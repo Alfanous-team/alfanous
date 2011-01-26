@@ -1,5 +1,4 @@
-# -*- coding: UTF-8 -*- 
-
+# -*- coding: utf-8 -*-
 
 """
 Created on 12 avr. 2010
@@ -7,48 +6,64 @@ Created on 12 avr. 2010
 @author: Assem Chelli
 @contact: assem.ch[at]gmail.com
 
+@todo: complete all new Ui features
+@todo: relate to AboutDlg / PreferenceDlg
+@todo: use css and simplify texts to make a good localization
+@bug: "unknown property dir" - harry  
+
 """
-CONFIGPATH="./"
-INDEXPATH="./indexes/"
 
 
-from configobj import ConfigObj
+import sys
+from support.configobj import ConfigObj
 from PyQt4 import  QtGui,QtCore
 from PyQt4.QtCore import QRect
 
-
-
+from paths import *
 from mainform import Ui_MainWindow
-import sys
+#from aboutDlg import Ui_Dialog as Ui_aboutDlg
 
 
-from alfanous.main import *
-from alfanous.pyparsing import ParseException
 
+
+#localization
 import gettext;
-gettext.bindtextdomain("alfanousQT", "./locale");
+gettext.bindtextdomain("alfanousQT", LOCALPATH);
 gettext.textdomain("alfanousQT");
 _=gettext.gettext
 n_ = gettext.ngettext
+"""
+Available_langs={"en":"English","ar":"Arabic"}
+lang1 = gettext.translation('myapplication', languages=['en'])
+# start by using language1
+lang1.install()
+"""
 
 
 
-
+from alfanous.main import *
+from alfanous.Support.pyparsing import ParseException
+#initialize search engines 
 QSE=QuranicSearchEngine(INDEXPATH+"main/")
 TSE=TraductionSearchEngine(INDEXPATH+"extend/")
+
+#results per page
 PERPAGE=10
-CPTZ=0
+#direction: default
+DIR=_("ltr")
 
 
+#parse keywords
 from re import compile
 kword = compile(u"[^,،]+")
 keywords = lambda phrase: kword.findall(phrase)
 
-
+#remove tamdid _
 def Gword_tamdid(aya):
     """ add a tamdid to lafdh aljalala to eliminate the double vocalization """
     return aya.replace(u"لَّه", u"لَّـه").replace(u"لَّه", u"لَّـه")
 
+#languages 
 langs={'el': 'Greek', 'eo': 'Esperanto', 'en': 'English', 'vi': 'Vietnamese', 'ca': 'Catalan', 'it': 'Italian', 'lb': 'Luxembourgish', 'eu': 'Basque', 'ar': 'Arabic', 'bg': 'Bulgarian', 'cs': 'Czech', 'et': 'Estonian', 'gl': 'Galician', 'id': 'Indonesian', 'ru': 'Russian', 'nl': 'Dutch', 'pt': 'Portuguese', 'no': 'Norwegian', 'tr': 'Turkish', 'lv': 'Latvian', 'lt': 'Lithuanian', 'th': 'Thai', 'es_ES': 'Spanish', 'ro': 'Romanian', 'en_GB': 'British English', 'fr': 'French', 'hy': 'Armenian', 'uk': 'Ukrainian', 'pt_BR': 'Brazilian', 'hr': 'Croatian', 'de': 'German', 'da': 'Danish', 'fa': 'Persian', 'bs': 'Bosnian', 'fi': 'Finnish', 'hu': 'Hungarian', 'ja': 'Japanese', 'he': 'Hebrew', 'ka': 'Georgian', 'zh_CN': 'Chinese', 'kk': 'Kazakh', 'sr': 'Serbian', 'sq': 'Albanian', 'ko': 'Korean', 'sv': 'Swedish', 'mk': 'Macedonian', 'sk': 'Slovak', 'pl': 'Polish', 'ms': 'Malay', 'sl': 'Slovenian'}
 
 sajda_type={u"مستحبة":_(u"recommended"),u"واجبة":_(u"obliged")}
@@ -157,7 +172,7 @@ class QUI(Ui_MainWindow):
     def setupUi(self, MainWindow):
         super(QUI, self).setupUi(MainWindow)
         
-        if _("ltr")=="rtl":
+        if DIR=="rtl":
             MainWindow.setLayoutDirection(QtCore.Qt.RightToLeft)
         self.o_query.setLayoutDirection(QtCore.Qt.RightToLeft)
         QtCore.QObject.connect(self.o_search, QtCore.SIGNAL("clicked()"), self.search_all)
@@ -215,8 +230,16 @@ class QUI(Ui_MainWindow):
         limit=self.o_limit.value()
         highlight=self.o_highlight.isChecked()
         
+	html="""
+<style type="text/css">
+span.green {font-size:14pt; color:#005800;}
+h1 {font-size:16pt; font-weight:600; color:#ff0000;}
+h2 {color:#0000ff; background-color:#ccffcc;}
+</style>
 
-        html=self.suggest(query)
+"""
+        html+='<div dir="'+DIR+"'>"
+        html+=self.suggest(query)
         
         #search
         terms=[]
@@ -241,11 +264,11 @@ class QUI(Ui_MainWindow):
                     if term[2]:                
                         matches+=term[2]
                         docs+=term[3]
-                        wordshtml+=u'<p dir="%s" style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"><span style=" font-size:14pt; color:#00aa00;">%d .  </span><span style=" font-size:14pt; color:#005800;">%s : </span><span style=" font-size:14pt;"> %s </span><span style=" font-size:14pt; color:#005500;">%d </span> %s <span style=" font-size:14pt;"> %s  </span><span style=" font-size:14pt; color:#005500;">%d</span><span style=" font-size:14pt;"> %s</span>.' %  (_(u"ltr"),cpt,term[1],_(u"reported"),term[2],n_(u"time",u"times",term[2]),_(u"in"),term[3],n_(u"aya",u"ayas",term[3]))
+                        wordshtml+=u'<p><span class="green">%d.%s : </span> %s <span class="green">%d </span> %s %s  <span class="green">%d</span>%s.' %  (cpt,term[1],_(u"reported"),term[2],n_(u"time",u"times",term[2]),_(u"in"),term[3],n_(u"aya",u"ayas",term[3]))
                         cpt+=1
                     wordshtml+=u"</p>"
             if cpt-1:
-                html+=u'<p dir="%s" style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"><span style=" font-size:16pt; font-weight:600; color:#ff0000;">%s </span><span style=" font-size:14pt; font-weight:600; color:#6a0000;"> </span><span style=" font-size:16pt; color:#6a0000;">( </span><span style=" font-size:16pt; color:#ff0000;">%d</span><span style=" font-size:16pt; color:#6a0000;"> %s %s </span><span style=" font-size:16pt; color:#ff0000;">%d</span><span style=" font-size:16pt; color:#6a0000;"> %s  </span><span style=" font-size:16pt; color:#6a0000;"> )</span><span style=" font-size:18pt; font-weight:600; color:#ff0000;"> : </span></p>' %  (_(u"ltr"),_(u"Words"),cpt-1,n_(u"word",u"words",cpt-1),_(u"reported"),matches,n_(u"time",u"times",matches))
+                html+=u'<h1>%s ( %d %s %s %d %s ): <h1>' %  (_(u"Words"),cpt-1,n_(u"word",u"words",cpt-1),_(u"reported"),matches,n_(u"time",u"times",matches))
                 html+= wordshtml   
                 html+=u"<br>"
             
@@ -272,6 +295,7 @@ class QUI(Ui_MainWindow):
         self.o_page.setValue(1)
         
         html+=res["results"]
+        html+="<div>"
         self.o_results.setText(html)
 
     
@@ -341,35 +365,40 @@ class QUI(Ui_MainWindow):
             
             html=""
             if reslist:
-                html+=u"<p  dir='%s' style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:15pt; font-weight:600; color:#ff0000;\">%s (%d %s %d)</span></p>" % (_(u"ltr"),_(u"Results"),start+1,_(u"to"),end)
+                html+=u"<h1>"+u"Results (%d to %d)" % (start+1,end)+ u"</h1>" 
             
     
             cpt = startpage
             for r in reslist :
                 cpt += 1
-                html += u"<br><span dir='%s' style=\" font-family:'arial ,sans serif'; color:#0000ff; background-color:#ccffcc;\"> <b>%d</b>)  - %s <b>%d</b> %s  <b>%s</b> </span>" %(_(u"ltr"),cpt,_(u"Aya n°"),r["aya_id"],_(u"of Sura "),H(keywords(r["sura"])[0]))
+                
+                html += u"<h2> <b>%d</b>)  - "+_("Aya n° <b>%d</b> of Sura  <b>%s</b>") %(cpt,r["aya_id"],H(keywords(r["sura"])[0]))  
                 if sura_info:
-                    html += u"<span style=\" font-size:8pt; color:#404060;\">(   %s: <b>%d</b>,%s : <b>%s</b> , %s :  <b>%d</b>, %s : <b>%d</b>)</span>" % (_(u"Sura n°"),r["sura_id"],_(u"revel_place"),H(sura_type[r["sura_type"]]),_(u"revel_order"),r["sura_order"],_(u"ayas"),r["s_a"])
-                html+="<br />"
+                    html += u"<span style=\" font-size:8pt; color:#404060;\"> ( "+ _(u"Sura n°: <b>%d</b>,revel_place : <b>%s</b> , revel_order :  <b>%d</b>, ayas : <b>%d</b>") % (r["sura_id"],H(sura_type[r["sura_type"]]),r["sura_order"],r["s_a"]) +u" )</span>" 
+                html+="</h2>"+"<br />"
+                html+= "<div  align=\"center\">"
                 if prev:
-                    html += u"<p dir='rtl' align=\"center\" style=\"margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\"font-family:'ArabeyesQr';  font-size:10pt;font-weight:200; color:#bc947a;\">[ <span style=\"font-family:'me_quran';\"><b>%s</b></span>] - %s %d </span></p>" % (Gword_tamdid(adja_ayas[r["gid"]-1]["uth_"] if self.o_script_uthmani.isChecked() else adja_ayas[r["gid"]-1]["aya_"] ),keywords(adja_ayas[r["gid"]-1]["sura"])[0],adja_ayas[r["gid"]-1]["aya_id"])
-                html += u" <p dir='rtl' align=\"center\" style=\"margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\"font-family:'ArabeyesQr';  font-size:18pt; font-weight:800; color:#6b462a;\">[ <span style=\"font-family:'me_quran';\"><b>%s</b></span>]  </span></p>" % Gword_tamdid(H(r["uth_"] if self.o_script_uthmani.isChecked() else r["aya_"] ) )
+                    html += u"<p dir='rtl' style=\"font-family:'ArabeyesQr';font-size:10pt;font-weight:200; color:#bc947a;\">[ <span style=\"font-family:'me_quran';\"><b>%s</b></span>] - %s %d </p>" % (Gword_tamdid(adja_ayas[r["gid"]-1]["uth_"] if self.o_script_uthmani.isChecked() else adja_ayas[r["gid"]-1]["aya_"] ),keywords(adja_ayas[r["gid"]-1]["sura"])[0],adja_ayas[r["gid"]-1]["aya_id"])
+                html += u" <p dir='rtl' style=\"font-family:'ArabeyesQr';  font-size:18pt; font-weight:800; color:#6b462a;\">[ <span style=\"font-family:'me_quran';\"><b>%s</b></span>] </p>" % Gword_tamdid(H(r["uth_"] if self.o_script_uthmani.isChecked() else r["aya_"] ) )
                 if suiv:
-                    html += u"<p dir='rtl' align=\"center\" style=\"margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\"font-family:'ArabeyesQr'; font-size:10pt; font-weight:200; color:#bc947a;\">[ <span style=\"font-family:'me_quran';\"><b>%s</b></span>] - %s %d </span></p>" % (Gword_tamdid(adja_ayas[r["gid"]+1]["uth_"] if self.o_script_uthmani.isChecked() else adja_ayas[r["gid"]+1]["aya_"] ),keywords(adja_ayas[r["gid"]+1]["sura"])[0],adja_ayas[r["gid"]+1]["aya_id"])
+                    html += u"<p dir='rtl' style=\"font-family:'ArabeyesQr'; font-size:10pt; font-weight:200; color:#bc947a;\">[ <span style=\"font-family:'me_quran';\"><b>%s</b>] - %s %d </span></p>" % (Gword_tamdid(adja_ayas[r["gid"]+1]["uth_"] if self.o_script_uthmani.isChecked() else adja_ayas[r["gid"]+1]["aya_"] ),keywords(adja_ayas[r["gid"]+1]["sura"])[0],adja_ayas[r["gid"]+1]["aya_id"])
                 html+="<br />"
                 if trad_index: 
                     if trad_id: 
-                        html += u'<p %s align="center" style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"><span style="font-size:18pt; font-weight:600; color:#5500ff;">%s (%s):</span></p><p dir="ltr" align="center" style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"><span style=" font-weight:600;">%s</span></p><br/>' % (_("dir='ltr'"),_(u"translation"),trad_title,trad_text[r["gid"]])
+                        html += u'<p>%s -%s-:</p><p dir="%s" align="center" style=" font-size:15pt; font-weight:400; color:#7722dd;">%s</p><br/>' % (_(u"Translation"),trad_title,"ltr",trad_text[r["gid"]])
                 if aya_info:
-                    html += u"<p align=\"center\" style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" color:#808080;\">%s:   <b>%d</b> -(%s : <b>%d</b> , %s : <b>%d</b>) - %s :<b>%d</b> -  %s :<b>%s</b></span></p> " % (_(u"page"),r["page"],_(u"hizb"),r["hizb"],_(u"rubu'"),r["rub"],_(u"manzil"),r["manzil"],_(u"ruku'"),r["ruku"])       
-                    html += u"<p align=\"center\" style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" color:#808080;\">%s : <b>%s</b> %s : <b>%s</b> %s : <b>%s</b> </span></p>" % (_(u"chapter"),H(r["chapter"]),_(u"topic"),H(r["topic"]),_(u"subtopic"),H(r["subtopic"]))        
-                    html += u"<p align=\"center\"><span style=\" color:#808080;\">%s : </span><span style=\" font-weight:600; color:#808080;\"> <b>%d</b> / %d </span><span style=\" color:#808080;\"> - %s :  <b>%d</b> / %d  </span><span style=\" color:#808080;\"> - %s :  <b>%d</b> / %d  </span></p>" % (_(u"words"),N(r["a_w"]),N(r["s_w"]),_(u"letters"),N(r["a_l"]),N(r["s_l"]),_(u"names of Allaah"),N(r["a_g"]),N(r["s_g"]))
-                    if r["sajda"]==u"نعم": html+=u'<p align="center" %s style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"><span style=" color:#b88484;">%s -%s- %s %d</span></p>' % (_("dir='rtl'"),_(u"This aya contain a sajdah"),sajda_type[r["sajda_type"]],_(u"n°"),N(r["sajda_id"]))
-                html += u"<hr />"
+                    html +=u"<p  style=\" color:#808080;\">"
+                    html +=_(u"page: <b>%d</b> -(Hizb : <b>%d</b> ,Rubu' : <b>%d</b>) - manzil :<b>%d</b> -  ruku' :<b>%s</b>") % (r["page"],r["hizb"],r["rub"],r["manzil"],r["ruku"])       
+                    html +="<br />"+_(u"chapter : <b>%s</b> topic : <b>%s</b> subtopic : <b>%s</b> ") % (H(r["chapter"]),H(r["topic"]),H(r["subtopic"]))        
+                    html +="<br />"+_(u"words : <b>%d</b> / %d  - letters :  <b>%d</b> / %d  -  names of Allaah :  <b>%d</b> / %d ") % (N(r["a_w"]),N(r["s_w"]),N(r["a_l"]),N(r["s_l"]),N(r["a_g"]),N(r["s_g"]))
+                    html += "</p>"
+                    if r["sajda"]==u"نعم": html+=u'<p style=" color:#b88484;">'+_(u"This aya contain a sajdah -%s- n° %d")% (sajda_type[r["sajda_type"]],N(r["sajda_id"]))+'</p>' 
+                html += u"</div><hr />"
             
             return {"results":html,"time":res.runtime,"resnum":len(res),"extend_time":extend_runtime}
         else:
             return {"results":"","time":0,"resnum":0,"extend_time":0}
+   
     @staticmethod
     def suggest(query):
         """ return lines of suggestions
@@ -378,9 +407,9 @@ class QUI(Ui_MainWindow):
             items=QSE.suggest_all(unicode(query)).items()
             text=u""
             if len(items):
-                text=u"<p  %s style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:15pt; font-weight:600; color:#ff0000;\">%s (%d)</span></p>" %(_("dir='ltr'"),_(u"Suggestions"),len(items))
+                text=u"<h1> %s (%d) </h1>" %(_(u"Suggestions"),len(items))
                 for key, value in items:
-                        text +=u"<p  dir='rtl' style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-weight:600; color:#246b14;\">%s</span><span style=\" font-weight:600; color:#246f0d;\">:</span><span style=\" color:#000000;\">%s.</span></p>" % (unicode(key),u"،".join(value))
+                        text +=u"<span class='green'>  %s </span> : %s. <br />" % (unicode(key),u"،".join(value))
                         
                
         except Exception:
@@ -667,6 +696,7 @@ Alfanous is a Quranic search engine provides simple and advanced search services
 <ul>
 <li> <b>  Mailinglist:</b> alfanous@googlegroup.com </li>
 <li> <b>  Website :</b> http://alfanous.sf.net/cms/ </li>
+<li> <b>  Developer's email :</b> assem.ch@gmail.com </li>
 
 
 </ul>
