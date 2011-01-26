@@ -24,8 +24,8 @@
 
 
 from Exceptions import Ta7rif 
-from whoosh.filedb.filestore import FileStorage
-from whoosh import index
+from Support.whoosh.filedb.filestore import FileStorage
+from Support.whoosh import index
 
 
 

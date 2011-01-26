@@ -12,7 +12,7 @@ it contains  suggestions systems
 
 '''
 
-from whoosh.spelling import SpellChecker
+from Support.whoosh.spelling import SpellChecker
 
 
 class QSuggester(SpellChecker):

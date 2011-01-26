@@ -10,10 +10,10 @@
 '''
 
 
-from whoosh.scoring import Cosine, TF_IDF, Frequency, BM25F
-from whoosh.highlight import highlight, NullFragmenter, BasicFragmentScorer, FIRST, Fragment, HtmlFormatter,GenshiFormatter
+from Support.whoosh.scoring import  TF_IDF, Frequency, BM25F
+from Support.whoosh.highlight import highlight, NullFragmenter, BasicFragmentScorer, FIRST, Fragment,GenshiFormatter,HtmlFormatter
 from TextProcessing import QHighLightAnalyzer, Gword_tamdid
-from whoosh.analysis import StandardAnalyzer
+from Support.whoosh.analysis import StandardAnalyzer
 
 #Results.extend(results)Results.upgrade(results)Results.upgrade_and_extend(results)    
 def QScore(methode=None):
