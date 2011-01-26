@@ -1,0 +1,1063 @@
+<?xml version="1.0" encoding="ascii"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>src.alfanous.Qimport.harvestman.lib.common.common</title>
+  <link rel="stylesheet" href="epydoc.css" type="text/css" />
+  <script type="text/javascript" src="epydoc.js"></script>
+</head>
+
+<body bgcolor="white" text="black" link="blue" vlink="#204080"
+      alink="#204080">
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="src.alfanous-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            ><a class="navbar" target="_top" href="alfanous.sourceforge.com">Alfanous</a></th>
+          </tr></table></th>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="100%">
+      <span class="breadcrumbs">
+        Package&nbsp;src ::
+        <a href="src.alfanous-module.html">Package&nbsp;alfanous</a> ::
+        <a href="src.alfanous.Qimport-module.html">Package&nbsp;Qimport</a> ::
+        <a href="src.alfanous.Qimport.harvestman-module.html">Package&nbsp;harvestman</a> ::
+        <a href="src.alfanous.Qimport.harvestman.lib-module.html">Package&nbsp;lib</a> ::
+        <a href="src.alfanous.Qimport.harvestman.lib.common-module.html">Package&nbsp;common</a> ::
+        Module&nbsp;common
+      </span>
+    </td>
+    <td>
+      <table cellpadding="0" cellspacing="0">
+        <!-- hide/show private -->
+        <tr><td align="right"><span class="options">[<a href="javascript:void(0);" class="privatelink"
+    onclick="toggle_private();">hide&nbsp;private</a>]</span></td></tr>
+        <tr><td align="right"><span class="options"
+            >[<a href="frames.html" target="_top">frames</a
+            >]&nbsp;|&nbsp;<a href="src.alfanous.Qimport.harvestman.lib.common.common-module.html"
+            target="_top">no&nbsp;frames</a>]</span></td></tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<!-- ==================== MODULE DESCRIPTION ==================== -->
+<h1 class="epydoc">Module common</h1><p class="nomargin-top"><span class="codelink"><a href="src.alfanous.Qimport.harvestman.lib.common.common-pysrc.html">source&nbsp;code</a></span></p>
+<pre class="literalblock">
+common.py - Global functions for HarvestMan Program.
+ This file is part of the HarvestMan software.
+ For licensing information, see file LICENSE.TXT.
+
+ Author: Anand B Pillai &lt;abpillai at gmail dot com&gt;
+
+ Created: Jun 10 2003
+
+ Aug 17 2006          Anand          Modifications for the new logging
+                                     module.
+
+ Feb 7 2007           Anand          Some changes. Added logconsole
+                                     function. Split Initialize() to
+                                     InitConfig() and InitLogger().
+ Feb 26 2007          Anand          Replaced urlmappings dictionary
+                                     with a WeakValueDictionary.
+
+Copyright (C) 2004 - Anand B Pillai.
+
+</pre>
+
+<hr />
+<div class="fields">      <p><strong>Version:</strong>
+        2.0 b1
+      </p>
+      <p><strong>Author:</strong>
+        Anand B Pillai
+      </p>
+</div><!-- ==================== CLASSES ==================== -->
+<a name="section-Classes"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Classes</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-Classes"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="src.alfanous.Qimport.harvestman.lib.common.common.Alias-class.html" class="summary-name">Alias</a>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="src.alfanous.Qimport.harvestman.lib.common.common.AliasError-class.html" class="summary-name">AliasError</a>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="src.alfanous.Qimport.harvestman.lib.common.common.GlobalData-class.html" class="summary-name">GlobalData</a>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="src.alfanous.Qimport.harvestman.lib.common.common.SleepEvent-class.html" class="summary-name">SleepEvent</a><br />
+      A class representing a timeout event.
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="src.alfanous.Qimport.harvestman.lib.common.common.RandomSleepEvent-class.html" class="summary-name">RandomSleepEvent</a><br />
+      A class representing a timeout event.
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="src.alfanous.Qimport.harvestman.lib.common.common.DummyStderr-class.html" class="summary-name">DummyStderr</a><br />
+      A dummy class to imitate stderr
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="src.alfanous.Qimport.harvestman.lib.common.common.CaselessDict-class.html" class="summary-name">CaselessDict</a>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="src.alfanous.Qimport.harvestman.lib.common.common.Ldeque-class.html" class="summary-name">Ldeque</a><br />
+      Length-limited deque
+    </td>
+  </tr>
+</table>
+<!-- ==================== FUNCTIONS ==================== -->
+<a name="section-Functions"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Functions</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-Functions"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="SysExceptHook"></a><span class="summary-sig-name">SysExceptHook</span>(<span class="summary-sig-arg">typ</span>,
+        <span class="summary-sig-arg">val</span>,
+        <span class="summary-sig-arg">tracebak</span>)</span><br />
+      Dummy function to replace sys.excepthook</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.alfanous.Qimport.harvestman.lib.common.common-pysrc.html#SysExceptHook">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="SetAlias"></a><span class="summary-sig-name">SetAlias</span>(<span class="summary-sig-arg">obj</span>)</span><br />
+      Set unique alias for the object</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.alfanous.Qimport.harvestman.lib.common.common-pysrc.html#SetAlias">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="SetLogFile"></a><span class="summary-sig-name">SetLogFile</span>()</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.alfanous.Qimport.harvestman.lib.common.common-pysrc.html#SetLogFile">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="src.alfanous.Qimport.harvestman.lib.common.common-module.html#SetUserDebug" class="summary-sig-name">SetUserDebug</a>(<span class="summary-sig-arg">message</span>)</span><br />
+      Used to store error messages related to user settings in the config 
+      file/project file.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.alfanous.Qimport.harvestman.lib.common.common-pysrc.html#SetUserDebug">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="SetLogSeverity"></a><span class="summary-sig-name">SetLogSeverity</span>()</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.alfanous.Qimport.harvestman.lib.common.common-pysrc.html#SetLogSeverity">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="wasOrWere"></a><span class="summary-sig-name">wasOrWere</span>(<span class="summary-sig-arg">val</span>)</span><br />
+      What it says</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.alfanous.Qimport.harvestman.lib.common.common-pysrc.html#wasOrWere">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="plural"></a><span class="summary-sig-name">plural</span>(<span class="summary-sig-arg">(s, val)</span>)</span><br />
+      What it says</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.alfanous.Qimport.harvestman.lib.common.common-pysrc.html#plural">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="bin_crypt"></a><span class="summary-sig-name">bin_crypt</span>(<span class="summary-sig-arg">data</span>)</span><br />
+      Encryption using binascii and obfuscation</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.alfanous.Qimport.harvestman.lib.common.common-pysrc.html#bin_crypt">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="bin_decrypt"></a><span class="summary-sig-name">bin_decrypt</span>(<span class="summary-sig-arg">data</span>)</span><br />
+      Decrypttion using binascii and deobfuscation</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.alfanous.Qimport.harvestman.lib.common.common-pysrc.html#bin_decrypt">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="obfuscate"></a><span class="summary-sig-name">obfuscate</span>(<span class="summary-sig-arg">data</span>)</span><br />
+      Obfuscate a string using repeated xor</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.alfanous.Qimport.harvestman.lib.common.common-pysrc.html#obfuscate">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="unobfuscate"></a><span class="summary-sig-name">unobfuscate</span>(<span class="summary-sig-arg">data</span>)</span><br />
+      Unobfuscate a xor obfuscated string</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.alfanous.Qimport.harvestman.lib.common.common-pysrc.html#unobfuscate">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="send_url"></a><span class="summary-sig-name">send_url</span>(<span class="summary-sig-arg">data</span>,
+        <span class="summary-sig-arg">host</span>,
+        <span class="summary-sig-arg">port</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.alfanous.Qimport.harvestman.lib.common.common-pysrc.html#send_url">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="send_url_tcp"></a><span class="summary-sig-name">send_url_tcp</span>(<span class="summary-sig-arg">data</span>,
+        <span class="summary-sig-arg">host</span>,
+        <span class="summary-sig-arg">port</span>)</span><br />
+      Send url to url server</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.alfanous.Qimport.harvestman.lib.common.common-pysrc.html#send_url_tcp">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="send_url_udp"></a><span class="summary-sig-name">send_url_udp</span>(<span class="summary-sig-arg">data</span>,
+        <span class="summary-sig-arg">host</span>,
+        <span class="summary-sig-arg">port</span>)</span><br />
+      Send url to url server</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.alfanous.Qimport.harvestman.lib.common.common-pysrc.html#send_url_udp">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="ping_urlserver"></a><span class="summary-sig-name">ping_urlserver</span>(<span class="summary-sig-arg">host</span>,
+        <span class="summary-sig-arg">port</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.alfanous.Qimport.harvestman.lib.common.common-pysrc.html#ping_urlserver">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="ping_urlserver_tcp"></a><span class="summary-sig-name">ping_urlserver_tcp</span>(<span class="summary-sig-arg">host</span>,
+        <span class="summary-sig-arg">port</span>)</span><br />
+      Ping url server to see if it is alive</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.alfanous.Qimport.harvestman.lib.common.common-pysrc.html#ping_urlserver_tcp">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="ping_urlserver_udp"></a><span class="summary-sig-name">ping_urlserver_udp</span>(<span class="summary-sig-arg">host</span>,
+        <span class="summary-sig-arg">port</span>)</span><br />
+      Ping url server to see if it is alive</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.alfanous.Qimport.harvestman.lib.common.common-pysrc.html#ping_urlserver_udp">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="GetTempDir"></a><span class="summary-sig-name">GetTempDir</span>()</span><br />
+      Return the temporary directory</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.alfanous.Qimport.harvestman.lib.common.common-pysrc.html#GetTempDir">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="src.alfanous.Qimport.harvestman.lib.common.common-module.html#GetMyTempDir" class="summary-sig-name">GetMyTempDir</a>()</span><br />
+      Return temporary directory for HarvestMan.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.alfanous.Qimport.harvestman.lib.common.common-pysrc.html#GetMyTempDir">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="debug"></a><span class="summary-sig-name">debug</span>(<span class="summary-sig-arg">arg</span>,
+        <span class="summary-sig-arg">*args</span>)</span><br />
+      Log information, will log if verbosity is equal to DEBUG level</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.alfanous.Qimport.harvestman.lib.common.common-pysrc.html#debug">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="info"></a><span class="summary-sig-name">info</span>(<span class="summary-sig-arg">arg</span>,
+        <span class="summary-sig-arg">*args</span>)</span><br />
+      Log information, will log if verbosity is &lt;= INFO level</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.alfanous.Qimport.harvestman.lib.common.common-pysrc.html#info">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="extrainfo"></a><span class="summary-sig-name">extrainfo</span>(<span class="summary-sig-arg">arg</span>,
+        <span class="summary-sig-arg">*args</span>)</span><br />
+      Log information, will log if verbosity is &lt;= EXTRAINFO level</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.alfanous.Qimport.harvestman.lib.common.common-pysrc.html#extrainfo">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="warning"></a><span class="summary-sig-name">warning</span>(<span class="summary-sig-arg">arg</span>,
+        <span class="summary-sig-arg">*args</span>)</span><br />
+      Log information, will log if verbosity is &lt;= WARNING level</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.alfanous.Qimport.harvestman.lib.common.common-pysrc.html#warning">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="error"></a><span class="summary-sig-name">error</span>(<span class="summary-sig-arg">arg</span>,
+        <span class="summary-sig-arg">*args</span>)</span><br />
+      Log information, will log if verbosity is &lt;= ERROR level</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.alfanous.Qimport.harvestman.lib.common.common-pysrc.html#error">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="critical"></a><span class="summary-sig-name">critical</span>(<span class="summary-sig-arg">arg</span>,
+        <span class="summary-sig-arg">*args</span>)</span><br />
+      Log information, will log if verbosity is &lt;= CRITICAL level</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.alfanous.Qimport.harvestman.lib.common.common-pysrc.html#critical">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="logconsole"></a><span class="summary-sig-name">logconsole</span>(<span class="summary-sig-arg">arg</span>,
+        <span class="summary-sig-arg">*args</span>)</span><br />
+      Log directly to sys.stdout using print</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.alfanous.Qimport.harvestman.lib.common.common-pysrc.html#logconsole">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="src.alfanous.Qimport.harvestman.lib.common.common-module.html#logtraceback" class="summary-sig-name">logtraceback</a>(<span class="summary-sig-arg">console</span>=<span class="summary-sig-default">False</span>)</span><br />
+      Log the most recent exception traceback.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.alfanous.Qimport.harvestman.lib.common.common-pysrc.html#logtraceback">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="hexit"></a><span class="summary-sig-name">hexit</span>(<span class="summary-sig-arg">arg</span>)</span><br />
+      Exit wrapper for HarvestMan</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.alfanous.Qimport.harvestman.lib.common.common-pysrc.html#hexit">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="print_traceback"></a><span class="summary-sig-name">print_traceback</span>()</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.alfanous.Qimport.harvestman.lib.common.common-pysrc.html#print_traceback">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="atom"></a><span class="summary-sig-name">atom</span>(<span class="summary-sig-arg">next</span>,
+        <span class="summary-sig-arg">token</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.alfanous.Qimport.harvestman.lib.common.common-pysrc.html#atom">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="simple_eval"></a><span class="summary-sig-name">simple_eval</span>(<span class="summary-sig-arg">source</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.alfanous.Qimport.harvestman.lib.common.common-pysrc.html#simple_eval">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="set_aliases"></a><span class="summary-sig-name">set_aliases</span>(<span class="summary-sig-arg">path</span>=<span class="summary-sig-default">None</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.alfanous.Qimport.harvestman.lib.common.common-pysrc.html#set_aliases">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="test_sgmlop"></a><span class="summary-sig-name">test_sgmlop</span>()</span><br />
+      Test whether sgmlop is available and working</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.alfanous.Qimport.harvestman.lib.common.common-pysrc.html#test_sgmlop">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+</table>
+<!-- ==================== VARIABLES ==================== -->
+<a name="section-Variables"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Variables</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-Variables"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="objects"></a><span class="summary-name">objects</span> = <code title="Alias()">Alias()</code><br />
+      hash(x)
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="globaldata"></a><span class="summary-name">globaldata</span> = <code title="GlobalData()">GlobalData()</code><br />
+      hash(x)
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="src.alfanous.Qimport.harvestman.lib.common.common-module.html#signatures" class="summary-name">signatures</a> = <code title="{'bmp': [0, ('BM6')],
+ 'gif': [0, ('GIF87a', 'GIF89a')],
+ 'jpeg': [6, ('JFIF')]}"><code class="variable-group">{</code><code class="variable-quote">'</code><code class="variable-string">bmp</code><code class="variable-quote">'</code><code class="variable-op">: </code><code class="variable-group">[</code>0<code class="variable-op">, </code><code class="variable-group">(</code><code class="variable-quote">'</code><code class="variable-string">BM6</code><code class="variable-quote">'</code><code class="variable-group">)</code><code class="variable-group">]</code><code class="variable-op">, </code><code class="variable-quote">'</code><code class="variable-string">gif</code><code class="variable-quote">'</code><code class="variable-op">: </code><code class="variable-group">[</code>0<code class="variable-op">, </code><code class="variable-group">(</code><code class="variable-quote">'</code><code class="variable-string">GIF87a</code><code class="variable-quote">'</code><code class="variable-op">, </code><code class="variable-quote">'</code><code class="variable-string">GIF8</code><code class="variable-ellipsis">...</code></code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="src.alfanous.Qimport.harvestman.lib.common.common-module.html#aliases" class="summary-name">aliases</a> = <code title="{'bmp': ('dib'), 'gif': (), 'jpeg': ('jpg', 'jpe', 'jfif')}"><code class="variable-group">{</code><code class="variable-quote">'</code><code class="variable-string">bmp</code><code class="variable-quote">'</code><code class="variable-op">: </code><code class="variable-group">(</code><code class="variable-quote">'</code><code class="variable-string">dib</code><code class="variable-quote">'</code><code class="variable-group">)</code><code class="variable-op">, </code><code class="variable-quote">'</code><code class="variable-string">gif</code><code class="variable-quote">'</code><code class="variable-op">: </code><code class="variable-group">(</code><code class="variable-group">)</code><code class="variable-op">, </code><code class="variable-quote">'</code><code class="variable-string">jpeg</code><code class="variable-quote">'</code><code class="variable-op">: </code><code class="variable-group">(</code><code class="variable-quote">'</code><code class="variable-string">jpg</code><code class="variable-quote">'</code><code class="variable-op">, </code><code class="variable-quote">'</code><code class="variable-string">jpe</code><code class="variable-quote">'</code><code class="variable-op">, </code><code class="variable-quote">'</code><code class="variable-ellipsis">...</code></code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="__package__"></a><span class="summary-name">__package__</span> = <code title="'src.alfanous.Qimport.harvestman.lib.common'"><code class="variable-quote">'</code><code class="variable-string">src.alfanous.Qimport.harvestman.lib.common</code><code class="variable-quote">'</code></code>
+    </td>
+  </tr>
+</table>
+<p class="indent-wrapped-lines"><b>Imports:</b>
+  <span title="weakref">weakref</span>,
+  <span title="os">os</span>,
+  <span title="sys">sys</span>,
+  <span title="socket">socket</span>,
+  <span title="binascii">binascii</span>,
+  <span title="copy">copy</span>,
+  <span title="shelve">shelve</span>,
+  <span title="traceback">traceback</span>,
+  <span title="threading">threading</span>,
+  <span title="collections">collections</span>,
+  <span title="random">random</span>,
+  <span title="cStringIO">cStringIO</span>,
+  <span title="tokenize">tokenize</span>,
+  <span title="types.IntType">IntType</span>,
+  <span title="types.TypeType">TypeType</span>,
+  <span title="types.BooleanType">BooleanType</span>,
+  <span title="types.CodeType">CodeType</span>,
+  <span title="types.UnboundMethodType">UnboundMethodType</span>,
+  <span title="types.StringType">StringType</span>,
+  <span title="types.BuiltinMethodType">BuiltinMethodType</span>,
+  <span title="types.FloatType">FloatType</span>,
+  <span title="types.DictionaryType">DictionaryType</span>,
+  <span title="types.NotImplementedType">NotImplementedType</span>,
+  <span title="types.BuiltinFunctionType">BuiltinFunctionType</span>,
+  <span title="types.DictProxyType">DictProxyType</span>,
+  <span title="types.GeneratorType">GeneratorType</span>,
+  <span title="types.InstanceType">InstanceType</span>,
+  <span title="types.ObjectType">ObjectType</span>,
+  <span title="types.DictType">DictType</span>,
+  <span title="types.GetSetDescriptorType">GetSetDescriptorType</span>,
+  <span title="types.FileType">FileType</span>,
+  <span title="types.EllipsisType">EllipsisType</span>,
+  <span title="types.StringTypes">StringTypes</span>,
+  <span title="types.ListType">ListType</span>,
+  <span title="types.MethodType">MethodType</span>,
+  <span title="types.TupleType">TupleType</span>,
+  <span title="types.ModuleType">ModuleType</span>,
+  <span title="types.FrameType">FrameType</span>,
+  <span title="types.LongType">LongType</span>,
+  <span title="types.BufferType">BufferType</span>,
+  <span title="types.TracebackType">TracebackType</span>,
+  <span title="types.ClassType">ClassType</span>,
+  <span title="types.MemberDescriptorType">MemberDescriptorType</span>,
+  <span title="types.UnicodeType">UnicodeType</span>,
+  <span title="types.SliceType">SliceType</span>,
+  <span title="types.ComplexType">ComplexType</span>,
+  <span title="types.LambdaType">LambdaType</span>,
+  <span title="types.FunctionType">FunctionType</span>,
+  <span title="types.XRangeType">XRangeType</span>,
+  <span title="types.NoneType">NoneType</span>,
+  <a href="src.alfanous.Qimport.harvestman.lib.common.singleton.Singleton-class.html" title="src.alfanous.Qimport.harvestman.lib.common.singleton.Singleton">Singleton</a>
+</p><br />
+<!-- ==================== FUNCTION DETAILS ==================== -->
+<a name="section-FunctionDetails"></a>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Function Details</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-FunctionDetails"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+</table>
+<a name="SetUserDebug"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">SetUserDebug</span>(<span class="sig-arg">message</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="src.alfanous.Qimport.harvestman.lib.common.common-pysrc.html#SetUserDebug">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Used to store error messages related to user settings in the config 
+  file/project file. These will be printed at the end of the program</p>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="GetMyTempDir"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">GetMyTempDir</span>()</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="src.alfanous.Qimport.harvestman.lib.common.common-pysrc.html#GetMyTempDir">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Return temporary directory for HarvestMan. Also creates it if the 
+  directory is not there</p>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="logtraceback"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">logtraceback</span>(<span class="sig-arg">console</span>=<span class="sig-default">False</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="src.alfanous.Qimport.harvestman.lib.common.common-pysrc.html#logtraceback">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Log the most recent exception traceback. By default the trace goes 
+  only to the log file</p>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<br />
+<!-- ==================== VARIABLES DETAILS ==================== -->
+<a name="section-VariablesDetails"></a>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Variables Details</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-VariablesDetails"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+</table>
+<a name="signatures"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <h3 class="epydoc">signatures</h3>
+  
+  <dl class="fields">
+  </dl>
+  <dl class="fields">
+    <dt>Value:</dt>
+      <dd><table><tr><td><pre class="variable">
+<code class="variable-group">{</code><code class="variable-quote">'</code><code class="variable-string">bmp</code><code class="variable-quote">'</code><code class="variable-op">: </code><code class="variable-group">[</code>0<code class="variable-op">, </code><code class="variable-group">(</code><code class="variable-quote">'</code><code class="variable-string">BM6</code><code class="variable-quote">'</code><code class="variable-group">)</code><code class="variable-group">]</code><code class="variable-op">,</code>
+ <code class="variable-quote">'</code><code class="variable-string">gif</code><code class="variable-quote">'</code><code class="variable-op">: </code><code class="variable-group">[</code>0<code class="variable-op">, </code><code class="variable-group">(</code><code class="variable-quote">'</code><code class="variable-string">GIF87a</code><code class="variable-quote">'</code><code class="variable-op">, </code><code class="variable-quote">'</code><code class="variable-string">GIF89a</code><code class="variable-quote">'</code><code class="variable-group">)</code><code class="variable-group">]</code><code class="variable-op">,</code>
+ <code class="variable-quote">'</code><code class="variable-string">jpeg</code><code class="variable-quote">'</code><code class="variable-op">: </code><code class="variable-group">[</code>6<code class="variable-op">, </code><code class="variable-group">(</code><code class="variable-quote">'</code><code class="variable-string">JFIF</code><code class="variable-quote">'</code><code class="variable-group">)</code><code class="variable-group">]</code><code class="variable-group">}</code>
+</pre></td></tr></table>
+</dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="aliases"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <h3 class="epydoc">aliases</h3>
+  
+  <dl class="fields">
+  </dl>
+  <dl class="fields">
+    <dt>Value:</dt>
+      <dd><table><tr><td><pre class="variable">
+<code class="variable-group">{</code><code class="variable-quote">'</code><code class="variable-string">bmp</code><code class="variable-quote">'</code><code class="variable-op">: </code><code class="variable-group">(</code><code class="variable-quote">'</code><code class="variable-string">dib</code><code class="variable-quote">'</code><code class="variable-group">)</code><code class="variable-op">, </code><code class="variable-quote">'</code><code class="variable-string">gif</code><code class="variable-quote">'</code><code class="variable-op">: </code><code class="variable-group">(</code><code class="variable-group">)</code><code class="variable-op">, </code><code class="variable-quote">'</code><code class="variable-string">jpeg</code><code class="variable-quote">'</code><code class="variable-op">: </code><code class="variable-group">(</code><code class="variable-quote">'</code><code class="variable-string">jpg</code><code class="variable-quote">'</code><code class="variable-op">, </code><code class="variable-quote">'</code><code class="variable-string">jpe</code><code class="variable-quote">'</code><code class="variable-op">, </code><code class="variable-quote">'</code><code class="variable-string">jfif</code><code class="variable-quote">'</code><code class="variable-group">)</code><code class="variable-group">}</code>
+</pre></td></tr></table>
+</dd>
+  </dl>
+</td></tr></table>
+</div>
+<br />
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="src.alfanous-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            ><a class="navbar" target="_top" href="alfanous.sourceforge.com">Alfanous</a></th>
+          </tr></table></th>
+  </tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" width="100%%">
+  <tr>
+    <td align="left" class="footer">
+    Generated by Epydoc 3.0.1 on Fri Apr 23 04:37:51 2010
+    </td>
+    <td align="right" class="footer">
+      <a target="mainFrame" href="http://epydoc.sourceforge.net"
+        >http://epydoc.sourceforge.net</a>
+    </td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+  <!--
+  // Private objects are initially displayed (because if
+  // javascript is turned off then we want them to be
+  // visible); but by default, we want to hide them.  So hide
+  // them unless we have a cookie that says to show them.
+  checkCookie();
+  // -->
+</script>
+</body>
+</html>

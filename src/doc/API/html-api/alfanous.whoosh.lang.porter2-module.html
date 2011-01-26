@@ -1,0 +1,783 @@
+<?xml version="1.0" encoding="ascii"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>alfanous.whoosh.lang.porter2</title>
+  <link rel="stylesheet" href="epydoc.css" type="text/css" />
+  <script type="text/javascript" src="epydoc.js"></script>
+</head>
+
+<body bgcolor="white" text="black" link="blue" vlink="#204080"
+      alink="#204080">
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="alfanous-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            ><a class="navbar" target="_top" href="alfanous.sourceforge.com">Alfanous</a></th>
+          </tr></table></th>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="100%">
+      <span class="breadcrumbs">
+        <a href="alfanous-module.html">Package&nbsp;alfanous</a> ::
+        <a href="alfanous.whoosh-module.html">Package&nbsp;whoosh</a> ::
+        <a href="alfanous.whoosh.lang-module.html">Package&nbsp;lang</a> ::
+        Module&nbsp;porter2
+      </span>
+    </td>
+    <td>
+      <table cellpadding="0" cellspacing="0">
+        <!-- hide/show private -->
+        <tr><td align="right"><span class="options">[<a href="javascript:void(0);" class="privatelink"
+    onclick="toggle_private();">hide&nbsp;private</a>]</span></td></tr>
+        <tr><td align="right"><span class="options"
+            >[<a href="frames.html" target="_top">frames</a
+            >]&nbsp;|&nbsp;<a href="alfanous.whoosh.lang.porter2-module.html"
+            target="_top">no&nbsp;frames</a>]</span></td></tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<!-- ==================== MODULE DESCRIPTION ==================== -->
+<h1 class="epydoc">Module porter2</h1><p class="nomargin-top"><span class="codelink"><a href="alfanous.whoosh.lang.porter2-pysrc.html">source&nbsp;code</a></span></p>
+<p>An implementation of the Porter2 stemming algorithm. See 
+  http://snowball.tartarus.org/algorithms/english/stemmer.html</p>
+  <p>Adapted from pyporter2 by Michael Dirolf.</p>
+  <p>This algorithm is more correct but (at least in this implementation) 
+  several times slower than the original porter algorithm as implemented in
+  whoosh.lang.porter.</p>
+
+<!-- ==================== FUNCTIONS ==================== -->
+<a name="section-Functions"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Functions</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-Functions"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="get_r1"></a><span class="summary-sig-name">get_r1</span>(<span class="summary-sig-arg">word</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="alfanous.whoosh.lang.porter2-pysrc.html#get_r1">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="get_r2"></a><span class="summary-sig-name">get_r2</span>(<span class="summary-sig-arg">word</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="alfanous.whoosh.lang.porter2-pysrc.html#get_r2">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="ends_with_short_syllable"></a><span class="summary-sig-name">ends_with_short_syllable</span>(<span class="summary-sig-arg">word</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="alfanous.whoosh.lang.porter2-pysrc.html#ends_with_short_syllable">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="is_short_word"></a><span class="summary-sig-name">is_short_word</span>(<span class="summary-sig-arg">word</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="alfanous.whoosh.lang.porter2-pysrc.html#is_short_word">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="remove_initial_apostrophe"></a><span class="summary-sig-name">remove_initial_apostrophe</span>(<span class="summary-sig-arg">word</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="alfanous.whoosh.lang.porter2-pysrc.html#remove_initial_apostrophe">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="capitalize_consonant_ys"></a><span class="summary-sig-name">capitalize_consonant_ys</span>(<span class="summary-sig-arg">word</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="alfanous.whoosh.lang.porter2-pysrc.html#capitalize_consonant_ys">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="step_0"></a><span class="summary-sig-name">step_0</span>(<span class="summary-sig-arg">word</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="alfanous.whoosh.lang.porter2-pysrc.html#step_0">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="step_1a"></a><span class="summary-sig-name">step_1a</span>(<span class="summary-sig-arg">word</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="alfanous.whoosh.lang.porter2-pysrc.html#step_1a">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="ends_with_double"></a><span class="summary-sig-name">ends_with_double</span>(<span class="summary-sig-arg">word</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="alfanous.whoosh.lang.porter2-pysrc.html#ends_with_double">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="step_1b_helper"></a><span class="summary-sig-name">step_1b_helper</span>(<span class="summary-sig-arg">word</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="alfanous.whoosh.lang.porter2-pysrc.html#step_1b_helper">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="step_1b"></a><span class="summary-sig-name">step_1b</span>(<span class="summary-sig-arg">word</span>,
+        <span class="summary-sig-arg">r1</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="alfanous.whoosh.lang.porter2-pysrc.html#step_1b">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="step_1c"></a><span class="summary-sig-name">step_1c</span>(<span class="summary-sig-arg">word</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="alfanous.whoosh.lang.porter2-pysrc.html#step_1c">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="step_2_helper"></a><span class="summary-sig-name">step_2_helper</span>(<span class="summary-sig-arg">word</span>,
+        <span class="summary-sig-arg">r1</span>,
+        <span class="summary-sig-arg">end</span>,
+        <span class="summary-sig-arg">repl</span>,
+        <span class="summary-sig-arg">prev</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="alfanous.whoosh.lang.porter2-pysrc.html#step_2_helper">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="step_2"></a><span class="summary-sig-name">step_2</span>(<span class="summary-sig-arg">word</span>,
+        <span class="summary-sig-arg">r1</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="alfanous.whoosh.lang.porter2-pysrc.html#step_2">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="step_3_helper"></a><span class="summary-sig-name">step_3_helper</span>(<span class="summary-sig-arg">word</span>,
+        <span class="summary-sig-arg">r1</span>,
+        <span class="summary-sig-arg">r2</span>,
+        <span class="summary-sig-arg">end</span>,
+        <span class="summary-sig-arg">repl</span>,
+        <span class="summary-sig-arg">r2_necessary</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="alfanous.whoosh.lang.porter2-pysrc.html#step_3_helper">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="step_3"></a><span class="summary-sig-name">step_3</span>(<span class="summary-sig-arg">word</span>,
+        <span class="summary-sig-arg">r1</span>,
+        <span class="summary-sig-arg">r2</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="alfanous.whoosh.lang.porter2-pysrc.html#step_3">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="step_4"></a><span class="summary-sig-name">step_4</span>(<span class="summary-sig-arg">word</span>,
+        <span class="summary-sig-arg">r2</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="alfanous.whoosh.lang.porter2-pysrc.html#step_4">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="step_5"></a><span class="summary-sig-name">step_5</span>(<span class="summary-sig-arg">word</span>,
+        <span class="summary-sig-arg">r1</span>,
+        <span class="summary-sig-arg">r2</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="alfanous.whoosh.lang.porter2-pysrc.html#step_5">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="normalize_ys"></a><span class="summary-sig-name">normalize_ys</span>(<span class="summary-sig-arg">word</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="alfanous.whoosh.lang.porter2-pysrc.html#normalize_ys">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="stem"></a><span class="summary-sig-name">stem</span>(<span class="summary-sig-arg">word</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="alfanous.whoosh.lang.porter2-pysrc.html#stem">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+</table>
+<!-- ==================== VARIABLES ==================== -->
+<a name="section-Variables"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Variables</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-Variables"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="r_exp"></a><span class="summary-name">r_exp</span> = <code title="re.compile(r'[^aeiouy]*[aeiouy]+[^aeiouy](\w*)')">re.compile(r'<code class="re-group">[</code><code class="re-op">^</code>aeiouy<code class="re-group">]</code><code class="re-op">*</code><code class="re-group">[</code>aeiouy<code class="re-group">]</code><code class="re-op">+</code><code class="re-group">[</code><code class="re-op">^</code>aeiouy<code class="re-group">]</code><code class="re-group">(</code>\w<code class="re-op">*</code><code class="re-group">)</code>')</code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="ewss_exp1"></a><span class="summary-name">ewss_exp1</span> = <code title="re.compile(r'^[aeiouy][^aeiouy]$')">re.compile(r'^<code class="re-group">[</code>aeiouy<code class="re-group">]</code><code class="re-group">[</code><code class="re-op">^</code>aeiouy<code class="re-group">]</code>$')</code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="ewss_exp2"></a><span class="summary-name">ewss_exp2</span> = <code title="re.compile(r'.*[^aeiouy][aeiouy][^aeiouywxY]$')">re.compile(r'.<code class="re-op">*</code><code class="re-group">[</code><code class="re-op">^</code>aeiouy<code class="re-group">]</code><code class="re-group">[</code>aeiouy<code class="re-group">]</code><code class="re-group">[</code><code class="re-op">^</code>aeiouywxY<code class="re-group">]</code>$')</code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="ccy_exp"></a><span class="summary-name">ccy_exp</span> = <code title="re.compile(r'([aeiouy])y')">re.compile(r'<code class="re-group">(</code><code class="re-group">[</code>aeiouy<code class="re-group">]</code><code class="re-group">)</code>y')</code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="s1a_exp"></a><span class="summary-name">s1a_exp</span> = <code title="re.compile(r'[aeiouy].')">re.compile(r'<code class="re-group">[</code>aeiouy<code class="re-group">]</code>.')</code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="s1b_exp"></a><span class="summary-name">s1b_exp</span> = <code title="re.compile(r'[aeiouy]')">re.compile(r'<code class="re-group">[</code>aeiouy<code class="re-group">]</code>')</code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="doubles"></a><span class="summary-name">doubles</span> = <code title="('bb', 'dd', 'ff', 'gg', 'mm', 'nn', 'pp', 'rr', 'tt')"><code class="variable-group">(</code><code class="variable-quote">'</code><code class="variable-string">bb</code><code class="variable-quote">'</code><code class="variable-op">, </code><code class="variable-quote">'</code><code class="variable-string">dd</code><code class="variable-quote">'</code><code class="variable-op">, </code><code class="variable-quote">'</code><code class="variable-string">ff</code><code class="variable-quote">'</code><code class="variable-op">, </code><code class="variable-quote">'</code><code class="variable-string">gg</code><code class="variable-quote">'</code><code class="variable-op">, </code><code class="variable-quote">'</code><code class="variable-string">mm</code><code class="variable-quote">'</code><code class="variable-op">, </code><code class="variable-quote">'</code><code class="variable-string">nn</code><code class="variable-quote">'</code><code class="variable-op">, </code><code class="variable-quote">'</code><code class="variable-string">pp</code><code class="variable-quote">'</code><code class="variable-op">, </code><code class="variable-quote">'</code><code class="variable-string">rr</code><code class="variable-quote">'</code><code class="variable-op">, </code><code class="variable-quote">'</code><code class="variable-string">tt</code><code class="variable-quote">'</code><code class="variable-group">)</code></code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="s1b_suffixes"></a><span class="summary-name">s1b_suffixes</span> = <code title="('ed', 'edly', 'ing', 'ingly')"><code class="variable-group">(</code><code class="variable-quote">'</code><code class="variable-string">ed</code><code class="variable-quote">'</code><code class="variable-op">, </code><code class="variable-quote">'</code><code class="variable-string">edly</code><code class="variable-quote">'</code><code class="variable-op">, </code><code class="variable-quote">'</code><code class="variable-string">ing</code><code class="variable-quote">'</code><code class="variable-op">, </code><code class="variable-quote">'</code><code class="variable-string">ingly</code><code class="variable-quote">'</code><code class="variable-group">)</code></code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="alfanous.whoosh.lang.porter2-module.html#s2_triples" class="summary-name">s2_triples</a> = <code title="(('ization', 'ize', []),
+ ('ational', 'ate', []),
+ ('fulness', 'ful', []),
+ ('ousness', 'ous', []),
+ ('iveness', 'ive', []),
+ ('tional', 'tion', []),
+ ('biliti', 'ble', []),
+ ('lessli', 'less', []),
+..."><code class="variable-group">(</code><code class="variable-group">(</code><code class="variable-quote">'</code><code class="variable-string">ization</code><code class="variable-quote">'</code><code class="variable-op">, </code><code class="variable-quote">'</code><code class="variable-string">ize</code><code class="variable-quote">'</code><code class="variable-op">, </code><code class="variable-group">[</code><code class="variable-group">]</code><code class="variable-group">)</code><code class="variable-op">, </code><code class="variable-group">(</code><code class="variable-quote">'</code><code class="variable-string">ational</code><code class="variable-quote">'</code><code class="variable-op">, </code><code class="variable-quote">'</code><code class="variable-string">ate</code><code class="variable-quote">'</code><code class="variable-op">, </code><code class="variable-group">[</code><code class="variable-group">]</code><code class="variable-group">)</code><code class="variable-op">, </code><code class="variable-ellipsis">...</code></code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="alfanous.whoosh.lang.porter2-module.html#s3_triples" class="summary-name">s3_triples</a> = <code title="(('ational', 'ate', False),
+ ('tional', 'tion', False),
+ ('alize', 'al', False),
+ ('icate', 'ic', False),
+ ('iciti', 'ic', False),
+ ('ative', '', True),
+ ('ical', 'ic', False),
+ ('ness', '', False),
+..."><code class="variable-group">(</code><code class="variable-group">(</code><code class="variable-quote">'</code><code class="variable-string">ational</code><code class="variable-quote">'</code><code class="variable-op">, </code><code class="variable-quote">'</code><code class="variable-string">ate</code><code class="variable-quote">'</code><code class="variable-op">, </code>False<code class="variable-group">)</code><code class="variable-op">, </code><code class="variable-group">(</code><code class="variable-quote">'</code><code class="variable-string">tional</code><code class="variable-quote">'</code><code class="variable-op">, </code><code class="variable-quote">'</code><code class="variable-string">tion</code><code class="variable-quote">'</code><code class="variable-op">, </code>Fa<code class="variable-ellipsis">...</code></code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="alfanous.whoosh.lang.porter2-module.html#s4_delete_list" class="summary-name">s4_delete_list</a> = <code title="('al',
+ 'ance',
+ 'ence',
+ 'er',
+ 'ic',
+ 'able',
+ 'ible',
+ 'ant',
+..."><code class="variable-group">(</code><code class="variable-quote">'</code><code class="variable-string">al</code><code class="variable-quote">'</code><code class="variable-op">, </code><code class="variable-quote">'</code><code class="variable-string">ance</code><code class="variable-quote">'</code><code class="variable-op">, </code><code class="variable-quote">'</code><code class="variable-string">ence</code><code class="variable-quote">'</code><code class="variable-op">, </code><code class="variable-quote">'</code><code class="variable-string">er</code><code class="variable-quote">'</code><code class="variable-op">, </code><code class="variable-quote">'</code><code class="variable-string">ic</code><code class="variable-quote">'</code><code class="variable-op">, </code><code class="variable-quote">'</code><code class="variable-string">able</code><code class="variable-quote">'</code><code class="variable-op">, </code><code class="variable-quote">'</code><code class="variable-string">i</code><code class="variable-ellipsis">...</code></code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="alfanous.whoosh.lang.porter2-module.html#exceptional_forms" class="summary-name">exceptional_forms</a> = <code title="{'andes': 'andes',
+ 'atlas': 'atlas',
+ 'bias': 'bias',
+ 'cosmos': 'cosmos',
+ 'dying': 'die',
+ 'early': 'earli',
+ 'gently': 'gentl',
+ 'howe': 'howe',
+..."><code class="variable-group">{</code><code class="variable-quote">'</code><code class="variable-string">andes</code><code class="variable-quote">'</code><code class="variable-op">: </code><code class="variable-quote">'</code><code class="variable-string">andes</code><code class="variable-quote">'</code><code class="variable-op">, </code><code class="variable-quote">'</code><code class="variable-string">atlas</code><code class="variable-quote">'</code><code class="variable-op">: </code><code class="variable-quote">'</code><code class="variable-string">atlas</code><code class="variable-quote">'</code><code class="variable-op">, </code><code class="variable-quote">'</code><code class="variable-string">bias</code><code class="variable-ellipsis">...</code></code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="alfanous.whoosh.lang.porter2-module.html#exceptional_early_exit_post_1a" class="summary-name">exceptional_early_exit_post_1a</a> = <code title="frozenset(['canning',
+           'earring',
+           'exceed',
+           'herring',
+           'inning',
+           'outing',
+           'proceed',
+           'succeed'])"><code class="variable-group">frozenset([</code><code class="variable-quote">'</code><code class="variable-string">canning</code><code class="variable-quote">'</code><code class="variable-op">, </code><code class="variable-quote">'</code><code class="variable-string">earrin</code><code class="variable-ellipsis">...</code></code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="__package__"></a><span class="summary-name">__package__</span> = <code title="'alfanous.whoosh.lang'"><code class="variable-quote">'</code><code class="variable-string">alfanous.whoosh.lang</code><code class="variable-quote">'</code></code>
+    </td>
+  </tr>
+</table>
+<p class="indent-wrapped-lines"><b>Imports:</b>
+  <span title="re">re</span>
+</p><br />
+<!-- ==================== VARIABLES DETAILS ==================== -->
+<a name="section-VariablesDetails"></a>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Variables Details</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-VariablesDetails"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+</table>
+<a name="s2_triples"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <h3 class="epydoc">s2_triples</h3>
+  
+  <dl class="fields">
+  </dl>
+  <dl class="fields">
+    <dt>Value:</dt>
+      <dd><table><tr><td><pre class="variable">
+<code class="variable-group">(</code><code class="variable-group">(</code><code class="variable-quote">'</code><code class="variable-string">ization</code><code class="variable-quote">'</code><code class="variable-op">, </code><code class="variable-quote">'</code><code class="variable-string">ize</code><code class="variable-quote">'</code><code class="variable-op">, </code><code class="variable-group">[</code><code class="variable-group">]</code><code class="variable-group">)</code><code class="variable-op">,</code>
+ <code class="variable-group">(</code><code class="variable-quote">'</code><code class="variable-string">ational</code><code class="variable-quote">'</code><code class="variable-op">, </code><code class="variable-quote">'</code><code class="variable-string">ate</code><code class="variable-quote">'</code><code class="variable-op">, </code><code class="variable-group">[</code><code class="variable-group">]</code><code class="variable-group">)</code><code class="variable-op">,</code>
+ <code class="variable-group">(</code><code class="variable-quote">'</code><code class="variable-string">fulness</code><code class="variable-quote">'</code><code class="variable-op">, </code><code class="variable-quote">'</code><code class="variable-string">ful</code><code class="variable-quote">'</code><code class="variable-op">, </code><code class="variable-group">[</code><code class="variable-group">]</code><code class="variable-group">)</code><code class="variable-op">,</code>
+ <code class="variable-group">(</code><code class="variable-quote">'</code><code class="variable-string">ousness</code><code class="variable-quote">'</code><code class="variable-op">, </code><code class="variable-quote">'</code><code class="variable-string">ous</code><code class="variable-quote">'</code><code class="variable-op">, </code><code class="variable-group">[</code><code class="variable-group">]</code><code class="variable-group">)</code><code class="variable-op">,</code>
+ <code class="variable-group">(</code><code class="variable-quote">'</code><code class="variable-string">iveness</code><code class="variable-quote">'</code><code class="variable-op">, </code><code class="variable-quote">'</code><code class="variable-string">ive</code><code class="variable-quote">'</code><code class="variable-op">, </code><code class="variable-group">[</code><code class="variable-group">]</code><code class="variable-group">)</code><code class="variable-op">,</code>
+ <code class="variable-group">(</code><code class="variable-quote">'</code><code class="variable-string">tional</code><code class="variable-quote">'</code><code class="variable-op">, </code><code class="variable-quote">'</code><code class="variable-string">tion</code><code class="variable-quote">'</code><code class="variable-op">, </code><code class="variable-group">[</code><code class="variable-group">]</code><code class="variable-group">)</code><code class="variable-op">,</code>
+ <code class="variable-group">(</code><code class="variable-quote">'</code><code class="variable-string">biliti</code><code class="variable-quote">'</code><code class="variable-op">, </code><code class="variable-quote">'</code><code class="variable-string">ble</code><code class="variable-quote">'</code><code class="variable-op">, </code><code class="variable-group">[</code><code class="variable-group">]</code><code class="variable-group">)</code><code class="variable-op">,</code>
+ <code class="variable-group">(</code><code class="variable-quote">'</code><code class="variable-string">lessli</code><code class="variable-quote">'</code><code class="variable-op">, </code><code class="variable-quote">'</code><code class="variable-string">less</code><code class="variable-quote">'</code><code class="variable-op">, </code><code class="variable-group">[</code><code class="variable-group">]</code><code class="variable-group">)</code><code class="variable-op">,</code>
+<code class="variable-ellipsis">...</code>
+</pre></td></tr></table>
+</dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="s3_triples"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <h3 class="epydoc">s3_triples</h3>
+  
+  <dl class="fields">
+  </dl>
+  <dl class="fields">
+    <dt>Value:</dt>
+      <dd><table><tr><td><pre class="variable">
+<code class="variable-group">(</code><code class="variable-group">(</code><code class="variable-quote">'</code><code class="variable-string">ational</code><code class="variable-quote">'</code><code class="variable-op">, </code><code class="variable-quote">'</code><code class="variable-string">ate</code><code class="variable-quote">'</code><code class="variable-op">, </code>False<code class="variable-group">)</code><code class="variable-op">,</code>
+ <code class="variable-group">(</code><code class="variable-quote">'</code><code class="variable-string">tional</code><code class="variable-quote">'</code><code class="variable-op">, </code><code class="variable-quote">'</code><code class="variable-string">tion</code><code class="variable-quote">'</code><code class="variable-op">, </code>False<code class="variable-group">)</code><code class="variable-op">,</code>
+ <code class="variable-group">(</code><code class="variable-quote">'</code><code class="variable-string">alize</code><code class="variable-quote">'</code><code class="variable-op">, </code><code class="variable-quote">'</code><code class="variable-string">al</code><code class="variable-quote">'</code><code class="variable-op">, </code>False<code class="variable-group">)</code><code class="variable-op">,</code>
+ <code class="variable-group">(</code><code class="variable-quote">'</code><code class="variable-string">icate</code><code class="variable-quote">'</code><code class="variable-op">, </code><code class="variable-quote">'</code><code class="variable-string">ic</code><code class="variable-quote">'</code><code class="variable-op">, </code>False<code class="variable-group">)</code><code class="variable-op">,</code>
+ <code class="variable-group">(</code><code class="variable-quote">'</code><code class="variable-string">iciti</code><code class="variable-quote">'</code><code class="variable-op">, </code><code class="variable-quote">'</code><code class="variable-string">ic</code><code class="variable-quote">'</code><code class="variable-op">, </code>False<code class="variable-group">)</code><code class="variable-op">,</code>
+ <code class="variable-group">(</code><code class="variable-quote">'</code><code class="variable-string">ative</code><code class="variable-quote">'</code><code class="variable-op">, </code><code class="variable-quote">'</code><code class="variable-string"></code><code class="variable-quote">'</code><code class="variable-op">, </code>True<code class="variable-group">)</code><code class="variable-op">,</code>
+ <code class="variable-group">(</code><code class="variable-quote">'</code><code class="variable-string">ical</code><code class="variable-quote">'</code><code class="variable-op">, </code><code class="variable-quote">'</code><code class="variable-string">ic</code><code class="variable-quote">'</code><code class="variable-op">, </code>False<code class="variable-group">)</code><code class="variable-op">,</code>
+ <code class="variable-group">(</code><code class="variable-quote">'</code><code class="variable-string">ness</code><code class="variable-quote">'</code><code class="variable-op">, </code><code class="variable-quote">'</code><code class="variable-string"></code><code class="variable-quote">'</code><code class="variable-op">, </code>False<code class="variable-group">)</code><code class="variable-op">,</code>
+<code class="variable-ellipsis">...</code>
+</pre></td></tr></table>
+</dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="s4_delete_list"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <h3 class="epydoc">s4_delete_list</h3>
+  
+  <dl class="fields">
+  </dl>
+  <dl class="fields">
+    <dt>Value:</dt>
+      <dd><table><tr><td><pre class="variable">
+<code class="variable-group">(</code><code class="variable-quote">'</code><code class="variable-string">al</code><code class="variable-quote">'</code><code class="variable-op">,</code>
+ <code class="variable-quote">'</code><code class="variable-string">ance</code><code class="variable-quote">'</code><code class="variable-op">,</code>
+ <code class="variable-quote">'</code><code class="variable-string">ence</code><code class="variable-quote">'</code><code class="variable-op">,</code>
+ <code class="variable-quote">'</code><code class="variable-string">er</code><code class="variable-quote">'</code><code class="variable-op">,</code>
+ <code class="variable-quote">'</code><code class="variable-string">ic</code><code class="variable-quote">'</code><code class="variable-op">,</code>
+ <code class="variable-quote">'</code><code class="variable-string">able</code><code class="variable-quote">'</code><code class="variable-op">,</code>
+ <code class="variable-quote">'</code><code class="variable-string">ible</code><code class="variable-quote">'</code><code class="variable-op">,</code>
+ <code class="variable-quote">'</code><code class="variable-string">ant</code><code class="variable-quote">'</code><code class="variable-op">,</code>
+<code class="variable-ellipsis">...</code>
+</pre></td></tr></table>
+</dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="exceptional_forms"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <h3 class="epydoc">exceptional_forms</h3>
+  
+  <dl class="fields">
+  </dl>
+  <dl class="fields">
+    <dt>Value:</dt>
+      <dd><table><tr><td><pre class="variable">
+<code class="variable-group">{</code><code class="variable-quote">'</code><code class="variable-string">andes</code><code class="variable-quote">'</code><code class="variable-op">: </code><code class="variable-quote">'</code><code class="variable-string">andes</code><code class="variable-quote">'</code><code class="variable-op">,</code>
+ <code class="variable-quote">'</code><code class="variable-string">atlas</code><code class="variable-quote">'</code><code class="variable-op">: </code><code class="variable-quote">'</code><code class="variable-string">atlas</code><code class="variable-quote">'</code><code class="variable-op">,</code>
+ <code class="variable-quote">'</code><code class="variable-string">bias</code><code class="variable-quote">'</code><code class="variable-op">: </code><code class="variable-quote">'</code><code class="variable-string">bias</code><code class="variable-quote">'</code><code class="variable-op">,</code>
+ <code class="variable-quote">'</code><code class="variable-string">cosmos</code><code class="variable-quote">'</code><code class="variable-op">: </code><code class="variable-quote">'</code><code class="variable-string">cosmos</code><code class="variable-quote">'</code><code class="variable-op">,</code>
+ <code class="variable-quote">'</code><code class="variable-string">dying</code><code class="variable-quote">'</code><code class="variable-op">: </code><code class="variable-quote">'</code><code class="variable-string">die</code><code class="variable-quote">'</code><code class="variable-op">,</code>
+ <code class="variable-quote">'</code><code class="variable-string">early</code><code class="variable-quote">'</code><code class="variable-op">: </code><code class="variable-quote">'</code><code class="variable-string">earli</code><code class="variable-quote">'</code><code class="variable-op">,</code>
+ <code class="variable-quote">'</code><code class="variable-string">gently</code><code class="variable-quote">'</code><code class="variable-op">: </code><code class="variable-quote">'</code><code class="variable-string">gentl</code><code class="variable-quote">'</code><code class="variable-op">,</code>
+ <code class="variable-quote">'</code><code class="variable-string">howe</code><code class="variable-quote">'</code><code class="variable-op">: </code><code class="variable-quote">'</code><code class="variable-string">howe</code><code class="variable-quote">'</code><code class="variable-op">,</code>
+<code class="variable-ellipsis">...</code>
+</pre></td></tr></table>
+</dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="exceptional_early_exit_post_1a"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <h3 class="epydoc">exceptional_early_exit_post_1a</h3>
+  
+  <dl class="fields">
+  </dl>
+  <dl class="fields">
+    <dt>Value:</dt>
+      <dd><table><tr><td><pre class="variable">
+<code class="variable-group">frozenset([</code><code class="variable-quote">'</code><code class="variable-string">canning</code><code class="variable-quote">'</code><code class="variable-op">,</code>
+           <code class="variable-quote">'</code><code class="variable-string">earring</code><code class="variable-quote">'</code><code class="variable-op">,</code>
+           <code class="variable-quote">'</code><code class="variable-string">exceed</code><code class="variable-quote">'</code><code class="variable-op">,</code>
+           <code class="variable-quote">'</code><code class="variable-string">herring</code><code class="variable-quote">'</code><code class="variable-op">,</code>
+           <code class="variable-quote">'</code><code class="variable-string">inning</code><code class="variable-quote">'</code><code class="variable-op">,</code>
+           <code class="variable-quote">'</code><code class="variable-string">outing</code><code class="variable-quote">'</code><code class="variable-op">,</code>
+           <code class="variable-quote">'</code><code class="variable-string">proceed</code><code class="variable-quote">'</code><code class="variable-op">,</code>
+           <code class="variable-quote">'</code><code class="variable-string">succeed</code><code class="variable-quote">'</code><code class="variable-group">])</code>
+</pre></td></tr></table>
+</dd>
+  </dl>
+</td></tr></table>
+</div>
+<br />
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="alfanous-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            ><a class="navbar" target="_top" href="alfanous.sourceforge.com">Alfanous</a></th>
+          </tr></table></th>
+  </tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" width="100%%">
+  <tr>
+    <td align="left" class="footer">
+    Generated by Epydoc 3.0.1 on Thu Mar 18 03:28:28 2010
+    </td>
+    <td align="right" class="footer">
+      <a target="mainFrame" href="http://epydoc.sourceforge.net"
+        >http://epydoc.sourceforge.net</a>
+    </td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+  <!--
+  // Private objects are initially displayed (because if
+  // javascript is turned off then we want them to be
+  // visible); but by default, we want to hide them.  So hide
+  // them unless we have a cookie that says to show them.
+  checkCookie();
+  // -->
+</script>
+</body>
+</html>

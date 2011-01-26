@@ -1,0 +1,483 @@
+<?xml version="1.0" encoding="ascii"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>src.alfanous.TextProcessing.unicode_</title>
+  <link rel="stylesheet" href="epydoc.css" type="text/css" />
+  <script type="text/javascript" src="epydoc.js"></script>
+</head>
+
+<body bgcolor="white" text="black" link="blue" vlink="#204080"
+      alink="#204080">
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="src.alfanous-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            ><a class="navbar" target="_top" href="alfanous.sourceforge.com">Alfanous</a></th>
+          </tr></table></th>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="100%">
+      <span class="breadcrumbs">
+        Package&nbsp;src ::
+        <a href="src.alfanous-module.html">Package&nbsp;alfanous</a> ::
+        <a href="src.alfanous.TextProcessing-module.html">Module&nbsp;TextProcessing</a> ::
+        Class&nbsp;unicode_
+      </span>
+    </td>
+    <td>
+      <table cellpadding="0" cellspacing="0">
+        <!-- hide/show private -->
+        <tr><td align="right"><span class="options">[<a href="javascript:void(0);" class="privatelink"
+    onclick="toggle_private();">hide&nbsp;private</a>]</span></td></tr>
+        <tr><td align="right"><span class="options"
+            >[<a href="frames.html" target="_top">frames</a
+            >]&nbsp;|&nbsp;<a href="src.alfanous.TextProcessing.unicode_-class.html"
+            target="_top">no&nbsp;frames</a>]</span></td></tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<!-- ==================== CLASS DESCRIPTION ==================== -->
+<h1 class="epydoc">Class unicode_</h1><p class="nomargin-top"></p>
+<center>
+<center>  <map id="uml_class_diagram_for_src_alfa_36" name="uml_class_diagram_for_src_alfa_36">
+<area shape="rect" href="javascript:void(0);" title="x+y" alt="" coords="20,97,185,116"/>
+<area shape="rect" href="javascript:void(0);" title="y in x" alt="" coords="20,116,185,135"/>
+<area shape="rect" href="javascript:void(0);" title="default object formatter" alt="" coords="20,135,185,153"/>
+<area shape="rect" href="javascript:void(0);" title="x&gt;=y" alt="" coords="20,153,185,172"/>
+<area shape="rect" href="javascript:void(0);" title="x.__getattribute__(&#39;name&#39;) &lt;==&gt; x.name" alt="" coords="20,172,185,191"/>
+<area shape="rect" href="javascript:void(0);" title="x[y]" alt="" coords="20,191,185,209"/>
+<area shape="rect" href="javascript:void(0);" title="unicode.__getnewargs__" alt="" coords="20,209,185,228"/>
+<area shape="rect" href="javascript:void(0);" title="x[i:j]" alt="" coords="20,228,185,247"/>
+<area shape="rect" href="javascript:void(0);" title="x&gt;y" alt="" coords="20,247,185,265"/>
+<area shape="rect" href="javascript:void(0);" title="hash(x)" alt="" coords="20,265,185,284"/>
+<area shape="rect" href="javascript:void(0);" title="x&lt;=y" alt="" coords="20,284,185,303"/>
+<area shape="rect" href="javascript:void(0);" title="len(x)" alt="" coords="20,303,185,321"/>
+<area shape="rect" href="javascript:void(0);" title="x&lt;y" alt="" coords="20,321,185,340"/>
+<area shape="rect" href="javascript:void(0);" title="Pad a numeric string S with zeros on the left, to fill a field of the &#160;specified width." alt="" coords="20,359,185,377"/>
+<area shape="rect" href="javascript:void(0);" title="unicode(string [, encoding[, errors]]) &#45;&gt; object" alt="" coords="19,72,187,379"/>
+<area shape="rect" href="src.alfanous.TextProcessing.unicode_-class.html#word_sh_pattern" title="src.alfanous.TextProcessing.unicode_.word_sh_pattern" alt="" coords="17,425,188,444"/>
+<area shape="rect" href="src.alfanous.TextProcessing.unicode_-class.html#__eq__" title="x==y" alt="" coords="17,447,188,465"/>
+<area shape="rect" href="src.alfanous.TextProcessing.unicode_-class.html#normalize_shaping" title="src.alfanous.TextProcessing.unicode_.normalize_shaping" alt="" coords="17,465,188,484"/>
+<area shape="rect" href="src.alfanous.TextProcessing.unicode_-class.html#list_harakat" title="return the dict of harakat with thier position in word" alt="" coords="17,484,188,503"/>
+<area shape="rect" href="src.alfanous.TextProcessing.unicode_-class.html#compare_harakat" title="compare tow list of harakat" alt="" coords="17,503,188,521"/>
+<area shape="rect" href="src.alfanous.TextProcessing.unicode_-class.html#shakl_compare" title="src.alfanous.TextProcessing.unicode_.shakl_compare" alt="" coords="17,521,188,540"/>
+<area shape="rect" href="src.alfanous.TextProcessing.unicode_-class.html#apply_harakat_list" title="src.alfanous.TextProcessing.unicode_.apply_harakat_list" alt="" coords="17,540,188,559"/>
+<area shape="rect" href="src.alfanous.TextProcessing.unicode_-class.html#tokenize_shakl" title="src.alfanous.TextProcessing.unicode_.tokenize_shakl" alt="" coords="17,559,188,577"/>
+<area shape="rect" href="src.alfanous.TextProcessing.unicode_-class.html" title="a subclass of unicode that handle al&#45;tashkil" alt="" coords="16,408,189,579"/>
+<area shape="rect" href="javascript:void(0);" title="Type basestring cannot be instantiated; it is the base for str and unicode." alt="" coords="71,11,135,43"/>
+</map>
+  <img src="uml_class_diagram_for_src_alfa_36.gif" alt='' usemap="#uml_class_diagram_for_src_alfa_36" ismap="ismap" class="graph-without-title" />
+</center>
+</center>
+<hr />
+<p>a subclass of unicode that handle al-tashkil</p>
+
+<hr />
+<div class="fields">      <p><strong>Deprecated:</strong>
+        its not well organized
+      </p>
+</div><!-- ==================== INSTANCE METHODS ==================== -->
+<a name="section-InstanceMethods"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Instance Methods</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-InstanceMethods"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="src.alfanous.TextProcessing.unicode_-class.html#__eq__" class="summary-sig-name">__eq__</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">other</span>)</span><br />
+      x==y</td>
+          <td align="right" valign="top">
+            
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="list_harakat"></a><span class="summary-sig-name">list_harakat</span>(<span class="summary-sig-arg">self</span>)</span><br />
+      return the dict of harakat with thier position in word</td>
+          <td align="right" valign="top">
+            
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="apply_harakat_list"></a><span class="summary-sig-name">apply_harakat_list</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">lst</span>)</span></td>
+          <td align="right" valign="top">
+            
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="tokenize_shakl"></a><span class="summary-sig-name">tokenize_shakl</span>(<span class="summary-sig-arg">self</span>)</span></td>
+          <td align="right" valign="top">
+            
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+  <tr>
+    <td colspan="2" class="summary">
+    <p class="indent-wrapped-lines"><b>Inherited from <code>unicode</code></b>:
+      <code>__add__</code>,
+      <code>__contains__</code>,
+      <code>__format__</code>,
+      <code>__ge__</code>,
+      <code>__getattribute__</code>,
+      <code>__getitem__</code>,
+      <code>__getnewargs__</code>,
+      <code>__getslice__</code>,
+      <code>__gt__</code>,
+      <code>__hash__</code>,
+      <code>__le__</code>,
+      <code>__len__</code>,
+      <code>__lt__</code>,
+      <code>__mod__</code>,
+      <code>__mul__</code>,
+      <code>__ne__</code>,
+      <code>__new__</code>,
+      <code>__repr__</code>,
+      <code>__rmod__</code>,
+      <code>__rmul__</code>,
+      <code>__sizeof__</code>,
+      <code>__str__</code>,
+      <code>capitalize</code>,
+      <code>center</code>,
+      <code>count</code>,
+      <code>decode</code>,
+      <code>encode</code>,
+      <code>endswith</code>,
+      <code>expandtabs</code>,
+      <code>find</code>,
+      <code>format</code>,
+      <code>index</code>,
+      <code>isalnum</code>,
+      <code>isalpha</code>,
+      <code>isdecimal</code>,
+      <code>isdigit</code>,
+      <code>islower</code>,
+      <code>isnumeric</code>,
+      <code>isspace</code>,
+      <code>istitle</code>,
+      <code>isupper</code>,
+      <code>join</code>,
+      <code>ljust</code>,
+      <code>lower</code>,
+      <code>lstrip</code>,
+      <code>partition</code>,
+      <code>replace</code>,
+      <code>rfind</code>,
+      <code>rindex</code>,
+      <code>rjust</code>,
+      <code>rpartition</code>,
+      <code>rsplit</code>,
+      <code>rstrip</code>,
+      <code>split</code>,
+      <code>splitlines</code>,
+      <code>startswith</code>,
+      <code>strip</code>,
+      <code>swapcase</code>,
+      <code>title</code>,
+      <code>translate</code>,
+      <code>upper</code>,
+      <code>zfill</code>
+      </p>
+    <div class="private">    <p class="indent-wrapped-lines"><b>Inherited from <code>unicode</code></b> (private):
+      <code>_formatter_field_name_split</code>,
+      <code>_formatter_parser</code>
+      </p></div>
+    <p class="indent-wrapped-lines"><b>Inherited from <code>object</code></b>:
+      <code>__delattr__</code>,
+      <code>__init__</code>,
+      <code>__reduce__</code>,
+      <code>__reduce_ex__</code>,
+      <code>__setattr__</code>,
+      <code>__subclasshook__</code>
+      </p>
+    </td>
+  </tr>
+</table>
+<!-- ==================== STATIC METHODS ==================== -->
+<a name="section-StaticMethods"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Static Methods</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-StaticMethods"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="normalize_shaping"></a><span class="summary-sig-name">normalize_shaping</span>(<span class="summary-sig-arg">text</span>)</span></td>
+          <td align="right" valign="top">
+            
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="compare_harakat"></a><span class="summary-sig-name">compare_harakat</span>(<span class="summary-sig-arg">list1</span>,
+        <span class="summary-sig-arg">list2</span>)</span><br />
+      compare tow list of harakat</td>
+          <td align="right" valign="top">
+            
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="shakl_compare"></a><span class="summary-sig-name">shakl_compare</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">other</span>)</span></td>
+          <td align="right" valign="top">
+            
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+</table>
+<!-- ==================== CLASS VARIABLES ==================== -->
+<a name="section-ClassVariables"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Class Variables</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-ClassVariables"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="word_sh_pattern"></a><span class="summary-name">word_sh_pattern</span> = <code title="re.compile(r'[^ \t\r\n]+')">re.compile(r'<code class="re-group">[</code><code class="re-op">^</code> \t\r\n<code class="re-group">]</code><code class="re-op">+</code>')</code>
+    </td>
+  </tr>
+</table>
+<!-- ==================== PROPERTIES ==================== -->
+<a name="section-Properties"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Properties</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-Properties"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+  <tr>
+    <td colspan="2" class="summary">
+    <p class="indent-wrapped-lines"><b>Inherited from <code>object</code></b>:
+      <code>__class__</code>
+      </p>
+    </td>
+  </tr>
+</table>
+<!-- ==================== METHOD DETAILS ==================== -->
+<a name="section-MethodDetails"></a>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Method Details</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-MethodDetails"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+</table>
+<a name="__eq__"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">__eq__</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">other</span>)</span>
+    <br /><em class="fname">(Equality operator)</em>
+  </h3>
+  </td><td align="right" valign="top"
+    >&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>x==y</p>
+  <dl class="fields">
+    <dt>Overrides:
+        unicode.__eq__
+        <dd><em class="note">(inherited documentation)</em></dd>
+    </dt>
+  </dl>
+</td></tr></table>
+</div>
+<br />
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="src.alfanous-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            ><a class="navbar" target="_top" href="alfanous.sourceforge.com">Alfanous</a></th>
+          </tr></table></th>
+  </tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" width="100%%">
+  <tr>
+    <td align="left" class="footer">
+    Generated by Epydoc 3.0.1 on Sun May 23 13:44:00 2010
+    </td>
+    <td align="right" class="footer">
+      <a target="mainFrame" href="http://epydoc.sourceforge.net"
+        >http://epydoc.sourceforge.net</a>
+    </td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+  <!--
+  // Private objects are initially displayed (because if
+  // javascript is turned off then we want them to be
+  // visible); but by default, we want to hide them.  So hide
+  // them unless we have a cookie that says to show them.
+  checkCookie();
+  // -->
+</script>
+</body>
+</html>

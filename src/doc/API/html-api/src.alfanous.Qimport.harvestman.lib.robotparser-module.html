@@ -1,0 +1,365 @@
+<?xml version="1.0" encoding="ascii"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>src.alfanous.Qimport.harvestman.lib.robotparser</title>
+  <link rel="stylesheet" href="epydoc.css" type="text/css" />
+  <script type="text/javascript" src="epydoc.js"></script>
+</head>
+
+<body bgcolor="white" text="black" link="blue" vlink="#204080"
+      alink="#204080">
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="src.alfanous-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            ><a class="navbar" target="_top" href="alfanous.sourceforge.com">Alfanous</a></th>
+          </tr></table></th>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="100%">
+      <span class="breadcrumbs">
+        Package&nbsp;src ::
+        <a href="src.alfanous-module.html">Package&nbsp;alfanous</a> ::
+        <a href="src.alfanous.Qimport-module.html">Package&nbsp;Qimport</a> ::
+        <a href="src.alfanous.Qimport.harvestman-module.html">Package&nbsp;harvestman</a> ::
+        <a href="src.alfanous.Qimport.harvestman.lib-module.html">Package&nbsp;lib</a> ::
+        Module&nbsp;robotparser
+      </span>
+    </td>
+    <td>
+      <table cellpadding="0" cellspacing="0">
+        <!-- hide/show private -->
+        <tr><td align="right"><span class="options">[<a href="javascript:void(0);" class="privatelink"
+    onclick="toggle_private();">hide&nbsp;private</a>]</span></td></tr>
+        <tr><td align="right"><span class="options"
+            >[<a href="frames.html" target="_top">frames</a
+            >]&nbsp;|&nbsp;<a href="src.alfanous.Qimport.harvestman.lib.robotparser-module.html"
+            target="_top">no&nbsp;frames</a>]</span></td></tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<!-- ==================== MODULE DESCRIPTION ==================== -->
+<h1 class="epydoc">Module robotparser</h1><p class="nomargin-top"><span class="codelink"><a href="src.alfanous.Qimport.harvestman.lib.robotparser-pysrc.html">source&nbsp;code</a></span></p>
+<pre class="literalblock">
+robotparser.py - Robot Exclusion Principle for python.
+This module is part of the HarvestMan program.
+
+This module is a modified version of robotparser.py supplied
+with Python standard library. The author does not assert
+any copyright on this module.
+
+Author: Anand B Pillai &lt;abpillai at gmail dot com&gt;
+
+=============== Original Copyright ============================
+robotparser.py
+
+Copyright (C) 2000  Bastian Kleineidam
+
+You can choose between two licenses when using this package:
+1) GNU GPLv2
+2) PYTHON 2.0 OPEN SOURCE LICENSE
+
+The robots.txt Exclusion Protocol is implemented as specified in
+http://info.webcrawler.com/mak/projects/robots/norobots-rfc.html
+
+================ End Original Copyright =========================
+
+Jan 5 2006          Anand   Fix for EIAO ticket #74, small change
+                            in open of URLopener class, Also moved
+                            import of HarvestManUrlConnector to top.
+
+Jan 8 2006         Anand    Updated this file from EIAO robacc
+                            repository.
+Jan 10 2006        Anand   Converted from dos to unix format (removed Ctrl-Ms).
+Feb 23 2009        Anand    Updated module contents from Python 2.5.                
+
+</pre>
+
+<hr />
+<div class="fields">      <p><strong>Version:</strong>
+        2.0 b1
+      </p>
+      <p><strong>Author:</strong>
+        Anand B Pillai
+      </p>
+</div><!-- ==================== CLASSES ==================== -->
+<a name="section-Classes"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Classes</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-Classes"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="src.alfanous.Qimport.harvestman.lib.robotparser.RobotFileParser-class.html" class="summary-name">RobotFileParser</a><br />
+      This class provides a set of methods to read, parse and answer 
+        questions about a single robots.txt file.
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="src.alfanous.Qimport.harvestman.lib.robotparser.RuleLine-class.html" class="summary-name" onclick="show_private();">RuleLine</a><br />
+      A rule line is a single &quot;Allow:&quot; (allowance==True) or 
+        &quot;Disallow:&quot; (allowance==False) followed by a path.
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="src.alfanous.Qimport.harvestman.lib.robotparser.Entry-class.html" class="summary-name" onclick="show_private();">Entry</a><br />
+      An entry has one or more user-agents and zero or more rulelines
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="src.alfanous.Qimport.harvestman.lib.robotparser.URLopener-class.html" class="summary-name" onclick="show_private();">URLopener</a>
+    </td>
+  </tr>
+</table>
+<!-- ==================== FUNCTIONS ==================== -->
+<a name="section-Functions"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Functions</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-Functions"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_basicdebug"></a><span class="summary-sig-name">_basicdebug</span>(<span class="summary-sig-arg">msg</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.alfanous.Qimport.harvestman.lib.robotparser-pysrc.html#_basicdebug">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_moredebug"></a><span class="summary-sig-name">_moredebug</span>(<span class="summary-sig-arg">msg</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.alfanous.Qimport.harvestman.lib.robotparser-pysrc.html#_moredebug">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_verbosedebug"></a><span class="summary-sig-name">_verbosedebug</span>(<span class="summary-sig-arg">msg</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.alfanous.Qimport.harvestman.lib.robotparser-pysrc.html#_verbosedebug">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_debug"></a><span class="summary-sig-name">_debug</span>(<span class="summary-sig-arg">msg</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.alfanous.Qimport.harvestman.lib.robotparser-pysrc.html#_debug">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_check"></a><span class="summary-sig-name">_check</span>(<span class="summary-sig-arg">a</span>,
+        <span class="summary-sig-arg">b</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.alfanous.Qimport.harvestman.lib.robotparser-pysrc.html#_check">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_test"></a><span class="summary-sig-name">_test</span>()</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.alfanous.Qimport.harvestman.lib.robotparser-pysrc.html#_test">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+</table>
+<!-- ==================== VARIABLES ==================== -->
+<a name="section-Variables"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Variables</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-Variables"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="debug"></a><span class="summary-name">debug</span> = <code title="0">0</code>
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="__package__"></a><span class="summary-name">__package__</span> = <code title="'src.alfanous.Qimport.harvestman.lib'"><code class="variable-quote">'</code><code class="variable-string">src.alfanous.Qimport.harvestman.lib</code><code class="variable-quote">'</code></code>
+    </td>
+  </tr>
+</table>
+<p class="indent-wrapped-lines"><b>Imports:</b>
+  <span title="re">re</span>,
+  <span title="urlparse">urlparse</span>,
+  <span title="urllib">urllib</span>,
+  <a href="src.alfanous.Qimport.harvestman.lib.connector.HarvestManUrlConnector-class.html" title="src.alfanous.Qimport.harvestman.lib.connector.HarvestManUrlConnector">HarvestManUrlConnector</a>,
+  <span title="socket">socket</span>
+</p><br />
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="src.alfanous-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            ><a class="navbar" target="_top" href="alfanous.sourceforge.com">Alfanous</a></th>
+          </tr></table></th>
+  </tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" width="100%%">
+  <tr>
+    <td align="left" class="footer">
+    Generated by Epydoc 3.0.1 on Fri Apr 23 04:37:54 2010
+    </td>
+    <td align="right" class="footer">
+      <a target="mainFrame" href="http://epydoc.sourceforge.net"
+        >http://epydoc.sourceforge.net</a>
+    </td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+  <!--
+  // Private objects are initially displayed (because if
+  // javascript is turned off then we want them to be
+  // visible); but by default, we want to hide them.  So hide
+  // them unless we have a cookie that says to show them.
+  checkCookie();
+  // -->
+</script>
+</body>
+</html>

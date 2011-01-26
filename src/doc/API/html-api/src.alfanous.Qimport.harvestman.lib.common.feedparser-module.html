@@ -1,0 +1,1501 @@
+<?xml version="1.0" encoding="ascii"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>src.alfanous.Qimport.harvestman.lib.common.feedparser</title>
+  <link rel="stylesheet" href="epydoc.css" type="text/css" />
+  <script type="text/javascript" src="epydoc.js"></script>
+</head>
+
+<body bgcolor="white" text="black" link="blue" vlink="#204080"
+      alink="#204080">
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="src.alfanous-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            ><a class="navbar" target="_top" href="alfanous.sourceforge.com">Alfanous</a></th>
+          </tr></table></th>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="100%">
+      <span class="breadcrumbs">
+        Package&nbsp;src ::
+        <a href="src.alfanous-module.html">Package&nbsp;alfanous</a> ::
+        <a href="src.alfanous.Qimport-module.html">Package&nbsp;Qimport</a> ::
+        <a href="src.alfanous.Qimport.harvestman-module.html">Package&nbsp;harvestman</a> ::
+        <a href="src.alfanous.Qimport.harvestman.lib-module.html">Package&nbsp;lib</a> ::
+        <a href="src.alfanous.Qimport.harvestman.lib.common-module.html">Package&nbsp;common</a> ::
+        Module&nbsp;feedparser
+      </span>
+    </td>
+    <td>
+      <table cellpadding="0" cellspacing="0">
+        <!-- hide/show private -->
+        <tr><td align="right"><span class="options">[<a href="javascript:void(0);" class="privatelink"
+    onclick="toggle_private();">hide&nbsp;private</a>]</span></td></tr>
+        <tr><td align="right"><span class="options"
+            >[<a href="frames.html" target="_top">frames</a
+            >]&nbsp;|&nbsp;<a href="src.alfanous.Qimport.harvestman.lib.common.feedparser-module.html"
+            target="_top">no&nbsp;frames</a>]</span></td></tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<!-- ==================== MODULE DESCRIPTION ==================== -->
+<h1 class="epydoc">Module feedparser</h1><p class="nomargin-top"><span class="codelink"><a href="src.alfanous.Qimport.harvestman.lib.common.feedparser-pysrc.html">source&nbsp;code</a></span></p>
+<p>Universal feed parser</p>
+  <p>Handles RSS 0.9x, RSS 1.0, RSS 2.0, CDF, Atom 0.3, and Atom 1.0 
+  feeds</p>
+  <p>Visit http://feedparser.org/ for the latest version Visit 
+  http://feedparser.org/docs/ for the latest documentation</p>
+  <p>Required: Python 2.1 or later Recommended: Python 2.3 or later 
+  Recommended: CJKCodecs and iconv_codec 
+  &lt;http://cjkpython.i18n.org/&gt;</p>
+
+<hr />
+<div class="fields">      <p><strong>Version:</strong>
+        4.1
+      </p>
+      <p><strong>Author:</strong>
+        Mark Pilgrim &lt;http://diveintomark.org/&gt;
+      </p>
+      <p><strong>License:</strong>
+        Copyright (c) 2002-2006, Mark Pilgrim, All rights reserved.
+        
+        Redistribution and use in source and binary forms, with or without 
+        modification,
+        are permitted provided that the following conditions are met:
+        
+        * Redistributions of source code must retain the above copyright 
+        notice,
+          this list of conditions and the following disclaimer.
+        * Redistributions in binary form must reproduce the above copyright
+        notice,
+          this list of conditions and the following disclaimer in the 
+        documentation
+          and/or other materials provided with the distribution.
+        
+        THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+        'AS IS'
+        AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED 
+        TO, THE
+        IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR 
+        PURPOSE
+        ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR 
+        CONTRIBUTORS BE
+        LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+        CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT 
+        OF
+        SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR 
+        BUSINESS
+        INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, 
+        WHETHER IN
+        CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR 
+        OTHERWISE)
+        ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
+        OF THE
+        POSSIBILITY OF SUCH DAMAGE.
+      </p>
+</div><!-- ==================== CLASSES ==================== -->
+<a name="section-Classes"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Classes</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-Classes"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="src.alfanous.Qimport.harvestman.lib.common.feedparser.ThingsNobodyCaresAboutButMe-class.html" class="summary-name">ThingsNobodyCaresAboutButMe</a>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="src.alfanous.Qimport.harvestman.lib.common.feedparser.CharacterEncodingOverride-class.html" class="summary-name">CharacterEncodingOverride</a>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="src.alfanous.Qimport.harvestman.lib.common.feedparser.CharacterEncodingUnknown-class.html" class="summary-name">CharacterEncodingUnknown</a>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="src.alfanous.Qimport.harvestman.lib.common.feedparser.NonXMLContentType-class.html" class="summary-name">NonXMLContentType</a>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="src.alfanous.Qimport.harvestman.lib.common.feedparser.UndeclaredNamespace-class.html" class="summary-name">UndeclaredNamespace</a>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="src.alfanous.Qimport.harvestman.lib.common.feedparser.FeedParserDict-class.html" class="summary-name">FeedParserDict</a>
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="src.alfanous.Qimport.harvestman.lib.common.feedparser._FeedParserMixin-class.html" class="summary-name" onclick="show_private();">_FeedParserMixin</a>
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="src.alfanous.Qimport.harvestman.lib.common.feedparser._StrictFeedParser-class.html" class="summary-name" onclick="show_private();">_StrictFeedParser</a>
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="src.alfanous.Qimport.harvestman.lib.common.feedparser._BaseHTMLProcessor-class.html" class="summary-name" onclick="show_private();">_BaseHTMLProcessor</a>
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="src.alfanous.Qimport.harvestman.lib.common.feedparser._LooseFeedParser-class.html" class="summary-name" onclick="show_private();">_LooseFeedParser</a>
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="src.alfanous.Qimport.harvestman.lib.common.feedparser._RelativeURIResolver-class.html" class="summary-name" onclick="show_private();">_RelativeURIResolver</a>
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="src.alfanous.Qimport.harvestman.lib.common.feedparser._HTMLSanitizer-class.html" class="summary-name" onclick="show_private();">_HTMLSanitizer</a>
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="src.alfanous.Qimport.harvestman.lib.common.feedparser._FeedURLHandler-class.html" class="summary-name" onclick="show_private();">_FeedURLHandler</a>
+    </td>
+  </tr>
+</table>
+<!-- ==================== FUNCTIONS ==================== -->
+<a name="section-Functions"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Functions</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-Functions"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="dict"></a><span class="summary-sig-name">dict</span>(<span class="summary-sig-arg">aList</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.alfanous.Qimport.harvestman.lib.common.feedparser-pysrc.html#dict">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="zopeCompatibilityHack"></a><span class="summary-sig-name">zopeCompatibilityHack</span>()</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.alfanous.Qimport.harvestman.lib.common.feedparser-pysrc.html#zopeCompatibilityHack">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_ebcdic_to_ascii"></a><span class="summary-sig-name">_ebcdic_to_ascii</span>(<span class="summary-sig-arg">s</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.alfanous.Qimport.harvestman.lib.common.feedparser-pysrc.html#_ebcdic_to_ascii">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_urljoin"></a><span class="summary-sig-name">_urljoin</span>(<span class="summary-sig-arg">base</span>,
+        <span class="summary-sig-arg">uri</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.alfanous.Qimport.harvestman.lib.common.feedparser-pysrc.html#_urljoin">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_resolveRelativeURIs"></a><span class="summary-sig-name">_resolveRelativeURIs</span>(<span class="summary-sig-arg">htmlSource</span>,
+        <span class="summary-sig-arg">baseURI</span>,
+        <span class="summary-sig-arg">encoding</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.alfanous.Qimport.harvestman.lib.common.feedparser-pysrc.html#_resolveRelativeURIs">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_sanitizeHTML"></a><span class="summary-sig-name">_sanitizeHTML</span>(<span class="summary-sig-arg">htmlSource</span>,
+        <span class="summary-sig-arg">encoding</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.alfanous.Qimport.harvestman.lib.common.feedparser-pysrc.html#_sanitizeHTML">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="src.alfanous.Qimport.harvestman.lib.common.feedparser-module.html#_open_resource" class="summary-sig-name" onclick="show_private();">_open_resource</a>(<span class="summary-sig-arg">url_file_stream_or_string</span>,
+        <span class="summary-sig-arg">etag</span>,
+        <span class="summary-sig-arg">modified</span>,
+        <span class="summary-sig-arg">agent</span>,
+        <span class="summary-sig-arg">referrer</span>,
+        <span class="summary-sig-arg">handlers</span>)</span><br />
+      URL, filename, or string --&gt; stream</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.alfanous.Qimport.harvestman.lib.common.feedparser-pysrc.html#_open_resource">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="registerDateHandler"></a><span class="summary-sig-name">registerDateHandler</span>(<span class="summary-sig-arg">func</span>)</span><br />
+      Register a date handler function (takes string, returns 9-tuple date 
+      in GMT)</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.alfanous.Qimport.harvestman.lib.common.feedparser-pysrc.html#registerDateHandler">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_parse_date_iso8601"></a><span class="summary-sig-name">_parse_date_iso8601</span>(<span class="summary-sig-arg">dateString</span>)</span><br />
+      Parse a variety of ISO-8601-compatible formats like 20040105</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.alfanous.Qimport.harvestman.lib.common.feedparser-pysrc.html#_parse_date_iso8601">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_parse_date_onblog"></a><span class="summary-sig-name">_parse_date_onblog</span>(<span class="summary-sig-arg">dateString</span>)</span><br />
+      Parse a string according to the OnBlog 8-bit date format</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.alfanous.Qimport.harvestman.lib.common.feedparser-pysrc.html#_parse_date_onblog">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_parse_date_nate"></a><span class="summary-sig-name">_parse_date_nate</span>(<span class="summary-sig-arg">dateString</span>)</span><br />
+      Parse a string according to the Nate 8-bit date format</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.alfanous.Qimport.harvestman.lib.common.feedparser-pysrc.html#_parse_date_nate">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_parse_date_mssql"></a><span class="summary-sig-name">_parse_date_mssql</span>(<span class="summary-sig-arg">dateString</span>)</span><br />
+      Parse a string according to the MS SQL date format</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.alfanous.Qimport.harvestman.lib.common.feedparser-pysrc.html#_parse_date_mssql">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_parse_date_greek"></a><span class="summary-sig-name">_parse_date_greek</span>(<span class="summary-sig-arg">dateString</span>)</span><br />
+      Parse a string according to a Greek 8-bit date format.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.alfanous.Qimport.harvestman.lib.common.feedparser-pysrc.html#_parse_date_greek">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_parse_date_hungarian"></a><span class="summary-sig-name">_parse_date_hungarian</span>(<span class="summary-sig-arg">dateString</span>)</span><br />
+      Parse a string according to a Hungarian 8-bit date format.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.alfanous.Qimport.harvestman.lib.common.feedparser-pysrc.html#_parse_date_hungarian">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_parse_date_w3dtf"></a><span class="summary-sig-name">_parse_date_w3dtf</span>(<span class="summary-sig-arg">dateString</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.alfanous.Qimport.harvestman.lib.common.feedparser-pysrc.html#_parse_date_w3dtf">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_parse_date_rfc822"></a><span class="summary-sig-name">_parse_date_rfc822</span>(<span class="summary-sig-arg">dateString</span>)</span><br />
+      Parse an RFC822, RFC1123, RFC2822, or asctime-style date</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.alfanous.Qimport.harvestman.lib.common.feedparser-pysrc.html#_parse_date_rfc822">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_parse_date"></a><span class="summary-sig-name">_parse_date</span>(<span class="summary-sig-arg">dateString</span>)</span><br />
+      Parses a variety of date formats into a 9-tuple in GMT</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.alfanous.Qimport.harvestman.lib.common.feedparser-pysrc.html#_parse_date">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="src.alfanous.Qimport.harvestman.lib.common.feedparser-module.html#_getCharacterEncoding" class="summary-sig-name" onclick="show_private();">_getCharacterEncoding</a>(<span class="summary-sig-arg">http_headers</span>,
+        <span class="summary-sig-arg">xml_data</span>)</span><br />
+      Get the character encoding of the XML document</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.alfanous.Qimport.harvestman.lib.common.feedparser-pysrc.html#_getCharacterEncoding">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="src.alfanous.Qimport.harvestman.lib.common.feedparser-module.html#_toUTF8" class="summary-sig-name" onclick="show_private();">_toUTF8</a>(<span class="summary-sig-arg">data</span>,
+        <span class="summary-sig-arg">encoding</span>)</span><br />
+      Changes an XML data stream on the fly to specify a new encoding</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.alfanous.Qimport.harvestman.lib.common.feedparser-pysrc.html#_toUTF8">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="src.alfanous.Qimport.harvestman.lib.common.feedparser-module.html#_stripDoctype" class="summary-sig-name" onclick="show_private();">_stripDoctype</a>(<span class="summary-sig-arg">data</span>)</span><br />
+      Strips DOCTYPE from XML document, returns (rss_version, 
+      stripped_data)</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.alfanous.Qimport.harvestman.lib.common.feedparser-pysrc.html#_stripDoctype">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="parse"></a><span class="summary-sig-name">parse</span>(<span class="summary-sig-arg">url_file_stream_or_string</span>,
+        <span class="summary-sig-arg">etag</span>=<span class="summary-sig-default">None</span>,
+        <span class="summary-sig-arg">modified</span>=<span class="summary-sig-default">None</span>,
+        <span class="summary-sig-arg">agent</span>=<span class="summary-sig-default">None</span>,
+        <span class="summary-sig-arg">referrer</span>=<span class="summary-sig-default">None</span>,
+        <span class="summary-sig-arg">handlers</span>=<span class="summary-sig-default"><code class="variable-group">[</code><code class="variable-group">]</code></span>)</span><br />
+      Parse a feed from a URL, file, stream, or string</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.alfanous.Qimport.harvestman.lib.common.feedparser-pysrc.html#parse">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+</table>
+<!-- ==================== VARIABLES ==================== -->
+<a name="section-Variables"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Variables</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-Variables"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="src.alfanous.Qimport.harvestman.lib.common.feedparser-module.html#__contributors__" class="summary-name">__contributors__</a> = <code title="['Jason Diamond &lt;http://injektilo.org/&gt;',
+ 'John Beimler &lt;http://john.beimler.org/&gt;',
+ 'Fazal Majid &lt;http://www.majid.info/mylos/weblog/&gt;',
+ 'Aaron Swartz &lt;http://aaronsw.com/&gt;',
+ 'Kevin Marks &lt;http://epeus.blogspot.com/&gt;']"><code class="variable-group">[</code><code class="variable-quote">'</code><code class="variable-string">Jason Diamond &lt;http://injektilo.org/&gt;</code><code class="variable-quote">'</code><code class="variable-op">, </code><code class="variable-quote">'</code><code class="variable-ellipsis">...</code></code>
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="_debug"></a><span class="summary-name">_debug</span> = <code title="0">0</code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="USER_AGENT"></a><span class="summary-name">USER_AGENT</span> = <code title="'UniversalFeedParser/4.1 +http://feedparser.org/'"><code class="variable-quote">'</code><code class="variable-string">UniversalFeedParser/4.1 +http://feedparser.org/</code><code class="variable-quote">'</code></code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="src.alfanous.Qimport.harvestman.lib.common.feedparser-module.html#ACCEPT_HEADER" class="summary-name">ACCEPT_HEADER</a> = <code title="'application/atom+xml,application/rdf+xml,application/rss+xml,applicat\
+ion/x-netcdf,application/xml;q=0.9,text/xml;q=0.2,*/*;q=0.1'"><code class="variable-quote">'</code><code class="variable-string">application/atom+xml,application/rdf+xml,appl</code><code class="variable-ellipsis">...</code></code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="PREFERRED_XML_PARSERS"></a><span class="summary-name">PREFERRED_XML_PARSERS</span> = <code title="['drv_libxml2']"><code class="variable-group">[</code><code class="variable-quote">'</code><code class="variable-string">drv_libxml2</code><code class="variable-quote">'</code><code class="variable-group">]</code></code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="TIDY_MARKUP"></a><span class="summary-name">TIDY_MARKUP</span> = <code title="0">0</code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="PREFERRED_TIDY_INTERFACES"></a><span class="summary-name">PREFERRED_TIDY_INTERFACES</span> = <code title="['uTidy', 'mxTidy']"><code class="variable-group">[</code><code class="variable-quote">'</code><code class="variable-string">uTidy</code><code class="variable-quote">'</code><code class="variable-op">, </code><code class="variable-quote">'</code><code class="variable-string">mxTidy</code><code class="variable-quote">'</code><code class="variable-group">]</code></code>
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="_XML_AVAILABLE"></a><span class="summary-name">_XML_AVAILABLE</span> = <code title="1">1</code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="src.alfanous.Qimport.harvestman.lib.common.feedparser-module.html#SUPPORTED_VERSIONS" class="summary-name">SUPPORTED_VERSIONS</a> = <code title="{'': 'unknown',
+ 'atom': 'Atom (unknown version)',
+ 'atom01': 'Atom 0.1',
+ 'atom02': 'Atom 0.2',
+ 'atom03': 'Atom 0.3',
+ 'atom10': 'Atom 1.0',
+ 'cdf': 'CDF',
+ 'hotrss': 'Hot RSS',
+..."><code class="variable-group">{</code><code class="variable-quote">'</code><code class="variable-string"></code><code class="variable-quote">'</code><code class="variable-op">: </code><code class="variable-quote">'</code><code class="variable-string">unknown</code><code class="variable-quote">'</code><code class="variable-op">, </code><code class="variable-quote">'</code><code class="variable-string">atom</code><code class="variable-quote">'</code><code class="variable-op">: </code><code class="variable-quote">'</code><code class="variable-string">Atom (unknown ve</code><code class="variable-ellipsis">...</code></code>
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="_ebcdic_to_ascii_map"></a><span class="summary-name">_ebcdic_to_ascii_map</span> = <code title="None">None</code><br />
+      hash(x)
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="src.alfanous.Qimport.harvestman.lib.common.feedparser-module.html#_urifixer" class="summary-name" onclick="show_private();">_urifixer</a> = <code title="re.compile(r'^([A-Za-z][A-Za-z0-9\+-\.]*://)(/*)(.*?)')">re.compile(r'^<code class="re-group">(</code><code class="re-group">[</code>A<code class="re-op">-</code>Za<code class="re-op">-</code>z<code class="re-group">]</code><code class="re-group">[</code>A<code class="re-op">-</code>Za<code class="re-op">-</code>z0<code class="re-op">-</code>9\+<code class="re-op">-</code>\.<code class="re-group">]</code><code class="re-op">*</code>://<code class="re-group">)</code><code class="re-group">(</code>/<code class="re-op">*</code><code class="re-group">)</code><code class="re-group">(</code>.<code class="variable-ellipsis">...</code></code>
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="_date_handlers"></a><span class="summary-name">_date_handlers</span> = <code title="[]">[]</code>
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="src.alfanous.Qimport.harvestman.lib.common.feedparser-module.html#_iso8601_tmpl" class="summary-name" onclick="show_private();">_iso8601_tmpl</a> = <code title="['YYYY-?MM-?DD',
+ 'YYYY-MM',
+ 'YYYY-?OOO',
+ 'YY-?MM-?DD',
+ 'YY-?OOO',
+ 'YYYY',
+ '-YY-?MM',
+ '-OOO',
+..."><code class="variable-group">[</code><code class="variable-quote">'</code><code class="variable-string">YYYY-?MM-?DD</code><code class="variable-quote">'</code><code class="variable-op">, </code><code class="variable-quote">'</code><code class="variable-string">YYYY-MM</code><code class="variable-quote">'</code><code class="variable-op">, </code><code class="variable-quote">'</code><code class="variable-string">YYYY-?OOO</code><code class="variable-quote">'</code><code class="variable-op">, </code><code class="variable-quote">'</code><code class="variable-string">YY-?</code><code class="variable-ellipsis">...</code></code>
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="src.alfanous.Qimport.harvestman.lib.common.feedparser-module.html#_iso8601_re" class="summary-name" onclick="show_private();">_iso8601_re</a> = <code title="['(?P&lt;year&gt;\\d{4})-?(?P&lt;month&gt;[01]\\d)-?(?P&lt;day&gt;[0123]\\d)(T?(?P&lt;hour&gt;\
+\\d{2}):(?P&lt;minute&gt;\\d{2})(:(?P&lt;second&gt;\\d{2}))?(?P&lt;tz&gt;[+-](?P&lt;tzhour&gt;\
+\\d{2})(:(?P&lt;tzmin&gt;\\d{2}))?|Z)?)?',
+ '(?P&lt;year&gt;\\d{4})-(?P&lt;month&gt;[01]\\d)(T?(?P&lt;hour&gt;\\d{2}):(?P&lt;minute&gt;\\\
+d{2})(:(?P&lt;second&gt;\\d{2}))?(?P&lt;tz&gt;[+-](?P&lt;tzhour&gt;\\d{2})(:(?P&lt;tzmin&gt;\\\
+d{2}))?|Z)?)?',
+ '(?P&lt;year&gt;\\d{4})-?(?P&lt;ordinal&gt;[0123]\\d\\d)(T?(?P&lt;hour&gt;\\d{2}):(?P&lt;m\
+inute&gt;\\d{2})(:(?P&lt;second&gt;\\d{2}))?(?P&lt;tz&gt;[+-](?P&lt;tzhour&gt;\\d{2})(:(?P&lt;\
+..."><code class="variable-group">[</code><code class="variable-quote">'</code><code class="variable-string">(?P&lt;year&gt;\\d{4})-?(?P&lt;month&gt;[01]\\d)-?(?P&lt;day&gt;</code><code class="variable-ellipsis">...</code></code>
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="src.alfanous.Qimport.harvestman.lib.common.feedparser-module.html#_iso8601_matches" class="summary-name" onclick="show_private();">_iso8601_matches</a> = <code title="[re.compile(regex).match for regex in _iso8601_re]">[re.compile(regex).match for regex in _iso8<code class="variable-ellipsis">...</code></code>
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="_korean_year"></a><span class="summary-name">_korean_year</span> = <code title="u'&#45380;'"><code class="variable-quote">u'</code><code class="variable-string">&#45380;</code><code class="variable-quote">'</code></code>
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="_korean_month"></a><span class="summary-name">_korean_month</span> = <code title="u'&#50900;'"><code class="variable-quote">u'</code><code class="variable-string">&#50900;</code><code class="variable-quote">'</code></code>
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="_korean_day"></a><span class="summary-name">_korean_day</span> = <code title="u'&#51068;'"><code class="variable-quote">u'</code><code class="variable-string">&#51068;</code><code class="variable-quote">'</code></code>
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="_korean_am"></a><span class="summary-name">_korean_am</span> = <code title="u'&#50724;&#51204;'"><code class="variable-quote">u'</code><code class="variable-string">&#50724;&#51204;</code><code class="variable-quote">'</code></code>
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="_korean_pm"></a><span class="summary-name">_korean_pm</span> = <code title="u'&#50724;&#54980;'"><code class="variable-quote">u'</code><code class="variable-string">&#50724;&#54980;</code><code class="variable-quote">'</code></code>
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="src.alfanous.Qimport.harvestman.lib.common.feedparser-module.html#_korean_onblog_date_re" class="summary-name" onclick="show_private();">_korean_onblog_date_re</a> = <code title="re.compile(r'(\d{4})\ub144\s+(\d{2})\uc6d4\s+(\d{2})\uc77c\s+(\d{2}):(\
+\d{2}):(\d{2})')">re.compile(r'<code class="re-group">(</code>\d<code class="re-op">{4}</code><code class="re-group">)</code>\ub144\s<code class="re-op">+</code><code class="re-group">(</code>\d<code class="re-op">{2}</code><code class="re-group">)</code>\<code class="variable-ellipsis">...</code></code>
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="src.alfanous.Qimport.harvestman.lib.common.feedparser-module.html#_korean_nate_date_re" class="summary-name" onclick="show_private();">_korean_nate_date_re</a> = <code title="re.compile(r'(\d{4})-(\d{2})-(\d{2})\s+(\uc624[\uc804\ud6c4])\s+(\d{,2\
+}):(\d{,2}):(\d{,2})')">re.compile(r'<code class="re-group">(</code>\d<code class="re-op">{4}</code><code class="re-group">)</code>-<code class="re-group">(</code>\d<code class="re-op">{2}</code><code class="re-group">)</code>-<code class="re-group">(</code>\d<code class="re-op">{2}</code><code class="re-group">)</code>\s<code class="re-op">+</code><code class="variable-ellipsis">...</code></code>
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="src.alfanous.Qimport.harvestman.lib.common.feedparser-module.html#_mssql_date_re" class="summary-name" onclick="show_private();">_mssql_date_re</a> = <code title="re.compile(r'(\d{4})-(\d{2})-(\d{2})\s+(\d{2}):(\d{2}):(\d{2})(\.\d+)?\
+')">re.compile(r'<code class="re-group">(</code>\d<code class="re-op">{4}</code><code class="re-group">)</code>-<code class="re-group">(</code>\d<code class="re-op">{2}</code><code class="re-group">)</code>-<code class="re-group">(</code>\d<code class="re-op">{2}</code><code class="re-group">)</code>\s<code class="re-op">+</code><code class="re-group">(</code>\d<code class="re-op">{2}</code><code class="variable-ellipsis">...</code></code>
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="src.alfanous.Qimport.harvestman.lib.common.feedparser-module.html#_greek_months" class="summary-name" onclick="show_private();">_greek_months</a> = <code title="{u'&#913;&#960;&#961;': u'Apr',
+ u'&#913;&#965;&#947;': u'Aug',
+ u'&#913;&#973;&#947;': u'Aug',
+ u'&#916;&#949;&#954;': u'Dec',
+ u'&#921;&#945;&#957;': u'Jan',
+ u'&#921;&#959;&#955;': u'Jul',
+ u'&#921;&#959;&#957;': u'Jun',
+ u'&#921;&#959;&#973;&#955;': u'Jul',
+..."><code class="variable-group">{</code><code class="variable-quote">u'</code><code class="variable-string">&#913;&#960;&#961;</code><code class="variable-quote">'</code><code class="variable-op">: </code><code class="variable-quote">u'</code><code class="variable-string">Apr</code><code class="variable-quote">'</code><code class="variable-op">, </code><code class="variable-quote">u'</code><code class="variable-string">&#913;&#965;&#947;</code><code class="variable-quote">'</code><code class="variable-op">: </code><code class="variable-quote">u'</code><code class="variable-string">Aug</code><code class="variable-quote">'</code><code class="variable-op">, </code><code class="variable-quote">u'</code><code class="variable-string">&#913;&#973;&#947;</code><code class="variable-quote">'</code><code class="variable-op">: </code><code class="variable-quote">u'</code><code class="variable-string">Aug</code><code class="variable-ellipsis">...</code></code>
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="src.alfanous.Qimport.harvestman.lib.common.feedparser-module.html#_greek_wdays" class="summary-name" onclick="show_private();">_greek_wdays</a> = <code title="{u'&#916;&#949;&#965;': u'Mon',
+ u'&#922;&#965;&#961;': u'Sun',
+ u'&#928;&#945;&#961;': u'Fri',
+ u'&#928;&#949;&#956;': u'Thu',
+ u'&#931;&#945;&#946;': u'Sat',
+ u'&#932;&#949;&#964;': u'Wed',
+ u'&#932;&#961;&#953;': u'Tue'}"><code class="variable-group">{</code><code class="variable-quote">u'</code><code class="variable-string">&#916;&#949;&#965;</code><code class="variable-quote">'</code><code class="variable-op">: </code><code class="variable-quote">u'</code><code class="variable-string">Mon</code><code class="variable-quote">'</code><code class="variable-op">, </code><code class="variable-quote">u'</code><code class="variable-string">&#922;&#965;&#961;</code><code class="variable-quote">'</code><code class="variable-op">: </code><code class="variable-quote">u'</code><code class="variable-string">Sun</code><code class="variable-quote">'</code><code class="variable-op">, </code><code class="variable-quote">u'</code><code class="variable-string">&#928;&#945;&#961;</code><code class="variable-quote">'</code><code class="variable-op">: </code><code class="variable-quote">u'</code><code class="variable-string">Fri</code><code class="variable-quote">'</code><code class="variable-ellipsis">...</code></code>
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="src.alfanous.Qimport.harvestman.lib.common.feedparser-module.html#_greek_date_format_re" class="summary-name" onclick="show_private();">_greek_date_format_re</a> = <code title="re.compile(r'([^,]+),\s+(\d{2})\s+([^\s]+)\s+(\d{4})\s+(\d{2}):(\d{2})\
+:(\d{2})\s+([^\s]+)')">re.compile(r'<code class="re-group">(</code><code class="re-group">[^</code>,<code class="re-group">]</code><code class="re-op">+</code><code class="re-group">)</code>,\s<code class="re-op">+</code><code class="re-group">(</code>\d<code class="re-op">{2}</code><code class="re-group">)</code>\s<code class="re-op">+</code><code class="re-group">(</code><code class="re-group">[</code><code class="re-op">^</code>\<code class="variable-ellipsis">...</code></code>
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="src.alfanous.Qimport.harvestman.lib.common.feedparser-module.html#_hungarian_months" class="summary-name" onclick="show_private();">_hungarian_months</a> = <code title="{u'augusztus': u'08',
+ u'december': u'12',
+ u'febru&#225;ri': u'02',
+ u'janu&#225;r': u'01',
+ u'j&#250;lius': u'07',
+ u'j&#250;nius': u'06',
+ u'm&#225;rcius': u'03',
+ u'm&#225;ujus': u'05',
+..."><code class="variable-group">{</code><code class="variable-quote">u'</code><code class="variable-string">augusztus</code><code class="variable-quote">'</code><code class="variable-op">: </code><code class="variable-quote">u'</code><code class="variable-string">08</code><code class="variable-quote">'</code><code class="variable-op">, </code><code class="variable-quote">u'</code><code class="variable-string">december</code><code class="variable-quote">'</code><code class="variable-op">: </code><code class="variable-quote">u'</code><code class="variable-string">12</code><code class="variable-quote">'</code><code class="variable-op">, </code><code class="variable-ellipsis">...</code></code>
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="src.alfanous.Qimport.harvestman.lib.common.feedparser-module.html#_hungarian_date_format_re" class="summary-name" onclick="show_private();">_hungarian_date_format_re</a> = <code title="re.compile(r'(\d{4})-([^-]+)-(\d{,2})T(\d{,2}):(\d{2})(([\+-])(\d{,2}:\
+\d{2}))')">re.compile(r'<code class="re-group">(</code>\d<code class="re-op">{4}</code><code class="re-group">)</code>-<code class="re-group">(</code><code class="re-group">[^</code>-<code class="re-group">]</code><code class="re-op">+</code><code class="re-group">)</code>-<code class="re-group">(</code>\d<code class="re-op">{,</code><code class="variable-ellipsis">...</code></code>
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="src.alfanous.Qimport.harvestman.lib.common.feedparser-module.html#_additional_timezones" class="summary-name" onclick="show_private();">_additional_timezones</a> = <code title="{'AT': -400, 'CT': -600, 'ET': -500, 'MT': -700, 'PT': -800}"><code class="variable-group">{</code><code class="variable-quote">'</code><code class="variable-string">AT</code><code class="variable-quote">'</code><code class="variable-op">: </code>-400<code class="variable-op">, </code><code class="variable-quote">'</code><code class="variable-string">CT</code><code class="variable-quote">'</code><code class="variable-op">: </code>-600<code class="variable-op">, </code><code class="variable-quote">'</code><code class="variable-string">ET</code><code class="variable-quote">'</code><code class="variable-op">: </code>-500<code class="variable-op">, </code><code class="variable-quote">'</code><code class="variable-ellipsis">...</code></code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="__package__"></a><span class="summary-name">__package__</span> = <code title="'src.alfanous.Qimport.harvestman.lib.common'"><code class="variable-quote">'</code><code class="variable-string">src.alfanous.Qimport.harvestman.lib.common</code><code class="variable-quote">'</code></code>
+    </td>
+  </tr>
+</table>
+<p class="indent-wrapped-lines"><b>Imports:</b>
+  <span title="sgmllib">sgmllib</span>,
+  <span title="re">re</span>,
+  <span title="sys">sys</span>,
+  <span title="copy">copy</span>,
+  <span title="urlparse">urlparse</span>,
+  <span title="time">time</span>,
+  <span title="rfc822">rfc822</span>,
+  <span title="types">types</span>,
+  <span title="cgi">cgi</span>,
+  <span title="urllib">urllib</span>,
+  <span title="urllib2">urllib2</span>,
+  <span title="StringIO.StringIO">_StringIO</span>,
+  <span title="gzip">gzip</span>,
+  <span title="zlib">zlib</span>,
+  <span title="xml">xml</span>,
+  <span title="xml.sax.saxutils.escape">_xmlescape</span>,
+  <span title="binascii">binascii</span>,
+  <span title="base64">base64</span>,
+  <span title="cjkcodecs">cjkcodecs</span>,
+  <span title="iconv_codec">iconv_codec</span>,
+  <span title="chardet">chardet</span>,
+  <span title="UserDict.UserDict">UserDict</span>
+</p><br />
+<!-- ==================== FUNCTION DETAILS ==================== -->
+<a name="section-FunctionDetails"></a>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Function Details</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-FunctionDetails"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+</table>
+<a name="_open_resource"></a>
+<div class="private">
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">_open_resource</span>(<span class="sig-arg">url_file_stream_or_string</span>,
+        <span class="sig-arg">etag</span>,
+        <span class="sig-arg">modified</span>,
+        <span class="sig-arg">agent</span>,
+        <span class="sig-arg">referrer</span>,
+        <span class="sig-arg">handlers</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="src.alfanous.Qimport.harvestman.lib.common.feedparser-pysrc.html#_open_resource">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>URL, filename, or string --&gt; stream</p>
+  <p>This function lets you define parsers that take any input source (URL,
+  pathname to local or network file, or actual data as a string) and deal 
+  with it in a uniform manner.  Returned object is guaranteed to have all 
+  the basic stdio read methods (read, readline, readlines). Just .close() 
+  the object when you're done with it.</p>
+  <p>If the etag argument is supplied, it will be used as the value of an 
+  If-None-Match request header.</p>
+  <p>If the modified argument is supplied, it must be a tuple of 9 integers
+  as returned by gmtime() in the standard Python time module. This MUST be 
+  in GMT (Greenwich Mean Time). The formatted date/time will be used as the
+  value of an If-Modified-Since request header.</p>
+  <p>If the agent argument is supplied, it will be used as the value of a 
+  User-Agent request header.</p>
+  <p>If the referrer argument is supplied, it will be used as the value of 
+  a Referer[sic] request header.</p>
+  <p>If handlers is supplied, it is a list of handlers used to build a 
+  urllib2 opener.</p>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="_getCharacterEncoding"></a>
+<div class="private">
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">_getCharacterEncoding</span>(<span class="sig-arg">http_headers</span>,
+        <span class="sig-arg">xml_data</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="src.alfanous.Qimport.harvestman.lib.common.feedparser-pysrc.html#_getCharacterEncoding">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Get the character encoding of the XML document</p>
+  <p>http_headers is a dictionary xml_data is a raw string (not 
+  Unicode)</p>
+  <p>This is so much trickier than it sounds, it's not even funny. 
+  According to RFC 3023 ('XML Media Types'), if the HTTP Content-Type is 
+  application/xml, application/*+xml, 
+  application/xml-external-parsed-entity, or application/xml-dtd, the 
+  encoding given in the charset parameter of the HTTP Content-Type takes 
+  precedence over the encoding given in the XML prefix within the document,
+  and defaults to 'utf-8' if neither are specified.  But, if the HTTP 
+  Content-Type is text/xml, text/*+xml, or text/xml-external-parsed-entity,
+  the encoding given in the XML prefix within the document is ALWAYS 
+  IGNORED and only the encoding given in the charset parameter of the HTTP 
+  Content-Type header should be respected, and it defaults to 'us-ascii' if
+  not specified.</p>
+  <p>Furthermore, discussion on the atom-syntax mailing list with the 
+  author of RFC 3023 leads me to the conclusion that any document served 
+  with a Content-Type of text/* and no charset parameter must be treated as
+  us-ascii.  (We now do this.)  And also that it must always be flagged as 
+  non-well-formed.  (We now do this too.)</p>
+  <p>If Content-Type is unspecified (input was local file or non-HTTP 
+  source) or unrecognized (server just got it totally wrong), then go by 
+  the encoding given in the XML prefix of the document and default to 
+  'iso-8859-1' as per the HTTP specification (RFC 2616).</p>
+  <p>Then, assuming we didn't find a character encoding in the HTTP headers
+  (and the HTTP Content-type allowed us to look in the body), we need to 
+  sniff the first few bytes of the XML data and try to determine whether 
+  the encoding is ASCII-compatible.  Section F of the XML specification 
+  shows the way here: 
+  http://www.w3.org/TR/REC-xml/#sec-guessing-no-ext-info</p>
+  <p>If the sniffed encoding is not ASCII-compatible, we need to make it 
+  ASCII compatible so that we can sniff further into the XML declaration to
+  find the encoding attribute, which will tell us the true encoding.</p>
+  <p>Of course, none of this guarantees that we will be able to parse the 
+  feed in the declared character encoding (assuming it was declared 
+  correctly, which many are not).  CJKCodecs and iconv_codec help a lot; 
+  you should definitely install them if you can. 
+  http://cjkpython.i18n.org/</p>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="_toUTF8"></a>
+<div class="private">
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">_toUTF8</span>(<span class="sig-arg">data</span>,
+        <span class="sig-arg">encoding</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="src.alfanous.Qimport.harvestman.lib.common.feedparser-pysrc.html#_toUTF8">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Changes an XML data stream on the fly to specify a new encoding</p>
+  <p>data is a raw sequence of bytes (not Unicode) that is presumed to be 
+  in %encoding already encoding is a string recognized by 
+  encodings.aliases</p>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="_stripDoctype"></a>
+<div class="private">
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">_stripDoctype</span>(<span class="sig-arg">data</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="src.alfanous.Qimport.harvestman.lib.common.feedparser-pysrc.html#_stripDoctype">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Strips DOCTYPE from XML document, returns (rss_version, 
+  stripped_data)</p>
+  <p>rss_version may be 'rss091n' or None stripped_data is the same XML 
+  document, minus the DOCTYPE</p>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<br />
+<!-- ==================== VARIABLES DETAILS ==================== -->
+<a name="section-VariablesDetails"></a>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Variables Details</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-VariablesDetails"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+</table>
+<a name="__contributors__"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <h3 class="epydoc">__contributors__</h3>
+  
+  <dl class="fields">
+  </dl>
+  <dl class="fields">
+    <dt>Value:</dt>
+      <dd><table><tr><td><pre class="variable">
+<code class="variable-group">[</code><code class="variable-quote">'</code><code class="variable-string">Jason Diamond &lt;http://injektilo.org/&gt;</code><code class="variable-quote">'</code><code class="variable-op">,</code>
+ <code class="variable-quote">'</code><code class="variable-string">John Beimler &lt;http://john.beimler.org/&gt;</code><code class="variable-quote">'</code><code class="variable-op">,</code>
+ <code class="variable-quote">'</code><code class="variable-string">Fazal Majid &lt;http://www.majid.info/mylos/weblog/&gt;</code><code class="variable-quote">'</code><code class="variable-op">,</code>
+ <code class="variable-quote">'</code><code class="variable-string">Aaron Swartz &lt;http://aaronsw.com/&gt;</code><code class="variable-quote">'</code><code class="variable-op">,</code>
+ <code class="variable-quote">'</code><code class="variable-string">Kevin Marks &lt;http://epeus.blogspot.com/&gt;</code><code class="variable-quote">'</code><code class="variable-group">]</code>
+</pre></td></tr></table>
+</dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="ACCEPT_HEADER"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <h3 class="epydoc">ACCEPT_HEADER</h3>
+  
+  <dl class="fields">
+  </dl>
+  <dl class="fields">
+    <dt>Value:</dt>
+      <dd><table><tr><td><pre class="variable">
+<code class="variable-quote">'</code><code class="variable-string">application/atom+xml,application/rdf+xml,application/rss+xml,applicat</code><span class="variable-linewrap"><img src="crarr.png" alt="\" /></span>
+<code class="variable-string">ion/x-netcdf,application/xml;q=0.9,text/xml;q=0.2,*/*;q=0.1</code><code class="variable-quote">'</code>
+</pre></td></tr></table>
+</dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="SUPPORTED_VERSIONS"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <h3 class="epydoc">SUPPORTED_VERSIONS</h3>
+  
+  <dl class="fields">
+  </dl>
+  <dl class="fields">
+    <dt>Value:</dt>
+      <dd><table><tr><td><pre class="variable">
+<code class="variable-group">{</code><code class="variable-quote">'</code><code class="variable-string"></code><code class="variable-quote">'</code><code class="variable-op">: </code><code class="variable-quote">'</code><code class="variable-string">unknown</code><code class="variable-quote">'</code><code class="variable-op">,</code>
+ <code class="variable-quote">'</code><code class="variable-string">atom</code><code class="variable-quote">'</code><code class="variable-op">: </code><code class="variable-quote">'</code><code class="variable-string">Atom (unknown version)</code><code class="variable-quote">'</code><code class="variable-op">,</code>
+ <code class="variable-quote">'</code><code class="variable-string">atom01</code><code class="variable-quote">'</code><code class="variable-op">: </code><code class="variable-quote">'</code><code class="variable-string">Atom 0.1</code><code class="variable-quote">'</code><code class="variable-op">,</code>
+ <code class="variable-quote">'</code><code class="variable-string">atom02</code><code class="variable-quote">'</code><code class="variable-op">: </code><code class="variable-quote">'</code><code class="variable-string">Atom 0.2</code><code class="variable-quote">'</code><code class="variable-op">,</code>
+ <code class="variable-quote">'</code><code class="variable-string">atom03</code><code class="variable-quote">'</code><code class="variable-op">: </code><code class="variable-quote">'</code><code class="variable-string">Atom 0.3</code><code class="variable-quote">'</code><code class="variable-op">,</code>
+ <code class="variable-quote">'</code><code class="variable-string">atom10</code><code class="variable-quote">'</code><code class="variable-op">: </code><code class="variable-quote">'</code><code class="variable-string">Atom 1.0</code><code class="variable-quote">'</code><code class="variable-op">,</code>
+ <code class="variable-quote">'</code><code class="variable-string">cdf</code><code class="variable-quote">'</code><code class="variable-op">: </code><code class="variable-quote">'</code><code class="variable-string">CDF</code><code class="variable-quote">'</code><code class="variable-op">,</code>
+ <code class="variable-quote">'</code><code class="variable-string">hotrss</code><code class="variable-quote">'</code><code class="variable-op">: </code><code class="variable-quote">'</code><code class="variable-string">Hot RSS</code><code class="variable-quote">'</code><code class="variable-op">,</code>
+<code class="variable-ellipsis">...</code>
+</pre></td></tr></table>
+</dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="_urifixer"></a>
+<div class="private">
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <h3 class="epydoc">_urifixer</h3>
+  
+  <dl class="fields">
+  </dl>
+  <dl class="fields">
+    <dt>Value:</dt>
+      <dd><table><tr><td><pre class="variable">
+re.compile(r'^<code class="re-group">(</code><code class="re-group">[</code>A<code class="re-op">-</code>Za<code class="re-op">-</code>z<code class="re-group">]</code><code class="re-group">[</code>A<code class="re-op">-</code>Za<code class="re-op">-</code>z0<code class="re-op">-</code>9\+<code class="re-op">-</code>\.<code class="re-group">]</code><code class="re-op">*</code>://<code class="re-group">)</code><code class="re-group">(</code>/<code class="re-op">*</code><code class="re-group">)</code><code class="re-group">(</code>.<code class="re-op">*?</code><code class="re-group">)</code>')
+</pre></td></tr></table>
+</dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="_iso8601_tmpl"></a>
+<div class="private">
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <h3 class="epydoc">_iso8601_tmpl</h3>
+  
+  <dl class="fields">
+  </dl>
+  <dl class="fields">
+    <dt>Value:</dt>
+      <dd><table><tr><td><pre class="variable">
+<code class="variable-group">[</code><code class="variable-quote">'</code><code class="variable-string">YYYY-?MM-?DD</code><code class="variable-quote">'</code><code class="variable-op">,</code>
+ <code class="variable-quote">'</code><code class="variable-string">YYYY-MM</code><code class="variable-quote">'</code><code class="variable-op">,</code>
+ <code class="variable-quote">'</code><code class="variable-string">YYYY-?OOO</code><code class="variable-quote">'</code><code class="variable-op">,</code>
+ <code class="variable-quote">'</code><code class="variable-string">YY-?MM-?DD</code><code class="variable-quote">'</code><code class="variable-op">,</code>
+ <code class="variable-quote">'</code><code class="variable-string">YY-?OOO</code><code class="variable-quote">'</code><code class="variable-op">,</code>
+ <code class="variable-quote">'</code><code class="variable-string">YYYY</code><code class="variable-quote">'</code><code class="variable-op">,</code>
+ <code class="variable-quote">'</code><code class="variable-string">-YY-?MM</code><code class="variable-quote">'</code><code class="variable-op">,</code>
+ <code class="variable-quote">'</code><code class="variable-string">-OOO</code><code class="variable-quote">'</code><code class="variable-op">,</code>
+<code class="variable-ellipsis">...</code>
+</pre></td></tr></table>
+</dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="_iso8601_re"></a>
+<div class="private">
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <h3 class="epydoc">_iso8601_re</h3>
+  
+  <dl class="fields">
+  </dl>
+  <dl class="fields">
+    <dt>Value:</dt>
+      <dd><table><tr><td><pre class="variable">
+<code class="variable-group">[</code><code class="variable-quote">'</code><code class="variable-string">(?P&lt;year&gt;\\d{4})-?(?P&lt;month&gt;[01]\\d)-?(?P&lt;day&gt;[0123]\\d)(T?(?P&lt;hour&gt;</code><span class="variable-linewrap"><img src="crarr.png" alt="\" /></span>
+<code class="variable-string">\\d{2}):(?P&lt;minute&gt;\\d{2})(:(?P&lt;second&gt;\\d{2}))?(?P&lt;tz&gt;[+-](?P&lt;tzhour&gt;</code><span class="variable-linewrap"><img src="crarr.png" alt="\" /></span>
+<code class="variable-string">\\d{2})(:(?P&lt;tzmin&gt;\\d{2}))?|Z)?)?</code><code class="variable-quote">'</code><code class="variable-op">,</code>
+ <code class="variable-quote">'</code><code class="variable-string">(?P&lt;year&gt;\\d{4})-(?P&lt;month&gt;[01]\\d)(T?(?P&lt;hour&gt;\\d{2}):(?P&lt;minute&gt;\\</code><span class="variable-linewrap"><img src="crarr.png" alt="\" /></span>
+<code class="variable-string">d{2})(:(?P&lt;second&gt;\\d{2}))?(?P&lt;tz&gt;[+-](?P&lt;tzhour&gt;\\d{2})(:(?P&lt;tzmin&gt;\\</code><span class="variable-linewrap"><img src="crarr.png" alt="\" /></span>
+<code class="variable-string">d{2}))?|Z)?)?</code><code class="variable-quote">'</code><code class="variable-op">,</code>
+ <code class="variable-quote">'</code><code class="variable-string">(?P&lt;year&gt;\\d{4})-?(?P&lt;ordinal&gt;[0123]\\d\\d)(T?(?P&lt;hour&gt;\\d{2}):(?P&lt;m</code><span class="variable-linewrap"><img src="crarr.png" alt="\" /></span>
+<code class="variable-string">inute&gt;\\d{2})(:(?P&lt;second&gt;\\d{2}))?(?P&lt;tz&gt;[+-](?P&lt;tzhour&gt;\\d{2})(:(?P&lt;</code><span class="variable-linewrap"><img src="crarr.png" alt="\" /></span>
+<code class="variable-ellipsis">...</code>
+</pre></td></tr></table>
+</dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="_iso8601_matches"></a>
+<div class="private">
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <h3 class="epydoc">_iso8601_matches</h3>
+  
+  <dl class="fields">
+  </dl>
+  <dl class="fields">
+    <dt>Value:</dt>
+      <dd><table><tr><td><pre class="variable">
+[re.compile(regex).match for regex in _iso8601_re]
+</pre></td></tr></table>
+</dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="_korean_onblog_date_re"></a>
+<div class="private">
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <h3 class="epydoc">_korean_onblog_date_re</h3>
+  
+  <dl class="fields">
+  </dl>
+  <dl class="fields">
+    <dt>Value:</dt>
+      <dd><table><tr><td><pre class="variable">
+re.compile(r'<code class="re-group">(</code>\d<code class="re-op">{4}</code><code class="re-group">)</code>\ub144\s<code class="re-op">+</code><code class="re-group">(</code>\d<code class="re-op">{2}</code><code class="re-group">)</code>\uc6d4\s<code class="re-op">+</code><code class="re-group">(</code>\d<code class="re-op">{2}</code><code class="re-group">)</code>\uc77c\s<code class="re-op">+</code><code class="re-group">(</code>\d<code class="re-op">{2}</code><code class="re-group">)</code>:<code class="re-group">(</code><span class="variable-linewrap"><img src="crarr.png" alt="\" /></span>
+\d<code class="re-op">{2}</code><code class="re-group">)</code>:<code class="re-group">(</code>\d<code class="re-op">{2}</code><code class="re-group">)</code>')
+</pre></td></tr></table>
+</dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="_korean_nate_date_re"></a>
+<div class="private">
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <h3 class="epydoc">_korean_nate_date_re</h3>
+  
+  <dl class="fields">
+  </dl>
+  <dl class="fields">
+    <dt>Value:</dt>
+      <dd><table><tr><td><pre class="variable">
+re.compile(r'<code class="re-group">(</code>\d<code class="re-op">{4}</code><code class="re-group">)</code>-<code class="re-group">(</code>\d<code class="re-op">{2}</code><code class="re-group">)</code>-<code class="re-group">(</code>\d<code class="re-op">{2}</code><code class="re-group">)</code>\s<code class="re-op">+</code><code class="re-group">(</code>\uc624<code class="re-group">[</code>\uc804\ud6c4<code class="re-group">]</code><code class="re-group">)</code>\s<code class="re-op">+</code><code class="re-group">(</code>\d<code class="re-op">{,2</code><span class="variable-linewrap"><img src="crarr.png" alt="\" /></span>
+<code class="re-op">}</code><code class="re-group">)</code>:<code class="re-group">(</code>\d<code class="re-op">{,2}</code><code class="re-group">)</code>:<code class="re-group">(</code>\d<code class="re-op">{,2}</code><code class="re-group">)</code>')
+</pre></td></tr></table>
+</dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="_mssql_date_re"></a>
+<div class="private">
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <h3 class="epydoc">_mssql_date_re</h3>
+  
+  <dl class="fields">
+  </dl>
+  <dl class="fields">
+    <dt>Value:</dt>
+      <dd><table><tr><td><pre class="variable">
+re.compile(r'<code class="re-group">(</code>\d<code class="re-op">{4}</code><code class="re-group">)</code>-<code class="re-group">(</code>\d<code class="re-op">{2}</code><code class="re-group">)</code>-<code class="re-group">(</code>\d<code class="re-op">{2}</code><code class="re-group">)</code>\s<code class="re-op">+</code><code class="re-group">(</code>\d<code class="re-op">{2}</code><code class="re-group">)</code>:<code class="re-group">(</code>\d<code class="re-op">{2}</code><code class="re-group">)</code>:<code class="re-group">(</code>\d<code class="re-op">{2}</code><code class="re-group">)</code><code class="re-group">(</code>\.\d<code class="re-op">+</code><code class="re-group">)</code><code class="re-op">?</code><span class="variable-linewrap"><img src="crarr.png" alt="\" /></span>
+')
+</pre></td></tr></table>
+</dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="_greek_months"></a>
+<div class="private">
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <h3 class="epydoc">_greek_months</h3>
+  
+  <dl class="fields">
+  </dl>
+  <dl class="fields">
+    <dt>Value:</dt>
+      <dd><table><tr><td><pre class="variable">
+<code class="variable-group">{</code><code class="variable-quote">u'</code><code class="variable-string">&#913;&#960;&#961;</code><code class="variable-quote">'</code><code class="variable-op">: </code><code class="variable-quote">u'</code><code class="variable-string">Apr</code><code class="variable-quote">'</code><code class="variable-op">,</code>
+ <code class="variable-quote">u'</code><code class="variable-string">&#913;&#965;&#947;</code><code class="variable-quote">'</code><code class="variable-op">: </code><code class="variable-quote">u'</code><code class="variable-string">Aug</code><code class="variable-quote">'</code><code class="variable-op">,</code>
+ <code class="variable-quote">u'</code><code class="variable-string">&#913;&#973;&#947;</code><code class="variable-quote">'</code><code class="variable-op">: </code><code class="variable-quote">u'</code><code class="variable-string">Aug</code><code class="variable-quote">'</code><code class="variable-op">,</code>
+ <code class="variable-quote">u'</code><code class="variable-string">&#916;&#949;&#954;</code><code class="variable-quote">'</code><code class="variable-op">: </code><code class="variable-quote">u'</code><code class="variable-string">Dec</code><code class="variable-quote">'</code><code class="variable-op">,</code>
+ <code class="variable-quote">u'</code><code class="variable-string">&#921;&#945;&#957;</code><code class="variable-quote">'</code><code class="variable-op">: </code><code class="variable-quote">u'</code><code class="variable-string">Jan</code><code class="variable-quote">'</code><code class="variable-op">,</code>
+ <code class="variable-quote">u'</code><code class="variable-string">&#921;&#959;&#955;</code><code class="variable-quote">'</code><code class="variable-op">: </code><code class="variable-quote">u'</code><code class="variable-string">Jul</code><code class="variable-quote">'</code><code class="variable-op">,</code>
+ <code class="variable-quote">u'</code><code class="variable-string">&#921;&#959;&#957;</code><code class="variable-quote">'</code><code class="variable-op">: </code><code class="variable-quote">u'</code><code class="variable-string">Jun</code><code class="variable-quote">'</code><code class="variable-op">,</code>
+ <code class="variable-quote">u'</code><code class="variable-string">&#921;&#959;&#973;&#955;</code><code class="variable-quote">'</code><code class="variable-op">: </code><code class="variable-quote">u'</code><code class="variable-string">Jul</code><code class="variable-quote">'</code><code class="variable-op">,</code>
+<code class="variable-ellipsis">...</code>
+</pre></td></tr></table>
+</dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="_greek_wdays"></a>
+<div class="private">
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <h3 class="epydoc">_greek_wdays</h3>
+  
+  <dl class="fields">
+  </dl>
+  <dl class="fields">
+    <dt>Value:</dt>
+      <dd><table><tr><td><pre class="variable">
+<code class="variable-group">{</code><code class="variable-quote">u'</code><code class="variable-string">&#916;&#949;&#965;</code><code class="variable-quote">'</code><code class="variable-op">: </code><code class="variable-quote">u'</code><code class="variable-string">Mon</code><code class="variable-quote">'</code><code class="variable-op">,</code>
+ <code class="variable-quote">u'</code><code class="variable-string">&#922;&#965;&#961;</code><code class="variable-quote">'</code><code class="variable-op">: </code><code class="variable-quote">u'</code><code class="variable-string">Sun</code><code class="variable-quote">'</code><code class="variable-op">,</code>
+ <code class="variable-quote">u'</code><code class="variable-string">&#928;&#945;&#961;</code><code class="variable-quote">'</code><code class="variable-op">: </code><code class="variable-quote">u'</code><code class="variable-string">Fri</code><code class="variable-quote">'</code><code class="variable-op">,</code>
+ <code class="variable-quote">u'</code><code class="variable-string">&#928;&#949;&#956;</code><code class="variable-quote">'</code><code class="variable-op">: </code><code class="variable-quote">u'</code><code class="variable-string">Thu</code><code class="variable-quote">'</code><code class="variable-op">,</code>
+ <code class="variable-quote">u'</code><code class="variable-string">&#931;&#945;&#946;</code><code class="variable-quote">'</code><code class="variable-op">: </code><code class="variable-quote">u'</code><code class="variable-string">Sat</code><code class="variable-quote">'</code><code class="variable-op">,</code>
+ <code class="variable-quote">u'</code><code class="variable-string">&#932;&#949;&#964;</code><code class="variable-quote">'</code><code class="variable-op">: </code><code class="variable-quote">u'</code><code class="variable-string">Wed</code><code class="variable-quote">'</code><code class="variable-op">,</code>
+ <code class="variable-quote">u'</code><code class="variable-string">&#932;&#961;&#953;</code><code class="variable-quote">'</code><code class="variable-op">: </code><code class="variable-quote">u'</code><code class="variable-string">Tue</code><code class="variable-quote">'</code><code class="variable-group">}</code>
+</pre></td></tr></table>
+</dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="_greek_date_format_re"></a>
+<div class="private">
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <h3 class="epydoc">_greek_date_format_re</h3>
+  
+  <dl class="fields">
+  </dl>
+  <dl class="fields">
+    <dt>Value:</dt>
+      <dd><table><tr><td><pre class="variable">
+re.compile(r'<code class="re-group">(</code><code class="re-group">[^</code>,<code class="re-group">]</code><code class="re-op">+</code><code class="re-group">)</code>,\s<code class="re-op">+</code><code class="re-group">(</code>\d<code class="re-op">{2}</code><code class="re-group">)</code>\s<code class="re-op">+</code><code class="re-group">(</code><code class="re-group">[</code><code class="re-op">^</code>\s<code class="re-group">]</code><code class="re-op">+</code><code class="re-group">)</code>\s<code class="re-op">+</code><code class="re-group">(</code>\d<code class="re-op">{4}</code><code class="re-group">)</code>\s<code class="re-op">+</code><code class="re-group">(</code>\d<code class="re-op">{2}</code><code class="re-group">)</code>:<code class="re-group">(</code>\d<code class="re-op">{2}</code><code class="re-group">)</code><span class="variable-linewrap"><img src="crarr.png" alt="\" /></span>
+:<code class="re-group">(</code>\d<code class="re-op">{2}</code><code class="re-group">)</code>\s<code class="re-op">+</code><code class="re-group">(</code><code class="re-group">[</code><code class="re-op">^</code>\s<code class="re-group">]</code><code class="re-op">+</code><code class="re-group">)</code>')
+</pre></td></tr></table>
+</dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="_hungarian_months"></a>
+<div class="private">
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <h3 class="epydoc">_hungarian_months</h3>
+  
+  <dl class="fields">
+  </dl>
+  <dl class="fields">
+    <dt>Value:</dt>
+      <dd><table><tr><td><pre class="variable">
+<code class="variable-group">{</code><code class="variable-quote">u'</code><code class="variable-string">augusztus</code><code class="variable-quote">'</code><code class="variable-op">: </code><code class="variable-quote">u'</code><code class="variable-string">08</code><code class="variable-quote">'</code><code class="variable-op">,</code>
+ <code class="variable-quote">u'</code><code class="variable-string">december</code><code class="variable-quote">'</code><code class="variable-op">: </code><code class="variable-quote">u'</code><code class="variable-string">12</code><code class="variable-quote">'</code><code class="variable-op">,</code>
+ <code class="variable-quote">u'</code><code class="variable-string">febru&#225;ri</code><code class="variable-quote">'</code><code class="variable-op">: </code><code class="variable-quote">u'</code><code class="variable-string">02</code><code class="variable-quote">'</code><code class="variable-op">,</code>
+ <code class="variable-quote">u'</code><code class="variable-string">janu&#225;r</code><code class="variable-quote">'</code><code class="variable-op">: </code><code class="variable-quote">u'</code><code class="variable-string">01</code><code class="variable-quote">'</code><code class="variable-op">,</code>
+ <code class="variable-quote">u'</code><code class="variable-string">j&#250;lius</code><code class="variable-quote">'</code><code class="variable-op">: </code><code class="variable-quote">u'</code><code class="variable-string">07</code><code class="variable-quote">'</code><code class="variable-op">,</code>
+ <code class="variable-quote">u'</code><code class="variable-string">j&#250;nius</code><code class="variable-quote">'</code><code class="variable-op">: </code><code class="variable-quote">u'</code><code class="variable-string">06</code><code class="variable-quote">'</code><code class="variable-op">,</code>
+ <code class="variable-quote">u'</code><code class="variable-string">m&#225;rcius</code><code class="variable-quote">'</code><code class="variable-op">: </code><code class="variable-quote">u'</code><code class="variable-string">03</code><code class="variable-quote">'</code><code class="variable-op">,</code>
+ <code class="variable-quote">u'</code><code class="variable-string">m&#225;ujus</code><code class="variable-quote">'</code><code class="variable-op">: </code><code class="variable-quote">u'</code><code class="variable-string">05</code><code class="variable-quote">'</code><code class="variable-op">,</code>
+<code class="variable-ellipsis">...</code>
+</pre></td></tr></table>
+</dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="_hungarian_date_format_re"></a>
+<div class="private">
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <h3 class="epydoc">_hungarian_date_format_re</h3>
+  
+  <dl class="fields">
+  </dl>
+  <dl class="fields">
+    <dt>Value:</dt>
+      <dd><table><tr><td><pre class="variable">
+re.compile(r'<code class="re-group">(</code>\d<code class="re-op">{4}</code><code class="re-group">)</code>-<code class="re-group">(</code><code class="re-group">[^</code>-<code class="re-group">]</code><code class="re-op">+</code><code class="re-group">)</code>-<code class="re-group">(</code>\d<code class="re-op">{,2}</code><code class="re-group">)</code>T<code class="re-group">(</code>\d<code class="re-op">{,2}</code><code class="re-group">)</code>:<code class="re-group">(</code>\d<code class="re-op">{2}</code><code class="re-group">)</code><code class="re-group">(</code><code class="re-group">(</code><code class="re-group">[</code>\+-<code class="re-group">]</code><code class="re-group">)</code><code class="re-group">(</code>\d<code class="re-op">{,2}</code>:<span class="variable-linewrap"><img src="crarr.png" alt="\" /></span>
+\d<code class="re-op">{2}</code><code class="re-group">)</code><code class="re-group">)</code>')
+</pre></td></tr></table>
+</dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="_additional_timezones"></a>
+<div class="private">
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <h3 class="epydoc">_additional_timezones</h3>
+  
+  <dl class="fields">
+  </dl>
+  <dl class="fields">
+    <dt>Value:</dt>
+      <dd><table><tr><td><pre class="variable">
+<code class="variable-group">{</code><code class="variable-quote">'</code><code class="variable-string">AT</code><code class="variable-quote">'</code><code class="variable-op">: </code>-400<code class="variable-op">, </code><code class="variable-quote">'</code><code class="variable-string">CT</code><code class="variable-quote">'</code><code class="variable-op">: </code>-600<code class="variable-op">, </code><code class="variable-quote">'</code><code class="variable-string">ET</code><code class="variable-quote">'</code><code class="variable-op">: </code>-500<code class="variable-op">, </code><code class="variable-quote">'</code><code class="variable-string">MT</code><code class="variable-quote">'</code><code class="variable-op">: </code>-700<code class="variable-op">, </code><code class="variable-quote">'</code><code class="variable-string">PT</code><code class="variable-quote">'</code><code class="variable-op">: </code>-800<code class="variable-group">}</code>
+</pre></td></tr></table>
+</dd>
+  </dl>
+</td></tr></table>
+</div>
+<br />
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="src.alfanous-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            ><a class="navbar" target="_top" href="alfanous.sourceforge.com">Alfanous</a></th>
+          </tr></table></th>
+  </tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" width="100%%">
+  <tr>
+    <td align="left" class="footer">
+    Generated by Epydoc 3.0.1 on Fri Apr 23 04:37:51 2010
+    </td>
+    <td align="right" class="footer">
+      <a target="mainFrame" href="http://epydoc.sourceforge.net"
+        >http://epydoc.sourceforge.net</a>
+    </td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+  <!--
+  // Private objects are initially displayed (because if
+  // javascript is turned off then we want them to be
+  // visible); but by default, we want to hide them.  So hide
+  // them unless we have a cookie that says to show them.
+  checkCookie();
+  // -->
+</script>
+</body>
+</html>

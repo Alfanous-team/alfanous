@@ -1,0 +1,784 @@
+<?xml version="1.0" encoding="ascii"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>alfanous.whoosh.searching.Searcher</title>
+  <link rel="stylesheet" href="epydoc.css" type="text/css" />
+  <script type="text/javascript" src="epydoc.js"></script>
+</head>
+
+<body bgcolor="white" text="black" link="blue" vlink="#204080"
+      alink="#204080">
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="alfanous-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            ><a class="navbar" target="_top" href="alfanous.sourceforge.com">Alfanous</a></th>
+          </tr></table></th>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="100%">
+      <span class="breadcrumbs">
+        <a href="alfanous-module.html">Package&nbsp;alfanous</a> ::
+        <a href="alfanous.whoosh-module.html">Package&nbsp;whoosh</a> ::
+        <a href="alfanous.whoosh.searching-module.html">Module&nbsp;searching</a> ::
+        Class&nbsp;Searcher
+      </span>
+    </td>
+    <td>
+      <table cellpadding="0" cellspacing="0">
+        <!-- hide/show private -->
+        <tr><td align="right"><span class="options">[<a href="javascript:void(0);" class="privatelink"
+    onclick="toggle_private();">hide&nbsp;private</a>]</span></td></tr>
+        <tr><td align="right"><span class="options"
+            >[<a href="frames.html" target="_top">frames</a
+            >]&nbsp;|&nbsp;<a href="alfanous.whoosh.searching.Searcher-class.html"
+            target="_top">no&nbsp;frames</a>]</span></td></tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<!-- ==================== CLASS DESCRIPTION ==================== -->
+<h1 class="epydoc">Class Searcher</h1><p class="nomargin-top"><span class="codelink"><a href="alfanous.whoosh.searching-pysrc.html#Searcher">source&nbsp;code</a></span></p>
+<pre class="base-tree">
+object --+
+         |
+        <strong class="uidshort">Searcher</strong>
+</pre>
+
+<hr />
+<p>Wraps an :class:`~whoosh.reading.IndexReader` object and provides 
+  methods for searching the index.</p>
+
+<!-- ==================== INSTANCE METHODS ==================== -->
+<a name="section-InstanceMethods"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Instance Methods</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-InstanceMethods"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="alfanous.whoosh.searching.Searcher-class.html#__init__" class="summary-sig-name">__init__</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">ixreader</span>,
+        <span class="summary-sig-arg">weighting</span>=<span class="summary-sig-default">&lt;class 'whoosh.scoring.BM25F'&gt;</span>)</span><br />
+      :param ixreader: An :class:`~whoosh.reading.IndexReader` object for
+    the index to search.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="alfanous.whoosh.searching-pysrc.html#Searcher.__init__">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="close"></a><span class="summary-sig-name">close</span>(<span class="summary-sig-arg">self</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="alfanous.whoosh.searching-pysrc.html#Searcher.close">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="reader"></a><span class="summary-sig-name">reader</span>(<span class="summary-sig-arg">self</span>)</span><br />
+      Returns the underlying :class:`~whoosh.reading.IndexReader`.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="alfanous.whoosh.searching-pysrc.html#Searcher.reader">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="alfanous.whoosh.searching.Searcher-class.html#idf" class="summary-sig-name">idf</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">fieldid</span>,
+        <span class="summary-sig-arg">text</span>)</span><br />
+      Calculates the Inverse Document Frequency of the current term.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="alfanous.whoosh.searching-pysrc.html#Searcher.idf">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="alfanous.whoosh.searching.Searcher-class.html#document" class="summary-sig-name">document</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">**kw</span>)</span><br />
+      Convenience method returns the stored fields of a document matching 
+      the given keyword arguments, where the keyword keys are field names 
+      and the values are terms that must appear in the field.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="alfanous.whoosh.searching-pysrc.html#Searcher.document">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="alfanous.whoosh.searching.Searcher-class.html#documents" class="summary-sig-name">documents</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">**kw</span>)</span><br />
+      Convenience method returns the stored fields of a document matching 
+      the given keyword arguments, where the keyword keys are field names 
+      and the values are terms that must appear in the field.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="alfanous.whoosh.searching-pysrc.html#Searcher.documents">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="alfanous.whoosh.searching.Searcher-class.html#document_number" class="summary-sig-name">document_number</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">**kw</span>)</span><br />
+      Returns the document number of the document matching the given 
+      keyword arguments, where the keyword keys are field names and the 
+      values are terms that must appear in the field.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="alfanous.whoosh.searching-pysrc.html#Searcher.document_number">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="alfanous.whoosh.searching.Searcher-class.html#document_numbers" class="summary-sig-name">document_numbers</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">**kw</span>)</span><br />
+      Returns a generator of the document numbers for documents matching 
+      the given keyword arguments, where the keyword keys are field names 
+      and the values are terms that must appear in the field.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="alfanous.whoosh.searching-pysrc.html#Searcher.document_numbers">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="alfanous.whoosh.searching.Searcher-class.html#key_terms" class="summary-sig-name">key_terms</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">docnums</span>,
+        <span class="summary-sig-arg">fieldname</span>,
+        <span class="summary-sig-arg">numterms</span>=<span class="summary-sig-default">5</span>,
+        <span class="summary-sig-arg">model</span>=<span class="summary-sig-default">&lt;class 'whoosh.classify.Bo1Model'&gt;</span>,
+        <span class="summary-sig-arg">normalize</span>=<span class="summary-sig-default">True</span>)</span><br />
+      Returns the 'numterms' most important terms from the documents
+listed (by number) in 'docnums'.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="alfanous.whoosh.searching-pysrc.html#Searcher.key_terms">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="search_page"></a><span class="summary-sig-name">search_page</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">query</span>,
+        <span class="summary-sig-arg">pagenum</span>,
+        <span class="summary-sig-arg">pagelen</span>=<span class="summary-sig-default">10</span>,
+        <span class="summary-sig-arg">**kwargs</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="alfanous.whoosh.searching-pysrc.html#Searcher.search_page">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="find"></a><span class="summary-sig-name">find</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">defaultfield</span>,
+        <span class="summary-sig-arg">querystring</span>,
+        <span class="summary-sig-arg">**kwargs</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="alfanous.whoosh.searching-pysrc.html#Searcher.find">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="alfanous.whoosh.searching.Searcher-class.html#search" class="summary-sig-name">search</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">query</span>,
+        <span class="summary-sig-arg">limit</span>=<span class="summary-sig-default">5000</span>,
+        <span class="summary-sig-arg">sortedby</span>=<span class="summary-sig-default">None</span>,
+        <span class="summary-sig-arg">reverse</span>=<span class="summary-sig-default">False</span>,
+        <span class="summary-sig-arg">minscore</span>=<span class="summary-sig-default">0.0001</span>)</span><br />
+      Runs the query represented by the ``query`` object and returns a
+Results object.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="alfanous.whoosh.searching-pysrc.html#Searcher.search">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="fieldname_to_num"></a><span class="summary-sig-name">fieldname_to_num</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">fieldid</span>)</span><br />
+      Returns the field number of the given field name.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="alfanous.whoosh.searching-pysrc.html#Searcher.fieldname_to_num">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="fieldnum_to_name"></a><span class="summary-sig-name">fieldnum_to_name</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">fieldnum</span>)</span><br />
+      Returns the field name corresponding to the given field number.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="alfanous.whoosh.searching-pysrc.html#Searcher.fieldnum_to_name">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="field"></a><span class="summary-sig-name">field</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">fieldid</span>)</span><br />
+      Returns the :class:`whoosh.fields.Field` object for the given field 
+      name.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="alfanous.whoosh.searching-pysrc.html#Searcher.field">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+  <tr>
+    <td colspan="2" class="summary">
+    <p class="indent-wrapped-lines"><b>Inherited from <code>object</code></b>:
+      <code>__delattr__</code>,
+      <code>__format__</code>,
+      <code>__getattribute__</code>,
+      <code>__hash__</code>,
+      <code>__new__</code>,
+      <code>__reduce__</code>,
+      <code>__reduce_ex__</code>,
+      <code>__repr__</code>,
+      <code>__setattr__</code>,
+      <code>__sizeof__</code>,
+      <code>__str__</code>,
+      <code>__subclasshook__</code>
+      </p>
+    </td>
+  </tr>
+</table>
+<!-- ==================== PROPERTIES ==================== -->
+<a name="section-Properties"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Properties</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-Properties"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+  <tr>
+    <td colspan="2" class="summary">
+    <p class="indent-wrapped-lines"><b>Inherited from <code>object</code></b>:
+      <code>__class__</code>
+      </p>
+    </td>
+  </tr>
+</table>
+<!-- ==================== METHOD DETAILS ==================== -->
+<a name="section-MethodDetails"></a>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Method Details</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-MethodDetails"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+</table>
+<a name="__init__"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">__init__</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">ixreader</span>,
+        <span class="sig-arg">weighting</span>=<span class="sig-default">&lt;class 'whoosh.scoring.BM25F'&gt;</span>)</span>
+    <br /><em class="fname">(Constructor)</em>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="alfanous.whoosh.searching-pysrc.html#Searcher.__init__">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <pre class="literalblock">
+
+:param ixreader: An :class:`~whoosh.reading.IndexReader` object for
+    the index to search.
+:param weighting: A :class:`whoosh.scoring.Weighting` object to use to
+    score found documents.
+
+</pre>
+  <dl class="fields">
+    <dt>Overrides:
+        object.__init__
+    </dt>
+  </dl>
+</td></tr></table>
+</div>
+<a name="idf"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">idf</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">fieldid</span>,
+        <span class="sig-arg">text</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="alfanous.whoosh.searching-pysrc.html#Searcher.idf">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Calculates the Inverse Document Frequency of the current term. 
+  Subclasses may want to override this.</p>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="document"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">document</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">**kw</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="alfanous.whoosh.searching-pysrc.html#Searcher.document">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Convenience method returns the stored fields of a document matching 
+  the given keyword arguments, where the keyword keys are field names and 
+  the values are terms that must appear in the field.</p>
+  <p>This method is equivalent to:</p>
+<pre class="literalblock">
+   searcher.stored_fields(searcher.document_number(&lt;keyword args&gt;))
+</pre>
+  <p>Where Searcher.documents() returns a generator, this function returns 
+  either a dictionary or None. Use it when you assume the given keyword 
+  arguments either match zero or one documents (i.e. at least one of the 
+  fields is a unique key).</p>
+<pre class="py-doctest">
+<span class="py-prompt">&gt;&gt;&gt; </span>stored_fields = searcher.document(path=u<span class="py-string">&quot;/a/b&quot;</span>)
+<span class="py-prompt">&gt;&gt;&gt; </span><span class="py-keyword">if</span> stored_fields:
+<span class="py-more">... </span>  <span class="py-keyword">print</span> stored_fields[<span class="py-string">'title'</span>]
+<span class="py-more">... </span><span class="py-keyword">else</span>:
+<span class="py-more">... </span>  <span class="py-keyword">print</span> <span class="py-string">&quot;There is no document with the path /a/b&quot;</span></pre>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="documents"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">documents</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">**kw</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="alfanous.whoosh.searching-pysrc.html#Searcher.documents">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Convenience method returns the stored fields of a document matching 
+  the given keyword arguments, where the keyword keys are field names and 
+  the values are terms that must appear in the field.</p>
+  <p>Returns a generator of dictionaries containing the stored fields of 
+  any documents matching the keyword arguments.</p>
+<pre class="py-doctest">
+<span class="py-prompt">&gt;&gt;&gt; </span><span class="py-keyword">for</span> stored_fields <span class="py-keyword">in</span> searcher.documents(emailto=u<span class="py-string">&quot;matt@whoosh.ca&quot;</span>):
+<span class="py-more">... </span>  <span class="py-keyword">print</span> <span class="py-string">&quot;Email subject:&quot;</span>, stored_fields[<span class="py-string">'subject'</span>]</pre>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="document_number"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">document_number</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">**kw</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="alfanous.whoosh.searching-pysrc.html#Searcher.document_number">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Returns the document number of the document matching the given keyword
+  arguments, where the keyword keys are field names and the values are 
+  terms that must appear in the field.</p>
+<pre class="py-doctest">
+<span class="py-prompt">&gt;&gt;&gt; </span>docnum = searcher.document_number(path=u<span class="py-string">&quot;/a/b&quot;</span>)</pre>
+  <p>Where Searcher.document_numbers() returns a generator, this function 
+  returns either an int or None. Use it when you assume the given keyword 
+  arguments either match zero or one documents (i.e. at least one of the 
+  fields is a unique key).</p>
+  <p>:rtype: int</p>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="document_numbers"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">document_numbers</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">**kw</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="alfanous.whoosh.searching-pysrc.html#Searcher.document_numbers">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Returns a generator of the document numbers for documents matching the
+  given keyword arguments, where the keyword keys are field names and the 
+  values are terms that must appear in the field.</p>
+<pre class="py-doctest">
+<span class="py-prompt">&gt;&gt;&gt; </span>docnums = list(searcher.document_numbers(emailto=u<span class="py-string">&quot;matt@whoosh.ca&quot;</span>))</pre>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="key_terms"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">key_terms</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">docnums</span>,
+        <span class="sig-arg">fieldname</span>,
+        <span class="sig-arg">numterms</span>=<span class="sig-default">5</span>,
+        <span class="sig-arg">model</span>=<span class="sig-default">&lt;class 'whoosh.classify.Bo1Model'&gt;</span>,
+        <span class="sig-arg">normalize</span>=<span class="sig-default">True</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="alfanous.whoosh.searching-pysrc.html#Searcher.key_terms">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <pre class="literalblock">
+Returns the 'numterms' most important terms from the documents
+listed (by number) in 'docnums'. You can get document numbers for the
+documents your interested in with the document_number() and
+document_numbers() methods.
+
+&gt;&gt;&gt; docnum = searcher.document_number(path=u&quot;/a/b&quot;)
+&gt;&gt;&gt; keywords = list(searcher.key_terms([docnum], &quot;content&quot;))
+
+&quot;Most important&quot; is generally defined as terms that occur frequently in
+the top hits but relatively infrequently in the collection as a whole.
+
+:param fieldname: Look at the terms in this field. This field must
+    store vectors.
+:param docnums: A sequence of document numbers specifying which
+    documents to extract key terms from.
+:param numterms: Return this number of important terms.
+:param model: The classify.ExpansionModel to use. See the classify
+    module.
+
+</pre>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="search"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">search</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">query</span>,
+        <span class="sig-arg">limit</span>=<span class="sig-default">5000</span>,
+        <span class="sig-arg">sortedby</span>=<span class="sig-default">None</span>,
+        <span class="sig-arg">reverse</span>=<span class="sig-default">False</span>,
+        <span class="sig-arg">minscore</span>=<span class="sig-default">0.0001</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="alfanous.whoosh.searching-pysrc.html#Searcher.search">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <pre class="literalblock">
+Runs the query represented by the ``query`` object and returns a
+Results object.
+
+:param query: a :class:`whoosh.query.Query` object.
+:param limit: the maximum number of documents to score. If you're only
+    interested in the top N documents, you can set limit=N to limit the
+    scoring for a faster search.
+:param sortedby: if this parameter is not None, the results are sorted
+    instead of scored. If this value is a string, the results are
+    sorted by the field named in the string. If this value is a list or
+    tuple, it is assumed to be a sequence of strings and the results
+    are sorted by the fieldnames in the sequence. Otherwise 'sortedby'
+    should be a scoring.Sorter object.
+    
+    The fields you want to sort by must be indexed.
+    
+    For example, to sort the results by the 'path' field::
+    
+        searcher.find(q, sortedby = &quot;path&quot;)
+        
+    To sort the results by the 'path' field and then the 'category'
+    field::
+        
+        searcher.find(q, sortedby = (&quot;path&quot;, &quot;category&quot;))
+        
+    To use a sorting object::
+    
+        searcher.find(q, sortedby = scoring.FieldSorter(&quot;path&quot;, key=mykeyfn))
+    
+    Using a string or tuple simply instantiates a
+    :class:`whoosh.scoring.FieldSorter` or
+    :class:`whoosh.scoring.MultiFieldSorter` object for you. To get a
+    custom sort order, instantiate your own ``FieldSorter`` with a
+    ``key`` argument, or write a custom :class:`whoosh.scoring.Sorter`
+    class.
+    
+    FieldSorter and MultiFieldSorter cache the document order, using 4
+    bytes times the number of documents in the index, and taking time
+    to cache. To increase performance, instantiate your own sorter and
+    re-use it (but remember you need to recreate it if the index
+    changes).
+
+:param reverse: if ``sortedby`` is not None, this reverses the
+    direction of the sort.
+:param minscore: the minimum score to include in the results.
+:rtype: :class:`Results`
+
+</pre>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<br />
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="alfanous-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            ><a class="navbar" target="_top" href="alfanous.sourceforge.com">Alfanous</a></th>
+          </tr></table></th>
+  </tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" width="100%%">
+  <tr>
+    <td align="left" class="footer">
+    Generated by Epydoc 3.0.1 on Thu Mar 18 03:28:31 2010
+    </td>
+    <td align="right" class="footer">
+      <a target="mainFrame" href="http://epydoc.sourceforge.net"
+        >http://epydoc.sourceforge.net</a>
+    </td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+  <!--
+  // Private objects are initially displayed (because if
+  // javascript is turned off then we want them to be
+  // visible); but by default, we want to hide them.  So hide
+  // them unless we have a cookie that says to show them.
+  checkCookie();
+  // -->
+</script>
+</body>
+</html>

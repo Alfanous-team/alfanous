@@ -1,0 +1,630 @@
+<?xml version="1.0" encoding="ascii"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>alfanous.whoosh.writing</title>
+  <link rel="stylesheet" href="epydoc.css" type="text/css" />
+  <script type="text/javascript" src="epydoc.js"></script>
+</head>
+
+<body bgcolor="white" text="black" link="blue" vlink="#204080"
+      alink="#204080">
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="alfanous-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            ><a class="navbar" target="_top" href="alfanous.sourceforge.com">Alfanous</a></th>
+          </tr></table></th>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="100%">
+      <span class="breadcrumbs">
+        <a href="alfanous-module.html">Package&nbsp;alfanous</a> ::
+        <a href="alfanous.whoosh-module.html">Package&nbsp;whoosh</a> ::
+        Module&nbsp;writing
+      </span>
+    </td>
+    <td>
+      <table cellpadding="0" cellspacing="0">
+        <!-- hide/show private -->
+        <tr><td align="right"><span class="options">[<a href="javascript:void(0);" class="privatelink"
+    onclick="toggle_private();">hide&nbsp;private</a>]</span></td></tr>
+        <tr><td align="right"><span class="options"
+            >[<a href="frames.html" target="_top">frames</a
+            >]&nbsp;|&nbsp;<a href="alfanous.whoosh.writing-pysrc.html"
+            target="_top">no&nbsp;frames</a>]</span></td></tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<h1 class="epydoc">Source Code for <a href="alfanous.whoosh.writing-module.html">Module alfanous.whoosh.writing</a></h1>
+<pre class="py-src">
+<a name="L1"></a><tt class="py-lineno">  1</tt>  <tt class="py-line"><tt class="py-comment">#===============================================================================</tt> </tt>
+<a name="L2"></a><tt class="py-lineno">  2</tt>  <tt class="py-line"><tt class="py-comment"># Copyright 2007 Matt Chaput</tt> </tt>
+<a name="L3"></a><tt class="py-lineno">  3</tt>  <tt class="py-line"><tt class="py-comment"># </tt> </tt>
+<a name="L4"></a><tt class="py-lineno">  4</tt>  <tt class="py-line"><tt class="py-comment"># Licensed under the Apache License, Version 2.0 (the "License");</tt> </tt>
+<a name="L5"></a><tt class="py-lineno">  5</tt>  <tt class="py-line"><tt class="py-comment"># you may not use this file except in compliance with the License.</tt> </tt>
+<a name="L6"></a><tt class="py-lineno">  6</tt>  <tt class="py-line"><tt class="py-comment"># You may obtain a copy of the License at</tt> </tt>
+<a name="L7"></a><tt class="py-lineno">  7</tt>  <tt class="py-line"><tt class="py-comment"># </tt> </tt>
+<a name="L8"></a><tt class="py-lineno">  8</tt>  <tt class="py-line"><tt class="py-comment">#    http://www.apache.org/licenses/LICENSE-2.0</tt> </tt>
+<a name="L9"></a><tt class="py-lineno">  9</tt>  <tt class="py-line"><tt class="py-comment"># </tt> </tt>
+<a name="L10"></a><tt class="py-lineno"> 10</tt>  <tt class="py-line"><tt class="py-comment"># Unless required by applicable law or agreed to in writing, software</tt> </tt>
+<a name="L11"></a><tt class="py-lineno"> 11</tt>  <tt class="py-line"><tt class="py-comment"># distributed under the License is distributed on an "AS IS" BASIS,</tt> </tt>
+<a name="L12"></a><tt class="py-lineno"> 12</tt>  <tt class="py-line"><tt class="py-comment"># WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.</tt> </tt>
+<a name="L13"></a><tt class="py-lineno"> 13</tt>  <tt class="py-line"><tt class="py-comment"># See the License for the specific language governing permissions and</tt> </tt>
+<a name="L14"></a><tt class="py-lineno"> 14</tt>  <tt class="py-line"><tt class="py-comment"># limitations under the License.</tt> </tt>
+<a name="L15"></a><tt class="py-lineno"> 15</tt>  <tt class="py-line"><tt class="py-comment">#===============================================================================</tt> </tt>
+<a name="L16"></a><tt class="py-lineno"> 16</tt>  <tt class="py-line"> </tt>
+<a name="L17"></a><tt class="py-lineno"> 17</tt>  <tt class="py-line"><tt class="py-keyword">import</tt> <tt class="py-name">threading</tt><tt class="py-op">,</tt> <tt class="py-name">time</tt> </tt>
+<a name="L18"></a><tt class="py-lineno"> 18</tt>  <tt class="py-line"> </tt>
+<a name="L19"></a><tt class="py-lineno"> 19</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt id="link-0" class="py-name" targets="Package alfanous.whoosh=alfanous.whoosh-module.html"><a title="alfanous.whoosh" class="py-name" href="#" onclick="return doclink('link-0', 'whoosh', 'link-0');">whoosh</a></tt><tt class="py-op">.</tt><tt id="link-1" class="py-name" targets="Method alfanous.whoosh.fields.BOOLEAN.index()=alfanous.whoosh.fields.BOOLEAN-class.html#index,Method alfanous.whoosh.fields.DATETIME.index()=alfanous.whoosh.fields.DATETIME-class.html#index,Method alfanous.whoosh.fields.FieldType.index()=alfanous.whoosh.fields.FieldType-class.html#index,Method alfanous.whoosh.fields.NUMERIC.index()=alfanous.whoosh.fields.NUMERIC-class.html#index,Module alfanous.whoosh.index=alfanous.whoosh.index-module.html,Method alfanous.whoosh.spelling.SpellChecker.index()=alfanous.whoosh.spelling.SpellChecker-class.html#index"><a title="alfanous.whoosh.fields.BOOLEAN.index
+alfanous.whoosh.fields.DATETIME.index
+alfanous.whoosh.fields.FieldType.index
+alfanous.whoosh.fields.NUMERIC.index
+alfanous.whoosh.index
+alfanous.whoosh.spelling.SpellChecker.index" class="py-name" href="#" onclick="return doclink('link-1', 'index', 'link-1');">index</a></tt> <tt class="py-keyword">import</tt> <tt id="link-2" class="py-name" targets="Class alfanous.whoosh.index.DeletionMixin=alfanous.whoosh.index.DeletionMixin-class.html"><a title="alfanous.whoosh.index.DeletionMixin" class="py-name" href="#" onclick="return doclink('link-2', 'DeletionMixin', 'link-2');">DeletionMixin</a></tt> </tt>
+<a name="L20"></a><tt class="py-lineno"> 20</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt id="link-3" class="py-name"><a title="alfanous.whoosh" class="py-name" href="#" onclick="return doclink('link-3', 'whoosh', 'link-0');">whoosh</a></tt><tt class="py-op">.</tt><tt id="link-4" class="py-name" targets="Module alfanous.whoosh.store=alfanous.whoosh.store-module.html"><a title="alfanous.whoosh.store" class="py-name" href="#" onclick="return doclink('link-4', 'store', 'link-4');">store</a></tt> <tt class="py-keyword">import</tt> <tt id="link-5" class="py-name" targets="Class alfanous.whoosh.store.LockError=alfanous.whoosh.store.LockError-class.html"><a title="alfanous.whoosh.store.LockError" class="py-name" href="#" onclick="return doclink('link-5', 'LockError', 'link-5');">LockError</a></tt> </tt>
+<a name="L21"></a><tt class="py-lineno"> 21</tt>  <tt class="py-line"> </tt>
+<a name="L22"></a><tt class="py-lineno"> 22</tt>  <tt class="py-line"><tt class="py-comment"># Exceptions</tt> </tt>
+<a name="L23"></a><tt class="py-lineno"> 23</tt>  <tt class="py-line"> </tt>
+<a name="IndexingError"></a><div id="IndexingError-def"><a name="L24"></a><tt class="py-lineno"> 24</tt> <a class="py-toggle" href="#" id="IndexingError-toggle" onclick="return toggle('IndexingError');">-</a><tt class="py-line"><tt class="py-keyword">class</tt> <a class="py-def-name" href="alfanous.whoosh.writing.IndexingError-class.html">IndexingError</a><tt class="py-op">(</tt><tt class="py-base-class">Exception</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="IndexingError-collapsed" style="display:none;" pad="+++" indent="++++"></div><div id="IndexingError-expanded"><a name="L25"></a><tt class="py-lineno"> 25</tt>  <tt class="py-line">    <tt class="py-keyword">pass</tt> </tt>
+</div><a name="L26"></a><tt class="py-lineno"> 26</tt>  <tt class="py-line"> </tt>
+<a name="L27"></a><tt class="py-lineno"> 27</tt>  <tt class="py-line"> </tt>
+<a name="L28"></a><tt class="py-lineno"> 28</tt>  <tt class="py-line"><tt class="py-comment"># Base class</tt> </tt>
+<a name="L29"></a><tt class="py-lineno"> 29</tt>  <tt class="py-line"> </tt>
+<a name="IndexWriter"></a><div id="IndexWriter-def"><a name="L30"></a><tt class="py-lineno"> 30</tt> <a class="py-toggle" href="#" id="IndexWriter-toggle" onclick="return toggle('IndexWriter');">-</a><tt class="py-line"><tt class="py-keyword">class</tt> <a class="py-def-name" href="alfanous.whoosh.writing.IndexWriter-class.html">IndexWriter</a><tt class="py-op">(</tt><tt class="py-base-class">DeletionMixin</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="IndexWriter-collapsed" style="display:none;" pad="+++" indent="++++"></div><div id="IndexWriter-expanded"><a name="L31"></a><tt class="py-lineno"> 31</tt>  <tt class="py-line">    <tt class="py-docstring">"""High-level object for writing to an index.</tt> </tt>
+<a name="L32"></a><tt class="py-lineno"> 32</tt>  <tt class="py-line"><tt class="py-docstring">    </tt> </tt>
+<a name="L33"></a><tt class="py-lineno"> 33</tt>  <tt class="py-line"><tt class="py-docstring">    To get a writer for a particular index, call</tt> </tt>
+<a name="L34"></a><tt class="py-lineno"> 34</tt>  <tt class="py-line"><tt class="py-docstring">    :meth:`~whoosh.index.Index.writer` on the Index object.</tt> </tt>
+<a name="L35"></a><tt class="py-lineno"> 35</tt>  <tt class="py-line"><tt class="py-docstring">    </tt> </tt>
+<a name="L36"></a><tt class="py-lineno"> 36</tt>  <tt class="py-line"><tt class="py-docstring">    &gt;&gt;&gt; writer = my_index.writer()</tt> </tt>
+<a name="L37"></a><tt class="py-lineno"> 37</tt>  <tt class="py-line"><tt class="py-docstring">    </tt> </tt>
+<a name="L38"></a><tt class="py-lineno"> 38</tt>  <tt class="py-line"><tt class="py-docstring">    You can use this object as a context manager. If an exception is thrown</tt> </tt>
+<a name="L39"></a><tt class="py-lineno"> 39</tt>  <tt class="py-line"><tt class="py-docstring">    from within the context it calls cancel(), otherwise it calls commit() when</tt> </tt>
+<a name="L40"></a><tt class="py-lineno"> 40</tt>  <tt class="py-line"><tt class="py-docstring">    the context exits.</tt> </tt>
+<a name="L41"></a><tt class="py-lineno"> 41</tt>  <tt class="py-line"><tt class="py-docstring">    """</tt> </tt>
+<a name="L42"></a><tt class="py-lineno"> 42</tt>  <tt class="py-line">     </tt>
+<a name="IndexWriter.__enter__"></a><div id="IndexWriter.__enter__-def"><a name="L43"></a><tt class="py-lineno"> 43</tt> <a class="py-toggle" href="#" id="IndexWriter.__enter__-toggle" onclick="return toggle('IndexWriter.__enter__');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="alfanous.whoosh.writing.IndexWriter-class.html#__enter__">__enter__</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="IndexWriter.__enter__-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="IndexWriter.__enter__-expanded"><a name="L44"></a><tt class="py-lineno"> 44</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt> <tt class="py-name">self</tt> </tt>
+</div><a name="L45"></a><tt class="py-lineno"> 45</tt>  <tt class="py-line">     </tt>
+<a name="IndexWriter.__exit__"></a><div id="IndexWriter.__exit__-def"><a name="L46"></a><tt class="py-lineno"> 46</tt> <a class="py-toggle" href="#" id="IndexWriter.__exit__-toggle" onclick="return toggle('IndexWriter.__exit__');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="alfanous.whoosh.writing.IndexWriter-class.html#__exit__">__exit__</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">exc_type</tt><tt class="py-op">,</tt> <tt class="py-param">exc_val</tt><tt class="py-op">,</tt> <tt class="py-param">exc_tb</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="IndexWriter.__exit__-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="IndexWriter.__exit__-expanded"><a name="L47"></a><tt class="py-lineno"> 47</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-name">exc_type</tt><tt class="py-op">:</tt> </tt>
+<a name="L48"></a><tt class="py-lineno"> 48</tt>  <tt class="py-line">            <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-6" class="py-name" targets="Method alfanous.whoosh.filedb.filewriting.FileIndexWriter.cancel()=alfanous.whoosh.filedb.filewriting.FileIndexWriter-class.html#cancel,Method alfanous.whoosh.writing.AsyncWriter.cancel()=alfanous.whoosh.writing.AsyncWriter-class.html#cancel,Method alfanous.whoosh.writing.IndexWriter.cancel()=alfanous.whoosh.writing.IndexWriter-class.html#cancel"><a title="alfanous.whoosh.filedb.filewriting.FileIndexWriter.cancel
+alfanous.whoosh.writing.AsyncWriter.cancel
+alfanous.whoosh.writing.IndexWriter.cancel" class="py-name" href="#" onclick="return doclink('link-6', 'cancel', 'link-6');">cancel</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L49"></a><tt class="py-lineno"> 49</tt>  <tt class="py-line">        <tt class="py-keyword">else</tt><tt class="py-op">:</tt> </tt>
+<a name="L50"></a><tt class="py-lineno"> 50</tt>  <tt class="py-line">            <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-7" class="py-name" targets="Method alfanous.whoosh.filedb.fileindex.FileIndex.commit()=alfanous.whoosh.filedb.fileindex.FileIndex-class.html#commit,Method alfanous.whoosh.filedb.filewriting.FileIndexWriter.commit()=alfanous.whoosh.filedb.filewriting.FileIndexWriter-class.html#commit,Method alfanous.whoosh.index.Index.commit()=alfanous.whoosh.index.Index-class.html#commit,Method alfanous.whoosh.writing.AsyncWriter.commit()=alfanous.whoosh.writing.AsyncWriter-class.html#commit,Method alfanous.whoosh.writing.IndexWriter.commit()=alfanous.whoosh.writing.IndexWriter-class.html#commit"><a title="alfanous.whoosh.filedb.fileindex.FileIndex.commit
+alfanous.whoosh.filedb.filewriting.FileIndexWriter.commit
+alfanous.whoosh.index.Index.commit
+alfanous.whoosh.writing.AsyncWriter.commit
+alfanous.whoosh.writing.IndexWriter.commit" class="py-name" href="#" onclick="return doclink('link-7', 'commit', 'link-7');">commit</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L51"></a><tt class="py-lineno"> 51</tt>  <tt class="py-line">     </tt>
+<a name="IndexWriter.searcher"></a><div id="IndexWriter.searcher-def"><a name="L52"></a><tt class="py-lineno"> 52</tt> <a class="py-toggle" href="#" id="IndexWriter.searcher-toggle" onclick="return toggle('IndexWriter.searcher');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="alfanous.whoosh.writing.IndexWriter-class.html#searcher">searcher</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-op">**</tt><tt class="py-param">kwargs</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="IndexWriter.searcher-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="IndexWriter.searcher-expanded"><a name="L53"></a><tt class="py-lineno"> 53</tt>  <tt class="py-line">        <tt class="py-docstring">"""Returns a searcher for the existing index.</tt> </tt>
+<a name="L54"></a><tt class="py-lineno"> 54</tt>  <tt class="py-line"><tt class="py-docstring">        """</tt> </tt>
+<a name="L55"></a><tt class="py-lineno"> 55</tt>  <tt class="py-line">         </tt>
+<a name="L56"></a><tt class="py-lineno"> 56</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-keyword">not</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">_searcher</tt><tt class="py-op">:</tt> </tt>
+<a name="L57"></a><tt class="py-lineno"> 57</tt>  <tt class="py-line">            <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">_searcher</tt> <tt class="py-op">=</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-8" class="py-name"><a title="alfanous.whoosh.fields.BOOLEAN.index
+alfanous.whoosh.fields.DATETIME.index
+alfanous.whoosh.fields.FieldType.index
+alfanous.whoosh.fields.NUMERIC.index
+alfanous.whoosh.index
+alfanous.whoosh.spelling.SpellChecker.index" class="py-name" href="#" onclick="return doclink('link-8', 'index', 'link-1');">index</a></tt><tt class="py-op">.</tt><tt id="link-9" class="py-name" targets="Method alfanous.whoosh.index.Index.searcher()=alfanous.whoosh.index.Index-class.html#searcher,Method alfanous.whoosh.writing.IndexWriter.searcher()=alfanous.whoosh.writing.IndexWriter-class.html#searcher"><a title="alfanous.whoosh.index.Index.searcher
+alfanous.whoosh.writing.IndexWriter.searcher" class="py-name" href="#" onclick="return doclink('link-9', 'searcher', 'link-9');">searcher</a></tt><tt class="py-op">(</tt><tt class="py-op">**</tt><tt class="py-name">kwargs</tt><tt class="py-op">)</tt> </tt>
+<a name="L58"></a><tt class="py-lineno"> 58</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">_searcher</tt> </tt>
+</div><a name="L59"></a><tt class="py-lineno"> 59</tt>  <tt class="py-line">     </tt>
+<a name="IndexWriter._close_reader"></a><div id="IndexWriter._close_reader-def"><a name="L60"></a><tt class="py-lineno"> 60</tt> <a class="py-toggle" href="#" id="IndexWriter._close_reader-toggle" onclick="return toggle('IndexWriter._close_reader');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="alfanous.whoosh.writing.IndexWriter-class.html#_close_reader">_close_reader</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="IndexWriter._close_reader-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="IndexWriter._close_reader-expanded"><a name="L61"></a><tt class="py-lineno"> 61</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">_searcher</tt><tt class="py-op">:</tt> </tt>
+<a name="L62"></a><tt class="py-lineno"> 62</tt>  <tt class="py-line">            <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">_searcher</tt><tt class="py-op">.</tt><tt id="link-10" class="py-name" targets="Method alfanous.whoosh.filedb.fileindex.FileIndex.close()=alfanous.whoosh.filedb.fileindex.FileIndex-class.html#close,Method alfanous.whoosh.filedb.filepostings.FilePostingReader.close()=alfanous.whoosh.filedb.filepostings.FilePostingReader-class.html#close,Method alfanous.whoosh.filedb.filepostings.FilePostingWriter.close()=alfanous.whoosh.filedb.filepostings.FilePostingWriter-class.html#close,Method alfanous.whoosh.filedb.filereading.SegmentReader.close()=alfanous.whoosh.filedb.filereading.SegmentReader-class.html#close,Method alfanous.whoosh.filedb.filetables.FileHashReader.close()=alfanous.whoosh.filedb.filetables.FileHashReader-class.html#close,Method alfanous.whoosh.filedb.filetables.FileHashWriter.close()=alfanous.whoosh.filedb.filetables.FileHashWriter-class.html#close,Method alfanous.whoosh.filedb.filetables.FileListReader.close()=alfanous.whoosh.filedb.filetables.FileListReader-class.html#close,Method alfanous.whoosh.filedb.filetables.FileListWriter.close()=alfanous.whoosh.filedb.filetables.FileListWriter-class.html#close,Method alfanous.whoosh.filedb.filetables.FileRecordReader.close()=alfanous.whoosh.filedb.filetables.FileRecordReader-class.html#close,Method alfanous.whoosh.filedb.filetables.FileRecordWriter.close()=alfanous.whoosh.filedb.filetables.FileRecordWriter-class.html#close,Method alfanous.whoosh.filedb.filetables.OrderedHashWriter.close()=alfanous.whoosh.filedb.filetables.OrderedHashWriter-class.html#close,Method alfanous.whoosh.filedb.filewriting.SegmentWriter.close()=alfanous.whoosh.filedb.filewriting.SegmentWriter-class.html#close,Method alfanous.whoosh.filedb.postpool.RunReader.close()=alfanous.whoosh.filedb.postpool.RunReader-class.html#close,Method alfanous.whoosh.filedb.structfile.StructFile.close()=alfanous.whoosh.filedb.structfile.StructFile-class.html#close,Method alfanous.whoosh.index.Index.close()=alfanous.whoosh.index.Index-class.html#close,Method alfanous.whoosh.postings.PostingWriter.close()=alfanous.whoosh.postings.PostingWriter-class.html#close,Method alfanous.whoosh.reading.IndexReader.close()=alfanous.whoosh.reading.IndexReader-class.html#close,Method alfanous.whoosh.reading.MultiReader.close()=alfanous.whoosh.reading.MultiReader-class.html#close,Method alfanous.whoosh.searching.Searcher.close()=alfanous.whoosh.searching.Searcher-class.html#close,Method alfanous.whoosh.store.Storage.close()=alfanous.whoosh.store.Storage-class.html#close"><a title="alfanous.whoosh.filedb.fileindex.FileIndex.close
+alfanous.whoosh.filedb.filepostings.FilePostingReader.close
+alfanous.whoosh.filedb.filepostings.FilePostingWriter.close
+alfanous.whoosh.filedb.filereading.SegmentReader.close
+alfanous.whoosh.filedb.filetables.FileHashReader.close
+alfanous.whoosh.filedb.filetables.FileHashWriter.close
+alfanous.whoosh.filedb.filetables.FileListReader.close
+alfanous.whoosh.filedb.filetables.FileListWriter.close
+alfanous.whoosh.filedb.filetables.FileRecordReader.close
+alfanous.whoosh.filedb.filetables.FileRecordWriter.close
+alfanous.whoosh.filedb.filetables.OrderedHashWriter.close
+alfanous.whoosh.filedb.filewriting.SegmentWriter.close
+alfanous.whoosh.filedb.postpool.RunReader.close
+alfanous.whoosh.filedb.structfile.StructFile.close
+alfanous.whoosh.index.Index.close
+alfanous.whoosh.postings.PostingWriter.close
+alfanous.whoosh.reading.IndexReader.close
+alfanous.whoosh.reading.MultiReader.close
+alfanous.whoosh.searching.Searcher.close
+alfanous.whoosh.store.Storage.close" class="py-name" href="#" onclick="return doclink('link-10', 'close', 'link-10');">close</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L63"></a><tt class="py-lineno"> 63</tt>  <tt class="py-line">            <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">_searcher</tt> <tt class="py-op">=</tt> <tt class="py-name">None</tt> </tt>
+</div><a name="L64"></a><tt class="py-lineno"> 64</tt>  <tt class="py-line">     </tt>
+<a name="IndexWriter.delete_document"></a><div id="IndexWriter.delete_document-def"><a name="L65"></a><tt class="py-lineno"> 65</tt> <a class="py-toggle" href="#" id="IndexWriter.delete_document-toggle" onclick="return toggle('IndexWriter.delete_document');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="alfanous.whoosh.writing.IndexWriter-class.html#delete_document">delete_document</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">docnum</tt><tt class="py-op">,</tt> <tt class="py-param">delete</tt><tt class="py-op">=</tt><tt class="py-name">True</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="IndexWriter.delete_document-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="IndexWriter.delete_document-expanded"><a name="L66"></a><tt class="py-lineno"> 66</tt>  <tt class="py-line">        <tt class="py-docstring">"""Deletes a document by number.</tt> </tt>
+<a name="L67"></a><tt class="py-lineno"> 67</tt>  <tt class="py-line"><tt class="py-docstring">        """</tt> </tt>
+<a name="L68"></a><tt class="py-lineno"> 68</tt>  <tt class="py-line">        <tt class="py-keyword">raise</tt> <tt class="py-name">NotImplementedError</tt> </tt>
+</div><a name="L69"></a><tt class="py-lineno"> 69</tt>  <tt class="py-line">     </tt>
+<a name="IndexWriter.add_document"></a><div id="IndexWriter.add_document-def"><a name="L70"></a><tt class="py-lineno"> 70</tt> <a class="py-toggle" href="#" id="IndexWriter.add_document-toggle" onclick="return toggle('IndexWriter.add_document');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="alfanous.whoosh.writing.IndexWriter-class.html#add_document">add_document</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-op">**</tt><tt class="py-param">fields</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="IndexWriter.add_document-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="IndexWriter.add_document-expanded"><a name="L71"></a><tt class="py-lineno"> 71</tt>  <tt class="py-line">        <tt class="py-docstring">"""Adds all the fields of a document at once. This is an alternative to</tt> </tt>
+<a name="L72"></a><tt class="py-lineno"> 72</tt>  <tt class="py-line"><tt class="py-docstring">        calling start_document(), add_field() [...], end_document().</tt> </tt>
+<a name="L73"></a><tt class="py-lineno"> 73</tt>  <tt class="py-line"><tt class="py-docstring">        </tt> </tt>
+<a name="L74"></a><tt class="py-lineno"> 74</tt>  <tt class="py-line"><tt class="py-docstring">        The keyword arguments map field names to the values to index/store.</tt> </tt>
+<a name="L75"></a><tt class="py-lineno"> 75</tt>  <tt class="py-line"><tt class="py-docstring">        </tt> </tt>
+<a name="L76"></a><tt class="py-lineno"> 76</tt>  <tt class="py-line"><tt class="py-docstring">        For fields that are both indexed and stored, you can specify an</tt> </tt>
+<a name="L77"></a><tt class="py-lineno"> 77</tt>  <tt class="py-line"><tt class="py-docstring">        alternate value to store using a keyword argument in the form</tt> </tt>
+<a name="L78"></a><tt class="py-lineno"> 78</tt>  <tt class="py-line"><tt class="py-docstring">        "_stored_&lt;fieldname&gt;". For example, if you have a field named "title"</tt> </tt>
+<a name="L79"></a><tt class="py-lineno"> 79</tt>  <tt class="py-line"><tt class="py-docstring">        and you want to index the text "a b c" but store the text "e f g", use</tt> </tt>
+<a name="L80"></a><tt class="py-lineno"> 80</tt>  <tt class="py-line"><tt class="py-docstring">        keyword arguments like this::</tt> </tt>
+<a name="L81"></a><tt class="py-lineno"> 81</tt>  <tt class="py-line"><tt class="py-docstring">        </tt> </tt>
+<a name="L82"></a><tt class="py-lineno"> 82</tt>  <tt class="py-line"><tt class="py-docstring">            writer.add_document(title=u"a b c", _stored_title=u"e f g")</tt> </tt>
+<a name="L83"></a><tt class="py-lineno"> 83</tt>  <tt class="py-line"><tt class="py-docstring">        """</tt> </tt>
+<a name="L84"></a><tt class="py-lineno"> 84</tt>  <tt class="py-line">        <tt class="py-keyword">raise</tt> <tt class="py-name">NotImplementedError</tt> </tt>
+</div><a name="L85"></a><tt class="py-lineno"> 85</tt>  <tt class="py-line">     </tt>
+<a name="IndexWriter.update_document"></a><div id="IndexWriter.update_document-def"><a name="L86"></a><tt class="py-lineno"> 86</tt> <a class="py-toggle" href="#" id="IndexWriter.update_document-toggle" onclick="return toggle('IndexWriter.update_document');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="alfanous.whoosh.writing.IndexWriter-class.html#update_document">update_document</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-op">**</tt><tt class="py-param">fields</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="IndexWriter.update_document-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="IndexWriter.update_document-expanded"><a name="L87"></a><tt class="py-lineno"> 87</tt>  <tt class="py-line">        <tt class="py-docstring">"""Adds or replaces a document. At least one of the fields for which</tt> </tt>
+<a name="L88"></a><tt class="py-lineno"> 88</tt>  <tt class="py-line"><tt class="py-docstring">        you supply values must be marked as 'unique' in the index's schema.</tt> </tt>
+<a name="L89"></a><tt class="py-lineno"> 89</tt>  <tt class="py-line"><tt class="py-docstring">        </tt> </tt>
+<a name="L90"></a><tt class="py-lineno"> 90</tt>  <tt class="py-line"><tt class="py-docstring">        The keyword arguments map field names to the values to index/store.</tt> </tt>
+<a name="L91"></a><tt class="py-lineno"> 91</tt>  <tt class="py-line"><tt class="py-docstring">        </tt> </tt>
+<a name="L92"></a><tt class="py-lineno"> 92</tt>  <tt class="py-line"><tt class="py-docstring">        Note that this method will only replace a *committed* document;</tt> </tt>
+<a name="L93"></a><tt class="py-lineno"> 93</tt>  <tt class="py-line"><tt class="py-docstring">        currently it cannot replace documents you've added to the IndexWriter</tt> </tt>
+<a name="L94"></a><tt class="py-lineno"> 94</tt>  <tt class="py-line"><tt class="py-docstring">        but haven't yet committed. For example, if you do this:</tt> </tt>
+<a name="L95"></a><tt class="py-lineno"> 95</tt>  <tt class="py-line"><tt class="py-docstring">        </tt> </tt>
+<a name="L96"></a><tt class="py-lineno"> 96</tt>  <tt class="py-line"><tt class="py-docstring">        &gt;&gt;&gt; writer.update_document(unique_id=u"1", content=u"Replace me")</tt> </tt>
+<a name="L97"></a><tt class="py-lineno"> 97</tt>  <tt class="py-line"><tt class="py-docstring">        &gt;&gt;&gt; writer.update_document(unique_id=u"1", content=u"Replacement")</tt> </tt>
+<a name="L98"></a><tt class="py-lineno"> 98</tt>  <tt class="py-line"><tt class="py-docstring">        </tt> </tt>
+<a name="L99"></a><tt class="py-lineno"> 99</tt>  <tt class="py-line"><tt class="py-docstring">        ...this will add two documents with the same value of ``unique_id``,</tt> </tt>
+<a name="L100"></a><tt class="py-lineno">100</tt>  <tt class="py-line"><tt class="py-docstring">        instead of the second document replacing the first.</tt> </tt>
+<a name="L101"></a><tt class="py-lineno">101</tt>  <tt class="py-line"><tt class="py-docstring">        </tt> </tt>
+<a name="L102"></a><tt class="py-lineno">102</tt>  <tt class="py-line"><tt class="py-docstring">        For fields that are both indexed and stored, you can specify an</tt> </tt>
+<a name="L103"></a><tt class="py-lineno">103</tt>  <tt class="py-line"><tt class="py-docstring">        alternate value to store using a keyword argument in the form</tt> </tt>
+<a name="L104"></a><tt class="py-lineno">104</tt>  <tt class="py-line"><tt class="py-docstring">        "_stored_&lt;fieldname&gt;". For example, if you have a field named "title"</tt> </tt>
+<a name="L105"></a><tt class="py-lineno">105</tt>  <tt class="py-line"><tt class="py-docstring">        and you want to index the text "a b c" but store the text "e f g", use</tt> </tt>
+<a name="L106"></a><tt class="py-lineno">106</tt>  <tt class="py-line"><tt class="py-docstring">        keyword arguments like this::</tt> </tt>
+<a name="L107"></a><tt class="py-lineno">107</tt>  <tt class="py-line"><tt class="py-docstring">        </tt> </tt>
+<a name="L108"></a><tt class="py-lineno">108</tt>  <tt class="py-line"><tt class="py-docstring">            writer.update_document(title=u"a b c", _stored_title=u"e f g")</tt> </tt>
+<a name="L109"></a><tt class="py-lineno">109</tt>  <tt class="py-line"><tt class="py-docstring">        """</tt> </tt>
+<a name="L110"></a><tt class="py-lineno">110</tt>  <tt class="py-line">         </tt>
+<a name="L111"></a><tt class="py-lineno">111</tt>  <tt class="py-line">        <tt class="py-comment"># Check which of the supplied fields are unique</tt> </tt>
+<a name="L112"></a><tt class="py-lineno">112</tt>  <tt class="py-line">        <tt class="py-name">unique_fields</tt> <tt class="py-op">=</tt> <tt class="py-op">[</tt><tt class="py-name">name</tt> <tt class="py-keyword">for</tt> <tt class="py-name">name</tt><tt class="py-op">,</tt> <tt id="link-11" class="py-name" targets="Method alfanous.whoosh.searching.Searcher.field()=alfanous.whoosh.searching.Searcher-class.html#field"><a title="alfanous.whoosh.searching.Searcher.field" class="py-name" href="#" onclick="return doclink('link-11', 'field', 'link-11');">field</a></tt> </tt>
+<a name="L113"></a><tt class="py-lineno">113</tt>  <tt class="py-line">                         <tt class="py-keyword">in</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-12" class="py-name"><a title="alfanous.whoosh.fields.BOOLEAN.index
+alfanous.whoosh.fields.DATETIME.index
+alfanous.whoosh.fields.FieldType.index
+alfanous.whoosh.fields.NUMERIC.index
+alfanous.whoosh.index
+alfanous.whoosh.spelling.SpellChecker.index" class="py-name" href="#" onclick="return doclink('link-12', 'index', 'link-1');">index</a></tt><tt class="py-op">.</tt><tt class="py-name">schema</tt><tt class="py-op">.</tt><tt id="link-13" class="py-name" targets="Module alfanous.whoosh.fields=alfanous.whoosh.fields-module.html,Method alfanous.whoosh.fields.Schema.fields()=alfanous.whoosh.fields.Schema-class.html#fields"><a title="alfanous.whoosh.fields
+alfanous.whoosh.fields.Schema.fields" class="py-name" href="#" onclick="return doclink('link-13', 'fields', 'link-13');">fields</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L114"></a><tt class="py-lineno">114</tt>  <tt class="py-line">                         <tt class="py-keyword">if</tt> <tt class="py-name">name</tt> <tt class="py-keyword">in</tt> <tt id="link-14" class="py-name"><a title="alfanous.whoosh.fields
+alfanous.whoosh.fields.Schema.fields" class="py-name" href="#" onclick="return doclink('link-14', 'fields', 'link-13');">fields</a></tt> <tt class="py-keyword">and</tt> <tt id="link-15" class="py-name"><a title="alfanous.whoosh.searching.Searcher.field" class="py-name" href="#" onclick="return doclink('link-15', 'field', 'link-11');">field</a></tt><tt class="py-op">.</tt><tt id="link-16" class="py-name" targets="Variable alfanous.whoosh.fields.FieldType.unique=alfanous.whoosh.fields.FieldType-class.html#unique"><a title="alfanous.whoosh.fields.FieldType.unique" class="py-name" href="#" onclick="return doclink('link-16', 'unique', 'link-16');">unique</a></tt><tt class="py-op">]</tt> </tt>
+<a name="L115"></a><tt class="py-lineno">115</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-keyword">not</tt> <tt class="py-name">unique_fields</tt><tt class="py-op">:</tt> </tt>
+<a name="L116"></a><tt class="py-lineno">116</tt>  <tt class="py-line">            <tt class="py-keyword">raise</tt> <tt id="link-17" class="py-name" targets="Class alfanous.whoosh.writing.IndexingError=alfanous.whoosh.writing.IndexingError-class.html"><a title="alfanous.whoosh.writing.IndexingError" class="py-name" href="#" onclick="return doclink('link-17', 'IndexingError', 'link-17');">IndexingError</a></tt><tt class="py-op">(</tt><tt class="py-string">"None of the fields in %r are unique"</tt> <tt class="py-op">%</tt> <tt id="link-18" class="py-name"><a title="alfanous.whoosh.fields
+alfanous.whoosh.fields.Schema.fields" class="py-name" href="#" onclick="return doclink('link-18', 'fields', 'link-13');">fields</a></tt><tt class="py-op">.</tt><tt id="link-19" class="py-name" targets="Method alfanous.whoosh.filedb.filetables.FileHashReader.keys()=alfanous.whoosh.filedb.filetables.FileHashReader-class.html#keys,Method alfanous.whoosh.filedb.filetables.FileTableReader.keys()=alfanous.whoosh.filedb.filetables.FileTableReader-class.html#keys,Method alfanous.whoosh.support.pyparsing.ParseResults.keys()=alfanous.whoosh.support.pyparsing.ParseResults-class.html#keys"><a title="alfanous.whoosh.filedb.filetables.FileHashReader.keys
+alfanous.whoosh.filedb.filetables.FileTableReader.keys
+alfanous.whoosh.support.pyparsing.ParseResults.keys" class="py-name" href="#" onclick="return doclink('link-19', 'keys', 'link-19');">keys</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt><tt class="py-op">)</tt> </tt>
+<a name="L117"></a><tt class="py-lineno">117</tt>  <tt class="py-line">         </tt>
+<a name="L118"></a><tt class="py-lineno">118</tt>  <tt class="py-line">        <tt class="py-comment"># Delete documents in which the supplied unique fields match</tt> </tt>
+<a name="L119"></a><tt class="py-lineno">119</tt>  <tt class="py-line">        <tt class="py-keyword">from</tt> <tt id="link-20" class="py-name"><a title="alfanous.whoosh" class="py-name" href="#" onclick="return doclink('link-20', 'whoosh', 'link-0');">whoosh</a></tt> <tt class="py-keyword">import</tt> <tt id="link-21" class="py-name" targets="Module alfanous.whoosh.query=alfanous.whoosh.query-module.html"><a title="alfanous.whoosh.query" class="py-name" href="#" onclick="return doclink('link-21', 'query', 'link-21');">query</a></tt> </tt>
+<a name="L120"></a><tt class="py-lineno">120</tt>  <tt class="py-line">        <tt class="py-name">delquery</tt> <tt class="py-op">=</tt> <tt id="link-22" class="py-name"><a title="alfanous.whoosh.query" class="py-name" href="#" onclick="return doclink('link-22', 'query', 'link-21');">query</a></tt><tt class="py-op">.</tt><tt id="link-23" class="py-name" targets="Class alfanous.whoosh.query.Or=alfanous.whoosh.query.Or-class.html,Class alfanous.whoosh.support.pyparsing.Or=alfanous.whoosh.support.pyparsing.Or-class.html"><a title="alfanous.whoosh.query.Or
+alfanous.whoosh.support.pyparsing.Or" class="py-name" href="#" onclick="return doclink('link-23', 'Or', 'link-23');">Or</a></tt><tt class="py-op">(</tt><tt class="py-op">[</tt><tt id="link-24" class="py-name"><a title="alfanous.whoosh.query" class="py-name" href="#" onclick="return doclink('link-24', 'query', 'link-21');">query</a></tt><tt class="py-op">.</tt><tt id="link-25" class="py-name" targets="Class alfanous.whoosh.query.Term=alfanous.whoosh.query.Term-class.html"><a title="alfanous.whoosh.query.Term" class="py-name" href="#" onclick="return doclink('link-25', 'Term', 'link-25');">Term</a></tt><tt class="py-op">(</tt><tt class="py-name">name</tt><tt class="py-op">,</tt> <tt id="link-26" class="py-name"><a title="alfanous.whoosh.fields
+alfanous.whoosh.fields.Schema.fields" class="py-name" href="#" onclick="return doclink('link-26', 'fields', 'link-13');">fields</a></tt><tt class="py-op">[</tt><tt class="py-name">name</tt><tt class="py-op">]</tt><tt class="py-op">)</tt> </tt>
+<a name="L121"></a><tt class="py-lineno">121</tt>  <tt class="py-line">                             <tt class="py-keyword">for</tt> <tt class="py-name">name</tt> <tt class="py-keyword">in</tt> <tt class="py-name">unique_fields</tt><tt class="py-op">]</tt><tt class="py-op">)</tt> </tt>
+<a name="L122"></a><tt class="py-lineno">122</tt>  <tt class="py-line">        <tt class="py-name">delquery</tt> <tt class="py-op">=</tt> <tt class="py-name">delquery</tt><tt class="py-op">.</tt><tt id="link-27" class="py-name" targets="Method alfanous.whoosh.query.AndMaybe.normalize()=alfanous.whoosh.query.AndMaybe-class.html#normalize,Method alfanous.whoosh.query.AndNot.normalize()=alfanous.whoosh.query.AndNot-class.html#normalize,Method alfanous.whoosh.query.CompoundQuery.normalize()=alfanous.whoosh.query.CompoundQuery-class.html#normalize,Method alfanous.whoosh.query.DisjunctionMax.normalize()=alfanous.whoosh.query.DisjunctionMax-class.html#normalize,Method alfanous.whoosh.query.Not.normalize()=alfanous.whoosh.query.Not-class.html#normalize,Method alfanous.whoosh.query.Or.normalize()=alfanous.whoosh.query.Or-class.html#normalize,Method alfanous.whoosh.query.Phrase.normalize()=alfanous.whoosh.query.Phrase-class.html#normalize,Method alfanous.whoosh.query.Query.normalize()=alfanous.whoosh.query.Query-class.html#normalize,Method alfanous.whoosh.query.Require.normalize()=alfanous.whoosh.query.Require-class.html#normalize,Method alfanous.whoosh.query.TermRange.normalize()=alfanous.whoosh.query.TermRange-class.html#normalize,Method alfanous.whoosh.query.Wildcard.normalize()=alfanous.whoosh.query.Wildcard-class.html#normalize"><a title="alfanous.whoosh.query.AndMaybe.normalize
+alfanous.whoosh.query.AndNot.normalize
+alfanous.whoosh.query.CompoundQuery.normalize
+alfanous.whoosh.query.DisjunctionMax.normalize
+alfanous.whoosh.query.Not.normalize
+alfanous.whoosh.query.Or.normalize
+alfanous.whoosh.query.Phrase.normalize
+alfanous.whoosh.query.Query.normalize
+alfanous.whoosh.query.Require.normalize
+alfanous.whoosh.query.TermRange.normalize
+alfanous.whoosh.query.Wildcard.normalize" class="py-name" href="#" onclick="return doclink('link-27', 'normalize', 'link-27');">normalize</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L123"></a><tt class="py-lineno">123</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-28" class="py-name" targets="Method alfanous.whoosh.index.DeletionMixin.delete_by_query()=alfanous.whoosh.index.DeletionMixin-class.html#delete_by_query"><a title="alfanous.whoosh.index.DeletionMixin.delete_by_query" class="py-name" href="#" onclick="return doclink('link-28', 'delete_by_query', 'link-28');">delete_by_query</a></tt><tt class="py-op">(</tt><tt class="py-name">delquery</tt><tt class="py-op">)</tt> </tt>
+<a name="L124"></a><tt class="py-lineno">124</tt>  <tt class="py-line">         </tt>
+<a name="L125"></a><tt class="py-lineno">125</tt>  <tt class="py-line">        <tt class="py-comment"># Add the given fields</tt> </tt>
+<a name="L126"></a><tt class="py-lineno">126</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-29" class="py-name" targets="Method alfanous.whoosh.filedb.filewriting.FileIndexWriter.add_document()=alfanous.whoosh.filedb.filewriting.FileIndexWriter-class.html#add_document,Method alfanous.whoosh.filedb.filewriting.SegmentWriter.add_document()=alfanous.whoosh.filedb.filewriting.SegmentWriter-class.html#add_document,Method alfanous.whoosh.writing.AsyncWriter.add_document()=alfanous.whoosh.writing.AsyncWriter-class.html#add_document,Method alfanous.whoosh.writing.IndexWriter.add_document()=alfanous.whoosh.writing.IndexWriter-class.html#add_document"><a title="alfanous.whoosh.filedb.filewriting.FileIndexWriter.add_document
+alfanous.whoosh.filedb.filewriting.SegmentWriter.add_document
+alfanous.whoosh.writing.AsyncWriter.add_document
+alfanous.whoosh.writing.IndexWriter.add_document" class="py-name" href="#" onclick="return doclink('link-29', 'add_document', 'link-29');">add_document</a></tt><tt class="py-op">(</tt><tt class="py-op">**</tt><tt id="link-30" class="py-name"><a title="alfanous.whoosh.fields
+alfanous.whoosh.fields.Schema.fields" class="py-name" href="#" onclick="return doclink('link-30', 'fields', 'link-13');">fields</a></tt><tt class="py-op">)</tt> </tt>
+</div><a name="L127"></a><tt class="py-lineno">127</tt>  <tt class="py-line">     </tt>
+<a name="IndexWriter.commit"></a><div id="IndexWriter.commit-def"><a name="L128"></a><tt class="py-lineno">128</tt> <a class="py-toggle" href="#" id="IndexWriter.commit-toggle" onclick="return toggle('IndexWriter.commit');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="alfanous.whoosh.writing.IndexWriter-class.html#commit">commit</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="IndexWriter.commit-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="IndexWriter.commit-expanded"><a name="L129"></a><tt class="py-lineno">129</tt>  <tt class="py-line">        <tt class="py-docstring">"""Finishes writing and unlocks the index.</tt> </tt>
+<a name="L130"></a><tt class="py-lineno">130</tt>  <tt class="py-line"><tt class="py-docstring">        """</tt> </tt>
+<a name="L131"></a><tt class="py-lineno">131</tt>  <tt class="py-line">        <tt class="py-keyword">pass</tt> </tt>
+</div><a name="L132"></a><tt class="py-lineno">132</tt>  <tt class="py-line">         </tt>
+<a name="IndexWriter.cancel"></a><div id="IndexWriter.cancel-def"><a name="L133"></a><tt class="py-lineno">133</tt> <a class="py-toggle" href="#" id="IndexWriter.cancel-toggle" onclick="return toggle('IndexWriter.cancel');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="alfanous.whoosh.writing.IndexWriter-class.html#cancel">cancel</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="IndexWriter.cancel-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="IndexWriter.cancel-expanded"><a name="L134"></a><tt class="py-lineno">134</tt>  <tt class="py-line">        <tt class="py-docstring">"""Cancels any documents/deletions added by this object</tt> </tt>
+<a name="L135"></a><tt class="py-lineno">135</tt>  <tt class="py-line"><tt class="py-docstring">        and unlocks the index.</tt> </tt>
+<a name="L136"></a><tt class="py-lineno">136</tt>  <tt class="py-line"><tt class="py-docstring">        """</tt> </tt>
+<a name="L137"></a><tt class="py-lineno">137</tt>  <tt class="py-line">        <tt class="py-keyword">pass</tt> </tt>
+</div></div><a name="L138"></a><tt class="py-lineno">138</tt>  <tt class="py-line">     </tt>
+<a name="L139"></a><tt class="py-lineno">139</tt>  <tt class="py-line"> </tt>
+<a name="AsyncWriter"></a><div id="AsyncWriter-def"><a name="L140"></a><tt class="py-lineno">140</tt> <a class="py-toggle" href="#" id="AsyncWriter-toggle" onclick="return toggle('AsyncWriter');">-</a><tt class="py-line"><tt class="py-keyword">class</tt> <a class="py-def-name" href="alfanous.whoosh.writing.AsyncWriter-class.html">AsyncWriter</a><tt class="py-op">(</tt><tt class="py-base-class">threading</tt><tt class="py-op">.</tt><tt class="py-base-class">Thread</tt><tt class="py-op">,</tt> <tt class="py-base-class">DeletionMixin</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="AsyncWriter-collapsed" style="display:none;" pad="+++" indent="++++"></div><div id="AsyncWriter-expanded"><a name="L141"></a><tt class="py-lineno">141</tt>  <tt class="py-line">    <tt class="py-docstring">"""Convenience wrapper for a writer object that might fail due to locking</tt> </tt>
+<a name="L142"></a><tt class="py-lineno">142</tt>  <tt class="py-line"><tt class="py-docstring">    (i.e. the ``filedb`` writer). This object will attempt once to obtain the</tt> </tt>
+<a name="L143"></a><tt class="py-lineno">143</tt>  <tt class="py-line"><tt class="py-docstring">    underlying writer, and if it's successful, will simply pass method calls on</tt> </tt>
+<a name="L144"></a><tt class="py-lineno">144</tt>  <tt class="py-line"><tt class="py-docstring">    to it.</tt> </tt>
+<a name="L145"></a><tt class="py-lineno">145</tt>  <tt class="py-line"><tt class="py-docstring">    </tt> </tt>
+<a name="L146"></a><tt class="py-lineno">146</tt>  <tt class="py-line"><tt class="py-docstring">    If this object *can't* obtain a writer immediately, it will *buffer*</tt> </tt>
+<a name="L147"></a><tt class="py-lineno">147</tt>  <tt class="py-line"><tt class="py-docstring">    delete, add, and update method calls in memory until you call ``commit()``.</tt> </tt>
+<a name="L148"></a><tt class="py-lineno">148</tt>  <tt class="py-line"><tt class="py-docstring">    At that point, this object will start running in a separate thread, trying</tt> </tt>
+<a name="L149"></a><tt class="py-lineno">149</tt>  <tt class="py-line"><tt class="py-docstring">    to obtain the writer over and over, and once it obtains it, "replay" all</tt> </tt>
+<a name="L150"></a><tt class="py-lineno">150</tt>  <tt class="py-line"><tt class="py-docstring">    the buffered method calls on it.</tt> </tt>
+<a name="L151"></a><tt class="py-lineno">151</tt>  <tt class="py-line"><tt class="py-docstring">    </tt> </tt>
+<a name="L152"></a><tt class="py-lineno">152</tt>  <tt class="py-line"><tt class="py-docstring">    In a typical scenario where you're adding a single or a few documents to</tt> </tt>
+<a name="L153"></a><tt class="py-lineno">153</tt>  <tt class="py-line"><tt class="py-docstring">    the index as the result of a Web transaction, this lets you just create the</tt> </tt>
+<a name="L154"></a><tt class="py-lineno">154</tt>  <tt class="py-line"><tt class="py-docstring">    writer, add, and commit, without having to worry about index locks,</tt> </tt>
+<a name="L155"></a><tt class="py-lineno">155</tt>  <tt class="py-line"><tt class="py-docstring">    retries, etc.</tt> </tt>
+<a name="L156"></a><tt class="py-lineno">156</tt>  <tt class="py-line"><tt class="py-docstring">    </tt> </tt>
+<a name="L157"></a><tt class="py-lineno">157</tt>  <tt class="py-line"><tt class="py-docstring">    The first argument is a callable which returns the actual writer. Usually</tt> </tt>
+<a name="L158"></a><tt class="py-lineno">158</tt>  <tt class="py-line"><tt class="py-docstring">    this will be the ``writer`` method of your Index object. Any additional</tt> </tt>
+<a name="L159"></a><tt class="py-lineno">159</tt>  <tt class="py-line"><tt class="py-docstring">    keyword arguments to the initializer are passed into the callable.</tt> </tt>
+<a name="L160"></a><tt class="py-lineno">160</tt>  <tt class="py-line"><tt class="py-docstring">    </tt> </tt>
+<a name="L161"></a><tt class="py-lineno">161</tt>  <tt class="py-line"><tt class="py-docstring">    For example, to get an aynchronous writer, instead of this:</tt> </tt>
+<a name="L162"></a><tt class="py-lineno">162</tt>  <tt class="py-line"><tt class="py-docstring">    </tt> </tt>
+<a name="L163"></a><tt class="py-lineno">163</tt>  <tt class="py-line"><tt class="py-docstring">    &gt;&gt;&gt; writer = myindex.writer(postlimit=128 * 1024 * 1024)</tt> </tt>
+<a name="L164"></a><tt class="py-lineno">164</tt>  <tt class="py-line"><tt class="py-docstring">    </tt> </tt>
+<a name="L165"></a><tt class="py-lineno">165</tt>  <tt class="py-line"><tt class="py-docstring">    Do this:</tt> </tt>
+<a name="L166"></a><tt class="py-lineno">166</tt>  <tt class="py-line"><tt class="py-docstring">    </tt> </tt>
+<a name="L167"></a><tt class="py-lineno">167</tt>  <tt class="py-line"><tt class="py-docstring">    &gt;&gt;&gt; from whoosh.writing import AsyncWriter</tt> </tt>
+<a name="L168"></a><tt class="py-lineno">168</tt>  <tt class="py-line"><tt class="py-docstring">    &gt;&gt;&gt; writer = AsyncWriter(myindex.writer, postlimit=128 * 1024 * 1024)</tt> </tt>
+<a name="L169"></a><tt class="py-lineno">169</tt>  <tt class="py-line"><tt class="py-docstring">    """</tt> </tt>
+<a name="L170"></a><tt class="py-lineno">170</tt>  <tt class="py-line">     </tt>
+<a name="AsyncWriter.__init__"></a><div id="AsyncWriter.__init__-def"><a name="L171"></a><tt class="py-lineno">171</tt> <a class="py-toggle" href="#" id="AsyncWriter.__init__-toggle" onclick="return toggle('AsyncWriter.__init__');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="alfanous.whoosh.writing.AsyncWriter-class.html#__init__">__init__</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">writerfn</tt><tt class="py-op">,</tt> <tt class="py-param">delay</tt><tt class="py-op">=</tt><tt class="py-number">0.25</tt><tt class="py-op">,</tt> <tt class="py-op">**</tt><tt class="py-param">writerargs</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="AsyncWriter.__init__-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="AsyncWriter.__init__-expanded"><a name="L172"></a><tt class="py-lineno">172</tt>  <tt class="py-line">        <tt class="py-docstring">"""</tt> </tt>
+<a name="L173"></a><tt class="py-lineno">173</tt>  <tt class="py-line"><tt class="py-docstring">        :param writerfn: a callable object (function or method) which returns</tt> </tt>
+<a name="L174"></a><tt class="py-lineno">174</tt>  <tt class="py-line"><tt class="py-docstring">            the actual writer.</tt> </tt>
+<a name="L175"></a><tt class="py-lineno">175</tt>  <tt class="py-line"><tt class="py-docstring">        :param delay: the delay (in seconds) between attempts to instantiate</tt> </tt>
+<a name="L176"></a><tt class="py-lineno">176</tt>  <tt class="py-line"><tt class="py-docstring">            the actual writer.</tt> </tt>
+<a name="L177"></a><tt class="py-lineno">177</tt>  <tt class="py-line"><tt class="py-docstring">        """</tt> </tt>
+<a name="L178"></a><tt class="py-lineno">178</tt>  <tt class="py-line">         </tt>
+<a name="L179"></a><tt class="py-lineno">179</tt>  <tt class="py-line">        <tt class="py-name">threading</tt><tt class="py-op">.</tt><tt class="py-name">Thread</tt><tt class="py-op">.</tt><tt id="link-31" class="py-name" targets="Method alfanous.Crawling.Crawler.QCrawler.__init__()=alfanous.Crawling.Crawler.QCrawler-class.html#__init__,Method alfanous.Exceptions.FeedBack.__init__()=alfanous.Exceptions.FeedBack-class.html#__init__,Method alfanous.Exceptions.NotImplemented.__init__()=alfanous.Exceptions.NotImplemented-class.html#__init__,Method alfanous.Exceptions.Ta7rif.__init__()=alfanous.Exceptions.Ta7rif-class.html#__init__,Method alfanous.Importing.Importer.__init__()=alfanous.Importing.Importer-class.html#__init__,Method alfanous.Importing.Transformer.__init__()=alfanous.Importing.Transformer-class.html#__init__,Method alfanous.Indexing.QseDocIndex.__init__()=alfanous.Indexing.QseDocIndex-class.html#__init__,Method alfanous.QueryProcessing.ArabicParser.Antonyms.__init__()=alfanous.QueryProcessing.ArabicParser.Antonyms-class.html#__init__,Method alfanous.QueryProcessing.ArabicParser.Derivation.__init__()=alfanous.QueryProcessing.ArabicParser.Derivation-class.html#__init__,Method alfanous.QueryProcessing.ArabicParser.SpellErrors.__init__()=alfanous.QueryProcessing.ArabicParser.SpellErrors-class.html#__init__,Method alfanous.QueryProcessing.ArabicParser.Synonyms.__init__()=alfanous.QueryProcessing.ArabicParser.Synonyms-class.html#__init__,Method alfanous.QueryProcessing.ArabicParser.Tashkil.__init__()=alfanous.QueryProcessing.ArabicParser.Tashkil-class.html#__init__,Method alfanous.QueryProcessing.ArabicParser.Tuple.__init__()=alfanous.QueryProcessing.ArabicParser.Tuple-class.html#__init__,Method alfanous.QueryProcessing.ArabicParser.__init__()=alfanous.QueryProcessing.ArabicParser-class.html#__init__,Method alfanous.QueryProcessing.QSuggester.QAyaSpellChecker.__init__()=alfanous.QueryProcessing.QSuggester.QAyaSpellChecker-class.html#__init__,Method alfanous.QueryProcessing.QSuggester.QSubjectSpellChecker.__init__()=alfanous.QueryProcessing.QSuggester.QSubjectSpellChecker-class.html#__init__,Method alfanous.QueryProcessing.QSuggester.__init__()=alfanous.QueryProcessing.QSuggester-class.html#__init__,Method alfanous.QueryProcessing.QuranicParser.Antonyms.__init__()=alfanous.QueryProcessing.QuranicParser.Antonyms-class.html#__init__,Method alfanous.QueryProcessing.QuranicParser.__init__()=alfanous.QueryProcessing.QuranicParser-class.html#__init__,Method alfanous.QueryProcessing.StandardParser.__init__()=alfanous.QueryProcessing.StandardParser-class.html#__init__,Method alfanous.ResultsProcessing.QFragmenter.__init__()=alfanous.ResultsProcessing.QFragmenter-class.html#__init__,Method alfanous.ResultsProcessing.QHtmlFormatter.__init__()=alfanous.ResultsProcessing.QHtmlFormatter-class.html#__init__,Method alfanous.Searching.QReader.__init__()=alfanous.Searching.QReader-class.html#__init__,Method alfanous.Searching.QSearcher.__init__()=alfanous.Searching.QSearcher-class.html#__init__,Method alfanous.TextProcessing.QAffixesTokenizer.__init__()=alfanous.TextProcessing.QAffixesTokenizer-class.html#__init__,Method alfanous.TextProcessing.QArabicSymbolsFilter.__init__()=alfanous.TextProcessing.QArabicSymbolsFilter-class.html#__init__,Method alfanous.TextProcessing.QSpaceTokenizer.__init__()=alfanous.TextProcessing.QSpaceTokenizer-class.html#__init__,Method alfanous.TextProcessing.QStopFilter.__init__()=alfanous.TextProcessing.QStopFilter-class.html#__init__,Method alfanous.main.QuranicSearchEngine.__init__()=alfanous.main.QuranicSearchEngine-class.html#__init__,Method alfanous.whoosh.analysis.BoostTextFilter.__init__()=alfanous.whoosh.analysis.BoostTextFilter-class.html#__init__,Method alfanous.whoosh.analysis.CharsetFilter.__init__()=alfanous.whoosh.analysis.CharsetFilter-class.html#__init__,Method alfanous.whoosh.analysis.CharsetTokenizer.__init__()=alfanous.whoosh.analysis.CharsetTokenizer-class.html#__init__,Method alfanous.whoosh.analysis.CompositeAnalyzer.__init__()=alfanous.whoosh.analysis.CompositeAnalyzer-class.html#__init__,Method alfanous.whoosh.analysis.IntraWordFilter.__init__()=alfanous.whoosh.analysis.IntraWordFilter-class.html#__init__,Method alfanous.whoosh.analysis.MultiFilter.__init__()=alfanous.whoosh.analysis.MultiFilter-class.html#__init__,Method alfanous.whoosh.analysis.NgramFilter.__init__()=alfanous.whoosh.analysis.NgramFilter-class.html#__init__,Method alfanous.whoosh.analysis.NgramTokenizer.__init__()=alfanous.whoosh.analysis.NgramTokenizer-class.html#__init__,Method alfanous.whoosh.analysis.RecordFilter.__init__()=alfanous.whoosh.analysis.RecordFilter-class.html#__init__,Method alfanous.whoosh.analysis.RegexTokenizer.__init__()=alfanous.whoosh.analysis.RegexTokenizer-class.html#__init__,Method alfanous.whoosh.analysis.StemFilter.__init__()=alfanous.whoosh.analysis.StemFilter-class.html#__init__,Method alfanous.whoosh.analysis.StopFilter.__init__()=alfanous.whoosh.analysis.StopFilter-class.html#__init__,Method alfanous.whoosh.analysis.Token.__init__()=alfanous.whoosh.analysis.Token-class.html#__init__,Method alfanous.whoosh.classify.Expander.__init__()=alfanous.whoosh.classify.Expander-class.html#__init__,Method alfanous.whoosh.classify.ExpansionModel.__init__()=alfanous.whoosh.classify.ExpansionModel-class.html#__init__,Method alfanous.whoosh.fields.BOOLEAN.__init__()=alfanous.whoosh.fields.BOOLEAN-class.html#__init__,Method alfanous.whoosh.fields.DATETIME.__init__()=alfanous.whoosh.fields.DATETIME-class.html#__init__,Method alfanous.whoosh.fields.FieldType.__init__()=alfanous.whoosh.fields.FieldType-class.html#__init__,Method alfanous.whoosh.fields.ID.__init__()=alfanous.whoosh.fields.ID-class.html#__init__,Method alfanous.whoosh.fields.IDLIST.__init__()=alfanous.whoosh.fields.IDLIST-class.html#__init__,Method alfanous.whoosh.fields.KEYWORD.__init__()=alfanous.whoosh.fields.KEYWORD-class.html#__init__,Method alfanous.whoosh.fields.NGRAM.__init__()=alfanous.whoosh.fields.NGRAM-class.html#__init__,Method alfanous.whoosh.fields.NUMERIC.__init__()=alfanous.whoosh.fields.NUMERIC-class.html#__init__,Method alfanous.whoosh.fields.STORED.__init__()=alfanous.whoosh.fields.STORED-class.html#__init__,Method alfanous.whoosh.fields.Schema.__init__()=alfanous.whoosh.fields.Schema-class.html#__init__,Method alfanous.whoosh.fields.TEXT.__init__()=alfanous.whoosh.fields.TEXT-class.html#__init__,Method alfanous.whoosh.filedb.fileindex.FileIndex.__init__()=alfanous.whoosh.filedb.fileindex.FileIndex-class.html#__init__,Method alfanous.whoosh.filedb.fileindex.Segment.__init__()=alfanous.whoosh.filedb.fileindex.Segment-class.html#__init__,Method alfanous.whoosh.filedb.fileindex.SegmentSet.__init__()=alfanous.whoosh.filedb.fileindex.SegmentSet-class.html#__init__,Method alfanous.whoosh.filedb.filepostings.FilePostingReader.__init__()=alfanous.whoosh.filedb.filepostings.FilePostingReader-class.html#__init__,Method alfanous.whoosh.filedb.filepostings.FilePostingWriter.__init__()=alfanous.whoosh.filedb.filepostings.FilePostingWriter-class.html#__init__,Method alfanous.whoosh.filedb.filereading.SegmentReader.__init__()=alfanous.whoosh.filedb.filereading.SegmentReader-class.html#__init__,Method alfanous.whoosh.filedb.filestore.FileStorage.__init__()=alfanous.whoosh.filedb.filestore.FileStorage-class.html#__init__,Method alfanous.whoosh.filedb.filestore.RamStorage.__init__()=alfanous.whoosh.filedb.filestore.RamStorage-class.html#__init__,Method alfanous.whoosh.filedb.filetables.FileHashReader.__init__()=alfanous.whoosh.filedb.filetables.FileHashReader-class.html#__init__,Method alfanous.whoosh.filedb.filetables.FileHashWriter.__init__()=alfanous.whoosh.filedb.filetables.FileHashWriter-class.html#__init__,Method alfanous.whoosh.filedb.filetables.FileListReader.__init__()=alfanous.whoosh.filedb.filetables.FileListReader-class.html#__init__,Method alfanous.whoosh.filedb.filetables.FileListWriter.__init__()=alfanous.whoosh.filedb.filetables.FileListWriter-class.html#__init__,Method alfanous.whoosh.filedb.filetables.FileRecordReader.__init__()=alfanous.whoosh.filedb.filetables.FileRecordReader-class.html#__init__,Method alfanous.whoosh.filedb.filetables.FileRecordWriter.__init__()=alfanous.whoosh.filedb.filetables.FileRecordWriter-class.html#__init__,Method alfanous.whoosh.filedb.filetables.FileTableReader.__init__()=alfanous.whoosh.filedb.filetables.FileTableReader-class.html#__init__,Method alfanous.whoosh.filedb.filetables.FileTableWriter.__init__()=alfanous.whoosh.filedb.filetables.FileTableWriter-class.html#__init__,Method alfanous.whoosh.filedb.filetables.OrderedHashReader.__init__()=alfanous.whoosh.filedb.filetables.OrderedHashReader-class.html#__init__,Method alfanous.whoosh.filedb.filetables.OrderedHashWriter.__init__()=alfanous.whoosh.filedb.filetables.OrderedHashWriter-class.html#__init__,Method alfanous.whoosh.filedb.filewriting.FileIndexWriter.__init__()=alfanous.whoosh.filedb.filewriting.FileIndexWriter-class.html#__init__,Method alfanous.whoosh.filedb.filewriting.SegmentWriter.__init__()=alfanous.whoosh.filedb.filewriting.SegmentWriter-class.html#__init__,Method alfanous.whoosh.filedb.postpool.PostingPool.__init__()=alfanous.whoosh.filedb.postpool.PostingPool-class.html#__init__,Method alfanous.whoosh.filedb.postpool.RunReader.__init__()=alfanous.whoosh.filedb.postpool.RunReader-class.html#__init__,Method alfanous.whoosh.filedb.structfile.StructFile.__init__()=alfanous.whoosh.filedb.structfile.StructFile-class.html#__init__,Method alfanous.whoosh.formats.Existence.__init__()=alfanous.whoosh.formats.Existence-class.html#__init__,Method alfanous.whoosh.formats.Format.__init__()=alfanous.whoosh.formats.Format-class.html#__init__,Method alfanous.whoosh.formats.Frequency.__init__()=alfanous.whoosh.formats.Frequency-class.html#__init__,Method alfanous.whoosh.highlight.ContextFragmenter.__init__()=alfanous.whoosh.highlight.ContextFragmenter-class.html#__init__,Method alfanous.whoosh.highlight.Fragment.__init__()=alfanous.whoosh.highlight.Fragment-class.html#__init__,Method alfanous.whoosh.highlight.GenshiFormatter.__init__()=alfanous.whoosh.highlight.GenshiFormatter-class.html#__init__,Method alfanous.whoosh.highlight.HtmlFormatter.__init__()=alfanous.whoosh.highlight.HtmlFormatter-class.html#__init__,Method alfanous.whoosh.highlight.SentenceFragmenter.__init__()=alfanous.whoosh.highlight.SentenceFragmenter-class.html#__init__,Method alfanous.whoosh.highlight.SimpleFragmenter.__init__()=alfanous.whoosh.highlight.SimpleFragmenter-class.html#__init__,Method alfanous.whoosh.highlight.UppercaseFormatter.__init__()=alfanous.whoosh.highlight.UppercaseFormatter-class.html#__init__,Method alfanous.whoosh.index.Index.__init__()=alfanous.whoosh.index.Index-class.html#__init__,Method alfanous.whoosh.index.IndexVersionError.__init__()=alfanous.whoosh.index.IndexVersionError-class.html#__init__,Method alfanous.whoosh.lang.paicehusk.PaiceHuskStemmer.__init__()=alfanous.whoosh.lang.paicehusk.PaiceHuskStemmer-class.html#__init__,Method alfanous.whoosh.lang.wordnet.Thesaurus.__init__()=alfanous.whoosh.lang.wordnet.Thesaurus-class.html#__init__,Method alfanous.whoosh.postings.AndMaybeScorer.__init__()=alfanous.whoosh.postings.AndMaybeScorer-class.html#__init__,Method alfanous.whoosh.postings.AndNotScorer.__init__()=alfanous.whoosh.postings.AndNotScorer-class.html#__init__,Method alfanous.whoosh.postings.CachedPostingReader.__init__()=alfanous.whoosh.postings.CachedPostingReader-class.html#__init__,Method alfanous.whoosh.postings.EmptyScorer.__init__()=alfanous.whoosh.postings.EmptyScorer-class.html#__init__,Method alfanous.whoosh.postings.Exclude.__init__()=alfanous.whoosh.postings.Exclude-class.html#__init__,Method alfanous.whoosh.postings.FakeIterator.__init__()=alfanous.whoosh.postings.FakeIterator-class.html#__init__,Method alfanous.whoosh.postings.IntersectionScorer.__init__()=alfanous.whoosh.postings.IntersectionScorer-class.html#__init__,Method alfanous.whoosh.postings.InverseScorer.__init__()=alfanous.whoosh.postings.InverseScorer-class.html#__init__,Method alfanous.whoosh.postings.ListScorer.__init__()=alfanous.whoosh.postings.ListScorer-class.html#__init__,Method alfanous.whoosh.postings.MultiPostingReader.__init__()=alfanous.whoosh.postings.MultiPostingReader-class.html#__init__,Method alfanous.whoosh.postings.RequireScorer.__init__()=alfanous.whoosh.postings.RequireScorer-class.html#__init__,Method alfanous.whoosh.postings.UnionScorer.__init__()=alfanous.whoosh.postings.UnionScorer-class.html#__init__,Method alfanous.whoosh.qparser.default.MultifieldParser.__init__()=alfanous.whoosh.qparser.default.MultifieldParser-class.html#__init__,Method alfanous.whoosh.qparser.default.QueryParser.__init__()=alfanous.whoosh.qparser.default.QueryParser-class.html#__init__,Method alfanous.whoosh.qparser.ngram.SimpleNgramParser.__init__()=alfanous.whoosh.qparser.ngram.SimpleNgramParser-class.html#__init__,Method alfanous.whoosh.qparser.simple.DisMaxParser.__init__()=alfanous.whoosh.qparser.simple.DisMaxParser-class.html#__init__,Method alfanous.whoosh.qparser.simple.SimpleParser.__init__()=alfanous.whoosh.qparser.simple.SimpleParser-class.html#__init__,Method alfanous.whoosh.query.AndMaybe.__init__()=alfanous.whoosh.query.AndMaybe-class.html#__init__,Method alfanous.whoosh.query.AndNot.__init__()=alfanous.whoosh.query.AndNot-class.html#__init__,Method alfanous.whoosh.query.CompoundQuery.__init__()=alfanous.whoosh.query.CompoundQuery-class.html#__init__,Method alfanous.whoosh.query.DisjunctionMax.DisMaxScorer.__init__()=alfanous.whoosh.query.DisjunctionMax.DisMaxScorer-class.html#__init__,Method alfanous.whoosh.query.DisjunctionMax.__init__()=alfanous.whoosh.query.DisjunctionMax-class.html#__init__,Method alfanous.whoosh.query.Every.EveryScorer.__init__()=alfanous.whoosh.query.Every.EveryScorer-class.html#__init__,Method alfanous.whoosh.query.Every.__init__()=alfanous.whoosh.query.Every-class.html#__init__,Method alfanous.whoosh.query.FuzzyTerm.__init__()=alfanous.whoosh.query.FuzzyTerm-class.html#__init__,Method alfanous.whoosh.query.Not.__init__()=alfanous.whoosh.query.Not-class.html#__init__,Method alfanous.whoosh.query.Or.__init__()=alfanous.whoosh.query.Or-class.html#__init__,Method alfanous.whoosh.query.Phrase.PostingPhraseScorer.__init__()=alfanous.whoosh.query.Phrase.PostingPhraseScorer-class.html#__init__,Method alfanous.whoosh.query.Phrase.VectorPhraseScorer.__init__()=alfanous.whoosh.query.Phrase.VectorPhraseScorer-class.html#__init__,Method alfanous.whoosh.query.Phrase.__init__()=alfanous.whoosh.query.Phrase-class.html#__init__,Method alfanous.whoosh.query.Prefix.__init__()=alfanous.whoosh.query.Prefix-class.html#__init__,Method alfanous.whoosh.query.Require.__init__()=alfanous.whoosh.query.Require-class.html#__init__,Method alfanous.whoosh.query.Term.TermScorer.__init__()=alfanous.whoosh.query.Term.TermScorer-class.html#__init__,Method alfanous.whoosh.query.Term.__init__()=alfanous.whoosh.query.Term-class.html#__init__,Method alfanous.whoosh.query.TermRange.__init__()=alfanous.whoosh.query.TermRange-class.html#__init__,Method alfanous.whoosh.query.Variations.__init__()=alfanous.whoosh.query.Variations-class.html#__init__,Method alfanous.whoosh.query.Wildcard.__init__()=alfanous.whoosh.query.Wildcard-class.html#__init__,Method alfanous.whoosh.reading.MultiReader.__init__()=alfanous.whoosh.reading.MultiReader-class.html#__init__,Method alfanous.whoosh.scoring.BM25F.__init__()=alfanous.whoosh.scoring.BM25F-class.html#__init__,Method alfanous.whoosh.scoring.DLH13.__init__()=alfanous.whoosh.scoring.DLH13-class.html#__init__,Method alfanous.whoosh.scoring.FieldSorter.__init__()=alfanous.whoosh.scoring.FieldSorter-class.html#__init__,Method alfanous.whoosh.scoring.Hiemstra_LM.__init__()=alfanous.whoosh.scoring.Hiemstra_LM-class.html#__init__,Method alfanous.whoosh.scoring.InL2.__init__()=alfanous.whoosh.scoring.InL2-class.html#__init__,Method alfanous.whoosh.scoring.MultiFieldSorter.__init__()=alfanous.whoosh.scoring.MultiFieldSorter-class.html#__init__,Method alfanous.whoosh.scoring.MultiWeighting.__init__()=alfanous.whoosh.scoring.MultiWeighting-class.html#__init__,Method alfanous.whoosh.searching.Results.__init__()=alfanous.whoosh.searching.Results-class.html#__init__,Method alfanous.whoosh.searching.ResultsPage.__init__()=alfanous.whoosh.searching.ResultsPage-class.html#__init__,Method alfanous.whoosh.searching.Searcher.__init__()=alfanous.whoosh.searching.Searcher-class.html#__init__,Method alfanous.whoosh.searching.TopDocs.__init__()=alfanous.whoosh.searching.TopDocs-class.html#__init__,Method alfanous.whoosh.spelling.SpellChecker.__init__()=alfanous.whoosh.spelling.SpellChecker-class.html#__init__,Method alfanous.whoosh.support.bitstream.BitStreamReader.__init__()=alfanous.whoosh.support.bitstream.BitStreamReader-class.html#__init__,Method alfanous.whoosh.support.bitvector.BitVector.__init__()=alfanous.whoosh.support.bitvector.BitVector-class.html#__init__,Method alfanous.whoosh.support.filelock.LockBase.__init__()=alfanous.whoosh.support.filelock.LockBase-class.html#__init__,Method alfanous.whoosh.support.pyparsing.And._ErrorStop.__init__()=alfanous.whoosh.support.pyparsing.And._ErrorStop-class.html#__init__,Method alfanous.whoosh.support.pyparsing.And.__init__()=alfanous.whoosh.support.pyparsing.And-class.html#__init__,Method alfanous.whoosh.support.pyparsing.CaselessKeyword.__init__()=alfanous.whoosh.support.pyparsing.CaselessKeyword-class.html#__init__,Method alfanous.whoosh.support.pyparsing.CaselessLiteral.__init__()=alfanous.whoosh.support.pyparsing.CaselessLiteral-class.html#__init__,Method alfanous.whoosh.support.pyparsing.CharsNotIn.__init__()=alfanous.whoosh.support.pyparsing.CharsNotIn-class.html#__init__,Method alfanous.whoosh.support.pyparsing.Combine.__init__()=alfanous.whoosh.support.pyparsing.Combine-class.html#__init__,Method alfanous.whoosh.support.pyparsing.Dict.__init__()=alfanous.whoosh.support.pyparsing.Dict-class.html#__init__,Method alfanous.whoosh.support.pyparsing.Each.__init__()=alfanous.whoosh.support.pyparsing.Each-class.html#__init__,Method alfanous.whoosh.support.pyparsing.Empty.__init__()=alfanous.whoosh.support.pyparsing.Empty-class.html#__init__,Method alfanous.whoosh.support.pyparsing.FollowedBy.__init__()=alfanous.whoosh.support.pyparsing.FollowedBy-class.html#__init__,Method alfanous.whoosh.support.pyparsing.Forward.__init__()=alfanous.whoosh.support.pyparsing.Forward-class.html#__init__,Method alfanous.whoosh.support.pyparsing.GoToColumn.__init__()=alfanous.whoosh.support.pyparsing.GoToColumn-class.html#__init__,Method alfanous.whoosh.support.pyparsing.Group.__init__()=alfanous.whoosh.support.pyparsing.Group-class.html#__init__,Method alfanous.whoosh.support.pyparsing.Keyword.__init__()=alfanous.whoosh.support.pyparsing.Keyword-class.html#__init__,Method alfanous.whoosh.support.pyparsing.LineEnd.__init__()=alfanous.whoosh.support.pyparsing.LineEnd-class.html#__init__,Method alfanous.whoosh.support.pyparsing.LineStart.__init__()=alfanous.whoosh.support.pyparsing.LineStart-class.html#__init__,Method alfanous.whoosh.support.pyparsing.Literal.__init__()=alfanous.whoosh.support.pyparsing.Literal-class.html#__init__,Method alfanous.whoosh.support.pyparsing.MatchFirst.__init__()=alfanous.whoosh.support.pyparsing.MatchFirst-class.html#__init__,Method alfanous.whoosh.support.pyparsing.NoMatch.__init__()=alfanous.whoosh.support.pyparsing.NoMatch-class.html#__init__,Method alfanous.whoosh.support.pyparsing.NotAny.__init__()=alfanous.whoosh.support.pyparsing.NotAny-class.html#__init__,Method alfanous.whoosh.support.pyparsing.OnlyOnce.__init__()=alfanous.whoosh.support.pyparsing.OnlyOnce-class.html#__init__,Method alfanous.whoosh.support.pyparsing.Optional.__init__()=alfanous.whoosh.support.pyparsing.Optional-class.html#__init__,Method alfanous.whoosh.support.pyparsing.Or.__init__()=alfanous.whoosh.support.pyparsing.Or-class.html#__init__,Method alfanous.whoosh.support.pyparsing.ParseBaseException.__init__()=alfanous.whoosh.support.pyparsing.ParseBaseException-class.html#__init__,Method alfanous.whoosh.support.pyparsing.ParseElementEnhance.__init__()=alfanous.whoosh.support.pyparsing.ParseElementEnhance-class.html#__init__,Method alfanous.whoosh.support.pyparsing.ParseExpression.__init__()=alfanous.whoosh.support.pyparsing.ParseExpression-class.html#__init__,Method alfanous.whoosh.support.pyparsing.ParseResults.__init__()=alfanous.whoosh.support.pyparsing.ParseResults-class.html#__init__,Method alfanous.whoosh.support.pyparsing.ParseSyntaxException.__init__()=alfanous.whoosh.support.pyparsing.ParseSyntaxException-class.html#__init__,Method alfanous.whoosh.support.pyparsing.ParserElement.__init__()=alfanous.whoosh.support.pyparsing.ParserElement-class.html#__init__,Method alfanous.whoosh.support.pyparsing.QuotedString.__init__()=alfanous.whoosh.support.pyparsing.QuotedString-class.html#__init__,Method alfanous.whoosh.support.pyparsing.RecursiveGrammarException.__init__()=alfanous.whoosh.support.pyparsing.RecursiveGrammarException-class.html#__init__,Method alfanous.whoosh.support.pyparsing.Regex.__init__()=alfanous.whoosh.support.pyparsing.Regex-class.html#__init__,Method alfanous.whoosh.support.pyparsing.SkipTo.__init__()=alfanous.whoosh.support.pyparsing.SkipTo-class.html#__init__,Method alfanous.whoosh.support.pyparsing.StringEnd.__init__()=alfanous.whoosh.support.pyparsing.StringEnd-class.html#__init__,Method alfanous.whoosh.support.pyparsing.StringStart.__init__()=alfanous.whoosh.support.pyparsing.StringStart-class.html#__init__,Method alfanous.whoosh.support.pyparsing.Token.__init__()=alfanous.whoosh.support.pyparsing.Token-class.html#__init__,Method alfanous.whoosh.support.pyparsing.TokenConverter.__init__()=alfanous.whoosh.support.pyparsing.TokenConverter-class.html#__init__,Method alfanous.whoosh.support.pyparsing.Upcase.__init__()=alfanous.whoosh.support.pyparsing.Upcase-class.html#__init__,Method alfanous.whoosh.support.pyparsing.White.__init__()=alfanous.whoosh.support.pyparsing.White-class.html#__init__,Method alfanous.whoosh.support.pyparsing.Word.__init__()=alfanous.whoosh.support.pyparsing.Word-class.html#__init__,Method alfanous.whoosh.support.pyparsing.WordEnd.__init__()=alfanous.whoosh.support.pyparsing.WordEnd-class.html#__init__,Method alfanous.whoosh.support.pyparsing.WordStart.__init__()=alfanous.whoosh.support.pyparsing.WordStart-class.html#__init__,Method alfanous.whoosh.support.pyparsing.ZeroOrMore.__init__()=alfanous.whoosh.support.pyparsing.ZeroOrMore-class.html#__init__,Method alfanous.whoosh.support.pyparsing._ParseResultsWithOffset.__init__()=alfanous.whoosh.support.pyparsing._ParseResultsWithOffset-class.html#__init__,Method alfanous.whoosh.support.pyparsing._PositionToken.__init__()=alfanous.whoosh.support.pyparsing._PositionToken-class.html#__init__,Method alfanous.whoosh.writing.AsyncWriter.__init__()=alfanous.whoosh.writing.AsyncWriter-class.html#__init__"><a title="alfanous.Crawling.Crawler.QCrawler.__init__
+alfanous.Exceptions.FeedBack.__init__
+alfanous.Exceptions.NotImplemented.__init__
+alfanous.Exceptions.Ta7rif.__init__
+alfanous.Importing.Importer.__init__
+alfanous.Importing.Transformer.__init__
+alfanous.Indexing.QseDocIndex.__init__
+alfanous.QueryProcessing.ArabicParser.Antonyms.__init__
+alfanous.QueryProcessing.ArabicParser.Derivation.__init__
+alfanous.QueryProcessing.ArabicParser.SpellErrors.__init__
+alfanous.QueryProcessing.ArabicParser.Synonyms.__init__
+alfanous.QueryProcessing.ArabicParser.Tashkil.__init__
+alfanous.QueryProcessing.ArabicParser.Tuple.__init__
+alfanous.QueryProcessing.ArabicParser.__init__
+alfanous.QueryProcessing.QSuggester.QAyaSpellChecker.__init__
+alfanous.QueryProcessing.QSuggester.QSubjectSpellChecker.__init__
+alfanous.QueryProcessing.QSuggester.__init__
+alfanous.QueryProcessing.QuranicParser.Antonyms.__init__
+alfanous.QueryProcessing.QuranicParser.__init__
+alfanous.QueryProcessing.StandardParser.__init__
+alfanous.ResultsProcessing.QFragmenter.__init__
+alfanous.ResultsProcessing.QHtmlFormatter.__init__
+alfanous.Searching.QReader.__init__
+alfanous.Searching.QSearcher.__init__
+alfanous.TextProcessing.QAffixesTokenizer.__init__
+alfanous.TextProcessing.QArabicSymbolsFilter.__init__
+alfanous.TextProcessing.QSpaceTokenizer.__init__
+alfanous.TextProcessing.QStopFilter.__init__
+alfanous.main.QuranicSearchEngine.__init__
+alfanous.whoosh.analysis.BoostTextFilter.__init__
+alfanous.whoosh.analysis.CharsetFilter.__init__
+alfanous.whoosh.analysis.CharsetTokenizer.__init__
+alfanous.whoosh.analysis.CompositeAnalyzer.__init__
+alfanous.whoosh.analysis.IntraWordFilter.__init__
+alfanous.whoosh.analysis.MultiFilter.__init__
+alfanous.whoosh.analysis.NgramFilter.__init__
+alfanous.whoosh.analysis.NgramTokenizer.__init__
+alfanous.whoosh.analysis.RecordFilter.__init__
+alfanous.whoosh.analysis.RegexTokenizer.__init__
+alfanous.whoosh.analysis.StemFilter.__init__
+alfanous.whoosh.analysis.StopFilter.__init__
+alfanous.whoosh.analysis.Token.__init__
+alfanous.whoosh.classify.Expander.__init__
+alfanous.whoosh.classify.ExpansionModel.__init__
+alfanous.whoosh.fields.BOOLEAN.__init__
+alfanous.whoosh.fields.DATETIME.__init__
+alfanous.whoosh.fields.FieldType.__init__
+alfanous.whoosh.fields.ID.__init__
+alfanous.whoosh.fields.IDLIST.__init__
+alfanous.whoosh.fields.KEYWORD.__init__
+alfanous.whoosh.fields.NGRAM.__init__
+alfanous.whoosh.fields.NUMERIC.__init__
+alfanous.whoosh.fields.STORED.__init__
+alfanous.whoosh.fields.Schema.__init__
+alfanous.whoosh.fields.TEXT.__init__
+alfanous.whoosh.filedb.fileindex.FileIndex.__init__
+alfanous.whoosh.filedb.fileindex.Segment.__init__
+alfanous.whoosh.filedb.fileindex.SegmentSet.__init__
+alfanous.whoosh.filedb.filepostings.FilePostingReader.__init__
+alfanous.whoosh.filedb.filepostings.FilePostingWriter.__init__
+alfanous.whoosh.filedb.filereading.SegmentReader.__init__
+alfanous.whoosh.filedb.filestore.FileStorage.__init__
+alfanous.whoosh.filedb.filestore.RamStorage.__init__
+alfanous.whoosh.filedb.filetables.FileHashReader.__init__
+alfanous.whoosh.filedb.filetables.FileHashWriter.__init__
+alfanous.whoosh.filedb.filetables.FileListReader.__init__
+alfanous.whoosh.filedb.filetables.FileListWriter.__init__
+alfanous.whoosh.filedb.filetables.FileRecordReader.__init__
+alfanous.whoosh.filedb.filetables.FileRecordWriter.__init__
+alfanous.whoosh.filedb.filetables.FileTableReader.__init__
+alfanous.whoosh.filedb.filetables.FileTableWriter.__init__
+alfanous.whoosh.filedb.filetables.OrderedHashReader.__init__
+alfanous.whoosh.filedb.filetables.OrderedHashWriter.__init__
+alfanous.whoosh.filedb.filewriting.FileIndexWriter.__init__
+alfanous.whoosh.filedb.filewriting.SegmentWriter.__init__
+alfanous.whoosh.filedb.postpool.PostingPool.__init__
+alfanous.whoosh.filedb.postpool.RunReader.__init__
+alfanous.whoosh.filedb.structfile.StructFile.__init__
+alfanous.whoosh.formats.Existence.__init__
+alfanous.whoosh.formats.Format.__init__
+alfanous.whoosh.formats.Frequency.__init__
+alfanous.whoosh.highlight.ContextFragmenter.__init__
+alfanous.whoosh.highlight.Fragment.__init__
+alfanous.whoosh.highlight.GenshiFormatter.__init__
+alfanous.whoosh.highlight.HtmlFormatter.__init__
+alfanous.whoosh.highlight.SentenceFragmenter.__init__
+alfanous.whoosh.highlight.SimpleFragmenter.__init__
+alfanous.whoosh.highlight.UppercaseFormatter.__init__
+alfanous.whoosh.index.Index.__init__
+alfanous.whoosh.index.IndexVersionError.__init__
+alfanous.whoosh.lang.paicehusk.PaiceHuskStemmer.__init__
+alfanous.whoosh.lang.wordnet.Thesaurus.__init__
+alfanous.whoosh.postings.AndMaybeScorer.__init__
+alfanous.whoosh.postings.AndNotScorer.__init__
+alfanous.whoosh.postings.CachedPostingReader.__init__
+alfanous.whoosh.postings.EmptyScorer.__init__
+alfanous.whoosh.postings.Exclude.__init__
+alfanous.whoosh.postings.FakeIterator.__init__
+alfanous.whoosh.postings.IntersectionScorer.__init__
+alfanous.whoosh.postings.InverseScorer.__init__
+alfanous.whoosh.postings.ListScorer.__init__
+alfanous.whoosh.postings.MultiPostingReader.__init__
+alfanous.whoosh.postings.RequireScorer.__init__
+alfanous.whoosh.postings.UnionScorer.__init__
+alfanous.whoosh.qparser.default.MultifieldParser.__init__
+alfanous.whoosh.qparser.default.QueryParser.__init__
+alfanous.whoosh.qparser.ngram.SimpleNgramParser.__init__
+alfanous.whoosh.qparser.simple.DisMaxParser.__init__
+alfanous.whoosh.qparser.simple.SimpleParser.__init__
+alfanous.whoosh.query.AndMaybe.__init__
+alfanous.whoosh.query.AndNot.__init__
+alfanous.whoosh.query.CompoundQuery.__init__
+alfanous.whoosh.query.DisjunctionMax.DisMaxScorer.__init__
+alfanous.whoosh.query.DisjunctionMax.__init__
+alfanous.whoosh.query.Every.EveryScorer.__init__
+alfanous.whoosh.query.Every.__init__
+alfanous.whoosh.query.FuzzyTerm.__init__
+alfanous.whoosh.query.Not.__init__
+alfanous.whoosh.query.Or.__init__
+alfanous.whoosh.query.Phrase.PostingPhraseScorer.__init__
+alfanous.whoosh.query.Phrase.VectorPhraseScorer.__init__
+alfanous.whoosh.query.Phrase.__init__
+alfanous.whoosh.query.Prefix.__init__
+alfanous.whoosh.query.Require.__init__
+alfanous.whoosh.query.Term.TermScorer.__init__
+alfanous.whoosh.query.Term.__init__
+alfanous.whoosh.query.TermRange.__init__
+alfanous.whoosh.query.Variations.__init__
+alfanous.whoosh.query.Wildcard.__init__
+alfanous.whoosh.reading.MultiReader.__init__
+alfanous.whoosh.scoring.BM25F.__init__
+alfanous.whoosh.scoring.DLH13.__init__
+alfanous.whoosh.scoring.FieldSorter.__init__
+alfanous.whoosh.scoring.Hiemstra_LM.__init__
+alfanous.whoosh.scoring.InL2.__init__
+alfanous.whoosh.scoring.MultiFieldSorter.__init__
+alfanous.whoosh.scoring.MultiWeighting.__init__
+alfanous.whoosh.searching.Results.__init__
+alfanous.whoosh.searching.ResultsPage.__init__
+alfanous.whoosh.searching.Searcher.__init__
+alfanous.whoosh.searching.TopDocs.__init__
+alfanous.whoosh.spelling.SpellChecker.__init__
+alfanous.whoosh.support.bitstream.BitStreamReader.__init__
+alfanous.whoosh.support.bitvector.BitVector.__init__
+alfanous.whoosh.support.filelock.LockBase.__init__
+alfanous.whoosh.support.pyparsing.And._ErrorStop.__init__
+alfanous.whoosh.support.pyparsing.And.__init__
+alfanous.whoosh.support.pyparsing.CaselessKeyword.__init__
+alfanous.whoosh.support.pyparsing.CaselessLiteral.__init__
+alfanous.whoosh.support.pyparsing.CharsNotIn.__init__
+alfanous.whoosh.support.pyparsing.Combine.__init__
+alfanous.whoosh.support.pyparsing.Dict.__init__
+alfanous.whoosh.support.pyparsing.Each.__init__
+alfanous.whoosh.support.pyparsing.Empty.__init__
+alfanous.whoosh.support.pyparsing.FollowedBy.__init__
+alfanous.whoosh.support.pyparsing.Forward.__init__
+alfanous.whoosh.support.pyparsing.GoToColumn.__init__
+alfanous.whoosh.support.pyparsing.Group.__init__
+alfanous.whoosh.support.pyparsing.Keyword.__init__
+alfanous.whoosh.support.pyparsing.LineEnd.__init__
+alfanous.whoosh.support.pyparsing.LineStart.__init__
+alfanous.whoosh.support.pyparsing.Literal.__init__
+alfanous.whoosh.support.pyparsing.MatchFirst.__init__
+alfanous.whoosh.support.pyparsing.NoMatch.__init__
+alfanous.whoosh.support.pyparsing.NotAny.__init__
+alfanous.whoosh.support.pyparsing.OnlyOnce.__init__
+alfanous.whoosh.support.pyparsing.Optional.__init__
+alfanous.whoosh.support.pyparsing.Or.__init__
+alfanous.whoosh.support.pyparsing.ParseBaseException.__init__
+alfanous.whoosh.support.pyparsing.ParseElementEnhance.__init__
+alfanous.whoosh.support.pyparsing.ParseExpression.__init__
+alfanous.whoosh.support.pyparsing.ParseResults.__init__
+alfanous.whoosh.support.pyparsing.ParseSyntaxException.__init__
+alfanous.whoosh.support.pyparsing.ParserElement.__init__
+alfanous.whoosh.support.pyparsing.QuotedString.__init__
+alfanous.whoosh.support.pyparsing.RecursiveGrammarException.__init__
+alfanous.whoosh.support.pyparsing.Regex.__init__
+alfanous.whoosh.support.pyparsing.SkipTo.__init__
+alfanous.whoosh.support.pyparsing.StringEnd.__init__
+alfanous.whoosh.support.pyparsing.StringStart.__init__
+alfanous.whoosh.support.pyparsing.Token.__init__
+alfanous.whoosh.support.pyparsing.TokenConverter.__init__
+alfanous.whoosh.support.pyparsing.Upcase.__init__
+alfanous.whoosh.support.pyparsing.White.__init__
+alfanous.whoosh.support.pyparsing.Word.__init__
+alfanous.whoosh.support.pyparsing.WordEnd.__init__
+alfanous.whoosh.support.pyparsing.WordStart.__init__
+alfanous.whoosh.support.pyparsing.ZeroOrMore.__init__
+alfanous.whoosh.support.pyparsing._ParseResultsWithOffset.__init__
+alfanous.whoosh.support.pyparsing._PositionToken.__init__
+alfanous.whoosh.writing.AsyncWriter.__init__" class="py-name" href="#" onclick="return doclink('link-31', '__init__', 'link-31');">__init__</a></tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">)</tt> </tt>
+<a name="L180"></a><tt class="py-lineno">180</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">running</tt> <tt class="py-op">=</tt> <tt class="py-name">False</tt> </tt>
+<a name="L181"></a><tt class="py-lineno">181</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">writerfn</tt> <tt class="py-op">=</tt> <tt class="py-name">writerfn</tt> </tt>
+<a name="L182"></a><tt class="py-lineno">182</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">writerargs</tt> <tt class="py-op">=</tt> <tt class="py-name">writerargs</tt> </tt>
+<a name="L183"></a><tt class="py-lineno">183</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">delay</tt> <tt class="py-op">=</tt> <tt class="py-name">delay</tt> </tt>
+<a name="L184"></a><tt class="py-lineno">184</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">events</tt> <tt class="py-op">=</tt> <tt class="py-op">[</tt><tt class="py-op">]</tt> </tt>
+<a name="L185"></a><tt class="py-lineno">185</tt>  <tt class="py-line">        <tt class="py-keyword">try</tt><tt class="py-op">:</tt> </tt>
+<a name="L186"></a><tt class="py-lineno">186</tt>  <tt class="py-line">            <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-32" class="py-name" targets="Method alfanous.whoosh.filedb.fileindex.FileIndex.writer()=alfanous.whoosh.filedb.fileindex.FileIndex-class.html#writer,Method alfanous.whoosh.index.Index.writer()=alfanous.whoosh.index.Index-class.html#writer"><a title="alfanous.whoosh.filedb.fileindex.FileIndex.writer
+alfanous.whoosh.index.Index.writer" class="py-name" href="#" onclick="return doclink('link-32', 'writer', 'link-32');">writer</a></tt> <tt class="py-op">=</tt> <tt class="py-name">writerfn</tt><tt class="py-op">(</tt><tt class="py-op">**</tt><tt class="py-name">writerargs</tt><tt class="py-op">)</tt> </tt>
+<a name="L187"></a><tt class="py-lineno">187</tt>  <tt class="py-line">        <tt class="py-keyword">except</tt> <tt id="link-33" class="py-name"><a title="alfanous.whoosh.store.LockError" class="py-name" href="#" onclick="return doclink('link-33', 'LockError', 'link-5');">LockError</a></tt><tt class="py-op">:</tt> </tt>
+<a name="L188"></a><tt class="py-lineno">188</tt>  <tt class="py-line">            <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-34" class="py-name"><a title="alfanous.whoosh.filedb.fileindex.FileIndex.writer
+alfanous.whoosh.index.Index.writer" class="py-name" href="#" onclick="return doclink('link-34', 'writer', 'link-32');">writer</a></tt> <tt class="py-op">=</tt> <tt class="py-name">None</tt> </tt>
+</div><a name="L189"></a><tt class="py-lineno">189</tt>  <tt class="py-line">     </tt>
+<a name="AsyncWriter._record"></a><div id="AsyncWriter._record-def"><a name="L190"></a><tt class="py-lineno">190</tt> <a class="py-toggle" href="#" id="AsyncWriter._record-toggle" onclick="return toggle('AsyncWriter._record');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="alfanous.whoosh.writing.AsyncWriter-class.html#_record">_record</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">method</tt><tt class="py-op">,</tt> <tt class="py-op">*</tt><tt class="py-param">args</tt><tt class="py-op">,</tt> <tt class="py-op">**</tt><tt class="py-param">kwargs</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="AsyncWriter._record-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="AsyncWriter._record-expanded"><a name="L191"></a><tt class="py-lineno">191</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-35" class="py-name"><a title="alfanous.whoosh.filedb.fileindex.FileIndex.writer
+alfanous.whoosh.index.Index.writer" class="py-name" href="#" onclick="return doclink('link-35', 'writer', 'link-32');">writer</a></tt><tt class="py-op">:</tt> </tt>
+<a name="L192"></a><tt class="py-lineno">192</tt>  <tt class="py-line">            <tt class="py-name">getattr</tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-36" class="py-name"><a title="alfanous.whoosh.filedb.fileindex.FileIndex.writer
+alfanous.whoosh.index.Index.writer" class="py-name" href="#" onclick="return doclink('link-36', 'writer', 'link-32');">writer</a></tt><tt class="py-op">,</tt> <tt class="py-name">method</tt><tt class="py-op">)</tt><tt class="py-op">(</tt><tt class="py-op">*</tt><tt class="py-name">args</tt><tt class="py-op">,</tt> <tt class="py-op">**</tt><tt class="py-name">kwargs</tt><tt class="py-op">)</tt> </tt>
+<a name="L193"></a><tt class="py-lineno">193</tt>  <tt class="py-line">        <tt class="py-keyword">else</tt><tt class="py-op">:</tt> </tt>
+<a name="L194"></a><tt class="py-lineno">194</tt>  <tt class="py-line">            <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">events</tt><tt class="py-op">.</tt><tt id="link-37" class="py-name" targets="Method alfanous.whoosh.classify.Expander.add()=alfanous.whoosh.classify.Expander-class.html#add,Method alfanous.whoosh.fields.Schema.add()=alfanous.whoosh.fields.Schema-class.html#add,Method alfanous.whoosh.filedb.filetables.FileHashWriter.add()=alfanous.whoosh.filedb.filetables.FileHashWriter-class.html#add,Method alfanous.whoosh.filedb.filetables.FileTableWriter.add()=alfanous.whoosh.filedb.filetables.FileTableWriter-class.html#add"><a title="alfanous.whoosh.classify.Expander.add
+alfanous.whoosh.fields.Schema.add
+alfanous.whoosh.filedb.filetables.FileHashWriter.add
+alfanous.whoosh.filedb.filetables.FileTableWriter.add" class="py-name" href="#" onclick="return doclink('link-37', 'add', 'link-37');">add</a></tt><tt class="py-op">(</tt><tt class="py-name">method</tt><tt class="py-op">,</tt> <tt class="py-name">args</tt><tt class="py-op">,</tt> <tt class="py-name">kwargs</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L195"></a><tt class="py-lineno">195</tt>  <tt class="py-line">     </tt>
+<a name="AsyncWriter.run"></a><div id="AsyncWriter.run-def"><a name="L196"></a><tt class="py-lineno">196</tt> <a class="py-toggle" href="#" id="AsyncWriter.run-toggle" onclick="return toggle('AsyncWriter.run');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="alfanous.whoosh.writing.AsyncWriter-class.html#run">run</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="AsyncWriter.run-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="AsyncWriter.run-expanded"><a name="L197"></a><tt class="py-lineno">197</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">running</tt> <tt class="py-op">=</tt> <tt class="py-name">True</tt> </tt>
+<a name="L198"></a><tt class="py-lineno">198</tt>  <tt class="py-line">        <tt id="link-38" class="py-name"><a title="alfanous.whoosh.filedb.fileindex.FileIndex.writer
+alfanous.whoosh.index.Index.writer" class="py-name" href="#" onclick="return doclink('link-38', 'writer', 'link-32');">writer</a></tt> <tt class="py-op">=</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-39" class="py-name"><a title="alfanous.whoosh.filedb.fileindex.FileIndex.writer
+alfanous.whoosh.index.Index.writer" class="py-name" href="#" onclick="return doclink('link-39', 'writer', 'link-32');">writer</a></tt> </tt>
+<a name="L199"></a><tt class="py-lineno">199</tt>  <tt class="py-line">        <tt class="py-keyword">while</tt> <tt id="link-40" class="py-name"><a title="alfanous.whoosh.filedb.fileindex.FileIndex.writer
+alfanous.whoosh.index.Index.writer" class="py-name" href="#" onclick="return doclink('link-40', 'writer', 'link-32');">writer</a></tt> <tt class="py-keyword">is</tt> <tt class="py-name">None</tt><tt class="py-op">:</tt> </tt>
+<a name="L200"></a><tt class="py-lineno">200</tt>  <tt class="py-line">            <tt class="py-keyword">try</tt><tt class="py-op">:</tt> </tt>
+<a name="L201"></a><tt class="py-lineno">201</tt>  <tt class="py-line">                <tt id="link-41" class="py-name"><a title="alfanous.whoosh.filedb.fileindex.FileIndex.writer
+alfanous.whoosh.index.Index.writer" class="py-name" href="#" onclick="return doclink('link-41', 'writer', 'link-32');">writer</a></tt> <tt class="py-op">=</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">writerfn</tt><tt class="py-op">(</tt><tt class="py-op">**</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">writerargs</tt><tt class="py-op">)</tt> </tt>
+<a name="L202"></a><tt class="py-lineno">202</tt>  <tt class="py-line">            <tt class="py-keyword">except</tt> <tt id="link-42" class="py-name"><a title="alfanous.whoosh.store.LockError" class="py-name" href="#" onclick="return doclink('link-42', 'LockError', 'link-5');">LockError</a></tt><tt class="py-op">:</tt> </tt>
+<a name="L203"></a><tt class="py-lineno">203</tt>  <tt class="py-line">                <tt class="py-name">time</tt><tt class="py-op">.</tt><tt class="py-name">sleep</tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">delay</tt><tt class="py-op">)</tt> </tt>
+<a name="L204"></a><tt class="py-lineno">204</tt>  <tt class="py-line">        <tt class="py-keyword">for</tt> <tt class="py-name">method</tt><tt class="py-op">,</tt> <tt class="py-name">args</tt><tt class="py-op">,</tt> <tt class="py-name">kwargs</tt> <tt class="py-keyword">in</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">events</tt><tt class="py-op">:</tt> </tt>
+<a name="L205"></a><tt class="py-lineno">205</tt>  <tt class="py-line">            <tt class="py-name">getattr</tt><tt class="py-op">(</tt><tt id="link-43" class="py-name"><a title="alfanous.whoosh.filedb.fileindex.FileIndex.writer
+alfanous.whoosh.index.Index.writer" class="py-name" href="#" onclick="return doclink('link-43', 'writer', 'link-32');">writer</a></tt><tt class="py-op">,</tt> <tt class="py-name">method</tt><tt class="py-op">)</tt><tt class="py-op">(</tt><tt class="py-op">*</tt><tt class="py-name">args</tt><tt class="py-op">,</tt> <tt class="py-op">**</tt><tt class="py-name">kwargs</tt><tt class="py-op">)</tt> </tt>
+<a name="L206"></a><tt class="py-lineno">206</tt>  <tt class="py-line">        <tt id="link-44" class="py-name"><a title="alfanous.whoosh.filedb.fileindex.FileIndex.writer
+alfanous.whoosh.index.Index.writer" class="py-name" href="#" onclick="return doclink('link-44', 'writer', 'link-32');">writer</a></tt><tt class="py-op">.</tt><tt id="link-45" class="py-name"><a title="alfanous.whoosh.filedb.fileindex.FileIndex.commit
+alfanous.whoosh.filedb.filewriting.FileIndexWriter.commit
+alfanous.whoosh.index.Index.commit
+alfanous.whoosh.writing.AsyncWriter.commit
+alfanous.whoosh.writing.IndexWriter.commit" class="py-name" href="#" onclick="return doclink('link-45', 'commit', 'link-7');">commit</a></tt><tt class="py-op">(</tt><tt class="py-op">*</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">commitargs</tt><tt class="py-op">,</tt> <tt class="py-op">**</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">commitkwargs</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L207"></a><tt class="py-lineno">207</tt>  <tt class="py-line">     </tt>
+<a name="AsyncWriter.delete_document"></a><div id="AsyncWriter.delete_document-def"><a name="L208"></a><tt class="py-lineno">208</tt> <a class="py-toggle" href="#" id="AsyncWriter.delete_document-toggle" onclick="return toggle('AsyncWriter.delete_document');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="alfanous.whoosh.writing.AsyncWriter-class.html#delete_document">delete_document</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">docnum</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="AsyncWriter.delete_document-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="AsyncWriter.delete_document-expanded"><a name="L209"></a><tt class="py-lineno">209</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-46" class="py-name" targets="Method alfanous.whoosh.writing.AsyncWriter._record()=alfanous.whoosh.writing.AsyncWriter-class.html#_record"><a title="alfanous.whoosh.writing.AsyncWriter._record" class="py-name" href="#" onclick="return doclink('link-46', '_record', 'link-46');">_record</a></tt><tt class="py-op">(</tt><tt class="py-string">"delete_document"</tt><tt class="py-op">,</tt> <tt id="link-47" class="py-name" targets="Method alfanous.whoosh.searching.Results.docnum()=alfanous.whoosh.searching.Results-class.html#docnum,Method alfanous.whoosh.searching.ResultsPage.docnum()=alfanous.whoosh.searching.ResultsPage-class.html#docnum"><a title="alfanous.whoosh.searching.Results.docnum
+alfanous.whoosh.searching.ResultsPage.docnum" class="py-name" href="#" onclick="return doclink('link-47', 'docnum', 'link-47');">docnum</a></tt><tt class="py-op">)</tt> </tt>
+</div><a name="L210"></a><tt class="py-lineno">210</tt>  <tt class="py-line">     </tt>
+<a name="AsyncWriter.add_document"></a><div id="AsyncWriter.add_document-def"><a name="L211"></a><tt class="py-lineno">211</tt> <a class="py-toggle" href="#" id="AsyncWriter.add_document-toggle" onclick="return toggle('AsyncWriter.add_document');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="alfanous.whoosh.writing.AsyncWriter-class.html#add_document">add_document</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-op">*</tt><tt class="py-param">args</tt><tt class="py-op">,</tt> <tt class="py-op">**</tt><tt class="py-param">kwargs</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="AsyncWriter.add_document-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="AsyncWriter.add_document-expanded"><a name="L212"></a><tt class="py-lineno">212</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-48" class="py-name"><a title="alfanous.whoosh.writing.AsyncWriter._record" class="py-name" href="#" onclick="return doclink('link-48', '_record', 'link-46');">_record</a></tt><tt class="py-op">(</tt><tt class="py-string">"add_document"</tt><tt class="py-op">,</tt> <tt class="py-op">*</tt><tt class="py-name">args</tt><tt class="py-op">,</tt> <tt class="py-op">**</tt><tt class="py-name">kwargs</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L213"></a><tt class="py-lineno">213</tt>  <tt class="py-line">         </tt>
+<a name="AsyncWriter.update_document"></a><div id="AsyncWriter.update_document-def"><a name="L214"></a><tt class="py-lineno">214</tt> <a class="py-toggle" href="#" id="AsyncWriter.update_document-toggle" onclick="return toggle('AsyncWriter.update_document');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="alfanous.whoosh.writing.AsyncWriter-class.html#update_document">update_document</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-op">*</tt><tt class="py-param">args</tt><tt class="py-op">,</tt> <tt class="py-op">**</tt><tt class="py-param">kwargs</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="AsyncWriter.update_document-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="AsyncWriter.update_document-expanded"><a name="L215"></a><tt class="py-lineno">215</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-49" class="py-name"><a title="alfanous.whoosh.writing.AsyncWriter._record" class="py-name" href="#" onclick="return doclink('link-49', '_record', 'link-46');">_record</a></tt><tt class="py-op">(</tt><tt class="py-string">"update_document"</tt><tt class="py-op">,</tt> <tt class="py-op">*</tt><tt class="py-name">args</tt><tt class="py-op">,</tt> <tt class="py-op">**</tt><tt class="py-name">kwargs</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L216"></a><tt class="py-lineno">216</tt>  <tt class="py-line">     </tt>
+<a name="AsyncWriter.commit"></a><div id="AsyncWriter.commit-def"><a name="L217"></a><tt class="py-lineno">217</tt> <a class="py-toggle" href="#" id="AsyncWriter.commit-toggle" onclick="return toggle('AsyncWriter.commit');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="alfanous.whoosh.writing.AsyncWriter-class.html#commit">commit</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-op">*</tt><tt class="py-param">args</tt><tt class="py-op">,</tt> <tt class="py-op">**</tt><tt class="py-param">kwargs</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="AsyncWriter.commit-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="AsyncWriter.commit-expanded"><a name="L218"></a><tt class="py-lineno">218</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-50" class="py-name"><a title="alfanous.whoosh.filedb.fileindex.FileIndex.writer
+alfanous.whoosh.index.Index.writer" class="py-name" href="#" onclick="return doclink('link-50', 'writer', 'link-32');">writer</a></tt><tt class="py-op">:</tt> </tt>
+<a name="L219"></a><tt class="py-lineno">219</tt>  <tt class="py-line">            <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-51" class="py-name"><a title="alfanous.whoosh.filedb.fileindex.FileIndex.writer
+alfanous.whoosh.index.Index.writer" class="py-name" href="#" onclick="return doclink('link-51', 'writer', 'link-32');">writer</a></tt><tt class="py-op">.</tt><tt id="link-52" class="py-name"><a title="alfanous.whoosh.filedb.fileindex.FileIndex.commit
+alfanous.whoosh.filedb.filewriting.FileIndexWriter.commit
+alfanous.whoosh.index.Index.commit
+alfanous.whoosh.writing.AsyncWriter.commit
+alfanous.whoosh.writing.IndexWriter.commit" class="py-name" href="#" onclick="return doclink('link-52', 'commit', 'link-7');">commit</a></tt><tt class="py-op">(</tt><tt class="py-op">*</tt><tt class="py-name">args</tt><tt class="py-op">,</tt> <tt class="py-op">**</tt><tt class="py-name">kwargs</tt><tt class="py-op">)</tt> </tt>
+<a name="L220"></a><tt class="py-lineno">220</tt>  <tt class="py-line">        <tt class="py-keyword">else</tt><tt class="py-op">:</tt> </tt>
+<a name="L221"></a><tt class="py-lineno">221</tt>  <tt class="py-line">            <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">commitargs</tt><tt class="py-op">,</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">commitkwargs</tt> <tt class="py-op">=</tt> <tt class="py-name">args</tt><tt class="py-op">,</tt> <tt class="py-name">kwargs</tt> </tt>
+<a name="L222"></a><tt class="py-lineno">222</tt>  <tt class="py-line">            <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-53" class="py-name" targets="Function alfanous.Crawling.Crawler.start()=alfanous.Crawling.Crawler-module.html#start,Method alfanous.whoosh.filedb.filepostings.FilePostingWriter.start()=alfanous.whoosh.filedb.filepostings.FilePostingWriter-class.html#start,Variable alfanous.whoosh.lang.morph_en.start=alfanous.whoosh.lang.morph_en-module.html#start"><a title="alfanous.Crawling.Crawler.start
+alfanous.whoosh.filedb.filepostings.FilePostingWriter.start
+alfanous.whoosh.lang.morph_en.start" class="py-name" href="#" onclick="return doclink('link-53', 'start', 'link-53');">start</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L223"></a><tt class="py-lineno">223</tt>  <tt class="py-line">     </tt>
+<a name="AsyncWriter.cancel"></a><div id="AsyncWriter.cancel-def"><a name="L224"></a><tt class="py-lineno">224</tt> <a class="py-toggle" href="#" id="AsyncWriter.cancel-toggle" onclick="return toggle('AsyncWriter.cancel');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="alfanous.whoosh.writing.AsyncWriter-class.html#cancel">cancel</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-op">*</tt><tt class="py-param">args</tt><tt class="py-op">,</tt> <tt class="py-op">**</tt><tt class="py-param">kwargs</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="AsyncWriter.cancel-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="AsyncWriter.cancel-expanded"><a name="L225"></a><tt class="py-lineno">225</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-54" class="py-name"><a title="alfanous.whoosh.filedb.fileindex.FileIndex.writer
+alfanous.whoosh.index.Index.writer" class="py-name" href="#" onclick="return doclink('link-54', 'writer', 'link-32');">writer</a></tt><tt class="py-op">:</tt> </tt>
+<a name="L226"></a><tt class="py-lineno">226</tt>  <tt class="py-line">            <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-55" class="py-name"><a title="alfanous.whoosh.filedb.fileindex.FileIndex.writer
+alfanous.whoosh.index.Index.writer" class="py-name" href="#" onclick="return doclink('link-55', 'writer', 'link-32');">writer</a></tt><tt class="py-op">.</tt><tt id="link-56" class="py-name"><a title="alfanous.whoosh.filedb.filewriting.FileIndexWriter.cancel
+alfanous.whoosh.writing.AsyncWriter.cancel
+alfanous.whoosh.writing.IndexWriter.cancel" class="py-name" href="#" onclick="return doclink('link-56', 'cancel', 'link-6');">cancel</a></tt><tt class="py-op">(</tt><tt class="py-op">*</tt><tt class="py-name">args</tt><tt class="py-op">,</tt> <tt class="py-op">**</tt><tt class="py-name">kwargs</tt><tt class="py-op">)</tt> </tt>
+</div></div><a name="L227"></a><tt class="py-lineno">227</tt>  <tt class="py-line"> </tt><script type="text/javascript">
+<!--
+expandto(location.href);
+// -->
+</script>
+</pre>
+<br />
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="alfanous-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            ><a class="navbar" target="_top" href="alfanous.sourceforge.com">Alfanous</a></th>
+          </tr></table></th>
+  </tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" width="100%%">
+  <tr>
+    <td align="left" class="footer">
+    Generated by Epydoc 3.0.1 on Thu Mar 18 03:28:42 2010
+    </td>
+    <td align="right" class="footer">
+      <a target="mainFrame" href="http://epydoc.sourceforge.net"
+        >http://epydoc.sourceforge.net</a>
+    </td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+  <!--
+  // Private objects are initially displayed (because if
+  // javascript is turned off then we want them to be
+  // visible); but by default, we want to hide them.  So hide
+  // them unless we have a cookie that says to show them.
+  checkCookie();
+  // -->
+</script>
+</body>
+</html>

@@ -1,0 +1,412 @@
+<?xml version="1.0" encoding="ascii"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>src.alfanous.Support.arabic_const</title>
+  <link rel="stylesheet" href="epydoc.css" type="text/css" />
+  <script type="text/javascript" src="epydoc.js"></script>
+</head>
+
+<body bgcolor="white" text="black" link="blue" vlink="#204080"
+      alink="#204080">
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="src.alfanous-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            ><a class="navbar" target="_top" href="alfanous.sourceforge.com">Alfanous</a></th>
+          </tr></table></th>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="100%">
+      <span class="breadcrumbs">
+        Package&nbsp;src ::
+        <a href="src.alfanous-module.html">Package&nbsp;alfanous</a> ::
+        <a href="src.alfanous.Support-module.html">Package&nbsp;Support</a> ::
+        Module&nbsp;arabic_const
+      </span>
+    </td>
+    <td>
+      <table cellpadding="0" cellspacing="0">
+        <!-- hide/show private -->
+        <tr><td align="right"><span class="options">[<a href="javascript:void(0);" class="privatelink"
+    onclick="toggle_private();">hide&nbsp;private</a>]</span></td></tr>
+        <tr><td align="right"><span class="options"
+            >[<a href="frames.html" target="_top">frames</a
+            >]&nbsp;|&nbsp;<a href="src.alfanous.Support.arabic_const-pysrc.html"
+            target="_top">no&nbsp;frames</a>]</span></td></tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<h1 class="epydoc">Source Code for <a href="src.alfanous.Support.arabic_const-module.html">Module src.alfanous.Support.arabic_const</a></h1>
+<pre class="py-src">
+<a name="L1"></a><tt class="py-lineno">  1</tt>  <tt class="py-line"><tt class="py-comment"># -*- coding=utf-8 -*-</tt> </tt>
+<a name="L2"></a><tt class="py-lineno">  2</tt>  <tt class="py-line"><tt class="py-comment">#---</tt> </tt>
+<a name="L3"></a><tt class="py-lineno">  3</tt>  <tt class="py-line"><tt class="py-comment"># $Id: arabic.py,v 1.6 2003/04/22 17:18:22 elzubeir Exp $</tt> </tt>
+<a name="L4"></a><tt class="py-lineno">  4</tt>  <tt class="py-line"><tt class="py-comment">#</tt> </tt>
+<a name="L5"></a><tt class="py-lineno">  5</tt>  <tt class="py-line"><tt class="py-comment"># ------------</tt> </tt>
+<a name="L6"></a><tt class="py-lineno">  6</tt>  <tt class="py-line"><tt class="py-comment"># Description:</tt> </tt>
+<a name="L7"></a><tt class="py-lineno">  7</tt>  <tt class="py-line"><tt class="py-comment"># ------------</tt> </tt>
+<a name="L8"></a><tt class="py-lineno">  8</tt>  <tt class="py-line"><tt class="py-comment">#</tt> </tt>
+<a name="L9"></a><tt class="py-lineno">  9</tt>  <tt class="py-line"><tt class="py-comment"># Arabic codes</tt> </tt>
+<a name="L10"></a><tt class="py-lineno"> 10</tt>  <tt class="py-line"><tt class="py-comment">#</tt> </tt>
+<a name="L11"></a><tt class="py-lineno"> 11</tt>  <tt class="py-line"><tt class="py-comment"># (C) Copyright 2003, Arabeyes, Mohammed Elzubeir</tt> </tt>
+<a name="L12"></a><tt class="py-lineno"> 12</tt>  <tt class="py-line"><tt class="py-comment"># -----------------</tt> </tt>
+<a name="L13"></a><tt class="py-lineno"> 13</tt>  <tt class="py-line"><tt class="py-comment"># Revision Details:    (Updated by Revision Control System)</tt> </tt>
+<a name="L14"></a><tt class="py-lineno"> 14</tt>  <tt class="py-line"><tt class="py-comment"># -----------------</tt> </tt>
+<a name="L15"></a><tt class="py-lineno"> 15</tt>  <tt class="py-line"><tt class="py-comment">#  $Date: 2003/04/22 17:18:22 $</tt> </tt>
+<a name="L16"></a><tt class="py-lineno"> 16</tt>  <tt class="py-line"><tt class="py-comment">#  $Author: elzubeir $</tt> </tt>
+<a name="L17"></a><tt class="py-lineno"> 17</tt>  <tt class="py-line"><tt class="py-comment">#  $Revision: 1.6 $</tt> </tt>
+<a name="L18"></a><tt class="py-lineno"> 18</tt>  <tt class="py-line"><tt class="py-comment">#  $Source: /home/arabeyes/cvs/projects/duali/pyduali/pyduali/arabic.py,v $</tt> </tt>
+<a name="L19"></a><tt class="py-lineno"> 19</tt>  <tt class="py-line"><tt class="py-comment">#</tt> </tt>
+<a name="L20"></a><tt class="py-lineno"> 20</tt>  <tt class="py-line"><tt class="py-comment">#  This program is written under the BSD License.</tt> </tt>
+<a name="L21"></a><tt class="py-lineno"> 21</tt>  <tt class="py-line"><tt class="py-comment">#---</tt> </tt>
+<a name="L22"></a><tt class="py-lineno"> 22</tt>  <tt class="py-line"> </tt>
+<a name="L23"></a><tt class="py-lineno"> 23</tt>  <tt class="py-line"><tt id="link-0" class="py-name" targets="Variable src.alfanous.Support.ar_ctype.COMMA=src.alfanous.Support.ar_ctype-module.html#COMMA,Variable src.alfanous.Support.arabic_const.COMMA=src.alfanous.Support.arabic_const-module.html#COMMA,Variable src.alfanous.TextProcessing.COMMA=src.alfanous.TextProcessing-module.html#COMMA"><a title="src.alfanous.Support.ar_ctype.COMMA
+src.alfanous.Support.arabic_const.COMMA
+src.alfanous.TextProcessing.COMMA" class="py-name" href="#" onclick="return doclink('link-0', 'COMMA', 'link-0');">COMMA</a></tt> <tt class="py-op">=</tt> <tt class="py-docstring">u'\u060C'</tt> </tt>
+<a name="L24"></a><tt class="py-lineno"> 24</tt>  <tt class="py-line"><tt id="link-1" class="py-name" targets="Variable src.alfanous.Support.ar_ctype.SEMICOLON=src.alfanous.Support.ar_ctype-module.html#SEMICOLON,Variable src.alfanous.Support.arabic_const.SEMICOLON=src.alfanous.Support.arabic_const-module.html#SEMICOLON,Variable src.alfanous.TextProcessing.SEMICOLON=src.alfanous.TextProcessing-module.html#SEMICOLON"><a title="src.alfanous.Support.ar_ctype.SEMICOLON
+src.alfanous.Support.arabic_const.SEMICOLON
+src.alfanous.TextProcessing.SEMICOLON" class="py-name" href="#" onclick="return doclink('link-1', 'SEMICOLON', 'link-1');">SEMICOLON</a></tt> <tt class="py-op">=</tt> <tt class="py-string">u'\u061B'</tt> </tt>
+<a name="L25"></a><tt class="py-lineno"> 25</tt>  <tt class="py-line"><tt id="link-2" class="py-name" targets="Variable src.alfanous.Support.ar_ctype.QUESTION=src.alfanous.Support.ar_ctype-module.html#QUESTION,Variable src.alfanous.Support.arabic_const.QUESTION=src.alfanous.Support.arabic_const-module.html#QUESTION,Variable src.alfanous.TextProcessing.QUESTION=src.alfanous.TextProcessing-module.html#QUESTION"><a title="src.alfanous.Support.ar_ctype.QUESTION
+src.alfanous.Support.arabic_const.QUESTION
+src.alfanous.TextProcessing.QUESTION" class="py-name" href="#" onclick="return doclink('link-2', 'QUESTION', 'link-2');">QUESTION</a></tt> <tt class="py-op">=</tt> <tt class="py-string">u'\u061F'</tt> </tt>
+<a name="L26"></a><tt class="py-lineno"> 26</tt>  <tt class="py-line"><tt id="link-3" class="py-name" targets="Variable src.alfanous.Support.ar_ctype.HAMZA=src.alfanous.Support.ar_ctype-module.html#HAMZA,Variable src.alfanous.Support.arabic_const.HAMZA=src.alfanous.Support.arabic_const-module.html#HAMZA,Variable src.alfanous.TextProcessing.HAMZA=src.alfanous.TextProcessing-module.html#HAMZA"><a title="src.alfanous.Support.ar_ctype.HAMZA
+src.alfanous.Support.arabic_const.HAMZA
+src.alfanous.TextProcessing.HAMZA" class="py-name" href="#" onclick="return doclink('link-3', 'HAMZA', 'link-3');">HAMZA</a></tt> <tt class="py-op">=</tt> <tt class="py-string">u'\u0621'</tt> </tt>
+<a name="L27"></a><tt class="py-lineno"> 27</tt>  <tt class="py-line"><tt id="link-4" class="py-name" targets="Variable src.alfanous.Support.ar_ctype.ALEF_MADDA=src.alfanous.Support.ar_ctype-module.html#ALEF_MADDA,Variable src.alfanous.Support.arabic_const.ALEF_MADDA=src.alfanous.Support.arabic_const-module.html#ALEF_MADDA,Variable src.alfanous.TextProcessing.ALEF_MADDA=src.alfanous.TextProcessing-module.html#ALEF_MADDA"><a title="src.alfanous.Support.ar_ctype.ALEF_MADDA
+src.alfanous.Support.arabic_const.ALEF_MADDA
+src.alfanous.TextProcessing.ALEF_MADDA" class="py-name" href="#" onclick="return doclink('link-4', 'ALEF_MADDA', 'link-4');">ALEF_MADDA</a></tt> <tt class="py-op">=</tt> <tt class="py-string">u'\u0622'</tt> </tt>
+<a name="L28"></a><tt class="py-lineno"> 28</tt>  <tt class="py-line"><tt id="link-5" class="py-name" targets="Variable src.alfanous.Support.ar_ctype.ALEF_HAMZA_ABOVE=src.alfanous.Support.ar_ctype-module.html#ALEF_HAMZA_ABOVE,Variable src.alfanous.Support.arabic_const.ALEF_HAMZA_ABOVE=src.alfanous.Support.arabic_const-module.html#ALEF_HAMZA_ABOVE,Variable src.alfanous.TextProcessing.ALEF_HAMZA_ABOVE=src.alfanous.TextProcessing-module.html#ALEF_HAMZA_ABOVE"><a title="src.alfanous.Support.ar_ctype.ALEF_HAMZA_ABOVE
+src.alfanous.Support.arabic_const.ALEF_HAMZA_ABOVE
+src.alfanous.TextProcessing.ALEF_HAMZA_ABOVE" class="py-name" href="#" onclick="return doclink('link-5', 'ALEF_HAMZA_ABOVE', 'link-5');">ALEF_HAMZA_ABOVE</a></tt> <tt class="py-op">=</tt> <tt class="py-string">u'\u0623'</tt> </tt>
+<a name="L29"></a><tt class="py-lineno"> 29</tt>  <tt class="py-line"><tt id="link-6" class="py-name" targets="Variable src.alfanous.Support.ar_ctype.WAW_HAMZA=src.alfanous.Support.ar_ctype-module.html#WAW_HAMZA,Variable src.alfanous.Support.arabic_const.WAW_HAMZA=src.alfanous.Support.arabic_const-module.html#WAW_HAMZA,Variable src.alfanous.TextProcessing.WAW_HAMZA=src.alfanous.TextProcessing-module.html#WAW_HAMZA"><a title="src.alfanous.Support.ar_ctype.WAW_HAMZA
+src.alfanous.Support.arabic_const.WAW_HAMZA
+src.alfanous.TextProcessing.WAW_HAMZA" class="py-name" href="#" onclick="return doclink('link-6', 'WAW_HAMZA', 'link-6');">WAW_HAMZA</a></tt> <tt class="py-op">=</tt> <tt class="py-string">u'\u0624'</tt> </tt>
+<a name="L30"></a><tt class="py-lineno"> 30</tt>  <tt class="py-line"><tt id="link-7" class="py-name" targets="Variable src.alfanous.Support.ar_ctype.ALEF_HAMZA_BELOW=src.alfanous.Support.ar_ctype-module.html#ALEF_HAMZA_BELOW,Variable src.alfanous.Support.arabic_const.ALEF_HAMZA_BELOW=src.alfanous.Support.arabic_const-module.html#ALEF_HAMZA_BELOW,Variable src.alfanous.TextProcessing.ALEF_HAMZA_BELOW=src.alfanous.TextProcessing-module.html#ALEF_HAMZA_BELOW"><a title="src.alfanous.Support.ar_ctype.ALEF_HAMZA_BELOW
+src.alfanous.Support.arabic_const.ALEF_HAMZA_BELOW
+src.alfanous.TextProcessing.ALEF_HAMZA_BELOW" class="py-name" href="#" onclick="return doclink('link-7', 'ALEF_HAMZA_BELOW', 'link-7');">ALEF_HAMZA_BELOW</a></tt> <tt class="py-op">=</tt> <tt class="py-string">u'\u0625'</tt> </tt>
+<a name="L31"></a><tt class="py-lineno"> 31</tt>  <tt class="py-line"><tt id="link-8" class="py-name" targets="Variable src.alfanous.Support.ar_ctype.YEH_HAMZA=src.alfanous.Support.ar_ctype-module.html#YEH_HAMZA,Variable src.alfanous.Support.arabic_const.YEH_HAMZA=src.alfanous.Support.arabic_const-module.html#YEH_HAMZA,Variable src.alfanous.TextProcessing.YEH_HAMZA=src.alfanous.TextProcessing-module.html#YEH_HAMZA"><a title="src.alfanous.Support.ar_ctype.YEH_HAMZA
+src.alfanous.Support.arabic_const.YEH_HAMZA
+src.alfanous.TextProcessing.YEH_HAMZA" class="py-name" href="#" onclick="return doclink('link-8', 'YEH_HAMZA', 'link-8');">YEH_HAMZA</a></tt> <tt class="py-op">=</tt> <tt class="py-string">u'\u0626'</tt> </tt>
+<a name="L32"></a><tt class="py-lineno"> 32</tt>  <tt class="py-line"><tt id="link-9" class="py-name" targets="Variable src.alfanous.Support.ar_ctype.ALEF=src.alfanous.Support.ar_ctype-module.html#ALEF,Variable src.alfanous.Support.arabic_const.ALEF=src.alfanous.Support.arabic_const-module.html#ALEF,Variable src.alfanous.TextProcessing.ALEF=src.alfanous.TextProcessing-module.html#ALEF"><a title="src.alfanous.Support.ar_ctype.ALEF
+src.alfanous.Support.arabic_const.ALEF
+src.alfanous.TextProcessing.ALEF" class="py-name" href="#" onclick="return doclink('link-9', 'ALEF', 'link-9');">ALEF</a></tt> <tt class="py-op">=</tt> <tt class="py-string">u'\u0627'</tt> </tt>
+<a name="L33"></a><tt class="py-lineno"> 33</tt>  <tt class="py-line"><tt id="link-10" class="py-name" targets="Variable src.alfanous.Support.ar_ctype.BEH=src.alfanous.Support.ar_ctype-module.html#BEH,Variable src.alfanous.Support.arabic_const.BEH=src.alfanous.Support.arabic_const-module.html#BEH,Variable src.alfanous.TextProcessing.BEH=src.alfanous.TextProcessing-module.html#BEH"><a title="src.alfanous.Support.ar_ctype.BEH
+src.alfanous.Support.arabic_const.BEH
+src.alfanous.TextProcessing.BEH" class="py-name" href="#" onclick="return doclink('link-10', 'BEH', 'link-10');">BEH</a></tt> <tt class="py-op">=</tt> <tt class="py-string">u'\u0628'</tt> </tt>
+<a name="L34"></a><tt class="py-lineno"> 34</tt>  <tt class="py-line"><tt id="link-11" class="py-name" targets="Variable src.alfanous.Support.ar_ctype.TEH_MARBUTA=src.alfanous.Support.ar_ctype-module.html#TEH_MARBUTA,Variable src.alfanous.Support.arabic_const.TEH_MARBUTA=src.alfanous.Support.arabic_const-module.html#TEH_MARBUTA,Variable src.alfanous.TextProcessing.TEH_MARBUTA=src.alfanous.TextProcessing-module.html#TEH_MARBUTA"><a title="src.alfanous.Support.ar_ctype.TEH_MARBUTA
+src.alfanous.Support.arabic_const.TEH_MARBUTA
+src.alfanous.TextProcessing.TEH_MARBUTA" class="py-name" href="#" onclick="return doclink('link-11', 'TEH_MARBUTA', 'link-11');">TEH_MARBUTA</a></tt> <tt class="py-op">=</tt> <tt class="py-string">u'\u0629'</tt> </tt>
+<a name="L35"></a><tt class="py-lineno"> 35</tt>  <tt class="py-line"><tt id="link-12" class="py-name" targets="Variable src.alfanous.Support.ar_ctype.TEH=src.alfanous.Support.ar_ctype-module.html#TEH,Variable src.alfanous.Support.arabic_const.TEH=src.alfanous.Support.arabic_const-module.html#TEH,Variable src.alfanous.TextProcessing.TEH=src.alfanous.TextProcessing-module.html#TEH"><a title="src.alfanous.Support.ar_ctype.TEH
+src.alfanous.Support.arabic_const.TEH
+src.alfanous.TextProcessing.TEH" class="py-name" href="#" onclick="return doclink('link-12', 'TEH', 'link-12');">TEH</a></tt> <tt class="py-op">=</tt> <tt class="py-string">u'\u062a'</tt> </tt>
+<a name="L36"></a><tt class="py-lineno"> 36</tt>  <tt class="py-line"><tt id="link-13" class="py-name" targets="Variable src.alfanous.Support.ar_ctype.THEH=src.alfanous.Support.ar_ctype-module.html#THEH,Variable src.alfanous.Support.arabic_const.THEH=src.alfanous.Support.arabic_const-module.html#THEH,Variable src.alfanous.TextProcessing.THEH=src.alfanous.TextProcessing-module.html#THEH"><a title="src.alfanous.Support.ar_ctype.THEH
+src.alfanous.Support.arabic_const.THEH
+src.alfanous.TextProcessing.THEH" class="py-name" href="#" onclick="return doclink('link-13', 'THEH', 'link-13');">THEH</a></tt> <tt class="py-op">=</tt> <tt class="py-string">u'\u062b'</tt> </tt>
+<a name="L37"></a><tt class="py-lineno"> 37</tt>  <tt class="py-line"><tt id="link-14" class="py-name" targets="Variable src.alfanous.Support.ar_ctype.JEEM=src.alfanous.Support.ar_ctype-module.html#JEEM,Variable src.alfanous.Support.arabic_const.JEEM=src.alfanous.Support.arabic_const-module.html#JEEM,Variable src.alfanous.TextProcessing.JEEM=src.alfanous.TextProcessing-module.html#JEEM"><a title="src.alfanous.Support.ar_ctype.JEEM
+src.alfanous.Support.arabic_const.JEEM
+src.alfanous.TextProcessing.JEEM" class="py-name" href="#" onclick="return doclink('link-14', 'JEEM', 'link-14');">JEEM</a></tt> <tt class="py-op">=</tt> <tt class="py-string">u'\u062c'</tt> </tt>
+<a name="L38"></a><tt class="py-lineno"> 38</tt>  <tt class="py-line"><tt id="link-15" class="py-name" targets="Variable src.alfanous.Support.ar_ctype.HAH=src.alfanous.Support.ar_ctype-module.html#HAH,Variable src.alfanous.Support.arabic_const.HAH=src.alfanous.Support.arabic_const-module.html#HAH,Variable src.alfanous.TextProcessing.HAH=src.alfanous.TextProcessing-module.html#HAH"><a title="src.alfanous.Support.ar_ctype.HAH
+src.alfanous.Support.arabic_const.HAH
+src.alfanous.TextProcessing.HAH" class="py-name" href="#" onclick="return doclink('link-15', 'HAH', 'link-15');">HAH</a></tt> <tt class="py-op">=</tt> <tt class="py-string">u'\u062d'</tt> </tt>
+<a name="L39"></a><tt class="py-lineno"> 39</tt>  <tt class="py-line"><tt id="link-16" class="py-name" targets="Variable src.alfanous.Support.ar_ctype.KHAH=src.alfanous.Support.ar_ctype-module.html#KHAH,Variable src.alfanous.Support.arabic_const.KHAH=src.alfanous.Support.arabic_const-module.html#KHAH,Variable src.alfanous.TextProcessing.KHAH=src.alfanous.TextProcessing-module.html#KHAH"><a title="src.alfanous.Support.ar_ctype.KHAH
+src.alfanous.Support.arabic_const.KHAH
+src.alfanous.TextProcessing.KHAH" class="py-name" href="#" onclick="return doclink('link-16', 'KHAH', 'link-16');">KHAH</a></tt> <tt class="py-op">=</tt> <tt class="py-string">u'\u062e'</tt> </tt>
+<a name="L40"></a><tt class="py-lineno"> 40</tt>  <tt class="py-line"><tt id="link-17" class="py-name" targets="Variable src.alfanous.Support.ar_ctype.DAL=src.alfanous.Support.ar_ctype-module.html#DAL,Variable src.alfanous.Support.arabic_const.DAL=src.alfanous.Support.arabic_const-module.html#DAL,Variable src.alfanous.TextProcessing.DAL=src.alfanous.TextProcessing-module.html#DAL"><a title="src.alfanous.Support.ar_ctype.DAL
+src.alfanous.Support.arabic_const.DAL
+src.alfanous.TextProcessing.DAL" class="py-name" href="#" onclick="return doclink('link-17', 'DAL', 'link-17');">DAL</a></tt> <tt class="py-op">=</tt> <tt class="py-string">u'\u062f'</tt> </tt>
+<a name="L41"></a><tt class="py-lineno"> 41</tt>  <tt class="py-line"><tt id="link-18" class="py-name" targets="Variable src.alfanous.Support.ar_ctype.THAL=src.alfanous.Support.ar_ctype-module.html#THAL,Variable src.alfanous.Support.arabic_const.THAL=src.alfanous.Support.arabic_const-module.html#THAL,Variable src.alfanous.TextProcessing.THAL=src.alfanous.TextProcessing-module.html#THAL"><a title="src.alfanous.Support.ar_ctype.THAL
+src.alfanous.Support.arabic_const.THAL
+src.alfanous.TextProcessing.THAL" class="py-name" href="#" onclick="return doclink('link-18', 'THAL', 'link-18');">THAL</a></tt> <tt class="py-op">=</tt> <tt class="py-string">u'\u0630'</tt> </tt>
+<a name="L42"></a><tt class="py-lineno"> 42</tt>  <tt class="py-line"><tt id="link-19" class="py-name" targets="Variable src.alfanous.Support.ar_ctype.REH=src.alfanous.Support.ar_ctype-module.html#REH,Variable src.alfanous.Support.arabic_const.REH=src.alfanous.Support.arabic_const-module.html#REH,Variable src.alfanous.TextProcessing.REH=src.alfanous.TextProcessing-module.html#REH"><a title="src.alfanous.Support.ar_ctype.REH
+src.alfanous.Support.arabic_const.REH
+src.alfanous.TextProcessing.REH" class="py-name" href="#" onclick="return doclink('link-19', 'REH', 'link-19');">REH</a></tt> <tt class="py-op">=</tt> <tt class="py-string">u'\u0631'</tt> </tt>
+<a name="L43"></a><tt class="py-lineno"> 43</tt>  <tt class="py-line"><tt id="link-20" class="py-name" targets="Variable src.alfanous.Support.ar_ctype.ZAIN=src.alfanous.Support.ar_ctype-module.html#ZAIN,Variable src.alfanous.Support.arabic_const.ZAIN=src.alfanous.Support.arabic_const-module.html#ZAIN,Variable src.alfanous.TextProcessing.ZAIN=src.alfanous.TextProcessing-module.html#ZAIN"><a title="src.alfanous.Support.ar_ctype.ZAIN
+src.alfanous.Support.arabic_const.ZAIN
+src.alfanous.TextProcessing.ZAIN" class="py-name" href="#" onclick="return doclink('link-20', 'ZAIN', 'link-20');">ZAIN</a></tt> <tt class="py-op">=</tt> <tt class="py-string">u'\u0632'</tt> </tt>
+<a name="L44"></a><tt class="py-lineno"> 44</tt>  <tt class="py-line"><tt id="link-21" class="py-name" targets="Variable src.alfanous.Support.ar_ctype.SEEN=src.alfanous.Support.ar_ctype-module.html#SEEN,Variable src.alfanous.Support.arabic_const.SEEN=src.alfanous.Support.arabic_const-module.html#SEEN,Variable src.alfanous.TextProcessing.SEEN=src.alfanous.TextProcessing-module.html#SEEN"><a title="src.alfanous.Support.ar_ctype.SEEN
+src.alfanous.Support.arabic_const.SEEN
+src.alfanous.TextProcessing.SEEN" class="py-name" href="#" onclick="return doclink('link-21', 'SEEN', 'link-21');">SEEN</a></tt> <tt class="py-op">=</tt> <tt class="py-string">u'\u0633'</tt> </tt>
+<a name="L45"></a><tt class="py-lineno"> 45</tt>  <tt class="py-line"><tt id="link-22" class="py-name" targets="Variable src.alfanous.Support.ar_ctype.SHEEN=src.alfanous.Support.ar_ctype-module.html#SHEEN,Variable src.alfanous.Support.arabic_const.SHEEN=src.alfanous.Support.arabic_const-module.html#SHEEN,Variable src.alfanous.TextProcessing.SHEEN=src.alfanous.TextProcessing-module.html#SHEEN"><a title="src.alfanous.Support.ar_ctype.SHEEN
+src.alfanous.Support.arabic_const.SHEEN
+src.alfanous.TextProcessing.SHEEN" class="py-name" href="#" onclick="return doclink('link-22', 'SHEEN', 'link-22');">SHEEN</a></tt> <tt class="py-op">=</tt> <tt class="py-string">u'\u0634'</tt> </tt>
+<a name="L46"></a><tt class="py-lineno"> 46</tt>  <tt class="py-line"><tt id="link-23" class="py-name" targets="Variable src.alfanous.Support.ar_ctype.SAD=src.alfanous.Support.ar_ctype-module.html#SAD,Variable src.alfanous.Support.arabic_const.SAD=src.alfanous.Support.arabic_const-module.html#SAD,Variable src.alfanous.TextProcessing.SAD=src.alfanous.TextProcessing-module.html#SAD"><a title="src.alfanous.Support.ar_ctype.SAD
+src.alfanous.Support.arabic_const.SAD
+src.alfanous.TextProcessing.SAD" class="py-name" href="#" onclick="return doclink('link-23', 'SAD', 'link-23');">SAD</a></tt> <tt class="py-op">=</tt> <tt class="py-string">u'\u0635'</tt> </tt>
+<a name="L47"></a><tt class="py-lineno"> 47</tt>  <tt class="py-line"><tt id="link-24" class="py-name" targets="Variable src.alfanous.Support.ar_ctype.DAD=src.alfanous.Support.ar_ctype-module.html#DAD,Variable src.alfanous.Support.arabic_const.DAD=src.alfanous.Support.arabic_const-module.html#DAD,Variable src.alfanous.TextProcessing.DAD=src.alfanous.TextProcessing-module.html#DAD"><a title="src.alfanous.Support.ar_ctype.DAD
+src.alfanous.Support.arabic_const.DAD
+src.alfanous.TextProcessing.DAD" class="py-name" href="#" onclick="return doclink('link-24', 'DAD', 'link-24');">DAD</a></tt> <tt class="py-op">=</tt> <tt class="py-string">u'\u0636'</tt> </tt>
+<a name="L48"></a><tt class="py-lineno"> 48</tt>  <tt class="py-line"><tt id="link-25" class="py-name" targets="Variable src.alfanous.Support.ar_ctype.TAH=src.alfanous.Support.ar_ctype-module.html#TAH,Variable src.alfanous.Support.arabic_const.TAH=src.alfanous.Support.arabic_const-module.html#TAH,Variable src.alfanous.TextProcessing.TAH=src.alfanous.TextProcessing-module.html#TAH"><a title="src.alfanous.Support.ar_ctype.TAH
+src.alfanous.Support.arabic_const.TAH
+src.alfanous.TextProcessing.TAH" class="py-name" href="#" onclick="return doclink('link-25', 'TAH', 'link-25');">TAH</a></tt> <tt class="py-op">=</tt> <tt class="py-string">u'\u0637'</tt> </tt>
+<a name="L49"></a><tt class="py-lineno"> 49</tt>  <tt class="py-line"><tt id="link-26" class="py-name" targets="Variable src.alfanous.Support.ar_ctype.ZAH=src.alfanous.Support.ar_ctype-module.html#ZAH,Variable src.alfanous.Support.arabic_const.ZAH=src.alfanous.Support.arabic_const-module.html#ZAH,Variable src.alfanous.TextProcessing.ZAH=src.alfanous.TextProcessing-module.html#ZAH"><a title="src.alfanous.Support.ar_ctype.ZAH
+src.alfanous.Support.arabic_const.ZAH
+src.alfanous.TextProcessing.ZAH" class="py-name" href="#" onclick="return doclink('link-26', 'ZAH', 'link-26');">ZAH</a></tt> <tt class="py-op">=</tt> <tt class="py-string">u'\u0638'</tt> </tt>
+<a name="L50"></a><tt class="py-lineno"> 50</tt>  <tt class="py-line"><tt id="link-27" class="py-name" targets="Variable src.alfanous.Support.ar_ctype.AIN=src.alfanous.Support.ar_ctype-module.html#AIN,Variable src.alfanous.Support.arabic_const.AIN=src.alfanous.Support.arabic_const-module.html#AIN,Variable src.alfanous.TextProcessing.AIN=src.alfanous.TextProcessing-module.html#AIN"><a title="src.alfanous.Support.ar_ctype.AIN
+src.alfanous.Support.arabic_const.AIN
+src.alfanous.TextProcessing.AIN" class="py-name" href="#" onclick="return doclink('link-27', 'AIN', 'link-27');">AIN</a></tt> <tt class="py-op">=</tt> <tt class="py-string">u'\u0639'</tt> </tt>
+<a name="L51"></a><tt class="py-lineno"> 51</tt>  <tt class="py-line"><tt id="link-28" class="py-name" targets="Variable src.alfanous.Support.ar_ctype.GHAIN=src.alfanous.Support.ar_ctype-module.html#GHAIN,Variable src.alfanous.Support.arabic_const.GHAIN=src.alfanous.Support.arabic_const-module.html#GHAIN,Variable src.alfanous.TextProcessing.GHAIN=src.alfanous.TextProcessing-module.html#GHAIN"><a title="src.alfanous.Support.ar_ctype.GHAIN
+src.alfanous.Support.arabic_const.GHAIN
+src.alfanous.TextProcessing.GHAIN" class="py-name" href="#" onclick="return doclink('link-28', 'GHAIN', 'link-28');">GHAIN</a></tt> <tt class="py-op">=</tt> <tt class="py-string">u'\u063a'</tt> </tt>
+<a name="L52"></a><tt class="py-lineno"> 52</tt>  <tt class="py-line"><tt id="link-29" class="py-name" targets="Variable src.alfanous.Support.ar_ctype.TATWEEL=src.alfanous.Support.ar_ctype-module.html#TATWEEL,Variable src.alfanous.Support.arabic_const.TATWEEL=src.alfanous.Support.arabic_const-module.html#TATWEEL,Variable src.alfanous.TextProcessing.TATWEEL=src.alfanous.TextProcessing-module.html#TATWEEL"><a title="src.alfanous.Support.ar_ctype.TATWEEL
+src.alfanous.Support.arabic_const.TATWEEL
+src.alfanous.TextProcessing.TATWEEL" class="py-name" href="#" onclick="return doclink('link-29', 'TATWEEL', 'link-29');">TATWEEL</a></tt> <tt class="py-op">=</tt> <tt class="py-string">u'\u0640'</tt> </tt>
+<a name="L53"></a><tt class="py-lineno"> 53</tt>  <tt class="py-line"><tt id="link-30" class="py-name" targets="Variable src.alfanous.Support.ar_ctype.FEH=src.alfanous.Support.ar_ctype-module.html#FEH,Variable src.alfanous.Support.arabic_const.FEH=src.alfanous.Support.arabic_const-module.html#FEH,Variable src.alfanous.TextProcessing.FEH=src.alfanous.TextProcessing-module.html#FEH"><a title="src.alfanous.Support.ar_ctype.FEH
+src.alfanous.Support.arabic_const.FEH
+src.alfanous.TextProcessing.FEH" class="py-name" href="#" onclick="return doclink('link-30', 'FEH', 'link-30');">FEH</a></tt> <tt class="py-op">=</tt> <tt class="py-string">u'\u0641'</tt> </tt>
+<a name="L54"></a><tt class="py-lineno"> 54</tt>  <tt class="py-line"><tt id="link-31" class="py-name" targets="Variable src.alfanous.Support.ar_ctype.QAF=src.alfanous.Support.ar_ctype-module.html#QAF,Variable src.alfanous.Support.arabic_const.QAF=src.alfanous.Support.arabic_const-module.html#QAF,Variable src.alfanous.TextProcessing.QAF=src.alfanous.TextProcessing-module.html#QAF"><a title="src.alfanous.Support.ar_ctype.QAF
+src.alfanous.Support.arabic_const.QAF
+src.alfanous.TextProcessing.QAF" class="py-name" href="#" onclick="return doclink('link-31', 'QAF', 'link-31');">QAF</a></tt> <tt class="py-op">=</tt> <tt class="py-string">u'\u0642'</tt> </tt>
+<a name="L55"></a><tt class="py-lineno"> 55</tt>  <tt class="py-line"><tt id="link-32" class="py-name" targets="Variable src.alfanous.Support.ar_ctype.KAF=src.alfanous.Support.ar_ctype-module.html#KAF,Variable src.alfanous.Support.arabic_const.KAF=src.alfanous.Support.arabic_const-module.html#KAF,Variable src.alfanous.TextProcessing.KAF=src.alfanous.TextProcessing-module.html#KAF"><a title="src.alfanous.Support.ar_ctype.KAF
+src.alfanous.Support.arabic_const.KAF
+src.alfanous.TextProcessing.KAF" class="py-name" href="#" onclick="return doclink('link-32', 'KAF', 'link-32');">KAF</a></tt> <tt class="py-op">=</tt> <tt class="py-string">u'\u0643'</tt> </tt>
+<a name="L56"></a><tt class="py-lineno"> 56</tt>  <tt class="py-line"><tt id="link-33" class="py-name" targets="Variable src.alfanous.Support.ar_ctype.LAM=src.alfanous.Support.ar_ctype-module.html#LAM,Variable src.alfanous.Support.arabic_const.LAM=src.alfanous.Support.arabic_const-module.html#LAM,Variable src.alfanous.TextProcessing.LAM=src.alfanous.TextProcessing-module.html#LAM"><a title="src.alfanous.Support.ar_ctype.LAM
+src.alfanous.Support.arabic_const.LAM
+src.alfanous.TextProcessing.LAM" class="py-name" href="#" onclick="return doclink('link-33', 'LAM', 'link-33');">LAM</a></tt> <tt class="py-op">=</tt> <tt class="py-string">u'\u0644'</tt> </tt>
+<a name="L57"></a><tt class="py-lineno"> 57</tt>  <tt class="py-line"><tt id="link-34" class="py-name" targets="Variable src.alfanous.Support.ar_ctype.MEEM=src.alfanous.Support.ar_ctype-module.html#MEEM,Variable src.alfanous.Support.arabic_const.MEEM=src.alfanous.Support.arabic_const-module.html#MEEM,Variable src.alfanous.TextProcessing.MEEM=src.alfanous.TextProcessing-module.html#MEEM"><a title="src.alfanous.Support.ar_ctype.MEEM
+src.alfanous.Support.arabic_const.MEEM
+src.alfanous.TextProcessing.MEEM" class="py-name" href="#" onclick="return doclink('link-34', 'MEEM', 'link-34');">MEEM</a></tt> <tt class="py-op">=</tt> <tt class="py-string">u'\u0645'</tt> </tt>
+<a name="L58"></a><tt class="py-lineno"> 58</tt>  <tt class="py-line"><tt id="link-35" class="py-name" targets="Variable src.alfanous.Support.ar_ctype.NOON=src.alfanous.Support.ar_ctype-module.html#NOON,Variable src.alfanous.Support.arabic_const.NOON=src.alfanous.Support.arabic_const-module.html#NOON,Variable src.alfanous.TextProcessing.NOON=src.alfanous.TextProcessing-module.html#NOON"><a title="src.alfanous.Support.ar_ctype.NOON
+src.alfanous.Support.arabic_const.NOON
+src.alfanous.TextProcessing.NOON" class="py-name" href="#" onclick="return doclink('link-35', 'NOON', 'link-35');">NOON</a></tt> <tt class="py-op">=</tt> <tt class="py-string">u'\u0646'</tt> </tt>
+<a name="L59"></a><tt class="py-lineno"> 59</tt>  <tt class="py-line"><tt id="link-36" class="py-name" targets="Variable src.alfanous.Support.ar_ctype.HEH=src.alfanous.Support.ar_ctype-module.html#HEH,Variable src.alfanous.Support.arabic_const.HEH=src.alfanous.Support.arabic_const-module.html#HEH,Variable src.alfanous.TextProcessing.HEH=src.alfanous.TextProcessing-module.html#HEH"><a title="src.alfanous.Support.ar_ctype.HEH
+src.alfanous.Support.arabic_const.HEH
+src.alfanous.TextProcessing.HEH" class="py-name" href="#" onclick="return doclink('link-36', 'HEH', 'link-36');">HEH</a></tt> <tt class="py-op">=</tt> <tt class="py-string">u'\u0647'</tt> </tt>
+<a name="L60"></a><tt class="py-lineno"> 60</tt>  <tt class="py-line"><tt id="link-37" class="py-name" targets="Variable src.alfanous.Support.ar_ctype.WAW=src.alfanous.Support.ar_ctype-module.html#WAW,Variable src.alfanous.Support.arabic_const.WAW=src.alfanous.Support.arabic_const-module.html#WAW,Variable src.alfanous.TextProcessing.WAW=src.alfanous.TextProcessing-module.html#WAW"><a title="src.alfanous.Support.ar_ctype.WAW
+src.alfanous.Support.arabic_const.WAW
+src.alfanous.TextProcessing.WAW" class="py-name" href="#" onclick="return doclink('link-37', 'WAW', 'link-37');">WAW</a></tt> <tt class="py-op">=</tt> <tt class="py-string">u'\u0648'</tt> </tt>
+<a name="L61"></a><tt class="py-lineno"> 61</tt>  <tt class="py-line"><tt id="link-38" class="py-name" targets="Variable src.alfanous.Support.ar_ctype.ALEF_MAKSURA=src.alfanous.Support.ar_ctype-module.html#ALEF_MAKSURA,Variable src.alfanous.Support.arabic_const.ALEF_MAKSURA=src.alfanous.Support.arabic_const-module.html#ALEF_MAKSURA,Variable src.alfanous.TextProcessing.ALEF_MAKSURA=src.alfanous.TextProcessing-module.html#ALEF_MAKSURA"><a title="src.alfanous.Support.ar_ctype.ALEF_MAKSURA
+src.alfanous.Support.arabic_const.ALEF_MAKSURA
+src.alfanous.TextProcessing.ALEF_MAKSURA" class="py-name" href="#" onclick="return doclink('link-38', 'ALEF_MAKSURA', 'link-38');">ALEF_MAKSURA</a></tt> <tt class="py-op">=</tt> <tt class="py-string">u'\u0649'</tt> </tt>
+<a name="L62"></a><tt class="py-lineno"> 62</tt>  <tt class="py-line"><tt id="link-39" class="py-name" targets="Variable src.alfanous.Support.ar_ctype.YEH=src.alfanous.Support.ar_ctype-module.html#YEH,Variable src.alfanous.Support.arabic_const.YEH=src.alfanous.Support.arabic_const-module.html#YEH,Variable src.alfanous.TextProcessing.YEH=src.alfanous.TextProcessing-module.html#YEH"><a title="src.alfanous.Support.ar_ctype.YEH
+src.alfanous.Support.arabic_const.YEH
+src.alfanous.TextProcessing.YEH" class="py-name" href="#" onclick="return doclink('link-39', 'YEH', 'link-39');">YEH</a></tt> <tt class="py-op">=</tt> <tt class="py-string">u'\u064a'</tt> </tt>
+<a name="L63"></a><tt class="py-lineno"> 63</tt>  <tt class="py-line"><tt id="link-40" class="py-name" targets="Variable src.alfanous.Support.ar_ctype.MADDA_ABOVE=src.alfanous.Support.ar_ctype-module.html#MADDA_ABOVE,Variable src.alfanous.Support.arabic_const.MADDA_ABOVE=src.alfanous.Support.arabic_const-module.html#MADDA_ABOVE,Variable src.alfanous.TextProcessing.MADDA_ABOVE=src.alfanous.TextProcessing-module.html#MADDA_ABOVE"><a title="src.alfanous.Support.ar_ctype.MADDA_ABOVE
+src.alfanous.Support.arabic_const.MADDA_ABOVE
+src.alfanous.TextProcessing.MADDA_ABOVE" class="py-name" href="#" onclick="return doclink('link-40', 'MADDA_ABOVE', 'link-40');">MADDA_ABOVE</a></tt> <tt class="py-op">=</tt> <tt class="py-string">u'\u0653'</tt> </tt>
+<a name="L64"></a><tt class="py-lineno"> 64</tt>  <tt class="py-line"><tt id="link-41" class="py-name" targets="Variable src.alfanous.Support.ar_ctype.HAMZA_ABOVE=src.alfanous.Support.ar_ctype-module.html#HAMZA_ABOVE,Variable src.alfanous.Support.arabic_const.HAMZA_ABOVE=src.alfanous.Support.arabic_const-module.html#HAMZA_ABOVE,Variable src.alfanous.TextProcessing.HAMZA_ABOVE=src.alfanous.TextProcessing-module.html#HAMZA_ABOVE"><a title="src.alfanous.Support.ar_ctype.HAMZA_ABOVE
+src.alfanous.Support.arabic_const.HAMZA_ABOVE
+src.alfanous.TextProcessing.HAMZA_ABOVE" class="py-name" href="#" onclick="return doclink('link-41', 'HAMZA_ABOVE', 'link-41');">HAMZA_ABOVE</a></tt> <tt class="py-op">=</tt> <tt class="py-string">u'\u0654'</tt> </tt>
+<a name="L65"></a><tt class="py-lineno"> 65</tt>  <tt class="py-line"><tt id="link-42" class="py-name" targets="Variable src.alfanous.Support.ar_ctype.HAMZA_BELOW=src.alfanous.Support.ar_ctype-module.html#HAMZA_BELOW,Variable src.alfanous.Support.arabic_const.HAMZA_BELOW=src.alfanous.Support.arabic_const-module.html#HAMZA_BELOW,Variable src.alfanous.TextProcessing.HAMZA_BELOW=src.alfanous.TextProcessing-module.html#HAMZA_BELOW"><a title="src.alfanous.Support.ar_ctype.HAMZA_BELOW
+src.alfanous.Support.arabic_const.HAMZA_BELOW
+src.alfanous.TextProcessing.HAMZA_BELOW" class="py-name" href="#" onclick="return doclink('link-42', 'HAMZA_BELOW', 'link-42');">HAMZA_BELOW</a></tt> <tt class="py-op">=</tt> <tt class="py-string">u'\u0655'</tt> </tt>
+<a name="L66"></a><tt class="py-lineno"> 66</tt>  <tt class="py-line"><tt id="link-43" class="py-name" targets="Variable src.alfanous.Support.ar_ctype.ZERO=src.alfanous.Support.ar_ctype-module.html#ZERO,Variable src.alfanous.Support.arabic_const.ZERO=src.alfanous.Support.arabic_const-module.html#ZERO,Variable src.alfanous.TextProcessing.ZERO=src.alfanous.TextProcessing-module.html#ZERO"><a title="src.alfanous.Support.ar_ctype.ZERO
+src.alfanous.Support.arabic_const.ZERO
+src.alfanous.TextProcessing.ZERO" class="py-name" href="#" onclick="return doclink('link-43', 'ZERO', 'link-43');">ZERO</a></tt> <tt class="py-op">=</tt> <tt class="py-string">u'\u0660'</tt> </tt>
+<a name="L67"></a><tt class="py-lineno"> 67</tt>  <tt class="py-line"><tt id="link-44" class="py-name" targets="Variable src.alfanous.Support.ar_ctype.ONE=src.alfanous.Support.ar_ctype-module.html#ONE,Variable src.alfanous.Support.arabic_const.ONE=src.alfanous.Support.arabic_const-module.html#ONE,Variable src.alfanous.TextProcessing.ONE=src.alfanous.TextProcessing-module.html#ONE"><a title="src.alfanous.Support.ar_ctype.ONE
+src.alfanous.Support.arabic_const.ONE
+src.alfanous.TextProcessing.ONE" class="py-name" href="#" onclick="return doclink('link-44', 'ONE', 'link-44');">ONE</a></tt> <tt class="py-op">=</tt> <tt class="py-string">u'\u0661'</tt> </tt>
+<a name="L68"></a><tt class="py-lineno"> 68</tt>  <tt class="py-line"><tt id="link-45" class="py-name" targets="Variable src.alfanous.Support.ar_ctype.TWO=src.alfanous.Support.ar_ctype-module.html#TWO,Variable src.alfanous.Support.arabic_const.TWO=src.alfanous.Support.arabic_const-module.html#TWO,Variable src.alfanous.TextProcessing.TWO=src.alfanous.TextProcessing-module.html#TWO"><a title="src.alfanous.Support.ar_ctype.TWO
+src.alfanous.Support.arabic_const.TWO
+src.alfanous.TextProcessing.TWO" class="py-name" href="#" onclick="return doclink('link-45', 'TWO', 'link-45');">TWO</a></tt> <tt class="py-op">=</tt> <tt class="py-string">u'\u0662'</tt> </tt>
+<a name="L69"></a><tt class="py-lineno"> 69</tt>  <tt class="py-line"><tt id="link-46" class="py-name" targets="Variable src.alfanous.Support.ar_ctype.THREE=src.alfanous.Support.ar_ctype-module.html#THREE,Variable src.alfanous.Support.arabic_const.THREE=src.alfanous.Support.arabic_const-module.html#THREE,Variable src.alfanous.TextProcessing.THREE=src.alfanous.TextProcessing-module.html#THREE"><a title="src.alfanous.Support.ar_ctype.THREE
+src.alfanous.Support.arabic_const.THREE
+src.alfanous.TextProcessing.THREE" class="py-name" href="#" onclick="return doclink('link-46', 'THREE', 'link-46');">THREE</a></tt> <tt class="py-op">=</tt> <tt class="py-string">u'\u0663'</tt> </tt>
+<a name="L70"></a><tt class="py-lineno"> 70</tt>  <tt class="py-line"><tt id="link-47" class="py-name" targets="Variable src.alfanous.Support.ar_ctype.FOUR=src.alfanous.Support.ar_ctype-module.html#FOUR,Variable src.alfanous.Support.arabic_const.FOUR=src.alfanous.Support.arabic_const-module.html#FOUR,Variable src.alfanous.TextProcessing.FOUR=src.alfanous.TextProcessing-module.html#FOUR"><a title="src.alfanous.Support.ar_ctype.FOUR
+src.alfanous.Support.arabic_const.FOUR
+src.alfanous.TextProcessing.FOUR" class="py-name" href="#" onclick="return doclink('link-47', 'FOUR', 'link-47');">FOUR</a></tt> <tt class="py-op">=</tt> <tt class="py-string">u'\u0664'</tt> </tt>
+<a name="L71"></a><tt class="py-lineno"> 71</tt>  <tt class="py-line"><tt id="link-48" class="py-name" targets="Variable src.alfanous.Support.ar_ctype.FIVE=src.alfanous.Support.ar_ctype-module.html#FIVE,Variable src.alfanous.Support.arabic_const.FIVE=src.alfanous.Support.arabic_const-module.html#FIVE,Variable src.alfanous.TextProcessing.FIVE=src.alfanous.TextProcessing-module.html#FIVE"><a title="src.alfanous.Support.ar_ctype.FIVE
+src.alfanous.Support.arabic_const.FIVE
+src.alfanous.TextProcessing.FIVE" class="py-name" href="#" onclick="return doclink('link-48', 'FIVE', 'link-48');">FIVE</a></tt> <tt class="py-op">=</tt> <tt class="py-string">u'\u0665'</tt> </tt>
+<a name="L72"></a><tt class="py-lineno"> 72</tt>  <tt class="py-line"><tt id="link-49" class="py-name" targets="Variable src.alfanous.Support.ar_ctype.SIX=src.alfanous.Support.ar_ctype-module.html#SIX,Variable src.alfanous.Support.arabic_const.SIX=src.alfanous.Support.arabic_const-module.html#SIX,Variable src.alfanous.TextProcessing.SIX=src.alfanous.TextProcessing-module.html#SIX"><a title="src.alfanous.Support.ar_ctype.SIX
+src.alfanous.Support.arabic_const.SIX
+src.alfanous.TextProcessing.SIX" class="py-name" href="#" onclick="return doclink('link-49', 'SIX', 'link-49');">SIX</a></tt> <tt class="py-op">=</tt> <tt class="py-string">u'\u0666'</tt> </tt>
+<a name="L73"></a><tt class="py-lineno"> 73</tt>  <tt class="py-line"><tt id="link-50" class="py-name" targets="Variable src.alfanous.Support.ar_ctype.SEVEN=src.alfanous.Support.ar_ctype-module.html#SEVEN,Variable src.alfanous.Support.arabic_const.SEVEN=src.alfanous.Support.arabic_const-module.html#SEVEN,Variable src.alfanous.TextProcessing.SEVEN=src.alfanous.TextProcessing-module.html#SEVEN"><a title="src.alfanous.Support.ar_ctype.SEVEN
+src.alfanous.Support.arabic_const.SEVEN
+src.alfanous.TextProcessing.SEVEN" class="py-name" href="#" onclick="return doclink('link-50', 'SEVEN', 'link-50');">SEVEN</a></tt> <tt class="py-op">=</tt> <tt class="py-string">u'\u0667'</tt> </tt>
+<a name="L74"></a><tt class="py-lineno"> 74</tt>  <tt class="py-line"><tt id="link-51" class="py-name" targets="Variable src.alfanous.Support.ar_ctype.EIGHT=src.alfanous.Support.ar_ctype-module.html#EIGHT,Variable src.alfanous.Support.arabic_const.EIGHT=src.alfanous.Support.arabic_const-module.html#EIGHT,Variable src.alfanous.TextProcessing.EIGHT=src.alfanous.TextProcessing-module.html#EIGHT"><a title="src.alfanous.Support.ar_ctype.EIGHT
+src.alfanous.Support.arabic_const.EIGHT
+src.alfanous.TextProcessing.EIGHT" class="py-name" href="#" onclick="return doclink('link-51', 'EIGHT', 'link-51');">EIGHT</a></tt> <tt class="py-op">=</tt> <tt class="py-string">u'\u0668'</tt> </tt>
+<a name="L75"></a><tt class="py-lineno"> 75</tt>  <tt class="py-line"><tt id="link-52" class="py-name" targets="Variable src.alfanous.Support.ar_ctype.NINE=src.alfanous.Support.ar_ctype-module.html#NINE,Variable src.alfanous.Support.arabic_const.NINE=src.alfanous.Support.arabic_const-module.html#NINE,Variable src.alfanous.TextProcessing.NINE=src.alfanous.TextProcessing-module.html#NINE"><a title="src.alfanous.Support.ar_ctype.NINE
+src.alfanous.Support.arabic_const.NINE
+src.alfanous.TextProcessing.NINE" class="py-name" href="#" onclick="return doclink('link-52', 'NINE', 'link-52');">NINE</a></tt> <tt class="py-op">=</tt> <tt class="py-string">u'\u0669'</tt> </tt>
+<a name="L76"></a><tt class="py-lineno"> 76</tt>  <tt class="py-line"><tt id="link-53" class="py-name" targets="Variable src.alfanous.Support.ar_ctype.PERCENT=src.alfanous.Support.ar_ctype-module.html#PERCENT,Variable src.alfanous.Support.arabic_const.PERCENT=src.alfanous.Support.arabic_const-module.html#PERCENT,Variable src.alfanous.TextProcessing.PERCENT=src.alfanous.TextProcessing-module.html#PERCENT"><a title="src.alfanous.Support.ar_ctype.PERCENT
+src.alfanous.Support.arabic_const.PERCENT
+src.alfanous.TextProcessing.PERCENT" class="py-name" href="#" onclick="return doclink('link-53', 'PERCENT', 'link-53');">PERCENT</a></tt> <tt class="py-op">=</tt> <tt class="py-string">u'\u066a'</tt> </tt>
+<a name="L77"></a><tt class="py-lineno"> 77</tt>  <tt class="py-line"><tt id="link-54" class="py-name" targets="Variable src.alfanous.Support.ar_ctype.DECIMAL=src.alfanous.Support.ar_ctype-module.html#DECIMAL,Variable src.alfanous.Support.arabic_const.DECIMAL=src.alfanous.Support.arabic_const-module.html#DECIMAL,Variable src.alfanous.TextProcessing.DECIMAL=src.alfanous.TextProcessing-module.html#DECIMAL"><a title="src.alfanous.Support.ar_ctype.DECIMAL
+src.alfanous.Support.arabic_const.DECIMAL
+src.alfanous.TextProcessing.DECIMAL" class="py-name" href="#" onclick="return doclink('link-54', 'DECIMAL', 'link-54');">DECIMAL</a></tt> <tt class="py-op">=</tt> <tt class="py-string">u'\u066b'</tt> </tt>
+<a name="L78"></a><tt class="py-lineno"> 78</tt>  <tt class="py-line"><tt id="link-55" class="py-name" targets="Variable src.alfanous.Support.ar_ctype.THOUSANDS=src.alfanous.Support.ar_ctype-module.html#THOUSANDS,Variable src.alfanous.Support.arabic_const.THOUSANDS=src.alfanous.Support.arabic_const-module.html#THOUSANDS,Variable src.alfanous.TextProcessing.THOUSANDS=src.alfanous.TextProcessing-module.html#THOUSANDS"><a title="src.alfanous.Support.ar_ctype.THOUSANDS
+src.alfanous.Support.arabic_const.THOUSANDS
+src.alfanous.TextProcessing.THOUSANDS" class="py-name" href="#" onclick="return doclink('link-55', 'THOUSANDS', 'link-55');">THOUSANDS</a></tt> <tt class="py-op">=</tt> <tt class="py-string">u'\u066c'</tt> </tt>
+<a name="L79"></a><tt class="py-lineno"> 79</tt>  <tt class="py-line"><tt id="link-56" class="py-name" targets="Variable src.alfanous.Support.ar_ctype.STAR=src.alfanous.Support.ar_ctype-module.html#STAR,Variable src.alfanous.Support.arabic_const.STAR=src.alfanous.Support.arabic_const-module.html#STAR,Variable src.alfanous.TextProcessing.STAR=src.alfanous.TextProcessing-module.html#STAR"><a title="src.alfanous.Support.ar_ctype.STAR
+src.alfanous.Support.arabic_const.STAR
+src.alfanous.TextProcessing.STAR" class="py-name" href="#" onclick="return doclink('link-56', 'STAR', 'link-56');">STAR</a></tt> <tt class="py-op">=</tt> <tt class="py-string">u'\u066d'</tt> </tt>
+<a name="L80"></a><tt class="py-lineno"> 80</tt>  <tt class="py-line"><tt id="link-57" class="py-name" targets="Variable src.alfanous.Support.ar_ctype.MINI_ALEF=src.alfanous.Support.ar_ctype-module.html#MINI_ALEF,Variable src.alfanous.Support.arabic_const.MINI_ALEF=src.alfanous.Support.arabic_const-module.html#MINI_ALEF,Variable src.alfanous.TextProcessing.MINI_ALEF=src.alfanous.TextProcessing-module.html#MINI_ALEF"><a title="src.alfanous.Support.ar_ctype.MINI_ALEF
+src.alfanous.Support.arabic_const.MINI_ALEF
+src.alfanous.TextProcessing.MINI_ALEF" class="py-name" href="#" onclick="return doclink('link-57', 'MINI_ALEF', 'link-57');">MINI_ALEF</a></tt> <tt class="py-op">=</tt> <tt class="py-string">u'\u0670'</tt> </tt>
+<a name="L81"></a><tt class="py-lineno"> 81</tt>  <tt class="py-line"><tt id="link-58" class="py-name" targets="Variable src.alfanous.Support.ar_ctype.ALEF_WASLA=src.alfanous.Support.ar_ctype-module.html#ALEF_WASLA,Variable src.alfanous.Support.arabic_const.ALEF_WASLA=src.alfanous.Support.arabic_const-module.html#ALEF_WASLA,Variable src.alfanous.TextProcessing.ALEF_WASLA=src.alfanous.TextProcessing-module.html#ALEF_WASLA"><a title="src.alfanous.Support.ar_ctype.ALEF_WASLA
+src.alfanous.Support.arabic_const.ALEF_WASLA
+src.alfanous.TextProcessing.ALEF_WASLA" class="py-name" href="#" onclick="return doclink('link-58', 'ALEF_WASLA', 'link-58');">ALEF_WASLA</a></tt> <tt class="py-op">=</tt> <tt class="py-string">u'\u0671'</tt> </tt>
+<a name="L82"></a><tt class="py-lineno"> 82</tt>  <tt class="py-line"><tt id="link-59" class="py-name" targets="Variable src.alfanous.Support.ar_ctype.FULL_STOP=src.alfanous.Support.ar_ctype-module.html#FULL_STOP,Variable src.alfanous.Support.arabic_const.FULL_STOP=src.alfanous.Support.arabic_const-module.html#FULL_STOP,Variable src.alfanous.TextProcessing.FULL_STOP=src.alfanous.TextProcessing-module.html#FULL_STOP"><a title="src.alfanous.Support.ar_ctype.FULL_STOP
+src.alfanous.Support.arabic_const.FULL_STOP
+src.alfanous.TextProcessing.FULL_STOP" class="py-name" href="#" onclick="return doclink('link-59', 'FULL_STOP', 'link-59');">FULL_STOP</a></tt> <tt class="py-op">=</tt> <tt class="py-string">u'\u06d4'</tt> </tt>
+<a name="L83"></a><tt class="py-lineno"> 83</tt>  <tt class="py-line"><tt id="link-60" class="py-name" targets="Variable src.alfanous.Support.ar_ctype.BYTE_ORDER_MARK=src.alfanous.Support.ar_ctype-module.html#BYTE_ORDER_MARK,Variable src.alfanous.Support.arabic_const.BYTE_ORDER_MARK=src.alfanous.Support.arabic_const-module.html#BYTE_ORDER_MARK,Variable src.alfanous.TextProcessing.BYTE_ORDER_MARK=src.alfanous.TextProcessing-module.html#BYTE_ORDER_MARK"><a title="src.alfanous.Support.ar_ctype.BYTE_ORDER_MARK
+src.alfanous.Support.arabic_const.BYTE_ORDER_MARK
+src.alfanous.TextProcessing.BYTE_ORDER_MARK" class="py-name" href="#" onclick="return doclink('link-60', 'BYTE_ORDER_MARK', 'link-60');">BYTE_ORDER_MARK</a></tt> <tt class="py-op">=</tt> <tt class="py-string">u'\ufeff'</tt> </tt>
+<a name="L84"></a><tt class="py-lineno"> 84</tt>  <tt class="py-line"> </tt>
+<a name="L85"></a><tt class="py-lineno"> 85</tt>  <tt class="py-line"><tt class="py-comment"># Diacritics</tt> </tt>
+<a name="L86"></a><tt class="py-lineno"> 86</tt>  <tt class="py-line"><tt id="link-61" class="py-name" targets="Variable src.alfanous.Support.ar_ctype.FATHATAN=src.alfanous.Support.ar_ctype-module.html#FATHATAN,Variable src.alfanous.Support.arabic_const.FATHATAN=src.alfanous.Support.arabic_const-module.html#FATHATAN,Variable src.alfanous.TextProcessing.FATHATAN=src.alfanous.TextProcessing-module.html#FATHATAN"><a title="src.alfanous.Support.ar_ctype.FATHATAN
+src.alfanous.Support.arabic_const.FATHATAN
+src.alfanous.TextProcessing.FATHATAN" class="py-name" href="#" onclick="return doclink('link-61', 'FATHATAN', 'link-61');">FATHATAN</a></tt> <tt class="py-op">=</tt> <tt class="py-string">u'\u064b'</tt> </tt>
+<a name="L87"></a><tt class="py-lineno"> 87</tt>  <tt class="py-line"><tt id="link-62" class="py-name" targets="Variable src.alfanous.Support.ar_ctype.DAMMATAN=src.alfanous.Support.ar_ctype-module.html#DAMMATAN,Variable src.alfanous.Support.arabic_const.DAMMATAN=src.alfanous.Support.arabic_const-module.html#DAMMATAN,Variable src.alfanous.TextProcessing.DAMMATAN=src.alfanous.TextProcessing-module.html#DAMMATAN"><a title="src.alfanous.Support.ar_ctype.DAMMATAN
+src.alfanous.Support.arabic_const.DAMMATAN
+src.alfanous.TextProcessing.DAMMATAN" class="py-name" href="#" onclick="return doclink('link-62', 'DAMMATAN', 'link-62');">DAMMATAN</a></tt> <tt class="py-op">=</tt> <tt class="py-string">u'\u064c'</tt> </tt>
+<a name="L88"></a><tt class="py-lineno"> 88</tt>  <tt class="py-line"><tt id="link-63" class="py-name" targets="Variable src.alfanous.Support.ar_ctype.KASRATAN=src.alfanous.Support.ar_ctype-module.html#KASRATAN,Variable src.alfanous.Support.arabic_const.KASRATAN=src.alfanous.Support.arabic_const-module.html#KASRATAN,Variable src.alfanous.TextProcessing.KASRATAN=src.alfanous.TextProcessing-module.html#KASRATAN"><a title="src.alfanous.Support.ar_ctype.KASRATAN
+src.alfanous.Support.arabic_const.KASRATAN
+src.alfanous.TextProcessing.KASRATAN" class="py-name" href="#" onclick="return doclink('link-63', 'KASRATAN', 'link-63');">KASRATAN</a></tt> <tt class="py-op">=</tt> <tt class="py-string">u'\u064d'</tt> </tt>
+<a name="L89"></a><tt class="py-lineno"> 89</tt>  <tt class="py-line"><tt id="link-64" class="py-name" targets="Variable src.alfanous.Support.ar_ctype.FATHA=src.alfanous.Support.ar_ctype-module.html#FATHA,Variable src.alfanous.Support.arabic_const.FATHA=src.alfanous.Support.arabic_const-module.html#FATHA,Variable src.alfanous.TextProcessing.FATHA=src.alfanous.TextProcessing-module.html#FATHA"><a title="src.alfanous.Support.ar_ctype.FATHA
+src.alfanous.Support.arabic_const.FATHA
+src.alfanous.TextProcessing.FATHA" class="py-name" href="#" onclick="return doclink('link-64', 'FATHA', 'link-64');">FATHA</a></tt> <tt class="py-op">=</tt> <tt class="py-string">u'\u064e'</tt> </tt>
+<a name="L90"></a><tt class="py-lineno"> 90</tt>  <tt class="py-line"><tt id="link-65" class="py-name" targets="Variable src.alfanous.Support.ar_ctype.DAMMA=src.alfanous.Support.ar_ctype-module.html#DAMMA,Variable src.alfanous.Support.arabic_const.DAMMA=src.alfanous.Support.arabic_const-module.html#DAMMA,Variable src.alfanous.TextProcessing.DAMMA=src.alfanous.TextProcessing-module.html#DAMMA"><a title="src.alfanous.Support.ar_ctype.DAMMA
+src.alfanous.Support.arabic_const.DAMMA
+src.alfanous.TextProcessing.DAMMA" class="py-name" href="#" onclick="return doclink('link-65', 'DAMMA', 'link-65');">DAMMA</a></tt> <tt class="py-op">=</tt> <tt class="py-string">u'\u064f'</tt> </tt>
+<a name="L91"></a><tt class="py-lineno"> 91</tt>  <tt class="py-line"><tt id="link-66" class="py-name" targets="Variable src.alfanous.Support.ar_ctype.KASRA=src.alfanous.Support.ar_ctype-module.html#KASRA,Variable src.alfanous.Support.arabic_const.KASRA=src.alfanous.Support.arabic_const-module.html#KASRA,Variable src.alfanous.TextProcessing.KASRA=src.alfanous.TextProcessing-module.html#KASRA"><a title="src.alfanous.Support.ar_ctype.KASRA
+src.alfanous.Support.arabic_const.KASRA
+src.alfanous.TextProcessing.KASRA" class="py-name" href="#" onclick="return doclink('link-66', 'KASRA', 'link-66');">KASRA</a></tt> <tt class="py-op">=</tt> <tt class="py-string">u'\u0650'</tt> </tt>
+<a name="L92"></a><tt class="py-lineno"> 92</tt>  <tt class="py-line"><tt id="link-67" class="py-name" targets="Variable src.alfanous.Support.ar_ctype.SHADDA=src.alfanous.Support.ar_ctype-module.html#SHADDA,Variable src.alfanous.Support.arabic_const.SHADDA=src.alfanous.Support.arabic_const-module.html#SHADDA,Variable src.alfanous.TextProcessing.SHADDA=src.alfanous.TextProcessing-module.html#SHADDA"><a title="src.alfanous.Support.ar_ctype.SHADDA
+src.alfanous.Support.arabic_const.SHADDA
+src.alfanous.TextProcessing.SHADDA" class="py-name" href="#" onclick="return doclink('link-67', 'SHADDA', 'link-67');">SHADDA</a></tt> <tt class="py-op">=</tt> <tt class="py-string">u'\u0651'</tt> </tt>
+<a name="L93"></a><tt class="py-lineno"> 93</tt>  <tt class="py-line"><tt id="link-68" class="py-name" targets="Variable src.alfanous.Support.ar_ctype.SUKUN=src.alfanous.Support.ar_ctype-module.html#SUKUN,Variable src.alfanous.Support.arabic_const.SUKUN=src.alfanous.Support.arabic_const-module.html#SUKUN,Variable src.alfanous.TextProcessing.SUKUN=src.alfanous.TextProcessing-module.html#SUKUN"><a title="src.alfanous.Support.ar_ctype.SUKUN
+src.alfanous.Support.arabic_const.SUKUN
+src.alfanous.TextProcessing.SUKUN" class="py-name" href="#" onclick="return doclink('link-68', 'SUKUN', 'link-68');">SUKUN</a></tt> <tt class="py-op">=</tt> <tt class="py-string">u'\u0652'</tt> </tt>
+<a name="L94"></a><tt class="py-lineno"> 94</tt>  <tt class="py-line"> </tt>
+<a name="L95"></a><tt class="py-lineno"> 95</tt>  <tt class="py-line"><tt id="link-69" class="py-name" targets="Variable src.alfanous.Support.ar_ctype.SMALL_ALEF=src.alfanous.Support.ar_ctype-module.html#SMALL_ALEF,Variable src.alfanous.Support.arabic_const.SMALL_ALEF=src.alfanous.Support.arabic_const-module.html#SMALL_ALEF,Variable src.alfanous.TextProcessing.SMALL_ALEF=src.alfanous.TextProcessing-module.html#SMALL_ALEF"><a title="src.alfanous.Support.ar_ctype.SMALL_ALEF
+src.alfanous.Support.arabic_const.SMALL_ALEF
+src.alfanous.TextProcessing.SMALL_ALEF" class="py-name" href="#" onclick="return doclink('link-69', 'SMALL_ALEF', 'link-69');">SMALL_ALEF</a></tt> <tt class="py-op">=</tt> <tt class="py-string">u"\u0670"</tt> </tt>
+<a name="L96"></a><tt class="py-lineno"> 96</tt>  <tt class="py-line"><tt id="link-70" class="py-name" targets="Variable src.alfanous.Support.ar_ctype.SMALL_WAW=src.alfanous.Support.ar_ctype-module.html#SMALL_WAW,Variable src.alfanous.Support.arabic_const.SMALL_WAW=src.alfanous.Support.arabic_const-module.html#SMALL_WAW,Variable src.alfanous.TextProcessing.SMALL_WAW=src.alfanous.TextProcessing-module.html#SMALL_WAW"><a title="src.alfanous.Support.ar_ctype.SMALL_WAW
+src.alfanous.Support.arabic_const.SMALL_WAW
+src.alfanous.TextProcessing.SMALL_WAW" class="py-name" href="#" onclick="return doclink('link-70', 'SMALL_WAW', 'link-70');">SMALL_WAW</a></tt> <tt class="py-op">=</tt> <tt class="py-string">u"\u06E5"</tt> </tt>
+<a name="L97"></a><tt class="py-lineno"> 97</tt>  <tt class="py-line"><tt id="link-71" class="py-name" targets="Variable src.alfanous.Support.ar_ctype.SMALL_YEH=src.alfanous.Support.ar_ctype-module.html#SMALL_YEH,Variable src.alfanous.Support.arabic_const.SMALL_YEH=src.alfanous.Support.arabic_const-module.html#SMALL_YEH,Variable src.alfanous.TextProcessing.SMALL_YEH=src.alfanous.TextProcessing-module.html#SMALL_YEH"><a title="src.alfanous.Support.ar_ctype.SMALL_YEH
+src.alfanous.Support.arabic_const.SMALL_YEH
+src.alfanous.TextProcessing.SMALL_YEH" class="py-name" href="#" onclick="return doclink('link-71', 'SMALL_YEH', 'link-71');">SMALL_YEH</a></tt> <tt class="py-op">=</tt> <tt class="py-string">u"\u06E6"</tt> </tt>
+<a name="L98"></a><tt class="py-lineno"> 98</tt>  <tt class="py-line"> </tt>
+<a name="L99"></a><tt class="py-lineno"> 99</tt>  <tt class="py-line"><tt class="py-comment">#Ligatures</tt> </tt>
+<a name="L100"></a><tt class="py-lineno">100</tt>  <tt class="py-line"><tt id="link-72" class="py-name" targets="Variable src.alfanous.Support.ar_ctype.LAM_ALEF=src.alfanous.Support.ar_ctype-module.html#LAM_ALEF,Variable src.alfanous.Support.arabic_const.LAM_ALEF=src.alfanous.Support.arabic_const-module.html#LAM_ALEF,Variable src.alfanous.TextProcessing.LAM_ALEF=src.alfanous.TextProcessing-module.html#LAM_ALEF"><a title="src.alfanous.Support.ar_ctype.LAM_ALEF
+src.alfanous.Support.arabic_const.LAM_ALEF
+src.alfanous.TextProcessing.LAM_ALEF" class="py-name" href="#" onclick="return doclink('link-72', 'LAM_ALEF', 'link-72');">LAM_ALEF</a></tt> <tt class="py-op">=</tt> <tt class="py-string">u'\ufefb'</tt> </tt>
+<a name="L101"></a><tt class="py-lineno">101</tt>  <tt class="py-line"><tt id="link-73" class="py-name" targets="Variable src.alfanous.Support.ar_ctype.LAM_ALEF_HAMZA_ABOVE=src.alfanous.Support.ar_ctype-module.html#LAM_ALEF_HAMZA_ABOVE,Variable src.alfanous.Support.arabic_const.LAM_ALEF_HAMZA_ABOVE=src.alfanous.Support.arabic_const-module.html#LAM_ALEF_HAMZA_ABOVE,Variable src.alfanous.TextProcessing.LAM_ALEF_HAMZA_ABOVE=src.alfanous.TextProcessing-module.html#LAM_ALEF_HAMZA_ABOVE"><a title="src.alfanous.Support.ar_ctype.LAM_ALEF_HAMZA_ABOVE
+src.alfanous.Support.arabic_const.LAM_ALEF_HAMZA_ABOVE
+src.alfanous.TextProcessing.LAM_ALEF_HAMZA_ABOVE" class="py-name" href="#" onclick="return doclink('link-73', 'LAM_ALEF_HAMZA_ABOVE', 'link-73');">LAM_ALEF_HAMZA_ABOVE</a></tt> <tt class="py-op">=</tt> <tt class="py-string">u'\ufef7'</tt> </tt>
+<a name="L102"></a><tt class="py-lineno">102</tt>  <tt class="py-line"><tt id="link-74" class="py-name" targets="Variable src.alfanous.Support.ar_ctype.LAM_ALEF_HAMZA_BELOW=src.alfanous.Support.ar_ctype-module.html#LAM_ALEF_HAMZA_BELOW,Variable src.alfanous.Support.arabic_const.LAM_ALEF_HAMZA_BELOW=src.alfanous.Support.arabic_const-module.html#LAM_ALEF_HAMZA_BELOW,Variable src.alfanous.TextProcessing.LAM_ALEF_HAMZA_BELOW=src.alfanous.TextProcessing-module.html#LAM_ALEF_HAMZA_BELOW"><a title="src.alfanous.Support.ar_ctype.LAM_ALEF_HAMZA_BELOW
+src.alfanous.Support.arabic_const.LAM_ALEF_HAMZA_BELOW
+src.alfanous.TextProcessing.LAM_ALEF_HAMZA_BELOW" class="py-name" href="#" onclick="return doclink('link-74', 'LAM_ALEF_HAMZA_BELOW', 'link-74');">LAM_ALEF_HAMZA_BELOW</a></tt> <tt class="py-op">=</tt> <tt class="py-string">u'\ufef9'</tt> </tt>
+<a name="L103"></a><tt class="py-lineno">103</tt>  <tt class="py-line"><tt id="link-75" class="py-name" targets="Variable src.alfanous.Support.ar_ctype.LAM_ALEF_MADDA_ABOVE=src.alfanous.Support.ar_ctype-module.html#LAM_ALEF_MADDA_ABOVE,Variable src.alfanous.Support.arabic_const.LAM_ALEF_MADDA_ABOVE=src.alfanous.Support.arabic_const-module.html#LAM_ALEF_MADDA_ABOVE,Variable src.alfanous.TextProcessing.LAM_ALEF_MADDA_ABOVE=src.alfanous.TextProcessing-module.html#LAM_ALEF_MADDA_ABOVE"><a title="src.alfanous.Support.ar_ctype.LAM_ALEF_MADDA_ABOVE
+src.alfanous.Support.arabic_const.LAM_ALEF_MADDA_ABOVE
+src.alfanous.TextProcessing.LAM_ALEF_MADDA_ABOVE" class="py-name" href="#" onclick="return doclink('link-75', 'LAM_ALEF_MADDA_ABOVE', 'link-75');">LAM_ALEF_MADDA_ABOVE</a></tt> <tt class="py-op">=</tt> <tt class="py-string">u'\ufef5'</tt> </tt>
+<a name="L104"></a><tt class="py-lineno">104</tt>  <tt class="py-line"><tt id="link-76" class="py-name" targets="Variable src.alfanous.Support.ar_ctype.simple_LAM_ALEF=src.alfanous.Support.ar_ctype-module.html#simple_LAM_ALEF,Variable src.alfanous.Support.arabic_const.simple_LAM_ALEF=src.alfanous.Support.arabic_const-module.html#simple_LAM_ALEF,Variable src.alfanous.TextProcessing.simple_LAM_ALEF=src.alfanous.TextProcessing-module.html#simple_LAM_ALEF"><a title="src.alfanous.Support.ar_ctype.simple_LAM_ALEF
+src.alfanous.Support.arabic_const.simple_LAM_ALEF
+src.alfanous.TextProcessing.simple_LAM_ALEF" class="py-name" href="#" onclick="return doclink('link-76', 'simple_LAM_ALEF', 'link-76');">simple_LAM_ALEF</a></tt> <tt class="py-op">=</tt> <tt id="link-77" class="py-name"><a title="src.alfanous.Support.ar_ctype.LAM
+src.alfanous.Support.arabic_const.LAM
+src.alfanous.TextProcessing.LAM" class="py-name" href="#" onclick="return doclink('link-77', 'LAM', 'link-33');">LAM</a></tt> <tt class="py-op">+</tt> <tt id="link-78" class="py-name"><a title="src.alfanous.Support.ar_ctype.FATHA
+src.alfanous.Support.arabic_const.FATHA
+src.alfanous.TextProcessing.FATHA" class="py-name" href="#" onclick="return doclink('link-78', 'FATHA', 'link-64');">FATHA</a></tt> <tt class="py-op">+</tt> <tt id="link-79" class="py-name"><a title="src.alfanous.Support.ar_ctype.ALEF
+src.alfanous.Support.arabic_const.ALEF
+src.alfanous.TextProcessing.ALEF" class="py-name" href="#" onclick="return doclink('link-79', 'ALEF', 'link-9');">ALEF</a></tt> </tt>
+<a name="L105"></a><tt class="py-lineno">105</tt>  <tt class="py-line"><tt id="link-80" class="py-name" targets="Variable src.alfanous.Support.ar_ctype.simple_LAM_ALEF_HAMZA_ABOVE=src.alfanous.Support.ar_ctype-module.html#simple_LAM_ALEF_HAMZA_ABOVE,Variable src.alfanous.Support.arabic_const.simple_LAM_ALEF_HAMZA_ABOVE=src.alfanous.Support.arabic_const-module.html#simple_LAM_ALEF_HAMZA_ABOVE,Variable src.alfanous.TextProcessing.simple_LAM_ALEF_HAMZA_ABOVE=src.alfanous.TextProcessing-module.html#simple_LAM_ALEF_HAMZA_ABOVE"><a title="src.alfanous.Support.ar_ctype.simple_LAM_ALEF_HAMZA_ABOVE
+src.alfanous.Support.arabic_const.simple_LAM_ALEF_HAMZA_ABOVE
+src.alfanous.TextProcessing.simple_LAM_ALEF_HAMZA_ABOVE" class="py-name" href="#" onclick="return doclink('link-80', 'simple_LAM_ALEF_HAMZA_ABOVE', 'link-80');">simple_LAM_ALEF_HAMZA_ABOVE</a></tt> <tt class="py-op">=</tt> <tt id="link-81" class="py-name"><a title="src.alfanous.Support.ar_ctype.LAM
+src.alfanous.Support.arabic_const.LAM
+src.alfanous.TextProcessing.LAM" class="py-name" href="#" onclick="return doclink('link-81', 'LAM', 'link-33');">LAM</a></tt> <tt class="py-op">+</tt> <tt id="link-82" class="py-name"><a title="src.alfanous.Support.ar_ctype.ALEF_HAMZA_ABOVE
+src.alfanous.Support.arabic_const.ALEF_HAMZA_ABOVE
+src.alfanous.TextProcessing.ALEF_HAMZA_ABOVE" class="py-name" href="#" onclick="return doclink('link-82', 'ALEF_HAMZA_ABOVE', 'link-5');">ALEF_HAMZA_ABOVE</a></tt> </tt>
+<a name="L106"></a><tt class="py-lineno">106</tt>  <tt class="py-line"><tt id="link-83" class="py-name" targets="Variable src.alfanous.Support.ar_ctype.simple_LAM_ALEF_HAMZA_BELOW=src.alfanous.Support.ar_ctype-module.html#simple_LAM_ALEF_HAMZA_BELOW,Variable src.alfanous.Support.arabic_const.simple_LAM_ALEF_HAMZA_BELOW=src.alfanous.Support.arabic_const-module.html#simple_LAM_ALEF_HAMZA_BELOW,Variable src.alfanous.TextProcessing.simple_LAM_ALEF_HAMZA_BELOW=src.alfanous.TextProcessing-module.html#simple_LAM_ALEF_HAMZA_BELOW"><a title="src.alfanous.Support.ar_ctype.simple_LAM_ALEF_HAMZA_BELOW
+src.alfanous.Support.arabic_const.simple_LAM_ALEF_HAMZA_BELOW
+src.alfanous.TextProcessing.simple_LAM_ALEF_HAMZA_BELOW" class="py-name" href="#" onclick="return doclink('link-83', 'simple_LAM_ALEF_HAMZA_BELOW', 'link-83');">simple_LAM_ALEF_HAMZA_BELOW</a></tt> <tt class="py-op">=</tt> <tt id="link-84" class="py-name"><a title="src.alfanous.Support.ar_ctype.LAM
+src.alfanous.Support.arabic_const.LAM
+src.alfanous.TextProcessing.LAM" class="py-name" href="#" onclick="return doclink('link-84', 'LAM', 'link-33');">LAM</a></tt> <tt class="py-op">+</tt> <tt id="link-85" class="py-name"><a title="src.alfanous.Support.ar_ctype.ALEF_HAMZA_BELOW
+src.alfanous.Support.arabic_const.ALEF_HAMZA_BELOW
+src.alfanous.TextProcessing.ALEF_HAMZA_BELOW" class="py-name" href="#" onclick="return doclink('link-85', 'ALEF_HAMZA_BELOW', 'link-7');">ALEF_HAMZA_BELOW</a></tt> </tt>
+<a name="L107"></a><tt class="py-lineno">107</tt>  <tt class="py-line"><tt id="link-86" class="py-name" targets="Variable src.alfanous.Support.ar_ctype.simple_LAM_ALEF_MADDA_ABOVE=src.alfanous.Support.ar_ctype-module.html#simple_LAM_ALEF_MADDA_ABOVE,Variable src.alfanous.Support.arabic_const.simple_LAM_ALEF_MADDA_ABOVE=src.alfanous.Support.arabic_const-module.html#simple_LAM_ALEF_MADDA_ABOVE,Variable src.alfanous.TextProcessing.simple_LAM_ALEF_MADDA_ABOVE=src.alfanous.TextProcessing-module.html#simple_LAM_ALEF_MADDA_ABOVE"><a title="src.alfanous.Support.ar_ctype.simple_LAM_ALEF_MADDA_ABOVE
+src.alfanous.Support.arabic_const.simple_LAM_ALEF_MADDA_ABOVE
+src.alfanous.TextProcessing.simple_LAM_ALEF_MADDA_ABOVE" class="py-name" href="#" onclick="return doclink('link-86', 'simple_LAM_ALEF_MADDA_ABOVE', 'link-86');">simple_LAM_ALEF_MADDA_ABOVE</a></tt> <tt class="py-op">=</tt> <tt id="link-87" class="py-name"><a title="src.alfanous.Support.ar_ctype.LAM
+src.alfanous.Support.arabic_const.LAM
+src.alfanous.TextProcessing.LAM" class="py-name" href="#" onclick="return doclink('link-87', 'LAM', 'link-33');">LAM</a></tt> <tt class="py-op">+</tt> <tt id="link-88" class="py-name"><a title="src.alfanous.Support.ar_ctype.HAMZA
+src.alfanous.Support.arabic_const.HAMZA
+src.alfanous.TextProcessing.HAMZA" class="py-name" href="#" onclick="return doclink('link-88', 'HAMZA', 'link-3');">HAMZA</a></tt> <tt class="py-op">+</tt> <tt id="link-89" class="py-name"><a title="src.alfanous.Support.ar_ctype.FATHA
+src.alfanous.Support.arabic_const.FATHA
+src.alfanous.TextProcessing.FATHA" class="py-name" href="#" onclick="return doclink('link-89', 'FATHA', 'link-64');">FATHA</a></tt> <tt class="py-op">+</tt> <tt id="link-90" class="py-name"><a title="src.alfanous.Support.ar_ctype.ALEF
+src.alfanous.Support.arabic_const.ALEF
+src.alfanous.TextProcessing.ALEF" class="py-name" href="#" onclick="return doclink('link-90', 'ALEF', 'link-9');">ALEF</a></tt> </tt>
+<a name="L108"></a><tt class="py-lineno">108</tt>  <tt class="py-line"> </tt><script type="text/javascript">
+<!--
+expandto(location.href);
+// -->
+</script>
+</pre>
+<br />
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="src.alfanous-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            ><a class="navbar" target="_top" href="alfanous.sourceforge.com">Alfanous</a></th>
+          </tr></table></th>
+  </tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" width="100%%">
+  <tr>
+    <td align="left" class="footer">
+    Generated by Epydoc 3.0.1 on Sun Apr 11 06:14:23 2010
+    </td>
+    <td align="right" class="footer">
+      <a target="mainFrame" href="http://epydoc.sourceforge.net"
+        >http://epydoc.sourceforge.net</a>
+    </td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+  <!--
+  // Private objects are initially displayed (because if
+  // javascript is turned off then we want them to be
+  // visible); but by default, we want to hide them.  So hide
+  // them unless we have a cookie that says to show them.
+  checkCookie();
+  // -->
+</script>
+</body>
+</html>

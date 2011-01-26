@@ -1,0 +1,294 @@
+<?xml version="1.0" encoding="ascii"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>alfanous.main</title>
+  <link rel="stylesheet" href="epydoc.css" type="text/css" />
+  <script type="text/javascript" src="epydoc.js"></script>
+</head>
+
+<body bgcolor="white" text="black" link="blue" vlink="#204080"
+      alink="#204080">
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="alfanous-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            ><a class="navbar" target="_top" href="alfanous.sourceforge.com">Alfanous</a></th>
+          </tr></table></th>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="100%">
+      <span class="breadcrumbs">
+        <a href="alfanous-module.html">Package&nbsp;alfanous</a> ::
+        Module&nbsp;main
+      </span>
+    </td>
+    <td>
+      <table cellpadding="0" cellspacing="0">
+        <!-- hide/show private -->
+        <tr><td align="right"><span class="options">[<a href="javascript:void(0);" class="privatelink"
+    onclick="toggle_private();">hide&nbsp;private</a>]</span></td></tr>
+        <tr><td align="right"><span class="options"
+            >[<a href="frames.html" target="_top">frames</a
+            >]&nbsp;|&nbsp;<a href="alfanous.main-pysrc.html"
+            target="_top">no&nbsp;frames</a>]</span></td></tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<h1 class="epydoc">Source Code for <a href="alfanous.main-module.html">Module alfanous.main</a></h1>
+<pre class="py-src">
+<a name="L1"></a><tt class="py-lineno">  1</tt>  <tt class="py-line"><tt class="py-comment"># coding: utf-8</tt> </tt>
+<a name="L2"></a><tt class="py-lineno">  2</tt>  <tt class="py-line"><tt class="py-docstring">'''</tt> </tt>
+<a name="L3"></a><tt class="py-lineno">  3</tt>  <tt class="py-line"><tt class="py-docstring">@author: assem</tt> </tt>
+<a name="L4"></a><tt class="py-lineno">  4</tt>  <tt class="py-line"><tt class="py-docstring">'''</tt> </tt>
+<a name="L5"></a><tt class="py-lineno">  5</tt>  <tt class="py-line"><tt class="py-comment">#       This program is free software; you can redistribute it and/or modify</tt> </tt>
+<a name="L6"></a><tt class="py-lineno">  6</tt>  <tt class="py-line"><tt class="py-comment">#       it under the terms of the GNU General Public License as published by</tt> </tt>
+<a name="L7"></a><tt class="py-lineno">  7</tt>  <tt class="py-line"><tt class="py-comment">#       the Free Software Foundation; either version 2 of the License, or</tt> </tt>
+<a name="L8"></a><tt class="py-lineno">  8</tt>  <tt class="py-line"><tt class="py-comment">#       (at your option) any later version.</tt> </tt>
+<a name="L9"></a><tt class="py-lineno">  9</tt>  <tt class="py-line"><tt class="py-comment">#       </tt> </tt>
+<a name="L10"></a><tt class="py-lineno"> 10</tt>  <tt class="py-line"><tt class="py-comment">#       This program is distributed in the hope that it will be useful,</tt> </tt>
+<a name="L11"></a><tt class="py-lineno"> 11</tt>  <tt class="py-line"><tt class="py-comment">#       but WITHOUT ANY WARRANTY; without even the implied warranty of</tt> </tt>
+<a name="L12"></a><tt class="py-lineno"> 12</tt>  <tt class="py-line"><tt class="py-comment">#       MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the</tt> </tt>
+<a name="L13"></a><tt class="py-lineno"> 13</tt>  <tt class="py-line"><tt class="py-comment">#       GNU General Public License for more details.</tt> </tt>
+<a name="L14"></a><tt class="py-lineno"> 14</tt>  <tt class="py-line"><tt class="py-comment">#       </tt> </tt>
+<a name="L15"></a><tt class="py-lineno"> 15</tt>  <tt class="py-line"><tt class="py-comment">#       You should have received a copy of the GNU General Public License</tt> </tt>
+<a name="L16"></a><tt class="py-lineno"> 16</tt>  <tt class="py-line"><tt class="py-comment">#       along with this program; if not, write to the Free Software</tt> </tt>
+<a name="L17"></a><tt class="py-lineno"> 17</tt>  <tt class="py-line"><tt class="py-comment">#       Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,</tt> </tt>
+<a name="L18"></a><tt class="py-lineno"> 18</tt>  <tt class="py-line"><tt class="py-comment">#       MA 02110-1301, USA.</tt> </tt>
+<a name="L19"></a><tt class="py-lineno"> 19</tt>  <tt class="py-line"> </tt>
+<a name="L20"></a><tt class="py-lineno"> 20</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt id="link-0" class="py-name" targets="Module alfanous.Searching=alfanous.Searching-module.html"><a title="alfanous.Searching" class="py-name" href="#" onclick="return doclink('link-0', 'Searching', 'link-0');">Searching</a></tt> <tt class="py-keyword">import</tt> <tt id="link-1" class="py-name" targets="Class alfanous.Searching.QSearcher=alfanous.Searching.QSearcher-class.html"><a title="alfanous.Searching.QSearcher" class="py-name" href="#" onclick="return doclink('link-1', 'QSearcher', 'link-1');">QSearcher</a></tt><tt class="py-op">,</tt> <tt id="link-2" class="py-name" targets="Class alfanous.Searching.QReader=alfanous.Searching.QReader-class.html"><a title="alfanous.Searching.QReader" class="py-name" href="#" onclick="return doclink('link-2', 'QReader', 'link-2');">QReader</a></tt> </tt>
+<a name="L21"></a><tt class="py-lineno"> 21</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt id="link-3" class="py-name" targets="Module alfanous.Indexing=alfanous.Indexing-module.html"><a title="alfanous.Indexing" class="py-name" href="#" onclick="return doclink('link-3', 'Indexing', 'link-3');">Indexing</a></tt> <tt class="py-keyword">import</tt> <tt id="link-4" class="py-name" targets="Class alfanous.Indexing.QseDocIndex=alfanous.Indexing.QseDocIndex-class.html"><a title="alfanous.Indexing.QseDocIndex" class="py-name" href="#" onclick="return doclink('link-4', 'QseDocIndex', 'link-4');">QseDocIndex</a></tt> </tt>
+<a name="L22"></a><tt class="py-lineno"> 22</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt id="link-5" class="py-name" targets="Module alfanous.QueryProcessing=alfanous.QueryProcessing-module.html"><a title="alfanous.QueryProcessing" class="py-name" href="#" onclick="return doclink('link-5', 'QueryProcessing', 'link-5');">QueryProcessing</a></tt> <tt class="py-keyword">import</tt> <tt id="link-6" class="py-name" targets="Class alfanous.QueryProcessing.QSuggester=alfanous.QueryProcessing.QSuggester-class.html"><a title="alfanous.QueryProcessing.QSuggester" class="py-name" href="#" onclick="return doclink('link-6', 'QSuggester', 'link-6');">QSuggester</a></tt> </tt>
+<a name="L23"></a><tt class="py-lineno"> 23</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt id="link-7" class="py-name" targets="Module alfanous.ResultsProcessing=alfanous.ResultsProcessing-module.html"><a title="alfanous.ResultsProcessing" class="py-name" href="#" onclick="return doclink('link-7', 'ResultsProcessing', 'link-7');">ResultsProcessing</a></tt> <tt class="py-keyword">import</tt> <tt id="link-8" class="py-name" targets="Function alfanous.ResultsProcessing.Qhighlight()=alfanous.ResultsProcessing-module.html#Qhighlight"><a title="alfanous.ResultsProcessing.Qhighlight" class="py-name" href="#" onclick="return doclink('link-8', 'Qhighlight', 'link-8');">Qhighlight</a></tt><tt class="py-op">,</tt> <tt id="link-9" class="py-name" targets="Function alfanous.ResultsProcessing.QPaginate()=alfanous.ResultsProcessing-module.html#QPaginate"><a title="alfanous.ResultsProcessing.QPaginate" class="py-name" href="#" onclick="return doclink('link-9', 'QPaginate', 'link-9');">QPaginate</a></tt><tt class="py-op">,</tt> <tt id="link-10" class="py-name" targets="Function alfanous.ResultsProcessing.QFilter()=alfanous.ResultsProcessing-module.html#QFilter"><a title="alfanous.ResultsProcessing.QFilter" class="py-name" href="#" onclick="return doclink('link-10', 'QFilter', 'link-10');">QFilter</a></tt> </tt>
+<a name="L24"></a><tt class="py-lineno"> 24</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt id="link-11" class="py-name"><a title="alfanous.QueryProcessing" class="py-name" href="#" onclick="return doclink('link-11', 'QueryProcessing', 'link-5');">QueryProcessing</a></tt> <tt class="py-keyword">import</tt> <tt id="link-12" class="py-name" targets="Class alfanous.QueryProcessing.QuranicParser=alfanous.QueryProcessing.QuranicParser-class.html"><a title="alfanous.QueryProcessing.QuranicParser" class="py-name" href="#" onclick="return doclink('link-12', 'QuranicParser', 'link-12');">QuranicParser</a></tt> </tt>
+<a name="L25"></a><tt class="py-lineno"> 25</tt>  <tt class="py-line"> </tt>
+<a name="L26"></a><tt class="py-lineno"> 26</tt>  <tt class="py-line"> </tt>
+<a name="L27"></a><tt class="py-lineno"> 27</tt>  <tt class="py-line"> </tt>
+<a name="L28"></a><tt class="py-lineno"> 28</tt>  <tt class="py-line"><tt class="py-comment">#the crawler is optional</tt> </tt>
+<a name="L29"></a><tt class="py-lineno"> 29</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt class="py-name">os</tt><tt class="py-op">.</tt><tt class="py-name">path</tt> <tt class="py-keyword">import</tt> <tt class="py-name">exists</tt> </tt>
+<a name="L30"></a><tt class="py-lineno"> 30</tt>  <tt class="py-line"><tt class="py-keyword">if</tt> <tt class="py-name">exists</tt><tt class="py-op">(</tt><tt class="py-string">"Crawling"</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L31"></a><tt class="py-lineno"> 31</tt>  <tt class="py-line">    <tt class="py-keyword">import</tt> <tt id="link-13" class="py-name" targets="Package alfanous.Crawling=alfanous.Crawling-module.html,Variable alfanous.main.Crawling=alfanous.main-module.html#Crawling"><a title="alfanous.Crawling
+alfanous.main.Crawling" class="py-name" href="#" onclick="return doclink('link-13', 'Crawling', 'link-13');">Crawling</a></tt> </tt>
+<a name="L32"></a><tt class="py-lineno"> 32</tt>  <tt class="py-line"><tt class="py-keyword">else</tt><tt class="py-op">:</tt> </tt>
+<a name="L33"></a><tt class="py-lineno"> 33</tt>  <tt class="py-line">    <tt id="link-14" class="py-name"><a title="alfanous.Crawling
+alfanous.main.Crawling" class="py-name" href="#" onclick="return doclink('link-14', 'Crawling', 'link-13');">Crawling</a></tt> <tt class="py-op">=</tt> <tt class="py-name">None</tt> </tt>
+<a name="L34"></a><tt class="py-lineno"> 34</tt>  <tt class="py-line"> </tt>
+<a name="L35"></a><tt class="py-lineno"> 35</tt>  <tt class="py-line"> </tt>
+<a name="L36"></a><tt class="py-lineno"> 36</tt>  <tt class="py-line"> </tt>
+<a name="QuranicSearchEngine"></a><div id="QuranicSearchEngine-def"><a name="L37"></a><tt class="py-lineno"> 37</tt> <a class="py-toggle" href="#" id="QuranicSearchEngine-toggle" onclick="return toggle('QuranicSearchEngine');">-</a><tt class="py-line"><tt class="py-keyword">class</tt> <a class="py-def-name" href="alfanous.main.QuranicSearchEngine-class.html">QuranicSearchEngine</a><tt class="py-op">:</tt> </tt>
+</div><div id="QuranicSearchEngine-collapsed" style="display:none;" pad="+++" indent="++++"></div><div id="QuranicSearchEngine-expanded"><a name="L38"></a><tt class="py-lineno"> 38</tt>  <tt class="py-line">    <tt class="py-docstring">"""</tt> </tt>
+<a name="L39"></a><tt class="py-lineno"> 39</tt>  <tt class="py-line"><tt class="py-docstring">    the basic search engine</tt> </tt>
+<a name="L40"></a><tt class="py-lineno"> 40</tt>  <tt class="py-line"><tt class="py-docstring">    </tt> </tt>
+<a name="L41"></a><tt class="py-lineno"> 41</tt>  <tt class="py-line"><tt class="py-docstring">            &gt;&gt;&gt; QSE=QuranicSearchEngine()</tt> </tt>
+<a name="L42"></a><tt class="py-lineno"> 42</tt>  <tt class="py-line"><tt class="py-docstring">        </tt> </tt>
+<a name="L43"></a><tt class="py-lineno"> 43</tt>  <tt class="py-line"><tt class="py-docstring">    """</tt> </tt>
+<a name="QuranicSearchEngine.__init__"></a><div id="QuranicSearchEngine.__init__-def"><a name="L44"></a><tt class="py-lineno"> 44</tt> <a class="py-toggle" href="#" id="QuranicSearchEngine.__init__-toggle" onclick="return toggle('QuranicSearchEngine.__init__');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="alfanous.main.QuranicSearchEngine-class.html#__init__">__init__</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">indexpath</tt><tt class="py-op">=</tt><tt class="py-string">"./indexes/"</tt><tt class="py-op">,</tt> <tt class="py-param">qparser</tt><tt class="py-op">=</tt><tt class="py-name">None</tt><tt class="py-op">,</tt> <tt class="py-param">qsearcher</tt><tt class="py-op">=</tt><tt class="py-name">None</tt><tt class="py-op">,</tt> <tt class="py-param">qreader</tt><tt class="py-op">=</tt><tt class="py-name">None</tt><tt class="py-op">,</tt> <tt class="py-param">qsuggester</tt><tt class="py-op">=</tt><tt class="py-name">None</tt><tt class="py-op">,</tt> <tt class="py-param">qhighlight</tt><tt class="py-op">=</tt><tt class="py-name">None</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="QuranicSearchEngine.__init__-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="QuranicSearchEngine.__init__-expanded"><a name="L45"></a><tt class="py-lineno"> 45</tt>  <tt class="py-line">        <tt class="py-comment">#</tt> </tt>
+<a name="L46"></a><tt class="py-lineno"> 46</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">__docindex</tt> <tt class="py-op">=</tt> <tt id="link-15" class="py-name"><a title="alfanous.Indexing.QseDocIndex" class="py-name" href="#" onclick="return doclink('link-15', 'QseDocIndex', 'link-4');">QseDocIndex</a></tt><tt class="py-op">(</tt><tt class="py-name">indexpath</tt> <tt class="py-op">+</tt> <tt class="py-string">"main/"</tt><tt class="py-op">)</tt> </tt>
+<a name="L47"></a><tt class="py-lineno"> 47</tt>  <tt class="py-line">        <tt class="py-comment">#</tt> </tt>
+<a name="L48"></a><tt class="py-lineno"> 48</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">__schema</tt> <tt class="py-op">=</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">__docindex</tt><tt class="py-op">.</tt><tt id="link-16" class="py-name" targets="Method alfanous.Indexing.QseDocIndex.get_schema()=alfanous.Indexing.QseDocIndex-class.html#get_schema"><a title="alfanous.Indexing.QseDocIndex.get_schema" class="py-name" href="#" onclick="return doclink('link-16', 'get_schema', 'link-16');">get_schema</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L49"></a><tt class="py-lineno"> 49</tt>  <tt class="py-line">        <tt class="py-comment">#        </tt> </tt>
+<a name="L50"></a><tt class="py-lineno"> 50</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-name">qparser</tt><tt class="py-op">:</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">__qparser</tt> <tt class="py-op">=</tt> <tt class="py-name">qparser</tt> </tt>
+<a name="L51"></a><tt class="py-lineno"> 51</tt>  <tt class="py-line">        <tt class="py-keyword">else</tt><tt class="py-op">:</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">__qparser</tt> <tt class="py-op">=</tt> <tt id="link-17" class="py-name"><a title="alfanous.QueryProcessing.QuranicParser" class="py-name" href="#" onclick="return doclink('link-17', 'QuranicParser', 'link-12');">QuranicParser</a></tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">__schema</tt><tt class="py-op">)</tt> </tt>
+<a name="L52"></a><tt class="py-lineno"> 52</tt>  <tt class="py-line">        <tt class="py-comment">#</tt> </tt>
+<a name="L53"></a><tt class="py-lineno"> 53</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-name">qsearcher</tt><tt class="py-op">:</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">__qsearcher</tt> <tt class="py-op">=</tt> <tt class="py-name">qsearcher</tt> </tt>
+<a name="L54"></a><tt class="py-lineno"> 54</tt>  <tt class="py-line">        <tt class="py-keyword">else</tt><tt class="py-op">:</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">__qsearcher</tt> <tt class="py-op">=</tt> <tt id="link-18" class="py-name"><a title="alfanous.Searching.QSearcher" class="py-name" href="#" onclick="return doclink('link-18', 'QSearcher', 'link-1');">QSearcher</a></tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">__docindex</tt><tt class="py-op">,</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">__qparser</tt><tt class="py-op">)</tt> </tt>
+<a name="L55"></a><tt class="py-lineno"> 55</tt>  <tt class="py-line">        <tt class="py-comment">#</tt> </tt>
+<a name="L56"></a><tt class="py-lineno"> 56</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-name">qreader</tt><tt class="py-op">:</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">__qreader</tt> <tt class="py-op">=</tt> <tt class="py-name">qreader</tt> </tt>
+<a name="L57"></a><tt class="py-lineno"> 57</tt>  <tt class="py-line">        <tt class="py-keyword">else</tt><tt class="py-op">:</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">__qreader</tt> <tt class="py-op">=</tt> <tt id="link-19" class="py-name"><a title="alfanous.Searching.QReader" class="py-name" href="#" onclick="return doclink('link-19', 'QReader', 'link-2');">QReader</a></tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">__docindex</tt><tt class="py-op">)</tt> </tt>
+<a name="L58"></a><tt class="py-lineno"> 58</tt>  <tt class="py-line">        <tt class="py-comment">#</tt> </tt>
+<a name="L59"></a><tt class="py-lineno"> 59</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-name">qsuggester</tt><tt class="py-op">:</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">__qsuggester</tt> <tt class="py-op">=</tt> <tt class="py-name">qsuggester</tt> </tt>
+<a name="L60"></a><tt class="py-lineno"> 60</tt>  <tt class="py-line">        <tt class="py-keyword">else</tt><tt class="py-op">:</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">__qsuggester</tt> <tt class="py-op">=</tt> <tt id="link-20" class="py-name"><a title="alfanous.QueryProcessing.QSuggester" class="py-name" href="#" onclick="return doclink('link-20', 'QSuggester', 'link-6');">QSuggester</a></tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">__docindex</tt><tt class="py-op">,</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">__qparser</tt><tt class="py-op">)</tt> </tt>
+<a name="L61"></a><tt class="py-lineno"> 61</tt>  <tt class="py-line">        <tt class="py-comment">#</tt> </tt>
+<a name="L62"></a><tt class="py-lineno"> 62</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-name">qhighlight</tt><tt class="py-op">:</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">__qhighlight</tt> <tt class="py-op">=</tt> <tt class="py-name">qhighlight</tt> </tt>
+<a name="L63"></a><tt class="py-lineno"> 63</tt>  <tt class="py-line">        <tt class="py-keyword">else</tt><tt class="py-op">:</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">__qhighlight</tt> <tt class="py-op">=</tt> <tt id="link-21" class="py-name"><a title="alfanous.ResultsProcessing.Qhighlight" class="py-name" href="#" onclick="return doclink('link-21', 'Qhighlight', 'link-8');">Qhighlight</a></tt> </tt>
+</div><a name="L64"></a><tt class="py-lineno"> 64</tt>  <tt class="py-line">    <tt class="py-comment">#end  __init__  </tt> </tt>
+<a name="L65"></a><tt class="py-lineno"> 65</tt>  <tt class="py-line"> </tt>
+<a name="L66"></a><tt class="py-lineno"> 66</tt>  <tt class="py-line">     </tt>
+<a name="QuranicSearchEngine.search_all"></a><div id="QuranicSearchEngine.search_all-def"><a name="L67"></a><tt class="py-lineno"> 67</tt> <a class="py-toggle" href="#" id="QuranicSearchEngine.search_all-toggle" onclick="return toggle('QuranicSearchEngine.search_all');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="alfanous.main.QuranicSearchEngine-class.html#search_all">search_all</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">querystr</tt><tt class="py-op">,</tt> <tt class="py-param">limit</tt><tt class="py-op">=</tt><tt class="py-number">6236</tt><tt class="py-op">,</tt> <tt class="py-param">sortedby</tt><tt class="py-op">=</tt><tt class="py-string">"score"</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="QuranicSearchEngine.search_all-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="QuranicSearchEngine.search_all-expanded"><a name="L68"></a><tt class="py-lineno"> 68</tt>  <tt class="py-line">        <tt class="py-docstring">"""</tt> </tt>
+<a name="L69"></a><tt class="py-lineno"> 69</tt>  <tt class="py-line"><tt class="py-docstring">        search in the quran </tt> </tt>
+<a name="L70"></a><tt class="py-lineno"> 70</tt>  <tt class="py-line"><tt class="py-docstring">            </tt> </tt>
+<a name="L71"></a><tt class="py-lineno"> 71</tt>  <tt class="py-line"><tt class="py-docstring">                &gt;&gt;&gt; results,terms=search_all(u"&#1575;&#1604;&#1581;&#1605;&#1583;",limit=10,sortby="mushaf")</tt> </tt>
+<a name="L72"></a><tt class="py-lineno"> 72</tt>  <tt class="py-line"><tt class="py-docstring">                &gt;&gt;&gt; print ",".join([term[1] for term in list(terms)])</tt> </tt>
+<a name="L73"></a><tt class="py-lineno"> 73</tt>  <tt class="py-line"><tt class="py-docstring">                &#1575;&#1604;&#1581;&#1605;&#1583;    </tt> </tt>
+<a name="L74"></a><tt class="py-lineno"> 74</tt>  <tt class="py-line"><tt class="py-docstring">                &gt;&gt;&gt; for r in results:</tt> </tt>
+<a name="L75"></a><tt class="py-lineno"> 75</tt>  <tt class="py-line"><tt class="py-docstring">                &gt;&gt;&gt;         print "(" + r["aya_id"] + "," + r["sura_id"] + ") :" + u"&lt;p&gt;" + Qhighlight(r["aya_"], terms) + u"&lt;/p&gt;"</tt> </tt>
+<a name="L76"></a><tt class="py-lineno"> 76</tt>  <tt class="py-line"><tt class="py-docstring">                (2,1) :&lt;p&gt;&lt;span style="color:red;font-size:100.0%"&gt;&lt;b&gt;&#1575;&#1604;&#1618;&#1581;&#1614;&#1605;&#1618;&#1583;&#1615;&lt;/b&gt;&lt;/span&gt; &#1604;&#1616;&#1604;&#1617;&#1614;&#1607;&#1616; &#1585;&#1614;&#1576;&#1617;&#1616; &#1575;&#1604;&#1618;&#1593;&#1614;&#1575;&#1604;&#1614;&#1605;&#1616;&#1610;&#1606;&#1614;&lt;/p&gt;</tt> </tt>
+<a name="L77"></a><tt class="py-lineno"> 77</tt>  <tt class="py-line"><tt class="py-docstring"></tt> </tt>
+<a name="L78"></a><tt class="py-lineno"> 78</tt>  <tt class="py-line"><tt class="py-docstring">        @param querystr: the query</tt> </tt>
+<a name="L79"></a><tt class="py-lineno"> 79</tt>  <tt class="py-line"><tt class="py-docstring">        @type querystr: unicode</tt> </tt>
+<a name="L80"></a><tt class="py-lineno"> 80</tt>  <tt class="py-line"><tt class="py-docstring">        @param limit: the limit of results</tt> </tt>
+<a name="L81"></a><tt class="py-lineno"> 81</tt>  <tt class="py-line"><tt class="py-docstring">        @type limit: int</tt> </tt>
+<a name="L82"></a><tt class="py-lineno"> 82</tt>  <tt class="py-line"><tt class="py-docstring">        @param sortedby: the methode of sorting the results</tt> </tt>
+<a name="L83"></a><tt class="py-lineno"> 83</tt>  <tt class="py-line"><tt class="py-docstring">        @type sortedby: string</tt> </tt>
+<a name="L84"></a><tt class="py-lineno"> 84</tt>  <tt class="py-line"><tt class="py-docstring">        @return: the lists of terms and results</tt> </tt>
+<a name="L85"></a><tt class="py-lineno"> 85</tt>  <tt class="py-line"><tt class="py-docstring">        </tt> </tt>
+<a name="L86"></a><tt class="py-lineno"> 86</tt>  <tt class="py-line"><tt class="py-docstring">        </tt> </tt>
+<a name="L87"></a><tt class="py-lineno"> 87</tt>  <tt class="py-line"><tt class="py-docstring">        </tt> </tt>
+<a name="L88"></a><tt class="py-lineno"> 88</tt>  <tt class="py-line"><tt class="py-docstring">        """</tt> </tt>
+<a name="L89"></a><tt class="py-lineno"> 89</tt>  <tt class="py-line">             </tt>
+<a name="L90"></a><tt class="py-lineno"> 90</tt>  <tt class="py-line">        <tt class="py-name">results</tt><tt class="py-op">,</tt> <tt class="py-name">termes</tt> <tt class="py-op">=</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">__qsearcher</tt><tt class="py-op">.</tt><tt id="link-22" class="py-name" targets="Method alfanous.Searching.QSearcher.search()=alfanous.Searching.QSearcher-class.html#search"><a title="alfanous.Searching.QSearcher.search" class="py-name" href="#" onclick="return doclink('link-22', 'search', 'link-22');">search</a></tt><tt class="py-op">(</tt><tt class="py-name">querystr</tt><tt class="py-op">,</tt> <tt class="py-name">limit</tt><tt class="py-op">,</tt> <tt class="py-name">sortedby</tt><tt class="py-op">)</tt> </tt>
+<a name="L91"></a><tt class="py-lineno"> 91</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt> <tt class="py-op">(</tt><tt class="py-name">results</tt><tt class="py-op">,</tt> <tt class="py-name">termes</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L92"></a><tt class="py-lineno"> 92</tt>  <tt class="py-line">         </tt>
+<a name="QuranicSearchEngine.most_frequent_words"></a><div id="QuranicSearchEngine.most_frequent_words-def"><a name="L93"></a><tt class="py-lineno"> 93</tt> <a class="py-toggle" href="#" id="QuranicSearchEngine.most_frequent_words-toggle" onclick="return toggle('QuranicSearchEngine.most_frequent_words');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="alfanous.main.QuranicSearchEngine-class.html#most_frequent_words">most_frequent_words</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">nb</tt><tt class="py-op">,</tt> <tt class="py-param">fieldname</tt><tt class="py-op">=</tt><tt class="py-string">"aya"</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="QuranicSearchEngine.most_frequent_words-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="QuranicSearchEngine.most_frequent_words-expanded"><a name="L94"></a><tt class="py-lineno"> 94</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt> <tt class="py-name">list</tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">__qreader</tt><tt class="py-op">.</tt><tt class="py-name">reader</tt><tt class="py-op">.</tt><tt class="py-name">most_frequent_terms</tt><tt class="py-op">(</tt><tt class="py-name">fieldname</tt><tt class="py-op">,</tt> <tt class="py-name">nb</tt><tt class="py-op">)</tt><tt class="py-op">)</tt>  </tt>
+</div><a name="L95"></a><tt class="py-lineno"> 95</tt>  <tt class="py-line">     </tt>
+<a name="L96"></a><tt class="py-lineno"> 96</tt>  <tt class="py-line">     </tt>
+<a name="QuranicSearchEngine.suggest_all"></a><div id="QuranicSearchEngine.suggest_all-def"><a name="L97"></a><tt class="py-lineno"> 97</tt> <a class="py-toggle" href="#" id="QuranicSearchEngine.suggest_all-toggle" onclick="return toggle('QuranicSearchEngine.suggest_all');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="alfanous.main.QuranicSearchEngine-class.html#suggest_all">suggest_all</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">querystr</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="QuranicSearchEngine.suggest_all-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="QuranicSearchEngine.suggest_all-expanded"><a name="L98"></a><tt class="py-lineno"> 98</tt>  <tt class="py-line">        <tt class="py-docstring">"""suggest the missed words</tt> </tt>
+<a name="L99"></a><tt class="py-lineno"> 99</tt>  <tt class="py-line"><tt class="py-docstring">     </tt> </tt>
+<a name="L100"></a><tt class="py-lineno">100</tt>  <tt class="py-line"><tt class="py-docstring">            &gt;&gt;&gt; for key, value in suggest_all(u" &#1593;&#1575;&#1589;&#1605;&#1608; ").items():</tt> </tt>
+<a name="L101"></a><tt class="py-lineno">101</tt>  <tt class="py-line"><tt class="py-docstring">            &gt;&gt;&gt;    print key, ":", ",".join(value)</tt> </tt>
+<a name="L102"></a><tt class="py-lineno">102</tt>  <tt class="py-line"><tt class="py-docstring">            &#1593;&#1575;&#1589;&#1605;&#1608; : &#1593;&#1575;&#1589;&#1605;</tt> </tt>
+<a name="L103"></a><tt class="py-lineno">103</tt>  <tt class="py-line"><tt class="py-docstring">       </tt> </tt>
+<a name="L104"></a><tt class="py-lineno">104</tt>  <tt class="py-line"><tt class="py-docstring">        """</tt> </tt>
+<a name="L105"></a><tt class="py-lineno">105</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">__qsuggester</tt><tt class="py-op">.</tt><tt id="link-23" class="py-name" targets="Method alfanous.QueryProcessing.QSuggester.QSuggest()=alfanous.QueryProcessing.QSuggester-class.html#QSuggest"><a title="alfanous.QueryProcessing.QSuggester.QSuggest" class="py-name" href="#" onclick="return doclink('link-23', 'QSuggest', 'link-23');">QSuggest</a></tt><tt class="py-op">(</tt><tt class="py-name">querystr</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L106"></a><tt class="py-lineno">106</tt>  <tt class="py-line"> </tt>
+<a name="QuranicSearchEngine.highlight"></a><div id="QuranicSearchEngine.highlight-def"><a name="L107"></a><tt class="py-lineno">107</tt> <a class="py-toggle" href="#" id="QuranicSearchEngine.highlight-toggle" onclick="return toggle('QuranicSearchEngine.highlight');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="alfanous.main.QuranicSearchEngine-class.html#highlight">highlight</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">text</tt><tt class="py-op">,</tt> <tt class="py-param">terms</tt><tt class="py-op">)</tt><tt class="py-op">:</tt>   </tt>
+</div><a name="L108"></a><tt class="py-lineno">108</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">__qhighlight</tt><tt class="py-op">(</tt><tt class="py-name">text</tt><tt class="py-op">,</tt> <tt class="py-name">terms</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L109"></a><tt class="py-lineno">109</tt>  <tt class="py-line">     </tt>
+<a name="L110"></a><tt class="py-lineno">110</tt>  <tt class="py-line">     </tt>
+<a name="QuranicSearchEngine.all_statistiques"></a><div id="QuranicSearchEngine.all_statistiques-def"><a name="L111"></a><tt class="py-lineno">111</tt> <a class="py-toggle" href="#" id="QuranicSearchEngine.all_statistiques-toggle" onclick="return toggle('QuranicSearchEngine.all_statistiques');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="alfanous.main.QuranicSearchEngine-class.html#all_statistiques">all_statistiques</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="QuranicSearchEngine.all_statistiques-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="QuranicSearchEngine.all_statistiques-expanded"><a name="L112"></a><tt class="py-lineno">112</tt>  <tt class="py-line">        <tt class="py-docstring">""" @warning: Not Implemented """</tt> </tt>
+<a name="L113"></a><tt class="py-lineno">113</tt>  <tt class="py-line">        <tt class="py-keyword">pass</tt> </tt>
+</div></div><a name="L114"></a><tt class="py-lineno">114</tt>  <tt class="py-line">     </tt>
+<a name="L115"></a><tt class="py-lineno">115</tt>  <tt class="py-line"> </tt>
+<a name="L116"></a><tt class="py-lineno">116</tt>  <tt class="py-line"><tt class="py-keyword">if</tt> <tt class="py-name">__name__</tt> <tt class="py-op">==</tt> <tt class="py-string">'__main__'</tt><tt class="py-op">:</tt> </tt>
+<a name="L117"></a><tt class="py-lineno">117</tt>  <tt class="py-line">    <tt class="py-name">QSE</tt> <tt class="py-op">=</tt> <tt id="link-24" class="py-name" targets="Class alfanous.main.QuranicSearchEngine=alfanous.main.QuranicSearchEngine-class.html"><a title="alfanous.main.QuranicSearchEngine" class="py-name" href="#" onclick="return doclink('link-24', 'QuranicSearchEngine', 'link-24');">QuranicSearchEngine</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L118"></a><tt class="py-lineno">118</tt>  <tt class="py-line">     </tt>
+<a name="L119"></a><tt class="py-lineno">119</tt>  <tt class="py-line">    <tt class="py-keyword">print</tt> <tt class="py-string">"#suggestions#"</tt> </tt>
+<a name="L120"></a><tt class="py-lineno">120</tt>  <tt class="py-line">    <tt class="py-keyword">for</tt> <tt class="py-name">key</tt><tt class="py-op">,</tt> <tt class="py-name">value</tt> <tt class="py-keyword">in</tt> <tt class="py-name">QSE</tt><tt class="py-op">.</tt><tt id="link-25" class="py-name" targets="Method alfanous.main.QuranicSearchEngine.suggest_all()=alfanous.main.QuranicSearchEngine-class.html#suggest_all"><a title="alfanous.main.QuranicSearchEngine.suggest_all" class="py-name" href="#" onclick="return doclink('link-25', 'suggest_all', 'link-25');">suggest_all</a></tt><tt class="py-op">(</tt><tt class="py-string">u"&#1571;&#1604;&#1610;&#1604;"</tt><tt class="py-op">)</tt><tt class="py-op">.</tt><tt class="py-name">items</tt><tt class="py-op">(</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L121"></a><tt class="py-lineno">121</tt>  <tt class="py-line">        <tt class="py-keyword">print</tt> <tt class="py-name">key</tt><tt class="py-op">,</tt> <tt class="py-string">":"</tt><tt class="py-op">,</tt> <tt class="py-string">","</tt><tt class="py-op">.</tt><tt class="py-name">join</tt><tt class="py-op">(</tt><tt class="py-name">value</tt><tt class="py-op">)</tt> </tt>
+<a name="L122"></a><tt class="py-lineno">122</tt>  <tt class="py-line">         </tt>
+<a name="L123"></a><tt class="py-lineno">123</tt>  <tt class="py-line"> </tt>
+<a name="L124"></a><tt class="py-lineno">124</tt>  <tt class="py-line"> </tt>
+<a name="L125"></a><tt class="py-lineno">125</tt>  <tt class="py-line">    <tt class="py-keyword">print</tt> <tt class="py-string">"\n#most frequent words#"</tt> </tt>
+<a name="L126"></a><tt class="py-lineno">126</tt>  <tt class="py-line">    <tt class="py-name">mfw</tt> <tt class="py-op">=</tt> <tt class="py-name">QSE</tt><tt class="py-op">.</tt><tt id="link-26" class="py-name" targets="Method alfanous.main.QuranicSearchEngine.most_frequent_words()=alfanous.main.QuranicSearchEngine-class.html#most_frequent_words"><a title="alfanous.main.QuranicSearchEngine.most_frequent_words" class="py-name" href="#" onclick="return doclink('link-26', 'most_frequent_words', 'link-26');">most_frequent_words</a></tt><tt class="py-op">(</tt><tt class="py-number">10</tt><tt class="py-op">,</tt> <tt class="py-string">"aya"</tt><tt class="py-op">)</tt> </tt>
+<a name="L127"></a><tt class="py-lineno">127</tt>  <tt class="py-line">    <tt class="py-keyword">for</tt> <tt class="py-name">term</tt> <tt class="py-keyword">in</tt> <tt class="py-name">mfw</tt><tt class="py-op">:</tt> </tt>
+<a name="L128"></a><tt class="py-lineno">128</tt>  <tt class="py-line">        <tt class="py-keyword">print</tt> <tt class="py-string">"\t"</tt><tt class="py-op">,</tt> <tt class="py-name">term</tt><tt class="py-op">[</tt><tt class="py-number">1</tt><tt class="py-op">]</tt><tt class="py-op">,</tt> <tt class="py-string">" - frequence = "</tt><tt class="py-op">,</tt> <tt class="py-name">term</tt><tt class="py-op">[</tt><tt class="py-number">0</tt><tt class="py-op">]</tt><tt class="py-op">,</tt> <tt class="py-string">"."</tt> </tt>
+<a name="L129"></a><tt class="py-lineno">129</tt>  <tt class="py-line"> </tt>
+<a name="L130"></a><tt class="py-lineno">130</tt>  <tt class="py-line"> </tt>
+<a name="L131"></a><tt class="py-lineno">131</tt>  <tt class="py-line"> </tt>
+<a name="L132"></a><tt class="py-lineno">132</tt>  <tt class="py-line">    <tt class="py-keyword">print</tt> <tt class="py-string">"\n#search#"</tt> </tt>
+<a name="L133"></a><tt class="py-lineno">133</tt>  <tt class="py-line">    <tt class="py-name">string1</tt> <tt class="py-op">=</tt> <tt class="py-string">u"&#1575;&#1604;&#1581;&#1605;&#1583;"</tt> </tt>
+<a name="L134"></a><tt class="py-lineno">134</tt>  <tt class="py-line">    <tt class="py-comment">#string1 = u"\" &#1585;&#1576; &#1575;&#1604;&#1593;&#1575;&#1604;&#1605;&#1610;&#1606;\""</tt> </tt>
+<a name="L135"></a><tt class="py-lineno">135</tt>  <tt class="py-line">    <tt class="py-comment"># %&#1575;&#1604;&#1605;&#1571;&#1589;&#1583;&#1577;</tt> </tt>
+<a name="L136"></a><tt class="py-lineno">136</tt>  <tt class="py-line">    <tt class="py-comment"># &#1604;&#1604;&#1607;</tt> </tt>
+<a name="L137"></a><tt class="py-lineno">137</tt>  <tt class="py-line">    <tt class="py-comment"># &#1575;&#1604;*&#1604;&#1603;</tt> </tt>
+<a name="L138"></a><tt class="py-lineno">138</tt>  <tt class="py-line">    <tt class="py-comment"># &#1585;&#1576;     </tt> </tt>
+<a name="L139"></a><tt class="py-lineno">139</tt>  <tt class="py-line">    <tt class="py-comment"># &#1585;&#1587;&#1608;&#1604; * &#1575;&#1604;&#1604;&#1607;  </tt> </tt>
+<a name="L140"></a><tt class="py-lineno">140</tt>  <tt class="py-line">    <tt class="py-comment"># &#1575;&#1604;&#1589;&#1604;&#1575;&#1577; &#1608;&#1604;&#1610;&#1587; &#1575;&#1604;&#1586;&#1603;&#1575;&#1577;</tt> </tt>
+<a name="L141"></a><tt class="py-lineno">141</tt>  <tt class="py-line">    <tt class="py-comment"># #&#1575;&#1604;&#1587;&#1593;&#1610;&#1585;  </tt> </tt>
+<a name="L142"></a><tt class="py-lineno">142</tt>  <tt class="py-line">    <tt class="py-comment"># ~&#1575;&#1604;&#1587;&#1593;&#1610;&#1585;</tt> </tt>
+<a name="L143"></a><tt class="py-lineno">143</tt>  <tt class="py-line">    <tt class="py-comment"># &#1606;&#1593;&#1605;&#1578;</tt> </tt>
+<a name="L144"></a><tt class="py-lineno">144</tt>  <tt class="py-line">    <tt class="py-comment">#&#1585;&#1602;&#1605;_&#1575;&#1604;&#1587;&#1608;&#1585;&#1577;:[1 &#1575;&#1604;&#1609; 5] &#1608; &#1575;&#1604;&#1604;&#1607;</tt> </tt>
+<a name="L145"></a><tt class="py-lineno">145</tt>  <tt class="py-line">    <tt class="py-comment">#&#1570;&#1610;&#1577;_:'&#1605;&#1614;&#1606;'</tt> </tt>
+<a name="L146"></a><tt class="py-lineno">146</tt>  <tt class="py-line">    <tt class="py-comment">#{&#1605;&#1604;&#1603;,&#1601;&#1593;&#1604;}</tt> </tt>
+<a name="L147"></a><tt class="py-lineno">147</tt>  <tt class="py-line">    <tt class="py-comment">#&gt;&gt;&#1587;&#1605;&#1575;&#1603;&#1605;</tt> </tt>
+<a name="L148"></a><tt class="py-lineno">148</tt>  <tt class="py-line">    <tt class="py-comment">#&gt;&#1587;&#1605;&#1575;&#1603;&#1605;</tt> </tt>
+<a name="L149"></a><tt class="py-lineno">149</tt>  <tt class="py-line">    <tt class="py-comment">#&#1587;&#1605;&#1575;&#1603;&#1605;</tt> </tt>
+<a name="L150"></a><tt class="py-lineno">150</tt>  <tt class="py-line">  </tt>
+<a name="L151"></a><tt class="py-lineno">151</tt>  <tt class="py-line">    <tt class="py-name">res</tt><tt class="py-op">,</tt> <tt class="py-name">terms</tt> <tt class="py-op">=</tt> <tt class="py-name">QSE</tt><tt class="py-op">.</tt><tt id="link-27" class="py-name" targets="Method alfanous.main.QuranicSearchEngine.search_all()=alfanous.main.QuranicSearchEngine-class.html#search_all"><a title="alfanous.main.QuranicSearchEngine.search_all" class="py-name" href="#" onclick="return doclink('link-27', 'search_all', 'link-27');">search_all</a></tt><tt class="py-op">(</tt><tt class="py-name">string1</tt><tt class="py-op">,</tt> <tt class="py-name">limit</tt><tt class="py-op">=</tt><tt class="py-number">6236</tt><tt class="py-op">,</tt> <tt class="py-name">sortedby</tt><tt class="py-op">=</tt><tt class="py-string">"score"</tt><tt class="py-op">)</tt> </tt>
+<a name="L152"></a><tt class="py-lineno">152</tt>  <tt class="py-line">    <tt class="py-string">'''</tt> </tt>
+<a name="L153"></a><tt class="py-lineno">153</tt>  <tt class="py-line"><tt class="py-string">    string2 = u"&#1593;&#1575;&#1589;&#1605;"</tt> </tt>
+<a name="L154"></a><tt class="py-lineno">154</tt>  <tt class="py-line"><tt class="py-string">    res2,terms2  = QSE.search_all(string2, sortedby="mushaf")</tt> </tt>
+<a name="L155"></a><tt class="py-lineno">155</tt>  <tt class="py-line"><tt class="py-string">    res=QFilter(res1,res2)</tt> </tt>
+<a name="L156"></a><tt class="py-lineno">156</tt>  <tt class="py-line"><tt class="py-string"></tt> </tt>
+<a name="L157"></a><tt class="py-lineno">157</tt>  <tt class="py-line"><tt class="py-string">    terms=terms1|terms2'''</tt> </tt>
+<a name="L158"></a><tt class="py-lineno">158</tt>  <tt class="py-line">    <tt class="py-name">terms</tt> <tt class="py-op">=</tt> <tt class="py-op">[</tt><tt class="py-name">term</tt><tt class="py-op">[</tt><tt class="py-number">1</tt><tt class="py-op">]</tt> <tt class="py-keyword">for</tt> <tt class="py-name">term</tt> <tt class="py-keyword">in</tt> <tt class="py-name">list</tt><tt class="py-op">(</tt><tt class="py-name">terms</tt><tt class="py-op">)</tt><tt class="py-op">]</tt> </tt>
+<a name="L159"></a><tt class="py-lineno">159</tt>  <tt class="py-line">    <tt class="py-keyword">print</tt> <tt class="py-string">"\n#of#"</tt> </tt>
+<a name="L160"></a><tt class="py-lineno">160</tt>  <tt class="py-line">    <tt class="py-keyword">print</tt> <tt class="py-string">","</tt><tt class="py-op">.</tt><tt class="py-name">join</tt><tt class="py-op">(</tt><tt class="py-name">terms</tt><tt class="py-op">)</tt> </tt>
+<a name="L161"></a><tt class="py-lineno">161</tt>  <tt class="py-line">    <tt class="py-keyword">print</tt> <tt class="py-string">"\n#is#"</tt> </tt>
+<a name="L162"></a><tt class="py-lineno">162</tt>  <tt class="py-line">    <tt class="py-comment">#print res.key_terms("aya")</tt> </tt>
+<a name="L163"></a><tt class="py-lineno">163</tt>  <tt class="py-line"> </tt>
+<a name="L164"></a><tt class="py-lineno">164</tt>  <tt class="py-line">    <tt class="py-name">html</tt> <tt class="py-op">=</tt> <tt class="py-string">u"Results(time=%f,number=%d):\n"</tt> <tt class="py-op">%</tt> <tt class="py-op">(</tt><tt class="py-name">res</tt><tt class="py-op">.</tt><tt class="py-name">runtime</tt><tt class="py-op">,</tt><tt class="py-name">len</tt><tt class="py-op">(</tt><tt class="py-name">res</tt><tt class="py-op">)</tt><tt class="py-op">)</tt>  </tt>
+<a name="L165"></a><tt class="py-lineno">165</tt>  <tt class="py-line">    <tt class="py-keyword">for</tt> <tt class="py-name">num</tt><tt class="py-op">,</tt> <tt class="py-name">respage</tt> <tt class="py-keyword">in</tt> <tt id="link-28" class="py-name"><a title="alfanous.ResultsProcessing.QPaginate" class="py-name" href="#" onclick="return doclink('link-28', 'QPaginate', 'link-9');">QPaginate</a></tt><tt class="py-op">(</tt><tt class="py-name">res</tt><tt class="py-op">,</tt> <tt class="py-number">5</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L166"></a><tt class="py-lineno">166</tt>  <tt class="py-line">        <tt class="py-name">html</tt> <tt class="py-op">+=</tt> <tt class="py-string">"~~~~~page "</tt> <tt class="py-op">+</tt> <tt class="py-name">str</tt><tt class="py-op">(</tt><tt class="py-name">num</tt><tt class="py-op">)</tt> <tt class="py-op">+</tt> <tt class="py-string">"~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n"</tt> </tt>
+<a name="L167"></a><tt class="py-lineno">167</tt>  <tt class="py-line">        <tt class="py-keyword">for</tt> <tt class="py-name">r</tt> <tt class="py-keyword">in</tt> <tt class="py-name">respage</tt><tt class="py-op">:</tt> </tt>
+<a name="L168"></a><tt class="py-lineno">168</tt>  <tt class="py-line">            <tt class="py-name">html</tt> <tt class="py-op">+=</tt> <tt class="py-string">"("</tt> <tt class="py-op">+</tt> <tt class="py-name">str</tt><tt class="py-op">(</tt><tt class="py-name">r</tt><tt class="py-op">[</tt><tt class="py-string">"aya_id"</tt><tt class="py-op">]</tt><tt class="py-op">)</tt> <tt class="py-op">+</tt> <tt class="py-string">","</tt> <tt class="py-op">+</tt> <tt class="py-name">str</tt><tt class="py-op">(</tt><tt class="py-name">r</tt><tt class="py-op">[</tt><tt class="py-string">"sura_id"</tt><tt class="py-op">]</tt><tt class="py-op">)</tt> <tt class="py-op">+</tt> <tt class="py-string">") :"</tt> <tt class="py-op">+</tt> <tt class="py-string">u"&lt;p&gt;"</tt> <tt class="py-op">+</tt> <tt class="py-name">QSE</tt><tt class="py-op">.</tt><tt id="link-29" class="py-name" targets="Method alfanous.main.QuranicSearchEngine.highlight()=alfanous.main.QuranicSearchEngine-class.html#highlight"><a title="alfanous.main.QuranicSearchEngine.highlight" class="py-name" href="#" onclick="return doclink('link-29', 'highlight', 'link-29');">highlight</a></tt><tt class="py-op">(</tt><tt class="py-name">r</tt><tt class="py-op">[</tt><tt class="py-string">"aya_"</tt><tt class="py-op">]</tt><tt class="py-op">,</tt> <tt class="py-name">terms</tt><tt class="py-op">)</tt> <tt class="py-op">+</tt> <tt class="py-string">u"&lt;/p&gt;\n"</tt> </tt>
+<a name="L169"></a><tt class="py-lineno">169</tt>  <tt class="py-line">        <tt class="py-keyword">print</tt> <tt class="py-name">html</tt> </tt>
+<a name="L170"></a><tt class="py-lineno">170</tt>  <tt class="py-line">        <tt class="py-name">html</tt> <tt class="py-op">=</tt> <tt class="py-string">""</tt> </tt>
+<a name="L171"></a><tt class="py-lineno">171</tt>  <tt class="py-line">        <tt class="py-name">raw_input</tt><tt class="py-op">(</tt><tt class="py-string">"press any key..."</tt><tt class="py-op">)</tt> </tt>
+<a name="L172"></a><tt class="py-lineno">172</tt>  <tt class="py-line"> </tt><script type="text/javascript">
+<!--
+expandto(location.href);
+// -->
+</script>
+</pre>
+<br />
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="alfanous-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            ><a class="navbar" target="_top" href="alfanous.sourceforge.com">Alfanous</a></th>
+          </tr></table></th>
+  </tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" width="100%%">
+  <tr>
+    <td align="left" class="footer">
+    Generated by Epydoc 3.0.1 on Thu Mar 18 04:21:20 2010
+    </td>
+    <td align="right" class="footer">
+      <a target="mainFrame" href="http://epydoc.sourceforge.net"
+        >http://epydoc.sourceforge.net</a>
+    </td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+  <!--
+  // Private objects are initially displayed (because if
+  // javascript is turned off then we want them to be
+  // visible); but by default, we want to hide them.  So hide
+  // them unless we have a cookie that says to show them.
+  checkCookie();
+  // -->
+</script>
+</body>
+</html>

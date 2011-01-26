@@ -1,0 +1,971 @@
+<?xml version="1.0" encoding="ascii"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>alfanous.whoosh.filedb.fileindex.FileIndex</title>
+  <link rel="stylesheet" href="epydoc.css" type="text/css" />
+  <script type="text/javascript" src="epydoc.js"></script>
+</head>
+
+<body bgcolor="white" text="black" link="blue" vlink="#204080"
+      alink="#204080">
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="alfanous-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            ><a class="navbar" target="_top" href="alfanous.sourceforge.com">Alfanous</a></th>
+          </tr></table></th>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="100%">
+      <span class="breadcrumbs">
+        <a href="alfanous-module.html">Package&nbsp;alfanous</a> ::
+        <a href="alfanous.whoosh-module.html">Package&nbsp;whoosh</a> ::
+        <a href="alfanous.whoosh.filedb-module.html">Package&nbsp;filedb</a> ::
+        <a href="alfanous.whoosh.filedb.fileindex-module.html">Module&nbsp;fileindex</a> ::
+        Class&nbsp;FileIndex
+      </span>
+    </td>
+    <td>
+      <table cellpadding="0" cellspacing="0">
+        <!-- hide/show private -->
+        <tr><td align="right"><span class="options">[<a href="javascript:void(0);" class="privatelink"
+    onclick="toggle_private();">hide&nbsp;private</a>]</span></td></tr>
+        <tr><td align="right"><span class="options"
+            >[<a href="frames.html" target="_top">frames</a
+            >]&nbsp;|&nbsp;<a href="alfanous.whoosh.filedb.fileindex.FileIndex-class.html"
+            target="_top">no&nbsp;frames</a>]</span></td></tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<!-- ==================== CLASS DESCRIPTION ==================== -->
+<h1 class="epydoc">Class FileIndex</h1><p class="nomargin-top"><span class="codelink"><a href="alfanous.whoosh.filedb.fileindex-pysrc.html#FileIndex">source&nbsp;code</a></span></p>
+<pre class="base-tree">
+                    object --+    
+                             |    
+          <a href="alfanous.whoosh.filedb.fileindex.SegmentDeletionMixin-class.html">SegmentDeletionMixin</a> --+
+                                 |
+                object --+       |
+                         |       |
+whoosh.index.DeletionMixin --+   |
+                             |   |
+            whoosh.index.Index --+
+                                 |
+                                <strong class="uidshort">FileIndex</strong>
+</pre>
+
+<hr />
+<!-- ==================== INSTANCE METHODS ==================== -->
+<a name="section-InstanceMethods"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Instance Methods</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-InstanceMethods"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="alfanous.whoosh.filedb.fileindex.FileIndex-class.html#__init__" class="summary-sig-name">__init__</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">storage</span>,
+        <span class="summary-sig-arg">schema</span>,
+        <span class="summary-sig-arg">create</span>=<span class="summary-sig-default">False</span>,
+        <span class="summary-sig-arg">indexname</span>=<span class="summary-sig-default"><code class="variable-quote">'</code><code class="variable-string">MAIN</code><code class="variable-quote">'</code></span>)</span><br />
+      :param storage: The :class:`whoosh.store.Storage` object in which this
+    index resides.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="alfanous.whoosh.filedb.fileindex-pysrc.html#FileIndex.__init__">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="alfanous.whoosh.filedb.fileindex.FileIndex-class.html#__repr__" class="summary-sig-name">__repr__</a>(<span class="summary-sig-arg">self</span>)</span><br />
+      repr(x)</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="alfanous.whoosh.filedb.fileindex-pysrc.html#FileIndex.__repr__">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="__del__"></a><span class="summary-sig-name">__del__</span>(<span class="summary-sig-arg">self</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="alfanous.whoosh.filedb.fileindex-pysrc.html#FileIndex.__del__">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="alfanous.whoosh.filedb.fileindex.FileIndex-class.html#close" class="summary-sig-name">close</a>(<span class="summary-sig-arg">self</span>)</span><br />
+      Closes any open resources held by the Index object itself.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="alfanous.whoosh.filedb.fileindex-pysrc.html#FileIndex.close">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="alfanous.whoosh.filedb.fileindex.FileIndex-class.html#latest_generation" class="summary-sig-name">latest_generation</a>(<span class="summary-sig-arg">self</span>)</span><br />
+      Returns the generation number of the latest generation of this index,
+      or -1 if the backend doesn't support versioning.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="alfanous.whoosh.filedb.fileindex-pysrc.html#FileIndex.latest_generation">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="alfanous.whoosh.filedb.fileindex.FileIndex-class.html#refresh" class="summary-sig-name">refresh</a>(<span class="summary-sig-arg">self</span>)</span><br />
+      Returns a new Index object representing the latest generation of this
+      index (if this object is the latest generation, or the backend 
+      doesn't support versioning, returns self).</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="alfanous.whoosh.filedb.fileindex-pysrc.html#FileIndex.refresh">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="alfanous.whoosh.filedb.fileindex.FileIndex-class.html#up_to_date" class="summary-sig-name">up_to_date</a>(<span class="summary-sig-arg">self</span>)</span><br />
+      Returns True if this object represents the latest generation of this 
+      index.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="alfanous.whoosh.filedb.fileindex-pysrc.html#FileIndex.up_to_date">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_write"></a><span class="summary-sig-name">_write</span>(<span class="summary-sig-arg">self</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="alfanous.whoosh.filedb.fileindex-pysrc.html#FileIndex._write">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_read"></a><span class="summary-sig-name">_read</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">schema</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="alfanous.whoosh.filedb.fileindex-pysrc.html#FileIndex._read">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_next_segment_name"></a><span class="summary-sig-name">_next_segment_name</span>(<span class="summary-sig-arg">self</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="alfanous.whoosh.filedb.fileindex-pysrc.html#FileIndex._next_segment_name">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_toc_filename"></a><span class="summary-sig-name">_toc_filename</span>(<span class="summary-sig-arg">self</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="alfanous.whoosh.filedb.fileindex-pysrc.html#FileIndex._toc_filename">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="alfanous.whoosh.filedb.fileindex.FileIndex-class.html#last_modified" class="summary-sig-name">last_modified</a>(<span class="summary-sig-arg">self</span>)</span><br />
+      Returns the last modified time of the index, or -1 if the backend 
+      doesn't support last-modified times.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="alfanous.whoosh.filedb.fileindex-pysrc.html#FileIndex.last_modified">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="alfanous.whoosh.filedb.fileindex.FileIndex-class.html#is_empty" class="summary-sig-name">is_empty</a>(<span class="summary-sig-arg">self</span>)</span><br />
+      Returns True if this index is empty (that is, it has never had any 
+      documents successfully written to it.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="alfanous.whoosh.filedb.fileindex-pysrc.html#FileIndex.is_empty">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="alfanous.whoosh.filedb.fileindex.FileIndex-class.html#optimize" class="summary-sig-name">optimize</a>(<span class="summary-sig-arg">self</span>)</span><br />
+      Optimizes this index, if necessary.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="alfanous.whoosh.filedb.fileindex-pysrc.html#FileIndex.optimize">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="alfanous.whoosh.filedb.fileindex.FileIndex-class.html#commit" class="summary-sig-name">commit</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">new_segments</span>=<span class="summary-sig-default">None</span>)</span><br />
+      Commits pending edits (such as deletions) to this index object.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="alfanous.whoosh.filedb.fileindex-pysrc.html#FileIndex.commit">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_clean_files"></a><span class="summary-sig-name">_clean_files</span>(<span class="summary-sig-arg">self</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="alfanous.whoosh.filedb.fileindex-pysrc.html#FileIndex._clean_files">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="alfanous.whoosh.filedb.fileindex.FileIndex-class.html#doc_count_all" class="summary-sig-name">doc_count_all</a>(<span class="summary-sig-arg">self</span>)</span><br />
+      Returns the total number of documents, DELETED OR UNDELETED, in this 
+      index.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="alfanous.whoosh.filedb.fileindex-pysrc.html#FileIndex.doc_count_all">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="alfanous.whoosh.filedb.fileindex.FileIndex-class.html#doc_count" class="summary-sig-name">doc_count</a>(<span class="summary-sig-arg">self</span>)</span><br />
+      Returns the total number of UNDELETED documents in this index.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="alfanous.whoosh.filedb.fileindex-pysrc.html#FileIndex.doc_count">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="alfanous.whoosh.filedb.fileindex.FileIndex-class.html#field_length" class="summary-sig-name">field_length</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">fieldid</span>)</span><br />
+      Returns the total number of terms in a given field.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="alfanous.whoosh.filedb.fileindex-pysrc.html#FileIndex.field_length">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="alfanous.whoosh.filedb.fileindex.FileIndex-class.html#reader" class="summary-sig-name">reader</a>(<span class="summary-sig-arg">self</span>)</span><br />
+      Returns an IndexReader object for this index.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="alfanous.whoosh.filedb.fileindex-pysrc.html#FileIndex.reader">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="alfanous.whoosh.filedb.fileindex.FileIndex-class.html#writer" class="summary-sig-name">writer</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">**kwargs</span>)</span><br />
+      Returns an IndexWriter object for this index.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="alfanous.whoosh.filedb.fileindex-pysrc.html#FileIndex.writer">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+  <tr>
+    <td colspan="2" class="summary">
+    <p class="indent-wrapped-lines"><b>Inherited from <code><a href="alfanous.whoosh.filedb.fileindex.SegmentDeletionMixin-class.html">SegmentDeletionMixin</a></code></b>:
+      <code><a href="alfanous.whoosh.filedb.fileindex.SegmentDeletionMixin-class.html#delete_document">delete_document</a></code>,
+      <code><a href="alfanous.whoosh.filedb.fileindex.SegmentDeletionMixin-class.html#deleted_count">deleted_count</a></code>,
+      <code><a href="alfanous.whoosh.filedb.fileindex.SegmentDeletionMixin-class.html#has_deletions">has_deletions</a></code>,
+      <code><a href="alfanous.whoosh.filedb.fileindex.SegmentDeletionMixin-class.html#is_deleted">is_deleted</a></code>
+      </p>
+    <p class="indent-wrapped-lines"><b>Inherited from <code>whoosh.index.Index</code></b>:
+      <code>searcher</code>
+      </p>
+    <p class="indent-wrapped-lines"><b>Inherited from <code>whoosh.index.DeletionMixin</code></b>:
+      <code>delete_by_query</code>,
+      <code>delete_by_term</code>
+      </p>
+    <p class="indent-wrapped-lines"><b>Inherited from <code>object</code></b>:
+      <code>__delattr__</code>,
+      <code>__format__</code>,
+      <code>__getattribute__</code>,
+      <code>__hash__</code>,
+      <code>__new__</code>,
+      <code>__reduce__</code>,
+      <code>__reduce_ex__</code>,
+      <code>__setattr__</code>,
+      <code>__sizeof__</code>,
+      <code>__str__</code>,
+      <code>__subclasshook__</code>
+      </p>
+    </td>
+  </tr>
+</table>
+<!-- ==================== PROPERTIES ==================== -->
+<a name="section-Properties"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Properties</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-Properties"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+  <tr>
+    <td colspan="2" class="summary">
+    <p class="indent-wrapped-lines"><b>Inherited from <code>object</code></b>:
+      <code>__class__</code>
+      </p>
+    </td>
+  </tr>
+</table>
+<!-- ==================== METHOD DETAILS ==================== -->
+<a name="section-MethodDetails"></a>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Method Details</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-MethodDetails"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+</table>
+<a name="__init__"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">__init__</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">storage</span>,
+        <span class="sig-arg">schema</span>,
+        <span class="sig-arg">create</span>=<span class="sig-default">False</span>,
+        <span class="sig-arg">indexname</span>=<span class="sig-default"><code class="variable-quote">'</code><code class="variable-string">MAIN</code><code class="variable-quote">'</code></span>)</span>
+    <br /><em class="fname">(Constructor)</em>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="alfanous.whoosh.filedb.fileindex-pysrc.html#FileIndex.__init__">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <pre class="literalblock">
+
+:param storage: The :class:`whoosh.store.Storage` object in which this
+    index resides. See the store module for more details.
+:param schema: A :class:`whoosh.fields.Schema` object defining the
+    fields of this index.
+:param indexname: An optional name to use for the index. Use this if
+    you need to keep multiple indexes in the same storage object.
+
+</pre>
+  <dl class="fields">
+    <dt>Overrides:
+        object.__init__
+        <dd><em class="note">(inherited documentation)</em></dd>
+    </dt>
+  </dl>
+</td></tr></table>
+</div>
+<a name="__repr__"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">__repr__</span>(<span class="sig-arg">self</span>)</span>
+    <br /><em class="fname">(Representation operator)</em>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="alfanous.whoosh.filedb.fileindex-pysrc.html#FileIndex.__repr__">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>repr(x)</p>
+  <dl class="fields">
+    <dt>Overrides:
+        object.__repr__
+        <dd><em class="note">(inherited documentation)</em></dd>
+    </dt>
+  </dl>
+</td></tr></table>
+</div>
+<a name="close"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">close</span>(<span class="sig-arg">self</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="alfanous.whoosh.filedb.fileindex-pysrc.html#FileIndex.close">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Closes any open resources held by the Index object itself. This may 
+  not close all resources being used everywhere, for example by a Searcher 
+  object.</p>
+  <dl class="fields">
+    <dt>Overrides:
+        whoosh.index.Index.close
+        <dd><em class="note">(inherited documentation)</em></dd>
+    </dt>
+  </dl>
+</td></tr></table>
+</div>
+<a name="latest_generation"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">latest_generation</span>(<span class="sig-arg">self</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="alfanous.whoosh.filedb.fileindex-pysrc.html#FileIndex.latest_generation">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Returns the generation number of the latest generation of this index, 
+  or -1 if the backend doesn't support versioning.</p>
+  <dl class="fields">
+    <dt>Overrides:
+        whoosh.index.Index.latest_generation
+        <dd><em class="note">(inherited documentation)</em></dd>
+    </dt>
+  </dl>
+</td></tr></table>
+</div>
+<a name="refresh"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">refresh</span>(<span class="sig-arg">self</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="alfanous.whoosh.filedb.fileindex-pysrc.html#FileIndex.refresh">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Returns a new Index object representing the latest generation of this 
+  index (if this object is the latest generation, or the backend doesn't 
+  support versioning, returns self).</p>
+  <p>:returns: :class:`Index`</p>
+  <dl class="fields">
+    <dt>Overrides:
+        whoosh.index.Index.refresh
+        <dd><em class="note">(inherited documentation)</em></dd>
+    </dt>
+  </dl>
+</td></tr></table>
+</div>
+<a name="up_to_date"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">up_to_date</span>(<span class="sig-arg">self</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="alfanous.whoosh.filedb.fileindex-pysrc.html#FileIndex.up_to_date">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Returns True if this object represents the latest generation of this 
+  index. Returns False if this object is not the latest generation (that 
+  is, someone else has updated the index since you opened this object).</p>
+  <p>:param rtype: bool</p>
+  <dl class="fields">
+    <dt>Overrides:
+        whoosh.index.Index.up_to_date
+        <dd><em class="note">(inherited documentation)</em></dd>
+    </dt>
+  </dl>
+</td></tr></table>
+</div>
+<a name="last_modified"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">last_modified</span>(<span class="sig-arg">self</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="alfanous.whoosh.filedb.fileindex-pysrc.html#FileIndex.last_modified">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Returns the last modified time of the index, or -1 if the backend 
+  doesn't support last-modified times.</p>
+  <dl class="fields">
+    <dt>Overrides:
+        whoosh.index.Index.last_modified
+        <dd><em class="note">(inherited documentation)</em></dd>
+    </dt>
+  </dl>
+</td></tr></table>
+</div>
+<a name="is_empty"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">is_empty</span>(<span class="sig-arg">self</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="alfanous.whoosh.filedb.fileindex-pysrc.html#FileIndex.is_empty">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Returns True if this index is empty (that is, it has never had any 
+  documents successfully written to it.</p>
+  <p>:param rtype: bool</p>
+  <dl class="fields">
+    <dt>Overrides:
+        whoosh.index.Index.is_empty
+        <dd><em class="note">(inherited documentation)</em></dd>
+    </dt>
+  </dl>
+</td></tr></table>
+</div>
+<a name="optimize"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">optimize</span>(<span class="sig-arg">self</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="alfanous.whoosh.filedb.fileindex-pysrc.html#FileIndex.optimize">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Optimizes this index, if necessary.</p>
+  <dl class="fields">
+    <dt>Overrides:
+        whoosh.index.Index.optimize
+        <dd><em class="note">(inherited documentation)</em></dd>
+    </dt>
+  </dl>
+</td></tr></table>
+</div>
+<a name="commit"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">commit</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">new_segments</span>=<span class="sig-default">None</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="alfanous.whoosh.filedb.fileindex-pysrc.html#FileIndex.commit">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Commits pending edits (such as deletions) to this index object.</p>
+  <dl class="fields">
+    <dt>Overrides:
+        whoosh.index.Index.commit
+        <dd><em class="note">(inherited documentation)</em></dd>
+    </dt>
+  </dl>
+</td></tr></table>
+</div>
+<a name="doc_count_all"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">doc_count_all</span>(<span class="sig-arg">self</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="alfanous.whoosh.filedb.fileindex-pysrc.html#FileIndex.doc_count_all">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Returns the total number of documents, DELETED OR UNDELETED, in this 
+  index.</p>
+  <dl class="fields">
+    <dt>Overrides:
+        whoosh.index.Index.doc_count_all
+        <dd><em class="note">(inherited documentation)</em></dd>
+    </dt>
+  </dl>
+</td></tr></table>
+</div>
+<a name="doc_count"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">doc_count</span>(<span class="sig-arg">self</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="alfanous.whoosh.filedb.fileindex-pysrc.html#FileIndex.doc_count">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Returns the total number of UNDELETED documents in this index.</p>
+  <dl class="fields">
+    <dt>Overrides:
+        whoosh.index.Index.doc_count
+        <dd><em class="note">(inherited documentation)</em></dd>
+    </dt>
+  </dl>
+</td></tr></table>
+</div>
+<a name="field_length"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">field_length</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">fieldid</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="alfanous.whoosh.filedb.fileindex-pysrc.html#FileIndex.field_length">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Returns the total number of terms in a given field. This is used by 
+  some scoring algorithms. Note that this necessarily includes terms in 
+  deleted documents.</p>
+  <dl class="fields">
+    <dt>Overrides:
+        whoosh.index.Index.field_length
+        <dd><em class="note">(inherited documentation)</em></dd>
+    </dt>
+  </dl>
+</td></tr></table>
+</div>
+<a name="reader"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">reader</span>(<span class="sig-arg">self</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="alfanous.whoosh.filedb.fileindex-pysrc.html#FileIndex.reader">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Returns an IndexReader object for this index.</p>
+  <p>:rtype: :class:`whoosh.reading.IndexReader`</p>
+  <dl class="fields">
+    <dt>Overrides:
+        whoosh.index.Index.reader
+        <dd><em class="note">(inherited documentation)</em></dd>
+    </dt>
+  </dl>
+</td></tr></table>
+</div>
+<a name="writer"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">writer</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">**kwargs</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="alfanous.whoosh.filedb.fileindex-pysrc.html#FileIndex.writer">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Returns an IndexWriter object for this index.</p>
+  <p>:rtype: :class:`whoosh.writing.IndexWriter`</p>
+  <dl class="fields">
+    <dt>Overrides:
+        whoosh.index.Index.writer
+        <dd><em class="note">(inherited documentation)</em></dd>
+    </dt>
+  </dl>
+</td></tr></table>
+</div>
+<br />
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="alfanous-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            ><a class="navbar" target="_top" href="alfanous.sourceforge.com">Alfanous</a></th>
+          </tr></table></th>
+  </tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" width="100%%">
+  <tr>
+    <td align="left" class="footer">
+    Generated by Epydoc 3.0.1 on Thu Mar 18 03:28:29 2010
+    </td>
+    <td align="right" class="footer">
+      <a target="mainFrame" href="http://epydoc.sourceforge.net"
+        >http://epydoc.sourceforge.net</a>
+    </td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+  <!--
+  // Private objects are initially displayed (because if
+  // javascript is turned off then we want them to be
+  // visible); but by default, we want to hide them.  So hide
+  // them unless we have a cookie that says to show them.
+  checkCookie();
+  // -->
+</script>
+</body>
+</html>

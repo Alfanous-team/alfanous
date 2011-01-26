@@ -1,0 +1,1005 @@
+<?xml version="1.0" encoding="ascii"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>alfanous.whoosh.filedb.filetables</title>
+  <link rel="stylesheet" href="epydoc.css" type="text/css" />
+  <script type="text/javascript" src="epydoc.js"></script>
+</head>
+
+<body bgcolor="white" text="black" link="blue" vlink="#204080"
+      alink="#204080">
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="alfanous-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            ><a class="navbar" target="_top" href="alfanous.sourceforge.com">Alfanous</a></th>
+          </tr></table></th>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="100%">
+      <span class="breadcrumbs">
+        <a href="alfanous-module.html">Package&nbsp;alfanous</a> ::
+        <a href="alfanous.whoosh-module.html">Package&nbsp;whoosh</a> ::
+        <a href="alfanous.whoosh.filedb-module.html">Package&nbsp;filedb</a> ::
+        Module&nbsp;filetables
+      </span>
+    </td>
+    <td>
+      <table cellpadding="0" cellspacing="0">
+        <!-- hide/show private -->
+        <tr><td align="right"><span class="options">[<a href="javascript:void(0);" class="privatelink"
+    onclick="toggle_private();">hide&nbsp;private</a>]</span></td></tr>
+        <tr><td align="right"><span class="options"
+            >[<a href="frames.html" target="_top">frames</a
+            >]&nbsp;|&nbsp;<a href="alfanous.whoosh.filedb.filetables-module.html"
+            target="_top">no&nbsp;frames</a>]</span></td></tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<!-- ==================== MODULE DESCRIPTION ==================== -->
+<h1 class="epydoc">Module filetables</h1><p class="nomargin-top"><span class="codelink"><a href="alfanous.whoosh.filedb.filetables-pysrc.html">source&nbsp;code</a></span></p>
+<p>This module defines writer and reader classes for a fast, immutable 
+  on-disk key-value database format. The current format is identical to D. 
+  J. Bernstein's CDB format (http://cr.yp.to/cdb.html).</p>
+
+<!-- ==================== CLASSES ==================== -->
+<a name="section-Classes"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Classes</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-Classes"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="alfanous.whoosh.filedb.filetables.FileHashWriter-class.html" class="summary-name">FileHashWriter</a>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="alfanous.whoosh.filedb.filetables.FileHashReader-class.html" class="summary-name">FileHashReader</a>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="alfanous.whoosh.filedb.filetables.OrderedHashWriter-class.html" class="summary-name">OrderedHashWriter</a>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="alfanous.whoosh.filedb.filetables.OrderedHashReader-class.html" class="summary-name">OrderedHashReader</a>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="alfanous.whoosh.filedb.filetables.FileTableWriter-class.html" class="summary-name">FileTableWriter</a>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="alfanous.whoosh.filedb.filetables.FileTableReader-class.html" class="summary-name">FileTableReader</a>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="alfanous.whoosh.filedb.filetables.FileRecordWriter-class.html" class="summary-name">FileRecordWriter</a>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="alfanous.whoosh.filedb.filetables.FileRecordReader-class.html" class="summary-name">FileRecordReader</a>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="alfanous.whoosh.filedb.filetables.FileListWriter-class.html" class="summary-name">FileListWriter</a>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="alfanous.whoosh.filedb.filetables.FileListReader-class.html" class="summary-name">FileListReader</a>
+    </td>
+  </tr>
+</table>
+<!-- ==================== FUNCTIONS ==================== -->
+<a name="section-Functions"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Functions</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-Functions"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="cdb_hash"></a><span class="summary-sig-name">cdb_hash</span>(<span class="summary-sig-arg">key</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="alfanous.whoosh.filedb.filetables-pysrc.html#cdb_hash">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">string</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="alfanous.whoosh.filedb.filetables-module.html#pack2ints" class="summary-sig-name">pack2ints</a>(<span class="summary-sig-arg">S</span>,
+        <span class="summary-sig-arg">v1</span>,
+        <span class="summary-sig-arg">v2</span>,
+        <span class="summary-sig-arg">...</span>)</span><br />
+      Return a string containing values v1, v2, ...</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="alfanous.whoosh.filedb.filetables-pysrc.html#pack2ints">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="writeints"></a><span class="summary-sig-name">writeints</span>(<span class="summary-sig-arg">f</span>,
+        <span class="summary-sig-arg">value1</span>,
+        <span class="summary-sig-arg">value2</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="alfanous.whoosh.filedb.filetables-pysrc.html#writeints">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">(v1, v2, ...)</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="alfanous.whoosh.filedb.filetables-module.html#_unpack2ints" class="summary-sig-name" onclick="show_private();">_unpack2ints</a>(<span class="summary-sig-arg">S</span>,
+        <span class="summary-sig-arg">str</span>)</span><br />
+      Return tuple containing values unpacked according to this Struct's 
+      format.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="alfanous.whoosh.filedb.filetables-pysrc.html#_unpack2ints">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="unpack2ints"></a><span class="summary-sig-name">unpack2ints</span>(<span class="summary-sig-arg">s</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="alfanous.whoosh.filedb.filetables-pysrc.html#unpack2ints">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="readint"></a><span class="summary-sig-name">readint</span>(<span class="summary-sig-arg">map</span>,
+        <span class="summary-sig-arg">offset</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="alfanous.whoosh.filedb.filetables-pysrc.html#readint">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">string</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="alfanous.whoosh.filedb.filetables-module.html#packint" class="summary-sig-name">packint</a>(<span class="summary-sig-arg">S</span>,
+        <span class="summary-sig-arg">v1</span>,
+        <span class="summary-sig-arg">v2</span>,
+        <span class="summary-sig-arg">...</span>)</span><br />
+      Return a string containing values v1, v2, ...</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="alfanous.whoosh.filedb.filetables-pysrc.html#packint">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">(v1, v2, ...)</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="alfanous.whoosh.filedb.filetables-module.html#_unpackint" class="summary-sig-name" onclick="show_private();">_unpackint</a>(<span class="summary-sig-arg">S</span>,
+        <span class="summary-sig-arg">str</span>)</span><br />
+      Return tuple containing values unpacked according to this Struct's 
+      format.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="alfanous.whoosh.filedb.filetables-pysrc.html#_unpackint">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="unpackint"></a><span class="summary-sig-name">unpackint</span>(<span class="summary-sig-arg">s</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="alfanous.whoosh.filedb.filetables-pysrc.html#unpackint">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">string</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="alfanous.whoosh.filedb.filetables-module.html#packushort" class="summary-sig-name">packushort</a>(<span class="summary-sig-arg">S</span>,
+        <span class="summary-sig-arg">v1</span>,
+        <span class="summary-sig-arg">v2</span>,
+        <span class="summary-sig-arg">...</span>)</span><br />
+      Return a string containing values v1, v2, ...</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="alfanous.whoosh.filedb.filetables-pysrc.html#packushort">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">(v1, v2, ...)</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="alfanous.whoosh.filedb.filetables-module.html#_unpackushort" class="summary-sig-name" onclick="show_private();">_unpackushort</a>(<span class="summary-sig-arg">S</span>,
+        <span class="summary-sig-arg">str</span>)</span><br />
+      Return tuple containing values unpacked according to this Struct's 
+      format.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="alfanous.whoosh.filedb.filetables-pysrc.html#_unpackushort">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="unpackushort"></a><span class="summary-sig-name">unpackushort</span>(<span class="summary-sig-arg">s</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="alfanous.whoosh.filedb.filetables-pysrc.html#unpackushort">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="encode_termkey"></a><span class="summary-sig-name">encode_termkey</span>(<span class="summary-sig-arg">term</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="alfanous.whoosh.filedb.filetables-pysrc.html#encode_termkey">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="decode_termkey"></a><span class="summary-sig-name">decode_termkey</span>(<span class="summary-sig-arg">key</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="alfanous.whoosh.filedb.filetables-pysrc.html#decode_termkey">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">string</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="alfanous.whoosh.filedb.filetables-module.html#_pack_vkey" class="summary-sig-name" onclick="show_private();">_pack_vkey</a>(<span class="summary-sig-arg">S</span>,
+        <span class="summary-sig-arg">v1</span>,
+        <span class="summary-sig-arg">v2</span>,
+        <span class="summary-sig-arg">...</span>)</span><br />
+      Return a string containing values v1, v2, ...</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="alfanous.whoosh.filedb.filetables-pysrc.html#_pack_vkey">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="encode_vectorkey"></a><span class="summary-sig-name">encode_vectorkey</span>(<span class="summary-sig-arg">docandfield</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="alfanous.whoosh.filedb.filetables-pysrc.html#encode_vectorkey">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">(v1, v2, ...)</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="alfanous.whoosh.filedb.filetables-module.html#decode_vectorkey" class="summary-sig-name">decode_vectorkey</a>(<span class="summary-sig-arg">S</span>,
+        <span class="summary-sig-arg">str</span>)</span><br />
+      Return tuple containing values unpacked according to this Struct's 
+      format.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="alfanous.whoosh.filedb.filetables-pysrc.html#decode_vectorkey">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">string</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="alfanous.whoosh.filedb.filetables-module.html#encode_docnum" class="summary-sig-name">encode_docnum</a>(<span class="summary-sig-arg">S</span>,
+        <span class="summary-sig-arg">v1</span>,
+        <span class="summary-sig-arg">v2</span>,
+        <span class="summary-sig-arg">...</span>)</span><br />
+      Return a string containing values v1, v2, ...</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="alfanous.whoosh.filedb.filetables-pysrc.html#packint">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="decode_docnum"></a><span class="summary-sig-name">decode_docnum</span>(<span class="summary-sig-arg">s</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="alfanous.whoosh.filedb.filetables-pysrc.html#unpackint">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">string</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="alfanous.whoosh.filedb.filetables-module.html#_terminfo_pack" class="summary-sig-name" onclick="show_private();">_terminfo_pack</a>(<span class="summary-sig-arg">S</span>,
+        <span class="summary-sig-arg">v1</span>,
+        <span class="summary-sig-arg">v2</span>,
+        <span class="summary-sig-arg">...</span>)</span><br />
+      Return a string containing values v1, v2, ...</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="alfanous.whoosh.filedb.filetables-pysrc.html#_terminfo_pack">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="encode_terminfo"></a><span class="summary-sig-name">encode_terminfo</span>(<span class="summary-sig-arg">cf_offset_df</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="alfanous.whoosh.filedb.filetables-pysrc.html#encode_terminfo">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">(v1, v2, ...)</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="alfanous.whoosh.filedb.filetables-module.html#decode_terminfo" class="summary-sig-name">decode_terminfo</a>(<span class="summary-sig-arg">S</span>,
+        <span class="summary-sig-arg">str</span>)</span><br />
+      Return tuple containing values unpacked according to this Struct's 
+      format.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="alfanous.whoosh.filedb.filetables-pysrc.html#decode_terminfo">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="enpickle"></a><span class="summary-sig-name">enpickle</span>(<span class="summary-sig-arg">data</span>)</span><br />
+      Encodes a value as a string for storage in a table.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="alfanous.whoosh.filedb.filetables-pysrc.html#enpickle">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="dump_hash"></a><span class="summary-sig-name">dump_hash</span>(<span class="summary-sig-arg">hashreader</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="alfanous.whoosh.filedb.filetables-pysrc.html#dump_hash">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+</table>
+<!-- ==================== VARIABLES ==================== -->
+<a name="section-Variables"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Variables</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-Variables"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="_2ints"></a><span class="summary-name">_2ints</span> = <code title="Struct(&quot;!II&quot;)">Struct(&quot;!II&quot;)</code>
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="_int_struct"></a><span class="summary-name">_int_struct</span> = <code title="Struct(&quot;!i&quot;)">Struct(&quot;!i&quot;)</code>
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="_ushort_struct"></a><span class="summary-name">_ushort_struct</span> = <code title="Struct(&quot;!H&quot;)">Struct(&quot;!H&quot;)</code>
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="_vkey_struct"></a><span class="summary-name">_vkey_struct</span> = <code title="Struct(&quot;!Ii&quot;)">Struct(&quot;!Ii&quot;)</code>
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="_terminfo_struct"></a><span class="summary-name">_terminfo_struct</span> = <code title="Struct(&quot;!ILI&quot;)">Struct(&quot;!ILI&quot;)</code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="__package__"></a><span class="summary-name">__package__</span> = <code title="'alfanous.whoosh.filedb'"><code class="variable-quote">'</code><code class="variable-string">alfanous.whoosh.filedb</code><code class="variable-quote">'</code></code>
+    </td>
+  </tr>
+</table>
+<p class="indent-wrapped-lines"><b>Imports:</b>
+  <span title="sys.path">path</span>,
+  <span title="array.array">array</span>,
+  <span title="bisect.bisect_right">bisect_right</span>,
+  <span title="collections.defaultdict">defaultdict</span>,
+  <span title="cPickle.dumps">dumps</span>,
+  <span title="cPickle.loads">loads</span>,
+  <span title="struct.Struct">Struct</span>,
+  <span title="alfanous.whoosh.system._USHORT_SIZE">_USHORT_SIZE</span>,
+  <span title="alfanous.whoosh.system._INT_SIZE">_INT_SIZE</span>,
+  <span title="alfanous.whoosh.util.utf8encode">utf8encode</span>,
+  <span title="alfanous.whoosh.util.utf8decode">utf8decode</span>,
+  depickle
+</p><br />
+<!-- ==================== FUNCTION DETAILS ==================== -->
+<a name="section-FunctionDetails"></a>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Function Details</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-FunctionDetails"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+</table>
+<a name="pack2ints"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">pack2ints</span>(<span class="sig-arg">S</span>,
+        <span class="sig-arg">v1</span>,
+        <span class="sig-arg">v2</span>,
+        <span class="sig-arg">...</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="alfanous.whoosh.filedb.filetables-pysrc.html#pack2ints">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Return a string containing values v1, v2, ... packed according to this
+  Struct's format. See struct.__doc__ for more on format strings.</p>
+  <dl class="fields">
+    <dt>Returns: string</dt>
+  </dl>
+</td></tr></table>
+</div>
+<a name="_unpack2ints"></a>
+<div class="private">
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">_unpack2ints</span>(<span class="sig-arg">S</span>,
+        <span class="sig-arg">str</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="alfanous.whoosh.filedb.filetables-pysrc.html#_unpack2ints">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Return tuple containing values unpacked according to this Struct's 
+  format. Requires len(str) == self.size. See struct.__doc__ for more on 
+  format strings.</p>
+  <dl class="fields">
+    <dt>Returns: (v1, v2, ...)</dt>
+  </dl>
+</td></tr></table>
+</div>
+<a name="packint"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">packint</span>(<span class="sig-arg">S</span>,
+        <span class="sig-arg">v1</span>,
+        <span class="sig-arg">v2</span>,
+        <span class="sig-arg">...</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="alfanous.whoosh.filedb.filetables-pysrc.html#packint">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Return a string containing values v1, v2, ... packed according to this
+  Struct's format. See struct.__doc__ for more on format strings.</p>
+  <dl class="fields">
+    <dt>Returns: string</dt>
+  </dl>
+</td></tr></table>
+</div>
+<a name="_unpackint"></a>
+<div class="private">
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">_unpackint</span>(<span class="sig-arg">S</span>,
+        <span class="sig-arg">str</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="alfanous.whoosh.filedb.filetables-pysrc.html#_unpackint">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Return tuple containing values unpacked according to this Struct's 
+  format. Requires len(str) == self.size. See struct.__doc__ for more on 
+  format strings.</p>
+  <dl class="fields">
+    <dt>Returns: (v1, v2, ...)</dt>
+  </dl>
+</td></tr></table>
+</div>
+<a name="packushort"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">packushort</span>(<span class="sig-arg">S</span>,
+        <span class="sig-arg">v1</span>,
+        <span class="sig-arg">v2</span>,
+        <span class="sig-arg">...</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="alfanous.whoosh.filedb.filetables-pysrc.html#packushort">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Return a string containing values v1, v2, ... packed according to this
+  Struct's format. See struct.__doc__ for more on format strings.</p>
+  <dl class="fields">
+    <dt>Returns: string</dt>
+  </dl>
+</td></tr></table>
+</div>
+<a name="_unpackushort"></a>
+<div class="private">
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">_unpackushort</span>(<span class="sig-arg">S</span>,
+        <span class="sig-arg">str</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="alfanous.whoosh.filedb.filetables-pysrc.html#_unpackushort">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Return tuple containing values unpacked according to this Struct's 
+  format. Requires len(str) == self.size. See struct.__doc__ for more on 
+  format strings.</p>
+  <dl class="fields">
+    <dt>Returns: (v1, v2, ...)</dt>
+  </dl>
+</td></tr></table>
+</div>
+<a name="_pack_vkey"></a>
+<div class="private">
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">_pack_vkey</span>(<span class="sig-arg">S</span>,
+        <span class="sig-arg">v1</span>,
+        <span class="sig-arg">v2</span>,
+        <span class="sig-arg">...</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="alfanous.whoosh.filedb.filetables-pysrc.html#_pack_vkey">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Return a string containing values v1, v2, ... packed according to this
+  Struct's format. See struct.__doc__ for more on format strings.</p>
+  <dl class="fields">
+    <dt>Returns: string</dt>
+  </dl>
+</td></tr></table>
+</div>
+<a name="decode_vectorkey"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">decode_vectorkey</span>(<span class="sig-arg">S</span>,
+        <span class="sig-arg">str</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="alfanous.whoosh.filedb.filetables-pysrc.html#decode_vectorkey">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Return tuple containing values unpacked according to this Struct's 
+  format. Requires len(str) == self.size. See struct.__doc__ for more on 
+  format strings.</p>
+  <dl class="fields">
+    <dt>Returns: (v1, v2, ...)</dt>
+  </dl>
+</td></tr></table>
+</div>
+<a name="encode_docnum"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">encode_docnum</span>(<span class="sig-arg">S</span>,
+        <span class="sig-arg">v1</span>,
+        <span class="sig-arg">v2</span>,
+        <span class="sig-arg">...</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="alfanous.whoosh.filedb.filetables-pysrc.html#packint">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Return a string containing values v1, v2, ... packed according to this
+  Struct's format. See struct.__doc__ for more on format strings.</p>
+  <dl class="fields">
+    <dt>Returns: string</dt>
+  </dl>
+</td></tr></table>
+</div>
+<a name="_terminfo_pack"></a>
+<div class="private">
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">_terminfo_pack</span>(<span class="sig-arg">S</span>,
+        <span class="sig-arg">v1</span>,
+        <span class="sig-arg">v2</span>,
+        <span class="sig-arg">...</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="alfanous.whoosh.filedb.filetables-pysrc.html#_terminfo_pack">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Return a string containing values v1, v2, ... packed according to this
+  Struct's format. See struct.__doc__ for more on format strings.</p>
+  <dl class="fields">
+    <dt>Returns: string</dt>
+  </dl>
+</td></tr></table>
+</div>
+<a name="decode_terminfo"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">decode_terminfo</span>(<span class="sig-arg">S</span>,
+        <span class="sig-arg">str</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="alfanous.whoosh.filedb.filetables-pysrc.html#decode_terminfo">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Return tuple containing values unpacked according to this Struct's 
+  format. Requires len(str) == self.size. See struct.__doc__ for more on 
+  format strings.</p>
+  <dl class="fields">
+    <dt>Returns: (v1, v2, ...)</dt>
+  </dl>
+</td></tr></table>
+</div>
+<br />
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="alfanous-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            ><a class="navbar" target="_top" href="alfanous.sourceforge.com">Alfanous</a></th>
+          </tr></table></th>
+  </tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" width="100%%">
+  <tr>
+    <td align="left" class="footer">
+    Generated by Epydoc 3.0.1 on Thu Mar 18 03:28:27 2010
+    </td>
+    <td align="right" class="footer">
+      <a target="mainFrame" href="http://epydoc.sourceforge.net"
+        >http://epydoc.sourceforge.net</a>
+    </td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+  <!--
+  // Private objects are initially displayed (because if
+  // javascript is turned off then we want them to be
+  // visible); but by default, we want to hide them.  So hide
+  // them unless we have a cookie that says to show them.
+  checkCookie();
+  // -->
+</script>
+</body>
+</html>

@@ -1,0 +1,666 @@
+<?xml version="1.0" encoding="ascii"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>alfanous.whoosh.analysis.IntraWordFilter</title>
+  <link rel="stylesheet" href="epydoc.css" type="text/css" />
+  <script type="text/javascript" src="epydoc.js"></script>
+</head>
+
+<body bgcolor="white" text="black" link="blue" vlink="#204080"
+      alink="#204080">
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="alfanous-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            ><a class="navbar" target="_top" href="alfanous.sourceforge.com">Alfanous</a></th>
+          </tr></table></th>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="100%">
+      <span class="breadcrumbs">
+        <a href="alfanous-module.html">Package&nbsp;alfanous</a> ::
+        <a href="alfanous.whoosh-module.html">Package&nbsp;whoosh</a> ::
+        <a href="alfanous.whoosh.analysis-module.html">Module&nbsp;analysis</a> ::
+        Class&nbsp;IntraWordFilter
+      </span>
+    </td>
+    <td>
+      <table cellpadding="0" cellspacing="0">
+        <!-- hide/show private -->
+        <tr><td align="right"><span class="options">[<a href="javascript:void(0);" class="privatelink"
+    onclick="toggle_private();">hide&nbsp;private</a>]</span></td></tr>
+        <tr><td align="right"><span class="options"
+            >[<a href="frames.html" target="_top">frames</a
+            >]&nbsp;|&nbsp;<a href="alfanous.whoosh.analysis.IntraWordFilter-class.html"
+            target="_top">no&nbsp;frames</a>]</span></td></tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<!-- ==================== CLASS DESCRIPTION ==================== -->
+<h1 class="epydoc">Class IntraWordFilter</h1><p class="nomargin-top"><span class="codelink"><a href="alfanous.whoosh.analysis-pysrc.html#IntraWordFilter">source&nbsp;code</a></span></p>
+<pre class="base-tree">
+object --+        
+         |        
+<a href="alfanous.whoosh.analysis.Composable-class.html">Composable</a> --+    
+             |    
+        <a href="alfanous.whoosh.analysis.Filter-class.html">Filter</a> --+
+                 |
+                <strong class="uidshort">IntraWordFilter</strong>
+</pre>
+
+<hr />
+<pre class="literalblock">
+Splits words into subwords and performs optional transformations on
+subword groups. This filter is funtionally based on yonik's
+WordDelimiterFilter in Solr, but shares no code with it.
+
+* Split on intra-word delimiters, e.g. `Wi-Fi` -&gt; `Wi`, `Fi`.
+* When splitwords=True, split on case transitions,
+  e.g. `PowerShot` -&gt; `Power`, `Shot`.
+* When splitnums=True, split on letter-number transitions,
+  e.g. `SD500` -&gt; `SD`, `500`.
+* Leading and trailing delimiter characters are ignored.
+* Trailing possesive &quot;'s&quot; removed from subwords,
+  e.g. `O'Neil's` -&gt; `O`, `Neil`.
+
+The mergewords and mergenums arguments turn on merging of subwords.
+
+When the merge arguments are false, subwords are not merged.
+
+* `PowerShot` -&gt; `0`:`Power`, `1`:`Shot` (where `0` and `1` are token
+  positions).
+
+When one or both of the merge arguments are true, consecutive runs of
+alphabetic and/or numeric subwords are merged into an additional token with
+the same position as the last sub-word.
+
+* `PowerShot` -&gt; `0`:`Power`, `1`:`Shot`, `1`:`PowerShot`
+* `A's+B's&amp;C's` -&gt; `0`:`A`, `1`:`B`, `2`:`C`, `2`:`ABC`
+* `Super-Duper-XL500-42-AutoCoder!` -&gt; `0`:`Super`, `1`:`Duper`, `2`:`XL`,
+  `2`:`SuperDuperXL`,
+  `3`:`500`, `4`:`42`, `4`:`50042`, `5`:`Auto`, `6`:`Coder`,
+  `6`:`AutoCoder`
+
+When using this filter you should use a tokenizer that only splits on
+whitespace, so the tokenizer does not remove intra-word delimiters before
+this filter can see them, and put this filter before any use of
+LowercaseFilter.
+
+&gt;&gt;&gt; analyzer = RegexTokenizer(r&quot;\S+&quot;) | IntraWordFilter() | LowercaseFilter()
+
+One use for this filter is to help match different written representations
+of a concept. For example, if the source text contained `wi-fi`, you
+probably want `wifi`, `WiFi`, `wi-fi`, etc. to match. One way of doing this
+is to specify mergewords=True and/or mergenums=True in the analyzer used
+for indexing, and mergewords=False / mergenums=False in the analyzer used
+for querying.
+
+&gt;&gt;&gt; iwf = MultiFilter(index=IntraWordFilter(mergewords=True, mergenums=True),
+                      query=IntraWordFilter(mergewords=False, mergenums=False))
+&gt;&gt;&gt; analyzer = RegexTokenizer(r&quot;\S+&quot;) | iwf | LowercaseFilter()
+
+(See :class:`MultiFilter`.)
+
+</pre>
+
+<!-- ==================== INSTANCE METHODS ==================== -->
+<a name="section-InstanceMethods"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Instance Methods</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-InstanceMethods"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="alfanous.whoosh.analysis.IntraWordFilter-class.html#__init__" class="summary-sig-name">__init__</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">delims</span>=<span class="summary-sig-default"><code class="variable-quote">u'</code><code class="variable-string">-_'&quot;()!@#$%^&amp;*[]{}&lt;&gt;\|;:,./?`~=+</code><code class="variable-quote">'</code></span>,
+        <span class="summary-sig-arg">splitwords</span>=<span class="summary-sig-default">True</span>,
+        <span class="summary-sig-arg">splitnums</span>=<span class="summary-sig-default">True</span>,
+        <span class="summary-sig-arg">mergewords</span>=<span class="summary-sig-default">False</span>,
+        <span class="summary-sig-arg">mergenums</span>=<span class="summary-sig-default">False</span>)</span><br />
+      :param delims: a string of delimiter characters.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="alfanous.whoosh.analysis-pysrc.html#IntraWordFilter.__init__">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="alfanous.whoosh.analysis.IntraWordFilter-class.html#__eq__" class="summary-sig-name">__eq__</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">other</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="alfanous.whoosh.analysis-pysrc.html#IntraWordFilter.__eq__">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="split"></a><span class="summary-sig-name">split</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">string</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="alfanous.whoosh.analysis-pysrc.html#IntraWordFilter.split">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="merge"></a><span class="summary-sig-name">merge</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">parts</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="alfanous.whoosh.analysis-pysrc.html#IntraWordFilter.merge">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="__call__"></a><span class="summary-sig-name">__call__</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">tokens</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="alfanous.whoosh.analysis-pysrc.html#IntraWordFilter.__call__">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+  <tr>
+    <td colspan="2" class="summary">
+    <p class="indent-wrapped-lines"><b>Inherited from <code><a href="alfanous.whoosh.analysis.Composable-class.html">Composable</a></code></b>:
+      <code><a href="alfanous.whoosh.analysis.Composable-class.html#__or__">__or__</a></code>,
+      <code><a href="alfanous.whoosh.analysis.Composable-class.html#__repr__">__repr__</a></code>
+      </p>
+    <p class="indent-wrapped-lines"><b>Inherited from <code>object</code></b>:
+      <code>__delattr__</code>,
+      <code>__format__</code>,
+      <code>__getattribute__</code>,
+      <code>__hash__</code>,
+      <code>__new__</code>,
+      <code>__reduce__</code>,
+      <code>__reduce_ex__</code>,
+      <code>__setattr__</code>,
+      <code>__sizeof__</code>,
+      <code>__str__</code>,
+      <code>__subclasshook__</code>
+      </p>
+    </td>
+  </tr>
+</table>
+<!-- ==================== CLASS VARIABLES ==================== -->
+<a name="section-ClassVariables"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Class Variables</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-ClassVariables"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="alfanous.whoosh.analysis.IntraWordFilter-class.html#digits" class="summary-name">digits</a> = <code title="u'0123456789\&#178;\&#179;\&#185;\&#1632;\&#1633;\&#1634;\&#1635;\&#1636;\&#1637;\&#1638;\&#1639;\&#1640;\&#1641;\&#1776;\&#1777;\&#1778;\&#1779;\&#1780;\&#1781;\&#1782;\&#1783;\&#1784;\&#1785;\&#1984;\&#1985;\&#1986;\&#1987;\&#1988;\&#1989;\
+\&#1990;\&#1991;\&#1992;\&#1993;\&#2406;\&#2407;\&#2408;\&#2409;\&#2410;\&#2411;\&#2412;\&#2413;\&#2414;\&#2415;\&#2534;\&#2535;\&#2536;\&#2537;\&#2538;\&#2539;\&#2540;\&#2541;\&#2542;\&#2543;\&#2662;\&#2663;\&#2664;\&#2665;\&#2666;\&#2667;\&#2668;\&#2669;\&#2670;\&#2671;\&#2790;\
+\&#2791;\&#2792;\&#2793;\&#2794;\&#2795;\&#2796;\&#2797;\&#2798;\&#2799;\&#2918;\&#2919;\&#2920;\&#2921;\&#2922;\&#2923;\&#2924;\&#2925;\&#2926;\&#2927;\&#3046;\&#3047;\&#3048;\&#3049;\&#3050;\&#3051;\&#3052;\&#3053;\&#3054;\&#3055;\&#3174;\&#3175;\&#3176;\&#3177;\&#3178;\&#3179;\
+\&#3180;\&#3181;\&#3182;\&#3183;\&#3302;\&#3303;\&#3304;\&#3305;\&#3306;\&#3307;\&#3308;\&#3309;\&#3310;\&#3311;\&#3430;\&#3431;\&#3432;\&#3433;\&#3434;\&#3435;\&#3436;\&#3437;\&#3438;\&#3439;\&#3664;\&#3665;\&#3666;\&#3667;\&#3668;\&#3669;\&#3670;\&#3671;\&#3672;\&#3673;\&#3792;\
+\&#3793;\&#3794;\&#3795;\&#3796;\&#3797;\&#3798;\&#3799;\&#3800;\&#3801;\&#3872;\&#3873;\&#3874;\&#3875;\&#3876;\&#3877;\&#3878;\&#3879;\&#3880;\&#3881;\&#4160;\&#4161;\&#4162;\&#4163;\&#4164;\&#4165;\&#4166;\&#4167;\&#4168;\&#4169;\&#4240;\&#4241;\&#4242;\&#4243;\&#4244;\&#4245;\
+\&#4246;\&#4247;\&#4248;\&#4249;\&#4969;\&#4970;\&#4971;\&#4972;\&#4973;\&#4974;\&#4975;\&#4976;\&#4977;\&#6112;\&#6113;\&#6114;\&#6115;\&#6116;\&#6117;\&#6118;\&#6119;\&#6120;\&#6121;\&#6160;\&#6161;\&#6162;\&#6163;\&#6164;\&#6165;\&#6166;\&#6167;\&#6168;\&#6169;\&#6470;\&#6471;\
+\&#6472;\&#6473;\&#6474;\&#6475;\&#6476;\&#6477;\&#6478;\&#6479;\&#6608;\&#6609;\&#6610;\&#6611;\&#6612;\&#6613;\&#6614;\&#6615;\&#6616;\&#6617;\&#6992;\&#6993;\&#6994;\&#6995;\&#6996;\&#6997;\&#6998;\&#6999;\&#7000;\&#7001;\&#7088;\&#7089;\&#7090;\&#7091;\&#7092;\&#7093;\&#7094;\
+\&#7095;\&#7096;\&#7097;\&#7232;\&#7233;\&#7234;\&#7235;\&#7236;\&#7237;\&#7238;\&#7239;\&#7240;\&#7241;\&#7248;\&#7249;\&#7250;\&#7251;\&#7252;\&#7253;\&#7254;\&#7255;\&#7256;\&#7257;\&#8304;\&#8308;\&#8309;\&#8310;\&#8311;\&#8312;\&#8313;\&#8320;\&#8321;\&#8322;\&#8323;\&#8324;\
+..."><code class="variable-quote">u'</code><code class="variable-string">0123456789\&#178;\&#179;\&#185;\&#1632;\&#1633;\&#1634;\&#1635;\&#1636;\&#1637;\&#1638;\&#1639;\&#1640;\&#1641;\&#1776;\&#1777;\&#1778;\&#1779;\&#1780;\&#1781;\&#1782;\</code><code class="variable-ellipsis">...</code></code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="alfanous.whoosh.analysis.IntraWordFilter-class.html#uppers" class="summary-name">uppers</a> = <code title="u'ABCDEFGHIJKLMNOPQRSTUVWXYZ\&#192;\&#193;\&#194;\&#195;\&#196;\&#197;\&#198;\&#199;\&#200;\&#201;\&#202;\&#203;\&#204;\&#205;\&#206;\&#207;\&#208;\&#209;\&#210;\&#211;\&#212;\
+\&#213;\&#214;\&#216;\&#217;\&#218;\&#219;\&#220;\&#221;\&#222;\&#256;\&#258;\&#260;\&#262;\&#264;\&#266;\&#268;\&#270;\&#272;\&#274;\&#276;\&#278;\&#280;\&#282;\&#284;\&#286;\&#288;\&#290;\&#292;\&#294;\&#296;\&#298;\&#300;\&#302;\&#304;\&#306;\
+\&#308;\&#310;\&#313;\&#315;\&#317;\&#319;\&#321;\&#323;\&#325;\&#327;\&#330;\&#332;\&#334;\&#336;\&#338;\&#340;\&#342;\&#344;\&#346;\&#348;\&#350;\&#352;\&#354;\&#356;\&#358;\&#360;\&#362;\&#364;\&#366;\&#368;\&#370;\&#372;\&#374;\&#376;\&#377;\
+\&#379;\&#381;\&#385;\&#386;\&#388;\&#390;\&#391;\&#393;\&#394;\&#395;\&#398;\&#399;\&#400;\&#401;\&#403;\&#404;\&#406;\&#407;\&#408;\&#412;\&#413;\&#415;\&#416;\&#418;\&#420;\&#422;\&#423;\&#425;\&#428;\&#430;\&#431;\&#433;\&#434;\&#435;\&#437;\
+\&#439;\&#440;\&#444;\&#452;\&#455;\&#458;\&#461;\&#463;\&#465;\&#467;\&#469;\&#471;\&#473;\&#475;\&#478;\&#480;\&#482;\&#484;\&#486;\&#488;\&#490;\&#492;\&#494;\&#497;\&#500;\&#502;\&#503;\&#504;\&#506;\&#508;\&#510;\&#512;\&#514;\&#516;\&#518;\
+\&#520;\&#522;\&#524;\&#526;\&#528;\&#530;\&#532;\&#534;\&#536;\&#538;\&#540;\&#542;\&#544;\&#546;\&#548;\&#550;\&#552;\&#554;\&#556;\&#558;\&#560;\&#562;\&#570;\&#571;\&#573;\&#574;\&#577;\&#579;\&#580;\&#581;\&#582;\&#584;\&#586;\&#588;\&#590;\
+\&#880;\&#882;\&#886;\&#902;\&#904;\&#905;\&#906;\&#908;\&#910;\&#911;\&#913;\&#914;\&#915;\&#916;\&#917;\&#918;\&#919;\&#920;\&#921;\&#922;\&#923;\&#924;\&#925;\&#926;\&#927;\&#928;\&#929;\&#931;\&#932;\&#933;\&#934;\&#935;\&#936;\&#937;\&#938;\
+\&#939;\&#975;\&#978;\&#979;\&#980;\&#984;\&#986;\&#988;\&#990;\&#992;\&#994;\&#996;\&#998;\&#1000;\&#1002;\&#1004;\&#1006;\&#1012;\&#1015;\&#1017;\&#1018;\&#1021;\&#1022;\&#1023;\&#1024;\&#1025;\&#1026;\&#1027;\&#1028;\&#1029;\&#1030;\&#1031;\&#1032;\&#1033;\&#1034;\
+..."><code class="variable-quote">u'</code><code class="variable-string">ABCDEFGHIJKLMNOPQRSTUVWXYZ\&#192;\&#193;\&#194;\&#195;\&#196;\&#197;\&#198;\&#199;\&#200;\&#201;\&#202;\&#203;\</code><code class="variable-ellipsis">...</code></code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="alfanous.whoosh.analysis.IntraWordFilter-class.html#lowers" class="summary-name">lowers</a> = <code title="u'abcdefghijklmnopqrstuvwxyz\&#170;\&#181;\&#186;\&#223;\&#224;\&#225;\&#226;\&#227;\&#228;\&#229;\&#230;\&#231;\&#232;\&#233;\&#234;\&#235;\&#236;\&#237;\&#238;\&#239;\&#240;\
+\&#241;\&#242;\&#243;\&#244;\&#245;\&#246;\&#248;\&#249;\&#250;\&#251;\&#252;\&#253;\&#254;\&#255;\&#257;\&#259;\&#261;\&#263;\&#265;\&#267;\&#269;\&#271;\&#273;\&#275;\&#277;\&#279;\&#281;\&#283;\&#285;\&#287;\&#289;\&#291;\&#293;\&#295;\&#297;\
+\&#299;\&#301;\&#303;\&#305;\&#307;\&#309;\&#311;\&#312;\&#314;\&#316;\&#318;\&#320;\&#322;\&#324;\&#326;\&#328;\&#329;\&#331;\&#333;\&#335;\&#337;\&#339;\&#341;\&#343;\&#345;\&#347;\&#349;\&#351;\&#353;\&#355;\&#357;\&#359;\&#361;\&#363;\&#365;\
+\&#367;\&#369;\&#371;\&#373;\&#375;\&#378;\&#380;\&#382;\&#383;\&#384;\&#387;\&#389;\&#392;\&#396;\&#397;\&#402;\&#405;\&#409;\&#410;\&#411;\&#414;\&#417;\&#419;\&#421;\&#424;\&#426;\&#427;\&#429;\&#432;\&#436;\&#438;\&#441;\&#442;\&#445;\&#446;\
+\&#447;\&#454;\&#457;\&#460;\&#462;\&#464;\&#466;\&#468;\&#470;\&#472;\&#474;\&#476;\&#477;\&#479;\&#481;\&#483;\&#485;\&#487;\&#489;\&#491;\&#493;\&#495;\&#496;\&#499;\&#501;\&#505;\&#507;\&#509;\&#511;\&#513;\&#515;\&#517;\&#519;\&#521;\&#523;\
+\&#525;\&#527;\&#529;\&#531;\&#533;\&#535;\&#537;\&#539;\&#541;\&#543;\&#545;\&#547;\&#549;\&#551;\&#553;\&#555;\&#557;\&#559;\&#561;\&#563;\&#564;\&#565;\&#566;\&#567;\&#568;\&#569;\&#572;\&#575;\&#576;\&#578;\&#583;\&#585;\&#587;\&#589;\&#591;\
+\&#592;\&#593;\&#594;\&#595;\&#596;\&#597;\&#598;\&#599;\&#600;\&#601;\&#602;\&#603;\&#604;\&#605;\&#606;\&#607;\&#608;\&#609;\&#610;\&#611;\&#612;\&#613;\&#614;\&#615;\&#616;\&#617;\&#618;\&#619;\&#620;\&#621;\&#622;\&#623;\&#624;\&#625;\&#626;\
+\&#627;\&#628;\&#629;\&#630;\&#631;\&#632;\&#633;\&#634;\&#635;\&#636;\&#637;\&#638;\&#639;\&#640;\&#641;\&#642;\&#643;\&#644;\&#645;\&#646;\&#647;\&#648;\&#649;\&#650;\&#651;\&#652;\&#653;\&#654;\&#655;\&#656;\&#657;\&#658;\&#659;\&#661;\&#662;\
+..."><code class="variable-quote">u'</code><code class="variable-string">abcdefghijklmnopqrstuvwxyz\&#170;\&#181;\&#186;\&#223;\&#224;\&#225;\&#226;\&#227;\&#228;\&#229;\&#230;\&#231;\</code><code class="variable-ellipsis">...</code></code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="alfanous.whoosh.analysis.IntraWordFilter-class.html#letters" class="summary-name">letters</a> = <code title="u'ABCDEFGHIJKLMNOPQRSTUVWXYZ\&#192;\&#193;\&#194;\&#195;\&#196;\&#197;\&#198;\&#199;\&#200;\&#201;\&#202;\&#203;\&#204;\&#205;\&#206;\&#207;\&#208;\&#209;\&#210;\&#211;\&#212;\
+\&#213;\&#214;\&#216;\&#217;\&#218;\&#219;\&#220;\&#221;\&#222;\&#256;\&#258;\&#260;\&#262;\&#264;\&#266;\&#268;\&#270;\&#272;\&#274;\&#276;\&#278;\&#280;\&#282;\&#284;\&#286;\&#288;\&#290;\&#292;\&#294;\&#296;\&#298;\&#300;\&#302;\&#304;\&#306;\
+\&#308;\&#310;\&#313;\&#315;\&#317;\&#319;\&#321;\&#323;\&#325;\&#327;\&#330;\&#332;\&#334;\&#336;\&#338;\&#340;\&#342;\&#344;\&#346;\&#348;\&#350;\&#352;\&#354;\&#356;\&#358;\&#360;\&#362;\&#364;\&#366;\&#368;\&#370;\&#372;\&#374;\&#376;\&#377;\
+\&#379;\&#381;\&#385;\&#386;\&#388;\&#390;\&#391;\&#393;\&#394;\&#395;\&#398;\&#399;\&#400;\&#401;\&#403;\&#404;\&#406;\&#407;\&#408;\&#412;\&#413;\&#415;\&#416;\&#418;\&#420;\&#422;\&#423;\&#425;\&#428;\&#430;\&#431;\&#433;\&#434;\&#435;\&#437;\
+\&#439;\&#440;\&#444;\&#452;\&#455;\&#458;\&#461;\&#463;\&#465;\&#467;\&#469;\&#471;\&#473;\&#475;\&#478;\&#480;\&#482;\&#484;\&#486;\&#488;\&#490;\&#492;\&#494;\&#497;\&#500;\&#502;\&#503;\&#504;\&#506;\&#508;\&#510;\&#512;\&#514;\&#516;\&#518;\
+\&#520;\&#522;\&#524;\&#526;\&#528;\&#530;\&#532;\&#534;\&#536;\&#538;\&#540;\&#542;\&#544;\&#546;\&#548;\&#550;\&#552;\&#554;\&#556;\&#558;\&#560;\&#562;\&#570;\&#571;\&#573;\&#574;\&#577;\&#579;\&#580;\&#581;\&#582;\&#584;\&#586;\&#588;\&#590;\
+\&#880;\&#882;\&#886;\&#902;\&#904;\&#905;\&#906;\&#908;\&#910;\&#911;\&#913;\&#914;\&#915;\&#916;\&#917;\&#918;\&#919;\&#920;\&#921;\&#922;\&#923;\&#924;\&#925;\&#926;\&#927;\&#928;\&#929;\&#931;\&#932;\&#933;\&#934;\&#935;\&#936;\&#937;\&#938;\
+\&#939;\&#975;\&#978;\&#979;\&#980;\&#984;\&#986;\&#988;\&#990;\&#992;\&#994;\&#996;\&#998;\&#1000;\&#1002;\&#1004;\&#1006;\&#1012;\&#1015;\&#1017;\&#1018;\&#1021;\&#1022;\&#1023;\&#1024;\&#1025;\&#1026;\&#1027;\&#1028;\&#1029;\&#1030;\&#1031;\&#1032;\&#1033;\&#1034;\
+..."><code class="variable-quote">u'</code><code class="variable-string">ABCDEFGHIJKLMNOPQRSTUVWXYZ\&#192;\&#193;\&#194;\&#195;\&#196;\&#197;\&#198;\&#199;\&#200;\&#201;\&#202;\&#203;</code><code class="variable-ellipsis">...</code></code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="alfanous.whoosh.analysis.IntraWordFilter-class.html#__inittypes__" class="summary-name">__inittypes__</a> = <code title="{'delims': &lt;type 'unicode'&gt;,
+ 'mergenums': &lt;type 'bool'&gt;,
+ 'mergewords': &lt;type 'bool'&gt;,
+ 'splitnums': &lt;type 'bool'&gt;,
+ 'splitwords': &lt;type 'bool'&gt;}"><code class="variable-group">{</code><code class="variable-quote">'</code><code class="variable-string">delims</code><code class="variable-quote">'</code><code class="variable-op">: </code>&lt;type 'unicode'&gt;<code class="variable-op">, </code><code class="variable-quote">'</code><code class="variable-string">mergenums</code><code class="variable-quote">'</code><code class="variable-op">: </code>&lt;typ<code class="variable-ellipsis">...</code></code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="ch"></a><span class="summary-name">ch</span> = <code title="u'&#65534;'"><code class="variable-quote">u'</code><code class="variable-string">&#65534;</code><code class="variable-quote">'</code></code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="n"></a><span class="summary-name">n</span> = <code title="65534">65534</code>
+    </td>
+  </tr>
+</table>
+<!-- ==================== PROPERTIES ==================== -->
+<a name="section-Properties"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Properties</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-Properties"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+  <tr>
+    <td colspan="2" class="summary">
+    <p class="indent-wrapped-lines"><b>Inherited from <code>object</code></b>:
+      <code>__class__</code>
+      </p>
+    </td>
+  </tr>
+</table>
+<!-- ==================== METHOD DETAILS ==================== -->
+<a name="section-MethodDetails"></a>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Method Details</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-MethodDetails"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+</table>
+<a name="__init__"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">__init__</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">delims</span>=<span class="sig-default"><code class="variable-quote">u'</code><code class="variable-string">-_'&quot;()!@#$%^&amp;*[]{}&lt;&gt;\|;:,./?`~=+</code><code class="variable-quote">'</code></span>,
+        <span class="sig-arg">splitwords</span>=<span class="sig-default">True</span>,
+        <span class="sig-arg">splitnums</span>=<span class="sig-default">True</span>,
+        <span class="sig-arg">mergewords</span>=<span class="sig-default">False</span>,
+        <span class="sig-arg">mergenums</span>=<span class="sig-default">False</span>)</span>
+    <br /><em class="fname">(Constructor)</em>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="alfanous.whoosh.analysis-pysrc.html#IntraWordFilter.__init__">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <pre class="literalblock">
+
+:param delims: a string of delimiter characters.
+:param splitwords: if True, split at case transitions,
+    e.g. `PowerShot` -&gt; `Power`, `Shot`
+:param splitnums: if True, split at letter-number transitions,
+    e.g. `SD500` -&gt; `SD`, `500`
+:param mergewords: merge consecutive runs of alphabetic subwords into
+    an additional token with the same position as the last subword.
+:param mergenums: merge consecutive runs of numeric subwords into an
+    additional token with the same position as the last subword.
+
+</pre>
+  <dl class="fields">
+    <dt>Overrides:
+        object.__init__
+    </dt>
+  </dl>
+</td></tr></table>
+</div>
+<a name="__eq__"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">__eq__</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">other</span>)</span>
+    <br /><em class="fname">(Equality operator)</em>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="alfanous.whoosh.analysis-pysrc.html#IntraWordFilter.__eq__">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  
+  <dl class="fields">
+    <dt>Overrides:
+        <a href="alfanous.whoosh.analysis.Filter-class.html#__eq__">Filter.__eq__</a>
+    </dt>
+  </dl>
+</td></tr></table>
+</div>
+<br />
+<!-- ==================== CLASS VARIABLE DETAILS ==================== -->
+<a name="section-ClassVariableDetails"></a>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Class Variable Details</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-ClassVariableDetails"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+</table>
+<a name="digits"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <h3 class="epydoc">digits</h3>
+  
+  <dl class="fields">
+  </dl>
+  <dl class="fields">
+    <dt>Value:</dt>
+      <dd><table><tr><td><pre class="variable">
+<code class="variable-quote">u'</code><code class="variable-string">0123456789\&#178;\&#179;\&#185;\&#1632;\&#1633;\&#1634;\&#1635;\&#1636;\&#1637;\&#1638;\&#1639;\&#1640;\&#1641;\&#1776;\&#1777;\&#1778;\&#1779;\&#1780;\&#1781;\&#1782;\&#1783;\&#1784;\&#1785;\&#1984;\&#1985;\&#1986;\&#1987;\&#1988;\&#1989;</code><span class="variable-linewrap"><img src="crarr.png" alt="\" /></span>
+<code class="variable-string">\&#1990;\&#1991;\&#1992;\&#1993;\&#2406;\&#2407;\&#2408;\&#2409;\&#2410;\&#2411;\&#2412;\&#2413;\&#2414;\&#2415;\&#2534;\&#2535;\&#2536;\&#2537;\&#2538;\&#2539;\&#2540;\&#2541;\&#2542;\&#2543;\&#2662;\&#2663;\&#2664;\&#2665;\&#2666;\&#2667;\&#2668;\&#2669;\&#2670;\&#2671;\&#2790;</code><span class="variable-linewrap"><img src="crarr.png" alt="\" /></span>
+<code class="variable-string">\&#2791;\&#2792;\&#2793;\&#2794;\&#2795;\&#2796;\&#2797;\&#2798;\&#2799;\&#2918;\&#2919;\&#2920;\&#2921;\&#2922;\&#2923;\&#2924;\&#2925;\&#2926;\&#2927;\&#3046;\&#3047;\&#3048;\&#3049;\&#3050;\&#3051;\&#3052;\&#3053;\&#3054;\&#3055;\&#3174;\&#3175;\&#3176;\&#3177;\&#3178;\&#3179;</code><span class="variable-linewrap"><img src="crarr.png" alt="\" /></span>
+<code class="variable-string">\&#3180;\&#3181;\&#3182;\&#3183;\&#3302;\&#3303;\&#3304;\&#3305;\&#3306;\&#3307;\&#3308;\&#3309;\&#3310;\&#3311;\&#3430;\&#3431;\&#3432;\&#3433;\&#3434;\&#3435;\&#3436;\&#3437;\&#3438;\&#3439;\&#3664;\&#3665;\&#3666;\&#3667;\&#3668;\&#3669;\&#3670;\&#3671;\&#3672;\&#3673;\&#3792;</code><span class="variable-linewrap"><img src="crarr.png" alt="\" /></span>
+<code class="variable-string">\&#3793;\&#3794;\&#3795;\&#3796;\&#3797;\&#3798;\&#3799;\&#3800;\&#3801;\&#3872;\&#3873;\&#3874;\&#3875;\&#3876;\&#3877;\&#3878;\&#3879;\&#3880;\&#3881;\&#4160;\&#4161;\&#4162;\&#4163;\&#4164;\&#4165;\&#4166;\&#4167;\&#4168;\&#4169;\&#4240;\&#4241;\&#4242;\&#4243;\&#4244;\&#4245;</code><span class="variable-linewrap"><img src="crarr.png" alt="\" /></span>
+<code class="variable-string">\&#4246;\&#4247;\&#4248;\&#4249;\&#4969;\&#4970;\&#4971;\&#4972;\&#4973;\&#4974;\&#4975;\&#4976;\&#4977;\&#6112;\&#6113;\&#6114;\&#6115;\&#6116;\&#6117;\&#6118;\&#6119;\&#6120;\&#6121;\&#6160;\&#6161;\&#6162;\&#6163;\&#6164;\&#6165;\&#6166;\&#6167;\&#6168;\&#6169;\&#6470;\&#6471;</code><span class="variable-linewrap"><img src="crarr.png" alt="\" /></span>
+<code class="variable-string">\&#6472;\&#6473;\&#6474;\&#6475;\&#6476;\&#6477;\&#6478;\&#6479;\&#6608;\&#6609;\&#6610;\&#6611;\&#6612;\&#6613;\&#6614;\&#6615;\&#6616;\&#6617;\&#6992;\&#6993;\&#6994;\&#6995;\&#6996;\&#6997;\&#6998;\&#6999;\&#7000;\&#7001;\&#7088;\&#7089;\&#7090;\&#7091;\&#7092;\&#7093;\&#7094;</code><span class="variable-linewrap"><img src="crarr.png" alt="\" /></span>
+<code class="variable-string">\&#7095;\&#7096;\&#7097;\&#7232;\&#7233;\&#7234;\&#7235;\&#7236;\&#7237;\&#7238;\&#7239;\&#7240;\&#7241;\&#7248;\&#7249;\&#7250;\&#7251;\&#7252;\&#7253;\&#7254;\&#7255;\&#7256;\&#7257;\&#8304;\&#8308;\&#8309;\&#8310;\&#8311;\&#8312;\&#8313;\&#8320;\&#8321;\&#8322;\&#8323;\&#8324;</code><span class="variable-linewrap"><img src="crarr.png" alt="\" /></span>
+<code class="variable-ellipsis">...</code>
+</pre></td></tr></table>
+</dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="uppers"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <h3 class="epydoc">uppers</h3>
+  
+  <dl class="fields">
+  </dl>
+  <dl class="fields">
+    <dt>Value:</dt>
+      <dd><table><tr><td><pre class="variable">
+<code class="variable-quote">u'</code><code class="variable-string">ABCDEFGHIJKLMNOPQRSTUVWXYZ\&#192;\&#193;\&#194;\&#195;\&#196;\&#197;\&#198;\&#199;\&#200;\&#201;\&#202;\&#203;\&#204;\&#205;\&#206;\&#207;\&#208;\&#209;\&#210;\&#211;\&#212;</code><span class="variable-linewrap"><img src="crarr.png" alt="\" /></span>
+<code class="variable-string">\&#213;\&#214;\&#216;\&#217;\&#218;\&#219;\&#220;\&#221;\&#222;\&#256;\&#258;\&#260;\&#262;\&#264;\&#266;\&#268;\&#270;\&#272;\&#274;\&#276;\&#278;\&#280;\&#282;\&#284;\&#286;\&#288;\&#290;\&#292;\&#294;\&#296;\&#298;\&#300;\&#302;\&#304;\&#306;</code><span class="variable-linewrap"><img src="crarr.png" alt="\" /></span>
+<code class="variable-string">\&#308;\&#310;\&#313;\&#315;\&#317;\&#319;\&#321;\&#323;\&#325;\&#327;\&#330;\&#332;\&#334;\&#336;\&#338;\&#340;\&#342;\&#344;\&#346;\&#348;\&#350;\&#352;\&#354;\&#356;\&#358;\&#360;\&#362;\&#364;\&#366;\&#368;\&#370;\&#372;\&#374;\&#376;\&#377;</code><span class="variable-linewrap"><img src="crarr.png" alt="\" /></span>
+<code class="variable-string">\&#379;\&#381;\&#385;\&#386;\&#388;\&#390;\&#391;\&#393;\&#394;\&#395;\&#398;\&#399;\&#400;\&#401;\&#403;\&#404;\&#406;\&#407;\&#408;\&#412;\&#413;\&#415;\&#416;\&#418;\&#420;\&#422;\&#423;\&#425;\&#428;\&#430;\&#431;\&#433;\&#434;\&#435;\&#437;</code><span class="variable-linewrap"><img src="crarr.png" alt="\" /></span>
+<code class="variable-string">\&#439;\&#440;\&#444;\&#452;\&#455;\&#458;\&#461;\&#463;\&#465;\&#467;\&#469;\&#471;\&#473;\&#475;\&#478;\&#480;\&#482;\&#484;\&#486;\&#488;\&#490;\&#492;\&#494;\&#497;\&#500;\&#502;\&#503;\&#504;\&#506;\&#508;\&#510;\&#512;\&#514;\&#516;\&#518;</code><span class="variable-linewrap"><img src="crarr.png" alt="\" /></span>
+<code class="variable-string">\&#520;\&#522;\&#524;\&#526;\&#528;\&#530;\&#532;\&#534;\&#536;\&#538;\&#540;\&#542;\&#544;\&#546;\&#548;\&#550;\&#552;\&#554;\&#556;\&#558;\&#560;\&#562;\&#570;\&#571;\&#573;\&#574;\&#577;\&#579;\&#580;\&#581;\&#582;\&#584;\&#586;\&#588;\&#590;</code><span class="variable-linewrap"><img src="crarr.png" alt="\" /></span>
+<code class="variable-string">\&#880;\&#882;\&#886;\&#902;\&#904;\&#905;\&#906;\&#908;\&#910;\&#911;\&#913;\&#914;\&#915;\&#916;\&#917;\&#918;\&#919;\&#920;\&#921;\&#922;\&#923;\&#924;\&#925;\&#926;\&#927;\&#928;\&#929;\&#931;\&#932;\&#933;\&#934;\&#935;\&#936;\&#937;\&#938;</code><span class="variable-linewrap"><img src="crarr.png" alt="\" /></span>
+<code class="variable-string">\&#939;\&#975;\&#978;\&#979;\&#980;\&#984;\&#986;\&#988;\&#990;\&#992;\&#994;\&#996;\&#998;\&#1000;\&#1002;\&#1004;\&#1006;\&#1012;\&#1015;\&#1017;\&#1018;\&#1021;\&#1022;\&#1023;\&#1024;\&#1025;\&#1026;\&#1027;\&#1028;\&#1029;\&#1030;\&#1031;\&#1032;\&#1033;\&#1034;</code><span class="variable-linewrap"><img src="crarr.png" alt="\" /></span>
+<code class="variable-ellipsis">...</code>
+</pre></td></tr></table>
+</dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="lowers"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <h3 class="epydoc">lowers</h3>
+  
+  <dl class="fields">
+  </dl>
+  <dl class="fields">
+    <dt>Value:</dt>
+      <dd><table><tr><td><pre class="variable">
+<code class="variable-quote">u'</code><code class="variable-string">abcdefghijklmnopqrstuvwxyz\&#170;\&#181;\&#186;\&#223;\&#224;\&#225;\&#226;\&#227;\&#228;\&#229;\&#230;\&#231;\&#232;\&#233;\&#234;\&#235;\&#236;\&#237;\&#238;\&#239;\&#240;</code><span class="variable-linewrap"><img src="crarr.png" alt="\" /></span>
+<code class="variable-string">\&#241;\&#242;\&#243;\&#244;\&#245;\&#246;\&#248;\&#249;\&#250;\&#251;\&#252;\&#253;\&#254;\&#255;\&#257;\&#259;\&#261;\&#263;\&#265;\&#267;\&#269;\&#271;\&#273;\&#275;\&#277;\&#279;\&#281;\&#283;\&#285;\&#287;\&#289;\&#291;\&#293;\&#295;\&#297;</code><span class="variable-linewrap"><img src="crarr.png" alt="\" /></span>
+<code class="variable-string">\&#299;\&#301;\&#303;\&#305;\&#307;\&#309;\&#311;\&#312;\&#314;\&#316;\&#318;\&#320;\&#322;\&#324;\&#326;\&#328;\&#329;\&#331;\&#333;\&#335;\&#337;\&#339;\&#341;\&#343;\&#345;\&#347;\&#349;\&#351;\&#353;\&#355;\&#357;\&#359;\&#361;\&#363;\&#365;</code><span class="variable-linewrap"><img src="crarr.png" alt="\" /></span>
+<code class="variable-string">\&#367;\&#369;\&#371;\&#373;\&#375;\&#378;\&#380;\&#382;\&#383;\&#384;\&#387;\&#389;\&#392;\&#396;\&#397;\&#402;\&#405;\&#409;\&#410;\&#411;\&#414;\&#417;\&#419;\&#421;\&#424;\&#426;\&#427;\&#429;\&#432;\&#436;\&#438;\&#441;\&#442;\&#445;\&#446;</code><span class="variable-linewrap"><img src="crarr.png" alt="\" /></span>
+<code class="variable-string">\&#447;\&#454;\&#457;\&#460;\&#462;\&#464;\&#466;\&#468;\&#470;\&#472;\&#474;\&#476;\&#477;\&#479;\&#481;\&#483;\&#485;\&#487;\&#489;\&#491;\&#493;\&#495;\&#496;\&#499;\&#501;\&#505;\&#507;\&#509;\&#511;\&#513;\&#515;\&#517;\&#519;\&#521;\&#523;</code><span class="variable-linewrap"><img src="crarr.png" alt="\" /></span>
+<code class="variable-string">\&#525;\&#527;\&#529;\&#531;\&#533;\&#535;\&#537;\&#539;\&#541;\&#543;\&#545;\&#547;\&#549;\&#551;\&#553;\&#555;\&#557;\&#559;\&#561;\&#563;\&#564;\&#565;\&#566;\&#567;\&#568;\&#569;\&#572;\&#575;\&#576;\&#578;\&#583;\&#585;\&#587;\&#589;\&#591;</code><span class="variable-linewrap"><img src="crarr.png" alt="\" /></span>
+<code class="variable-string">\&#592;\&#593;\&#594;\&#595;\&#596;\&#597;\&#598;\&#599;\&#600;\&#601;\&#602;\&#603;\&#604;\&#605;\&#606;\&#607;\&#608;\&#609;\&#610;\&#611;\&#612;\&#613;\&#614;\&#615;\&#616;\&#617;\&#618;\&#619;\&#620;\&#621;\&#622;\&#623;\&#624;\&#625;\&#626;</code><span class="variable-linewrap"><img src="crarr.png" alt="\" /></span>
+<code class="variable-string">\&#627;\&#628;\&#629;\&#630;\&#631;\&#632;\&#633;\&#634;\&#635;\&#636;\&#637;\&#638;\&#639;\&#640;\&#641;\&#642;\&#643;\&#644;\&#645;\&#646;\&#647;\&#648;\&#649;\&#650;\&#651;\&#652;\&#653;\&#654;\&#655;\&#656;\&#657;\&#658;\&#659;\&#661;\&#662;</code><span class="variable-linewrap"><img src="crarr.png" alt="\" /></span>
+<code class="variable-ellipsis">...</code>
+</pre></td></tr></table>
+</dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="letters"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <h3 class="epydoc">letters</h3>
+  
+  <dl class="fields">
+  </dl>
+  <dl class="fields">
+    <dt>Value:</dt>
+      <dd><table><tr><td><pre class="variable">
+<code class="variable-quote">u'</code><code class="variable-string">ABCDEFGHIJKLMNOPQRSTUVWXYZ\&#192;\&#193;\&#194;\&#195;\&#196;\&#197;\&#198;\&#199;\&#200;\&#201;\&#202;\&#203;\&#204;\&#205;\&#206;\&#207;\&#208;\&#209;\&#210;\&#211;\&#212;</code><span class="variable-linewrap"><img src="crarr.png" alt="\" /></span>
+<code class="variable-string">\&#213;\&#214;\&#216;\&#217;\&#218;\&#219;\&#220;\&#221;\&#222;\&#256;\&#258;\&#260;\&#262;\&#264;\&#266;\&#268;\&#270;\&#272;\&#274;\&#276;\&#278;\&#280;\&#282;\&#284;\&#286;\&#288;\&#290;\&#292;\&#294;\&#296;\&#298;\&#300;\&#302;\&#304;\&#306;</code><span class="variable-linewrap"><img src="crarr.png" alt="\" /></span>
+<code class="variable-string">\&#308;\&#310;\&#313;\&#315;\&#317;\&#319;\&#321;\&#323;\&#325;\&#327;\&#330;\&#332;\&#334;\&#336;\&#338;\&#340;\&#342;\&#344;\&#346;\&#348;\&#350;\&#352;\&#354;\&#356;\&#358;\&#360;\&#362;\&#364;\&#366;\&#368;\&#370;\&#372;\&#374;\&#376;\&#377;</code><span class="variable-linewrap"><img src="crarr.png" alt="\" /></span>
+<code class="variable-string">\&#379;\&#381;\&#385;\&#386;\&#388;\&#390;\&#391;\&#393;\&#394;\&#395;\&#398;\&#399;\&#400;\&#401;\&#403;\&#404;\&#406;\&#407;\&#408;\&#412;\&#413;\&#415;\&#416;\&#418;\&#420;\&#422;\&#423;\&#425;\&#428;\&#430;\&#431;\&#433;\&#434;\&#435;\&#437;</code><span class="variable-linewrap"><img src="crarr.png" alt="\" /></span>
+<code class="variable-string">\&#439;\&#440;\&#444;\&#452;\&#455;\&#458;\&#461;\&#463;\&#465;\&#467;\&#469;\&#471;\&#473;\&#475;\&#478;\&#480;\&#482;\&#484;\&#486;\&#488;\&#490;\&#492;\&#494;\&#497;\&#500;\&#502;\&#503;\&#504;\&#506;\&#508;\&#510;\&#512;\&#514;\&#516;\&#518;</code><span class="variable-linewrap"><img src="crarr.png" alt="\" /></span>
+<code class="variable-string">\&#520;\&#522;\&#524;\&#526;\&#528;\&#530;\&#532;\&#534;\&#536;\&#538;\&#540;\&#542;\&#544;\&#546;\&#548;\&#550;\&#552;\&#554;\&#556;\&#558;\&#560;\&#562;\&#570;\&#571;\&#573;\&#574;\&#577;\&#579;\&#580;\&#581;\&#582;\&#584;\&#586;\&#588;\&#590;</code><span class="variable-linewrap"><img src="crarr.png" alt="\" /></span>
+<code class="variable-string">\&#880;\&#882;\&#886;\&#902;\&#904;\&#905;\&#906;\&#908;\&#910;\&#911;\&#913;\&#914;\&#915;\&#916;\&#917;\&#918;\&#919;\&#920;\&#921;\&#922;\&#923;\&#924;\&#925;\&#926;\&#927;\&#928;\&#929;\&#931;\&#932;\&#933;\&#934;\&#935;\&#936;\&#937;\&#938;</code><span class="variable-linewrap"><img src="crarr.png" alt="\" /></span>
+<code class="variable-string">\&#939;\&#975;\&#978;\&#979;\&#980;\&#984;\&#986;\&#988;\&#990;\&#992;\&#994;\&#996;\&#998;\&#1000;\&#1002;\&#1004;\&#1006;\&#1012;\&#1015;\&#1017;\&#1018;\&#1021;\&#1022;\&#1023;\&#1024;\&#1025;\&#1026;\&#1027;\&#1028;\&#1029;\&#1030;\&#1031;\&#1032;\&#1033;\&#1034;</code><span class="variable-linewrap"><img src="crarr.png" alt="\" /></span>
+<code class="variable-ellipsis">...</code>
+</pre></td></tr></table>
+</dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="__inittypes__"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <h3 class="epydoc">__inittypes__</h3>
+  
+  <dl class="fields">
+  </dl>
+  <dl class="fields">
+    <dt>Value:</dt>
+      <dd><table><tr><td><pre class="variable">
+<code class="variable-group">{</code><code class="variable-quote">'</code><code class="variable-string">delims</code><code class="variable-quote">'</code><code class="variable-op">: </code>&lt;type 'unicode'&gt;<code class="variable-op">,</code>
+ <code class="variable-quote">'</code><code class="variable-string">mergenums</code><code class="variable-quote">'</code><code class="variable-op">: </code>&lt;type 'bool'&gt;<code class="variable-op">,</code>
+ <code class="variable-quote">'</code><code class="variable-string">mergewords</code><code class="variable-quote">'</code><code class="variable-op">: </code>&lt;type 'bool'&gt;<code class="variable-op">,</code>
+ <code class="variable-quote">'</code><code class="variable-string">splitnums</code><code class="variable-quote">'</code><code class="variable-op">: </code>&lt;type 'bool'&gt;<code class="variable-op">,</code>
+ <code class="variable-quote">'</code><code class="variable-string">splitwords</code><code class="variable-quote">'</code><code class="variable-op">: </code>&lt;type 'bool'&gt;<code class="variable-group">}</code>
+</pre></td></tr></table>
+</dd>
+  </dl>
+</td></tr></table>
+</div>
+<br />
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="alfanous-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            ><a class="navbar" target="_top" href="alfanous.sourceforge.com">Alfanous</a></th>
+          </tr></table></th>
+  </tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" width="100%%">
+  <tr>
+    <td align="left" class="footer">
+    Generated by Epydoc 3.0.1 on Thu Mar 18 03:28:29 2010
+    </td>
+    <td align="right" class="footer">
+      <a target="mainFrame" href="http://epydoc.sourceforge.net"
+        >http://epydoc.sourceforge.net</a>
+    </td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+  <!--
+  // Private objects are initially displayed (because if
+  // javascript is turned off then we want them to be
+  // visible); but by default, we want to hide them.  So hide
+  // them unless we have a cookie that says to show them.
+  checkCookie();
+  // -->
+</script>
+</body>
+</html>

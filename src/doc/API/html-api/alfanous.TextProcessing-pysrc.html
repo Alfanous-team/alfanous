@@ -1,0 +1,421 @@
+<?xml version="1.0" encoding="ascii"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>alfanous.TextProcessing</title>
+  <link rel="stylesheet" href="epydoc.css" type="text/css" />
+  <script type="text/javascript" src="epydoc.js"></script>
+</head>
+
+<body bgcolor="white" text="black" link="blue" vlink="#204080"
+      alink="#204080">
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="alfanous-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            ><a class="navbar" target="_top" href="alfanous.sourceforge.com">Alfanous</a></th>
+          </tr></table></th>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="100%">
+      <span class="breadcrumbs">
+        <a href="alfanous-module.html">Package&nbsp;alfanous</a> ::
+        Module&nbsp;TextProcessing
+      </span>
+    </td>
+    <td>
+      <table cellpadding="0" cellspacing="0">
+        <!-- hide/show private -->
+        <tr><td align="right"><span class="options">[<a href="javascript:void(0);" class="privatelink"
+    onclick="toggle_private();">hide&nbsp;private</a>]</span></td></tr>
+        <tr><td align="right"><span class="options"
+            >[<a href="frames.html" target="_top">frames</a
+            >]&nbsp;|&nbsp;<a href="alfanous.TextProcessing-pysrc.html"
+            target="_top">no&nbsp;frames</a>]</span></td></tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<h1 class="epydoc">Source Code for <a href="alfanous.TextProcessing-module.html">Module alfanous.TextProcessing</a></h1>
+<pre class="py-src">
+<a name="L1"></a><tt class="py-lineno">  1</tt>  <tt class="py-line"><tt class="py-comment"># coding: utf-8</tt> </tt>
+<a name="L2"></a><tt class="py-lineno">  2</tt>  <tt class="py-line"><tt class="py-docstring">'''</tt> </tt>
+<a name="L3"></a><tt class="py-lineno">  3</tt>  <tt class="py-line"><tt class="py-docstring">@author: assem</tt> </tt>
+<a name="L4"></a><tt class="py-lineno">  4</tt>  <tt class="py-line"><tt class="py-docstring">'''</tt> </tt>
+<a name="L5"></a><tt class="py-lineno">  5</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt id="link-0" class="py-name" targets="Package alfanous.dynamic_ressources=alfanous.dynamic_ressources-module.html"><a title="alfanous.dynamic_ressources" class="py-name" href="#" onclick="return doclink('link-0', 'dynamic_ressources', 'link-0');">dynamic_ressources</a></tt> <tt class="py-keyword">import</tt> <tt class="py-name">synonymes_dyn</tt> <tt class="py-keyword">as</tt> <tt class="py-name">sydy</tt> </tt>
+<a name="L6"></a><tt class="py-lineno">  6</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt id="link-1" class="py-name"><a title="alfanous.dynamic_ressources" class="py-name" href="#" onclick="return doclink('link-1', 'dynamic_ressources', 'link-0');">dynamic_ressources</a></tt> <tt class="py-keyword">import</tt> <tt class="py-name">stopwords_dyn</tt> <tt class="py-keyword">as</tt> <tt class="py-name">swdy</tt> </tt>
+<a name="L7"></a><tt class="py-lineno">  7</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt class="py-name">whoosh</tt><tt class="py-op">.</tt><tt class="py-name">analysis</tt> <tt class="py-keyword">import</tt> <tt class="py-name">StandardAnalyzer</tt><tt class="py-op">,</tt> <tt class="py-name">StopFilter</tt><tt class="py-op">,</tt> <tt class="py-name">RegexTokenizer</tt><tt class="py-op">,</tt> <tt class="py-name">LowercaseFilter</tt> </tt>
+<a name="L8"></a><tt class="py-lineno">  8</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt id="link-2" class="py-name" targets="Package alfanous.Support=alfanous.Support-module.html"><a title="alfanous.Support" class="py-name" href="#" onclick="return doclink('link-2', 'Support', 'link-2');">Support</a></tt><tt class="py-op">.</tt><tt id="link-3" class="py-name" targets="Module alfanous.Support.ar_ctype=alfanous.Support.ar_ctype-module.html"><a title="alfanous.Support.ar_ctype" class="py-name" href="#" onclick="return doclink('link-3', 'ar_ctype', 'link-3');">ar_ctype</a></tt> <tt class="py-keyword">import</tt> <tt id="link-4" class="py-name" targets="Function alfanous.Support.ar_ctype.strip_tashkeel()=alfanous.Support.ar_ctype-module.html#strip_tashkeel"><a title="alfanous.Support.ar_ctype.strip_tashkeel" class="py-name" href="#" onclick="return doclink('link-4', 'strip_tashkeel', 'link-4');">strip_tashkeel</a></tt><tt class="py-op">,</tt> <tt id="link-5" class="py-name" targets="Function alfanous.Support.ar_ctype.normalize_spellerrors()=alfanous.Support.ar_ctype-module.html#normalize_spellerrors"><a title="alfanous.Support.ar_ctype.normalize_spellerrors" class="py-name" href="#" onclick="return doclink('link-5', 'normalize_spellerrors', 'link-5');">normalize_spellerrors</a></tt><tt class="py-op">,</tt> <tt id="link-6" class="py-name" targets="Function alfanous.Support.ar_ctype.normalize_hamza()=alfanous.Support.ar_ctype-module.html#normalize_hamza"><a title="alfanous.Support.ar_ctype.normalize_hamza" class="py-name" href="#" onclick="return doclink('link-6', 'normalize_hamza', 'link-6');">normalize_hamza</a></tt><tt class="py-op">,</tt> <tt id="link-7" class="py-name" targets="Variable alfanous.Support.ar_ctype.HARAKAT_pat=alfanous.Support.ar_ctype-module.html#HARAKAT_pat"><a title="alfanous.Support.ar_ctype.HARAKAT_pat" class="py-name" href="#" onclick="return doclink('link-7', 'HARAKAT_pat', 'link-7');">HARAKAT_pat</a></tt><tt class="py-op">,</tt> <tt id="link-8" class="py-name" targets="Function alfanous.Support.ar_ctype.normalize_lamalef()=alfanous.Support.ar_ctype-module.html#normalize_lamalef"><a title="alfanous.Support.ar_ctype.normalize_lamalef" class="py-name" href="#" onclick="return doclink('link-8', 'normalize_lamalef', 'link-8');">normalize_lamalef</a></tt> </tt>
+<a name="L9"></a><tt class="py-lineno">  9</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt id="link-9" class="py-name"><a title="alfanous.Support" class="py-name" href="#" onclick="return doclink('link-9', 'Support', 'link-2');">Support</a></tt><tt class="py-op">.</tt><tt id="link-10" class="py-name" targets="Module alfanous.Support.arabic_const=alfanous.Support.arabic_const-module.html"><a title="alfanous.Support.arabic_const" class="py-name" href="#" onclick="return doclink('link-10', 'arabic_const', 'link-10');">arabic_const</a></tt> <tt class="py-keyword">import</tt>  <tt class="py-op">*</tt> </tt>
+<a name="L10"></a><tt class="py-lineno"> 10</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt id="link-11" class="py-name" targets="Module alfanous.Constantes=alfanous.Constantes-module.html"><a title="alfanous.Constantes" class="py-name" href="#" onclick="return doclink('link-11', 'Constantes', 'link-11');">Constantes</a></tt> <tt class="py-keyword">import</tt> <tt id="link-12" class="py-name" targets="Variable alfanous.Constantes.inversed_shaping_table=alfanous.Constantes-module.html#inversed_shaping_table"><a title="alfanous.Constantes.inversed_shaping_table" class="py-name" href="#" onclick="return doclink('link-12', 'inversed_shaping_table', 'link-12');">inversed_shaping_table</a></tt> </tt>
+<a name="L11"></a><tt class="py-lineno"> 11</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt id="link-13" class="py-name" targets="Module alfanous.Exceptions=alfanous.Exceptions-module.html"><a title="alfanous.Exceptions" class="py-name" href="#" onclick="return doclink('link-13', 'Exceptions', 'link-13');">Exceptions</a></tt> <tt class="py-keyword">import</tt> <tt id="link-14" class="py-name" targets="Class alfanous.Exceptions.NotImplemented=alfanous.Exceptions.NotImplemented-class.html"><a title="alfanous.Exceptions.NotImplemented" class="py-name" href="#" onclick="return doclink('link-14', 'NotImplemented', 'link-14');">NotImplemented</a></tt> </tt>
+<a name="L12"></a><tt class="py-lineno"> 12</tt>  <tt class="py-line"><tt class="py-keyword">import</tt> <tt class="py-name">re</tt> </tt>
+<a name="QSpaceTokenizer"></a><div id="QSpaceTokenizer-def"><a name="L13"></a><tt class="py-lineno"> 13</tt>  <tt class="py-line"> </tt>
+<a name="L14"></a><tt class="py-lineno"> 14</tt>  <tt class="py-line">    </tt>
+<a name="L15"></a><tt class="py-lineno"> 15</tt> <a class="py-toggle" href="#" id="QSpaceTokenizer-toggle" onclick="return toggle('QSpaceTokenizer');">-</a><tt class="py-line"><tt class="py-keyword">class</tt> <a class="py-def-name" href="alfanous.TextProcessing.QSpaceTokenizer-class.html">QSpaceTokenizer</a><tt class="py-op">(</tt><tt class="py-base-class">RegexTokenizer</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="QSpaceTokenizer-collapsed" style="display:none;" pad="+++" indent="++++"></div><div id="QSpaceTokenizer-expanded"><a name="QSpaceTokenizer.__init__"></a><div id="QSpaceTokenizer.__init__-def"><a name="L16"></a><tt class="py-lineno"> 16</tt> <a class="py-toggle" href="#" id="QSpaceTokenizer.__init__-toggle" onclick="return toggle('QSpaceTokenizer.__init__');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="alfanous.TextProcessing.QSpaceTokenizer-class.html#__init__">__init__</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">expression</tt><tt class="py-op">=</tt><tt class="py-string">r"[^ \t\r\n]+"</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="QSpaceTokenizer.__init__-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="QSpaceTokenizer.__init__-expanded"><a name="L17"></a><tt class="py-lineno"> 17</tt>  <tt class="py-line">        <tt class="py-name">super</tt><tt class="py-op">(</tt><tt id="link-15" class="py-name" targets="Class alfanous.TextProcessing.QSpaceTokenizer=alfanous.TextProcessing.QSpaceTokenizer-class.html"><a title="alfanous.TextProcessing.QSpaceTokenizer" class="py-name" href="#" onclick="return doclink('link-15', 'QSpaceTokenizer', 'link-15');">QSpaceTokenizer</a></tt><tt class="py-op">,</tt> <tt class="py-name">self</tt><tt class="py-op">)</tt><tt class="py-op">.</tt><tt id="link-16" class="py-name" targets="Method alfanous.Crawling.Crawler.QCrawler.__init__()=alfanous.Crawling.Crawler.QCrawler-class.html#__init__,Method alfanous.Exceptions.FeedBack.__init__()=alfanous.Exceptions.FeedBack-class.html#__init__,Method alfanous.Exceptions.NotImplemented.__init__()=alfanous.Exceptions.NotImplemented-class.html#__init__,Method alfanous.Exceptions.Ta7rif.__init__()=alfanous.Exceptions.Ta7rif-class.html#__init__,Method alfanous.Importing.Importer.__init__()=alfanous.Importing.Importer-class.html#__init__,Method alfanous.Importing.Transformer.__init__()=alfanous.Importing.Transformer-class.html#__init__,Method alfanous.Indexing.QseDocIndex.__init__()=alfanous.Indexing.QseDocIndex-class.html#__init__,Method alfanous.QueryProcessing.ArabicParser.Antonyms.__init__()=alfanous.QueryProcessing.ArabicParser.Antonyms-class.html#__init__,Method alfanous.QueryProcessing.ArabicParser.Derivation.__init__()=alfanous.QueryProcessing.ArabicParser.Derivation-class.html#__init__,Method alfanous.QueryProcessing.ArabicParser.SpellErrors.__init__()=alfanous.QueryProcessing.ArabicParser.SpellErrors-class.html#__init__,Method alfanous.QueryProcessing.ArabicParser.Synonyms.__init__()=alfanous.QueryProcessing.ArabicParser.Synonyms-class.html#__init__,Method alfanous.QueryProcessing.ArabicParser.Tashkil.__init__()=alfanous.QueryProcessing.ArabicParser.Tashkil-class.html#__init__,Method alfanous.QueryProcessing.ArabicParser.Tuple.__init__()=alfanous.QueryProcessing.ArabicParser.Tuple-class.html#__init__,Method alfanous.QueryProcessing.ArabicParser.__init__()=alfanous.QueryProcessing.ArabicParser-class.html#__init__,Method alfanous.QueryProcessing.QSuggester.QAyaSpellChecker.__init__()=alfanous.QueryProcessing.QSuggester.QAyaSpellChecker-class.html#__init__,Method alfanous.QueryProcessing.QSuggester.QSubjectSpellChecker.__init__()=alfanous.QueryProcessing.QSuggester.QSubjectSpellChecker-class.html#__init__,Method alfanous.QueryProcessing.QSuggester.__init__()=alfanous.QueryProcessing.QSuggester-class.html#__init__,Method alfanous.QueryProcessing.QuranicParser.Antonyms.__init__()=alfanous.QueryProcessing.QuranicParser.Antonyms-class.html#__init__,Method alfanous.QueryProcessing.QuranicParser.__init__()=alfanous.QueryProcessing.QuranicParser-class.html#__init__,Method alfanous.QueryProcessing.StandardParser.__init__()=alfanous.QueryProcessing.StandardParser-class.html#__init__,Method alfanous.ResultsProcessing.QFragmenter.__init__()=alfanous.ResultsProcessing.QFragmenter-class.html#__init__,Method alfanous.ResultsProcessing.QHtmlFormatter.__init__()=alfanous.ResultsProcessing.QHtmlFormatter-class.html#__init__,Method alfanous.Searching.QReader.__init__()=alfanous.Searching.QReader-class.html#__init__,Method alfanous.Searching.QSearcher.__init__()=alfanous.Searching.QSearcher-class.html#__init__,Method alfanous.TextProcessing.QAffixesTokenizer.__init__()=alfanous.TextProcessing.QAffixesTokenizer-class.html#__init__,Method alfanous.TextProcessing.QArabicSymbolsFilter.__init__()=alfanous.TextProcessing.QArabicSymbolsFilter-class.html#__init__,Method alfanous.TextProcessing.QSpaceTokenizer.__init__()=alfanous.TextProcessing.QSpaceTokenizer-class.html#__init__,Method alfanous.TextProcessing.QStopFilter.__init__()=alfanous.TextProcessing.QStopFilter-class.html#__init__,Method alfanous.main.QuranicSearchEngine.__init__()=alfanous.main.QuranicSearchEngine-class.html#__init__"><a title="alfanous.Crawling.Crawler.QCrawler.__init__
+alfanous.Exceptions.FeedBack.__init__
+alfanous.Exceptions.NotImplemented.__init__
+alfanous.Exceptions.Ta7rif.__init__
+alfanous.Importing.Importer.__init__
+alfanous.Importing.Transformer.__init__
+alfanous.Indexing.QseDocIndex.__init__
+alfanous.QueryProcessing.ArabicParser.Antonyms.__init__
+alfanous.QueryProcessing.ArabicParser.Derivation.__init__
+alfanous.QueryProcessing.ArabicParser.SpellErrors.__init__
+alfanous.QueryProcessing.ArabicParser.Synonyms.__init__
+alfanous.QueryProcessing.ArabicParser.Tashkil.__init__
+alfanous.QueryProcessing.ArabicParser.Tuple.__init__
+alfanous.QueryProcessing.ArabicParser.__init__
+alfanous.QueryProcessing.QSuggester.QAyaSpellChecker.__init__
+alfanous.QueryProcessing.QSuggester.QSubjectSpellChecker.__init__
+alfanous.QueryProcessing.QSuggester.__init__
+alfanous.QueryProcessing.QuranicParser.Antonyms.__init__
+alfanous.QueryProcessing.QuranicParser.__init__
+alfanous.QueryProcessing.StandardParser.__init__
+alfanous.ResultsProcessing.QFragmenter.__init__
+alfanous.ResultsProcessing.QHtmlFormatter.__init__
+alfanous.Searching.QReader.__init__
+alfanous.Searching.QSearcher.__init__
+alfanous.TextProcessing.QAffixesTokenizer.__init__
+alfanous.TextProcessing.QArabicSymbolsFilter.__init__
+alfanous.TextProcessing.QSpaceTokenizer.__init__
+alfanous.TextProcessing.QStopFilter.__init__
+alfanous.main.QuranicSearchEngine.__init__" class="py-name" href="#" onclick="return doclink('link-16', '__init__', 'link-16');">__init__</a></tt><tt class="py-op">(</tt><tt class="py-name">expression</tt><tt class="py-op">=</tt><tt class="py-name">expression</tt><tt class="py-op">)</tt> </tt>
+</div></div><a name="L18"></a><tt class="py-lineno"> 18</tt>  <tt class="py-line">     </tt>
+<a name="QAffixesTokenizer"></a><div id="QAffixesTokenizer-def"><a name="L19"></a><tt class="py-lineno"> 19</tt>  <tt class="py-line">     </tt>
+<a name="L20"></a><tt class="py-lineno"> 20</tt> <a class="py-toggle" href="#" id="QAffixesTokenizer-toggle" onclick="return toggle('QAffixesTokenizer');">-</a><tt class="py-line"><tt class="py-keyword">class</tt> <a class="py-def-name" href="alfanous.TextProcessing.QAffixesTokenizer-class.html">QAffixesTokenizer</a><tt class="py-op">(</tt><tt class="py-base-class">QSpaceTokenizer</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="QAffixesTokenizer-collapsed" style="display:none;" pad="+++" indent="++++"></div><div id="QAffixesTokenizer-expanded"><a name="QAffixesTokenizer.__init__"></a><div id="QAffixesTokenizer.__init__-def"><a name="L21"></a><tt class="py-lineno"> 21</tt> <a class="py-toggle" href="#" id="QAffixesTokenizer.__init__-toggle" onclick="return toggle('QAffixesTokenizer.__init__');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="alfanous.TextProcessing.QAffixesTokenizer-class.html#__init__">__init__</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">expression</tt><tt class="py-op">=</tt><tt class="py-string">r"[^ \t\r\n]+"</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="QAffixesTokenizer.__init__-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="QAffixesTokenizer.__init__-expanded"><a name="L22"></a><tt class="py-lineno"> 22</tt>  <tt class="py-line">        <tt class="py-name">super</tt><tt class="py-op">(</tt><tt id="link-17" class="py-name" targets="Class alfanous.TextProcessing.QAffixesTokenizer=alfanous.TextProcessing.QAffixesTokenizer-class.html"><a title="alfanous.TextProcessing.QAffixesTokenizer" class="py-name" href="#" onclick="return doclink('link-17', 'QAffixesTokenizer', 'link-17');">QAffixesTokenizer</a></tt><tt class="py-op">,</tt> <tt class="py-name">self</tt><tt class="py-op">)</tt><tt class="py-op">.</tt><tt id="link-18" class="py-name"><a title="alfanous.Crawling.Crawler.QCrawler.__init__
+alfanous.Exceptions.FeedBack.__init__
+alfanous.Exceptions.NotImplemented.__init__
+alfanous.Exceptions.Ta7rif.__init__
+alfanous.Importing.Importer.__init__
+alfanous.Importing.Transformer.__init__
+alfanous.Indexing.QseDocIndex.__init__
+alfanous.QueryProcessing.ArabicParser.Antonyms.__init__
+alfanous.QueryProcessing.ArabicParser.Derivation.__init__
+alfanous.QueryProcessing.ArabicParser.SpellErrors.__init__
+alfanous.QueryProcessing.ArabicParser.Synonyms.__init__
+alfanous.QueryProcessing.ArabicParser.Tashkil.__init__
+alfanous.QueryProcessing.ArabicParser.Tuple.__init__
+alfanous.QueryProcessing.ArabicParser.__init__
+alfanous.QueryProcessing.QSuggester.QAyaSpellChecker.__init__
+alfanous.QueryProcessing.QSuggester.QSubjectSpellChecker.__init__
+alfanous.QueryProcessing.QSuggester.__init__
+alfanous.QueryProcessing.QuranicParser.Antonyms.__init__
+alfanous.QueryProcessing.QuranicParser.__init__
+alfanous.QueryProcessing.StandardParser.__init__
+alfanous.ResultsProcessing.QFragmenter.__init__
+alfanous.ResultsProcessing.QHtmlFormatter.__init__
+alfanous.Searching.QReader.__init__
+alfanous.Searching.QSearcher.__init__
+alfanous.TextProcessing.QAffixesTokenizer.__init__
+alfanous.TextProcessing.QArabicSymbolsFilter.__init__
+alfanous.TextProcessing.QSpaceTokenizer.__init__
+alfanous.TextProcessing.QStopFilter.__init__
+alfanous.main.QuranicSearchEngine.__init__" class="py-name" href="#" onclick="return doclink('link-18', '__init__', 'link-16');">__init__</a></tt><tt class="py-op">(</tt><tt class="py-name">expression</tt><tt class="py-op">=</tt><tt class="py-name">expression</tt><tt class="py-op">)</tt> </tt>
+<a name="L23"></a><tt class="py-lineno"> 23</tt>  <tt class="py-line">        <tt class="py-keyword">raise</tt> <tt id="link-19" class="py-name"><a title="alfanous.Exceptions.NotImplemented" class="py-name" href="#" onclick="return doclink('link-19', 'NotImplemented', 'link-14');">NotImplemented</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt>   </tt>
+</div></div><a name="L24"></a><tt class="py-lineno"> 24</tt>  <tt class="py-line">     </tt>
+<a name="QStopFilter"></a><div id="QStopFilter-def"><a name="L25"></a><tt class="py-lineno"> 25</tt> <a class="py-toggle" href="#" id="QStopFilter-toggle" onclick="return toggle('QStopFilter');">-</a><tt class="py-line"><tt class="py-keyword">class</tt> <a class="py-def-name" href="alfanous.TextProcessing.QStopFilter-class.html">QStopFilter</a><tt class="py-op">(</tt><tt class="py-base-class">StopFilter</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="QStopFilter-collapsed" style="display:none;" pad="+++" indent="++++"></div><div id="QStopFilter-expanded"><a name="L26"></a><tt class="py-lineno"> 26</tt>  <tt class="py-line">    <tt class="py-docstring">""" &#1575;&#1587;&#1578;&#1576;&#1593;&#1575;&#1583; &#1576;&#1593;&#1590; &#1575;&#1604;&#1603;&#1604;&#1605;&#1575;&#1578;  """</tt> </tt>
+<a name="L27"></a><tt class="py-lineno"> 27</tt>  <tt class="py-line">     </tt>
+<a name="QStopFilter.__init__"></a><div id="QStopFilter.__init__-def"><a name="L28"></a><tt class="py-lineno"> 28</tt> <a class="py-toggle" href="#" id="QStopFilter.__init__-toggle" onclick="return toggle('QStopFilter.__init__');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="alfanous.TextProcessing.QStopFilter-class.html#__init__">__init__</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">stoplist</tt><tt class="py-op">=</tt><tt class="py-name">swdy</tt><tt class="py-op">.</tt><tt class="py-name">stoplist</tt><tt class="py-op">,</tt> <tt class="py-param">minsize</tt><tt class="py-op">=</tt><tt class="py-number">2</tt><tt class="py-op">,</tt> <tt class="py-param">renumber</tt><tt class="py-op">=</tt><tt class="py-name">False</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="QStopFilter.__init__-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="QStopFilter.__init__-expanded"><a name="L29"></a><tt class="py-lineno"> 29</tt>  <tt class="py-line">        <tt class="py-name">super</tt><tt class="py-op">(</tt><tt id="link-20" class="py-name" targets="Class alfanous.TextProcessing.QStopFilter=alfanous.TextProcessing.QStopFilter-class.html"><a title="alfanous.TextProcessing.QStopFilter" class="py-name" href="#" onclick="return doclink('link-20', 'QStopFilter', 'link-20');">QStopFilter</a></tt><tt class="py-op">,</tt> <tt class="py-name">self</tt><tt class="py-op">)</tt><tt class="py-op">.</tt><tt id="link-21" class="py-name"><a title="alfanous.Crawling.Crawler.QCrawler.__init__
+alfanous.Exceptions.FeedBack.__init__
+alfanous.Exceptions.NotImplemented.__init__
+alfanous.Exceptions.Ta7rif.__init__
+alfanous.Importing.Importer.__init__
+alfanous.Importing.Transformer.__init__
+alfanous.Indexing.QseDocIndex.__init__
+alfanous.QueryProcessing.ArabicParser.Antonyms.__init__
+alfanous.QueryProcessing.ArabicParser.Derivation.__init__
+alfanous.QueryProcessing.ArabicParser.SpellErrors.__init__
+alfanous.QueryProcessing.ArabicParser.Synonyms.__init__
+alfanous.QueryProcessing.ArabicParser.Tashkil.__init__
+alfanous.QueryProcessing.ArabicParser.Tuple.__init__
+alfanous.QueryProcessing.ArabicParser.__init__
+alfanous.QueryProcessing.QSuggester.QAyaSpellChecker.__init__
+alfanous.QueryProcessing.QSuggester.QSubjectSpellChecker.__init__
+alfanous.QueryProcessing.QSuggester.__init__
+alfanous.QueryProcessing.QuranicParser.Antonyms.__init__
+alfanous.QueryProcessing.QuranicParser.__init__
+alfanous.QueryProcessing.StandardParser.__init__
+alfanous.ResultsProcessing.QFragmenter.__init__
+alfanous.ResultsProcessing.QHtmlFormatter.__init__
+alfanous.Searching.QReader.__init__
+alfanous.Searching.QSearcher.__init__
+alfanous.TextProcessing.QAffixesTokenizer.__init__
+alfanous.TextProcessing.QArabicSymbolsFilter.__init__
+alfanous.TextProcessing.QSpaceTokenizer.__init__
+alfanous.TextProcessing.QStopFilter.__init__
+alfanous.main.QuranicSearchEngine.__init__" class="py-name" href="#" onclick="return doclink('link-21', '__init__', 'link-16');">__init__</a></tt><tt class="py-op">(</tt><tt class="py-name">stoplist</tt><tt class="py-op">=</tt><tt class="py-name">stoplist</tt><tt class="py-op">,</tt> <tt class="py-name">minsize</tt><tt class="py-op">=</tt><tt class="py-name">minsize</tt><tt class="py-op">,</tt> <tt class="py-name">renumber</tt><tt class="py-op">=</tt><tt class="py-name">renumber</tt><tt class="py-op">)</tt> </tt>
+</div></div><a name="L30"></a><tt class="py-lineno"> 30</tt>  <tt class="py-line">         </tt>
+<a name="QArabicSymbolsFilter"></a><div id="QArabicSymbolsFilter-def"><a name="L31"></a><tt class="py-lineno"> 31</tt>  <tt class="py-line"><tt class="py-comment">#        </tt> </tt>
+<a name="L32"></a><tt class="py-lineno"> 32</tt>  <tt class="py-line"> </tt>
+<a name="L33"></a><tt class="py-lineno"> 33</tt>  <tt class="py-line">         </tt>
+<a name="L34"></a><tt class="py-lineno"> 34</tt>  <tt class="py-line">     </tt>
+<a name="L35"></a><tt class="py-lineno"> 35</tt> <a class="py-toggle" href="#" id="QArabicSymbolsFilter-toggle" onclick="return toggle('QArabicSymbolsFilter');">-</a><tt class="py-line"><tt class="py-keyword">class</tt> <a class="py-def-name" href="alfanous.TextProcessing.QArabicSymbolsFilter-class.html">QArabicSymbolsFilter</a><tt class="py-op">(</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="QArabicSymbolsFilter-collapsed" style="display:none;" pad="+++" indent="++++"></div><div id="QArabicSymbolsFilter-expanded"><a name="L36"></a><tt class="py-lineno"> 36</tt>  <tt class="py-line">    <tt class="py-docstring">"""        """</tt> </tt>
+<a name="QArabicSymbolsFilter.__init__"></a><div id="QArabicSymbolsFilter.__init__-def"><a name="L37"></a><tt class="py-lineno"> 37</tt> <a class="py-toggle" href="#" id="QArabicSymbolsFilter.__init__-toggle" onclick="return toggle('QArabicSymbolsFilter.__init__');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="alfanous.TextProcessing.QArabicSymbolsFilter-class.html#__init__">__init__</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">shaping</tt><tt class="py-op">=</tt><tt class="py-name">True</tt><tt class="py-op">,</tt> <tt class="py-param">tashkil</tt><tt class="py-op">=</tt><tt class="py-name">True</tt><tt class="py-op">,</tt> <tt class="py-param">spellerrors</tt><tt class="py-op">=</tt><tt class="py-name">False</tt><tt class="py-op">,</tt> <tt class="py-param">hamza</tt><tt class="py-op">=</tt><tt class="py-name">False</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="QArabicSymbolsFilter.__init__-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="QArabicSymbolsFilter.__init__-expanded"><a name="L38"></a><tt class="py-lineno"> 38</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">__shaping</tt> <tt class="py-op">=</tt> <tt class="py-name">shaping</tt> </tt>
+<a name="L39"></a><tt class="py-lineno"> 39</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">__tashkil</tt> <tt class="py-op">=</tt> <tt class="py-name">tashkil</tt> </tt>
+<a name="L40"></a><tt class="py-lineno"> 40</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">__spellerrors</tt> <tt class="py-op">=</tt> <tt class="py-name">spellerrors</tt> </tt>
+<a name="L41"></a><tt class="py-lineno"> 41</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">__hamza</tt> <tt class="py-op">=</tt> <tt class="py-name">hamza</tt> </tt>
+<a name="L42"></a><tt class="py-lineno"> 42</tt>  <tt class="py-line">        <tt class="py-keyword">pass</tt> </tt>
+</div><a name="L43"></a><tt class="py-lineno"> 43</tt>  <tt class="py-line">     </tt>
+<a name="QArabicSymbolsFilter.normalize_all"></a><div id="QArabicSymbolsFilter.normalize_all-def"><a name="L44"></a><tt class="py-lineno"> 44</tt> <a class="py-toggle" href="#" id="QArabicSymbolsFilter.normalize_all-toggle" onclick="return toggle('QArabicSymbolsFilter.normalize_all');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="alfanous.TextProcessing.QArabicSymbolsFilter-class.html#normalize_all">normalize_all</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">text</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="QArabicSymbolsFilter.normalize_all-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="QArabicSymbolsFilter.normalize_all-expanded"><a name="L45"></a><tt class="py-lineno"> 45</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">__shaping</tt><tt class="py-op">:</tt> </tt>
+<a name="L46"></a><tt class="py-lineno"> 46</tt>  <tt class="py-line">                <tt class="py-name">text</tt> <tt class="py-op">=</tt> <tt id="link-22" class="py-name"><a title="alfanous.Support.ar_ctype.normalize_lamalef" class="py-name" href="#" onclick="return doclink('link-22', 'normalize_lamalef', 'link-8');">normalize_lamalef</a></tt><tt class="py-op">(</tt><tt class="py-name">text</tt><tt class="py-op">)</tt>  </tt>
+<a name="L47"></a><tt class="py-lineno"> 47</tt>  <tt class="py-line">                <tt class="py-name">text</tt> <tt class="py-op">=</tt> <tt id="link-23" class="py-name" targets="Class alfanous.TextProcessing.unicode_=alfanous.TextProcessing.unicode_-class.html"><a title="alfanous.TextProcessing.unicode_" class="py-name" href="#" onclick="return doclink('link-23', 'unicode_', 'link-23');">unicode_</a></tt><tt class="py-op">.</tt><tt id="link-24" class="py-name" targets="Static Method alfanous.TextProcessing.unicode_.normalize_shaping()=alfanous.TextProcessing.unicode_-class.html#normalize_shaping"><a title="alfanous.TextProcessing.unicode_.normalize_shaping" class="py-name" href="#" onclick="return doclink('link-24', 'normalize_shaping', 'link-24');">normalize_shaping</a></tt><tt class="py-op">(</tt><tt class="py-name">text</tt><tt class="py-op">)</tt>  </tt>
+<a name="L48"></a><tt class="py-lineno"> 48</tt>  <tt class="py-line">             </tt>
+<a name="L49"></a><tt class="py-lineno"> 49</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">__tashkil</tt><tt class="py-op">:</tt> </tt>
+<a name="L50"></a><tt class="py-lineno"> 50</tt>  <tt class="py-line">                <tt class="py-name">text</tt> <tt class="py-op">=</tt> <tt id="link-25" class="py-name"><a title="alfanous.Support.ar_ctype.strip_tashkeel" class="py-name" href="#" onclick="return doclink('link-25', 'strip_tashkeel', 'link-4');">strip_tashkeel</a></tt><tt class="py-op">(</tt><tt class="py-name">text</tt><tt class="py-op">)</tt> </tt>
+<a name="L51"></a><tt class="py-lineno"> 51</tt>  <tt class="py-line">                 </tt>
+<a name="L52"></a><tt class="py-lineno"> 52</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">__spellerrors</tt><tt class="py-op">:</tt> </tt>
+<a name="L53"></a><tt class="py-lineno"> 53</tt>  <tt class="py-line">                <tt class="py-name">text</tt> <tt class="py-op">=</tt> <tt id="link-26" class="py-name"><a title="alfanous.Support.ar_ctype.normalize_spellerrors" class="py-name" href="#" onclick="return doclink('link-26', 'normalize_spellerrors', 'link-5');">normalize_spellerrors</a></tt><tt class="py-op">(</tt><tt class="py-name">text</tt><tt class="py-op">)</tt> </tt>
+<a name="L54"></a><tt class="py-lineno"> 54</tt>  <tt class="py-line">             </tt>
+<a name="L55"></a><tt class="py-lineno"> 55</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">__hamza</tt><tt class="py-op">:</tt> </tt>
+<a name="L56"></a><tt class="py-lineno"> 56</tt>  <tt class="py-line">                <tt class="py-name">text</tt> <tt class="py-op">=</tt> <tt id="link-27" class="py-name"><a title="alfanous.Support.ar_ctype.normalize_hamza" class="py-name" href="#" onclick="return doclink('link-27', 'normalize_hamza', 'link-6');">normalize_hamza</a></tt><tt class="py-op">(</tt><tt class="py-name">text</tt><tt class="py-op">)</tt> </tt>
+<a name="L57"></a><tt class="py-lineno"> 57</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt> <tt class="py-name">text</tt> </tt>
+</div><a name="L58"></a><tt class="py-lineno"> 58</tt>  <tt class="py-line">     </tt>
+<a name="QArabicSymbolsFilter.__call__"></a><div id="QArabicSymbolsFilter.__call__-def"><a name="L59"></a><tt class="py-lineno"> 59</tt> <a class="py-toggle" href="#" id="QArabicSymbolsFilter.__call__-toggle" onclick="return toggle('QArabicSymbolsFilter.__call__');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="alfanous.TextProcessing.QArabicSymbolsFilter-class.html#__call__">__call__</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">tokens</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="QArabicSymbolsFilter.__call__-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="QArabicSymbolsFilter.__call__-expanded"><a name="L60"></a><tt class="py-lineno"> 60</tt>  <tt class="py-line">        <tt class="py-keyword">for</tt> <tt class="py-name">t</tt> <tt class="py-keyword">in</tt> <tt class="py-name">tokens</tt><tt class="py-op">:</tt> </tt>
+<a name="L61"></a><tt class="py-lineno"> 61</tt>  <tt class="py-line">            <tt class="py-name">t</tt><tt class="py-op">.</tt><tt class="py-name">text</tt> <tt class="py-op">=</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-28" class="py-name" targets="Method alfanous.TextProcessing.QArabicSymbolsFilter.normalize_all()=alfanous.TextProcessing.QArabicSymbolsFilter-class.html#normalize_all"><a title="alfanous.TextProcessing.QArabicSymbolsFilter.normalize_all" class="py-name" href="#" onclick="return doclink('link-28', 'normalize_all', 'link-28');">normalize_all</a></tt><tt class="py-op">(</tt><tt class="py-name">t</tt><tt class="py-op">.</tt><tt class="py-name">text</tt><tt class="py-op">)</tt> </tt>
+<a name="L62"></a><tt class="py-lineno"> 62</tt>  <tt class="py-line">            <tt class="py-keyword">yield</tt> <tt class="py-name">t</tt>      </tt>
+</div></div><a name="L63"></a><tt class="py-lineno"> 63</tt>  <tt class="py-line">             </tt>
+<a name="Gword_tamdid"></a><div id="Gword_tamdid-def"><a name="L64"></a><tt class="py-lineno"> 64</tt> <a class="py-toggle" href="#" id="Gword_tamdid-toggle" onclick="return toggle('Gword_tamdid');">-</a><tt class="py-line"><tt class="py-keyword">def</tt> <a class="py-def-name" href="alfanous.TextProcessing-module.html#Gword_tamdid">Gword_tamdid</a><tt class="py-op">(</tt><tt class="py-param">aya</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="Gword_tamdid-collapsed" style="display:none;" pad="+++" indent="++++"></div><div id="Gword_tamdid-expanded"><a name="L65"></a><tt class="py-lineno"> 65</tt>  <tt class="py-line">    <tt class="py-docstring">""" add a tamdid to lafdh aljalala to eliminate the double vocalization """</tt> </tt>
+<a name="L66"></a><tt class="py-lineno"> 66</tt>  <tt class="py-line">    <tt class="py-keyword">return</tt> <tt class="py-name">aya</tt><tt class="py-op">.</tt><tt class="py-name">replace</tt><tt class="py-op">(</tt><tt class="py-string">u"&#1604;&#1617;&#1614;&#1607;"</tt><tt class="py-op">,</tt> <tt class="py-string">u"&#1604;&#1617;&#1614;&#1600;&#1607;"</tt><tt class="py-op">)</tt><tt class="py-op">.</tt><tt class="py-name">replace</tt><tt class="py-op">(</tt><tt class="py-string">u"&#1604;&#1614;&#1617;&#1607;"</tt><tt class="py-op">,</tt> <tt class="py-string">u"&#1604;&#1614;&#1617;&#1600;&#1607;"</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L67"></a><tt class="py-lineno"> 67</tt>  <tt class="py-line"> </tt>
+<a name="unicode_"></a><div id="unicode_-def"><a name="L68"></a><tt class="py-lineno"> 68</tt>  <tt class="py-line">             </tt>
+<a name="L69"></a><tt class="py-lineno"> 69</tt>  <tt class="py-line">  </tt>
+<a name="L70"></a><tt class="py-lineno"> 70</tt>  <tt class="py-line">    </tt>
+<a name="L71"></a><tt class="py-lineno"> 71</tt>  <tt class="py-line">     </tt>
+<a name="L72"></a><tt class="py-lineno"> 72</tt> <a class="py-toggle" href="#" id="unicode_-toggle" onclick="return toggle('unicode_');">-</a><tt class="py-line"><tt class="py-keyword">class</tt> <a class="py-def-name" href="alfanous.TextProcessing.unicode_-class.html">unicode_</a><tt class="py-op">(</tt><tt class="py-base-class">unicode</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="unicode_-collapsed" style="display:none;" pad="+++" indent="++++"></div><div id="unicode_-expanded"><a name="L73"></a><tt class="py-lineno"> 73</tt>  <tt class="py-line">    <tt class="py-docstring">"""    a subclass of unicode that handle al-tashkil    """</tt> </tt>
+<a name="L74"></a><tt class="py-lineno"> 74</tt>  <tt class="py-line">     </tt>
+<a name="unicode_.__eq__"></a><div id="unicode_.__eq__-def"><a name="L75"></a><tt class="py-lineno"> 75</tt> <a class="py-toggle" href="#" id="unicode_.__eq__-toggle" onclick="return toggle('unicode_.__eq__');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="alfanous.TextProcessing.unicode_-class.html#__eq__">__eq__</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">other</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="unicode_.__eq__-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="unicode_.__eq__-expanded"><a name="L76"></a><tt class="py-lineno"> 76</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-29" class="py-name" targets="Static Method alfanous.TextProcessing.unicode_.shakl_compare()=alfanous.TextProcessing.unicode_-class.html#shakl_compare"><a title="alfanous.TextProcessing.unicode_.shakl_compare" class="py-name" href="#" onclick="return doclink('link-29', 'shakl_compare', 'link-29');">shakl_compare</a></tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">,</tt> <tt class="py-name">other</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L77"></a><tt class="py-lineno"> 77</tt>  <tt class="py-line">     </tt>
+<a name="L78"></a><tt class="py-lineno"> 78</tt>  <tt class="py-line">    <tt class="py-decorator">@</tt><tt class="py-decorator">staticmethod</tt> </tt>
+<a name="unicode_.normalize_shaping"></a><div id="unicode_.normalize_shaping-def"><a name="L79"></a><tt class="py-lineno"> 79</tt> <a class="py-toggle" href="#" id="unicode_.normalize_shaping-toggle" onclick="return toggle('unicode_.normalize_shaping');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="alfanous.TextProcessing.unicode_-class.html#normalize_shaping">normalize_shaping</a><tt class="py-op">(</tt><tt class="py-param">text</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="unicode_.normalize_shaping-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="unicode_.normalize_shaping-expanded"><a name="L80"></a><tt class="py-lineno"> 80</tt>  <tt class="py-line">        <tt class="py-docstring">""""""</tt> </tt>
+<a name="L81"></a><tt class="py-lineno"> 81</tt>  <tt class="py-line">        <tt class="py-name">str</tt> <tt class="py-op">=</tt> <tt class="py-string">""</tt> </tt>
+<a name="L82"></a><tt class="py-lineno"> 82</tt>  <tt class="py-line">        <tt class="py-keyword">for</tt> <tt class="py-name">ch</tt> <tt class="py-keyword">in</tt> <tt class="py-name">text</tt><tt class="py-op">:</tt> </tt>
+<a name="L83"></a><tt class="py-lineno"> 83</tt>  <tt class="py-line">            <tt class="py-keyword">if</tt> <tt id="link-30" class="py-name"><a title="alfanous.Constantes.inversed_shaping_table" class="py-name" href="#" onclick="return doclink('link-30', 'inversed_shaping_table', 'link-12');">inversed_shaping_table</a></tt><tt class="py-op">.</tt><tt class="py-name">has_key</tt><tt class="py-op">(</tt><tt class="py-name">ch</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L84"></a><tt class="py-lineno"> 84</tt>  <tt class="py-line">                <tt class="py-name">str</tt> <tt class="py-op">+=</tt> <tt id="link-31" class="py-name"><a title="alfanous.Constantes.inversed_shaping_table" class="py-name" href="#" onclick="return doclink('link-31', 'inversed_shaping_table', 'link-12');">inversed_shaping_table</a></tt><tt class="py-op">[</tt><tt class="py-name">ch</tt><tt class="py-op">]</tt> </tt>
+<a name="L85"></a><tt class="py-lineno"> 85</tt>  <tt class="py-line">            <tt class="py-keyword">else</tt><tt class="py-op">:</tt> </tt>
+<a name="L86"></a><tt class="py-lineno"> 86</tt>  <tt class="py-line">                <tt class="py-name">str</tt> <tt class="py-op">+=</tt> <tt class="py-name">ch</tt> </tt>
+<a name="L87"></a><tt class="py-lineno"> 87</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt> <tt class="py-name">str</tt> </tt>
+</div><a name="L88"></a><tt class="py-lineno"> 88</tt>  <tt class="py-line"> </tt>
+<a name="L89"></a><tt class="py-lineno"> 89</tt>  <tt class="py-line">     </tt>
+<a name="L90"></a><tt class="py-lineno"> 90</tt>  <tt class="py-line">     </tt>
+<a name="unicode_.list_harakat"></a><div id="unicode_.list_harakat-def"><a name="L91"></a><tt class="py-lineno"> 91</tt> <a class="py-toggle" href="#" id="unicode_.list_harakat-toggle" onclick="return toggle('unicode_.list_harakat');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="alfanous.TextProcessing.unicode_-class.html#list_harakat">list_harakat</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="unicode_.list_harakat-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="unicode_.list_harakat-expanded"><a name="L92"></a><tt class="py-lineno"> 92</tt>  <tt class="py-line">            <tt class="py-docstring">"""return the dict of harakat with thier position in word"""</tt> </tt>
+<a name="L93"></a><tt class="py-lineno"> 93</tt>  <tt class="py-line">            <tt class="py-name">cptH</tt> <tt class="py-op">=</tt> <tt class="py-number">0</tt> </tt>
+<a name="L94"></a><tt class="py-lineno"> 94</tt>  <tt class="py-line">            <tt class="py-name">hdic</tt> <tt class="py-op">=</tt> <tt class="py-op">{</tt><tt class="py-op">}</tt> </tt>
+<a name="L95"></a><tt class="py-lineno"> 95</tt>  <tt class="py-line">            <tt class="py-keyword">for</tt> <tt class="py-name">ch</tt> <tt class="py-keyword">in</tt> <tt class="py-name">self</tt><tt class="py-op">:</tt> </tt>
+<a name="L96"></a><tt class="py-lineno"> 96</tt>  <tt class="py-line">                <tt class="py-keyword">if</tt> <tt class="py-name">unicode</tt><tt class="py-op">(</tt><tt class="py-name">ch</tt><tt class="py-op">)</tt> <tt class="py-keyword">in</tt> <tt class="py-op">[</tt><tt id="link-32" class="py-name" targets="Variable alfanous.Support.ar_ctype.FATHATAN=alfanous.Support.ar_ctype-module.html#FATHATAN,Variable alfanous.Support.arabic_const.FATHATAN=alfanous.Support.arabic_const-module.html#FATHATAN,Variable alfanous.TextProcessing.FATHATAN=alfanous.TextProcessing-module.html#FATHATAN"><a title="alfanous.Support.ar_ctype.FATHATAN
+alfanous.Support.arabic_const.FATHATAN
+alfanous.TextProcessing.FATHATAN" class="py-name" href="#" onclick="return doclink('link-32', 'FATHATAN', 'link-32');">FATHATAN</a></tt><tt class="py-op">,</tt> <tt id="link-33" class="py-name" targets="Variable alfanous.Support.ar_ctype.DAMMATAN=alfanous.Support.ar_ctype-module.html#DAMMATAN,Variable alfanous.Support.arabic_const.DAMMATAN=alfanous.Support.arabic_const-module.html#DAMMATAN,Variable alfanous.TextProcessing.DAMMATAN=alfanous.TextProcessing-module.html#DAMMATAN"><a title="alfanous.Support.ar_ctype.DAMMATAN
+alfanous.Support.arabic_const.DAMMATAN
+alfanous.TextProcessing.DAMMATAN" class="py-name" href="#" onclick="return doclink('link-33', 'DAMMATAN', 'link-33');">DAMMATAN</a></tt><tt class="py-op">,</tt> <tt id="link-34" class="py-name" targets="Variable alfanous.Support.ar_ctype.KASRATAN=alfanous.Support.ar_ctype-module.html#KASRATAN,Variable alfanous.Support.arabic_const.KASRATAN=alfanous.Support.arabic_const-module.html#KASRATAN,Variable alfanous.TextProcessing.KASRATAN=alfanous.TextProcessing-module.html#KASRATAN"><a title="alfanous.Support.ar_ctype.KASRATAN
+alfanous.Support.arabic_const.KASRATAN
+alfanous.TextProcessing.KASRATAN" class="py-name" href="#" onclick="return doclink('link-34', 'KASRATAN', 'link-34');">KASRATAN</a></tt><tt class="py-op">,</tt> <tt id="link-35" class="py-name" targets="Variable alfanous.Support.ar_ctype.FATHA=alfanous.Support.ar_ctype-module.html#FATHA,Variable alfanous.Support.arabic_const.FATHA=alfanous.Support.arabic_const-module.html#FATHA,Variable alfanous.TextProcessing.FATHA=alfanous.TextProcessing-module.html#FATHA"><a title="alfanous.Support.ar_ctype.FATHA
+alfanous.Support.arabic_const.FATHA
+alfanous.TextProcessing.FATHA" class="py-name" href="#" onclick="return doclink('link-35', 'FATHA', 'link-35');">FATHA</a></tt><tt class="py-op">,</tt> <tt id="link-36" class="py-name" targets="Variable alfanous.Support.ar_ctype.DAMMA=alfanous.Support.ar_ctype-module.html#DAMMA,Variable alfanous.Support.arabic_const.DAMMA=alfanous.Support.arabic_const-module.html#DAMMA,Variable alfanous.TextProcessing.DAMMA=alfanous.TextProcessing-module.html#DAMMA"><a title="alfanous.Support.ar_ctype.DAMMA
+alfanous.Support.arabic_const.DAMMA
+alfanous.TextProcessing.DAMMA" class="py-name" href="#" onclick="return doclink('link-36', 'DAMMA', 'link-36');">DAMMA</a></tt><tt class="py-op">,</tt> <tt id="link-37" class="py-name" targets="Variable alfanous.Support.ar_ctype.KASRA=alfanous.Support.ar_ctype-module.html#KASRA,Variable alfanous.Support.arabic_const.KASRA=alfanous.Support.arabic_const-module.html#KASRA,Variable alfanous.TextProcessing.KASRA=alfanous.TextProcessing-module.html#KASRA"><a title="alfanous.Support.ar_ctype.KASRA
+alfanous.Support.arabic_const.KASRA
+alfanous.TextProcessing.KASRA" class="py-name" href="#" onclick="return doclink('link-37', 'KASRA', 'link-37');">KASRA</a></tt><tt class="py-op">,</tt> <tt id="link-38" class="py-name" targets="Variable alfanous.Support.ar_ctype.SUKUN=alfanous.Support.ar_ctype-module.html#SUKUN,Variable alfanous.Support.arabic_const.SUKUN=alfanous.Support.arabic_const-module.html#SUKUN,Variable alfanous.TextProcessing.SUKUN=alfanous.TextProcessing-module.html#SUKUN"><a title="alfanous.Support.ar_ctype.SUKUN
+alfanous.Support.arabic_const.SUKUN
+alfanous.TextProcessing.SUKUN" class="py-name" href="#" onclick="return doclink('link-38', 'SUKUN', 'link-38');">SUKUN</a></tt><tt class="py-op">]</tt><tt class="py-op">:</tt><tt class="py-comment">#, SHADDA</tt> </tt>
+<a name="L97"></a><tt class="py-lineno"> 97</tt>  <tt class="py-line">                    <tt class="py-name">cptH</tt> <tt class="py-op">-=</tt> <tt class="py-number">1</tt> </tt>
+<a name="L98"></a><tt class="py-lineno"> 98</tt>  <tt class="py-line">                    <tt class="py-keyword">if</tt> <tt class="py-name">hdic</tt><tt class="py-op">.</tt><tt class="py-name">has_key</tt><tt class="py-op">(</tt><tt class="py-name">cptH</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L99"></a><tt class="py-lineno"> 99</tt>  <tt class="py-line">         </tt>
+<a name="L100"></a><tt class="py-lineno">100</tt>  <tt class="py-line">                        <tt class="py-name">hdic</tt><tt class="py-op">[</tt><tt class="py-name">cptH</tt><tt class="py-op">]</tt><tt class="py-op">.</tt><tt class="py-name">append</tt><tt class="py-op">(</tt><tt class="py-name">ch</tt><tt class="py-op">)</tt> </tt>
+<a name="L101"></a><tt class="py-lineno">101</tt>  <tt class="py-line">                    <tt class="py-keyword">else</tt><tt class="py-op">:</tt> </tt>
+<a name="L102"></a><tt class="py-lineno">102</tt>  <tt class="py-line">                        <tt class="py-name">hdic</tt><tt class="py-op">[</tt><tt class="py-name">cptH</tt><tt class="py-op">]</tt> <tt class="py-op">=</tt> <tt class="py-name">ch</tt>     </tt>
+<a name="L103"></a><tt class="py-lineno">103</tt>  <tt class="py-line">     </tt>
+<a name="L104"></a><tt class="py-lineno">104</tt>  <tt class="py-line">                <tt class="py-name">cptH</tt> <tt class="py-op">+=</tt> <tt class="py-number">1</tt> </tt>
+<a name="L105"></a><tt class="py-lineno">105</tt>  <tt class="py-line">            <tt class="py-keyword">return</tt> <tt class="py-name">hdic</tt> </tt>
+</div><a name="L106"></a><tt class="py-lineno">106</tt>  <tt class="py-line">         </tt>
+<a name="L107"></a><tt class="py-lineno">107</tt>  <tt class="py-line">    <tt class="py-decorator">@</tt><tt class="py-decorator">staticmethod</tt> </tt>
+<a name="unicode_.compare_harakat"></a><div id="unicode_.compare_harakat-def"><a name="L108"></a><tt class="py-lineno">108</tt> <a class="py-toggle" href="#" id="unicode_.compare_harakat-toggle" onclick="return toggle('unicode_.compare_harakat');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="alfanous.TextProcessing.unicode_-class.html#compare_harakat">compare_harakat</a><tt class="py-op">(</tt><tt class="py-param">list1</tt><tt class="py-op">,</tt> <tt class="py-param">list2</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="unicode_.compare_harakat-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="unicode_.compare_harakat-expanded"><a name="L109"></a><tt class="py-lineno">109</tt>  <tt class="py-line">        <tt class="py-docstring">"""compare tow list of harakat"""</tt> </tt>
+<a name="L110"></a><tt class="py-lineno">110</tt>  <tt class="py-line">        <tt class="py-name">indices</tt> <tt class="py-op">=</tt> <tt class="py-op">[</tt><tt class="py-name">indice</tt> <tt class="py-keyword">for</tt> <tt class="py-name">indice</tt> <tt class="py-keyword">in</tt> <tt class="py-name">list1</tt><tt class="py-op">.</tt><tt class="py-name">keys</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> <tt class="py-op">+</tt> <tt class="py-name">list2</tt><tt class="py-op">.</tt><tt class="py-name">keys</tt><tt class="py-op">(</tt><tt class="py-op">)</tt><tt class="py-op">]</tt> </tt>
+<a name="L111"></a><tt class="py-lineno">111</tt>  <tt class="py-line">        <tt class="py-name">ret</tt> <tt class="py-op">=</tt> <tt class="py-name">True</tt> </tt>
+<a name="L112"></a><tt class="py-lineno">112</tt>  <tt class="py-line">        <tt class="py-keyword">for</tt> <tt class="py-name">i</tt> <tt class="py-keyword">in</tt> <tt class="py-name">indices</tt><tt class="py-op">:</tt> </tt>
+<a name="L113"></a><tt class="py-lineno">113</tt>  <tt class="py-line">            <tt class="py-keyword">if</tt> <tt class="py-name">list1</tt><tt class="py-op">.</tt><tt class="py-name">has_key</tt><tt class="py-op">(</tt><tt class="py-name">i</tt><tt class="py-op">)</tt> <tt class="py-keyword">and</tt> <tt class="py-name">list2</tt><tt class="py-op">.</tt><tt class="py-name">has_key</tt><tt class="py-op">(</tt><tt class="py-name">i</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L114"></a><tt class="py-lineno">114</tt>  <tt class="py-line">                <tt class="py-keyword">for</tt> <tt class="py-name">haraka</tt> <tt class="py-keyword">in</tt> <tt class="py-name">list1</tt><tt class="py-op">[</tt><tt class="py-name">i</tt><tt class="py-op">]</tt><tt class="py-op">:</tt> </tt>
+<a name="L115"></a><tt class="py-lineno">115</tt>  <tt class="py-line">                    <tt class="py-keyword">if</tt> <tt class="py-name">haraka</tt> <tt class="py-keyword">in</tt> <tt class="py-name">list2</tt><tt class="py-op">[</tt><tt class="py-name">i</tt><tt class="py-op">]</tt><tt class="py-op">:</tt> </tt>
+<a name="L116"></a><tt class="py-lineno">116</tt>  <tt class="py-line">                        <tt class="py-keyword">pass</tt> </tt>
+<a name="L117"></a><tt class="py-lineno">117</tt>  <tt class="py-line">                    <tt class="py-keyword">elif</tt> <tt class="py-name">haraka</tt> <tt class="py-op">==</tt> <tt id="link-39" class="py-name" targets="Variable alfanous.Support.ar_ctype.SHADDA=alfanous.Support.ar_ctype-module.html#SHADDA,Variable alfanous.Support.arabic_const.SHADDA=alfanous.Support.arabic_const-module.html#SHADDA,Variable alfanous.TextProcessing.SHADDA=alfanous.TextProcessing-module.html#SHADDA"><a title="alfanous.Support.ar_ctype.SHADDA
+alfanous.Support.arabic_const.SHADDA
+alfanous.TextProcessing.SHADDA" class="py-name" href="#" onclick="return doclink('link-39', 'SHADDA', 'link-39');">SHADDA</a></tt><tt class="py-op">:</tt> </tt>
+<a name="L118"></a><tt class="py-lineno">118</tt>  <tt class="py-line">                        <tt class="py-name">ret</tt> <tt class="py-op">=</tt> <tt class="py-name">False</tt> </tt>
+<a name="L119"></a><tt class="py-lineno">119</tt>  <tt class="py-line">                        <tt class="py-keyword">break</tt> </tt>
+<a name="L120"></a><tt class="py-lineno">120</tt>  <tt class="py-line">                    <tt class="py-keyword">else</tt><tt class="py-op">:</tt> </tt>
+<a name="L121"></a><tt class="py-lineno">121</tt>  <tt class="py-line">                        <tt class="py-keyword">for</tt> <tt class="py-name">haraka2</tt> <tt class="py-keyword">in</tt> <tt class="py-name">list2</tt><tt class="py-op">[</tt><tt class="py-name">i</tt><tt class="py-op">]</tt><tt class="py-op">:</tt> </tt>
+<a name="L122"></a><tt class="py-lineno">122</tt>  <tt class="py-line">                            <tt class="py-keyword">if</tt> <tt class="py-name">haraka2</tt> <tt class="py-op">==</tt> <tt id="link-40" class="py-name"><a title="alfanous.Support.ar_ctype.SHADDA
+alfanous.Support.arabic_const.SHADDA
+alfanous.TextProcessing.SHADDA" class="py-name" href="#" onclick="return doclink('link-40', 'SHADDA', 'link-39');">SHADDA</a></tt><tt class="py-op">:</tt> </tt>
+<a name="L123"></a><tt class="py-lineno">123</tt>  <tt class="py-line">                                <tt class="py-name">ret</tt> <tt class="py-op">=</tt> <tt class="py-name">False</tt> </tt>
+<a name="L124"></a><tt class="py-lineno">124</tt>  <tt class="py-line">                            <tt class="py-keyword">else</tt><tt class="py-op">:</tt> </tt>
+<a name="L125"></a><tt class="py-lineno">125</tt>  <tt class="py-line">                                <tt class="py-name">ret</tt> <tt class="py-op">=</tt> <tt class="py-name">False</tt> </tt>
+<a name="L126"></a><tt class="py-lineno">126</tt>  <tt class="py-line">                            <tt class="py-keyword">break</tt> </tt>
+<a name="L127"></a><tt class="py-lineno">127</tt>  <tt class="py-line">            <tt class="py-keyword">elif</tt> <tt class="py-name">list1</tt><tt class="py-op">.</tt><tt class="py-name">has_key</tt><tt class="py-op">(</tt><tt class="py-name">i</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L128"></a><tt class="py-lineno">128</tt>  <tt class="py-line">                <tt class="py-keyword">if</tt> <tt id="link-41" class="py-name"><a title="alfanous.Support.ar_ctype.SHADDA
+alfanous.Support.arabic_const.SHADDA
+alfanous.TextProcessing.SHADDA" class="py-name" href="#" onclick="return doclink('link-41', 'SHADDA', 'link-39');">SHADDA</a></tt> <tt class="py-keyword">in</tt> <tt class="py-name">list1</tt><tt class="py-op">[</tt><tt class="py-name">i</tt><tt class="py-op">]</tt><tt class="py-op">:</tt> </tt>
+<a name="L129"></a><tt class="py-lineno">129</tt>  <tt class="py-line">                    <tt class="py-name">ret</tt> <tt class="py-op">=</tt> <tt class="py-name">False</tt> </tt>
+<a name="L130"></a><tt class="py-lineno">130</tt>  <tt class="py-line">                    <tt class="py-keyword">break</tt> </tt>
+<a name="L131"></a><tt class="py-lineno">131</tt>  <tt class="py-line">            <tt class="py-keyword">elif</tt> <tt class="py-name">list2</tt><tt class="py-op">.</tt><tt class="py-name">has_key</tt><tt class="py-op">(</tt><tt class="py-name">i</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L132"></a><tt class="py-lineno">132</tt>  <tt class="py-line">                <tt class="py-keyword">if</tt> <tt id="link-42" class="py-name"><a title="alfanous.Support.ar_ctype.SHADDA
+alfanous.Support.arabic_const.SHADDA
+alfanous.TextProcessing.SHADDA" class="py-name" href="#" onclick="return doclink('link-42', 'SHADDA', 'link-39');">SHADDA</a></tt> <tt class="py-keyword">in</tt> <tt class="py-name">list2</tt><tt class="py-op">[</tt><tt class="py-name">i</tt><tt class="py-op">]</tt><tt class="py-op">:</tt> </tt>
+<a name="L133"></a><tt class="py-lineno">133</tt>  <tt class="py-line">                    <tt class="py-name">ret</tt> <tt class="py-op">=</tt> <tt class="py-name">False</tt> </tt>
+<a name="L134"></a><tt class="py-lineno">134</tt>  <tt class="py-line">                    <tt class="py-keyword">break</tt> </tt>
+<a name="L135"></a><tt class="py-lineno">135</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt> <tt class="py-name">ret</tt>     </tt>
+</div><a name="L136"></a><tt class="py-lineno">136</tt>  <tt class="py-line">    <tt class="py-decorator">@</tt><tt class="py-decorator">staticmethod</tt> </tt>
+<a name="unicode_.shakl_compare"></a><div id="unicode_.shakl_compare-def"><a name="L137"></a><tt class="py-lineno">137</tt> <a class="py-toggle" href="#" id="unicode_.shakl_compare-toggle" onclick="return toggle('unicode_.shakl_compare');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="alfanous.TextProcessing.unicode_-class.html#shakl_compare">shakl_compare</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">other</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="unicode_.shakl_compare-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="unicode_.shakl_compare-expanded"><a name="L138"></a><tt class="py-lineno">138</tt>  <tt class="py-line"> </tt>
+<a name="L139"></a><tt class="py-lineno">139</tt>  <tt class="py-line">        <tt class="py-name">first</tt> <tt class="py-op">=</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-43" class="py-name"><a title="alfanous.TextProcessing.unicode_.normalize_shaping" class="py-name" href="#" onclick="return doclink('link-43', 'normalize_shaping', 'link-24');">normalize_shaping</a></tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">)</tt> </tt>
+<a name="L140"></a><tt class="py-lineno">140</tt>  <tt class="py-line">        <tt class="py-name">second</tt> <tt class="py-op">=</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-44" class="py-name"><a title="alfanous.TextProcessing.unicode_.normalize_shaping" class="py-name" href="#" onclick="return doclink('link-44', 'normalize_shaping', 'link-24');">normalize_shaping</a></tt><tt class="py-op">(</tt><tt class="py-name">other</tt><tt class="py-op">)</tt> </tt>
+<a name="L141"></a><tt class="py-lineno">141</tt>  <tt class="py-line">        <tt class="py-name">firstN</tt> <tt class="py-op">=</tt> <tt id="link-45" class="py-name"><a title="alfanous.Support.ar_ctype.strip_tashkeel" class="py-name" href="#" onclick="return doclink('link-45', 'strip_tashkeel', 'link-4');">strip_tashkeel</a></tt><tt class="py-op">(</tt><tt class="py-name">first</tt><tt class="py-op">)</tt> </tt>
+<a name="L142"></a><tt class="py-lineno">142</tt>  <tt class="py-line">        <tt class="py-name">secondN</tt> <tt class="py-op">=</tt> <tt id="link-46" class="py-name"><a title="alfanous.Support.ar_ctype.strip_tashkeel" class="py-name" href="#" onclick="return doclink('link-46', 'strip_tashkeel', 'link-4');">strip_tashkeel</a></tt><tt class="py-op">(</tt><tt class="py-name">second</tt><tt class="py-op">)</tt> </tt>
+<a name="L143"></a><tt class="py-lineno">143</tt>  <tt class="py-line">         </tt>
+<a name="L144"></a><tt class="py-lineno">144</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-name">firstN</tt> <tt class="py-op">!=</tt> <tt class="py-name">secondN</tt><tt class="py-op">:</tt> </tt>
+<a name="L145"></a><tt class="py-lineno">145</tt>  <tt class="py-line">            <tt class="py-keyword">return</tt> <tt class="py-name">False</tt> </tt>
+<a name="L146"></a><tt class="py-lineno">146</tt>  <tt class="py-line">        <tt class="py-keyword">else</tt><tt class="py-op">:</tt> </tt>
+<a name="L147"></a><tt class="py-lineno">147</tt>  <tt class="py-line">            <tt class="py-name">l1</tt> <tt class="py-op">=</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-47" class="py-name" targets="Method alfanous.TextProcessing.unicode_.list_harakat()=alfanous.TextProcessing.unicode_-class.html#list_harakat"><a title="alfanous.TextProcessing.unicode_.list_harakat" class="py-name" href="#" onclick="return doclink('link-47', 'list_harakat', 'link-47');">list_harakat</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L148"></a><tt class="py-lineno">148</tt>  <tt class="py-line">            <tt class="py-name">l2</tt> <tt class="py-op">=</tt> <tt class="py-name">other</tt><tt class="py-op">.</tt><tt id="link-48" class="py-name"><a title="alfanous.TextProcessing.unicode_.list_harakat" class="py-name" href="#" onclick="return doclink('link-48', 'list_harakat', 'link-47');">list_harakat</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L149"></a><tt class="py-lineno">149</tt>  <tt class="py-line">            <tt class="py-keyword">return</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-49" class="py-name" targets="Static Method alfanous.TextProcessing.unicode_.compare_harakat()=alfanous.TextProcessing.unicode_-class.html#compare_harakat"><a title="alfanous.TextProcessing.unicode_.compare_harakat" class="py-name" href="#" onclick="return doclink('link-49', 'compare_harakat', 'link-49');">compare_harakat</a></tt><tt class="py-op">(</tt><tt class="py-name">l1</tt><tt class="py-op">,</tt> <tt class="py-name">l2</tt><tt class="py-op">)</tt>  </tt>
+</div><a name="L150"></a><tt class="py-lineno">150</tt>  <tt class="py-line">        </tt>
+<a name="L151"></a><tt class="py-lineno">151</tt>  <tt class="py-line">        </tt>
+<a name="unicode_.apply_harakat_list"></a><div id="unicode_.apply_harakat_list-def"><a name="L152"></a><tt class="py-lineno">152</tt> <a class="py-toggle" href="#" id="unicode_.apply_harakat_list-toggle" onclick="return toggle('unicode_.apply_harakat_list');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="alfanous.TextProcessing.unicode_-class.html#apply_harakat_list">apply_harakat_list</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">lst</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="unicode_.apply_harakat_list-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="unicode_.apply_harakat_list-expanded"><a name="L153"></a><tt class="py-lineno">153</tt>  <tt class="py-line">        <tt class="py-name">new</tt> <tt class="py-op">=</tt> <tt class="py-string">u""</tt> </tt>
+<a name="L154"></a><tt class="py-lineno">154</tt>  <tt class="py-line">        <tt class="py-keyword">for</tt> <tt class="py-name">i</tt> <tt class="py-keyword">in</tt> <tt class="py-name">range</tt><tt class="py-op">(</tt><tt class="py-name">len</tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">)</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L155"></a><tt class="py-lineno">155</tt>  <tt class="py-line">            <tt class="py-name">new</tt> <tt class="py-op">+=</tt> <tt class="py-name">self</tt><tt class="py-op">[</tt><tt class="py-name">i</tt><tt class="py-op">]</tt> </tt>
+<a name="L156"></a><tt class="py-lineno">156</tt>  <tt class="py-line">            <tt class="py-keyword">if</tt> <tt class="py-name">lst</tt><tt class="py-op">.</tt><tt class="py-name">has_key</tt><tt class="py-op">(</tt><tt class="py-name">i</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L157"></a><tt class="py-lineno">157</tt>  <tt class="py-line">                <tt class="py-name">new</tt> <tt class="py-op">+=</tt> <tt id="link-50" class="py-name"><a title="alfanous.TextProcessing.unicode_" class="py-name" href="#" onclick="return doclink('link-50', 'unicode_', 'link-23');">unicode_</a></tt><tt class="py-op">(</tt><tt class="py-string">""</tt><tt class="py-op">.</tt><tt class="py-name">join</tt><tt class="py-op">(</tt><tt class="py-name">lst</tt><tt class="py-op">[</tt><tt class="py-name">i</tt><tt class="py-op">]</tt><tt class="py-op">)</tt><tt class="py-op">)</tt> </tt>
+<a name="L158"></a><tt class="py-lineno">158</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt> <tt class="py-name">new</tt> </tt>
+</div><a name="L159"></a><tt class="py-lineno">159</tt>  <tt class="py-line">     </tt>
+<a name="L160"></a><tt class="py-lineno">160</tt>  <tt class="py-line">    <tt id="link-51" class="py-name" targets="Variable alfanous.TextProcessing.unicode_.word_sh_pattern=alfanous.TextProcessing.unicode_-class.html#word_sh_pattern"><a title="alfanous.TextProcessing.unicode_.word_sh_pattern" class="py-name" href="#" onclick="return doclink('link-51', 'word_sh_pattern', 'link-51');">word_sh_pattern</a></tt> <tt class="py-op">=</tt> <tt class="py-name">re</tt><tt class="py-op">.</tt><tt class="py-name">compile</tt><tt class="py-op">(</tt><tt class="py-string">u"[^ \t\r\n]+"</tt><tt class="py-op">)</tt> </tt>
+<a name="L161"></a><tt class="py-lineno">161</tt>  <tt class="py-line">     </tt>
+<a name="unicode_.tokenize_shakl"></a><div id="unicode_.tokenize_shakl-def"><a name="L162"></a><tt class="py-lineno">162</tt> <a class="py-toggle" href="#" id="unicode_.tokenize_shakl-toggle" onclick="return toggle('unicode_.tokenize_shakl');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="alfanous.TextProcessing.unicode_-class.html#tokenize_shakl">tokenize_shakl</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="unicode_.tokenize_shakl-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="unicode_.tokenize_shakl-expanded"><a name="L163"></a><tt class="py-lineno">163</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-52" class="py-name"><a title="alfanous.TextProcessing.unicode_.word_sh_pattern" class="py-name" href="#" onclick="return doclink('link-52', 'word_sh_pattern', 'link-51');">word_sh_pattern</a></tt><tt class="py-op">.</tt><tt class="py-name">findall</tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">)</tt> </tt>
+</div></div><a name="L164"></a><tt class="py-lineno">164</tt>  <tt class="py-line">     </tt>
+<a name="L165"></a><tt class="py-lineno">165</tt>  <tt class="py-line"><tt class="py-comment">#analyzers    </tt> </tt>
+<a name="L166"></a><tt class="py-lineno">166</tt>  <tt class="py-line"><tt id="link-53" class="py-name" targets="Variable alfanous.TextProcessing.QStandardAnalyzer=alfanous.TextProcessing-module.html#QStandardAnalyzer"><a title="alfanous.TextProcessing.QStandardAnalyzer" class="py-name" href="#" onclick="return doclink('link-53', 'QStandardAnalyzer', 'link-53');">QStandardAnalyzer</a></tt> <tt class="py-op">=</tt> <tt id="link-54" class="py-name"><a title="alfanous.TextProcessing.QSpaceTokenizer" class="py-name" href="#" onclick="return doclink('link-54', 'QSpaceTokenizer', 'link-15');">QSpaceTokenizer</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> <tt class="py-op">|</tt> <tt id="link-55" class="py-name" targets="Class alfanous.TextProcessing.QArabicSymbolsFilter=alfanous.TextProcessing.QArabicSymbolsFilter-class.html"><a title="alfanous.TextProcessing.QArabicSymbolsFilter" class="py-name" href="#" onclick="return doclink('link-55', 'QArabicSymbolsFilter', 'link-55');">QArabicSymbolsFilter</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> <tt class="py-op">|</tt> <tt id="link-56" class="py-name"><a title="alfanous.TextProcessing.QStopFilter" class="py-name" href="#" onclick="return doclink('link-56', 'QStopFilter', 'link-20');">QStopFilter</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt>  </tt>
+<a name="L167"></a><tt class="py-lineno">167</tt>  <tt class="py-line"><tt id="link-57" class="py-name" targets="Variable alfanous.TextProcessing.QDiacAnalyzer=alfanous.TextProcessing-module.html#QDiacAnalyzer"><a title="alfanous.TextProcessing.QDiacAnalyzer" class="py-name" href="#" onclick="return doclink('link-57', 'QDiacAnalyzer', 'link-57');">QDiacAnalyzer</a></tt> <tt class="py-op">=</tt> <tt id="link-58" class="py-name"><a title="alfanous.TextProcessing.QSpaceTokenizer" class="py-name" href="#" onclick="return doclink('link-58', 'QSpaceTokenizer', 'link-15');">QSpaceTokenizer</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> <tt class="py-op">|</tt> <tt id="link-59" class="py-name"><a title="alfanous.TextProcessing.QArabicSymbolsFilter" class="py-name" href="#" onclick="return doclink('link-59', 'QArabicSymbolsFilter', 'link-55');">QArabicSymbolsFilter</a></tt><tt class="py-op">(</tt><tt class="py-name">tashkil</tt><tt class="py-op">=</tt><tt class="py-name">False</tt><tt class="py-op">)</tt> </tt>
+<a name="L168"></a><tt class="py-lineno">168</tt>  <tt class="py-line"><tt id="link-60" class="py-name" targets="Variable alfanous.TextProcessing.QHighLightAnalyzer=alfanous.TextProcessing-module.html#QHighLightAnalyzer"><a title="alfanous.TextProcessing.QHighLightAnalyzer" class="py-name" href="#" onclick="return doclink('link-60', 'QHighLightAnalyzer', 'link-60');">QHighLightAnalyzer</a></tt> <tt class="py-op">=</tt> <tt id="link-61" class="py-name"><a title="alfanous.TextProcessing.QSpaceTokenizer" class="py-name" href="#" onclick="return doclink('link-61', 'QSpaceTokenizer', 'link-15');">QSpaceTokenizer</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> <tt class="py-op">|</tt> <tt id="link-62" class="py-name"><a title="alfanous.TextProcessing.QArabicSymbolsFilter" class="py-name" href="#" onclick="return doclink('link-62', 'QArabicSymbolsFilter', 'link-55');">QArabicSymbolsFilter</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L169"></a><tt class="py-lineno">169</tt>  <tt class="py-line"><tt id="link-63" class="py-name" targets="Variable alfanous.TextProcessing.QUthmaniAnalyzer=alfanous.TextProcessing-module.html#QUthmaniAnalyzer"><a title="alfanous.TextProcessing.QUthmaniAnalyzer" class="py-name" href="#" onclick="return doclink('link-63', 'QUthmaniAnalyzer', 'link-63');">QUthmaniAnalyzer</a></tt> <tt class="py-op">=</tt> <tt id="link-64" class="py-name"><a title="alfanous.TextProcessing.QSpaceTokenizer" class="py-name" href="#" onclick="return doclink('link-64', 'QSpaceTokenizer', 'link-15');">QSpaceTokenizer</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> <tt class="py-op">|</tt> <tt id="link-65" class="py-name"><a title="alfanous.TextProcessing.QArabicSymbolsFilter" class="py-name" href="#" onclick="return doclink('link-65', 'QArabicSymbolsFilter', 'link-55');">QArabicSymbolsFilter</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L170"></a><tt class="py-lineno">170</tt>  <tt class="py-line"><tt id="link-66" class="py-name" targets="Variable alfanous.TextProcessing.QUthmaniDiacAnalyzer=alfanous.TextProcessing-module.html#QUthmaniDiacAnalyzer"><a title="alfanous.TextProcessing.QUthmaniDiacAnalyzer" class="py-name" href="#" onclick="return doclink('link-66', 'QUthmaniDiacAnalyzer', 'link-66');">QUthmaniDiacAnalyzer</a></tt> <tt class="py-op">=</tt> <tt id="link-67" class="py-name"><a title="alfanous.TextProcessing.QSpaceTokenizer" class="py-name" href="#" onclick="return doclink('link-67', 'QSpaceTokenizer', 'link-15');">QSpaceTokenizer</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> <tt class="py-op">|</tt> <tt id="link-68" class="py-name"><a title="alfanous.TextProcessing.QArabicSymbolsFilter" class="py-name" href="#" onclick="return doclink('link-68', 'QArabicSymbolsFilter', 'link-55');">QArabicSymbolsFilter</a></tt><tt class="py-op">(</tt><tt class="py-name">tashkil</tt><tt class="py-op">=</tt><tt class="py-name">False</tt><tt class="py-op">)</tt> </tt>
+<a name="L171"></a><tt class="py-lineno">171</tt>  <tt class="py-line"> </tt>
+<a name="L172"></a><tt class="py-lineno">172</tt>  <tt class="py-line"> </tt>
+<a name="L173"></a><tt class="py-lineno">173</tt>  <tt class="py-line"> </tt>
+<a name="L174"></a><tt class="py-lineno">174</tt>  <tt class="py-line"><tt class="py-keyword">if</tt> <tt class="py-name">__name__</tt> <tt class="py-op">==</tt> <tt class="py-string">"__main__"</tt><tt class="py-op">:</tt>   </tt>
+<a name="L175"></a><tt class="py-lineno">175</tt>  <tt class="py-line">    <tt class="py-name">ASF</tt> <tt class="py-op">=</tt> <tt id="link-69" class="py-name"><a title="alfanous.TextProcessing.QArabicSymbolsFilter" class="py-name" href="#" onclick="return doclink('link-69', 'QArabicSymbolsFilter', 'link-55');">QArabicSymbolsFilter</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L176"></a><tt class="py-lineno">176</tt>  <tt class="py-line">    <tt class="py-name">text</tt> <tt class="py-op">=</tt> <tt class="py-string">u"&#1593;&#1575;&#1589;&#1616;&#1605;&#1612;"</tt> </tt>
+<a name="L177"></a><tt class="py-lineno">177</tt>  <tt class="py-line">    <tt class="py-name">text</tt> <tt class="py-op">=</tt> <tt class="py-name">ASF</tt><tt class="py-op">.</tt><tt id="link-70" class="py-name"><a title="alfanous.TextProcessing.QArabicSymbolsFilter.normalize_all" class="py-name" href="#" onclick="return doclink('link-70', 'normalize_all', 'link-28');">normalize_all</a></tt><tt class="py-op">(</tt><tt class="py-name">text</tt><tt class="py-op">)</tt>      </tt>
+<a name="L178"></a><tt class="py-lineno">178</tt>  <tt class="py-line">    <tt class="py-keyword">print</tt> <tt class="py-name">text</tt> </tt>
+<a name="L179"></a><tt class="py-lineno">179</tt>  <tt class="py-line">     </tt>
+<a name="L180"></a><tt class="py-lineno">180</tt>  <tt class="py-line">    <tt class="py-name">word1</tt> <tt class="py-op">=</tt> <tt id="link-71" class="py-name"><a title="alfanous.TextProcessing.unicode_" class="py-name" href="#" onclick="return doclink('link-71', 'unicode_', 'link-23');">unicode_</a></tt><tt class="py-op">(</tt><tt class="py-string">"&#1593;&#1614;&#1575;&#1589;&#1616;&#1605;&#1615;"</tt><tt class="py-op">)</tt> </tt>
+<a name="L181"></a><tt class="py-lineno">181</tt>  <tt class="py-line">    <tt class="py-name">word2</tt> <tt class="py-op">=</tt> <tt id="link-72" class="py-name"><a title="alfanous.TextProcessing.unicode_" class="py-name" href="#" onclick="return doclink('link-72', 'unicode_', 'link-23');">unicode_</a></tt><tt class="py-op">(</tt><tt class="py-string">"&#1593;&#1614;&#1575;&#1589;&#1605;&#1615;"</tt><tt class="py-op">)</tt> </tt>
+<a name="L182"></a><tt class="py-lineno">182</tt>  <tt class="py-line">    <tt class="py-name">l1</tt> <tt class="py-op">=</tt> <tt class="py-name">word1</tt><tt class="py-op">.</tt><tt id="link-73" class="py-name"><a title="alfanous.TextProcessing.unicode_.list_harakat" class="py-name" href="#" onclick="return doclink('link-73', 'list_harakat', 'link-47');">list_harakat</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L183"></a><tt class="py-lineno">183</tt>  <tt class="py-line">    <tt class="py-name">l2</tt> <tt class="py-op">=</tt> <tt class="py-name">word2</tt><tt class="py-op">.</tt><tt id="link-74" class="py-name"><a title="alfanous.TextProcessing.unicode_.list_harakat" class="py-name" href="#" onclick="return doclink('link-74', 'list_harakat', 'link-47');">list_harakat</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L184"></a><tt class="py-lineno">184</tt>  <tt class="py-line">    <tt class="py-name">word3</tt> <tt class="py-op">=</tt> <tt id="link-75" class="py-name"><a title="alfanous.TextProcessing.unicode_" class="py-name" href="#" onclick="return doclink('link-75', 'unicode_', 'link-23');">unicode_</a></tt><tt class="py-op">(</tt><tt class="py-string">"&#1601;&#1575;&#1593;&#1604;"</tt><tt class="py-op">)</tt> </tt>
+<a name="L185"></a><tt class="py-lineno">185</tt>  <tt class="py-line">    <tt class="py-name">phrase</tt> <tt class="py-op">=</tt> <tt id="link-76" class="py-name"><a title="alfanous.TextProcessing.unicode_" class="py-name" href="#" onclick="return doclink('link-76', 'unicode_', 'link-23');">unicode_</a></tt><tt class="py-op">(</tt><tt class="py-string">"&#1603;&#1575;&#1606;&#1614; &#1584;&#1574;&#1576;&#1575;"</tt><tt class="py-op">)</tt> </tt>
+<a name="L186"></a><tt class="py-lineno">186</tt>  <tt class="py-line">    <tt class="py-keyword">print</tt> <tt class="py-name">word3</tt><tt class="py-op">.</tt><tt id="link-77" class="py-name" targets="Method alfanous.TextProcessing.unicode_.apply_harakat_list()=alfanous.TextProcessing.unicode_-class.html#apply_harakat_list"><a title="alfanous.TextProcessing.unicode_.apply_harakat_list" class="py-name" href="#" onclick="return doclink('link-77', 'apply_harakat_list', 'link-77');">apply_harakat_list</a></tt><tt class="py-op">(</tt><tt class="py-name">l1</tt><tt class="py-op">)</tt> </tt>
+<a name="L187"></a><tt class="py-lineno">187</tt>  <tt class="py-line">    <tt class="py-keyword">print</tt> <tt class="py-name">l1</tt><tt class="py-op">,</tt> <tt class="py-string">"\n"</tt><tt class="py-op">,</tt> <tt class="py-name">l2</tt><tt class="py-op">,</tt> <tt class="py-string">"\n"</tt><tt class="py-op">,</tt> <tt id="link-78" class="py-name"><a title="alfanous.TextProcessing.unicode_" class="py-name" href="#" onclick="return doclink('link-78', 'unicode_', 'link-23');">unicode_</a></tt><tt class="py-op">.</tt><tt id="link-79" class="py-name"><a title="alfanous.TextProcessing.unicode_.compare_harakat" class="py-name" href="#" onclick="return doclink('link-79', 'compare_harakat', 'link-49');">compare_harakat</a></tt><tt class="py-op">(</tt><tt class="py-name">l1</tt><tt class="py-op">,</tt> <tt class="py-name">l2</tt><tt class="py-op">)</tt>    </tt>
+<a name="L188"></a><tt class="py-lineno">188</tt>  <tt class="py-line">    <tt class="py-keyword">print</tt> <tt class="py-name">word1</tt><tt class="py-op">.</tt><tt id="link-80" class="py-name"><a title="alfanous.TextProcessing.unicode_.shakl_compare" class="py-name" href="#" onclick="return doclink('link-80', 'shakl_compare', 'link-29');">shakl_compare</a></tt><tt class="py-op">(</tt><tt class="py-name">word1</tt><tt class="py-op">,</tt> <tt class="py-name">word2</tt><tt class="py-op">)</tt> </tt>
+<a name="L189"></a><tt class="py-lineno">189</tt>  <tt class="py-line">    <tt class="py-keyword">for</tt> <tt class="py-name">i</tt> <tt class="py-keyword">in</tt> <tt class="py-name">phrase</tt><tt class="py-op">.</tt><tt id="link-81" class="py-name" targets="Method alfanous.TextProcessing.unicode_.tokenize_shakl()=alfanous.TextProcessing.unicode_-class.html#tokenize_shakl"><a title="alfanous.TextProcessing.unicode_.tokenize_shakl" class="py-name" href="#" onclick="return doclink('link-81', 'tokenize_shakl', 'link-81');">tokenize_shakl</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L190"></a><tt class="py-lineno">190</tt>  <tt class="py-line">        <tt class="py-keyword">print</tt> <tt class="py-name">i</tt><tt class="py-op">,</tt> </tt>
+<a name="L191"></a><tt class="py-lineno">191</tt>  <tt class="py-line">    <tt class="py-name">t</tt> <tt class="py-op">=</tt> <tt id="link-82" class="py-name"><a title="alfanous.TextProcessing.unicode_" class="py-name" href="#" onclick="return doclink('link-82', 'unicode_', 'link-23');">unicode_</a></tt><tt class="py-op">(</tt><tt class="py-string">u"&#1593;&#1575;&#1589;&#1605;"</tt><tt class="py-op">)</tt> </tt>
+<a name="L192"></a><tt class="py-lineno">192</tt>  <tt class="py-line">    <tt class="py-name">u</tt> <tt class="py-op">=</tt> <tt id="link-83" class="py-name"><a title="alfanous.TextProcessing.unicode_" class="py-name" href="#" onclick="return doclink('link-83', 'unicode_', 'link-23');">unicode_</a></tt><tt class="py-op">(</tt><tt class="py-string">u"&#1593;&#1575;&#1589;&#1616;&#1605;"</tt><tt class="py-op">)</tt> </tt>
+<a name="L193"></a><tt class="py-lineno">193</tt>  <tt class="py-line">     </tt>
+<a name="L194"></a><tt class="py-lineno">194</tt>  <tt class="py-line">    <tt class="py-keyword">print</tt> <tt class="py-name">t</tt> <tt class="py-op">==</tt> <tt class="py-name">u</tt> </tt>
+<a name="L195"></a><tt class="py-lineno">195</tt>  <tt class="py-line"> </tt><script type="text/javascript">
+<!--
+expandto(location.href);
+// -->
+</script>
+</pre>
+<br />
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="alfanous-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            ><a class="navbar" target="_top" href="alfanous.sourceforge.com">Alfanous</a></th>
+          </tr></table></th>
+  </tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" width="100%%">
+  <tr>
+    <td align="left" class="footer">
+    Generated by Epydoc 3.0.1 on Thu Mar 18 04:21:20 2010
+    </td>
+    <td align="right" class="footer">
+      <a target="mainFrame" href="http://epydoc.sourceforge.net"
+        >http://epydoc.sourceforge.net</a>
+    </td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+  <!--
+  // Private objects are initially displayed (because if
+  // javascript is turned off then we want them to be
+  // visible); but by default, we want to hide them.  So hide
+  // them unless we have a cookie that says to show them.
+  checkCookie();
+  // -->
+</script>
+</body>
+</html>
