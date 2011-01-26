@@ -10,9 +10,9 @@ from setuptools import setup,find_packages
 
 setup(
 	name="alfanous",
-	version=0.2,
+	version=0.4,
 	package_dir={'alfanous':'.'},
-	packages=["alfanous", "alfanous.dynamic_ressources", "alfanous.Support"],
+	packages=["alfanous", "alfanous.dynamic_ressources", "alfanous.Support","alfanous.Support.whoosh","alfanous.Support.whoosh.filedb","alfanous.Support.whoosh.lang","alfanous.Support.whoosh.qparser","alfanous.Support.whoosh.support"],
 	author="Assem Chelli",
 	author_email="assem.ch@gmail.com",
 	description="Quranic search engine API",
@@ -21,7 +21,7 @@ setup(
 	keywords="quran search indexing engine alfanous",
 	url="http://alfanous.sourceforge.net/cms",
 	download_url="https://sourceforge.net/projects/alfanous/files",
-	install_requires=['whoosh >= 0.3.18'],
+	#install_requires=['whoosh >= 0.3.18'],
 
 	include_package_data=True,
 
