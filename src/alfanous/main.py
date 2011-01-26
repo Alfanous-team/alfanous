@@ -23,6 +23,9 @@
 @organization: Waiting support 
 
 
+@todo: Upgrading to last whoosh 
+@todo: Dynamic fields
+@todo: Quranic Corpus integration
 
 
 '''

@@ -8,12 +8,15 @@ it contains specified query parsers , some linguistic operations
 @organization: Waiting support 
 
 
-
+@todo: Buckwalter/Other codings Search  {bw!  kutubo }
+@todo: Upgrading Tuple Search to Embeded Query Search  {1! word="foo"}
+@todo: Smart-search : take the optimal choice with NLP!
+@todo: Synonyme-Antonyme Upgrade to related search {syn!  fire }
 
 '''
 
-from whoosh.qparser import MultifieldParser, QueryParser
-from whoosh.query import Or,And, Term, MultiTerm, NullQuery,Every,Wildcard as whoosh_Wildcard,Prefix as whoosh_Prefix
+from Support.whoosh.qparser import MultifieldParser, QueryParser
+from Support.whoosh.query import Or,And, Term, MultiTerm, NullQuery,Every,Wildcard as whoosh_Wildcard,Prefix as whoosh_Prefix
 
 from dynamic_ressources.synonymes_dyn import syndict
 from dynamic_ressources.arabicnames_dyn import ara2eng_names
@@ -21,12 +24,12 @@ from dynamic_ressources.antonymes_dyn import antdict
 from dynamic_ressources.word_props_dyn import worddict
 from dynamic_ressources.derivations_dyn import derivedict
 
-from pyparsing import printables, alphanums
-from pyparsing import ZeroOrMore, OneOrMore
-from pyparsing import Group, Combine, Suppress, Optional, FollowedBy
-from pyparsing import Literal, CharsNotIn, Word, Keyword
-from pyparsing import Empty, White, Forward, QuotedString
-from pyparsing import StringEnd, ParserElement    
+from Support.pyparsing import printables, alphanums
+from Support.pyparsing import ZeroOrMore, OneOrMore
+from Support.pyparsing import Group, Combine, Suppress, Optional, FollowedBy
+from Support.pyparsing import Literal, CharsNotIn, Word, Keyword
+from Support.pyparsing import Empty, White, Forward, QuotedString
+from Support.pyparsing import StringEnd, ParserElement    
 
 from Indexing import QseDocIndex 
 

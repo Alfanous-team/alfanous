@@ -23,10 +23,13 @@ it contains the linguistic analysers of Quran and Arabic...etc.
 @license: GPL
 
 
+@todo: pronoun Reference  " == لا إله إلا الله " لا إله إلا هو
+
+
 '''
 from dynamic_ressources import synonymes_dyn as sydy
 from dynamic_ressources import stopwords_dyn as swdy
-from whoosh.analysis import StandardAnalyzer, StopFilter, RegexTokenizer, LowercaseFilter
+from Support.whoosh.analysis import StandardAnalyzer, StopFilter, RegexTokenizer, LowercaseFilter
 #from pyarabic.araby  import araby
 
 from Support.ar_ctype import strip_tashkeel, normalize_spellerrors, normalize_hamza, HARAKAT_pat, normalize_lamalef
