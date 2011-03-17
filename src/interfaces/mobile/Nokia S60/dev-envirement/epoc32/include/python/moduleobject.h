@@ -1,0 +1,27 @@
+/* Portions Copyright (c) 2005 Nokia Corporation */
+
+/* Module object interface */
+
+#ifndef Py_MODULEOBJECT_H
+#define Py_MODULEOBJECT_H
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+  /* extern DL_IMPORT(const PyTypeObject) PyModule_Type; */
+
+#define PyModule_Type ((PYTHON_GLOBALS->tobj).t_PyModule)
+
+#define PyModule_Check(op) PyObject_TypeCheck(op, &PyModule_Type)
+#define PyModule_CheckExact(op) ((op)->ob_type == &PyModule_Type)
+
+extern DL_IMPORT(PyObject *) PyModule_New(char *);
+extern DL_IMPORT(PyObject *) PyModule_GetDict(PyObject *);
+extern DL_IMPORT(char *) PyModule_GetName(PyObject *);
+extern DL_IMPORT(char *) PyModule_GetFilename(PyObject *);
+extern DL_IMPORT(void) _PyModule_Clear(PyObject *);
+
+#ifdef __cplusplus
+}
+#endif
+#endif /* !Py_MODULEOBJECT_H */

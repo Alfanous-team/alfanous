@@ -1,0 +1,274 @@
+/* Copyright (c) 2005-2006 Nokia Corporation
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+NAME PYTH //XXX
+
+#include <eikon.rh>
+#include <eikon.rsg>
+#include <avkon.rh>
+#include <avkon.rsg>
+
+#include <appinfo.rh>
+#include "PyTest.hrh"
+
+RESOURCE RSS_SIGNATURE { }
+
+RESOURCE TBUF { buf=""; }
+
+RESOURCE EIK_APP_INFO
+{
+  menubar=r_python_app_menubar;
+  cba = R_AVKON_SOFTKEYS_OPTIONS_EXIT;
+}
+
+RESOURCE MENU_BAR r_python_app_menubar
+{
+  titles=
+  {
+    MENU_TITLE { menu_pane=r_python_extension_menu; txt="Extension"; }
+  };
+}
+
+
+RESOURCE MENU_PANE r_python_extension_menu
+{
+  items=
+  {
+  };
+}
+
+
+RESOURCE MENU_PANE r_python_sub_menu_00
+{
+  items=
+  {
+  };
+}
+
+RESOURCE MENU_PANE r_python_sub_menu_01
+{
+  items=
+  {
+  };
+}
+
+RESOURCE MENU_PANE r_python_sub_menu_02
+{
+  items=
+  {
+  };
+}
+
+RESOURCE MENU_PANE r_python_sub_menu_03
+{
+  items=
+  {
+  };
+}
+
+RESOURCE MENU_PANE r_python_sub_menu_04
+{
+  items=
+  {
+  };
+}
+
+RESOURCE MENU_PANE r_python_sub_menu_05
+{
+  items=
+  {
+  };
+}
+
+RESOURCE MENU_PANE r_python_sub_menu_06
+{
+  items=
+  {
+  };
+}
+
+RESOURCE MENU_PANE r_python_sub_menu_07
+{
+  items=
+  {
+  };
+}
+
+RESOURCE MENU_PANE r_python_sub_menu_08
+{
+  items=
+  {
+  };
+}
+
+RESOURCE MENU_PANE r_python_sub_menu_09
+{
+  items=
+  {
+  };
+}
+
+RESOURCE MENU_PANE r_python_sub_menu_10
+{
+  items=
+  {
+  };
+}
+
+RESOURCE MENU_PANE r_python_sub_menu_11
+{
+  items=
+  {
+  };
+}
+
+RESOURCE MENU_PANE r_python_sub_menu_12
+{
+  items=
+  {
+  };
+}
+
+RESOURCE MENU_PANE r_python_sub_menu_13
+{
+  items=
+  {
+  };
+}
+
+RESOURCE MENU_PANE r_python_sub_menu_14
+{
+  items=
+  {
+  };
+}
+
+RESOURCE MENU_PANE r_python_sub_menu_15
+{
+  items=
+  {
+  };
+}
+
+RESOURCE MENU_PANE r_python_sub_menu_16
+{
+  items=
+  {
+  };
+}
+
+RESOURCE MENU_PANE r_python_sub_menu_17
+{
+  items=
+  {
+  };
+}
+
+RESOURCE MENU_PANE r_python_sub_menu_18
+{
+  items=
+  {
+  };
+}
+
+RESOURCE MENU_PANE r_python_sub_menu_19
+{
+  items=
+  {
+  };
+}
+
+RESOURCE MENU_PANE r_python_sub_menu_20
+{
+  items=
+  {
+  };
+}
+
+RESOURCE MENU_PANE r_python_sub_menu_21
+{
+  items=
+  {
+  };
+}
+
+RESOURCE MENU_PANE r_python_sub_menu_22
+{
+  items=
+  {
+  };
+}
+
+RESOURCE MENU_PANE r_python_sub_menu_23
+{
+  items=
+  {
+  };
+}
+
+RESOURCE MENU_PANE r_python_sub_menu_24
+{
+  items=
+  {
+  };
+}
+
+RESOURCE MENU_PANE r_python_sub_menu_25
+{
+  items=
+  {
+  };
+}
+
+RESOURCE MENU_PANE r_python_sub_menu_26
+{
+  items=
+  {
+  };
+}
+
+RESOURCE MENU_PANE r_python_sub_menu_27
+{
+  items=
+  {
+  };
+}
+
+RESOURCE MENU_PANE r_python_sub_menu_28
+{
+  items=
+  {
+  };
+}
+
+RESOURCE MENU_PANE r_python_sub_menu_29
+{
+  items=
+  {
+  };
+}
+
+RESOURCE LOCALISABLE_APP_INFO r_python_localisable_app_info
+    {
+    short_caption = "${{PY2SIS_APPNAME}}";
+    caption_and_icon =
+    CAPTION_AND_ICON_INFO
+        {
+        caption = "${{PY2SIS_APPNAME}}";
+        number_of_icons = 1;
+        icon_file = "\\resource\\apps\\${{PY2SIS_APPNAME}}_${{PY2SIS_UID}}_AIF.mif";
+        };
+    }
+
+

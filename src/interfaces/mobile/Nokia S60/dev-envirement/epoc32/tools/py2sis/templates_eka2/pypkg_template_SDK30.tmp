@@ -1,0 +1,18 @@
+;
+; Standalone Python for S60 app
+;
+;Languages
+&EN
+;
+;
+#{"%s"},(%s),1,0,0,TYPE=SISAPP
+;
+;Localised Vendor name
+%%{"Vendor-EN"}
+;
+;Supports S60 v 3.0
+;
+(0x101F7961), 0, 0, 0, {"Series60ProductID"}
+;
+; Files to install:
+

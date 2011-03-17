@@ -1,0 +1,9 @@
+/*
+ * Includes the application in the device bootstrap
+ */
+#include <startupitem.rh>
+RESOURCE STARTUP_ITEM_INFO ${{PY2SIS_APPNAME}}
+{
+executable_name = "!:\\sys\\bin\\${{PY2SIS_APPNAME}}_${{PY2SIS_UID}}.exe";
+recovery = EStartupItemExPolicyNone;
+}

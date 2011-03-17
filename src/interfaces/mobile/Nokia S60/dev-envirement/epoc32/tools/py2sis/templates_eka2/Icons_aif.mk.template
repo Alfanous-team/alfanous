@@ -1,0 +1,41 @@
+ifeq (WINS,$(findstring WINS, $(PLATFORM)))
+ZDIR=\epoc32\release\$(PLATFORM)\$(CFG)\Z
+else
+ZDIR=\epoc32\data\z
+endif
+
+TARGETDIR=$(ZDIR)\RESOURCE\APPS
+ICONTARGETFILENAME=$(TARGETDIR)\${{PY2SIS_APPNAME}}_${{PY2SIS_UID}}_AIF.mif
+
+do_nothing :
+	@rem do_nothing
+
+MAKMAKE : do_nothing
+
+BLD : do_nothing
+
+CLEAN : do_nothing
+
+LIB : do_nothing
+
+CLEANLIB : do_nothing
+
+#
+# Modify:
+#  /c8,8 python_star.svg
+# to
+#  /c8,8 /Hpython_aif.mbg python_star.svg 
+# to generate index header file
+#
+RESOURCE :
+	mifconv $(ICONTARGETFILENAME) \
+		/c8,8 python_star.svg
+
+FREEZE : do_nothing
+
+SAVESPACE : do_nothing
+
+RELEASABLES :
+	@echo $(ICONTARGETFILENAME)
+
+FINAL : do_nothing
