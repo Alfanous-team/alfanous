@@ -1,0 +1,14 @@
+<SearchPlugin xmlns="http://www.mozilla.org/2006/browser/search/">
+<ShortName>Alfanous</ShortName>
+<Description>Alfanous - Advanced Qur'anic Search Engine</Description>
+<InputEncoding>UTF-8</InputEncoding>
+<Image width="16" height="16">data:image/png;base64,</Image>
+<Url type="application/x-suggestions+json" method="GET" template=""/>
+<Url type="text/html" method="GET" template="http://www.alfanous.org/index.php">
+  <Param name="query" value="{searchTerms}"/>
+  <!-- Dynamic parameters -->
+  <Param name="rls" value="{moz:distributionID}:{moz:locale}:{moz:official}"/>
+  <MozParam name="client" condition="defaultEngine" trueValue="firefox-a" falseValue="firefox"/>
+</Url>
+<SearchForm>http://www.alfanous.org/index.php</SearchForm>
+</SearchPlugin>
