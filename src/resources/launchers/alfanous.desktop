@@ -1,0 +1,10 @@
+
+[Desktop Entry]
+Type=Application
+Version=0.4
+Name=Alfanous
+GenericName=Alfanous-Quranic Search Engine
+Icon=/usr/share/pixmaps/AlFanous.png
+Exec=AlfanousDesktop
+Categories=Utility;Qt;X-Islamic-Software;X-Quran;
+Name[en_US]=AlfanousDesktop
