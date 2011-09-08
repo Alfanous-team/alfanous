@@ -1,0 +1,31 @@
+#TutTB-MainMenu {
+    list-style-image: url("chrome://alfanoustoolbar/skin/main.png");
+}
+
+#TutTB-Combined-Button {
+    list-style-image: url("chrome://alfanoustoolbar/skin/combined.png");
+}
+
+#TutTB-Combined-Button > .toolbarbutton-menubutton-button {
+    -moz-box-orient: horizontal;
+}
+
+#TutTB-Web-Button,
+#TutTB-Combined-Web {
+    list-style-image: url("chrome://alfanoustoolbar/skin/combined.png");
+}
+
+#TutTB-Combined-Image {
+    list-style-image: url("chrome://alfanoustoolbar/skin/images.png");
+}
+
+#TutTB-ResizeBar {
+    background-image: url("chrome://alfanoustoolbar/skin/gripper.png");
+    min-height: 22px;
+    min-width: 3px;
+}
+
+#TutTB-ResizeSplitter {
+    background: transparent;
+    border: none !important;
+}
