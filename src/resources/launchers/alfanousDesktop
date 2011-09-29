@@ -1,3 +1,0 @@
-#!/bin/sh
-
-python -m alfanousDesktop.Gui -i /usr/share/alfanous-indexes/ -l /usr/locale/ -c /usr/share/alfanous-config/ #PATHS as arguments

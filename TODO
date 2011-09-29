@@ -1,0 +1,18 @@
+### API ##########
+
+@todo: SunnaSearchEngine,MedicamentsSearchEngine,AnimalsSearchEngine,DreamsSearchEngine
+@todo: Feedback or Debug System
+@todo: statistic system cprofile
+@todo: import Qurany Corpus
+@todo: relate with Elexir and PyArabic
+@todo: Database manager
+@todo: +alradif
+@todo: alsakta,alwaqf
+@todo: statistiques
+
+@todo: do more specific Analysers with costumized filters and derivation level
+@todo: stemming Analysers for other languages
+@todo: replace support with pyarabic
+
+@todo: partial vocalisation
+@todo: make an automatic fuzzy search to do all possible features, costumizable as well

@@ -1,0 +1,3 @@
+content alfanoustoolbar jar:chrome/alfanoustoolbar.jar!/content/
+overlay chrome://browser/content/browser.xul chrome://alfanoustoolbar/content/alfanoustoolbar.xul
+skin alfanoustoolbar classic/1.0 jar:chrome/alfanoustoolbar.jar!/skin/

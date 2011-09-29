@@ -1,4 +1,0 @@
-# this is the INSTALL file of alfanous project
-
-make build_all
-make install_desktop

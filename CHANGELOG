@@ -1,0 +1,14 @@
+2010-10-31  Assem chelli  <assem.ch@gmail.com>
+
+    	* launching the first release 0.4.13
+
+2011-05-22  Assem chelli  <assem.ch@gmail.com>
+
+	* Minor bugfix releases:
+	    o "unknown property dir " bug is fixed
+	    o icons and images compressed
+	    o clean css to show the results
+	    o buckwalter search (partially implemented) 
+
+
+
