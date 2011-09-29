@@ -1,0 +1,352 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Welcome to Alfanous’s documentation! &mdash; Alfanous v0.1 documentation</title>
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '0.1',
+        COLLAPSE_MODINDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="Alfanous v0.1 documentation" href="" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="modindex.html" title="Global Module Index"
+             accesskey="M">modules</a> |</li>
+        <li><a href="">Alfanous v0.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="module-alfanous">
+<h1>Welcome to Alfanous&#8217;s documentation!<a class="headerlink" href="#module-alfanous" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="summary">
+<h2>Summary:<a class="headerlink" href="#summary" title="Permalink to this headline">¶</a></h2>
+<p>Alfanous is a Quranic search engine provides simple and advanced search services in the diverse information of the Holy Quran and is built on the foundations of modern search engines to ensure high stability and high-speed search and we aspire to provide the benefits of facilitating the search for the user like highlight,suggestions ...Etc..</p>
+<p>Alfanous is a search engine in the Arabic language necessarily and it provides the morphological analysis , starting from the extraction of roots and other processes different and this will give the user more liberty in the formulation of queries,and also increases the accuracy of the research and its comprehensiveness.</p>
+<p>Alfanous is a programming interface (API) a tool of developers working on programs related to the Qur&#8217;an and want to take advantage of the search services provided by alfanous</p>
+</div>
+<div class="section" id="features">
+<h2>Features:<a class="headerlink" href="#features" title="Permalink to this headline">¶</a></h2>
+<blockquote>
+<ul>
+<li><dl class="first docutils">
+<dt>Advanced search features</dt>
+<dd><ul class="first last simple">
+<li>Fielded Search</li>
+<li>jokers (regular expression)</li>
+<li>logical relations</li>
+<li>Phrase Search</li>
+<li>Intervals search</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>Additional Features</dt>
+<dd><ul class="first last simple">
+<li>spelling Suggestions</li>
+<li>pagination</li>
+<li>Sorting</li>
+<li>Highlight</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>Language options </dt>
+<dd><ul class="first last simple">
+<li>Signification</li>
+<li>Synonyms and Antonyms (to do)</li>
+<li>Diacritics</li>
+<li>Affixes</li>
+<li>Arabic word Root</li>
+<li>Verb Conjugaisons</li>
+<li>Nouns derivations</li>
+<li>Arabic word type</li>
+<li>Arabic word Pattern (to do)</li>
+<li>Spell Errors :hamza formes,some similar letters</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>Options Qur&#8217;anic</dt>
+<dd><ul class="first last simple">
+<li>Search in Uthmani script</li>
+<li>Extend the search to all qur&#8217;anic sciences (to do)</li>
+<li>the ability to search using special indexes</li>
+<li>Structural options</li>
+<li>Statistical Informations</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>Other</dt>
+<dd><ul class="first last simple">
+<li>Buckwalter query</li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</blockquote>
+<p></p>
+</div>
+<div class="section" id="quick-start">
+<h2>Quick Start:<a class="headerlink" href="#quick-start" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="install">
+<h3>Install<a class="headerlink" href="#install" title="Permalink to this headline">¶</a></h3>
+<dl class="docutils">
+<dt>use easy_install to download and install alfanous API</dt>
+<dd><div class="first last highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">easy_install</span> <span class="n">alfanous</span>
+</pre></div>
+</div>
+</dd>
+</dl>
+</div>
+<div class="section" id="examples">
+<h3>Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></h3>
+<dl class="docutils">
+<dt>to call the api from script</dt>
+<dd><ul class="first last">
+<li><p class="first">import and call it</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">alfanous.main</span> <span class="kn">import</span> <span class="n">QuranicSearchEngine</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">QSE</span> <span class="o">=</span> <span class="n">QuranicSearchEngine</span><span class="p">()</span> 
+<span class="go">&lt;__main__.QuranicSearchEngine instance at 0xb77d168c&gt;</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">find the results of a query</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">results</span><span class="p">,</span><span class="n">_</span> <span class="o">=</span><span class="n">QSE</span><span class="o">.</span><span class="n">search_all</span><span class="p">(</span><span class="s">u&quot;الحمد&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">results</span><span class="p">:</span>
+<span class="gp">&gt;&gt;&gt; </span>      <span class="k">print</span> <span class="n">r</span><span class="p">[</span><span class="s">&quot;aya&quot;</span><span class="p">]</span>
+<span class="go">الحمد لله رب العالمين</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">show more information about a result : sura&#8217;s name, aya&#8217;s number ,aya&#8217;s vocalized text</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">results</span><span class="p">:</span>
+<span class="gp">&gt;&gt;&gt; </span>       <span class="k">print</span> <span class="n">r</span><span class="p">[</span><span class="s">&quot;sura_name&quot;</span><span class="p">],</span><span class="s">&quot;:&quot;</span><span class="p">,</span><span class="n">r</span><span class="p">[</span><span class="s">&quot;aya_id&quot;</span><span class="p">],</span><span class="s">&quot;:&quot;</span><span class="p">,</span><span class="n">r</span><span class="p">[</span><span class="s">&quot;aya_&quot;</span><span class="p">]</span>
+<span class="go">الفاتحة:2:الْحَمْدُ لِلَّهِ رَبِّ الْعَالَمِينَ         </span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">find the terms used to search from a query</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">_</span><span class="p">,</span><span class="n">terms</span> <span class="o">=</span><span class="n">QSE</span><span class="o">.</span><span class="n">search_all</span><span class="p">(</span><span class="s">u&quot;الحمد&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">terms</span>
+<span class="go">[(&quot;aya&quot;,u&quot;الحمد&quot;)]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="s">&quot;,&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">term</span><span class="p">[</span><span class="mf">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">term</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">terms</span><span class="p">)])</span>
+<span class="go">الحمد</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">use the terms to highlight the aya text</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">Qhighlight</span><span class="p">(</span><span class="s">u&quot;الْحَمْدُ لِلَّهِ رَبِّ الْعَالَمِينَ&quot;</span><span class="p">,</span> <span class="p">[</span><span class="s">u&quot;الحمد&quot;</span><span class="p">,</span> <span class="s">u&quot;لله&quot;</span><span class="p">])</span>
+<span class="go">&lt;span style=&quot;color:red;font-size:100.0%&quot;&gt;&lt;b&gt;الْحَمْدُ&lt;/b&gt;&lt;/span&gt; &lt;span style=&quot;color:green;font-size:100.0%&quot;&gt;&lt;b&gt;لِلَّـهِ&lt;/b&gt;&lt;/span&gt; رَبِّ الْعَالَمِينَ</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">get the search time and the number of results</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="s">&quot;time=</span><span class="si">%f</span><span class="s">,number=</span><span class="si">%d</span><span class="s">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">results</span><span class="o">.</span><span class="n">runtime</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="n">results</span><span class="p">))</span>
+<span class="go">time=0.100318,number=160</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">limit the number of results</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">results</span><span class="p">,</span><span class="n">_</span> <span class="o">=</span><span class="n">QSE</span><span class="o">.</span><span class="n">search_all</span><span class="p">(</span><span class="s">u&quot;الله&quot;</span><span class="p">,</span><span class="n">limit</span><span class="o">=</span><span class="mf">10</span><span class="p">)</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">order the results by a specific order: score,mushaf,tanzil</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">results</span><span class="p">,</span><span class="n">_</span> <span class="o">=</span><span class="n">QSE</span><span class="o">.</span><span class="n">search_all</span><span class="p">(</span><span class="s">u&quot;الله&quot;</span><span class="p">,</span><span class="n">sortby</span><span class="o">=</span><span class="s">&quot;mushaf&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">suggest the missed words in query</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">QSE</span><span class="o">.</span><span class="n">suggest_all</span><span class="p">(</span><span class="s">u&quot; عاصمو &quot;</span><span class="p">)</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+<span class="gp">&gt;&gt;&gt; </span>   <span class="k">print</span> <span class="n">key</span><span class="p">,</span> <span class="s">&quot;:&quot;</span><span class="p">,</span> <span class="s">&quot;,&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+<span class="go">عاصمو : عاصم</span>
+</pre></div>
+</div>
+</li>
+</ul>
+</dd>
+</dl>
+</div>
+<div class="section" id="advanced-search">
+<h3>Advanced Search<a class="headerlink" href="#advanced-search" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+use  the advanced queries to find exactly the results that you want</blockquote>
+<dl class="docutils">
+<dt>simple search                 </dt>
+<dd><div class="first last highlight-python"><pre>&gt;&gt;&gt; سماكم</pre>
+</div>
+</dd>
+<dt>derivation level 1</dt>
+<dd><div class="first last highlight-python"><pre>&gt;&gt;&gt; &gt;سماكم</pre>
+</div>
+</dd>
+<dt>derivation level 2            </dt>
+<dd><div class="first last highlight-python"><pre>&gt;&gt;&gt; &gt;&gt;سماكم</pre>
+</div>
+</dd>
+<dt>joker ?                       </dt>
+<dd><div class="first last highlight-python"><pre>&gt;&gt;&gt; ال؟لك</pre>
+</div>
+</dd>
+<dt>joker *                    </dt>
+<dd><div class="first last highlight-python"><pre>&gt;&gt;&gt; رسول * الله</pre>
+</div>
+</dd>
+<dt>phrase                     </dt>
+<dd><div class="first last highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="s">&quot;رب العالمين&quot;</span>
+</pre></div>
+</div>
+</dd>
+<dt>spell errors                 </dt>
+<dd><div class="first last highlight-python"><pre>&gt;&gt;&gt; %المأصدة</pre>
+</div>
+</dd>
+<dt>relation logic And        </dt>
+<dd><div class="first last highlight-python"><pre>&gt;&gt;&gt; الصلاة و الزكاة</pre>
+</div>
+</dd>
+<dt>relation logic AndNot     </dt>
+<dd><div class="first last highlight-python"><pre>&gt;&gt;&gt; الصلاة أو الزكاة</pre>
+</div>
+</dd>
+<dt>relation logic AndNot     </dt>
+<dd><div class="first last highlight-python"><pre>&gt;&gt;&gt; الصلاة وليس الزكاة</pre>
+</div>
+</dd>
+<dt>Synonyms                 </dt>
+<dd><div class="first last highlight-python"><pre>&gt;&gt;&gt; ~السعير</pre>
+</div>
+</dd>
+<dt>Antonyms                 </dt>
+<dd><div class="first last highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="c">#السعير</span>
+</pre></div>
+</div>
+</dd>
+<dt>fielded                 </dt>
+<dd><div class="first last highlight-python"><pre>&gt;&gt;&gt; سورة:الفاتحة </pre>
+</div>
+</dd>
+<dt>interval                 </dt>
+<dd><div class="first last highlight-python"><pre>&gt;&gt;&gt; رقم_السورة:[112 إلى 114]</pre>
+</div>
+</dd>
+<dt>vocalization</dt>
+<dd><div class="first last highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="s">&#39;المَلك&#39;</span>
+</pre></div>
+</div>
+</dd>
+<dt>word properties            </dt>
+<dd><div class="first last highlight-python"><pre>&gt;&gt;&gt; {ملك,فعل}</pre>
+</div>
+</dd>
+<dt>buckwalter</dt>
+<dd><div class="first last highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">fawoqa</span>
+</pre></div>
+</div>
+</dd>
+</dl>
+
+</div>
+</div>
+</div>
+<div class="section" id="indices-and-tables">
+<h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h1>
+<ul class="simple">
+<li><a class="reference external" href="genindex.html"><em>Index</em></a></li>
+<li><a class="reference external" href="modindex.html"><em>Module Index</em></a></li>
+<li><a class="reference external" href="search.html"><em>Search Page</em></a></li>
+</ul>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <h3><a href="">Table Of Contents</a></h3>
+            <ul>
+<li><a class="reference external" href="">Welcome to Alfanous&#8217;s documentation!</a><ul>
+<li><a class="reference external" href="#summary">Summary:</a></li>
+<li><a class="reference external" href="#features">Features:</a></li>
+<li><a class="reference external" href="#quick-start">Quick Start:</a><ul>
+<li><a class="reference external" href="#install">Install</a></li>
+<li><a class="reference external" href="#examples">Examples</a></li>
+<li><a class="reference external" href="#advanced-search">Advanced Search</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference external" href="#indices-and-tables">Indices and tables</a></li>
+</ul>
+
+            <h3>This Page</h3>
+            <ul class="this-page-menu">
+              <li><a href="_sources/index.txt"
+                     rel="nofollow">Show Source</a></li>
+            </ul>
+          <div id="searchbox" style="display: none">
+            <h3>Quick search</h3>
+              <form class="search" action="search.html" method="get">
+                <input type="text" name="q" size="18" />
+                <input type="submit" value="Go" />
+                <input type="hidden" name="check_keywords" value="yes" />
+                <input type="hidden" name="area" value="default" />
+              </form>
+              <p class="searchtip" style="font-size: 90%">
+              Enter search terms or a module, class or function name.
+              </p>
+          </div>
+          <script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="modindex.html" title="Global Module Index"
+             >modules</a> |</li>
+        <li><a href="">Alfanous v0.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+      &copy; Copyright 2010, Assem Chelli.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.3.
+    </div>
+  </body>
+</html>
