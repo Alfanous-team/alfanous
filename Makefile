@@ -10,7 +10,7 @@
  
 VERSION="4.0.13" 
 
-API_PATH="./"
+API_PATH="./src/"
 IMPORTER=$(API_PATH)"alfanous/Extensions/Importer/main.py"
 DYNAMIC_RESOURCES_PATH=$(API_PATH)"alfanous/dynamic_ressources/"
 STORE_PATH="./store/"
