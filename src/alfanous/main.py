@@ -178,6 +178,9 @@ if __name__ == '__main__':
         print "\n#extended search#"
         results = TSE.find_extended(u"gid:1 OR gid:2", defaultfield="gid")
         print "\n".join([str(result) for result in results])
+        
+        print "\n#list all translations id#"
+        print ",".join(TSE.list_values("id"))
     
 
 
