@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'UI/aboutDlg.ui'
 #
-# Created: Fri Jul 29 08:38:21 2011
+# Created: Fri Oct  7 23:28:07 2011
 #      by: PyQt4 UI code generator 4.7.2
 #
 # WARNING! All changes made in this file will be lost!

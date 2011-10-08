@@ -1,1 +1,1 @@
-#super of  the english GUI
+#arabic copy of  the english GUI

@@ -6,6 +6,8 @@ Created on 12 avr. 2010
 @author: Assem Chelli
 @contact: assem.ch[at]gmail.com
 
+
+@todo: use Alfanous-json to request results
 @todo: use Table grid for view , use CSS good schema instead
 @todo: complete all new Ui features
 @todo: relate to AboutDlg / PreferenceDlg
