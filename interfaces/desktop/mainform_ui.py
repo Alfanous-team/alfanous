@@ -2,18 +2,17 @@
 
 # Form implementation generated from reading ui file 'UI/mainform.ui'
 #
-# Created: Mon May 23 14:44:47 2011
+# Created: Fri Oct  7 23:28:09 2011
 #      by: PyQt4 UI code generator 4.7.2
 #
 # WARNING! All changes made in this file will be lost!
 
-
+LOCALPATH="./locale/"
 import gettext
 _=gettext.gettext
-gettext.bindtextdomain("alfanousQT","./locale/" )#LOCALPATH
+gettext.bindtextdomain("alfanousQT", LOCALPATH)
 gettext.textdomain("alfanousQT")
 from PyQt4 import QtCore, QtGui
-
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
@@ -696,7 +695,7 @@ class Ui_MainWindow(object):
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtGui.QMenuBar(MainWindow)
         self.menubar.setEnabled(True)
-        self.menubar.setGeometry(QtCore.QRect(0, 0, 1422, 27))
+        self.menubar.setGeometry(QtCore.QRect(0, 0, 1422, 25))
         self.menubar.setLayoutDirection(QtCore.Qt.LeftToRight)
         self.menubar.setDefaultUp(False)
         self.menubar.setObjectName("menubar")
@@ -779,7 +778,7 @@ class Ui_MainWindow(object):
         self.scrollArea.setWidgetResizable(True)
         self.scrollArea.setObjectName("scrollArea")
         self.scrollAreaWidgetContents = QtGui.QWidget(self.scrollArea)
-        self.scrollAreaWidgetContents.setGeometry(QtCore.QRect(0, -99, 345, 593))
+        self.scrollAreaWidgetContents.setGeometry(QtCore.QRect(0, 0, 255, 593))
         self.scrollAreaWidgetContents.setObjectName("scrollAreaWidgetContents")
         self.verticalLayout_5 = QtGui.QVBoxLayout(self.scrollAreaWidgetContents)
         self.verticalLayout_5.setObjectName("verticalLayout_5")
@@ -1086,7 +1085,7 @@ class Ui_MainWindow(object):
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.w_features.sizePolicy().hasHeightForWidth())
         self.w_features.setSizePolicy(sizePolicy)
-        self.w_features.setMinimumSize(QtCore.QSize(200, 341))
+        self.w_features.setMinimumSize(QtCore.QSize(200, 363))
         icon13 = QtGui.QIcon()
         icon13.addPixmap(QtGui.QPixmap(":/resources/editcut.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.w_features.setWindowIcon(icon13)
@@ -1108,7 +1107,7 @@ class Ui_MainWindow(object):
         self.toolBox.setLineWidth(0)
         self.toolBox.setObjectName("toolBox")
         self.page_2 = QtGui.QWidget()
-        self.page_2.setGeometry(QtCore.QRect(0, 0, 357, 451))
+        self.page_2.setGeometry(QtCore.QRect(0, 0, 360, 451))
         self.page_2.setObjectName("page_2")
         self.verticalLayout_7 = QtGui.QVBoxLayout(self.page_2)
         self.verticalLayout_7.setObjectName("verticalLayout_7")
@@ -1232,7 +1231,7 @@ class Ui_MainWindow(object):
         self.verticalLayout_7.addWidget(self.o_add2query_advanced)
         self.toolBox.addItem(self.page_2, "")
         self.page = QtGui.QWidget()
-        self.page.setGeometry(QtCore.QRect(0, 0, 357, 297))
+        self.page.setGeometry(QtCore.QRect(0, 0, 360, 297))
         self.page.setObjectName("page")
         self.verticalLayout_16 = QtGui.QVBoxLayout(self.page)
         self.verticalLayout_16.setObjectName("verticalLayout_16")
@@ -1366,7 +1365,7 @@ class Ui_MainWindow(object):
         self.verticalLayout_16.addItem(spacerItem14)
         self.toolBox.addItem(self.page, "")
         self.page_3 = QtGui.QWidget()
-        self.page_3.setGeometry(QtCore.QRect(0, 0, 357, 173))
+        self.page_3.setGeometry(QtCore.QRect(0, 0, 360, 173))
         self.page_3.setObjectName("page_3")
         self.verticalLayout_24 = QtGui.QVBoxLayout(self.page_3)
         self.verticalLayout_24.setObjectName("verticalLayout_24")
@@ -1441,7 +1440,7 @@ class Ui_MainWindow(object):
         self.verticalLayout_24.addItem(spacerItem15)
         self.toolBox.addItem(self.page_3, "")
         self.p_subject = QtGui.QWidget()
-        self.p_subject.setGeometry(QtCore.QRect(0, 0, 357, 202))
+        self.p_subject.setGeometry(QtCore.QRect(0, 0, 360, 202))
         self.p_subject.setObjectName("p_subject")
         self.verticalLayout_4 = QtGui.QVBoxLayout(self.p_subject)
         self.verticalLayout_4.setObjectName("verticalLayout_4")
@@ -1552,7 +1551,7 @@ class Ui_MainWindow(object):
         self.verticalLayout_4.addItem(spacerItem16)
         self.toolBox.addItem(self.p_subject, "")
         self.p_struct = QtGui.QWidget()
-        self.p_struct.setGeometry(QtCore.QRect(0, 0, 357, 206))
+        self.p_struct.setGeometry(QtCore.QRect(0, 0, 360, 206))
         self.p_struct.setObjectName("p_struct")
         self.verticalLayout_18 = QtGui.QVBoxLayout(self.p_struct)
         self.verticalLayout_18.setObjectName("verticalLayout_18")
@@ -1654,7 +1653,7 @@ class Ui_MainWindow(object):
         self.verticalLayout_18.addItem(spacerItem17)
         self.toolBox.addItem(self.p_struct, "")
         self.p_stat = QtGui.QWidget()
-        self.p_stat.setGeometry(QtCore.QRect(0, 0, 357, 237))
+        self.p_stat.setGeometry(QtCore.QRect(0, 0, 360, 237))
         self.p_stat.setObjectName("p_stat")
         self.verticalLayout_19 = QtGui.QVBoxLayout(self.p_stat)
         self.verticalLayout_19.setObjectName("verticalLayout_19")
@@ -1763,8 +1762,12 @@ class Ui_MainWindow(object):
         spacerItem18 = QtGui.QSpacerItem(20, 40, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
         self.verticalLayout_19.addItem(spacerItem18)
         self.toolBox.addItem(self.p_stat, "")
+        self.p_predefined = QtGui.QWidget()
+        self.p_predefined.setGeometry(QtCore.QRect(0, 0, 375, 90))
+        self.p_predefined.setObjectName("p_predefined")
+        self.toolBox.addItem(self.p_predefined, "")
         self.p_misc = QtGui.QWidget()
-        self.p_misc.setGeometry(QtCore.QRect(0, 0, 357, 233))
+        self.p_misc.setGeometry(QtCore.QRect(0, 0, 360, 233))
         self.p_misc.setObjectName("p_misc")
         self.verticalLayout_20 = QtGui.QVBoxLayout(self.p_misc)
         self.verticalLayout_20.setObjectName("verticalLayout_20")
@@ -2491,6 +2494,7 @@ class Ui_MainWindow(object):
         self.o_relation_stat.setItemText(4, QtGui.QApplication.translate("MainWindow",_( "(ANDNOT)"), None, QtGui.QApplication.UnicodeUTF8))
         self.o_add2query_stat.setText(QtGui.QApplication.translate("MainWindow",_( "Add to SearchBar"), None, QtGui.QApplication.UnicodeUTF8))
         self.toolBox.setItemText(self.toolBox.indexOf(self.p_stat), QtGui.QApplication.translate("MainWindow",_( "Statistic Search"), None, QtGui.QApplication.UnicodeUTF8))
+        self.toolBox.setItemText(self.toolBox.indexOf(self.p_predefined), QtGui.QApplication.translate("MainWindow",_( "Predefined Queries"), None, QtGui.QApplication.UnicodeUTF8))
         self.label_25.setText(QtGui.QApplication.translate("MainWindow",_( "Sura"), None, QtGui.QApplication.UnicodeUTF8))
         self.o_sura_name.setItemText(0, QtGui.QApplication.translate("MainWindow",_( "None"), None, QtGui.QApplication.UnicodeUTF8))
         self.label_26.setText(QtGui.QApplication.translate("MainWindow",_( "Revelation place "), None, QtGui.QApplication.UnicodeUTF8))
