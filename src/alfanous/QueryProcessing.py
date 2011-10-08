@@ -19,7 +19,7 @@
 '''
 it contains specified query parsers , some linguistic operations 
 
-@author: assem chelli
+@author: Assem Chelli
 @contact: assem.ch [at] gmail.com
 @license: AGPL
 
