@@ -73,10 +73,10 @@ def miniShell():
 if __name__ == '__main__':
     print "system is : ", SYS, " &language is :", LOC
     #Assem testing gettext
-    print _(u"hello,i love you Python")
+    print _(u"hello,i love Python")
     print _(u"سلام")
     print n_(u"man", u"men", 5)
-    miniShell()
+    #miniShell()   
     
 
 
