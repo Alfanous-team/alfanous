@@ -1,109 +1,78 @@
+﻿
 
-<div dir="rtl" align="right">
 
 <?php
+
+  ##to do
+  #encoding queries before sending-recieving
+  #suggestionq : هل تقصد؟ كلمة
+  # costumiser pour chaque messenger
+  # write documentation on the wiki
+  # hide/show optional information 
+  
+    
+$message="";
+if ( isset($_REQUEST['msg'])) $message=rawurlencode($_REQUEST['msg']);
+
+$user="أخي";
+if ( isset($_REQUEST['user'])) $user=$_REQUEST['user'];
+
 
 if ($_REQUEST['step']==1)
 {
 
-echo " <br/>  السلام عليكم ".$_REQUEST['user']."<br/><br/>";
-?>
-<br/>
-الفانوس هو مشروع محرّك بحث قرآني يوفر للمستخدمين خدمات البحث البسيط و المتقدم في المعلومات المتنوّعة التي يزخر بها القرآن الكريم
- <br/>
-هذا الروبوت هو واجهة لابراز مزايا البحث في القرآن الموجودة في  الفانوس و لم يتسنى التدقيق لجميع البيانات كالمعلومات الاحصائية...في حالة اكتشفت أخطاءا اتصل بنا 
-<br/><br/>
-اكتب "مساعدة" لمشاهدة نص المساعدة
-<br/>
-اكتب "فريق"  لمشاهدة فريق تطوير الروبوت
-
-
-<br/>
-
-<br>
-
-
-
-<?php
-
-$message="no msg";
-if ($_REQUEST['msg']) $message=$_REQUEST['msg'];
-
-$user="anonymos";
-if ($_REQUEST['user']) $user=$_REQUEST['user'];
-
-mail( "assem.ch@gmail.com", "Subject:alfanous",$message, "From: ".$user );
+echo "Salam ".$user."!";
+#mail( "assem.ch@gmail.com", "Subject:Chatty",$message, "From: ".$user."@chatty.alfanous.org" );
 }
 
-
-
-
-if ($_REQUEST['msg'])
+if (isset($_REQUEST['msg']))
 {
 
-if ($_REQUEST['msg']=="مساعدة")
+
+echo $message;
+
+
+$json=file_get_contents("http://www.alfanous.org/json?search=".$message."&highlight=bold");
+
+$results=json_decode($json);
+# Formatting the results to show
+echo "words (".$results->{'words'}->{'global'}->{'nb_words'}."words in ".$results->{'words'}->{'global'}->{'nb_matches'}."times )";
+echo "<br/>";
+$cpt = 1;
+while ($cpt <= $results->{'words'}->{'global'}->{'nb_words'})
 {
-?>
-<b>مساعدة</b><br/>
-<table>
-<th colspan="2">أمثلة عن البحث المتقدم:</th>
-<tr>
-<th>البحث بالجملة </th><td>" رب العالمين"</td>
-</tr>
-
-<tr>
-<th> العبارات المنطقية</th><td>الصلاة وليس الزكاة</td>
-</tr>
-<tr>
-<th> المترادفات</th><td>~السعير</td>
-</tr>
-<tr>
-<th> العبارات النمطية</th><td>*نبي*</td>
-</tr>
-<tr>
-<th>الحقول </th><td>سورة:يس</td>
-</tr>
-<tr>
-<th>  المجالات و الحقول </th><td>رقم_السورة:[1 الى 5] و الله</td>
-</tr>
- <tr>
-<th>ثنائية جذر،نوع</th><td>{قول,اسم}</td>
-</tr>
-<tr>
-<th>البحث بالاشتقاق</th><td> >>ملك </td>
-</tr>
-</table>
-
-<?php
+    echo $cpt.".".$results->{'words'}->{$cpt}->{'word'}.":".$results->{'words'}->{$cpt}->{'nb_matches'}." times ".$results->{'words'}->{$cpt}->{'nb_ayas'}." verses "."<br/>";
+    $cpt++;
 }
-
-elseif ($_REQUEST['msg']=="فريق")
-{
-?>
-<b>فريق تطوير الروبوت</b><br/>
-عاصم شلي (Assem Chelli)
-																     <br/> Assem.ch@gmail.com
-<br/>
-
-<?php
-}
-else 
-{
-
-echo "<b>"."عبارة البحث: "."</b>".urldecode($_REQUEST['msg'])." ـ ";
+echo "<br/> <br/>";
+echo "Results (:".$results->{'interval'}->{'start'}." to ".$results->{'interval'}->{'end'}." of ".$results->{'interval'}->{'total'}.")"; 
 
 echo "<br>";
-virtual("/cgi-bin/alfanous-web.py?search_bot=".$_REQUEST['msg']);
-echo "<br/>";
-}
+echo"<br/>"; 
+$cpt = 1;
+$limit = $results->{'interval'}->{'total'};
+if ($results->{'interval'}->{'total'} > 10 ) $limit=10;
+while ($cpt <= $limit)
+    {
+       echo "$cpt -> (".$results->{'ayas'}->{$cpt}->{'sura'}->{'name'}.$results->{'ayas'}->{$cpt}->{'aya'}->{'id'}.")"."<br/>";
+       echo "{ ".$results->{'ayas'}->{$cpt}->{'aya'}->{'text'} .  "}"."<br/>";
+       echo " words ".$results->{'ayas'}->{$cpt}->{'stat'}->{'words'}."\\".$results->{'ayas'}->{$cpt}->{'sura'}->{'stat'}->{'words'}." - ";
+       echo " letters ".$results->{'ayas'}->{$cpt}->{'stat'}->{'letters'}."\\".$results->{'ayas'}->{$cpt}->{'sura'}->{'stat'}->{'letters'}." - ";
+       echo " Godnames ".$results->{'ayas'}->{$cpt}->{'stat'}->{'godnames'}."\\".$results->{'ayas'}->{$cpt}->{'sura'}->{'stat'}->{'godnames'}."
+       <br/> ";
+       echo " Hizb ".$results->{'ayas'}->{$cpt}->{'position'}->{'hizb'}."-";
+       echo " Page ".$results->{'ayas'}->{$cpt}->{'position'}->{'page'}."<br/>";
+       $cpt++ ;
+     echo"<br/>";
+    }
+
+
+
 }
 ?>
-<br/>
-<br/>
-الفانوس - محرك بحث قرآني (alfanous.sf.net)
-<br/>
-نسخة تجريبية (قيد التطوير)
-<br/>
 
-</div>
+<br/>
+<b> for more results/details follow</b>
+<b><a href="http://alfanous.org/?search=<?=$message ?>">  the link </a></b>
 
+</div> 
