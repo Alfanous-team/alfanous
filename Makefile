@@ -119,15 +119,18 @@ help_api:
 help:
 	@echo "Todo : Manual documentation using sphinx"
 	
-## Qt forms ,dialogs and resources compilation
-qt_all:	pyqt qt_uic qt_rcc
+## Qt forms ,dialogs and resources compilation  
+# PyQt is needed  
+# apt-get install pyqt4-dev-tools  pyqt-tools  
+
+qt_all:	 qt_uic qt_rcc
 	
 qt_uic:
 	
 	cd ./interfaces/desktop ; pyuic4  -o aboutDlg_ui.py UI/aboutDlg.ui
 	cd ./interfaces/desktop ; pyuic4  -o preferencesDlg_ui.py UI/preferencesDlg.ui
 	cd ./interfaces/desktop ; pyuic4  -o temp.py UI/mainform.ui #-x
-	sed 's/\"MainWindow\"\,/\"MainWindow\"\,\_(/g' temp.py | sed 's/\, None\,/\)\, None\,/g'| sed 's/from PyQt4/from paths import LOCALPATH\nimport gettext\n\_\=gettext\.gettext\ngettext\.bindtextdomain\(\"alfanousQT\"\, LOCALPATH\)\ngettext\.textdomain\(\"alfanousQT\"\)\nfrom PyQt4/g'    >mainform_ui.py 
+	cd ./interfaces/desktop ; sed 's/\"MainWindow\"\,/\"MainWindow\"\,\_(/g' temp.py | sed 's/\, None\,/\)\, None\,/g'| sed 's/from PyQt4/LOCALPATH="\.\/locale\/"\nimport gettext\n\_\=gettext\.gettext\ngettext\.bindtextdomain\(\"alfanousQT\"\, LOCALPATH\)\ngettext\.textdomain\(\"alfanousQT\"\)\nfrom PyQt4/g'    >mainform_ui.py 
 
 qt_rcc:
 	pyrcc4 ./resources/images/main.qrc -o ./interfaces/desktop/main_rc.py
@@ -180,13 +183,14 @@ install_desktop: install_index  install_api qt_all
 	cp ./resources/launchers/alfanous.desktop /usr/share/applications/
 	cp ./resources/AlFanous.png  /usr/share/pixmaps/
 	cp ./resources/fonts/* /usr/share/fonts/
-	rm -r 	$(CONFIG_INSTALL_PATH) ; mkdir -p $(CONFIG_INSTALL_PATH)
+	rm -r 	$(CONFIG_INSTALL_PATH) ; mkdir -p $(CONFIG_INSTALL_PATH); chmod 777  $(CONFIG_INSTALL_PATH)
 	#test installation
 	#alfanousDesktop
 	
 	
-install_web: apache2 
+install_web: 
 	#update the indexes and the API if possible 
+	# Apache2 needed : apt-get install apache2
 	#
 	##use always a local copy in the same folder, to make it simple for installation in shared servers
 	#copy_files 
@@ -200,6 +204,8 @@ install_web: apache2
 	a2ensite alfanous
 	#reload apache
 	/etc/init.d/apache2 reload
+	# change  DNS !?
+	
 	#test installation
 	#firefox 127.0.0.1 &
 	
@@ -266,11 +272,6 @@ tarball_data:
 
 
 #dependencies
-apache2:
-	apt-get install apache2
-	
-pyqt:
-	apt-get install pyqt4-dev-tools  pyqt-tools  
 	
 python2.5:
 	apt-get install python2.5
