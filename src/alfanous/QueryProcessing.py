@@ -23,13 +23,11 @@ it contains specified query parsers , some linguistic operations
 @contact: assem.ch [at] gmail.com
 @license: AGPL
 
-
-
 @todo: Buckwalter/Other codings Search  {bw!  kutubo }
 @todo: Upgrading Tuple Search to Embeded Query Search  {1! word="foo"}
 @todo: Smart-search : take the optimal choice with NLP!
 @todo: Synonyme-Antonyme Upgrade to related search {syn!  fire }
-
+@bug: multifields 
 '''
 
 from Support.whoosh.qparser import MultifieldParser, QueryParser
@@ -188,16 +186,16 @@ def _make_arabic_parser():
 ARABIC_PARSER_FN = _make_arabic_parser()
     
     
-class StandardParser(QueryParser):
-    def __init__(self, schema,mainfield,termclass=Term):
-        super(StandardParser, self).__init__(mainfield, schema=schema, conjunction=And, termclass=termclass)
+class StandardParser(QueryParser):#
+    def __init__(self, schema,mainfield,otherfields,termclass=Term):
+        super(StandardParser, self).__init__(mainfield,schema=schema, conjunction=Or, termclass=termclass)
         
-       
-    
+
+
 class ArabicParser(StandardParser):
         """a costumizable parser for Arabic proprieties"""
-        def __init__(self, schema,mainfield,termclass=Term, ara2eng=ara2eng_names):
-            super(ArabicParser, self).__init__(schema=schema,mainfield=mainfield,termclass=termclass)
+        def __init__(self, schema,mainfield,otherfields=[],termclass=Term, ara2eng=ara2eng_names):
+            super(ArabicParser, self).__init__(schema=schema,mainfield=mainfield,otherfields=otherfields,termclass=termclass)
             self.parser = ARABIC_PARSER_FN
             self.ara2eng = ara2eng
        
@@ -253,7 +251,8 @@ class ArabicParser(StandardParser):
             return self.Tuple(fieldname, items)
         
         def make_wildcard(self, fieldname, text):
-            field = self._field(fieldname)
+            
+            field = self._field(fieldname) if fieldname else None
             if field:
                 text = self.get_term_text(field, text, tokenize=False,removestops=False)
         
@@ -483,9 +482,9 @@ class ArabicParser(StandardParser):
 
 
 class QuranicParser(ArabicParser):
-        """a costumizable parser for Arabic proprieties"""
-        def __init__(self, schema,mainfield="aya",termclass=Term,ara2eng=ara2eng_names):
-            super(QuranicParser, self).__init__(schema=schema,mainfield=mainfield,termclass=termclass)
+        """a costumizable parser for Quranic proprieties"""
+        def __init__(self, schema,mainfield="aya",otherfields=[],termclass=Term,ara2eng=ara2eng_names):
+            super(QuranicParser, self).__init__(schema=schema,mainfield=mainfield,otherfields=otherfields,termclass=termclass)
          
         class FuzzyAll(ArabicParser.FuzzyAll):
             """ specific for quran    """
@@ -664,10 +663,62 @@ class QuranicParser(ArabicParser):
                     self.words.append(t)
                     yield t
                     
-                    
+                 
+                 
+class SuperFuzzyAll(QuranicParser.FuzzyAll):
+            """ specific for quran   
+            search with all possible forms of the  word
+          
+             """
+                   
+            def pipeline(self,fieldname,text):
+                words=set()
+                words|=set(QuranicParser.Synonyms(fieldname,text).words)
+                words|=set(QuranicParser.Derivation(fieldname,text,level=2).words)
+                if len(words)==1:
+                    wildcarded_text=" ".join(map(lambda x: "*"+x+"*",text.split(" ")))
+                    words|=set(QuranicParser.Wildcard(fieldname,wildcarded_text).words)
+                
+                return list(words)   
 
+
+class FuzzyQuranicParser(QuranicParser):
+    """a costumizable parser for Quranic proprieties  ++ search non exact"""
+    def __init__(self, schema,mainfield="aya",otherfields=[], termclass=SuperFuzzyAll,ara2eng=ara2eng_names):
+        super(FuzzyQuranicParser, self).__init__(schema=schema,mainfield=mainfield,otherfields=otherfields,termclass=termclass)
+        
+        self.fieldnames = [mainfield]+otherfields
+        
+
+    def _make(self, methodname, fieldname, *args):
+        method = getattr(super(FuzzyQuranicParser, self), methodname)
+        if fieldname is None:
+            return Or([method(fn, *args) for fn in self.fieldnames])
+        else:
+            return method(fieldname, *args)
             
+
+    def make_term(self, fieldname, text):
+        print ">>3#"
+        return self._make("make_term", fieldname, text)
+
+    def make_range(self, fieldname, start, end, startexcl, endexcl):
+        print ">>4#"
+        return self._make("make_range", fieldname, start, end,
+                          startexcl, endexcl)
+
+    def make_wildcard(self, fieldname, text):
+        return self._make("make_wildcard", fieldname, text)
+
+    def make_phrase(self, fieldname, text):
+        return self._make("make_phrase", fieldname, text)
+
+
+
+        
+        
             
+
         
         
 if __name__ == "__main__": 
@@ -687,7 +738,7 @@ if __name__ == "__main__":
     
 
     D = QseDocIndex()
-    QP = QuranicParser(D.get_schema())
+    QP = FuzzyQuranicParser(D.get_schema(),otherfields=['subject'])
     print QP.parse(u"'لو كان البحر '")
     print QP.parse(u"\"عاصم\"")
     print QP.parse(u"[1 الى 3]")
