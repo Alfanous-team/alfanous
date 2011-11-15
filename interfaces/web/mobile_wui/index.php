@@ -6,9 +6,14 @@ header("Content-Language: ar");
 header("Cache-Control: max-age=3600, must-revalidate");
 header("Last-Modified: Mon, 13 Oct 2011 00:00:00 GMT");
 
-$search=$_GET["search"];
-if ($search == "") $search = "الحمد";
-$page=$_GET["page"];
+if (count($_GET)<2) {
+		$search = "الحمد";
+		$page=1;
+	}
+	else {
+		$search=$_GET["search"];
+		$page=$_GET["page"];
+	}
 
 $sortedby="mushaf";
 $recitation="Mishary Rashid Alafasy";
