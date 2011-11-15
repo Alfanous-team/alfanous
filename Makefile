@@ -147,7 +147,7 @@ local_mo_download:
 	#wget ; mv to /localization/locale
 ##
 
-build_all:  index_all transfer_all speller_all qt_all local_mo_download
+build_all:  local_mo_download qt_all #index_all transfer_all speller_all
 	@echo "todo"
 	
 	
