@@ -11,9 +11,13 @@ header("Cache-Control: max-age=3600, must-revalidate");
 header("Last-Modified: Mon, 13 Oct 2011 00:00:00 GMT");
 
 # Check GET parameters
-if (count($_GET)<2) {
+if (count($_GET)<1) {
 		# test
 		$search = "الحمد";
+		$page=1;
+	}
+	elseif (count($_GET)<2) {
+		$search=$_GET["search"];
 		$page=1;
 	}
 	else {
