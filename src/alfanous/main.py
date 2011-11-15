@@ -22,7 +22,6 @@
 @license: AGPL
 
 
-
 @todo: use optparse to organise this script as a console command
 @todo: Upgrading to last whoosh 
 @todo: Dynamic fields
@@ -35,7 +34,7 @@ from Searching import QSearcher, QReader
 from Indexing import QseDocIndex, ExtDocIndex
 
 from ResultsProcessing import Qhighlight, QPaginate, QFilter
-from QueryProcessing import QuranicParser,StandardParser,ArabicParser
+from QueryProcessing import QuranicParser,StandardParser,ArabicParser,FuzzyQuranicParser
 from Suggestions import QSuggester,QAyaSpellChecker,QSubjectSpellChecker,concat_suggestions
 
 
@@ -46,7 +45,7 @@ class BasicSearchEngine:
     the basic search engine
 
     """
-    def __init__(self,qdocindex,qparser,mainfield,qsearcher,qreader,qspellcheckers,qhighlight):
+    def __init__(self,qdocindex,qparser,mainfield,otherfields,qsearcher,qreader,qspellcheckers,qhighlight):
        
         self.OK=False
         if qdocindex.OK: 
@@ -54,7 +53,7 @@ class BasicSearchEngine:
             #
             self._schema = self._docindex.get_schema()
             #        
-            self._parser = qparser(self._schema,mainfield)
+            self._parser = qparser(self._schema,mainfield=mainfield,otherfields=otherfields)
             #
             self._searcher = qsearcher(self._docindex, self._parser)
             #
@@ -131,11 +130,22 @@ class BasicSearchEngine:
     
 
 
-
 def QuranicSearchEngine(indexpath="../indexes/main/",qparser=QuranicParser):
     return BasicSearchEngine(qdocindex=QseDocIndex(indexpath)
                             ,qparser=qparser#termclass=QuranicParser.FuzzyAll
                             ,mainfield="aya"
+                            ,otherfields=[]
+                            ,qsearcher=QSearcher
+                            ,qreader=QReader
+                            ,qspellcheckers=[QAyaSpellChecker,QSubjectSpellChecker]
+                            ,qhighlight=Qhighlight  
+                            )
+    
+def FuzzyQuranicSearchEngine(indexpath="../indexes/main/",qparser=FuzzyQuranicParser):
+    return BasicSearchEngine(qdocindex=QseDocIndex(indexpath)
+                            ,qparser=qparser#termclass=QuranicParser.FuzzyAll
+                            ,mainfield="aya"
+                            ,otherfields=["subject",]
                             ,qsearcher=QSearcher
                             ,qreader=QReader
                             ,qspellcheckers=[QAyaSpellChecker,QSubjectSpellChecker]
@@ -148,6 +158,7 @@ def TraductionSearchEngine(indexpath="../indexes/extend/",qparser=StandardParser
     return BasicSearchEngine(qdocindex=ExtDocIndex(indexpath )
                             ,qparser=qparser
                             ,mainfield="text"
+                            ,otherfields=[]
                             ,qsearcher=QSearcher
                             ,qreader=QReader
                             ,qspellcheckers=[]
@@ -157,8 +168,8 @@ def TraductionSearchEngine(indexpath="../indexes/extend/",qparser=StandardParser
     
 
 if __name__ == '__main__':
-    QSE = QuranicSearchEngine("../indexes/main/")
-    
+    QSE = QuranicSearchEngine("../indexes/main/") 
+    FQSE = FuzzyQuranicSearchEngine("../indexes/main/") 
     TSE = TraductionSearchEngine("../indexes/extend/")
     
     if QSE.OK:
@@ -184,7 +195,7 @@ if __name__ == '__main__':
     
 
 
-    string1 = "   رب "
+    string1 = "  الجنة"
     # %المأصدة
     # لله
     # ال*لك
@@ -210,7 +221,7 @@ if __name__ == '__main__':
         for key, value in QSE.suggest_all(string1).items():
             print key, ":", ",".join(value)
         print "\n#search#"   
-        res, terms = QSE.search_all(string1, limit=6236, sortedby="score",reverse=True)
+        res, terms = FQSE.search_all(string1, limit=6236, sortedby="score",reverse=True)
         
 
         #for key,freq in res.key_terms("aya", docs=1, numterms=15000): print key,"(",freq,"),",
