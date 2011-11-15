@@ -54,6 +54,7 @@ from alfanous.main import *
 from alfanous.dynamic_ressources.arabicnames_dyn import ara2eng_names as Fields
 
 
+
 import gettext;
 gettext.bindtextdomain("alfanous", "./locale");
 gettext.textdomain("alfanous");
@@ -62,8 +63,7 @@ n_ = gettext.ngettext
 
 
 
-QSE = QuranicSearchEngine("./indexes/main/")
-TSE=TraductionSearchEngine("./indexes/extend/")
+
 
 aratable = {"sura":u"السورة", "aya_id":u"الآية", "aya":u"نص الآية"}
 ara = lambda key:aratable[key] if aratable.has_key(key) else key
@@ -243,23 +243,42 @@ def about():
 			"version": "0.1",
 			"author": "Assem chelli", 
 			"contact": "assem.ch@gmail.com"	,
-			"wiki"	: "http://wiki.alfanous.org/doku.php?id=json_web_service"		
+			"wiki"	: "http://wiki.alfanous.org/doku.php?id=json_web_service",	
+            "visits4search":visits4search()	
 						
 			}
             )
 
 def salam():
-    print unicode(json.dumps([u"عاصم"].decode("utf-8") ));
+    print unicode(json.dumps([u"سلام"].decode("utf-8") ));
 			
 			
+def visits4search():
+    f=open("visits.cpt","r+")
+    cpt=int(f.readline())
+    cpt+=1
+    f=open("visits.cpt","w+")
+    f.write(str(cpt))
+    return cpt
+
+
+
+    
 
 
 
 
 
 
+if form.has_key("fsearch"):
+    QSE = FuzzyQuranicSearchEngine("./indexes/main/")
+else:
+    QSE = QuranicSearchEngine("./indexes/main/")
 
+TSE=TraductionSearchEngine("./indexes/extend/")
 	
+
+
 
 if form.has_key("suggest"):
     print "Content-Type: application/json; charset=utf-8" 
@@ -277,6 +296,8 @@ elif  form.has_key("search"):
     print 'Access-Control-Allow-Methods: GET'
     print 
 
+    visits4search()
+    
     if form.has_key("sortedby"):
         sortedby = form["sortedby"][0]
     else: sortedby = "score"
