@@ -40,7 +40,7 @@ import cgi,cgitb,sys,urllib,re,json
 from sys import path
 from os import chdir,curdir,environ
 
-cgitb.enable()
+#cgitb.enable()
 form = cgi.FormContentDict()
 
 
@@ -270,11 +270,8 @@ def visits4search():
 
 
 
-if form.has_key("fsearch"):
-    QSE = FuzzyQuranicSearchEngine("./indexes/main/")
-else:
-    QSE = QuranicSearchEngine("./indexes/main/")
 
+QSE = QuranicSearchEngine("./indexes/main/")   
 TSE=TraductionSearchEngine("./indexes/extend/")
 	
 
@@ -289,7 +286,7 @@ if form.has_key("suggest"):
 
     print suggest(form["suggest"][0])	
 
-elif  form.has_key("search"):
+elif  form.has_key("search") :
     print "Content-Type: application/json; charset=utf-8" 
     #Allow cross domain XHR
     print 'Access-Control-Allow-Origin: *'
@@ -314,6 +311,7 @@ elif  form.has_key("search"):
     if form.has_key("translation"):
         translation = form["translation"][0]
     else: translation = "None"
+
     print results(form["search"][0], sortedby=sortedby, highlight=highlight, recitation=recitation,page=page,translation=translation)
 
 elif form.has_key("list"):
