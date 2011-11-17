@@ -131,6 +131,10 @@ text-align: center;
 
 .aya_details {
 }
+
+.align-left {
+	text-align: left;
+}
 </style>
 ');
 
@@ -202,6 +206,12 @@ print($results);
 print($results_pages);
 
 print($search_form);
+}
+else {
+print('
+<hr />
+<p class="align-left" dir="ltr">Alfanous is a Quranic search engine offers simple and advanced search services in the whole information that Holy Qur’an contains. it is based on the modern approach of information retrieval to get a good-stability and a high-speed search. We want implement some additional features like Highlight, Suggestions, Scoring …etc.</p>
+');
 };
 
 # Close body
