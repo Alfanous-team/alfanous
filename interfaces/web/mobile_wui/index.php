@@ -12,17 +12,17 @@ header("Last-Modified: Mon, 13 Oct 2011 00:00:00 GMT");
 
 # Check GET parameters
 if (count($_GET)<1) {
-		# test
-		$search = "الحمد";
-		$page=1;
+		$show_result=False;
 	}
 	elseif (count($_GET)<2) {
 		$search=$_GET["search"];
 		$page=1;
+		$show_result=True;
 	}
 	else {
 		$search=$_GET["search"];
 		$page=$_GET["page"];
+		$show_result=True;
 	}
 
 # Hidden parameters
@@ -76,7 +76,6 @@ text-align: center;
 /* form */
 #search_form {
 	background-color: #FFF;
-	border-bottom: 1px solid #00F;
 }
 
 #search_form img {
@@ -98,7 +97,8 @@ text-align: center;
 }
 
 .pages {
-	border-bottom: 1px solid #000;
+	border-bottom: 1px solid #00F;
+	border-top: 1px solid #00F;
 }
 
 /* result */
@@ -138,7 +138,9 @@ text-align: center;
 print('
 </head>
 <body dir="rtl">
+');
 
+$search_form='
 	<form id="form" method="get" action="index.php">
 		<div id="search_form">
 			<img src="icon.gif" width="32" height="32" alt="logo" />
@@ -147,7 +149,11 @@ print('
 			<input id="submit" type="submit" value="بحث" />
 		</div>
 	</form>
-');
+';
+
+print($search_form);
+
+if ($show_result) {
 
 # Pages control
 $nb_pages = floor(($json->interval->total- 1) / 10)+ 1;
@@ -191,6 +197,12 @@ for( $i = $json->interval->start; $i <= $json->interval->end; $i++) {
 };
 $results .= "</div>";
 print($results);
+
+# Pages control again
+print($results_pages);
+
+print($search_form);
+};
 
 # Close body
 print('
