@@ -160,7 +160,7 @@ $search_form='
 
 printf($search_form,1);
 
-if ($show_result) {
+if ($show_result and $json) {
 
 # Pages control
 $nb_pages = floor(($json->interval->total- 1) / 10)+ 1;
@@ -209,6 +209,12 @@ print($results);
 print($results_pages);
 
 printf($search_form,2);
+}
+elseif (!$json) {
+print('
+<hr />
+<p class="align-left" dir="ltr">Oops, Nothing found.</p>
+');
 }
 else {
 print('
