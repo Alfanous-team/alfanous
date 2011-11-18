@@ -31,7 +31,7 @@ $sortedby="mushaf";
 $recitation="Mishary Rashid Alafasy";
 $translation="None";
 $highlight="css";
-$fuzzy="ok";
+#$fuzzy="yes";
 
 # Encode JSON query URL
 $query_site = "http://www.alfanous.org/json?";
@@ -40,8 +40,8 @@ $query_page = "&page=" . urlencode($page);
 $query_string =  "&sortedby=" . urlencode($sortedby)
 	. "&recitation=" . urlencode($recitation)
 	. "&translation=" . urlencode($translation)
-	. "&highlight=" . urlencode($highlight)
-	. "&fuzzy=" . urlencode($fuzzy);
+	. "&highlight=" . urlencode($highlight);
+	#. "&fuzzy=" . urlencode($fuzzy);
 
 # JSON query
 $handle = fopen($query_site . $query_search . $query_page . $query_string, "rb");
@@ -212,7 +212,7 @@ print($results_pages);
 
 printf($search_form,2);
 }
-elseif ($show_result and !$json) {
+elseif ($show_result and !$json and $search) {
 print('
 <hr />
 <p class="align-left" dir="ltr">Oops, Nothing found.</p>
