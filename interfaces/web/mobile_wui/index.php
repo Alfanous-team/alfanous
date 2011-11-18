@@ -24,6 +24,7 @@ if (count($_GET)<1) {
 		$page=$_GET["page"];
 		$show_result=True;
 	}
+if ($show_result) {
 
 # Hidden parameters
 $sortedby="mushaf";
@@ -48,6 +49,8 @@ fclose($handle);
 $json = json_decode($contents);
 # test
 #var_dump($json);
+
+};
 
 # XHTML header
 print('
@@ -74,25 +77,25 @@ text-align: center;
 }
 
 /* form */
-#search_form {
+.search_form {
 	background-color: #FFF;
 }
 
-#search_form img {
+.search_form img {
 	vertical-align: middle;
 	margin: 3px 0px 3px 0px;
 }
 
-#search_form span {
+.search_form span {
 	font-weight: bold;
 	vertical-align: middle;
 }
 
-#search_box {
+.search_box {
 	vertical-align: middle;
 }
 
-#submit {
+.submit {
 	vertical-align: middle;
 }
 
@@ -145,17 +148,17 @@ print('
 ');
 
 $search_form='
-	<form id="form" method="get" action="index.php">
-		<div id="search_form">
+	<form id="form_%1$s" class="form" method="get" action="index.php">
+		<div id="search_form_%1$s" class="search_form">
 			<img src="icon.gif" width="32" height="32" alt="logo" />
 			<span>الفانوس</span>
-			<input id="search_box" type="text" name="search" title="search" inputmode="arabic" />
-			<input id="submit" type="submit" value="بحث" />
+			<input id="search_box_%1$s" class="search_box" type="text" name="search" title="search" inputmode="arabic" />
+			<input id="submit_%1$s" class="submit" type="submit" value="بحث" />
 		</div>
 	</form>
 ';
 
-print($search_form);
+printf($search_form,1);
 
 if ($show_result) {
 
@@ -205,7 +208,7 @@ print($results);
 # Pages control again
 print($results_pages);
 
-print($search_form);
+printf($search_form,2);
 }
 else {
 print('
