@@ -31,6 +31,7 @@ $sortedby="mushaf";
 $recitation="Mishary Rashid Alafasy";
 $translation="None";
 $highlight="css";
+$fuzzy="ok";
 
 # Encode JSON query URL
 $query_site = "http://www.alfanous.org/json?";
@@ -39,7 +40,8 @@ $query_page = "&page=" . urlencode($page);
 $query_string =  "&sortedby=" . urlencode($sortedby)
 	. "&recitation=" . urlencode($recitation)
 	. "&translation=" . urlencode($translation)
-	. "&highlight=" . urlencode($highlight);
+	. "&highlight=" . urlencode($highlight)
+	. "&fuzzy=" . urlencode($fuzzy);
 
 # JSON query
 $handle = fopen($query_site . $query_search . $query_page . $query_string, "rb");
