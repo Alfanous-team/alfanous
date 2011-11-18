@@ -212,7 +212,7 @@ print($results_pages);
 
 printf($search_form,2);
 }
-elseif (!$json) {
+elseif ($show_result and !$json) {
 print('
 <hr />
 <p class="align-left" dir="ltr">Oops, Nothing found.</p>
