@@ -1,0 +1,22 @@
+alfanous (0.4.30) unstable; urgency=low
+
+  * Minor bugfix releases:
+
+    o "unknown property dir " bug is fixed
+    o icons and images compressed
+    o clean css to show the results
+    o buckwalter search (partially implemented) 
+  
+ 
+ -- Assem Chelli <assem.ch@gmail.com>  Sun, 22 may 2011 12:27:30 -0500
+
+alfanous (0.4.13) unstable; urgency=low
+
+  * Minor bugfix releases:
+
+    o launching 
+  
+ 
+ -- Assem Chelli <assem.ch@gmail.com>  Sun, 31 oct 2010 12:43:30 -0500
+
+
