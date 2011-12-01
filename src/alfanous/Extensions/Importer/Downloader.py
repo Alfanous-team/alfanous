@@ -23,7 +23,9 @@
 @license: AGPL
 
 
-@to do : download Tanzil, Zekr translations
+@note:  read the licences of those ressources before download them
+
+@to do : download Tanzil,Translations
 '''
 
 import twill
@@ -33,6 +35,8 @@ def download_tanzil(quranType="simple-clean", outType="xml", outPath="./tanzil.x
     """ 
     quranType : simple, simple-enhanced,  simple-min, simple-clean , uthmani, uthmani-min 
     outType : txt, xml, sql
+    
+    
         
     """
     bw = twill.get_browser()
@@ -61,6 +65,10 @@ def download_quranic_corpus():
     
     return "not yet"
     
+    
+def download_tanzil_translations():
+    """  http://tanzil.net/trans/ """
+    pass
 
     
 print download_tanzil(quranType="simple-clean", outType="xml", outPath="../../../../store/tanzil_simple_clean.xml")
