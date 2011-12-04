@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # coding: utf-8
 
 
@@ -37,6 +38,7 @@ HowTo
 @license: GPL      
 
 '''
+
 import urllib2  
 import xml.dom.minidom as dom    
 import os

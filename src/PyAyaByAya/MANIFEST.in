@@ -1,1 +1,4 @@
+include *.py *.txt
+exclude *.pyc
 exclude setup.sh
+
