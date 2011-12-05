@@ -1,0 +1,3 @@
+include *.py *.txt
+exclude *.pyc
+
