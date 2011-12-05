@@ -1,4 +1,5 @@
-# coding: utf-8
+#!/usr/bin/env python
+# coding = utf-8
 
 #    Copyright (C) 2009-2010 Assem Chelli <assem.ch@gmail.com>
 #    This program is free software; you can redistribute it and/or modify

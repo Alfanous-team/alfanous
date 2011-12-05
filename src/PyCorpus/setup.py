@@ -1,5 +1,5 @@
-#!python
-#coding=utf-8
+#!/usr/bin/env python
+# coding = utf-8
 
 
 from setuptools import setup
@@ -7,26 +7,32 @@ from setuptools import setup
 
 setup(
 	name="PyCorpus",
+	description="Arabic Quranic Corpus python API",
 	version=0.1,
-	package_dir={'PyCorpus':'.'},
+	platforms="ALL",
+	license="GPL",
 	packages=["PyCorpus"],
+	install_requires=['pyparsing'],
+
 	author="Assem Chelli",
 	author_email="assem.ch@gmail.com",
-	description="Arabic Quranic Corpus  python API",
-    long_description=""" a python api for the project   """,
-	license="GPL",
-	keywords="quran arabic corpus quranic alfanous",
-	url="alfanous.sf.net/cms",
-	download_url="",
-	install_requires=['pyparsing'],
-	
+	maintainer="Assem Chelli",
+	maintainer_email="assem.ch@gmail.com",
 
-    #data_files=[ ('./','quranic-corpus-morpology.xml'),('./','GPL.txt')],
+	package_dir={'PyCorpus':'.'},
+	long_description="""A python api for the Arabic Quranic Corpus project""",
+	keywords="quran arabic corpus quranic alfanous",
+	url="http://www.alfanous.org/",
+	download_url="https://sourceforge.net/projects/alfanous/files/",
+
+	include_package_data=True,
+
+	#data_files=[ ('./','quranic-corpus-morpology.xml'),('./','GPL.txt')],
+
 	zip_safe=True,
 
-	
 	classifiers=[
-	"Development Status :: 3 - Alpha",
+	"Development Status :: 4 - Beta",
 	"Intended Audience :: Developers",
 	"License :: OSI Approved :: GNU General Public License (GPL)",
 	"Natural Language :: Arabic",
@@ -35,5 +41,4 @@ setup(
 	"Programming Language :: Python :: 2.6",
 	"Topic :: Software Development :: Libraries :: Python Modules",
 	],
-	
 )
