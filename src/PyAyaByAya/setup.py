@@ -12,16 +12,19 @@ setup(
 	platforms="ALL",
 	license="GPL",
 	packages=["PyAyaByAya"],
+	install_requires=[],
+
 	author="Assem Chelli",
 	author_email="assem.ch@gmail.com",
 	maintainer="Assem Chelli",
 	maintainer_email="assem.ch@gmail.com",
+
 	package_dir={"PyAyaByAya":"."},
 	long_description="""A python api for the project versebyverse""",
 	keywords="quran aya verse versebyverse everyayah recitation alfanous",
 	url="http://www.alfanous.org/",
 	download_url="https://sourceforge.net/projects/alfanous/files/",
-	install_requires=[],
+
 	include_package_data=True,
 
 	#data_files=[ ('.','GPL.txt')],
