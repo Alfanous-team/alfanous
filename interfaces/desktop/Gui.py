@@ -17,8 +17,6 @@ Created on 12 avr. 2010
 @todo: fields name in english and arabic / explication (id) 
 @todo: add qurany project for Subjects in english
 
-
-
 @bug: "unknown property dir" - fixed  
 
 

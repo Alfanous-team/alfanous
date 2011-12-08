@@ -30,8 +30,8 @@ it contains the linguistic analysers of Quran and Arabic...etc.
 
 
 '''
-from dynamic_ressources import synonymes_dyn as sydy
-from dynamic_ressources import stopwords_dyn as swdy
+from dynamic_resources import synonymes_dyn as sydy
+from dynamic_resources import stopwords_dyn as swdy
 from Support.whoosh.analysis import StandardAnalyzer, StopFilter, RegexTokenizer, LowercaseFilter
 #from pyarabic.araby  import araby
 

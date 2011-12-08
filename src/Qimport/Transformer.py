@@ -394,8 +394,8 @@ class Transformer:
    
     
 if __name__ == "__main__":
-    #T= Transformer( ixpath="../indexes/tiny/" , dypypath="dynamic_ressources/",dbpath="../store/tiny.db")
-    #T = Transformer( ixpath="../indexes/main/" , dypypath="dynamic_ressources/",dbpath="../store/main.db")
+    #T= Transformer( ixpath="../indexes/tiny/" , dypypath="dynamic_resources/",dbpath="../store/tiny.db")
+    #T = Transformer( ixpath="../indexes/main/" , dypypath="dynamic_resources/",dbpath="../store/main.db")
     #T.transfer_stopwords()
     #T.transfer_synonymes()
     #T.transfer_word_props()
