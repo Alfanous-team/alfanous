@@ -29,7 +29,7 @@
 
 '''
 
-from dynamic_ressources.arabicnames_dyn import ara2eng_names
+from dynamic_resources.arabicnames_dyn import ara2eng_names
 from Searching import QSearcher, QReader
 from Indexing import QseDocIndex, ExtDocIndex
 
