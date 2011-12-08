@@ -18,8 +18,8 @@ setup(
 	platforms="ALL",
 	license="GPL",
 	#packages=find_packages(where='..', exclude=()),
-	packages=['alfanous'],
-	install_requires=['pyparsing','harvestman'],# 'whoosh == 0.3.18',
+	packages=['alfanous','alfanous.dynamic_ressources','alfanous.Support'],
+	install_requires=['pyparsing'],# 'whoosh == 0.3.18',
 
 	author="Assem Chelli",
 	author_email="assem.ch@gmail.com",
