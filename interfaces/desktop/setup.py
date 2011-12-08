@@ -26,7 +26,7 @@ setup(
 	license="GPL",
 	keywords="quran search indexing engine alfanous",
 	url="http://alfanous.org",
-	install_requires=['alfanous',],#,'pyqt','configobj'
+	install_requires=['alfanous','configobj'],#,'pyqt',
 	#entry_points={
         #'gui_scripts': [
         #    'alfanous-desktop = alfanousDesktop.Gui:main',

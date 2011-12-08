@@ -81,7 +81,7 @@ lang1.install()
 
 
 from alfanous.main import *
-from alfanous.Support.pyparsing import ParseException
+from pyparsing import ParseException
 #initialize search engines 
 QSE=QuranicSearchEngine(INDEXPATH+"main/")
 TSE=TraductionSearchEngine(INDEXPATH+"extend/")
