@@ -11,16 +11,17 @@
 VERSION="4.0.13" 
 
 API_PATH="./src/"
-IMPORTER=$(API_PATH)"alfanous/Extensions/Importer/main.py"
+IMPORTER=$(API_PATH)"Importer/main.py"
 DYNAMIC_RESOURCES_PATH=$(API_PATH)"alfanous/dynamic_ressources/"
 STORE_PATH="./store/"
 INDEX_PATH="./indexes/"
 DESKTOP_INTERFACE_PATH="./interfaces/desktop/"
 
+PREFIX?=/usr
+CONFIG_INSTALL_PATH="$(DESTDIR)$(PREFIX)/share/alfanous-config/"
+INDEX_INSTALL_PATH="$(DESTDIR)$(PREFIX)/share/alfanous-indexes/"
+WEB_INSTALL_PATH="$(DESTDIR)/var/alfanous-web/" 
 
-CONFIG_INSTALL_PATH="/usr/share/alfanous-config/"
-INDEX_INSTALL_PATH="/usr/share/alfanous-indexes/"
-WEB_INSTALL_PATH="/var/alfanous-web/" 
 
 
 
@@ -179,10 +180,10 @@ install_api:
 	
 install_desktop: install_index  install_api qt_all 
 	cd  ./interfaces/desktop/; sudo python setup.py install
-	cp ./resources/launchers/alfanousDesktop /usr/bin/
-	cp ./resources/launchers/alfanous.desktop /usr/share/applications/
-	cp ./resources/AlFanous.png  /usr/share/pixmaps/
-	cp ./resources/fonts/* /usr/share/fonts/
+	cp ./resources/launchers/alfanousDesktop $(DESTDIR)$(PREFIX)/bin/
+	cp ./resources/launchers/alfanous.desktop $(DESTDIR)$(PREFIX)/share/applications/
+	cp ./resources/AlFanous.png  $(DESTDIR)$(PREFIX)/share/pixmaps/
+	cp ./resources/fonts/* $(DESTDIR)$(PREFIX)/share/fonts/
 	rm -r 	$(CONFIG_INSTALL_PATH) ; mkdir -p $(CONFIG_INSTALL_PATH); chmod 777  $(CONFIG_INSTALL_PATH)
 	#test installation
 	#alfanousDesktop
