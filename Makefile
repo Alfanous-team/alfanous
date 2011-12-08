@@ -12,7 +12,7 @@ VERSION="4.0.13"
 
 API_PATH="./src/"
 IMPORTER=$(API_PATH)"Importer/main.py"
-DYNAMIC_RESOURCES_PATH=$(API_PATH)"alfanous/dynamic_ressources/"
+DYNAMIC_RESOURCES_PATH=$(API_PATH)"alfanous/dynamic_resources/"
 STORE_PATH="./store/"
 INDEX_PATH="./indexes/"
 DESKTOP_INTERFACE_PATH="./interfaces/desktop/"
