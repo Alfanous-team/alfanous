@@ -16,9 +16,13 @@ setup(
 	description="Quranic search engine API",
 	version=0.4,
 	platforms="ALL",
-	license="GPL",
+	license="AGPL",
 	#packages=find_packages(where='..', exclude=()),
-	packages=['alfanous','alfanous.dynamic_ressources','alfanous.Support'],
+	packages=['alfanous','alfanous.dynamic_resources','alfanous.Support',
+            'alfanous.Support.whoosh', 'alfanous.Support.whoosh.filedb',
+            'alfanous.Support.whoosh.lang', 'alfanous.Support.whoosh.qparser',
+            'alfanous.Support.whoosh.support'],
+
 	install_requires=['pyparsing'],# 'whoosh == 0.3.18',
 
 	author="Assem Chelli",
