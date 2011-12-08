@@ -54,7 +54,7 @@ LOCALPATH=options.local if options.local else"./locale/"
 
 
 
-import sys
+import sys,os
 from configobj import ConfigObj
 from PyQt4 import  QtGui,QtCore
 from PyQt4.QtCore import QRect
@@ -176,6 +176,8 @@ class QUI(Ui_MainWindow):
  
     def save_config(self):
         """save configuration """
+        if not os.path.isdir(CONFIGPATH):
+            os.makedirs(CONFIGPATH)
         config=ConfigObj(CONFIGPATH+"config.ini")
         config["history"]=map(lambda x:x,config["history"]) if config.has_key("history") else ["الحمد لله"]
         
