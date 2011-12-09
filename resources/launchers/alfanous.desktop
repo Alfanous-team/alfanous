@@ -4,10 +4,9 @@ Type=Application
 Version=0.4
 Name=Alfanous
 Name[ar]=الفانوس
-Name[en_US]=AlfanousDesktop
 GenericName=Alfanous-Quranic Search Engine
 GenericName[ar]=الفانوس - محرك بحث قرآني
 Icon=/usr/share/pixmaps/AlFanous.png
 Exec=alfanousDesktop
-Categories=Utility;Qt;X-Islamic-Software;X-Quran;
+Categories=Education;X-Islamic-Software;X-Quran;Qt;
 
