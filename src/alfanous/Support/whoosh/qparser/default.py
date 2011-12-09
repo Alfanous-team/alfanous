@@ -54,7 +54,7 @@ http://pyparsing.wikispaces.com/space/showimage/searchparser.py
 # - Rudolph Froger
 # - Paul McGuire
 
-from alfanous.Support.whoosh.support.pyparsing import (printables, alphanums, OneOrMore,
+from pyparsing import (printables, alphanums, OneOrMore,
                                       Group, Combine, Suppress, Optional,
                                       FollowedBy, Literal, CharsNotIn, Word,
                                       Keyword, Empty, White, Forward,
