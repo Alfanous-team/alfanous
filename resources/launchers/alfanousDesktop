@@ -9,9 +9,9 @@ sys.argv.extend([
 	'-l', '/usr/locale/',
 	'-c', '/usr/share/alfanous-config/'])
 
-from Gui import *
+from alfanousDesktop.Gui import *
 
-#main()
+main()
 
 
 
