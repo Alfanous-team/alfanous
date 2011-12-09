@@ -27,6 +27,7 @@
 @todo: add  ID of requester for  better experience
 @todo: multithreading server-clients
 @todo: dynamic_ressources to   dynamic_resources
+@todo: send error messages (no results, parsing exception)
 
 """
 
@@ -312,7 +313,8 @@ elif  form.has_key("search") :
         translation = form["translation"][0]
     else: translation = "None"
     if form.has_key("fuzzy"):
-        QSE = FuzzyQuranicSearchEngine("./indexes/main/")   
+        if form["fuzzy"][0]=="yes":
+                QSE = FuzzyQuranicSearchEngine("./indexes/main/")   
 
     print results(form["search"][0], sortedby=sortedby, highlight=highlight, recitation=recitation,page=page,translation=translation)
 
