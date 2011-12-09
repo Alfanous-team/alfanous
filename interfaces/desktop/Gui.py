@@ -67,7 +67,7 @@ from mainform_ui import Ui_MainWindow
 
 #localization
 import gettext;
-gettext.bindtextdomain("alfanousQT", LOCALPATH);
+gettext.bindtextdomain("alfanousQT");
 gettext.textdomain("alfanousQT");
 _=gettext.gettext
 n_ = gettext.ngettext
@@ -139,7 +139,7 @@ class QUI(Ui_MainWindow):
         
     def load_config(self):
         """load configuration"""
-        config=ConfigObj(CONFIGPATH+"config.ini")
+        config=ConfigObj(CONFIGPATH+"/config.ini")
         boolean=lambda s:True if s=="True" else False
         self.o_query.clear()
         self.o_query.addItems(map(lambda x:x.decode("utf-8"),config["history"]) if config.has_key("history") else [u"الحمد لله"])
@@ -178,7 +178,7 @@ class QUI(Ui_MainWindow):
         """save configuration """
         if not os.path.isdir(CONFIGPATH):
             os.makedirs(CONFIGPATH)
-        config=ConfigObj(CONFIGPATH+"config.ini")
+        config=ConfigObj(CONFIGPATH+"/config.ini")
         config["history"]=map(lambda x:x,config["history"]) if config.has_key("history") else ["الحمد لله"]
         
         config["options"]={}
