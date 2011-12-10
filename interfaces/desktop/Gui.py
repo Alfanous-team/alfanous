@@ -17,8 +17,6 @@ Created on 12 avr. 2010
 @todo: fields name in english and arabic / explication (id) 
 @todo: add qurany project for Subjects in english
 
-@bug: "unknown property dir" - fixed  
-
 
 
 """
@@ -121,6 +119,10 @@ sura_reallist=[item for item in QSE.list_values("sura") if item]
 
 relations=["","",u"|",u"+",u"-"]
 relate=lambda query,filter,index:"( "+unicode(query)+" ) "+relations[index]+" ( "+filter+" ) " if  index>1 else filter if index==1 else unicode(query)+" "+filter
+
+#Quranic Translation static list
+TDICT={}
+STATIC_TRANSLATIONS_LIST=True
 
 
 class QUI(Ui_MainWindow):
@@ -249,7 +251,7 @@ class QUI(Ui_MainWindow):
         self.o_chapter.addItems([item for item in QSE.list_values("chapter") if item])
         self.o_sura_name.addItems([keywords(item)[0] for item in QSE.list_values("sura") if item])
         self.o_field.addItems(ara2eng_names.values())# ara2eng_names.keys()
-        self.o_traduction.addItems(self.traductions_dict(static=True).values())
+        self.o_traduction.addItems(self.traductions_dict(static=STATIC_TRANSLATIONS_LIST).values())
         
         self.load_config()
 
@@ -389,7 +391,7 @@ class QUI(Ui_MainWindow):
             if trad_index:
                 trad_title=self.o_traduction.currentText()
                 trad_id=None
-                for k,v in self.traductions_dict(static=True).items():
+                for k,v in self.traductions_dict(static=STATIC_TRANSLATIONS_LIST).items():
                     if v==trad_title:
                         trad_id=k
                         break
@@ -836,7 +838,7 @@ you can use alfanous to verify some numeric miracles of Quran
         self.o_results.setText(html)
         
         
-TDICT=QUI.traductions_dict(static=False)
+
 
 def main():
     """ the main function"""
