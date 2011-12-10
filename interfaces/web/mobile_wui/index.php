@@ -49,7 +49,7 @@ if (count($_GET)<1) {
 		$search=$_GET["search"];
 		$page=$_GET["page"];
 		$show_result=True;
-	}
+	};
 
 
 if ($show_result) {
@@ -59,7 +59,7 @@ if ($show_result) {
 	$recitation="Mishary Rashid Alafasy";
 	$translation="None";
 	$highlight="css";
-	#$fuzzy="yes";
+	#$fuzzy="yes"; not stable yet
 
 	# Encode JSON query URL
 	$query_site = "http://www.alfanous.org/json?";
@@ -200,6 +200,12 @@ if ($show_result and $json) {
 	# Pages control
 	$nb_pages = floor(($json->interval->total- 1) / 10)+ 1;
 	$page_nb = floor(($json->interval->start- 1) / 10)+ 1;
+	# Alfanous JSON service doesn't serve more than 100 pages.
+	$hit_page_limit = False;
+	if ($nb_pages > 100) {
+		$hit_page_limit = True;
+		$nb_pages = 100;
+	};
 
 	$results_pages = sprintf("<div class='pages'>\nالنتائج: %s-%s\\%s الصفحات:"
 		,$json->interval->start
@@ -213,8 +219,10 @@ if ($show_result and $json) {
 			$results_pages .= sprintf(" <a href='%s'>%s</a>",
 				htmlspecialchars("index.php?" . $query_search . "&page=" . $i),
 				$i);
-		}
-	}
+		};
+	};
+	# show a sign for pages limit '...', a part of pages are not listed
+	if ($hit_page_limit) $results_pages .= " ...";
 	$results_pages .= "</div>\n";
 	print($results_pages);
 
