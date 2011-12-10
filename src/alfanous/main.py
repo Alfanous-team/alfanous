@@ -195,7 +195,7 @@ if __name__ == '__main__':
     
 
 
-    string1 = "  الجنة"
+    string1 = ">>الأمل"
     # %المأصدة
     # لله
     # ال*لك
@@ -221,7 +221,7 @@ if __name__ == '__main__':
         for key, value in QSE.suggest_all(string1).items():
             print key, ":", ",".join(value)
         print "\n#search#"   
-        res, terms = FQSE.search_all(string1, limit=6236, sortedby="score",reverse=True)
+        res, terms = QSE.search_all(string1, limit=6236, sortedby="score",reverse=True)
         
 
         #for key,freq in res.key_terms("aya", docs=1, numterms=15000): print key,"(",freq,"),",
