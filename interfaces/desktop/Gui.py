@@ -1,5 +1,20 @@
 # -*- coding: utf-8 -*-
 
+##     Copyright (C) 2009-2012 Assem Chelli <assem.ch [at] gmail.com>
+
+##     This program is free software: you can redistribute it and/or modify
+##     it under the terms of the GNU Affero General Public License as published by
+##     the Free Software Foundation, either version 3 of the License, or
+##     (at your option) any later version.
+
+##     This program is distributed in the hope that it will be useful,
+##     but WITHOUT ANY WARRANTY; without even the implied warranty of
+##     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+##     GNU Affero General Public License for more details.
+
+##     You should have received a copy of the GNU Affero General Public License
+##     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 """
 Created on 12 avr. 2010
 
@@ -17,9 +32,9 @@ Created on 12 avr. 2010
 @todo: fields name in english and arabic / explication (id) 
 @todo: add qurany project for Subjects in english
 
-
-
 """
+
+## Arguments Management
 from optparse import OptionParser,OptionGroup
 
 usage = "usage: %prog [options]"
@@ -44,31 +59,30 @@ parser.add_option_group(paths)
 
 
 
-CONFIGPATH=options.config if options.config else "./"
-INDEXPATH=options.index if options.index else"../../indexes/"
-LOCALPATH=options.local if options.local else"./locale/"
 
 
 
-
-
-import sys,os
+## Importing modules
+import sys,os,gettext
 from configobj import ConfigObj
 from PyQt4 import  QtGui,QtCore
 from PyQt4.QtCore import QRect
-
+from pyparsing import ParseException
+from alfanous.main import *
+from re import compile
+## Importing forms
 from mainform_ui import Ui_MainWindow
 #from aboutDlg import Ui_Dialog as Ui_aboutDlg
 
 
 
 
-#localization
-import gettext;
-gettext.bindtextdomain("alfanousQT");
-gettext.textdomain("alfanousQT");
+## Localization using gettext
 _=gettext.gettext
 n_ = gettext.ngettext
+gettext.bindtextdomain("alfanousQT");
+gettext.textdomain("alfanousQT");
+
 """
 Available_langs={"en":"English","ar":"Arabic"}
 lang1 = gettext.translation('myapplication', languages=['en'])
@@ -78,55 +92,58 @@ lang1.install()
 
 
 
-from alfanous.main import *
-from pyparsing import ParseException
-#initialize search engines 
+
+## Specification of resources paths
+CONFIGPATH=options.config if options.config else "./"
+INDEXPATH=options.index if options.index else"../../indexes/"
+LOCALPATH=options.local if options.local else"./locale/"
+
+## Initialize search engines 
 QSE=QuranicSearchEngine(INDEXPATH+"main/")
 TSE=TraductionSearchEngine(INDEXPATH+"extend/")
 
-#results per page
-PERPAGE=10
-#direction: default
-DIR=_("ltr")
+## STATIC GLOBAL variables
+PERPAGE=10 #results per page
+DIR=_("ltr") #direction: default
+RELATIONS=["","",u"|",u"+",u"-"] 
+LANGS={'el': 'Greek', 'eo': 'Esperanto', 'en': 'English', 'vi': 'Vietnamese', 'ca': 'Catalan', 'it': 'Italian', 'lb': 'Luxembourgish', 'eu': 'Basque', 'ar': 'Arabic', 'bg': 'Bulgarian', 'cs': 'Czech', 'et': 'Estonian', 'gl': 'Galician', 'id': 'Indonesian', 'ru': 'Russian', 'nl': 'Dutch', 'pt': 'Portuguese', 'no': 'Norwegian', 'tr': 'Turkish', 'lv': 'Latvian', 'lt': 'Lithuanian', 'th': 'Thai', 'es_ES': 'Spanish', 'ro': 'Romanian', 'en_GB': 'British English', 'fr': 'French', 'hy': 'Armenian', 'uk': 'Ukrainian', 'pt_BR': 'Brazilian', 'hr': 'Croatian', 'de': 'German', 'da': 'Danish', 'fa': 'Persian', 'bs': 'Bosnian', 'fi': 'Finnish', 'hu': 'Hungarian', 'ja': 'Japanese', 'he': 'Hebrew', 'ka': 'Georgian', 'zh_CN': 'Chinese', 'kk': 'Kazakh', 'sr': 'Serbian', 'sq': 'Albanian', 'ko': 'Korean', 'sv': 'Swedish', 'mk': 'Macedonian', 'sk': 'Slovak', 'pl': 'Polish', 'ms': 'Malay', 'sl': 'Slovenian'} #languages 
+SAJDA_TYPE={u"مستحبة":_(u"recommended"),u"واجبة":_(u"obliged")}
+SURA_TYPE={u"مدنية":_(u"medina"),u"مكية":_(u"mekka")}
+STATIC_TRANSLATIONS_LIST=True #Use Static Quranic translation list or Generate them automatically
+TDICT={} #Quranic Translation static list
 
-#css
-CSS="""
-<style type="text/css">
-span.green {font-size:14pt; color:#005800;}
-h1 {font-size:14pt; font-weight:600; color:#ff0000;}
-h2 {color:#0000ff; background-color:#ccffcc;}
-</style>
 
-"""
+CSS=""" 
+        <style type="text/css">
+            span.green {font-size:14pt; color:#005800;}
+            h1 {font-size:14pt; font-weight:600; color:#ff0000;}
+            h2 {color:#0000ff; background-color:#ccffcc;}
+        </style>
+    """
 
-#parse keywords
-from re import compile
-kword = compile(u"[^,،]+")
-keywords = lambda phrase: kword.findall(phrase)
 
-#remove tamdid _
-def Gword_tamdid(aya):
+
+
+## Some functions
+keywords = lambda phrase: compile(u"[^,،]+").findall(phrase) #parse keywords
+relate=lambda query,filter,index:"( "+unicode(query)+" ) "+RELATIONS[index]+" ( "+filter+" ) " if  index>1 else filter if index==1 else unicode(query)+" "+filter
+sura_reallist=[item for item in QSE.list_values("sura") if item]
+
+def Gword_tamdid(aya): #remove tamdid _
     """ add a tamdid to lafdh aljalala to eliminate the double vocalization """
     return aya.replace(u"لَّه", u"لَّـه").replace(u"لَّه", u"لَّـه")
 
-#languages 
-langs={'el': 'Greek', 'eo': 'Esperanto', 'en': 'English', 'vi': 'Vietnamese', 'ca': 'Catalan', 'it': 'Italian', 'lb': 'Luxembourgish', 'eu': 'Basque', 'ar': 'Arabic', 'bg': 'Bulgarian', 'cs': 'Czech', 'et': 'Estonian', 'gl': 'Galician', 'id': 'Indonesian', 'ru': 'Russian', 'nl': 'Dutch', 'pt': 'Portuguese', 'no': 'Norwegian', 'tr': 'Turkish', 'lv': 'Latvian', 'lt': 'Lithuanian', 'th': 'Thai', 'es_ES': 'Spanish', 'ro': 'Romanian', 'en_GB': 'British English', 'fr': 'French', 'hy': 'Armenian', 'uk': 'Ukrainian', 'pt_BR': 'Brazilian', 'hr': 'Croatian', 'de': 'German', 'da': 'Danish', 'fa': 'Persian', 'bs': 'Bosnian', 'fi': 'Finnish', 'hu': 'Hungarian', 'ja': 'Japanese', 'he': 'Hebrew', 'ka': 'Georgian', 'zh_CN': 'Chinese', 'kk': 'Kazakh', 'sr': 'Serbian', 'sq': 'Albanian', 'ko': 'Korean', 'sv': 'Swedish', 'mk': 'Macedonian', 'sk': 'Slovak', 'pl': 'Polish', 'ms': 'Malay', 'sl': 'Slovenian'}
 
-sajda_type={u"مستحبة":_(u"recommended"),u"واجبة":_(u"obliged")}
-sura_type={u"مدنية":_(u"medina"),u"مكية":_(u"mekka")}
 
-sura_reallist=[item for item in QSE.list_values("sura") if item]
 
-relations=["","",u"|",u"+",u"-"]
-relate=lambda query,filter,index:"( "+unicode(query)+" ) "+relations[index]+" ( "+filter+" ) " if  index>1 else filter if index==1 else unicode(query)+" "+filter
 
-#Quranic Translation static list
-TDICT={}
-STATIC_TRANSLATIONS_LIST=True
+
+
+
 
 
 class QUI(Ui_MainWindow):
-    """ the Quranic UI"""
+    """ the Quranic main UI """
     def __init__(self):
         self.last_results=None
         self.last_terms=None
@@ -418,7 +435,7 @@ class QUI(Ui_MainWindow):
                 
                 html += u"<h2> <b>%d</b>)  - " % cpt+_(u"Aya n° <b>%d</b> of Sura  <b>%s</b>") %(r["aya_id"],H(keywords(r["sura"])[0]))+ "</h2>"  
                 if sura_info:
-                    html += u"<div style=\" font-size:8pt; color:#404060;\"> ( "+ _(u"Sura n°: <b>%d</b>,revel_place : <b>%s</b> , revel_order :  <b>%d</b>, ayas : <b>%d</b>") % (r["sura_id"],H(sura_type[r["sura_type"]]),r["sura_order"],r["s_a"]) +u" )</div>" 
+                    html += u"<div style=\" font-size:8pt; color:#404060;\"> ( "+ _(u"Sura n°: <b>%d</b>,revel_place : <b>%s</b> , revel_order :  <b>%d</b>, ayas : <b>%d</b>") % (r["sura_id"],H(SURA_TYPE[r["sura_type"]]),r["sura_order"],r["s_a"]) +u" )</div>" 
                 html+=""+""
                 html+= "<div  align=\"center\">"
                 if prev:
@@ -436,7 +453,7 @@ class QUI(Ui_MainWindow):
                     html +="<br />"+_(u"chapter : <b>%s</b> ; topic : <b>%s</b> ; subtopic : <b>%s</b> ") % (H(r["chapter"]),H(r["topic"]),H(r["subtopic"]))        
                     html +="<br />"+_(u"words : <b>%d</b> / %d  ; letters :  <b>%d</b> / %d  ;  names of Allaah :  <b>%d</b> / %d ") % (N(r["a_w"]),N(r["s_w"]),N(r["a_l"]),N(r["s_l"]),N(r["a_g"]),N(r["s_g"]))
                     html += "</p>"
-                    if r["sajda"]==u"نعم": html+=u'<p style=" color:#b88484;">'+_(u"This aya contain a sajdah -%s- n° %d")% (sajda_type[r["sajda_type"]],N(r["sajda_id"]))+'</p>' 
+                    if r["sajda"]==u"نعم": html+=u'<p style=" color:#b88484;">'+_(u"This aya contain a sajdah -%s- n° %d")% (SAJDA_TYPE[r["sajda_type"]],N(r["sajda_id"]))+'</p>' 
                 html += u"</div><hr />"
             
             return {"results":html,"time":res.runtime,"resnum":len(res),"extend_time":extend_runtime}
@@ -471,7 +488,7 @@ class QUI(Ui_MainWindow):
             for id in list1:
                 list2.extend([item for item in TSE.list_values("lang",conditions=[("id",id)]) if item])
                 list3.extend([item for item in TSE.list_values("author",conditions=[("id",id)]) if item])
-            list5=map(lambda x: langs[x] if langs.has_key(x) else x,list2)
+            list5=map(lambda x: LANGS[x] if LANGS.has_key(x) else x,list2)
             D={}
             for i in range(len(list3)):
                 D[list1[i]]=list3[i]+"-"+list5[i]
