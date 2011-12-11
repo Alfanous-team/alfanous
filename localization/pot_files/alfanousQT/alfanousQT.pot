@@ -1,0 +1,1081 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2011-12-11 19:12+0100\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: interfaces/desktop/Gui.py:115
+msgid "ltr"
+msgstr ""
+
+#: interfaces/desktop/Gui.py:118
+msgid "recommended"
+msgstr ""
+
+#: interfaces/desktop/Gui.py:118
+msgid "obliged"
+msgstr ""
+
+#: interfaces/desktop/Gui.py:119
+msgid "medina"
+msgstr ""
+
+#: interfaces/desktop/Gui.py:119
+msgid "mekka"
+msgstr ""
+
+#: interfaces/desktop/Gui.py:319
+msgid "Your query is wrong!,correct it and search again"
+msgstr ""
+
+#: interfaces/desktop/Gui.py:321
+msgid "Interrupted by user"
+msgstr ""
+
+#: interfaces/desktop/Gui.py:336 interfaces/desktop/Gui.py:340
+msgid "reported"
+msgstr ""
+
+#: interfaces/desktop/Gui.py:336 interfaces/desktop/Gui.py:340
+msgid "time"
+msgstr ""
+
+#: interfaces/desktop/Gui.py:336
+msgid "in"
+msgstr ""
+
+#: interfaces/desktop/Gui.py:336
+msgid "aya"
+msgstr ""
+
+#: interfaces/desktop/Gui.py:340
+msgid "word"
+msgstr ""
+
+#: interfaces/desktop/Gui.py:444
+#, python-format
+msgid "Aya n° <b>%d</b> of Sura  <b>%s</b>"
+msgstr ""
+
+#: interfaces/desktop/Gui.py:446
+#, python-format
+msgid ""
+"Sura n°: <b>%d</b>,revel_place : <b>%s</b> , revel_order :  <b>%d</b>, "
+"ayas : <b>%d</b>"
+msgstr ""
+
+#: interfaces/desktop/Gui.py:457 interfaces/desktop/mainform_ui.py:2335
+#: interfaces/desktop/mainform_ui.py:2429
+msgid "Translation"
+msgstr ""
+
+#: interfaces/desktop/Gui.py:460
+#, python-format
+msgid ""
+"page: <b>%d</b> ; (Hizb : <b>%d</b> ,Rubu' : <b>%d</b>) ; manzil :<b>%d</"
+"b> ;  ruku' :<b>%s</b>"
+msgstr ""
+
+#: interfaces/desktop/Gui.py:461
+#, python-format
+msgid "chapter : <b>%s</b> ; topic : <b>%s</b> ; subtopic : <b>%s</b> "
+msgstr ""
+
+#: interfaces/desktop/Gui.py:462
+#, python-format
+msgid ""
+"words : <b>%d</b> / %d  ; letters :  <b>%d</b> / %d  ;  names of Allaah :  "
+"<b>%d</b> / %d "
+msgstr ""
+
+#: interfaces/desktop/Gui.py:464
+#, python-format
+msgid "This aya contain a sajdah -%s- n° %d"
+msgstr ""
+
+#: interfaces/desktop/Gui.py:479
+msgid "Suggestions"
+msgstr ""
+
+#: interfaces/desktop/Gui.py:722 interfaces/desktop/mainform_ui.py:2316
+#: interfaces/desktop/mainform_ui.py:2318
+#: interfaces/desktop/mainform_ui.py:2319
+msgid "Results"
+msgstr ""
+
+#: interfaces/desktop/Gui.py:732
+msgid ""
+"This is not a bug,Printing will be available in next releases insha'allah"
+msgstr ""
+
+#: interfaces/desktop/Gui.py:761
+msgid ""
+"   \n"
+"Alfanous is a Quranic search engine provides simple and advanced search "
+"services in the diverse information of the Holy Quran .\n"
+"\n"
+"\n"
+"<ul>\n"
+"<li> <b>  Website :</b> alfanous.sf.net   </li>\n"
+"<li> <b>  Author :</b> Assem Chelli - assem.ch@gmail.com </li>\n"
+"</ul>\n"
+"\n"
+"Try our web interface (Arabic): www.alfanous.org\n"
+"\n"
+"</div>   \n"
+"\n"
+"\n"
+msgstr ""
+
+#: interfaces/desktop/Gui.py:794
+msgid ""
+"   \n"
+"These are some <b>hints</b> how to use alfanous to get some interested "
+"information about ayas of Qur'an\n"
+"\n"
+"<br>\n"
+"<ol>\n"
+"<li> <h2>  Simple search :</h2></li> Write your keywords on the search bar "
+"ex: <b>الحمد لله</b>\n"
+"<br>\n"
+"<li> <h2>  Search in specified sura :</h2></li> add to your query \"sura:\" "
+"or \"سورة:\" ex:<b> سورة:الفاتحة </b>\n"
+"<br>\n"
+"\n"
+"<li> <h2>  Different methods of sorting:</h2></li> Go to options panel and "
+"change \"order by\" , there are many criteria  : order by relevance, by the "
+"position of aya in the Mus-haf ,by the date of revelation ...\n"
+"<br>\n"
+"<li> <h2>  Search by a phrase :</h2></li> Write your keywords between double "
+"quotes ,ex : <b>\"الحمد لله\" </b>\n"
+"<li> <h2>  use logical relations between keywords :</h2></li> \n"
+"use + to oblige a keyword ,ex : <b>الصلاة + الزكاة</b>\n"
+"<br> use - to eliminate a keyword ,ex : <b> الصلاة - الزكاة</b>\n"
+"<br> use | to search one of  two keywords ,ex :<b> الصلاة | الزكاة</b>\n"
+"\n"
+"<li> <h2>  use jokers or regular expression :</h2></li>\n"
+"asterisk  *  replace many letters ,ex :<b> وال* </b>\n"
+"<br>? replace one letter ,ex:<b> ؟الله</b>\n"
+"\n"
+"\n"
+"<li> <h2>  use Buckwalter transliteration (partially implemented) :</h2></"
+"li>\n"
+"ex: <b>rabi</b> to search for <b> رب</b>\n"
+"<br/> <b>qawol</b> to search for <b> قول</b>\n"
+"\n"
+"\n"
+"\n"
+"<li> <h2>  search by words of the same origin as a keyword :</h2></li>\n"
+"use &gt; to search by the infinitive of verbs and the lemma of nouns ,ex:<b> "
+"&gt;جاهد </b>\n"
+"<br>use &gt;&gt; to search by the arabic root  ,ex:<b> &gt;&gt;جاهد </b>\n"
+"<br>\n"
+"<li> <h2>  search by vocalization :</h2></li>\n"
+"for full vocalization,search in the field \"aya_\" or \"آية_\" ,ex: <b> آية_:"
+"مِنْ</b>\n"
+"<br>for partial vocalization,search in the field \"aya_\" or \"آية_\" using "
+"quotes ,ex:<b> آية_:'المَلك' </b>\n"
+"<br>\n"
+"\n"
+"<li> <h2>  search by subject :</h2></li>\n"
+"Go to features panel, Subjects tab \n"
+"<br>Ex: search ayas talking about Taloot, choose the chapter :<b> التاريخ و "
+"القصص القرآني </b> then the topic :<b> قصة طالوت </b>, choose Relation : "
+"\"Replace\"  and Press \"Add to search bar\"\n"
+"\n"
+"<li> <h2>  Structural search :</h2></li>\n"
+"Go to features panel, Structural search tab \n"
+"<br>Ex: for searching only on juz' 3amma, choose search_in : <b>juz's</b> ,"
+"from  :<b> 30 </b>, to :<b> 30 </b>. then Relation : \"(AND)\"  and Press "
+"\"Add to search bar\"\n"
+"\n"
+"<li> <h2> Statistic search :</h2></li>\n"
+"Go to features panel, Statistical search tab \n"
+"<br>Ex: for searching ayas with more then four names of Allah, choose "
+"number_of :<b> Allah words </b>, in : <b>ayas </b>,from  :<b> 5</b> , to :"
+"<b> 10 </b>. then Relation : \"Replace\"  and Press \"Add to search bar\"\n"
+"\n"
+"<li> <h2> Search sajadat:</h2></li>\n"
+"Go to features panel, Divers tab  then choose <b>\"yes\" </b>for Sajdah\n"
+"\n"
+"<li> <h2> Verify numeric miracles:</h2></li>\n"
+"you can use alfanous to verify some numeric miracles of Quran\n"
+"<br>Ex:  if you search <b>&gt;الدنيا  </b> you find <b>115 </b>times\n"
+"<br> if you search <b>&gt;الآخرة </b> (includes بالآخرة...)  you find also "
+"<b>115 </b>times\n"
+"\n"
+"</ol>\n"
+"\n"
+"\n"
+msgstr ""
+
+#: interfaces/desktop/mainform_ui.py:2296
+msgid "Alfanous - Qur'anic Search Engine (Beta Version)"
+msgstr ""
+
+#: interfaces/desktop/mainform_ui.py:2297
+msgid "Alfanous - Qur'anic Search Engine "
+msgstr ""
+
+#: interfaces/desktop/mainform_ui.py:2298
+#: interfaces/desktop/mainform_ui.py:2299
+msgid "save current page"
+msgstr ""
+
+#: interfaces/desktop/mainform_ui.py:2300
+msgid "save"
+msgstr ""
+
+#: interfaces/desktop/mainform_ui.py:2301
+#: interfaces/desktop/mainform_ui.py:2302
+msgid "print current page"
+msgstr ""
+
+#: interfaces/desktop/mainform_ui.py:2303
+msgid "print"
+msgstr ""
+
+#: interfaces/desktop/mainform_ui.py:2304
+#: interfaces/desktop/mainform_ui.py:2305
+#: interfaces/desktop/mainform_ui.py:2306
+msgid "show/hide features"
+msgstr ""
+
+#: interfaces/desktop/mainform_ui.py:2307
+#: interfaces/desktop/mainform_ui.py:2308
+#: interfaces/desktop/mainform_ui.py:2309
+msgid "view/hide options"
+msgstr ""
+
+#: interfaces/desktop/mainform_ui.py:2310
+#: interfaces/desktop/mainform_ui.py:2528
+msgid "Help"
+msgstr ""
+
+#: interfaces/desktop/mainform_ui.py:2311
+msgid "help"
+msgstr ""
+
+#: interfaces/desktop/mainform_ui.py:2312
+msgid "About "
+msgstr ""
+
+#: interfaces/desktop/mainform_ui.py:2313
+msgid "about"
+msgstr ""
+
+#: interfaces/desktop/mainform_ui.py:2314
+#: interfaces/desktop/mainform_ui.py:2315
+msgid "exit"
+msgstr ""
+
+#: interfaces/desktop/mainform_ui.py:2317
+msgid "+"
+msgstr ""
+
+#: interfaces/desktop/mainform_ui.py:2320
+msgid "Page"
+msgstr ""
+
+#: interfaces/desktop/mainform_ui.py:2321
+#: interfaces/desktop/mainform_ui.py:2463
+#: interfaces/desktop/mainform_ui.py:2465
+#: interfaces/desktop/mainform_ui.py:2486
+#: interfaces/desktop/mainform_ui.py:2488
+msgid "color : red"
+msgstr ""
+
+#: interfaces/desktop/mainform_ui.py:2322
+msgid "of"
+msgstr ""
+
+#: interfaces/desktop/mainform_ui.py:2323
+#: interfaces/desktop/mainform_ui.py:2324
+msgid "pages number"
+msgstr ""
+
+#: interfaces/desktop/mainform_ui.py:2325
+msgid "Important! :"
+msgstr ""
+
+#: interfaces/desktop/mainform_ui.py:2326
+msgid "If you find any error in contents,contact us!"
+msgstr ""
+
+#: interfaces/desktop/mainform_ui.py:2327
+msgid "&File"
+msgstr ""
+
+#: interfaces/desktop/mainform_ui.py:2328
+msgid "&Recent Queries"
+msgstr ""
+
+#: interfaces/desktop/mainform_ui.py:2329
+msgid "&Help"
+msgstr ""
+
+#: interfaces/desktop/mainform_ui.py:2330
+msgid "&View"
+msgstr ""
+
+#: interfaces/desktop/mainform_ui.py:2331
+msgid "&Options"
+msgstr ""
+
+#: interfaces/desktop/mainform_ui.py:2332
+#: interfaces/desktop/mainform_ui.py:2344
+msgid "Order by"
+msgstr ""
+
+#: interfaces/desktop/mainform_ui.py:2333
+msgid "Field"
+msgstr ""
+
+#: interfaces/desktop/mainform_ui.py:2334
+#: interfaces/desktop/mainform_ui.py:2351
+msgid "Script"
+msgstr ""
+
+#: interfaces/desktop/mainform_ui.py:2336
+#: interfaces/desktop/mainform_ui.py:2357
+msgid "Recitation"
+msgstr ""
+
+#: interfaces/desktop/mainform_ui.py:2337
+#: interfaces/desktop/mainform_ui.py:2354
+msgid "Show"
+msgstr ""
+
+#: interfaces/desktop/mainform_ui.py:2338
+msgid "Choose &Language"
+msgstr ""
+
+#: interfaces/desktop/mainform_ui.py:2339
+msgid "&Indexes"
+msgstr ""
+
+#: interfaces/desktop/mainform_ui.py:2340
+msgid "Remove Translation"
+msgstr ""
+
+#: interfaces/desktop/mainform_ui.py:2341
+msgid "Remove Recitation"
+msgstr ""
+
+#: interfaces/desktop/mainform_ui.py:2342
+msgid "&Edit"
+msgstr ""
+
+#: interfaces/desktop/mainform_ui.py:2343
+msgid "Options"
+msgstr ""
+
+#: interfaces/desktop/mainform_ui.py:2345
+#: interfaces/desktop/mainform_ui.py:2549
+msgid "Relevance"
+msgstr ""
+
+#: interfaces/desktop/mainform_ui.py:2346
+msgid "Position in Mus-haf "
+msgstr ""
+
+#: interfaces/desktop/mainform_ui.py:2347
+#: interfaces/desktop/mainform_ui.py:2551
+msgid "Revelation"
+msgstr ""
+
+#: interfaces/desktop/mainform_ui.py:2348
+msgid "Subject fields"
+msgstr ""
+
+#: interfaces/desktop/mainform_ui.py:2349
+msgid "Field:"
+msgstr ""
+
+#: interfaces/desktop/mainform_ui.py:2350
+#: interfaces/desktop/mainform_ui.py:2553
+msgid "Inverse"
+msgstr ""
+
+#: interfaces/desktop/mainform_ui.py:2352
+msgid "Script Standard"
+msgstr ""
+
+#: interfaces/desktop/mainform_ui.py:2353
+msgid "Script Uthmani"
+msgstr ""
+
+#: interfaces/desktop/mainform_ui.py:2355
+msgid "Translation "
+msgstr ""
+
+#: interfaces/desktop/mainform_ui.py:2356
+#: interfaces/desktop/mainform_ui.py:2358
+#: interfaces/desktop/mainform_ui.py:2475
+#: interfaces/desktop/mainform_ui.py:2482
+#: interfaces/desktop/mainform_ui.py:2499
+#: interfaces/desktop/mainform_ui.py:2501
+#: interfaces/desktop/mainform_ui.py:2505
+#: interfaces/desktop/mainform_ui.py:2509
+#: interfaces/desktop/mainform_ui.py:2558
+#: interfaces/desktop/mainform_ui.py:2559
+#: interfaces/desktop/mainform_ui.py:2579
+msgid "None"
+msgstr ""
+
+#: interfaces/desktop/mainform_ui.py:2359
+msgid "Words Statistics"
+msgstr ""
+
+#: interfaces/desktop/mainform_ui.py:2360
+msgid "Word Information"
+msgstr ""
+
+#: interfaces/desktop/mainform_ui.py:2361
+msgid "Aya Information"
+msgstr ""
+
+#: interfaces/desktop/mainform_ui.py:2362
+msgid "Sura Information"
+msgstr ""
+
+#: interfaces/desktop/mainform_ui.py:2363
+msgid "Previous  aya"
+msgstr ""
+
+#: interfaces/desktop/mainform_ui.py:2364
+#: interfaces/desktop/mainform_ui.py:2564
+msgid "Next aya"
+msgstr ""
+
+#: interfaces/desktop/mainform_ui.py:2365
+#: interfaces/desktop/mainform_ui.py:2519
+msgid "Misc"
+msgstr ""
+
+#: interfaces/desktop/mainform_ui.py:2366
+msgid "Limit "
+msgstr ""
+
+#: interfaces/desktop/mainform_ui.py:2367
+#: interfaces/desktop/mainform_ui.py:2369
+msgid " results"
+msgstr ""
+
+#: interfaces/desktop/mainform_ui.py:2368
+msgid "Results/Page"
+msgstr ""
+
+#: interfaces/desktop/mainform_ui.py:2370
+msgid "Highlight keywords"
+msgstr ""
+
+#: interfaces/desktop/mainform_ui.py:2371
+#: interfaces/desktop/mainform_ui.py:2374
+msgid "SearchBar"
+msgstr ""
+
+#: interfaces/desktop/mainform_ui.py:2372
+#: interfaces/desktop/mainform_ui.py:2373
+msgid "Write your query here"
+msgstr ""
+
+#: interfaces/desktop/mainform_ui.py:2375
+msgid "الحمد لله"
+msgstr ""
+
+#: interfaces/desktop/mainform_ui.py:2376
+msgid "آية:(يقول)"
+msgstr ""
+
+#: interfaces/desktop/mainform_ui.py:2377
+#: interfaces/desktop/mainform_ui.py:2378
+msgid "Click to search"
+msgstr ""
+
+#: interfaces/desktop/mainform_ui.py:2379
+#: interfaces/desktop/mainform_ui.py:2380
+msgid "Click to clear searchbar"
+msgstr ""
+
+#: interfaces/desktop/mainform_ui.py:2381
+msgid "Filter recent results"
+msgstr ""
+
+#: interfaces/desktop/mainform_ui.py:2382
+msgid "Auto speller"
+msgstr ""
+
+#: interfaces/desktop/mainform_ui.py:2383
+msgid "search in :"
+msgstr ""
+
+#: interfaces/desktop/mainform_ui.py:2384
+msgid "Verses"
+msgstr ""
+
+#: interfaces/desktop/mainform_ui.py:2385
+#: interfaces/desktop/mainform_ui.py:2477
+msgid "Words"
+msgstr ""
+
+#: interfaces/desktop/mainform_ui.py:2386
+msgid "Translations"
+msgstr ""
+
+#: interfaces/desktop/mainform_ui.py:2387
+msgid " Features "
+msgstr ""
+
+#: interfaces/desktop/mainform_ui.py:2388
+#: interfaces/desktop/mainform_ui.py:2427
+msgid "Text"
+msgstr ""
+
+#: interfaces/desktop/mainform_ui.py:2389
+msgid "Phrase"
+msgstr ""
+
+#: interfaces/desktop/mainform_ui.py:2390
+msgid "Part of Words"
+msgstr ""
+
+#: interfaces/desktop/mainform_ui.py:2391
+msgid "All Words"
+msgstr ""
+
+#: interfaces/desktop/mainform_ui.py:2392
+msgid "Some Words"
+msgstr ""
+
+#: interfaces/desktop/mainform_ui.py:2393
+msgid "Except Words"
+msgstr ""
+
+#: interfaces/desktop/mainform_ui.py:2394
+msgid "Synonyms"
+msgstr ""
+
+#: interfaces/desktop/mainform_ui.py:2395
+msgid "Antonyms"
+msgstr ""
+
+#: interfaces/desktop/mainform_ui.py:2396
+msgid "Ignore Spell Errors"
+msgstr ""
+
+#: interfaces/desktop/mainform_ui.py:2397
+msgid "Partial vocalisation"
+msgstr ""
+
+#: interfaces/desktop/mainform_ui.py:2398
+msgid "Light Stemming"
+msgstr ""
+
+#: interfaces/desktop/mainform_ui.py:2399
+msgid "Deep Stemming (Root)"
+msgstr ""
+
+#: interfaces/desktop/mainform_ui.py:2400
+msgid "Boosting"
+msgstr ""
+
+#: interfaces/desktop/mainform_ui.py:2401
+msgid "Buckwalter"
+msgstr ""
+
+#: interfaces/desktop/mainform_ui.py:2402
+#: interfaces/desktop/mainform_ui.py:2419
+#: interfaces/desktop/mainform_ui.py:2430
+#: interfaces/desktop/mainform_ui.py:2444
+#: interfaces/desktop/mainform_ui.py:2466
+#: interfaces/desktop/mainform_ui.py:2489
+#: interfaces/desktop/mainform_ui.py:2512
+msgid "Relation"
+msgstr ""
+
+#: interfaces/desktop/mainform_ui.py:2403
+#: interfaces/desktop/mainform_ui.py:2420
+#: interfaces/desktop/mainform_ui.py:2431
+#: interfaces/desktop/mainform_ui.py:2445
+#: interfaces/desktop/mainform_ui.py:2467
+#: interfaces/desktop/mainform_ui.py:2490
+msgid "Add"
+msgstr ""
+
+#: interfaces/desktop/mainform_ui.py:2404
+#: interfaces/desktop/mainform_ui.py:2421
+#: interfaces/desktop/mainform_ui.py:2432
+#: interfaces/desktop/mainform_ui.py:2446
+#: interfaces/desktop/mainform_ui.py:2468
+#: interfaces/desktop/mainform_ui.py:2491
+#: interfaces/desktop/mainform_ui.py:2514
+msgid "Replace"
+msgstr ""
+
+#: interfaces/desktop/mainform_ui.py:2405
+msgid "Conjuction (AND)"
+msgstr ""
+
+#: interfaces/desktop/mainform_ui.py:2406
+#: interfaces/desktop/mainform_ui.py:2422
+#: interfaces/desktop/mainform_ui.py:2433
+#: interfaces/desktop/mainform_ui.py:2447
+#: interfaces/desktop/mainform_ui.py:2469
+#: interfaces/desktop/mainform_ui.py:2492
+#: interfaces/desktop/mainform_ui.py:2515
+msgid "(OR)"
+msgstr ""
+
+#: interfaces/desktop/mainform_ui.py:2407
+msgid "Exception (ANDNOT)"
+msgstr ""
+
+#: interfaces/desktop/mainform_ui.py:2408
+#: interfaces/desktop/mainform_ui.py:2425
+#: interfaces/desktop/mainform_ui.py:2436
+#: interfaces/desktop/mainform_ui.py:2450
+#: interfaces/desktop/mainform_ui.py:2472
+#: interfaces/desktop/mainform_ui.py:2495
+#: interfaces/desktop/mainform_ui.py:2518
+msgid "Add to SearchBar"
+msgstr ""
+
+#: interfaces/desktop/mainform_ui.py:2409
+msgid "Advanced Search"
+msgstr ""
+
+#: interfaces/desktop/mainform_ui.py:2410
+msgid "Root"
+msgstr ""
+
+#: interfaces/desktop/mainform_ui.py:2411
+#: interfaces/desktop/mainform_ui.py:2428
+msgid "Type"
+msgstr ""
+
+#: interfaces/desktop/mainform_ui.py:2412
+msgid "اسم"
+msgstr ""
+
+#: interfaces/desktop/mainform_ui.py:2413
+msgid "فعل"
+msgstr ""
+
+#: interfaces/desktop/mainform_ui.py:2414
+msgid "أداة"
+msgstr ""
+
+#: interfaces/desktop/mainform_ui.py:2415
+msgid "SubType"
+msgstr ""
+
+#: interfaces/desktop/mainform_ui.py:2416
+msgid "Gender"
+msgstr ""
+
+#: interfaces/desktop/mainform_ui.py:2417
+msgid "Number"
+msgstr ""
+
+#: interfaces/desktop/mainform_ui.py:2418
+msgid "Person"
+msgstr ""
+
+#: interfaces/desktop/mainform_ui.py:2423
+#: interfaces/desktop/mainform_ui.py:2434
+#: interfaces/desktop/mainform_ui.py:2448
+#: interfaces/desktop/mainform_ui.py:2470
+#: interfaces/desktop/mainform_ui.py:2493
+#: interfaces/desktop/mainform_ui.py:2516
+msgid "(AND)"
+msgstr ""
+
+#: interfaces/desktop/mainform_ui.py:2424
+#: interfaces/desktop/mainform_ui.py:2435
+#: interfaces/desktop/mainform_ui.py:2449
+#: interfaces/desktop/mainform_ui.py:2471
+#: interfaces/desktop/mainform_ui.py:2494
+#: interfaces/desktop/mainform_ui.py:2517
+msgid "(ANDNOT)"
+msgstr ""
+
+#: interfaces/desktop/mainform_ui.py:2426
+msgid "Word Properties"
+msgstr ""
+
+#: interfaces/desktop/mainform_ui.py:2437
+msgid "Translation Text Search"
+msgstr ""
+
+#: interfaces/desktop/mainform_ui.py:2438
+msgid "Chapter"
+msgstr ""
+
+#: interfaces/desktop/mainform_ui.py:2439
+#: interfaces/desktop/mainform_ui.py:2441
+#: interfaces/desktop/mainform_ui.py:2443
+msgid "All"
+msgstr ""
+
+#: interfaces/desktop/mainform_ui.py:2440
+msgid "Topic"
+msgstr ""
+
+#: interfaces/desktop/mainform_ui.py:2442
+msgid "SubTopic"
+msgstr ""
+
+#: interfaces/desktop/mainform_ui.py:2451
+msgid "Subjects"
+msgstr ""
+
+#: interfaces/desktop/mainform_ui.py:2452
+msgid "search in"
+msgstr ""
+
+#: interfaces/desktop/mainform_ui.py:2453
+#: interfaces/desktop/mainform_ui.py:2479
+msgid "Ayas"
+msgstr ""
+
+#: interfaces/desktop/mainform_ui.py:2454
+msgid "Ayas (Global id)"
+msgstr ""
+
+#: interfaces/desktop/mainform_ui.py:2455
+#: interfaces/desktop/mainform_ui.py:2480
+msgid "Ruku's"
+msgstr ""
+
+#: interfaces/desktop/mainform_ui.py:2456
+msgid "Suras"
+msgstr ""
+
+#: interfaces/desktop/mainform_ui.py:2457
+msgid "Pages"
+msgstr ""
+
+#: interfaces/desktop/mainform_ui.py:2458
+msgid "Rubu's"
+msgstr ""
+
+#: interfaces/desktop/mainform_ui.py:2459
+msgid "Hizbs"
+msgstr ""
+
+#: interfaces/desktop/mainform_ui.py:2460
+msgid "Juz's"
+msgstr ""
+
+#: interfaces/desktop/mainform_ui.py:2461
+msgid "Manzils"
+msgstr ""
+
+#: interfaces/desktop/mainform_ui.py:2462
+#: interfaces/desktop/mainform_ui.py:2485
+msgid "from"
+msgstr ""
+
+#: interfaces/desktop/mainform_ui.py:2464
+#: interfaces/desktop/mainform_ui.py:2487
+msgid "to"
+msgstr ""
+
+#: interfaces/desktop/mainform_ui.py:2473
+msgid "Structural Search"
+msgstr ""
+
+#: interfaces/desktop/mainform_ui.py:2474
+msgid " number of"
+msgstr ""
+
+#: interfaces/desktop/mainform_ui.py:2476
+msgid "Letters"
+msgstr ""
+
+#: interfaces/desktop/mainform_ui.py:2478
+msgid "Words (الله)"
+msgstr ""
+
+#: interfaces/desktop/mainform_ui.py:2481
+msgid "in "
+msgstr ""
+
+#: interfaces/desktop/mainform_ui.py:2483
+msgid "Aya"
+msgstr ""
+
+#: interfaces/desktop/mainform_ui.py:2484
+#: interfaces/desktop/mainform_ui.py:2498
+msgid "Sura"
+msgstr ""
+
+#: interfaces/desktop/mainform_ui.py:2496
+msgid "Statistic Search"
+msgstr ""
+
+#: interfaces/desktop/mainform_ui.py:2497
+msgid "Predefined Queries"
+msgstr ""
+
+#: interfaces/desktop/mainform_ui.py:2500
+msgid "Revelation place "
+msgstr ""
+
+#: interfaces/desktop/mainform_ui.py:2502
+msgid "Medina"
+msgstr ""
+
+#: interfaces/desktop/mainform_ui.py:2503
+msgid "Mekka"
+msgstr ""
+
+#: interfaces/desktop/mainform_ui.py:2504
+msgid "Sajdah"
+msgstr ""
+
+#: interfaces/desktop/mainform_ui.py:2506
+msgid "No"
+msgstr ""
+
+#: interfaces/desktop/mainform_ui.py:2507
+msgid "Yes"
+msgstr ""
+
+#: interfaces/desktop/mainform_ui.py:2508
+msgid "Sajdah Type"
+msgstr ""
+
+#: interfaces/desktop/mainform_ui.py:2510
+msgid "Recommended"
+msgstr ""
+
+#: interfaces/desktop/mainform_ui.py:2511
+msgid "Obliged"
+msgstr ""
+
+#: interfaces/desktop/mainform_ui.py:2513
+msgid " Add"
+msgstr ""
+
+#: interfaces/desktop/mainform_ui.py:2520
+msgid "E&xit"
+msgstr ""
+
+#: interfaces/desktop/mainform_ui.py:2521
+msgid "About interface"
+msgstr ""
+
+#: interfaces/desktop/mainform_ui.py:2522
+msgid "About"
+msgstr ""
+
+#: interfaces/desktop/mainform_ui.py:2523
+msgid "links"
+msgstr ""
+
+#: interfaces/desktop/mainform_ui.py:2524
+msgid "Funding"
+msgstr ""
+
+#: interfaces/desktop/mainform_ui.py:2525
+msgid "Advanced Search "
+msgstr ""
+
+#: interfaces/desktop/mainform_ui.py:2526
+msgid "Show/Hide &options"
+msgstr ""
+
+#: interfaces/desktop/mainform_ui.py:2527
+msgid "Extending Search"
+msgstr ""
+
+#: interfaces/desktop/mainform_ui.py:2529
+msgid "Show &features"
+msgstr ""
+
+#: interfaces/desktop/mainform_ui.py:2530
+msgid "Translate!"
+msgstr ""
+
+#: interfaces/desktop/mainform_ui.py:2531
+msgid "&Export Results"
+msgstr ""
+
+#: interfaces/desktop/mainform_ui.py:2532
+msgid "&Print Results"
+msgstr ""
+
+#: interfaces/desktop/mainform_ui.py:2533
+msgid "------------"
+msgstr ""
+
+#: interfaces/desktop/mainform_ui.py:2534
+msgid "_________"
+msgstr ""
+
+#: interfaces/desktop/mainform_ui.py:2535
+msgid "Send by email"
+msgstr ""
+
+#: interfaces/desktop/mainform_ui.py:2536
+msgid "Redo"
+msgstr ""
+
+#: interfaces/desktop/mainform_ui.py:2537
+msgid "Undo"
+msgstr ""
+
+#: interfaces/desktop/mainform_ui.py:2538
+msgid "--"
+msgstr ""
+
+#: interfaces/desktop/mainform_ui.py:2539
+msgid "Zoom In"
+msgstr ""
+
+#: interfaces/desktop/mainform_ui.py:2540
+msgid "Zoom Out"
+msgstr ""
+
+#: interfaces/desktop/mainform_ui.py:2541
+msgid "Hints"
+msgstr ""
+
+#: interfaces/desktop/mainform_ui.py:2542
+msgid "Report bug"
+msgstr ""
+
+#: interfaces/desktop/mainform_ui.py:2543
+msgid "Donate us"
+msgstr ""
+
+#: interfaces/desktop/mainform_ui.py:2544
+msgid "Contact us"
+msgstr ""
+
+#: interfaces/desktop/mainform_ui.py:2545
+msgid "Work team"
+msgstr ""
+
+#: interfaces/desktop/mainform_ui.py:2546
+msgid "Show &options"
+msgstr ""
+
+#: interfaces/desktop/mainform_ui.py:2547
+msgid "Show/Hide &features"
+msgstr ""
+
+#: interfaces/desktop/mainform_ui.py:2548
+msgid "Translate this application"
+msgstr ""
+
+#: interfaces/desktop/mainform_ui.py:2550
+msgid "Position in Mus-haf"
+msgstr ""
+
+#: interfaces/desktop/mainform_ui.py:2552
+msgid "Subject"
+msgstr ""
+
+#: interfaces/desktop/mainform_ui.py:2554
+#: interfaces/desktop/mainform_ui.py:2574
+msgid "default"
+msgstr ""
+
+#: interfaces/desktop/mainform_ui.py:2555
+msgid "de"
+msgstr ""
+
+#: interfaces/desktop/mainform_ui.py:2556
+msgid "Standard"
+msgstr ""
+
+#: interfaces/desktop/mainform_ui.py:2557
+msgid "Uthmani"
+msgstr ""
+
+#: interfaces/desktop/mainform_ui.py:2560
+msgid "Word statistics"
+msgstr ""
+
+#: interfaces/desktop/mainform_ui.py:2561
+msgid "Sura informations"
+msgstr ""
+
+#: interfaces/desktop/mainform_ui.py:2562
+msgid "Aya Informations"
+msgstr ""
+
+#: interfaces/desktop/mainform_ui.py:2563
+msgid "Previos aya"
+msgstr ""
+
+#: interfaces/desktop/mainform_ui.py:2565
+msgid "Preferences"
+msgstr ""
+
+#: interfaces/desktop/mainform_ui.py:2566
+msgid "&Load  Query"
+msgstr ""
+
+#: interfaces/desktop/mainform_ui.py:2567
+msgid "&Save Query"
+msgstr ""
+
+#: interfaces/desktop/mainform_ui.py:2568
+msgid "&Sbb"
+msgstr ""
+
+#: interfaces/desktop/mainform_ui.py:2569
+msgid "English "
+msgstr ""
+
+#: interfaces/desktop/mainform_ui.py:2570
+msgid "Add Translation"
+msgstr ""
+
+#: interfaces/desktop/mainform_ui.py:2571
+msgid "Default"
+msgstr ""
+
+#: interfaces/desktop/mainform_ui.py:2572
+msgid "Change Path"
+msgstr ""
+
+#: interfaces/desktop/mainform_ui.py:2573
+msgid "Add Recitation"
+msgstr ""
+
+#: interfaces/desktop/mainform_ui.py:2575
+msgid "Undo Query"
+msgstr ""
+
+#: interfaces/desktop/mainform_ui.py:2576
+msgid "Redo Query"
+msgstr ""
+
+#: interfaces/desktop/mainform_ui.py:2577
+msgid "Copy Query"
+msgstr ""
+
+#: interfaces/desktop/mainform_ui.py:2578
+msgid "Copy Page"
+msgstr ""
+
+#: interfaces/desktop/mainform_ui.py:2580
+msgid "About project"
+msgstr ""
