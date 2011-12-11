@@ -1,0 +1,11 @@
+alfanous (0.5~svn125-1~sabily1) oneiric; urgency=low
+
+  [ أحمد المحمودي (Ahmed El-Mahmoudy) ]
+  * Initial release
+  * Patched alfanousDesktop python script to add /usr/share/alfanous to path, 
+    since alfanousDesktop module is installed there.
+
+  [ Assem ]
+  * test
+
+ -- Assem <assem@assem-laptop>  Sun, 11 Dec 2011 12:42:35 +0100
