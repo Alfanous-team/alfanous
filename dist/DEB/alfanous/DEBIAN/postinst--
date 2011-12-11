@@ -1,3 +1,0 @@
-#!/bin/bash
-export PYTHONPATH=${PYTHONPATH}:/usr/local/lib/python2.6/dist-packages/whoosh.egg
-export PYTHONPATH=${PYTHONPATH}:/usr/local/lib/python2.6/dist-packages/alfanous.egg
