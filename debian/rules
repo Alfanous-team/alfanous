@@ -1,0 +1,20 @@
+#!/usr/bin/make -f
+# -*- makefile -*-
+
+%:
+	dh $@ --with python2
+
+override_dh_auto_build:
+	dh_auto_build -Dsrc/alfanous
+	dh_auto_build -Dinterfaces/desktop
+
+override_dh_auto_install:
+	dh_auto_install -Dsrc/alfanous
+	dh_auto_install -Dinterfaces/desktop -- --install-lib=/usr/share/alfanous
+
+override_dh_auto_clean:
+	dh_auto_clean -Dsrc/alfanous
+	dh_auto_clean -Dinterfaces/desktop
+
+override_dh_installchangelogs:
+	dh_installchangelogs CHANGELOG
