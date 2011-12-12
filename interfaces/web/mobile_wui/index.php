@@ -31,26 +31,20 @@ header("Content-Type: application/xhtml+xml; charset=UTF-8");
 header("Content-Language: ar");
 
 header("Cache-Control: max-age=3600, must-revalidate");
-header("Last-Modified: Sat, 10 Dec 2011 00:00:00 GMT");
+header("Last-Modified: Sat, 12 Dec 2011 00:00:00 GMT");
 
 # Check GET parameters
-if (count($_GET)<1) {
-		# case: no query
-		$show_result=False;
-	}
-	elseif (count($_GET)<2) {
-		# case: new search
-		$search=$_GET["search"];
-		$page=1;
-		$show_result=True;
+$show_result = False;
+if (isset($_GET["search"])) {
+	$search = $_GET["search"];
+	$show_result = True;
+	if (isset($_GET["page"])) {
+		$page=$_GET["page"];
 	}
 	else {
-		# case: another result page
-		$search=$_GET["search"];
-		$page=$_GET["page"];
-		$show_result=True;
+		$page=1;
 	};
-
+};
 
 if ($show_result) {
 
