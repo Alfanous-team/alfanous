@@ -31,7 +31,7 @@ header("Content-Type: application/xhtml+xml; charset=UTF-8");
 header("Content-Language: ar");
 
 header("Cache-Control: max-age=3600, must-revalidate");
-header("Last-Modified: Sat, 12 Dec 2011 00:00:00 GMT");
+header(sprintf("Last-Modified: %s", date("r", filemtime($_SERVER['SCRIPT_FILENAME']))));
 
 # Check GET parameters
 	$search = isset($_GET["search"]) ? $_GET["search"] : "";
