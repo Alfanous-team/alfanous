@@ -34,19 +34,10 @@ header("Cache-Control: max-age=3600, must-revalidate");
 header("Last-Modified: Sat, 12 Dec 2011 00:00:00 GMT");
 
 # Check GET parameters
-$show_result = False;
-if (isset($_GET["search"])) {
-	$search = $_GET["search"];
-	$show_result = True;
-	if (isset($_GET["page"])) {
-		$page=$_GET["page"];
-	}
-	else {
-		$page=1;
-	};
-};
+	$search = isset($_GET["search"]) ? $_GET["search"] : "";
+	$page = isset($_GET["page"]) ? $_GET["page"] : 1;
 
-if ($show_result) {
+if ($search) {
 
 	# Hidden parameters
 	$sortedby="mushaf";
@@ -171,7 +162,7 @@ print('
 ');
 
 /*
-if ($show_result) {
+if ($search) {
 	# debug:
 	# print raw json
 	printf('<!-- DEBUG --><pre>%s</pre>', htmlspecialchars($contents));
@@ -198,7 +189,7 @@ name="search" title="search" inputmode="arabic" />
 # Top search form
 printf($search_form,1);
 
-if ($show_result and $json and $json->interval->total) {
+if ($search and $json and $json->interval->total) {
 	# case: some results
 
 	# Pages control
@@ -261,7 +252,7 @@ if ($show_result and $json and $json->interval->total) {
 		printf($search_form,2);
 	};
 }
-elseif ($show_result and $search) {
+elseif ($search) {
 	# case: no results
 	print('
 	<hr />
