@@ -35,7 +35,6 @@ text-align: center;
 
 /* result */
 #search_result {
-	text-align: right;
 }
 
 .result_item {
@@ -66,4 +65,8 @@ text-align: center;
 
 .align-left {
 	text-align: left;
+}
+
+.align-right {
+	text-align: right;
 }
