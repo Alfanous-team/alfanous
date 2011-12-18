@@ -51,6 +51,7 @@ $themes_list = array("std");
 $search = isset($_GET["search"]) ? $_GET["search"] : "";
 $page = isset($_GET["page"]) ? $_GET["page"] : 1;
 $language = isset($_GET["language"]) ? $_GET["language"] : DEFAULT_LOCALE;
+$theme = isset($_GET["theme"]) ? $_GET["theme"] : DEFAULT_THEME;
 $tashkil = isset($_GET["tashkil"]) ? True : False;
 $fazzy = isset($_GET["fazzy"]) ? True : False;
 
