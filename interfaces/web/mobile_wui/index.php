@@ -92,10 +92,16 @@ if ($search) {
 	$query_site = "http://www.alfanous.org/json?";
 	$query_search = "search=" . urlencode($search);
 	$query_page = "&page=" . urlencode($page);
-	$query_string =  "&sortedby=" . urlencode($sortedby)
+	$query_string = "&sortedby=" . urlencode($sortedby)
 		. "&recitation=" . urlencode($recitation)
 		. "&translation=" . urlencode($translation)
 		. "&highlight=" . urlencode($highlight)
+		. (($fuzzy)?"&fuzzy=yes":"");
+
+	# Custom additional options (NOT for JSON Query)
+	$query_custom = "&language=" . urlencode($language)
+		. "&theme=" . urlencode($theme)
+		. (($tashkil)?"&tashkil=yes":"")
 		. (($fuzzy)?"&fuzzy=yes":"");
 
 	# JSON query
@@ -185,7 +191,7 @@ if ($search and $json and $json->interval->total): # case: some results
 		}
 		else {
 			$results_pages .= sprintf(" <a href='%s'>%s</a>",
-				htmlspecialchars("index.php?" . $query_search . "&page=" . $i),
+				htmlspecialchars("index.php?" . $query_search . "&page=" . $i . $query_custom),
 				$i);
 		};
 	};
