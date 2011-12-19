@@ -15,7 +15,7 @@ public function __construct () {
 
 		$this->SEARCH = T_("Search");
 		$this->TASHKIL = T_("Tashkil");
-		$this->FAZZY = T_("Fazzy");
+		$this->FUZZY = T_("Fuzzy");
 		$this->LANGUAGE = T_("Language");
 		$this->THEME = T_("Theme");
 		$this->RESULTS = T_("Results");

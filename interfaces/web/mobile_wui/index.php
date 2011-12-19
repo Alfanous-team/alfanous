@@ -53,7 +53,7 @@ $page = isset($_GET["page"]) ? $_GET["page"] : 1;
 $language = isset($_GET["language"]) ? $_GET["language"] : DEFAULT_LOCALE;
 $theme = isset($_GET["theme"]) ? $_GET["theme"] : DEFAULT_THEME;
 $tashkil = isset($_GET["tashkil"]) ? True : False;
-$fazzy = isset($_GET["fazzy"]) ? True : False;
+$fuzzy = isset($_GET["fuzzy"]) ? True : False;
 
 
 # Gettext
@@ -96,7 +96,7 @@ if ($search) {
 		. "&recitation=" . urlencode($recitation)
 		. "&translation=" . urlencode($translation)
 		. "&highlight=" . urlencode($highlight)
-		. (($fazzy)?"&fuzzy=yes":"");
+		. (($fuzzy)?"&fuzzy=yes":"");
 
 	# JSON query
 	$handle = fopen($query_site . $query_search . $query_page . $query_string,
@@ -140,9 +140,9 @@ name="search" title="search" inputmode="arabic" />
 			<input name="tashkil" type="checkbox"
 <? echo ($tashkil)?" checked=\"checked\"":""; ?> value="yes" />
 <? echo $mt->TASHKIL; ?> | 
-			<input name="fazzy" type="checkbox"
-<? echo ($fazzy)?" checked=\"checked\"":""; ?> value="yes" />
-<? echo $mt->FAZZY; ?>
+			<input name="fuzzy" type="checkbox"
+<? echo ($fuzzy)?" checked=\"checked\"":""; ?> value="yes" />
+<? echo $mt->FUZZY; ?>
 			<br />
 			<? echo $mt->LANGUAGE; ?>:
 			<select name="language">
@@ -239,9 +239,9 @@ name="search" title="search" inputmode="arabic" />
 			<input name="tashkil" type="checkbox"
 <? echo ($tashkil)?" checked=\"checked\"":""; ?> value="yes" />
 <? echo $mt->TASHKIL; ?> | 
-			<input name="fazzy" type="checkbox"
-<? echo ($fazzy)?" checked=\"checked\"":""; ?> value="yes" />
-<? echo $mt->FAZZY; ?>
+			<input name="fuzzy" type="checkbox"
+<? echo ($fuzzy)?" checked=\"checked\"":""; ?> value="yes" />
+<? echo $mt->FUZZY; ?>
 			<br />
 			<? echo $mt->LANGUAGE; ?>:
 			<select name="language">
