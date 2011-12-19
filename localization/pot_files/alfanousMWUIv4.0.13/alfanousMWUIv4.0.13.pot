@@ -6,9 +6,9 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: PACKAGE VERSION\n"
+"Project-Id-Version: AlfanousMobileWUI 4.0.13\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-12-19 09:07+0100\n"
+"POT-Creation-Date: 2011-12-19 23:39+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,11 +16,11 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: mobiletext.php:8
+#: interfaces/web/mobile_wui/mobiletext.php:8
 msgid "Alfanous"
 msgstr ""
 
-#: mobiletext.php:9
+#: interfaces/web/mobile_wui/mobiletext.php:9
 msgid ""
 "Alfanous is a Quranic search engine offers \n"
 "\tsimple and advanced search services in the whole information that Holy Qur’an \n"
@@ -29,102 +29,102 @@ msgid ""
 "\tfeatures like Highlight, Suggestions, Scoring …etc."
 msgstr ""
 
-#: mobiletext.php:14
+#: interfaces/web/mobile_wui/mobiletext.php:14
 msgid "Oops, Nothing found."
 msgstr ""
 
-#: mobiletext.php:16
+#: interfaces/web/mobile_wui/mobiletext.php:16
 msgid "Search"
 msgstr ""
 
-#: mobiletext.php:17
+#: interfaces/web/mobile_wui/mobiletext.php:17
 msgid "Tashkil"
 msgstr ""
 
-#: mobiletext.php:18
+#: interfaces/web/mobile_wui/mobiletext.php:18
 msgid "Fuzzy"
 msgstr ""
 
-#: mobiletext.php:19
+#: interfaces/web/mobile_wui/mobiletext.php:19
 msgid "Language"
 msgstr ""
 
-#: mobiletext.php:20
+#: interfaces/web/mobile_wui/mobiletext.php:20
 msgid "Theme"
 msgstr ""
 
-#: mobiletext.php:21
+#: interfaces/web/mobile_wui/mobiletext.php:21
 msgid "Results"
 msgstr ""
 
-#: mobiletext.php:22
+#: interfaces/web/mobile_wui/mobiletext.php:22
 msgid "Pages"
 msgstr ""
 
-#: mobiletext.php:24
+#: interfaces/web/mobile_wui/mobiletext.php:24
 msgid "Words"
 msgstr ""
 
-#: mobiletext.php:25
+#: interfaces/web/mobile_wui/mobiletext.php:25
 msgid "Letters"
 msgstr ""
 
-#: mobiletext.php:26
+#: interfaces/web/mobile_wui/mobiletext.php:26
 msgid "God's Names"
 msgstr ""
 
-#: mobiletext.php:28
+#: interfaces/web/mobile_wui/mobiletext.php:28
 msgid "Aya's"
 msgstr ""
 
-#: mobiletext.php:29
+#: interfaces/web/mobile_wui/mobiletext.php:29
 msgid "Subject"
 msgstr ""
 
-#: mobiletext.php:30
+#: interfaces/web/mobile_wui/mobiletext.php:30
 msgid "Chapter"
 msgstr ""
 
-#: mobiletext.php:31
+#: interfaces/web/mobile_wui/mobiletext.php:31
 msgid "Topic"
 msgstr ""
 
-#: mobiletext.php:32
+#: interfaces/web/mobile_wui/mobiletext.php:32
 msgid "Subtopic"
 msgstr ""
 
-#: mobiletext.php:33
+#: interfaces/web/mobile_wui/mobiletext.php:33
 msgid "Sura"
 msgstr ""
 
-#: mobiletext.php:34
+#: interfaces/web/mobile_wui/mobiletext.php:34
 msgid "Juz"
 msgstr ""
 
-#: mobiletext.php:35
+#: interfaces/web/mobile_wui/mobiletext.php:35
 msgid "Hizb"
 msgstr ""
 
-#: mobiletext.php:36
+#: interfaces/web/mobile_wui/mobiletext.php:36
 msgid "Rub"
 msgstr ""
 
-#: mobiletext.php:37
+#: interfaces/web/mobile_wui/mobiletext.php:37
 msgid "Page"
 msgstr ""
 
-#: mobiletext.php:38
+#: interfaces/web/mobile_wui/mobiletext.php:38
 msgid "Manzil"
 msgstr ""
 
-#: mobiletext.php:39
+#: interfaces/web/mobile_wui/mobiletext.php:39
 msgid "Ruku"
 msgstr ""
 
-#: mobiletext.php:40
+#: interfaces/web/mobile_wui/mobiletext.php:40
 msgid "Sajda"
 msgstr ""
 
-#: mobiletext.php:42
+#: interfaces/web/mobile_wui/mobiletext.php:42
 msgid "ltr"
 msgstr ""

@@ -5,7 +5,7 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: AlfanousMobile 1.0\n"
+"Project-Id-Version: AlfanousMobileWUI 4.0.13\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2011-12-19 09:06+0100\n"
 "PO-Revision-Date: 2011-12-18 21:43+0100\n"
