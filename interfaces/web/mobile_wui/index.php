@@ -40,7 +40,7 @@ define("DEFAULT_THEME", "std");
 
 # Gettext
 require_once("./php-gettext/gettext.inc");
-$domain = "AlfanousMobile";
+$domain = "alfanousMWUI";
 $locales_list = array("en", "ar");
 $encoding = "UTF-8";
 

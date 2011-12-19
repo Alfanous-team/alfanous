@@ -8,7 +8,7 @@
 ## to do: send version to all integrated tools
 ## to do: all operations of each extenstion
  
-VERSION="4.0.13" 
+VERSION="4.0.13"
 
 API_PATH="./src/"
 IMPORTER=$(API_PATH)"Importer/main.py"
@@ -16,6 +16,7 @@ DYNAMIC_RESOURCES_PATH=$(API_PATH)"alfanous/dynamic_resources/"
 STORE_PATH="./store/"
 INDEX_PATH="./indexes/"
 DESKTOP_INTERFACE_PATH="./interfaces/desktop/"
+MOBILE_WUI_PATH=./interfaces/web/mobile_wui/
 
 PREFIX?=/usr
 CONFIG_INSTALL_PATH="$(DESTDIR)$(PREFIX)/share/alfanous-config/"
@@ -142,6 +143,10 @@ local_pot:
 	xgettext $(DESKTOP_INTERFACE_PATH)*.py  --default-domain=alfanousQT --language=Python --keyword=n_ 
 	mv alfanousQT.po localization/pot_files/alfanousQT.pot
 	# upload the potfile to transifix
+
+local_mobile_pot:
+	@if [ ! -d "./localization/pot_files/alfanousMWUIv$(VERSION)/" ]; then mkdir ./localization/pot_files/alfanousMWUIv$(VERSION)/; fi
+	xgettext -kT_ --from-code utf-8 -L PHP --no-wrap --package-name="AlfanousMobileWUI" --package-version=$(VERSION) -d alfanousMWUI -o ./localization/pot_files/alfanousMWUIv$(VERSION)/alfanousMWUIv$(VERSION).pot $(MOBILE_WUI_PATH)*.php
 
 local_mo_download:
 	@echo "todo"
@@ -282,13 +287,3 @@ py2app: easy_install
 	
 easy_install:
 	apt-get install python-distutils*
-	
-
-	
-	
-	
-
-	
-	
-
-	
