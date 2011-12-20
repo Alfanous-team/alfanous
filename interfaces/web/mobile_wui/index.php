@@ -3,7 +3,7 @@
 /*******************************************************************************
 
     Alfanous Web Interface for Mobiles, uses Alfanous JSON service.
-    Copyright (C) 2011  Alfanous Team <http://www.alfanous.org>
+    Copyright (C) 2011  Abdellah Chelli, Alfanous Team <http://www.alfanous.org>
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as
@@ -51,7 +51,9 @@ $themes_list = array("std");
 $search = isset($_GET["search"]) ? $_GET["search"] : "";
 $page = isset($_GET["page"]) ? $_GET["page"] : 1;
 $language = isset($_GET["language"]) ? $_GET["language"] : DEFAULT_LOCALE;
+if (! in_array($language, $locales_list)) $language=DEFAULT_LOCALE;
 $theme = isset($_GET["theme"]) ? $_GET["theme"] : DEFAULT_THEME;
+if (! in_array($theme, $themes_list)) $theme=DEFAULT_THEME;
 $tashkil = isset($_GET["tashkil"]) ? True : False;
 $fuzzy = isset($_GET["fuzzy"]) ? True : False;
 
@@ -111,6 +113,18 @@ if ($search) {
 	fclose($handle);
 
 	$json = json_decode($contents);
+
+	if ($json) {
+		# Pages
+		$nb_pages = floor(($json->interval->total- 1) / 10)+ 1;
+		$page_nb = floor(($json->interval->start- 1) / 10)+ 1;
+		# Alfanous JSON service doesn't serve more than 100 pages.
+		$hit_page_limit = False;
+		if ($nb_pages > 100) {
+			$hit_page_limit = True;
+			$nb_pages = 100;
+		};
+	};
 };
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML Basic 1.1//EN"
@@ -165,73 +179,50 @@ name="search" title="search" inputmode="arabic" />
 		</div>
 	</form>
 
-<?php
-if ($search and $json and $json->interval->total): # case: some results
+<? if ($search and $json and $json->interval->total): # case: some results ?>
 
-	# Pages control
-	$nb_pages = floor(($json->interval->total- 1) / 10)+ 1;
-	$page_nb = floor(($json->interval->start- 1) / 10)+ 1;
-	# Alfanous JSON service doesn't serve more than 100 pages.
-	$hit_page_limit = False;
-	if ($nb_pages > 100) {
-		$hit_page_limit = True;
-		$nb_pages = 100;
-	};
-?>
-
-	<div class='pages'><? echo $mt->RESULTS; ?>: 
-		<? echo $json->interval->start; ?>-<? echo $json->interval->end; ?><? echo ($mt->RTL)?"\\":"/"; ?><? echo $json->interval->total; ?> 
+	<div class='pages'>
+		<? echo $mt->RESULTS; ?>: <? echo $json->interval->start; ?>-<? echo $json->interval->end; ?><? echo ($mt->RTL)?"\\":"/"; ?><? echo $json->interval->total; ?> 
 		<? echo $mt->PAGES; ?>:
-
-<?php
-	$results_pages = "";
-	for ($i = 1; $i <= $nb_pages; $i++) {
-		if ($i == $page_nb) {
-			$results_pages .= " ". $i;
-		}
-		else {
-			$results_pages .= sprintf(" <a href='%s'>%s</a>",
-				htmlspecialchars("index.php?" . $query_search . "&page=" . $i . $query_custom),
-				$i);
-		};
-	};
-	# show a sign for pages limit '...', a part of pages are not listed
-	if ($hit_page_limit) $results_pages .= " ...";
-	print($results_pages);
-?>
+		<?php
+			$results_pages = "";
+			for ($i = 1; $i <= $nb_pages; $i++) {
+				if ($i == $page_nb) {
+					$results_pages .= " ". $i;
+				}
+				else {
+					$results_pages .= sprintf(" <a href='%s'>%s</a>",
+						htmlspecialchars("index.php?" . $query_search . "&page=" . $i . $query_custom),
+						$i);
+				};
+			};
+			# show a sign for pages limit '...', a part of pages are not listed
+			if ($hit_page_limit) $results_pages .= " ...";
+			print($results_pages);
+		?>
 	</div>
 
 	<div id='search_result'>
-<?php
-	# Results listing
-	for( $i = $json->interval->start; $i <= $json->interval->end; $i++): ?>
-
-		<div class='result_item'>
-			<div dir='rtl' class='align-right'><span class='item_number'><? echo $i; ?> </span>
-				<span class='aya_info'> (<? echo $json->ayas->$i->sura->name; ?> <? echo $json->ayas->$i->aya->id; ?>) </span></div>
-			<div class='quran align-right' dir='rtl'> [ <? echo ($tashkil)?$json->ayas->$i->aya->text:preg_replace("/[\x{064B}-\x{065F}]/u", "", $json->ayas->$i->aya->text); ?> ] </div>
-			<div class='aya_details <? echo ($mt->RTL)?"align-right":"align-left"; ?>'>
-	‎			<? echo $mt->WORDS; ?> 
-	<? echo $json->ayas->$i->stat->words; ?><? echo ($mt->RTL)?"\\":"/"; ?><? echo $json->ayas->$i->sura->stat->words; ?> 
-				- <? echo $mt->LETTERS; ?> 
-	<? echo $json->ayas->$i->stat->letters; ?><? echo ($mt->RTL)?"\\":"/"; ?><? echo $json->ayas->$i->sura->stat->letters; ?> 
-				- <? echo $mt->GODNAMES; ?> 
-	<? echo $json->ayas->$i->stat->godnames; ?><? echo ($mt->RTL)?"\\":"/"; ?><? echo $json->ayas->$i->sura->stat->godnames; ?>
-				<br />
-				<? echo $mt->HIZB; ?> 
-	<? echo $json->ayas->$i->position->hizb; ?> 
-				- <? echo $mt->PAGE; ?> 
-	<? echo $json->ayas->$i->position->page; ?></div>
-		</div>
-
-<? endfor; ?>
+		<? for( $i = $json->interval->start; $i <= $json->interval->end; $i++): # Results listing ?>
+			<div class='result_item'>! in_array($language, $locales_list)) $language=DEFAULT_LOCALE;
+				<div dir='rtl' class='align-right'><span class='item_number'><? echo $i; ?> </span>
+					<span class='aya_info'> (<? echo $json->ayas->$i->sura->name; ?> <? echo $json->ayas->$i->aya->id; ?>) </span></div>
+				<div class='quran align-right' dir='rtl'> [ <? echo ($tashkil)?$json->ayas->$i->aya->text:preg_replace("/[\x{064B}-\x{065F}]/u", "", $json->ayas->$i->aya->text); ?> ] </div>
+				<div class='aya_details <? echo ($mt->RTL)?"align-right":"align-left"; ?>'>
+		‎			<? echo $mt->WORDS; ?> <? echo $json->ayas->$i->stat->words; ?><? echo ($mt->RTL)?"\\":"/"; ?><? echo $json->ayas->$i->sura->stat->words; ?> 
+					- <? echo $mt->LETTERS; ?> <? echo $json->ayas->$i->stat->letters; ?><? echo ($mt->RTL)?"\\":"/"; ?><? echo $json->ayas->$i->sura->stat->letters; ?> 
+					- <? echo $mt->GODNAMES; ?> <? echo $json->ayas->$i->stat->godnames; ?><? echo ($mt->RTL)?"\\":"/"; ?><? echo $json->ayas->$i->sura->stat->godnames; ?>
+					<br />
+					<? echo $mt->HIZB; ?> <? echo $json->ayas->$i->position->hizb; ?> 
+					- <? echo $mt->PAGE; ?> <? echo $json->ayas->$i->position->page; ?>
+				</div>
+			</div>
+		<? endfor; ?>
 	</div>
 
 	<div class='pages'>
-		<? echo $mt->RESULTS; ?>: 
-		<? echo $json->interval->start; ?>-<? echo $json->interval->end; ?><? echo ($mt->RTL)?"\\":"/"; ?><? echo $json->interval->total; ?> 
-		<? echo $mt->PAGES; ?>:
-		<? print($results_pages); ?>
+		<? echo $mt->RESULTS; ?>: <? echo $json->interval->start; ?>-<? echo $json->interval->end; ?><? echo ($mt->RTL)?"\\":"/"; ?><? echo $json->interval->total; ?> 
+		<? echo $mt->PAGES; ?>: <? print($results_pages); ?>
 	</div>
 
 	<form id="form_top" class="form" method="get" action="index.php">
