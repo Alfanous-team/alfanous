@@ -2,9 +2,9 @@
 
 ; HM NIS Edit Wizard helper defines
 !define PRODUCT_NAME "Alfanous"
-!define PRODUCT_VERSION "0.4"
+!define PRODUCT_VERSION "0.4.3"
 !define PRODUCT_PUBLISHER "Assem.ch"
-!define PRODUCT_WEB_SITE "http://alfanous.sf.net/cms"
+!define PRODUCT_WEB_SITE "http://www.alfanous.org"
 !define PRODUCT_DIR_REGKEY "Software\Microsoft\Windows\CurrentVersion\App Paths\Gui.exe"
 !define PRODUCT_UNINST_KEY "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT_NAME}"
 !define PRODUCT_UNINST_ROOT_KEY "HKLM"
@@ -14,8 +14,8 @@
 
 ; MUI Settings
 !define MUI_ABORTWARNING
-!define MUI_ICON "Alfanous.ico"
-!define MUI_UNICON "Alfanous.ico"
+!define MUI_ICON "resources\Alfanous.ico"
+!define MUI_UNICON "resources\Alfanous.ico"
 
 ; Language Selection Dialog Settings
 !define MUI_LANGDLL_REGISTRY_ROOT "${PRODUCT_UNINST_ROOT_KEY}"
@@ -25,7 +25,7 @@
 ; Welcome page
 !insertmacro MUI_PAGE_WELCOME
 ; License page
-!insertmacro MUI_PAGE_LICENSE "license.txt"
+!insertmacro MUI_PAGE_LICENSE "dist\nsis\license.txt"
 ; Components page
 !insertmacro MUI_PAGE_COMPONENTS
 ; Directory page
@@ -40,9 +40,62 @@
 !insertmacro MUI_UNPAGE_INSTFILES
 
 ; Language files
-!insertmacro MUI_LANGUAGE "Arabic"
-!insertmacro MUI_LANGUAGE "English"
-!insertmacro MUI_LANGUAGE "French"
+;!insertmacro MUI_LANGUAGE  "Albanian"
+!insertmacro MUI_LANGUAGE  "Arabic"
+;!insertmacro MUI_LANGUAGE  "Basque"
+;!insertmacro MUI_LANGUAGE  "Belarusian"
+;!insertmacro MUI_LANGUAGE  "Bosnian"
+;!insertmacro MUI_LANGUAGE  "Breton"
+;!insertmacro MUI_LANGUAGE  "Bulgarian"
+;!insertmacro MUI_LANGUAGE  "Catalan"
+;!insertmacro MUI_LANGUAGE  "Croatian"
+;!insertmacro MUI_LANGUAGE  "Czech"
+;!insertmacro MUI_LANGUAGE  "Danish"
+;!insertmacro MUI_LANGUAGE  "Dutch"
+!insertmacro MUI_LANGUAGE  "English"
+;!insertmacro MUI_LANGUAGE  "Estonian"
+!insertmacro MUI_LANGUAGE  "Farsi"
+;!insertmacro MUI_LANGUAGE  "Finnish"
+!insertmacro MUI_LANGUAGE  "French"
+;!insertmacro MUI_LANGUAGE  "Galician"
+;!insertmacro MUI_LANGUAGE  "German"
+;!insertmacro MUI_LANGUAGE  "Greek"
+;!insertmacro MUI_LANGUAGE  "Hebrew"
+;!insertmacro MUI_LANGUAGE  "Hungarian"
+;!insertmacro MUI_LANGUAGE  "Icelandic"
+!insertmacro MUI_LANGUAGE  "Indonesian"
+;!insertmacro MUI_LANGUAGE  "Irish"
+;!insertmacro MUI_LANGUAGE  "Italian"
+;!insertmacro MUI_LANGUAGE  "Japanese"
+;!insertmacro MUI_LANGUAGE  "Korean"
+;!insertmacro MUI_LANGUAGE  "Kurdish"
+;!insertmacro MUI_LANGUAGE  "Latvian"
+;!insertmacro MUI_LANGUAGE  "Lithuanian"
+;!insertmacro MUI_LANGUAGE  "Luxembourgish"
+;!insertmacro MUI_LANGUAGE  "Macedonian"
+!insertmacro MUI_LANGUAGE  "Malay"
+;!insertmacro MUI_LANGUAGE  "Mongolian"
+;!insertmacro MUI_LANGUAGE  "Norwegian"
+;!insertmacro MUI_LANGUAGE  "NorwegianNynor"
+;!insertmacro MUI_LANGUAGE  "Polish"
+;!insertmacro MUI_LANGUAGE  "Portuguese"
+;!insertmacro MUI_LANGUAGE  "PortugueseBR"
+;!insertmacro MUI_LANGUAGE  "Romanian"
+;!insertmacro MUI_LANGUAGE  "Russian"
+;!insertmacro MUI_LANGUAGE  "Serbian"
+;!insertmacro MUI_LANGUAGE  "SerbianLatin"
+;!insertmacro MUI_LANGUAGE  "SimpChinese"
+;!insertmacro MUI_LANGUAGE  "Slovak"
+;!insertmacro MUI_LANGUAGE  "Slovenian"
+!insertmacro MUI_LANGUAGE  "Spanish"
+;!insertmacro MUI_LANGUAGE  "Swedish"
+;!insertmacro MUI_LANGUAGE  "Thai"
+;!insertmacro MUI_LANGUAGE  "TradChinese"
+!insertmacro MUI_LANGUAGE  "Turkish"
+;!insertmacro MUI_LANGUAGE  "Ukrainian"
+;!insertmacro MUI_LANGUAGE  "Uzbek"
+;!insertmacro MUI_LANGUAGE  "Valencian"
+;!insertmacro MUI_LANGUAGE  "Welsh"
 
 ; MUI end ------
 
@@ -53,6 +106,8 @@ InstallDirRegKey HKLM "${PRODUCT_DIR_REGKEY}" ""
 ShowInstDetails hide
 ShowUnInstDetails hide
 
+
+
 Function .onInit
   !insertmacro MUI_LANGDLL_DISPLAY
 FunctionEnd
@@ -60,24 +115,24 @@ FunctionEnd
 Section "Application" SEC01
   SetOutPath "$INSTDIR"
   SetOverwrite ifnewer
-  File "..\..\Interfaces\desktop\dist\mingwm10.dll"
+ # File "interfaces\desktop\dist\mingwm10.dll"
   SetOverwrite try
-  File "..\..\Interfaces\desktop\dist\bz2.pyd"
-  File "..\..\Interfaces\desktop\dist\Gui.exe"
+  File "interfaces\desktop\dist\bz2.pyd"
+  File "interfaces\desktop\dist\Gui.exe"
   CreateDirectory "$SMPROGRAMS\Alfanous"
   CreateShortCut "$SMPROGRAMS\Alfanous\Alfanous.lnk" "$INSTDIR\Gui.exe"
   CreateShortCut "$DESKTOP\Alfanous.lnk" "$INSTDIR\Gui.exe"
-  File "..\..\Interfaces\desktop\dist\*"
-
+  File "interfaces\desktop\dist\*"
   SetOverwrite ifnewer
-  File "..\..\alfanous\GPL.txt"
-  CreateShortCut "$STARTMENU.lnk" "$INSTDIR\GPL.txt"
+  File "LICENSE"
+  CreateShortCut "$STARTMENU.lnk" "$INSTDIR\LICENSE"
 SectionEnd
+
 
 Section "Main indexes" SEC02
   SetOutPath "$INSTDIR\indexes\main"
   SetOverwrite try
-  File "..\..\Interfaces\desktop\indexes\main\*"
+  File "indexes\main\*"
 
 SectionEnd
 
@@ -85,7 +140,7 @@ Section "Fonts" SEC03
   SetOutPath "$FONTS"
   
   SetOverwrite ifnewer
-  File "..\..\Interfaces\desktop\fonts\*"
+  File "resources\fonts\*"
 
   
 SectionEnd
@@ -93,9 +148,20 @@ SectionEnd
 Section "Extend indexes" SEC04
   SetOutPath "$INSTDIR\indexes\extend"
   SetOverwrite try
-  File "..\..\Interfaces\desktop\indexes\extend\*"
+  File "indexes\extend\*"
  
 SectionEnd
+
+
+Section "Predefined configuration" SEC05
+  SetOutPath "$INSTDIR\configs"
+  AccessControl::GrantOnFile "$INSTDIR\configs" "(BU)" "FullAccess"
+  SetOverwrite try
+  File "resources\configs\config.ini"
+SectionEnd
+
+
+
 
 Section -AdditionalIcons
   SetOutPath $INSTDIR
@@ -126,12 +192,12 @@ SectionEnd
 
 Function un.onUninstSuccess
   HideWindow
-  MessageBox MB_ICONINFORMATION|MB_OK "$(^Name) a été désinstallé avec succès de votre ordinateur."
+  MessageBox MB_ICONINFORMATION|MB_OK "$(^Name) a ï¿½tï¿½ dï¿½sinstallï¿½ avec succï¿½s de votre ordinateur."
 FunctionEnd
 
 Function un.onInit
 !insertmacro MUI_UNGETLANGUAGE
-  MessageBox MB_ICONQUESTION|MB_YESNO|MB_DEFBUTTON2 "Êtes-vous certains de vouloir désinstaller totalement $(^Name) et tous ses composants ?" IDYES +2
+  MessageBox MB_ICONQUESTION|MB_YESNO|MB_DEFBUTTON2 "ï¿½tes-vous certains de vouloir dï¿½sinstaller totalement $(^Name) et tous ses composants ?" IDYES +2
   Abort
 FunctionEnd
 
@@ -160,3 +226,5 @@ Section Uninstall
   DeleteRegKey HKLM "${PRODUCT_DIR_REGKEY}"
   SetAutoClose true
 SectionEnd
+
+
