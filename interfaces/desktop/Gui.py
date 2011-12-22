@@ -32,6 +32,14 @@ Created on 12 avr. 2010
 @todo: fields name in english and arabic / explication (id) 
 @todo: add qurany project for Subjects in english
 
+
+warning: 'msgid' format string with unnamed arguments cannot be properly localized:
+         The translator cannot reorder the arguments.
+         Please consider using a format string with named arguments,
+         and a mapping instead of a tuple for the arguments.
+
+
+
 """
 
 ## Arguments Management
@@ -91,11 +99,9 @@ lang1.install()
 """
 
 
-
-
 ## Specification of resources paths
-CONFIGPATH=options.config if options.config else "./"
-INDEXPATH=options.index if options.index else"../../indexes/"
+CONFIGPATH=options.config if options.config else "./configs/"
+INDEXPATH=options.index if options.index else"./indexes/"
 LOCALPATH=options.local if options.local else"./locale/"
 
 ## Initialize search engines 
@@ -138,15 +144,13 @@ def Gword_tamdid(aya): #remove tamdid _
 
 
 
-
-
-
-
 class QUI(Ui_MainWindow):
     """ the Quranic main UI """
     def __init__(self):
         self.last_results=None
         self.last_terms=None
+        self.currentQuery=None
+        self.Queries=[]
         self.history=[]
         
         
@@ -206,7 +210,6 @@ class QUI(Ui_MainWindow):
         config["options"]["highlight"]=self.o_highlight.isChecked()
         
   
-        
         
         config["sorting"]={}
         config["sorting"]["sortedbyscore"]=self.o_sortedbyscore.isChecked()
@@ -269,7 +272,6 @@ class QUI(Ui_MainWindow):
         self.o_sura_name.addItems([keywords(item)[0] for item in QSE.list_values("sura") if item])
         self.o_field.addItems(ara2eng_names.values())# ara2eng_names.keys()
         self.o_traduction.addItems(self.traductions_dict(static=STATIC_TRANSLATIONS_LIST).values())
-        
         self.load_config()
 
 
@@ -854,9 +856,6 @@ you can use alfanous to verify some numeric miracles of Quran
             html=F.read()
         self.o_results.setText(html)
         
-        
-
-
 def main():
     """ the main function"""
     app = QtGui.QApplication(sys.argv)
