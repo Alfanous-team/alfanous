@@ -55,7 +55,6 @@ from alfanous.main import *
 from alfanous.dynamic_ressources.arabicnames_dyn import ara2eng_names as Fields
 
 
-
 import gettext;
 gettext.bindtextdomain("alfanous", "./locale");
 gettext.textdomain("alfanous");
@@ -120,7 +119,7 @@ def results(query, sortedby="score", fields=["sura", "aya_id", "aya"],page=1,hig
 	@param fields : fields enabled to be shown
 	@return : the results with the type specified
     """
-    res, termz = QSE.search_all(unicode(query.replace("\\",""), 'utf8') ,limit=1000, sortedby=sortedby)
+    res, termz = QSE.search_all(unicode(query.replace("\\",""), 'utf8') ,limit=7000, sortedby=sortedby)
     terms = [term[1] for term in list(termz)]
     #pagination
     page=int(page)
