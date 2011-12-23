@@ -5,13 +5,17 @@
 #	Assem chelli <assem.ch@gmail.com>
 #
 
-## to do: send version to all integrated tools
-## to do: all operations of each extenstion
+## TODO: send version to all integrated tools
+## TODO: all operations of each extenstion
  
+<<<<<<< .mine
+VERSION="0.4.3"
+=======
 VERSION="4.0.13"
+>>>>>>> .r151
 
 API_PATH="./src/"
-IMPORTER=$(API_PATH)"Importer/main.py"
+IMPORTER=$(API_PATH)"Qimport/main.py"
 DYNAMIC_RESOURCES_PATH=$(API_PATH)"alfanous/dynamic_resources/"
 STORE_PATH="./store/"
 INDEX_PATH="./indexes/"
@@ -115,11 +119,12 @@ speller_subject:
 	
 ## help
 help_api:
-	cd alfanous/ ; epydoc   --html -v --graph all   --show-imports  -n alfanous -u alfanous.org  . ; 7z a -tzip  alfanous-html.zip ./html/* ;	mv -f alfanous-html.zip ../output ; mv ./html ../doc/API/
+	cd $(API_PATH)alfanous ; epydoc   --html -v --graph all   --show-imports  -n alfanous -u alfanous.org  . ; 7z a -tzip  alfanous-html.zip ./html/* ;	mv -f alfanous-html.zip ../output ; mv ./html ../docs/
 	@echo "API help is done!"
 	
 help:
-	@echo "Todo : Manual documentation using sphinx"
+	cd ./docs ; 
+	
 	
 ## Qt forms ,dialogs and resources compilation  
 # PyQt is needed  
@@ -129,10 +134,10 @@ qt_all:	 qt_uic qt_rcc
 	
 qt_uic:
 	
-	cd ./interfaces/desktop ; pyuic4  -o aboutDlg_ui.py UI/aboutDlg.ui
-	cd ./interfaces/desktop ; pyuic4  -o preferencesDlg_ui.py UI/preferencesDlg.ui
-	cd ./interfaces/desktop ; pyuic4  -o temp.py UI/mainform.ui #-x
-	cd ./interfaces/desktop ; sed 's/\"MainWindow\"\,/\"MainWindow\"\,\_(/g' temp.py | sed 's/\, None\,/\)\, None\,/g'| sed 's/from PyQt4/LOCALPATH="\.\/locale\/"\nimport gettext\n\_\=gettext\.gettext\ngettext\.bindtextdomain\(\"alfanousQT\"\, LOCALPATH\)\ngettext\.textdomain\(\"alfanousQT\"\)\nfrom PyQt4/g'    >mainform_ui.py 
+	cd $(DESKTOP_INTERFACE_PATH) ; pyuic4  -o aboutDlg_ui.py UI/aboutDlg.ui
+	cd $(DESKTOP_INTERFACE_PATH); pyuic4  -o preferencesDlg_ui.py UI/preferencesDlg.ui
+	cd $(DESKTOP_INTERFACE_PATH); pyuic4  -o temp.py UI/mainform.ui #-x
+	cd $(DESKTOP_INTERFACE_PATH); sed 's/\"MainWindow\"\,/\"MainWindow\"\,\_(/g' temp.py | sed 's/\, None\,/\)\, None\,/g'| sed 's/from PyQt4/LOCALPATH="\.\/locale\/"\nimport gettext\n\_\=gettext\.gettext\ngettext\.bindtextdomain\(\"alfanousQT\"\, LOCALPATH\)\ngettext\.textdomain\(\"alfanousQT\"\)\nfrom PyQt4/g'    >mainform_ui.py 
 
 qt_rcc:
 	pyrcc4 ./resources/images/main.qrc -o ./interfaces/desktop/main_rc.py
@@ -141,8 +146,9 @@ qt_rcc:
 # localization files
 local_pot:
 	xgettext $(DESKTOP_INTERFACE_PATH)*.py  --default-domain=alfanousQT --language=Python --keyword=n_ 
-	mv alfanousQT.po localization/pot_files/alfanousQT.pot
-	# upload the potfile to transifix
+	mkdir localization/pot_files/alfanousQTv$(VERSION)
+	mv alfanousQT.po localization/pot_files/alfanousQTv$(VERSION)/alfanousQTv$(VERSION).pot
+	
 
 local_mobile_pot:
 	@if [ ! -d "./localization/pot_files/alfanousMWUIv$(VERSION)/" ]; then mkdir ./localization/pot_files/alfanousMWUIv$(VERSION)/; fi
@@ -184,7 +190,7 @@ install_api:
 	cd   $(API_PATH)/alfanous/ ; python setup.py  install
 	
 install_desktop: install_index  install_api qt_all 
-	cd  ./interfaces/desktop/; sudo python setup.py install
+	cd  $(DESKTOP_INTERFACE_PATH); sudo python setup.py install
 	cp ./resources/launchers/alfanousDesktop $(DESTDIR)$(PREFIX)/bin/
 	cp ./resources/launchers/alfanous.desktop $(DESTDIR)$(PREFIX)/share/applications/
 	cp ./resources/AlFanous.png  $(DESTDIR)$(PREFIX)/share/pixmaps/
@@ -224,27 +230,51 @@ install_web:
 dist_all: tarball dist_egg dist_deb dist_rpm dist_sis dist_xpi  dist_app
 	@echo "done!"
 
+# generate all extentions and API's eggs
+dist_egg_all: dist_egg_api dist_egg_pyaya dist_egg_pycorpus  dist_egg_pyzekr dist_egg_qimport dist_egg_desktop
+ 
 # python egg for API
-dist_egg: alfanous/setup.py
-	cd ./alfanous ; python setup.py bdist_egg 
-	mkdir -p output/$(VERSION) ; mv ./alfanous/dist/*.egg ./output/$(VERSION)
+dist_egg_api: 
+	cd ./src/alfanous ; python setup.py bdist_egg 
+	mkdir -p output/$(VERSION) ; mv ./src/alfanous/dist/*.egg ./output/$(VERSION)
 	@echo  "NOTE: you can find the generated egg in ./output"
+	
+# python egg for PyAyaByAya extension
+dist_egg_pyaya: 
+	cd ./src/PyAyaByAya ; python setup.py bdist_egg 
+	mkdir -p output/$(VERSION) ; mv ./src/PyAyaByAya/dist/*.egg ./output/$(VERSION)
+	@echo  "NOTE: you can find the generated egg in ./output"
+	
+	
+# python egg for PyCorpus extension
+dist_egg_pycorpus: 
+	cd ./src/PyCorpus ; python setup.py bdist_egg 
+	mkdir -p output/$(VERSION) ; mv ./src/PyCorpus/dist/*.egg ./output/$(VERSION)
+	@echo  "NOTE: you can find the generated egg in ./output"
+	
+	
+# python egg for PyZekrModels extension
+dist_egg_pyzekr: 
+	cd ./src/PyZekrModels ; python setup.py bdist_egg 
+	mkdir -p output/$(VERSION) ; mv ./src/PyZekrModels/dist/*.egg ./output/$(VERSION)
+	@echo  "NOTE: you can find the generated egg in ./output"
+	
+# python egg for Qimport extension
+dist_egg_qimport: 
+	cd ./src/Qimport ; python setup.py bdist_egg 
+	mkdir -p output/$(VERSION) ; mv ./src/Qimport/dist/*.egg ./output/$(VERSION)
+	@echo  "NOTE: you can find the generated egg in ./output"
+# python egg for alfanousDesktop interface
+dist_egg_desktop: 
+	cd $(DESKTOP_INTERFACE_PATH) ; python setup.py bdist_egg 
+	mkdir -p output/$(VERSION) ; mv ./interfaces/desktop/dist/*.egg ./output/$(VERSION)
+	@echo  "NOTE: you can find the generated egg in ./output"
+
+# python 
 
 # Debian package for AlfanousDesktop
 dist_deb: 
-	#update files : todo
-	
-	# build deb
-	cd dist/DEB ; @echo "remove these" `find .  -name *~`; sudo rm -rf `find .  -name *~`;
-	cd dist/DEB ; sudo nano  alfanous/DEBIAN/changelog
-	cd dist/DEB ; sudo nano alfanous/DEBIAN/control
-	cd dist/DEB ; dpkg-deb -D --build alfanous alfanous-$(VERSION).deb
-	mkdir -p output/$(VERSION) ; mv dist/DEB/alfanous-$(VERSION).deb  ./output/$(VERSION)
-	
-	# build *_source.changes
-	cd dist/DEB/alfanous ; mv DEBIAN debian
-	cd dist/DEB/alfanous ; dpkg-buildpackage -S -rfakeroot -k2B2B8B26
-	cd dist/DEB/alfanous ; mv debian DEBIAN
+	dpkg-buildpackage
 	
 
 # Redhat package for AlfanousDesktop
