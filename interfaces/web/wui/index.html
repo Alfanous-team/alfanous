@@ -268,6 +268,11 @@
 			$(document).scrollTop($("#search_result").position().top);
 
 		}
+
+		function addto_searchbar(){
+			window.external.AddSearchProvider("http://wui.alfanous.org/alfanous-opensearch.xml");
+		}
+
 	// ]]>
 	</script>
 
@@ -508,7 +513,7 @@
     <div id="footer-small-wrapper">
         <div id="footer-small">
             <p class="left">copyright © <a href="http://wiki.alfanous.org/doku.php?id=contributers">Alfanous Team</a> 2009 - 2011 | released under <a href="http://www.gnu.org/licenses/agpl.html">AGPL</a> license</p>
-            <p class="right">powered by <a href="http://www.alfanous.org">Alfanous</a></p>
+            <p class="right">powered by <a href="http://www.alfanous.org">Alfanous</a>, <a onclick="addto_searchbar();return false;" href="#">Add to Search Bar</a></p>
         </div>
     </div>
 </footer>
