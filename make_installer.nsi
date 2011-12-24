@@ -5,7 +5,7 @@
 !define PRODUCT_VERSION "0.4.3"
 !define PRODUCT_PUBLISHER "Assem.ch"
 !define PRODUCT_WEB_SITE "http://www.alfanous.org"
-!define PRODUCT_DIR_REGKEY "Software\Microsoft\Windows\CurrentVersion\App Paths\Gui.exe"
+!define PRODUCT_DIR_REGKEY "Software\Microsoft\Windows\CurrentVersion\App Paths\alfanousDesktop-win.exe"
 !define PRODUCT_UNINST_KEY "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT_NAME}"
 !define PRODUCT_UNINST_ROOT_KEY "HKLM"
 
@@ -33,7 +33,7 @@
 ; Instfiles page
 !insertmacro MUI_PAGE_INSTFILES
 ; Finish page
-!define MUI_FINISHPAGE_RUN "$INSTDIR\Gui.exe"
+!define MUI_FINISHPAGE_RUN "$INSTDIR\alfanousDesktop-win.exe"
 !insertmacro MUI_PAGE_FINISH
 
 ; Uninstaller pages
@@ -118,10 +118,10 @@ Section "Application" SEC01
  # File "interfaces\desktop\dist\mingwm10.dll"
   SetOverwrite try
   File "interfaces\desktop\dist\bz2.pyd"
-  File "interfaces\desktop\dist\Gui.exe"
+  File "interfaces\desktop\dist\alfanousDesktop-win.exe"
   CreateDirectory "$SMPROGRAMS\Alfanous"
-  CreateShortCut "$SMPROGRAMS\Alfanous\Alfanous.lnk" "$INSTDIR\Gui.exe"
-  CreateShortCut "$DESKTOP\Alfanous.lnk" "$INSTDIR\Gui.exe"
+  CreateShortCut "$SMPROGRAMS\Alfanous\Alfanous.lnk" "$INSTDIR\alfanousDesktop-win.exe"
+  CreateShortCut "$DESKTOP\Alfanous.lnk" "$INSTDIR\alfanousDesktop-win.exe"
   File "interfaces\desktop\dist\*"
   SetOverwrite ifnewer
   File "LICENSE"
@@ -130,10 +130,9 @@ SectionEnd
 
 
 Section "Main indexes" SEC02
-  SetOutPath "$INSTDIR\indexes\main"
+  SetOutPath "$COMMONFILES\alfanous\indexes\main"
   SetOverwrite try
   File "indexes\main\*"
-
 SectionEnd
 
 Section "Fonts" SEC03
@@ -145,17 +144,16 @@ Section "Fonts" SEC03
   
 SectionEnd
 
-Section "Extend indexes" SEC04
-  SetOutPath "$INSTDIR\indexes\extend"
-  SetOverwrite try
-  File "indexes\extend\*"
- 
-SectionEnd
+ Section "Extend indexes" SEC04
+ SetOutPath "$COMMONFILES\alfanous\indexes\extend"
+ SetOverwrite try
+ # File "indexes\extend\*"
+ SectionEnd
 
 
 Section "Predefined configuration" SEC05
-  SetOutPath "$INSTDIR\configs"
-  AccessControl::GrantOnFile "$INSTDIR\configs" "(BU)" "FullAccess"
+  SetOutPath "$APPDATA\alfanous\configs"
+  AccessControl::GrantOnFile "$APPDATA\alfanous\configs" "(BU)" "FullAccess"
   SetOverwrite try
   File "resources\configs\config.ini"
 SectionEnd
@@ -172,10 +170,10 @@ SectionEnd
 
 Section -Post
   WriteUninstaller "$INSTDIR\uninst.exe"
-  WriteRegStr HKLM "${PRODUCT_DIR_REGKEY}" "" "$INSTDIR\Gui.exe"
+  WriteRegStr HKLM "${PRODUCT_DIR_REGKEY}" "" "$INSTDIR\alfanousDesktop-win.exe"
   WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "DisplayName" "$(^Name)"
   WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "UninstallString" "$INSTDIR\uninst.exe"
-  WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "DisplayIcon" "$INSTDIR\Gui.exe"
+  WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "DisplayIcon" "$INSTDIR\alfanousDesktop-win.exe"
   WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "DisplayVersion" "${PRODUCT_VERSION}"
   WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "URLInfoAbout" "${PRODUCT_WEB_SITE}"
   WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "Publisher" "${PRODUCT_PUBLISHER}"
@@ -185,27 +183,28 @@ SectionEnd
 !insertmacro MUI_FUNCTION_DESCRIPTION_BEGIN
   !insertmacro MUI_DESCRIPTION_TEXT ${SEC01} "required"
   !insertmacro MUI_DESCRIPTION_TEXT ${SEC02} "required"
-  !insertmacro MUI_DESCRIPTION_TEXT ${SEC03} "recommended"
+  #!insertmacro MUI_DESCRIPTION_TEXT ${SEC03} "recommended"
   !insertmacro MUI_DESCRIPTION_TEXT ${SEC04} "optional"
 !insertmacro MUI_FUNCTION_DESCRIPTION_END
 
 
 Function un.onUninstSuccess
   HideWindow
-  MessageBox MB_ICONINFORMATION|MB_OK "$(^Name) a �t� d�sinstall� avec succ�s de votre ordinateur."
+  MessageBox MB_ICONINFORMATION|MB_OK "$(^Name) is uninstalled completely from your computer."
 FunctionEnd
 
 Function un.onInit
 !insertmacro MUI_UNGETLANGUAGE
-  MessageBox MB_ICONQUESTION|MB_YESNO|MB_DEFBUTTON2 "�tes-vous certains de vouloir d�sinstaller totalement $(^Name) et tous ses composants ?" IDYES +2
+  MessageBox MB_ICONQUESTION|MB_YESNO|MB_DEFBUTTON2 "are you sure that you want to install completely $(^Name)and  all ots components?" IDYES +2
   Abort
 FunctionEnd
 
 Section Uninstall
   Delete "$INSTDIR\${PRODUCT_NAME}.url"
   Delete "$INSTDIR\uninst.exe"
-  Delete "$INSTDIR\indexes\extend\*"
-  Delete "$INSTDIR\indexes\main\*"
+  Delete "$COMMONFILES\alfanous\indexes\extend\*"
+  Delete "$COMMONFILES\alfanous\indexes\main\*"
+  Delete "$APPDATA\alfanous\configs\*"
 
   Delete "$INSTDIR\*"
 
@@ -216,11 +215,15 @@ Section Uninstall
   Delete "$DESKTOP\Alfanous.lnk"
   Delete "$SMPROGRAMS\Alfanous\Alfanous.lnk"
 
-  RMDir "$INSTDIR\indexes\main"
-  RMDir "$INSTDIR\indexes\extend"
+  RMDir "$COMMONFILES\alfanous\indexes\extend"
+  RMDir "$COMMONFILES\alfanous\indexes\main"
+  RMDir "$COMMONFILES\alfanous\indexes"
+  RMDir "$COMMONFILES\alfanous"
+  RMDir  "$APPDATA\alfanous\configs"
+  RMDir "$APPDATA\alfanous"
   RMDir "$SMPROGRAMS\Alfanous"
   RMDir "$INSTDIR"
-  RMDir ""
+
 
   DeleteRegKey ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}"
   DeleteRegKey HKLM "${PRODUCT_DIR_REGKEY}"
