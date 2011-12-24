@@ -22,7 +22,7 @@ Created on 22 avr. 2010
 
 @author: Assem Chelli
 @contact: Assem.ch [at] gmail.com
-@license: GPL     
+@license: AGPL     
 '''
 
 import os.path
@@ -63,7 +63,7 @@ class TranslationModel:
         
         @author: Assem Chelli
         @contact: Assem.ch [at] gmail.com
-        @license: GPL        
+        @license: AGPL        
         
         """
 
