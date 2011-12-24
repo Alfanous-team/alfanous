@@ -53,7 +53,7 @@
 
 			// help links
 			$("#help table a").bind('click', function(event) {
-				var param = {search: $(this).attr("href"), recitation: $("#recitation").val(), translation: $("#translation").val(), sortedby: $("#sortedby").val(), page: 1, highlight: "css"};
+				var param = {search: $(this).attr("href"), recitation: $("#recitation").val(), translation: $("#translation").val(), sortedby: $("#sortedby").val(), page: 1, highlight: "css" }; //,fuzzy:"ok"
 				
 				// Mouad
 				redirect_to_params ( param );
@@ -66,7 +66,7 @@
 			});
 			
 			$('#form').submit(function(){
-				var param = {search: $("#search_box").val(), recitation: $("#recitation").val(), translation: $("#translation").val(), sortedby: $("#sortedby").val(), page: 1, highlight: "css"};
+				var param = {search: $("#search_box").val(), recitation: $("#recitation").val(), translation: $("#translation").val(), sortedby: $("#sortedby").val(), page: 1, highlight: "css"}; //,fuzzy:"ok"
 				
 				// Mouad
 				redirect_to_params ( param );
@@ -433,7 +433,14 @@
 <div id="help" align="right" class="modal" style="width: 675px;">
 	<h2>مساعدة</h2>	
 <table dir="rtl" style=" border: 2px dashed gray;margin: 5px;width: 672px;">
-<tbody><tr>
+<tbody>
+<tr>
+<th>البحث التلقائي  </th><td><a href="رب">  رب </a></td><td> </td>
+</tr>
+<tr>
+<th class="style6"">البحث الدقيق  </th><td><a href="'رب'"> 'رب' </a></td><td> </td>
+</tr>
+<tr>
 <th>جملة  </th><td><a href="&quot;رب العالمين&quot;">  "رب العالمين" </a></td><td> </td>
 </tr>
 <tr>
@@ -477,25 +484,23 @@
             <div class="column"> 
                 <h1>Quick links</h1> 
                 <ul> 
-                    <li><a href="http://www.alfanous.org/">Search Quran</a></li> 
-                    <li><a href="http://old.alfanous.org/">Old HTML Web Interface</a></li> 
+    				<li><a href="http://cms.alfanous.org/" target="_blank">About</a></li> 
                     <li><a href="http://sourceforge.net/projects/alfanous/files/" target="_blank">Downloads</a></li> 
-                    <li><a href="http://wiki.alfanous.org/doku.php?id=contributers" target="_blank">Team</a></li> 
-                    <li><a href="http://wwW.launchpad.net/alfanous/" target="_blank">@Launchpad</a></li>
+                    <li><a href="http://old.alfanous.org/">Old HTML Web Interface</a></li> 
                     <li><a href="http://sourceforge.net/projects/alfanous/" target="_blank">@Sourceforge</a></li> 
-                    <li class="last"><a href="http://cms.alfanous.org/" target="_blank">About</a></li> 
+                    <li class="last"><a href="http://wwW.launchpad.net/alfanous/" target="_blank">@Launchpad</a></li>
                 </ul> 
             </div> 
             <div class="column"> 
                 <h1>Community</h1> 
                 <ul> 
-                    <li><a href="http://wiki.alfanous.org/doku.php?id=json_web_service" title="JSON Service" target="_blank">JSON Service</a></li> 
                     <li><a href="http://wiki.alfanous.org/" title="Wiki" target="_blank">Wiki</a></li> 
-                    <li><a href="http://groups.google.com/group/alfanous/" title="Group" target="_blank">Group</a></li> 
+                    <li><a href="http://groups.google.com/group/alfanous/" title="Mailinglist" target="_blank">Mailinglist</a></li> 
                     <li><a href="https://bugs.launchpad.net/alfanous/+filebug" title="Report a bug" target="_blank">+ Report a Bug</a></li>
                     <li><a href="https://bugs.launchpad.net/alfanous/" title="Bugs" target="_blank">Bugs</a></li>
-                    <li><a href="https://www.facebook.com/alfanous" title="Facebook" target="_blank">Facebook</a></li> 
-                    <li class="last"><a href="https://twitter.com/#!/alfanous" target="_blank">Twitter</a></li> 
+                    <li><a href="https://www.facebook.com/alfanous" title="Facebook" target="_blank">@Facebook</a></li> 
+                    <li><a href="https://plus.google.com/111305625425237630318" target="_blank">@Google Plus</a></li> 
+                    <li class="last"><a href="https://twitter.com/#!/alfanous" target="_blank">@Twitter</a></li> 
                 </ul> 
             </div> 
             <div class="column last"> 
@@ -513,24 +518,11 @@
     <div id="footer-small-wrapper">
         <div id="footer-small">
             <p class="left">copyright © <a href="http://wiki.alfanous.org/doku.php?id=contributers">Alfanous Team</a> 2009 - 2011 | released under <a href="http://www.gnu.org/licenses/agpl.html">AGPL</a> license</p>
-            <p class="right">powered by <a href="http://www.alfanous.org">Alfanous</a>, <a onclick="addto_searchbar();return false;" href="#">Add to Search Bar</a></p>
+            <p class="right">powered by <a href="http://wiki.alfanous.org/doku.php?id=json_web_service">Alfanous</a>, <a onclick="addto_searchbar();return false;" href="#">Add to Search Bar</a></p>
         </div>
     </div>
 </footer>
 
-
-<!-- Start of Zopim Live Chat Script -->
-<!--
-<script type="text/javascript">
-window.$zopim||(function(d,s){var z=$zopim=function(c){z._.push(c)},$=
-z.s=d.createElement(s),e=d.getElementsByTagName(s)[0];z.set=function(o
-){z.set._.push(o)};$.setAttribute('charset','utf-8');$.async=!0;z.set.
-_=[];$.src=('https:'==d.location.protocol?'https://ssl':'http://cdn')+
-'.zopim.com/?YKlDdCQhyjaCEj7oRc03B8W6SeYyHJmo';$.type='text/java'+s;z.
-t=+new Date;z._=[];e.parentNode.insertBefore($,e)})(document,'script')
-</script>
--->
-<!-- End of Zopim Live Chat Script -->
 
 
 </body>
