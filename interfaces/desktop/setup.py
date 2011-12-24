@@ -2,6 +2,9 @@
 # -*- coding: utf-8 -*-
 
 
+# TODO: package for MacOS
+
+
 from setuptools import setup, find_packages
 import glob
 
@@ -14,7 +17,6 @@ try:
 	import py2exe  ## to generate an exe file
 except:
 	pass
-
 
 
 
@@ -46,12 +48,12 @@ setup(
 	#entry_points={ 'gui_scripts': ['alfanousQT = alfanousDesktop.Gui:main',]},
 		
 	windows = [{
-			"script": "Gui.py",
+			"script": "../../resources/launchers/alfanousDesktop-win.py",
 			"icon_resources": [(1, "../../resources/Alfanous.ico")]
 		}],
 	
 	options={"py2exe" : {"includes" : ["sip"]}},
-	app=["Gui.py"],
+	#app=["alfanousDesktop-win.py"],
 	
 	classifiers=[
 	"Development Status :: 4 - Beta",
