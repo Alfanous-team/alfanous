@@ -1,2 +1,3 @@
 Requirement:
-	php-gettext
+	php-gettext 1.0.10
+	Savant3 3.0.1

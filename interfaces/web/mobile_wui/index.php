@@ -27,6 +27,7 @@
    - <http://validator.w3.org/mobile/> helps much to check standards
    - CSS is embedded within XHTML output to avoid many requests
    - For I18n/L10n, it uses php-gettext (As fallback)
+   - Template engine, Savant3
 */
 
 # Constants
@@ -35,37 +36,58 @@ define("M_EXEC", 1);
 define("ROOT_DIR", realpath("./")); # or dirname(__FILE__);
 define("LOCALE_DIR", ROOT_DIR ."/locale");
 define("DEFAULT_LOCALE", "en");
-define("THEME_DIR", ROOT_DIR ."/themes/");
+define("THEME_DIR", "./themes/"); # absulute path didn't work with Savant3
 define("DEFAULT_THEME", "std");
+
+require_once "savant3/Savant3.php";
+$tpl = new Savant3();
+
+# variables
+class MV {
+
+	public function __construct () {
+
+	# gettext
+	$this->domain = "alfanousMWUI";
+	$this->encoding = "UTF-8";
+	$this->locales_list = array("en", "ar");
+
+	# theme
+	$this->themes_list = array("std");
+
+	# Check GET parameters
+	$this->search = isset($_GET["search"]) ? $_GET["search"] : "";
+	$this->page = isset($_GET["page"]) ? $_GET["page"] : 1;
+	$this->language = isset($_GET["language"]) ? $_GET["language"] : DEFAULT_LOCALE;
+	if (! in_array($this->language, $this->locales_list)) $mv->language=DEFAULT_LOCALE;
+	$this->theme = isset($_GET["theme"]) ? $_GET["theme"] : DEFAULT_THEME;
+	if (! in_array($this->theme, $this->themes_list)) $mv->theme=DEFAULT_THEME;
+	$this->tashkil = isset($_GET["tashkil"]) ? True : False;
+	$this->fuzzy = isset($_GET["fuzzy"]) ? True : False;
+
+	# Hidden JSON query parameters
+	$this->sortedby="mushaf";
+	$this->recitation="Mishary Rashid Alafasy";
+	$this->translation="None";
+	$this->highlight="css";
+
+	}
+}
+
+$mv = new MV();
+
 
 # Gettext
 require_once("./php-gettext/gettext.inc");
-$domain = "alfanousMWUI";
-$locales_list = array("en", "ar");
-$encoding = "UTF-8";
-
-# Theme
-$themes_list = array("std");
-
-# Check GET parameters
-$search = isset($_GET["search"]) ? $_GET["search"] : "";
-$page = isset($_GET["page"]) ? $_GET["page"] : 1;
-$language = isset($_GET["language"]) ? $_GET["language"] : DEFAULT_LOCALE;
-if (! in_array($language, $locales_list)) $language=DEFAULT_LOCALE;
-$theme = isset($_GET["theme"]) ? $_GET["theme"] : DEFAULT_THEME;
-if (! in_array($theme, $themes_list)) $theme=DEFAULT_THEME;
-$tashkil = isset($_GET["tashkil"]) ? True : False;
-$fuzzy = isset($_GET["fuzzy"]) ? True : False;
-
 
 # Gettext
 # set language
-putenv("LC_ALL=$language");
-T_setlocale(LC_ALL, $language);
+putenv("LC_ALL=$mv->language");
+T_setlocale(LC_ALL, $mv->language);
 # set local
-T_bindtextdomain($domain, LOCALE_DIR);
-T_bind_textdomain_codeset($domain, $encoding);
-T_textdomain($domain);
+T_bindtextdomain($mv->domain, LOCALE_DIR);
+T_bind_textdomain_codeset($mv->domain, $mv->encoding);
+T_textdomain($mv->domain);
 # import localized texts
 require_once "./mobiletext.php";
 $mt = new MT();
@@ -82,190 +104,57 @@ header(sprintf(
 	));
 
 # Query JSON service
-if ($search) {
-
+if ($mv->search) {
+/*
 	# Hidden JSON query parameters
-	$sortedby="mushaf";
-	$recitation="Mishary Rashid Alafasy";
-	$translation="None";
-	$highlight="css";
-
+	$mv->sortedby="mushaf";
+	$mv->recitation="Mishary Rashid Alafasy";
+	$mv->translation="None";
+	$mv->highlight="css";
+*/
 	# Encode JSON query URL
-	$query_site = "http://www.alfanous.org/json?";
-	$query_search = "search=" . urlencode($search);
-	$query_page = "&page=" . urlencode($page);
-	$query_string = "&sortedby=" . urlencode($sortedby)
-		. "&recitation=" . urlencode($recitation)
-		. "&translation=" . urlencode($translation)
-		. "&highlight=" . urlencode($highlight)
-		. (($fuzzy)?"&fuzzy=yes":"");
+	$mv->query_site = "http://www.alfanous.org/json?";
+	$mv->query_search = "search=" . urlencode($mv->search);
+	$mv->query_page = "&page=" . urlencode($mv->page);
+	$mv->query_string = "&sortedby=" . urlencode($mv->sortedby)
+		. "&recitation=" . urlencode($mv->recitation)
+		. "&translation=" . urlencode($mv->translation)
+		. "&highlight=" . urlencode($mv->highlight)
+		. (($mv->fuzzy)?"&fuzzy=yes":"");
 
 	# Custom additional options (NOT for JSON Query)
-	$query_custom = "&language=" . urlencode($language)
-		. "&theme=" . urlencode($theme)
-		. (($tashkil)?"&tashkil=yes":"")
-		. (($fuzzy)?"&fuzzy=yes":"");
+	$mv->query_custom = "&language=" . urlencode($mv->language)
+		. "&theme=" . urlencode($mv->theme)
+		. (($mv->tashkil)?"&tashkil=yes":"")
+		. (($mv->fuzzy)?"&fuzzy=yes":"");
 
 	# JSON query
-	$handle = fopen($query_site . $query_search . $query_page . $query_string,
+	$handle = fopen($mv->query_site . $mv->query_search . $mv->query_page . $mv->query_string,
 		"rb");
 	$contents = stream_get_contents($handle);
 	fclose($handle);
 
-	$json = json_decode($contents);
+	$mv->json = json_decode($contents);
 
-	if ($json) {
+	if ($mv->json) {
 		# Pages
-		$nb_pages = floor(($json->interval->total- 1) / 10)+ 1;
-		$page_nb = floor(($json->interval->start- 1) / 10)+ 1;
+		$mv->nb_pages = floor(($mv->json->interval->total- 1) / 10)+ 1;
+		$mv->page_nb = floor(($mv->json->interval->start- 1) / 10)+ 1;
 		# Alfanous JSON service doesn't serve more than 100 pages.
-		$hit_page_limit = False;
-		if ($nb_pages > 100) {
-			$hit_page_limit = True;
-			$nb_pages = 100;
+		$mv->hit_page_limit = False;
+		if ($mv->nb_pages > 100) {
+			$mv->hit_page_limit = True;
+			$mv->nb_pages = 100;
 		};
 	};
 };
+
+if (DEBUG and $mv->search) var_dump($mv->json);
+
+# pass variables to template engine
+$tpl->mv = $mv;
+$tpl->mt = $mt;
+
+# display template
+$tpl->display(THEME_DIR . $mv->theme . "/index.tpl.php"); 
 ?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML Basic 1.1//EN"
-    "http://www.w3.org/TR/xhtml-basic/xhtml-basic11.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-
-	<title><? echo $mt->ALFANOUS; ?></title>
-
-	<meta http-equiv="Content-Type" content="application/xhtml+xml; 
-charset=UTF-8" />
-	<link rel="shortcut icon" type="image/gif" href="./icon.gif" />
-
-<?php
-# CSS1 style
-$css = file_get_contents('./basic.css');
-echo "<style type=\"text/css\">\n$css\n</style>";
-?>
-
-</head>
-<body<? echo ($mt->RTL)?" dir=\"rtl\"":""; ?>>
-
-<? if (DEBUG and $search) var_dump($json); ?>
-
-	<form id="form_top" class="form" method="get" action="index.php">
-		<div class="search_form">
-			<img src="./icon.gif" width="32" height="32" alt="logo" />
-			<span><? echo $mt->ALFANOUS; ?></span>
-			<input class="search_box" type="text" 
-name="search" title="search" inputmode="arabic" />
-			<input class="submit" type="submit" value="<? echo $mt->SEARCH; ?>" />
-			<br />
-			<input name="tashkil" type="checkbox"
-<? echo ($tashkil)?" checked=\"checked\"":""; ?> value="yes" />
-<? echo $mt->TASHKIL; ?> | 
-			<input name="fuzzy" type="checkbox"
-<? echo ($fuzzy)?" checked=\"checked\"":""; ?> value="yes" />
-<? echo $mt->FUZZY; ?>
-			<br />
-			<? echo $mt->LANGUAGE; ?>:
-			<select name="language">
-				<? foreach ($locales_list as $l ) {
-					echo "<option ".(($l == $language)?"selected=\"selected\" ":"")."value=\"$l\">$l</option>";
-				}; ?>
-			</select> | 
-			<? echo $mt->THEME; ?>:
-			<select name="theme">
-				<? foreach ($themes_list as $t ) {
-					echo "<option ".(($t == $theme)?"selected=\"selected\" ":"")."value=\"$t\">$t</option>";
-				}; ?>
-			</select>
-		</div>
-	</form>
-
-<? if ($search and $json and $json->interval->total): # case: some results ?>
-
-	<div class='pages'>
-		<? echo $mt->RESULTS; ?>: <? echo $json->interval->start; ?>-<? echo $json->interval->end; ?><? echo ($mt->RTL)?"\\":"/"; ?><? echo $json->interval->total; ?> 
-		<? echo $mt->PAGES; ?>:
-		<?php
-			$results_pages = "";
-			for ($i = 1; $i <= $nb_pages; $i++) {
-				if ($i == $page_nb) {
-					$results_pages .= " ". $i;
-				}
-				else {
-					$results_pages .= sprintf(" <a href='%s'>%s</a>",
-						htmlspecialchars("index.php?" . $query_search . "&page=" . $i . $query_custom),
-						$i);
-				};
-			};
-			# show a sign for pages limit '...', a part of pages are not listed
-			if ($hit_page_limit) $results_pages .= " ...";
-			print($results_pages);
-		?>
-	</div>
-
-	<div id='search_result'>
-		<? for( $i = $json->interval->start; $i <= $json->interval->end; $i++): # Results listing ?>
-			<div class='result_item'>! in_array($language, $locales_list)) $language=DEFAULT_LOCALE;
-				<div dir='rtl' class='align-right'><span class='item_number'><? echo $i; ?> </span>
-					<span class='aya_info'> (<? echo $json->ayas->$i->sura->name; ?> <? echo $json->ayas->$i->aya->id; ?>) </span></div>
-				<div class='quran align-right' dir='rtl'> [ <? echo ($tashkil)?$json->ayas->$i->aya->text:preg_replace("/[\x{064B}-\x{065F}]/u", "", $json->ayas->$i->aya->text); ?> ] </div>
-				<div class='aya_details <? echo ($mt->RTL)?"align-right":"align-left"; ?>'>
-		‎			<? echo $mt->WORDS; ?> <? echo $json->ayas->$i->stat->words; ?><? echo ($mt->RTL)?"\\":"/"; ?><? echo $json->ayas->$i->sura->stat->words; ?> 
-					- <? echo $mt->LETTERS; ?> <? echo $json->ayas->$i->stat->letters; ?><? echo ($mt->RTL)?"\\":"/"; ?><? echo $json->ayas->$i->sura->stat->letters; ?> 
-					- <? echo $mt->GODNAMES; ?> <? echo $json->ayas->$i->stat->godnames; ?><? echo ($mt->RTL)?"\\":"/"; ?><? echo $json->ayas->$i->sura->stat->godnames; ?>
-					<br />
-					<? echo $mt->HIZB; ?> <? echo $json->ayas->$i->position->hizb; ?> 
-					- <? echo $mt->PAGE; ?> <? echo $json->ayas->$i->position->page; ?>
-				</div>
-			</div>
-		<? endfor; ?>
-	</div>
-
-	<div class='pages'>
-		<? echo $mt->RESULTS; ?>: <? echo $json->interval->start; ?>-<? echo $json->interval->end; ?><? echo ($mt->RTL)?"\\":"/"; ?><? echo $json->interval->total; ?> 
-		<? echo $mt->PAGES; ?>: <? print($results_pages); ?>
-	</div>
-
-	<form id="form_top" class="form" method="get" action="index.php">
-		<div class="search_form">
-			<img src="./icon.gif" width="32" height="32" alt="logo" />
-			<span><? echo $mt->ALFANOUS; ?></span>
-			<input class="search_box" type="text" 
-name="search" title="search" inputmode="arabic" />
-			<input class="submit" type="submit" value="<? echo $mt->SEARCH; ?>" />
-			<br />
-			<input name="tashkil" type="checkbox"
-<? echo ($tashkil)?" checked=\"checked\"":""; ?> value="yes" />
-<? echo $mt->TASHKIL; ?> | 
-			<input name="fuzzy" type="checkbox"
-<? echo ($fuzzy)?" checked=\"checked\"":""; ?> value="yes" />
-<? echo $mt->FUZZY; ?>
-			<br />
-			<? echo $mt->LANGUAGE; ?>:
-			<select name="language">
-				<? foreach ($locales_list as $l ) {
-					echo "<option ".(($l == $language)?"selected=\"selected\" ":"")."value=\"$l\">$l</option>";
-				}; ?>
-			</select> | 
-			<? echo $mt->THEME; ?>:
-			<select name="theme">
-				<? foreach ($themes_list as $t ) {
-					echo "<option ".(($t == $theme)?"selected=\"selected\" ":"")."value=\"$t\">$t</option>";
-				}; ?>
-			</select>
-		</div>
-	</form>
-
-<? elseif ($search): # case: no results ?>
-
-	<hr />
-	<p><? echo $mt->NORESULTS; ?></p>
-
-<? else: # case: no query ?>
-
-	<hr />
-	<p><? echo $mt->ALFANOUS_INTRO; ?></p>
-
-<? endif; ?>
-
-</body>
-</html>
