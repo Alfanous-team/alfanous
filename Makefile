@@ -8,11 +8,8 @@
 ## TODO: send version to all integrated tools
 ## TODO: all operations of each extenstion
  
-<<<<<<< .mine
+
 VERSION="0.4.3"
-=======
-VERSION="4.0.13"
->>>>>>> .r151
 
 API_PATH="./src/"
 IMPORTER=$(API_PATH)"Qimport/main.py"
