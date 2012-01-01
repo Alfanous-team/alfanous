@@ -37,7 +37,7 @@ define("ROOT_DIR", realpath("./")); # or dirname(__FILE__);
 define("LOCALE_DIR", ROOT_DIR ."/locale");
 define("DEFAULT_LOCALE", "en");
 define("THEME_DIR", "./themes/"); # absulute path didn't work with Savant3
-define("DEFAULT_THEME", "std");
+define("DEFAULT_THEME", "blue");
 
 # Gettext
 require_once("./php-gettext/gettext.inc");
@@ -57,7 +57,7 @@ class MV {
 	$this->locales_list = array("ar", "en", "ms");
 
 	# theme
-	$this->themes_list = array("std");
+	$this->themes_list = array("blue", "std");
 
 	# Check GET parameters
 	$this->search = isset($_GET["search"]) ? $_GET["search"] : "";
