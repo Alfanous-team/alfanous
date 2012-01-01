@@ -50,7 +50,7 @@ class MV {
 	# gettext
 	$this->domain = "alfanousMWUI";
 	$this->encoding = "UTF-8";
-	$this->locales_list = array("en", "ar");
+	$this->locales_list = array("ar", "en", "ms");
 
 	# theme
 	$this->themes_list = array("std");
