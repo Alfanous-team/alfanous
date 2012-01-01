@@ -60,6 +60,7 @@ public function __construct () {
 		$this->SAJDA = T_("Sajda");
 
 		$this->DIR = T_("ltr");
+		$this->TRANSLATOR = T_("English translation by Abdellah Chelli");
 	}
 }
 
