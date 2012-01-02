@@ -38,6 +38,7 @@ define("LOCALE_DIR", ROOT_DIR ."/locale");
 define("DEFAULT_LOCALE", "en");
 define("THEME_DIR", "./themes/"); # absulute path didn't work with Savant3
 define("DEFAULT_THEME", "blue");
+define("RESULTS_LIMIT", 15);
 
 # Gettext
 require_once("./php-gettext/gettext.inc");
@@ -72,7 +73,7 @@ class MV {
 		if (! in_array($this->theme, $this->themes_list)) $this->theme=DEFAULT_THEME;
 
 	# Hidden JSON query parameters
-	$this->sortedby="mushaf";
+	$this->sortedby="score";
 	$this->recitation="Mishary Rashid Alafasy";
 	$this->translation="None";
 	$this->highlight="css";
@@ -153,9 +154,9 @@ if ($mv->search) {
 		$mv->page_nb = floor(($mv->json->interval->start- 1) / 10)+ 1;
 		# Alfanous JSON service doesn't serve more than 100 pages.
 		$mv->hit_page_limit = False;
-		if ($mv->nb_pages > 100) {
+		if ($mv->nb_pages > RESULTS_LIMIT) {
 			$mv->hit_page_limit = True;
-			$mv->nb_pages = 100;
+			$mv->nb_pages = RESULTS_LIMIT;
 		};
 	};
 };
