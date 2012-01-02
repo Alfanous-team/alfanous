@@ -139,12 +139,14 @@ echo "<style type=\"text/css\">\n$css\n</style>\n";
 
 <? endif; ?>
 
-<div id="footer">
+<div id="footer" dir="ltr">
 	<p><a href="http://wiki.alfanous.org/doku.php?id=contributers">Alfanous Team</a> © 2011-2012
 	 | <a href="http://www.gnu.org/licenses/agpl.html">AGPL</a> license
 	 | powered by <a href="http://wiki.alfanous.org/doku.php?id=json_web_service">Alfanous</a></p>
-	<p><a href="https://bugs.launchpad.net/alfanous/">Report a Bug</a>+
-	 | <?= $this->mt->TRANSLATOR; ?> | Theme by Abdellah Chelli</p>
+	<p><a href="https://bugs.launchpad.net/alfanous/">Report a Bug</a>^
+	 | <a href="https://translations.launchpad.net/alfanous">Help translate</a>^
+	 | <a href="https://answers.launchpad.net/alfanous/">Ask a question</a>^</p>
+	<p><?= $this->mt->TRANSLATOR; ?> | Theme by Abdellah Chelli</p>
 </div>
 
 </body>
