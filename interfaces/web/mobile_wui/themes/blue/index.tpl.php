@@ -49,6 +49,7 @@ echo "<style type=\"text/css\">\n$css\n</style>\n";
 
 	<!-- top page control -->
 	<div id="pages_top" class="pages">
+		" <span><a><?= $this->mv->search; ?></a></span> " | 
 		<?= $this->mt->RESULTS; ?>: <span><?= $this->mv->json->interval->start; ?></span>-<span><?= $this->mv->json->interval->end; ?></span><?= ($this->mv->rtl)?"\\":"/"; ?><span><?= $this->mv->json->interval->total; ?></span> 
 		<?= $this->mt->PAGES; ?>:
 		<span>
@@ -93,7 +94,8 @@ echo "<style type=\"text/css\">\n$css\n</style>\n";
 
 	<!-- bottom page control -->
 	<div id="pages_bottom" class="pages">
-		<?= $this->mt->RESULTS; ?>: <span><?= $this->mv->json->interval->start; ?></span>-<span><?= $this->mv->json->interval->end; ?></span><?= ($this->mv->rtl)?"\\":"/"; ?><span><?= $this->mv->json->interval->total; ?></span> 
+		" <span><a><?= $this->mv->search; ?></a></span> "
+		 | <?= $this->mt->RESULTS; ?>: <span><?= $this->mv->json->interval->start; ?></span>-<span><?= $this->mv->json->interval->end; ?></span><?= ($this->mv->rtl)?"\\":"/"; ?><span><?= $this->mv->json->interval->total; ?></span> 
 		<?= $this->mt->PAGES; ?>: <span><?= $results_pages; ?></span>
 	</div>
 
@@ -144,9 +146,8 @@ echo "<style type=\"text/css\">\n$css\n</style>\n";
 	 | <a href="http://www.gnu.org/licenses/agpl.html">AGPL</a> license
 	 | powered by <a href="http://wiki.alfanous.org/doku.php?id=json_web_service">Alfanous</a></p>
 	<p><a href="https://bugs.launchpad.net/alfanous/">Report a Bug</a>^
-	 | <a href="https://translations.launchpad.net/alfanous">Help translate</a>^
+	 | <a href="https://translations.launchpad.net/alfanous/trunk/+pots/alfanousmobile">Help translate</a>^
 	 | <a href="https://answers.launchpad.net/alfanous/">Ask a question</a>^</p>
-	<p><?= $this->mt->TRANSLATOR; ?> | Theme by Abdellah Chelli</p>
 </div>
 
 </body>
