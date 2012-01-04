@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: AlfanousMobileWUI 4.0.13\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-01-02 00:16+0100\n"
+"POT-Creation-Date: 2011-12-19 23:39+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,11 +16,11 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: interfaces/web/mobile_wui/mobiletext.php:28
+#: interfaces/web/mobile_wui/mobiletext.php:8
 msgid "Alfanous"
 msgstr ""
 
-#: interfaces/web/mobile_wui/mobiletext.php:29
+#: interfaces/web/mobile_wui/mobiletext.php:9
 msgid ""
 "Alfanous is a Quranic search engine offers \n"
 "\tsimple and advanced search services in the whole information that Holy Qur’an \n"
@@ -29,106 +29,102 @@ msgid ""
 "\tfeatures like Highlight, Suggestions, Scoring …etc."
 msgstr ""
 
-#: interfaces/web/mobile_wui/mobiletext.php:34
+#: interfaces/web/mobile_wui/mobiletext.php:14
 msgid "Oops, Nothing found."
 msgstr ""
 
-#: interfaces/web/mobile_wui/mobiletext.php:36
+#: interfaces/web/mobile_wui/mobiletext.php:16
 msgid "Search"
 msgstr ""
 
-#: interfaces/web/mobile_wui/mobiletext.php:37
+#: interfaces/web/mobile_wui/mobiletext.php:17
 msgid "Tashkil"
 msgstr ""
 
-#: interfaces/web/mobile_wui/mobiletext.php:38
+#: interfaces/web/mobile_wui/mobiletext.php:18
 msgid "Fuzzy"
 msgstr ""
 
-#: interfaces/web/mobile_wui/mobiletext.php:39
+#: interfaces/web/mobile_wui/mobiletext.php:19
 msgid "Language"
 msgstr ""
 
-#: interfaces/web/mobile_wui/mobiletext.php:40
+#: interfaces/web/mobile_wui/mobiletext.php:20
 msgid "Theme"
 msgstr ""
 
-#: interfaces/web/mobile_wui/mobiletext.php:41
+#: interfaces/web/mobile_wui/mobiletext.php:21
 msgid "Results"
 msgstr ""
 
-#: interfaces/web/mobile_wui/mobiletext.php:42
+#: interfaces/web/mobile_wui/mobiletext.php:22
 msgid "Pages"
 msgstr ""
 
-#: interfaces/web/mobile_wui/mobiletext.php:44
+#: interfaces/web/mobile_wui/mobiletext.php:24
 msgid "Words"
 msgstr ""
 
-#: interfaces/web/mobile_wui/mobiletext.php:45
+#: interfaces/web/mobile_wui/mobiletext.php:25
 msgid "Letters"
 msgstr ""
 
-#: interfaces/web/mobile_wui/mobiletext.php:46
+#: interfaces/web/mobile_wui/mobiletext.php:26
 msgid "God's Names"
 msgstr ""
 
-#: interfaces/web/mobile_wui/mobiletext.php:48
+#: interfaces/web/mobile_wui/mobiletext.php:28
 msgid "Aya's"
 msgstr ""
 
-#: interfaces/web/mobile_wui/mobiletext.php:49
+#: interfaces/web/mobile_wui/mobiletext.php:29
 msgid "Subject"
 msgstr ""
 
-#: interfaces/web/mobile_wui/mobiletext.php:50
+#: interfaces/web/mobile_wui/mobiletext.php:30
 msgid "Chapter"
 msgstr ""
 
-#: interfaces/web/mobile_wui/mobiletext.php:51
+#: interfaces/web/mobile_wui/mobiletext.php:31
 msgid "Topic"
 msgstr ""
 
-#: interfaces/web/mobile_wui/mobiletext.php:52
+#: interfaces/web/mobile_wui/mobiletext.php:32
 msgid "Subtopic"
 msgstr ""
 
-#: interfaces/web/mobile_wui/mobiletext.php:53
+#: interfaces/web/mobile_wui/mobiletext.php:33
 msgid "Sura"
 msgstr ""
 
-#: interfaces/web/mobile_wui/mobiletext.php:54
+#: interfaces/web/mobile_wui/mobiletext.php:34
 msgid "Juz"
 msgstr ""
 
-#: interfaces/web/mobile_wui/mobiletext.php:55
+#: interfaces/web/mobile_wui/mobiletext.php:35
 msgid "Hizb"
 msgstr ""
 
-#: interfaces/web/mobile_wui/mobiletext.php:56
+#: interfaces/web/mobile_wui/mobiletext.php:36
 msgid "Rub"
 msgstr ""
 
-#: interfaces/web/mobile_wui/mobiletext.php:57
+#: interfaces/web/mobile_wui/mobiletext.php:37
 msgid "Page"
 msgstr ""
 
-#: interfaces/web/mobile_wui/mobiletext.php:58
+#: interfaces/web/mobile_wui/mobiletext.php:38
 msgid "Manzil"
 msgstr ""
 
-#: interfaces/web/mobile_wui/mobiletext.php:59
+#: interfaces/web/mobile_wui/mobiletext.php:39
 msgid "Ruku"
 msgstr ""
 
-#: interfaces/web/mobile_wui/mobiletext.php:60
+#: interfaces/web/mobile_wui/mobiletext.php:40
 msgid "Sajda"
 msgstr ""
 
-#: interfaces/web/mobile_wui/mobiletext.php:62
+#: interfaces/web/mobile_wui/mobiletext.php:42
 msgid "ltr"
-msgstr ""
-
-#: interfaces/web/mobile_wui/mobiletext.php:63
-msgid "English translation by Abdellah Chelli"
 msgstr ""
