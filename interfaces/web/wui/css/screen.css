@@ -220,6 +220,16 @@ a:hover{color: green;}
 	cursor:pointer;
 }
 
+#suggestions {
+	background-color: #ecf7f9;
+	margin: 10px 0px 10px 0px;
+	padding: 15px 15px 15px 15px;
+}
+
+#suggestions a {
+	text-decoration: none;
+}
+
 #search_words {
 	background-color: #ecf7f9;
 	margin: 10px 0px 10px 0px;
