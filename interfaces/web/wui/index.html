@@ -118,152 +118,204 @@
 			results += "<br /><br /><span class='xbre'>نتيجة البحث</span><br /><br />";
 			results += "<center><b>الزمن المستغرق</b> : "+ json.runtime+ " ثانية</center>";
 
-			// Pages control
-			results_pages += "<div class='pages'>\n<img src='images/prev.gif' alt='الصفحة السابقة' title = 'الصفحة السابقة' /><div style=' display:inline-block; position:relative; top:-8px;'>\n";
-			for( i = 1; i <= nb_pages; i++) {
-				if (i == page)
-				{
-					results_pages += " "+ i;
+			// Suggestions
+			if (json.suggestions.length) {
+				results += "<div id='suggestions' align='right'>";
+				results += "<h2 style='font-size:16pt; font-weight:600; color:#ff0000;'>المقترحات :";
+				$.each(json.suggestions, function(key, item) {
+					results += "<p dir='rtl' style=' margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;'>";
+						results += "<div class='word_details'>";
+							results += "<span style=' font-size:14pt; color:#00aa00;'>"+ (key+ 1)+ ". </span>";
+							results += "<div class='details_label word_info0'> كلمة | "+ item[0]+ "</div>";
+							if (item[1].length) {
+								$.each(item[1], function(sub_key, sub_item) {
+									var param2 = param;
+									param2.page = 1;
+									param2.search = sub_item;
+									results += " <a href='"+ get_url_without_params()+ "?"+ build_params( param2 )+ "'><div class='details_label word_stat1'>"+ sub_item+ "</div></a>";
+								});
+							} else {
+								results += "<div class='details_label word_stat0'> لا مقترحات</div>";
+							}
+							results += "</div></p>";
+				});
+				results += "</div>";
+			}
+
+			if (json.interval.total) {
+
+				// Pages control
+				results_pages += "<div class='pages'>\n<img src='images/prev.gif' alt='الصفحة السابقة' title = 'الصفحة السابقة' /><div style=' display:inline-block; position:relative; top:-8px;'>\n";
+				for( i = 1; i <= nb_pages; i++) {
+					if (i == page)
+					{
+						results_pages += " "+ i;
+					}
+					else
+					{
+						results_pages += " <a href=''>"+ i+ "</a>";
+					}
 				}
-				else
-				{
-					results_pages += " <a href=''>"+ i+ "</a>";
+				results_pages += "</div><img src='images/next.gif' alt='الصفحة التالية' title = 'الصفحة التالية' />\n</div>\n";
+			
+				// Words list
+				results += "<div id='search_words' align='right'>";
+				results += "<h2 style='font-size:16pt; font-weight:600; color:#ff0000;'>الكلمات :";
+					results += "<div class='details_label word_count'> الكلمات | "+ json.words["global"].nb_words+ "</div>";
+					results += "<div class='details_label word_stat0'> مجموع المرات | "+ json.words["global"].nb_matches+ "</div>"; 
+					results += "</h2><br />";
+				for( i = 1; i <= json.words.global.nb_words; i++) {
+					results += "<p dir='rtl' style=' margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;'>";
+						results += "<div class='word_details'>";
+							results += "<span style=' font-size:14pt; color:#00aa00;'>"+ i+ ". </span>";
+							results += "<div class='details_label word_info0'> كلمة | "+ json.words[i].word+ "</div>";
+							results += "<div class='details_label word_stat0'> المرات | "+ json.words[i].nb_matches+ "</div>";
+							results += "<div class='details_label word_stat1'> الآيات | "+ json.words[i].nb_ayas+ "</div>";
+							results += "</div></p>";
 				}
-			}
-			results_pages += "</div><img src='images/next.gif' alt='الصفحة التالية' title = 'الصفحة التالية' />\n</div>\n";
-			
-			// Words list - not yet
-			results += "<div id='search_words' align='right'>";
-			results += "<h2 style='font-size:16pt; font-weight:600; color:#ff0000;'>الكلمات :";
-				results += "<div class='details_label word_count'> الكلمات | "+ json.words["global"].nb_words+ "</div>";
-				results += "<div class='details_label word_stat0'> مجموع المرات | "+ json.words["global"].nb_matches+ "</div>"; 
-				results += "</h2><br />";
-			for( i = 1; i <= json.words.global.nb_words; i++) {
-				results += "<p dir='rtl' style=' margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;'>";
-					results += "<div class='word_details'>";
-						results += "<span style=' font-size:14pt; color:#00aa00;'>"+ i+ ". </span>";
-						results += "<div class='details_label word_info0'> كلمة | "+ json.words[i].word+ "</div>";
-						results += "<div class='details_label word_stat0'> المرات | "+ json.words[i].nb_matches+ "</div>";
-						results += "<div class='details_label word_stat1'> الآيات | "+ json.words[i].nb_ayas+ "</div>";
-						results += "</div></p>";
-			}
-			results += "</div> ";
+				results += "</div> ";
 
-			// Pages list
-			results += results_pages;
+				// Pages list
+				results += results_pages;
 
-			// Ayas list
-			results += "<br /><h2 style=' font-size:15pt; font-weight:600; color:#ff0000;'>النتائج (";
-				results += json.interval.start+ " إلى "+ json.interval.end+ " من أصل "+ json.interval.total+ " )</h2> <br /> ";
+				// Ayas list
+				results += "<br /><h2 style=' font-size:15pt; font-weight:600; color:#ff0000;'>النتائج (";
+					results += json.interval.start+ " إلى "+ json.interval.end+ " من أصل "+ json.interval.total+ " )</h2> <br /> ";
 			
-			for( i = json.interval.start; i <= json.interval.end; i++) {
-			results += "<fieldset class='main_re_item'>";
-				results += "<legend class='main_re_item_title' style='font-size:14pt;-qt-block-indent:0; text-indent:0px;' dir='rtl'>";
-					results += "<span style=' font-family:\"arial ,sans serif\"; color:#0000ff; '> النتيجة رقم <span style=' font-family:\"arial ,sans serif\"; font-weight:600; color:#0000ff;'> <b>"+ i+ "</b> </span>";
-					// results += "<span align='left'><object width='350' height='24' id='audioplayer1' data='swf/player.swf' type='application/x-shockwave-flash'>";
-						// results += "<param value='swf/player.swf' name='movie'>";
-						// results += "<param value='playerID=audioplayer1&amp;soundFile="+ json.ayas[i].aya.recitation+ "' name='FlashVars'>";
-						// results += "<param value='high' name='quality'>";
-						// results += "<param value='false' name='menu'>";
-						// results += "<param value='transparent' name='wmode'></object></span><br />";
-					results += "<span id='audioplayer_"+ i+ "'>(<a href='"+ json.ayas[i].aya.recitation+ "' target='_blank'>تلاوة</a>)</span>";  
-					results += "<div class='sura_details'>";
-						results += "<div class='details_label sura_info0'> سورة | "+ json.ayas[i].sura.name+ "</div> ";
-						results += "<div class='details_label sura_ord0'> رقم | "+ json.ayas[i].sura.id+ "</div>";
-						results += "<div class='details_label sura_info1'> النوع | "+ json.ayas[i].sura.type+ "</div>";
-						results += "<div class='details_label sura_ord1'> ترتيب النزول | "+ json.ayas[i].sura.order+ "</div> ";
-						results += "<div class='details_label sura_stat0'> الآيات | "+ json.ayas[i].sura.stat.ayas+ "</div> ";
-						results += "<div class='details_label sura_stat1'> الكلمات | "+ json.ayas[i].sura.stat.words+ " </div>";
-						results += "<div class='details_label sura_stat2'> الأحرف | "+ json.ayas[i].sura.stat.letters+ "</div>";
-						results += "<div class='details_label sura_stat3'> ألفاظ الجلالة | "+ json.ayas[i].sura.stat.godnames+ "</div>";
-						results += "</div>";
-					results += "</span></legend>";
-				results += "<br><p align='center' style=' margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;'>";
-					results += "<span style='font-family:\"ArabeyesQr\", Scheherazade; line-height: 180%; font-size:22px; color:#7b563a;'><br>[ ";
-					results += "<span style='font-family:\"me_quran\", Scheherazade; font-size:22px;'>"+ json.ayas[i].aya.text+ "</span> ";
-					results += " <span>("+ json.ayas[i].aya.id+ ")</span> ";
-					results += "] <br></span></p><br />";
-				results += "<p dir='ltr' align='center' style=' margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;'>";
-					results += "<span style='font-family: \"Droid Sans\", Tahoma, \"Bitstream Vera Sans\", \"DejaVu Sans\", Verdana, Geneva, Arial, Sans-serif; line-height: 150%;'>"+ json.ayas[i].aya.traduction+ "</span></p>";
-				results += "<br><p align='center' style=' margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;'>";
-					results += "<span style=' color:#808080;'>الفصل : <b>"+ json.ayas[i].theme.chapter+ "</b> ";
-					results += "الفرع : <b>"+ json.ayas[i].theme.topic+ "</b> ";
-					results += "الباب : <b>"+ json.ayas[i].theme.subtopic+ "</b> </span></p>";
-				results += "<div class='aya_details'>";
-					results += "<div class='details_label aya_stat0'> الكلمات | "+ json.ayas[i].stat.words+ "</div>";
-					results += "<div class='details_label aya_stat1'> الأحرف | "+ json.ayas[i].stat.letters+ "</div>";
-					results += "<div class='details_label aya_stat2'> ألفاظ الجلالة | "+ json.ayas[i].stat.godnames+ "</div> ";
-					results += "<div class='details_label aya_pos0'> المنزل | "+ json.ayas[i].position.manzil+ "</div>";
-					results += "<div class='details_label aya_pos1'> الحزب | "+ json.ayas[i].position.hizb+ "</div>";
-					results += "<div class='details_label aya_pos2'> الربع | "+ json.ayas[i].position.rubu+ "</div>";
-					results += "<div class='details_label aya_pos3'> الصفحة | "+ json.ayas[i].position.page+ "</div>";
-					results += "</div><br />";
-				results += "</p></fieldset><br /><br />";
-			}
+				for( i = json.interval.start; i <= json.interval.end; i++) {
+				results += "<fieldset class='main_re_item'>";
+					results += "<legend class='main_re_item_title' style='font-size:14pt;-qt-block-indent:0; text-indent:0px;' dir='rtl'>";
+						results += "<span style=' font-family:\"arial ,sans serif\"; color:#0000ff; '> النتيجة رقم <span style=' font-family:\"arial ,sans serif\"; font-weight:600; color:#0000ff;'> <b>"+ i+ "</b> </span>";
+						// results += "<span align='left'><object width='350' height='24' id='audioplayer1' data='swf/player.swf' type='application/x-shockwave-flash'>";
+							// results += "<param value='swf/player.swf' name='movie'>";
+							// results += "<param value='playerID=audioplayer1&amp;soundFile="+ json.ayas[i].aya.recitation+ "' name='FlashVars'>";
+							// results += "<param value='high' name='quality'>";
+							// results += "<param value='false' name='menu'>";
+							// results += "<param value='transparent' name='wmode'></object></span><br />";
+						results += "<span id='audioplayer_"+ i+ "'>(<a href='"+ json.ayas[i].aya.recitation+ "' target='_blank'>تلاوة</a>)</span>";  
+						results += "<div class='sura_details'>";
+							results += "<div class='details_label sura_info0'> سورة | "+ json.ayas[i].sura.name+ "</div> ";
+							results += "<div class='details_label sura_ord0'> رقم | "+ json.ayas[i].sura.id+ "</div>";
+							results += "<div class='details_label sura_info1'> النوع | "+ json.ayas[i].sura.type+ "</div>";
+							results += "<div class='details_label sura_ord1'> ترتيب النزول | "+ json.ayas[i].sura.order+ "</div> ";
+							results += "<div class='details_label sura_stat0'> الآيات | "+ json.ayas[i].sura.stat.ayas+ "</div> ";
+							results += "<div class='details_label sura_stat1'> الكلمات | "+ json.ayas[i].sura.stat.words+ " </div>";
+							results += "<div class='details_label sura_stat2'> الأحرف | "+ json.ayas[i].sura.stat.letters+ "</div>";
+							results += "<div class='details_label sura_stat3'> ألفاظ الجلالة | "+ json.ayas[i].sura.stat.godnames+ "</div>";
+							results += "</div>";
+						results += "</span></legend>";
+					results += "<br><p align='center' style=' margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;'>";
+						results += "<span style='font-family:\"ArabeyesQr\", Scheherazade; line-height: 180%; font-size:22px; color:#7b563a;'><br>[ ";
+						results += "<span style='font-family:\"me_quran\", Scheherazade; font-size:22px;'>"+ json.ayas[i].aya.text+ "</span> ";
+						results += " <span>("+ json.ayas[i].aya.id+ ")</span> ";
+						results += "] <br></span></p><br />";
+					results += "<p dir='ltr' align='center' style=' margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;'>";
+						results += "<span style='font-family: \"Droid Sans\", Tahoma, \"Bitstream Vera Sans\", \"DejaVu Sans\", Verdana, Geneva, Arial, Sans-serif; line-height: 150%;'>"+ json.ayas[i].aya.traduction+ "</span></p>";
+					results += "<br><p align='center' style=' margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;'>";
+						results += "<span style=' color:#808080;'>الفصل : <b>"+ json.ayas[i].theme.chapter+ "</b> ";
+						results += "الفرع : <b>"+ json.ayas[i].theme.topic+ "</b> ";
+						results += "الباب : <b>"+ json.ayas[i].theme.subtopic+ "</b> </span></p>";
+					results += "<div class='aya_details'>";
+						results += "<div class='details_label aya_stat0'> الكلمات | "+ json.ayas[i].stat.words+ "</div>";
+						results += "<div class='details_label aya_stat1'> الأحرف | "+ json.ayas[i].stat.letters+ "</div>";
+						results += "<div class='details_label aya_stat2'> ألفاظ الجلالة | "+ json.ayas[i].stat.godnames+ "</div> ";
+						results += "<div class='details_label aya_pos0'> المنزل | "+ json.ayas[i].position.manzil+ "</div>";
+						results += "<div class='details_label aya_pos1'> الحزب | "+ json.ayas[i].position.hizb+ "</div>";
+						results += "<div class='details_label aya_pos2'> الربع | "+ json.ayas[i].position.rubu+ "</div>";
+						results += "<div class='details_label aya_pos3'> الصفحة | "+ json.ayas[i].position.page+ "</div>";
+						results += "</div><br />";
+					results += "</p></fieldset><br /><br />";
+				}
 			
 
-			// Pages list
-			results += results_pages+ "<br />";
+				// Pages list
+				results += results_pages+ "<br />";
+
+			}
 
 			// show result
 			$("#search_result").append(results);
-			for( i = json.interval.start; i <= json.interval.end; i++) {
-				AudioPlayer.embed("audioplayer_"+ i, {soundFile: json.ayas[i].aya.recitation, titles: json.ayas[i].sura.name+"-"+json.ayas[i].aya.id});
-			}
 
-			// Pages control
-			$(".pages a").one('click', function(event) {
+
+			// Suggestions links
+			$("#suggestions a").one('click', function(event) {
 				var param2 = param;
-				param2.page = $(this).text();
+				param2.page = 1;
+				param2.search = $(this).find("div").text();
 				
 				// Mouad
 				redirect_to_params ( param2 );
 				// search_for ( param2 );
 				// $('#search_box').val(param2.search);
 				// get_results(param2);
+			
+				event.preventDefault();
+			}).mouseover(function() {
+				window.status = $(this).find("div").text();
+			});
+
+			if (json.interval.total) {
+			
+				for( i = json.interval.start; i <= json.interval.end; i++) {
+					AudioPlayer.embed("audioplayer_"+ i, {soundFile: json.ayas[i].aya.recitation, titles: json.ayas[i].sura.name+"-"+json.ayas[i].aya.id});
+				}
+
+
+				// Pages control
+				$(".pages a").one('click', function(event) {
+					var param2 = param;
+					param2.page = $(this).text();
 				
-				event.preventDefault();
-			});
-			$(".pages img:first-child").one('click', function(event) {
-				var param2 = param;
-				if (param2.page > 1) {
-					param2.page = parseInt ( param2.page ) - 1;
-					
 					// Mouad
 					redirect_to_params ( param2 );
 					// search_for ( param2 );
 					// $('#search_box').val(param2.search);
 					// get_results(param2);
-				}
-				event.preventDefault();
-			});
-			$(".pages img:last-child").one('click', function(event) {
-				var param2 = param;
-				if  (param2.page < nb_pages) {
-					param2.page = parseInt ( param2.page ) + 1;
+				
+					event.preventDefault();
+				});
+				$(".pages img:first-child").one('click', function(event) {
+					var param2 = param;
+					if (param2.page > 1) {
+						param2.page = parseInt ( param2.page ) - 1;
 					
-					// Mouad
-					redirect_to_params ( param2 );
-					// search_for ( param2 );
-					// $('#search_box').val(param2.search);
-					// get_results(param2);
+						// Mouad
+						redirect_to_params ( param2 );
+						// search_for ( param2 );
+						// $('#search_box').val(param2.search);
+						// get_results(param2);
+					}
+					event.preventDefault();
+				});
+				$(".pages img:last-child").one('click', function(event) {
+					var param2 = param;
+					if  (param2.page < nb_pages) {
+						param2.page = parseInt ( param2.page ) + 1;
+					
+						// Mouad
+						redirect_to_params ( param2 );
+						// search_for ( param2 );
+						// $('#search_box').val(param2.search);
+						// get_results(param2);
+					}
+					event.preventDefault();
+				});
+
+				// dynamic css
+				//$(".match").css("color", "#181");
+				for (i=0; i<10; i++) {
+					selector = ".term"+i;
+					for (j=1; j<10; j++) {
+						selector += ", .term"+(i+10*j);
+					};
+					$(selector).css("color", color_list[i]);
 				}
-				event.preventDefault();
-			});
-			
-			// dynamic css
-			//$(".match").css("color", "#181");
-			for (i=0; i<10; i++) {
-				selector = ".term"+i;
-				for (j=1; j<10; j++) {
-					selector += ", .term"+(i+10*j);
-				};
-				$(selector).css("color", color_list[i]);
 			}
-			
+
 			// Corners
 			$(".details_label").corner("3px");
 			$("#search_words").corner("30px");
+			$("#suggestions").corner("30px");
 			
 			$(document).scrollTop($("#search_result").position().top);
 
