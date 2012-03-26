@@ -55,7 +55,7 @@ class MV {
 	# gettext
 	$this->domain = "alfanousMWUI";
 	$this->encoding = "UTF-8";
-	$this->locales_list = array("ar", "en", "fr", "ja", "ms");
+	$this->locales_list = array("ar", "en", "fr", "id", "it", "ja", "ms");
 
 	# theme
 	$this->themes_list = array("blue", "std");
