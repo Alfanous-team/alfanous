@@ -1,7 +1,7 @@
 #
 # This is Alfanous Makefile
 #
-# Contributers:   
+# Contributors:   
 #	Assem chelli <assem.ch@gmail.com>
 #
 
@@ -22,7 +22,7 @@ MOBILE_WUI_PATH=./interfaces/web/mobile_wui/
 PREFIX?=/usr
 CONFIG_INSTALL_PATH="$(DESTDIR)$(PREFIX)/share/alfanous-config/"
 INDEX_INSTALL_PATH="$(DESTDIR)$(PREFIX)/share/alfanous-indexes/"
-WEB_INSTALL_PATH="$(DESTDIR)/var/alfanous-web/" 
+WEB_INSTALL_PATH="$(DESTDIR)/var/www/alfanous-web/" 
 
 
 
@@ -32,7 +32,7 @@ WEB_INSTALL_PATH="$(DESTDIR)/var/alfanous-web/"
 default: 
 	@echo "choose a target!"
 	
-## Kaboom!
+## Kaboom! 
 all: update_all build_all install_all dist_all  clean_all	 
 	@echo "done."
 
@@ -51,13 +51,13 @@ update_recitations:
 	@echo "todo"
 
 update_quranic_corpus:
+	# Qimport.Importer.QuranicCorpusImporter
 	@echo "todo"
 
 update_tanzil:
+	# Qimport.Downloader.download_tanzil
 	@echo "todo"
 	
-
-
 
 ##  build indexes 
 index_all: index_main index_extend index_word index_tiny
@@ -184,7 +184,7 @@ install_index:
 	
 	
 install_api: 
-	cd   $(API_PATH)/alfanous/ ; python setup.py  install
+	cd   "$(API_PATH)alfanous" ; python setup.py  install
 	
 install_desktop: install_index  install_api qt_all 
 	cd  $(DESKTOP_INTERFACE_PATH); sudo python setup.py install
@@ -197,26 +197,25 @@ install_desktop: install_index  install_api qt_all
 	#alfanousDesktop
 	
 	
-install_web: 
-	#update the indexes and the API if possible 
+install_web: install_api install_index
 	# Apache2 needed : apt-get install apache2
-	#
-	##use always a local copy in the same folder, to make it simple for installation in shared servers
-	#copy_files 
 	mkdir -p $(WEB_INSTALL_PATH)
 	cd ./interfaces/web/ ;  cp ./AGPL $(WEB_INSTALL_PATH)
-	cd ./interfaces/web/ ; cp -r site/  $(WEB_INSTALL_PATH)
-	cd ./interfaces/web/ ; cp -r cgi/  $(WEB_INSTALL_PATH)
+	cd ./interfaces/web/ ;  cp  -r wui  $(WEB_INSTALL_PATH) 
+	cd ./interfaces/web/ ;  mkdir "$(WEB_INSTALL_PATH)cgi"; cp  -r cgi/*.py "$(WEB_INSTALL_PATH)cgi";
+	#cd ./interfaces/web/ ;  cp  .htaccess "$(WEB_INSTALL_PATH)"
 	cd ./interfaces/web/ ;  cp alfanous /etc/apache2/sites-available/ #configure well this file 
-	#remove and add the site if exist 
+	chmod 755 $(WEB_INSTALL_PATH)
+	chmod +x "$(WEB_INSTALL_PATH)cgi/alfanous-json.py"
+	sed -i 's/\"cgitb.enable\(\)\"/cgitb.enable\(\)/g' "$(WEB_INSTALL_PATH)cgi/alfanous-json.py"
+	sed -i 's/\.\/indexes\/main\//\/usr\/share\/alfanous\-indexes\/main\//g' "$(WEB_INSTALL_PATH)cgi/alfanous-json.py"
+	sed -i 's/\.\/indexes\/extend\//\/usr\/share\/alfanous\-indexes\/extend\//g' "$(WEB_INSTALL_PATH)cgi/alfanous-json.py"	
+	cd $(WEB_INSTALL_PATH); mv -f \ cgi cgi;  cd wui; sed -i 's/www\.alfanous\.org\/json/alfanous\.local\/cgi\-bin\/alfanous\-json\.py/g' index.*   
 	a2dissite alfanous
 	a2ensite alfanous
-	#reload apache
-	/etc/init.d/apache2 reload
-	# change  DNS !?
-	
-	#test installation
-	#firefox 127.0.0.1 &
+	service apache2 reload
+	echo "127.0.0.1 alfanous.local" >> /etc/hosts
+	#firefox alfanous.local &
 	
 	
 
