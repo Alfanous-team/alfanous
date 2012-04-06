@@ -1,6 +1,6 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML Basic 1.1//EN"
     "http://www.w3.org/TR/xhtml-basic/xhtml-basic11.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html xmlns="http://www.w3.org/1999/xhtml" prefix="og: http://ogp.me/ns#">
 <head>
 
 	<title><?= $this->mt->ALFANOUS; ?></title>
@@ -8,6 +8,18 @@
 	<meta http-equiv="Content-Type" content="application/xhtml+xml; 
 charset=UTF-8" />
 	<link rel="shortcut icon" type="image/gif" href="<?= $this->mv->theme_dir; ?>icon.gif" />
+	
+	<!-- OpenGraph meta -->
+	<meta property="og:title" content="<?= $this->mt->ALFANOUS; ?>: <?= $this->mv->search; ?> (Mobile WUI)" />
+	<meta property="og:type" content="website" />
+	<meta property="og:url" content="http://m.alfanous.org/" />
+	<meta property="og:image" content="http://m.alfanous.org/<?= $this->mv->theme_dir; ?>og.png" />
+	<meta property="og:locale" content="<?= $this->mv->language; ?>" />
+	<? foreach ($this->mv->locales_list as $l ) {
+		echo (($l == $this->mv->language)?"":"<meta property=\"og:locale:alternate\" content=\"".$l."\" />\n");
+	}; ?>
+	<meta property="og:site_name" content="Alfanous" />	
+	<meta property="og:description" content="<?= $this->mt->ALFANOUS_INTRO; ?>" />
 
 <!-- embedded css -->
 <?
