@@ -25,7 +25,7 @@ HowTo
       >>> from everyayah import API 
       >>> A=API()
       >>> A.recitations_list()[0]
-  	  {u'Folder': u'http://www.versebyversequran.com/data/Abdul_Basit_Murattal', u'bitrate': u'64', u'name': u'AbdulBasit AbdusSamad (Murattal style)', u'Description': ''} 
+    {u'Folder': u'http://www.versebyversequran.com/data/Abdul_Basit_Murattal', u'bitrate': u'64', u'name': u'AbdulBasit AbdusSamad (Murattal style)', u'Description': ''} 
       
       >>> print A.recitation_link("AbdulBasit AbdusSamad (Murattal style)", sura=2, aya=1)
       http://www.versebyversequran.com/data/Abdul_Basit_Murattal/002001.mp3
@@ -45,8 +45,7 @@ import os
              
 class API:
     """    Recitation AyaByAya project reader     """
-    
-    
+
     def __init__(self, root="http://www.everyayah.com/", temppath="/tmp/Recitations.xml"):
             """ 
             @param root: the root of AyaByAya project site      
