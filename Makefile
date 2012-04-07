@@ -46,9 +46,15 @@ update_traductions:
 	# auto download from  http://zekr.org/resources.html to ./store/traductions
 	@echo "todo"
 
-update_recitations:
+
+update_recitations: update_recitations_offline update_recitations_online
+update_recitations_offline:
 	#  auto download from  http://zekr.org/resources.html to ./store/recitations  + VerseByVerse recitations list
 	@echo "todo"
+
+update_recitations_online:
+	cd $(STORE_PATH); wget http://www.everyayah.com/data/recitations.js
+
 
 update_quranic_corpus:
 	# Qimport.Importer.QuranicCorpusImporter
@@ -206,10 +212,10 @@ install_web: install_api install_index
 	#cd ./interfaces/web/ ;  cp  .htaccess "$(WEB_INSTALL_PATH)"
 	cd ./interfaces/web/ ;  cp alfanous /etc/apache2/sites-available/ #configure well this file 
 	chmod 755 $(WEB_INSTALL_PATH)
-	chmod +x "$(WEB_INSTALL_PATH)cgi/alfanous-json.py"
-	sed -i 's/\"cgitb.enable\(\)\"/cgitb.enable\(\)/g' "$(WEB_INSTALL_PATH)cgi/alfanous-json.py"
-	sed -i 's/\.\/indexes\/main\//\/usr\/share\/alfanous\-indexes\/main\//g' "$(WEB_INSTALL_PATH)cgi/alfanous-json.py"
-	sed -i 's/\.\/indexes\/extend\//\/usr\/share\/alfanous\-indexes\/extend\//g' "$(WEB_INSTALL_PATH)cgi/alfanous-json.py"	
+	chmod +x "$(WEB_INSTALL_PATH)cgi/alfanous-cgi-json.py"
+	sed -i 's/\"cgitb.enable\(\)\"/cgitb.enable\(\)/g' "$(WEB_INSTALL_PATH)cgi/alfanous-cgi-json.py"
+	sed -i 's/\.\/indexes\/main\//\/usr\/share\/alfanous\-indexes\/main\//g' "$(WEB_INSTALL_PATH)cgi/alfanous-cgi-json.py"
+	sed -i 's/\.\/indexes\/extend\//\/usr\/share\/alfanous\-indexes\/extend\//g' "$(WEB_INSTALL_PATH)cgi/alfanous-cgi-json.py"	
 	cd $(WEB_INSTALL_PATH); mv -f \ cgi cgi;  cd wui; sed -i 's/www\.alfanous\.org\/json/alfanous\.local\/cgi\-bin\/alfanous\-json\.py/g' index.*   
 	a2dissite alfanous
 	a2ensite alfanous
