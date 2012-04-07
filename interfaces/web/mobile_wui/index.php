@@ -69,7 +69,11 @@ class MV {
 	$this->fuzzy = isset($_GET["fuzzy"]) ? True : False;
 
 	# Check if language & theme supported
-		if (! in_array($this->language, $this->locales_list)) $this->language=DEFAULT_LOCALE;
+		if (! in_array($this->language, $this->locales_list)) {
+			# Fallback to 2 char language code and recheck
+			$this->language=substr($this->language, 0, 2);
+			if (! in_array($this->language, $this->locales_list)) $this->language=DEFAULT_LOCALE;
+		};
 		if (! in_array($this->theme, $this->themes_list)) $this->theme=DEFAULT_THEME;
 
 	# Hidden JSON query parameters
