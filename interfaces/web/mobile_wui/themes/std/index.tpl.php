@@ -16,6 +16,8 @@ $css = file_get_contents($this->mv->theme_dir . 'basic.css');
 echo "<style type=\"text/css\">\n$css\n</style>\n";
 ?>
 
+<?= $this->mv->g_analytics_js; ?>
+
 </head>
 <body<?= ($this->mv->rtl)?" dir=\"rtl\"":""; ?>>
 
