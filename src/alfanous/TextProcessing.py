@@ -28,8 +28,8 @@ it contains the linguistic analysers of Quran and Arabic...etc.
 
 @todo: pronoun Reference  " == لا إله إلا الله " لا إله إلا هو
 
-
 '''
+
 from dynamic_resources import synonymes_dyn as sydy
 from dynamic_resources import stopwords_dyn as swdy
 from Support.whoosh.analysis import StandardAnalyzer, StopFilter, RegexTokenizer, LowercaseFilter
@@ -37,7 +37,6 @@ from Support.whoosh.analysis import StandardAnalyzer, StopFilter, RegexTokenizer
 
 from Support.ar_ctype import strip_tashkeel, normalize_spellerrors, normalize_hamza, HARAKAT_pat, normalize_lamalef
 from Support.arabic_const import  * 
-
 from Constantes import inversed_shaping_table
 from Exceptions import NotImplemented
 import re
@@ -59,7 +58,7 @@ class QStopFilter(StopFilter):
     def __init__(self, stoplist=swdy.stoplist, minsize=2, renumber=False):
         super(QStopFilter, self).__init__(stoplist=stoplist, minsize=minsize, renumber=renumber)
         
-#        
+
 
         
     
@@ -70,7 +69,7 @@ class QArabicSymbolsFilter():
         self.__tashkil = tashkil
         self.__spellerrors = spellerrors
         self.__hamza = hamza
-        pass
+
     
     def normalize_all(self, text):
         if self.__shaping:
@@ -100,7 +99,7 @@ def Gword_tamdid(aya):
  
    
 def PartialVocalisation():
-    """  """   
+    """  @todo: complete it"""   
     
     def __init__():
         pass

@@ -77,8 +77,9 @@ if __name__ == '__main__':
     print _(u"سلام")
     print n_(u"man", u"men", 5)
     #miniShell()   
+    from dynamic_resources.derivations_dyn import derivedict
+    print max([len(a) for a in derivedict])
     
-
 
 
 
