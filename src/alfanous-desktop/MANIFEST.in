@@ -1,0 +1,4 @@
+include *.py *.txt
+exclude *.pyc
+prune UI
+
