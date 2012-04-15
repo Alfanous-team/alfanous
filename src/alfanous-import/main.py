@@ -1,8 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-
-
 ##     Copyright (C) 2009-2012 Assem Chelli <assem.ch [at] gmail.com>
 
 ##     This program is free software: you can redistribute it and/or modify
@@ -21,12 +19,14 @@
 
 '''
 Created on Jul 28, 2011
-
 @author: Assem chelli 
+
 '''
 
 from Importer import *
 from Transformer import *
+from Downloader import *
+from Updater import *
 
 
 from optparse import OptionParser,OptionGroup
@@ -41,14 +41,17 @@ commands = OptionGroup(parser, "Options", "Choose what to do:  ")
 commands.add_option("-x", "--index",dest="index",type="choice",choices=["main", "extend" , "word"],
                   help="create  indexes",metavar="TYPE") 
 
-commands.add_option("-t", "--transfer",dest="transfer",type="choice",choices=["stopwords", "synonyms", "word_props", "derivations", "ara2eng_names"],
+commands.add_option("-t", "--transfer",dest="transfer",type="choice",choices=["stopwords", "synonyms", "word_props", "derivations", "ara2eng_names","std2uth_words"],
                   help="transfer from database to dynamic resources",metavar="RESOURCE") 
 
-commands.add_option("-p", "--speller",dest="speller",type="choice",choices=["aya", "subject"],
+commands.add_option("-p", "--speller",dest="speller",type="choice",choices=["aya", "subject","word"],
                   help="build a speller for a field",metavar="FIELD") 
 
+commands.add_option("-d", "--download",dest="download",type="choice",choices=["tanzil_simple_clean", "tanzil_uthmani"],
+                  help="download Quranic resources",metavar="FIELD") 
 
-
+commands.add_option("-u", "--update",dest="update",type="choice",choices=["translations.js","wordqc"],
+                  help="update store information files",metavar="FIELD") 
 
 
 parser.add_option_group(commands)
@@ -80,7 +83,9 @@ if options.index:
         E.load_translationModels()
     
     elif options.index=="word" :
-        pass
+        T = Transformer( ixpath=DESTINATION , dypypath=None,dbpath=SOURCE)
+        wordqcSchema=T.build_schema(tablename='wordqc')
+	T.build_docindex(wordqcSchema,tablename='wordqc') 
 
 
 if options.transfer:
@@ -102,6 +107,8 @@ if options.transfer:
         T.transfer_derivations()
     elif options.transfer=="ara2eng_names":
         T.transfer_ara2eng_names()
+    elif options.transfer=="std2uth_words":
+        T.transfer_std2uth_words()
 
 if options.speller:
     
@@ -116,7 +123,42 @@ if options.speller:
     T= Transformer(ixpath=DESTINATION, dypypath=None,dbpath=None)
     
     if options.speller=="aya":
-        T.build_ayaspeller()
+        T.build_speller(indexname="AYA_SPELL", fields=["aya"])
     elif options.speller=="subject":
-        T.build_subjectspeller()
+        T.build_speller(indexname="SUBJECT_SPELL", fields=["subject"])
+    elif options.speller=="word":
+        T.build_speller(indexname="WORD_SPELL", fields=["word"])
+        
+
+if options.download:
+    
+    if len(args)==2:
+        SOURCE=args[0]
+        DESTINATION=args[1]
+    elif len(args)==1:
+        DESTINATION=args[0]
+    else:
+        parser.error("Choose DISTINATION_PATH")
+    
+    
+    
+    if options.download=="tanzil_simple_clean":
+        download_tanzil(quranType="simple-clean", outType="xml", outPath=DESTINATION)
+    elif options.download=="tanzil_uthmani":
+        download_tanzil(quranType="uthmani", outType="xml", outPath=DESTINATION)
+        
+if options.update:
+    
+    if len(args)==2:
+        SOURCE=args[0]
+        DESTINATION=args[1]
+    else:
+        parser.error("Choose SOURCE_PATH and DISTINATION_PATH")
+    
+    
+    
+    if options.update=="translations.js":
+        update_translations_list(TSE_index=SOURCE, translations_list_file=DESTINATION)
+    elif options.update=="wordqc":
+        QCI=QuranicCorpusImporter(SOURCE, DESTINATION)
 

@@ -10,7 +10,7 @@ setup(
 	description="Importing system for quranic indexes",
 	version=0.1,
 	platforms="ALL",
-	license="GPL",
+	license="AGPL",
 	packages=["Qimport"],
 	install_requires=["whoosh","PyCorpus"],
 
