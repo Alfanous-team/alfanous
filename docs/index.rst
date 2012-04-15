@@ -5,6 +5,9 @@
 
 Welcome to Alfanous's documentation!
 ====================================
+.. toctree::
+   :maxdepth: 2
+
 
 .. automodule:: alfanous
 
