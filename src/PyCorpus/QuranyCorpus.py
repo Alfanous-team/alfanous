@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-# coding = utf-8
+#coding:utf-8
 
 #    Copyright (C) 2009-2010 Assem Chelli <assem.ch@gmail.com>
 #    This program is free software; you can redistribute it and/or modify
@@ -45,7 +45,7 @@ import re
 import os,sys
 
 
-import libxml2,xpath
+import libxml2#,xpath
 import xml.etree.ElementTree
 
 import pyparsing as pyp
@@ -55,15 +55,7 @@ from QuranyCorpusConstantes import *
 
 
 
-     
-"""                
-TO DO:
-test_existance
-analyzer
-"""
-
-
-        
+       
 def TagKeywords(list):
     """a specific pyparsing term to match tages return Keywords 
      """
@@ -86,7 +78,7 @@ def TagLiterals(list):
 
 class API:
     """ the api """
-    def __init__(self,source="quranic-corpus-morpology.xml"):
+    def __init__(self,source="../../store/quranic-corpus-morpology.xml"):
         """ init the API based on XMLfile 
    
         @param source: the path of the xml file
@@ -275,7 +267,7 @@ class API:
     def unique_words(self):
             """return a dictionary: the keys is word tokens and the values is the properties"""
             D={}
-            for chapter in  self.corpus.findall("//chapter"):
+            for chapter in  self.corpus.findall(".//chapter"):
                 for verse in chapter.findall("verse"):
                     for word in verse.findall("word"):
                         D[word.attrib["token"]]=API.MorphologyParser.parse(word.attrib["morphology"])
@@ -286,7 +278,7 @@ class API:
             """ 
             Generate words properties ,word by word 
             """
-            for chapter in  self.corpus.findall("//chapter"):
+            for chapter in  self.corpus.findall(".//chapter"):
                 for verse in chapter.findall("verse"):
                     for word in verse.findall("word"):
                         res=word.attrib
@@ -303,7 +295,7 @@ class API:
     
     
 if __name__=="__main__":
-        A=API(source="../../../store/quranic-corpus-morpology.xml") 
+        A=API(source="../../store/quranic-corpus-morpology.xml") 
         """keys=set()
         for iter in A.all_words_generator():
             keys|=set(iter.keys())

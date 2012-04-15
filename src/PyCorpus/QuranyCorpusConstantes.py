@@ -17,7 +17,7 @@
 
 
 """
-@author: Assem Chelli
+@author: Assem Chelli 
 @contact:  assem.ch [at] gmail.com
 @license:  GPL
 
@@ -189,26 +189,26 @@ PREFIXclass={
 }
 
 PREFIX={
-"Al+":("ال","al"),  	
-"bi+":("ب","bi"), 	
-"ka+":("ك","ka"), 	
-"ta+":("ت", "ta"), 	
-"sa+":("س", "sa"), 	
-"ya+":("يا", "yā"), 	
-"ha+":("ها", "hā"), 
-"A+":("أ", "alif"), 	
-"A:INTG+":("أ", "alif"), 	
-"A:EQ+":("أ", "alif"), 	
-"wa+":("و", "wa"), 	
-"w:P+":("و", "wa"),
-"fa+":("ف", "fa"), 	
-"f:CONJ+":("ف", "fa"), 
-"f:REM+":("ف", "fa"), 	
-"f:CAUS+":("ف", "fa"), 	
-"l:P+":("ل", "lām"), 	
-"l:EMPH+":("ل", "lām"), 	
-"l:PRP+":("ل", "lām"), 	
-"l:IMPV+":("ل", "lām"), 	
+"Al+":(u"ال",u"al"),  	
+"bi+":(u"ب",u"bi"), 	
+"ka+":(u"ك",u"ka"), 	
+"ta+":(u"ت", u"ta"), 	
+"sa+":(u"س", u"sa"), 	
+"ya+":(u"يا", u"yā"), 	
+"ha+":(u"ها", u"hā"), 
+"A+":(u"أ", u"alif"), 	
+"A:INTG+":(u"أ", u"alif"), 	
+"A:EQ+":(u"أ", u"alif"), 	
+"wa+":(u"و", u"wa"), 	
+"w:P+":(u"و", u"wa"),
+"fa+":(u"ف", u"fa"), 	
+"f:CONJ+":(u"ف", u"fa"), 
+"f:REM+":(u"ف", u"fa"), 	
+"f:CAUS+":(u"ف", u"fa"), 	
+"l:P+":(u"ل", u"lām"), 	
+"l:EMPH+":(u"ل", u"lām"), 	
+"l:PRP+":(u"ل", u"lām"), 	
+"l:IMPV+":(u"ل", u"lām"), 	
 }
 
 PGNclass={
