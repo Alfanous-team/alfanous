@@ -24,10 +24,9 @@
 @license: AGPL
 
 
-
 @todo: reorganize the importer module ,keep it free of un-needed resources
-@todo: introduce the execution using arguments,to execute it from the makefile
 '''
+
 ## attention : these libraries will be pickled in the indexes
 from alfanous.Support.whoosh.fields import Schema, STORED, ID, KEYWORD, TEXT, NUMERIC
 from alfanous.Support.whoosh.formats import Positions,Frequency    
@@ -189,8 +188,8 @@ class Transformer:
 
         
         #print "loading DATA..."
-        query = "select " + ",".join(seq) + " from "+tablename
-        
+        query = "select " + ",".join(map(lambda x: '"'+ x+ '"',seq)) + " from "+tablename
+        print query
         cur.execute(query)
         Data = cur.fetchall()
 
@@ -256,7 +255,7 @@ class Transformer:
         """ load stopwords from database and save them as a list in a dynamic py """
         
         cur = self.__mainDb.cursor()
-        cur.execute("select word from stopwords")
+        cur.execute("select word from word")
         stoplist = []
         for item in cur.fetchall():
             stoplist.append(item[0])
@@ -268,10 +267,22 @@ class Transformer:
         
         return raw_str
     
-    def transfer_QuranyCorpus(self):
-        """ load stopwords from database and save them as a list in a dynamic py """
-        return None
-    
+    def transfer_std2uth_words(self):
+        """ load a mapping standard:uthmani and save it as a list in a dynamic py """
+        cur = self.__mainDb.cursor()
+        cur.execute("select word_,uthmani   from word")
+        standard2uthmani = {}
+        for item in cur.fetchall():
+            if item[0]!= item[1] and item[1]:
+		standard2uthmani[item[0]]=item[1]
+	
+	           
+        raw_str = self.dheader + u"\nstd2uth_words=" + str(standard2uthmani).replace(",", ",\n")
+        
+        fich = open(self.__dypypath + "std2uth_dyn.py", "w+")
+        fich.write(raw_str)
+        
+        return raw_str
     
     def transfer_synonymes(self):
         """ load synonymes from database and save them as a list in a dynamic py """
@@ -335,21 +346,13 @@ class Transformer:
         fich = open(self.__dypypath + "spellerrors_dyn.py", "w+")
         fich.write(raw_str)
      
-        
-        
-    def build_ayaspeller(self, fields=["aya"]):
-        """ build a spellchecker based on aya words and save it in storage """
-        ayaspeller = SpellChecker(self.__storage, indexname="AYA_SPELL")
+    def build_speller(self,indexname="NO_SPELL", fields=[]):
+        """ build a spellchecker based on specified fields it in storage """
+        ayaspeller = SpellChecker(self.__storage, indexname=indexname)
         for field in fields:
             ayaspeller.add_field(self.__storage.open_index(), field)
-        
-    def build_subjectspeller(self, fields=["subject"]):
-        """ build a spellchecker based on subject field words and save it in storage """
-        subjectspeller = SpellChecker(self.__storage, indexname="SUB_SPELL")
-        for field in fields:
-            subjectspeller.add_field(self.__storage.open_index(), field)
-    
-    
+            
+  
     def transfer_word_props(self):
         """ load word props from database and save them as a list in a dynamic py """
         cur = self.__mainDb.cursor()
@@ -394,24 +397,26 @@ class Transformer:
    
     
 if __name__ == "__main__":
-    #T= Transformer( ixpath="../indexes/tiny/" , dypypath="dynamic_resources/",dbpath="../store/tiny.db")
-    #T = Transformer( ixpath="../indexes/main/" , dypypath="dynamic_resources/",dbpath="../store/main.db")
+    #T = Transformer( ixpath="../indexes/main/" , dypypath="dynamic_resources/",dbpath="../../resources/DB/main.db")
+    T = Transformer( ixpath="../../indexes/word/" , dypypath="../alfanous/dynamic_resources/",dbpath="../../resources/DB/main.db")
     #T.transfer_stopwords()
     #T.transfer_synonymes()
     #T.transfer_word_props()
     #T.transfer_derivations()
     #T.transfer_ara2eng_names()
+    #T.transfer_std2uth_words()
     #T.make_spellerrors_dict()
     
     
-    ayaSchema=T.build_schema(tablename='aya')
-    T.build_docindex(ayaSchema) 
+    #ayaSchema=T.build_schema(tablename='aya')
+    #T.build_docindex(ayaSchema) 
+    #T.build_speller(indexname="AYA_SPELL", fields=["aya"])
+    #T.build_speller(indexname="SUBJECT_SPELL", fields=["subject"])
     
-    #wordqcSchema=T.build_schema(tablename='wordqc')
+    wordqcSchema=T.build_schema(tablename='wordqc')
     #T.build_docindex(wordqcSchema,tablename='wordqc') 
+    #T.build_speller(indexname="WORD_SPELL", fields=["word"])
     
-    #T.build_ayaspeller() 
-    
-    #T.build_subjectspeller()
+
  
   

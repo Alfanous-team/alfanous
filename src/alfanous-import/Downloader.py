@@ -25,11 +25,10 @@
 
 
 @note:  read the licences of those ressources before download them
-
 @to do : download Tanzil,Translations
 '''
 
-import twill
+#import twill
 
 
 def download_tanzil(quranType="simple-clean", outType="xml", outPath="./tanzil.xml"):
@@ -70,5 +69,3 @@ def download_tanzil_translations():
     pass
 
     
-print download_tanzil(quranType="simple-clean", outType="xml", outPath="../store/tanzil_simple_clean.xml")
-print download_tanzil(quranType="uthmani", outType="xml", outPath="../store/tanzil_uthmani.xml")

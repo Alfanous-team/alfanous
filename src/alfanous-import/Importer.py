@@ -23,31 +23,29 @@
 @contact: assem.ch [at] gmail.com
 @license: AGPL
 
-
-@to do : Antonymes and Synonymes
-@to do : prefixes and suffixes
-
+@to do : Antonymes / Synonymes
+@to do : Prefixes / Suffixes
 '''
+
 from alfanous.Support.whoosh.fields import Schema, STORED, ID, KEYWORD, TEXT, NUMERIC
 from alfanous.Support.whoosh.filedb.filestore import FileStorage
 from alfanous.Support.whoosh import index
 
 
 import os.path
-from alfanous.Extensions.PyZekrModels.Models import TranslationModel
+from PyZekrModels.Models import TranslationModel
 
-from alfanous.TextProcessing import QArabicSymbolsFilter as ASF
+from alfanous.TextProcessing import QArabicSymbolsFilter 
       
 class GenericImporter:
-    """  generic importer for loading any type of data
-    @attention: Not implemented
+    """  TODO: generic importer for loading any type of data
     """
     pass
 
 
 class TanzilImporter:
-    """ import all info contained in Tanzil 
-    @attention: Not implemented
+    """ TODO:import all info contained in Tanzil 
+    
     """
     pass
 
@@ -55,27 +53,27 @@ class TanzilImporter:
 class QuranicCorpusImporter:
     """ import Quranic Corpus to use in Analyser
     
-    @todo: Import derivation levels
-    @todo: Import words properties
+    TODO: Import derivation levels
+    TODO: Import words properties
     
     """
     
     
-    def __init__(self,db="main.db"):
+    def __init__(self,QC_PATH="../../store/quranic-corpus-morpology.xml",DB="main.db"):
         """ make word table """
            
         import sqlite3 
         
         print "connecting to database ...",
-        maindb = sqlite3.connect(db)
+        maindb = sqlite3.connect(DB)
         cur = maindb.cursor()
         print "OK"
         
         print "creating tables:"
-
+	cur.execute(""" drop table if exists wordQC""")
         cur.execute(
-                        """ create table if not exists wordQC(
-                        gid int,
+                        """ create table if not exists  wordQC(
+                        gid int unique,
                         word_gid int,
                         word_id int,
                         aya_id int,
@@ -129,35 +127,69 @@ class QuranicCorpusImporter:
 
         print ">loading Qurany Corpus...",
         from PyCorpus.QuranyCorpus import API as QC
-        A=QC()
+        A=QC(source=QC_PATH)
         print ".OK\n"
-        IFEXIST=lambda dict,attrib: dict[attrib] if dict.has_key(attrib) else ""
+        IFEXIST=lambda dict,attrib: dict[attrib].encode("utf-8") if dict.has_key(attrib) else ""
         gid,word_gid=0,0
         print ">inserting values of gid...",  
-        for iter in A.all_words_generator():
+        for iteration in A.all_words_generator():
             QUERY=lambda d,part: """insert into wordQC(gid,word_gid,word_id,aya_id,sura_id,'order',token,arabictoken,part,type,pos,arabicpos,mood,
                 arabicmood, 'case', arabiccase, root ,arabicroot, lemma ,arabiclemma, special, arabicspecial,
-                word,normalised,spelled, derivation, form ,gender, person, number,voice, state, aspect) values ("%d","%d","%d","%d","%d","%d","%s","%s","%s","%s","%s","%s","%s","%s","%s","%s","%s","%s","%s","%s","%s","%s","%s","%s","%s","%s","%s","%s","%s","%s","%s","%s","%s")""" % (gid,word_gid,iter["word_id"],iter["aya_id"],iter["sura_id"],order,IFEXIST(d,"token"),IFEXIST(d,"arabictoken"),part,IFEXIST(d,"type"),IFEXIST(d,"pos"),IFEXIST(d,"arabicpos"),IFEXIST(d,"mood"),
-                IFEXIST(d,"arabicmood"),IFEXIST(d,"case"),IFEXIST(d,"arabiccase"),IFEXIST(d,"root"),IFEXIST(d,"arabicroot"),IFEXIST(d,"lemma"),IFEXIST(d,"arabiclemma"),IFEXIST(d,"special"),IFEXIST(d,"arabicspecial"),
-                iter["word"],ASF(shaping=True, tashkil=True, spellerrors=False, hamza=False).normalize_all(iter["word"]),ASF(shaping=True, tashkil=True, spellerrors=True, hamza=True).normalize_all(iter["word"]),IFEXIST(d,"derivation"),IFEXIST(d,"form"),IFEXIST(d,"gender"),IFEXIST(d,"person"),IFEXIST(d,"number"),IFEXIST(d,"voice"),IFEXIST(d,"state"),IFEXIST(d,"aspect"))
+                word,normalised,spelled, derivation, form ,gender, person, number,voice, state, aspect) values 
+                ("%(gid)d","%(word_gid)d","%(word_id)d","%(aya_id)d","%(sura_id)d","%(order)d","%(token)s","%(arabictoken)s","%(part)s","%(type)s","%(pos)s","%(arabicpos)s","%(mood)s","%(arabicmood)s",
+                "%(case)s","%(arabiccase)s","%(root)s","%(arabicroot)s","%(lemma)s","%(arabiclemma)s","%(special)s","%(arabicspecial)s","%(word)s","%(normalised)s","%(spelled)s",
+                "%(derivation)s","%(form)s","%(gender)s","%(person)s","%(number)s","%(voice)s","%(state)s","%(aspect)s")""" % {
+										    "gid":gid,
+										    "word_gid":word_gid,
+										    "word_id":iteration["word_id"],
+										    "aya_id":iteration["aya_id"],
+										    "sura_id":iteration["sura_id"],
+										    "order":order,
+										    "token":IFEXIST(d,"token"),
+										    "arabictoken":IFEXIST(d,"arabictoken"),
+										    "part":part.encode("utf-8"),
+										    "type":IFEXIST(d,"type"),
+										    "pos":IFEXIST(d,"pos"),
+										    "arabicpos":IFEXIST(d,"arabicpos"),
+										    "mood":IFEXIST(d,"mood"),
+										    "arabicmood":IFEXIST(d,"arabicmood"),
+										    "case":IFEXIST(d,"case"),
+										    "arabiccase":IFEXIST(d,"arabiccase"),
+										    "root":IFEXIST(d,"root"),
+										    "arabicroot":IFEXIST(d,"arabicroot"),
+										    "lemma":IFEXIST(d,"lemma"),
+										    "arabiclemma":IFEXIST(d,"arabiclemma"),
+										    "special":IFEXIST(d,"special"),
+										    "arabicspecial":IFEXIST(d,"arabicspecial"),
+										    "word":iteration["word"].encode("utf-8"),
+										    "normalised":QArabicSymbolsFilter(shaping=True, tashkil=True, spellerrors=False, hamza=False).normalize_all(iteration["word"]).encode("utf-8"),
+										    "spelled":QArabicSymbolsFilter(shaping=True, tashkil=True, spellerrors=True, hamza=True).normalize_all(iteration["word"]).encode("utf-8"),
+										    "derivation":IFEXIST(d,"derivation"),
+										    "form":IFEXIST(d,"form"),
+										    "gender":IFEXIST(d,"gender"),
+										    "person":IFEXIST(d,"person"),
+										    "number":IFEXIST(d,"number"),
+										    "voice":IFEXIST(d,"voice"),
+										    "state":IFEXIST(d,"state"),
+										    "aspect":IFEXIST(d,"aspect")
+										    }
             word_gid+=1
             print word_gid,"\n" if word_gid % 10 == 0 else "...",
             
             order=0
-            for d in iter["morphology"]["prefixes"]:
+            for d in iteration["morphology"]["prefixes"]:
                 gid+=1;
                 order+=1
                 cur.execute(QUERY(d,u"سابق")) 
             
             order=0
-            for d in iter["morphology"]["base"]:
+            for d in iteration["morphology"]["base"]:
                 gid+=1
                 order+=1
-                q=QUERY(d,u"جذع")
-                cur.execute(q) 
+                cur.execute(QUERY(d,u"جذع")) 
             
             order=0
-            for d in iter["morphology"]["suffixes"]:
+            for d in iteration["morphology"]["suffixes"]:
                 gid+=1
                 order+=1
                 cur.execute(QUERY(d,u"لاحق")) 
@@ -172,7 +204,7 @@ class ZekrModelsImporter:
     """  Import  translations of quran as Zekr models """
     schema = Schema(gid=NUMERIC(stored=True), id=TEXT(stored=True), text=TEXT(stored=True), type=KEYWORD(stored=True), lang=KEYWORD(stored=True), country=KEYWORD(stored=True), author=KEYWORD(stored=True), copyright=STORED,binary=STORED)
     
-    def __init__(self, pathindex, pathstore="./Store/Traductions/"):
+    def __init__(self, pathindex, pathstore):
         self.pathindex = pathindex
         self.pathstore = pathstore
         
@@ -219,26 +251,29 @@ class ZekrModelsImporter:
     
     def load_translationModels(self):
 
-        for file in  os.listdir(self.pathstore):
-            try:
-                TM = TranslationModel(self.pathstore + file)
-                props = TM.translation_properties()
+        for filename in  os.listdir(self.pathstore):
+            try: 
+                if filename.endswith(".trans.zip"):
+		    TM = TranslationModel(self.pathstore + filename)
+		    props = TM.translation_properties()
 
-                test = self.test_existence(props["id"])
-                if not test:
-                    print "indexing translation (%s)..." % props["id"],
-                    self.index_it(TM.document_list())
-                    print "  OK"
+		    test = self.test_existence(props["id"])
+		    if not test:
+			print "indexing translation (%s)..." % props["id"],
+			self.index_it(TM.document_list())
+			print "  OK"
+		else:
+		    print "ignoring %s.." % filename
             except Exception as E:
                 print E
                 
 
     
 if __name__ == "__main__":
-    #QCI=QuranicCorpusImporter()
+    QCI=QuranicCorpusImporter()
  
-    E = ZekrModelsImporter(pathindex="indexes/extend/")#../indexes/extend/
-    E.load_translationModels()
-    print "Done"
+    #E = ZekrModelsImporter(pathindex="../../indexes/extend/",pathstore="../../store/Translations/")
+    #E.load_translationModels()
+
 
     
