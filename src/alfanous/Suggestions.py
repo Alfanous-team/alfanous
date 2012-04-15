@@ -73,6 +73,10 @@ def QSubjectSpellChecker(docindex,qparser):
         """spellchecking the words of aya fields"""
         return QSuggester(docindex, qparser, fields=["subject","chapter","topic","subtopic"], spellindexname="Sub_SPELL")
 
+def QWordChecker(docindex,qparser):
+        """spellchecking the words"""
+        return QSuggester(docindex, qparser, fields=["word"], spellindexname="WORD_SPELL")
+
 
 def concat_suggestions(listofsuggestions):
     """     """

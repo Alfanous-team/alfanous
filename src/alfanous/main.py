@@ -31,11 +31,11 @@
 
 from dynamic_resources.arabicnames_dyn import ara2eng_names
 from Searching import QSearcher, QReader
-from Indexing import QseDocIndex, ExtDocIndex
+from Indexing import QseDocIndex, ExtDocIndex,BasicDocIndex
 
 from ResultsProcessing import Qhighlight, QPaginate, QFilter
 from QueryProcessing import QuranicParser,StandardParser,ArabicParser,FuzzyQuranicParser
-from Suggestions import QSuggester,QAyaSpellChecker,QSubjectSpellChecker,concat_suggestions
+from Suggestions import QSuggester,QAyaSpellChecker,QSubjectSpellChecker,concat_suggestions,QWordChecker
 
 
 
@@ -141,6 +141,9 @@ def QuranicSearchEngine(indexpath="../indexes/main/",qparser=QuranicParser):
                             ,qhighlight=Qhighlight  
                             )
     
+    
+
+    
 def FuzzyQuranicSearchEngine(indexpath="../indexes/main/",qparser=FuzzyQuranicParser):
     return BasicSearchEngine(qdocindex=QseDocIndex(indexpath)
                             ,qparser=qparser#termclass=QuranicParser.FuzzyAll
@@ -164,29 +167,63 @@ def TraductionSearchEngine(indexpath="../indexes/extend/",qparser=StandardParser
                             ,qspellcheckers=[]
                             ,qhighlight=Qhighlight  
                             )
-        
+    
+def WordSearchEngine(indexpath="../indexes/word/",qparser=StandardParser):
+    return BasicSearchEngine(qdocindex=BasicDocIndex(indexpath)
+                            ,qparser=qparser#termclass=QuranicParser.FuzzyAll
+                            ,mainfield="word"
+                            ,otherfields=["normalized","spelled"]
+                            ,qsearcher=QSearcher
+                            ,qreader=QReader
+                            ,qspellcheckers=[QWordChecker]
+                            ,qhighlight=Qhighlight  
+                            )
     
 
 if __name__ == '__main__':
-    QSE = QuranicSearchEngine("../indexes/main/") 
-    FQSE = FuzzyQuranicSearchEngine("../indexes/main/") 
-    TSE = TraductionSearchEngine("../indexes/extend/")
+    import profile
+    QSE = QuranicSearchEngine("./../indexes/main/")
+    FQSE = FuzzyQuranicSearchEngine("./../indexes/main/") 
+    TSE = TraductionSearchEngine("./../indexes/extend/")
+    QWSE = WordSearchEngine("../../indexes/word/") 
     
+    if QWSE.OK:
+        print "most frequent vocalized words"
+        mfw = QWSE.most_frequent_words(10, "word")
+        for term in mfw:
+            print "\t", term[1], " - frequence = ", term[0], "."
+        print "most  frequent unvocalized words"
+        mfw = QWSE.most_frequent_words(10, "normalized")
+        for term in mfw:
+            print "\t", term[1], " - frequence = ", term[0], "."
+         
+       
+        res, terms =  QWSE.search_all("word_id:1",limit=6236, sortedby="score",reverse=True)
+        print len(res)
+
+        print "\n#list field stored values# type"
+        print ",".join([str(item) for item in QWSE.list_values("type")])
+        
     if QSE.OK:
         print "\n#most frequent words#"
         
-        mfw = QSE.most_frequent_words(9999999, "aya")
+        mfw = QSE.most_frequent_words(9999999, "uth_")
         print len(mfw)
-        for term in mfw[0:8]:
-            print "\t", term[1], " - frequence = ", term[0], "."
+        f=open("./uthmani_vocalized.csv", "w+")
+        for term in mfw:
+            pass
+            #print "\t", term[1], " - frequence = ", term[0], "."
+            #print>>f,"\t", term[1]," ;\t",term[0],"\n"
+            
 
+        
         print "\n#list field stored values#"
         print ",".join([str(item) for item in QSE.list_values("gid")])
 
     
            
     if TSE.OK:
-        print "\n#extended search#"
+        print "\n#extended search#",
         results = TSE.find_extended(u"gid:1 OR gid:2", defaultfield="gid")
         print "\n".join([str(result) for result in results])
         
