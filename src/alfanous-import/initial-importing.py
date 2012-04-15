@@ -2,7 +2,6 @@
 # coding: utf-8
 
 
-
 ##     Copyright (C) 2009-2012 Assem Chelli <assem.ch [at] gmail.com>
 
 ##     This program is free software: you can redistribute it and/or modify
@@ -22,6 +21,7 @@
 '''
 Its one time importing system,dont use it else if you are sure what you're doing
 
+@todo: this script must be clean , we need it to build the indexes for the original ressources
 @author: Assem Chelli
 @contact: assem.ch [at] gmail.com
 
