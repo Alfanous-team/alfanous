@@ -560,6 +560,7 @@ class QuranicParser(ArabicParser):
                     lst = []
                     if indexsrc != "none":
                         itm = locate(derivedict[indexsrc], derivedict[indexdist], word) 
+                        print itm
                         lst = filter_doubles(Find(derivedict[indexdist], derivedict["word_"], itm))
                     
                     return lst
