@@ -47,6 +47,9 @@ class Ta7rif(Exception):
     @param msg:the message of error
     @type msg:unicode
     
+    
+    TODO: some translations can't be loaded cause a problem of ascii 
+    
     """
     def __init__(self, type="new", value="undefined", original=None, aya_gid=None, msg=""):     
         self.type = type
@@ -73,11 +76,11 @@ class TranslationModel:
             @attention: add the last slash for directories
             """
             print path
-            assert os.path.exists(path), "path not exist!!"
+            assert os.path.exists(path), "path does not exist!!"
             
             if os.path.isfile(path):
                 self.path = self.open_zip(path)
-            else: assert False, "type of path not defined : %s" % path
+            else: assert False, "type of path is not defined : %s" % path
             
             
         
@@ -116,7 +119,7 @@ class TranslationModel:
             lines = self.translation_lines(props)  
             if len(lines) != 6236:raise Ta7rif(type="ayas number", value=str(len(lines)), original="6236",msg="the number of lines is not 6236")
             for i in range(6236):
-                doc = {"gid":i + 1, "id":unicode(props["id"]), "text":unicode(lines[i]), "type":u"translation", "lang":unicode(props["language"]), "country":unicode(props["country"]), "author":unicode(props["name"]), "copyright":unicode(props["copyright"]), "binary":None} #the same of the schema
+                doc = {"gid":i + 1, "id":props["id"].decode(props["encoding"]), "text":lines[i].decode(props["encoding"]), "type":u"translation", "lang":props["language"].decode(props["encoding"]), "country":props["country"].decode(props["encoding"]), "author":props["name"].decode(props["encoding"]), "copyright":props["copyright"].decode(props["encoding"]), "binary":None} #the same of the schema
                 yield doc
                 
                 
