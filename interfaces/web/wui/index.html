@@ -4,10 +4,9 @@
 	<title>الفانوس | محرك بحث قرآني متقدم</title>
 
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-	<meta http-equiv="content-language" content="ar en" />
 	<meta name="description" content="الفانوس - محرك بحث متقدم في القرآن الكريم "/>
 	<meta name="keywords" content="quran, search, ayates, surates, متقدم, advanced, الفانوس ,القرآن ,فانوس ,قرآني ,احصاءات ,ألفاظ, fanous, alfanous, alfanoos, fanoos, elfanous, elfanoos, alfanouce, alfanooce, fanooce , engine, محرك ,بحث ,قرآن"/>
-	<meta name="copyright" content="&copy; Alfanous Team, AGPL" />
+	<!-- meta name="copyright" content="&copy; Alfanous Team, AGPL" -->
 	<meta name="author" content="Assem Chelli, Ahmed Ramadan, Abdellah Chelli, Mouad Debbar" />
 	<meta name="robots" content="index,follow"/>
 
@@ -326,6 +325,7 @@
 
 		function addto_searchbar(){
 			window.external.AddSearchProvider("http://wui.alfanous.org/alfanous-opensearch.xml");
+			window.external.AddSearchProvider("http://wui.alfanous.org/alfanous-mobile-opensearch.xml");
 		}
 
 	// ]]>
@@ -386,13 +386,25 @@
 	</script>
 
 
+<style type="text/css">
+	body {
+		background: #fff;
+		text-align: center;
+	}
+	table {
+		width: 395px;
+		height: 256px;		
+	}
+	
+</style>
+
 </head>
-<body bgcolor="#FFFFFF">
+<body>
 
 <form id="form" name="form" method="post" action=".">
 <div align="center">
 <div>
-<table width="395" height="256" border="0" cellpadding="0" cellspacing="0">
+<table>
 	<tr>
 		<td colspan="4" style="background:url(images/logo.png); width:395px; height:209px;"> </td>
 		</tr>
@@ -401,7 +413,7 @@
 		<td style="background:url(images/main_table_03.png) no-repeat;width:259px;height:26px">
 			<input id="search_box" name="search" class="enter" type="text" value="" />
 			</td>
-		<td width="62" height="26" style="background:url(images/main_table_04.png) repeat scroll 0 0 transparent;width:62;height:26;text-align:right;">
+		<td style="background:url(images/main_table_04.png) repeat scroll 0 0 transparent;width:62;height:26;text-align:right;">
 			<a class="button" href="" onclick="$('#form').submit(); return false;">بحث</a>
 			</td>
 		<td style="background:url(images/main_table_05.png) no-repeat;width:24px;height:26px"> </td>
@@ -411,8 +423,8 @@
 </table>
 
 <div class="follow-box" > 
-	<a class="twitter_share" target='_blank' rel='nofollow' href='http://twitter.com/home?status=http://www.alfanous.org الفانوس | محرك بحث قرآني متقدم'><img src='images/twitter.png' class='bo' alt='twitter' title='تويتر'/></a><br/>
-	<a class="facebook_share" target='_blank' rel='nofollow' href='http://www.facebook.com/share.php?u=http://www.alfanous.org&t=الفانوس | محرك بحث قرآني متقدم'><img class='bo' alt='Facebook' title='فيس بوك' src='images/facebook.png' /></a><br/>
+	<a class="twitter_share" target='_blank' rel='nofollow' href='http://twitter.com/home?status=http://www.alfanous.org%20الفانوس%20|%20محرك%20بحث%20قرآني%20متقدم'><img src='images/twitter.png' class='bo' alt='twitter' title='تويتر'/></a><br/>
+	<a class="facebook_share" target='_blank' rel='nofollow' href='http://www.facebook.com/share.php?u=http://www.alfanous.org%26t=الفانوس%20|%20محرك%20بحث%20قرآني%20متقدم'><img class='bo' alt='Facebook' title='فيس بوك' src='images/facebook.png' /></a><br/>
 	<a title='إرسال إلى نبضات جوجل' class='external2 buzz_share' rel='nofollow' href='http://www.google.com/buzz/post?url=http://www.alfanous.org' target='_blank'><img src='images/google.png' class='bo' alt='Google Buzz'/></a><br/>
 	<a title='إرسال إلى MySpace' class='external2 myspace_share' rel='nofollow' href='http://www.myspace.com/Modules/PostTo/Pages/?u=http://www.alfanous.org' target='_blank'><img src='images/myspace.png' class='bo' alt='myspace'/></a><br/>
 	<script type="text/javascript">
@@ -465,7 +477,7 @@
 <input id="down_btn" rel='#down' class='modalInput xbutton gray' type='button' value='تحميل' />
 <input id="help_btn" rel='#help' class='modalInput xbutton gray' type='button' value='مساعدة' />
 <!--<input id="feedback_btn" rel='#feedback' class='modalInput xbutton gray' type='button' value='Feedback!' />-->
-<div id="vote_btn"><a class='modalInput xbutton gray' href="https://www.surveymonkey.com/s/P3LGJ8K" target="_blank"/><i>News 22-04-2012:</i> Please help us to make <b>Alfanous</b> better, by taking this survey!</a></div>
+<div id="vote_btn"><a class='modalInput xbutton gray' href="https://www.surveymonkey.com/s/P3LGJ8K" target="_blank"><i>News 22-04-2012:</i> Please help us to make <b>Alfanous</b> better, by taking this survey!</a></div>
 <br /><br />
 
 <!--abdellah-->
@@ -473,7 +485,7 @@
 
 </div>
 </div>
-<div align="center" class="modal" id="down">
+<div class="modal" id="down" style="text-align: center;">
 	<h2 style='padding:0 0 0px 0'><img alt="download" src="images/Download.png">  تحميل</h2><br/>
 <strong>النسخة المكتبية الانجليزية 0.4 <br/> 
 <a class="name" title="Click to download alfanousDesktop-win0.4r20.exe" href="http://sourceforge.net/projects/alfanous/files/Interfaces/AlfanousDesktop/0.4.20/alfanousDesktop-win0.4r20.exe/download">وينداوز</a>
@@ -485,44 +497,43 @@
 		<button type="button" class='close gray button'> إغلاق </button>	
 	<br />
 </div>
-<div id="help" align="right" class="modal" style="width: 675px;">
+<div id="help" class="modal" style="width: 675px; text-align: right;">
 	<h2>مساعدة</h2>	
 <table dir="rtl" style=" border: 2px dashed gray;margin: 5px;width: 672px;">
 <tbody>
 <!--<tr>
-<th>البحث التلقائي  </th><td><a href="رب">  رب </a></td><td> </td>
+<th>البحث التلقائي  </th><td><a href="رب">  رب</a></td><td> </td>
 </tr>-->
 <tr>
-<th class="style6"">البحث الدقيق  </th><td><a href="'رب'"> 'رب' </a></td><td> </td>
+<th class="style6">البحث الدقيق  </th><td><a href="'رب'"> 'رب'</a></td><td> </td>
 </tr>
 <tr>
-<th>جملة  </th><td><a href="&quot;رب العالمين&quot;">  "رب العالمين" </a></td><td> </td>
+<th>جملة  </th><td><a href="&quot;رب%20العالمين&quot;">"رب العالمين"</a></td><td> </td>
 </tr>
 <tr>
-<th class="style6"> العلاقات المنطقية</th><td class="style5"><a href="(الصلاة - الزكاة) + سورة:البقرة">(الصلاة - الزكاة) + سورة:البقرة</a></td>
-    <td class="style4"><a href="سميع | بصير"> سميع | بصير</a></td>
+<th class="style6"> العلاقات المنطقية</th><td class="style5"><a href="(الصلاة%20-%20الزكاة)%20+%20سورة%3aالبقرة">(الصلاة - الزكاة) + سورة:البقرة</a></td>
+    <td class="style4"><a href="سميع%20|%20بصير"> سميع | بصير</a></td>
 </tr> 
 <tr>
-<th class="style3">  العبارات النمطية</th><td class="style2"><a href="*نبي*">*نبي* </a></td><td><a href="نعم؟">نعم؟ </a></td>
+<th class="style3">  العبارات النمطية</th><td class="style2"><a href="*نبي*">*نبي*</a></td><td><a href="نعم؟">نعم؟</a></td>
 </tr>
 <tr>
-<th class="style6">الحقول </th><td class="style5"><a href="سورة:يس">سورة:يس </a></td>
-    <td class="style4"><a href="سجدة:نعم">سجدة:نعم </a></td>
+<th class="style6">الحقول </th><td class="style5"><a href="سورة%3aيس">سورة:يس</a></td>
+    <td class="style4"><a href="سجدة%3aنعم">سجدة:نعم</a></td>
 </tr>
 <tr>
-<th class="style3">المجالات </th><td class="style2"><a href="رقم_السورة:[1 الى 5] و الله">  رقم_السورة:[1 الى 5] و الله </a></td>
-
+<th class="style3">المجالات </th><td class="style2"><a href="رقم_السورة%3a%5b1%20الى%205%5d%20و%20الله">  رقم_السورة:[1 الى 5] و الله</a></td><td> </td>
 </tr>
 <tr>
-<th class="style6">التشكيل الجزئي </th><td class="style5"><a href="آية_:'مَن' ">آية_:'مَن' </a></td>
-    <td class="style4"><a href="آية_:'المَلكُ' ">آية_:'المَلكُ' </a></td>
+<th class="style6">التشكيل الجزئي </th><td class="style5"><a href="آية_%3a'مَن'">آية_:'مَن'</a></td>
+    <td class="style4"><a href="آية_%3a'المَلكُ'">آية_:'المَلكُ'</a></td>
 </tr>
 <tr>
-<th class="style3">خصائص الكلمة</th><td class="style2"><a href="{قول،اسم} ">{قول،اسم} </a></td><td><a href="{ملك،فعل} ">{ملك،فعل} </a></td>
+<th class="style3">خصائص الكلمة</th><td class="style2"><a href="{قول،اسم} ">{قول،اسم}</a></td><td><a href="{ملك،فعل}">{ملك،فعل}</a></td>
 </tr>
 <tr>
-<th class="style9">الاشتقاقات</th><td class="style8"><a href="&gt;&gt;ملك"> &gt;&gt;ملك </a></td>
-    <td class="style7"><a href="&gt;ملك"> &gt;ملك </a></td>
+<th class="style9">الاشتقاقات</th><td class="style8"><a href="&gt;&gt;ملك">&gt;&gt;ملك</a></td>
+    <td class="style7"><a href="&gt;ملك"> &gt;ملك</a></td>
 </tr>
 </tbody></table>
 	<br/>
