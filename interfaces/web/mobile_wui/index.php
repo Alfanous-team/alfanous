@@ -55,7 +55,7 @@ class MV {
 	# gettext
 	$this->domain = "alfanousMWUI";
 	$this->encoding = "UTF-8";
-	$this->locales_list = array("ar", "en", "fr", "id", "it", "ja", "ms");
+	$this->locales_list = array("ar", "bs", "en", "fr", "id", "it", "ja", "ms", "pt_BR");
 
 	# theme
 	$this->themes_list = array("blue", "std");
@@ -116,6 +116,7 @@ class MV {
   })();
 
 </script>
+
 ";
 
 	# Dynamically added variables
