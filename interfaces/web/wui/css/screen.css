@@ -117,20 +117,62 @@ a:hover{color: green;}
 	text-shadow:0 1px 1px #eeeeee;
 	-moz-text-shadow:0 1px 1px #eeeeee;
 	-webkit-text-shadow:0 1px 1px #eeeeee;
-	border: 1px solid silver;}
-.modal 
-{
+	border: 1px solid silver;
+}
+
+.green {
+	background: #007419; /* old browsers */
+	background: -moz-linear-gradient(top, #007419 0%, #005011 100%); /* firefox */
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#007419), color-stop(100%,#005011)); /* webkit */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#007419', endColorstr='#005011',GradientType=0 ); /* ie */
+	text-shadow:0 1px 1px #eeeeee;
+	-moz-text-shadow:0 1px 1px #eeeeee;
+	-webkit-text-shadow:0 1px 1px #eeeeee;
+	border: 1px solid silver;
+}
+
+.modal {
 	opacity:1;
 	position:absolute;
 	top:10px;
 	left:10px;
-	background-color:#fff;display:none;width:350px;padding:15px;border:2px solid #333;-moz-border-radius:6px;-webkit-border-radius:6px;-moz-box-shadow: 0 0 50px #ccc;-webkit-box-shadow: 0 0 50px #ccc;}
-.modal h2 {background:url(../images/info.png) 0 50% no-repeat;margin:0px;padding:10px 0 10px 45px;border-bottom:1px solid #333;font-size:20px;}
-.external,.bo{margin:3px;border:0}
-.external:hover,.bo:hover{margin-left:4px;}
-.optaly{ color: gray;font-size: 12px;}
-.newur{margin-left: 27px;}
-.xbre{ 
+	background-color:#fff;
+	display:none;
+	width:350px;
+	padding:15px;
+	border:2px solid #333;
+	-moz-border-radius:6px;
+	-webkit-border-radius:6px;
+	-moz-box-shadow: 0 0 50px #ccc;
+	-webkit-box-shadow: 0 0 50px #ccc;
+}
+
+.modal h2 {
+	background:url(../images/info.png) 0 50% no-repeat;
+	margin:0px;
+	padding:10px 0 10px 45px;
+	border-bottom:1px solid #333;
+	font-size:20px;
+}
+
+.external,.bo {
+	margin:3px;
+	border:0
+}
+
+.external:hover,.bo:hover {
+	margin-left:4px;
+}
+
+.optaly {
+	color: gray;
+	font-size: 12px;
+}
+
+.newur {
+	margin-left: 27px;
+}
+.xbre{
 	border: 2px solid gray;
 	color: #0F9AA1;
 	font-family: Times New Roman;
@@ -169,11 +211,34 @@ a:hover{color: green;}
 }
 
 /* +some fun */
-.follow-box {border:0 none;clear:both;margin:0;padding:0;position: absolute;top:180px;right:0;z-index:95;width:50px;text-align:right;}
-.follow-box a:hover {margin-right: 7px;}
+.follow-box {
+	border:0 none;
+	clear:both;
+	margin:0;
+	padding:0;
+	position: absolute;
+	top:180px;
+	right:0;
+	z-index:95;
+	width:50px;
+	text-align:right;
+}
 
-.footer{font-family: tahoma; font-size: 14px; height:20px;margin-top:80px; text-align: center;}
-#vedio,#vedio3,#vedio4,#vedio5{width:670px}
+.follow-box a:hover {
+	margin-right: 7px;
+}
+
+.footer {
+	font-family: tahoma;
+	font-size: 14px;
+	height:20px;
+	margin-top:80px;
+	text-align: center;
+}
+
+#vedio,#vedio3,#vedio4,#vedio5 {
+	width:670px
+}
 
 .style2
 	{
@@ -214,7 +279,22 @@ a:hover{color: green;}
 	.xdrops_continer{direction:rtl;}
 
 /* Abdellah */
-#help_btn {position: absolute;top:10px;right:0;z-index:95;}
+
+#help_btn {
+	position: absolute;
+	top:10px;
+	right:0;
+	z-index:95;
+}
+
+#vote_btn a {
+	font-weight: normal;
+	text-decoration: none;
+	color: #000069;
+	padding-left: 20px;
+	padding-right: 20px;
+}
+
 
 .pages img, select {
 	cursor:pointer;

@@ -47,7 +47,7 @@
 	// ]]>
 	</script>
 
-	<script>
+	<script type="text/javascript">
 	// <![CDATA[
 		$(document).ready(function(){
 		
@@ -391,13 +391,23 @@
 		background: #fff;
 		text-align: center;
 	}
+	
 	table {
 		width: 395px;
 		height: 256px;		
 	}
+	
 	#footer-big-wrapper {
 		text-align: left;
-	}	
+	}
+	
+	body form div div table {
+		display: inline-block;
+	}
+	
+	body form div div div.xdrops_continer {
+		display: inline-block;
+	}
 	
 </style>
 
@@ -405,7 +415,8 @@
 <body>
 
 <form id="form" name="form" method="post" action=".">
-<div align="center">
+<!-- <div align="center"> -->
+<div>
 <div>
 <table>
 	<tr>
@@ -435,10 +446,9 @@
 	    var addthis_pub = "kaan";
 	// ]]>
     </script>
-<!--     <a class="other_share" rel='nofollow' href="http://www.addthis.com/bookmark.php?v=250&amp;username=ahmadramadan" onmouseover="return addthis_open(this, '', 'http://www.alfanous.org', 'الفانوس | محرك بحث قرآني متقدم')" onmouseout="addthis_close()" onclick="return addthis_sendto()"><img class='bo' src="images/share.png" alt="شارك أصدقاءك هذا الموقع"/></a> -->
     <a class="other_share" rel='nofollow' href="http://www.addthis.com/bookmark.php?v=250&amp;username=ahmadramadan" onmouseover="return addthis_open(this, '', document.URL, document.title );" onmouseout="addthis_close()" onclick="return addthis_sendto()"><img class='bo' src="images/share.png" alt="شارك أصدقاءك هذا الموقع"/></a>
 </div>
-
+<br />
 <div class="xdrops_continer" style="direction:rtl; text-align:left; width: 342px;">
 	<span class="xtitle">ترتيب حسب :</span>
 	<select id="sortedby" class="styled" name="sortedby">
@@ -477,9 +487,9 @@
 </div>
 
 <br />
+<br />
 <input id="down_btn" rel='#down' class='modalInput xbutton gray' type='button' value='تحميل' />
 <input id="help_btn" rel='#help' class='modalInput xbutton gray' type='button' value='مساعدة' />
-<!--<input id="feedback_btn" rel='#feedback' class='modalInput xbutton gray' type='button' value='Feedback!' />-->
 <div id="vote_btn"><a class='modalInput xbutton gray' href="https://www.surveymonkey.com/s/P3LGJ8K" target="_blank"><i>News 22-04-2012:</i> Please help us to make <b>Alfanous</b> better, by taking this survey!</a></div>
 <br /><br />
 
