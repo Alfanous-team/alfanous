@@ -1,9 +1,10 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html>
 <head>
-	<title>الفانوس | محرك بحث قرآني متقدم</title>
-
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+	
+	<title>الفانوس | محرك بحث قرآني متقدم</title>
+	
 	<meta name="description" content="الفانوس - محرك بحث متقدم في القرآن الكريم "/>
 	<meta name="keywords" content="quran, search, ayates, surates, متقدم, advanced, الفانوس ,القرآن ,فانوس ,قرآني ,احصاءات ,ألفاظ, fanous, alfanous, alfanoos, fanoos, elfanous, elfanoos, alfanouce, alfanooce, fanooce , engine, محرك ,بحث ,قرآن"/>
 	<!-- meta name="copyright" content="&copy; Alfanous Team, AGPL" -->
@@ -24,10 +25,10 @@
 	
 	<!--abdellah-->
 	<script type="text/javascript" src="js/audio-player.js"></script>
-	<!--one of next scripts imports tries to import jquery so jquery must imported first-->
-	<script type="text/javascript" src="js/jquery-1.6.2.min.js"></script>
+	<!--jquery tools (for overlay) + jquery 1.7.2 included-->
+	<script type="text/javascript" src="js/jquery.tools.min.js"></script>
 
-	<script type="text/javascript" src="js/msgs.js"></script>
+	
 	<script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#username=ahmadramadan"></script>
 	<script type="text/javascript" src="js/drops.js"></script>
 	
@@ -51,7 +52,14 @@
 	// <![CDATA[
 		$(document).ready(function(){
 		
-			$("#down_btn").hide();
+			$("#help_btn").click(function() {
+				$("#help").overlay().load();
+			});
+			/*
+			$("#down_btn").click(function() {
+				$("#down").overlay().load();
+			});
+			*/
 
 			// help links
 			$("#help table a").bind('click', function(event) {
@@ -488,9 +496,9 @@
 
 <br />
 <br />
-<input id="down_btn" rel='#down' class='modalInput xbutton gray' type='button' value='تحميل' />
-<input id="help_btn" rel='#help' class='modalInput xbutton gray' type='button' value='مساعدة' />
-<div id="vote_btn"><a class='modalInput xbutton gray' href="https://www.surveymonkey.com/s/P3LGJ8K" target="_blank"><i>News 22-04-2012:</i> Please help us to make <b>Alfanous</b> better, by taking this survey!</a></div>
+<!--<div id="down_btn"><a rel='#down' class='xbutton gray' >تحميل</a></div>-->
+<div id="help_btn"><a class='xbutton gray' >مساعدة</a></div>
+<div id="vote_btn"><a class='xbutton gray' href="https://www.surveymonkey.com/s/P3LGJ8K" target="_blank"><i>News 22-04-2012:</i> Please help us to make <b>Alfanous</b> better, by taking this survey!</a></div>
 <br /><br />
 
 <!--abdellah-->
@@ -498,7 +506,7 @@
 
 </div>
 </div>
-<div class="modal" id="down" style="text-align: center;">
+<div id="down" class="modal" style="text-align: center;">
 	<h2 style='padding:0 0 0px 0'><img alt="download" src="images/Download.png">  تحميل</h2><br/>
 <strong>النسخة المكتبية الانجليزية 0.4 <br/> 
 <a class="name" title="Click to download alfanousDesktop-win0.4r20.exe" href="http://sourceforge.net/projects/alfanous/files/Interfaces/AlfanousDesktop/0.4.20/alfanousDesktop-win0.4r20.exe/download">وينداوز</a>
