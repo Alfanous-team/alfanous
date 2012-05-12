@@ -148,7 +148,7 @@ a:hover{color: green;}
 }
 
 .modal h2 {
-	background:url(../images/info.png) 0 50% no-repeat;
+	/*background:url(../images/info.png) 0 50% no-repeat; image missing*/
 	margin:0px;
 	padding:10px 0 10px 45px;
 	border-bottom:1px solid #333;
