@@ -14,8 +14,8 @@
 
 ; MUI Settings
 !define MUI_ABORTWARNING
-!define MUI_ICON "resources\Alfanous.ico"
-!define MUI_UNICON "resources\Alfanous.ico"
+!define MUI_ICON "resources\AlfanousInstaller.ico"
+!define MUI_UNICON "resources\AlfanousInstaller.ico"
 
 ; Language Selection Dialog Settings
 !define MUI_LANGDLL_REGISTRY_ROOT "${PRODUCT_UNINST_ROOT_KEY}"
@@ -135,6 +135,7 @@ Section "Main indexes" SEC02
   File "indexes\main\*"
 SectionEnd
 
+
 Section "Fonts" SEC03
   SetOutPath "$FONTS"
   
@@ -147,7 +148,7 @@ SectionEnd
  Section "Extend indexes" SEC04
  SetOutPath "$COMMONFILES\alfanous\indexes\extend"
  SetOverwrite try
- # File "indexes\extend\*"
+ File "indexes\extend\*"
  SectionEnd
 
 
@@ -155,8 +156,21 @@ Section "Predefined configuration" SEC05
   SetOutPath "$APPDATA\alfanous\configs"
   AccessControl::GrantOnFile "$APPDATA\alfanous\configs" "(BU)" "FullAccess"
   SetOverwrite try
-  File "resources\configs\config.ini"
+   File "resources\configs\config.ini"
+   
+
 SectionEnd
+
+
+ Section "Store" SEC06
+  SetOutPath "$COMMONFILES\alfanous\store"
+  SetOverwrite try
+  File "resources\configs\stats.js"
+  File "resources\configs\recitations.js"
+  File "resources\configs\information.js"
+  File "resources\configs\hints.js"
+  File "resources\configs\translations.js"
+ SectionEnd
 
 
 
@@ -183,7 +197,7 @@ SectionEnd
 !insertmacro MUI_FUNCTION_DESCRIPTION_BEGIN
   !insertmacro MUI_DESCRIPTION_TEXT ${SEC01} "required"
   !insertmacro MUI_DESCRIPTION_TEXT ${SEC02} "required"
-  #!insertmacro MUI_DESCRIPTION_TEXT ${SEC03} "recommended"
+  !insertmacro MUI_DESCRIPTION_TEXT ${SEC03} "recommended"
   !insertmacro MUI_DESCRIPTION_TEXT ${SEC04} "optional"
 !insertmacro MUI_FUNCTION_DESCRIPTION_END
 
