@@ -1,0 +1,36 @@
+#  check it  before use it
+<VirtualHost *:80>
+	ServerAdmin Anonymous@alfanous.local
+	ServerName alfanous.local
+	DocumentRoot /var/www/alfanous-web/wui
+
+	<Directory /var/www/alfanous-web/wui>
+		Options Indexes FollowSymLinks MultiViews
+		AllowOverride None
+		Order allow,deny
+		allow from all
+	</Directory>
+	
+
+	
+
+	ErrorLog /var/log/apache2/error.log
+
+	# Possible values include: debug, info, notice, warn, error, crit,
+	# alert, emerg.
+	LogLevel warn
+
+	CustomLog /var/log/apache2/access.log combined
+
+
+
+	ScriptAlias  /cgi-bin/ /var/www/alfanous-web/cgi/ 
+	
+	<Directory /var/www/alfanous-web/cgi/>
+		Options +ExecCGI +MultiViews +SymLinksIfOwnerMatch
+		addHandler cgi-script .py
+		allow from all
+	</Directory>
+
+
+</VirtualHost>
