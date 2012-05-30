@@ -3,8 +3,8 @@
 ##     Copyright (C) 2009-2012 Assem Chelli <assem.ch [at] gmail.com>
 
 ##     This program is free software: you can redistribute it and/or modify
-##     it under the terms of the GNU Affero General Public License as published by
-##     the Free Software Foundation, either version 3 of the License, or
+##     it under the terms of the GNU Affero General Public License as published
+##     by the Free Software Foundation, either version 3 of the License, or
 ##     (at your option) any later version.
 
 ##     This program is distributed in the hope that it will be useful,
@@ -21,11 +21,20 @@
 
 Summary:
 ========
-Alfanous is a Quranic search engine provides simple and advanced search services in the diverse information of the Holy Quran and is built on the foundations of modern search engines to ensure high stability and high-speed search and we aspire to provide the benefits of facilitating the search for the user like highlight,suggestions ...Etc..
+Alfanous is a Quranic search engine provides simple and advanced search services
+in the diverse information of the Holy Quran and is built on the foundations of 
+modern search engines to ensure high stability and high-speed search and we 
+aspire to provide the benefits of facilitating the search for the user like highlight,suggestions ...Etc..
 
-Alfanous is a search engine in the Arabic language necessarily and it provides the morphological analysis , starting from the extraction of roots and other processes different and this will give the user more liberty in the formulation of queries,and also increases the accuracy of the research and its comprehensiveness.
+Alfanous is a search engine in the Arabic language necessarily and it provides 
+the morphological analysis , starting from the extraction of roots and other 
+processes different and this will give the user more liberty in the formulation 
+of queries,and also increases the accuracy of the research and its 
+comprehensiveness.
 
-Alfanous is a programming interface (API) a tool of developers working on programs related to the Qur'an and want to take advantage of the search services provided by alfanous
+Alfanous is a programming interface (API) a tool of developers working on 
+programs related to the Qur'an and want to take advantage of the search services
+ provided by alfanous
 
 
 Features:
@@ -89,7 +98,7 @@ to call the api from script
             >>>       print r["aya"]
             الحمد لله رب العالمين
     
-  - show more information about a result : sura's name, aya's number ,aya's vocalized text
+  - show more information about a result : sura's name, aya's number ...
             
             >>>  for r in results:
             >>>        print r["sura_name"],":",r["aya_id"],":",r["aya_"]
@@ -189,7 +198,8 @@ buckwalter
 
 Available fields
 ----------------
-Alfanous main index contains lot of info about Qur'an.the search on them is available using fielded search feature:
+Alfanous main index contains lot of info about Qur'an.the search on them is 
+available using fielded search feature:
          
         >>> سورة:الفاتحة 
 
@@ -272,7 +282,8 @@ the API is divided to these main parties:
      - PyAyaByAya_ : to connect the recitations on the site of VersePyVerse project
      - PyElixirFM_ : to use ElixirFM in python 
  
-the API use a *critical* resource which are the index.alfanous project contains some indexes :
+the API use a *critical* resource which are the index.alfanous project contains 
+some indexes :
  - Quran index : its the main index.contains all info about Qur'an:
      - Quranic text in different scripts (standard and uthmani)
      - Structural infos like hizb,juz',rubu',manzil..etc
@@ -282,7 +293,8 @@ the API use a *critical* resource which are the index.alfanous project contains 
  - Extended index: contains the translations and taffassir
  
  
-To make your index, you can create it using Whoosh_ . the analysers exist in TextProcessing_ if you want to use them in your schema 
+To make your index, you can create it using Whoosh_ . the analysers exist in 
+TextProcessing_ if you want to use them in your schema 
  
 .. _Whoosh: http://packages.python.org/Whoosh/quickstart.html
 
