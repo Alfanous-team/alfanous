@@ -11,7 +11,7 @@
     <x>0</x>
     <y>0</y>
     <width>1422</width>
-    <height>557</height>
+    <height>567</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -36,7 +36,7 @@
    <string>Alfanous - Qur'anic Search Engine (Beta Version)</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="../../../resources/images/main.qrc">
+   <iconset resource="../images/main.qrc">
     <normaloff>:/resources/AlFanous-A2_64_2010-03-25.png</normaloff>:/resources/AlFanous-A2_64_2010-03-25.png</iconset>
   </property>
   <property name="whatsThis">
@@ -46,393 +46,7 @@
    <enum>Qt::LeftToRight</enum>
   </property>
   <property name="styleSheet">
-   <string notr="true">
-     QComboBox {
-     border: 1px solid gray;
-     border-radius: 3px;
-     padding: 1px 18px 1px 3px;
-     min-width: 6em;
- }
-
-
- QComboBox::down-arrow {
-     image:url(:/resources/1downarrow.png)
- }
-
- QComboBox::down-arrow:on { /* shift the arrow when popup is open */
-     top: 1px;
-     left: 1px;
- }
-
-
- QToolBox::tab {
-         background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
-                                     stop: 0 #E1F1E1, stop: 0.4 #DDEDDD,
-                                     stop: 0.5 #D8E8D8, stop: 1.0 #D3E3D3);
-         border-radius: 10px;
-         color: rgb(0, 85, 0);
-     border: 1px solid green;
-     }
-
-     QToolBox::tab:selected { /* italicize selected tabs */
-  background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
-                                     stop: 0 #C1D1C1, stop: 0.4 #BDCDBD,
-                                     stop: 0.5 #B8C8B8, stop: 1.0 #B3C3B3);
-         font: italic;
-         color: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:0, stop:0 rgba(255, 0, 0, 255), stop:0.166 rgba(138, 138, 0, 255), stop:0.333 rgba(0, 92, 0, 255), stop:0.5 rgba(0, 0, 0, 255), stop:0.666 rgba(0, 0, 255, 255), stop:0.833 rgba(255, 0, 255, 255), stop:1 rgba(255, 0, 0, 255));
-     border: 2px solid red;
-}
-
-
-QMainWindow::separator {
-    height: 1px;
-	width: 1px;
-
-background-color: qlineargradient(spread:reflect, x1:0.996, y1:0.0113182, x2:1, y2:0, stop:0 rgba(121, 121, 121, 194), stop:0.45 rgba(38, 92, 54, 222), stop:1 rgba(57, 64, 17, 222))
-
-}
-
-QDockWidget {
-     border: 1px solid lightgray;
-
-     titlebar-close-icon: url(:/resources/application_exit.png);
-     titlebar-normal-icon: url(:/resources/bookmark.png);
-    color : white;
-	border-radius:5px;
- 	icon-size: 64px;
- }
-
- QDockWidget::title {
-     text-align: center; /* align the text to the left */
-     background:qlineargradient(spread:pad, x1:0.472273, y1:0.738, x2:0.468818, y2:0.239, stop:0 rgba(60, 53, 48, 246), stop:1 rgba(121, 78, 46, 222));
-     padding-left: 20px;
- }
-
- QDockWidget::close-button, QDockWidget::float-button {
-     border: 1px solid transparent;
-     padding: 0px;
- }
-
- QDockWidget::close-button:hover, QDockWidget::float-button:hover {
-
- }
-
- QDockWidget::close-button:pressed, QDockWidget::float-button:pressed {
-     padding: 1px -1px -1px 1px;
- }
-
-QPushButton { background: qlineargradient(spread:pad, x1:0.504091, y1:0.619, x2:0.487, y2:0, stop:0 rgba(240, 146, 146, 255), stop:1 rgba(238, 197, 197, 255)) ;
- border: 1px solid #f5f6fa;
-     border-radius: 3px; }
-
-QToolButton { background: qlineargradient(spread:pad, x1:0.504091, y1:0.619, x2:0.487, y2:0, stop:0 rgba(162, 200, 160, 255), stop:1 rgba(226, 225, 221, 255));
- border: 1px solid #f5f6fa;
-     border-radius: 3px; }
-
-
-QMenuBar { background: qlineargradient(spread:pad, x1:0.472273, y1:0.738, x2:0.468818, y2:0.239, stop:0 rgba(43, 51, 41, 246), stop:1 rgba(71, 121, 46, 222));
-color : white}
-
-QMenuBar::item {
- background: transparent;
-color:white;
-}
-
-
- QMenuBar::item:selected,QPushButton:hover,QToolButton:hover { /* when selected using mouse or keyboard */
-border: 1px solid #f5f6fa;
-     border-radius: 3px;
-
-     background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1,
-                                       stop:0 #d0d0d0 stop:0.5 #259478 stop:1 #57a792);
- }
-
- QMenuBar::item:pressed,QPushButton:pressed,QToolButton:pressed{
-          border: 1px solid grey;
-     border-radius: 3px;
-
-background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1,
-                                       stop:0 #e0e0e0 stop:0.5 #257894 stop:1 #5792a7);
-
-}
-
-QMenu {
-     background-color: #f1f1f1; /* sets background of the menu */
-     border: 1px solid #979797;
- }
-
-
- QMenu::item { /* when selected using mouse or keyboard */
-
-margin-left: 2px;
-margin-right: 2px;
-
-padding-top: 4px;
-padding-bottom: 4px;
-padding-left: 28px;
-padding-right: 14px;
-
-/*background:blue;*/
-/*padding: 2px 0px 2px -1px;*/
-}
-
- QMenu::item:selected { /* when selected using mouse or keyboard */
-     border: 1px solid #a7dbff;
-     border-radius: 3px;
-
-     background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1,
-                                       stop:0 #f1f1f1 stop:1 #e4f0f5);
-
-margin-left: 1px;
-
-padding-left: 28px;
-
-
-/*padding: 2px 0px 2px -1px;*/
-}
-
-
-
-
-QMenu::indicator:unchecked { /* when selected using mouse or keyboard */
-
-     border-radius: 3px;
-
-}
-
-QMenu::indicator:checked:enabled { /* when selected using mouse or keyboard */
-     border: 1px solid #a7dbff;
-     border-radius: 3px;
-
-     background-color: #e6eff4;
-
-     image: url(:/resources/menu_indicator.png)
-}
-
-
-QMenu::indicator:checked:!enabled { /* when selected using mouse or keyboard */
-     image: url(:/resources/menu_indicator_disabled.png)
-}
-
-
-
-QMenu::separator {
-    height: 2px;
-    margin-left: 0px;
-margin-top: 4px;
-margin-bottom: 4px;
-
-background-color: #aaeeaa;
-
-}
-
-QGroupBox {
-     border: 1px solid green;
-	border-radius:5px;
-	margin: 6px 2px 2px 2px;
-}
-
-QGroupBox::title {
-     subcontrol-origin: margin;
-     subcontrol-position: top left; /* position at the top center */
-     padding: 0 3px;
-}
-
- QCheckBox {
-     spacing: 5px;
- }
-
- QCheckBox::indicator {
-     width: 13px;
-     height: 13px;
- }
-
- QCheckBox::indicator:unchecked {
-     image: url(:/resources/checkbox_off_enabled.png);
- }
-
- QCheckBox::indicator:unchecked:!enabled {
-     image: url(:/resources/checkbox_off_disabled.png);
- }
-
- QCheckBox::indicator:unchecked:hover {
-     image: url(:/resources/checkbox_off_enabled_hover.png);
- }
-
- QCheckBox::indicator:unchecked:pressed {
-     image: url(:/resources/checkbox_off_enabled_pressed.png);
- }
-
- QCheckBox::indicator:checked {
-     image: url(:/resources/checkbox_on_enabled.png);
- }
-
- QCheckBox::indicator:checked:!enabled {
-     image: url(:/resources/checkbox_on_disabled.png);
- }
-
-
- QCheckBox::indicator:checked:hover {
-     image: url(:/resources/checkbox_on_enabled_hover.png);
- }
-
- QCheckBox::indicator:checked:pressed {
-     image: url(:/resources/checkbox_on_enabled_pressed.png);
- }
-
- QCheckBox::indicator:indeterminate:hover {
-     image: url(:/resources/checkbox_inter_enabled_hover.png);
- }
-
- QCheckBox::indicator:indeterminate {
-     image: url(:/resources/checkbox_inter_enabled.png);
- } 
-
- QCheckBox::indicator:indeterminate:!enabled {
-     image: url(:/resources/checkbox_inter_disabled.png);
- }
-
-QRadioButton {
-     spacing: 5px;
- }
-
- QRadioButton::indicator {
-     width: 12px;
-     height: 12px;
- }
-
- QRadioButton::indicator:unchecked {
-     image: url(:/resources/radiobutton_off_enabled.png);
- }
-
- QRadioButton::indicator:checked {
-     image: url(:/resources/radiobutton_on_enabled.png);
- }
-
- QRadioButton::indicator:checked:hover {
-     image: url(:/resources/radiobutton_on_enabled_hover.png);
- }
-
- QRadioButton::indicator:checked:pressed {
-     image: url(:/resources/radiobutton_on_enabled_pressed.png);
-}
-
- QRadioButton::indicator:unchecked:!enabled {
-     image: url(:/resources/radiobutton_off_disabled.png);
- }
-
- QRadioButton::indicator:checked:!enabled {
-     image: url(:/resources/radiobutton_on_disabled.png);
- }
-
- QRadioButton::indicator:unchecked:hover {
-     image: url(:/resources/radiobutton_off_enabled_hover.png);
-}
-
- QRadioButton::indicator:unchecked:pressed {
-     image: url(:/resources/radiobutton_off_enabled_pressed.png);
-}
-
-QLineEdit, QTextEdit, QSpinBox, QDoubleSpinBox, QTextBrowser {
- 	border-top: 1px solid #abadb3;
- 	border-right: 1px solid #abadb3;
-	border-left: 1px solid #e3e9ef;
-	border-bottom: 1px solid #e3e9ef;
-	border-radius: 2px;
-
-     background: white;
-     selection-background-color: #3399ff;
-
-	min-height: 23 px;
-}
-
-QLineEdit:!enabled, QTextEdit:!enabled, QSpinBox:!enabled, QDoubleSpinBox:!enabled {
- 	border: 1px solid #afafaf;
-	border-radius: 2px;
-
-     background: white;
-	color: #afafaf;
-     selection-background-color: #3399ff;
-}
-
-
-QLineEdit:hover:enabled, QTextEdit:hover:enabled, QSpinBox:hover:enabled, QDoubleSpinBox:hover:enabled {
- 	border-top: 1px solid #3d7bad;
- 	border-right: 1px solid #3d7bad;
-	border-left: 1px solid #b7d9ed;
-	border-bottom: 1px solid #b7d9ed;
-}
-
-
-QSpinBox, QDoubleSpinBox {
-	padding-right: 18px;
-}
-
-QSpinBox::up-button:!enabled, QDoubleSpinBox::up-button:!enabled,
-QSpinBox::up-arrow:off, QDoubleSpinBox::up-arrow:off {
-	border-image: url(:/resources/spin_up_disabled.png) 1;
-}
-
-QSpinBox::down-button:!enabled, QDoubleSpinBox::down-button:!enabled,
-QSpinBox::down-arrow:off, QDoubleSpinBox::down-arrow:off {
-	border-image: url(:/resources/spin_down_disabled.png) 1;
-}
-
-QSpinBox::up-button:hover:enabled, QDoubleSpinBox::up-button:hover:enabled {
-	border-image: url(:/resources/spin_up_enabled_hover.png) 1;
-}
-
-QSpinBox::up-button:pressed:enabled, QDoubleSpinBox::up-button:pressed:enabled {
-	border-image: url(:/resources/spin_up_enabled_pressed.png) 1;
-}
-
-QSpinBox::down-button:hover:enabled, QDoubleSpinBox::down-button:hover:enabled {
-	border-image: url(:/resources/spin_down_enabled_hover.png) 1;
-}
-
-QSpinBox::down-button:pressed:enabled, QDoubleSpinBox::down-button:pressed:enabled {
-	border-image: url(:/resources/spin_down_enabled_pressed.png) 1;
-}
-
-QSpinBox::up-button, QDoubleSpinBox::up-button {
-     subcontrol-origin: border;
-     subcontrol-position: top right; /* position at the top right corner */
-
-     width: 16px; /* 16 + 2*1px border-width = 15px padding + 3px parent border */
-     border-width: 2px;
-	border-bottom-width: 0;
-
-	border-image: url(:/resources/spin_up_enabled.png) 1;
-}
-
-QSpinBox::down-button, QDoubleSpinBox::down-button {
-     subcontrol-origin: border;
-     subcontrol-position: bottom right; /* position at bottom right corner */
-
-     width: 16px;
-     border-width: 2px;
-     border-top-width: 0;
-
-	border-image: url(:/resources/spin_down_enabled.png) 1;
-}
-
-
-
-
-
-QComboBox::QFrame {
-	border: 1px solid #828790;
-}
-
-QLabel,QToolBox {
-	border: 0px solid #828790;
-}
-
-
-
-
-
-</string>
+   <string notr="true"/>
   </property>
   <property name="locale">
    <locale language="English" country="UnitedStates"/>
@@ -448,266 +62,6 @@ QLabel,QToolBox {
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QVBoxLayout" name="verticalLayout_2">
-    <item>
-     <layout class="QHBoxLayout" name="horizontalLayout_8">
-      <item>
-       <spacer name="horizontalSpacer_7">
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
-        </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>40</width>
-          <height>20</height>
-         </size>
-        </property>
-       </spacer>
-      </item>
-      <item>
-       <widget class="QToolButton" name="tb_save">
-        <property name="minimumSize">
-         <size>
-          <width>20</width>
-          <height>20</height>
-         </size>
-        </property>
-        <property name="toolTip">
-         <string>save current page</string>
-        </property>
-        <property name="statusTip">
-         <string>save current page</string>
-        </property>
-        <property name="text">
-         <string>save</string>
-        </property>
-        <property name="icon">
-         <iconset resource="../../../resources/images/main.qrc">
-          <normaloff>:/resources/gnome-dev-floppy.png</normaloff>:/resources/gnome-dev-floppy.png</iconset>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QToolButton" name="tb_print">
-        <property name="enabled">
-         <bool>true</bool>
-        </property>
-        <property name="minimumSize">
-         <size>
-          <width>20</width>
-          <height>20</height>
-         </size>
-        </property>
-        <property name="toolTip">
-         <string>print current page</string>
-        </property>
-        <property name="statusTip">
-         <string>print current page</string>
-        </property>
-        <property name="text">
-         <string>print</string>
-        </property>
-        <property name="icon">
-         <iconset resource="../../../resources/images/main.qrc">
-          <normaloff>:/resources/filequickprint.png</normaloff>:/resources/filequickprint.png</iconset>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QToolButton" name="tb_show_hide_features">
-        <property name="enabled">
-         <bool>true</bool>
-        </property>
-        <property name="minimumSize">
-         <size>
-          <width>20</width>
-          <height>20</height>
-         </size>
-        </property>
-        <property name="toolTip">
-         <string>show/hide features</string>
-        </property>
-        <property name="statusTip">
-         <string>show/hide features</string>
-        </property>
-        <property name="text">
-         <string>show/hide features</string>
-        </property>
-        <property name="icon">
-         <iconset resource="../../../resources/images/main.qrc">
-          <normaloff>:/resources/gnome-starthere.png</normaloff>:/resources/gnome-starthere.png</iconset>
-        </property>
-        <property name="checkable">
-         <bool>false</bool>
-        </property>
-        <property name="checked">
-         <bool>false</bool>
-        </property>
-        <property name="popupMode">
-         <enum>QToolButton::InstantPopup</enum>
-        </property>
-        <property name="autoRaise">
-         <bool>false</bool>
-        </property>
-        <property name="arrowType">
-         <enum>Qt::NoArrow</enum>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QToolButton" name="tb_show_hide_options">
-        <property name="enabled">
-         <bool>true</bool>
-        </property>
-        <property name="minimumSize">
-         <size>
-          <width>20</width>
-          <height>20</height>
-         </size>
-        </property>
-        <property name="toolTip">
-         <string>view/hide options</string>
-        </property>
-        <property name="statusTip">
-         <string>view/hide options</string>
-        </property>
-        <property name="text">
-         <string>view/hide options</string>
-        </property>
-        <property name="icon">
-         <iconset resource="../../../resources/images/main.qrc">
-          <normaloff>:/resources/configure.png</normaloff>:/resources/configure.png</iconset>
-        </property>
-        <property name="checkable">
-         <bool>false</bool>
-        </property>
-        <property name="checked">
-         <bool>false</bool>
-        </property>
-        <property name="popupMode">
-         <enum>QToolButton::InstantPopup</enum>
-        </property>
-        <property name="autoRaise">
-         <bool>false</bool>
-        </property>
-        <property name="arrowType">
-         <enum>Qt::NoArrow</enum>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <spacer name="horizontalSpacer_12">
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
-        </property>
-        <property name="sizeType">
-         <enum>QSizePolicy::Fixed</enum>
-        </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>5</width>
-          <height>20</height>
-         </size>
-        </property>
-       </spacer>
-      </item>
-      <item>
-       <widget class="QToolButton" name="tb_help">
-        <property name="minimumSize">
-         <size>
-          <width>20</width>
-          <height>20</height>
-         </size>
-        </property>
-        <property name="toolTip">
-         <string>Help</string>
-        </property>
-        <property name="text">
-         <string>help</string>
-        </property>
-        <property name="icon">
-         <iconset resource="../../../resources/images/main.qrc">
-          <normaloff>:/resources/contents.png</normaloff>:/resources/contents.png</iconset>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QToolButton" name="tb_about">
-        <property name="minimumSize">
-         <size>
-          <width>20</width>
-          <height>20</height>
-         </size>
-        </property>
-        <property name="toolTip">
-         <string>About </string>
-        </property>
-        <property name="text">
-         <string>about</string>
-        </property>
-        <property name="icon">
-         <iconset resource="../../../resources/images/main.qrc">
-          <normaloff>:/resources/document_properties.png</normaloff>:/resources/document_properties.png</iconset>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <spacer name="horizontalSpacer_11">
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
-        </property>
-        <property name="sizeType">
-         <enum>QSizePolicy::Fixed</enum>
-        </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>5</width>
-          <height>20</height>
-         </size>
-        </property>
-       </spacer>
-      </item>
-      <item>
-       <widget class="QToolButton" name="tb_exit">
-        <property name="minimumSize">
-         <size>
-          <width>20</width>
-          <height>20</height>
-         </size>
-        </property>
-        <property name="toolTip">
-         <string>exit</string>
-        </property>
-        <property name="text">
-         <string>exit</string>
-        </property>
-        <property name="icon">
-         <iconset resource="../../../resources/images/main.qrc">
-          <normaloff>:/resources/exit.png</normaloff>:/resources/exit.png</iconset>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <spacer name="horizontalSpacer_6">
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
-        </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>40</width>
-          <height>20</height>
-         </size>
-        </property>
-       </spacer>
-      </item>
-     </layout>
-    </item>
-    <item>
-     <widget class="Line" name="line">
-      <property name="orientation">
-       <enum>Qt::Horizontal</enum>
-      </property>
-     </widget>
-    </item>
     <item>
      <widget class="QGroupBox" name="groupBox_5">
       <property name="sizePolicy">
@@ -764,7 +118,7 @@ QLabel,QToolBox {
               <string/>
              </property>
              <property name="pixmap">
-              <pixmap resource="../../../resources/images/main.qrc">:/resources/document_preview.png</pixmap>
+              <pixmap resource="../images/main.qrc">:/resources/document_preview.png</pixmap>
              </property>
             </widget>
            </item>
@@ -816,54 +170,12 @@ QLabel,QToolBox {
               <string/>
              </property>
              <property name="pixmap">
-              <pixmap resource="../../../resources/images/main.qrc">:/resources/edit_clear_history.png</pixmap>
+              <pixmap resource="../images/main.qrc">:/resources/edit_clear_history.png</pixmap>
              </property>
             </widget>
            </item>
            <item>
             <widget class="QLCDNumber" name="o_time">
-             <property name="styleSheet">
-              <string notr="true">color : gray</string>
-             </property>
-             <property name="frameShape">
-              <enum>QFrame::NoFrame</enum>
-             </property>
-             <property name="smallDecimalPoint">
-              <bool>true</bool>
-             </property>
-             <property name="numDigits">
-              <number>5</number>
-             </property>
-             <property name="segmentStyle">
-              <enum>QLCDNumber::Flat</enum>
-             </property>
-             <property name="value" stdset="0">
-              <double>0.000000000000000</double>
-             </property>
-             <property name="intValue" stdset="0">
-              <number>0</number>
-             </property>
-            </widget>
-           </item>
-          </layout>
-         </item>
-         <item>
-          <layout class="QHBoxLayout" name="horizontalLayout_41">
-           <item>
-            <widget class="QLabel" name="label_39">
-             <property name="sizePolicy">
-              <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
-               <horstretch>0</horstretch>
-               <verstretch>0</verstretch>
-              </sizepolicy>
-             </property>
-             <property name="text">
-              <string>+</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QLCDNumber" name="o_time_extend">
              <property name="styleSheet">
               <string notr="true">color : gray</string>
              </property>
@@ -956,10 +268,10 @@ QLabel,QToolBox {
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;title&gt;Results&lt;/title&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Arial'; font-size:12pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p align=&quot;center&quot; style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'ArabeyesQr'; font-size:14pt;&quot;&gt;&lt;/p&gt;
-&lt;p align=&quot;center&quot; style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'ArabeyesQr'; font-size:14pt;&quot;&gt;&lt;/p&gt;
+&lt;p align=&quot;center&quot; style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'ArabeyesQr'; font-size:14pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;p align=&quot;center&quot; style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'ArabeyesQr'; font-size:14pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
 &lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;img src=&quot;:/resources/alfanous.jpg&quot; /&gt;&lt;/p&gt;
-&lt;p align=&quot;center&quot; style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'ArabeyesQr';&quot;&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+&lt;p align=&quot;center&quot; style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'ArabeyesQr';&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
          </property>
          <property name="overwriteMode">
           <bool>true</bool>
@@ -1011,7 +323,7 @@ p, li { white-space: pre-wrap; }
            <property name="minimumSize">
             <size>
              <width>100</width>
-             <height>25</height>
+             <height>0</height>
             </size>
            </property>
            <property name="styleSheet">
@@ -1086,52 +398,6 @@ p, li { white-space: pre-wrap; }
        </item>
       </layout>
      </widget>
-    </item>
-    <item>
-     <layout class="QHBoxLayout" name="horizontalLayout_33">
-      <item>
-       <widget class="QLabel" name="label_32">
-        <property name="font">
-         <font>
-          <weight>50</weight>
-          <bold>false</bold>
-          <underline>true</underline>
-         </font>
-        </property>
-        <property name="styleSheet">
-         <string notr="true">color:red</string>
-        </property>
-        <property name="text">
-         <string>Important! :</string>
-        </property>
-        <property name="textFormat">
-         <enum>Qt::PlainText</enum>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QLabel" name="label_21">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="styleSheet">
-         <string notr="true">color:rgb(170, 0, 0)</string>
-        </property>
-        <property name="text">
-         <string>If you find any error in contents,contact us!</string>
-        </property>
-        <property name="textFormat">
-         <enum>Qt::PlainText</enum>
-        </property>
-        <property name="wordWrap">
-         <bool>true</bool>
-        </property>
-       </widget>
-      </item>
-     </layout>
     </item>
    </layout>
   </widget>
@@ -1257,7 +523,7 @@ p, li { white-space: pre-wrap; }
       <string>Choose &amp;Language</string>
      </property>
      <property name="icon">
-      <iconset resource="../../../resources/images/main.qrc">
+      <iconset resource="../images/main.qrc">
        <normaloff>:/resources/flag.png</normaloff>:/resources/flag.png</iconset>
      </property>
      <addaction name="actionEnglish"/>
@@ -1392,8 +658,8 @@ border : 0px solid white;
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>255</width>
-          <height>593</height>
+          <width>258</width>
+          <height>689</height>
          </rect>
         </property>
         <layout class="QVBoxLayout" name="verticalLayout_5">
@@ -1483,7 +749,7 @@ border : 0px solid white;
                <widget class="QComboBox" name="o_field">
                 <property name="minimumSize">
                  <size>
-                  <width>125</width>
+                  <width>0</width>
                   <height>0</height>
                  </size>
                 </property>
@@ -1858,8 +1124,8 @@ border : 0px solid white;
    </property>
    <property name="minimumSize">
     <size>
-     <width>360</width>
-     <height>152</height>
+     <width>398</width>
+     <height>172</height>
     </size>
    </property>
    <property name="maximumSize">
@@ -1907,7 +1173,7 @@ border : 0px solid white;
          </property>
          <property name="minimumSize">
           <size>
-           <width>125</width>
+           <width>0</width>
            <height>0</height>
           </size>
          </property>
@@ -1971,7 +1237,7 @@ border : 0px solid white;
           <string/>
          </property>
          <property name="icon">
-          <iconset resource="../../../resources/images/main.qrc">
+          <iconset resource="../images/main.qrc">
            <normaloff>:/resources/find.png</normaloff>:/resources/find.png</iconset>
          </property>
          <property name="flat">
@@ -1991,7 +1257,7 @@ border : 0px solid white;
           <string/>
          </property>
          <property name="icon">
-          <iconset resource="../../../resources/images/main.qrc">
+          <iconset resource="../images/main.qrc">
            <normaloff>:/resources/clear_left.png</normaloff>:/resources/clear_left.png</iconset>
          </property>
         </widget>
@@ -2142,11 +1408,11 @@ border : 0px solid white;
    <property name="minimumSize">
     <size>
      <width>200</width>
-     <height>363</height>
+     <height>364</height>
     </size>
    </property>
    <property name="windowIcon">
-    <iconset resource="../../../resources/images/main.qrc">
+    <iconset resource="../images/main.qrc">
      <normaloff>:/resources/editcut.png</normaloff>:/resources/editcut.png</iconset>
    </property>
    <property name="floating">
@@ -2197,8 +1463,8 @@ border : 0px solid white;
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>360</width>
-          <height>451</height>
+          <width>367</width>
+          <height>524</height>
          </rect>
         </property>
         <attribute name="label">
@@ -2462,7 +1728,7 @@ border : 0px solid white;
             <string>Add to SearchBar</string>
            </property>
            <property name="icon">
-            <iconset resource="../../../resources/images/main.qrc">
+            <iconset resource="../images/main.qrc">
              <normaloff>:/resources/up-16.png</normaloff>:/resources/up-16.png</iconset>
            </property>
            <property name="checkable">
@@ -2483,8 +1749,8 @@ border : 0px solid white;
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>360</width>
-          <height>297</height>
+          <width>367</width>
+          <height>330</height>
          </rect>
         </property>
         <attribute name="label">
@@ -2739,7 +2005,7 @@ border : 0px solid white;
             <string>Add to SearchBar</string>
            </property>
            <property name="icon">
-            <iconset resource="../../../resources/images/main.qrc">
+            <iconset resource="../images/main.qrc">
              <normaloff>:/resources/up-16.png</normaloff>:/resources/up-16.png</iconset>
            </property>
           </widget>
@@ -2764,8 +2030,8 @@ border : 0px solid white;
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>360</width>
-          <height>173</height>
+          <width>367</width>
+          <height>190</height>
          </rect>
         </property>
         <attribute name="label">
@@ -2911,7 +2177,7 @@ border : 0px solid white;
             <string>Add to SearchBar</string>
            </property>
            <property name="icon">
-            <iconset resource="../../../resources/images/main.qrc">
+            <iconset resource="../images/main.qrc">
              <normaloff>:/resources/up-16.png</normaloff>:/resources/up-16.png</iconset>
            </property>
           </widget>
@@ -2936,8 +2202,8 @@ border : 0px solid white;
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>360</width>
-          <height>202</height>
+          <width>367</width>
+          <height>227</height>
          </rect>
         </property>
         <attribute name="label">
@@ -3146,7 +2412,7 @@ border : 0px solid white;
             <string>Add to SearchBar</string>
            </property>
            <property name="icon">
-            <iconset resource="../../../resources/images/main.qrc">
+            <iconset resource="../images/main.qrc">
              <normaloff>:/resources/up-16.png</normaloff>:/resources/up-16.png</iconset>
            </property>
           </widget>
@@ -3171,8 +2437,8 @@ border : 0px solid white;
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>360</width>
-          <height>206</height>
+          <width>367</width>
+          <height>227</height>
          </rect>
         </property>
         <attribute name="label">
@@ -3399,7 +2665,7 @@ border : 0px solid white;
             <string>Add to SearchBar</string>
            </property>
            <property name="icon">
-            <iconset resource="../../../resources/images/main.qrc">
+            <iconset resource="../images/main.qrc">
              <normaloff>:/resources/up-16.png</normaloff>:/resources/up-16.png</iconset>
            </property>
           </widget>
@@ -3424,8 +2690,8 @@ border : 0px solid white;
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>360</width>
-          <height>237</height>
+          <width>367</width>
+          <height>262</height>
          </rect>
         </property>
         <attribute name="label">
@@ -3658,7 +2924,7 @@ border : 0px solid white;
             <string>Add to SearchBar</string>
            </property>
            <property name="icon">
-            <iconset resource="../../../resources/images/main.qrc">
+            <iconset resource="../images/main.qrc">
              <normaloff>:/resources/up-16.png</normaloff>:/resources/up-16.png</iconset>
            </property>
           </widget>
@@ -3683,8 +2949,8 @@ border : 0px solid white;
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>375</width>
-          <height>90</height>
+          <width>380</width>
+          <height>73</height>
          </rect>
         </property>
         <attribute name="label">
@@ -3696,8 +2962,8 @@ border : 0px solid white;
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>360</width>
-          <height>233</height>
+          <width>367</width>
+          <height>262</height>
          </rect>
         </property>
         <attribute name="label">
@@ -3935,7 +3201,7 @@ border : 0px solid white;
             <string>Add to SearchBar</string>
            </property>
            <property name="icon">
-            <iconset resource="../../../resources/images/main.qrc">
+            <iconset resource="../images/main.qrc">
              <normaloff>:/resources/up-16.png</normaloff>:/resources/up-16.png</iconset>
            </property>
           </widget>
@@ -3962,7 +3228,7 @@ border : 0px solid white;
   </widget>
   <action name="m_exit">
    <property name="icon">
-    <iconset resource="../../../resources/images/main.qrc">
+    <iconset resource="../images/main.qrc">
      <normaloff>:/resources/exit.png</normaloff>:/resources/exit.png</iconset>
    </property>
    <property name="text">
@@ -3974,7 +3240,7 @@ border : 0px solid white;
   </action>
   <action name="m_about">
    <property name="icon">
-    <iconset resource="../../../resources/images/main.qrc">
+    <iconset resource="../images/main.qrc">
      <normaloff>:/resources/document_properties.png</normaloff>:/resources/document_properties.png</iconset>
    </property>
    <property name="text">
@@ -3986,7 +3252,7 @@ border : 0px solid white;
   </action>
   <action name="m_project">
    <property name="icon">
-    <iconset resource="../../../resources/images/main.qrc">
+    <iconset resource="../images/main.qrc">
      <normaloff>:/resources/gnome-help2.png</normaloff>:/resources/gnome-help2.png</iconset>
    </property>
    <property name="text">
@@ -4007,7 +3273,7 @@ border : 0px solid white;
   </action>
   <action name="m_support">
    <property name="icon">
-    <iconset resource="../../../resources/images/main.qrc">
+    <iconset resource="../images/main.qrc">
      <normaloff>:/resources/gnome-money.png</normaloff>:/resources/gnome-money.png</iconset>
    </property>
    <property name="text">
@@ -4049,7 +3315,7 @@ border : 0px solid white;
   </action>
   <action name="m_help">
    <property name="icon">
-    <iconset resource="../../../resources/images/main.qrc">
+    <iconset resource="../images/main.qrc">
      <normaloff>:/resources/contents.png</normaloff>:/resources/contents.png</iconset>
    </property>
    <property name="text">
@@ -4078,7 +3344,7 @@ border : 0px solid white;
   </action>
   <action name="a_save">
    <property name="icon">
-    <iconset resource="../../../resources/images/main.qrc">
+    <iconset resource="../images/main.qrc">
      <normaloff>:/resources/gnome-dev-floppy.png</normaloff>:/resources/gnome-dev-floppy.png</iconset>
    </property>
    <property name="text">
@@ -4087,7 +3353,7 @@ border : 0px solid white;
   </action>
   <action name="a_print">
    <property name="icon">
-    <iconset resource="../../../resources/images/main.qrc">
+    <iconset resource="../images/main.qrc">
      <normaloff>:/resources/filequickprint.png</normaloff>:/resources/filequickprint.png</iconset>
    </property>
    <property name="text">
@@ -4106,7 +3372,7 @@ border : 0px solid white;
   </action>
   <action name="a_mail">
    <property name="icon">
-    <iconset resource="../../../resources/images/main.qrc">
+    <iconset resource="../images/main.qrc">
      <normaloff>:/resources/emblem-mail.png</normaloff>:/resources/emblem-mail.png</iconset>
    </property>
    <property name="text">
@@ -4115,7 +3381,7 @@ border : 0px solid white;
   </action>
   <action name="a_redo">
    <property name="icon">
-    <iconset resource="../../../resources/images/main.qrc">
+    <iconset resource="../images/main.qrc">
      <normaloff>:/resources/editredo.png</normaloff>:/resources/editredo.png</iconset>
    </property>
    <property name="text">
@@ -4124,7 +3390,7 @@ border : 0px solid white;
   </action>
   <action name="a_undo">
    <property name="icon">
-    <iconset resource="../../../resources/images/main.qrc">
+    <iconset resource="../images/main.qrc">
      <normaloff>:/resources/editundo.png</normaloff>:/resources/editundo.png</iconset>
    </property>
    <property name="text">
@@ -4141,7 +3407,7 @@ border : 0px solid white;
     <bool>false</bool>
    </property>
    <property name="icon">
-    <iconset resource="../../../resources/images/main.qrc">
+    <iconset resource="../images/main.qrc">
      <normaloff>:/resources/zoomin.png</normaloff>:/resources/zoomin.png</iconset>
    </property>
    <property name="text">
@@ -4153,7 +3419,7 @@ border : 0px solid white;
     <bool>false</bool>
    </property>
    <property name="icon">
-    <iconset resource="../../../resources/images/main.qrc">
+    <iconset resource="../images/main.qrc">
      <normaloff>:/resources/zoomout.png</normaloff>:/resources/zoomout.png</iconset>
    </property>
    <property name="text">
@@ -4165,7 +3431,7 @@ border : 0px solid white;
     <bool>true</bool>
    </property>
    <property name="icon">
-    <iconset resource="../../../resources/images/main.qrc">
+    <iconset resource="../images/main.qrc">
      <normaloff>:/resources/bookmark.png</normaloff>:/resources/bookmark.png</iconset>
    </property>
    <property name="text">
@@ -4177,7 +3443,7 @@ border : 0px solid white;
     <bool>false</bool>
    </property>
    <property name="icon">
-    <iconset resource="../../../resources/images/main.qrc">
+    <iconset resource="../images/main.qrc">
      <normaloff>:/resources/bug-buddy.png</normaloff>:/resources/bug-buddy.png</iconset>
    </property>
    <property name="text">
@@ -4189,7 +3455,7 @@ border : 0px solid white;
     <bool>false</bool>
    </property>
    <property name="icon">
-    <iconset resource="../../../resources/images/main.qrc">
+    <iconset resource="../images/main.qrc">
      <normaloff>:/resources/gnome-money.png</normaloff>:/resources/gnome-money.png</iconset>
    </property>
    <property name="text">
@@ -4201,7 +3467,7 @@ border : 0px solid white;
     <bool>false</bool>
    </property>
    <property name="icon">
-    <iconset resource="../../../resources/images/main.qrc">
+    <iconset resource="../images/main.qrc">
      <normaloff>:/resources/gnome-modem.png</normaloff>:/resources/gnome-modem.png</iconset>
    </property>
    <property name="text">
@@ -4384,7 +3650,7 @@ border : 0px solid white;
   </action>
   <action name="actionPreferences">
    <property name="icon">
-    <iconset resource="../../../resources/images/main.qrc">
+    <iconset resource="../images/main.qrc">
      <normaloff>:/resources/exec.png</normaloff>:/resources/exec.png</iconset>
    </property>
    <property name="text">
@@ -4399,7 +3665,7 @@ border : 0px solid white;
     <bool>false</bool>
    </property>
    <property name="icon">
-    <iconset resource="../../../resources/images/main.qrc">
+    <iconset resource="../images/main.qrc">
      <normaloff>:/resources/up.png</normaloff>:/resources/up.png</iconset>
    </property>
    <property name="text">
@@ -4411,7 +3677,7 @@ border : 0px solid white;
     <bool>false</bool>
    </property>
    <property name="icon">
-    <iconset resource="../../../resources/images/main.qrc">
+    <iconset resource="../images/main.qrc">
      <normaloff>:/resources/down.png</normaloff>:/resources/down.png</iconset>
    </property>
    <property name="text">
@@ -4466,7 +3732,7 @@ border : 0px solid white;
   </action>
   <action name="actionUndo_Query">
    <property name="icon">
-    <iconset resource="../../../resources/images/main.qrc">
+    <iconset resource="../images/main.qrc">
      <normaloff>:/resources/editundo.png</normaloff>:/resources/editundo.png</iconset>
    </property>
    <property name="text">
@@ -4475,7 +3741,7 @@ border : 0px solid white;
   </action>
   <action name="actionRedo_Query">
    <property name="icon">
-    <iconset resource="../../../resources/images/main.qrc">
+    <iconset resource="../images/main.qrc">
      <normaloff>:/resources/editredo.png</normaloff>:/resources/editredo.png</iconset>
    </property>
    <property name="text">
@@ -4484,7 +3750,7 @@ border : 0px solid white;
   </action>
   <action name="actionCopy_Query">
    <property name="icon">
-    <iconset resource="../../../resources/images/main.qrc">
+    <iconset resource="../images/main.qrc">
      <normaloff>:/resources/editpaste.png</normaloff>:/resources/editpaste.png</iconset>
    </property>
    <property name="text">
@@ -4493,7 +3759,7 @@ border : 0px solid white;
   </action>
   <action name="actionCopy_Page">
    <property name="icon">
-    <iconset resource="../../../resources/images/main.qrc">
+    <iconset resource="../images/main.qrc">
      <normaloff>:/resources/editpaste.png</normaloff>:/resources/editpaste.png</iconset>
    </property>
    <property name="text">
@@ -4510,7 +3776,7 @@ border : 0px solid white;
     <bool>false</bool>
    </property>
    <property name="icon">
-    <iconset resource="../../../resources/images/main.qrc">
+    <iconset resource="../images/main.qrc">
      <normaloff>:/resources/document_properties.png</normaloff>:/resources/document_properties.png</iconset>
    </property>
    <property name="text">
@@ -4538,14 +3804,9 @@ border : 0px solid white;
   <tabstop>o_stat_to</tabstop>
   <tabstop>o_stat_num</tabstop>
   <tabstop>o_sajdah_exist</tabstop>
-  <tabstop>tb_save</tabstop>
-  <tabstop>tb_print</tabstop>
-  <tabstop>tb_show_hide_options</tabstop>
   <tabstop>o_script_uthmani</tabstop>
   <tabstop>o_traduction</tabstop>
-  <tabstop>tb_about</tabstop>
   <tabstop>o_add2query_struct</tabstop>
-  <tabstop>tb_exit</tabstop>
   <tabstop>scrollArea</tabstop>
   <tabstop>o_sortedbyscore</tabstop>
   <tabstop>o_sortedbytanzil</tabstop>
@@ -4579,6 +3840,7 @@ border : 0px solid white;
   <tabstop>o_relation_struct</tabstop>
  </tabstops>
  <resources>
+  <include location="../images/main.qrc"/>
   <include location="../../../resources/images/main.qrc"/>
  </resources>
  <connections>
@@ -4691,118 +3953,6 @@ border : 0px solid white;
     <hint type="destinationlabel">
      <x>282</x>
      <y>67</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>a_save</sender>
-   <signal>activated()</signal>
-   <receiver>tb_save</receiver>
-   <slot>click()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>-1</x>
-     <y>-1</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>452</x>
-     <y>65</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>a_print</sender>
-   <signal>activated()</signal>
-   <receiver>tb_print</receiver>
-   <slot>click()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>-1</x>
-     <y>-1</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>484</x>
-     <y>65</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>m_help</sender>
-   <signal>activated()</signal>
-   <receiver>tb_help</receiver>
-   <slot>click()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>-1</x>
-     <y>-1</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>590</x>
-     <y>65</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>m_about</sender>
-   <signal>activated()</signal>
-   <receiver>tb_about</receiver>
-   <slot>click()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>-1</x>
-     <y>-1</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>622</x>
-     <y>65</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>m_exit</sender>
-   <signal>activated()</signal>
-   <receiver>tb_exit</receiver>
-   <slot>click()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>-1</x>
-     <y>-1</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>644</x>
-     <y>40</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>tb_show_hide_features</sender>
-   <signal>clicked()</signal>
-   <receiver>m_features</receiver>
-   <slot>trigger()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>516</x>
-     <y>65</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>-1</x>
-     <y>-1</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>tb_show_hide_options</sender>
-   <signal>clicked()</signal>
-   <receiver>m_options</receiver>
-   <slot>trigger()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>547</x>
-     <y>65</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>-1</x>
-     <y>-1</y>
     </hint>
    </hints>
   </connection>
