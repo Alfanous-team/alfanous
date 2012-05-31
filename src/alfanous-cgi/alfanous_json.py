@@ -59,7 +59,7 @@ if len(form):
     flags={}
     if form.has_key("action"): flags["action"] = form["action"][0]
     if form.has_key("query"): flags["query"] = form["query"][0]
-    if form.has_key("id"): flags["id"] = form["id"][0]
+    if form.has_key( "ident" ): flags["ident"] = form["ident"][0]
     if form.has_key("platform"): flags["platform"] = form["platform"][0]
     if form.has_key("domain"): flags["domain"] = form["domain"][0]
     if form.has_key("sortedby"): flags["sortedby"] = form["sortedby"][0]
