@@ -658,7 +658,7 @@ border : 0px solid white;
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>258</width>
+          <width>252</width>
           <height>689</height>
          </rect>
         </property>
@@ -1463,8 +1463,8 @@ border : 0px solid white;
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>367</width>
-          <height>524</height>
+          <width>407</width>
+          <height>528</height>
          </rect>
         </property>
         <attribute name="label">
@@ -1749,8 +1749,8 @@ border : 0px solid white;
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>367</width>
-          <height>330</height>
+          <width>407</width>
+          <height>332</height>
          </rect>
         </property>
         <attribute name="label">
@@ -2030,8 +2030,8 @@ border : 0px solid white;
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>367</width>
-          <height>190</height>
+          <width>407</width>
+          <height>192</height>
          </rect>
         </property>
         <attribute name="label">
@@ -2202,7 +2202,7 @@ border : 0px solid white;
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>367</width>
+          <width>407</width>
           <height>227</height>
          </rect>
         </property>
@@ -2437,7 +2437,7 @@ border : 0px solid white;
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>367</width>
+          <width>407</width>
           <height>227</height>
          </rect>
         </property>
@@ -2690,7 +2690,7 @@ border : 0px solid white;
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>367</width>
+          <width>407</width>
           <height>262</height>
          </rect>
         </property>
@@ -2949,7 +2949,7 @@ border : 0px solid white;
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>380</width>
+          <width>420</width>
           <height>73</height>
          </rect>
         </property>
@@ -2962,7 +2962,7 @@ border : 0px solid white;
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>367</width>
+          <width>407</width>
           <height>262</height>
          </rect>
         </property>
@@ -3841,7 +3841,7 @@ border : 0px solid white;
  </tabstops>
  <resources>
   <include location="../images/main.qrc"/>
-  <include location="../../../resources/images/main.qrc"/>
+  <include location="../images/main.qrc"/>
  </resources>
  <connections>
   <connection>
