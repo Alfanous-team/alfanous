@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-
 ##     Copyright (C) 2009-2012 Assem Chelli <assem.ch [at] gmail.com>
 
 ##     This program is free software: you can redistribute it and/or modify
@@ -31,41 +30,41 @@
 #import twill
 
 
-def download_tanzil(quranType="simple-clean", outType="xml", outPath="./tanzil.xml"):
-    """ 
-    quranType : simple, simple-enhanced,  simple-min, simple-clean , uthmani, uthmani-min 
+def download_tanzil( quranType = "simple-clean", outType = "xml", outPath = "./tanzil.xml" ):
+    """
+    quranType : simple, simple-enhanced,  simple-min, simple-clean , uthmani, uthmani-min
     outType : txt, xml, sql
-           
+
     """
     bw = twill.get_browser()
-    bw.go("http://tanzil.net/pub/download/download.htm")
+    bw.go( "http://tanzil.net/pub/download/download.htm" )
     form = bw.get_all_forms()[0]
     #print bw.get_title()
-    form.set_value([quranType],id="quranType")
-    form.set_value([outType],id="outType")
-    form.set_value(["true"],id="agree")
+    form.set_value( [quranType], id = "quranType" )
+    form.set_value( [outType], id = "outType" )
+    form.set_value( ["true"], id = "agree" )
     bw.submit()
-    f=open(outPath, "w+")
-    f.write(bw.get_html())
-    return "file :  "+outPath
+    f = open( outPath, "w+" )
+    f.write( bw.get_html() )
+    return "file :  " + outPath
 
 def download_quranic_corpus():
-    """ 
-    ## javascript executing 
+    """
+    ## javascript executing
     """
     bw = twill.get_browser()
-    bw.go("http://corpus.quran.com/download/default.jsp")
+    bw.go( "http://corpus.quran.com/download/default.jsp" )
     form = bw.get_all_forms()[1]
     #print bw.get_title()
-    twill.commands.fv("downloadForm","txtEmail","test@test.tt")
+    twill.commands.fv( "downloadForm", "txtEmail", "test@test.tt" )
     bw.submit()
-    bw.go("javascript:downloadFile('3');")
-    
+    bw.go( "javascript:downloadFile('3');" )
+
     return "not yet"
-    
-    
+
+
 def download_tanzil_translations():
     """  http://tanzil.net/trans/ """
     pass
 
-    
+

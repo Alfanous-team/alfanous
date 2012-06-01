@@ -23,57 +23,53 @@
 
 
 @todo: use optparse to organise this script as a console command
-@todo: Upgrading to last whoosh 
+@todo: Upgrading to last whoosh
 @todo: Dynamic fields
 @todo: Quranic Corpus integration
 
 '''
+#from alfanous.dynamic_resources.arabicnames_dyn import ara2eng_names
+from alfanous.Searching import QSearcher, QReader
+from alfanous.Indexing import QseDocIndex, ExtDocIndex, BasicDocIndex
 
-from dynamic_resources.arabicnames_dyn import ara2eng_names
-from Searching import QSearcher, QReader
-from Indexing import QseDocIndex, ExtDocIndex,BasicDocIndex
-
-from ResultsProcessing import Qhighlight, QPaginate, QFilter
-from QueryProcessing import QuranicParser,StandardParser,ArabicParser,FuzzyQuranicParser
-from Suggestions import QSuggester,QAyaSpellChecker,QSubjectSpellChecker,concat_suggestions,QWordChecker
-
-
-
+from alfanous.ResultsProcessing import Qhighlight, QPaginate #, QFilter 
+from alfanous.QueryProcessing import QuranicParser, StandardParser, FuzzyQuranicParser #,  ArabicParser
+from alfanous.Suggestions import  QAyaSpellChecker, QSubjectSpellChecker, concat_suggestions, QWordChecker #, QSuggester
 
 class BasicSearchEngine:
     """
     the basic search engine
 
     """
-    def __init__(self,qdocindex,qparser,mainfield,otherfields,qsearcher,qreader,qspellcheckers,qhighlight):
-       
-        self.OK=False
-        if qdocindex.OK: 
-            self._docindex = qdocindex 
+    def __init__( self, qdocindex, qparser, mainfield, otherfields, qsearcher, qreader, qspellcheckers, qhighlight ):
+
+        self.OK = False
+        if qdocindex.OK:
+            self._docindex = qdocindex
             #
             self._schema = self._docindex.get_schema()
             #        
-            self._parser = qparser(self._schema,mainfield=mainfield,otherfields=otherfields)
+            self._parser = qparser( self._schema, mainfield = mainfield, otherfields = otherfields )
             #
-            self._searcher = qsearcher(self._docindex, self._parser)
+            self._searcher = qsearcher( self._docindex, self._parser )
             #
-            self._reader = qreader(self._docindex)
+            self._reader = qreader( self._docindex )
             #
-            self._spellcheckers = map(lambda X:X(self._docindex,self._parser),qspellcheckers)
+            self._spellcheckers = map( lambda X:X( self._docindex, self._parser ), qspellcheckers )
             #
             self._highlight = qhighlight
-            self.OK=True
-        
+            self.OK = True
+
     #end  __init__  
 
-    
-    def search_all(self, querystr,limit=6236, sortedby="score",reverse=False):
+
+    def search_all( self, querystr, limit = 6236, sortedby = "score", reverse = False ):
         """
-        search in the quran 
-            
+        search in the quran
+
                 >>> results,terms=search_all(u"الحمد",limit=10,sortby="mushaf")
                 >>> print ",".join([term[1] for term in list(terms)])
-                الحمد    
+                الحمد
                 >>> for r in results:
                 >>>         print "(" + r["aya_id"] + "," + r["sura_id"] + ") :" + u"<p>" + Qhighlight(r["aya_"], terms) + u"</p>"
                 (2,1) :<p><span style="color:red;font-size:100.0%"><b>الْحَمْدُ</b></span> لِلَّهِ رَبِّ الْعَالَمِينَ</p>
@@ -88,148 +84,148 @@ class BasicSearchEngine:
 
         """
         if querystr.__class__ is not unicode:
-            querystr=querystr.decode("utf-8")   
+            querystr = querystr.decode( "utf-8" )
 
-        results, termes = self._searcher.search(querystr, limit, sortedby,reverse)
-        return (results, list(self._reader.term_stats(termes)))
-        
-    def most_frequent_words(self, nb, fieldname):
-        return list(self._reader.reader.most_frequent_terms(fieldname, nb)) 
-    
-    
-    def suggest_all(self, querystr):
+        results, termes = self._searcher.search( querystr, limit, sortedby, reverse )
+        return ( results, list( self._reader.term_stats( termes ) ) )
+
+    def most_frequent_words( self, nb, fieldname ):
+        return list( self._reader.reader.most_frequent_terms( fieldname, nb ) )
+
+
+    def suggest_all( self, querystr ):
         """suggest the missed words
-     
+
             >>> for key, value in suggest_all(u" عاصمو ").items():
             >>>    print key, ":", ",".join(value)
             عاصمو : عاصم
         """
         if querystr.__class__ is not unicode:
-            querystr=querystr.decode("utf-8")
-        return concat_suggestions(map(lambda X:X.QSuggest(querystr),self._spellcheckers))
+            querystr = querystr.decode( "utf-8" )
+        return concat_suggestions( map( lambda X:X.QSuggest( querystr ), self._spellcheckers ) )
 
-    def highlight(self, text, terms,type="css"):  
-        return self._highlight(text, terms,type)
-    
-    
-    def find_extended(self, query, defaultfield):
-        """ 
+    def highlight( self, text, terms, type = "css" ):
+        return self._highlight( text, terms, type )
+
+
+    def find_extended( self, query, defaultfield ):
+        """
         a simple search operation on extended document index
 
         """
         searcher = self._docindex.get_searcher()
-        return searcher().find(defaultfield, query)
-    
-    
-    def list_values(self, fieldname,double=False,conditions=[]):
+        return searcher().find( defaultfield, query )
+
+
+    def list_values( self, fieldname, double = False, conditions = [] ):
         """ list all stored values of a field  """
-        return self._reader.list_values(fieldname,double=double,conditions=conditions,)
-    
-    def __call__(self):
+        return self._reader.list_values( fieldname, double = double, conditions = conditions, )
+
+    def __call__( self ):
         return self.OK
-    
 
 
-def QuranicSearchEngine(indexpath="../indexes/main/",qparser=QuranicParser):
-    return BasicSearchEngine(qdocindex=QseDocIndex(indexpath)
-                            ,qparser=qparser#termclass=QuranicParser.FuzzyAll
-                            ,mainfield="aya"
-                            ,otherfields=[]
-                            ,qsearcher=QSearcher
-                            ,qreader=QReader
-                            ,qspellcheckers=[QAyaSpellChecker,QSubjectSpellChecker]
-                            ,qhighlight=Qhighlight  
+
+def QuranicSearchEngine( indexpath = "../indexes/main/", qparser = QuranicParser ):
+    return BasicSearchEngine( qdocindex = QseDocIndex( indexpath )
+                            , qparser = qparser#termclass=QuranicParser.FuzzyAll
+                            , mainfield = "aya"
+                            , otherfields = []
+                            , qsearcher = QSearcher
+                            , qreader = QReader
+                            , qspellcheckers = [QAyaSpellChecker, QSubjectSpellChecker]
+                            , qhighlight = Qhighlight
                             )
-    
-    
 
-    
-def FuzzyQuranicSearchEngine(indexpath="../indexes/main/",qparser=FuzzyQuranicParser):
-    return BasicSearchEngine(qdocindex=QseDocIndex(indexpath)
-                            ,qparser=qparser#termclass=QuranicParser.FuzzyAll
-                            ,mainfield="aya"
-                            ,otherfields=["subject",]
-                            ,qsearcher=QSearcher
-                            ,qreader=QReader
-                            ,qspellcheckers=[QAyaSpellChecker,QSubjectSpellChecker]
-                            ,qhighlight=Qhighlight  
+
+
+
+def FuzzyQuranicSearchEngine( indexpath = "../indexes/main/", qparser = FuzzyQuranicParser ):
+    return BasicSearchEngine( qdocindex = QseDocIndex( indexpath )
+                            , qparser = qparser#termclass=QuranicParser.FuzzyAll
+                            , mainfield = "aya"
+                            , otherfields = ["subject", ]
+                            , qsearcher = QSearcher
+                            , qreader = QReader
+                            , qspellcheckers = [QAyaSpellChecker, QSubjectSpellChecker]
+                            , qhighlight = Qhighlight
                             )
-   
-    
-def TraductionSearchEngine(indexpath="../indexes/extend/",qparser=StandardParser):
+
+
+def TraductionSearchEngine( indexpath = "../indexes/extend/", qparser = StandardParser ):
     """             """
-    return BasicSearchEngine(qdocindex=ExtDocIndex(indexpath )
-                            ,qparser=qparser
-                            ,mainfield="text"
-                            ,otherfields=[]
-                            ,qsearcher=QSearcher
-                            ,qreader=QReader
-                            ,qspellcheckers=[]
-                            ,qhighlight=Qhighlight  
+    return BasicSearchEngine( qdocindex = ExtDocIndex( indexpath )
+                            , qparser = qparser
+                            , mainfield = "text"
+                            , otherfields = []
+                            , qsearcher = QSearcher
+                            , qreader = QReader
+                            , qspellcheckers = []
+                            , qhighlight = Qhighlight
                             )
-    
-def WordSearchEngine(indexpath="../indexes/word/",qparser=StandardParser):
-    return BasicSearchEngine(qdocindex=BasicDocIndex(indexpath)
-                            ,qparser=qparser#termclass=QuranicParser.FuzzyAll
-                            ,mainfield="word"
-                            ,otherfields=["normalized","spelled"]
-                            ,qsearcher=QSearcher
-                            ,qreader=QReader
-                            ,qspellcheckers=[QWordChecker]
-                            ,qhighlight=Qhighlight  
+
+def WordSearchEngine( indexpath = "../indexes/word/", qparser = StandardParser ):
+    return BasicSearchEngine( qdocindex = BasicDocIndex( indexpath )
+                            , qparser = qparser#termclass=QuranicParser.FuzzyAll
+                            , mainfield = "word"
+                            , otherfields = ["normalized", "spelled"]
+                            , qsearcher = QSearcher
+                            , qreader = QReader
+                            , qspellcheckers = [QWordChecker]
+                            , qhighlight = Qhighlight
                             )
-    
+
 
 if __name__ == '__main__':
     import profile
-    QSE = QuranicSearchEngine("./../indexes/main/")
-    FQSE = FuzzyQuranicSearchEngine("./../indexes/main/") 
-    TSE = TraductionSearchEngine("./../indexes/extend/")
-    QWSE = WordSearchEngine("../../indexes/word/") 
-    
+    QSE = QuranicSearchEngine( "./../indexes/main/" )
+    FQSE = FuzzyQuranicSearchEngine( "./../indexes/main/" )
+    TSE = TraductionSearchEngine( "./../indexes/extend/" )
+    QWSE = WordSearchEngine( "../../indexes/word/" )
+
     if QWSE.OK:
         print "most frequent vocalized words"
-        mfw = QWSE.most_frequent_words(10, "word")
+        mfw = QWSE.most_frequent_words( 10, "word" )
         for term in mfw:
             print "\t", term[1], " - frequence = ", term[0], "."
         print "most  frequent unvocalized words"
-        mfw = QWSE.most_frequent_words(10, "normalized")
+        mfw = QWSE.most_frequent_words( 10, "normalized" )
         for term in mfw:
             print "\t", term[1], " - frequence = ", term[0], "."
-         
-       
-        res, terms =  QWSE.search_all("word_id:1",limit=6236, sortedby="score",reverse=True)
-        print len(res)
+
+
+        res, terms = QWSE.search_all( "word_id:1", limit = 6236, sortedby = "score", reverse = True )
+        print len( res )
 
         print "\n#list field stored values# type"
-        print ",".join([str(item) for item in QWSE.list_values("type")])
-        
+        print ",".join( [str( item ) for item in QWSE.list_values( "type" )] )
+
     if QSE.OK:
         print "\n#most frequent words#"
-        
-        mfw = QSE.most_frequent_words(9999999, "uth_")
-        print len(mfw)
-        f=open("./uthmani_vocalized.csv", "w+")
+
+        mfw = QSE.most_frequent_words( 9999999, "uth_" )
+        print len( mfw )
+        f = open( "./uthmani_vocalized.csv", "w+" )
         for term in mfw:
             pass
             #print "\t", term[1], " - frequence = ", term[0], "."
             #print>>f,"\t", term[1]," ;\t",term[0],"\n"
-            
 
-        
+
+
         print "\n#list field stored values#"
-        print ",".join([str(item) for item in QSE.list_values("gid")])
+        print ",".join( [str( item ) for item in QSE.list_values( "gid" )] )
 
-    
-           
+
+
     if TSE.OK:
         print "\n#extended search#",
-        results = TSE.find_extended(u"gid:1 OR gid:2", defaultfield="gid")
-        print "\n".join([str(result) for result in results])
-        
+        results = TSE.find_extended( u"gid:1 OR gid:2", defaultfield = "gid" )
+        print "\n".join( [str( result ) for result in results] )
+
         print "\n#list all translations id#"
-        print ",".join(TSE.list_values("id"))
-    
+        print ",".join( TSE.list_values( "id" ) )
+
 
 
     string1 = ">>الأمل"
@@ -252,18 +248,18 @@ if __name__ == '__main__':
     #fawoqa
     #\" رب العالمين\"
     #جزء:8
-    
+
     if QSE.OK:
         print "#suggestions#"
-        for key, value in QSE.suggest_all(string1).items():
-            print key, ":", ",".join(value)
-        print "\n#search#"   
-        res, terms = QSE.search_all(string1, limit=6236, sortedby="score",reverse=True)
-        
+        for key, value in QSE.suggest_all( string1 ).items():
+            print key, ":", ",".join( value )
+        print "\n#search#"
+        res, terms = QSE.search_all( string1, limit = 6236, sortedby = "score", reverse = True )
+
 
         #for key,freq in res.key_terms("aya", docs=1, numterms=15000): print key,"(",freq,"),",
 
-        
+
         '''
         string2 = u"عاصم"
         res2,terms2  = QSE.search_all(string2, sortedby="mushaf")
@@ -272,25 +268,25 @@ if __name__ == '__main__':
         terms=terms1|terms2
         '''
 
-        
+
         print "\n#of#"
         for term in terms:
-            print "%s  (%d in %d)," %  term[1:],
-            
-        values = [term[1] for term in list(terms)]
+            print "%s  (%d in %d)," % term[1:],
+
+        values = [term[1] for term in list( terms )]
         print "\n#is#"
         #print res.key_terms("aya")
-        html = u"Results(time=%f,number=%d):\n" % (res.runtime, len(res)) 
-        for num, respage in QPaginate(res, 5):
-            html += "~~~~~page " + str(num) + "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n"
+        html = u"Results(time=%f,number=%d):\n" % ( res.runtime, len( res ) )
+        for num, respage in QPaginate( res, 5 ):
+            html += "~~~~~page " + str( num ) + "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n"
             for r in respage:
-                html += "(" + str(r["aya_id"]) + "," + str(r["sura_id"]) + ") :" + u"<p>" + QSE.highlight(r["aya_"], values,"html") + u"</p>\n"
+                html += "(" + str( r["aya_id"] ) + "," + str( r["sura_id"] ) + ") :" + u"<p>" + QSE.highlight( r["aya_"], values, "html" ) + u"</p>\n"
             print html
             html = ""
-            raw_input("press any key...")
-    
-        
-    
-       
-        
-    
+            raw_input( "press any key..." )
+
+
+
+
+
+
