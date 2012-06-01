@@ -219,6 +219,3 @@ class QBoldFormatter( object ):
                                   for fragment in fragments ) )
 
 
-if __name__ == "__main__":
-    H = Qhighlight( u"الْحَمْدُ لِلَّهِ رَبِّ الْعَالَمِينَ", [u"الحمد", u"لله"], "html" )
-    print H
