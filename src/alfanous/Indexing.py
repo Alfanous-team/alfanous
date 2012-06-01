@@ -136,8 +136,11 @@ class QseDocIndex( BasicDocIndex ):
 
     def verify( self ):
         """raise a  ta7rif exception if it is wrong"""
-        nb = len( self )
-        if nb != 6236 : raise Ta7rif( "number of ayas wrong", value = nb, original = 6236, msg = "you must update your index" )
+        nb = -1
+        if self.OK:
+            nb = len( self )
+            if nb != 6236 :
+                raise Ta7rif( "number of ayas wrong", value = nb, original = 6236, msg = "you must update your index" )
         return nb
 
 
