@@ -31,7 +31,7 @@ it contains specified query parsers , some linguistic operations
 '''
 
 from alfanous.Support.whoosh.qparser import QueryParser #, MultifieldParser
-from alfanous.Support.whoosh.query import Term, MultiTerm,
+from alfanous.Support.whoosh.query import Term, MultiTerm
 from alfanous.Support.whoosh.query import Wildcard as whoosh_Wildcard
 from alfanous.Support.whoosh.query import Prefix as whoosh_Prefix
 from alfanous.Support.whoosh.query import Or, NullQuery, Every #, And
