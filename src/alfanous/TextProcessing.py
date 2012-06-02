@@ -24,9 +24,6 @@ it contains the linguistic analysers of Quran and Arabic...etc.
 @contact: assem.ch [at] gmail.com
 @license: AGPL
 
-
-@todo: pronoun Reference  " == لا إله إلا الله " لا إله إلا هو
-
 '''
 
 #from alfanous.dynamic_resources import synonymes_dyn as sydy
@@ -99,7 +96,7 @@ def Gword_tamdid( aya ):
 
 
 def PartialVocalisation():
-    """  @todo: complete it"""
+    """  TODO complete it"""
 
     def __init__():
         pass
