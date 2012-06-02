@@ -33,9 +33,9 @@ HowTo
 @license: GPL
 
 
-@bug: the generated python dict is too big and waste time
+FIXME the generated python dict is too big and waste time
 
-@todo: dont load the total XML file,Just Ask! key:XPath
+TODO dont load the total XML file,Just Ask! key:XPath
 
 
 '''
