@@ -76,10 +76,10 @@ def replace_pos (word, rep, pos):
 	return word[0:pos] + rep + word[pos + 1:];
 #--------------------------------------
 def chomp(s):
-  if (s.endswith('\n')):
-    return s[:-1]
-  else:
-    return s
+	if ( s.endswith( '\n' ) ):
+		return s[:-1]
+	else:
+		return s
 #--------------------------------------
 # readfile : extract text as à string from a file
 #--------------------------------------

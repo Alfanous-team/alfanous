@@ -32,24 +32,20 @@ def FREEZE_XRANGE( d ):
 	return new_d; # JSON doesnt accept serialization of xrange  
 
 
-
-
-
-
 class Raw():
 	""" Basic format for output, as  structures of python
 
-	@todo: Add word annotations to results
-	@bug: terms are standard and Qurany corpus are uthmani   # resolve with uthmani mapping of Taha , + domains + errors
-	@todo: statistics of use + update_stats.js
-	@todo: status Messages ALL (code , message)
+	TODO Add word annotations to results
+	FIXME terms are standard and Qurany corpus are uthmani   # resolve with uthmani mapping of Taha , + domains + errors
+	TODO statistics of use + update_stats.js
+	TODO status Messages ALL (code , message)
 	"""
 
 	DEFAULTS = {
 		    "maxrange":25,
 		    "results_limit":100,
 		    "flags":{ "action":"error",
-			      "id":"undefined",
+			      "ident":"undefined",
 			      "platform":"undefined",
 			      "domain":"undefined",
 			      "query":"",
@@ -81,7 +77,7 @@ class Raw():
 
 	DOMAINS = {
 			      "action": ["search", "suggest", "show"],
-			      "id":["undefined"],
+			      "ident":["undefined"],
 			      "platform":["undefined", "wp7", "s60", "android", "ios", "linux", "window"],
 			      "domain":[],
 			      "query":[],
@@ -326,7 +322,7 @@ class Raw():
 						matches += term[2]
 					docs += term[3]
 					annotation_word_query += u" OR normalised:%s " % STANDARD2UTHMANI( term[1] )
-					words_output[str( cpt )] = {"word":term[1], "nb_matches":term[2], "nb_ayas":term[3]}
+					words_output[ cpt ] = {"word":term[1], "nb_matches":term[2], "nb_ayas":term[3]}
 					cpt += 1
 			annotation_word_query += u" ) "
 			words_output["global"] = {"nb_words":cpt - 1, "nb_matches":matches}
@@ -382,7 +378,7 @@ class Raw():
 		output["ayas"] = {}
 		for r in reslist :
 			cpt += 1
-			output["ayas"][str( cpt )] = {
+			output["ayas"][ cpt ] = {
 
 		              "aya":{
 		              		"id":r["aya_id"],
