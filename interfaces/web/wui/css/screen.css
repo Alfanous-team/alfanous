@@ -211,6 +211,21 @@ a:hover{color: green;}
 }
 
 /* +some fun */
+
+
+.ads-box {
+	border:0 none;
+	clear:both;
+	margin:0;
+	padding:0;
+	position: absolute;
+	top: 0;
+	left:0;
+	z-index:95;
+	width:50px;
+	text-align:left;
+}
+
 .follow-box {
 	border:0 none;
 	clear:both;
