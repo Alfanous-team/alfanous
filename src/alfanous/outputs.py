@@ -395,11 +395,17 @@ class Raw():
 		output["interval"] = {"start":start + 1, "end":end, "total":len( res )}
 		output["translation_info"] = {}
 		### Ayas
-		cpt = start
+		cpt = start - 1
 		output["ayas"] = {}
 		for r in reslist :
 			cpt += 1
 			output["ayas"][ cpt ] = {
+
+					  "identifier": {"gid":r["gid"],
+									 "aya_id":r["aya_id"],
+									 "sura_id":r["sura_id"],
+									 "sura_name":keywords( r["sura"] )[0],
+									},
 
 		              "aya":{
 		              		"id":r["aya_id"],
@@ -426,9 +432,9 @@ class Raw():
 
 		    		"sura": {} if not sura_info
 					  else  {
-						  "name":H( keywords( r["sura"] )[0] ),
+						  "name":keywords( r["sura"] )[0] ,
 							  "id":r["sura_id"],
-							  "type":H( r["sura_type"] ),
+							  "type": r["sura_type"] ,
 							  "order":r["sura_order"],
 						    "stat":{
 								  "ayas":r["s_a"],
@@ -446,8 +452,9 @@ class Raw():
 		                else {
 		                	"manzil":r["manzil"],
 		                	"hizb":r["hizb"],
-		                	"rubu":r["rub"] % 4,
-		                	"page":r["page"]
+		                	"rub":r["rub"] % 4,
+		                	"page":r["page"],
+		                	"ruku":r["ruku"],
 		           	},
 
 		           	"theme":{} if not aya_theme_info
@@ -472,7 +479,7 @@ class Raw():
 		    			}
 		    		}
 
-		return {"search":output}
+		return {"search": output}
 
 
 
