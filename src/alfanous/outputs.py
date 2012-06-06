@@ -59,7 +59,10 @@ class Raw():
 			      "next_aya": False,
 			      "sura_info": True,
 			      "word_info": True,
-			      "aya_info":	True,
+			      "aya_position_info":	True,
+			      "aya_theme_info":	True,
+			      "aya_stat_info":	True,
+			      "aya_sajda_info":	True,
 			      "annotation_word":False,
 			      "annotation_aya":False,
 			      "sortedby":"score",
@@ -93,7 +96,10 @@ class Raw():
 			      "next_aya": [True, False],
 			      "sura_info": [True, False],
 			      "word_info": [True, False],
-			      "aya_info":	[True, False],
+			      "aya_position_info":	[True, False],
+			      "aya_theme_info":	[True, False],
+			      "aya_stat_info":	[True, False],
+			      "aya_sajda_info":	[True, False],
 			      "annotation_word":[True, False],
 			      "annotation_aya":[True, False],
 			      "sortedby":["total", "score", "mushaf", "tanzil", "subject"],
@@ -284,7 +290,10 @@ class Raw():
 		next_aya = flags["next_aya"] if flags.has_key( "next_aya" ) else self._defaults["flags"]["next_aya"]
 		sura_info = flags["sura_info"] if flags.has_key( "sura_info" ) else self._defaults["flags"]["sura_info"]
 		word_info = flags["word_info"] if flags.has_key( "word_info" ) else self._defaults["flags"]["word_info"]
-		aya_info = flags["aya_info"] if flags.has_key( "aya_info" ) else self._defaults["flags"]["aya_info"]
+		aya_position_info = flags["aya_position_info"] if flags.has_key( "aya_position_info" ) else self._defaults["flags"]["aya_position_info"]
+		aya_theme_info = flags["aya_theme_info"] if flags.has_key( "aya_theme_info" ) else self._defaults["flags"]["aya_theme_info"]
+		aya_stat_info = flags["aya_stat_info"] if flags.has_key( "aya_stat_info" ) else self._defaults["flags"]["aya_stat_info"]
+		aya_sajda_info = flags["aya_sajda_info"] if flags.has_key( "aya_sajda_info" ) else self._defaults["flags"]["aya_sajda_info"]
 		annotation_aya = flags["annotation_aya"] if flags.has_key( "annotation_aya" ) else self._defaults["flags"]["annotation_aya"]
 		annotation_word = flags["annotation_word"] if flags.has_key( "annotation_word" ) else self._defaults["flags"]["annotation_word"]
 		fuzzy = flags["fuzzy"] if flags.has_key( "fuzzy" ) else self._defaults["flags"]["fuzzy"]
@@ -384,6 +393,7 @@ class Raw():
 
 		output["runtime"] = extend_runtime
 		output["interval"] = {"start":start + 1, "end":end, "total":len( res )}
+		output["translation_info"] = {}
 		### Ayas
 		cpt = start
 		output["ayas"] = {}
@@ -395,7 +405,7 @@ class Raw():
 		              		"id":r["aya_id"],
 		              		"text":  Gword_tamdid( H( V( r["aya_"] ) ) ) if script == "standard"
 		              			else  Gword_tamdid( H( r["uth_"] ) ),
-		                	"traduction": trad_text[r["gid"]] if ( translation != "None" and translation ) else None,
+		                	"translation": trad_text[r["gid"]] if ( translation != "None" and translation ) else None,
 		                	"recitation": None if not recitation else u"http://www.everyayah.com/data/" + self._recitations[recitation]["subfolder"].encode( "utf-8" ) + "/%03d%03d.mp3" % ( r["sura_id"], r["aya_id"] ),
 		                	"prev_aya":{
 						    "id":adja_ayas[r["gid"] - 1]["aya_id"],
@@ -432,7 +442,7 @@ class Raw():
 
 
 
-		                "position": {} if not aya_info
+		                "position": {} if not aya_position_info
 		                else {
 		                	"manzil":r["manzil"],
 		                	"hizb":r["hizb"],
@@ -440,21 +450,21 @@ class Raw():
 		                	"page":r["page"]
 		           	},
 
-		           	"theme":{} if not aya_info
+		           	"theme":{} if not aya_theme_info
 		                else	{
 				    		"chapter":H( r["chapter"] ),
 				    		"topic":H( r["topic"] ),
 				   		 "subtopic":H( r["subtopic"] )
 				 	   },
 
-				"stat":  {} if not aya_info
+				"stat":  {} if not aya_stat_info
 		                else {
 						"words":N( r["a_w"] ),
 		    				"letters":N( r["a_l"] ),
 		    				"godnames":N( r["a_g"] )
 				}       ,
 
-				"sajda":{} if not aya_info
+				"sajda":{} if not aya_sajda_info
 		                else    {
 		    				"exist":( r["sajda"] == u"نعم" ),
 		    				"type":H( r["sajda_type"] ) if ( r["sajda"] == u"نعم" ) else None,
