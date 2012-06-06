@@ -21,7 +21,6 @@ Created on 12 avr. 2010
 @author: Assem Chelli
 @contact: assem.ch[at]gmail.com
 
-
 @todo: use Alfanous.outputs.Json to request results
 @todo: use Table grid for view , use CSS good schema instead
 @todo: complete all new Ui features
@@ -35,13 +34,6 @@ Created on 12 avr. 2010
 @todo: Localization
 @todo: Use tree widget to show results
 @todo: printing
-
-
-warning: 'msgid' format string with unnamed arguments cannot be properly localized:
-         The translator cannot reorder the arguments.
-         Please consider using a format string with named arguments,
-         and a mapping instead of a tuple for the arguments.
-
 
 
 """
@@ -85,9 +77,6 @@ from re import compile
 from mainform_ui import Ui_MainWindow
 #from aboutDlg import Ui_Dialog as Ui_aboutDlg
 
-
-
-
 ## Localization using gettext
 _ = gettext.gettext
 n_ = gettext.ngettext
@@ -115,14 +104,9 @@ SURA_TYPE = {u"مدنية":_( u"medina" ), u"مكية":_( u"mekka" )}
 
 CSS = """
         <style type="text/css">
-            span.green {font-size:14pt; color:#005800;}
-            h1 {font-size:14pt; font-weight:600; color:#ff0000;}
-            h2 {color:#0000ff; background-color:#ccffcc;}
+            #TODO : new simple&clean style
         </style>
     """
-
-
-
 
 ## Some functions
 relate = lambda query, filter, index:"( " + unicode( query ) + " ) " + RELATIONS[index] + " ( " + filter + " ) " if  index > 1 else filter if index == 1 else unicode( query ) + " " + filter
@@ -130,14 +114,12 @@ relate = lambda query, filter, index:"( " + unicode( query ) + " ) " + RELATIONS
 class QUI( Ui_MainWindow ):
     """ the Quranic main UI """
 
-
     def __init__( self ):
         self.last_results = None
         self.last_terms = None
         self.currentQuery = None
         self.Queries = []
         self.history = []
-
 
 
     def exit( self ):
@@ -182,7 +164,6 @@ class QUI( Ui_MainWindow ):
         self.m_options.setChecked ( boolean( config["widgets"]["options"] ) if config.has_key( "widgets" ) else False )
         self.m_features.setChecked ( boolean( config["widgets"]["features"] ) if config.has_key( "widgets" ) else False )
 
-
     def save_config( self ):
         """save configuration """
         if not os.path.isdir( CONFIGPATH ):
@@ -195,8 +176,6 @@ class QUI( Ui_MainWindow ):
         config["options"]["perpage"] = self.o_perpage.value()
         config["options"]["highlight"] = self.o_highlight.isChecked()
 
-
-
         config["sorting"] = {}
         config["sorting"]["sortedbyscore"] = self.o_sortedbyscore.isChecked()
         config["sorting"]["sortedbymushaf"] = self.o_sortedbymushaf.isChecked()
@@ -205,7 +184,6 @@ class QUI( Ui_MainWindow ):
         config["sorting"]["sortedbyfield"] = self.o_sortedbyfield.isChecked()
         config["sorting"]["field"] = self.o_field.currentIndex()
         config["sorting"]["reverse"] = self.o_reverse.isChecked()
-
 
         config["extend"] = {}
         config["extend"]["prev"] = self.o_prev.isChecked()
@@ -241,11 +219,11 @@ class QUI( Ui_MainWindow ):
         QtCore.QObject.connect( self.o_perpage, QtCore.SIGNAL( "valueChanged(int)" ), self.changePERPAGE )
         QtCore.QObject.connect( self.o_struct_from, QtCore.SIGNAL( "valueChanged(int)" ), self.struct_to_min )
         QtCore.QObject.connect( self.o_stat_from, QtCore.SIGNAL( "valueChanged(int)" ), self.stat_to_min )
-        QtCore.QObject.connect( self.tb_exit, QtCore.SIGNAL( "clicked()" ), self.exit )
-        QtCore.QObject.connect( self.tb_help, QtCore.SIGNAL( "clicked()" ), self.help )
-        QtCore.QObject.connect( self.tb_about, QtCore.SIGNAL( "clicked()" ), self.about )
-        QtCore.QObject.connect( self.tb_save, QtCore.SIGNAL( "clicked()" ), self.save_results )
-        QtCore.QObject.connect( self.tb_print, QtCore.SIGNAL( "clicked()" ), self.print_results )
+        QtCore.QObject.connect( self.m_exit, QtCore.SIGNAL( "clicked()" ), self.exit )
+        QtCore.QObject.connect( self.m_help, QtCore.SIGNAL( "clicked()" ), self.help )
+        QtCore.QObject.connect( self.m_about, QtCore.SIGNAL( "clicked()" ), self.about )
+        QtCore.QObject.connect( self.a_save, QtCore.SIGNAL( "clicked()" ), self.save_results )
+        QtCore.QObject.connect( self.a_print, QtCore.SIGNAL( "clicked()" ), self.print_results )
 
         QtCore.QObject.connect( self.o_add2query_advanced, QtCore.SIGNAL( "clicked()" ), self.add2query_advanced )
         QtCore.QObject.connect( self.o_add2query_struct, QtCore.SIGNAL( "clicked()" ), self.add2query_struct )
@@ -261,228 +239,195 @@ class QUI( Ui_MainWindow ):
         self.load_config()
 
 
-
-
-
     def search_all( self ):
         """
         The main search function
         """
-        #inputs
-        query = self.o_query.currentText()
         # add to history
-        self.history.insert( 0, query )
+        self.history.insert( 0, self.o_query.currentText() )
         self.o_query.clear()
         self.o_query.addItems( self.history )
         self.o_query.setCurrentIndex( 0 )
 
-        ### Sorting Options
-        bymushaf = self.o_sortedbymushaf.isChecked()
-        bytanzil = self.o_sortedbytanzil.isChecked()
-        byscore = self.o_sortedbyscore.isChecked()
-        bysubject = self.o_sortedbysubject.isChecked()
-        byfield = self.o_sortedbyfield.isChecked()
-        field = unicode( self.o_field.currentText() )
-        sortedby = "score" if byscore  else "mushaf" if bymushaf else "tanzil" if bytanzil else "subject" if bysubject else field # ara2eng_names[field] for Arabic
-        reverse_sort = self.o_reverse.isChecked()
         ###
 
         limit = self.o_limit.value()
-        highlight = self.o_highlight.isChecked()
 
         html = CSS
 
-        flags = {"action":"suggest", "query":query}
-        output = RAWoutput.do( flags )
-        print output
-        suggestions = output["suggest"].items() if output.has_key( "suggest" ) else []
-        print suggestions
+        suggest_flags = {
+                "action":"suggest",
+                "query": self.o_query.currentText()
+                }
+        output = RAWoutput.do( suggest_flags )
+        #print output
+        suggestions = output["suggest"] if output.has_key( "suggest" ) else []
+        #print suggestions
         if len( suggestions ):
 	    html += _( u"<h1> Suggestions (%(number)s) </h1>" ) % {"number":len( suggestions )}
             for key, value in suggestions:
                 html += _( u"<span class='green'>  %(word)s </span> : %(suggestions)s. <br />" ) % {"word": unicode( key ), "suggestions":u"،".join( value )}
 
-
         #search
-        terms = []
-        results = None
-        #flags={"action":"search","query":query,"sortedby":sortedby,"reverse_order":}
+        results, terms = None, []
+        search_flags = {"action":"search",
+                 "query": self.o_query.currentText(),
+                 "sortedby":"score" if self.o_sortedbyscore.isChecked() \
+                        else "mushaf" if self.o_sortedbymushaf.isChecked() \
+                        else "tanzil" if self.o_sortedbytanzil.isChecked() \
+                        else "subject" if self.o_sortedbysubject.isChecked() \
+                        else unicode( self.o_field.currentText() ), # ara2eng_names[self.o_field.currentText()] for Arabic,
+                 "page": self.o_page.value(),
+                 "reverse_order": self.o_reverse.isChecked(),
+                 "word_info":self.o_word_stat.isChecked(),
+                 "highlight":self.o_highlight.isChecked(),
+                 "script": "uthmani" if self.o_script_uthmani.isChecked()
+                            else "standard",
+                 "prev_aya":self.o_prev.isChecked(),
+                 "next_aya": self.o_suiv.isChecked(),
+                 "sura_info": self.o_sura_info.isChecked(),
+                 "aya_position_info":  self.o_aya_info.isChecked(),
+                 "aya_theme_info":  self.o_aya_info.isChecked(),
+                 "aya_stat_info":  self.o_aya_info.isChecked(),
+                 "aya_sajda_info":  self.o_aya_info.isChecked(),
+                 "translation":self.o_traduction.currentText(),
+
+                 }
         try:
-            results, terms = RAWoutput.QSE.search_all( unicode( query ), limit = limit, sortedby = sortedby, reverse = reverse_sort )
+            results = RAWoutput.do( search_flags )
         except ParseException as PE:
             html += _( "Your query is wrong!,correct it and search again" )
         except KeyboardInterrupt:
             html += _( "Interrupted by user" )
 
 
-        #print terms
+        #print words_info
         if self.o_word_stat.isChecked():
-            wordshtml = ""
-            matches = 0
-            docs = 0
-            cpt = 1;
-            for term in terms :
-                if term[0] == "aya":
+            html += u'<h1> Words ( %(nb_words)d words reported %(nb_matches)d times ): </h1>' % results["search"]["words"]["global"]
 
-                    if term[2]:
-                        matches += term[2]
-                        docs += term[3]
-                        wordshtml += u'<p><span class="green">%d.%s : </span> %s <span class="green">%d </span> %s %s  <span class="green">%d</span>%s.' % ( cpt, term[1], _( u"reported" ), term[2], n_( u"time", u"times", term[2] ), _( u"in" ), term[3], n_( u"aya", u"ayas", term[3] ) )
-                        cpt += 1
-                    wordshtml += u"</p>"
-            if cpt - 1:
-                html += u'<h1> %s ( %d %s %s %d %s ): </h1>' % ( "Words", cpt - 1, n_( u"word", u"words", cpt - 1 ), _( u"reported" ), matches, n_( u"time", u"times", matches ) )
-                html += wordshtml
-                html += u"<br/>"
+            for cpt in xrange( results["search"]["words"]["global"]["nb_words"] ) :
+                    this_word_info = results["search"]["words"][cpt + 1]
+                    this_word_info["cpt"] = cpt + 1
+                    html += u'''<p>
+                                <span class="green">%(cpt)d. %(word)s : </span>
+                                reported
+                                <span class="green"> %(nb_matches)d </span>
+                                times in
+                                <span class="green"> %(nb_ayas)d </span>
+                                ayas.
+                                </p>''' % this_word_info
+            html += u"<br/>"
 
-        terms = [term[1] for term in list( terms )]
-        if self.o_filter.isChecked() and self.last_results:
-            results = QFilter( self.last_results, results )
-
-
-
+        #if self.o_filter.isChecked() and self.last_results:
+        #    results = QFilter( self.last_results, results )
         self.last_results = results
-        self.last_terms = terms
-        res = self.results( results, terms, sortedby = sortedby, page = 1, highlight = highlight )
+        ayas = results["search"]["ayas"]
         #outputs
-        self.o_time.display( res["time"] )
-        self.o_time_extend.display( res["extend_time"] )
-        self.o_resnum.display( res["resnum"] )
-        numpagereal = ( res["resnum"] - 1 ) / PERPAGE + 1
+        self.o_time.display( results["search"]["runtime"] )
+        self.o_resnum.display( results["search"]["interval"]["total"] )
+
+        # get page
+        numpagereal = ( results["search"]["interval"]["total"] - 1 ) / PERPAGE + 1
         numpagelimit = ( limit - 1 ) / PERPAGE + 1
         numpage = numpagelimit if numpagelimit < numpagereal else numpagereal
-
         self.o_numpage.display( numpage )
         self.o_page.setMinimum( 1 if numpage else 0 )
         self.o_page.setMaximum( numpage )
         self.o_page.setValue( 1 )
 
-        html += res["results"]
-        html += "<div>"
+
+        if results["error"]["code"] == 0:
+            html += _( """<h1> Results ( %(interval_start)d to %(interval_end)d of %(interval_total)d ) </h1> <br/>""" ) \
+                    % {
+                                    "interval_start": results["search"]["interval"]["start"] ,
+                                    "interval_end": results["search"]["interval"]["end"],
+                                    "interval_total": results["search"]["interval"]["total"]
+                        }
+
+
+            for cpt, result in results["search"]["ayas"].items():
+                html += _( u"""  %(cpt)d)  -  Aya n° %(aya_id)d of Sura  %(sura_name)s  """ )  \
+                            % {
+                                                "cpt": cpt,
+                                                "aya_id": result["identifier"]["aya_id"],
+                                                "sura_name": result["identifier"]["sura_name"],
+                                                }
+
+                if result["sura"]:
+                    html += _( u" Sura n°: %(sura_id)d ,revel_place : %(sura_type)s, revel_order :  %(sura_order)d, ayas : %(sura_nb_ayas)d " ) \
+                            % {
+                                        "sura_id": result["sura"]["id"],
+                                        "sura_type": SURA_TYPE[result["sura"]["type"]],
+                                        "sura_order": result["sura"]["order"],
+                                        "sura_nb_ayas": result ["sura"]["stat"]["ayas"]
+                            }
+                html += "<br/>"
+
+                if result["aya"]["prev_aya"]:
+                    html += """[ %(prev_aya_text)s ] - %(prev_aya_sura)s %(prev_aya_id)d <br/>
+                             """ % {
+                                     "prev_aya_text": result["aya"]["prev_aya"]["text"] ,
+                                     "prev_aya_sura": result["aya"]["prev_aya"]["sura"],
+                                     "prev_aya_id": result["aya"]["prev_aya"]["id"]
+                                    }
+
+                html += u"[  %(aya_text)s ] <br/> " % {
+                                                 "aya_text": result["aya"]["text"],
+                                                 }
+                if result["aya"]["next_aya"]:
+                    html += u"""[ %(next_aya_text)s ] - %(next_aya_sura)s %(next_aya_id)d <br/>
+                    """ % {
+                           "next_aya_text":result["aya"]["next_aya"]["text"],
+                           "next_aya_sura":result["aya"]["next_aya"]["sura"],
+                           "next_aya_id": result["aya"]["next_aya"]["id"]
+                           }
+                if result["aya"]["translation"]:
+                    html += _( u"""Translation -%(translation_title)s-: %(translation_text)s <br/>
+                            """ ) % {
+                                     "translation_title":"" ,
+                                     "translation_text": result["aya"]["translation"]
+                                     }
+                if result["position"]:
+                    html += _( u"""page: %(position_page)d ; (Hizb : %(position_hizb)d</b> ,Rubu' : %(position_rub)d) ; manzil :%(position_manzil)d ;  ruku' :%(position_ruku)s <br/>
+                            """ ) % {
+                                    "position_page": result["position"]["page"],
+                                    "position_hizb": result["position"]["hizb"],
+                                    "position_rub": result["position"]["rub"],
+                                    "position_manzil": result["position"]["manzil"],
+                                    "position_ruku": result["position"]["ruku"]
+                                    }
+                if result["theme"]:
+                    html += _( """chapter : %(theme_chapter)s ; topic : %(theme_topic)s ; subtopic : %(theme_subtopic)s <br/>
+                            """ ) % {
+                                    "theme_chapter":result["theme"]["chapter"] ,
+                                    "theme_topic": result["theme"]["topic"] ,
+                                    "theme_subtopic": result["theme"]["subtopic"]
+                                    }
+                if result["stat"]:
+                    html += _( """words : %(aya_nb_words)d / %(sura_nb_words)d  ; letters :  %(aya_nb_letters)d / %(sura_nb_letters)d  ;  names of Allaah : %(aya_nb_godnames)d / %(sura_nb_godnames)d <br/>
+                            """ ) % {
+                                    "aya_nb_words": result["stat"]["words"] ,
+                                    "sura_nb_words": result["sura"]["stat"]["words"] ,
+                                    "aya_nb_letters": result["stat"]["letters"],
+                                    "sura_nb_letters": result["sura"]["stat"]["letters"] ,
+                                    "aya_nb_godnames": result["stat"]["godnames"],
+                                    "sura_nb_godnames": result["sura"]["stat"]["godnames"]
+                                    }
+
+
+                if result["sajda"]:
+                    if result["sajda"]["exist"] == u"نعم":
+                        html += _( u""" This aya contain a sajdah -%(sajda_type)s- n° %(sajda_id)d <br/>
+                                """ ) % {
+                                         "sajda_type": SAJDA_TYPE[ result["sajda"]["type"]],
+                                         "sajda_id": result["sajda"]["id"]
+                                        }
+
+        html += "<br/><hr/><br/>"
         self.o_results.setText( html )
 
-
-
-
-
-
-    def results( self, results, terms, sortedby = "score", recitation = "Mishary Rashid Alafasy", page = 1, highlight = True ):
-        """
-        @todo: Use listview
-        @param fields : fields enabled to be shown
-        @return : the results
-        """
-        if results:
-            res = results
-
-            #pagination
-            page = int( page )
-            startpage = ( page - 1 ) * PERPAGE
-            endpage = ( page ) * PERPAGE
-            end = endpage if endpage < len( res ) else len( res )
-            start = startpage if startpage < len( res ) else -1
-            reslist = [] if end == 0 or start == -1 else list( res )[start:end]
-            extend_runtime = 0
-
-            H = lambda X:RAWoutput.QSE.highlight( X, terms, "html" ) if highlight and X else X if X else u"-----"
-            N = lambda X:X if X else 0
-
-            #+prev +succ +sura_info +aya_info
-            prev = self.o_prev.isChecked()
-            suiv = self.o_suiv.isChecked()
-            sura_info = self.o_sura_info.isChecked()
-            aya_info = self.o_aya_info.isChecked()
-
-            if prev or suiv:
-                adja_query = u"( 0"
-                for r in reslist :
-                    if prev: adja_query += " OR gid:" + unicode( r["gid"] - 1 ) + u" "
-                    if suiv:adja_query += " OR gid:" + unicode( r["gid"] + 1 ) + u" "
-                adja_query += " )"
-                adja_res = RAWoutput.QSE.find_extended( adja_query, "gid" )
-                adja_ayas = {0:{"aya_":u"----", "uth_":u"----", "sura":u"---", "aya_id":0}, 6237:{"aya_":u"----", "uth_":u"----", "sura":u"---", "aya_id":9999}}
-                for adja in adja_res:
-                    adja_ayas[adja["gid"]] = {"aya_":adja["aya_"], "uth_":adja["uth_"], "aya_id":adja["aya_id"], "sura":adja["sura"]}
-                extend_runtime += adja_res.runtime
-
-            #traductions
-            trad_index = self.o_traduction.currentIndex()
-            if trad_index:
-                trad_title = self.o_traduction.currentText()
-                trad_id = None
-                for k, v in RAWoutput.Translations.items():
-                    if v == trad_title:
-                        trad_id = k
-                        break
-                trad_query = u"( 0"
-                for r in reslist :
-                    trad_query += " OR gid:" + unicode( r["gid"] ) + u" "
-                trad_query += " )" + u" AND id:" + unicode( trad_id )
-                trad_res = RAWoutput.TSE.find_extended( trad_query, "gid" )
-                trad_text = {}
-                for tr in trad_res:
-                    trad_text[tr["gid"]] = tr["text"]
-                extend_runtime += trad_res.runtime
-
-
-
-            html = ""
-            if reslist:
-                html += u"<h1>" + u"Results (%d to %d)" % ( start + 1, end ) + u"</h1>"
-
-
-            cpt = startpage
-            for r in reslist :
-                cpt += 1
-
-                html += u"<h2> <b>%d</b>)  - " % cpt + _( u"Aya n° <b>%d</b> of Sura  <b>%s</b>" ) % ( r["aya_id"], H( r["sura"] ) ) + "</h2>"
-                if sura_info:
-                    html += u"<div style=\" font-size:8pt; color:#404060;\"> ( " + _( u"Sura n°: <b>%d</b>,revel_place : <b>%s</b> , revel_order :  <b>%d</b>, ayas : <b>%d</b>" ) % ( r["sura_id"], H( SURA_TYPE[r["sura_type"]] ), r["sura_order"], r["s_a"] ) + u" )</div>"
-                html += "" + ""
-                html += "<div  align=\"center\">"
-                if prev:
-                    html += u"<p dir='rtl' style=\"font-family:'ArabeyesQr';font-size:10pt;font-weight:200; color:#bc947a;\">[ <span style=\"font-family:'me_quran';\"><b>%s</b></span>] - %s %d </p>" % ( adja_ayas[r["gid"] - 1]["uth_"] if self.o_script_uthmani.isChecked() else adja_ayas[r["gid"] - 1]["aya_"] , adja_ayas[r["gid"] - 1]["sura"], adja_ayas[r["gid"] - 1]["aya_id"] )
-                html += u" <p dir='rtl' style=\"font-family:'ArabeyesQr';  font-size:18pt; font-weight:800; color:#6b462a;\">[ <span style=\"font-family:'me_quran';\"><b>%s</b></span>] </p>" % H( r["uth_"] if self.o_script_uthmani.isChecked() else r["aya_"] )
-                if suiv:
-                    html += u"<p dir='rtl' style=\"font-family:'ArabeyesQr'; font-size:10pt; font-weight:200; color:#bc947a;\">[ <span style=\"font-family:'me_quran';\"><b>%s</b> </span> ] - %s %d  </p>" % ( adja_ayas[r["gid"] + 1]["uth_"] if self.o_script_uthmani.isChecked() else adja_ayas[r["gid"] + 1]["aya_"] , adja_ayas[r["gid"] + 1]["sura"], adja_ayas[r["gid"] + 1]["aya_id"] )
-                html += "<br />"
-                if trad_index:
-                    if trad_id:
-                        html += u'<p>%s -%s-:</p><p dir="%s" align="center" style=" font-size:15pt; font-weight:400; color:#7722dd;">%s</p><br/>' % ( _( u"Translation" ), trad_title, "ltr", trad_text[r["gid"]] )
-                if aya_info:
-                    html += u"<p  style=\" color:#808080;\">"
-                    html += _( u"page: <b>%d</b> ; (Hizb : <b>%d</b> ,Rubu' : <b>%d</b>) ; manzil :<b>%d</b> ;  ruku' :<b>%s</b>" ) % ( r["page"], r["hizb"], r["rub"], r["manzil"], r["ruku"] )
-                    html += "<br />" + _( u"chapter : <b>%s</b> ; topic : <b>%s</b> ; subtopic : <b>%s</b> " ) % ( H( r["chapter"] ), H( r["topic"] ), H( r["subtopic"] ) )
-                    html += "<br />" + _( u"words : <b>%d</b> / %d  ; letters :  <b>%d</b> / %d  ;  names of Allaah :  <b>%d</b> / %d " ) % ( N( r["a_w"] ), N( r["s_w"] ), N( r["a_l"] ), N( r["s_l"] ), N( r["a_g"] ), N( r["s_g"] ) )
-                    html += "</p>"
-                    if r["sajda"] == u"نعم": html += u'<p style=" color:#b88484;">' + _( u"This aya contain a sajdah -%s- n° %d" ) % ( SAJDA_TYPE[r["sajda_type"]], N( r["sajda_id"] ) ) + '</p>'
-                html += u"</div><hr />"
-
-            return {"results":html, "time":res.runtime, "resnum":len( res ), "extend_time":extend_runtime}
-        else:
-            return {"results":"", "time":0, "resnum":0, "extend_time":0}
-
-
-
-    def changepage( self, value ):
-        #inputs
-        bymushaf = self.o_sortedbymushaf.isChecked()
-        bytanzil = self.o_sortedbytanzil.isChecked()
-        byscore = self.o_sortedbyscore.isChecked()
-        bysubject = self.o_sortedbysubject.isChecked()
-        byfield = self.o_sortedbyfield.isChecked()
-        field = unicode( self.o_field.currentText() )
-
-        sortedby = "score" if byscore  else "mushaf" if bymushaf else "tanzil" if bytanzil else "subject" if bysubject else ara2eng_names[field]
-
-        page = value
-        highlight = self.o_highlight.isChecked()
-        #search
-        res = self.results( self.last_results, self.last_terms, sortedby = sortedby, page = page, highlight = highlight )
-
-        html = CSS
-        html += res["results"]
-        self.o_results.setText( html )
+    def changepage( self, page ):
+        self.search_all( page )
 
     def topics( self, chapter ):
 
