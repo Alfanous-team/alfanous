@@ -69,6 +69,8 @@ if len( form ):
     if form.has_key( "recitation" ): flags["recitation"] = form["recitation"][0]
     if form.has_key( "translation" ): flags["translation"] = form["translation"][0]
     if form.has_key( "highlight" ): flags["highlight"] = form["highlight"][0]
+    if form.has_key( "script" ): flags["script"] = form["script"][0]
+    if form.has_key( "vocalized" ): flags["vocalized"] = TRUE_FALSE( form["vocalized"][0] )
     if form.has_key( "prev_aya" ): flags["prev_aya"] = TRUE_FALSE( form["prev_aya"][0] )
     if form.has_key( "next_aya" ): flags["next_aya"] = TRUE_FALSE( form["next_aya"][0] )
     if form.has_key( "sura_info" ): flags["sura_info"] = TRUE_FALSE( form["sura_info"][0] )
