@@ -21,6 +21,7 @@
 from alfanous.main import 	QuranicSearchEngine, FuzzyQuranicSearchEngine, TraductionSearchEngine, WordSearchEngine
 from alfanous.dynamic_resources.arabicnames_dyn import ara2eng_names as Fields
 from alfanous.dynamic_resources.std2uth_dyn import std2uth_words
+from alfanous.TextProcessing import QArabicSymbolsFilter
 import json, re
 
 STANDARD2UTHMANI = lambda x: std2uth_words[x] if std2uth_words.has_key( x ) else x;
@@ -49,6 +50,8 @@ class Raw():
 			      "platform":"undefined",
 			      "domain":"undefined",
 			      "query":"",
+			      "script":"standard",
+			      "vocalized": True,
 			      "highlight": "css",
 			      "recitation": "1",
 			      "translation": None,
@@ -82,6 +85,8 @@ class Raw():
 			      "domain":[],
 			      "query":[],
 			      "highlight": ["css", "html", "genshi", "bold", "bbcode"],
+			      "script": ["standard", "uthmani"],
+			      "vocalized": [True, False],
 			      "recitation": [], #map(lambda x:str(x),range(30)),
 			      "translation": [],
 			      "prev_aya": [True, False],
@@ -271,6 +276,8 @@ class Raw():
 		range = int( flags["perpage"] ) if  flags.has_key( "perpage" )  else flags["range"] if flags.has_key( "range" ) else self._defaults["flags"]["range"]
 		offset = ( int( flags["page"] ) - 1 ) * range if flags.has_key( "page" ) else flags["offset"] if flags.has_key( "offset" ) else self._defaults["flags"]["offset"] ## offset = (page-1) * perpage   --  mode paging
 		highlight = flags["highlight"] if flags.has_key( "highlight" ) else self._defaults["flags"]["highlight"]
+		script = flags["script"] if flags.has_key( "script" ) else self._defaults["flags"]["script"]
+		vocalized = flags["vocalized"] if flags.has_key( "vocalized" ) else self._defaults["flags"]["vocalized"]
 		recitation = flags["recitation"] if flags.has_key( "recitation" ) else self._defaults["flags"]["recitation"]
 		translation = flags["translation"] if flags.has_key( "recitation" ) else self._defaults["flags"]["recitation"]
 		prev_aya = flags["prev_aya"] if flags.has_key( "prev_aya" ) else self._defaults["flags"]["prev_aya"]
@@ -296,8 +303,10 @@ class Raw():
 		output = {}
 
 		#if True:
+		## strip vocalization when vocalized = true
+		V = QArabicSymbolsFilter( shaping = False, tashkil = not vocalized, spellerrors = False, hamza = False )
 		# highligh function that consider None value and non-definition
-		H = lambda X:self.QSE.highlight( X, terms, highlight ) if highlight != "none" and X else X if X else u"-----"
+		H = lambda X:  self.QSE.highlight( X, terms, highlight ) if highlight != "none" and X else X if X else u"-----"
 		# Numbers are 0 if not defined
 		N = lambda X:X if X else 0
 		# parse keywords lists , used for Sura names
@@ -307,7 +316,6 @@ class Raw():
 		Gword_tamdid = lambda aya: aya.replace( u"لَّه", u"لَّـه" ).replace( u"لَّه", u"لَّـه" )
 		##########################################
 		extend_runtime = res.runtime
-
 		# Words & Annotations
 
 		words_output = {}
@@ -328,7 +336,6 @@ class Raw():
 			words_output["global"] = {"nb_words":cpt - 1, "nb_matches":matches}
 		output["words"] = words_output;
 
-
 		#Magic_loop to built queries of Adjacents,translations and annotations in the same time 
 		if prev_aya or next_aya or translation or  annotation_aya:
 			adja_query = trad_query = annotation_aya_query = u"( 0"
@@ -342,7 +349,6 @@ class Raw():
 			adja_query += " )"
 			trad_query += " )" + u" AND id:%s " % unicode( translation )
 			annotation_aya_query += " )"
-
 
 		# Adjacents 
 		if prev_aya or next_aya:
@@ -382,28 +388,26 @@ class Raw():
 
 		              "aya":{
 		              		"id":r["aya_id"],
-		              		"text": Gword_tamdid( H( r["aya_"] ) ),
-	      				"text_uthmani": Gword_tamdid( H( r["uth_"] ) ),
+		              		"text":  Gword_tamdid( H( V( r["aya_"] ) ) ) if script == "standard"
+		              			else  Gword_tamdid( H( r["uth_"] ) ),
 		                	"traduction": trad_text[r["gid"]] if ( translation != "None" and translation ) else None,
 		                	"recitation": None if not recitation else u"http://www.everyayah.com/data/" + self._recitations[recitation]["subfolder"].encode( "utf-8" ) + "/%03d%03d.mp3" % ( r["sura_id"], r["aya_id"] ),
 		                	"prev_aya":{
 						    "id":adja_ayas[r["gid"] - 1]["aya_id"],
 						    "sura":adja_ayas[r["gid"] - 1]["sura"],
-						    "text": Gword_tamdid( adja_ayas[r["gid"] - 1]["aya_"] ),
-						    "text_uthmani": Gword_tamdid( adja_ayas[r["gid"] - 1]["uth_"] ),
+						    "text": Gword_tamdid( V( adja_ayas[r["gid"] - 1]["aya_"] ) ) if script == "standard"
+		              			else Gword_tamdid( adja_ayas[r["gid"] - 1]["uth_"] ),
 						    } if prev_aya else None
 						    ,
 		                	"next_aya":{
 						    "id":adja_ayas[r["gid"] + 1]["aya_id"],
 						    "sura":adja_ayas[r["gid"] + 1]["sura"],
-						    "text": Gword_tamdid( adja_ayas[r["gid"] + 1]["aya_"] ),
-						    "text_uthmani": Gword_tamdid( adja_ayas[r["gid"] + 1]["uth_"] ),
+						    "text": Gword_tamdid( V( adja_ayas[r["gid"] + 1]["aya_"] ) ) if script == "standard"
+		              			else  Gword_tamdid( adja_ayas[r["gid"] + 1]["uth_"] ),
 						    } if next_aya else None
 						    ,
 
 		              },
-
-
 
 		    		"sura": {} if not sura_info
 					  else  {
