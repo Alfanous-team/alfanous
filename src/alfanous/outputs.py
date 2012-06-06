@@ -304,7 +304,12 @@ class Raw():
 
 		#if True:
 		## strip vocalization when vocalized = true
-		V = QArabicSymbolsFilter( shaping = False, tashkil = not vocalized, spellerrors = False, hamza = False )
+		V = QArabicSymbolsFilter( \
+								shaping = False, \
+								tashkil = not vocalized, \
+								spellerrors = False, \
+								hamza = False \
+								).normalize_all
 		# highligh function that consider None value and non-definition
 		H = lambda X:  self.QSE.highlight( X, terms, highlight ) if highlight != "none" and X else X if X else u"-----"
 		# Numbers are 0 if not defined
