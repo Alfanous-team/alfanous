@@ -155,6 +155,7 @@
 			if (json.interval.total) {
 
 				// Pages control
+				results_pages += "<br />";
 				results_pages += "<div class='pages'>\n<img src='images/prev.gif' alt='الصفحة السابقة' title = 'الصفحة السابقة' /><div style=' display:inline-block; position:relative; top:-8px;'>\n";
 				for( i = 1; i <= nb_pages; i++) {
 					if (i == page)
@@ -167,9 +168,10 @@
 					}
 				}
 				results_pages += "</div><img src='images/next.gif' alt='الصفحة التالية' title = 'الصفحة التالية' />\n</div>\n";
-			
+				results_pages += "<br />";
+	
 				// Words list
-				results += "<div id='search_words' align='right'>";
+				results += " <div id='search_words' align='right'>";
 				results += "<h2 style='font-size:16pt; font-weight:600; color:#ff0000;'>الكلمات :";
 					results += "<div class='details_label word_count'> الكلمات | "+ json.words["global"].nb_words+ "</div>";
 					results += "<div class='details_label word_stat0'> مجموع المرات | "+ json.words["global"].nb_matches+ "</div>"; 
@@ -434,6 +436,10 @@
 	body form div div div.xdrops_continer {
 		display: inline-block;
 	}
+
+	body form div div {
+		display: inline-block;
+	}
 	
 </style>
 
@@ -449,7 +455,6 @@
 </div>
 <!-- -->
 <form id="form" name="form" method="post" action=".">
-<div align="center">
 <div>
 <div>
 <table>
@@ -588,7 +593,6 @@
 	<br/>
 		<button type="button" class='close gray button'> إغلاق </button>	
 	<br />
-</div>
 </div>
 </form>
 
