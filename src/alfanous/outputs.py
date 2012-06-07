@@ -459,9 +459,9 @@ class Raw():
 
 		           	"theme":{} if not aya_theme_info
 		                else	{
-				    		"chapter":H( r["chapter"] ),
-				    		"topic":H( r["topic"] ),
-				   		 "subtopic":H( r["subtopic"] )
+				    		"chapter": r["chapter"],
+				    		"topic":  r["topic"] ,
+				   		 "subtopic": r["subtopic"]
 				 	   },
 
 				"stat":  {} if not aya_stat_info
@@ -474,7 +474,7 @@ class Raw():
 				"sajda":{} if not aya_sajda_info
 		                else    {
 		    				"exist":( r["sajda"] == u"نعم" ),
-		    				"type":H( r["sajda_type"] ) if ( r["sajda"] == u"نعم" ) else None,
+		    				"type": r["sajda_type"]  if ( r["sajda"] == u"نعم" ) else None,
 		    				"id":N( r["sajda_id"] ) if ( r["sajda"] == u"نعم" ) else None,
 		    			}
 		    		}
