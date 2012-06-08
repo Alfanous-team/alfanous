@@ -385,8 +385,7 @@ a:hover{color: green;}
 .word_vocalization {
 	background-color: #FFF;
 	color: #90A;
-	font-family:   KacstBook, KacstQurn, ArabeyesQr, "KFGQPC Uthman Taha Naskh", Scheherazade, Arial;
-	font-size:125%;
+	/* font-size:100%;*/
 }
 
 .item_number {
