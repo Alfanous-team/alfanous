@@ -41,7 +41,7 @@ commands = OptionGroup( parser, "Options", "Choose what to do:  " )
 commands.add_option( "-x", "--index", dest = "index", type = "choice", choices = ["main", "extend" , "word"],
                   help = "create  indexes", metavar = "TYPE" )
 
-commands.add_option( "-t", "--transfer", dest = "transfer", type = "choice", choices = ["stopwords", "synonyms", "word_props", "derivations", "ara2eng_names", "std2uth_words"],
+commands.add_option( "-t", "--transfer", dest = "transfer", type = "choice", choices = ["stopwords", "synonyms", "word_props", "derivations", "vocalizations", "ara2eng_names", "std2uth_words"],
                   help = "transfer from database to dynamic resources", metavar = "RESOURCE" )
 
 commands.add_option( "-p", "--speller", dest = "speller", type = "choice", choices = ["aya", "subject", "word"],
@@ -105,6 +105,8 @@ if options.transfer:
         T.transfer_word_props()
     elif options.transfer == "derivations":
         T.transfer_derivations()
+    elif options.transfer == "vocalizations":
+        T.transfer_vocalizations()
     elif options.transfer == "ara2eng_names":
         T.transfer_ara2eng_names()
     elif options.transfer == "std2uth_words":
