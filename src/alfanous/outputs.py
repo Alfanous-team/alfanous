@@ -16,11 +16,16 @@
 ##     You should have received a copy of the GNU Affero General Public License
 ##     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+"""
+TODO offer some linguistic operations like vocalize,derive using  Quranic Corpus  / functions
+"""
+
 
 
 from alfanous.main import 	QuranicSearchEngine, FuzzyQuranicSearchEngine, TraductionSearchEngine, WordSearchEngine
 from alfanous.dynamic_resources.arabicnames_dyn import ara2eng_names as Fields
 from alfanous.dynamic_resources.std2uth_dyn import std2uth_words
+from alfanous.dynamic_resources.vocalizations_dyn import vocalization_dict
 from alfanous.TextProcessing import QArabicSymbolsFilter
 import json, re
 
@@ -344,7 +349,7 @@ class Raw():
 						matches += term[2]
 					docs += term[3]
 					annotation_word_query += u" OR normalised:%s " % STANDARD2UTHMANI( term[1] )
-					words_output[ cpt ] = {"word":term[1], "nb_matches":term[2], "nb_ayas":term[3]}
+					words_output[ cpt ] = {"word":term[1], "nb_matches":term[2], "nb_ayas":term[3], "vocalizations": vocalization_dict[term[1]]}
 					cpt += 1
 			annotation_word_query += u" ) "
 			words_output["global"] = {"nb_words":cpt - 1, "nb_matches":matches}
