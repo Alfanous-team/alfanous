@@ -52,7 +52,7 @@ path.append("alfanous.egg/alfanous")
 
 from alfanous.main import *
 from alfanous.dynamic_ressources.arabicnames_dyn import ara2eng_names as Fields
-
+from vocalizations_dyn import vocalization_dict
 
 
 import gettext;
@@ -148,7 +148,8 @@ def results(query, sortedby="score", fields=["sura", "aya_id", "aya"],page=1,hig
                 if term[2]:                
                     matches+=term[2]
                     docs+=term[3]
-                    words_output[str(cpt)]={"word":term[1],"nb_matches":term[2],"nb_ayas":term[3]}
+                    vocalizations = vocalization_dict[term[1]]
+                    words_output[str( cpt )] = {"word":term[1], "nb_matches":term[2], "nb_ayas":term[3], "nb_vocalizations":len( vocalizations ), "vocalizations": vocalizations }
                     cpt+=1
                 
         words_output["global"]={"nb_words":cpt-1,"nb_matches":matches}
@@ -206,7 +207,7 @@ def results(query, sortedby="score", fields=["sura", "aya_id", "aya"],page=1,hig
                         {
                         	"manzil":r["manzil"],
                         	"hizb":r["hizb"],
-                        	"rubu":r["rub"]%4,
+                        	"rubu": r["rub"] % 4,
                         	"page":r["page"]
                    	},
                    	
