@@ -41,7 +41,7 @@ import re
 import sqlite3 as lite
 
 
-
+from alfanous.main import QuranicSearchEngine
 from alfanous.Indexing import QseDocIndex
 from alfanous.TextProcessing import QStandardAnalyzer, QDiacAnalyzer, QArabicSymbolsFilter, QUthmaniDiacAnalyzer, QUthmaniAnalyzer
 from alfanous.Exceptions import  Ta7rif
@@ -66,6 +66,7 @@ class Transformer:
         if not( os.path.exists( ixpath ) ):
             os.makedirs( ixpath )
         self.__storage = FileStorage( ixpath )
+        self.__ixpath = ixpath
         self.__dypypath = dypypath
         pass
 
@@ -374,7 +375,7 @@ class Transformer:
         return raw_str
 
     def transfer_derivations( self ):
-        """ load word props from database and save them as a list in a dynamic py """
+        """ load word derivations from database and save them as a list in a dynamic py """
         cur = self.__mainDb.cursor()
         levels = ["word_", "lemma", "root"]
         cur.execute( "select " + ",".join( levels ) + " from word" )
@@ -394,14 +395,47 @@ class Transformer:
 
         return raw_str
 
+    def transfer_vocalizations( self ):
+        """ load indexed vocalized words  from the main index and save them as a list in a dynamic py """
+        QSE = QuranicSearchEngine( self.__ixpath )
+        mfw = QSE.most_frequent_words( 9999999, "aya_" )
+
+        V = QArabicSymbolsFilter( \
+                                shaping = False, \
+                                tashkil = True, \
+                                spellerrors = False, \
+                                hamza = False \
+                                ).normalize_all
+
+
+        vocalization_dict = {}
+        for w in mfw:
+            word = w[1]
+            if vocalization_dict.has_key( V( word ) ):
+                vocalization_dict[V( word )].append( word )
+            else:
+                vocalization_dict[V( word )] = [word]
+
+        raw_str = self.dheader + u"\nvocalization_dict=" + str( vocalization_dict ).replace( ",", ",\n" )
+
+        fich = open( self.__dypypath + "vocalizations_dyn.py", "w+" )
+        fich.write( raw_str )
+
+        return raw_str
+
+
+
+
+
 
 if __name__ == "__main__":
-    #T = Transformer( ixpath="../indexes/main/" , dypypath="dynamic_resources/",dbpath="../../resources/DB/main.db")
-    T = Transformer( ixpath = "../../indexes/word/" , dypypath = "../alfanous/dynamic_resources/", dbpath = "../../resources/DB/main.db" )
+    T = Transformer( ixpath = "../../indexes/main/" , dypypath = "../alfanous/dynamic_resources/", dbpath = "../../resources/databases/main.db" )
+    #T = Transformer( ixpath = "../../indexes/word/" , dypypath = "../alfanous/dynamic_resources/", dbpath = "../../resources/DB/main.db" )
     #T.transfer_stopwords()
     #T.transfer_synonymes()
     #T.transfer_word_props()
     #T.transfer_derivations()
+    T.transfer_vocalizations()
     #T.transfer_ara2eng_names()
     #T.transfer_std2uth_words()
     #T.make_spellerrors_dict()
@@ -412,7 +446,7 @@ if __name__ == "__main__":
     #T.build_speller(indexname="AYA_SPELL", fields=["aya"])
     #T.build_speller(indexname="SUBJECT_SPELL", fields=["subject"])
 
-    wordqcSchema = T.build_schema( tablename = 'wordqc' )
+    #wordqcSchema = T.build_schema( tablename = 'wordqc' )
     #T.build_docindex(wordqcSchema,tablename='wordqc') 
     #T.build_speller(indexname="WORD_SPELL", fields=["word"])
 

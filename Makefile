@@ -28,7 +28,8 @@ WUI_PATH=./interfaces/web/wui/
 PREFIX?=/usr
 CONFIG_INSTALL_PATH="$(DESTDIR)$(PREFIX)/share/alfanous-config/"
 INDEX_INSTALL_PATH="$(DESTDIR)$(PREFIX)/share/alfanous-indexes/"
-WEB_INSTALL_PATH="$(DESTDIR)/var/www/alfanous-web/" 
+WEB_INSTALL_PATH=$(DESTDIR)/var/www/alfanous-web/
+WEB_CGI_INSTALL_PATH=$(WEB_INSTALL_PATH)cgi
 
 
 default: 
@@ -101,6 +102,9 @@ transfer_word_props:
 transfer_derivations:
 	export PYTHONPATH=$(API_PATH) ;	python $(QIMPORT) -t derivations $(DB_PATH)main.db $(DYNAMIC_RESOURCES_PATH)
 
+transfer_derivations:
+	export PYTHONPATH=$(API_PATH) ;	python $(QIMPORT) -t vocalizations $(DB_PATH)main.db $(DYNAMIC_RESOURCES_PATH)
+
 transfer_ara2eng_names:
 	export PYTHONPATH=$(API_PATH) ;	python $(QIMPORT) -t ara2eng_names $(DB_PATH)main.db $(DYNAMIC_RESOURCES_PATH)
 	
@@ -160,15 +164,14 @@ speller_word:
 
 
 ## build help
-help_all: help_api help_sphinx
+help_all: help_epydoc help_sphinx
 
 help_epydoc:
-	cd $(API_PATH); epydoc   --html -v --graph all --no-sourcecode     --show-imports  -n alfanous -u alfanous.org  . ;  zip -9   alfanous-epydoc.zip ./html/* ;	mv -f alfanous-epydoc.zip ../output ; rm -r ./html
+	mkdir -p output/$(VERSION);cd $(API_PATH); epydoc   --html -v --graph all --no-sourcecode     --show-imports  -n alfanous -u alfanous.org  . ;  zip -9   alfanous-epydoc.zip ./html/* ;	mv -f alfanous-epydoc.zip ../output/$(VERSION)/ ; rm -r ./html
 	
 help_sphinx:
-	cd ./docs ; make dirhtml;  zip -9   alfanous-sphinx-doc.zip ./_build/dirhtml/* ; mv -f alfanous-sphinx-doc.zip ../output ; rm -r  ./_build/dirhtml
+	mkdir -p output/$(VERSION);cd ./docs ; make dirhtml;  zip -9   alfanous-sphinx-doc.zip ./_build/dirhtml/* ; mv -f alfanous-sphinx-doc.zip ../output/$(VERSION)/ ; rm -r  ./_build/dirhtml
 
-	
 ## Qt forms ,dialogs and resources compilation  
 # PyQt is needed  
 # apt-get install pyqt4-dev-tools  pyqt-tools  
@@ -202,7 +205,7 @@ local_mo_download:
 	#wget ; mv to /localization/locale
 
 ##   make packages
-dist_all: dist_egg dist_deb dist_rpm dist_sis dist_xpi  dist_app
+dist_all: dist_egg_all dist_deb dist_rpm dist_sis dist_xpi  dist_app
 
 # generate all extentions and API's eggs
 dist_egg_all: dist_egg_api  dist_egg_pycorpus  dist_egg_pyzekr dist_egg_qimport dist_egg_desktop
@@ -311,24 +314,45 @@ install_desktop: install_config install_index  install_api qt_all  local_mo_down
 	#test installation
 	alfanousDesktop &
 	
-	
-install_web: install_api install_index install_config
+##  don't use it!!
+install_json: #install_api #install_index 
+	cd $(API_PATH)alfanous-cgi ;  mkdir -p $(WEB_CGI_INSTALL_PATH); cp  -r alfanous-json.py $(WEB_CGI_INSTALL_PATH);
+	#cd ./interfaces/web/ ;  cp  htaccess $(WEB_INSTALL_PATH)".htaccess"
+	cd ./interfaces/web/ ;  vi alfanous ; cp alfanous /etc/apache2/sites-available/ #configure well this file 
+	chmod 755 -R $(WEB_CGI_INSTALL_PATH)
+	chmod +x $(WEB_INSTALL_PATH)cgi/alfanous_json.py
+
+	a2dissite alfanous
+	a2ensite alfanous
+	service apache2 reload
+	echo "127.0.0.1 alfanous.local" >> /etc/hosts ## must check existance first!!
+	xdg-open http://alfanous.local/ &  ##launch default browser for test
+
+##  don't use it!!
+install_json2: install_api install_index install_config 
+	cd $(API_PATH)alfanous-cgi ;  mkdir -p $(WEB_CGI_INSTALL_PATH); cp  -r alfanous_json2.py $(WEB_CGI_INSTALL_PATH);
+	#cd ./interfaces/web/ ;  cp  htaccess $(WEB_INSTALL_PATH)".htaccess"
+	cd ./interfaces/web/ ;  vi alfanous ; cp alfanous /etc/apache2/sites-available/ #configure well this file 
+	chmod 755 -R $(WEB_INSTALL_PATH)
+	chmod +x $(WEB_INSTALL_PATH)cgi/alfanous_json2.py 
+	sed -i 's/\"cgitb.enable\(\)\"/cgitb.enable\(\)/g' "$(WEB_INSTALL_PATH)cgi/alfanous_json2.py"
+	sed -i 's/\.\/indexes/\/usr\/share\/alfanous\-indexes/g' "$(WEB_INSTALL_PATH)cgi/alfanous_json2.py"	
+	sed -i 's/\.\/configs/\/usr\/share\/alfanous\-config/g' "$(WEB_INSTALL_PATH)cgi/alfanous_json2.py"	
+
+	cd $(WEB_INSTALL_PATH); mv -f \ cgi cgi;  cd wui; sed -i 's/www\.alfanous\.org\/json/alfanous\.local\/cgi\-bin\/alfanous\_json\.py/g' index.*   
+	a2dissite alfanous
+	a2ensite alfanous
+	service apache2 reload
+	echo "127.0.0.1 alfanous.local" >> /etc/hosts ## must check existance first!!
+	xdg-open http://alfanous.local/ &  ##launch default browser for test
+
+##  don't use it!!
+install_wui: #install_json
 	rm -r  $(WEB_INSTALL_PATH)
 	mkdir -p $(WEB_INSTALL_PATH)
 	cd ./interfaces/web/ ;  cp ./AGPL $(WEB_INSTALL_PATH)
 	cd ./interfaces/web/ ;  cp  -r wui  $(WEB_INSTALL_PATH) 
-	cd $(API_PATH)alfanous-cgi ;  mkdir "$(WEB_INSTALL_PATH)cgi"; cp  -r *.py "$(WEB_INSTALL_PATH)cgi";
-	#cd ./interfaces/web/ ;  cp  .htaccess "$(WEB_INSTALL_PATH)"
-	cd ./interfaces/web/ ;  cp alfanous /etc/apache2/sites-available/ #configure well this file 
-	chmod 755 $(WEB_INSTALL_PATH)
-	chmod +x "$(WEB_INSTALL_PATH)cgi/alfanous-json.py"
-	sed -i 's/\"cgitb.enable\(\)\"/cgitb.enable\(\)/g' "$(WEB_INSTALL_PATH)cgi/alfanous-json.py"
-	sed -i 's/\.\/indexes/\/usr\/share\/alfanous\-indexes/g' "$(WEB_INSTALL_PATH)cgi/alfanous-json.py"	
-	sed -i 's/\.\/configs/\/usr\/share\/alfanous\-config/g' "$(WEB_INSTALL_PATH)cgi/alfanous-json.py"	
-
-	cd $(WEB_INSTALL_PATH); mv -f \ cgi cgi;  cd wui; sed -i 's/www\.alfanous\.org\/json/alfanous\.local\/cgi\-bin\/alfanous\-json\.py/g' index.*   
-	a2dissite alfanous
-	a2ensite alfanous
-	service apache2 reload
-	#echo "127.0.0.1 alfanous.local" >> /etc/hosts ## must check existance first!!
-	#xdg-open http://alfanous.local/ &  ##launch default browser for test
+	cd ./interfaces/web/ ;  vi alfanous ; cp alfanous /etc/apache2/sites-available/ #configure well this file 
+	chmod 755 -R $(WEB_INSTALL_PATH)
+	echo "127.0.0.1 alfanous.local" >> /etc/hosts ## must check existance first!!
+	xdg-open http://alfanous.local/ &  ##launch default browser for test
