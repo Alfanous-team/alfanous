@@ -191,6 +191,12 @@
 							results += build_search_link(param, json.words[i].word, false) +  "<div class='details_label word_info0 clickable'> كلمة | "+ json.words[i].word+ "</div></a>";
 							results += "<div class='details_label word_stat0'> المرات | "+ json.words[i].nb_matches+ "</div>";
 							results += "<div class='details_label word_stat1'> الآيات | "+ json.words[i].nb_ayas+ "</div>";
+							results += "<div class='details_label word_vocalization_nb'> التشكيلات | "+ json.words[i].nb_vocalizations+ "</div>";
+							for( j = 0; j < json.words[i].nb_vocalizations; j++) 
+								{
+								results += build_search_link(param, "آية_:"+ json.words[i].vocalizations[j] + "", false ) + "<div class='details_label word_vocalization clickable'>"+ json.words[i].vocalizations[j]+ "</div></a>";
+								}
+							
 							results += "</div></p>";
 				}
 				results += "</div> ";
@@ -246,7 +252,7 @@
 						results += build_search_link(param,"ج_آ:" + json.ayas[i].stat.godnames, false) + "<div class='details_label aya_stat2 clickable'> ألفاظ الجلالة | "+ json.ayas[i].stat.godnames+ "</div></a> ";
 						results += build_search_link(param, "منزل:" + json.ayas[i].position.manzil, true) + "<div class='details_label aya_pos0 clickable filter'> المنزل | "+ json.ayas[i].position.manzil+ "</div></a>";
 						results += build_search_link(param, "حزب:" + json.ayas[i].position.hizb, true) +"<div class='details_label aya_pos1 clickable filter'> الحزب | "+ json.ayas[i].position.hizb+ "</div></a>";
-						results += "<div class='details_label aya_pos2'> الربع | "+ json.ayas[i].position.rubu+ "</div>";
+						results += "<div class='details_label aya_pos2'> الربع | "+ (json.ayas[i].position.rubu + 1 )+ "</div>";
 						results += build_search_link(param, "صفحة:" + json.ayas[i].position.page, true) + "<div class='details_label aya_pos3 clickable filter'> الصفحة | "+ json.ayas[i].position.page+ "</div></a>";
 
 						

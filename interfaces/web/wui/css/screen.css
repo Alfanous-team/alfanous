@@ -373,10 +373,21 @@ a:hover{color: green;}
 }
 
 .word_stat1 {
+	background-color: #555;
+	color: #FFF;
+}
+
+.word_vocalization_nb {
 	background-color: #90A;
 	color: #FFF;
 }
 
+.word_vocalization {
+	background-color: #FFF;
+	color: #90A;
+	font-family:   KacstBook, KacstQurn, ArabeyesQr, "KFGQPC Uthman Taha Naskh", Scheherazade, Arial;
+	font-size:125%;
+}
 
 .item_number {
 	background-color: #FFF;
@@ -496,17 +507,15 @@ a:hover{color: green;}
 }
 
 .clickable {
-	
-	color: #FFF;
 	font-weight: bold;
 	border-style:solid;
-	border-color:#00F;
-	border-width:1px;
+	border-color:#A0C;
+	border-width:2px;
 }
 
 .filter {
 	
-	border-color:#F00;
+	border-color:#000;
 	
 }
 
