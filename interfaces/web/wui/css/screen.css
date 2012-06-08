@@ -465,6 +465,50 @@ a:hover{color: green;}
 	color: #FFF;
 }
 
+.sura_ord1 {
+	background-color: #888;
+	color: #FFF;
+}
+
+.sura_ord1 {
+	background-color: #888;
+	color: #FFF;
+}
+
+
+.aya_sajda_exist {
+
+	background-color: #E44;
+	color: #FFF;
+	
+}
+
+.aya_sajda_id {
+	
+	background-color: #C44;
+	color: #FFF;
+	
+}
+
+.aya_sajda_type {
+	background-color: #A44;
+	color: #FFF;
+}
+
+.clickable {
+	
+	color: #FFF;
+	font-weight: bold;
+	border-style:solid;
+	border-color:#555;
+	border-width:2px;
+}
+
+.no_decoration {
+	text-decoration:none;
+		
+}
+
 /* Abdellah AD.*/
 
 
