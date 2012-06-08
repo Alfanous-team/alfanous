@@ -500,8 +500,14 @@ a:hover{color: green;}
 	color: #FFF;
 	font-weight: bold;
 	border-style:solid;
-	border-color:#555;
-	border-width:2px;
+	border-color:#00F;
+	border-width:1px;
+}
+
+.filter {
+	
+	border-color:#F00;
+	
 }
 
 .no_decoration {
