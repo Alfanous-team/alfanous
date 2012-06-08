@@ -215,15 +215,15 @@ a:hover{color: green;}
 
 .awa-box {
 	border:0 none;
-	clear:both;
+	display: inline-block;
 	margin:0;
 	padding:0;
-	position: absolute;
-	top: 0;
-	left:0;
+	float: left;
+	position: relative;
+	top: 20px;
+	left: 10px;
 	z-index:95;
-	width:50px;
-	text-align:left;
+	text-align:center;
 }
 
 .follow-box {
@@ -520,12 +520,12 @@ div#footer-big {
 
 div#footer-big div.column {
     float: left;
-    width: 220px;
+    width: 180px;
     padding: 20px 20px 20px 0;
 }
 
 div#footer-big div.last {
-    padding: 20px 0 20px 150px;
+    padding: 20px 0 20px 60px;
     width: 330px;
 }
 
