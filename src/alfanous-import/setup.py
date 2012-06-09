@@ -26,7 +26,7 @@ setup(
 
 	include_package_data = True,
 
-	data_files = [ ( '.', './urls.txt' ), ( '.', './GPL.txt' ), ( '.', './config.xml' )],
+	#data_files = [ ( '.', './urls.txt' ), ( '.', './GPL.txt' ), ( '.', './config.xml' )],
 
 	zip_safe = True,
 
