@@ -1,10 +1,11 @@
 <!DOCTYPE html>
+
 <html>
+<!-- FIXME page links doesn't work properly with links of click-able tags  -->
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 
 	<title>الفانوس | محرك بحث قرآني متقدم</title>
-	
 	<meta name="description" content="الفانوس - محرك بحث متقدم في القرآن الكريم "/>
 	<meta name="keywords" content="quran, search, ayates, surates, متقدم, advanced, الفانوس ,القرآن ,فانوس ,قرآني ,احصاءات ,ألفاظ, fanous, alfanous, alfanoos, fanoos, elfanous, elfanoos, alfanouce, alfanooce, fanooce , engine, محرك ,بحث ,قرآن"/>
 	<!-- meta name="copyright" content="&copy; Alfanous Team, AGPL" -->
@@ -175,31 +176,36 @@
 				}
 				results_pages += "</div><img src='images/next.gif' alt='الصفحة التالية' title = 'الصفحة التالية' />\n</div>\n";
 			
-				// Words list
-				results += "<div id='search_words' align='right'>";
+
 				
-				results += "<h2 style='font-size:16pt; font-weight:600; color:#ff0000;'>الكلمات :";
+				if (json.words["global"].nb_words > 0)
+					{
+					// Words list
+					results += "<div id='search_words' align='right'>";
+					
+					results += "<h2 style='font-size:16pt; font-weight:600; color:#ff0000;'>الكلمات :";
 					results += "<div class='details_label word_count'> الكلمات | "+ json.words["global"].nb_words+ "</div>";
 					results += "<div class='details_label word_stat0'> مجموع المرات | "+ json.words["global"].nb_matches+ "</div>"; 
 					results += "</h2><br />";
-
+					
+					
+					for( i = 1; i <= json.words.global.nb_words; i++) {
+						results += "<p dir='rtl' style=' margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;'>";
+							results += "<div class='word_details'>";
+								results += "<span style=' font-size:14pt; color:#00aa00;'>"+ i+ ". </span>";
+								results += build_search_link(param, json.words[i].word, false) +  "<div class='details_label word_info0 clickable'> كلمة | "+ json.words[i].word+ "</div></a>";
+								results += "<div class='details_label word_stat0'> المرات | "+ json.words[i].nb_matches+ "</div>";
+								results += "<div class='details_label word_stat1'> الآيات | "+ json.words[i].nb_ayas+ "</div>";
+								results += "<div class='details_label word_vocalization_nb'> التشكيلات | "+ json.words[i].nb_vocalizations+ "</div>";
+								for( j = 0; j < json.words[i].nb_vocalizations; j++) 
+									{
+									results += build_search_link(param, "آية_:"+ json.words[i].vocalizations[j] + "", false ) + "<div class='details_label word_vocalization clickable'>"+ json.words[i].vocalizations[j]+ "</div></a>";
+									}
+								results += "</div></p>";
+							}	
+					results += "</div> ";
+					}
 				
-				for( i = 1; i <= json.words.global.nb_words; i++) {
-					results += "<p dir='rtl' style=' margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;'>";
-						results += "<div class='word_details'>";
-							results += "<span style=' font-size:14pt; color:#00aa00;'>"+ i+ ". </span>";
-							results += build_search_link(param, json.words[i].word, false) +  "<div class='details_label word_info0 clickable'> كلمة | "+ json.words[i].word+ "</div></a>";
-							results += "<div class='details_label word_stat0'> المرات | "+ json.words[i].nb_matches+ "</div>";
-							results += "<div class='details_label word_stat1'> الآيات | "+ json.words[i].nb_ayas+ "</div>";
-							results += "<div class='details_label word_vocalization_nb'> التشكيلات | "+ json.words[i].nb_vocalizations+ "</div>";
-							for( j = 0; j < json.words[i].nb_vocalizations; j++) 
-								{
-								results += build_search_link(param, "آية_:"+ json.words[i].vocalizations[j] + "", false ) + "<div class='details_label word_vocalization clickable'>"+ json.words[i].vocalizations[j]+ "</div></a>";
-								}
-							
-							results += "</div></p>";
-				}
-				results += "</div> ";
 
 				// Pages list
 				results += results_pages;
@@ -221,7 +227,7 @@
 						results += "<span id='audioplayer_"+ i+ "'>(<a href='"+ json.ayas[i].aya.recitation+ "' target='_blank'>تلاوة</a>)</span>";  
 						results += "<div class='sura_details'>";
 
-							results += build_search_link(param, "سورة:" + json.ayas[i].sura.name, true) + "<div class='details_label sura_info0 clickable filter'> سورة | "+ json.ayas[i].sura.name+ "</div></a> ";
+							results += build_search_link(param, "سورة:\"" + json.ayas[i].sura.name +"\"", true) + "<div class='details_label sura_info0 clickable filter'> سورة | "+ json.ayas[i].sura.name+ "</div></a> ";
 							results += "<div class='details_label sura_ord0'> رقم | "+ json.ayas[i].sura.id+ "</div>";
 							results += build_search_link(param, "نوع_السورة:" +  json.ayas[i].sura.type , true) + "<div class='details_label sura_info1 clickable filter'> النوع | "+ json.ayas[i].sura.type+ "</div></a>";
 							results += "<div class='details_label sura_ord1'> ترتيب النزول | "+ json.ayas[i].sura.order+ "</div></a>";
