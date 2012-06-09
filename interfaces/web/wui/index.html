@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-
 <html>
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 
 	<title>الفانوس | محرك بحث قرآني متقدم</title>
+	
 	<meta name="description" content="الفانوس - محرك بحث متقدم في القرآن الكريم "/>
 	<meta name="keywords" content="quran, search, ayates, surates, متقدم, advanced, الفانوس ,القرآن ,فانوس ,قرآني ,احصاءات ,ألفاظ, fanous, alfanous, alfanoos, fanoos, elfanous, elfanoos, alfanouce, alfanooce, fanooce , engine, محرك ,بحث ,قرآن"/>
 	<!-- meta name="copyright" content="&copy; Alfanous Team, AGPL" -->
@@ -55,11 +55,11 @@
 			$("#help_btn").click(function() {
 				$("#help").overlay().load();
 			});
-			
+			/*
 			$("#down_btn").click(function() {
 				$("#down").overlay().load();
 			});
-			
+			*/
 
 			// help links
 			$("#help table a").bind('click', function(event) {
@@ -162,6 +162,7 @@
 			if (json.interval.total) {
 
 				// Pages control
+				results_pages += "<br />";
 				results_pages += "<div class='pages'>\n<img src='images/prev.gif' alt='الصفحة السابقة' title = 'الصفحة السابقة' /><div style=' display:inline-block; position:relative; top:-8px;'>\n";
 				for( i = 1; i <= nb_pages; i++) {
 					if (i == page)
@@ -174,14 +175,11 @@
 					}
 				}
 				results_pages += "</div><img src='images/next.gif' alt='الصفحة التالية' title = 'الصفحة التالية' />\n</div>\n";
-			
-
 				
 				if (json.words["global"].nb_words > 0)
 					{
 					// Words list
 					results += "<div id='search_words' align='right'>";
-					
 					results += "<h2 style='font-size:16pt; font-weight:600; color:#ff0000;'>الكلمات :";
 					results += "<div class='details_label word_count'> الكلمات | "+ json.words["global"].nb_words+ "</div>";
 					results += "<div class='details_label word_stat0'> مجموع المرات | "+ json.words["global"].nb_matches+ "</div>"; 
@@ -260,10 +258,6 @@
 						results += build_search_link(param, "حزب:" + json.ayas[i].position.hizb, true) +"<div class='details_label aya_pos1 clickable filter'> الحزب | "+ json.ayas[i].position.hizb+ "</div></a>";
 						results += "<div class='details_label aya_pos2'> الربع | "+ (json.ayas[i].position.rubu + 1 )+ "</div>";
 						results += build_search_link(param, "صفحة:" + json.ayas[i].position.page, true) + "<div class='details_label aya_pos3 clickable filter'> الصفحة | "+ json.ayas[i].position.page+ "</div></a>";
-
-						
-						
-					
 					results += "</div><br />";
 					if (  json.ayas[i].sajda.exist == true)
 					{
@@ -453,7 +447,7 @@
 <!-- end -->
 
 
-
+<!-- all css to be collocted, this just for fast fixes -->
 <style type="text/css">
 	body {
 		background: #fff;
@@ -476,6 +470,10 @@
 	body form div div div.xdrops_continer {
 		display: inline-block;
 	}
+
+	body form div div {
+		display: inline-block;
+	}
 	
 </style>
 
@@ -483,15 +481,8 @@
 
 </head>
 <body>
-<!-- Assem -->
-<div class="ads-box" >
-	<a href="http://wiki.alfanous.org/doku.php?id=Best_technicality_award">
-		<img src='images/awa.png' class='banner' alt='Best technicality award' title='جائزة الموقع الأفضل تقنيا في الجزائر 2012'/>
-	</a>
-</div>
-<!-- -->
+
 <form id="form" name="form" method="post" action=".">
-<div align="center">
 <div>
 <div>
 <table>
@@ -631,7 +622,6 @@
 		<button type="button" class='close gray button'> إغلاق </button>	
 	<br />
 </div>
-</div>
 </form>
 
 <footer>
@@ -659,7 +649,14 @@
                     <li><a href="https://plus.google.com/111305625425237630318" target="_blank">@Google Plus</a></li> 
                     <li class="last"><a href="https://twitter.com/#!/alfanous" target="_blank">@Twitter</a></li> 
                 </ul> 
-            </div> 
+            </div>
+	<!-- Assem -->
+	<div class="awa-box" >
+		<a href="http://wiki.alfanous.org/doku.php?id=Best_technicality_award">
+			<img src='images/awa2-128.png' class='banner' alt='Best technicality award' title='جائزة الموقع الأفضل تقنيا في الجزائر 2012'/>
+		</a>
+	</div>
+	<!-- -->
             <div class="column last"> 
                 <p>
                 	<a href="http://www.gnu.org/licenses/agpl.html" target="_blank"><img src="images/agplv3-88x31.png" alt="AGPL Lisence" title="AGPL Lisence"></a>
