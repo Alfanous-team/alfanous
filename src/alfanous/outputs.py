@@ -342,6 +342,7 @@ class Raw():
 		if word_info:
 			matches = 0
 			docs = 0
+			nb_vocalizations_globale = 0
 			cpt = 1;
 			annotation_word_query = u"( 0 "
 			for term in termz :
@@ -350,10 +351,12 @@ class Raw():
 						matches += term[2]
 					docs += term[3]
 					annotation_word_query += u" OR normalized:%s " % STANDARD2UTHMANI( term[1] )
-					words_output[ cpt ] = {"word":term[1], "nb_matches":term[2], "nb_ayas":term[3], "vocalizations": vocalization_dict[term[1]]}
+					vocalizations = vocalization_dict[term[1]]
+					nb_vocalizations_globale += len( vocalizations )
+					words_output[ cpt ] = {"word":term[1], "nb_matches":term[2], "nb_ayas":term[3], "nb_vocalizations": len( vocalizations ), "vocalizations": vocalizations}
 					cpt += 1
 			annotation_word_query += u" ) "
-			words_output["global"] = {"nb_words":cpt - 1, "nb_matches":matches}
+			words_output["global"] = {"nb_words":cpt - 1, "nb_matches":matches, "nb_vocalizations": nb_vocalizations_globale}
 		output["words"] = words_output;
 
 		#Magic_loop to built queries of Adjacents,translations and annotations in the same time 
