@@ -49,8 +49,9 @@ class Raw():
 
 	DEFAULTS = {
 		    "maxrange":25,
-		    "results_limit":100,
-		    "flags":{ "action":"error",
+		    "results_limit":6236,
+		    "flags":{
+				  "action":"error",
 			      "ident":"undefined",
 			      "platform":"undefined",
 			      "domain":"undefined",
@@ -307,6 +308,7 @@ class Raw():
 		SE = self.FQSE if fuzzy else self.QSE
 		res, termz = SE.search_all( unicode( query.replace( "\\", "" ), 'utf8' ) , self._defaults["results_limit"], sortedby = sortedby )
 		terms = [term[1] for term in list( termz )] # TODO: I dont like this termz structure , must change it
+		terms_uthmani = map( STANDARD2UTHMANI, terms )
 		#pagination
 		offset = 1 if offset < 1 else offset;
 		range = self._defaults["maxrange"] if range > self._defaults["maxrange"] else range;
@@ -336,7 +338,6 @@ class Raw():
 		##########################################
 		extend_runtime = res.runtime
 		# Words & Annotations
-
 		words_output = {}
 		if word_info:
 			matches = 0
@@ -348,7 +349,7 @@ class Raw():
 					if term[2]:
 						matches += term[2]
 					docs += term[3]
-					annotation_word_query += u" OR normalised:%s " % STANDARD2UTHMANI( term[1] )
+					annotation_word_query += u" OR normalized:%s " % STANDARD2UTHMANI( term[1] )
 					words_output[ cpt ] = {"word":term[1], "nb_matches":term[2], "nb_ayas":term[3], "vocalizations": vocalization_dict[term[1]]}
 					cpt += 1
 			annotation_word_query += u" ) "
@@ -360,14 +361,15 @@ class Raw():
 			adja_query = trad_query = annotation_aya_query = u"( 0"
 
 			for r in reslist :
-				if prev_aya: adja_query += " OR gid:%s " % unicode( r["gid"] - 1 )
-				if next_aya: adja_query += " OR gid:%s " % unicode( r["gid"] + 1 )
-				if translation: trad_query += " OR gid:%s " % unicode( r["gid"] )
-				if annotation_aya: annotation_aya_query += " OR ( aya_id:%s  AND  sura_id:%d ) " % ( unicode( r["aya_id"] ), unicode( r["sura_id"] ) )
+				if prev_aya: adja_query += u" OR gid:%s " % unicode( r["gid"] - 1 )
+				if next_aya: adja_query += u" OR gid:%s " % unicode( r["gid"] + 1 )
+				if translation: trad_query += u" OR gid:%s " % unicode( r["gid"] )
+				if annotation_aya: annotation_aya_query += u" OR  ( aya_id:%s AND  sura_id:%s ) " % ( unicode( r["aya_id"] ) , unicode( r["sura_id"] ) )
 
-			adja_query += " )"
-			trad_query += " )" + u" AND id:%s " % unicode( translation )
-			annotation_aya_query += " )"
+			adja_query += u" )"
+			trad_query += u" )" + u" AND id:%s " % unicode( translation )
+			annotation_aya_query += u" )"
+
 
 		# Adjacents 
 		if prev_aya or next_aya:
@@ -387,14 +389,37 @@ class Raw():
 
 		#annotations for aya words
 		if annotation_aya or ( annotation_word and word_info ) :
-			annotation_word_query = annotation_word_query if annotation_word and word_info else "()"
-			annotation_aya_query = annotation_aya_query if annotation_aya else "()"
-			annotation_query = annotation_aya_query + " 0R " + annotation_word_query
-			#print annotation_query.encode("utf-8")
+			annotation_word_query = annotation_word_query if annotation_word and word_info else u"()"
+			annotation_aya_query = annotation_aya_query if annotation_aya else u"()"
+			annotation_query = annotation_aya_query + u" OR  " + annotation_word_query
+			#print annotation_query.encode( "utf-8" )
 			annot_res = self.WSE.find_extended( annotation_query, "gid" )
 			extend_runtime += annot_res.runtime
-			## TODO:prepare annotations for use 
+			## prepare annotations for use 
+			annotations_by_word = {}
+			annotations_by_position = {}
+			for annot in annot_res:
+				if ( annotation_word and word_info ) :
+					if annot["normalized"] in terms_uthmani:
+						if annotations_by_word.has_key( annot["normalized"] ):
+							annotations_by_word[annot["normalized"]][annot["word"]] = annot;
+						else:
+							annotations_by_word[annot["normalized"]] = { annot["word"]: annot}
+				if annotation_aya:
+					if annotations_by_position.has_key( ( annot["sura_id"], annot["aya_id"] ) ):
+						annotations_by_position[( annot["sura_id"], annot["aya_id"] )][annot["word_id"]] = annot
+					else:
+						annotations_by_position[( annot["sura_id"], annot["aya_id"] )] = { annot["word_id"]: annot }
 
+		## merge word annotations to word output
+		if ( annotation_word and word_info ):
+			for cpt in xrange( 1, len( termz ) + 1 ):
+				current_word = STANDARD2UTHMANI( output["words"][cpt]["word"] )
+				#print current_word.encode( "utf-8" ), "=>", annotations_by_word, "=>", list( annot_res )
+				if current_word in terms_uthmani:
+					current_word_annotations = annotations_by_word[ current_word ]
+					output["words"][cpt]["annotations"] = current_word_annotations
+					output["words"][cpt]["nb_annotations"] = len ( current_word_annotations )
 
 		output["runtime"] = extend_runtime
 		output["interval"] = {"start":start + 1, "end":end, "total":len( res )}
@@ -450,9 +475,6 @@ class Raw():
 
 		    		},
 
-
-
-
 		                "position": {} if not aya_position_info
 		                else {
 		                	"manzil":r["manzil"],
@@ -481,7 +503,10 @@ class Raw():
 		    				"exist":( r["sajda"] == u"نعم" ),
 		    				"type": r["sajda_type"]  if ( r["sajda"] == u"نعم" ) else None,
 		    				"id":N( r["sajda_id"] ) if ( r["sajda"] == u"نعم" ) else None,
-		    			}
+		    			},
+
+				"annotations": {} if not annotation_aya
+							else annotations_by_position[( r["sura_id"], r["aya_id"] )]
 		    		}
 
 		return {"search": output}
@@ -492,10 +517,6 @@ class Json( Raw ):
 	""" JSON output format """
 	def do( self, flags ):
 		return json.dumps( self._do( flags ) )
-
-
-
-
 
 
 class Xml( Raw ):
