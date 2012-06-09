@@ -315,7 +315,8 @@
 				$(".pages a").one('click', function(event) {
 					var param2 = param;
 					param2.page = $(this).text();
-				
+					param2.search = $("#search_box").val();
+					
 					// Mouad
 					redirect_to_params ( param2 );
 					// search_for ( param2 );
@@ -328,7 +329,7 @@
 					var param2 = param;
 					if (param2.page > 1) {
 						param2.page = parseInt ( param2.page ) - 1;
-					
+						param2.search = $("#search_box").val();
 						// Mouad
 						redirect_to_params ( param2 );
 						// search_for ( param2 );
@@ -341,7 +342,8 @@
 					var param2 = param;
 					if  (param2.page < nb_pages) {
 						param2.page = parseInt ( param2.page ) + 1;
-					
+						param2.search = $("#search_box").val();
+											
 						// Mouad
 						redirect_to_params ( param2 );
 						// search_for ( param2 );
