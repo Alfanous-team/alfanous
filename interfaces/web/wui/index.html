@@ -56,11 +56,11 @@
 			$("#help_btn").click(function() {
 				$("#help").overlay().load();
 			});
-			/*
+			
 			$("#down_btn").click(function() {
 				$("#down").overlay().load();
 			});
-			*/
+			
 
 			// help links
 			$("#help table a").bind('click', function(event) {
@@ -186,6 +186,7 @@
 					results += "<h2 style='font-size:16pt; font-weight:600; color:#ff0000;'>الكلمات :";
 					results += "<div class='details_label word_count'> الكلمات | "+ json.words["global"].nb_words+ "</div>";
 					results += "<div class='details_label word_stat0'> مجموع المرات | "+ json.words["global"].nb_matches+ "</div>"; 
+					results += "<div class='details_label word_vocalization_nb'> مجموع التشكيلات | "+ json.words["global"].nb_vocalizations+ "</div>"; 
 					results += "</h2><br />";
 					
 					
