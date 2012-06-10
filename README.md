@@ -1,8 +1,7 @@
-
                           Alfanous - Quranic Search Engine API
 
   What is it?
-  -----------
+  ===========
   Alfanous is a Quranic search engine offers simple and advanced
   search services in the whole information that Holy Qur’an contains.
   it is based on the modern approach of information retrieval to get 
@@ -15,29 +14,29 @@
   different systems, ex: Desktop GUI
 
   The Latest Version
-  ------------------
+  ==================
 
   0.4
   
 
   Documentation
-  -------------
+  =============
 
   ...
 
   Installation
-  ------------
+  ============
 
   Please see the file called INSTALL. 
 
   Licensing
-  ---------
+  =========
 
   Please see the file called LICENSE.
 
   
   Contacts
-  --------
+  ========
 
 
      o If you have a concrete bug report for Alfanous please go to the
