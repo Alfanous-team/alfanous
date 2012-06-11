@@ -8,6 +8,7 @@
 ##  TODO: Check installation scripts
 
 
+
 VERSION="0.5.0"
 
 API_PATH="./src/"
@@ -29,7 +30,7 @@ PREFIX?=/usr
 CONFIG_INSTALL_PATH="$(DESTDIR)$(PREFIX)/share/alfanous-config/"
 INDEX_INSTALL_PATH="$(DESTDIR)$(PREFIX)/share/alfanous-indexes/"
 WEB_INSTALL_PATH=$(DESTDIR)/var/www/alfanous-web/
-WEB_CGI_INSTALL_PATH=$(WEB_INSTALL_PATH)cgi
+WEB_CGI_INSTALL_PATH=$(WEB_INSTALL_PATH)cgi/
 
 
 default: 
@@ -102,7 +103,7 @@ transfer_word_props:
 transfer_derivations:
 	export PYTHONPATH=$(API_PATH) ;	python $(QIMPORT) -t derivations $(DB_PATH)main.db $(DYNAMIC_RESOURCES_PATH)
 
-transfer_derivations:
+transfer_vocalizations:
 	export PYTHONPATH=$(API_PATH) ;	python $(QIMPORT) -t vocalizations $(DB_PATH)main.db $(DYNAMIC_RESOURCES_PATH)
 
 transfer_ara2eng_names:
@@ -316,43 +317,42 @@ install_desktop: install_config install_index  install_api qt_all  local_mo_down
 	
 ##  don't use it!!
 install_json: #install_api #install_index 
-	cd $(API_PATH)alfanous-cgi ;  mkdir -p $(WEB_CGI_INSTALL_PATH); cp  -r alfanous-json.py $(WEB_CGI_INSTALL_PATH);
+	cd $(API_PATH)alfanous-cgi ;  mkdir -p $(WEB_CGI_INSTALL_PATH); cp  -r alfanous_json.py $(WEB_CGI_INSTALL_PATH);
 	#cd ./interfaces/web/ ;  cp  htaccess $(WEB_INSTALL_PATH)".htaccess"
-	cd ./interfaces/web/ ;  vi alfanous ; cp alfanous /etc/apache2/sites-available/ #configure well this file 
-	chmod 755 -R $(WEB_CGI_INSTALL_PATH)
-	chmod +x $(WEB_INSTALL_PATH)cgi/alfanous_json.py
-
-	a2dissite alfanous
-	a2ensite alfanous
-	service apache2 reload
-	echo "127.0.0.1 alfanous.local" >> /etc/hosts ## must check existance first!!
-	xdg-open http://alfanous.local/ &  ##launch default browser for test
+	#cd ./interfaces/web/ ;  vi alfanous ; cp alfanous /etc/apache2/sites-available/ #configure well this file 
+	#chmod 755 -R $(WEB_CGI_INSTALL_PATH)
+	chmod +x $(WEB_CGI_INSTALL_PATH)alfanous_json.py
+	#a2dissite alfanous
+	#a2ensite alfanous
+	#service apache2 reload
+	#echo "127.0.0.1 alfanous.local" >> /etc/hosts ## must check existance first!!
+	#xdg-open http://alfanous.local/cgi-bin/alfanous_json.py &  ##launch default browser for test
 
 ##  don't use it!!
-install_json2: install_api install_index install_config 
+install_json2: install_api #install_index install_config 
 	cd $(API_PATH)alfanous-cgi ;  mkdir -p $(WEB_CGI_INSTALL_PATH); cp  -r alfanous_json2.py $(WEB_CGI_INSTALL_PATH);
 	#cd ./interfaces/web/ ;  cp  htaccess $(WEB_INSTALL_PATH)".htaccess"
-	cd ./interfaces/web/ ;  vi alfanous ; cp alfanous /etc/apache2/sites-available/ #configure well this file 
-	chmod 755 -R $(WEB_INSTALL_PATH)
-	chmod +x $(WEB_INSTALL_PATH)cgi/alfanous_json2.py 
-	sed -i 's/\"cgitb.enable\(\)\"/cgitb.enable\(\)/g' "$(WEB_INSTALL_PATH)cgi/alfanous_json2.py"
-	sed -i 's/\.\/indexes/\/usr\/share\/alfanous\-indexes/g' "$(WEB_INSTALL_PATH)cgi/alfanous_json2.py"	
-	sed -i 's/\.\/configs/\/usr\/share\/alfanous\-config/g' "$(WEB_INSTALL_PATH)cgi/alfanous_json2.py"	
+	#cd ./interfaces/web/ ;  vi alfanous ; cp alfanous /etc/apache2/sites-available/ #configure well this file 
 
-	cd $(WEB_INSTALL_PATH); mv -f \ cgi cgi;  cd wui; sed -i 's/www\.alfanous\.org\/json/alfanous\.local\/cgi\-bin\/alfanous\_json\.py/g' index.*   
-	a2dissite alfanous
-	a2ensite alfanous
-	service apache2 reload
-	echo "127.0.0.1 alfanous.local" >> /etc/hosts ## must check existance first!!
-	xdg-open http://alfanous.local/ &  ##launch default browser for test
+	chmod +x $(WEB_CGI_INSTALL_PATH)alfanous_json2.py 
+	sed -i 's/\"cgitb.enable\(\)\"/cgitb.enable\(\)/g' "$(WEB_CGI_INSTALL_PATH)alfanous_json2.py"
+	sed -i 's/\.\/indexes/\/usr\/share\/alfanous\-indexes/g' "$(WEB_CGI_INSTALL_PATH)alfanous_json2.py"	
+	sed -i 's/\.\/configs/\/usr\/share\/alfanous\-config/g' "$(WEB_CGI_INSTALL_PATH)alfanous_json2.py"	
+   
+	#a2dissite alfanous
+	#a2ensite alfanous
+	#service apache2 reload
+	#echo "127.0.0.1 alfanous.local" >> /etc/hosts ## must check existance first!!
+	#xdg-open http://alfanous.local/ &  ##launch default browser for test
 
 ##  don't use it!!
 install_wui: #install_json
-	rm -r  $(WEB_INSTALL_PATH)
+	#rm -r  $(WEB_INSTALL_PATH)
 	mkdir -p $(WEB_INSTALL_PATH)
-	cd ./interfaces/web/ ;  cp ./AGPL $(WEB_INSTALL_PATH)
+	#cd ./interfaces/web/ ;  cp ./AGPL $(WEB_INSTALL_PATH)
 	cd ./interfaces/web/ ;  cp  -r wui  $(WEB_INSTALL_PATH) 
-	cd ./interfaces/web/ ;  vi alfanous ; cp alfanous /etc/apache2/sites-available/ #configure well this file 
-	chmod 755 -R $(WEB_INSTALL_PATH)
-	echo "127.0.0.1 alfanous.local" >> /etc/hosts ## must check existance first!!
-	xdg-open http://alfanous.local/ &  ##launch default browser for test
+	#cd ./interfaces/web/ ;  vi alfanous ; cp alfanous /etc/apache2/sites-available/ #configure well this file 
+	#chmod 755 -R $(WEB_INSTALL_PATH)
+	cd $(WEB_INSTALL_PATH);  cd wui; sed -i 's/www\.alfanous\.org\/json/alfanous\.local\/cgi\-bin\/alfanous\_json\.py/g' index.*
+	#echo "127.0.0.1 alfanous.local" >> /etc/hosts ## must check existance first!!
+	#xdg-open http://alfanous.local/ &  ##launch default browser for test
