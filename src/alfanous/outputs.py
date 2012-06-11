@@ -419,7 +419,7 @@ class Raw():
 			for cpt in xrange( 1, len( termz ) + 1 ):
 				current_word = STANDARD2UTHMANI( output["words"][cpt]["word"] )
 				#print current_word.encode( "utf-8" ), "=>", annotations_by_word, "=>", list( annot_res )
-				if current_word in terms_uthmani:
+				if annotations_by_word.has_key( current_word ):
 					current_word_annotations = annotations_by_word[ current_word ]
 					output["words"][cpt]["annotations"] = current_word_annotations
 					output["words"][cpt]["nb_annotations"] = len ( current_word_annotations )
@@ -508,7 +508,7 @@ class Raw():
 		    				"id":N( r["sajda_id"] ) if ( r["sajda"] == u"نعم" ) else None,
 		    			},
 
-				"annotations": {} if not annotation_aya
+				"annotations": {} if not annotation_aya or not annotations_by_position.has_key( ( r["sura_id"], r["aya_id"] ) )
 							else annotations_by_position[( r["sura_id"], r["aya_id"] )]
 		    		}
 
