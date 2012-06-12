@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html>
 <head>
+	<!-- TODO FIXME fix click-able bugs, eliminate the last vocalization of aya words and activate partial vocalization search  , eliminate Kasheeda in Godnames , fix g_a=0 clickable bug , fix sura_name phrase search possiblity -->
+	<!-- TODO clickable-floating-panel with options and user feedback!  -->
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 
 	<title>الفانوس | محرك بحث قرآني متقدم</title>
@@ -237,7 +239,25 @@
 						results += "</span></legend>";
 					results += "<br><p align='center' style=' margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;'>";
 						results += "<span style='font-family:\"ArabeyesQr\", Scheherazade; line-height: 180%; font-size:22px; color:#7b563a;'><br>[ ";
-						results += "<span style='font-family:\"me_quran\", Scheherazade; font-size:22px;'>"+ json.ayas[i].aya.text+ "</span> ";
+						results += "<span style='font-family:\"me_quran\", Scheherazade; font-size:22px;'>"
+						
+						
+						aya_words = json.ayas[i].aya.text.split(" ");
+						
+						for (var j=0; j < aya_words.length ; j++ )
+						{
+							// TODO optimize this condition , any "in" operation?
+							if ( aya_words[j][0] == "<" || aya_words[j][0] == "c" || aya_words[j][0] == "t" || aya_words[j][0] == ">")
+								{
+								results += aya_words[j] + " "
+								}
+							else 
+								{
+								results += build_search_link(param,"آية_:" + aya_words[j] ,false ) + aya_words[j] + "<a />" + " " ;
+								
+								}
+						}
+						results += "</span> ";
 						results += " <span>("+ build_search_link(param,"رقم_الآية:" + json.ayas[i].aya.id ,false ) +   json.ayas[i].aya.id + "</a>)</span> ";
 						results += "] <br></span></p><br />";
 					results += "<p dir='ltr' align='center' style=' margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;'>";
