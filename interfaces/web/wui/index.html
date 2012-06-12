@@ -238,7 +238,7 @@
 					results += "<br><p align='center' style=' margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;'>";
 						results += "<span style='font-family:\"ArabeyesQr\", Scheherazade; line-height: 180%; font-size:22px; color:#7b563a;'><br>[ ";
 						results += "<span style='font-family:\"me_quran\", Scheherazade; font-size:22px;'>"+ json.ayas[i].aya.text+ "</span> ";
-						results += " <span>("+ json.ayas[i].aya.id+ ")</span> ";
+						results += " <span>("+ build_search_link(param,"رقم_الآية:" + json.ayas[i].aya.id ,false ) +   json.ayas[i].aya.id + "</a>)</span> ";
 						results += "] <br></span></p><br />";
 					results += "<p dir='ltr' align='center' style=' margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;'>";
 						results += "<span style='font-family: \"Droid Sans\", Tahoma, \"Bitstream Vera Sans\", \"DejaVu Sans\", Verdana, Geneva, Arial, Sans-serif; line-height: 150%;'>"+ json.ayas[i].aya.traduction+ "</span></p>";
@@ -261,11 +261,11 @@
 					results += "</div><br />";
 					if (  json.ayas[i].sajda.exist == true)
 					{
-						results += "<div>";
+						results += "<br /><div>";
 						results += build_search_link(param,"سجدة:نعم",false) + "<div class='details_label aya_sajda_exist clickable'> سجدة  " + "</div></a>";
 						results += "<div class='details_label aya_sajda_id'> رقم | "+ json.ayas[i].sajda.id + "</div>";
 						results += "<div class='details_label aya_sajda_type'> نوع | "+ json.ayas[i].sajda.type + "</div>";
-						results += "</div>"
+						results += "</div><br />"
 					};
 					
 					results += "<br /></p></fieldset><br /><br />";
@@ -557,8 +557,10 @@
 <br />
 <!--<div id="down_btn"><a rel='#down' class='xbutton gray' >تحميل</a></div>-->
 <div id="help_btn"><a class='xbutton gray' >مساعدة</a></div>
-<div id="vote_btn"><a class='xbutton gray' href="https://www.surveymonkey.com/s/P3LGJ8K" target="_blank"><i>News 22-04-2012:</i> Please help us to make <b>Alfanous</b> better, by taking this survey!</a></div>
-<br /><br />
+<div id="vote_btn"><a class='xbutton gray' href="http://www.surveymonkey.com/s/NTFPFTF" target="_blank"><i>ملاحظة 12-06-2012:</i> الرجاء المساهمة معنا في الرقي بمشروع  <b>الفانوس</b>, بإكمال هذا الاستبيان</a></div>
+<br /><br /> 
+<!--  <div id="vote_btn"><a class='xbutton gray' href="https://www.surveymonkey.com/s/P3LGJ8K" target="_blank"><i>News 22-04-2012:</i> Please help us to make <b>Alfanous</b> better, by taking this survey!</a></div>
+<br /><br /> -->
 
 <!--abdellah-->
 <div id="search_result" style="direction:rtl; width:800px"></div>
