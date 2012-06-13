@@ -21,8 +21,9 @@ Created on 24 févr. 2010
 @contact: assem.ch [at] gmail.com
 @license: AGPL
 
-TODO  get default values from Alfanous.output
-TODO  show RAW|JSON
+TODO  show RAW|JSON | BEST-presentation format
+TODO how to configure setup.py to install alfanous-console
+TODO how to run this as a linux service, as a windows service, as a mac service
 
 '''
 
@@ -33,7 +34,6 @@ from alfanous.outputs import Raw
 RAWoutput = Raw( QSE_index = "../../indexes/main/", TSE_index = "../../indexes/extend/", WSE_index = "../../indexes/word/", Recitations_list_file = "../../resources/configs/recitations.js", Translations_list_file = "../../resources/configs/translations.js", Information_file = "../../resources/configs/information.js", Hints_file = "../../resources/configs/hints.js", Stats_file = "../../resources/configs/stats.js" )
 
 INFORMATION = RAWoutput.do( {"action":"show", "query":"information" } )["show"]["information"]
-DEFAULTS = RAWoutput.do( {"action":"show", "query":"defaults" } )["show"]["defaults"]
 DOMAINS = RAWoutput.do( {"action":"show", "query":"domains" } )["show"]["domains"]
 HELPMESSAGES = RAWoutput.do( {"action":"show", "query":"help_messages" } )["show"]["help_messages"]
 
@@ -46,19 +46,19 @@ def DEFREEZE_XRANGE( d ):
 
 
 arg_parser = ArgumentParser( 
-                              description = ' Alfanous - advanced search engine in  Holy Quran',
+                              description = INFORMATION["description"],
                               prog = 'alfanous-console',
                               version = '%(prog)s ' + INFORMATION["version"],
                               usage = sys.argv[0] + " [flags]"
                             )
 
 # add arguments
-arg_parser.add_argument( "-a", "--action", dest = "action", type = str , choices = DOMAINS["action"], default = "search", help = HELPMESSAGES["action"] )
+arg_parser.add_argument( "-a", "--action", dest = "action", type = str , choices = DOMAINS["action"], help = HELPMESSAGES["action"] )
 arg_parser.add_argument( "-q", "--query", dest = "query", type = str  , help = HELPMESSAGES["query"] )
 arg_parser.add_argument( "-o", "--offset", dest = "offset", type = int, choices = DOMAINS["offset"], help = HELPMESSAGES["offset"] )
 arg_parser.add_argument( "-r", "--range", dest = "range", type = int, choices = DOMAINS["range"], help = HELPMESSAGES["range"] )
 arg_parser.add_argument( "-s", "--sortedby", dest = "sortedby", type = str, choices = DOMAINS["sortedby"], help = HELPMESSAGES["sortedby"] )
-arg_parser.add_argument( "--page", dest = "page", type = int, default = 1, choices = DOMAINS["page"], help = HELPMESSAGES["page"] )
+arg_parser.add_argument( "--page", dest = "page", type = int, choices = DOMAINS["page"], help = HELPMESSAGES["page"] )
 arg_parser.add_argument( "--perpage", dest = "perpage", type = int, choices = DOMAINS["perpage"], help = HELPMESSAGES["perpage"] )
 arg_parser.add_argument( "--recitation", dest = "recitation", type = str, choices = DOMAINS["recitation"], help = HELPMESSAGES["recitation"] )
 arg_parser.add_argument( "--translation", dest = "translation", type = str, choices = DOMAINS["translation"], help = HELPMESSAGES["translation"] )
@@ -76,7 +76,7 @@ arg_parser.add_argument( "--aya_sajda_info", dest = "aya_sajda_info", type = boo
 arg_parser.add_argument( "--annotation_aya", dest = "annotation_aya", type = bool, choices = DOMAINS["annotation_aya"], help = HELPMESSAGES["annotation_aya"] )
 arg_parser.add_argument( "--annotation_word", dest = "annotation_word", type = bool, choices = DOMAINS["annotation_word"], help = HELPMESSAGES["annotation_word"] )
 arg_parser.add_argument( "--fuzzy", dest = "fuzzy", type = bool, choices = DOMAINS["fuzzy"], help = HELPMESSAGES["fuzzy"] )
-arg_parser.add_argument( "--ident", dest = "ident", type = str , default = "unknown" , help = HELPMESSAGES["ident"] )
+arg_parser.add_argument( "--ident", dest = "ident", type = str  , help = HELPMESSAGES["ident"] )
 arg_parser.add_argument( "--platform", dest = "platform", type = str, choices = DOMAINS["platform"], help = HELPMESSAGES["platform"] )
 arg_parser.add_argument( "--domain", dest = "domain", type = str, help = HELPMESSAGES["domain"] )
 #execute command
