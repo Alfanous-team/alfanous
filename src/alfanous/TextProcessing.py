@@ -234,6 +234,7 @@ class unicode_( unicode ):
 
 #analyzers    
 QStandardAnalyzer = QSpaceTokenizer() | QArabicSymbolsFilter() #| QStopFilter() 
+APermissibleAnalyzer = QSpaceTokenizer() | QArabicSymbolsFilter( shaping = True, tashkil = True, spellerrors = True, hamza = True )
 QDiacAnalyzer = QSpaceTokenizer() | QArabicSymbolsFilter( tashkil = False )
 QHighLightAnalyzer = QSpaceTokenizer() | QArabicSymbolsFilter()
 QUthmaniAnalyzer = QSpaceTokenizer() | QArabicSymbolsFilter()
