@@ -5,6 +5,7 @@
 Alfanous Setup Script
 
 """
+import glob
 
 try:
 	from setuptools import setup#,find_packages
@@ -40,7 +41,14 @@ setup(
 
 	include_package_data = True,
 
-	#data_files=[ ('indexes/main',glob.glob('indexes/main/*')),('indexes/extend',glob.glob('indexes/extend/*'))],#,('indexes/extend',glob.glob('indexes/extend/*'))
+	data_files = [
+				 ( 'indexes/main', glob.glob( '../../indexes/main/*' ) ),
+				 ( 'indexes/extend', glob.glob( '../../indexes/extend/*' ) ),
+				 ( 'indexes/word', glob.glob( '../../indexes/word/*' ) ),
+				 ( 'resources/configs', glob.glob( '../../resources/configs/*' ) )
+				 ] ,
+
+	entry_points = { 'console_scripts': ['alfanous-console = alfanous.console:main', ]},
 
 	zip_safe = True,
 

@@ -21,17 +21,14 @@ Created on 24 févr. 2010
 @contact: assem.ch [at] gmail.com
 @license: AGPL
 
-TODO  show RAW|JSON | BEST-presentation format
-TODO how to configure setup.py to install alfanous-console
-TODO how to run this as a linux service, as a windows service, as a mac service
-
+TODO show RAW|JSON | BEST-presentation format
 '''
 
 import sys, json
 from argparse import ArgumentParser
 from alfanous.outputs import Raw
 
-RAWoutput = Raw( QSE_index = "../../indexes/main/", TSE_index = "../../indexes/extend/", WSE_index = "../../indexes/word/", Recitations_list_file = "../../resources/configs/recitations.js", Translations_list_file = "../../resources/configs/translations.js", Information_file = "../../resources/configs/information.js", Hints_file = "../../resources/configs/hints.js", Stats_file = "../../resources/configs/stats.js" )
+RAWoutput = Raw( QSE_index = "./indexes/main/", TSE_index = "./indexes/extend/", WSE_index = "./indexes/word/", Recitations_list_file = "./resources/configs/recitations.js", Translations_list_file = "./resources/configs/translations.js", Information_file = "./resources/configs/information.js", Hints_file = "./resources/configs/hints.js", Stats_file = "./resources/configs/stats.js" )
 
 INFORMATION = RAWoutput.do( {"action":"show", "query":"information" } )["show"]["information"]
 DOMAINS = RAWoutput.do( {"action":"show", "query":"domains" } )["show"]["domains"]
@@ -79,42 +76,45 @@ arg_parser.add_argument( "--fuzzy", dest = "fuzzy", type = bool, choices = DOMAI
 arg_parser.add_argument( "--ident", dest = "ident", type = str  , help = HELPMESSAGES["ident"] )
 arg_parser.add_argument( "--platform", dest = "platform", type = str, choices = DOMAINS["platform"], help = HELPMESSAGES["platform"] )
 arg_parser.add_argument( "--domain", dest = "domain", type = str, help = HELPMESSAGES["domain"] )
+
+
+
+
 #execute command
-args = arg_parser.parse_args()
+def main():
+    args = arg_parser.parse_args()
+    if args.action and args.query:
+        flags = {}
+        if args.action: flags["action"] = args.action
+        if args.query: flags["query"] = args.query
+        if args.ident: flags["ident"] = args.ident
+        if args.platform: flags["platform"] = args.platform
+        if args.domain: flags["domain"] = args.domain
+        if args.sortedby: flags["sortedby"] = args.sortedby
+        if args.page: flags["page"] = args.page
+        if args.perpage: flags["perpage"] = args.perpage
+        if args.offset: flags["offset"] = args.offset
+        if args.range:  flags["range"] = args.range
+        if args.recitation: flags["recitation"] = args.recitation
+        if args.translation: flags["translation"] = args.translation
+        if args.highlight: flags["highlight"] = args.highlight
+        if args.script: flags["script"] = args.script
+        if args.vocalized: flags["vocalized"] = TRUE_FALSE( args.vocalized )
+        if args.prev_aya: flags["prev_aya"] = TRUE_FALSE( args.prev_aya )
+        if args.next_aya: flags["next_aya"] = TRUE_FALSE( args.next_aya )
+        if args.sura_info: flags["sura_info"] = TRUE_FALSE( args.sura_info )
+        if args.word_info: flags["word_info"] = TRUE_FALSE( args.word_info )
+        if args.aya_position_info: flags["aya_position_info"] = TRUE_FALSE( args.aya_position_info )
+        if args.aya_theme_info: flags["aya_theme_info"] = TRUE_FALSE( args.aya_theme_info )
+        if args.aya_stat_info: flags["aya_stat_info"] = TRUE_FALSE( args.aya_stat_info )
+        if args.aya_sajda_info: flags["aya_sajda_info"] = TRUE_FALSE( args.aya_sajda_info )
+        if args.annotation_aya: flags["annotation_aya"] = TRUE_FALSE( args.annotation_aya )
+        if args.annotation_word: flags["annotation_word"] = TRUE_FALSE( args.annotation_word )
+        if args.fuzzy: flags["fuzzy"] = TRUE_FALSE( args.fuzzy )
 
-
-if args.action and args.query:
-    flags = {}
-    if args.action: flags["action"] = args.action
-    if args.query: flags["query"] = args.query
-    if args.ident: flags["ident"] = args.ident
-    if args.platform: flags["platform"] = args.platform
-    if args.domain: flags["domain"] = args.domain
-    if args.sortedby: flags["sortedby"] = args.sortedby
-    if args.page: flags["page"] = args.page
-    if args.perpage: flags["perpage"] = args.perpage
-    if args.offset: flags["offset"] = args.offset
-    if args.range:  flags["range"] = args.range
-    if args.recitation: flags["recitation"] = args.recitation
-    if args.translation: flags["translation"] = args.translation
-    if args.highlight: flags["highlight"] = args.highlight
-    if args.script: flags["script"] = args.script
-    if args.vocalized: flags["vocalized"] = TRUE_FALSE( args.vocalized )
-    if args.prev_aya: flags["prev_aya"] = TRUE_FALSE( args.prev_aya )
-    if args.next_aya: flags["next_aya"] = TRUE_FALSE( args.next_aya )
-    if args.sura_info: flags["sura_info"] = TRUE_FALSE( args.sura_info )
-    if args.word_info: flags["word_info"] = TRUE_FALSE( args.word_info )
-    if args.aya_position_info: flags["aya_position_info"] = TRUE_FALSE( args.aya_position_info )
-    if args.aya_theme_info: flags["aya_theme_info"] = TRUE_FALSE( args.aya_theme_info )
-    if args.aya_stat_info: flags["aya_stat_info"] = TRUE_FALSE( args.aya_stat_info )
-    if args.aya_sajda_info: flags["aya_sajda_info"] = TRUE_FALSE( args.aya_sajda_info )
-    if args.annotation_aya: flags["annotation_aya"] = TRUE_FALSE( args.annotation_aya )
-    if args.annotation_word: flags["annotation_word"] = TRUE_FALSE( args.annotation_word )
-    if args.fuzzy: flags["fuzzy"] = TRUE_FALSE( args.fuzzy )
-
-    print json.dumps( RAWoutput.do( flags ) )
-else:
-    print RAWoutput._information["console_note"]
+        print json.dumps( RAWoutput.do( flags ) )
+    else:
+        print RAWoutput._information["console_note"]
 
 
 
