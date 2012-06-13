@@ -1,6 +1,6 @@
 # -*- coding=utf-8 -*-
 
-import re, string, sys
+import re
 from arabic_const import *
 
 

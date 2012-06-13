@@ -140,7 +140,7 @@ class QseDocIndex( BasicDocIndex ):
         if self.OK:
             nb = len( self )
             if nb != 6236 :
-                raise Ta7rif( "number of ayas wrong", value = nb, original = 6236, msg = "you must update your index" )
+                raise Ta7rif( "Ayas count is not exact", value = nb, original = 6236, msg = "you must update your indexes" )
         return nb
 
 
