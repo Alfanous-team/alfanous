@@ -16,8 +16,12 @@
 ##     You should have received a copy of the GNU Affero General Public License
 ##     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+
 """
+TODO add to SHOW: TYPES, HELPMSGS,
 TODO offer some linguistic operations like vocalize,derive using  Quranic Corpus  / functions
+FIXME use xranges in domains
+
 """
 
 
@@ -117,6 +121,36 @@ class Raw():
 		}
 
 
+	HELPMESSAGES = {
+			      "action": "action to do",
+			      "ident":"identifier of requester",
+			      "platform":"platform used by requester",
+			      "domain":"web domain of requester if applicable",
+			      "query": "query attached to action",
+			      "highlight": "highlight method",
+			      "script": "script of aya text",
+			      "vocalized": "enable vocalization of aya text",
+			      "recitation": "recitation id",
+			      "translation": "translation id",
+			      "prev_aya": "enable previous aya retrieving",
+			      "next_aya": "enable next aya retrieving",
+			      "sura_info": "enable sura information retrieving",
+			      "word_info": "enable word information retrieving",
+			      "aya_position_info":	"enable aya position information retrieving",
+			      "aya_theme_info":	"enable aya theme information retrieving",
+			      "aya_stat_info":	"enable aya stat information retrieving",
+			      "aya_sajda_info":	"enable aya sajda information retrieving",
+			      "annotation_word": "enable query terms annotations retrieving",
+			      "annotation_aya": "enable aya words annotations retrieving",
+			      "sortedby": "sorting order of results",
+			      "offset": "starting offset of results",
+			      "range": "range of results",
+			      "page":"page number  [override offset]",
+			      "perpage":"results per page  [override range]",
+			      "fuzzy":"fuzzy search [exprimental]",
+		}
+
+
 	IDS = {"ALFANOUS_WUI_2342R52"}
 
 
@@ -151,7 +185,6 @@ class Raw():
 		self.Stats_file = Stats_file
 
 		##
-
 		self._surates = [item for item in self.QSE.list_values( "sura" ) if item]
 		self._chapters = [item for item in self.QSE.list_values( "chapter" ) if item]
 		self._defaults = self.DEFAULTS
@@ -160,6 +193,7 @@ class Raw():
 		self._fields_reverse = dict( ( v, k ) for k, v in Fields.iteritems() )
 		self._errors = self.ERRORS
 		self._domains = self.DOMAINS
+		self._helpmessages = self.HELPMESSAGES
 		self._ids = self.IDS # dont send it to output , it's private
 		self._all = {
 			  "translations":self._translations,
@@ -174,6 +208,7 @@ class Raw():
 			  "fields_reverse":self._fields_reverse,
 			  "errors":self._errors,
 			  "domains":FREEZE_XRANGE( self._domains ),
+			  "help_messages": self._helpmessages
 			  }
 
 
