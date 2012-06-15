@@ -31,7 +31,20 @@ from alfanous.dynamic_resources.arabicnames_dyn import ara2eng_names as Fields
 from alfanous.dynamic_resources.std2uth_dyn import std2uth_words
 from alfanous.dynamic_resources.vocalizations_dyn import vocalization_dict
 from alfanous.TextProcessing import QArabicSymbolsFilter
-import json, re
+import json, re, os
+
+# default paths
+ROOT = os.path.dirname( __file__ ) + "/"
+ROOT_INDEX = ROOT + "indexes/"
+ROOT_CONFIG = ROOT + "configs/"
+QSE_INDEX = ROOT_INDEX + "main/"
+TSE_INDEX = ROOT_INDEX + "extend/"
+WSE_INDEX = ROOT_INDEX + "word/"
+RECITATIONS_LIST_FILE = ROOT_CONFIG + "recitations.js"
+TRANSLATIONS_LIST_FILE = ROOT_CONFIG + "translations.js"
+INFORMATION_FILE = ROOT_CONFIG + "information.js"
+HINTS_FILE = ROOT_CONFIG + "hints.js"
+STATS_FILE = "./stats.js"
 
 STANDARD2UTHMANI = lambda x: std2uth_words[x] if std2uth_words.has_key( x ) else x;
 def FREEZE_XRANGE( d ):
@@ -122,7 +135,7 @@ class Raw():
 
 
 	HELPMESSAGES = {
-			      "action": "action to do",
+			      "action": "action to perform",
 			      "ident":"identifier of requester",
 			      "platform":"platform used by requester",
 			      "domain":"web domain of requester if applicable",
@@ -154,7 +167,15 @@ class Raw():
 	IDS = {"ALFANOUS_WUI_2342R52"}
 
 
-	def __init__( self, QSE_index = "../../indexes/main/", TSE_index = "../../indexes/extend/", WSE_index = "../../indexes/word/" , Recitations_list_file = "../../resources/configs/recitations.js", Translations_list_file = "../../resources/configs/translations.js", Information_file = "../../resources/configs/information.js", Hints_file = "../../resourcs/configs/hints.js", Stats_file = "../../resources/configs/stats.js" ):
+	def __init__( self,
+					QSE_index = QSE_INDEX,
+					TSE_index = TSE_INDEX,
+					WSE_index = WSE_INDEX,
+					Recitations_list_file = RECITATIONS_LIST_FILE,
+					Translations_list_file = TRANSLATIONS_LIST_FILE,
+					Information_file = INFORMATION_FILE,
+					Hints_file = HINTS_FILE,
+					Stats_file = STATS_FILE ):
 		"""
 		Init the search engines
 
@@ -179,7 +200,7 @@ class Raw():
 		f = open( Hints_file )
 		self._hints = json.loads( f.read() ) if f else {}
 		##
-		f = open( Stats_file )
+		f = None #open( Stats_file ) #FIXME test existence before open ,else create it
 		self._stats = json.loads( f.read() ) if f else {}
 		self._init_stats()
 		self.Stats_file = Stats_file
@@ -291,8 +312,8 @@ class Raw():
 						stats[ident][action]["other"]["total"] += 1
 			else: stats[ident]["other"]["total"] += 1
 		self._stats = stats
-		f = open( self.Stats_file, "w" )
-		f.write( json.dumps( self._stats ) )
+		#f = open( self.Stats_file, "w" )
+		#f.write( json.dumps( self._stats ) )
 
 	def _show( self, flags ):
 		"""  show metadata"""
@@ -315,7 +336,7 @@ class Raw():
 
 	def _search( self, flags ):
 		"""
-		return the results as json
+		return the results of search as json
 	    """
 		#flags
 		query = flags["query"] if flags.has_key( "query" ) else self._defaults["flags"]["query"]
