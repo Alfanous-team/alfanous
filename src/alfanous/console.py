@@ -22,13 +22,16 @@ Created on 24 févr. 2010
 @license: AGPL
 
 TODO show RAW|JSON | BEST-presentation format
+TODO __file__ to use resources and indexes integrated with Alfanous Module
 '''
 
-import sys, json
+import sys, json, os
+
+
 from argparse import ArgumentParser
 from alfanous.outputs import Raw
 
-RAWoutput = Raw( QSE_index = "./indexes/main/", TSE_index = "./indexes/extend/", WSE_index = "./indexes/word/", Recitations_list_file = "./resources/configs/recitations.js", Translations_list_file = "./resources/configs/translations.js", Information_file = "./resources/configs/information.js", Hints_file = "./resources/configs/hints.js", Stats_file = "./resources/configs/stats.js" )
+RAWoutput = Raw() #use default paths 
 
 INFORMATION = RAWoutput.do( {"action":"show", "query":"information" } )["show"]["information"]
 DOMAINS = RAWoutput.do( {"action":"show", "query":"domains" } )["show"]["domains"]
