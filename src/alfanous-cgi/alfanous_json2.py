@@ -22,10 +22,9 @@
 @contact: assem.ch [at] gmail.com
 @license: AGPL
 
-
-@todo: add  ID of requester for  better experience
-@todo: multithreading server-clients
-@todo: send error messages (no results, parsing exception)
+TODO add  ID of requester for  better experience
+TODO multithreading server-clients
+TODO send error messages (no results, parsing exception)
 
 """
 
@@ -40,7 +39,7 @@ path.append( "alfanous.egg/alfanous" )
 
 from alfanous.outputs import Json
 
-JSONoutput = Json( QSE_index = "./indexes/main/", TSE_index = "./indexes/extend/", WSE_index = "./indexes/word/", Recitations_list_file = "./configs/recitations.js", Translations_list_file = "./configs/translations.js", Information_file = "./configs/information.js", Hints_file = "./configs/hints.js", Stats_file = "./configs/stats.js" )
+JSONoutput = Json() #use default paths
 
 JSON_HEADER = """Content-Type: application/json; charset=utf-8
 Access-Control-Allow-Origin: *
