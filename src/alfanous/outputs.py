@@ -162,11 +162,11 @@ class Raw():
 					FQSE_index = Indexes.FQSE(),
 					TSE_index = Indexes.TSE(),
 					WSE_index = Indexes.WSE(),
-					Recitations_list_file = Configs.recitations(),
-					Translations_list_file = Configs.translations(),
-					Hints_file = Configs.hints(),
-					Stats_file = Configs.stats(),
-					Information_file = Resources.information() ):
+					Recitations_list = Configs.recitations(),
+					Translations_list = Configs.translations(),
+					Hints = Configs.hints(),
+					Stats = Configs.stats(),
+					Information = Resources.information() ):
 		"""
 		Init the search engines
 
@@ -177,15 +177,14 @@ class Raw():
 		self.TSE = TSE_index
 		self.WSE = WSE_index
 		##
-		self._recitations = Recitations_list_file
-		self._translations = Translations_list_file
-		self._hints = Hints_file
+		self._recitations = Recitations_list
+		self._translations = Translations_list
+		self._hints = Hints
 		##
-		self._information = Information_file
+		self._information = Information
 		##
-		self._stats = {} #Stats_file
+		self._stats = Stats
 		self._init_stats()
-		self.Stats_file = Stats_file
 		##
 
 
@@ -297,8 +296,8 @@ class Raw():
 						stats[ident][action]["other"]["total"] += 1
 			else: stats[ident]["other"]["total"] += 1
 		self._stats = stats
-		#f = open( self.Stats_file, "w" )
-		#f.write( json.dumps( self._stats ) )
+		f = open( Paths.STATS_FILE, "w" )
+		f.write( json.dumps( self._stats ) )
 
 	def _show( self, flags ):
 		"""  show metadata"""
