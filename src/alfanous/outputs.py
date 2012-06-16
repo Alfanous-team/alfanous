@@ -31,20 +31,10 @@ from alfanous.dynamic_resources.arabicnames_dyn import ara2eng_names as Fields
 from alfanous.dynamic_resources.std2uth_dyn import std2uth_words
 from alfanous.dynamic_resources.vocalizations_dyn import vocalization_dict
 from alfanous.TextProcessing import QArabicSymbolsFilter
-import json, re, os
+import json, re
 
-# default paths
-ROOT = os.path.dirname( __file__ ) + "/"
-ROOT_INDEX = ROOT + "indexes/"
-ROOT_CONFIG = ROOT + "configs/"
-QSE_INDEX = ROOT_INDEX + "main/"
-TSE_INDEX = ROOT_INDEX + "extend/"
-WSE_INDEX = ROOT_INDEX + "word/"
-RECITATIONS_LIST_FILE = ROOT_CONFIG + "recitations.js"
-TRANSLATIONS_LIST_FILE = ROOT_CONFIG + "translations.js"
-INFORMATION_FILE = ROOT_CONFIG + "information.js"
-HINTS_FILE = ROOT_CONFIG + "hints.js"
-STATS_FILE = "./stats.js"
+from alfanous.Data import *
+
 
 STANDARD2UTHMANI = lambda x: std2uth_words[x] if std2uth_words.has_key( x ) else x;
 def FREEZE_XRANGE( d ):
@@ -168,42 +158,37 @@ class Raw():
 
 
 	def __init__( self,
-					QSE_index = QSE_INDEX,
-					TSE_index = TSE_INDEX,
-					WSE_index = WSE_INDEX,
-					Recitations_list_file = RECITATIONS_LIST_FILE,
-					Translations_list_file = TRANSLATIONS_LIST_FILE,
-					Information_file = INFORMATION_FILE,
-					Hints_file = HINTS_FILE,
-					Stats_file = STATS_FILE ):
+					QSE_index = Indexes.QSE(),
+					FQSE_index = Indexes.FQSE(),
+					TSE_index = Indexes.TSE(),
+					WSE_index = Indexes.WSE(),
+					Recitations_list_file = Configs.recitations(),
+					Translations_list_file = Configs.translations(),
+					Hints_file = Configs.hints(),
+					Stats_file = Configs.stats(),
+					Information_file = Resources.information() ):
 		"""
 		Init the search engines
 
-
 		"""
 		##
-		self.QSE = QuranicSearchEngine( QSE_index )
-		self.FQSE = FuzzyQuranicSearchEngine( QSE_index )
-		self.TSE = TraductionSearchEngine( TSE_index )
-		self.WSE = WordSearchEngine( WSE_index )
+		self.QSE = 	QSE_index
+		self.FQSE = FQSE_index
+		self.TSE = TSE_index
+		self.WSE = WSE_index
 		##
-		f = open( Recitations_list_file )
-		self._recitations = json.loads( f.read() ) if f else {}
-
+		self._recitations = Recitations_list_file
+		self._translations = Translations_list_file
+		self._hints = Hints_file
 		##
-		f = open( Translations_list_file )
-		self._translations = json.loads( f.read() ) if f else {}
+		self._information = Information_file
 		##
-		f = open( Information_file )
-		self._information = json.loads( f.read() ) if f else {}
-		##
-		f = open( Hints_file )
-		self._hints = json.loads( f.read() ) if f else {}
-		##
-		f = None #open( Stats_file ) #FIXME test existence before open ,else create it
-		self._stats = json.loads( f.read() ) if f else {}
+		self._stats = {} #Stats_file
 		self._init_stats()
 		self.Stats_file = Stats_file
+		##
+
+
 
 		##
 		self._surates = [item for item in self.QSE.list_values( "sura" ) if item]
