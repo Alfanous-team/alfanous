@@ -156,39 +156,32 @@ class Raw():
 
 	IDS = {"ALFANOUS_WUI_2342R52"}
 
-
 	def __init__( self,
-					QSE_index = Indexes.QSE(),
-					FQSE_index = Indexes.FQSE(),
-					TSE_index = Indexes.TSE(),
-					WSE_index = Indexes.WSE(),
-					Recitations_list = Configs.recitations(),
-					Translations_list = Configs.translations(),
-					Hints = Configs.hints(),
-					Stats = Configs.stats(),
-					Information = Resources.information() ):
+					QSE_index = Paths.QSE_INDEX	,
+					TSE_index = Paths.TSE_INDEX,
+					WSE_index = Paths.WSE_INDEX,
+					Recitations_list_file = Paths.RECITATIONS_LIST_FILE,
+					Translations_list_file = Paths.TRANSLATIONS_LIST_FILE ,
+					Hints_file = Paths.HINTS_FILE,
+					Stats_file = Paths.STATS_FILE,
+					Information_file = Paths.INFORMATION_FILE ):
 		"""
-		Init the search engines
-
+		init the search engines
 		"""
 		##
-		self.QSE = 	QSE_index
-		self.FQSE = FQSE_index
-		self.TSE = TSE_index
-		self.WSE = WSE_index
+		self.QSE = 	Indexes.QSE( QSE_index )
+		self.FQSE = Indexes.FQSE( QSE_index )
+		self.TSE = Indexes.TSE( TSE_index )
+		self.WSE = Indexes.WSE( WSE_index )
 		##
-		self._recitations = Recitations_list
-		self._translations = Translations_list
-		self._hints = Hints
+		self._recitations = Configs.recitations( Recitations_list_file )
+		self._translations = Configs.translations( Translations_list_file )
+		self._hints = Configs.hints( Hints_file )
 		##
-		self._information = Information
+		self._information = Resources.information( Information_file )
 		##
-		self._stats = Stats
+		self._stats = Configs.stats( Stats_file )
 		self._init_stats()
-		##
-
-
-
 		##
 		self._surates = [item for item in self.QSE.list_values( "sura" ) if item]
 		self._chapters = [item for item in self.QSE.list_values( "chapter" ) if item]
