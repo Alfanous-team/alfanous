@@ -3,9 +3,9 @@
 
 """
 Alfanous Setup Script
-
-TODO python building & installing system
-TODO integrate Indexes and Configs as package data
+TODO pure python building & installing system
+TODO include resources in installation
+FIXME install configs in HOME
 XXX Index building pre-install script?
 """
 
@@ -45,13 +45,13 @@ setup(
 	url = "http://www.alfanous.org/",
 	#download_url = "https://sourceforge.net/projects/alfanous/files/",
 
-
 	include_package_data = True,
 
 	package_data = {'alfanous': ['configs/*',
 								'indexes/main/*',
 								'indexes/extend/*',
-								'indexes/word/*']},
+								'indexes/word/*',
+								'resources/*']},
 
 	#data_files = [
 	#			 ( 'indexes/main', glob.glob( '../../indexes/main/*' ) ),
