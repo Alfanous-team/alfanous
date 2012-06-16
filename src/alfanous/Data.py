@@ -1,9 +1,6 @@
 '''
 Created on Jun 15, 2012
 
-@author: assem
-
-
 TODO build paths based on running platform
 '''
 from alfanous.main import QuranicSearchEngine, FuzzyQuranicSearchEngine, \
@@ -15,17 +12,23 @@ import os, json
 class Paths:
     """ """
     ROOT = os.path.dirname( __file__ ) + "/"
-    HOME = os.getenv( 'USERPROFILE' ) or os.getenv( 'HOME' ) + "/.alfanous/"
+    HOME = os.getenv( 'USERPROFILE' ) or os.getenv( 'HOME' ) + "/"
+    # base paths
     ROOT_INDEX = ROOT + "indexes/"
     ROOT_CONFIG = ROOT + "configs/"
+    HOME_CONFIG = HOME + ".alfanous/"
+    ROOT_RESOURCE = ROOT + "resources/"
+    # indexes paths
     QSE_INDEX = ROOT_INDEX + "main/"
     TSE_INDEX = ROOT_INDEX + "extend/"
     WSE_INDEX = ROOT_INDEX + "word/"
-    RECITATIONS_LIST_FILE = ROOT_CONFIG + "recitations.js"
-    TRANSLATIONS_LIST_FILE = ROOT_CONFIG + "translations.js"
-    INFORMATION_FILE = ROOT_CONFIG + "information.js"
-    HINTS_FILE = ROOT_CONFIG + "hints.js"
-    STATS_FILE = HOME + "stats.js"
+    # resources paths
+    INFORMATION_FILE = ROOT_RESOURCE + "information.json"
+    # configs path suffixes
+    RECITATIONS_LIST_FILE = ROOT_CONFIG + "recitations.json"
+    TRANSLATIONS_LIST_FILE = ROOT_CONFIG + "translations.json"
+    HINTS_FILE = ROOT_CONFIG + "hints.json"
+    STATS_FILE = HOME_CONFIG + "stats.json"
 
 
 
