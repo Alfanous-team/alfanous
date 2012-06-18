@@ -40,9 +40,7 @@ HELPMESSAGES = RAWoutput.do( {"action":"show", "query":"help_messages" } )["show
 ## a function to decide what is True and what is False
 TRUE_FALSE = lambda x:False if x.lower() in ["no", "none", "null", "0", "-1", "", "false"] else True;
 
-def DEFREEZE_XRANGE( d ):
-    """ TODO reversing the operation of freezing xranges done by module alfanous.output """
-    pass
+
 
 
 arg_parser = ArgumentParser( 
@@ -55,13 +53,13 @@ arg_parser = ArgumentParser(
 # add arguments
 arg_parser.add_argument( "-a", "--action", dest = "action", type = str , choices = DOMAINS["action"], help = HELPMESSAGES["action"] )
 arg_parser.add_argument( "-q", "--query", dest = "query", type = str  , help = HELPMESSAGES["query"] )
-arg_parser.add_argument( "-o", "--offset", dest = "offset", type = int, choices = DOMAINS["offset"], help = HELPMESSAGES["offset"] )
-arg_parser.add_argument( "-r", "--range", dest = "range", type = int, choices = DOMAINS["range"], help = HELPMESSAGES["range"] )
+arg_parser.add_argument( "-o", "--offset", dest = "offset", metavar = 'NUMBER', type = int, help = HELPMESSAGES["offset"] )
+arg_parser.add_argument( "-r", "--range", dest = "range", type = int, metavar = 'NUMBER', help = HELPMESSAGES["range"] )
 arg_parser.add_argument( "-s", "--sortedby", dest = "sortedby", type = str, choices = DOMAINS["sortedby"], help = HELPMESSAGES["sortedby"] )
-arg_parser.add_argument( "--page", dest = "page", type = int, choices = DOMAINS["page"], help = HELPMESSAGES["page"] )
-arg_parser.add_argument( "--perpage", dest = "perpage", type = int, choices = DOMAINS["perpage"], help = HELPMESSAGES["perpage"] )
-arg_parser.add_argument( "--recitation", dest = "recitation", type = str, choices = DOMAINS["recitation"], help = HELPMESSAGES["recitation"] )
-arg_parser.add_argument( "--translation", dest = "translation", type = str, choices = DOMAINS["translation"], help = HELPMESSAGES["translation"] )
+arg_parser.add_argument( "--page", dest = "page", type = int, metavar = 'NUMBER', help = HELPMESSAGES["page"] )
+arg_parser.add_argument( "--perpage", dest = "perpage", type = int, metavar = 'NUMBER', help = HELPMESSAGES["perpage"] )
+arg_parser.add_argument( "--recitation", dest = "recitation", type = str, help = HELPMESSAGES["recitation"] )
+arg_parser.add_argument( "--translation", dest = "translation", metavar = 'NUMBER', type = str, help = HELPMESSAGES["translation"] )
 arg_parser.add_argument( "--highlight", dest = "highlight", type = str, choices = DOMAINS["highlight"], help = HELPMESSAGES["highlight"] )
 arg_parser.add_argument( "--script", dest = "script", type = str, choices = DOMAINS["script"] , help = HELPMESSAGES["script"] )
 arg_parser.add_argument( "--vocalized", dest = "vocalized", type = bool, choices = DOMAINS["vocalized"], help = HELPMESSAGES["vocalized"] )
