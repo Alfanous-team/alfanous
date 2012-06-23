@@ -29,7 +29,7 @@ import sys, json, os
 
 
 from argparse import ArgumentParser
-from alfanous.outputs import Raw
+from alfanous.Outputs import Raw
 
 RAWoutput = Raw() #use default paths 
 
