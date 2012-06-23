@@ -5,7 +5,6 @@
 	<!-- 	TODO clickable-floating-panel with options and user feedback! 
 			TODO: show prev_aya and next_aya [WUI]
 			TODO: replace suggested word in the  previous query [WUI] 
-			TODO: show only 9 pages with previous page button and next page button [WUI]
 			-->
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 
@@ -170,14 +169,23 @@
 				// Pages control
 				results_pages += "<br />";
 				results_pages += "<div class='pages'>\n<img src='images/prev.gif' alt='الصفحة السابقة' title = 'الصفحة السابقة' /><div style=' display:inline-block; position:relative; top:-8px;'>\n";
-				for( i = 1; i <= nb_pages; i++) {
+				for( i = 1;  i <= nb_pages ; i++) 
+				{
 					if (i == page)
 					{
 						results_pages += " "+ i;
 					}
-					else
+					else if ((i <= page + 7 )  && (i >= page - 3) ) // pages  in range [-3,+7]
 					{
 						results_pages += " <a href=''>"+ i+ "</a>";
+					}
+					else if (i==1)  // first page
+					{
+						results_pages += " <a href=''>"+ i+ "</a> ..";
+					}
+					else if (i==nb_pages)  // last page
+					{
+						results_pages += " .. <a href=''>"+ i+ "</a>";
 					}
 				}
 				results_pages += "</div><img src='images/next.gif' alt='الصفحة التالية' title = 'الصفحة التالية' />\n</div>\n";
