@@ -179,14 +179,15 @@
 					{
 						results_pages += " <a href=''>"+ i+ "</a>";
 					}
-					else if (i==1)  // first page
+					else if (i==1 || (i%50 == 0 && i<page))  // first page
 					{
 						results_pages += " <a href=''>"+ i+ "</a> ..";
 					}
-					else if (i==nb_pages)  // last page
+					else if (i==nb_pages || (i%50 == 0 && i>page))  // last page
 					{
 						results_pages += " .. <a href=''>"+ i+ "</a>";
 					}
+
 				}
 				results_pages += "</div><img src='images/next.gif' alt='الصفحة التالية' title = 'الصفحة التالية' />\n</div>\n";
 				
@@ -272,6 +273,7 @@
 						results += "</span> ";
 						results += " <span>("+ build_search_link(param,"رقم_الآية:" + json.ayas[i].aya.id ,false ) +   json.ayas[i].aya.id + "</a>)</span> ";
 						results += "] <br></span></p><br />";
+						
 					results += "<p dir='ltr' align='center' style=' margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;'>";
 						results += "<span style='font-family: \"Droid Sans\", Tahoma, \"Bitstream Vera Sans\", \"DejaVu Sans\", Verdana, Geneva, Arial, Sans-serif; line-height: 150%;'>"+ json.ayas[i].aya.traduction+ "</span></p>";
 					results += "<br><p align='center' style=' margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;'>";
