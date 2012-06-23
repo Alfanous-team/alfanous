@@ -12,7 +12,7 @@ import os, json
 class Paths:
     """ """
     ROOT = os.path.dirname( __file__ ) + "/"
-    HOME = os.getenv( 'USERPROFILE' ) or os.getenv( 'HOME' ) + "/"
+    HOME = ( os.getenv( 'USERPROFILE' ) or os.getenv( 'HOME' ) or "." ) + "/"
     # base paths
     ROOT_INDEX = ROOT + "indexes/"
     ROOT_CONFIG = ROOT + "configs/"
@@ -58,6 +58,9 @@ class Configs:
         if os.path.exists( path ):
             myfile = open( path )
         else:
+            path_dirpart = os.path.dirname( path )
+            if not os.path.exists( path_dirpart ):
+                os.makedirs( path_dirpart )
             myfile = open( path , "w+" )
             myfile.write( "{}" )
             myfile.seek( 0 )
