@@ -34,6 +34,7 @@ Created on 12 avr. 2010
 @todo: Localization
 @todo: Use tree widget to show results
 @todo: printing
+@todo: load UI files on real-time
 
 
 """
@@ -71,7 +72,7 @@ from configobj import ConfigObj
 from PyQt4 import  QtGui, QtCore
 from PyQt4.QtCore import QRect
 from pyparsing import ParseException
-from alfanous.outputs import Raw
+from alfanous.Outputs import Raw
 from re import compile
 ## Importing forms
 from mainform_ui import Ui_MainWindow

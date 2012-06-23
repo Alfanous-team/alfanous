@@ -37,7 +37,7 @@ form = cgi.FormContentDict()
 from sys import path
 path.append( "alfanous.egg/alfanous" )
 
-from alfanous.outputs import Json
+from alfanous.Outputs import Json
 
 JSONoutput = Json() #use default paths
 
