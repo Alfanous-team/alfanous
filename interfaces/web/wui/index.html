@@ -252,7 +252,7 @@
 						results += "</span></legend>";
 					results += "<br><p align='center' style=' margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;'>";
 						results += "<span style='font-family:\"ArabeyesQr\", Scheherazade; line-height: 180%; font-size:22px; color:#7b563a;'><br>[ ";
-						results += "<span style='font-family:\"me_quran\", Scheherazade; font-size:22px;'>"
+						results += "<span  class='aya_words' style='font-family:\"me_quran\", Scheherazade; font-size:22px;'>"
 						
 						
 						aya_words = json.ayas[i].aya.text.split(" ");
@@ -266,7 +266,7 @@
 								}
 							else 
 								{
-								results += build_search_link(param,"" + aya_words[j] +"" ,false ) + aya_words[j] + "<a />" + " " ;
+								results += "<a href=''>" + aya_words[j] + "<a />" + " " ;
 								
 								}
 						}
@@ -339,6 +339,16 @@
 				}
 
 
+				// Aya_words clicks control
+				$(".aya_words a").one('click', function(event) {
+					var param2 = param;
+					param2.page = 1;
+					param2.search = $(this).text();
+					
+					redirect_to_params ( param2 );
+					event.preventDefault();
+				});
+				
 				// Pages control
 				$(".pages a").one('click', function(event) {
 					var param2 = param;
