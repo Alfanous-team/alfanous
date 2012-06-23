@@ -1,8 +1,12 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<!-- TODO FIXME fix click-able bugs, eliminate the last vocalization of aya words and activate partial vocalization search  , eliminate Kasheeda in Godnames , fix g_a=0 clickable bug , fix sura_name phrase search possiblity -->
-	<!-- TODO clickable-floating-panel with options and user feedback!  -->
+	<!-- 	TODO FIXME fix click-able bugs, eliminate the last vocalization of aya words and activate partial vocalization search  , eliminate Kasheeda in Godnames , fix g_a=0 clickable bug , fix sura_name phrase search possiblity -->
+	<!-- 	TODO clickable-floating-panel with options and user feedback! 
+			TODO: show prev_aya and next_aya [WUI]
+			TODO: replace suggested word in the  previous query [WUI] 
+			TODO: show only 9 pages with previous page button and next page button [WUI]
+			-->
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 
 	<title>الفانوس | محرك بحث قرآني متقدم</title>
@@ -101,7 +105,7 @@
 					new_param.sorted_by = "mushaf";
 					if (filter) new_param.search = "(" + $("#search_box").val() + ") + " + query;
 					else new_param.search = query;
-					return "<a class='no_decoration' href='"+ get_url_without_params()+ "?"+ build_params( new_param )+ "'>" 
+					return "<a class='no_decoration' href=\""+ get_url_without_params()+ "?"+ build_params( new_param )+ "\">" 
 				}
 		
 		function get_results (param) {
@@ -253,7 +257,7 @@
 								}
 							else 
 								{
-								results += build_search_link(param,"آية_:" + aya_words[j] ,false ) + aya_words[j] + "<a />" + " " ;
+								results += build_search_link(param,"آية_:" + aya_words[j] +"" ,false ) + aya_words[j] + "<a />" + " " ;
 								
 								}
 						}
