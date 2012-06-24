@@ -25,7 +25,7 @@ TODO show RAW|JSON | BEST-presentation format
 TODO __file__ to use resources and indexes integrated with Alfanous Module
 '''
 
-import sys, json, os
+import sys, json
 
 
 from argparse import ArgumentParser
@@ -39,8 +39,6 @@ HELPMESSAGES = RAWoutput.do( {"action":"show", "query":"help_messages" } )["show
 
 ## a function to decide what is True and what is False
 TRUE_FALSE = lambda x:False if x.lower() in ["no", "none", "null", "0", "-1", "", "false"] else True;
-
-
 
 
 arg_parser = ArgumentParser( 
@@ -58,8 +56,8 @@ arg_parser.add_argument( "-r", "--range", dest = "range", type = int, metavar = 
 arg_parser.add_argument( "-s", "--sortedby", dest = "sortedby", type = str, choices = DOMAINS["sortedby"], help = HELPMESSAGES["sortedby"] )
 arg_parser.add_argument( "--page", dest = "page", type = int, metavar = 'NUMBER', help = HELPMESSAGES["page"] )
 arg_parser.add_argument( "--perpage", dest = "perpage", type = int, metavar = 'NUMBER', help = HELPMESSAGES["perpage"] )
-arg_parser.add_argument( "--recitation", dest = "recitation", type = str, help = HELPMESSAGES["recitation"] )
-arg_parser.add_argument( "--translation", dest = "translation", metavar = 'NUMBER', type = str, help = HELPMESSAGES["translation"] )
+arg_parser.add_argument( "--recitation", dest = "recitation", metavar = 'NUMBER', type = str, help = HELPMESSAGES["recitation"] )
+arg_parser.add_argument( "--translation", dest = "translation", type = str, help = HELPMESSAGES["translation"] )
 arg_parser.add_argument( "--highlight", dest = "highlight", type = str, choices = DOMAINS["highlight"], help = HELPMESSAGES["highlight"] )
 arg_parser.add_argument( "--script", dest = "script", type = str, choices = DOMAINS["script"] , help = HELPMESSAGES["script"] )
 arg_parser.add_argument( "--vocalized", dest = "vocalized", type = bool, choices = DOMAINS["vocalized"], help = HELPMESSAGES["vocalized"] )
