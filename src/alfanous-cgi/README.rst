@@ -1,20 +1,26 @@
-====== JSON Web Service ======
-
+================
+JSON Web Service
+================
 This is the JSON output system of Alfanous project. This feature is in Alpha test and the JSON schema may be it's not stable. We are waiting for real feadbacks and suggestions to improve its efficacy, quality and stability. To contact the author, please send an email to [[assem.ch@gmail.com|Assem Chelli]] or [[alfanous@googlegroups.com|mailing list]].
 
 If you don't know what is JSON, See: [[wp>JSON]], [[http://www.json.org/|Official Site of JSON]]. It contains many JSON parsing libraries for most programming languages. 
 
-====== License ======
-
+======= 
+License
+=======
 This service is free to use.We recommend to refer Alfanous engine somewhere in your pages using icons or texts like "Alfanous engine","[[http://wiki.alfanous.org/doku.php?id=art_works#powered_by | Powered by Alfanous]]" linked to http://www.alfanous.org/json .
 
 Art works you may need are available here [[http://www.alfanous.org/art/]]
 
-====== Limitations ======
+=========== 
+Limitations
+===========
 
 JSON service does not provide more then 1000 results. It gives the real pages number found but query for page=101 get a reply with NULL.
 
-====== Syntax ======
+======
+Syntax
+======
 
 To get JSON information , use this syntax : http://www.alfanous.org/json?ARGUMENT such as ARGUMENT is:
 <code>
@@ -32,7 +38,9 @@ suggest== TERMS
 
 Here you find [[Json_fixes|the fixes history]]
 
-====== Examples ======
+======== 
+Examples
+========
 
   *  [[http://www.alfanous.org/json?search=%D8%A7%D9%84%D8%AD%D9%85%D8%AF&highlight=bbcode&sortedby=tanzil&page=2&traduction=shakir&recitation=Mishary+Rashid+Alafasy|http://www.alfanous.org/json?search=الحمد&highlight=bbcode&sortedby=tanzil&page=2&traduction=shakir&recitation=Mishary+Rashid+Alafasy]]
   *  http://www.alfanous.org/json?list=recitations
@@ -42,14 +50,18 @@ Here you find [[Json_fixes|the fixes history]]
   *  http://www.alfanous.org/json?suggest=%D8%A7%D8%A8%D8%B1%D8%A7%D9%87%D8%A7%D9%85
  
 
-====== Demoes  ======
+======
+Demoes
+======
 
   * [[http://www.sneetsher.com/abdellah/alfanous_jquery_demo/| alfanous_jquery_demo v1]] by Abdellah Ch.
   * [[http://www.sneetsher.com/abdellah/alfanous_jquery_demo2/| alfanous_jquery_demo v2]] by Abdellah Ch.
   * [[http://www.sneetsher.com/abdellah/alfanous_jquery_demo3/| alfanous_jquery_demo v3]] by Abdellah Ch.
   * [[http://mobile.alfanous.org/| Alfanous Mobile Web Interface (PHP)]] , [[http://alfanous.svn.sourceforge.net/viewvc/alfanous/trunk/interfaces/web/mobile_wui/| Its source code is in SVN]]
 
-====== Advanced Query Examples ======
+=======================
+Advanced Query Examples
+=======================
 
   *  Simple search : [[http://www.alfanous.org/json?search=الحمد|search=الحمد]]
   *  Phrases : [[http://www.alfanous.org/json?search="الحمد لله"|search="الحمد لله"]]
@@ -66,7 +78,9 @@ Here you find [[Json_fixes|the fixes history]]
   *  Derivations - lemma : [[http://www.alfanous.org/json?search=>مالك|search=>مالك]]
   *  Derivations - root : [[http://www.alfanous.org/json?search=>>مالك|search=>>مالك]]
 
-====== Fields ======
+======
+Fields
+======
 ^ Arabic  ^ English ^ Values ^ Description ^ 
 | رقم | gid | 1 to 6236 | Global order of Aya in the whole Quran |
 | رقم_الآية | aya_id | 1 to $(s_a) | order of Aya inside its Sura  |
@@ -101,7 +115,9 @@ Here you find [[Json_fixes|the fixes history]]
 | ك_آ | a_w | Number | Number of **words** in **Aya** |
 | ج_آ | a_g | Number | Number of **God's names** in **Aya**  |
 
-====== SortedBy Options ======
+================
+SortedBy Options
+================
 ^ Option ^ Description ^
 | score | The relevance of the results compared to the query keywords |
 | mushaf | The default order of ayas in Mus-haf |           
@@ -111,8 +127,12 @@ Here you find [[Json_fixes|the fixes history]]
 
 
 
-====== Schema's ======
-===== Suggestions =====
+========
+Schema's
+========
+-----------
+Suggestions
+-----------
 <code java alfanous_suggestions_example.json>
 [
 
@@ -121,7 +141,9 @@ Here you find [[Json_fixes|the fixes history]]
 ]
 </code>
 
-===== Results =====
+-------
+Results
+-------
 <code java alfanous_results_example.json>
 {
  "runtime": "0.00055",
@@ -188,8 +210,9 @@ Here you find [[Json_fixes|the fixes history]]
         }
 }
 </code>
-
-===== Translations =====
+------------
+Translations
+------------
 <code java alfanous_translations_list_example.json>
 {
 indonesian: "Bahasa Indonesia-Indonesian"
@@ -212,7 +235,9 @@ kuliev: "E. Kuliev-Russian"
 transliteration-en: "Transliteration-English"
 }
 </code>
-===== Information =====
+-----------
+Information
+-----------
 <code java alfanous_information_example.json>
 {
 "engine": "Alfanous",
@@ -222,7 +247,9 @@ transliteration-en: "Transliteration-English"
 "author": "Assem chelli"
 }
 </code>
-===== Recitations =====
+-----------
+Recitations
+-----------
 <code java alfanous_recitations_list_example.json>
 {
 "Mishary Rashid Alafasy": "http://www.versebyversequran.com/data/Alafasy_128kbps",
@@ -243,7 +270,9 @@ transliteration-en: "Transliteration-English"
 "Muhammad Ayyoub (external source)": "http://www.everyayah.com/data/Muhammad_Ayyoub_32kbps"
 }
 </code>
-===== Fields =====
+------
+Fields
+------
 Note: Arabic fields are shown here as LTR due to the page direction. See [[json_web_service#Fields|Fields]] for correct displayed Arabic names of fields. To be clear JSON UNICODE characters "\uxxxx" are transformed.
 <code java alfanous_fields_list_example.json>
 {
@@ -281,8 +310,9 @@ Note: Arabic fields are shown here as LTR due to the page direction. See [[json_
 "ترتيب_السورة": "sura_order"
 }
 </code>
-
-====== Who use this? ======
+=============
+Who use this?
+=============
 
 If you are using this service, We want to make Alfanous more helpful. We will be happy to know about your applications.
   * [[http://www.sneetsher.com/abdellah/alfanous_jquery_demo3/|A Simple jQuery/JavaScript Demo Example]] 
