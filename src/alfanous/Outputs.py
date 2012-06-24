@@ -44,6 +44,9 @@ def FREEZE_XRANGE( d ):
 			new_d[k] = str( v ) ;
 	return new_d; # JSON doesnt accept serialization of xrange  
 
+def DEFREEZE_XRANGE( d ):
+    """ TODO reversing the operation of freezing xranges done by module alfanous.output """
+    pass
 
 class Raw():
 	""" Basic format for output, as  structures of python
