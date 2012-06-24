@@ -21,21 +21,20 @@ Created on 12 avr. 2010
 @author: Assem Chelli
 @contact: assem.ch[at]gmail.com
 
-@todo: use Alfanous.outputs.Json to request results
-@todo: use Table grid for view , use CSS good schema instead
-@todo: complete all new Ui features
-@todo: relate to AboutDlg / PreferenceDlg / Hints dialog
-@todo: use css and simplify texts to make a good localization
-@todo: clean Code
-@todo: sura's name also in English
-@todo: fields name in english and arabic / explication (id)
-@todo: add qurany project for Subjects in english
-@todo: %(var)s mapping is better for localization
-@todo: Localization
-@todo: Use tree widget to show results
-@todo: printing
-@todo: load UI files on real-time
-
+TODO use Alfanous.outputs.Json to request results
+TODO use Table grid for view , use CSS good schema instead
+TODO complete all new Ui features
+TODO relate to AboutDlg / PreferenceDlg / Hints dialog
+TODO use css and simplify texts to make a good localization
+TODO clean Code
+TODO sura's name also in English
+TODO fields name in english and arabic / explication (id)
+TODO add qurany project for Subjects in english
+TODO %(var)s mapping is better for localization
+TODO Localization
+TODO Use tree widget to show results
+TODO printing
+TODO load UI files on real-time
 
 """
 
