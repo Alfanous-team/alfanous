@@ -29,7 +29,7 @@ class Paths:
     TRANSLATIONS_LIST_FILE = ROOT_CONFIG + "translations.json"
     HINTS_FILE = ROOT_CONFIG + "hints.json"
     STATS_FILE = HOME_CONFIG + "stats.json"
-
+    STATS_REFERENCE_FILE = ROOT_CONFIG + "stats.json"
 
 
 
@@ -54,15 +54,17 @@ class Configs:
         return json.loads( myfile.read() ) if myfile else {}
 
     @staticmethod
-    def stats( path = Paths.STATS_FILE ):
+    def stats( path = Paths.STATS_FILE, ref_path = Paths.STATS_REFERENCE_FILE ):
         if os.path.exists( path ):
             myfile = open( path )
         else:
             path_dirpart = os.path.dirname( path )
             if not os.path.exists( path_dirpart ):
                 os.makedirs( path_dirpart )
+
+            ref_file = open( ref_path, "r" )
             myfile = open( path , "w+" )
-            myfile.write( "{}" )
+            myfile.write( ref_file.read() )
             myfile.seek( 0 )
         return json.loads( myfile.read() ) if myfile else {}
 
