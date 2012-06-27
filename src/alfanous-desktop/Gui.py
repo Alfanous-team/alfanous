@@ -16,11 +16,6 @@
 ##     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 """
-Created on 12 avr. 2010
-
-@author: Assem Chelli
-@contact: assem.ch[at]gmail.com
-
 TODO use Alfanous.outputs.Json to request results
 TODO use Table grid for view , use CSS good schema instead
 TODO complete all new Ui features
@@ -35,6 +30,7 @@ TODO Localization
 TODO Use tree widget to show results
 TODO printing
 TODO load UI files on real-time
+
 
 """
 
@@ -90,7 +86,7 @@ LOCALPATH = options.local if options.local else"./locale/"
 STOREPATH = options.store if options.store else "../../store/"
 
 ## Initialize search engines 
-RAWoutput = Raw( QSE_index = INDEXPATH + "main/", TSE_index = INDEXPATH + "extend/", Recitations_list_file = CONFIGPATH + "recitations.js", Translations_list_file = CONFIGPATH + "translations.js", Information_file = CONFIGPATH + "information.js", Hints_file = CONFIGPATH + "hints.js", Stats_file = CONFIGPATH + "stats.js" )
+RAWoutput = Raw() # default paths
 
 ## STATIC GLOBAL variables
 PERPAGE = 10 #results per page
