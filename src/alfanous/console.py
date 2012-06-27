@@ -37,10 +37,6 @@ HELPMESSAGES = RAWoutput.do( {"action":"show", "query":"help_messages" } )["show
 ## a function to decide what is True and what is False
 TRUE_FALSE = lambda x:False if x.lower() in ["no", "none", "null", "0", "-1", "", "false"] else True;
 
-def DEFREEZE_XRANGE( d ):
-    """ TODO reversing the operation of freezing xranges done by module alfanous.output """
-    pass
-
 
 arg_parser = ArgumentParser( 
                               description = INFORMATION["description"],
