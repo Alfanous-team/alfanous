@@ -16,7 +16,7 @@
 ##     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 """
-TODO use Alfanous.outputs.Json to request results
+TODO use Alfanous.outputs.Json to request different info the first time
 TODO use Table grid for view , use CSS good schema instead
 TODO complete all new Ui features
 TODO relate to AboutDlg / PreferenceDlg / Hints dialog
@@ -52,8 +52,8 @@ paths.add_option( "-i", "--index", dest = "index", type = "string",
 paths.add_option( "-l", "--local", dest = "local", type = "string",
                   help = "localization path", metavar = "PATH" )
 
-paths.add_option( "-s", "--store", dest = "store", type = "string",
-                  help = "store path", metavar = "PATH" )
+paths.add_option( "-r", "--resource", dest = "resource", type = "string",
+                  help = "resources path", metavar = "PATH" )
 
 
 parser.add_option_group( paths )
@@ -79,11 +79,13 @@ n_ = gettext.ngettext
 gettext.bindtextdomain( "alfanousQT" );
 gettext.textdomain( "alfanousQT" );
 
+
 ## Specification of resources paths
-CONFIGPATH = options.config if options.config else "../../resources/configs/"
-INDEXPATH = options.index if options.index else"../../indexes/"
-LOCALPATH = options.local if options.local else"./locale/"
-STOREPATH = options.store if options.store else "../../store/"
+from alfanous.Data import Paths
+CONFIGPATH = options.config if options.config else Paths.HOME_CONFIG + ""
+INDEXPATH = options.index if options.index else Paths.ROOT_INDEX
+LOCALPATH = options.local if options.local else "./locale/"
+RESPATH = options.resource if options.resource else Paths.ROOT_RESOURCE
 
 ## Initialize search engines 
 RAWoutput = Raw() # default paths
@@ -207,7 +209,7 @@ class QUI( Ui_MainWindow ):
             MainWindow.setLayoutDirection( QtCore.Qt.RightToLeft )
         self.o_query.setLayoutDirection( QtCore.Qt.RightToLeft )
         QtCore.QObject.connect( self.o_search, QtCore.SIGNAL( "clicked()" ), self.search_all )
-        QtCore.QObject.connect( self.o_page, QtCore.SIGNAL( "valueChanged(int)" ), self.changepage )
+        QtCore.QObject.connect( self.o_page, QtCore.SIGNAL( "valueChanged(int)" ), self.search_all )
         QtCore.QObject.connect( self.o_chapter, QtCore.SIGNAL( "activated(QString)" ), self.topics )
         QtCore.QObject.connect( self.o_topic, QtCore.SIGNAL( "activated(QString)" ), self.subtopics )
         QtCore.QObject.connect( self.o_sajdah_exist, QtCore.SIGNAL( "activated(int)" ), self.sajda_enable )
@@ -235,7 +237,7 @@ class QUI( Ui_MainWindow ):
         self.load_config()
 
 
-    def search_all( self ):
+    def search_all( self, page = 1 ):
         """
         The main search function
         """
@@ -329,7 +331,7 @@ class QUI( Ui_MainWindow ):
         self.o_numpage.display( numpage )
         self.o_page.setMinimum( 1 if numpage else 0 )
         self.o_page.setMaximum( numpage )
-        self.o_page.setValue( 1 )
+        #self.o_page.setValue(  )
 
 
         if results["error"]["code"] == 0:
@@ -422,12 +424,9 @@ class QUI( Ui_MainWindow ):
         html += "<br/><hr/><br/>"
         self.o_results.setText( html )
 
-    def changepage( self, page ):
-        self.search_all( page )
+
 
     def topics( self, chapter ):
-
-
         first = self.o_topic.itemText( 0 )
         list = [item for item in RAWoutput.QSE.list_values( "topic", conditions = [( "chapter", unicode( chapter ) )] ) if item]
         list.insert( 0, first )
@@ -645,9 +644,6 @@ class QUI( Ui_MainWindow ):
         painter.end()
 
 
-
-
-
     def about( self ):
 	""" deprecated """
         html = """to replace with about dialog """
@@ -655,13 +651,11 @@ class QUI( Ui_MainWindow ):
 
 
 
-
-
-
     def help( self ):
         """  deprecated     """
         html = """ to replace with a hints dialog """
         self.o_results.setText( html )
+
 
 def main():
     """ the main function"""
