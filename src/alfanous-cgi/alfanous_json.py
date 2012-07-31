@@ -72,7 +72,6 @@ def Gword_tamdid( aya ):
     return aya.replace( u"لَّه", u"لَّـه" ).replace( u"لَّه", u"لَّـه" )
 
 PERPAGE = 10
-MAX_INSTANCES=10
 
 Translations = { u'ghomshei': u'Mahdi Elahi Ghomshei-Persian', u'indonesian': u'Bahasa Indonesia-Indonesian', u'noghmani': u'Noghmani-tt', u'korkut': u'Besim Korkut-Bosnian', u'makarem': u'Ayatollah Makarem Shirazi-Persian', u'osmanov': u'M.-N.O. Osmanov-Russian', u'amroti': u'Maulana Taj Mehmood Amroti-sd', u'ozturk': u'Prof. Yasar Nuri Ozturk-Turkish', u'shakir': u'Mohammad Habib Shakir-English', u'muhiuddinkhan': u'Maulana Muhiuddin Khan-bn', u'arberry': u'Arthur John Arberry-English', u'irfan_ul_quran': u'Maulana Doctor Tahir ul Qadri-ur', u'jalandhry': u'Jalandhry-ur', u'porokhova': u'V. Porokhova-Russian', u'kuliev': u'E. Kuliev-Russian', u'transliteration-en': u'Transliteration-English', u'pickthall': u'Mohammed Marmaduke William Pickthall-English', u'ansarian': u'Hussain Ansarian-Persian'}
 
@@ -116,7 +115,7 @@ def results( query, sortedby = "score", fields = ["sura", "aya_id", "aya"], page
 	@param fields : fields enabled to be shown
 	@return : the results with the type specified
     """
-    res, termz = QSE.search_all( unicode( query.replace( "\\", "" ), 'utf8' ) , limit = 6500, sortedby = sortedby )
+    res, termz = QSE.search_all( unicode( query.replace( "\\", "" ), 'utf8' ) , limit = 1000, sortedby = sortedby )
     terms = [term[1] for term in list( termz )]
     #pagination
     page = int( page )
@@ -263,113 +262,92 @@ def visits4search():
 
 
 
-    
 
 
 
 
 
-# check number of instances 
-
-f = open("instances.cpt","r")
-instances_cpt = int ( f.readline())
-
-if instances_cpt < MAX_INSTANCES:
-    f = open("instances.cpt","w"); 
-    f.write(str(instances_cpt + 1))
-    f.close()
-    try:
-        QSE = QuranicSearchEngine( "./indexes/main/" )
-        TSE = TraductionSearchEngine( "./indexes/extend/" )
-
-        if form.has_key( "suggest" ):
-             print "Content-Type: application/json; charset=utf-8"
-             #Allow cross domain XHR
-             print 'Access-Control-Allow-Origin: *'
-             print 'Access-Control-Allow-Methods: GET'
-             print
-
-             print suggest( form["suggest"][0] )
-
-        elif  form.has_key( "search" ) :
-             print "Content-Type: application/json; charset=utf-8"
-             #Allow cross domain XHR
-             print 'Access-Control-Allow-Origin: *'
-             print 'Access-Control-Allow-Methods: GET'
-             print
-
-             visits4search()
-
-             if form.has_key( "sortedby" ):
-                 sortedby = form["sortedby"][0]
-             else: sortedby = "score"
-             if form.has_key( "page" ):
-                 page = form["page"][0]
-             else: page = 1
-             if form.has_key( "recitation" ):
-                 recitation = form["recitation"][0]
-             else:
-                 recitation = "Mishary Rashid Alafasy"
-             if form.has_key( "highlight" ):
-                 highlight = form["highlight"][0]
-             else: highlight = "css"
-             if form.has_key( "translation" ):
-                 translation = form["translation"][0]
-             else: translation = "None"
-             if form.has_key( "fuzzy" ):
-                 QSE = FuzzyQuranicSearchEngine( "./indexes/main/" )
-
-             print results( form["search"][0], sortedby = sortedby,  highlight = highlight, recitation = recitation, page = page, translation = translation )
-
-        elif form.has_key( "list" ):
-             print "Content-Type: application/json; charset=utf-8"
-             #Allow cross domain XHR
-             print 'Access-Control-Allow-Origin: *'
-             print 'Access-Control-Allow-Methods: GET'
-             print
-
-             if form["list"][0] == "translations":
-                 print json.dumps( Translations )
-             elif form["list"][0] == "recitations":
-                 print json.dumps( Recitations )
-             elif form["list"][0] == "information":
-                 print about()
-             elif form["list"][0] == "fields":
-                 print json.dumps( Fields )
-             else:
-                 print "choose <b>list=translations | recitations | information | fields</b>"
 
 
-        else:
-             print "Content-Type: text/html; charset=utf-8\n\n"
-             print
 
-             print """
-             This is the <a href='http://json.org/'>JSON</a> output 
-system of <a href="http://wiki.alfanous.org">Alfanous</a> project .This 
-feature is in Alpha test and the Json schema may be it's not stable . 
-We are waiting for real feadbacks and suggestions to improve its 
-efficacity,quality and stability. To contact the author ,please send a direct email to <b> assem.ch[at]gmail.com</b> or to the mailing list <b>alfanous [at] googlegroups.com</b>
-    <br/><br/> For more details  visit the page of this service <a href="http://wiki.alfanous.org/doku.php?id=json_web_service">here</a>
-    """
+QSE = QuranicSearchEngine( "./indexes/main/" )
+TSE = TraductionSearchEngine( "./indexes/extend/" )
 
-    except:
-        pass
 
-    f = open("instances.cpt","r")
-    instances_cpt = int(f.readline())
-    f = open("instances.cpt","w")
-    f.write(str(instances_cpt-1)) 
-    f.close()
 
-else:
+
+if form.has_key( "suggest" ):
     print "Content-Type: application/json; charset=utf-8"
     #Allow cross domain XHR
     print 'Access-Control-Allow-Origin: *'
     print 'Access-Control-Allow-Methods: GET'
     print
-    print """{"error":"max_instances_reached", "ayas": {}, "runtime": "0.00000", "suggestions": [], "words": {"global": {"nb_matches": 0, "nb_vocalizations": 0, "nb_words": 0}}, "interval": {"start": 0, "total": 0, "end": 0}}"""
 
+    print suggest( form["suggest"][0] )
+
+elif  form.has_key( "search" ) :
+    print "Content-Type: application/json; charset=utf-8"
+    #Allow cross domain XHR
+    print 'Access-Control-Allow-Origin: *'
+    print 'Access-Control-Allow-Methods: GET'
+    print
+
+    visits4search()
+
+    if form.has_key( "sortedby" ):
+        sortedby = form["sortedby"][0]
+    else: sortedby = "score"
+    if form.has_key( "page" ):
+        page = form["page"][0]
+    else: page = 1
+    if form.has_key( "recitation" ):
+        recitation = form["recitation"][0]
+    else:
+        recitation = "Mishary Rashid Alafasy"
+    if form.has_key( "highlight" ):
+        highlight = form["highlight"][0]
+    else: highlight = "css"
+    if form.has_key( "translation" ):
+        translation = form["translation"][0]
+    else: translation = "None"
+    if form.has_key( "fuzzy" ):
+        QSE = FuzzyQuranicSearchEngine( "./indexes/main/" )
+
+    print results( form["search"][0], sortedby = sortedby, highlight = highlight, recitation = recitation, page = page, translation = translation )
+
+elif form.has_key( "list" ):
+    print "Content-Type: application/json; charset=utf-8"
+    #Allow cross domain XHR
+    print 'Access-Control-Allow-Origin: *'
+    print 'Access-Control-Allow-Methods: GET'
+    print
+
+    if form["list"][0] == "translations":
+        print json.dumps( Translations )
+    elif form["list"][0] == "recitations":
+        print json.dumps( Recitations )
+    elif form["list"][0] == "information":
+        print about()
+    elif form["list"][0] == "fields":
+        print json.dumps( Fields )
+    else:
+        print "choose <b>list=translations | recitations | information | fields</b>"
+
+
+else:
+    print "Content-Type: text/html; charset=utf-8\n\n"
+    print
+
+    print """
+    This is the <a href='http://json.org/'>JSON</a> output system of <a href="http://wiki.alfanous.org">Alfanous</a> project .This feature is in Alpha test and the Json schema may be it's not stable . We are waiting for real feadbacks and suggestions to improve its efficacity,quality and stability. To contact the author ,please send a direct email to <b> assem.ch[at]gmail.com</b> or to the mailing list <b>alfanous [at] googlegroups.com</b>
+    <br/><br/> For more details  visit the page of this service <a href="http://wiki.alfanous.org/doku.php?id=json_web_service">here</a>
+    """
+
+
+
+##tests
+#a=suggest("الحم")
+#print results("الحمد")
 
 
 
