@@ -36,7 +36,7 @@ TODO add qurany project for Subjects in english
 #from alfanous.dynamic_resources.arabicnames_dyn import ara2eng_names
 from alfanous.Searching import QSearcher, QReader
 from alfanous.Indexing import QseDocIndex, ExtDocIndex, BasicDocIndex
-from alfanous.ResultsProcessing import Qhighlight #, QPaginate , QFilter
+from alfanous.ResultsProcessing import Qhighlight , QPaginate# , QFilter
 from alfanous.QueryProcessing import QuranicParser, StandardParser, FuzzyQuranicParser #,  ArabicParser
 from alfanous.Suggestions import  QAyaSpellChecker, QSubjectSpellChecker, concat_suggestions, QWordChecker #, QSuggester
 
