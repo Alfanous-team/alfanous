@@ -75,7 +75,7 @@ def _make_arabic_parser():
                 األآإـتنمكطدجحخهعغفقثصضشسيبئءؤرىةوزظذ
                 """
 
-    wordtext = CharsNotIn( u'//*؟^():"{}[]$><%~#،,\' +-' )
+    wordtext = CharsNotIn( u'//*؟^():"{}[]$><%~#،,\' +-|' )
     escape = Suppress( escapechar ) \
              + ( Word( printables, exact = 1 ) | White( exact = 1 ) )
     wordtoken = Combine( OneOrMore( wordtext | escape ) )
