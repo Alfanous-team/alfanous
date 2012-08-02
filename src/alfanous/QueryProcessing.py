@@ -71,7 +71,7 @@ def _make_arabic_parser():
                 األآإـتنمكطدجحخهعغفقثصضشسيبئءؤرىةوزظذ
                 """
 
-    wordtext = CharsNotIn( u'//*؟^():"{}[]$><%~#،,\' +-' )
+    wordtext = CharsNotIn( u'//*؟^():"{}[]$><%~#،,\' +-!' )
     escape = Suppress( escapechar ) \
              + ( Word( printables, exact = 1 ) | White( exact = 1 ) )
     wordtoken = Combine( OneOrMore( wordtext | escape ) )
@@ -185,13 +185,13 @@ def _make_arabic_parser():
     operatorNot = Group( Suppress( Keyword( u"ليس" ) | Keyword( u"NOT" ) ) + Suppress( White() ) + unit ).setResultsName( "Not" )
     generalUnit = operatorNot | unit
 
-    andToken = Keyword( u"و" ) | Keyword( u"AND" ) | Literal( u"+" )
-    orToken = Keyword( u"أو" ) | Keyword( u"او" ) | Keyword( u"OR" ) | Literal( u"|" )
-    andNotToken = Keyword( u"وليس" ) | Keyword( u"ANDNOT" ) | Literal( u"-" )
+    andToken = Keyword( u"و" ) | Keyword( u"AND" )
+    orToken = Keyword( u"أو" ) | Keyword( u"او" ) | Keyword( u"OR" )
+    andNotToken = Keyword( u"وليس" ) | Keyword( u"ANDNOT" )
 
-    operatorAnd = Group( generalUnit + Suppress( White() ) + Suppress( andToken ) + Suppress( White() ) + expression ).setResultsName( "And" )
-    operatorOr = Group( generalUnit + Suppress( White() ) + Suppress( orToken ) + Suppress( White() ) + expression ).setResultsName( "Or" )
-    operatorAndNot = Group( unit + Suppress( White() ) + Suppress( andNotToken ) + Suppress( White() ) + unit ).setResultsName( "AndNot" )
+    operatorAnd = Group( ( generalUnit + Suppress( White() ) + Suppress( andToken ) + Suppress( White() ) + expression ) | ( generalUnit + Suppress( Literal( u"+" ) ) + expression ) ).setResultsName( "And" )
+    operatorOr = Group( ( generalUnit + Suppress( White() ) + Suppress( orToken ) + Suppress( White() ) + expression ) | ( generalUnit + Suppress( Literal( u"|" ) ) + expression ) ).setResultsName( "Or" )
+    operatorAndNot = Group( ( unit + Suppress( White() ) + Suppress( andNotToken ) + Suppress( White() ) + unit ) | ( unit + Suppress( Literal( u"-" ) ) + unit ) ).setResultsName( "AndNot" )
 
 
 
