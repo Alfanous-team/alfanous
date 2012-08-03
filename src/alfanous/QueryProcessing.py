@@ -19,15 +19,11 @@
 '''
 it contains specified query parsers , some linguistic operations
 
-@author: Assem Chelli
-@contact: assem.ch [at] gmail.com
-@license: AGPL
-
-@todo: Buckwalter/Other codings Search  {bw!  kutubo }
-@todo: Upgrading Tuple Search to Embeded Query Search  {1! word="foo"}
-@todo: Smart-search : take the optimal choice with NLP!
-@todo: Synonyme-Antonyme Upgrade to related search {syn!  fire }
-@bug: multifields
+TODO Buckwalter/Other codings Search  {bw!  kutubo }
+TODO Upgrading Tuple Search to Embeded Query Search  {1! word="foo"}
+TODO Smart-search : take the optimal choice with NLP!
+TODO Synonyme-Antonyme Upgrade to related search {syn!  fire }
+FIXME multifields
 '''
 
 from alfanous.Support.whoosh.qparser import QueryParser #, MultifieldParser
@@ -75,7 +71,7 @@ def _make_arabic_parser():
                 األآإـتنمكطدجحخهعغفقثصضشسيبئءؤرىةوزظذ
                 """
 
-    wordtext = CharsNotIn( u'//*؟^():"{}[]$><%~#،,\' +-' )
+    wordtext = CharsNotIn( u'//*؟^():"{}[]$><%~#،,\' +-!' )
     escape = Suppress( escapechar ) \
              + ( Word( printables, exact = 1 ) | White( exact = 1 ) )
     wordtoken = Combine( OneOrMore( wordtext | escape ) )
@@ -90,7 +86,7 @@ def _make_arabic_parser():
     # Or, start with wildchars, and then either a mixture of word and wild chars
     #, or the next token
     wildstart = wildchars \
-		+( OneOrMore( wordtoken + Optional( wildchars ) ) \
+		+ ( OneOrMore( wordtoken + Optional( wildchars ) ) \
 			| FollowedBy( White() \
 			| StringEnd() ) )
     wildcard = Group( Combine( wildmixed | wildstart ) ).setResultsName( "Wildcard" )
@@ -104,11 +100,11 @@ def _make_arabic_parser():
 	 | Keyword( "To" ) \
 	 | Keyword( "to" ) \
 	 | Keyword( "TO" )
-    
+
     openstartrange = Group( Empty() ) \
 		     + Suppress( to + White() ) \
 		     + Group( rangeitem )
-    
+
     openendrange = Group( rangeitem ) \
 		   + Suppress( White() + to ) \
                    + Group( Empty() )
@@ -189,13 +185,13 @@ def _make_arabic_parser():
     operatorNot = Group( Suppress( Keyword( u"ليس" ) | Keyword( u"NOT" ) ) + Suppress( White() ) + unit ).setResultsName( "Not" )
     generalUnit = operatorNot | unit
 
-    andToken = Keyword( u"و" ) | Keyword( u"AND" ) | Literal( u"+" )
-    orToken = Keyword( u"أو" ) | Keyword( u"او" ) | Keyword( u"OR" ) | Literal( u"|" )
-    andNotToken = Keyword( u"وليس" ) | Keyword( u"ANDNOT" ) | Literal( u"-" )
+    andToken = Keyword( u"و" ) | Keyword( u"AND" )
+    orToken = Keyword( u"أو" ) | Keyword( u"او" ) | Keyword( u"OR" )
+    andNotToken = Keyword( u"وليس" ) | Keyword( u"ANDNOT" )
 
-    operatorAnd = Group( generalUnit + Suppress( White() ) + Suppress( andToken ) + Suppress( White() ) + expression ).setResultsName( "And" )
-    operatorOr = Group( generalUnit + Suppress( White() ) + Suppress( orToken ) + Suppress( White() ) + expression ).setResultsName( "Or" )
-    operatorAndNot = Group( unit + Suppress( White() ) + Suppress( andNotToken ) + Suppress( White() ) + unit ).setResultsName( "AndNot" )
+    operatorAnd = Group( ( generalUnit + Suppress( White() ) + Suppress( andToken ) + Suppress( White() ) + expression ) | ( generalUnit + Suppress( Literal( u"+" ) ) + expression ) ).setResultsName( "And" )
+    operatorOr = Group( ( generalUnit + Suppress( White() ) + Suppress( orToken ) + Suppress( White() ) + expression ) | ( generalUnit + Suppress( Literal( u"|" ) ) + expression ) ).setResultsName( "Or" )
+    operatorAndNot = Group( ( unit + Suppress( White() ) + Suppress( andNotToken ) + Suppress( White() ) + unit ) | ( unit + Suppress( Literal( u"-" ) ) + unit ) ).setResultsName( "AndNot" )
 
 
 

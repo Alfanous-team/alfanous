@@ -1,8 +1,11 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<!-- TODO FIXME fix click-able bugs, eliminate the last vocalization of aya words and activate partial vocalization search  , eliminate Kasheeda in Godnames , fix g_a=0 clickable bug , fix sura_name phrase search possiblity -->
-	<!-- TODO clickable-floating-panel with options and user feedback!  -->
+	<!-- 	TODO FIXME fix click-able bugs, eliminate the last vocalization of aya words and activate partial vocalization search  , eliminate Kasheeda in Godnames , fix g_a=0 clickable bug , fix sura_name phrase search possiblity -->
+	<!-- 	TODO clickable-floating-panel with options and user feedback! 
+			TODO: show prev_aya and next_aya [WUI]
+			TODO: replace suggested word in the  previous query [WUI] 
+			-->
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 
 	<title>الفانوس | محرك بحث قرآني متقدم</title>
@@ -57,11 +60,11 @@
 			$("#help_btn").click(function() {
 				$("#help").overlay().load();
 			});
-			/*
+		
 			$("#down_btn").click(function() {
 				$("#down").overlay().load();
 			});
-			*/
+	
 
 			// help links
 			$("#help table a").bind('click', function(event) {
@@ -101,7 +104,7 @@
 					new_param.sorted_by = "mushaf";
 					if (filter) new_param.search = "(" + $("#search_box").val() + ") + " + query;
 					else new_param.search = query;
-					return "<a class='no_decoration' href='"+ get_url_without_params()+ "?"+ build_params( new_param )+ "'>" 
+					return "<a class='no_decoration' href=\""+ get_url_without_params()+ "?"+ build_params( new_param )+ "\">" 
 				}
 		
 		function get_results (param) {
@@ -127,7 +130,7 @@
 
 
 		function show_results (json, param) {
-			var color_list = ["#181", "#118", "#811", "#807", "#F50", "#f00", "#f39", "#f43", "#660", "#444"];
+			var color_list = [ "#118", "#811", "#807", "#F50", "#f00", "#f39", "#f43", "#660", "#444"]; //"#181"
 			var results = "";
 			var results_pages = "";
 
@@ -166,15 +169,25 @@
 				// Pages control
 				results_pages += "<br />";
 				results_pages += "<div class='pages'>\n<img src='images/prev.gif' alt='الصفحة السابقة' title = 'الصفحة السابقة' /><div style=' display:inline-block; position:relative; top:-8px;'>\n";
-				for( i = 1; i <= nb_pages; i++) {
+				for( i = 1;  i <= nb_pages ; i++) 
+				{
 					if (i == page)
 					{
 						results_pages += " "+ i;
 					}
-					else
+					else if ((i <= page + 7 )  && (i >= page - 3) ) // pages  in range [-3,+7]
 					{
 						results_pages += " <a href=''>"+ i+ "</a>";
 					}
+					else if (i==1 || (i%50 == 0 && i<page))  // first page
+					{
+						results_pages += " <a href=''>"+ i+ "</a> ..";
+					}
+					else if (i==nb_pages || (i%50 == 0 && i>page))  // last page
+					{
+						results_pages += " .. <a href=''>"+ i+ "</a>";
+					}
+
 				}
 				results_pages += "</div><img src='images/next.gif' alt='الصفحة التالية' title = 'الصفحة التالية' />\n</div>\n";
 				
@@ -239,7 +252,7 @@
 						results += "</span></legend>";
 					results += "<br><p align='center' style=' margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;'>";
 						results += "<span style='font-family:\"ArabeyesQr\", Scheherazade; line-height: 180%; font-size:22px; color:#7b563a;'><br>[ ";
-						results += "<span style='font-family:\"me_quran\", Scheherazade; font-size:22px;'>"
+						results += "<span  class='aya_words' style='font-family:\"me_quran\", Scheherazade; font-size:22px;'>"
 						
 						
 						aya_words = json.ayas[i].aya.text.split(" ");
@@ -253,13 +266,14 @@
 								}
 							else 
 								{
-								results += build_search_link(param,"آية_:" + aya_words[j] ,false ) + aya_words[j] + "<a />" + " " ;
+								results += "<a href=''>" + aya_words[j] + "<a />" + " " ;
 								
 								}
 						}
 						results += "</span> ";
 						results += " <span>("+ build_search_link(param,"رقم_الآية:" + json.ayas[i].aya.id ,false ) +   json.ayas[i].aya.id + "</a>)</span> ";
 						results += "] <br></span></p><br />";
+						
 					results += "<p dir='ltr' align='center' style=' margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;'>";
 						results += "<span style='font-family: \"Droid Sans\", Tahoma, \"Bitstream Vera Sans\", \"DejaVu Sans\", Verdana, Geneva, Arial, Sans-serif; line-height: 150%;'>"+ json.ayas[i].aya.traduction+ "</span></p>";
 					results += "<br><p align='center' style=' margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;'>";
@@ -325,6 +339,16 @@
 				}
 
 
+				// Aya_words clicks control
+				$(".aya_words a").one('click', function(event) {
+					var param2 = param;
+					param2.page = 1;
+					param2.search = $(this).text();
+					
+					redirect_to_params ( param2 );
+					event.preventDefault();
+				});
+				
 				// Pages control
 				$(".pages a").one('click', function(event) {
 					var param2 = param;
@@ -575,10 +599,11 @@
 
 <br />
 <br />
-<!--<div id="down_btn"><a rel='#down' class='xbutton gray' >تحميل</a></div>-->
+<div id="down_btn"><a  class='xbutton gray' >تحميل</a></div>
 <div id="help_btn"><a class='xbutton gray' >مساعدة</a></div>
-<div id="vote_btn"><a class='xbutton gray' href="http://www.surveymonkey.com/s/NTFPFTF" target="_blank"><i>ملاحظة 12-06-2012:</i> الرجاء المساهمة معنا في الرقي بمشروع  <b>الفانوس</b>, بإكمال هذا الاستبيان</a></div>
-<br /><br /> 
+<br /><br />
+<!--<div id="vote_btn"><a class='xbutton gray' href="http://www.surveymonkey.com/s/NTFPFTF" target="_blank"><i>ملاحظة 12-06-2012:</i> الرجاء المساهمة معنا في الرقي بمشروع  <b>الفانوس</b>, بإكمال هذا الاستبيان</a></div>
+<br /><br /> -->
 <!--  <div id="vote_btn"><a class='xbutton gray' href="https://www.surveymonkey.com/s/P3LGJ8K" target="_blank"><i>News 22-04-2012:</i> Please help us to make <b>Alfanous</b> better, by taking this survey!</a></div>
 <br /><br /> -->
 
@@ -587,16 +612,15 @@
 
 </div>
 </div>
-<div id="down" class="modal" style="text-align: center;">
+<div id="down" class="modal" style="text-align: right;">
 	<h2 style='padding:0 0 0px 0'><img alt="download" src="images/Download.png">  تحميل</h2><br/>
-<strong>النسخة المكتبية الانجليزية 0.4 <br/> 
+<strong> النسخة المكتبية الانجليزية 0.4 : 
 <a class="name" title="Click to download alfanousDesktop-win0.4r20.exe" href="http://sourceforge.net/projects/alfanous/files/Interfaces/AlfanousDesktop/0.4.20/alfanousDesktop-win0.4r20.exe/download">وينداوز</a>
- - 
-<a class="name" title="Click to download alfanousDesktop-linux-0.4r20.deb" href="http://sourceforge.net/projects/alfanous/files/Interfaces/AlfanousDesktop/0.4.20/alfanousDesktop-linux-0.4r20.deb/download">لينوكس</a><br />
-النسخة المكتبية العربية 0.3 <br/> 
-<a class="name" title="Click to download alfanousDesktop-windows-0.3ar.exe" href="http://sourceforge.net/projects/alfanous/files/Interfaces/AlfanousDesktop/0.3/alfanousDesktop-windows-0.3ar.exe/download">ويندوز</a></strong>
+ <br/> <br/> 
+النسخة المكتبية العربية 0.3  :
+<a class="name" title="Click to download alfanousDesktop-windows-0.3ar.exe" href="http://sourceforge.net/projects/alfanous/files/Interfaces/AlfanousDesktop/0.3/alfanousDesktop-windows-0.3ar.exe/download">وينداوز</a></strong>
     <br/><br/>
-		<button type="button" class='close gray button'> إغلاق </button>	
+		<button type="button" class='close gray button' > إغلاق </button>	
 	<br />
 </div>
 <div id="help" class="modal" style="width: 675px; text-align: right;">
@@ -657,7 +681,8 @@
                     <li><a href="http://m.alfanous.org/">Mobile Web Interface</a></li>
                     <li><a href="http://old.alfanous.org/">Old HTML Web Interface</a></li> 
                     <li><a href="http://sourceforge.net/projects/alfanous/" target="_blank">@Sourceforge</a></li> 
-                    <li class="last"><a href="http://wwW.launchpad.net/alfanous/" target="_blank">@Launchpad</a></li>
+                    <li><a href="http://wwW.launchpad.net/alfanous/" target="_blank">@Launchpad</a></li>
+                    <li class="last"><a href="http://github.com/Alfanous-team/alfanous" target="_blank">@Github</a></li>
                 </ul> 
             </div> 
             <div class="column"> 
@@ -674,9 +699,9 @@
             </div>
 	<!-- Assem -->
 	<div class="awa-box" >
-		<a href="http://wiki.alfanous.org/doku.php?id=Best_technicality_award">
-			<img src='images/awa2-128.png' class='banner' alt='Best technicality award' title='جائزة الموقع الأفضل تقنيا في الجزائر 2012'/>
-		</a>
+		
+			<img src='images/awa2-128.png' class='banner' alt='Best technicality award' title='Award of the best-technicality  website in AlgeriaWebAwards2012'/>
+		
 	</div>
 	<!-- -->
             <div class="column last"> 
@@ -685,9 +710,9 @@
                 	<a href="http://www.python.org/" target="_blank"><img src="images/python-logo-inkscape.png" alt="Python Powered" title="Python Powered"></a>
                 	<a href="http://www.json.org/" target="_blank"><img src="images/json_logo.png" alt="Provide JSON" title="Provide JSON"></a>
                 	<a href="http://jquery.com/" target="_blank"><img src="images/jquery_logos.png" alt="jQuery Logo" title="jQuery"></a>
-                	<a href="http://jqueryui.com/" target="_blank"><img src="images/jquery_logos_ui.png" alt="jQuery UI Logo" title="jQuery UI"></a>
+                	<!-- <a href="http://jqueryui.com/" target="_blank"><img src="images/jquery_logos_ui.png" alt="jQuery UI Logo" title="jQuery UI"></a> -->
                 	<a href="http://www.w3.org/html/logo/" target="_blank"><img src="images/html5-32x32.png" alt="Html5 Logo" title="HTML5"></a>
-                	<a href="https://www.djangoproject.com/" target="_blank"><img src="images/Django_logo.png" alt="Django Logo" title="Django"></a>
+                	<!-- <a href="https://www.djangoproject.com/" target="_blank"><img src="images/Django_logo.png" alt="Django Logo" title="Django"></a> -->
                 </p>
                 <p class="right">Alfanous is a Quranic search engine offers simple and advanced search services in the whole information that Holy Qur’an contains. it is based on the modern approach of information retrieval to get a good-stability and a high-speed search. We want implement some additional features like Highlight, Suggestions, Scoring …etc.</p>
             </div> 
