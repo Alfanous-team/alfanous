@@ -62,6 +62,7 @@ a.button:active {
 }
 
 a{color: gray;}
+.aya_words a { text-decoration: none; }
 a:hover{color: green;}
 .select {
 	background: url("../images/select.gif") no-repeat scroll right top transparent;
@@ -138,7 +139,7 @@ a:hover{color: green;}
 	left:10px;
 	background-color:#fff;
 	display:none;
-	width:350px;
+	width:300px;
 	padding:15px;
 	border:2px solid #333;
 	-moz-border-radius:6px;
@@ -231,8 +232,8 @@ a:hover{color: green;}
 	clear:both;
 	margin:0;
 	padding:0;
-	position: absolute;
-	top:180px;
+	position: fixed;
+	top:150px;
 	right:0;
 	z-index:95;
 	width:50px;
@@ -295,12 +296,21 @@ a:hover{color: green;}
 
 /* Abdellah */
 
+/*
 #help_btn {
 	position: absolute;
 	top:10px;
 	right:0;
 	z-index:95;
 }
+
+#down_btn {
+	position: absolute;
+	top:10px;
+	right:50px;
+	z-index:95;
+}
+*/
 
 #vote_btn a {
 	font-weight: normal;
@@ -624,12 +634,15 @@ div#footer-small-wrapper {
     border-top: 1px solid #2e353d;
     color: #aaa;
     font-size: 11px;
+
+
 }
 
 div#footer-small {
     width: 960px;
     margin: auto;
     line-height: 30px;
+
 }
 
 div#footer-small a {
