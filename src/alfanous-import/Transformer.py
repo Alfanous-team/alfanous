@@ -23,7 +23,7 @@
 @license: AGPL
 
 
-@todo: reorganize the importer module ,keep it free of un-needed resources
+TODO reorganize the importer module ,keep it free of un-needed resources
 '''
 
 ## attention : these libraries will be pickled in the indexes
@@ -43,7 +43,7 @@ import sqlite3 as lite
 
 from alfanous.main import QuranicSearchEngine
 from alfanous.Indexing import QseDocIndex
-from alfanous.TextProcessing import QStandardAnalyzer, QDiacAnalyzer, QArabicSymbolsFilter, QUthmaniDiacAnalyzer, QUthmaniAnalyzer
+from alfanous.TextProcessing import QStandardAnalyzer, QDiacAnalyzer, QArabicSymbolsFilter, QUthmaniDiacAnalyzer, QUthmaniAnalyzer, APermissibleAnalyzer
 from alfanous.Exceptions import  Ta7rif
 from alfanous.Support.ar_ctype import strip_tashkeel
 from alfanous.Searching import QReader
