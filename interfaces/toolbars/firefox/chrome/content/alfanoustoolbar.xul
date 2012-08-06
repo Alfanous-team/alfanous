@@ -1,60 +1,168 @@
 <?xml version="1.0"?>
+
+<!-- 
+	alfanoustoolbar.xul file 
+	created on Sunday, August 05th, 2012 at 13:00
+	by SMAHI Zakaria
+	zakaria08esi@gmail.com
+							-->
+
+<!-- css sheet used -->
+
 <?xml-stylesheet href="chrome://alfanoustoolbar/skin/alfanoustoolbar.css" type="text/css"?>
 
-<overlay id="TutTB-Overlay"
+<!-- overlay tag -->
+
+<overlay id="AlfanousTB-Overlay"
          xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
-         
-    <script type="application/x-javascript"
+
+	<!-- the JavaScript file used -->
+
+	<script type="application/x-javascript"
             src="chrome://alfanoustoolbar/content/alfanoustoolbar.js" />
-            
-    <toolbox id="navigator-toolbox">
-    
-        <toolbar id="TutTB-Toolbar" toolbarname="Alfanous Toolbar" accesskey="T"
-                 class="chromeclass-toolbar" context="toolbar-context-menu" 
-                 hidden="false" persist="hidden">
-                 
-            <toolbaritem flex="0">
-                <toolbarbutton id="TutTB-MainMenu" type="menu"
-                               tooltiptext="Alfanous Toolbar Main Menu">
-                    <menupopup>
-                        <menuitem label="Alfanous project" accesskey="G"
-                                  tooltiptext="Navigate to alfanous"
-                                  oncommand="TutTB_LoadURL('http://sourceforge.net/projects/alfanous/')" />
-                        
-                        <menuseparator />
+
+
+	
+	<!-- ToolBox -->
+
+	<toolbox id="navigator-toolbox">
+		
+	<!-- Toolbar -->
+
+		<toolbar id="AlfanousTB-Toolbar" toolbarname="Alfanous Toolbar" accesskey="A"
+			class="chromeclass-toolbar" context="toolbar-context-menu"
+			hidden="false" persist="hidden">
+		
+			<!-- official website button -->
+
+			<toolbarbutton id="AlfanousTB-Web-Button" tooltiptext="Alfanous official website"
+				label="Alfanous" onclick="AlfanousTB_LoadURL('http://alfanous.org/')" />
+		
+			<!-- a separator -->
+
+			<toolbarseparator />
+		
+			<!-- search in Alfanous -->
+		
+			<!-- SearchBox item -->
+
+			<toolbaritem id="AlfanousTB-SearchTerms-TBItem" persist="width">
 			
-			<menuitem label="donate us" accesskey="G"
-                                  tooltiptext="donate to alfanous project"
-                                  oncommand="TutTB_LoadURL('http://sourceforge.net/donate/index.php?group_id=281803')" />
+				<menulist id="AlfanousTB-SearchTerms" editable="true" flex="1"
+					minwidth="100" width="250"
+					onkeypress="AlfanousTB_KeyHandler(event);">
+				
+					<menupopup id="AlfanousTB-SearchTermsMenu" onpopupshowing="AlfanousTB_Populate()" />
 
-                      </menupopup>  
-                        
-                </toolbarbutton>
-            </toolbaritem>
-            
-            <toolbaritem id="TutTB-SearchTerms-TBItem" persist="width">
-                <menulist id="TutTB-SearchTerms" editable="true" flex="1"
-                          minwidth="100" width="400"
-                          onkeypress="TutTB_KeyHandler(event);">
-                    <menupopup id="TutTB-SearchTermsMenu" onpopupshowing="TutTB_Populate()" />
-                </menulist>
-            </toolbaritem>
-            
-            <splitter id="TutTB-ResizeSplitter" state="open" collapse="none"
-                      resizebefore="closest" resizeafter="farthest"
-                      tooltiptext="Resize the Search Box">
-                <vbox id="TutTB-ResizeBar" />
-            </splitter>
-            
-            <toolbaritem flex="0">
-                
-                <toolbarbutton id="TutTB-Web-Button" tooltiptext="Search"
-                               label="Aya Search" oncommand="TutTB_Search(event, 'aya')" />
-            </toolbaritem>
-            
-            <toolbarspring />
+				</menulist>
 
-        </toolbar>
-    </toolbox>
+			</toolbaritem>
+
+			<!-- SearchBox Resizer -->
+
+			<splitter id="AlfanousTB-ResizeSplitter" state="open" collapse="none"
+                		resizebefore="closest" resizeafter="farthest"
+                		tooltiptext="Resize the Search Box">
+
+                		<vbox id="AlfanousTB-ResizeBar" />
+            		</splitter>
+
+			<!-- Search Button -->
+
+			<toolbarbutton id="AlfanousTB-Search-Button" tooltiptext="Search on Alfanous"
+				label="Search" onclick="AlfanousTB_Search(event, 'word')" />
+
+			<!-- a separator -->
+
+			<toolbarseparator />
+
+			<!-- Alfanous CMS button -->
+
+			<toolbarbutton id="AlfanousTB-Cms-Button" tooltiptext="Alfanous CMS website"
+				label="" onclick="AlfanousTB_LoadURL('http://cms.alfanous.org/')" />
+
+			<!-- wiki pages button -->
+
+			<toolbarbutton id="AlfanousTB-Wiki-Button" tooltiptext="Alfanous Wiki pages"
+				label="" onclick="AlfanousTB_LoadURL('http://wiki.alfanous.org/')" />
+
+			<!-- facebook page button -->
+
+			<toolbarbutton id="AlfanousTB-FaceBook-Button" tooltiptext="Find us on FaceBook"
+				label="" onclick="AlfanousTB_LoadURL('http://www.facebook.com/Alfanous')" />
+
+			<!-- twitter button -->
+
+			<toolbarbutton id="AlfanousTB-Twitter-Button" tooltiptext="Follow us on Twitter"
+				label="" onclick="AlfanousTB_LoadURL('http://twitter.com/alfanous')" />
+
+			<!-- Google+ button -->
+
+			<toolbarbutton id="AlfanousTB-Gplus-Button" tooltiptext="Add us on Google+"
+				label="" onclick="AlfanousTB_LoadURL('http://plus.google.com/111305625425237630318')" />
+
+			<!-- Alfanous on SourceForge button -->
+
+			<toolbarbutton id="AlfanousTB-SourceForge-Button" tooltiptext="Alfanous on SourceForge"
+				label="" onclick="AlfanousTB_LoadURL('http://sourceforge.net/projects/alfanous/')" />
+
+			<!-- Alfanous on LaunchPad button -->
+
+			<toolbarbutton id="AlfanousTB-LaunchPad-Button" tooltiptext="Alfanous on LaunchPad"
+				label="" onclick="AlfanousTB_LoadURL('http://launchpad.net/alfanous/')" />
+
+			<!-- Alfanous on Github button-->
+
+			<toolbarbutton id="AlfanousTB-Github-Button" tooltiptext="Alfanous on Github"
+				label="" onclick="AlfanousTB_LoadURL('https://github.com/Alfanous-team/alfanous')" />
+
+			<!-- a separator -->
+
+			<toolbarseparator />
+
+			<!-- Available Interfaces menu-button -->
+
+			<toolbarbutton id="AlfanousTB-Interfaces-Button" label="Other Interfaces"
+				type="menu-button" tooltiptext="Combined Search">
+
+				<!-- Items -->
+
+				<menupopup>
+
+					<!-- Official Interfaces; Add a separator -->
+
+					<!-- JSON Interface -->
+
+					<menuitem id="AlfanousTB-Interfaces-JSON" label="JSON Interface"
+						class="menuitem-iconic" tooltiptext="JSON Interface for Alfanous"
+						onclick="AlfanousTB_LoadURL('http://www.alfanous.org/json')" />
+
+					<!-- Mobile Version -->
+
+					<menuitem id="AlfanousTB-Interfaces-Mobile" label="Alfanous Mobile"
+						class="menuitem-iconic" tooltiptext="use alfanous website from mobile"
+						onclick="AlfanousTB_LoadURL('mobile.alfanous.org')" />
+
+					<!-- Non-Official Interfaces; Add a separator -->						
+
+					<!-- Under Construction -->
+
+					
+
+					<!-- Other Interfaces must be added under this comment -->
+
+					<!-- Copy/Paste the menuitem tag used before adding new interfaces links -->
+
+				</menupopup>
+
+			</toolbarbutton> 
+
+			<!-- THE END -->
+
+			<toolbarspring />		
+		
+		</toolbar>
+
+	</toolbox>
+	
 </overlay>
-
