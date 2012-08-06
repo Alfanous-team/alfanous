@@ -1,31 +1,87 @@
-#TutTB-MainMenu {
-    list-style-image: url("chrome://alfanoustoolbar/skin/main.png");
+/*
+	alfanoustoolbar.css file 
+	created on Sunday, August 05th, 2012 at 13:00
+	by SMAHI Zakaria
+	zakaria08esi@gmail.com
+							 */
+
+/* Linking The alfanous.png icon to AlfanousTB-Web-Button */
+
+#AlfanousTB-Web-Button {
+	list-style-image: url("chrome://Alfanoustoolbar/skin/alfanous.png");
 }
 
-#TutTB-Combined-Button {
-    list-style-image: url("chrome://alfanoustoolbar/skin/combined.png");
+/* Linking The search.png icon to AlfanousTB-Search-Button */
+
+#AlfanousTB-Search-Button{
+	list-style-image: url("chrome://Alfanoustoolbar/skin/search.png");
 }
 
-#TutTB-Combined-Button > .toolbarbutton-menubutton-button {
-    -moz-box-orient: horizontal;
+/* Forcing the label to be horizontally aligned */
+
+#AlfanousTB-Search-Button > .toolbarbutton-menubutton-button {
+	-moz-box-orient: horizontal;
 }
 
-#TutTB-Web-Button,
-#TutTB-Combined-Web {
-    list-style-image: url("chrome://alfanoustoolbar/skin/combined.png");
+/* ResizeBar */
+
+#AlfanousTB-ResizeBar {
+	background-image: url("chrome://Alfanoustoolbar/skin/gripper.png");
+	min-height: 22px;
+	min-width: 3px;
 }
 
-#TutTB-Combined-Image {
-    list-style-image: url("chrome://alfanoustoolbar/skin/images.png");
+/* ResizeSplitter */
+
+#AlfanousTB-ResizeSplitter {
+	background: transparent;
+	border: none !important;
 }
 
-#TutTB-ResizeBar {
-    background-image: url("chrome://alfanoustoolbar/skin/gripper.png");
-    min-height: 22px;
-    min-width: 3px;
+/* Linking The cms.png icon to AlfanousTB-Cms-Button */ 
+
+#AlfanousTB-Cms-Button{
+	list-style-image: url("chrome://Alfanoustoolbar/skin/cms.png");
 }
 
-#TutTB-ResizeSplitter {
-    background: transparent;
-    border: none !important;
+/* Linking The wiki.png icon to AlfanousTB-Wiki-Button */ 
+
+#AlfanousTB-Wiki-Button{
+	list-style-image: url("chrome://Alfanoustoolbar/skin/wiki.png");
+}
+
+/* Linking The cms.png icon to AlfanousTB-FaceBook-Button */ 
+
+#AlfanousTB-FaceBook-Button{
+	list-style-image: url("chrome://Alfanoustoolbar/skin/fb.png");
+}
+
+/* Linking The t.png icon to AlfanousTB-Twitter-Button */ 
+
+#AlfanousTB-Twitter-Button{
+	list-style-image: url("chrome://Alfanoustoolbar/skin/t.png");
+}
+
+/* Linking The g+.png icon to AlfanousTB-Gplus-Button */ 
+
+#AlfanousTB-Gplus-Button{
+	list-style-image: url("chrome://Alfanoustoolbar/skin/g+.png");
+}
+
+/* Linking The sf.png icon to AlfanousTB-SourceForge-Button */ 
+
+#AlfanousTB-SourceForge-Button{
+	list-style-image: url("chrome://Alfanoustoolbar/skin/sf.png");
+}
+
+/* Linking The lp.png icon to AlfanousTB-LaunchPad-Button */ 
+
+#AlfanousTB-LaunchPad-Button{
+	list-style-image: url("chrome://Alfanoustoolbar/skin/lp.png");
+}
+
+/* Linking the gh.png icon to */
+
+#AlfanousTB-Github-Button{
+	list-style-image: url("chrome://Alfanoustoolbar/skin/gh.png");
 }

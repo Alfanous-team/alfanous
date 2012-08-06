@@ -1,27 +1,37 @@
 <?xml version="1.0"?>
 
+<!-- 
+	install.rdf file 
+	created on Sunday, August 05th, 2012 at 13:00
+	by SMAHI Zakaria
+	zakaria08esi@gmail.com
+	firefox supported versions : from 1.5 to 20th version 
+								-->
+
 <RDF xmlns="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
-     xmlns:em="http://www.mozilla.org/2004/em-rdf#">
+	xmlns:em="http://www.mozilla.org/2004/em-rdf#">
 
-    <Description about="urn:mozilla:install-manifest">
+	<Description about="urn:mozilla:install-manifest">
 
-        <!-- Required Items -->
-        <em:id>alfanousQSE@gmail.com</em:id>
-        <em:name>Alfanous Toolbar</em:name>
-        <em:version>0.2</em:version>
+		<!-- Required Items -->
 
-        <em:targetApplication>
-            <Description>
-                <em:id>{ec8030f7-c20a-464f-9b0e-13a3a9e97384}</em:id>
-                <em:minVersion>1.5</em:minVersion>
-                <em:maxVersion>3.5.*</em:maxVersion>
-            </Description>
-        </em:targetApplication>
+		<em:id>alfanousQSE@gmail.com</em:id>
+		<em:name>ALFANOUS Toolbar</em:name>
+		<em:version>0.3</em:version>
+		<em:targetApplication>
+			<Description>
+				<em:id>{ec8030f7-c20a-464f-9b0e-13a3a9e97384}</em:id>
+				<em:minVersion>1.5</em:minVersion>
+				<em:maxVersion>20.*</em:maxVersion>
+			</Description>
+		</em:targetApplication>
 
-        <!-- Optional Items -->
-        <em:creator>Assem Chelli</em:creator>
-        <em:description>alfanous toolbar:search in holy quran</em:description>
-        <em:homepageURL>alfanous.sourceforge.com</em:homepageURL>
+		<!-- Optional Items -->
 
-    </Description>
-</RDF>
+		<em:creator>Zakaria SMAHI</em:creator>
+		<em:description>ALFANOUS Toolbar: search easily in Holy Quran</em:description>
+		<em:homepageURL>http://alfanous.org/</em:homepageURL>
+
+	</Description>
+
+</RDF> 
