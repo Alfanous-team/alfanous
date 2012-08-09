@@ -54,7 +54,6 @@ Featured Posts
 - *الفانوس مشروع محرك بحث متقدم للقرآن الكريم*,  arabcrunch_
 - *جزائري يطلق محرك بحث شامل للقرآن الكريم*, onislam_
 - *Alfanous – Quran Search Engine*, muslihzarthblog_ 
-- *الفانوس...تجربة شبابية*, saidmaroc_
 **Note:**  If you wrote -yourself- a good post about Alfanous in any language, please just tell us to refer it here!
 
 .. _json_web_service: http://blank
