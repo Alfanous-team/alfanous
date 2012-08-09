@@ -19,6 +19,10 @@ Alfanous is a Quranic search engine API that offers simple and advanced search s
 
 * Alfanous is Free gratis : no payment, no ads 
 
+see FAQ_
+
+.. _FAQ: FAQ.rst
+
 --------
 Contacts
 --------
