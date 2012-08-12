@@ -135,206 +135,57 @@ Fields
 ----------------
 SortedBy Options
 ----------------
-^ Option ^ Description ^
-| score | The relevance of the results compared to the query keywords |
-| mushaf | The default order of ayas in Mus-haf |           
-| tanzil | The revelation order |
-| subject | The alphabetic order of the values for subjects fields |
-| FIELD (field's name) | The numerical order or alphabetic order of a costum field   (use "list=fields"  to  fetch the possible names of fields) |
+
+========== =================================================================================
+ Option     Description
+---------- ---------------------------------------------------------------------------------
+ score      The relevance of the results compared to the query keywords
+ mushaf     The default order of ayas in Mus-haf
+ tanzil     The revelation order
+ subject    The alphabetic order of the values for subjects fields
+ FIELD      The numerical order or alphabetic order of a costum field (see Fields_)
+
+========== =================================================================================
 
 
+-------------
+Who use this?
+-------------
+If you are using this service, We want to make Alfanous more helpful. We will be happy to know about your applications.
+   * (no application yet!)
 
-========
-Schema's
-========
+
+==============
+Schema Samples
+==============
+
 -----------
 Suggestions
 -----------
-<code java alfanous_suggestions_example.json>
-[
-
-        ["ابراهام", ["\u0625\u0628\u0631\u0627\u0647\u064a\u0645"]]
-
-]
-</code>
+TODO
 
 -------
 Results
 -------
-<code java alfanous_results_example.json>
-{
- "runtime": "0.00055",
- "suggestions": [],
- "words": {
-           "1": {
-                 "nb_matches": 3,
-                 "word": "\u0639\u0627\u0635\u0645",
-                 "nb_ayas": 3
-                 },
-           "global": {
-                      "nb_matches": 3,
-                      "nb_words": 1
-                      }
-           },
-"interval": {
-              "start": 1,
-              "total": 3,
-              "end": 3
-              },
-"ayas": {
-          "1": {
+TODO
 
-                 "sura": {
-                          "id": 40,
-                          "name": "\u063a\u0627\u0641\u0631",
-                          "type": "\u0645\u0643\u064a\u0629",
-                           "order": 60
-                           "stat":{
-                                  "letters": 5041,
-                                  "words": 1219,
-                                  "godnames": 53,
-                                  "ayas": 85,
-                                  }
-                         },
-                 "aya": {
-                     "id": 33,
-                     "text": "\u064a\u064e\u0648\u0652\u0645\u064e \u062a\u064f\u0648\u064e\u0644\u0651\u064f\u0648\u0646\u064e \u0645\u064f\u062f\u0652\u0628\u0650\u0631\u0650\u064a\u0646\u064e \u0645\u064e\u0627 \u0644\u064e\u0643\u064f\u0645\u0652 \u0645\u0650\u0646\u064e \u0627\u0644\u0644\u0651\u064e\u0640\u0647\u0650 \u0645\u0650\u0646\u0652 <b>\u0639\u064e\u0627\u0635\u0650\u0645\u064d</b> \u0648\u064e\u0645\u064e\u0646\u0652 \u064a\u064f\u0636\u0652\u0644\u0650\u0644\u0650 \u0627\u0644\u0644\u0651\u064e\u0640\u0647\u064f \u0641\u064e\u0645\u064e\u0627 \u0644\u064e\u0647\u064f \u0645\u0650\u0646\u0652 \u0647\u064e\u0627\u062f\u064d",
-                         "text_uthmani": "\u064a\u064e\u0648\u0652\u0645\u064e \u062a\u064f\u0648\u064e\u0644\u0651\u064f\u0648\u0646\u064e \u0645\u064f\u062f\u0652\u0628\u0650\u0631\u0650\u064a\u0646\u064e \u0645\u064e\u0627 \u0644\u064e\u0643\u064f\u0645 \u0645\u0651\u0650\u0646\u064e \u0671\u0644\u0644\u0651\u064e\u0640\u0647\u0650 \u0645\u0650\u0646\u0652 <b>\u0639\u064e\u0627\u0635\u0650\u0645\u064d</b> \u06d7 \u0648\u064e\u0645\u064e\u0646 \u064a\u064f\u0636\u0652\u0644\u0650\u0644\u0650 \u0671\u0644\u0644\u0651\u064e\u0640\u0647\u064f \u0641\u064e\u0645\u064e\u0627 \u0644\u064e\u0647\u064f\u06e5 \u0645\u0650\u0646\u0652 \u0647\u064e\u0627\u062f\u064d",
-                         "recitation": "http://www.versebyversequran.com/data/Alafasy_128kbps/040033.mp3",
-                         "traduction": null
-                         },
-                 "stat": {
-                          "letters": 52,
-                          "godnames": 2,
-                          "words": 16},
-                "theme": {
-                            "chapter": "-----",
-                            "topic": "-----",
-                            "subtopic": "-----"
-                            },
-                "position": {
-                             "rubu": 0,
-                             "manzil": 6,
-                             "hizb": 47,
-                             "page": 470
-                             }
-                 "sajda": {
-                           "exist": false,
-                           "type": null,
-                           "id": null
-                           },
-                }
-        }
-}
-</code>
 ------------
 Translations
 ------------
-<code java alfanous_translations_list_example.json>
-{
-indonesian: "Bahasa Indonesia-Indonesian"
-noghmani: "Noghmani-tt"
-korkut: "Besim Korkut-Bosnian"
-jalandhry: "Jalandhry-ur"
-makarem: "Ayatollah Makarem Shirazi-Persian"
-osmanov: "M.-N.O. Osmanov-Russian"
-amroti: "Maulana Taj Mehmood Amroti-sd"
-ozturk: "Prof. Yasar Nuri Ozturk-Turkish"
-shakir: "Mohammad Habib Shakir-English"
-pickthall: "Mohammed Marmaduke William Pickthall-English"
-muhiuddinkhan: "Maulana Muhiuddin Khan-bn"
-irfan_ul_quran: "Maulana Doctor Tahir ul Qadri-ur"
-ghomshei: "Mahdi Elahi Ghomshei-Persian"
-arberry: "Arthur John Arberry-English"
-porokhova: "V. Porokhova-Russian"
-ansarian: "Hussain Ansarian-Persian"
-kuliev: "E. Kuliev-Russian"
-transliteration-en: "Transliteration-English"
-}
-</code>
+TODO
+
 -----------
 Information
 -----------
-<code java alfanous_information_example.json>
-{
-"engine": "Alfanous",
-"wiki": "http://wiki.alfanous.org/doku.php?id=json_web_service",
-"version": "0.1",
-"contact": "assem.ch@gmail.com",
-"author": "Assem chelli"
-}
-</code>
+TODO
+
 -----------
 Recitations
 -----------
-<code java alfanous_recitations_list_example.json>
-{
-"Mishary Rashid Alafasy": "http://www.versebyversequran.com/data/Alafasy_128kbps",
-"Ahmed_ibn_Ali_al-Ajamy (From QuranExplorer.com)": "http://www.versebyversequran.com/data/Ahmed_ibn_Ali_al-Ajamy_64kbps_QuranExplorer.Com",
-"Menshawi (external source)": "http://www.everyayah.com/data/Menshawi_32kbps",
-"Saad Al Ghamadi": "http://www.everyayah.com/data/Ghamadi_40kbps",
-"AbdulBasit AbdusSamad (From QuranExplorer.com)": "http://www.versebyversequran.com/data/AbdulSamad_64kbps_QuranExplorer.Com",
-"Hani Rifai": "http://www.everyayah.com/data/Hani_Rifai_192kbps",
-"Muhammad Ayyoub": "http://www.everyayah.com/data/Muhammad_Ayyoub_128kbps",
-"Husary": "http://www.everyayah.com/data/Husary_128kbps",
-"Saood bin Ibraaheem Ash-Shuraym": "http://www.everyayah.com/data/Saood bin Ibraaheem Ash-Shuraym_128kbps",
-"Hudhaify": "http://www.everyayah.com/data/Hudhaify_128kbps",
-"Abu Bakr Ash-Shaatree": "http://www.versebyversequran.com/data/Abu Bakr Ash-Shaatree_128kbps",
-"Ibrahim_Walk": "http://www.everyayah.com/data/English/Ibrahim_Walk_192kbps_TEST",
-"Husary Mujawwad": "http://www.everyayah.com/data/Husary_128kbps_Mujawwad",
-"Abdullah Basfar": "http://www.everyayah.com/data/Abdullah_Basfar_192kbps",
-"AbdulBasit AbdusSamad (Murattal style)": "http://www.versebyversequran.com/data/Abdul_Basit_Murattal",
-"Muhammad Ayyoub (external source)": "http://www.everyayah.com/data/Muhammad_Ayyoub_32kbps"
-}
-</code>
+TODO
+
 ------
 Fields
 ------
-Note: Arabic fields are shown here as LTR due to the page direction. See [[json_web_service#Fields|Fields]] for correct displayed Arabic names of fields. To be clear JSON UNICODE characters "\uxxxx" are transformed.
-<code java alfanous_fields_list_example.json>
-{
-"جزء": "juz",
-"عثماني ": "uth",
-"نوع_السورة": "sura_type",
-"رقم_السجدة": "sajda_id",
-"صفحة": "page",
-"ربع": "rub",
-"ر_س": "s_r",
-"ركوع": "ruku",
-"رقم_السورة": "sura_id",
-"آ_س": "s_a",
-"آية_": "aya_",
-"موضوع": "subject",
-"ج_س": "s_g",
-"ك_آ": "a_w",
-"فصل": "chapter",
-"ح_آ": "a_l",
-"سورة": "sura",
-"فرع": "topic",
-"آية": "aya",
-"رقم_الآية": "aya_id",
-"عثماني_": "uth_",
-"ك_س": "s_w",
-"نوع_السجدة": "sajda_type",
-"رقم": "gid",
-"باب": "subtopic",
-"نصف": "nisf",
-"ح_س": "s_l",
-"حزب": "hizb",
-"منزل": "manzil",
-"ج_آ": "a_g",
-"سجدة": "sajda",
-"ترتيب_السورة": "sura_order"
-}
-</code>
-=============
-Who use this?
-=============
-
-If you are using this service, We want to make Alfanous more helpful. We will be happy to know about your applications.
-  * [[http://www.sneetsher.com/abdellah/alfanous_jquery_demo3/|A Simple jQuery/JavaScript Demo Example]] 
-  * [[http://wui.alfanous.org/| Alfanous web user interface ]]
-  * [[http://m.alfanous.org/| Alfanous web user interface for mobiles ]]
-  * [[http://chatty.alfanous.org/?step=1&msg=%D8%B9%D8%A7%D8%B5%D9%85&user=Assem| Alfanous chat bot ]]
-  * [[http://www.bayt-al-hikma.com/SearchQuran.aspx|Bayt Al-Hikma]]
+TODO
 
