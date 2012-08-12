@@ -17,21 +17,22 @@ Why Alfanous?
 
 * Alfanous is Free gratis : no payment, no ads 
 
-========================== 
+--------------------------
 Why we called it Alfanous?  
-==========================
+--------------------------
 Alfanous is an arabic word "الفانوس"  that means the Lantern. The name was inspired from a picture that contains a Mushaf, a chronometer and a lantern. 
 
-================== 
+------------------
 How to Contribute? 
-==================
+------------------
+TODO
 
-
-
-==================
+------------------
 How to Contact us?
-==================
+------------------
+TODO
 
-====================
+--------------------
 How you can help us?
-====================
+--------------------
+TODO
