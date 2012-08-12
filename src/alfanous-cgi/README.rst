@@ -1,22 +1,22 @@
-================
-JSON Web Service
-================
-This is the JSON output system of Alfanous project. This feature is in Alpha test and the JSON schema may be it's not stable. We are waiting for real feadbacks and suggestions to improve its efficacy, quality and stability. To contact the author, please send an email to [[assem.ch@gmail.com|Assem Chelli]] or [[alfanous@googlegroups.com|mailing list]].
+===================
+JSON Web Service II
+===================
+This is the JSON output system version 2 of Alfanous project. This feature is in Alpha test and the JSON schema may be it's not stable. We are waiting for real feadbacks and suggestions to improve its efficacy, quality and stability. To contact us, please send an email to the mailing list <alfanous@googlegroups.com>. If you don't know what is JSON, See: Wikipedia_ or the Official_Website_of_JSON_. It contains many JSON parsing libraries for most programming languages. 
 
-If you don't know what is JSON, See: [[wp>JSON]], [[http://www.json.org/|Official Site of JSON]]. It contains many JSON parsing libraries for most programming languages. 
+.. _Wikipedia: http://en.wikipedia.org/wiki/JSON
+.. _Official_Website_of_JSON: http://www.json.org/
 
 ======= 
 License
 =======
-This service is free to use.We recommend to refer Alfanous engine somewhere in your pages using icons or texts like "Alfanous engine","[[http://wiki.alfanous.org/doku.php?id=art_works#powered_by | Powered by Alfanous]]" linked to http://www.alfanous.org/json .
+This service is free to use.We highly recommend to refer Alfanous engine somewhere in your pages using icons or texts like "Alfanous engine", "Powered by Alfanous" linked to http://www.alfanous.org/json.Art works you may need are available here_.
 
-Art works you may need are available here [[http://www.alfanous.org/art/]]
+.. _here: http://www.alfanous.org/art/
 
 =========== 
 Limitations
 ===========
-
-JSON service does not provide more then 1000 results. It gives the real pages number found but query for page=101 get a reply with NULL.
+1. JSON service does not provide more then 1000 results. It gives the real pages number found but query for page=101 get a reply with NULL.
 
 ======
 Syntax
