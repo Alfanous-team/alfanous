@@ -6,21 +6,21 @@ This is the JSON output system version 2 of Alfanous project. This feature is in
 .. _Wikipedia: http://en.wikipedia.org/wiki/JSON
 .. _Official_Website_of_JSON: http://www.json.org/
 
-======= 
+-------
 License
-=======
+-------
 This service is free to use.We highly recommend to refer Alfanous engine somewhere in your pages using icons or texts like "Alfanous engine", "Powered by Alfanous" linked to http://www.alfanous.org/json.Art works you may need are available here_.
 
 .. _here: http://www.alfanous.org/art/
 
-=========== 
+-----------
 Limitations
-===========
+-----------
 1. JSON service does not provide more then 1000 results. It gives the real pages number found but query for page=101 get a reply with NULL.
 
-======
+------
 Syntax
-======
+------
 
 To get JSON information , use this syntax : http://www.alfanous.org/json?ARGUMENT such as ARGUMENT is:
 <code>
@@ -38,9 +38,9 @@ suggest== TERMS
 
 Here you find [[Json_fixes|the fixes history]]
 
-======== 
+--------
 Examples
-========
+--------
 
   *  [[http://www.alfanous.org/json?search=%D8%A7%D9%84%D8%AD%D9%85%D8%AF&highlight=bbcode&sortedby=tanzil&page=2&traduction=shakir&recitation=Mishary+Rashid+Alafasy|http://www.alfanous.org/json?search=الحمد&highlight=bbcode&sortedby=tanzil&page=2&traduction=shakir&recitation=Mishary+Rashid+Alafasy]]
   *  http://www.alfanous.org/json?list=recitations
@@ -50,18 +50,18 @@ Examples
   *  http://www.alfanous.org/json?suggest=%D8%A7%D8%A8%D8%B1%D8%A7%D9%87%D8%A7%D9%85
  
 
-======
+------
 Demoes
-======
+------
 
   * [[http://www.sneetsher.com/abdellah/alfanous_jquery_demo/| alfanous_jquery_demo v1]] by Abdellah Ch.
   * [[http://www.sneetsher.com/abdellah/alfanous_jquery_demo2/| alfanous_jquery_demo v2]] by Abdellah Ch.
   * [[http://www.sneetsher.com/abdellah/alfanous_jquery_demo3/| alfanous_jquery_demo v3]] by Abdellah Ch.
   * [[http://mobile.alfanous.org/| Alfanous Mobile Web Interface (PHP)]] , [[http://alfanous.svn.sourceforge.net/viewvc/alfanous/trunk/interfaces/web/mobile_wui/| Its source code is in SVN]]
 
-=======================
+-----------------------
 Advanced Query Examples
-=======================
+-----------------------
 
   *  Simple search : [[http://www.alfanous.org/json?search=الحمد|search=الحمد]]
   *  Phrases : [[http://www.alfanous.org/json?search="الحمد لله"|search="الحمد لله"]]
@@ -78,9 +78,9 @@ Advanced Query Examples
   *  Derivations - lemma : [[http://www.alfanous.org/json?search=>مالك|search=>مالك]]
   *  Derivations - root : [[http://www.alfanous.org/json?search=>>مالك|search=>>مالك]]
 
-======
+------
 Fields
-======
+------
 ^ Arabic  ^ English ^ Values ^ Description ^ 
 | رقم | gid | 1 to 6236 | Global order of Aya in the whole Quran |
 | رقم_الآية | aya_id | 1 to $(s_a) | order of Aya inside its Sura  |
@@ -115,9 +115,9 @@ Fields
 | ك_آ | a_w | Number | Number of **words** in **Aya** |
 | ج_آ | a_g | Number | Number of **God's names** in **Aya**  |
 
-================
+----------------
 SortedBy Options
-================
+----------------
 ^ Option ^ Description ^
 | score | The relevance of the results compared to the query keywords |
 | mushaf | The default order of ayas in Mus-haf |           
