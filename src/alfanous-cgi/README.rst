@@ -18,25 +18,25 @@ Limitations
 -----------
 1. JSON service does not provide more then 1000 results. It gives the real pages number found but query for page=101 get a reply with NULL.
 
-------
-Syntax
-------
+--------------
+Quering Syntax
+--------------
 To get JSON information , use this syntax : http://www.alfanous.org/json?ARGUMENT such as ARGUMENT is compound of those flags:
 
 ======== =================== ================= ============================================ ================= ========================================================================================================================================================================
- number    flag               related action    description                                   default value    accepted values
+ number    flag               related action    description                                   default value    accepted values 
 -------- ------------------- ----------------- -------------------------------------------- ----------------- ------------------------------------------------------------------------------------------------------------------------------------------------------------------------
  1         **action**         <none>            action to perform                             "error"          search | suggest | show
  2         ident              <all>             identifier of requester   [exprimental]       "undefined"      undefined
  3         platform           <all>             platform used by requester                    "undefined"      undefined | wp7 | s60 | android | ios | linux | window
- 4         domain             <all>             web domain of requester if applicable         "undefined"      *
- 5a        **query**          search,suggest    query attached to action                       ""              *
+ 4         domain             <all>             web domain of requester if applicable         "undefined"      \*
+ 5a        **query**          search,suggest    query attached to action                       ""              \*
  5b        **query**          show              query attached to action                       ""              all | translations |recitations | information | hints | surates | chapters | defaults | flags | fields | fields_reverse | errors | domains | help_messages 
  6         highlight          search            highlight method                              "css"            css | html | genshi | bold | bbcode
  7         script             search            script of aya text                            "standard"       standard | uthmani
  8         vocalized          search            enable vocalization of aya text               "True"           True | False
  9         recitation         search            recitation id                                 "1"              1 to 30
- 10        translation        search            translation id                                "None"           *
+ 10        translation        search            translation id                                "None"           \*
  11        prev_aya           search            enable previous aya retrieving                "False"          True | False
  12        next_aya           search            enable next aya retrieving                    "False"          True | False
  13        sura_info          search            enable sura information retrieving            "True"           True | False
@@ -56,99 +56,81 @@ To get JSON information , use this syntax : http://www.alfanous.org/json?ARGUMEN
 
 ======== =================== ================= ============================================ ================= ========================================================================================================================================================================
 
-
-
-<code>
-list= translations | recitations | information | fields
-search= QUERY
-  &highlight= none | css | html | bold | bbcode
-  &sortedby= mushaf | tanzil | subject | score | FIELD (use list=fields)
-  &page= NUMBER
-  &recitation= RECITATION (use list=recitations)
-  &translation= TRANSLATION (use list=translations)
-  &fuzzy=yes | no
-suggest== TERMS
-</code>
- <del>&traduction=...</del>
-
-Here you find [[Json_fixes|the fixes history]]
-
 --------
 Examples
 --------
-
-  *  [[http://www.alfanous.org/json?search=%D8%A7%D9%84%D8%AD%D9%85%D8%AF&highlight=bbcode&sortedby=tanzil&page=2&traduction=shakir&recitation=Mishary+Rashid+Alafasy|http://www.alfanous.org/json?search=الحمد&highlight=bbcode&sortedby=tanzil&page=2&traduction=shakir&recitation=Mishary+Rashid+Alafasy]]
-  *  http://www.alfanous.org/json?list=recitations
-  *  http://www.alfanous.org/json?list=fields
-  *  http://www.alfanous.org/json?list=information
-  *  http://www.alfanous.org/json?list=translations <del>...?list=traductions</del>
-  *  http://www.alfanous.org/json?suggest=%D8%A7%D8%A8%D8%B1%D8%A7%D9%87%D8%A7%D9%85
- 
+*  json2?action=search& query=الحمد &highlight=bbcode &sortedby=tanzil &page=2 &traduction=1&fuzzy=True
+*  json2?show=recitations
+*  json2?show=fields
+*  json2?show=all
+*  json2?show=translations 
+*  json2?show=errors
+*  json2?suggest=مءصدة
 
 ------
 Demoes
 ------
-
-  * [[http://www.sneetsher.com/abdellah/alfanous_jquery_demo/| alfanous_jquery_demo v1]] by Abdellah Ch.
-  * [[http://www.sneetsher.com/abdellah/alfanous_jquery_demo2/| alfanous_jquery_demo v2]] by Abdellah Ch.
-  * [[http://www.sneetsher.com/abdellah/alfanous_jquery_demo3/| alfanous_jquery_demo v3]] by Abdellah Ch.
-  * [[http://mobile.alfanous.org/| Alfanous Mobile Web Interface (PHP)]] , [[http://alfanous.svn.sourceforge.net/viewvc/alfanous/trunk/interfaces/web/mobile_wui/| Its source code is in SVN]]
+(No demoes yet! if you have a demo, we'll be happy to refer it here)
 
 -----------------------
 Advanced Query Examples
 -----------------------
-
-  *  Simple search : [[http://www.alfanous.org/json?search=الحمد|search=الحمد]]
-  *  Phrases : [[http://www.alfanous.org/json?search="الحمد لله"|search="الحمد لله"]]
-  *  Logical relations - ANDNOT : [[http://www.alfanous.org/json?search=(الصلاة - الزكاة)|search=(الصلاة - الزكاة)]]
-  *  Logical relations - AND : [[http://www.alfanous.org/json?search=الصلاة + الزكاة|search=الصلاة + الزكاة]]
-  *  Logical relations - OR : [[http://www.alfanous.org/json?search=الصلاة %7C الزكاة|search=الصلاة | الزكاة]]
-  *  Joker * : [[http://www.alfanous.org/json?search=*نبي*|search=*نبي*]]
-  *  Joker ? : [[http://www.alfanous.org/json?search=نعم؟|search=نعم؟]]
-  *  Fielded search : [[http://www.alfanous.org/json?search=سورة:يس|search=سورة:يس]] , look for [[http://wiki.alfanous.org/doku.php?id=json_web_service#fields|fields list]]
-  *  Fielded search (2) : [[http://www.alfanous.org/json?search=سجدة:نعم|search=سجدة:نعم]],
-  *  Intervals : [[http://www.alfanous.org/json?search=رقم_السورة:[1 الى 5] و الله|search=رقم_السورة:[1 الى 5] و الله]]
-  *  Partial vocalization : [[http://www.alfanous.org/json?search=آية_:'مَن'|search=آية_:'مَن']]
-  *  Tuples (root,type=أداة | اسم | فعل) : [[http://www.alfanous.org/json?search={قول،اسم}|search={قول،اسم}]]
-  *  Derivations - lemma : [[http://www.alfanous.org/json?search=>مالك|search=>مالك]]
-  *  Derivations - root : [[http://www.alfanous.org/json?search=>>مالك|search=>>مالك]]
+*  Simple search: query=الحمد    
+*  Phrases : query="الحمد لله"    
+*  Logical relations - ANDNOT :  query=(الصلاة - الزكاة)    
+*  Logical relations - AND :   query=الصلاة + الزكاة    
+*  Logical relations - OR :  query=الصلاة | الزكاة    
+*  Joker \* :      query=\*نبي\*    
+*  Joker \? :     query=نعم؟    
+*  Fielded search :       query=سورة:يس     , look for Fields_     
+*  Fielded search (2) :     query=سجدة:نعم    ,
+*  Intervals :       query=رقم_السورة:[1 الى 5] و الله    
+*  Partial vocalization :      query=آية_:'مَن'    
+*  Tuples (root,type=أداة | اسم | فعل): query={قول،اسم}    
+*  Derivations - lemma :      query=>مالك    
+*  Derivations - root :       query=>>مالك    
 
 ------
 Fields
 ------
-^ Arabic  ^ English ^ Values ^ Description ^ 
-| رقم | gid | 1 to 6236 | Global order of Aya in the whole Quran |
-| رقم_الآية | aya_id | 1 to $(s_a) | order of Aya inside its Sura  |
-| آية| aya | Text | Aya non-vocalized standard text ( used for search) |
-| آية_| aya_ | Text | Aya vocalized standard text ( used for show/search) |
-| عثماني  | uth | Text |  Aya vocalized uthmani text ( used for show/search)  |
-| عثماني_ | uth_ | Text | Aya vocalized uthmani text ( used for show)|
-| موضوع  | subject | Text | Thematic Division : **Chapter** > **Topic** > **Subtopic** |
-| فصل | chapter | Text | Thematic Division : **Chapter** > Topic > Subtopic |
-| فرع | topic | Text | Thematic Division : Chapter > **Topic** > Subtopic |
-| باب  | subtopic | Text | Thematic Division :  Chapter > Topic >** Subtopic** |
-| رقم_السورة | sura_id | 1 to 114 | Order of  Sura in Mus-haf |
-| سورة | sura | Text | Possible Names of Sura |
-| نوع_السورة  | sura_type | مدنية or مكية | Revelation place of Sura |
-| ترتيب_السورة | sura_order | 1 to 114 | Revelation order of Sura |
-| جزء | juz | 1 to 30 | Structural Division : **Juz** > Hizb  > Rub  |
-| حزب | hizb | 1 to 60| Structural Division : Juz > **Hizb** > Rub   |
-| نصف| nisf| 1 to 2 | Deprecated   |
-| ربع | rub | 1 to 4| Structural Division : Juz > Hizb  > **Rub**  |
-| صفحة| page| Number | Structural Division : Page |
-| منزل  | manzil | 1 to 7| Structural Division : **Manzil** > Ruku  |
-| ركوع | ruku | Number| Structural Division : Manzil > **Ruku** |
-| سجدة | sajda | نعم or لا | Test existence of a Sajda |
-| رقم_السجدة | sajda_id |1 to 14 | the order of the Sajda if exist |
-| نوع_السجدة | sajda_type | واجبة or مستحبة  | the type of the Sajda if exist |
-| ح_س| s_l | Number | Number of **letters** in **Sura** |
-| ك_س| s_w | Number | Number of **words** in **Sura** |
-| ج_س | s_g | Number | Number of **God's names** in **Sura** |
-| آ_س | s_a | Number | Number of **Ayas** in **Sura** |
-| ر_س| s_r | Number | Number of **Ruku-s** in **Sura** |
-| ح_آ | a_l | Number | Number of **letters** in **Aya**  |
-| ك_آ | a_w | Number | Number of **words** in **Aya** |
-| ج_آ | a_g | Number | Number of **God's names** in **Aya**  |
+
+===== ================= =================== ============== ============================================================
+ n     عربي              English             Values         Description   
+----- ----------------- ------------------- -------------- ------------------------------------------------------------
+ 1     رقم               gid                 1 to 6236      Global order of Aya in the whole Quran 
+ 2     رقم_الآية           aya_id              1 to 300       order of Aya inside its Sura  
+ 3     آية                aya                 Text           Aya non-vocalized standard text ( used for search) 
+ 4     آية_               aya_                Text           Aya vocalized standard text ( used for show/search) 
+ 5     عثماني             uth                 Text           Aya vocalized uthmani text ( used for show/search) 
+ 6     عثماني_            uth_                Text           Aya vocalized uthmani text ( used for show)
+ 7     موضوع             subject             Text           Thematic Division: **Chapter** > **Topic** > **Subtopic** 
+ 8     فصل              chapter              Text           Thematic Division: **Chapter** > Topic > Subtopic 
+ 9     فرع               topic                Text           Thematic Division: Chapter > **Topic** > Subtopic 
+ 10    باب               subtopic             Text           Thematic Division:  Chapter > Topic > **Subtopic** 
+ 11    رقم_السورة        sura_id              1 to 114       Order of  Sura in Mus-haf
+ 12    سورة              sura                Text           Possible Names of Sura 
+ 13    نوع_السورة         sura_type           مدنية | مكية    Revelation place of Sura 
+ 14    ترتيب_السورة       sura_order           1 to 114       Revelation order of Sura 
+ 15    جزء               juz                  1 to 30        Structural Division : **Juz** > Hizb  > Rub  
+ 16    حزب              hizb                 1 to 60        Structural Division : Juz > **Hizb** > Rub 
+ 17    نصف              nisf                 1 to 2         Deprecated   
+ 18    ربع                rub                  1 to 4         Structural Division : Juz > Hizb  > **Rub**  
+ 19    صفحة              page                Number          Structural Division : Page
+ 20    منزل               manzil              1 to 7          Structural Division : **Manzil** > Ruku  
+ 21    ركوع               ruku                Number          Structural Division : Manzil > **Ruku** 
+ 22    سجدة              sajda               نعم | لا        Test existence of a Sajda
+ 23    رقم_السجدة         sajda_id            1 | 14         Order of the Sajda if exist 
+ 24    نوع_السجدة         sajda_type         واجبة|مستحبة   Type of the Sajda if exist 
+ 25    ح_س              s_l                  Number          Number of **letters** in **Sura** 
+ 26    ك_س              s_w                  Number          Number of **words** in **Sura** 
+ 27    ج_س               s_g                 Number          Number of **God's names** in **Sura** 
+ 28    آ_س               s_a                 Number          Number of **Ayas** in **Sura** 
+ 29    ر_س               s_r                 Number          Number of **Ruku-s** in **Sura** 
+ 30    ح_آ                a_l                 Number          Number of **letters** in **Aya**  
+ 31    ك_آ                a_w                 Number          Number of **words** in **Aya** 
+ 32    ج_آ                a_g                 Number          Number of **God's names** in **Aya**
+===== ================= =================== ============== ============================================================
+
 
 ----------------
 SortedBy Options
