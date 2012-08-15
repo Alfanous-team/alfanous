@@ -19,19 +19,6 @@
 @author: assem
 @contact: assem.ch [at] gmail.com
 @license: AGPL
-
-TODO Upgrading to last whoosh
-TODO Dynamic fields
-TODO Quranic Corpus integration
-TODO SunnaSearchEngine,DreamsSearchEngine
-TODO Feedback or Debug System
-TODO use Qurany Corpus
-TODO Database manager or move to CSV or JSON
-TODO statistiques
-TODO partial vocalisation
-TODO make an automatic fuzzy search to do all possible features, costumizable as well
-TODO add qurany project for Subjects in english
-
 '''
 #from alfanous.dynamic_resources.arabicnames_dyn import ara2eng_names
 from alfanous.Searching import QSearcher, QReader
