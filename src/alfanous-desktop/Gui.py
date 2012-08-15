@@ -26,12 +26,10 @@ TODO sura's name also in English
 TODO fields name in english and arabic / explication (id)
 TODO add qurany project for Subjects in english
 TODO %(var)s mapping is better for localization
-TODO Localization
+TODO use QT Localization instead of gettext
 TODO Use tree widget to show results
 TODO printing
 TODO load UI files on real-time
-
-
 """
 
 ## Arguments Management
@@ -64,14 +62,12 @@ parser.add_option_group( paths )
 ## Importing modules
 import sys, os, gettext
 from configobj import ConfigObj
-from PyQt4 import  QtGui, QtCore
+from PyQt4 import  QtGui, QtCore, uic
 from PyQt4.QtCore import QRect
 from pyparsing import ParseException
 from alfanous.Outputs import Raw
 from re import compile
-## Importing forms
-from mainform_ui import Ui_MainWindow
-#from aboutDlg import Ui_Dialog as Ui_aboutDlg
+
 
 ## Localization using gettext
 _ = gettext.gettext
@@ -86,6 +82,13 @@ CONFIGPATH = options.config if options.config else Paths.HOME_CONFIG + ""
 INDEXPATH = options.index if options.index else Paths.ROOT_INDEX
 LOCALPATH = options.local if options.local else "./locale/"
 RESPATH = options.resource if options.resource else Paths.ROOT_RESOURCE
+
+## Load Qt forms & dialogs on real time
+THIS_FILE_DIR_PATH = os.path.dirname( __file__ ) + "/"
+print THIS_FILE_DIR_PATH
+Ui_MainWindow = uic.loadUiType( THIS_FILE_DIR_PATH + "UI/mainform.ui" )[0]
+Ui_aboutDlg = uic.loadUiType( THIS_FILE_DIR_PATH + "UI/aboutDlg.ui" )[0]
+Ui_preferencesDlg = uic.loadUiType( THIS_FILE_DIR_PATH + "UI/preferencesDlg.ui" )[0]
 
 ## Initialize search engines 
 RAWoutput = Raw() # default paths
@@ -109,8 +112,10 @@ CSS = """
 ## Some functions
 relate = lambda query, filter, index:"( " + unicode( query ) + " ) " + RELATIONS[index] + " ( " + filter + " ) " if  index > 1 else filter if index == 1 else unicode( query ) + " " + filter
 
+
+
 class QUI( Ui_MainWindow ):
-    """ the Quranic main UI """
+    """ the main UI """
 
     def __init__( self ):
         self.last_results = None

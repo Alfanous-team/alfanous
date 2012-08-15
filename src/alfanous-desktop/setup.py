@@ -50,6 +50,7 @@ setup(
 	#data_files=[("install","files")],
 	#data_files=[('.','config.ini'),('index',glob.glob('resources/*.*'))],
 
+    package_data = {'alfanousDesktop': ['UI/*']},
 	include_package_data = True,
 
 
