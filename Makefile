@@ -176,16 +176,8 @@ help_sphinx:
 ## Qt forms ,dialogs and resources compilation  
 # PyQt is needed  
 # apt-get install pyqt4-dev-tools  pyqt-tools  
-qt_all:	 qt_uic qt_rcc
+qt_all:	 qt_rcc
 	
-qt_uic:
-	
-	pyuic4  -o $(DESKTOP_INTERFACE_PATH)aboutDlg_ui.py $(QT_UI_PATH)aboutDlg.ui
-	pyuic4  -o $(DESKTOP_INTERFACE_PATH)preferencesDlg_ui.py $(QT_UI_PATH)preferencesDlg.ui
-	pyuic4  -o temp.py $(QT_UI_PATH)mainform.ui #-x
-	sed 's/\"MainWindow\"\,/\"MainWindow\"\,\_(/g' temp.py | sed 's/\, None\,/\)\, None\,/g'| sed 's/from PyQt4/LOCALPATH="\.\/locale\/"\nimport gettext\n\_\=gettext\.gettext\ngettext\.bindtextdomain\(\"alfanousQT\"\, LOCALPATH\)\ngettext\.textdomain\(\"alfanousQT\"\)\nfrom PyQt4/g'> $(DESKTOP_INTERFACE_PATH)mainform_ui.py 
-	rm temp.py
-
 qt_rcc:
 	pyrcc4 ./resources/images/main.qrc -o $(DESKTOP_INTERFACE_PATH)main_rc.py
 
