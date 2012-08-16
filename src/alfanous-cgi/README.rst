@@ -9,7 +9,7 @@ This is the JSON output system version 2 of Alfanous project. This feature is in
 -------
 License
 -------
-This service is free to use.We highly recommend to refer Alfanous engine somewhere in your pages using icons or texts like "Alfanous engine", "Powered by Alfanous" linked to http://www.alfanous.org/json.Art works you may need are available here_.
+This service is free to use.We highly recommend to refer Alfanous engine somewhere in your pages using icons or texts like "Alfanous engine", "Powered by Alfanous" linked to http://www.alfanous.org/json. Art works you may need are available here_.
 
 .. _here: http://www.alfanous.org/art/
 
