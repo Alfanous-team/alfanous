@@ -29,7 +29,7 @@ TODO %(var)s mapping is better for localization
 TODO use QT Localization instead of gettext
 TODO Use tree widget to show results
 TODO printing
-TODO load UI files on real-time
+TODO load Qt resources on realtime or at least compile them on realtime if missed
 """
 
 ## Arguments Management
