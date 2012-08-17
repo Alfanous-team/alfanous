@@ -227,7 +227,7 @@ flags:
 
 .. code-block:: python
  
-{
+    {
        "action":"search",
        "query": "الكوثر",
        "sortedby":"score",
@@ -245,8 +245,9 @@ flags:
        "translation":"None",
        "recitation": 1
 
-    }
+     }
 
+response:
 
 .. code-block:: python
     
