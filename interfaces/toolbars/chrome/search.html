@@ -139,10 +139,15 @@
 <body>
 
 	<div id="search_form">
-		<form id="form" method="GET" action="http://www.alfanous.org/json">
-			 <input   dir='rtl' type="text" id="search_box" size="24" name="search" value="الحمد">
 
-		   	<input id="submit" type="submit" value=" بحث في القرآن الكريم" >
+	<!-- 
+		changes made by zsmahi
+		url in action attribut changed from "http://www.alfanous.org/json" to "http://www.alfanous.org/"
+		attribut target="_blank" added to show results in new tab // without this attribut results won't be showen
+	-->
+		<form id="form" method="GET" action="http://www.alfanous.org/" target="_blank">
+			 <input   dir='rtl' type="text" id="search_box" size="24" name="search" value="الحمد">
+  		         <input id="submit" type="submit" value=" بحث في القرآن الكريم" >
 
 		</form>
 	</div>
