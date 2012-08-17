@@ -6,10 +6,23 @@ Alfanous API
 -------
 Install
 -------
+.. code-block:: sh
+
+    $ sudo python setup.py install
+
+
+
+-------
+Console
+-------
+.. code-block:: sh
+
+    $ alfanous-console -h
 
 -----------
 Quick Start
 -----------
+
 .. code-block:: python
 
     # import Output object 
@@ -62,5 +75,6 @@ Quick Start
 
       print "runtime", results["search"]["runtime"] 
       print "total", results["search"]["interval"]["total"] 
+
 
 
