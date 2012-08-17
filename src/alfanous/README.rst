@@ -108,7 +108,7 @@ Flags
  23        range              search            range of results                              "10"             1 to 25
  24        page               search            page number  [override offset]                "1"              1 to 6236
  25        perpage            search            results per page  [override range]            "10"             1 to 25
- 26        fuzzy              search            fuzzy search [exprimental]                  	    "False"          True | False
+ 26        fuzzy              search            fuzzy search [exprimental]                          "False"          True | False
 
 ======== =================== ================= ============================================ ================= ========================================================================================================================================================================
 
@@ -223,8 +223,33 @@ response:
 -------
 Results
 -------
+flags:
 
 .. code-block:: python
+ 
+{
+       "action":"search",
+       "query": "الكوثر",
+       "sortedby":"score",
+       "page": 1,
+       "word_info":True,
+       "highlight":"css",
+       "script": "standard",
+       "prev_aya": True,
+       "next_aya": True,
+       "sura_info": True,
+       "aya_position_info":  True,
+       "aya_theme_info":  True,
+       "aya_stat_info":  True,
+       "aya_sajda_info":  True,
+       "translation":"None",
+       "recitation": 1
+
+    }
+
+
+.. code-block:: python
+    
     {}
 
 ------------
