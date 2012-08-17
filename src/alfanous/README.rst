@@ -10,6 +10,12 @@ Install
 
     $ sudo python setup.py install
 
+A console interface will  be installed automatically with the API:
+
+.. code-block:: sh
+
+    $ alfanous-console -h
+    usage: alfanous-console [flags]
 
 -----------
 Quick Start
@@ -109,20 +115,20 @@ Flags
 -----------------------
 Advanced Query Examples
 -----------------------
-*  Simple search: query=الحمد    
-*  Phrases : query="الحمد لله"    
-*  Logical relations - ANDNOT :  query=(الصلاة - الزكاة)    
-*  Logical relations - AND :   query=الصلاة + الزكاة    
-*  Logical relations - OR :  query=الصلاة | الزكاة    
-*  Joker \* :      query=\*نبي\*    
-*  Joker \? :     query=نعم؟    
-*  Fielded search :       query=سورة:يس     , look for Fields_     
-*  Fielded search (2) :     query=سجدة:نعم    ,
-*  Intervals :       query=رقم_السورة:[1 الى 5] و الله    
-*  Partial vocalization :      query=آية_:'مَن'    
-*  Tuples (root,type=أداة | اسم | فعل): query={قول،اسم}    
-*  Derivations - lemma :      query=>مالك    
-*  Derivations - root :       query=>>مالك   
+*  Simple search: الحمد    
+*  Phrases : "الحمد لله"    
+*  Logical relations - ANDNOT : (الصلاة - الزكاة)    
+*  Logical relations - AND :   الصلاة + الزكاة    
+*  Logical relations - OR : الصلاة | الزكاة    
+*  Joker \* :   \*نبي\*    
+*  Joker \? :   نعم؟    
+*  Fielded search :      سورة:يس  ( look for other Fields_  )   
+*  Fielded search (2) :  سجدة:نعم    
+*  Intervals :       رقم_السورة:[1 الى 5] و الله    
+*  Partial vocalization :      آية_:'مَن'    
+*  Tuples (root,type= أداة | اسم | فعل) as: {قول،اسم}    
+*  Derivations - lemma :      >مالك    
+*  Derivations - root :       >>مالك   
 
 
 ------
@@ -241,65 +247,5 @@ Fields
 ------
 TODO
 
-=================
-Console Interface
-=================
-A console interface will  be installed automatically with the API:
 
-.. code-block:: sh
 
-    $ alfanous-console -h
-    usage: alfanous-console [flags]
-    
-    Alfanous is a Quranic search engine provides simple and advanced search
-    services in the diverse information of the Holy Quran .
-    
-    optional arguments:
-      -h, --help            show this help message and exit
-      -v, --version         show program's version number and exit
-      -a {search,suggest,show}, --action {search,suggest,show}
-                            action to perform
-      -q QUERY, --query QUERY
-                            query attached to action
-      -o NUMBER, --offset NUMBER
-                            starting offset of results
-      -r NUMBER, --range NUMBER
-                            range of results
-      -s {total,score,mushaf,tanzil,subject}, --sortedby {total,score,mushaf,tanzil,subject}
-                            sorting order of results
-      --page NUMBER         page number [override offset]
-      --perpage NUMBER      results per page [override range]
-      --recitation NUMBER   recitation id
-      --translation TRANSLATION
-                            translation id
-      --highlight {css,html,genshi,bold,bbcode}
-                            highlight method
-      --script {standard,uthmani}
-                            script of aya text
-      --vocalized {True,False}
-                            enable vocalization of aya text
-      --prev_aya {True,False}
-                            enable previous aya retrieving
-      --next_aya {True,False}
-                            enable next aya retrieving
-      --sura_info {True,False}
-                            enable sura information retrieving
-      --word_info {True,False}
-                            enable word information retrieving
-      --aya_position_info {True,False}
-                            enable aya position information retrieving
-      --aya_theme_info {True,False}
-                            enable aya theme information retrieving
-      --aya_stat_info {True,False}
-                            enable aya stat information retrieving
-      --aya_sajda_info {True,False}
-                            enable aya sajda information retrieving
-      --annotation_aya {True,False}
-                            enable aya words annotations retrieving
-      --annotation_word {True,False}
-                            enable query terms annotations retrieving
-      --fuzzy {True,False}  fuzzy search [exprimental]
-      --ident IDENT         identifier of requester
-      --platform {undefined,wp7,s60,android,ios,linux,window}
-                            platform used by requester
-      --domain DOMAIN       web domain of requester if applicable
