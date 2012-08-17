@@ -16,7 +16,7 @@ This service is free to use.We highly recommend to refer Alfanous engine somewhe
 -----------
 Limitations
 -----------
-1. JSON service does not provide more then 1000 results. It gives the real pages number found but query for page=101 get a reply with NULL.
+1. *(no limits)*
 
 --------------
 Quering Syntax
@@ -162,7 +162,7 @@ Schema Samples
 -----------
 Suggestions
 -----------
-response for: action=**suggest**&query=**مءصدة**
+response for: action=suggest&query=مءصدة
 
 .. code-block:: json
 
@@ -180,7 +180,9 @@ response for: action=**suggest**&query=**مءصدة**
 -------
 Results
 -------
-TODO
+
+.. code-block:: json
+    {}
 
 ------------
 Translations
