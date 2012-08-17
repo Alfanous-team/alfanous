@@ -50,7 +50,7 @@ def QSort( sortedby ):
     if sortedby == "mushaf": sortedby = "gid"
     elif sortedby == "tanzil": sortedby = ( "sura_order", "aya_id" )
     elif sortedby == "subject": sortedby = ( "chapter", "topic", "subtopic" )
-    elif sortedby == "score": sortedby = None
+    elif sortedby == "relevance" or sortedby == "score": sortedby = None
     else: sortedby = sortedby
     return sortedby
 

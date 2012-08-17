@@ -2,13 +2,12 @@
 
 from alfanous.main import *
 
-
 if __name__ == '__main__':
     import profile
-    QSE = QuranicSearchEngine( "../../indexes/main/" )
-    FQSE = FuzzyQuranicSearchEngine( "../../indexes/main/" )
-    TSE = TraductionSearchEngine( "../../indexes/extend/" )
-    QWSE = WordSearchEngine( "../../indexes/word/" )
+    QSE = QuranicSearchEngine( "../alfanous/indexes/main/" )
+    FQSE = FuzzyQuranicSearchEngine( "../alfanous/indexes/main/" )
+    TSE = TraductionSearchEngine( "../alfanous/indexes/extend/" )
+    QWSE = WordSearchEngine( "../alfanous/indexes/word/" )
 
     if QWSE.OK:
         print "most frequent vocalized words"
@@ -55,7 +54,8 @@ if __name__ == '__main__':
 
 
 
-    string1 = ">>الأمل"
+    string1 = "الصلاة+الزكاة"
+    # >>الأمل
     # %المأصدة
     # لله
     # ال*لك
