@@ -187,6 +187,7 @@ SortedBy Options
 Console Interface
 -----------------
 A console interface will install automatically with the API:
+
 .. code-block:: sh
 
     $ alfanous-console -h
