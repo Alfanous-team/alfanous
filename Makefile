@@ -20,7 +20,7 @@ DB_PATH="./resources/databases/"
 QT_UI_PATH="./resources/UI/"
 
 STORE_PATH="./store/"
-INDEX_PATH="./indexes/"
+INDEX_PATH=$(API_PATH)"alfanous/indexes/"
 
 DESKTOP_INTERFACE_PATH=$(API_PATH)"alfanous-desktop/"
 MOBILE_WUI_PATH=./interfaces/web/mobile_wui/
@@ -37,7 +37,7 @@ default:
 	@echo "choose a target!"
 	
 ## Kaboom! @TODO: must test this well
-all:  download_all   build   tarball_data  dist_all  clean  tarball_minimal #install_all	 
+all:  download_all   build   tarball_data  dist_all  clean  #tarball_minimal #install_all	 
 
 
 ##
@@ -176,16 +176,8 @@ help_sphinx:
 ## Qt forms ,dialogs and resources compilation  
 # PyQt is needed  
 # apt-get install pyqt4-dev-tools  pyqt-tools  
-qt_all:	 qt_uic qt_rcc
+qt_all:	 qt_rcc
 	
-qt_uic:
-	
-	pyuic4  -o $(DESKTOP_INTERFACE_PATH)aboutDlg_ui.py $(QT_UI_PATH)aboutDlg.ui
-	pyuic4  -o $(DESKTOP_INTERFACE_PATH)preferencesDlg_ui.py $(QT_UI_PATH)preferencesDlg.ui
-	pyuic4  -o temp.py $(QT_UI_PATH)mainform.ui #-x
-	sed 's/\"MainWindow\"\,/\"MainWindow\"\,\_(/g' temp.py | sed 's/\, None\,/\)\, None\,/g'| sed 's/from PyQt4/LOCALPATH="\.\/locale\/"\nimport gettext\n\_\=gettext\.gettext\ngettext\.bindtextdomain\(\"alfanousQT\"\, LOCALPATH\)\ngettext\.textdomain\(\"alfanousQT\"\)\nfrom PyQt4/g'> $(DESKTOP_INTERFACE_PATH)mainform_ui.py 
-	rm temp.py
-
 qt_rcc:
 	pyrcc4 ./resources/images/main.qrc -o $(DESKTOP_INTERFACE_PATH)main_rc.py
 
@@ -275,38 +267,16 @@ dist_xpi:
 	cd ./interfaces/toolbars/firefox ; zip alfanous_toolbar_$(VERSION).xpi install.rdf chrome.manifest chrome/alfanoustoolbar.jar
 	mkdir output/$(VERSION) ; mv ./interfaces/toolbars/firefox/alfanous_toolbar_$(VERSION).xpi ./output/$(VERSION)
 
-# the whole project Tarball #attention: what if a bad use of the database! ta7rif?!
-tarball_minimal: clean
-	tar zcvf ./output/Alfanous_project_minimal.tar.gz ./* --exclude=.svn  --exclude=*.egg-info --exclude=Thumbs.db --exclude=*~ --exclude=dist --exclude=dynamic_resources  --exclude=output --exclude=*.zip  --exclude=indexes --exclude=art  --exclude=html --exclude=epydoc --exclude=_build --exclude=build --exclude=tiny  --exclude=Quranic*Indexes --exclude=*.dll --exclude=dev --exclude=ignore --exclude=*.pyc --exclude=*.pyo  # --exclude=html --exclude=web --exclude=*_dyn.py --exclude=Conception --exclude=Desktop --exclude=art --exclude=*_ui.py  --exclude=*_rc.py --exclude=*.zip 
-
-# use indexes and dynamic resources  as they are	
-tarball_data:
-	tar zcvf ./output/Alfanous_project_minimal.tar.gz ./* --exclude=.svn --exclude=Thumbs.db --exclude=*~ --exclude=dist  --exclude=output --exclude=store  --exclude=*.dll --exclude=dev  --exclude=*.pyc  --exclude=UI --exclude=*.ui
-
 
 ## installation
 	
 install_all: install_api install_desktop install_web
 	
-install_config: 
-	rm -r 	$(CONFIG_INSTALL_PATH) ; mkdir -p $(CONFIG_INSTALL_PATH);
-	cp    ./resources/configs/recitations.js $(CONFIG_INSTALL_PATH)
-	cp    ./resources/configs/hints.js $(CONFIG_INSTALL_PATH)
-	cp    ./resources/configs/translations.js $(CONFIG_INSTALL_PATH)
-	cp    ./resources/configs/stats.js $(CONFIG_INSTALL_PATH) 
-	chmod -R 777  $(CONFIG_INSTALL_PATH)
-	cp    ./resources/configs/information.js $(CONFIG_INSTALL_PATH) # must be readonly 755
 
-install_index: 
-	mkdir -p $(INDEX_INSTALL_PATH)
-	cp -r ./indexes/main $(INDEX_INSTALL_PATH)
-	cp -r ./indexes/extend $(INDEX_INSTALL_PATH)
-	cp -r ./indexes/word $(INDEX_INSTALL_PATH)
-	
 install_api: 
 	cd   "$(API_PATH)alfanous" ; python setup.py  install
 	
-install_desktop: install_config install_index  install_api qt_all  local_mo_download
+install_desktop:  install_api qt_all  local_mo_download
 	cd  $(DESKTOP_INTERFACE_PATH); sudo python setup.py install
 	cp ./resources/launchers/alfanousDesktop $(DESTDIR)$(PREFIX)/bin/
 	cp ./resources/launchers/alfanous.desktop $(DESTDIR)$(PREFIX)/share/applications/
@@ -315,18 +285,6 @@ install_desktop: install_config install_index  install_api qt_all  local_mo_down
 	#test installation
 	alfanousDesktop &
 	
-##  don't use it!!
-install_json: #install_api #install_index 
-	cd $(API_PATH)alfanous-cgi ;  mkdir -p $(WEB_CGI_INSTALL_PATH); cp  -r alfanous_json.py $(WEB_CGI_INSTALL_PATH);
-	#cd ./interfaces/web/ ;  cp  htaccess $(WEB_INSTALL_PATH)".htaccess"
-	#cd ./interfaces/web/ ;  vi alfanous ; cp alfanous /etc/apache2/sites-available/ #configure well this file 
-	#chmod 755 -R $(WEB_CGI_INSTALL_PATH)
-	chmod +x $(WEB_CGI_INSTALL_PATH)alfanous_json.py
-	#a2dissite alfanous
-	#a2ensite alfanous
-	#service apache2 reload
-	#echo "127.0.0.1 alfanous.local" >> /etc/hosts ## must check existance first!!
-	#xdg-open http://alfanous.local/cgi-bin/alfanous_json.py &  ##launch default browser for test
 
 ##  don't use it!!
 install_json2: install_api #install_index install_config 
