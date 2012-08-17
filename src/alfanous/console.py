@@ -22,13 +22,16 @@ Created on 24 févr. 2010
 @license: AGPL
 
 TODO show RAW|JSON | BEST-presentation format
+TODO __file__ to use resources and indexes integrated with Alfanous Module
 '''
 
 import sys, json
-from argparse import ArgumentParser
-from alfanous.outputs import Raw
 
-RAWoutput = Raw( QSE_index = "./indexes/main/", TSE_index = "./indexes/extend/", WSE_index = "./indexes/word/", Recitations_list_file = "./resources/configs/recitations.js", Translations_list_file = "./resources/configs/translations.js", Information_file = "./resources/configs/information.js", Hints_file = "./resources/configs/hints.js", Stats_file = "./resources/configs/stats.js" )
+
+from argparse import ArgumentParser
+from alfanous.Outputs import Raw
+
+RAWoutput = Raw() #use default paths 
 
 INFORMATION = RAWoutput.do( {"action":"show", "query":"information" } )["show"]["information"]
 DOMAINS = RAWoutput.do( {"action":"show", "query":"domains" } )["show"]["domains"]
@@ -48,13 +51,13 @@ arg_parser = ArgumentParser(
 # add arguments
 arg_parser.add_argument( "-a", "--action", dest = "action", type = str , choices = DOMAINS["action"], help = HELPMESSAGES["action"] )
 arg_parser.add_argument( "-q", "--query", dest = "query", type = str  , help = HELPMESSAGES["query"] )
-arg_parser.add_argument( "-o", "--offset", dest = "offset", type = int, choices = DOMAINS["offset"], help = HELPMESSAGES["offset"] )
-arg_parser.add_argument( "-r", "--range", dest = "range", type = int, choices = DOMAINS["range"], help = HELPMESSAGES["range"] )
+arg_parser.add_argument( "-o", "--offset", dest = "offset", metavar = 'NUMBER', type = int, help = HELPMESSAGES["offset"] )
+arg_parser.add_argument( "-r", "--range", dest = "range", type = int, metavar = 'NUMBER', help = HELPMESSAGES["range"] )
 arg_parser.add_argument( "-s", "--sortedby", dest = "sortedby", type = str, choices = DOMAINS["sortedby"], help = HELPMESSAGES["sortedby"] )
-arg_parser.add_argument( "--page", dest = "page", type = int, choices = DOMAINS["page"], help = HELPMESSAGES["page"] )
-arg_parser.add_argument( "--perpage", dest = "perpage", type = int, choices = DOMAINS["perpage"], help = HELPMESSAGES["perpage"] )
-arg_parser.add_argument( "--recitation", dest = "recitation", type = str, choices = DOMAINS["recitation"], help = HELPMESSAGES["recitation"] )
-arg_parser.add_argument( "--translation", dest = "translation", type = str, choices = DOMAINS["translation"], help = HELPMESSAGES["translation"] )
+arg_parser.add_argument( "--page", dest = "page", type = int, metavar = 'NUMBER', help = HELPMESSAGES["page"] )
+arg_parser.add_argument( "--perpage", dest = "perpage", type = int, metavar = 'NUMBER', help = HELPMESSAGES["perpage"] )
+arg_parser.add_argument( "--recitation", dest = "recitation", metavar = 'NUMBER', type = str, help = HELPMESSAGES["recitation"] )
+arg_parser.add_argument( "--translation", dest = "translation", type = str, help = HELPMESSAGES["translation"] )
 arg_parser.add_argument( "--highlight", dest = "highlight", type = str, choices = DOMAINS["highlight"], help = HELPMESSAGES["highlight"] )
 arg_parser.add_argument( "--script", dest = "script", type = str, choices = DOMAINS["script"] , help = HELPMESSAGES["script"] )
 arg_parser.add_argument( "--vocalized", dest = "vocalized", type = bool, choices = DOMAINS["vocalized"], help = HELPMESSAGES["vocalized"] )
