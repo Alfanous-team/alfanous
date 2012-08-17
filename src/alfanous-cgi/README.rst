@@ -162,8 +162,21 @@ Schema Samples
 -----------
 Suggestions
 -----------
-TODO
+response for: action=**suggest**&query=**مءصدة**
 
+.. code-block:: json
+
+    {
+    "suggest": [
+                  ["\u0645\u0621\u0635\u062f\u0629", 
+                      ["\u0645\u0642\u062a\u0635\u062f\u0629", "\u0645\u0624\u0635\u062f\u0629"]
+                  ]
+                ], 
+    "error": {
+                "msg": "success ## action=suggest ; query=\u0645\u0621\u0635\u062f\u0629", 
+                "code": 0
+               }
+    }
 -------
 Results
 -------
