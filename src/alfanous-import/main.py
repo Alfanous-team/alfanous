@@ -16,11 +16,12 @@
 ##     You should have received a copy of the GNU Affero General Public License
 ##     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-
 '''
 Created on Jul 28, 2011
 @author: Assem chelli
 
+
+TODO convert all data resources to JSON files , easier for version control and use in Python
 '''
 
 from Importer import *
