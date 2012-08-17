@@ -1,0 +1,164 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<!-- saved from url=(0056)http://www.sneetsher.com/abdellah/alfanous_jquery_demo3/ -->
+<html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+	<title>Alfanous JSON Search Form with jQuery v3 | Alfanous</title>
+
+	
+	<meta http-equiv="content-language" content="en ar">
+	<meta name="robots" content="index, follow">
+
+	<meta name="description" content="A Simple jQuery/JavaScript Demo example for Alfanous JSON interface.">
+	<meta name="keywords" content="alfanous, quran, json, ajax, jquery, javascript, tips, tutorial, demo, search">
+	<meta name="copyright" content="© CC Alfanous.org Project">
+	<meta name="author" content="Abdellah Chelli, Sneetsher Crispy, Abdullah Shally, عبدالله شلي">
+
+
+	<link type="text/css" href="search/screen.css" rel="stylesheet" media="screen">
+	
+
+	<script type="text/javascript" src="search/jquery-1.6.2.min.js"></script>
+
+
+
+	<script>
+		$(document).ready(function(){
+
+
+		
+
+			$('#form').submit(function(){
+				param = {search: $("#search_box").val(), page: 1, highlight: "css"};
+				get_results(param);
+				return false;
+			});
+
+
+			function get_results (param) {
+				$.ajax({
+					url: "http://www.alfanous.org/json",
+					async: false,
+					type: "GET",
+					dataType: "json",
+					timeout: 100,
+					crossDomain: true,
+					data: param,
+					success: function(json){
+						show_results (json);
+					},
+					error: function(jq_xhr, text_status, error_thrown){
+						$("#search_result").html("<div id='error'><p>"+ error_thrown+"</p></div>");
+						return false;
+					}
+					});
+			};
+
+
+			function show_results (json) {
+				var results = "";
+				var results_pages = "";
+
+				var nb_pages = Math.floor((json.interval.total- 1) / 10)+ 1;
+				var page = Math.floor((json.interval.start- 1) / 10)+ 1;
+
+				$("#search_result").html("");
+
+				
+				
+
+				// Pages control
+				results_pages += "<div dir='rtl' class='pages'>\nالصّفحات:";
+				for( i = 1; i <= nb_pages; i++) {
+					if (i == page)
+					{
+						results_pages += " "+ i;
+					}
+					else
+					{
+						results_pages += " <a href=''>"+ i+ "</a>";
+					};
+				};
+				results_pages += "</div>\n";
+				
+				// Words list - not yet
+				results += "<div id='search_words'  dir='rtl'>";
+				results += "<div class='details_label word_count'> الكلمات|"+ json.words["global"].nb_words+ "</div>";
+				results += "<div class='details_label word_stat0'> المرات|"+ json.words["global"].nb_matches+ "</div>";
+				for( i = 1; i <= json.words.global.nb_words; i++) {
+					results += "<div class='word_details'>";
+						results += "<div class='details_label word_info0'> كلمة|"+ json.words[i].word+ "</div>";
+						results += "<div class='details_label word_stat0'> المرات|"+ json.words[i].nb_matches+ "</div>";
+						results += "<div class='details_label word_stat1'> الآيات|"+ json.words[i].nb_ayas+ "</div>";
+					results += "</div>";
+				};
+				results += "</div>";
+
+				// Pages list
+		
+
+				// Ayas list
+				results += "<div id='search_ayas'>";
+				for( i = json.interval.start; i <= json.interval.end; i++) {
+					if (i % 2)
+						{
+							results += "<div dir='rtl' class='result_item0'>";
+						}
+					else
+						{
+							results += "<div  dir='rtl' class='result_item1'>";
+						};
+					results += "<span class='item_number'>"+ i+ "</span>";
+					results += "<div class='quran'> &#64831 "+ json.ayas[i].aya.text;
+						results += " (<span>"+ json.ayas[i].aya.id+ "</span>) &#64830[سورة" + json.ayas[i].sura.name+" ]</div>";
+					
+				
+					results += "</div>";
+				};
+				results += "</div>";
+
+				// Pages list
+				results += results_pages;
+
+				// show result
+				$("#search_result").append(results);
+
+				// Pages control
+				$(".pages a").one('click', function(event) {
+					var param2 = param;
+					param2.page = $(this).text();
+					$('#search_box').val(param2.search);
+					get_results(param2);
+					event.preventDefault();
+				});
+			};
+
+		});
+
+	</script>
+
+<body>
+
+	<div id="search_form">
+	<!-- 
+		changes made by zsmahi
+		url in action attribut changed from "http://www.alfanous.org/json" to "http://www.alfanous.org/"
+		attribut target="_blank" added to show results in new tab // without this attribut results won't be showen
+	-->
+		<form id="form" method="GET" action="http://www.alfanous.org/" target="_blank">
+			 <input   dir='rtl' type="text" id="search_box" size="24" name="search" value="الحمد">
+
+		   	<input id="submit" type="submit" value=" بحث في القرآن الكريم" >
+
+		</form>
+	</div>
+
+	<div id="search_result">
+	
+
+
+
+
+
+
+
+</body><span id="skype_highlighting_settings" display="none" autoextractnumbers="1"></span><object id="skype_plugin_object" location.href="http://www.sneetsher.com/abdellah/alfanous_jquery_demo3/" location.hostname="www.sneetsher.com" style="position: absolute; visibility: hidden; left: -100px; top: -100px; " width="0" height="0" type="application/x-vnd.skype.toolbars.npplugin.4.2.0"></object></html>

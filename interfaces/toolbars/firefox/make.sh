@@ -1,7 +1,7 @@
 #!/bin/sh
 
 # 	make file 
-#	created on Sunday, August 05th, 2012 at 13:00
+#	created on Wednsday, August 15th, 2012 at 13:00
 #	by SMAHI Zakaria
 #	zakaria08esi@gmail.com
 
