@@ -1,6 +1,12 @@
 #!/usr/bin/env python
 #coding=utf-8
 
+"""
+
+TODO include the main database as a package data
+
+"""
+
 from setuptools import setup
 
 
