@@ -22,7 +22,7 @@
 			<Description>
 				<em:id>{ec8030f7-c20a-464f-9b0e-13a3a9e97384}</em:id>
 				<em:minVersion>1.5</em:minVersion>
-				<em:maxVersion>20.*</em:maxVersion>
+				<em:maxVersion>25.*</em:maxVersion>
 			</Description>
 		</em:targetApplication>
 
@@ -31,6 +31,7 @@
 		<em:creator>Zakaria SMAHI</em:creator>
 		<em:description>ALFANOUS Toolbar: search easily in Holy Quran</em:description>
 		<em:homepageURL>http://alfanous.org/</em:homepageURL>
+		<em:iconURL>chrome://alfanoustoolbar/skin/icon.png</em:iconURL>
 
 	</Description>
 

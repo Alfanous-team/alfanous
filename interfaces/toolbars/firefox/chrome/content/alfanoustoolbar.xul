@@ -143,6 +143,28 @@
 						class="menuitem-iconic" tooltiptext="use alfanous website from mobile"
 						onclick="AlfanousTB_LoadURL('mobile.alfanous.org')" />
 
+					<!-- Desktop Version -->
+
+					<menuitem id="AlfanousTB-Interfaces-WindowsAR" label="Alfanous Windows(Arabic)"
+						class="menuitem-iconic" tooltiptext="Alfanous Arabic version Windows"
+						onclick="AlfanousTB_LoadURL('http://sourceforge.net/projects/alfanous/files/Interfaces/AlfanousDesktop/0.3/alfanousDesktop-windows-0.3ar.exe/download')" />
+
+					<menuitem id="AlfanousTB-Interfaces-WindowsEN" label="Alfanous Windows(English)"
+						class="menuitem-iconic" tooltiptext="Alfanous English version Windows"
+						onclick="AlfanousTB_LoadURL('http://sourceforge.net/projects/alfanous/files/Interfaces/AlfanousDesktop/0.4.20/alfanousDesktop-win0.4r20.exe/download')" />
+
+					<!-- WP7 Interface -->
+
+					<menuitem id="AlfanousTB-Interfaces-WP7" label="Alfanous WP7"
+						class="menuitem-iconic" tooltiptext="use alfanous website from Windows Phone 7"
+						onclick="AlfanousTB_LoadURL('http://www.windowsphone.com/en-US/apps/f9e1504d-ce31-4802-a2d1-24ff9f41a06e')" />
+
+					<!-- Iphone Interface -->
+
+					<menuitem id="AlfanousTB-Interfaces-Iphone" label="Alfanous Iphone"
+						class="menuitem-iconic" tooltiptext="use alfanous website from Iphone"
+						onclick="AlfanousTB_LoadURL('http://itunes.apple.com/us/app/alfanws-mhrk-bhth-qrany-mtqdm/id543646326?mt=8')" />
+
 					<!-- Non-Official Interfaces; Add a separator -->						
 
 					<!-- Under Construction -->
