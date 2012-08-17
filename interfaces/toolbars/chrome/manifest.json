@@ -1,0 +1,12 @@
+{
+  "name": "Alfanous",
+  "version": "1.0",
+  "description": "Alfanous.",
+  "browser_action": {
+    "default_icon": "logo.png",
+	"popup": "search.html"
+  },
+  "permissions": [
+    "http://www.alfanous.org/json/"
+  ]
+}
