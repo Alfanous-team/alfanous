@@ -183,9 +183,67 @@ SortedBy Options
 ========== =================================================================================
 
 
------------------
+==============
+Schema Samples
+==============
+
+-----------
+Suggestions
+-----------
+flags:
+
+.. code-block:: python
+
+    {
+        "action"="suggest",
+        "query"="مءصدة"
+    }
+
+response:
+
+.. code-block:: python
+
+    {
+    "suggest": [
+                  ["\u0645\u0621\u0635\u062f\u0629", 
+                      ["\u0645\u0642\u062a\u0635\u062f\u0629", "\u0645\u0624\u0635\u062f\u0629"]
+                  ]
+                ], 
+    "error": {
+                "msg": "success ## action=suggest ; query=\u0645\u0621\u0635\u062f\u0629", 
+                "code": 0
+               }
+    }
+-------
+Results
+-------
+
+.. code-block:: python
+    {}
+
+------------
+Translations
+------------
+TODO
+
+-----------
+Information
+-----------
+TODO
+
+-----------
+Recitations
+-----------
+TODO
+
+------
+Fields
+------
+TODO
+
+=================
 Console Interface
------------------
+=================
 A console interface will install automatically with the API:
 
 .. code-block:: sh
