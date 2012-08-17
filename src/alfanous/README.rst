@@ -244,7 +244,7 @@ TODO
 =================
 Console Interface
 =================
-A console interface will install automatically with the API:
+A console interface will  be installed automatically with the API:
 
 .. code-block:: sh
 
