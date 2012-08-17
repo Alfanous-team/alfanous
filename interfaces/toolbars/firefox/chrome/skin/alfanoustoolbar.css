@@ -26,7 +26,7 @@
 /* ResizeBar */
 
 #AlfanousTB-ResizeBar {
-	background-image: url("chrome://Alfanoustoolbar/skin/gripper.png");
+	background-image: url("chrome://Alfanoustoolbar/skin/gripper.jpg");
 	min-height: 22px;
 	min-width: 3px;
 }
@@ -84,4 +84,30 @@
 
 #AlfanousTB-Github-Button{
 	list-style-image: url("chrome://Alfanoustoolbar/skin/gh.png");
+}
+
+/* test */
+
+#AlfanousTB-Interfaces-JSON{
+	list-style-image: url("chrome://Alfanoustoolbar/skin/json.gif");
+}
+
+#AlfanousTB-Interfaces-Mobile{
+	list-style-image: url("chrome://Alfanoustoolbar/skin/mobile.gif");
+}
+
+#AlfanousTB-Interfaces-WindowsAR{
+	list-style-image: url("chrome://Alfanoustoolbar/skin/windows.png");
+}
+
+#AlfanousTB-Interfaces-WindowsEN{
+	list-style-image: url("chrome://Alfanoustoolbar/skin/windows.png");
+}
+
+#AlfanousTB-Interfaces-WP7{
+	list-style-image: url("chrome://Alfanoustoolbar/skin/wp7.png");
+}
+
+#AlfanousTB-Interfaces-Iphone{
+	list-style-image: url("chrome://Alfanoustoolbar/skin/iphone.jpg");
 }
