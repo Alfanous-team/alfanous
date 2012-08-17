@@ -1,6 +1,5 @@
 # coding: utf-8
 
-
 ##     Copyright (C) 2009-2012 Assem Chelli <assem.ch [at] gmail.com>
 
 ##     This program is free software: you can redistribute it and/or modify
@@ -20,27 +19,11 @@
 @author: assem
 @contact: assem.ch [at] gmail.com
 @license: AGPL
-
-
-TODO use optparse to organise this script as a console command
-TODO Upgrading to last whoosh
-TODO Dynamic fields
-TODO Quranic Corpus integration
-TODO SunnaSearchEngine,DreamsSearchEngine
-TODO Feedback or Debug System
-TODO use Qurany Corpus
-TODO Database manager
-TODO statistiques
-TODO partial vocalisation
-TODO make an automatic fuzzy search to do all possible features, costumizable as well
-
-
 '''
 #from alfanous.dynamic_resources.arabicnames_dyn import ara2eng_names
 from alfanous.Searching import QSearcher, QReader
 from alfanous.Indexing import QseDocIndex, ExtDocIndex, BasicDocIndex
-
-from alfanous.ResultsProcessing import Qhighlight #,QPaginate , QFilter 
+from alfanous.ResultsProcessing import Qhighlight , QPaginate# , QFilter
 from alfanous.QueryProcessing import QuranicParser, StandardParser, FuzzyQuranicParser #,  ArabicParser
 from alfanous.Suggestions import  QAyaSpellChecker, QSubjectSpellChecker, concat_suggestions, QWordChecker #, QSuggester
 

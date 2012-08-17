@@ -16,26 +16,20 @@
 ##     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 """
-Created on 12 avr. 2010
-
-@author: Assem Chelli
-@contact: assem.ch[at]gmail.com
-
-@todo: use Alfanous.outputs.Json to request results
-@todo: use Table grid for view , use CSS good schema instead
-@todo: complete all new Ui features
-@todo: relate to AboutDlg / PreferenceDlg / Hints dialog
-@todo: use css and simplify texts to make a good localization
-@todo: clean Code
-@todo: sura's name also in English
-@todo: fields name in english and arabic / explication (id)
-@todo: add qurany project for Subjects in english
-@todo: %(var)s mapping is better for localization
-@todo: Localization
-@todo: Use tree widget to show results
-@todo: printing
-
-
+TODO use Alfanous.outputs.Json to request different info the first time
+TODO use Table grid for view , use CSS good schema instead
+TODO complete all new Ui features
+TODO relate to AboutDlg / PreferenceDlg / Hints dialog
+TODO use css and simplify texts to make a good localization
+TODO clean Code
+TODO sura's name also in English
+TODO fields name in english and arabic / explication (id)
+TODO add qurany project for Subjects in english
+TODO %(var)s mapping is better for localization
+TODO use QT Localization instead of gettext
+TODO Use tree widget to show results
+TODO printing
+TODO load Qt resources on realtime or at least compile them on realtime if missed
 """
 
 ## Arguments Management
@@ -56,8 +50,8 @@ paths.add_option( "-i", "--index", dest = "index", type = "string",
 paths.add_option( "-l", "--local", dest = "local", type = "string",
                   help = "localization path", metavar = "PATH" )
 
-paths.add_option( "-s", "--store", dest = "store", type = "string",
-                  help = "store path", metavar = "PATH" )
+paths.add_option( "-r", "--resource", dest = "resource", type = "string",
+                  help = "resources path", metavar = "PATH" )
 
 
 parser.add_option_group( paths )
@@ -68,14 +62,12 @@ parser.add_option_group( paths )
 ## Importing modules
 import sys, os, gettext
 from configobj import ConfigObj
-from PyQt4 import  QtGui, QtCore
+from PyQt4 import  QtGui, QtCore, uic
 from PyQt4.QtCore import QRect
 from pyparsing import ParseException
-from alfanous.outputs import Raw
+from alfanous.Outputs import Raw
 from re import compile
-## Importing forms
-from mainform_ui import Ui_MainWindow
-#from aboutDlg import Ui_Dialog as Ui_aboutDlg
+
 
 ## Localization using gettext
 _ = gettext.gettext
@@ -83,14 +75,23 @@ n_ = gettext.ngettext
 gettext.bindtextdomain( "alfanousQT" );
 gettext.textdomain( "alfanousQT" );
 
+
 ## Specification of resources paths
-CONFIGPATH = options.config if options.config else "../../resources/configs/"
-INDEXPATH = options.index if options.index else"../../indexes/"
-LOCALPATH = options.local if options.local else"./locale/"
-STOREPATH = options.store if options.store else "../../store/"
+from alfanous.Data import Paths
+CONFIGPATH = options.config if options.config else Paths.HOME_CONFIG + ""
+INDEXPATH = options.index if options.index else Paths.ROOT_INDEX
+LOCALPATH = options.local if options.local else "./locale/"
+RESPATH = options.resource if options.resource else Paths.ROOT_RESOURCE
+
+## Load Qt forms & dialogs on real time
+THIS_FILE_DIR_PATH = os.path.dirname( __file__ ) + "/"
+print THIS_FILE_DIR_PATH
+Ui_MainWindow = uic.loadUiType( THIS_FILE_DIR_PATH + "UI/mainform.ui" )[0]
+Ui_aboutDlg = uic.loadUiType( THIS_FILE_DIR_PATH + "UI/aboutDlg.ui" )[0]
+Ui_preferencesDlg = uic.loadUiType( THIS_FILE_DIR_PATH + "UI/preferencesDlg.ui" )[0]
 
 ## Initialize search engines 
-RAWoutput = Raw( QSE_index = INDEXPATH + "main/", TSE_index = INDEXPATH + "extend/", Recitations_list_file = CONFIGPATH + "recitations.js", Translations_list_file = CONFIGPATH + "translations.js", Information_file = CONFIGPATH + "information.js", Hints_file = CONFIGPATH + "hints.js", Stats_file = CONFIGPATH + "stats.js" )
+RAWoutput = Raw() # default paths
 
 ## STATIC GLOBAL variables
 PERPAGE = 10 #results per page
@@ -111,8 +112,10 @@ CSS = """
 ## Some functions
 relate = lambda query, filter, index:"( " + unicode( query ) + " ) " + RELATIONS[index] + " ( " + filter + " ) " if  index > 1 else filter if index == 1 else unicode( query ) + " " + filter
 
+
+
 class QUI( Ui_MainWindow ):
-    """ the Quranic main UI """
+    """ the main UI """
 
     def __init__( self ):
         self.last_results = None
@@ -211,7 +214,7 @@ class QUI( Ui_MainWindow ):
             MainWindow.setLayoutDirection( QtCore.Qt.RightToLeft )
         self.o_query.setLayoutDirection( QtCore.Qt.RightToLeft )
         QtCore.QObject.connect( self.o_search, QtCore.SIGNAL( "clicked()" ), self.search_all )
-        QtCore.QObject.connect( self.o_page, QtCore.SIGNAL( "valueChanged(int)" ), self.changepage )
+        QtCore.QObject.connect( self.o_page, QtCore.SIGNAL( "valueChanged(int)" ), self.search_all )
         QtCore.QObject.connect( self.o_chapter, QtCore.SIGNAL( "activated(QString)" ), self.topics )
         QtCore.QObject.connect( self.o_topic, QtCore.SIGNAL( "activated(QString)" ), self.subtopics )
         QtCore.QObject.connect( self.o_sajdah_exist, QtCore.SIGNAL( "activated(int)" ), self.sajda_enable )
@@ -239,7 +242,7 @@ class QUI( Ui_MainWindow ):
         self.load_config()
 
 
-    def search_all( self ):
+    def search_all( self, page = 1 ):
         """
         The main search function
         """
@@ -333,7 +336,7 @@ class QUI( Ui_MainWindow ):
         self.o_numpage.display( numpage )
         self.o_page.setMinimum( 1 if numpage else 0 )
         self.o_page.setMaximum( numpage )
-        self.o_page.setValue( 1 )
+        #self.o_page.setValue(  )
 
 
         if results["error"]["code"] == 0:
@@ -426,12 +429,9 @@ class QUI( Ui_MainWindow ):
         html += "<br/><hr/><br/>"
         self.o_results.setText( html )
 
-    def changepage( self, page ):
-        self.search_all( page )
+
 
     def topics( self, chapter ):
-
-
         first = self.o_topic.itemText( 0 )
         list = [item for item in RAWoutput.QSE.list_values( "topic", conditions = [( "chapter", unicode( chapter ) )] ) if item]
         list.insert( 0, first )
@@ -649,9 +649,6 @@ class QUI( Ui_MainWindow ):
         painter.end()
 
 
-
-
-
     def about( self ):
 	""" deprecated """
         html = """to replace with about dialog """
@@ -659,13 +656,11 @@ class QUI( Ui_MainWindow ):
 
 
 
-
-
-
     def help( self ):
         """  deprecated     """
         html = """ to replace with a hints dialog """
         self.o_results.setText( html )
+
 
 def main():
     """ the main function"""

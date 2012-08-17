@@ -4,6 +4,7 @@
 # TODO: package for MacOS
 
 """
+
  Usage (Mac OS X):
      python setup.py py2app
 
@@ -34,7 +35,7 @@ setup(
 	platforms = "ALL",
 	license = "AGPL",
 	packages = ["alfanousDesktop"],
-	install_requires = ['alfanous', 'configobj', 'pyparsing'], #,'pyqt',
+	install_requires = ['alfanous', 'configobj', 'pyparsing', 'pyqt'], #,
 	author = "Assem Chelli",
 	author_email = "assem.ch@gmail.com",
 	maintainer = "Assem Chelli",
@@ -49,10 +50,11 @@ setup(
 	#data_files=[("install","files")],
 	#data_files=[('.','config.ini'),('index',glob.glob('resources/*.*'))],
 
+    package_data = {'alfanousDesktop': ['UI/*']},
 	include_package_data = True,
 
 
-	#entry_points={ 'gui_scripts': ['alfanousQT = alfanousDesktop.Gui:main',]},
+	entry_points = { 'gui_scripts': ['alfanous-desktop = alfanousDesktop.Gui:main', ]},
 
 
 
