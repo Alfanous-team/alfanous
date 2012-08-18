@@ -58,6 +58,19 @@ Featured Posts
 - *Alfanous – Quran Search Engine*, muslihzarthblog_ 
 **Note:**  If you wrote -yourself- a good post about Alfanous in any language, please just tell us to refer it here!
 
+--------
+See also
+--------
+#. `Application Programming Interface & Console Interface <https://github.com/Alfanous-team/alfanous/tree/master/src/alfanous>`_
+
+#. `JSON output system <https://github.com/Alfanous-team/alfanous/tree/master/src/alfanous-cgi>`_
+
+#. `Desktop Interface <https://github.com/Alfanous-team/alfanous/tree/master/src/alfanous-desktop>`_
+
+#. `Django application <https://github.com/Alfanous-team/alfanous/tree/master/src/alfanous-django>`_
+
+#. `Web user interface <https://github.com/Alfanous-team/alfanous/tree/master/interfaces/web/wui>`_
+
 .. _json_web_service: http://blank
 .. _mobile_web_interface: http://blank
 .. _alfanous.org: http://old.alfanous.org
