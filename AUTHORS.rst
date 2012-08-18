@@ -1,5 +1,3 @@
-*#AUTHORS.rst file of Alfanous project*
-
 Alfanous - Advanced Quranic Search Engine , Founded  by Assem Chelli <assem.ch@gmail.com>
 
       We gratefully acknowledge contributions from the following.
