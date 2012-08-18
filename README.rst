@@ -3,6 +3,12 @@ What is Alfanous?
 =================
 Alfanous is a Quranic search engine API that offers simple and advanced search services in the whole information that Holy Qur’an contains. it is based on the modern approach of information retrieval to get a good-stability and a high-speed search. We want implement some additional features like Highlight, Suggestions, Scoring …etc.by the way, a Quranic search engine is an Arabic search engine so we have to offer Arabic language processing like the stemming and eliminating of ambiguities. The API is aimed to be the base that the developers can use it to build different types of interfaces in different systems, ex: Desktop GUI 
 
+
+
+:Authors: `Authors.rst <https://github.com/Alfanous-team/alfanous/blob/master/AUTHORS.rst>`_
+:Version: 0.#.##
+:License: `AGPL <https://github.com/Alfanous-team/alfanous/blob/master/LICENSE>`_
+
 --------------
  Why Alfanous? 
 --------------
@@ -19,7 +25,7 @@ Alfanous is a Quranic search engine API that offers simple and advanced search s
 
 * Alfanous is Free gratis : no payment, no ads 
 
-
+see `FAQ <https://github.com/Alfanous-team/alfanous/blob/master/FAQ.rst>`_
 
 --------
 Contacts
