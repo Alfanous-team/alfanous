@@ -19,15 +19,15 @@ Alfanous is a Quranic search engine API that offers simple and advanced search s
  Why Alfanous? 
 --------------
 
-* Alfanous is FREE LIBRE OPEN SOURCE: Any one can use it and any one can contribute in coding, translating, design...etc. alfanous will die only if his community dies
+* Alfanous is FREE LIBRE OPEN SOURCE: Any one can use it and any one can contribute in coding, translating, design...etc. Alfanous will die only if his community dies!
 
-* Alfanous is a Python API: that allow anyone to create independently a web interface, desktop interface , Android/Iphone/Windows phone interfaces , facebook/twitter/G+ applications .... . the search process is too fast and too stable
+* Alfanous is a Python API: that allows anyone to create independently a web interface, desktop interface , Android/Iphone/Windows phone interfaces , facebook/twitter/G+ applications ...and so on. The search process is too fast and too stable
 
 * Alfanous is a research project : so we figure out features not only do what other websites/applications do.
 
-* Alfanous has lot of features: check it your self in the desktop interface # http://sourceforge.net/projects/alfanous/files/Interfaces/AlfanousDesktop/ 
+* Alfanous has lot of features: check it your self in the desktop interface ( `Arabic <http://sourceforge.net/projects/alfanous/files/Interfaces/AlfanousDesktop/0.3/alfanousDesktop-windows-0.3ar.exe/download>`_ `@English <http://sourceforge.net/projects/alfanous/files/Interfaces/AlfanousDesktop/0.4.3/alfanousInstallerV0.4.3.exe/download>`_ )
 
-* Alfanous has many interfaces for many platforms: Desktop for linux/windows, Web (wui.alfanous.org | m.alfanous.org) ...
+* Alfanous has many interfaces for many platforms: Desktop for linux/windows, Web (http://wui.alfanous.org | http://m.alfanous.org) ...
 
 * Alfanous is Free gratis : no payment, no ads 
 
@@ -83,8 +83,8 @@ See also
 
 #. `Web user interface <https://github.com/Alfanous-team/alfanous/tree/master/interfaces/web/wui>`_
 
-.. _json_web_service: http://blank
-.. _mobile_web_interface: http://blank
+.. _json_web_service: https://github.com/assem-ch/alfanous/blob/master/src/alfanous-cgi/README.rst
+.. _mobile_web_interface: https://github.com/assem-ch/alfanous/tree/master/interfaces/web
 .. _alfanous.org: http://old.alfanous.org
 .. _english_interface: http://sourceforge.net/projects/alfanous/files/Interfaces/AlfanousDesktop/0.4.20
 .. _arabic_interface: http://sourceforge.net/projects/alfanous/files/Interfaces/AlfanousDesktop/0.3/alfanousDesktop-windows-0.3ar.exe/download
