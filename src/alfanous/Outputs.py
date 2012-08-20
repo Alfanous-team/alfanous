@@ -325,7 +325,7 @@ class Raw():
 		query = flags["query"] if flags.has_key( "query" ) else self._defaults["flags"]["query"]
 		sortedby = flags["sortedby"] if flags.has_key( "sortedby" ) else self._defaults["flags"]["sortedby"]
 		range = int( flags["perpage"] ) if  flags.has_key( "perpage" )  else flags["range"] if flags.has_key( "range" ) else self._defaults["flags"]["range"]
-		offset = ( int( flags["page"] ) - 1 ) * range if flags.has_key( "page" ) else flags["offset"] if flags.has_key( "offset" ) else self._defaults["flags"]["offset"] ## offset = (page-1) * perpage   --  mode paging
+		offset = (( int( flags["page"] ) - 1 ) * range) + 1 if flags.has_key( "page" ) else int(flags["offset"]) if flags.has_key( "offset" ) else self._defaults["flags"]["offset"] ## offset = (page-1) * perpage   --  mode paging
 		highlight = flags["highlight"] if flags.has_key( "highlight" ) else self._defaults["flags"]["highlight"]
 		script = flags["script"] if flags.has_key( "script" ) else self._defaults["flags"]["script"]
 		vocalized = flags["vocalized"] if flags.has_key( "vocalized" ) else self._defaults["flags"]["vocalized"]
@@ -354,7 +354,7 @@ class Raw():
 		interval_end = offset + range
 		end = interval_end if interval_end < len( res ) else len( res )
 		start = offset if offset < len( res ) else -1
-		reslist = [] if end == 0 or start == -1 else list( res )[start:end]
+		reslist = [] if end == 0 or start == -1 else list( res )[start-1:end]
 		output = {}
 
 		#if True:
@@ -464,7 +464,7 @@ class Raw():
 					output["words"][cpt]["nb_annotations"] = len ( current_word_annotations )
 
 		output["runtime"] = extend_runtime
-		output["interval"] = {"start":start + 1, "end":end, "total":len( res )}
+		output["interval"] = {"start":start, "end":end, "total":len( res )}
 		output["translation_info"] = {}
 		### Ayas
 		cpt = start - 1
