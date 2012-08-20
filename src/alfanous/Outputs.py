@@ -21,6 +21,9 @@
 TODO add to SHOW: TYPES, HELPMSGS,
 TODO offer some linguistic operations like vocalize,derive using  Quranic Corpus  / functions
 FIXME use xranges in domains
+FIXME vocalization_dict[terms[1]], test key existance before use
+TODO include suggestions with search results
+TODO +flag language
 
 """
 
@@ -327,7 +330,7 @@ class Raw():
 		script = flags["script"] if flags.has_key( "script" ) else self._defaults["flags"]["script"]
 		vocalized = flags["vocalized"] if flags.has_key( "vocalized" ) else self._defaults["flags"]["vocalized"]
 		recitation = flags["recitation"] if flags.has_key( "recitation" ) else self._defaults["flags"]["recitation"]
-		translation = flags["translation"] if flags.has_key( "recitation" ) else self._defaults["flags"]["recitation"]
+		translation = flags["translation"] if flags.has_key( "translation" ) else self._defaults["flags"]["translation"]
 		prev_aya = flags["prev_aya"] if flags.has_key( "prev_aya" ) else self._defaults["flags"]["prev_aya"]
 		next_aya = flags["next_aya"] if flags.has_key( "next_aya" ) else self._defaults["flags"]["next_aya"]
 		sura_info = flags["sura_info"] if flags.has_key( "sura_info" ) else self._defaults["flags"]["sura_info"]
