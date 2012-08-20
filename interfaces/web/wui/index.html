@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<!-- 	TODO FIXME fix click-able bugs, eliminate the last vocalization of aya words and activate partial vocalization search  , eliminate Kasheeda in Godnames , fix g_a=0 clickable bug , fix sura_name phrase search possiblity -->
+       	<!-- 	TODO FIXME fix click-able bugs, eliminate the last vocalization of aya words and activate partial vocalization search  , eliminate Kasheeda in Godnames , fix g_a=0 clickable bug , fix sura_name phrase search possiblity -->
 	<!-- 	TODO clickable-floating-panel with options and user feedback! 
 			TODO: show prev_aya and next_aya [WUI]
 			TODO: replace suggested word in the  previous query [WUI] 
@@ -64,11 +64,11 @@
 			$("#down_btn").click(function() {
 				$("#down").overlay().load();
 			});
-	
+			
 
 			// help links
 			$("#help table a").bind('click', function(event) {
-				var param = {search: $(this).attr("href"), recitation: $("#recitation").val(), translation: $("#translation").val(), sortedby: $("#sortedby").val(), page: 1, highlight: "css" }; //,fuzzy:"ok"
+				var param = {action:"search", query: $(this).attr("href"), recitation: $("#recitation").val(), translation: $("#translation").val(), sortedby: $("#sortedby").val(), page: 1, highlight: "css" }; //,fuzzy:"ok"
 				
 				// Mouad
 				redirect_to_params ( param );
@@ -80,8 +80,11 @@
 				event.preventDefault();
 			});
 			
+			
+	
+
 			$('#form').submit(function(){
-				var param = {search: $("#search_box").val(), recitation: $("#recitation").val(), translation: $("#translation").val(), sortedby: $("#sortedby").val(), page: 1, highlight: "css"}; //,fuzzy:"ok"
+				var param = {action: "search", query: $("#search_box").val(), recitation: $("#recitation").val(), translation: $("#translation").val(), sortedby: $("#sortedby").val(), page: 1, highlight: "css"}; //,fuzzy:"ok"
 				
 				// Mouad
 				redirect_to_params ( param );
@@ -100,17 +103,18 @@
 		function build_search_link(param,query,filter)
 				{
 					var new_param = param; 
+                                        new_param.action="search";
 					new_param.page = 1;
-					new_param.sorted_by = "mushaf";
-					if (filter) new_param.search = "(" + $("#search_box").val() + ") + " + query;
-					else new_param.search = query;
+					new_param.sortedby = "mushaf";
+					if (filter) new_param.query = "(" + $("#search_box").val() + ") + " + query;
+					else new_param.query = query;
 					return "<a class='no_decoration' href=\""+ get_url_without_params()+ "?"+ build_params( new_param )+ "\">" 
 				}
 		
 		function get_results (param) {
-			if ($.trim(param.search) != "") {
+			if ($.trim(param.query) != "" && param.action == "search") {
 				$.ajax({
-					url: "http://www.alfanous.org/json",
+					url: "http://www.alfanous.org/json2", //http://localhost/cgi-bin2/alfanous_json2.py
 					async: false,
 					type: "GET",
 					dataType: "json",
@@ -134,20 +138,22 @@
 			var results = "";
 			var results_pages = "";
 
-			var nb_pages = Math.floor((json.interval.total- 1) / 10)+ 1;
-			var page = Math.floor((json.interval.start- 1) / 10)+ 1;
+			var nb_pages = Math.floor((json.search.interval.total- 1) / 10)+ 1;
+			var page = Math.floor((json.search.interval.start- 1) / 10)+ 1;
 
 			$("#search_result").html("");
 
 			// Note
 			results += "<br /><br /><span class='xbre'>نتيجة البحث</span><br /><br />";
-			results += "<center><b>الزمن المستغرق</b> : "+ json.runtime+ " ثانية</center>";
+			results += "<center><b>الزمن المستغرق</b> : "+ json.search.runtime+ " ثانية</center>";
 
 			// Suggestions
-			if (json.suggestions.length) {
+			
+			if (json.suggest) {			
+			if (json.suggest.length) {
 				results += "<div id='suggestions' align='right'>";
 				results += "<h2 style='font-size:16pt; font-weight:600; color:#ff0000;'>المقترحات :";
-				$.each(json.suggestions, function(key, item) {
+				$.each(json.suggest, function(key, item) {
 					results += "<p dir='rtl' style=' margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;'>";
 						results += "<div class='word_details'>";
 							results += "<span style=' font-size:14pt; color:#00aa00;'>"+ (key+ 1)+ ". </span>";
@@ -162,9 +168,12 @@
 							results += "</div></p>";
 				});
 				results += "</div><br />";
-			}
+						};
+					
+					}
+			
 
-			if (json.interval.total) {
+			if (json.search.interval.total) {
 
 				// Pages control
 				results_pages += "<br />";
@@ -191,63 +200,64 @@
 				}
 				results_pages += "</div><img src='images/next.gif' alt='الصفحة التالية' title = 'الصفحة التالية' />\n</div>\n";
 				
-				if (json.words["global"].nb_words > 0)
+				if (json.search.words["global"].nb_words > 0)
 					{
 					// Words list
 					results += "<div id='search_words' align='right'>";
 					results += "<h2 style='font-size:16pt; font-weight:600; color:#ff0000;'>الكلمات :";
-					results += "<div class='details_label word_count'> الكلمات | "+ json.words["global"].nb_words+ "</div>";
-					results += "<div class='details_label word_stat0'> مجموع المرات | "+ json.words["global"].nb_matches+ "</div>"; 
-					results += "<div class='details_label word_vocalization_nb'> مجموع التشكيلات | "+ json.words["global"].nb_vocalizations+ "</div>"; 
+					results += "<div class='details_label word_count'> الكلمات | "+ json.search.words["global"].nb_words+ "</div>";
+					results += "<div class='details_label word_stat0'> مجموع المرات | "+ json.search.words["global"].nb_matches+ "</div>"; 
+					results += "<div class='details_label word_vocalization_nb'> مجموع التشكيلات | "+ json.search.words["global"].nb_vocalizations+ "</div>"; 
 					results += "</h2><br />";
 					
 					
-					for( i = 1; i <= json.words.global.nb_words; i++) {
+					for( i = 1; i <= json.search.words.global.nb_words; i++) {
 						results += "<p dir='rtl' style=' margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;'>";
 							results += "<div class='word_details'>";
 								results += "<span style=' font-size:14pt; color:#00aa00;'>"+ i+ ". </span>";
-								results += build_search_link(param, json.words[i].word, false) +  "<div class='details_label word_info0 clickable'> كلمة | "+ json.words[i].word+ "</div></a>";
-								results += "<div class='details_label word_stat0'> المرات | "+ json.words[i].nb_matches+ "</div>";
-								results += "<div class='details_label word_stat1'> الآيات | "+ json.words[i].nb_ayas+ "</div>";
-								results += "<div class='details_label word_vocalization_nb'> التشكيلات | "+ json.words[i].nb_vocalizations+ "</div>";
-								for( j = 0; j < json.words[i].nb_vocalizations; j++) 
+								results += build_search_link(param, json.search.words[i].word, false) +  "<div class='details_label word_info0 clickable'> كلمة | "+ json.search.words[i].word+ "</div></a>";
+								results += "<div class='details_label word_stat0'> المرات | "+ json.search.words[i].nb_matches+ "</div>";
+								results += "<div class='details_label word_stat1'> الآيات | "+ json.search.words[i].nb_ayas+ "</div>";
+								results += "<div class='details_label word_vocalization_nb'> التشكيلات | "+ json.search.words[i].nb_vocalizations+ "</div>";
+								for( j = 0; j < json.search.words[i].nb_vocalizations; j++) 
 									{
-									results += build_search_link(param, "آية_:"+ json.words[i].vocalizations[j] + "", false ) + "<div class='details_label word_vocalization clickable'>"+ json.words[i].vocalizations[j]+ "</div></a>";
+									results += build_search_link(param, "آية_:"+ json.search.words[i].vocalizations[j] + "", false ) + "<div class='details_label word_vocalization clickable'>"+ json.search.words[i].vocalizations[j]+ "</div></a>";
 									}
 								results += "</div></p>";
 							}	
 					results += "</div> ";
 					}
 				
-
+				
 				// Pages list
 				results += results_pages;
 
 				// Ayas list
 				results += "<br /><h2 style=' font-size:15pt; font-weight:600; color:#ff0000;'>النتائج (";
-					results += json.interval.start+ " إلى "+ json.interval.end+ " من أصل "+ json.interval.total+ " )</h2> <br /> ";
+					results += json.search.interval.start+ " إلى "+ json.search.interval.end+ " من أصل "+ json.search.interval.total+ " )</h2> <br /> ";
 				
-				for( i = json.interval.start; i <= json.interval.end; i++) {
+				for( i = json.search.interval.start; i <=json.search.interval.end; i++) 
+				{ 
 				results += "<fieldset class='main_re_item'>";
 					results += "<legend class='main_re_item_title' style='font-size:14pt;-qt-block-indent:0; text-indent:0px;' dir='rtl'>";
 						results += "<span style=' font-family:\"arial ,sans serif\"; color:#0000ff; '> النتيجة رقم <span style=' font-family:\"arial ,sans serif\"; font-weight:600; color:#0000ff;'> <b>"+ i+ "</b> </span>";
 						// results += "<span align='left'><object width='350' height='24' id='audioplayer1' data='swf/player.swf' type='application/x-shockwave-flash'>";
 							// results += "<param value='swf/player.swf' name='movie'>";
-							// results += "<param value='playerID=audioplayer1&amp;soundFile="+ json.ayas[i].aya.recitation+ "' name='FlashVars'>";
+							// results += "<param value='playerID=audioplayer1&amp;soundFile="+ json.search.ayas[i].aya.recitation+ "' name='FlashVars'>";
 							// results += "<param value='high' name='quality'>";
 							// results += "<param value='false' name='menu'>";
 							// results += "<param value='transparent' name='wmode'></object></span><br />";
-						results += "<span id='audioplayer_"+ i+ "'>(<a href='"+ json.ayas[i].aya.recitation+ "' target='_blank'>تلاوة</a>)</span>";  
+						results += "<span id='audioplayer_"+ i+ "'>(<a href='"+ json.search.ayas[i].aya.recitation+ "' target='_blank'>تلاوة</a>)</span>";  
 						results += "<div class='sura_details'>";
 
-							results += build_search_link(param, "سورة:\"" + json.ayas[i].sura.name +"\"", true) + "<div class='details_label sura_info0 clickable filter'> سورة | "+ json.ayas[i].sura.name+ "</div></a> ";
-							results += "<div class='details_label sura_ord0'> رقم | "+ json.ayas[i].sura.id+ "</div>";
-							results += build_search_link(param, "نوع_السورة:" +  json.ayas[i].sura.type , true) + "<div class='details_label sura_info1 clickable filter'> النوع | "+ json.ayas[i].sura.type+ "</div></a>";
-							results += "<div class='details_label sura_ord1'> ترتيب النزول | "+ json.ayas[i].sura.order+ "</div></a>";
-							results += "<div class='details_label sura_stat0'> الآيات | "+ json.ayas[i].sura.stat.ayas+ "</div> ";
-							results += "<div class='details_label sura_stat1'> الكلمات | "+ json.ayas[i].sura.stat.words+ " </div>";
-							results += "<div class='details_label sura_stat2'> الأحرف | "+ json.ayas[i].sura.stat.letters+ "</div>";
-							results += "<div class='details_label sura_stat3'> ألفاظ الجلالة | "+ json.ayas[i].sura.stat.godnames+ "</div>";
+							results += build_search_link(param, "سورة:\"" + json.search.ayas[i].sura.name +"\"", true) + "<div class='details_label sura_info0 clickable filter'> سورة | "+ json.search.ayas[i].sura.name+ "</div></a> ";
+							results += "<div class='details_label sura_ord0'> رقم | "+ json.search.ayas[i].sura.id+ "</div>";
+							results += build_search_link(param, "نوع_السورة:" +  json.search.ayas[i].sura.type , true) + "<div class='details_label sura_info1 clickable filter'> النوع | "+ json.search.ayas[i].sura.type+ "</div></a>";
+							results += "<div class='details_label sura_ord1'> ترتيب النزول | "+ json.search.ayas[i].sura.order+ "</div></a>";
+							results += "<div class='details_label sura_stat0'> الآيات | "+ json.search.ayas[i].sura.stat.ayas+ "</div> ";
+							results += "<div class='details_label sura_stat1'> الكلمات | "+ json.search.ayas[i].sura.stat.words+ " </div>";
+							results += "<div class='details_label sura_stat2'> الأحرف | "+ json.search.ayas[i].sura.stat.letters+ "</div>";
+							results += "<div class='details_label sura_stat3'> ألفاظ الجلالة | "+ json.search.ayas[i].sura.stat.godnames+ "</div>";
 							results += "</div>";
 						results += "</span></legend>";
 					results += "<br><p align='center' style=' margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;'>";
@@ -255,7 +265,7 @@
 						results += "<span  class='aya_words' style='font-family:\"me_quran\", Scheherazade; font-size:22px;'>"
 						
 						
-						aya_words = json.ayas[i].aya.text.split(" ");
+						aya_words = json.search.ayas[i].aya.text.split(" ");
 						
 						for (var j=0; j < aya_words.length ; j++ )
 						{
@@ -271,41 +281,45 @@
 								}
 						}
 						results += "</span> ";
-						results += " <span>("+ build_search_link(param,"رقم_الآية:" + json.ayas[i].aya.id ,false ) +   json.ayas[i].aya.id + "</a>)</span> ";
+						results += " <span>("+ build_search_link(param,"رقم_الآية:" + json.search.ayas[i].aya.id ,false ) +   json.search.ayas[i].aya.id + "</a>)</span> ";
 						results += "] <br></span></p><br />";
 						
 					results += "<p dir='ltr' align='center' style=' margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;'>";
-						results += "<span style='font-family: \"Droid Sans\", Tahoma, \"Bitstream Vera Sans\", \"DejaVu Sans\", Verdana, Geneva, Arial, Sans-serif; line-height: 150%;'>"+ json.ayas[i].aya.traduction+ "</span></p>";
+						results += "<span style='font-family: \"Droid Sans\", Tahoma, \"Bitstream Vera Sans\", \"DejaVu Sans\", Verdana, Geneva, Arial, Sans-serif; line-height: 150%;'>"+ json.search.ayas[i].aya.traduction+ "</span></p>";
 					results += "<br><p align='center' style=' margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;'>";
 						
 						results += "<span style=' color:#808080;'>"
-						if (json.ayas[i].theme.chapter)	results += "الفصل : "+ build_search_link(param,"فصل:\"" +  json.ayas[i].theme.chapter + "\"",false )+ "<b>"+ json.ayas[i].theme.chapter+ "</b></a> ";
-						if (json.ayas[i].theme.topic) results += "الفرع : " + build_search_link(param, "فرع:\"" + json.ayas[i].theme.topic +"\"",false) +"<b>"+ json.ayas[i].theme.topic+ "</b></a> ";
-						if (json.ayas[i].theme.subtopic) results += "الباب : " + build_search_link(param, "باب:\"" + json.ayas[i].theme.subtopic +"\"", false) +"<b>"+ json.ayas[i].theme.subtopic+ "</b></a>"; 
+						if (json.search.ayas[i].theme.chapter)	results += "الفصل : "+ build_search_link(param,"فصل:\"" +  json.search.ayas[i].theme.chapter + "\"",false )+ "<b>"+ json.search.ayas[i].theme.chapter+ "</b></a> ";
+						if (json.search.ayas[i].theme.topic) results += "الفرع : " + build_search_link(param, "فرع:\"" + json.search.ayas[i].theme.topic +"\"",false) +"<b>"+ json.search.ayas[i].theme.topic+ "</b></a> ";
+						if (json.search.ayas[i].theme.subtopic) results += "الباب : " + build_search_link(param, "باب:\"" + json.search.ayas[i].theme.subtopic +"\"", false) +"<b>"+ json.search.ayas[i].theme.subtopic+ "</b></a>"; 
 						results += "</span></p>";						
-									
+								
 						results += "<div class='aya_details'>";
-						results += build_search_link(param,"ك_آ:" + json.ayas[i].stat.words, false) + "<div class='details_label aya_stat0 clickable'> الكلمات | "+ json.ayas[i].stat.words+ "</div></a>";
-						results += build_search_link(param,"ح_آ:" + json.ayas[i].stat.letters, false) + "<div class='details_label aya_stat1 clickable'> الأحرف | "+ json.ayas[i].stat.letters+ "</div></a>";
-						results += build_search_link(param,"ج_آ:" + json.ayas[i].stat.godnames, false) + "<div class='details_label aya_stat2 clickable'> ألفاظ الجلالة | "+ json.ayas[i].stat.godnames+ "</div></a> ";
-						results += build_search_link(param, "منزل:" + json.ayas[i].position.manzil, true) + "<div class='details_label aya_pos0 clickable filter'> المنزل | "+ json.ayas[i].position.manzil+ "</div></a>";
-						results += build_search_link(param, "حزب:" + json.ayas[i].position.hizb, true) +"<div class='details_label aya_pos1 clickable filter'> الحزب | "+ json.ayas[i].position.hizb+ "</div></a>";
-						results += "<div class='details_label aya_pos2'> الربع | "+ (json.ayas[i].position.rubu + 1 )+ "</div>";
-						results += build_search_link(param, "صفحة:" + json.ayas[i].position.page, true) + "<div class='details_label aya_pos3 clickable filter'> الصفحة | "+ json.ayas[i].position.page+ "</div></a>";
+						results += build_search_link(param,"ك_آ:" + json.search.ayas[i].stat.words, false) + "<div class='details_label aya_stat0 clickable'> الكلمات | "+ json.search.ayas[i].stat.words+ "</div></a>";
+						results += build_search_link(param,"ح_آ:" + json.search.ayas[i].stat.letters, false) + "<div class='details_label aya_stat1 clickable'> الأحرف | "+ json.search.ayas[i].stat.letters+ "</div></a>";
+						results += build_search_link(param,"ج_آ:" + json.search.ayas[i].stat.godnames, false) + "<div class='details_label aya_stat2 clickable'> ألفاظ الجلالة | "+ json.search.ayas[i].stat.godnames+ "</div></a> ";
+						results += build_search_link(param, "منزل:" + json.search.ayas[i].position.manzil, true) + "<div class='details_label aya_pos0 clickable filter'> المنزل | "+ json.search.ayas[i].position.manzil+ "</div></a>";
+						results += build_search_link(param, "حزب:" + json.search.ayas[i].position.hizb, true) +"<div class='details_label aya_pos1 clickable filter'> الحزب | "+ json.search.ayas[i].position.hizb+ "</div></a>";
+						results += "<div class='details_label aya_pos2'> الربع | "+ (json.search.ayas[i].position.rubu + 1 )+ "</div>";		
+						
+						results += build_search_link(param, "صفحة:" + json.search.ayas[i].position.page, true) + "<div class='details_label aya_pos3 clickable filter'> الصفحة | "+ json.search.ayas[i].position.page+ "</div></a>";
 					results += "</div><br />";
-					if (  json.ayas[i].sajda.exist == true)
+						
+					if (  json.search.ayas[i].sajda.exist == true)
 					{
+						
 						results += "<br /><div>";
 						results += build_search_link(param,"سجدة:نعم",false) + "<div class='details_label aya_sajda_exist clickable'> سجدة  " + "</div></a>";
-						results += "<div class='details_label aya_sajda_id'> رقم | "+ json.ayas[i].sajda.id + "</div>";
-						results += "<div class='details_label aya_sajda_type'> نوع | "+ json.ayas[i].sajda.type + "</div>";
+						
+						results += "<div class='details_label aya_sajda_id'> رقم | "+ json.search.ayas[i].sajda.id + "</div>";
+						results += "<div class='details_label aya_sajda_type'> نوع | "+ json.search.ayas[i].sajda.type + "</div>";			
+							
 						results += "</div><br />"
 					};
-					
 					results += "<br /></p></fieldset><br /><br />";
 				}
 			
-
+				
 				// Pages list
 				results += results_pages+ "<br />";
 
@@ -318,13 +332,14 @@
 			// Suggestions links
 			$("#suggestions a").one('click', function(event) {
 				var param2 = param;
+				param2.action = "search";
 				param2.page = 1;
-				param2.search = $(this).find("div").text();
+				param2.query = $(this).find("div").text();
 				
 				// Mouad
 				redirect_to_params ( param2 );
 				// search_for ( param2 );
-				// $('#search_box').val(param2.search);
+				// $('#search_box').val(param2.query);
 				// get_results(param2);
 			
 				event.preventDefault();
@@ -332,18 +347,19 @@
 				window.status = $(this).find("div").text();
 			});
 
-			if (json.interval.total) {
+			if (json.search.interval.total) {
 			
-				for( i = json.interval.start; i <= json.interval.end; i++) {
-					AudioPlayer.embed("audioplayer_"+ i, {soundFile: json.ayas[i].aya.recitation, titles: json.ayas[i].sura.name+"-"+json.ayas[i].aya.id});
+				for( i = json.search.interval.start; i <= json.search.interval.end; i++) {
+					AudioPlayer.embed("audioplayer_"+ i, {soundFile: json.search.ayas[i].aya.recitation, titles: json.search.ayas[i].sura.name+"-"+json.search.ayas[i].aya.id});
 				}
 
 
 				// Aya_words clicks control
 				$(".aya_words a").one('click', function(event) {
 					var param2 = param;
+					param2.action = "search";					
 					param2.page = 1;
-					param2.search = $(this).text();
+					param2.query = $(this).text();
 					
 					redirect_to_params ( param2 );
 					event.preventDefault();
@@ -352,13 +368,14 @@
 				// Pages control
 				$(".pages a").one('click', function(event) {
 					var param2 = param;
+					param2.action = search;
 					param2.page = $(this).text();
-					param2.search = $("#search_box").val();
+					param2.query = $("#search_box").val();
 					
 					// Mouad
 					redirect_to_params ( param2 );
 					// search_for ( param2 );
-					// $('#search_box').val(param2.search);
+					// $('#search_box').val(param2.query);
 					// get_results(param2);
 				
 					event.preventDefault();
@@ -366,12 +383,13 @@
 				$(".pages img:first-child").one('click', function(event) {
 					var param2 = param;
 					if (param2.page > 1) {
+						param2.action="search";
 						param2.page = parseInt ( param2.page ) - 1;
-						param2.search = $("#search_box").val();
+						param2.query = $("#search_box").val();
 						// Mouad
 						redirect_to_params ( param2 );
 						// search_for ( param2 );
-						// $('#search_box').val(param2.search);
+						// $('#search_box').val(param2.query);
 						// get_results(param2);
 					}
 					event.preventDefault();
@@ -379,13 +397,14 @@
 				$(".pages img:last-child").one('click', function(event) {
 					var param2 = param;
 					if  (param2.page < nb_pages) {
+						param2.action = "search";
 						param2.page = parseInt ( param2.page ) + 1;
-						param2.search = $("#search_box").val();
+						param2.query = $("#search_box").val();
 											
 						// Mouad
 						redirect_to_params ( param2 );
 						// search_for ( param2 );
-						// $('#search_box').val(param2.search);
+						// $('#search_box').val(param2.query);
 						// get_results(param2);
 					}
 					event.preventDefault();
@@ -570,6 +589,13 @@
 		<option value="subject">المواضيع</option>
 	</select><br /><!--[if lte IE 8]><![endif]-->
 
+	<!--  
+		TODO generate dynamically  the lists of translations and recitations 
+		{ 
+			action: show,
+			query: translations
+		}
+	-->
 	<span class="xtitle">&nbsp;&nbsp;&nbsp; الترجمات :</span>
 	<select id="translation" class="styled" name="translation">
 					<option value="shakir">افتراضي</option>
@@ -676,7 +702,7 @@
             <div class="column"> 
                 <h1>Quick links</h1> 
                 <ul> 
-    				<li><a href="http://cms.alfanous.org/" target="_blank">About</a></li> 
+    	            <li><a href="http://cms.alfanous.org/" target="_blank">About</a></li> 
                     <li><a href="http://sourceforge.net/projects/alfanous/files/" target="_blank">Downloads</a></li> 
                     <li><a href="http://m.alfanous.org/">Mobile Web Interface</a></li>
                     <li><a href="http://old.alfanous.org/">Old HTML Web Interface</a></li> 
@@ -694,7 +720,7 @@
                     <li><a href="https://bugs.launchpad.net/alfanous/" title="Bugs" target="_blank">Bugs</a></li>
                     <li><a href="https://www.facebook.com/alfanous" title="Facebook" target="_blank">@Facebook</a></li> 
                     <li><a href="https://plus.google.com/111305625425237630318" target="_blank">@Google Plus</a></li> 
-                    <li class="last"><a href="https://twitter.com/#!/alfanous" target="_blank">@Twitter</a></li> 
+                    <li class="last"><a href="https://twitter.com/alfanous" target="_blank">@Twitter</a></li> 
                 </ul> 
             </div>
 	<!-- Assem -->
