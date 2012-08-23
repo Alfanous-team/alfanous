@@ -1,10 +1,11 @@
 {
   "name": "Alfanous",
   "version": "0.7",
+  "manifest_version": 2,
   "description": "Alfanous.",
   "browser_action": {
     "default_icon": "logo.png",
-	"popup": "search.html"
+	"default_popup": "search.html"
 		  },
   "permissions": ["http://www.alfanous.org/json/"]
 }
