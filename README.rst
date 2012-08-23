@@ -37,9 +37,9 @@ see `FAQ <https://github.com/Alfanous-team/alfanous/blob/master/FAQ.rst>`_
 --------
 Contacts
 --------
-- If you have a concrete bug report for Alfanous please go to the launchpad Bug tracker and submit your report: <https://bugs.launchpad.net/alfanous>
+- If you have a concrete bug report for Alfanous please go to the Issues Tracker, submit your report and tag it "bug": <https://github.com/Alfanous-team/alfanous/issues>
 
-- If you want to participate in actively developing Alfanous please subscribe to the 'alfanous@googlegroups.com' mailing list : <http://groups.google.com/group/alfanous>
+- If you want to participate in actively developing Alfanous,  read this `How to contribute?  <https://github.com/Alfanous-team/alfanous/blob/master/FAQ.rst#how-to-contribute>`_. 
 
 -------
 History
