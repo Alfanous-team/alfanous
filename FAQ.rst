@@ -22,6 +22,11 @@ Why we called it Alfanous?
 --------------------------
 Alfanous is an arabic word "الفانوس"  that means the Lantern. The name was inspired from a picture that contains a Mushaf, a chronometer and a lantern. 
 
+--------------------
+How to report a bug?
+--------------------
+If you have a concrete bug report for Alfanous please go to the `Issues Tracker  <https://github.com/Alfanous-team/alfanous/issues>`_, submit your report and tag it "bug".
+
 ------------------
 How to Contribute? 
 ------------------
@@ -43,11 +48,33 @@ See also `How you can help?`_
 
 
 ------------------
-How to Contact us?
+How to contact us?
 ------------------
-TODO
+You can contact us via the mailing list on Google groups:  `alfanous@googlegroups.com <http://groups.google.com/group/alfanous>`_ .
+Here also the emails of `Maintainers <https://github.com/Alfanous-team/alfanous/blob/master/AUTHORS.rst#maintainers>`_.
+
 
 -----------------
 How you can help?
 -----------------
-TODO
+You can help us by:
+
+- Spreading the word 
+
+  - Following and sharing our social network pages : `@Facebook <https://www.facebook.com/alfanous>`_ `@Twitter <https://twitter.com/alfanous>`_ `@GooglePlus <https://plus.google.com/111305625425237630318>`_ 
+  - Sharing a link to `our website <www.alfanous.org>`_ via your accounts in Social networks.
+  - Pointing  skilled developers and Quranic researchers to the importance of the project.
+  - Writing articles about the project in blogs, newspapers.
+  - Showing a banner on your Blog/Website.
+
+- Managing and Animating our social network pages with news and daily posts [Arabic, English]: `@Facebook <https://www.facebook.com/alfanous>`_ `@Twitter <https://twitter.com/alfanous>`_ `@GooglePlus <https://plus.google.com/111305625425237630318>`_ 
+
+- Translating project interfaces to your language , we are using Launchpad platform for translation:
+
+  - `alfanous web interface for mobiles <http://m.alfanous.org/>`_ , translation platform link: `here <https://translations.launchpad.net/alfanous/trunk/+pots/alfanousmobile>`_.
+
+- Fixing `bugs <https://github.com/Alfanous-team/alfanous/issues?labels=bug&milestone=&page=1&state=open>`_ , Coding `new features <https://github.com/Alfanous-team/alfanous/issues/milestones>`_ or Developing `new interfaces <https://github.com/Alfanous-team/alfanous/issues?milestone=8&page=1&state=open>`_ , See: `How to Contribute?`_ .
+- Designing  Icons, Logoes , Banners.
+- Donating/Supporting to the project: *we're stuck here, looking for possible ways for donations since Algeria is  very restricting foreign transactions. Any help is appreciated *
+
+
