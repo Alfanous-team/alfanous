@@ -1,6 +1,7 @@
 2012-08-19  zaki Smahi <zakaria08esi@gmail.com>
 
-    	* adding the '"manifest_version": 2,' to manifest.json; newer versions of chrome use json 2
+    	* adding the '"manifest_version": 2,' to manifest.json 
+				newer versions of chrome have upgraded from json 1 to json 2
 		
 2012-08-17  zaki Smahi <zakaria08esi@gmail.com>
 
