@@ -37,7 +37,7 @@ see `FAQ <https://github.com/Alfanous-team/alfanous/blob/master/FAQ.rst>`_
 --------
 Contacts
 --------
-- If you have a concrete bug report for Alfanous please go to the Issues Tracker, submit your report and tag it "bug": <https://github.com/Alfanous-team/alfanous/issues>
+- If you have a concrete bug report for Alfanous please go to the `Issues Tracker  <https://github.com/Alfanous-team/alfanous/issues>`_, submit your report and tag it "bug".
 
 - If you want to participate in actively developing Alfanous,  read this `How to contribute?  <https://github.com/Alfanous-team/alfanous/blob/master/FAQ.rst#how-to-contribute>`_. 
 
