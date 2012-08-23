@@ -1,7 +1,6 @@
 2012-08-19  zaki Smahi <zakaria08esi@gmail.com>
 
     	* launching the first release 0.5
-		* call for testing
 		
 2012-08-18  zaki Smahi <zakaria08esi@gmail.com>
 
