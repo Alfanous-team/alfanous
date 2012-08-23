@@ -52,7 +52,8 @@ You can help us by:
 - Testing the releases and Reporting bugs , see `How to report a bug?`_
 - Fixing `bugs <https://github.com/Alfanous-team/alfanous/issues?labels=bug&milestone=&page=1&state=open>`_ , Coding `new features <https://github.com/Alfanous-team/alfanous/issues/milestones>`_ or Developing `new interfaces <https://github.com/Alfanous-team/alfanous/issues?milestone=8&page=1&state=open>`_ , See: `How to Contribute?`_ .
 - Designing  Icons, Logoes , Banners.
-- Donating/Supporting to the project: *we're stuck here, looking for possible ways for donations since Algeria is  very restricting foreign transactions. Any help is appreciated *
+- Packaging the project for different systems: Windows, Linux distributions, MacOs.
+- Donating/Supporting to the project: *we're stuck here, looking for possible ways for donations since Algeria is  very restricting foreign transactions. Any help is appreciated*
 
 
 
