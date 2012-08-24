@@ -6,6 +6,7 @@ Alfanous API
 -------
 Install
 -------
+To install the API from the source:
 .. code-block:: sh
 
     $ sudo python setup.py install
