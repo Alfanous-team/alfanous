@@ -258,6 +258,11 @@ response:
         
         "search": {
                     "runtime": 1.0951571464538574, 
+                    "interval": {
+                                    "start": 1, 
+                                    "total": 1, 
+                                    "end": 1
+                                }
                     "words": {
                                 "global": {
                                             "nb_words": 1,
@@ -273,11 +278,6 @@ response:
                                       }, 
 
                              }, 
-                    "interval": {
-                                    "start": 1, 
-                                    "total": 1, 
-                                    "end": 1
-                                }
 
                     "ayas": {
                                 "1": {
