@@ -24,6 +24,7 @@ FIXME use xranges in domains
 FIXME vocalization_dict[terms[1]], test key existance before use
 TODO include suggestions with search results
 TODO +flag language
+FIXME how to select the translation attached to results, what ID? 
 
 """
 
@@ -353,7 +354,7 @@ class Raw():
 		range = self._defaults["maxrange"] if range > self._defaults["maxrange"] else range;
 		interval_end = offset + range
 		end = interval_end if interval_end < len( res ) else len( res )
-		start = offset if offset < len( res ) else -1
+		start = offset if offset <= len( res ) else -1
 		reslist = [] if end == 0 or start == -1 else list( res )[start-1:end]
 		output = {}
 
@@ -483,7 +484,7 @@ class Raw():
 		              		"id":r["aya_id"],
 		              		"text":  Gword_tamdid( H( V( r["aya_"] ) ) ) if script == "standard"
 		              			else  Gword_tamdid( H( r["uth_"] ) ),
-		                	"translation": trad_text[r["gid"]] if ( translation != "None" and translation ) else None,
+						"translation": trad_text[r["gid"]] if ( translation != "None" and translation and trad_text.has_key(r["gid"])) else None,
 		                	"recitation": None if not recitation else u"http://www.everyayah.com/data/" + self._recitations[recitation]["subfolder"].encode( "utf-8" ) + "/%03d%03d.mp3" % ( r["sura_id"], r["aya_id"] ),
 		                	"prev_aya":{
 						    "id":adja_ayas[r["gid"] - 1]["aya_id"],
