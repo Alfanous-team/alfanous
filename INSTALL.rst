@@ -1,7 +1,7 @@
 AlfanousDesktop
 ===============
-* **Windows XP/VISTA/SEVEN**: Download the installer from sourceforge: last version http://sourceforge.net/projects/alfanous/files/Interfaces/AlfanousDesktop/0.4.3/alfanousInstallerV0.4.3.exe/download
-* **Ubuntu**:  add the repository of Sabily http://ubuntuforums.org/showthread.php?t=1370001  
+* **Windows XP/VISTA/SEVEN**: Download the installer from sourceforge: `last version https://sourceforge.net/projects/alfanous/files/latest/download?source=files`_
+* **Ubuntu**:  add `the repository of Sabily http://ubuntuforums.org/showthread.php?t=1370001`_.  
 
 
 
