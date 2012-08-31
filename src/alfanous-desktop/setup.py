@@ -31,11 +31,11 @@ except:
 setup( 
 	name = "alfanousDesktop",
 	description = "Desktop interface for alfanous Quranic search engine API",
-	version = 0.4,
+	version = 0.7,
 	platforms = "ALL",
 	license = "AGPL",
 	packages = ["alfanousDesktop"],
-	install_requires = ['alfanous', 'configobj', 'pyparsing', 'pyqt'], #,
+	install_requires = ['alfanous', 'configobj', 'pyparsing'], #, 'pyqt'
 	author = "Assem Chelli",
 	author_email = "assem.ch@gmail.com",
 	maintainer = "Assem Chelli",
