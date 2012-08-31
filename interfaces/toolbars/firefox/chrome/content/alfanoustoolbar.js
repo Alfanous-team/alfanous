@@ -4,7 +4,12 @@
 	by SMAHI Zakaria
 	zakaria08esi@gmail.com
 */
-
+/*
+TODO  LIST
+	# open  links in  new tab instead of getting last browser window  ......... done
+	# use one regexp to trim " "
+	# enable search history and autocomplete
+ */
 
  
 	function AlfanousTB_Search(event, type)
@@ -117,10 +122,9 @@
 		
 		/*
 			AlfanousTB_LoadURL
-			This function loads the specified URL in the browser
+			This function loads the specified URL in the browser (new tab)
 		*/
-var win = Components.classes['@mozilla.org/appshell/window-mediator;1'].getService(Components.interfaces.nsIWindowMediator).getMostRecentWindow('navigator:browser');
-win.openUILinkIn(url, 'current');
+		gBrowser.selectedTab = gBrowser.addTab(url);
 	}
 
 	function AlfanousTB_KeyHandler(event)
@@ -159,14 +163,14 @@ win.openUILinkIn(url, 'current');
 		// Specify how many items we should add to the menu
 		var numItemsToAdd = 10;
 
-		tempItem.setAttribute("label", "الحمد لله رب العالمين");
+		tempItem.setAttribute("label", "allah");
 		for(var i=0; i<numItemsToAdd; i++)
 		{
 			// Create a new menu item to be added
 			var tempItem = document.createElement("menuitem");
 
 			// Set the new menu item's label
-			//tempItem.setAttribute("label", "Dynamic Item Number " + (i+1));
+			tempItem.setAttribute("label", "Dynamic Item Number " + (i+1));
 
 			// Add the item to our menu
 			menu.appendChild(tempItem);
