@@ -1,16 +1,8 @@
-# this is the INSTALL file of alfanous project
+AlfanousDesktop
+===============
+* **Windows XP/VISTA/SEVEN**: Download the installer from sourceforge: `last version https://sourceforge.net/projects/alfanous/files/latest/download?source=files`_
+* **Ubuntu**:  add `the repository of Sabily http://ubuntuforums.org/showthread.php?t=1370001`_.  
 
-
-USERS
-=====
-
-Windows
--------
-download the last version from sourceforge and install: [link]
-
-Ubuntu/Sabily
--------------
-add the repository of Sabily :  [Howto link]
 
 
 
