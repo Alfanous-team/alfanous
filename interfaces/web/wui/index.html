@@ -1,50 +1,39 @@
 <!DOCTYPE html>
 <html>
-<head>
-       	<!-- 	TODO FIXME fix click-able bugs, eliminate the last vocalization of aya words and activate partial vocalization search  , eliminate Kasheeda in Godnames , fix g_a=0 clickable bug , fix sura_name phrase search possiblity -->
-	<!-- 	TODO clickable-floating-panel with options and user feedback! 
-			TODO: show prev_aya and next_aya [WUI]
-			TODO: replace suggested word in the  previous query [WUI] 
-			-->
-	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-
-	<title>الفانوس | محرك بحث قرآني متقدم</title>
-	
-	<meta name="description" content="الفانوس - محرك بحث متقدم في القرآن الكريم "/>
-	<meta name="keywords" content="quran, search, ayates, surates, متقدم, advanced, الفانوس ,القرآن ,فانوس ,قرآني ,احصاءات ,ألفاظ, fanous, alfanous, alfanoos, fanoos, elfanous, elfanoos, alfanouce, alfanooce, fanooce , engine, محرك ,بحث ,قرآن"/>
-	<!-- meta name="copyright" content="&copy; Alfanous Team, AGPL" -->
-	<meta name="author" content="Assem Chelli, Ahmed Ramadan, Abdellah Chelli, Mouad Debbar" />
-	<meta name="robots" content="index,follow"/>
-
-	<link rel="icon" href="images/icon_32.png" sizes="32x32"> 
-	<link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon">
-
-	<link rel="search" type="application/opensearchdescription+xml" title="Alfanous" href="http://wui.alfanous.org/alfanous-opensearch.xml"/>
-	<link rel="search" type="application/opensearchdescription+xml" title="Alfanous Mobile" href="http://wui.alfanous.org/alfanous-mobile-opensearch.xml"/>
-
-	<!--fb-->
-	<meta property="og:image" content="http://wui.alfanous.org/images/logo_fb.png" />
-
-	<link href="https://fonts.googleapis.com/css?family=Droid+Sans:regular,bold&amp;subset=latin" rel="stylesheet" type="text/css">
-	<link rel="stylesheet" href="css/screen.css" type="text/css"/>
-	
-	<!--abdellah-->
-	<script type="text/javascript" src="js/audio-player.js"></script>
-	<!--jquery tools (for overlay) + jquery 1.7.2 included-->
-	<script type="text/javascript" src="js/jquery.tools.min.js"></script>
-
-	
-	<script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#username=ahmadramadan"></script>
-	<script type="text/javascript" src="js/drops.js"></script>
-	
-	<!-- Mouad -->
-	<script type="text/javascript" src="js/jquery.sprintf.js"></script>
-	<script type="text/javascript" src="js/hash.js"></script>
-	
-	<!--abdellah-->
-	<script type="text/javascript" src="js/jquery.corner.js"></script>
-	
-	<script type="text/javascript">
+  <head>
+    <!-- 	TODO FIXME fix click-able bugs, eliminate the last vocalization of aya words and activate partial vocalization search  , eliminate Kasheeda in Godnames , fix g_a=0 clickable bug , fix sura_name phrase search possiblity -->
+    <!-- 	TODO clickable-floating-panel with options and user feedback! 
+			TODO: show prev_aya and next_aya [WUI]			TODO: replace suggested word in the  previous query [WUI] 			-->
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>الفانوس | محرك بحث قرآني متقدم</title>
+    <meta name="description" content="الفانوس - محرك بحث متقدم في القرآن الكريم ">
+    <meta name="keywords" content="quran, search, ayates, surates, متقدم, advanced, الفانوس ,القرآن ,فانوس ,قرآني ,احصاءات ,ألفاظ, fanous, alfanous, alfanoos, fanoos, elfanous, elfanoos, alfanouce, alfanooce, fanooce , engine, محرك ,بحث ,قرآن">
+    <!-- meta name="copyright" content="&copy; Alfanous Team, AGPL" -->
+    <meta name="author" content="Assem Chelli, Ahmed Ramadan, Abdellah Chelli, Mouad Debbar">
+    <meta name="robots" content="index,follow">
+    <link rel="icon" href="images/icon_32.png" sizes="32x32">
+    <link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon">
+    <link rel="search" type="application/opensearchdescription+xml" title="Alfanous"
+      href="http://wui.alfanous.org/alfanous-opensearch.xml">
+    <link rel="search" type="application/opensearchdescription+xml" title="Alfanous Mobile"
+      href="http://wui.alfanous.org/alfanous-mobile-opensearch.xml">
+    <!--fb-->
+    <meta property="og:image" content="http://wui.alfanous.org/images/logo_fb.png">
+    <link href="https://fonts.googleapis.com/css?family=Droid+Sans:regular,bold&amp;subset=latin"
+      rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="css/screen.css" type="text/css">
+    <!--abdellah-->
+    <script type="text/javascript" src="js/audio-player.js"></script>
+    <!--jquery tools (for overlay) + jquery 1.7.2 included-->
+    <script type="text/javascript" src="js/jquery.tools.min.js"></script>
+    <script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#username=ahmadramadan"></script>
+    <script type="text/javascript" src="js/drops.js"></script>
+    <!-- Mouad -->
+    <script type="text/javascript" src="js/jquery.sprintf.js"></script>
+    <script type="text/javascript" src="js/hash.js"></script>
+    <!--abdellah-->
+    <script type="text/javascript" src="js/jquery.corner.js"></script>
+    <script type="text/javascript">
 	// <![CDATA[
 		AudioPlayer.setup("swf/player.swf", {
 			width: 350,
@@ -52,8 +41,7 @@
 			});
 	// ]]>
 	</script>
-
-	<script type="text/javascript">
+    <script type="text/javascript">
 	// <![CDATA[
 		$(document).ready(function(){
 		
@@ -437,64 +425,19 @@
 
 	// ]]>
 	</script>
-
-	<!--[if lte IE 8]>
-	<style type="text/css">
-
-	a.button {
-		padding:0 12px;
-		cursor: pointer;
-		font-family: tahoma;
-		font-size: 10pt;
-		font-weight: bold;
-		color: black;
-		min-width: 30px;
-		margin: 0 5px 0 0;
-		/* Css3 Effects */
-		border-radius:4px ;
-		-moz-border-radius:4px ;
-		-webkit-border-radius:4px ;
-		opacity:0.8;
-		filter: alpha(opacity=80); 
-		background: #ffffff; /* old browsers */
-		background: -moz-linear-gradient(top, #ffffff 0%, #e5e5e5 100%); /* firefox */
-		background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#ffffff), color-stop(100%,#e5e5e5)); /* webkit */
-		filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#e5e5e5',GradientType=0 ); /* ie */
-		text-shadow:0 1px 1px #eeeeee;
-		-moz-text-shadow:0 1px 1px #eeeeee;
-		-webkit-text-shadow:0 1px 1px #eeeeee;
-		border: 1px solid silver;
-	}
-
-	a.button:hover, .button:focus {
-		outline: 0;
-		-webkit-box-shadow:0 0 4px silver;
-		-moz-box-shadow:0 0 4px silver;
-		opacity:1;
-		filter: alpha(opacity=100);
-	}
-
-	a.button:active {
-		color: #000;
-		border-color: #444;
-	}
-	.styled{}
-	.select{}
-
-	</style>
-	<![endif]-->
-
-	<script type="text/javascript">
+    <!--[if lte IE 8]>
+	<style type="text/css">	a.button {		padding:0 12px;		cursor: pointer;		font-family: tahoma;		font-size: 10pt;		font-weight: bold;		color: black;		min-width: 30px;		margin: 0 5px 0 0;		/* Css3 Effects */		border-radius:4px ;		-moz-border-radius:4px ;		-webkit-border-radius:4px ;		opacity:0.8;
+		filter: alpha(opacity=80); 		background: #ffffff; /* old browsers */		background: -moz-linear-gradient(top, #ffffff 0%, #e5e5e5 100%); /* firefox */		background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#ffffff), color-stop(100%,#e5e5e5)); /* webkit */		filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#e5e5e5',GradientType=0 ); /* ie */		text-shadow:0 1px 1px #eeeeee;		-moz-text-shadow:0 1px 1px #eeeeee;		-webkit-text-shadow:0 1px 1px #eeeeee;		border: 1px solid silver;	}	a.button:hover, .button:focus {		outline: 0;		-webkit-box-shadow:0 0 4px silver;		-moz-box-shadow:0 0 4px silver;		opacity:1;
+		filter: alpha(opacity=100);	}	a.button:active {		color: #000;		border-color: #444;	}	.styled{}	.select{}	</style>	<![endif]-->
+    <script type="text/javascript">
 	// <![CDATA[
 	if (navigator.userAgent.toLowerCase().match('chrome')){
 		document.write('<style type="text/css">.xdrops_continer{direction:ltr;padding-left:160px;}a.button {margin-top:2px;}</style>');
 	}
 	// ]]>
 	</script>
-
-
-<!-- Google analytics #Assem -->
-<script type="text/javascript">
+    <!-- Google analytics #Assem -->
+    <script type="text/javascript">
 
   var _gaq = _gaq || [];
   _gaq.push(['_setAccount', 'UA-9859501-4']);
@@ -506,12 +449,9 @@
     var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
   })();
 
-</script>
-<!-- end -->
-
-
-<!-- all css to be collocted, this just for fast fixes -->
-<style type="text/css">
+</script><!-- end -->
+    <!-- all css to be collocted, this just for fast fixes -->
+    <style type="text/css">
 	body {
 		background: #fff;
 		text-align: center;
@@ -538,221 +478,271 @@
 		display: inline-block;
 	}
 	
-</style>
-
-
-
-</head>
-<body>
-
-<form id="form" name="form" method="post" action=".">
-<div>
-<div>
-<table>
-	<tr>
-		<td colspan="4" style="background:url(images/logo.png); width:395px; height:209px;"> </td>
-		</tr>
-	<tr>
-		<td style="background:url(images/main_table_02.png) no-repeat;width:50px;height:26px"> </td>
-		<td style="background:url(images/main_table_03.png) no-repeat;width:259px;height:26px">
-			<input id="search_box" name="search" class="enter" type="text" value="" />
-			</td>
-		<td style="background:url(images/main_table_04.png) repeat scroll 0 0 transparent;width:62;height:26;text-align:right;">
-			<a class="button" href="" onclick="$('#form').submit(); return false;">بحث</a>
-			</td>
-		<td style="background:url(images/main_table_05.png) no-repeat;width:24px;height:26px"> </td>
-		</tr>
-	<tr style=" vertical-align: top;">
-		<td colspan="4" style="background:url(images/main_table_06.png) no-repeat;width:395px;height:21px;"> </td></tr>
-</table>
-
-<div class="follow-box" > 
-	<a class="twitter_share" target='_blank' rel='nofollow' href='http://twitter.com/home?status=http://www.alfanous.org%20الفانوس%20|%20محرك%20بحث%20قرآني%20متقدم'><img src='images/twitter.png' class='bo' alt='twitter' title='تويتر'/></a><br/>
-	<a class="facebook_share" target='_blank' rel='nofollow' href='http://www.facebook.com/share.php?u=http://www.alfanous.org%26t=الفانوس%20|%20محرك%20بحث%20قرآني%20متقدم'><img class='bo' alt='Facebook' title='فيس بوك' src='images/facebook.png' /></a><br/>
-	<a title='إرسال إلى نبضات جوجل' class='external2 buzz_share' rel='nofollow' href='http://www.google.com/buzz/post?url=http://www.alfanous.org' target='_blank'><img src='images/google.png' class='bo' alt='Google Buzz'/></a><br/>
-	<a title='إرسال إلى MySpace' class='external2 myspace_share' rel='nofollow' href='http://www.myspace.com/Modules/PostTo/Pages/?u=http://www.alfanous.org' target='_blank'><img src='images/myspace.png' class='bo' alt='myspace'/></a><br/>
-	<script type="text/javascript">
+</style> </head>
+  <body>
+    <form id="form" name="form" method="post" action=".">
+      <div>
+        <div>
+          <table>
+            <tbody>
+              <tr>
+                <td colspan="4" style="background:url(images/logo.png); width:395px; height:209px;">
+                  <br>
+                </td>
+              </tr>
+              <tr>
+                <td style="background:url(images/main_table_02.png) no-repeat;width:50px;height:26px">
+                  <br>
+                </td>
+                <td style="background:url(images/main_table_03.png) no-repeat;width:259px;height:26px">
+                  <input id="search_box" name="search" class="enter" value="" type="text">
+                </td>
+                <td style="background:url(images/main_table_04.png) repeat scroll 0 0 transparent;width:62;height:26;text-align:right;">
+                  <a class="button" href="" onclick="$('#form').submit(); return false;">بحث</a>
+                </td>
+                <td style="background:url(images/main_table_05.png) no-repeat;width:24px;height:26px">
+                  <br>
+                </td>
+              </tr>
+              <tr style=" vertical-align: top;">
+                <td colspan="4" style="background:url(images/main_table_06.png) no-repeat;width:395px;height:21px;">
+                  <br>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="follow-box"> <a class="twitter_share" target="_blank" rel="nofollow"
+              href="http://twitter.com/home?status=http://www.alfanous.org%20%D8%A7%D9%84%D9%81%D8%A7%D9%86%D9%88%D8%B3%20%7C%20%D9%85%D8%AD%D8%B1%D9%83%20%D8%A8%D8%AD%D8%AB%20%D9%82%D8%B1%D8%A2%D9%86%D9%8A%20%D9%85%D8%AA%D9%82%D8%AF%D9%85"><img
+                src="images/twitter.png" class="bo" alt="twitter" title="تويتر"></a><br>
+            <a class="facebook_share" target="_blank" rel="nofollow" href="http://www.facebook.com/share.php?u=http://www.alfanous.org%26t=%D8%A7%D9%84%D9%81%D8%A7%D9%86%D9%88%D8%B3%20%7C%20%D9%85%D8%AD%D8%B1%D9%83%20%D8%A8%D8%AD%D8%AB%20%D9%82%D8%B1%D8%A2%D9%86%D9%8A%20%D9%85%D8%AA%D9%82%D8%AF%D9%85"><img
+                class="bo" alt="Facebook" title="فيس بوك" src="images/facebook.png"></a><br>
+            <a title="إرسال إلى نبضات جوجل" class="external2 buzz_share" rel="nofollow"
+              href="http://www.google.com/buzz/post?url=http://www.alfanous.org"
+              target="_blank"><img src="images/google.png" class="bo" alt="Google Buzz"></a><br>
+            <a title="إرسال إلى MySpace" class="external2 myspace_share" rel="nofollow"
+              href="http://www.myspace.com/Modules/PostTo/Pages/?u=http://www.alfanous.org"
+              target="_blank"><img src="images/myspace.png" class="bo" alt="myspace"></a><br>
+            <script type="text/javascript">
 	// <![CDATA[
 	    var addthis_pub = "kaan";
 	// ]]>
-    </script>
-    <a class="other_share" rel='nofollow' href="http://www.addthis.com/bookmark.php?v=250&amp;username=ahmadramadan" onmouseover="return addthis_open(this, '', document.URL, document.title );" onmouseout="addthis_close()" onclick="return addthis_sendto()"><img class='bo' src="images/share.png" alt="شارك أصدقاءك هذا الموقع"/></a>
-</div>
-<br />
-<div class="xdrops_continer" style="direction:rtl; text-align:left; width: 342px;">
-	<span class="xtitle">ترتيب حسب :</span>
-	<select id="sortedby" class="styled" name="sortedby">
-		<option value="score">افتراضي</option>
-		<option value="score">التقييم</option>
-		<option value="mushaf">المصحف</option>
-		<option value="tanzil">التنزيل</option>
-		<option value="subject">المواضيع</option>
-	</select><br /><!--[if lte IE 8]><![endif]-->
-
-	<!--  
-		TODO generate dynamically  the lists of translations and recitations 
-		{ 
-			action: show,
-			query: translations
-		}
-	-->
-	<span class="xtitle">&nbsp;&nbsp;&nbsp; الترجمات :</span>
-	<select id="translation" class="styled" name="translation">
-					<option value="shakir">افتراضي</option>
-					<option value="None">بلا ترجمة</option>
-					<option value="shakir">انجليزية - محمد حبيب شاكر</option>
-					<option value="transliteration-en">تهجية انجليزية</option>
-	</select><br /><!--[if lte IE 8]><![endif]-->
-
-	<span class="xtitle">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; التلاوة :</span>
-	<select id="recitation" class="styled" name="recitation">
-		<option value="Mishary Rashid Alafasy">الافتراضي</option>
-		<option value="Mishary Rashid Alafasy">مشاري راشد العفاسي</option>   
-		<option value="AbdulBasit AbdusSamad (Murattal style)">عبد الباسط عبد الصمد</option>
-		<option value="Abu Bakr Ash-Shaatree">أبو بكر الشاطري</option>
-		<option value="Ahmed_ibn_Ali_al-Ajamy (From QuranExplorer.com)">أحمدبن علي العجمي</option>
-		<option value="Saad Al Ghamadi">سعد الغامدي</option>
-		<option value="Hani Rifai">هاني الرفاعي</option>
-		<option value="Husary Mujawwad">الحصري</option>
-		<option value="Hudhaify">الحذيفي</option>
-		<option value="Menshawi (external source)">المنشاوي</option>
-		<option value="Muhammad Ayyoub">محمد أيوب</option>
-		<option value="Saood bin Ibraaheem Ash-Shuraym">سعود بن ابراهيم الشريم</option>
-		<option value="Ibrahim_Walk">ابراهيم ولق</option>
-		<option value="Abdullah Basfar">عبد الله بسفر</option>
-	</select><br /><!--[if lte IE 8]><![endif]-->
-</div>
-
-<br />
-<br />
-<div id="down_btn"><a  class='xbutton gray' >تحميل</a></div>
-<div id="help_btn"><a class='xbutton gray' >مساعدة</a></div>
-<br /><br />
-<!--<div id="vote_btn"><a class='xbutton gray' href="http://www.surveymonkey.com/s/NTFPFTF" target="_blank"><i>ملاحظة 12-06-2012:</i> الرجاء المساهمة معنا في الرقي بمشروع  <b>الفانوس</b>, بإكمال هذا الاستبيان</a></div>
+    </script> <a class="other_share" rel="nofollow" href="http://www.addthis.com/bookmark.php?v=250&amp;username=ahmadramadan"
+              onmouseover="return addthis_open(this, '', document.URL, document.title );"
+              onmouseout="addthis_close()" onclick="return addthis_sendto()"><img
+                class="bo" src="images/share.png" alt="شارك أصدقاءك هذا الموقع"></a>
+          </div>
+          <br>
+          <div class="xdrops_continer" style="direction:rtl; text-align:left; width: 342px;">
+            <span class="xtitle">ترتيب حسب :</span>
+            <select id="sortedby" class="styled" name="sortedby">
+              <option value="score">افتراضي</option>
+              <option value="score">التقييم</option>
+              <option value="mushaf">المصحف</option>
+              <option value="tanzil">التنزيل</option>
+              <option value="subject">المواضيع</option>
+            </select>
+            <br>
+            <!--[if lte IE 8]><![endif]-->
+            <!--  
+		TODO generate dynamically  the lists of translations and recitations 		{ 			action: show,			query: translations		}	-->
+            <span class="xtitle">&nbsp;&nbsp;&nbsp; الترجمات :</span>
+            <select id="translation" class="styled" name="translation">
+              <option value="shakir">افتراضي</option>
+              <option value="None">بلا ترجمة</option>
+              <option value="shakir">انجليزية - محمد حبيب شاكر</option>
+              <option value="transliteration-en">تهجية انجليزية</option>
+            </select>
+            <br>
+            <!--[if lte IE 8]><![endif]--> <span class="xtitle">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+              التلاوة :</span>
+            <select id="recitation" class="styled" name="recitation">
+              <option value="Mishary Rashid Alafasy">الافتراضي</option>
+              <option value="Mishary Rashid Alafasy">مشاري راشد العفاسي</option>
+              <option value="AbdulBasit AbdusSamad (Murattal style)">عبد الباسط
+                عبد الصمد</option>
+              <option value="Abu Bakr Ash-Shaatree">أبو بكر الشاطري</option>
+              <option value="Ahmed_ibn_Ali_al-Ajamy (From QuranExplorer.com)">أحمدبن
+                علي العجمي</option>
+              <option value="Saad Al Ghamadi">سعد الغامدي</option>
+              <option value="Hani Rifai">هاني الرفاعي</option>
+              <option value="Husary Mujawwad">الحصري</option>
+              <option value="Hudhaify">الحذيفي</option>
+              <option value="Menshawi (external source)">المنشاوي</option>
+              <option value="Muhammad Ayyoub">محمد أيوب</option>
+              <option value="Saood bin Ibraaheem Ash-Shuraym">سعود بن ابراهيم
+                الشريم</option>
+              <option value="Ibrahim_Walk">ابراهيم ولق</option>
+              <option value="Abdullah Basfar">عبد الله بسفر</option>
+            </select>
+            <br>
+            <!--[if lte IE 8]><![endif]--> </div>
+          <br>
+          <br>
+          <div id="down_btn"><a class="xbutton gray">تحميل</a></div>
+          <div id="help_btn"><a class="xbutton gray">مساعدة</a></div>
+          <br>
+          <br>
+          <!--<div id="vote_btn"><a class='xbutton gray' href="http://www.surveymonkey.com/s/NTFPFTF" target="_blank"><i>ملاحظة 12-06-2012:</i> الرجاء المساهمة معنا في الرقي بمشروع  <b>الفانوس</b>, بإكمال هذا الاستبيان</a></div>
 <br /><br /> -->
-<!--  <div id="vote_btn"><a class='xbutton gray' href="https://www.surveymonkey.com/s/P3LGJ8K" target="_blank"><i>News 22-04-2012:</i> Please help us to make <b>Alfanous</b> better, by taking this survey!</a></div>
+          <!--  <div id="vote_btn"><a class='xbutton gray' href="https://www.surveymonkey.com/s/P3LGJ8K" target="_blank"><i>News 22-04-2012:</i> Please help us to make <b>Alfanous</b> better, by taking this survey!</a></div>
 <br /><br /> -->
-
-<!--abdellah-->
-<div id="search_result" style="direction:rtl; width:800px"></div>
-
-</div>
-</div>
-<div id="down" class="modal" style="text-align: right;">
-	<h2 style='padding:0 0 0px 0'><img alt="download" src="images/Download.png">  تحميل</h2><br/>
-<strong> النسخة المكتبية الانجليزية 0.4 : 
-<a class="name" title="Click to download alfanousDesktop-win0.4r20.exe" href="http://sourceforge.net/projects/alfanous/files/Interfaces/AlfanousDesktop/0.4.20/alfanousDesktop-win0.4r20.exe/download">وينداوز</a>
- <br/> <br/> 
-النسخة المكتبية العربية 0.3  :
-<a class="name" title="Click to download alfanousDesktop-windows-0.3ar.exe" href="http://sourceforge.net/projects/alfanous/files/Interfaces/AlfanousDesktop/0.3/alfanousDesktop-windows-0.3ar.exe/download">وينداوز</a></strong>
-    <br/><br/>
-		<button type="button" class='close gray button' > إغلاق </button>	
-	<br />
-</div>
-<div id="help" class="modal" style="width: 675px; text-align: right;">
-	<h2>مساعدة</h2>	
-<table dir="rtl" style=" border: 2px dashed gray;margin: 5px;width: 672px;">
-<tbody>
-
-<tr>
-<th class="style6">البحث المطابق  </th><td class="style5" ><a  href="رب"> رب</a></td>
-<td class="style4" ><a  href="فأسقيناكموه"> فأسقيناكموه </a></td>
-</tr>
-<tr>
-<th class="style3">جملة  </th><td class="style2"><a href="&quot;رب العالمين&quot;">"رب العالمين"</a></td>
-<td class="style2"><a href="&quot;رسول الله&quot;">"رسول الله"</a></td><td> </td>
-</tr>
-<tr>
-<th class="style6"> العلاقات المنطقية</th><td class="style5"><a href="(الصلاة - الزكاة) + سورة:البقرة">(الصلاة - الزكاة) + سورة:البقرة</a></td>
-    <td class="style4"><a href="سميع | بصير"> سميع | بصير</a></td>
-</tr> 
-<tr>
-<th class="style3">  العبارات النمطية</th><td class="style2"><a href="*نبي*">*نبي*</a></td><td><a href="نعم؟">نعم؟</a></td>
-</tr>
-<tr>
-<th class="style6">الحقول </th><td class="style5"><a href="سورة :يس">سورة:يس</a></td>
-    <td class="style4"><a href="سجدة :نعم">سجدة:نعم</a></td>
-</tr>
-<tr>
-<th class="style3">المجالات </th><td class="style2"><a href="رقم_السورة :[1 الى 5 ] و الله">  رقم_السورة:[1 الى 5] و الله</a></td><td> </td>
-</tr>
-<tr>
-<th class="style6">التشكيل الجزئي </th><td class="style5"><a href="آية_ :'مَن'">آية_:'مَن'</a></td>
-    <td class="style4"><a href="آية_ :'المَلكُ'">آية_:'المَلكُ'</a></td>
-</tr>
-<tr>
-<th class="style3">خصائص الكلمة</th><td class="style2"><a href="{قول،اسم} ">{قول،اسم}</a></td><td><a href="{ملك،فعل}">{ملك،فعل}</a></td>
-</tr>
-<tr>
-<th class="style9">الاشتقاقات</th><td class="style8"><a href="&gt;&gt;ملك">&gt;&gt;ملك</a></td>
-    <td class="style7"><a href="&gt;ملك"> &gt;ملك</a></td>
-</tr>
-</tbody></table>
-	<br/>
-	<p> الموقع لا يعمل بشكل جيد مع متصفح أنترنت-إكسبلورر، ننصح باستخدام متصفح آخر <a href="https://www.mozilla.org/firefox/" target="_blank">فَيَرفُكس</a> مثلا</p>
-	<br/>
-		<button type="button" class='close gray button'> إغلاق </button>	
-	<br />
-</div>
-</form>
-
-<footer>
-    <div id="footer-big-wrapper">
+          <!--abdellah-->
+          <div id="search_result" style="direction:rtl; width:800px"></div>
+        </div>
+      </div>
+      <div id="down" class="modal" style="text-align: right;">
+        <h2 style="padding:0 0 0px 0"><img alt="download" src="images/Download.png">
+          تحميل</h2>
+        <br>
+        <strong> النسخة المكتبية الانجليزية 0.4 : <a class="name" title="Click to download alfanousDesktop-win0.4r20.exe"
+            href="http://sourceforge.net/projects/alfanous/files/Interfaces/AlfanousDesktop/0.4.20/alfanousDesktop-win0.4r20.exe/download">وينداوز</a>
+          <br>
+          <br>
+          النسخة المكتبية العربية 0.3 : <a class="name" title="Click to download alfanousDesktop-windows-0.3ar.exe"
+            href="http://sourceforge.net/projects/alfanous/files/Interfaces/AlfanousDesktop/0.3/alfanousDesktop-windows-0.3ar.exe/download">وينداوز</a></strong>
+        <br>
+        <br>
+        <button type="button" class="close gray button"> إغلاق </button> <br>
+      </div>
+      <div id="help" class="modal" style="width: 675px; text-align: right;">
+        <h2>مساعدة</h2>
+        <table dir="rtl" style=" border: 2px dashed gray;margin: 5px;width: 672px;">
+          <tbody>
+            <tr>
+              <th class="style6">البحث المطابق </th>
+              <td class="style5"><a href="%D8%B1%D8%A8"> رب</a></td>
+              <td class="style4"><a href="%D9%81%D8%A3%D8%B3%D9%82%D9%8A%D9%86%D8%A7%D9%83%D9%85%D9%88%D9%87">
+                  فأسقيناكموه </a></td>
+            </tr>
+            <tr>
+              <th class="style3">جملة </th>
+              <td class="style2"><a href="%22%D8%B1%D8%A8+%D8%A7%D9%84%D8%B9%D8%A7%D9%84%D9%85%D9%8A%D9%86%22">"رب
+                  العالمين"</a></td>
+              <td class="style2"><a href="%22%D8%B1%D8%B3%D9%88%D9%84+%D8%A7%D9%84%D9%84%D9%87%22">"رسول
+                  الله"</a></td>
+              <td> <br>
+              </td>
+            </tr>
+            <tr>
+              <th class="style6"> العلاقات المنطقية</th>
+              <td class="style5"><a href="%28%D8%A7%D9%84%D8%B5%D9%84%D8%A7%D8%A9+-+%D8%A7%D9%84%D8%B2%D9%83%D8%A7%D8%A9%29+++%D8%B3%D9%88%D8%B1%D8%A9:%D8%A7%D9%84%D8%A8%D9%82%D8%B1%D8%A9">(الصلاة
+                  - الزكاة) + سورة:البقرة</a></td>
+              <td class="style4"><a href="%D8%B3%D9%85%D9%8A%D8%B9+%7C+%D8%A8%D8%B5%D9%8A%D8%B1">
+                  سميع | بصير</a></td>
+            </tr>
+            <tr>
+              <th class="style3"> العبارات النمطية</th>
+              <td class="style2"><a href="*%D9%86%D8%A8%D9%8A*">*نبي*</a></td>
+              <td><a href="%D9%86%D8%B9%D9%85%D8%9F">نعم؟</a></td>
+            </tr>
+            <tr>
+              <th class="style6">الحقول </th>
+              <td class="style5"><a href="%D8%B3%D9%88%D8%B1%D8%A9+:%D9%8A%D8%B3">سورة:يس</a></td>
+              <td class="style4"><a href="%D8%B3%D8%AC%D8%AF%D8%A9+:%D9%86%D8%B9%D9%85">سجدة:نعم</a></td>
+            </tr>
+            <tr>
+              <th class="style3">المجالات </th>
+              <td class="style2"><a href="%D8%B1%D9%82%D9%85_%D8%A7%D9%84%D8%B3%D9%88%D8%B1%D8%A9+:[1+%D8%A7%D9%84%D9%89+5+]+%D9%88+%D8%A7%D9%84%D9%84%D9%87">
+                  رقم_السورة:[1 الى 5] و الله</a></td>
+              <td> <br>
+              </td>
+            </tr>
+            <tr>
+              <th class="style6">التشكيل الجزئي </th>
+              <td class="style5"><a href="%D8%A2%D9%8A%D8%A9_+:%27%D9%85%D9%8E%D9%86%27">آية_:'مَن'</a></td>
+              <td class="style4"><a href="%D8%A2%D9%8A%D8%A9_+:%27%D8%A7%D9%84%D9%85%D9%8E%D9%84%D9%83%D9%8F%27">آية_:'المَلكُ'</a></td>
+            </tr>
+            <tr>
+              <th class="style3">خصائص الكلمة</th>
+              <td class="style2"><a href="%7B%D9%82%D9%88%D9%84%D8%8C%D8%A7%D8%B3%D9%85%7D+">{قول،اسم}</a></td>
+              <td><a href="%7B%D9%85%D9%84%D9%83%D8%8C%D9%81%D8%B9%D9%84%7D">{ملك،فعل}</a></td>
+            </tr>
+            <tr>
+              <th class="style9">الاشتقاقات</th>
+              <td class="style8"><a href="%3E%3E%D9%85%D9%84%D9%83">&gt;&gt;ملك</a></td>
+              <td class="style7"><a href="%3E%D9%85%D9%84%D9%83"> &gt;ملك</a></td>
+            </tr>
+          </tbody>
+        </table>
+        <br>
+        <p> الموقع لا يعمل بشكل جيد مع متصفح أنترنت-إكسبلورر، ننصح باستخدام
+          متصفح آخر <a href="https://www.mozilla.org/firefox/" target="_blank">فَيَرفُكس</a>
+          مثلا</p>
+        <br>
+        <button type="button" class="close gray button"> إغلاق </button> <br>
+      </div>
+    </form>
+    <footer>
+      <div id="footer-big-wrapper">
         <div id="footer-big">
-            <div class="column"> 
-                <h1>Quick links</h1> 
-                <ul> 
-    	            <li><a href="http://cms.alfanous.org/" target="_blank">About</a></li> 
-                    <li><a href="http://sourceforge.net/projects/alfanous/files/" target="_blank">Downloads</a></li> 
-                    <li><a href="http://m.alfanous.org/">Mobile Web Interface</a></li>
-                    <li><a href="http://old.alfanous.org/">Old HTML Web Interface</a></li> 
-                    <li><a href="http://sourceforge.net/projects/alfanous/" target="_blank">@Sourceforge</a></li> 
-                    <li><a href="http://wwW.launchpad.net/alfanous/" target="_blank">@Launchpad</a></li>
-                    <li class="last"><a href="http://github.com/Alfanous-team/alfanous" target="_blank">@Github</a></li>
-                </ul> 
-            </div> 
-            <div class="column"> 
-                <h1>Community</h1> 
-                <ul> 
-                    <li><a href="http://wiki.alfanous.org/" title="Wiki" target="_blank">Wiki</a></li> 
-                    <li><a href="http://groups.google.com/group/alfanous/" title="Mailinglist" target="_blank">Mailinglist</a></li> 
-                    <li><a href="https://bugs.launchpad.net/alfanous/+filebug" title="Report a bug" target="_blank">+ Report a Bug</a></li>
-                    <li><a href="https://bugs.launchpad.net/alfanous/" title="Bugs" target="_blank">Bugs</a></li>
-                    <li><a href="https://www.facebook.com/alfanous" title="Facebook" target="_blank">@Facebook</a></li> 
-                    <li><a href="https://plus.google.com/111305625425237630318" target="_blank">@Google Plus</a></li> 
-                    <li class="last"><a href="https://twitter.com/alfanous" target="_blank">@Twitter</a></li> 
-                </ul> 
-            </div>
-	<!-- Assem -->
-	<div class="awa-box" >
-		
-			<img src='images/awa2-128.png' class='banner' alt='Best technicality award' title='Award of the best-technicality  website in AlgeriaWebAwards2012'/>
-		
-	</div>
-	<!-- -->
-            <div class="column last"> 
-                <p>
-                	<a href="http://www.gnu.org/licenses/agpl.html" target="_blank"><img src="images/agplv3-88x31.png" alt="AGPL Lisence" title="AGPL Lisence"></a>
-                	<a href="http://www.python.org/" target="_blank"><img src="images/python-logo-inkscape.png" alt="Python Powered" title="Python Powered"></a>
-                	<a href="http://www.json.org/" target="_blank"><img src="images/json_logo.png" alt="Provide JSON" title="Provide JSON"></a>
-                	<a href="http://jquery.com/" target="_blank"><img src="images/jquery_logos.png" alt="jQuery Logo" title="jQuery"></a>
-                	<!-- <a href="http://jqueryui.com/" target="_blank"><img src="images/jquery_logos_ui.png" alt="jQuery UI Logo" title="jQuery UI"></a> -->
-                	<a href="http://www.w3.org/html/logo/" target="_blank"><img src="images/html5-32x32.png" alt="Html5 Logo" title="HTML5"></a>
-                	<!-- <a href="https://www.djangoproject.com/" target="_blank"><img src="images/Django_logo.png" alt="Django Logo" title="Django"></a> -->
-                </p>
-                <p class="right">Alfanous is a Quranic search engine offers simple and advanced search services in the whole information that Holy Qur’an contains. it is based on the modern approach of information retrieval to get a good-stability and a high-speed search. We want implement some additional features like Highlight, Suggestions, Scoring …etc.</p>
-            </div> 
+          <div class="column">
+            <h1>Quick links</h1>
+            <ul>
+              <li><a href="http://cms.alfanous.org/" target="_blank">About</a></li>
+              <li><a href="http://sourceforge.net/projects/alfanous/files/" target="_blank">Downloads</a></li>
+              <li><a href="http://m.alfanous.org/">Mobile Web Interface</a></li>
+              <li><a href="http://old.alfanous.org/">Old HTML Web Interface</a></li>
+              <li><a href="http://sourceforge.net/projects/alfanous/" target="_blank">@Sourceforge</a></li>
+              <li><a href="http://wwW.launchpad.net/alfanous/" target="_blank">@Launchpad</a></li>
+              <li class="last"><a href="http://github.com/Alfanous-team/alfanous"
+                  target="_blank">@Github</a></li>
+            </ul>
+          </div>
+          <div class="column">
+            <h1>Community</h1>
+            <ul>
+              <li><a href="http://wiki.alfanous.org/" title="Wiki" target="_blank">Wiki</a></li>
+              <li><a href="http://groups.google.com/group/alfanous/" title="Mailinglist"
+                  target="_blank">Mailinglist</a></li>
+              <li><a href="https://bugs.launchpad.net/alfanous/+filebug" title="Report a bug"
+                  target="_blank">+ Report a Bug</a></li>
+              <li><a href="https://bugs.launchpad.net/alfanous/" title="Bugs" target="_blank">Bugs</a></li>
+              <li><a href="https://www.facebook.com/alfanous" title="Facebook" target="_blank">@Facebook</a></li>
+              <li><a href="https://plus.google.com/111305625425237630318" target="_blank">@Google
+                  Plus</a></li>
+              <li class="last"><a href="https://twitter.com/alfanous" target="_blank">@Twitter</a></li>
+            </ul>
+          </div>
+          <!-- Assem -->
+          <div class="awa-box"> <img src="images/awa2-128.png" class="banner" alt="Best technicality award"
+              title="Award of the best-technicality  website in AlgeriaWebAwards2012">
+          </div>
+          <!-- -->
+          <div class="column last">
+            <p> <a href="http://www.gnu.org/licenses/agpl.html" target="_blank"><img
+                  src="images/agplv3-88x31.png" alt="AGPL Lisence" title="AGPL Lisence"></a>
+              <a href="http://www.python.org/" target="_blank"><img src="images/python-logo-inkscape.png"
+                  alt="Python Powered" title="Python Powered"></a> <a href="http://www.json.org/"
+                target="_blank"><img src="images/json_logo.png" alt="Provide JSON"
+                  title="Provide JSON"></a> <a href="http://jquery.com/" target="_blank"><img
+                  src="images/jquery_logos.png" alt="jQuery Logo" title="jQuery"></a>
+              <!-- <a href="http://jqueryui.com/" target="_blank"><img src="images/jquery_logos_ui.png" alt="jQuery UI Logo" title="jQuery UI"></a> -->
+              <a href="http://www.w3.org/html/logo/" target="_blank"><img src="images/html5-32x32.png"
+                  alt="Html5 Logo" title="HTML5"></a>
+              <!-- here --> <a href="http://git-scm.com/" target="_blank"><img
+                  src="images/Git-Logo.png" alt="Git Logo" title="HTML5"></a>
+              <!-- here -->
+              <!-- <a href="https://www.djangoproject.com/" target="_blank"><img src="images/Django_logo.png" alt="Django Logo" title="Django"></a> -->
+            </p>
+            <p class="right">Alfanous is a Quranic search engine offers simple
+              and advanced search services in the whole information that Holy
+              Qur’an contains. it is based on the modern approach of information
+              retrieval to get a good-stability and a high-speed search. We want
+              implement some additional features like Highlight, Suggestions,
+              Scoring …etc.</p>
+          </div>
         </div>
-    </div>
-    <div id="footer-small-wrapper">
+      </div>
+      <div id="footer-small-wrapper">
         <div id="footer-small">
-            <p class="left">copyright © <a href="http://wiki.alfanous.org/doku.php?id=contributers">Alfanous Team</a> 2009 - 2011 | released under <a href="http://www.gnu.org/licenses/agpl.html">AGPL</a> license</p>
-            <p class="right">powered by <a href="http://wiki.alfanous.org/doku.php?id=json_web_service">Alfanous JSON</a>, <a onclick="addto_searchbar();return false;" href="#">Add to Search Bar</a></p>
+          <p class="left">copyright © <a href="http://wiki.alfanous.org/doku.php?id=contributers">Alfanous
+              Team</a> 2009 - 2011 | released under <a href="http://www.gnu.org/licenses/agpl.html">AGPL</a>
+            license</p>
+          <p class="right">powered by <a href="http://wiki.alfanous.org/doku.php?id=json_web_service">Alfanous
+              JSON</a>, <a onclick="addto_searchbar();return false;" href="#">Add
+              to Search Bar</a></p>
         </div>
-    </div>
-</footer>
-
-
-
-</body>
+      </div>
+    </footer>
+  </body>
 </html>
