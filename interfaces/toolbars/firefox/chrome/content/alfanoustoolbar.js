@@ -4,6 +4,7 @@
 	by SMAHI Zakaria
 	zakaria08esi@gmail.com
 */
+
 /*
 TODO  LIST
 	# open  links in  new tab instead of getting last browser window  ......... done
@@ -164,6 +165,7 @@ TODO  LIST
 		var numItemsToAdd = 10;
 
 		tempItem.setAttribute("label", "allah");
+
 		for(var i=0; i<numItemsToAdd; i++)
 		{
 			// Create a new menu item to be added
@@ -177,4 +179,3 @@ TODO  LIST
 		}
 
 	} 
-
