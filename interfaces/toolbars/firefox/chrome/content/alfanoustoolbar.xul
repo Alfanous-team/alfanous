@@ -7,13 +7,14 @@
 	zakaria08esi@gmail.com
 							-->
 
-							
+				
 <!-- 
 	TODO  LIST
 	# use textbox instead of toolbaritem id="AlfanousTB-SearchTerms-TBItem"
 	# enable search history and autocomplete in textbox
 							-->							
 							
+
 <!-- css sheet used -->
 
 <?xml-stylesheet href="chrome://alfanoustoolbar/skin/alfanoustoolbar.css" type="text/css"?>
@@ -149,6 +150,7 @@
 					<menuitem id="AlfanousTB-Interfaces-Mobile" label="Alfanous Mobile"
 						class="menuitem-iconic" tooltiptext="use alfanous website from mobile"
 						onclick="AlfanousTB_LoadURL('mobile.alfanous.org')" />
+
 
 					<!-- Desktop Version -->
 
