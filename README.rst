@@ -6,7 +6,7 @@ Alfanous is a Quranic search engine API that offers simple and advanced search s
 
 
 :Authors: `Authors.rst <https://github.com/Alfanous-team/alfanous/blob/master/AUTHORS.rst>`_
-:Version: 0.#.##
+:Version: 0.7.##
 :License: `AGPL <https://github.com/Alfanous-team/alfanous/blob/master/LICENSE>`_
 :Tracker: `Alfanous-team/alfanous/Issues <https://github.com/Alfanous-team/alfanous/issues>`_
 :Mailinglist: `alfanous@googlegroups.com <http://groups.google.com/group/alfanous/>`_
