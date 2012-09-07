@@ -37,6 +37,7 @@ You can help us by:
   - Pointing  skilled developers and Quranic researchers to the importance of the project.
   - Writing articles about the project in blogs, newspapers.
   - Showing a banner on your Blog/Website.
+  - creating an ad for alfanous links using Google adwords or facebook if you're familiar with that (btw,it needs money) 
 
 - Managing and Animating our social network pages with news and daily posts [Arabic, English]: `@Facebook <https://www.facebook.com/alfanous>`_ `@Twitter <https://twitter.com/alfanous>`_ `@GooglePlus <https://plus.google.com/111305625425237630318>`_ 
 
@@ -50,6 +51,7 @@ You can help us by:
 - Packaging the project for different systems: Windows, Linux distributions, MacOs.
 - Donating/Supporting to the project: *we're stuck here, looking for possible ways for donations since Algeria is  very restricting foreign transactions. Any help is appreciated*
 
+For more discussion, you can contact us via the mailing list : `alfanous@googlegroups.com <http://groups.google.com/group/alfanous/>`_
 
 
 --------------------
