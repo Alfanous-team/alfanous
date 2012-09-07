@@ -34,9 +34,9 @@ Contacts
 
 * Alfanous is a research project : so we figure out features not only do what other websites/applications do.
 
-* Alfanous has lot of features: check it your self in the desktop interface ( `Arabic <http://sourceforge.net/projects/alfanous/files/Interfaces/AlfanousDesktop/0.3/alfanousDesktop-windows-0.3ar.exe/download>`_ `@English <http://sourceforge.net/projects/alfanous/files/Interfaces/AlfanousDesktop/0.4.3/alfanousInstallerV0.4.3.exe/download>`_ )
+* Alfanous has lot of features: see `Search Features`_ or check it your self in the desktop interface ( `Arabic <http://sourceforge.net/projects/alfanous/files/Interfaces/AlfanousDesktop/0.3/alfanousDesktop-windows-0.3ar.exe/download>`_ `English <http://sourceforge.net/projects/alfanous/files/Interfaces/AlfanousDesktop/0.4.3/alfanousInstallerV0.4.3.exe/download>`_ )
 
-* Alfanous has many interfaces for many platforms: Desktop for linux/windows, Web (http://wui.alfanous.org | http://m.alfanous.org) ...
+* Alfanous has many interfaces for many platforms: see `Interfaces`_.
 
 * Alfanous is Free gratis : no payment, no ads 
 
