@@ -20,7 +20,7 @@ Yasmine Hoadjli     Community Manager           yhoadjli [at] gmail.com         
 .. _`Assem Chelli`: https://github.com/assem-ch
 .. _`Abdellah Chelli`: https://github.com/sneetsher 
 .. _`Zaki Smahi`: https://github.com/zsmahi
-
+.. _`Mouad Debbar` : https://github.com/mdebbar
 
 ============ 
 Contributors 
@@ -30,7 +30,7 @@ Coding
 --------
 * API & JSON interface: `Assem Chelli`_    
 * Desktop Interface: `Assem Chelli`_   
-* Web Interface: `Assem Chelli`_   , `Abdellah Chelli`_ , Mouad Debbar, Ahmed Ramadan
+* Web Interface: `Assem Chelli`_   , `Abdellah Chelli`_ , `Mouad Debbar`_, Ahmed Ramadan
 * Mobile Web Interface: `Abdellah Chelli`_ 
 * Firefox toolbar: `Zaki Smahi`_ 
 

@@ -2,20 +2,15 @@
 FAQ 
 ===
 
+-----------------
+What is Alfanous? 
+-----------------
+see `what-is-alfanous <https://github.com/Alfanous-team/alfanous/blob/master/README.rst#what-is-alfanous>`_.
+
 --------------
 Why Alfanous? 
 --------------
-* Alfanous is FREE LIBRE OPEN SOURCE: Any one can use it and any one can contribute in coding, translating, design...etc. alfanous will die only if his community dies
-
-* Alfanous is a Python API: that allow anyone to create independently a web interface, desktop interface , Android/Iphone/Windows phone interfaces , facebook/twitter/G+ applications .... . the search process is too fast and too stable
-
-* Alfanous is a research project : so we figure out features not only do what other websites/applications do.
-
-* Alfanous has lot of features: check it your self in the desktop interface # http://sourceforge.net/projects/alfanous/files/Interfaces/AlfanousDesktop/ 
-
-* Alfanous has many interfaces for many platforms: Desktop for linux/windows, Web (wui.alfanous.org | m.alfanous.org) ...
-
-* Alfanous is Free gratis : no payment, no ads 
+see `why-alfanous <https://github.com/Alfanous-team/alfanous/blob/master/README.rst#why-alfanous>`_.
 
 --------------------------
 Why we called it Alfanous?  
@@ -26,9 +21,7 @@ Alfanous is an arabic word "الفانوس"  that means the Lantern. The name wa
 ------------------
 How to contact us?
 ------------------
-You can contact us via the mailing list on Google groups:  `alfanous@googlegroups.com <http://groups.google.com/group/alfanous>`_ .
-Here also the emails of `Maintainers <https://github.com/Alfanous-team/alfanous/blob/master/AUTHORS.rst#maintainers>`_.
-
+see `contacts <https://github.com/Alfanous-team/alfanous#contacts>`_.
 
 -----------------
 How you can help?
@@ -42,6 +35,7 @@ You can help us by:
   - Pointing  skilled developers and Quranic researchers to the importance of the project.
   - Writing articles about the project in blogs, newspapers.
   - Showing a banner on your Blog/Website.
+  - creating an ad for alfanous links using Google adwords or facebook if you're familiar with that (btw,it needs money) 
 
 - Managing and Animating our social network pages with news and daily posts [Arabic, English]: `@Facebook <https://www.facebook.com/alfanous>`_ `@Twitter <https://twitter.com/alfanous>`_ `@GooglePlus <https://plus.google.com/111305625425237630318>`_ 
 
@@ -55,6 +49,7 @@ You can help us by:
 - Packaging the project for different systems: Windows, Linux distributions, MacOs.
 - Donating/Supporting to the project: *we're stuck here, looking for possible ways for donations since Algeria is  very restricting foreign transactions. Any help is appreciated*
 
+For more discussion, you can contact us via the mailing list : `alfanous@googlegroups.com <http://groups.google.com/group/alfanous/>`_
 
 
 --------------------
