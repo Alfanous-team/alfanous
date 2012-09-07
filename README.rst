@@ -23,6 +23,14 @@ Contacts
 
 - If you want to participate in actively developing Alfanous,  read this `How to contribute?  <https://github.com/Alfanous-team/alfanous/blob/master/FAQ.rst#how-to-contribute>`_. 
 
+- If you want to help in Alfanous somehow,  read this `How you can help?  <https://github.com/Alfanous-team/alfanous/blob/master/FAQ.rst#how-you-can-help>`_. 
+
+- If you have a feature request, a proposition or a question for the project, you may use the mailing list `alfanous@googlegroups.com <http://groups.google.com/group/alfanous/>`_.
+
+- If you want to criticize the project, we'll be thankful if you resume your criticism and send it to our mailing list `alfanous@googlegroups.com <http://groups.google.com/group/alfanous/>`_.
+ 
+
+
 
 --------------
  Why Alfanous? 
