@@ -16,6 +16,14 @@ Alfanous is a Quranic search engine API that offers simple and advanced search s
 
 
 
+--------
+Contacts
+--------
+- If you have a concrete bug report for Alfanous please go to the `Issues Tracker  <https://github.com/Alfanous-team/alfanous/issues>`_, submit your report and tag it "bug".
+
+- If you want to participate in actively developing Alfanous,  read this `How to contribute?  <https://github.com/Alfanous-team/alfanous/blob/master/FAQ.rst#how-to-contribute>`_. 
+
+
 --------------
  Why Alfanous? 
 --------------
@@ -34,12 +42,40 @@ Alfanous is a Quranic search engine API that offers simple and advanced search s
 
 see `FAQ <https://github.com/Alfanous-team/alfanous/blob/master/FAQ.rst>`_
 
---------
-Contacts
---------
-- If you have a concrete bug report for Alfanous please go to the `Issues Tracker  <https://github.com/Alfanous-team/alfanous/issues>`_, submit your report and tag it "bug".
+----------
+Interfaces
+----------
+#. Alfanous Python API, `source <https://github.com/Alfanous-team/alfanous/tree/master/src/alfanous>`_.
+#. JSON web interface, `link <http://www.alfanous.org/json>`_, actually we're moving to JSON web interface II, `source <https://github.com/Alfanous-team/alfanous/tree/master/src/alfanous-cgi>`_.
+#. Web User interface [Arabic], `link <http://wui.alfanous.org/>`_, `source <https://github.com/Alfanous-team/alfanous/tree/master/interfaces/web/wui>`_.
+#. Web User interface for mobiles [Multi-language], `link <http://m.alfanous.org/>`_, `source <https://github.com/Alfanous-team/alfanous/tree/master/interfaces/web/mobile_wui>`_.
+#. Alfanous Desktop application (Windows: `[Arabic] <http://sourceforge.net/projects/alfanous/files/Interfaces/AlfanousDesktop/0.3/alfanousDesktop-windows-0.3ar.exe/download>`_ `[English] <http://sourceforge.net/projects/alfanous/files/Interfaces/AlfanousDesktop/0.4.3/alfanousInstallerV0.4.3.exe/download>`_; Ubuntu/Sabily), `source <https://github.com/Alfanous-team/alfanous/tree/master/src/alfanous-desktop>`_. 
+#. Alfanous Firefox toolbar, `link <https://addons.mozilla.org/en-us/firefox/addon/alfanous-toolbar/>`_, `source <https://github.com/Alfanous-team/alfanous/tree/master/interfaces/toolbars/firefox>`_.
+#. Alfanous Firefox search bar addon, `link <https://addons.mozilla.org/en-us/firefox/addon/alfanous/>`_.
+#. Django app (alpha), `source <https://github.com/Alfanous-team/alfanous/tree/master/src/alfanous-django>`_.
+#. Chrome extension (alpha), `source <https://github.com/Alfanous-team/alfanous/tree/master/interfaces/toolbars/chrome>`_.
+#. App for Nokia S60 (prototype), `source <https://github.com/Alfanous-team/alfanous/tree/master/interfaces/smart_phones/alfanousS60>`_.
+#. Facebook app (prototype), `source <https://github.com/Alfanous-team/alfanous/tree/master/interfaces/web/facebook_app>`_.
+#. Other:
+  * `Alfanous4WP7 <http://www.windowsphone.com/en-US/apps/f9e1504d-ce31-4802-a2d1-24ff9f41a06e>`_ by  Abdelmoumen BOUABDALLAH ,  source: unavailable.
+  * `Alfanous4Iphone <http://itunes.apple.com/us/app/alfanws-mhrk-bhth-qrany-mtqdm/id543646326?mt=8>`_ by i4islam, source unavailable.
 
-- If you want to participate in actively developing Alfanous,  read this `How to contribute?  <https://github.com/Alfanous-team/alfanous/blob/master/FAQ.rst#how-to-contribute>`_. 
+**note:** you can find the perspective interfaces under the milestone: `Extra Interfaces <https://github.com/Alfanous-team/alfanous/issues?milestone=8&page=1&sort=updated&state=open>`_.
+
+---------------
+Search Features
+---------------
+#. Exact Word Search : `فأسقيناكموه <http://alfanous.org/?search=%D9%81%D8%A3%D8%B3%D9%82%D9%8A%D9%86%D8%A7%D9%83%D9%85%D9%88%D9%87>`_
+#.  : `<>`_
+#.  : `<>`_
+#.  : `<>`_
+#.  : `<>`_
+#.  : `<>`_
+#.  : `<>`_
+#.  : `<>`_
+#.  : `<>`_
+#.  : `<>`_
+
 
 -------
 History
