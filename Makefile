@@ -9,7 +9,9 @@
 
 
 
-VERSION="0.5.0"
+## Global Version of the project , must be updated in each significant change in the API
+# 0.7.00 is the initial version 
+VERSION="0.7.00"
 
 API_PATH="./src/"
 QIMPORT=$(API_PATH)"alfanous-import/main.py"
