@@ -56,9 +56,9 @@ Interfaces
 #. Chrome extension (alpha), `source <https://github.com/Alfanous-team/alfanous/tree/master/interfaces/toolbars/chrome>`_.
 #. App for Nokia S60 (prototype), `source <https://github.com/Alfanous-team/alfanous/tree/master/interfaces/smart_phones/alfanousS60>`_.
 #. Facebook app (prototype), `source <https://github.com/Alfanous-team/alfanous/tree/master/interfaces/web/facebook_app>`_.
-#. Other:
+#. Third party:
   * `Alfanous4WP7 <http://www.windowsphone.com/en-US/apps/f9e1504d-ce31-4802-a2d1-24ff9f41a06e>`_ by  Abdelmoumen BOUABDALLAH ,  source: unavailable.
-  * `Alfanous4Iphone <http://itunes.apple.com/us/app/alfanws-mhrk-bhth-qrany-mtqdm/id543646326?mt=8>`_ by i4islam, source unavailable.
+  * `Alfanous4Iphone <http://itunes.apple.com/us/app/alfanws-mhrk-bhth-qrany-mtqdm/id543646326?mt=8>`_ by i4islam, source: closed.
 
 **note:** you can find the perspective interfaces under the milestone: `Extra Interfaces <https://github.com/Alfanous-team/alfanous/issues?milestone=8&page=1&sort=updated&state=open>`_.
 
