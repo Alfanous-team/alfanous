@@ -5,11 +5,12 @@ FAQ
 -----------------
 What is Alfanous? 
 -----------------
-see `what-is-alfanous <https://github.com/Alfanous-team/alfanous/blob/master/README.rst#what-is-alfanous>`_
+see `what-is-alfanous <https://github.com/Alfanous-team/alfanous/blob/master/README.rst#what-is-alfanous>`_.
 --------------
 Why Alfanous? 
 --------------
-see `why-alfanous <https://github.com/Alfanous-team/alfanous/blob/master/README.rst#why-alfanous>`_
+see `why-alfanous <https://github.com/Alfanous-team/alfanous/blob/master/README.rst#why-alfanous>`_.
+
 --------------------------
 Why we called it Alfanous?  
 --------------------------
