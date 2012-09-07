@@ -76,23 +76,34 @@ Search Features
 ---------------
 This is the list of search features already implemented, preview links use Alfanous web user interface: www.alfanous.org. 
 
-#. Exact Word Search : `فأسقيناكموه <http://alfanous.org/?search=%D9%81%D8%A3%D8%B3%D9%82%D9%8A%D9%86%D8%A7%D9%83%D9%85%D9%88%D9%87>`_
-#. Phrase Search : `"رسول الله" <http://alfanous.org/%22%D8%B1%D8%B3%D9%88%D9%84%20%D8%A7%D9%84%D9%84%D9%87%22>`_
+#. Exact Word: that is the simple search, eg `فأسقيناكموه <http://alfanous.org/?search=%D9%81%D8%A3%D8%B3%D9%82%D9%8A%D9%86%D8%A7%D9%83%D9%85%D9%88%D9%87>`_
+#. Phrase: for searching a whole phrase rather then independent words, eg:`"رسول الله" <http://alfanous.org/%22%D8%B1%D8%B3%D9%88%D9%84%20%D8%A7%D9%84%D9%84%D9%87%22>`_
 #. Logical relations
-  * Conjuction: `الصلاة + الزكاة <http://alfanous.org/?search=%D8%A7%D9%84%D8%B5%D9%84%D8%A7%D8%A9%20%2B%20%D8%A7%D9%84%D8%B2%D9%83%D8%A7%D8%A9>`_.
-  * Disjunction (default): `الصلاة | الزكاة <http://alfanous.org/?search=%D8%A7%D9%84%D8%B5%D9%84%D8%A7%D8%A9%20%7C%20%20%D8%A7%D9%84%D8%B2%D9%83%D8%A7%D8%A9>`_.
-  * Exception: `الصلاة - الزكاة <http://alfanous.org/?search=%D8%A7%D9%84%D8%B5%D9%84%D8%A7%D8%A9%20-%20%20%D8%A7%D9%84%D8%B2%D9%83%D8%A7%D8%A9>`_.
-#. Wildcards or Jokers
-  * Asterisk (replace zero or many undefined letters): `*نبي* <http://alfanous.org/?search=*%D9%86%D8%A8%D9%8A*>`_
-  * Interogation mark (replace one undefined letter): `نعم؟ <http://alfanous.org/?search=%D9%86%D8%B9%D9%85%D8%9F>`_
-#. Fielded  search 
-  * Global ID [1 to 6236]:  `gid:1 <http://alfanous.org/?search=gid%3A1>`_, `رقم:1 <http://alfanous.org/?search=%D8%B1%D9%82%D9%85%3A1>`_
+
+   * Conjuction: for searching only the ayahs that contains two terms or more, eg: `الصلاة + الزكاة <http://alfanous.org/?search=%D8%A7%D9%84%D8%B5%D9%84%D8%A7%D8%A9%20%2B%20%D8%A7%D9%84%D8%B2%D9%83%D8%A7%D8%A9>`_.
+   * Disjunction (default): for searching all the ayahs that contains one of two terms or more, eg:`الصلاة | الزكاة <http://alfanous.org/?search=%D8%A7%D9%84%D8%B5%D9%84%D8%A7%D8%A9%20%7C%20%20%D8%A7%D9%84%D8%B2%D9%83%D8%A7%D8%A9>`_.
+   * Exception: for eleminating a term from search results, eg:`الصلاة - الزكاة <http://alfanous.org/?search=%D8%A7%D9%84%D8%B5%D9%84%D8%A7%D8%A9%20-%20%20%D8%A7%D9%84%D8%B2%D9%83%D8%A7%D8%A9>`_. You can understand it as "Ayahs that contains الصلاة but doesn't contain الزكاة". 
+
+#. Wildcards or Jokers: for search all words that share many letters, we have:
+ 
+   * Asterisk: replace zero or many undefined letters, eg: `*نبي* <http://alfanous.org/?search=*%D9%86%D8%A8%D9%8A*>`_
+   * Interogation mark: replace one undefined letter, eg: `نعم؟ <http://alfanous.org/?search=%D9%86%D8%B9%D9%85%D8%9F>`_
+
+#. Fielded  search: to search in more information of Quran , not only ayahs'text, we cite here the most significant fields for users:
+
+   * aya_id or رقم_الآية (Aya local ID): that's the number of ayah inside its sura, use it for example to search all first ayahs (`رقم_الآية:1 <http://alfanous.org/?search=%D8%B1%D9%82%D9%85_%D8%A7%D9%84%D8%A2%D9%8A%D8%A9%3A1>`_).
+   * sura_id or رقم_السورة (Sura ID): use it with  aya_id to specify an exact ayah,for example the first ayah of surate an-nass will be :  `aya_id:1 + sura_id:114 <http://alfanous.org/?search=aya_id%3A1%20%2Bsura_id%3A114>`_.       
+   * subject or موضوع (Topics): thats field contains all topics information, it will be helpful to search for a topic,eg:  `موضوع:الشيطان <http://alfanous.org/?search=%D9%85%D9%88%D8%B6%D9%88%D8%B9%3A%D8%A7%D9%84%D8%B4%D9%8A%D8%B7%D8%A7%D9%86%20>`_
+   * for more fields, see: `Fields <https://github.com/Alfanous-team/alfanous/tree/master/src/alfanous#fields>`_
+
 #. Intervals: `رقم_السورة :[1 الى 5 ] + الله <http://alfanous.org/?search=%D8%B1%D9%82%D9%85_%D8%A7%D9%84%D8%B3%D9%88%D8%B1%D8%A9%20%3A%5B1%20%D8%A7%D9%84%D9%89%205%20%5D%20%2B%20%D8%A7%D9%84%D9%84%D9%87>`_
 #. Partial vocalization: `آية_ :'مَن' <http://alfanous.org/?search=%D8%A2%D9%8A%D8%A9_%20%3A'%D9%85%D9%8E%D9%86'>`_.
 #. Word Properties: `{قول،اسم} <http://alfanous.org/?search=%7B%D9%82%D9%88%D9%84%D8%8C%D8%A7%D8%B3%D9%85%7D%20>`_.
 #. Derivations
-  * light (using lemma): `>ملك <http://alfanous.org/?search=%3E%D9%85%D9%84%D9%83>`_.
-  * heavy (using root): `>>ملك <http://alfanous.org/?search=%3E%3E%D9%85%D9%84%D9%83>`_. 
+
+   * light (using lemma): `>ملك <http://alfanous.org/?search=%3E%D9%85%D9%84%D9%83>`_.
+   * heavy (using root): `>>ملك <http://alfanous.org/?search=%3E%3E%D9%85%D9%84%D9%83>`_. 
+
 #.  : `<>`_
 
 
