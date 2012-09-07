@@ -21,9 +21,7 @@ Alfanous is an arabic word "الفانوس"  that means the Lantern. The name wa
 ------------------
 How to contact us?
 ------------------
-You can contact us via the mailing list on Google groups:  `alfanous@googlegroups.com <http://groups.google.com/group/alfanous>`_ .
-Here also the emails of `Maintainers <https://github.com/Alfanous-team/alfanous/blob/master/AUTHORS.rst#maintainers>`_.
-
+see `contacts <https://github.com/Alfanous-team/alfanous#contacts>`_.
 
 -----------------
 How you can help?
