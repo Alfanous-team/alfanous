@@ -47,7 +47,7 @@ Here also the emails of `Maintainers <https://github.com/Alfanous-team/alfanous/
 
 * Alfanous has many interfaces for many platforms: see `Interfaces`_.
 
-* Alfanous is Free gratis : no payment, no ads 
+* Alfanous is FREE GRATIS: no payment, no ads. 
 
 see `FAQ <https://github.com/Alfanous-team/alfanous/blob/master/FAQ.rst>`_
 
