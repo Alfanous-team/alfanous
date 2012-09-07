@@ -74,17 +74,29 @@ Interfaces
 ---------------
 Search Features
 ---------------
+This is the list of search features already implemented, preview links use Alfanous web user interface: www.alfanous.org. 
+
 #. Exact Word Search : `فأسقيناكموه <http://alfanous.org/?search=%D9%81%D8%A3%D8%B3%D9%82%D9%8A%D9%86%D8%A7%D9%83%D9%85%D9%88%D9%87>`_
-#.  : `<>`_
-#.  : `<>`_
-#.  : `<>`_
-#.  : `<>`_
-#.  : `<>`_
-#.  : `<>`_
-#.  : `<>`_
-#.  : `<>`_
+#. Phrase Search : `"رسول الله" <http://alfanous.org/%22%D8%B1%D8%B3%D9%88%D9%84%20%D8%A7%D9%84%D9%84%D9%87%22>`_
+#. Logical relations
+  * Conjuction: `الصلاة + الزكاة <http://alfanous.org/?search=%D8%A7%D9%84%D8%B5%D9%84%D8%A7%D8%A9%20%2B%20%D8%A7%D9%84%D8%B2%D9%83%D8%A7%D8%A9>`_.
+  * Disjunction (default): `الصلاة | الزكاة <http://alfanous.org/?search=%D8%A7%D9%84%D8%B5%D9%84%D8%A7%D8%A9%20%7C%20%20%D8%A7%D9%84%D8%B2%D9%83%D8%A7%D8%A9>`_.
+  * Exception: `الصلاة - الزكاة <http://alfanous.org/?search=%D8%A7%D9%84%D8%B5%D9%84%D8%A7%D8%A9%20-%20%20%D8%A7%D9%84%D8%B2%D9%83%D8%A7%D8%A9>`_.
+#. Wildcards or Jokers
+  * Asterisk (replace zero or many undefined letters): `*نبي* <http://alfanous.org/?search=*%D9%86%D8%A8%D9%8A*>`_
+  * Interogation mark (replace one undefined letter): `نعم؟ <http://alfanous.org/?search=%D9%86%D8%B9%D9%85%D8%9F>`_
+#. Fielded  search 
+  * Global ID [1 to 6236]:  `gid:1 <http://alfanous.org/?search=gid%3A1>`_, `رقم:1 <http://alfanous.org/?search=%D8%B1%D9%82%D9%85%3A1>`_
+#. Intervals: `رقم_السورة :[1 الى 5 ] + الله <http://alfanous.org/?search=%D8%B1%D9%82%D9%85_%D8%A7%D9%84%D8%B3%D9%88%D8%B1%D8%A9%20%3A%5B1%20%D8%A7%D9%84%D9%89%205%20%5D%20%2B%20%D8%A7%D9%84%D9%84%D9%87>`_
+#. Partial vocalization: `آية_ :'مَن' <http://alfanous.org/?search=%D8%A2%D9%8A%D8%A9_%20%3A'%D9%85%D9%8E%D9%86'>`_.
+#. Word Properties: `{قول،اسم} <http://alfanous.org/?search=%7B%D9%82%D9%88%D9%84%D8%8C%D8%A7%D8%B3%D9%85%7D%20>`_.
+#. Derivations
+  * light (using lemma): `>ملك <http://alfanous.org/?search=%3E%D9%85%D9%84%D9%83>`_.
+  * heavy (using root): `>>ملك <http://alfanous.org/?search=%3E%3E%D9%85%D9%84%D9%83>`_. 
 #.  : `<>`_
 
+
+**note:** you can find the perspective search features under the milestones: `Quranic Search Features Pack 1 <https://github.com/Alfanous-team/alfanous/issues?milestone=7&state=open>`_,  `Quranic Search Features Pack 2 <https://github.com/Alfanous-team/alfanous/issues?milestone=10&state=open>`_.
 
 -------
 History
