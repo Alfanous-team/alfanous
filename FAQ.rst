@@ -6,6 +6,7 @@ FAQ
 What is Alfanous? 
 -----------------
 see `what-is-alfanous <https://github.com/Alfanous-team/alfanous/blob/master/README.rst#what-is-alfanous>`_.
+
 --------------
 Why Alfanous? 
 --------------
