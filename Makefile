@@ -100,43 +100,89 @@ clean:
 	rm -rf `find . -type d -name *.egg-info`
 	
 
+## download Quranic resources needed for Alfanous project, which are:
+# 1. Quran translations from zekr.org, see download_translations
+# 2. 
+download_all: download_translations download_recitations download_quranic_corpus download_tanzil local_mo_download
 
-##  update store  & dynamic_ressources & qt forms scripts & qt resources
+download_translations:
+	#  download from  http://zekr.org/resources.html to ./store/traductions
+	cd $(STORE_PATH)Translations;  wget -i translations.list
+
+download_recitations:
+	#  auto download from  http://zekr.org/resources.html to ./store/recitations  + VerseByVerse recitations list
+	@echo "todo"
+
+download_quranic_corpus:
+	# Qimport.Downloader
+	@echo "todo"
+
+download_tanzil:
+	export PYTHONPATH=$(API_PATH) ;	python $(QIMPORT) -d tanzil_simple_clean $(STORE_PATH)
+	export PYTHONPATH=$(API_PATH) ;	python $(QIMPORT) -d tanzil_uthmani $(STORE_PATH)
+
+
+
+##  update resources that must be updated after (or independent to) indexing phase, which are:
+# 1. api information, see update_information
+# 2. globl hints (deprecated), see update_hints
+# 3. list of indexed translations, see update_translations_indexed_list
+# 4. list of offline recitations, see update_recitations_offline_list
+# 5. list of online recitations, see update_recitations_online_list  
 update_post_build:  update_information update_hints update_translations_indexed_list update_recitations_offline_list update_recitations_online_list    
 
+##  update resources that must be updated before indexing phase, which are:
+# 1. Quranic Arabic Corpus, see update_quranic_corpus
+# 2. Linguistic resources on the form of python dictionarries to accelerate the loading , see update_dynamic_resources
+# 3. List of translations to be downloaded, see  update_translations_to_download_list
 update_pre_build:  update_quranic_corpus update_dynamic_resources update_translations_to_download_list
 
+# update information manually 
 update_information:
 	nano $(CONFIG_PATH)information.js
 
+# update hints manually
 update_hints:
 	nano $(CONFIG_PATH)hints.js
 
+# update stats manually, to initiate it just leave it as an empty json object {}
+# never leave it empty till fix that! TODO
 update_stats:
-	nano $(CONFIG_PATH)stats.js # create an empty file {}
+	nano $(CONFIG_PATH)stats.js 
 	chmod 777 $(CONFIG_PATH)stats.js 
 
+# update downloading translation list manually
 update_translations_to_download_list:
 	nano $(STORE_PATH)Translations/translations.list
 
+# update list of indexed translations automatically using Importer
 update_translations_indexed_list:
 	export PYTHONPATH=$(API_PATH) ;	python $(QIMPORT) -u translations.js  $(INDEX_PATH)extend/ $(CONFIG_PATH)translations.js
 
+# update quranic corpus in the database automatically using Importer
 update_quranic_corpus:
 	export PYTHONPATH=$(API_PATH) ;	python $(QIMPORT) -u wordqc $(STORE_PATH)quranic-corpus-morpology.xml $(DB_PATH)main.db
 
+# update recitations offline list TODO
 update_recitations_offline_list:
 	@echo "todo"
 
+# update recitations online list automatically from the project every ayah
 update_recitations_online_list:
 	cd $(CONFIG_PATH); wget http://www.everyayah.com/data/recitations.js
 
+# update dynamic resources automatically , see transfer_all
 update_dynamic_resources: transfer_all
 	
-## build dynamic_resources 
-transfer_all: transfer_stopwords transfer_synonyms transfer_word_props transfer_derivations transfer_ara2eng_names transfer_standard2uthmani
-	@echo "done;"
-	
+## build dynamic_resources by transferring the data from database to python modules, this include:
+# 1. arabic stop words, see transfer_stopwords
+# 2. Quranic words synonyms, see transfer_synonyms
+# 3. Word properties [root,type], see transfer_word_props
+# 4. Derivtion levels of Qurnic words, see transfer_derivations
+# 5. Field names mapping Arabic to English, see transfer_ara2eng_names
+# 6. Quranic words mapping Standard to Uthmani, see transfer_standard2uthmani
+# 7. Different vocalizations of each quranic word, see transfer_vocalizations
+transfer_all: transfer_stopwords transfer_synonyms transfer_word_props transfer_derivations transfer_ara2eng_names transfer_standard2uthmani transfer_vocalizations
 	
 transfer_stopwords:
 	export PYTHONPATH=$(API_PATH) ;	python $(QIMPORT) -t stopwords $(DB_PATH)main.db $(DYNAMIC_RESOURCES_PATH)
@@ -161,29 +207,12 @@ transfer_standard2uthmani:
 	
 
 
-## download resources
-download_all: download_translations download_recitations download_quranic_corpus download_tanzil local_mo_download
-
-download_translations:
-	#  download from  http://zekr.org/resources.html to ./store/traductions
-	cd $(STORE_PATH)Translations;  wget -i translations.list
 
 
-
-download_recitations:
-	#  auto download from  http://zekr.org/resources.html to ./store/recitations  + VerseByVerse recitations list
-	@echo "todo"
-
-download_quranic_corpus:
-	# Qimport.Downloader
-	@echo "todo"
-
-download_tanzil:
-	export PYTHONPATH=$(API_PATH) ;	python $(QIMPORT) -d tanzil_simple_clean $(STORE_PATH)
-	export PYTHONPATH=$(API_PATH) ;	python $(QIMPORT) -d tanzil_uthmani $(STORE_PATH)
-	
-
-##  build indexes 
+## build all indexes:
+# 1. Main index that contains all information related to Ayah or Surah, see index_main
+# 2. Extended index that contains Quranic translations and offline recitations, see index_extend
+# 3. Word index, contains all information related to Word, see index_word
 index_all: index_main index_extend index_word 
 	@echo "done;"
 
@@ -196,7 +225,11 @@ index_extend:
 index_word:
 	export PYTHONPATH=$(API_PATH) ;	python $(QIMPORT) -x word $(DB_PATH)main.db $(INDEX_PATH)word/
 	
-## build spellers
+
+## build all spellers:
+# 1. Speller of ayah unvocalized standard text words, see speller_aya
+# 2. Speller of subject fields (deprecated), see speller_subject
+# 3. Speller of quranic unvocalized uthmani words, see speller_word
 speller_all: speller_aya speller_subject speller_word
 	@echo "done;"
 
@@ -211,7 +244,9 @@ speller_word:
 	
 
 
-## build help
+## build help based on those methods:
+# 1. epydoc, see help_epydoc
+# 2. sphinx, see help_sphinx
 help_all: help_epydoc help_sphinx
 
 help_epydoc:
@@ -220,15 +255,16 @@ help_epydoc:
 help_sphinx:
 	mkdir -p output/$(VERSION);cd ./docs ; make dirhtml;  zip -9   alfanous-sphinx-doc.zip ./_build/dirhtml/* ; mv -f alfanous-sphinx-doc.zip ../output/$(VERSION)/ ; rm -r  ./_build/dirhtml
 
-## Qt forms ,dialogs and resources compilation  
-# PyQt is needed  
-# apt-get install pyqt4-dev-tools  pyqt-tools  
+## Qt resources compilation, PyQt is needed: apt-get install pyqt4-dev-tools  pyqt-tools  
+#  1. qrc files, see qt_rcc
 qt_all:	 qt_rcc
 	
 qt_rcc:
 	pyrcc4 ./resources/images/main.qrc -o $(DESKTOP_INTERFACE_PATH)main_rc.py
 
-# localization files
+## build localization files, this include:
+# 1. Desktop interface , see local_desktop_pot
+# 2. Web User Interface for mobiles, see  local_mobile_pot
 local_pot_all: local_desktop_pot local_mobile_pot
 
 local_desktop_pot:
@@ -240,14 +276,27 @@ local_mobile_pot:
 	@if [ ! -d "./localization/pot_files/alfanousMWUIv$(VERSION)/" ]; then mkdir ./localization/pot_files/alfanousMWUIv$(VERSION)/; fi
 	xgettext -kT_ --from-code utf-8 -L PHP --no-wrap --package-name="AlfanousMobileWUI" --package-version=$(VERSION) -d alfanousMWUI -o ./localization/pot_files/alfanousMWUIv$(VERSION)/alfanousMWUIv$(VERSION).pot $(MOBILE_WUI_PATH)*.php
 
+
+## load mo files from launchpad automatically
 local_mo_download:
 	@echo "todo"
 	#wget ; mv to /localization/locale
 
-##   make packages
+##   packaging all to:
+# 1. Python egg files, see dist_egg_all
+# 2. Debian/Ubuntu/Sabily DEB packages, see  dist_deb
+# 3. Fedora/Ojuba RPM packages, see dist_rpm
+# 4. Nokia Symbian sis package, see dist_sis
+# 5. firefox toolbar xpi file, see dist_xpi
+# 6. MacOS applications app, see  dist_app
 dist_all: dist_egg_all dist_deb dist_rpm dist_sis dist_xpi  dist_app
 
-# generate all extentions and API's eggs
+## generate all extentions and API's eggs:
+# 1. Alfanous main API, see dist_egg_api
+# 2. PyCorpus [Quranic Corpus parser], see dist_egg_pycorpus
+# 3. PyZekr [Zekr Translations models reader], see dist_egg_pyzekr
+# 4. Alfanous Importer [Importing, Updating, Downloading, Indexing resources], see dist_egg_qimport
+# 5. Alfanous Desktop Gui , see dist_egg_desktop
 dist_egg_all: dist_egg_api  dist_egg_pycorpus  dist_egg_pyzekr dist_egg_qimport dist_egg_desktop
  
 
@@ -287,7 +336,7 @@ dist_deb:
 	dpkg-buildpackage
 	
 
-# Redhat package for AlfanousDesktop
+# Fedora package for AlfanousDesktop
 dist_rpm:  
 	@echo "todo"
 	#cd $(DESKTOP_INTERFACE_PATH) ; python setup.py bdist_rpm
@@ -315,10 +364,13 @@ dist_xpi:
 	mkdir output/$(VERSION) ; mv ./interfaces/toolbars/firefox/alfanous_toolbar_$(VERSION).xpi ./output/$(VERSION)
 
 
-## installation
-	
-install_all: install_api install_desktop install_web
-	
+## install all (deprecated), use it only to make tests:
+# 1. the API, see install_api
+# 2. the desktop inteface, see install_desktop
+# 3. the json web service II, see install_json2
+# 4. the web interface, see install_web	
+install_all: install_api install_desktop install_json2 install_web
+
 
 install_api: 
 	cd   "$(API_PATH)alfanous" ; python setup.py  install
@@ -351,7 +403,7 @@ install_json2: install_api #install_index install_config
 	#xdg-open http://alfanous.local/ &  ##launch default browser for test
 
 ##  don't use it!!
-install_wui: #install_json
+install_wui: #install_json2
 	#rm -r  $(WEB_INSTALL_PATH)
 	mkdir -p $(WEB_INSTALL_PATH)
 	#cd ./interfaces/web/ ;  cp ./AGPL $(WEB_INSTALL_PATH)
