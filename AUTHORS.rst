@@ -12,7 +12,7 @@ Name			Position               Email                            twitter
 ------------------ -------------------------- --------------------------------- ---------------------------------------------
 `Assem Chelli`_     Project Manager/Developer   assem.ch [at] gmail.com          @assem_ch
 `Abdellah Chelli`_  Web Developer               sneetsher [at] gmail.com         @sneetsher 
-`Zaki Smahi`_ 	    Developer                   zakaria08esi [at] gmail.com      
+`Zaki Smahi`_ 	    Developer                   zakaria08esi [at] gmail.com    @zsmahi  
 Muslih  al aqaad    Graphic Designer            muslihzarth [at] gmail.com       @muslihzarth
 Yasmine Hoadjli     Community Manager           yhoadjli [at] gmail.com          @yasmamine 
 ================== ========================== ================================= =============================================
