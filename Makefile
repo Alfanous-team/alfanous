@@ -129,13 +129,13 @@ download_tanzil:
 # 3. list of indexed translations, see update_translations_indexed_list
 # 4. list of offline recitations, see update_recitations_offline_list
 # 5. list of online recitations, see update_recitations_online_list  
-update_post_build:  update_information update_hints update_translations_indexed_list update_recitations_offline_list update_recitations_online_list    
+update_post_build:  update_dynamic_resources_postbuild  update_information update_hints update_translations_indexed_list update_recitations_offline_list update_recitations_online_list   
 
 ##  update resources that must be updated before indexing phase, which are:
 # 1. Quranic Arabic Corpus, see update_quranic_corpus
 # 2. Linguistic resources on the form of python dictionarries to accelerate the loading , see update_dynamic_resources
 # 3. List of translations to be downloaded, see  update_translations_to_download_list
-update_pre_build:  update_quranic_corpus update_dynamic_resources update_translations_to_download_list
+update_pre_build:  update_quranic_corpus update_dynamic_resources_prebuild update_translations_to_download_list
 
 # update information manually 
 update_information:
@@ -171,18 +171,21 @@ update_recitations_offline_list:
 update_recitations_online_list:
 	cd $(CONFIG_PATH); wget http://www.everyayah.com/data/recitations.js
 
-# update dynamic resources automatically , see transfer_all
-update_dynamic_resources: transfer_all
+# update dynamic resources automatically , see transfer_prebuild, transfer_postbuild
+update_dynamic_resources_prebuild: transfer_prebuild
+update_dynamic_resources_postbuild: transfer_postbuild
 	
-## build dynamic_resources by transferring the data from database to python modules, this include:
-# 1. arabic stop words, see transfer_stopwords
-# 2. Quranic words synonyms, see transfer_synonyms
-# 3. Word properties [root,type], see transfer_word_props
-# 4. Derivtion levels of Qurnic words, see transfer_derivations
-# 5. Field names mapping Arabic to English, see transfer_ara2eng_names
-# 6. Quranic words mapping Standard to Uthmani, see transfer_standard2uthmani
-# 7. Different vocalizations of each quranic word, see transfer_vocalizations
-transfer_all: transfer_stopwords transfer_synonyms transfer_word_props transfer_derivations transfer_ara2eng_names transfer_standard2uthmani transfer_vocalizations
+## build dynamic_resources by transferring the data from database (or indexes) to python modules, this include:
+# 1. [prebuild] arabic stop words, see transfer_stopwords
+# 2. [prebuild] Quranic words synonyms, see transfer_synonyms
+# 3. [prebuild] Word properties [root,type], see transfer_word_props
+# 4. [prebuild] Derivtion levels of Qurnic words, see transfer_derivations
+# 5. [prebuild] Field names mapping Arabic to English, see transfer_ara2eng_names
+# 6. [prebuild] Quranic words mapping Standard to Uthmani, see transfer_standard2uthmani
+# 7. [postbuild] Different vocalizations of each quranic word, see transfer_vocalizations
+transfer_all: transfer_prebuild transfer_postbuild
+transfer_prebuild: transfer_stopwords transfer_synonyms transfer_word_props transfer_derivations transfer_ara2eng_names transfer_standard2uthmani 
+transfer_postbuild: transfer_vocalizations
 	
 transfer_stopwords:
 	export PYTHONPATH=$(API_PATH) ;	python $(QIMPORT) -t stopwords $(DB_PATH)main.db $(DYNAMIC_RESOURCES_PATH)
@@ -197,7 +200,7 @@ transfer_derivations:
 	export PYTHONPATH=$(API_PATH) ;	python $(QIMPORT) -t derivations $(DB_PATH)main.db $(DYNAMIC_RESOURCES_PATH)
 
 transfer_vocalizations:
-	export PYTHONPATH=$(API_PATH) ;	python $(QIMPORT) -t vocalizations $(DB_PATH)main.db $(DYNAMIC_RESOURCES_PATH)
+	export PYTHONPATH=$(API_PATH) ;	python $(QIMPORT) -t vocalizations $(DB_PATH)main.db $(INDEX_PATH)main/ $(DYNAMIC_RESOURCES_PATH)
 
 transfer_ara2eng_names:
 	export PYTHONPATH=$(API_PATH) ;	python $(QIMPORT) -t ara2eng_names $(DB_PATH)main.db $(DYNAMIC_RESOURCES_PATH)
@@ -205,8 +208,6 @@ transfer_ara2eng_names:
 transfer_standard2uthmani:
 	export PYTHONPATH=$(API_PATH) ;	python $(QIMPORT) -t std2uth_words $(DB_PATH)main.db $(DYNAMIC_RESOURCES_PATH)
 	
-
-
 
 
 ## build all indexes:
