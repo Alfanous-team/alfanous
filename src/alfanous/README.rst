@@ -4,12 +4,20 @@ Alfanous API
 -----
 Build
 -----
-TODO
+The API uses many critical resources that must be downloaded and/or prepared to be used. To do that, just run this command in the root path of the project
+
+.. code-block:: sh
+
+    $ cd ../../
+    $ make build
+
+For more details check  `Makefile <https://github.com/Alfanous-team/alfanous/blob/master/Makefile>`_
+
 
 -------
 Install
 -------
-To install the API from the source:
+To install the API from the source (After Build_ ):
 
 .. code-block:: sh
 
