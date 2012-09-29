@@ -27,7 +27,7 @@
 @to do : download Tanzil,Translations
 '''
 
-#import twill
+import twill
 
 
 def download_tanzil( quranType = "simple-clean", outType = "xml", outPath = "./tanzil.xml" ):
