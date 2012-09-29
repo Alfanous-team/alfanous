@@ -43,7 +43,7 @@ You can help us by:
 
   - `alfanous web interface for mobiles <http://m.alfanous.org/>`_ , translation platform link: `here <https://translations.launchpad.net/alfanous/trunk/+pots/alfanousmobile>`_.
 
-- Testing the releases and Reporting bugs , see `How to report a bug?`_
+- Testing the modules and releases, Reporting bugs , see `How to report a bug?`_ and `How to help by testing?`_ .
 - Fixing `bugs <https://github.com/Alfanous-team/alfanous/issues?labels=bug&milestone=&page=1&state=open>`_ , Coding `new features <https://github.com/Alfanous-team/alfanous/issues/milestones>`_ or Developing `new interfaces <https://github.com/Alfanous-team/alfanous/issues?milestone=8&page=1&state=open>`_ , See: `How to Contribute?`_ .
 - Designing  Icons, Logoes , Banners.
 - Packaging the project for different systems: Windows, Linux distributions, MacOs.
@@ -60,7 +60,7 @@ If you have a concrete bug report for Alfanous please go to the `Issues Tracker 
 ------------------
 How to Contribute? 
 ------------------
-If you are coder, and want to participate in actively developing Alfanous :
+If you are a coder, and want to participate in actively developing Alfanous :
 
 #. Learning Git is essential, read about `Set up Git <https://help.github.com/articles/set-up-git>`_ and you can also try it online `here <http://try.github.com/levels/1/challenges/1>`_!
 #. Browse a `milestone <https://github.com/Alfanous-team/alfanous/issues/milestones>`_ and choose an open issue (or more) that fits your skills.
@@ -68,11 +68,52 @@ If you are coder, and want to participate in actively developing Alfanous :
 #. Start with forking the repository, do your changes, test them and then make a pull request to `alfanous-team <https://github.com/Alfanous-team/alfanous>`_ when you think your code is ready.
 #. The project is not well documented but you may find helpful information in Readme files:
 
-  - `Application Programming Interface & Console Interface <https://github.com/Alfanous-team/alfanous/tree/master/src/alfanous>`_
-  - `JSON output system <https://github.com/Alfanous-team/alfanous/tree/master/src/alfanous-cgi>`_
-  - `Desktop Interface <https://github.com/Alfanous-team/alfanous/tree/master/src/alfanous-desktop>`_
-  - `Django application <https://github.com/Alfanous-team/alfanous/tree/master/src/alfanous-django>`_
-  - `Web user interface <https://github.com/Alfanous-team/alfanous/tree/master/interfaces/web/wui>`_
+   - `Application Programming Interface & Console Interface <https://github.com/Alfanous-team/alfanous/tree/master/src/alfanous>`_
+   - `JSON output system <https://github.com/Alfanous-team/alfanous/tree/master/src/alfanous-cgi>`_
+   - `Desktop Interface <https://github.com/Alfanous-team/alfanous/tree/master/src/alfanous-desktop>`_
+   - `Django application <https://github.com/Alfanous-team/alfanous/tree/master/src/alfanous-django>`_
+   - `Web user interface <https://github.com/Alfanous-team/alfanous/tree/master/interfaces/web/wui>`_
+
+See also `How you can help?`_
+
+
+-----------------------
+How to help by testing? 
+-----------------------
+If you want to help us testing  the project modules, just follow these steps and  Sooner as  you encounter a problem, stop testing and  submit it as an issue in  our issue tracker  and then send about it to the mailing list (alfanous@googlegroups.com):
+
+#. Get the code source:
+
+   - clone the git repo  from github:  $ git clone https://github.com/Alfanous-team/alfanous.git
+   - or download it as a `zipfile <https://github.com/Alfanous-team/alfanous/zipball/master>`_ 
+
+#. Run the build: just go to the root path of the code source and execute this command :    $ make build
+#. Install the API: also in the root path of the code source, execute the command: $ make install_api
+#. Test the console interface, it provides results in Json format:
+
+   - $ alfanous-console -h
+   - $ alfanous-console -a search -q qawol
+   - $ alfanous-console -a search -q الصلاة+الزكاة
+   - ...
+
+#. Test the basic script:
+
+   - $ cd src/alfanous-tests
+   - $ python sample.py
+
+#. Test the desktop interface:
+
+   - $ cd src/alfanous-desktop
+   - $ python Gui.py
+
+#. Test the json output system II (later)
+#. Test the web interface (later)
+#. Test Django app (later)
+#. Test Firefox toolbar (later)
+#. Test Ubuntu/Sabily package (later)
+#. Test Windows Installer script (later)
+#. Test MacOs package (later)
+
 
 See also `How you can help?`_
 
