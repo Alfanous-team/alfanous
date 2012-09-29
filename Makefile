@@ -118,8 +118,8 @@ download_quranic_corpus:
 	@echo "todo"
 
 download_tanzil:
-	export PYTHONPATH=$(API_PATH) ;	python $(QIMPORT) -d tanzil_simple_clean $(STORE_PATH)
-	export PYTHONPATH=$(API_PATH) ;	python $(QIMPORT) -d tanzil_uthmani $(STORE_PATH)
+	export PYTHONPATH=$(API_PATH) ;	python $(QIMPORT) -d tanzil_simple_clean $(STORE_PATH)tanzil_simple_clean.xml
+	export PYTHONPATH=$(API_PATH) ;	python $(QIMPORT) -d tanzil_uthmani $(STORE_PATH)tanzil_uthmani.xml
 
 
 
