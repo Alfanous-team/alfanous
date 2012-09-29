@@ -36,6 +36,8 @@ Quick Start
 
 .. code-block:: python
 
+    # coding: utf-8
+    
     # import Output object 
     from alfanous.Outputs import Raw
     
@@ -67,7 +69,7 @@ Quick Start
      ## prepare a search query
      search_flags = {
                  "action":"search",
-                 "query": u"الحمد لله",
+                 "query": "الحمد لله",
                  "sortedby":"mushaf",
                  "reverse_order": False,        
                  "page": 1,
