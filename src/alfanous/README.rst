@@ -33,7 +33,6 @@ A console interface will  be installed automatically with the API:
 -----------
 Quick Start
 -----------
-
 .. code-block:: python
 
     # coding: utf-8
@@ -89,6 +88,7 @@ Quick Start
       print "runtime", results["search"]["runtime"] 
       print "total", results["search"]["interval"]["total"] 
 
+see `sample.py <https://github.com/Alfanous-team/alfanous/blob/master/src/alfanous-tests/sample.py>`_.
 
 --------------
 Flags
