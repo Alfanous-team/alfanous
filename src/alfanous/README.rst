@@ -1,12 +1,16 @@
 ============
 Alfanous API
 ============
-
+-----
+Build
+-----
+TODO
 
 -------
 Install
 -------
 To install the API from the source:
+
 .. code-block:: sh
 
     $ sudo python setup.py install
@@ -185,7 +189,7 @@ SortedBy Options
  mushaf     The default order of ayas in Mus-haf
  tanzil     The revelation order
  subject    The alphabetic order of the values for subjects fields
- FIELD      The numerical order or alphabetic order of a costum field (see Fields_)
+ FIELD      The numerical order or alphabetic order of a costum field (see Fields_ )
 
 ========== =================================================================================
 
