@@ -40,7 +40,7 @@ Research
 *  2009-2010: Engineer Thesis( Développement d'un moteur de recherche et d'indexation dans les documents coraniques) @ [ESI_ - Algiers]
    Assem Chelli (Student), Merouane Dahmani (Student), Taha Zerrouki  ( Supervisor),  Pr. Amar Balla ( Supervisor)  
 
-.. _ESI: http://www.esi.dz|
+.. _ESI: http://www.esi.dz
 -----------------
 Graphics & Design
 -----------------
