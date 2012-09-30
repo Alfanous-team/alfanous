@@ -75,3 +75,8 @@ Translation
 Test & Support
 --------------
 Many persons from the community, thanks to all 
+
+==============
+Acknowledgment
+==============
+See `THANKS.rst <https://github.com/Alfanous-team/alfanous/blob/master/THANKS.rst>`_ 
