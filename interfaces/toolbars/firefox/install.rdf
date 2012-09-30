@@ -5,7 +5,8 @@
 	created on Sunday, August 05th, 2012 at 13:00
 	by SMAHI Zakaria
 	zakaria08esi@gmail.com
-	firefox supported versions : from 1.5 to 20th version 
+	firefox supported versions : from 1.5 to 18th version
+	updated on Sunday, September 30th, 2012 at 15:38  
 								-->
 
 <RDF xmlns="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
@@ -17,19 +18,22 @@
 
 		<em:id>alfanousQSE@gmail.com</em:id>
 		<em:name>ALFANOUS Toolbar</em:name>
-		<em:version>0.5</em:version>
+		<em:version>0.7</em:version>
 		<em:targetApplication>
 			<Description>
 				<em:id>{ec8030f7-c20a-464f-9b0e-13a3a9e97384}</em:id>
 				<em:minVersion>1.5</em:minVersion>
-				<em:maxVersion>17.0a1</em:maxVersion>
+				<em:maxVersion>18.0a1</em:maxVersion>
 			</Description>
 		</em:targetApplication>
 		<em:type>2</em:type>
 		<em:unpack>true</em:unpack>
+
 		<!-- Optional Items -->
 
 		<em:creator>Zakaria SMAHI</em:creator>
+		<em:developer>Assem CHELLI</em:developer>
+		<em:contributor>Muslih ALAQQAD</em:contributor>
 		<em:description>ALFANOUS Toolbar: search easily in Holy Quran</em:description>
 		<em:homepageURL>http://alfanous.org/</em:homepageURL>
 		<em:iconURL>chrome://alfanoustoolbar/skin/icon.png</em:iconURL>

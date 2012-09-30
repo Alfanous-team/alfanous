@@ -100,6 +100,8 @@
 
 			<!-- separator -->
 
+			<toolbarseparator />
+
 			<!-- Alfanous on Github button-->
 
 			<toolbarbutton id="AlfanousTB-Github-Button" tooltiptext="Alfanous on Github"
