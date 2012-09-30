@@ -1,12 +1,24 @@
 ============
 Alfanous API
 ============
+-----
+Build
+-----
+The API uses many critical resources that must be downloaded and/or prepared to be used. To do that, just run this command in the root path of the project
+
+.. code-block:: sh
+
+    $ cd ../../
+    $ make build
+
+For more details check  `Makefile <https://github.com/Alfanous-team/alfanous/blob/master/Makefile>`_
 
 
 -------
 Install
 -------
-To install the API from the source:
+To install the API from the source (After Build_ ):
+
 .. code-block:: sh
 
     $ sudo python setup.py install
@@ -21,9 +33,10 @@ A console interface will  be installed automatically with the API:
 -----------
 Quick Start
 -----------
-
 .. code-block:: python
 
+    # coding: utf-8
+    
     # import Output object 
     from alfanous.Outputs import Raw
     
@@ -55,7 +68,7 @@ Quick Start
      ## prepare a search query
      search_flags = {
                  "action":"search",
-                 "query": u"الحمد لله",
+                 "query": "الحمد لله",
                  "sortedby":"mushaf",
                  "reverse_order": False,        
                  "page": 1,
@@ -75,6 +88,7 @@ Quick Start
       print "runtime", results["search"]["runtime"] 
       print "total", results["search"]["interval"]["total"] 
 
+see `sample.py <https://github.com/Alfanous-team/alfanous/blob/master/src/alfanous-tests/sample.py>`_.
 
 --------------
 Flags
@@ -185,7 +199,7 @@ SortedBy Options
  mushaf     The default order of ayas in Mus-haf
  tanzil     The revelation order
  subject    The alphabetic order of the values for subjects fields
- FIELD      The numerical order or alphabetic order of a costum field (see Fields_)
+ FIELD      The numerical order or alphabetic order of a costum field (see Fields_ )
 
 ========== =================================================================================
 
