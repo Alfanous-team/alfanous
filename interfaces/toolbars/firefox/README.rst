@@ -2,17 +2,10 @@
 Firefox Toolbar for Alfanous
 ============================
 
-
--------
-Install
--------
-
+:Version: #.#.#
+:Links: `Download <Https://addons.mozilla.org/fr/firefox/addon/alfanous-toolbar/?src=search>`_,  `Statistics <https://addons.mozilla.org/fr/firefox/addon/alfanous-toolbar/statistics/?last>`_
 
 -------
 Changes
 -------
-
-changes made by zsmahi:
-
-1. logo for extension added
-2. interfaces added
+See `CHANGELOG  <https://github.com/Alfanous-team/alfanous/blob/master/interfaces/toolbars/firefox/CHANGELOG>`_ 

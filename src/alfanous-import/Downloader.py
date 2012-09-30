@@ -27,7 +27,7 @@
 @to do : download Tanzil,Translations
 '''
 
-#import twill
+#import twill  ## disabled tempararily because a bug in twill with python2.6 
 
 
 def download_tanzil( quranType = "simple-clean", outType = "xml", outPath = "./tanzil.xml" ):

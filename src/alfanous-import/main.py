@@ -93,11 +93,16 @@ if options.transfer:
 
     if len( args ) == 2:
         SOURCE = args[0]
+	SOURCE2 = "." # Secondary source, used for main index path
         DESTINATION = args[1]
+    elif len( args ) == 3:
+        SOURCE = args[0]
+	SOURCE2 = args[1] # Secondary source, used for main index path
+        DESTINATION = args[2]
     else:
         parser.error( "Choose SOURCE_PATH and DISTINATION_PATH" )
 
-    T = Transformer( ixpath = ".", dypypath = DESTINATION, dbpath = SOURCE )
+    T = Transformer( ixpath = SOURCE2 , dypypath = DESTINATION, dbpath = SOURCE ) 
     if options.transfer == "stopwords":
         T.transfer_stopwords()
     elif options.transfer == "synonyms":
@@ -106,12 +111,12 @@ if options.transfer:
         T.transfer_word_props()
     elif options.transfer == "derivations":
         T.transfer_derivations()
-    elif options.transfer == "vocalizations":
-        T.transfer_vocalizations()
     elif options.transfer == "ara2eng_names":
         T.transfer_ara2eng_names()
     elif options.transfer == "std2uth_words":
         T.transfer_std2uth_words()
+    elif options.transfer == "vocalizations":
+        T.transfer_vocalizations()
 
 if options.speller:
 
