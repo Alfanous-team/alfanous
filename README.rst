@@ -21,7 +21,7 @@ Contacts
 --------
 - If you have a concrete bug report for Alfanous please go to the `Issues Tracker  <https://github.com/Alfanous-team/alfanous/issues>`_, submit your report and tag it "bug".
 
-- If you want to participate in actively developing Alfanous,  read this `How to contribute?  <https://github.com/Alfanous-team/alfanous/blob/master/FAQ.rst#how-to-contribute>`_. 
+- If you want to participate in actively developing Alfanous,by testing read this `How to help with testing?  <https://github.com/Alfanous-team/alfanous/blob/master/FAQ.rst#how-to-help-by-testing>`_ and by coding read this `How to contribute?  <https://github.com/Alfanous-team/alfanous/blob/master/FAQ.rst#how-to-contribute>`_. 
 
 - If you want to help in Alfanous somehow,  read this `How you can help?  <https://github.com/Alfanous-team/alfanous/blob/master/FAQ.rst#how-you-can-help>`_. 
 
