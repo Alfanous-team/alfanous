@@ -12,7 +12,7 @@ Name      		Position               Email                            twitter
 ------------------ -------------------------- --------------------------------- ---------------------------------------------
 `Assem Chelli`_     Project Manager/Developer   assem.ch [at] gmail.com          @assem_ch
 `Abdellah Chelli`_  Web Developer               sneetsher [at] gmail.com         @sneetsher 
-`Zaki Smahi`_ 	    Developer                   zakaria08esi [at] gmail.com      
+`Zaki Smahi`_ 	    Developer                   zakaria08esi [at] gmail.com     @zsmahi  
 Muslih  al aqaad    Graphic Designer            muslihzarth [at] gmail.com       @muslihzarth
 Yasmine Hoadjli     Community Manager           yhoadjli [at] gmail.com          @yasmamine 
 ================== ========================== ================================= =============================================
@@ -40,7 +40,7 @@ Research
 *  2009-2010: Engineer Thesis( Développement d'un moteur de recherche et d'indexation dans les documents coraniques) @ [ESI_ - Algiers]
    Assem Chelli (Student), Merouane Dahmani (Student), Taha Zerrouki  ( Supervisor),  Pr. Amar Balla ( Supervisor)  
 
-.. _ESI: http://www.esi.dz|
+.. _ESI: http://www.esi.dz
 -----------------
 Graphics & Design
 -----------------
@@ -75,3 +75,8 @@ Translation
 Test & Support
 --------------
 Many persons from the community, thanks to all 
+
+==============
+Acknowledgment
+==============
+See `THANKS.rst <https://github.com/Alfanous-team/alfanous/blob/master/THANKS.rst>`_ 

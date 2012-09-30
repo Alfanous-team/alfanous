@@ -396,17 +396,22 @@ class Transformer:
         return raw_str
 
     def transfer_vocalizations( self ):
-        """ load indexed vocalized words  from the main index and save them as a list in a dynamic py """
-        QSE = QuranicSearchEngine( self.__ixpath )
-        mfw = QSE.most_frequent_words( 9999999, "aya_" )
+        """ load indexed vocalized words  from the main index and save them as a list in a dynamic py """ 
+	QSE = QuranicSearchEngine( self.__ixpath )
 
-        V = QArabicSymbolsFilter( \
+	if QSE.OK:
+		mfw = QSE.most_frequent_words( 9999999, "aya_" )
+	else:
+		mfw = []
+
+	V = QArabicSymbolsFilter( \
                                 shaping = False, \
                                 tashkil = True, \
                                 spellerrors = False, \
                                 hamza = False \
-                                ).normalize_all
+	).normalize_all
 
+	
 
         vocalization_dict = {}
         for w in mfw:
