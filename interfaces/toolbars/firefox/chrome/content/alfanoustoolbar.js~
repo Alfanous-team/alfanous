@@ -141,16 +141,47 @@ TODO  LIST
 
 	}
 
+	// need review
+	function AlfanousTB_Populate()
+	{
+
+		/*
+			AlfanousTB_Populate
+			This function generates automatically menu item inside the SearchBox drop-down menu
+			As a historic searchs; te number of Items to Add is 10 
+		*/
+
+		// Get the menupopup element that we will be working with
+		var menu = document.getElementById("AlfanousTB-SearchTermsMenu");
+
+		// Remove all of the items currently in the popup menu
+		for(var i=menu.childNodes.length - 1; i >= 0; i--)
+		{
+			menu.removeChild(menu.childNodes.item(i));
+		}
+
+		// Specify how many items we should add to the menu
+		var numItemsToAdd = 10;
+
+		tempItem.setAttribute("label", "allah");
+
+		for(var i=0; i<numItemsToAdd; i++)
+		{
+			// Create a new menu item to be added
+			var tempItem = document.createElement("menuitem");
+
+			// Set the new menu item's label
+			tempItem.setAttribute("label", "Dynamic Item Number " + (i+1));
+
+			// Add the item to our menu
+			menu.appendChild(tempItem);
+		}
+
+	} 
 
 	// add autocomplete function here 
 	function AlfanousTB_Add()
 	{
-
-		/* 
-			AlfanousTB_Add
-			This function save the historic search terms
-		*/
-
 			var fhService = Components.classes["@mozilla.org/satchel/form-history;1"].getService(Components.interfaces.nsIFormHistory2);
 			fhService.addEntry("searchHistory", document.getElementById("AlfanousTB-Search-textbox").value);
 
