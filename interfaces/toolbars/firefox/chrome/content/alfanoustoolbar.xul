@@ -7,13 +7,14 @@
 	zakaria08esi@gmail.com
 							-->
 
-				
+
 <!-- 
 	TODO  LIST
-	# use textbox instead of toolbaritem id="AlfanousTB-SearchTerms-TBItem"
-	# enable search history and autocomplete in textbox
-							-->							
-							
+	# use textbox instead of toolbaritem id="AlfanousTB-SearchTerms-TBItem"....done
+	# enable search history and autocomplete in textbox....done
+	# add Mailing List Button....done
+	#add others menubutton including sourceforge,launchpad,cms,wiki....done
+										-->
 
 <!-- css sheet used -->
 
@@ -22,12 +23,12 @@
 <!-- overlay tag -->
 
 <overlay id="AlfanousTB-Overlay"
-         xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+	xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
 
 	<!-- the JavaScript file used -->
 
 	<script type="application/x-javascript"
-            src="chrome://alfanoustoolbar/content/alfanoustoolbar.js" />
+		src="chrome://alfanoustoolbar/content/alfanoustoolbar.js" />
 
 
 	
@@ -54,26 +55,19 @@
 		
 			<!-- SearchBox item -->
 
-			<toolbaritem id="AlfanousTB-SearchTerms-TBItem" persist="width">
-			
-				<menulist id="AlfanousTB-SearchTerms" editable="true" flex="1"
-					minwidth="100" width="250"
-					onkeypress="AlfanousTB_KeyHandler(event);">
-				
-					<menupopup id="AlfanousTB-SearchTermsMenu" onpopupshowing="AlfanousTB_Populate()" />
-
-				</menulist>
-
-			</toolbaritem>
+			 <textbox id="AlfanousTB-Search-textbox" type="autocomplete" autocompletesearch="form-history"
+				autocompletesearchparam="searchHistory" enablehistory="true"
+				onkeypress="AlfanousTB_KeyHandler(event);"/>
 
 			<!-- SearchBox Resizer -->
 
 			<splitter id="AlfanousTB-ResizeSplitter" state="open" collapse="none"
-                		resizebefore="closest" resizeafter="farthest"
-                		tooltiptext="Resize the Search Box">
+				resizebefore="closest" resizeafter="farthest"
+				tooltiptext="Resize the Search Box">
 
-                		<vbox id="AlfanousTB-ResizeBar" />
-            		</splitter>
+				<vbox id="AlfanousTB-ResizeBar" />
+
+			</splitter>
 
 			<!-- Search Button -->
 
@@ -83,16 +77,6 @@
 			<!-- a separator -->
 
 			<toolbarseparator />
-
-			<!-- Alfanous CMS button -->
-
-			<toolbarbutton id="AlfanousTB-Cms-Button" tooltiptext="Alfanous CMS website"
-				label="" onclick="AlfanousTB_LoadURL('http://cms.alfanous.org/')" />
-
-			<!-- wiki pages button -->
-
-			<toolbarbutton id="AlfanousTB-Wiki-Button" tooltiptext="Alfanous Wiki pages"
-				label="" onclick="AlfanousTB_LoadURL('http://wiki.alfanous.org/')" />
 
 			<!-- facebook page button -->
 
@@ -109,15 +93,12 @@
 			<toolbarbutton id="AlfanousTB-Gplus-Button" tooltiptext="Add us on Google+"
 				label="" onclick="AlfanousTB_LoadURL('http://plus.google.com/111305625425237630318')" />
 
-			<!-- Alfanous on SourceForge button -->
+			<!-- Mailing List -->
 
-			<toolbarbutton id="AlfanousTB-SourceForge-Button" tooltiptext="Alfanous on SourceForge"
-				label="" onclick="AlfanousTB_LoadURL('http://sourceforge.net/projects/alfanous/')" />
+			<toolbarbutton id="AlfanousTB-Ggroups" tooltiptext="Our Mailing List"
+				label="" onclick="AlfanousTB_LoadURL('http://groups.google.com/group/alfanous/')"/>
 
-			<!-- Alfanous on LaunchPad button -->
-
-			<toolbarbutton id="AlfanousTB-LaunchPad-Button" tooltiptext="Alfanous on LaunchPad"
-				label="" onclick="AlfanousTB_LoadURL('http://launchpad.net/alfanous/')" />
+			<!-- separator -->
 
 			<!-- Alfanous on Github button-->
 
@@ -130,7 +111,7 @@
 
 			<!-- Available Interfaces menu-button -->
 
-			<toolbarbutton id="AlfanousTB-Interfaces-Button" label="Other Interfaces"
+			<toolbarbutton id="AlfanousTB-Interfaces-Button" label="Interfaces"
 				type="menu-button" tooltiptext="Combined Search">
 
 				<!-- Items -->
@@ -174,26 +155,58 @@
 						class="menuitem-iconic" tooltiptext="use alfanous website from Iphone"
 						onclick="AlfanousTB_LoadURL('http://itunes.apple.com/us/app/alfanws-mhrk-bhth-qrany-mtqdm/id543646326?mt=8')" />
 
-					<!-- Non-Official Interfaces; Add a separator -->						
 
-					<!-- Under Construction -->
+				</menupopup>
 
-					
+			</toolbarbutton>
 
-					<!-- Other Interfaces must be added under this comment -->
+			<!-- Other websites menu-button -->
 
-					<!-- Copy/Paste the menuitem tag used before adding new interfaces links -->
+			<toolbarbutton id="AlfanousTB-Others-Button" label="Others"
+				type="menu-button" tooltiptext="Combined Search">
+
+				<!-- Items -->
+
+				<menupopup>
+
+					<!-- Here we add old websites of Alfanous -->
+
+					<!-- Alfanous CMS -->
+
+					<menuitem id="AlfanousTB-Others-CMS" label="Alfanous CMS"
+						class="menuitem-iconic" tooltiptext="Alfanous CMS"
+						onclick="AlfanousTB_LoadURL('http://cms.alfanous.org/')" />
+
+					<!-- Alfanous wiki pages -->
+
+					<menuitem id="AlfanousTB-Others-Wiki" label="Alfanous Wiki pages"
+						class="menuitem-iconic" tooltiptext="Old help pages of Alfanous"
+						onclick="AlfanousTB_LoadURL('http://wiki.alfanous.org/')" />
+
+					<!-- Alfanous on SourceForge -->
+
+					<menuitem id="AlfanousTB-Others-SourceForge" label="Alfanous SourceForge"
+						class="menuitem-iconic" tooltiptext="Alfanous on SourceForge"
+						onclick="AlfanousTB_LoadURL('http://sourceforge.net/projects/alfanous/')" />
+
+					<!-- Alfanous on LaunchPad -->
+
+					<menuitem id="AlfanousTB-Others-LaunchPad" label="Alfanous LaunchPad"
+
+						class="menuitem-iconic" tooltiptext="Alfanous on LaunchPad"
+						onclick="AlfanousTB_LoadURL('http://launchpad.net/alfanous/')" />
 
 				</menupopup>
 
 			</toolbarbutton> 
+ 
 
 			<!-- THE END -->
 
-			<toolbarspring />		
-		
+			<toolbarspring />
+
 		</toolbar>
 
 	</toolbox>
-	
+
 </overlay>
