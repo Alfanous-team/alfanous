@@ -8,11 +8,11 @@
 /*
 TODO  LIST
 	# open  links in  new tab instead of getting last browser window  ......... done
-	# use one regexp to trim " "
-	# enable search history and autocomplete
+	# use one regexp to trim " "  ......... done
+	# enable search history and autocomplete......done
  */
 
- 
+
 	function AlfanousTB_Search(event, type)
 	{
 
@@ -28,7 +28,7 @@ TODO  LIST
 
 		// Get a handle to our search terms box (the <menulist> element)
 
-		var searchTermsBox = document.getElementById("AlfanousTB-SearchTerms");
+		var searchTermsBox = document.getElementById("AlfanousTB-Search-textbox");
     
 		// Get the value in the search terms box, trimming whitespace as necessary using the AlfanousTB_TrimString() function
 		// See farther down in this file for details on how it works.
@@ -49,14 +49,15 @@ TODO  LIST
 
 			// Build up the URL
 			case "word":
-			if(isEmpty) { URL = "http://alfanous.org/"; }
-			else        { URL = "http://alfanous.org/?search=" + searchTerms; }
+			if(isEmpty) { URL = "http://www.alfanous.org/"; }
+			else        { URL = "http://www.alfanous.org/?search=" + searchTerms; }
 			break;
 		
 		}
 
-		// Load the URL in the browser window using the TutTB_LoadURL function
+		// Load the URL in the browser window using the AlfanousTB_LoadURL function
 		AlfanousTB_LoadURL(URL);
+		AlfanousTB_Add();
 
 	}
 
@@ -64,21 +65,18 @@ TODO  LIST
 	{
 
 		/*
-			AlfanousTB_TrimString function			
-			This function trims all leading and trailing whitespace from the incoming string and convert them into one 
+			AlfanousTB_TrimString function
+			This function trims all leading and trailing whitespace from the incoming string 
+			and convert them into one 
 			whitespace; the new string is returned 
 		*/
 
 		// If the incoming string is invalid, or nothing was passed in, return empty
 		if (!string)
 		return "";
-
-		string = string.replace(/^\s+/, ''); // Remove leading whitespace
-		string = string.replace(/\s+$/, ''); // Remove trailing whitespace
-
-		// Replace all whitespace runs with a single space
-		string = string.replace(/\s+/g, ' ');
-
+		
+		string = string.replace(/(^\s*)|(\s*$)/g,""); // Remove leading and trailing whitespace
+		string = string.replace(/\s+/g, ' '); // Replace all whitespace runs with a single space
 		return string; // Return the altered value
 
 	}
@@ -143,39 +141,19 @@ TODO  LIST
 
 	}
 
-	function AlfanousTB_Populate()
+
+	// add autocomplete function here 
+	function AlfanousTB_Add()
 	{
 
-		/*
-			AlfanousTB_Populate
-			This function generates automatically menu item inside the SearchBox drop-down menu
-			As a historic searchs; te number of Items to Add is 10 
+		/* 
+			AlfanousTB_Add
+			This function save the historic search terms
 		*/
 
-		// Get the menupopup element that we will be working with
-		var menu = document.getElementById("AlfanousTB-SearchTermsMenu");
+			var fhService = Components.classes["@mozilla.org/satchel/form-history;1"].getService(Components.interfaces.nsIFormHistory2);
+			fhService.addEntry("searchHistory", document.getElementById("AlfanousTB-Search-textbox").value);
 
-		// Remove all of the items currently in the popup menu
-		for(var i=menu.childNodes.length - 1; i >= 0; i--)
-		{
-			menu.removeChild(menu.childNodes.item(i));
-		}
+	}
 
-		// Specify how many items we should add to the menu
-		var numItemsToAdd = 10;
 
-		tempItem.setAttribute("label", "allah");
-
-		for(var i=0; i<numItemsToAdd; i++)
-		{
-			// Create a new menu item to be added
-			var tempItem = document.createElement("menuitem");
-
-			// Set the new menu item's label
-			tempItem.setAttribute("label", "Dynamic Item Number " + (i+1));
-
-			// Add the item to our menu
-			menu.appendChild(tempItem);
-		}
-
-	} 
