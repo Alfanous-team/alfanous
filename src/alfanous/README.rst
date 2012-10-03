@@ -7,12 +7,20 @@ Build
 The API uses many critical resources that must be downloaded and/or prepared to be used. To do that, just run this command in the root path of the project
 
 #. Install all building dependencies: `pyparsing <http://aminenacer.blogspot.com/2012/10/mon-voyage-akfadou-deuxieme-partie.html>`_, `pyqt4 <http://www.riverbankcomputing.co.uk/software/pyqt/download>`_.  
-#. run the build command:
+   
+   * (ubuntu 12.04): 
+      
+     .. code-block:: sh
+     
+        $ sudo apt-get install python-qt4 python-distutils
+        $ sudo easy_install pyparsing
 
-.. code-block:: sh
-    
-    $ cd ../../
-    $ make build
+#. Run the build command:
+
+   .. code-block:: sh
+        
+        $ cd ../../
+        $ make build
 
 
 
