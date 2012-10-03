@@ -6,10 +6,15 @@ Build
 -----
 The API uses many critical resources that must be downloaded and/or prepared to be used. To do that, just run this command in the root path of the project
 
-.. code-block:: sh
+#. Install all building dependencies: `pyparsing <http://aminenacer.blogspot.com/2012/10/mon-voyage-akfadou-deuxieme-partie.html>`_, `pyqt4 <http://www.riverbankcomputing.co.uk/software/pyqt/download>`_.  
+#. run the build command:
 
+.. code-block:: sh
+    
     $ cd ../../
     $ make build
+
+
 
 For more details check  `Makefile <https://github.com/Alfanous-team/alfanous/blob/master/Makefile>`_
 
