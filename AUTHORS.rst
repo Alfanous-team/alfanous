@@ -21,6 +21,7 @@ Yasmine Hoadjli     Community Manager           yhoadjli [at] gmail.com         
 .. _`Abdellah Chelli`: https://github.com/sneetsher 
 .. _`Zaki Smahi`: https://github.com/zsmahi
 .. _`Mouad Debbar` : https://github.com/mdebbar
+.. _`Walid Ziouche`: https://github.com/01walid
 
 ============ 
 Contributors 
@@ -74,7 +75,8 @@ Translation
 --------------
 Test & Support
 --------------
-Many persons from the community, thanks to all 
+* `Walid Ziouche`_
+* Many persons from the community, thanks to all 
 
 ==============
 Acknowledgment
