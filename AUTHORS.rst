@@ -10,12 +10,12 @@ Maintainers
 ================== ========================== ================================= =============================================
 Name      		  Position                    Email                            Twitter
 ------------------ -------------------------- --------------------------------- ---------------------------------------------
-`Assem Chelli`_     Project Manager/Developer   assem.ch [at] gmail.com          @assem_ch
-`Abdellah Chelli`_  Web Developer               sneetsher [at] gmail.com         @sneetsher 
-`Zaki Smahi`_       Developer                   zakaria08esi [at] gmail.com      @zsmahi  
-`Walid Ziouche`_    Tester                      01walid [at] gmail.com           @01walid  
-Muslih  al aqaad    Graphic Designer            muslihzarth [at] gmail.com       @muslihzarth
-Yasmine Hoadjli     Community Manager           yhoadjli [at] gmail.com          @yasmamine 
+`Assem Chelli`_     Project Manager/Developer   assem.ch [at] gmail.com          `@assem_ch`_
+`Abdellah Chelli`_  Web Developer               sneetsher [at] gmail.com         `@sneetsher`_ 
+`Zaki Smahi`_       Developer                   zakaria08esi [at] gmail.com      `@zsmahi`_  
+`Walid Ziouche`_    Tester                      01walid [at] gmail.com           `@01walid`_  
+Muslih  al aqaad    Graphic Designer            muslihzarth [at] gmail.com       `@muslihzarth`_
+Yasmine Hoadjli     Community Manager           yhoadjli [at] gmail.com          `@yasmamine`_ 
 ================== ========================== ================================= =============================================
 
 .. _`Assem Chelli`: https://github.com/assem-ch
@@ -23,6 +23,13 @@ Yasmine Hoadjli     Community Manager           yhoadjli [at] gmail.com         
 .. _`Zaki Smahi`: https://github.com/zsmahi
 .. _`Mouad Debbar` : https://github.com/mdebbar
 .. _`Walid Ziouche`: https://github.com/01walid
+
+.. _`@assem_ch`: https://twitter.com/assem_ch
+.. _`@sneetsher`: https://twitter.com/sneetsher 
+.. _`@zsmahi`: https://twitter.com/zsmahi
+.. _`@yasmamine`: https://twitter.com/yasmamine
+.. _`@01walid`: https://twitter.com/01walid
+.. _`@muslihzarth`: https://twitter.com/muslihzarth
 
 ============ 
 Contributors 
