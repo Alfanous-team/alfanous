@@ -6,14 +6,16 @@ Build
 -----
 The API uses many critical resources that must be downloaded and/or prepared to be used. To do that, just run this command in the root path of the project
 
-#. Install all building dependencies: `pyparsing <http://aminenacer.blogspot.com/2012/10/mon-voyage-akfadou-deuxieme-partie.html>`_, `pyqt4-dev-tools <http://www.riverbankcomputing.co.uk/software/pyqt/download>`_.  
-   
+#. Install all building dependencies: `pyparsing <http://aminenacer.blogspot.com/2012/10/mon-voyage-akfadou-deuxieme-partie.html>`_, `pyqt4-dev-tools <http://www.riverbankcomputing.co.uk/software/pyqt/download>`_, `epydoc <http://epydoc.sourceforge.net/>`_,
+   `sphinx <http://sphinx.pocoo.org/>`_.
+
    * (ubuntu 12.04): 
       
      .. code-block:: sh
      
-        $ sudo apt-get install python-qt4 qt4-dev-tools python-qt4-dev pyqt4-dev-tools python-distutils
-        $ sudo easy_install pyparsing
+        $ sudo apt-get install python-qt4 qt4-dev-tools python-qt4-dev pyqt4-dev-tools
+        $ sudo apt-get install python-distutils-extra
+        $ sudo easy_install pyparsing epydoc sphinx
 
 
 
