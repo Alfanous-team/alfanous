@@ -8,7 +8,7 @@ Alfanous - Advanced Quranic Search Engine , Founded  by Assem Chelli <assem.ch@g
 Maintainers
 ===========
 ================== ========================== ================================= =============================================
-Name      		Position               Email                            twitter
+Name      		  Position                    Email                            Twitter
 ------------------ -------------------------- --------------------------------- ---------------------------------------------
 `Assem Chelli`_     Project Manager/Developer   assem.ch [at] gmail.com          @assem_ch
 `Abdellah Chelli`_  Web Developer               sneetsher [at] gmail.com         @sneetsher 
