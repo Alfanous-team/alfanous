@@ -123,4 +123,8 @@ If you want to help us testing  the project modules, just follow these steps and
 
 See also `How you can help?`_
 
+--------------
+How API works?
+--------------
+TODO
 
