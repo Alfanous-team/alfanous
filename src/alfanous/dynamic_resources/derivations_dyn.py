@@ -1,7 +1,7 @@
 #coding:utf-8
 
     #THIS FILE IS DYNAMIC!! DONT EDIT IT.
-   
+
     
 derivedict={'lemma': [u'\u0623\u0628',
  u'\u0623\u0628',

@@ -1,7 +1,7 @@
 #coding:utf-8
 
     #THIS FILE IS DYNAMIC!! DONT EDIT IT.
-   
+
     
 ara2eng_names={u'\u062c\u0632\u0621': u'juz',
  u'\u0631\u0642\u0645_\u0627\u0644\u0633\u062c\u062f\u0629': u'sajda_id',

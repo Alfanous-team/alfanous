@@ -1,7 +1,7 @@
 #coding:utf-8
 
     #THIS FILE IS DYNAMIC!! DONT EDIT IT.
-   
+
     
 worddict={'root': [u'\u0623\u0628\u0648',
  u'\u0623\u0628\u0648',
