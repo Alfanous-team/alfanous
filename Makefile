@@ -254,8 +254,7 @@ help_epydoc:
 	mkdir -p output/$(VERSION);cd $(API_PATH); epydoc   --html -v --graph all --no-sourcecode     --show-imports  -n alfanous -u alfanous.org  . ;  zip -9   alfanous-epydoc.zip ./html/* ;	mv -f alfanous-epydoc.zip ../output/$(VERSION)/ ; rm -r ./html
 	
 help_sphinx:
-	@echo "TODO"
-	# mkdir -p output/$(VERSION);cd ./docs ; make dirhtml;  zip -9   alfanous-sphinx-doc.zip ./_build/dirhtml/* ; mv -f alfanous-sphinx-doc.zip ../output/$(VERSION)/ ; rm -r  ./_build/dirhtml
+	mkdir -p output/$(VERSION);cd ./docs ; make dirhtml;  zip -9   alfanous-sphinx-doc.zip ./_build/dirhtml/* ; mv -f alfanous-sphinx-doc.zip ../output/$(VERSION)/ ; rm -r  ./_build/dirhtml
 
 ## Qt resources compilation, PyQt is needed: apt-get install pyqt4-dev-tools  pyqt-tools  
 #  1. qrc files, see qt_rcc
