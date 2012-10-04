@@ -3,7 +3,7 @@
 from alfanous.Searching import *
 
 if __name__ == "__main__":
-    D = QseDocIndex( "../../indexes/main/" )
+    D = QseDocIndex( "../alfanous/indexes/main/" )
     S = QSearcher( D, QuranicParser( D.get_schema() ) )
 
     R = QReader( D )

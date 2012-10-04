@@ -9,12 +9,12 @@ if __name__ == "__main__":
     text = ASF.normalize_all( text )
     print text
 
-    word1 = unicode_( "عَاصِمُ" )
-    word2 = unicode_( "عَاصمُ" )
+    word1 = unicode_( u"عَاصِمُ" )
+    word2 = unicode_( u"عَاصمُ" )
     l1 = word1.list_harakat()
     l2 = word2.list_harakat()
-    word3 = unicode_( "فاعل" )
-    phrase = unicode_( "كانَ ذئبا" )
+    word3 = unicode_( u"فاعل" )
+    phrase = unicode_( u"كانَ" )
     print word3.apply_harakat_list( l1 )
     print l1, "\n", l2, "\n", unicode_.compare_harakat( l1, l2 )
     print word1.shakl_compare( word1, word2 )

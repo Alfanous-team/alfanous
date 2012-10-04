@@ -3,7 +3,7 @@
 from alfanous.QueryProcessing import *
 
 if __name__ == "__main__":
-    D = QseDocIndex( "../../indexes/main/" )
+    D = QseDocIndex( "../alfanous/indexes/main/" )
     QP = FuzzyQuranicParser( D.get_schema(), otherfields = ['subject'] )
     print QP.parse( u"'لو كان البحر '" )
     print QP.parse( u"\"عاصم\"" )
