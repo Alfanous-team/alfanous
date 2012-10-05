@@ -36,7 +36,7 @@ TODO load Qt resources on realtime or at least compile them on realtime if misse
 from optparse import OptionParser, OptionGroup
 
 usage = "usage: %prog [options]"
-parser = OptionParser( usage = usage, version = "AlfanousDesktop 0.5" )
+parser = OptionParser (usage = usage, version = "AlfanousDesktop 0.5")
 
 paths = OptionGroup( parser, "Paths", "Choose your paths:  " )
 
@@ -84,7 +84,7 @@ LOCALPATH = options.local if options.local else "./locale/"
 RESPATH = options.resource if options.resource else Paths.ROOT_RESOURCE
 
 ## Load Qt forms & dialogs on real time
-THIS_FILE_DIR_PATH = os.path.dirname( __file__ ) + "/"
+THIS_FILE_DIR_PATH = os.path.dirname(os.path.abspath(__file__)) + "/"
 print THIS_FILE_DIR_PATH
 Ui_MainWindow = uic.loadUiType( THIS_FILE_DIR_PATH + "UI/mainform.ui" )[0]
 Ui_aboutDlg = uic.loadUiType( THIS_FILE_DIR_PATH + "UI/aboutDlg.ui" )[0]
