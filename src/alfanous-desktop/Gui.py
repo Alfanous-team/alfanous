@@ -32,7 +32,6 @@ TODO printing
 TODO load Qt resources on realtime or at least compile them on realtime if missed
 """
 
-
 ## Importing modules
 import sys, os, gettext
 from configobj import ConfigObj
@@ -55,10 +54,8 @@ from alfanous.Data import Paths
 
 
 ## Load Qt forms & dialogs on real time
-print __file__
 
-THIS_FILE_DIR_PATH = os.path.dirname( __file__ ) + "/"
-print THIS_FILE_DIR_PATH
+THIS_FILE_DIR_PATH = os.path.dirname(os.path.abspath(__file__)) + "/"
 Ui_MainWindow = uic.loadUiType( THIS_FILE_DIR_PATH + "UI/mainform.ui" )[0]
 Ui_aboutDlg = uic.loadUiType( THIS_FILE_DIR_PATH + "UI/aboutDlg.ui" )[0]
 Ui_preferencesDlg = uic.loadUiType( THIS_FILE_DIR_PATH + "UI/preferencesDlg.ui" )[0]
