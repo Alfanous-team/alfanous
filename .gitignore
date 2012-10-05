@@ -55,7 +55,7 @@ resources/configs/*.js
 WORD_SPELL_LOCK
 localization/pot_files/*.00
 
-# Debug and Release and build directories #
+# Debug, Release and build directories #
 ###########################################
 Debug/*
 Release/*
@@ -70,6 +70,7 @@ develop-eggs
 .installed.cfg
 lib
 lib64
+_build/
 
 # Packages #
 ############
