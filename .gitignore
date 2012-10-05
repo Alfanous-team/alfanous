@@ -6,6 +6,7 @@ pip-log.txt
 ################################
 .coverage
 .tox
+nosetests.xml
 
 #Translations #
 ###############
@@ -15,6 +16,8 @@ pip-log.txt
 ################
 .mr.developer.cfg
 /output
+.project
+.pydevproject
 
 # generated indexes #
 #####################
@@ -41,9 +44,6 @@ _*.toc
 *.Release
 Makefile*
 *.autosave
-ui_*
-moc_*.cpp
-qrc_*.cpp
 *.mk
 *.inf
 *.cache
@@ -66,6 +66,8 @@ var
 sdist
 develop-eggs
 .installed.cfg
+lib
+lib64
 
 # Packages #
 ############
