@@ -53,8 +53,9 @@ gettext.textdomain( "alfanousQT" );
 from alfanous.Data import Paths
 
 
-## Load Qt forms & dialogs on real time
 
+
+## Load Qt forms & dialogs on real time
 THIS_FILE_DIR_PATH = os.path.dirname(os.path.abspath(__file__)) + "/"
 Ui_MainWindow = uic.loadUiType( THIS_FILE_DIR_PATH + "UI/mainform.ui" )[0]
 Ui_aboutDlg = uic.loadUiType( THIS_FILE_DIR_PATH + "UI/aboutDlg.ui" )[0]
@@ -64,6 +65,7 @@ Ui_preferencesDlg = uic.loadUiType( THIS_FILE_DIR_PATH + "UI/preferencesDlg.ui" 
 RAWoutput = Raw() # default paths
 
 ## STATIC GLOBAL variables
+CONFIGPATH = ( os.getenv( 'USERPROFILE' ) or os.getenv( 'HOME' ) or "." ) + "/"
 PERPAGE = 10 #results per page
 DIR = _( "ltr" ) #direction: default
 RELATIONS = ["", "", u"|", u"+", u"-"]
