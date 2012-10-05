@@ -32,32 +32,6 @@ TODO printing
 TODO load Qt resources on realtime or at least compile them on realtime if missed
 """
 
-## Arguments Management
-from optparse import OptionParser, OptionGroup
-
-usage = "usage: %prog [options]"
-parser = OptionParser( usage = usage, version = "AlfanousDesktop 0.5" )
-
-paths = OptionGroup( parser, "Paths", "Choose your paths:  " )
-
-
-paths.add_option( "-c", "--config", dest = "config", type = "string",
-                  help = "configuration file path", metavar = "PATH" )
-
-paths.add_option( "-i", "--index", dest = "index", type = "string",
-                  help = "indexes path", metavar = "PATH" )
-
-paths.add_option( "-l", "--local", dest = "local", type = "string",
-                  help = "localization path", metavar = "PATH" )
-
-paths.add_option( "-r", "--resource", dest = "resource", type = "string",
-                  help = "resources path", metavar = "PATH" )
-
-
-parser.add_option_group( paths )
-( options, args ) = parser.parse_args()
-
-
 
 ## Importing modules
 import sys, os, gettext
@@ -78,12 +52,11 @@ gettext.textdomain( "alfanousQT" );
 
 ## Specification of resources paths
 from alfanous.Data import Paths
-CONFIGPATH = options.config if options.config else Paths.HOME_CONFIG + ""
-INDEXPATH = options.index if options.index else Paths.ROOT_INDEX
-LOCALPATH = options.local if options.local else "./locale/"
-RESPATH = options.resource if options.resource else Paths.ROOT_RESOURCE
+
 
 ## Load Qt forms & dialogs on real time
+print __file__
+
 THIS_FILE_DIR_PATH = os.path.dirname( __file__ ) + "/"
 print THIS_FILE_DIR_PATH
 Ui_MainWindow = uic.loadUiType( THIS_FILE_DIR_PATH + "UI/mainform.ui" )[0]
