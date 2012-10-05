@@ -47,7 +47,9 @@ Makefile*
 *.mk
 *.inf
 *.cache
-main_rc.py
+*_rc.py
+*_dyn.py
+*_ui.py
 src/alfanous-tests/*.csv
 resources/configs/*.js
 WORD_SPELL_LOCK
