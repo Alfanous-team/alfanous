@@ -106,6 +106,12 @@ If you want to help us testing  the project modules, just follow these steps and
    - $ cd src/alfanous-desktop
    - $ python Gui.py
 
+#. Test the installation of alfanous-desktop as a library
+
+   - $ sudo python setup.py install
+   - $ alfanous-desktop
+    
+
 #. Test the json output system II (later)
 #. Test the web interface (later)
 #. Test Django app (later)
@@ -117,4 +123,8 @@ If you want to help us testing  the project modules, just follow these steps and
 
 See also `How you can help?`_
 
+--------------
+How API works?
+--------------
+TODO
 
