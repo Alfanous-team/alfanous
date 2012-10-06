@@ -112,7 +112,12 @@ If you want to help us testing  the project modules, just follow these steps and
    - $ alfanous-desktop
     
 
-#. Test the json output system II (later)
+#. Test the json output system II 
+
+   - # Install apache2
+   - $ sudo make install_jos2
+   - $ xdg-open http://alfanous.local/cgi-bin/alfanous_json2.py &
+
 #. Test the web interface (later)
 #. Test Django app (later)
 #. Test Firefox toolbar (later)
