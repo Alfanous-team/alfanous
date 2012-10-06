@@ -370,7 +370,7 @@ dist_xpi:
 # 2. the desktop inteface, see install_desktop
 # 3. the json web service II, see install_json2
 # 4. the web interface, see install_web	
-install_all: install_api install_desktop install_json2 install_web
+install_all: install_api install_desktop install_jos2 install_web
 
 
 install_api: 
@@ -387,7 +387,7 @@ install_desktop:  install_api qt_all  local_mo_download
 	
 
 ##  don't use it!!
-install_json2: install_api #install_index install_config 
+install_jos2: install_api #install_index install_config 
 	cd $(API_PATH)alfanous-cgi ;  mkdir -p $(WEB_CGI_INSTALL_PATH); cp  -r alfanous_json2.py $(WEB_CGI_INSTALL_PATH);
 	#cd ./interfaces/web/ ;  cp  htaccess $(WEB_INSTALL_PATH)".htaccess"
 	cd ./interfaces/web/ ;  vi alfanous ; cp alfanous /etc/apache2/sites-available/ #configure well this file 
@@ -403,7 +403,7 @@ install_json2: install_api #install_index install_config
 	xdg-open http://alfanous.local/ &  ##launch default browser for test
 
 ##  don't use it!!
-install_wui: #install_json2
+install_wui: #install_jos2
 	#rm -r  $(WEB_INSTALL_PATH)
 	mkdir -p $(WEB_INSTALL_PATH)
 	#cd ./interfaces/web/ ;  cp ./AGPL $(WEB_INSTALL_PATH)
