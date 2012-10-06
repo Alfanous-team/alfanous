@@ -87,8 +87,24 @@ If you want to help us testing  the project modules, just follow these steps and
    - clone the git repo  from github:  $ git clone https://github.com/Alfanous-team/alfanous.git
    - or download it as a `zipfile <https://github.com/Alfanous-team/alfanous/zipball/master>`_ 
 
-#. Run the build: just go to the root path of the code source and execute this command :    $ make build
-#. Install the API: also in the root path of the code source, execute the command: $ make install_api
+#. Run the build: 
+
+   - Install all building dependencies: `pyparsing <http://aminenacer.blogspot.com/2012/10/mon-voyage-akfadou-deuxieme-partie.html>`_, `pyqt4-dev-tools <http://www.riverbankcomputing.co.uk/software/pyqt/download>`_, `epydoc <http://epydoc.sourceforge.net/>`_,
+     `sphinx <http://sphinx.pocoo.org/>`_.
+   - Go to the root path of the code source and execute this command    
+   
+     .. code-block:: sh
+      
+          $ make build
+
+#. Install the API: 
+
+   - Also in the root path of the code source, execute the command
+     
+     .. code-block:: sh
+
+          $ make install_api
+
 #. Test the console interface, it provides results in Json format:
 
    - $ alfanous-console -h
@@ -112,7 +128,12 @@ If you want to help us testing  the project modules, just follow these steps and
    - $ alfanous-desktop
     
 
-#. Test the json output system II (later)
+#. Test the json output system II 
+
+   - # Install apache2
+   - $ sudo make install_jos2
+   - $ xdg-open http://alfanous.local/cgi-bin/alfanous_json2.py &
+
 #. Test the web interface (later)
 #. Test Django app (later)
 #. Test Firefox toolbar (later)
