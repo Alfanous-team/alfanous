@@ -394,9 +394,7 @@ install_jos2: install_api #install_index install_config
 	chmod +x $(WEB_CGI_INSTALL_PATH)alfanous_json2.py
 	chmod -R 777 $(WEB_CGI_INSTALL_PATH).alfanous/
 	sed -i 's/\"cgitb.enable\(\)\"/cgitb.enable\(\)/g' "$(WEB_CGI_INSTALL_PATH)alfanous_json2.py"
-	sed -i 's/\.\/indexes/\/usr\/share\/alfanous\-indexes/g' "$(WEB_CGI_INSTALL_PATH)alfanous_json2.py"	
-	sed -i 's/\.\/configs/\/usr\/share\/alfanous\-config/g' "$(WEB_CGI_INSTALL_PATH)alfanous_json2.py"	
-   
+ 
 	a2dissite alfanous
 	a2ensite alfanous
 	service apache2 reload
