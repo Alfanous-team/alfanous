@@ -107,32 +107,42 @@ If you want to help us testing  the project modules, just follow these steps and
 
 #. Test the console interface, it provides results in Json format:
 
-   - $ alfanous-console -h
-   - $ alfanous-console -a search -q qawol
-   - $ alfanous-console -a search -q الصلاة+الزكاة
-   - ...
+   .. code-block:: sh
+
+       $ alfanous-console -h
+       $ alfanous-console -a search -q qawol
+       $ alfanous-console -a search -q الصلاة+الزكاة
+       $ ...
 
 #. Test the basic script:
 
-   - $ cd src/alfanous-tests
-   - $ python sample.py
+   .. code-block:: sh
+        
+        $ cd src/alfanous-tests
+        $ python sample.py
 
 #. Test the desktop interface:
 
-   - $ cd src/alfanous-desktop
-   - $ python Gui.py
+   .. code-block:: sh
+      
+        $ cd src/alfanous-desktop
+        $ python Gui.py
 
 #. Test the installation of alfanous-desktop as a library
 
-   - $ sudo python setup.py install
-   - $ alfanous-desktop
+   .. code-block:: sh
+          
+        $ sudo python setup.py install
+        $ alfanous-desktop
     
 
 #. Test the json output system II 
 
-   - # Install apache2
-   - $ sudo make install_jos2
-   - $ xdg-open http://alfanous.local/cgi-bin/alfanous_json2.py &
+   .. code-block:: sh
+        
+        # Install apache2 first
+        $ sudo make install_jos2
+        $ xdg-open http://alfanous.local/cgi-bin/alfanous_json2.py &
 
 #. Test the web interface (later)
 #. Test Django app (later)
