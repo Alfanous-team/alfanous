@@ -149,8 +149,8 @@ If you want to help us testing  the project modules, just follow these steps and
       
      - http://alfanous.local/cgi-bin/alfanous_json2.py
      - http://alfanous.local/cgi-bin/alfanous_json2.py?action=search&query=qawol
-     - http://alfanous.local/cgi-bin2/alfanous_json2.py?action=suggest&query=مءصدة
-     - http://alfanous.local/cgi-bin2/alfanous_json2.py?action=search&query=%D8%A7%D9%84%D9%83%D9%88%D8%AB%D8%B1&sortedby=mushaf&page=1&word_info=true&highlight=css&script=standard&prev_aya=true&next_aya=true&sura_info=true&aya_position_info=true&aya_theme_info=true&aya_stat_info=true&aya_sajda_info=true&annotation_word=true&annotation_aya=true&recitation=1
+     - http://alfanous.local/cgi-bin/alfanous_json2.py?action=suggest&query=مءصدة
+     - http://alfanous.local/cgi-bin/alfanous_json2.py?action=search&query=%D8%A7%D9%84%D9%83%D9%88%D8%AB%D8%B1&sortedby=mushaf&page=1&word_info=true&highlight=css&script=standard&prev_aya=true&next_aya=true&sura_info=true&aya_position_info=true&aya_theme_info=true&aya_stat_info=true&aya_sajda_info=true&annotation_word=true&annotation_aya=true&recitation=1
      - ...
 
 
