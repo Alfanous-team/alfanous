@@ -136,7 +136,7 @@ If you want to help us testing  the project modules, just follow these steps and
         $ alfanous-desktop
     
 
-#. Test the json output system II 
+#. Test the json output system II  
 
    - install it in apache as a cgi script
      
@@ -154,7 +154,19 @@ If you want to help us testing  the project modules, just follow these steps and
      - ...
 
 
-#. Test the web interface (later)
+#. Test the web user interface WUI
+   
+   - install it in apache 
+     
+     .. code-block:: sh
+        
+         # Install apache2 first
+         $ sudo make install_wui
+        
+   - test it in browser by checking this link
+      
+     - http://alfanous.local/
+
 #. Test Django app (later)
 #. Test Firefox toolbar (later)
 #. Test Ubuntu/Sabily package (later)
