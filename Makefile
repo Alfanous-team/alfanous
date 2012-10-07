@@ -408,8 +408,13 @@ install_jos2: install_api install_web_basic
 	sed -i 's/\"cgitb.enable\(\)\"/cgitb.enable\(\)/g' "$(WEB_CGI_INSTALL_PATH)alfanous_json2.py"
 	xdg-open http://alfanous.local/cgi-bin/alfanous_json2.py &  ##launch default browser for test
 
-##  don't use it!!
-install_wui: install_jos2
+
+install_wui2: install_jos2
 	cd ./interfaces/web/ ;  cp  -r wui  $(WEB_INSTALL_PATH) 
 	cd $(WEB_INSTALL_PATH);  cd wui; sed -i 's/www\.alfanous\.org\/json/alfanous\.local\/cgi\-bin\/alfanous\_json2\.py/g' index.*
 	xdg-open http://alfanous.local/ &  ##launch default browser for test
+
+install_wui: install_web_basic
+	cd ./interfaces/web/ ;  cp  -r wui  $(WEB_INSTALL_PATH) 
+	xdg-open http://alfanous.local/ &  ##launch default browser for test
+
