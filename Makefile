@@ -386,29 +386,30 @@ install_desktop:  install_api qt_all  local_mo_download
 	alfanousDesktop &
 	
 
-install_jos2: install_api #install_index install_config 
-	cd $(API_PATH)alfanous-cgi ;  mkdir -p $(WEB_CGI_INSTALL_PATH).alfanous/; cp  -r alfanous_json2.py $(WEB_CGI_INSTALL_PATH);
+install_web_basic:
+	#rm -r  $(WEB_INSTALL_PATH)
+	mkdir -p $(WEB_INSTALL_PATH)
+	chmod 755 -R $(WEB_INSTALL_PATH)
+	cd ./interfaces/web/ ;  cp ./AGPL $(WEB_INSTALL_PATH)
 	#cd ./interfaces/web/ ;  cp  htaccess $(WEB_INSTALL_PATH)".htaccess"
 	cd ./interfaces/web/ ;  vi alfanous ; cp alfanous /etc/apache2/sites-available/ #configure well this file 
-	chmod +x $(WEB_CGI_INSTALL_PATH)alfanous_json2.py
-	chmod -R 777 $(WEB_CGI_INSTALL_PATH).alfanous/
-	sed -i 's/\"cgitb.enable\(\)\"/cgitb.enable\(\)/g' "$(WEB_CGI_INSTALL_PATH)alfanous_json2.py"
- 
+
 	a2dissite alfanous
 	a2ensite alfanous
 	service apache2 reload
 
 	if ! grep -qs alfanous.local /etc/hosts; then   echo "127.0.0.1 alfanous.local" >> /etc/hosts ; fi
+
+
+install_jos2: install_api install_web_basic
+	cd $(API_PATH)alfanous-cgi ;  mkdir -p $(WEB_CGI_INSTALL_PATH).alfanous/; cp  -r alfanous_json2.py $(WEB_CGI_INSTALL_PATH);
+	chmod +x $(WEB_CGI_INSTALL_PATH)alfanous_json2.py
+	chmod -R 777 $(WEB_CGI_INSTALL_PATH).alfanous/
+	sed -i 's/\"cgitb.enable\(\)\"/cgitb.enable\(\)/g' "$(WEB_CGI_INSTALL_PATH)alfanous_json2.py"
 	xdg-open http://alfanous.local/cgi-bin/alfanous_json2.py &  ##launch default browser for test
 
 ##  don't use it!!
-install_wui: #install_jos2
-	#rm -r  $(WEB_INSTALL_PATH)
-	mkdir -p $(WEB_INSTALL_PATH)
-	#cd ./interfaces/web/ ;  cp ./AGPL $(WEB_INSTALL_PATH)
+install_wui: install_jos2
 	cd ./interfaces/web/ ;  cp  -r wui  $(WEB_INSTALL_PATH) 
-	#cd ./interfaces/web/ ;  vi alfanous ; cp alfanous /etc/apache2/sites-available/ #configure well this file 
-	#chmod 755 -R $(WEB_INSTALL_PATH)
 	cd $(WEB_INSTALL_PATH);  cd wui; sed -i 's/www\.alfanous\.org\/json/alfanous\.local\/cgi\-bin\/alfanous\_json\.py/g' index.*
-	#echo "127.0.0.1 alfanous.local" >> /etc/hosts ## must check existance first!!
-	#xdg-open http://alfanous.local/ &  ##launch default browser for test
+	xdg-open http://alfanous.local/ &  ##launch default browser for test
