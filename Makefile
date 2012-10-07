@@ -386,7 +386,6 @@ install_desktop:  install_api qt_all  local_mo_download
 	alfanousDesktop &
 	
 
-##  don't use it!!
 install_jos2: install_api #install_index install_config 
 	cd $(API_PATH)alfanous-cgi ;  mkdir -p $(WEB_CGI_INSTALL_PATH).alfanous/; cp  -r alfanous_json2.py $(WEB_CGI_INSTALL_PATH);
 	#cd ./interfaces/web/ ;  cp  htaccess $(WEB_INSTALL_PATH)".htaccess"
