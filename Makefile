@@ -398,7 +398,8 @@ install_jos2: install_api #install_index install_config
 	a2dissite alfanous
 	a2ensite alfanous
 	service apache2 reload
-	echo "127.0.0.1 alfanous.local" >> /etc/hosts ## must check existance first!!
+
+	if ! grep -qs alfanous.local /etc/hosts; then   echo "127.0.0.1 alfanous.local" >> /etc/hosts ; fi
 	xdg-open http://alfanous.local/cgi-bin/alfanous_json2.py &  ##launch default browser for test
 
 ##  don't use it!!
