@@ -167,7 +167,19 @@ If you want to help us testing  the project modules, just follow these steps and
       
      - http://alfanous.local/
 
-#. Test Django app (later)
+#. Test Django app 
+
+   - run the server
+     
+     .. code-block:: sh
+        
+         $ cd src/alfanous-django
+         $ python manage.py runserver
+        
+   - test it in browser by checking this link
+      
+     - http://127.0.0.1:8000/wui/
+
 #. Test Firefox toolbar (later)
 #. Test Ubuntu/Sabily package (later)
 #. Test Windows Installer script (later)
