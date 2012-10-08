@@ -533,7 +533,62 @@ TODO
 ------
 Fields
 ------
-TODO
+
+flags:
+
+.. code-block:: python
+
+    {
+        "action"="show",
+        "query"="fields"
+    }
+
+response:
+
+.. code-block:: python
+            
+      {
+          "show": {
+              "fields": {
+                  "جزء": "juz",
+                  "عثماني ": "uth",
+                  "نوع_السورة": "sura_type",
+                  "رقم_السجدة": "sajda_id",
+                  "صفحة": "page",
+                  "ربع": "rub",
+                  "ر_س": "s_r",
+                  "ركوع": "ruku",
+                  "رقم_السورة": "sura_id",
+                  "آ_س": "s_a",
+                  "آية_": "aya_",
+                  "موضوع": "subject",
+                  "ج_س": "s_g",
+                  "ك_آ": "a_w",
+                  "فصل": "chapter",
+                  "ح_آ": "a_l",
+                  "سورة": "sura",
+                  "فرع": "topic",
+                  "آية": "aya",
+                  "رقم_الآية": "aya_id",
+                  "عثماني_": "uth_",
+                  "ك_س": "s_w",
+                  "نوع_السجدة": "sajda_type",
+                  "رقم": "gid",
+                  "باب": "subtopic",
+                  "نصف": "nisf",
+                  "ح_س": "s_l",
+                  "حزب": "hizb",
+                  "منزل": "manzil",
+                  "ج_آ": "a_g",
+                  "سجدة": "sajda",
+                  "ترتيب_السورة": "sura_order"
+              }
+          },
+          "error": {
+              "msg": "success ## action=show ; query=fields",
+              "code": 0
+          }
+      }
 
 
 
