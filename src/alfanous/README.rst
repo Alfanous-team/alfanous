@@ -528,7 +528,42 @@ response:
 -----------
 Recitations
 -----------
-TODO
+
+flags:
+
+.. code-block:: python
+
+    {
+        "action"="show",
+        "query"="recitations"
+    }
+
+response (sample):
+
+.. code-block:: python
+      
+      {
+          "show": {
+              "recitations": {
+                  "45": {
+                      "bitrate": "192kbps",
+                      "name": "English/Ibrahim Walk TEST",
+                      "subfolder": "English/Ibrahim_Walk_192kbps_TEST"
+                  },
+                  "54": {
+                      "bitrate": "128kbps",
+                      "name": "Salah Al Budair",
+                      "subfolder": "Salah_Al_Budair_128kbps"
+                  }
+                  
+      
+              }
+          },
+          "error": {
+              "msg": "success ## action=show ; query=recitations",
+              "code": 0
+          }
+      }
 
 ------
 Fields
