@@ -167,7 +167,7 @@ If you want to help us testing  the project modules, just follow these steps and
       
      - http://alfanous.local/
 
-#. Test Django app 
+#. Test Django app (don't forget to install `django <https://www.djangoproject.com/>`_)
 
    - run the server
      
@@ -181,9 +181,17 @@ If you want to help us testing  the project modules, just follow these steps and
      - http://127.0.0.1:8000/wui/
 
 #. Test Firefox toolbar (later)
+   - building 
+
+
+   - using
+
+
 #. Test Ubuntu/Sabily package (later)
 #. Test Windows Installer script (later)
 #. Test MacOs package (later)
+#. Test PyCorpus (later)
+
 
 
 See also `How you can help?`_
