@@ -493,17 +493,137 @@ TODO
 -----------
 Information
 -----------
-TODO
+flags:
+
+.. code-block:: python
+
+    {
+        "action"="show",
+        "query"="information"
+    }
+
+response:
+
+.. code-block:: python
+      
+      {
+          "show": {
+              "information": {
+                  "engine": "Alfanous",
+                  "wiki": "http://wiki.alfanous.org/doku.php?id=json_web_service",
+                  "description": "Alfanous is a Quranic search engine provides simple and advanced search services in the diverse information of the Holy Quran .",
+                  "author": "Assem chelli",
+                  "version": "0.5",
+                  "contact": "assem.ch@gmail.com",
+                  "console_note": "this is console interface of Alfanous, try -h to get help ",
+                  "json_output_system_note": "\n    This is the <a href='http://json.org/'>JSON</a> output system of <a href=\"http://wiki.alfanous.org\">Alfanous</a> project .This feature is in Alpha test and the Json schema may be it's not stable . We are waiting for real feadbacks and suggestions to improve its efficacity,quality and stability. To contact the author ,please send a direct email to <b> assem.ch[at]gmail.com</b> or to the mailing list <b>alfanous [at] googlegroups.com</b>\n    <br/><br/> For more details  visit the page of this service <a href=\"http://wiki.alfanous.org/doku.php?id=json_web_service\">here</a>\n    "
+              }
+          },
+          "error": {
+              "msg": "success ## action=show ; query=information",
+              "code": 0
+          }
+      }
 
 -----------
 Recitations
 -----------
-TODO
+
+flags:
+
+.. code-block:: python
+
+    {
+        "action"="show",
+        "query"="recitations"
+    }
+
+response (sample):
+
+.. code-block:: python
+      
+      {
+          "show": {
+              "recitations": {
+                  "45": {
+                      "bitrate": "192kbps",
+                      "name": "English/Ibrahim Walk TEST",
+                      "subfolder": "English/Ibrahim_Walk_192kbps_TEST"
+                  },
+                  "54": {
+                      "bitrate": "128kbps",
+                      "name": "Salah Al Budair",
+                      "subfolder": "Salah_Al_Budair_128kbps"
+                  }
+                  
+      
+              }
+          },
+          "error": {
+              "msg": "success ## action=show ; query=recitations",
+              "code": 0
+          }
+      }
 
 ------
 Fields
 ------
-TODO
+
+flags:
+
+.. code-block:: python
+
+    {
+        "action"="show",
+        "query"="fields"
+    }
+
+response:
+
+.. code-block:: python
+            
+      {
+          "show": {
+              "fields": {
+                  "جزء": "juz",
+                  "عثماني ": "uth",
+                  "نوع_السورة": "sura_type",
+                  "رقم_السجدة": "sajda_id",
+                  "صفحة": "page",
+                  "ربع": "rub",
+                  "ر_س": "s_r",
+                  "ركوع": "ruku",
+                  "رقم_السورة": "sura_id",
+                  "آ_س": "s_a",
+                  "آية_": "aya_",
+                  "موضوع": "subject",
+                  "ج_س": "s_g",
+                  "ك_آ": "a_w",
+                  "فصل": "chapter",
+                  "ح_آ": "a_l",
+                  "سورة": "sura",
+                  "فرع": "topic",
+                  "آية": "aya",
+                  "رقم_الآية": "aya_id",
+                  "عثماني_": "uth_",
+                  "ك_س": "s_w",
+                  "نوع_السجدة": "sajda_type",
+                  "رقم": "gid",
+                  "باب": "subtopic",
+                  "نصف": "nisf",
+                  "ح_س": "s_l",
+                  "حزب": "hizb",
+                  "منزل": "manzil",
+                  "ج_آ": "a_g",
+                  "سجدة": "sajda",
+                  "ترتيب_السورة": "sura_order"
+              }
+          },
+          "error": {
+              "msg": "success ## action=show ; query=fields",
+              "code": 0
+          }
+      }
 
 
 
