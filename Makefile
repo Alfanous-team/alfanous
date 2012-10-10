@@ -270,7 +270,7 @@ local_pot_all: local_desktop_pot local_mobile_pot
 
 local_desktop_pot:
 	xgettext $(DESKTOP_INTERFACE_PATH)*.py  --default-domain=alfanousQT --language=Python --keyword=n_ 
-	mkdir localization/pot_files/alfanousQTv$(VERSION)
+	mkdir -p localization/pot_files/alfanousQTv$(VERSION)
 	mv alfanousQT.po localization/pot_files/alfanousQTv$(VERSION)/alfanousQTv$(VERSION).pot
 	
 local_mobile_pot:
