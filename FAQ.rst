@@ -180,11 +180,15 @@ If you want to help us testing  the project modules, just follow these steps and
       
      - http://127.0.0.1:8000/wui/
 
-#. Test Firefox toolbar (later)
-   - building 
+#. Test Firefox toolbar 
 
+   - package it 
+     
+     .. code-block:: sh
+        
+         $ make dist_xpi
 
-   - using
+   - use it,  you'll find the package in output folder
 
 
 #. Test Ubuntu/Sabily package (later)
