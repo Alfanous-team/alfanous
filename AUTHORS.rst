@@ -14,7 +14,7 @@ Name      		  Position                    Email                            Twitt
 `Abdellah Chelli`_  Web Developer               sneetsher [at] gmail.com         `@sneetsher`_ 
 `Zaki Smahi`_       Developer                   zakaria08esi [at] gmail.com      `@zsmahi`_  
 `Walid Ziouche`_    Tester                      01walid [at] gmail.com           `@01walid`_  
-Muslih  al aqaad    Graphic Designer            muslihzarth [at] gmail.com       `@muslihzarth`_
+`Muslih al aqaad`_  Graphic Designer            muslihzarth [at] gmail.com       `@muslihzarth`_
 Yasmine Hoadjli     Community Manager           yhoadjli [at] gmail.com          `@yasmamine`_ 
 ================== ========================== ================================= =============================================
 
@@ -23,6 +23,7 @@ Yasmine Hoadjli     Community Manager           yhoadjli [at] gmail.com         
 .. _`Zaki Smahi`: https://github.com/zsmahi
 .. _`Mouad Debbar` : https://github.com/mdebbar
 .. _`Walid Ziouche`: https://github.com/01walid
+.. _`Muslih al aqaad`: https://github.com/muslih
 
 .. _`@assem_ch`: https://twitter.com/assem_ch
 .. _`@sneetsher`: https://twitter.com/sneetsher 
