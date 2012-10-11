@@ -5,7 +5,7 @@ Maintainer: Debian Islamic Maintainers <debian-islamic-maintainers@lists.alioth.
 Uploaders: أحمد المحمودي (Ahmed El-Mahmoudy) <aelmahmoudy@sabily.org>
 DM-Upload-Allowed: yes
 Build-Depends: debhelper (>= 8)
-Build-Depends-Indep: python-all (>= 2.6.6-3~), python-setuptools
+Build-Depends-Indep: python (>= 2.6.6-3~), python-setuptools
 Standards-Version: 3.9.2
 Homepage: http://alfanous.org
 X-Python-Version: >= 2.5
