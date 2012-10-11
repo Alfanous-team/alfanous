@@ -188,7 +188,7 @@ If you want to help us testing  the project modules, just follow these steps and
         
          $ make dist_xpi
 
-   - use it,  you'll find the package in output folder
+   - use it,  you'll find the package in output folder with the extension .xpi
 
 
 #. Test Ubuntu/Sabily package (later)
