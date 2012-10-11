@@ -191,7 +191,16 @@ If you want to help us testing  the project modules, just follow these steps and
    - use it,  you'll find the package in output folder with the extension .xpi
 
 
-#. Test Ubuntu/Sabily package (later)
+#. Test Ubuntu/Sabily package 
+   
+   - run the command of packaging
+     
+     .. code-block:: sh
+    
+         $ make dist_deb
+
+   - Add sabily repository and test the package
+
 #. Test Windows Installer script (later)
 #. Test MacOs package (later)
 #. Test PyCorpus (later)
