@@ -61,6 +61,7 @@ debian/alfanous/
 debian/files
 debian/python-alfanous/
 *~
+*.swp
 
 # Debug, Release and build directories #
 ###########################################
