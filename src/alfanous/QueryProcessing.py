@@ -32,12 +32,37 @@ from alfanous.Support.whoosh.query import Wildcard as whoosh_Wildcard
 from alfanous.Support.whoosh.query import Prefix as whoosh_Prefix
 from alfanous.Support.whoosh.query import Or, NullQuery, Every #, And
 
+#### Importing dynamically compiled resources
+## Importing synonyms dictionary 
+try:
+	from alfanous.dynamic_resources.synonymes_dyn import syndict
+except ImportError:
+ 	syndict={}
 
-from alfanous.dynamic_resources.synonymes_dyn import syndict
-from alfanous.dynamic_resources.arabicnames_dyn import ara2eng_names
-#from alfanous.dynamic_resources.antonymes_dyn import antdict
-from alfanous.dynamic_resources.word_props_dyn import worddict
-from alfanous.dynamic_resources.derivations_dyn import derivedict
+## Importing field names arabic-to-english mapping dictionary 
+try:
+	from alfanous.dynamic_resources.arabicnames_dyn import ara2eng_names
+except ImportError:
+	ara2eng_names={}
+
+## Importing word properties dictionary 
+try:
+	from alfanous.dynamic_resources.word_props_dyn import worddict
+except ImportError:
+	worddict={}
+
+## Importing derivations dictionary 
+try:
+	from alfanous.dynamic_resources.derivations_dyn import derivedict
+except ImportError:
+	derivedict={}
+
+## Importing antonyms dictionary 
+try:
+	pass #from alfanous.dynamic_resources.antonymes_dyn import antdict
+except ImportError:
+	pass #antdict={}
+
 
 from pyparsing import printables, alphanums
 from pyparsing import ZeroOrMore, OneOrMore
