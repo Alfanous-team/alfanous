@@ -35,7 +35,7 @@ from alfanous.Support.whoosh.query import Or, NullQuery, Every #, And
 
 from alfanous.dynamic_resources.synonymes_dyn import syndict
 from alfanous.dynamic_resources.arabicnames_dyn import ara2eng_names
-from alfanous.dynamic_resources.antonymes_dyn import antdict
+#from alfanous.dynamic_resources.antonymes_dyn import antdict
 from alfanous.dynamic_resources.word_props_dyn import worddict
 from alfanous.dynamic_resources.derivations_dyn import derivedict
 
