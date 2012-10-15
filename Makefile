@@ -135,7 +135,7 @@ update_post_build:  update_dynamic_resources_postbuild  update_information updat
 # 1. Quranic Arabic Corpus, see update_quranic_corpus
 # 2. Linguistic resources on the form of python dictionarries to accelerate the loading , see update_dynamic_resources
 # 3. List of translations to be downloaded, see  update_translations_to_download_list
-update_pre_build:  update_quranic_corpus update_dynamic_resources_prebuild update_translations_to_download_list
+update_pre_build:  update_dynamic_resources_prebuild update_quranic_corpus  update_translations_to_download_list
 
 # update information manually 
 update_information:
