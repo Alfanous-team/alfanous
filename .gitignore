@@ -18,6 +18,7 @@ nosetests.xml
 /output
 .project
 .pydevproject
+.settings
 
 # generated indexes #
 #####################
