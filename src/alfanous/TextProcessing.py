@@ -26,8 +26,8 @@ it contains the linguistic analysers of Quran and Arabic...etc.
 
 '''
 
-#from alfanous.dynamic_resources import synonymes_dyn as sydy
-from alfanous.dynamic_resources import stopwords_dyn as swdy
+#from alfanous.dynamic_resources import stopwords_dyn ##should test existance before importing
+
 from alfanous.Support.whoosh.analysis import StopFilter, RegexTokenizer #LowercaseFilter, StandardAnalyzer,
 #from pyarabic.araby  import araby
 
@@ -52,7 +52,7 @@ class QAffixesTokenizer( QSpaceTokenizer ):
 class QStopFilter( StopFilter ):
     """ استبعاد بعض الكلمات  """
 
-    def __init__( self, stoplist = swdy.stoplist, minsize = 2, renumber = False ):
+    def __init__( self, stoplist = [], minsize = 2, renumber = False ):
         super( QStopFilter, self ).__init__( stoplist = stoplist, minsize = minsize, renumber = renumber )
 
 
@@ -233,7 +233,7 @@ class unicode_( unicode ):
         return self.word_sh_pattern.findall( self )
 
 #analyzers    
-QStandardAnalyzer = QSpaceTokenizer() | QArabicSymbolsFilter() #| QStopFilter() 
+QStandardAnalyzer = QSpaceTokenizer() | QArabicSymbolsFilter() # | QStopFilter(stoplist = stopwords_dyn) 
 APermissibleAnalyzer = QSpaceTokenizer() | QArabicSymbolsFilter( shaping = True, tashkil = True, spellerrors = True, hamza = True )
 QDiacAnalyzer = QSpaceTokenizer() | QArabicSymbolsFilter( tashkil = False )
 QHighLightAnalyzer = QSpaceTokenizer() | QArabicSymbolsFilter()
