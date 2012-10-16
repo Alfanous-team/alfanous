@@ -216,7 +216,7 @@ def _make_arabic_parser():
 
     operatorAnd = Group( ( generalUnit + Suppress( White() ) + Suppress( andToken ) + Suppress( White() ) + expression ) | ( generalUnit + Suppress( Literal( u"+" ) ) + expression ) ).setResultsName( "And" )
     operatorOr = Group( ( generalUnit + Suppress( White() ) + Suppress( orToken ) + Suppress( White() ) + expression ) | ( generalUnit + Suppress( Literal( u"|" ) ) + expression ) ).setResultsName( "Or" )
-    operatorAndNot = Group( ( unit + Suppress( White() ) + Suppress( andNotToken ) + Suppress( White() ) + unit ) | ( unit + Suppress( Literal( u"-" ) ) + unit ) ).setResultsName( "AndNot" )
+    operatorAndNot = Group( ( unit + Suppress( White() ) + Suppress( andNotToken ) + Suppress( White() ) + unit ) | ( unit + Suppress( Literal( u"-" ) ) + Suppress( White() ) + unit ) ).setResultsName( "AndNot" )
 
 
 
