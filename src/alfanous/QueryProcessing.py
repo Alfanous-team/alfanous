@@ -187,11 +187,11 @@ def _make_arabic_parser():
 
     andToken = Keyword( u"و" ) | Keyword( u"AND" )
     orToken = Keyword( u"أو" ) | Keyword( u"او" ) | Keyword( u"OR" )
-    andNotToken = Keyword( u"وليس" ) | Keyword( u"ANDNOT" )
+    andNotToken = Keyword( u"وليس" ) | Keyword( u"ANDNOT" ) | Keyword(u"-")
 
     operatorAnd = Group( ( generalUnit + Suppress( White() ) + Suppress( andToken ) + Suppress( White() ) + expression ) | ( generalUnit + Suppress( Literal( u"+" ) ) + expression ) ).setResultsName( "And" )
     operatorOr = Group( ( generalUnit + Suppress( White() ) + Suppress( orToken ) + Suppress( White() ) + expression ) | ( generalUnit + Suppress( Literal( u"|" ) ) + expression ) ).setResultsName( "Or" )
-    operatorAndNot = Group( ( unit + Suppress( White() ) + Suppress( andNotToken ) + Suppress( White() ) + unit ) | ( unit + Suppress( Literal( u"-" ) ) + unit ) ).setResultsName( "AndNot" )
+    operatorAndNot = Group( ( unit + Suppress( White() ) + Suppress( andNotToken ) + Suppress( White() ) + expression ) | ( unit + Suppress( Literal( u"-" ) ) + expression ) ).setResultsName( "AndNot" )
 
 
 
