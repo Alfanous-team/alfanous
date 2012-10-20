@@ -89,7 +89,7 @@ If you want to help us testing  the project modules, just follow these steps and
 
 #. Run the build: 
 
-   - Install all building dependencies: `pyparsing <http://aminenacer.blogspot.com/2012/10/mon-voyage-akfadou-deuxieme-partie.html>`_, `pyqt4-dev-tools <http://www.riverbankcomputing.co.uk/software/pyqt/download>`_, `epydoc <http://epydoc.sourceforge.net/>`_,
+   - Install all building dependencies: `pyparsing <http://pyparsing.wikispaces.com/>`_, `pyqt4-dev-tools <http://www.riverbankcomputing.co.uk/software/pyqt/download>`_, `epydoc <http://epydoc.sourceforge.net/>`_,
      `sphinx <http://sphinx.pocoo.org/>`_.
    - Go to the root path of the code source and execute this command    
    
