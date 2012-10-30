@@ -122,7 +122,7 @@ class QUI( Ui_MainWindow ):
         self.o_reverse.setChecked( boolean( config["sorting"]["reverse"] )if config.has_key( "sorting" ) else False )
 
         self.o_prev.setChecked( boolean( config["extend"]["prev"] ) if config.has_key( "extend" ) else False )
-        self.o_suiv.setChecked( boolean( config["extend"]["suiv"] )if config.has_key( "extend" ) else False )
+        self.o_suiv.setChecked( boolean( config["extend"]["suiv"] ) if config.has_key( "extend" ) else False )
 
         self.o_word_stat.setChecked( boolean( config["extend"]["word_stat"] )if config.has_key( "extend" ) else False )
         self.o_aya_info.setChecked( boolean( config["extend"]["aya_info"] )if config.has_key( "extend" ) else False )
@@ -223,7 +223,7 @@ class QUI( Ui_MainWindow ):
         self.o_query.clear()
         self.o_query.addItems( self.history )
         self.o_query.setCurrentIndex( 0 )
-
+	
         ###
 
         limit = self.o_limit.value()
@@ -235,8 +235,8 @@ class QUI( Ui_MainWindow ):
                 "query": self.o_query.currentText()
                 }
         output = RAWoutput.do( suggest_flags )
-        #print output
-        suggestions = output["suggest"] if output.has_key( "suggest" ) else []
+        #print output     
+	suggestions = output["suggest"] if output.has_key( "suggest" ) else []
         #print suggestions
         if len( suggestions ):
 	    html += _( u"<h1> Suggestions (%(number)s) </h1>" ) % {"number":len( suggestions )}
@@ -246,7 +246,7 @@ class QUI( Ui_MainWindow ):
         #search
         results, terms = None, []
         search_flags = {"action":"search",
-                 "query": self.o_query.currentText(),
+                 "query": unicode(self.o_query.currentText()),
                  "sortedby":"score" if self.o_sortedbyscore.isChecked() \
                         else "mushaf" if self.o_sortedbymushaf.isChecked() \
                         else "tanzil" if self.o_sortedbytanzil.isChecked() \
@@ -279,7 +279,8 @@ class QUI( Ui_MainWindow ):
         #print words_info
         if self.o_word_stat.isChecked():
             html += u'<h1> Words ( %(nb_words)d words reported %(nb_matches)d times ): </h1>' % results["search"]["words"]["global"]
-
+            
+	    print results["error"]["msg"]
             for cpt in xrange( results["search"]["words"]["global"]["nb_words"] ) :
                     this_word_info = results["search"]["words"][cpt + 1]
                     this_word_info["cpt"] = cpt + 1

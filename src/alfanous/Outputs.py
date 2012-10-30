@@ -313,7 +313,7 @@ class Raw():
 		""" return suggestions """
 		query = flags["query"] if flags.has_key( "query" ) else self._defaults["flags"]["query"]
 		try:
-			output = self.QSE.suggest_all( unicode( query.replace( "\\", "" ), 'utf8' ) ).items()
+			output = self.QSE.suggest_all( unicode( query, 'utf8' ) ).items()
 		except Exception:
 			output = []
 		return {"suggest":output}
@@ -344,9 +344,14 @@ class Raw():
 		annotation_word = flags["annotation_word"] if flags.has_key( "annotation_word" ) else self._defaults["flags"]["annotation_word"]
 		fuzzy = flags["fuzzy"] if flags.has_key( "fuzzy" ) else self._defaults["flags"]["fuzzy"]
 
+		#preprocess query
+		query= query.replace( "\\", "") 
+		if not isinstance(query,unicode):
+			query = unicode( query , 'utf8' )
+
 		#Search
 		SE = self.FQSE if fuzzy else self.QSE
-		res, termz = SE.search_all( unicode( query.replace( "\\", "" ), 'utf8' ) , self._defaults["results_limit"], sortedby = sortedby )
+		res, termz = SE.search_all( query  , self._defaults["results_limit"], sortedby = sortedby )
 		terms = [term[1] for term in list( termz )] # TODO: I dont like this termz structure , must change it
 		terms_uthmani = map( STANDARD2UTHMANI, terms )
 		#pagination
