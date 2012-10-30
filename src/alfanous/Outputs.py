@@ -315,7 +315,7 @@ class Raw():
 		try:
 			output = self.QSE.suggest_all( unicode( query.replace( "\\", "" ), 'utf8' ) ).items()
 		except Exception:
-			output = None
+			output = []
 		return {"suggest":output}
 
 	def _search( self, flags ):
