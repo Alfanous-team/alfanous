@@ -12,7 +12,7 @@ Name      		  Position                    Email                            Twitt
 ------------------ -------------------------- --------------------------------- ---------------------------------------------
 `Assem Chelli`_     Project Manager/Developer   assem.ch [at] gmail.com          `@assem_ch`_
 `Abdellah Chelli`_  Web Developer               sneetsher [at] gmail.com         `@sneetsher`_ 
-`Zaki Smahi`_       Developer                   zakaria08esi [at] gmail.com      `@zsmahi`_  
+`Zakaria Smahi`_       Developer                   zakaria08esi [at] gmail.com      `@zsmahi`_  
 `Walid Ziouche`_    Tester                      01walid [at] gmail.com           `@01walid`_  
 `Muslih al aqaad`_  Graphic Designer            muslihzarth [at] gmail.com       `@muslihzarth`_
 Yasmine Hoadjli     Community Manager           yhoadjli [at] gmail.com          `@yasmamine`_ 
@@ -20,7 +20,7 @@ Yasmine Hoadjli     Community Manager           yhoadjli [at] gmail.com         
 
 .. _`Assem Chelli`: https://github.com/assem-ch
 .. _`Abdellah Chelli`: https://github.com/sneetsher 
-.. _`Zaki Smahi`: https://github.com/zsmahi
+.. _`Zakaria Smahi`: https://github.com/zsmahi
 .. _`Mouad Debbar` : https://github.com/mdebbar
 .. _`Walid Ziouche`: https://github.com/01walid
 .. _`Muslih al aqaad`: https://github.com/muslih
