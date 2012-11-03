@@ -240,6 +240,30 @@ a:hover{color: green;}
 	text-align:right;
 }
 
+.feedback-box {
+
+	left:0;
+	position: fixed;
+	top:220px;
+
+ }
+
+.feedback-box a {
+	margin-left: -38px;
+	line-height:50px;
+	padding:0 10px;
+	font-weight: bold;
+	-webkit-transform: rotate(-90deg);
+	-moz-transform: rotate(-90deg);
+	-ms-transform: rotate(-90deg);
+	-o-transform: rotate(-90deg);
+	transform: rotate(-90deg);
+	background-color: #3AB034; /*#339A63*/
+	color: white;
+	display: block;
+	height: 41px;
+}
+
 .follow-box a:hover {
 	margin-right: 7px;
 }
