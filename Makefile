@@ -135,7 +135,7 @@ update_post_build:  update_dynamic_resources_postbuild  update_information updat
 # 1. Quranic Arabic Corpus, see update_quranic_corpus
 # 2. Linguistic resources on the form of python dictionarries to accelerate the loading , see update_dynamic_resources
 # 3. List of translations to be downloaded, see  update_translations_to_download_list
-update_pre_build:  update_dynamic_resources_prebuild update_quranic_corpus  update_translations_to_download_list
+update_pre_build:  update_dynamic_resources_prebuild  update_translations_to_download_list #update_quranic_corpus
 
 # update information manually 
 update_information:
@@ -214,7 +214,7 @@ transfer_standard2uthmani:
 # 1. Main index that contains all information related to Ayah or Surah, see index_main
 # 2. Extended index that contains Quranic translations and offline recitations, see index_extend
 # 3. Word index, contains all information related to Word, see index_word
-index_all: index_main index_extend index_word 
+index_all: index_main index_extend #index_word 
 	@echo "done;"
 
 index_main:
@@ -231,7 +231,7 @@ index_word:
 # 1. Speller of ayah unvocalized standard text words, see speller_aya
 # 2. Speller of subject fields (deprecated), see speller_subject
 # 3. Speller of quranic unvocalized uthmani words, see speller_word
-speller_all: speller_aya speller_subject speller_word
+speller_all: speller_aya speller_subject #speller_word
 	@echo "done;"
 
 speller_aya:
