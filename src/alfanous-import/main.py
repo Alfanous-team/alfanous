@@ -51,7 +51,7 @@ commands.add_option( "-p", "--speller", dest = "speller", type = "choice", choic
 commands.add_option( "-d", "--download", dest = "download", type = "choice", choices = ["tanzil_simple_clean", "tanzil_uthmani"],
                   help = "download Quranic resources", metavar = "FIELD" )
 
-commands.add_option( "-u", "--update", dest = "update", type = "choice", choices = ["translations.js", "wordqc"],
+commands.add_option( "-u", "--update", dest = "update", type = "choice", choices = ["translations", "wordqc"],
                   help = "update store information files", metavar = "FIELD" )
 
 
@@ -165,8 +165,8 @@ if options.update:
 
 
 
-    if options.update == "translations.js":
+    if options.update == "translations":
         update_translations_list( TSE_index = SOURCE, translations_list_file = DESTINATION )
     elif options.update == "wordqc":
-        QCI = QuranicCorpusImporter( SOURCE, DESTINATION )
+	QCI = QuranicCorpusImporter( SOURCE, DESTINATION )
 
