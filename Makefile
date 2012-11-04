@@ -4,11 +4,6 @@
 # Contributors:   
 #	Assem chelli <assem.ch@gmail.com>
 #
-##  TODO: Must follow the standards!
-##  TODO: Check installation scripts
-##  TODO: make a self-documentations for Makefile using comments
-
-
 
 
 ## Global Version of the project, must be updated in each significant change in 
@@ -42,6 +37,11 @@ INDEX_PATH=$(API_PATH)"alfanous/indexes/"
 
 ## Desktop Gui interface path
 DESKTOP_INTERFACE_PATH=$(API_PATH)"alfanous-desktop/"
+## QT UI & RC files paths, destined to be compiled & used by alfanousDesktop
+QT_UI_PATH=$(DESKTOP_INTERFACE_PATH)"UI/"
+QT_RC_PATH=$(DESKTOP_INTERFACE_PATH)"images/"
+
+
 ## Path of Web User Interface for mobiles 
 MOBILE_WUI_PATH=./interfaces/web/mobile_wui/
 ## Web User interface path
@@ -258,10 +258,18 @@ help_sphinx:
 
 ## Qt resources compilation, PyQt is needed: apt-get install pyqt4-dev-tools  pyqt-tools  
 #  1. qrc files, see qt_rcc
-qt_all:	 qt_rcc
-	
+#  2. ui files, see qt_uic
+qt_all:	 qt_rcc qt_uic
+
+qt_uic:
+	pyuic4 -o $(DESKTOP_INTERFACE_PATH)aboutDlg_ui.py $(QT_UI_PATH)aboutDlg.ui
+	pyuic4 -o $(DESKTOP_INTERFACE_PATH)preferencesDlg_ui.py $(QT_UI_PATH)preferencesDlg.ui
+	pyuic4 -o temp.py $(QT_UI_PATH)mainform.ui #-x
+	sed 's/\"MainWindow\"\,/\"MainWindow\"\,\_(/g' temp.py | sed 's/\, None\,/\)\, None\,/g'| sed 's/from PyQt4/LOCALPATH="\.\/locale\/"\nimport gettext\n\_\=gettext\.gettext\ngettext\.bindtextdomain\(\"alfanousQT\"\, LOCALPATH\)\ngettext\.textdomain\(\"alfanousQT\"\)\nfrom PyQt4/g'> $(DESKTOP_INTERFACE_PATH)mainform_ui.py
+	rm temp.py
+
 qt_rcc:
-	pyrcc4 ./resources/images/main.qrc -o $(DESKTOP_INTERFACE_PATH)main_rc.py
+	pyrcc4 $(QT_RC_PATH)main.qrc -o $(DESKTOP_INTERFACE_PATH)main_rc.py
 
 ## build localization files, this include:
 # 1. Desktop interface , see local_desktop_pot
