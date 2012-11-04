@@ -29,7 +29,6 @@ TODO %(var)s mapping is better for localization
 TODO use QT Localization instead of gettext
 TODO Use tree widget to show results
 TODO printing
-TODO load Qt resources on realtime or at least compile them on realtime if missed
 """
 
 ## Importing modules
@@ -192,7 +191,7 @@ class QUI( Ui_MainWindow ):
         QtCore.QObject.connect( self.o_stat_from, QtCore.SIGNAL( "valueChanged(int)" ), self.stat_to_min )
         QtCore.QObject.connect( self.m_exit, QtCore.SIGNAL( "clicked()" ), self.exit )
         QtCore.QObject.connect( self.m_help, QtCore.SIGNAL( "clicked()" ), self.help )
-        QtCore.QObject.connect( self.m_about, QtCore.SIGNAL( "clicked()" ), self.about )
+        QtCore.QObject.connect( self.m_about, QtCore.SIGNAL( "triggered(bool)" ), self.about )
         QtCore.QObject.connect( self.a_save, QtCore.SIGNAL( "clicked()" ), self.save_results )
         QtCore.QObject.connect( self.a_print, QtCore.SIGNAL( "clicked()" ), self.print_results )
 
@@ -214,6 +213,7 @@ class QUI( Ui_MainWindow ):
         """
         The main search function
         """
+
         # add to history
         self.history.insert( 0, self.o_query.currentText() )
         self.o_query.clear()
@@ -617,11 +617,13 @@ class QUI( Ui_MainWindow ):
         painter.end()
 
 
-    def about( self ):
-	""" deprecated """
-        html = """to replace with about dialog """
-        self.o_results.setText( html )
-
+    def about( self , state ):
+        """ Show about-dialog """
+        
+        AboutDialog = QtGui.QDialog()
+        dlg=Ui_aboutDlg()
+        dlg.setupUi(AboutDialog)
+        AboutDialog.exec_() 
 
 
     def help( self ):
@@ -641,6 +643,7 @@ def main():
 
     MainWindow.show()
     app.exec_()
+  
     ui.exit()
 
 if __name__ == "__main__":
