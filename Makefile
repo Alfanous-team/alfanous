@@ -4,11 +4,6 @@
 # Contributors:   
 #	Assem chelli <assem.ch@gmail.com>
 #
-##  TODO: Must follow the standards!
-##  TODO: Check installation scripts
-##  TODO: make a self-documentations for Makefile using comments
-
-
 
 
 ## Global Version of the project, must be updated in each significant change in 
