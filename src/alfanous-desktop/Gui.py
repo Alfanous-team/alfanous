@@ -52,14 +52,10 @@ gettext.textdomain( "alfanousQT" );
 ## Specification of resources paths
 from alfanous.Data import Paths
 
-
-
-
-## Load Qt forms & dialogs on real time
-THIS_FILE_DIR_PATH = os.path.dirname(os.path.abspath(__file__)) + "/"
-Ui_MainWindow = uic.loadUiType( THIS_FILE_DIR_PATH + "UI/mainform.ui" )[0]
-Ui_aboutDlg = uic.loadUiType( THIS_FILE_DIR_PATH + "UI/aboutDlg.ui" )[0]
-Ui_preferencesDlg = uic.loadUiType( THIS_FILE_DIR_PATH + "UI/preferencesDlg.ui" )[0]
+## Importing Qt forms
+from mainform_ui import Ui_MainWindow
+from preferencesDlg_ui import Ui_preferencesDlg
+from aboutDlg_ui import Ui_Dialog as Ui_aboutDlg
 
 ## Initialize search engines 
 RAWoutput = Raw() # default paths
@@ -266,7 +262,6 @@ class QUI( Ui_MainWindow ):
                  "aya_stat_info":  self.o_aya_info.isChecked(),
                  "aya_sajda_info":  self.o_aya_info.isChecked(),
                  "translation":self.o_traduction.currentText(),
-
                  }
         try:
             results = RAWoutput.do( search_flags )
