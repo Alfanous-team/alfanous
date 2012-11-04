@@ -227,24 +227,12 @@ a:hover{color: green;}
 	text-align:center;
 }
 
-.follow-box {
-	border:0 none;
-	clear:both;
-	margin:0;
-	padding:0;
-	position: fixed;
-	top:150px;
-	right:0;
-	z-index:95;
-	width:50px;
-	text-align:right;
-}
 
 .feedback-box {
 
 	left:0;
 	position: fixed;
-	top:220px;
+	top:190px;
 
  }
 
@@ -263,6 +251,45 @@ a:hover{color: green;}
 	display: block;
 	height: 41px;
 }
+
+.donate-box {
+
+	left:0;
+	position: fixed;
+	top:280px;
+
+ }
+
+.donate-box a {
+	margin-left: -28px;
+	line-height:50px;
+	padding:0 10px;
+	font-weight: bold;
+	-webkit-transform: rotate(-90deg);
+	-moz-transform: rotate(-90deg);
+	-ms-transform: rotate(-90deg);
+	-o-transform: rotate(-90deg);
+	transform: rotate(-90deg);
+	background-color: #BA30B4; /*#339A63*/
+	color: white;
+	display: block;
+	height: 41px;
+}
+
+.follow-box {
+	border:0 none;
+	clear:both;
+	margin:0;
+	padding:0;
+	position: fixed;
+	top:150px;
+	right:0;
+	z-index:95;
+	width:50px;
+	text-align:right;
+}
+
+
 
 .follow-box a:hover {
 	margin-right: 7px;
