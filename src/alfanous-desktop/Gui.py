@@ -16,12 +16,10 @@
 ##     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 """
-TODO use Alfanous.outputs.Json to request different info the first time
 TODO use Table grid for view , use CSS good schema instead
 TODO complete all new Ui features
-TODO relate to AboutDlg / PreferenceDlg / Hints dialog
+TODO relate to PreferenceDlg / Hints dialog
 TODO use css and simplify texts to make a good localization
-TODO clean Code
 TODO sura's name also in English
 TODO fields name in english and arabic / explication (id)
 TODO add qurany project for Subjects in english
@@ -67,6 +65,7 @@ RELATIONS = ["", "", u"|", u"+", u"-"]
 
 SAJDA_TYPE = {u"مستحبة":_( u"recommended" ), u"واجبة":_( u"obliged" )}
 SURA_TYPE = {u"مدنية":_( u"medina" ), u"مكية":_( u"mekka" )}
+
 
 
 
@@ -192,6 +191,8 @@ class QUI( Ui_MainWindow ):
         QtCore.QObject.connect( self.m_exit, QtCore.SIGNAL( "clicked()" ), self.exit )
         QtCore.QObject.connect( self.m_help, QtCore.SIGNAL( "clicked()" ), self.help )
         QtCore.QObject.connect( self.m_about, QtCore.SIGNAL( "triggered(bool)" ), self.about )
+        QtCore.QObject.connect( self.action_Send_Feedback, QtCore.SIGNAL( "triggered(bool)" ), self.send_feedback )
+
         QtCore.QObject.connect( self.a_save, QtCore.SIGNAL( "clicked()" ), self.save_results )
         QtCore.QObject.connect( self.a_print, QtCore.SIGNAL( "clicked()" ), self.print_results )
 
@@ -617,14 +618,16 @@ class QUI( Ui_MainWindow ):
         painter.end()
 
 
+    def send_feedback( self , state ):
+        """ Open feedback url in an external browser """
+        #QtGui.QDesktopServices.openUrl() ## How to specify the URL , feedback.alfanous.org
+
     def about( self , state ):
         """ Show about-dialog """
-        
         AboutDialog = QtGui.QDialog()
         dlg=Ui_aboutDlg()
         dlg.setupUi(AboutDialog)
-        AboutDialog.exec_() 
-
+        AboutDialog.exec_()
 
     def help( self ):
         """  deprecated     """
