@@ -76,7 +76,7 @@ var VKI_attach, VKI_close;
   this.VKI_imageURI = "images/keyboard.png";  // If empty string, use imageless mode
   this.VKI_clickless = 0;  // 0 = disabled, > 0 = delay in ms
   this.VKI_activeTab = 0;  // Tab moves to next: 1 = element, 2 = keyboard enabled element
-  this.VKI_enterSubmit = true;  // Submit forms when Enter is pressed
+  this.VKI_enterSubmit = false;  // Submit forms when Enter is pressed
   this.VKI_keyCenter = 3;
 
   this.VKI_isIE = /*@cc_on!@*/false;
