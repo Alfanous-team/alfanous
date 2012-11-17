@@ -148,7 +148,10 @@
 
 			// Note
 			results += "<br /><br /><span class='xbre'>نتيجة البحث</span><br /><br />";
-			results += "<center><b>الزمن المستغرق</b> : "+ json.search.runtime+ " ثانية</center>";
+			
+			// Round runtime to 5 decimals 
+			runtime = Math.round(json.search.runtime * Math.pow(10,5))/Math.pow(10,5)
+			results += "<center><b>الزمن المستغرق</b> : "+ runtime + " ثانية</center>";
 
 			// Suggestions
 			
