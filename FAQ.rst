@@ -209,6 +209,44 @@ If you want to help us testing  the project modules, just follow these steps and
 
 See also `How you can help?`_
 
+----------------------------------------------------------
+How to prepare your development environment to contribute?
+----------------------------------------------------------
+Best OS for that is Ubuntu (>11.10).
+
+#. First at all, create an account in `Github <https://github.com>`_ and make your own fork of `alfanous-team/alfanous <https://github.com/Alfanous-team/alfanous>`_ (Fork button is top-right).
+#. Secondly, install `git-scm <http://git-scm.com/downloads>`_ and then clone locally your fork : 
+      
+   .. code-block:: sh
+   
+       git clone LINK_OF_GITHUB_FORK.
+
+#. Third, install building dependecies :  `pyparsing <http://pyparsing.wikispaces.com/>`_, `pyqt4-dev-tools <http://www.riverbankcomputing.co.uk/software/pyqt/download>`_, `epydoc <http://epydoc.sourceforge.net/>`_,
+     `sphinx <http://sphinx.pocoo.org/>`_. 
+   - then run in the root of your local repo: 
+     
+     .. code-block:: sh
+    
+         $ make build 
+   - then run also in the same path: 
+     
+     .. code-block:: sh
+
+         $ sudo make install_api
+   - test the installation with this command: 
+     
+     .. code-block:: sh
+
+         $ alfanous-console -h
+
+#. Forth, prepare your dev tool :
+
+   - if you want work on web tasks, install `aptana <http://www.aptana.com/>`_ with `pydev <http://pydev.org/>`_ plugin (install apache2 also for local tests).
+   - else install `eclipse <http://www.eclipse.org/downloads/>`_ with `pydev <http://pydev.org/>`_ plugin.
+   - or you can just usea simple text editor.
+
+   You can also use git with eclipse, by installing `EGit <http://www.eclipse.org/egit/>`_.
+
 --------------
 How API works?
 --------------
