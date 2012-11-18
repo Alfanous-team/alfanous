@@ -374,7 +374,7 @@
 				// Pages control
 				$(".pages a").one('click', function(event) {
 					var param2 = param;
-					param2.action = search;
+					param2.action = "search";
 					param2.page = $(this).text();
 					param2.query = $("#search_box").val();
 					
