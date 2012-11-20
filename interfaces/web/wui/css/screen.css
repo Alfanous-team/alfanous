@@ -57,7 +57,7 @@ a.button:active {
 	direction: rtl;
 	font-family: tahoma;
 	font-weight: bold;
-	width: 255px;
+	width: 220px;
 	margin:0;
 }
 
@@ -256,7 +256,7 @@ a:hover{color: green;}
 
 	left:0;
 	position: fixed;
-	top:280px;
+	top:300px;
 
  }
 
