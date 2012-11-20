@@ -7,6 +7,20 @@ What is NSIS?
 
 How to run the script successfully?
     #. Have a windows OS either XP, Vista or Seven.
+    #. Install the python library `py2exe <http://www.py2exe.org/>`_.
+    #. Compile AlfanousDesktop to a binary executable file:
+        
+       .. code-block:: bat
+            
+            python setup.py py2exe
+
     #. Install `NSIS compiler <http://nsis.sourceforge.net/Download>`_.
-    #. Check if the script `make_installer.nsi <https://github.com/Alfanous-team/alfanous/blob/master/dist/nsis/make_installer.nsi>`_ is up to date.
-    #. Run the bat script in `make_nsis_installer.win.bat <https://github.com/Alfanous-team/alfanous/blob/master/dist/nsis/make_nsis_installer.win.bat>`_ the command line.
+    #. Check if the script `make_installer.nsi <https://github.com/Alfanous-team/alfanous/blob/master/dist/nsis/make_installer.nsi>`_ is up to date and includes the right files.
+
+    #. Update the variables VERSION, PYTHON, MAKENSIS inside the bat script  `make_nsis_installer.win.bat <https://github.com/Alfanous-team/alfanous/blob/master/dist/nsis/make_nsis_installer.win.bat>`_ the command line.
+
+       .. code-block:: bat
+
+            set VERSION="0.4.3"
+            set PYTHON="C:\Python26\python.exe"
+            set MAKENSIS="H:\developement\nsis\makensis.exe"
