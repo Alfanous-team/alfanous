@@ -33,7 +33,10 @@
 	<!--jquery tools (for overlay) + jquery 1.7.2 included-->
 	<script type="text/javascript" src="js/jquery.tools.min.js"></script>
 
-	
+	<!-- Assem: Keyboard -->
+	<script type="text/javascript" src="js/keyboard.js" charset="UTF-8"></script>
+	<link rel="stylesheet" type="text/css" href="css/keyboard.css">
+
 	<script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#username=ahmadramadan"></script>
 	<script type="text/javascript" src="js/drops.js"></script>
 	
@@ -145,7 +148,10 @@
 
 			// Note
 			results += "<br /><br /><span class='xbre'>نتيجة البحث</span><br /><br />";
-			results += "<center><b>الزمن المستغرق</b> : "+ json.search.runtime+ " ثانية</center>";
+			
+			// Round runtime to 5 decimals 
+			runtime = Math.round(json.search.runtime * Math.pow(10,5))/Math.pow(10,5)
+			results += "<center><b>الزمن المستغرق</b> : "+ runtime + " ثانية</center>";
 
 			// Suggestions
 			
@@ -285,7 +291,7 @@
 						results += "] <br></span></p><br />";
 						
 					results += "<p dir='ltr' align='center' style=' margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;'>";
-						results += "<span style='font-family: \"Droid Sans\", Tahoma, \"Bitstream Vera Sans\", \"DejaVu Sans\", Verdana, Geneva, Arial, Sans-serif; line-height: 150%;'>"+ json.search.ayas[i].aya.traduction+ "</span></p>";
+					if (json.search.ayas[i].aya.traduction)	results += "<span style='font-family: \"Droid Sans\", Tahoma, \"Bitstream Vera Sans\", \"DejaVu Sans\", Verdana, Geneva, Arial, Sans-serif; line-height: 150%;'>"+ json.search.ayas[i].aya.traduction+ "</span></p>";
 					results += "<br><p align='center' style=' margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;'>";
 						
 						results += "<span style=' color:#808080;'>"
@@ -368,7 +374,7 @@
 				// Pages control
 				$(".pages a").one('click', function(event) {
 					var param2 = param;
-					param2.action = search;
+					param2.action = "search";
 					param2.page = $(this).text();
 					param2.query = $("#search_box").val();
 					
@@ -555,7 +561,7 @@
 	<tr>
 		<td style="background:url(images/main_table_02.png) no-repeat;width:50px;height:26px"> </td>
 		<td style="background:url(images/main_table_03.png) no-repeat;width:259px;height:26px">
-			<input id="search_box" name="search" class="enter" type="text" value="" />
+			<input id="search_box" name="search" class="enter keyboardInput" type="text" value="" />
 			</td>
 		<td style="background:url(images/main_table_04.png) repeat scroll 0 0 transparent;width:62;height:26;text-align:right;">
 			<a class="button" href="" onclick="$('#form').submit(); return false;">بحث</a>
@@ -616,20 +622,20 @@
 
 	<span class="xtitle">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; التلاوة :</span>
 	<select id="recitation" class="styled" name="recitation">
-		<option value="Mishary Rashid Alafasy">الافتراضي</option>
-		<option value="Mishary Rashid Alafasy">مشاري راشد العفاسي</option>   
-		<option value="AbdulBasit AbdusSamad (Murattal style)">عبد الباسط عبد الصمد</option>
-		<option value="Abu Bakr Ash-Shaatree">أبو بكر الشاطري</option>
-		<option value="Ahmed_ibn_Ali_al-Ajamy (From QuranExplorer.com)">أحمدبن علي العجمي</option>
-		<option value="Saad Al Ghamadi">سعد الغامدي</option>
-		<option value="Hani Rifai">هاني الرفاعي</option>
-		<option value="Husary Mujawwad">الحصري</option>
-		<option value="Hudhaify">الحذيفي</option>
-		<option value="Menshawi (external source)">المنشاوي</option>
-		<option value="Muhammad Ayyoub">محمد أيوب</option>
-		<option value="Saood bin Ibraaheem Ash-Shuraym">سعود بن ابراهيم الشريم</option>
-		<option value="Ibrahim_Walk">ابراهيم ولق</option>
-		<option value="Abdullah Basfar">عبد الله بسفر</option>
+		<option value="14">الافتراضي</option>
+		<option value="14">مشاري راشد العفاسي</option>   
+		<option value="1">عبد الباسط عبد الصمد</option>
+		<option value="10">أبو بكر الشاطري</option>
+		<option value="12">أحمدبن علي العجمي</option>
+		<option value="16">سعد الغامدي</option>
+		<option value="17">هاني الرفاعي</option>
+		<option value="21">الحصري</option>
+		<option value="23">الحذيفي</option>
+		<option value="30">المنشاوي</option>
+		<option value="37">محمد أيوب</option>
+		<option value="43">سعود بن ابراهيم الشريم</option>
+		<option value="45">ابراهيم ولق</option>
+		<option value="5">عبد الله بسفر</option>
 	</select><br /><!--[if lte IE 8]><![endif]-->
 </div>
 
@@ -638,10 +644,9 @@
 <div id="down_btn"><a  class='xbutton gray' >تحميل</a></div>
 <div id="help_btn"><a class='xbutton gray' >مساعدة</a></div>
 <br /><br />
-<!--<div id="vote_btn"><a class='xbutton gray' href="http://www.surveymonkey.com/s/NTFPFTF" target="_blank"><i>ملاحظة 12-06-2012:</i> الرجاء المساهمة معنا في الرقي بمشروع  <b>الفانوس</b>, بإكمال هذا الاستبيان</a></div>
-<br /><br /> -->
-<!--  <div id="vote_btn"><a class='xbutton gray' href="https://www.surveymonkey.com/s/P3LGJ8K" target="_blank"><i>News 22-04-2012:</i> Please help us to make <b>Alfanous</b> better, by taking this survey!</a></div>
-<br /><br /> -->
+<!--  <br /><br />
+<div id="vote_btn"><a class='xbutton gray' href="https://docs.google.com/spreadsheet/viewform?formkey=dEZZaE5fQ0NwQXljU2ZyUmpfLW15SVE6MA#gid=0" target="_blank"><i>ملاحظة 09-11-2012:</i> الرجاء المساهمة معنا في الرقي بمشروع  <b>الفانوس</b>, بإكمال هذا الاستبيان حول مزايا البحث في القرآن الكريم</a></div>
+<br /><br />  -->
 
 <!--abdellah-->
 <div id="search_result" style="direction:rtl; width:800px"></div>
@@ -712,21 +717,23 @@
             <div class="column"> 
                 <h1>Quick links</h1> 
                 <ul> 
-    	            <li><a href="http://cms.alfanous.org/" target="_blank">About</a></li> 
+
+    				<li><a href="https://github.com/Alfanous-team/alfanous/blob/master/README.rst" target="_blank">About</a></li> 
                     <li><a href="http://sourceforge.net/projects/alfanous/files/" target="_blank">Downloads</a></li> 
                     <li><a href="http://m.alfanous.org/">Mobile Web Interface</a></li>
                     <li><a href="http://old.alfanous.org/">Old HTML Web Interface</a></li> 
                     <li class="last"><a href="http://github.com/Alfanous-team/alfanous" target="_blank">@Github</a></li>
                     <li><a href="http://sourceforge.net/projects/alfanous/" target="_blank">@Sourceforge</a></li> 
                     <li><a href="http://wwW.launchpad.net/alfanous/" target="_blank">@Launchpad</a></li>
-
                 </ul> 
             </div> 
             <div class="column"> 
                 <h1>Community</h1> 
                 <ul> 
+
+                    <li><a href="http://feedback.alfanous.org/" title="Feedback" target="_blank">Feedback</a></li> 
                     <li><a href="http://groups.google.com/group/alfanous/" title="Mailinglist" target="_blank">Mailinglist</a></li> 
-                    <li><a href="https://github.com/Alfanous-team/alfanous/issues/new" title="Report a bug" target="_blank">+ Report an issue</a></li>
+                    <li><a href="https://github.com/Alfanous-team/alfanous/issues/new" title="Report an issue" target="_blank">+ Report an issue</a></li>
                     <li><a href="https://github.com/Alfanous-team/alfanous/issues" title="Issues" target="_blank">Issues</a></li>
                     <li><a href="https://www.facebook.com/alfanous" title="Facebook" target="_blank">@Facebook</a></li> 
                     <li><a href="https://plus.google.com/111305625425237630318" target="_blank">@Google Plus</a></li> 
@@ -743,6 +750,7 @@
             <div class="column last"> 
                 <p>
                 	<a href="http://www.gnu.org/licenses/agpl.html" target="_blank"><img src="images/agplv3-88x31.png" alt="AGPL Lisence" title="AGPL Lisence"></a>
+                	<a href="http://git-scm.com/" target="_blank"><img src="images/Git-Logo.png" alt="Git Logo" title="Git scm"></a>
                 	<a href="http://www.python.org/" target="_blank"><img src="images/python-logo-inkscape.png" alt="Python Powered" title="Python Powered"></a>
                 	<a href="http://www.json.org/" target="_blank"><img src="images/json_logo.png" alt="Provide JSON" title="Provide JSON"></a>
                 	<a href="http://jquery.com/" target="_blank"><img src="images/jquery_logos.png" alt="jQuery Logo" title="jQuery"></a>
