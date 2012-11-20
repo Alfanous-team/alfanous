@@ -7,7 +7,7 @@ What is NSIS?
 
 How to run the script successfully?
     #. Have a windows OS either XP, Vista or Seven.
-    #. Install the python library `py2exe <http://www.py2exe.org/>`_.
+    #. Install the python library `py2exe <http://www.py2exe.org/>`_ and all requirments of AlfanousDesktop.
     #. Compile AlfanousDesktop to a binary executable file:
         
        .. code-block:: bat
