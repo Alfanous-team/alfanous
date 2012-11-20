@@ -9,4 +9,4 @@ How to run the script successfully?
     #. Have a windows OS either XP, Vista or Seven.
     #. Install `NSIS compiler <http://nsis.sourceforge.net/Download>`_.
     #. Check if the script `make_installer.nsi <https://github.com/Alfanous-team/alfanous/blob/master/dist/nsis/make_installer.nsi>`_ is up to date.
-    #. Run the bat script in ` make_nsis_installer.win.bat <https://github.com/Alfanous-team/alfanous/blob/master/dist/nsis/make_nsis_installer.win.bat>`_ the command line.
+    #. Run the bat script in `make_nsis_installer.win.bat <https://github.com/Alfanous-team/alfanous/blob/master/dist/nsis/make_nsis_installer.win.bat>`_ the command line.
