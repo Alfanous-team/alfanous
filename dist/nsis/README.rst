@@ -15,7 +15,7 @@ How to run the script successfully?
             cd ..\..\src\alfanous-desktop 
             python setup.py py2exe
 
-    #. Install `NSIS compiler <http://nsis.sourceforge.net/Download>`_.
+    #. Install `NSIS compiler <http://nsis.sourceforge.net/Download>`_ .
     #. Check if the script `make_installer.nsi <https://github.com/Alfanous-team/alfanous/blob/master/dist/nsis/make_installer.nsi>`_ is up to date and includes the right files.
 
     #. Run the compilation of the installer using the nsis compiler.
