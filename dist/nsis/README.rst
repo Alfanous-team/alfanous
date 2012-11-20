@@ -12,12 +12,15 @@ How to run the script successfully?
         
        .. code-block:: bat
             
+            cd ..\..\src\alfanous-desktop 
             python setup.py py2exe
 
     #. Install `NSIS compiler <http://nsis.sourceforge.net/Download>`_.
     #. Check if the script `make_installer.nsi <https://github.com/Alfanous-team/alfanous/blob/master/dist/nsis/make_installer.nsi>`_ is up to date and includes the right files.
 
-    #. Update the variables VERSION, PYTHON, MAKENSIS inside the bat script  `make_nsis_installer.win.bat <https://github.com/Alfanous-team/alfanous/blob/master/dist/nsis/make_nsis_installer.win.bat>`_ the command line.
+    #. Run the compilation of the installer using the nsis compiler.
+    #. Test the installer built.
+    #. For multiple uses, you can configure the bat script  `make_nsis_installer.win.bat <https://github.com/Alfanous-team/alfanous/blob/master/dist/nsis/make_nsis_installer.win.bat>`_ the command line. Update the variables VERSION, PYTHON, MAKENSIS before using it.
 
        .. code-block:: bat
 
