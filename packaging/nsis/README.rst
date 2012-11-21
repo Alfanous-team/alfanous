@@ -12,7 +12,7 @@ How to run the script successfully?
        `pyparsing <http://pyparsing.wikispaces.com/>`_, 
        `configobj <http://www.voidspace.org.uk/python/configobj.html>`_, 
        `alfanous API <https://github.com/Alfanous-team/alfanous/tree/master/src/alfanous>`_ (build resources then install the API) .
-    #. py2exe needs this dll: msvcp90.dll ,so if you havn't installed already Microsoft Visual C++ 2008, install instead the `redisributable package <http://www.microsoft.com/en-us/download/details.aspx?displaylang=en&id=29>`_ 
+    #. py2exe needs this dll: msvcp90.dll ,so if you havn't installed already Microsoft Visual C++ 2008, get instead the `redisributable package <http://www.microsoft.com/en-us/download/details.aspx?displaylang=en&id=29>`_ then extract it. Move the *nosxs_msvcp90.dll* to Python's DLL folder and rename it to *msvcp90.dll*. 
     #. Compile AlfanousDesktop to a binary executable file:
         
        .. code-block:: bat
