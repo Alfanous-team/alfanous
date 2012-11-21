@@ -65,15 +65,15 @@ a{color: gray;}
 .aya_words a { text-decoration: none; }
 a:hover{color: green;}
 .select {
-	background: url("../images/select.gif") no-repeat scroll right top transparent;
+	background: url("../images/select.gif") no-repeat scroll left top transparent;
 	color: gray;
 	font: 13px/17px tahoma;
 	height: 40px;
 	overflow: hidden;
-	padding: 11px 15px 0 0;
+	padding: 11px 0px 0px 30px;
 	position: absolute;
 	width: 191px;
-	text-align:right;
+	text-align:left;
 }
 .styled{height: 40px;
 	margin-right: 3px;
@@ -205,7 +205,7 @@ a:hover{color: green;}
 	-moz-border-radius: 12px;
 	border-radius: 12px;
 	font-size: 14pt;
-	margin: 0 15px 0 0;
+	margin: 0 0px 0 15px;
 	padding: 6px;
 	text-indent: 0;
 	box-shadow: 0 0 8px green;
