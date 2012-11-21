@@ -12,12 +12,15 @@ How to run the script successfully?
        `pyparsing <http://pyparsing.wikispaces.com/>`_, 
        `configobj <http://www.voidspace.org.uk/python/configobj.html>`_, 
        `alfanous API <https://github.com/Alfanous-team/alfanous/tree/master/src/alfanous>`_ (build resources then install the API) .
+    #. py2exe needs this dll: msvcp90.dll ,so if you havn't installed already Microsoft Visual C++ 2008, install instead the `redisributable package <http://www.microsoft.com/en-us/download/details.aspx?displaylang=en&id=29>`_ 
     #. Compile AlfanousDesktop to a binary executable file:
         
        .. code-block:: bat
             
             cd ..\..\src\alfanous-desktop 
             python setup.py py2exe
+       
+       
 
     #. Install `NSIS compiler <http://nsis.sourceforge.net/Download>`_ .
     #. Check if the script `make_installer.nsi <https://github.com/Alfanous-team/alfanous/blob/master/dist/nsis/make_installer.nsi>`_ is up to date and includes the right files.
