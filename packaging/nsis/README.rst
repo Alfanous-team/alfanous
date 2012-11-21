@@ -11,7 +11,7 @@ How to run the script successfully?
        `PyQt4 <http://www.riverbankcomputing.co.uk/software/pyqt/download>`_, 
        `pyparsing <http://pyparsing.wikispaces.com/>`_, 
        `configobj <http://www.voidspace.org.uk/python/configobj.html>`_, 
-       `alfanous API <https://github.com/Alfanous-team/alfanous/tree/master/src/alfanous>`_ .
+       `alfanous API <https://github.com/Alfanous-team/alfanous/tree/master/src/alfanous>`_ (build resources then install the API) .
     #. Compile AlfanousDesktop to a binary executable file:
         
        .. code-block:: bat
