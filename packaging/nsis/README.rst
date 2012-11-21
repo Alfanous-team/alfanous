@@ -28,6 +28,6 @@ How to run the script successfully?
 
        .. code-block:: bat
 
-            set VERSION="0.4.3"
-            set PYTHON="C:\Python26\python.exe"
-            set MAKENSIS="H:\developement\nsis\makensis.exe"
+            set VERSION="0.7"
+            set PYTHON="C:\Python27\python.exe"
+            set MAKENSIS="C:\Programmes\NSIS\makensis.exe"
