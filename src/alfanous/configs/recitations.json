@@ -336,8 +336,8 @@
       "bitrate":"128kbps"
    },
    "45":{
-      "subfolder":"English\/Ibrahim_Walk_192kbps_TEST",
-      "name":"English\/Ibrahim Walk TEST",
+      "subfolder":"English\/Sahih_Intnl_Ibrahim_Walk_192kbps",
+      "name":"(English) Translated by Sahih International Recited by Ibrahim Walk",
       "bitrate":"192kbps"
    },
    "46":{
@@ -384,5 +384,55 @@
       "subfolder":"Salah_Al_Budair_128kbps",
       "name":"Salah Al Budair",
       "bitrate":"128kbps"
-   }
+   },
+   "55":{
+      "subfolder":"Abdullah_Matroud_128kbps",
+      "name":"Abdullah Matroud",
+      "bitrate":"128kbps"
+   },
+   "56":{
+      "subfolder":"Ahmed_Neana_128kbps",
+      "name":"Ahmed Neana",
+      "bitrate":"128kbps"
+   },
+   "57":{
+      "subfolder":"Muhammad_AbdulKareem_128kbps",
+      "name":"Muhammad AbdulKareem",
+      "bitrate":"128kbps"
+   },
+   "58":{
+     "subfolder":"khalefa_al_tunaiji_64kbps",
+     "name":"Khalefa Al-Tunaiji",
+     "bitrate":"64kbps"
+   },
+   "59":{
+     "subfolder":"mahmoud_ali_al_banna_32kbps",
+     "name":"Mahmoud Ali Al-Banna",
+     "bitrate":"32kbps"
+   },
+   "60":{
+     "subfolder":"warsh\/warsh_ibrahim_aldosary_128kbps",
+     "name":"(Warsh) Ibrahim Al-Dosary",
+     "bitrate":"128kbps"
+   },
+   "61":{
+     "subfolder":"warsh\/warsh_yassin_al_jazaery_64kbps",
+     "name":"(Warsh) Yassin Al-Jazaery",
+     "bitrate":"64kbps"
+   },
+   "62":{
+     "subfolder":"warsh\/warsh_Abdul_Basit_128kbps",
+     "name":"(Warsh) Abdul Basit",
+     "bitrate":"128kbps"
+   },
+   "63":{
+     "subfolder":"translations/urdu_shamshad_ali_khan_46kbps",
+     "name":"(Urdu) Shamshad Ali Khan",
+     "bitrate":"46kbps"
+   },
+   "64":{
+     "subfolder":"Karim_Mansoori_40kbps",
+     "name":"Karim Mansoori (Iran)",
+     "bitrate":"40kbps"
+   }	
 }
