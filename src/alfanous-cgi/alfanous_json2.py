@@ -50,41 +50,16 @@ HTTP_HEADER = """Content-Type: text/html; charset=utf-8\n\n
 
 """
 
-## a function to decide what is True and what is false
-TRUE_FALSE = lambda x: False if x.lower() in ["no", "none", "null", "0", "-1", "", "false"] else True;
 
-if len( form ):
-    flags = {}
-    if form.has_key( "action" ): flags["action"] = form["action"][0]
-    if form.has_key( "query" ): flags["query"] = form["query"][0]
-    if form.has_key( "ident" ): flags["ident"] = form["ident"][0]
-    if form.has_key( "platform" ): flags["platform"] = form["platform"][0]
-    if form.has_key( "domain" ): flags["domain"] = form["domain"][0]
-    if form.has_key( "sortedby" ): flags["sortedby"] = form["sortedby"][0]
-    if form.has_key( "page" ): flags["page"] = form["page"][0]
-    if form.has_key( "perpage" ): flags["perpage"] = form["perpage"][0]
-    if form.has_key( "offset" ): flags["offset"] = form["offset"][0]
-    if form.has_key( "range" ):  flags["range"] = form["range"][0]
-    if form.has_key( "recitation" ): flags["recitation"] = form["recitation"][0]
-    if form.has_key( "translation" ): flags["translation"] = form["translation"][0]
-    if form.has_key( "highlight" ): flags["highlight"] = form["highlight"][0]
-    if form.has_key( "script" ): flags["script"] = form["script"][0]
-    if form.has_key( "vocalized" ): flags["vocalized"] = TRUE_FALSE( form["vocalized"][0] )
-    if form.has_key( "prev_aya" ): flags["prev_aya"] = TRUE_FALSE( form["prev_aya"][0] )
-    if form.has_key( "next_aya" ): flags["next_aya"] = TRUE_FALSE( form["next_aya"][0] )
-    if form.has_key( "sura_info" ): flags["sura_info"] = TRUE_FALSE( form["sura_info"][0] )
-    if form.has_key( "word_info" ): flags["word_info"] = TRUE_FALSE( form["word_info"][0] )
-    if form.has_key( "aya_position_info" ): flags["aya_position_info"] = TRUE_FALSE( form["aya_position_info"][0] )
-    if form.has_key( "aya_theme_info" ): flags["aya_theme_info"] = TRUE_FALSE( form["aya_theme_info"][0] )
-    if form.has_key( "aya_stat_info" ): flags["aya_stat_info"] = TRUE_FALSE( form["aya_stat_info"][0] )
-    if form.has_key( "aya_sajda_info" ): flags["aya_sajda_info"] = TRUE_FALSE( form["aya_sajda_info"][0] )
-    if form.has_key( "annotation_aya" ): flags["annotation_aya"] = TRUE_FALSE( form["annotation_aya"][0] )
-    if form.has_key( "annotation_word" ): flags["annotation_word"] = TRUE_FALSE( form["annotation_word"][0] )
-    if form.has_key( "fuzzy" ): flags["fuzzy"] = TRUE_FALSE( form["fuzzy"][0] )
+# Get form arguments and build the flags dict
+flags = {}
+for key, value in form.items():
+    flags[key] = value[0]
 
+
+if len(flags):    
     print JSON_HEADER
     print JSONoutput.do( flags )
-
 
 else:
     print HTTP_HEADER
