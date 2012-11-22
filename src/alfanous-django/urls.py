@@ -8,6 +8,7 @@ urlpatterns = patterns('',
     # Examples:
     # url(r'^$', 'alfanousDjango.views.home', name='home'),
     url(r'^wui/', 'alfanous-django.wui.views.results'),
+    url(r'^jos2/', 'alfanous-django.wui.views.jos2'),
    
     # Uncomment the admin/doc line below to enable admin documentation:
     # url(r'^admin/doc/', include('django.contrib.admindocs.urls')),

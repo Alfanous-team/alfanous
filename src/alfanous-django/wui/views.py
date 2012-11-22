@@ -12,12 +12,36 @@ from django.utils.translation import pgettext_lazy # for ambiguities
 from django.utils.translation import get_language_info
 
 
+import json
+from sys import path
+path.append( "alfanous.egg/alfanous" )
 
+from alfanous.Outputs import Raw
 
+RAWoutput = Raw() #use default paths
+
+def jos2(request):
+    """ JSON Output System II """
+
+    if len( request.GET ): 
+        response_data = RAWoutput.do( request.GET )
+        response =  HttpResponse(json.dumps(response_data), mimetype="application/json")
+        response['charset'] = 'utf-8'
+        response['Access-Control-Allow-Origin'] = '*'
+        response['Access-Control-Allow-Methods'] = 'GET'
+        
+    else:
+        response_data = RAWoutput._information["json_output_system_note"]
+        response = HttpResponse(response_data)
+        
+    return response 
+    
 
 
 
 def results(request):
+
+    response = RAWoutput.do( request.GET )
 
     # language information
     language = translation.get_language_from_request(request)
