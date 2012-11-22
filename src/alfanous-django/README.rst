@@ -15,7 +15,7 @@ how to contribute on it?
 
 Test
 ----
-#. Install requirements: Django, Alfanous API.
+#. Install the requirements: `Django <https://www.djangoproject.com/download/>`_, `Alfanous API <https://github.com/Alfanous-team/alfanous/tree/master/src/alfanous>`_ .
 #. Use the manage.py script to run the server:
     
    .. code :: sh
