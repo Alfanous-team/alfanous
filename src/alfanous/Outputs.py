@@ -41,6 +41,10 @@ from alfanous.Data import *
 
 
 STANDARD2UTHMANI = lambda x: std2uth_words[x] if std2uth_words.has_key( x ) else x;
+
+
+
+
 def FREEZE_XRANGE( d ):
 	new_d = dict( d );
 	for k, v in d.items():
@@ -95,9 +99,9 @@ class Raw():
 		  }
 
 	ERRORS = {
-	     0:"success ## action=%(action)s ; query=%(query)s",
-	     1:"no action is chosen or action undefined ## action=%(action)s",
-	     - 1:"fail, reason unknown ## action=%(action)s ; query=%(query)s",
+	     0:"success",
+	     1:"no action is chosen or action undefined",
+	     - 1:"fail, reason unknown",
 	    }
 
 
@@ -282,19 +286,20 @@ class Raw():
 		#Incrementation 
 		for ident in ["TOTAL"]: #["TOTAL",flags[ident]]
 			stats[ident]["total"] += 1
-			action = flags["action"]
-			if action in self._domains["action"]:
-				stats[ident][action]["total"] += 1
-				for flag, val in flags.items():
-					if flag in self._domains.keys():
-						stats[ident][action][flag]["total"] += 1
-						if val in self._domains[flag]:
-							stats[ident][action][flag][str( val )] += 1
+			if flags.has_key("action"):
+				action = flags["action"]
+				if action in self._domains["action"]:
+					stats[ident][action]["total"] += 1
+					for flag, val in flags.items():
+						if flag in self._domains.keys():
+							stats[ident][action][flag]["total"] += 1
+							if val in self._domains[flag]:
+								stats[ident][action][flag][str( val )] += 1
+							else:
+								stats[ident][action][flag]["other"] += 1
 						else:
-							stats[ident][action][flag]["other"] += 1
-					else:
-						stats[ident][action]["other"]["total"] += 1
-			else: stats[ident]["other"]["total"] += 1
+							stats[ident][action]["other"]["total"] += 1
+				else: stats[ident]["other"]["total"] += 1
 		self._stats = stats
 		f = open( Paths.STATS_FILE, "w" )
 		f.write( json.dumps( self._stats ) )
