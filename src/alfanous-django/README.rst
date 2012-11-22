@@ -12,4 +12,15 @@ why?
 
 how to contribute on it?
     cccccccccccccccccccccccccccccccc
+
+Test
+----
+#. Install requirements: Django, Alfanous API.
+#. Use the manage.py script to run the server:
+    
+   .. code :: sh
+
+       $ python manage.py runserver
+
+
     
