@@ -1,5 +1,11 @@
 # Create your views here.
 
+"""
+
+TODO make a fields English-Arabic mapping based on the "bidi" value to be used in localization
+
+"""
+
 
 from django.http import HttpResponse
 from django.shortcuts import render_to_response
@@ -37,8 +43,6 @@ def jos2(request):
     return response 
     
 
-
-
 def results(request):
 
     response = RAWoutput.do( request.GET )
@@ -54,4 +58,17 @@ def results(request):
     request.LANGUAGE_CODE = translation.get_language()
     
 
-    return render_to_response('wui.html', {"bidi": "rtl" if language_info['bidi'] else "ltr","language_local_name": language_info['name_local']})
+    return render_to_response('wui.html', 
+                              {
+                                "bidi": "rtl" if language_info['bidi'] 
+                                              else "ltr",
+                                "language_local_name": language_info['name_local'],
+                                "align": "right" if language_info['bidi'] 
+                                              else "left",
+                                "align_inverse": "left" if language_info['bidi'] 
+                                              else "right",
+                                "image_extension": "_ar" if language_info['bidi'] 
+                                              else "_en"
+                                
+                               }
+                              )
