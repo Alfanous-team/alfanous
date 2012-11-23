@@ -71,7 +71,7 @@ class Raw():
 		    "maxrange":25,
 		    "results_limit":6236,
 		    "flags":{
-				  "action":"error",
+				  "action":"search",
 			      "ident":"undefined",
 			      "platform":"undefined",
 			      "domain":"undefined",
