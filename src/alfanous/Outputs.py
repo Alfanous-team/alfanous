@@ -476,7 +476,7 @@ class Raw():
 					output["words"][cpt]["annotations"] = current_word_annotations
 					output["words"][cpt]["nb_annotations"] = len ( current_word_annotations )
 
-		output["runtime"] = extend_runtime
+		output["runtime"] = round(extend_runtime, 5)
 		output["interval"] = {"start":start, "end":end, "total":len( res )}
 		output["translation_info"] = {}
 		### Ayas
