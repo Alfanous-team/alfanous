@@ -230,7 +230,7 @@
 								results += "<div class='details_label word_vocalization_nb'> vocalizations | "+ json.search.words[i].nb_vocalizations+ "</div>";
 								for( j = 0; j < json.search.words[i].nb_vocalizations; j++) 
 									{
-									results += build_search_link(param, "آية_:"+ json.search.words[i].vocalizations[j] + "", false ) + "<div class='details_label word_vocalization clickable'>"+ json.search.words[i].vocalizations[j]+ "</div></a>";
+									results += build_search_link(param, "aya_:"+ json.search.words[i].vocalizations[j] + "", false ) + "<div class='details_label word_vocalization clickable'>"+ json.search.words[i].vocalizations[j]+ "</div></a>";
 									}
 								results += "</div></p>";
 							}	
@@ -259,9 +259,9 @@
 						results += "<span id='audioplayer_"+ i+ "'>(<a href='"+ json.search.ayas[i].aya.recitation+ "' target='_blank'>Recitation</a>)</span>";  
 						results += "<div class='sura_details'>";
 
-							results += build_search_link(param, "سورة:\"" + json.search.ayas[i].sura.name +"\"", true) + "<div class='details_label sura_info0 clickable filter'> Surah | "+ json.search.ayas[i].sura.name+ "</div></a> ";
+							results += build_search_link(param, "sura:\"" + json.search.ayas[i].sura.name +"\"", true) + "<div class='details_label sura_info0 clickable filter'> Surah | "+ json.search.ayas[i].sura.name+ "</div></a> ";
 							results += "<div class='details_label sura_ord0'> n° | "+ json.search.ayas[i].sura.id+ "</div>";
-							results += build_search_link(param, "نوع_السورة:" +  json.search.ayas[i].sura.type , true) + "<div class='details_label sura_info1 clickable filter'> type | "+ json.search.ayas[i].sura.type+ "</div></a>";
+							results += build_search_link(param, "sura_type:" +  json.search.ayas[i].sura.type , true) + "<div class='details_label sura_info1 clickable filter'> type | "+ json.search.ayas[i].sura.type+ "</div></a>";
 							results += "<div class='details_label sura_ord1'> revel_order | "+ json.search.ayas[i].sura.order+ "</div></a>";
 							results += "<div class='details_label sura_stat0'> ayahs | "+ json.search.ayas[i].sura.stat.ayas+ "</div> ";
 							results += "<div class='details_label sura_stat1'> words | "+ json.search.ayas[i].sura.stat.words+ " </div>";
@@ -290,7 +290,7 @@
 								}
 						}
 						results += "</span> ";
-						results += " <span>("+ build_search_link(param,"رقم_الآية:" + json.search.ayas[i].aya.id ,false ) +   json.search.ayas[i].aya.id + "</a>)</span> ";
+						results += " <span>("+ build_search_link(param,"aya_id:" + json.search.ayas[i].aya.id ,false ) +   json.search.ayas[i].aya.id + "</a>)</span> ";
 						results += "] <br></span></p><br />";
 						
 					results += "<p dir='ltr' align='center' >";
@@ -298,28 +298,28 @@
 					results += "<br><p align='center' >";
 						
 						results += "<span style=' color:#808080;'>"
-						if (json.search.ayas[i].theme.chapter)	results += "Chapter : "+ build_search_link(param,"فصل:\"" +  json.search.ayas[i].theme.chapter + "\"",false )+ "<b>"+ json.search.ayas[i].theme.chapter+ "</b></a> ";
-						if (json.search.ayas[i].theme.topic) results += "Topic : " + build_search_link(param, "فرع:\"" + json.search.ayas[i].theme.topic +"\"",false) +"<b>"+ json.search.ayas[i].theme.topic+ "</b></a> ";
-						if (json.search.ayas[i].theme.subtopic) results += "Subtopic : " + build_search_link(param, "باب:\"" + json.search.ayas[i].theme.subtopic +"\"", false) +"<b>"+ json.search.ayas[i].theme.subtopic+ "</b></a>"; 
+						if (json.search.ayas[i].theme.chapter)	results += "Chapter : "+ build_search_link(param,"chapter:\"" +  json.search.ayas[i].theme.chapter + "\"",false )+ "<b>"+ json.search.ayas[i].theme.chapter+ "</b></a> ";
+						if (json.search.ayas[i].theme.topic) results += "Topic : " + build_search_link(param, "topic:\"" + json.search.ayas[i].theme.topic +"\"",false) +"<b>"+ json.search.ayas[i].theme.topic+ "</b></a> ";
+						if (json.search.ayas[i].theme.subtopic) results += "Subtopic : " + build_search_link(param, "subtopic:\"" + json.search.ayas[i].theme.subtopic +"\"", false) +"<b>"+ json.search.ayas[i].theme.subtopic+ "</b></a>"; 
 						results += "</span></p>";						
 								
 						results += "<div class='aya_details'>";
-						results += build_search_link(param,"ك_آ:" + json.search.ayas[i].stat.words, false) + "<div class='details_label aya_stat0 clickable'> words | "+ json.search.ayas[i].stat.words+ "</div></a>";
-						results += build_search_link(param,"ح_آ:" + json.search.ayas[i].stat.letters, false) + "<div class='details_label aya_stat1 clickable'> letters | "+ json.search.ayas[i].stat.letters+ "</div></a>";
-						results += build_search_link(param,"ج_آ:" + json.search.ayas[i].stat.godnames, false) + "<div class='details_label aya_stat2 clickable'> divine names | "+ json.search.ayas[i].stat.godnames+ "</div></a> ";
-						// results += build_search_link(param, "منزل:" + json.search.ayas[i].position.manzil, true) + "<div class='details_label aya_pos0 clickable filter'> manzil | "+ json.search.ayas[i].position.manzil+ "</div></a>";
-						results += build_search_link(param, "حزب:" + json.search.ayas[i].position.hizb, true) +"<div class='details_label aya_pos1 clickable filter'> hizb | "+ json.search.ayas[i].position.hizb+ "</div></a>";
+						results += build_search_link(param,"a_w:" + json.search.ayas[i].stat.words, false) + "<div class='details_label aya_stat0 clickable'> words | "+ json.search.ayas[i].stat.words+ "</div></a>";
+						results += build_search_link(param,"a_l:" + json.search.ayas[i].stat.letters, false) + "<div class='details_label aya_stat1 clickable'> letters | "+ json.search.ayas[i].stat.letters+ "</div></a>";
+						results += build_search_link(param,"a_g:" + json.search.ayas[i].stat.godnames, false) + "<div class='details_label aya_stat2 clickable'> divine names | "+ json.search.ayas[i].stat.godnames+ "</div></a> ";
+						// results += build_search_link(param, "manzil:" + json.search.ayas[i].position.manzil, true) + "<div class='details_label aya_pos0 clickable filter'> manzil | "+ json.search.ayas[i].position.manzil+ "</div></a>";
+						results += build_search_link(param, "hizb:" + json.search.ayas[i].position.hizb, true) +"<div class='details_label aya_pos1 clickable filter'> hizb | "+ json.search.ayas[i].position.hizb+ "</div></a>";
 						results += "<div class='details_label aya_pos2'>quart | "+ (json.search.ayas[i].position.rub + 1 )+ "</div>";		
 
 						
-						results += build_search_link(param, "صفحة:" + json.search.ayas[i].position.page, true) + "<div class='details_label aya_pos3 clickable filter'> page | "+ json.search.ayas[i].position.page+ "</div></a>";
+						results += build_search_link(param, "page:" + json.search.ayas[i].position.page, true) + "<div class='details_label aya_pos3 clickable filter'> page | "+ json.search.ayas[i].position.page+ "</div></a>";
 					results += "</div><br />";
 						
 					if (  json.search.ayas[i].sajda.exist == true)
 					{
 						
 						results += "<br /><div>";
-						results += build_search_link(param,"سجدة:نعم",false) + "<div class='details_label aya_sajda_exist clickable'> Sajdah  " + "</div></a>";
+						results += build_search_link(param,"sajda:نعم",false) + "<div class='details_label aya_sajda_exist clickable'> Sajdah  " + "</div></a>";
 						
 						results += "<div class='details_label aya_sajda_id'> N° | "+ json.search.ayas[i].sajda.id + "</div>";
 						results += "<div class='details_label aya_sajda_type'> Type | "+ json.search.ayas[i].sajda.type + "</div>";			
