@@ -1,9 +1,7 @@
 #
 # This is Alfanous Makefile
 #
-# Contributors:   
-#	Assem chelli <assem.ch@gmail.com>
-#
+
 
 
 ## Global Version of the project, must be updated in each significant change in 
@@ -75,6 +73,7 @@ default:
 # 2. build all indexes, update all resources, qt files,  localization files, help files
 # 3. make a tarball that contains all downloaded and generated data
 # 4. generate all possible distribution files for all interfaces: API, Desktop interface
+
 ## Kaboom! @TODO: must test this well
 all:  download_all   build   tarball_data  dist_all  clean  #install_all	 
 
