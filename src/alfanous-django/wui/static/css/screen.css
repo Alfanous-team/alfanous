@@ -23,11 +23,11 @@ a.button {
 	display: inline-block;
 	font: bold 16px Helvetica,Arial,sans-serif;
 	height: 15px;
-	padding: 2px 35px 4px 16px;
+	padding: 2px 6px 4px 6px;
 	position: relative;
 	text-decoration: none;
 	text-shadow: 0 0 4px #0F9AA1;
-	width: 6px;
+	width: 50px;
 	-webkit-border-radius: 2px;
 	-moz-border-radius: 2px;
 	background: -moz-linear-gradient(linear,0% 40%,0% 70%,from(#F5F5F5),to(#F1F1F1));
@@ -57,22 +57,23 @@ a.button:active {
 	direction: ltr;
 	font-family: tahoma;
 	font-weight: bold;
-	width: 255px;
+	width: 220px;
 	margin:0;
 }
 
 a{color: gray;}
+.aya_words a { text-decoration: none; }
 a:hover{color: green;}
 .select {
-	background: url("../images/select.gif") no-repeat scroll right top transparent;
+	background: url("../images/select.gif") no-repeat scroll left top transparent;
 	color: gray;
 	font: 13px/17px tahoma;
 	height: 40px;
 	overflow: hidden;
-	padding: 11px 15px 0 0;
+	padding: 11px 0px 0px 30px;
 	position: absolute;
 	width: 191px;
-	text-align:right;
+	text-align:left;
 }
 .styled{height: 40px;
 	margin-right: 3px;
@@ -138,7 +139,7 @@ a:hover{color: green;}
 	left:10px;
 	background-color:#fff;
 	display:none;
-	width:350px;
+	width:300px;
 	padding:15px;
 	border:2px solid #333;
 	-moz-border-radius:6px;
@@ -204,7 +205,7 @@ a:hover{color: green;}
 	-moz-border-radius: 12px;
 	border-radius: 12px;
 	font-size: 14pt;
-	margin: 0 15px 0 0;
+	margin: 0 0px 0 15px;
 	padding: 6px;
 	text-indent: 0;
 	box-shadow: 0 0 8px green;
@@ -226,18 +227,69 @@ a:hover{color: green;}
 	text-align:center;
 }
 
+
+.feedback-box {
+
+	left:0;
+	position: fixed;
+	top:190px;
+
+ }
+
+.feedback-box a {
+	margin-left: -38px;
+	line-height:50px;
+	padding:0 10px;
+	font-weight: bold;
+	-webkit-transform: rotate(-90deg);
+	-moz-transform: rotate(-90deg);
+	-ms-transform: rotate(-90deg);
+	-o-transform: rotate(-90deg);
+	transform: rotate(-90deg);
+	background-color: #3AB034; /*#339A63*/
+	color: white;
+	display: block;
+	height: 41px;
+}
+
+.donate-box {
+
+	left:0;
+	position: fixed;
+	top:300px;
+
+ }
+
+.donate-box a {
+	margin-left: -28px;
+	line-height:50px;
+	padding:0 10px;
+	font-weight: bold;
+	-webkit-transform: rotate(-90deg);
+	-moz-transform: rotate(-90deg);
+	-ms-transform: rotate(-90deg);
+	-o-transform: rotate(-90deg);
+	transform: rotate(-90deg);
+	background-color: #BA30B4; /*#339A63*/
+	color: white;
+	display: block;
+	height: 41px;
+}
+
 .follow-box {
 	border:0 none;
 	clear:both;
 	margin:0;
 	padding:0;
-	position: absolute;
-	top:180px;
+	position: fixed;
+	top:150px;
 	right:0;
 	z-index:95;
 	width:50px;
 	text-align:right;
 }
+
+
 
 .follow-box a:hover {
 	margin-right: 7px;
@@ -295,12 +347,21 @@ a:hover{color: green;}
 
 /* Abdellah */
 
+/*
 #help_btn {
 	position: absolute;
 	top:10px;
 	right:0;
 	z-index:95;
 }
+
+#down_btn {
+	position: absolute;
+	top:10px;
+	right:50px;
+	z-index:95;
+}
+*/
 
 #vote_btn a {
 	font-weight: normal;
@@ -624,12 +685,15 @@ div#footer-small-wrapper {
     border-top: 1px solid #2e353d;
     color: #aaa;
     font-size: 11px;
+
+
 }
 
 div#footer-small {
     width: 960px;
     margin: auto;
     line-height: 30px;
+
 }
 
 div#footer-small a {

@@ -7,7 +7,6 @@ admin.autodiscover()
 urlpatterns = patterns('',
     # Examples:
     # url(r'^$', 'alfanousDjango.views.home', name='home'),
-    url(r'^wui/', 'alfanous-django.wui.views.results'),
     url(r'^jos2/', 'alfanous-django.wui.views.jos2'),
    
     # Uncomment the admin/doc line below to enable admin documentation:
@@ -15,4 +14,5 @@ urlpatterns = patterns('',
 
     # Uncomment the next line to enable the admin:
     url(r'^admin/', include(admin.site.urls)),
+    url(r'^', 'alfanous-django.wui.views.results'),
 )

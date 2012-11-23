@@ -73,7 +73,7 @@ var VKI_attach, VKI_close;
   this.VKI_size = 2;  // Default keyboard size (1-5)
   this.VKI_sizeAdj = true;  // Allow user to adjust keyboard size
   this.VKI_clearPasswords = false;  // Clear password fields on focus
-  this.VKI_imageURI = "images/keyboard.png";  // If empty string, use imageless mode
+  this.VKI_imageURI = "/static/images/keyboard.png";  // If empty string, use imageless mode
   this.VKI_clickless = 0;  // 0 = disabled, > 0 = delay in ms
   this.VKI_activeTab = 0;  // Tab moves to next: 1 = element, 2 = keyboard enabled element
   this.VKI_enterSubmit = false;  // Submit forms when Enter is pressed
@@ -88,18 +88,18 @@ var VKI_attach, VKI_close;
 
   /* ***** i18n text strings ************************************* */
   this.VKI_i18n = {
-    '00': "عرض لوحة الأرقام",
-    '01': "عرض لوحة مفاتيح افتراضية",
+    '00': "Display Number Pad",
+    '01': "Display virtual keyboard interface",
     '02': "Select keyboard layout",
     '03': "Dead keys",
     '04': "On",
     '05': "Off",
-    '06': "إغلاق لوحة المفاتيح الافتراضية",
-    '07': "مسح",
-    '08': "مسح",
+    '06': "Close the keyboard",
+    '07': "Clear",
+    '08': "Clear this input",
     '09': "Version",
-    '10': "تصغير الحجم",
-    '11': "تكبير الحجم"
+    '10': "Decrease keyboard size",
+    '11': "Increase keyboard size"
   };
 
 

@@ -8,8 +8,9 @@ hash_kv_sep = ':';
 // hash_decode = [ '+',  '%23', '%2C', '%3A', ];
 
 defaultParams = {
-	search: "",
-	recitation: "Mishary Rashid Alafasy",
+	action: "search",	
+	query: "",
+	recitation: "1",
 	translation: "shakir",
 	sortedby: "score",
 	page: "1",
@@ -101,11 +102,11 @@ function build_hash ( params ) {
 function set_search_params ( params ) {
 	// parent.location.hash = build_hash ( params );
 	// window.location = get_url_without_params () + "?" + build_params ( params );
-	$("#search_box").val( params.search );
-	$("#recitation").val( params.recitation );
+	$("#search_box").val( params.query );
+	$("#recitation").val( params.recitation ); 
 	$("#translation").val( params.translation );
 	$("#sortedby").val( params.sortedby );
-	document.title = "الفانوس | نتائج البحث عن: " + params.search;
+	document.title = "الفانوس | نتائج البحث عن: " + params.query;
 }
 
 function redirect_to_params ( params ) {
