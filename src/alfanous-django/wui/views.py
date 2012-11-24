@@ -45,8 +45,10 @@ def jos2(request):
 
 def results(request):
 
-    response = RAWoutput.do( request.GET )
-
+    raw_results = RAWoutput.do( request.GET )
+    raw_suggestions = RAWoutput.do( { "action":"suggest", "query": request.GET["query"] } )
+    
+    
     # language information
     language = translation.get_language_from_request(request)
     language_info = get_language_info(language)
@@ -68,7 +70,11 @@ def results(request):
                                 "align_inverse": "left" if language_info['bidi'] 
                                               else "right",
                                 "image_extension": "_ar" if language_info['bidi'] 
-                                              else "_en"
+                                              else "_en",
+                                              
+        
+                                "results": raw_results,
+                                "suggestions": raw_suggestions
                                 
                                }
                               )

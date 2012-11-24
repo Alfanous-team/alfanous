@@ -149,12 +149,6 @@
 
 			$("#search_result").html("");
 
-			// Note
-			results += "<br /><br /><span class='xbre'> {{ _("Search results") }}</span><br /><br />";
-			
-			// Round runtime to 5 decimals 
-			runtime = Math.round(json.search.runtime * Math.pow(10,5))/Math.pow(10,5)
-			results += "<center><b>{{ _("Runtime") }}</b> : "+ runtime + "{{ _("seconds") }} </center>";
 
 			// Suggestions
 			
@@ -649,6 +643,17 @@
 <!--  <br /><br />
 <div id="vote_btn"><a class='xbutton gray' href="https://docs.google.com/spreadsheet/viewform?formkey=dEZZaE5fQ0NwQXljU2ZyUmpfLW15SVE6MA#gid=0" target="_blank"><i>Note 09-11-2012:</i> Please help us improving <b>Alfanous</b> Project, by taking this survey about search features in Holy Quran </a></div>
 <br /><br />  -->
+
+<!-- assem: search_result_django_static -->
+{% if results.error.code == 0 and results.search.interval.start >= 1  %} 
+
+<div id="search_result_static" style="direction:{{ bidi }}; width:800px">
+<br /><br /><span class='xbre'> {{ _("Search results") }}</span><br /><br />
+<center><b>{{ _("Runtime") }}</b> : {{ results.search.runtime }} {{ _("seconds") }} </center>
+</div>
+
+{% endif %}
+
 
 <!--abdellah-->
 <div id="search_result" style="direction:{{ bidi }}; width:800px"></div>
