@@ -405,7 +405,6 @@ class Raw():
 					annotation_word_query += u" OR normalized:%s " % STANDARD2UTHMANI( term[1] )
 					vocalizations = vocalization_dict[term[1]] if vocalization_dict.has_key(term[1]) \
 															   else []
-					
 					nb_vocalizations_globale += len( vocalizations )
 					words_output[ cpt ] = {"word":term[1], "nb_matches":term[2], "nb_ayas":term[3], "nb_vocalizations": len( vocalizations ), "vocalizations": vocalizations}
 					cpt += 1
