@@ -1,8 +1,10 @@
 #!/bin/python
 # config : utf-8
 
-from alfanous.main import TraductionSearchEngine
 import json
+
+from alfanous.main import TraductionSearchEngine
+
 
 LANGS = {'el': 'Greek', 'eo': 'Esperanto', 'en': 'English', 'vi': 'Vietnamese', 'ca': 'Catalan', 'it': 'Italian', 'lb': 'Luxembourgish', 'eu': 'Basque', 'ar': 'Arabic', 'bg': 'Bulgarian', 'cs': 'Czech', 'et': 'Estonian', 'gl': 'Galician', 'id': 'Indonesian', 'ru': 'Russian', 'nl': 'Dutch', 'pt': 'Portuguese', 'no': 'Norwegian', 'tr': 'Turkish', 'lv': 'Latvian', 'lt': 'Lithuanian', 'th': 'Thai', 'es_ES': 'Spanish', 'ro': 'Romanian', 'en_GB': 'British English', 'fr': 'French', 'hy': 'Armenian', 'uk': 'Ukrainian', 'pt_BR': 'Brazilian', 'hr': 'Croatian', 'de': 'German', 'da': 'Danish', 'fa': 'Persian', 'bs': 'Bosnian', 'fi': 'Finnish', 'hu': 'Hungarian', 'ja': 'Japanese', 'he': 'Hebrew', 'ka': 'Georgian', 'zh_CN': 'Chinese', 'kk': 'Kazakh', 'sr': 'Serbian', 'sq': 'Albanian', 'ko': 'Korean', 'sv': 'Swedish', 'mk': 'Macedonian', 'sk': 'Slovak', 'pl': 'Polish', 'ms': 'Malay', 'sl': 'Slovenian'} #languages 
 
