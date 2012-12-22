@@ -186,7 +186,7 @@
 
 				// Pages control
 				results_pages += "<br />";
-				results_pages += "<div class='pages'>\n<img src='/static/images/prev.gif' alt='{{ _("Previous page") }}' title = '{{ _("Previous page") }}' /><div style=' display:inline-block; position:relative; top:-8px;'>\n";
+				results_pages += "<div class='pages'>\n<img src='/static/images/prev{{ image_extension }}.gif' alt='{{ _("Previous page") }}' title = '{{ _("Previous page") }}' /><div style=' display:inline-block; position:relative; top:-8px;'>\n";
 				for( i = 1;  i <= nb_pages ; i++) 
 				{
 					if (i == page)
@@ -207,7 +207,7 @@
 					}
 
 				}
-				results_pages += "</div><img src='/static/images/next.gif' alt='{{ _("Next page") }}' title = '{{ _("Next page") }}' />\n</div>\n";
+				results_pages += "</div><img src='/static/images/next{{ image_extension }}.gif' alt='{{ _("Next page") }}' title = '{{ _("Next page") }}' />\n</div>\n";
 				
 				if (json.search.words["global"].nb_words > 0)
 					{
@@ -560,7 +560,7 @@
 <div>
 <table>
 	<tr>
-		<td colspan="4" style="background:url(/static/images/logo.png); width:395px; height:209px;"> </td>
+		<td colspan="4" style="background:url(/static/images/logo{{ image_extension }}.png); width:385px; height:200px;"> </td>
 	</tr>
 	<tr>
 		<td style="background:url(/static/images/main_table_02.png) no-repeat;width:50px;height:26px"> </td>
