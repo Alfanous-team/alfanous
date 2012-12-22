@@ -27,17 +27,16 @@ TODO multithreading server-clients
 TODO send error messages (no results, parsing exception)
 
 """
+from sys import path
 
-import cgi, cgitb
+import cgi
+import cgitb
 cgitb.enable()
 
-form = cgi.FormContentDict()
-
-
-from sys import path
 path.append( "alfanous.egg/alfanous" )
-
 from alfanous.Outputs import Json
+
+
 
 JSONoutput = Json() #use default paths
 
@@ -50,8 +49,8 @@ HTTP_HEADER = """Content-Type: text/html; charset=utf-8\n\n
 
 """
 
-
 # Get form arguments and build the flags dict
+form = cgi.FormContentDict()
 flags = {}
 for key, value in form.items():
     flags[key] = value[0]

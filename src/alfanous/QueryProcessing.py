@@ -580,7 +580,7 @@ class QuranicParser( ArabicParser ):
             if word in derivedict["word_"]: indexsrc = "word_"
             elif word in derivedict["lemma"]: indexsrc = "lemma"
             elif word in derivedict["root"]: indexsrc = "root"
-            else: indexsrc = "none" #warning
+            else: indexsrc = None #warning
             #define destination level index
             if leveldist == 0: indexdist = "word_"
             elif leveldist == 1: indexdist = "lemma"
@@ -592,10 +592,12 @@ class QuranicParser( ArabicParser ):
             Find = lambda source, dist, itm: [dist[i] for i in [i for i in range( len( source ) ) if source[i] == itm]]
 
             lst = []
-            if indexsrc != "none":
+            if indexsrc: #if index source level is definded
                 itm = locate( derivedict[indexsrc], derivedict[indexdist], word )
-                #print itm
-                lst = filter_doubles( Find( derivedict[indexdist], derivedict["word_"], itm ) )
+                if itm: # if different of none
+                    lst = filter_doubles( Find( derivedict[indexdist], derivedict["word_"], itm ) )
+                else:
+                    lst=[word]
 
             return lst
 

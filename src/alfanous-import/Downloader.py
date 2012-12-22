@@ -24,7 +24,6 @@
 
 
 @note:  read the licences of those ressources before download them
-@to do : download Tanzil,Translations
 '''
 
 #import twill  ## disabled tempararily because a bug in twill with python2.6 
