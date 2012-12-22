@@ -3,8 +3,9 @@
 
 """ a space for tests and misc functions """
 
-import locale
 import sys
+import locale
+
 from  alfanous.Constantes import BUCKWALTER2UNICODE
 
 
