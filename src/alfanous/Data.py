@@ -3,9 +3,13 @@ Created on Jun 15, 2012
 
 TODO build paths based on running platform
 '''
-from alfanous.main import QuranicSearchEngine, FuzzyQuranicSearchEngine, \
-                         TraductionSearchEngine, WordSearchEngine
-import os, json
+import os
+import json
+
+
+from alfanous.main import QuranicSearchEngine, FuzzyQuranicSearchEngine
+from alfanous.main import TraductionSearchEngine, WordSearchEngine
+
 
 
 # default paths

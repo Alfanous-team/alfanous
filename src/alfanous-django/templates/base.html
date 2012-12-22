@@ -186,7 +186,7 @@
 
 				// Pages control
 				results_pages += "<br />";
-				results_pages += "<div class='pages'>\n<img src='/static/images/prev.gif' alt='{{ _("Previous page") }}' title = '{{ _("Previous page") }}' /><div style=' display:inline-block; position:relative; top:-8px;'>\n";
+				results_pages += "<div class='pages'>\n<img src='/static/images/prev{{ image_extension }}.gif' alt='{{ _("Previous page") }}' title = '{{ _("Previous page") }}' /><div style=' display:inline-block; position:relative; top:-8px;'>\n";
 				for( i = 1;  i <= nb_pages ; i++) 
 				{
 					if (i == page)
@@ -207,7 +207,7 @@
 					}
 
 				}
-				results_pages += "</div><img src='/static/images/next.gif' alt='{{ _("Next page") }}' title = '{{ _("Next page") }}' />\n</div>\n";
+				results_pages += "</div><img src='/static/images/next{{ image_extension }}.gif' alt='{{ _("Next page") }}' title = '{{ _("Next page") }}' />\n</div>\n";
 				
 				if (json.search.words["global"].nb_words > 0)
 					{
@@ -263,7 +263,7 @@
 							results += "<div class='details_label sura_ord0'> {{ _("n°") }} | "+ json.search.ayas[i].sura.id+ "</div>";
 							results += build_search_link(param, "sura_type:" +  json.search.ayas[i].sura.type , true) + "<div class='details_label sura_info1 clickable filter'> {{ _("type") }} | "+ json.search.ayas[i].sura.type+ "</div></a>";
 							results += "<div class='details_label sura_ord1'> {{ _("revelation_order") }}  | "+ json.search.ayas[i].sura.order+ "</div></a>";
-							results += "<div class='details_label sura_stat0'> {{ _("ayahs") }} |  | "+ json.search.ayas[i].sura.stat.ayas+ "</div> ";
+							results += "<div class='details_label sura_stat0'> {{ _("ayahs") }} | "+ json.search.ayas[i].sura.stat.ayas+ "</div> ";
 							results += "<div class='details_label sura_stat1'> {{ _("words") }} | "+ json.search.ayas[i].sura.stat.words+ " </div>";
 							results += "<div class='details_label sura_stat2'> {{ _("letters") }} | "+ json.search.ayas[i].sura.stat.letters+ "</div>";
 							results += "<div class='details_label sura_stat3'> {{ _("devine names") }} | "+ json.search.ayas[i].sura.stat.godnames+ "</div>";
@@ -560,7 +560,7 @@
 <div>
 <table>
 	<tr>
-		<td colspan="4" style="background:url(/static/images/logo.png); width:395px; height:209px;"> </td>
+		<td colspan="4" style="background:url(/static/images/logo{{ image_extension }}.png); width:385px; height:200px;"> </td>
 	</tr>
 	<tr>
 		<td style="background:url(/static/images/main_table_02.png) no-repeat;width:50px;height:26px"> </td>

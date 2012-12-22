@@ -14,13 +14,16 @@ a specific crawler to find ayates in the web,authentificate them and then index 
 
 '''
 
-
+import sys
+import os
 import re
+from os import makedirs, path 
+from types import StringTypes
+
 from whoosh.index import create_in
 from whoosh.fields import * 
 from whoosh import index
 from whoosh.index import open_dir
-from os import makedirs, path 
 
 from harvestman.apps.spider import HarvestMan
 from harvestman.lib.common.common import objects
@@ -31,8 +34,8 @@ from sgmllib import SGMLParser
 spanreg = re.compile('"class=\"aya\"""')
 
 
-import sys, os
-from types import StringTypes
+
+
 
 # You can write a variety of custom crawlers by combining
 # different events and writing handlers for them...
