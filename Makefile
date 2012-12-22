@@ -129,7 +129,7 @@ download_tanzil:
 # 3. list of indexed translations, see update_translations_indexed_list
 # 4. list of offline recitations, see update_recitations_offline_list
 # 5. list of online recitations, see update_recitations_online_list  
-update_post_build:  update_dynamic_resources_postbuild  update_information update_hints update_translations_indexed_list update_recitations_offline_list update_recitations_online_list   
+update_post_build:  update_dynamic_resources_postbuild  update_information update_hints update_translations_indexed_list update_recitations_offline_list #update_recitations_online_list   
 
 ##  update resources that must be updated before indexing phase, which are:
 # 1. Quranic Arabic Corpus, see update_quranic_corpus
@@ -218,13 +218,13 @@ index_all: index_main index_extend #index_word
 	@echo "done;"
 
 index_main:
-	export PYTHONPATH=$(API_PATH) ;	python $(QIMPORT) -x main $(DB_PATH)main.db $(INDEX_PATH)main/
+	export PYTHONPATH=$(API_PATH) ;	rm -r $(INDEX_PATH)main/; python $(QIMPORT) -x main $(DB_PATH)main.db $(INDEX_PATH)main/
 
 index_extend:
-	export PYTHONPATH=$(API_PATH) ;	python $(QIMPORT) -x extend $(STORE_PATH)Translations/ $(INDEX_PATH)extend/
+	export PYTHONPATH=$(API_PATH) ;	rm -r $(INDEX_PATH)extend/; python $(QIMPORT) -x extend $(STORE_PATH)Translations/ $(INDEX_PATH)extend/
 	
 index_word:
-	export PYTHONPATH=$(API_PATH) ;	python $(QIMPORT) -x word $(DB_PATH)main.db $(INDEX_PATH)word/
+	export PYTHONPATH=$(API_PATH) ;	rm -r $(INDEX_PATH)word/; python $(QIMPORT) -x word $(DB_PATH)main.db $(INDEX_PATH)word/
 	
 
 ## build all spellers:

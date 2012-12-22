@@ -26,17 +26,16 @@ it contains the linguistic analysers of Quran and Arabic...etc.
 
 '''
 
-#from alfanous.dynamic_resources import stopwords_dyn ##should test existance before importing
+import re
 
-from alfanous.Support.whoosh.analysis import StopFilter, RegexTokenizer #LowercaseFilter, StandardAnalyzer,
 #from pyarabic.araby  import araby
 
+from alfanous.Support.whoosh.analysis import StopFilter, RegexTokenizer #LowercaseFilter, StandardAnalyzer,
 from alfanous.Support.ar_ctype import strip_tashkeel, strip_tatweel, normalize_spellerrors, normalize_hamza, normalize_lamalef  #, HARAKAT_pat, 
 from alfanous.Support.arabic_const import FATHATAN, DAMMATAN, KASRATAN, FATHA, DAMMA, KASRA, SUKUN, SHADDA # *
+
 from alfanous.Constantes import INVERTEDSHAPING
-
-
-import re
+#from alfanous.dynamic_resources import stopwords_dyn ##should test existence before importing
 
 
 class QSpaceTokenizer( RegexTokenizer ):

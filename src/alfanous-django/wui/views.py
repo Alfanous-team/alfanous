@@ -5,11 +5,13 @@
 TODO make a fields English-Arabic mapping based on the "bidi" value to be used in localization
 
 """
+import json
+import datetime
+from sys import path
 
 
 from django.http import HttpResponse
 from django.shortcuts import render_to_response
-import datetime
 
 from django.utils import translation
 from django.utils.translation import ugettext as _
@@ -17,14 +19,12 @@ from django.utils.translation import ungettext
 from django.utils.translation import pgettext_lazy # for ambiguities
 from django.utils.translation import get_language_info
 
-
-import json
-from sys import path
 path.append( "alfanous.egg/alfanous" )
-
 from alfanous.Outputs import Raw
 
-RAWoutput = Raw() #use default paths
+
+# load the search engine, use default paths
+RAWoutput = Raw()
 
 def jos2(request):
     """ JSON Output System II """

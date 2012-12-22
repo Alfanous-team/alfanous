@@ -26,9 +26,8 @@ it contains  suggestions systems
 @license: AGPL
 
 
-
-
 '''
+
 from alfanous.Support.whoosh.spelling import SpellChecker
 
 class QSuggester( SpellChecker ):

@@ -30,13 +30,24 @@ TODO printing
 """
 
 ## Importing modules
-import sys, os, gettext
+import sys
+import os
+import gettext
+from re import compile
+
+from pyparsing import ParseException
 from configobj import ConfigObj
 from PyQt4 import  QtGui, QtCore, uic
 from PyQt4.QtCore import QRect
-from pyparsing import ParseException
+
 from alfanous.Outputs import Raw
-from re import compile
+## Specification of resources paths
+from alfanous.Data import Paths
+
+## Importing Qt forms
+from mainform_ui import Ui_MainWindow
+from preferencesDlg_ui import Ui_preferencesDlg
+from aboutDlg_ui import Ui_Dialog as Ui_aboutDlg
 
 
 ## Localization using gettext
@@ -45,14 +56,6 @@ n_ = gettext.ngettext
 gettext.bindtextdomain( "alfanousQT" );
 gettext.textdomain( "alfanousQT" );
 
-
-## Specification of resources paths
-from alfanous.Data import Paths
-
-## Importing Qt forms
-from mainform_ui import Ui_MainWindow
-from preferencesDlg_ui import Ui_preferencesDlg
-from aboutDlg_ui import Ui_Dialog as Ui_aboutDlg
 
 ## Initialize search engines 
 RAWoutput = Raw() # default paths
@@ -65,8 +68,6 @@ RELATIONS = ["", "", u"|", u"+", u"-"]
 
 SAJDA_TYPE = {u"مستحبة":_( u"recommended" ), u"واجبة":_( u"obliged" )}
 SURA_TYPE = {u"مدنية":_( u"medina" ), u"مكية":_( u"mekka" )}
-
-
 
 
 CSS = """
