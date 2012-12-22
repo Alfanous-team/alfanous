@@ -25,6 +25,10 @@
 
 TODO reorganize the importer module ,keep it free of un-needed resources
 '''
+import os.path
+import re
+import sqlite3 as lite
+
 
 ## attention : these libraries will be pickled in the indexes
 from alfanous.Support.whoosh.fields import Schema, STORED, ID, KEYWORD, TEXT, NUMERIC
@@ -33,12 +37,6 @@ from alfanous.Support.whoosh.filedb.filestore import FileStorage
 from alfanous.Support.whoosh.store import LockError
 from alfanous.Support.whoosh.spelling import SpellChecker
 from alfanous.Support.whoosh import  index
-
-
-
-import os.path
-import re
-import sqlite3 as lite
 
 
 from alfanous.main import QuranicSearchEngine
