@@ -25,10 +25,10 @@ TODO show RAW|JSON | BEST-presentation format
 TODO __file__ to use resources and indexes integrated with Alfanous Module
 '''
 
-import sys, json
-
-
+import sys
+import json
 from argparse import ArgumentParser
+
 from alfanous.Outputs import Raw
 
 RAWoutput = Raw() #use default paths 

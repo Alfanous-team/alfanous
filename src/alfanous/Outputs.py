@@ -29,14 +29,15 @@ FIXME how to select the translation attached to results, what ID?
 """
 
 
+import json
+import re
+
 
 from alfanous.main import 	QuranicSearchEngine, FuzzyQuranicSearchEngine, TraductionSearchEngine, WordSearchEngine
 from alfanous.dynamic_resources.arabicnames_dyn import ara2eng_names as Fields
 from alfanous.dynamic_resources.std2uth_dyn import std2uth_words
 from alfanous.dynamic_resources.vocalizations_dyn import vocalization_dict
 from alfanous.TextProcessing import QArabicSymbolsFilter
-import json, re
-
 from alfanous.Data import *
 
 
