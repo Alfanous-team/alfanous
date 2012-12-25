@@ -149,38 +149,11 @@
 
 			$("#search_result").html("");
 
-
-			// Suggestions
-			
-			if (json.suggest) {			
-			if (json.suggest.length) {
-				results += "<div id='suggestions' align='{{ align }}'>";
-				results += "<h2 style='font-size:16pt; color:#ff0000;'>{{ _("Suggestions:") }}";
-				$.each(json.suggest, function(key, item) {
-					results += "<p dir='{{ bidi }}' >";
-						results += "<div class='word_details'>";
-							results += "<span style=' font-size:14pt; color:#00aa00;'>"+ (key+ 1)+ ". </span>";
-							results += "<div class='details_label word_info0'>  {{ _("word") }} | "+ item[0]+ "</div>";
-							if (item[1].length) {
-								$.each(item[1], function(sub_key, sub_item) {
-									results += build_search_link(param,sub_item,false) + "<div class='details_label word_stat1 clickable'>"+ sub_item+ "</div></a>";
-								});
-							} else {
-								results += "<div class='details_label word_stat0'>{{ _("no suggestions!") }} </div>";
-							}
-							results += "</div></p>";
-				});
-				results += "</div><br />";
-						};
-					
-					}
-			
-
 			if (json.search.interval.total) {
 
 				// Pages control
 				results_pages += "<br />";
-				results_pages += "<div class='pages'>\n<img src='/static/images/prev{{ image_extension }}.gif' alt='{{ _("Previous page") }}' title = '{{ _("Previous page") }}' /><div style=' display:inline-block; position:relative; top:-8px;'>\n";
+				results_pages += "<div class='pages'>\n<img src='/static/images/prev_en.gif' alt='Previous page' title = 'Previous page' /><div style=' display:inline-block; position:relative; top:-8px;'>\n";
 				for( i = 1;  i <= nb_pages ; i++) 
 				{
 					if (i == page)
@@ -201,27 +174,27 @@
 					}
 
 				}
-				results_pages += "</div><img src='/static/images/next{{ image_extension }}.gif' alt='{{ _("Next page") }}' title = '{{ _("Next page") }}' />\n</div>\n";
+				results_pages += "</div><img src='/static/images/next_en.gif' alt='Next page' title = 'Next page' />\n</div>\n";
 				
 				if (json.search.words["global"].nb_words > 0)
 					{
 					// Words list
 					results += "<div id='search_words' align='left'>";
-					results += "<h2 style='font-size:16pt;  color:#ff0000;'>{{ _("Words:") }}";
-					results += "<div class='details_label word_count'>  {{ _("words") }} | "+ json.search.words["global"].nb_words+ "</div>";
-					results += "<div class='details_label word_stat0'> {{ _("occurances") }} | "+ json.search.words["global"].nb_matches+ "</div>"; 
-					results += "<div class='details_label word_vocalization_nb'> {{ _("vocalizations") }} | "+ json.search.words["global"].nb_vocalizations+ "</div>"; 
+					results += "<h2 style='font-size:16pt;  color:#ff0000;'>Words:";
+					results += "<div class='details_label word_count'>  words | "+ json.search.words["global"].nb_words+ "</div>";
+					results += "<div class='details_label word_stat0'> occurances | "+ json.search.words["global"].nb_matches+ "</div>"; 
+					results += "<div class='details_label word_vocalization_nb'> vocalizations | "+ json.search.words["global"].nb_vocalizations+ "</div>"; 
 					results += "</h2><br />";
 					
 					
 					for( i = 1; i <= json.search.words.global.nb_words; i++) {
-						results += "<p dir='{{ bidi }}' >";
+						results += "<p dir='ltr' >";
 							results += "<div class='word_details'>";
 								results += "<span style=' font-size:14pt; color:#00aa00;'>"+ i+ ". </span>";
-								results += build_search_link(param, json.search.words[i].word, false) +  "<div class='details_label word_info0 clickable'> {{ _("word") }} | "+ json.search.words[i].word+ "</div></a>";
-								results += "<div class='details_label word_stat0'> {{ _("occurnaces") }} | "+ json.search.words[i].nb_matches+ "</div>";
-								results += "<div class='details_label word_stat1'> {{ _("ayates") }} | "+ json.search.words[i].nb_ayas+ "</div>";
-								results += "<div class='details_label word_vocalization_nb'> {{ _("vocalizations") }} | "+ json.search.words[i].nb_vocalizations+ "</div>";
+								results += build_search_link(param, json.search.words[i].word, false) +  "<div class='details_label word_info0 clickable'> word | "+ json.search.words[i].word+ "</div></a>";
+								results += "<div class='details_label word_stat0'> occurnaces | "+ json.search.words[i].nb_matches+ "</div>";
+								results += "<div class='details_label word_stat1'> ayates | "+ json.search.words[i].nb_ayas+ "</div>";
+								results += "<div class='details_label word_vocalization_nb'> vocalizations | "+ json.search.words[i].nb_vocalizations+ "</div>";
 								for( j = 0; j < json.search.words[i].nb_vocalizations; j++) 
 									{
 									results += build_search_link(param, "aya_:"+ json.search.words[i].vocalizations[j] + "", false ) + "<div class='details_label word_vocalization clickable'>"+ json.search.words[i].vocalizations[j]+ "</div></a>";
@@ -236,31 +209,31 @@
 				results += results_pages;
 
 				// Ayas list
-				results += "<br /><h2 style=' font-size:15pt;  color:#ff0000;'>{{ _("Results") }} (";
-				results += json.search.interval.start+ " {{ _("to") }} "+ json.search.interval.end+ " {{ _("of") }} "+ json.search.interval.total+ " )</h2> <br /> ";
+				results += "<br /><h2 style=' font-size:15pt;  color:#ff0000;'>Results (";
+				results += json.search.interval.start+ " to "+ json.search.interval.end+ " of "+ json.search.interval.total+ " )</h2> <br /> ";
 				
 				for( i = json.search.interval.start; i <=json.search.interval.end; i++) 
 				{ 
 				results += "<fieldset class='main_re_item'>";
-					results += "<legend class='main_re_item_title' style='font-size:14pt; ' dir='{{ bidi }}'>";
-						results += "<span align='{{ align }}' style='color:#0000ff;'>{{ _("Result n°") }}<b>"+ i+ "</b> </span>";
-						// results += "<span align='{{ align_inverse }}'><object width='350' height='24' id='audioplayer1' data='swf/player.swf' type='application/x-shockwave-flash'>";
+					results += "<legend class='main_re_item_title' style='font-size:14pt; ' dir='ltr'>";
+						results += "<span align='left' style='color:#0000ff;'>Result n°<b>"+ i+ "</b> </span>";
+						// results += "<span align='right'><object width='350' height='24' id='audioplayer1' data='swf/player.swf' type='application/x-shockwave-flash'>";
 							// results += "<param value='/static/swf/player.swf' name='movie'>";
 							// results += "<param value='playerID=audioplayer1&amp;soundFile="+ json.search.ayas[i].aya.recitation+ "' name='FlashVars'>";
 							// results += "<param value='high' name='quality'>";
 							// results += "<param value='false' name='menu'>";
 							// results += "<param value='transparent' name='wmode'></object></span><br />";
-						results += "<span id='audioplayer_"+ i+ "'>(<a href='"+ json.search.ayas[i].aya.recitation+ "' target='_blank'>{{ _("Recitation") }}</a>)</span>";  
+						results += "<span id='audioplayer_"+ i+ "'>(<a href='"+ json.search.ayas[i].aya.recitation+ "' target='_blank'>Recitation</a>)</span>";  
 						results += "<div class='sura_details'>";
 
-							results += build_search_link(param, "sura:\"" + json.search.ayas[i].sura.name +"\"", true) + "<div class='details_label sura_info0 clickable filter'> {{ _("Sura") }} | "+ json.search.ayas[i].sura.name+ "</div></a> ";
-							results += "<div class='details_label sura_ord0'> {{ _("n°") }} | "+ json.search.ayas[i].sura.id+ "</div>";
-							results += build_search_link(param, "sura_type:" +  json.search.ayas[i].sura.type , true) + "<div class='details_label sura_info1 clickable filter'> {{ _("type") }} | "+ json.search.ayas[i].sura.type+ "</div></a>";
-							results += "<div class='details_label sura_ord1'> {{ _("revelation_order") }}  | "+ json.search.ayas[i].sura.order+ "</div></a>";
-							results += "<div class='details_label sura_stat0'> {{ _("ayahs") }} | "+ json.search.ayas[i].sura.stat.ayas+ "</div> ";
-							results += "<div class='details_label sura_stat1'> {{ _("words") }} | "+ json.search.ayas[i].sura.stat.words+ " </div>";
-							results += "<div class='details_label sura_stat2'> {{ _("letters") }} | "+ json.search.ayas[i].sura.stat.letters+ "</div>";
-							results += "<div class='details_label sura_stat3'> {{ _("devine names") }} | "+ json.search.ayas[i].sura.stat.godnames+ "</div>";
+							results += build_search_link(param, "sura:\"" + json.search.ayas[i].sura.name +"\"", true) + "<div class='details_label sura_info0 clickable filter'> Sura | "+ json.search.ayas[i].sura.name+ "</div></a> ";
+							results += "<div class='details_label sura_ord0'> n° | "+ json.search.ayas[i].sura.id+ "</div>";
+							results += build_search_link(param, "sura_type:" +  json.search.ayas[i].sura.type , true) + "<div class='details_label sura_info1 clickable filter'> type | "+ json.search.ayas[i].sura.type+ "</div></a>";
+							results += "<div class='details_label sura_ord1'> revelation_order  | "+ json.search.ayas[i].sura.order+ "</div></a>";
+							results += "<div class='details_label sura_stat0'> ayahs | "+ json.search.ayas[i].sura.stat.ayas+ "</div> ";
+							results += "<div class='details_label sura_stat1'> words | "+ json.search.ayas[i].sura.stat.words+ " </div>";
+							results += "<div class='details_label sura_stat2'> letters | "+ json.search.ayas[i].sura.stat.letters+ "</div>";
+							results += "<div class='details_label sura_stat3'> devine names | "+ json.search.ayas[i].sura.stat.godnames+ "</div>";
 							results += "</div>";
 						results += "</legend>";
 					results += "<br><p align='center'>";
@@ -292,31 +265,31 @@
 					results += "<br><p align='center' >";
 						
 						results += "<span style=' color:#808080;'>"
-						if (json.search.ayas[i].theme.chapter)	results += "{{ _("Chapter")  }} : "+ build_search_link(param,"chapter:\"" +  json.search.ayas[i].theme.chapter + "\"",false )+ "<b>"+ json.search.ayas[i].theme.chapter+ "</b></a> ";
-						if (json.search.ayas[i].theme.topic) results += "{{ _("Topic")  }} : " + build_search_link(param, "topic:\"" + json.search.ayas[i].theme.topic +"\"",false) +"<b>"+ json.search.ayas[i].theme.topic+ "</b></a> ";
-						if (json.search.ayas[i].theme.subtopic) results += "{{ _("Subtopic") }} : " + build_search_link(param, "subtopic:\"" + json.search.ayas[i].theme.subtopic +"\"", false) +"<b>"+ json.search.ayas[i].theme.subtopic+ "</b></a>"; 
+						if (json.search.ayas[i].theme.chapter)	results += "Chapter : "+ build_search_link(param,"chapter:\"" +  json.search.ayas[i].theme.chapter + "\"",false )+ "<b>"+ json.search.ayas[i].theme.chapter+ "</b></a> ";
+						if (json.search.ayas[i].theme.topic) results += "Topic : " + build_search_link(param, "topic:\"" + json.search.ayas[i].theme.topic +"\"",false) +"<b>"+ json.search.ayas[i].theme.topic+ "</b></a> ";
+						if (json.search.ayas[i].theme.subtopic) results += "Subtopic : " + build_search_link(param, "subtopic:\"" + json.search.ayas[i].theme.subtopic +"\"", false) +"<b>"+ json.search.ayas[i].theme.subtopic+ "</b></a>"; 
 						results += "</span></p>";						
 								
 						results += "<div class='aya_details'>";
-						results += build_search_link(param,"a_w:" + json.search.ayas[i].stat.words, false) + "<div class='details_label aya_stat0 clickable'> {{ _("words") }}  | "+ json.search.ayas[i].stat.words+ "</div></a>";
-						results += build_search_link(param,"a_l:" + json.search.ayas[i].stat.letters, false) + "<div class='details_label aya_stat1 clickable'> {{ _("letters") }} | "+ json.search.ayas[i].stat.letters+ "</div></a>";
-						results += build_search_link(param,"a_g:" + json.search.ayas[i].stat.godnames, false) + "<div class='details_label aya_stat2 clickable'> {{ _("devine names") }} | "+ json.search.ayas[i].stat.godnames+ "</div></a> ";
-						// results += build_search_link(param, "manzil:" + json.search.ayas[i].position.manzil, true) + "<div class='details_label aya_pos0 clickable filter'> {{ _("manzil") }} | "+ json.search.ayas[i].position.manzil+ "</div></a>";
-						results += build_search_link(param, "hizb:" + json.search.ayas[i].position.hizb, true) +"<div class='details_label aya_pos1 clickable filter'> {{ _("hizb") }} | "+ json.search.ayas[i].position.hizb+ "</div></a>";
-						results += "<div class='details_label aya_pos2'>{{ _("quart") }} | "+ (json.search.ayas[i].position.rub + 1 )+ "</div>";		
+						results += build_search_link(param,"a_w:" + json.search.ayas[i].stat.words, false) + "<div class='details_label aya_stat0 clickable'> words  | "+ json.search.ayas[i].stat.words+ "</div></a>";
+						results += build_search_link(param,"a_l:" + json.search.ayas[i].stat.letters, false) + "<div class='details_label aya_stat1 clickable'> letters | "+ json.search.ayas[i].stat.letters+ "</div></a>";
+						results += build_search_link(param,"a_g:" + json.search.ayas[i].stat.godnames, false) + "<div class='details_label aya_stat2 clickable'> devine names | "+ json.search.ayas[i].stat.godnames+ "</div></a> ";
+						// results += build_search_link(param, "manzil:" + json.search.ayas[i].position.manzil, true) + "<div class='details_label aya_pos0 clickable filter'> manzil | "+ json.search.ayas[i].position.manzil+ "</div></a>";
+						results += build_search_link(param, "hizb:" + json.search.ayas[i].position.hizb, true) +"<div class='details_label aya_pos1 clickable filter'> hizb | "+ json.search.ayas[i].position.hizb+ "</div></a>";
+						results += "<div class='details_label aya_pos2'>quart | "+ (json.search.ayas[i].position.rub + 1 )+ "</div>";		
 
 						
-						results += build_search_link(param, "page:" + json.search.ayas[i].position.page, true) + "<div class='details_label aya_pos3 clickable filter'> {{ _("page") }} | "+ json.search.ayas[i].position.page+ "</div></a>";
+						results += build_search_link(param, "page:" + json.search.ayas[i].position.page, true) + "<div class='details_label aya_pos3 clickable filter'> page | "+ json.search.ayas[i].position.page+ "</div></a>";
 					results += "</div><br />";
 						
 					if (  json.search.ayas[i].sajda.exist == true)
 					{
 						
 						results += "<br /><div>";
-						results += build_search_link(param,"sajda:نعم",false) + "<div class='details_label aya_sajda_exist clickable'> {{ _("sajda") }}  " + "</div></a>";
+						results += build_search_link(param,"sajda:نعم",false) + "<div class='details_label aya_sajda_exist clickable'> sajda  " + "</div></a>";
 						
-						results += "<div class='details_label aya_sajda_id'> {{ _("n°") }} | "+ json.search.ayas[i].sajda.id + "</div>";
-						results += "<div class='details_label aya_sajda_type'> {{ _("type") }} | "+ json.search.ayas[i].sajda.type + "</div>";
+						results += "<div class='details_label aya_sajda_id'> n° | "+ json.search.ayas[i].sajda.id + "</div>";
+						results += "<div class='details_label aya_sajda_type'> type | "+ json.search.ayas[i].sajda.type + "</div>";
 													
 						results += "</div><br />"
 					};
@@ -328,7 +301,9 @@
 				results += results_pages+ "<br />";
 
 			}
+			
 
+			
 			// show result
 			$("#search_result").append(results);
 
@@ -645,14 +620,36 @@
 <br /><br />  -->
 
 <!-- assem: search_result_django_static -->
-{% if results.error.code == 0 and results.search.interval.start >= 1  %} 
-
-<div id="search_result_static" style="direction:{{ bidi }}; width:800px">
-<br /><br /><span class='xbre'> {{ _("Search results") }}</span><br /><br />
-<center><b>{{ _("Runtime") }}</b> : {{ results.search.runtime }} {{ _("seconds") }} </center>
-</div>
+{% if results.error.code == 0  %} 
+	<div id="search_result_static" style="direction:{{ bidi }}; width:800px">
+	<br /><br /><span class='xbre'> {{ _("Search results") }}</span><br /><br />
+	<center><b>{{ _("Runtime") }}</b> : {{ results.search.runtime }} {{ _("seconds") }} </center>
+	</div>
+	<!-- Suggestions-->
+	{% if suggestions.error.code == 0 and suggestions.suggest %} <!-- FIXME if len() > 0 -->
+		<div id='suggestions' align='{{ align }}'>
+		<h2 style='font-size:16pt; color:#ff0000;'>{{ _("Suggestions:") }}
+		{% for suggestion_key, suggestion_item in suggestions.suggest.items %}
+			<p dir='{{ bidi }}' >
+			<div class='word_details'>
+			<span style=' font-size:14pt; color:#00aa00;'> {{ suggestion_key }} </span>
+			<div class='details_label word_info0'>  {{ _("word") }} |  {{ suggestion_item|first }} </div>
+			{% for suggestion_sub_key, suggestion_sub_item in suggestion_item|slice:"1" %}
+				<script type="text/javascript"> build_search_link(param,{{ suggestion_sub_item }},false) </script>
+				<div class='details_label word_stat1 clickable'> {{ suggestion_sub_item }}</div></a>
+			{% empty %}
+				<div class='details_label word_stat0'> {{ _("no suggestions!") }} </div>
+			{% endfor %}
+			</div></p>
+		{% endfor %}
+	</div><br />
+	{% endif %}
 
 {% endif %}
+
+
+
+
 
 
 <!--abdellah-->
