@@ -1018,7 +1018,6 @@ class Phrase(MultiTerm):
                             # means the phrase "linda linda linda" will match a
                             # single "linda" because it will match three times
                             # with a delta of 0.
-                            # TODO: Fix this somehow?
                             if delta <= slop:
                                 newpositions.append(newpos)
 
