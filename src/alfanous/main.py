@@ -16,9 +16,8 @@
 ##     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 '''
-@author: assem
-@contact: assem.ch [at] gmail.com
-@license: AGPL
+ the main module that relay all the modules.
+
 '''
 #from alfanous.dynamic_resources.arabicnames_dyn import ara2eng_names
 from alfanous.Searching import QSearcher, QReader
