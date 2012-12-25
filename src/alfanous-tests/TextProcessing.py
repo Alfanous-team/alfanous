@@ -1,26 +1,33 @@
 # coding: utf-8
 
-from alfanous.TextProcessing import *
+"""
+This is a test module for alfanous.TextProcessing
+
+"""
+
+from alfanous.TextProcessing import QArabicSymbolsFilter, unicode_
 
 
 if __name__ == "__main__":
     ASF = QArabicSymbolsFilter()
-    text = u"عاصِمٌ"
-    text = ASF.normalize_all( text )
-    print text
+    TEXT = u"عاصِمٌ"
+    TEXT = ASF.normalize_all( TEXT )
+    print TEXT
 
-    word1 = unicode_( u"عَاصِمُ" )
-    word2 = unicode_( u"عَاصمُ" )
-    l1 = word1.list_harakat()
-    l2 = word2.list_harakat()
-    word3 = unicode_( u"فاعل" )
-    phrase = unicode_( u"كانَ" )
-    print word3.apply_harakat_list( l1 )
-    print l1, "\n", l2, "\n", unicode_.compare_harakat( l1, l2 )
-    print word1.shakl_compare( word1, word2 )
-    for i in phrase.tokenize_shakl():
+    WORD1 = unicode_( u"عَاصِمُ" )
+    WORD2 = unicode_( u"عَاصمُ" )
+    LIST_HARAKAT1 = WORD1.list_harakat()
+    LIST_HARAKAT2 = WORD2.list_harakat()
+    WORD3 = unicode_( u"فاعل" )
+    PHRASE = unicode_( u"كانَ" )
+    print WORD3.apply_harakat_list( LIST_HARAKAT1 )
+    print LIST_HARAKAT1, "\n", LIST_HARAKAT2
+    print unicode_.compare_harakat( LIST_HARAKAT1, LIST_HARAKAT2 )
+    print WORD1.shakl_compare( WORD1, WORD2 )
+    for i in PHRASE.tokenize_shakl():
         print i,
-    t = unicode_( u"عاصم" )
-    u = unicode_( u"عاصِم" )
+    
+    WORD4 = unicode_( u"عاصم" )
+    WORD5 = unicode_( u"عاصِم" )
 
-    print t == u
+    print WORD4 == WORD5

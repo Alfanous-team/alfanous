@@ -15,11 +15,7 @@
 ##     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 '''
-Created on 24 févr. 2010
-
-@author: Assem Chelli
-@contact: assem.ch [at] gmail.com
-@license: AGPL
+a console interface for the API.
 
 TODO show RAW|JSON | BEST-presentation format
 TODO __file__ to use resources and indexes integrated with Alfanous Module
@@ -31,7 +27,7 @@ from argparse import ArgumentParser
 
 from alfanous.Outputs import Raw
 
-RAWoutput = Raw() #use default paths 
+RAWoutput = Raw() #use default paths
 
 INFORMATION = RAWoutput.do( {"action":"show", "query":"information" } )["show"]["information"]
 DOMAINS = RAWoutput.do( {"action":"show", "query":"domains" } )["show"]["domains"]
@@ -76,12 +72,12 @@ arg_parser.add_argument( "--domain", dest = "domain", type = str, help = HELPMES
 #execute command
 def main():
     args = arg_parser.parse_args()
-            
+
     # Get the arguments as a dictionary and remove None-valued keys.
     flags = {}
-    for k,v in args.__dict__.items():
-        if v!=None:
-            flags[k]=v
+    for k, v in args.__dict__.items():
+        if v != None:
+            flags[k] = v
 
     if args.action and args.query:
         print json.dumps( RAWoutput.do( flags ) )

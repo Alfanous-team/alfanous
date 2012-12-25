@@ -1,9 +1,21 @@
 # coding: utf-8
 
-from alfanous.main import *
+"""
+This is a test module for most of features provided by alfanous.main module.
+
+"""
+import profile
+
+from alfanous.main import QuranicSearchEngine, FuzzyQuranicSearchEngine
+from alfanous.main import TraductionSearchEngine
+from alfanous.main import WordSearchEngine
+from alfanous.main import QPaginate
+#from alfanous.ResultsProcessing import QFilter
+
+
 
 if __name__ == '__main__':
-    import profile
+    
     QSE = QuranicSearchEngine( "../alfanous/indexes/main/" )
     FQSE = FuzzyQuranicSearchEngine( "../alfanous/indexes/main/" )
     TSE = TraductionSearchEngine( "../alfanous/indexes/extend/" )
@@ -11,31 +23,34 @@ if __name__ == '__main__':
 
     if QWSE.OK:
         print "most frequent vocalized words"
-        mfw = QWSE.most_frequent_words( 10, "word" )
-        for term in mfw:
+        MFW = QWSE.most_frequent_words( 10, "word" )
+        for term in MFW:
             print "\t", term[1], " - frequence = ", term[0], "."
         print "most  frequent unvocalized words"
-        mfw = QWSE.most_frequent_words( 10, "normalized" )
-        for term in mfw:
+        MFW = QWSE.most_frequent_words( 10, "normalized" )
+        for term in MFW:
             print "\t", term[1], " - frequence = ", term[0], "."
 
 
-        res, terms = QWSE.search_all( "word_id:1", limit = 6236, sortedby = "score", reverse = True )
-        print len( res )
+        RESULTS, TERMS = QWSE.search_all( "word_id:1", 
+                                       limit = 6236, 
+                                       sortedby = "score", 
+                                       reverse = True )
+        print len( RESULTS )
 
-        print "\n#list field stored values# type"
+        print "\n#list field stored VALUES# type"
         print ",".join( [str( item ) for item in QWSE.list_values( "type" )] )
 
     if QSE.OK:
         print "\n#most frequent words#"
 
-        mfw = QSE.most_frequent_words( 9999999, "uth_" )
-        print len( mfw )
-        f = open( "./uthmani_vocalized.csv", "w+" )
-        for term in mfw:
+        MFW = QSE.most_frequent_words( 9999999, "uth_" )
+        print len( MFW )
+        MFW_CSVFILE = open( "./uthmani_vocalized.csv", "w+" )
+        for term in MFW:
             pass
             #print "\t", term[1], " - frequence = ", term[0], "."
-            #print>>f,"\t", term[1]," ;\t",term[0],"\n"
+            #print>>MFW_CSVFILE,"\t", term[1]," ;\t",term[0],"\n"
 
 
 
@@ -46,15 +61,15 @@ if __name__ == '__main__':
 
     if TSE.OK:
         print "\n#extended search#",
-        results = TSE.find_extended( u"gid:1 OR gid:2", defaultfield = "gid" )
-        print "\n".join( [str( result ) for result in results] )
+        RESULTS = TSE.find_extended( u"gid:1 OR gid:2", defaultfield = "gid" )
+        print "\n".join( [str( result ) for result in RESULTS] )
 
         print "\n#list all translations id#"
         print ",".join( TSE.list_values( "id" ) )
 
 
 
-    string1 = "الصلاة+الزكاة"
+    QUERY1 = "الصلاة+الزكاة"
     # >>الأمل
     # %المأصدة
     # لله
@@ -78,38 +93,49 @@ if __name__ == '__main__':
 
     if QSE.OK:
         print "#suggestions#"
-        for key, value in QSE.suggest_all( string1 ).items():
+        for key, value in QSE.suggest_all( QUERY1 ).items():
             print key, ":", ",".join( value )
         print "\n#search#"
-        res, terms = QSE.search_all( string1, limit = 6236, sortedby = "score", reverse = True )
+        RESULTS, TERMS = QSE.search_all( QUERY1, 
+                                     limit = 6236, 
+                                     sortedby = "score", 
+                                     reverse = True )
 
 
-        #for key,freq in res.key_terms("aya", docs=1, numterms=15000): print key,"(",freq,"),",
+        for key, freq in RESULTS.key_terms("aya", docs=1, numterms=15000): 
+            print key, "(", freq, "),",
 
 
-        '''
-        string2 = u"عاصم"
-        res2,terms2  = QSE.search_all(string2, sortedby="mushaf")
-        res=QFilter(res1,res2)
 
-        terms=terms1|terms2
-        '''
+        ## test filtering results
+        #QUERY2 = u"عاصم"
+        #RESULTS2,TERMS2  = QSE.search_all(QUERY2, sortedby="mushaf")
+        #RESULTS=QFilter(RESULTS,RESULTS2)
+        #TERMS = list( set(TERMS) &  set( TERMS2))
+        
+
 
 
         print "\n#of#"
-        for term in terms:
+        for term in TERMS:
             print "%s  (%d in %d)," % term[1:],
 
-        values = [term[1] for term in list( terms )]
+        VALUES = [term[1] for term in list( TERMS )]
         print "\n#is#"
-        #print res.key_terms("aya")
-        html = u"Results(time=%f,number=%d):\n" % ( res.runtime, len( res ) )
-        for num, respage in QPaginate( res, 5 ):
-            html += "~~~~~page " + str( num ) + "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n"
+        #print RESULTS.key_terms("aya")
+        HTML = u"Results(time=%f,number=%d):\n" % ( 
+                                                   RESULTS.runtime,
+                                                   len( RESULTS ) 
+                                                   )
+        for num, respage in QPaginate( RESULTS, 5 ):
+            HTML += "~~~~~page " + str( num ) + "~~~~~~\n"
             for r in respage:
-                html += "(" + str( r["aya_id"] ) + "," + str( r["sura_id"] ) + ") :" + u"<p>" + QSE.highlight( r["aya_"], values, "html" ) + u"</p>\n"
-            print html
-            html = ""
+                HTML += "(" + \
+                        str( r["aya_id"] ) + "," + \
+                        str( r["sura_id"] ) + ") :<p>" + \
+                        QSE.highlight( r["aya_"], VALUES, "html" ) + u"</p>\n"
+            print HTML
+            HTML = ""
             raw_input( "press any key..." )
 
 
