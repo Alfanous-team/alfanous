@@ -1,5 +1,11 @@
 # coding: utf-8
 
+"""
+A sample script that emphasize the basic operations of Alfanous API.
+
+"""
+
+
 # import Output object
 from alfanous.Outputs import Raw
 
