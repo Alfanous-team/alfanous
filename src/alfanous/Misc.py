@@ -6,7 +6,7 @@
 import sys
 import locale
 
-from  alfanous.Constantes import BUCKWALTER2UNICODE
+from  alfanous.Constants import BUCKWALTER2UNICODE
 
 
 #translation functions
