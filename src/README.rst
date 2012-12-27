@@ -1,14 +1,16 @@
 ==============
 Code Structure
 ==============
+
 This is a quick view of the source code structure of Alfanous project explaining the different packages and modules.
 
 --------
 Packages
 -------- 
-:alfanous: the main API of the project, offers the search features.
-:alfanous-import: a library responsible of all management tasks of Quranic & Linguistic resources.
-:alfanous-cgi: a small script to execute the API in a web CGI environment.
+
+:alfanous: the main API of the project, offers the search features. 
+:alfanous-import: a library responsible of all management tasks of Quranic & Linguistic resources. 
+:alfanous-cgi: a small script to execute the API in a web CGI environment. 
 :alfanous-desktop: a desktop interface made by QT & PyQt.
 :alfanous-django: a django app replaces the old web user interface and also the cgi script.
 :alfanous-labs:  all related libraries that still in alpha phase.
@@ -19,7 +21,8 @@ Packages
 
 -----------------------------
 API Modules, Files (alfanous)
-------------------------------
+-----------------------------
+
 :main.py: the main module that relay all the modules.
 :console.py: a console interface for the API.
 :Outputs.py: the programming interface, responsible of the output of all results.
