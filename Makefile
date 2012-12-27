@@ -398,7 +398,6 @@ install_web_basic:
 	#rm -r  $(WEB_INSTALL_PATH)
 	mkdir -p $(WEB_INSTALL_PATH)
 	chmod 755 -R $(WEB_INSTALL_PATH)
-	cd ./interfaces/web/ ;  cp ./AGPL $(WEB_INSTALL_PATH)
 	#cd ./interfaces/web/ ;  cp  htaccess $(WEB_INSTALL_PATH)".htaccess"
 	cd ./interfaces/web/ ;  vi alfanous ; cp alfanous /etc/apache2/sites-available/ #configure well this file 
 
