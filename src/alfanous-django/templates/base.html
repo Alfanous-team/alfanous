@@ -1,6 +1,6 @@
 
 
-
+{% load custom_filters %}
 
 
 <!DOCTYPE html>
@@ -644,10 +644,30 @@
 		{% endfor %}
 	</div><br />
 	{% endif %}
+	{% if results.search.interval.total %}
+		<!-- Pages control -->
+		<br />
+		<div class='pages'>
+		<img src='/static/images/prev_en.gif' alt='Previous page' title = 'Previous page' />
+		<div style=' display:inline-block; position:relative; top:-8px;'>
+		{% for i in results.search.interval.nb_pages|get_range %}
+			{% with results.search.interval.page as page %}
+				{% ifequal  i page %}
+					 {{ i }} 	
+				{% else %}
+					 <a href=''>{{ i }}</a> 
+				{% endifequal %}
+				
+			
+			{% endwith %}
+		{% endfor %}
+		</div>
+		<img src='/static/images/next_en.gif' alt='Next page' title = 'Next page' />
+		</div>
+	{% endif %}		
+
 
 {% endif %}
-
-
 
 
 
@@ -752,7 +772,7 @@
 	<!-- -->
             <div class="column last"> 
                 <p>
-                	<a href="http://www.gnu.org/licenses/agpl.html" target="_blank"><img src="/static/images/agplv3-88x31.png" alt="AGPL Lisence" title="AGPL Lisence"></a>
+                	<!-- <a href="http://www.gnu.org/licenses/agpl.html" target="_blank"><img src="/static/images/agplv3-88x31.png" alt="AGPL Lisence" title="AGPL Lisence"></a> -->
                 	<a href="http://git-scm.com/" target="_blank"><img src="/static/images/Git-Logo.png" alt="Git Logo" title="Git scm"></a>
                 	<a href="http://www.python.org/" target="_blank"><img src="/static/images/python-logo-inkscape.png" alt="Python Powered" title="Python Powered"></a>
                 	<a href="http://www.json.org/" target="_blank"><img src="/static/images/json_logo.png" alt="Provide JSON" title="Provide JSON"></a>
@@ -761,7 +781,7 @@
                 	<a href="http://www.w3.org/html/logo/" target="_blank"><img src="/static/images/html5-32x32.png" alt="Html5 Logo" title="HTML5"></a>
                 	<a href="https://www.djangoproject.com/" target="_blank"><img src="/static/images/Django_logo.png" alt="Django Logo" title="Django"></a>
                 </p>
-                <p class="right"> {{ _("Alfanous is a functional, dynamic, comprehensive Qur’an search engine that has been effectively designed to carry out simple or advanced Quranic searches. Alfanous uses a contemporary, highly developed approach to retrieve vital information, enabling stable efficient, speedy searches to be conducted. Alfanous aims to implement additional features such as highlight, site suggestions, scoring …etc to further improve your search experience. Alfanous understands the complex nature of the Arabic language and thus offers effective Arabic language processing, allowing the stemming and successful elimination of ambiguities. The Application Programming Interface can be used as a fundamental base for developers to build and enhance interface types within different systems, ex: Desktop GUI, Web-based UI…etc.") }}</p>
+                <p class="right justify"> {{ _("Alfanous is a functional, dynamic, comprehensive Qur’an search engine that has been effectively designed to carry out simple or advanced Quranic searches. Alfanous uses a contemporary, highly developed approach to retrieve vital information, enabling stable efficient, speedy searches to be conducted. Alfanous aims to implement additional features such as highlight, site suggestions, scoring …etc to further improve your search experience. Alfanous understands the complex nature of the Arabic language and thus offers effective Arabic language processing, allowing the stemming and successful elimination of ambiguities. The project offers an API that can be used as a fundamental base for developers to build their own applications within different systems, ex: Desktop GUI, Web-based UI…etc.") }}</p>
             </div> 
         </div>
     </div>
