@@ -19,7 +19,8 @@
 
 """
 TODO add to SHOW: TYPES, HELPMSGS,
-TODO offer some linguistic operations like vocalize,derive using  Quranic Corpus  / functions
+TODO offer some linguistic operations like vocalize
+TODO derive using Quranic Corpus/functions
 FIXME use xranges in domains
 FIXME vocalization_dict[terms[1]], test key existance before use
 TODO include suggestions with search results
@@ -33,7 +34,8 @@ import json
 import re
 
 
-from alfanous.main import 	QuranicSearchEngine, FuzzyQuranicSearchEngine, TraductionSearchEngine, WordSearchEngine
+from alfanous.main import QuranicSearchEngine, FuzzyQuranicSearchEngine
+from alfanous.main import TraductionSearchEngine, WordSearchEngine
 from alfanous.dynamic_resources.arabicnames_dyn import ara2eng_names as Fields
 from alfanous.dynamic_resources.std2uth_dyn import std2uth_words
 from alfanous.dynamic_resources.vocalizations_dyn import vocalization_dict
@@ -41,19 +43,20 @@ from alfanous.TextProcessing import QArabicSymbolsFilter
 from alfanous.Data import *
 
 
-STANDARD2UTHMANI = lambda x: std2uth_words[x] if std2uth_words.has_key( x ) else x;
+STANDARD2UTHMANI = lambda x: std2uth_words[x] if std2uth_words.has_key( x ) else x
 
 ## a function to decide what is True and what is false
-TRUE_FALSE = lambda x: False if x in [False, "False", "no", "0", 0, None] else True;
+TRUE_FALSE = lambda x: False if x in [False, "False", "no", "0", 0, None] else True
 
 
 
 def FREEZE_XRANGE( d ):
-	new_d = dict( d );
-	for k, v in d.items():
-		if v.__class__ == xrange:
-			new_d[k] = str( v ) ;
-	return new_d; # JSON doesnt accept serialization of xrange
+    new_d = dict( d );
+    for k, v in d.items():
+        if v.__class__ == xrange:
+            new_d[k] = str( v )
+    return new_d; # JSON doesnt accept serialization of xrange
+
 
 def DEFREEZE_XRANGE( d ):
     """ TODO reversing the operation of freezing xranges done by module alfanous.output """
@@ -330,26 +333,49 @@ class Raw():
 		return the results of search as json
 	    """
 		#flags
-		query = flags["query"] if flags.has_key( "query" ) else self._defaults["flags"]["query"]
-		sortedby = flags["sortedby"] if flags.has_key( "sortedby" ) else self._defaults["flags"]["sortedby"]
-		range = int( flags["perpage"] ) if  flags.has_key( "perpage" )  else flags["range"] if flags.has_key( "range" ) else self._defaults["flags"]["range"]
-		offset = ( ( int( flags["page"] ) - 1 ) * range ) + 1 if flags.has_key( "page" ) else int( flags["offset"] ) if flags.has_key( "offset" ) else self._defaults["flags"]["offset"] ## offset = (page-1) * perpage   --  mode paging
-		recitation = flags["recitation"] if flags.has_key( "recitation" ) else self._defaults["flags"]["recitation"]
-		translation = flags["translation"] if flags.has_key( "translation" ) else self._defaults["flags"]["translation"]
-		highlight = flags["highlight"] if flags.has_key( "highlight" ) else self._defaults["flags"]["highlight"]
-		script = flags["script"] if flags.has_key( "script" ) else self._defaults["flags"]["script"]
-		vocalized = TRUE_FALSE( flags["vocalized"] ) if flags.has_key( "vocalized" ) else self._defaults["flags"]["vocalized"]
-		prev_aya = TRUE_FALSE( flags["prev_aya"] ) if flags.has_key( "prev_aya" ) else self._defaults["flags"]["prev_aya"]
-		next_aya = TRUE_FALSE( flags["next_aya"] ) if flags.has_key( "next_aya" ) else self._defaults["flags"]["next_aya"]
-		sura_info = TRUE_FALSE( flags["sura_info"] ) if flags.has_key( "sura_info" ) else self._defaults["flags"]["sura_info"]
-		word_info = TRUE_FALSE( flags["word_info"] ) if flags.has_key( "word_info" ) else self._defaults["flags"]["word_info"]
-		aya_position_info = TRUE_FALSE( flags["aya_position_info"] ) if flags.has_key( "aya_position_info" ) else self._defaults["flags"]["aya_position_info"]
-		aya_theme_info = TRUE_FALSE( flags["aya_theme_info"] ) if flags.has_key( "aya_theme_info" ) else self._defaults["flags"]["aya_theme_info"]
-		aya_stat_info = TRUE_FALSE( flags["aya_stat_info"] ) if flags.has_key( "aya_stat_info" ) else self._defaults["flags"]["aya_stat_info"]
-		aya_sajda_info = TRUE_FALSE( flags["aya_sajda_info"] ) if flags.has_key( "aya_sajda_info" ) else self._defaults["flags"]["aya_sajda_info"]
-		annotation_aya = TRUE_FALSE( flags["annotation_aya"] ) if flags.has_key( "annotation_aya" ) else self._defaults["flags"]["annotation_aya"]
-		annotation_word = TRUE_FALSE( flags["annotation_word"] ) if flags.has_key( "annotation_word" ) else self._defaults["flags"]["annotation_word"]
-		fuzzy = TRUE_FALSE( flags["fuzzy"] ) if flags.has_key( "fuzzy" ) else self._defaults["flags"]["fuzzy"]
+		query = flags["query"] if flags.has_key( "query" ) \
+				else self._defaults["flags"]["query"]
+		sortedby = flags["sortedby"] if flags.has_key( "sortedby" ) \
+				   else self._defaults["flags"]["sortedby"]
+		range = int( flags["perpage"] ) if  flags.has_key( "perpage" )  \
+				else flags["range"] if flags.has_key( "range" ) \
+									else self._defaults["flags"]["range"]
+		## offset = (page-1) * perpage   --  mode paging
+		offset = ( ( int( flags["page"] ) - 1 ) * range ) + 1 if flags.has_key( "page" ) \
+				 else int( flags["offset"] ) if flags.has_key( "offset" ) \
+					  else self._defaults["flags"]["offset"]
+		recitation = flags["recitation"] if flags.has_key( "recitation" ) \
+					 else self._defaults["flags"]["recitation"]
+		translation = flags["translation"] if flags.has_key( "translation" ) \
+					  else self._defaults["flags"]["translation"]
+		highlight = flags["highlight"] if flags.has_key( "highlight" ) \
+					else self._defaults["flags"]["highlight"]
+		script = flags["script"] if flags.has_key( "script" ) \
+				 else self._defaults["flags"]["script"]
+		vocalized = TRUE_FALSE( flags["vocalized"] ) if flags.has_key( "vocalized" ) \
+					else self._defaults["flags"]["vocalized"]
+		prev_aya = TRUE_FALSE( flags["prev_aya"] ) if flags.has_key( "prev_aya" ) \
+				   else self._defaults["flags"]["prev_aya"]
+		next_aya = TRUE_FALSE( flags["next_aya"] ) if flags.has_key( "next_aya" ) \
+				   else self._defaults["flags"]["next_aya"]
+		sura_info = TRUE_FALSE( flags["sura_info"] ) if flags.has_key( "sura_info" ) \
+					else self._defaults["flags"]["sura_info"]
+		word_info = TRUE_FALSE( flags["word_info"] ) if flags.has_key( "word_info" ) \
+					else self._defaults["flags"]["word_info"]
+		aya_position_info = TRUE_FALSE( flags["aya_position_info"] ) if flags.has_key( "aya_position_info" ) \
+							else self._defaults["flags"]["aya_position_info"]
+		aya_theme_info = TRUE_FALSE( flags["aya_theme_info"] ) if flags.has_key( "aya_theme_info" ) \
+						 else self._defaults["flags"]["aya_theme_info"]
+		aya_stat_info = TRUE_FALSE( flags["aya_stat_info"] ) if flags.has_key( "aya_stat_info" ) \
+						else self._defaults["flags"]["aya_stat_info"]
+		aya_sajda_info = TRUE_FALSE( flags["aya_sajda_info"] ) if flags.has_key( "aya_sajda_info" ) \
+						 else self._defaults["flags"]["aya_sajda_info"]
+		annotation_aya = TRUE_FALSE( flags["annotation_aya"] ) if flags.has_key( "annotation_aya" ) \
+						 else self._defaults["flags"]["annotation_aya"]
+		annotation_word = TRUE_FALSE( flags["annotation_word"] ) if flags.has_key( "annotation_word" ) \
+						  else self._defaults["flags"]["annotation_word"]
+		fuzzy = TRUE_FALSE( flags["fuzzy"] ) if flags.has_key( "fuzzy" ) \
+			    else self._defaults["flags"]["fuzzy"]
 
 		#preprocess query
 		query = query.replace( "\\", "" )
@@ -404,7 +430,7 @@ class Raw():
 					docs += term[3]
 					annotation_word_query += u" OR normalized:%s " % STANDARD2UTHMANI( term[1] )
 					vocalizations = vocalization_dict[term[1]] if vocalization_dict.has_key( term[1] ) \
-															   else []
+										   else []
 					nb_vocalizations_globale += len( vocalizations )
 					words_output[ cpt ] = {"word":term[1], "nb_matches":term[2], "nb_ayas":term[3], "nb_vocalizations": len( vocalizations ), "vocalizations": vocalizations}
 					cpt += 1
