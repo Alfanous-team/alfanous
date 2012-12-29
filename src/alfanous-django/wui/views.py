@@ -44,9 +44,16 @@ def jos2( request ):
 
 
 def results( request ):
-
-    raw_results = RAWoutput.do( request.GET )
-    raw_suggestions = RAWoutput.do( { "action":"suggest", "query": request.GET["query"]  } )
+    """    """
+    if request.GET.has_key( "query" ) and not ( request.GET.has_key( "action" ) and not request.GET["action"] == "search" ):
+        raw_results = RAWoutput.do( request.GET )
+        raw_suggestions = RAWoutput.do( #use suggest as second action
+                                       { "action":"suggest",
+                                        "query": request.GET["query"]  }
+                                       )
+    else:
+        raw_results = None
+        raw_suggestions = None
 
 
     # language information
