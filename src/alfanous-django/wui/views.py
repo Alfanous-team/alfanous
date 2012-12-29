@@ -26,6 +26,7 @@ from alfanous.Outputs import Raw
 # load the search engine, use default paths
 RAWoutput = Raw()
 
+
 def jos2( request ):
     """ JSON Output System II """
 
