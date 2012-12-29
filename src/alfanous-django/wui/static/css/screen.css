@@ -603,6 +603,10 @@ img.right {
     margin-left: 10px;
 }
 
+.justify {
+	text-align: justify;
+}
+
 
 
 /* Footer*/
@@ -645,7 +649,7 @@ div#footer-big div.column {
 
 div#footer-big div.last {
     padding: 20px 0 20px 60px;
-    width: 330px;
+    width: 370px;
 }
 
 div#footer-big div.last img {
