@@ -72,6 +72,7 @@ class Raw():
 	"""
 
 	DEFAULTS = {
+		    "minrange":1,
 		    "maxrange":25,
 		    "results_limit":6236,
 		    "flags":{
@@ -389,6 +390,7 @@ class Raw():
 		terms_uthmani = map( STANDARD2UTHMANI, terms )
 		#pagination
 		offset = 1 if offset < 1 else offset;
+		range = self._defaults["minrange"] if range < self._defaults["minrange"] else range;
 		range = self._defaults["maxrange"] if range > self._defaults["maxrange"] else range;
 		interval_end = offset + range
 		end = interval_end if interval_end < len( res ) else len( res )
@@ -504,7 +506,13 @@ class Raw():
 					output["words"][cpt]["nb_annotations"] = len ( current_word_annotations )
 
 		output["runtime"] = round( extend_runtime, 5 )
-		output["interval"] = {"start":start, "end":end, "total":len( res )}
+		output["interval"] = {
+							"start":start,
+							"end":end,
+							"total": len( res ),
+							"page": ( ( start - 1 ) / range ) + 1,
+							"nb_pages": ( ( len( res ) - 1 ) / range ) + 1
+							}
 		output["translation_info"] = {}
 		### Ayas
 		cpt = start - 1
