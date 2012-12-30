@@ -301,13 +301,16 @@ response:
                                             "nb_matches": 1, 
                                             "nb_vocalizations": 1, 
                                             },
-                                "1": {
-                                        "word": "\u0627\u0644\u0643\u0648\u062b\u0631", 
-                                        "nb_matches": 1, 
-                                        "nb_ayas": 1,
-                                        "nb_vocalizations": 1, 
-                                        "vocalizations": ["\u0627\u0644\u0652\u0643\u064e\u0648\u0652\u062b\u064e\u0631\u064e"], 
-                                      }, 
+                                "individual": {
+                                
+				                                "1": {
+				                                        "word": "\u0627\u0644\u0643\u0648\u062b\u0631", 
+				                                        "nb_matches": 1, 
+				                                        "nb_ayas": 1,
+				                                        "nb_vocalizations": 1, 
+				                                        "vocalizations": ["\u0627\u0644\u0652\u0643\u064e\u0648\u0652\u062b\u064e\u0631\u064e"], 
+				                                      }, 
+				                               },
 
                              }, 
 
