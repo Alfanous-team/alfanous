@@ -418,7 +418,7 @@ class Raw():
 		##########################################
 		extend_runtime = res.runtime
 		# Words & Annotations
-		words_output = {}
+		words_output = {"individual":{}}
 		if word_info:
 			matches = 0
 			docs = 0
@@ -434,7 +434,7 @@ class Raw():
 					vocalizations = vocalization_dict[term[1]] if vocalization_dict.has_key( term[1] ) \
 										   else []
 					nb_vocalizations_globale += len( vocalizations )
-					words_output[ cpt ] = {"word":term[1], "nb_matches":term[2], "nb_ayas":term[3], "nb_vocalizations": len( vocalizations ), "vocalizations": vocalizations}
+					words_output[ "individual" ][ cpt ] = {"word":term[1], "nb_matches":term[2], "nb_ayas":term[3], "nb_vocalizations": len( vocalizations ), "vocalizations": vocalizations}
 					cpt += 1
 			annotation_word_query += u" ) "
 			words_output["global"] = {"nb_words":cpt - 1, "nb_matches":matches, "nb_vocalizations": nb_vocalizations_globale}
