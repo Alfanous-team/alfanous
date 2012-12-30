@@ -1,64 +1,31 @@
-{% extends "base.html" %}
+{% extends "results.html" %}
 
 {% load custom_filters %}
 
-
-
-{% block title %} {{ _("Alfanous - Results to Query:") }}  {% endblock %}  
-
-{% block results %}
-	{% if results.error.code == 0  %} 
-		<div id="search_result_static" style="direction:{{ bidi }}; width:800px">
-		<br /><br /><span class='xbre'> {{ _("Search results") }}</span><br /><br />
-		<center><b>{{ _("Runtime") }}</b> : {{ results.search.runtime }} {{ _("seconds") }} </center>
-		</div>
-		<!-- Suggestions-->
-		{% if suggestions.error.code == 0 and suggestions.suggest %} 
-			<div id='suggestions' align='{{ align }}'>
-			<h2 style='font-size:16pt; color:#ff0000;'>{{ _("Suggestions:") }}
-			{% for suggestion_key, suggestion_item in suggestions.suggest.items %}
-				<p dir='{{ bidi }}' >
-				<div class='word_details'>
-				<span style=' font-size:14pt; color:#00aa00;'> {{ suggestion_key }} </span>
-				<div class='details_label word_info0'>  {{ _("word") }} |  {{ suggestion_item|first }} </div>
-				{% for suggestion_sub_key, suggestion_sub_item in suggestion_item|slice:"1" %}
-					<script type="text/javascript"> build_search_link(param,{{ suggestion_sub_item }},false) </script>
-					<div class='details_label word_stat1 clickable'> {{ suggestion_sub_item }}</div></a>
-				{% empty %}
-					<div class='details_label word_stat0'> {{ _("no suggestions!") }} </div>
+{% block pages_bottom %} 
+	{% block pages_top %}
+				<br />
+				<div class='pages'>
+				<img src='/static/images/prev_en.gif' alt='Previous page' title = 'Previous page' />
+				<div style=' display:inline-block; position:relative; top:-8px;'>
+				{% for i in results.search.interval.nb_pages|get_range %}
+					{% with results.search.interval.page as page %}
+						{% if  i == page %}
+							 {{ i }}  	
+						{% elif i <= page|add:"+7" and i >= page|add:"-3"  %} 
+							<!-- pages  in range [-3,+7]-->
+							<a href=''>{{ i }}</a> 
+						{% elif i|divisibleby:"50" and i < page or i == 1  %} {# Prio: Left #}
+							<!-- first page ; and every 50 pages before current page -->
+							<a href=''>{{ i }}</a> .. 
+						{% elif i|divisibleby:"50" and i > page or i == results.search.interval.nb_pages  %}
+							<!-- last page;  and every 50 pages after current page -->
+							.. <a href=''>{{ i }}</a> 
+						{% endif %}	
+					{% endwith %}
 				{% endfor %}
-				</div></p>
-			{% endfor %}
-		</div><br />
-		{% endif %}
-		{% if results.search.interval.total %}
-			<!-- Pages control -->
-			<br />
-			<div class='pages'>
-			<img src='/static/images/prev_en.gif' alt='Previous page' title = 'Previous page' />
-			<div style=' display:inline-block; position:relative; top:-8px;'>
-			{% for i in results.search.interval.nb_pages|get_range %}
-				{% with results.search.interval.page as page %}
-					{% if  i == page %}
-						 {{ i }}  	
-					{% elif i <= page|add:"+7" and i >= page|add:"-3"  %} 
-						<!-- pages  in range [-3,+7]-->
-						<a href=''>{{ i }}</a> 
-					{% elif i|divisibleby:"50" and i < page or i == 1  %} {# Prio: Left #}
-						<!-- first page ; and every 50 pages before current page -->
-						<a href=''>{{ i }}</a> .. 
-					{% elif i|divisibleby:"50" and i > page or i == results.search.interval.nb_pages  %}
-						<!-- last page;  and every 50 pages after current page -->
-						.. <a href=''>{{ i }}</a> 
-					{% endif %}
-				
-				{% endwith %}
-			{% endfor %}
-			</div>
-			<img src='/static/images/next_en.gif' alt='Next page' title = 'Next page' />
-			</div>
-		{% endif %}		
-	{% else %}
-		<div id='error'><p> {{ results.error.msg }}({{ results.error.code }})</p></div>"
-	{% endif %}
-{% endblock results %}
+				</div>
+				<img src='/static/images/next_en.gif' alt='Next page' title = 'Next page' />
+				</div>
+		{% endblock %}
+{% endblock %}
