@@ -13,13 +13,13 @@
 						{% if  i == page %}
 							 {{ i }}  	
 						{% elif i <= page|add:"+7" and i >= page|add:"-3"  %} 
-							<!-- pages  in range [-3,+7]-->
+							{# pages  in range [-3,+7] #}
 							<a href=''>{{ i }}</a> 
 						{% elif i|divisibleby:"50" and i < page or i == 1  %} {# Prio: Left #}
-							<!-- first page ; and every 50 pages before current page -->
+							{# first page ; and every 50 pages before current page #}
 							<a href=''>{{ i }}</a> .. 
 						{% elif i|divisibleby:"50" and i > page or i == results.search.interval.nb_pages  %}
-							<!-- last page;  and every 50 pages after current page -->
+							{# last page;  and every 50 pages after current page #}
 							.. <a href=''>{{ i }}</a> 
 						{% endif %}	
 					{% endwith %}

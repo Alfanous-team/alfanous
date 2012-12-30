@@ -22,7 +22,7 @@
 				<span style=' font-size:14pt; color:#00aa00;'> {{ suggestion_key }} </span>
 				<div class='details_label word_info0'>  {{ _("word") }} |  {{ suggestion_item|first }} </div>
 				{% for suggestion_sub_key, suggestion_sub_item in suggestion_item|slice:"1" %}
-					<script type="text/javascript"> build_search_link(param,{{ suggestion_sub_item }},false) </script>
+					<script type="text/javascript"> document.write(build_search_link(param,{{ suggestion_sub_item }},false)); </script>
 					<div class='details_label word_stat1 clickable'> {{ suggestion_sub_item }}</div></a>
 				{% empty %}
 					<div class='details_label word_stat0'> {{ _("no suggestions!") }} </div>
@@ -32,8 +32,44 @@
 		</div><br />
 		{% endif %}
 		{% if results.search.interval.total %}
+			{% if results.search.words.global.nb_words %}
+				<!-- Words list -->
+				<div id='search_words' align='left'>
+				  <h2 style='font-size:16pt;  color:#ff0000;'>
+				  Words:
+				  <div class='details_label word_count'>  
+				    {{ _("words") }} | {{  results.search.words.global.nb_words }} 
+				  </div>
+				  <div class='details_label word_stat0'> 
+				    {{ _("occurances") }}  | {{ results.search.words.global.nb_matches }} 
+				  </div> 
+				  <div class='details_label word_vocalization_nb'> 
+				    {{ _("vocalizations") }} | {{ results.search.words.global.nb_vocalizations }} 
+				  </div> 
+				  </h2>
+				  <br />
+				{% for wordcpt, wordstat in results.search.words.individual.items %}
+						<p dir='ltr' >
+						  <div class='word_details'>
+						    <span style=' font-size:14pt; color:#00aa00;'> {{ wordcpt }}  </span>
+							<script type="text/javascript"> document.write(build_search_link(param, {{ wordstat.word }}, false)); </script> 
+							<div class='details_label word_info0 clickable'> {{ _("word") }} | {{ wordstat.word }} </div></a>
+							<div class='details_label word_stat0'> {{ _("occurnaces") }} | {{ wordstat.nb_matches }} </div>
+							<div class='details_label word_stat1'> {{ _("ayates") }} |  {{ wordstat.nb_ayas }} </div>
+							<div class='details_label word_vocalization_nb'> {{ _("vocalizations") }} | {{ wordstat.nb_vocalizations }} </div>
+						{% for vocalization in wordstat.vocalizations %} 
+							<script type="text/javascript"> document.write(build_search_link(param, "aya_:"+ {{ vocalization }} + "", false )); </script> 
+							<div class='details_label word_vocalization clickable'> {{ vocalization }} </div></a>
+						{% endfor %}
+						   </div>
+					 	  </p>	
+				{% endfor %}
+				</div> 
+			{% endif %}
+			
 			<!-- Pages control # top one -->
 			{% block pages_top %} {% endblock %}
+		
 			
 			
 			
