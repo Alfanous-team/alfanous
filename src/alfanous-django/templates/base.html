@@ -149,62 +149,6 @@
 
 			if (json.search.interval.total) {
 
-				// Pages control
-				results_pages += "<br />";
-				results_pages += "<div class='pages'>\n<img src='/static/images/prev_en.gif' alt='Previous page' title = 'Previous page' /><div style=' display:inline-block; position:relative; top:-8px;'>\n";
-				for( i = 1;  i <= nb_pages ; i++) 
-				{
-					if (i == page)
-					{
-						results_pages += " "+ i;
-					}
-					else if ((i <= page + 7 )  && (i >= page - 3) ) // pages  in range [-3,+7]
-					{
-						results_pages += " <a href=''>"+ i+ "</a>";
-					}
-					else if (i==1 || (i%50 == 0 && i<page))  // first page
-					{
-						results_pages += " <a href=''>"+ i+ "</a> ..";
-					}
-					else if (i==nb_pages || (i%50 == 0 && i>page))  // last page
-					{
-						results_pages += " .. <a href=''>"+ i+ "</a>";
-					}
-
-				}
-				results_pages += "</div><img src='/static/images/next_en.gif' alt='Next page' title = 'Next page' />\n</div>\n";
-				
-				if (json.search.words["global"].nb_words > 0)
-					{
-					// Words list
-					results += "<div id='search_words' align='left'>";
-					results += "<h2 style='font-size:16pt;  color:#ff0000;'>Words:";
-					results += "<div class='details_label word_count'>  words | "+ json.search.words["global"].nb_words+ "</div>";
-					results += "<div class='details_label word_stat0'> occurances | "+ json.search.words["global"].nb_matches+ "</div>"; 
-					results += "<div class='details_label word_vocalization_nb'> vocalizations | "+ json.search.words["global"].nb_vocalizations+ "</div>"; 
-					results += "</h2><br />";
-					
-					
-					for( i = 1; i <= json.search.words.global.nb_words; i++) {
-						results += "<p dir='ltr' >";
-							results += "<div class='word_details'>";
-								results += "<span style=' font-size:14pt; color:#00aa00;'>"+ i+ ". </span>";
-								results += build_search_link(param, json.search.words[i].word, false) +  "<div class='details_label word_info0 clickable'> word | "+ json.search.words[i].word+ "</div></a>";
-								results += "<div class='details_label word_stat0'> occurnaces | "+ json.search.words[i].nb_matches+ "</div>";
-								results += "<div class='details_label word_stat1'> ayates | "+ json.search.words[i].nb_ayas+ "</div>";
-								results += "<div class='details_label word_vocalization_nb'> vocalizations | "+ json.search.words[i].nb_vocalizations+ "</div>";
-								for( j = 0; j < json.search.words[i].nb_vocalizations; j++) 
-									{
-									results += build_search_link(param, "aya_:"+ json.search.words[i].vocalizations[j] + "", false ) + "<div class='details_label word_vocalization clickable'>"+ json.search.words[i].vocalizations[j]+ "</div></a>";
-									}
-								results += "</div></p>";
-							}	
-					results += "</div> ";
-					}
-				
-				
-				// Pages list
-				results += results_pages;
 
 				// Ayas list
 				results += "<br /><h2 style=' font-size:15pt;  color:#ff0000;'>Results (";
