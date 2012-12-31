@@ -446,6 +446,7 @@ a:hover{color: green;}
 .word_vocalization {
 	background-color: #FFF;
 	color: #90A;
+	padding: 5px 2px 4px 2px;
 	/* font-size:100%;*/
 }
 
@@ -461,17 +462,46 @@ a:hover{color: green;}
 
 .quran {
 	direction: rtl;
-	font-family: Scheherazade, me_quran, KacstBook, KacstQurn, ArabeyesQr, "KFGQPC Uthman Taha Naskh", Arial;
-	font-size: 2em;
+	font-family: me_quran, Scheherazade,  KacstBook, KacstQurn, ArabeyesQr, "KFGQPC Uthman Taha Naskh", Arial;
+	
+}
+
+.main_aya {
+	font-size: 22px;
 	margin: 2px 5px 10px 30px;
 }
+
+.prev_aya {
+	font-size: 18px;
+	margin: 2px 5px 10px 30px;
+}
+
+.next_aya {
+	font-size: 18px;
+	margin: 2px 5px 10px 30px;
+}
+
+.quran_decoration {
+	direction: rtl;
+	font-family: ArabeyesQr, Scheherazade;
+	line-height: 180%;
+	font-size:22px;
+	color:#7b563a;
+}
+
+.quran_translation {
+	font-family: Droid Sans, Tahoma, Bitstream Vera Sans, DejaVu Sans, Verdana, Geneva, Arial, Sans-serif; 
+	line-height: 150%;
+	
+}
+
 
 .match {
 	color: #181;
 }
 
 .word_details, .sura_details, .aya_details {
-	margin: 5px 5px 0px 20px;
+	margin: 8px 5px 2px 20px;
 }
 
 .aya_stat0, .sura_stat1 {
