@@ -14,3 +14,8 @@ register = Library()
 def get_range( value ):
   return range( 1, value + 1 )
 
+
+@register.filter
+def space_split( str ):
+    return str.split()
+
