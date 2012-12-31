@@ -92,7 +92,7 @@
 							<param value='transparent' name='wmode'>
 						</object>
 					</span><br />
-					<span id='audioplayer_{{ ayaresult_id }}'> (<a href='{{ ayaresult_content.aya.recitation }}' target='_blank'>{{ _("Recitation") }}</a> )</span>  
+					  
 					
 				   <div class='sura_details'>
 						<script type="text/javascript"> document.write(build_search_link(param, "sura:\"" + {{ ayaresult_content.sura.name }} +"\"", true)); </script> 
@@ -108,9 +108,25 @@
 					</div>
 				  </legend>
 				  <br />
+				  	{% if ayaresult_content.aya.prev_aya %}
+					  		<p  align='center' >
+					  		<span class='quran_decoration prev_aya'>
+							 [ </span>
+					  		<span class="quran prev_aya">
+					  		  {{ ayaresult_content.aya.prev_aya.text }} 
+					  		  
+					  		 </span>
+					  		 <span class='quran_decoration prev_aya'>
+							 ] </span>
+							 <span dir="ltr" class='prev_aya'>
+							 (   <script type="text/javascript"> build_search_link(param,"aya_id:" + {{ ayaresult_content.aya.prev_aya.id }} + " sura:" + {{ ayaresult_content.aya.prev_aya.sura }} ,false ); </script> {{ ayaresult_content.aya.prev_aya.sura }} {{ ayaresult_content.aya.prev_aya.id }} </a> )
+					  		</span>
+					  		 </p>
+					  		
+					  		
+					  {% endif %}
 				  <p align='center'>
-					 <br />
-					 <span class='quran_decoration'>
+					 <span class='quran_decoration main_aya'>
 					 [ </span>
 					 
 					 <span  class='aya_words quran main_aya'>
@@ -130,24 +146,46 @@
 							{% endspaceless %}	
 					  	{% endfor %}
 					  </span> 
-					  <span dir="ltr">
-					  (   <a> <script type="text/javascript"> build_search_link(param,"aya_id:" + {{ ayaresult_content.aya.id }} ,false ); </script>  {{ ayaresult_content.aya.id }} </a> )
-					  </span>
+					 
 					  
-					 <span class='quran_decoration'>
+					 <span class='quran_decoration main_aya'>
 					 ] </span>
+					  <span dir="ltr" class='main_aya'>
+					  ( <script type="text/javascript"> build_search_link(param,"aya_id:" + {{ ayaresult_content.aya.id }} + " + " + "sura_name:" + ayaresult_content.identifier.sura_name ,false ); </script> {{ ayaresult_content.identifier.sura_name }} {{ ayaresult_content.aya.id }} </a>)
+					  </span>
 					  <br />
+					  
 					  
 					  </span>
 				    </p>
+				    <!-- next ayah -->
+				    {% if ayaresult_content.aya.next_aya %}
+					  		<p  align='center' >
+					  		<span class='quran_decoration next_aya'>
+							 [ </span>
+					  		<span class="quran next_aya">
+					  		  {{ ayaresult_content.aya.next_aya.text }} 
+					  		  
+					  		 </span>
+					  		 <span class='quran_decoration next_aya'>
+							 ] </span>
+							 <span dir="ltr" class='next_aya'>
+							 (   <script type="text/javascript"> build_search_link(param,"aya_id:" + {{ ayaresult_content.aya.next_aya.id }} + " sura:" + {{ ayaresult_content.aya.next_aya.sura }} ,false ); </script> {{ ayaresult_content.aya.next_aya.sura }} {{ ayaresult_content.aya.next_aya.id }} </a> )
+					  		</span>
+					  		 </p>
+					  		
+					  		<br />
+					  {% endif %}
 				    <br />
-					  <p dir='ltr' align='center' >
+					  
 					  {% if ayaresult_content.aya.traduction %}
+					  		<p dir='ltr' align='center' >
 					  		<span class="quran_translation">
 					  		  {{ ayaresult_content.aya.traduction }} 
 					  		</span></p>
+					  		<br />
 					  {% endif %}
-					  <br>
+					  
 					  <p align='center' >
 					  	<span style=' color:#808080;'>
 					  	{% if ayaresult_content.theme.chapter %}
