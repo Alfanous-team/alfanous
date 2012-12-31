@@ -1,12 +1,42 @@
 /* Abdellah */
 @import url('reset.css');
 
+
 @font-face {
 	font-family:'Scheherazade';
 	src:url('../fonts/ScheherazadeRegOT.ttf');
 }
 
+/* copied from the template */
+
+	body {
+		background: #fff;
+		text-align: center;
+	}				
+	
+	table {
+		width: 395px;
+		height: 256px;		
+	}
+	
+	#footer-big-wrapper {
+		text-align: left;
+	}
+	
+	body form div div table {
+		display: inline-block;
+	}
+	
+	body form div div div.xdrops_continer {
+		display: inline-block;
+	}
+
+	body form div div {
+		display: inline-block;
+	}
+
 /* original */
+
 
 .buttons {
 	float: left;
@@ -61,7 +91,7 @@ a.button:active {
 	margin:0;
 }
 
-a{color: gray;}
+a{color: black;}
 .aya_words a { text-decoration: none; }
 a:hover{color: green;}
 .select {
@@ -347,7 +377,7 @@ a:hover{color: green;}
 
 /* Abdellah */
 
-/*
+
 #help_btn {
 	position: absolute;
 	top:10px;
@@ -361,7 +391,7 @@ a:hover{color: green;}
 	right:50px;
 	z-index:95;
 }
-*/
+
 
 #vote_btn a {
 	font-weight: normal;
@@ -463,30 +493,32 @@ a:hover{color: green;}
 .quran {
 	direction: rtl;
 	font-family: me_quran, Scheherazade,  KacstBook, KacstQurn, ArabeyesQr, "KFGQPC Uthman Taha Naskh", Arial;
-	
+
 }
 
 .main_aya {
 	font-size: 22px;
-	margin: 2px 5px 10px 30px;
+	margin: 2px 5px 10px 5px;
+	color: #000;
 }
 
 .prev_aya {
-	font-size: 18px;
-	margin: 2px 5px 10px 30px;
+	font-size: 14px;
+	margin: 2px 5px 10px 5px;
+	color:#666;
 }
 
 .next_aya {
-	font-size: 18px;
-	margin: 2px 5px 10px 30px;
+	font-size: 14px;
+	margin: 2px 5px 10px 5px;
+	color:#666;
 }
 
 .quran_decoration {
 	direction: rtl;
 	font-family: ArabeyesQr, Scheherazade;
 	line-height: 180%;
-	font-size:22px;
-	color:#7b563a;
+	
 }
 
 .quran_translation {

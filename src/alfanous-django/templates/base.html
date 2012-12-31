@@ -88,7 +88,17 @@
 	
 
 			$('#form').submit(function(){
-				var param = {action: "search", query: $("#search_box").val(), recitation: $("#recitation").val(), translation: $("#translation").val(), sortedby: $("#sortedby").val(), page: 1, highlight: "css"}; //,fuzzy:"ok"
+				var param = {
+								action: "search", 
+								query: $("#search_box").val(), 
+								recitation: $("#recitation").val(), 
+								translation: $("#translation").val(), 
+								sortedby: $("#sortedby").val(), 
+								page: 1, 
+								highlight: "css",
+								prev_aya: "True",
+								next_aya: "True",
+								}; //,fuzzy:"ok"
 				
 				// Mouad
 				redirect_to_params ( param );
@@ -118,7 +128,7 @@
 		function get_results (param) {
 			if ($.trim(param.query) != "" && param.action == "search") {
 				$.ajax({
-					url: "//jos2/", // http://www.alfanous.org/jos2
+					url: "/jos2/", // http://www.alfanous.org/jos2
 					async: false,
 					type: "GET",
 					dataType: "json",
@@ -144,22 +154,6 @@
 
 			var nb_pages = Math.floor((json.search.interval.total- 1) / 10)+ 1;
 			var page = Math.floor((json.search.interval.start- 1) / 10)+ 1;
-
-			$("#search_result").html("");
-
-			if (json.search.interval.total) {
-
-
-				
-			
-				
-
-			}
-			
-
-			
-			// show result
-			$("#search_result").append(results);
 
 
 			// Suggestions links
@@ -344,35 +338,6 @@
 
 
 <!-- all css to be collocted, this just for fast fixes -->
-<style type="text/css">
-	body {
-		background: #fff;
-		text-align: center;
-	}				
-	
-	table {
-		width: 395px;
-		height: 256px;		
-	}
-	
-	#footer-big-wrapper {
-		text-align: left;
-	}
-	
-	body form div div table {
-		display: inline-block;
-	}
-	
-	body form div div div.xdrops_continer {
-		display: inline-block;
-	}
-
-	body form div div {
-		display: inline-block;
-	}
-	
-</style>
-
 
 
 </head>
@@ -469,17 +434,20 @@
 <div id="down_btn"><a  class='xbutton gray' >{{ _("Download") }}</a></div>
 <div id="help_btn"><a class='xbutton gray' >{{ _("Help") }}</a></div>
 <br /><br />
-<!--  <br /><br />
+<br /><br />
 <div id="vote_btn"><a class='xbutton gray' href="https://docs.google.com/spreadsheet/viewform?formkey=dEZZaE5fQ0NwQXljU2ZyUmpfLW15SVE6MA#gid=0" target="_blank"><i>Note 09-11-2012:</i> Please help us improving <b>Alfanous</b> Project, by taking this survey about search features in Holy Quran </a></div>
-<br /><br />  -->
+<br /><br />  
 
-<!-- assem: search_result_django_static -->
-{% block results %} {% endblock results %}
+
+
 
 
 
 <!--abdellah-->
-<div id="search_result" style="direction:{{ bidi }}; width:800px"></div>
+<div id="search_result" style="direction:{{ bidi }}; width:800px">
+<!-- assem: search_result_django_static -->
+{% block results %} {% endblock results %}
+</div>
 
 </div>
 </div>
