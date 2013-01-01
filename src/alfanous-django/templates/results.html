@@ -62,61 +62,63 @@
 							<script type="text/javascript"> document.write(build_search_link(param, "aya_:"+ {{ vocalization }} + "", false )); </script> 
 							<div class='details_label word_vocalization clickable quran'> {{ vocalization }} </div></a>
 						{% endfor %}
-						{% for annotation_word, annotation_detail in wordstat.annotations.items %}
-							<p   class='annotation_details'>
-							<div style=' font-size:12pt; color:#99aa88;'> {{ wordcpt }}.{{ forloop.counter }} </div>
-							<div class='details_label word_annotation clickable'> {{ _("Annotation") }} | {{ annotation_word }} </div>
-							<div class='details_label word_annotation_info0'> {{ _("ID") }} | {{ annotation_detail.word_gid }} </div>
-							<div class='details_label word_annotation_info0'> {{ _("sura,aya") }} | {{ annotation_detail.sura_id }},{{ annotation_detail.aya_id }} </div>
-							{% if annotation_detail.token %}
-								<div class='details_label word_annotation_info1'> {{ _("token") }} | {{ annotation_detail.token }} ( {{ annotation_detail.arabictoken }}) </div>
-							{% endif %}
-							{% if annotation_detail.part %}
-								<div class='details_label word_annotation_info1'> {{ _("part") }} | {{ annotation_detail.part }} </div>
-							{% endif %}
-							{% if annotation_detail.type %}
-								<div class='details_label word_annotation_info2'> {{ _("type") }} | {{ annotation_detail.type }} </div>
-							{% endif %}
-							{% if annotation_detail.pos %}
-								<div class='details_label word_annotation_info2'> {{ _("POS") }} | {{ annotation_detail.pos }} ({{ annotation_detail.arabicpos }}) </div>
-							{% endif %}
-							{% if annotation_detail.lemma %}
-								<div class='details_label word_annotation_info5'> {{ _("lemma") }} | {{ annotation_detail.lemma  }} ({{ annotation_detail.arabiclemma }}) </div>
-							{% endif %}
-							{% if annotation_detail.root %}
-								<div class='details_label word_annotation_info5'> {{ _("root") }} | {{ annotation_detail.root }} ({{ annotation_detail.arabicroot }}) </div>
-							{% endif %}
-							{% if annotation_detail.special %}
-								<div class='details_label word_annotation_info5'> {{ _("special") }} | {{ annotation_detail.special }} ({{ annotation_detail.arabicspecial }}) </div>
-							{% endif %}
-							{% if annotation_detail.aspect %}
-								<div class='details_label word_annotation_info6'> {{ _("aspect") }} | {{ annotation_detail.aspect }} </div>
-							{% endif %}
-							{% if annotation_detail.state %}
-								<div class='details_label word_annotation_info6'> {{ _("state") }} | {{ annotation_detail.state }} </div>
-							{% endif %}
-							{% if annotation_detail.form %}
-								<div class='details_label word_annotation_info6'> {{ _("form") }} | {{ annotation_detail.form }} </div>
-							{% endif %}
-							{% if annotation_detail.case %}
-								<div class='details_label word_annotation_info6'> {{ _("case") }} | {{ annotation_detail.case }} ( {{ annotation_detail.arabiccase }}) </div>
-							{% endif %}
-							{% if annotation_detail.derivation %}
-								<div class='details_label word_annotation_info6'> {{ _("derivation") }} | {{ annotation_detail.derivation }} </div>
-							{% endif %}
-							{% if annotation_detail.person %}
-								<div class='details_label word_annotation_info3'> {{ _("person") }} | {{ annotation_detail.person }} </div>
-							{% endif %}
-							{% if annotation_detail.number %}
-								<div class='details_label word_annotation_info3'> {{ _("number") }} | {{ annotation_detail.number }} </div>
-							{% endif %}
-							{% if annotation_detail.gender %}
-								<div class='details_label word_annotation_info3'> {{ _("gender") }} | {{ annotation_detail.gender }} </div>
-							{% endif %}
-							{% if annotation_detail.voice %}
-								<div class='details_label word_annotation_info3'> {{ _("voice") }} | {{ annotation_detail.voice }} </div>
-							{% endif %}
-							</p>
+						{% for annotation_word, parts in wordstat.annotations.items %}
+							{% for part_order, annotation_detail in parts.items %} 
+								<p   class='annotation_details'>
+								<div style=' font-size:12pt; color:#99aa88;'> {{ wordcpt }}.{{ forloop.counter }}.{{ part_order }} </div>
+								<div class='details_label word_annotation clickable'> {{ _("Annotation") }} | {{ annotation_word }} </div>
+								<div class='details_label word_annotation_info0'> {{ _("ID") }} | {{ annotation_detail.word_gid }} </div>
+								<div class='details_label word_annotation_info0'> {{ _("sura,aya") }} | {{ annotation_detail.sura_id }},{{ annotation_detail.aya_id }} </div>
+								{% if annotation_detail.token %}
+									<div class='details_label word_annotation_info1'> {{ _("token") }} | {{ annotation_detail.token }} ( {{ annotation_detail.arabictoken }}) </div>
+								{% endif %}
+								{% if annotation_detail.part %}
+									<div class='details_label word_annotation_info1'> {{ _("part") }} | {{ annotation_detail.part }} </div>
+								{% endif %}
+								{% if annotation_detail.type %}
+									<div class='details_label word_annotation_info2'> {{ _("type") }} | {{ annotation_detail.type }} </div>
+								{% endif %}
+								{% if annotation_detail.pos %}
+									<div class='details_label word_annotation_info2'> {{ _("POS") }} | {{ annotation_detail.pos }} ({{ annotation_detail.arabicpos }}) </div>
+								{% endif %}
+								{% if annotation_detail.lemma %}
+									<div class='details_label word_annotation_info5'> {{ _("lemma") }} | {{ annotation_detail.lemma  }} ({{ annotation_detail.arabiclemma }}) </div>
+								{% endif %}
+								{% if annotation_detail.root %}
+									<div class='details_label word_annotation_info5'> {{ _("root") }} | {{ annotation_detail.root }} ({{ annotation_detail.arabicroot }}) </div>
+								{% endif %}
+								{% if annotation_detail.special %}
+									<div class='details_label word_annotation_info5'> {{ _("special") }} | {{ annotation_detail.special }} ({{ annotation_detail.arabicspecial }}) </div>
+								{% endif %}
+								{% if annotation_detail.aspect %}
+									<div class='details_label word_annotation_info6'> {{ _("aspect") }} | {{ annotation_detail.aspect }} </div>
+								{% endif %}
+								{% if annotation_detail.state %}
+									<div class='details_label word_annotation_info6'> {{ _("state") }} | {{ annotation_detail.state }} </div>
+								{% endif %}
+								{% if annotation_detail.form %}
+									<div class='details_label word_annotation_info6'> {{ _("form") }} | {{ annotation_detail.form }} </div>
+								{% endif %}
+								{% if annotation_detail.case %}
+									<div class='details_label word_annotation_info6'> {{ _("case") }} | {{ annotation_detail.case }} ( {{ annotation_detail.arabiccase }}) </div>
+								{% endif %}
+								{% if annotation_detail.derivation %}
+									<div class='details_label word_annotation_info6'> {{ _("derivation") }} | {{ annotation_detail.derivation }} </div>
+								{% endif %}
+								{% if annotation_detail.person %}
+									<div class='details_label word_annotation_info3'> {{ _("person") }} | {{ annotation_detail.person }} </div>
+								{% endif %}
+								{% if annotation_detail.number %}
+									<div class='details_label word_annotation_info3'> {{ _("number") }} | {{ annotation_detail.number }} </div>
+								{% endif %}
+								{% if annotation_detail.gender %}
+									<div class='details_label word_annotation_info3'> {{ _("gender") }} | {{ annotation_detail.gender }} </div>
+								{% endif %}
+								{% if annotation_detail.voice %}
+									<div class='details_label word_annotation_info3'> {{ _("voice") }} | {{ annotation_detail.voice }} </div>
+								{% endif %}
+								</p>
+							{% endfor %}
 						{% endfor %}
 						   </div>
 					 	  </p>	
@@ -243,10 +245,10 @@
 					  {% endif %}
 				    <br />
 					  
-					  {% if ayaresult_content.aya.traduction %}
+					  {% if ayaresult_content.aya.translation %}
 					  		<p dir='ltr' align='center' >
 					  		<span class="quran_translation">
-					  		  {{ ayaresult_content.aya.traduction }} 
+					  		  {{ ayaresult_content.aya.translation }} 
 					  		</span></p>
 					  		<br />
 					  {% endif %}
