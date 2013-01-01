@@ -368,6 +368,7 @@ class Raw():
 
 		# pre-defined views
 		if view == "minimal":
+			vocalized = False
 			recitation = None
 			translation = None
 			prev_aya = next_aya = False
