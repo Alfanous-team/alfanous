@@ -569,12 +569,12 @@ class Raw():
 		## merge word annotations to word output
 		if ( annotation_word and word_info ):
 			for cpt in xrange( 1, len( termz ) + 1 ):
-				current_word = STANDARD2UTHMANI( output["words"][cpt]["word"] )
+				current_word = STANDARD2UTHMANI( output["words"]["individual"][cpt]["word"] )
 				#print current_word.encode( "utf-8" ), "=>", annotations_by_word, "=>", list( annot_res )
 				if annotations_by_word.has_key( current_word ):
 					current_word_annotations = annotations_by_word[ current_word ]
-					output["words"][cpt]["annotations"] = current_word_annotations
-					output["words"][cpt]["nb_annotations"] = len ( current_word_annotations )
+					output["words"]["individual"][cpt]["annotations"] = current_word_annotations
+					output["words"]["individual"][cpt]["nb_annotations"] = len ( current_word_annotations )
 
 		output["runtime"] = round( extend_runtime, 5 )
 		output["interval"] = {

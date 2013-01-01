@@ -392,7 +392,6 @@ a:hover{color: green;}
 	z-index:95;
 }
 
-
 #vote_btn a {
 	font-weight: normal;
 	text-decoration: none;
@@ -468,6 +467,7 @@ a:hover{color: green;}
 	color: #FFF;
 }
 
+
 .word_vocalization_nb {
 	background-color: #90A;
 	color: #FFF;
@@ -478,6 +478,56 @@ a:hover{color: green;}
 	color: #90A;
 	padding: 5px 2px 4px 2px;
 	/* font-size:100%;*/
+}
+.word_annotation_nb {
+	background-color: #0A9;
+	color: #FFF;	
+}
+
+.annotation_details {
+	margin:10px 2px 5px 30px;
+}
+
+.word_annotation {
+	background-color: #0A9;
+	color: #FFF;
+	font-size: 12px;
+	font-weight: bold;
+}
+
+.word_annotation_info0 {
+	background-color: #3BB;
+	color: #FFF;
+}
+
+.word_annotation_info1 {
+	background-color: #7B8;
+	color: #FFF;
+}
+
+.word_annotation_info2 {
+	background-color: #5A9;
+	color: #FFF;
+}
+
+.word_annotation_info3 {
+	background-color: #497;
+	color: #FFF;
+}
+
+.word_annotation_info4 {
+	background-color: #5B4;
+	color: #FFF;
+}
+
+.word_annotation_info5 {
+	background-color: #7D7;
+	color: #FFF;
+}
+
+.word_annotation_info6 {
+	background-color: #088;
+	color: #FFF;
 }
 
 .item_number {
@@ -534,6 +584,10 @@ a:hover{color: green;}
 
 .word_details, .sura_details, .aya_details .sura_stat_details {
 	margin: 8px 5px 2px 20px;
+}
+
+.theme_details{
+	margin: 8px 5px 8px 20px;
 }
 
 .aya_stat0, .sura_stat1 {
@@ -645,6 +699,17 @@ a:hover{color: green;}
 	text-decoration:none;
 		
 }
+
+
+/* Assem: Error, NotFound */
+.notfound {
+	margin: 30px 30px 30px 30px;
+}
+
+.error {
+	
+}
+
 
 /* Abdellah AD.*/
 
