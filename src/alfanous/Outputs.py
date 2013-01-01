@@ -84,6 +84,7 @@ class Raw():
 			      "script":"standard",
 			      "vocalized": True,
 			      "highlight": "css",
+                  "view": "custom",
 			      "recitation": "1",
 			      "translation": None,
 			      "prev_aya": False,
@@ -121,6 +122,7 @@ class Raw():
 			      "highlight": ["css", "html", "genshi", "bold", "bbcode"],
 			      "script": ["standard", "uthmani"],
 			      "vocalized": [True, False],
+                  "view":["minimal", "normal", "full", "statistic", "linguistic", "custom"],
 			      "recitation": xrange( 30 ),
 			      "translation": [],
 			      "prev_aya": [True, False],
@@ -151,6 +153,7 @@ class Raw():
 			      "highlight": "highlight method",
 			      "script": "script of aya text",
 			      "vocalized": "enable vocalization of aya text",
+                  "view": "pre-defined configuration for what information to retrieve",
 			      "recitation": "recitation id",
 			      "translation": "translation id",
 			      "prev_aya": "enable previous aya retrieving",
@@ -332,7 +335,7 @@ class Raw():
 	def _search( self, flags ):
 		"""
 		return the results of search as json
-	    """
+		"""
 		#flags
 		query = flags["query"] if flags.has_key( "query" ) \
 				else self._defaults["flags"]["query"]
@@ -355,28 +358,73 @@ class Raw():
 				 else self._defaults["flags"]["script"]
 		vocalized = TRUE_FALSE( flags["vocalized"] ) if flags.has_key( "vocalized" ) \
 					else self._defaults["flags"]["vocalized"]
-		prev_aya = TRUE_FALSE( flags["prev_aya"] ) if flags.has_key( "prev_aya" ) \
-				   else self._defaults["flags"]["prev_aya"]
-		next_aya = TRUE_FALSE( flags["next_aya"] ) if flags.has_key( "next_aya" ) \
-				   else self._defaults["flags"]["next_aya"]
-		sura_info = TRUE_FALSE( flags["sura_info"] ) if flags.has_key( "sura_info" ) \
-					else self._defaults["flags"]["sura_info"]
-		word_info = TRUE_FALSE( flags["word_info"] ) if flags.has_key( "word_info" ) \
-					else self._defaults["flags"]["word_info"]
-		aya_position_info = TRUE_FALSE( flags["aya_position_info"] ) if flags.has_key( "aya_position_info" ) \
-							else self._defaults["flags"]["aya_position_info"]
-		aya_theme_info = TRUE_FALSE( flags["aya_theme_info"] ) if flags.has_key( "aya_theme_info" ) \
-						 else self._defaults["flags"]["aya_theme_info"]
-		aya_stat_info = TRUE_FALSE( flags["aya_stat_info"] ) if flags.has_key( "aya_stat_info" ) \
-						else self._defaults["flags"]["aya_stat_info"]
-		aya_sajda_info = TRUE_FALSE( flags["aya_sajda_info"] ) if flags.has_key( "aya_sajda_info" ) \
-						 else self._defaults["flags"]["aya_sajda_info"]
-		annotation_aya = TRUE_FALSE( flags["annotation_aya"] ) if flags.has_key( "annotation_aya" ) \
-						 else self._defaults["flags"]["annotation_aya"]
-		annotation_word = TRUE_FALSE( flags["annotation_word"] ) if flags.has_key( "annotation_word" ) \
-						  else self._defaults["flags"]["annotation_word"]
 		fuzzy = TRUE_FALSE( flags["fuzzy"] ) if flags.has_key( "fuzzy" ) \
-			    else self._defaults["flags"]["fuzzy"]
+				else self._defaults["flags"]["fuzzy"]
+		view = flags["view"] if flags.has_key( "view" ) \
+				else self._defaults["flags"]["view"]
+
+		# pre-defined views
+		if view == "minimal":
+			translation = None
+			prev_aya = next_aya = False
+			sura_info = False
+			word_info = False
+			aya_position_info = aya_theme_info = aya_sajda_info = False
+			aya_stat_info = False
+			annotation_aya = annotation_word = False
+		elif view == "normal":
+			prev_aya = next_aya = False
+			sura_info = True
+			word_info = True
+			aya_position_info = aya_theme_info = aya_sajda_info = True
+			aya_stat_info = True
+			annotation_aya = annotation_word = False
+		elif view == "full":
+			prev_aya = next_aya = True
+			sura_info = True
+			word_info = True
+			aya_position_info = aya_theme_info = aya_sajda_info = True
+			aya_stat_info = True
+			annotation_aya = annotation_word = True
+		elif view == "statistic":
+			prev_aya = next_aya = False
+			sura_info = True
+			word_info = True
+			aya_position_info = True
+			aya_theme_info = aya_sajda_info = False
+			aya_stat_info = True
+			annotation_aya = False
+			annotation_word = True
+		elif view == "linguistic":
+			prev_aya = next_aya = False
+			sura_info = False
+			word_info = True
+			aya_position_info = False
+			aya_theme_info = aya_sajda_info = True
+			aya_stat_info = False
+			annotation_aya = True
+			annotation_word = True
+		else: # if view == custom
+			prev_aya = TRUE_FALSE( flags["prev_aya"] ) if flags.has_key( "prev_aya" ) \
+						else self._defaults["flags"]["prev_aya"]
+			next_aya = TRUE_FALSE( flags["next_aya"] ) if flags.has_key( "next_aya" ) \
+						else self._defaults["flags"]["next_aya"]
+			sura_info = TRUE_FALSE( flags["sura_info"] ) if flags.has_key( "sura_info" ) \
+						else self._defaults["flags"]["sura_info"]
+			word_info = TRUE_FALSE( flags["word_info"] ) if flags.has_key( "word_info" ) \
+						else self._defaults["flags"]["word_info"]
+			aya_position_info = TRUE_FALSE( flags["aya_position_info"] ) if flags.has_key( "aya_position_info" ) \
+								else self._defaults["flags"]["aya_position_info"]
+			aya_theme_info = TRUE_FALSE( flags["aya_theme_info"] ) if flags.has_key( "aya_theme_info" ) \
+							 else self._defaults["flags"]["aya_theme_info"]
+			aya_stat_info = TRUE_FALSE( flags["aya_stat_info"] ) if flags.has_key( "aya_stat_info" ) \
+							else self._defaults["flags"]["aya_stat_info"]
+			aya_sajda_info = TRUE_FALSE( flags["aya_sajda_info"] ) if flags.has_key( "aya_sajda_info" ) \
+							 else self._defaults["flags"]["aya_sajda_info"]
+			annotation_aya = TRUE_FALSE( flags["annotation_aya"] ) if flags.has_key( "annotation_aya" ) \
+							 else self._defaults["flags"]["annotation_aya"]
+			annotation_word = TRUE_FALSE( flags["annotation_word"] ) if flags.has_key( "annotation_word" ) \
+							 else self._defaults["flags"]["annotation_word"]
 
 		#preprocess query
 		query = query.replace( "\\", "" )
@@ -598,7 +646,6 @@ class Raw():
 				"annotations": {} if not annotation_aya or not annotations_by_position.has_key( ( r["sura_id"], r["aya_id"] ) )
 							else annotations_by_position[( r["sura_id"], r["aya_id"] )]
 		    		}
-
 		return {"search": output}
 
 

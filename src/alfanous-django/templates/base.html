@@ -72,7 +72,15 @@
 
 			// help links
 			$("#help table a").bind('click', function(event) {
-				var param = {action:"search", query: $(this).attr("href"), recitation: $("#recitation").val(), translation: $("#translation").val(), sortedby: $("#sortedby").val(), page: 1, highlight: "css" }; //,fuzzy:"ok"
+				var param = {
+								action:"search", 
+								query: $(this).attr("href"), 
+								recitation: $("#recitation").val(), 
+								translation: $("#translation").val(), 
+								sortedby: $("#sortedby").val(), 
+								view: $("#view").val(),
+								page: 1, 
+								highlight: "css" }; //,fuzzy:"ok"
 				
 				// Mouad
 				redirect_to_params ( param );
@@ -88,17 +96,20 @@
 	
 
 			$('#form').submit(function(){
+			
 				var param = {
 								action: "search", 
 								query: $("#search_box").val(), 
 								recitation: $("#recitation").val(), 
 								translation: $("#translation").val(), 
 								sortedby: $("#sortedby").val(), 
+								view: $("#view").val(),
 								page: 1, 
 								highlight: "css",
-								prev_aya: "True",
-								next_aya: "True",
 								}; //,fuzzy:"ok"
+								
+									
+
 				
 				// Mouad
 				redirect_to_params ( param );
@@ -386,7 +397,18 @@
 </div>
 <br />
 <div class="xdrops_continer" style="direction:{{ bidi }}; text-align:right; width: 342px;">
-	<span class="xtitle">Sorted by :</span>
+	<span class="xtitle">{{ _("View") }} :</span>
+	<select id="view" class="styled" name="view">
+		<option value="normal">{{ _("Default") }}</option>
+		<option value="minimal">{{ _("Minimal") }}</option>
+		<option value="normal">{{ _("Normal") }}</option>
+		<option value="full">{{ _("Full") }}</option>
+		<option value="statistic">{{ _("Statitic") }}</option>
+		<option value="lingistic">{{ _("Linguistic") }}</option>
+	</select><br /><!--[if lte IE 8]><![endif]-->
+
+
+	<span class="xtitle">{{ _("Sorted by") }} :</span>
 	<select id="sortedby" class="styled" name="sortedby">
 		<option value="score">{{ _("Default") }}</option>
 		<option value="score">{{ _("Relevance") }}</option>
