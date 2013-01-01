@@ -463,7 +463,7 @@ class Raw():
 		offset = 1 if offset < 1 else offset;
 		range = self._defaults["minrange"] if range < self._defaults["minrange"] else range;
 		range = self._defaults["maxrange"] if range > self._defaults["maxrange"] else range;
-		interval_end = offset + range
+		interval_end = offset + range - 1
 		end = interval_end if interval_end < len( res ) else len( res )
 		start = offset if offset <= len( res ) else -1
 		reslist = [] if end == 0 or start == -1 else list( res )[start - 1:end]
