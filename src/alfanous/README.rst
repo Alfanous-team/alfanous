@@ -130,19 +130,20 @@ Flags
  12        prev_aya           search            enable previous aya retrieving                "False"          True | False
  13        next_aya           search            enable next aya retrieving                    "False"          True | False
  14        sura_info          search            enable sura information retrieving            "True"           True | False
- 15        word_info          search            enable word information retrieving            "True"           True | False
- 16        aya_position_info  search            enable aya position information retrieving    "True"           True | False
- 17        aya_theme_info     search            enable aya theme information retrieving       "True"           True | False
- 18        aya_stat_info      search            enable aya stat information retrieving        "True"           True | False
- 19        aya_sajda_info     search            enable aya sajda information retrieving       "True"           True | False
- 20        annotation_word    search            enable query terms annotations retrieving     "False"          True | False
- 21        annotation_aya     search            enable aya words annotations retrieving       "False"          True | False
- 22        sortedby           search            sorting order of results                      "score"          total | score | mushaf | tanzil | subject
- 23        offset             search            starting offset of results                    "1"              1 to 6236
- 24        range              search            range of results                              "10"             1 to 25
- 25        page               search            page number  [override offset]                "1"              1 to 6236
- 26        perpage            search            results per page  [override range]            "10"             1 to 25
- 27        fuzzy              search            fuzzy search [exprimental]                          "False"          True | False
+ 15        sura_stat_info     search            enable sura stats retrieving                  "False"          True | False
+ 16        word_info          search            enable word information retrieving            "True"           True | False
+ 17        aya_position_info  search            enable aya position information retrieving    "True"           True | False
+ 18        aya_theme_info     search            enable aya theme information retrieving       "True"           True | False
+ 19        aya_stat_info      search            enable aya stat information retrieving        "True"           True | False
+ 20        aya_sajda_info     search            enable aya sajda information retrieving       "True"           True | False
+ 21        annotation_word    search            enable query terms annotations retrieving     "False"          True | False
+ 22        annotation_aya     search            enable aya words annotations retrieving       "False"          True | False
+ 23        sortedby           search            sorting order of results                      "score"          total | score | mushaf | tanzil | subject
+ 24        offset             search            starting offset of results                    "1"              1 to 6236
+ 25        range              search            range of results                              "10"             1 to 25
+ 26        page               search            page number  [override offset]                "1"              1 to 6236
+ 27        perpage            search            results per page  [override range]            "10"             1 to 25
+ 28        fuzzy              search            fuzzy search [exprimental]                          "False"          True | False
 
 ======== =================== ================= ============================================ ================= ========================================================================================================================================================================
 
@@ -348,8 +349,8 @@ response:
                                                         "name": "\u0627\u0644\u0643\u0648\u062b\u0631", 
                                                         "type": "\u0645\u0643\u064a\u0629", 
                                                         "order": 15, 
+                                                        "ayas": 3,
                                                         "stat": {
-                                                                    "ayas": 3, 
                                                                     "words": 10,
                                                                     "letters": 42, 
                                                                     "godnames": 0, 
