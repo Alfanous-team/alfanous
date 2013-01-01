@@ -532,7 +532,7 @@ a:hover{color: green;}
 	color: #181;
 }
 
-.word_details, .sura_details, .aya_details {
+.word_details, .sura_details, .aya_details .sura_stat_details {
 	margin: 8px 5px 2px 20px;
 }
 
