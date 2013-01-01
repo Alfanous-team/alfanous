@@ -46,6 +46,7 @@ arg_parser.add_argument( "-q", "--query", dest = "query", type = str  , help = H
 arg_parser.add_argument( "-o", "--offset", dest = "offset", metavar = 'NUMBER', type = int, help = HELPMESSAGES["offset"] )
 arg_parser.add_argument( "-r", "--range", dest = "range", type = int, metavar = 'NUMBER', help = HELPMESSAGES["range"] )
 arg_parser.add_argument( "-s", "--sortedby", dest = "sortedby", type = str, choices = DOMAINS["sortedby"], help = HELPMESSAGES["sortedby"] )
+arg_parser.add_argument( "-w", "--view", dest = "view", type = str, choices = DOMAINS["view"] , help = HELPMESSAGES["view"] )
 arg_parser.add_argument( "--page", dest = "page", type = int, metavar = 'NUMBER', help = HELPMESSAGES["page"] )
 arg_parser.add_argument( "--perpage", dest = "perpage", type = int, metavar = 'NUMBER', help = HELPMESSAGES["perpage"] )
 arg_parser.add_argument( "--recitation", dest = "recitation", metavar = 'NUMBER', type = str, help = HELPMESSAGES["recitation"] )

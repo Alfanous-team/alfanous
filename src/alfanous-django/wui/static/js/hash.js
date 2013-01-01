@@ -18,8 +18,8 @@ defaultParams = {
 	      highlight: "css",
 	      recitation: "1",
 	      translation: "None",
-	      prev_aya: "True",
-	      next_aya: "True",
+	      prev_aya: "False",
+	      next_aya: "False",
 	      sura_info: "True",
 	      word_info: "True",
 	      aya_position_info:	"True",
@@ -29,6 +29,7 @@ defaultParams = {
 	      annotation_word:"False",
 	      annotation_aya:"False",
 	      sortedby:"score",
+	      view: "custom",
 	      page:"1", 
 	      perpage:"10",
 	      fuzzy:"False",
@@ -123,6 +124,7 @@ function set_search_params ( params ) {
 	$("#recitation").val( params.recitation ); 
 	$("#translation").val( params.translation );
 	$("#sortedby").val( params.sortedby );
+	$("#view").val( params.view );
 	document.title = "الفانوس | نتائج البحث عن: " + params.query;
 }
 
