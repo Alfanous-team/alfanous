@@ -41,6 +41,7 @@ from alfanous.dynamic_resources.std2uth_dyn import std2uth_words
 from alfanous.dynamic_resources.vocalizations_dyn import vocalization_dict
 from alfanous.TextProcessing import QArabicSymbolsFilter
 from alfanous.Data import *
+from alfanous.Misc import buck2uni
 
 
 STANDARD2UTHMANI = lambda x: std2uth_words[x] if std2uth_words.has_key( x ) else x
@@ -533,7 +534,14 @@ class Raw():
 					vocalizations = vocalization_dict[term[1]] if vocalization_dict.has_key( term[1] ) \
 										   else []
 					nb_vocalizations_globale += len( vocalizations )
-					words_output[ "individual" ][ cpt ] = {"word":term[1], "nb_matches":term[2], "nb_ayas":term[3], "nb_vocalizations": len( vocalizations ), "vocalizations": vocalizations}
+					words_output[ "individual" ][ cpt ] = {
+														 "word":term[1],
+														 "buckwalter": buck2uni( term[1], ignore = "" , reverse = True ),
+														 "nb_matches":term[2], 
+														 "nb_ayas":term[3], 
+														 "nb_vocalizations": len( vocalizations ), 
+														 "vocalizations": vocalizations
+														 }
 					cpt += 1
 			annotation_word_query += u" ) "
 			words_output["global"] = {"nb_words":cpt - 1, "nb_matches":matches, "nb_vocalizations": nb_vocalizations_globale}
