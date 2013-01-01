@@ -110,7 +110,7 @@
 				  </legend>
 				  <br />
 				  	{% if ayaresult_content.aya.prev_aya %}
-					  		<p  align='center' >
+					  		<p  align='center' dir='rtl' >
 					  		<span class='quran_decoration prev_aya'>
 							 [ </span>
 					  		<span class="quran prev_aya">
@@ -126,7 +126,7 @@
 					  		
 					  		
 					  {% endif %}
-				  <p align='center'>
+				  <p align='center' dir='rtl'>
 					 <span class='quran_decoration main_aya'>
 					 [ </span>
 					 
@@ -151,7 +151,7 @@
 					  
 					 <span class='quran_decoration main_aya'>
 					 ] </span>
-					  <span dir="ltr" class='main_aya'>
+					  <span dir="rtl" class='main_aya'>
 					  ( <script type="text/javascript"> build_search_link(param,"aya_id:" + {{ ayaresult_content.aya.id }} + " + " + "sura_name:" + ayaresult_content.identifier.sura_name ,false ); </script> {{ ayaresult_content.identifier.sura_name }} {{ ayaresult_content.aya.id }} </a>)
 					  </span>
 					  <br />
@@ -161,7 +161,7 @@
 				    </p>
 				    <!-- next ayah -->
 				    {% if ayaresult_content.aya.next_aya %}
-					  		<p  align='center' >
+					  		<p  align='center' dir='rtl'>
 					  		<span class='quran_decoration next_aya'>
 							 [ </span>
 					  		<span class="quran next_aya">
