@@ -379,14 +379,14 @@ a:hover{color: green;}
 
 
 #help_btn {
-	position: absolute;
+	/*position: absolute;*/
 	top:10px;
 	right:0;
 	z-index:95;
 }
 
 #down_btn {
-	position: absolute;
+	/* position: absolute; */
 	top:10px;
 	right:50px;
 	z-index:95;
