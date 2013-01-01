@@ -413,6 +413,18 @@ class Raw():
 			sura_stat_info = False
 			annotation_aya = True
 			annotation_word = True
+		elif view == "recitation":
+			script = "uthmani"
+			prev_aya = next_aya = True
+			sura_info = True
+			word_info = False
+			aya_position_info = True
+			aya_theme_info = False
+			aya_sajda_info = True
+			aya_stat_info = False
+			sura_stat_info = False
+			annotation_aya = False
+			annotation_word = False
 		else: # if view == custom or undefined
 			prev_aya = TRUE_FALSE( flags["prev_aya"] ) if flags.has_key( "prev_aya" ) \
 						else self._defaults["flags"]["prev_aya"]
