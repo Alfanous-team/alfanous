@@ -51,15 +51,72 @@
 				{% for wordcpt, wordstat in results.search.words.individual.items %}
 						<p dir='ltr' >
 						  <div class='word_details'>
-						    <span style=' font-size:14pt; color:#00aa00;'> {{ wordcpt }}  </span>
+						    <span style=' font-size:14pt; color:#00aa00;'> {{ wordcpt }}.  </span>
 							<script type="text/javascript"> document.write(build_search_link(param, {{ wordstat.word }}, false)); </script> 
 							<div class='details_label word_info0 clickable'> {{ _("word") }} | {{ wordstat.word }} </div></a>
 							<div class='details_label word_stat0'> {{ _("occurnaces") }} | {{ wordstat.nb_matches }} </div>
 							<div class='details_label word_stat1'> {{ _("ayates") }} |  {{ wordstat.nb_ayas }} </div>
 							<div class='details_label word_vocalization_nb'> {{ _("vocalizations") }} | {{ wordstat.nb_vocalizations }} </div>
+
 						{% for vocalization in wordstat.vocalizations %} 
 							<script type="text/javascript"> document.write(build_search_link(param, "aya_:"+ {{ vocalization }} + "", false )); </script> 
 							<div class='details_label word_vocalization clickable quran'> {{ vocalization }} </div></a>
+						{% endfor %}
+						{% for annotation_word, annotation_detail in wordstat.annotations.items %}
+							<p   class='annotation_details'>
+							<div style=' font-size:12pt; color:#99aa88;'> {{ wordcpt }}.{{ forloop.counter }} </div>
+							<div class='details_label word_annotation clickable'> {{ _("Annotation") }} | {{ annotation_word }} </div>
+							<div class='details_label word_annotation_info0'> {{ _("ID") }} | {{ annotation_detail.word_gid }} </div>
+							<div class='details_label word_annotation_info0'> {{ _("sura,aya") }} | {{ annotation_detail.sura_id }},{{ annotation_detail.aya_id }} </div>
+							{% if annotation_detail.token %}
+								<div class='details_label word_annotation_info1'> {{ _("token") }} | {{ annotation_detail.token }} ( {{ annotation_detail.arabictoken }}) </div>
+							{% endif %}
+							{% if annotation_detail.part %}
+								<div class='details_label word_annotation_info1'> {{ _("part") }} | {{ annotation_detail.part }} </div>
+							{% endif %}
+							{% if annotation_detail.type %}
+								<div class='details_label word_annotation_info2'> {{ _("type") }} | {{ annotation_detail.type }} </div>
+							{% endif %}
+							{% if annotation_detail.pos %}
+								<div class='details_label word_annotation_info2'> {{ _("POS") }} | {{ annotation_detail.pos }} ({{ annotation_detail.arabicpos }}) </div>
+							{% endif %}
+							{% if annotation_detail.lemma %}
+								<div class='details_label word_annotation_info5'> {{ _("lemma") }} | {{ annotation_detail.lemma  }} ({{ annotation_detail.arabiclemma }}) </div>
+							{% endif %}
+							{% if annotation_detail.root %}
+								<div class='details_label word_annotation_info5'> {{ _("root") }} | {{ annotation_detail.root }} ({{ annotation_detail.arabicroot }}) </div>
+							{% endif %}
+							{% if annotation_detail.special %}
+								<div class='details_label word_annotation_info5'> {{ _("special") }} | {{ annotation_detail.special }} ({{ annotation_detail.arabicspecial }}) </div>
+							{% endif %}
+							{% if annotation_detail.aspect %}
+								<div class='details_label word_annotation_info6'> {{ _("aspect") }} | {{ annotation_detail.aspect }} </div>
+							{% endif %}
+							{% if annotation_detail.state %}
+								<div class='details_label word_annotation_info6'> {{ _("state") }} | {{ annotation_detail.state }} </div>
+							{% endif %}
+							{% if annotation_detail.form %}
+								<div class='details_label word_annotation_info6'> {{ _("form") }} | {{ annotation_detail.form }} </div>
+							{% endif %}
+							{% if annotation_detail.case %}
+								<div class='details_label word_annotation_info6'> {{ _("case") }} | {{ annotation_detail.case }} ( {{ annotation_detail.arabiccase }}) </div>
+							{% endif %}
+							{% if annotation_detail.derivation %}
+								<div class='details_label word_annotation_info6'> {{ _("derivation") }} | {{ annotation_detail.derivation }} </div>
+							{% endif %}
+							{% if annotation_detail.person %}
+								<div class='details_label word_annotation_info3'> {{ _("person") }} | {{ annotation_detail.person }} </div>
+							{% endif %}
+							{% if annotation_detail.number %}
+								<div class='details_label word_annotation_info3'> {{ _("number") }} | {{ annotation_detail.number }} </div>
+							{% endif %}
+							{% if annotation_detail.gender %}
+								<div class='details_label word_annotation_info3'> {{ _("gender") }} | {{ annotation_detail.gender }} </div>
+							{% endif %}
+							{% if annotation_detail.voice %}
+								<div class='details_label word_annotation_info3'> {{ _("voice") }} | {{ annotation_detail.voice }} </div>
+							{% endif %}
+							</p>
 						{% endfor %}
 						   </div>
 					 	  </p>	
@@ -195,7 +252,7 @@
 					  {% endif %}
 					  
 					  {% if ayaresult_content.theme %}
-						  <p align='center' >
+						  <p align='center' class='theme_details' >
 						  	<span style=' color:#808080;'>
 						  	{% if ayaresult_content.theme.chapter %}
 						  		{{ _("Chapter") }} :  <script type="text/javascript"> document.write(build_search_link(param,"chapter:\"" +  {{ ayaresult_content.theme.chapter }} + "\"",false )); </script> 
@@ -210,8 +267,8 @@
 								<b> {{ ayaresult_content.theme.subtopic }} </b></a> 
 							{% endif %}			
 							</span>
-						  </p>		
-					  {% endif %}
+						  </p>
+					   {% endif %}
 					  	
 					  {% if ayaresult_content.stat or 	ayaresult_content.position %}		
 						  <div class='aya_details'>
@@ -232,7 +289,7 @@
 								<script type="text/javascript"> build_search_link(param, "page:" + {{ ayaresult_content.position.page }}, true)); </script> 
 								<div class='details_label aya_pos3 clickable filter'> {{ _("page") }} | {{ ayaresult_content.position.page }} </div></a>
 							{% endif %}
-						  </div><br />
+						  </div><br /></br />
 					  {% endif %}
 					  {% if  ayaresult_content.sajda.exist %}
 					  		<br /><div>
@@ -255,9 +312,12 @@
 			{% block pages_bottom %} {% endblock %}
 			
 			
-			
+		{% else %}
+			<br />
+			<div class='notfound'><p> {{ _("Sorry! there is no results for this search query.") }} </p></div>
+			<br />
 		{% endif %}		
 	{% else %}
-		<div id='error'><p> {{ results.error.msg }}({{ results.error.code }})</p></div>"
+		<div id='error' class='error'><p> {{ results.error.msg }}({{ results.error.code }})</p></div>"
 	{% endif %}
 {% endblock results %}
