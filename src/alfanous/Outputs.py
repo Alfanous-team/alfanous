@@ -76,7 +76,7 @@ class Raw():
 		    "maxrange":25,
 		    "results_limit":6236,
 		    "flags":{
-				  "action":"search",
+			      "action":"search",
 			      "ident":"undefined",
 			      "platform":"undefined",
 			      "domain":"undefined",
@@ -558,9 +558,12 @@ class Raw():
 				if ( annotation_word and word_info ) :
 					if annot["normalized"] in terms_uthmani:
 						if annotations_by_word.has_key( annot["normalized"] ):
-							annotations_by_word[annot["normalized"]][annot["word"]] = annot;
+							if annotations_by_word[annot["normalized"]].has_key( annot["word"] ):
+								annotations_by_word[annot["normalized"]][annot["word"]][annot["order"]] = annot;
+							else:
+								annotations_by_word[annot["normalized"]][annot["word"]] = { annot["order"]: annot} ;
 						else:
-							annotations_by_word[annot["normalized"]] = { annot["word"]: annot}
+							annotations_by_word[annot["normalized"]] = { annot["word"]: { annot["order"]: annot}}
 				if annotation_aya:
 					if annotations_by_position.has_key( ( annot["sura_id"], annot["aya_id"] ) ):
 						annotations_by_position[( annot["sura_id"], annot["aya_id"] )][annot["word_id"]] = annot
