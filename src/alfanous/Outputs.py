@@ -90,6 +90,7 @@ class Raw():
 			      "prev_aya": False,
 			      "next_aya": False,
 			      "sura_info": True,
+			      "sura_stat_info":False,
 			      "word_info": True,
 			      "aya_position_info":	True,
 			      "aya_theme_info":	True,
@@ -128,6 +129,7 @@ class Raw():
 			      "prev_aya": [True, False],
 			      "next_aya": [True, False],
 			      "sura_info": [True, False],
+			      "sura_stat_info": [True, False],
 			      "word_info": [True, False],
 			      "aya_position_info":	[True, False],
 			      "aya_theme_info":	[True, False],
@@ -158,7 +160,8 @@ class Raw():
 			      "translation": "translation id",
 			      "prev_aya": "enable previous aya retrieving",
 			      "next_aya": "enable next aya retrieving",
-			      "sura_info": "enable sura information retrieving",
+			      "sura_info": "enable sura information retrieving (override sura_stat_info if False)",
+			      "sura_stat_info": "enable sura stats retrieving (has no effect if sura_info is False)",
 			      "word_info": "enable word information retrieving",
 			      "aya_position_info":	"enable aya position information retrieving",
 			      "aya_theme_info":	"enable aya theme information retrieving",
@@ -365,26 +368,29 @@ class Raw():
 
 		# pre-defined views
 		if view == "minimal":
+			recitation = None
 			translation = None
 			prev_aya = next_aya = False
 			sura_info = False
 			word_info = False
 			aya_position_info = aya_theme_info = aya_sajda_info = False
 			aya_stat_info = False
+			sura_stat_info = False
 			annotation_aya = annotation_word = False
 		elif view == "normal":
-			prev_aya = next_aya = False
+			prev_aya = next_aya = True
 			sura_info = True
 			word_info = True
 			aya_position_info = aya_theme_info = aya_sajda_info = True
 			aya_stat_info = True
+			sura_stat_info = False
 			annotation_aya = annotation_word = False
 		elif view == "full":
 			prev_aya = next_aya = True
 			sura_info = True
 			word_info = True
 			aya_position_info = aya_theme_info = aya_sajda_info = True
-			aya_stat_info = True
+			aya_stat_info = sura_stat_info = True
 			annotation_aya = annotation_word = True
 		elif view == "statistic":
 			prev_aya = next_aya = False
@@ -393,6 +399,7 @@ class Raw():
 			aya_position_info = True
 			aya_theme_info = aya_sajda_info = False
 			aya_stat_info = True
+			sura_stat_info = True
 			annotation_aya = False
 			annotation_word = True
 		elif view == "linguistic":
@@ -402,15 +409,18 @@ class Raw():
 			aya_position_info = False
 			aya_theme_info = aya_sajda_info = True
 			aya_stat_info = False
+			sura_stat_info = False
 			annotation_aya = True
 			annotation_word = True
-		else: # if view == custom
+		else: # if view == custom or undefined
 			prev_aya = TRUE_FALSE( flags["prev_aya"] ) if flags.has_key( "prev_aya" ) \
 						else self._defaults["flags"]["prev_aya"]
 			next_aya = TRUE_FALSE( flags["next_aya"] ) if flags.has_key( "next_aya" ) \
 						else self._defaults["flags"]["next_aya"]
 			sura_info = TRUE_FALSE( flags["sura_info"] ) if flags.has_key( "sura_info" ) \
 						else self._defaults["flags"]["sura_info"]
+			sura_stat_info = TRUE_FALSE( flags["sura_stat_info"] ) if flags.has_key( "sura_stat_info" ) \
+						else self._defaults["flags"]["sura_stat_info"]
 			word_info = TRUE_FALSE( flags["word_info"] ) if flags.has_key( "word_info" ) \
 						else self._defaults["flags"]["word_info"]
 			aya_position_info = TRUE_FALSE( flags["aya_position_info"] ) if flags.has_key( "aya_position_info" ) \
@@ -604,12 +614,13 @@ class Raw():
 							  "id":r["sura_id"],
 							  "type": r["sura_type"] ,
 							  "order":r["sura_order"],
-						    "stat":{
-								  "ayas":r["s_a"],
-								  "words":N( r["s_w"] ),
-								  "godnames":N( r["s_g"] ),
-								  "letters":N( r["s_l"] )
-						      }
+							  "ayas":r["s_a"],
+						    "stat":{} if not sura_stat_info
+							  	  else	{
+										  "words":N( r["s_w"] ),
+										  "godnames":N( r["s_g"] ),
+										  "letters":N( r["s_l"] )
+								      }
 
 		    		},
 

@@ -57,6 +57,7 @@ arg_parser.add_argument( "--vocalized", dest = "vocalized", type = bool, choices
 arg_parser.add_argument( "--prev_aya", dest = "prev_aya", type = bool, choices = DOMAINS["prev_aya"], help = HELPMESSAGES["prev_aya"] )
 arg_parser.add_argument( "--next_aya", dest = "next_aya", type = bool, choices = DOMAINS["next_aya"], help = HELPMESSAGES["next_aya"] )
 arg_parser.add_argument( "--sura_info", dest = "sura_info", type = bool, choices = DOMAINS["sura_info"], help = HELPMESSAGES["sura_info"] )
+arg_parser.add_argument( "--sura_stat_info", dest = "sura_stat_info", type = bool, choices = DOMAINS["sura_stat_info"], help = HELPMESSAGES["sura_stat_info"] )
 arg_parser.add_argument( "--word_info", dest = "word_info", type = bool, choices = DOMAINS["word_info"], help = HELPMESSAGES["word_info"] )
 arg_parser.add_argument( "--aya_position_info", dest = "aya_position_info", type = bool, choices = DOMAINS["aya_position_info"], help = HELPMESSAGES["aya_position_info"] )
 arg_parser.add_argument( "--aya_theme_info", dest = "aya_theme_info", type = bool, choices = DOMAINS["aya_theme_info"], help = HELPMESSAGES["aya_theme_info"] )
