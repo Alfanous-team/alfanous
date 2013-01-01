@@ -320,6 +320,6 @@
 			<br />
 		{% endif %}		
 	{% else %}
-		<div id='error' class='error'><p> {{ results.error.msg }}({{ results.error.code }})</p></div>"
+		<div id='error' class='error'><p> {{ _("Error ") }} ({{ results.error.code }}) : {{ results.error.msg|linebreaksbr }}</p></div>
 	{% endif %}
 {% endblock results %}

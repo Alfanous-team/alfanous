@@ -48,6 +48,27 @@ STANDARD2UTHMANI = lambda x: std2uth_words[x] if std2uth_words.has_key( x ) else
 ## a function to decide what is True and what is false
 TRUE_FALSE = lambda x: False if x in [False, "False", "no", "0", 0, None] else True
 
+#
+def SCAN_SUPERJOKERS( query ):
+	"""
+	a function to detect SuperJokers such as  *, ????, 
+	a "*" query is a superjoker if it contains less then 3 letters
+	a "?" query is a superjoker if it contains less then 2 letters
+	a mixed query has the same conditions of a "?" query
+	
+	TODO that's a quick fix, the problem of superjokers must be fixed in 
+			the query parser or by time delay 
+	"""
+	myreg = re.compile( "\*+|[\؟\?]{2,9}|[ \t\n\r\(\)\+\-\|]+|[^ ]+:|" )
+	filtred_query = myreg.sub( "", query )
+	super_joker = True if ( len( filtred_query ) < 3 and "*" in query ) \
+						or ( len( filtred_query ) < 2 and ( "?" in query or "؟" in query ) ) \
+			 	else False
+	# Exceptions
+	if query in ["?", "؟", "???????????", "؟؟؟؟؟؟؟؟؟؟؟؟"]:
+		super_joker = False
+
+	return super_joker
 
 
 def FREEZE_XRANGE( d ):
@@ -108,9 +129,12 @@ class Raw():
 		  }
 
 	ERRORS = {
+	     - 1:"fail, reason unknown",
 	     0:"success",
 	     1:"no action is chosen or action undefined",
-	     - 1:"fail, reason unknown",
+	     2:"""SuperJokers are not permitted, you have to add  3 letters or more to use * and 2 letters or more to use ? (؟)\n
+	     	-- Exceptions: ? (1),  ??????????? (11)
+	     	"""
 	    }
 
 
@@ -250,7 +274,10 @@ class Raw():
 		# init the error message with Succes
 		output = self._check( 0, flags )
 		if action == "search":
-			output.update( self._search( flags ) )
+			if SCAN_SUPERJOKERS( flags["query"] ): #Quick fix!!
+				output = self._check( 2, flags )
+			else:
+				output.update( self._search( flags ) )
 		elif action == "suggest":
 			output.update( self._suggest( flags ) )
 		elif action == "show":
