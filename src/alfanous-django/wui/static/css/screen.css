@@ -596,12 +596,8 @@ a:hover{color: green;}
 .term9, .term19 { color: #5C3; }
 
 
-.word_details, .sura_details, .aya_details .sura_stat_details {
+.word_details, .sura_details, .aya_details, .sura_stat_details, .theme_details {
 	margin: 8px 5px 2px 20px;
-}
-
-.theme_details{
-	margin: 8px 5px 8px 20px;
 }
 
 .aya_stat0, .sura_stat1 {
