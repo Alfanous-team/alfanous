@@ -286,15 +286,24 @@
 						  <p align='center' class='theme_details' >
 						  	<span style=' color:#808080;'>
 						  	{% if ayaresult_content.theme.chapter %}
-						  		{{ _("Chapter") }} :  <script type="text/javascript"> document.write(build_search_link(param,"chapter:\"" +  {{ ayaresult_content.theme.chapter }} + "\"",false )); </script> 
+						  		{{ _("Chapter") }} :  
+						  		{% with 'chapter:"'|add:ayaresult_content.theme.chapter|add:'"'  as new_query %}
+									<a class='no_decoration' href='?{% build_search_link params  new_query 1 False %}'> 
+								{% endwith %}
 						  		<b> {{ ayaresult_content.theme.chapter }} </b></a>
 						  	{% endif %}
 							{% if ayaresult_content.theme.topic %} 
-								{{ _("Topic") }} :  <script type="text/javascript"> document.write(build_search_link(param, "topic:\"" + {{ ayaresult_content.theme.topic }} +"\"",false)); </script> 
+								{{ _("Topic") }} :  
+								{% with 'topic:"'|add:ayaresult_content.theme.topic|add:'"'  as new_query %}
+									<a class='no_decoration' href='?{% build_search_link params  new_query 1 False %}'> 
+								{% endwith %}
 								<b> {{ ayaresult_content.theme.topic }} </b></a>
 							{% endif %}
 							{% if ayaresult_content.theme.subtopic %}
-								{{ _("Subtopic") }}:  <script type="text/javascript"> document.write(build_search_link(param, "subtopic:\"" + {{ ayaresult_content.theme.subtopic }} +"\"", false)); </script>
+								{{ _("Subtopic") }}:  
+								{% with 'subtopic:"'|add:ayaresult_content.theme.subtopic|add:'"'  as new_query %}
+									<a class='no_decoration' href='?{% build_search_link params  new_query 1 False %}'> 
+								{% endwith %}
 								<b> {{ ayaresult_content.theme.subtopic }} </b></a> 
 							{% endif %}			
 							</span>
