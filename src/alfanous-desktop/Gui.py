@@ -279,7 +279,7 @@ class QUI( Ui_MainWindow ):
             
             print results["error"]["msg"]
             for cpt in xrange( results["search"]["words"]["global"]["nb_words"] ) :
-                    this_word_info = results["search"]["words"][cpt + 1]
+                    this_word_info = results["search"]["words"]["individual"][cpt + 1]
                     this_word_info["cpt"] = cpt + 1
                     html += u'''<p>
                                 <span class="green">%(cpt)d. %(word)s : </span>
