@@ -95,30 +95,7 @@
 			
 	
 
-			$('#form').submit(function(){
-			
-				var param = {
-								action: "search", 
-								query: $("#search_box").val(), 
-								recitation: $("#recitation").val(), 
-								translation: $("#translation").val(), 
-								sortedby: $("#sortedby").val(), 
-								view: $("#view").val(),
-								page: 1, 
-								highlight: "css",
-								}; //,fuzzy:"ok"
-								
-									
-
-				
-				// Mouad
-				redirect_to_params ( param );
-				// search_for ( param );
-				// get_results(param);
-				
-				return false;
-			});
-			
+						
 			// Mouad
 			// if ( ! read_hash () ) {
 				read_params();
@@ -347,10 +324,11 @@
 </script>
 <!-- end -->
 
+
 </head>
 <body>
 
-<form id="form" name="form" method="post" action=".">
+<form id="form" name="form" method="get" action=".">
 <div>
 <div>
 <table>
@@ -360,7 +338,7 @@
 	<tr>
 		<td style="background:url(/static/images/main_table_02.png) no-repeat;width:50px;height:26px"> </td>
 		<td style="background:url(/static/images/main_table_03.png) no-repeat;width:259px;height:26px">
-			<input id="search_box" name="search" class="enter keyboardInput" type="text" value="" />
+			<input id="search_box" name="query" class="enter keyboardInput" type="text" value="" />
 			</td>
 		<td style="background:url(/static/images/main_table_04.png) repeat scroll 0 0 transparent;width:62;height:26;text-align:right;">
 			<a class="button" href="" onclick="$('#form').submit(); return false;">{{ _("search") }}</a>
@@ -395,7 +373,7 @@
 <div class="xdrops_continer" style="direction:{{ bidi }}; text-align:right; width: 342px;">
 	<span class="xtitle">{{ _("View") }} :</span>
 	<select id="view" class="styled" name="view">
-		<option value="custom">{{ _("Default") }}</option>
+		<option value="default">{{ _("Default") }}</option>
 		<option value="minimal">{{ _("Minimal") }}</option>
 		<option value="normal">{{ _("Normal") }}</option>
 		<option value="full">{{ _("Full") }}</option>
