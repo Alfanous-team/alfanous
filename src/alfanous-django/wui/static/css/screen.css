@@ -700,6 +700,10 @@ a:hover{color: green;}
 		
 }
 
+.page_link {
+				color: blue;
+			}
+
 
 /* Assem: Error, NotFound */
 .notfound {
