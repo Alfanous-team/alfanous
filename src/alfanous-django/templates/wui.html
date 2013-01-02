@@ -6,7 +6,13 @@
 	{% block pages_top %}
 				<br />
 				<div class='pages'>
-				<img src='/static/images/prev_en.gif' alt='Previous page' title = 'Previous page' />
+				{% if results.search.interval.page != 1 %}
+					{% with results.search.interval.page|add:"-1"|stringformat:"s" as prev_page %}
+						<a class='no_decoration' href='?{% build_search_link params params.query prev_page False%}'> 
+					{% endwith %} 
+					<img src='/static/images/prev_en.gif' alt='Previous page' title = 'Previous page' />
+					</a>
+				{% endif %}
 				<div style=' display:inline-block; position:relative; top:-8px;'>
 				{% for i in results.search.interval.nb_pages|get_range %}
 					{% with results.search.interval.page as page %}
@@ -25,7 +31,13 @@
 					{% endwith %}
 				{% endfor %}
 				</div>
-				<img src='/static/images/next_en.gif' alt='Next page' title = 'Next page' />
+				{% if results.search.interval.page != results.search.interval.nb_pages %}
+					{% with results.search.interval.page|add:"+1"|stringformat:"s" as next_page %}
+						<a class='no_decoration' href='?{% build_search_link params params.query next_page False%}'> 
+					{% endwith %} 
+					<img src='/static/images/next_en.gif' alt='Next page' title = 'Next page' /></a>
+				{% endif %}
+				
 				</div>
 		{% endblock %}
 {% endblock %}

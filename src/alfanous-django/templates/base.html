@@ -166,38 +166,6 @@
 				for( i = json.search.interval.start; i <= json.search.interval.end; i++) {
 					AudioPlayer.embed("audioplayer_"+ i, {soundFile: json.search.ayas[i].aya.recitation, titles: json.search.ayas[i].sura.name+"-"+json.search.ayas[i].aya.id});
 				}
-
-
-				$(".pages img:first-child").one('click', function(event) {
-					var param2 = param;
-					if (param2.page > 1) {
-						param2.action="search";
-						param2.page = parseInt ( param2.page ) - 1;
-						param2.query = $("#search_box").val();
-						// Mouad
-						redirect_to_params ( param2 );
-						// search_for ( param2 );
-						// $('#search_box').val(param2.query);
-						// get_results(param2);
-					}
-					event.preventDefault();
-				});
-				$(".pages img:last-child").one('click', function(event) {
-					var param2 = param;
-					if  (param2.page < nb_pages) {
-						param2.action = "search";
-						param2.page = parseInt ( param2.page ) + 1;
-						param2.query = $("#search_box").val();
-											
-						// Mouad
-						redirect_to_params ( param2 );
-						// search_for ( param2 );
-						// $('#search_box').val(param2.query);
-						// get_results(param2);
-					}
-					event.preventDefault();
-				});
-
 				// dynamic css
 				//$(".match").css("color", "#181");
 				for (i=0; i<10; i++) {
