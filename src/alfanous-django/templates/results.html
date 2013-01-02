@@ -6,6 +6,7 @@
 
 {% block title %} {{ _("Alfanous - Results to Query:") }}  {% endblock %}  
 
+
 {% block results %}
 	{% if results.error.code == 0  %} 
 		<div id="search_result_static" style="direction:{{ bidi }}; width:800px">
@@ -22,7 +23,7 @@
 				<span style=' font-size:14pt; color:#00aa00;'> {{ suggestion_key }} </span>
 				<div class='details_label word_info0'>  {{ _("word") }} |  {{ suggestion_item|first }} </div>
 				{% for suggestion_sub_key, suggestion_sub_item in suggestion_item|slice:"1" %}
-					<script type="text/javascript"> document.write(build_search_link(param,{{ suggestion_sub_item }},false)); </script>
+					<a class='no_decoration' href="?{% build_search_link params  suggestion_sub_item 1 False %}"> 
 					<div class='details_label word_stat1 clickable'> {{ suggestion_sub_item }}</div></a>
 				{% empty %}
 					<div class='details_label word_stat0'> {{ _("no suggestions!") }} </div>
@@ -52,7 +53,7 @@
 						<p dir='ltr' >
 						  <div class='word_details'>
 						    <span style=' font-size:14pt; color:#00aa00;'> {{ wordcpt }}.  </span>
-							<script type="text/javascript"> document.write(build_search_link(param, {{ wordstat.word }}, false)); </script> 
+							<a class='no_decoration' href="?{% build_search_link params  wordstat.word 1 False %}"> 
 							<div class='details_label word_info0 clickable'> {{ _("word") }} | {{ wordstat.word }} | {{ wordstat.buckwalter }} </div></a>
 							<div class='details_label word_stat0'> {{ _("occurnaces") }} | {{ wordstat.nb_matches }} </div>
 							<div class='details_label word_stat1'> {{ _("ayates") }} |  {{ wordstat.nb_ayas }} </div>
@@ -206,7 +207,7 @@
 										{% if aya_word|first in "<ct> "|make_list  %}
 												{{ aya_word }} 
 										{% else %} 
-												<a href=''>{{ aya_word }}<a /> 
+												<a class='no_decoration' href="?{% build_search_link params aya_word 1 False %}"> {{ aya_word }}</a> 
 										{% endif %}
 									 
 								{% endautoescape%}
@@ -306,10 +307,7 @@
 			{% endfor %}
 			
 		
-			
-			
-			
-			
+				
 			<!-- Pages control # bottom one -->
 			{% block pages_bottom %} {% endblock %}
 			
