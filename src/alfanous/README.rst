@@ -116,7 +116,7 @@ Flags
  number    flag               related action    description                                   default value    accepted values 
 -------- ------------------- ----------------- -------------------------------------------- ----------------- ------------------------------------------------------------------------------------------------------------------------------------------------------------------------
  1         **action**         <none>            action to perform                             "error"          search | suggest | show
- 2         ident              <all>             identifier of requester   [exprimental]       "undefined"      undefined
+ 2         ident              <all>             identifier of requester   [experimental]      "undefined"      undefined
  3         platform           <all>             platform used by requester                    "undefined"      undefined | wp7 | s60 | android | ios | linux | window
  4         domain             <all>             web domain of requester if applicable         "undefined"      \*
  5a        **query**          search,suggest    query attached to action                       ""              \*
@@ -126,22 +126,24 @@ Flags
  8         vocalized          search            enable vocalization of aya text               "True"           True | False
  9         recitation         search            recitation id                                 "1"              1 to 30
  10        translation        search            translation id                                "None"           \*
- 11        prev_aya           search            enable previous aya retrieving                "False"          True | False
- 12        next_aya           search            enable next aya retrieving                    "False"          True | False
- 13        sura_info          search            enable sura information retrieving            "True"           True | False
- 14        word_info          search            enable word information retrieving            "True"           True | False
- 15        aya_position_info  search            enable aya position information retrieving    "True"           True | False
- 16        aya_theme_info     search            enable aya theme information retrieving       "True"           True | False
- 17        aya_stat_info      search            enable aya stat information retrieving        "True"           True | False
- 18        aya_sajda_info     search            enable aya sajda information retrieving       "True"           True | False
- 19        annotation_word    search            enable query terms annotations retrieving     "False"          True | False
- 20        annotation_aya     search            enable aya words annotations retrieving       "False"          True | False
- 21        sortedby           search            sorting order of results                      "score"          total | score | mushaf | tanzil | subject
- 22        offset             search            starting offset of results                    "1"              1 to 6236
- 23        range              search            range of results                              "10"             1 to 25
- 24        page               search            page number  [override offset]                "1"              1 to 6236
- 25        perpage            search            results per page  [override range]            "10"             1 to 25
- 26        fuzzy              search            fuzzy search [exprimental]                          "False"          True | False
+ 11        view               search            pre-defined configuration for view            "custom"         minimal | normal | full | statistic | linguistic | custom
+ 12        prev_aya           search            enable previous aya retrieving                "False"          True | False
+ 13        next_aya           search            enable next aya retrieving                    "False"          True | False
+ 14        sura_info          search            enable sura information retrieving            "True"           True | False
+ 15        sura_stat_info     search            enable sura stats retrieving                  "False"          True | False
+ 16        word_info          search            enable word information retrieving            "True"           True | False
+ 17        aya_position_info  search            enable aya position information retrieving    "True"           True | False
+ 18        aya_theme_info     search            enable aya theme information retrieving       "True"           True | False
+ 19        aya_stat_info      search            enable aya stat information retrieving        "True"           True | False
+ 20        aya_sajda_info     search            enable aya sajda information retrieving       "True"           True | False
+ 21        annotation_word    search            enable query terms annotations retrieving     "False"          True | False
+ 22        annotation_aya     search            enable aya words annotations retrieving       "False"          True | False
+ 23        sortedby           search            sorting order of results                      "score"          total | score | mushaf | tanzil | subject
+ 24        offset             search            starting offset of results                    "1"              1 to 6236
+ 25        range              search            range of results                              "10"             1 to 25
+ 26        page               search            page number  [override offset]                "1"              1 to 6236
+ 27        perpage            search            results per page  [override range]            "10"             1 to 25
+ 28        fuzzy              search            fuzzy search [exprimental]                          "False"          True | False
 
 ======== =================== ================= ============================================ ================= ========================================================================================================================================================================
 
@@ -301,13 +303,16 @@ response:
                                             "nb_matches": 1, 
                                             "nb_vocalizations": 1, 
                                             },
-                                "1": {
-                                        "word": "\u0627\u0644\u0643\u0648\u062b\u0631", 
-                                        "nb_matches": 1, 
-                                        "nb_ayas": 1,
-                                        "nb_vocalizations": 1, 
-                                        "vocalizations": ["\u0627\u0644\u0652\u0643\u064e\u0648\u0652\u062b\u064e\u0631\u064e"], 
-                                      }, 
+                                "individual": {
+                                
+				                                "1": {
+				                                        "word": "\u0627\u0644\u0643\u0648\u062b\u0631", 
+				                                        "nb_matches": 1, 
+				                                        "nb_ayas": 1,
+				                                        "nb_vocalizations": 1, 
+				                                        "vocalizations": ["\u0627\u0644\u0652\u0643\u064e\u0648\u0652\u062b\u064e\u0631\u064e"], 
+				                                      }, 
+				                               },
 
                              }, 
 
@@ -344,8 +349,8 @@ response:
                                                         "name": "\u0627\u0644\u0643\u0648\u062b\u0631", 
                                                         "type": "\u0645\u0643\u064a\u0629", 
                                                         "order": 15, 
+                                                        "ayas": 3,
                                                         "stat": {
-                                                                    "ayas": 3, 
                                                                     "words": 10,
                                                                     "letters": 42, 
                                                                     "godnames": 0, 
@@ -383,7 +388,8 @@ response:
                                                                         "arabicmood": null, 
                                                                         "number": null, 
                                                                         "spelled": "\u0627\u0646\u0627\u0653", 
-                                                                        "aspect": null, "word_gid": 75871, 
+                                                                        "aspect": null, 
+                                                                        "word_gid": 75871, 
                                                                         "word_id": 1, 
                                                                         "mood": null, 
                                                                         "arabicspecial": "\u0625\u0650\u0646\u0651", 
