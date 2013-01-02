@@ -135,7 +135,6 @@
 
 
 		function show_results (json, param) {
-			var color_list = [ "#118", "#811", "#807", "#F50", "#f00", "#f39", "#f43", "#660", "#444"]; //"#181"
 			var results = "";
 			var results_pages = "";
 
@@ -166,15 +165,7 @@
 				for( i = json.search.interval.start; i <= json.search.interval.end; i++) {
 					AudioPlayer.embed("audioplayer_"+ i, {soundFile: json.search.ayas[i].aya.recitation, titles: json.search.ayas[i].sura.name+"-"+json.search.ayas[i].aya.id});
 				}
-				// dynamic css
-				//$(".match").css("color", "#181");
-				for (i=0; i<10; i++) {
-					selector = ".term"+i;
-					for (j=1; j<10; j++) {
-						selector += ", .term"+(i+10*j);
-					};
-					$(selector).css("color", color_list[i]);
-				}
+
 			}
 
 			// Corners

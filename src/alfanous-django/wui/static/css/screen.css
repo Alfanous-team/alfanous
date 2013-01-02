@@ -7,6 +7,7 @@
 	src:url('../fonts/ScheherazadeRegOT.ttf');
 }
 
+
 /* copied from the template */
 
 	body {
@@ -582,6 +583,19 @@ a:hover{color: green;}
 	color: #181;
 }
 
+/* Assem: Terms Static Highlighting colors */
+.term0, .term10 { color: #118; }
+.term1, .term11 { color: #811; }
+.term2, .term12 { color: #807; }
+.term3, .term13 { color: #F50; }
+.term4, .term14 { color: #f00; }
+.term5, .term15 { color: #f39; }
+.term6, .term16 { color: #f43; }
+.term7, .term17 { color: #660; }
+.term8, .term18 { color: #444; }
+.term9, .term19 { color: #5C3; }
+
+
 .word_details, .sura_details, .aya_details .sura_stat_details {
 	margin: 8px 5px 2px 20px;
 }
@@ -703,6 +717,9 @@ a:hover{color: green;}
 .page_link {
 				color: blue;
 			}
+
+
+
 
 
 /* Assem: Error, NotFound */
