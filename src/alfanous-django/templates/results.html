@@ -313,15 +313,27 @@
 					  {% if ayaresult_content.stat or 	ayaresult_content.position %}		
 						  <div class='aya_details'>
 						  	{% if ayaresult_content.stat %}
-							  	<script type="text/javascript"> document.write(build_search_link(param,"a_w:" + {{ ayaresult_content.stat.words }}, false)); </script> 
+						  		{% with ayaresult_content.stat.words|stringformat:"s" as stat_words %}
+							  		{% with 'a_w:'|add:stat_words  as new_query %}
+										<a class='no_decoration' href='?{% build_search_link params  new_query 1 False %}'> 
+									{% endwith %}
+							  	{% endwith %} 
 							  	<div class='details_label aya_stat0 clickable'> {{ _("words") }} | {{ ayaresult_content.stat.words }} </div></a>
-								<script type="text/javascript"> document.write(build_search_link(param,"a_l:" + {{ ayaresult_content.stat.letters }}, false)); </script>
+								{% with ayaresult_content.stat.letters|stringformat:"s" as stat_letters %}
+							  		{% with 'a_l:'|add:stat_letters  as new_query %}
+										<a class='no_decoration' href='?{% build_search_link params  new_query 1 False %}'> 
+									{% endwith %}
+							  	{% endwith %} 
 								<div class='details_label aya_stat1 clickable'> {{ _("letters") }} | {{ ayaresult_content.stat.letters }} </div></a>
-								<script type="text/javascript"> build_search_link(param,"a_g:" + {{ ayaresult_content.stat.godnames }}, false);  </script>
+								{% with ayaresult_content.stat.godnames|stringformat:"s" as stat_godnames %}
+							  		{% with 'a_g:'|add:stat_godnames as new_query %}
+										<a class='no_decoration' href='?{% build_search_link params  new_query 1 False %}'> 
+									{% endwith %}
+							  	{% endwith %} 
 								<div class='details_label aya_stat2 clickable'> {{ _("devine names") }} | {{ ayaresult_content.stat.godnames }} </div></a>
 							{% endif %}
 							{% if ayaresult_content.position %}
-							<script type="text/javascript"> build_search_link(param, "manzil:" + {{ ayaresult_content.position.manzil }}, true)); </script> 
+								<script type="text/javascript"> build_search_link(param, "manzil:" + {{ ayaresult_content.position.manzil }}, true)); </script> 
 								<div class='details_label aya_pos0 clickable filter'> {{ _("manzil") }} | {{ ayaresult_content.position.manzil }} </div></a>
 								<script type="text/javascript"> build_search_link(param, "hizb:" + {{ ayaresult_content.position.hizb }}, true)); </script>
 								<div class='details_label aya_pos1 clickable filter'> {{ _("hizb") }} | {{ ayaresult_content.position.hizb }} </div></a>
