@@ -23,16 +23,26 @@ LOC = locale.getdefaultlocale()[0]
 #get platform
 SYS = sys.platform
 
-def buck2uni( string, ignore = "" ):
-    """ decode buckwalter """
-    result = ""
-    for char in string :
-        if BUCKWALTER2UNICODE.has_key( char ) and char not in ignore:
-            result += BUCKWALTER2UNICODE[char]
-        else :
-            result += char
 
-    return result
+
+def buck2uni( string, ignore = "" , reverse = False ):
+	""" encode & decode buckwalter transliteration """
+
+	if reverse:
+		mapping = {}
+		for k, v in BUCKWALTER2UNICODE.items():
+			#reverse the mapping buckwalter <-> unicode
+			mapping[v] = k
+	else:
+		mapping = BUCKWALTER2UNICODE
+
+	result = ""
+	for char in string :
+		if mapping.has_key( char ) and char not in ignore:
+			result += mapping[char]
+		else :
+			result += char
+	return result
 
 
 

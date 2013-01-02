@@ -8,13 +8,31 @@ hash_kv_sep = ':';
 // hash_decode = [ '+',  '%23', '%2C', '%3A', ];
 
 defaultParams = {
-	action: "search",	
-	query: "",
-	recitation: "1",
-	translation: "shakir",
-	sortedby: "score",
-	page: "1",
-	highlight: "css"
+		  action:"search",
+	      ident:"alfa001",
+	      platform:"undefined",
+	      domain:"dj.alfanous.org",
+	      query:"",
+	      script:"standard",
+	      vocalized: "True",
+	      highlight: "css",
+	      recitation: "1",
+	      translation: "None",
+	      prev_aya: "False",
+	      next_aya: "False",
+	      sura_info: "True",
+	      word_info: "True",
+	      aya_position_info:	"True",
+	      aya_theme_info:	"True",
+	      aya_stat_info:	"True",
+	      aya_sajda_info:	"True",
+	      annotation_word:"False",
+	      annotation_aya:"False",
+	      sortedby:"score",
+	      view: "custom",
+	      page:"1", 
+	      perpage:"10",
+	      fuzzy:"False",
 }
 
 share_links = {
@@ -106,6 +124,7 @@ function set_search_params ( params ) {
 	$("#recitation").val( params.recitation ); 
 	$("#translation").val( params.translation );
 	$("#sortedby").val( params.sortedby );
+	$("#view").val( params.view );
 	document.title = "الفانوس | نتائج البحث عن: " + params.query;
 }
 

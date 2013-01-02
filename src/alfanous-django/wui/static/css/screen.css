@@ -1,12 +1,43 @@
 /* Abdellah */
 @import url('reset.css');
 
+
 @font-face {
 	font-family:'Scheherazade';
 	src:url('../fonts/ScheherazadeRegOT.ttf');
 }
 
+
+/* copied from the template */
+
+	body {
+		background: #fff;
+		text-align: center;
+	}				
+	
+	table {
+		width: 395px;
+		height: 256px;		
+	}
+	
+	#footer-big-wrapper {
+		text-align: left;
+	}
+	
+	body form div div table {
+		display: inline-block;
+	}
+	
+	body form div div div.xdrops_continer {
+		display: inline-block;
+	}
+
+	body form div div {
+		display: inline-block;
+	}
+
 /* original */
+
 
 .buttons {
 	float: left;
@@ -61,7 +92,7 @@ a.button:active {
 	margin:0;
 }
 
-a{color: gray;}
+a{color: black;}
 .aya_words a { text-decoration: none; }
 a:hover{color: green;}
 .select {
@@ -347,21 +378,20 @@ a:hover{color: green;}
 
 /* Abdellah */
 
-/*
+
 #help_btn {
-	position: absolute;
+	/*position: absolute;*/
 	top:10px;
 	right:0;
 	z-index:95;
 }
 
 #down_btn {
-	position: absolute;
+	/* position: absolute; */
 	top:10px;
 	right:50px;
 	z-index:95;
 }
-*/
 
 #vote_btn a {
 	font-weight: normal;
@@ -438,6 +468,7 @@ a:hover{color: green;}
 	color: #FFF;
 }
 
+
 .word_vocalization_nb {
 	background-color: #90A;
 	color: #FFF;
@@ -446,7 +477,58 @@ a:hover{color: green;}
 .word_vocalization {
 	background-color: #FFF;
 	color: #90A;
+	padding: 5px 2px 4px 2px;
 	/* font-size:100%;*/
+}
+.word_annotation_nb {
+	background-color: #0A9;
+	color: #FFF;	
+}
+
+.annotation_details {
+	margin:10px 2px 5px 30px;
+}
+
+.word_annotation {
+	background-color: #0A9;
+	color: #FFF;
+	font-size: 12px;
+	font-weight: bold;
+}
+
+.word_annotation_info0 {
+	background-color: #3BB;
+	color: #FFF;
+}
+
+.word_annotation_info1 {
+	background-color: #7B8;
+	color: #FFF;
+}
+
+.word_annotation_info2 {
+	background-color: #5A9;
+	color: #FFF;
+}
+
+.word_annotation_info3 {
+	background-color: #497;
+	color: #FFF;
+}
+
+.word_annotation_info4 {
+	background-color: #5B4;
+	color: #FFF;
+}
+
+.word_annotation_info5 {
+	background-color: #7D7;
+	color: #FFF;
+}
+
+.word_annotation_info6 {
+	background-color: #088;
+	color: #FFF;
 }
 
 .item_number {
@@ -461,17 +543,61 @@ a:hover{color: green;}
 
 .quran {
 	direction: rtl;
-	font-family: Scheherazade, me_quran, KacstBook, KacstQurn, ArabeyesQr, "KFGQPC Uthman Taha Naskh", Arial;
-	font-size: 2em;
-	margin: 2px 5px 10px 30px;
+	font-family: me_quran, Scheherazade,  KacstBook, KacstQurn, ArabeyesQr, "KFGQPC Uthman Taha Naskh", Arial;
+
 }
+
+.main_aya {
+	font-size: 22px;
+	margin: 2px 5px 10px 5px;
+	color: #000;
+}
+
+.prev_aya {
+	font-size: 14px;
+	margin: 2px 5px 10px 5px;
+	color:#666;
+}
+
+.next_aya {
+	font-size: 14px;
+	margin: 2px 5px 10px 5px;
+	color:#666;
+}
+
+.quran_decoration {
+	direction: rtl;
+	font-family: ArabeyesQr, Scheherazade;
+	line-height: 180%;
+	
+}
+
+.quran_translation {
+	font-family: Droid Sans, Tahoma, Bitstream Vera Sans, DejaVu Sans, Verdana, Geneva, Arial, Sans-serif; 
+	line-height: 150%;
+	
+}
+
 
 .match {
 	color: #181;
 }
 
-.word_details, .sura_details, .aya_details {
-	margin: 5px 5px 0px 20px;
+/* Assem: Terms Static Highlighting colors */
+.term0, .term10 { color: #118; }
+.term1, .term11 { color: #811; }
+.term2, .term12 { color: #807; }
+.term3, .term13 { color: #F50; }
+.term4, .term14 { color: #f00; }
+.term5, .term15 { color: #f39; }
+.term6, .term16 { color: #f43; }
+.term7, .term17 { color: #660; }
+.term8, .term18 { color: #444; }
+.term9, .term19 { color: #5C3; }
+
+
+.word_details, .sura_details, .aya_details, .sura_stat_details, .theme_details {
+	margin: 8px 5px 2px 20px;
 }
 
 .aya_stat0, .sura_stat1 {
@@ -584,6 +710,25 @@ a:hover{color: green;}
 		
 }
 
+.page_link {
+				color: blue;
+			}
+
+
+
+
+
+/* Assem: Error, NotFound */
+.notfound {
+	margin: 30px 30px 30px 30px;
+}
+
+.error {
+	margin: 30px 30px 30px 30px;
+
+}
+
+
 /* Abdellah AD.*/
 
 
@@ -601,6 +746,10 @@ img.left {
 
 img.right {
     margin-left: 10px;
+}
+
+.justify {
+	text-align: justify;
 }
 
 
@@ -645,7 +794,7 @@ div#footer-big div.column {
 
 div#footer-big div.last {
     padding: 20px 0 20px 60px;
-    width: 330px;
+    width: 370px;
 }
 
 div#footer-big div.last img {
