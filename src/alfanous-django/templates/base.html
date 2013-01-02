@@ -17,8 +17,7 @@
 	<link rel="icon" href="/static/images/icon_32.png" sizes="32x32"> 
 	<link rel="shortcut icon" href="/static/images/favicon.ico" type="image/x-icon">
 
-	<link rel="search" type="application/opensearchdescription+xml" title="Alfanous" href="http://wui.alfanous.org/alfanous-opensearch.xml"/>
-	<link rel="search" type="application/opensearchdescription+xml" title="Alfanous Mobile" href="http://wui.alfanous.org/alfanous-mobile-opensearch.xml"/>
+	<link rel="search" type="application/opensearchdescription+xml" title="Alfanous" href="/static/alfanous-opensearch.xml"/>
 
 	<!-- G+ direct connect -->
 	<link href="https://plus.google.com/u/0/111305625425237630318" rel="publisher" />
@@ -169,32 +168,6 @@
 				}
 
 
-				// Aya_words clicks control
-				$(".aya_words a").one('click', function(event) {
-					var param2 = param;
-					param2.action = "search";					
-					param2.page = 1;
-					param2.query = $(this).text();
-					
-					redirect_to_params ( param2 );
-					event.preventDefault();
-				});
-				
-				// Pages control
-				$(".pages a").one('click', function(event) {
-					var param2 = param;
-					param2.action = "search";
-					param2.page = $(this).text();
-					param2.query = $("#search_box").val();
-					
-					// Mouad
-					redirect_to_params ( param2 );
-					// search_for ( param2 );
-					// $('#search_box').val(param2.query);
-					// get_results(param2);
-				
-					event.preventDefault();
-				});
 				$(".pages img:first-child").one('click', function(event) {
 					var param2 = param;
 					if (param2.page > 1) {
@@ -246,8 +219,8 @@
 		}
 
 		function addto_searchbar(){
-			window.external.AddSearchProvider("http://wui.alfanous.org/alfanous-opensearch.xml");
-			window.external.AddSearchProvider("http://wui.alfanous.org/alfanous-mobile-opensearch.xml");
+			window.external.AddSearchProvider("/static/alfanous-opensearch.xml");
+		
 		}
 
 	// ]]>
@@ -434,7 +407,6 @@
 <br /><br />
 <div id="vote_btn"><a class='xbutton gray' href="https://docs.google.com/spreadsheet/viewform?formkey=dEZZaE5fQ0NwQXljU2ZyUmpfLW15SVE6MA#gid=0" target="_blank"><i>Note 09-11-2012:</i> Please help us improving <b>Alfanous</b> Project, by taking this survey about search features in Holy Quran </a></div>
 <br /><br />  
-
 
 
 

@@ -22,25 +22,25 @@ def space_split( str ):
 	return str.split()
 
 @register.simple_tag
-def build_search_link( params, query, filter ):
+def build_search_link( params, query, page, filter ):
     """ build a search link based on a new query 
     
     usage: {% build_search_link params query filter %}link</a>
     
     """
     # create a mutuable params object 
-    new_params = {} 
+    new_params = {}
     for k,v in params.items():
     	new_params[k]=v
     # update params
-    new_params["page"] = 1
+    new_params["page"] = page
     new_params["sortedby"] = "mushaf"
-    if bool( filter ) and params["query"] != query:
+    if filter == "True" and params["query"] != query:
     	new_params["query"] = "(" + params["query"] + ") + " + query;
     else:
     	new_params["query"] = query;
     
-    return "<a class='no_decoration' href=\"/?"+ build_params( new_params )+ "\">" 
+    return build_params( new_params )
 
 def build_params(params):
 	""" Concatenate the params to build a url GET request """
