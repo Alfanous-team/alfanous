@@ -1,0 +1,384 @@
+{% extends "base.html" %}
+
+{% load custom_filters %}
+
+
+
+{% block title %} {{ _("Alfanous - Results to Query:") }}  {% endblock %}  
+
+
+{% block results %}
+	{% if results.error.code == 0  %} 
+		<div id="search_result_static" style="direction:{{ bidi }}; width:800px">
+		<br /><br /><span class='xbre'> {{ _("Search results") }}</span><br /><br />
+		<center><b>{{ _("Runtime") }}</b> : {{ results.search.runtime|floatformat:"5" }} {{ _("seconds") }} </center>
+		</div>
+		<!-- Suggestions-->
+		{% if suggestions.error.code == 0 and suggestions.suggest %} 
+			<div id='suggestions' align='{{ align }}'>
+			<h2 style='font-size:16pt; color:#ff0000;'>{{ _("Suggestions:") }}
+			{% for suggestion_key, suggestion_item in suggestions.suggest.items %}
+				<p dir='{{ bidi }}' >
+				<div class='word_details'>
+				<span style=' font-size:14pt; color:#00aa00;'> {{ suggestion_key }} </span>
+				<div class='details_label word_info0'>  {{ _("word") }} |  {{ suggestion_item|first }} </div>
+				{% for suggestion_sub_key, suggestion_sub_item in suggestion_item|slice:"1" %}
+					<a class='no_decoration' href="?{% build_search_link params  suggestion_sub_item 1 False %}"> 
+					<div class='details_label word_stat1 clickable'> {{ suggestion_sub_item }}</div></a>
+				{% empty %}
+					<div class='details_label word_stat0'> {{ _("no suggestions!") }} </div>
+				{% endfor %}
+				</div></p>
+			{% endfor %}
+		</div><br />
+		{% endif %}
+		{% if results.search.interval.total %}
+			{% if results.search.words.global.nb_words %}
+				<!-- Words list -->
+				<div id='search_words' align='left'>
+				  <h2 style='font-size:16pt;  color:#ff0000;'>
+				  Words:
+				  <div class='details_label word_count'>  
+				    {{ _("words") }} | {{  results.search.words.global.nb_words }} 
+				  </div>
+				  <div class='details_label word_stat0'> 
+				    {{ _("occurances") }}  | {{ results.search.words.global.nb_matches }} 
+				  </div> 
+				  <div class='details_label word_vocalization_nb'> 
+				    {{ _("vocalizations") }} | {{ results.search.words.global.nb_vocalizations }} 
+				  </div> 
+				  </h2>
+				  <br />
+				{% for wordcpt, wordstat in results.search.words.individual.items %}
+						<p dir='ltr' >
+						  <div class='word_details'>
+						    <span style=' font-size:14pt; color:#00aa00;'> {{ wordcpt }}.  </span>
+							<a class='no_decoration' href="?{% build_search_link params  wordstat.word 1 False %}"> 
+							<div class='details_label word_info0 clickable'> {{ _("word") }} | {{ wordstat.word }} | {{ wordstat.buckwalter }} </div></a>
+							<div class='details_label word_stat0'> {{ _("occurnaces") }} | {{ wordstat.nb_matches }} </div>
+							<div class='details_label word_stat1'> {{ _("ayates") }} |  {{ wordstat.nb_ayas }} </div>
+							<div class='details_label word_vocalization_nb'> {{ _("vocalizations") }} | {{ wordstat.nb_vocalizations }} </div>
+
+						{% for vocalization in wordstat.vocalizations %} 
+							{% with "aya_:"|add:vocalization|add:"" as new_query %}
+								<a class='no_decoration' href="?{% build_search_link params  new_query 1 False %}"> 
+							{% endwith %}
+							<div class='details_label word_vocalization clickable quran'> {{ vocalization }} </div></a>
+						{% endfor %}
+						{% for annotation_word, parts in wordstat.annotations.items %}
+							{% for part_order, annotation_detail in parts.items %} 
+								<p   class='annotation_details'>
+								<div style=' font-size:12pt; color:#99aa88;'> {{ wordcpt }}.{{ forloop.counter }}.{{ part_order }} </div>
+								<div class='details_label word_annotation clickable'> {{ _("Annotation") }} | {{ annotation_word }} </div>
+								<div class='details_label word_annotation_info0'> {{ _("ID") }} | {{ annotation_detail.word_gid }} </div>
+								<div class='details_label word_annotation_info0'> {{ _("sura,aya") }} | {{ annotation_detail.sura_id }},{{ annotation_detail.aya_id }} </div>
+								{% if annotation_detail.token %}
+									<div class='details_label word_annotation_info1'> {{ _("token") }} | {{ annotation_detail.token }} ( {{ annotation_detail.arabictoken }}) </div>
+								{% endif %}
+								{% if annotation_detail.part %}
+									<div class='details_label word_annotation_info1'> {{ _("part") }} | {{ annotation_detail.part }} </div>
+								{% endif %}
+								{% if annotation_detail.type %}
+									<div class='details_label word_annotation_info2'> {{ _("type") }} | {{ annotation_detail.type }} </div>
+								{% endif %}
+								{% if annotation_detail.pos %}
+									<div class='details_label word_annotation_info2'> {{ _("POS") }} | {{ annotation_detail.pos }} ({{ annotation_detail.arabicpos }}) </div>
+								{% endif %}
+								{% if annotation_detail.lemma %}
+									<div class='details_label word_annotation_info5'> {{ _("lemma") }} | {{ annotation_detail.lemma  }} ({{ annotation_detail.arabiclemma }}) </div>
+								{% endif %}
+								{% if annotation_detail.root %}
+									<div class='details_label word_annotation_info5'> {{ _("root") }} | {{ annotation_detail.root }} ({{ annotation_detail.arabicroot }}) </div>
+								{% endif %}
+								{% if annotation_detail.special %}
+									<div class='details_label word_annotation_info5'> {{ _("special") }} | {{ annotation_detail.special }} ({{ annotation_detail.arabicspecial }}) </div>
+								{% endif %}
+								{% if annotation_detail.aspect %}
+									<div class='details_label word_annotation_info6'> {{ _("aspect") }} | {{ annotation_detail.aspect }} </div>
+								{% endif %}
+								{% if annotation_detail.state %}
+									<div class='details_label word_annotation_info6'> {{ _("state") }} | {{ annotation_detail.state }} </div>
+								{% endif %}
+								{% if annotation_detail.form %}
+									<div class='details_label word_annotation_info6'> {{ _("form") }} | {{ annotation_detail.form }} </div>
+								{% endif %}
+								{% if annotation_detail.case %}
+									<div class='details_label word_annotation_info6'> {{ _("case") }} | {{ annotation_detail.case }} ( {{ annotation_detail.arabiccase }}) </div>
+								{% endif %}
+								{% if annotation_detail.derivation %}
+									<div class='details_label word_annotation_info6'> {{ _("derivation") }} | {{ annotation_detail.derivation }} </div>
+								{% endif %}
+								{% if annotation_detail.person %}
+									<div class='details_label word_annotation_info3'> {{ _("person") }} | {{ annotation_detail.person }} </div>
+								{% endif %}
+								{% if annotation_detail.number %}
+									<div class='details_label word_annotation_info3'> {{ _("number") }} | {{ annotation_detail.number }} </div>
+								{% endif %}
+								{% if annotation_detail.gender %}
+									<div class='details_label word_annotation_info3'> {{ _("gender") }} | {{ annotation_detail.gender }} </div>
+								{% endif %}
+								{% if annotation_detail.voice %}
+									<div class='details_label word_annotation_info3'> {{ _("voice") }} | {{ annotation_detail.voice }} </div>
+								{% endif %}
+								</p>
+							{% endfor %}
+						{% endfor %}
+						   </div>
+					 	  </p>	
+				{% endfor %}
+				</div> 
+			{% endif %}
+			
+			<!-- Pages control # top one -->
+			{% block pages_top %} {% endblock %}
+			
+			<!-- Ayahs results -->
+			<br /><h2 style=' font-size:15pt;  color:#ff0000;'>
+			  {{ _("Results") }} ( {{ results.search.interval.start }} 
+			  {{ _("to") }} {{ results.search.interval.end }}
+			  {{ _("of") }} {{ results.search.interval.total }} )
+			</h2> <br /> 
+			
+			{% for ayaresult_id, ayaresult_content in  	results.search.ayas.items %}
+			    <fieldset class='main_re_item'>
+				  <legend class='main_re_item_title' style='font-size:14pt; ' dir='ltr'>
+				    <span align='left' style='color:#0000ff;'>
+				      {{ _("Result n°") }} <b> {{ ayaresult_id }} </b> 
+				    </span>
+				    {% if ayaresult_content.aya.recitation %}
+				    <span align='right'>
+						<object width='350' height='24' id='audioplayer_{{ ayaresult_id }}' name='audioplayer_{{ ayaresult_id }}' data='swf/player.swf' type='application/x-shockwave-flash'>
+							<param value='/static/swf/player.swf' name='movie'>
+							<param value='playerID=audioplayer_{{ ayaresult_id }}&amp;soundFile={{ ayaresult_content.aya.recitation}}' name='FlashVars'>
+							<param value='high' name='quality'>
+							<param value='false' name='menu'>
+							<param value='transparent' name='wmode'>
+						</object>
+					</span><br />
+					{% endif %}
+					  
+				   {% if ayaresult_content.sura %}
+					   <div class='sura_details'>
+					   		{% with 'sura:"'|add:ayaresult_content.sura.name|add:'"' as new_query %}
+								<a class='no_decoration' href='?{% build_search_link params  new_query 1 True %}'> 
+							{% endwith %}
+							<div class='details_label sura_info0 clickable filter'> {{ _("Sura") }} | {{ ayaresult_content.sura.name }} </div></a> 
+							<div class='details_label sura_ord0'> {{ _("n°") }} | {{ ayaresult_content.sura.id }} </div>
+							{% with 'sura_type:'|add:ayaresult_content.sura.type|add:'' as new_query %}
+								<a class='no_decoration' href='?{% build_search_link params  new_query 1 True %}'> 
+							{% endwith %}
+							<div class='details_label sura_info1 clickable filter'> {{ _("type") }} | {{ ayaresult_content.sura.type }} </div></a>
+							<div class='details_label sura_ord1'> {{ _("revelation_order") }}  | {{ ayaresult_content.sura.order }}</div></a>
+							<div class='details_label sura_stat0'> {{ _("ayahs") }} | {{ ayaresult_content.sura.ayas }} </div> 
+							{% if ayaresult_content.sura.stat %}
+								<br />
+								<div class='sura_stat_details'>
+									<div class='details_label sura_stat1'> {{ _("words") }} | {{ ayaresult_content.sura.stat.words }} </div>
+									<div class='details_label sura_stat2'> {{ _("letters") }} | {{ ayaresult_content.sura.stat.letters }} </div>
+									<div class='details_label sura_stat3'> {{ _("devine names") }} | {{ ayaresult_content.sura.stat.godnames }} </div>
+								</div>
+							{% endif %}
+						</div>
+				 	{% endif %}
+				  </legend>
+				  <br />
+				  	{% if ayaresult_content.aya.prev_aya  and ayaresult_content.aya.prev_aya.id != 0 %}
+					  		<p  align='center' dir='rtl' >
+					  		<span class='quran_decoration prev_aya'>
+							 [ </span>
+					  		<span class="quran prev_aya">
+					  		  {{ ayaresult_content.aya.prev_aya.text }} 
+					  		  
+					  		 </span>
+					  		 <span class='quran_decoration prev_aya'>
+							 ] </span>
+							 <span dir="ltr" class='prev_aya'>
+							 (   
+							 {% with ayaresult_content.aya.prev_aya.id|stringformat:"s" as prev_aya_id %}
+								 {% with 'sura:'|add:ayaresult_content.aya.prev_aya.sura|add:' + aya_id:'|add:prev_aya_id  as new_query %}
+									<a class='no_decoration' href='?{% build_search_link params  new_query 1 False %}'> 
+								{% endwith %}
+							{% endwith %}
+							{{ ayaresult_content.aya.prev_aya.sura }} {{ ayaresult_content.aya.prev_aya.id }} </a> 
+							)
+					  		</span>
+					  		 </p>
+					  		
+					  		
+					  {% endif %}
+				  <p align='center' dir='rtl'>
+					 <span class='quran_decoration main_aya'>
+					 [ </span>
+					 
+					 <span  class='aya_words quran main_aya'>
+					
+						{% for aya_word in ayaresult_content.aya.text|space_split %}
+							{% spaceless %}
+								{% autoescape off %}
+									
+								  		{# TODO optimize this condition, any "in" operation? #}
+										{% if aya_word|first in "<ct> "|make_list  %}
+												{{ aya_word }} 
+										{% else %} 
+												<a class='no_decoration' href="?{% build_search_link params aya_word 1 False %}"> {{ aya_word }}</a> 
+										{% endif %}
+									 
+								{% endautoescape%}
+							{% endspaceless %}	
+					  	{% endfor %}
+					  </span> 
+					 
+					  
+					 <span class='quran_decoration main_aya'>
+					 ] </span>
+					  <span dir="rtl" class='main_aya'>
+					  		(   
+							 {% with ayaresult_content.aya.id|stringformat:"s" as aya_id %}
+								 {% with 'sura:'|add:ayaresult_content.identifier.sura_name|add:' + aya_id:'|add:aya_id  as new_query %}
+									<a class='no_decoration' href='?{% build_search_link params  new_query 1 False %}'> 
+								{% endwith %}
+							{% endwith %}
+							{{ ayaresult_content.identifier.sura_name }} {{ ayaresult_content.aya.id }} </a> 
+							)
+					   
+					  </span>
+					  <br />
+					  
+					  
+					  </span>
+				    </p>
+				    <!-- next ayah -->
+				    {% if ayaresult_content.aya.next_aya and ayaresult_content.aya.next_aya.id != 9999 %}
+					  		<p  align='center' dir='rtl'>
+					  		<span class='quran_decoration next_aya'>
+							 [ </span>
+					  		<span class="quran next_aya">
+					  		  {{ ayaresult_content.aya.next_aya.text }} 
+					  		  
+					  		 </span>
+					  		 <span class='quran_decoration next_aya'>
+							 ] </span>
+							 <span dir="ltr" class='next_aya'>
+							(   
+							 {% with ayaresult_content.aya.next_aya.id|stringformat:"s" as next_aya_id %}
+								 {% with 'sura:'|add:ayaresult_content.aya.next_aya.sura|add:' + aya_id:'|add:next_aya_id  as new_query %}
+									<a class='no_decoration' href='?{% build_search_link params  new_query 1 False %}'> 
+								{% endwith %}
+							{% endwith %}
+							{{ ayaresult_content.aya.next_aya.sura }} {{ ayaresult_content.aya.next_aya.id }} </a> 
+							)
+							</span>
+					  		 </p>
+					  		
+					  		<br />
+					  {% endif %}
+				    <br />
+					  
+					  {% if ayaresult_content.aya.translation %}
+					  		<p dir='ltr' align='center' >
+					  		<span class="quran_translation">
+					  		  {{ ayaresult_content.aya.translation }} 
+					  		</span></p>
+					  		<br />
+					  {% endif %}
+					  
+					  {% if ayaresult_content.theme %}
+						  <p align='center' class='theme_details' >
+						  	<span style=' color:#808080;'>
+						  	{% if ayaresult_content.theme.chapter %}
+						  		{{ _("Chapter") }} :  
+						  		{% with 'chapter:"'|add:ayaresult_content.theme.chapter|add:'"'  as new_query %}
+									<a class='no_decoration' href='?{% build_search_link params  new_query 1 False %}'> 
+								{% endwith %}
+						  		<b> {{ ayaresult_content.theme.chapter }} </b></a>
+						  	{% endif %}
+							{% if ayaresult_content.theme.topic %} 
+								{{ _("Topic") }} :  
+								{% with 'topic:"'|add:ayaresult_content.theme.topic|add:'"'  as new_query %}
+									<a class='no_decoration' href='?{% build_search_link params  new_query 1 False %}'> 
+								{% endwith %}
+								<b> {{ ayaresult_content.theme.topic }} </b></a>
+							{% endif %}
+							{% if ayaresult_content.theme.subtopic %}
+								{{ _("Subtopic") }}:  
+								{% with 'subtopic:"'|add:ayaresult_content.theme.subtopic|add:'"'  as new_query %}
+									<a class='no_decoration' href='?{% build_search_link params  new_query 1 False %}'> 
+								{% endwith %}
+								<b> {{ ayaresult_content.theme.subtopic }} </b></a> 
+							{% endif %}			
+							</span>
+						  </p>
+					   {% endif %}
+					  	
+					  {% if ayaresult_content.stat or 	ayaresult_content.position %}		
+						  <div class='aya_details'>
+						  	{% if ayaresult_content.stat %}
+						  		{% with ayaresult_content.stat.words|stringformat:"s" as stat_words %}
+							  		{% with 'a_w:'|add:stat_words  as new_query %}
+										<a class='no_decoration' href='?{% build_search_link params  new_query 1 False %}'> 
+									{% endwith %}
+							  	{% endwith %} 
+							  	<div class='details_label aya_stat0 clickable'> {{ _("words") }} | {{ ayaresult_content.stat.words }} </div></a>
+								{% with ayaresult_content.stat.letters|stringformat:"s" as stat_letters %}
+							  		{% with 'a_l:'|add:stat_letters  as new_query %}
+										<a class='no_decoration' href='?{% build_search_link params  new_query 1 False %}'> 
+									{% endwith %}
+							  	{% endwith %} 
+								<div class='details_label aya_stat1 clickable'> {{ _("letters") }} | {{ ayaresult_content.stat.letters }} </div></a>
+								{% with ayaresult_content.stat.godnames|stringformat:"s" as stat_godnames %}
+							  		{% with 'a_g:'|add:stat_godnames as new_query %}
+										<a class='no_decoration' href='?{% build_search_link params  new_query 1 False %}'> 
+									{% endwith %}
+							  	{% endwith %} 
+								<div class='details_label aya_stat2 clickable'> {{ _("devine names") }} | {{ ayaresult_content.stat.godnames }} </div></a>
+							{% endif %}
+							{% if ayaresult_content.position %}
+								{% with ayaresult_content.position.manzil|stringformat:"s" as position_manzil %}
+							  		{% with 'manzil:'|add:position_manzil as new_query %}
+										<a class='no_decoration' href='?{% build_search_link params  new_query 1 True%}'> 
+									{% endwith %}
+							  	{% endwith %} 
+								<div class='details_label aya_pos0 clickable filter'> {{ _("manzil") }} | {{ ayaresult_content.position.manzil }} </div></a>
+								{% with ayaresult_content.position.hizb|stringformat:"s" as position_hizb %}
+							  		{% with 'hizb:'|add:position_hizb as new_query %}
+										<a class='no_decoration' href='?{% build_search_link params  new_query 1 True%}'> 
+									{% endwith %}
+							  	{% endwith %} 
+								<div class='details_label aya_pos1 clickable filter'> {{ _("hizb") }} | {{ ayaresult_content.position.hizb }} </div></a>
+								<div class='details_label aya_pos2'> {{ _("quart") }} | {{ ayaresult_content.position.rub|add:"+1" }} </div>		
+								{% with ayaresult_content.position.page|stringformat:"s" as position_page %}
+							  		{% with 'page:'|add:position_page as new_query %}
+										<a class='no_decoration' href='?{% build_search_link params new_query 1 True%}'> 
+									{% endwith %}
+							  	{% endwith %} 
+								<div class='details_label aya_pos3 clickable filter'> {{ _("page") }} | {{ ayaresult_content.position.page }} </div></a>
+							{% endif %}
+						  </div><br /></br />
+					  {% endif %}
+					  {% if  ayaresult_content.sajda.exist %}
+					  		<br /><div>
+					  		<a class='no_decoration' href='?{% build_search_link params "sajda:نعم" 1 False%}'> 
+							<div class='details_label aya_sajda_exist clickable'> {{ _("sajda") }} </div></a>
+							<div class='details_label aya_sajda_id'> {{ _("n°") }} | {{ ayaresult_content.sajda.id }} </div>
+						    <div class='details_label aya_sajda_type'> {{ _("type") }} | {{ ayaresult_content.sajda.type }}</div>
+							</div><br />
+					  {% endif %}
+				
+			     </p></fieldset><br />
+			{% endfor %}
+			
+		
+				
+			<!-- Pages control # bottom one -->
+			{% block pages_bottom %} {% endblock %}
+			
+			
+		{% else %}
+			<br />
+			<div class='notfound'><p> {{ _("Sorry! there is no results for this search query.") }} </p></div>
+			<br />
+		{% endif %}		
+	{% else %}
+		<div id='error' class='error'><p> {{ _("Error ") }} ({{ results.error.code }}) : {{ results.error.msg|linebreaksbr }}</p></div>
+	{% endif %}
+{% endblock results %}

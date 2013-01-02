@@ -41,6 +41,7 @@ from alfanous.dynamic_resources.std2uth_dyn import std2uth_words
 from alfanous.dynamic_resources.vocalizations_dyn import vocalization_dict
 from alfanous.TextProcessing import QArabicSymbolsFilter
 from alfanous.Data import *
+from alfanous.Misc import buck2uni
 
 
 STANDARD2UTHMANI = lambda x: std2uth_words[x] if std2uth_words.has_key( x ) else x
@@ -48,6 +49,27 @@ STANDARD2UTHMANI = lambda x: std2uth_words[x] if std2uth_words.has_key( x ) else
 ## a function to decide what is True and what is false
 TRUE_FALSE = lambda x: False if x in [False, "False", "no", "0", 0, None] else True
 
+#
+def SCAN_SUPERJOKERS( query ):
+	"""
+	a function to detect SuperJokers such as  *, ????, 
+	a "*" query is a superjoker if it contains less then 3 letters
+	a "?" query is a superjoker if it contains less then 2 letters
+	a mixed query has the same conditions of a "?" query
+	
+	TODO that's a quick fix, the problem of superjokers must be fixed in 
+			the query parser or by time delay 
+	"""
+	myreg = re.compile( "\*+|[\؟\?]{2,9}|[ \t\n\r\(\)\+\-\|]+|[^ ]+:|" )
+	filtred_query = myreg.sub( "", query )
+	super_joker = True if ( len( filtred_query ) < 3 and "*" in query ) \
+						or ( len( filtred_query ) < 2 and ( u"?" in query or u"؟" in query ) ) \
+			 	else False
+	# Exceptions
+	if query in [u"?", u"؟", u"???????????", u"؟؟؟؟؟؟؟؟؟؟؟؟"]:
+		super_joker = False
+
+	return super_joker
 
 
 def FREEZE_XRANGE( d ):
@@ -56,6 +78,7 @@ def FREEZE_XRANGE( d ):
         if v.__class__ == xrange:
             new_d[k] = str( v )
     return new_d; # JSON doesnt accept serialization of xrange
+
 
 def DEFREEZE_XRANGE( d ):
     """ TODO reversing the operation of freezing xranges done by module alfanous.output """
@@ -71,10 +94,11 @@ class Raw():
 	"""
 
 	DEFAULTS = {
+		    "minrange":1,
 		    "maxrange":25,
 		    "results_limit":6236,
 		    "flags":{
-				  "action":"error",
+			      "action":"search",
 			      "ident":"undefined",
 			      "platform":"undefined",
 			      "domain":"undefined",
@@ -82,11 +106,13 @@ class Raw():
 			      "script":"standard",
 			      "vocalized": True,
 			      "highlight": "css",
+                  "view": "custom",
 			      "recitation": "1",
 			      "translation": None,
 			      "prev_aya": False,
 			      "next_aya": False,
 			      "sura_info": True,
+			      "sura_stat_info":False,
 			      "word_info": True,
 			      "aya_position_info":	True,
 			      "aya_theme_info":	True,
@@ -104,9 +130,12 @@ class Raw():
 		  }
 
 	ERRORS = {
+	     - 1:"fail, reason unknown",
 	     0:"success",
 	     1:"no action is chosen or action undefined",
-	     - 1:"fail, reason unknown",
+	     2:"""SuperJokers are not permitted, you have to add  3 letters or more to use * and 2 letters or more to use ? (؟)\n
+	     	-- Exceptions: ? (1),  ??????????? (11)
+	     	"""
 	    }
 
 
@@ -119,11 +148,13 @@ class Raw():
 			      "highlight": ["css", "html", "genshi", "bold", "bbcode"],
 			      "script": ["standard", "uthmani"],
 			      "vocalized": [True, False],
+                  "view":["minimal", "normal", "full", "statistic", "linguistic", "custom"],
 			      "recitation": xrange( 30 ),
 			      "translation": [],
 			      "prev_aya": [True, False],
 			      "next_aya": [True, False],
 			      "sura_info": [True, False],
+			      "sura_stat_info": [True, False],
 			      "word_info": [True, False],
 			      "aya_position_info":	[True, False],
 			      "aya_theme_info":	[True, False],
@@ -149,11 +180,13 @@ class Raw():
 			      "highlight": "highlight method",
 			      "script": "script of aya text",
 			      "vocalized": "enable vocalization of aya text",
+                  "view": "pre-defined configuration for what information to retrieve",
 			      "recitation": "recitation id",
 			      "translation": "translation id",
 			      "prev_aya": "enable previous aya retrieving",
 			      "next_aya": "enable next aya retrieving",
-			      "sura_info": "enable sura information retrieving",
+			      "sura_info": "enable sura information retrieving (override sura_stat_info if False)",
+			      "sura_stat_info": "enable sura stats retrieving (has no effect if sura_info is False)",
 			      "word_info": "enable word information retrieving",
 			      "aya_position_info":	"enable aya position information retrieving",
 			      "aya_theme_info":	"enable aya theme information retrieving",
@@ -241,9 +274,11 @@ class Raw():
 
 		# init the error message with Succes
 		output = self._check( 0, flags )
-
 		if action == "search":
-			output.update( self._search( flags ) )
+			if SCAN_SUPERJOKERS( flags["query"] ): #Quick fix!!
+				output = self._check( 2, flags )
+			else:
+				output.update( self._search( flags ) )
 		elif action == "suggest":
 			output.update( self._suggest( flags ) )
 		elif action == "show":
@@ -331,7 +366,7 @@ class Raw():
 	def _search( self, flags ):
 		"""
 		return the results of search as json
-	    """
+		"""
 		#flags
 		query = flags["query"] if flags.has_key( "query" ) \
 				else self._defaults["flags"]["query"]
@@ -354,28 +389,94 @@ class Raw():
 				 else self._defaults["flags"]["script"]
 		vocalized = TRUE_FALSE( flags["vocalized"] ) if flags.has_key( "vocalized" ) \
 					else self._defaults["flags"]["vocalized"]
-		prev_aya = TRUE_FALSE( flags["prev_aya"] ) if flags.has_key( "prev_aya" ) \
-				   else self._defaults["flags"]["prev_aya"]
-		next_aya = TRUE_FALSE( flags["next_aya"] ) if flags.has_key( "next_aya" ) \
-				   else self._defaults["flags"]["next_aya"]
-		sura_info = TRUE_FALSE( flags["sura_info"] ) if flags.has_key( "sura_info" ) \
-					else self._defaults["flags"]["sura_info"]
-		word_info = TRUE_FALSE( flags["word_info"] ) if flags.has_key( "word_info" ) \
-					else self._defaults["flags"]["word_info"]
-		aya_position_info = TRUE_FALSE( flags["aya_position_info"] ) if flags.has_key( "aya_position_info" ) \
-							else self._defaults["flags"]["aya_position_info"]
-		aya_theme_info = TRUE_FALSE( flags["aya_theme_info"] ) if flags.has_key( "aya_theme_info" ) \
-						 else self._defaults["flags"]["aya_theme_info"]
-		aya_stat_info = TRUE_FALSE( flags["aya_stat_info"] ) if flags.has_key( "aya_stat_info" ) \
-						else self._defaults["flags"]["aya_stat_info"]
-		aya_sajda_info = TRUE_FALSE( flags["aya_sajda_info"] ) if flags.has_key( "aya_sajda_info" ) \
-						 else self._defaults["flags"]["aya_sajda_info"]
-		annotation_aya = TRUE_FALSE( flags["annotation_aya"] ) if flags.has_key( "annotation_aya" ) \
-						 else self._defaults["flags"]["annotation_aya"]
-		annotation_word = TRUE_FALSE( flags["annotation_word"] ) if flags.has_key( "annotation_word" ) \
-						  else self._defaults["flags"]["annotation_word"]
 		fuzzy = TRUE_FALSE( flags["fuzzy"] ) if flags.has_key( "fuzzy" ) \
-			    else self._defaults["flags"]["fuzzy"]
+				else self._defaults["flags"]["fuzzy"]
+		view = flags["view"] if flags.has_key( "view" ) \
+				else self._defaults["flags"]["view"]
+
+		# pre-defined views
+		if view == "minimal":
+			vocalized = False
+			range = 25
+			recitation = None
+			translation = None
+			prev_aya = next_aya = False
+			sura_info = False
+			word_info = False
+			aya_position_info = aya_theme_info = aya_sajda_info = False
+			aya_stat_info = False
+			sura_stat_info = False
+			annotation_aya = annotation_word = False
+		elif view == "normal":
+			prev_aya = next_aya = True
+			sura_info = True
+			word_info = True
+			aya_position_info = aya_theme_info = aya_sajda_info = True
+			aya_stat_info = True
+			sura_stat_info = False
+			annotation_aya = annotation_word = False
+		elif view == "full":
+			prev_aya = next_aya = True
+			sura_info = True
+			word_info = True
+			aya_position_info = aya_theme_info = aya_sajda_info = True
+			aya_stat_info = sura_stat_info = True
+			annotation_aya = annotation_word = True
+		elif view == "statistic":
+			prev_aya = next_aya = False
+			sura_info = True
+			word_info = True
+			aya_position_info = True
+			aya_theme_info = aya_sajda_info = False
+			aya_stat_info = True
+			sura_stat_info = True
+			annotation_aya = False
+			annotation_word = True
+		elif view == "linguistic":
+			prev_aya = next_aya = False
+			sura_info = False
+			word_info = True
+			aya_position_info = False
+			aya_theme_info = aya_sajda_info = True
+			aya_stat_info = False
+			sura_stat_info = False
+			annotation_aya = True
+			annotation_word = True
+		elif view == "recitation":
+			script = "uthmani"
+			prev_aya = next_aya = True
+			sura_info = True
+			word_info = False
+			aya_position_info = True
+			aya_theme_info = False
+			aya_sajda_info = True
+			aya_stat_info = False
+			sura_stat_info = False
+			annotation_aya = False
+			annotation_word = False
+		else: # if view == custom or undefined
+			prev_aya = TRUE_FALSE( flags["prev_aya"] ) if flags.has_key( "prev_aya" ) \
+						else self._defaults["flags"]["prev_aya"]
+			next_aya = TRUE_FALSE( flags["next_aya"] ) if flags.has_key( "next_aya" ) \
+						else self._defaults["flags"]["next_aya"]
+			sura_info = TRUE_FALSE( flags["sura_info"] ) if flags.has_key( "sura_info" ) \
+						else self._defaults["flags"]["sura_info"]
+			sura_stat_info = TRUE_FALSE( flags["sura_stat_info"] ) if flags.has_key( "sura_stat_info" ) \
+						else self._defaults["flags"]["sura_stat_info"]
+			word_info = TRUE_FALSE( flags["word_info"] ) if flags.has_key( "word_info" ) \
+						else self._defaults["flags"]["word_info"]
+			aya_position_info = TRUE_FALSE( flags["aya_position_info"] ) if flags.has_key( "aya_position_info" ) \
+								else self._defaults["flags"]["aya_position_info"]
+			aya_theme_info = TRUE_FALSE( flags["aya_theme_info"] ) if flags.has_key( "aya_theme_info" ) \
+							 else self._defaults["flags"]["aya_theme_info"]
+			aya_stat_info = TRUE_FALSE( flags["aya_stat_info"] ) if flags.has_key( "aya_stat_info" ) \
+							else self._defaults["flags"]["aya_stat_info"]
+			aya_sajda_info = TRUE_FALSE( flags["aya_sajda_info"] ) if flags.has_key( "aya_sajda_info" ) \
+							 else self._defaults["flags"]["aya_sajda_info"]
+			annotation_aya = TRUE_FALSE( flags["annotation_aya"] ) if flags.has_key( "annotation_aya" ) \
+							 else self._defaults["flags"]["annotation_aya"]
+			annotation_word = TRUE_FALSE( flags["annotation_word"] ) if flags.has_key( "annotation_word" ) \
+							 else self._defaults["flags"]["annotation_word"]
 
 		#preprocess query
 		query = query.replace( "\\", "" )
@@ -389,8 +490,9 @@ class Raw():
 		terms_uthmani = map( STANDARD2UTHMANI, terms )
 		#pagination
 		offset = 1 if offset < 1 else offset;
+		range = self._defaults["minrange"] if range < self._defaults["minrange"] else range;
 		range = self._defaults["maxrange"] if range > self._defaults["maxrange"] else range;
-		interval_end = offset + range
+		interval_end = offset + range - 1
 		end = interval_end if interval_end < len( res ) else len( res )
 		start = offset if offset <= len( res ) else -1
 		reslist = [] if end == 0 or start == -1 else list( res )[start - 1:end]
@@ -416,7 +518,7 @@ class Raw():
 		##########################################
 		extend_runtime = res.runtime
 		# Words & Annotations
-		words_output = {}
+		words_output = {"individual":{}}
 		if word_info:
 			matches = 0
 			docs = 0
@@ -432,7 +534,14 @@ class Raw():
 					vocalizations = vocalization_dict[term[1]] if vocalization_dict.has_key( term[1] ) \
 										   else []
 					nb_vocalizations_globale += len( vocalizations )
-					words_output[ cpt ] = {"word":term[1], "nb_matches":term[2], "nb_ayas":term[3], "nb_vocalizations": len( vocalizations ), "vocalizations": vocalizations}
+					words_output[ "individual" ][ cpt ] = {
+														 "word":term[1],
+														 "buckwalter": buck2uni( term[1], ignore = "" , reverse = True ),
+														 "nb_matches":term[2], 
+														 "nb_ayas":term[3], 
+														 "nb_vocalizations": len( vocalizations ), 
+														 "vocalizations": vocalizations
+														 }
 					cpt += 1
 			annotation_word_query += u" ) "
 			words_output["global"] = {"nb_words":cpt - 1, "nb_matches":matches, "nb_vocalizations": nb_vocalizations_globale}
@@ -484,9 +593,12 @@ class Raw():
 				if ( annotation_word and word_info ) :
 					if annot["normalized"] in terms_uthmani:
 						if annotations_by_word.has_key( annot["normalized"] ):
-							annotations_by_word[annot["normalized"]][annot["word"]] = annot;
+							if annotations_by_word[annot["normalized"]].has_key( annot["word"] ):
+								annotations_by_word[annot["normalized"]][annot["word"]][annot["order"]] = annot;
+							else:
+								annotations_by_word[annot["normalized"]][annot["word"]] = { annot["order"]: annot} ;
 						else:
-							annotations_by_word[annot["normalized"]] = { annot["word"]: annot}
+							annotations_by_word[annot["normalized"]] = { annot["word"]: { annot["order"]: annot}}
 				if annotation_aya:
 					if annotations_by_position.has_key( ( annot["sura_id"], annot["aya_id"] ) ):
 						annotations_by_position[( annot["sura_id"], annot["aya_id"] )][annot["word_id"]] = annot
@@ -496,15 +608,21 @@ class Raw():
 		## merge word annotations to word output
 		if ( annotation_word and word_info ):
 			for cpt in xrange( 1, len( termz ) + 1 ):
-				current_word = STANDARD2UTHMANI( output["words"][cpt]["word"] )
+				current_word = STANDARD2UTHMANI( output["words"]["individual"][cpt]["word"] )
 				#print current_word.encode( "utf-8" ), "=>", annotations_by_word, "=>", list( annot_res )
 				if annotations_by_word.has_key( current_word ):
 					current_word_annotations = annotations_by_word[ current_word ]
-					output["words"][cpt]["annotations"] = current_word_annotations
-					output["words"][cpt]["nb_annotations"] = len ( current_word_annotations )
+					output["words"]["individual"][cpt]["annotations"] = current_word_annotations
+					output["words"]["individual"][cpt]["nb_annotations"] = len ( current_word_annotations )
 
-		output["runtime"] = extend_runtime
-		output["interval"] = {"start":start, "end":end, "total":len( res )}
+		output["runtime"] = round( extend_runtime, 5 )
+		output["interval"] = {
+							"start":start,
+							"end":end,
+							"total": len( res ),
+							"page": ( ( start - 1 ) / range ) + 1,
+							"nb_pages": ( ( len( res ) - 1 ) / range ) + 1
+							}
 		output["translation_info"] = {}
 		### Ayas
 		cpt = start - 1
@@ -548,12 +666,13 @@ class Raw():
 							  "id":r["sura_id"],
 							  "type": r["sura_type"] ,
 							  "order":r["sura_order"],
-						    "stat":{
-								  "ayas":r["s_a"],
-								  "words":N( r["s_w"] ),
-								  "godnames":N( r["s_g"] ),
-								  "letters":N( r["s_l"] )
-						      }
+							  "ayas":r["s_a"],
+						    "stat":{} if not sura_stat_info
+							  	  else	{
+										  "words":N( r["s_w"] ),
+										  "godnames":N( r["s_g"] ),
+										  "letters":N( r["s_l"] )
+								      }
 
 		    		},
 
@@ -590,7 +709,6 @@ class Raw():
 				"annotations": {} if not annotation_aya or not annotations_by_position.has_key( ( r["sura_id"], r["aya_id"] ) )
 							else annotations_by_position[( r["sura_id"], r["aya_id"] )]
 		    		}
-
 		return {"search": output}
 
 
