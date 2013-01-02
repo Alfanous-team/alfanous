@@ -2,6 +2,66 @@
 
 {% load custom_filters %}
 
+{% block help_panel %}
+	<div id="help" class="modal" style="width: 675px; text-align: left;">
+		<h2>{{ _("Help") }}</h2>	
+	<table dir="{{ bidi }}" style=" border: 2px dashed gray;margin: 5px;width: 672px;">
+	<tbody>
+	
+	<tr>
+		<th class="style6">{{ _("Exact search") }} </th>
+		<td class="style5" ><a  href='/?{% build_search_link params ' رب' 1 False %}'> رب</a></td>
+		<td class="style4" ><a  href='/?{% build_search_link params 'فأسقيناكموه' 1 False %}'> فأسقيناكموه </a></td>
+	</tr>
+	<tr>
+		<th class="style3">{{ _("Phrase search") }}  </th>
+		<td class="style2"><a href='/?{% build_search_link params '"رب العالمين"' 1 False %}'>"رب العالمين"</a></td>
+		<td class="style2"><a href='/?{% build_search_link params '"رسول الله"' 1 False %}'>"رسول الله"</a></td>
+	</tr>
+	<tr>
+		<th class="style6">{{ _("Logical relations") }}</th>
+		<td class="style5"><a href='/?{% build_search_link params '(الصلاة - الزكاة) + سورة:البقرة' 1 False %}'>(الصلاة - الزكاة) + سورة:البقرة</a></td>
+	    <td class="style4"><a href='/?{% build_search_link params 'سميع | بصير' 1 False %}'> سميع | بصير</a></td>
+	</tr> 
+	<tr>
+		<th class="style3">{{ _("Wildcards") }}</th>
+		<td class="style2"><a href='/?{% build_search_link params '*نبي*' 1 False %}'>*نبي*</a></td>
+		<td class="style2"><a href='/?{% build_search_link params 'نعم؟' 1 False %}'>نعم؟</a></td>
+	</tr>
+	<tr>
+		<th class="style6">{{ _("Fields") }}</th>
+		<td class="style5"><a href='/?{% build_search_link params 'سورة:يس' 1 False %}'>سورة:يس</a></td>
+	    <td class="style4"><a href='/?{% build_search_link params 'سجدة:نعم' 1 False %}'>سجدة:نعم</a></td>
+	</tr>
+	<tr>
+		<th class="style3">{{ _("Intervals") }} </th>
+		<td class="style2"><a href='/?{% build_search_link params 'رقم_السورة:[1 الى 5] + الله' 1 False %}'>  رقم_السورة:[1 الى 5] + الله</a></td>
+		<td> </td>
+	</tr>
+	<tr>
+		<th class="style6">{{ _("Partial vocalization") }} </th>
+		<td class="style5"><a href="/?{% build_search_link params "آية_:'مَن'" 1 False %}">آية_:'مَن'</a></td>
+	    <td class="style4"><a href="/?{% build_search_link params "آية_:'المَلكُ'" 1 False %}">آية_:'المَلكُ'</a></td>
+	</tr>
+	<tr>
+		<th class="style3">{{ _("Word properties") }}</th>
+		<td class="style2"><a href='/?{% build_search_link params '{قول،اسم}' 1 False %}'>{قول،اسم}</a></td>
+		<td class="style2"><a href='/?{% build_search_link params '{ملك،فعل}' 1 False %}'>{ملك،فعل}</a></td>
+	</tr>
+	<tr>
+		<th class="style9">{{ _("Derivations") }}</th>
+		<td class="style8"><a href='/?{% build_search_link params '>>ملك' 1 False %}'>&gt;&gt;ملك</a></td>
+	    <td class="style7"><a href='/?{% build_search_link params '>ملك' 1 False %}'> &gt;ملك</a></td>
+	</tr>
+	</tbody></table>
+		<br/>
+		<p> {{ _("The website does not work well on Internet Explorer, we suggest to use another explorer such as: ") }} <a href="https://www.mozilla.org/firefox/" target="_blank">{{ _("Firefox") }}</a>.</p>
+		<br/>
+			<button type="button" class='close gray button'> {{ _("Close") }} </button>	
+		<br />
+	</div>
+{% endblock %}
+
 {% block pages_bottom %} 
 	{% block pages_top %}
 				<br />

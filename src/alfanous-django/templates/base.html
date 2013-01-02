@@ -69,30 +69,6 @@
 			});
 			
 
-			// help links
-			$("#help table a").bind('click', function(event) {
-				var param = {
-								action:"search", 
-								query: $(this).attr("href"), 
-								recitation: $("#recitation").val(), 
-								translation: $("#translation").val(), 
-								sortedby: $("#sortedby").val(), 
-								view: $("#view").val(),
-								page: 1, 
-								highlight: "css" }; //,fuzzy:"ok"
-				
-				// Mouad
-				redirect_to_params ( param );
-				// search_for ( param );
-				// $( "#help" ).hide ();
-				// $('#search_box').val(param.search);
-				// get_results(param);
-				
-				event.preventDefault();
-			});
-			
-			
-	
 
 						
 			// Mouad
@@ -135,12 +111,6 @@
 
 
 		function show_results (json, param) {
-			var results = "";
-			var results_pages = "";
-
-			var nb_pages = Math.floor((json.search.interval.total- 1) / 10)+ 1;
-			var page = Math.floor((json.search.interval.start- 1) / 10)+ 1;
-
 
 			if (json.search.interval.total) {
 			
@@ -372,51 +342,10 @@
 		<button type="button" class='close gray button' > {{ _(" Close ") }} </button>	
 	<br />
 </div>
-<div id="help" class="modal" style="width: 675px; text-align: left;">
-	<h2>{{ _("Help") }}</h2>	
-<table dir="{{ bidi }}" style=" border: 2px dashed gray;margin: 5px;width: 672px;">
-<tbody>
+{% block help_panel %}
 
-<tr>
-<th class="style6">{{ _("Exact search") }} </th><td class="style5" ><a  href="رب"> رب</a></td>
-<td class="style4" ><a  href="فأسقيناكموه"> فأسقيناكموه </a></td>
-</tr>
-<tr>
-<th class="style3">{{ _("Phrase") }}  </th><td class="style2"><a href="&quot;رب العالمين&quot;">"رب العالمين"</a></td>
-<td class="style2"><a href="&quot;رسول الله&quot;">"رسول الله"</a></td><td> </td>
-</tr>
-<tr>
-<th class="style6">{{ _("Logical relations") }}</th><td class="style5"><a href="(الصلاة - الزكاة) + سورة:البقرة">(الصلاة - الزكاة) + سورة:البقرة</a></td>
-    <td class="style4"><a href="سميع | بصير"> سميع | بصير</a></td>
-</tr> 
-<tr>
-<th class="style3">{{ _("Wildcards") }}</th><td class="style2"><a href="*نبي*">*نبي*</a></td><td><a href="نعم؟">نعم؟</a></td>
-</tr>
-<tr>
-<th class="style6">{{ _("Fields") }}</th><td class="style5"><a href="سورة :يس">سورة:يس</a></td>
-    <td class="style4"><a href="سجدة :نعم">سجدة:نعم</a></td>
-</tr>
-<tr>
-<th class="style3">{{ _("Intervals") }} </th><td class="style2"><a href="رقم_السورة :[1 الى 5 ] و الله">  رقم_السورة:[1 الى 5] و الله</a></td><td> </td>
-</tr>
-<tr>
-<th class="style6">{{ _("Partial vocalization") }} </th><td class="style5"><a href="آية_ :'مَن'">آية_:'مَن'</a></td>
-    <td class="style4"><a href="آية_ :'المَلكُ'">آية_:'المَلكُ'</a></td>
-</tr>
-<tr>
-<th class="style3">{{ _("Word properties") }}</th><td class="style2"><a href="{قول،اسم} ">{قول،اسم}</a></td><td><a href="{ملك،فعل}">{ملك،فعل}</a></td>
-</tr>
-<tr>
-<th class="style9">{{ _("Derivations") }}</th><td class="style8"><a href="&gt;&gt;ملك">&gt;&gt;ملك</a></td>
-    <td class="style7"><a href="&gt;ملك"> &gt;ملك</a></td>
-</tr>
-</tbody></table>
-	<br/>
-	<p> {{ _("The website does not work well on Internet Explorer, we suggest to use another explorer such as: ") }} <a href="https://www.mozilla.org/firefox/" target="_blank">{{ _("Firefox") }}</a>.</p>
-	<br/>
-		<button type="button" class='close gray button'> {{ _("Close") }} </button>	
-	<br />
-</div>
+{% endblock %}
+	
 </form>
 
 <footer>
@@ -476,8 +405,6 @@
         </div>
     </div>
 </footer>
-
-
 
 </body>
 </html>
