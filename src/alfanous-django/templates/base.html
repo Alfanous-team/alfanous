@@ -142,24 +142,6 @@
 			var page = Math.floor((json.search.interval.start- 1) / 10)+ 1;
 
 
-			// Suggestions links
-			$("#suggestions a").one('click', function(event) {
-				var param2 = param;
-				param2.action = "search";
-				param2.page = 1;
-				param2.query = $(this).find("div").text();
-				
-				// Mouad
-				redirect_to_params ( param2 );
-				// search_for ( param2 );
-				// $('#search_box').val(param2.query);
-				// get_results(param2);
-			
-				event.preventDefault();
-			}).mouseover(function() {
-				window.status = $(this).find("div").text();
-			});
-
 			if (json.search.interval.total) {
 			
 				for( i = json.search.interval.start; i <= json.search.interval.end; i++) {
