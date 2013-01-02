@@ -63,10 +63,10 @@ def SCAN_SUPERJOKERS( query ):
 	myreg = re.compile( "\*+|[\؟\?]{2,9}|[ \t\n\r\(\)\+\-\|]+|[^ ]+:|" )
 	filtred_query = myreg.sub( "", query )
 	super_joker = True if ( len( filtred_query ) < 3 and "*" in query ) \
-						or ( len( filtred_query ) < 2 and ( "?" in query or "؟" in query ) ) \
+						or ( len( filtred_query ) < 2 and ( u"?" in query or u"؟" in query ) ) \
 			 	else False
 	# Exceptions
-	if query in ["?", "؟", "???????????", "؟؟؟؟؟؟؟؟؟؟؟؟"]:
+	if query in [u"?", u"؟", u"???????????", u"؟؟؟؟؟؟؟؟؟؟؟؟"]:
 		super_joker = False
 
 	return super_joker
