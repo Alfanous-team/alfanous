@@ -82,7 +82,7 @@ def results( request ):
                                 "image_extension": "_ar" if language_info['bidi']
                                               else "_en",
 
-
+                                "params": request.GET,
                                 "results": raw_results,
                                 "suggestions": raw_suggestions
 
