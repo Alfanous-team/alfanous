@@ -333,19 +333,31 @@
 								<div class='details_label aya_stat2 clickable'> {{ _("devine names") }} | {{ ayaresult_content.stat.godnames }} </div></a>
 							{% endif %}
 							{% if ayaresult_content.position %}
-								<script type="text/javascript"> build_search_link(param, "manzil:" + {{ ayaresult_content.position.manzil }}, true)); </script> 
+								{% with ayaresult_content.position.manzil|stringformat:"s" as position_manzil %}
+							  		{% with 'manzil:'|add:position_manzil as new_query %}
+										<a class='no_decoration' href='?{% build_search_link params  new_query 1 True%}'> 
+									{% endwith %}
+							  	{% endwith %} 
 								<div class='details_label aya_pos0 clickable filter'> {{ _("manzil") }} | {{ ayaresult_content.position.manzil }} </div></a>
-								<script type="text/javascript"> build_search_link(param, "hizb:" + {{ ayaresult_content.position.hizb }}, true)); </script>
+								{% with ayaresult_content.position.hizb|stringformat:"s" as position_hizb %}
+							  		{% with 'hizb:'|add:position_hizb as new_query %}
+										<a class='no_decoration' href='?{% build_search_link params  new_query 1 True%}'> 
+									{% endwith %}
+							  	{% endwith %} 
 								<div class='details_label aya_pos1 clickable filter'> {{ _("hizb") }} | {{ ayaresult_content.position.hizb }} </div></a>
 								<div class='details_label aya_pos2'> {{ _("quart") }} | {{ ayaresult_content.position.rub|add:"+1" }} </div>		
-								<script type="text/javascript"> build_search_link(param, "page:" + {{ ayaresult_content.position.page }}, true)); </script> 
+								{% with ayaresult_content.position.page|stringformat:"s" as position_page %}
+							  		{% with 'page:'|add:position_page as new_query %}
+										<a class='no_decoration' href='?{% build_search_link params new_query 1 True%}'> 
+									{% endwith %}
+							  	{% endwith %} 
 								<div class='details_label aya_pos3 clickable filter'> {{ _("page") }} | {{ ayaresult_content.position.page }} </div></a>
 							{% endif %}
 						  </div><br /></br />
 					  {% endif %}
 					  {% if  ayaresult_content.sajda.exist %}
 					  		<br /><div>
-							<script type="text/javascript"> build_search_link(param,"sajda:نعم",false); </script> 
+					  		<a class='no_decoration' href='?{% build_search_link params "sajda:نعم" 1 False%}'> 
 							<div class='details_label aya_sajda_exist clickable'> {{ _("sajda") }} </div></a>
 							<div class='details_label aya_sajda_id'> {{ _("n°") }} | {{ ayaresult_content.sajda.id }} </div>
 						    <div class='details_label aya_sajda_type'> {{ _("type") }} | {{ ayaresult_content.sajda.type }}</div>
