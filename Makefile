@@ -59,11 +59,11 @@ WEB_CGI_INSTALL_PATH=$(WEB_INSTALL_PATH)cgi/
 default: 
 	@echo "choose a target:"
 	@echo "download_all \n\t to download all Quranic resources that we can't \n\t include in Git or tarball because of license or huge size" 
-	@echo "build \n\t to build all indexes, update all resources, qt files, \n\t localization files, help files"
+	@echo "build \n\t to build all indexes, update all resources, qt files, \n\t localization files"
 	@echo "tarball_data \n\t to make a tarball that contains all downloaded \n\t and generated data"
 	@echo "dist_all \n\t to generate all distribution files for the API and \n\t the Desktop interface"
 	@echo "install_all \n\t install all interfaces on your system. don't use \n\t it unless you know what you are doing!! (deprecated)"
-	 
+	@echo "help_all \n\t generate sphinx and pydoc documentation" 
 	
 
 ## This target englob all the targets on this makefile
@@ -71,11 +71,12 @@ default:
 ## it will do every thing:
 # 1. download all Quranic resources that we can't include in Git or tarball because of license or huge size
 # 2. build all indexes, update all resources, qt files,  localization files, help files
-# 3. make a tarball that contains all downloaded and generated data
-# 4. generate all possible distribution files for all interfaces: API, Desktop interface
+# 3. generate all documentations
+# 4. make a tarball that contains all downloaded and generated data
+# 5. generate all possible distribution files for all interfaces: API, Desktop interface
 
 ## Kaboom! @TODO: must test this well
-all:  download_all   build   tarball_data  dist_all  clean  #install_all	 
+all:  download_all   build  help_all  tarball_data  dist_all  clean  #install_all	 
 
 
 ## this target is to build all what have to be built:
@@ -85,8 +86,7 @@ all:  download_all   build   tarball_data  dist_all  clean  #install_all
 # 4. Update all resources that must be updated after indexing phase or independently, see  update_post_build
 # 5. Build qt resource files, see qt_all
 # 6. Generate localization files, see local_pot_all
-# 7. Generate help files, see help_all
-build:  update_pre_build index_all speller_all update_post_build qt_all local_pot_all help_all
+build:  update_pre_build index_all speller_all update_post_build qt_all local_pot_all #help_all
 
 
 ## clean temporary files after a building operation
