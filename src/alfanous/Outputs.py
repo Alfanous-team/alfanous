@@ -537,9 +537,9 @@ class Raw():
 					words_output[ "individual" ][ cpt ] = {
 														 "word":term[1],
 														 "buckwalter": buck2uni( term[1], ignore = "" , reverse = True ),
-														 "nb_matches":term[2], 
-														 "nb_ayas":term[3], 
-														 "nb_vocalizations": len( vocalizations ), 
+														 "nb_matches":term[2],
+														 "nb_ayas":term[3],
+														 "nb_vocalizations": len( vocalizations ),
 														 "vocalizations": vocalizations
 														 }
 					cpt += 1
@@ -607,7 +607,7 @@ class Raw():
 
 		## merge word annotations to word output
 		if ( annotation_word and word_info ):
-			for cpt in xrange( 1, len( termz ) + 1 ):
+			for cpt in xrange( 1, len( output["words"]["individual"] ) + 1 ):
 				current_word = STANDARD2UTHMANI( output["words"]["individual"][cpt]["word"] )
 				#print current_word.encode( "utf-8" ), "=>", annotations_by_word, "=>", list( annot_res )
 				if annotations_by_word.has_key( current_word ):
