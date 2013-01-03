@@ -378,7 +378,9 @@
 			<div class='notfound'><p> {{ _("Sorry! there is no results for this search query.") }} </p></div>
 			<br />
 		{% endif %}		
-	{% else %}
+	{% elif results.error %}
 		<div id='error' class='error'><p> {{ _("Error ") }} ({{ results.error.code }}) : {{ results.error.msg|linebreaksbr }}</p></div>
+	{% else %}
+		
 	{% endif %}
 {% endblock results %}
