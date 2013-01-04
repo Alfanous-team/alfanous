@@ -47,14 +47,21 @@ def jos2( request ):
 def results( request ):
     """    """
     if request.GET.has_key( "query" ) and not ( request.GET.has_key( "action" ) and not request.GET["action"] == "search" ):
-        raw_results = RAWoutput.do( request.GET )
-        raw_suggestions = RAWoutput.do( #use suggest as second action
+        raw_search = RAWoutput.do( request.GET )
+        raw_suggest = RAWoutput.do( #use suggest as second action
                                        { "action":"suggest",
-                                        "query": request.GET["query"]  }
+                                        "query": request.GET["query"]
+                                        }
                                        )
     else:
-        raw_results = None
-        raw_suggestions = None
+        raw_search = None
+        raw_suggest = None
+
+    raw_show = RAWoutput.do( #use show as third action
+							  { "action":"show",
+								"query": "all"
+								}
+							)
 
 
     # language information
@@ -67,8 +74,6 @@ def results( request ):
     translation.activate( language )
     request.LANGUAGE_CODE = translation.get_language()
 
-
-    print raw_suggestions
 
     return render_to_response( 'wui.html',
                               {
@@ -83,8 +88,9 @@ def results( request ):
                                               else "_en",
 
                                 "params": request.GET,
-                                "results": raw_results,
-                                "suggestions": raw_suggestions
+                                "results": raw_search,
+                                "suggestions": raw_suggest,
+                                "info": raw_show
 
                                }
                               )
