@@ -149,7 +149,7 @@ class Raw():
 			      "script": ["standard", "uthmani"],
 			      "vocalized": [True, False],
                   "view":["minimal", "normal", "full", "statistic", "linguistic", "custom"],
-			      "recitation": xrange( 30 ),
+			      "recitation": [], #xrange( 30 ),
 			      "translation": [],
 			      "prev_aya": [True, False],
 			      "next_aya": [True, False],
