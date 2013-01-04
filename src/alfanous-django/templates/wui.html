@@ -64,7 +64,8 @@
 
 {% block pages_bottom %} 
 	{% block pages_top %}
-				<br />
+		<br />
+		{% if results.search.interval.nb_pages > 1 %}
 				<div class='pages'>
 				{% if results.search.interval.page != 1 %}
 					{% with results.search.interval.page|add:"-1"|stringformat:"s" as prev_page %}
@@ -99,5 +100,6 @@
 				{% endif %}
 				
 				</div>
-		{% endblock %}
+		{% endif %}
+	{% endblock %}
 {% endblock %}
