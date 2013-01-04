@@ -233,6 +233,8 @@
 		<td colspan="4" style="background:url(/static/images/main_table_06.png) no-repeat;width:395px;height:21px;"> </td></tr>
 </table>
 
+
+
 <div class="donate-box" > 
 	<a class="donate_button" target='_blank' href=''>{{ _("Donate") }}</a><br/>
 </div>
@@ -268,7 +270,6 @@
 		<option value="recitation">{{ _("Recitation") }}</option>
 	</select><br /><!--[if lte IE 8]><![endif]-->
 
-
 	<span class="xtitle">{{ _("Sorted by") }} :</span>
 	<select id="sortedby" class="styled" name="sortedby">
 		<option value="score">{{ _("Default") }}</option>
@@ -278,38 +279,14 @@
 		<option value="subject">{{ _("Topics") }}</option>
 	</select><br /><!--[if lte IE 8]><![endif]-->
 
-	<!--  
-		TODO generate dynamically  the lists of translations and recitations 
-		{ 
-			action: show,
-			query: translations
-		}
-	-->
-	<span class="xtitle">&nbsp;&nbsp;&nbsp; {{ _("Translation:") }} :</span>
-	<select id="translation" class="styled" name="translation">
-					<option value="shakir">{{ _("Default") }}</option>
-					<option value="None">{{ _("No translation") }}</option>
-					<option value="shakir">{{ _("English - Shakir") }}</option>
-					<option value="transliteration-en">{{ _("English - Transliteration") }}</option>
-	</select><br /><!--[if lte IE 8]><![endif]-->
+{% block translations_panel %}
 
-	<span class="xtitle">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {{ _("Recitation:") }}</span>
-	<select id="recitation" class="styled" name="recitation">
-		<option value="14">{{ _("Default") }}</option>
-		<option value="14">{{ _("Mishary Rashid Alafasy") }}</option>   
-		<option value="1">{{ _("AbdulBasit AbdusSamad (Murattal style)") }}</option>
-		<option value="10">{{ _("Abu Bakr Ash-Shaatree") }}</option>
-		<option value="12">{{ _("Ahmed_ibn_Ali_al-Ajamy") }}</option>
-		<option value="16">{{ _("Saad Al Ghamadi") }}</option>
-		<option value="17">{{ _("Hani Rifai") }}</option>
-		<option value="21">{{ _("Husary Mujawwad") }}</option>
-		<option value="23">{{ _("Hudhaify") }}</option>
-		<option value="30">{{ _("Menshawi") }}</option>
-		<option value="37">{{ _("Muhammad Ayyoub") }}</option>
-		<option value="43">{{ _("Saood bin Ibraaheem Ash-Shuraym") }}</option>
-		<option value="45">{{ _("Ibrahim_Walk") }}</option>
-		<option value="5">{{ _("Abdullah Basfar") }}</option>
-	</select><br /><!--[if lte IE 8]><![endif]-->
+{% endblock %}
+
+{% block recitations_panel %}
+
+{% endblock %}
+
 </div>
 
 <br />

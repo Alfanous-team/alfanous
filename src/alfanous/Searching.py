@@ -124,8 +124,10 @@ class QSearcher:
         query = self._qparser.parse( querystr )
         results = self.searcher.search( query, limit, QSort( sortedby ), reverse )
         terms = set()
-        try:query.all_terms( terms )
-        except:pass
+        try:
+            query.all_terms( terms )
+        except:
+            pass
 
         return results, terms
 
