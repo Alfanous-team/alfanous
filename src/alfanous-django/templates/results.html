@@ -11,7 +11,7 @@
 	{% if results.error.code == 0  %} 
 		<div id="search_result_static" style="direction:{{ bidi }}; width:800px">
 		<br /><br /><span class='xbre'> {{ _("Search results") }}</span><br /><br />
-		<center><b>{{ _("Runtime") }}</b> : {{ results.search.runtime|floatformat:"5" }} {{ _("seconds") }} </center>
+		<span class="runtime"> <b>{{ _("Runtime") }}</b> : {{ results.search.runtime|floatformat:"5" }} {{ _("seconds") }} </span>
 		</div>
 		<!-- Suggestions-->
 		{% if suggestions.error.code == 0 and suggestions.suggest %} 
