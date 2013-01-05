@@ -95,6 +95,7 @@ class Raw():
 	DEFAULTS = {
 		    "minrange":1,
 		    "maxrange":25,
+		    "maxkeywords":100,
 		    "results_limit":6236,
 		    "flags":{
 			      "action":"search",
@@ -497,7 +498,7 @@ class Raw():
 		#Search
 		SE = self.FQSE if fuzzy else self.QSE
 		res, termz = SE.search_all( query  , self._defaults["results_limit"], sortedby = sortedby )
-		terms = [term[1] for term in list( termz )] # TODO: I dont like this termz structure , must change it
+		terms = [term[1] for term in list( termz )[:self._defaults["maxkeywords"]]]
 		terms_uthmani = map( STANDARD2UTHMANI, terms )
 		#pagination
 		offset = 1 if offset < 1 else offset;
