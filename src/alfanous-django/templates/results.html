@@ -4,7 +4,7 @@
 
 
 
-{% block title %} {{ _("Alfanous - Results to Query:") }}  {% endblock %}  
+{% block title %} {{ _("Alfanous - Results to Query:") }}  {{ params.query }} {% endblock %}  
 
 
 {% block results %}
@@ -20,7 +20,7 @@
 			{% for suggestion_key, suggestion_item in suggestions.suggest.items %}
 				<p dir='{{ bidi }}' >
 				<div class='word_details'>
-				<span style=' font-size:14pt; color:#00aa00;'> {{ forloop.counter }} </span>
+				<span style=' font-size:14pt; color:#00aa00;'> {{ forloop.counter }}. </span>
 				<div class='details_label word_info0'>  {{ _("word") }} |  {{ suggestion_key }} </div>
 				{% for suggestion_sub_item  in suggestion_item %}
 					<a class='no_decoration' href="?{% build_search_link params  suggestion_sub_item 1 False %}"> 
@@ -54,7 +54,7 @@
 						  <div class='word_details'>
 						    <span style=' font-size:14pt; color:#00aa00;'> {{ wordcpt }}.  </span>
 							<a class='no_decoration' href="?{% build_search_link params  wordstat.word 1 False %}"> 
-							<div class='details_label word_info0 clickable'> {{ _("word") }} | {{ wordstat.word }} | {{ wordstat.buckwalter }} </div></a>
+							<div class='details_label word_info0 clickable'> {{ _("word") }} | {{ wordstat.word }} {% if wordstat.romanization %} ( {{ wordstat.romanization }} ) {%  endif %} </div></a>
 							<div class='details_label word_stat0'> {{ _("occurnaces") }} | {{ wordstat.nb_matches }} </div>
 							<div class='details_label word_stat1'> {{ _("ayates") }} |  {{ wordstat.nb_ayas }} </div>
 							<div class='details_label word_vocalization_nb'> {{ _("vocalizations") }} | {{ wordstat.nb_vocalizations }} </div>
@@ -193,14 +193,13 @@
 					  		 <span class='quran_decoration prev_aya'>
 							 ] </span>
 							 <span dir="ltr" class='prev_aya'>
-							 (   
+							    
 							 {% with ayaresult_content.aya.prev_aya.id|stringformat:"s" as prev_aya_id %}
-								 {% with 'sura:'|add:ayaresult_content.aya.prev_aya.sura|add:' + aya_id:'|add:prev_aya_id  as new_query %}
+								 {% with 'sura:"'|add:ayaresult_content.aya.prev_aya.sura|add:'" + aya_id:'|add:prev_aya_id|urlencode  as new_query %}
 									<a class='no_decoration' href='?{% build_search_link params  new_query 1 False %}'> 
 								{% endwith %}
 							{% endwith %}
-							{{ ayaresult_content.aya.prev_aya.sura }} {{ ayaresult_content.aya.prev_aya.id }} </a> 
-							)
+							({{ ayaresult_content.aya.prev_aya.sura }} {{ ayaresult_content.aya.prev_aya.id }}) </a> 
 					  		</span>
 					  		 </p>
 					  		
@@ -215,7 +214,6 @@
 						{% for aya_word in ayaresult_content.aya.text|space_split %}
 							{% spaceless %}
 								{% autoescape off %}
-									
 								  		{# TODO optimize this condition, any "in" operation? #}
 										{% if aya_word|first in "<ct> "|make_list  %}
 												{{ aya_word }} 
@@ -232,14 +230,14 @@
 					 <span class='quran_decoration main_aya'>
 					 ] </span>
 					  <span dir="rtl" class='main_aya'>
-					  		(   
+					  		   
 							 {% with ayaresult_content.aya.id|stringformat:"s" as aya_id %}
-								 {% with 'sura:'|add:ayaresult_content.identifier.sura_name|add:' + aya_id:'|add:aya_id  as new_query %}
+								 {% with 'sura:"'|add:ayaresult_content.identifier.sura_name|add:'" + aya_id:'|add:aya_id|urlencode  as new_query %}
 									<a class='no_decoration' href='?{% build_search_link params  new_query 1 False %}'> 
 								{% endwith %}
 							{% endwith %}
-							{{ ayaresult_content.identifier.sura_name }} {{ ayaresult_content.aya.id }} </a> 
-							)
+							({{ ayaresult_content.identifier.sura_name }} {{ ayaresult_content.aya.id }}) </a> 
+							
 					   
 					  </span>
 					  <br />
@@ -259,14 +257,14 @@
 					  		 <span class='quran_decoration next_aya'>
 							 ] </span>
 							 <span dir="ltr" class='next_aya'>
-							(   
+							   
 							 {% with ayaresult_content.aya.next_aya.id|stringformat:"s" as next_aya_id %}
-								 {% with 'sura:'|add:ayaresult_content.aya.next_aya.sura|add:' + aya_id:'|add:next_aya_id  as new_query %}
+								 {% with 'sura:"'|add:ayaresult_content.aya.next_aya.sura|add:'" + aya_id:'|add:next_aya_id|urlencode  as new_query %}
 									<a class='no_decoration' href='?{% build_search_link params  new_query 1 False %}'> 
 								{% endwith %}
 							{% endwith %}
-							{{ ayaresult_content.aya.next_aya.sura }} {{ ayaresult_content.aya.next_aya.id }} </a> 
-							)
+							({{ ayaresult_content.aya.next_aya.sura }} {{ ayaresult_content.aya.next_aya.id }})</a> 
+							
 							</span>
 					  		 </p>
 					  		
@@ -277,7 +275,9 @@
 					  {% if ayaresult_content.aya.translation %}
 					  		<p dir='ltr' align='center' >
 					  		<span class="quran_translation">
+					  		{% autoescape off %}
 					  		  {{ ayaresult_content.aya.translation }} 
+					  		{% endautoescape %}
 					  		</span></p>
 					  		<br />
 					  {% endif %}
