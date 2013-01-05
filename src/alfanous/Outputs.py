@@ -89,13 +89,13 @@ class Raw():
 
 	TODO Add word annotations to results
 	FIXME terms are standard and Qurany corpus are uthmani   # resolve with uthmani mapping of Taha , + domains + errors
-	TODO statistics of use + update_stats.js
-	TODO status Messages ALL (code , message)
+	
 	"""
 
 	DEFAULTS = {
 		    "minrange":1,
 		    "maxrange":25,
+		    "maxkeywords":100,
 		    "results_limit":6236,
 		    "flags":{
 			      "action":"search",
@@ -109,6 +109,7 @@ class Raw():
                   "view": "custom",
 			      "recitation": "1",
 			      "translation": None,
+			      "romanization": None,
 			      "prev_aya": False,
 			      "next_aya": False,
 			      "sura_info": True,
@@ -133,7 +134,8 @@ class Raw():
 	     - 1:"fail, reason unknown",
 	     0:"success",
 	     1:"no action is chosen or action undefined",
-	     2:"""SuperJokers are not permitted, you have to add  3 letters or more to use * and 2 letters or more to use ? (؟)\n
+	     2:"""SuperJokers are not permitted, you have to add  3 letters 
+	           or more to use * and 2 letters or more to use ? (؟)\n
 	     	-- Exceptions: ? (1),  ??????????? (11)
 	     	"""
 	    }
@@ -151,6 +153,7 @@ class Raw():
                   "view":["minimal", "normal", "full", "statistic", "linguistic", "custom"],
 			      "recitation": [], #xrange( 30 ),
 			      "translation": [],
+			      "romanization": ["none", "buckwalter", "iso", "arabtex"], #arabizi is forbidden for show
 			      "prev_aya": [True, False],
 			      "next_aya": [True, False],
 			      "sura_info": [True, False],
@@ -162,7 +165,7 @@ class Raw():
 			      "aya_sajda_info":	[True, False],
 			      "annotation_word":[True, False],
 			      "annotation_aya":[True, False],
-			      "sortedby":["total", "score", "relevance", "mushaf", "tanzil", "subject"],
+			      "sortedby":["score", "relevance", "mushaf", "tanzil", "subject", "ayalength"],
 			      "offset":[], #xrange(6237)
 			      "range":[], # xrange(DEFAULTS["maxrange"]) , # used as "perpage" in paging mode
 			      "page":[], # xrange(6237),  # overridden with offset
@@ -183,6 +186,7 @@ class Raw():
                   "view": "pre-defined configuration for what information to retrieve",
 			      "recitation": "recitation id",
 			      "translation": "translation id",
+			      "romanization": "type of romanization",
 			      "prev_aya": "enable previous aya retrieving",
 			      "next_aya": "enable next aya retrieving",
 			      "sura_info": "enable sura information retrieving (override sura_stat_info if False)",
@@ -388,6 +392,8 @@ class Raw():
 					 else self._defaults["flags"]["recitation"]
 		translation = flags["translation"] if flags.has_key( "translation" ) \
 					  else self._defaults["flags"]["translation"]
+		romanization = flags["romanization"] if flags.has_key( "romanization" ) \
+					  else self._defaults["flags"]["romanization"]
 		highlight = flags["highlight"] if flags.has_key( "highlight" ) \
 					else self._defaults["flags"]["highlight"]
 		script = flags["script"] if flags.has_key( "script" ) \
@@ -402,7 +408,6 @@ class Raw():
 		# pre-defined views
 		if view == "minimal":
 			vocalized = False
-			range = 25
 			recitation = None
 			translation = None
 			prev_aya = next_aya = False
@@ -427,6 +432,7 @@ class Raw():
 			aya_position_info = aya_theme_info = aya_sajda_info = True
 			aya_stat_info = sura_stat_info = True
 			annotation_aya = annotation_word = True
+			romanization = "iso"
 		elif view == "statistic":
 			prev_aya = next_aya = False
 			sura_info = True
@@ -447,6 +453,7 @@ class Raw():
 			sura_stat_info = False
 			annotation_aya = True
 			annotation_word = True
+			romanization = "buckwalter"
 		elif view == "recitation":
 			script = "uthmani"
 			prev_aya = next_aya = True
@@ -491,7 +498,7 @@ class Raw():
 		#Search
 		SE = self.FQSE if fuzzy else self.QSE
 		res, termz = SE.search_all( query  , self._defaults["results_limit"], sortedby = sortedby )
-		terms = [term[1] for term in list( termz )] # TODO: I dont like this termz structure , must change it
+		terms = [term[1] for term in list( termz )[:self._defaults["maxkeywords"]]]
 		terms_uthmani = map( STANDARD2UTHMANI, terms )
 		#pagination
 		offset = 1 if offset < 1 else offset;
@@ -541,7 +548,7 @@ class Raw():
 					nb_vocalizations_globale += len( vocalizations )
 					words_output[ "individual" ][ cpt ] = {
 														 "word":term[1],
-														 "buckwalter": buck2uni( term[1], ignore = "" , reverse = True ),
+														 "romanization": buck2uni( term[1], ignore = "" , reverse = True ) if romanization == "buckwalter" else None,
 														 "nb_matches":term[2],
 														 "nb_ayas":term[3],
 														 "nb_vocalizations": len( vocalizations ),
