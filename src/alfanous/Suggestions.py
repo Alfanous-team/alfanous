@@ -93,6 +93,7 @@ def concat_suggestions( listofsuggestions ):
         for key, values in unit.items():
             if D.has_key( key ):
                 D[key].extend[list( values )]
-            else: D[key] = list( values )
+            else:
+            	D[key] = list( values )
     return D
 

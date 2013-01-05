@@ -62,9 +62,34 @@
 	</div>
 {% endblock %}
 
+{% block translations_panel %}
+	<span class="xtitle">&nbsp;&nbsp;&nbsp; {{ _("Translation:") }} :</span>
+	<select id="translation" class="styled" name="translation">
+					<option value="en.shakir">{{ _("Default") }}</option>
+					<option value="None">{{ _("No translation") }}</option>
+					{% for translation_id, translation_name in info.show.translations.items %}
+					<option value="{{ translation_id }}">{{ translation_name }}</option>
+					{% endfor %}
+	</select><br /><!--[if lte IE 8]><![endif]-->
+{% endblock %}
+
+{% block recitations_panel %}
+	<span class="xtitle">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {{ _("Recitation:") }}</span>
+	<select id="recitation" class="styled" name="recitation">
+		<option value="14">{{ _("Default") }}</option>
+		<option value="0">{{ _("No recitation") }}</option>
+		{% for recitation_id, recitation_details in info.show.recitations.items %}
+			{% if recitation_id != "ayahCount" %}
+					<option value="{{ recitation_id }}">{{ recitation_details.name }} - {{ recitation_details.bitrate }} </option>
+			{% endif %}
+		{% endfor %}
+	</select><br /><!--[if lte IE 8]><![endif]-->
+{% endblock %}
+
 {% block pages_bottom %} 
 	{% block pages_top %}
-				<br />
+		<br />
+		{% if results.search.interval.nb_pages > 1 %}
 				<div class='pages'>
 				{% if results.search.interval.page != 1 %}
 					{% with results.search.interval.page|add:"-1"|stringformat:"s" as prev_page %}
@@ -99,5 +124,6 @@
 				{% endif %}
 				
 				</div>
-		{% endblock %}
+		{% endif %}
+	{% endblock %}
 {% endblock %}
