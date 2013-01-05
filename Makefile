@@ -64,6 +64,7 @@ default:
 	@echo "dist_all \n\t to generate all distribution files for the API and \n\t the Desktop interface"
 	@echo "install_all \n\t install all interfaces on your system. don't use \n\t it unless you know what you are doing!! (deprecated)"
 	@echo "help_all \n\t generate sphinx and pydoc documentation" 
+	@echo "test_pylint \n\t run the tests of pylint on the API " 
 	
 
 ## This target englob all the targets on this makefile
@@ -421,3 +422,6 @@ install_wui: install_jos2
 	cd $(WEB_INSTALL_PATH);  cd wui; sed -i 's/www\.alfanous\.org\/json2/alfanous\.local\/cgi\-bin\/alfanous\_json2\.py/g' index.*
 	xdg-open http://alfanous.local/ &  ##launch default browser for test
 
+
+test_pylint:
+	pylint --ignore=whoosh,dynamic_resources,mainform_ui.py src -f colorized | more

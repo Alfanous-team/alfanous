@@ -126,6 +126,7 @@ Flags
  8         vocalized          search            enable vocalization of aya text               "True"           True | False
  9         recitation         search            recitation id                                 "1"              1 to 30
  10        translation        search            translation id                                "None"           \*
+ 11        romanization       search            type of romanization                          "none"           none | buckwalter | iso | arabtex
  11        view               search            pre-defined configuration for view            "custom"         minimal | normal | full | statistic | linguistic | custom
  12        prev_aya           search            enable previous aya retrieving                "False"          True | False
  13        next_aya           search            enable next aya retrieving                    "False"          True | False
