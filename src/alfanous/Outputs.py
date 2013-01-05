@@ -490,6 +490,7 @@ class Raw():
 			annotation_word = TRUE_FALSE( flags["annotation_word"] ) if flags.has_key( "annotation_word" ) \
 							 else self._defaults["flags"]["annotation_word"]
 
+
 		#preprocess query
 		query = query.replace( "\\", "" )
 		if not isinstance( query, unicode ):
@@ -509,6 +510,10 @@ class Raw():
 		start = offset if offset <= len( res ) else -1
 		reslist = [] if end == 0 or start == -1 else list( res )[start - 1:end]
 		output = {}
+
+		## disable annotations for aya words if there is more then one result
+		if annotation_aya and len ( res ) > 1:
+			annotation_aya = False
 
 		#if True:
 		## strip vocalization when vocalized = true
