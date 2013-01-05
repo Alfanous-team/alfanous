@@ -1,5 +1,31 @@
 # Django settings for alfanousDjango project.
 
+
+from ConfigParser import RawConfigParser
+
+config = RawConfigParser()
+
+# set you setting path here.
+# the file have to be a system-config like, ini-style file, see settings.ini.proto for a prototype
+configFile = "" # e,g. '/etc/whatever/settings.ini'
+
+if configFile == "":
+    print "WARNING: You need to set a path to the config file, see settings.py"
+
+config.read(configFile)
+"""
+example use cases: 
+
+DATABASE_USER = config.get('database', 'DATABASE_USER')
+DATABASE_PASSWORD = config.get('database', 'DATABASE_PASSWORD')
+DATABASE_HOST = config.get('database', 'DATABASE_HOST')
+DATABASE_PORT = config.get('database', 'DATABASE_PORT')
+DATABASE_ENGINE = config.get('database', 'DATABASE_ENGINE')
+DATABASE_NAME = config.get('database', 'DATABASE_NAME')
+TEST_DATABASE_NAME = config.get('database', 'TESTSUITE_DATABASE_NAME')
+
+"""
+
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
