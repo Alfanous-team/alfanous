@@ -20,9 +20,9 @@
 			{% for suggestion_key, suggestion_item in suggestions.suggest.items %}
 				<p dir='{{ bidi }}' >
 				<div class='word_details'>
-				<span style=' font-size:14pt; color:#00aa00;'> {{ suggestion_key }} </span>
-				<div class='details_label word_info0'>  {{ _("word") }} |  {{ suggestion_item|first }} </div>
-				{% for suggestion_sub_key, suggestion_sub_item in suggestion_item|slice:"1" %}
+				<span style=' font-size:14pt; color:#00aa00;'> {{ forloop.counter }} </span>
+				<div class='details_label word_info0'>  {{ _("word") }} |  {{ suggestion_key }} </div>
+				{% for suggestion_sub_item  in suggestion_item %}
 					<a class='no_decoration' href="?{% build_search_link params  suggestion_sub_item 1 False %}"> 
 					<div class='details_label word_stat1 clickable'> {{ suggestion_sub_item }}</div></a>
 				{% empty %}
