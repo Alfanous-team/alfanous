@@ -23,9 +23,13 @@ nosetests.xml
 # generated indexes #
 #####################
 _*.dcz
+_*.dci
 _*.pst
 _*.tiz
 _*.toc
+_*.fvz
+_*.vps
+*_LOCK
 
 # Compiled source #
 ###################
