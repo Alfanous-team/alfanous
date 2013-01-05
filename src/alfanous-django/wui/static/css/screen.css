@@ -401,6 +401,10 @@ a:hover{color: green;}
 	padding-right: 20px;
 }
 
+.runtime {
+	color:grey;
+	font-size: 12px;
+}
 
 .pages img, select {
 	cursor:pointer;

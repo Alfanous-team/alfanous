@@ -149,7 +149,7 @@ class Raw():
 			      "script": ["standard", "uthmani"],
 			      "vocalized": [True, False],
                   "view":["minimal", "normal", "full", "statistic", "linguistic", "custom"],
-			      "recitation": xrange( 30 ),
+			      "recitation": [], #xrange( 30 ),
 			      "translation": [],
 			      "prev_aya": [True, False],
 			      "next_aya": [True, False],
@@ -357,10 +357,15 @@ class Raw():
 	def _suggest( self, flags ):
 		""" return suggestions """
 		query = flags["query"] if flags.has_key( "query" ) else self._defaults["flags"]["query"]
+		#preprocess query
+		query = query.replace( "\\", "" )
+		if not isinstance( query, unicode ):
+			query = unicode( query , 'utf8' )
 		try:
-			output = self.QSE.suggest_all( unicode( query, 'utf8' ) ).items()
+			output = self.QSE.suggest_all( query )
 		except Exception:
-			output = []
+			output = {}
+
 		return {"suggest":output}
 
 	def _search( self, flags ):
@@ -537,9 +542,9 @@ class Raw():
 					words_output[ "individual" ][ cpt ] = {
 														 "word":term[1],
 														 "buckwalter": buck2uni( term[1], ignore = "" , reverse = True ),
-														 "nb_matches":term[2], 
-														 "nb_ayas":term[3], 
-														 "nb_vocalizations": len( vocalizations ), 
+														 "nb_matches":term[2],
+														 "nb_ayas":term[3],
+														 "nb_vocalizations": len( vocalizations ),
 														 "vocalizations": vocalizations
 														 }
 					cpt += 1
@@ -607,7 +612,7 @@ class Raw():
 
 		## merge word annotations to word output
 		if ( annotation_word and word_info ):
-			for cpt in xrange( 1, len( termz ) + 1 ):
+			for cpt in xrange( 1, len( output["words"]["individual"] ) + 1 ):
 				current_word = STANDARD2UTHMANI( output["words"]["individual"][cpt]["word"] )
 				#print current_word.encode( "utf-8" ), "=>", annotations_by_word, "=>", list( annot_res )
 				if annotations_by_word.has_key( current_word ):
@@ -642,7 +647,8 @@ class Raw():
 		              		"text":  Gword_tamdid( H( V( r["aya_"] ) ) ) if script == "standard"
 		              			else  Gword_tamdid( H( r["uth_"] ) ),
 						"translation": trad_text[r["gid"]] if ( translation != "None" and translation and trad_text.has_key( r["gid"] ) ) else None,
-		                	"recitation": None if not recitation else u"http://www.everyayah.com/data/" + self._recitations[recitation]["subfolder"].encode( "utf-8" ) + "/%03d%03d.mp3" % ( r["sura_id"], r["aya_id"] ),
+		                	"recitation": None if not recitation or not self._recitations.has_key( recitation ) \
+		                				  else u"http://www.everyayah.com/data/" + self._recitations[recitation]["subfolder"].encode( "utf-8" ) + "/%03d%03d.mp3" % ( r["sura_id"], r["aya_id"] ),
 		                	"prev_aya":{
 						    "id":adja_ayas[r["gid"] - 1]["aya_id"],
 						    "sura":adja_ayas[r["gid"] - 1]["sura"],
