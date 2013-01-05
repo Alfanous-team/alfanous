@@ -124,11 +124,9 @@ function set_search_params ( params ) {
 	
 }
 
-
 function redirect_to_params ( params ) {
 	window.location = get_url_without_params () + "?" + build_params ( params );
 }
-
 
 
 function update_share_links () {
