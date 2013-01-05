@@ -64,8 +64,8 @@ def results( request ):
                         "query": request.GET["search"]
                                         }
     else:
-        search_params = None
-        suggest_params = None
+        search_params = {}
+        suggest_params = {}
 
     #use search as first action
     raw_search = RAWoutput.do( search_params ) if search_params else None
