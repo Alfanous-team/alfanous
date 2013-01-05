@@ -46,22 +46,33 @@ def jos2( request ):
 
 def results( request ):
     """    """
-    if request.GET.has_key( "query" ) and not ( request.GET.has_key( "action" ) and not request.GET["action"] == "search" ):
-        raw_search = RAWoutput.do( request.GET )
-        raw_suggest = RAWoutput.do( #use suggest as second action
-                                       { "action":"suggest",
-                                        "query": request.GET["query"]
-                                        }
-                                       )
-    else:
-        raw_search = None
-        raw_suggest = None
+    show_params = { "action":"show", "query": "all" }
 
-    raw_show = RAWoutput.do( #use show as third action
-							  { "action":"show",
-								"query": "all"
-								}
-							)
+    if request.GET.has_key( "query" ) and not ( request.GET.has_key( "action" ) and not request.GET["action"] == "search" ):
+        search_params = request.GET
+        suggest_params = { "action":"suggest", "query": request.GET["query"] }
+    elif request.GET.has_key( "search" ):
+    	## back-compatibility of links:
+    	# if it's a classic API style, wrap it to the new API style
+        search_params = { "action": "search",
+                        "query": request.GET["search"],
+                        "page": request.GET["page"] if request.GET.has_key( "page" ) else 1,
+                        "sortedby": request.GET["sortedby"] if request.GET.has_key( "sortedby" ) else "relevance"
+                        }
+        suggest_params = { 
+						"action":"suggest",
+                        "query": request.GET["search"]
+                                        }
+    else:
+        search_params = None
+        suggest_params = None
+
+    #use search as first action
+    raw_search = RAWoutput.do( search_params ) if search_params else None
+    #use suggest as second action
+    raw_suggest = RAWoutput.do( suggest_params ) if suggest_params else None
+    #use show as third action
+    raw_show = RAWoutput.do( show_params )   if show_params else None
 
 
     # language information
@@ -88,7 +99,7 @@ def results( request ):
                                 "image_extension": "_ar" if language_info['bidi']
                                               else "_en",
 
-                                "params": request.GET,
+                                "params": search_params,
                                 "results": raw_search,
                                 "suggestions": raw_suggest,
                                 "info": raw_show
