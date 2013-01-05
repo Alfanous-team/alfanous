@@ -234,9 +234,9 @@ class QUI( Ui_MainWindow ):
                 }
         output = RAWoutput.do( suggest_flags )
         #print output     
-        suggestions = output["suggest"] if output.has_key( "suggest" ) else []
+        suggestions = output["suggest"] if output.has_key( "suggest" ) else {}
         #print suggestions
-        if len( suggestions ): 
+        if len( suggestions ):
             html += _( u"<h1> Suggestions (%(number)s) </h1>" ) % {"number":len( suggestions )}
             for key, value in suggestions:
                 html += _( u"<span class='green'>  %(word)s </span> : %(suggestions)s. <br />" ) % {"word": unicode( key ), "suggestions":u"،".join( value )}
@@ -279,7 +279,7 @@ class QUI( Ui_MainWindow ):
             
             print results["error"]["msg"]
             for cpt in xrange( results["search"]["words"]["global"]["nb_words"] ) :
-                    this_word_info = results["search"]["words"][cpt + 1]
+                    this_word_info = results["search"]["words"]["individual"][cpt + 1]
                     this_word_info["cpt"] = cpt + 1
                     html += u'''<p>
                                 <span class="green">%(cpt)d. %(word)s : </span>
