@@ -5,11 +5,10 @@
 <html>
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-
 	<title> {% block title %} {{ _("Alfanous - Advanced Quranic Search Engine") }} {% endblock %}  </title>
 	
-	<meta name="description" content="{{ _('Alfanous - Advanced search engine in  Holy Quran') }}"/>
-	<meta name="keywords" content="quran, search, ayates, surates, متقدم, advanced, الفانوس ,القرآن ,فانوس ,قرآني ,احصاءات ,ألفاظ, fanous, alfanous, alfanoos, fanoos, elfanous, elfanoos, alfanouce, alfanooce, fanooce , engine, محرك ,بحث ,قرآن"/>
+	<meta name="description" content="{{ _('Alfanous is a functional, dynamic, comprehensive Qur’an search engine that has been effectively designed to carry out simple or advanced Quranic searches.') }}"/>
+	<meta name="keywords" content="{{ _("quran") }}, {{ _("forqan") }}, {{ _("koran") }}, {{ _("search") }}, {{ _("search engine") }}, {{ _("ayates") }}, {{ _("surates") }}, {{ _("advanced") }}, {{ _("statistics") }}, {{  _("linguistic") }}, {{ _("information retrieval") }}, {{ _("natural language processing") }}, {{ _("words") }}, {{ _("Lantern") }}, {{ _("alfanous") }},  "/>
 	<!-- meta name="copyright" content="&copy; Alfanous Team, AGPL" -->
 	<meta name="author" content="Assem Chelli, Ahmed Ramadan, Abdellah Chelli, Mouad Debbar" />
 	<meta name="robots" content="index,follow"/>
@@ -73,13 +72,10 @@
 			$("#search_words").corner("30px");
 			$("#suggestions").corner("30px");
 			
-			$(document).scrollTop($("#search_result").position().top);
+			$(document).scrollTop($("#search_result_static").position().top);
 			
+			update_share_links()
 
-
-			// Mouad
-			read_params();
-			
 			{% block JS_Embedding_AudioPlayers %}
 				{% for ayaresult_id, ayaresult_content in  	results.search.ayas.items %}
 					AudioPlayer.embed("audioplayer_{{ ayaresult_id }}", {soundFile: "{{  ayaresult_content.aya.recitation }}", titles: "{{ ayaresult_content.identifier.sura_name }}-{{ ayaresult_content.identifier.aya_id}}" });
@@ -251,9 +247,9 @@
 
 {% block  follow_box %}
 <div class="follow-box" > 
-	<a class="twitter_share" target='_blank' rel='nofollow' href='http://twitter.com/home?status=http://www.alfanous.org%20Alfanous%20|%20Advanced%20Quranic%20Search%20Engine'><img src='/static/images/twitter.png' class='bo' alt='twitter' title='{{ _("Twitter") }}'/></a><br/>
-	<a class="facebook_share" target='_blank' rel='nofollow' href='http://www.facebook.com/share.php?u=http://www.alfanous.org%26t=Alfanous%20|%20Advanced%20Quranic%20Search%20Engine'><img class='bo' alt='Facebook' title='{{ _("Facebook") }}' src='/static/images/facebook.png' /></a><br/>
-	<a title='{{ _("Send to MySpace") }}' class='external2 myspace_share' rel='nofollow' href='http://www.myspace.com/Modules/PostTo/Pages/?u=http://www.alfanous.org' target='_blank'><img src='/static/images/myspace.png' class='bo' alt='myspace'/></a><br/>
+	<a class="twitter_share" target='_blank' rel='nofollow' href='https://twitter.com/share?url=http://www.alfanous.org{{ current_path }}&text={{ _("Alfanous | Advanced Quranic Search Engine")|iriencode }}'><img src='/static/images/twitter.png' class='bo' alt='twitter' title='{{ _("Twitter") }}'/></a><br/>
+	<a class="facebook_share" target='_blank' rel='nofollow' href='http://www.facebook.com/share.php?u=http://www.alfanous.org{{ current_path }}&t={{ _("Alfanous | Advanced Quranic Search Engine")|iriencode }}'><img class='bo' alt='Facebook' title='{{ _("Facebook") }}' src='/static/images/facebook.png' /></a><br/>
+	<a title='{{ _("Send to MySpace") }}' class='external2 myspace_share' rel='nofollow' href='http://www.myspace.com/Modules/PostTo/Pages/?u=http://www.alfanous.org{{ current_path }}' target='_blank'><img src='/static/images/myspace.png' class='bo' alt='myspace'/></a><br/>
 	<script type="text/javascript">
 	// <![CDATA[
 	    var addthis_pub = "kaan";

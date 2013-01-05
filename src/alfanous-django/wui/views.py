@@ -77,6 +77,7 @@ def results( request ):
 
     return render_to_response( 'wui.html',
                               {
+                                'current_path': request.get_full_path(),
                                 "bidi": "rtl" if language_info['bidi']
                                               else "ltr",
                                 "language_local_name": language_info['name_local'],
