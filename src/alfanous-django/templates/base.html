@@ -68,19 +68,31 @@
 				$("#down").overlay().load();
 			});
 			
+			// Corners
+			$(".details_label").corner("3px");
+			$("#search_words").corner("30px");
+			$("#suggestions").corner("30px");
+			
+			$(document).scrollTop($("#search_result").position().top);
+			
 
 
-						
 			// Mouad
-			// if ( ! read_hash () ) {
-				read_params();
-			// }
+			read_params();
+			
+			{% block JS_Embedding_AudioPlayers %}
+				{% for ayaresult_id, ayaresult_content in  	results.search.ayas.items %}
+					AudioPlayer.embed("audioplayer_{{ ayaresult_id }}", {soundFile: "{{  ayaresult_content.aya.recitation }}", titles: "{{ ayaresult_content.identifier.sura_name }}-{{ ayaresult_content.identifier.aya_id}}" });
+				{% endfor %}
+			{% endblock %}
+				
+
 		});
 
 		function build_search_link(param,query,filter)
 				{
 					var new_param = param; 
-                                        new_param.action="search";
+                           new_param.action="search";
 					new_param.page = 1;
 					new_param.sortedby = "mushaf";
 					if (filter) new_param.query = "(" + $("#search_box").val() + ") + " + query;
@@ -88,7 +100,7 @@
 					return "<a class='no_decoration' href=\""+ get_url_without_params()+ "?"+ build_params( new_param )+ "\">" 
 				}
 		
-		function get_results (param) {
+		function get_results (param) { // this function will be used to require suggestions
 			if ($.trim(param.query) != "" && param.action == "search") {
 				$.ajax({
 					url: "/jos2/", // http://www.alfanous.org/jos2
@@ -110,24 +122,7 @@
 		};
 
 
-		function show_results (json, param) {
-
-			if (json.search.interval.total) {
-			
-				for( i = json.search.interval.start; i <= json.search.interval.end; i++) {
-					AudioPlayer.embed("audioplayer_"+ i, {soundFile: json.search.ayas[i].aya.recitation, titles: json.search.ayas[i].sura.name+"-"+json.search.ayas[i].aya.id});
-				}
-
-			}
-
-			// Corners
-			$(".details_label").corner("3px");
-			$("#search_words").corner("30px");
-			$("#suggestions").corner("30px");
-			
-			$(document).scrollTop($("#search_result").position().top);
-
-		}
+		function show_results (json, param) {		}
 
 		function addto_searchbar(){
 			window.external.AddSearchProvider("/static/alfanous-opensearch.xml");

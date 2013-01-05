@@ -71,7 +71,7 @@ function read_params () {
 		var param_string = document.URL.slice ( idx + 1 );
 		if ( param_string.length > 0 ) {
 			var params = parse_params ( param_string );
-			search_for ( params );
+			//search_for ( params );
 			return true;
 		}
 	}
@@ -121,38 +121,15 @@ function set_search_params ( params ) {
 	// parent.location.hash = build_hash ( params );
 	// window.location = get_url_without_params () + "?" + build_params ( params );
 	//$("#search_box").val( params.query );
-	//$("#recitation").val( params.recitation ); 
-	//$("#translation").val( params.translation );
-	//$("#sortedby").val( params.sortedby );
-	//$("#view").val( params.view );
 	
 }
+
 
 function redirect_to_params ( params ) {
 	window.location = get_url_without_params () + "?" + build_params ( params );
 }
 
-function search_for ( param ) {
-	set_search_params ( param );
-	for ( key in defaultParams ) {
-		if ( defaultParams.hasOwnProperty ( key ) && ! param.hasOwnProperty ( key ) ) {
-			param[key] = defaultParams[key];
-		}
-	}
-	
-	update_share_links ();
-	get_results ( param );
-}
 
-function read_hash () {
-	var hash = parent.location.hash;
-
-	if ( hash.length > 1 ) {
-		search_for ( parse_hash ( hash ) );
-		return true;
-	}
-	return false;
-}
 
 function update_share_links () {
 	for ( var class_name in share_links ) {
