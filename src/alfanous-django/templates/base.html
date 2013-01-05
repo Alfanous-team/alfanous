@@ -217,7 +217,7 @@
 <div>
 <table>
 	<tr>
-		<td colspan="4" style="background:url(/static/images/logo{{ image_extension }}.png); width:385px; height:200px;"> </td>
+		<td colspan="4" style="background:transparent url(/static/images/logo{{ image_extension }}.png); width:385px; height:200px;"> </td>
 	</tr>
 	<tr>
 		<td style="background:url(/static/images/main_table_02.png) no-repeat;width:50px;height:26px"> </td>
@@ -234,9 +234,17 @@
 </table>
 
 <br/>
-<input type="checkbox"  name="fuzzy" value="True"/> <span class="xtitle">{{ _("Fuzzy search") }} </span> 
-<input type="checkbox" name="vocalized" value="False"/> <span class="xtitle">{{ _("Unvocalized text") }} </span>
+
+ 
+
+<input type="checkbox"  name="fuzzy" value="True" {{ params.fuzzy|yesno:"checked,," }} /> 
+	<span class="xtitle">{{ _("Fuzzy search") }} </span> 
+<input type="checkbox" name="vocalized" value="False" {{ params.vocalized|yesno:"checked,," }} /> 
+	<span class="xtitle">{{ _("Unvocalized text") }} </span>
+<input type="checkbox" name="script" value="uthmani" {{ params.script|yesno:"checked,," }} /> 
+	<span class="xtitle">{{ _("Uthmani script") }} </span>
 <br/>
+
 
 <div class="donate-box" > 
 	<a class="donate_button" target='_blank' href=''>{{ _("Donate") }}</a><br/>
