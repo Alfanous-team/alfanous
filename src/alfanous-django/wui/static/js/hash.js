@@ -5,7 +5,7 @@
 hash_sep = ',';
 hash_kv_sep = ':';
 // hash_encode = [ ' ',  '#',   ',',   ':',   ];
-// hash_decode = [ '+',  '%23', '%2C', '%3A', ];
+// hash_decode = [ '%20',  '%23', '%2C', '%3A', ];
 
 defaultParams = {
 		  action:"search",
@@ -120,12 +120,12 @@ function build_hash ( params ) {
 function set_search_params ( params ) {
 	// parent.location.hash = build_hash ( params );
 	// window.location = get_url_without_params () + "?" + build_params ( params );
-	$("#search_box").val( params.query );
-	$("#recitation").val( params.recitation ); 
-	$("#translation").val( params.translation );
-	$("#sortedby").val( params.sortedby );
-	$("#view").val( params.view );
-	document.title = "الفانوس | نتائج البحث عن: " + params.query;
+	//$("#search_box").val( params.query );
+	//$("#recitation").val( params.recitation ); 
+	//$("#translation").val( params.translation );
+	//$("#sortedby").val( params.sortedby );
+	//$("#view").val( params.view );
+	
 }
 
 function redirect_to_params ( params ) {
