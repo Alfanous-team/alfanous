@@ -193,14 +193,13 @@
 					  		 <span class='quran_decoration prev_aya'>
 							 ] </span>
 							 <span dir="ltr" class='prev_aya'>
-							 (   
+							    
 							 {% with ayaresult_content.aya.prev_aya.id|stringformat:"s" as prev_aya_id %}
 								 {% with 'sura:"'|add:ayaresult_content.aya.prev_aya.sura|add:'" + aya_id:'|add:prev_aya_id|urlencode  as new_query %}
 									<a class='no_decoration' href='?{% build_search_link params  new_query 1 False %}'> 
 								{% endwith %}
 							{% endwith %}
-							{{ ayaresult_content.aya.prev_aya.sura }} {{ ayaresult_content.aya.prev_aya.id }} </a> 
-							)
+							({{ ayaresult_content.aya.prev_aya.sura }} {{ ayaresult_content.aya.prev_aya.id }}) </a> 
 					  		</span>
 					  		 </p>
 					  		
@@ -231,14 +230,14 @@
 					 <span class='quran_decoration main_aya'>
 					 ] </span>
 					  <span dir="rtl" class='main_aya'>
-					  		(   
+					  		   
 							 {% with ayaresult_content.aya.id|stringformat:"s" as aya_id %}
 								 {% with 'sura:"'|add:ayaresult_content.identifier.sura_name|add:'" + aya_id:'|add:aya_id|urlencode  as new_query %}
 									<a class='no_decoration' href='?{% build_search_link params  new_query 1 False %}'> 
 								{% endwith %}
 							{% endwith %}
-							{{ ayaresult_content.identifier.sura_name }} {{ ayaresult_content.aya.id }} </a> 
-							)
+							({{ ayaresult_content.identifier.sura_name }} {{ ayaresult_content.aya.id }}) </a> 
+							
 					   
 					  </span>
 					  <br />
@@ -258,14 +257,14 @@
 					  		 <span class='quran_decoration next_aya'>
 							 ] </span>
 							 <span dir="ltr" class='next_aya'>
-							(   
+							   
 							 {% with ayaresult_content.aya.next_aya.id|stringformat:"s" as next_aya_id %}
 								 {% with 'sura:"'|add:ayaresult_content.aya.next_aya.sura|add:'" + aya_id:'|add:next_aya_id|urlencode  as new_query %}
 									<a class='no_decoration' href='?{% build_search_link params  new_query 1 False %}'> 
 								{% endwith %}
 							{% endwith %}
-							{{ ayaresult_content.aya.next_aya.sura }} {{ ayaresult_content.aya.next_aya.id }} </a> 
-							)
+							({{ ayaresult_content.aya.next_aya.sura }} {{ ayaresult_content.aya.next_aya.id }})</a> 
+							
 							</span>
 					  		 </p>
 					  		
