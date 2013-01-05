@@ -94,6 +94,7 @@ BUCKWALTER2UNICODE = {"'": u"\u0621", # hamza-on-the-line
                 }
 
 
+
 #:shaping table
 SHAPING = {
  u'\u0621' : ( u'\uFE80' ) ,
