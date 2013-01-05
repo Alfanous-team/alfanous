@@ -4,7 +4,7 @@
 
 
 
-{% block title %} {{ _("Alfanous - Results to Query:") }}  {% endblock %}  
+{% block title %} {{ _("Alfanous - Results to Query:") }}  {{ params.query }} {% endblock %}  
 
 
 {% block results %}
@@ -215,7 +215,6 @@
 						{% for aya_word in ayaresult_content.aya.text|space_split %}
 							{% spaceless %}
 								{% autoescape off %}
-									
 								  		{# TODO optimize this condition, any "in" operation? #}
 										{% if aya_word|first in "<ct> "|make_list  %}
 												{{ aya_word }} 
@@ -277,7 +276,9 @@
 					  {% if ayaresult_content.aya.translation %}
 					  		<p dir='ltr' align='center' >
 					  		<span class="quran_translation">
+					  		{% autoescape off %}
 					  		  {{ ayaresult_content.aya.translation }} 
+					  		{% endautoescape %}
 					  		</span></p>
 					  		<br />
 					  {% endif %}
