@@ -157,7 +157,7 @@ update_translations_to_download_list:
 
 # update list of indexed translations automatically using Importer
 update_translations_indexed_list:
-	export PYTHONPATH=$(API_PATH) ;	python $(QIMPORT) -u translations $(INDEX_PATH)extend/ $(CONFIG_PATH)translations.json
+	export PYTHONPATH=$(API_PATH) ;	python $(QIMPORT) -u translations $(INDEX_PATH)extend/  $(CONFIGS_PATH)translations.json
 
 # update quranic corpus in the database automatically using Importer
 update_quranic_corpus:
