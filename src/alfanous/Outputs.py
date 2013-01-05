@@ -357,10 +357,15 @@ class Raw():
 	def _suggest( self, flags ):
 		""" return suggestions """
 		query = flags["query"] if flags.has_key( "query" ) else self._defaults["flags"]["query"]
+		#preprocess query
+		query = query.replace( "\\", "" )
+		if not isinstance( query, unicode ):
+			query = unicode( query , 'utf8' )
 		try:
-			output = self.QSE.suggest_all( unicode( query, 'utf8' ) ).items()
+			output = self.QSE.suggest_all( query )
 		except Exception:
-			output = []
+			output = {}
+
 		return {"suggest":output}
 
 	def _search( self, flags ):
