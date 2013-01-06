@@ -8,7 +8,7 @@ DATABASE_NAME: wui.db
 TESTSUITE_DATABASE_NAME: test_blo
 
 [secrets]
-SECRET_KEY: random-string-of-ascii
+SECRET_KEY: kl2wmaaul8-roi3k9*@1j9kse%z^durtud=8l-*6+r#h2mo*80
 CSRF_MIDDLEWARE_SECRET: random-string-of-ascii
 
 [cookies]
@@ -28,7 +28,7 @@ SERVER_EMAIL: django@localhost
 EMAIL_HOST: localhost
 
 # the [error mail] and [404 mail] sections are special. Just add lines with
-#  full name: email_address@domain.xx
+# full name: email_address@domain.xx
 # each section must be present but may be empty.
 [error mail]
 Adam Smith: adam@localhost

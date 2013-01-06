@@ -4,7 +4,7 @@ from ConfigParser import RawConfigParser
 
 config = RawConfigParser()
 
-# set you setting path here.
+# set the path of your private config file here.
 # the file have to be a system-config like, ini-style file, see settings.ini.proto for a prototype
 configFile = "settings.ini.proto" # e,g. '/etc/whatever/settings.ini'
 
@@ -13,7 +13,7 @@ if configFile == "" or configFile == "settings.ini.proto":
 
 config.read(configFile)
 
-# fetching critical info from the cofig file
+# fetching critical info from the config file
 DATABASE_USER = config.get('database', 'DATABASE_USER')
 DATABASE_PASSWORD = config.get('database', 'DATABASE_PASSWORD')
 DATABASE_HOST = config.get('database', 'DATABASE_HOST')
@@ -21,8 +21,8 @@ DATABASE_PORT = config.get('database', 'DATABASE_PORT')
 DATABASE_ENGINE = config.get('database', 'DATABASE_ENGINE')
 DATABASE_NAME = config.get('database', 'DATABASE_NAME')
 # TEST_DATABASE_NAME = config.get('database', 'TESTSUITE_DATABASE_NAME')
-
-DEBUG = True
+ 
+DEBUG = config.get('debug', 'DEBUG') in ['true', 'True', '1', 'TRUE', 'y', 'yes']
 TEMPLATE_DEBUG = DEBUG
 
 ADMINS = (
@@ -33,12 +33,12 @@ MANAGERS = ADMINS
 
 DATABASES = {
     'default': {
-        'ENGINE': DATABASE_ENGINE, # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
-        'NAME': DATABASE_NAME,                      # Or path to database file if using sqlite3.
-        'USER': DATABASE_USER,                      # Not used with sqlite3.
-        'PASSWORD': DATABASE_PASSWORD,                  # Not used with sqlite3.
-        'HOST': DATABASE_HOST,                      # Set to empty string for localhost. Not used with sqlite3.
-        'PORT': DATABASE_PORT,                      # Set to empty string for default. Not used with sqlite3.
+        'ENGINE': DATABASE_ENGINE,      # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
+        'NAME': DATABASE_NAME,          # Or path to database file if using sqlite3.
+        'USER': DATABASE_USER,          # Not used with sqlite3.
+        'PASSWORD': DATABASE_PASSWORD,  # Not used with sqlite3.
+        'HOST': DATABASE_HOST,          # Set to empty string for localhost. Not used with sqlite3.
+        'PORT': DATABASE_PORT,          # Set to empty string for default. Not used with sqlite3.
     }
 }
 
@@ -109,7 +109,7 @@ STATICFILES_FINDERS = (
 )
 
 # Make this unique, and don't share it with anybody.
-SECRET_KEY = 'kl2wmaaul8-roi3k9*@1j9kse%z^durtud=8l-*6+r#h2mo*80'
+SECRET_KEY = config.get('secrets', 'SECRET_KEY')
 
 # List of callables that know how to import templates from various sources.
 TEMPLATE_LOADERS = (
