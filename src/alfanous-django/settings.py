@@ -25,14 +25,17 @@ DATABASE_HOST = config.get('database', 'DATABASE_HOST')
 DATABASE_PORT = config.get('database', 'DATABASE_PORT')
 DATABASE_ENGINE = config.get('database', 'DATABASE_ENGINE')
 DATABASE_NAME = config.get('database', 'DATABASE_NAME')
-# TEST_DATABASE_NAME = config.get('database', 'TESTSUITE_DATABASE_NAME')
+
 MY_DEBUG = config.get( 'debug', 'DEBUG' ) in ["true", "True"]
 MY_TEMPLATE_DEBUG = config.get( 'debug', 'TEMPLATE_DEBUG' ) in ["true", "True"]
 
 MY_SECRET_KEY =  config.get('secrets', 'SECRET_KEY')
 
 MY_MEDIA_URL = config.get('paths', 'MEDIA_URL')
+MY_MEDIA_ROOT = config.get( 'paths', 'MEDIA_ROOT' )
+MY_STATIC_URL = config.get( 'paths', 'STATIC_URL' )
 MY_STATIC_ROOT = config.get('paths', 'STATIC_ROOT')
+
 
 
 ########################################
@@ -87,7 +90,7 @@ USE_L10N = True
 
 # Absolute filesystem path to the directory that will hold user-uploaded files.
 # Example: "/home/media/media.lawrence.com/media/"
-MEDIA_ROOT = './media/'
+MEDIA_ROOT = MY_MEDIA_ROOT
 
 # URL that handles the media served from MEDIA_ROOT. Make sure to use a
 # trailing slash.
@@ -102,7 +105,7 @@ STATIC_ROOT = MY_STATIC_ROOT
 
 # URL prefix for static files.
 # Example: "http://media.lawrence.com/static/"
-STATIC_URL = '/static/'
+STATIC_URL = MY_STATIC_URL
 
 # URL prefix for admin static files -- CSS, JavaScript and images.
 # Make sure to use a trailing slash.
