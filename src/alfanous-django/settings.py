@@ -11,7 +11,7 @@ from ConfigParser import RawConfigParser
 # the file have to be a system-config like, ini-style file, see settings.ini.proto for a prototype
 configFile = "./settings.ini.proto" # e,g. '/etc/whatever/settings.ini'
 
-if configFile == "settings.ini.proto":
+if configFile == "./settings.ini.proto":
     print "WARNING: You need to specify a reliable path to the config file, see settings.py"
 
 
