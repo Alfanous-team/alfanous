@@ -21,6 +21,13 @@ def space_split( str ):
 	""" split a string counting on spaces """
 	return str.split()
 
+
+@register.simple_tag
+def string_replace( string, oldword, newword ):
+    """ replace all occurrences of oldword in string by newword    """
+    return string.replace( oldword, newword )
+
+
 @register.simple_tag
 def build_search_link( params, query, page, filter ):
     """ build a search link based on a new query 
@@ -41,6 +48,7 @@ def build_search_link( params, query, page, filter ):
     	new_params["query"] = query;
     
     return build_params( new_params )
+
 
 def build_params(params):
 	""" Concatenate the params to build a url GET request """
