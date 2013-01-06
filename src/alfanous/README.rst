@@ -112,45 +112,47 @@ see `sample.py <https://github.com/Alfanous-team/alfanous/blob/master/src/alfano
 Flags
 --------------
 
-======== =================== ================= ============================================ ================= ========================================================================================================================================================================
- number    flag               related action    description                                   default value    accepted values 
--------- ------------------- ----------------- -------------------------------------------- ----------------- ------------------------------------------------------------------------------------------------------------------------------------------------------------------------
- 1         **action**         <none>            action to perform                             "error"          search | suggest | show
- 2         ident              <all>             identifier of requester   [experimental]      "undefined"      undefined
- 3         platform           <all>             platform used by requester                    "undefined"      undefined | wp7 | s60 | android | ios | linux | window
- 4         domain             <all>             web domain of requester if applicable         "undefined"      \*
- 5a        **query**          search,suggest    query attached to action                       ""              \*
- 5b        **query**          show              query attached to action                       ""              all | translations |recitations | information | hints | surates | chapters | defaults | flags | fields | fields_reverse | errors | domains | help_messages 
- 6         highlight          search            highlight method                              "css"            css | html | genshi | bold | bbcode
- 7         script             search            script of aya text                            "standard"       standard | uthmani
- 8         vocalized          search            enable vocalization of aya text               "True"           True | False
- 9         recitation         search            recitation id                                 "1"              1 to 30
- 10        translation        search            translation id                                "None"           \*
- 11        romanization       search            type of romanization                          "none"           none | buckwalter | iso | arabtex
- 11        view               search            pre-defined configuration for view            "custom"         minimal | normal | full | statistic | linguistic | custom
- 12        prev_aya           search            enable previous aya retrieving                "False"          True | False
- 13        next_aya           search            enable next aya retrieving                    "False"          True | False
- 14        sura_info          search            enable sura information retrieving            "True"           True | False
- 15        sura_stat_info     search            enable sura stats retrieving                  "False"          True | False
- 16        word_info          search            enable word information retrieving            "True"           True | False
- 17        aya_position_info  search            enable aya position information retrieving    "True"           True | False
- 18        aya_theme_info     search            enable aya theme information retrieving       "True"           True | False
- 19        aya_stat_info      search            enable aya stat information retrieving        "True"           True | False
- 20        aya_sajda_info     search            enable aya sajda information retrieving       "True"           True | False
- 21        annotation_word    search            enable query terms annotations retrieving     "False"          True | False
- 22        annotation_aya     search            enable aya words annotations retrieving       "False"          True | False
- 23        sortedby           search            sorting order of results                      "score"          total | score | mushaf | tanzil | subject
- 24        offset             search            starting offset of results                    "1"              1 to 6236
- 25        range              search            range of results                              "10"             1 to 25
- 26        page               search            page number  [override offset]                "1"              1 to 6236
- 27        perpage            search            results per page  [override range]            "10"             1 to 25
- 28        fuzzy              search            fuzzy search [exprimental]                          "False"          True | False
+======== =================== ================= ================ ============================================ ================= ========================================================================================================================================================================
+ number    flag               related action    related unit     description                                   default value    accepted values 
+-------- ------------------- ----------------- ---------------- ---------------------------- ----------------- ------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ 1         **action**         <none>            <none>           action to perform                             "search"         search | suggest | show
+ 2         unit               search, suggest   <none>           search unit                                   "aya"            aya | word | translation
+ 2         ident              <all>             <all>            identifier of requester   [experimental]      "undefined"      undefined
+ 3         platform           <all>             <all>            platform used by requester                    "undefined"      undefined | wp7 | s60 | android | ios | linux | window
+ 4         domain             <all>             <all>            web domain of requester if applicable         "undefined"      \*
+ 5a        **query**          search,suggest    <all>            query attached to action                       ""              \*
+ 5b        **query**          show              <all>            query attached to action                       ""              all | translations |recitations | information | hints | surates | chapters | defaults | flags | fields | fields_reverse | errors | domains | help_messages 
+ 6         highlight          search            <all>            highlight method                              "css"            css | html | genshi | bold | bbcode
+ 7         script             search            aya, word        script of aya text                            "standard"       standard | uthmani
+ 8         vocalized          search            aya, word        enable vocalization of aya text               "True"           True | False
+ 9         recitation         search            aya              recitation id                                 "1"              1 to 30
+ 10        translation        search            aya, trans       translation id                                "None"           \*
+ 11        romanization       search            aya, word        type of romanization                          "none"           none | buckwalter | iso | arabtex
+ 11        view               search            <all>            pre-defined configuration for view            "custom"         minimal | normal | full | statistic | linguistic | custom
+ 12        prev_aya           search            aya              enable previous aya retrieving                "False"          True | False
+ 13        next_aya           search            aya              enable next aya retrieving                    "False"          True | False
+ 14        sura_info          search            aya              enable sura information retrieving            "True"           True | False
+ 15        sura_stat_info     search            aya              enable sura stats retrieving                  "False"          True | False
+ 16        word_info          search            aya, word        enable word information retrieving            "True"           True | False
+ 17        aya_position_info  search            aya              enable aya position information retrieving    "True"           True | False
+ 18        aya_theme_info     search            aya              enable aya theme information retrieving       "True"           True | False
+ 19        aya_stat_info      search            aya              enable aya stat information retrieving        "True"           True | False
+ 20        aya_sajda_info     search            aya              enable aya sajda information retrieving       "True"           True | False
+ 21        annotation_word    search            aya, word        enable query terms annotations retrieving     "False"          True | False
+ 22        annotation_aya     search            aya              enable aya words annotations retrieving       "False"          True | False
+ 23        sortedby           search            <all>            sorting order of results                      "score"          total | score | mushaf | tanzil | subject
+ 24        offset             search            <all>            starting offset of results                    "1"              1 to 6236
+ 25        range              search            <all>            range of results                              "10"             1 to 25
+ 26        page               search            <all>            page number  [override offset]                "1"              1 to 6236
+ 27        perpage            search            <all>            results per page  [override range]            "10"             1 to 25
+ 28        fuzzy              search            aya              fuzzy search [exprimental]                          "False"          True | False
 
 ======== =================== ================= ============================================ ================= ========================================================================================================================================================================
 
 -----------------------
 Advanced Query Examples
 -----------------------
+Aya Search:
 *  Simple search: الحمد    
 *  Phrases : "الحمد لله"    
 *  Logical relations - ANDNOT : (الصلاة - الزكاة)    
@@ -170,7 +172,7 @@ Advanced Query Examples
 ------
 Fields
 ------
-
+* Aya Search Fields:
 ===== ================= =================== ============== ============================================================
  n     عربي              English             Values         Description   
 ----- ----------------- ------------------- -------------- ------------------------------------------------------------
@@ -212,7 +214,7 @@ Fields
 ----------------
 SortedBy Options
 ----------------
-
+* Aya Search:
 ========== =================================================================================
  Option     Description
 ---------- ---------------------------------------------------------------------------------
@@ -220,6 +222,7 @@ SortedBy Options
  mushaf     The default order of ayas in Mus-haf
  tanzil     The revelation order
  subject    The alphabetic order of the values for subjects fields
+ ayalenght  The length of ayah from the shortest to the longest
  FIELD      The numerical order or alphabetic order of a costum field (see Fields_ )
 
 ========== =================================================================================
@@ -228,7 +231,7 @@ SortedBy Options
 ==============
 Schema Samples
 ==============
-
+* Aya Search:
 -----------
 Suggestions
 -----------

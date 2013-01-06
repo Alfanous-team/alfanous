@@ -99,6 +99,7 @@ class Raw():
 		    "results_limit":6236,
 		    "flags":{
 			      "action":"search",
+			      "unit":"aya",
 			      "ident":"undefined",
 			      "platform":"undefined",
 			      "domain":"undefined",
@@ -143,6 +144,7 @@ class Raw():
 
 	DOMAINS = {
 			      "action": ["search", "suggest", "show"],
+			      "unit": ["aya", "word", "translation"],
 			      "ident":["undefined"],
 			      "platform":["undefined", "wp7", "s60", "android", "ios", "linux", "window"],
 			      "domain":[],
@@ -176,6 +178,7 @@ class Raw():
 
 	HELPMESSAGES = {
 			      "action": "action to perform",
+			      "unit": "search unit",
 			      "ident":"identifier of requester",
 			      "platform":"platform used by requester",
 			      "domain":"web domain of requester if applicable",
@@ -234,6 +237,7 @@ class Raw():
 		self._information = Resources.information( Information_file )
 		##
 		self._stats = Configs.stats( Stats_file )
+		# enable it if you need statistics , disable it you prefer performance
 		self._init_stats()
 		##
 		self._surates = [item for item in self.QSE.list_values( "sura" ) if item]
@@ -270,10 +274,13 @@ class Raw():
 	def _do( self, flags ):
 		#try:
 		action = flags["action"] if flags.has_key( "action" ) else self._defaults["flags"]["action"]
+		unit = flags["unit"] if flags.has_key( "unit" ) else self._defaults["flags"]["unit"]
 		ident = flags["ident"] if flags.has_key( "ident" ) else self._defaults["flags"]["ident"]
 		platform = flags["platform"] if flags.has_key( "platform" ) else self._defaults["flags"]["platform"]
 		domain = flags["domain"] if flags.has_key( "domain" ) else self._defaults["flags"]["domain"]
-		# gather statistics
+
+		# gather statistics, enable it if you need use statistics
+		# disable it if you prefer performance
 		self._process_stats( flags )
 
 		# init the error message with Succes
@@ -282,9 +289,9 @@ class Raw():
 			if SCAN_SUPERJOKERS( flags["query"] ): #Quick fix!!
 				output = self._check( 2, flags )
 			else:
-				output.update( self._search( flags ) )
+				output.update( self._search( flags, unit ) )
 		elif action == "suggest":
-			output.update( self._suggest( flags ) )
+			output.update( self._suggest( flags, unit ) )
 		elif action == "show":
 			output.update( self._show( flags ) )
 		else:
@@ -358,8 +365,18 @@ class Raw():
 		else:
 			return {"show":None}
 
-	def _suggest( self, flags ):
-		""" return suggestions """
+	def _suggest( self, flags, unit ):
+		""" return suggestions for any search unit """
+		if unit == "aya":
+			suggestions = self._suggest_aya( flags )
+		else:
+			suggestions = {}
+
+		return {"suggest": suggestions}
+
+
+	def _suggest_aya( self, flags ):
+		""" return suggestions for aya words """
 		query = flags["query"] if flags.has_key( "query" ) else self._defaults["flags"]["query"]
 		#preprocess query
 		query = query.replace( "\\", "" )
@@ -370,11 +387,20 @@ class Raw():
 		except Exception:
 			output = {}
 
-		return {"suggest":output}
+		return output
 
-	def _search( self, flags ):
+	def _search( self, flags, unit ):
+		""" return the results of search for any unit """
+		if unit == "aya":
+			search_results = self._search_aya( flags )
+		else:
+			search_results = {}
+
+		return { "search": search_results }
+
+	def _search_aya( self, flags ):
 		"""
-		return the results of search as json
+		return the results of aya search as a dictionary data structure
 		"""
 		#flags
 		query = flags["query"] if flags.has_key( "query" ) \
@@ -727,8 +753,7 @@ class Raw():
 				"annotations": {} if not annotation_aya or not annotations_by_position.has_key( ( r["sura_id"], r["aya_id"] ) )
 							else annotations_by_position[( r["sura_id"], r["aya_id"] )]
 		    		}
-		return {"search": output}
-
+		return output
 
 
 class Json( Raw ):
@@ -742,52 +767,7 @@ class Xml( Raw ):
 
 	@deprecated: Why Xml and CompleXity?! Use jSon and Simplicity!
 	"""
-	def suggest( self, query ):
-		""" return suggestions """
-		raw_output = super( Json, self ).suggest( query )
-		xml_output = "\n".join( 
-			[
-			'<word text="%(word)s"> %(suggestions)s </word>' % {
-					"word":word,
-					"suggestions": "\n".join( ['<suggestion text="%s"/>' % suggestion for suggestion in raw_output[word]] )
-					}
-			for word in raw_output.keys()
-			]
-			)
-		return xml_output
-
-	def search( self, query, sortedby = "score", offset = 1, range = 10 ):
-		""" return results """
-		#TODO: complete it manually or using an Python2XML dump , JSON2XML,or manually
-		schema = """
-		<results runtime=%(runtime)f                > # output["runtime"
-		<words nb_words=%(nb_words) global_nb_matches=%(global_nb_matches)>
-			<word cpt="%cpt" text="%word" nb_matches=%(nb_matches) nb_ayas=%(nb_ayas) > *  cpt
-
-		</words>
-		<ayas total="%total" start="%start"  end="%end">
-		<aya cpt=%cpt>
-		<aya_info id=%id>
-
-		<text>   </text>
-		<text>
-
-
-		</aya_info>
-
-
-
-
-		</aya>
-
-
-
-
-		</ayas>
-		</results>
-
-		"""
-		return None
+	pass
 
 
 
