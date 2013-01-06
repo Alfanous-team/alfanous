@@ -71,12 +71,8 @@
 			$(".details_label").corner("3px");
 			$("#search_words").corner("30px");
 			$("#suggestions").corner("30px");
-			$("#feedback_button").corner();
-			$("#donate_button").corner();
-			$("#translate_button").corner();
-			$("#contribute_button").corner();
-			
-			
+			$("div.sidebox a ").corner();
+
 			$(document).scrollTop($("#search_result_static").position().top);
 			
 			update_share_links()
@@ -261,19 +257,31 @@
 
 
 <div  class="sidebox feedback-sidebox" > 
-	<a id="feedback_button" target='_blank' href='http://feedback.alfanous.org/'>{{ _("Feedback") }}</a><br/>
+	<a  target='_blank' href='http://feedback.alfanous.org/'>{{ _("Feedback") }}</a><br/>
 </div>
 
 <div class="sidebox donate-sidebox" > 
-	<a id="donate_button" target='_blank' href=''>{{ _("Donate") }}</a><br/>
+	<a  target='_blank' href=''>{{ _("Donate") }}</a><br/>
 </div>
 
 <div class="sidebox translate-sidebox" > 
-	<a id="translate_button" target='_blank' href='#'>{{ _("Translate") }}</a><br/>
+	<a  target='_blank' href='#'>{{ _("Translate") }}</a><br/>
 </div>
 
 <div class="sidebox contribute-sidebox" > 
-	<a id="contribute_button" target='_blank' href='#'>{{ _("Contribute") }}</a><br/>
+	<a  target='_blank' href='#'>{{ _("Contribute") }}</a><br/>
+</div>
+
+<div class="sidebox faq-sidebox" > 
+	<a  target='_blank' href='#'>{{ _("F.A.Q.") }}</a><br/>
+</div>
+
+<div class="sidebox help-sidebox" > 
+	<a target='_blank' href='#'>{{ _("Help") }}</a><br/>
+</div>
+
+<div class="sidebox download-sidebox" > 
+	<a  target='_blank' href='#'>{{ _("Downloads") }}</a><br/>
 </div>
 
 

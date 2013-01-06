@@ -271,18 +271,20 @@ a:hover{color: green;}
 .sidebox a {
 	margin-left:-10px;
 	line-height:50px;
-	padding:0px 2px 0px 10px ;
+	padding:0px 0px 0px 10px ;
 	font-weight: bold;
+	font-size: 15px;
 	/*text-align: left;*/
+	text-decoration: none;
 	background-color: #OOO; /* override it to make different color */
 	color: white;
 	display: block;
-	height: 45px;
-	width: 120px
+	height: 40px;
+	width: 110px
 }
 
 .feedback-sidebox {
-	top:200px;
+	top:150px;
  }
 
 .feedback-sidebox a {
@@ -290,7 +292,7 @@ a:hover{color: green;}
 }
 
 .donate-sidebox {
-	top:250px;
+	top:195px;
  }
 
 .donate-sidebox a {
@@ -298,7 +300,7 @@ a:hover{color: green;}
 }
 
 .translate-sidebox {
-	top:300px;
+	top:240px;
  }
 
 .translate-sidebox a {
@@ -306,11 +308,38 @@ a:hover{color: green;}
 }
 
 .contribute-sidebox {
-	top:350px;
+	top:285px;
  }
 
 .contribute-sidebox a {
 	background-color: #000000; /*#339A63*/
+}
+
+.faq-sidebox {
+	top:350px;
+ }
+
+.faq-sidebox a {
+	background-color: #BDB; 
+	color: black;
+}
+
+.help-sidebox {
+	top:395px;
+ }
+
+.help-sidebox a {
+	background-color: #BBD; 
+	color: black;
+}
+
+.download-sidebox {
+	top:440px;
+ }
+
+.download-sidebox a {
+	background-color: #DBB; 
+	color: black;
 }
 
 
