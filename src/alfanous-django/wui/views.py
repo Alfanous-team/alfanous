@@ -46,7 +46,7 @@ def jos2( request ):
 
 def results( request, unit = "aya" ):
     """     """
-    if unit not in ["aya", "word", "translations"]: # authorized units
+    if unit not in ["aya", "word", "translation"]: # authorized units
     	unit = "aya"
     mutable_request = {}
     for k, v in request.GET.items():
