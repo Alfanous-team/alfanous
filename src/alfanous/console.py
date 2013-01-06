@@ -42,6 +42,7 @@ arg_parser = ArgumentParser(
 
 # add arguments
 arg_parser.add_argument( "-a", "--action", dest = "action", type = str , choices = DOMAINS["action"], help = HELPMESSAGES["action"] )
+arg_parser.add_argument( "-u", "--unit", dest = "unit", type = str , choices = DOMAINS["unit"], help = HELPMESSAGES["unit"] )
 arg_parser.add_argument( "-q", "--query", dest = "query", type = str  , help = HELPMESSAGES["query"] )
 arg_parser.add_argument( "-o", "--offset", dest = "offset", metavar = 'NUMBER', type = int, help = HELPMESSAGES["offset"] )
 arg_parser.add_argument( "-r", "--range", dest = "range", type = int, metavar = 'NUMBER', help = HELPMESSAGES["range"] )
@@ -51,6 +52,7 @@ arg_parser.add_argument( "--page", dest = "page", type = int, metavar = 'NUMBER'
 arg_parser.add_argument( "--perpage", dest = "perpage", type = int, metavar = 'NUMBER', help = HELPMESSAGES["perpage"] )
 arg_parser.add_argument( "--recitation", dest = "recitation", metavar = 'NUMBER', type = str, help = HELPMESSAGES["recitation"] )
 arg_parser.add_argument( "--translation", dest = "translation", type = str, help = HELPMESSAGES["translation"] )
+arg_parser.add_argument( "--romanization", dest = "romanization", type = str, help = HELPMESSAGES["romanization"] )
 arg_parser.add_argument( "--highlight", dest = "highlight", type = str, choices = DOMAINS["highlight"], help = HELPMESSAGES["highlight"] )
 arg_parser.add_argument( "--script", dest = "script", type = str, choices = DOMAINS["script"] , help = HELPMESSAGES["script"] )
 arg_parser.add_argument( "--vocalized", dest = "vocalized", type = bool, choices = DOMAINS["vocalized"], help = HELPMESSAGES["vocalized"] )
