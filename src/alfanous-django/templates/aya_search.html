@@ -2,6 +2,17 @@
 
 {% load custom_filters %}
 
+{% block options %}
+<input type="checkbox"  name="fuzzy" value="True" {{ params.fuzzy|yesno:"checked," }} /> 
+	<span class="xtitle">{{ _("Fuzzy search") }} </span> 
+<input type="checkbox" name="vocalized" value="False" {{ params.vocalized|yesno:"checked," }} /> 
+	<span class="xtitle">{{ _("Unvocalized text") }} </span>
+<input type="checkbox" name="script" value="uthmani" {{ params.script|yesno:"checked," }} /> 
+	<span class="xtitle">{{ _("Uthmani script") }} </span>
+<br/>
+{% endblock %}
+
+
 {% block help_panel %}
 	<div id="help" class="modal" style="width: 675px; text-align: left;">
 		<h2>{{ _("Help") }}</h2>	
