@@ -1,16 +1,21 @@
 # Django settings for alfanousDjango project.
 
+
+########################################
+#     Dynamic or Private settings      #
+########################################
 from ConfigParser import RawConfigParser
 
-config = RawConfigParser()
 
 # set you setting path here.
 # the file have to be a system-config like, ini-style file, see settings.ini.proto for a prototype
-configFile = "settings.ini.proto" # e,g. '/etc/whatever/settings.ini'
+configFile = "./settings.ini.proto" # e,g. '/etc/whatever/settings.ini'
 
-if configFile == "" or configFile == "settings.ini.proto":
+if configFile == "settings.ini.proto":
     print "WARNING: You need to specify a reliable path to the config file, see settings.py"
 
+
+config = RawConfigParser()
 config.read(configFile)
 
 # fetching critical info from the cofig file
@@ -22,8 +27,21 @@ DATABASE_ENGINE = config.get('database', 'DATABASE_ENGINE')
 DATABASE_NAME = config.get('database', 'DATABASE_NAME')
 # TEST_DATABASE_NAME = config.get('database', 'TESTSUITE_DATABASE_NAME')
 
-DEBUG = True
-TEMPLATE_DEBUG = DEBUG
+MY_DEBUG = config.get('debug', 'DEBUG')
+MY_TEMPLATE_DEBUG = config.get('debug', 'TEMPLATE_DEBUG')
+
+MY_SECRET_KEY =  config.get('secrets', 'SECRET_KEY')
+
+MY_MEDIA_URL = config.get('paths', 'MEDIA_URL')
+MY_STATIC_ROOT = config.get('paths', 'STATIC_ROOT')
+
+
+########################################
+#     Static and Public settings       #
+########################################
+
+DEBUG = MY_DEBUG 
+TEMPLATE_DEBUG = MY_TEMPLATE_DEBUG 
 
 ADMINS = (
      ('Assem Chelli', 'assem.ch@gmail.com'),
@@ -33,7 +51,7 @@ MANAGERS = ADMINS
 
 DATABASES = {
     'default': {
-        'ENGINE': DATABASE_ENGINE, # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
+        'ENGINE': DATABASE_ENGINE,                  # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
         'NAME': DATABASE_NAME,                      # Or path to database file if using sqlite3.
         'USER': DATABASE_USER,                      # Not used with sqlite3.
         'PASSWORD': DATABASE_PASSWORD,                  # Not used with sqlite3.
@@ -75,13 +93,13 @@ MEDIA_ROOT = './media/'
 # URL that handles the media served from MEDIA_ROOT. Make sure to use a
 # trailing slash.
 # Examples: "http://media.lawrence.com/media/", "http://example.com/media/"
-MEDIA_URL = 'http://127.0.0.1:8000/media'
+MEDIA_URL = MY_MEDIA_URL
 
 # Absolute path to the directory static files should be collected to.
 # Don't put anything in this directory yourself; store your static files
 # in apps' "static/" subdirectories and in STATICFILES_DIRS.
 # Example: "/home/media/media.lawrence.com/static/"
-STATIC_ROOT = '/QSE/root/alfanous_git/alfanous-code/src/alfanous-django/static/'
+STATIC_ROOT = MY_STATIC_ROOT
 
 # URL prefix for static files.
 # Example: "http://media.lawrence.com/static/"
@@ -109,7 +127,7 @@ STATICFILES_FINDERS = (
 )
 
 # Make this unique, and don't share it with anybody.
-SECRET_KEY = 'kl2wmaaul8-roi3k9*@1j9kse%z^durtud=8l-*6+r#h2mo*80'
+SECRET_KEY = MY_SECRET_KEY
 
 # List of callables that know how to import templates from various sources.
 TEMPLATE_LOADERS = (
