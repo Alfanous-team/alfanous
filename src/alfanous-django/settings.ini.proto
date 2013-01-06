@@ -32,7 +32,7 @@ SERVER_EMAIL: django@localhost
 EMAIL_HOST: localhost
 
 # the [error mail] and [404 mail] sections are special. Just add lines with
-#  full name: email_address@domain.xx
+# full name: email_address@domain.xx
 # each section must be present but may be empty.
 [error mail]
 Adam Smith: adam@localhost
