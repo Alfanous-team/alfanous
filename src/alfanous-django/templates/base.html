@@ -272,13 +272,18 @@
 	<a  target='_blank' href='https://github.com/Alfanous-team/alfanous'>{{ _("Contribute") }}</a><br/>
 </div>
 
-<div class="sidebox faq-sidebox" > 
-	<a  target='_blank' href='#'>{{ _("F.A.Q.") }}</a><br/>
+<div class="sidebox contact-sidebox" > 
+	<a  target='_blank' href='#'>{{ _("Contact") }}</a><br/>
 </div>
 
 <div class="sidebox help-sidebox" > 
 	<a id="help_btn">{{ _("Help") }}</a><br/>
 </div>
+
+<div class="sidebox faq-sidebox" > 
+	<a  target='_blank' href='#'>{{ _("F.A.Q.") }}</a><br/>
+</div>
+
 
 <div class="sidebox download-sidebox" > 
 	<a id="down_btn">{{ _("Download") }}</a><br/>
@@ -327,10 +332,15 @@
 
 </div>
 
+
+<br />
 <br />
 <br />
 
-<div id="vote_btn"><a class='xbutton gray' href="https://docs.google.com/spreadsheet/viewform?formkey=dEZZaE5fQ0NwQXljU2ZyUmpfLW15SVE6MA#gid=0" target="_blank"><i>Note 09-11-2012:</i> Please help us improving <b>Alfanous</b> Project, by taking this survey about search features in Holy Quran </a></div>
+<div id="vote_btn">
+<a class='xbutton gray' href="https://docs.google.com/spreadsheet/viewform?formkey=dEZZaE5fQ0NwQXljU2ZyUmpfLW15SVE6MA#gid=0" target="_blank">{{ _("Please help us improving Alfanous Project, by taking this survey about search features in Holy Quran") }} </a>
+</div>
+
 <br /><br />  
 
 
@@ -368,7 +378,7 @@
             <div class="column"> 
                 <h1>{{ _("Quick links") }}</h1> 
                 <ul> 
-                    <li><a href="http://sourceforge.net/projects/alfanous/files/" target="_blank">{{ _("Downloads") }}</a></li> 
+                    <!-- <li><a href="http://sourceforge.net/projects/alfanous/files/" target="_blank">{{ _("Downloads") }}</a></li>--> 
                     <li><a href="http://m.alfanous.org/">{{ _("Mobile Web Interface") }}</a></li>
                     <li><a href="http://wui.alfanous.org/">{{ _("Old jQuery Web Interface") }}</a></li> 
                     <li><a href="http://old.alfanous.org/">{{ _("Old HTML Web Interface") }}</a></li> 
@@ -380,11 +390,10 @@
             <div class="column"> 
                 <h1>{{ _("Community") }}</h1> 
                 <ul> 
-
-                    <li><a href="https://github.com/Alfanous-team/alfanous/blob/master/README.rst" target="_blank">{{ _("About") }}</a></li> 
+                    <!--<li><a href="https://github.com/Alfanous-team/alfanous/blob/master/README.rst" target="_blank">{{ _("About") }}</a></li>--> 
                     <li><a href="http://groups.google.com/group/alfanous/" title="Mailinglist" target="_blank">{{ _("Mailinglist") }}</a></li> 
                     <li><a href="https://github.com/Alfanous-team/alfanous/issues/new" title="Report an issue" target="_blank">{{ _("+ Report an issue") }}</a></li>
-                    <li><a href="https://github.com/Alfanous-team/alfanous/issues" title="Issues" target="_blank">{{ _("Issues") }}</a></li>
+                    <li><a href="https://github.com/Alfanous-team/alfanous/issues" title="Issues" target="_blank">{{ _("Issues Tracker") }}</a></li>
                     <li><a href="https://www.facebook.com/alfanous" title="Facebook" target="_blank">{{ _("@Facebook") }}</a></li> 
                     <li><a href="https://plus.google.com/111305625425237630318" target="_blank">{{ _("@Google Plus") }}</a></li> 
                     <li class="last"><a href="https://twitter.com/alfanous" target="_blank">{{ _("@Twitter") }}</a></li> 
@@ -393,7 +402,7 @@
 	<!-- Assem -->
 	<div class="awa-box" >
 		
-			<img src='/static/images/awa2-128.png' class='banner' alt='{{ _("Best technicality award") }}' title='{{ _("The award of best-technicality website in AlgeriaWebAwards2012 competition") }}'/>
+			<a href="#"> <img src='/static/images/awa2-128.png' class='banner' alt='{{ _("Best technicality award") }}' title='{{ _("The award of best-technicality website in AlgeriaWebAwards2012 competition") }}'/></a>
 		
 	</div>
 	<!-- -->
