@@ -44,36 +44,42 @@ def jos2( request ):
     return response
 
 
-def results( request ):
-    """    """
+def results( request, unit = "aya" ):
+    """     """
+    if unit not in ["aya", "word", "translations"]: # authorized units
+    	unit = "aya"
+    mutable_request = {}
+    for k, v in request.GET.items():
+    	mutable_request[k] = v
+
     show_params = { "action":"show", "query": "all" }
 
-    if request.GET.has_key( "query" ) and not ( request.GET.has_key( "action" ) and not request.GET["action"] == "search" ):
-        search_params = request.GET
-        suggest_params = { "action":"suggest", "query": request.GET["query"] }
-    elif request.GET.has_key( "search" ):
+    if mutable_request.has_key( "query" ) and not ( mutable_request.has_key( "action" ) and not mutable_request["action"] == "search" ):
+        search_params = mutable_request
+        suggest_params = { "action":"suggest", "query": mutable_request["query"] }
+    elif mutable_request.has_key( "search" ):
     	## back-compatibility of links:
     	# if it's a classic API style, wrap it to the new API style
         search_params = { "action": "search",
-                        "query": request.GET["search"],
-                        "page": request.GET["page"] if request.GET.has_key( "page" ) else 1,
-                        "sortedby": request.GET["sortedby"] if request.GET.has_key( "sortedby" ) else "relevance"
+                        "query": mutable_request["search"],
+                        "page": mutable_request["page"] if mutable_request.has_key( "page" ) else 1,
+                        "sortedby": rmutable_request["sortedby"] if mutable_request.has_key( "sortedby" ) else "relevance"
                         }
-        suggest_params = { 
+        suggest_params = {
 						"action":"suggest",
-                        "query": request.GET["search"]
+                        "query": mutable_request["search"]
                                         }
     else:
         search_params = {}
         suggest_params = {}
-
+    #override the unit flag
+    mutable_request["unit"] = unit
     #use search as first action
     raw_search = RAWoutput.do( search_params ) if search_params else None
     #use suggest as second action
     raw_suggest = RAWoutput.do( suggest_params ) if suggest_params else None
     #use show as third action
     raw_show = RAWoutput.do( show_params )   if show_params else None
-
 
     # language information
     language = translation.get_language_from_request( request )
@@ -85,8 +91,9 @@ def results( request ):
     translation.activate( language )
     request.LANGUAGE_CODE = translation.get_language()
 
+    mytemplate = unit + '_search.html'
 
-    return render_to_response( 'wui.html',
+    return render_to_response( mytemplate ,
                               {
                                 'current_path': request.get_full_path(),
                                 "bidi": "rtl" if language_info['bidi']
