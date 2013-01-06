@@ -259,53 +259,60 @@ a:hover{color: green;}
 }
 
 
-.feedback-box {
+
+.sidebox {
 
 	left:0;
 	position: fixed;
-	top:190px;
+	top:0px; /* must override it */
 
  }
 
-.feedback-box a {
-	margin-left: -38px;
+.sidebox a {
+	margin-left:-10px;
 	line-height:50px;
-	padding:0 10px;
+	padding:0px 2px 0px 10px ;
 	font-weight: bold;
-	-webkit-transform: rotate(-90deg);
-	-moz-transform: rotate(-90deg);
-	-ms-transform: rotate(-90deg);
-	-o-transform: rotate(-90deg);
-	transform: rotate(-90deg);
+	/*text-align: left;*/
+	background-color: #OOO; /* override it to make different color */
+	color: white;
+	display: block;
+	height: 45px;
+	width: 120px
+}
+
+.feedback-sidebox {
+	top:200px;
+ }
+
+.feedback-sidebox a {
 	background-color: #3AB034; /*#339A63*/
-	color: white;
-	display: block;
-	height: 41px;
 }
 
-.donate-box {
-
-	left:0;
-	position: fixed;
-	top:300px;
-
+.donate-sidebox {
+	top:250px;
  }
 
-.donate-box a {
-	margin-left: -28px;
-	line-height:50px;
-	padding:0 10px;
-	font-weight: bold;
-	-webkit-transform: rotate(-90deg);
-	-moz-transform: rotate(-90deg);
-	-ms-transform: rotate(-90deg);
-	-o-transform: rotate(-90deg);
-	transform: rotate(-90deg);
-	background-color: #BA30B4; /*#339A63*/
-	color: white;
-	display: block;
-	height: 41px;
+.donate-sidebox a {
+	background-color: #BA3074; /*#339A63*/
 }
+
+.translate-sidebox {
+	top:300px;
+ }
+
+.translate-sidebox a {
+	background-color: #3A34B0; /*#339A63*/
+}
+
+.contribute-sidebox {
+	top:350px;
+ }
+
+.contribute-sidebox a {
+	background-color: #000000; /*#339A63*/
+}
+
 
 .follow-box {
 	border:0 none;

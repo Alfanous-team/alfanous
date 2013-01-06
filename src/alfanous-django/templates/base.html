@@ -71,6 +71,11 @@
 			$(".details_label").corner("3px");
 			$("#search_words").corner("30px");
 			$("#suggestions").corner("30px");
+			$("#feedback_button").corner();
+			$("#donate_button").corner();
+			$("#translate_button").corner();
+			$("#contribute_button").corner();
+			
 			
 			$(document).scrollTop($("#search_result_static").position().top);
 			
@@ -207,13 +212,13 @@
 <div id="alfanousheader">
 <ul class="headermenu">
 <li class="menuitem"><span>{{ _("Ayahs") }}</span></li>
-<li class="menuitem"><a href="#">{{ _("Surahs") }}</a></li>
+{# <li class="menuitem"><a href="#">{{ _("Surahs") }}</a></li> #}
 <li class="menuitem"><a href="#">{{ _("Words") }}</a></li>
 <li class="menuitem"><a href="#">{{ _("Translations") }}</a></li>
-<li class="menuitem"><a href="#">{{ _("Taffsirs") }}</a></li>
-<li class="menuitem"><a href="#">{{ _("Hadiths") }}</a></li>
-<li class="menuitem"><a href="#">{{ _("Dreams") }}</a></li>
-<li class="menuitem"><a href="#">{{ _("Poems") }}</a></li>
+{# <li class="menuitem"><a href="#">{{ _("Taffsirs") }}</a></li> #}
+{# <li class="menuitem"><a href="#">{{ _("Hadiths") }}</a></li> #}
+{# <li class="menuitem"><a href="#">{{ _("Dreams") }}</a></li> #}
+{# <li class="menuitem"><a href="#">{{ _("Poems") }}</a></li> #}
 </ul>
 <div style="clear: left"></div>
 </div>
@@ -253,13 +258,25 @@
 <br/>
 
 
-<div class="donate-box" > 
-	<a class="donate_button" target='_blank' href=''>{{ _("Donate") }}</a><br/>
+
+
+<div  class="sidebox feedback-sidebox" > 
+	<a id="feedback_button" target='_blank' href='http://feedback.alfanous.org/'>{{ _("Feedback") }}</a><br/>
 </div>
 
-<div class="feedback-box" > 
-	<a class="feedback_button" target='_blank' href='http://feedback.alfanous.org/'>{{ _("Feedback") }}</a><br/>
+<div class="sidebox donate-sidebox" > 
+	<a id="donate_button" target='_blank' href=''>{{ _("Donate") }}</a><br/>
 </div>
+
+<div class="sidebox translate-sidebox" > 
+	<a id="translate_button" target='_blank' href='#'>{{ _("Translate") }}</a><br/>
+</div>
+
+<div class="sidebox contribute-sidebox" > 
+	<a id="contribute_button" target='_blank' href='#'>{{ _("Contribute") }}</a><br/>
+</div>
+
+
 
 {% block  follow_box %}
 <div class="follow-box" > 
