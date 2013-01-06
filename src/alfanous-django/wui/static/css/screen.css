@@ -316,17 +316,17 @@ a:hover{color: green;}
 	background-color: #000000; /*#339A63*/
 }
 
-.faq-sidebox {
+.contact-sidebox {
 	top:350px;
  }
 
-.faq-sidebox a {
+.contact-sidebox a {
 	background-color: #BDB; 
 	color: black;
 }
 
 .help-sidebox {
-	top:395px;
+	top:440px;
  }
 
 .help-sidebox a {
@@ -334,15 +334,23 @@ a:hover{color: green;}
 	color: black;
 }
 
-.download-sidebox {
-	top:440px;
+.faq-sidebox {
+	top:395px;
  }
 
-.download-sidebox a {
+.faq-sidebox a {
 	background-color: #DBB; 
 	color: black;
 }
 
+.download-sidebox {
+	top:485px;
+ }
+
+.download-sidebox a {
+	background-color: #BBB; 
+	color: black;
+}
 
 .follow-box {
 	border:0 none;
@@ -875,6 +883,7 @@ div#footer-small-wrapper {
     border-top: 1px solid #2e353d;
     color: #aaa;
     font-size: 11px;
+    
 
 
 }
@@ -946,7 +955,7 @@ padding: 5px 7px 6px 4px;
 font-size: 16px;
 color: white;
 border-right: 1px solid #222;
-/* text-decoration: none; */
+text-decoration: none; 
 }
 
 
