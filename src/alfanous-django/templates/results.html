@@ -10,7 +10,9 @@
 {% block results %}
 	{% if results.error.code == 0  %} 
 		<div id="search_result_static" style="direction:{{ bidi }}; width:800px">
-		<br /><br /><span class='xbre'> {{ _("Search results") }}</span><br /><br />
+		<br /><br /><br />
+		<span class='xbre'> {{ _("Search results") }}</span>
+		<br /><br />
 		<span class="runtime"> <b>{{ _("Runtime") }}</b> : {{ results.search.runtime|floatformat:"5" }} {{ _("seconds") }} </span>
 		</div>
 		<!-- Suggestions-->

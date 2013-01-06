@@ -280,7 +280,8 @@ a:hover{color: green;}
 	color: white;
 	display: block;
 	height: 40px;
-	width: 110px
+	width: 110px;
+	cursor: pointer;
 }
 
 .feedback-sidebox {
@@ -900,7 +901,9 @@ div#alfanousheader {
 font-family: Arial, Helvetica, sans-serif;
 font-weight: bold;
 background: #222;
-position: relative;
+position: fixed;
+height: 30px;
+width: 100%;
 text-align: left;
 z-index: 9999;
 -webkit-font-smoothing: subpixel-antialiased;
