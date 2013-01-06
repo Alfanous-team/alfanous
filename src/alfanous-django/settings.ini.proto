@@ -1,0 +1,37 @@
+[database]
+DATABASE_USER:
+DATABASE_PASSWORD:
+DATABASE_HOST:
+DATABASE_PORT:
+DATABASE_ENGINE: django.db.backends.sqlite3
+DATABASE_NAME: wui.db
+TESTSUITE_DATABASE_NAME: test_blo
+
+[secrets]
+SECRET_KEY: random-string-of-ascii
+CSRF_MIDDLEWARE_SECRET: random-string-of-ascii
+
+[cookies]
+SESSION_COOKIE_DOMAIN:
+
+# all settings in debug section should be false in productive environment
+# INTERNAL_IPS should be empty in productive environment
+[debug]
+DEBUG: true
+TEMPLATE_DEBUG: true
+VIEW_TEST: true
+INTERNAL_IPS: 127.0.0.1
+SKIP_CSRF_MIDDLEWARE: true
+
+[email]
+SERVER_EMAIL: django@localhost
+EMAIL_HOST: localhost
+
+# the [error mail] and [404 mail] sections are special. Just add lines with
+#  full name: email_address@domain.xx
+# each section must be present but may be empty.
+[error mail]
+Adam Smith: adam@localhost
+
+[404 mail]
+John Wayne: john@localhost

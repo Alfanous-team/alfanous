@@ -1,5 +1,27 @@
 # Django settings for alfanousDjango project.
 
+from ConfigParser import RawConfigParser
+
+config = RawConfigParser()
+
+# set you setting path here.
+# the file have to be a system-config like, ini-style file, see settings.ini.proto for a prototype
+configFile = "settings.ini.proto" # e,g. '/etc/whatever/settings.ini'
+
+if configFile == "" or configFile == "settings.ini.proto":
+    print "WARNING: You need to specify a reliable path to the config file, see settings.py"
+
+config.read(configFile)
+
+# fetching critical info from the cofig file
+DATABASE_USER = config.get('database', 'DATABASE_USER')
+DATABASE_PASSWORD = config.get('database', 'DATABASE_PASSWORD')
+DATABASE_HOST = config.get('database', 'DATABASE_HOST')
+DATABASE_PORT = config.get('database', 'DATABASE_PORT')
+DATABASE_ENGINE = config.get('database', 'DATABASE_ENGINE')
+DATABASE_NAME = config.get('database', 'DATABASE_NAME')
+# TEST_DATABASE_NAME = config.get('database', 'TESTSUITE_DATABASE_NAME')
+
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
@@ -11,12 +33,12 @@ MANAGERS = ADMINS
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3', # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
-        'NAME': 'wui.db',                      # Or path to database file if using sqlite3.
-        'USER': '',                      # Not used with sqlite3.
-        'PASSWORD': '',                  # Not used with sqlite3.
-        'HOST': '',                      # Set to empty string for localhost. Not used with sqlite3.
-        'PORT': '',                      # Set to empty string for default. Not used with sqlite3.
+        'ENGINE': DATABASE_ENGINE, # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
+        'NAME': DATABASE_NAME,                      # Or path to database file if using sqlite3.
+        'USER': DATABASE_USER,                      # Not used with sqlite3.
+        'PASSWORD': DATABASE_PASSWORD,                  # Not used with sqlite3.
+        'HOST': DATABASE_HOST,                      # Set to empty string for localhost. Not used with sqlite3.
+        'PORT': DATABASE_PORT,                      # Set to empty string for default. Not used with sqlite3.
     }
 }
 
