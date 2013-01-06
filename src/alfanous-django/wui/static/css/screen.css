@@ -859,4 +859,58 @@ div#footer-small a:hover {
 }
 
 
+/* tedj: header style */
+div#alfanousheader {
+font-family: Arial, Helvetica, sans-serif;
+font-weight: bold;
+background: #222;
+position: relative;
+text-align: left;
+z-index: 9999;
+-webkit-font-smoothing: subpixel-antialiased;
+}
+
+div#alfanousheader ul {
+padding: 0 25px;
+}
+
+div#alfanousheader li {
+float: left;
+position: relative;
+margin-right: 4px;
+
+list-style-type: none;
+line-height: normal;
+padding: 0;
+
+margin-bottom: 0;
+}
+
+div#alfanousheader li a {
+position: relative;
+display: block;
+padding: 5px 7px 6px 4px;
+font-size: 16px;
+color: #BBB;
+border-right: 1px solid #222;
+/* text-decoration: none; */
+}
+
+div#alfanousheader li a:hover {
+color: white;
+}
+
+div#alfanousheader li span {
+position: relative;
+display: block;
+padding: 5px 7px 6px 4px;
+font-size: 16px;
+color: white;
+border-right: 1px solid #222;
+/* text-decoration: none; */
+}
+
+
+
+
 
