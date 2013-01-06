@@ -16,7 +16,8 @@ This service is free to use.We highly recommend to refer Alfanous engine somewhe
 -----------
 Limitations
 -----------
-1. *(no limits)*
+1. 100 keywords at most
+2. Ayah word annotations are enabled for only one ayah
 
 --------------
 Quering Syntax
