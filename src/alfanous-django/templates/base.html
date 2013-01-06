@@ -208,13 +208,13 @@
 <div id="alfanousheader">
 <ul class="headermenu">
 <li class="menuitem"><span>{{ _("Ayahs") }}</span></li>
-{# <li class="menuitem"><a href="#">{{ _("Surahs") }}</a></li> #}
-<li class="menuitem"><a href="#">{{ _("Words") }}</a></li>
-<li class="menuitem"><a href="#">{{ _("Translations") }}</a></li>
-{# <li class="menuitem"><a href="#">{{ _("Taffsirs") }}</a></li> #}
-{# <li class="menuitem"><a href="#">{{ _("Hadiths") }}</a></li> #}
-{# <li class="menuitem"><a href="#">{{ _("Dreams") }}</a></li> #}
-{# <li class="menuitem"><a href="#">{{ _("Poems") }}</a></li> #}
+{# <li class="menuitem"><a href="/sura/">{{ _("Surahs") }}</a></li> #}
+<li class="menuitem"><a href="/word/">{{ _("Words") }}</a></li>
+<li class="menuitem"><a href="/translation/">{{ _("Translations") }}</a></li>
+{# <li class="menuitem"><a href="/taffsir/">{{ _("Taffsirs") }}</a></li> #}
+{# <li class="menuitem"><a href="/hadith/">{{ _("Hadiths") }}</a></li> #}
+{# <li class="menuitem"><a href="/dream/">{{ _("Dreams") }}</a></li> #}
+{# <li class="menuitem"><a href="/poem/">{{ _("Poems") }}</a></li> #}
 </ul>
 <div style="clear: left"></div>
 </div>
@@ -244,15 +244,9 @@
 <br/>
 
  
+{% block options %}
 
-<input type="checkbox"  name="fuzzy" value="True" {{ params.fuzzy|yesno:"checked," }} /> 
-	<span class="xtitle">{{ _("Fuzzy search") }} </span> 
-<input type="checkbox" name="vocalized" value="False" {{ params.vocalized|yesno:"checked," }} /> 
-	<span class="xtitle">{{ _("Unvocalized text") }} </span>
-<input type="checkbox" name="script" value="uthmani" {{ params.script|yesno:"checked," }} /> 
-	<span class="xtitle">{{ _("Uthmani script") }} </span>
-<br/>
-
+{% endblock %}
 
 
 
