@@ -13,6 +13,8 @@ from sys import path
 from django.http import HttpResponse
 from django.shortcuts import render_to_response
 
+from django.conf import settings
+
 from django.utils import translation
 from django.utils.translation import ugettext as _
 from django.utils.translation import ungettext
@@ -48,7 +50,7 @@ def jos2( request ):
     return response
 
 
-def results( request, unit = "aya" ):
+def results( request, unit = "aya", language = None ):
     """     """
     if unit not in ["aya", "word", "translation"]: # authorized units
     	unit = "aya"
@@ -86,13 +88,22 @@ def results( request, unit = "aya" ):
     raw_show = RAWoutput.do( show_params )   if show_params else None
 
     # language information
-    language = translation.get_language_from_request( request )
-    language_info = get_language_info( language )
+    current_language = translation.get_language()
+    request_language = translation.get_language_from_request( request )
+    available_languages = settings.LANGUAGES
+    try:
+        translation.activate( language )
+        language_info = get_language_info( language )
+    except:
+    	try:
+	        translation.activate( request_language )
+	        language_info = get_language_info( request_language )
+	        language = request_language
+    	except:
+    		translation.activate( current_language )
+	        language_info = get_language_info( current_language )
+	        language = current_language
 
-    #print  language ,language_info['name'], language_info['name_local'], language_info['bidi']
-
-
-    translation.activate( language )
     request.LANGUAGE_CODE = translation.get_language()
 
     mytemplate = unit + '_search.html'
@@ -103,6 +114,8 @@ def results( request, unit = "aya" ):
                                 "bidi": "rtl" if language_info['bidi']
                                               else "ltr",
                                 "language_local_name": language_info['name_local'],
+                                "language_code": language_info['code'],
+                                "available_languages": available_languages,
                                 "align": "right" if language_info['bidi']
                                               else "left",
                                 "align_inverse": "left" if language_info['bidi']

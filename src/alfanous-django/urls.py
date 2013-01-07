@@ -14,6 +14,9 @@ urlpatterns = patterns( '',
 
     # Uncomment the next line to enable the admin:
     url( r'^admin/', include( admin.site.urls ) ),
-    url( r'^(?P<unit>\w+)/', 'alfanous-django.wui.views.results' ),
+    url( r'^(?P<language>\w{2})/(?P<unit>\w{3,15})/', 'alfanous-django.wui.views.results' ),
+    url( r'^(?P<language>\w{2})/', 'alfanous-django.wui.views.results' ),
+    url( r'^(?P<unit>\w{3,15})/(?P<language>\w{2})/', 'alfanous-django.wui.views.results' ),
+    url( r'^(?P<unit>\w{3,15})/', 'alfanous-django.wui.views.results' ),
     url( r'^', 'alfanous-django.wui.views.results' ),
  )
