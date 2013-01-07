@@ -210,9 +210,7 @@
 <li class="menuitem"><span>{{ _("Ayahs") }}</span></li>
 {# <li class="menuitem"><a href="/sura/">{{ _("Surahs") }}</a></li> #}
 <li class="menuitem"><a href="{{ current_path }}word/">{{ _("Words") }}</a></li>
-<!--
-	<li class="menuitem"><a href="{{ current_path }}translation/">{{ _("Translations") }}</a></li> 
--->
+<li class="menuitem"><a href="{{ current_path }}translation/">{{ _("Translations") }}</a></li>
 {# <li class="menuitem"><a href="/taffsir/">{{ _("Taffsirs") }}</a></li> #}
 {# <li class="menuitem"><a href="/hadith/">{{ _("Hadiths") }}</a></li> #}
 {# <li class="menuitem"><a href="/dream/">{{ _("Dreams") }}</a></li> #}
@@ -220,7 +218,7 @@
 
 <nav>
 	<ul class = "right">
-		<li class="menuitem"><a href="#">Translations &darr;</a>
+		<li class="menuitem"><a href="#"> {{ language_local_name }} &darr;</a>
 			<ul class = "right">
 				{% for language in available_languages %}
 				<li class="listItem" >
