@@ -43,8 +43,8 @@ QT_RC_PATH=$(DESKTOP_INTERFACE_PATH)"images/"
 
 ## Path of Web User Interface for mobiles 
 MOBILE_WUI_PATH=./interfaces/web/mobile_wui/
-## Web User interface path
-WUI_PATH=./interfaces/web/wui/
+## Django Web User interface path
+DJWUI_PATH=$(API_PATH)"alfanous-django/"
 
 
 ##  Installation Paths:
@@ -275,22 +275,30 @@ qt_rcc:
 ## build localization files, this include:
 # 1. Desktop interface , see local_desktop_pot
 # 2. Web User Interface for mobiles, see  local_mobile_pot
-local_pot_all: local_desktop_pot local_mobile_pot
+local_pot_all: local_pot_desktop local_pot_mobile local_pot_django
 
-local_desktop_pot:
+local_pot_desktop:
 	xgettext $(DESKTOP_INTERFACE_PATH)*.py  --default-domain=alfanousQT --language=Python --keyword=n_ 
 	mkdir -p localization/pot_files/alfanousQTv$(VERSION)
 	mv alfanousQT.po localization/pot_files/alfanousQTv$(VERSION)/alfanousQTv$(VERSION).pot
 	
-local_mobile_pot:
+local_pot_mobile:
 	@if [ ! -d "./localization/pot_files/alfanousMWUIv$(VERSION)/" ]; then mkdir ./localization/pot_files/alfanousMWUIv$(VERSION)/; fi
 	xgettext -kT_ --from-code utf-8 -L PHP --no-wrap --package-name="AlfanousMobileWUI" --package-version=$(VERSION) -d alfanousMWUI -o ./localization/pot_files/alfanousMWUIv$(VERSION)/alfanousMWUIv$(VERSION).pot $(MOBILE_WUI_PATH)*.php
 
+local_pot_django:
+	cd  $(DJWUI_PATH); python manage.py makemessages  -a 
+	mkdir -p localization/pot_files/alfanousDJv$(VERSION)
+	cp $(DJWUI_PATH)/locale/default/LC_MESSAGES/django.po localization/pot_files/alfanousDJv$(VERSION)/alfanousDJv$(VERSION).pot
 
 ## load mo files from launchpad automatically
 local_mo_download:
 	@echo "todo"
 	#wget ; mv to /localization/locale
+
+## compile files for django
+local_mo_compile:
+	cd  $(DJWUI_PATH); python manage.py compilemessages 
 
 ##   packaging all to:
 # 1. Python egg files, see dist_egg_all
