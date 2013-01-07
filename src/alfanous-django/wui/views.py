@@ -19,7 +19,11 @@ from django.utils.translation import ungettext
 from django.utils.translation import pgettext_lazy # for ambiguities
 from django.utils.translation import get_language_info
 
-path.append( "alfanous.egg/alfanous" )
+## either append the path of alfanous API as:
+path.append( "alfanous.egg/alfanous" ) ## an egg, portable
+path.append( "../../src" ) ## a relative path, development mode
+path.append( "/home/alfanous/alfanous-django/src/" ) ## absolute  path, server mode
+
 from alfanous.Outputs import Raw
 
 
