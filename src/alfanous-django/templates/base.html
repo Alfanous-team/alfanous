@@ -216,15 +216,22 @@
 {# <li class="menuitem"><a href="/dream/">{{ _("Dreams") }}</a></li> #}
 {# <li class="menuitem"><a href="/poem/">{{ _("Poems") }}</a></li> #}
 
-</ul>
-<ul class="right">
-{% for language in available_languages %}
-<li class="menuitem" >
-{% ifequal language.0 language_code %}<span >{{ language.1 }}</span> 
-{% else %} <a href="/{{ language.0 }}/">{{ language.1 }}</a></span></li>
-{% endifequal %} 
-{% endfor %}
-</ul>
+<nav>
+	<ul class = "right">
+		<li class="menuitem"><a href="#"> {{ language_local_name }} &darr;</a>
+			<ul class = "right">
+				{% for language in available_languages %}
+				<li class="listItem" >
+					{% ifequal language.0 language_code %}<span >{{ language.1 }}</span> 
+					{% else %} <a href="/{{ language.0 }}/">{{ language.1 }}</a></span>
+				</li>
+				{% endifequal %} 
+				{% endfor %}
+			</ul>
+		</li>
+
+	</ul>
+</nav>
 <div style="clear: left"></div>
 </div>
 <!-- End Alfanous Header -->
