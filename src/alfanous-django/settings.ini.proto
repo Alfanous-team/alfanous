@@ -25,4 +25,5 @@ STATIC_URL: /static/
 STATIC_ROOT: /QSE/root/alfanous_git/alfanous-code/src/alfanous-django/static/
 TEMPLATE_DIR1: ./templates/
 STATIC_DIR1: ./wui/static/
-
+LOCALE_PATH1: ./locale/
+LOCALE_PATH2: ./wui/locale/
