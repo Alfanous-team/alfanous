@@ -17,7 +17,7 @@
 		</div>
 		<!-- Suggestions-->
 		{% if suggestions.error.code == 0 and suggestions.suggest %} 
-			<div id='suggestions' align='{{ align }}'>
+			<div id='suggestions' style=" text-align:{{ align }}" >
 			<h2 style='font-size:16pt; color:#ff0000;'>{{ _("Suggestions:") }}
 			{% for suggestion_key, suggestion_item in suggestions.suggest.items %}
 				<p dir='{{ bidi }}' >
@@ -37,7 +37,7 @@
 		{% if results.search.interval.total %}
 			{% if results.search.words.global.nb_words %}
 				<!-- Words list -->
-				<div id='search_words' align='left'>
+				<div id='search_words' style=" text-align:{{ align }}" >
 				  <h2 style='font-size:16pt;  color:#ff0000;'>
 				  Words:
 				  <div class='details_label word_count'>  
