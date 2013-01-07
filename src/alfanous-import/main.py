@@ -102,7 +102,7 @@ if options.transfer:
     else:
         parser.error( "Choose SOURCE_PATH and DISTINATION_PATH" )
 
-    T = Transformer( ixpath = SOURCE2 , dypypath = DESTINATION, dbpath = SOURCE ) 
+    T = Transformer( ixpath = SOURCE2 , dypypath = DESTINATION, dbpath = SOURCE )
     if options.transfer == "stopwords":
         T.transfer_stopwords()
     elif options.transfer == "synonyms":
@@ -162,8 +162,6 @@ if options.update:
         DESTINATION = args[1]
     else:
         parser.error( "Choose SOURCE_PATH and DISTINATION_PATH" )
-
-
 
     if options.update == "translations":
         update_translations_list( TSE_index = SOURCE, translations_list_file = DESTINATION )
