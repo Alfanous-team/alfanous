@@ -221,11 +221,11 @@
 		<li class="menuitem"><a href="#"> {{ language_local_name }} &darr;</a>
 			<ul class = "right">
 				{% for language in available_languages %}
-				<li class="listItem" >
+				<li class="listItem">
 					{% ifequal language.0 language_code %}<span >{{ language.1 }}</span> 
-					{% else %} <a href="/{{ language.0 }}/">{{ language.1 }}</a></span>
-				</li>
-				{% endifequal %} 
+					{% else %} <a href="/{{ language.0 }}/">{{ language.1 }}</a>
+					{% endifequal %} 
+				</li><br/>
 				{% endfor %}
 			</ul>
 		</li>
