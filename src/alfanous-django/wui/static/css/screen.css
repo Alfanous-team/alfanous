@@ -987,7 +987,6 @@ nav ul li {
 
 nav ul li a {
 	display: block;
-	/*padding: 25px 40px;*/
 	color: #757575;
 	text-decoration: none;
 }
@@ -995,7 +994,6 @@ nav ul li a {
 		
 nav ul ul {
 	background: rgb(34, 34, 34);;
-	/*border-radius: 0px;*/
 	padding: 0;
 	position: absolute;
 	top: 100%;
@@ -1003,8 +1001,6 @@ nav ul ul {
 
 nav ul ul li {
 	float: none; 
-	/*border-top: 1px solid #6b727c;*/
-	/*border-bottom: 1px solid #575f6a;*/
 	position: relative;
 }
 
