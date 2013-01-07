@@ -89,7 +89,7 @@ def results( request, unit = "aya", language = None ):
 
     # language information
     current_language = translation.get_language()
-    request_language = translation.get_language_from_request( request )
+    request_language = translation.get_language_from_request( request )[:2]
     available_languages = settings.LANGUAGES
     try:
         translation.activate( language )
