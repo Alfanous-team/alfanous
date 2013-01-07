@@ -35,8 +35,8 @@ MY_MEDIA_URL = config.get('paths', 'MEDIA_URL')
 MY_MEDIA_ROOT = config.get( 'paths', 'MEDIA_ROOT' )
 MY_STATIC_URL = config.get( 'paths', 'STATIC_URL' )
 MY_STATIC_ROOT = config.get('paths', 'STATIC_ROOT')
-
-
+MY_TEMPLATE_DIR1 = config.get( 'paths', 'TEMPLATE_DIR1' )
+MY_STATIC_DIR1 = config.get( 'paths', 'STATIC_DIR1' )
 
 ########################################
 #     Static and Public settings       #
@@ -117,7 +117,7 @@ STATICFILES_DIRS = (
     # Put strings here, like "/home/html/static" or "C:/www/django/static".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
-'./wui/static',
+MY_STATIC_DIR1,
 )
 
 # List of finder classes that know how to find static files in
@@ -153,7 +153,7 @@ TEMPLATE_DIRS = (
     # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
-    './templates/',
+    MY_TEMPLATE_DIR1,
 )
 
 INSTALLED_APPS = (
