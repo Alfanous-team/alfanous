@@ -16,38 +16,43 @@ if configFile[:2] == "./":
 
 
 config = RawConfigParser()
-config.read(configFile)
+config.read( configFile )
 
 # fetching critical info from the config file
-DATABASE_USER = config.get('database', 'DATABASE_USER')
-DATABASE_PASSWORD = config.get('database', 'DATABASE_PASSWORD')
-DATABASE_HOST = config.get('database', 'DATABASE_HOST')
-DATABASE_PORT = config.get('database', 'DATABASE_PORT')
-DATABASE_ENGINE = config.get('database', 'DATABASE_ENGINE')
-DATABASE_NAME = config.get('database', 'DATABASE_NAME')
+DATABASE_USER = config.get( 'database', 'DATABASE_USER' )
+DATABASE_PASSWORD = config.get( 'database', 'DATABASE_PASSWORD' )
+DATABASE_HOST = config.get( 'database', 'DATABASE_HOST' )
+DATABASE_PORT = config.get( 'database', 'DATABASE_PORT' )
+DATABASE_ENGINE = config.get( 'database', 'DATABASE_ENGINE' )
+DATABASE_NAME = config.get( 'database', 'DATABASE_NAME' )
 
 MY_DEBUG = config.get( 'debug', 'DEBUG' ) in ["true", "True"]
 MY_TEMPLATE_DEBUG = config.get( 'debug', 'TEMPLATE_DEBUG' ) in ["true", "True"]
 
-MY_SECRET_KEY =  config.get('secrets', 'SECRET_KEY')
+MY_SECRET_KEY = config.get( 'secrets', 'SECRET_KEY' )
 
-MY_MEDIA_URL = config.get('paths', 'MEDIA_URL')
+MY_MEDIA_URL = config.get( 'paths', 'MEDIA_URL' )
 MY_MEDIA_ROOT = config.get( 'paths', 'MEDIA_ROOT' )
+
 MY_STATIC_URL = config.get( 'paths', 'STATIC_URL' )
-MY_STATIC_ROOT = config.get('paths', 'STATIC_ROOT')
-MY_TEMPLATE_DIR1 = config.get( 'paths', 'TEMPLATE_DIR1' )
+MY_STATIC_ROOT = config.get( 'paths', 'STATIC_ROOT' )
 MY_STATIC_DIR1 = config.get( 'paths', 'STATIC_DIR1' )
+
+MY_TEMPLATE_DIR1 = config.get( 'paths', 'TEMPLATE_DIR1' )
+
+MY_LOCALE_PATH1 = config.get( 'paths', 'LOCALE_PATH1' )
+MY_LOCALE_PATH2 = config.get( 'paths', 'LOCALE_PATH2' )
 
 ########################################
 #     Static and Public settings       #
 ########################################
 
 DEBUG = MY_DEBUG
-TEMPLATE_DEBUG = MY_TEMPLATE_DEBUG 
+TEMPLATE_DEBUG = MY_TEMPLATE_DEBUG
 
-ADMINS = (
-     ('Assem Chelli', 'assem.ch@gmail.com'),
-)
+ADMINS = ( 
+     ( 'Assem Chelli', 'assem.ch@gmail.com' ),
+ )
 
 MANAGERS = ADMINS
 
@@ -113,50 +118,50 @@ STATIC_URL = MY_STATIC_URL
 ADMIN_MEDIA_PREFIX = '/static/admin/'
 
 # Additional locations of static files
-STATICFILES_DIRS = (
+STATICFILES_DIRS = ( 
     # Put strings here, like "/home/html/static" or "C:/www/django/static".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
 MY_STATIC_DIR1,
-)
+ )
 
 # List of finder classes that know how to find static files in
 # various locations.
-STATICFILES_FINDERS = (
+STATICFILES_FINDERS = ( 
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
 #    'django.contrib.staticfiles.finders.DefaultStorageFinder',
-)
+ )
 
 # Make this unique, and don't share it with anybody.
 SECRET_KEY = MY_SECRET_KEY
 
 
 # List of callables that know how to import templates from various sources.
-TEMPLATE_LOADERS = (
+TEMPLATE_LOADERS = ( 
     'django.template.loaders.filesystem.Loader',
     'django.template.loaders.app_directories.Loader',
 #     'django.template.loaders.eggs.Loader',
-)
+ )
 
-MIDDLEWARE_CLASSES = (
+MIDDLEWARE_CLASSES = ( 
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
-)
+ )
 
 ROOT_URLCONF = 'alfanous-django.urls'
 
-TEMPLATE_DIRS = (
+TEMPLATE_DIRS = ( 
     # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
     MY_TEMPLATE_DIR1,
-)
+ )
 
-INSTALLED_APPS = (
+INSTALLED_APPS = ( 
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
@@ -168,7 +173,7 @@ INSTALLED_APPS = (
      'django.contrib.admin',
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
-)
+ )
 
 # A sample logging configuration. The only tangible logging
 # performed by this configuration is to send an email to
@@ -194,9 +199,8 @@ LOGGING = {
 }
 
 
-LOCALE_PATHS = (
-    './locale',
-'./wui/locale',
-    
-)
+LOCALE_PATHS = ( 
+    MY_LOCALE_PATH1,
+	MY_LOCALE_PATH2
+ )
 
