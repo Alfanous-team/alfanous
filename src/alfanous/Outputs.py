@@ -210,7 +210,7 @@ class Raw():
 		}
 
 
-	IDS = {"ALFANOUS_WUI_2342R52"}
+	IDS = ["ALFANOUS_WUI_2342R52"]
 
 	def __init__( self,
 					QSE_index = Paths.QSE_INDEX	,
