@@ -965,6 +965,7 @@ text-decoration: none;
 
 nav {
 	text-align: center;
+	margin-right: 50px;
 }
 
 nav ul ul {
@@ -982,7 +983,7 @@ nav ul:after {
 }
 
 nav ul li {
-	float: left;
+	float: right;
 }
 
 nav ul li a {
@@ -993,14 +994,14 @@ nav ul li a {
 			
 		
 nav ul ul {
-	background: rgb(34, 34, 34);;
+	background: rgb(34, 34, 34);
 	padding: 0;
 	position: absolute;
 	top: 100%;
 }
 
 nav ul ul li {
-	float: none; 
+	float: right; 
 	position: relative;
 }
 
