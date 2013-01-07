@@ -3,12 +3,14 @@
 {% load custom_filters %}
 
 {% block options %}
+<div class="options" dir="{{ bidi }}">
 <input type="checkbox"  name="fuzzy" value="True" {{ params.fuzzy|yesno:"checked," }} /> 
 	<span class="xtitle">{{ _("Fuzzy search") }} </span> 
 <input type="checkbox" name="vocalized" value="False" {{ params.vocalized|yesno:"checked," }} /> 
 	<span class="xtitle">{{ _("Unvocalized text") }} </span>
 <input type="checkbox" name="script" value="uthmani" {{ params.script|yesno:"checked," }} /> 
 	<span class="xtitle">{{ _("Uthmani script") }} </span>
+</div>
 <br/>
 {% endblock %}
 
@@ -117,7 +119,7 @@
 					{% with results.search.interval.page|add:"-1"|stringformat:"s" as prev_page %}
 						<a class='no_decoration' href='?{% build_search_link params params.query prev_page False%}'> 
 					{% endwith %} 
-					<img src='/static/images/prev_en.gif' alt='Previous page' title = 'Previous page' />
+					<img src='/static/images/prev{{ image_extension }}.gif' alt='Previous page' title = 'Previous page' />
 					</a>
 				{% endif %}
 				<div style=' display:inline-block; position:relative; top:-8px;'>
@@ -142,7 +144,7 @@
 					{% with results.search.interval.page|add:"+1"|stringformat:"s" as next_page %}
 						<a class='no_decoration' href='?{% build_search_link params params.query next_page False%}'> 
 					{% endwith %} 
-					<img src='/static/images/next_en.gif' alt='Next page' title = 'Next page' /></a>
+					<img src='/static/images/next{{ image_extension }}.gif' alt='Next page' title = 'Next page' /></a>
 				{% endif %}
 				
 				</div>

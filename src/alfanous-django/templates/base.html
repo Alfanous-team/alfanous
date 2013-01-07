@@ -239,7 +239,7 @@
 	<tr>
 		<td style="background:url(/static/images/main_table_02.png) no-repeat;width:50px;height:26px"> </td>
 		<td style="background:url(/static/images/main_table_03.png) no-repeat;width:259px;height:26px">
-			<input id="search_box" name="query" class="enter keyboardInput" type="text" value="{{ params.query }}" />
+			<input style="direction: {{ bidi }} ; text-align:{{ align }}" id="search_box" name="query" class="enter keyboardInput" type="text" value="{{ params.query }}" />
 			</td>
 		<td style="background:url(/static/images/main_table_04.png) repeat scroll 0 0 transparent;width:62;height:26;text-align:right;">
 			<a class="button" href="" onclick="$('#form').submit(); return false;">{{ _("search") }}</a>
@@ -309,7 +309,7 @@
 {% endblock %}
 
 <br />
-<div class="xdrops_continer" style="direction:{{ bidi }}; text-align:right; width: 342px;">
+<div class="xdrops_continer" style="direction:{{ bidi }}; text-align:{{ align_inverse }}; width: 342px;">
 	<span class="xtitle">{{ _("View") }} :</span>
 	<select id="view"  class="styled" name="view" >
 		<option value="default" {% ifequal params.view "default" %}selected{% endifequal %}>{{ _("Default") }}</option>

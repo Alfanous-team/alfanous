@@ -143,7 +143,7 @@
 			
 			{% for ayaresult_id, ayaresult_content in  	results.search.ayas.items %}
 			    <fieldset class='main_re_item'>
-				  <legend class='main_re_item_title' style='font-size:14pt; ' dir='ltr'>
+				  <legend class='main_re_item_title' style='font-size:14pt; ' dir='{{ bidi }}'>
 				    <span align='left' style='color:#0000ff;'>
 				      {{ _("Result n°") }} <b> {{ ayaresult_id }} </b> 
 				    </span>
