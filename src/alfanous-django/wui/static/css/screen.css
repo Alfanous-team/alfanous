@@ -963,7 +963,58 @@ border-right: 1px solid #222;
 text-decoration: none; 
 }
 
+nav {
+	text-align: center;
+}
 
+nav ul ul {
+	display: none;
+}
 
+nav ul li:hover > ul {
+	display: block;
+}
 
+nav ul:after {
+	content: "";
+	clear: both;
+	display: block;
+}
 
+nav ul li {
+	float: left;
+}
+
+nav ul li a {
+	display: block;
+	/*padding: 25px 40px;*/
+	color: #757575;
+	text-decoration: none;
+}
+			
+		
+nav ul ul {
+	background: rgb(34, 34, 34);;
+	/*border-radius: 0px;*/
+	padding: 0;
+	position: absolute;
+	top: 100%;
+}
+
+nav ul ul li {
+	float: none; 
+	/*border-top: 1px solid #6b727c;*/
+	/*border-bottom: 1px solid #575f6a;*/
+	position: relative;
+}
+
+nav ul ul li a {
+	padding: 15px 40px;
+	color: #fff;
+}	
+		
+nav ul ul ul {
+	position: absolute;
+	left: 100%; top:0;
+}
+		
