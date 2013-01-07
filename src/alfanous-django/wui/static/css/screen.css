@@ -924,7 +924,7 @@ z-index: 9999;
 }
 
 div#alfanousheader ul {
-padding: 0 25px;
+padding: 0 5px;
 }
 
 div#alfanousheader li {
@@ -962,6 +962,9 @@ color: white;
 border-right: 1px solid #222;
 text-decoration: none; 
 }
+
+
+/*  01walid: right top menu */
 
 nav {
 	text-align: center;
