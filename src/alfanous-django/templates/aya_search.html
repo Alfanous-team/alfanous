@@ -1,4 +1,4 @@
-{% extends "results.html" %}
+{% extends "aya_results.html" %}
 
 {% load custom_filters %}
 
@@ -16,8 +16,6 @@
 
 
 {% block help_panel %}
-	<div id="help" class="modal" style="width: 675px; text-align: left;">
-		<h2>{{ _("Help") }}</h2>	
 	<table dir="{{ bidi.direction }}" style=" border: 2px dashed gray;margin: 5px;width: 672px;">
 	<tbody>
 	
@@ -72,8 +70,10 @@
 		<br/>
 			<button type="button" class='close gray button'> {{ _("Close") }} </button>	
 		<br />
-	</div>
 {% endblock %}
+
+
+
 
 {% block sortedby_panel %}
 	<span class="xtitle">{{ _("Sorted by") }} :</span>
