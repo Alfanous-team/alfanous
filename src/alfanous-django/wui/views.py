@@ -112,7 +112,10 @@ def results( request, unit = "aya", language = None ):
     # language direction  properties
     bidi_val = language_info['bidi']
     fields_mapping_en_ar = raw_show["show"]["fields_reverse"]
-    fields_mapping_en_en = { k:k for k in fields_mapping_en_ar.keys() }
+    fields_mapping_en_en = {}
+    for k in fields_mapping_en_ar.keys():
+        fields_mapping_en_en[k] = k
+    #python 2.7: { k:k for k in fields_mapping_en_ar.keys() }
     bidi_properties = {
 		  				 False : {
 								 	"val": bidi_val,
