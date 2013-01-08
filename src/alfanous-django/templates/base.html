@@ -216,14 +216,14 @@
 {# <li class="menuitem"><a href="/dream/">{{ _("Dreams") }}</a></li> #}
 {# <li class="menuitem"><a href="/poem/">{{ _("Poems") }}</a></li> #}
 
-<nav>
+<nav id="language_menu">
 	<ul class = "right">
-		<li class="menuitem"><a href="#"> {{ language_local_name }} &darr;</a>
+		<li class="menuitem"><a href="#"> {{ language.name_local }} &darr;</a>
 			<ul class = "right">
-				{% for language in available_languages %}
+				{% for available_language in available_languages %}
 				<li class="listItem">
-					{% ifequal language.0 language_code %}<span >{{ language.1 }}</span> 
-					{% else %} <a href="/{{ language.0 }}/">{{ language.1 }}</a>
+					{% ifequal available_language.0 language.code %}<span >{{ available_language.1 }}</span> 
+					{% else %} <a href="/{{ available_language.0 }}/">{{ available_language.1 }}</a>
 					{% endifequal %} 
 				</li><br/>
 				{% endfor %}
@@ -241,12 +241,12 @@
 <div>
 <table>
 	<tr>
-		<td colspan="4" style="background:transparent url(/static/images/logo{{ image_extension }}.png); width:385px; height:200px;"> </td>
+		<td colspan="4" style="background:transparent url(/static/images/logo{{ bidi.image_extension }}.png); width:385px; height:200px;"> </td>
 	</tr>
 	<tr>
 		<td style="background:url(/static/images/main_table_02.png) no-repeat;width:50px;height:26px"> </td>
 		<td style="background:url(/static/images/main_table_03.png) no-repeat;width:259px;height:26px">
-			<input style="direction: {{ bidi }} ; text-align:{{ align }}" id="search_box" name="query" class="enter keyboardInput" type="text" value="{{ params.query }}" />
+			<input style="direction: {{ bidi.direction }} ; text-align:{{ bidi.align }}" id="search_box" name="query" class="enter keyboardInput" type="text" value="{{ params.query }}" />
 			</td>
 		<td style="background:url(/static/images/main_table_04.png) repeat scroll 0 0 transparent;width:62;height:26;text-align:right;">
 			<a class="button" href="" onclick="$('#form').submit(); return false;">{{ _("search") }}</a>
@@ -316,7 +316,7 @@
 {% endblock %}
 
 <br />
-<div class="xdrops_continer" style="direction:{{ bidi }}; text-align:{{ align_inverse }}; width: 342px;">
+<div class="xdrops_continer" style="direction:{{ bidi.direction }}; text-align:{{ bidi.align_inverse }}; width: 342px;">
 	<span class="xtitle">{{ _("View") }} :</span>
 	<select id="view"  class="styled" name="view" >
 		<option value="default" {% ifequal params.view "default" %}selected{% endifequal %}>{{ _("Default") }}</option>
@@ -358,14 +358,14 @@
 
 
 <!--abdellah-->
-<div id="search_result" style="direction:{{ bidi }}; width:800px">
+<div id="search_result" style="direction:{{ bidi.direction }}; width:800px">
 <!-- assem: search_result_django_static -->
 {% block results %} {% endblock results %}
 </div>
 
 </div>
 </div>
-<div id="down" class="modal" style="text-align: {{ align }};">
+<div id="down" class="modal" style="text-align: {{ bidi.align }};">
 	<h2 style='padding:0 0 0px 0'><img alt="download" src="/static/images/Download.png">{{ _("Download") }}</h2><br/>
 <strong> {{ _("English desktop release 0.4") }}: 
 <a class="name" title="Click to download alfanousDesktop-win0.4r20.exe" href="http://sourceforge.net/projects/alfanous/files/Interfaces/AlfanousDesktop/0.4.20/alfanousDesktop-win0.4r20.exe/download">{{ _("Windows") }}</a>
