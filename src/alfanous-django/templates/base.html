@@ -248,7 +248,7 @@
 		<td style="background:url(/static/images/main_table_03.png) no-repeat;width:259px;height:26px">
 			<input style="direction: {{ bidi.direction }} ; text-align:{{ bidi.align }}" id="search_box" name="query" class="enter keyboardInput" type="text" value="{{ params.query }}" />
 			</td>
-		<td style="background:url(/static/images/main_table_04.png) repeat scroll 0 0 transparent;width:62;height:26;text-align:right;">
+		<td style="background:url(/static/images/main_table_04.png) repeat scroll 0 0 transparent;width:62;height:26;text-align:center;">
 			<a class="button" href="" onclick="$('#form').submit(); return false;">{{ _("search") }}</a>
 			</td>
 		<td style="background:url(/static/images/main_table_05.png) no-repeat;width:24px;height:26px"> </td>
@@ -380,7 +380,7 @@
 	<br />
 </div>
 
-<div id="help" class="modal" style="width: 675px; text-align: left;">
+<div id="help" class="modal" style="width: 675px; text-align: {{ bidi.align }};">
 <h2>{{ _("Help") }}</h2>
 {% block help_panel %}
 
