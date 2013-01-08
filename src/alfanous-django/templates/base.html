@@ -209,21 +209,22 @@
 <ul class="headermenu">
 <li class="menuitem"><span>{{ _("Ayahs") }}</span></li>
 {# <li class="menuitem"><a href="/sura/">{{ _("Surahs") }}</a></li> #}
-<li class="menuitem"><a href="{{ current_path }}word/">{{ _("Words") }}</a></li>
-<li class="menuitem"><a href="{{ current_path }}translation/">{{ _("Translations") }}</a></li>
+<li class="menuitem"><a href="{% url alfanous-django.wui.views.results current.language "word" %}">{{ _("Words") }}</a></li>
+<li class="menuitem"><a href="{% url alfanous-django.wui.views.results current.language "translation" %}">{{ _("Translations") }}</a></li>
 {# <li class="menuitem"><a href="/taffsir/">{{ _("Taffsirs") }}</a></li> #}
 {# <li class="menuitem"><a href="/hadith/">{{ _("Hadiths") }}</a></li> #}
 {# <li class="menuitem"><a href="/dream/">{{ _("Dreams") }}</a></li> #}
 {# <li class="menuitem"><a href="/poem/">{{ _("Poems") }}</a></li> #}
 
+
 <nav id="language_menu">
 	<ul class = "right">
 		<li class="menuitem"><a href="#"> {{ language.name_local }} &darr;</a>
 			<ul class = "right">
-				{% for available_language in available_languages %}
+				{% for available_language in available.languages %}
 				<li class="listItem">
 					{% ifequal available_language.0 language.code %}<span >{{ available_language.1 }}</span> 
-					{% else %} <a href="/{{ available_language.0 }}/">{{ available_language.1 }}</a>
+					{% else %} <a href="{% url alfanous-django.wui.views.results available_language.0 current.unit %}?{{ current.request }}">{{ available_language.1 }}</a>
 					{% endifequal %} 
 				</li><br/>
 				{% endfor %}
