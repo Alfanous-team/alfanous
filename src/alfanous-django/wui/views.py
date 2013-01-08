@@ -106,27 +106,40 @@ def results( request, unit = "aya", language = None ):
 
     request.LANGUAGE_CODE = translation.get_language()
 
+    # language direction  properties
+    bidi_val = language_info['bidi']
+    fields_mapping_en_ar = raw_show["show"]["fields_reverse"]
+    fields_mapping_en_en = { k:k for k in fields_mapping_en_ar.keys() }
+    bidi_properties = {
+		  				 False : {
+								 	"val": bidi_val,
+								 	"direction": "ltr",
+								 	"align": "left",
+								 	"align_inverse": "right",
+								 	"image_extension": "_en",
+								 	"fields": fields_mapping_en_en
+	   				 			  },
+		  				 True : {
+								 	"val": bidi_val,
+								 	"direction": "rtl",
+								 	"align": "right",
+								 	"align_inverse": "left",
+								 	"image_extension": "_ar",
+								 	"fields": fields_mapping_en_ar
+	   				 			  }
+					}
+
     mytemplate = unit + '_search.html'
 
     return render_to_response( mytemplate ,
                               {
                                 'current_path': request.get_full_path(),
-                                "bidi": "rtl" if language_info['bidi']
-                                              else "ltr",
-                                "language_local_name": language_info['name_local'],
-                                "language_code": language_info['code'],
+                                "bidi":bidi_properties[bidi_val],
+                                "language": language_info,
                                 "available_languages": available_languages,
-                                "align": "right" if language_info['bidi']
-                                              else "left",
-                                "align_inverse": "left" if language_info['bidi']
-                                              else "right",
-                                "image_extension": "_ar" if language_info['bidi']
-                                              else "_en",
-
                                 "params": search_params,
                                 "results": raw_search,
                                 "suggestions": raw_suggest,
                                 "info": raw_show
-
                                }
                               )
