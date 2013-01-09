@@ -632,7 +632,7 @@ class QuranicParser( ArabicParser ):
         def pipeline( self, fieldname, text ):
             words = set()
             words |= set( QuranicParser.Synonyms( fieldname, text ).words )
-            words |= set( QuranicParser.Derivation( fieldname, text, level = 2 ).words )
+            words |= set( QuranicParser.Derivation( fieldname, text, level = 1 ).words )
             return list( words )
 
 
@@ -813,7 +813,7 @@ class SuperFuzzyAll( QuranicParser.FuzzyAll ):
     def pipeline( self, fieldname, text ):
         words = set()
         words |= set( QuranicParser.Synonyms( fieldname, text ).words )
-        words |= set( QuranicParser.Derivation( fieldname, text, level = 2 ).words )
+        words |= set( QuranicParser.Derivation( fieldname, text, level = 1 ).words )
         if len( words ) == 1:
             wildcarded_text = " ".join( map( lambda x: "*" + x + "*", text.split( " " ) ) )
             words |= set( QuranicParser.Wildcard( fieldname, wildcarded_text ).words )
@@ -846,11 +846,9 @@ class FuzzyQuranicParser( QuranicParser ):
 
 
     def make_term( self, fieldname, text ):
-        print ">>3#"
         return self._make( "make_term", fieldname, text )
 
     def make_range( self, fieldname, start, end, startexcl, endexcl ):
-        print ">>4#"
         return self._make( "make_range", fieldname, start, end,
                           startexcl, endexcl )
 
