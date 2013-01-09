@@ -5,7 +5,34 @@
 <html>
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-	<title> {% block title %} {{ _("Alfanous - Advanced Quranic Search Engine") }} {% endblock %}  </title>
+	<title> 
+			{% block title %} 
+				{% if params.query %}
+					{% if current.unit == "aya" %}
+						{{ _("Ayah Results to Query:") }} 
+					{% elif current.unit == "word" %}
+						{{ _("Word Results to Query:") }}
+					{% elif current.unit == "translation" %}
+						{{ _("Translation Results to Query:") }} 
+					{% else %}
+						{{ _("Results to Query:") }} 
+					{% endif %}	
+					{{ params.query }}
+					
+				{% else %}
+					{% if current.unit == "aya" %}
+						{{ _("Quranic Verse Search") }}
+					{% elif current.unit == "word" %}
+						{{ _("Quranic Word Search") }}
+					{% elif current.unit == "translation" %}
+						{{ _("Quranic Translation Search") }}
+					{% else %}
+						{{ _("Advanced Quranic Search Engine") }} 
+					{% endif %}
+					 - {{ _("Alfanous") }} 
+				{% endif %}
+			{% endblock %}  
+	</title>
 	
 	<meta name="description" content="{{ _('Alfanous is a functional, dynamic, comprehensive Qur’an search engine that has been effectively designed to carry out simple or advanced Quranic searches.') }}"/>
 	<meta name="keywords" content="{{ _("quran") }}, {{ _("forqan") }}, {{ _("koran") }}, {{ _("search") }}, {{ _("search engine") }}, {{ _("ayates") }}, {{ _("surates") }}, {{ _("advanced") }}, {{ _("statistics") }}, {{  _("linguistic") }}, {{ _("information retrieval") }}, {{ _("natural language processing") }}, {{ _("words") }}, {{ _("Lantern") }}, {{ _("alfanous") }},  "/>
@@ -209,8 +236,8 @@
 <ul class="headermenu">
 <li class="menuitem"><span>{{ _("Ayahs") }}</span></li>
 {# <li class="menuitem"><a href="/sura/">{{ _("Surahs") }}</a></li> #}
-<li class="menuitem"><a href="{% url alfanous-django.wui.views.results current.language "word" %}">{{ _("Words") }}</a></li>
-<li class="menuitem"><a href="{% url alfanous-django.wui.views.results current.language "translation" %}">{{ _("Translations") }}</a></li>
+<!-- <li class="menuitem"><a href="{% url alfanous-django.wui.views.results current.language "word" %}">{{ _("Words") }}</a></li> -->
+<!-- <li class="menuitem"><a href="{% url alfanous-django.wui.views.results current.language "translation" %}">{{ _("Translations") }}</a></li> -->
 {# <li class="menuitem"><a href="/taffsir/">{{ _("Taffsirs") }}</a></li> #}
 {# <li class="menuitem"><a href="/hadith/">{{ _("Hadiths") }}</a></li> #}
 {# <li class="menuitem"><a href="/dream/">{{ _("Dreams") }}</a></li> #}
