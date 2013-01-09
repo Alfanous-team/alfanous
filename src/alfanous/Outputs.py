@@ -433,6 +433,8 @@ class Raw():
 
 		# pre-defined views
 		if view == "minimal":
+			fuzzy = True
+			#page = 25
 			vocalized = False
 			recitation = None
 			translation = None
