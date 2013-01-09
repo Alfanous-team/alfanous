@@ -4,9 +4,6 @@
 
 
 
-{% block title %} {{ _("Alfanous - Results to Query:") }}  {{ params.query }} {% endblock %}  
-
-
 {% block results %}
 	{% if results.error.code == 0  %} 
 		<div id="search_result_static" style="direction:{{ bidi.direction }}; width:800px">
