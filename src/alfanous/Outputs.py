@@ -39,6 +39,8 @@ from alfanous.main import TraductionSearchEngine, WordSearchEngine
 from alfanous.dynamic_resources.arabicnames_dyn import ara2eng_names as Fields
 from alfanous.dynamic_resources.std2uth_dyn import std2uth_words
 from alfanous.dynamic_resources.vocalizations_dyn import vocalization_dict
+from alfanous.dynamic_resources.synonymes_dyn import syndict
+from alfanous.dynamic_resources.derivations_dyn import derivedict
 from alfanous.TextProcessing import QArabicSymbolsFilter
 from alfanous.Data import *
 from alfanous.Misc import buck2uni
@@ -579,13 +581,21 @@ class Raw():
 					vocalizations = vocalization_dict[term[1]] if vocalization_dict.has_key( term[1] ) \
 										   else []
 					nb_vocalizations_globale += len( vocalizations )
+					synonyms = syndict[term[1]] if syndict.has_key( term[1] ) \
+										   else []
+					derivations = derivedict[term[1]] if derivedict.has_key( term[1] ) \
+										   else []
 					words_output[ "individual" ][ cpt ] = {
-														 "word":term[1],
-														 "romanization": buck2uni( term[1], ignore = "" , reverse = True ) if romanization == "buckwalter" else None,
-														 "nb_matches":term[2],
-														 "nb_ayas":term[3],
-														 "nb_vocalizations": len( vocalizations ),
-														 "vocalizations": vocalizations
+															 "word":term[1],
+															 "romanization": buck2uni( term[1], ignore = "" , reverse = True ) if romanization == "buckwalter" else None,
+															 "nb_matches":term[2],
+															 "nb_ayas":term[3],
+															 "nb_vocalizations": len( vocalizations ),
+															 "vocalizations": vocalizations,
+															 "nb_synonyms": len( synonyms ),
+															 "synonyms": synonyms,
+															 "nb_derivations": len( derivations ),
+															 "derivations": derivations
 														 }
 					cpt += 1
 			annotation_word_query += u" ) "
