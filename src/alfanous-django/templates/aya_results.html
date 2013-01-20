@@ -54,16 +54,35 @@
 						    <span style=' font-size:14pt; color:#00aa00;'> {{ wordcpt }}.  </span>
 							<a class='no_decoration' href="?{% build_search_link params  wordstat.word 1 False %}"> 
 							<div class='details_label word_info0 clickable'> {{ _("word") }} | {{ wordstat.word }} {% if wordstat.romanization %} ( {{ wordstat.romanization }} ) {%  endif %} </div></a>
-							<div class='details_label word_stat0'> {{ _("occurnaces") }} | {{ wordstat.nb_matches }} </div>
+							<div class='details_label word_stat0'> {{ _("occurances") }} | {{ wordstat.nb_matches }} </div>
 							<div class='details_label word_stat1'> {{ _("ayates") }} |  {{ wordstat.nb_ayas }} </div>
+							
+							<br />
 							<div class='details_label word_vocalization_nb'> {{ _("vocalizations") }} | {{ wordstat.nb_vocalizations }} </div>
-
-						{% for vocalization in wordstat.vocalizations %} 
-							{% with bidi.fields.aya_|add:":"|add:vocalization|add:"" as new_query %}
-								<a class='no_decoration' href="?{% build_search_link params  new_query 1 False %}"> 
-							{% endwith %}
-							<div class='details_label word_vocalization clickable quran'> {{ vocalization }} </div></a>
-						{% endfor %}
+							{% for vocalization in wordstat.vocalizations %} 
+								{% with bidi.fields.aya_|add:":"|add:vocalization|add:"" as new_query %}
+									<a class='no_decoration' href="?{% build_search_link params  new_query 1 False %}"> 
+								{% endwith %}
+								<div class='details_label word_vocalization clickable quran'> {{ vocalization }} </div></a>
+							{% endfor %}
+							
+							{% ifnotequal wordstat.nb_synonyms 0 %}
+								<br />
+								<div class='details_label word_synonym_nb'> {{ _("synonyms") }} | {{ wordstat.nb_synonyms }} </div>
+								{% for synonym in wordstat.synonyms %} 
+									<a class='no_decoration' href="?{% build_search_link params synonym  1 False %}"> 
+									<div class='details_label word_synonym clickable quran'> {{ synonym }} </div></a>
+								{% endfor %}
+								{% with "~"|add:wordstat.word as new_query %}
+									<a class='no_decoration' href="?{% build_search_link params  new_query 1 False %}"> 
+								{% endwith %}
+								<div class='details_label word_synonym clickable quran'> {{ _("ALL") }} | ~{{ wordstat.word }}  </div></a>
+							{% endifnotequal %}
+							
+						
+							<br />
+							<div class='details_label word_derivation_nb'> {{ _("derivations") }} | {{ wordstat.nb_derivations }} </div>
+							
 						{% for annotation_word, parts in wordstat.annotations.items %}
 							{% for part_order, annotation_detail in parts.items %} 
 								<p   class='annotation_details'>
@@ -141,7 +160,7 @@
 			{% for ayaresult_id, ayaresult_content in  	results.search.ayas.items %}
 			    <fieldset class='main_re_item'>
 				  <legend class='main_re_item_title' style='font-size:14pt; ' dir='{{ bidi.direction }}'>
-				    <span align='left' style='color:#0000ff;'>
+				    <span align='left' epstyle='color:#0000ff;'>
 				      {{ _("Result n°") }} <b> {{ ayaresult_id }} </b> 
 				    </span>
 				    {% if ayaresult_content.aya.recitation %}
