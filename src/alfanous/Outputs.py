@@ -44,6 +44,7 @@ from alfanous.dynamic_resources.derivations_dyn import derivedict
 from alfanous.TextProcessing import QArabicSymbolsFilter
 from alfanous.Data import *
 from alfanous.Misc import buck2uni
+from alfanous.Misc import LOCATE, FIND, FILTER_DOUBLES
 
 
 STANDARD2UTHMANI = lambda x: std2uth_words[x] if std2uth_words.has_key( x ) else x
@@ -583,19 +584,26 @@ class Raw():
 					nb_vocalizations_globale += len( vocalizations )
 					synonyms = syndict[term[1]] if syndict.has_key( term[1] ) \
 										   else []
-					derivations = derivedict[term[1]] if derivedict.has_key( term[1] ) \
-										   else []
+
+					lemma = LOCATE( derivedict["word_"], derivedict["lemma"], term[1] )
+					root = LOCATE( derivedict["word_"], derivedict["root"], term[1] )
+					if lemma:  # if different of none
+						derivations = FILTER_DOUBLES( FIND( derivedict["lemma"], derivedict["word_"], lemma ) )
+					else:
+						derivations = []
 					words_output[ "individual" ][ cpt ] = {
 															 "word":term[1],
 															 "romanization": buck2uni( term[1], ignore = "" , reverse = True ) if romanization == "buckwalter" else None,
 															 "nb_matches":term[2],
 															 "nb_ayas":term[3],
-															 "nb_vocalizations": len( vocalizations ),
+															 "nb_vocalizations": len( vocalizations ),#unneeded
 															 "vocalizations": vocalizations,
-															 "nb_synonyms": len( synonyms ),
-															 "synonyms": synonyms,
-															 "nb_derivations": len( derivations ),
-															 "derivations": derivations
+															 "nb_synonyms": len( synonyms ),#unneeded
+															 "synonyms": synonyms, #unneeded for normal mode
+															 "lemma": lemma,
+															 "root": root,
+															 "nb_derivations": len( derivations ), #unneeded
+															 "derivations": derivations #unneeded for normal mode
 														 }
 					cpt += 1
 			annotation_word_query += u" ) "
