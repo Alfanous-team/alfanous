@@ -46,13 +46,11 @@ def buck2uni( string, ignore = "" , reverse = False ):
 
 
 
-#filter doubles
-def filter_doubles( lst ):
-    """ deprecated : use list(set()) or filter(cond,list) instead"""
-    for i in range( len( lst ) ):
-        if lst[i] not in lst[i + 1:]:
-            yield lst[i]
+FILTER_DOUBLES = filter_doubles = lambda lst:list( set( lst ) )
+LOCATE = lambda source, dist, itm: dist[source.index( itm )] \
+												if itm in source else None
 
+FIND = lambda source, dist, itm: [dist[i] for i in [i for i in range( len( source ) ) if source[i] == itm]]
 
 
 
