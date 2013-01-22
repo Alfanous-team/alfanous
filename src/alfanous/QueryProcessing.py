@@ -75,6 +75,7 @@ from alfanous.Indexing import QseDocIndex
 from alfanous.Exceptions import  FeedBack  # , NotImplemented
 from alfanous.TextProcessing import QArabicSymbolsFilter, unicode_
 
+from alfanous.Misc import LOCATE, FIND, FILTER_DOUBLES
 # from alfanous.Misc import buck2uni
 
 
@@ -684,17 +685,12 @@ class QuranicParser( ArabicParser ):
             elif leveldist == 2: indexdist = "root"
             else: indexdist = "root"  # new levels
 
-            filter_doubles = lambda lst:[lst[i] for i in range( len( lst ) ) \
-										if lst[i] not in lst[i + 1:]]
-            locate = lambda source, dist, itm: dist[source.index( itm )] \
-            									if itm in source else None
-            Find = lambda source, dist, itm: [dist[i] for i in [i for i in range( len( source ) ) if source[i] == itm]]
 
             lst = []
-            if indexsrc:  # if index source level is definded
-                itm = locate( derivedict[indexsrc], derivedict[indexdist], word )
+            if indexsrc:  # if index source level is defined
+                itm = LOCATE( derivedict[indexsrc], derivedict[indexdist], word )
                 if itm:  # if different of none
-                    lst = filter_doubles( Find( derivedict[indexdist], derivedict["word_"], itm ) )
+                    lst = FILTER_DOUBLES( FIND( derivedict[indexdist], derivedict["word_"], itm ) )
                 else:
                     lst = [word]
 
@@ -722,12 +718,12 @@ class QuranicParser( ArabicParser ):
         @staticmethod
         def tuple( props ):
             """ search the words that have the specific properties """
-            Find = lambda source, dist, itm: [dist[i] for i in [i for i in range( len( source ) ) if source[i] == itm]]
+
             wset = set()
             firsttime = True
             for propkey in props.keys():
                 if worddict.has_key( propkey ):
-                    partial_wset = set( Find( worddict[propkey], worddict["word_"], props[propkey] ) )
+                    partial_wset = set( FIND( worddict[propkey], worddict["word_"], props[propkey] ) )
                     if firsttime:
                         wset = partial_wset;firsttime = False
                     else:
