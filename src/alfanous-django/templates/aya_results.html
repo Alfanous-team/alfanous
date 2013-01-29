@@ -193,7 +193,7 @@
 								<div class='sura_stat_details'>
 									<div class='details_label sura_stat1'> {{ _("words") }} | {{ ayaresult_content.sura.stat.words }} </div>
 									<div class='details_label sura_stat2'> {{ _("letters") }} | {{ ayaresult_content.sura.stat.letters }} </div>
-									<div class='details_label sura_stat3'> {{ _("devine names") }} | {{ ayaresult_content.sura.stat.godnames }} </div>
+									<div class='details_label sura_stat3'> {{ _("divine names") }} | {{ ayaresult_content.sura.stat.godnames }} </div>
 								</div>
 							{% endif %}
 						</div>
@@ -348,7 +348,7 @@
 										<a class='no_decoration' href='?{% build_search_link params  new_query 1 False %}'> 
 									{% endwith %}
 							  	{% endwith %} 
-								<div class='details_label aya_stat2 clickable'> {{ _("devine names") }} | {{ ayaresult_content.stat.godnames }} </div></a>
+								<div class='details_label aya_stat2 clickable'> {{ _("divine names") }} | {{ ayaresult_content.stat.godnames }} </div></a>
 							{% endif %}
 							{% if ayaresult_content.position %}
 								{% with ayaresult_content.position.manzil|stringformat:"s" as position_manzil %}
@@ -389,7 +389,6 @@
 				
 			<!-- Pages control # bottom one -->
 			{% block pages_bottom %} {% endblock %}
-			
 			
 		{% else %}
 			<br />
