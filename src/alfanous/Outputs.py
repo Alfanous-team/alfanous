@@ -22,7 +22,7 @@ TODO add to SHOW: TYPES, HELPMSGS,
 TODO offer some linguistic operations like vocalize
 TODO derive using Quranic Corpus/functions
 FIXME use xranges in domains
-FIXME vocalization_dict[terms[1]], test key existance before use
+FIXME vocalization_dict[terms[1]], test key existence before use
 TODO include suggestions with search results
 TODO +flag language
 FIXME how to select the translation attached to results, what ID? 
@@ -43,7 +43,7 @@ from alfanous.dynamic_resources.synonymes_dyn import syndict
 from alfanous.dynamic_resources.derivations_dyn import derivedict
 from alfanous.TextProcessing import QArabicSymbolsFilter
 from alfanous.Data import *
-from alfanous.Misc import buck2uni
+from alfanous.Romanization import transliterate
 from alfanous.Misc import LOCATE, FIND, FILTER_DOUBLES
 
 
@@ -396,6 +396,8 @@ class Raw():
 		""" return the results of search for any unit """
 		if unit == "aya":
 			search_results = self._search_aya( flags )
+		elif unit == "translation":
+			search_results = self._search_translation( flags )
 		else:
 			search_results = {}
 
@@ -593,7 +595,7 @@ class Raw():
 						derivations = []
 					words_output[ "individual" ][ cpt ] = {
 															 "word":term[1],
-															 "romanization": buck2uni( term[1], ignore = "" , reverse = True ) if romanization == "buckwalter" else None,
+															 "romanization": transliterate( romanization, term[1], ignore = "" , reverse = True ) if romanization in self.DOMAINS["romanization"] else None,
 															 "nb_matches":term[2],
 															 "nb_ayas":term[3],
 															 "nb_vocalizations": len( vocalizations ),#unneeded
@@ -609,7 +611,6 @@ class Raw():
 			annotation_word_query += u" ) "
 			words_output["global"] = {"nb_words":cpt - 1, "nb_matches":matches, "nb_vocalizations": nb_vocalizations_globale}
 		output["words"] = words_output;
-
 		#Magic_loop to built queries of Adjacents,translations and annotations in the same time
 		if prev_aya or next_aya or translation or  annotation_aya:
 			adja_query = trad_query = annotation_aya_query = u"( 0"
