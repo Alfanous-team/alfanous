@@ -76,7 +76,6 @@ from alfanous.Exceptions import  FeedBack  # , NotImplemented
 from alfanous.TextProcessing import QArabicSymbolsFilter, unicode_
 
 from alfanous.Misc import LOCATE, FIND, FILTER_DOUBLES
-# from alfanous.Misc import buck2uni
 
 
 FEEDBACK = True

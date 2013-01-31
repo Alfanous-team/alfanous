@@ -33,6 +33,7 @@ API Modules, Files (alfanous)
 :Indexing.py: the manager of the indexes reading.
 :Searching.py: the module responsible of the basic search operation.
 :Suggestions.py: the module responsible of suggestions.
+:Romanization.py: the module responsible of romanization systems.
 :Threading.py: the module responsible of multi-processing during the search.
 :Constants.py: a module that contains some constants used in the API.
 :Exceptions.py: a module that contains some exceptions used in the API.
