@@ -49,8 +49,8 @@ DJWUI_PATH=$(API_PATH)"alfanous-django/"
 
 ##  Installation Paths:
 PREFIX?=/usr
-CONFIG_INSTALL_PATH="$(DESTDIR)$(PREFIX)/share/alfanous-config/"
-INDEX_INSTALL_PATH="$(DESTDIR)$(PREFIX)/share/alfanous-indexes/"
+#CONFIG_INSTALL_PATH="$(DESTDIR)$(PREFIX)/share/alfanous-config/"
+#INDEX_INSTALL_PATH="$(DESTDIR)$(PREFIX)/share/alfanous-indexes/"
 WEB_INSTALL_PATH=$(DESTDIR)/var/www/alfanous-web/
 WEB_CGI_INSTALL_PATH=$(WEB_INSTALL_PATH)cgi/
 
@@ -391,13 +391,17 @@ install_all: install_api install_desktop install_jos2 install_web
 
 
 install_api: 
-	cd   "$(API_PATH)alfanous" ; python setup.py  install
+	cd   "$(API_PATH)alfanous" ; python setup.py install #--root=%{buildroot}
 	
 install_desktop:  install_api qt_all  local_mo_download
-	cd  $(DESKTOP_INTERFACE_PATH); sudo python setup.py install
+	cd  $(DESKTOP_INTERFACE_PATH); sudo python setup.py install #--root=%{buildroot}
+	mkdir -p $(DESTDIR)$(PREFIX)/bin/
 	cp ./resources/launchers/alfanousDesktop $(DESTDIR)$(PREFIX)/bin/
+	mkdir -p $(DESTDIR)$(PREFIX)/share/applications/
 	cp ./resources/launchers/alfanous.desktop $(DESTDIR)$(PREFIX)/share/applications/
+	mkdir -p $(DESTDIR)$(PREFIX)/share/pixmaps/
 	cp ./resources/AlFanous.png  $(DESTDIR)$(PREFIX)/share/pixmaps/
+	mkdir -p $(DESTDIR)$(PREFIX)/share/fonts/
 	cp ./resources/fonts/* $(DESTDIR)$(PREFIX)/share/fonts/
 	#test installation
 	alfanousDesktop &
