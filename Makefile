@@ -391,10 +391,10 @@ install_all: install_api install_desktop install_jos2 install_web
 
 
 install_api: 
-	cd   "$(API_PATH)alfanous" ; python setup.py install #--root=%{buildroot}
+	cd   "$(API_PATH)alfanous" ; python setup.py install --root=$(DESTDIR)
 	
 install_desktop:  install_api qt_all  local_mo_download
-	cd  $(DESKTOP_INTERFACE_PATH); sudo python setup.py install #--root=%{buildroot}
+	cd  $(DESKTOP_INTERFACE_PATH); sudo python setup.py install --root=$(DESTDIR)
 	mkdir -p $(DESTDIR)$(PREFIX)/bin/
 	cp ./resources/launchers/alfanousDesktop $(DESTDIR)$(PREFIX)/bin/
 	mkdir -p $(DESTDIR)$(PREFIX)/share/applications/
