@@ -534,6 +534,26 @@ a:hover{color: green;}
 	padding: 5px 2px 4px 2px;
 	/* font-size:100%;*/
 }
+
+.word_synonym_nb {
+	background-color: #09A;
+	color: #FFF;
+}
+
+.word_synonym {
+	background-color: #FFF;
+	color: #09A;
+	padding: 5px 2px 4px 2px;
+	/* font-size:100%;*/
+}
+
+.word_derivation_nb {
+	background-color: #A90;
+	color: #FFF;
+}
+
+
+
 .word_annotation_nb {
 	background-color: #0A9;
 	color: #FFF;	
