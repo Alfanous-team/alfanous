@@ -5,7 +5,34 @@
 <html>
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-	<title> {% block title %} {{ _("Alfanous - Advanced Quranic Search Engine") }} {% endblock %}  </title>
+	<title> 
+			{% block title %} 
+				{% if params.query %}
+					{% if current.unit == "aya" %}
+						{{ _("Ayah Results to Query:") }} 
+					{% elif current.unit == "word" %}
+						{{ _("Word Results to Query:") }}
+					{% elif current.unit == "translation" %}
+						{{ _("Translation Results to Query:") }} 
+					{% else %}
+						{{ _("Results to Query:") }} 
+					{% endif %}	
+					{{ params.query }}
+					
+				{% else %}
+					{% if current.unit == "aya" %}
+						{{ _("Quranic Verse Search") }}
+					{% elif current.unit == "word" %}
+						{{ _("Quranic Word Search") }}
+					{% elif current.unit == "translation" %}
+						{{ _("Quranic Translation Search") }}
+					{% else %}
+						{{ _("Advanced Quranic Search Engine") }} 
+					{% endif %}
+					 - {{ _("Alfanous") }} 
+				{% endif %}
+			{% endblock %}  
+	</title>
 	
 	<meta name="description" content="{{ _('Alfanous is a functional, dynamic, comprehensive Qur’an search engine that has been effectively designed to carry out simple or advanced Quranic searches.') }}"/>
 	<meta name="keywords" content="{{ _("quran") }}, {{ _("forqan") }}, {{ _("koran") }}, {{ _("search") }}, {{ _("search engine") }}, {{ _("ayates") }}, {{ _("surates") }}, {{ _("advanced") }}, {{ _("statistics") }}, {{  _("linguistic") }}, {{ _("information retrieval") }}, {{ _("natural language processing") }}, {{ _("words") }}, {{ _("Lantern") }}, {{ _("alfanous") }},  "/>
@@ -209,23 +236,24 @@
 <ul class="headermenu">
 <li class="menuitem"><span>{{ _("Ayahs") }}</span></li>
 {# <li class="menuitem"><a href="/sura/">{{ _("Surahs") }}</a></li> #}
-<li class="menuitem"><a href="{{ current_path }}word/">{{ _("Words") }}</a></li>
-<li class="menuitem"><a href="{{ current_path }}translation/">{{ _("Translations") }}</a></li>
+<!-- <li class="menuitem"><a href="{% url alfanous-django.wui.views.results current.language "word" %}">{{ _("Words") }}</a></li> -->
+<!-- <li class="menuitem"><a href="{% url alfanous-django.wui.views.results current.language "translation" %}">{{ _("Translations") }}</a></li> -->
 {# <li class="menuitem"><a href="/taffsir/">{{ _("Taffsirs") }}</a></li> #}
 {# <li class="menuitem"><a href="/hadith/">{{ _("Hadiths") }}</a></li> #}
 {# <li class="menuitem"><a href="/dream/">{{ _("Dreams") }}</a></li> #}
 {# <li class="menuitem"><a href="/poem/">{{ _("Poems") }}</a></li> #}
 
-<nav>
+
+<nav id="language_menu">
 	<ul class = "right">
-		<li class="menuitem"><a href="#"> {{ language_local_name }} &darr;</a>
+		<li class="menuitem"><a href="#"> {{ language.name_local }} &darr;</a>
 			<ul class = "right">
-				{% for language in available_languages %}
-				<li class="listItem" >
-					{% ifequal language.0 language_code %}<span >{{ language.1 }}</span> 
-					{% else %} <a href="/{{ language.0 }}/">{{ language.1 }}</a></span>
-				</li>
-				{% endifequal %} 
+				{% for available_language in available.languages %}
+				<li class="listItem">
+					{% ifequal available_language.0 language.code %}<span >{{ available_language.1 }}</span> 
+					{% else %} <a href="{% url alfanous-django.wui.views.results available_language.0 current.unit %}?{{ current.request }}">{{ available_language.1 }}</a>
+					{% endifequal %} 
+				</li><br/>
 				{% endfor %}
 			</ul>
 		</li>
@@ -241,14 +269,14 @@
 <div>
 <table>
 	<tr>
-		<td colspan="4" style="background:transparent url(/static/images/logo{{ image_extension }}.png); width:385px; height:200px;"> </td>
+		<td colspan="4" style="background:transparent url(/static/images/logo{{ bidi.image_extension }}.png); width:385px; height:200px;"> </td>
 	</tr>
 	<tr>
 		<td style="background:url(/static/images/main_table_02.png) no-repeat;width:50px;height:26px"> </td>
 		<td style="background:url(/static/images/main_table_03.png) no-repeat;width:259px;height:26px">
-			<input style="direction: {{ bidi }} ; text-align:{{ align }}" id="search_box" name="query" class="enter keyboardInput" type="text" value="{{ params.query }}" />
+			<input style="direction: {{ bidi.direction }} ; text-align:{{ bidi.align }}" id="search_box" name="query" class="enter keyboardInput" type="text" value="{{ params.query }}" />
 			</td>
-		<td style="background:url(/static/images/main_table_04.png) repeat scroll 0 0 transparent;width:62;height:26;text-align:right;">
+		<td style="background:url(/static/images/main_table_04.png) repeat scroll 0 0 transparent;width:62;height:26;text-align:center;">
 			<a class="button" href="" onclick="$('#form').submit(); return false;">{{ _("search") }}</a>
 			</td>
 		<td style="background:url(/static/images/main_table_05.png) no-repeat;width:24px;height:26px"> </td>
@@ -316,7 +344,7 @@
 {% endblock %}
 
 <br />
-<div class="xdrops_continer" style="direction:{{ bidi }}; text-align:{{ align_inverse }}; width: 342px;">
+<div class="xdrops_continer" style="direction:{{ bidi.direction }}; text-align:{{ bidi.align_inverse }}; width: 342px;">
 	<span class="xtitle">{{ _("View") }} :</span>
 	<select id="view"  class="styled" name="view" >
 		<option value="default" {% ifequal params.view "default" %}selected{% endifequal %}>{{ _("Default") }}</option>
@@ -328,44 +356,48 @@
 		<option value="recitation"{% ifequal params.view "recitation" %}selected{% endifequal %}>{{ _("Recitation") }}</option>
 	</select><br /><!--[if lte IE 8]><![endif]-->
 
-{% block sortedby_panel %}
-
-{% endblock %}
-
-{% block translations_panel %}
-
-{% endblock %}
-
-{% block recitations_panel %}
-
-{% endblock %}
+{% block sortedby_panel %}{% endblock %}
+{% block translations_panel %}{% endblock %}
+{% block recitations_panel %} {% endblock %}
 
 </div>
 
 
 <br />
-<br />
-<br />
 
-<div id="vote_btn">
-<a class='xbutton gray' href="https://docs.google.com/spreadsheet/viewform?formkey=dEZZaE5fQ0NwQXljU2ZyUmpfLW15SVE6MA#gid=0" target="_blank">{{ _("Please help us improving Alfanous Project, by taking this survey about search features in Holy Quran") }} </a>
-</div>
+{% if not params %}
+	{% block no_request %}
+		<br /><br />  
+		<div>
+        <a href="https://www.facebook.com/alfanous" title="Facebook" target="_blank"><img src="/static/images/facebook-icon-black.png" alt="{{ _("Facebook") }}" title="{{ _("Facebook") }}" /></a> 
+        <a href="https://plus.google.com/111305625425237630318" target="_blank"><img src="/static/images/google-icon-black.png" alt="{{ _("Google Plus") }}" title="{{ _("Google Plus") }}" /> </a> 
+        <a href="https://twitter.com/alfanous" target="_blank"> <img src="/static/images/twitter-icon-black.png" alt="{{ _("Twitter") }}" title="{{ _("Twitter") }}" /></a> 
+		</div>
+		<!-- <br />
+		<br />
+		<div id="vote_btn">
+		<a class='xbutton gray' href="https://docs.google.com/spreadsheet/viewform?formkey=dEZZaE5fQ0NwQXljU2ZyUmpfLW15SVE6MA#gid=0" target="_blank">{{ _("Please help us improving Alfanous Project, by taking this survey about search features in Holy Quran") }} </a>
+		</div><br />  -->
+		<br /><br />  
+		<br /><br />
+	{% endblock %}
+{% endif %}
 
-<br /><br />  
+
 
 
 
 
 
 <!--abdellah-->
-<div id="search_result" style="direction:{{ bidi }}; width:800px">
+<div id="search_result" style="direction:{{ bidi.direction }}; width:800px">
 <!-- assem: search_result_django_static -->
 {% block results %} {% endblock results %}
 </div>
 
 </div>
 </div>
-<div id="down" class="modal" style="text-align: {{ align }};">
+<div id="down" class="modal" style="text-align: {{ bidi.align }};">
 	<h2 style='padding:0 0 0px 0'><img alt="download" src="/static/images/Download.png">{{ _("Download") }}</h2><br/>
 <strong> {{ _("English desktop release 0.4") }}: 
 <a class="name" title="Click to download alfanousDesktop-win0.4r20.exe" href="http://sourceforge.net/projects/alfanous/files/Interfaces/AlfanousDesktop/0.4.20/alfanousDesktop-win0.4r20.exe/download">{{ _("Windows") }}</a>
@@ -376,9 +408,13 @@
 		<button type="button" class='close gray button' > {{ _(" Close ") }} </button>	
 	<br />
 </div>
+
+<div id="help" class="modal" style="width: 675px; text-align: {{ bidi.align }};">
+<h2>{{ _("Help") }}</h2>
 {% block help_panel %}
 
 {% endblock %}
+</div>
 	
 </form>
 

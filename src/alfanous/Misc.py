@@ -6,9 +6,6 @@
 import sys
 import locale
 
-from  alfanous.Constants import BUCKWALTER2UNICODE
-
-
 #translation functions
 import gettext
 gettext.bindtextdomain( "fanous", "./locale" )
@@ -23,36 +20,10 @@ LOC = locale.getdefaultlocale()[0]
 #get platform
 SYS = sys.platform
 
-
-
-def buck2uni( string, ignore = "" , reverse = False ):
-	""" encode & decode buckwalter transliteration """
-
-	if reverse:
-		mapping = {}
-		for k, v in BUCKWALTER2UNICODE.items():
-			#reverse the mapping buckwalter <-> unicode
-			mapping[v] = k
-	else:
-		mapping = BUCKWALTER2UNICODE
-
-	result = ""
-	for char in string :
-		if mapping.has_key( char ) and char not in ignore:
-			result += mapping[char]
-		else :
-			result += char
-	return result
-
-
-
-#filter doubles
-def filter_doubles( lst ):
-    """ deprecated : use list(set()) or filter(cond,list) instead"""
-    for i in range( len( lst ) ):
-        if lst[i] not in lst[i + 1:]:
-            yield lst[i]
-
+FILTER_DOUBLES = filter_doubles = lambda lst:list( set( lst ) )
+LOCATE = lambda source, dist, itm: dist[source.index( itm )] \
+												if itm in source else None
+FIND = lambda source, dist, itm: [dist[i] for i in [i for i in range( len( source ) ) if source[i] == itm]]
 
 
 

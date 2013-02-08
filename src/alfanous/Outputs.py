@@ -22,7 +22,7 @@ TODO add to SHOW: TYPES, HELPMSGS,
 TODO offer some linguistic operations like vocalize
 TODO derive using Quranic Corpus/functions
 FIXME use xranges in domains
-FIXME vocalization_dict[terms[1]], test key existance before use
+FIXME vocalization_dict[terms[1]], test key existence before use
 TODO include suggestions with search results
 TODO +flag language
 FIXME how to select the translation attached to results, what ID? 
@@ -39,9 +39,12 @@ from alfanous.main import TraductionSearchEngine, WordSearchEngine
 from alfanous.dynamic_resources.arabicnames_dyn import ara2eng_names as Fields
 from alfanous.dynamic_resources.std2uth_dyn import std2uth_words
 from alfanous.dynamic_resources.vocalizations_dyn import vocalization_dict
+from alfanous.dynamic_resources.synonymes_dyn import syndict
+from alfanous.dynamic_resources.derivations_dyn import derivedict
 from alfanous.TextProcessing import QArabicSymbolsFilter
 from alfanous.Data import *
-from alfanous.Misc import buck2uni
+from alfanous.Romanization import transliterate
+from alfanous.Misc import LOCATE, FIND, FILTER_DOUBLES
 
 
 STANDARD2UTHMANI = lambda x: std2uth_words[x] if std2uth_words.has_key( x ) else x
@@ -393,6 +396,8 @@ class Raw():
 		""" return the results of search for any unit """
 		if unit == "aya":
 			search_results = self._search_aya( flags )
+		elif unit == "translation":
+			search_results = self._search_translation( flags )
 		else:
 			search_results = {}
 
@@ -433,6 +438,8 @@ class Raw():
 
 		# pre-defined views
 		if view == "minimal":
+			fuzzy = True
+			#page = 25
 			vocalized = False
 			recitation = None
 			translation = None
@@ -577,19 +584,33 @@ class Raw():
 					vocalizations = vocalization_dict[term[1]] if vocalization_dict.has_key( term[1] ) \
 										   else []
 					nb_vocalizations_globale += len( vocalizations )
+					synonyms = syndict[term[1]] if syndict.has_key( term[1] ) \
+										   else []
+
+					lemma = LOCATE( derivedict["word_"], derivedict["lemma"], term[1] )
+					root = LOCATE( derivedict["word_"], derivedict["root"], term[1] )
+					if lemma:  # if different of none
+						derivations = FILTER_DOUBLES( FIND( derivedict["lemma"], derivedict["word_"], lemma ) )
+					else:
+						derivations = []
 					words_output[ "individual" ][ cpt ] = {
-														 "word":term[1],
-														 "romanization": buck2uni( term[1], ignore = "" , reverse = True ) if romanization == "buckwalter" else None,
-														 "nb_matches":term[2],
-														 "nb_ayas":term[3],
-														 "nb_vocalizations": len( vocalizations ),
-														 "vocalizations": vocalizations
+															 "word":term[1],
+															 "romanization": transliterate( romanization, term[1], ignore = "" , reverse = True ) if romanization in self.DOMAINS["romanization"] else None,
+															 "nb_matches":term[2],
+															 "nb_ayas":term[3],
+															 "nb_vocalizations": len( vocalizations ),#unneeded
+															 "vocalizations": vocalizations,
+															 "nb_synonyms": len( synonyms ),#unneeded
+															 "synonyms": synonyms, #unneeded for normal mode
+															 "lemma": lemma,
+															 "root": root,
+															 "nb_derivations": len( derivations ), #unneeded
+															 "derivations": derivations #unneeded for normal mode
 														 }
 					cpt += 1
 			annotation_word_query += u" ) "
 			words_output["global"] = {"nb_words":cpt - 1, "nb_matches":matches, "nb_vocalizations": nb_vocalizations_globale}
 		output["words"] = words_output;
-
 		#Magic_loop to built queries of Adjacents,translations and annotations in the same time
 		if prev_aya or next_aya or translation or  annotation_aya:
 			adja_query = trad_query = annotation_aya_query = u"( 0"
