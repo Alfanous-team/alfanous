@@ -32,34 +32,40 @@ from alfanous.Outputs import Raw
 # load the search engine, use default paths
 RAWoutput = Raw()
 
+def control_access ( request ):
+	""" Controling access to  the API """
+	print request.META["REMOTE_ADDR"]
+	print request.META["REMOTE_HOST"]
+	print request.META["QUERY_STRING"]
+	#print request.META["HTTP_REFERER"]
+	print request.META["QUERY_STRING"]
+	print "is ajax?", request.is_ajax()
+	return True
+
 
 def jos2( request ):
     """ JSON Output System II """
-
+    control_access( request )
     if len( request.GET ):
         response_data = RAWoutput.do( request.GET )
         response = HttpResponse( json.dumps( response_data ), mimetype = "application/json" )
         response['charset'] = 'utf-8'
         response['Access-Control-Allow-Origin'] = '*'
         response['Access-Control-Allow-Methods'] = 'GET'
-
     else:
         response_data = RAWoutput._information["json_output_system_note"]
         response = HttpResponse( response_data )
-
     return response
-
 
 def results( request, unit = "aya", language = None ):
     """     """
-    if unit not in ["aya", "word", "translation"]: # authorized units
+    available_units = ["aya", "word", "translation"]
+    if unit not in available_units:
     	unit = "aya"
     mutable_request = {}
     for k, v in request.GET.items():
     	mutable_request[k] = v
-
     show_params = { "action":"show", "query": "all" }
-
     if mutable_request.has_key( "query" ) and not ( mutable_request.has_key( "action" ) and not mutable_request["action"] == "search" ):
         search_params = mutable_request
         suggest_params = { "action":"suggest", "query": mutable_request["query"] }
@@ -74,7 +80,7 @@ def results( request, unit = "aya", language = None ):
         suggest_params = {
 						"action":"suggest",
                         "query": mutable_request["search"]
-                                        }
+                         }
     else:
         search_params = {}
         suggest_params = {}
@@ -86,7 +92,6 @@ def results( request, unit = "aya", language = None ):
     raw_suggest = RAWoutput.do( suggest_params ) if suggest_params else None
     #use show as third action
     raw_show = RAWoutput.do( show_params )   if show_params else None
-
     # language information
     current_language = translation.get_language()
     request_language = translation.get_language_from_request( request )[:2]
@@ -103,30 +108,50 @@ def results( request, unit = "aya", language = None ):
     		translation.activate( current_language )
 	        language_info = get_language_info( current_language )
 	        language = current_language
-
     request.LANGUAGE_CODE = translation.get_language()
-
+    # language direction  properties
+    bidi_val = language_info['bidi']
+    fields_mapping_en_ar = raw_show["show"]["fields_reverse"]
+    fields_mapping_en_en = {}
+    for k in fields_mapping_en_ar.keys():
+        fields_mapping_en_en[k] = k
+    #python 2.7: { k:k for k in fields_mapping_en_ar.keys() }
+    bidi_properties = {
+		  				 False : {
+								 	"val": bidi_val,
+								 	"direction": "ltr",
+								 	"align": "left",
+								 	"align_inverse": "right",
+								 	"image_extension": "_en",
+								 	"fields": fields_mapping_en_en
+	   				 			  },
+		  				 True : {
+								 	"val": bidi_val,
+								 	"direction": "rtl",
+								 	"align": "right",
+								 	"align_inverse": "left",
+								 	"image_extension": "_ar",
+								 	"fields": fields_mapping_en_ar
+	   				 			  }
+					}
     mytemplate = unit + '_search.html'
-
     return render_to_response( mytemplate ,
                               {
-                                'current_path': request.get_full_path(),
-                                "bidi": "rtl" if language_info['bidi']
-                                              else "ltr",
-                                "language_local_name": language_info['name_local'],
-                                "language_code": language_info['code'],
-                                "available_languages": available_languages,
-                                "align": "right" if language_info['bidi']
-                                              else "left",
-                                "align_inverse": "left" if language_info['bidi']
-                                              else "right",
-                                "image_extension": "_ar" if language_info['bidi']
-                                              else "_en",
-
+                                'current': {
+											'path': request.path,
+                                			'request': request.GET.urlencode(),
+                                   			'unit': unit,
+                                	     	'language': language,
+											},
+                                "bidi":bidi_properties[bidi_val],
+                                "language": language_info,
+                                "available": {
+											"languages": available_languages,
+											"units": available_units,
+											},
                                 "params": search_params,
                                 "results": raw_search,
                                 "suggestions": raw_suggest,
                                 "info": raw_show
-
                                }
                               )
