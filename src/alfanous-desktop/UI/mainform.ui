@@ -463,6 +463,9 @@ p, li { white-space: pre-wrap; }
    </widget>
    <widget class="QMenu" name="menuOptions">
     <property name="enabled">
+     <bool>true</bool>
+    </property>
+    <property name="tearOffEnabled">
      <bool>false</bool>
     </property>
     <property name="title">
@@ -490,6 +493,9 @@ p, li { white-space: pre-wrap; }
      <addaction name="actionInverse"/>
     </widget>
     <widget class="QMenu" name="menuScript">
+     <property name="enabled">
+      <bool>false</bool>
+     </property>
      <property name="title">
       <string>Script</string>
      </property>
@@ -497,18 +503,27 @@ p, li { white-space: pre-wrap; }
      <addaction name="actionUthmani"/>
     </widget>
     <widget class="QMenu" name="menuTranslation">
+     <property name="enabled">
+      <bool>false</bool>
+     </property>
      <property name="title">
       <string>Translation</string>
      </property>
      <addaction name="actionDefault_2"/>
     </widget>
     <widget class="QMenu" name="menuRecitation">
+     <property name="enabled">
+      <bool>false</bool>
+     </property>
      <property name="title">
       <string>Recitation</string>
      </property>
      <addaction name="actionDefault_3"/>
     </widget>
     <widget class="QMenu" name="menuShow">
+     <property name="enabled">
+      <bool>false</bool>
+     </property>
      <property name="title">
       <string>Show</string>
      </property>
@@ -519,6 +534,9 @@ p, li { white-space: pre-wrap; }
      <addaction name="actionNext_aya"/>
     </widget>
     <widget class="QMenu" name="menuChoose_Language">
+     <property name="enabled">
+      <bool>false</bool>
+     </property>
      <property name="title">
       <string>Choose &amp;Language</string>
      </property>
@@ -541,12 +559,15 @@ p, li { white-space: pre-wrap; }
    </widget>
    <widget class="QMenu" name="menu_Indexes">
     <property name="enabled">
-     <bool>false</bool>
+     <bool>true</bool>
     </property>
     <property name="title">
      <string>&amp;Indexes</string>
     </property>
     <widget class="QMenu" name="menuRemove_Translation">
+     <property name="enabled">
+      <bool>false</bool>
+     </property>
      <property name="title">
       <string>Remove Translation</string>
      </property>
@@ -557,6 +578,9 @@ p, li { white-space: pre-wrap; }
      <addaction name="actionDefault_4"/>
     </widget>
     <widget class="QMenu" name="menuRemove_Recitation">
+     <property name="enabled">
+      <bool>false</bool>
+     </property>
      <property name="title">
       <string>Remove Recitation</string>
      </property>
@@ -576,7 +600,7 @@ p, li { white-space: pre-wrap; }
    </widget>
    <widget class="QMenu" name="menu_Edit">
     <property name="enabled">
-     <bool>false</bool>
+     <bool>true</bool>
     </property>
     <property name="title">
      <string>&amp;Edit</string>
@@ -3317,6 +3341,9 @@ border : 0px solid white;
    </property>
   </action>
   <action name="m_help">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="icon">
     <iconset resource="../images/main.qrc">
      <normaloff>:/resources/contents.png</normaloff>:/resources/contents.png</iconset>
@@ -3652,6 +3679,9 @@ border : 0px solid white;
    </property>
   </action>
   <action name="actionPreferences">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="icon">
     <iconset resource="../images/main.qrc">
      <normaloff>:/resources/exec.png</normaloff>:/resources/exec.png</iconset>
@@ -3698,6 +3728,9 @@ border : 0px solid white;
    </property>
   </action>
   <action name="actionAdd_Translation">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="icon">
     <iconset>
      <normaloff>:/resources/button_ok.png</normaloff>:/resources/button_ok.png</iconset>
@@ -3723,6 +3756,9 @@ border : 0px solid white;
    </property>
   </action>
   <action name="actionAdd_Recitation">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="icon">
     <iconset>
      <normaloff>:/resources/button_ok.png</normaloff>:/resources/button_ok.png</iconset>
@@ -3737,6 +3773,9 @@ border : 0px solid white;
    </property>
   </action>
   <action name="actionUndo_Query">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="icon">
     <iconset resource="../images/main.qrc">
      <normaloff>:/resources/editundo.png</normaloff>:/resources/editundo.png</iconset>
@@ -3746,6 +3785,9 @@ border : 0px solid white;
    </property>
   </action>
   <action name="actionRedo_Query">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="icon">
     <iconset resource="../images/main.qrc">
      <normaloff>:/resources/editredo.png</normaloff>:/resources/editredo.png</iconset>
@@ -3755,6 +3797,9 @@ border : 0px solid white;
    </property>
   </action>
   <action name="actionCopy_Query">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="icon">
     <iconset resource="../images/main.qrc">
      <normaloff>:/resources/editpaste.png</normaloff>:/resources/editpaste.png</iconset>
@@ -3764,6 +3809,9 @@ border : 0px solid white;
    </property>
   </action>
   <action name="actionCopy_Page">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="icon">
     <iconset resource="../images/main.qrc">
      <normaloff>:/resources/editpaste.png</normaloff>:/resources/editpaste.png</iconset>
