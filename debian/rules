@@ -5,6 +5,7 @@
 	dh $@ --with python2
 
 override_dh_auto_build:
+	make build
 	dh_auto_build -Dsrc/alfanous
 	dh_auto_build -Dsrc/alfanous-desktop
 
