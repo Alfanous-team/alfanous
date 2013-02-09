@@ -152,8 +152,8 @@ download_quranic_corpus:
 	@echo "todo"
 
 download_tanzil:
-	export PYTHONPATH=$(API_PATH) ;	python $(QIMPORT) -d tanzil_simple_clean $(STORE_PATH)tanzil_simple_clean.xml
-	export PYTHONPATH=$(API_PATH) ;	python $(QIMPORT) -d tanzil_uthmani $(STORE_PATH)tanzil_uthmani.xml
+	export PYTHONPATH=$(API_PATH) ;	python2 $(QIMPORT) -d tanzil_simple_clean $(STORE_PATH)tanzil_simple_clean.xml
+	export PYTHONPATH=$(API_PATH) ;	python2 $(QIMPORT) -d tanzil_uthmani $(STORE_PATH)tanzil_uthmani.xml
 
 
 
@@ -175,11 +175,11 @@ update_pre_build:  update_dynamic_resources_prebuild   #update_quranic_corpus
 
 # update list of indexed translations automatically using Importer
 update_translations_indexed_list:
-	export PYTHONPATH=$(API_PATH) ;	python $(QIMPORT) -u translations $(INDEX_PATH)extend/  $(CONFIGS_PATH)translations.json
+	export PYTHONPATH=$(API_PATH) ;	python2 $(QIMPORT) -u translations $(INDEX_PATH)extend/  $(CONFIGS_PATH)translations.json
 
 # update quranic corpus in the database automatically using Importer
 update_quranic_corpus:
-	export PYTHONPATH=$(API_PATH) ;	python $(QIMPORT) -u wordqc $(STORE_PATH)quranic-corpus-morpology.xml $(DB_PATH)main.db
+	export PYTHONPATH=$(API_PATH) ;	python2 $(QIMPORT) -u wordqc $(STORE_PATH)quranic-corpus-morpology.xml $(DB_PATH)main.db
 
 # update recitations offline list TODO
 update_recitations_offline_list:
@@ -206,25 +206,25 @@ transfer_prebuild: transfer_stopwords transfer_synonyms transfer_word_props tran
 transfer_postbuild: transfer_vocalizations
 	
 transfer_stopwords:
-	export PYTHONPATH=$(API_PATH) ;	python $(QIMPORT) -t stopwords $(DB_PATH)main.db $(DYNAMIC_RESOURCES_PATH)
+	export PYTHONPATH=$(API_PATH) ;	python2 $(QIMPORT) -t stopwords $(DB_PATH)main.db $(DYNAMIC_RESOURCES_PATH)
 	
 transfer_synonyms:
-	export PYTHONPATH=$(API_PATH) ;	python $(QIMPORT) -t synonyms $(DB_PATH)main.db $(DYNAMIC_RESOURCES_PATH)
+	export PYTHONPATH=$(API_PATH) ;	python2 $(QIMPORT) -t synonyms $(DB_PATH)main.db $(DYNAMIC_RESOURCES_PATH)
 
 transfer_word_props:
-	export PYTHONPATH=$(API_PATH) ;	python $(QIMPORT) -t word_props $(DB_PATH)main.db $(DYNAMIC_RESOURCES_PATH)
+	export PYTHONPATH=$(API_PATH) ;	python2 $(QIMPORT) -t word_props $(DB_PATH)main.db $(DYNAMIC_RESOURCES_PATH)
 
 transfer_derivations:
-	export PYTHONPATH=$(API_PATH) ;	python $(QIMPORT) -t derivations $(DB_PATH)main.db $(DYNAMIC_RESOURCES_PATH)
+	export PYTHONPATH=$(API_PATH) ;	python2 $(QIMPORT) -t derivations $(DB_PATH)main.db $(DYNAMIC_RESOURCES_PATH)
 
 transfer_vocalizations:
-	export PYTHONPATH=$(API_PATH) ;	python $(QIMPORT) -t vocalizations $(DB_PATH)main.db $(INDEX_PATH)main/ $(DYNAMIC_RESOURCES_PATH)
+	export PYTHONPATH=$(API_PATH) ;	python2 $(QIMPORT) -t vocalizations $(DB_PATH)main.db $(INDEX_PATH)main/ $(DYNAMIC_RESOURCES_PATH)
 
 transfer_ara2eng_names:
-	export PYTHONPATH=$(API_PATH) ;	python $(QIMPORT) -t ara2eng_names $(DB_PATH)main.db $(DYNAMIC_RESOURCES_PATH)
+	export PYTHONPATH=$(API_PATH) ;	python2 $(QIMPORT) -t ara2eng_names $(DB_PATH)main.db $(DYNAMIC_RESOURCES_PATH)
 	
 transfer_standard2uthmani:
-	export PYTHONPATH=$(API_PATH) ;	python $(QIMPORT) -t std2uth_words $(DB_PATH)main.db $(DYNAMIC_RESOURCES_PATH)
+	export PYTHONPATH=$(API_PATH) ;	python2 $(QIMPORT) -t std2uth_words $(DB_PATH)main.db $(DYNAMIC_RESOURCES_PATH)
 	
 
 
@@ -236,13 +236,13 @@ index_all: index_main index_extend #index_word
 	@echo "done;"
 
 index_main:
-	export PYTHONPATH=$(API_PATH) ;	rm -r $(INDEX_PATH)main/; python $(QIMPORT) -x main $(DB_PATH)main.db $(INDEX_PATH)main/
+	export PYTHONPATH=$(API_PATH) ;	rm -r $(INDEX_PATH)main/; python2 $(QIMPORT) -x main $(DB_PATH)main.db $(INDEX_PATH)main/
 
 index_extend:
-	export PYTHONPATH=$(API_PATH) ;	rm -r $(INDEX_PATH)extend/; python $(QIMPORT) -x extend $(STORE_PATH)Translations/ $(INDEX_PATH)extend/
+	export PYTHONPATH=$(API_PATH) ;	rm -r $(INDEX_PATH)extend/; python2 $(QIMPORT) -x extend $(STORE_PATH)Translations/ $(INDEX_PATH)extend/
 	
 index_word:
-	export PYTHONPATH=$(API_PATH) ;	rm -r $(INDEX_PATH)word/; python $(QIMPORT) -x word $(DB_PATH)main.db $(INDEX_PATH)word/
+	export PYTHONPATH=$(API_PATH) ;	rm -r $(INDEX_PATH)word/; python2 $(QIMPORT) -x word $(DB_PATH)main.db $(INDEX_PATH)word/
 	
 
 ## build all spellers:
@@ -253,13 +253,13 @@ speller_all: speller_aya speller_subject #speller_word
 	@echo "done;"
 
 speller_aya:
-	export PYTHONPATH=$(API_PATH) ;	python $(QIMPORT) -p aya  $(INDEX_PATH)main/
+	export PYTHONPATH=$(API_PATH) ;	python2 $(QIMPORT) -p aya  $(INDEX_PATH)main/
 
 speller_subject:
-	export PYTHONPATH=$(API_PATH) ;	python $(QIMPORT) -p subject  $(INDEX_PATH)main/
+	export PYTHONPATH=$(API_PATH) ;	python2 $(QIMPORT) -p subject  $(INDEX_PATH)main/
 
 speller_word:
-	export PYTHONPATH=$(API_PATH) ;	python $(QIMPORT) -p word  $(INDEX_PATH)word/
+	export PYTHONPATH=$(API_PATH) ;	python2 $(QIMPORT) -p word  $(INDEX_PATH)word/
 	
 
 
@@ -304,7 +304,7 @@ local_pot_mobile:
 	xgettext -kT_ --from-code utf-8 -L PHP --no-wrap --package-name="AlfanousMobileWUI" --package-version=$(VERSION) -d alfanousMWUI -o ./localization/pot_files/alfanousMWUIv$(VERSION)/alfanousMWUIv$(VERSION).pot $(MOBILE_WUI_PATH)*.php
 
 local_pot_django:
-	cd  $(DJWUI_PATH); python manage.py makemessages  -a 
+	cd  $(DJWUI_PATH); python2 manage.py makemessages  -a 
 	mkdir -p localization/pot_files/alfanousDJv$(VERSION)
 	cp $(DJWUI_PATH)/locale/default/LC_MESSAGES/django.po localization/pot_files/alfanousDJv$(VERSION)/alfanousDJv$(VERSION).pot
 
@@ -315,7 +315,7 @@ local_mo_download:
 
 ## compile files for django
 local_mo_compile:
-	cd  $(DJWUI_PATH); python manage.py compilemessages 
+	cd  $(DJWUI_PATH); python2 manage.py compilemessages 
 
 ##   packaging all to:
 # 1. Python egg files, see dist_egg_all
@@ -337,32 +337,32 @@ dist_egg_all: dist_egg_api  dist_egg_pycorpus  dist_egg_pyzekr dist_egg_qimport 
 
 # python egg for API
 dist_egg_api: 
-	cd $(API_PATH)alfanous ; python setup.py bdist_egg 
+	cd $(API_PATH)alfanous ; python2 setup.py bdist_egg 
 	mkdir -p output/$(VERSION) ; mv $(API_PATH)alfanous/dist/*.egg ./output/$(VERSION)
 	@echo  "NOTE: you can find the generated egg in ./output"
 	
 # python egg for PyCorpus extension
 dist_egg_pycorpus: 
-	cd $(API_PATH)PyCorpus ; python setup.py bdist_egg 
+	cd $(API_PATH)PyCorpus ; python2 setup.py bdist_egg 
 	mkdir -p output/$(VERSION) ; mv $(API_PATH)PyCorpus/dist/*.egg ./output/$(VERSION)
 	@echo  "NOTE: you can find the generated egg in ./output"
 	
 
 # python egg for PyZekrModels extension
 dist_egg_pyzekr: 
-	cd $(API_PATH)PyZekrModels ; python setup.py bdist_egg 
+	cd $(API_PATH)PyZekrModels ; python2 setup.py bdist_egg 
 	mkdir -p output/$(VERSION) ; mv $(API_PATH)PyZekrModels/dist/*.egg ./output/$(VERSION)
 	@echo  "NOTE: you can find the generated egg in ./output"
 	
 # python egg for Qimport extension
 dist_egg_qimport: 
-	cd $(API_PATH)alfanous-import ; python setup.py bdist_egg 
+	cd $(API_PATH)alfanous-import ; python2 setup.py bdist_egg 
 	mkdir -p output/$(VERSION) ; mv $(API_PATH)alfanous-import/dist/*.egg ./output/$(VERSION)
 	@echo  "NOTE: you can find the generated egg in ./output"
 
 # python egg for alfanousDesktop interface
 dist_egg_desktop: 
-	cd $(DESKTOP_INTERFACE_PATH) ; python setup.py bdist_egg 
+	cd $(DESKTOP_INTERFACE_PATH) ; python2 setup.py bdist_egg 
 	mkdir -p output/$(VERSION) ; mv $(DESKTOP_INTERFACE_PATH)dist/*.egg ./output/$(VERSION)
 	@echo  "NOTE: you can find the generated egg in ./output"
  
@@ -374,8 +374,8 @@ dist_deb:
 # Fedora package for AlfanousDesktop
 dist_rpm:  
 	@echo "todo"
-	#cd $(DESKTOP_INTERFACE_PATH) ; python setup.py bdist_rpm
-	#cd $(DESKTOP_INTERFACE_PATH) ; python setup.py bdist_rpm 
+	#cd $(DESKTOP_INTERFACE_PATH) ; python2 setup.py bdist_rpm
+	#cd $(DESKTOP_INTERFACE_PATH) ; python2 setup.py bdist_rpm 
 	
 # MacOs application 
 ## need distutils  and py2app 
@@ -383,7 +383,7 @@ dist_rpm:
 ## easy_install py2app
 dist_app:  
 	@echo "todo using py2app"
-	# cd $(DESKTOP_INTERFACE_PATH) ; python setup.py py2app
+	# cd $(DESKTOP_INTERFACE_PATH) ; python2 setup.py py2app
 
 # Nokia symbian package for alfanousPyS60 #required python2.5 
 dist_sis: 
@@ -408,10 +408,10 @@ install_all: install_api install_desktop install_jos2 install_web
 
 
 install_api: 
-	cd   "$(API_PATH)alfanous" ; python setup.py install --root=$(DESTDIR)
+	cd   "$(API_PATH)alfanous" ; python2 setup.py install --root=$(DESTDIR)
 	
 install_desktop:  install_api qt_all  local_mo_download
-	cd  $(DESKTOP_INTERFACE_PATH); sudo python setup.py install --root=$(DESTDIR)
+	cd  $(DESKTOP_INTERFACE_PATH); sudo python2 setup.py install --root=$(DESTDIR)
 	mkdir -p $(DESTDIR)$(PREFIX)/bin/
 	cp ./resources/launchers/alfanousDesktop $(DESTDIR)$(PREFIX)/bin/
 	mkdir -p $(DESTDIR)$(PREFIX)/share/applications/
