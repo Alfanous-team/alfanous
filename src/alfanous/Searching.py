@@ -37,9 +37,9 @@ class QReader:
 
     def list_values( self, fieldname = None, double = False, conditions = [] ):
         """
-        a choosen field stored values generator
+        a chosen field stored values generator
 
-        @param fieldname: the name of the choosen field
+        @param fieldname: the name of the chosen field
         @param double: Eliminate the doubles or not
         @param conditions: conditions of match
         @type conditions: list of couples
