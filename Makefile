@@ -70,14 +70,41 @@ default:
 ## This target englob all the targets on this makefile
 ## it may help when you are going to make a release
 ## it will do every thing:
-# 1. download all Quranic resources that we can't include in Git or tarball because of license or huge size
-# 2. build all indexes, update all resources, qt files,  localization files, help files
-# 3. generate all documentations
-# 4. make a tarball that contains all downloaded and generated data
-# 5. generate all possible distribution files for all interfaces: API, Desktop interface
+# 1. edit text resources before building
+# 2. download all Quranic resources that we can't include in Git or tarball because of license or huge size
+# 3. build all indexes, update all resources, qt files,  localization files, help files
+# 4. generate all documentations
+# 5. make a tarball that contains all downloaded and generated data
+# 6. generate all possible distribution files for all interfaces: API, Desktop interface
 
 ## Kaboom! @TODO: must test this well
-all:  download_all   build  help_all  tarball_data  dist_all  clean  #install_all	 
+all:  edit_all download_all  build_all local_pot_all help_all  tarball_data  dist_all  clean  #install_all	 
+
+
+##  This target is to edit text resources before building, which are:
+# 1. api information, see update_information
+# 2. globl hints (deprecated), see update_hints
+# 3. List of translations to be downloaded, see  update_translations_to_download_list
+edit_all:  edit_information edit_hints edit_translations_to_download_list
+
+# update information manually 
+edit_information:
+	nano $(RESOURCES_PATH)information.json
+
+# update hints manually
+edit_hints:
+	nano $(CONFIGS_PATH)hints.json
+
+# update stats manually, to initiate it just leave it as an empty json object {}
+# never leave it empty till fix that! TODO
+edit_stats:
+	nano $(CONFIGS_PATH)stats.json 
+	chmod 777 $(CONFIGS_PATH)stats.json 
+
+# update downloading translation list manually
+edit_translations_to_download_list:
+	nano $(STORE_PATH)Translations/translations.list
+
 
 
 ## this target is to build all what have to be built:
@@ -130,37 +157,21 @@ download_tanzil:
 
 
 
+
+
+
 ##  update resources that must be updated after (or independent to) indexing phase, which are:
-# 1. api information, see update_information
-# 2. globl hints (deprecated), see update_hints
-# 3. list of indexed translations, see update_translations_indexed_list
-# 4. list of offline recitations, see update_recitations_offline_list
-# 5. list of online recitations, see update_recitations_online_list  
-update_post_build:  update_dynamic_resources_postbuild  update_information update_hints update_translations_indexed_list update_recitations_offline_list #update_recitations_online_list   
+# 1. list of indexed translations, see update_translations_indexed_list
+# 2. list of offline recitations, see update_recitations_offline_list
+# 3. list of online recitations, see update_recitations_online_list  
+update_post_build:  update_dynamic_resources_postbuild   update_translations_indexed_list update_recitations_offline_list #update_recitations_online_list   
 
 ##  update resources that must be updated before indexing phase, which are:
 # 1. Quranic Arabic Corpus, see update_quranic_corpus
 # 2. Linguistic resources on the form of python dictionarries to accelerate the loading , see update_dynamic_resources
-# 3. List of translations to be downloaded, see  update_translations_to_download_list
-update_pre_build:  update_dynamic_resources_prebuild  update_translations_to_download_list #update_quranic_corpus
 
-# update information manually 
-update_information:
-	nano $(RESOURCES_PATH)information.json
+update_pre_build:  update_dynamic_resources_prebuild   #update_quranic_corpus
 
-# update hints manually
-update_hints:
-	nano $(CONFIGS_PATH)hints.json
-
-# update stats manually, to initiate it just leave it as an empty json object {}
-# never leave it empty till fix that! TODO
-update_stats:
-	nano $(CONFIGS_PATH)stats.json 
-	chmod 777 $(CONFIGS_PATH)stats.json 
-
-# update downloading translation list manually
-update_translations_to_download_list:
-	nano $(STORE_PATH)Translations/translations.list
 
 # update list of indexed translations automatically using Importer
 update_translations_indexed_list:
