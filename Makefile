@@ -86,8 +86,14 @@ all:  download_all   build  help_all  tarball_data  dist_all  clean  #install_al
 # 3. Generate all spelling dictionaries, see speller_all
 # 4. Update all resources that must be updated after indexing phase or independently, see  update_post_build
 # 5. Build qt resource files, see qt_all
-# 6. Generate localization files, see local_pot_all
-build:  update_pre_build index_all speller_all update_post_build qt_all local_pot_all #help_all
+build:  build_all  
+
+build_all: build_api build_desktop
+
+build_api: update_pre_build index_all speller_all update_post_build
+
+build_desktop: qt_all 
+
 
 
 ## clean temporary files after a building operation
