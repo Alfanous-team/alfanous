@@ -58,6 +58,7 @@ WEB_CGI_INSTALL_PATH=$(WEB_INSTALL_PATH)cgi/
 ## default target, it's what to do if you typed "make" without target
 default: 
 	@echo "choose a target:"
+	@echo "edit_all \n\t to edit all resources that should humanly edited " 
 	@echo "download_all \n\t to download all Quranic resources that we can't \n\t include in Git or tarball because of license or huge size" 
 	@echo "build \n\t to build all indexes, update all resources, qt files, \n\t localization files"
 	@echo "tarball_data \n\t to make a tarball that contains all downloaded \n\t and generated data"
@@ -412,8 +413,6 @@ install_api:
 	
 install_desktop:  install_api qt_all  local_mo_download
 	cd  $(DESKTOP_INTERFACE_PATH); sudo python2 setup.py install --root=$(DESTDIR)
-	mkdir -p $(DESTDIR)$(PREFIX)/bin/
-	cp ./resources/launchers/alfanousDesktop $(DESTDIR)$(PREFIX)/bin/
 	mkdir -p $(DESTDIR)$(PREFIX)/share/applications/
 	cp ./resources/launchers/alfanous.desktop $(DESTDIR)$(PREFIX)/share/applications/
 	mkdir -p $(DESTDIR)$(PREFIX)/share/pixmaps/
@@ -421,7 +420,7 @@ install_desktop:  install_api qt_all  local_mo_download
 	mkdir -p $(DESTDIR)$(PREFIX)/share/fonts/
 	cp ./resources/fonts/* $(DESTDIR)$(PREFIX)/share/fonts/
 	#test installation
-	alfanousDesktop &
+	# alfanous-desktop &
 	
 
 install_web_basic:
