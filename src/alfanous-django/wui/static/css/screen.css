@@ -480,7 +480,7 @@ a:hover{color: green;}
 	display: inline;
 	font-size: 12px;
 	padding: 1px 5px 2px 5px;
-	margin: 1px 1px 0px 2px;
+	margin: 1px 1px 1px 2px;
 }
 
 .word_item {
@@ -550,6 +550,13 @@ a:hover{color: green;}
 .word_derivation_nb {
 	background-color: #A90;
 	color: #FFF;
+}
+
+.word_derivation {
+	background-color: #FFF;
+	color: #A90;
+	padding: 5px 2px 4px 2px;
+	/* font-size:100%;*/
 }
 
 
@@ -670,9 +677,15 @@ a:hover{color: green;}
 .term9, .term19 { color: #5C3; }
 
 
-.word_details, .sura_details, .aya_details, .sura_stat_details, .theme_details {
+.word_details,  .sura_details, .aya_details, .sura_stat_details, .theme_details {
 	margin: 8px 5px 2px 20px;
 }
+
+.word_extra_details {
+	margin: 5px 5px 10px 40px;
+	padding: 3px 1px 1px 1px;
+}
+
 
 .aya_stat0, .sura_stat1 {
 	background-color: #00A;

@@ -58,6 +58,7 @@
 							<div class='details_label word_stat1'> {{ _("ayates") }} |  {{ wordstat.nb_ayas }} </div>
 							
 							<br />
+							<div class='word_extra_details'>
 							<div class='details_label word_vocalization_nb'> {{ _("vocalizations") }} | {{ wordstat.nb_vocalizations }} </div>
 							{% for vocalization in wordstat.vocalizations %} 
 								{% with bidi.fields.aya_|add:":"|add:vocalization|add:"" as new_query %}
@@ -65,6 +66,7 @@
 								{% endwith %}
 								<div class='details_label word_vocalization clickable quran'> {{ vocalization }} </div></a>
 							{% endfor %}
+							
 							
 							{% ifnotequal wordstat.nb_synonyms 0 %}
 								<br />
@@ -76,12 +78,23 @@
 								{% with "~"|add:wordstat.word as new_query %}
 									<a class='no_decoration' href="?{% build_search_link params  new_query 1 False %}"> 
 								{% endwith %}
-								<div class='details_label word_synonym clickable quran'> {{ _("ALL") }} | ~{{ wordstat.word }}  </div></a>
+								<div class='details_label word_synonym clickable quran'>  ~  </div></a>
 							{% endifnotequal %}
 							
-						
-							<br />
-							<div class='details_label word_derivation_nb'> {{ _("derivations") }} | {{ wordstat.nb_derivations }} </div>
+			
+							{% ifnotequal wordstat.nb_derivations 0 %}
+								<br />
+								<div class='details_label word_derivation_nb'> {{ _("derivations") }} | {{ wordstat.nb_derivations }} </div> 
+								{% for derivation in wordstat.derivations %} 
+									<a class='no_decoration' href="?{% build_search_link params derivation 1 False %}"> 
+									<div class='details_label word_derivation clickable quran'> {{ derivation }} </div></a>
+								{% endfor %}
+								{% with ">"|add:wordstat.word as new_query %}
+									<a class='no_decoration' href="?{% build_search_link params  new_query 1 False %}"> 
+								{% endwith %}
+								<div class='details_label word_derivation clickable quran'>  >  </div></a>
+							{% endifnotequal %}
+							
 							
 						{% for annotation_word, parts in wordstat.annotations.items %}
 							{% for part_order, annotation_detail in parts.items %} 
@@ -141,6 +154,7 @@
 								</p>
 							{% endfor %}
 						{% endfor %}
+						   </div>
 						   </div>
 					 	  </p>	
 				{% endfor %}
