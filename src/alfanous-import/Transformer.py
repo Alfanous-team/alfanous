@@ -157,7 +157,7 @@ class Transformer:
         resSchema = None
         exec "resSchema=" + Schema_raw
 
-        print resSchema
+        #print resSchema
         return resSchema
 
 
@@ -187,12 +187,12 @@ class Transformer:
 
         #print "loading DATA..."
         query = "select " + ",".join( map( lambda x: '"' + x + '"', seq ) ) + " from " + tablename
-        print query
+        #print query
         cur.execute( query )
         Data = cur.fetchall()
 
 
-        print "writing in index"
+        print "writing documents in index (total: %d) ...." % len( Data )
         writer = ix.writer()
 
         cpt = 0
@@ -208,12 +208,14 @@ class Transformer:
                 i += 1
 
             write_cmd = write_cmd[:-1] + ")"
-            print write_cmd
+            #print write_cmd
             exec write_cmd
             try: pass
             except: print "ERROR"
             cpt += 1
-            print cpt
+            if not cpt % 1000:
+            	print " - milestone:", cpt, "( %d%% )" % ( cpt * 100 / len( Data ) )
+        print "done."
         writer.commit()
         self.__lock_docindex( ix )
 
@@ -337,7 +339,7 @@ class Transformer:
                 else:
                     spell_err[normalized] = [term[1]]
 
-        print "\n".join( [unicode( key ) + u":" + ",".join( value ) for key, value in spell_err.items()] )
+        #print "\n".join( [unicode( key ) + u":" + ",".join( value ) for key, value in spell_err.items()] )
 
         raw_str = self.dheader + u"\nspell_err=" + str( spell_err )
 
