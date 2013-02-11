@@ -1,0 +1,7 @@
+<SearchPlugin xmlns="http://www.mozilla.org/2006/browser/search/" xmlns:os="http://a9.com/-/spec/opensearch/1.1/">
+<os:ShortName>الفانوس محرك بحث قرأني</os:ShortName>
+<os:InputEncoding>UTF-8</os:InputEncoding>
+<os:Image height="16" width="16" type="image/x-icon">http://alfanous.org/images/favicon.ico</os:Image>
+<os:Url type="text/html" method="GET" template="http://alfanous.org/?search={searchTerms}"></os:Url>
+<os:Url type="application/x-suggestions+json" method="GET" template="http://alfanous.org/?search={searchTerms}"/>
+</SearchPlugin>

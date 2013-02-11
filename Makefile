@@ -372,12 +372,21 @@ dist_deb:
 	dpkg-buildpackage
 	
 
-# Fedora package for AlfanousDesktop
+# Fedora/OpenSuse/Ojuba packages
 dist_rpm:  
-	@echo "todo"
-	#cd $(DESKTOP_INTERFACE_PATH) ; python2 setup.py bdist_rpm
-	#cd $(DESKTOP_INTERFACE_PATH) ; python2 setup.py bdist_rpm 
-	
+	## dependecies: rpm-build PyQt4-devel pyparsing python-setuptools python-distutils-extra python-configobj unzip ImageMagick
+	rm -rf ~/rpmbuild ~/.rpmmacros
+	mkdir -p ~/rpmbuild/BUILD
+	mkdir -p ~/rpmbuild/BUILDROOT
+	mkdir -p ~/rpmbuild/RPMS
+	mkdir -p ~/rpmbuild/SOURCES
+	mkdir -p ~/rpmbuild/SPECS
+	mkdir -p ~/rpmbuild/SRPMS
+	echo '%_topdir %(echo $HOME)/rpmbuild' > ~/.rpmmacros
+	cp ./packaging/RPM/* ~/rpmbuild/SOURCES/
+	rpmbuild -ba ~/rpmbuild/SOURCES/*.spec
+
+
 # MacOs application 
 ## need distutils  and py2app 
 ## apt-get install python-distutils*
