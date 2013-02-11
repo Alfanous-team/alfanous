@@ -62,7 +62,9 @@ Graphics & Design
 Packaging 
 ---------
 * Windows NSIS installer: Assem Chelli 
-* Debian package: Ahmed Almahmoudy
+* Ubuntu/Sabily DEB package: Ahmed Almahmoudy
+* Fedora/OpenSuse/Ojuba RPM package: Muhammad Shaban
+* Arch-linux package: Walid Ziouche
 
 -------------
 Documentation 
