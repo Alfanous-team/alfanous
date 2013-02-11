@@ -1,29 +1,45 @@
-AlfanousDesktop
-===============
+========
+Install
+========
 
 * **Windows XP/VISTA/SEVEN**: Download the installer from sourceforge: `last version <https://sourceforge.net/projects/alfanous/files/latest/download?source=files>`_
+
 * **Ubuntu-Based**:  you can add Sabily repository and install alfanous from it (`more <http://ubuntuforums.org/showthread.php?t=1370001>`_):
 
   .. code-block:: sh
 
-        $ sudo add-apt-repository ppa:sabily.team/ppa && sudo apt-get -q update
-        $ sudo apt-get install alfanous
+        $ add-apt-repository ppa:sabily.team/ppa && sudo apt-get -q update
+        $ apt-get install alfanous
 
-* **Other Linux distros**:  There is no available package yet for other distros such as redhat-based.  If you are a developer you can follow the advancement of Alfanous packaging to most of linux distributions through those github issues:
+* **Fedora-Based**:  follow this  `link <http://software.opensuse.org/download.html?project=home:Kenzy:tahadz&package=alfanous>`_ .
 
-  - https://github.com/Alfanous-team/alfanous/issues/111
-  - https://github.com/Alfanous-team/alfanous/issues/27
+* **OpenSuse-Based**: follow this  `link <http://software.opensuse.org/download.html?project=home:Kenzy:tahadz&package=alfanous>`_ .
+
+* **Archlinux-Based**: use yaourt to install alfanous.
+
+  .. code-block:: sh
+	
+	$ yaourt alfanous
+
+
+* **Mac OS**:  There is no available package yet for Mac OS. 
+
+* **Other**: Install from the source by downloading the tarbal and executing those commands carefully:
   
-  We appreciate any help to achieve those issues :).  
+  .. code-block:: sh
 
-
-
-
-Testers
-=======
-Try these commands carfully :
-.. code-block:: sh
-
+        $ make build
         $ sudo make install_api # to install the api and alfanous-console.
         $ sudo make install_desktop # to install alfanous-desktop.
-        $ sudo make install_wui # to install the web user interface.
+
+
+
+**Note**: If you are a developer you can follow the advancement of Alfanous packaging through this github issue:
+
+- https://github.com/Alfanous-team/alfanous/issues/111
+- https://github.com/Alfanous-team/alfanous/issues/26
+  
+We appreciate any help to achieve those issues :).  
+
+
+
