@@ -367,7 +367,7 @@ dist_egg_desktop:
 	mkdir -p output/$(VERSION) ; mv $(DESKTOP_INTERFACE_PATH)dist/*.egg ./output/$(VERSION)
 	@echo  "NOTE: you can find the generated egg in ./output"
  
-# Debian package for AlfanousDesktop
+# Debian/Ubuntu/Sabily package
 dist_deb: 
 	dpkg-buildpackage
 	
