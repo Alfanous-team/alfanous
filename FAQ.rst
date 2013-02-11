@@ -104,7 +104,7 @@ If you want to help us testing  the project modules, just follow these steps and
      
      .. code-block:: sh
 
-          $ make install_api
+          $ make install_api DESTDIR=%{buildroot}
 
 #. Test the console interface, it provides results in Json format:
 
@@ -154,19 +154,6 @@ If you want to help us testing  the project modules, just follow these steps and
      - http://alfanous.local/cgi-bin/alfanous_json2.py?action=search&query=%D8%A7%D9%84%D9%83%D9%88%D8%AB%D8%B1&sortedby=mushaf&page=1&word_info=true&highlight=css&script=standard&prev_aya=true&next_aya=true&sura_info=true&aya_position_info=true&aya_theme_info=true&aya_stat_info=true&aya_sajda_info=true&annotation_word=true&annotation_aya=true&recitation=1
      - ...
 
-
-#. Test the web user interface WUI
-   
-   - install it in apache 
-     
-     .. code-block:: sh
-        
-         # Install apache2 first
-         $ sudo make install_wui
-        
-   - test it in browser by checking this link
-      
-     - http://alfanous.local/
 
 #. Test Django app (don't forget to install `django <https://www.djangoproject.com/>`_)
 
@@ -222,7 +209,7 @@ Best OS for that is Ubuntu (>11.10).
    
        git clone LINK_OF_GITHUB_FORK.
 
-#. Third, install building dependecies :  `pyparsing <http://pyparsing.wikispaces.com/>`_, `pyqt4-dev-tools <http://www.riverbankcomputing.co.uk/software/pyqt/download>`_, `epydoc <http://epydoc.sourceforge.net/>`_,
+#. Third, install building dependencies :  `pyparsing <http://pyparsing.wikispaces.com/>`_, `pyqt4-dev-tools <http://www.riverbankcomputing.co.uk/software/pyqt/download>`_, `epydoc <http://epydoc.sourceforge.net/>`_,
      `sphinx <http://sphinx.pocoo.org/>`_. 
    - then run in the root of your local repo: 
      
@@ -233,7 +220,7 @@ Best OS for that is Ubuntu (>11.10).
      
      .. code-block:: sh
 
-         $ sudo make install_api
+         $ sudo make install_api  DESTDIR=%{buildroot}
    - test the installation with this command: 
      
      .. code-block:: sh
@@ -244,7 +231,7 @@ Best OS for that is Ubuntu (>11.10).
 
    - if you want work on web tasks, install `aptana <http://www.aptana.com/>`_ with `pydev <http://pydev.org/>`_ plugin (install apache2 also for local tests).
    - else install `eclipse <http://www.eclipse.org/downloads/>`_ with `pydev <http://pydev.org/>`_ plugin.
-   - or you can just usea simple text editor.
+   - or you can just use a simple text editor.
 
    You can also use git with eclipse, by installing `EGit <http://www.eclipse.org/egit/>`_.
 
