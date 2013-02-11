@@ -409,10 +409,10 @@ install_all: install_api install_desktop install_jos2 install_web
 
 
 install_api: 
-	cd   "$(API_PATH)alfanous" ; python2 setup.py install --root=$(DESTDIR)
+	cd   "$(API_PATH)alfanous" ; python2 setup.py install --prefix=\$(PREFIX) --root=$(DESTDIR)
 	
 install_desktop:  install_api qt_all  local_mo_download
-	cd  $(DESKTOP_INTERFACE_PATH); python2 setup.py install --root=$(DESTDIR)
+	cd  $(DESKTOP_INTERFACE_PATH); python2 setup.py install --prefix=\$(PREFIX) --root=$(DESTDIR)
 	mkdir -p $(DESTDIR)$(PREFIX)/share/applications/
 	cp ./resources/launchers/alfanous.desktop $(DESTDIR)$(PREFIX)/share/applications/
 	mkdir -p $(DESTDIR)$(PREFIX)/share/pixmaps/
