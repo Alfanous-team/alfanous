@@ -7,7 +7,10 @@
 ## Global Version of the project, must be updated in each significant change in 
 ## the API & Desktop Gui
 VERSION="0.7.00"
-RELEASE="1.0"
+
+## Next releases:
+# Beta X [0.7.00~0.9.99], Basis [1.0], Silver[~], Golden[~], Crystal[~]
+RELEASE="Beta 1" 
 
 ## API path, API contains all python packages 
 API_PATH="./src/"
