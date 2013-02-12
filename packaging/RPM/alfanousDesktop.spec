@@ -64,9 +64,10 @@ Alfanous python library.
 #Chromium Toolbar for Alfanous.
 
 %prep
-rm -rf %{_builddir}/alfanous-master
-wget -c https://github.com/Alfanous-team/alfanous/archive/master.zip
-unzip -qq master.zip
+rm -rf   %{_builddir}/alfanous-master
+mkdir -p %{_builddir}/alfanous-master
+cd ../..
+cp -r `cat list.txt`  %{_builddir}/alfanous-master
 
 %build
 cd alfanous-master
