@@ -13,6 +13,7 @@
 
 """
 
+
 from setuptools import setup, find_packages
 import glob
 
@@ -31,7 +32,7 @@ except:
 setup( 
 	name = "alfanousDesktop",
 	description = "Desktop interface for alfanous Quranic search engine API",
-	version = 0.7,
+	version = "0.7.00", # Don't modify version here, modify it in Makefile
 	platforms = "ALL",
 	license = "AGPL",
 	packages = ["alfanousDesktop"],

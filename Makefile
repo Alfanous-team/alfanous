@@ -6,11 +6,11 @@
 
 ## Global Version of the project, must be updated in each significant change in 
 ## the API & Desktop Gui
-VERSION="0.7.00"
+VERSION=0.7.00
 
 ## Next releases:
 # Beta [0.7.00~0.9.99], Basis [1.0], Silver[~], Golden[~], Crystal[~]
-RELEASE=$(VERSION)"Beta"
+RELEASE=$(VERSION)Beta
 
 ## API path, API contains all python packages 
 API_PATH="./src/"
@@ -342,7 +342,11 @@ dist_egg_all: dist_egg_api  dist_egg_pycorpus  dist_egg_pyzekr dist_egg_qimport 
 
 # python egg for API
 dist_egg_api: 
-	cd $(API_PATH)alfanous ; python2 setup.py bdist_egg 
+	perl -pi -w -e 's|alfanous.release|$(RELEASE)|g;' $(API_PATH)alfanous/resources/information.json
+	perl -pi -w -e 's|alfanous.version|$(VERSION)|g;' $(API_PATH)alfanous/resources/information.json
+	cd $(API_PATH)alfanous ; python2 setup.py bdist_egg
+	perl -pi -w -e 's|$(RELEASE)|alfanous.release|g;' $(API_PATH)alfanous/resources/information.json
+	perl -pi -w -e 's|$(VERSION)|alfanous.version|g;' $(API_PATH)alfanous/resources/information.json
 	mkdir -p output/$(VERSION) ; mv $(API_PATH)alfanous/dist/*.egg ./output/$(VERSION)
 	@echo  "NOTE: you can find the generated egg in ./output"
 	
@@ -367,6 +371,7 @@ dist_egg_qimport:
 
 # python egg for alfanousDesktop interface
 dist_egg_desktop: 
+	perl -pi -w -e 's|version = "\d+\.\d+(\.\d+)*"|version = "$(VERSION)"|g;' $(DESKTOP_INTERFACE_PATH)/setup.py
 	cd $(DESKTOP_INTERFACE_PATH) ; python2 setup.py bdist_egg 
 	mkdir -p output/$(VERSION) ; mv $(DESKTOP_INTERFACE_PATH)dist/*.egg ./output/$(VERSION)
 	@echo  "NOTE: you can find the generated egg in ./output"
@@ -391,15 +396,15 @@ dist_rpm:
 	ls > list.txt
 	mkdir -p $(CURDIR)/rpmbuild/{BUILD,BUILDROOT,RPMS,SOURCES,SPECS,SRPMS}
 	echo "%_topdir $(CURDIR)/rpmbuild" > ~/.rpmmacros
-	perl -pi -w -e 's|alfanous.version|$(VERSION)|g;' $(CURDIR)/packaging/RPM/alfanousDesktop.spec
 	perl -pi -w -e 's|alfanous.release|$(RELEASE)|g;' $(CURDIR)/packaging/RPM/alfanousDesktop.spec
+	perl -pi -w -e 's|alfanous.version|$(VERSION)|g;' $(CURDIR)/packaging/RPM/alfanousDesktop.spec
 	cp $(CURDIR)/packaging/RPM/* $(CURDIR)/rpmbuild/SOURCES/
 	rpmbuild -ba $(CURDIR)/rpmbuild/SOURCES/*.spec
 	mkdir -p output/$(VERSION)/RPM
 	cp $(CURDIR)/rpmbuild/RPMS/*/*.rpm $(CURDIR)/output/$(VERSION)/RPM
 	rm -rf $(CURDIR)/rpmbuild ~/.rpmmacros
-	perl -pi -w -e 's|$(VERSION)|alfanous.version|g;' $(CURDIR)/packaging/RPM/alfanousDesktop.spec
 	perl -pi -w -e 's|$(RELEASE)|alfanous.release|g;' $(CURDIR)/packaging/RPM/alfanousDesktop.spec
+	perl -pi -w -e 's|$(VERSION)|alfanous.version|g;' $(CURDIR)/packaging/RPM/alfanousDesktop.spec
 	@if [ ! -d "/usr/bin/xdg-open" ]; then xdg-open $(CURDIR)/output/$(VERSION)/RPM; fi
 
 
@@ -434,9 +439,14 @@ install_all: install_api install_desktop install_jos2 install_web
 
 
 install_api: 
+	perl -pi -w -e 's|alfanous.release|$(RELEASE)|g;' $(API_PATH)alfanous/resources/information.json
+	perl -pi -w -e 's|alfanous.version|$(VERSION)|g;' $(API_PATH)alfanous/resources/information.json
 	cd   "$(API_PATH)alfanous" ; python2 setup.py install --prefix=$(PREFIX) --root=$(DESTDIR)
+	perl -pi -w -e 's|$(RELEASE)|alfanous.release|g;' $(API_PATH)alfanous/resources/information.json
+	perl -pi -w -e 's|$(VERSION)|alfanous.version|g;' $(API_PATH)alfanous/resources/information.json
 	
 install_desktop:  install_api qt_all  local_mo_download
+	perl -pi -w -e 's|version = "\d+\.\d+(\.\d+)*"|version = "$(VERSION)"|g;' $(DESKTOP_INTERFACE_PATH)/setup.py
 	cd  $(DESKTOP_INTERFACE_PATH); python2 setup.py install --prefix=$(PREFIX) --root=$(DESTDIR)
 	mkdir -p $(DESTDIR)$(PREFIX)/share/applications/
 	cp ./resources/launchers/alfanous.desktop $(DESTDIR)$(PREFIX)/share/applications/

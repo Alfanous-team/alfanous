@@ -6,5 +6,6 @@
 "console_note":"this is console interface of Alfanous, try -h to get help ",
 "author": "Assem chelli",
 "contact": "assem.ch@gmail.com", 
-"version": "0.7"
+"version": "alfanous.version",
+"release": "alfanous.release"
 }
