@@ -151,7 +151,7 @@ class Transformer:
 
                 #last
                 Schema_raw += "),"
-        else: pass #ignored     
+        else: pass #ignored
         Schema_raw = Schema_raw[:-1] + ")"
         print Schema_raw
         resSchema = None
@@ -255,15 +255,15 @@ class Transformer:
         """ load stopwords from database and save them as a list in a dynamic py """
 
         cur = self.__mainDb.cursor()
-        cur.execute( "select word from word" )
-        stoplist = []
+        cur.execute( "select word from stopwords" )
+        stoplist = "["
         for item in cur.fetchall():
-            stoplist.append( item[0] )
-
-        raw_str = self.dheader + u"\nstoplist=" + str( stoplist ).replace( ",", ",\n" )
+            stoplist += "u'" + unicode( item[0] ) + "',"
+        stoplist += "]"
+        raw_str = self.dheader + u"\nstoplist=" + stoplist .replace( ",", ",\n" )
 
         fich = open( self.__dypypath + "stopwords_dyn.py", "w+" )
-        fich.write( raw_str )
+        fich.write( raw_str.encode( 'utf8' ) )
 
         return raw_str
 
@@ -396,7 +396,7 @@ class Transformer:
         return raw_str
 
     def transfer_vocalizations( self ):
-        """ load indexed vocalized words  from the main index and save them as a list in a dynamic py """ 
+        """ load indexed vocalized words  from the main index and save them as a list in a dynamic py """
 	QSE = QuranicSearchEngine( self.__ixpath )
 
 	if QSE.OK:
@@ -411,7 +411,7 @@ class Transformer:
                                 hamza = False \
 	).normalize_all
 
-	
+
 
         vocalization_dict = {}
         for w in mfw:
@@ -447,12 +447,12 @@ if __name__ == "__main__":
 
 
     #ayaSchema=T.build_schema(tablename='aya')
-    #T.build_docindex(ayaSchema) 
+    #T.build_docindex(ayaSchema)
     #T.build_speller(indexname="AYA_SPELL", fields=["aya"])
     #T.build_speller(indexname="SUBJECT_SPELL", fields=["subject"])
 
     #wordqcSchema = T.build_schema( tablename = 'wordqc' )
-    #T.build_docindex(wordqcSchema,tablename='wordqc') 
+    #T.build_docindex(wordqcSchema,tablename='wordqc')
     #T.build_speller(indexname="WORD_SPELL", fields=["word"])
 
 
