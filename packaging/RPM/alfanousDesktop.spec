@@ -6,7 +6,7 @@ Version: 0.7
 Release: test
 License: GPL
 Url:     http://alfanous.org
-#Source0: alfanous-master.zip
+Source0: https://github.com/Alfanous-team/alfanous/archive/master.zip
 Source1: alfanous.xml
 Group:   Quran/Tools
 BuildRequires: python python-setuptools python-distutils-extra python-configobj unzip ImageMagick
@@ -76,7 +76,6 @@ make build
 %install
 cd alfanous-master
 make install_desktop DESTDIR=%{buildroot}
-perl -i -l -wpe 's/^(Icon=).*/${1}AlFanous/' %{buildroot}%{_datadir}/applications/alfanous.desktop
 
 # Install icon
 for res in 16x16 22x22 24x24 32x32 36x36 48x48 64x64 72x72 96x96; do \
