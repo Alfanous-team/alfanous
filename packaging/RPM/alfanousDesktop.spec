@@ -2,11 +2,11 @@
 
 Name:    alfanous
 Summary: Alfanous is a search engine API provide the simple and advanced search in the Holy Qur'an and more features.
-Version: 0.7
-Release: test
+Version: alfanous.version
+Release: alfanous.release%{?dist}
 License: GPL
 Url:     http://alfanous.org
-Source0: https://github.com/Alfanous-team/alfanous/archive/master.zip
+#Source0: https://github.com/Alfanous-team/alfanous/archive/master.zip
 Source1: alfanous.xml
 Group:   Quran/Tools
 BuildRequires: python python-setuptools python-distutils-extra python-configobj unzip ImageMagick
@@ -64,6 +64,7 @@ Alfanous python library.
 #Chromium Toolbar for Alfanous.
 
 %prep
+#%setup -q -n alfanous-master
 rm -rf   %{_builddir}/alfanous-master
 mkdir -p %{_builddir}/alfanous-master
 cd ../..
