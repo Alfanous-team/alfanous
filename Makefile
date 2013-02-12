@@ -7,6 +7,7 @@
 ## Global Version of the project, must be updated in each significant change in 
 ## the API & Desktop Gui
 VERSION="0.7.00"
+RELEASE="1.0"
 
 ## API path, API contains all python packages 
 API_PATH="./src/"
@@ -387,11 +388,15 @@ dist_rpm:
 	ls > list.txt
 	mkdir -p $(CURDIR)/rpmbuild/{BUILD,BUILDROOT,RPMS,SOURCES,SPECS,SRPMS}
 	echo "%_topdir $(CURDIR)/rpmbuild" > ~/.rpmmacros
+	perl -pi -w -e 's|alfanous.version|$(VERSION)|g;' $(CURDIR)/packaging/RPM/alfanousDesktop.spec
+	perl -pi -w -e 's|alfanous.release|$(RELEASE)|g;' $(CURDIR)/packaging/RPM/alfanousDesktop.spec
 	cp $(CURDIR)/packaging/RPM/* $(CURDIR)/rpmbuild/SOURCES/
 	rpmbuild -ba $(CURDIR)/rpmbuild/SOURCES/*.spec
 	mkdir -p output/$(VERSION)/RPM
 	cp $(CURDIR)/rpmbuild/RPMS/*/*.rpm $(CURDIR)/output/$(VERSION)/RPM
 	rm -rf $(CURDIR)/rpmbuild ~/.rpmmacros
+	perl -pi -w -e 's|$(VERSION)|alfanous.version|g;' $(CURDIR)/packaging/RPM/alfanousDesktop.spec
+	perl -pi -w -e 's|$(RELEASE)|alfanous.release|g;' $(CURDIR)/packaging/RPM/alfanousDesktop.spec
 	@if [ ! -d "/usr/bin/xdg-open" ]; then xdg-open $(CURDIR)/output/$(VERSION)/RPM; fi
 
 
