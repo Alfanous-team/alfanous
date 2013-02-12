@@ -9,8 +9,8 @@
 VERSION="0.7.00"
 
 ## Next releases:
-# Beta X [0.7.00~0.9.99], Basis [1.0], Silver[~], Golden[~], Crystal[~]
-RELEASE="Beta 1" 
+# Beta [0.7.00~0.9.99], Basis [1.0], Silver[~], Golden[~], Crystal[~]
+RELEASE=$(VERSION)"Beta"
 
 ## API path, API contains all python packages 
 API_PATH="./src/"
