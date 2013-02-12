@@ -370,10 +370,15 @@ dist_egg_desktop:
 # Debian/Ubuntu/Sabily package
 dist_deb: 
 	dpkg-buildpackage
+	mkdir -p output/$(VERSION)/DEB
+	mv ../*.deb ./output/$(VERSION)/DEB
+	mv ../*.dsc ./output/$(VERSION)/DEB
+	mv ../*.changes ./output/$(VERSION)/DEB
+	mv ../*.tar.gz ./output/$(VERSION)/DEB
 	
 
-# Fedora/OpenSuse/Ojuba packages
-dist_rpm:  
+# Fedora/OpenSuse/Ojuba rpm packages
+dist_rpm:
 	## Fedora or Ojuba
 	## dependecies: rpm-build PyQt4-devel pyparsing python-setuptools python-distutils-extra python-configobj unzip ImageMagick
 	## OpenSuse
@@ -384,9 +389,10 @@ dist_rpm:
 	echo "%_topdir $(CURDIR)/rpmbuild" > ~/.rpmmacros
 	cp $(CURDIR)/packaging/RPM/* $(CURDIR)/rpmbuild/SOURCES/
 	rpmbuild -ba $(CURDIR)/rpmbuild/SOURCES/*.spec
-	cp $(CURDIR)/rpmbuild/RPMS/*/*.rpm $(CURDIR)/packaging/RPM
+	mkdir -p output/$(VERSION)/RPM
+	cp $(CURDIR)/rpmbuild/RPMS/*/*.rpm $(CURDIR)/output/$(VERSION)/RPM
 	rm -rf $(CURDIR)/rpmbuild ~/.rpmmacros
-	@if [ ! -d "/usr/bin/xdg-open" ]; then xdg-open $(CURDIR)/packaging/RPM; fi
+	@if [ ! -d "/usr/bin/xdg-open" ]; then xdg-open $(CURDIR)/output/$(VERSION)/RPM; fi
 
 
 # MacOs application 
