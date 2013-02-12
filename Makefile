@@ -374,17 +374,19 @@ dist_deb:
 
 # Fedora/OpenSuse/Ojuba packages
 dist_rpm:  
+	## Fedora or Ojuba
 	## dependecies: rpm-build PyQt4-devel pyparsing python-setuptools python-distutils-extra python-configobj unzip ImageMagick
-	rm -rf ~/rpmbuild ~/.rpmmacros
-	mkdir -p ~/rpmbuild/BUILD
-	mkdir -p ~/rpmbuild/BUILDROOT
-	mkdir -p ~/rpmbuild/RPMS
-	mkdir -p ~/rpmbuild/SOURCES
-	mkdir -p ~/rpmbuild/SPECS
-	mkdir -p ~/rpmbuild/SRPMS
-	echo '%_topdir %(echo $HOME)/rpmbuild' > ~/.rpmmacros
-	cp ./packaging/RPM/* ~/rpmbuild/SOURCES/
-	rpmbuild -ba ~/rpmbuild/SOURCES/*.spec
+	## OpenSuse
+	## dependecies: rpm-build python-qt4-devel python-pyparsing python-setuptools python-distutils-extra python-configobj unzip ImageMagick
+	rm -rf $(CURDIR)/rpmbuild ~/.rpmmacros
+	ls > list.txt
+	mkdir -p $(CURDIR)/rpmbuild/{BUILD,BUILDROOT,RPMS,SOURCES,SPECS,SRPMS}
+	echo "%_topdir $(CURDIR)/rpmbuild" > ~/.rpmmacros
+	cp $(CURDIR)/packaging/RPM/* $(CURDIR)/rpmbuild/SOURCES/
+	rpmbuild -ba $(CURDIR)/rpmbuild/SOURCES/*.spec
+	cp $(CURDIR)/rpmbuild/RPMS/*/*.rpm $(CURDIR)/packaging/RPM
+	rm -rf $(CURDIR)/rpmbuild ~/.rpmmacros
+	@if [ ! -d "/usr/bin/xdg-open" ]; then xdg-open $(CURDIR)/packaging/RPM; fi
 
 
 # MacOs application 
