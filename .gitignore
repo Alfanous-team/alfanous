@@ -84,6 +84,7 @@ develop-eggs
 lib
 lib64
 _build/
+rpmbuild
 
 # Packages #
 ############
@@ -99,6 +100,10 @@ _build/
 *.zip
 *.egg
 *.egg-info
+*.rpm
+*.deb
+
+
 
 # Logs and databases #
 ######################
