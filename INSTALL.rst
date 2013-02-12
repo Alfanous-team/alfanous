@@ -11,9 +11,9 @@ Install
         $ add-apt-repository ppa:sabily.team/ppa && sudo apt-get -q update
         $ apt-get install alfanous
 
-* **Fedora-Based**:  follow this  `link <http://software.opensuse.org/download.html?project=home:Kenzy:tahadz&package=alfanous>`_ .
+* **Fedora-Based**:  follow this  `link1 <http://software.opensuse.org/download.html?project=home:Kenzy:tahadz&package=alfanous>`_  & this `link2 <http://software.opensuse.org/download.html?project=home:Kenzy:tahadz&package=python-alfanous>`_  .
 
-* **OpenSuse-Based**: follow this  `link <http://software.opensuse.org/download.html?project=home:Kenzy:tahadz&package=alfanous>`_ .
+* **OpenSuse-Based**: follow this  `link1 <http://software.opensuse.org/download.html?project=home:Kenzy:tahadz&package=alfanous>`_ & this `link2 <http://software.opensuse.org/download.html?project=home:Kenzy:tahadz&package=python-alfanous>`_ .
 
 * **Archlinux-Based**: use yaourt to install alfanous.
 
