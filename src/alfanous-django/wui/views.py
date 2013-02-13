@@ -48,7 +48,7 @@ def jos2( request ):
     control_access( request )
     if len( request.GET ):
         response_data = RAWoutput.do( request.GET )
-        response = HttpResponse( json.dumps( response_data ), mimetype = "application/json" )
+        response = HttpResponse( json.dumps( response_data, sort_keys = False, indent = 4 ), mimetype = "application/json" )
         response['charset'] = 'utf-8'
         response['Access-Control-Allow-Origin'] = '*'
         response['Access-Control-Allow-Methods'] = 'GET'

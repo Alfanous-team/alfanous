@@ -780,7 +780,7 @@ class Raw():
 class Json( Raw ):
 	""" JSON output format """
 	def do( self, flags ):
-		return json.dumps( self._do( flags ) )
+		return json.dumps( self._do( flags ) , sort_keys = False, indent = 4 )
 
 
 class Xml( Raw ):
