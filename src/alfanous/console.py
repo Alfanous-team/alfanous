@@ -84,7 +84,7 @@ def main():
             flags[k] = v
 
     if args.action and args.query:
-        print json.dumps( RAWoutput.do( flags ) )
+        print json.dumps( RAWoutput.do( flags ), sort_keys = False, indent = 4 )
     else:
         print RAWoutput._information["console_note"]
 
