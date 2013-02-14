@@ -156,7 +156,6 @@
 						{% endfor %}
 						   </div>
 						   </div>
-					 	</p>	
 				{% endfor %}
 				</div> 
 			{% endif %}
@@ -174,7 +173,7 @@
 			{% for ayaresult_id, ayaresult_content in  	results.search.ayas.items %}
 			    <fieldset class='main_re_item'>
 				  <legend class='main_re_item_title' style='font-size:14pt; ' dir='{{ bidi.direction }}'>
-				    <span align='left' epstyle='color:#0000ff;'>
+				    <span align='left' style='color:#0000ff;'>
 				      {{ _("Result n°") }} <b> {{ ayaresult_id }} </b> 
 				    </span>
 				    {% if ayaresult_content.aya.recitation %}
@@ -200,7 +199,7 @@
 								<a class='no_decoration' href='?{% build_search_link params  new_query 1 True %}'> 
 							{% endwith %}
 							<div class='details_label sura_info1 clickable filter'> {{ _("type") }} | {{ ayaresult_content.sura.type }} </div></a>
-							<div class='details_label sura_ord1'> {{ _("revelation_order") }}  | {{ ayaresult_content.sura.order }}</div></a>
+							<div class='details_label sura_ord1'> {{ _("revelation_order") }}  | {{ ayaresult_content.sura.order }}</div>
 							<div class='details_label sura_stat0'> {{ _("ayahs") }} | {{ ayaresult_content.sura.ayas }} </div> 
 							{% if ayaresult_content.sura.stat %}
 								<br />
@@ -273,9 +272,6 @@
 					   
 					  </span>
 					  <br />
-					  
-					  
-					  </span>
 				    </p>
 				    <!-- next ayah -->
 				    {% if ayaresult_content.aya.next_aya and ayaresult_content.aya.next_aya.id != 9999 %}
@@ -385,7 +381,7 @@
 							  	{% endwith %} 
 								<div class='details_label aya_pos3 clickable filter'> {{ _("page") }} | {{ ayaresult_content.position.page }} </div></a>
 							{% endif %}
-						  </div><br /></br />
+						  </div><br /><br />
 					  {% endif %}
 					  {% if  ayaresult_content.sajda.exist %}
 					  		<br /><div>
@@ -396,7 +392,7 @@
 							</div><br />
 					  {% endif %}
 				
-			     </p></fieldset><br />
+			     </fieldset><br />
 			{% endfor %}
 			
 		
