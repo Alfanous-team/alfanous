@@ -451,6 +451,17 @@ a:hover{color: green;}
 	padding-right: 20px;
 }
 
+.wordheader {
+	font-size:16pt;
+	color:#ff0000;
+	display: inline-block;
+}
+
+.suggestionheader {
+	font-size:16pt; 
+	color:#ff0000;
+}
+
 .runtime {
 	color:grey;
 	font-size: 12px;
@@ -1050,4 +1061,4 @@ nav ul ul ul {
 	position: absolute;
 	left: 100%; top:0;
 }
-		
+

@@ -15,7 +15,7 @@
 		<!-- Suggestions-->
 		{% if suggestions.error.code == 0 and suggestions.suggest %} 
 			<div id='suggestions' style=" text-align:{{ bidi.align }}" >
-			<h2 style='font-size:16pt; color:#ff0000;'>{{ _("Suggestions:") }}
+			<h2 class='suggestionheader'>{{ _("Suggestions:") }}</h2>
 			{% for suggestion_key, suggestion_item in suggestions.suggest.items %}
 				<p dir='{{ bidi.direction }}' >
 				<div class='word_details'>
@@ -39,18 +39,16 @@
 			{% if results.search.words.global.nb_words %}
 				<!-- Words list -->
 				<div id='search_words' style=" text-align:{{ bidi.align }}" >
-				  <h2 style='font-size:16pt;  color:#ff0000;'>
-				  Words:
-				  <div class='details_label word_count'>  
-				    {{ _("words") }} | {{  results.search.words.global.nb_words }} 
-				  </div>
-				  <div class='details_label word_stat0'> 
-				    {{ _("occurances") }}  | {{ results.search.words.global.nb_matches }} 
-				  </div> 
-				  <div class='details_label word_vocalization_nb'> 
-				    {{ _("vocalizations") }} | {{ results.search.words.global.nb_vocalizations }} 
-				  </div> 
-				  </h2>
+				  <h2 class='wordheader'> {{ _("Words:") }} </h2>
+					  <div class='details_label word_count'>  
+					    {{ _("words") }} | {{  results.search.words.global.nb_words }} 
+					  </div>
+					  <div class='details_label word_stat0'> 
+					    {{ _("occurances") }}  | {{ results.search.words.global.nb_matches }} 
+					  </div> 
+					  <div class='details_label word_vocalization_nb'> 
+					    {{ _("vocalizations") }} | {{ results.search.words.global.nb_vocalizations }} 
+					  </div> 
 				  <br />
 				{% for wordcpt, wordstat in results.search.words.individual.items %}
 						<p dir='ltr' >
@@ -97,8 +95,7 @@
 								{% endwith %}
 								<div class='details_label word_derivation clickable quran'>  >  </div></a>
 							{% endifnotequal %}
-							
-							
+
 						{% for annotation_word, parts in wordstat.annotations.items %}
 							{% for part_order, annotation_detail in parts.items %} 
 								<p   class='annotation_details'>
@@ -159,7 +156,7 @@
 						{% endfor %}
 						   </div>
 						   </div>
-					 	  </p>	
+					 	</p>	
 				{% endfor %}
 				</div> 
 			{% endif %}
