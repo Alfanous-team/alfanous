@@ -34,12 +34,11 @@ RAWoutput = Raw()
 
 def control_access ( request ):
 	""" Controling access to  the API """
-	print request.META["REMOTE_ADDR"]
-	print request.META["REMOTE_HOST"]
-	print request.META["QUERY_STRING"]
+	#print request.META["REMOTE_ADDR"]
+	#print request.META["REMOTE_HOST"]
+	#print request.META["QUERY_STRING"]
 	#print request.META["HTTP_REFERER"]
-	print request.META["QUERY_STRING"]
-	print "is ajax?", request.is_ajax()
+	#print "is ajax?", request.is_ajax()
 	return True
 
 
@@ -52,6 +51,7 @@ def jos2( request ):
         response['charset'] = 'utf-8'
         response['Access-Control-Allow-Origin'] = '*'
         response['Access-Control-Allow-Methods'] = 'GET'
+        #response['Content-Encoding'] = 'gzip'
     else:
         response_data = RAWoutput._information["json_output_system_note"]
         response = HttpResponse( response_data )
