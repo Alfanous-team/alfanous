@@ -24,18 +24,18 @@
 	
 	<tr>
 		<th class="style6">{{ _("Exact search") }} </th>
-		<td class="style5" ><a  href='/?{% build_search_link params ' رب' 1 False %}'> رب</a></td>
+		<td class="style5" ><a  href='/?{% build_search_link params '%20رب' 1 False %}'> رب</a></td>
 		<td class="style4" ><a  href='/?{% build_search_link params 'فأسقيناكموه' 1 False %}'> فأسقيناكموه </a></td>
 	</tr>
 	<tr>
 		<th class="style3">{{ _("Phrase search") }}  </th>
-		<td class="style2"><a href='/?{% build_search_link params '"رب العالمين"' 1 False %}'>"رب العالمين"</a></td>
-		<td class="style2"><a href='/?{% build_search_link params '"رسول الله"' 1 False %}'>"رسول الله"</a></td>
+		<td class="style2"><a href='/?{% build_search_link params '"رب%20العالمين"' 1 False %}'>"رب العالمين"</a></td>
+		<td class="style2"><a href='/?{% build_search_link params '"رسول%20الله"' 1 False %}'>"رسول الله"</a></td>
 	</tr>
 	<tr>
 		<th class="style6">{{ _("Logical relations") }}</th>
-		<td class="style5"><a href='/?{% build_search_link params '(الصلاة - الزكاة) + سورة:البقرة' 1 False %}'>(الصلاة - الزكاة) + سورة:البقرة</a></td>
-	    <td class="style4"><a href='/?{% build_search_link params 'سميع | بصير' 1 False %}'> سميع | بصير</a></td>
+		<td class="style5"><a href='/?{% build_search_link params '(الصلاة%20-%20الزكاة)%20+%20سورة:البقرة' 1 False %}'>(الصلاة - الزكاة) + سورة:البقرة</a></td>
+	    <td class="style4"><a href='/?{% build_search_link params 'سميع%20|%20بصير' 1 False %}'> سميع | بصير</a></td>
 	</tr> 
 	<tr>
 		<th class="style3">{{ _("Wildcards") }}</th>
@@ -49,7 +49,7 @@
 	</tr>
 	<tr>
 		<th class="style3">{{ _("Intervals") }} </th>
-		<td class="style2"><a href='/?{% build_search_link params 'رقم_السورة:[1 الى 5] + الله' 1 False %}'>  رقم_السورة:[1 الى 5] + الله</a></td>
+		<td class="style2"><a href='/?{% build_search_link params 'رقم_السورة:[1%20الى%205]%20+%20الله' 1 False %}'>  رقم_السورة:[1 الى 5] + الله</a></td>
 		<td> </td>
 	</tr>
 	<tr>
@@ -64,8 +64,8 @@
 	</tr>
 	<tr>
 		<th class="style9">{{ _("Derivations") }}</th>
-		<td class="style8"><a href='/?{% build_search_link params '>>ملك' 1 False %}'>&gt;&gt;ملك</a></td>
-	    <td class="style7"><a href='/?{% build_search_link params '>ملك' 1 False %}'> &gt;ملك</a></td>
+		<td class="style8"><a href='/?{% build_search_link params '%3E%3Eملك' 1 False %}'>&gt;&gt;ملك</a></td>
+	    <td class="style7"><a href='/?{% build_search_link params '%3Eملك' 1 False %}'> &gt;ملك</a></td>
 	</tr>
 	</tbody></table>
 		<br/>
