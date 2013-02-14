@@ -256,7 +256,7 @@
 					{% ifequal available_language.0 language.code %}<span >{{ available_language.1 }}</span> 
 					{% else %} <a href="{% url alfanous-django.wui.views.results available_language.0 current.unit %}?{{ current.request }}">{{ available_language.1 }}</a>
 					{% endifequal %} 
-				</li><br/>
+				</li>
 				{% endfor %}
 			</ul>
 		</li>
