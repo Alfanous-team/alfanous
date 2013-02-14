@@ -22,9 +22,12 @@ def space_split( str ):
 	return str.split()
 
 
-@register.simple_tag
-def string_replace( string, oldword, newword ):
-    """ replace all occurrences of oldword in string by newword    """
+@register.filter
+def string_replace( string, args ):
+    """ replace all occurrences of oldword (arg_list[0]) in string by newword (arg_list[1])   """
+    arg_list = [arg.strip() for arg in args.split( ',' )]
+    oldword = arg_list[0]
+    newword = arg_list[1]
     return string.replace( oldword, newword )
 
 
