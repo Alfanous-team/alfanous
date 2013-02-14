@@ -51,8 +51,13 @@ def build_search_link( params, query, page, filter ):
 
 
 def build_params(params):
-	""" Concatenate the params to build a url GET request """
+	""" Concatenate the params to build a url GET request
+	
+	TODO: use a standard url builder if exists
+	TODO: encode the generated url
+
+	"""
 	get_request = ""
 	for k, v in params.items():
 		get_request = get_request + unicode( k ) + "=" + unicode( v ) + "&amp;"
-	return get_request[:-1]
+	return get_request[:-5] #remove the last "&amp;" #5 symbols 
