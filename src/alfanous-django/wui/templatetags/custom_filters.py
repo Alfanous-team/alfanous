@@ -54,5 +54,5 @@ def build_params(params):
 	""" Concatenate the params to build a url GET request """
 	get_request = ""
 	for k, v in params.items():
-		get_request = get_request + unicode( k ) + "=" + unicode( v ) + "&"
+		get_request = get_request + unicode( k ) + "=" + unicode( v ) + "&amp;"
 	return get_request[:-1]
