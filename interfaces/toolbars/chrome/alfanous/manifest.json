@@ -1,7 +1,8 @@
 {
   "name": "Alfanous",
-  "version": "0.7.00",
-  "description": "Alfanous.",
+  "version": "0.7",
+  "description": "Addon for the open quranic search engine alfanous (alfanous.org)",
+  "manifest_version": 2,
   "browser_action": {
     "default_icon": "logo.png",
 	"popup": "search.html"
