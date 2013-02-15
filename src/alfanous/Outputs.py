@@ -18,14 +18,7 @@
 
 
 """
-TODO add to SHOW: TYPES, HELPMSGS,
-TODO offer some linguistic operations like vocalize
-TODO derive using Quranic Corpus/functions
-FIXME use xranges in domains
-FIXME vocalization_dict[terms[1]], test key existence before use
-TODO include suggestions with search results
-TODO +flag language
-FIXME how to select the translation attached to results, what ID? 
+The programming interface, responsible of the output of all results
 
 """
 
@@ -464,7 +457,7 @@ class Raw():
 			word_info = True
 			aya_position_info = aya_theme_info = aya_sajda_info = True
 			aya_stat_info = sura_stat_info = True
-			annotation_aya = annotation_word = True
+			annotation_aya = annotation_word = False
 			romanization = "iso"
 		elif view == "statistic":
 			prev_aya = next_aya = False
