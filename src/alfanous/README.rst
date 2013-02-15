@@ -128,24 +128,26 @@ Flags
  9         recitation         search            aya              recitation id                                 "1"              1 to 30
  10        translation        search            aya, trans       translation id                                "None"           \*
  11        romanization       search            aya, word        type of romanization                          "none"           none | buckwalter | iso | arabtex
- 11        view               search            <all>            pre-defined configuration for view            "custom"         minimal | normal | full | statistic | linguistic | custom
- 12        prev_aya           search            aya              enable previous aya retrieving                "False"          True | False
- 13        next_aya           search            aya              enable next aya retrieving                    "False"          True | False
- 14        sura_info          search            aya              enable sura information retrieving            "True"           True | False
- 15        sura_stat_info     search            aya              enable sura stats retrieving                  "False"          True | False
- 16        word_info          search            aya, word        enable word information retrieving            "True"           True | False
- 17        aya_position_info  search            aya              enable aya position information retrieving    "True"           True | False
- 18        aya_theme_info     search            aya              enable aya theme information retrieving       "True"           True | False
- 19        aya_stat_info      search            aya              enable aya stat information retrieving        "True"           True | False
- 20        aya_sajda_info     search            aya              enable aya sajda information retrieving       "True"           True | False
- 21        annotation_word    search            aya, word        enable query terms annotations retrieving     "False"          True | False
- 22        annotation_aya     search            aya              enable aya words annotations retrieving       "False"          True | False
- 23        sortedby           search            <all>            sorting order of results                      "score"          total | score | mushaf | tanzil | subject
- 24        offset             search            <all>            starting offset of results                    "1"              1 to 6236
- 25        range              search            <all>            range of results                              "10"             1 to 25
- 26        page               search            <all>            page number  [override offset]                "1"              1 to 6236
- 27        perpage            search            <all>            results per page  [override range]            "10"             1 to 25
- 28        fuzzy              search            aya              fuzzy search [exprimental]                          "False"          True | False
+ 12a       view               search            aya, word        pre-defined configuration for view            "custom"         minimal | normal | full | statistic | linguistic | custom
+ 12b       view               search            translation      pre-defined configuration for view            "custom"         minimal | normal | full | custom
+ 13        prev_aya           search            aya              enable previous aya retrieving                "False"          True | False
+ 14        next_aya           search            aya              enable next aya retrieving                    "False"          True | False
+ 15        sura_info          search            aya              enable sura information retrieving            "True"           True | False
+ 16        sura_stat_info     search            aya              enable sura stats retrieving                  "False"          True | False
+ 17        word_info          search            aya, word        enable word information retrieving            "True"           True | False
+ 18        aya_position_info  search            aya              enable aya position information retrieving    "True"           True | False
+ 19        aya_theme_info     search            aya              enable aya theme information retrieving       "True"           True | False
+ 20        aya_stat_info      search            aya              enable aya stat information retrieving        "True"           True | False
+ 21        aya_sajda_info     search            aya              enable aya sajda information retrieving       "True"           True | False
+ 22        annotation_word    search            aya, word        enable query terms annotations retrieving     "False"          True | False
+ 23        annotation_aya     search            aya              enable aya words annotations retrieving       "False"          True | False
+ 24        sortedby           search            <all>            sorting order of results                      "score"          total | score | mushaf | tanzil | subject
+ 25        offset             search            <all>            starting offset of results                    "1"              1 to 6236
+ 26        range              search            <all>            range of results                              "10"             1 to 25
+ 27        page               search            <all>            page number  [override offset]                "1"              1 to 6236
+ 28        perpage            search            <all>            results per page  [override range]            "10"             1 to 25
+ 29        fuzzy              search            aya              fuzzy search [exprimental]                          "False"          True | False
+ 30        aya                search            translation      enable retrieving of aya text                    "False"          True | False
 
 ======== =================== ================= ================ ============================================ ================= ========================================================================================================================================================================
 

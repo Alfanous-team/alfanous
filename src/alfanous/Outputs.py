@@ -124,6 +124,7 @@ class Raw():
 			      "page":1, # overridden with offset
 			      "perpage":10, # overridden with range
 			      "fuzzy":False,
+			      "aya": False
 		       }
 		  }
 
@@ -170,6 +171,7 @@ class Raw():
 			      "page":[], # xrange(6237),  # overridden with offset
 			      "perpage":[], # xrange( DEFAULTS["maxrange"] ) , # overridden with range
 			      "fuzzy":[True, False],
+			      "aya": [True, False],
 		}
 
 
@@ -204,6 +206,7 @@ class Raw():
 			      "page":"page number  [override offset]",
 			      "perpage":"results per page  [override range]",
 			      "fuzzy":"fuzzy search [exprimental]",
+			      "aya": "enable retrieving of aya text in the case of translation search",
 		}
 
 
@@ -388,7 +391,7 @@ class Raw():
 
 	def _search( self, flags, unit ):
 		""" return the results of search for any unit """
-		try:
+		if True:
 			if unit == "aya":
 				search_results = self._search_aya( flags )
 			elif unit == "translation":
@@ -396,6 +399,8 @@ class Raw():
 			else:
 				search_results = {}
 			output = { "search": search_results }
+		try:
+			pass
 		except:
 			output = { "error": {"code":3, "msg":self.ERRORS[3] }}
 
@@ -526,6 +531,10 @@ class Raw():
 		query = query.replace( "\\", "" )
 		if not isinstance( query, unicode ):
 			query = unicode( query , 'utf8' )
+
+		if ":" not in query:
+			query = unicode( transliterate( "buckwalter", query, ignore = "'_\"%*?#~[]{}:>+-|" ) )
+
 
 		#Search
 		SE = self.FQSE if fuzzy else self.QSE
@@ -771,6 +780,110 @@ class Raw():
 
 				"annotations": {} if not annotation_aya or not annotations_by_position.has_key( ( r["sura_id"], r["aya_id"] ) )
 							else annotations_by_position[( r["sura_id"], r["aya_id"] )]
+		    		}
+		return output
+
+	def _search_translation( self, flags ):
+		"""
+		return the results of translation search as a dictionary data structure
+		"""
+		#flags
+		query = flags["query"] if flags.has_key( "query" ) \
+				else self._defaults["flags"]["query"]
+		sortedby = flags["sortedby"] if flags.has_key( "sortedby" ) \
+				   else self._defaults["flags"]["sortedby"]
+		range = int( flags["perpage"] ) if  flags.has_key( "perpage" )  \
+				else flags["range"] if flags.has_key( "range" ) \
+									else self._defaults["flags"]["range"]
+		## offset = (page-1) * perpage   --  mode paging
+		offset = ( ( int( flags["page"] ) - 1 ) * range ) + 1 if flags.has_key( "page" ) \
+				 else int( flags["offset"] ) if flags.has_key( "offset" ) \
+					  else self._defaults["flags"]["offset"]
+		highlight = flags["highlight"] if flags.has_key( "highlight" ) \
+					else self._defaults["flags"]["highlight"]
+		view = flags["view"] if flags.has_key( "view" ) \
+				else self._defaults["flags"]["view"]
+
+		# pre-defined views
+		if view == "minimal":
+			#page = 25
+			aya = False
+		elif view == "normal":
+			pass
+		elif view == "full":
+			aya = True
+		else: # if view == custom or undefined
+			aya = TRUE_FALSE( flags["aya"] ) if flags.has_key( "aya" ) \
+						else self._defaults["flags"]["aya"]
+		#preprocess query
+		query = query.replace( "\\", "" )
+		if not isinstance( query, unicode ):
+			query = unicode( query , 'utf8' )
+
+		#Search
+		SE = self.TSE
+		res, termz = SE.search_all( query  , self._defaults["results_limit"], sortedby = sortedby )
+		terms = [term[1] for term in list( termz )[:self._defaults["maxkeywords"]]]
+		#pagination
+		offset = 1 if offset < 1 else offset;
+		range = self._defaults["minrange"] if range < self._defaults["minrange"] else range;
+		range = self._defaults["maxrange"] if range > self._defaults["maxrange"] else range;
+		interval_end = offset + range - 1
+		end = interval_end if interval_end < len( res ) else len( res )
+		start = offset if offset <= len( res ) else -1
+		reslist = [] if end == 0 or start == -1 else list( res )[start - 1:end]
+		output = {}
+
+		# highligh function that consider None value and non-definition
+		H = lambda X:  SE.highlight( X, terms, highlight ) if highlight != "none" and X else X if X else u"-----"
+		# Numbers are 0 if not defined
+		N = lambda X:X if X else 0
+		extend_runtime = res.runtime
+
+		#Magic_loop to built queries of ayas,etc in the same time
+		if aya:
+			aya_query = u"( 0"
+			for r in reslist :
+				if aya: aya_query += u" OR gid:%s " % unicode( r["gid"] )
+			aya_query += u" )"
+
+		#original ayas
+		if aya:
+			aya_res = self.QSE.find_extended( aya_query, "gid" )
+			extend_runtime += aya_res.runtime
+			aya_text = {}
+			for ay in aya_res:
+				aya_text[ay["gid"]] = ay["aya_"]
+
+		output["runtime"] = round( extend_runtime, 5 )
+		output["interval"] = {
+							"start":start,
+							"end":end,
+							"total": len( res ),
+							"page": ( ( start - 1 ) / range ) + 1,
+							"nb_pages": ( ( len( res ) - 1 ) / range ) + 1
+							}
+		output["terms"] = terms
+		### translations
+		cpt = start - 1
+		output["translations"] = {}
+		for r in reslist :
+			cpt += 1
+			output["translations"][ cpt ] = {
+
+					  "identifier": {"gid":r["gid"],
+									 "id":r["id"],
+									},
+
+		              "text":   H( r["text"] ),
+		              "aya": None if not aya \
+		              			else aya_text[r["gid"]],
+					  "info": {
+								"language": r["lang"],
+								"author": r["author"],
+								"country":r["country"],
+								},
+
 		    		}
 		return output
 
