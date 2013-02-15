@@ -23,9 +23,6 @@
 from alfanous.Indexing import QseDocIndex
 from alfanous.QueryProcessing import QuranicParser
 from alfanous.ResultsProcessing import QSort, QScore
-from alfanous.Romanization import transliterate
-
-
 
 
 class QReader:
@@ -117,9 +114,6 @@ class QSearcher:
         self.searcher = self._searcher( weighting = QScore() )
 
     def search( self, querystr, limit = 6236, sortedby = "score", reverse = False ):
-        if ":" not in querystr:
-            querystr = unicode( transliterate( "buckwalter", querystr, ignore = "'_\"%*?#~[]{}:>+-|" ) )
-
         query = self._qparser.parse( querystr )
         results = self.searcher.search( query, limit, QSort( sortedby ), reverse )
         terms = set()
