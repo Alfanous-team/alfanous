@@ -134,7 +134,8 @@ class Raw():
 	     2:"""SuperJokers are not permitted, you have to add  3 letters 
 	           or more to use * and 2 letters or more to use ? (؟)\n
 	     	-- Exceptions: ? (1),  ??????????? (11)
-	     	"""
+	     	""",
+	     3: "Parsing Query failed, please reformulate  the query"
 	    }
 
 
@@ -387,14 +388,18 @@ class Raw():
 
 	def _search( self, flags, unit ):
 		""" return the results of search for any unit """
-		if unit == "aya":
-			search_results = self._search_aya( flags )
-		elif unit == "translation":
-			search_results = self._search_translation( flags )
-		else:
-			search_results = {}
+		try:
+			if unit == "aya":
+				search_results = self._search_aya( flags )
+			elif unit == "translation":
+				search_results = self._search_translation( flags )
+			else:
+				search_results = {}
+			output = { "search": search_results }
+		except:
+			output = { "error": {"code":3, "msg":self.ERRORS[3] }}
 
-		return { "search": search_results }
+		return output
 
 	def _search_aya( self, flags ):
 		"""
