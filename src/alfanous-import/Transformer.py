@@ -25,6 +25,10 @@
 
 TODO reorganize the importer module ,keep it free of un-needed resources
 '''
+import os.path
+import re
+import sqlite3 as lite
+
 
 ## attention : these libraries will be pickled in the indexes
 from alfanous.Support.whoosh.fields import Schema, STORED, ID, KEYWORD, TEXT, NUMERIC
@@ -33,12 +37,6 @@ from alfanous.Support.whoosh.filedb.filestore import FileStorage
 from alfanous.Support.whoosh.store import LockError
 from alfanous.Support.whoosh.spelling import SpellChecker
 from alfanous.Support.whoosh import  index
-
-
-
-import os.path
-import re
-import sqlite3 as lite
 
 
 from alfanous.main import QuranicSearchEngine
@@ -153,13 +151,13 @@ class Transformer:
 
                 #last
                 Schema_raw += "),"
-        else: pass #ignored     
+        else: pass #ignored
         Schema_raw = Schema_raw[:-1] + ")"
         print Schema_raw
         resSchema = None
         exec "resSchema=" + Schema_raw
 
-        print resSchema
+        #print resSchema
         return resSchema
 
 
@@ -189,12 +187,12 @@ class Transformer:
 
         #print "loading DATA..."
         query = "select " + ",".join( map( lambda x: '"' + x + '"', seq ) ) + " from " + tablename
-        print query
+        #print query
         cur.execute( query )
         Data = cur.fetchall()
 
 
-        print "writing in index"
+        print "writing documents in index (total: %d) ...." % len( Data )
         writer = ix.writer()
 
         cpt = 0
@@ -210,12 +208,14 @@ class Transformer:
                 i += 1
 
             write_cmd = write_cmd[:-1] + ")"
-            print write_cmd
+            #print write_cmd
             exec write_cmd
             try: pass
             except: print "ERROR"
             cpt += 1
-            print cpt
+            if not cpt % 1000:
+            	print " - milestone:", cpt, "( %d%% )" % ( cpt * 100 / len( Data ) )
+        print "done."
         writer.commit()
         self.__lock_docindex( ix )
 
@@ -255,15 +255,15 @@ class Transformer:
         """ load stopwords from database and save them as a list in a dynamic py """
 
         cur = self.__mainDb.cursor()
-        cur.execute( "select word from word" )
-        stoplist = []
+        cur.execute( "select word from stopwords" )
+        stoplist = "["
         for item in cur.fetchall():
-            stoplist.append( item[0] )
-
-        raw_str = self.dheader + u"\nstoplist=" + str( stoplist ).replace( ",", ",\n" )
+            stoplist += "u'" + unicode( item[0] ) + "',"
+        stoplist += "]"
+        raw_str = self.dheader + u"\nstoplist=" + stoplist .replace( ",", ",\n" )
 
         fich = open( self.__dypypath + "stopwords_dyn.py", "w+" )
-        fich.write( raw_str )
+        fich.write( raw_str.encode( 'utf8' ) )
 
         return raw_str
 
@@ -339,7 +339,7 @@ class Transformer:
                 else:
                     spell_err[normalized] = [term[1]]
 
-        print "\n".join( [unicode( key ) + u":" + ",".join( value ) for key, value in spell_err.items()] )
+        #print "\n".join( [unicode( key ) + u":" + ",".join( value ) for key, value in spell_err.items()] )
 
         raw_str = self.dheader + u"\nspell_err=" + str( spell_err )
 
@@ -396,7 +396,7 @@ class Transformer:
         return raw_str
 
     def transfer_vocalizations( self ):
-        """ load indexed vocalized words  from the main index and save them as a list in a dynamic py """ 
+        """ load indexed vocalized words  from the main index and save them as a list in a dynamic py """
 	QSE = QuranicSearchEngine( self.__ixpath )
 
 	if QSE.OK:
@@ -411,7 +411,7 @@ class Transformer:
                                 hamza = False \
 	).normalize_all
 
-	
+
 
         vocalization_dict = {}
         for w in mfw:
@@ -447,12 +447,12 @@ if __name__ == "__main__":
 
 
     #ayaSchema=T.build_schema(tablename='aya')
-    #T.build_docindex(ayaSchema) 
+    #T.build_docindex(ayaSchema)
     #T.build_speller(indexname="AYA_SPELL", fields=["aya"])
     #T.build_speller(indexname="SUBJECT_SPELL", fields=["subject"])
 
     #wordqcSchema = T.build_schema( tablename = 'wordqc' )
-    #T.build_docindex(wordqcSchema,tablename='wordqc') 
+    #T.build_docindex(wordqcSchema,tablename='wordqc')
     #T.build_speller(indexname="WORD_SPELL", fields=["word"])
 
 

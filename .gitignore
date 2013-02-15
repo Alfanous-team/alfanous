@@ -20,12 +20,20 @@ nosetests.xml
 .pydevproject
 .settings
 
+# Private Keys #
+################
+*.pem
+
 # generated indexes #
 #####################
 _*.dcz
+_*.dci
 _*.pst
 _*.tiz
 _*.toc
+_*.fvz
+_*.vps
+*_LOCK
 
 # Compiled source #
 ###################
@@ -80,6 +88,8 @@ develop-eggs
 lib
 lib64
 _build/
+rpmbuild
+%{buildroot}
 
 # Packages #
 ############
@@ -95,6 +105,11 @@ _build/
 *.zip
 *.egg
 *.egg-info
+*.rpm
+*.deb
+*.crx
+
+
 
 # Logs and databases #
 ######################

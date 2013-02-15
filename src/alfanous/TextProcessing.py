@@ -1,23 +1,23 @@
 # coding: utf-8
 
-##     Copyright (C) 2009-2012 Assem Chelli <assem.ch [at] gmail.com>
+# #     Copyright (C) 2009-2012 Assem Chelli <assem.ch [at] gmail.com>
 
-##     This program is free software: you can redistribute it and/or modify
-##     it under the terms of the GNU Affero General Public License as published by
-##     the Free Software Foundation, either version 3 of the License, or
-##     (at your option) any later version.
+# #     This program is free software: you can redistribute it and/or modify
+# #     it under the terms of the GNU Affero General Public License as published by
+# #     the Free Software Foundation, either version 3 of the License, or
+# #     (at your option) any later version.
 
-##     This program is distributed in the hope that it will be useful,
-##     but WITHOUT ANY WARRANTY; without even the implied warranty of
-##     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-##     GNU Affero General Public License for more details.
+# #     This program is distributed in the hope that it will be useful,
+# #     but WITHOUT ANY WARRANTY; without even the implied warranty of
+# #     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# #     GNU Affero General Public License for more details.
 
-##     You should have received a copy of the GNU Affero General Public License
-##     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+# #     You should have received a copy of the GNU Affero General Public License
+# #     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
 '''
-it contains the linguistic analysers of Quran and Arabic...etc.
+it contains the linguistic analyzers of Quran and Arabic...etc.
 
 
 @author: Assem Chelli
@@ -26,17 +26,16 @@ it contains the linguistic analysers of Quran and Arabic...etc.
 
 '''
 
-#from alfanous.dynamic_resources import stopwords_dyn ##should test existance before importing
-
-from alfanous.Support.whoosh.analysis import StopFilter, RegexTokenizer #LowercaseFilter, StandardAnalyzer,
-#from pyarabic.araby  import araby
-
-from alfanous.Support.ar_ctype import strip_tashkeel, strip_tatweel, normalize_spellerrors, normalize_hamza, normalize_lamalef  #, HARAKAT_pat, 
-from alfanous.Support.arabic_const import FATHATAN, DAMMATAN, KASRATAN, FATHA, DAMMA, KASRA, SUKUN, SHADDA # *
-from alfanous.Constantes import INVERTEDSHAPING
-
-
 import re
+
+# from pyarabic.araby  import araby
+
+from alfanous.Support.whoosh.analysis import StopFilter, RegexTokenizer  # LowercaseFilter, StandardAnalyzer,
+from alfanous.Support.ar_ctype import strip_tashkeel, strip_tatweel, normalize_spellerrors, normalize_hamza, normalize_lamalef  # , HARAKAT_pat,
+from alfanous.Support.arabic_const import FATHATAN, DAMMATAN, KASRATAN, FATHA, DAMMA, KASRA, SUKUN, SHADDA  # *
+
+from alfanous.Constants import INVERTEDSHAPING
+# from alfanous.dynamic_resources import stopwords_dyn ##should test existence before importing
 
 
 class QSpaceTokenizer( RegexTokenizer ):
@@ -163,7 +162,7 @@ class unicode_( unicode ):
             cptH = 0
             hdic = {}
             for ch in self:
-                if unicode( ch ) in [FATHATAN, DAMMATAN, KASRATAN, FATHA, DAMMA, KASRA, SUKUN]:#, SHADDA
+                if unicode( ch ) in [FATHATAN, DAMMATAN, KASRATAN, FATHA, DAMMA, KASRA, SUKUN]:  # , SHADDA
                     cptH -= 1
                     if hdic.has_key( cptH ):
 
@@ -232,8 +231,8 @@ class unicode_( unicode ):
     def tokenize_shakl( self ):
         return self.word_sh_pattern.findall( self )
 
-#analyzers    
-QStandardAnalyzer = QSpaceTokenizer() | QArabicSymbolsFilter() # | QStopFilter(stoplist = stopwords_dyn) 
+# analyzers
+QStandardAnalyzer = QSpaceTokenizer() | QArabicSymbolsFilter()  # | QStopFilter(stoplist = stopwords_dyn)
 APermissibleAnalyzer = QSpaceTokenizer() | QArabicSymbolsFilter( shaping = True, tashkil = True, spellerrors = True, hamza = True )
 QDiacAnalyzer = QSpaceTokenizer() | QArabicSymbolsFilter( tashkil = False )
 QHighLightAnalyzer = QSpaceTokenizer() | QArabicSymbolsFilter()

@@ -1,0 +1,156 @@
+{% extends "aya_results.html" %}
+
+{% load custom_filters %}
+
+
+
+
+{% block options %}
+<div class="options" dir="{{ bidi.direction }}">
+<input type="checkbox"  name="fuzzy" value="True" {{ params.fuzzy|yesno:"checked," }} /> 
+	<span class="xtitle">{{ _("Fuzzy search") }} </span> 
+<input type="checkbox" name="vocalized" value="False" {{ params.vocalized|yesno:"checked," }} /> 
+	<span class="xtitle">{{ _("Unvocalized text") }} </span>
+<input type="checkbox" name="script" value="uthmani" {{ params.script|yesno:"checked," }} /> 
+	<span class="xtitle">{{ _("Uthmani script") }} </span>
+</div>
+<br/>
+{% endblock %}
+
+
+{% block help_panel %}
+	<table dir="{{ bidi.direction }}" style=" border: 2px dashed gray;margin: 5px;width: 672px;">
+	<tbody>
+	
+	<tr>
+		<th class="style6">{{ _("Exact search") }} </th>
+		<td class="style5" ><a  href='/?{% build_search_link params '%20رب' 1 False %}'> رب</a></td>
+		<td class="style4" ><a  href='/?{% build_search_link params 'فأسقيناكموه' 1 False %}'> فأسقيناكموه </a></td>
+	</tr>
+	<tr>
+		<th class="style3">{{ _("Phrase search") }}  </th>
+		<td class="style2"><a href='/?{% build_search_link params '"رب%20العالمين"' 1 False %}'>"رب العالمين"</a></td>
+		<td class="style2"><a href='/?{% build_search_link params '"رسول%20الله"' 1 False %}'>"رسول الله"</a></td>
+	</tr>
+	<tr>
+		<th class="style6">{{ _("Logical relations") }}</th>
+		<td class="style5"><a href='/?{% build_search_link params '(الصلاة%20-%20الزكاة)%20+%20سورة:البقرة' 1 False %}'>(الصلاة - الزكاة) + سورة:البقرة</a></td>
+	    <td class="style4"><a href='/?{% build_search_link params 'سميع%20|%20بصير' 1 False %}'> سميع | بصير</a></td>
+	</tr> 
+	<tr>
+		<th class="style3">{{ _("Wildcards") }}</th>
+		<td class="style2"><a href='/?{% build_search_link params '*نبي*' 1 False %}'>*نبي*</a></td>
+		<td class="style2"><a href='/?{% build_search_link params 'نعم؟' 1 False %}'>نعم؟</a></td>
+	</tr>
+	<tr>
+		<th class="style6">{{ _("Fields") }}</th>
+		<td class="style5"><a href='/?{% build_search_link params 'سورة:يس' 1 False %}'>سورة:يس</a></td>
+	    <td class="style4"><a href='/?{% build_search_link params 'سجدة:نعم' 1 False %}'>سجدة:نعم</a></td>
+	</tr>
+	<tr>
+		<th class="style3">{{ _("Intervals") }} </th>
+		<td class="style2"><a href='/?{% build_search_link params 'رقم_السورة:%5B1%20الى%205%5D%20%2B%20الله' 1 False %}'>  رقم_السورة:[1 الى 5] + الله</a></td>
+		<td> </td>
+	</tr>
+	<tr>
+		<th class="style6">{{ _("Partial vocalization") }} </th>
+		<td class="style5"><a href="/?{% build_search_link params "آية_:'مَن'" 1 False %}">آية_:'مَن'</a></td>
+	    <td class="style4"><a href="/?{% build_search_link params "آية_:'المَلكُ'" 1 False %}">آية_:'المَلكُ'</a></td>
+	</tr>
+	<tr>
+		<th class="style3">{{ _("Word properties") }}</th>
+		<td class="style2"><a href='/?{% build_search_link params '{قول،اسم}' 1 False %}'>{قول،اسم}</a></td>
+		<td class="style2"><a href='/?{% build_search_link params '{ملك،فعل}' 1 False %}'>{ملك،فعل}</a></td>
+	</tr>
+	<tr>
+		<th class="style9">{{ _("Derivations") }}</th>
+		<td class="style8"><a href='/?{% build_search_link params '%3E%3Eملك' 1 False %}'>&gt;&gt;ملك</a></td>
+	    <td class="style7"><a href='/?{% build_search_link params '%3Eملك' 1 False %}'> &gt;ملك</a></td>
+	</tr>
+	</tbody></table>
+		<br/>
+		<p> {{ _("The website does not work well on Internet Explorer, we suggest to use another explorer such as: ") }} <a href="https://www.mozilla.org/firefox/" target="_blank">{{ _("Firefox") }}</a>.</p>
+		<br/>
+			<button type="button" class='close gray button'> {{ _("Close") }} </button>	
+		<br />
+{% endblock %}
+
+
+
+
+{% block sortedby_panel %}
+	<span class="xtitle">{{ _("Sorted by") }} :</span>
+	<select id="sortedby" class="styled" name="sortedby">
+		<option value="score" {% ifequal params.sortedby "score" %}selected{% endifequal %}>{{ _("Relevance") }}</option>
+		<option value="mushaf" {% ifequal params.sortedby "mushaf" %}selected{% endifequal %}>{{ _("Mus'haf") }}</option>
+		<option value="tanzil" {% ifequal params.sortedby "tanzil" %}selected{% endifequal %}>{{ _("Tanzil") }}</option>
+		<option value="subject" {% ifequal params.sortedby "subject" %}selected{% endifequal %}>{{ _("Topics") }}</option>
+		<option value="ayalength" {% ifequal params.sortedby "ayalength" %}selected{% endifequal %}>{{ _("Ayah length") }}</option>
+	</select><br /><!--[if lte IE 8]><![endif]-->
+{% endblock %}
+
+{% block translations_panel %}
+	<span class="xtitle">&nbsp;&nbsp;&nbsp; {{ _("Translation") }} :</span>
+	<select id="translation" class="styled" name="translation">
+					<option value="en.transliteration">{{ _("Default") }}</option>
+					<option value="None" {% ifequal params.translation "None" %}selected{% endifequal %}>{{ _("No translation") }}</option>
+					{% for translation_id, translation_name in info.show.translations.items %}
+					<option value="{{ translation_id }}" {% ifequal params.translation translation_id %}selected{% endifequal %}>{{ translation_name }}</option>
+					{% endfor %}
+	</select><br /><!--[if lte IE 8]><![endif]-->
+{% endblock %}
+
+{% block recitations_panel %}
+	<span class="xtitle">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {{ _("Recitation:") }}</span>
+	<select id="recitation" class="styled" name="recitation">
+		<option value="14">{{ _("Default") }}</option>
+		<option value="0" {% ifequal params.recitation "0" %}selected{% endifequal %}>{{ _("No recitation") }}</option>
+		{% for recitation_id, recitation_details in info.show.recitations.items %}
+			{% if recitation_id != "ayahCount" %}
+					<option value="{{ recitation_id }}" {% ifequal params.recitation recitation_id %}selected{% endifequal %}>{{ recitation_details.name }} - {{ recitation_details.bitrate }} </option>
+			{% endif %}
+		{% endfor %}
+	</select><br /><!--[if lte IE 8]><![endif]-->
+{% endblock %}
+
+{% block pages_bottom %} 
+	{% block pages_top %}
+		<br />
+		{% if results.search.interval.nb_pages > 1 %}
+				<div class='pages'>
+				{% if results.search.interval.page != 1 %}
+					{% with results.search.interval.page|add:"-1"|stringformat:"s" as prev_page %}
+						<a class='no_decoration' href='?{% build_search_link params params.query prev_page False%}'> 
+					{% endwith %} 
+					<img src='/static/images/prev{{ bidi.image_extension }}.gif' alt='{{ _("Previous page") }}' title = '{{ _("Previous page") }}' />
+					</a>
+				{% endif %}
+				<div style=' display:inline-block; position:relative; top:-8px;'>
+				{% for i in results.search.interval.nb_pages|get_range %}
+					{% with results.search.interval.page as page %}
+						{% if  i == page %}
+							 {{ i }}  	
+						{% elif i <= page|add:"+7" and i >= page|add:"-3"  %} 
+							{# pages  in range [-3,+7] #} 
+							<a class='page_link' href="?{% build_search_link params params.query i False %}">{{ i }}</a> 
+						{% elif i|divisibleby:"50" and i < page or i == 1  %} {# Prio: Left #}
+							{# first page ; and every 50 pages before current page #}
+							<a class='page_link' href="?{% build_search_link params params.query i False %}">{{ i }}</a> .. 
+						{% elif i|divisibleby:"50" and i > page or i == results.search.interval.nb_pages  %}
+							{# last page;  and every 50 pages after current page #}
+							.. <a class='page_link' href="?{% build_search_link params params.query i False %}">{{ i }}</a> 
+						{% endif %}	
+					{% endwith %}
+				{% endfor %}
+				</div>
+				{% if results.search.interval.page != results.search.interval.nb_pages %}
+					{% with results.search.interval.page|add:"+1"|stringformat:"s" as next_page %}
+						<a class='no_decoration' href='?{% build_search_link params params.query next_page False%}'> 
+					{% endwith %} 
+					<img src='/static/images/next{{ bidi.image_extension }}.gif' alt='{{ _("Next page") }}' title = '{{ _("Next page") }}' /></a>
+				{% endif %}
+				
+				</div>
+		{% endif %}
+	{% endblock %}
+{% endblock %}

@@ -16,12 +16,10 @@
 ##     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 """
-TODO use Alfanous.outputs.Json to request different info the first time
 TODO use Table grid for view , use CSS good schema instead
 TODO complete all new Ui features
-TODO relate to AboutDlg / PreferenceDlg / Hints dialog
+TODO relate to PreferenceDlg / Hints dialog
 TODO use css and simplify texts to make a good localization
-TODO clean Code
 TODO sura's name also in English
 TODO fields name in english and arabic / explication (id)
 TODO add qurany project for Subjects in english
@@ -29,17 +27,27 @@ TODO %(var)s mapping is better for localization
 TODO use QT Localization instead of gettext
 TODO Use tree widget to show results
 TODO printing
-TODO load Qt resources on realtime or at least compile them on realtime if missed
 """
 
 ## Importing modules
-import sys, os, gettext
+import sys
+import os
+import gettext
+from re import compile
+
+from pyparsing import ParseException
 from configobj import ConfigObj
 from PyQt4 import  QtGui, QtCore, uic
 from PyQt4.QtCore import QRect
-from pyparsing import ParseException
+
 from alfanous.Outputs import Raw
-from re import compile
+## Specification of resources paths
+from alfanous.Data import Paths
+
+## Importing Qt forms
+from mainform_ui import Ui_MainWindow
+from preferencesDlg_ui import Ui_preferencesDlg
+from aboutDlg_ui import Ui_Dialog as Ui_aboutDlg
 
 
 ## Localization using gettext
@@ -48,18 +56,6 @@ n_ = gettext.ngettext
 gettext.bindtextdomain( "alfanousQT" );
 gettext.textdomain( "alfanousQT" );
 
-
-## Specification of resources paths
-from alfanous.Data import Paths
-
-
-
-
-## Load Qt forms & dialogs on real time
-THIS_FILE_DIR_PATH = os.path.dirname(os.path.abspath(__file__)) + "/"
-Ui_MainWindow = uic.loadUiType( THIS_FILE_DIR_PATH + "UI/mainform.ui" )[0]
-Ui_aboutDlg = uic.loadUiType( THIS_FILE_DIR_PATH + "UI/aboutDlg.ui" )[0]
-Ui_preferencesDlg = uic.loadUiType( THIS_FILE_DIR_PATH + "UI/preferencesDlg.ui" )[0]
 
 ## Initialize search engines 
 RAWoutput = Raw() # default paths
@@ -72,7 +68,6 @@ RELATIONS = ["", "", u"|", u"+", u"-"]
 
 SAJDA_TYPE = {u"مستحبة":_( u"recommended" ), u"واجبة":_( u"obliged" )}
 SURA_TYPE = {u"مدنية":_( u"medina" ), u"مكية":_( u"mekka" )}
-
 
 
 CSS = """
@@ -122,7 +117,7 @@ class QUI( Ui_MainWindow ):
         self.o_reverse.setChecked( boolean( config["sorting"]["reverse"] )if config.has_key( "sorting" ) else False )
 
         self.o_prev.setChecked( boolean( config["extend"]["prev"] ) if config.has_key( "extend" ) else False )
-        self.o_suiv.setChecked( boolean( config["extend"]["suiv"] )if config.has_key( "extend" ) else False )
+        self.o_suiv.setChecked( boolean( config["extend"]["suiv"] ) if config.has_key( "extend" ) else False )
 
         self.o_word_stat.setChecked( boolean( config["extend"]["word_stat"] )if config.has_key( "extend" ) else False )
         self.o_aya_info.setChecked( boolean( config["extend"]["aya_info"] )if config.has_key( "extend" ) else False )
@@ -196,7 +191,9 @@ class QUI( Ui_MainWindow ):
         QtCore.QObject.connect( self.o_stat_from, QtCore.SIGNAL( "valueChanged(int)" ), self.stat_to_min )
         QtCore.QObject.connect( self.m_exit, QtCore.SIGNAL( "clicked()" ), self.exit )
         QtCore.QObject.connect( self.m_help, QtCore.SIGNAL( "clicked()" ), self.help )
-        QtCore.QObject.connect( self.m_about, QtCore.SIGNAL( "clicked()" ), self.about )
+        QtCore.QObject.connect( self.m_about, QtCore.SIGNAL( "triggered(bool)" ), self.about )
+        QtCore.QObject.connect( self.action_Send_Feedback, QtCore.SIGNAL( "triggered(bool)" ), self.send_feedback )
+
         QtCore.QObject.connect( self.a_save, QtCore.SIGNAL( "clicked()" ), self.save_results )
         QtCore.QObject.connect( self.a_print, QtCore.SIGNAL( "clicked()" ), self.print_results )
 
@@ -218,12 +215,13 @@ class QUI( Ui_MainWindow ):
         """
         The main search function
         """
+
         # add to history
         self.history.insert( 0, self.o_query.currentText() )
         self.o_query.clear()
         self.o_query.addItems( self.history )
         self.o_query.setCurrentIndex( 0 )
-
+	
         ###
 
         limit = self.o_limit.value()
@@ -235,18 +233,18 @@ class QUI( Ui_MainWindow ):
                 "query": self.o_query.currentText()
                 }
         output = RAWoutput.do( suggest_flags )
-        #print output
-        suggestions = output["suggest"] if output.has_key( "suggest" ) else []
+        #print output     
+        suggestions = output["suggest"] if output.has_key( "suggest" ) else {}
         #print suggestions
         if len( suggestions ):
-	    html += _( u"<h1> Suggestions (%(number)s) </h1>" ) % {"number":len( suggestions )}
+            html += _( u"<h1> Suggestions (%(number)s) </h1>" ) % {"number":len( suggestions )}
             for key, value in suggestions:
                 html += _( u"<span class='green'>  %(word)s </span> : %(suggestions)s. <br />" ) % {"word": unicode( key ), "suggestions":u"،".join( value )}
 
         #search
         results, terms = None, []
         search_flags = {"action":"search",
-                 "query": self.o_query.currentText(),
+                 "query": unicode(self.o_query.currentText()),
                  "sortedby":"score" if self.o_sortedbyscore.isChecked() \
                         else "mushaf" if self.o_sortedbymushaf.isChecked() \
                         else "tanzil" if self.o_sortedbytanzil.isChecked() \
@@ -266,7 +264,6 @@ class QUI( Ui_MainWindow ):
                  "aya_stat_info":  self.o_aya_info.isChecked(),
                  "aya_sajda_info":  self.o_aya_info.isChecked(),
                  "translation":self.o_traduction.currentText(),
-
                  }
         try:
             results = RAWoutput.do( search_flags )
@@ -279,9 +276,10 @@ class QUI( Ui_MainWindow ):
         #print words_info
         if self.o_word_stat.isChecked():
             html += u'<h1> Words ( %(nb_words)d words reported %(nb_matches)d times ): </h1>' % results["search"]["words"]["global"]
-
+            
+            print results["error"]["msg"]
             for cpt in xrange( results["search"]["words"]["global"]["nb_words"] ) :
-                    this_word_info = results["search"]["words"][cpt + 1]
+                    this_word_info = results["search"]["words"]["individual"][cpt + 1]
                     this_word_info["cpt"] = cpt + 1
                     html += u'''<p>
                                 <span class="green">%(cpt)d. %(word)s : </span>
@@ -621,12 +619,16 @@ class QUI( Ui_MainWindow ):
         painter.end()
 
 
-    def about( self ):
-	""" deprecated """
-        html = """to replace with about dialog """
-        self.o_results.setText( html )
+    def send_feedback( self , state ):
+        """ Open feedback url in an external browser """
+        #QtGui.QDesktopServices.openUrl() ## How to specify the URL , feedback.alfanous.org
 
-
+    def about( self , state ):
+        """ Show about-dialog """
+        AboutDialog = QtGui.QDialog()
+        dlg=Ui_aboutDlg()
+        dlg.setupUi(AboutDialog)
+        AboutDialog.exec_()
 
     def help( self ):
         """  deprecated     """
@@ -645,6 +647,7 @@ def main():
 
     MainWindow.show()
     app.exec_()
+  
     ui.exit()
 
 if __name__ == "__main__":

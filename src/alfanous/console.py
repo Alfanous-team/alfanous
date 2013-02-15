@@ -15,31 +15,23 @@
 ##     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 '''
-Created on 24 févr. 2010
-
-@author: Assem Chelli
-@contact: assem.ch [at] gmail.com
-@license: AGPL
+a console interface for the API.
 
 TODO show RAW|JSON | BEST-presentation format
 TODO __file__ to use resources and indexes integrated with Alfanous Module
 '''
 
-import sys, json
-
-
+import sys
+import json
 from argparse import ArgumentParser
+
 from alfanous.Outputs import Raw
 
-RAWoutput = Raw() #use default paths 
+RAWoutput = Raw() #use default paths
 
 INFORMATION = RAWoutput.do( {"action":"show", "query":"information" } )["show"]["information"]
 DOMAINS = RAWoutput.do( {"action":"show", "query":"domains" } )["show"]["domains"]
 HELPMESSAGES = RAWoutput.do( {"action":"show", "query":"help_messages" } )["show"]["help_messages"]
-
-## a function to decide what is True and what is False
-TRUE_FALSE = lambda x:False if x.lower() in ["no", "none", "null", "0", "-1", "", "false"] else True;
-
 
 arg_parser = ArgumentParser( 
                               description = INFORMATION["description"],
@@ -50,20 +42,24 @@ arg_parser = ArgumentParser(
 
 # add arguments
 arg_parser.add_argument( "-a", "--action", dest = "action", type = str , choices = DOMAINS["action"], help = HELPMESSAGES["action"] )
+arg_parser.add_argument( "-u", "--unit", dest = "unit", type = str , choices = DOMAINS["unit"], help = HELPMESSAGES["unit"] )
 arg_parser.add_argument( "-q", "--query", dest = "query", type = str  , help = HELPMESSAGES["query"] )
 arg_parser.add_argument( "-o", "--offset", dest = "offset", metavar = 'NUMBER', type = int, help = HELPMESSAGES["offset"] )
 arg_parser.add_argument( "-r", "--range", dest = "range", type = int, metavar = 'NUMBER', help = HELPMESSAGES["range"] )
 arg_parser.add_argument( "-s", "--sortedby", dest = "sortedby", type = str, choices = DOMAINS["sortedby"], help = HELPMESSAGES["sortedby"] )
+arg_parser.add_argument( "-w", "--view", dest = "view", type = str, choices = DOMAINS["view"] , help = HELPMESSAGES["view"] )
 arg_parser.add_argument( "--page", dest = "page", type = int, metavar = 'NUMBER', help = HELPMESSAGES["page"] )
 arg_parser.add_argument( "--perpage", dest = "perpage", type = int, metavar = 'NUMBER', help = HELPMESSAGES["perpage"] )
 arg_parser.add_argument( "--recitation", dest = "recitation", metavar = 'NUMBER', type = str, help = HELPMESSAGES["recitation"] )
 arg_parser.add_argument( "--translation", dest = "translation", type = str, help = HELPMESSAGES["translation"] )
+arg_parser.add_argument( "--romanization", dest = "romanization", type = str, help = HELPMESSAGES["romanization"] )
 arg_parser.add_argument( "--highlight", dest = "highlight", type = str, choices = DOMAINS["highlight"], help = HELPMESSAGES["highlight"] )
 arg_parser.add_argument( "--script", dest = "script", type = str, choices = DOMAINS["script"] , help = HELPMESSAGES["script"] )
 arg_parser.add_argument( "--vocalized", dest = "vocalized", type = bool, choices = DOMAINS["vocalized"], help = HELPMESSAGES["vocalized"] )
 arg_parser.add_argument( "--prev_aya", dest = "prev_aya", type = bool, choices = DOMAINS["prev_aya"], help = HELPMESSAGES["prev_aya"] )
 arg_parser.add_argument( "--next_aya", dest = "next_aya", type = bool, choices = DOMAINS["next_aya"], help = HELPMESSAGES["next_aya"] )
 arg_parser.add_argument( "--sura_info", dest = "sura_info", type = bool, choices = DOMAINS["sura_info"], help = HELPMESSAGES["sura_info"] )
+arg_parser.add_argument( "--sura_stat_info", dest = "sura_stat_info", type = bool, choices = DOMAINS["sura_stat_info"], help = HELPMESSAGES["sura_stat_info"] )
 arg_parser.add_argument( "--word_info", dest = "word_info", type = bool, choices = DOMAINS["word_info"], help = HELPMESSAGES["word_info"] )
 arg_parser.add_argument( "--aya_position_info", dest = "aya_position_info", type = bool, choices = DOMAINS["aya_position_info"], help = HELPMESSAGES["aya_position_info"] )
 arg_parser.add_argument( "--aya_theme_info", dest = "aya_theme_info", type = bool, choices = DOMAINS["aya_theme_info"], help = HELPMESSAGES["aya_theme_info"] )
@@ -77,41 +73,18 @@ arg_parser.add_argument( "--platform", dest = "platform", type = str, choices = 
 arg_parser.add_argument( "--domain", dest = "domain", type = str, help = HELPMESSAGES["domain"] )
 
 
-
-
 #execute command
 def main():
     args = arg_parser.parse_args()
-    if args.action and args.query:
-        flags = {}
-        if args.action: flags["action"] = args.action
-        if args.query: flags["query"] = args.query
-        if args.ident: flags["ident"] = args.ident
-        if args.platform: flags["platform"] = args.platform
-        if args.domain: flags["domain"] = args.domain
-        if args.sortedby: flags["sortedby"] = args.sortedby
-        if args.page: flags["page"] = args.page
-        if args.perpage: flags["perpage"] = args.perpage
-        if args.offset: flags["offset"] = args.offset
-        if args.range:  flags["range"] = args.range
-        if args.recitation: flags["recitation"] = args.recitation
-        if args.translation: flags["translation"] = args.translation
-        if args.highlight: flags["highlight"] = args.highlight
-        if args.script: flags["script"] = args.script
-        if args.vocalized: flags["vocalized"] = TRUE_FALSE( args.vocalized )
-        if args.prev_aya: flags["prev_aya"] = TRUE_FALSE( args.prev_aya )
-        if args.next_aya: flags["next_aya"] = TRUE_FALSE( args.next_aya )
-        if args.sura_info: flags["sura_info"] = TRUE_FALSE( args.sura_info )
-        if args.word_info: flags["word_info"] = TRUE_FALSE( args.word_info )
-        if args.aya_position_info: flags["aya_position_info"] = TRUE_FALSE( args.aya_position_info )
-        if args.aya_theme_info: flags["aya_theme_info"] = TRUE_FALSE( args.aya_theme_info )
-        if args.aya_stat_info: flags["aya_stat_info"] = TRUE_FALSE( args.aya_stat_info )
-        if args.aya_sajda_info: flags["aya_sajda_info"] = TRUE_FALSE( args.aya_sajda_info )
-        if args.annotation_aya: flags["annotation_aya"] = TRUE_FALSE( args.annotation_aya )
-        if args.annotation_word: flags["annotation_word"] = TRUE_FALSE( args.annotation_word )
-        if args.fuzzy: flags["fuzzy"] = TRUE_FALSE( args.fuzzy )
 
-        print json.dumps( RAWoutput.do( flags ) )
+    # Get the arguments as a dictionary and remove None-valued keys.
+    flags = {}
+    for k, v in args.__dict__.items():
+        if v != None:
+            flags[k] = v
+
+    if args.action and args.query:
+        print json.dumps( RAWoutput.do( flags ), sort_keys = False, indent = 4 )
     else:
         print RAWoutput._information["console_note"]
 

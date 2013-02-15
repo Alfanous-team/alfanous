@@ -20,11 +20,10 @@
 '''
 @author: assem
 '''
-
 from alfanous.Indexing import QseDocIndex
 from alfanous.QueryProcessing import QuranicParser
 from alfanous.ResultsProcessing import QSort, QScore
-from alfanous.Misc import buck2uni
+from alfanous.Romanization import transliterate
 
 
 
@@ -38,9 +37,9 @@ class QReader:
 
     def list_values( self, fieldname = None, double = False, conditions = [] ):
         """
-        a choosen field stored values generator
+        a chosen field stored values generator
 
-        @param fieldname: the name of the choosen field
+        @param fieldname: the name of the chosen field
         @param double: Eliminate the doubles or not
         @param conditions: conditions of match
         @type conditions: list of couples
@@ -119,13 +118,15 @@ class QSearcher:
 
     def search( self, querystr, limit = 6236, sortedby = "score", reverse = False ):
         if ":" not in querystr:
-            querystr = unicode( buck2uni( querystr, ignore = "'_\"%*?#~[]{}:>+-|" ) )
+            querystr = unicode( transliterate( "buckwalter", querystr, ignore = "'_\"%*?#~[]{}:>+-|" ) )
 
         query = self._qparser.parse( querystr )
         results = self.searcher.search( query, limit, QSort( sortedby ), reverse )
         terms = set()
-        try:query.all_terms( terms )
-        except:pass
+        try:
+            query.all_terms( terms )
+        except:
+            pass
 
         return results, terms
 

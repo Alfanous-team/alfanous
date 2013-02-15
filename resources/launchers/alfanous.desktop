@@ -1,12 +1,16 @@
-
 [Desktop Entry]
+Encoding=UTF-8
 Type=Application
-Version=0.4
+Version=0.7
 Name=Alfanous
 Name[ar]=الفانوس
 GenericName=Alfanous-Quranic Search Engine
 GenericName[ar]=الفانوس - محرك بحث قرآني
-Icon=/usr/share/pixmaps/AlFanous.png
-Exec=alfanousDesktop
-Categories=Education;X-Islamic-Software;X-Quran;Qt;
+Icon=AlFanous
+Exec=alfanous-desktop
+Terminal=false
+Categories=Education;X-Islamic-Software;X-Quran;Qt;X-Red-Hat-Base;X-SuSE-Core-Office;X-MandrivaLinux-MoreApplications-Databases;
+X-Desktop-File-Install-Version=0.19
+
+
 

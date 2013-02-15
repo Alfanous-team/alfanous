@@ -2,12 +2,14 @@
 '''
 Created on 17 avr. 2010
 
-a module to calculate different statistiques on coranic text
+a module to calculate different statistics on coranic text
 
 @author: assem
 '''
-from araby import araby
 import re
+
+from araby import araby
+
 araby = araby()
 
 def letters( text ):

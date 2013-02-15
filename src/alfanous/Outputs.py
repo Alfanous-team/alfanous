@@ -1,5 +1,5 @@
 #!/bin/python
-# -*- coding: UTF-8 -*- 
+# -*- coding: UTF-8 -*-
 
 ##     Copyright (C) 2009-2012 Assem Chelli <assem.ch [at] gmail.com>
 
@@ -19,9 +19,10 @@
 
 """
 TODO add to SHOW: TYPES, HELPMSGS,
-TODO offer some linguistic operations like vocalize,derive using  Quranic Corpus  / functions
+TODO offer some linguistic operations like vocalize
+TODO derive using Quranic Corpus/functions
 FIXME use xranges in domains
-FIXME vocalization_dict[terms[1]], test key existance before use
+FIXME vocalization_dict[terms[1]], test key existence before use
 TODO include suggestions with search results
 TODO +flag language
 FIXME how to select the translation attached to results, what ID? 
@@ -29,24 +30,58 @@ FIXME how to select the translation attached to results, what ID?
 """
 
 
+import json
+import re
 
-from alfanous.main import 	QuranicSearchEngine, FuzzyQuranicSearchEngine, TraductionSearchEngine, WordSearchEngine
+
+from alfanous.main import QuranicSearchEngine, FuzzyQuranicSearchEngine
+from alfanous.main import TraductionSearchEngine, WordSearchEngine
 from alfanous.dynamic_resources.arabicnames_dyn import ara2eng_names as Fields
 from alfanous.dynamic_resources.std2uth_dyn import std2uth_words
 from alfanous.dynamic_resources.vocalizations_dyn import vocalization_dict
+from alfanous.dynamic_resources.synonymes_dyn import syndict
+from alfanous.dynamic_resources.derivations_dyn import derivedict
 from alfanous.TextProcessing import QArabicSymbolsFilter
-import json, re
-
 from alfanous.Data import *
+from alfanous.Romanization import transliterate
+from alfanous.Misc import LOCATE, FIND, FILTER_DOUBLES
 
 
-STANDARD2UTHMANI = lambda x: std2uth_words[x] if std2uth_words.has_key( x ) else x;
+STANDARD2UTHMANI = lambda x: std2uth_words[x] if std2uth_words.has_key( x ) else x
+
+## a function to decide what is True and what is false
+TRUE_FALSE = lambda x: False if x in [False, "False", "no", "0", 0, None] else True
+
+#
+def SCAN_SUPERJOKERS( query ):
+	"""
+	a function to detect SuperJokers such as  *, ????, 
+	a "*" query is a superjoker if it contains less then 3 letters
+	a "?" query is a superjoker if it contains less then 2 letters
+	a mixed query has the same conditions of a "?" query
+	
+	TODO that's a quick fix, the problem of superjokers must be fixed in 
+			the query parser or by time delay 
+	"""
+	myreg = re.compile( "\*+|[\؟\?]{2,9}|[ \t\n\r\(\)\+\-\|]+|[^ ]+:|" )
+	filtred_query = myreg.sub( "", query )
+	super_joker = True if ( len( filtred_query ) < 3 and "*" in query ) \
+						or ( len( filtred_query ) < 2 and ( u"?" in query or u"؟" in query ) ) \
+			 	else False
+	# Exceptions
+	if query in [u"?", u"؟", u"???????????", u"؟؟؟؟؟؟؟؟؟؟؟؟"]:
+		super_joker = False
+
+	return super_joker
+
+
 def FREEZE_XRANGE( d ):
-	new_d = dict( d );
-	for k, v in d.items():
-		if v.__class__ == xrange:
-			new_d[k] = str( v ) ;
-	return new_d; # JSON doesnt accept serialization of xrange  
+    new_d = dict( d );
+    for k, v in d.items():
+        if v.__class__ == xrange:
+            new_d[k] = str( v )
+    return new_d; # JSON doesnt accept serialization of xrange
+
 
 def DEFREEZE_XRANGE( d ):
     """ TODO reversing the operation of freezing xranges done by module alfanous.output """
@@ -57,15 +92,17 @@ class Raw():
 
 	TODO Add word annotations to results
 	FIXME terms are standard and Qurany corpus are uthmani   # resolve with uthmani mapping of Taha , + domains + errors
-	TODO statistics of use + update_stats.js
-	TODO status Messages ALL (code , message)
+	
 	"""
 
 	DEFAULTS = {
+		    "minrange":1,
 		    "maxrange":25,
+		    "maxkeywords":100,
 		    "results_limit":6236,
 		    "flags":{
-				  "action":"error",
+			      "action":"search",
+			      "unit":"aya",
 			      "ident":"undefined",
 			      "platform":"undefined",
 			      "domain":"undefined",
@@ -73,11 +110,14 @@ class Raw():
 			      "script":"standard",
 			      "vocalized": True,
 			      "highlight": "css",
+                  "view": "custom",
 			      "recitation": "1",
 			      "translation": None,
+			      "romanization": None,
 			      "prev_aya": False,
 			      "next_aya": False,
 			      "sura_info": True,
+			      "sura_stat_info":False,
 			      "word_info": True,
 			      "aya_position_info":	True,
 			      "aya_theme_info":	True,
@@ -87,7 +127,7 @@ class Raw():
 			      "annotation_aya":False,
 			      "sortedby":"score",
 			      "offset":1,
-			      "range":10, # used as "perpage" in paging mode 
+			      "range":10, # used as "perpage" in paging mode
 			      "page":1, # overridden with offset
 			      "perpage":10, # overridden with range
 			      "fuzzy":False,
@@ -95,14 +135,19 @@ class Raw():
 		  }
 
 	ERRORS = {
-	     0:"success ## action=%(action)s ; query=%(query)s",
-	     1:"no action is chosen or action undefined ## action=%(action)s",
-	     - 1:"fail, reason unknown ## action=%(action)s ; query=%(query)s",
+	     - 1:"fail, reason unknown",
+	     0:"success",
+	     1:"no action is chosen or action undefined",
+	     2:"""SuperJokers are not permitted, you have to add  3 letters 
+	           or more to use * and 2 letters or more to use ? (؟)\n
+	     	-- Exceptions: ? (1),  ??????????? (11)
+	     	"""
 	    }
 
 
 	DOMAINS = {
 			      "action": ["search", "suggest", "show"],
+			      "unit": ["aya", "word", "translation"],
 			      "ident":["undefined"],
 			      "platform":["undefined", "wp7", "s60", "android", "ios", "linux", "window"],
 			      "domain":[],
@@ -110,11 +155,14 @@ class Raw():
 			      "highlight": ["css", "html", "genshi", "bold", "bbcode"],
 			      "script": ["standard", "uthmani"],
 			      "vocalized": [True, False],
-			      "recitation": xrange( 30 ),
+                  "view":["minimal", "normal", "full", "statistic", "linguistic", "custom"],
+			      "recitation": [], #xrange( 30 ),
 			      "translation": [],
+			      "romanization": ["none", "buckwalter", "iso", "arabtex"], #arabizi is forbidden for show
 			      "prev_aya": [True, False],
 			      "next_aya": [True, False],
 			      "sura_info": [True, False],
+			      "sura_stat_info": [True, False],
 			      "word_info": [True, False],
 			      "aya_position_info":	[True, False],
 			      "aya_theme_info":	[True, False],
@@ -122,9 +170,9 @@ class Raw():
 			      "aya_sajda_info":	[True, False],
 			      "annotation_word":[True, False],
 			      "annotation_aya":[True, False],
-			      "sortedby":["total", "score","relevance", "mushaf", "tanzil", "subject"],
+			      "sortedby":["score", "relevance", "mushaf", "tanzil", "subject", "ayalength"],
 			      "offset":[], #xrange(6237)
-			      "range":[], # xrange(DEFAULTS["maxrange"]) , # used as "perpage" in paging mode 
+			      "range":[], # xrange(DEFAULTS["maxrange"]) , # used as "perpage" in paging mode
 			      "page":[], # xrange(6237),  # overridden with offset
 			      "perpage":[], # xrange( DEFAULTS["maxrange"] ) , # overridden with range
 			      "fuzzy":[True, False],
@@ -133,6 +181,7 @@ class Raw():
 
 	HELPMESSAGES = {
 			      "action": "action to perform",
+			      "unit": "search unit",
 			      "ident":"identifier of requester",
 			      "platform":"platform used by requester",
 			      "domain":"web domain of requester if applicable",
@@ -140,11 +189,14 @@ class Raw():
 			      "highlight": "highlight method",
 			      "script": "script of aya text",
 			      "vocalized": "enable vocalization of aya text",
+                  "view": "pre-defined configuration for what information to retrieve",
 			      "recitation": "recitation id",
 			      "translation": "translation id",
+			      "romanization": "type of romanization",
 			      "prev_aya": "enable previous aya retrieving",
 			      "next_aya": "enable next aya retrieving",
-			      "sura_info": "enable sura information retrieving",
+			      "sura_info": "enable sura information retrieving (override sura_stat_info if False)",
+			      "sura_stat_info": "enable sura stats retrieving (has no effect if sura_info is False)",
 			      "word_info": "enable word information retrieving",
 			      "aya_position_info":	"enable aya position information retrieving",
 			      "aya_theme_info":	"enable aya theme information retrieving",
@@ -161,7 +213,7 @@ class Raw():
 		}
 
 
-	IDS = {"ALFANOUS_WUI_2342R52"}
+	IDS = ["ALFANOUS_WUI_2342R52"]
 
 	def __init__( self,
 					QSE_index = Paths.QSE_INDEX	,
@@ -188,6 +240,7 @@ class Raw():
 		self._information = Resources.information( Information_file )
 		##
 		self._stats = Configs.stats( Stats_file )
+		# enable it if you need statistics , disable it you prefer performance
 		self._init_stats()
 		##
 		self._surates = [item for item in self.QSE.list_values( "sura" ) if item]
@@ -224,19 +277,24 @@ class Raw():
 	def _do( self, flags ):
 		#try:
 		action = flags["action"] if flags.has_key( "action" ) else self._defaults["flags"]["action"]
+		unit = flags["unit"] if flags.has_key( "unit" ) else self._defaults["flags"]["unit"]
 		ident = flags["ident"] if flags.has_key( "ident" ) else self._defaults["flags"]["ident"]
 		platform = flags["platform"] if flags.has_key( "platform" ) else self._defaults["flags"]["platform"]
 		domain = flags["domain"] if flags.has_key( "domain" ) else self._defaults["flags"]["domain"]
-		# gather statistics
+
+		# gather statistics, enable it if you need use statistics
+		# disable it if you prefer performance
 		self._process_stats( flags )
 
 		# init the error message with Succes
 		output = self._check( 0, flags )
-
 		if action == "search":
-			output.update( self._search( flags ) )
+			if SCAN_SUPERJOKERS( flags["query"] ): #Quick fix!!
+				output = self._check( 2, flags )
+			else:
+				output.update( self._search( flags, unit ) )
 		elif action == "suggest":
-			output.update( self._suggest( flags ) )
+			output.update( self._suggest( flags, unit ) )
 		elif action == "show":
 			output.update( self._show( flags ) )
 		else:
@@ -254,7 +312,7 @@ class Raw():
 		     }
 
 	def _init_stats( self ):
-		### initialization of stats 
+		### initialization of stats
 		stats = {}
 		for ident in ["TOTAL"]: #self._idents.extend(["TOTAL"])
 			stats[ident] = {}
@@ -279,22 +337,23 @@ class Raw():
 	def _process_stats( self, flags ):
 		""" process flags for statistics """
 		stats = self._stats
-		#Incrementation 
+		#Incrementation
 		for ident in ["TOTAL"]: #["TOTAL",flags[ident]]
 			stats[ident]["total"] += 1
-			action = flags["action"]
-			if action in self._domains["action"]:
-				stats[ident][action]["total"] += 1
-				for flag, val in flags.items():
-					if flag in self._domains.keys():
-						stats[ident][action][flag]["total"] += 1
-						if val in self._domains[flag]:
-							stats[ident][action][flag][str( val )] += 1
+			if flags.has_key( "action" ):
+				action = flags["action"]
+				if action in self._domains["action"]:
+					stats[ident][action]["total"] += 1
+					for flag, val in flags.items():
+						if flag in self._domains.keys():
+							stats[ident][action][flag]["total"] += 1
+							if val in self._domains[flag]:
+								stats[ident][action][flag][str( val )] += 1
+							else:
+								stats[ident][action][flag]["other"] += 1
 						else:
-							stats[ident][action][flag]["other"] += 1
-					else:
-						stats[ident][action]["other"]["total"] += 1
-			else: stats[ident]["other"]["total"] += 1
+							stats[ident][action]["other"]["total"] += 1
+				else: stats[ident]["other"]["total"] += 1
 		self._stats = stats
 		f = open( Paths.STATS_FILE, "w" )
 		f.write( json.dumps( self._stats ) )
@@ -309,54 +368,185 @@ class Raw():
 		else:
 			return {"show":None}
 
-	def _suggest( self, flags ):
-		""" return suggestions """
-		query = flags["query"] if flags.has_key( "query" ) else self._defaults["flags"]["query"]
-		try:
-			output = self.QSE.suggest_all( unicode( query.replace( "\\", "" ), 'utf8' ) ).items()
-		except Exception:
-			output = None
-		return {"suggest":output}
+	def _suggest( self, flags, unit ):
+		""" return suggestions for any search unit """
+		if unit == "aya":
+			suggestions = self._suggest_aya( flags )
+		else:
+			suggestions = {}
 
-	def _search( self, flags ):
-		"""
-		return the results of search as json
-	    """
-		#flags
+		return {"suggest": suggestions}
+
+
+	def _suggest_aya( self, flags ):
+		""" return suggestions for aya words """
 		query = flags["query"] if flags.has_key( "query" ) else self._defaults["flags"]["query"]
-		sortedby = flags["sortedby"] if flags.has_key( "sortedby" ) else self._defaults["flags"]["sortedby"]
-		range = int( flags["perpage"] ) if  flags.has_key( "perpage" )  else flags["range"] if flags.has_key( "range" ) else self._defaults["flags"]["range"]
-		offset = (( int( flags["page"] ) - 1 ) * range) + 1 if flags.has_key( "page" ) else int(flags["offset"]) if flags.has_key( "offset" ) else self._defaults["flags"]["offset"] ## offset = (page-1) * perpage   --  mode paging
-		highlight = flags["highlight"] if flags.has_key( "highlight" ) else self._defaults["flags"]["highlight"]
-		script = flags["script"] if flags.has_key( "script" ) else self._defaults["flags"]["script"]
-		vocalized = flags["vocalized"] if flags.has_key( "vocalized" ) else self._defaults["flags"]["vocalized"]
-		recitation = flags["recitation"] if flags.has_key( "recitation" ) else self._defaults["flags"]["recitation"]
-		translation = flags["translation"] if flags.has_key( "translation" ) else self._defaults["flags"]["translation"]
-		prev_aya = flags["prev_aya"] if flags.has_key( "prev_aya" ) else self._defaults["flags"]["prev_aya"]
-		next_aya = flags["next_aya"] if flags.has_key( "next_aya" ) else self._defaults["flags"]["next_aya"]
-		sura_info = flags["sura_info"] if flags.has_key( "sura_info" ) else self._defaults["flags"]["sura_info"]
-		word_info = flags["word_info"] if flags.has_key( "word_info" ) else self._defaults["flags"]["word_info"]
-		aya_position_info = flags["aya_position_info"] if flags.has_key( "aya_position_info" ) else self._defaults["flags"]["aya_position_info"]
-		aya_theme_info = flags["aya_theme_info"] if flags.has_key( "aya_theme_info" ) else self._defaults["flags"]["aya_theme_info"]
-		aya_stat_info = flags["aya_stat_info"] if flags.has_key( "aya_stat_info" ) else self._defaults["flags"]["aya_stat_info"]
-		aya_sajda_info = flags["aya_sajda_info"] if flags.has_key( "aya_sajda_info" ) else self._defaults["flags"]["aya_sajda_info"]
-		annotation_aya = flags["annotation_aya"] if flags.has_key( "annotation_aya" ) else self._defaults["flags"]["annotation_aya"]
-		annotation_word = flags["annotation_word"] if flags.has_key( "annotation_word" ) else self._defaults["flags"]["annotation_word"]
-		fuzzy = flags["fuzzy"] if flags.has_key( "fuzzy" ) else self._defaults["flags"]["fuzzy"]
+		#preprocess query
+		query = query.replace( "\\", "" )
+		if not isinstance( query, unicode ):
+			query = unicode( query , 'utf8' )
+		try:
+			output = self.QSE.suggest_all( query )
+		except Exception:
+			output = {}
+
+		return output
+
+	def _search( self, flags, unit ):
+		""" return the results of search for any unit """
+		if unit == "aya":
+			search_results = self._search_aya( flags )
+		elif unit == "translation":
+			search_results = self._search_translation( flags )
+		else:
+			search_results = {}
+
+		return { "search": search_results }
+
+	def _search_aya( self, flags ):
+		"""
+		return the results of aya search as a dictionary data structure
+		"""
+		#flags
+		query = flags["query"] if flags.has_key( "query" ) \
+				else self._defaults["flags"]["query"]
+		sortedby = flags["sortedby"] if flags.has_key( "sortedby" ) \
+				   else self._defaults["flags"]["sortedby"]
+		range = int( flags["perpage"] ) if  flags.has_key( "perpage" )  \
+				else flags["range"] if flags.has_key( "range" ) \
+									else self._defaults["flags"]["range"]
+		## offset = (page-1) * perpage   --  mode paging
+		offset = ( ( int( flags["page"] ) - 1 ) * range ) + 1 if flags.has_key( "page" ) \
+				 else int( flags["offset"] ) if flags.has_key( "offset" ) \
+					  else self._defaults["flags"]["offset"]
+		recitation = flags["recitation"] if flags.has_key( "recitation" ) \
+					 else self._defaults["flags"]["recitation"]
+		translation = flags["translation"] if flags.has_key( "translation" ) \
+					  else self._defaults["flags"]["translation"]
+		romanization = flags["romanization"] if flags.has_key( "romanization" ) \
+					  else self._defaults["flags"]["romanization"]
+		highlight = flags["highlight"] if flags.has_key( "highlight" ) \
+					else self._defaults["flags"]["highlight"]
+		script = flags["script"] if flags.has_key( "script" ) \
+				 else self._defaults["flags"]["script"]
+		vocalized = TRUE_FALSE( flags["vocalized"] ) if flags.has_key( "vocalized" ) \
+					else self._defaults["flags"]["vocalized"]
+		fuzzy = TRUE_FALSE( flags["fuzzy"] ) if flags.has_key( "fuzzy" ) \
+				else self._defaults["flags"]["fuzzy"]
+		view = flags["view"] if flags.has_key( "view" ) \
+				else self._defaults["flags"]["view"]
+
+		# pre-defined views
+		if view == "minimal":
+			fuzzy = True
+			#page = 25
+			vocalized = False
+			recitation = None
+			translation = None
+			prev_aya = next_aya = False
+			sura_info = False
+			word_info = False
+			aya_position_info = aya_theme_info = aya_sajda_info = False
+			aya_stat_info = False
+			sura_stat_info = False
+			annotation_aya = annotation_word = False
+		elif view == "normal":
+			prev_aya = next_aya = True
+			sura_info = True
+			word_info = True
+			aya_position_info = aya_theme_info = aya_sajda_info = True
+			aya_stat_info = True
+			sura_stat_info = False
+			annotation_aya = annotation_word = False
+		elif view == "full":
+			prev_aya = next_aya = True
+			sura_info = True
+			word_info = True
+			aya_position_info = aya_theme_info = aya_sajda_info = True
+			aya_stat_info = sura_stat_info = True
+			annotation_aya = annotation_word = True
+			romanization = "iso"
+		elif view == "statistic":
+			prev_aya = next_aya = False
+			sura_info = True
+			word_info = True
+			aya_position_info = True
+			aya_theme_info = aya_sajda_info = False
+			aya_stat_info = True
+			sura_stat_info = True
+			annotation_aya = False
+			annotation_word = True
+		elif view == "linguistic":
+			prev_aya = next_aya = False
+			sura_info = False
+			word_info = True
+			aya_position_info = False
+			aya_theme_info = aya_sajda_info = True
+			aya_stat_info = False
+			sura_stat_info = False
+			annotation_aya = True
+			annotation_word = True
+			romanization = "buckwalter"
+		elif view == "recitation":
+			script = "uthmani"
+			prev_aya = next_aya = True
+			sura_info = True
+			word_info = False
+			aya_position_info = True
+			aya_theme_info = False
+			aya_sajda_info = True
+			aya_stat_info = False
+			sura_stat_info = False
+			annotation_aya = False
+			annotation_word = False
+		else: # if view == custom or undefined
+			prev_aya = TRUE_FALSE( flags["prev_aya"] ) if flags.has_key( "prev_aya" ) \
+						else self._defaults["flags"]["prev_aya"]
+			next_aya = TRUE_FALSE( flags["next_aya"] ) if flags.has_key( "next_aya" ) \
+						else self._defaults["flags"]["next_aya"]
+			sura_info = TRUE_FALSE( flags["sura_info"] ) if flags.has_key( "sura_info" ) \
+						else self._defaults["flags"]["sura_info"]
+			sura_stat_info = TRUE_FALSE( flags["sura_stat_info"] ) if flags.has_key( "sura_stat_info" ) \
+						else self._defaults["flags"]["sura_stat_info"]
+			word_info = TRUE_FALSE( flags["word_info"] ) if flags.has_key( "word_info" ) \
+						else self._defaults["flags"]["word_info"]
+			aya_position_info = TRUE_FALSE( flags["aya_position_info"] ) if flags.has_key( "aya_position_info" ) \
+								else self._defaults["flags"]["aya_position_info"]
+			aya_theme_info = TRUE_FALSE( flags["aya_theme_info"] ) if flags.has_key( "aya_theme_info" ) \
+							 else self._defaults["flags"]["aya_theme_info"]
+			aya_stat_info = TRUE_FALSE( flags["aya_stat_info"] ) if flags.has_key( "aya_stat_info" ) \
+							else self._defaults["flags"]["aya_stat_info"]
+			aya_sajda_info = TRUE_FALSE( flags["aya_sajda_info"] ) if flags.has_key( "aya_sajda_info" ) \
+							 else self._defaults["flags"]["aya_sajda_info"]
+			annotation_aya = TRUE_FALSE( flags["annotation_aya"] ) if flags.has_key( "annotation_aya" ) \
+							 else self._defaults["flags"]["annotation_aya"]
+			annotation_word = TRUE_FALSE( flags["annotation_word"] ) if flags.has_key( "annotation_word" ) \
+							 else self._defaults["flags"]["annotation_word"]
+
+
+		#preprocess query
+		query = query.replace( "\\", "" )
+		if not isinstance( query, unicode ):
+			query = unicode( query , 'utf8' )
 
 		#Search
 		SE = self.FQSE if fuzzy else self.QSE
-		res, termz = SE.search_all( unicode( query.replace( "\\", "" ), 'utf8' ) , self._defaults["results_limit"], sortedby = sortedby )
-		terms = [term[1] for term in list( termz )] # TODO: I dont like this termz structure , must change it
+		res, termz = SE.search_all( query  , self._defaults["results_limit"], sortedby = sortedby )
+		terms = [term[1] for term in list( termz )[:self._defaults["maxkeywords"]]]
 		terms_uthmani = map( STANDARD2UTHMANI, terms )
 		#pagination
 		offset = 1 if offset < 1 else offset;
+		range = self._defaults["minrange"] if range < self._defaults["minrange"] else range;
 		range = self._defaults["maxrange"] if range > self._defaults["maxrange"] else range;
-		interval_end = offset + range
+		interval_end = offset + range - 1
 		end = interval_end if interval_end < len( res ) else len( res )
 		start = offset if offset <= len( res ) else -1
-		reslist = [] if end == 0 or start == -1 else list( res )[start-1:end]
+		reslist = [] if end == 0 or start == -1 else list( res )[start - 1:end]
 		output = {}
+
+		## disable annotations for aya words if there is more then one result
+		if annotation_aya and len ( res ) > 1:
+			annotation_aya = False
 
 		#if True:
 		## strip vocalization when vocalized = true
@@ -378,7 +568,7 @@ class Raw():
 		##########################################
 		extend_runtime = res.runtime
 		# Words & Annotations
-		words_output = {}
+		words_output = {"individual":{}}
 		if word_info:
 			matches = 0
 			docs = 0
@@ -391,15 +581,37 @@ class Raw():
 						matches += term[2]
 					docs += term[3]
 					annotation_word_query += u" OR normalized:%s " % STANDARD2UTHMANI( term[1] )
-					vocalizations = vocalization_dict[term[1]]
+					vocalizations = vocalization_dict[term[1]] if vocalization_dict.has_key( term[1] ) \
+										   else []
 					nb_vocalizations_globale += len( vocalizations )
-					words_output[ cpt ] = {"word":term[1], "nb_matches":term[2], "nb_ayas":term[3], "nb_vocalizations": len( vocalizations ), "vocalizations": vocalizations}
+					synonyms = syndict[term[1]] if syndict.has_key( term[1] ) \
+										   else []
+
+					lemma = LOCATE( derivedict["word_"], derivedict["lemma"], term[1] )
+					root = LOCATE( derivedict["word_"], derivedict["root"], term[1] )
+					if lemma:  # if different of none
+						derivations = FILTER_DOUBLES( FIND( derivedict["lemma"], derivedict["word_"], lemma ) )
+					else:
+						derivations = []
+					words_output[ "individual" ][ cpt ] = {
+															 "word":term[1],
+															 "romanization": transliterate( romanization, term[1], ignore = "" , reverse = True ) if romanization in self.DOMAINS["romanization"] else None,
+															 "nb_matches":term[2],
+															 "nb_ayas":term[3],
+															 "nb_vocalizations": len( vocalizations ),#unneeded
+															 "vocalizations": vocalizations,
+															 "nb_synonyms": len( synonyms ),#unneeded
+															 "synonyms": synonyms, #unneeded for normal mode
+															 "lemma": lemma,
+															 "root": root,
+															 "nb_derivations": len( derivations ), #unneeded
+															 "derivations": derivations #unneeded for normal mode
+														 }
 					cpt += 1
 			annotation_word_query += u" ) "
 			words_output["global"] = {"nb_words":cpt - 1, "nb_matches":matches, "nb_vocalizations": nb_vocalizations_globale}
 		output["words"] = words_output;
-
-		#Magic_loop to built queries of Adjacents,translations and annotations in the same time 
+		#Magic_loop to built queries of Adjacents,translations and annotations in the same time
 		if prev_aya or next_aya or translation or  annotation_aya:
 			adja_query = trad_query = annotation_aya_query = u"( 0"
 
@@ -414,7 +626,7 @@ class Raw():
 			annotation_aya_query += u" )"
 
 
-		# Adjacents 
+		# Adjacents
 		if prev_aya or next_aya:
 			adja_res = self.QSE.find_extended( adja_query, "gid" )
 			adja_ayas = {0:{"aya_":u"----", "uth_":u"----", "sura":u"---", "aya_id":0}, 6237:{"aya_":u"----", "uth_":u"----", "sura":u"---", "aya_id":9999}}
@@ -438,16 +650,19 @@ class Raw():
 			#print annotation_query.encode( "utf-8" )
 			annot_res = self.WSE.find_extended( annotation_query, "gid" )
 			extend_runtime += annot_res.runtime
-			## prepare annotations for use 
+			## prepare annotations for use
 			annotations_by_word = {}
 			annotations_by_position = {}
 			for annot in annot_res:
 				if ( annotation_word and word_info ) :
 					if annot["normalized"] in terms_uthmani:
 						if annotations_by_word.has_key( annot["normalized"] ):
-							annotations_by_word[annot["normalized"]][annot["word"]] = annot;
+							if annotations_by_word[annot["normalized"]].has_key( annot["word"] ):
+								annotations_by_word[annot["normalized"]][annot["word"]][annot["order"]] = annot;
+							else:
+								annotations_by_word[annot["normalized"]][annot["word"]] = { annot["order"]: annot} ;
 						else:
-							annotations_by_word[annot["normalized"]] = { annot["word"]: annot}
+							annotations_by_word[annot["normalized"]] = { annot["word"]: { annot["order"]: annot}}
 				if annotation_aya:
 					if annotations_by_position.has_key( ( annot["sura_id"], annot["aya_id"] ) ):
 						annotations_by_position[( annot["sura_id"], annot["aya_id"] )][annot["word_id"]] = annot
@@ -456,16 +671,22 @@ class Raw():
 
 		## merge word annotations to word output
 		if ( annotation_word and word_info ):
-			for cpt in xrange( 1, len( termz ) + 1 ):
-				current_word = STANDARD2UTHMANI( output["words"][cpt]["word"] )
+			for cpt in xrange( 1, len( output["words"]["individual"] ) + 1 ):
+				current_word = STANDARD2UTHMANI( output["words"]["individual"][cpt]["word"] )
 				#print current_word.encode( "utf-8" ), "=>", annotations_by_word, "=>", list( annot_res )
 				if annotations_by_word.has_key( current_word ):
 					current_word_annotations = annotations_by_word[ current_word ]
-					output["words"][cpt]["annotations"] = current_word_annotations
-					output["words"][cpt]["nb_annotations"] = len ( current_word_annotations )
+					output["words"]["individual"][cpt]["annotations"] = current_word_annotations
+					output["words"]["individual"][cpt]["nb_annotations"] = len ( current_word_annotations )
 
-		output["runtime"] = extend_runtime
-		output["interval"] = {"start":start, "end":end, "total":len( res )}
+		output["runtime"] = round( extend_runtime, 5 )
+		output["interval"] = {
+							"start":start,
+							"end":end,
+							"total": len( res ),
+							"page": ( ( start - 1 ) / range ) + 1,
+							"nb_pages": ( ( len( res ) - 1 ) / range ) + 1
+							}
 		output["translation_info"] = {}
 		### Ayas
 		cpt = start - 1
@@ -484,8 +705,9 @@ class Raw():
 		              		"id":r["aya_id"],
 		              		"text":  Gword_tamdid( H( V( r["aya_"] ) ) ) if script == "standard"
 		              			else  Gword_tamdid( H( r["uth_"] ) ),
-						"translation": trad_text[r["gid"]] if ( translation != "None" and translation and trad_text.has_key(r["gid"])) else None,
-		                	"recitation": None if not recitation else u"http://www.everyayah.com/data/" + self._recitations[recitation]["subfolder"].encode( "utf-8" ) + "/%03d%03d.mp3" % ( r["sura_id"], r["aya_id"] ),
+						"translation": trad_text[r["gid"]] if ( translation != "None" and translation and trad_text.has_key( r["gid"] ) ) else None,
+		                	"recitation": None if not recitation or not self._recitations.has_key( recitation ) \
+		                				  else u"http://www.everyayah.com/data/" + self._recitations[recitation]["subfolder"].encode( "utf-8" ) + "/%03d%03d.mp3" % ( r["sura_id"], r["aya_id"] ),
 		                	"prev_aya":{
 						    "id":adja_ayas[r["gid"] - 1]["aya_id"],
 						    "sura":adja_ayas[r["gid"] - 1]["sura"],
@@ -509,12 +731,13 @@ class Raw():
 							  "id":r["sura_id"],
 							  "type": r["sura_type"] ,
 							  "order":r["sura_order"],
-						    "stat":{
-								  "ayas":r["s_a"],
-								  "words":N( r["s_w"] ),
-								  "godnames":N( r["s_g"] ),
-								  "letters":N( r["s_l"] )
-						      }
+							  "ayas":r["s_a"],
+						    "stat":{} if not sura_stat_info
+							  	  else	{
+										  "words":N( r["s_w"] ),
+										  "godnames":N( r["s_g"] ),
+										  "letters":N( r["s_l"] )
+								      }
 
 		    		},
 
@@ -551,15 +774,13 @@ class Raw():
 				"annotations": {} if not annotation_aya or not annotations_by_position.has_key( ( r["sura_id"], r["aya_id"] ) )
 							else annotations_by_position[( r["sura_id"], r["aya_id"] )]
 		    		}
-
-		return {"search": output}
-
+		return output
 
 
 class Json( Raw ):
 	""" JSON output format """
 	def do( self, flags ):
-		return json.dumps( self._do( flags ) )
+		return json.dumps( self._do( flags ) , sort_keys = False, indent = 4 )
 
 
 class Xml( Raw ):
@@ -567,52 +788,7 @@ class Xml( Raw ):
 
 	@deprecated: Why Xml and CompleXity?! Use jSon and Simplicity!
 	"""
-	def suggest( self, query ):
-		""" return suggestions """
-		raw_output = super( Json, self ).suggest( query )
-		xml_output = "\n".join( 
-			[
-			'<word text="%(word)s"> %(suggestions)s </word>' % {
-					"word":word,
-					"suggestions": "\n".join( ['<suggestion text="%s"/>' % suggestion for suggestion in raw_output[word]] )
-					}
-			for word in raw_output.keys()
-			]
-			)
-		return xml_output
-
-	def search( self, query, sortedby = "score", offset = 1, range = 10 ):
-		""" return results """
-		#TODO: complete it manually or using an Python2XML dump , JSON2XML,or manually 
-		schema = """
-		<results runtime=%(runtime)f                > # output["runtime"
-		<words nb_words=%(nb_words) global_nb_matches=%(global_nb_matches)>
-			<word cpt="%cpt" text="%word" nb_matches=%(nb_matches) nb_ayas=%(nb_ayas) > *  cpt
-
-		</words>
-		<ayas total="%total" start="%start"  end="%end">
-		<aya cpt=%cpt>
-		<aya_info id=%id>
-
-		<text>   </text>
-		<text>
-
-
-		</aya_info>
-
-
-
-
-		</aya>
-
-
-
-
-		</ayas>
-		</results>
-
-		"""
-		return None
+	pass
 
 
 
