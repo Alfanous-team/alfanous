@@ -435,7 +435,7 @@ dist_xpi:
 #  Chrome/Chromium extension
 dist_crx:
 	cd $(CHROMEADDON_PATH); if [ ! -e privatekey.pem ] ; 	then openssl genrsa  -out privatekey.pem 2048; fi; 
-	cd $(CHROMEADDON_PATH); sh crxmake.sh alfanous privatekey.pem 
+	cd $(CHROMEADDON_PATH); bash crxmake.sh alfanous privatekey.pem 
 	mkdir -p output/$(VERSION) ; mv $(CHROMEADDON_PATH)alfanous.crx ./output/$(VERSION)/alfanous_chromeaddon_$(VERSION).crx
 
 ## install all (deprecated), use it only to make tests:
