@@ -22,17 +22,16 @@
 @contact: assem.ch [at] gmail.com
 @license: AGPL
 
-@to do : Antonymes / Synonymes
-@to do : Prefixes / Suffixes
+TODO Antonyms / Synonyms
+TODO Prefixes / Suffixes
 '''
+import os.path
+
+from PyZekrModels.Models import TranslationModel
 
 from alfanous.Support.whoosh.fields import Schema, STORED, ID, KEYWORD, TEXT, NUMERIC
 from alfanous.Support.whoosh.filedb.filestore import FileStorage
 from alfanous.Support.whoosh import index
-
-
-import os.path
-from PyZekrModels.Models import TranslationModel
 
 from alfanous.TextProcessing import QArabicSymbolsFilter
 
