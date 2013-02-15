@@ -20,6 +20,10 @@ nosetests.xml
 .pydevproject
 .settings
 
+# Private Keys #
+################
+*.pem
+
 # generated indexes #
 #####################
 _*.dcz
@@ -103,6 +107,7 @@ rpmbuild
 *.egg-info
 *.rpm
 *.deb
+*.crx
 
 
 

@@ -49,7 +49,8 @@ QT_RC_PATH=$(DESKTOP_INTERFACE_PATH)"images/"
 MOBILE_WUI_PATH=./interfaces/web/mobile_wui/
 ## Django Web User interface path
 DJWUI_PATH=$(API_PATH)"alfanous-django/"
-
+## Chrome addon source path
+CHROMEADDON_PATH=interfaces/toolbars/chrome/
 
 ##  Installation Paths:
 PREFIX?=/usr
@@ -57,6 +58,8 @@ PREFIX?=/usr
 #INDEX_INSTALL_PATH="$(DESTDIR)$(PREFIX)/share/alfanous-indexes/"
 WEB_INSTALL_PATH=$(DESTDIR)/var/www/alfanous-web/
 WEB_CGI_INSTALL_PATH=$(WEB_INSTALL_PATH)cgi/
+CHROMEADDON_INSTALL_PATH=
+CHROMIUMADDON_INSTALL_PATH=
 
 
 ## default target, it's what to do if you typed "make" without target
@@ -329,7 +332,7 @@ local_mo_compile:
 # 4. Nokia Symbian sis package, see dist_sis
 # 5. firefox toolbar xpi file, see dist_xpi
 # 6. MacOS applications app, see  dist_app
-dist_all: dist_egg_all dist_deb dist_rpm dist_sis dist_xpi  dist_app
+dist_all: dist_egg_all dist_deb dist_rpm dist_sis dist_xpi dist_crx  dist_app
 
 ## generate all extentions and API's eggs:
 # 1. Alfanous main API, see dist_egg_api
@@ -429,6 +432,11 @@ dist_xpi:
 	cd ./interfaces/toolbars/firefox ; zip alfanous_toolbar_$(VERSION).xpi install.rdf chrome.manifest defaults/* chrome/alfanoustoolbar.jar
 	mkdir -p output/$(VERSION) ; mv ./interfaces/toolbars/firefox/alfanous_toolbar_$(VERSION).xpi ./output/$(VERSION)
 
+#  Chrome/Chromium extension
+dist_crx:
+	cd $(CHROMEADDON_PATH); if [ ! -e privatekey.pem ] ; 	then openssl genrsa  -out privatekey.pem 2048; fi; 
+	cd $(CHROMEADDON_PATH); sh crxmake.sh alfanous privatekey.pem 
+	mkdir -p output/$(VERSION) ; mv $(CHROMEADDON_PATH)alfanous.crx ./output/$(VERSION)/alfanous_chromeaddon_$(VERSION).crx
 
 ## install all (deprecated), use it only to make tests:
 # 1. the API, see install_api
