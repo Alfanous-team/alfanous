@@ -3,10 +3,8 @@
 
 """ a space for tests and misc functions """
 
-import locale
 import sys
-from  alfanous.Constantes import BUCKWALTER2UNICODE
-
+import locale
 
 #translation functions
 import gettext
@@ -22,26 +20,10 @@ LOC = locale.getdefaultlocale()[0]
 #get platform
 SYS = sys.platform
 
-def buck2uni( string, ignore = "" ):
-    """ decode buckwalter """
-    result = ""
-    for char in string :
-        if BUCKWALTER2UNICODE.has_key( char ) and char not in ignore:
-            result += BUCKWALTER2UNICODE[char]
-        else :
-            result += char
-
-    return result
-
-
-
-#filter doubles
-def filter_doubles( lst ):
-    """ deprecated : use list(set()) or filter(cond,list) instead"""
-    for i in range( len( lst ) ):
-        if lst[i] not in lst[i + 1:]:
-            yield lst[i]
-
+FILTER_DOUBLES = filter_doubles = lambda lst:list( set( lst ) )
+LOCATE = lambda source, dist, itm: dist[source.index( itm )] \
+												if itm in source else None
+FIND = lambda source, dist, itm: [dist[i] for i in [i for i in range( len( source ) ) if source[i] == itm]]
 
 
 

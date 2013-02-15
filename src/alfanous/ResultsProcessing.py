@@ -46,17 +46,18 @@ def QScore( methode = None ):
     return methode
 
 def QSort( sortedby ):
-    """         """
+    """  Controls the results sorting options    """
     if sortedby == "mushaf": sortedby = "gid"
     elif sortedby == "tanzil": sortedby = ( "sura_order", "aya_id" )
     elif sortedby == "subject": sortedby = ( "chapter", "topic", "subtopic" )
+    elif sortedby == "ayalength": sortedby = ( "a_l", "a_w" )
     elif sortedby == "relevance" or sortedby == "score": sortedby = None
     else: sortedby = sortedby
     return sortedby
 
 
 def QFilter( results, new_results ):
-    """           """
+    """ Filter give results with new results"""
     results.filter( new_results )
     return results
 

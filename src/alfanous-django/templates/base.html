@@ -1,17 +1,41 @@
 
 
 
-
-
 <!DOCTYPE html>
 <html>
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-
-	<title>{% block title %}  {{ _("الفانوس | محرك بحث قرآني متقدم")  }}{% endblock %}</title>
+	<title> 
+			{% block title %} 
+				{% if params.query %}
+					{% if current.unit == "aya" %}
+						{{ _("Ayah Results to Query:") }} 
+					{% elif current.unit == "word" %}
+						{{ _("Word Results to Query:") }}
+					{% elif current.unit == "translation" %}
+						{{ _("Translation Results to Query:") }} 
+					{% else %}
+						{{ _("Results to Query:") }} 
+					{% endif %}	
+					{{ params.query }}
+					
+				{% else %}
+					{% if current.unit == "aya" %}
+						{{ _("Quranic Verse Search") }}
+					{% elif current.unit == "word" %}
+						{{ _("Quranic Word Search") }}
+					{% elif current.unit == "translation" %}
+						{{ _("Quranic Translation Search") }}
+					{% else %}
+						{{ _("Advanced Quranic Search Engine") }} 
+					{% endif %}
+					 - {{ _("Alfanous") }} 
+				{% endif %}
+			{% endblock %}  
+	</title>
 	
-	<meta name="description" content="الفانوس - محرك بحث متقدم في القرآن الكريم "/>
-	<meta name="keywords" content="quran, search, ayates, surates, متقدم, advanced, الفانوس ,القرآن ,فانوس ,قرآني ,احصاءات ,ألفاظ, fanous, alfanous, alfanoos, fanoos, elfanous, elfanoos, alfanouce, alfanooce, fanooce , engine, محرك ,بحث ,قرآن,{% block keywords %}{% endblock %}"/>
+	<meta name="description" content="{{ _('Alfanous is a functional, dynamic, comprehensive Qur’an search engine that has been effectively designed to carry out simple or advanced Quranic searches.') }}"/>
+	<meta name="keywords" content="{{ _("quran") }}, {{ _("forqan") }}, {{ _("koran") }}, {{ _("search") }}, {{ _("search engine") }}, {{ _("ayates") }}, {{ _("surates") }}, {{ _("advanced") }}, {{ _("statistics") }}, {{  _("linguistic") }}, {{ _("information retrieval") }}, {{ _("natural language processing") }}, {{ _("words") }}, {{ _("Lantern") }}, {{ _("alfanous") }},  "/>
 	<!-- meta name="copyright" content="&copy; Alfanous Team, AGPL" -->
 	<meta name="author" content="Assem Chelli, Ahmed Ramadan, Abdellah Chelli, Mouad Debbar" />
 	<meta name="robots" content="index,follow"/>
@@ -20,10 +44,12 @@
 	<link rel="shortcut icon" href="/static/images/favicon.ico" type="image/x-icon">
 
 	<link rel="search" type="application/opensearchdescription+xml" title="Alfanous" href="/static/alfanous-opensearch.xml"/>
-	<link rel="search" type="application/opensearchdescription+xml" title="Alfanous Mobile" href="/static/alfanous-mobile-opensearch.xml"/>
 
+	<!-- G+ direct connect -->
+	<link href="https://plus.google.com/u/0/111305625425237630318" rel="publisher" />
+	
 	<!--fb-->
-	<meta property="og:image" content="/static/images/logo_fb.png" />
+	<meta property="og:image" content="http://www.alfanous.org/static/images/logo_fb.png" />
 
 	<link href="https://fonts.googleapis.com/css?family=Droid+Sans:regular,bold&amp;subset=latin" rel="stylesheet" type="text/css">
 	<link rel="stylesheet" href="/static/css/screen.css" type="text/css"/>
@@ -33,8 +59,14 @@
 	<!--jquery tools (for overlay) + jquery 1.7.2 included-->
 	<script type="text/javascript" src="/static/js/jquery.tools.min.js"></script>
 
+	<!-- Assem: Keyboard -->
+	<script type="text/javascript" src="/static/js/keyboard.js" charset="UTF-8"></script>
+	<link rel="stylesheet" type="text/css" href="/static/css/keyboard.css">
 	
+	<!--
+	## it block the other contents from loading
 	<script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#username=ahmadramadan"></script>
+	-->
 	<script type="text/javascript" src="/static/js/drops.js"></script>
 	
 	<!-- Mouad -->
@@ -60,57 +92,45 @@
 			$("#help_btn").click(function() {
 				$("#help").overlay().load();
 			});
-			/*
+		
 			$("#down_btn").click(function() {
 				$("#down").overlay().load();
 			});
-			*/
+			
+			// Corners
+			$(".details_label").corner("3px");
+			$("#search_words").corner("30px");
+			$("#suggestions").corner("30px");
+			$("div.sidebox a ").corner();
 
-			// help links
-			$("#help table a").bind('click', function(event) {
-				var param = {search: $(this).attr("href"), recitation: $("#recitation").val(), translation: $("#translation").val(), sortedby: $("#sortedby").val(), page: 1, highlight: "css" }; //,fuzzy:"ok"
-				
-				// Mouad
-				redirect_to_params ( param );
-				// search_for ( param );
-				// $( "#help" ).hide ();
-				// $('#search_box').val(param.search);
-				// get_results(param);
-				
-				event.preventDefault();
-			});
+			$(document).scrollTop($("#search_result_static").position().top);
 			
-			$('#form').submit(function(){
-				var param = {search: $("#search_box").val(), recitation: $("#recitation").val(), translation: $("#translation").val(), sortedby: $("#sortedby").val(), page: 1, highlight: "css"}; //,fuzzy:"ok"
+			update_share_links()
+
+			{% block JS_Embedding_AudioPlayers %}
+				{% for ayaresult_id, ayaresult_content in  	results.search.ayas.items %}
+					AudioPlayer.embed("audioplayer_{{ ayaresult_id }}", {soundFile: "{{  ayaresult_content.aya.recitation }}", titles: "{{ ayaresult_content.identifier.sura_name }}-{{ ayaresult_content.identifier.aya_id}}" });
+				{% endfor %}
+			{% endblock %}
 				
-				// Mouad
-				redirect_to_params ( param );
-				// search_for ( param );
-				// get_results(param);
-				
-				return false;
-			});
-			
-			// Mouad
-			// if ( ! read_hash () ) {
-				read_params();
-			// }
+
 		});
 
 		function build_search_link(param,query,filter)
 				{
 					var new_param = param; 
+                           new_param.action="search";
 					new_param.page = 1;
-					new_param.sorted_by = "mushaf";
-					if (filter) new_param.search = "(" + $("#search_box").val() + ") + " + query;
-					else new_param.search = query;
+					new_param.sortedby = "mushaf";
+					if (filter) new_param.query = "(" + $("#search_box").val() + ") + " + query;
+					else new_param.query = query;
 					return "<a class='no_decoration' href=\""+ get_url_without_params()+ "?"+ build_params( new_param )+ "\">" 
 				}
 		
-		function get_results (param) {
-			if ($.trim(param.search) != "") {
+		function get_results (param) { // this function will be used to require suggestions
+			if ($.trim(param.query) != "" && param.action == "search") {
 				$.ajax({
-					url: "http://www.alfanous.org/json",
+					url: "/jos2/", // http://www.alfanous.org/jos2
 					async: false,
 					type: "GET",
 					dataType: "json",
@@ -129,281 +149,11 @@
 		};
 
 
-		function show_results (json, param) {
-			var color_list = [ "#118", "#811", "#807", "#F50", "#f00", "#f39", "#f43", "#660", "#444"]; //"#181"
-			var results = "";
-			var results_pages = "";
-
-			var nb_pages = Math.floor((json.interval.total- 1) / 10)+ 1;
-			var page = Math.floor((json.interval.start- 1) / 10)+ 1;
-
-			$("#search_result").html("");
-
-			// Note
-			results += "<br /><br /><span class='xbre'> {{ _("Search results") }}</span><br /><br />";
-			results += "<center><b>{{ _("time") }}</b> : "+ json.runtime+ "{{ _("seconds") }} </center>";
-
-			// Suggestions
-			if (json.suggestions.length) {
-				results += "<div id='suggestions' align='right'>";
-				results += "<h2 style='font-size:16pt; font-weight:600; color:#ff0000;'>{{ _("Suggestions") }} :";
-				$.each(json.suggestions, function(key, item) {
-					results += "<p dir='{{ bidi }}' style=' margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;'>";
-						results += "<div class='word_details'>";
-							results += "<span style=' font-size:14pt; color:#00aa00;'>"+ (key+ 1)+ ". </span>";
-							results += "<div class='details_label word_info0'> {{ _("word") }} | "+ item[0]+ "</div>";
-							if (item[1].length) {
-								$.each(item[1], function(sub_key, sub_item) {
-									results += build_search_link(param,sub_item,false) + "<div class='details_label word_stat1 clickable'>"+ sub_item+ "</div></a>";
-								});
-							} else {
-								results += "<div class='details_label word_stat0'>{{ _("no suggestions!") }} </div>";
-							}
-							results += "</div></p>";
-				});
-				results += "</div>";
-			}
-
-			if (json.interval.total) {
-
-				// Pages control
-				results_pages += "<br />";
-				results_pages += "<div class='pages'>\n<img src='/static/images/prev.gif' alt='{{ _("Previous page") }}' title = '{{ _("Previous page") }}' /><div style=' display:inline-block; position:relative; top:-8px;'>\n";
-				for( i = 1;  i <= nb_pages ; i++) 
-				{
-					if (i == page)
-					{
-						results_pages += " "+ i;
-					}
-					else if ((i <= page + 7 )  && (i >= page - 3) ) // pages  in range [-3,+7]
-					{
-						results_pages += " <a href=''>"+ i+ "</a>";
-					}
-					else if (i==1 || (i%50 == 0 && i<page))  // first page
-					{
-						results_pages += " <a href=''>"+ i+ "</a> ..";
-					}
-					else if (i==nb_pages || (i%50 == 0 && i>page))  // last page
-					{
-						results_pages += " .. <a href=''>"+ i+ "</a>";
-					}
-
-				}
-				results_pages += "</div><img src='/static/images/next.gif' alt='{{ _("Next page") }}' title = '{{ _("Next page") }}' />\n</div>\n";
-				
-				if (json.words["global"].nb_words > 0)
-					{
-					// Words list
-					results += "<div id='search_words' align='left'>";
-					results += "<h2 style='font-size:16pt; font-weight:600; color:#ff0000;'> {{ _("Words") }}:";
-					results += "<div class='details_label word_count'> {{ _("words") }} | "+ json.words["global"].nb_words+ "</div>";
-					results += "<div class='details_label word_stat0'> {{ _("occurances") }} | "+ json.words["global"].nb_matches+ "</div>"; 
-					results += "<div class='details_label word_vocalization_nb'> {{ _("vocalizations") }} | "+ json.words["global"].nb_vocalizations+ "</div>"; 
-					results += "</h2><br />";
-					
-					
-					for( i = 1; i <= json.words.global.nb_words; i++) {
-						results += "<p dir='{{ bidi }}' style=' margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;'>";
-							results += "<div class='word_details'>";
-								results += "<span style=' font-size:14pt; color:#00aa00;'>"+ i+ ". </span>";
-								results += build_search_link(param, json.words[i].word, false) +  "<div class='details_label word_info0 clickable'> {{ _("word") }} | "+ json.words[i].word+ "</div></a>";
-								results += "<div class='details_label word_stat0'> {{ _("occurnaces") }} | "+ json.words[i].nb_matches+ "</div>";
-								results += "<div class='details_label word_stat1'> {{ _("ayates") }} | "+ json.words[i].nb_ayas+ "</div>";
-								results += "<div class='details_label word_vocalization_nb'> {{ _("vocalizations") }} | "+ json.words[i].nb_vocalizations+ "</div>";
-								for( j = 0; j < json.words[i].nb_vocalizations; j++) 
-									{
-									results += build_search_link(param, "آية_:"+ json.words[i].vocalizations[j] + "", false ) + "<div class='details_label word_vocalization clickable'>"+ json.words[i].vocalizations[j]+ "</div></a>";
-									}
-								results += "</div></p>";
-							}	
-					results += "</div> ";
-					}
-				
-
-				// Pages list
-				results += results_pages;
-
-				// Ayas list
-				results += "<br /><h2 style=' font-size:15pt; font-weight:600; color:#ff0000;'>{{ _("Results") }} (";
-					results += json.interval.start+  "  {{ _("to") }}  "+ json.interval.end+  "  {{ _("of") }}  "+ json.interval.total+ " )</h2> <br /> ";
-				
-				for( i = json.interval.start; i <= json.interval.end; i++) {
-				results += "<fieldset class='main_re_item'>";
-					results += "<legend class='main_re_item_title' style='font-size:14pt;-qt-block-indent:0; text-indent:0px;' dir='{{ bidi }}'>";
-						results += "<span style=' font-family:\"arial ,sans serif\"; color:#0000ff; '>{{ _("Result n°") }} <span style=' font-family:\"arial ,sans serif\"; font-weight:600; color:#0000ff;'> <b>"+ i+ "</b> </span>";
-						// results += "<span align='left'><object width='350' height='24' id='audioplayer1' data='/static/swf/player.swf' type='application/x-shockwave-flash'>";
-							// results += "<param value='/static/swf/player.swf' name='movie'>";
-							// results += "<param value='playerID=audioplayer1&amp;soundFile="+ json.ayas[i].aya.recitation+ "' name='FlashVars'>";
-							// results += "<param value='high' name='quality'>";
-							// results += "<param value='false' name='menu'>";
-							// results += "<param value='transparent' name='wmode'></object></span><br />";
-						results += "<span id='audioplayer_"+ i+ "'>(<a href='"+ json.ayas[i].aya.recitation+ "' target='_blank'>تلاوة</a>)</span>";  
-						results += "<div class='sura_details'>";
-
-							results += build_search_link(param, "سورة:\"" + json.ayas[i].sura.name +"\"", true) + "<div class='details_label sura_info0 clickable filter'> {{ _("sura") }}  | "+ json.ayas[i].sura.name+ "</div></a> ";
-							results += "<div class='details_label sura_ord0'> {{ _("number") }} | "+ json.ayas[i].sura.id+ "</div>";
-							results += build_search_link(param, "نوع_السورة:" +  json.ayas[i].sura.type , true) + "<div class='details_label sura_info1 clickable filter'> {{ _("type") }} | "+ json.ayas[i].sura.type+ "</div></a>";
-							results += "<div class='details_label sura_ord1'> {{ _("revelation_order") }}  | "+ json.ayas[i].sura.order+ "</div></a>";
-							results += "<div class='details_label sura_stat0'> {{ _("ayates") }} | "+ json.ayas[i].sura.stat.ayas+ "</div> ";
-							results += "<div class='details_label sura_stat1'> {{ _("words") }} | "+ json.ayas[i].sura.stat.words+ " </div>";
-							results += "<div class='details_label sura_stat2'> {{ _("letters") }} | "+ json.ayas[i].sura.stat.letters+ "</div>";
-							results += "<div class='details_label sura_stat3'> {{ _("devine names") }} | "+ json.ayas[i].sura.stat.godnames+ "</div>";
-							results += "</div>";
-						results += "</span></legend>";
-					results += "<br><p align='center' style=' margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;'>";
-						results += "<span style='font-family:\"ArabeyesQr\", Scheherazade; line-height: 180%; font-size:22px; color:#7b563a;'><br>[ ";
-						results += "<span style='font-family:\"me_quran\", Scheherazade; font-size:22px;'>"
-						
-						
-						aya_words = json.ayas[i].aya.text.split(" ");
-						
-						for (var j=0; j < aya_words.length ; j++ )
-						{
-							// TODO optimize this condition , any "in" operation?
-							if ( aya_words[j][0] == "<" || aya_words[j][0] == "c" || aya_words[j][0] == "t" || aya_words[j][0] == ">")
-								{
-								results += aya_words[j] + " "
-								}
-							else 
-								{
-								results += build_search_link(param,"" + aya_words[j] +"" ,false ) + aya_words[j] + "<a />" + " " ;
-								
-								}
-						}
-						results += "</span> ";
-						results += " <span>("+ build_search_link(param,"رقم_الآية:" + json.ayas[i].aya.id ,false ) +   json.ayas[i].aya.id + "</a>)</span> ";
-						results += "] <br></span></p><br />";
-						
-					results += "<p dir='ltr' align='center' style=' margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;'>";
-					if(json.ayas[i].aya.traduction) results += "<span style='font-family: \"Droid Sans\", Tahoma, \"Bitstream Vera Sans\", \"DejaVu Sans\", Verdana, Geneva, Arial, Sans-serif; line-height: 150%;'>"+ json.ayas[i].aya.traduction+ "</span></p>";
-					results += "<br><p align='center' style=' margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;'>";
-						
-						results += "<span style=' color:#808080;'>"
-						if (json.ayas[i].theme.chapter)	results += "{{ _("chapter")  }} :" + build_search_link(param,"فصل:\"" +  json.ayas[i].theme.chapter + "\"",false )+ "<b>"+ json.ayas[i].theme.chapter+ "</b></a> ";
-						if (json.ayas[i].theme.topic) results += "{{ _("topic") }} :" + build_search_link(param, "فرع:\"" + json.ayas[i].theme.topic +"\"",false) +"<b>"+ json.ayas[i].theme.topic+ "</b></a> ";
-						if (json.ayas[i].theme.subtopic) results += "{{ _("subtopic") }} : " + build_search_link(param, "باب:\"" + json.ayas[i].theme.subtopic +"\"", false) +"<b>"+ json.ayas[i].theme.subtopic+ "</b></a>"; 
-						results += "</span></p>";						
-									
-						results += "<div class='aya_details'>";
-						results += build_search_link(param,"ك_آ:" + json.ayas[i].stat.words, false) + "<div class='details_label aya_stat0 clickable'> {{ _("words") }}  | "+ json.ayas[i].stat.words+ "</div></a>";
-						results += build_search_link(param,"ح_آ:" + json.ayas[i].stat.letters, false) + "<div class='details_label aya_stat1 clickable'> {{ _("letters") }} | "+ json.ayas[i].stat.letters+ "</div></a>";
-						results += build_search_link(param,"ج_آ:" + json.ayas[i].stat.godnames, false) + "<div class='details_label aya_stat2 clickable'> {{ _("devine names") }} | "+ json.ayas[i].stat.godnames+ "</div></a> ";
-						results += build_search_link(param, "منزل:" + json.ayas[i].position.manzil, true) + "<div class='details_label aya_pos0 clickable filter'> {{ _("manzil") }} | "+ json.ayas[i].position.manzil+ "</div></a>";
-						results += build_search_link(param, "حزب:" + json.ayas[i].position.hizb, true) +"<div class='details_label aya_pos1 clickable filter'> {{ _("hizb") }} | "+ json.ayas[i].position.hizb+ "</div></a>";
-						results += "<div class='details_label aya_pos2'> {{ _("quart") }} | "+ (json.ayas[i].position.rubu + 1 )+ "</div>";
-						results += build_search_link(param, "صفحة:" + json.ayas[i].position.page, true) + "<div class='details_label aya_pos3 clickable filter'> {{ _("page") }} | "+ json.ayas[i].position.page+ "</div></a>";
-					results += "</div><br />";
-					if (  json.ayas[i].sajda.exist == true)
-					{
-						results += "<br /><div>";
-						results += build_search_link(param,"سجدة:نعم",false) + "<div class='details_label aya_sajda_exist clickable'> {{ _("sajda") }} " + "</div></a>";
-						results += "<div class='details_label aya_sajda_id'> {{ _("number") }}| "+ json.ayas[i].sajda.id + "</div>";
-						results += "<div class='details_label aya_sajda_type'> {{ _("type") }} | "+ json.ayas[i].sajda.type + "</div>";
-						results += "</div><br />"
-					};
-					
-					results += "<br /></p></fieldset><br /><br />";
-				}
-			
-
-				// Pages list
-				results += results_pages+ "<br />";
-
-			}
-
-			// show result
-			$("#search_result").append(results);
-
-
-			// Suggestions links
-			$("#suggestions a").one('click', function(event) {
-				var param2 = param;
-				param2.page = 1;
-				param2.search = $(this).find("div").text();
-				
-				// Mouad
-				redirect_to_params ( param2 );
-				// search_for ( param2 );
-				// $('#search_box').val(param2.search);
-				// get_results(param2);
-			
-				event.preventDefault();
-			}).mouseover(function() {
-				window.status = $(this).find("div").text();
-			});
-
-			if (json.interval.total) {
-			
-				for( i = json.interval.start; i <= json.interval.end; i++) {
-					AudioPlayer.embed("audioplayer_"+ i, {soundFile: json.ayas[i].aya.recitation, titles: json.ayas[i].sura.name+"-"+json.ayas[i].aya.id});
-				}
-
-
-				// Pages control
-				$(".pages a").one('click', function(event) {
-					var param2 = param;
-					param2.page = $(this).text();
-					param2.search = $("#search_box").val();
-					
-					// Mouad
-					redirect_to_params ( param2 );
-					// search_for ( param2 );
-					// $('#search_box').val(param2.search);
-					// get_results(param2);
-				
-					event.preventDefault();
-				});
-				$(".pages img:first-child").one('click', function(event) {
-					var param2 = param;
-					if (param2.page > 1) {
-						param2.page = parseInt ( param2.page ) - 1;
-						param2.search = $("#search_box").val();
-						// Mouad
-						redirect_to_params ( param2 );
-						// search_for ( param2 );
-						// $('#search_box').val(param2.search);
-						// get_results(param2);
-					}
-					event.preventDefault();
-				});
-				$(".pages img:last-child").one('click', function(event) {
-					var param2 = param;
-					if  (param2.page < nb_pages) {
-						param2.page = parseInt ( param2.page ) + 1;
-						param2.search = $("#search_box").val();
-											
-						// Mouad
-						redirect_to_params ( param2 );
-						// search_for ( param2 );
-						// $('#search_box').val(param2.search);
-						// get_results(param2);
-					}
-					event.preventDefault();
-				});
-
-				// dynamic css
-				//$(".match").css("color", "#181");
-				for (i=0; i<10; i++) {
-					selector = ".term"+i;
-					for (j=1; j<10; j++) {
-						selector += ", .term"+(i+10*j);
-					};
-					$(selector).css("color", color_list[i]);
-				}
-			}
-
-			// Corners
-			$(".details_label").corner("3px");
-			$("#search_words").corner("30px");
-			$("#suggestions").corner("30px");
-			
-			$(document).scrollTop($("#search_result").position().top);
-
-		}
+		function show_results (json, param) {		}
 
 		function addto_searchbar(){
-			window.external.AddSearchProvider("http://wui.alfanous.org/alfanous-opensearch.xml");
-			window.external.AddSearchProvider("http://wui.alfanous.org/alfanous-mobile-opensearch.xml");
+			window.external.AddSearchProvider("/static/alfanous-opensearch.xml");
+		
 		}
 
 	// ]]>
@@ -481,54 +231,55 @@
 <!-- end -->
 
 
-<!-- all css to be collocted, this just for fast fixes -->
-<style type="text/css">
-	body {
-		background: #fff;
-		text-align: center;
-	}				
-	
-	table {
-		width: 395px;
-		height: 256px;		
-	}
-	
-	#footer-big-wrapper {
-		text-align: left;
-	}
-	
-	body form div div table {
-		display: inline-block;
-	}
-	
-	body form div div div.xdrops_continer {
-		display: inline-block;
-	}
-
-	body form div div {
-		display: inline-block;
-	}
-	
-</style>
-
-
-
 </head>
 <body>
 
-<form id="form" name="form" method="post" action=".">
+<!-- Alfanous Header -->
+<div id="alfanousheader">
+<ul class="headermenu">
+<li class="menuitem"><span>{{ _("Ayahs") }}</span></li>
+{# <li class="menuitem"><a href="/sura/">{{ _("Surahs") }}</a></li> #}
+<!-- <li class="menuitem"><a href="{% url alfanous-django.wui.views.results current.language "word" %}">{{ _("Words") }}</a></li> -->
+<!-- <li class="menuitem"><a href="{% url alfanous-django.wui.views.results current.language "translation" %}">{{ _("Translations") }}</a></li> -->
+{# <li class="menuitem"><a href="/taffsir/">{{ _("Taffsirs") }}</a></li> #}
+{# <li class="menuitem"><a href="/hadith/">{{ _("Hadiths") }}</a></li> #}
+{# <li class="menuitem"><a href="/dream/">{{ _("Dreams") }}</a></li> #}
+{# <li class="menuitem"><a href="/poem/">{{ _("Poems") }}</a></li> #}
+</ul>
+
+<nav id="language_menu">
+	<ul class = "right">
+		<li class="menuitem"><a href="#"> {{ language.name_local }} &darr;</a>
+			<ul class = "right">
+				{% for available_language in available.languages %}
+				<li class="listItem">
+					{% ifequal available_language.0 language.code %}<span >{{ available_language.1 }}</span> 
+					{% else %} <a href="{% url alfanous-django.wui.views.results available_language.0 current.unit %}?{{ current.request }}">{{ available_language.1 }}</a>
+					{% endifequal %} 
+				</li>
+				{% endfor %}
+			</ul>
+		</li>
+
+	</ul>
+</nav>
+<div style="clear: left"></div>
+</div>
+<!-- End Alfanous Header -->
+
+<form id="form" name="form" method="get" action=".">
 <div>
 <div>
 <table>
 	<tr>
-		<td colspan="4" style="background:url(/static/images/logo_en.png) no-repeat center;align:center; width:395px; height:200px;"> </td>
-		</tr>
+		<td colspan="4" style="background:transparent url(/static/images/logo{{ bidi.image_extension }}.png); width:385px; height:200px;"> </td>
+	</tr>
 	<tr>
 		<td style="background:url(/static/images/main_table_02.png) no-repeat;width:50px;height:26px"> </td>
 		<td style="background:url(/static/images/main_table_03.png) no-repeat;width:259px;height:26px">
-			<input id="search_box" name="search" class="enter" type="text" value="" />
+			<input style="direction: {{ bidi.direction }} ; text-align:{{ bidi.align }}" id="search_box" name="query" class="enter keyboardInput" type="text" value="{{ params.query }}" />
 			</td>
-		<td style="background:url(/static/images/main_table_04.png) repeat scroll 0 0 transparent;width:62;height:26;text-align:right;">
+		<td style="background:url(/static/images/main_table_04.png) repeat scroll 0 0 transparent;width:62;height:26;text-align:center;">
 			<a class="button" href="" onclick="$('#form').submit(); return false;">{{ _("search") }}</a>
 			</td>
 		<td style="background:url(/static/images/main_table_05.png) no-repeat;width:24px;height:26px"> </td>
@@ -537,11 +288,55 @@
 		<td colspan="4" style="background:url(/static/images/main_table_06.png) no-repeat;width:395px;height:21px;"> </td></tr>
 </table>
 
+<br/>
+
+ 
+{% block options %}
+
+{% endblock %}
+
+
+
+<div  class="sidebox feedback-sidebox" > 
+	<a  target='_blank' href='http://feedback.alfanous.org/'>{{ _("Feedback") }}</a><br/>
+</div>
+
+<div class="sidebox donate-sidebox" > 
+	<a  target='_blank' href='#'>{{ _("Donate") }}</a><br/>
+</div>
+
+<div class="sidebox translate-sidebox" > 
+	<a  target='_blank' href='https://translations.launchpad.net/alfanous'>{{ _("Translate") }}</a><br/>
+</div>
+
+<div class="sidebox contribute-sidebox" > 
+	<a  target='_blank' href='https://github.com/Alfanous-team/alfanous'>{{ _("Contribute") }}</a><br/>
+</div>
+
+<div class="sidebox contact-sidebox" > 
+	<a  target='_blank' href='#'>{{ _("Contact") }}</a><br/>
+</div>
+
+<div class="sidebox help-sidebox" > 
+	<a id="help_btn">{{ _("Help") }}</a><br/>
+</div>
+
+<div class="sidebox faq-sidebox" > 
+	<a  target='_blank' href='#'>{{ _("F.A.Q.") }}</a><br/>
+</div>
+
+
+<div class="sidebox download-sidebox" > 
+	<a id="down_btn">{{ _("Download") }}</a><br/>
+</div>
+
+
+
+{% block  follow_box %}
 <div class="follow-box" > 
-	<a class="twitter_share" target='_blank' rel='nofollow' href='http://twitter.com/home?status=http://www.alfanous.org%20|%20محرك%20بحث%20قرآني%20متقدم'><img src='/static/images/twitter.png' class='bo' alt='twitter' title='{{ _("Twitter") }}'/></a><br/>
-	<a class="facebook_share" target='_blank' rel='nofollow' href='http://www.facebook.com/share.php?u=http://www.alfanous.org%26t=الفانوس%20|%20محرك%20بحث%20قرآني%20متقدم'><img class='bo' alt='Facebook' title='{{ _("Facebook") }}' src='/static/images/facebook.png' /></a><br/>
-	<a title='{{ _("Google buzz") }}' class='external2 buzz_share' rel='nofollow' href='http://www.google.com/buzz/post?url=http://www.alfanous.org' target='_blank'><img src='/static/images/google.png' class='bo' alt='Google Buzz'/></a><br/>
-	<a title='{{ _("Myspace") }} MySpace' class='external2 myspace_share' rel='nofollow' href='http://www.myspace.com/Modules/PostTo/Pages/?u=http://www.alfanous.org' target='_blank'><img src='/static/images/myspace.png' class='bo' alt='myspace'/></a><br/>
+	<a class="twitter_share" target='_blank' rel='nofollow' href='https://twitter.com/share?url=http://www.alfanous.org{{ current_path }}&amp;text={{ _("Alfanous | Advanced Quranic Search Engine")|iriencode }}'><img src='/static/images/twitter.png' class='bo' alt='twitter' title='{{ _("Twitter") }}'/></a><br/>
+	<a class="facebook_share" target='_blank' rel='nofollow' href='http://www.facebook.com/share.php?u=http://www.alfanous.org{{ current_path }}&amp;t={{ _("Alfanous | Advanced Quranic Search Engine")|iriencode }}'><img class='bo' alt='Facebook' title='{{ _("Facebook") }}' src='/static/images/facebook.png' /></a><br/>
+	<a title='{{ _("Send to MySpace") }}' class='external2 myspace_share' rel='nofollow' href='http://www.myspace.com/Modules/PostTo/Pages/?u=http://www.alfanous.org{{ current_path }}' target='_blank'><img src='/static/images/myspace.png' class='bo' alt='myspace'/></a><br/>
 	<script type="text/javascript">
 	// <![CDATA[
 	    var addthis_pub = "kaan";
@@ -549,119 +344,90 @@
     </script>
     <a class="other_share" rel='nofollow' href="http://www.addthis.com/bookmark.php?v=250&amp;username=ahmadramadan" onmouseover="return addthis_open(this, '', document.URL, document.title );" onmouseout="addthis_close()" onclick="return addthis_sendto()"><img class='bo' src="/static/images/share.png" alt="{{ _("Share it with friends") }}"/></a>
 </div>
+{% endblock %}
+
 <br />
-<div class="xdrops_continer" style="direction:{{ bidi }}; text-align:left; width: 342px;">
-	<span class="xtitle">{{ _("Sorted by") }} :</span>
-	<select id="sortedby" class="styled" name="sortedby">
-		<option value="score">{{ _("default") }}</option>
-		<option value="score">{{ _("relevance") }}</option>
-		<option value="mushaf">{{ _("mushaf") }}</option>
-		<option value="tanzil">{{ _("tanzil") }}</option>
-		<option value="subject">{{ _("topics") }}</option>
+<div class="xdrops_continer" style="direction:{{ bidi.direction }}; text-align:{{ bidi.align_inverse }}; width: 342px;">
+	<span class="xtitle">{{ _("View") }} :</span>
+	<select id="view"  class="styled" name="view" >
+		<option value="default" {% ifequal params.view "default" %}selected{% endifequal %}>{{ _("Default") }}</option>
+		<option value="minimal" {% ifequal params.view "minimal" %}selected{% endifequal %}>{{ _("Minimal") }}</option>
+		<option value="normal" {% ifequal params.view "normal" %}selected{% endifequal %}>{{ _("Normal") }}</option>
+		<option value="full" {% ifequal params.view "full" %}selected{% endifequal %}>{{ _("Full") }}</option>
+		<option value="statistic" {% ifequal params.view "statistic" %}selected{% endifequal %}>{{ _("Statitic") }}</option>
+		<option value="linguistic" {% ifequal params.view "linguistic" %}selected{% endifequal %}>{{ _("Linguistic") }}</option>
+		<option value="recitation" {% ifequal params.view "recitation" %}selected{% endifequal %}>{{ _("Recitation") }}</option>
 	</select><br /><!--[if lte IE 8]><![endif]-->
 
-	<span class="xtitle">&nbsp;&nbsp;&nbsp; {{ _("Translation") }} :</span>
-	<select id="translation" class="styled" name="translation">
-					<option value="shakir">{{ _("default") }}</option>
-					<option value="None">{{ _("no translation") }}</option>
-					<option value="shakir">{{ _("shakir") }}</option>
-					<option value="transliteration-en">{{ _("transliteration-en") }}</option>
-	</select><br /><!--[if lte IE 8]><![endif]-->
+{% block sortedby_panel %}{% endblock %}
+{% block translations_panel %}{% endblock %}
+{% block recitations_panel %} {% endblock %}
 
-	<span class="xtitle">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {{ _("Recitation") }} :</span>
-	<select id="recitation" class="styled" name="recitation">
-		<option value="Mishary Rashid Alafasy">{{ _("default") }}</option>
-		<option value="Mishary Rashid Alafasy">{{ _("Mishary Rashid Alafasy") }}</option>   
-		<option value="AbdulBasit AbdusSamad (Murattal style)">{{ _("AbdulBasit AbdusSamad (Murattal style)") }}</option>
-		<option value="Abu Bakr Ash-Shaatree">{{ _("Abu Bakr Ash-Shaatree") }}</option>
-		<option value="Ahmed_ibn_Ali_al-Ajamy (From QuranExplorer.com)">{{ _("Ahmed_ibn_Ali_al-Ajamy (From QuranExplorer.com)") }}</option>
-		<option value="Saad Al Ghamadi">{{ _("Saad Al Ghamadi") }}</option>
-		<option value="Hani Rifai">{{ _("Hani Rifai") }}</option>
-		<option value="Husary Mujawwad">{{ _("Husary Mujawwad") }}</option>
-		<option value="Hudhaify">{{ _("Hudhaify") }}</option>
-		<option value="Menshawi (external source)">{{ _("Menshawi (external source)") }}</option>
-		<option value="Muhammad Ayyoub">{{ _("uhammad Ayyoub") }}</option>
-		<option value="Saood bin Ibraaheem Ash-Shuraym">{{ _("Saood bin Ibraaheem Ash-Shuraym") }}</option>
-		<option value="Ibrahim_Walk">{{ _("Ibrahim_Walk") }}</option>
-		<option value="Abdullah Basfar">{{ _("Abdullah Basfar") }}</option>
-	</select><br /><!--[if lte IE 8]><![endif]-->
 </div>
 
+
 <br />
-<br />
-<!--<div id="down_btn"><a rel='#down' class='xbutton gray' >{{ _("download") }}</a></div>-->
-<div id="help_btn"><a class='xbutton gray' >{{ _("help") }}</a></div>
-<div id="vote_btn"><a class='xbutton gray' href="https://www.surveymonkey.com/s/P3LGJ8K" target="_blank"><i>News 22-04-2012:</i> Please help us to make <b>Alfanous</b> better, by taking this survey!</a></div>
-<br /><br />
+
+{% if not params %}
+	{% block no_request %}
+		<br /><br />  
+		<div>
+        <a href="https://www.facebook.com/alfanous" title="Facebook" target="_blank"><img src="/static/images/facebook-icon-black.png" alt="{{ _("Facebook") }}" title="{{ _("Facebook") }}" /></a> 
+        <a href="https://plus.google.com/111305625425237630318" target="_blank"><img src="/static/images/google-icon-black.png" alt="{{ _("Google Plus") }}" title="{{ _("Google Plus") }}" /> </a> 
+        <a href="https://twitter.com/alfanous" target="_blank"> <img src="/static/images/twitter-icon-black.png" alt="{{ _("Twitter") }}" title="{{ _("Twitter") }}" /></a> 
+		</div>
+		<!-- <br />
+		<br />
+		<div id="vote_btn">
+		<a class='xbutton gray' href="https://docs.google.com/spreadsheet/viewform?formkey=dEZZaE5fQ0NwQXljU2ZyUmpfLW15SVE6MA#gid=0" target="_blank">{{ _("Please help us improving Alfanous Project, by taking this survey about search features in Holy Quran") }} </a>
+		</div><br />  -->
+		<br /><br />  
+		<br /><br />
+	{% endblock %}
+{% endif %}
+
+
+
+
+
+
 
 <!--abdellah-->
-<div id="search_result" style="direction:{{ bidi }}; width:800px"></div>
+<div id="search_result" style="direction:{{ bidi.direction }}; width:800px">
+<!-- assem: search_result_django_static -->
+{% block results %} {% endblock results %}
+</div>
 
-<!-- assem for django -->
-<div id="search_result" style="direction:{{ bidi }}; width:800px">
-{% block content %}
+</div>
+</div>
+<div id="down" class="modal" style="text-align: {{ bidi.align }};">
+	<h2 style='padding:0 0 0px 0'><img alt="download" src="/static/images/Download.png">{{ _("Download") }}</h2><br/>
+
+<strong> {{ _("Windows") }}:</strong>
+<ul>
+<li>
+<a class="name" title="Click to download alfanousDesktop-win0.4r20.exe" href="http://sourceforge.net/projects/alfanous/files/Interfaces/AlfanousDesktop/0.4.20/alfanousDesktop-win0.4r20.exe/download">{{ _("English desktop release 0.4") }}</a>
+ </li>
+ <li>
+<a class="name" title="Click to download alfanousDesktop-windows-0.3ar.exe" href="http://sourceforge.net/projects/alfanous/files/Interfaces/AlfanousDesktop/0.3/alfanousDesktop-windows-0.3ar.exe/download">{{ _("Arabic desktop release 0.3") }} </a>
+ </li>
+ </ul>
+ <br/> <br/> 
+<strong> {{ _("Linux") }}:</strong>
+<a class="name" title="more details" href="https://github.com/Alfanous-team/alfanous/blob/master/INSTALL.rst">{{ _("More details") }}</a>
+
+    <br/><br/>
+		<button type="button" class='close gray button' > {{ _(" Close ") }} </button>	
+	<br />
+</div>
+
+<div id="help" class="modal" style="width: 675px; text-align: {{ bidi.align }};">
+<h2>{{ _("Help") }}</h2>
+{% block help_panel %}
 
 {% endblock %}
 </div>
-
-
-</div>
-</div>
-<div id="down" class="modal" style="text-align: center;">
-	<h2 style='padding:0 0 0px 0'><img alt="download" src="/static/images/Download.png"> {{ _("download") }} </h2><br/>
-<strong>{{ _("English desktop release 0.4") }} <br/> 
-<a class="name" title="Click to download alfanousDesktop-win0.4r20.exe" href="http://sourceforge.net/projects/alfanous/files/Interfaces/AlfanousDesktop/0.4.20/alfanousDesktop-win0.4r20.exe/download">{{ _("windows") }} </a><br />
-{{ _("Arabic desktop release 0.3") }} <br/> 
-<a class="name" title="Click to download alfanousDesktop-windows-0.3ar.exe" href="http://sourceforge.net/projects/alfanous/files/Interfaces/AlfanousDesktop/0.3/alfanousDesktop-windows-0.3ar.exe/download">{{ _("windows") }}</a></strong>
-    <br/><br/>
-		<button type="button" class='close gray button'> {{ _(" close ") }} </button>	
-	<br />
-</div>
-<div id="help" class="modal" style="width: 675px; text-align: left;">
-	<h2>{{ _("Help") }}</h2>	
-<table dir="{{ bidi }}" style=" border: 2px dashed gray;margin: 5px;width: 672px;">
-<tbody>
-
-<tr>
-<th class="style6">{{ _("exact search") }}  </th><td class="style5" ><a  href="رب"> رب</a></td>
-<td class="style4" ><a  href="فأسقيناكموه"> فأسقيناكموه </a></td>
-</tr>
-<tr>
-<th class="style3">{{ _("phrase") }}  </th><td class="style2"><a href="&quot;رب العالمين&quot;">"رب العالمين"</a></td>
-<td class="style2"><a href="&quot;رسول الله&quot;">"رسول الله"</a></td><td> </td>
-</tr>
-<tr>
-<th class="style6"> {{ _("logical relations") }}</th><td class="style5"><a href="(الصلاة - الزكاة) + سورة:البقرة">(الصلاة - الزكاة) + سورة:البقرة</a></td>
-    <td class="style4"><a href="سميع | بصير"> سميع | بصير</a></td>
-</tr> 
-<tr>
-<th class="style3">  {{ _("wildcards") }}</th><td class="style2"><a href="*نبي*">*نبي*</a></td><td><a href="نعم؟">نعم؟</a></td>
-</tr>
-<tr>
-<th class="style6">{{ _("fields") }} </th><td class="style5"><a href="سورة :يس">سورة:يس</a></td>
-    <td class="style4"><a href="سجدة :نعم">سجدة:نعم</a></td>
-</tr>
-<tr>
-<th class="style3"> {{ _("intervals") }} </th><td class="style2"><a href="رقم_السورة :[1 الى 5 ] و الله">  رقم_السورة:[1 الى 5] و الله</a></td><td> </td>
-</tr>
-<tr>
-<th class="style6">{{ _("partial vocalization") }} </th><td class="style5"><a href="آية_ :'مَن'">آية_:'مَن'</a></td>
-    <td class="style4"><a href="آية_ :'المَلكُ'">آية_:'المَلكُ'</a></td>
-</tr>
-<tr>
-<th class="style3">{{ _("word properties") }}</th><td class="style2"><a href="{قول،اسم} ">{قول،اسم}</a></td><td><a href="{ملك،فعل}">{ملك،فعل}</a></td>
-</tr>
-<tr>
-<th class="style9">{{ _("derivations") }}</th><td class="style8"><a href="&gt;&gt;ملك">&gt;&gt;ملك</a></td>
-    <td class="style7"><a href="&gt;ملك"> &gt;ملك</a></td>
-</tr>
-</tbody></table>
-	<br/>
-	<p> {{ _("The website does not work well on Internet Explorer, we suggest to use another explorer such as: ") }} <a href="https://www.mozilla.org/firefox/" target="_blank">Firefox</a> </p>
-	<br/>
-		<button type="button" class='close gray button'> close </button>	
-	<br />
-</div>
+	
 </form>
 
 <footer>
@@ -670,58 +436,56 @@
             <div class="column"> 
                 <h1>{{ _("Quick links") }}</h1> 
                 <ul> 
-    		    <li><a href="http://cms.alfanous.org/" target="_blank">{{ _("About") }}</a></li> 
-                    <li><a href="http://sourceforge.net/projects/alfanous/files/" target="_blank">{{ _("Downloads") }}</a></li> 
+                    <!-- <li><a href="http://sourceforge.net/projects/alfanous/files/" target="_blank">{{ _("Downloads") }}</a></li>--> 
                     <li><a href="http://m.alfanous.org/">{{ _("Mobile Web Interface") }}</a></li>
+                    <li><a href="http://wui.alfanous.org/">{{ _("Old jQuery Web Interface") }}</a></li> 
                     <li><a href="http://old.alfanous.org/">{{ _("Old HTML Web Interface") }}</a></li> 
+                    <li class="last"><a href="http://github.com/Alfanous-team/alfanous" target="_blank">{{ _("@Github") }}</a></li>
                     <li><a href="http://sourceforge.net/projects/alfanous/" target="_blank">{{ _("@Sourceforge") }}</a></li> 
                     <li><a href="http://wwW.launchpad.net/alfanous/" target="_blank">{{ _("@Launchpad") }}</a></li>
-                    <li class="last"><a href="http://github.com/Alfanous-team/alfanous" target="_blank">{{ _("@Github") }}</a></li>
                 </ul> 
             </div> 
             <div class="column"> 
                 <h1>{{ _("Community") }}</h1> 
                 <ul> 
-                    <li><a href="http://wiki.alfanous.org/" title="Wiki" target="_blank">{{ _("Wiki") }}</a></li> 
+                    <!--<li><a href="https://github.com/Alfanous-team/alfanous/blob/master/README.rst" target="_blank">{{ _("About") }}</a></li>--> 
                     <li><a href="http://groups.google.com/group/alfanous/" title="Mailinglist" target="_blank">{{ _("Mailinglist") }}</a></li> 
-                    <li><a href="https://bugs.launchpad.net/alfanous/+filebug" title="Report a bug" target="_blank">{{ _("+ Report a Bug") }}</a></li>
-                    <li><a href="https://blueprints.launchpad.net/alfanous/" title="Bugs" target="_blank">{{ _("Blueprints") }}</a></li>
+                    <li><a href="https://github.com/Alfanous-team/alfanous/issues/new" title="Report an issue" target="_blank">{{ _("+ Report an issue") }}</a></li>
+                    <li><a href="https://github.com/Alfanous-team/alfanous/issues" title="Issues" target="_blank">{{ _("Issues Tracker") }}</a></li>
                     <li><a href="https://www.facebook.com/alfanous" title="Facebook" target="_blank">{{ _("@Facebook") }}</a></li> 
                     <li><a href="https://plus.google.com/111305625425237630318" target="_blank">{{ _("@Google Plus") }}</a></li> 
-                    <li class="last"><a href="https://twitter.com/#!/alfanous" target="_blank">{{ _("@Twitter") }}</a></li> 
+                    <li class="last"><a href="https://twitter.com/alfanous" target="_blank">{{ _("@Twitter") }}</a></li> 
                 </ul> 
             </div>
 	<!-- Assem -->
 	<div class="awa-box" >
-		<a href="http://wiki.alfanous.org/doku.php?id=Best_technicality_award">
-			<img src='/static/images/awa2-128.png' class='banner' alt='{{ _("Best technicality award") }}' title='{{ _("The award of best-technicality website in AlgeriaWebAwards2012 competition") }}'/>
-		</a>
+		
+			<a href="#"> <img src='/static/images/awa2-128.png' class='banner' alt='{{ _("Best technicality award") }}' title='{{ _("The award of best-technicality website in AlgeriaWebAwards2012 competition") }}'/></a>
+		
 	</div>
 	<!-- -->
             <div class="column last"> 
                 <p>
-                	<a href="http://www.gnu.org/licenses/agpl.html" target="_blank"><img src="/static/images/agplv3-88x31.png" alt="AGPL Lisence" title="AGPL Lisence"></a>
+                	<!-- <a href="http://www.gnu.org/licenses/agpl.html" target="_blank"><img src="/static/images/agplv3-88x31.png" alt="AGPL Lisence" title="AGPL Lisence"></a> -->
+                	<a href="http://git-scm.com/" target="_blank"><img src="/static/images/Git-Logo.png" alt="Git Logo" title="Git scm"></a>
                 	<a href="http://www.python.org/" target="_blank"><img src="/static/images/python-logo-inkscape.png" alt="Python Powered" title="Python Powered"></a>
                 	<a href="http://www.json.org/" target="_blank"><img src="/static/images/json_logo.png" alt="Provide JSON" title="Provide JSON"></a>
                 	<a href="http://jquery.com/" target="_blank"><img src="/static/images/jquery_logos.png" alt="jQuery Logo" title="jQuery"></a>
-                	<a href="http://jqueryui.com/" target="_blank"><img src="/static/images/jquery_logos_ui.png" alt="jQuery UI Logo" title="jQuery UI"></a>
+                	<!-- <a href="http://jqueryui.com/" target="_blank"><img src="/static/images/jquery_logos_ui.png" alt="jQuery UI Logo" title="jQuery UI"></a> -->
                 	<a href="http://www.w3.org/html/logo/" target="_blank"><img src="/static/images/html5-32x32.png" alt="Html5 Logo" title="HTML5"></a>
                 	<a href="https://www.djangoproject.com/" target="_blank"><img src="/static/images/Django_logo.png" alt="Django Logo" title="Django"></a>
                 </p>
-                <p class="right">{{ _("Alfanous is a Quranic search engine offers simple and advanced search services in the whole information that Holy Qur’an contains. it is based on the modern approach of information retrieval to get a good-stability and a high-speed search. We want implement some additional features like Highlight, Suggestions, Scoring …etc.") }}</p>
+                <p class="right justify"> {{ _("Alfanous is a functional, dynamic, comprehensive Qur’an search engine that has been effectively designed to carry out simple or advanced Quranic searches. Alfanous uses a contemporary, highly developed approach to retrieve vital information, enabling stable efficient, speedy searches to be conducted. Alfanous aims to implement additional features such as highlight, site suggestions, scoring …etc to further improve your search experience. Alfanous understands the complex nature of the Arabic language and thus offers effective Arabic language processing, allowing the stemming and successful elimination of ambiguities.") }}</p>
             </div> 
         </div>
     </div>
     <div id="footer-small-wrapper">
         <div id="footer-small">
-            <p class="left">copyright © <a href="http://wiki.alfanous.org/doku.php?id=contributers">Alfanous Team</a> 2009 - 2011 | released under <a href="http://www.gnu.org/licenses/agpl.html">AGPL</a> license</p>
-            <p class="right">powered by <a href="http://wiki.alfanous.org/doku.php?id=json_web_service">Alfanous JSON</a>, <a onclick="addto_searchbar();return false;" href="#"> {{ _("Add to Search Bar") }}</a></p>
+            <p class="left">copyright © <a href="https://github.com/Alfanous-team/alfanous/blob/master/AUTHORS.rst">Alfanous Team</a> 2010 - 2013 | released under <a href="http://www.gnu.org/licenses/agpl.html">AGPL</a> license</p>
+            <p class="right">powered by <a href="/jos2/">Alfanous JOS2</a>, <a onclick="addto_searchbar();return false;" href="#">{{ _("Add to Search Bar") }}</a></p>
         </div>
     </div>
 </footer>
 
-
-
 </body>
 </html>
-

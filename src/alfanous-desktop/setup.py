@@ -13,6 +13,7 @@
 
 """
 
+
 from setuptools import setup, find_packages
 import glob
 
@@ -31,7 +32,7 @@ except:
 setup( 
 	name = "alfanousDesktop",
 	description = "Desktop interface for alfanous Quranic search engine API",
-	version = 0.7,
+	version = "0.7.00", # Don't modify version here, modify it in Makefile
 	platforms = "ALL",
 	license = "AGPL",
 	packages = ["alfanousDesktop"],
@@ -47,11 +48,9 @@ setup(
 	url = "http://www.alfanous.org/",
 	download_url = "https://sourceforge.net/projects/alfanous/files/",
 
-	#data_files=[("install","files")],
-	#data_files=[('.','config.ini'),('index',glob.glob('resources/*.*'))],
 
-    package_data = {'alfanousDesktop': ['UI/*']},
-	include_package_data = True,
+  	package_data = {'alfanousDesktop': ['UI/*']},
+	include_package_data = False,
 
 
 	entry_points = { 'gui_scripts': ['alfanous-desktop = alfanousDesktop.Gui:main', ]},

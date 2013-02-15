@@ -51,7 +51,7 @@ commands.add_option( "-p", "--speller", dest = "speller", type = "choice", choic
 commands.add_option( "-d", "--download", dest = "download", type = "choice", choices = ["tanzil_simple_clean", "tanzil_uthmani"],
                   help = "download Quranic resources", metavar = "FIELD" )
 
-commands.add_option( "-u", "--update", dest = "update", type = "choice", choices = ["translations.js", "wordqc"],
+commands.add_option( "-u", "--update", dest = "update", type = "choice", choices = ["translations", "wordqc"],
                   help = "update store information files", metavar = "FIELD" )
 
 
@@ -102,7 +102,7 @@ if options.transfer:
     else:
         parser.error( "Choose SOURCE_PATH and DISTINATION_PATH" )
 
-    T = Transformer( ixpath = SOURCE2 , dypypath = DESTINATION, dbpath = SOURCE ) 
+    T = Transformer( ixpath = SOURCE2 , dypypath = DESTINATION, dbpath = SOURCE )
     if options.transfer == "stopwords":
         T.transfer_stopwords()
     elif options.transfer == "synonyms":
@@ -163,10 +163,8 @@ if options.update:
     else:
         parser.error( "Choose SOURCE_PATH and DISTINATION_PATH" )
 
-
-
-    if options.update == "translations.js":
+    if options.update == "translations":
         update_translations_list( TSE_index = SOURCE, translations_list_file = DESTINATION )
     elif options.update == "wordqc":
-        QCI = QuranicCorpusImporter( SOURCE, DESTINATION )
+	QCI = QuranicCorpusImporter( SOURCE, DESTINATION )
 
