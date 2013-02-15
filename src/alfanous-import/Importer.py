@@ -22,8 +22,6 @@
 @contact: assem.ch [at] gmail.com
 @license: AGPL
 
-TODO Antonyms / Synonyms
-TODO Prefixes / Suffixes
 '''
 import os.path
 
@@ -200,7 +198,17 @@ class QuranicCorpusImporter:
 
 class ZekrModelsImporter:
     """  Import  translations of quran as Zekr models """
-    schema = Schema( gid = NUMERIC( stored = True ), id = TEXT( stored = True ), text = TEXT( stored = True ), type = KEYWORD( stored = True ), lang = KEYWORD( stored = True ), country = KEYWORD( stored = True ), author = KEYWORD( stored = True ), copyright = STORED, binary = STORED )
+    schema = Schema( 
+						gid = NUMERIC( stored = True ),
+						id = TEXT( stored = True ),
+						text = TEXT( stored = True ),
+						type = KEYWORD( stored = True ),
+						lang = KEYWORD( stored = True ),
+						country = KEYWORD( stored = True ),
+						author = KEYWORD( stored = True ),
+						copyright = STORED,
+						binary = STORED
+					)
 
     def __init__( self, pathindex, pathstore ):
         self.pathindex = pathindex
