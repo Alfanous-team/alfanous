@@ -7,10 +7,10 @@
 <ShortName>Alfanous</ShortName>
 <Description>Alfanous - Advanced Qur'anic Search Engine</Description>
 <Tags>quran alfanous قرآن الفانوس</Tags>
-<Image height="16" width="16" type="image/png">http://www.alfanous.org/images/icon_32.png</Image>
-<Url type="text/html" method="GET" xmlns:referrer="http://a9.com/-/opensearch/extensions/referrer/" template="http://www.alfanous.org/?search={searchTerms}"/>
+<Image height="16" width="16" type="image/png">http://www.alfanous.org/static/images/icon_32.png</Image>
+<Url type="text/html" method="GET" xmlns:referrer="http://a9.com/-/opensearch/extensions/referrer/" template="http://dj.alfanous.org/?query={searchTerms}"/>
 
-<Url type="application/opensearchdescription+xml" rel="self" template="http://wui.alfanous.org/alfanous-opensearch.xml"/>
+<Url type="application/opensearchdescription+xml" rel="self" template="http://dj.alfanous.org/static/alfanous-opensearch.xml"/>
 <InputEncoding>UTF-8</InputEncoding>
 <AdultContent>false</AdultContent>
 </OpenSearchDescription>
