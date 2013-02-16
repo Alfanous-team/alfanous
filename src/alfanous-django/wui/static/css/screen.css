@@ -261,6 +261,7 @@ a:hover{color: green;}
 	left: 10px;
 	z-index:10;
 	text-align:center;
+	cursor: pointer;
 }
 
 
@@ -683,7 +684,6 @@ a:hover{color: green;}
 .quran_translation {
 	font-family: Droid Sans, Tahoma, Bitstream Vera Sans, DejaVu Sans, Verdana, Geneva, Arial, Sans-serif; 
 	line-height: 150%;
-	
 }
 
 
