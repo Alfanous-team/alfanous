@@ -19,7 +19,7 @@
 
 
 {% block help_panel %}
-	<table dir="{{ bidi.direction }}" style=" border: 2px dashed gray;margin: 5px;width: 672px;">
+	<table dir="{{ bidi.direction }}" style=" border: 2px dashed gray;margin: 5px;width: 672px; z-index:20;">
 	<tbody>
 	
 	<tr>
@@ -106,7 +106,7 @@
 	<select id="translation" class="styled" name="translation">
 					<option value="en.transliteration">{{ _("Default") }}</option>
 					<option value="None" {% ifequal params.translation "None" %}selected{% endifequal %}>{{ _("No translation") }}</option>
-					{% for translation_id, translation_name in info.show.translations.items %}
+					{% for translation_id, translation_name in available.translations.items%}
 					<option value="{{ translation_id }}" {% ifequal params.translation translation_id %}selected{% endifequal %}>{{ translation_name }}</option>
 					{% endfor %}
 	</select><br /><!--[if lte IE 8]><![endif]-->
