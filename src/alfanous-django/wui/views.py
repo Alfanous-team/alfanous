@@ -60,14 +60,15 @@ def jos2( request ):
 
 def results( request, unit = "aya", language = None ):
     """     """
-    available_units = SortedDict ( [
-						( "aya", "Ayahs" ),
-						#( "sura", "Surahs" ),
-						#( "word", "Words" ),
-						( "translation", "Translations" ),
-						#  tafsir, hadith, dream, poem
-						] )
-    if unit not in available_units.keys():
+    available_units = lambda: SortedDict ( [
+								( "aya", _( "Ayahs" ) ),
+								#( "sura", "Surahs" ),
+								#( "word", "Words" ),
+								( "translation", _( "Translations" ) ),
+								#  tafsir, hadith, dream, poem
+								] )
+
+    if unit not in available_units().keys():
     	unit = "aya"
     mutable_request = {}
     for k, v in request.GET.items():
@@ -142,6 +143,7 @@ def results( request, unit = "aya", language = None ):
 	   				 			  }
 					}
     mytemplate = unit + '_search.html'
+
     return render_to_response( mytemplate ,
                               {
                                 'current': {
@@ -154,7 +156,7 @@ def results( request, unit = "aya", language = None ):
                                 "language": language_info,
                                 "available": {
 											"languages": available_languages,
-											"units": available_units,
+											"units": available_units(),
 											},
                                 "params": search_params,
                                 "results": raw_search,
