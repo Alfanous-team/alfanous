@@ -16,7 +16,7 @@
 ##     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 '''
- the main module that relay all the modules.
+The main module that relay all the modules.
 
 '''
 #from alfanous.dynamic_resources.arabicnames_dyn import ara2eng_names

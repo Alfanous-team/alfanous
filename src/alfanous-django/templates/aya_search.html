@@ -76,6 +76,18 @@
 {% endblock %}
 
 
+{% block views_panel %}
+	<span class="xtitle">{{ _("View") }} :</span>
+	<select id="view"  class="styled" name="view" >
+		<option value="default" {% ifequal params.view "default" %}selected{% endifequal %}>{{ _("Default") }}</option>
+		<option value="minimal" {% ifequal params.view "minimal" %}selected{% endifequal %}>{{ _("Minimal") }}</option>
+		<option value="normal" {% ifequal params.view "normal" %}selected{% endifequal %}>{{ _("Normal") }}</option>
+		<option value="full" {% ifequal params.view "full" %}selected{% endifequal %}>{{ _("Full") }}</option>
+		<option value="statistic" {% ifequal params.view "statistic" %}selected{% endifequal %}>{{ _("Statitic") }}</option>
+		<option value="linguistic" {% ifequal params.view "linguistic" %}selected{% endifequal %}>{{ _("Linguistic") }}</option>
+		<option value="recitation" {% ifequal params.view "recitation" %}selected{% endifequal %}>{{ _("Recitation") }}</option>
+	</select><br /><!--[if lte IE 8]><![endif]-->
+{% endblock %}
 
 
 {% block sortedby_panel %}
