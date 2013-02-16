@@ -259,7 +259,7 @@ a:hover{color: green;}
 	position: relative;
 	top: 20px;
 	left: 10px;
-	z-index:95;
+	z-index:10;
 	text-align:center;
 }
 
@@ -384,6 +384,20 @@ a:hover{color: green;}
 	text-align: center;
 }
 
+.log {
+	color:grey;
+	font-size: 12px;
+	text-align:left;
+}
+
+.logbox {
+	display: none;
+	width: 700px;
+	/*height: 100px;*/
+	background: #FFF;
+	border: none;
+}
+
 #vedio,#vedio3,#vedio4,#vedio5 {
 	width:670px
 }
@@ -466,6 +480,8 @@ a:hover{color: green;}
 	color:grey;
 	font-size: 12px;
 }
+
+
 
 .pages img, select {
 	cursor:pointer;

@@ -3,6 +3,17 @@
 {% load custom_filters %}
 
 
+{% block no_request %} 
+	{{ _("List of indexed Quran translations") }}:<button id="showlog" type="button">Show/Hide!</button><br> 
+	<div class="logbox" id="logbox">
+		{% for translation in available.translations.items %}
+		<span class="log">	{{ forloop.counter }}. {{ translation.1 }} </span><br/>
+		{% empty %}
+		<span class="log"> {{ _("Sorry, there is no indexed translations!") }}</span><br/>
+		{% endfor %}
+	</div>
+	<br>
+{% endblock %} 
 
 
 {% block options %}

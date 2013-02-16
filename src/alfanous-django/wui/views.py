@@ -21,6 +21,7 @@ from django.utils.translation import ungettext
 from django.utils.translation import pgettext_lazy # for ambiguities
 from django.utils.translation import get_language_info
 from django.utils.datastructures import SortedDict
+from test.test_support import sortdict
 
 ## either append the path of alfanous API as:
 path.append( "alfanous.egg/alfanous" ) ## an egg, portable
@@ -124,6 +125,12 @@ def results( request, unit = "aya", language = None ):
     for k in fields_mapping_en_ar.keys():
         fields_mapping_en_en[k] = k
     #python 2.7: { k:k for k in fields_mapping_en_ar.keys() }
+    # a sorted list of translations
+    translations = raw_show["show"]["translations"]
+    translations_keys = translations.keys()
+    translations_keys.sort()
+    sorted_translations = SortedDict( [( key, translations[key] ) for key in translations_keys ] )
+
     bidi_properties = {
 		  				 False : {
 								 	"val": bidi_val,
@@ -157,6 +164,7 @@ def results( request, unit = "aya", language = None ):
                                 "available": {
 											"languages": available_languages,
 											"units": available_units(),
+											"translations": sorted_translations
 											},
                                 "params": search_params,
                                 "results": raw_search,

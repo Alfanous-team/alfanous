@@ -76,6 +76,10 @@
 	<!--abdellah-->
 	<script type="text/javascript" src="/static/js/jquery.corner.js"></script>
 	
+	<!-- assem -->
+	<!-- <script src="http://code.jquery.com/jquery-1.9.1.js"></script> -->
+	<script src="http://code.jquery.com/ui/1.10.1/jquery-ui.js"></script>
+	
 	<script type="text/javascript">
 	// <![CDATA[
 		AudioPlayer.setup("/static/swf/player.swf", {
@@ -95,6 +99,10 @@
 		
 			$("#down_btn").click(function() {
 				$("#down").overlay().load();
+			});
+			
+			$( "#showlog" ).click(function() {
+				$( "#logbox" ).toggle( "blind", 5 );
 			});
 			
 			// Corners
@@ -370,7 +378,7 @@
 <br />
 
 {% if not params %}
-	{% block no_request %}
+	{% block share_buttons %}
 		<br /><br />  
 		<div>
         <a href="https://www.facebook.com/alfanous" title="Facebook" target="_blank"><img src="/static/images/facebook-icon-black.png" alt="{{ _("Facebook") }}" title="{{ _("Facebook") }}" /></a> 
@@ -385,6 +393,7 @@
 		<br /><br />  
 		<br /><br />
 	{% endblock %}
+	{% block no_request %} {% endblock %} 
 {% endif %}
 
 
