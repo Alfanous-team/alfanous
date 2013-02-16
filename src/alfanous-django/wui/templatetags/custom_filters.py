@@ -5,7 +5,7 @@ Created on Dec 29, 2012
 '''
 
 from django.template import Library
-
+from django.utils.encoding import iri_to_uri
 
 register = Library()
 
@@ -49,7 +49,7 @@ def build_search_link( params, query, page, filter ):
     else:
     	new_params["query"] = query;
 
-    return build_params( new_params )
+    return iri_to_uri( build_params( new_params ) )
 
 
 def build_params( params ):
