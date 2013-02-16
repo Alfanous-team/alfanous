@@ -233,19 +233,26 @@
 
 </head>
 <body>
+<!-- Localization purpose -->
+<!-- {{ _("Ayahs") }} -->
+<!-- {{ _("Translations") }} -->
+<!-- {{ _("Words") }} -->
+
+
+
 
 <!-- Alfanous Header -->
 <div id="alfanousheader">
 <ul class="headermenu">
-<li class="menuitem"><span>{{ _("Ayahs") }}</span></li>
-{# <li class="menuitem"><a href="/sura/">{{ _("Surahs") }}</a></li> #}
-<!-- <li class="menuitem"><a href="{% url alfanous-django.wui.views.results current.language "word" %}">{{ _("Words") }}</a></li> -->
-<!-- <li class="menuitem"><a href="{% url alfanous-django.wui.views.results current.language "translation" %}">{{ _("Translations") }}</a></li> -->
-{# <li class="menuitem"><a href="/taffsir/">{{ _("Taffsirs") }}</a></li> #}
-{# <li class="menuitem"><a href="/hadith/">{{ _("Hadiths") }}</a></li> #}
-{# <li class="menuitem"><a href="/dream/">{{ _("Dreams") }}</a></li> #}
-{# <li class="menuitem"><a href="/poem/">{{ _("Poems") }}</a></li> #}
+{% for available_unit in available.units.items %}
+	<li class="menuitem">
+		{% ifequal available_unit.0 current.unit %}<span >{{ available_unit.1 }}</span> 
+		{% else %} <a href="{% url alfanous-django.wui.views.results current.language available_unit.0 %}">{{ available_unit.1 }}</a>
+		{% endifequal %} 
+	</li>
+{% endfor %}
 </ul>
+
 
 <nav id="language_menu">
 	<ul class = "right">
@@ -348,17 +355,7 @@
 
 <br />
 <div class="xdrops_continer" style="direction:{{ bidi.direction }}; text-align:{{ bidi.align_inverse }}; width: 342px;">
-	<span class="xtitle">{{ _("View") }} :</span>
-	<select id="view"  class="styled" name="view" >
-		<option value="default" {% ifequal params.view "default" %}selected{% endifequal %}>{{ _("Default") }}</option>
-		<option value="minimal" {% ifequal params.view "minimal" %}selected{% endifequal %}>{{ _("Minimal") }}</option>
-		<option value="normal" {% ifequal params.view "normal" %}selected{% endifequal %}>{{ _("Normal") }}</option>
-		<option value="full" {% ifequal params.view "full" %}selected{% endifequal %}>{{ _("Full") }}</option>
-		<option value="statistic" {% ifequal params.view "statistic" %}selected{% endifequal %}>{{ _("Statitic") }}</option>
-		<option value="linguistic" {% ifequal params.view "linguistic" %}selected{% endifequal %}>{{ _("Linguistic") }}</option>
-		<option value="recitation" {% ifequal params.view "recitation" %}selected{% endifequal %}>{{ _("Recitation") }}</option>
-	</select><br /><!--[if lte IE 8]><![endif]-->
-
+{% block views_panel %}{% endblock %}
 {% block sortedby_panel %}{% endblock %}
 {% block translations_panel %}{% endblock %}
 {% block recitations_panel %} {% endblock %}

@@ -1,0 +1,131 @@
+{% extends "base.html" %}
+
+{% load custom_filters %}
+
+
+
+{% block results %}
+	{% if results.error.code == 0  %} 
+		<div id="search_result_static" style="direction:{{ bidi.direction }}; width:800px">
+		<br /><br /><br />
+		<span class='xbre'> {{ _("Search results") }}</span>
+		<br /><br />
+		<span class="runtime"> <b>{{ _("Runtime") }}</b> : {{ results.search.runtime|floatformat:"5" }} {{ _("seconds") }} </span>
+		</div>
+		<!-- Suggestions-->
+		{% if suggestions.error.code == 0 and suggestions.suggest %} 
+			<div id='suggestions' style=" text-align:{{ bidi.align }}" >
+			<h2 class='suggestionheader'>{{ _("Suggestions:") }}</h2>
+			{% for suggestion_key, suggestion_item in suggestions.suggest.items %}
+				<p dir='{{ bidi.direction }}' >
+				<div class='word_details'>
+				<span style=' font-size:14pt; color:#00aa00;'> {{ forloop.counter }}. </span>
+				<div class='details_label word_info0'>  {{ _("word") }} |  {{ suggestion_key }} </div>
+				{% for suggestion_sub_item  in suggestion_item %}
+					{% with suggestion_key|add:","|add:suggestion_sub_item as replacement_args %}
+						{% with params.query|string_replace:replacement_args as new_query %}
+							<a class='no_decoration' href="?{% build_search_link params  new_query 1 False %}"> 
+							<div class='details_label word_stat1 clickable'> {{ suggestion_sub_item }}</div></a>
+						{% endwith %}
+					{% endwith %}
+				{% empty %}
+					<div class='details_label word_stat0'> {{ _("no suggestions!") }} </div>
+				{% endfor %}
+				</div></p>
+			{% endfor %}
+		</div><br />
+		{% endif %}
+		{% if results.search.interval.total %}
+			<br />
+			<!-- Pages control # top one -->
+			{% block pages_top %} {% endblock %}
+			
+			<!-- translation results -->
+			<br /><h2 style=' font-size:15pt;  color:#ff0000;'>
+			  {{ _("Results") }} ( {{ results.search.interval.start }} 
+			  {{ _("to") }} {{ results.search.interval.end }}
+			  {{ _("of") }} {{ results.search.interval.total }} )
+			</h2> <br /> 
+			
+			{% for translationresult_id, translationresult_content in  	results.search.translations.items %}
+			    <fieldset class='main_re_item'>
+				  <legend class='main_re_item_title' style='font-size:14pt; ' dir='{{ bidi.direction }}'>
+				    <span align='left' style='color:#0000ff;'>
+				      {{ _("Result n°") }} <b> {{ translationresult_id }} </b> 
+				    </span>
+				  </legend>
+				  <br />
+				  	
+				  <p align='center' dir='ltr'>
+					 
+					 
+					 <span  class='aya_words '>
+					[
+						{% for translation_word in translationresult_content.text|space_split %}
+							{% spaceless %}
+								{% autoescape off %}
+										{% if translation_word|first in "<ct> "|make_list  %}
+												{{ translation_word }} 
+										{% else %} 
+												<a class='no_decoration' href="?{% build_search_link params translation_word 1 False %}"> {{ translation_word }}</a> 
+										{% endif %}
+								{% endautoescape%}
+							{% endspaceless %}	
+					  	{% endfor %}
+					  ]
+					  </span> 
+
+					  <span dir="ltr" class='quran_translation'>
+					  		{% with translationresult_content.identifier.gid|stringformat:"s" as translation_gid %}
+								{% with "gid:"|add:translation_gid|add:" AND id:"|add:translationresult_content.identifier.id as new_query %}
+										<a class='no_decoration' href='?{% build_search_link params  new_query 1 False %}'> 
+								{% endwith %}
+							{% endwith %}
+							({{ translationresult_content.identifier.gid }}) </a> 
+					</span>	
+							<br />
+							<br />
+							{% with "author:"|add:translationresult_content.info.author as new_query %}
+										<a class='no_decoration' href='?{% build_search_link params  new_query 1 True %}'> 
+							{% endwith %} 
+							<div class='details_label translation_author clickable filter'> {{ _("Author") }} | {{  translationresult_content.info.author }} </div></a>
+							{% with "lang:"|add:translationresult_content.info.language as new_query %}
+										<a class='no_decoration' href='?{% build_search_link params  new_query 1 True %}'> 
+							{% endwith %} 
+							<div class='details_label translation_language clickable filter'> {{ _("Language") }} | {{ translationresult_content.info.language }} </div></a>
+					  <br />
+				    </p>
+				    <br />
+					  
+					  {% if translationresult_content.aya %}
+					  		<p dir='rtl' align='center' >
+						  		<span class='quran_decoration main_aya'>
+						 		 [ </span>
+						  		<span class="aya_words quran main_aya">
+						  		  {{ translationresult_content.aya }} 
+						  		</span>
+						  		<span class='quran_decoration main_aya'>
+						  		] </span>
+					  		</p>
+					  		<br />
+					  {% endif %}
+
+			     </fieldset><br />
+			{% endfor %}
+			
+		
+				<br />
+			<!-- Pages control # bottom one -->
+			{% block pages_bottom %} {% endblock %}
+			
+		{% else %}
+			<br />
+			<div class='notfound'><p> {{ _("Sorry! there is no results for this search query.") }} </p></div>
+			<br />
+		{% endif %}		
+	{% elif results.error %}
+		<div id='error' class='error'><p> {{ _("Error ") }} ({{ results.error.code }}) : {{ results.error.msg|linebreaksbr }}</p></div>
+	{% else %}
+		
+	{% endif %}
+{% endblock results %}

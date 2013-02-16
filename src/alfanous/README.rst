@@ -141,13 +141,13 @@ Flags
  21        aya_sajda_info     search            aya              enable aya sajda information retrieving       "True"           True | False
  22        annotation_word    search            aya, word        enable query terms annotations retrieving     "False"          True | False
  23        annotation_aya     search            aya              enable aya words annotations retrieving       "False"          True | False
- 24        sortedby           search            <all>            sorting order of results                      "score"          total | score | mushaf | tanzil | subject
+ 24        sortedby           search            aya              sorting order of results                      "score"          total | score | mushaf | tanzil | subject
  25        offset             search            <all>            starting offset of results                    "1"              1 to 6236
  26        range              search            <all>            range of results                              "10"             1 to 25
  27        page               search            <all>            page number  [override offset]                "1"              1 to 6236
  28        perpage            search            <all>            results per page  [override range]            "10"             1 to 25
  29        fuzzy              search            aya              fuzzy search [exprimental]                          "False"          True | False
- 30        aya                search            translation      enable retrieving of aya text                    "False"          True | False
+ 30        aya                search            translation      enable retrieving of aya text                    "True"          True | False
 
 ======== =================== ================= ================ ============================================ ================= ========================================================================================================================================================================
 
