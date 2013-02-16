@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-01-07 17:36+0100\n"
+"POT-Creation-Date: 2013-02-16 04:03+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,369 +17,623 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: templates/aya_search.html:7
-msgid "Fuzzy search"
+#: templates/aya_results.html:11 templates/translation_results.html:11
+msgid "Search results"
 msgstr ""
 
-#: templates/aya_search.html:9
-msgid "Unvocalized text"
+#: templates/aya_results.html:13 templates/translation_results.html:13
+msgid "Runtime"
+msgstr ""
+
+#: templates/aya_results.html:13 templates/translation_results.html:13
+msgid "seconds"
+msgstr ""
+
+#: templates/aya_results.html:18 templates/translation_results.html:18
+msgid "Suggestions:"
+msgstr ""
+
+#: templates/aya_results.html:23 templates/aya_results.html.py:58
+#: templates/translation_results.html:23
+msgid "word"
+msgstr ""
+
+#: templates/aya_results.html:32 templates/translation_results.html:32
+msgid "no suggestions!"
+msgstr ""
+
+#: templates/aya_results.html:42
+msgid "Words:"
+msgstr ""
+
+#: templates/aya_results.html:44 templates/aya_results.html.py:207
+#: templates/aya_results.html:349 templates/base.html:38
+msgid "words"
+msgstr ""
+
+#: templates/aya_results.html:47 templates/aya_results.html.py:59
+msgid "occurances"
+msgstr ""
+
+#: templates/aya_results.html:50 templates/aya_results.html.py:63
+msgid "vocalizations"
+msgstr ""
+
+#: templates/aya_results.html:60 templates/base.html:38
+msgid "ayates"
+msgstr ""
+
+#: templates/aya_results.html:74
+msgid "synonyms"
+msgstr ""
+
+#: templates/aya_results.html:88
+msgid "derivations"
+msgstr ""
+
+#: templates/aya_results.html:103
+msgid "Annotation"
+msgstr ""
+
+#: templates/aya_results.html:104
+msgid "ID"
+msgstr ""
+
+#: templates/aya_results.html:105
+msgid "sura,aya"
+msgstr ""
+
+#: templates/aya_results.html:107
+msgid "token"
+msgstr ""
+
+#: templates/aya_results.html:110
+msgid "part"
+msgstr ""
+
+#: templates/aya_results.html:113 templates/aya_results.html.py:201
+#: templates/aya_results.html:391
+msgid "type"
+msgstr ""
+
+#: templates/aya_results.html:116
+msgid "POS"
+msgstr ""
+
+#: templates/aya_results.html:119
+msgid "lemma"
+msgstr ""
+
+#: templates/aya_results.html:122
+msgid "root"
+msgstr ""
+
+#: templates/aya_results.html:125
+msgid "special"
+msgstr ""
+
+#: templates/aya_results.html:128
+msgid "aspect"
+msgstr ""
+
+#: templates/aya_results.html:131
+msgid "state"
+msgstr ""
+
+#: templates/aya_results.html:134
+msgid "form"
+msgstr ""
+
+#: templates/aya_results.html:137
+msgid "case"
+msgstr ""
+
+#: templates/aya_results.html:140
+msgid "derivation"
+msgstr ""
+
+#: templates/aya_results.html:143
+msgid "person"
+msgstr ""
+
+#: templates/aya_results.html:146
+msgid "number"
+msgstr ""
+
+#: templates/aya_results.html:149
+msgid "gender"
+msgstr ""
+
+#: templates/aya_results.html:152
+msgid "voice"
+msgstr ""
+
+#: templates/aya_results.html:168 templates/translation_results.html:45
+msgid "Results"
+msgstr ""
+
+#: templates/aya_results.html:169 templates/translation_results.html:46
+msgid "to"
+msgstr ""
+
+#: templates/aya_results.html:170 templates/translation_results.html:47
+msgid "of"
+msgstr ""
+
+#: templates/aya_results.html:177 templates/translation_results.html:54
+msgid "Result n°"
+msgstr ""
+
+#: templates/aya_results.html:196
+msgid "Sura"
+msgstr ""
+
+#: templates/aya_results.html:197 templates/aya_results.html.py:390
+msgid "n°"
+msgstr ""
+
+#: templates/aya_results.html:202
+msgid "revelation_order"
+msgstr ""
+
+#: templates/aya_results.html:203
+msgid "ayahs"
+msgstr ""
+
+#: templates/aya_results.html:208 templates/aya_results.html.py:355
+msgid "letters"
+msgstr ""
+
+#: templates/aya_results.html:209 templates/aya_results.html.py:361
+msgid "divine names"
+msgstr ""
+
+#: templates/aya_results.html:317
+msgid "Chapter"
+msgstr ""
+
+#: templates/aya_results.html:324
+msgid "Topic"
+msgstr ""
+
+#: templates/aya_results.html:331
+msgid "Subtopic"
+msgstr ""
+
+#: templates/aya_results.html:369
+msgid "manzil"
+msgstr ""
+
+#: templates/aya_results.html:375
+msgid "hizb"
+msgstr ""
+
+#: templates/aya_results.html:376
+msgid "quart"
+msgstr ""
+
+#: templates/aya_results.html:382
+msgid "page"
+msgstr ""
+
+#: templates/aya_results.html:389
+msgid "sajda"
+msgstr ""
+
+#: templates/aya_results.html:405 templates/translation_results.html:123
+msgid "Sorry! there is no results for this search query."
+msgstr ""
+
+#: templates/aya_results.html:409 templates/translation_results.html:127
+msgid "Error "
 msgstr ""
 
 #: templates/aya_search.html:11
+msgid "Fuzzy search"
+msgstr ""
+
+#: templates/aya_search.html:13
+msgid "Unvocalized text"
+msgstr ""
+
+#: templates/aya_search.html:15
 msgid "Uthmani script"
 msgstr ""
 
-#: templates/aya_search.html:18 templates/base.html:274
-msgid "Help"
-msgstr ""
-
-#: templates/aya_search.html:23
+#: templates/aya_search.html:26 templates/translation_search.html:23
 msgid "Exact search"
 msgstr ""
 
-#: templates/aya_search.html:28
+#: templates/aya_search.html:31 templates/translation_search.html:28
 msgid "Phrase search"
 msgstr ""
 
-#: templates/aya_search.html:33
+#: templates/aya_search.html:36 templates/translation_search.html:33
 msgid "Logical relations"
 msgstr ""
 
-#: templates/aya_search.html:38
+#: templates/aya_search.html:41 templates/translation_search.html:38
 msgid "Wildcards"
 msgstr ""
 
-#: templates/aya_search.html:43
+#: templates/aya_search.html:46 templates/translation_search.html:43
 msgid "Fields"
 msgstr ""
 
-#: templates/aya_search.html:48
+#: templates/aya_search.html:51
 msgid "Intervals"
 msgstr ""
 
-#: templates/aya_search.html:53
+#: templates/aya_search.html:56
 msgid "Partial vocalization"
 msgstr ""
 
-#: templates/aya_search.html:58
+#: templates/aya_search.html:61
 msgid "Word properties"
 msgstr ""
 
-#: templates/aya_search.html:63
+#: templates/aya_search.html:66
 msgid "Derivations"
 msgstr ""
 
-#: templates/aya_search.html:69
+#: templates/aya_search.html:72 templates/translation_search.html:50
 msgid ""
 "The website does not work well on Internet Explorer, we suggest to use "
-"another explorer such as: "
+"another browser such as: "
 msgstr ""
 
-#: templates/aya_search.html:69
+#: templates/aya_search.html:72 templates/translation_search.html:50
 msgid "Firefox"
 msgstr ""
 
-#: templates/aya_search.html:71
+#: templates/aya_search.html:74 templates/translation_search.html:52
 msgid "Close"
 msgstr ""
 
-#: templates/aya_search.html:77
-msgid "Sorted by"
-msgstr ""
-
-#: templates/aya_search.html:79
-msgid "Relevance"
-msgstr ""
-
 #: templates/aya_search.html:80
-msgid "Mus'haf"
+msgid "View"
 msgstr ""
 
-#: templates/aya_search.html:81
-msgid "Tanzil"
-msgstr ""
-
-#: templates/aya_search.html:82
-msgid "Topics"
-msgstr ""
-
-#: templates/aya_search.html:83
-msgid "Ayah length"
-msgstr ""
-
-#: templates/aya_search.html:88
-msgid "Translation:"
-msgstr ""
-
-#: templates/aya_search.html:90 templates/aya_search.html.py:101
-#: templates/base.html:306
+#: templates/aya_search.html:82 templates/aya_search.html.py:107
+#: templates/aya_search.html:118
 msgid "Default"
 msgstr ""
 
-#: templates/aya_search.html:91
-msgid "No translation"
+#: templates/aya_search.html:83
+msgid "Minimal"
+msgstr ""
+
+#: templates/aya_search.html:84
+msgid "Normal"
+msgstr ""
+
+#: templates/aya_search.html:85
+msgid "Full"
+msgstr ""
+
+#: templates/aya_search.html:86
+msgid "Statitic"
+msgstr ""
+
+#: templates/aya_search.html:87
+msgid "Linguistic"
+msgstr ""
+
+#: templates/aya_search.html:88
+msgid "Recitation"
+msgstr ""
+
+#: templates/aya_search.html:94
+msgid "Sorted by"
+msgstr ""
+
+#: templates/aya_search.html:96
+msgid "Relevance"
+msgstr ""
+
+#: templates/aya_search.html:97
+msgid "Mus'haf"
+msgstr ""
+
+#: templates/aya_search.html:98
+msgid "Tanzil"
 msgstr ""
 
 #: templates/aya_search.html:99
+msgid "Topics"
+msgstr ""
+
+#: templates/aya_search.html:100
+msgid "Ayah length"
+msgstr ""
+
+#: templates/aya_search.html:105
+msgid "Translation"
+msgstr ""
+
+#: templates/aya_search.html:108
+msgid "No translation"
+msgstr ""
+
+#: templates/aya_search.html:116
 msgid "Recitation:"
 msgstr ""
 
-#: templates/aya_search.html:102
+#: templates/aya_search.html:119
 msgid "No recitation"
 msgstr ""
 
-#: templates/base.html:8
-msgid "Alfanous - Advanced Quranic Search Engine"
+#: templates/aya_search.html:137 templates/translation_search.html:77
+msgid "Previous page"
 msgstr ""
 
-#: templates/base.html:10
+#: templates/aya_search.html:162 templates/translation_search.html:102
+msgid "Next page"
+msgstr ""
+
+#: templates/base.html:12
+msgid "Ayah Results to Query:"
+msgstr ""
+
+#: templates/base.html:14
+msgid "Word Results to Query:"
+msgstr ""
+
+#: templates/base.html:16
+msgid "Translation Results to Query:"
+msgstr ""
+
+#: templates/base.html:18
+msgid "Results to Query:"
+msgstr ""
+
+#: templates/base.html:24
+msgid "Quranic Verse Search"
+msgstr ""
+
+#: templates/base.html:26
+msgid "Quranic Word Search"
+msgstr ""
+
+#: templates/base.html:28
+msgid "Quranic Translation Search"
+msgstr ""
+
+#: templates/base.html:30
+msgid "Advanced Quranic Search Engine"
+msgstr ""
+
+#: templates/base.html:32
+msgid "Alfanous"
+msgstr ""
+
+#: templates/base.html:37
 msgid ""
 "Alfanous is a functional, dynamic, comprehensive Qur’an search engine that "
 "has been effectively designed to carry out simple or advanced Quranic "
 "searches."
 msgstr ""
 
-#: templates/base.html:11
+#: templates/base.html:38
 msgid "quran"
 msgstr ""
 
-#: templates/base.html:11
+#: templates/base.html:38
 msgid "forqan"
 msgstr ""
 
-#: templates/base.html:11
+#: templates/base.html:38
 msgid "koran"
 msgstr ""
 
-#: templates/base.html:11 templates/base.html.py:236
+#: templates/base.html:38 templates/base.html.py:290
 msgid "search"
 msgstr ""
 
-#: templates/base.html:11
+#: templates/base.html:38
 msgid "search engine"
 msgstr ""
 
-#: templates/base.html:11 templates/results.html:61
-msgid "ayates"
-msgstr ""
-
-#: templates/base.html:11
+#: templates/base.html:38
 msgid "surates"
 msgstr ""
 
-#: templates/base.html:11
+#: templates/base.html:38
 msgid "advanced"
 msgstr ""
 
-#: templates/base.html:11
+#: templates/base.html:38
 msgid "statistics"
 msgstr ""
 
-#: templates/base.html:11
+#: templates/base.html:38
 msgid "linguistic"
 msgstr ""
 
-#: templates/base.html:11
+#: templates/base.html:38
 msgid "information retrieval"
 msgstr ""
 
-#: templates/base.html:11
+#: templates/base.html:38
 msgid "natural language processing"
 msgstr ""
 
-#: templates/base.html:11 templates/results.html:44
-#: templates/results.html.py:178 templates/results.html:323
-msgid "words"
-msgstr ""
-
-#: templates/base.html:11
+#: templates/base.html:38
 msgid "Lantern"
 msgstr ""
 
-#: templates/base.html:11
+#: templates/base.html:38
 msgid "alfanous"
 msgstr ""
 
-#: templates/base.html:210
+#: templates/base.html:237
 msgid "Ayahs"
 msgstr ""
 
-#: templates/base.html:212
-msgid "Words"
-msgstr ""
-
-#: templates/base.html:213
+#: templates/base.html:238
 msgid "Translations"
 msgstr ""
 
-#: templates/base.html:254
-msgid "Feedback"
-msgstr ""
-
-#: templates/base.html:258
-msgid "Donate"
-msgstr ""
-
-#: templates/base.html:262
-msgid "Translate"
-msgstr ""
-
-#: templates/base.html:266
-msgid "Contribute"
-msgstr ""
-
-#: templates/base.html:270
-msgid "Contact"
-msgstr ""
-
-#: templates/base.html:278
-msgid "F.A.Q."
-msgstr ""
-
-#: templates/base.html:283 templates/base.html.py:353
-msgid "Download"
-msgstr ""
-
-#: templates/base.html:290
-msgid "Twitter"
-msgstr ""
-
-#: templates/base.html:291
-msgid "Facebook"
-msgstr ""
-
-#: templates/base.html:292
-msgid "Send to MySpace"
-msgstr ""
-
-#: templates/base.html:298
-msgid "Share it with friends"
-msgstr ""
-
-#: templates/base.html:304
-msgid "View"
-msgstr ""
-
-#: templates/base.html:307
-msgid "Minimal"
+#: templates/base.html:239
+msgid "Words"
 msgstr ""
 
 #: templates/base.html:308
-msgid "Normal"
-msgstr ""
-
-#: templates/base.html:309
-msgid "Full"
-msgstr ""
-
-#: templates/base.html:310
-msgid "Statitic"
-msgstr ""
-
-#: templates/base.html:311
-msgid "Linguistic"
+msgid "Feedback"
 msgstr ""
 
 #: templates/base.html:312
-msgid "Recitation"
+msgid "Donate"
 msgstr ""
 
-#: templates/base.html:335
+#: templates/base.html:316
+msgid "Translate"
+msgstr ""
+
+#: templates/base.html:320
+msgid "Contribute"
+msgstr ""
+
+#: templates/base.html:324
+msgid "Contact"
+msgstr ""
+
+#: templates/base.html:328 templates/base.html.py:422
+msgid "Help"
+msgstr ""
+
+#: templates/base.html:332
+msgid "F.A.Q."
+msgstr ""
+
+#: templates/base.html:337 templates/base.html.py:401
+msgid "Download"
+msgstr ""
+
+#: templates/base.html:344 templates/base.html.py:374
+msgid "Twitter"
+msgstr ""
+
+#: templates/base.html:345 templates/base.html.py:372
+msgid "Facebook"
+msgstr ""
+
+#: templates/base.html:346
+msgid "Send to MySpace"
+msgstr ""
+
+#: templates/base.html:352
+msgid "Share it with friends"
+msgstr ""
+
+#: templates/base.html:373
+msgid "Google Plus"
+msgstr ""
+
+#: templates/base.html:379
 msgid ""
 "Please help us improving Alfanous Project, by taking this survey about "
 "search features in Holy Quran"
 msgstr ""
 
-#: templates/base.html:354
-msgid "English desktop release 0.4"
-msgstr ""
-
-#: templates/base.html:355 templates/base.html.py:358
+#: templates/base.html:403
 msgid "Windows"
 msgstr ""
 
-#: templates/base.html:357
+#: templates/base.html:406
+msgid "English desktop release 0.4"
+msgstr ""
+
+#: templates/base.html:409
 msgid "Arabic desktop release 0.3"
 msgstr ""
 
-#: templates/base.html:360
+#: templates/base.html:413
+msgid "Linux"
+msgstr ""
+
+#: templates/base.html:414
+msgid "More details"
+msgstr ""
+
+#: templates/base.html:417
 msgid " Close "
 msgstr ""
 
-#: templates/base.html:373
+#: templates/base.html:434
 msgid "Quick links"
 msgstr ""
 
-#: templates/base.html:375
+#: templates/base.html:436
 msgid "Downloads"
 msgstr ""
 
-#: templates/base.html:376
+#: templates/base.html:437
 msgid "Mobile Web Interface"
 msgstr ""
 
-#: templates/base.html:377
+#: templates/base.html:438
 msgid "Old jQuery Web Interface"
 msgstr ""
 
-#: templates/base.html:378
+#: templates/base.html:439
 msgid "Old HTML Web Interface"
 msgstr ""
 
-#: templates/base.html:379
+#: templates/base.html:440
 msgid "@Github"
 msgstr ""
 
-#: templates/base.html:380
+#: templates/base.html:441
 msgid "@Sourceforge"
 msgstr ""
 
-#: templates/base.html:381
+#: templates/base.html:442
 msgid "@Launchpad"
 msgstr ""
 
-#: templates/base.html:385
+#: templates/base.html:446
 msgid "Community"
 msgstr ""
 
-#: templates/base.html:387
+#: templates/base.html:448
 msgid "About"
 msgstr ""
 
-#: templates/base.html:388
+#: templates/base.html:449
 msgid "Mailinglist"
 msgstr ""
 
-#: templates/base.html:389
+#: templates/base.html:450
 msgid "+ Report an issue"
 msgstr ""
 
-#: templates/base.html:390
+#: templates/base.html:451
 msgid "Issues Tracker"
 msgstr ""
 
-#: templates/base.html:391
+#: templates/base.html:452
 msgid "@Facebook"
 msgstr ""
 
-#: templates/base.html:392
+#: templates/base.html:453
 msgid "@Google Plus"
 msgstr ""
 
-#: templates/base.html:393
+#: templates/base.html:454
 msgid "@Twitter"
 msgstr ""
 
-#: templates/base.html:399
+#: templates/base.html:460
 msgid "Best technicality award"
 msgstr ""
 
-#: templates/base.html:399
+#: templates/base.html:460
 msgid ""
 "The award of best-technicality website in AlgeriaWebAwards2012 competition"
 msgstr ""
 
-#: templates/base.html:414
+#: templates/base.html:475
 msgid ""
 "Alfanous is a functional, dynamic, comprehensive Qur’an search engine that "
 "has been effectively designed to carry out simple or advanced Quranic "
@@ -392,203 +646,18 @@ msgid ""
 "successful elimination of ambiguities."
 msgstr ""
 
-#: templates/base.html:421
+#: templates/base.html:482
 msgid "Add to Search Bar"
 msgstr ""
 
-#: templates/results.html:7
-msgid "Alfanous - Results to Query:"
+#: templates/translation_results.html:91
+msgid "Author"
 msgstr ""
 
-#: templates/results.html:14
-msgid "Search results"
+#: templates/translation_results.html:95
+msgid "Language"
 msgstr ""
 
-#: templates/results.html:16
-msgid "Runtime"
-msgstr ""
-
-#: templates/results.html:16
-msgid "seconds"
-msgstr ""
-
-#: templates/results.html:21
-msgid "Suggestions:"
-msgstr ""
-
-#: templates/results.html:26 templates/results.html.py:59
-msgid "word"
-msgstr ""
-
-#: templates/results.html:31
-msgid "no suggestions!"
-msgstr ""
-
-#: templates/results.html:47
-msgid "occurances"
-msgstr ""
-
-#: templates/results.html:50 templates/results.html.py:62
-msgid "vocalizations"
-msgstr ""
-
-#: templates/results.html:60
-msgid "occurnaces"
-msgstr ""
-
-#: templates/results.html:74
-msgid "Annotation"
-msgstr ""
-
-#: templates/results.html:75
-msgid "ID"
-msgstr ""
-
-#: templates/results.html:76
-msgid "sura,aya"
-msgstr ""
-
-#: templates/results.html:78
-msgid "token"
-msgstr ""
-
-#: templates/results.html:81
-msgid "part"
-msgstr ""
-
-#: templates/results.html:84 templates/results.html.py:172
-#: templates/results.html:365
-msgid "type"
-msgstr ""
-
-#: templates/results.html:87
-msgid "POS"
-msgstr ""
-
-#: templates/results.html:90
-msgid "lemma"
-msgstr ""
-
-#: templates/results.html:93
-msgid "root"
-msgstr ""
-
-#: templates/results.html:96
-msgid "special"
-msgstr ""
-
-#: templates/results.html:99
-msgid "aspect"
-msgstr ""
-
-#: templates/results.html:102
-msgid "state"
-msgstr ""
-
-#: templates/results.html:105
-msgid "form"
-msgstr ""
-
-#: templates/results.html:108
-msgid "case"
-msgstr ""
-
-#: templates/results.html:111
-msgid "derivation"
-msgstr ""
-
-#: templates/results.html:114
-msgid "person"
-msgstr ""
-
-#: templates/results.html:117
-msgid "number"
-msgstr ""
-
-#: templates/results.html:120
-msgid "gender"
-msgstr ""
-
-#: templates/results.html:123
-msgid "voice"
-msgstr ""
-
-#: templates/results.html:139
-msgid "Results"
-msgstr ""
-
-#: templates/results.html:140
-msgid "to"
-msgstr ""
-
-#: templates/results.html:141
-msgid "of"
-msgstr ""
-
-#: templates/results.html:148
-msgid "Result n°"
-msgstr ""
-
-#: templates/results.html:167
-msgid "Sura"
-msgstr ""
-
-#: templates/results.html:168 templates/results.html.py:364
-msgid "n°"
-msgstr ""
-
-#: templates/results.html:173
-msgid "revelation_order"
-msgstr ""
-
-#: templates/results.html:174
-msgid "ayahs"
-msgstr ""
-
-#: templates/results.html:179 templates/results.html.py:329
-msgid "letters"
-msgstr ""
-
-#: templates/results.html:180 templates/results.html.py:335
-msgid "devine names"
-msgstr ""
-
-#: templates/results.html:291
-msgid "Chapter"
-msgstr ""
-
-#: templates/results.html:298
-msgid "Topic"
-msgstr ""
-
-#: templates/results.html:305
-msgid "Subtopic"
-msgstr ""
-
-#: templates/results.html:343
-msgid "manzil"
-msgstr ""
-
-#: templates/results.html:349
-msgid "hizb"
-msgstr ""
-
-#: templates/results.html:350
-msgid "quart"
-msgstr ""
-
-#: templates/results.html:356
-msgid "page"
-msgstr ""
-
-#: templates/results.html:363
-msgid "sajda"
-msgstr ""
-
-#: templates/results.html:380
-msgid "Sorry! there is no results for this search query."
-msgstr ""
-
-#: templates/results.html:384
-msgid "Error "
+#: templates/translation_search.html:11
+msgid "Show ayah arabic text"
 msgstr ""

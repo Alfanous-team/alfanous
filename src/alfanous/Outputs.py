@@ -60,6 +60,7 @@ def SCAN_SUPERJOKERS( query ):
 	filtred_query = myreg.sub( "", query )
 	super_joker = True if ( len( filtred_query ) < 3 and "*" in query ) \
 						or ( len( filtred_query ) < 2 and ( u"?" in query or u"؟" in query ) ) \
+						or query.count( "*" ) > 1 \
 			 	else False
 	# Exceptions
 	if query in [u"?", u"؟", u"???????????", u"؟؟؟؟؟؟؟؟؟؟؟؟"]:
@@ -92,7 +93,12 @@ class Raw():
 		    "minrange":1,
 		    "maxrange":25,
 		    "maxkeywords":100,
-		    "results_limit":6236,
+		    "results_limit": { 
+							"aya": 6236,
+							"translation":1000,
+							"word":1000,
+							 },
+
 		    "flags":{
 			      "action":"search",
 			      "unit":"aya",
@@ -124,7 +130,7 @@ class Raw():
 			      "page":1, # overridden with offset
 			      "perpage":10, # overridden with range
 			      "fuzzy":False,
-			      "aya": False
+			      "aya": True,
 		       }
 		  }
 
@@ -133,7 +139,7 @@ class Raw():
 	     0:"success",
 	     1:"no action is chosen or action undefined",
 	     2:"""SuperJokers are not permitted, you have to add  3 letters 
-	           or more to use * and 2 letters or more to use ? (؟)\n
+	           or more to use * (only one is permitted) and 2 letters or more to use ? (؟)\n
 	     	-- Exceptions: ? (1),  ??????????? (11)
 	     	""",
 	     3: "Parsing Query failed, please reformulate  the query"
@@ -538,7 +544,7 @@ class Raw():
 
 		#Search
 		SE = self.FQSE if fuzzy else self.QSE
-		res, termz = SE.search_all( query  , self._defaults["results_limit"], sortedby = sortedby )
+		res, termz = SE.search_all( query  , self._defaults["results_limit"]["aya"], sortedby = sortedby )
 		terms = [term[1] for term in list( termz )[:self._defaults["maxkeywords"]]]
 		terms_uthmani = map( STANDARD2UTHMANI, terms )
 		#pagination
@@ -790,8 +796,6 @@ class Raw():
 		#flags
 		query = flags["query"] if flags.has_key( "query" ) \
 				else self._defaults["flags"]["query"]
-		sortedby = flags["sortedby"] if flags.has_key( "sortedby" ) \
-				   else self._defaults["flags"]["sortedby"]
 		range = int( flags["perpage"] ) if  flags.has_key( "perpage" )  \
 				else flags["range"] if flags.has_key( "range" ) \
 									else self._defaults["flags"]["range"]
@@ -822,15 +826,21 @@ class Raw():
 
 		#Search
 		SE = self.TSE
-		res, termz = SE.search_all( query  , self._defaults["results_limit"], sortedby = sortedby )
+		res, termz = SE.search_all( query  , self._defaults["results_limit"]["translation"] )
 		terms = [term[1] for term in list( termz )[:self._defaults["maxkeywords"]]]
 		#pagination
 		offset = 1 if offset < 1 else offset;
 		range = self._defaults["minrange"] if range < self._defaults["minrange"] else range;
 		range = self._defaults["maxrange"] if range > self._defaults["maxrange"] else range;
 		interval_end = offset + range - 1
-		end = interval_end if interval_end < len( res ) else len( res )
+		end = interval_end if interval_end < len( res ) \
+							else len( res ) if len( res ) < self._defaults["results_limit"]["translation"] \
+											else self._defaults["results_limit"]["translation"]
 		start = offset if offset <= len( res ) else -1
+		total = len ( res )
+		limited_total = total if total < self._defaults["results_limit"]["translation"] \
+											else self._defaults["results_limit"]["translation"]
+
 		reslist = [] if end == 0 or start == -1 else list( res )[start - 1:end]
 		output = {}
 
@@ -859,9 +869,9 @@ class Raw():
 		output["interval"] = {
 							"start":start,
 							"end":end,
-							"total": len( res ),
+							"total": total ,
 							"page": ( ( start - 1 ) / range ) + 1,
-							"nb_pages": ( ( len( res ) - 1 ) / range ) + 1
+							"nb_pages": ( ( limited_total - 1 ) / range ) + 1
 							}
 		output["terms"] = terms
 		### translations

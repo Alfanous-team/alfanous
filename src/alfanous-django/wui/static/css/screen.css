@@ -698,7 +698,7 @@ a:hover{color: green;}
 }
 
 
-.aya_stat0, .sura_stat1 {
+.aya_stat0, .sura_stat1, .translation_author {
 	background-color: #00A;
 	color: #FFF;
 }
@@ -713,7 +713,7 @@ a:hover{color: green;}
 	color: #FFF;
 }
 
-.aya_pos0 {
+.aya_pos0, .translation_language {
 	background-color: #074;
 	color: #FFF;
 }

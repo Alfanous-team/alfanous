@@ -20,6 +20,7 @@ from django.utils.translation import ugettext as _
 from django.utils.translation import ungettext
 from django.utils.translation import pgettext_lazy # for ambiguities
 from django.utils.translation import get_language_info
+from django.utils.datastructures import SortedDict
 
 ## either append the path of alfanous API as:
 path.append( "alfanous.egg/alfanous" ) ## an egg, portable
@@ -59,8 +60,14 @@ def jos2( request ):
 
 def results( request, unit = "aya", language = None ):
     """     """
-    available_units = ["aya", "word", "translation"]
-    if unit not in available_units:
+    available_units = SortedDict ( [
+						( "aya", "Ayahs" ),
+						#( "sura", "Surahs" ),
+						#( "word", "Words" ),
+						( "translation", "Translations" ),
+						#  tafsir, hadith, dream, poem
+						] )
+    if unit not in available_units.keys():
     	unit = "aya"
     mutable_request = {}
     for k, v in request.GET.items():
