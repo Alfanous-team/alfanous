@@ -175,13 +175,14 @@ a:hover{color: green;}
 	left:10px;
 	background-color:#fff;
 	display:none;
-	width:300px;
+	width:672px;
 	padding:15px;
 	border:2px solid #333;
 	-moz-border-radius:6px;
 	-webkit-border-radius:6px;
 	-moz-box-shadow: 0 0 50px #ccc;
 	-webkit-box-shadow: 0 0 50px #ccc;
+	overflow-y: scroll;
 }
 
 .modal h2 {
@@ -866,6 +867,17 @@ img.right {
 	text-align: justify;
 }
 
+
+.list li{
+	display:list-item;
+	list-style-type: circle;
+	margin: 10px;
+	padding: 5px;
+}
+
+.list a {
+	color:blue;
+}
 
 
 /* Footer*/
