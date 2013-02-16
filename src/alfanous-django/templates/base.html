@@ -233,11 +233,15 @@
 
 </head>
 <body>
-<!-- Localization purpose -->
-<!-- {{ _("Ayahs") }} -->
-<!-- {{ _("Translations") }} -->
-<!-- {{ _("Words") }} -->
+{% if False %} 
+{# block reserved to force localization of automatic values #}
 
+{{ _("Ayahs") }}
+{{ _("Translations") }}
+{{ _("Words") }}
+
+
+{% endif %}
 
 
 
@@ -246,7 +250,7 @@
 <ul class="headermenu">
 {% for available_unit in available.units.items %}
 	<li class="menuitem">
-		{% ifequal available_unit.0 current.unit %}<span >{{ available_unit.1 }}</span> 
+		{% ifequal available_unit.0 current.unit %}<span > {{ available_unit.1 }}</span> 
 		{% else %} <a href="{% url alfanous-django.wui.views.results current.language available_unit.0 %}">{{ available_unit.1 }}</a>
 		{% endifequal %} 
 	</li>
