@@ -101,10 +101,17 @@
 				$("#down").overlay().load();
 			});
 			
+			
+			$("#awa_btn").click(function() {
+				$("#awapanel").overlay().load();
+			});
+			
+			
 			$( "#showlog" ).click(function() {
 				$( "#logbox" ).toggle( "blind", 5 );
 			});
-			
+
+
 			// Corners
 			$(".details_label").corner("3px");
 			$("#search_words").corner("30px");
@@ -385,19 +392,16 @@
         <a href="https://plus.google.com/111305625425237630318" target="_blank"><img src="/static/images/google-icon-black.png" alt="{{ _("Google Plus") }}" title="{{ _("Google Plus") }}" /> </a> 
         <a href="https://twitter.com/alfanous" target="_blank"> <img src="/static/images/twitter-icon-black.png" alt="{{ _("Twitter") }}" title="{{ _("Twitter") }}" /></a> 
 		</div>
-		<!-- <br />
+		 <br />
 		<br />
 		<div id="vote_btn">
-		<a class='xbutton gray' href="https://docs.google.com/spreadsheet/viewform?formkey=dEZZaE5fQ0NwQXljU2ZyUmpfLW15SVE6MA#gid=0" target="_blank">{{ _("Please help us improving Alfanous Project, by taking this survey about search features in Holy Quran") }} </a>
-		</div><br />  -->
+		<a class='xbutton gray' href="https://docs.google.com/spreadsheet/viewform?formkey=dHNKQU1JSkEzbDNKR2tvM2M2cDA2SXc6MQ" target="_blank">{{ _("Please help us improving Alfanous Project, by taking this survey about search features in Holy Quran") }} </a>
+		</div><br />  
 		<br /><br />  
 		<br /><br />
 	{% endblock %}
 	{% block no_request %} {% endblock %} 
 {% endif %}
-
-
-
 
 
 
@@ -410,9 +414,10 @@
 
 </div>
 </div>
+
+
 <div id="down" class="modal" style="text-align: {{ bidi.align }};">
 	<h2 style='padding:0 0 0px 0'><img alt="download" src="/static/images/Download.png">{{ _("Download") }}</h2><br/>
-
 <strong> {{ _("Windows") }}:</strong>
 <ul>
 <li>
@@ -430,6 +435,16 @@
 		<button type="button" class='close gray button' > {{ _(" Close ") }} </button>	
 	<br />
 </div>
+
+
+<div id="awapanel" class="modal" style="text-align: {{ bidi.align }};">
+	<h2 style='padding:0 0 0px 0'>{{ _("Awarded!") }}</h2><br/>
+{{ _("Alfanous.org was chosen as the best-in-technicaity website in the competition AlgeriaWebAwards 2012.") }}
+    <br/><br/>
+		<button type="button" class='close gray button' > {{ _(" Close ") }} </button>	
+	<br />
+</div>
+
 
 <div id="help" class="modal" style="width: 675px; text-align: {{ bidi.align }};">
 <h2>{{ _("Help") }}</h2>
@@ -470,7 +485,7 @@
 	<!-- Assem -->
 	<div class="awa-box" >
 		
-			<a href="#"> <img src='/static/images/awa2-128.png' class='banner' alt='{{ _("Best technicality award") }}' title='{{ _("The award of best-technicality website in AlgeriaWebAwards2012 competition") }}'/></a>
+			<a id="awa_btn"> <img src='/static/images/awa2-128.png' class='banner' alt='{{ _("Best technicality award") }}' title='{{ _("The award of best-technicality website in AlgeriaWebAwards2012 competition") }}'/></a>
 		
 	</div>
 	<!-- -->
