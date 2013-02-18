@@ -102,10 +102,19 @@
 						  		<span class='quran_decoration main_aya'>
 						 		 [ </span>
 						  		<span class="aya_words quran main_aya">
-						  		  {{ translationresult_content.aya }} 
+						  		  {{ translationresult_content.aya.text }} 
 						  		</span>
 						  		<span class='quran_decoration main_aya'>
 						  		] </span>
+						  		
+						  		<span dir="rtl" class='main_aya'>
+									 {% with translationresult_content.aya.aya_id|stringformat:"s" as aya_id %}
+										 {% with bidi.fields.sura|add:':"'|add:translationresult_content.aya.sura_name|add:'" + '|add:bidi.fields.aya_id|add:':'|add:aya_id|urlencode  as new_query %}
+											<a class='no_decoration' href='{% url alfanous-django.wui.views.results current.language "aya" %}?{% build_search_link params  new_query 1 False %}'> 
+										{% endwith %}
+									{% endwith %}
+									({{ translationresult_content.aya.sura_name }} {{ translationresult_content.aya.aya_id }}) </a> 
+  					 			 </span>
 					  		</p>
 					  		<br />
 					  {% endif %}

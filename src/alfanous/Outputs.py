@@ -861,9 +861,12 @@ class Raw():
 		if aya:
 			aya_res = self.QSE.find_extended( aya_query, "gid" )
 			extend_runtime += aya_res.runtime
-			aya_text = {}
+			aya_info = {}
 			for ay in aya_res:
-				aya_text[ay["gid"]] = ay["aya_"]
+				aya_info[ay["gid"]] = { "text": ay["aya_"],
+										"aya_id": ay["aya_id"],
+										"sura_name": ay["sura"]
+										}
 
 		output["runtime"] = round( extend_runtime, 5 )
 		output["interval"] = {
@@ -887,7 +890,7 @@ class Raw():
 
 		              "text":   H( r["text"] ),
 		              "aya": None if not aya \
-		              			else aya_text[r["gid"]],
+		              			else aya_info[r["gid"]],
 					  "info": {
 								"language": r["lang"],
 								"author": r["author"],
