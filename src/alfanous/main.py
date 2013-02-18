@@ -157,8 +157,8 @@ def TraductionSearchEngine( indexpath = "../indexes/extend/", qparser = Standard
 def WordSearchEngine( indexpath = "../indexes/word/", qparser = StandardParser ):
     return BasicSearchEngine( qdocindex = BasicDocIndex( indexpath )
                             , qparser = qparser#termclass=QuranicParser.FuzzyAll
-                            , mainfield = "word"
-                            , otherfields = ["normalized", "spelled"]
+                            , mainfield = "normalized"
+                            , otherfields = ["word", "spelled"]
                             , qsearcher = QSearcher
                             , qreader = QReader
                             , qspellcheckers = [QWordChecker]
