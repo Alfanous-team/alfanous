@@ -57,6 +57,13 @@ How to report a bug?
 --------------------
 If you have a concrete bug report for Alfanous please go to the `Issues Tracker  <https://github.com/Alfanous-team/alfanous/issues>`_, submit your report and tag it "bug".
 
+-----------------
+How to translate?
+-----------------
+- Contact us to confirm the translation need into your language and to request the PO file.
+- Use Use Poedit or Virtaal to edit it and complete the translation.
+- Send us the update po file so we can include it in the website.
+
 ------------------
 How to Contribute? 
 ------------------
