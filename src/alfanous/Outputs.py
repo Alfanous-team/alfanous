@@ -399,7 +399,7 @@ class Raw():
 
 	def _search( self, flags, unit ):
 		""" return the results of search for any unit """
-		if True:
+		try:
 			if unit == "aya":
 				search_results = self._search_aya( flags )
 			elif unit == "translation":
@@ -409,7 +409,6 @@ class Raw():
 			else:
 				search_results = {}
 			output = { "search": search_results }
-		try:
 			pass
 		except:
 			output = { "error": {"code":3, "msg":self.ERRORS[3] }}
@@ -488,7 +487,7 @@ class Raw():
 			aya_stat_info = True
 			sura_stat_info = True
 			annotation_aya = False
-			annotation_word = True
+			annotation_word = False
 		elif view == "linguistic":
 			prev_aya = next_aya = False
 			sura_info = False
@@ -497,8 +496,8 @@ class Raw():
 			aya_theme_info = aya_sajda_info = True
 			aya_stat_info = False
 			sura_stat_info = False
-			annotation_aya = True
-			annotation_word = True
+			annotation_aya = False
+			annotation_word = False
 			romanization = "buckwalter"
 		elif view == "recitation":
 			script = "uthmani"
