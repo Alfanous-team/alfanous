@@ -93,7 +93,7 @@ class Raw():
 		    "minrange":1,
 		    "maxrange":25,
 		    "maxkeywords":100,
-		    "results_limit": { 
+		    "results_limit": {
 							"aya": 6236,
 							"translation":1000,
 							"word":1000,
@@ -375,6 +375,8 @@ class Raw():
 		""" return suggestions for any search unit """
 		if unit == "aya":
 			suggestions = self._suggest_aya( flags )
+		elif unit == "translation":
+			suggestions = None
 		else:
 			suggestions = {}
 
@@ -397,14 +399,18 @@ class Raw():
 
 	def _search( self, flags, unit ):
 		""" return the results of search for any unit """
-		try:
+		if True:
 			if unit == "aya":
 				search_results = self._search_aya( flags )
 			elif unit == "translation":
 				search_results = self._search_translation( flags )
+			elif unit == "word":
+				search_results = self._search_word( flags )
 			else:
 				search_results = {}
 			output = { "search": search_results }
+		try:
+			pass
 		except:
 			output = { "error": {"code":3, "msg":self.ERRORS[3] }}
 
@@ -445,7 +451,7 @@ class Raw():
 
 		# pre-defined views
 		if view == "minimal":
-			fuzzy = True
+			#fuzzy = True
 			#page = 25
 			vocalized = False
 			recitation = None
@@ -567,6 +573,12 @@ class Raw():
 								spellerrors = False, \
 								hamza = False \
 								).normalize_all
+		strip_vocalization = QArabicSymbolsFilter( \
+								shaping = False, \
+								tashkil = True, \
+								spellerrors = False, \
+								hamza = False \
+								).normalize_all
 		# highligh function that consider None value and non-definition
 		H = lambda X:  self.QSE.highlight( X, terms, highlight ) if highlight != "none" and X else X if X else u"-----"
 		# Numbers are 0 if not defined
@@ -587,12 +599,16 @@ class Raw():
 			cpt = 1;
 			annotation_word_query = u"( 0 "
 			for term in termz :
-				if term[0] == "aya":
+				if term[0] == "aya" or term[0] == "aya_":
 					if term[2]:
 						matches += term[2]
 					docs += term[3]
-					annotation_word_query += u" OR normalized:%s " % STANDARD2UTHMANI( term[1] )
-					vocalizations = vocalization_dict[term[1]] if vocalization_dict.has_key( term[1] ) \
+					if term[0] == "aya_":
+						annotation_word_query += u" OR word:%s " % term[1]
+					else: #if aya
+						annotation_word_query += u" OR normalized:%s " % STANDARD2UTHMANI( term[1] )
+
+					vocalizations = vocalization_dict[ strip_vocalization( term[1] ) ] if vocalization_dict.has_key( strip_vocalization( term[1] ) ) \
 										   else []
 					nb_vocalizations_globale += len( vocalizations )
 					synonyms = syndict[term[1]] if syndict.has_key( term[1] ) \
@@ -898,6 +914,180 @@ class Raw():
 		    		}
 		return output
 
+	def _search_word( self, flags ):
+		"""
+		return the results of word search as a dictionary data structure
+		"""
+		#flags
+		query = flags["query"] if flags.has_key( "query" ) \
+				else self._defaults["flags"]["query"]
+		sortedby = flags["sortedby"] if flags.has_key( "sortedby" ) \
+				   else self._defaults["flags"]["sortedby"]
+		range = int( flags["perpage"] ) if  flags.has_key( "perpage" )  \
+				else flags["range"] if flags.has_key( "range" ) \
+									else self._defaults["flags"]["range"]
+		## offset = (page-1) * perpage   --  mode paging
+		offset = ( ( int( flags["page"] ) - 1 ) * range ) + 1 if flags.has_key( "page" ) \
+				 else int( flags["offset"] ) if flags.has_key( "offset" ) \
+					  else self._defaults["flags"]["offset"]
+		romanization = flags["romanization"] if flags.has_key( "romanization" ) \
+					  else self._defaults["flags"]["romanization"]
+		highlight = flags["highlight"] if flags.has_key( "highlight" ) \
+					else self._defaults["flags"]["highlight"]
+		script = flags["script"] if flags.has_key( "script" ) \
+				 else self._defaults["flags"]["script"]
+		vocalized = TRUE_FALSE( flags["vocalized"] ) if flags.has_key( "vocalized" ) \
+					else self._defaults["flags"]["vocalized"]
+		view = flags["view"] if flags.has_key( "view" ) \
+				else self._defaults["flags"]["view"]
+
+		# pre-defined views
+		if view == "minimal":
+			vocalized = False
+		elif view == "normal":
+			pass
+		elif view == "full":
+			romanization = "iso"
+		elif view == "statistic":
+			pass
+		elif view == "linguistic":
+			romanization = "buckwalter"
+		elif view == "recitation":
+			script = "uthmani"
+		else: # if view == custom or undefined
+			pass
+
+		#preprocess query
+		query = query.replace( "\\", "" )
+		if not isinstance( query, unicode ):
+			query = unicode( query , 'utf8' )
+
+		if ":" not in query:
+			query = unicode( transliterate( "buckwalter", query, ignore = "'_\"%*?#~[]{}:>+-|" ) )
+
+
+		#Search
+		SE = self.WSE
+		res, termz = SE.search_all( query  , self._defaults["results_limit"]["word"], sortedby = sortedby )
+		terms = [term[1] for term in list( termz )[:self._defaults["maxkeywords"]]]
+
+		#pagination
+		offset = 1 if offset < 1 else offset;
+		range = self._defaults["minrange"] if range < self._defaults["minrange"] else range;
+		range = self._defaults["maxrange"] if range > self._defaults["maxrange"] else range;
+		interval_end = offset + range - 1
+		end = interval_end if interval_end < len( res ) else len( res )
+		start = offset if offset <= len( res ) else -1
+		reslist = [] if end == 0 or start == -1 else list( res )[start - 1:end]
+		output = {}
+
+
+		#if True:
+		## strip vocalization when vocalized = true
+		V = QArabicSymbolsFilter( \
+								shaping = False, \
+								tashkil = not vocalized, \
+								spellerrors = False, \
+								hamza = False \
+								).normalize_all
+		# highligh function that consider None value and non-definition
+		H = lambda X:  SE.highlight( X, terms, highlight ) if highlight != "none" and X else X if X else u"-----"
+		# Numbers are 0 if not defined
+		N = lambda X:X if X else 0
+		# parse keywords lists , used for Sura names
+		kword = re.compile( u"[^,،]+" )
+		keywords = lambda phrase: kword.findall( phrase )
+		# Tamdid devine name to avoid double Shedda on the middle Lam
+		Gword_tamdid = lambda aya: aya.replace( u"لَّه", u"لَّـه" ).replace( u"لَّه", u"لَّـه" )
+		##########################################
+		extend_runtime = res.runtime
+		# Words & Annotations
+		words_output = {"individual":{}}
+		if True:
+			matches = 0
+			docs = 0
+			cpt = 1;
+			for term in termz :
+				if True: #term[0] == "normalized" or term[0] == "word":
+					if term[2]:
+						matches += term[2]
+					docs += term[3]
+					words_output[ "individual" ][ cpt ] = {
+															 "field": term[0],
+															 "word":term[1],
+															 "romanization": transliterate( romanization, term[1], ignore = "" , reverse = True ) if romanization in self.DOMAINS["romanization"] else None,
+															 "nb_matches":term[2],
+															 "nb_docs":term[3],
+														 }
+					cpt += 1
+			words_output["global"] = {"nb_words":cpt - 1, "nb_matches":matches}
+		output["keywords"] = words_output;
+		
+		output["runtime"] = round( extend_runtime, 5 )
+		output["interval"] = {
+							"start":start,
+							"end":end,
+							"total": len( res ),
+							"page": ( ( start - 1 ) / range ) + 1,
+							"nb_pages": ( ( len( res ) - 1 ) / range ) + 1
+							}
+
+		### Words
+		cpt = start - 1
+		output["words"] = {}
+		for r in reslist :
+			cpt += 1
+			output["words"][ cpt ] = {
+									
+					  "identifier": {
+									 "gid":r["gid"],
+									 "word_gid": r["word_gid"],
+									 "aya_id":r["aya_id"],
+									 "sura_id":r["sura_id"],
+									 "word_id":r["word_id"],
+									},
+
+		              "word":{
+		              		"text":  Gword_tamdid( H( V( r["word"] ) ) ),
+		                	"part": r["part"],
+		                	"part_order": r["order"],
+		                	"token": r["arabictoken"],
+		                	"POS": {
+										  	"english": r["pos"],
+										  	"arabic": r["arabicpos"],
+									},
+							"mood": {
+										"english": r["mood"],
+										"arabic": r["arabicmood"],
+									},
+							"case": {
+										"english": r["case"],
+										"arabic": r["arabiccase"],
+									},
+							"root": {
+										#"english": r["root"],
+										"arabic": r["arabicroot"],
+									},
+							"lemma": {
+										#"english": r["lemma"],
+										"arabic": r["arabiclemma"],
+									},
+							
+							"special": {
+										#"english": r["special"],
+										"arabic": r["arabicspecial"],
+									},
+							"derivation": r["derivation"],
+							"form": r["form"],
+							"gender": r["gender"],
+							"person": r["person"],
+							"number": r["number"],
+							"voice": r["voice"],
+							"state": r["state"],
+							"aspect": r["aspect"],
+		              },
+		    		}
+		return output
 
 class Json( Raw ):
 	""" JSON output format """
