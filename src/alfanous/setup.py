@@ -5,7 +5,6 @@
 Alfanous Setup Script
 TODO pure python building & installing system
 TODO include resources in installation
-FIXME install configs in HOME
 XXX Index building pre-install script?
 """
 
