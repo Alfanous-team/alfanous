@@ -16,16 +16,12 @@
 ##     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 """
-TODO use Table grid for view , use CSS good schema instead
-TODO complete all new Ui features
+TODO use Table grid for view results , use CSS good schema instead
 TODO relate to PreferenceDlg / Hints dialog
 TODO use css and simplify texts to make a good localization
 TODO sura's name also in English
-TODO fields name in english and arabic / explication (id)
 TODO add qurany project for Subjects in english
-TODO %(var)s mapping is better for localization
 TODO use QT Localization instead of gettext
-TODO Use tree widget to show results
 TODO printing
 """
 
@@ -55,6 +51,9 @@ _ = gettext.gettext
 n_ = gettext.ngettext
 gettext.bindtextdomain( "alfanousQT" );
 gettext.textdomain( "alfanousQT" );
+
+## Localization using QT way
+tr = QtCore.QCoreApplication.translate
 
 
 ## Initialize search engines 
