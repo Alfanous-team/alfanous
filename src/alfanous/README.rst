@@ -147,7 +147,7 @@ Flags
  27        page               search            <all>            page number  [override offset]                "1"              1 to 6236
  28        perpage            search            <all>            results per page  [override range]            "10"             1 to 25
  29        fuzzy              search            aya              fuzzy search [exprimental]                          "False"          True | False
- 30        aya                search            translation      enable retrieving of aya text                    "True"          True | False
+ 30        aya                search            word,trans       enable retrieving of aya text                    "True"          True | False
 
 ======== =================== ================= ================ ============================================ ================= ========================================================================================================================================================================
 
@@ -172,6 +172,17 @@ Aya Search:
 *  Derivations - lemma :      >مالك    
 *  Derivations - root :       >>مالك   
 
+Translation Search:
+
+* Exact search: god
+* Phrase search: "seven heavens"
+* Logical relations - OR:	prayer ANDNOT charity
+* Logical relations - AND: prayer AND charity
+* Logical relations - OR:	prayer OR charity
+* Wildcards - Joker \*: pray* 	
+* Wildcards - Joker \?: produc?
+* Fielded search: 	lang:fr 	
+* Fielded search (2) : author:Shakir 
 
 ------
 Fields
