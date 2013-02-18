@@ -397,7 +397,7 @@ class Raw():
 
 	def _search( self, flags, unit ):
 		""" return the results of search for any unit """
-		if True:
+		try:
 			if unit == "aya":
 				search_results = self._search_aya( flags )
 			elif unit == "translation":
@@ -405,8 +405,6 @@ class Raw():
 			else:
 				search_results = {}
 			output = { "search": search_results }
-		try:
-			pass
 		except:
 			output = { "error": {"code":3, "msg":self.ERRORS[3] }}
 
