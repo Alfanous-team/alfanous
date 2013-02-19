@@ -4,7 +4,7 @@
 
 
 {% block no_request %} 
-	{{ _("List of indexed Quran translations") }}:<button id="showlog" type="button">Show/Hide!</button><br> 
+	{{ _("List of indexed Quran translations") }} ({{ _("Translation source:") }} <a href="http://tanzil.net/trans/" target="_blank">tanzil.net</a>):<button id="showlog" type="button">{{ _("Show/Hide!") }}</button><br> 
 	<div class="logbox" id="logbox">
 		{% for translation in available.translations.items %}
 		<span class="log">	{{ forloop.counter }}. {{ translation.1 }} </span><br/>
