@@ -435,7 +435,7 @@
 </div>
 
 
-<div id="down" class="modal" style="text-align: {{ bidi.align }};">
+<div id="down" class="modal" style="text-align: {{ bidi.align }};  direction: {{ bidi.direction}};">
 	<h2 style='padding:0 0 0px 0'><img alt="download" src="/static/images/Download.png">{{ _("Download") }}</h2><br/>
 <strong> {{ _("Windows") }}:</strong>
 <ul>
@@ -456,7 +456,7 @@
 </div>
 
 
-<div id="awapanel" class="modal" style="text-align: {{ bidi.align }};">
+<div id="awapanel" class="modal" style="text-align: {{ bidi.align }};  direction: {{ bidi.direction}};">
 	<h2 style='padding:0 0 0px 0'>{{ _("Awarded!") }}</h2><br/>
 {{ _("Alfanous.org was chosen as the best-in-technicaity website in the competition AlgeriaWebAwards 2012.") }}
     <br/><br/>
@@ -464,84 +464,86 @@
 	<br />
 </div>
 
-<div id="contactpanel" class="modal" style="text-align: {{ bidi.align }}; width:672px">
+<div id="contactpanel" class="modal" style="text-align: {{ bidi.align }}; direction: {{ bidi.direction}}; width:672px">
 	<h2 style='padding:0 0 0px 0'>{{ _("Contact us") }}</h2><br/>
 <ul class="list">
-<li>If you have a concrete bug report for Alfanous please go to the <a href="https://github.com/Alfanous-team/alfanous/issues">Issues Tracker</a>, submit your report and tag it "bug".</li>
-<li>If you want to participate in actively developing Alfanous,by testing read this <a href="https://github.com/Alfanous-team/alfanous/blob/master/FAQ.rst#how-to-help-by-testing">How to help with testing?</a> and by coding read this <a href="https://github.com/Alfanous-team/alfanous/blob/master/FAQ.rst#how-to-contribute">How to contribute?</a>.</li>
-<li>If you want to help in Alfanous somehow,  read this <a href="https://github.com/Alfanous-team/alfanous/blob/master/FAQ.rst#how-you-can-help">How you can help?</a>.</li>
-<li>If you have a feature request, a proposition or a question for the project, you may use the mailing list.</li>
-<li>If you want to criticize the project, we'll be thankful if you resume your criticism and send it to the mailing list.</li>
+<li> {{ _("If you have a concrete bug report for Alfanous please go to") }} <a href="https://github.com/Alfanous-team/alfanous/issues"> {{ _("Issues Tracker") }}</a>, {{ _("submit your report and tag it \"bug\".")}}</li>
+<li> {{ _("If you want to participate in actively developing Alfanous,by testing read") }} <a href="https://github.com/Alfanous-team/alfanous/blob/master/FAQ.rst#how-to-help-by-testing"> How to help with testing? </a> {{ _("and by coding read ") }} <a href="https://github.com/Alfanous-team/alfanous/blob/master/FAQ.rst#how-to-contribute">How to contribute?</a>.</li>
+<li> {{ _("If you want to help in Alfanous somehow,  read") }} <a href="https://github.com/Alfanous-team/alfanous/blob/master/FAQ.rst#how-you-can-help">How you can help?</a>.</li>
+<li> {{ _("If you have a feature request, a proposition or a question for the project, you may use the mailing list.") }}</li>
+<li> {{ _("If you want to criticize the project, we'll be thankful if you resume your criticism and send it to the mailing list.") }}</li>
 </ul>
-<p>For anything else, you can contact us via the mailing list which is  <a href="http://groups.google.com/group/alfanous">alfanous[at]googlegroups[dot]com</a> .</p>
+<p>{{ _("For anything else, you can contact us via the mailing list which is:") }} <a href="http://groups.google.com/group/alfanous">alfanous[at]googlegroups[dot]com</a> .</p>
     <br/><br/>
 		<button type="button" class='close gray button' > {{ _(" Close ") }} </button>	
 	<br />
 </div>
 
-<div id="faqpanel" class="modal" style="text-align: {{ bidi.align }};">
+<div id="faqpanel" class="modal" style="text-align: {{ bidi.align }};  direction: {{ bidi.direction}};">
 	<h2 style='padding:0 0 0px 0'>{{ _("F.A.Q.") }}</h2><br/>
-	See <a href="https://github.com/Alfanous-team/alfanous/blob/master/FAQ.rst">this link</a>.
+	{{ _("See") }} <a href="https://github.com/Alfanous-team/alfanous/blob/master/FAQ.rst">{{ _("this link") }}</a>.
     <br/><br/>
 		<button type="button" class='close gray button' > {{ _(" Close ") }} </button>	
 	<br />
 </div>
 
-<div id="donatepanel" class="modal" style="text-align: {{ bidi.align }};">
+<div id="donatepanel" class="modal" style="text-align: {{ bidi.align }};  direction: {{ bidi.direction}};">
 	<h2 style='padding:0 0 0px 0'>{{ _("How to donate") }}</h2><br/>
-	We're stuck looking for possible ways for donations/Funding. Any help is appreciated!
-    <br/><br/>
-		<button type="button" class='close gray button' > {{ _(" Close ") }} </button>	
-	<br />
-</div>
-
-<div id="translatepanel" class="modal" style="text-align: {{ bidi.align }};">
-	<h2 style='padding:0 0 0px 0'>{{ _("How to translate") }}</h2><br/>
-	<ul class="list">
-  		<li>Check the existance of your language in the available languages list.</li>
-		<li>Download the file: <a href="/static/django.po">django.po</a>.</li>
-		<li>Use Poedit or Virtaal to edit it.</li>
-		<li>Send the updated file into our mailing list: <a href="http://groups.google.com/group/alfanous">alfanous[at]googlegroups[dot]com</a> .</li>
+	{{ _("We're stuck looking for possible ways for donations/Funding. Any help is appreciated!") }}
+    <br />
+    {{ _("Any way you can help by:") }}
+    <ul class="list">
+    <li> {{ _("Pay our web hosting monthly bills directly, we create an account for you in the host to do that.") }}</li>
+	<li> {{ _("Lead an advertising compaign for the project website through Google adwords or Facebook.") }}</li>
     </ul>
     <br/><br/>
 		<button type="button" class='close gray button' > {{ _(" Close ") }} </button>	
 	<br />
 </div>
 
-<div id="contributepanel" class="modal" style="text-align: {{ bidi.align }}; 	height: 400px; ">
-	<h2 style='padding:0 0 0px 0'>{{ _("How to contribute") }}</h2><br/>
-<ul class="list">
-<li>Spreading the word<ul>
-<li>Following and sharing our social network pages : <a href="https://www.facebook.com/alfanous">@Facebook</a> <a href="https://twitter.com/alfanous">@Twitter</a> <a href="https://plus.google.com/111305625425237630318">@GooglePlus</a>
-</li>
-<li>Sharing a link to <a href="http://www.alfanous.org/">our website</a> via your accounts in Social networks.</li>
-<li>Pointing  skilled developers and Quranic researchers to the importance of the project.</li>
-<li>Writing articles about the project in blogs, newspapers.</li>
-<li>Showing a banner on your Blog/Website.</li>
-<li>creating an ad for alfanous links using Google adwords or facebook if you're familiar with that (btw,it needs money)</li>
-</ul>
-</li>
-<li>Managing and Animating our social network pages with news and daily posts [Arabic, English]: <a href="https://www.facebook.com/alfanous">@Facebook</a> <a href="https://twitter.com/alfanous">@Twitter</a> <a href="https://plus.google.com/111305625425237630318">@GooglePlus</a>
-</li>
-<li>Translating project interfaces to your language , we are using Launchpad platform for translation:<ul>
-<li>
-<a href="http://m.alfanous.org/">alfanous web interface for mobiles</a> , translation platform link: <a href="https://translations.launchpad.net/alfanous/trunk/+pots/alfanousmobile">here</a>.</li>
-</ul>
-</li>
-<li>Testing the modules and releases, Reporting bugs , see <a href="https://github.com/Alfanous-team/alfanous/blob/master/FAQ.rst#how-to-report-a-bug">How to report a bug?</a> and <a href="https://github.com/Alfanous-team/alfanous/blob/master/FAQ.rst#how-to-help-by-testing">How to help by testing?</a> .</li>
-<li>Fixing <a href="https://github.com/Alfanous-team/alfanous/issues?labels=bug&amp;milestone=&amp;page=1&amp;state=open">bugs</a> , Coding <a href="https://github.com/Alfanous-team/alfanous/issues/milestones">new features</a> or Developing <a href="https://github.com/Alfanous-team/alfanous/issues?milestone=8&amp;page=1&amp;state=open">new interfaces</a> , See: <a href="https://github.com/Alfanous-team/alfanous/blob/master/FAQ.rst#how-to-contribute">How to Contribute?</a> .</li>
-<li>Designing  Icons, Logos , Banners.</li>
-<li>Packaging the project for different systems: Windows, Linux distributions, MacOs.</li>
-<li>Donating/Supporting to the project: <em>We're stuck looking for possible ways for donations/Funding. Any help is appreciated</em>
-</li>
-</ul>
+<div id="translatepanel" class="modal" style="text-align: {{ bidi.align }}; direction: {{ bidi.direction}};">
+	<h2 style='padding:0 0 0px 0'>{{ _("How to translate") }}</h2><br/>
+	<ul class="list">
+  		<li>{{ _("Check the existance of your language in the available languages list.") }}</li>
+		<li>{{ _("Download the file:") }} <a href="/static/django.po">django.po</a>.</li>
+		<li>{{ _("Use Poedit or Virtaal to edit it.") }}</li>
+		<li>{{ _("Send the updated file into our mailing list:") }} <a href="http://groups.google.com/group/alfanous">alfanous[at]googlegroups[dot]com</a> .</li>
+    </ul>
     <br/><br/>
 		<button type="button" class='close gray button' > {{ _(" Close ") }} </button>	
 	<br />
 </div>
 
+<div id="contributepanel" class="modal" style="text-align: {{ bidi.align }}; direction: {{ bidi.direction}};  	height: 400px; ">
+	<h2 style='padding:0 0 0px 0'>{{ _("How to contribute") }}</h2><br/>
+<ul class="list">
+<li>{{ _("Spreading the word") }}<ul>
+<li>{{ _("Following and sharing our social network pages:") }} <a href="https://www.facebook.com/alfanous">@Facebook</a> <a href="https://twitter.com/alfanous">@Twitter</a> <a href="https://plus.google.com/111305625425237630318">@GooglePlus</a>
+</li>
+<li>{{ _("Sharing a link to") }} <a href="http://www.alfanous.org/">{{ _("our website") }}</a> {{ _("via your accounts in Social networks.") }}</li>
+<li>{{ _("Pointing  skilled developers and Quranic researchers to the importance of the project.") }}</li>
+<li>{{ _("Writing articles about the project in blogs, newspapers.") }}</li>
+<li>{{ _("Showing a banner on your Blog/Website.") }}</li>
+<li>{{ _("creating an ad for alfanous links using Google adwords or facebook if you're familiar with that (btw,it needs money)") }}</li>
+</ul>
+</li>
+<li>{{ _("Managing and Animating our social network pages with news and daily posts [Arabic, English]:") }} <a href="https://www.facebook.com/alfanous">@Facebook</a> <a href="https://twitter.com/alfanous">@Twitter</a> <a href="https://plus.google.com/111305625425237630318">@GooglePlus</a>
+</li>
+<li>{{ _("Translating project interfaces to your language , see:") }} <a href="https://github.com/Alfanous-team/alfanous/blob/master/FAQ.rst#how-to-contribute-by-translation">How to contribute by translation?</a>
+<li>{{ _("Testing the modules and releases, Reporting bugs , see:") }} <a href="https://github.com/Alfanous-team/alfanous/blob/master/FAQ.rst#how-to-report-a-bug">How to report a bug?</a> , <a href="https://github.com/Alfanous-team/alfanous/blob/master/FAQ.rst#how-to-help-by-testing">How to help by testing?</a> .</li>
+<li>{{ _("Fixing") }} <a href="https://github.com/Alfanous-team/alfanous/issues?labels=bug&amp;milestone=&amp;page=1&amp;state=open">{{ _("bugs") }}</a> , {{ _("Coding") }} <a href="https://github.com/Alfanous-team/alfanous/issues/milestones">{{ _("new features") }}</a> {{ _("or Developing") }} <a href="https://github.com/Alfanous-team/alfanous/issues?milestone=8&amp;page=1&amp;state=open">{{ _("new interfaces") }}</a> , {{ _("See:") }} <a href="How to contribute by coding?">How to contribute by coding?</a> .</li>
+<li>{{ _("Designing  Icons, Logos , Banners.") }}</li>
+<li>{{ _("Packaging the project for different systems: Windows, Linux distributions, MacOs.") }}</li>
+<li>{{ _("Donating/Supporting to the project: <em>We're stuck looking for possible ways for donations/Funding. Any help is appreciated</em>") }}
+</li>
+</ul>
+    <br/><br/>
+		<button type="button" class='close gray button' > {{ _("Close") }} </button>	
+	<br />
+</div>
 
-<div id="help" class="modal" style="width: 675px; text-align: {{ bidi.align }};">
+
+<div id="help" class="modal" style="width: 675px; text-align: {{ bidi.align }}; direction: {{ bidi.direction}};">
 <h2>{{ _("Help") }}</h2>
 {% block help_panel %}
 
@@ -556,7 +558,7 @@
             <div class="column"> 
                 <h1>{{ _("Quick links") }}</h1> 
                 <ul> 
-                    <!-- <li><a href="http://sourceforge.net/projects/alfanous/files/" target="_blank">{{ _("Downloads") }}</a></li>--> 
+                    <li><a href="/jos2" target="_blank">{{ _("Json Output Service") }}</a></li>
                     <li><a href="http://m.alfanous.org/">{{ _("Mobile Web Interface") }}</a></li>
                     <li><a href="http://wui.alfanous.org/">{{ _("Old jQuery Web Interface") }}</a></li> 
                     <li><a href="http://old.alfanous.org/">{{ _("Old HTML Web Interface") }}</a></li> 

@@ -661,6 +661,7 @@ a:hover{color: green;}
 	font-size: 22px;
 	margin: 2px 5px 10px 5px;
 	color: #000;
+	direction: rtl;
 }
 
 .prev_aya {
@@ -685,6 +686,7 @@ a:hover{color: green;}
 .quran_translation {
 	font-family: Droid Sans, Tahoma, Bitstream Vera Sans, DejaVu Sans, Verdana, Geneva, Arial, Sans-serif; 
 	line-height: 150%;
+	direction: ltr;
 }
 
 
