@@ -4,7 +4,9 @@
 
 
 {% block no_request %} 
-	{{ _("List of indexed Quran translations") }} ({{ _("Translation source:") }} <a href="http://tanzil.net/trans/" target="_blank">tanzil.net</a>):<button id="showlog" type="button">{{ _("Show/Hide!") }}</button><br> 
+	<div style="direction: {{ bidi.direction }};>
+	{{ _("List of indexed Quran translations") }} ({{ _("Translation source:") }} <a href="http://tanzil.net/trans/" target="_blank">{{ _("Tanzil") }}</a>):<button id="showlog" type="button">{{ _("Show/Hide!") }}</button><br> 
+	
 	<div class="logbox" id="logbox">
 		{% for translation in available.translations.items %}
 		<span class="log">	{{ forloop.counter }}. {{ translation.1 }} </span><br/>
@@ -12,12 +14,14 @@
 		<span class="log"> {{ _("Sorry, there is no indexed translations!") }}</span><br/>
 		{% endfor %}
 	</div>
-	<br>
+	<br />
+	</div>
+	<br />
 {% endblock %} 
 
 
 {% block options %}
-<div class="options" dir="{{ bidi.direction }}">
+<div class="options" style="direction: {{ bidi.direction }};">
 <!-- <input type="checkbox"  name="aya" value="True" {{ params.aya|yesno:"checked," }} /> 
 	<span class="xtitle">{{ _("Show ayah arabic text") }} </span> -->
 </div>
@@ -26,7 +30,7 @@
 
 
 {% block help_panel %}
-	<table dir="{{ bidi.direction }}" style=" border: 2px dashed gray;margin: 5px;width: 600px;">
+	<table  style="direction: {{ bidi.direction }}; border: 2px dashed gray;margin: 5px;width: 600px;">
 	<tbody>
 	
 	<tr>

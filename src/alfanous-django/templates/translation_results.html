@@ -3,7 +3,6 @@
 {% load custom_filters %}
 
 
-
 {% block results %}
 	{% if results.error.code == 0  %} 
 		<div id="search_result_static" style="direction:{{ bidi.direction }}; width:800px">
@@ -17,7 +16,7 @@
 			<div id='suggestions' style=" text-align:{{ bidi.align }}" >
 			<h2 class='suggestionheader'>{{ _("Suggestions:") }}</h2>
 			{% for suggestion_key, suggestion_item in suggestions.suggest.items %}
-				<p dir='{{ bidi.direction }}' >
+				<p style="direction: {{ bidi.direction }};" >
 				<div class='word_details'>
 				<span style=' font-size:14pt; color:#00aa00;'> {{ forloop.counter }}. </span>
 				<div class='details_label word_info0'>  {{ _("word") }} |  {{ suggestion_key }} </div>
@@ -49,14 +48,14 @@
 			
 			{% for translationresult_id, translationresult_content in  	results.search.translations.items %}
 			    <fieldset class='main_re_item'>
-				  <legend class='main_re_item_title' style='font-size:14pt; ' dir='{{ bidi.direction }}'>
-				    <span align='left' style='color:#0000ff;'>
+				  <legend class='main_re_item_title' style='font-size:14pt; direction: {{ bidi.direction }};'>
+				    <span style="text-align:left;" style='color:#0000ff;'>
 				      {{ _("Result n°") }} <b> {{ translationresult_id }} </b> 
 				    </span>
 				  </legend>
 				  <br />
 				  	
-				  <p align='center' dir='ltr'>
+				  <p style="direction: ltr;text-align:center">
 					 
 					 
 					 <span  class='aya_words '>
@@ -75,7 +74,7 @@
 					  ]
 					  </span> 
 
-					  <span dir="ltr" class='quran_translation'>
+					  <span class='quran_translation'>
 					  		{% with translationresult_content.identifier.gid|stringformat:"s" as translation_gid %}
 								{% with "gid:"|add:translation_gid|add:" AND id:"|add:translationresult_content.identifier.id as new_query %}
 										<a class='no_decoration' href='?{% build_search_link params  new_query 1 False %}'> 
@@ -98,7 +97,7 @@
 				    <br />
 					  
 					  {% if translationresult_content.aya %}
-					  		<p dir='rtl' align='center' >
+					  		<p style='direction:rtl; text-align:center >
 						  		<span class='quran_decoration main_aya'>
 						 		 [ </span>
 						  		<span class="aya_words quran main_aya">
@@ -107,7 +106,7 @@
 						  		<span class='quran_decoration main_aya'>
 						  		] </span>
 						  		
-						  		<span dir="rtl" class='main_aya'>
+						  		<span class='main_aya'>
 									 {% with translationresult_content.aya.aya_id|stringformat:"s" as aya_id %}
 										 {% with bidi.fields.sura|add:':"'|add:translationresult_content.aya.sura_name|add:'" + '|add:bidi.fields.aya_id|add:':'|add:aya_id|urlencode  as new_query %}
 											<a class='no_decoration' href='{% url alfanous-django.wui.views.results current.language "aya" %}?{% build_search_link params  new_query 1 False %}'> 
@@ -133,6 +132,7 @@
 			<br />
 		{% endif %}		
 	{% elif results.error %}
+		
 		<div id='error' class='error'><p> {{ _("Error ") }} ({{ results.error.code }}) : {{ results.error.msg|linebreaksbr }}</p></div>
 	{% else %}
 		
