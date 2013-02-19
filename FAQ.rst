@@ -47,7 +47,7 @@ You can help us by:
 - Fixing `bugs <https://github.com/Alfanous-team/alfanous/issues?labels=bug&milestone=&page=1&state=open>`_ , Coding `new features <https://github.com/Alfanous-team/alfanous/issues/milestones>`_ or Developing `new interfaces <https://github.com/Alfanous-team/alfanous/issues?milestone=8&page=1&state=open>`_ , See: `How to Contribute?`_ .
 - Designing  Icons, Logoes , Banners.
 - Packaging the project for different systems: Windows, Linux distributions, MacOs.
-- Donating/Supporting to the project: *we're stuck here, looking for possible ways for donations since Algeria is  very restricting foreign transactions. Any help is appreciated*
+- Donating/Supporting to the project: *We're stuck looking for possible ways for donations/Funding. Any help is appreciated!*
 
 For more discussion, you can contact us via the mailing list : `alfanous@googlegroups.com <http://groups.google.com/group/alfanous/>`_
 
@@ -57,16 +57,27 @@ How to report a bug?
 --------------------
 If you have a concrete bug report for Alfanous please go to the `Issues Tracker  <https://github.com/Alfanous-team/alfanous/issues>`_, submit your report and tag it "bug".
 
------------------
-How to translate?
------------------
+---------------------------------
+How to contribute by translation?
+---------------------------------
 - Contact us to confirm the translation need into your language and to request the PO file.
 - Use Use Poedit or Virtaal to edit it and complete the translation.
 - Send us the update po file so we can include it in the website.
 
-------------------
-How to Contribute? 
-------------------
+------------------------------
+How to contribute by donation?
+------------------------------
+Funding is a critical point for our project. Whereas we're stuck looking for possible ways to get. Donations as far as we tried is so restricted in our home country so Any help in that is appreciated!
+
+Any way you can:
+
+- Pay our web hosting monthly bills directly, we create an account for you in the host to do that.
+- Lead an advertising compaign for the project website through `Google adwords <adwords.google.com>`_ or `Facebook <https://www.facebook.com/business/connect>`_.
+- Incubate the whole project in another country.
+
+----------------------------
+How to contribute by coding? 
+----------------------------
 If you are a coder, and want to participate in actively developing Alfanous :
 
 #. Learning Git is essential, read about `Set up Git <https://help.github.com/articles/set-up-git>`_ and you can also try it online `here <http://try.github.com/levels/1/challenges/1>`_!
