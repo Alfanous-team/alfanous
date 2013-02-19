@@ -6,7 +6,7 @@
 
 
 {% block options %}
-<div class="options" dir="{{ bidi.direction }}">
+<div class="options" style='direction:{{ bidi.direction }};'>
 <input type="checkbox"  name="fuzzy" value="True" {{ params.fuzzy|yesno:"checked," }} /> 
 	<span class="xtitle">{{ _("Fuzzy search") }} </span> 
 <input type="checkbox" name="vocalized" value="False" {{ params.vocalized|yesno:"checked," }} /> 
@@ -19,7 +19,7 @@
 
 
 {% block help_panel %}
-	<table dir="{{ bidi.direction }}" style=" border: 2px dashed gray;margin: 5px;width: 600px; z-index:20;">
+	<table style='direction:{{ bidi.direction }}; border: 2px dashed gray;margin: 5px;width: 600px; z-index:20;">
 	<tbody>
 	
 	<tr>
