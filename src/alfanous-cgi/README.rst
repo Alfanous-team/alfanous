@@ -27,13 +27,13 @@ To get JSON information , use this syntax : http://www.alfanous.org/json?ARGUMEN
 --------
 Examples
 --------
-*  json2?action=search& query=الحمد &highlight=bbcode &sortedby=tanzil &page=2 &traduction=1&fuzzy=True
-*  json2?show=recitations
-*  json2?show=fields
-*  json2?show=all
-*  json2?show=translations 
-*  json2?show=errors
-*  json2?suggest=مءصدة
+*  jos2?action=search&unit=aya&query=الحمد &highlight=bbcode &sortedby=tanzil &page=2 &traduction=1&fuzzy=True
+*  jos2?action=show&query=recitations
+*  jos2?action=show&queryfields
+*  jos2?action=show&query=All
+*  jos2?action=show&query=translations 
+*  jos2?action=show&query=errors
+*  jos2?action=suggest&unit=aya&query=مءصدة
 
 ----------------
 Response Samples
