@@ -122,8 +122,7 @@ If you want to help us testing  the project modules, just follow these steps and
      
      .. code-block:: sh
 
-          $ make install_api DESTDIR=%{buildroot}
-
+          $ make install_api_no_arguments
 #. Test the console interface, it provides results in Json format:
 
    .. code-block:: sh
