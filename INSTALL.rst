@@ -29,9 +29,8 @@ Install
   .. code-block:: sh
 
         $ make build
-        $ sudo make install_api # to install the api and alfanous-console.
-        $ sudo make install_desktop # to install alfanous-desktop.
-
+        $ sudo make install_api_no_arguments # to install the api and alfanous-console.
+        $ sudo make install_desktop_no_arguments # to install alfanous-desktop.
 
 
 **Note**: If you are a developer you can follow the advancement of Alfanous packaging through this github issue:
