@@ -585,8 +585,6 @@ class Raw():
 		# parse keywords lists , used for Sura names
 		kword = re.compile( u"[^,،]+" )
 		keywords = lambda phrase: kword.findall( phrase )
-		# Tamdid devine name to avoid double Shedda on the middle Lam
-		Gword_tamdid = lambda aya: aya.replace( u"لَّه", u"لَّـه" ).replace( u"لَّه", u"لَّـه" )
 		##########################################
 		extend_runtime = res.runtime
 		# Words & Annotations
@@ -729,23 +727,23 @@ class Raw():
 
 		              "aya":{
 		              		"id":r["aya_id"],
-		              		"text":  Gword_tamdid( H( V( r["aya_"] ) ) ) if script == "standard"
-		              			else  Gword_tamdid( H( r["uth_"] ) ),
+		              		"text":   H( V( r["aya_"] ) )  if script == "standard"
+		              			else   H( r["uth_"] ) ,
 						"translation": trad_text[r["gid"]] if ( translation != "None" and translation and trad_text.has_key( r["gid"] ) ) else None,
 		                	"recitation": None if not recitation or not self._recitations.has_key( recitation ) \
 		                				  else u"http://www.everyayah.com/data/" + self._recitations[recitation]["subfolder"].encode( "utf-8" ) + "/%03d%03d.mp3" % ( r["sura_id"], r["aya_id"] ),
 		                	"prev_aya":{
 						    "id":adja_ayas[r["gid"] - 1]["aya_id"],
 						    "sura":adja_ayas[r["gid"] - 1]["sura"],
-						    "text": Gword_tamdid( V( adja_ayas[r["gid"] - 1]["aya_"] ) ) if script == "standard"
-		              			else Gword_tamdid( adja_ayas[r["gid"] - 1]["uth_"] ),
+						    "text": V( adja_ayas[r["gid"] - 1]["aya_"] )  if script == "standard"
+		              			else  adja_ayas[r["gid"] - 1]["uth_"] ,
 						    } if prev_aya else None
 						    ,
 		                	"next_aya":{
 						    "id":adja_ayas[r["gid"] + 1]["aya_id"],
 						    "sura":adja_ayas[r["gid"] + 1]["sura"],
-						    "text": Gword_tamdid( V( adja_ayas[r["gid"] + 1]["aya_"] ) ) if script == "standard"
-		              			else  Gword_tamdid( adja_ayas[r["gid"] + 1]["uth_"] ),
+						    "text":  V( adja_ayas[r["gid"] + 1]["aya_"] )  if script == "standard"
+		              			else   adja_ayas[r["gid"] + 1]["uth_"] ,
 						    } if next_aya else None
 						    ,
 
@@ -996,9 +994,7 @@ class Raw():
 		# parse keywords lists , used for Sura names
 		kword = re.compile( u"[^,،]+" )
 		keywords = lambda phrase: kword.findall( phrase )
-		# Tamdid devine name to avoid double Shedda on the middle Lam
-		Gword_tamdid = lambda aya: aya.replace( u"لَّه", u"لَّـه" ).replace( u"لَّه", u"لَّـه" )
-		##########################################
+		#####################################################
 		extend_runtime = res.runtime
 		# Words & Annotations
 		words_output = {"individual":{}}
@@ -1047,7 +1043,7 @@ class Raw():
 									},
 
 		              "word":{
-		              		"text":  Gword_tamdid( H( V( r["word"] ) ) ),
+		              		"text":  H( V( r["word"] ) ),
 		                	"part": r["part"],
 		                	"part_order": r["order"],
 		                	"token": r["arabictoken"],
