@@ -452,10 +452,29 @@ install_api:
 	cd   "$(API_PATH)alfanous" ; python2 setup.py install --prefix=$(PREFIX) --root=$(DESTDIR)
 	perl -pi -w -e 's|$(RELEASE)|alfanous.release|g;' $(API_PATH)alfanous/resources/information.json
 	perl -pi -w -e 's|$(VERSION)|alfanous.version|g;' $(API_PATH)alfanous/resources/information.json
+
+install_api_no_arguments: 
+	perl -pi -w -e 's|alfanous.release|$(RELEASE)|g;' $(API_PATH)alfanous/resources/information.json
+	perl -pi -w -e 's|alfanous.version|$(VERSION)|g;' $(API_PATH)alfanous/resources/information.json
+	cd   "$(API_PATH)alfanous" ; python2 setup.py install
+	perl -pi -w -e 's|$(RELEASE)|alfanous.release|g;' $(API_PATH)alfanous/resources/information.json
+	perl -pi -w -e 's|$(VERSION)|alfanous.version|g;' $(API_PATH)alfanous/resources/information.json
 	
 install_desktop:  install_api qt_all  local_mo_download
 	perl -pi -w -e 's|version = "\d+\.\d+(\.\d+)*"|version = "$(VERSION)"|g;' $(DESKTOP_INTERFACE_PATH)/setup.py
 	cd  $(DESKTOP_INTERFACE_PATH); python2 setup.py install --prefix=$(PREFIX) --root=$(DESTDIR)
+	mkdir -p $(DESTDIR)$(PREFIX)/share/applications/
+	cp ./resources/launchers/alfanous.desktop $(DESTDIR)$(PREFIX)/share/applications/
+	mkdir -p $(DESTDIR)$(PREFIX)/share/pixmaps/
+	cp ./resources/AlFanous.png  $(DESTDIR)$(PREFIX)/share/pixmaps/
+	mkdir -p $(DESTDIR)$(PREFIX)/share/fonts/
+	cp ./resources/fonts/* $(DESTDIR)$(PREFIX)/share/fonts/
+	#test installation
+	# alfanous-desktop &
+
+install_desktop_no_arguments:  install_api_no_arguments qt_all  local_mo_download
+	perl -pi -w -e 's|version = "\d+\.\d+(\.\d+)*"|version = "$(VERSION)"|g;' $(DESKTOP_INTERFACE_PATH)/setup.py
+	cd  $(DESKTOP_INTERFACE_PATH); python2 setup.py install
 	mkdir -p $(DESTDIR)$(PREFIX)/share/applications/
 	cp ./resources/launchers/alfanous.desktop $(DESTDIR)$(PREFIX)/share/applications/
 	mkdir -p $(DESTDIR)$(PREFIX)/share/pixmaps/
