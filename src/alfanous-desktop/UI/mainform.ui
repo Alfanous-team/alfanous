@@ -473,22 +473,21 @@ p, li { white-space: pre-wrap; }
     </property>
     <widget class="QMenu" name="menuOrder_by">
      <property name="enabled">
-      <bool>false</bool>
+      <bool>true</bool>
      </property>
      <property name="title">
       <string>Order by</string>
      </property>
-     <widget class="QMenu" name="menuField_2">
+     <widget class="QMenu" name="menuFields">
       <property name="title">
        <string>Field</string>
       </property>
-      <addaction name="actionDefault"/>
      </widget>
      <addaction name="actionRelevance"/>
      <addaction name="actionPosition_in_Mus_haf"/>
      <addaction name="actionRevelation"/>
      <addaction name="actionSubject"/>
-     <addaction name="menuField_2"/>
+     <addaction name="menuFields"/>
      <addaction name="separator"/>
      <addaction name="actionInverse"/>
     </widget>
@@ -3560,7 +3559,7 @@ border : 0px solid white;
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>Position in Mus-haf</string>
+    <string>Mus-haf</string>
    </property>
   </action>
   <action name="actionRevelation">
@@ -3584,7 +3583,7 @@ border : 0px solid white;
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>Inverse</string>
+    <string>Reverse order</string>
    </property>
   </action>
   <action name="actionDefault">
