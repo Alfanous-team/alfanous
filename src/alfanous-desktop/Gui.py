@@ -45,7 +45,6 @@ from mainform_ui import Ui_MainWindow
 from preferencesDlg_ui import Ui_preferencesDlg
 from aboutDlg_ui import Ui_Dialog as Ui_aboutDlg
 
-
 ## Localization using gettext
 _ = gettext.gettext
 n_ = gettext.ngettext
@@ -54,7 +53,6 @@ gettext.textdomain( "alfanousQT" );
 
 ## Localization using QT way
 tr = QtCore.QCoreApplication.translate
-
 
 ## Initialize search engines
 RAWoutput = Raw() # default paths
@@ -68,7 +66,6 @@ RELATIONS = ["", "", u"|", u"+", u"-"]
 SAJDA_TYPE = {u"مستحبة":_( u"recommended" ), u"واجبة":_( u"obliged" )}
 SURA_TYPE = {u"مدنية":_( u"medina" ), u"مكية":_( u"mekka" )}
 
-
 CSS = """
         <style type="text/css">
             #TODO : new simple&clean style
@@ -77,8 +74,6 @@ CSS = """
 
 ## Some functions
 relate = lambda query, filter, index:"( " + unicode( query ) + " ) " + RELATIONS[index] + " ( " + filter + " ) " if  index > 1 else filter if index == 1 else unicode( query ) + " " + filter
-
-
 
 class QUI( Ui_MainWindow ):
     """ the main UI """
@@ -89,12 +84,9 @@ class QUI( Ui_MainWindow ):
         self.Queries = []
         self.history = []
 
-
     def exit( self ):
         self.save_config()
         sys.exit()
-
-
 
     def load_config( self ):
         """load configuration"""
@@ -175,6 +167,16 @@ class QUI( Ui_MainWindow ):
     def setupUi( self, MainWindow ):
         super( QUI, self ).setupUi( MainWindow )
 
+        # make sorted_by menu items as a group of radio buttons
+        sorted_by_group = QtGui.QActionGroup( MainWindow )
+        sorted_by_group.addAction( self.actionRelevance )
+        sorted_by_group.addAction( self.actionRevelation )
+        sorted_by_group.addAction( self.actionPosition_in_Mus_haf )
+        sorted_by_group.addAction( self.actionSubject )
+        sorted_by_group.addAction( self.actionRevelation )
+        for v in RAWoutput._fields.values(): #x.keys() for Arabic
+            self.menuFields.addAction( v )
+
         if DIR == "rtl":
             MainWindow.setLayoutDirection( QtCore.Qt.RightToLeft )
         self.o_query.setLayoutDirection( QtCore.Qt.RightToLeft )
@@ -213,7 +215,6 @@ class QUI( Ui_MainWindow ):
         """
         The main search function
         """
-
         # add to history
         if self.o_query.currentText() in self.history:
             self.history.remove( self.o_query.currentText() )
@@ -263,6 +264,7 @@ class QUI( Ui_MainWindow ):
                  "aya_sajda_info":  self.o_aya_info.isChecked(),
                  "translation":self.o_traduction.currentText(),
                  }
+        self.Queries.insert( 0, search_flags )
         try:
             results = RAWoutput.do( search_flags )
         except ParseException as PE:
