@@ -56,7 +56,7 @@ gettext.textdomain( "alfanousQT" );
 tr = QtCore.QCoreApplication.translate
 
 
-## Initialize search engines 
+## Initialize search engines
 RAWoutput = Raw() # default paths
 
 ## STATIC GLOBAL variables
@@ -85,8 +85,7 @@ class QUI( Ui_MainWindow ):
 
     def __init__( self ):
         self.last_results = None
-        self.last_terms = None
-        self.currentQuery = None
+        self.currentQuery = 0
         self.Queries = []
         self.history = []
 
@@ -216,12 +215,12 @@ class QUI( Ui_MainWindow ):
         """
 
         # add to history
+        if self.o_query.currentText() in self.history:
+            self.history.remove( self.o_query.currentText() )
         self.history.insert( 0, self.o_query.currentText() )
         self.o_query.clear()
         self.o_query.addItems( self.history )
         self.o_query.setCurrentIndex( 0 )
-	
-        ###
 
         limit = self.o_limit.value()
 
@@ -232,7 +231,7 @@ class QUI( Ui_MainWindow ):
                 "query": self.o_query.currentText()
                 }
         output = RAWoutput.do( suggest_flags )
-        #print output     
+        #print output
         suggestions = output["suggest"] if output.has_key( "suggest" ) else {}
         #print suggestions
         if len( suggestions ):
@@ -243,7 +242,7 @@ class QUI( Ui_MainWindow ):
         #search
         results, terms = None, []
         search_flags = {"action":"search",
-                 "query": unicode(self.o_query.currentText()),
+                 "query": unicode( self.o_query.currentText() ),
                  "sortedby":"score" if self.o_sortedbyscore.isChecked() \
                         else "mushaf" if self.o_sortedbymushaf.isChecked() \
                         else "tanzil" if self.o_sortedbytanzil.isChecked() \
@@ -275,7 +274,7 @@ class QUI( Ui_MainWindow ):
         #print words_info
         if self.o_word_stat.isChecked():
             html += u'<h1> Words ( %(nb_words)d words reported %(nb_matches)d times ): </h1>' % results["search"]["words"]["global"]
-            
+
             print results["error"]["msg"]
             for cpt in xrange( results["search"]["words"]["global"]["nb_words"] ) :
                     this_word_info = results["search"]["words"]["individual"][cpt + 1]
@@ -625,8 +624,8 @@ class QUI( Ui_MainWindow ):
     def about( self , state ):
         """ Show about-dialog """
         AboutDialog = QtGui.QDialog()
-        dlg=Ui_aboutDlg()
-        dlg.setupUi(AboutDialog)
+        dlg = Ui_aboutDlg()
+        dlg.setupUi( AboutDialog )
         AboutDialog.exec_()
 
     def help( self ):
@@ -646,7 +645,7 @@ def main():
 
     MainWindow.show()
     app.exec_()
-  
+
     ui.exit()
 
 if __name__ == "__main__":
