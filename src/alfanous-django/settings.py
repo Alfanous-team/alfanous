@@ -83,8 +83,8 @@ LANGUAGE_CODE = 'en'
 LANGUAGES = ( 
     ( 'ar', "Arabic" ),
     ( 'en', "English" ),
-    #( 'fr', "French" ),
-    #( 'id', "Indonesian" ),
+    ( 'fr', "French" ),
+    ( 'id', "Indonesian" ),
     #( 'ms', "Malay" ),
     #( 'sv', "swedish" )
  )
