@@ -41,51 +41,6 @@
 	<link rel="shortcut icon" href="/static/img/favicon.ico" type="image/x-icon">
 
 	<link rel="search" type="application/opensearchdescription+xml" title="Alfanous" href="/static/alfanous-opensearch.xml"/>
-	<script type="text/javascript">
-	// <![CDATA[
-
-		function build_search_link(param,query,filter)
-				{
-					var new_param = param; 
-                           new_param.action="search";
-					new_param.page = 1;
-					new_param.sortedby = "mushaf";
-					if (filter) new_param.query = "(" + $("#search_box").val() + ") + " + query;
-					else new_param.query = query;
-					return "<a class='no_decoration' href=\""+ get_url_without_params()+ "?"+ build_params( new_param )+ "\">" 
-				}
-		
-		function get_results (param) { // this function will be used to require suggestions
-			if ($.trim(param.query) != "" && param.action == "search") {
-				$.ajax({
-					url: "/jos2/", // http://www.alfanous.org/jos2
-					async: false,
-					type: "GET",
-					dataType: "json",
-					timeout: 10000,
-					crossDomain: true,
-					data: param,
-					success: function(json){
-						show_results (json, param);
-					},
-					error: function(jq_xhr, text_status, error_thrown){
-						$("#search_result").html("<div id='error'><p>"+ error_thrown+"</p></div>");
-						return false;
-					}
-					});
-				};
-		};
-
-
-		function show_results (json, param) {		}
-
-		function addto_searchbar(){
-			window.external.AddSearchProvider("/static/alfanous-opensearch.xml");
-		
-		}
-
-	// ]]>
-	</script>
 
 	<!-- Google analytics #Assem -->
 	<script type="text/javascript">
@@ -211,7 +166,7 @@
                         <form class="form-search text-center" id="form" name="form" method="get" action=".">
                             <div class="input-append text-right">
                                 <input id="search_box" name="query" class="search-query enter keyboardInput" dir="{{ bidi.direction }}" placeholder="Search" type="text" value="{{ params.query }}" data-provide="typeahead" autocomplete="off"
-                                data-source="[&quot;الله&quot;,&quot;محمد&quot;,&quot;الصلاة&quot;,&quot;الزكاة&quot;,&quot;الصوم&quot;,&quot;رمضان&quot;,&quot;الحج&quot;,&quot;الشهادة&quot;,&quot;العلم&quot;,&quot;المؤمنون&quot;,&quot;الرسول&quot;,&quot;الرسل&quot;,&quot;عيسى&quot;,&quot;موسى&quot;,&quot;ابراهيم&quot;,&quot;الاسلام&quot;,&quot;مسلم&quot;,&quot;الجنة&quot;,&quot;النار&quot;,&quot;العذاب&quot;,&quot;أليم&quot;,&quot;النعيم&quot;,&quot;الحياة&quot;,&quot;الدنيا&quot;,&quot;الخوع&quot;,&quot;الحكم&quot;,&quot;الكفر&quot;,&quot;الشيطان&quot;,&quot;ابليس&quot;,&quot;آدم&quot;,&quot;اليهود&quot;,&quot;اسرائيل&quot;,&quot;السنة&quot;,&quot;الاستغفار&quot;,&quot;المشركين&quot;,&quot;المشركات&quot;,&quot;النساء&quot;,&quot;التوبة&quot;,&quot;المغفرة&quot;,&quot;الصدق&quot;,&quot;التوحيد&quot;,&quot;الجهل&quot;,&quot;فأسقيناكموه&quot;,&quot;نبي&quot;,&quot;نعم؟&quot;,&quot;رسول الله&quot;,&quot;الصلاة + الزكاة&quot;,&quot;موضوع:&quot;,&quot;الملك&quot;,&quot;الصلاة | الزكاة&quot;,&quot;الصلاة - الزكاة&quot;]"
+                                data-source="[&quot;الله&quot;,&quot;محمد&quot;,&quot;الصلاة&quot;,&quot;الزكاة&quot;,&quot;صوم&quot;,&quot;رمضان&quot;,&quot;الحج&quot;,&quot;الشهادة&quot;,&quot;العلم&quot;,&quot;المؤمنون&quot;,&quot;الرسول&quot;,&quot;الرسل&quot;,&quot;عيسى&quot;,&quot;موسى&quot;,&quot;ابراهيم&quot;,&quot;الاسلام&quot;,&quot;مسلم&quot;,&quot;الجنة&quot;,&quot;النار&quot;,&quot;العذاب&quot;,&quot;أليم&quot;,&quot;النعيم&quot;,&quot;الحياة&quot;,&quot;الدنيا&quot;,&quot;الخوع&quot;,&quot;الحكم&quot;,&quot;الكفر&quot;,&quot;الشيطان&quot;,&quot;ابليس&quot;,&quot;آدم&quot;,&quot;اليهود&quot;,&quot;اسرائيل&quot;,&quot;السنة&quot;,&quot;الاستغفار&quot;,&quot;المشركين&quot;,&quot;المشركات&quot;,&quot;النساء&quot;,&quot;التوبة&quot;,&quot;المغفرة&quot;,&quot;الصدق&quot;,&quot;التوحيد&quot;,&quot;الجهل&quot;,&quot;فأسقيناكموه&quot;,&quot;نبي&quot;,&quot;نعم؟&quot;,&quot;رسول الله&quot;,&quot;الصلاة + الزكاة&quot;,&quot;موضوع:&quot;,&quot;الملك&quot;,&quot;الصلاة | الزكاة&quot;,&quot;الصلاة - الزكاة&quot;]"
                                 />
                                 
                                 <button type="submit" href="" class="btn" onclick="$('#form').submit(); return false;">
@@ -298,8 +253,8 @@
     <!-- The javascript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
-    <!-- <script src="http://code.jquery.com/jquery.js"></script> -->
     <script src="/static/js/jquery-1.9.1.min.js"></script>
+    <script src="/static/js/alfanous.js"></script>
     <script src="http://api.html5media.info/1.1.5/html5media.min.js"></script>
     <script src="/static/js/bootstrap-transition.js"></script>
     <script src="/static/js/bootstrap-alert.js"></script>
@@ -313,81 +268,5 @@
     <script src="/static/js/bootstrap-collapse.js"></script>
     <script src="/static/js/bootstrap-typeahead.js"></script>
 
-    <!-- audio.js -->
-    <script>
-        audiojs.events.ready(function() {
-            var as = audiojs.createAll();
-        });
-    </script>
-
-    <!-- Alfanous specific javascrit -->
-    <script type="text/javascript">
-    $(document).ready(function(){
-        $(".slidingForm").hide();
-        $('.show_hide').click(function(){
-            $(".slidingForm").slideToggle(function() {
-                var text = $('.show_hide').html();
-                if($('.slidingForm').is(":visible")){
-                    $('.show_hide').html(text.replace('+', ' - '));
-                }
-                else {
-                    $('.show_hide').html(text.replace(' - ', '+'));
-                }
-            });
-        });
-
-        $(".aya_details").hide();
-
-        $("a").click(function(event) {
-            var id = $(this).attr('id');
-            var ayaNum = id.split("_").pop();
-
-            $("#" + id + "_content").slideToggle(function() {
-                var text = $("#" + id).html();
-                if($("#" + id + "_content").is(":visible")){
-                    $("#" + id).html(text.replace('more', 'less'));
-                    document.getElementById("details_icon_" + ayaNum).className = "icon-chevron-up";
-                }
-                else {
-                    $("#" + id).html(text.replace('less', 'more'));
-                    document.getElementById("details_icon_" + ayaNum).className = "icon-chevron-down";
-                }
-            });
-            
-        });
-
-        $(".audio").hide();
-        $("button").click(function(event) {
-            if ($(this).attr('id').indexOf("audio_button") !== -1) {
-                var id = $(this).attr('id');
-                var ayaNum = id.split("_").pop();
-                $("#aya_audio_" + ayaNum).slideToggle(function() {});
-            };
-
-            if ($(this).attr('id').indexOf("opy_aya") !== -1) {
-                var id = $(this).attr('id');
-                var ayaNum = id.split("_").pop();
-
-                var text = $("#aya_text_" + ayaNum).html().replace(/<(?:.|\n)*?>/gm, '').replace(/\s+/g, ' ');
-                window.prompt ("Copy to clipboard: Ctrl+C, Enter", $.trim(text));
-            };
-            
-        });
-
-        $('.footer-link-jos2').popover(
-            {
-                html:true,
-                title:'<span class="popoverInnerText">About JOS2<span>',
-                animation: true,
-                content: function() {
-                    return $('.popoverInner').html();
-                },
-            });
-    });
-
-    function addto_searchbar(){
-        window.external.AddSearchProvider("/static/alfanous-opensearch.xml");
-    }
-    </script>
 </body>
 </html>
