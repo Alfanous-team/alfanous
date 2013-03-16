@@ -202,8 +202,10 @@
 		</div>
 
 		<!-- Pages control # top one -->
-		<div class="span8 offset3">
-			{% usekwacro paginationRoutine %}
+		<div class="row">
+			<div class="span8 offset3">
+				{% usekwacro paginationRoutine %}
+			</div>
 		</div>
 
 		{% for ayaresult_id, ayaresult_content in  	results.search.ayas.items %}
@@ -238,8 +240,8 @@
 			                    </div>
 		                    </div>
 		                    <div class="row-fluid">
-		                        <div id="aya_text_{{ ayaresult_id }}" class="row arabic-ayah">
-		                        	<p class="text-center">
+		                        <div id="aya_text_{{ ayaresult_id }}" class="row text-center arabic-ayah">
+		                        	<p>
 						 				<span class='quran_decoration main_aya'> [ </span>
 										{% for aya_word in ayaresult_content.aya.text|space_split %}
 											{% spaceless %}
