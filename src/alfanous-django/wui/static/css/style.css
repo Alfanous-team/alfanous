@@ -151,4 +151,9 @@ div.help {
 /* Audio player */
 .audio {
   display: none;
+  
+}
+
+.audio-player {
+  margin: auto;
 }
