@@ -215,7 +215,7 @@
 					    </span>
 			  		</legend>
 	                <div class="row-fluid">
-	                    <div class="row-fluid text-center visible-phone">
+	                	<div class="row-fluid visible-phone text-center">
 	                        <div class="btn-group btn-toolbar">
 	                            <button id="aya_audio_button_{{ ayaresult_id }}" class="btn"><i class="icon-headphones"></i></button>
 	                            <button class="btn"><i class="icon-file"></i></button>
@@ -230,52 +230,59 @@
 	                        </div>
 	                    </div>
 	                    <div class="span10">
-		                    <div id="aya_audio_{{ ayaresult_id }}" class="row offset3 audio text-center">
-		                    	{% if ayaresult_content.aya.recitation %}
-		                    		<audio src="{{ ayaresult_content.aya.recitation}}" controls preload></audio>
-								{% endif %}
+	                    	<div class="row text-center">
+			                    <div id="aya_audio_{{ ayaresult_id }}" class="audio">
+			                    	{% if ayaresult_content.aya.recitation %}
+			                    		<audio class="audio-player" src="{{ ayaresult_content.aya.recitation}}" controls preload></audio>
+									{% endif %}
+			                    </div>
 		                    </div>
-		                    
-	                        <div id="aya_text_{{ ayaresult_id }}" class="row arabic-ayah">
-	                        	<p class="text-center">
-					 				<span class='quran_decoration main_aya'> [ </span>
-									{% for aya_word in ayaresult_content.aya.text|space_split %}
-										{% spaceless %}
-											{% autoescape off %}
-											  		{# TODO optimize this condition, any "in" operation? #}
-													{% if aya_word|first in "<ct> "|make_list  %}
-															{{ aya_word }} 
-													{% else %} 
-															<a class='no_decoration' href="?{% build_search_link params aya_word 1 False %}"> {{ aya_word }}</a> 
-													{% endif %}
-												 
-											{% endautoescape%}
-										{% endspaceless %}	
-								  	{% endfor %}
-									<span class='quran_decoration main_aya'> ] </span>
-								</p>
-	                        </div>
-	                        <div class="text-left muted ayah_source">
-	                        	{% with ayaresult_content.aya.id|stringformat:"s" as aya_id %}
-								 	{% with bidi.fields.sura|add:':"'|add:ayaresult_content.identifier.sura_name|add:'" + '|add:bidi.fields.aya_id|add:':'|add:aya_id|urlencode  as new_query %}
-									<a class='no_decoration' href='?{% build_search_link params  new_query 1 False %}'> 
+		                    <div class="row-fluid">
+		                        <div id="aya_text_{{ ayaresult_id }}" class="row arabic-ayah">
+		                        	<p class="text-center">
+						 				<span class='quran_decoration main_aya'> [ </span>
+										{% for aya_word in ayaresult_content.aya.text|space_split %}
+											{% spaceless %}
+												{% autoescape off %}
+												  		{# TODO optimize this condition, any "in" operation? #}
+														{% if aya_word|first in "<ct> "|make_list  %}
+																{{ aya_word }} 
+														{% else %} 
+																<a class='no_decoration' href="?{% build_search_link params aya_word 1 False %}"> {{ aya_word }}</a> 
+														{% endif %}
+													 
+												{% endautoescape%}
+											{% endspaceless %}	
+									  	{% endfor %}
+										<span class='quran_decoration main_aya'> ] </span>
+									</p>
+		                        </div>
+		              
+		                        <div class="text-left muted ayah_source">
+		                        	{% with ayaresult_content.aya.id|stringformat:"s" as aya_id %}
+									 	{% with bidi.fields.sura|add:':"'|add:ayaresult_content.identifier.sura_name|add:'" + '|add:bidi.fields.aya_id|add:':'|add:aya_id|urlencode  as new_query %}
+										<a class='no_decoration' href='?{% build_search_link params  new_query 1 False %}'> 
+										{% endwith %}
 									{% endwith %}
-								{% endwith %}
-	                        	<small>- {{ ayaresult_content.identifier.sura_name }}<cite title="Source Title"> {{ ayaresult_content.aya.id }}</cite></small></a> 
-	                        </div>
-
-	                        <hr />
-	                        <div class="row-fluid text-center non-arabic-ayah">
-	                        	{% if ayaresult_content.aya.translation %}
-	                                <p>
-								  		{% autoescape off %}
-								  		  {{ ayaresult_content.aya.translation }} 
-								  		{% endautoescape %}
-	                                </p>
-	                            {% endif %}
-	                        </div>
+		                        	<small>- {{ ayaresult_content.identifier.sura_name }}<cite title="Source Title"> {{ ayaresult_content.aya.id }}</cite></small></a> 
+		                        </div>
+		                    </div>
+		                    <div class="row">
+		                        <hr />
+		                        <div class="row text-center non-arabic-ayah">
+		                        	{% if ayaresult_content.aya.translation %}
+		                                <p>
+									  		{% autoescape off %}
+									  		  {{ ayaresult_content.aya.translation }} 
+									  		{% endautoescape %}
+		                                </p>
+		                            {% endif %}
+		                        </div>
+		           			</div>
 	                    </div>
+	                    
 	                </div>
+	               
 	                <div class="text-center">
 	                    <a id="aya_details_{{ ayaresult_id }}" class="text-center show_hide_aya_details" data-toggle="tooltip" title="first tooltip"><p>----------
 	                    <i id="details_icon_{{ ayaresult_id }}" class="icon-chevron-down"></i>
