@@ -53,13 +53,13 @@ $(document).ready(function(){
         
     });
 
-    $('.footer-link-jos2').popover(
+    $('#footer-link-jos2').popover(
         {
             html:true,
             title:'<span class="popoverInnerText">About JOS2<span>',
             animation: true,
             content: function() {
-                return $('.popoverInner').html();
+                return $('#popoverInner').html();
             },
         });
 });
