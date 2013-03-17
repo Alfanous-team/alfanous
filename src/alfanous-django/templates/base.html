@@ -212,12 +212,6 @@
 
     </div>
 
-    <div class="hidden popoverInner">
-        <p class="popoverInnerText">This is the <a href='http://json.org/'>JSON</a> output system 2 of <a href="http://www.alfanous.org">Alfanous</a> project, we call it <b>Alfanous JOS2</b>. This feature is in Alpha test and the Json schema may be it's not stable . We are waiting for real feedback and suggestions to improve its efficacy,quality and stability. To contact the author ,please send a direct email to <b> assem.ch[at]gmail.com</b> or to the mailing list <b>alfanous [at] googlegroups.com</b>
-        <br/><br/> For more details  visit the page of this service <a href="https://github.com/Alfanous-team/alfanous/blob/master/src/alfanous-cgi/README.rst">here</a>
-        </p>
-    </div>
-
     {% include "popups_content.html" %}
 
 
@@ -236,7 +230,7 @@
                     <p class="muted credit">Copyright &copy; <a href="https://github.com/Alfanous-team/alfanous/blob/master/AUTHORS.rst">Alfanous Team</a> 2010 - 2013 &#124; released under <a href="http://www.gnu.org/licenses/agpl.html">AGPL</a> license.</p>
 
                     <p class="muted credit pull-right">Powered by <span class="label label-inverse">
-                        <a class="footer-link-jos2" data-placement="top" data-toggle="popover">
+                        <a id="footer-link-jos2" data-placement="top" data-toggle="popover">
                             <i class=" icon-chevron-up icon-white"></i>
                             Alfanous JOS2
                         </a>
@@ -252,6 +246,12 @@
             </div>
         </div>
     </footer>
+
+    <div id="popoverInner" class="hidden">
+        <p class="popoverInnerText">This is the <a href='http://json.org/'>JSON</a> output system 2 of <a href="http://www.alfanous.org">Alfanous</a> project, we call it <i><b>Alfanous JOS2</b></i>. This feature is in Alpha test and the Json schema may be it's not stable . We are waiting for real feedback and suggestions to improve its efficacy,quality and stability. To contact the author ,please send a direct email to <b> assem.ch[at]gmail.com</b> or to the mailing list <b>alfanous [at] googlegroups.com</b>
+        <br/><br/> For more details  visit the page of this service <a href="https://github.com/Alfanous-team/alfanous/blob/master/src/alfanous-cgi/README.rst">here</a>
+        </p>
+    </div>
 
     <!-- The javascript
     ================================================== -->
