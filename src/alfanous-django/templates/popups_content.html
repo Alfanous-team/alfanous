@@ -143,28 +143,52 @@
         <h3 id="myModalLabel">{{ _("How to contribute") }}</h3>
     </div>
     <div class="modal-body">
-        <ul class="list">
-            <li>{{ _("Spreading the word") }}:
-                <ul>
-                    <li>{{ _("Following and sharing our social network pages:") }} <a href="https://www.facebook.com/alfanous">@Facebook</a> <a href="https://twitter.com/alfanous">@Twitter</a> <a href="https://plus.google.com/111305625425237630318">@GooglePlus</a>
-                    </li>
-                    <li>{{ _("Sharing a link to") }} <a href="http://www.alfanous.org/">{{ _("our website") }}</a> {{ _("via your accounts in Social networks.") }}</li>
-                    <li>{{ _("Pointing  skilled developers and Quranic researchers to the importance of the project.") }}</li>
-                    <li>{{ _("Writing articles about the project in blogs, newspapers.") }}</li>
-                    <li>{{ _("Showing a banner on your Blog/Website.") }}</li>
-                    <li>{{ _("creating an ad for alfanous links using Google adwords or facebook if you're familiar with that (btw,it needs money)") }}</li>
-                </ul>
-            </li>
-            <li>{{ _("Managing and Animating our social network pages with news and daily posts [Arabic, English]:") }} <a href="https://www.facebook.com/alfanous">@Facebook</a> <a href="https://twitter.com/alfanous">@Twitter</a> <a href="https://plus.google.com/111305625425237630318">@GooglePlus</a>
-            </li>
-            <li>{{ _("Translating project interfaces to your language , see:") }} <a href="https://github.com/Alfanous-team/alfanous/blob/master/FAQ.rst#how-to-contribute-by-translation">How to contribute by translation?</a></li>
-            <li>{{ _("Testing the modules and releases, Reporting bugs , see:") }} <a href="https://github.com/Alfanous-team/alfanous/blob/master/FAQ.rst#how-to-report-a-bug">How to report a bug?</a> , <a href="https://github.com/Alfanous-team/alfanous/blob/master/FAQ.rst#how-to-help-by-testing">How to help by testing?</a> .</li>
-            <li>{{ _("Fixing") }} <a href="https://github.com/Alfanous-team/alfanous/issues?labels=bug&amp;milestone=&amp;page=1&amp;state=open">{{ _("bugs") }}</a> , {{ _("Coding") }} <a href="https://github.com/Alfanous-team/alfanous/issues/milestones">{{ _("new features") }}</a> {{ _("or Developing") }} <a href="https://github.com/Alfanous-team/alfanous/issues?milestone=8&amp;page=1&amp;state=open">{{ _("new interfaces") }}</a> , {{ _("See:") }} <a href="https://github.com/Alfanous-team/alfanous/blob/master/FAQ.rst#how-to-contribute-by-coding">How to contribute by coding?</a> .</li>
-            <li>{{ _("Designing  Icons, Logos , Banners.") }}</li>
-            <li>{{ _("Packaging the project for different systems: Windows, Linux distributions, MacOs.") }}</li>
-            <li>{{ _("Donating/Supporting to the project: <em>We're stuck looking for possible ways for donations/Funding. Any help is appreciated</em>") }}
-            </li>
-        </ul>
+
+    <div class="accordion" id="accordion2">
+        <div class="accordion-group">
+            <div class="accordion-heading">
+                <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapseOne">
+                <li class="icon-chevron-right"></li> {{ _("Spreading the word") }}
+                </a>
+            </div>
+            <div id="collapseOne" class="accordion-body collapse in">
+                <div class="accordion-inner">
+                    <ul>
+                        <li>{{ _("Following and sharing our social network pages:") }} <a href="https://www.facebook.com/alfanous">@Facebook</a> <a href="https://twitter.com/alfanous">@Twitter</a> <a href="https://plus.google.com/111305625425237630318">@GooglePlus</a>
+                        </li>
+                        <li>{{ _("Sharing a link to") }} <a href="http://www.alfanous.org/">{{ _("our website") }}</a> {{ _("via your accounts in Social networks.") }}</li>
+                        <li>{{ _("Pointing  skilled developers and Quranic researchers to the importance of the project.") }}</li>
+                        <li>{{ _("Writing articles about the project in blogs, newspapers.") }}</li>
+                        <li>{{ _("Showing a banner on your Blog/Website.") }}</li>
+                        <li>{{ _("creating an ad for alfanous links using Google adwords or facebook if you're familiar with that (btw,it needs money)") }}</li>
+                    </ul>   
+                </div>
+            </div>
+        </div>
+        <div class="accordion-group">
+            <div class="accordion-heading">
+                <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapseTwo">
+                <li class="icon-chevron-right"></li> Or by
+                </a>
+            </div>
+            <div id="collapseTwo" class="accordion-body collapse">
+                <div class="accordion-inner">
+                    <ul class="list">
+                        <li>{{ _("Managing and Animating our social network pages with news and daily posts [Arabic, English]:") }} <a href="https://www.facebook.com/alfanous">@Facebook</a> <a href="https://twitter.com/alfanous">@Twitter</a> <a href="https://plus.google.com/111305625425237630318">@GooglePlus</a>
+                        </li>
+                        <li>{{ _("Translating project interfaces to your language , see:") }} <a href="https://github.com/Alfanous-team/alfanous/blob/master/FAQ.rst#how-to-contribute-by-translation">How to contribute by translation?</a></li>
+                        <li>{{ _("Testing the modules and releases, Reporting bugs , see:") }} <a href="https://github.com/Alfanous-team/alfanous/blob/master/FAQ.rst#how-to-report-a-bug">How to report a bug?</a> , <a href="https://github.com/Alfanous-team/alfanous/blob/master/FAQ.rst#how-to-help-by-testing">How to help by testing?</a> .</li>
+                        <li>{{ _("Fixing") }} <a href="https://github.com/Alfanous-team/alfanous/issues?labels=bug&amp;milestone=&amp;page=1&amp;state=open">{{ _("bugs") }}</a> , {{ _("Coding") }} <a href="https://github.com/Alfanous-team/alfanous/issues/milestones">{{ _("new features") }}</a> {{ _("or Developing") }} <a href="https://github.com/Alfanous-team/alfanous/issues?milestone=8&amp;page=1&amp;state=open">{{ _("new interfaces") }}</a> , {{ _("See:") }} <a href="https://github.com/Alfanous-team/alfanous/blob/master/FAQ.rst#how-to-contribute-by-coding">How to contribute by coding?</a> .</li>
+                        <li>{{ _("Designing  Icons, Logos , Banners.") }}</li>
+                        <li>{{ _("Packaging the project for different systems: Windows, Linux distributions, MacOs.") }}</li>
+                        <li>{{ _("Donating/Supporting to the project: <em>We're stuck looking for possible ways for donations/Funding. Any help is appreciated</em>") }}
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+       
     </div>
     <div class="modal-footer">
         <button class="btn" data-dismiss="modal" aria-hidden="true">{{ _(" Close ") }}</button>
