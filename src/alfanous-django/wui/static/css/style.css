@@ -28,10 +28,11 @@ hr {
 a {
   cursor: pointer;
 }
+
 span a, span a:hover {
   color: white;
- cursor: pointer;
- text-decoration: none; 
+  cursor: pointer;
+  text-decoration: none; 
 }
 
 #social-icons a {

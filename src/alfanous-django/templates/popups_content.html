@@ -1,0 +1,133 @@
+{% load custom_filters %}
+
+<!-- F.A.Q. -->
+<div id="faqpanel" class="modal hide fade" tabindex="-1" role="dialog" aria-hidden="true" style="text-align: {{ bidi.align }};  direction: {{ bidi.direction}};">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+        <h3 id="myModalLabel">{{ _("F.A.Q.") }}</h3>
+    </div>
+    <div class="modal-body">
+        <p>{{ _("See") }} <a href="https://github.com/Alfanous-team/alfanous/blob/master/FAQ.rst">{{ _("this link") }}</a>.</p>
+    </div>
+    <div class="modal-footer">
+        <button class="btn" data-dismiss="modal" aria-hidden="true">{{ _(" Close ") }}</button>
+    </div>
+</div>
+
+<!-- Help -->
+<div id="help" class="modal hide fade" tabindex="-1" role="dialog" aria-hidden="true" style="text-align: {{ bidi.align }};  direction: {{ bidi.direction}};">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+        <h3 id="myModalLabel">{{ _("Help") }}</h3>
+    </div>
+    <div class="modal-body">
+        <table class="table table-striped table-bordered" style="direction:{{ bidi.direction }};">
+            <tbody>
+            
+                <tr>
+                    <th class="style6">{{ _("Exact search") }} </th>
+                    <td class="style5" ><a  href='/?{% build_search_link params '%20رب' 1 False %}'> رب</a></td>
+                    <td class="style4" ><a  href='/?{% build_search_link params 'فأسقيناكموه' 1 False %}'> فأسقيناكموه </a></td>
+                </tr>
+                <tr>
+                    <th class="style3">{{ _("Phrase search") }}  </th>
+                    <td class="style2"><a href='/?{% build_search_link params '"رب%20العالمين"' 1 False %}'>"رب العالمين"</a></td>
+                    <td class="style2"><a href='/?{% build_search_link params '"رسول%20الله"' 1 False %}'>"رسول الله"</a></td>
+                </tr>
+                <tr>
+                    <th class="style6">{{ _("Logical relations") }}</th>
+                    <td class="style5"><a href='/?{% build_search_link params '(الصلاة%20-%20الزكاة)%20+%20سورة:البقرة' 1 False %}'>(الصلاة - الزكاة) + سورة:البقرة</a></td>
+                    <td class="style4"><a href='/?{% build_search_link params 'سميع%20|%20بصير' 1 False %}'> سميع | بصير</a></td>
+                </tr> 
+                <tr>
+                    <th class="style3">{{ _("Wildcards") }}</th>
+                    <td class="style2"><a href='/?{% build_search_link params '*نبي*' 1 False %}'>*نبي*</a></td>
+                    <td class="style2"><a href='/?{% build_search_link params 'نعم؟' 1 False %}'>نعم؟</a></td>
+                </tr>
+                <tr>
+                    <th class="style6">{{ _("Fields") }}</th>
+                    <td class="style5"><a href='/?{% build_search_link params 'سورة:يس' 1 False %}'>سورة:يس</a></td>
+                    <td class="style4"><a href='/?{% build_search_link params 'سجدة:نعم' 1 False %}'>سجدة:نعم</a></td>
+                </tr>
+                <tr>
+                    <th class="style3">{{ _("Intervals") }} </th>
+                    <td class="style2"><a href='/?{% build_search_link params 'رقم_السورة:%5B1%20الى%205%5D%20%2B%20الله' 1 False %}'>  رقم_السورة:[1 الى 5] + الله</a></td>
+                    <td> </td>
+                </tr>
+                <tr>
+                    <th class="style6">{{ _("Partial vocalization") }} </th>
+                    <td class="style5"><a href="/?{% build_search_link params "آية_:'مَن'" 1 False %}">آية_:'مَن'</a></td>
+                    <td class="style4"><a href="/?{% build_search_link params "آية_:'المَلكُ'" 1 False %}">آية_:'المَلكُ'</a></td>
+                </tr>
+                <tr>
+                    <th class="style3">{{ _("Word properties") }}</th>
+                    <td class="style2"><a href='/?{% build_search_link params '{قول،اسم}' 1 False %}'>{قول،اسم}</a></td>
+                    <td class="style2"><a href='/?{% build_search_link params '{ملك،فعل}' 1 False %}'>{ملك،فعل}</a></td>
+                </tr>
+                <tr>
+                    <th class="style9">{{ _("Derivations") }}</th>
+                    <td class="style8"><a href='/?{% build_search_link params '%3E%3Eملك' 1 False %}'>&gt;&gt;ملك</a></td>
+                    <td class="style7"><a href='/?{% build_search_link params '%3Eملك' 1 False %}'> &gt;ملك</a></td>
+                </tr>
+            </tbody>
+        </table>
+        <br/>
+        <p> {{ _("The website does not work well on Internet Explorer, we suggest to use another browser such as: ") }} <a href="https://www.mozilla.org/firefox/" target="_blank">{{ _("Firefox") }}</a>.</p>
+    </div>
+    <div class="modal-footer">
+        <button class="btn" data-dismiss="modal" aria-hidden="true">{{ _(" Close ") }}</button>
+    </div>
+</div>
+
+<!-- AWA 2012 -->
+<div id="awapanel" class="modal hide fade" tabindex="-1" role="dialog" aria-hidden="true" style="text-align: {{ bidi.align }};  direction: {{ bidi.direction}};">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+        <h3 id="myModalLabel">{{ _("Awarded!") }}</h3>
+    </div>
+    <div class="modal-body">
+        <p>{{ _("Alfanous.org was chosen as the best-in-technicaity website in the competition AlgeriaWebAwards 2012.") }}</p>
+    </div>
+    <div class="modal-footer">
+        <button class="btn" data-dismiss="modal" aria-hidden="true">{{ _(" Close ") }}</button>
+    </div>
+</div>
+
+<!-- Donate -->
+
+<div id="donatepanel" class="modal hide fade" tabindex="-1" role="dialog" aria-hidden="true" style="text-align: {{ bidi.align }};  direction: {{ bidi.direction}};">
+    <h2 style='padding:0 0 0px 0'>{{ _("How to donate") }}</h2><br/>
+    {{ _("We're stuck looking for possible ways for donations/Funding. Any help is appreciated!") }}
+    <br />
+    {{ _("Any way you can help by:") }}
+    <ul class="list">
+    <li> {{ _("Pay our web hosting monthly bills directly, we create an account for you in the host to do that.") }}</li>
+    <li> {{ _("Lead an advertising compaign for the project website through Google adwords or Facebook.") }}</li>
+    </ul>
+    <br/><br/>
+        <button type="button" class='close gray button' > {{ _(" Close ") }} </button>  
+    <br />
+</div>
+
+<!-- Contact-->
+<div id="contactpanel"  class="modal hide fade" tabindex="-1" role="dialog" aria-hidden="true" style="text-align: {{ bidi.align }};  direction: {{ bidi.direction}};">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+        <h3 id="myModalLabel">{{ _("Contact us") }}</h3>
+    </div>
+    <div class="modal-body">
+        <ul class="list">
+            <li> {{ _("If you have a concrete bug report for Alfanous please go to") }} <a href="https://github.com/Alfanous-team/alfanous/issues"> {{ _("Issues Tracker") }}</a>, {{ _("submit your report and tag it \"bug\".")}}</li>
+            <li> {{ _("If you want to participate in actively developing Alfanous,by testing read") }} <a href="https://github.com/Alfanous-team/alfanous/blob/master/FAQ.rst#how-to-help-by-testing"> How to help with testing? </a> {{ _("and by coding read ") }} <a href="https://github.com/Alfanous-team/alfanous/blob/master/FAQ.rst#how-to-contribute-by-coding">How to contribute by coding?</a>.</li>
+            <li> {{ _("If you want to help in Alfanous somehow,  read") }} <a href="https://github.com/Alfanous-team/alfanous/blob/master/FAQ.rst#how-you-can-help">How you can help?</a>.</li>
+            <li> {{ _("If you have a feature request, a proposition or a question for the project, you may use the mailing list.") }}</li>
+            <li> {{ _("If you want to criticize the project, we'll be thankful if you resume your criticism and send it to the mailing list.") }}</li>
+        </ul>
+        <p>{{ _("For anything else, you can contact us via the mailing list which is:") }} <a href="http://groups.google.com/group/alfanous">alfanous[at]googlegroups[dot]com</a> .</p>
+    </div>
+    <div class="modal-footer">
+        <button class="btn" data-dismiss="modal" aria-hidden="true">{{ _(" Close ") }}</button>
+    </div>
+</div>
+
+

@@ -242,17 +242,15 @@
 		                    <div class="row">
 		                        <div id="aya_text_{{ ayaresult_id }}" class="row text-center arabic-ayah">
 		                        	<p>
-						 				<span class='quran_decoration main_aya'>[</span>					 				
+						 				<span class='quran_decoration main_aya'>[</span>
 										{% for aya_word in ayaresult_content.aya.text|space_split %}
 											{% spaceless %}
 												{% autoescape off %}
 												  		{# TODO optimize this condition, any "in" operation? #}
 														{% if aya_word|first in "<ct> "|make_list  %}
 																{{ aya_word }} 
-														{% else %} 
-															{% spaceless %}
+														{% else %}
 																<a href="?{% build_search_link params aya_word 1 False %}">{{ aya_word }}</a>
-															{% endspaceless %}
 														{% endif %}
 												{% endautoescape%}
 											{% endspaceless %}	

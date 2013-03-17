@@ -146,15 +146,15 @@
                 <div class="well sidebar-nav hidden-phone affix">
                     <ul class="nav nav-list ">
                         <li class="nav-header">{{ _("Information:") }}</li>
-                            <li><a href="#"><i class="icon-question-sign"></i> {{ _("F.A.Q.") }}</a></li>
-                            <li><a href="#"><i class="icon-exclamation-sign"></i> {{ _("Help") }}</a></li>
-                            <li><a href="#"><i class="icon-envelope"></i> {{ _("Contact") }}</a></li>
-                            <li><a href="#"><i class="icon-download-alt"></i> {{ _("Download") }}</a></li>
+                            <li><a href="#faqpanel" data-toggle="modal"><i class="icon-question-sign"></i> {{ _("F.A.Q.") }}</a></li>
+                            <li><a href="#help" data-toggle="modal"><i class="icon-exclamation-sign"></i> {{ _("Help") }}</a></li>
+                            <li><a href="#contactpanel" data-toggle="modal"><i class="icon-envelope"></i> {{ _("Contact") }}</a></li>
+                            <li><a href="#" data-toggle="modal"><i class="icon-download-alt"></i> {{ _("Download") }}</a></li>
                         <li class="nav-header">{{ _("Contribute:") }}</li>
-                            <li><a href="#"><i class="icon-globe"></i> {{ _("Translate") }}</a></li>
-                            <li><a href="#"><i class="icon-comment"></i> {{ _("Feedback") }}</a></li>
-                            <li><a href="#"><i class="icon-shopping-cart"></i> {{ _("Donate") }}</a></li>
-                            <li><a href="#"><i class="icon-plus"></i> {{ _("Other means") }}</a></li>
+                            <li><a href="#" data-toggle="modal"><i class="icon-globe"></i> {{ _("Translate") }}</a></li>
+                            <li><a href="#" data-toggle="modal"><i class="icon-comment"></i> {{ _("Feedback") }}</a></li>
+                            <li><a href="#donatepanel" data-toggle="modal"><i class="icon-shopping-cart"></i> {{ _("Donate") }}</a></li>
+                            <li><a href="#" data-toggle="modal"><i class="icon-plus"></i> {{ _("Other means") }}</a></li>
                     </ul>
                 </div><!--/.well -->
             </div><!--/span-->
@@ -217,6 +217,9 @@
         <br/><br/> For more details  visit the page of this service <a href="https://github.com/Alfanous-team/alfanous/blob/master/src/alfanous-cgi/README.rst">here</a>
         </p>
     </div>
+
+    {% include "popups_content.html" %}
+
 
 	<footer>
         <div class="push"><!--//--></div>
