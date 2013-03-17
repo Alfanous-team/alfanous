@@ -64,13 +64,17 @@ span a, span a:hover {
   margin: auto;
 }
 
-.footer-link-jos2, .footer-link-jos2:hover, .footer-link-jos2:visited,
+#footer-link-jos2, #footer-link-jos2:hover, #footer-link-jos2:visited,
 .footer-link-searchbar, .footer-link-searchbar:hover, .footer-link-searchbar:visited {
   color:white;
 }
 .popoverInnerText {
   font-weight: normal;
   text-shadow:none;
+  color: rgb(51, 51, 51);
+}
+.popoverInnerText a, .popoverInnerText a:hover{
+  font-weight: bold;
   color: rgb(51, 51, 51);
 }
 p.credit {
