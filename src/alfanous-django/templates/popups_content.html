@@ -3,7 +3,7 @@
 <!-- F.A.Q. -->
 <div id="faqpanel" class="modal hide fade" tabindex="-1" role="dialog" aria-hidden="true" style="text-align: {{ bidi.align }};  direction: {{ bidi.direction}};">
     <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
         <h3 id="myModalLabel">{{ _("F.A.Q.") }}</h3>
     </div>
     <div class="modal-body">
@@ -17,7 +17,7 @@
 <!-- Help -->
 <div id="help" class="modal hide fade" tabindex="-1" role="dialog" aria-hidden="true" style="text-align: {{ bidi.align }};  direction: {{ bidi.direction}};">
     <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
         <h3 id="myModalLabel">{{ _("Help") }}</h3>
     </div>
     <div class="modal-body">
@@ -82,7 +82,7 @@
 <!-- AWA 2012 -->
 <div id="awapanel" class="modal hide fade" tabindex="-1" role="dialog" aria-hidden="true" style="text-align: {{ bidi.align }};  direction: {{ bidi.direction}};">
     <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
         <h3 id="myModalLabel">{{ _("Awarded!") }}</h3>
     </div>
     <div class="modal-body">
@@ -96,7 +96,7 @@
 <!-- Donate -->
 
 <div id="donatepanel" class="modal hide fade" tabindex="-1" role="dialog" aria-hidden="true" style="text-align: {{ bidi.align }};  direction: {{ bidi.direction}};">
-    <h2 style='padding:0 0 0px 0'>{{ _("How to donate") }}</h2><br/>
+    <h2 style='padding:0 0 0px 0'></h2><br/>
     {{ _("We're stuck looking for possible ways for donations/Funding. Any help is appreciated!") }}
     <br />
     {{ _("Any way you can help by:") }}
@@ -107,6 +107,17 @@
     <br/><br/>
         <button type="button" class='close gray button' > {{ _(" Close ") }} </button>  
     <br />
+
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h3 id="myModalLabel">{{ _("How to donate") }}</h3>
+    </div>
+    <div class="modal-body">
+        <p>{{ _("We're stuck looking for possible ways for donations/Funding. Any help is appreciated!") }}</p>
+    </div>
+    <div class="modal-footer">
+        <button class="btn" data-dismiss="modal" aria-hidden="true">{{ _(" Close ") }}</button>
+    </div>
 </div>
 
 <!-- Contact-->
