@@ -263,10 +263,10 @@
 		                        <div class="text-left muted ayah_source">
 		                        	{% with ayaresult_content.aya.id|stringformat:"s" as aya_id %}
 									 	{% with bidi.fields.sura|add:':"'|add:ayaresult_content.identifier.sura_name|add:'" + '|add:bidi.fields.aya_id|add:':'|add:aya_id|urlencode  as new_query %}
-										<a class='no_decoration' href='?{% build_search_link params  new_query 1 False %}'> 
+										<a href='?{% build_search_link params  new_query 1 False %}'> 
 										{% endwith %}
 									{% endwith %}
-		                        	<small>- {{ ayaresult_content.identifier.sura_name }}<cite title="Source Title"> {{ ayaresult_content.aya.id }}</cite></small></a> 
+		                        	<small>- {{ ayaresult_content.identifier.sura_name }}<cite> {{ ayaresult_content.aya.id }}</cite></small></a> 
 		                        </div>
 		                    </div>
 		                    <div class="row">
