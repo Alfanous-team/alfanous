@@ -106,6 +106,7 @@ div.help {
 }
 
 .non-arabic-ayah {
+  direction: ltr;
   font-family: me_quran,  KacstBook, KacstQurn, ArabeyesQr, "KFGQPC Uthman Taha Naskh", Arial;
   word-spacing: 0.3em;
   font-size: 16px;
@@ -161,4 +162,8 @@ div.help {
 
 .audio-player {
   margin: auto;
+}
+
+table th.text-center {
+    text-align: center !important;
 }
