@@ -1,0 +1,173 @@
+body { 
+  padding-top: 60px; /* 60px to make the container go all the way to the bottom of the topbar */
+}
+html, body, .content {
+  background-color: #eee;
+}
+
+@font-face {
+  font-family:'Scheherazade';
+  src:url('../fonts/ScheherazadeRegOT.ttf');
+}
+
+.advanced-search {
+    margin-top: 20px;
+}
+
+.logo img{
+  margin: auto;
+  margin-bottom: 5%;
+  margin-top: 10%;
+}
+
+hr {
+  border: none;
+  border-top: 1px dashed rgb(210, 210, 210);
+}
+
+a {
+  cursor: pointer;
+}
+
+span a, span a:hover {
+  color: white;
+  cursor: pointer;
+  text-decoration: none; 
+}
+
+#social-icons a {
+  height: 26px;
+  width: 26px;
+  margin-right: 5px;
+  display: inline-block;
+  background: transparent url(../img/social_icons.png);
+  text-indent: -9999999px;
+} 
+
+.slidingForm, .aya_details{
+    display:none;
+}
+
+.show_hide_aya_details:hover, .show_hide:hover {
+  text-decoration: none;
+}
+
+.slidingForm li, .slidingForm div {
+  padding: 0.5%;
+}
+
+.slidingForm div.container-fluid{
+  margin: auto;
+  text-align: left;
+}
+.slidingForm label.checkbox {
+  margin: auto;
+}
+
+#footer-link-jos2, #footer-link-jos2:hover, #footer-link-jos2:visited,
+.footer-link-searchbar, .footer-link-searchbar:hover, .footer-link-searchbar:visited {
+  color:white;
+}
+.popoverInnerText {
+  font-weight: normal;
+  text-shadow:none;
+  color: rgb(51, 51, 51);
+}
+.popoverInnerText a, .popoverInnerText a:hover{
+  font-weight: bold;
+  color: rgb(51, 51, 51);
+}
+p.credit {
+  display:inline;
+}
+
+.topic, .chapter {
+  clear: both;
+  display: inline;
+}
+
+div.help {
+  margin: 0 auto;
+}
+
+.arabic-ayah {
+  direction: rtl;
+  font-family: me_quran, Scheherazade,  KacstBook, KacstQurn, ArabeyesQr, "KFGQPC Uthman Taha Naskh", Arial;
+  font-size: 22px;
+  word-spacing: 3px;
+  line-height: 220%; 
+}
+
+@media (max-width: 480px) {
+    .arabic-ayah { 
+      font-size: 16px;
+      word-spacing: 2px;
+    }
+}
+
+.non-arabic-ayah {
+  direction: ltr;
+  font-family: me_quran,  KacstBook, KacstQurn, ArabeyesQr, "KFGQPC Uthman Taha Naskh", Arial;
+  word-spacing: 0.3em;
+  font-size: 16px;
+}
+
+.quran_decoration {
+  direction: rtl;
+  font-family: ArabeyesQr, Scheherazade;
+}
+
+.ayah_source {
+  direction: rtl;
+  font-family: tahoma, Scheherazade,  KacstBook, KacstQurn, ArabeyesQr, "KFGQPC Uthman Taha Naskh", Arial;
+  font-size: 16px;
+}
+
+.push {
+  height: 63px;
+}
+
+.table {
+  font-family: tahoma, Scheherazade,  KacstBook, KacstQurn, ArabeyesQr, "KFGQPC Uthman Taha Naskh", Arial;
+  font-size: 12px;
+}
+
+.nav-tabs > .active > a, .nav-tabs > .active > a:hover, .nav-tabs > .active > a:focus {
+    cursor: default;
+    background-color: rgb(238, 238, 238);
+    border-width: 1px;
+    border-style: solid;
+}
+
+
+#social-icons a.facebook { background-position: 0px top; }
+#social-icons a.twitter { background-position: -26px top; }
+#social-icons a.github { background-position: -52px top ; }
+#social-icons a.rss { background-position: -260px top ; }
+#social-icons a.googleplus { background-position: -286px top ; }
+
+#social-icons a.facebook:hover { background-position: 0px bottom; }
+#social-icons a.twitter:hover { background-position: -26px bottom ; }
+#social-icons a.github:hover { background-position: -52px bottom ; }
+#social-icons a.rss:hover { background-position: -260px bottom ; }
+#social-icons a.googleplus:hover { background-position: -286px bottom ; }
+
+
+
+/* Audio player */
+.audio {
+  display: none;
+  
+}
+
+.audio-player {
+  margin: auto;
+}
+
+table th.text-center {
+    text-align: center !important;
+}
+
+.dropdown-menu {
+  right: 40%;
+}
