@@ -37,8 +37,8 @@
 	<meta name="author" content="Assem Chelli, Ahmed Ramadan, Abdellah Chelli, Mouad Debbar" />
 	<meta name="robots" content="index,follow"/>
 
-	<link rel="icon" href="/static/img/icon_32.png" sizes="32x32"> 
-	<link rel="shortcut icon" href="/static/img/favicon.ico" type="image/x-icon">
+	<link rel="icon" href="/static/{{ bidi.direction }}/img/icon_32.png" sizes="32x32"> 
+	<link rel="shortcut icon" href="/static/{{ bidi.direction }}/img/favicon.ico" type="image/x-icon">
 
 	<link rel="search" type="application/opensearchdescription+xml" title="Alfanous" href="/static/alfanous-opensearch.xml"/>
 
@@ -59,16 +59,16 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<!-- Bootstrap -->
     {% ifequal bidi.direction "ltr" %}
-        <link href="/static/css/bootstrap.min.css" rel="stylesheet">
-        <link href="/static/css/bootstrap-responsive.min.css" rel="stylesheet">      
+        <link href="/static/ltr/css/bootstrap.min.css" rel="stylesheet">
+        <link href="/static/ltr/css/bootstrap-responsive.min.css" rel="stylesheet">      
     {% else %}
         <!-- the same as ltr just for mow-->
-        <link href="/static/css/bootstrap.min.css" rel="stylesheet">
-        <link href="/static/css/bootstrap-responsive.min.css" rel="stylesheet">      
+        <link href="/static/rtl/css/rtl-bootstrap.min.css" rel="stylesheet">
+        <link href="/static/rtl/css/rtl-bootstrap-responsive.min.css" rel="stylesheet">      
     {% endifequal %}
 
     <!-- Custom Alfanous CSS -->
-    <link href="/static/css/style.css" rel="stylesheet">
+    <link href="/static/{{ bidi.direction }}/css/style.css" rel="stylesheet">
     
 </head>
 <body>
@@ -103,7 +103,11 @@
 							{% endifequal %} 
 						{% endfor %}
                     </ul>
+                    {% if bidi.direction == "rtl" %}
+                    <ul class="nav pull-left">
+                    {% else %}
                     <ul class="nav pull-right">
+                    {% endif %}
                         <li class="dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown">{{ _("Languages") }}<b class="caret"></b></a>
                             <ul class="dropdown-menu">
@@ -130,7 +134,11 @@
         <!-- social media icons -->
 		<div class="row">
 		    <div id="social-icons" class="social-networks">
-				<ul class="inline pull-right">
+                {% if bidi.direction == "rtl" %}
+                <ul class="inline pull-left">
+                {% else %}
+                <ul class="inline pull-right">
+                {% endif %}
 					<li><a class="facebook" href="https://www.facebook.com/Alfanous">Facebook</a></li>
 					<li><a class="twitter" href="https://twitter.com/alfanous">Twitter</a></li>
 					<li><a class="github" href="https://github.com/Alfanous-team/alfanous">Github</a></li>
@@ -162,10 +170,10 @@
 
             <div class="span10 text-center">
                 <div class="row span4 offset2">
-                    <a href="{% url alfanous-django.wui.views.results current.language current.unit %}" class="logo"><img src="/static/img/alfanous.png"></a>
+                    <a href="{% url alfanous-django.wui.views.results current.language current.unit %}" class="logo"><img src="/static/{{ bidi.direction }}/img/alfanous.png"></a>
                         <form class="form-search text-center" id="form" name="form" method="get" action=".">
                             <div class="input-append text-right">
-                                <input id="search_box" name="query" class="search-query enter keyboardInput" dir="{{ bidi.direction }}" placeholder="Search" type="text" value="{{ params.query }}" data-provide="typeahead" autocomplete="off"
+                                <input id="search_box" name="query" class="search-query enter keyboardInput" placeholder="Search" type="text" value="{{ params.query }}" data-provide="typeahead" autocomplete="off"
                                 data-source="[&quot;الله&quot;,&quot;محمد&quot;,&quot;الصلاة&quot;,&quot;الزكاة&quot;,&quot;صوم&quot;,&quot;رمضان&quot;,&quot;الحج&quot;,&quot;الشهادة&quot;,&quot;العلم&quot;,&quot;المؤمنون&quot;,&quot;الرسول&quot;,&quot;الرسل&quot;,&quot;عيسى&quot;,&quot;موسى&quot;,&quot;ابراهيم&quot;,&quot;الاسلام&quot;,&quot;مسلم&quot;,&quot;الجنة&quot;,&quot;النار&quot;,&quot;العذاب&quot;,&quot;أليم&quot;,&quot;النعيم&quot;,&quot;الحياة&quot;,&quot;الدنيا&quot;,&quot;الخوع&quot;,&quot;الحكم&quot;,&quot;الكفر&quot;,&quot;الشيطان&quot;,&quot;ابليس&quot;,&quot;آدم&quot;,&quot;اليهود&quot;,&quot;اسرائيل&quot;,&quot;السنة&quot;,&quot;الاستغفار&quot;,&quot;المشركين&quot;,&quot;المشركات&quot;,&quot;النساء&quot;,&quot;التوبة&quot;,&quot;المغفرة&quot;,&quot;الصدق&quot;,&quot;التوحيد&quot;,&quot;الجهل&quot;,&quot;فأسقيناكموه&quot;,&quot;نبي&quot;,&quot;نعم؟&quot;,&quot;رسول الله&quot;,&quot;الصلاة + الزكاة&quot;,&quot;موضوع:&quot;,&quot;الملك&quot;,&quot;الصلاة | الزكاة&quot;,&quot;الصلاة - الزكاة&quot;]"
                                 />
                                 
@@ -177,13 +185,14 @@
                                     <!-- dropdown menu links -->
                                 </ul>
                             </div>
-
+                            {% if current.unit == "aya" %}
                             <div class="advanced-search text-center">
                                 <a class="text-center show_hide" data-toggle="tooltip" title="first tooltip">
                                     <i class="icon-wrench"></i>
                                     Advanced search [+]
                                 </a>
                             </div>
+                            {% endif %}
                         </form>
 
                    
@@ -228,7 +237,11 @@
                 <hr />
                 <p class="muted credit">Copyright &copy; <a href="https://github.com/Alfanous-team/alfanous/blob/master/AUTHORS.rst">Alfanous Team</a> 2010 - 2013 &#124; released under <a href="http://www.gnu.org/licenses/agpl.html">AGPL</a> license.</p>
 
+                {% if bidi.direction == "rtl" %}
+                <p class="muted credit pull-left">Powered by <span class="label label-inverse">
+                {% else %}
                 <p class="muted credit pull-right">Powered by <span class="label label-inverse">
+                {% endif %}
                     <a id="footer-link-jos2" data-placement="top" data-toggle="popover">
                         <i class=" icon-chevron-up icon-white"></i>
                         Alfanous JOS2
@@ -254,9 +267,13 @@
     <!-- The javascript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
-    <script src="/static/js/jquery-1.9.1.min.js"></script>
-    <script src="/static/js/bootstrap.min.js"></script>
-    <script src="/static/js/alfanous.js"></script>
+    <script src="/static/{{ bidi.direction }}/js/jquery-1.9.1.min.js"></script>
+    {% ifequal bidi.direction "ltr" %}
+        <script src="/static/ltr/js/bootstrap.min.js"></script>
+    {% else %}
+        <script src="/static/rtl/js/rtl-bootstrap.min.js"></script>     
+    {% endifequal %}
+    <script src="/static/{{ bidi.direction }}/js/alfanous.js"></script>
     <script src="http://api.html5media.info/1.1.5/html5media.min.js"></script>
 </body>
 </html>
