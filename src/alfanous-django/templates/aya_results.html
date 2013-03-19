@@ -298,7 +298,7 @@
 		                        <tbody>
 		                            <tr>
 		                            	{% if ayaresult_content.theme.chapter %}
-		                                <td><i class="icon-book"></i><strong class="hidden-phone">{{ _("Chapter") }}:</strong></td>
+		                                <td><i class="icon-book"></i><strong class="hidden-phone"> {{ _("Chapter") }}:</strong></td>
 		                                <td>
 									  		{% with bidi.fields.chapter|add:':"'|add:ayaresult_content.theme.chapter|add:'"'  as new_query %}
 												<a class='no_decoration' href='?{% build_search_link params  new_query 1 False %}'> 
@@ -308,7 +308,7 @@
 		                                {% endif %}
 
 		                                {% if ayaresult_content.theme.topic %} 
-		                                <td><i class="icon-tag"></i><strong class="hidden-phone">{{ _("Topic") }}:</strong></td>
+		                                <td><i class="icon-tag"></i><strong class="hidden-phone"> {{ _("Topic") }}:</strong></td>
 		                                <td>
 		                            		{% with bidi.fields.topic|add:':"'|add:ayaresult_content.theme.topic|add:'"'  as new_query %}
 											<a class='no_decoration' href='?{% build_search_link params  new_query 1 False %}'> 
@@ -317,7 +317,7 @@
 		                                </td>
 		                                {% endif %}
 		                                {% if ayaresult_content.theme.subtopic %}
-		                                <td><i class="icon-tag"></i><strong class="hidden-phone">{{ _("Subtopic") }}:</strong></td>
+		                                <td><i class="icon-tag"></i><strong class="hidden-phone"> {{ _("Subtopic") }}:</strong></td>
 		                                <td>
 		                                	{% with bidi.fields.subtopic|add:':"'|add:ayaresult_content.theme.subtopic|add:'"'  as new_query %}
 											<a class='no_decoration' href='?{% build_search_link params  new_query 1 False %}'> 
