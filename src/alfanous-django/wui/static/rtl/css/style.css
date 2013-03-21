@@ -130,9 +130,16 @@ div.help {
 }
 
 .push {
-  height: 63px;
+  height: 120px;
 }
 
+.push2 {
+  height: 83px;
+}
+
+.push3 {
+  height: 53px;
+}
 .table {
   font-family: tahoma, Scheherazade,  KacstBook, KacstQurn, ArabeyesQr, "KFGQPC Uthman Taha Naskh", Arial;
   font-size: 12px;
@@ -176,4 +183,20 @@ table th.text-center {
 
 .dropdown-menu {
   right: 40%;
+}
+
+
+.footer-desktop {
+  bottom: 0px;
+  width: 100%;
+  background:url("../img/paisley.png") #111 50% 50%;
+  height:100px;
+  height:auto !important;
+  min-height:100px;
+  border-top:solid 3px #666;
+  padding:15px 0;
+}
+
+.footer-info {
+  margin-bottom: -20px;
 }
