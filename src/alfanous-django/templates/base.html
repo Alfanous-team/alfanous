@@ -151,7 +151,7 @@
 		<div class="row">
             <!-- left navbar -->
             <div class="span2">
-                <div class="well sidebar-nav hidden-phone affix">
+                <div id="navbar" class="well sidebar-nav hidden-phone affix">
                     <ul class="nav nav-list ">
                         <li class="nav-header">{{ _("Information:") }}</li>
                             <li><a href="#faqpanel" data-toggle="modal"><i class="icon-question-sign"></i> {{ _("F.A.Q.") }}</a></li>
@@ -220,40 +220,93 @@
         </div>
 
     </div>
+</div>
 
     {% include "popups_content.html" %}
 
+    <div class="push visible-desktop"><!--//--></div>
+    <div class="push2 visible-tablet"><!--//--></div>
+    <div class="push3 visible-phone"><!--//--></div>
 
-	<footer>
-        <div class="push"><!--//--></div>
-        <div id="footer">
+    <div class="row hidden-phone text-center help">
+        <div class="alert alert-info span8 offset3 text-center">
+            <button type="button" class="close" data-dismiss="alert">&times;</button>
+            <strong>Help!</strong> Please help us improving Alfanous Project, by taking this survey about search features in Holy Quran.
+        </div>
+    </div>
+
+    <footer>
+        <div class="hidden-desktop">
+            <div id="footer">
+                <div class="container">
+                    <hr />
+                    <p class="muted credit">Copyright &copy; <a href="https://github.com/Alfanous-team/alfanous/blob/master/AUTHORS.rst">Alfanous Team</a> 2010 - 2013 &#124; released under <a href="http://www.gnu.org/licenses/agpl.html">AGPL</a> license.</p>
+
+                    {% if bidi.direction == "rtl" %}
+                    <p class="muted credit pull-left">Powered by <span class="label label-inverse">
+                    {% else %}
+                    <p class="muted credit pull-right">Powered by <span class="label label-inverse">
+                    {% endif %}
+                        <a id="footer-link-jos2" data-placement="top" data-toggle="popover">
+                            <i class=" icon-chevron-up icon-white"></i>
+                            Alfanous JOS2
+                        </a>
+                        </span> 
+                        - <span class="label label-inverse hidden-phone">
+                        <a class="footer-link-searchbar" onclick="addto_searchbar();return false;" href="#">
+                            <i class="icon-plus-sign icon-white"></i>
+                            Add to your search bar!
+                        </a>
+                        </span>
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer-desktop visible-desktop">                
             <div class="container">
-                <div class="row hidden-phone text-center help">
-                    <div class="alert alert-info span8 offset2 text-center">
-                        <button type="button" class="close" data-dismiss="alert">&times;</button>
-                        <strong>Help!</strong> Please help us improving Alfanous Project, by taking this survey about search features in Holy Quran.
+                <div class="row footer-info">
+                    <div class="span4">
+                        <h4>Algeria Web Award 2012 Winner!</h4>
+                    </div>
+                    <div class="span4">
+                    </div>
+                    {% if bidi.direction == "rtl" %}
+                    <div class="span4 text-left">
+                    {% else %}
+                    <div class="span4 text-right">
+                    {% endif %}
+                        <ul class="inline">
+                            <li><a href="https://github.com/Alfanous-team/alfanous/blob/master/README.rst">About</a></li>
+                            <li>-</li>
+                            <li><a href="">Docs</a></li>
+                            <li>-</li>
+                            <li><a href="">Mailignlist</a></li>
+                        </ul>
                     </div>
                 </div>
-                <hr />
-                <p class="muted credit">Copyright &copy; <a href="https://github.com/Alfanous-team/alfanous/blob/master/AUTHORS.rst">Alfanous Team</a> 2010 - 2013 &#124; released under <a href="http://www.gnu.org/licenses/agpl.html">AGPL</a> license.</p>
+                <div>
+                    <hr />
+                    <p class="muted credit">Copyright &copy; <a href="https://github.com/Alfanous-team/alfanous/blob/master/AUTHORS.rst">Alfanous Team</a> 2010 - 2013 &#124; released under <a href="http://www.gnu.org/licenses/agpl.html">AGPL</a> license.</p>
 
-                {% if bidi.direction == "rtl" %}
-                <p class="muted credit pull-left">Powered by <span class="label label-inverse">
-                {% else %}
-                <p class="muted credit pull-right">Powered by <span class="label label-inverse">
-                {% endif %}
-                    <a id="footer-link-jos2" data-placement="top" data-toggle="popover">
-                        <i class=" icon-chevron-up icon-white"></i>
-                        Alfanous JOS2
-                    </a>
-                    </span> 
-                    - <span class="label label-inverse hidden-phone">
-                    <a class="footer-link-searchbar" onclick="addto_searchbar();return false;" href="#">
-                        <i class="icon-plus-sign icon-white"></i>
-                        Add to your search bar!
-                    </a>
-                    </span>
-                </p>
+                    {% if bidi.direction == "rtl" %}
+                    <p class="muted credit pull-left">Powered by <span class="label label-inverse">
+                    {% else %}
+                    <p class="muted credit pull-right">Powered by <span class="label label-inverse">
+                    {% endif %}
+                        <a id="footer-link-jos2" data-placement="top" data-toggle="popover">
+                            <i class=" icon-chevron-up icon-white"></i>
+                            Alfanous JOS2
+                        </a>
+                        </span> 
+                        - <span class="label label-inverse">
+                        <a class="footer-link-searchbar" onclick="addto_searchbar();return false;" href="#">
+                            <i class="icon-plus-sign icon-white"></i>
+                            Add to your search bar!
+                        </a>
+                        </span>
+                    </p>
+                </div>
             </div>
         </div>
     </footer>
