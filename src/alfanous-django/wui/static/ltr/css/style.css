@@ -199,3 +199,9 @@ table th.text-center {
 .footer-info {
   margin-bottom: -20px;
 }
+
+@media (min-width: 1200px) {
+  .push {
+    height: 220px;
+  }
+}
