@@ -10,6 +10,12 @@ html, body, .content {
   src:url('../fonts/ScheherazadeRegOT.ttf');
 }
 
+@media (max-width: 979px) {
+  body {
+    padding-top: 0;
+  }
+}
+
 .advanced-search {
     margin-top: 20px;
 }
