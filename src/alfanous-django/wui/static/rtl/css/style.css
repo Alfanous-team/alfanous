@@ -201,8 +201,8 @@ table th.text-center {
   margin-bottom: -20px;
 }
 
-@media (min-width: 1200px) {
+@media (min-height: 900px) {
   .push {
-    height: 220px;
+    height: 340px;
   }
 }
