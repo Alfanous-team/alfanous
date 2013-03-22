@@ -67,6 +67,13 @@
         <link href="/static/rtl/css/rtl-bootstrap-responsive.min.css" rel="stylesheet">      
     {% endifequal %}
 
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="/static/shared/css/font-awesome.min.css">
+
+    <!--[if IE 7]>
+    <link rel="stylesheet" href="/static/shared/css/font-awesome-ie7.min.css">
+    <![endif]-->
+
     <!-- Custom Alfanous CSS -->
     <link href="/static/{{ bidi.direction }}/css/style.css" rel="stylesheet">
     
@@ -94,7 +101,7 @@
                 <a class="brand" href="#"></a>
                 <div class="nav-collapse collapse">
                     <ul class="nav">
-                    	<li><a href="{% url alfanous-django.wui.views.results current.language current.unit %}"><i class="icon-home icon-white"></i> {{ _("Home") }}</a></li>
+                    	<li><a href="{% url alfanous-django.wui.views.results current.language current.unit %}"><i class="icon-home icon-large"></i> {{ _("Home") }}</a></li>
                     	{% for available_unit in available.units.items %}
                     		{% ifequal available_unit.0 current.unit %}
                     			<li class="active"><a>{{ available_unit.1 }}</a></li>
@@ -220,6 +227,7 @@
         </div>
 
     </div>
+</div>
 
     {% include "popups_content.html" %}
 
