@@ -42,14 +42,19 @@ span a, span a:hover {
 }
 
 #social-icons a {
-  height: 26px;
-  width: 26px;
+  color: gray;
   margin-right: 5px;
   display: inline-block;
-  background: transparent url(../img/social_icons.png);
-  text-indent: -9999999px;
 } 
 
+#social-icons a:hover {
+  text-decoration: none;
+  color: #4765B6;
+} 
+
+.slidingForm {
+  margin-top: 5%;
+}
 .slidingForm, .aya_details{
     display:none;
 }
@@ -58,22 +63,11 @@ span a, span a:hover {
   text-decoration: none;
 }
 
-.slidingForm li, .slidingForm div {
-  padding: 0.5%;
-}
-
-.slidingForm div.container-fluid{
-  margin: auto;
-  text-align: left;
-}
-.slidingForm label.checkbox {
-  margin: auto;
-}
-
 #footer-link-jos2, #footer-link-jos2:hover, #footer-link-jos2:visited,
 .footer-link-searchbar, .footer-link-searchbar:hover, .footer-link-searchbar:visited {
   color:white;
 }
+
 .popoverInnerText {
   font-weight: normal;
   text-shadow:none;
@@ -145,21 +139,6 @@ div.help {
     border-style: solid;
 }
 
-
-#social-icons a.facebook { background-position: 0px top; }
-#social-icons a.twitter { background-position: -26px top; }
-#social-icons a.github { background-position: -52px top ; }
-#social-icons a.rss { background-position: -260px top ; }
-#social-icons a.googleplus { background-position: -286px top ; }
-
-#social-icons a.facebook:hover { background-position: 0px bottom; }
-#social-icons a.twitter:hover { background-position: -26px bottom ; }
-#social-icons a.github:hover { background-position: -52px bottom ; }
-#social-icons a.rss:hover { background-position: -260px bottom ; }
-#social-icons a.googleplus:hover { background-position: -286px bottom ; }
-
-
-
 /* Audio player */
 .audio {
   display: none;
@@ -174,6 +153,3 @@ table th.text-center {
     text-align: center !important;
 }
 
-.dropdown-menu {
-  right: 40%;
-}

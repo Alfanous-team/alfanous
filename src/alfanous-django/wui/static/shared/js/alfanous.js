@@ -54,14 +54,20 @@ $(document).ready(function(){
     });
 
     $('#footer-link-jos2').popover(
-        {
-            html:true,
-            title:'<span class="popoverInnerText">About JOS2<span>',
-            animation: true,
-            content: function() {
-                return $('#popoverInner').html();
-            },
-        });
+    {
+        html:true,
+        title:'<span class="popoverInnerText">About JOS2<span>',
+        animation: true,
+        content: function() {
+            return $('#popoverInner').html();
+        },
+    });
+
+    $('select').selectpicker();
+
+    $("#QuickTour").click(function(){
+                bootstro.start();    
+            });
 });
 
 function build_search_link(param,query,filter)

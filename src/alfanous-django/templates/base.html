@@ -37,8 +37,8 @@
 	<meta name="author" content="Assem Chelli, Ahmed Ramadan, Abdellah Chelli, Mouad Debbar" />
 	<meta name="robots" content="index,follow"/>
 
-	<link rel="icon" href="/static/{{ bidi.direction }}/img/icon_32.png" sizes="32x32"> 
-	<link rel="shortcut icon" href="/static/{{ bidi.direction }}/img/favicon.ico" type="image/x-icon">
+	<link rel="icon" href="/static/shared/img/icon_32.png" sizes="32x32"> 
+	<link rel="shortcut icon" href="/static/shared/img/favicon.ico" type="image/x-icon">
 
 	<link rel="search" type="application/opensearchdescription+xml" title="Alfanous" href="/static/alfanous-opensearch.xml"/>
 
@@ -62,11 +62,13 @@
         <link href="/static/ltr/css/bootstrap.min.css" rel="stylesheet">
         <link href="/static/ltr/css/bootstrap-responsive.min.css" rel="stylesheet">      
     {% else %}
-        <!-- the same as ltr just for mow-->
         <link href="/static/rtl/css/rtl-bootstrap.min.css" rel="stylesheet">
         <link href="/static/rtl/css/rtl-bootstrap-responsive.min.css" rel="stylesheet">      
     {% endifequal %}
-
+    <!-- custom html select items -->
+    <link href="/static/shared/css/bootstrap-select.min.css" rel="stylesheet">
+    <!-- Quick tour -->
+    <link href="/static/shared/css/bootstro.min.css" rel="stylesheet">
     <!-- Font Awesome -->
     <link rel="stylesheet" href="/static/shared/css/font-awesome.min.css">
 
@@ -75,8 +77,10 @@
     <![endif]-->
 
     <!-- Custom Alfanous CSS -->
-    <link href="/static/{{ bidi.direction }}/css/style.css" rel="stylesheet">
-    
+    <link href="/static/shared/css/style.css" rel="stylesheet">
+    {% ifequal bidi.direction "rtl" %}
+    <link href="/static/rtl/css/rtl.css" rel="stylesheet">
+    {% endifequal %}
 </head>
 <body>
 {% if False %} 
@@ -104,7 +108,10 @@
                     	<li><a href="{% url alfanous-django.wui.views.results current.language current.unit %}"><i class="icon-home icon-large"></i> {{ _("Home") }}</a></li>
                     	{% for available_unit in available.units.items %}
                     		{% ifequal available_unit.0 current.unit %}
-                    			<li class="active"><a>{{ available_unit.1 }}</a></li>
+                    			<li class="active bootstro" data-bootstro-title="First select search mode"
+                                data-bootstro-content="You can choose whether to search in Arabic verses of the holly Quran or in its translations"
+                                data-bootstro-width="400px" 
+                                data-bootstro-placement='bottom' data-bootstro-step='0'><a >{{ available_unit.1 }}</a></li>
 							{% else %}
 							<li><a href="{% url alfanous-django.wui.views.results current.language available_unit.0 %}">{{ available_unit.1 }}</a></li>
 							{% endifequal %} 
@@ -116,7 +123,10 @@
                     <ul class="nav pull-right">
                     {% endif %}
                         <li class="dropdown">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">{{ _("Languages") }}<b class="caret"></b></a>
+                            <a href="#" class="dropdown-toggle bootstro" data-toggle="dropdown" data-bootstro-title="Select your language"
+                                data-bootstro-content="If you didn't notice, Alfanous User Interface is now translated to other languages, choose the one that fits you the best, or, you can contribute in translating it into your native language! (see the translate link)"
+                                data-bootstro-width="400px" 
+                                data-bootstro-placement='bottom' data-bootstro-step='1'>{{ _("Languages") }}<b class="caret"></b></a>
                             <ul class="dropdown-menu">
                                 {% for available_language in available.languages %}
                                     {% if available_language.0 != language.code %}
@@ -146,10 +156,10 @@
                 {% else %}
                 <ul class="inline pull-right">
                 {% endif %}
-					<li><a class="facebook" href="https://www.facebook.com/Alfanous">Facebook</a></li>
-					<li><a class="twitter" href="https://twitter.com/alfanous">Twitter</a></li>
-					<li><a class="github" href="https://github.com/Alfanous-team/alfanous">Github</a></li>
-                    <li><a class="googleplus" href="https://plus.google.com/u/0/111305625425237630318">Google+</a></li>
+					<li><a class="facebook" href="https://www.facebook.com/Alfanous"><i class="icon-facebook icon-large"></i></a></li>
+					<li><a class="twitter" href="https://twitter.com/alfanous"><i class="icon-twitter icon-large"></i></a></li>
+					<li><a class="github" href="https://github.com/Alfanous-team/alfanous"><i class="icon-github icon-large"></i></a></li>
+                    <li><a class="googleplus" href="https://plus.google.com/u/0/111305625425237630318"><i class="icon-google-plus icon-large"></i></a></li>
 				</ul>
 			</div>
 		</div>
@@ -161,14 +171,31 @@
                 <div class="well sidebar-nav hidden-phone affix">
                     <ul class="nav nav-list ">
                         <li class="nav-header">{{ _("Information:") }}</li>
+                            <li><a id="QuickTour" href="#"><i class="icon-lightbulb"></i>Quick Tour!</a></li>
                             <li><a href="#faqpanel" data-toggle="modal"><i class="icon-question-sign"></i> {{ _("F.A.Q.") }}</a></li>
-                            <li><a href="#help" data-toggle="modal"><i class="icon-exclamation-sign"></i> {{ _("Help") }}</a></li>
+                            <li><a href="#help" class="bootstro" data-toggle="modal" data-bootstro-title="Sample search here"
+                                data-bootstro-content="Here you can learn by example about the full power of Alfanous search engine and what you can do with it."
+                                data-bootstro-width="400px" 
+                                {% if bidi.direction == "rtl" %}
+                                data-bootstro-placement='left'
+                                {% else %}
+                                data-bootstro-placement='right'
+                                {% endif %}
+                                data-bootstro-step='4'><i class="icon-exclamation-sign"></i> {{ _("Help") }}</a></li>
                             <li><a href="#contactpanel" data-toggle="modal"><i class="icon-envelope"></i> {{ _("Contact") }}</a></li>
                             <li><a href="#download" data-toggle="modal"><i class="icon-download-alt"></i> {{ _("Download") }}</a></li>
                         <li class="nav-header">{{ _("Contribute:") }}</li>
                             <li><a href="#translatepanel" data-toggle="modal"><i class="icon-globe"></i> {{ _("Translate") }}</a></li>
                             <li><a href="http://feedback.alfanous.org/"><i class="icon-comment"></i> {{ _("Feedback") }}</a></li>
-                            <li><a href="#donatepanel" data-toggle="modal"><i class="icon-shopping-cart"></i> {{ _("Donate") }}</a></li>
+                            <li><a href="#donatepanel" data-toggle="modal" title="we really need your help!" class="dropdown-toggle bootstro" data-bootstro-title="We really need your help!"
+                                data-bootstro-content="We're looking to fund the project, if you like it, help us making it even better."
+                                data-bootstro-width="400px" 
+                                {% if bidi.direction == "rtl" %}
+                                data-bootstro-placement='left'
+                                {% else %}
+                                data-bootstro-placement='right'
+                                {% endif %}
+                                data-bootstro-step='5'><i class="icon-shopping-cart"></i> {{ _("Donate") }}</a></li>
                             <li><a href="#otherMeans" data-toggle="modal"><i class="icon-plus"></i> {{ _("Other means") }}</a></li>
                     </ul>
                 </div><!--/.well -->
@@ -178,45 +205,53 @@
             <div class="span10 text-center">
                 <div class="row span4 offset2">
                     <a href="{% url alfanous-django.wui.views.results current.language current.unit %}" class="logo"><img src="/static/{{ bidi.direction }}/img/alfanous.png"></a>
-                        <form class="form-search text-center" id="form" name="form" method="get" action=".">
-                            <div class="input-append text-right">
-                                <input id="search_box" name="query" class="search-query enter keyboardInput" placeholder="Search" type="text" value="{{ params.query }}" data-provide="typeahead" autocomplete="off"
+                        <form class="form-search" id="form" name="form" method="GET" action=".">
+                            <div class="input-append text-right bootstro"
+                                data-bootstro-title="Alfanous is smart!"
+                                data-bootstro-content="Just start typing here! but wait... <strong>Did you know?</strong> Alfanous isn't just a typical search function, you can do a lot using operators like: <code>+</code>, <code>-</code>, <code>|</code> and a lot more!"
+                                data-bootstro-width="400px" 
+                                data-bootstro-placement='bottom' data-bootstro-step='2'>
+                                <input id="appendedInputButtons" name="query" class="search-query enter keyboardInput" placeholder="Search" type="text" value="{{ params.query }}" data-provide="typeahead" autocomplete="off"
                                 data-source="[&quot;الله&quot;,&quot;محمد&quot;,&quot;الصلاة&quot;,&quot;الزكاة&quot;,&quot;صوم&quot;,&quot;رمضان&quot;,&quot;الحج&quot;,&quot;الشهادة&quot;,&quot;العلم&quot;,&quot;المؤمنون&quot;,&quot;الرسول&quot;,&quot;الرسل&quot;,&quot;عيسى&quot;,&quot;موسى&quot;,&quot;ابراهيم&quot;,&quot;الاسلام&quot;,&quot;مسلم&quot;,&quot;الجنة&quot;,&quot;النار&quot;,&quot;العذاب&quot;,&quot;أليم&quot;,&quot;النعيم&quot;,&quot;الحياة&quot;,&quot;الدنيا&quot;,&quot;الخوع&quot;,&quot;الحكم&quot;,&quot;الكفر&quot;,&quot;الشيطان&quot;,&quot;ابليس&quot;,&quot;آدم&quot;,&quot;اليهود&quot;,&quot;اسرائيل&quot;,&quot;السنة&quot;,&quot;الاستغفار&quot;,&quot;المشركين&quot;,&quot;المشركات&quot;,&quot;النساء&quot;,&quot;التوبة&quot;,&quot;المغفرة&quot;,&quot;الصدق&quot;,&quot;التوحيد&quot;,&quot;الجهل&quot;,&quot;فأسقيناكموه&quot;,&quot;نبي&quot;,&quot;نعم؟&quot;,&quot;رسول الله&quot;,&quot;الصلاة + الزكاة&quot;,&quot;موضوع:&quot;,&quot;الملك&quot;,&quot;الصلاة | الزكاة&quot;,&quot;الصلاة - الزكاة&quot;]"
                                 />
-                                
                                 <button type="submit" href="" class="btn" onclick="$('#form').submit(); return false;">
                                     <i class="icon-search"></i>
                                     <span class="hidden-phone">Quick {{ _("search") }}</span>
                                 </button>
-                                <ul class="dropdown-menu">
-                                    <!-- dropdown menu links -->
-                                </ul>
                             </div>
                             {% if current.unit == "aya" %}
-                            <div class="advanced-search text-center">
-                                <a class="text-center show_hide" data-toggle="tooltip" title="first tooltip">
-                                    <i class="icon-wrench"></i>
-                                    Advanced search [+]
-                                </a>
-                            </div>
-                            {% endif %}
-                        </form>
+                                <div class="advanced-search text-center">
+                                    <a class="text-center show_hide bootstro" data-toggle="tooltip" title="Even more!"
+                                    data-bootstro-title="Even more!"
+                                data-bootstro-content="You can <strong>sort</strong>, <strong>filter</strong> search reasults or choose a translation, you can as well choose a recitator!"
+                                data-bootstro-width="400px" 
+                                data-bootstro-placement='top' data-bootstro-step='3'>
+                                        <i class="icon-wrench"></i>
+                                        Advanced search [+]
+                                    </a>
+                                </div>
+                                
+                                <div class="row slidingForm">
+                                    <form class="form-horizontal ">
+                                        <fieldset class="well">
+                                                {% block options %}
+                                                {% endblock %}
 
-                   
-                        <form class="form-horizontal well slidingForm">
-                            <h4 class="text-center">Search options:</h4>
-                                {% block options %}
-								{% endblock %}
-                            <div class="row">
-                                {% block views_panel %}{% endblock %}
-								{% block sortedby_panel %}{% endblock %}
-								{% block translations_panel %}{% endblock %}
-								{% block recitations_panel %} {% endblock %}
-                                <button type="submit" class="btn" onclick="$('#form').submit(); return false;">
-                                    <i class="icon-search"></i>
-                                    Bismi'Allah Go!
-                                </button>
-                            </div>
+                                                {% block views_panel %}{% endblock %}
+                                                {% block sortedby_panel %}{% endblock %}
+                                                {% block translations_panel %}{% endblock %}
+                                                {% block recitations_panel %} {% endblock %}
+                                                <!-- Button -->
+                                                <div class="control-group">
+                                                    <label class="control-label"></label>
+                                                    <div class="controls">
+                                                        <button type="submit" id="singlebutton" name="singlebutton" class="btn btn-default" onclick="$('#form').submit(); return false;">Bismi'Allah Go!</button>
+                                                    </div>
+                                                </div>
+                                        </fieldset>
+                                    </form>
+                                </div>
+                            {% endif %}
                         </form>
                 </div><!--/span4-->
             </div><!--/row-->
@@ -239,7 +274,10 @@
                 <div class="row hidden-phone text-center help">
                     <div class="alert alert-info span8 offset2 text-center">
                         <button type="button" class="close" data-dismiss="alert">&times;</button>
-                        <strong>Help!</strong> Please help us improving Alfanous Project, by taking this survey about search features in Holy Quran.
+                        <i class="icon-info-sign"></i>
+                        <strong>Help!</strong>
+                        <a href="https://docs.google.com/spreadsheet/viewform?formkey=dEZZaE5fQ0NwQXljU2ZyUmpfLW15SVE6MA#gid=0">Please help us improving Alfanous Project, 
+                        by taking this survey about search features in Holy Quran.</a>
                     </div>
                 </div>
                 <hr />
@@ -275,13 +313,15 @@
     <!-- The javascript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
-    <script src="/static/{{ bidi.direction }}/js/jquery-1.9.1.min.js"></script>
+    <script src="/static/shared/js/jquery-1.9.1.min.js"></script>
     {% ifequal bidi.direction "ltr" %}
         <script src="/static/ltr/js/bootstrap.min.js"></script>
     {% else %}
         <script src="/static/rtl/js/rtl-bootstrap.min.js"></script>     
     {% endifequal %}
-    <script src="/static/{{ bidi.direction }}/js/alfanous.js"></script>
+    <script src="/static/shared/js/bootstrap-select.min.js"></script>
+    <script src="/static/shared/js/bootstro.min.js"></script>
+    <script src="/static/shared/js/alfanous.js"></script>
     <script src="http://api.html5media.info/1.1.5/html5media.min.js"></script>
 </body>
 </html>
