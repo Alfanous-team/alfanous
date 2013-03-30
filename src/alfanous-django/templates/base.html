@@ -171,7 +171,7 @@
                 <div class="well sidebar-nav hidden-phone affix">
                     <ul class="nav nav-list ">
                         <li class="nav-header">{{ _("Information:") }}</li>
-                            <li><a id="QuickTour" href="#"><i class="icon-lightbulb"></i>Quick Tour!</a></li>
+                            <li><a id="QuickTour" href="#"><i class="icon-lightbulb"></i>{{ _("Quick Tour!") }}</a></li>
                             <li><a href="#faqpanel" data-toggle="modal"><i class="icon-question-sign"></i> {{ _("F.A.Q.") }}</a></li>
                             <li><a href="#help" class="bootstro" data-toggle="modal" data-bootstro-title="Sample search here"
                                 data-bootstro-content="Here you can learn by example about the full power of Alfanous search engine and what you can do with it."
@@ -216,7 +216,7 @@
                                 />
                                 <button type="submit" class="btn" onclick="$('#form').submit(); return false;">
                                     <i class="icon-search"></i>
-                                    <span class="hidden-phone">Quick {{ _("search") }}</span>
+                                    <span class="hidden-phone">{{ _("Quick search") }}</span>
                                 </button>
                             </div>
                             {% if current.unit == "aya" %}
@@ -227,7 +227,7 @@
                                 data-bootstro-width="400px" 
                                 data-bootstro-placement='top' data-bootstro-step='3'>
                                         <i class="icon-wrench"></i>
-                                        Advanced search [+]
+                                        {{ _("Advanced search") }} [+]
                                     </a>
                                 </div>
                                 
@@ -245,7 +245,7 @@
                                                 <div class="control-group">
                                                     <label class="control-label"></label>
                                                     <div class="controls">
-                                                        <button type="submit" id="singlebutton" name="singlebutton" class="btn btn-default" onclick="$('#form').submit(); return false;">Bismi'Allah Go!</button>
+                                                        <button type="submit" id="singlebutton" name="singlebutton" class="btn btn-default" onclick="$('#form').submit(); return false;">{{ _("Bismi'Allah Go!") }}</button>
                                                     </div>
                                                 </div>
                                         </fieldset>
@@ -275,20 +275,14 @@
                     <div class="alert alert-info span8 offset2 text-center">
                         <button type="button" class="close" data-dismiss="alert">&times;</button>
                         <i class="icon-info-sign"></i>
-                        <strong>Help!</strong>
-                        <a href="https://docs.google.com/spreadsheet/viewform?formkey=dEZZaE5fQ0NwQXljU2ZyUmpfLW15SVE6MA#gid=0">Please help us improving Alfanous Project, 
-                        by taking this survey about search features in Holy Quran.</a>
+                        <strong>{{ _("Help!") }}</strong>
+                        <a href="https://docs.google.com/spreadsheet/viewform?formkey=dEZZaE5fQ0NwQXljU2ZyUmpfLW15SVE6MA#gid=0">{{ _("Please help us improving Alfanous Project, by taking this survey about search features in Holy Quran.") }} </a>
                     </div>
                 </div>
                 <hr />
-                <p class="muted credit">Copyright &copy; <a href="https://github.com/Alfanous-team/alfanous/blob/master/AUTHORS.rst">Alfanous Team</a> 2010 - 2013 &#124; released under <a href="http://www.gnu.org/licenses/agpl.html">AGPL</a> license.</p>
-
-                {% if bidi.direction == "rtl" %}
-                <p class="muted credit pull-left">Powered by <span class="label label-inverse">
-                {% else %}
-                <p class="muted credit pull-right">Powered by <span class="label label-inverse">
-                {% endif %}
-                    <a id="footer-link-jos2" data-placement="top" data-toggle="popover">
+                <p class="muted credit">{{ _("Copyright") }} &copy; <a href="https://github.com/Alfanous-team/alfanous/blob/master/AUTHORS.rst">{{ _("Alfanous Team") }}</a> 2010 - 2013 &#124; {{ _("released under") }} <a href="http://www.gnu.org/licenses/agpl.html">{{ _("AGPL license") }}</a>.</p>
+                <p class="muted credit pull-{{ bidi.align_inverse }}"> {{ _("Powered by") }} <span class="label label-inverse">
+                        <a id="footer-link-jos2" data-placement="top" data-toggle="popover">
                         <i class=" icon-chevron-up icon-white"></i>
                         Alfanous JOS2
                     </a>
@@ -296,7 +290,7 @@
                     - <span class="label label-inverse hidden-phone">
                     <a class="footer-link-searchbar" onclick="addto_searchbar();return false;" href="#">
                         <i class="icon-plus-sign icon-white"></i>
-                        Add to your search bar!
+                        {{ _("Add to your search bar!") }}
                     </a>
                     </span>
                 </p>
