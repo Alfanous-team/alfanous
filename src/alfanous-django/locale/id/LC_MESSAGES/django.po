@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2013-02-20 22:47+0100\n"
-"PO-Revision-Date: 2013-03-07 09:39-0000\n"
+"PO-Revision-Date: 2013-03-30 15:48-0000\n"
 "Last-Translator: Assem Chelli <assem.ch@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -50,7 +50,7 @@ msgstr "Tida ada Saran"
 
 #: templates/aya_results.html:42
 msgid "Words:"
-msgstr "Kalimat"
+msgstr "Kalimat:"
 
 #: templates/aya_results.html:44
 #: templates/aya_results.html.py:207
