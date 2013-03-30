@@ -204,7 +204,7 @@
 
             <div class="span10 text-center">
                 <div class="row span4 offset2">
-                    <a href="{% url alfanous-django.wui.views.results current.language current.unit %}" class="logo"><img src="/static/{{ bidi.direction }}/img/alfanous.png"></a>
+                    <a href="{% url alfanous-django.wui.views.results current.language current.unit %}" class="logo"><img src="/static/{{ bidi.direction }}/img/alfanous.png" alt="logo"></a>
                         <form class="form-search" id="form" name="form" method="GET" action=".">
                             <div class="input-append text-right bootstro"
                                 data-bootstro-title="Alfanous is smart!"
@@ -214,7 +214,7 @@
                                 <input id="appendedInputButtons" name="query" class="search-query enter keyboardInput" placeholder="Search" type="text" value="{{ params.query }}" data-provide="typeahead" autocomplete="off"
                                 data-source="[&quot;الله&quot;,&quot;محمد&quot;,&quot;الصلاة&quot;,&quot;الزكاة&quot;,&quot;صوم&quot;,&quot;رمضان&quot;,&quot;الحج&quot;,&quot;الشهادة&quot;,&quot;العلم&quot;,&quot;المؤمنون&quot;,&quot;الرسول&quot;,&quot;الرسل&quot;,&quot;عيسى&quot;,&quot;موسى&quot;,&quot;ابراهيم&quot;,&quot;الاسلام&quot;,&quot;مسلم&quot;,&quot;الجنة&quot;,&quot;النار&quot;,&quot;العذاب&quot;,&quot;أليم&quot;,&quot;النعيم&quot;,&quot;الحياة&quot;,&quot;الدنيا&quot;,&quot;الخوع&quot;,&quot;الحكم&quot;,&quot;الكفر&quot;,&quot;الشيطان&quot;,&quot;ابليس&quot;,&quot;آدم&quot;,&quot;اليهود&quot;,&quot;اسرائيل&quot;,&quot;السنة&quot;,&quot;الاستغفار&quot;,&quot;المشركين&quot;,&quot;المشركات&quot;,&quot;النساء&quot;,&quot;التوبة&quot;,&quot;المغفرة&quot;,&quot;الصدق&quot;,&quot;التوحيد&quot;,&quot;الجهل&quot;,&quot;فأسقيناكموه&quot;,&quot;نبي&quot;,&quot;نعم؟&quot;,&quot;رسول الله&quot;,&quot;الصلاة + الزكاة&quot;,&quot;موضوع:&quot;,&quot;الملك&quot;,&quot;الصلاة | الزكاة&quot;,&quot;الصلاة - الزكاة&quot;]"
                                 />
-                                <button type="submit" href="" class="btn" onclick="$('#form').submit(); return false;">
+                                <button type="submit" class="btn" onclick="$('#form').submit(); return false;">
                                     <i class="icon-search"></i>
                                     <span class="hidden-phone">Quick {{ _("search") }}</span>
                                 </button>
