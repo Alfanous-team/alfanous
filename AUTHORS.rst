@@ -77,7 +77,7 @@ Translation
 * Arabic: Assem Chelli 
 * Bosnian: Armin Kazic
 * Brazilian Portuguese: Aieon.corp(LP)
-* French: Assem Chelli, Karim Oulad Chalha, 'yass-pard' LP/FIXME
+* French: Assem Chelli, Karim Oulad Chalha, 'yass-pard', Zineb Pub
 * Indonesian: Mahyuddin Susanto
 * Italian: 'Guybrush88' LP/FIXME
 * Japanese: Abdelkarim Aries
