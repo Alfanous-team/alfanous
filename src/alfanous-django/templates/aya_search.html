@@ -4,22 +4,30 @@
 
 
 
-
 {% block options %}
-<div class="options" style='direction:{{ bidi.direction }};'>
-<input type="checkbox"  name="fuzzy" value="True" {{ params.fuzzy|yesno:"checked," }} /> 
-	<span class="xtitle">{{ _("Fuzzy search") }} </span> 
-<input type="checkbox" name="vocalized" value="False" {{ params.vocalized|yesno:"checked," }} /> 
-	<span class="xtitle">{{ _("Unvocalized text") }} </span>
-<input type="checkbox" name="script" value="uthmani" {{ params.script|yesno:"checked," }} /> 
-	<span class="xtitle">{{ _("Uthmani script") }} </span>
+<!-- Multiple Checkboxes -->
+<div class="control-group">
+  <label class="control-label"><h4>Search options:</h4></label>
+  <div class="controls">
+    <label class="checkbox">
+    	<input type="checkbox"  name="fuzzy" value="True" {{ params.fuzzy|yesno:"checked," }} /> 
+		{{ _("Fuzzy search") }}
+    </label>
+    <label class="checkbox">
+		<input type="checkbox" name="vocalized" value="False" {{ params.vocalized|yesno:"checked," }} /> 
+		{{ _("Unvocalized text") }}
+    </label>
+    <label class="checkbox">
+		<input type="checkbox" name="script" value="uthmani" {{ params.script|yesno:"checked," }} /> 
+		{{ _("Uthmani script") }}
+    </label>
+  </div>
 </div>
-<br/>
 {% endblock %}
 
 
 {% block help_panel %}
-	<table style='direction:{{ bidi.direction }}; border: 2px dashed gray;margin: 5px;width: 600px; z-index:20;">
+	<table style="direction:{{ bidi.direction }}; border: 2px dashed gray;margin: 5px;width: 600px; z-index:20;">
 	<tbody>
 	
 	<tr>
@@ -77,8 +85,15 @@
 
 
 {% block views_panel %}
-	<span class="xtitle">{{ _("View") }} :</span>
-	<select id="view"  class="styled" name="view" >
+<div class="control-group">
+  <label class="control-label"><i class="icon-eye-close"></i> {{ _("View") }}:</label>
+  <div class="controls">
+
+{% if bidi.direction == "rtl" %}
+    <select id="view" name="view" class="input-xlarge text-right">
+{% else %}
+    <select id="view" name="view" class="input-xlarge text-left">
+{% endif %}
 		<option value="default" {% ifequal params.view "default" %}selected{% endifequal %}>{{ _("Default") }}</option>
 		<option value="minimal" {% ifequal params.view "minimal" %}selected{% endifequal %}>{{ _("Minimal") }}</option>
 		<option value="normal" {% ifequal params.view "normal" %}selected{% endifequal %}>{{ _("Normal") }}</option>
@@ -86,35 +101,59 @@
 		<option value="statistic" {% ifequal params.view "statistic" %}selected{% endifequal %}>{{ _("Statitic") }}</option>
 		<option value="linguistic" {% ifequal params.view "linguistic" %}selected{% endifequal %}>{{ _("Linguistic") }}</option>
 		<option value="recitation" {% ifequal params.view "recitation" %}selected{% endifequal %}>{{ _("Recitation") }}</option>
-	</select><br /><!--[if lte IE 8]><![endif]-->
+    </select>
+  </div>
+</div>
 {% endblock %}
 
 
 {% block sortedby_panel %}
-	<span class="xtitle">{{ _("Sorted by") }} :</span>
-	<select id="sortedby" class="styled" name="sortedby">
+<div class="control-group">
+  <label class="control-label"><i class="icon-sort"></i> {{ _("Sorted by") }}:</label>
+  <div class="controls">
+{% if bidi.direction == "rtl" %}
+    <select id="sortedby" name="sortedby" class="input-xlarge text-right">
+{% else %}
+    <select id="sortedby" name="sortedby" class="input-xlarge text-left">
+{% endif %}
 		<option value="score" {% ifequal params.sortedby "score" %}selected{% endifequal %}>{{ _("Relevance") }}</option>
 		<option value="mushaf" {% ifequal params.sortedby "mushaf" %}selected{% endifequal %}>{{ _("Mus'haf") }}</option>
 		<option value="tanzil" {% ifequal params.sortedby "tanzil" %}selected{% endifequal %}>{{ _("Tanzil") }}</option>
 		<option value="subject" {% ifequal params.sortedby "subject" %}selected{% endifequal %}>{{ _("Topics") }}</option>
 		<option value="ayalength" {% ifequal params.sortedby "ayalength" %}selected{% endifequal %}>{{ _("Ayah length") }}</option>
-	</select><br /><!--[if lte IE 8]><![endif]-->
+    </select>
+  </div>
+</div>
 {% endblock %}
 
 {% block translations_panel %}
-	<span class="xtitle">&nbsp;&nbsp;&nbsp; {{ _("Translation") }} :</span>
-	<select id="translation" class="styled" name="translation">
-					<option value="en.transliteration">{{ _("Default") }}</option>
-					<option value="None" {% ifequal params.translation "None" %}selected{% endifequal %}>{{ _("No translation") }}</option>
-					{% for translation_id, translation_name in available.translations.items%}
-					<option value="{{ translation_id }}" {% ifequal params.translation translation_id %}selected{% endifequal %}>{{ translation_name }}</option>
-					{% endfor %}
-	</select><br /><!--[if lte IE 8]><![endif]-->
+<div class="control-group">
+  <label class="control-label"><i class="icon-globe"></i> {{ _("Translation") }}:</label>
+  <div class="controls">
+{% if bidi.direction == "rtl" %}
+    <select id="translation" name="translation" class="input-xlarge text-right">
+{% else %}
+    <select id="translation" name="translation" class="input-xlarge text-left">
+{% endif %}
+		<option value="en.transliteration">{{ _("Default") }}</option>
+		<option value="None" {% ifequal params.translation "None" %}selected{% endifequal %}>{{ _("No translation") }}</option>
+		{% for translation_id, translation_name in available.translations.items%}
+		<option value="{{ translation_id }}" {% ifequal params.translation translation_id %}selected{% endifequal %}>{{ translation_name }}</option>
+		{% endfor %}
+    </select>
+  </div>
+</div>
 {% endblock %}
 
 {% block recitations_panel %}
-	<span class="xtitle">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {{ _("Recitation:") }}</span>
-	<select id="recitation" class="styled" name="recitation">
+<div class="control-group">
+  <label class="control-label"><i class="icon-play-circle"></i> {{ _("Recitation:") }}</label>
+  <div class="controls">
+{% if bidi.direction == "rtl" %}
+    <select id="recitation" name="recitation" class="input-xlarge text-right">
+{% else %}
+    <select id="recitation" name="recitation" class="input-xlarge text-left">
+{% endif %}
 		<option value="14">{{ _("Default") }}</option>
 		<option value="0" {% ifequal params.recitation "0" %}selected{% endifequal %}>{{ _("No recitation") }}</option>
 		{% for recitation_id, recitation_details in info.show.recitations.items %}
@@ -122,47 +161,135 @@
 					<option value="{{ recitation_id }}" {% ifequal params.recitation recitation_id %}selected{% endifequal %}>{{ recitation_details.name }} - {{ recitation_details.bitrate }} </option>
 			{% endif %}
 		{% endfor %}
-	</select><br /><!--[if lte IE 8]><![endif]-->
+    </select>
+  </div>
+</div>
 {% endblock %}
 
-{% block pages_bottom %} 
-	{% block pages_top %}
-		<br />
+
+{% block pagination %} 
 		{% if results.search.interval.nb_pages > 1 %}
-				<div class='pages'>
-				{% if results.search.interval.page != 1 %}
-					{% with results.search.interval.page|add:"-1"|stringformat:"s" as prev_page %}
-						<a class='no_decoration' href='?{% build_search_link params params.query prev_page False%}'> 
-					{% endwith %} 
-					<img src='/static/images/prev{{ bidi.image_extension }}.gif' alt='{{ _("Previous page") }}' title = '{{ _("Previous page") }}' />
-					</a>
-				{% endif %}
-				<div style=' display:inline-block; position:relative; top:-8px;'>
-				{% for i in results.search.interval.nb_pages|get_range %}
-					{% with results.search.interval.page as page %}
-						{% if  i == page %}
-							 {{ i }}  	
-						{% elif i <= page|add:"+7" and i >= page|add:"-3"  %} 
-							{# pages  in range [-3,+7] #} 
-							<a class='page_link' href="?{% build_search_link params params.query i False %}">{{ i }}</a> 
-						{% elif i|divisibleby:"50" and i < page or i == 1  %} {# Prio: Left #}
-							{# first page ; and every 50 pages before current page #}
-							<a class='page_link' href="?{% build_search_link params params.query i False %}">{{ i }}</a> .. 
-						{% elif i|divisibleby:"50" and i > page or i == results.search.interval.nb_pages  %}
-							{# last page;  and every 50 pages after current page #}
-							.. <a class='page_link' href="?{% build_search_link params params.query i False %}">{{ i }}</a> 
-						{% endif %}	
-					{% endwith %}
-				{% endfor %}
-				</div>
-				{% if results.search.interval.page != results.search.interval.nb_pages %}
-					{% with results.search.interval.page|add:"+1"|stringformat:"s" as next_page %}
-						<a class='no_decoration' href='?{% build_search_link params params.query next_page False%}'> 
-					{% endwith %} 
-					<img src='/static/images/next{{ bidi.image_extension }}.gif' alt='{{ _("Next page") }}' title = '{{ _("Next page") }}' /></a>
-				{% endif %}
-				
-				</div>
+			<div class="pagination pagination-centered visible-desktop">
+				<ul>
+					{% if results.search.interval.page != 1 %}
+						{% with results.search.interval.page|add:"-1"|stringformat:"s" as prev_page %}
+						<li><a class='no_decoration' href='?{% build_search_link params params.query prev_page False%}'> 
+						{% endwith %} 
+						<span>&laquo;</span>
+						</a></li>
+					{% endif %}
+
+					{% for i in results.search.interval.nb_pages|get_range %}
+						{% with results.search.interval.page as page %}
+							{% if  i == page %}
+								<li class="disabled"><a>{{ i }}</a></li>
+							{% elif i <= page|add:"+7" and i >= page|add:"-3"  %} 
+								{# pages  in range [-3,+7] #} 
+								<li><a class='page_link' href="?{% build_search_link params params.query i False %}">{{ i }}</a></li>
+							{% elif i|divisibleby:"50" and i < page or i == 1  %} {# Prio: Left #}
+								{# first page ; and every 50 pages before current page #}
+								<li><a class='page_link' href="?{% build_search_link params params.query i False %}">{{ i }}</a></li>
+								<li class="disabled"><a>..</a></li>
+							{% elif i|divisibleby:"50" and i > page or i == results.search.interval.nb_pages  %}
+								{# last page;  and every 50 pages after current page #}
+								<li class="disabled"><a>..</a></li>
+								<li><a class='page_link' href="?{% build_search_link params params.query i False %}">{{ i }}</a></li>
+							{% endif %}	
+						{% endwith %}
+					{% endfor %}
+
+					{% if results.search.interval.page != results.search.interval.nb_pages %}
+						{% with results.search.interval.page|add:"+1"|stringformat:"s" as next_page %}
+							<li><a class='no_decoration' href='?{% build_search_link params params.query next_page False%}'> 
+						{% endwith %} 
+						<span>&raquo;</span></a></li>
+					{% endif %}
+				</ul>
+			</div>
 		{% endif %}
-	{% endblock %}
 {% endblock %}
+
+{% block pagination_tablet %} 
+		{% if results.search.interval.nb_pages > 1 %}
+			<div class="pagination pagination-centered pagination-small visible-tablet">
+				<ul>
+					{% if results.search.interval.page != 1 %}
+						{% with results.search.interval.page|add:"-1"|stringformat:"s" as prev_page %}
+						<li><a class='no_decoration' href='?{% build_search_link params params.query prev_page False%}'> 
+						{% endwith %} 
+						<span>&laquo;</span>
+						</a></li>
+					{% endif %}
+
+					{% for i in results.search.interval.nb_pages|get_range %}
+						{% with results.search.interval.page as page %}
+							{% if  i == page %}
+								<li class="disabled"><a>{{ i }}</a></li>
+							{% elif i <= page|add:"+7" and i >= page|add:"-3"  %} 
+								{# pages  in range [-3,+7] #} 
+								<li><a class='page_link' href="?{% build_search_link params params.query i False %}">{{ i }}</a></li>
+							{% elif i|divisibleby:"50" and i < page or i == 1  %} {# Prio: Left #}
+								{# first page ; and every 50 pages before current page #}
+								<li><a class='page_link' href="?{% build_search_link params params.query i False %}">{{ i }}</a></li>
+								<li class="disabled"><a>..</a></li>
+							{% elif i|divisibleby:"50" and i > page or i == results.search.interval.nb_pages  %}
+								{# last page;  and every 50 pages after current page #}
+								<li class="disabled"><a>..</a></li>
+								<li><a class='page_link' href="?{% build_search_link params params.query i False %}">{{ i }}</a></li>
+							{% endif %}	
+						{% endwith %}
+					{% endfor %}
+
+					{% if results.search.interval.page != results.search.interval.nb_pages %}
+						{% with results.search.interval.page|add:"+1"|stringformat:"s" as next_page %}
+							<li><a class='no_decoration' href='?{% build_search_link params params.query next_page False%}'> 
+						{% endwith %} 
+						<span>&raquo;</span></a></li>
+					{% endif %}
+				</ul>
+			</div>
+		{% endif %}
+{% endblock %}
+
+{% block pagination_phone %} 
+		{% if results.search.interval.nb_pages > 1 %}
+			<div class="pagination pagination-centered pagination-mini visible-phone">
+				<ul>
+					{% if results.search.interval.page != 1 %}
+						{% with results.search.interval.page|add:"-1"|stringformat:"s" as prev_page %}
+						<li><a class='no_decoration' href='?{% build_search_link params params.query prev_page False%}'> 
+						{% endwith %} 
+						<span>&laquo;</span>
+						</a></li>
+					{% endif %}
+
+					{% for i in results.search.interval.nb_pages|get_range %}
+						{% with results.search.interval.page as page %}
+							{% if  i == page %}
+								<li class="disabled"><a>{{ i }}</a></li>
+							{% elif i <= page|add:"+7" and i >= page|add:"-3"  %} 
+								{# pages  in range [-3,+7] #} 
+								<li><a class='page_link' href="?{% build_search_link params params.query i False %}">{{ i }}</a></li>
+							{% elif i|divisibleby:"50" and i < page or i == 1  %} {# Prio: Left #}
+								{# first page ; and every 50 pages before current page #}
+								<li><a class='page_link' href="?{% build_search_link params params.query i False %}">{{ i }}</a></li>
+								<li class="disabled"><a>..</a></li>
+							{% elif i|divisibleby:"50" and i > page or i == results.search.interval.nb_pages  %}
+								{# last page;  and every 50 pages after current page #}
+								<li class="disabled"><a>..</a></li>
+								<li><a class='page_link' href="?{% build_search_link params params.query i False %}">{{ i }}</a></li>
+							{% endif %}	
+						{% endwith %}
+					{% endfor %}
+
+					{% if results.search.interval.page != results.search.interval.nb_pages %}
+						{% with results.search.interval.page|add:"+1"|stringformat:"s" as next_page %}
+							<li><a class='no_decoration' href='?{% build_search_link params params.query next_page False%}'> 
+						{% endwith %} 
+						<span>&raquo;</span></a></li>
+					{% endif %}
+				</ul>
+			</div>
+		{% endif %}
+{% endblock %}
+
