@@ -62,7 +62,7 @@
 				<!-- Words list -->
 				<tbody>
 					<tr>
-						<td>About {{ _("Words:") }}</td>
+						<td>{{ _("About words:") }}</td>
 						<td>{{ _("words") }}: {{  results.search.words.global.nb_words }}</td>
 						<td>{{ _("occurances") }}: {{ results.search.words.global.nb_matches }}</td>
 						<td>{{ _("vocalizations") }}: {{ results.search.words.global.nb_vocalizations }}</td>
@@ -288,7 +288,7 @@
 	                <div class="text-center">
 	                    <a id="aya_details_{{ ayaresult_id }}" class="text-center show_hide_aya_details" data-toggle="tooltip" title="first tooltip"><p>----------
 	                    <i id="details_icon_{{ ayaresult_id }}" class="icon-chevron-down"></i>
-	                    Show more ----------
+	                    {{ _("Show more") }} ----------
 	                    </p></a>
 	                </div>
 	                <div id="aya_details_{{ ayaresult_id }}_content" class="aya_details">
@@ -331,7 +331,7 @@
 		                    {% endif %}
 		                </div>
 						{% if ayaresult_content.stat or 	ayaresult_content.position %}	
-		                    <h5>About ayah:</h5>
+		                    <h5>{{ _("About ayah:") }}</h5>
 		                    <div class="text-center">
 		                    	{% if ayaresult_content.stat %}
 		                            <span class="label">
@@ -403,7 +403,7 @@
 	                    {% endif %}
 
 	                    {% if ayaresult_content.sura %}
-		                    <h5>About Surah:</h5>
+		                    <h5>{{ _("About Surah:") }}</h5>
 		                    <div class="text-center">
 		                        <span class="badge">
 		                        	{% with bidi.fields.sura|add:':"'|add:ayaresult_content.sura.name|add:'"' as new_query %}
