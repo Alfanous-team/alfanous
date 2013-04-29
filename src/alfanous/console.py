@@ -40,7 +40,11 @@ arg_parser = ArgumentParser(
                               usage = sys.argv[0] + " [flags]"
                             )
 
-# add arguments
+
+#
+Boolean_choices = ["true", "false"]
+
+# add arguments ## TODO this should be automatized using the fields list
 arg_parser.add_argument( "-a", "--action", dest = "action", type = str , choices = DOMAINS["action"], help = HELPMESSAGES["action"] )
 arg_parser.add_argument( "-u", "--unit", dest = "unit", type = str , choices = DOMAINS["unit"], help = HELPMESSAGES["unit"] )
 arg_parser.add_argument( "-q", "--query", dest = "query", type = str  , help = HELPMESSAGES["query"] )
@@ -55,19 +59,22 @@ arg_parser.add_argument( "--translation", dest = "translation", type = str, help
 arg_parser.add_argument( "--romanization", dest = "romanization", type = str, help = HELPMESSAGES["romanization"] )
 arg_parser.add_argument( "--highlight", dest = "highlight", type = str, choices = DOMAINS["highlight"], help = HELPMESSAGES["highlight"] )
 arg_parser.add_argument( "--script", dest = "script", type = str, choices = DOMAINS["script"] , help = HELPMESSAGES["script"] )
-arg_parser.add_argument( "--vocalized", dest = "vocalized", type = bool, choices = DOMAINS["vocalized"], help = HELPMESSAGES["vocalized"] )
-arg_parser.add_argument( "--prev_aya", dest = "prev_aya", type = bool, choices = DOMAINS["prev_aya"], help = HELPMESSAGES["prev_aya"] )
-arg_parser.add_argument( "--next_aya", dest = "next_aya", type = bool, choices = DOMAINS["next_aya"], help = HELPMESSAGES["next_aya"] )
-arg_parser.add_argument( "--sura_info", dest = "sura_info", type = bool, choices = DOMAINS["sura_info"], help = HELPMESSAGES["sura_info"] )
-arg_parser.add_argument( "--sura_stat_info", dest = "sura_stat_info", type = bool, choices = DOMAINS["sura_stat_info"], help = HELPMESSAGES["sura_stat_info"] )
-arg_parser.add_argument( "--word_info", dest = "word_info", type = bool, choices = DOMAINS["word_info"], help = HELPMESSAGES["word_info"] )
-arg_parser.add_argument( "--aya_position_info", dest = "aya_position_info", type = bool, choices = DOMAINS["aya_position_info"], help = HELPMESSAGES["aya_position_info"] )
-arg_parser.add_argument( "--aya_theme_info", dest = "aya_theme_info", type = bool, choices = DOMAINS["aya_theme_info"], help = HELPMESSAGES["aya_theme_info"] )
-arg_parser.add_argument( "--aya_stat_info", dest = "aya_stat_info", type = bool, choices = DOMAINS["aya_stat_info"], help = HELPMESSAGES["aya_stat_info"] )
-arg_parser.add_argument( "--aya_sajda_info", dest = "aya_sajda_info", type = bool, choices = DOMAINS["aya_sajda_info"], help = HELPMESSAGES["aya_sajda_info"] )
-arg_parser.add_argument( "--annotation_aya", dest = "annotation_aya", type = bool, choices = DOMAINS["annotation_aya"], help = HELPMESSAGES["annotation_aya"] )
-arg_parser.add_argument( "--annotation_word", dest = "annotation_word", type = bool, choices = DOMAINS["annotation_word"], help = HELPMESSAGES["annotation_word"] )
-arg_parser.add_argument( "--fuzzy", dest = "fuzzy", type = bool, choices = DOMAINS["fuzzy"], help = HELPMESSAGES["fuzzy"] )
+arg_parser.add_argument( "--vocalized", dest = "vocalized", type = str, choices = Boolean_choices , help = HELPMESSAGES["vocalized"] )
+arg_parser.add_argument( "--prev_aya", dest = "prev_aya", type = str, choices = Boolean_choices , help = HELPMESSAGES["prev_aya"] )
+arg_parser.add_argument( "--next_aya", dest = "next_aya", type = str, choices = Boolean_choices , help = HELPMESSAGES["next_aya"] )
+arg_parser.add_argument( "--sura_info", dest = "sura_info", type = str, choices = Boolean_choices , help = HELPMESSAGES["sura_info"] )
+arg_parser.add_argument( "--sura_stat_info", dest = "sura_stat_info", type = str, choices = Boolean_choices , help = HELPMESSAGES["sura_stat_info"] )
+arg_parser.add_argument( "--word_info", dest = "word_info", type = str, choices = Boolean_choices, help = HELPMESSAGES["word_info"] )
+arg_parser.add_argument( "--word_synonyms", dest = "word_synonyms", type = str, choices = Boolean_choices, help = HELPMESSAGES["word_synonyms"] )
+arg_parser.add_argument( "--word_derivations", dest = "word_derivations", type = str, choices = Boolean_choices, help = HELPMESSAGES["word_derivations"] )
+arg_parser.add_argument( "--word_vocalizations", dest = "word_vocalizations", type = str, choices = Boolean_choices, help = HELPMESSAGES["word_vocalizations"] )
+arg_parser.add_argument( "--aya_position_info", dest = "aya_position_info", type = str, choices = Boolean_choices, help = HELPMESSAGES["aya_position_info"] )
+arg_parser.add_argument( "--aya_theme_info", dest = "aya_theme_info", type = str, choices = Boolean_choices, help = HELPMESSAGES["aya_theme_info"] )
+arg_parser.add_argument( "--aya_stat_info", dest = "aya_stat_info", type = str, choices = Boolean_choices, help = HELPMESSAGES["aya_stat_info"] )
+arg_parser.add_argument( "--aya_sajda_info", dest = "aya_sajda_info", type = str, choices = Boolean_choices, help = HELPMESSAGES["aya_sajda_info"] )
+arg_parser.add_argument( "--annotation_aya", dest = "annotation_aya", type = str, choices = Boolean_choices, help = HELPMESSAGES["annotation_aya"] )
+arg_parser.add_argument( "--annotation_word", dest = "annotation_word", type = str, choices = Boolean_choices, help = HELPMESSAGES["annotation_word"] )
+arg_parser.add_argument( "--fuzzy", dest = "fuzzy", type = str, choices = Boolean_choices, help = HELPMESSAGES["fuzzy"] )
 arg_parser.add_argument( "--ident", dest = "ident", type = str  , help = HELPMESSAGES["ident"] )
 arg_parser.add_argument( "--platform", dest = "platform", type = str, choices = DOMAINS["platform"], help = HELPMESSAGES["platform"] )
 arg_parser.add_argument( "--domain", dest = "domain", type = str, help = HELPMESSAGES["domain"] )
