@@ -135,6 +135,9 @@ Flags
  15        sura_info          search            aya              enable sura information retrieving            "True"           True | False
  16        sura_stat_info     search            aya              enable sura stats retrieving                  "False"          True | False
  17        word_info          search            aya, word        enable word information retrieving            "True"           True | False
+ 17a       word_synonyms      search            aya              enable retrieving of keyword synonyms         "False"          True | False
+ 17b       word_derivations   search            aya              enable retrieving of keyword derivations      "True"           True | False
+ 17c       word_vocalizations search            aya              enable retrieving of keyword vocalizations    "True"           True | False
  18        aya_position_info  search            aya              enable aya position information retrieving    "True"           True | False
  19        aya_theme_info     search            aya              enable aya theme information retrieving       "True"           True | False
  20        aya_stat_info      search            aya              enable aya stat information retrieving        "True"           True | False
