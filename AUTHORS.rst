@@ -13,7 +13,7 @@ Name      		  Position                    Email                            Twitt
 `Assem Chelli`_     Project Manager/Developer   assem.ch [at] gmail.com          `@assem_ch`_
 `Abdellah Chelli`_  Web Developer               sneetsher [at] gmail.com         `@sneetsher`_ 
 `Zakaria Smahi`_       Developer                   zakaria08esi [at] gmail.com      `@zsmahi`_  
-`Walid Ziouche`_    Tester                      01walid [at] gmail.com           `@01walid`_  
+`Walid Ziouche`_    Tester/Developer            01walid [at] gmail.com           `@01walid`_  
 `Muslih al aqaad`_  Graphic Designer            muslihzarth [at] gmail.com       `@muslihzarth`_
 Yasmine Hoadjli     Community Manager           yhoadjli [at] gmail.com          `@yasmamine`_ 
 ================== ========================== ================================= =============================================
@@ -77,7 +77,7 @@ Translation
 * Arabic: Assem Chelli 
 * Bosnian: Armin Kazic
 * Brazilian Portuguese: Aieon.corp(LP)
-* French: Assem Chelli, Karim Oulad Chalha, 'yass-pard' LP/FIXME
+* French: Assem Chelli, Karim Oulad Chalha, 'yass-pard', Zineb Pub
 * Indonesian: Mahyuddin Susanto
 * Italian: 'Guybrush88' LP/FIXME
 * Japanese: Abdelkarim Aries
