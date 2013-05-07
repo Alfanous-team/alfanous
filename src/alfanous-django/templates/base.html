@@ -414,7 +414,12 @@
 		 <br />
 		<br />
 		<div id="vote_btn">
-		<a class='xbutton gray' href="https://docs.google.com/spreadsheet/viewform?formkey=dHNKQU1JSkEzbDNKR2tvM2M2cDA2SXc6MQ" target="_blank">{{ _("Please help us improving Alfanous Project, by taking this survey about search features in Holy Quran") }} </a>
+		{% ifequal current.language  "ar" %}
+		<a class='xbutton gray' href="https://docs.google.com/spreadsheet/viewform?formkey=dEZZaE5fQ0NwQXljU2ZyUmpfLW15SVE6MA" target="_blank">
+		{% else %}
+		<a class='xbutton gray' href="https://docs.google.com/spreadsheet/viewform?formkey=dHNKQU1JSkEzbDNKR2tvM2M2cDA2SXc6MQ" target="_blank">
+		{% endifequal  %}
+	    {{ _("Please help us improving Alfanous Project, by taking this survey about search features in Holy Quran") }} </a>
 		</div><br />  
 		<br /><br />  
 		<br /><br />
