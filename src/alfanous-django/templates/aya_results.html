@@ -58,70 +58,84 @@
 		
 		{% if results.search.interval.total %}
 			{% if results.search.words.global.nb_words %}
-			<table class="table table-striped table-bordered">	
+			<table class="table table-bordered">	
 				<!-- Words list -->
 				<tbody>
 					<tr>
-						<td>{{ _("About words:") }}</td>
-						<td>{{ _("words") }}: {{  results.search.words.global.nb_words }}</td>
-						<td>{{ _("occurances") }}: {{ results.search.words.global.nb_matches }}</td>
-						<td>{{ _("vocalizations") }}: {{ results.search.words.global.nb_vocalizations }}</td>
+						<td>{{ _("Search Keywords") }} ({{  results.search.words.global.nb_words }}) </td>
+						<td>
+							<table class="table table-striped table-bordered">
+								<tr>
+									<td>{{ _("occurances") }}: {{ results.search.words.global.nb_matches }}</td>
+									<td>{{ _("vocalizations") }}: {{ results.search.words.global.nb_vocalizations }}</td>
+								</tr>
+							</table>
+						</td>
 					</tr>
 					{% for wordcpt, wordstat in results.search.words.individual.items %}
 						<tr>
-							<td rowspan="3">{{ wordcpt }}.</td>
 							<td>
-								{{ _("word") }}:
+								{{ wordcpt }}. {{ _("word") }}:
 								<a href="?{% build_search_link params  wordstat.word 1 False %}"> 
 								{{ wordstat.word }} {% if wordstat.romanization %} ( {{ wordstat.romanization }} ) {%  endif %}</a>
 							</td>
-							<td>{{ _("occurances") }}: {{ wordstat.nb_matches }}</td>
-							<td>{{ _("ayates") }}:  {{ wordstat.nb_ayas }}</td>
-						</tr>
-						<tr>
-							<td>{{ _("vocalizations") }}: {{ wordstat.nb_vocalizations }} </td>
-							<td colspan="2">
-								{% for vocalization in wordstat.vocalizations %} 
-									{% with bidi.fields.aya_|add:":"|add:vocalization|add:"" as new_query %}
-										<a href="?{% build_search_link params  new_query 1 False %}"> 
-									{% endwith %}
-									<span class='label'> {{ vocalization }} 
-									</span></a>
-								{% endfor %}
+							<td>
+							   <table class="table table-striped table-bordered">
+								<tr>
+									<td>{{ _("occurances") }}: {{ wordstat.nb_matches }}</td>
+									<td>{{ _("ayates") }}:  {{ wordstat.nb_ayas }}</td>
+								</tr>
+						
+								<tr>
+									<td>{{ _("vocalizations") }}: {{ wordstat.nb_vocalizations }} </td>
+									<td>
+										{% for vocalization in wordstat.vocalizations %} 
+											{% with bidi.fields.aya_|add:":"|add:vocalization|add:"" as new_query %}
+												<a href="?{% build_search_link params  new_query 1 False %}"> 
+											{% endwith %}
+											<span class='label'> {{ vocalization }} 
+											</span></a>
+										{% endfor %}
+									</td>
+								</tr>
+								{% ifnotequal wordstat.nb_synonyms 0 %}
+									<tr>
+										<td>{{ _("synonyms") }}: {{ wordstat.nb_synonyms }}</td>
+										<td>
+											{% for synonym in wordstat.synonyms %} 
+												<a href="?{% build_search_link params synonym  1 False %}"> 
+												<span class='label label-info'> {{ synonym }} </span></a>
+											{% endfor %}
+											{% with "~"|add:wordstat.word as new_query %}
+												<a href="?{% build_search_link params  new_query 1 False %}"> 
+											{% endwith %}
+											<span class='label label-info'>  {{ "~" }}  
+											</span></a>
+										</td>
+									</tr>
+								{% endifnotequal %}
+	
+								{% ifnotequal wordstat.nb_derivations 0 %}
+									<tr>
+										<td>{{ _("derivations") }}: {{ wordstat.nb_derivations }}</td>
+										<td>
+											{% for derivation in wordstat.derivations %} 
+												<a href="?{% build_search_link params derivation 1 False %}"> 
+												<span class='label label-info'>{{ derivation }} 
+												</span></a>
+											{% endfor %}
+											{% with ">"|add:wordstat.word as new_query %}
+												<a href="?{% build_search_link params  new_query 1 False %}"> 
+											{% endwith %}
+											<span class='label label-info'>  {{ ">" }}  
+											</span></a>
+										</td>
+									</tr>
+								{% endifnotequal %}
+							</table>
 							</td>
+							
 						</tr>
-						{% ifnotequal wordstat.nb_synonyms 0 %}
-							<tr>
-								<td>{{ _("synonyms") }}: {{ wordstat.nb_synonyms }}</td>
-								<td colspan="2">
-									{% for synonym in wordstat.synonyms %} 
-										<a href="?{% build_search_link params synonym  1 False %}"> 
-										<span class='label label-info'> {{ synonym }} </span></a>
-									{% endfor %}
-									{% with "~"|add:wordstat.word as new_query %}
-										<a href="?{% build_search_link params  new_query 1 False %}"> 
-									{% endwith %}
-									<span class='label label-info'>  ~  
-									</span></a>
-								</td>
-							</tr>
-						{% endifnotequal %}
-
-						{% ifnotequal wordstat.nb_derivations 0 %}
-							<tr>
-								<td>{{ _("derivations") }}: {{ wordstat.nb_derivations }}</td>
-								<td colspan="2">
-									{% for derivation in wordstat.derivations %} 
-										<a href="?{% build_search_link params derivation 1 False %}"> 
-										<span class='label label-info'>{{ derivation }} 
-										</span></a>
-									{% endfor %}
-									{% with ">"|add:wordstat.word as new_query %}
-										<a href="?{% build_search_link params  new_query 1 False %}"> 
-									{% endwith %}
-								</td>
-							</tr>
-						{% endifnotequal %}
 						
 					{% endfor %}
 
