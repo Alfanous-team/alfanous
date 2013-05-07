@@ -290,7 +290,12 @@
                         <button type="button" class="close" data-dismiss="alert">&times;</button>
                         <i class="icon-info-sign"></i>
                         <strong>{{ _("Help!") }}</strong>
-                        <a href="https://docs.google.com/spreadsheet/viewform?formkey=dEZZaE5fQ0NwQXljU2ZyUmpfLW15SVE6MA#gid=0">{{ _("Please help us improving Alfanous Project, by taking this survey about search features in Holy Quran.") }} </a>
+                        {% ifequal current.language "ar" %}
+                        <a href="https://docs.google.com/spreadsheet/viewform?formkey=dEZZaE5fQ0NwQXljU2ZyUmpfLW15SVE6MA">
+                        {% else %}
+                        <a href="https://docs.google.com/spreadsheet/viewform?formkey=dHNKQU1JSkEzbDNKR2tvM2M2cDA2SXc6MQ">
+                        {% endifequal %}
+                        {{ _("Please help us improving Alfanous Project, by taking this survey about search features in Holy Quran.") }} </a>
                     </div>
                 </div>
                 <hr />
