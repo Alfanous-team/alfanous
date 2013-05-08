@@ -81,6 +81,20 @@
     {% ifequal bidi.direction "rtl" %}
     <link href="/static/rtl/css/rtl.css" rel="stylesheet">
     {% endifequal %}
+    
+    <!--  flattr donation -->
+    <script type="text/javascript">
+		/* <![CDATA[ */
+	    (function() {
+	        var s = document.createElement('script'), t = document.getElementsByTagName('script')[0];
+	        s.type = 'text/javascript';
+	        s.async = true;
+	        s.src = 'http://api.flattr.com/js/0.6/load.js?mode=auto';
+	        t.parentNode.insertBefore(s, t);
+	    })();
+		/* ]]> */
+	</script>
+
 </head>
 <body>
 {% if False %} 
@@ -231,8 +245,8 @@
                                     </a>
                                 </div>
                                 
-                                <div class="row slidingForm">
-                                    <form class="form-horizontal ">
+                                <div class="row slidingForm ">
+                                    {# <form class="form-horizontal "> #}
                                         <fieldset class="well">
                                                 {% block options %}
                                                 {% endblock %}
@@ -249,7 +263,7 @@
                                                     </div>
                                                 </div>
                                         </fieldset>
-                                    </form>
+                                    {# </form> #}
                                 </div>
                             {% endif %}
                         </form>
@@ -276,7 +290,12 @@
                         <button type="button" class="close" data-dismiss="alert">&times;</button>
                         <i class="icon-info-sign"></i>
                         <strong>{{ _("Help!") }}</strong>
-                        <a href="https://docs.google.com/spreadsheet/viewform?formkey=dEZZaE5fQ0NwQXljU2ZyUmpfLW15SVE6MA#gid=0">{{ _("Please help us improving Alfanous Project, by taking this survey about search features in Holy Quran.") }} </a>
+                        {% ifequal current.language "ar" %}
+                        <a href="https://docs.google.com/spreadsheet/viewform?formkey=dEZZaE5fQ0NwQXljU2ZyUmpfLW15SVE6MA">
+                        {% else %}
+                        <a href="https://docs.google.com/spreadsheet/viewform?formkey=dHNKQU1JSkEzbDNKR2tvM2M2cDA2SXc6MQ">
+                        {% endifequal %}
+                        {{ _("Please help us improving Alfanous Project, by taking this survey about search features in Holy Quran.") }} </a>
                     </div>
                 </div>
                 <hr />

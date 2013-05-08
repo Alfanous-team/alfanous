@@ -43,7 +43,7 @@ from alfanous.Misc import LOCATE, FIND, FILTER_DOUBLES
 STANDARD2UTHMANI = lambda x: std2uth_words[x] if std2uth_words.has_key( x ) else x
 
 ## a function to decide what is True and what is false
-TRUE_FALSE = lambda x: False if x in [False, "False", "no", "0", 0, None] else True
+TRUE_FALSE = lambda x: False if x in [False, "False", "false", "no", "0", 0, None] else True
 
 #
 def SCAN_SUPERJOKERS( query ):
@@ -118,6 +118,9 @@ class Raw():
 			      "sura_info": True,
 			      "sura_stat_info":False,
 			      "word_info": True,
+			      "word_synonyms":False,
+			      "word_derivations":True,
+			      "word_vocalizations":True,
 			      "aya_position_info":	True,
 			      "aya_theme_info":	True,
 			      "aya_stat_info":	True,
@@ -156,7 +159,7 @@ class Raw():
 			      "highlight": ["css", "html", "genshi", "bold", "bbcode"],
 			      "script": ["standard", "uthmani"],
 			      "vocalized": [True, False],
-                  "view":["minimal", "normal", "full", "statistic", "linguistic", "custom"],
+                  "view":["minimal", "normal", "full", "statistic", "linguistic", "recitation" "custom"],
 			      "recitation": [], #xrange( 30 ),
 			      "translation": [],
 			      "romanization": ["none", "buckwalter", "iso", "arabtex"], #arabizi is forbidden for show
@@ -165,6 +168,9 @@ class Raw():
 			      "sura_info": [True, False],
 			      "sura_stat_info": [True, False],
 			      "word_info": [True, False],
+			      "word_synonyms":[True, False],
+			      "word_derivations":[True, False],
+			      "word_vocalizations":[True, False],
 			      "aya_position_info":	[True, False],
 			      "aya_theme_info":	[True, False],
 			      "aya_stat_info":	[True, False],
@@ -200,6 +206,9 @@ class Raw():
 			      "sura_info": "enable sura information retrieving (override sura_stat_info if False)",
 			      "sura_stat_info": "enable sura stats retrieving (has no effect if sura_info is False)",
 			      "word_info": "enable word information retrieving",
+			      "word_synonyms": "enable  retrieving of keyword synonyms",
+			      "word_derivations":"enable  retrieving of keyword derivations",
+			      "word_vocalizations":"enable  retrieving of keyword vocalizations",
 			      "aya_position_info":	"enable aya position information retrieving",
 			      "aya_theme_info":	"enable aya theme information retrieving",
 			      "aya_stat_info":	"enable aya stat information retrieving",
@@ -228,7 +237,7 @@ class Raw():
 					Stats_file = Paths.STATS_FILE,
 					Information_file = Paths.INFORMATION_FILE ):
 		"""
-		init the search engines
+		initialize the search engines
 		"""
 		##
 		self.QSE = 	Indexes.QSE( QSE_index )
@@ -458,6 +467,9 @@ class Raw():
 			prev_aya = next_aya = False
 			sura_info = False
 			word_info = False
+			word_synonyms = False
+			word_derivations = False
+			word_vocalizations = False
 			aya_position_info = aya_theme_info = aya_sajda_info = False
 			aya_stat_info = False
 			sura_stat_info = False
@@ -466,6 +478,9 @@ class Raw():
 			prev_aya = next_aya = True
 			sura_info = True
 			word_info = True
+			word_synonyms = False
+			word_derivations = True
+			word_vocalizations = True
 			aya_position_info = aya_theme_info = aya_sajda_info = True
 			aya_stat_info = True
 			sura_stat_info = False
@@ -474,6 +489,9 @@ class Raw():
 			prev_aya = next_aya = True
 			sura_info = True
 			word_info = True
+			word_synonyms = True
+			word_derivations = True
+			word_vocalizations = True
 			aya_position_info = aya_theme_info = aya_sajda_info = True
 			aya_stat_info = sura_stat_info = True
 			annotation_aya = annotation_word = False
@@ -482,6 +500,9 @@ class Raw():
 			prev_aya = next_aya = False
 			sura_info = True
 			word_info = True
+			word_synonyms = False
+			word_derivations = True
+			word_vocalizations = True
 			aya_position_info = True
 			aya_theme_info = aya_sajda_info = False
 			aya_stat_info = True
@@ -492,6 +513,9 @@ class Raw():
 			prev_aya = next_aya = False
 			sura_info = False
 			word_info = True
+			word_synonyms = True
+			word_derivations = True
+			word_vocalizations = True
 			aya_position_info = False
 			aya_theme_info = aya_sajda_info = True
 			aya_stat_info = False
@@ -504,6 +528,9 @@ class Raw():
 			prev_aya = next_aya = True
 			sura_info = True
 			word_info = False
+			word_synonyms = False
+			word_derivations = False
+			word_vocalizations = False
 			aya_position_info = True
 			aya_theme_info = False
 			aya_sajda_info = True
@@ -522,6 +549,13 @@ class Raw():
 						else self._defaults["flags"]["sura_stat_info"]
 			word_info = TRUE_FALSE( flags["word_info"] ) if flags.has_key( "word_info" ) \
 						else self._defaults["flags"]["word_info"]
+			word_synonyms = TRUE_FALSE( flags["word_synonyms"] ) if flags.has_key( "word_synonyms" ) \
+						else self._defaults["flags"]["word_synonyms"]
+			word_derivations = TRUE_FALSE( flags["word_derivations"] ) if flags.has_key( "word_derivations" ) \
+						else self._defaults["flags"]["word_derivations"]
+			word_vocalizations = TRUE_FALSE( flags["word_vocalizations"] ) if flags.has_key( "word_vocalizations" ) \
+						else self._defaults["flags"]["word_vocalizations"]
+
 			aya_position_info = TRUE_FALSE( flags["aya_position_info"] ) if flags.has_key( "aya_position_info" ) \
 								else self._defaults["flags"]["aya_position_info"]
 			aya_theme_info = TRUE_FALSE( flags["aya_theme_info"] ) if flags.has_key( "aya_theme_info" ) \
@@ -535,7 +569,7 @@ class Raw():
 			annotation_word = TRUE_FALSE( flags["annotation_word"] ) if flags.has_key( "annotation_word" ) \
 							 else self._defaults["flags"]["annotation_word"]
 
-
+		print query
 		#preprocess query
 		query = query.replace( "\\", "" )
 		if not isinstance( query, unicode ):
@@ -604,32 +638,34 @@ class Raw():
 						annotation_word_query += u" OR word:%s " % term[1]
 					else: #if aya
 						annotation_word_query += u" OR normalized:%s " % STANDARD2UTHMANI( term[1] )
-
-					vocalizations = vocalization_dict[ strip_vocalization( term[1] ) ] if vocalization_dict.has_key( strip_vocalization( term[1] ) ) \
+					if word_vocalizations:
+						vocalizations = vocalization_dict[ strip_vocalization( term[1] ) ] if vocalization_dict.has_key( strip_vocalization( term[1] ) ) \
 										   else []
-					nb_vocalizations_globale += len( vocalizations )
-					synonyms = syndict[term[1]] if syndict.has_key( term[1] ) \
+						nb_vocalizations_globale += len( vocalizations )
+					if word_synonyms:
+						synonyms = syndict[term[1]] if syndict.has_key( term[1] ) \
 										   else []
+					if word_derivations:
+						lemma = LOCATE( derivedict["word_"], derivedict["lemma"], term[1] )
+						root = LOCATE( derivedict["word_"], derivedict["root"], term[1] )
+						if lemma:  # if different of none
+							derivations = FILTER_DOUBLES( FIND( derivedict["lemma"], derivedict["word_"], lemma ) )
+						else:
+							derivations = []
 
-					lemma = LOCATE( derivedict["word_"], derivedict["lemma"], term[1] )
-					root = LOCATE( derivedict["word_"], derivedict["root"], term[1] )
-					if lemma:  # if different of none
-						derivations = FILTER_DOUBLES( FIND( derivedict["lemma"], derivedict["word_"], lemma ) )
-					else:
-						derivations = []
 					words_output[ "individual" ][ cpt ] = {
 															 "word":term[1],
 															 "romanization": transliterate( romanization, term[1], ignore = "" , reverse = True ) if romanization in self.DOMAINS["romanization"] else None,
 															 "nb_matches":term[2],
 															 "nb_ayas":term[3],
-															 "nb_vocalizations": len( vocalizations ),#unneeded
-															 "vocalizations": vocalizations,
-															 "nb_synonyms": len( synonyms ),#unneeded
-															 "synonyms": synonyms, #unneeded for normal mode
-															 "lemma": lemma,
-															 "root": root,
-															 "nb_derivations": len( derivations ), #unneeded
-															 "derivations": derivations #unneeded for normal mode
+															 "nb_vocalizations": len( vocalizations ) if word_vocalizations else 0,#unneeded
+															 "vocalizations": vocalizations if word_vocalizations else [],
+															 "nb_synonyms": len( synonyms ) if word_synonyms else 0,#unneeded
+															 "synonyms": synonyms if word_synonyms else [],
+															 "lemma": lemma if word_derivations else "",
+															 "root": root if word_derivations else "",
+															 "nb_derivations": len( derivations ) if word_derivations else 0, #unneeded
+															 "derivations": derivations if word_derivations else []
 														 }
 					cpt += 1
 			annotation_word_query += u" ) "
@@ -1017,7 +1053,7 @@ class Raw():
 					cpt += 1
 			words_output["global"] = {"nb_words":cpt - 1, "nb_matches":matches}
 		output["keywords"] = words_output;
-		
+
 		output["runtime"] = round( extend_runtime, 5 )
 		output["interval"] = {
 							"start":start,
@@ -1033,7 +1069,7 @@ class Raw():
 		for r in reslist :
 			cpt += 1
 			output["words"][ cpt ] = {
-									
+
 					  "identifier": {
 									 "gid":r["gid"],
 									 "word_gid": r["word_gid"],
@@ -1067,7 +1103,7 @@ class Raw():
 										#"english": r["lemma"],
 										"arabic": r["arabiclemma"],
 									},
-							
+
 							"special": {
 										#"english": r["special"],
 										"arabic": r["arabicspecial"],

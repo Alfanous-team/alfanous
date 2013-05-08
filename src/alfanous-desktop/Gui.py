@@ -246,7 +246,7 @@ class QUI( Ui_MainWindow ):
                  "query": unicode( self.o_query.currentText() ),
                  "sortedby":"score" if self.o_sortedbyscore.isChecked() \
                         else "mushaf" if self.o_sortedbymushaf.isChecked() \
-                        else "tanzil" if self.o_sortedbytanzil.isChecked() \
+                        } else "tanzil" if self.o_sortedbytanzil.isChecked() \
                         else "subject" if self.o_sortedbysubject.isChecked() \
                         else unicode( self.o_field.currentText() ), # ara2eng_names[self.o_field.currentText()] for Arabic,
                  "page": self.o_page.value(),
