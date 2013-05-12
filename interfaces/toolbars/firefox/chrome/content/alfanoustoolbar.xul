@@ -13,7 +13,9 @@
 	# use textbox instead of toolbaritem id="AlfanousTB-SearchTerms-TBItem"....done
 	# enable search history and autocomplete in textbox....done
 	# add Mailing List Button....done
-	#add others menubutton including sourceforge,launchpad,cms,wiki....done
+	# add others menubutton including sourceforge,launchpad,cms,wiki....done
+	# enabling localization
+	# adding about section
 										-->
 
 <!-- css sheet used -->
