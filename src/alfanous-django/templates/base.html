@@ -106,7 +106,6 @@
 
 
 {% endif %}
-
     <!-- Fixed navbar -->
     <div class="navbar navbar-inverse navbar-fixed-top">
         <div class="navbar-inner">
@@ -178,6 +177,7 @@
 			</div>
 		</div>
         <!-- end social media icons-->
+        
 
 		<div class="row">
             <!-- left navbar -->
@@ -225,13 +225,15 @@
                                 data-bootstro-content="Just start typing here! but wait... <strong>Did you know?</strong> Alfanous isn't just a typical search function, you can do a lot using operators like: <code>+</code>, <code>-</code>, <code>|</code> and a lot more!"
                                 data-bootstro-width="400px" 
                                 data-bootstro-placement='bottom' data-bootstro-step='2'>
-                                <input id="appendedInputButtons" name="query" class="search-query enter keyboardInput" placeholder="Search" type="text" value="{{ params.query }}" data-provide="typeahead" autocomplete="off"
-                                data-source="[&quot;الله&quot;,&quot;محمد&quot;,&quot;الصلاة&quot;,&quot;الزكاة&quot;,&quot;صوم&quot;,&quot;رمضان&quot;,&quot;الحج&quot;,&quot;الشهادة&quot;,&quot;العلم&quot;,&quot;المؤمنون&quot;,&quot;الرسول&quot;,&quot;الرسل&quot;,&quot;عيسى&quot;,&quot;موسى&quot;,&quot;ابراهيم&quot;,&quot;الاسلام&quot;,&quot;مسلم&quot;,&quot;الجنة&quot;,&quot;النار&quot;,&quot;العذاب&quot;,&quot;أليم&quot;,&quot;النعيم&quot;,&quot;الحياة&quot;,&quot;الدنيا&quot;,&quot;الخوع&quot;,&quot;الحكم&quot;,&quot;الكفر&quot;,&quot;الشيطان&quot;,&quot;ابليس&quot;,&quot;آدم&quot;,&quot;اليهود&quot;,&quot;اسرائيل&quot;,&quot;السنة&quot;,&quot;الاستغفار&quot;,&quot;المشركين&quot;,&quot;المشركات&quot;,&quot;النساء&quot;,&quot;التوبة&quot;,&quot;المغفرة&quot;,&quot;الصدق&quot;,&quot;التوحيد&quot;,&quot;الجهل&quot;,&quot;فأسقيناكموه&quot;,&quot;نبي&quot;,&quot;نعم؟&quot;,&quot;رسول الله&quot;,&quot;الصلاة + الزكاة&quot;,&quot;موضوع:&quot;,&quot;الملك&quot;,&quot;الصلاة | الزكاة&quot;,&quot;الصلاة - الزكاة&quot;]"
-                                />
-                                <button type="submit" class="btn" onclick="$('#form').submit(); return false;">
-                                    <i class="icon-search"></i>
-                                    <span class="hidden-phone">{{ _("Quick search") }}</span>
-                                </button>
+								     <input id="appendedInputButtons" name="query" class="search-query enter keyboardInput" placeholder="Search" type="text" value="{{ params.query }}" data-provide="typeahead" autocomplete="off"
+		                                data-source="[&quot;الله&quot;,&quot;محمد&quot;,&quot;الصلاة&quot;,&quot;الزكاة&quot;,&quot;صوم&quot;,&quot;رمضان&quot;,&quot;الحج&quot;,&quot;الشهادة&quot;,&quot;العلم&quot;,&quot;المؤمنون&quot;,&quot;الرسول&quot;,&quot;الرسل&quot;,&quot;عيسى&quot;,&quot;موسى&quot;,&quot;ابراهيم&quot;,&quot;الاسلام&quot;,&quot;مسلم&quot;,&quot;الجنة&quot;,&quot;النار&quot;,&quot;العذاب&quot;,&quot;أليم&quot;,&quot;النعيم&quot;,&quot;الحياة&quot;,&quot;الدنيا&quot;,&quot;الخوع&quot;,&quot;الحكم&quot;,&quot;الكفر&quot;,&quot;الشيطان&quot;,&quot;ابليس&quot;,&quot;آدم&quot;,&quot;اليهود&quot;,&quot;اسرائيل&quot;,&quot;السنة&quot;,&quot;الاستغفار&quot;,&quot;المشركين&quot;,&quot;المشركات&quot;,&quot;النساء&quot;,&quot;التوبة&quot;,&quot;المغفرة&quot;,&quot;الصدق&quot;,&quot;التوحيد&quot;,&quot;الجهل&quot;,&quot;فأسقيناكموه&quot;,&quot;نبي&quot;,&quot;نعم؟&quot;,&quot;رسول الله&quot;,&quot;الصلاة + الزكاة&quot;,&quot;موضوع:&quot;,&quot;الملك&quot;,&quot;الصلاة | الزكاة&quot;,&quot;الصلاة - الزكاة&quot;]"
+		                                />
+		                                
+		                                <button type="submit" class="btn" onclick="$('#form').submit(); return false;">
+		                                    <i class="icon-search"></i>
+		                                    <span class="hidden-phone">{{ _("Quick search") }}</span>
+		                                </button>
+		                                
                             </div>
                             {% if current.unit == "aya" %}
                                 <div class="advanced-search text-center">
@@ -259,7 +261,7 @@
                                                 <div class="control-group">
                                                     <label class="control-label"></label>
                                                     <div class="controls">
-                                                        <button type="submit" id="singlebutton" name="singlebutton" class="btn btn-default" onclick="$('#form').submit(); return false;">{{ _("Bismi'Allah Go!") }}</button>
+                                                        <button type="submit" id="singlebutton" name="singlebutton" class="btn btn-primary" onclick="$('#form').submit(); return false;">{{ _("Bismi'Allah Go!") }}</button>
                                                     </div>
                                                 </div>
                                         </fieldset>
@@ -280,12 +282,9 @@
 
     {% include "popups_content.html" %}
 
-
-	<footer>
-        <div class="push"><!--//--></div>
-        <div id="footer">
-            <div class="container">
-                <div class="row hidden-phone text-center help">
+{% block notification %}
+<!--
+				<div class="hidden-phone text-center help">
                     <div class="alert alert-info span8 offset2 text-center">
                         <button type="button" class="close" data-dismiss="alert">&times;</button>
                         <i class="icon-info-sign"></i>
@@ -298,28 +297,40 @@
                         {{ _("Please help us improving Alfanous Project, by taking this survey about search features in Holy Quran.") }} </a>
                     </div>
                 </div>
-                <hr />
-                <p class="muted credit">{{ _("Copyright") }} &copy; <a href="https://github.com/Alfanous-team/alfanous/blob/master/AUTHORS.rst">{{ _("Alfanous Team") }}</a> 2010 - 2013 &#124; {{ _("released under") }} <a href="http://www.gnu.org/licenses/agpl.html">{{ _("AGPL license") }}</a>.</p>
-                <p class="muted credit pull-{{ bidi.align_inverse }}"> {{ _("Powered by") }} <span class="label label-inverse">
-                        <a id="footer-link-jos2" data-placement="top" data-toggle="popover">
-                        <i class=" icon-chevron-up icon-white"></i>
+-->
+{% endblock notification %}
+
+<br/>
+<br/>
+
+	<div id="footer" class="navbar navbar-inverse navbar-fixed-bottom text-center">
+	<div class="push"><!--//--></div>
+            <div class="container narrow row-fluid ">
+                <p class="muted credit">{{ _("Copyright") }} &copy; <a href="https://github.com/Alfanous-team/alfanous/blob/master/AUTHORS.rst">{{ _("Alfanous Team") }}</a> 2010 - 2013</p>
+                <p class="muted credit hidden-phone">&#124; {{ _("released under") }} <a href="http://www.gnu.org/licenses/agpl.html">{{ _("AGPL license") }}</a>.</p>
+                <br/>
+                 <span class="label label-info">
+                		 <a id="footer-link-jos2" data-placement="top" data-toggle="popover">
+                		 <i class=" icon-chevron-up icon-white"></i>
+                 		{{ _("Powered by") }}
+                        
+                        
                         Alfanous JOS2
                     </a>
                     </span> 
-                    - <span class="label label-inverse hidden-phone">
+                    <span class="label label-success hidden-phone">
                     <a class="footer-link-searchbar" onclick="addto_searchbar();return false;" href="#">
                         <i class="icon-plus-sign icon-white"></i>
                         {{ _("Add to your search bar!") }}
                     </a>
                     </span>
-                </p>
             </div>
-        </div>
-    </footer>
+
+    </div>
 
     <div id="popoverInner" class="hidden">
-        <p class="popoverInnerText">This is the <a href='http://json.org/'>JSON</a> output system 2 of <a href="http://www.alfanous.org">Alfanous</a> project, we call it <i><b>Alfanous JOS2</b></i>. This feature is in Alpha test and the Json schema may be it's not stable . We are waiting for real feedback and suggestions to improve its efficacy,quality and stability. To contact the author ,please send a direct email to <b> assem.ch[at]gmail.com</b> or to the mailing list <b>alfanous [at] googlegroups.com</b>
-        <br/><br/> For more details  visit the page of this service <a href="https://github.com/Alfanous-team/alfanous/blob/master/src/alfanous-cgi/README.rst">here</a>
+        <p class="popoverInnerText">This is the <a href='http://json.org/'>JSON</a> output system 2 of <a href="http://www.alfanous.org">Alfanous</a> project, we call it <i><b>Alfanous JOS2</b></i>. This feature is in Alpha test and the Json schema may be it's not stable . We are waiting for real feedback and suggestions to improve its efficacy,quality and stability. To contact the author ,please send a direct email to <b> assem[dot]ch[at]gmail[dot]com</b> or to the mailing list <b>alfanous [at] googlegroups [dot] com</b>
+        <br/><br/> For more details  visit the page of this service <a class="badge" href="https://github.com/Alfanous-team/alfanous/blob/master/src/alfanous-cgi/README.rst">here</a>
         </p>
     </div>
 
