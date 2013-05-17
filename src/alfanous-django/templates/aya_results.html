@@ -10,33 +10,27 @@
 {% endkwacro %}
 
 {% block results %}
-	<div id="#search_result_static" class="row span7 offset3">	
+	<div id="#search_result_static" class="row span7 offset3  text-center ">	
 		
 		{% if results.error.code == 0  %}
-			<table class="table table-striped table-bordered">
-				<caption>{{ _("Search results") }}</caption>
-				<thead>
-					<tr>
-						<th>{{ _("Runtime") }}:</th>
-						<th colspan="3">{{ results.search.runtime|floatformat:"5" }} {{ _("seconds") }}</th>
-					</tr>
-				</thead>
-			</table>
+			 <span	class="text-success">
+			 {{ _("Search results") }} 
+						({{ results.search.runtime|floatformat:"5" }} {{ _("seconds") }})
+			 </span>
 			<!-- Suggestions-->
 			{% if suggestions.error.code == 0 and suggestions.suggest %} 
 				<table class="table table-striped table-bordered">
 					<thead>
 						<tr>
-							<th>#</th>
-							<th>search key:</th>
+							
+							<th>{{ _("Searched keyword:") }}</th>
 							<th>{{ _("Suggestions:") }}</th>
 						</tr>
 					</thead>
 					<tbody>
 						<tr>
 							{% for suggestion_key, suggestion_item in suggestions.suggest.items %}
-								<td>{{ forloop.counter }}.</td>
-								<td>{{ _("word") }} |  {{ suggestion_key }}</td>
+								<td>{{ forloop.counter }}. <strong>{{ suggestion_key }}</strong></td>
 								<td>
 									{% for suggestion_sub_item  in suggestion_item %}
 										{% with suggestion_key|add:","|add:suggestion_sub_item as replacement_args %}
@@ -58,24 +52,24 @@
 		
 		{% if results.search.interval.total %}
 			{% if results.search.words.global.nb_words %}
-			<table class="table table-bordered">	
+     			<table class="table table-bordered">	
 				<!-- Words list -->
 				<tbody>
 					<tr>
-						<td>{{ _("Search Keywords") }} ({{  results.search.words.global.nb_words }}) </td>
-						<td>
+						<th>{{ _("Search Keywords") }} ({{  results.search.words.global.nb_words }}) </th>
+						<th>
 							<table class="table table-striped table-bordered">
 								<tr>
 									<td>{{ _("occurances") }}: {{ results.search.words.global.nb_matches }}</td>
 									<td>{{ _("vocalizations") }}: {{ results.search.words.global.nb_vocalizations }}</td>
 								</tr>
 							</table>
-						</td>
+						</th>
 					</tr>
 					{% for wordcpt, wordstat in results.search.words.individual.items %}
 						<tr>
 							<td>
-								{{ wordcpt }}. {{ _("word") }}:
+								{{ wordcpt }}.
 								<a href="?{% build_search_link params  wordstat.word 1 False %}"> 
 								{{ wordstat.word }} {% if wordstat.romanization %} ( {{ wordstat.romanization }} ) {%  endif %}</a>
 							</td>
