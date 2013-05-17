@@ -108,7 +108,7 @@
 {% endif %}
     <!-- Fixed navbar -->
     <div class="navbar navbar-inverse navbar-fixed-top">
-        <div class="navbar-inner">
+        <div class="navbar-inner ">
             <div class="container">
                 <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
                     <span class="icon-bar"></span>
@@ -118,7 +118,7 @@
                 <a class="brand" href="#"></a>
                 <div class="nav-collapse collapse">
                     <ul class="nav">
-                    	<li><a href="{% url alfanous-django.wui.views.results current.language current.unit %}"><i class="icon-home icon-large"></i> {{ _("Home") }}</a></li>
+                    <li><a href="/"><i class="icon-home icon-large"></i></a></li>
                     	{% for available_unit in available.units.items %}
                     		{% ifequal available_unit.0 current.unit %}
                     			<li class="active bootstro" data-bootstro-title="First select search mode"
@@ -169,7 +169,7 @@
                 {% else %}
                 <ul class="inline pull-right">
                 {% endif %}
-					<li><a class="facebook" href="https://www.facebook.com/Alfanous"><i class="icon-facebook icon-large"></i></a></li>
+					<li><a class="facebook" href="https://www.facebook.com/Alfanous"><i class="icon-facebook icon-large success"></i></a></li>
 					<li><a class="twitter" href="https://twitter.com/alfanous"><i class="icon-twitter icon-large"></i></a></li>
 					<li><a class="github" href="https://github.com/Alfanous-team/alfanous"><i class="icon-github icon-large"></i></a></li>
                     <li><a class="googleplus" href="https://plus.google.com/u/0/111305625425237630318"><i class="icon-google-plus icon-large"></i></a></li>
@@ -178,6 +178,7 @@
 		</div>
         <!-- end social media icons-->
         
+
 
 		<div class="row">
             <!-- left navbar -->
@@ -220,16 +221,16 @@
                 <div class="row span4 offset2">
                     <a href="{% url alfanous-django.wui.views.results current.language current.unit %}" class="logo"><img src="/static/{{ bidi.direction }}/img/alfanous.png" alt="logo"></a>
                         <form class="form-search" id="form" name="form" method="GET" action=".">
-                            <div class="input-append text-right bootstro"
+                            <div class="input-append  text-right"
                                 data-bootstro-title="Alfanous is smart!"
                                 data-bootstro-content="Just start typing here! but wait... <strong>Did you know?</strong> Alfanous isn't just a typical search function, you can do a lot using operators like: <code>+</code>, <code>-</code>, <code>|</code> and a lot more!"
                                 data-bootstro-width="400px" 
                                 data-bootstro-placement='bottom' data-bootstro-step='2'>
 								     <input id="appendedInputButtons" name="query" class="search-query enter keyboardInput" placeholder="Search" type="text" value="{{ params.query }}" data-provide="typeahead" autocomplete="off"
-		                                data-source="[&quot;الله&quot;,&quot;محمد&quot;,&quot;الصلاة&quot;,&quot;الزكاة&quot;,&quot;صوم&quot;,&quot;رمضان&quot;,&quot;الحج&quot;,&quot;الشهادة&quot;,&quot;العلم&quot;,&quot;المؤمنون&quot;,&quot;الرسول&quot;,&quot;الرسل&quot;,&quot;عيسى&quot;,&quot;موسى&quot;,&quot;ابراهيم&quot;,&quot;الاسلام&quot;,&quot;مسلم&quot;,&quot;الجنة&quot;,&quot;النار&quot;,&quot;العذاب&quot;,&quot;أليم&quot;,&quot;النعيم&quot;,&quot;الحياة&quot;,&quot;الدنيا&quot;,&quot;الخوع&quot;,&quot;الحكم&quot;,&quot;الكفر&quot;,&quot;الشيطان&quot;,&quot;ابليس&quot;,&quot;آدم&quot;,&quot;اليهود&quot;,&quot;اسرائيل&quot;,&quot;السنة&quot;,&quot;الاستغفار&quot;,&quot;المشركين&quot;,&quot;المشركات&quot;,&quot;النساء&quot;,&quot;التوبة&quot;,&quot;المغفرة&quot;,&quot;الصدق&quot;,&quot;التوحيد&quot;,&quot;الجهل&quot;,&quot;فأسقيناكموه&quot;,&quot;نبي&quot;,&quot;نعم؟&quot;,&quot;رسول الله&quot;,&quot;الصلاة + الزكاة&quot;,&quot;موضوع:&quot;,&quot;الملك&quot;,&quot;الصلاة | الزكاة&quot;,&quot;الصلاة - الزكاة&quot;]"
+		                                data-source=""
 		                                />
-		                                
-		                                <button type="submit" class="btn btn-success" onclick="$('#form').submit(); return false;">
+		
+		                                <button type="submit" class="btn btn-success search-query" onclick="$('#form').submit(); return false;">
 		                                    <i class="icon-search"></i>
 		                                    <span class="hidden-phone">{{ _("Quick search") }}</span>
 		                                </button>
@@ -300,10 +301,9 @@
 -->
 {% endblock notification %}
 
-<br/>
-<br/>
 
-	<div id="footer" class="navbar navbar-inverse navbar-fixed-bottom text-center">
+
+	<div id="footer" class="navbar navbar-inverse  navbar-fixed-bottom text-center">
 	<div class="push"><!--//--></div>
             <div class="container narrow row-fluid ">
                 <p class="muted credit">{{ _("Copyright") }} &copy; <a href="https://github.com/Alfanous-team/alfanous/blob/master/AUTHORS.rst">{{ _("Alfanous Team") }}</a> 2010 - 2013</p>
