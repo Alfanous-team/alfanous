@@ -153,3 +153,20 @@ table th.text-center {
     text-align: center !important;
 }
 
+
+
+/* Assem: Terms Static Highlighting colors */
+.match { color: #181; }
+.term0, .term9 { color: #F50; }
+.term1, .term10 { color: #f00; }
+.term2, .term11 { color: #f39; }
+.term3, .term12 { color: #811; }
+.term4, .term13 { color: #807; }
+.term5, .term14 { color: #660; }
+.term6, .term15 { color: #5C3; }
+.term7, .term16 { color: #444; }
+.term8, .term17 { color: #118; }
+
+
+
+
