@@ -87,7 +87,7 @@
 											{% with bidi.fields.aya_|add:":"|add:vocalization|add:"" as new_query %}
 												<a href="?{% build_search_link params  new_query 1 False %}"> 
 											{% endwith %}
-											<span class='label'> {{ vocalization }} 
+											<span class='label label-info'> {{ vocalization }} 
 											</span></a>
 										{% endfor %}
 									</td>
@@ -98,12 +98,12 @@
 										<td>
 											{% for synonym in wordstat.synonyms %} 
 												<a href="?{% build_search_link params synonym  1 False %}"> 
-												<span class='label label-info'> {{ synonym }} </span></a>
+												<span class='label'> {{ synonym }} </span></a>
 											{% endfor %}
 											{% with "~"|add:wordstat.word as new_query %}
 												<a href="?{% build_search_link params  new_query 1 False %}"> 
 											{% endwith %}
-											<span class='label label-info'>  {{ "~" }}  
+											<span class='label'><i class="icon-th"> </i>
 											</span></a>
 										</td>
 									</tr>
@@ -115,14 +115,13 @@
 										<td>
 											{% for derivation in wordstat.derivations %} 
 												<a href="?{% build_search_link params derivation 1 False %}"> 
-												<span class='label label-info'>{{ derivation }} 
+												<span class='label label-success'>{{ derivation }} 
 												</span></a>
 											{% endfor %}
 											{% with ">"|add:wordstat.word as new_query %}
 												<a href="?{% build_search_link params  new_query 1 False %}"> 
 											{% endwith %}
-											<span class='label label-info'>  {{ ">" }}  
-											</span></a>
+											<span class='label label-warning'><i class="icon-th"> </i>	</span></a>
 										</td>
 									</tr>
 								{% endifnotequal %}
