@@ -52,33 +52,49 @@
 		
 		{% if results.search.interval.total %}
 			{% if results.search.words.global.nb_words %}
-     			<table class="table table-bordered">	
-				<!-- Words list -->
-				<tbody>
-					<tr>
-						<th>{{ _("Search Keywords") }} ({{  results.search.words.global.nb_words }}) </th>
-						<th>
-							<table class="table table-striped table-bordered">
+				<div class="tabbable ">  {#tabs-{{ bidi.align }} #}
+					<ul id="Keywords_Tab" class="nav nav-pills"> 
+					<li class="active">
+						<a href="#total_keywords" data-toggle="tab">
+						{{ _("Keywords") }} ({{  results.search.words.global.nb_words }})
+						</a>
+					</li>
+					{% for wordcpt, wordstat in results.search.words.individual.items %}
+		              <li class="">
+		              	<a href="#{{ wordstat.word }}" data-toggle="tab">
+		              			{{ wordcpt }}. {{ wordstat.word }} {% if wordstat.romanization %} ( {{ wordstat.romanization }} ) {%  endif %}
+								
+		              	</a>
+		              </li>
+		            {% endfor %}
+		            </ul> 
+		            <div class="tab-content">
+		            	 <div class="tab-pane active" id="total_keywords">
+		            		<table class="table table-striped table-bordered">
+		            			<tr>
+									<td>{{ _("words") }}: {{ results.search.words.global.nb_words }}</td>
+								</tr>
 								<tr>
 									<td>{{ _("occurances") }}: {{ results.search.words.global.nb_matches }}</td>
+								</tr>
+								<tr>
 									<td>{{ _("vocalizations") }}: {{ results.search.words.global.nb_vocalizations }}</td>
 								</tr>
 							</table>
-						</th>
-					</tr>
+						</div>
+
+            		
 					{% for wordcpt, wordstat in results.search.words.individual.items %}
-						<tr>
-							<td>
-								{{ wordcpt }}.
-								<a href="?{% build_search_link params  wordstat.word 1 False %}"> 
-								{{ wordstat.word }} {% if wordstat.romanization %} ( {{ wordstat.romanization }} ) {%  endif %}</a>
-							</td>
-							<td>
+						<div class="tab-pane" id="{{ wordstat.word }}">
 							   <table class="table table-striped table-bordered">
 								<tr>
-									<td>{{ _("occurances") }}: {{ wordstat.nb_matches }}</td>
-									<td>{{ _("ayates") }}:  {{ wordstat.nb_ayas }}</td>
+									<td colspan="2">{{ _("occurances") }}: {{ wordstat.nb_matches }}</td>
 								</tr>
+								
+								<tr>
+									<td colspan="2">{{ _("ayates") }}:  {{ wordstat.nb_ayas }}</td>
+								</tr>
+								
 						
 								<tr>
 									<td>{{ _("vocalizations") }}: {{ wordstat.nb_vocalizations }} </td>
@@ -90,6 +106,9 @@
 											<span class='label label-info'> {{ vocalization }} 
 											</span></a>
 										{% endfor %}
+										 <a href="?{% build_search_link params  wordstat.word 1 False %}"> 
+											<span class='label label-warning'><i class="icon-th"> </i> {{ wordstat.nb_vocalizations }}
+											</span></a>
 									</td>
 								</tr>
 								{% ifnotequal wordstat.nb_synonyms 0 %}
@@ -103,7 +122,7 @@
 											{% with "~"|add:wordstat.word as new_query %}
 												<a href="?{% build_search_link params  new_query 1 False %}"> 
 											{% endwith %}
-											<span class='label'><i class="icon-th"> </i>
+											<span class='label'><i class="icon-th"> </i> {{ wordstat.nb_synonyms }}
 											</span></a>
 										</td>
 									</tr>
@@ -121,19 +140,17 @@
 											{% with ">"|add:wordstat.word as new_query %}
 												<a href="?{% build_search_link params  new_query 1 False %}"> 
 											{% endwith %}
-											<span class='label label-warning'><i class="icon-th"> </i>	</span></a>
+											<span class='label label-warning'><i class="icon-th"> </i> {{ wordstat.nb_derivations }}	</span></a>
 										</td>
 									</tr>
 								{% endifnotequal %}
 							</table>
-							</td>
-							
-						</tr>
+						</div>
 						
 					{% endfor %}
 
-				</tbody>
-			</table>
+					<div> <!-- end tab-content -->
+		        </div><!-- end tabbable -->
 			{% for annotation_word, parts in wordstat.annotations.items %}
 				{% for part_order, annotation_detail in parts.items %} 
 					<p   class='annotation_details'>
