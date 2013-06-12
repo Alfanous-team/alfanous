@@ -66,10 +66,19 @@ Packaging
 * Fedora/OpenSuse/Ojuba RPM package: Muhammad Shaban
 * Arch-linux package: Walid Ziouche
 
+
 -------------
-Documentation 
+Documentation
 -------------
 * Wiki: Assem Chelli, Abdellah Chelli 
+
+-------
+Writing
+-------
+* News : Mohamed M Sayed, Yasser Ghemit, Kacem Boukraa, Asmaa Mhimeh, 
+* Blog posts: Muslih Al-aqaad, Ahmed Jumal, 
+
+
 
 -----------
 Translation
@@ -86,8 +95,10 @@ Translation
 --------------
 Test & Support
 --------------
-* `Walid Ziouche`_
-* Many persons from the community, thanks to all 
+* Test: `Walid Ziouche`_
+* Bugs: xsoh, Yasser ghemmit, Jounathan~, Salima bendjedou, oussama~, Many persons from the community, thanks to all. 
+
+
 
 ==============
 Acknowledgment
