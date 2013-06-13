@@ -4,35 +4,89 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 	<title> 
 			{% block title %} 
+				{{ _("Alfanous") }} - 
+				{% if current.unit == "aya" %}
+						{{ _("Ayah Search") }}
+					{% elif current.unit == "word" %}
+						{{ _("Word Search") }}
+					{% elif current.unit == "translation" %}
+						{{ _("Translation Search") }}
+					{% else %}
+						{{ _("Ayah Search") }} 
+				{% endif %}
+				
 				{% if params.query %}
-					{% if current.unit == "aya" %}
-						{{ _("Ayah Results to Query:") }} 
-					{% elif current.unit == "word" %}
-						{{ _("Word Results to Query:") }}
-					{% elif current.unit == "translation" %}
-						{{ _("Translation Results to Query:") }} 
-					{% else %}
-						{{ _("Results to Query:") }} 
-					{% endif %}	
-					{{ params.query }}
-					
-				{% else %}
-					{% if current.unit == "aya" %}
-						{{ _("Quranic Verse Search") }}
-					{% elif current.unit == "word" %}
-						{{ _("Quranic Word Search") }}
-					{% elif current.unit == "translation" %}
-						{{ _("Quranic Translation Search") }}
-					{% else %}
-						{{ _("Advanced Quranic Search Engine") }} 
+					- 
+					{{ _("Query:") }}
+					{{ params.query }} 
+					{% if params.page %}
+						|| {{ _("Page:") }}
+						{{ params.page }}
 					{% endif %}
-					 - {{ _("Alfanous") }} 
+					{% if params.order %}
+						|| {{ _("Order:") }}
+						{{ params.sortedby }}
+					{% endif %}
+					{% if params.view and params.view != "default" %}
+						|| {{ _("View:") }}
+						{{ params.view }}
+					{% endif %}
+					{% if params.vocalized or params.uthmani or params.fuzzy %}
+						|| {{ _("Options:") }} {
+							{% if params.vocalized %}
+								{{ _("vocalized") }},
+							{% endif %}
+							{% if params.uthmani %}
+								{{ _("uthmani") }},
+							{% endif %}
+							{% if params.fuzzy %}
+								{{ _("fuzzy") }},
+							{% endif %}
+						}
+					{% endif %}
+					{% if params.translation %}
+						|| {{ _("Translation:") }}
+							{{ params.translation }},
+					{% endif %}
 				{% endif %}
 			{% endblock %}  
 	</title>
 	
 	<meta name="description" content="{{ _('Alfanous is a functional, dynamic, comprehensive Qur’an search engine that has been effectively designed to carry out simple or advanced Quranic searches.') }}"/>
-	<meta name="keywords" content="{{ _("quran") }}, {{ _("forqan") }}, {{ _("koran") }}, {{ _("search") }}, {{ _("search engine") }}, {{ _("ayates") }}, {{ _("surates") }}, {{ _("advanced") }}, {{ _("statistics") }}, {{  _("linguistic") }}, {{ _("information retrieval") }}, {{ _("natural language processing") }}, {{ _("words") }}, {{ _("Lantern") }}, {{ _("alfanous") }},  "/>
+	<meta name="keywords" content="{{ _("quran") }},
+								   {{ _("forqan") }},
+								   {{ _("koran") }}, 
+								   {{ _("search") }}, 
+								   {{ _("search engine") }}, 
+								   {{ _("ayates") }}, 
+								   {{ _("surates") }}, 
+								   {{ _("advanced") }}, 
+								   {{ _("statistics") }}, 
+								   {{  _("linguistic") }}, 
+								   {{ _("information retrieval") }}, 
+								   {{ _("natural language processing") }}, 
+								   {{ _("words") }}, 
+								   {{ _("Lantern") }}, 
+								   {{ _("alfanous") }},
+								   {% for wordcpt, wordstat in results.search.words.individual.items %}
+								   		{{ wordstat.word }},
+								   		{% if wordstat.romanization %} {{ wordstat.romanization }}, {%  endif %}
+								   {% endfor %}
+								   {{ params.translation }},
+								   {{ params.view }} view,
+								   {% if params.vocalized %}
+										{{ _("vocalized text") }},
+								   {% endif %}
+								   {% if params.uthmani %}
+										{{ _("uthmani script") }},
+								   {% endif %}
+								   {% if params.fuzzy %}
+										{{ _("fuzzy search") }},
+								   {% endif %}
+								   {{ params.sortedby }} order,
+								   {{ language.name }},
+								   {{ language.name_local }},
+								   "/>
 	<!-- meta name="copyright" content="&copy; Alfanous Team, AGPL" -->
 	<meta name="author" content="Assem Chelli, Ahmed Ramadan, Abdellah Chelli, Mouad Debbar" />
 	<meta name="robots" content="index,follow"/>
