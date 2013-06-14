@@ -83,14 +83,14 @@ Writing
 -----------
 Translation
 -----------
-* Arabic: Assem Chelli 
+* Arabic: Assem Chelli, Yasmine Houdjli
 * Bosnian: Armin Kazic
 * Brazilian Portuguese: Aieon.corp(LP)
 * French: Assem Chelli, Karim Oulad Chalha, 'yass-pard', Zineb Pub
-* Indonesian: Mahyuddin Susanto
-* Italian: 'Guybrush88' LP/FIXME
+* Indonesian: Mahyuddin Susanto, Ahmed Jumal , Amy cidra
+* Italian: 'Guybrush88' 
 * Japanese: Abdelkarim Aries
-* Malay: 'abuyop' LP/FIXME
+* Malay: 'abuyop'
 
 --------------
 Test & Support
