@@ -106,11 +106,5 @@ function get_results (param) { // this function will be used to require suggesti
 function show_results (json, param) {       }
 
 function addto_searchbar(){
-    window.external.AddSearchProvider("/static/alfanous-opensearch.xml");
-
-}
-
-
-function addto_searchbar(){
-    window.external.AddSearchProvider("/static/alfanous-opensearch.xml");
+	window.external.AddSearchProvider("/static/alfanous-opensearch.xml");
 }
