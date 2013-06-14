@@ -10,7 +10,7 @@
 {% endkwacro %}
 
 {% block results %}
-	<div id="#search_result_static" class="row span7 offset3  text-center ">	
+	<div id="#search_result_static" class="row span9 offset3  text-center ">	
 		
 		{% if results.error.code == 0  %}
 			 <span	class="text-success">
@@ -215,7 +215,7 @@
 					
 	<div class="row">
 		<!-- Ayahs results -->
-		<div class="row span8 offset3 text-center">
+		<div class="row span12 text-center">
 			<hr />
 			<ul class="breadcrumb">
 			    <li>{{ _("Results") }}: ( {{ results.search.interval.start }}</li>
@@ -227,13 +227,13 @@
 
 		<!-- Pages control # top one -->
 		<div class="row">
-			<div class="span8 offset3">
+			<div class="span12 ">
 				{% usekwacro paginationRoutine %}
 			</div>
 		</div>
 
 		{% for ayaresult_id, ayaresult_content in  	results.search.ayas.items %}
-			<div class='container well well-small span8 offset3'>
+			<div class='container well well-small span12'>
 				<fieldset class="fieldset">
 					<legend>
 					    <span class="muted">
@@ -461,7 +461,7 @@
 	    {% endfor %}
 
 	    <!-- Pages control # bottom one -->
-		<div class="span8 offset3">
+		<div class="span12">
 			{% usekwacro paginationRoutine %}
 		</div>
     </div>
@@ -469,7 +469,7 @@
 
 	{% else %}
 	<div class="row">
-		<div class="alert alert-error text-center span8 offset2">
+		<div class="alert alert-error text-center span12">
 			<button type="button" class="close" data-dismiss="alert">&times;</button>
 			{{ _("Sorry! there is no results for this search query.") }}
 		</div>
@@ -477,7 +477,7 @@
 	{% endif %}		
 	{% elif results.error %}
 	<div class="row">
-		<div class="alert alert-error span5 offset1">
+		<div class="alert alert-error span12">
 			<button type="button" class="close" data-dismiss="alert">&times;</button>
 			{{ _("Error ") }} ({{ results.error.code }}) : {{ results.error.msg|linebreaksbr }}
 		</div>
