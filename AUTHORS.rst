@@ -96,7 +96,7 @@ Translation
 Test & Support
 --------------
 * Test: `Walid Ziouche`_
-* Bugs: xsoh, Yasser ghemmit, Jounathan~, Salima bendjedou, oussama~, Many persons from the community, thanks to all. 
+* Bugs: xsoh, Yacer~, Jounathan~, BenSali~ , oussama~, Many persons from the community, thanks to all. 
 
 
 
