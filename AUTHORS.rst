@@ -1,4 +1,4 @@
-Alfanous - Advanced Quranic Search Engine , Founded  by Assem Chelli <assem.ch@gmail.com>
+Alfanous - Advanced Quranic Search Engine , Authored by Assem Chelli <assem.ch@gmail.com>
 
       We gratefully acknowledge contributions from the following.
       Please let us know if we missed anyone, thanks :)
@@ -24,6 +24,7 @@ Yasmine Hoadjli     Community Manager           yhoadjli [at] gmail.com         
 .. _`Mouad Debbar` : https://github.com/mdebbar
 .. _`Walid Ziouche`: https://github.com/01walid
 .. _`Muslih al aqaad`: https://github.com/muslih
+.. _`Tedjeddine Meabeo`: https://github.com/tedj
 
 .. _`@assem_ch`: https://twitter.com/assem_ch
 .. _`@sneetsher`: https://twitter.com/sneetsher 
@@ -40,7 +41,7 @@ Coding
 --------
 * API & JSON interface: `Assem Chelli`_    
 * Desktop Interface: `Assem Chelli`_   
-* Web Interface: `Assem Chelli`_   , `Abdellah Chelli`_ , `Mouad Debbar`_, Ahmed Ramadan
+* Web Interface: `Assem Chelli`_  , `Walid Ziouche`_, `Abdellah Chelli`_ , `Tedjeddine Meabeo`_ , `Muslih al aqaad`_,  `Mouad Debbar`_, Ahmed Ramadan
 * Mobile Web Interface: `Abdellah Chelli`_ 
 * Firefox toolbar: `Zaki Smahi`_ 
 
@@ -78,25 +79,50 @@ Writing
 * News : Mohamed M Sayed, Yasser Ghemit, Kacem Boukraa, Asmaa Mhimeh, 
 * Blog posts: Muslih Al-aqaad, Ahmed Jumal, 
 
-
+--------------------
+Community Management
+--------------------
+* FB page: Yasmine Hoadjli 
+* G+ page: Yasmine Hoadjli
+* Twitter: ~
 
 -----------
 Translation
 -----------
-* Arabic: Assem Chelli, Yasmine Houdjli
-* Bosnian: Armin Kazic
-* Brazilian Portuguese: Aieon.corp(LP)
-* French: Assem Chelli, Karim Oulad Chalha, 'yass-pard', Zineb Pub
-* Indonesian: Mahyuddin Susanto, Ahmed Jumal , Amy cidra
-* Italian: 'Guybrush88' 
-* Japanese: Abdelkarim Aries
-* Malay: 'abuyop'
+* Bootstrap Web Interface
+  * not yet! to help contact the mailing list.
+
+* Desktop application
+  * not yet! 
+
+* Django Web Interface
+  * Arabic: Yasmine Houdjli
+  * Bosnian: Armin Kazic
+  * Brazilian Portuguese: Aieon.corp(LP)
+  * French: Zineb Pub
+  * Indonesian:  Ahmed Jumal , Amy cidra 
+  * Italian: ~
+  * Japanese: Abdelkarim Aries
+  * Malay: ~
+
+* Mobile Web interface 
+  * Arabic: ~
+  * Bosnian: Armin Kazic
+  * Brazilian Portuguese: Aieon.corp(LP)
+  * French:  Karim Oulad Chalha, 'yass-pard'
+  * Indonesian: Mahyuddin Susanto, 
+  * Italian: 'Guybrush88' 
+  * Japanese: Abdelkarim Aries
+  * Malay: 'abuyop'
+
+
 
 --------------
 Test & Support
 --------------
 * Test: `Walid Ziouche`_
 * Bugs: xsoh, Yacer~, Jounathan~, BenSali~ , oussama~, Many persons from the community, thanks to all. 
+* Vulns:  Jalil~
 
 
 
