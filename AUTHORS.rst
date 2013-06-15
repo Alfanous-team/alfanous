@@ -89,24 +89,25 @@ Community Management
 -----------
 Translation
 -----------
+( to help in translation, contact us in  the mailing list )
+
 * Bootstrap Web Interface
-  * not yet! to help contact the mailing list.
+
+  * not yet! 
 
 * Desktop application
+
   * not yet! 
 
 * Django Web Interface
+
   * Arabic: Yasmine Houdjli
-  * Bosnian: Armin Kazic
-  * Brazilian Portuguese: Aieon.corp(LP)
   * French: Zineb Pub
   * Indonesian:  Ahmed Jumal , Amy cidra 
-  * Italian: ~
   * Japanese: Abdelkarim Aries
-  * Malay: ~
 
 * Mobile Web interface 
-  * Arabic: ~
+
   * Bosnian: Armin Kazic
   * Brazilian Portuguese: Aieon.corp(LP)
   * French:  Karim Oulad Chalha, 'yass-pard'
