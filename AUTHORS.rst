@@ -12,7 +12,7 @@ Name      		  Position                    Email                            Twitt
 ------------------ -------------------------- --------------------------------- ---------------------------------------------
 `Assem Chelli`_     Project Manager/Developer   assem.ch [at] gmail.com          `@assem_ch`_
 `Abdellah Chelli`_  Web Developer               sneetsher [at] gmail.com         `@sneetsher`_ 
-`Zakaria Smahi`_       Developer                   zakaria08esi [at] gmail.com      `@zsmahi`_  
+`Zakaria Smahi`_       Developer                   zakaria08esi [at] gmail.com   `@zsmahi`_  
 `Walid Ziouche`_    Tester/Developer            01walid [at] gmail.com           `@01walid`_  
 `Muslih al aqaad`_  Graphic Designer            muslihzarth [at] gmail.com       `@muslihzarth`_
 Yasmine Hoadjli     Community Manager           yhoadjli [at] gmail.com          `@yasmamine`_ 
@@ -43,7 +43,7 @@ Coding
 * Desktop Interface: `Assem Chelli`_   
 * Web Interface: `Assem Chelli`_  , `Walid Ziouche`_, `Abdellah Chelli`_ , `Tedjeddine Meabeo`_ , `Muslih al aqaad`_,  `Mouad Debbar`_, Ahmed Ramadan
 * Mobile Web Interface: `Abdellah Chelli`_ 
-* Firefox toolbar: `Zaki Smahi`_ 
+* Firefox toolbar: `Zakaria Smahi`_ 
 
 --------
 Research
@@ -52,6 +52,8 @@ Research
    Assem Chelli (Student), Merouane Dahmani (Student), Taha Zerrouki  ( Supervisor),  Pr. Amar Balla ( Supervisor)  
 
 .. _ESI: http://www.esi.dz
+
+
 -----------------
 Graphics & Design
 -----------------
