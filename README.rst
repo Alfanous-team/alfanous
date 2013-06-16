@@ -111,6 +111,10 @@ This is the list of search features already implemented, preview links use Alfan
 -------
 History
 -------
+- **10 June 2013**: Launching the django web interface, localizable, indexable, and has many search features, improvements and bug fixes.
+
+- **26 June 2012**: Launching the clickable feature, making most of results information searchable.
+
 - **02 January 2012**: Launching new web interface for mobiles, uses: json_web_service_, link: http://m.alfanous.org/, wiki: mobile_web_interface_
 
 - **19 September 2011**: Launching a new web interface with a new design based on the json_web_service_, the link is:  http://wui.alfanous.org
