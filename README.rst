@@ -56,10 +56,9 @@ see `FAQ <https://github.com/Alfanous-team/alfanous/blob/master/FAQ.rst>`_
 Interfaces
 ----------
 #. Alfanous Python API, `source <https://github.com/Alfanous-team/alfanous/tree/master/src/alfanous>`_.
-#. JSON web interface, `link <http://www.alfanous.org/json>`_, actually we're moving to JSON web interface II, `source <https://github.com/Alfanous-team/alfanous/tree/master/src/alfanous-cgi>`_.
-#. Django web application, `source <https://github.com/Alfanous-team/alfanous/tree/master/src/alfanous-django>`_.
-#. Web User interface [Arabic], `link <http://wui.alfanous.org/>`_, `source <https://github.com/Alfanous-team/alfanous/tree/master/interfaces/web/wui>`_.
-#. Web User interface for mobiles [Multi-language], `link <http://m.alfanous.org/>`_, `source <https://github.com/Alfanous-team/alfanous/tree/master/interfaces/web/mobile_wui>`_.
+#. JSON web interface 2, `link <http://www.alfanous.org/jos2>`_, `source <https://github.com/Alfanous-team/alfanous/tree/master/src/alfanous-cgi>`_.
+#. Django web interface [Multi-language], `link <http://www.alfanous.org/>`_ , `source <https://github.com/Alfanous-team/alfanous/tree/master/src/alfanous-django>`_.
+#. Web User interface for mobiles [Multi-language], `link <http://m.alfanous.org/>`_ , `source <https://github.com/Alfanous-team/alfanous/tree/master/interfaces/web/mobile_wui>`_.
 #. Alfanous Desktop application (Windows: `[Arabic] <http://sourceforge.net/projects/alfanous/files/Interfaces/AlfanousDesktop/0.3/alfanousDesktop-windows-0.3ar.exe/download>`_ `[English] <http://sourceforge.net/projects/alfanous/files/Interfaces/AlfanousDesktop/0.4.3/alfanousInstallerV0.4.3.exe/download>`_; Ubuntu/Sabily), `source <https://github.com/Alfanous-team/alfanous/tree/master/src/alfanous-desktop>`_. 
 #. Alfanous Firefox toolbar, `link <https://addons.mozilla.org/en-us/firefox/addon/alfanous-toolbar/>`_, `source <https://github.com/Alfanous-team/alfanous/tree/master/interfaces/toolbars/firefox>`_.
 #. Alfanous Firefox search bar addon, `link <https://addons.mozilla.org/en-us/firefox/addon/alfanous/>`_.
