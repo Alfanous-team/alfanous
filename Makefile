@@ -214,24 +214,31 @@ transfer_prebuild: transfer_stopwords transfer_synonyms transfer_word_props tran
 transfer_postbuild: transfer_vocalizations
 	
 transfer_stopwords:
+	mkdir -p $(DYNAMIC_RESOURCES_PATH)
 	export PYTHONPATH=$(API_PATH) ;	python2 $(QIMPORT) -t stopwords $(DB_PATH)main.db $(DYNAMIC_RESOURCES_PATH)
 	
 transfer_synonyms:
+	mkdir -p $(DYNAMIC_RESOURCES_PATH)
 	export PYTHONPATH=$(API_PATH) ;	python2 $(QIMPORT) -t synonyms $(DB_PATH)main.db $(DYNAMIC_RESOURCES_PATH)
 
 transfer_word_props:
+	mkdir -p $(DYNAMIC_RESOURCES_PATH)
 	export PYTHONPATH=$(API_PATH) ;	python2 $(QIMPORT) -t word_props $(DB_PATH)main.db $(DYNAMIC_RESOURCES_PATH)
 
 transfer_derivations:
+	mkdir -p $(DYNAMIC_RESOURCES_PATH)
 	export PYTHONPATH=$(API_PATH) ;	python2 $(QIMPORT) -t derivations $(DB_PATH)main.db $(DYNAMIC_RESOURCES_PATH)
 
 transfer_vocalizations:
+	mkdir -p $(DYNAMIC_RESOURCES_PATH)
 	export PYTHONPATH=$(API_PATH) ;	python2 $(QIMPORT) -t vocalizations $(DB_PATH)main.db $(INDEX_PATH)main/ $(DYNAMIC_RESOURCES_PATH)
 
 transfer_ara2eng_names:
+	mkdir -p $(DYNAMIC_RESOURCES_PATH)
 	export PYTHONPATH=$(API_PATH) ;	python2 $(QIMPORT) -t ara2eng_names $(DB_PATH)main.db $(DYNAMIC_RESOURCES_PATH)
 	
 transfer_standard2uthmani:
+	mkdir -p $(DYNAMIC_RESOURCES_PATH)
 	export PYTHONPATH=$(API_PATH) ;	python2 $(QIMPORT) -t std2uth_words $(DB_PATH)main.db $(DYNAMIC_RESOURCES_PATH)
 	
 
