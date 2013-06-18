@@ -10,11 +10,11 @@ Alfanous understands the complex nature of the Arabic language and thus offers e
 :License: `AGPL <https://github.com/Alfanous-team/alfanous/blob/master/LICENSE>`_
 :Tracker: `Alfanous-team/alfanous/Issues <https://github.com/Alfanous-team/alfanous/issues>`_
 :Mailinglist: `alfanous@googlegroups.com <http://groups.google.com/group/alfanous/>`_
+:IRC: #alfanous @ freenode
 :Website: `Alfanous.org <http://www.alfanous.org/>`_
 :Feedbacks: `Alfanous Community Feedbacks <http://feedback.alfanous.org/>`_
 :Accounts: `@Facebook <https://www.facebook.com/alfanous>`_ `@Twitter <https://twitter.com/alfanous>`_ `@GooglePlus <https://plus.google.com/111305625425237630318>`_ 
         | `@Sourceforge <http://sourceforge.net/projects/alfanous/>`_ `@Launchpad <http://www.launchpad.net/alfanous/>`_
-
 
 
 --------
@@ -26,11 +26,11 @@ Contacts
 
 - If you want to help in Alfanous somehow,  read this `How you can help?  <https://github.com/Alfanous-team/alfanous/blob/master/FAQ.rst#how-you-can-help>`_. 
 
-- If you have a feature request, a proposition or a question for the project, you may use the mailing list.
+- If you have a feature request, a proposition or a question for the project, you may use the mailing list or the IRC channel.
 
 - If you want to criticize the project, we'll be thankful if you resume your criticism and send it to the mailing list.
 
-For anything else, you can contact us via the mailing list:  `alfanous@googlegroups.com <http://groups.google.com/group/alfanous>`_ .
+For anything else, you can contact us via the mailing list:  `alfanous@googlegroups.com <http://groups.google.com/group/alfanous>`_.
 Here also the emails of `Maintainers <https://github.com/Alfanous-team/alfanous/blob/master/AUTHORS.rst#maintainers>`_, use them wisely.
 
 

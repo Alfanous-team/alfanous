@@ -1,0 +1,244 @@
+{% load custom_filters %}
+
+<!-- F.A.Q. -->
+<div id="faqpanel" class="modal hide fade" tabindex="-1" role="dialog" aria-hidden="true" style="text-align: {{ bidi.align }};  direction: {{ bidi.direction}};">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h3 id="myModalLabel_faq">{{ _("F.A.Q.") }}</h3>
+    </div>
+    <div class="modal-body">
+        <p>{{ _("See") }} <a href="https://github.com/Alfanous-team/alfanous/blob/master/FAQ.rst">{{ _("this link") }}</a>.</p>
+    </div>
+    <div class="modal-footer">
+        <button class="btn" data-dismiss="modal" aria-hidden="true">{{ _(" Close ") }}</button>
+    </div>
+</div>
+
+<!-- Help -->
+<div id="help" class="modal hide fade" tabindex="-1" role="dialog" aria-hidden="true" style="text-align: {{ bidi.align }};  direction: {{ bidi.direction}};">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h3 id="myModalLabel_help">{{ _("Help") }}</h3>
+    </div>
+    <div class="modal-body">
+        <table class="table table-striped table-bordered" style="direction:{{ bidi.direction }};">
+            <tbody>
+            
+                <tr>
+                    <th class="style6">{{ _("Exact search") }} </th>
+                    <td class="style5" ><a  href='/?{% build_search_link params '%20رب' 1 False %}'> رب</a></td>
+                    <td class="style4" ><a  href='/?{% build_search_link params 'فأسقيناكموه' 1 False %}'> فأسقيناكموه </a></td>
+                </tr>
+                <tr>
+                    <th class="style3">{{ _("Phrase search") }}  </th>
+                    <td class="style2"><a href='/?{% build_search_link params '"رب%20العالمين"' 1 False %}'>"رب العالمين"</a></td>
+                    <td class="style2"><a href='/?{% build_search_link params '"رسول%20الله"' 1 False %}'>"رسول الله"</a></td>
+                </tr>
+                <tr>
+                    <th class="style6">{{ _("Logical relations") }}</th>
+                    <td class="style5"><a href='/?{% build_search_link params '(الصلاة%20-%20الزكاة)%20+%20سورة:البقرة' 1 False %}'>(الصلاة - الزكاة) + سورة:البقرة</a></td>
+                    <td class="style4"><a href='/?{% build_search_link params 'سميع%20|%20بصير' 1 False %}'> سميع | بصير</a></td>
+                </tr> 
+                <tr>
+                    <th class="style3">{{ _("Wildcards") }}</th>
+                    <td class="style2"><a href='/?{% build_search_link params '*نبي*' 1 False %}'>*نبي*</a></td>
+                    <td class="style2"><a href='/?{% build_search_link params 'نعم؟' 1 False %}'>نعم؟</a></td>
+                </tr>
+                <tr>
+                    <th class="style6">{{ _("Fields") }}</th>
+                    <td class="style5"><a href='/?{% build_search_link params 'سورة:يس' 1 False %}'>سورة:يس</a></td>
+                    <td class="style4"><a href='/?{% build_search_link params 'سجدة:نعم' 1 False %}'>سجدة:نعم</a></td>
+                </tr>
+                <tr>
+                    <th class="style3">{{ _("Intervals") }} </th>
+                    <td class="style2"><a href='/?{% build_search_link params 'رقم_السورة:%5B1%20الى%205%5D%20%2B%20الله' 1 False %}'>  رقم_السورة:[1 الى 5] + الله</a></td>
+                    <td> </td>
+                </tr>
+                <tr>
+                    <th class="style6">{{ _("Partial vocalization") }} </th>
+                    <td class="style5"><a href="/?{% build_search_link params "آية_:'مَن'" 1 False %}">آية_:'مَن'</a></td>
+                    <td class="style4"><a href="/?{% build_search_link params "آية_:'المَلكُ'" 1 False %}">آية_:'المَلكُ'</a></td>
+                </tr>
+                <tr>
+                    <th class="style3">{{ _("Word properties") }}</th>
+                    <td class="style2"><a href='/?{% build_search_link params '{قول،اسم}' 1 False %}'>{قول،اسم}</a></td>
+                    <td class="style2"><a href='/?{% build_search_link params '{ملك،فعل}' 1 False %}'>{ملك،فعل}</a></td>
+                </tr>
+                <tr>
+                    <th class="style9">{{ _("Derivations") }}</th>
+                    <td class="style8"><a href='/?{% build_search_link params '%3E%3Eملك' 1 False %}'>&gt;&gt;ملك</a></td>
+                    <td class="style7"><a href='/?{% build_search_link params '%3Eملك' 1 False %}'> &gt;ملك</a></td>
+                </tr>
+            </tbody>
+        </table>
+        <p> {{ _("The website does not work well on Internet Explorer, we suggest to use another browser such as: ") }} <a href="https://www.mozilla.org/firefox/" target="_blank">{{ _("Firefox") }}</a>.</p>
+    </div>
+    <div class="modal-footer">
+        <button class="btn" data-dismiss="modal" aria-hidden="true">{{ _(" Close ") }}</button>
+    </div>
+</div>
+
+<!-- AWA 2012 -->
+<div id="awapanel" class="modal hide fade" tabindex="-1" role="dialog" aria-hidden="true" style="text-align: {{ bidi.align }};  direction: {{ bidi.direction}};">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h3 id="myModalLabel_awarded">{{ _("Awarded!") }}</h3>
+    </div>
+    <div class="modal-body">
+        <p>{{ _("Alfanous.org was chosen as the best-in-technicaity website in the competition AlgeriaWebAwards 2012.") }}</p>
+    </div>
+    <div class="modal-footer">
+        <button class="btn" data-dismiss="modal" aria-hidden="true">{{ _(" Close ") }}</button>
+    </div>
+</div>
+
+<!-- Donate -->
+<div id="donatepanel" class="modal hide fade" tabindex="-1" role="dialog" aria-hidden="true" style="text-align: {{ bidi.align }};  direction: {{ bidi.direction}};">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h3 id="myModalLabel_donate">{{ _("How to donate") }}</h3>
+    </div>
+    <div class="modal-body">
+        <p class="text-center text-info">{{ _("We're stuck looking for possible ways for donations/Funding. Any help is appreciated!") }}</p>
+       	
+        <hr />
+        <h4>{{ _("Any way you can help by:") }}</h4>
+        <ul>
+            <li> {{ _("Pay our web hosting monthly bills directly, we create an account for you in the host to do that.") }}</li>
+            <li> {{ _("Lead an advertising compaign for the project website through Google adwords or Facebook.") }}</li>
+            <li> {{ _("Donate by flattr:") }} <a class="FlattrButton" style="display:none;" rev="flattr;button:compact;" href="http://dj.alfanous.org/"></a></li>
+            
+        </ul>
+    </div>
+    
+    <div class="modal-footer">
+        <button class="btn" data-dismiss="modal" aria-hidden="true">{{ _(" Close ") }}</button>
+    </div>
+</div>
+
+<!-- Contact-->
+<div id="contactpanel" class="modal hide fade" tabindex="-1" role="dialog" aria-hidden="true" style="text-align: {{ bidi.align }};  direction: {{ bidi.direction}};">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h3 id="myModalLabel_contact">{{ _("Contact us") }}</h3>
+    </div>
+    <div class="modal-body">
+        <ul class="list">
+            <li> {{ _("If you have a concrete bug report for Alfanous please go to") }} <a href="https://github.com/Alfanous-team/alfanous/issues"> {{ _("Issues Tracker") }}</a>, {{ _("submit your report and tag it \"bug\".")}}</li>
+            <li> {{ _("If you want to participate in actively developing Alfanous,by testing read") }} <a href="https://github.com/Alfanous-team/alfanous/blob/master/FAQ.rst#how-to-help-by-testing"> How to help with testing? </a> {{ _("and by coding read ") }} <a href="https://github.com/Alfanous-team/alfanous/blob/master/FAQ.rst#how-to-contribute-by-coding">How to contribute by coding?</a>.</li>
+            <li> {{ _("If you want to help in Alfanous somehow,  read") }} <a href="https://github.com/Alfanous-team/alfanous/blob/master/FAQ.rst#how-you-can-help">How you can help?</a>.</li>
+            <li> {{ _("If you have a feature request, a proposition or a question for the project, you may use the mailing list.") }}</li>
+            <li> {{ _("If you want to criticize the project, we'll be thankful if you resume your criticism and send it to the mailing list.") }}</li>
+        </ul>
+        <p>{{ _("For anything else, you can contact us via the mailing list which is:") }} <a href="http://groups.google.com/group/alfanous">alfanous[at]googlegroups[dot]com</a> .</p>
+    </div>
+    <div class="modal-footer">
+        <button class="btn" data-dismiss="modal" aria-hidden="true">{{ _(" Close ") }}</button>
+    </div>
+</div>
+
+
+<!-- Contribute -->
+
+<div id="otherMeans" class="modal hide fade" tabindex="-1" role="dialog" aria-hidden="true" style="text-align: {{ bidi.align }};  direction: {{ bidi.direction}};">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h3 id="myModalLabel_contrib">{{ _("How to contribute") }}</h3>
+    </div>
+    <div class="modal-body">
+
+    <div class="accordion" id="accordion2">
+        <div class="accordion-group">
+            <div class="accordion-heading">
+                <a class="accordion-toggle icon-chevron-right" data-toggle="collapse" data-parent="#accordion2" href="#collapseOne">
+                {{ _("Spreading the word") }}
+                </a>
+            </div>
+            <div id="collapseOne" class="accordion-body collapse in">
+                <div class="accordion-inner">
+                    <ul>
+                        <li>{{ _("Following and sharing our social network pages:") }} <a href="https://www.facebook.com/alfanous">@Facebook</a> <a href="https://twitter.com/alfanous">@Twitter</a> <a href="https://plus.google.com/111305625425237630318">@GooglePlus</a>
+                        </li>
+                        <li>{{ _("Sharing a link to") }} <a href="http://www.alfanous.org/">{{ _("our website") }}</a> {{ _("via your accounts in Social networks.") }}</li>
+                        <li>{{ _("Pointing  skilled developers and Quranic researchers to the importance of the project.") }}</li>
+                        <li>{{ _("Writing articles about the project in blogs, newspapers.") }}</li>
+                        <li>{{ _("Showing a banner on your Blog/Website.") }}</li>
+                        <li>{{ _("creating an ad for alfanous links using Google adwords or facebook if you're familiar with that (btw,it needs money)") }}</li>
+                    </ul>   
+                </div>
+            </div>
+        </div>
+        <div class="accordion-group">
+            <div class="accordion-heading">
+                
+                <a class="accordion-toggle icon-chevron-right" data-toggle="collapse" data-parent="#accordion2" href="#collapseTwo">
+                Or by</a>
+            </div>
+            <div id="collapseTwo" class="accordion-body collapse">
+                <div class="accordion-inner">
+                    <ul class="list">
+                        <li>{{ _("Managing and Animating our social network pages with news and daily posts [Arabic, English]:") }} <a href="https://www.facebook.com/alfanous">@Facebook</a> <a href="https://twitter.com/alfanous">@Twitter</a> <a href="https://plus.google.com/111305625425237630318">@GooglePlus</a>
+                        </li>
+                        <li>{{ _("Translating project interfaces to your language , see:") }} <a href="https://github.com/Alfanous-team/alfanous/blob/master/FAQ.rst#how-to-contribute-by-translation">How to contribute by translation?</a></li>
+                        <li>{{ _("Testing the modules and releases, Reporting bugs , see:") }} <a href="https://github.com/Alfanous-team/alfanous/blob/master/FAQ.rst#how-to-report-a-bug">How to report a bug?</a> , <a href="https://github.com/Alfanous-team/alfanous/blob/master/FAQ.rst#how-to-help-by-testing">How to help by testing?</a> .</li>
+                        <li>{{ _("Fixing") }} <a href="https://github.com/Alfanous-team/alfanous/issues?labels=bug&amp;milestone=&amp;page=1&amp;state=open">{{ _("bugs") }}</a> , {{ _("Coding") }} <a href="https://github.com/Alfanous-team/alfanous/issues/milestones">{{ _("new features") }}</a> {{ _("or Developing") }} <a href="https://github.com/Alfanous-team/alfanous/issues?milestone=8&amp;page=1&amp;state=open">{{ _("new interfaces") }}</a> , {{ _("See:") }} <a href="https://github.com/Alfanous-team/alfanous/blob/master/FAQ.rst#how-to-contribute-by-coding">How to contribute by coding?</a> .</li>
+                        <li>{{ _("Designing  Icons, Logos , Banners.") }}</li>
+                        <li>{{ _("Packaging the project for different systems: Windows, Linux distributions, MacOs.") }}</li>
+                        <li>{{ _("Donating/Supporting to the project: <em>We're stuck looking for possible ways for donations/Funding. Any help is appreciated</em>") }}
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+       
+    </div>
+    <div class="modal-footer">
+        <button class="btn" data-dismiss="modal" aria-hidden="true">{{ _(" Close ") }}</button>
+    </div>
+</div>
+
+<!-- Download -->
+
+<div id="download" class="modal hide fade" tabindex="-1" role="dialog" aria-hidden="true" style="text-align: {{ bidi.align }};  direction: {{ bidi.direction}};">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h3 id="myModalLabel_download">{{ _("Download") }}</h3>
+    </div>
+    <div class="modal-body">
+        <h4> {{ _("Windows") }}:</h4>
+        <ul>
+            <li>
+                <a class="name" title="Click to download alfanousDesktop-win0.4r20.exe" href="http://sourceforge.net/projects/alfanous/files/Interfaces/AlfanousDesktop/0.4.20/alfanousDesktop-win0.4r20.exe/download">{{ _("English desktop release 0.4") }}</a>
+             </li>
+            <li>
+                <a class="name" title="Click to download alfanousDesktop-windows-0.3ar.exe" href="http://sourceforge.net/projects/alfanous/files/Interfaces/AlfanousDesktop/0.3/alfanousDesktop-windows-0.3ar.exe/download">{{ _("Arabic desktop release 0.3") }} </a>
+            </li>
+        </ul>
+
+        <h4> {{ _("Linux") }}:</h4>
+        <a class="name" title="more details" href="https://github.com/Alfanous-team/alfanous/blob/master/INSTALL.rst">{{ _("More details") }}</a>
+    </div>
+    <div class="modal-footer">
+        <button class="btn" data-dismiss="modal" aria-hidden="true">{{ _(" Close ") }}</button>
+    </div>
+</div>
+
+<!-- Translate -->
+<div id="translatepanel" class="modal hide fade" tabindex="-1" role="dialog" aria-hidden="true" style="text-align: {{ bidi.align }};  direction: {{ bidi.direction}};">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h3 id="myModalLabel_translate">{{ _("How to translate") }}</h3>
+    </div>
+    <div class="modal-body">
+        <ul class="list">
+        <li>{{ _("Check the existance of your language in the available languages list.") }}</li>
+        <li>{{ _("Download the file:") }} <a href="/static/django.po">django.po</a>.</li>
+        <li>{{ _("Use Poedit or Virtaal to edit it.") }}</li>
+        <li>{{ _("Send the updated file into our mailing list:") }} <a href="http://groups.google.com/group/alfanous">alfanous[at]googlegroups[dot]com</a> .</li>
+    </ul>
+    </div>
+    <div class="modal-footer">
+        <button class="btn" data-dismiss="modal" aria-hidden="true">{{ _(" Close ") }}</button>
+    </div>
+</div>

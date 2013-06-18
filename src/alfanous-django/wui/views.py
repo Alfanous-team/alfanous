@@ -55,7 +55,11 @@ def jos2( request ):
         response['Access-Control-Allow-Methods'] = 'GET'
         #response['Content-Encoding'] = 'gzip'
     else:
-        response_data = RAWoutput._information["json_output_system_note"]
+        response_html = "<html><head> <title> %(title)s </title> </head><body> %(body)s </body> </html>"
+        response_data = response_html % {
+										"title":"JSON Output System 2 (JOS2)",
+    									"body": RAWoutput._information["json_output_system_note"]
+    									}
         response = HttpResponse( response_data )
     return response
 
