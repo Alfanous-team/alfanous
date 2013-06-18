@@ -1,269 +1,153 @@
-
-
-
 <!DOCTYPE html>
-<html>
+<html dir="{{ bidi.direction }}" lang="{{ language.code }}">
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 	<title> 
 			{% block title %} 
+				{{ _("Alfanous") }} - 
+				{% if current.unit == "aya" %}
+						{{ _("Ayah Search") }}
+					{% elif current.unit == "word" %}
+						{{ _("Word Search") }}
+					{% elif current.unit == "translation" %}
+						{{ _("Translation Search") }}
+					{% else %}
+						{{ _("Ayah Search") }} 
+				{% endif %}
+				
 				{% if params.query %}
-					{% if current.unit == "aya" %}
-						{{ _("Ayah Results to Query:") }} 
-					{% elif current.unit == "word" %}
-						{{ _("Word Results to Query:") }}
-					{% elif current.unit == "translation" %}
-						{{ _("Translation Results to Query:") }} 
-					{% else %}
-						{{ _("Results to Query:") }} 
-					{% endif %}	
-					{{ params.query }}
-					
-				{% else %}
-					{% if current.unit == "aya" %}
-						{{ _("Quranic Verse Search") }}
-					{% elif current.unit == "word" %}
-						{{ _("Quranic Word Search") }}
-					{% elif current.unit == "translation" %}
-						{{ _("Quranic Translation Search") }}
-					{% else %}
-						{{ _("Advanced Quranic Search Engine") }} 
+					- 
+					{{ _("Query:") }}
+					{{ params.query }} 
+					{% if params.page %}
+						|| {{ _("Page:") }}
+						{{ params.page }}
 					{% endif %}
-					 - {{ _("Alfanous") }} 
+					{% if params.order %}
+						|| {{ _("Order:") }}
+						{{ params.sortedby }}
+					{% endif %}
+					{% if params.view and params.view != "default" %}
+						|| {{ _("View:") }}
+						{{ params.view }}
+					{% endif %}
+					{% if params.vocalized or params.uthmani or params.fuzzy %}
+						|| {{ _("Options:") }} {
+							{% if params.vocalized %}
+								{{ _("vocalized") }},
+							{% endif %}
+							{% if params.uthmani %}
+								{{ _("uthmani") }},
+							{% endif %}
+							{% if params.fuzzy %}
+								{{ _("fuzzy") }},
+							{% endif %}
+						}
+					{% endif %}
+					{% if params.translation %}
+						|| {{ _("Translation:") }}
+							{{ params.translation }},
+					{% endif %}
 				{% endif %}
 			{% endblock %}  
 	</title>
 	
 	<meta name="description" content="{{ _('Alfanous is a functional, dynamic, comprehensive Qur’an search engine that has been effectively designed to carry out simple or advanced Quranic searches.') }}"/>
-	<meta name="keywords" content="{{ _("quran") }}, {{ _("forqan") }}, {{ _("koran") }}, {{ _("search") }}, {{ _("search engine") }}, {{ _("ayates") }}, {{ _("surates") }}, {{ _("advanced") }}, {{ _("statistics") }}, {{  _("linguistic") }}, {{ _("information retrieval") }}, {{ _("natural language processing") }}, {{ _("words") }}, {{ _("Lantern") }}, {{ _("alfanous") }},  "/>
+	<meta name="keywords" content="{{ _("quran") }},
+								   {{ _("forqan") }},
+								   {{ _("koran") }}, 
+								   {{ _("search") }}, 
+								   {{ _("search engine") }}, 
+								   {{ _("ayates") }}, 
+								   {{ _("surates") }}, 
+								   {{ _("advanced") }}, 
+								   {{ _("statistics") }}, 
+								   {{  _("linguistic") }}, 
+								   {{ _("information retrieval") }}, 
+								   {{ _("natural language processing") }}, 
+								   {{ _("words") }}, 
+								   {{ _("Lantern") }}, 
+								   {{ _("alfanous") }},
+								   {% for wordcpt, wordstat in results.search.words.individual.items %}
+								   		{{ wordstat.word }},
+								   		{% if wordstat.romanization %} {{ wordstat.romanization }}, {%  endif %}
+								   {% endfor %}
+								   {{ params.translation }},
+								   {{ params.view }} view,
+								   {% if params.vocalized %}
+										{{ _("vocalized text") }},
+								   {% endif %}
+								   {% if params.uthmani %}
+										{{ _("uthmani script") }},
+								   {% endif %}
+								   {% if params.fuzzy %}
+										{{ _("fuzzy search") }},
+								   {% endif %}
+								   {{ params.sortedby }} order,
+								   {{ language.name }},
+								   {{ language.name_local }},
+								   "/>
 	<!-- meta name="copyright" content="&copy; Alfanous Team, AGPL" -->
-	<meta name="author" content="Assem Chelli, Ahmed Ramadan, Abdellah Chelli, Mouad Debbar" />
+	<meta name="author" content="Assem Chelli, Ahmed Ramadan, Abdellah Chelli, Mouad Debbar, Walid Ziouche" />
 	<meta name="robots" content="index,follow"/>
 
-	<link rel="icon" href="/static/images/icon_32.png" sizes="32x32"> 
-	<link rel="shortcut icon" href="/static/images/favicon.ico" type="image/x-icon">
+	<link rel="icon" href="/static/shared/img/icon_32.png" sizes="32x32"> 
+	<link rel="shortcut icon" href="/static/shared/img/favicon.ico" type="image/x-icon">
 
 	<link rel="search" type="application/opensearchdescription+xml" title="Alfanous" href="/static/alfanous-opensearch.xml"/>
 
-	<!-- G+ direct connect -->
-	<link href="https://plus.google.com/u/0/111305625425237630318" rel="publisher" />
-	
-	<!--fb-->
-	<meta property="og:image" content="http://www.alfanous.org/static/images/logo_fb.png" />
-
-	<link href="https://fonts.googleapis.com/css?family=Droid+Sans:regular,bold&amp;subset=latin" rel="stylesheet" type="text/css">
-	<link rel="stylesheet" href="/static/css/screen.css" type="text/css"/>
-	
-	<!--abdellah-->
-	<script type="text/javascript" src="/static/js/audio-player.js"></script>
-	<!--jquery tools (for overlay) + jquery 1.7.2 included-->
-	<script type="text/javascript" src="/static/js/jquery.tools.min.js"></script>
-
-	<!-- Assem: Keyboard -->
-	<script type="text/javascript" src="/static/js/keyboard.js" charset="UTF-8"></script>
-	<link rel="stylesheet" type="text/css" href="/static/css/keyboard.css">
-	
-	<!--
-	## it block the other contents from loading
-	<script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#username=ahmadramadan"></script>
-	-->
-	<script type="text/javascript" src="/static/js/drops.js"></script>
-	
-	<!-- Mouad -->
-	<script type="text/javascript" src="/static/js/jquery.sprintf.js"></script>
-	<script type="text/javascript" src="/static/js/hash.js"></script>
-	
-	<!--abdellah-->
-	<script type="text/javascript" src="/static/js/jquery.corner.js"></script>
-	
-	<!-- assem -->
-	<!-- <script src="http://code.jquery.com/jquery-1.9.1.js"></script> -->
-	<script src="http://code.jquery.com/ui/1.10.1/jquery-ui.js"></script>
-	
+	<!-- Google analytics #Assem -->
 	<script type="text/javascript">
-	// <![CDATA[
-		AudioPlayer.setup("/static/swf/player.swf", {
-			width: 350,
-			rtl: "no"
-			});
-	// ]]>
+        var _gaq = _gaq || [];
+        _gaq.push(['_setAccount', 'UA-9859501-4']);
+        _gaq.push(['_trackPageview']);
+
+        (function() {
+            var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+            ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+            var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+        })();
 	</script>
+	<!-- end -->
 
-	<script type="text/javascript">
-	// <![CDATA[
-		$(document).ready(function(){
-		
-			$("#help_btn").click(function() {
-				$("#help").overlay().load();
-			});
-		
-			$("#down_btn").click(function() {
-				$("#down").overlay().load();
-			});
-			
-			
-			$("#awa_btn").click(function() {
-				$("#awapanel").overlay().load();
-			});
-			
-			$("#contact_btn").click(function() {
-				$("#contactpanel").overlay().load();
-			});
-			
-			$("#donate_btn").click(function() {
-				$("#donatepanel").overlay().load();
-			});
-			
-			$("#faq_btn").click(function() {
-				$("#faqpanel").overlay().load();
-			});
-			
-			$("#translate_btn").click(function() {
-				$("#translatepanel").overlay().load();
-			});
-			
-			$("#contribute_btn").click(function() {
-				$("#contributepanel").overlay().load();
-			});
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<!-- Bootstrap -->
+    {% ifequal bidi.direction "ltr" %}
+        <link href="/static/ltr/css/bootstrap.min.css" rel="stylesheet">
+        <link href="/static/ltr/css/bootstrap-responsive.min.css" rel="stylesheet">      
+    {% else %}
+        <link href="/static/rtl/css/rtl-bootstrap.min.css" rel="stylesheet">
+        <link href="/static/rtl/css/rtl-bootstrap-responsive.min.css" rel="stylesheet">      
+    {% endifequal %}
+    <!-- custom html select items -->
+    <link href="/static/shared/css/bootstrap-select.min.css" rel="stylesheet">
+    <!-- Quick tour -->
+    <link href="/static/shared/css/bootstro.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="/static/shared/css/font-awesome.min.css">
 
-			$( "#showlog" ).click(function() {
-				$( "#logbox" ).toggle( "blind", 5 );
-			});
+    <!--[if IE 7]>
+    <link rel="stylesheet" href="/static/shared/css/font-awesome-ie7.min.css">
+    <![endif]-->
 
-
-			// Corners
-			$(".details_label").corner("3px");
-			$("#search_words").corner("30px");
-			$("#suggestions").corner("30px");
-			$("div.sidebox a ").corner();
-
-			$(document).scrollTop($("#search_result_static").position().top);
-			
-			update_share_links()
-
-			{% block JS_Embedding_AudioPlayers %}
-				{% for ayaresult_id, ayaresult_content in  	results.search.ayas.items %}
-					AudioPlayer.embed("audioplayer_{{ ayaresult_id }}", {soundFile: "{{  ayaresult_content.aya.recitation }}", titles: "{{ ayaresult_content.identifier.sura_name }}-{{ ayaresult_content.identifier.aya_id}}" });
-				{% endfor %}
-			{% endblock %}
-				
-
-		});
-
-		function build_search_link(param,query,filter)
-				{
-					var new_param = param; 
-                           new_param.action="search";
-					new_param.page = 1;
-					new_param.sortedby = "mushaf";
-					if (filter) new_param.query = "(" + $("#search_box").val() + ") + " + query;
-					else new_param.query = query;
-					return "<a class='no_decoration' href=\""+ get_url_without_params()+ "?"+ build_params( new_param )+ "\">" 
-				}
-		
-		function get_results (param) { // this function will be used to require suggestions
-			if ($.trim(param.query) != "" && param.action == "search") {
-				$.ajax({
-					url: "/jos2/", // http://www.alfanous.org/jos2
-					async: false,
-					type: "GET",
-					dataType: "json",
-					timeout: 10000,
-					crossDomain: true,
-					data: param,
-					success: function(json){
-						show_results (json, param);
-					},
-					error: function(jq_xhr, text_status, error_thrown){
-						$("#search_result").html("<div id='error'><p>"+ error_thrown+"</p></div>");
-						return false;
-					}
-					});
-				};
-		};
-
-
-		function show_results (json, param) {		}
-
-		function addto_searchbar(){
-			window.external.AddSearchProvider("/static/alfanous-opensearch.xml");
-		
-		}
-
-	// ]]>
+    <!-- Custom Alfanous CSS -->
+    <link href="/static/shared/css/style.css" rel="stylesheet">
+    {% ifequal bidi.direction "rtl" %}
+    <link href="/static/rtl/css/rtl.css" rel="stylesheet">
+    {% endifequal %}
+    
+    <!--  flattr donation -->
+    <script type="text/javascript">
+		/* <![CDATA[ */
+	    (function() {
+	        var s = document.createElement('script'), t = document.getElementsByTagName('script')[0];
+	        s.type = 'text/javascript';
+	        s.async = true;
+	        s.src = 'http://api.flattr.com/js/0.6/load.js?mode=auto';
+	        t.parentNode.insertBefore(s, t);
+	    })();
+		/* ]]> */
 	</script>
-
-	<!--[if lte IE 8]>
-	<style type="text/css">
-
-	a.button {
-		padding:0 12px;
-		cursor: pointer;
-		font-family: tahoma;
-		font-size: 10pt;
-		font-weight: bold;
-		color: black;
-		min-width: 30px;
-		margin: 0 5px 0 0;
-		/* Css3 Effects */
-		border-radius:4px ;
-		-moz-border-radius:4px ;
-		-webkit-border-radius:4px ;
-		opacity:0.8;
-		filter: alpha(opacity=80); 
-		background: #ffffff; /* old browsers */
-		background: -moz-linear-gradient(top, #ffffff 0%, #e5e5e5 100%); /* firefox */
-		background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#ffffff), color-stop(100%,#e5e5e5)); /* webkit */
-		filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#e5e5e5',GradientType=0 ); /* ie */
-		text-shadow:0 1px 1px #eeeeee;
-		-moz-text-shadow:0 1px 1px #eeeeee;
-		-webkit-text-shadow:0 1px 1px #eeeeee;
-		border: 1px solid silver;
-	}
-
-	a.button:hover, .button:focus {
-		outline: 0;
-		-webkit-box-shadow:0 0 4px silver;
-		-moz-box-shadow:0 0 4px silver;
-		opacity:1;
-		filter: alpha(opacity=100);
-	}
-
-	a.button:active {
-		color: #000;
-		border-color: #444;
-	}
-	.styled{}
-	.select{}
-
-	</style>
-	<![endif]-->
-
-	<script type="text/javascript">
-	// <![CDATA[
-	if (navigator.userAgent.toLowerCase().match('chrome')){
-		document.write('<style type="text/css">.xdrops_continer{direction:ltr;padding-left:160px;}a.button {margin-top:2px;}</style>');
-	}
-	// ]]>
-	</script>
-
-
-<!-- Google analytics #Assem -->
-<script type="text/javascript">
-
-  var _gaq = _gaq || [];
-  _gaq.push(['_setAccount', 'UA-9859501-4']);
-  _gaq.push(['_trackPageview']);
-
-  (function() {
-    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-  })();
-
-</script>
-<!-- end -->
-
 
 </head>
 <body>
@@ -276,343 +160,246 @@
 
 
 {% endif %}
-
-
-
-<!-- Alfanous Header -->
-<div id="alfanousheader">
-<ul class="headermenu">
-{% for available_unit in available.units.items %}
-	<li class="menuitem">
-		{% ifequal available_unit.0 current.unit %}<span > {{ available_unit.1 }}</span> 
-		{% else %} <a href="{% url alfanous-django.wui.views.results current.language available_unit.0 %}">{{ available_unit.1 }}</a>
-		{% endifequal %} 
-	</li>
-{% endfor %}
-</ul>
-
-
-<nav id="language_menu">
-	<ul class = "right">
-		<li class="menuitem"><a href="#"> {{ language.name_local }} &darr;</a>
-			<ul class = "right">
-				{% for available_language in available.languages %}
-				<li class="listItem">
-					{% ifequal available_language.0 language.code %}<span >{{ available_language.1 }}</span> 
-					{% else %} <a href="{% url alfanous-django.wui.views.results available_language.0 current.unit %}?{{ current.request }}">{{ available_language.1 }}</a>
-					{% endifequal %} 
-				</li>
-				{% endfor %}
-			</ul>
-		</li>
-
-	</ul>
-</nav>
-<div style="clear: left"></div>
-</div>
-<!-- End Alfanous Header -->
-
-<form id="form" name="form" method="get" action=".">
-<div>
-<div>
-<table>
-	<tr>
-		<td colspan="4" style="background:transparent url(/static/images/logo{{ bidi.image_extension }}.png); width:385px; height:200px;"> </td>
-	</tr>
-	<tr>
-		<td style="background:url(/static/images/main_table_02.png) no-repeat;width:50px;height:26px"> </td>
-		<td style="background:url(/static/images/main_table_03.png) no-repeat;width:259px;height:26px">
-			<input style="direction: {{ bidi.direction }} ; text-align:{{ bidi.align }}" id="search_box" name="query" class="enter keyboardInput" type="text" value="{{ params.query }}" />
-			</td>
-		<td style="background:url(/static/images/main_table_04.png) repeat scroll 0 0 transparent;width:62;height:26;text-align:center;">
-			<a class="button" href="" onclick="$('#form').submit(); return false;">{{ _("search") }}</a>
-			</td>
-		<td style="background:url(/static/images/main_table_05.png) no-repeat;width:24px;height:26px"> </td>
-		</tr>
-	<tr style=" vertical-align: top;">
-		<td colspan="4" style="background:url(/static/images/main_table_06.png) no-repeat;width:395px;height:21px;"> </td></tr>
-</table>
-
-<br/>
-
- 
-{% block options %}
-
-{% endblock %}
-
-
-
-<div  class="sidebox feedback-sidebox" > 
-	<a  target='_blank' href='http://feedback.alfanous.org/'>{{ _("Feedback") }}</a><br/>
-</div>
-
-<div class="sidebox donate-sidebox" > 
-	<a  id="donate_btn">{{ _("Donate") }}</a><br/>
-</div>
-
-<div class="sidebox translate-sidebox" > 
-	<a  id="translate_btn">{{ _("Translate") }}</a><br/>
-</div>
-
-<div class="sidebox contribute-sidebox" > 
-	<a  id="contribute_btn">{{ _("Contribute") }}</a><br/>
-</div>
-
-<div class="sidebox contact-sidebox" > 
-	<a  id="contact_btn">{{ _("Contact") }}</a><br/>
-</div>
-
-<div class="sidebox help-sidebox" > 
-	<a id="help_btn">{{ _("Help") }}</a><br/>
-</div>
-
-<div class="sidebox faq-sidebox" > 
-	<a id="faq_btn">{{ _("F.A.Q.") }}</a><br/>
-</div>
-
-
-<div class="sidebox download-sidebox" > 
-	<a id="down_btn">{{ _("Download") }}</a><br/>
-</div>
-
-
-
-{% block  follow_box %}
-<div class="follow-box" > 
-	<a class="twitter_share" target='_blank' rel='nofollow' href='https://twitter.com/share?url=http://www.alfanous.org{{ current_path }}&amp;text={{ _("Alfanous | Advanced Quranic Search Engine")|iriencode }}'><img src='/static/images/twitter.png' class='bo' alt='twitter' title='{{ _("Twitter") }}'/></a><br/>
-	<a class="facebook_share" target='_blank' rel='nofollow' href='http://www.facebook.com/share.php?u=http://www.alfanous.org{{ current_path }}&amp;t={{ _("Alfanous | Advanced Quranic Search Engine")|iriencode }}'><img class='bo' alt='Facebook' title='{{ _("Facebook") }}' src='/static/images/facebook.png' /></a><br/>
-	<a title='{{ _("Send to MySpace") }}' class='external2 myspace_share' rel='nofollow' href='http://www.myspace.com/Modules/PostTo/Pages/?u=http://www.alfanous.org{{ current_path }}' target='_blank'><img src='/static/images/myspace.png' class='bo' alt='myspace'/></a><br/>
-	<script type="text/javascript">
-	// <![CDATA[
-	    var addthis_pub = "kaan";
-	// ]]>
-    </script>
-    <a class="other_share" rel='nofollow' href="http://www.addthis.com/bookmark.php?v=250&amp;username=ahmadramadan" onmouseover="return addthis_open(this, '', document.URL, document.title );" onmouseout="addthis_close()" onclick="return addthis_sendto()"><img class='bo' src="/static/images/share.png" alt="{{ _("Share it with friends") }}"/></a>
-</div>
-{% endblock %}
-
-<br />
-<div class="xdrops_continer" style="direction:{{ bidi.direction }}; text-align:{{ bidi.align_inverse }}; width: 342px;">
-{% block views_panel %}{% endblock %}
-{% block sortedby_panel %}{% endblock %}
-{% block translations_panel %}{% endblock %}
-{% block recitations_panel %} {% endblock %}
-
-</div>
-
-
-<br />
-
-{% if not params %}
-	{% block share_buttons %}
-		<br /><br />  
-		<div>
-        <a href="https://www.facebook.com/alfanous" title="Facebook" target="_blank"><img src="/static/images/facebook-icon-black.png" alt="{{ _("Facebook") }}" title="{{ _("Facebook") }}" /></a> 
-        <a href="https://plus.google.com/111305625425237630318" target="_blank"><img src="/static/images/google-icon-black.png" alt="{{ _("Google Plus") }}" title="{{ _("Google Plus") }}" /> </a> 
-        <a href="https://twitter.com/alfanous" target="_blank"> <img src="/static/images/twitter-icon-black.png" alt="{{ _("Twitter") }}" title="{{ _("Twitter") }}" /></a> 
-		</div>
-		 <br />
-		<br />
-		<div id="vote_btn">
-		{% ifequal current.language  "ar" %}
-		<a class='xbutton gray' href="https://docs.google.com/spreadsheet/viewform?formkey=dEZZaE5fQ0NwQXljU2ZyUmpfLW15SVE6MA" target="_blank">
-		{% else %}
-		<a class='xbutton gray' href="https://docs.google.com/spreadsheet/viewform?formkey=dHNKQU1JSkEzbDNKR2tvM2M2cDA2SXc6MQ" target="_blank">
-		{% endifequal  %}
-	    {{ _("Please help us improving Alfanous Project, by taking this survey about search features in Holy Quran") }} </a>
-		</div><br />  
-		<br /><br />  
-		<br /><br />
-	{% endblock %}
-	{% block no_request %} {% endblock %} 
-{% endif %}
-
-
-
-
-<!--abdellah-->
-<div id="search_result" style="direction:{{ bidi.direction }}; width:800px">
-<!-- assem: search_result_django_static -->
-{% block results %} {% endblock results %}
-</div>
-
-</div>
-</div>
-
-
-<div id="down" class="modal" style="text-align: {{ bidi.align }};  direction: {{ bidi.direction}};">
-	<h2 style='padding:0 0 0px 0'><img alt="download" src="/static/images/Download.png">{{ _("Download") }}</h2><br/>
-<strong> {{ _("Windows") }}:</strong>
-<ul>
-<li>
-<a class="name" title="Click to download alfanousDesktop-win0.4r20.exe" href="http://sourceforge.net/projects/alfanous/files/Interfaces/AlfanousDesktop/0.4.20/alfanousDesktop-win0.4r20.exe/download">{{ _("English desktop release 0.4") }}</a>
- </li>
- <li>
-<a class="name" title="Click to download alfanousDesktop-windows-0.3ar.exe" href="http://sourceforge.net/projects/alfanous/files/Interfaces/AlfanousDesktop/0.3/alfanousDesktop-windows-0.3ar.exe/download">{{ _("Arabic desktop release 0.3") }} </a>
- </li>
- </ul>
- <br/> <br/> 
-<strong> {{ _("Linux") }}:</strong>
-<a class="name" title="more details" href="https://github.com/Alfanous-team/alfanous/blob/master/INSTALL.rst">{{ _("More details") }}</a>
-
-    <br/><br/>
-		<button type="button" class='close gray button' > {{ _(" Close ") }} </button>	
-	<br />
-</div>
-
-
-<div id="awapanel" class="modal" style="text-align: {{ bidi.align }};  direction: {{ bidi.direction}};">
-	<h2 style='padding:0 0 0px 0'>{{ _("Awarded!") }}</h2><br/>
-{{ _("Alfanous.org was chosen as the best-in-technicaity website in the competition AlgeriaWebAwards 2012.") }}
-    <br/><br/>
-		<button type="button" class='close gray button' > {{ _(" Close ") }} </button>	
-	<br />
-</div>
-
-<div id="contactpanel" class="modal" style="text-align: {{ bidi.align }}; direction: {{ bidi.direction}}; width:672px">
-	<h2 style='padding:0 0 0px 0'>{{ _("Contact us") }}</h2><br/>
-<ul class="list">
-<li> {{ _("If you have a concrete bug report for Alfanous please go to") }} <a href="https://github.com/Alfanous-team/alfanous/issues"> {{ _("Issues Tracker") }}</a>, {{ _("submit your report and tag it \"bug\".")}}</li>
-<li> {{ _("If you want to participate in actively developing Alfanous,by testing read") }} <a href="https://github.com/Alfanous-team/alfanous/blob/master/FAQ.rst#how-to-help-by-testing"> How to help with testing? </a> {{ _("and by coding read ") }} <a href="https://github.com/Alfanous-team/alfanous/blob/master/FAQ.rst#how-to-contribute-by-coding">How to contribute by coding?</a>.</li>
-<li> {{ _("If you want to help in Alfanous somehow,  read") }} <a href="https://github.com/Alfanous-team/alfanous/blob/master/FAQ.rst#how-you-can-help">How you can help?</a>.</li>
-<li> {{ _("If you have a feature request, a proposition or a question for the project, you may use the mailing list.") }}</li>
-<li> {{ _("If you want to criticize the project, we'll be thankful if you resume your criticism and send it to the mailing list.") }}</li>
-</ul>
-<p>{{ _("For anything else, you can contact us via the mailing list which is:") }} <a href="http://groups.google.com/group/alfanous">alfanous[at]googlegroups[dot]com</a> .</p>
-    <br/><br/>
-		<button type="button" class='close gray button' > {{ _(" Close ") }} </button>	
-	<br />
-</div>
-
-<div id="faqpanel" class="modal" style="text-align: {{ bidi.align }};  direction: {{ bidi.direction}};">
-	<h2 style='padding:0 0 0px 0'>{{ _("F.A.Q.") }}</h2><br/>
-	{{ _("See") }} <a href="https://github.com/Alfanous-team/alfanous/blob/master/FAQ.rst">{{ _("this link") }}</a>.
-    <br/><br/>
-		<button type="button" class='close gray button' > {{ _(" Close ") }} </button>	
-	<br />
-</div>
-
-<div id="donatepanel" class="modal" style="text-align: {{ bidi.align }};  direction: {{ bidi.direction}};">
-	<h2 style='padding:0 0 0px 0'>{{ _("How to donate") }}</h2><br/>
-	{{ _("We're stuck looking for possible ways for donations/Funding. Any help is appreciated!") }}
-    <br />
-    {{ _("Any way you can help by:") }}
-    <ul class="list">
-    <li> {{ _("Pay our web hosting monthly bills directly, we create an account for you in the host to do that.") }}</li>
-	<li> {{ _("Lead an advertising compaign for the project website through Google adwords or Facebook.") }}</li>
-    </ul>
-    <br/><br/>
-		<button type="button" class='close gray button' > {{ _(" Close ") }} </button>	
-	<br />
-</div>
-
-<div id="translatepanel" class="modal" style="text-align: {{ bidi.align }}; direction: {{ bidi.direction}};">
-	<h2 style='padding:0 0 0px 0'>{{ _("How to translate") }}</h2><br/>
-	<ul class="list">
-  		<li>{{ _("Check the existance of your language in the available languages list.") }}</li>
-		<li>{{ _("Download the file:") }} <a href="/static/django.po">django.po</a>.</li>
-		<li>{{ _("Use Poedit or Virtaal to edit it.") }}</li>
-		<li>{{ _("Send the updated file into our mailing list:") }} <a href="http://groups.google.com/group/alfanous">alfanous[at]googlegroups[dot]com</a> .</li>
-    </ul>
-    <br/><br/>
-		<button type="button" class='close gray button' > {{ _(" Close ") }} </button>	
-	<br />
-</div>
-
-<div id="contributepanel" class="modal" style="text-align: {{ bidi.align }}; direction: {{ bidi.direction}};  	height: 400px; ">
-	<h2 style='padding:0 0 0px 0'>{{ _("How to contribute") }}</h2><br/>
-<ul class="list">
-<li>{{ _("Spreading the word") }}<ul>
-<li>{{ _("Following and sharing our social network pages:") }} <a href="https://www.facebook.com/alfanous">@Facebook</a> <a href="https://twitter.com/alfanous">@Twitter</a> <a href="https://plus.google.com/111305625425237630318">@GooglePlus</a>
-</li>
-<li>{{ _("Sharing a link to") }} <a href="http://www.alfanous.org/">{{ _("our website") }}</a> {{ _("via your accounts in Social networks.") }}</li>
-<li>{{ _("Pointing  skilled developers and Quranic researchers to the importance of the project.") }}</li>
-<li>{{ _("Writing articles about the project in blogs, newspapers.") }}</li>
-<li>{{ _("Showing a banner on your Blog/Website.") }}</li>
-<li>{{ _("creating an ad for alfanous links using Google adwords or facebook if you're familiar with that (btw,it needs money)") }}</li>
-</ul>
-</li>
-<li>{{ _("Managing and Animating our social network pages with news and daily posts [Arabic, English]:") }} <a href="https://www.facebook.com/alfanous">@Facebook</a> <a href="https://twitter.com/alfanous">@Twitter</a> <a href="https://plus.google.com/111305625425237630318">@GooglePlus</a>
-</li>
-<li>{{ _("Translating project interfaces to your language , see:") }} <a href="https://github.com/Alfanous-team/alfanous/blob/master/FAQ.rst#how-to-contribute-by-translation">How to contribute by translation?</a>
-<li>{{ _("Testing the modules and releases, Reporting bugs , see:") }} <a href="https://github.com/Alfanous-team/alfanous/blob/master/FAQ.rst#how-to-report-a-bug">How to report a bug?</a> , <a href="https://github.com/Alfanous-team/alfanous/blob/master/FAQ.rst#how-to-help-by-testing">How to help by testing?</a> .</li>
-<li>{{ _("Fixing") }} <a href="https://github.com/Alfanous-team/alfanous/issues?labels=bug&amp;milestone=&amp;page=1&amp;state=open">{{ _("bugs") }}</a> , {{ _("Coding") }} <a href="https://github.com/Alfanous-team/alfanous/issues/milestones">{{ _("new features") }}</a> {{ _("or Developing") }} <a href="https://github.com/Alfanous-team/alfanous/issues?milestone=8&amp;page=1&amp;state=open">{{ _("new interfaces") }}</a> , {{ _("See:") }} <a href="https://github.com/Alfanous-team/alfanous/blob/master/FAQ.rst#how-to-contribute-by-coding">How to contribute by coding?</a> .</li>
-<li>{{ _("Designing  Icons, Logos , Banners.") }}</li>
-<li>{{ _("Packaging the project for different systems: Windows, Linux distributions, MacOs.") }}</li>
-<li>{{ _("Donating/Supporting to the project: <em>We're stuck looking for possible ways for donations/Funding. Any help is appreciated</em>") }}
-</li>
-</ul>
-    <br/><br/>
-		<button type="button" class='close gray button' > {{ _("Close") }} </button>	
-	<br />
-</div>
-
-
-<div id="help" class="modal" style="width: 675px; text-align: {{ bidi.align }}; direction: {{ bidi.direction}};">
-<h2>{{ _("Help") }}</h2>
-{% block help_panel %}
-
-{% endblock %}
-</div>
-	
-</form>
-
-<footer>
-    <div id="footer-big-wrapper">
-        <div id="footer-big">
-            <div class="column"> 
-                <h1>{{ _("Quick links") }}</h1> 
-                <ul> 
-                    <li><a href="/jos2" target="_blank">{{ _("Json Output Service") }}</a></li>
-                    <li><a href="http://m.alfanous.org/">{{ _("Mobile Web Interface") }}</a></li>
-                    <li><a href="http://wui.alfanous.org/">{{ _("Old jQuery Web Interface") }}</a></li> 
-                    <li><a href="http://old.alfanous.org/">{{ _("Old HTML Web Interface") }}</a></li> 
-                    <li class="last"><a href="http://github.com/Alfanous-team/alfanous" target="_blank">{{ _("@Github") }}</a></li>
-                    <li><a href="http://sourceforge.net/projects/alfanous/" target="_blank">{{ _("@Sourceforge") }}</a></li> 
-                    <li><a href="http://wwW.launchpad.net/alfanous/" target="_blank">{{ _("@Launchpad") }}</a></li>
-                </ul> 
-            </div> 
-            <div class="column"> 
-                <h1>{{ _("Community") }}</h1> 
-                <ul> 
-                    <!--<li><a href="https://github.com/Alfanous-team/alfanous/blob/master/README.rst" target="_blank">{{ _("About") }}</a></li>--> 
-                    <li><a href="http://groups.google.com/group/alfanous/" title="Mailinglist" target="_blank">{{ _("Mailinglist") }}</a></li> 
-                    <li><a href="https://github.com/Alfanous-team/alfanous/issues/new" title="Report an issue" target="_blank">{{ _("+ Report an issue") }}</a></li>
-                    <li><a href="https://github.com/Alfanous-team/alfanous/issues" title="Issues" target="_blank">{{ _("Issues Tracker") }}</a></li>
-                    <li><a href="https://www.facebook.com/alfanous" title="Facebook" target="_blank">{{ _("@Facebook") }}</a></li> 
-                    <li><a href="https://plus.google.com/111305625425237630318" target="_blank">{{ _("@Google Plus") }}</a></li> 
-                    <li class="last"><a href="https://twitter.com/alfanous" target="_blank">{{ _("@Twitter") }}</a></li> 
-                </ul> 
+    <!-- Fixed navbar -->
+    <div class="navbar navbar-inverse navbar-fixed-top">
+        <div class="navbar-inner ">
+            <div class="container">
+                <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="brand" href="#"></a>
+                <div class="nav-collapse collapse">
+                    <ul class="nav">
+                    <li><a href="/"><i class="icon-home icon-large"></i></a></li>
+                    	{% for available_unit in available.units.items %}
+                    		{% ifequal available_unit.0 current.unit %}
+                    			<li class="active bootstro" data-bootstro-title="First select search mode"
+                                data-bootstro-content="You can choose whether to search in Arabic verses of the holly Quran or in its translations"
+                                data-bootstro-width="400px" 
+                                data-bootstro-placement='bottom' data-bootstro-step='0'><a >{{ available_unit.1 }}</a></li>
+							{% else %}
+							<li><a href="{% url alfanous-django.wui.views.results current.language available_unit.0 %}">{{ available_unit.1 }}</a></li>
+							{% endifequal %} 
+						{% endfor %}
+                    </ul>
+                    {% if bidi.direction == "rtl" %}
+                    <ul class="nav pull-left">
+                    {% else %}
+                    <ul class="nav pull-right">
+                    {% endif %}
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle bootstro" data-toggle="dropdown" data-bootstro-title="Select your language"
+                                data-bootstro-content="If you didn't notice, Alfanous User Interface is now translated to other languages, choose the one that fits you the best, or, you can contribute in translating it into your native language! (see the translate link)"
+                                data-bootstro-width="400px" 
+                                data-bootstro-placement='bottom' data-bootstro-step='1'>{{ _("Languages") }}<b class="caret"></b></a>
+                            <ul class="dropdown-menu">
+                                {% for available_language in available.languages %}
+                                    {% if available_language.0 != language.code %}
+                                    <li>
+    									<a href="{% url alfanous-django.wui.views.results available_language.0 current.unit %}?{{ current.request }}">{{ available_language.1 }}</a> 			
+    								</li>
+                                    {% endif %}
+                                {% endfor %}
+                                   	<li class="divider"></li>
+                                	<li class="nav-header">{{ _("Current:") }}</li>
+                                	<li class="disabled"><a>{{ language.name }}</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div><!--/.nav-collapse -->
             </div>
-	<!-- Assem -->
-	<div class="awa-box" >
-		
-			<a id="awa_btn"> <img src='/static/images/awa2-128.png' class='banner' alt='{{ _("Best technicality award") }}' title='{{ _("The award of best-technicality website in AlgeriaWebAwards2012 competition") }}'/></a>
-		
-	</div>
-	<!-- -->
-            <div class="column last"> 
-                <p>
-                	<!-- <a href="http://www.gnu.org/licenses/agpl.html" target="_blank"><img src="/static/images/agplv3-88x31.png" alt="AGPL Lisence" title="AGPL Lisence"></a> -->
-                	<a href="http://git-scm.com/" target="_blank"><img src="/static/images/Git-Logo.png" alt="Git Logo" title="Git scm"></a>
-                	<a href="http://www.python.org/" target="_blank"><img src="/static/images/python-logo-inkscape.png" alt="Python Powered" title="Python Powered"></a>
-                	<a href="http://www.json.org/" target="_blank"><img src="/static/images/json_logo.png" alt="Provide JSON" title="Provide JSON"></a>
-                	<a href="http://jquery.com/" target="_blank"><img src="/static/images/jquery_logos.png" alt="jQuery Logo" title="jQuery"></a>
-                	<!-- <a href="http://jqueryui.com/" target="_blank"><img src="/static/images/jquery_logos_ui.png" alt="jQuery UI Logo" title="jQuery UI"></a> -->
-                	<a href="http://www.w3.org/html/logo/" target="_blank"><img src="/static/images/html5-32x32.png" alt="Html5 Logo" title="HTML5"></a>
-                	<a href="https://www.djangoproject.com/" target="_blank"><img src="/static/images/Django_logo.png" alt="Django Logo" title="Django"></a>
-                </p>
-                <p class="right justify"> {{ _("Alfanous is a functional, dynamic, comprehensive Qur’an search engine that has been effectively designed to carry out simple or advanced Quranic searches. Alfanous uses a contemporary, highly developed approach to retrieve vital information, enabling stable efficient, speedy searches to be conducted. Alfanous aims to implement additional features such as highlight, site suggestions, scoring …etc to further improve your search experience. Alfanous understands the complex nature of the Arabic language and thus offers effective Arabic language processing, allowing the stemming and successful elimination of ambiguities.") }}</p>
-            </div> 
         </div>
     </div>
-    <div id="footer-small-wrapper">
-        <div id="footer-small">
-            <p class="left">copyright © <a href="https://github.com/Alfanous-team/alfanous/blob/master/AUTHORS.rst">Alfanous Team</a> 2010 - 2013 | released under <a href="http://www.gnu.org/licenses/agpl.html">AGPL</a> license</p>
-            <p class="right">powered by <a href="/jos2/">Alfanous JOS2</a>, <a onclick="addto_searchbar();return false;" href="#">{{ _("Add to Search Bar") }}</a></p>
-        </div>
-    </div>
-</footer>
+    <!-- End fixed navbar -->
 
+    <div class="container content">
+        <!-- social media icons -->
+		<div class="row">
+		    <div id="social-icons" class="social-networks">
+                {% if bidi.direction == "rtl" %}
+                <ul class="inline pull-left">
+                {% else %}
+                <ul class="inline pull-right">
+                {% endif %}
+					<li><a class="facebook" href="https://www.facebook.com/Alfanous"><i class="icon-facebook icon-large success"></i></a></li>
+					<li><a class="twitter" href="https://twitter.com/alfanous"><i class="icon-twitter icon-large"></i></a></li>
+					<li><a class="github" href="https://github.com/Alfanous-team/alfanous"><i class="icon-github icon-large"></i></a></li>
+                    <li><a class="googleplus" href="https://plus.google.com/u/0/111305625425237630318"><i class="icon-google-plus icon-large"></i></a></li>
+				</ul>
+			</div>
+		</div>
+        <!-- end social media icons-->
+        
+
+
+		<div class="row">
+            <!-- left navbar -->
+            <div class="span2">
+                <div class="well sidebar-nav hidden-phone affix">
+                    <ul class="nav nav-list ">
+                        <li class="nav-header">{{ _("Information:") }}</li>
+                            <li><a id="QuickTour" href="#"><i class="icon-lightbulb"></i>{{ _("Quick Tour!") }}</a></li>
+                            <li><a href="#faqpanel" data-toggle="modal"><i class="icon-question-sign"></i> {{ _("F.A.Q.") }}</a></li>
+                            <li><a href="#help" class="bootstro" data-toggle="modal" data-bootstro-title="Sample search here"
+                                data-bootstro-content="Here you can learn by example about the full power of Alfanous search engine and what you can do with it."
+                                data-bootstro-width="400px" 
+                                {% if bidi.direction == "rtl" %}
+                                data-bootstro-placement='left'
+                                {% else %}
+                                data-bootstro-placement='right'
+                                {% endif %}
+                                data-bootstro-step='4'><i class="icon-exclamation-sign"></i> {{ _("Help") }}</a></li>
+                            <li><a href="#contactpanel" data-toggle="modal"><i class="icon-envelope"></i> {{ _("Contact") }}</a></li>
+                            <li><a href="#download" data-toggle="modal"><i class="icon-download-alt"></i> {{ _("Download") }}</a></li>
+                        <li class="nav-header">{{ _("Contribute:") }}</li>
+                            <li><a href="#translatepanel" data-toggle="modal"><i class="icon-globe"></i> {{ _("Translate") }}</a></li>
+                            <li><a href="http://feedback.alfanous.org/"><i class="icon-comment"></i> {{ _("Feedback") }}</a></li>
+                            <li><a href="#donatepanel" data-toggle="modal" title="we really need your help!" class="dropdown-toggle bootstro" data-bootstro-title="We really need your help!"
+                                data-bootstro-content="We're looking to fund the project, if you like it, help us making it even better."
+                                data-bootstro-width="400px" 
+                                {% if bidi.direction == "rtl" %}
+                                data-bootstro-placement='left'
+                                {% else %}
+                                data-bootstro-placement='right'
+                                {% endif %}
+                                data-bootstro-step='5'><i class="icon-shopping-cart"></i> {{ _("Donate") }}</a></li>
+                            <li><a href="#otherMeans" data-toggle="modal"><i class="icon-plus"></i> {{ _("Other means") }}</a></li>
+                    </ul>
+                </div><!--/.well -->
+            </div><!--/span-->
+            <!-- end left navbar -->
+
+            <div class="row offset2 span10 text-center">
+                <div class="span6 offset2">
+                    <a href="{% url alfanous-django.wui.views.results current.language current.unit %}" class="logo"><img src="/static/{{ bidi.direction }}/img/alfanous.png" alt="logo"></a>
+                        <form class="form-search" id="form" name="form" method="GET" action=".">
+                            <div class="input-append  text-right"
+                                data-bootstro-title="Alfanous is smart!"
+                                data-bootstro-content="Just start typing here! but wait... <strong>Did you know?</strong> Alfanous isn't just a typical search function, you can do a lot using operators like: <code>+</code>, <code>-</code>, <code>|</code> and a lot more!"
+                                data-bootstro-width="400px" 
+                                data-bootstro-placement='bottom' data-bootstro-step='2'>
+								     <input id="appendedInputButtons" name="query" class="search-query enter keyboardInput" placeholder="Search" type="text" value="{{ params.query }}" data-provide="typeahead" autocomplete="off"
+		                                data-source=""
+		                                />
+		
+		                                <button type="submit" class="btn btn-success search-query" onclick="$('#form').submit(); return false;">
+		                                    <i class="icon-search"></i>
+		                                    <span class="hidden-phone">{{ _("Quick search") }}</span>
+		                                </button>
+		                                
+                            </div>
+                            {% if current.unit == "aya" %}
+                                <div class="advanced-search text-center">
+                                    <a class="text-center show_hide bootstro" data-toggle="tooltip" title="Even more!"
+                                    data-bootstro-title="Even more!"
+                                data-bootstro-content="You can <strong>sort</strong>, <strong>filter</strong> search reasults or choose a translation, you can as well choose a recitator!"
+                                data-bootstro-width="400px" 
+                                data-bootstro-placement='top' data-bootstro-step='3'>
+                                        <i class="icon-wrench"></i>
+                                        {{ _("Advanced search") }} [+]
+                                    </a>
+                                </div>
+                                
+                                <div class="row slidingForm ">
+                                    {# <form class="form-horizontal "> #}
+                                        <fieldset class="well">
+                                                {% block options %}
+                                                {% endblock %}
+
+                                                {% block views_panel %}{% endblock %}
+                                                {% block sortedby_panel %}{% endblock %}
+                                                {% block translations_panel %}{% endblock %}
+                                                {% block recitations_panel %} {% endblock %}
+                                                <!-- Button -->
+                                                <div class="control-group">
+                                                    <label class="control-label"></label>
+                                                    <div class="controls">
+                                                        <button type="submit" id="singlebutton" name="singlebutton" class="btn btn-primary" onclick="$('#form').submit(); return false;">{{ _("Bismi'Allah Go!") }}</button>
+                                                    </div>
+                                                </div>
+                                        </fieldset>
+                                    {# </form> #}
+                                </div>
+                            {% endif %}
+                        </form>
+                </div><!--/span4-->
+            </div><!--/row-->
+        </div>
+                
+        <div class="row-fluid">
+        	{% block results %} {% endblock results %}
+        </div>
+
+    </div>
+</div>
+
+    {% include "popups_content.html" %}
+
+{% block notification %}
+<!--
+				<div class="hidden-phone text-center help">
+                    <div class="alert alert-info span8 offset2 text-center">
+                        <button type="button" class="close" data-dismiss="alert">&times;</button>
+                        <i class="icon-info-sign"></i>
+                        <strong>{{ _("Help!") }}</strong>
+                        {% ifequal current.language "ar" %}
+                        <a href="https://docs.google.com/spreadsheet/viewform?formkey=dEZZaE5fQ0NwQXljU2ZyUmpfLW15SVE6MA">
+                        {% else %}
+                        <a href="https://docs.google.com/spreadsheet/viewform?formkey=dHNKQU1JSkEzbDNKR2tvM2M2cDA2SXc6MQ">
+                        {% endifequal %}
+                        {{ _("Please help us improving Alfanous Project, by taking this survey about search features in Holy Quran.") }} </a>
+                    </div>
+                </div>
+-->
+{% endblock notification %}
+
+
+
+	<div id="footer" class="navbar navbar-inverse  navbar-fixed-bottom text-center">
+	<div class="push"><!--//--></div>
+            <div class="container narrow row-fluid ">
+                <p class="muted credit">{{ _("Copyright") }} &copy; <a href="https://github.com/Alfanous-team/alfanous/blob/master/AUTHORS.rst">{{ _("Alfanous Team") }}</a> 2010 - 2013</p>
+                <p class="muted credit hidden-phone">&#124; {{ _("released under") }} <a href="http://www.gnu.org/licenses/agpl.html">{{ _("AGPL license") }}</a>.</p>
+                <br/>
+                 <span class="label label-info">
+                		 <a id="footer-link-jos2" data-placement="top" data-toggle="popover">
+                		 <i class=" icon-chevron-up icon-white"></i>
+                 		{{ _("Powered by") }}
+                        
+                        
+                        Alfanous JOS2
+                    </a>
+                    </span> 
+                    <span class="label label-success hidden-phone">
+                    <a class="footer-link-searchbar" onclick="window.external.AddSearchProvider('/static/alfanous-opensearch.xml');return false;" href="#">
+                        <i class="icon-plus-sign icon-white"></i>
+                        {{ _("Add to your search bar!") }}
+                    </a>
+                    </span>
+            </div>
+
+    </div>
+
+    <div id="popoverInner" class="hidden">
+        <p class="popoverInnerText">This is the <a href='http://json.org/'>JSON</a> output system 2 of <a href="http://www.alfanous.org">Alfanous</a> project, we call it <i><b>Alfanous JOS2</b></i>. This feature is in Alpha test and the Json schema may be it's not stable . We are waiting for real feedback and suggestions to improve its efficacy,quality and stability. To contact the author ,please send a direct email to <b> assem[dot]ch[at]gmail[dot]com</b> or to the mailing list <b>alfanous [at] googlegroups [dot] com</b>
+        <br/><br/> For more details  visit the page of this service <a class="badge" href="https://github.com/Alfanous-team/alfanous/blob/master/src/alfanous-cgi/README.rst">here</a>
+        </p>
+    </div>
+
+    <!-- The javascript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="/static/shared/js/jquery-1.9.1.min.js"></script>
+    {% ifequal bidi.direction "ltr" %}
+        <script src="/static/ltr/js/bootstrap.min.js"></script>
+    {% else %}
+        <script src="/static/rtl/js/rtl-bootstrap.min.js"></script>     
+    {% endifequal %}
+    <script src="/static/shared/js/bootstrap-select.min.js"></script>
+    <script src="/static/shared/js/bootstro.min.js"></script>
+    <script src="/static/shared/js/alfanous.js"></script>
+    <script src="http://api.html5media.info/1.1.5/html5media.min.js"></script>
 </body>
 </html>
