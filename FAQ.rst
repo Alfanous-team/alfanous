@@ -110,11 +110,33 @@ If you want to help us testing  the project modules, just follow these steps and
 
    - Install all building dependencies: `pyparsing <http://pyparsing.wikispaces.com/>`_, `pyqt4-dev-tools <http://www.riverbankcomputing.co.uk/software/pyqt/download>`_, `epydoc <http://epydoc.sourceforge.net/>`_,
      `sphinx <http://sphinx.pocoo.org/>`_.
+
    - Go to the root path of the code source and execute this command    
    
      .. code-block:: sh
       
           $ make build
+  
+     **Possible Problems:**
+
+     #. **/bin/sh: python2: not found** : if you dont have the command "python2", create one using a symbolic link
+  
+        .. code-block:: sh
+    
+               $ python --version
+               Python 2.7.4
+               $ sudo ln -s /usr/bin/python2.7 /usr/bin/python2 
+               
+     
+     #. **ImportError: No module named pyparsing** : you need to install pyparsing python library
+  
+        .. code-block:: sh
+    
+              $ sudo pip pyparsing
+
+               
+        
+     
 
 #. Install the API: 
 
@@ -209,6 +231,8 @@ If you want to help us testing  the project modules, just follow these steps and
 #. Test Windows Installer script (later)
 #. Test MacOs package (later)
 #. Test PyCorpus (later)
+
+
 
 
 

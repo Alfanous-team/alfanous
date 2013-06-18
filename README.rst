@@ -56,10 +56,9 @@ see `FAQ <https://github.com/Alfanous-team/alfanous/blob/master/FAQ.rst>`_
 Interfaces
 ----------
 #. Alfanous Python API, `source <https://github.com/Alfanous-team/alfanous/tree/master/src/alfanous>`_.
-#. JSON web interface, `link <http://www.alfanous.org/json>`_, actually we're moving to JSON web interface II, `source <https://github.com/Alfanous-team/alfanous/tree/master/src/alfanous-cgi>`_.
-#. Django web application, `source <https://github.com/Alfanous-team/alfanous/tree/master/src/alfanous-django>`_.
-#. Web User interface [Arabic], `link <http://wui.alfanous.org/>`_, `source <https://github.com/Alfanous-team/alfanous/tree/master/interfaces/web/wui>`_.
-#. Web User interface for mobiles [Multi-language], `link <http://m.alfanous.org/>`_, `source <https://github.com/Alfanous-team/alfanous/tree/master/interfaces/web/mobile_wui>`_.
+#. JSON web interface 2, `link <http://www.alfanous.org/jos2>`_, `source <https://github.com/Alfanous-team/alfanous/tree/master/src/alfanous-cgi>`_.
+#. Django web interface [Multi-language], `link <http://www.alfanous.org/>`_ , `source <https://github.com/Alfanous-team/alfanous/tree/master/src/alfanous-django>`_.
+#. Web User interface for mobiles [Multi-language], `link <http://m.alfanous.org/>`_ , `source <https://github.com/Alfanous-team/alfanous/tree/master/interfaces/web/mobile_wui>`_.
 #. Alfanous Desktop application (Windows: `[Arabic] <http://sourceforge.net/projects/alfanous/files/Interfaces/AlfanousDesktop/0.3/alfanousDesktop-windows-0.3ar.exe/download>`_ `[English] <http://sourceforge.net/projects/alfanous/files/Interfaces/AlfanousDesktop/0.4.3/alfanousInstallerV0.4.3.exe/download>`_; Ubuntu/Sabily), `source <https://github.com/Alfanous-team/alfanous/tree/master/src/alfanous-desktop>`_. 
 #. Alfanous Firefox toolbar, `link <https://addons.mozilla.org/en-us/firefox/addon/alfanous-toolbar/>`_, `source <https://github.com/Alfanous-team/alfanous/tree/master/interfaces/toolbars/firefox>`_.
 #. Alfanous Firefox search bar addon, `link <https://addons.mozilla.org/en-us/firefox/addon/alfanous/>`_.
@@ -111,6 +110,10 @@ This is the list of search features already implemented, preview links use Alfan
 -------
 History
 -------
+- **10 June 2013**: Launching the django web interface, localizable, indexable, and has many search features, improvements and bug fixes.
+
+- **26 June 2012**: Launching the clickable feature, making most of results information searchable.
+
 - **02 January 2012**: Launching new web interface for mobiles, uses: json_web_service_, link: http://m.alfanous.org/, wiki: mobile_web_interface_
 
 - **19 September 2011**: Launching a new web interface with a new design based on the json_web_service_, the link is:  http://wui.alfanous.org
@@ -136,6 +139,10 @@ Featured Posts
 - *الفانوس مشروع محرك بحث متقدم للقرآن الكريم*,  arabcrunch_
 - *جزائري يطلق محرك بحث شامل للقرآن الكريم*, onislam_
 - *Alfanous – Quran Search Engine*, muslihzarthblog_ 
+- *إطلاق الإصدارة الجديدة لموقع الفانوس*, kacemb_
+- *مزية جديدة في الفانوس، أنقر ما تريد لتبحث من جديد!*, chiffra1_
+- *التحقق من أحد المنشورات حول الإعجاز العددي في القرآن الكريم*, chiffra2_
+
 **Note:**  If you wrote -yourself- a good post about Alfanous in any language, please just tell us to refer it here!
 
 --------
@@ -150,6 +157,7 @@ See also
 #. `Django application <https://github.com/Alfanous-team/alfanous/tree/master/src/alfanous-django>`_
 
 
+
 .. _json_web_service: https://github.com/assem-ch/alfanous/blob/master/src/alfanous-cgi/README.rst
 .. _mobile_web_interface: https://github.com/assem-ch/alfanous/tree/master/interfaces/web
 .. _alfanous.org: http://old.alfanous.org
@@ -160,3 +168,7 @@ See also
 .. _muslihzarthblog: http://muslihzarth.wordpress.com/2010/12/13/alfanous-quran-search-engine/
 .. _saidmaroc: http://www.saidmaroc.com/2010/07/blog-post_23.html
 .. _arabcrunch: http://arabcrunch.com/ar/2011/09/%D8%A7%D9%84%D9%81%D8%A7%D9%86%D9%88%D8%B3-%D9%85%D8%B4%D8%B1%D9%88%D8%B9-%D9%85%D8%AD%D8%B1%D9%83-%D8%A8%D8%AD%D8%AB-%D9%85%D8%AA%D9%82%D8%AF%D9%85-%D9%84%D9%84%D9%82%D8%B1%D8%A2%D9%86-%D8%A7%D9%84/
+.. _kacemb: http://www.kacemb.com/%D8%A5%D8%B7%D9%84%D8%A7%D9%82-%D8%A7%D9%84%D8%A5%D8%B5%D8%AF%D8%A7%D8%B1%D8%A9-%D8%A7%D9%84%D8%AC%D8%AF%D9%8A%D8%AF%D8%A9-%D9%84%D9%85%D9%88%D9%82%D8%B9-%D8%A7%D9%84%D9%81%D8%A7%D9%86%D9%88%D8%B3/
+.. _chiffra1: http://chiffra.blogspot.com/2012/06/blog-post.html
+.. _chiffra2: http://chiffra.blogspot.com/2013/01/blog-post_4.html
+
