@@ -237,7 +237,7 @@
 		<div class="row">
             <!-- left navbar -->
             <div class="span2">
-                <div class="well sidebar-nav hidden-phone affix">
+                <div class="well well-small sidebar-nav hidden-phone affix">
                     <ul class="nav nav-list ">
                         <li class="nav-header">{{ _("Information:") }}</li>
                             <li><a id="QuickTour" href="#"><i class="icon-lightbulb"></i>{{ _("Quick Tour!") }}</a></li>
@@ -271,8 +271,8 @@
             </div><!--/span-->
             <!-- end left navbar -->
 
-            <div class="row offset2 span10 text-center">
-                <div class="span6 offset2">
+            <div class="row offset2 span9 text-center">
+                <div class="span6 offset1">
                     <a href="{% url alfanous-django.wui.views.results current.language current.unit %}" class="logo"><img src="/static/{{ bidi.direction }}/img/alfanous.png" alt="logo"></a>
                         <form class="form-search" id="form" name="form" method="GET" action=".">
                             <div class="input-append  text-right"
