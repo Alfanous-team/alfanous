@@ -413,6 +413,14 @@
 								  	{% endwith %} 
 									{{ _("page") }} | {{ ayaresult_content.position.page }}</a>
 		                            </span>
+		                            <span class="label label-inverse">
+		                            {% with ayaresult_content.position.page_IN|stringformat:"s" as position_page %}
+								  		{% with bidi.fields.page_IN|add:':'|add:position_page as new_query %}
+											<a class='no_decoration' href='?{% build_search_link params new_query 1 True%}'> 
+										{% endwith %}
+								  	{% endwith %} 
+									{{ _("page (indian)") }} | {{ ayaresult_content.position.page_IN }}</a>
+		                            </span>
 		                        {% endif %}
 
 		                        {% if  ayaresult_content.sajda.exist %}
