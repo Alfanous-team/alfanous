@@ -69,6 +69,12 @@ Packaging
 * Fedora/OpenSuse/Ojuba RPM package: Muhammad Shaban
 * Arch-linux package: Walid Ziouche
 
+------------------
+Resource Enriching
+------------------
+* Word index: Taha Zerrouki, Assem Chelli, Asmaa Mhimeh,
+* Aya index: {Tanzil Project}, Taha Zerrouki (Subjects), Muhi-uddin (Indian mushaf pages)
+* Translations:  {Tanzil Project},
 
 -------------
 Documentation
@@ -81,11 +87,13 @@ Writing
 * News : Mohamed M Sayed, Yasser Ghemit, Kacem Boukraa, Asmaa Mhimeh, 
 * Blog posts: Muslih Al-aqaad, Ahmed Jumal, 
 
+
 --------------------
 Community Management
 --------------------
 * FB page: Yasmine Hoadjli 
 * G+ page: Yasmine Hoadjli
+* G+ Community: Zineb Laouici
 * Twitter: ~
 
 -----------
