@@ -212,7 +212,8 @@ Fields
  16    حزب              hizb                 1 to 60        Structural Division : Juz > **Hizb** > Rub 
  17    نصف              nisf                 1 to 2         Deprecated   
  18    ربع                rub                  1 to 4         Structural Division : Juz > Hizb  > **Rub**  
- 19    صفحة              page                Number          Structural Division : Page
+ 19    صفحة              page                Number          Structural Division : Page 
+ 19b   صفحة_هندي         page_IN             Number          Structural Division : Page (INDIAN MUSHAF)
  20    منزل               manzil              1 to 7          Structural Division : **Manzil** > Ruku  
  21    ركوع               ruku                Number          Structural Division : Manzil > **Ruku** 
  22    سجدة              sajda               نعم | لا        Test existence of a Sajda
