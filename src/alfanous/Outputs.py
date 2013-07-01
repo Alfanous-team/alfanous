@@ -807,6 +807,7 @@ class Raw():
 		                	"hizb":r["hizb"],
 		                	"rub":r["rub"] % 4,
 		                	"page":r["page"],
+		                	"page_IN":r["page_IN"],
 		                	"ruku":r["ruku"],
 		           	},
 
