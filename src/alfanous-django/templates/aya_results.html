@@ -14,8 +14,12 @@
 		
 		{% if results.error.code == 0  %}
 			 <span	class="text-success">
-			 {{ _("Search results") }} 
-						({{ results.search.runtime|floatformat:"5" }} {{ _("seconds") }})
+			 {{ _("Keywords") }} :
+						{{ results.search.words.global.nb_words }}; 
+			 {{ _("Results") }} :
+						{{ results.search.interval.total }}; 
+			 {{ _("Runtime") }} :
+						{{ results.search.runtime|floatformat:"5" }} {{ _("s") }}
 			 </span>
 			<!-- Suggestions-->
 			{% if suggestions.error.code == 0 and suggestions.suggest %} 
@@ -52,7 +56,7 @@
 		
 		{% if results.search.interval.total %}
 			{% if results.search.words.global.nb_words %}
-				<div class="tabbable ">  {#tabs-{{ bidi.align }} #}
+				<div class="tabbable well ">  {#tabs-{{ bidi.align }} #}
 					<ul id="Keywords_Tab" class="nav nav-pills"> 
 					<li class="active">
 						<a href="#total_keywords" data-toggle="tab">
@@ -72,13 +76,25 @@
 		            	 <div class="tab-pane active" id="total_keywords">
 		            		<table class="table table-striped table-bordered">
 		            			<tr>
-									<td>{{ _("words") }}: {{ results.search.words.global.nb_words }}</td>
+									<td >
+									<span class="badge badge-info">{{ _("words") }}: {{ results.search.words.global.nb_words }}</span>
+									{% for wordcpt, wordstat in results.search.words.individual.items %}
+						              <span class="label label-success">
+						              	<a href="?{% build_search_link params  wordstat.word 1 False %}">
+						              			 {{ wordstat.word }}  {% if wordstat.romanization %} ( {{ wordstat.romanization }} ) {%  endif %}
+						              	</a>
+						              </span>
+		         				   {% endfor %}
+									
+									</td>
+								
+								
 								</tr>
 								<tr>
-									<td>{{ _("occurances") }}: {{ results.search.words.global.nb_matches }}</td>
+									<td><span class="badge badge-info">{{ _("occurances") }}: {{ results.search.words.global.nb_matches }}</span></td>
 								</tr>
 								<tr>
-									<td>{{ _("vocalizations") }}: {{ results.search.words.global.nb_vocalizations }}</td>
+									<td><span class="badge badge-info">{{ _("vocalizations") }}: {{ results.search.words.global.nb_vocalizations }}</span></td>
 								</tr>
 							</table>
 						</div>
@@ -88,22 +104,22 @@
 						<div class="tab-pane" id="{{ wordstat.word }}">
 							   <table class="table table-striped table-bordered">
 								<tr>
-									<td colspan="2">{{ _("occurances") }}: {{ wordstat.nb_matches }}</td>
+									<td colspan="2"><span class="badge badge-info">{{ _("occurances") }}: {{ wordstat.nb_matches }}</span></td>
 								</tr>
 								
 								<tr>
-									<td colspan="2">{{ _("ayates") }}:  {{ wordstat.nb_ayas }}</td>
+									<td colspan="2"><span class="badge badge-info">{{ _("ayates") }}:  {{ wordstat.nb_ayas }}</span></td>
 								</tr>
 								
 						
 								<tr>
-									<td>{{ _("vocalizations") }}: {{ wordstat.nb_vocalizations }} </td>
-									<td>
+									<td><span class="badge badge-info">{{ _("vocalizations") }}: {{ wordstat.nb_vocalizations }}</span> 
+							
 										{% for vocalization in wordstat.vocalizations %} 
 											{% with bidi.fields.aya_|add:":"|add:vocalization|add:"" as new_query %}
 												<a href="?{% build_search_link params  new_query 1 False %}"> 
 											{% endwith %}
-											<span class='label label-info'> {{ vocalization }} 
+											<span class='label label-success'> {{ vocalization }} 
 											</span></a>
 										{% endfor %}
 										 <a href="?{% build_search_link params  wordstat.word 1 False %}"> 
@@ -113,16 +129,16 @@
 								</tr>
 								{% ifnotequal wordstat.nb_synonyms 0 %}
 									<tr>
-										<td>{{ _("synonyms") }}: {{ wordstat.nb_synonyms }}</td>
-										<td>
+										<td><span class="badge badge-info">{{ _("synonyms") }}: {{ wordstat.nb_synonyms }}</span>
+										
 											{% for synonym in wordstat.synonyms %} 
 												<a href="?{% build_search_link params synonym  1 False %}"> 
-												<span class='label'> {{ synonym }} </span></a>
+												<span class='label label-success'> {{ synonym }} </span></a>
 											{% endfor %}
 											{% with "~"|add:wordstat.word as new_query %}
 												<a href="?{% build_search_link params  new_query 1 False %}"> 
 											{% endwith %}
-											<span class='label'><i class="icon-th"> </i> {{ wordstat.nb_synonyms }}
+											<span class='label label-warning'><i class="icon-th"> </i> {{ wordstat.nb_synonyms }}
 											</span></a>
 										</td>
 									</tr>
@@ -130,8 +146,8 @@
 	
 								{% ifnotequal wordstat.nb_derivations 0 %}
 									<tr>
-										<td>{{ _("derivations") }}: {{ wordstat.nb_derivations }}</td>
-										<td>
+										<td><span class="badge badge-info">{{ _("derivations") }}: {{ wordstat.nb_derivations }}</span>
+										
 											{% for derivation in wordstat.derivations %} 
 												<a href="?{% build_search_link params derivation 1 False %}"> 
 												<span class='label label-success'>{{ derivation }} 
@@ -209,14 +225,13 @@
 					</p>
 				{% endfor %}
 			{% endfor %}
+			</div>
+			</div>
 		{% endif %}
 		
-    </div>			
-					
-	<div class="row">
+
 		<!-- Ayahs results -->
 		<div class="row offset1 span10 text-center">
-			<hr />
 			<ul class="breadcrumb">
 			    <li>{{ _("Results") }}: ( {{ results.search.interval.start }}</li>
 			    <li>{{ _("to") }} {{ results.search.interval.end }}</li>
@@ -235,37 +250,40 @@
 		{% for ayaresult_id, ayaresult_content in  	results.search.ayas.items %}
 			<div class='container well well-small span12'>
 				<fieldset class="fieldset">
-					<legend>
+					<legend class="text-{{ bidi.align }}">
+					   
+					   
 					    <span class="muted">
-					      {{ _("Result n°") }} <b> {{ ayaresult_id }} </b> 
-					    </span>
-			  		</legend>
-	                <div class="row-fluid">
-	                	<div class="row-fluid visible-phone text-center">
-	                        <div class="btn-group btn-toolbar">
-	                            <button id="aya_audio_button_{{ ayaresult_id }}" class="btn"><i class="icon-volume-up"></i></button>
+					      <span class="hidden-phone"> {{ _("Result n°") }}</span>
+					       <b> <span class="visible-phone">#</span>{{ ayaresult_id }} </b>
+					     
+		                        
+						 
+ 						</span>
+ 						
+ 					 			<span class="btn-group  pull-{{ bidi.align_inverse }} ">
+	                            {% if ayaresult_content.aya.recitation %}
+	                            	<button id="aya_audio_button_{{ ayaresult_id }}" class="btn"><i class="icon-volume-up"></i></button>
+	                            {% endif %}
 	                            <button class="btn"><i class="icon-copy"></i></button>
 	                            <button class="btn"><i class="icon-share"></i></button>
-	                        </div>
-	                    </div>
-	                    <div class="span1 hidden-phone">
-	                        <div class="btn-group btn-group-vertical btn-toolbar">
-	                            <button id="aya_audio_button_{{ ayaresult_id }}" class="btn"><i class="icon-volume-up"></i></button>
-	                            <button id="copy_aya_{{ ayaresult_id }}" class="btn"><i class="icon-copy"></i></button>
-	                            <button class="btn"><i class="icon-share"></i></button>
-	                        </div>
-	                    </div>
-	                    <div class="span9 offset1">
+	                        </span>				 
+						 
+	          
+			  		</legend>
+	                <div class="row-fluid">
+	                    <div class="span11 offset1">
+	                    	
 	                    	<div class="row text-center">
 			                    <div id="aya_audio_{{ ayaresult_id }}" class="audio">
 			                    	{% if ayaresult_content.aya.recitation %}
-			                    		<audio class="audio-player" src="{{ ayaresult_content.aya.recitation}}" controls preload></audio>
+			                    		<audio class="audio-player" src="{{ ayaresult_content.aya.recitation }}" controls preload></audio>
 									{% endif %}
 			                    </div>
 		                    </div>
 		                    <div class="row">
 		                        <div id="aya_text_{{ ayaresult_id }}" class="row text-center arabic-ayah">
-		                        	<p>
+		                       
 						 				<span class='quran_decoration main_aya'>[</span>
 										{% for aya_word in ayaresult_content.aya.text|space_split %}
 											{% spaceless %}
@@ -280,52 +298,67 @@
 											{% endspaceless %}	
 										{% endfor %}
 										<span class='quran_decoration main_aya'>]</span>
-									</p>
 									
-		                        </div>
-		              
-		                        <div class="text-left muted ayah_source">
-		                        	{% with ayaresult_content.aya.id|stringformat:"s" as aya_id %}
+										{% with ayaresult_content.aya.id|stringformat:"s" as aya_id %}
 									 	{% with bidi.fields.sura|add:':"'|add:ayaresult_content.identifier.sura_name|add:'" + '|add:bidi.fields.aya_id|add:':'|add:aya_id|urlencode  as new_query %}
-										<a href='?{% build_search_link params  new_query 1 False %}'> 
+										- <a href='?{% build_search_link params  new_query 1 False %}'> 
 										{% endwith %}
 									{% endwith %}
-		                        	<small>- {{ ayaresult_content.identifier.sura_name }}<cite> {{ ayaresult_content.aya.id }}</cite></small></a> 
-		                        </div>
+		                        	<span class="text-success"><small> {{ ayaresult_content.identifier.sura_name }} </small> {{ ayaresult_content.aya.id }} </span></a> 
+								
+		                       </div>	
+		                        
+		              
+		                       
 		                    </div>
-		                    <div class="row">
-		                        <hr />
-		                        <div class="row text-center non-arabic-ayah">
+		                 
+		                        
+		                       
 		                        	{% if ayaresult_content.aya.translation %}
-		                                <p>
+		                        	  
+		                        	   <div class="row text-center non-arabic-ayah">
+		                                 <hr />
 									  		{% autoescape off %}
 									  		  {{ ayaresult_content.aya.translation }} 
 									  		{% endautoescape %}
-		                                </p>
+		                                  </div>
 		                            {% endif %}
-		                        </div>
-		           			</div>
+		                       
+		           			
 	                    </div>
 	                    
 	                </div>
-	               
-	                <div class="text-center">
-	                    <a id="aya_details_{{ ayaresult_id }}" class="text-center show_hide_aya_details" data-toggle="tooltip" title="first tooltip"><p>----------
-	                    <i id="details_icon_{{ ayaresult_id }}" class="icon-chevron-down"></i>
-	                    {{ _("Show more") }} ----------
-	                    </p></a>
-	                </div>
-	                <div id="aya_details_{{ ayaresult_id }}_content" class="aya_details">
+
+					 {% if params.view == "default" %}
+		               {% if  ayaresult_content.theme or  ayaresult_content.stat or 	ayaresult_content.position %}
+		                
+		                <div class="text-center">
+		                    <a id="aya_details_{{ ayaresult_id }}" class="text-center show_hide_aya_details" data-toggle="tooltip" title="{{ _('Click here to show more details') }} "><p>
+		                    ----------
+		                    <i id="details_icon_{{ ayaresult_id }}" class="icon-chevron-down"></i>
+		                    {{ _("Show more") }} 
+		                    ----------
+		                    </p></a>
+		                </div>
+		                {% endif %}
+		               {% else %}
+		               <br/>
+		              {% endif %}
+	                <div id="aya_details_{{ ayaresult_id }}_content" 
+	                {% if params.view == "default" %}
+	                class="aya_details"
+	                {% endif %}
+	                >
 		                <div class="row-fluid">				   
 					   		{% if ayaresult_content.theme %}
 		                    <table class="table table-bordered table-condensed">
 		                        <tbody>
-		                            <tr>
+		                            <tr class="warning">
 		                            	{% if ayaresult_content.theme.chapter %}
 		                                <td><i class="icon-book"></i><strong class="hidden-phone"> {{ _("Chapter") }}:</strong></td>
-		                                <td>
+		                                <td >
 									  		{% with bidi.fields.chapter|add:':"'|add:ayaresult_content.theme.chapter|add:'"'  as new_query %}
-												<a class='no_decoration' href='?{% build_search_link params  new_query 1 False %}'> 
+												<a class=' no_decoration' href='?{% build_search_link params  new_query 1 False %}'> 
 											{% endwith %}
 									  		{{ ayaresult_content.theme.chapter }}</a>
 		                                </td>
@@ -355,9 +388,48 @@
 		                    {% endif %}
 		                </div>
 						{% if ayaresult_content.stat or 	ayaresult_content.position %}	
-		                    <h5>{{ _("About ayah:") }}</h5>
 		                    <div class="text-center">
-		                    	{% if ayaresult_content.stat %}
+		                    	<span class="badge badge-info"> {{ _("About ayah") }}</span>
+
+		                        {% if ayaresult_content.position %}
+		                            <span class="label label-success">
+									{% with ayaresult_content.position.manzil|stringformat:"s" as position_manzil %}
+								  		{% with bidi.fields.manzil|add:':'|add:position_manzil as new_query %}
+											<a class='no_decoration' href='?{% build_search_link params  new_query 1 True%}'> 
+										{% endwith %}
+								  	{% endwith %} 
+									{{ _("manzil") }} | {{ ayaresult_content.position.manzil }}</a>
+		                            </span>
+		                            <span class="label label-success">
+		                            {% with ayaresult_content.position.hizb|stringformat:"s" as position_hizb %}
+								  		{% with bidi.fields.hizb|add:':'|add:position_hizb as new_query %}
+											<a class='no_decoration' href='?{% build_search_link params  new_query 1 True%}'> 
+										{% endwith %}
+								  	{% endwith %} 
+									{{ _("hizb") }} | {{ ayaresult_content.position.hizb }}</a>
+		                            </span>
+		                            <span class="label label-inverse">
+		                            	{{ _("quart") }} | {{ ayaresult_content.position.rub|add:"+1" }}
+		                            </span>
+		                            <span class="label label-success">
+		                            {% with ayaresult_content.position.page|stringformat:"s" as position_page %}
+								  		{% with bidi.fields.page|add:':'|add:position_page as new_query %}
+											<a class='no_decoration' href='?{% build_search_link params new_query 1 True%}'> 
+										{% endwith %}
+								  	{% endwith %} 
+									{{ _("page") }} | {{ ayaresult_content.position.page }}</a>
+		                            </span>
+		                            <span class="label label-success">
+		                            {% with ayaresult_content.position.page_IN|stringformat:"s" as position_page %}
+								  		{% with bidi.fields.page_IN|add:':'|add:position_page as new_query %}
+											<a class='no_decoration' href='?{% build_search_link params new_query 1 True%}'> 
+										{% endwith %}
+								  	{% endwith %} 
+									{{ _("page (indian)") }} | {{ ayaresult_content.position.page_IN }}</a>
+		                            </span>
+		                        {% endif %}
+		                        
+		                        {% if ayaresult_content.stat %}
 		                            <span class="label">
 							  		{% with ayaresult_content.stat.words|stringformat:"s" as stat_words %}
 								  		{% with bidi.fields.a_w|add:':'|add:stat_words  as new_query %}
@@ -366,7 +438,7 @@
 								  	{% endwith %} 
 								  	{{ _("words") }} | {{ ayaresult_content.stat.words }}</a>
 		                            </span>
-		                            <span class="label label-success">
+		                            <span class="label">
 		                            {% with ayaresult_content.stat.letters|stringformat:"s" as stat_letters %}
 							  			{% with bidi.fields.a_l|add:':'|add:stat_letters  as new_query %}
 										<a class='no_decoration' href='?{% build_search_link params  new_query 1 False %}'> 
@@ -375,7 +447,7 @@
 									{{ _("letters") }} | {{ ayaresult_content.stat.letters }}</a>
 		                            </span>
 
-		                            <span class="label label-warning">
+		                            <span class="label">
 		                            {% with ayaresult_content.stat.godnames|stringformat:"s" as stat_godnames %}
 							  			{% with bidi.fields.a_g|add:':'|add:stat_godnames as new_query %}
 											<a class='no_decoration' href='?{% build_search_link params  new_query 1 False %}'> 
@@ -385,46 +457,8 @@
 		                            </span>
 		                        {% endif %}
 
-		                        {% if ayaresult_content.position %}
-		                            <span class="label label-important">
-									{% with ayaresult_content.position.manzil|stringformat:"s" as position_manzil %}
-								  		{% with bidi.fields.manzil|add:':'|add:position_manzil as new_query %}
-											<a class='no_decoration' href='?{% build_search_link params  new_query 1 True%}'> 
-										{% endwith %}
-								  	{% endwith %} 
-									{{ _("manzil") }} | {{ ayaresult_content.position.manzil }}</a>
-		                            </span>
-		                            <span class="label label-info">
-		                            {% with ayaresult_content.position.hizb|stringformat:"s" as position_hizb %}
-								  		{% with bidi.fields.hizb|add:':'|add:position_hizb as new_query %}
-											<a class='no_decoration' href='?{% build_search_link params  new_query 1 True%}'> 
-										{% endwith %}
-								  	{% endwith %} 
-									{{ _("hizb") }} | {{ ayaresult_content.position.hizb }}</a>
-		                            </span>
-		                            <span class="label label-info">
-		                            	{{ _("quart") }} | {{ ayaresult_content.position.rub|add:"+1" }}
-		                            </span>
-		                            <span class="label label-inverse">
-		                            {% with ayaresult_content.position.page|stringformat:"s" as position_page %}
-								  		{% with bidi.fields.page|add:':'|add:position_page as new_query %}
-											<a class='no_decoration' href='?{% build_search_link params new_query 1 True%}'> 
-										{% endwith %}
-								  	{% endwith %} 
-									{{ _("page") }} | {{ ayaresult_content.position.page }}</a>
-		                            </span>
-		                            <span class="label label-inverse">
-		                            {% with ayaresult_content.position.page_IN|stringformat:"s" as position_page %}
-								  		{% with bidi.fields.page_IN|add:':'|add:position_page as new_query %}
-											<a class='no_decoration' href='?{% build_search_link params new_query 1 True%}'> 
-										{% endwith %}
-								  	{% endwith %} 
-									{{ _("page (indian)") }} | {{ ayaresult_content.position.page_IN }}</a>
-		                            </span>
-		                        {% endif %}
-
 		                        {% if  ayaresult_content.sajda.exist %}
-		                            <span class="label label-inverse">
+		                            <span class="label label-important">
 		                            	<a class='no_decoration' href='?{% build_search_link params "sajda:نعم" 1 False%}'> 
 										{{ _("sajda") }}</a>
 		                            </span>
@@ -435,31 +469,32 @@
 	                    {% endif %}
 
 	                    {% if ayaresult_content.sura %}
-		                    <h5>{{ _("About Surah:") }}</h5>
+	                    	<br/>
 		                    <div class="text-center">
-		                        <span class="badge">
+		                    	<span class="badge badge-info">{{ _("About surah") }}</span>
+		                        <span class="label label-success">
 		                        	{% with bidi.fields.sura|add:':"'|add:ayaresult_content.sura.name|add:'"' as new_query %}
 									<a href='?{% build_search_link params  new_query 1 True %}'> 
 									{% endwith %}
 									{{ _("Sura") }} | {{ ayaresult_content.sura.name }}</a> 
 		                        </span>
-		                        <span class="badge badge-success"> {{ _("n°") }} | {{ ayaresult_content.sura.id }} </span>
-		                        <span class="badge badge-warning">
+		                        <span class="label label-inverse"> {{ _("n°") }} | {{ ayaresult_content.sura.id }} </span>
+		                        <span class="label label-success">
 		                        	{% with bidi.fields.sura_type|add:':'|add:ayaresult_content.sura.type|add:'' as new_query %}
 									<a class='no_decoration' href='?{% build_search_link params  new_query 1 True %}'> 
 									{% endwith %}
 									{{ _("type") }} | {{ ayaresult_content.sura.type }}</a>
 		                        </span>
-		                        <span class="badge badge-important">
+		                        <span class="label label-inverse">
 		                        	{{ _("revelation_order") }}  | {{ ayaresult_content.sura.order }}
 		                        </span>
-		                        <span class="badge badge-inverse">
+		                        <span class="label">
 		                        	{{ _("ayahs") }} | {{ ayaresult_content.sura.ayas }} 
 		                        </span>
 		                        {% if ayaresult_content.sura.stat %}
-									<span class="badge badge-inverse"> {{ _("words") }} | {{ ayaresult_content.sura.stat.words }} </span>
-									<span class="badge badge-inverse"> {{ _("letters") }} | {{ ayaresult_content.sura.stat.letters }} </span>
-									<span class="badge badge-inverse"> {{ _("divine names") }} | {{ ayaresult_content.sura.stat.godnames }} </span>
+									<span class="label"> {{ _("words") }} | {{ ayaresult_content.sura.stat.words }} </span>
+									<span class="label"> {{ _("letters") }} | {{ ayaresult_content.sura.stat.letters }} </span>
+									<span class="label"> {{ _("divine names") }} | {{ ayaresult_content.sura.stat.godnames }} </span>
 								{% endif %}
 		                    </div>
 	                    {% endif %}

@@ -223,11 +223,7 @@
                             <li><a href="#help" class="bootstro" data-toggle="modal" data-bootstro-title="{{ _('Sample search here') }}"
                                 data-bootstro-content="{{ _('Here you can learn by example about the full power of Alfanous search engine and what you can do with it.') }}"
                                 data-bootstro-width="400px" 
-                                {% if bidi.direction == "rtl" %}
-                                data-bootstro-placement='left'
-                                {% else %}
-                                data-bootstro-placement='right'
-                                {% endif %}
+                                data-bootstro-placement='{{ bidi.align_inverse }}'
                                 data-bootstro-step='4'><i class="icon-exclamation-sign"></i> {{ _("Help") }}</a></li>
                             <li><a href="#contactpanel" data-toggle="modal"><i class="icon-envelope"></i> {{ _("Contact") }}</a></li>
                             <li><a href="#download" data-toggle="modal"><i class="icon-download-alt"></i> {{ _("Download") }}</a></li>
