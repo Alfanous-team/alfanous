@@ -804,6 +804,7 @@ class Raw():
 		                "position": {} if not aya_position_info
 		                else {
 		                	"manzil":r["manzil"],
+		                	"juz":r["juz"],
 		                	"hizb":r["hizb"],
 		                	"rub":r["rub"] % 4,
 		                	"page":r["page"],
