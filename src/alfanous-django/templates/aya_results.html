@@ -401,6 +401,14 @@
 									{{ _("manzil") }} | {{ ayaresult_content.position.manzil }}</a>
 		                            </span>
 		                            <span class="label label-success">
+		                            {% with ayaresult_content.position.juz|stringformat:"s" as position_juz %}
+								  		{% with bidi.fields.juz|add:':'|add:position_juz as new_query %}
+											<a class='no_decoration' href='?{% build_search_link params  new_query 1 True%}'> 
+										{% endwith %}
+								  	{% endwith %} 
+									{{ _("juz") }} | {{ ayaresult_content.position.juz }}</a>
+		                            </span>
+		                            <span class="label label-success">
 		                            {% with ayaresult_content.position.hizb|stringformat:"s" as position_hizb %}
 								  		{% with bidi.fields.hizb|add:':'|add:position_hizb as new_query %}
 											<a class='no_decoration' href='?{% build_search_link params  new_query 1 True%}'> 
@@ -419,14 +427,16 @@
 								  	{% endwith %} 
 									{{ _("page") }} | {{ ayaresult_content.position.page }}</a>
 		                            </span>
-		                            <span class="label label-success">
-		                            {% with ayaresult_content.position.page_IN|stringformat:"s" as position_page %}
-								  		{% with bidi.fields.page_IN|add:':'|add:position_page as new_query %}
-											<a class='no_decoration' href='?{% build_search_link params new_query 1 True%}'> 
-										{% endwith %}
-								  	{% endwith %} 
-									{{ _("page (indian)") }} | {{ ayaresult_content.position.page_IN }}</a>
-		                            </span>
+		                            {% if current.language == "ur" %}
+			                            <span class="label label-success">
+			                            {% with ayaresult_content.position.page_IN|stringformat:"s" as position_page %}
+									  		{% with bidi.fields.page_IN|add:':'|add:position_page as new_query %}
+												<a class='no_decoration' href='?{% build_search_link params new_query 1 True%}'> 
+											{% endwith %}
+									  	{% endwith %} 
+										{{ _("page (indian)") }} | {{ ayaresult_content.position.page_IN }}</a>
+			                            </span>
+			                         {% endif %}
 		                        {% endif %}
 		                        
 		                        {% if ayaresult_content.stat %}
