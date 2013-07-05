@@ -261,7 +261,7 @@ Best OS for that is Ubuntu (>11.10).
      
      .. code-block:: sh
 
-         $ sudo make install_api  DESTDIR=%{buildroot}
+         $ sudo make install_api_no_arguments
    - test the installation with this command: 
      
      .. code-block:: sh
