@@ -2,6 +2,7 @@
 /**  Alfanous specific javascrit **/
 
 $(document).ready(function(){
+	//$('head').append('<link rel="stylesheet" href="/static/shared/css/skins/bootstrap.min.css" type="text/css" />')
     $(".slidingForm").hide();
     $('.show_hide').click(function(){
         $(".slidingForm").slideToggle(function() {
@@ -101,6 +102,11 @@ function get_results (param) { // this function will be used to require suggesti
             });
         };
 };
+
+/*$(document).ready(function() {
+	//$('head').append('<link rel="stylesheet" href="/static/shared/css/skins/bootstrap.min.css" type="text/css" />"');
+	$('head').append('islam');
+});*/
 
 
 function show_results (json, param) {       }
