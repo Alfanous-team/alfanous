@@ -52,7 +52,23 @@
 			{% endblock %}  
 	</title>
 	
-	<meta name="description" content="{{ _('Alfanous is a functional, dynamic, comprehensive Qur’an search engine that has been effectively designed to carry out simple or advanced Quranic searches.') }}"/>
+	<meta name="description" content="
+		
+			{% if params.query %}
+				{{ _('Alfanous search results searching in') }} {{ current.unit }}  {{ _('looking for the query') }} {{ params.query }}, {{ _('the page') }} {{ params.page }}, {{ _('the view') }} {{ params.view }}, {{ _('the script') }} {{ params.script }} {{ vocalized|yesno:'vocalized,,' }} , {{ _('and the translation') }} {{ params.translation }}. {{ _('The fuzzy search is') }} {{ params.fuzzy|yesno:'activated,deactivated,deactivated' }}.
+			{% else %}	
+			    {% if curren.unit == 'word' %}
+			    	{{ _('Alfanous has the feautre to search in the Quran words, their properties and occurences') }}
+				{% elif  current.unit == 'translation' %}
+					{{ _('Alfanous has the feautre to search in the translations of Quran meanings to lot of world languages') }}
+				{% else %}
+					{{ _('Alfanous is a functional, dynamic, comprehensive Qur’an search engine that has been effectively designed to carry out simple or advanced Quranic searches.') }}
+				{% endif %}
+			{% endif %}
+			"/>
+	
+	
+	
 	<meta name="keywords" content="{{ _("quran") }},
 								   {{ _("forqan") }},
 								   {{ _("koran") }}, 

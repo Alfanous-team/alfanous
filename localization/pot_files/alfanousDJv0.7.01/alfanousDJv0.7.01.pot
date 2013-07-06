@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-07-04 18:47+0100\n"
+"POT-Creation-Date: 2013-07-06 01:55+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -47,7 +47,7 @@ msgid "no suggestions!"
 msgstr ""
 
 #: templates/aya_results.html:80 templates/aya_results.html.py:449
-#: templates/aya_results.html:505 templates/base.html:68
+#: templates/aya_results.html:505 templates/base.html:84
 msgid "words"
 msgstr ""
 
@@ -59,7 +59,7 @@ msgstr ""
 msgid "vocalizations"
 msgstr ""
 
-#: templates/aya_results.html:111 templates/base.html:61
+#: templates/aya_results.html:111 templates/base.html:77
 msgid "ayates"
 msgstr ""
 
@@ -446,243 +446,283 @@ msgstr ""
 msgid "Translation:"
 msgstr ""
 
-#: templates/base.html:55
+#: templates/base.html:58
+msgid "Alfanous search results searching in"
+msgstr ""
+
+#: templates/base.html:58
+msgid "looking for the query"
+msgstr ""
+
+#: templates/base.html:58
+msgid "the page"
+msgstr ""
+
+#: templates/base.html:58
+msgid "the view"
+msgstr ""
+
+#: templates/base.html:58
+msgid "the script"
+msgstr ""
+
+#: templates/base.html:58
+msgid "and the translation"
+msgstr ""
+
+#: templates/base.html:58
+msgid "The fuzzy search is"
+msgstr ""
+
+#: templates/base.html:61
+msgid ""
+"Alfanous has the feautre to search in the Quran words, their properties and "
+"occurences"
+msgstr ""
+
+#: templates/base.html:63
+msgid ""
+"Alfanous has the feautre to search in the translations of Quran meanings to "
+"lot of world languages"
+msgstr ""
+
+#: templates/base.html:65
 msgid ""
 "Alfanous is a functional, dynamic, comprehensive Qur’an search engine that "
 "has been effectively designed to carry out simple or advanced Quranic "
 "searches."
 msgstr ""
 
-#: templates/base.html:56
+#: templates/base.html:72
 msgid "quran"
 msgstr ""
 
-#: templates/base.html:57
+#: templates/base.html:73
 msgid "forqan"
 msgstr ""
 
-#: templates/base.html:58
+#: templates/base.html:74
 msgid "koran"
 msgstr ""
 
-#: templates/base.html:59
+#: templates/base.html:75
 msgid "search"
 msgstr ""
 
-#: templates/base.html:60
+#: templates/base.html:76
 msgid "search engine"
 msgstr ""
 
-#: templates/base.html:62
+#: templates/base.html:78
 msgid "surates"
 msgstr ""
 
-#: templates/base.html:63
+#: templates/base.html:79
 msgid "advanced"
 msgstr ""
 
-#: templates/base.html:64
+#: templates/base.html:80
 msgid "statistics"
 msgstr ""
 
-#: templates/base.html:65
+#: templates/base.html:81
 msgid "linguistic"
 msgstr ""
 
-#: templates/base.html:66
+#: templates/base.html:82
 msgid "information retrieval"
 msgstr ""
 
-#: templates/base.html:67
+#: templates/base.html:83
 msgid "natural language processing"
 msgstr ""
 
-#: templates/base.html:69
+#: templates/base.html:85
 msgid "Lantern"
 msgstr ""
 
-#: templates/base.html:70
+#: templates/base.html:86
 msgid "alfanous"
 msgstr ""
 
-#: templates/base.html:78
+#: templates/base.html:94
 msgid "vocalized text"
 msgstr ""
 
-#: templates/base.html:81
+#: templates/base.html:97
 msgid "uthmani script"
 msgstr ""
 
-#: templates/base.html:84
+#: templates/base.html:100
 msgid "fuzzy search"
 msgstr ""
 
-#: templates/base.html:135 wui/views.py:69
+#: templates/base.html:151 wui/views.py:69
 msgid "Ayahs"
 msgstr ""
 
-#: templates/base.html:136 wui/views.py:72
+#: templates/base.html:152 wui/views.py:72
 msgid "Translations"
 msgstr ""
 
-#: templates/base.html:137
+#: templates/base.html:153
 msgid "Words"
 msgstr ""
 
-#: templates/base.html:156
+#: templates/base.html:172
 msgid "First, select the search unit"
 msgstr ""
 
-#: templates/base.html:157
+#: templates/base.html:173
 msgid ""
 "You can choose whether to search in Arabic verses of the holly Quran or in "
 "its translations"
 msgstr ""
 
-#: templates/base.html:171
+#: templates/base.html:187
 msgid "Select your language"
 msgstr ""
 
-#: templates/base.html:172
+#: templates/base.html:188
 msgid ""
 "If you didn't notice, Alfanous User Interface is now translated to other "
 "languages, choose the one that fits you the best, or, you can contribute in "
 "translating it into your native language! (see the translate link)"
 msgstr ""
 
-#: templates/base.html:174
+#: templates/base.html:190
 msgid "Languages"
 msgstr ""
 
-#: templates/base.html:184
+#: templates/base.html:200
 msgid "Current:"
 msgstr ""
 
-#: templates/base.html:220
+#: templates/base.html:236
 msgid "Information:"
 msgstr ""
 
-#: templates/base.html:221
+#: templates/base.html:237
 msgid "Quick Tour!"
 msgstr ""
 
-#: templates/base.html:222 templates/popups_content.html:7
+#: templates/base.html:238 templates/popups_content.html:7
 msgid "F.A.Q."
 msgstr ""
 
-#: templates/base.html:223
+#: templates/base.html:239
 msgid "Sample search here"
 msgstr ""
 
-#: templates/base.html:224
+#: templates/base.html:240
 msgid ""
 "Here you can learn by example about the full power of Alfanous search engine "
 "and what you can do with it."
 msgstr ""
 
-#: templates/base.html:227 templates/popups_content.html:21
+#: templates/base.html:243 templates/popups_content.html:21
 msgid "Help"
 msgstr ""
 
-#: templates/base.html:228
+#: templates/base.html:244
 msgid "Contact"
 msgstr ""
 
-#: templates/base.html:229 templates/popups_content.html:206
+#: templates/base.html:245 templates/popups_content.html:206
 msgid "Download"
 msgstr ""
 
-#: templates/base.html:230
+#: templates/base.html:246
 msgid "Contribute:"
 msgstr ""
 
-#: templates/base.html:231
+#: templates/base.html:247
 msgid "Translate"
 msgstr ""
 
-#: templates/base.html:232
+#: templates/base.html:248
 msgid "Feedback"
 msgstr ""
 
-#: templates/base.html:233
+#: templates/base.html:249
 msgid "we really need your help!"
 msgstr ""
 
-#: templates/base.html:234
+#: templates/base.html:250
 msgid ""
 "We're looking to fund the project, if you like it, help us making it even "
 "better."
 msgstr ""
 
-#: templates/base.html:241
+#: templates/base.html:257
 msgid "Donate"
 msgstr ""
 
-#: templates/base.html:242
+#: templates/base.html:258
 msgid "Other means"
 msgstr ""
 
-#: templates/base.html:253
+#: templates/base.html:269
 msgid "Alfanous is smart!"
 msgstr ""
 
-#: templates/base.html:257
+#: templates/base.html:273
 msgid "search query here ..."
 msgstr ""
 
-#: templates/base.html:263
+#: templates/base.html:279
 msgid "Quick search"
 msgstr ""
 
-#: templates/base.html:270
+#: templates/base.html:286
 msgid "Even more!"
 msgstr ""
 
-#: templates/base.html:271
+#: templates/base.html:287
 msgid ""
 "You can <strong>sort</strong>, <strong>filter</strong> search reasults or "
 "choose a translation, you can as well choose a recitator!"
 msgstr ""
 
-#: templates/base.html:275
+#: templates/base.html:291
 msgid "Advanced search"
 msgstr ""
 
-#: templates/base.html:293
+#: templates/base.html:309
 msgid "Bismi'Allah Go!"
 msgstr ""
 
-#: templates/base.html:320
+#: templates/base.html:336
 msgid "Help!"
 msgstr ""
 
-#: templates/base.html:326
+#: templates/base.html:342
 msgid ""
 "Please help us improving Alfanous Project, by taking this survey about "
 "search features in Holy Quran."
 msgstr ""
 
-#: templates/base.html:337
+#: templates/base.html:353
 msgid "Copyright"
 msgstr ""
 
-#: templates/base.html:337
+#: templates/base.html:353
 msgid "Alfanous Team"
 msgstr ""
 
-#: templates/base.html:338
+#: templates/base.html:354
 msgid "released under"
 msgstr ""
 
-#: templates/base.html:338
+#: templates/base.html:354
 msgid "AGPL license"
 msgstr ""
 
-#: templates/base.html:343
+#: templates/base.html:359
 msgid "Powered by"
 msgstr ""
 
-#: templates/base.html:352
+#: templates/base.html:368
 msgid "Add to your search bar!"
 msgstr ""
 
@@ -697,7 +737,7 @@ msgstr ""
 #: templates/popups_content.html:13 templates/popups_content.html.py:77
 #: templates/popups_content.html:91 templates/popups_content.html.py:115
 #: templates/popups_content.html:136 templates/popups_content.html.py:197
-#: templates/popups_content.html:223 templates/popups_content.html.py:242
+#: templates/popups_content.html:223 templates/popups_content.html.py:243
 msgid " Close "
 msgstr ""
 
