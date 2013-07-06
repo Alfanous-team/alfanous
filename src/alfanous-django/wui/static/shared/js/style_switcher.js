@@ -1,29 +1,47 @@
-$('#cyborg_skin').click(function() {
-	$('head').append('<link rel="stylesheet" href="/static/shared/css/skins/bootstrap_cyborg.css" type="text/css" />');
-});
+function change_skin(skin_id) {
+	
+   $("#skin_css").attr("href", "/static/ltr/css/skins/bootstrap_" + skin_id +".css" );
+   setSkinCookie(skin_id)
+}
 
-$('#cerulean_skin').click(function() {
-	$('head').append('<link rel="stylesheet" href="/static/shared/css/skins/bootstrap_cerulean.css" type="text/css" />');
-});
+function setSkinCookie(skin_id)
+{
 
-$('#default_skin').click(function() {
-	$('head').append('<link rel="stylesheet" href="/static/shared/css/skins/bootstrap_default.css" type="text/css" />');
-});
+	var exdays = 300; // expiration time
+	var c_name = "skin"; // cookie_name
+	var exdate=new Date();
+	exdate.setDate(exdate.getDate() + exdays);
+var c_value=escape(skin_id) + ((exdays==null) ? "" : ";path=/; expires="+exdate.toUTCString());
+document.cookie=c_name + "=" + c_value;
+}
 
-
-$('#readable_skin').click(function() {
-	$('head').append('<link rel="stylesheet" href="/static/shared/css/skins/bootstrap_readable.css" type="text/css" />');
-});
-
-$('#slate_skin').click(function() {
-	$('head').append('<link rel="stylesheet" href="/static/shared/css/skins/bootstrap_slate.css" type="text/css" />');
-});
-
-$('#spacelab_skin').click(function() {
-	$('head').append('<link rel="stylesheet" href="/static/shared/css/skins/bootstrap_spacelab.css" type="text/css" />');
-});
-
-$('#superheroes_skin').click(function() {
-	$('head').append('<link rel="stylesheet" href="/static/shared/css/skins/bootstrap_superheroes.css" type="text/css" />');
-});
-
+function GetSkinCookieAndApply() 
+{
+	var c_name = "skin"; // cookie_name
+	var c_value = document.cookie;
+	var c_start = c_value.indexOf(" " + c_name + "=");
+	if (c_start == -1)
+	  {
+	  c_start = c_value.indexOf(c_name + "=");
+	  }
+	if (c_start == -1)
+	  {
+	  c_value = null;
+	  }
+	else
+	  {
+	  c_start = c_value.indexOf("=", c_start) + 1;
+	  var c_end = c_value.indexOf(";", c_start);
+	  if (c_end == -1)
+	  {
+	c_end = c_value.length;
+	}
+	c_value = unescape(c_value.substring(c_start,c_end));
+	}
+	
+	var skin_id = c_value;
+	
+	if (skin_id != null &&   skin_id != "null" && skin_id != "default") change_skin(skin_id);
+	
+	
+}
