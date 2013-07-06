@@ -2,7 +2,7 @@ body {
   padding-top: 60px; /* 60px to make the container go all the way to the bottom of the topbar */
 }
 html, body, .content {
-  background-color: #eee;
+  /* background-color: #eee;*/
 }
 
 @font-face {
@@ -42,14 +42,14 @@ span a, span a:hover {
 }
 
 #social-icons a {
-  color: gray;
+  /* color: gray; */
   margin-right: 5px;
   display: inline-block;
 } 
 
 #social-icons a:hover {
   text-decoration: none;
-  color: #4765B6;
+  /* color: #4765B6; */
 } 
 
 .slidingForm {
