@@ -145,6 +145,7 @@
 
 </head>
 <body>
+
 {% if False %} 
 {# block reserved to force localization of automatic values #}
 
@@ -199,6 +200,15 @@
                                    	<li class="divider"></li>
                                 	<li class="nav-header">{{ _("Current:") }}</li>
                                 	<li class="disabled"><a>{{ language.name }}</a></li>
+                            </ul>
+                        </li>
+                        <li class="dropdown">
+							<a href="#" class="dropdown-toggle bootstro" data-toggle="dropdown">Skin</a>
+                            <ul class="dropdown-menu">
+								<li>
+									<a href="#" class="style1">Style1</a>
+									<a href="#" class="style2">Style2</a>
+								</li>
                             </ul>
                         </li>
                     </ul>
@@ -388,6 +398,7 @@
         <script src="/static/rtl/js/rtl-bootstrap.min.js"></script>     
     {% endifequal %}
     <script src="/static/shared/js/bootstrap-select.min.js"></script>
+    <script src="/static/shared/js/style_switcher.js"></script>
     <script src="/static/shared/js/bootstro.min.js"></script>
     <script src="/static/shared/js/alfanous.js"></script>
     <script src="http://api.html5media.info/1.1.5/html5media.min.js"></script>
