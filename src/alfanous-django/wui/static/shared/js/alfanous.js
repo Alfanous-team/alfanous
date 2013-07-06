@@ -3,7 +3,10 @@
 
 $(document).ready(function(){
 	//$('head').append('<link rel="stylesheet" href="/static/shared/css/skins/bootstrap.min.css" type="text/css" />')
-    $(".slidingForm").hide();
+	
+	GetSkinCookieAndApply(); //change the skin based on the cookie value
+	
+	$(".slidingForm").hide();
     $('.show_hide').click(function(){
         $(".slidingForm").slideToggle(function() {
             var text = $('.show_hide').html();
@@ -17,7 +20,8 @@ $(document).ready(function(){
     });
 
     $(".aya_details").hide();
-
+    
+    
     $("a").click(function(event) {
         var id = $(this).attr('id');
         var ayaNum = id.split("_").pop();

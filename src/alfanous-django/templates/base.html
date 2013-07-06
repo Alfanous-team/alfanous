@@ -116,7 +116,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<!-- Bootstrap -->
     {% ifequal bidi.direction "ltr" %}
-        <link href="/static/ltr/css/bootstrap.min.css" rel="stylesheet">
+        <link id="skin_css" href="/static/ltr/css/bootstrap.min.css" rel="stylesheet">
         <link href="/static/ltr/css/bootstrap-responsive.min.css" rel="stylesheet">      
     {% else %}
         <link href="/static/rtl/css/rtl-bootstrap.min.css" rel="stylesheet">
@@ -206,15 +206,20 @@
 							<a href="#" class="dropdown-toggle bootstro" data-toggle="dropdown">{{ _("Skins") }}<b class="caret"></b></a>
                             <ul class="dropdown-menu">
 								<li>
-								    <a href="#" id="default_skin">{{ _("Default") }}</a>
-									<a href="#" id="cyborg_skin">{{ _("Cyborg") }}</a>
-									<a href="#" id="cerulean_skin">{{ _("Cerulean") }}</a>
-								    <a href="#" id="amelia_skin">{{ _("Amelia") }}</a>
-									<a href="#" id="readable_skin">{{ _("Readable") }}</a>
-									<a href="#" id="slate_skin">{{ _("Slate") }}</a>
-									<a href="#" id="spacelab_skin">{{ _("Spacelab") }}</a>
-									<a href="#" id="superheroes_skin">{{ _("Super Heroes") }}</a>
-								    <a href="#" id="united_skin">{{ _("United") }}</a>
+								    {# Show the skins available for both ltr and rtl #}
+								    <a href="#" onclick="change_skin('default');" id="default_skin" >{{ _("Default") }}</a>
+									{# Show the skins available for ltr only #}
+									{% ifequal bidi.direction  "ltr" %} 
+									    <a href="#" onclick="change_skin('cerulean');" id="cerulean_skin">{{ _("Cerulean") }}</a>
+										<a href="#" onclick="change_skin('cyborg');" id="cyborg_skin">{{ _("Cyborg") }}</a>
+									    <!-- <a href="#" onclick="change_skin('amelia');" id="amelia_skin">{{ _("Amelia") }}</a> -->
+										<!-- <a href="#" onclick="change_skin('readable');" id="readable_skin">{{ _("Readable") }}</a> -->
+										<a href="#" onclick="change_skin('slate');" id="slate_skin">{{ _("Slate") }}</a>
+										<!-- <a href="#" onclick="change_skin('spacelab');" id="spacelab_skin">{{ _("Spacelab") }}</a> -->
+										<!-- <a href="#" onclick="change_skin('superheroes');" id="superheroes_skin">{{ _("Super Heroes") }}</a>  -->
+									    <a href="#" onclick="change_skin('united');"  id="united_skin">{{ _("United") }}</a>
+									{% endifequal %}
+								
 								</li>
                             </ul>
                         </li>
