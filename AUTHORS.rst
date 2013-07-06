@@ -41,7 +41,7 @@ Coding
 --------
 * API & JSON interface: `Assem Chelli`_    
 * Desktop Interface: `Assem Chelli`_   
-* Web Interface: `Assem Chelli`_  , `Walid Ziouche`_, `Abdellah Chelli`_ , `Tedjeddine Meabeo`_ , `Muslih al aqaad`_,  `Mouad Debbar`_, Ahmed Ramadan
+* Web Interface: `Assem Chelli`_  , `Walid Ziouche`_, `Abdellah Chelli`_ , `Mennouchi Islam Azeddine <https://github.com/islamoc>`_, `Tedjeddine Meabeo`_ , `Muslih al aqaad`_,  `Mouad Debbar`_, Ahmed Ramadan
 * Mobile Web Interface: `Abdellah Chelli`_ 
 * Firefox toolbar: `Zakaria Smahi`_ 
 
