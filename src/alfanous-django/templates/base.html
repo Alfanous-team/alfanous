@@ -209,17 +209,17 @@
                             <ul class="dropdown-menu">
 								<li>
 								    {# Show the skins available for both ltr and rtl #}
-								    <a href="#" onclick="change_skin('default');" id="default_skin" >{{ _("Default") }}</a>
+								    <a href="#" onclick="change_skin('default','light');" id="default_skin" >{{ _("Default") }}</a>
 									{# Show the skins available for ltr only #}
 									{% ifequal bidi.direction  "ltr" %} 
-									    <a href="#" onclick="change_skin('cerulean');" id="cerulean_skin">{{ _("Cerulean") }}</a>
-										<a href="#" onclick="change_skin('cyborg','light');" id="cyborg_skin">{{ _("Cyborg") }}</a>
-									    <!-- <a href="#" onclick="change_skin('amelia');" id="amelia_skin">{{ _("Amelia") }}</a> -->
-										<!-- <a href="#" onclick="change_skin('readable');" id="readable_skin">{{ _("Readable") }}</a> -->
-										<a href="#" onclick="change_skin('slate','light');" id="slate_skin">{{ _("Slate") }}</a>
-										<!-- <a href="#" onclick="change_skin('spacelab');" id="spacelab_skin">{{ _("Spacelab") }}</a> -->
-										<!-- <a href="#" onclick="change_skin('superheroes');" id="superheroes_skin">{{ _("Super Heroes") }}</a>  -->
-									    <a href="#" onclick="change_skin('united','dark');"  id="united_skin">{{ _("United") }}</a>
+									    <a href="#" onclick="change_skin('cerulean','light');" id="cerulean_skin">{{ _("Cerulean") }}</a>
+										<a href="#" onclick="change_skin('cyborg','dark');" id="cyborg_skin">{{ _("Cyborg") }}</a>
+									    <!-- <a href="#" onclick="change_skin('amelia','light');" id="amelia_skin">{{ _("Amelia") }}</a> -->
+										<!-- <a href="#" onclick="change_skin('readable','light');" id="readable_skin">{{ _("Readable") }}</a> -->
+										<a href="#" onclick="change_skin('slate','dark');" id="slate_skin">{{ _("Slate") }}</a>
+										<!-- <a href="#" onclick="change_skin('spacelab','light');" id="spacelab_skin">{{ _("Spacelab") }}</a> -->
+										<!-- <a href="#" onclick="change_skin('superheroes','dark');" id="superheroes_skin">{{ _("Super Heroes") }}</a>  -->
+									    <a href="#" onclick="change_skin('united','light');"  id="united_skin">{{ _("United") }}</a>
 									{% endifequal %}
 								
 								</li>

@@ -1,15 +1,13 @@
-function change_skin(skin_id,type) {
+function change_skin(skin_id,skin_type) {
 	
    $("#skin_css").attr("href", "/static/ltr/css/skins/bootstrap_" + skin_id +".css" );
-   if (type == "dark")
-   {
-	   $('img[alt="logo"]').attr("src", "/static/"+bidi+"/img/alfanous_"+type+".png" );
-	}
-	if (type == "light")
-   {
-	   $('img[alt="logo"]').attr("src", "/static/"+bidi+"/img/alfanous_"+type+".png" );
-	}
-   setSkinCookie(skin_id+"_"+type)
+   
+   logo_type ="dark"; // dark is the default logo type
+   if (skin_type == "dark" && bidi=="ltr") { logo_type="light"; }  // RTL is not ready for skins
+	
+   $('img[alt="logo"]').attr("src", "/static/"+bidi+"/img/alfanous_"+logo_type+".png" );
+
+   setSkinCookie(skin_id+"_"+skin_type)
 }
 
 function setSkinCookie(skin_id)
