@@ -213,13 +213,13 @@
 									{# Show the skins available for ltr only #}
 									{% ifequal bidi.direction  "ltr" %} 
 									    <a href="#" onclick="change_skin('cerulean');" id="cerulean_skin">{{ _("Cerulean") }}</a>
-										<a href="#" onclick="change_skin('cyborg');" id="cyborg_skin">{{ _("Cyborg") }}</a>
+										<a href="#" onclick="change_skin('cyborg','light');" id="cyborg_skin">{{ _("Cyborg") }}</a>
 									    <!-- <a href="#" onclick="change_skin('amelia');" id="amelia_skin">{{ _("Amelia") }}</a> -->
 										<!-- <a href="#" onclick="change_skin('readable');" id="readable_skin">{{ _("Readable") }}</a> -->
-										<a href="#" onclick="change_skin('slate');" id="slate_skin">{{ _("Slate") }}</a>
+										<a href="#" onclick="change_skin('slate','light');" id="slate_skin">{{ _("Slate") }}</a>
 										<!-- <a href="#" onclick="change_skin('spacelab');" id="spacelab_skin">{{ _("Spacelab") }}</a> -->
 										<!-- <a href="#" onclick="change_skin('superheroes');" id="superheroes_skin">{{ _("Super Heroes") }}</a>  -->
-									    <a href="#" onclick="change_skin('united');"  id="united_skin">{{ _("United") }}</a>
+									    <a href="#" onclick="change_skin('united','dark');"  id="united_skin">{{ _("United") }}</a>
 									{% endifequal %}
 								
 								</li>
@@ -419,6 +419,7 @@
     <script src="http://api.html5media.info/1.1.5/html5media.min.js"></script>
     
     <!-- Google analytics #Assem -->
+    <script type="text/javascript">var bidi = "{{ bidi.direction }}";</script>
 	<script type="text/javascript">
         var _gaq = _gaq || [];
         _gaq.push(['_setAccount', 'UA-9859501-4']);
