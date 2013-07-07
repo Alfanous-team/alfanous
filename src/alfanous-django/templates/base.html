@@ -128,6 +128,8 @@
     <link href="/static/shared/css/bootstro.min.css" rel="stylesheet">
     <!-- Font Awesome -->
     <link rel="stylesheet" href="/static/shared/css/font-awesome.min.css">
+    <!-- v-keyboard css -->
+    <link href="/static/shared/css/keyboard.css" rel="stylesheet">
 
     <!--[if IE 7]>
     <link rel="stylesheet" href="/static/shared/css/font-awesome-ie7.min.css">
@@ -285,7 +287,7 @@
 
             <div class="row offset2 span9 text-center">
                 <div class="span6 offset1">
-                    <a href="{% url alfanous-django.wui.views.results current.language current.unit %}" class="logo"><img src="/static/{{ bidi.direction }}/img/alfanous.png" alt="logo"></a>
+                    <a href="{% url alfanous-django.wui.views.results current.language current.unit %}" class="logo"><img src="/static/{{ bidi.direction }}/img/alfanous_dark.png" alt="logo"></a>
                         <form class="form-search" id="form" name="form" method="GET" action=".">
                             <div class="input-append  text-right"
                                 data-bootstro-title="{{ _('Alfanous is smart!') }}"
@@ -410,6 +412,7 @@
         <script src="/static/rtl/js/rtl-bootstrap.min.js"></script>     
     {% endifequal %}
     <script src="/static/shared/js/bootstrap-select.min.js"></script>
+    <script src="/static/shared/js/keyboard.js"></script>
     <script src="/static/shared/js/style_switcher.js"></script>
     <script src="/static/shared/js/bootstro.min.js"></script>
     <script src="/static/shared/js/alfanous.js"></script>
