@@ -11,51 +11,16 @@
 {% endkwacro %}
 
 {% block results %}
-	<div id="#search_result_static" class="row span8 offset3 text-center">			
+	<div id="#search_result_static" class="row span9 offset2 text-center">			
 		{% if results.error.code == 0  %}
-			 <span	class="text-success">
-			 {{ _("Search results") }} 
+			 <span	class="muted">
+			 {{ _("Runtime") }} 
 						({{ results.search.runtime|floatformat:"5" }} {{ _("seconds") }})
 			 </span>
-			<!-- Suggestions-->
-			{% if suggestions.error.code == 0 and suggestions.suggest %} 
-				<table class="table table-striped table-bordered">
-					<thead>
-						<tr>
-							<th>#</th>
-							<th>search key:</th>
-							<th>{{ _("Suggestions:") }}</th>
-						</tr>
-					</thead>
-					<tbody>
-						<tr>
-							{% for suggestion_key, suggestion_item in suggestions.suggest.items %}
-								<td>{{ forloop.counter }}.</td>
-								<td>{{ _("word") }} |  {{ suggestion_key }}</td>
-								<td>
-									{% for suggestion_sub_item  in suggestion_item %}
-										{% with suggestion_key|add:","|add:suggestion_sub_item as replacement_args %}
-											{% with params.query|string_replace:replacement_args as new_query %}
-												<span class="label label-inverse"><i class="icon-share-alt icon-white"></i><a href="?{% build_search_link params  new_query 1 False %}"> 
-												{{ suggestion_sub_item }}</a></span>
-											{% endwith %}
-										{% endwith %}
-										{% empty %}
-										{{ _("no suggestions!") }}
-									{% endfor %}
-								</td>
-							{% endfor %}
-						</tr>
-					</tbody>
-				</table>
-			{% endif %}
-	
-			{% if results.search.interval.total %}
-			<div class="row">
 			
+			{% if results.search.interval.total %}
 				<!-- translation results -->
-				<div class="row span12 text-center">
-					<hr />
+				<div class="row offset1 span10 text-center">
 					<ul class="breadcrumb">
 					    <li>{{ _("Results") }}: ( {{ results.search.interval.start }}</li>
 					    <li>{{ _("to") }} {{ results.search.interval.end }}</li>
@@ -74,41 +39,23 @@
 				{% for translationresult_id, translationresult_content in  	results.search.translations.items %}
 					<div class='container well well-small span12'>
 					    <fieldset class='main_re_item'>
-					    	<legend>
+					    	<legend class="text-left">
 						    	<span class="muted">
-						      	{{ _("Result n°") }} <b> {{ translationresult_id }} </b> 
+						      	<span class="hidden-phone">{{ _("Result n°") }} </span>
+						      	
+						      	 <b> <span class="visible-phone">#</span>{{ translationresult_id }} </b> 
+						      	   
 						    	</span>
-				  			</legend>
-				  			<div class="row-fluid">
-				  				<div class="span1">
-					  				<div class="row-fluid visible-phone text-center">
-				                        <div class="btn-group btn-toolbar">
-				                            <button id="aya_audio_button_{{ ayaresult_id }}" class="btn"><i class="icon-headphones"></i></button>
+						    	  <div class="btn-group pull-right">
 				                            <button class="btn"><i class="icon-file"></i></button>
 				                            <button class="btn"><i class="icon-share"></i></button>
 				                        </div>
-			                   		</div>
-				                    <div class="hidden-phone">
-				                        <div class="btn-group btn-group-vertical btn-toolbar">
-				                            <button id="aya_audio_button_{{ ayaresult_id }}" class="btn"><i class="icon-headphones"></i></button>
-				                            <button id="copy_aya_{{ ayaresult_id }}" class="btn"><i class="icon-file"></i></button>
-				                            <button class="btn"><i class="icon-share"></i></button>
-				                        </div>
-				                    </div>
-			                	</div>
-
+				  			</legend>
+				  			<div class="row-fluid">
 			                    <div class="span10 offset1">
-			                    	<div class="row text-center">
-					                    <div id="aya_audio_{{ ayaresult_id }}" class="audio">
-					                    	{% if ayaresult_content.aya.recitation %}
-					                    		<audio class="audio-player" src="{{ ayaresult_content.aya.recitation}}" controls preload></audio>
-											{% endif %}
-					                    </div>
-			                    	</div>
 				                    <div class="row">
 				                        <div id="aya_text_{{ ayaresult_id }}" class="row text-center non-arabic-ayah">
-				                        	<p>
-								 				[
+				                        		[
 												{% for translation_word in translationresult_content.text|space_split %}
 													{% spaceless %}
 														{% autoescape off %}
@@ -121,43 +68,19 @@
 													{% endspaceless %}	
 											  	{% endfor %}
 							  					]
-											</p>											
+							  						
+							  				
+																					
 				                        </div>
 				              
-										<div class="row">
-											<table class="table table-bordered">
-											    <caption>
-													{% with translationresult_content.identifier.gid|stringformat:"s" as translation_gid %}
-														{% with "gid:"|add:translation_gid|add:" AND id:"|add:translationresult_content.identifier.id as new_query %}
-																<a href='?{% build_search_link params  new_query 1 False %}'> 
-														{% endwith %}
-													{% endwith %}
-													<cite>({{ translationresult_content.identifier.gid }})</cite></a> -
-											    </caption>
-											    <thead>
-												    <tr>
-												    	<th class="text-center">
-												    		<span class="label label-inverse">
-																{% with "author:"|add:translationresult_content.info.author as new_query %}
-																	<a href='?{% build_search_link params  new_query 1 True %}'> 
-																{% endwith %} 
-																	{{ _("Author") }} | {{  translationresult_content.info.author }} </a>
-															</span>
-															<span class="label label-info">
-																{% with "lang:"|add:translationresult_content.info.language as new_query %}
-																	<a href='?{% build_search_link params  new_query 1 True %}'> 
-																{% endwith %} 
-																{{ _("Language") }} | {{ translationresult_content.info.language }}</a>
-															</span>
-												    	</th>
-												    </tr>
-											    </thead>
-										    </table>
-				                        </div>
+		
 				                    </div>
 			                    </div>
+			                    
 			                    <div class="row text-center span12">
+			                    	<hr/>
 			                 		{% if translationresult_content.aya %}
+
 								  		<p class="arabic-ayah">
 									  		<span class='quran_decoration main_aya'>
 									 		 [ </span>
@@ -166,17 +89,44 @@
 									  		</span>
 									  		<span class='quran_decoration main_aya'>
 									  		] </span>									  		
-									  		<div class="text-left muted ayah_source">
-												 {% with translationresult_content.aya.aya_id|stringformat:"s" as aya_id %}
+									  	
+											-	 {% with translationresult_content.aya.aya_id|stringformat:"s" as aya_id %}
 													 {% with bidi.fields.sura|add:':"'|add:translationresult_content.aya.sura_name|add:'" + '|add:bidi.fields.aya_id|add:':'|add:aya_id|urlencode  as new_query %}
-														<a href='{% url alfanous-django.wui.views.results current.language "aya" %}?{% build_search_link params  new_query 1 False %}'> 
+														<a class="text-success" href='{% url alfanous-django.wui.views.results current.language "aya" %}?{% build_search_link params  new_query 1 False %}'> 
 													{% endwith %}
 												{% endwith %}
-												({{ translationresult_content.aya.sura_name }} {{ translationresult_content.aya.aya_id }}) </a> 
-			  					 			</div>
+												<small>{{ translationresult_content.aya.sura_name }}</small> {{ translationresult_content.aya.aya_id }} </a> 
+
 								  		</p>
 						  			{% endif %}
-				                </div>
+				                		</div>
+				                		
+				                		<div class="row text-center span12">
+				                		   <hr/>
+											<span class="badge badge-info">{{ _("About translation") }}</span>
+															<span class="label label-success" >
+										  					 {% with translationresult_content.identifier.gid|stringformat:"s" as translation_gid %}
+																	{% with "gid:"|add:translation_gid|add:" AND id:"|add:translationresult_content.identifier.id as new_query %}
+																			<a  href='?{% build_search_link params  new_query 1 False %}'> 
+																	{% endwith %}
+																{% endwith %}
+															{{ _("Aya") }} | {{ translationresult_content.identifier.gid }}
+							  							  </span></a>
+										
+												    		<span class="label label-success">
+																{% with "author:"|add:translationresult_content.info.author as new_query %}
+																	<a href='?{% build_search_link params  new_query 1 True %}'> 
+																{% endwith %} 
+																	{{ _("Author") }} | {{  translationresult_content.info.author }} </a>
+															</span>
+															<span class="label label-inverse">
+																{% with "lang:"|add:translationresult_content.info.language as new_query %}
+																	<a href='?{% build_search_link params  new_query 1 True %}'> 
+																{% endwith %} 
+																{{ _("Language") }} | {{ translationresult_content.info.language }}</a>
+															</span>
+										
+				                        </div>
 				  			</div>
 					    </fieldset>
 					</div>
