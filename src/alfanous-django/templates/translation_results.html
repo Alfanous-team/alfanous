@@ -106,12 +106,12 @@
 											<span class="badge badge-info">{{ _("About translation") }}</span>
 															<span class="label label-success" >
 										  					 {% with translationresult_content.identifier.gid|stringformat:"s" as translation_gid %}
-																	{% with "gid:"|add:translation_gid|add:" AND id:"|add:translationresult_content.identifier.id as new_query %}
+																	{% with "gid:"|add:translation_gid|add:" AND lang:"|add:translationresult_content.info.language as new_query %}
 																			<a  href='?{% build_search_link params  new_query 1 False %}'> 
 																	{% endwith %}
 																{% endwith %}
-															{{ _("Aya") }} | {{ translationresult_content.identifier.gid }}
-							  							  </span></a>
+														    	{{ _("Aya") }} | {{ translationresult_content.identifier.gid }}
+							  							   </span></a>
 										
 												    		<span class="label label-success">
 																{% with "author:"|add:translationresult_content.info.author as new_query %}
