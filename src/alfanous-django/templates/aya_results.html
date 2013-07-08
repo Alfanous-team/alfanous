@@ -104,11 +104,11 @@
 						<div class="tab-pane" id="{{ wordstat.word }}">
 							   <table class="table table-striped table-bordered">
 								<tr>
-									<td colspan="2"><span class="badge badge-info">{{ _("occurances") }}: {{ wordstat.nb_matches }}</span></td>
+									<td><span class="badge badge-info">{{ _("occurances") }}: {{ wordstat.nb_matches }}</span></td>
 								</tr>
 								
 								<tr>
-									<td colspan="2"><span class="badge badge-info">{{ _("ayates") }}:  {{ wordstat.nb_ayas }}</span></td>
+									<td><span class="badge badge-info">{{ _("ayates") }}:  {{ wordstat.nb_ayas }}</span></td>
 								</tr>
 								
 						
@@ -350,7 +350,7 @@
 	                {% endif %}
 	                >
 		                <div class="row-fluid">				   
-					   		{% if ayaresult_content.theme %}
+					   		{% if ayaresult_content.theme.chapter %}
 		                    <table class="table table-bordered table-condensed">
 		                        <tbody>
 		                            <tr class="warning">
