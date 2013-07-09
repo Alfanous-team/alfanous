@@ -521,16 +521,18 @@
     
 
 	{% else %}
+	<br/>
 	<div class="row">
-		<div class="alert alert-error text-center span12">
+		<div class="alert alert-error text-center span10 offset1">
 			<button type="button" class="close" data-dismiss="alert">&times;</button>
 			{{ _("Sorry! there is no results for this search query.") }}
 		</div>
 	</div>
 	{% endif %}		
 	{% elif results.error %}
+	<br/>
 	<div class="row">
-		<div class="alert alert-error span12">
+		<div class="alert alert-error span12 offset1">
 			<button type="button" class="close" data-dismiss="alert">&times;</button>
 			{{ _("Error ") }} ({{ results.error.code }}) : {{ results.error.msg|linebreaksbr }}
 		</div>

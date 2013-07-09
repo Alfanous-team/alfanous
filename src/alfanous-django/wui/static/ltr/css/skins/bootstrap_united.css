@@ -233,9 +233,14 @@ body {
 }
 
 a {
-  color: #dd4814;
+  color: #442222;
   text-decoration: none;
 }
+
+.modal a {
+	  text-decoration: underline;
+}
+
 
 a:hover,
 a:focus {

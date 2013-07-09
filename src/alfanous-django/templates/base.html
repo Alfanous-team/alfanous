@@ -170,7 +170,7 @@
                 <a class="brand" href="#"></a>
                 <div class="nav-collapse collapse">
                     <ul class="nav">
-                    <li><a href="/"><i class="icon-home icon-large"></i></a></li>
+                    <li><a href="/{{ current.language }}/"><i class="icon-home icon-large"></i></a></li>
                     	{% for available_unit in available.units.items %}
                     		{% ifequal available_unit.0 current.unit %}
                     			<li class="active bootstro" data-bootstro-title="{{ _('First, select the search unit') }}"
@@ -398,8 +398,8 @@
     </div>
 
     <div id="popoverInner" class="hidden">
-        <p class="popoverInnerText">This is the <a href='http://json.org/'>JSON</a> output system 2 of <a href="http://www.alfanous.org">Alfanous</a> project, we call it <i><b>Alfanous JOS2</b></i>. This feature is in Alpha test and the Json schema may be it's not stable . We are waiting for real feedback and suggestions to improve its efficacy,quality and stability. To contact the author ,please send a direct email to <b> assem[dot]ch[at]gmail[dot]com</b> or to the mailing list <b>alfanous [at] googlegroups [dot] com</b>
-        <br/><br/> For more details  visit the page of this service <a class="badge" href="https://github.com/Alfanous-team/alfanous/blob/master/src/alfanous-cgi/README.rst">here</a>
+        <p class="popoverInnerText">This website is powered by the<a href='http://json.org/'>JSON</a> output system 2 of <a href="http://www.alfanous.org">Alfanous</a> project, we call it <i><b>Alfanous JOS2</b></i>. This feature is in Alpha test and the Json schema may be it's not stable . We are waiting for real feedback and suggestions to improve its efficacy,quality and stability. To contact the author ,please send a direct email to <b> assem[dot]ch[at]gmail[dot]com</b> or to the mailing list <b>alfanous [at] googlegroups [dot] com</b>
+        <br/><br/> For more details  visit the page of this service <a class="badge badge-inverse" href="https://github.com/Alfanous-team/alfanous/blob/master/src/alfanous-cgi/README.rst">here</a>
         </p>
     </div>
 

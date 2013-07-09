@@ -10,6 +10,11 @@ html, body, .content {
   src:url('../fonts/ScheherazadeRegOT.ttf');
 }
 
+@font-face {
+  font-family:'ArabeyesQr';
+  src:url('../fonts/arabeyes-qr.ttf');
+}
+
 @media (max-width: 979px) {
   body {
     padding-top: 0;
@@ -45,6 +50,7 @@ span a, span a:hover {
   /* color: gray; */
   margin-right: 5px;
   display: inline-block;
+  text-decoration: none;
 } 
 
 #social-icons a:hover {
@@ -71,11 +77,11 @@ span a, span a:hover {
 .popoverInnerText {
   font-weight: normal;
   text-shadow:none;
-  color: rgb(51, 51, 51);
+  color: rgb(51, 200, 51);
 }
 .popoverInnerText a, .popoverInnerText a:hover{
   font-weight: bold;
-  color: rgb(51, 51, 51);
+  color: rgb(200, 150, 51);
 }
 p.credit {
   display:inline;
@@ -128,8 +134,8 @@ div.help {
 }
 
 .table {
-  font-family: tahoma, Scheherazade,  KacstBook, KacstQurn, ArabeyesQr, "KFGQPC Uthman Taha Naskh", Arial;
-  font-size: 12px;
+  font-family: tahoma, Arial,  KacstBook, KacstQurn, ArabeyesQr, "KFGQPC Uthman Taha Naskh", Scheherazade;
+  font-size: 13px;
 }
 
 .nav-tabs > .active > a, .nav-tabs > .active > a:hover, .nav-tabs > .active > a:focus {
@@ -166,7 +172,6 @@ table th.text-center {
 .term6, .term15 { color: #5C3; }
 .term7, .term16 { color: #444; }
 .term8, .term17 { color: #118; }
-
 
 
 

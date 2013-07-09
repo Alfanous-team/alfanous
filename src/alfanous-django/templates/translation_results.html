@@ -55,7 +55,7 @@
 			                    <div class="span10 offset1">
 				                    <div class="row">
 				                        <div id="aya_text_{{ ayaresult_id }}" class="row text-center non-arabic-ayah">
-				                        		[
+				                        		
 												{% for translation_word in translationresult_content.text|space_split %}
 													{% spaceless %}
 														{% autoescape off %}
@@ -67,7 +67,7 @@
 														{% endautoescape%}
 													{% endspaceless %}	
 											  	{% endfor %}
-							  					]
+							  					
 							  						
 							  				
 																					
@@ -142,7 +142,7 @@
 	</div>
 			{% else %}
 				<div class="row">
-					<div class="alert alert-error text-center span12">
+					<div class="alert alert-error text-center span10 offset1">
 						<button type="button" class="close" data-dismiss="alert">&times;</button>
 						{{ _("Sorry! there is no results for this search query.") }}
 					</div>
@@ -150,7 +150,7 @@
 			{% endif %}			
 		{% elif results.error %}
 			<div class="row">
-				<div class="alert alert-error span12">
+				<div class="alert alert-error span10 offset1">
 					<button type="button" class="close" data-dismiss="alert">&times;</button>
 					{{ _("Error ") }} ({{ results.error.code }}) : {{ results.error.msg|linebreaksbr }}
 				</div>
