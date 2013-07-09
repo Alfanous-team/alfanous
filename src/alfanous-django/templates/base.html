@@ -4,20 +4,9 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 	<title> 
 			{% block title %} 
-				{{ _("Alfanous") }} - 
-				{% if current.unit == "aya" %}
-						{{ _("Ayah Search") }}
-					{% elif current.unit == "word" %}
-						{{ _("Word Search") }}
-					{% elif current.unit == "translation" %}
-						{{ _("Translation Search") }}
-					{% else %}
-						{{ _("Ayah Search") }} 
-				{% endif %}
+			
 				
 				{% if params.query %}
-					- 
-					{{ _("Query:") }}
 					{{ params.query }} 
 					{% if params.page %}
 						|| {{ _("Page:") }}
@@ -44,11 +33,23 @@
 							{% endif %}
 						}
 					{% endif %}
-					{% if params.translation %}
+					{% if params.translation and params.translation != "en.transliteration" %}
 						|| {{ _("Translation:") }}
 							{{ params.translation }},
 					{% endif %}
+					- 
 				{% endif %}
+				
+				{% if current.unit == "aya" %}
+						{{ _("Quran Ayah Search") }}
+					{% elif current.unit == "word" %}
+						{{ _("Quran Word Search") }}
+					{% elif current.unit == "translation" %}
+						{{ _("Quran Translation Search") }}
+					{% else %}
+						{{ _("Quran Ayah Search") }} 
+				{% endif %} 
+				- {{ _("Alfanous") }} 
 			{% endblock %}  
 	</title>
 	
