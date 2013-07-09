@@ -6,7 +6,7 @@ Alfanous understands the complex nature of the Arabic language and thus offers e
 
 
 :Authors: `Authors.rst <https://github.com/Alfanous-team/alfanous/blob/master/AUTHORS.rst>`_
-:Version: 0.7.##
+:Release: 0.7  
 :License: `AGPL <https://github.com/Alfanous-team/alfanous/blob/master/LICENSE>`_
 :Tracker: `Alfanous-team/alfanous/Issues <https://github.com/Alfanous-team/alfanous/issues>`_
 :Mailinglist: `alfanous@googlegroups.com <http://groups.google.com/group/alfanous/>`_
