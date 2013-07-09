@@ -263,7 +263,7 @@
  						
  					 			<span class="btn-group  pull-{{ bidi.align_inverse }} ">
 	                            {% if ayaresult_content.aya.recitation %}
-	                            	<button id="aya_audio_button_{{ ayaresult_id }}" class="btn"><i class="icon-volume-up"></i></button>
+	                            	<button id="aya_audio_button_{{ ayaresult_id }}" class="btn"><i class="icon-play-circle"></i></button>
 	                            {% endif %}
 	                            <button id="aya_copy_button_{{ ayaresult_id }}" class="btn"><i class="icon-copy"></i></button>
 	                            <button class="btn"><i class="icon-share"></i></button>
@@ -301,7 +301,7 @@
 									
 										{% with ayaresult_content.aya.id|stringformat:"s" as aya_id %}
 									 	{% with bidi.fields.sura|add:':"'|add:ayaresult_content.identifier.sura_name|add:'" + '|add:bidi.fields.aya_id|add:':'|add:aya_id|urlencode  as new_query %}
-										- <a href='?{% build_search_link params  new_query 1 False %}'> 
+										- <a href='?{% build_search_link params  new_query 1 False  %}'> 
 										{% endwith %}
 									{% endwith %}
 		                        	<span class="text-success"><small> {{ ayaresult_content.identifier.sura_name }} </small> {{ ayaresult_content.aya.id }} </span></a> 
