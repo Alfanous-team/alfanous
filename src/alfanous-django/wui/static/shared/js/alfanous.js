@@ -49,7 +49,7 @@ $(document).ready(function(){
             $("#aya_audio_" + ayaNum).slideToggle(function() {});
         };
 
-        if ($(this).attr('id').indexOf("opy_aya") !== -1) {
+        if ($(this).attr('id').indexOf("aya_copy") !== -1) {
             var id = $(this).attr('id');
             var ayaNum = id.split("_").pop();
 
