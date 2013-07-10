@@ -108,8 +108,8 @@
 	<meta name="author" content="Assem Chelli, Ahmed Ramadan, Abdellah Chelli, Mouad Debbar, Walid Ziouche" />
 	<meta name="robots" content="index,follow"/>
 
-	<link rel="icon" href="/static/shared/img/icon_32.png" sizes="32x32"> 
-	<link rel="shortcut icon" href="/static/shared/img/favicon.ico" type="image/x-icon">
+	<link rel="icon" href="/static/shared/img/icon/icon_32_a.png" sizes="32x32"> 
+	<link rel="shortcut icon" href="/static/shared/img/icon/icon_16_a.png">
 
 	<link rel="search" type="application/opensearchdescription+xml" title="Alfanous" href="/static/alfanous-opensearch.xml"/>
 
@@ -295,7 +295,13 @@
 
             <div class="row offset2 span9 text-center">
                 <div class="span6 offset1">
-                    <a href="{% url alfanous-django.wui.views.results current.language current.unit %}" class="logo"><img src="/static/{{ bidi.direction }}/img/alfanous_dark.png" alt="logo"></a>
+                    <a href="{% url alfanous-django.wui.views.results current.language current.unit %}" class="logo">
+                    {% if current.language == "ar" or  current.language == "fr" or current.language == "id" %}
+                  	  <img src="/static/shared/img/logo_{{ current.unit }}_{{ current.language }}.png" alt="logo">
+                  	 {% else %}
+                  	 	 <img src="/static/shared/img/logo_{{ current.unit }}_en.png" alt="logo">
+                  	  {% endif %}
+                    </a>
                         <form class="form-search" id="form" name="form" method="GET" action=".">
                             <div class="input-append  text-right"
                                 data-bootstro-title="{{ _('Alfanous is smart!') }}"
