@@ -261,13 +261,29 @@
 						 
  						</span>
  						
+ 						
  					 			<span class="btn-group  pull-{{ bidi.align_inverse }} ">
 	                            {% if ayaresult_content.aya.recitation %}
 	                            	<button id="aya_audio_button_{{ ayaresult_id }}" class="btn"><i class="icon-play-circle"></i></button>
 	                            {% endif %}
 	                            <button id="aya_copy_button_{{ ayaresult_id }}" class="btn"><i class="icon-copy"></i></button>
-	                            <button class="btn"><i class="icon-share"></i></button>
-	                        </span>				 
+	                          
+	                           {% with ayaresult_content.aya.id|stringformat:"s" as aya_id %}
+									 			{% with bidi.fields.sura|add:':"'|add:ayaresult_content.identifier.sura_name|add:'" + '|add:bidi.fields.aya_id|add:':'|add:aya_id|urlencode  as new_query %}
+										 	 		<button class="btn shareme" data-url="http://www.alfanous.org/{% url alfanous-django.wui.views.results current.language current.unit %}?{% build_search_link params  new_query 1 False  %}" data-text="{{ ayaresult_content.aya.text_no_highlight }} - ({{ ayaresult_content.identifier.sura_name }},{{ ayaresult_content.aya.id }}) "></button>
+												{% endwith %}
+											{% endwith %}
+	                     
+	                      	  </span>		
+	                      	
+	                      	         
+	                      	
+	                         
+	                 
+			                  
+			                    			
+								
+		               	 
 						 
 	          
 			  		</legend>
@@ -281,6 +297,8 @@
 									{% endif %}
 			                    </div>
 		                    </div>
+
+		                    
 		                    <div class="row">
 		                        <div id="aya_text_{{ ayaresult_id }}" class="row text-center arabic-ayah">
 		                       
@@ -307,6 +325,7 @@
 		                        	<span class="text-success"><small> {{ ayaresult_content.identifier.sura_name }} </small> {{ ayaresult_content.aya.id }} </span></a> 
 								
 		                       </div>	
+		                       
 		                        
 		              
 		                       
@@ -324,8 +343,10 @@
 		                                  </div>
 		                            {% endif %}
 		                       
-		           			
+		           			   <hr/>
 	                    </div>
+	                    
+	                  
 	                    
 	                </div>
 
