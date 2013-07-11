@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-07-10 05:58+0100\n"
+"POT-Creation-Date: 2013-07-11 11:27+0100\n"
 "PO-Revision-Date: 2013-04-30 19:11+0100\n"
 "Last-Translator: Abdelkrime Aries <kariminfo0@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -719,45 +719,54 @@ msgstr "ご寄付"
 msgid "Other means"
 msgstr ""
 
-#: templates/base.html:297
+#: templates/base.html:287
+msgid "Links:"
+msgstr ""
+
+#: templates/base.html:288
+#, fuzzy
+msgid "Old website"
+msgstr "当社のWebサイト"
+
+#: templates/base.html:307
 #, fuzzy
 msgid "Alfanous is smart!"
 msgstr "Alfanous"
 
-#: templates/base.html:301
+#: templates/base.html:311
 msgid "search query here ..."
 msgstr ""
 
-#: templates/base.html:307
+#: templates/base.html:317
 #, fuzzy
 msgid "Quick search"
 msgstr "コーラン節検索"
 
-#: templates/base.html:314
+#: templates/base.html:324
 msgid "Even more!"
 msgstr ""
 
-#: templates/base.html:315
+#: templates/base.html:325
 msgid ""
 "You can <strong>sort</strong>, <strong>filter</strong> search reasults or "
 "choose a translation, you can as well choose a recitator!"
 msgstr ""
 
-#: templates/base.html:319
+#: templates/base.html:329
 #, fuzzy
 msgid "Advanced search"
 msgstr "完全な検索"
 
-#: templates/base.html:337
+#: templates/base.html:347
 msgid "Bismi'Allah Go!"
 msgstr ""
 
-#: templates/base.html:364
+#: templates/base.html:374
 #, fuzzy
 msgid "Help!"
 msgstr "ヘルプ"
 
-#: templates/base.html:370
+#: templates/base.html:380
 #, fuzzy
 msgid ""
 "Please help us improving Alfanous Project, by taking this survey about "
@@ -766,29 +775,29 @@ msgstr ""
 "この神聖なコーランの検索機能の調査を取ることによって、Alfanousプロジェクトを"
 "改善する役立ってください"
 
-#: templates/base.html:381
+#: templates/base.html:391
 msgid "Copyright"
 msgstr ""
 
-#: templates/base.html:381
+#: templates/base.html:391
 #, fuzzy
 msgid "Alfanous Team"
 msgstr "Alfanous"
 
-#: templates/base.html:382
+#: templates/base.html:392
 msgid "released under"
 msgstr ""
 
-#: templates/base.html:382
+#: templates/base.html:392
 msgid "AGPL license"
 msgstr ""
 
-#: templates/base.html:387
+#: templates/base.html:397
 #, fuzzy
 msgid "Powered by"
 msgstr "ソート基準"
 
-#: templates/base.html:396
+#: templates/base.html:406
 #, fuzzy
 msgid "Add to your search bar!"
 msgstr "検索バーに追加する"
