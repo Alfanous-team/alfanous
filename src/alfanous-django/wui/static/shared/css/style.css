@@ -166,12 +166,12 @@ table th.text-center {
 .keyboardInputInitiator{
   position: absolute;
   top: 9px;
-  right: 129px;
+  left: 195px;
 }
 
 @media (max-width: 767px) {
   .keyboardInputInitiator{
-    right: 40px;
+    left: 145px;
   }
 }
 
