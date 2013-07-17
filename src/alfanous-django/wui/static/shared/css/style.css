@@ -164,12 +164,6 @@ table th.text-center {
   position: relative;
 }
 
-@media (max-width: 767px) {
-  .keyboardInputInitiator{
-    right: 40px;
-  }
-}
-
 
 
 /* Assem: Terms Static Highlighting colors */

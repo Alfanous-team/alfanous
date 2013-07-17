@@ -146,8 +146,15 @@
     <style rel="stylesheet">
     .keyboardInputInitiator{
   	
-	  {{ bidi.align_inverse }}: 129px;
-} 
+	  	{{ bidi.align_inverse }}: 129px;
+	} 
+	@media (max-width: 767px) {
+  		.keyboardInputInitiator{
+    			{{ bidi.align_inverse }}: 40px;
+ 			}
+		}	 
+
+
     </style> 
     
 
