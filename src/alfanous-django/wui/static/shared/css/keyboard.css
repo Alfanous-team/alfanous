@@ -270,5 +270,5 @@
   cursor:pointer;
   position: absolute;
   top: 9px;
-
+  z-index: 9;
 }
