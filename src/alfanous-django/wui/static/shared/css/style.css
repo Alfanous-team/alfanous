@@ -163,11 +163,6 @@ table th.text-center {
 .input-append.text-right{
   position: relative;
 }
-.keyboardInputInitiator{
-  position: absolute;
-  top: 9px;
-  right: 129px;
-}
 
 
 
