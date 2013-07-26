@@ -46,10 +46,16 @@
 						      	 <b> <span class="visible-phone">#</span>{{ translationresult_id }} </b> 
 						      	   
 						    	</span>
-						    	  <div class="btn-group pull-right">
-				                            <button class="btn"><i class="icon-file"></i></button>
-				                            <button class="btn"><i class="icon-share"></i></button>
-				                        </div>
+						    	<span class="btn-group  pull-{{ bidi.align_inverse }} ">
+	                            <button id="aya_copy_button_{{ ayaresult_id }}" class="btn"><i class="icon-copy"></i></button>
+	                           {% with translationresult_content.identifier.gid|stringformat:"s" as aya_id %}
+									 			{% with bidi.fields.gid|add:':"'|add:translationresult_content.identifier.id|urlencode  as new_query %}
+										 	 		<button class="btn shareme" data-url="http://www.alfanous.org{% url alfanous-django.wui.views.results current.language current.unit %}?{% build_search_link params  new_query 1 False  %}" data-text="{{ translationresult_content.text }} - {{ translationresult_content.identifier.gid }} "></button>
+												{% endwith %}
+											{% endwith %}
+	                     
+	                      	  </span>		
+	                      	
 				  			</legend>
 				  			<div class="row-fluid">
 			                    <div class="span10 offset1">
