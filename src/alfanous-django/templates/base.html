@@ -4,8 +4,6 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 	<title> 
 			{% block title %} 
-			
-				
 				{% if params.query %}
 					{{ params.query }} 
 					{% if params.page %}
@@ -143,14 +141,18 @@
     <link href="/static/rtl/css/rtl.css" rel="stylesheet">
     {% endifequal %}
     
+    
     <style rel="stylesheet">
+    @media (min-width: 768px) {
     .keyboardInputInitiator{
   	
 	  	{{ bidi.align }}: 195px;
 	} 
+	}
+	
 	@media (max-width: 767px) {
   		.keyboardInputInitiator{
-    			{{ bidi.align }}: 145px;
+    			{{ bidi.align_inverse }}: 40px;
  			}
 		}	 
 
@@ -255,11 +257,11 @@
                 {% else %}
                 <ul class="inline pull-right">
                 {% endif %}
-					<li><a class="facebook" href="https://www.facebook.com/Alfanous"><i class="icon-facebook icon-large success"></i></a></li>
-					<li><a class="twitter" href="https://twitter.com/alfanous"><i class="icon-twitter icon-large"></i></a></li>
-					<li><a class="googleplus" href="https://plus.google.com/u/0/111305625425237630318"><i class="icon-google-plus icon-large"></i></a></li>
-                    <li><a class="github" href="https://github.com/Alfanous-team/alfanous"><i class="icon-github-alt icon-large"></i></a></li>
-                    <li><a class="mailing-list" href="http://groups.google.com/group/alfanous/"><i class="icon-group icon-large"></i></a></li>
+					<li><a class="facebook" href="https://www.facebook.com/Alfanous" data-toggle="tooltip" title="{{ _('Our page on Facebook') }}"><i class="icon-facebook icon-large success"></i></a></li>
+					<li><a class="googleplus" href="https://plus.google.com/u/0/111305625425237630318" data-toggle="tooltip" title="{{ _('Our page on Google+') }}"><i class="icon-google-plus icon-large"></i></a></li>
+                    <li><a class="twitter" href="https://twitter.com/alfanous" data-toggle="tooltip" title="{{ _('Our account on Twitter') }}"><i class="icon-twitter icon-large"></i></a></li>
+                    <li><a class="github" href="https://github.com/Alfanous-team/alfanous" data-toggle="tooltip" title="{{ _('Our repository on Github') }}"><i class="icon-github-alt icon-large"></i></a></li>
+                    <li><a class="mailing-list" href="http://groups.google.com/group/alfanous/" data-toggle="tooltip" title="{{ _('Our Mailing list on GoogleGroups') }}"><i class="icon-group icon-large"></i></a></li>
                     
 				</ul>
 			</div>
