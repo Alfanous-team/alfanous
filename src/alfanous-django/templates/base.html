@@ -379,7 +379,9 @@
 
     {% include "popups_content.html" %}
 
-{% block notification %}
+
+{% if not params %}
+	{% block notification %}
 
 				<div class="hidden-phone text-center help">
                     <div class="alert alert-warning span8 offset3 text-center">
@@ -410,7 +412,8 @@
                     <br/>
                 </div>
 
-{% endblock notification %}
+	{% endblock notification %}
+{% endif %}
 
 
 
