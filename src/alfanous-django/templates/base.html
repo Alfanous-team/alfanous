@@ -380,21 +380,36 @@
     {% include "popups_content.html" %}
 
 {% block notification %}
-<!--
+
 				<div class="hidden-phone text-center help">
-                    <div class="alert alert-info span8 offset2 text-center">
+                    <div class="alert alert-warning span8 offset3 text-center">
                         <button type="button" class="close" data-dismiss="alert">&times;</button>
-                        <i class="icon-info-sign"></i>
-                        <strong>{{ _("Help!") }}</strong>
+                        <i class="icon-screenshot"></i>
+                        <strong>{{ _("Help!") }} </strong>
+                        <a href="https://translations.launchpad.net/alfanous/trunk/+pots/alfanousdjv0.7.01" target="_blank" class="">
+                        {{ _("Please help us translate Alfanous Project into more languages!") }}
+                        </a>
+                        <!-- 
                         {% ifequal current.language "ar" %}
                         <a href="https://docs.google.com/spreadsheet/viewform?formkey=dEZZaE5fQ0NwQXljU2ZyUmpfLW15SVE6MA">
                         {% else %}
                         <a href="https://docs.google.com/spreadsheet/viewform?formkey=dHNKQU1JSkEzbDNKR2tvM2M2cDA2SXc6MQ">
                         {% endifequal %}
                         {{ _("Please help us improving Alfanous Project, by taking this survey about search features in Holy Quran.") }} </a>
+                     	-->
                     </div>
+                    <!-- <div class="alert alert-info span8 offset3 text-center">
+                        <button type="button" class="close" data-dismiss="alert">&times;</button>
+                        <i class="icon-info-sign"></i>
+                        <strong>{{ _("Info!") }} </strong>
+                        <a href="tani" target="_blank">
+                        {{ _("The source of indexed Quran translations is Tanzil Project") }}
+                        </a>
+                    </div>  -->
+                    <br/>
+                    <br/>
                 </div>
--->
+
 {% endblock notification %}
 
 
