@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-07-27 13:41+0100\n"
+"POT-Creation-Date: 2013-07-28 20:01+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -752,37 +752,49 @@ msgstr ""
 msgid "Bismi'Allah Go!"
 msgstr ""
 
-#: templates/base.html:388
+#: templates/base.html:390
 msgid "Help!"
 msgstr ""
 
-#: templates/base.html:394
+#: templates/base.html:392
+msgid "Please help us translate Alfanous Project into more languages!"
+msgstr ""
+
+#: templates/base.html:400
 msgid ""
 "Please help us improving Alfanous Project, by taking this survey about "
 "search features in Holy Quran."
 msgstr ""
 
-#: templates/base.html:405
+#: templates/base.html:406
+msgid "Info!"
+msgstr ""
+
+#: templates/base.html:408
+msgid "The source of indexed Quran translations is Tanzil Project"
+msgstr ""
+
+#: templates/base.html:423
 msgid "Copyright"
 msgstr ""
 
-#: templates/base.html:405
+#: templates/base.html:423
 msgid "Alfanous Team"
 msgstr ""
 
-#: templates/base.html:406
+#: templates/base.html:424
 msgid "released under"
 msgstr ""
 
-#: templates/base.html:406
+#: templates/base.html:424
 msgid "AGPL license"
 msgstr ""
 
-#: templates/base.html:411
+#: templates/base.html:429
 msgid "Powered by"
 msgstr ""
 
-#: templates/base.html:420
+#: templates/base.html:438
 msgid "Add to your search bar!"
 msgstr ""
 
