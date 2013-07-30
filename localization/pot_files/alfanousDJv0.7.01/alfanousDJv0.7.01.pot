@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-07-28 20:01+0100\n"
+"POT-Creation-Date: 2013-07-30 02:11+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1058,6 +1058,18 @@ msgstr ""
 
 #: templates/popups_content.html:254
 msgid "Send the updated file into our mailing list:"
+msgstr ""
+
+#: templates/popups_content.html:256
+msgid "Note:"
+msgstr ""
+
+#: templates/popups_content.html:256
+msgid "You can use launchpad to translate without installing any tool"
+msgstr ""
+
+#: templates/popups_content.html:256
+msgid "here!"
 msgstr ""
 
 #: templates/translation_results.html:18
