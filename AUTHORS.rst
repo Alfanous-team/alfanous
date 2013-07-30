@@ -1,22 +1,8 @@
-Alfanous - Advanced Quranic Search Engine , Authored by Assem Chelli <assem.ch@gmail.com>
+Alfanous - Advanced Quranic Search Engine , Authored by Assem Chelli (`@assem-ch <https://github.com/assem-ch>`_) <assem[DOT]ch[AT]gmail[DOTCOM]>
 
       We gratefully acknowledge contributions from the following.
       Please let us know if we missed anyone, thanks :)
 
-
-===========
-Maintainers
-===========
-================== ========================== ================================= =============================================
-Name      		  Position                    Email                            Twitter
------------------- -------------------------- --------------------------------- ---------------------------------------------
-`Assem Chelli`_     Project Manager/Developer   assem.ch [at] gmail.com          `@assem_ch`_
-`Abdellah Chelli`_  Web Developer               sneetsher [at] gmail.com         `@sneetsher`_ 
-`Zakaria Smahi`_       Developer                   zakaria08esi [at] gmail.com   `@zsmahi`_  
-`Walid Ziouche`_    Tester/Developer            01walid [at] gmail.com           `@01walid`_  
-`Muslih al aqaad`_  Graphic Designer            muslihzarth [at] gmail.com       `@muslihzarth`_
-Yasmine Hoadjli     Community Manager           yhoadjli [at] gmail.com          `@yasmamine`_ 
-================== ========================== ================================= =============================================
 
 .. _`Assem Chelli`: https://github.com/assem-ch
 .. _`Abdellah Chelli`: https://github.com/sneetsher 
@@ -25,13 +11,6 @@ Yasmine Hoadjli     Community Manager           yhoadjli [at] gmail.com         
 .. _`Walid Ziouche`: https://github.com/01walid
 .. _`Muslih al aqaad`: https://github.com/muslih
 .. _`Tedjeddine Meabeo`: https://github.com/tedj
-
-.. _`@assem_ch`: https://twitter.com/assem_ch
-.. _`@sneetsher`: https://twitter.com/sneetsher 
-.. _`@zsmahi`: https://twitter.com/zsmahi
-.. _`@yasmamine`: https://twitter.com/yasmamine
-.. _`@01walid`: https://twitter.com/01walid
-.. _`@muslihzarth`: https://twitter.com/muslihzarth
 
 ============ 
 Contributors 
@@ -42,7 +21,6 @@ Coding
 * API & JSON interface: `Assem Chelli`_    
 * Desktop Interface: `Assem Chelli`_   
 * Web Interface: `Assem Chelli`_  , `Walid Ziouche`_, `Abdellah Chelli`_ , `Mennouchi Islam Azeddine <https://github.com/islamoc>`_, `Tedjeddine Meabeo`_ , `Muslih al aqaad`_,  `Mouad Debbar`_, Ahmed Ramadan
-* Mobile Web Interface: `Abdellah Chelli`_ 
 * Firefox toolbar: `Zakaria Smahi`_ 
 
 --------
@@ -72,7 +50,7 @@ Packaging
 ------------------
 Resource Enriching
 ------------------
-* Word index: Taha Zerrouki, Assem Chelli, Asmaa Mhimeh,
+* Word index: Taha Zerrouki, Assem Chelli, Asmaa Mhimeh, Rahma Maaref 
 * Aya index: {Tanzil Project}, Taha Zerrouki (Subjects), Muhi-uddin (Indian mushaf pages)
 * Translations:  {Tanzil Project},
 
@@ -99,19 +77,16 @@ Community Management
 -----------
 Translation
 -----------
-( to help in translation, contact us in  the mailing list )
+( to help in translation, contact us in  the mailing list <alfanous[at]googlegroups[dotcom]> )
 
-* Bootstrap Web Interface
-
-  * not yet! 
 
 * Desktop application
 
   * not yet! 
 
-* Django Web Interface
+* Main Web Interface
 
-  * Arabic: Yasmine Houdjli
+  * Arabic: Yasmine Houadjli
   * French: Zineb Pub
   * Indonesian:  Ahmed Jumal , Amy cidra 
   * Japanese: Abdelkarim Aries
@@ -125,7 +100,6 @@ Translation
   * Italian: 'Guybrush88' 
   * Japanese: Abdelkarim Aries
   * Malay: 'abuyop'
-
 
 
 --------------
