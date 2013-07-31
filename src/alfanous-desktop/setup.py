@@ -74,7 +74,7 @@ setup(
 
 	classifiers = [
 	"Development Status :: 4 - Beta",
-	"Intended Audience :: Users",
+	"Intended Audience :: Religion",
 	"License :: OSI Approved :: GNU General Public License (GPL)",
 	"Natural Language :: Arabic",
 	"Natural Language :: English",
