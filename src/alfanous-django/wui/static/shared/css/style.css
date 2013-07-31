@@ -179,4 +179,7 @@ table th.text-center {
 .term8, .term17 { color: #118; }
 
 
-
+/* Walid: a little fix for the quick tour */
+.affix {
+  z-index: 2;
+}
