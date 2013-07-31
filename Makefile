@@ -347,14 +347,14 @@ dist_all: dist_egg_all dist_deb dist_rpm dist_sis dist_xpi dist_crx  dist_app
 # 3. PyZekr [Zekr Translations models reader], see dist_egg_pyzekr
 # 4. Alfanous Importer [Importing, Updating, Downloading, Indexing resources], see dist_egg_qimport
 # 5. Alfanous Desktop Gui , see dist_egg_desktop
-dist_egg_all: dist_egg_api  dist_egg_pycorpus  dist_egg_pyzekr dist_egg_qimport dist_egg_desktop
+dist_egg_all:   dist_egg_pycorpus  dist_egg_pyzekr dist_egg_qimport dist_egg_desktop dist_egg_api
  
 
 # python egg for API
 dist_egg_api: 
 	perl -pi -w -e 's|alfanous.release|$(RELEASE)|g;' $(API_PATH)alfanous/resources/information.json
 	perl -pi -w -e 's|alfanous.version|$(VERSION)|g;' $(API_PATH)alfanous/resources/information.json
-	cd $(API_PATH)alfanous ; python2 setup.py bdist_egg
+	cd $(API_PATH)alfanous ; python2 setup.py bdist_egg register upload
 	perl -pi -w -e 's|$(RELEASE)|alfanous.release|g;' $(API_PATH)alfanous/resources/information.json
 	perl -pi -w -e 's|$(VERSION)|alfanous.version|g;' $(API_PATH)alfanous/resources/information.json
 	mkdir -p output/$(VERSION) ; mv $(API_PATH)alfanous/dist/*.egg ./output/$(VERSION)
@@ -362,27 +362,27 @@ dist_egg_api:
 	
 # python egg for PyCorpus extension
 dist_egg_pycorpus: 
-	cd $(API_PATH)PyCorpus ; python2 setup.py bdist_egg 
+	cd $(API_PATH)PyCorpus ; python2 setup.py bdist_egg register upload
 	mkdir -p output/$(VERSION) ; mv $(API_PATH)PyCorpus/dist/*.egg ./output/$(VERSION)
 	@echo  "NOTE: you can find the generated egg in ./output"
 	
 
 # python egg for PyZekrModels extension
 dist_egg_pyzekr: 
-	cd $(API_PATH)PyZekrModels ; python2 setup.py bdist_egg 
+	cd $(API_PATH)PyZekrModels ; python2 setup.py bdist_egg register upload 
 	mkdir -p output/$(VERSION) ; mv $(API_PATH)PyZekrModels/dist/*.egg ./output/$(VERSION)
 	@echo  "NOTE: you can find the generated egg in ./output"
 	
 # python egg for Qimport extension
 dist_egg_qimport: 
-	cd $(API_PATH)alfanous-import ; python2 setup.py bdist_egg 
+	cd $(API_PATH)alfanous-import ; python2 setup.py bdist_egg register  upload
 	mkdir -p output/$(VERSION) ; mv $(API_PATH)alfanous-import/dist/*.egg ./output/$(VERSION)
 	@echo  "NOTE: you can find the generated egg in ./output"
 
 # python egg for alfanousDesktop interface
 dist_egg_desktop: 
 	perl -pi -w -e 's|version = "\d+\.\d+(\.\d+)*"|version = "$(VERSION)"|g;' $(DESKTOP_INTERFACE_PATH)/setup.py
-	cd $(DESKTOP_INTERFACE_PATH) ; python2 setup.py bdist_egg 
+	cd $(DESKTOP_INTERFACE_PATH) ; python2 setup.py bdist_egg register upload
 	mkdir -p output/$(VERSION) ; mv $(DESKTOP_INTERFACE_PATH)dist/*.egg ./output/$(VERSION)
 	@echo  "NOTE: you can find the generated egg in ./output"
  
