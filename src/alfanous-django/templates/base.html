@@ -68,21 +68,21 @@
 	
 	
 	
-	<meta name="keywords" content="{{ _("quran") }},
-								   {{ _("forqan") }},
-								   {{ _("koran") }}, 
-								   {{ _("search") }}, 
-								   {{ _("search engine") }}, 
-								   {{ _("ayates") }}, 
-								   {{ _("surates") }}, 
-								   {{ _("advanced") }}, 
-								   {{ _("statistics") }}, 
-								   {{  _("linguistic") }}, 
-								   {{ _("information retrieval") }}, 
-								   {{ _("natural language processing") }}, 
-								   {{ _("words") }}, 
-								   {{ _("Lantern") }}, 
-								   {{ _("alfanous") }},
+	<meta name="keywords" content="{{ _('quran') }},
+								   {{ _('forqan') }},
+								   {{ _('koran') }}, 
+								   {{ _('search') }}, 
+								   {{ _('search engine') }}, 
+								   {{ _('ayates') }}, 
+								   {{ _('surates') }}, 
+								   {{ _('advanced') }}, 
+								   {{ _('statistics') }}, 
+								   {{  _('linguistic') }}, 
+								   {{ _('information retrieval') }}, 
+								   {{ _('natural language processing') }}, 
+								   {{ _('words') }}, 
+								   {{ _('Lantern') }}, 
+								   {{ _('alfanous') }},
 								   {% for wordcpt, wordstat in results.search.words.individual.items %}
 								   		{{ wordstat.word }},
 								   		{% if wordstat.romanization %} {{ wordstat.romanization }}, {%  endif %}
@@ -90,13 +90,13 @@
 								   {{ params.translation }},
 								   {{ params.view }} view,
 								   {% if params.vocalized %}
-										{{ _("vocalized text") }},
+										{{ _('vocalized text') }},
 								   {% endif %}
 								   {% if params.uthmani %}
-										{{ _("uthmani script") }},
+										{{ _('uthmani script') }},
 								   {% endif %}
 								   {% if params.fuzzy %}
-										{{ _("fuzzy search") }},
+										{{ _('fuzzy search') }},
 								   {% endif %}
 								   {{ params.sortedby }} order,
 								   {{ language.name }},
@@ -144,10 +144,10 @@
     
     <style rel="stylesheet">
     @media (min-width: 768px) {
-    .keyboardInputInitiator{
-  	
-	  	{{ bidi.align }}: 195px;
-	} 
+	    .keyboardInputInitiator{
+	  	
+		  	{{ bidi.align }}: 195px;
+		} 
 	}
 	
 	@media (max-width: 767px) {
@@ -174,7 +174,7 @@
 
 {% endif %}
     <!-- Fixed navbar -->
-    <div class="navbar navbar-inverse navbar-fixed-top">
+    <div class='navbar navbar-inverse navbar-fixed-top'>
         <div class="navbar-inner ">
             <div class="container">
                 <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
@@ -193,7 +193,7 @@
                                 data-bootstro-width="400px" 
                                 data-bootstro-placement='bottom' data-bootstro-step='0'><a >{{ available_unit.1 }}</a></li>
 							{% else %}
-							<li><a href="{% url alfanous-django.wui.views.results current.language available_unit.0 %}">{{ available_unit.1 }}</a></li>
+							<li><a href="{% url 'alfanous-django.wui.views.results' current.language available_unit.0 %}">{{ available_unit.1 }}</a></li>
 							{% endifequal %} 
 						{% endfor %}
                     </ul>
@@ -211,7 +211,7 @@
                                 {% for available_language in available.languages %}
                                     {% if available_language.0 != language.code %}
                                     <li>
-    									<a href="{% url alfanous-django.wui.views.results available_language.0 current.unit %}?{{ current.request }}">{{ available_language.1 }}</a> 			
+    									<a href="{% url 'alfanous-django.wui.views.results' available_language.0 current.unit %}?{{ current.request }}">{{ available_language.1 }}</a> 			
     								</li>
                                     {% endif %}
                                 {% endfor %}
@@ -276,7 +276,7 @@
                 <div class="well well-small sidebar-nav hidden-phone affix">
                     <ul class="nav nav-list ">
                         <li class="nav-header">{{ _("Information:") }}</li>
-                            <li><a id="QuickTour" href="#"><i class="icon-lightbulb"></i>{{ _("Quick Tour!") }}</a></li>
+                            <li><a id="QuickTour" href="#"><i class="icon-lightbulb"></i> {{ _("Quick Tour!") }}</a></li>
                             <li><a href="#faqpanel" data-toggle="modal"><i class="icon-question-sign"></i> {{ _("F.A.Q.") }}</a></li>
                             <li><a href="#help" class="bootstro" data-toggle="modal" data-bootstro-title="{{ _('Sample search here') }}"
                                 data-bootstro-content="{{ _('Here you can learn by example about the full power of Alfanous search engine and what you can do with it.') }}"
@@ -309,7 +309,7 @@
 
             <div class="row offset2 span9 text-center">
                 <div class="span6 offset1">
-                    <a href="{% url alfanous-django.wui.views.results current.language current.unit %}" class="logo">
+                    <a class="logo" href="{% url 'alfanous-django.wui.views.results' current.language current.unit %}">
                     {% if current.language == "ar" or  current.language == "fr" or current.language == "id" %}
                   	  <img src="/static/shared/img/logo_{{ current.unit }}_{{ current.language }}.png" alt="logo">
                   	 {% else %}

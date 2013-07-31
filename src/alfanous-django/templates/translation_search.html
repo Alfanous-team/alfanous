@@ -34,28 +34,28 @@
 	
 	<tr>
 		<th class="style6">{{ _("Exact search") }} </th>
-		<td class="style5" ><a  href='{% url alfanous-django.wui.views.results current.language "translation" %}?{% build_search_link params 'god' 1 False %}'> god </a></td>
-		<td class="style4" ><a  href='{% url alfanous-django.wui.views.results current.language "translation" %}?{% build_search_link params 'time' 1 False %}'> time </a></td>
+		<td class="style5" ><a  href="{% url 'alfanous-django.wui.views.results' current.language 'translation' %}?{% build_search_link params 'god' 1 False %}"> god </a></td>
+		<td class="style4" ><a  href="{% url 'alfanous-django.wui.views.results' current.language 'translation' %}?{% build_search_link params 'time' 1 False %}"> time </a></td>
 	</tr>
 	<tr>
 		<th class="style3">{{ _("Phrase search") }}  </th>
-		<td class="style2"><a href='{% url alfanous-django.wui.views.results current.language "translation" %}?{% build_search_link params '"the%20Lord%20Of%20The%20Creation"' 1 False %}'>"the Lord Of The Creation"</a></td>
-		<td class="style2"><a href='{% url alfanous-django.wui.views.results current.language "translation" %}?{% build_search_link params '"seven%20heavens"' 1 False %}'>"seven heavens"</a></td>
+		<td class="style2"><a href="{% url 'alfanous-django.wui.views.results' current.language 'translation' %}?{% build_search_link params '"the%20Lord%20Of%20The%20Creation"' 1 False %}">"the Lord Of The Creation"</a></td>
+		<td class="style2"><a href="{% url 'alfanous-django.wui.views.results' current.language 'translation' %}?{% build_search_link params '"seven%20heavens"' 1 False %}">"seven heavens"</a></td>
 	</tr>
 	<tr>
 		<th class="style6">{{ _("Logical relations") }}</th>
-		<td class="style5"><a href='{% url alfanous-django.wui.views.results current.language "translation" %}?{% build_search_link params 'prayer%20AND%20charity' 1 False %}'>prayer AND charity</a></td>
-	    <td class="style4"><a href='{% url alfanous-django.wui.views.results current.language "translation" %}?{% build_search_link params 'prayer%20OR%20charity' 1 False %}'>prayer OR charity</a></td>
+		<td class="style5"><a href="{% url 'alfanous-django.wui.views.results' current.language 'translation' %}?{% build_search_link params 'prayer%20AND%20charity' 1 False %}">prayer AND charity</a></td>
+	    <td class="style4"><a href="{% url 'alfanous-django.wui.views.results' current.language 'translation' %}?{% build_search_link params 'prayer%20OR%20charity' 1 False %}">prayer OR charity</a></td>
 	</tr> 
 	<tr>
 		<th class="style3">{{ _("Wildcards") }}</th>
-		<td class="style2"><a href='{% url alfanous-django.wui.views.results current.language "translation" %}?{% build_search_link params 'pray*' 1 False %}'>pray*</a></td>
-		<td class="style2"><a href='{% url alfanous-django.wui.views.results current.language "translation" %}?{% build_search_link params 'produc?' 1 False %}'>produc?</a></td>
+		<td class="style2"><a href="{% url 'alfanous-django.wui.views.results' current.language 'translation' %}?{% build_search_link params 'pray*' 1 False %}">pray*</a></td>
+		<td class="style2"><a href="{% url 'alfanous-django.wui.views.results' current.language 'translation' %}?{% build_search_link params 'produc?' 1 False %}">produc?</a></td>
 	</tr>
 	<tr>
 		<th class="style6">{{ _("Fields") }}</th>
-		<td class="style5"><a href='{% url alfanous-django.wui.views.results current.language "translation" %}?{% build_search_link params 'lang:en' 1 False %}'>lang:fr</a></td>
-	    <td class="style4"><a href='{% url alfanous-django.wui.views.results current.language "translation" %}?{% build_search_link params 'author:Shakir' 1 False %}'>author:Shakir
+		<td class="style5"><a href="{% url 'alfanous-django.wui.views.results' current.language 'translation' %}?{% build_search_link params 'lang:en' 1 False %}">lang:fr</a></td>
+	    <td class="style4"><a href="{% url 'alfanous-django.wui.views.results' current.language 'translation' %}?{% build_search_link params 'author:Shakir' 1 False %}">author:Shakir
 	    </a></td>
 	</tr>
 	</tbody></table>
