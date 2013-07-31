@@ -264,25 +264,11 @@
   color:#444444;
 }
 
-/* Muslih: Absolute image keyboard position*/
-.input-append.text-right{
-  position: relative;
-}
-
-
 .keyboardInputInitiator {
-  /*margin:0px 3px;
-  vertical-align:middle;*/
+  margin:0px 3px;
+  vertical-align:middle;
   cursor:pointer;
   position: absolute;
   top: 9px;
   z-index: 9;
-}
-
-
-
-@media (max-width: 767px){
-  .keyboardInputInitiator {
-    left: 145px;
-  }
 }

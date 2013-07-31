@@ -159,6 +159,11 @@ table th.text-center {
     text-align: center !important;
 }
 
+/* Muslih: Absolute image keyboard position*/
+.input-append.text-right{
+  position: relative;
+}
+
 
 
 /* Assem: Terms Static Highlighting colors */
