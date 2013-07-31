@@ -72,8 +72,8 @@ $(document).ready(function(){
     $('select').selectpicker();
 
     $("#QuickTour").click(function(){
-                bootstro.start();    
-            });
+        bootstro.start();    
+    });
 });
 
 function build_search_link(param,query,filter)

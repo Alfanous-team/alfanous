@@ -68,21 +68,21 @@
 	
 	
 	
-	<meta name="keywords" content="{{ _("quran") }},
-								   {{ _("forqan") }},
-								   {{ _("koran") }}, 
-								   {{ _("search") }}, 
-								   {{ _("search engine") }}, 
-								   {{ _("ayates") }}, 
-								   {{ _("surates") }}, 
-								   {{ _("advanced") }}, 
-								   {{ _("statistics") }}, 
-								   {{  _("linguistic") }}, 
-								   {{ _("information retrieval") }}, 
-								   {{ _("natural language processing") }}, 
-								   {{ _("words") }}, 
-								   {{ _("Lantern") }}, 
-								   {{ _("alfanous") }},
+	<meta name="keywords" content="{{ _('quran') }},
+								   {{ _('forqan') }},
+								   {{ _('koran') }}, 
+								   {{ _('search') }}, 
+								   {{ _('search engine') }}, 
+								   {{ _('ayates') }}, 
+								   {{ _('surates') }}, 
+								   {{ _('advanced') }}, 
+								   {{ _('statistics') }}, 
+								   {{  _('linguistic') }}, 
+								   {{ _('information retrieval') }}, 
+								   {{ _('natural language processing') }}, 
+								   {{ _('words') }}, 
+								   {{ _('Lantern') }}, 
+								   {{ _('alfanous') }},
 								   {% for wordcpt, wordstat in results.search.words.individual.items %}
 								   		{{ wordstat.word }},
 								   		{% if wordstat.romanization %} {{ wordstat.romanization }}, {%  endif %}
@@ -90,13 +90,13 @@
 								   {{ params.translation }},
 								   {{ params.view }} view,
 								   {% if params.vocalized %}
-										{{ _("vocalized text") }},
+										{{ _('vocalized text') }},
 								   {% endif %}
 								   {% if params.uthmani %}
-										{{ _("uthmani script") }},
+										{{ _('uthmani script') }},
 								   {% endif %}
 								   {% if params.fuzzy %}
-										{{ _("fuzzy search") }},
+										{{ _('fuzzy search') }},
 								   {% endif %}
 								   {{ params.sortedby }} order,
 								   {{ language.name }},
@@ -144,10 +144,10 @@
     
     <style rel="stylesheet">
     @media (min-width: 768px) {
-    .keyboardInputInitiator{
-  	
-	  	{{ bidi.align }}: 195px;
-	} 
+	    .keyboardInputInitiator{
+	  	
+		  	{{ bidi.align }}: 195px;
+		} 
 	}
 	
 	@media (max-width: 767px) {
@@ -174,7 +174,7 @@
 
 {% endif %}
     <!-- Fixed navbar -->
-    <div class="navbar navbar-inverse navbar-fixed-top">
+    <div class='navbar navbar-inverse navbar-fixed-top'>
         <div class="navbar-inner ">
             <div class="container">
                 <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
@@ -193,7 +193,7 @@
                                 data-bootstro-width="400px" 
                                 data-bootstro-placement='bottom' data-bootstro-step='0'><a >{{ available_unit.1 }}</a></li>
 							{% else %}
-							<li><a href="{% url alfanous-django.wui.views.results current.language available_unit.0 %}">{{ available_unit.1 }}</a></li>
+							<li><a href="{% url 'alfanous-django.wui.views.results' current.language available_unit.0 %}">{{ available_unit.1 }}</a></li>
 							{% endifequal %} 
 						{% endfor %}
                     </ul>
@@ -211,7 +211,7 @@
                                 {% for available_language in available.languages %}
                                     {% if available_language.0 != language.code %}
                                     <li>
-    									<a href="{% url alfanous-django.wui.views.results available_language.0 current.unit %}?{{ current.request }}">{{ available_language.1 }}</a> 			
+    									<a href="{% url 'alfanous-django.wui.views.results' available_language.0 current.unit %}?{{ current.request }}">{{ available_language.1 }}</a> 			
     								</li>
                                     {% endif %}
                                 {% endfor %}
@@ -273,30 +273,32 @@
 		<div class="row">
             <!-- left navbar -->
             <div class="span2">
-                <div class="well well-small sidebar-nav hidden-phone affix">
-                    <ul class="nav nav-list ">
+                <div id="sidebar" class="well well-small sidebar-nav hidden-phone affix">
+                    <ul class="nav nav-list">
                         <li class="nav-header">{{ _("Information:") }}</li>
-                            <li><a id="QuickTour" href="#"><i class="icon-lightbulb"></i>{{ _("Quick Tour!") }}</a></li>
+                            <li><a id="QuickTour" href="#"><i class="icon-lightbulb"></i> {{ _("Quick Tour!") }}</a></li>
                             <li><a href="#faqpanel" data-toggle="modal"><i class="icon-question-sign"></i> {{ _("F.A.Q.") }}</a></li>
-                            <li><a href="#help" class="bootstro" data-toggle="modal" data-bootstro-title="{{ _('Sample search here') }}"
+                            <li class="bootstro" data-bootstro-title="{{ _('Sample search here') }}"
                                 data-bootstro-content="{{ _('Here you can learn by example about the full power of Alfanous search engine and what you can do with it.') }}"
                                 data-bootstro-width="400px" 
                                 data-bootstro-placement='{{ bidi.align_inverse }}'
-                                data-bootstro-step='4'><i class="icon-exclamation-sign"></i> {{ _("Help") }}</a></li>
+                                data-bootstro-step='4'>
+                            	<a href="#help" data-toggle="modal"><i class="icon-exclamation-sign"></i> {{ _("Help") }}</a>
+                            </li>
                             <li><a href="#contactpanel" data-toggle="modal"><i class="icon-envelope"></i> {{ _("Contact") }}</a></li>
                             <li><a href="#download" data-toggle="modal"><i class="icon-download-alt"></i> {{ _("Download") }}</a></li>
                         <li class="nav-header">{{ _("Contribute:") }}</li>
                             <li><a href="#translatepanel" data-toggle="modal"><i class="icon-globe"></i> {{ _("Translate") }}</a></li>
                             <li><a href="http://feedback.alfanous.org/"><i class="icon-comment"></i> {{ _("Feedback") }}</a></li>
-                            <li><a href="#donatepanel" data-toggle="modal" title="We really need your help!" class="dropdown-toggle bootstro" data-bootstro-title="{{ _('we really need your help!') }}"
-                                data-bootstro-content="{{ _('We\'re looking to fund the project, if you like it, help us making it even better.') }}"
+                            <li class="bootstro" data-bootstro-title="{{ _('we really need your help!') }}" 
+                                data-bootstro-content="{{ _('We\'re looking to fund the project, if you like it, help us making it even better.') }}" 
                                 data-bootstro-width="400px" 
                                 {% if bidi.direction == "rtl" %}
-                                data-bootstro-placement='left'
+                                data-bootstro-placement='left' 
                                 {% else %}
-                                data-bootstro-placement='right'
+                                data-bootstro-placement='right' 
                                 {% endif %}
-                                data-bootstro-step='5'><i class="icon-money"></i> {{ _("Donate") }}</a></li>
+                                data-bootstro-step='5'><a class="dropdown-toggle" href="#donatepanel" data-toggle="modal" title="We really need your help!"><i class="icon-money"></i> {{ _("Donate") }}</a></li>
                             <li><a href="#otherMeans" data-toggle="modal"><i class="icon-plus"></i> {{ _("Other means") }}</a></li>
                   		 <li class="nav-header">{{ _("Links:") }}</li>
                   		 	 <li><a href="http://dj00.alfanous.org"><i class="icon-link"></i> {{ _("Old website") }}</a></li>
@@ -309,7 +311,7 @@
 
             <div class="row offset2 span9 text-center">
                 <div class="span6 offset1">
-                    <a href="{% url alfanous-django.wui.views.results current.language current.unit %}" class="logo">
+                    <a class="logo" href="{% url 'alfanous-django.wui.views.results' current.language current.unit %}">
                     {% if current.language == "ar" or  current.language == "fr" or current.language == "id" %}
                   	  <img src="/static/shared/img/logo_{{ current.unit }}_{{ current.language }}.png" alt="logo">
                   	 {% else %}
@@ -317,11 +319,11 @@
                   	  {% endif %}
                     </a>
                         <form class="form-search" id="form" name="form" method="GET" action=".">
-                            <div class="input-append  text-right"
+                            <div class="input-append bootstro text-right"
                                 data-bootstro-title="{{ _('Alfanous is smart!') }}"
                                 data-bootstro-content="{{ _('Just start typing here! but wait... <strong>Did you know?</strong> Alfanous isn\'t just a typical search function, you can do a lot using operators like: <code>+</code>, <code>-</code>, <code>|</code> and a lot more!') }}"
                                 data-bootstro-width="400px" 
-                                data-bootstro-placement='bottom' data-bootstro-step='2'>
+                                data-bootstro-placement='bottom' data-bootstro-step='3'>
 								     <input id="appendedInputButtons" name="query" class="search-query enter keyboardInput" placeholder="{{ _('search query here ...') }}" type="text" value="{{ params.query }}" data-provide="typeahead" autocomplete="off"
 		                                data-source=""
 		                                />
@@ -333,12 +335,12 @@
 		                                
                             </div>
                             {% if current.unit == "aya" %}
-                                <div class="advanced-search text-center">
-                                    <a class="text-center show_hide bootstro" data-toggle="tooltip"
+                                <div class="advanced-search text-center bootstro" data-toggle="tooltip"
                                     data-bootstro-title="{{ _('Even more!') }}"
                                 data-bootstro-content="{{ _('You can <strong>sort</strong>, <strong>filter</strong> search reasults or choose a translation, you can as well choose a recitator!') }}"
                                 data-bootstro-width="400px" 
-                                data-bootstro-placement='top' data-bootstro-step='3'>
+                                data-bootstro-placement='top' data-bootstro-step='2'>
+                                    <a class="text-center show_hide">
                                         <i class="icon-wrench"></i>
                                         {{ _("Advanced search") }} [+]
                                     </a>

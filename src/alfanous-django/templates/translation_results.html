@@ -50,7 +50,7 @@
 	                            <button id="aya_copy_button_{{ ayaresult_id }}" class="btn"><i class="icon-copy"></i></button>
 	                           {% with translationresult_content.identifier.gid|stringformat:"s" as aya_id %}
 									 			{% with bidi.fields.gid|add:':"'|add:translationresult_content.identifier.id|urlencode  as new_query %}
-										 	 		<button class="btn shareme" data-url="http://www.alfanous.org{% url alfanous-django.wui.views.results current.language current.unit %}?{% build_search_link params  new_query 1 False  %}" data-text="{{ translationresult_content.text }} - {{ translationresult_content.identifier.gid }} "></button>
+										 	 		<button class="btn shareme" data-url="http://www.alfanous.org{% url 'alfanous-django.wui.views.results' current.language current.unit %}?{% build_search_link params  new_query 1 False  %}" data-text="{{ translationresult_content.text }} - {{ translationresult_content.identifier.gid }} "></button>
 												{% endwith %}
 											{% endwith %}
 	                     
@@ -98,7 +98,7 @@
 									  	
 											-	 {% with translationresult_content.aya.aya_id|stringformat:"s" as aya_id %}
 													 {% with bidi.fields.sura|add:':"'|add:translationresult_content.aya.sura_name|add:'" + '|add:bidi.fields.aya_id|add:':'|add:aya_id|urlencode  as new_query %}
-														<a class="text-success" href='{% url alfanous-django.wui.views.results current.language "aya" %}?{% build_search_link params  new_query 1 False %}'> 
+														<a class="text-success" href="{% url 'alfanous-django.wui.views.results' current.language 'aya' %}?{% build_search_link params  new_query 1 False %}"> 
 													{% endwith %}
 												{% endwith %}
 												<small>{{ translationresult_content.aya.sura_name }}</small> {{ translationresult_content.aya.aya_id }} </a> 
