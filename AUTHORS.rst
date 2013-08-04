@@ -43,7 +43,7 @@ Research
   
   * **Title**:. Advanced Search in Quran: Classification and Proposition of All Possible Features     
   * **Conference**:  A pre-conference workshop in LREC 2012 Turkey which is about ”LRE-Rel: Language Resource and Evaluation for Religious Texts”
-  * **Collaborators**: Assem Chelli, Merouane Dahmani, Taha Zerrouki,  Pr. Amar Balla
+  * **Collaborators**: Assem Chelli, Taha Zerrouki,  Pr. Amar Balla
 
 
 .. _ESI: http://www.esi.dz
