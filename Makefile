@@ -3,10 +3,9 @@
 #
 
 
-
 ## Global Version of the project, must be updated in each significant change in 
 ## the API & Desktop Gui
-VERSION=0.7.00
+VERSION=0.7.01
 
 ## Next releases:
 # Beta [0.7.00~0.9.99], Basis [1.0], Silver[~], Golden[~], Crystal[~]
@@ -319,7 +318,7 @@ local_pot_mobile:
 	xgettext -kT_ --from-code utf-8 -L PHP --no-wrap --package-name="AlfanousMobileWUI" --package-version=$(VERSION) -d alfanousMWUI -o ./localization/pot_files/alfanousMWUIv$(VERSION)/alfanousMWUIv$(VERSION).pot $(MOBILE_WUI_PATH)*.php
 
 local_pot_django:
-	cd  $(DJWUI_PATH); python2 manage.py makemessages  -a 
+	cd  $(DJWUI_PATH); python2 manage.py makemessages  -a
 	mkdir -p localization/pot_files/alfanousDJv$(VERSION)
 	cp $(DJWUI_PATH)/locale/default/LC_MESSAGES/django.po localization/pot_files/alfanousDJv$(VERSION)/alfanousDJv$(VERSION).pot
 
