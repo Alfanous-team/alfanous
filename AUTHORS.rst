@@ -26,8 +26,25 @@ Coding
 --------
 Research
 --------
-*  2009-2010: Engineer Thesis( Développement d'un moteur de recherche et d'indexation dans les documents coraniques) @ [ESI_ - Algiers]
-   Assem Chelli (Student), Merouane Dahmani (Student), Taha Zerrouki  ( Supervisor),  Pr. Amar Balla ( Supervisor)  
+* **2009-2010: Engineer Thesis**
+  
+  * **Title**:  Développement d'un moteur de recherche et d'indexation dans les documents coraniques
+  * **University**: ESI_ - Algiers
+  * **Collaborators**: Assem Chelli (Student), Merouane Dahmani (Student), Taha Zerrouki  ( Supervisor),  Pr. Amar Balla ( Supervisor)  
+
+* **March 2011: Arabic Research paper**
+  
+  * **Title**: An Application Programming Interface for indexing and search in Noble Quran
+  * **Original title**: مكتبة برمجية للفهرسة والبحث في القرآن الكريم
+  * **Conference**: NITS 2011 KSA 
+  * **Collaborators**:  Assem Chelli, Merouane Dahmani, Taha Zerrouki,  Pr. Amar Balla 
+   
+* **May 2012: English Research paper** 
+  
+  * **Title**:. Advanced Search in Quran: Classification and Proposition of All Possible Features     
+  * **Conference**:  A pre-conference workshop in LREC 2012 Turkey which is about ”LRE-Rel: Language Resource and Evaluation for Religious Texts”
+  * **Collaborators**: Assem Chelli, Merouane Dahmani, Taha Zerrouki,  Pr. Amar Balla
+
 
 .. _ESI: http://www.esi.dz
 
