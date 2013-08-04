@@ -7,20 +7,20 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-07-11 11:27+0100\n"
-"PO-Revision-Date: 2013-05-06 13:23-0000\n"
-"Last-Translator: Assem Chelli <assem.ch@gmail.com>\n"
+"POT-Creation-Date: 2013-07-30 02:11+0100\n"
+"PO-Revision-Date: 2013-07-30 12:45+0000\n"
+"Last-Translator: Assem Chelli (عاصم شلي) <assem.ch@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
-"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 1.5.5\n"
+"X-Launchpad-Export-Date: 2013-08-04 21:12+0000\n"
+"X-Generator: Launchpad (build 16718)\n"
+"Language: \n"
 
 #: templates/aya_results.html:17 templates/aya_results.html.py:63
-#, fuzzy
 msgid "Keywords"
-msgstr "mots"
+msgstr "Mots-clés"
 
 #: templates/aya_results.html:19 templates/aya_results.html.py:236
 #: templates/translation_results.html:25
@@ -33,11 +33,11 @@ msgstr "Temps d'exécution"
 
 #: templates/aya_results.html:22
 msgid "s"
-msgstr ""
+msgstr "s"
 
 #: templates/aya_results.html:30
 msgid "Searched keyword:"
-msgstr ""
+msgstr "Mot-clé recherché"
 
 #: templates/aya_results.html:31
 msgid "Suggestions:"
@@ -48,7 +48,7 @@ msgid "no suggestions!"
 msgstr "pas de suggestions!"
 
 #: templates/aya_results.html:80 templates/aya_results.html.py:470
-#: templates/aya_results.html:526 templates/base.html:85
+#: templates/aya_results.html:526 templates/base.html:83
 msgid "words"
 msgstr "mots"
 
@@ -60,7 +60,7 @@ msgstr "occurrences"
 msgid "vocalizations"
 msgstr "vocalisations"
 
-#: templates/aya_results.html:111 templates/base.html:78
+#: templates/aya_results.html:111 templates/base.html:76
 msgid "ayates"
 msgstr "ayas"
 
@@ -163,11 +163,11 @@ msgstr "Résultat n°"
 
 #: templates/aya_results.html:357
 msgid "Click here to show more details"
-msgstr ""
+msgstr "Cliquez ici pour afficher plus de détails"
 
 #: templates/aya_results.html:360
 msgid "Show more"
-msgstr ""
+msgstr "Voir plus"
 
 #: templates/aya_results.html:379
 msgid "Chapter"
@@ -182,9 +182,8 @@ msgid "Subtopic"
 msgstr "Sous-thème"
 
 #: templates/aya_results.html:413
-#, fuzzy
 msgid "About ayah"
-msgstr "A propos"
+msgstr "À propos de Ayah"
 
 #: templates/aya_results.html:422
 msgid "manzil"
@@ -192,7 +191,7 @@ msgstr "manzil"
 
 #: templates/aya_results.html:430
 msgid "juz"
-msgstr ""
+msgstr "juz"
 
 #: templates/aya_results.html:438
 msgid "hizb"
@@ -208,7 +207,7 @@ msgstr "page"
 
 #: templates/aya_results.html:458
 msgid "page (indian)"
-msgstr ""
+msgstr "page (indien)"
 
 #: templates/aya_results.html:478 templates/aya_results.html.py:527
 msgid "letters"
@@ -227,9 +226,8 @@ msgid "n°"
 msgstr "n°"
 
 #: templates/aya_results.html:505
-#, fuzzy
 msgid "About surah"
-msgstr "A propos"
+msgstr "À propos de surah"
 
 #: templates/aya_results.html:510
 msgid "Sura"
@@ -243,18 +241,17 @@ msgstr "ordre de révélation"
 msgid "ayahs"
 msgstr "ayas"
 
-#: templates/aya_results.html:549 templates/translation_results.html:147
+#: templates/aya_results.html:549 templates/translation_results.html:153
 msgid "Sorry! there is no results for this search query."
 msgstr "Désolé! il n'y a pas du résultats à cette recherche"
 
-#: templates/aya_results.html:558 templates/translation_results.html:155
+#: templates/aya_results.html:558 templates/translation_results.html:161
 msgid "Error "
-msgstr "Erreur"
+msgstr "Erreur "
 
 #: templates/aya_search.html:10
-#, fuzzy
 msgid "Search options"
-msgstr "Résultats de recherche"
+msgstr "Options de recherche"
 
 #: templates/aya_search.html:14
 msgid "Fuzzy search"
@@ -316,7 +313,7 @@ msgid ""
 "another browser such as: "
 msgstr ""
 "Le site web ne marche pas bien en Internet Explorer, nous suggérons "
-"d'utiliser un autre navigateur tel que :"
+"d'utiliser un autre navigateur tel que : "
 
 #: templates/aya_search.html:80 templates/popups_content.html:74
 #: templates/translation_search.html:63
@@ -332,7 +329,7 @@ msgid "View"
 msgstr "Vue"
 
 #: templates/aya_search.html:100 templates/aya_search.html.py:151
-#: templates/aya_search.html:173 templates/base.html:214
+#: templates/aya_search.html:173 templates/base.html:228
 msgid "Default"
 msgstr "Défaut"
 
@@ -400,106 +397,99 @@ msgstr "Récitation:"
 msgid "No recitation"
 msgstr "Pas de récitations"
 
-#: templates/base.html:12
+#: templates/base.html:10
 msgid "Page:"
-msgstr ""
+msgstr "Page :"
 
-#: templates/base.html:16
+#: templates/base.html:14
 msgid "Order:"
-msgstr ""
+msgstr "Ordre:"
 
-#: templates/base.html:20
-#, fuzzy
+#: templates/base.html:18
 msgid "View:"
-msgstr "Vue"
+msgstr "Vue:"
+
+#: templates/base.html:22
+msgid "Options:"
+msgstr "Options:"
 
 #: templates/base.html:24
-#, fuzzy
-msgid "Options:"
-msgstr "Suggestions:"
-
-#: templates/base.html:26
-#, fuzzy
 msgid "vocalized"
-msgstr "Texte non vocalisé"
+msgstr "vocalisé"
 
-#: templates/base.html:29
+#: templates/base.html:27
 msgid "uthmani"
-msgstr ""
+msgstr "uthmani"
 
-#: templates/base.html:32
+#: templates/base.html:30
 msgid "fuzzy"
-msgstr ""
+msgstr "flou"
 
-#: templates/base.html:37
-#, fuzzy
+#: templates/base.html:35
 msgid "Translation:"
-msgstr "Traduction"
+msgstr "Traduction:"
 
-#: templates/base.html:44 templates/base.html.py:50
-#, fuzzy
+#: templates/base.html:42 templates/base.html.py:48
 msgid "Quran Ayah Search"
-msgstr "Longueur de Aya"
+msgstr "Chercher une verse coranique"
+
+#: templates/base.html:44
+msgid "Quran Word Search"
+msgstr "Recherche dans le Coran par mot"
 
 #: templates/base.html:46
-#, fuzzy
-msgid "Quran Word Search"
-msgstr "Recherche de mots dans le Coran"
-
-#: templates/base.html:48
-#, fuzzy
 msgid "Quran Translation Search"
-msgstr "Recherche dans les traductions du Coran"
+msgstr "Recherche dans les traduction du Coran"
 
-#: templates/base.html:52
+#: templates/base.html:50
 msgid "Alfanous"
 msgstr "Alfanous"
 
-#: templates/base.html:59
+#: templates/base.html:57
 msgid "Alfanous search results searching in"
-msgstr ""
+msgstr "Résultats de la recherche de Alfanous en cherchant dans"
 
-#: templates/base.html:59
+#: templates/base.html:57
 msgid "looking for the query"
-msgstr ""
+msgstr "En cours de recherche sur la requête"
 
-#: templates/base.html:59
-#, fuzzy
+#: templates/base.html:57
 msgid "the page"
-msgstr "Page suivante"
+msgstr "la page"
 
-#: templates/base.html:59
+#: templates/base.html:57
 msgid "the view"
-msgstr ""
+msgstr "la vue"
 
-#: templates/base.html:59
-#, fuzzy
+#: templates/base.html:57
 msgid "the script"
-msgstr "Script ottoman"
+msgstr "le script"
 
-#: templates/base.html:59
-#, fuzzy
+#: templates/base.html:57
 msgid "and the translation"
-msgstr "Pas de traduction"
+msgstr "et la traduction"
 
-#: templates/base.html:59
-#, fuzzy
+#: templates/base.html:57
 msgid "The fuzzy search is"
-msgstr "Recherche approximative"
+msgstr "La recherche floue est"
 
-#: templates/base.html:62
+#: templates/base.html:60
 msgid ""
 "Alfanous has the feautre to search in the Quran words, their properties and "
 "occurences"
 msgstr ""
+"Alfanous a pour fonctionnalité, la recherche dans les mots du Coran, leurs "
+"propriétés et leurs occurrences"
 
-#: templates/base.html:64
+#: templates/base.html:62
 msgid ""
 "Alfanous has the feautre to search in the translations of Quran meanings to "
 "lot of world languages"
 msgstr ""
+"Alfanous a pour fonctionnalité, la recherche dans les traductions du sens du "
+"Coran dans nombreuse langues du monde"
 
-#: templates/base.html:66
+#: templates/base.html:64
 msgid ""
 "Alfanous is a functional, dynamic, comprehensive Qur’an search engine that "
 "has been effectively designed to carry out simple or advanced Quranic "
@@ -509,299 +499,330 @@ msgstr ""
 "global, bien conçu pour effectuer des recherches simples et avancées dans la "
 "diversité des informations du Saint Coran."
 
-#: templates/base.html:73
+#: templates/base.html:71
 msgid "quran"
 msgstr "Coran"
 
-#: templates/base.html:74
+#: templates/base.html:72
 msgid "forqan"
 msgstr "Forqan"
 
-#: templates/base.html:75
+#: templates/base.html:73
 msgid "koran"
 msgstr "Coran"
 
-#: templates/base.html:76
+#: templates/base.html:74
 msgid "search"
 msgstr "recherche"
 
-#: templates/base.html:77
+#: templates/base.html:75
 msgid "search engine"
 msgstr "moteur de recherche"
 
-#: templates/base.html:79
+#: templates/base.html:77
 msgid "surates"
 msgstr "suras"
 
-#: templates/base.html:80
+#: templates/base.html:78
 msgid "advanced"
 msgstr "avancé"
 
-#: templates/base.html:81
+#: templates/base.html:79
 msgid "statistics"
 msgstr "statistiques"
 
-#: templates/base.html:82
+#: templates/base.html:80
 msgid "linguistic"
 msgstr "liguistique"
 
-#: templates/base.html:83
+#: templates/base.html:81
 msgid "information retrieval"
 msgstr "récupération d'information"
 
-#: templates/base.html:84
+#: templates/base.html:82
 msgid "natural language processing"
 msgstr "traitement du langage naturel"
 
-#: templates/base.html:86
+#: templates/base.html:84
 msgid "Lantern"
 msgstr "Lanterne"
 
-#: templates/base.html:87
+#: templates/base.html:85
 msgid "alfanous"
 msgstr "alfanous"
 
-#: templates/base.html:95
-#, fuzzy
+#: templates/base.html:93
 msgid "vocalized text"
-msgstr "Texte non vocalisé"
+msgstr "texte vocalisé"
 
-#: templates/base.html:98
-#, fuzzy
+#: templates/base.html:96
 msgid "uthmani script"
-msgstr "Script ottoman"
+msgstr "scripte ottoman"
 
-#: templates/base.html:101
-#, fuzzy
+#: templates/base.html:99
 msgid "fuzzy search"
-msgstr "Recherche approximative"
+msgstr "recherche flou"
 
-#: templates/base.html:156 wui/views.py:69
+#: templates/base.html:170 wui/views.py:69
 msgid "Ayahs"
 msgstr "Ayas"
 
-#: templates/base.html:157 wui/views.py:72
+#: templates/base.html:171 wui/views.py:72
 msgid "Translations"
 msgstr "Traductions"
 
-#: templates/base.html:158
+#: templates/base.html:172
 msgid "Words"
 msgstr "Mots"
 
-#: templates/base.html:177
+#: templates/base.html:191
 msgid "First, select the search unit"
-msgstr ""
+msgstr "D'abord, sélectionnez l'unité de recherche"
 
-#: templates/base.html:178
+#: templates/base.html:192
 msgid ""
 "You can choose whether to search in Arabic verses of the holly Quran or in "
 "its translations"
 msgstr ""
+"Vous pouvez choisir de rechercher dans les versets arabes du Coran ou dans "
+"ses traductions"
 
-#: templates/base.html:192
+#: templates/base.html:206
 msgid "Select your language"
-msgstr ""
+msgstr "Choisissez votre langue"
 
-#: templates/base.html:193
+#: templates/base.html:207
 msgid ""
 "If you didn't notice, Alfanous User Interface is now translated to other "
 "languages, choose the one that fits you the best, or, you can contribute in "
 "translating it into your native language! (see the translate link)"
 msgstr ""
+"Si vous n'avez pas remarqué, l'interface utilisateur d'Alfanous est traduite "
+"en d'autres langues. Choisissez celles qui vous convient le mieux, vous "
+"pouvez contribuer dans la traduction vers votre langue natale! (Voir le lien "
+"de traduction)"
 
-#: templates/base.html:195
-#, fuzzy
+#: templates/base.html:209
 msgid "Languages"
-msgstr "Langue"
-
-#: templates/base.html:205
-msgid "Current:"
-msgstr ""
-
-#: templates/base.html:210
-msgid "Skins"
-msgstr ""
-
-#: templates/base.html:217
-msgid "Cerulean"
-msgstr ""
-
-#: templates/base.html:218
-msgid "Cyborg"
-msgstr ""
+msgstr "Langues"
 
 #: templates/base.html:219
-msgid "Amelia"
-msgstr ""
-
-#: templates/base.html:220
-msgid "Readable"
-msgstr ""
-
-#: templates/base.html:221
-msgid "Slate"
-msgstr ""
-
-#: templates/base.html:222
-msgid "Spacelab"
-msgstr ""
-
-#: templates/base.html:223
-msgid "Super Heroes"
-msgstr ""
+msgid "Current:"
+msgstr "Actuel :"
 
 #: templates/base.html:224
+msgid "Skins"
+msgstr "Thèmes:"
+
+#: templates/base.html:231
+msgid "Cerulean"
+msgstr "Cerulean"
+
+#: templates/base.html:232
+msgid "Cyborg"
+msgstr "Cyborg"
+
+#: templates/base.html:233
+msgid "Amelia"
+msgstr "Amelia"
+
+#: templates/base.html:234
+msgid "Readable"
+msgstr "Lisible"
+
+#: templates/base.html:235
+msgid "Slate"
+msgstr "Slate"
+
+#: templates/base.html:236
+msgid "Spacelab"
+msgstr "Spacelab"
+
+#: templates/base.html:237
+msgid "Super Heroes"
+msgstr "Super Heroes"
+
+#: templates/base.html:238
 msgid "United"
-msgstr ""
+msgstr "United"
+
+#: templates/base.html:260
+msgid "Our page on Facebook"
+msgstr "Notre page Facebook"
+
+#: templates/base.html:261
+msgid "Our page on Google+"
+msgstr "Notre page Google+"
+
+#: templates/base.html:262
+msgid "Our account on Twitter"
+msgstr "Notre compte Twitter"
+
+#: templates/base.html:263
+msgid "Our repository on Github"
+msgstr "Notre entrepôt Github"
 
 #: templates/base.html:264
-#, fuzzy
+msgid "Our Mailing list on GoogleGroups"
+msgstr "Notre liste de diffusion GoogleGroups"
+
+#: templates/base.html:278
 msgid "Information:"
-msgstr "Annotation"
+msgstr "Information:"
 
-#: templates/base.html:265
+#: templates/base.html:279
 msgid "Quick Tour!"
-msgstr ""
+msgstr "Visite rapide!"
 
-#: templates/base.html:266 templates/popups_content.html:7
+#: templates/base.html:280 templates/popups_content.html:7
 msgid "F.A.Q."
 msgstr "F.A.Q."
 
-#: templates/base.html:267
+#: templates/base.html:281
 msgid "Sample search here"
-msgstr ""
+msgstr "Exemple de recherche ici"
 
-#: templates/base.html:268
+#: templates/base.html:282
 msgid ""
 "Here you can learn by example about the full power of Alfanous search engine "
 "and what you can do with it."
 msgstr ""
+"Ici vous pouvez apprendre par exemple à propos de toute la puissance du "
+"moteur de recherche Alfanous et ce que vous pouvez faire avec lui."
 
-#: templates/base.html:271 templates/popups_content.html:21
+#: templates/base.html:285 templates/popups_content.html:21
 msgid "Help"
 msgstr "Aide"
 
-#: templates/base.html:272
+#: templates/base.html:286
 msgid "Contact"
 msgstr "Contact"
 
-#: templates/base.html:273 templates/popups_content.html:206
+#: templates/base.html:287 templates/popups_content.html:206
 msgid "Download"
 msgstr "Télécharger"
 
-#: templates/base.html:274
-#, fuzzy
+#: templates/base.html:288
 msgid "Contribute:"
-msgstr "Contribuer"
+msgstr "Contribuer:"
 
-#: templates/base.html:275
+#: templates/base.html:289
 msgid "Translate"
 msgstr "Traduire"
 
-#: templates/base.html:276
+#: templates/base.html:290
 msgid "Feedback"
 msgstr "Feed-back"
 
-#: templates/base.html:277
+#: templates/base.html:291
 msgid "we really need your help!"
-msgstr ""
+msgstr "Nous avons vraiment besoin de votre aide!"
 
-#: templates/base.html:278
+#: templates/base.html:292
 msgid ""
 "We're looking to fund the project, if you like it, help us making it even "
 "better."
 msgstr ""
+"On a besoin de financier le projet, s vous l'appréciez, aidez nous a le "
+"rendre meilleur."
 
-#: templates/base.html:285
+#: templates/base.html:299
 msgid "Donate"
 msgstr "Dons"
 
-#: templates/base.html:286
+#: templates/base.html:300
 msgid "Other means"
-msgstr ""
+msgstr "Autres moyens"
 
-#: templates/base.html:287
+#: templates/base.html:301
 msgid "Links:"
-msgstr ""
+msgstr "Liens:"
 
-#: templates/base.html:288
-#, fuzzy
+#: templates/base.html:302
 msgid "Old website"
-msgstr "notre siteweb"
+msgstr "Ancien site"
 
-#: templates/base.html:307
-#, fuzzy
+#: templates/base.html:321
 msgid "Alfanous is smart!"
-msgstr "Alfanous"
-
-#: templates/base.html:311
-msgid "search query here ..."
-msgstr ""
-
-#: templates/base.html:317
-#, fuzzy
-msgid "Quick search"
-msgstr "Recherche de versets coraniques"
-
-#: templates/base.html:324
-msgid "Even more!"
-msgstr ""
+msgstr "Alfanous est intelligent"
 
 #: templates/base.html:325
+msgid "search query here ..."
+msgstr "rechercher ici ..."
+
+#: templates/base.html:331
+msgid "Quick search"
+msgstr "Recherche rapide"
+
+#: templates/base.html:338
+msgid "Even more!"
+msgstr "encore plus!"
+
+#: templates/base.html:339
 msgid ""
 "You can <strong>sort</strong>, <strong>filter</strong> search reasults or "
 "choose a translation, you can as well choose a recitator!"
 msgstr ""
+"Vous pouvez trier, filtrer les résultats de la recherche ou bien choisir une "
+"traduction, vous pouvez aussi choisir un réciteur!"
 
-#: templates/base.html:329
-#, fuzzy
+#: templates/base.html:343
 msgid "Advanced search"
-msgstr "Recherche exacte"
+msgstr "Recherche avancée"
 
-#: templates/base.html:347
+#: templates/base.html:361
 msgid "Bismi'Allah Go!"
-msgstr ""
+msgstr "Bismi'Allah Commencer"
 
-#: templates/base.html:374
-#, fuzzy
+#: templates/base.html:390
 msgid "Help!"
-msgstr "Aide"
+msgstr "À l'aide!"
 
-#: templates/base.html:380
-#, fuzzy
+#: templates/base.html:392
+msgid "Please help us translate Alfanous Project into more languages!"
+msgstr ""
+"S'il vous plaît, aidez nous à traduire le projet Alfanous dans d'autres "
+"langues"
+
+#: templates/base.html:400
 msgid ""
 "Please help us improving Alfanous Project, by taking this survey about "
 "search features in Holy Quran."
 msgstr ""
-"SVP, aidez-nous à améliorer le projet d'Alfanous en répondant à ce sondage "
-"sur les caractéristiques de recherche dans le Saint Coran"
-
-#: templates/base.html:391
-msgid "Copyright"
-msgstr ""
-
-#: templates/base.html:391
-#, fuzzy
-msgid "Alfanous Team"
-msgstr "Alfanous"
-
-#: templates/base.html:392
-msgid "released under"
-msgstr ""
-
-#: templates/base.html:392
-msgid "AGPL license"
-msgstr ""
-
-#: templates/base.html:397
-#, fuzzy
-msgid "Powered by"
-msgstr "Trié par"
+"S'il vous plaît aidez nous dans la progression du projet Alfanous, répondez "
+"sur ce questionnaire sur les fonctionnalités de recherche dans le Coran"
 
 #: templates/base.html:406
-#, fuzzy
+msgid "Info!"
+msgstr "Infos!"
+
+#: templates/base.html:408
+msgid "The source of indexed Quran translations is Tanzil Project"
+msgstr "La source  des traductions indexées du Coran est le projet Tanzil"
+
+#: templates/base.html:423
+msgid "Copyright"
+msgstr "Copyright"
+
+#: templates/base.html:423
+msgid "Alfanous Team"
+msgstr "L'équipe Alfanous"
+
+#: templates/base.html:424
+msgid "released under"
+msgstr "Publié sous"
+
+#: templates/base.html:424
+msgid "AGPL license"
+msgstr "Licence AGPL"
+
+#: templates/base.html:429
+msgid "Powered by"
+msgstr "Powered by"
+
+#: templates/base.html:438
 msgid "Add to your search bar!"
-msgstr "Ajouter à la barre de recherche"
+msgstr "Ajouter à votre barre de recherche"
 
 #: templates/popups_content.html:10
 msgid "See"
@@ -816,7 +837,7 @@ msgstr "ce lien"
 #: templates/popups_content.html:136 templates/popups_content.html.py:197
 #: templates/popups_content.html:239 templates/popups_content.html.py:259
 msgid " Close "
-msgstr "Fermer"
+msgstr " Fermer "
 
 #: templates/popups_content.html:85
 msgid "Awarded!"
@@ -864,11 +885,11 @@ msgstr ""
 
 #: templates/popups_content.html:109
 msgid "Buy Products (T-shirts, Cups, Hats) from Zazzle"
-msgstr ""
+msgstr "Achetez les produits (T-shirt, tasse,casquettes)"
 
 #: templates/popups_content.html:110
 msgid "Donate by flattr:"
-msgstr ""
+msgstr "Faire un don avec Flattr"
 
 #: templates/popups_content.html:123
 msgid "Contact us"
@@ -880,7 +901,7 @@ msgstr "Si vous un rapport de bug d'Alfanous bien précis, SVP allez à"
 
 #: templates/popups_content.html:127
 msgid "Issues Tracker"
-msgstr "Suivi des problèmes "
+msgstr "Suivi des problèmes"
 
 #: templates/popups_content.html:127
 msgid "submit your report and tag it \"bug\"."
@@ -895,7 +916,7 @@ msgstr ""
 
 #: templates/popups_content.html:128
 msgid "and by coding read "
-msgstr "et en development, lisez"
+msgstr "et en development, lisez "
 
 #: templates/popups_content.html:129
 msgid "If you want to help in Alfanous somehow,  read"
@@ -975,7 +996,7 @@ msgstr ""
 
 #: templates/popups_content.html:175
 msgid "Or by"
-msgstr ""
+msgstr "ou bien avec"
 
 #: templates/popups_content.html:180
 msgid ""
@@ -1040,7 +1061,7 @@ msgid ""
 msgstr ""
 "Faire un don/soutenir le projet : <em> Nous sommes à la recherche de "
 "possibles méthodes de donations/fonds. N'importe quelle aide est appréciée ! "
-"</em> "
+"</em>"
 
 #: templates/popups_content.html:209
 msgid "Windows"
@@ -1064,15 +1085,15 @@ msgstr "Plus de détails"
 
 #: templates/popups_content.html:225
 msgid "MacOS"
-msgstr ""
+msgstr "MacOS"
 
 #: templates/popups_content.html:228 templates/popups_content.html.py:234
 msgid "Not yet"
-msgstr ""
+msgstr "Pas encore"
 
 #: templates/popups_content.html:231
 msgid "Android"
-msgstr ""
+msgstr "Android"
 
 #: templates/popups_content.html:247
 msgid "How to translate"
@@ -1095,25 +1116,35 @@ msgstr "Utiliser Poedit ou Virtaal pour le modifier."
 msgid "Send the updated file into our mailing list:"
 msgstr "Envoyer le fichier modifié à notre liste de diffusion :"
 
+#: templates/popups_content.html:256
+msgid "Note:"
+msgstr "Note"
+
+#: templates/popups_content.html:256
+msgid "You can use launchpad to translate without installing any tool"
+msgstr "Vous pouvez utiliser launchpad pour traduire sans rien installer!"
+
+#: templates/popups_content.html:256
+msgid "here!"
+msgstr "ici!"
+
 #: templates/translation_results.html:18
 msgid "seconds"
 msgstr "secondes"
 
-#: templates/translation_results.html:106
-#, fuzzy
+#: templates/translation_results.html:112
 msgid "About translation"
-msgstr "Pas de traduction"
+msgstr "Concernant la traduction"
 
-#: templates/translation_results.html:113
-#, fuzzy
+#: templates/translation_results.html:119
 msgid "Aya"
-msgstr "Ayas"
+msgstr "Ayah"
 
-#: templates/translation_results.html:120
+#: templates/translation_results.html:126
 msgid "Author"
 msgstr "Auteur"
 
-#: templates/translation_results.html:126
+#: templates/translation_results.html:132
 msgid "Language"
 msgstr "Langue"
 
@@ -1136,119 +1167,3 @@ msgstr "Désolés, il n'y a pas des traductions indexées"
 #: templates/translation_search.html:25
 msgid "Show ayah arabic text"
 msgstr "Afficher le texte du aya en Arabe"
-
-#~ msgid "Search results"
-#~ msgstr "Résultats de recherche"
-
-#~ msgid "word"
-#~ msgstr "mot"
-
-#~ msgid "Words:"
-#~ msgstr "Mots:"
-
-#~ msgid "Previous page"
-#~ msgstr "Page précédente"
-
-#~ msgid "Ayah Results to Query:"
-#~ msgstr "Résultats de la recherche - Ayas :"
-
-#~ msgid "Word Results to Query:"
-#~ msgstr "Résultats de la recherche - Mots :"
-
-#~ msgid "Translation Results to Query:"
-#~ msgstr "Résultats de la recherche - Traductions :"
-
-#~ msgid "Results to Query:"
-#~ msgstr "Résultats de recherche:"
-
-#~ msgid "Advanced Quranic Search Engine"
-#~ msgstr "Moteur de recherche coranique avancé"
-
-#~ msgid "Twitter"
-#~ msgstr "Twitter"
-
-#~ msgid "Facebook"
-#~ msgstr "Facebook"
-
-#~ msgid "Send to MySpace"
-#~ msgstr "Envoyer à MySpace"
-
-#~ msgid "Share it with friends"
-#~ msgstr "Partager avec les amis"
-
-#~ msgid "Google Plus"
-#~ msgstr "Google Plus"
-
-#~ msgid "Quick links"
-#~ msgstr "Liens rapides"
-
-#~ msgid "Json Output Service"
-#~ msgstr "Service de Json Output "
-
-#~ msgid "Mobile Web Interface"
-#~ msgstr "Mobile Web Interface"
-
-#~ msgid "Old jQuery Web Interface"
-#~ msgstr "Old jQuery Web Interface"
-
-#~ msgid "Old HTML Web Interface"
-#~ msgstr "L'ancienne HTML Web Interface"
-
-#~ msgid "@Github"
-#~ msgstr "@Github"
-
-#~ msgid "@Sourceforge"
-#~ msgstr "@Sourceforge"
-
-#~ msgid "@Launchpad"
-#~ msgstr "@Launchpad"
-
-#~ msgid "Community"
-#~ msgstr "Communité"
-
-#~ msgid "Mailinglist"
-#~ msgstr "Liste de diffusion"
-
-#~ msgid "+ Report an issue"
-#~ msgstr "+ Reporter un problème"
-
-#~ msgid "@Facebook"
-#~ msgstr "@Facebook"
-
-#~ msgid "@Google Plus"
-#~ msgstr "@Google Plus"
-
-#~ msgid "@Twitter"
-#~ msgstr "@Twitter"
-
-#~ msgid "Best technicality award"
-#~ msgstr "Meilleur prix selon la technicité"
-
-#~ msgid ""
-#~ "The award of best-technicality website in AlgeriaWebAwards2012 competition"
-#~ msgstr ""
-#~ "Le prix de meilleur siteweb en terme de technicité dans la compétition "
-#~ "AlgeriaWebAwards2012"
-
-#~ msgid ""
-#~ "Alfanous is a functional, dynamic, comprehensive Qur’an search engine "
-#~ "that has been effectively designed to carry out simple or advanced "
-#~ "Quranic searches. Alfanous uses a contemporary, highly developed approach "
-#~ "to retrieve vital information, enabling stable efficient, speedy searches "
-#~ "to be conducted. Alfanous aims to implement additional features such as "
-#~ "highlight, site suggestions, scoring …etc to further improve your search "
-#~ "experience. Alfanous understands the complex nature of the Arabic "
-#~ "language and thus offers effective Arabic language processing, allowing "
-#~ "the stemming and successful elimination of ambiguities."
-#~ msgstr ""
-#~ "Alfanous est un moteur de recherche coranique fonctionnel, dynamique et "
-#~ "global, bien conçu pour effectuer des recherches simples et avancées dans "
-#~ "la diversité des informations du Saint Coran. Alfanous  utilise une "
-#~ "approche très moderne pour fournir les informations nécessaires et "
-#~ "assurer la stabilité et la haute vitesse de recherche.  Le projet "
-#~ "d'Alfanous a pour but d'implanter des fonctions supplémentaires telles "
-#~ "que: la surbrillance, les suggestions au site, l'évaluation par score ... "
-#~ "etc pour perfectionner votre recherche.  Alfanous comprend bien la nature "
-#~ "complexe de a langue Arabe, ainsi, il offert le bon et l'effectif "
-#~ "traitement de la langue Arabe, ce qui permet l'arrêt et l'élimination des "
-#~ "ambiguïtés."
