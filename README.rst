@@ -110,6 +110,8 @@ This is the list of search features already implemented, preview links use Alfan
 -------
 History
 -------
+- **4 August 2013**: Launching "`WEB 0.7.5 alyaqoot release <https://github.com/Alfanous-team/alfanous/releases/tag/WEB_0.7.5>`_" of the  web interface: based on `Twitter Bootstrap <http://twitter.github.io/bootstrap/>`_, Responsive , Simple, Clean , Accept skins, and has many  improvements and bug fixes.
+
 - **10 June 2013**: Launching the django web interface, localizable, indexable, and has many search features, improvements and bug fixes.
 
 - **26 June 2012**: Launching the clickable feature, making most of results information searchable.
