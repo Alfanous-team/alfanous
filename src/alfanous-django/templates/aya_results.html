@@ -264,9 +264,9 @@
  						
  					 			<span class="btn-group  pull-{{ bidi.align_inverse }} ">
 	                            {% if ayaresult_content.aya.recitation %}
-	                            	<button id="aya_audio_button_{{ ayaresult_id }}" class="btn"><i class="icon-play-circle"></i></button>
+	                            	<button id="aya_audio_button_{{ ayaresult_id }}" class="btn function_button"><i class="icon-play-circle"></i></button>
 	                            {% endif %}
-	                            <button id="aya_copy_button_{{ ayaresult_id }}" class="btn"><i class="icon-copy"></i></button>
+	                            <button id="aya_copy_button_{{ ayaresult_id }}" class="btn function_button"><i class="icon-copy"></i></button>
 	                          
 	                           {% with ayaresult_content.aya.id|stringformat:"s" as aya_id %}
 									 			{% with bidi.fields.sura|add:':"'|add:ayaresult_content.identifier.sura_name|add:'" + '|add:bidi.fields.aya_id|add:':'|add:aya_id|urlencode  as new_query %}
