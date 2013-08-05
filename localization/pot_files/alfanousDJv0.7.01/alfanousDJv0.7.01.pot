@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-08-04 23:34+0100\n"
+"POT-Creation-Date: 2013-08-05 15:06+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -46,8 +46,8 @@ msgstr ""
 msgid "no suggestions!"
 msgstr ""
 
-#: templates/aya_results.html:80 templates/aya_results.html.py:470
-#: templates/aya_results.html:526 templates/base.html:83
+#: templates/aya_results.html:80 templates/aya_results.html.py:503
+#: templates/aya_results.html:559 templates/base.html:83
 msgid "words"
 msgstr ""
 
@@ -91,8 +91,8 @@ msgstr ""
 msgid "part"
 msgstr ""
 
-#: templates/aya_results.html:184 templates/aya_results.html.py:497
-#: templates/aya_results.html:517
+#: templates/aya_results.html:184 templates/aya_results.html.py:530
+#: templates/aya_results.html:550
 msgid "type"
 msgstr ""
 
@@ -160,91 +160,91 @@ msgstr ""
 msgid "Result n°"
 msgstr ""
 
-#: templates/aya_results.html:357
+#: templates/aya_results.html:390
 msgid "Click here to show more details"
 msgstr ""
 
-#: templates/aya_results.html:360
+#: templates/aya_results.html:393
 msgid "Show more"
 msgstr ""
 
-#: templates/aya_results.html:379
+#: templates/aya_results.html:412
 msgid "Chapter"
 msgstr ""
 
-#: templates/aya_results.html:389
+#: templates/aya_results.html:422
 msgid "Topic"
 msgstr ""
 
-#: templates/aya_results.html:398
+#: templates/aya_results.html:431
 msgid "Subtopic"
 msgstr ""
 
-#: templates/aya_results.html:413
+#: templates/aya_results.html:446
 msgid "About ayah"
 msgstr ""
 
-#: templates/aya_results.html:422
+#: templates/aya_results.html:455
 msgid "manzil"
 msgstr ""
 
-#: templates/aya_results.html:430
+#: templates/aya_results.html:463
 msgid "juz"
 msgstr ""
 
-#: templates/aya_results.html:438
+#: templates/aya_results.html:471
 msgid "hizb"
 msgstr ""
 
-#: templates/aya_results.html:441
+#: templates/aya_results.html:474
 msgid "quart"
 msgstr ""
 
-#: templates/aya_results.html:449
+#: templates/aya_results.html:482
 msgid "page"
 msgstr ""
 
-#: templates/aya_results.html:458
+#: templates/aya_results.html:491
 msgid "page (indian)"
 msgstr ""
 
-#: templates/aya_results.html:478 templates/aya_results.html.py:527
+#: templates/aya_results.html:511 templates/aya_results.html.py:560
 msgid "letters"
 msgstr ""
 
-#: templates/aya_results.html:487 templates/aya_results.html.py:528
+#: templates/aya_results.html:520 templates/aya_results.html.py:561
 msgid "divine names"
 msgstr ""
 
-#: templates/aya_results.html:494
+#: templates/aya_results.html:527
 msgid "sajda"
 msgstr ""
 
-#: templates/aya_results.html:496 templates/aya_results.html.py:512
+#: templates/aya_results.html:529 templates/aya_results.html.py:545
 msgid "n°"
 msgstr ""
 
-#: templates/aya_results.html:505
+#: templates/aya_results.html:538
 msgid "About surah"
 msgstr ""
 
-#: templates/aya_results.html:510
+#: templates/aya_results.html:543
 msgid "Sura"
 msgstr ""
 
-#: templates/aya_results.html:520
+#: templates/aya_results.html:553
 msgid "revelation_order"
 msgstr ""
 
-#: templates/aya_results.html:523
+#: templates/aya_results.html:556
 msgid "ayahs"
 msgstr ""
 
-#: templates/aya_results.html:549 templates/translation_results.html:153
+#: templates/aya_results.html:582 templates/translation_results.html:153
 msgid "Sorry! there is no results for this search query."
 msgstr ""
 
-#: templates/aya_results.html:558 templates/translation_results.html:161
+#: templates/aya_results.html:591 templates/translation_results.html:161
 msgid "Error "
 msgstr ""
 
@@ -269,7 +269,7 @@ msgid "View"
 msgstr ""
 
 #: templates/aya_search.html:42 templates/aya_search.html.py:93
-#: templates/aya_search.html:115 templates/base.html:228
+#: templates/aya_search.html:115 templates/base.html:237
 msgid "Default"
 msgstr ""
 
@@ -369,7 +369,7 @@ msgstr ""
 msgid "Translation:"
 msgstr ""
 
-#: templates/base.html:42 templates/base.html.py:48
+#: templates/base.html:42 templates/base.html.py:48 templates/base.html:423
 msgid "Quran Ayah Search"
 msgstr ""
 
@@ -381,7 +381,7 @@ msgstr ""
 msgid "Quran Translation Search"
 msgstr ""
 
-#: templates/base.html:50
+#: templates/base.html:50 templates/base.html.py:423
 msgid "Alfanous"
 msgstr ""
 
@@ -496,248 +496,252 @@ msgstr ""
 msgid "fuzzy search"
 msgstr ""
 
-#: templates/base.html:170 wui/views.py:69
+#: templates/base.html:179 wui/views.py:69
 msgid "Ayahs"
 msgstr ""
 
-#: templates/base.html:171 wui/views.py:72
+#: templates/base.html:180 wui/views.py:72
 msgid "Translations"
 msgstr ""
 
-#: templates/base.html:172
+#: templates/base.html:181
 msgid "Words"
 msgstr ""
 
-#: templates/base.html:191
+#: templates/base.html:200
 msgid "First, select the search unit"
 msgstr ""
 
-#: templates/base.html:192
+#: templates/base.html:201
 msgid ""
 "You can choose whether to search in Arabic verses of the holly Quran or in "
 "its translations"
 msgstr ""
 
-#: templates/base.html:206
+#: templates/base.html:215
 msgid "Select your language"
 msgstr ""
 
-#: templates/base.html:207
+#: templates/base.html:216
 msgid ""
 "If you didn't notice, Alfanous User Interface is now translated to other "
 "languages, choose the one that fits you the best, or, you can contribute in "
 "translating it into your native language! (see the translate link)"
 msgstr ""
 
-#: templates/base.html:209
+#: templates/base.html:218
 msgid "Languages"
 msgstr ""
 
-#: templates/base.html:219
+#: templates/base.html:228
 msgid "Current:"
 msgstr ""
 
-#: templates/base.html:224
+#: templates/base.html:233
 msgid "Skins"
 msgstr ""
 
-#: templates/base.html:231
+#: templates/base.html:240
 msgid "Cerulean"
 msgstr ""
 
-#: templates/base.html:232
+#: templates/base.html:241
 msgid "Cyborg"
 msgstr ""
 
-#: templates/base.html:233
+#: templates/base.html:242
 msgid "Amelia"
 msgstr ""
 
-#: templates/base.html:234
+#: templates/base.html:243
 msgid "Readable"
 msgstr ""
 
-#: templates/base.html:235
+#: templates/base.html:244
 msgid "Slate"
 msgstr ""
 
-#: templates/base.html:236
+#: templates/base.html:245
 msgid "Spacelab"
 msgstr ""
 
-#: templates/base.html:237
+#: templates/base.html:246
 msgid "Super Heroes"
 msgstr ""
 
-#: templates/base.html:238
+#: templates/base.html:247
 msgid "United"
 msgstr ""
 
-#: templates/base.html:260
+#: templates/base.html:269
 msgid "Our page on Facebook"
 msgstr ""
 
-#: templates/base.html:261
+#: templates/base.html:270
 msgid "Our page on Google+"
 msgstr ""
 
-#: templates/base.html:262
+#: templates/base.html:271
 msgid "Our account on Twitter"
 msgstr ""
 
-#: templates/base.html:263
+#: templates/base.html:272
 msgid "Our repository on Github"
 msgstr ""
 
-#: templates/base.html:264
+#: templates/base.html:273
 msgid "Our Mailing list on GoogleGroups"
 msgstr ""
 
-#: templates/base.html:278
+#: templates/base.html:287
 msgid "Information:"
 msgstr ""
 
-#: templates/base.html:279
+#: templates/base.html:288
 msgid "Quick Tour!"
 msgstr ""
 
-#: templates/base.html:280 templates/popups_content.html:7
+#: templates/base.html:289 templates/popups_content.html:7
 msgid "F.A.Q."
 msgstr ""
 
-#: templates/base.html:281
+#: templates/base.html:290
 msgid "Sample search here"
 msgstr ""
 
-#: templates/base.html:282
+#: templates/base.html:291
 msgid ""
 "Here you can learn by example about the full power of Alfanous search engine "
 "and what you can do with it."
 msgstr ""
 
-#: templates/base.html:285 templates/popups_content.html:21
+#: templates/base.html:294 templates/popups_content.html:21
 msgid "Help"
 msgstr ""
 
-#: templates/base.html:286
+#: templates/base.html:295
 msgid "Contact"
 msgstr ""
 
-#: templates/base.html:287 templates/popups_content.html:258
+#: templates/base.html:296 templates/popups_content.html:258
 msgid "Download"
 msgstr ""
 
-#: templates/base.html:288
+#: templates/base.html:297
 msgid "Contribute:"
 msgstr ""
 
-#: templates/base.html:289
+#: templates/base.html:298
 msgid "Translate"
 msgstr ""
 
-#: templates/base.html:290
+#: templates/base.html:299
 msgid "Feedback"
 msgstr ""
 
-#: templates/base.html:291
+#: templates/base.html:300
 msgid "we really need your help!"
 msgstr ""
 
-#: templates/base.html:292
+#: templates/base.html:301
 msgid ""
 "We're looking to fund the project, if you like it, help us making it even "
 "better."
 msgstr ""
 
-#: templates/base.html:299
+#: templates/base.html:308
 msgid "Donate"
 msgstr ""
 
-#: templates/base.html:300
+#: templates/base.html:309
 msgid "Other means"
 msgstr ""
 
-#: templates/base.html:301
+#: templates/base.html:310
 msgid "Links:"
 msgstr ""
 
-#: templates/base.html:302
+#: templates/base.html:311
 msgid "Old website"
 msgstr ""
 
-#: templates/base.html:321
+#: templates/base.html:330
 msgid "Alfanous is smart!"
 msgstr ""
 
-#: templates/base.html:325
+#: templates/base.html:334
 msgid "search query here ..."
 msgstr ""
 
-#: templates/base.html:331
+#: templates/base.html:340
 msgid "Quick search"
 msgstr ""
 
-#: templates/base.html:338
+#: templates/base.html:347
 msgid "Even more!"
 msgstr ""
 
-#: templates/base.html:339
+#: templates/base.html:348
 msgid ""
 "You can <strong>sort</strong>, <strong>filter</strong> search reasults or "
 "choose a translation, you can as well choose a recitator!"
 msgstr ""
 
-#: templates/base.html:343
+#: templates/base.html:352
 msgid "Advanced search"
 msgstr ""
 
-#: templates/base.html:361
+#: templates/base.html:370
 msgid "Bismi'Allah Go!"
 msgstr ""
 
-#: templates/base.html:390
+#: templates/base.html:395
 msgid "Help!"
 msgstr ""
 
-#: templates/base.html:392
+#: templates/base.html:397
 msgid "Please help us translate Alfanous Project into more languages!"
 msgstr ""
 
-#: templates/base.html:400
+#: templates/base.html:405
 msgid ""
 "Please help us improving Alfanous Project, by taking this survey about "
 "search features in Holy Quran."
 msgstr ""
 
-#: templates/base.html:406
+#: templates/base.html:411
 msgid "Info!"
 msgstr ""
 
-#: templates/base.html:408
+#: templates/base.html:413
 msgid "The source of indexed Quran translations is Tanzil Project"
 msgstr ""
 
 #: templates/base.html:423
+msgid "Share!"
+msgstr ""
+
+#: templates/base.html:440
 msgid "Copyright"
 msgstr ""
 
-#: templates/base.html:423
+#: templates/base.html:440
 msgid "Alfanous Team"
 msgstr ""
 
-#: templates/base.html:424
+#: templates/base.html:441
 msgid "released under"
 msgstr ""
 
-#: templates/base.html:424
+#: templates/base.html:441
 msgid "AGPL license"
 msgstr ""
 
-#: templates/base.html:429
+#: templates/base.html:446
 msgid "Powered by"
 msgstr ""
 
-#: templates/base.html:438
+#: templates/base.html:455
 msgid "Add to your search bar!"
 msgstr ""
 
