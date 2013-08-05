@@ -113,8 +113,8 @@ class Raw():
 			      "recitation": "1",
 			      "translation": None,
 			      "romanization": None,
-			      "prev_aya": False,
-			      "next_aya": False,
+			      "prev_aya": True,
+			      "next_aya": True,
 			      "sura_info": True,
 			      "sura_stat_info":False,
 			      "word_info": True,
@@ -142,7 +142,7 @@ class Raw():
 	     0:"success",
 	     1:"no action is chosen or action undefined",
 	     2:"""SuperJokers are not permitted, you have to add  3 letters 
-	           or more to use * (only one is permitted) and 2 letters or more to use ? (؟)\n
+	           or more to use * (only two are permitted) and 2 letters or more to use ? (؟)\n
 	     	-- Exceptions: ? (1),  ??????????? (11)
 	     	""",
 	     3: "Parsing Query failed, please reformulate  the query"
@@ -475,7 +475,7 @@ class Raw():
 			sura_stat_info = False
 			annotation_aya = annotation_word = False
 		elif view == "normal":
-			prev_aya = next_aya = True
+			prev_aya = next_aya = False
 			sura_info = True
 			word_info = True
 			word_synonyms = False
@@ -569,7 +569,7 @@ class Raw():
 			annotation_word = TRUE_FALSE( flags["annotation_word"] ) if flags.has_key( "annotation_word" ) \
 							 else self._defaults["flags"]["annotation_word"]
 
-		print query
+		#print query
 		#preprocess query
 		query = query.replace( "\\", "" )
 		if not isinstance( query, unicode ):
