@@ -65,8 +65,8 @@
 
 }
 #shareme_root .box a{
-color:#404040;
-text-shadow: 0 1px 1px rgba(167,167,167,.4);
+color:#808080;
+text-shadow: 0 3px 3px rgba(200,200,200,.4);
 }
 #shareme_root .box a:hover{
 text-decoration:none;

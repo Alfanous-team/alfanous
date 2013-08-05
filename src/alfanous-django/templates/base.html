@@ -385,7 +385,10 @@
         </div>
         
         {% if not params %}
-
+ 			<div class="row-fluid">
+					<div id="shareme_root" class="span4 offset5" data-url="http://www.alfanous.org" data-text="{{ _('Quran Ayah Search') }} - {{ _('Alfanous') }} " data-title="{{ _('Share!') }}"></div>
+			 </div>
+			 <br/>
 			{% block notification %}
 				   <div class="row-fluid">
 						<div class="hidden-phone text-center help">
@@ -419,9 +422,7 @@
 		            </div>
 		
 			{% endblock notification %}
-			 <div class="row-fluid">
-					<div id="shareme_root" class="span4 offset5" data-url="http://www.alfanous.org" data-text="{{ _('Quran Ayah Search') }} - {{ _('Alfanous') }} " data-title="{{ _('Share!') }}"></div>
-			 </div>
+			
 		{% endif %}
 
     </div>
