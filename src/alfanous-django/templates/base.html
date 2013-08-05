@@ -130,7 +130,11 @@
     <!-- v-keyboard css -->
     <link href="/static/shared/css/keyboard.css" rel="stylesheet">
 	<!-- share buttons styling -->
-	<link href="/static/shared/css/share_style.css" rel="stylesheet">
+	{% if params %}
+		<link href="/static/shared/css/share_style.css" rel="stylesheet">
+	{% else %}
+		<link href="/static/shared/css/share_style_root.css" rel="stylesheet">
+	{% endif %}
     <!--[if IE 7]>
     <link rel="stylesheet" href="/static/shared/css/font-awesome-ie7.min.css">
     <![endif]-->
@@ -156,15 +160,6 @@
  			}
 		}	 
 
-	#shareme_root .share {
-		float:{{ bidi.align }};
-		padding-{{ bidi.align }}:10px;
-	}
-	
-	#shareme_root .count {
-		float:{{ bidi.align }};
-		padding-{{ bidi.align_inverse }}:70px;
-	}
 
     </style> 
     
@@ -385,10 +380,6 @@
         </div>
         
         {% if not params %}
- 			<div class="row-fluid">
-					<div id="shareme_root" class="span4 offset5" data-url="http://www.alfanous.org" data-text="{{ _('Quran Ayah Search') }} - {{ _('Alfanous') }} " data-title="{{ _('Share!') }}"></div>
-			 </div>
-			 <br/>
 			{% block notification %}
 				   <div class="row-fluid">
 						<div class="hidden-phone text-center help">
@@ -422,6 +413,11 @@
 		            </div>
 		
 			{% endblock notification %}
+			<div class="row-fluid text-center">
+				<br/>
+			     <br/>
+				<span id="shareme_root" class="span4 offset4 shareme_root" data-url="http://www.alfanous.org" data-text="{{ _('Quran Ayah Search') }} - {{ _('Alfanous') }} " data-title="{{ _('Share!') }}"></span>
+			</div>
 			
 		{% endif %}
 
@@ -438,10 +434,11 @@
 	<div id="footer" class="navbar navbar-inverse  text-center">
 	<div class="push"><!--//--></div>
             <div class="container narrow row-fluid ">
+
                 <p class="muted credit">{{ _("Copyright") }} &copy; <a href="https://github.com/Alfanous-team/alfanous/blob/master/AUTHORS.rst">{{ _("Alfanous Team") }}</a> 2010 - 2013</p>
                 <p class="muted credit hidden-phone">&#124; {{ _("released under") }} <a href="http://www.gnu.org/licenses/agpl.html">{{ _("AGPL license") }}</a>.</p>
                 <br/>
-                 <span class="label label-info">
+                 <span class="hidden-phone label label-info">
                 		 <a id="footer-link-jos2" data-placement="top" data-toggle="popover">
                 		 <i class=" icon-chevron-up icon-white"></i>
                  		{{ _("Powered by") }}
@@ -456,6 +453,7 @@
                         {{ _("Add to your search bar!") }}
                     </a>
                     </span>
+
             </div>
 
     </div>
