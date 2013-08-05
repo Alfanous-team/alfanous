@@ -300,6 +300,25 @@
 
 		                    
 		                    <div class="row">
+		                    
+		                    {% if ayaresult_content.aya.prev_aya  and ayaresult_content.aya.prev_aya.id != 0 %}
+		                    <div id="prev_aya_text_{{ ayaresult_id }}" class="row text-center arabic-ayah-prev">
+		                       
+						 				<span class='quran_decoration prev_aya  muted'>[</span>
+											<span class="quran prev_aya muted">{{ ayaresult_content.aya.prev_aya.text }} </span>
+										<span class='quran_decoration prev_aya  muted'>]</span>
+									
+										{% with ayaresult_content.aya.prev_aya.id|stringformat:"s" as prev_aya_id %}
+									 	{% with bidi.fields.sura|add:':"'|add:ayaresult_content.aya.prev_aya.sura|add:'" + '|add:bidi.fields.aya_id|add:':'|add:prev_aya_id|urlencode  as new_query %}
+										- <a href='?{% build_search_link params  new_query 1 False  %}'> 
+										{% endwith %}
+									{% endwith %}
+		                        	<span class=" muted"><small> {{ ayaresult_content.aya.prev_aya.sura }} </small> {{ ayaresult_content.aya.prev_aya.id }} </span></a> 
+								
+		                       </div>	
+		                     {% endif %}
+		                        
+		                      
 		                        <div id="aya_text_{{ ayaresult_id }}" class="row text-center arabic-ayah">
 		                       
 						 				<span class='quran_decoration main_aya'>[</span>
@@ -325,11 +344,25 @@
 		                        	<span class="text-success"><small> {{ ayaresult_content.identifier.sura_name }} </small> {{ ayaresult_content.aya.id }} </span></a> 
 								
 		                       </div>	
-		                       
-		                        
-		              
-		                       
+	
 		                    </div>
+		                    
+		                    {% if ayaresult_content.aya.prev_aya  and ayaresult_content.aya.prev_aya.id != 0 %}
+		                    <div id="next_aya_text_{{ ayaresult_id }}" class="row text-center arabic-ayah-next">
+		                       
+						 				<span class='quran_decoration next_aya  muted'>[</span>
+											<span class="quran next_aya muted">{{ ayaresult_content.aya.next_aya.text }} </span>
+										<span class='quran_decoration next_aya  muted'>]</span>
+									
+										{% with ayaresult_content.aya.next_aya.id|stringformat:"s" as next_aya_id %}
+									 	{% with bidi.fields.sura|add:':"'|add:ayaresult_content.aya.next_aya.sura|add:'" + '|add:bidi.fields.aya_id|add:':'|add:next_aya_id|urlencode  as new_query %}
+										- <a href='?{% build_search_link params  new_query 1 False  %}'> 
+										{% endwith %}
+									{% endwith %}
+		                        	<span class=" muted"><small> {{ ayaresult_content.aya.next_aya.sura }} </small> {{ ayaresult_content.aya.next_aya.id }} </span></a> 
+								
+		                       </div>	
+		                     {% endif %}
 		                 
 		                        
 		                       

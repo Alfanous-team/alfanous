@@ -104,6 +104,14 @@ div.help {
   line-height: 220%; 
 }
 
+.arabic-ayah-prev,  .arabic-ayah-next  {
+  direction: rtl;
+  font-family: me_quran, Scheherazade,  KacstBook, KacstQurn, ArabeyesQr, "KFGQPC Uthman Taha Naskh", Arial;
+  font-size: 15px;
+  word-spacing: 3px;
+  line-height: 200%; 
+}
+
 @media (max-width: 480px) {
     .arabic-ayah { 
       font-size: 16px;
