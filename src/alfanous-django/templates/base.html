@@ -141,7 +141,7 @@
     <link href="/static/rtl/css/rtl.css" rel="stylesheet">
     {% endifequal %}
     
-    
+    <!--  conditional css style -->
     <style rel="stylesheet">
     @media (min-width: 768px) {
     .keyboardInputInitiator{
@@ -156,6 +156,15 @@
  			}
 		}	 
 
+	#shareme_root .share {
+		float:{{ bidi.align }};
+		padding-{{ bidi.align }}:10px;
+	}
+	
+	#shareme_root .count {
+		float:{{ bidi.align }};
+		padding-{{ bidi.align_inverse }}:70px;
+	}
 
     </style> 
     
@@ -371,8 +380,49 @@
         </div>
                 
         <div class="row-fluid">
-        	{% block results %} {% endblock results %}
+        	    
+        	{% block results %}  {% endblock results %}
         </div>
+        
+        {% if not params %}
+
+			{% block notification %}
+				   <div class="row-fluid">
+						<div class="hidden-phone text-center help">
+		                    <div class="alert alert-warning span7 offset3 text-center">
+		                        <button type="button" class="close" data-dismiss="alert">&times;</button>
+		                        <i class="icon-screenshot"></i>
+		                        <strong>{{ _("Help!") }} </strong>
+		                        <a href="https://translations.launchpad.net/alfanous/trunk/+pots/alfanousdjv0.7.01" target="_blank" class="">
+		                        {{ _("Please help us translate Alfanous Project into more languages!") }}
+		                        </a>
+		                        <!-- 
+		                        {% ifequal current.language "ar" %}
+		                        <a href="https://docs.google.com/spreadsheet/viewform?formkey=dEZZaE5fQ0NwQXljU2ZyUmpfLW15SVE6MA">
+		                        {% else %}
+		                        <a href="https://docs.google.com/spreadsheet/viewform?formkey=dHNKQU1JSkEzbDNKR2tvM2M2cDA2SXc6MQ">
+		                        {% endifequal %}
+		                        {{ _("Please help us improving Alfanous Project, by taking this survey about search features in Holy Quran.") }} </a>
+		                     	-->
+		                    </div>
+		                    <!-- <div class="alert alert-info span8 offset3 text-center">
+		                        <button type="button" class="close" data-dismiss="alert">&times;</button>
+		                        <i class="icon-info-sign"></i>
+		                        <strong>{{ _("Info!") }} </strong>
+		                        <a href="tani" target="_blank">
+		                        {{ _("The source of indexed Quran translations is Tanzil Project") }}
+		                        </a>
+		                    </div>  -->
+		                    <br/>
+		                    <br/>
+		                </div>
+		            </div>
+		
+			{% endblock notification %}
+			 <div class="row-fluid">
+					<div id="shareme_root" class="span4 offset5" data-url="http://www.alfanous.org" data-text="{{ _('Quran Ayah Search') }} - {{ _('Alfanous') }} " data-title="{{ _('Share!') }}"></div>
+			 </div>
+		{% endif %}
 
     </div>
 </div>
@@ -380,40 +430,7 @@
     {% include "popups_content.html" %}
 
 
-{% if not params %}
-	{% block notification %}
 
-				<div class="hidden-phone text-center help">
-                    <div class="alert alert-warning span7 offset3 text-center">
-                        <button type="button" class="close" data-dismiss="alert">&times;</button>
-                        <i class="icon-screenshot"></i>
-                        <strong>{{ _("Help!") }} </strong>
-                        <a href="https://translations.launchpad.net/alfanous/trunk/+pots/alfanousdjv0.7.01" target="_blank" class="">
-                        {{ _("Please help us translate Alfanous Project into more languages!") }}
-                        </a>
-                        <!-- 
-                        {% ifequal current.language "ar" %}
-                        <a href="https://docs.google.com/spreadsheet/viewform?formkey=dEZZaE5fQ0NwQXljU2ZyUmpfLW15SVE6MA">
-                        {% else %}
-                        <a href="https://docs.google.com/spreadsheet/viewform?formkey=dHNKQU1JSkEzbDNKR2tvM2M2cDA2SXc6MQ">
-                        {% endifequal %}
-                        {{ _("Please help us improving Alfanous Project, by taking this survey about search features in Holy Quran.") }} </a>
-                     	-->
-                    </div>
-                    <!-- <div class="alert alert-info span8 offset3 text-center">
-                        <button type="button" class="close" data-dismiss="alert">&times;</button>
-                        <i class="icon-info-sign"></i>
-                        <strong>{{ _("Info!") }} </strong>
-                        <a href="tani" target="_blank">
-                        {{ _("The source of indexed Quran translations is Tanzil Project") }}
-                        </a>
-                    </div>  -->
-                    <br/>
-                    <br/>
-                </div>
-
-	{% endblock notification %}
-{% endif %}
 
 
 
