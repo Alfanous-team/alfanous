@@ -107,7 +107,7 @@ div.help {
 .arabic-ayah-prev,  .arabic-ayah-next  {
   direction: rtl;
   font-family: me_quran, Scheherazade,  KacstBook, KacstQurn, ArabeyesQr, "KFGQPC Uthman Taha Naskh", Arial;
-  font-size: 15px;
+  font-size: 13px;
   word-spacing: 3px;
   line-height: 200%; 
 }
