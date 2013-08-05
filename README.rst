@@ -110,6 +110,8 @@ This is the list of search features already implemented, preview links use Alfan
 -------
 History
 -------
+- **4 August 2013**: Launching "`WEB 0.7.5 alyaqoot release <https://github.com/Alfanous-team/alfanous/releases/tag/WEB_0.7.5>`_" of the  web interface: based on `Twitter Bootstrap <http://twitter.github.io/bootstrap/>`_, Responsive , Simple, Clean , Accept skins, and has many  improvements and bug fixes.
+
 - **10 June 2013**: Launching the django web interface, localizable, indexable, and has many search features, improvements and bug fixes.
 
 - **26 June 2012**: Launching the clickable feature, making most of results information searchable.
@@ -130,7 +132,7 @@ History
 
 - **21 July 2010**: Uploading the arabic_interface_ of alfanous-Desktop version 0.3 beta for Windows
 
-- **30 September 2010 - 6 July 2011**: Graduation project for obtaining State-Engineer degree in National higher school of computer science (ESI ,ex.INI) - Algiers. The project was entitled *“Developpement  d'un moteur d'indexation et de recherche dans les documents coranique”*. 
+- **30 September 2009 - 6 July 2010**: Graduation project for obtaining State-Engineer degree in National higher school of computer science (ESI ,ex.INI) - Algiers. The project was entitled *“Developpement  d'un moteur d'indexation et de recherche dans les documents coranique”*. 
   
 --------------
 Featured Posts
