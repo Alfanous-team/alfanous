@@ -32,14 +32,14 @@
 						</tr>
 					</thead>
 					<tbody>
-						<tr>
 							{% for suggestion_key, suggestion_item in suggestions.suggest.items %}
+							<tr>
 								<td>{{ forloop.counter }}. <strong>{{ suggestion_key }}</strong></td>
 								<td>
 									{% for suggestion_sub_item  in suggestion_item %}
 										{% with suggestion_key|add:","|add:suggestion_sub_item as replacement_args %}
 											{% with params.query|string_replace:replacement_args as new_query %}
-												<span class="label label-inverse"><i class="icon-share-alt icon-white"></i><a href="?{% build_search_link params  new_query 1 False %}"> 
+												<span class="label label-info"><i class="icon-share-alt icon-white"></i><a href="?{% build_search_link params  new_query 1 False %}"> 
 												{{ suggestion_sub_item }}</a></span>
 											{% endwith %}
 										{% endwith %}
@@ -47,8 +47,8 @@
 										{{ _("no suggestions!") }}
 									{% endfor %}
 								</td>
+							</tr>
 							{% endfor %}
-						</tr>
 					</tbody>
 				</table>
 			{% endif %}
