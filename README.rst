@@ -132,7 +132,7 @@ History
 
 - **21 July 2010**: Uploading the arabic_interface_ of alfanous-Desktop version 0.3 beta for Windows
 
-- **30 September 2010 - 6 July 2011**: Graduation project for obtaining State-Engineer degree in National higher school of computer science (ESI ,ex.INI) - Algiers. The project was entitled *“Developpement  d'un moteur d'indexation et de recherche dans les documents coranique”*. 
+- **30 September 2009 - 6 July 2010**: Graduation project for obtaining State-Engineer degree in National higher school of computer science (ESI ,ex.INI) - Algiers. The project was entitled *“Developpement  d'un moteur d'indexation et de recherche dans les documents coranique”*. 
   
 --------------
 Featured Posts
