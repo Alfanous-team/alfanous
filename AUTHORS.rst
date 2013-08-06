@@ -99,14 +99,15 @@ Translation
 
 * Desktop application
 
-  * not yet! 
+  * (we'll write about that as soon as we manage the translations made to the desktop application)
 
 * Main Web Interface
 
-  * Arabic: Yasmine Houadjli
-  * French: Zineb Pub
-  * Indonesian:  Ahmed Jumal , Amy cidra 
+  * Arabic: Assem Chelli, Yasmine Houadjli
+  * French: Zineb Pub, Yasmine Houadjli, Abdelkarim Aries, Nassim rehali, Nasreddine Cheniki
+  * Indonesian:  Ahmed Jumal , Amy cidra, Mahyuddin Susanto
   * Japanese: Abdelkarim Aries
+  * Spanish: Khiru Barbaross 
 
 * Mobile Web interface 
 
