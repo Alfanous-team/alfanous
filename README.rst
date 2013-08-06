@@ -110,9 +110,9 @@ This is the list of search features already implemented, preview links use Alfan
 -------
 History
 -------
-- **4 August 2013**: Launching "`WEB 0.7.5 alyaqoot release <https://github.com/Alfanous-team/alfanous/releases/tag/WEB_0.7.5>`_" of the  web interface: based on `Twitter Bootstrap <http://twitter.github.io/bootstrap/>`_, Responsive , Simple, Clean , Accept skins, and has many  improvements and bug fixes.
+- **4 August 2013**: Launching "`WEB 0.7.5 alyaqoot release <https://github.com/Alfanous-team/alfanous/releases/tag/WEB_0.7.5>`_" of the  web interface: based on `Twitter Bootstrap <http://twitter.github.io/bootstrap/>`_, Responsive , Simple, Clean , Accept skins, and has many  improvements and bug fixes. kacemb2_
 
-- **10 June 2013**: Launching the django web interface, localizable, indexable, and has many search features, improvements and bug fixes.
+- **10 June 2013**: Launching the django web interface, localizable, indexable, and has many search features, improvements and bug fixes. kacemb_
 
 - **26 June 2012**: Launching the clickable feature, making most of results information searchable.
 
@@ -142,6 +142,7 @@ Featured Posts
 - *جزائري يطلق محرك بحث شامل للقرآن الكريم*, onislam_
 - *Alfanous – Quran Search Engine*, muslihzarthblog_ 
 - *إطلاق الإصدارة الجديدة لموقع الفانوس*, kacemb_
+- *إصدار نسخة “الياقوت” من موقع الفانوس للبحث القرآني المتقدّم*, kacemb2_
 - *مزية جديدة في الفانوس، أنقر ما تريد لتبحث من جديد!*, chiffra1_
 - *التحقق من أحد المنشورات حول الإعجاز العددي في القرآن الكريم*, chiffra2_
 
@@ -171,6 +172,7 @@ See also
 .. _saidmaroc: http://www.saidmaroc.com/2010/07/blog-post_23.html
 .. _arabcrunch: http://arabcrunch.com/ar/2011/09/%D8%A7%D9%84%D9%81%D8%A7%D9%86%D9%88%D8%B3-%D9%85%D8%B4%D8%B1%D9%88%D8%B9-%D9%85%D8%AD%D8%B1%D9%83-%D8%A8%D8%AD%D8%AB-%D9%85%D8%AA%D9%82%D8%AF%D9%85-%D9%84%D9%84%D9%82%D8%B1%D8%A2%D9%86-%D8%A7%D9%84/
 .. _kacemb: http://www.kacemb.com/%D8%A5%D8%B7%D9%84%D8%A7%D9%82-%D8%A7%D9%84%D8%A5%D8%B5%D8%AF%D8%A7%D8%B1%D8%A9-%D8%A7%D9%84%D8%AC%D8%AF%D9%8A%D8%AF%D8%A9-%D9%84%D9%85%D9%88%D9%82%D8%B9-%D8%A7%D9%84%D9%81%D8%A7%D9%86%D9%88%D8%B3/
+.. _kacemb2: http://www.kacemb.com/%D8%A5%D8%B5%D8%AF%D8%A7%D8%B1-%D9%86%D8%B3%D8%AE%D8%A9-%D8%A7%D9%84%D9%8A%D8%A7%D9%82%D9%88%D8%AA-%D9%85%D9%86-%D9%85%D9%88%D9%82%D8%B9-%D8%A7%D9%84%D9%81%D8%A7%D9%86%D9%88%D8%B3-%D9%84%D9%84/
 .. _chiffra1: http://chiffra.blogspot.com/2012/06/blog-post.html
 .. _chiffra2: http://chiffra.blogspot.com/2013/01/blog-post_4.html
 
