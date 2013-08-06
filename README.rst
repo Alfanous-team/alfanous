@@ -114,7 +114,7 @@ History
 
 - **10 June 2013**: Launching the django web interface, localizable, indexable, and has many search features, improvements and bug fixes. kacemb_
 
-- **26 June 2012**: Launching the clickable feature, making most of results information searchable.
+- **26 June 2012**: Launching the clickable feature, making most of results information searchable. chiffra1_
 
 - **02 January 2012**: Launching new web interface for mobiles, uses: json_web_service_, link: http://m.alfanous.org/, wiki: mobile_web_interface_
 
