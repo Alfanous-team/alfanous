@@ -7,16 +7,16 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-07-30 02:11+0100\n"
+"POT-Creation-Date: 2013-08-06 17:41+0100\n"
 "PO-Revision-Date: 2013-07-30 05:33+0000\n"
 "Last-Translator: Mahyuddin Susanto <me@udienz.my.id>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Launchpad-Export-Date: 2013-08-04 21:12+0000\n"
 "X-Generator: Launchpad (build 16718)\n"
-"Language: \n"
 
 #: templates/aya_results.html:17 templates/aya_results.html.py:63
 msgid "Keywords"
@@ -47,8 +47,8 @@ msgstr "Saran"
 msgid "no suggestions!"
 msgstr "Tida ada Saran"
 
-#: templates/aya_results.html:80 templates/aya_results.html.py:470
-#: templates/aya_results.html:526 templates/base.html:83
+#: templates/aya_results.html:80 templates/aya_results.html.py:503
+#: templates/aya_results.html:559 templates/base.html:83
 msgid "words"
 msgstr "Kalimat"
 
@@ -92,8 +92,8 @@ msgstr "Tanda"
 msgid "part"
 msgstr "Juz"
 
-#: templates/aya_results.html:184 templates/aya_results.html.py:497
-#: templates/aya_results.html:517
+#: templates/aya_results.html:184 templates/aya_results.html.py:530
+#: templates/aya_results.html:550
 msgid "type"
 msgstr "Tipe"
 
@@ -161,91 +161,95 @@ msgstr "Dari"
 msgid "Result n°"
 msgstr "Hasil Nomer"
 
-#: templates/aya_results.html:357
+#: templates/aya_results.html:390
 msgid "Click here to show more details"
 msgstr "Klik di sini untuk melihat detail lebih"
 
-#: templates/aya_results.html:360
+#: templates/aya_results.html:393
 msgid "Show more"
 msgstr "Tampilkan lebih banyak"
 
-#: templates/aya_results.html:379
+#: templates/aya_results.html:412
 msgid "Chapter"
 msgstr "Surat"
 
-#: templates/aya_results.html:389
+#: templates/aya_results.html:422
 msgid "Topic"
 msgstr "Tema"
 
-#: templates/aya_results.html:398
+#: templates/aya_results.html:431
 msgid "Subtopic"
 msgstr "Sub Tema"
 
-#: templates/aya_results.html:413
+#: templates/aya_results.html:446
 msgid "About ayah"
 msgstr "Tentang ayat"
 
-#: templates/aya_results.html:422
+#: templates/aya_results.html:455
 msgid "manzil"
 msgstr "Manzil"
 
-#: templates/aya_results.html:430
+#: templates/aya_results.html:463
 msgid "juz"
 msgstr "juz"
 
-#: templates/aya_results.html:438
+#: templates/aya_results.html:471
 msgid "hizb"
 msgstr "Hizb"
 
-#: templates/aya_results.html:441
+#: templates/aya_results.html:474
 msgid "quart"
 msgstr "Rubu'"
 
-#: templates/aya_results.html:449
+#: templates/aya_results.html:482
 msgid "page"
 msgstr "Halaman"
 
-#: templates/aya_results.html:458
+#: templates/aya_results.html:491
 msgid "page (indian)"
 msgstr "halaman (indian)"
 
-#: templates/aya_results.html:478 templates/aya_results.html.py:527
+#: templates/aya_results.html:511 templates/aya_results.html.py:560
 msgid "letters"
 msgstr "Huruf"
 
-#: templates/aya_results.html:487 templates/aya_results.html.py:528
+#: templates/aya_results.html:520 templates/aya_results.html.py:561
 msgid "divine names"
 msgstr "Lafadz-Lafadz Mulia"
 
-#: templates/aya_results.html:494
+#: templates/aya_results.html:527
 msgid "sajda"
 msgstr "Sajdah"
 
-#: templates/aya_results.html:496 templates/aya_results.html.py:512
+#: templates/aya_results.html:527
+msgid "Hafs"
+msgstr ""
+
+#: templates/aya_results.html:529 templates/aya_results.html.py:545
 msgid "n°"
 msgstr "Nomer"
 
-#: templates/aya_results.html:505
+#: templates/aya_results.html:538
 msgid "About surah"
 msgstr "Tentang Surat"
 
-#: templates/aya_results.html:510
+#: templates/aya_results.html:543
 msgid "Sura"
 msgstr "Surat"
 
-#: templates/aya_results.html:520
+#: templates/aya_results.html:553
 msgid "revelation_order"
 msgstr "Urutan Turun"
 
-#: templates/aya_results.html:523
+#: templates/aya_results.html:556
 msgid "ayahs"
 msgstr "Ayat"
 
-#: templates/aya_results.html:549 templates/translation_results.html:153
+#: templates/aya_results.html:582 templates/translation_results.html:153
 msgid "Sorry! there is no results for this search query."
 msgstr "Maaf! Tidak ada hasil yang sesuai"
 
-#: templates/aya_results.html:558 templates/translation_results.html:161
+#: templates/aya_results.html:591 templates/translation_results.html:161
 msgid "Error "
 msgstr "Kesalahan "
 
@@ -265,135 +269,76 @@ msgstr "Sembunyikan Harakat"
 msgid "Uthmani script"
 msgstr "Tulisan Utsmani"
 
-#: templates/aya_search.html:34 templates/popups_content.html:28
-#: templates/translation_search.html:36
-msgid "Exact search"
-msgstr "Cari identik"
-
-#: templates/aya_search.html:39 templates/popups_content.html:33
-#: templates/translation_search.html:41
-msgid "Phrase search"
-msgstr "Mencari Berdasarkan Kalimat"
-
-#: templates/aya_search.html:44 templates/popups_content.html:38
-#: templates/translation_search.html:46
-msgid "Logical relations"
-msgstr "Hubungan logis"
-
-#: templates/aya_search.html:49 templates/popups_content.html:43
-#: templates/translation_search.html:51
-msgid "Wildcards"
-msgstr "Mencari text di direktori yang tidak dapat diperkirakan"
-
-#: templates/aya_search.html:54 templates/popups_content.html:48
-#: templates/translation_search.html:56
-msgid "Fields"
-msgstr "Bidang"
-
-#: templates/aya_search.html:59 templates/popups_content.html:53
-msgid "Intervals"
-msgstr "jarak waktu"
-
-#: templates/aya_search.html:64 templates/popups_content.html:58
-msgid "Partial vocalization"
-msgstr "Memberi harakat sebagian"
-
-#: templates/aya_search.html:69 templates/popups_content.html:63
-msgid "Word properties"
-msgstr "kata sifat"
-
-#: templates/aya_search.html:74 templates/popups_content.html:68
-msgid "Derivations"
-msgstr "asal mula"
-
-#: templates/aya_search.html:80 templates/popups_content.html:74
-#: templates/translation_search.html:63
-msgid ""
-"The website does not work well on Internet Explorer, we suggest to use "
-"another browser such as: "
-msgstr ""
-"Website tidak bekerja dengan baik pada Internet Explorer, kami sarankan "
-"untuk menggunakan peramban lain seperti: "
-
-#: templates/aya_search.html:80 templates/popups_content.html:74
-#: templates/translation_search.html:63
-msgid "Firefox"
-msgstr "Firefox"
-
-#: templates/aya_search.html:82 templates/translation_search.html:65
-msgid "Close"
-msgstr "Tutup"
-
-#: templates/aya_search.html:93
+#: templates/aya_search.html:35
 msgid "View"
 msgstr "Melihat"
 
-#: templates/aya_search.html:100 templates/aya_search.html.py:151
-#: templates/aya_search.html:173 templates/base.html:228
+#: templates/aya_search.html:42 templates/aya_search.html.py:93
+#: templates/aya_search.html:115 templates/base.html:232
 msgid "Default"
 msgstr "Tampilan Asli"
 
-#: templates/aya_search.html:101
+#: templates/aya_search.html:43
 msgid "Minimal"
 msgstr "Tampilan Dikecilkan"
 
-#: templates/aya_search.html:102
+#: templates/aya_search.html:44
 msgid "Normal"
 msgstr "Normal"
 
-#: templates/aya_search.html:103
+#: templates/aya_search.html:45
 msgid "Full"
 msgstr "Penuh"
 
-#: templates/aya_search.html:104
+#: templates/aya_search.html:46
 msgid "Statitic"
 msgstr "Statistik"
 
-#: templates/aya_search.html:105
+#: templates/aya_search.html:47
 msgid "Linguistic"
 msgstr "Sesuai Bahasa"
 
-#: templates/aya_search.html:106
+#: templates/aya_search.html:48
 msgid "Recitation"
 msgstr "Bacaan"
 
-#: templates/aya_search.html:121
+#: templates/aya_search.html:63
 msgid "Sorted by"
 msgstr "Urut Berdasarkan"
 
-#: templates/aya_search.html:128
+#: templates/aya_search.html:70
 msgid "Relevance"
 msgstr "Sangkut paut"
 
-#: templates/aya_search.html:129
+#: templates/aya_search.html:71
 msgid "Mus'haf"
 msgstr "Mushaf"
 
-#: templates/aya_search.html:130 templates/translation_search.html:7
+#: templates/aya_search.html:72 templates/translation_search.html:7
 msgid "Tanzil"
 msgstr "Tanzil"
 
-#: templates/aya_search.html:131
+#: templates/aya_search.html:73
 msgid "Topics"
 msgstr "Judul"
 
-#: templates/aya_search.html:132
+#: templates/aya_search.html:74
 msgid "Ayah length"
 msgstr "Panjang Ayat"
 
-#: templates/aya_search.html:144
+#: templates/aya_search.html:86
 msgid "Translation"
 msgstr "Terjemah"
 
-#: templates/aya_search.html:152
+#: templates/aya_search.html:94
 msgid "No translation"
 msgstr "Tidak ada Terjemah"
 
-#: templates/aya_search.html:167
+#: templates/aya_search.html:109
 msgid "Recitation:"
 msgstr "Bacaan"
 
-#: templates/aya_search.html:174
+#: templates/aya_search.html:116
 msgid "No recitation"
 msgstr "Tanpa Bacaan"
 
@@ -429,7 +374,7 @@ msgstr "ragu-ragu"
 msgid "Translation:"
 msgstr "Penerjemahan:"
 
-#: templates/base.html:42 templates/base.html.py:48
+#: templates/base.html:42 templates/base.html.py:48 templates/base.html:422
 msgid "Quran Ayah Search"
 msgstr "Pencarian ayat Al-Quran"
 
@@ -441,7 +386,7 @@ msgstr "Pencarian Kata Al-Quran"
 msgid "Quran Translation Search"
 msgstr ""
 
-#: templates/base.html:50
+#: templates/base.html:50 templates/base.html.py:422
 msgid "Alfanous"
 msgstr "Alfanous"
 
@@ -559,248 +504,252 @@ msgstr ""
 msgid "fuzzy search"
 msgstr ""
 
-#: templates/base.html:170 wui/views.py:69
+#: templates/base.html:174 wui/views.py:69
 msgid "Ayahs"
 msgstr "Ayat-Ayat"
 
-#: templates/base.html:171 wui/views.py:72
+#: templates/base.html:175 wui/views.py:72
 msgid "Translations"
 msgstr "Terjemah-terjemah"
 
-#: templates/base.html:172
+#: templates/base.html:176
 msgid "Words"
 msgstr "Kata-kata"
 
-#: templates/base.html:191
+#: templates/base.html:195
 msgid "First, select the search unit"
 msgstr ""
 
-#: templates/base.html:192
+#: templates/base.html:196
 msgid ""
 "You can choose whether to search in Arabic verses of the holly Quran or in "
 "its translations"
 msgstr ""
 
-#: templates/base.html:206
+#: templates/base.html:210
 msgid "Select your language"
 msgstr ""
 
-#: templates/base.html:207
+#: templates/base.html:211
 msgid ""
 "If you didn't notice, Alfanous User Interface is now translated to other "
 "languages, choose the one that fits you the best, or, you can contribute in "
 "translating it into your native language! (see the translate link)"
 msgstr ""
 
-#: templates/base.html:209
+#: templates/base.html:213
 msgid "Languages"
 msgstr ""
 
-#: templates/base.html:219
+#: templates/base.html:223
 msgid "Current:"
 msgstr ""
 
-#: templates/base.html:224
+#: templates/base.html:228
 msgid "Skins"
 msgstr ""
 
-#: templates/base.html:231
+#: templates/base.html:235
 msgid "Cerulean"
 msgstr ""
 
-#: templates/base.html:232
+#: templates/base.html:236
 msgid "Cyborg"
 msgstr ""
 
-#: templates/base.html:233
+#: templates/base.html:237
 msgid "Amelia"
 msgstr ""
 
-#: templates/base.html:234
+#: templates/base.html:238
 msgid "Readable"
 msgstr ""
 
-#: templates/base.html:235
+#: templates/base.html:239
 msgid "Slate"
 msgstr ""
 
-#: templates/base.html:236
+#: templates/base.html:240
 msgid "Spacelab"
 msgstr ""
 
-#: templates/base.html:237
+#: templates/base.html:241
 msgid "Super Heroes"
 msgstr ""
 
-#: templates/base.html:238
+#: templates/base.html:242
 msgid "United"
 msgstr ""
 
-#: templates/base.html:260
+#: templates/base.html:264
 msgid "Our page on Facebook"
 msgstr ""
 
-#: templates/base.html:261
+#: templates/base.html:265
 msgid "Our page on Google+"
 msgstr ""
 
-#: templates/base.html:262
+#: templates/base.html:266
 msgid "Our account on Twitter"
 msgstr ""
 
-#: templates/base.html:263
+#: templates/base.html:267
 msgid "Our repository on Github"
 msgstr ""
 
-#: templates/base.html:264
+#: templates/base.html:268
 msgid "Our Mailing list on GoogleGroups"
 msgstr ""
 
-#: templates/base.html:278
+#: templates/base.html:282
 msgid "Information:"
 msgstr ""
 
-#: templates/base.html:279
+#: templates/base.html:283
 msgid "Quick Tour!"
 msgstr ""
 
-#: templates/base.html:280 templates/popups_content.html:7
+#: templates/base.html:284 templates/popups_content.html:7
 msgid "F.A.Q."
 msgstr "Pertanyaan"
 
-#: templates/base.html:281
+#: templates/base.html:285
 msgid "Sample search here"
 msgstr ""
 
-#: templates/base.html:282
+#: templates/base.html:286
 msgid ""
 "Here you can learn by example about the full power of Alfanous search engine "
 "and what you can do with it."
 msgstr ""
 
-#: templates/base.html:285 templates/popups_content.html:21
+#: templates/base.html:289 templates/popups_content.html:21
 msgid "Help"
 msgstr "Bantuan"
 
-#: templates/base.html:286
+#: templates/base.html:290
 msgid "Contact"
 msgstr "Hubungi Kami"
 
-#: templates/base.html:287 templates/popups_content.html:206
+#: templates/base.html:291 templates/popups_content.html:258
 msgid "Download"
 msgstr "Unduh"
 
-#: templates/base.html:288
+#: templates/base.html:292
 msgid "Contribute:"
 msgstr ""
 
-#: templates/base.html:289
+#: templates/base.html:293
 msgid "Translate"
 msgstr "Terjemah"
 
-#: templates/base.html:290
+#: templates/base.html:294
 msgid "Feedback"
 msgstr "Umpan balik"
 
-#: templates/base.html:291
+#: templates/base.html:295
 msgid "we really need your help!"
 msgstr ""
 
-#: templates/base.html:292
+#: templates/base.html:296
 msgid ""
 "We're looking to fund the project, if you like it, help us making it even "
 "better."
 msgstr ""
 
-#: templates/base.html:299
+#: templates/base.html:303
 msgid "Donate"
 msgstr "Donasi"
 
-#: templates/base.html:300
+#: templates/base.html:304
 msgid "Other means"
 msgstr ""
 
-#: templates/base.html:301
+#: templates/base.html:305
 msgid "Links:"
 msgstr ""
 
-#: templates/base.html:302
+#: templates/base.html:306
 msgid "Old website"
 msgstr ""
 
-#: templates/base.html:321
+#: templates/base.html:325
 msgid "Alfanous is smart!"
 msgstr ""
 
-#: templates/base.html:325
+#: templates/base.html:329
 msgid "search query here ..."
 msgstr ""
 
-#: templates/base.html:331
+#: templates/base.html:335
 msgid "Quick search"
 msgstr ""
 
-#: templates/base.html:338
+#: templates/base.html:342
 msgid "Even more!"
 msgstr ""
 
-#: templates/base.html:339
+#: templates/base.html:343
 msgid ""
 "You can <strong>sort</strong>, <strong>filter</strong> search reasults or "
 "choose a translation, you can as well choose a recitator!"
 msgstr ""
 
-#: templates/base.html:343
+#: templates/base.html:347
 msgid "Advanced search"
 msgstr ""
 
-#: templates/base.html:361
+#: templates/base.html:365
 msgid "Bismi'Allah Go!"
 msgstr ""
 
-#: templates/base.html:390
+#: templates/base.html:389
 msgid "Help!"
 msgstr ""
 
-#: templates/base.html:392
+#: templates/base.html:391
 msgid "Please help us translate Alfanous Project into more languages!"
 msgstr ""
 
-#: templates/base.html:400
+#: templates/base.html:399
 msgid ""
 "Please help us improving Alfanous Project, by taking this survey about "
 "search features in Holy Quran."
 msgstr ""
 
-#: templates/base.html:406
+#: templates/base.html:405
 msgid "Info!"
 msgstr ""
 
-#: templates/base.html:408
+#: templates/base.html:407
 msgid "The source of indexed Quran translations is Tanzil Project"
 msgstr ""
 
-#: templates/base.html:423
-msgid "Copyright"
-msgstr ""
-
-#: templates/base.html:423
-msgid "Alfanous Team"
-msgstr ""
-
-#: templates/base.html:424
-msgid "released under"
-msgstr ""
-
-#: templates/base.html:424
-msgid "AGPL license"
-msgstr ""
-
-#: templates/base.html:429
-msgid "Powered by"
+#: templates/base.html:422
+msgid "Share!"
 msgstr ""
 
 #: templates/base.html:438
+msgid "Copyright"
+msgstr ""
+
+#: templates/base.html:438
+msgid "Alfanous Team"
+msgstr ""
+
+#: templates/base.html:439
+msgid "released under"
+msgstr ""
+
+#: templates/base.html:439
+msgid "AGPL license"
+msgstr ""
+
+#: templates/base.html:444
+msgid "Powered by"
+msgstr ""
+
+#: templates/base.html:453
 msgid "Add to your search bar!"
 msgstr ""
 
@@ -812,18 +761,75 @@ msgstr "Lihat"
 msgid "this link"
 msgstr "Tautan ini"
 
-#: templates/popups_content.html:13 templates/popups_content.html.py:77
-#: templates/popups_content.html:91 templates/popups_content.html.py:115
-#: templates/popups_content.html:136 templates/popups_content.html.py:197
-#: templates/popups_content.html:239 templates/popups_content.html.py:259
+#: templates/popups_content.html:13 templates/popups_content.html.py:129
+#: templates/popups_content.html:143 templates/popups_content.html.py:167
+#: templates/popups_content.html:188 templates/popups_content.html.py:249
+#: templates/popups_content.html:291 templates/popups_content.html.py:312
 msgid " Close "
 msgstr " Tutup "
 
-#: templates/popups_content.html:85
+#: templates/popups_content.html:27
+msgid "Searching in Quran Ayahs"
+msgstr ""
+
+#: templates/popups_content.html:34 templates/popups_content.html.py:93
+msgid "Exact search"
+msgstr "Cari identik"
+
+#: templates/popups_content.html:39 templates/popups_content.html.py:98
+msgid "Phrase search"
+msgstr "Mencari Berdasarkan Kalimat"
+
+#: templates/popups_content.html:44 templates/popups_content.html.py:103
+msgid "Logical relations"
+msgstr "Hubungan logis"
+
+#: templates/popups_content.html:49 templates/popups_content.html.py:108
+msgid "Wildcards"
+msgstr "Mencari text di direktori yang tidak dapat diperkirakan"
+
+#: templates/popups_content.html:54 templates/popups_content.html.py:113
+msgid "Fields"
+msgstr "Bidang"
+
+#: templates/popups_content.html:59
+msgid "Intervals"
+msgstr "jarak waktu"
+
+#: templates/popups_content.html:64
+msgid "Partial vocalization"
+msgstr "Memberi harakat sebagian"
+
+#: templates/popups_content.html:69
+msgid "Word properties"
+msgstr "kata sifat"
+
+#: templates/popups_content.html:74
+msgid "Derivations"
+msgstr "asal mula"
+
+#: templates/popups_content.html:86
+#, fuzzy
+msgid "Searching in Quran Translations"
+msgstr "Daftar Hasil Terjemah Makna Al-Quran"
+
+#: templates/popups_content.html:126
+msgid ""
+"The website does not work well on Internet Explorer, we suggest to use "
+"another browser such as: "
+msgstr ""
+"Website tidak bekerja dengan baik pada Internet Explorer, kami sarankan "
+"untuk menggunakan peramban lain seperti: "
+
+#: templates/popups_content.html:126
+msgid "Firefox"
+msgstr "Firefox"
+
+#: templates/popups_content.html:137
 msgid "Awarded!"
 msgstr "Penghargaan"
 
-#: templates/popups_content.html:88
+#: templates/popups_content.html:140
 msgid ""
 "Alfanous.org was chosen as the best-in-technicaity website in the "
 "competition AlgeriaWebAwards 2012."
@@ -831,11 +837,11 @@ msgstr ""
 "Alfanous.org terpilih sebagai situs terbaik dalam hal teknisi di kompetisi "
 "Algeria Web Awards 2012."
 
-#: templates/popups_content.html:99
+#: templates/popups_content.html:151
 msgid "How to donate"
 msgstr "Bagaimana Berdonasi"
 
-#: templates/popups_content.html:102
+#: templates/popups_content.html:154
 msgid ""
 "We're stuck looking for possible ways for donations/Funding. Any help is "
 "appreciated!"
@@ -843,11 +849,11 @@ msgstr ""
 "Kami menerima bantuan berupa sumbangan/pendanaan. Setiap bantuan sangat kami "
 "hargai!"
 
-#: templates/popups_content.html:105
+#: templates/popups_content.html:157
 msgid "Any way you can help by:"
 msgstr "Anda bisa membantu lewat :"
 
-#: templates/popups_content.html:107
+#: templates/popups_content.html:159
 msgid ""
 "Pay our web hosting monthly bills directly, we create an account for you in "
 "the host to do that."
@@ -855,54 +861,54 @@ msgstr ""
 "Bayar web hosting bulanan kami secara langsung, kami membuat account untuk "
 "Anda dalam host untuk melakukan itu."
 
-#: templates/popups_content.html:108
+#: templates/popups_content.html:160
 msgid ""
 "Lead an advertising compaign for the project website through Google adwords "
 "or Facebook."
 msgstr ""
 "Kampanyekan iklan untuk proyek ini melalui Google adwords atau Facebook."
 
-#: templates/popups_content.html:109
+#: templates/popups_content.html:161
 msgid "Buy Products (T-shirts, Cups, Hats) from Zazzle"
 msgstr ""
 
-#: templates/popups_content.html:110
+#: templates/popups_content.html:162
 msgid "Donate by flattr:"
 msgstr ""
 
-#: templates/popups_content.html:123
+#: templates/popups_content.html:175
 msgid "Contact us"
 msgstr "Hubungi Kami"
 
-#: templates/popups_content.html:127
+#: templates/popups_content.html:179
 msgid "If you have a concrete bug report for Alfanous please go to"
 msgstr ""
 "Jika Anda mendapatkan kesalahan di program Alfanous ini silahkan mengunjungi"
 
-#: templates/popups_content.html:127
+#: templates/popups_content.html:179
 msgid "Issues Tracker"
 msgstr "Issues Tracker"
 
-#: templates/popups_content.html:127
+#: templates/popups_content.html:179
 msgid "submit your report and tag it \"bug\"."
 msgstr "Submit Laporan dan Tag di \"bug\"."
 
-#: templates/popups_content.html:128
+#: templates/popups_content.html:180
 msgid ""
 "If you want to participate in actively developing Alfanous,by testing read"
 msgstr ""
 "Jika anda ingin ikut mengambil bagian secara aktif dalam mengembangkan "
 "Alfanous, bisa dengan tes"
 
-#: templates/popups_content.html:128
+#: templates/popups_content.html:180
 msgid "and by coding read "
 msgstr "dan membaca pengkodean "
 
-#: templates/popups_content.html:129
+#: templates/popups_content.html:181
 msgid "If you want to help in Alfanous somehow,  read"
 msgstr "Jika Anda ingin membantu Alfanous dengan cara yang anda bisa, baca"
 
-#: templates/popups_content.html:130
+#: templates/popups_content.html:182
 msgid ""
 "If you have a feature request, a proposition or a question for the project, "
 "you may use the mailing list."
@@ -910,7 +916,7 @@ msgstr ""
 "Jika Anda memiliki permintaan fitur, preposisi atau pertanyaan tentang "
 "proyek tersebut, Anda dapat menggunakan milis."
 
-#: templates/popups_content.html:131
+#: templates/popups_content.html:183
 msgid ""
 "If you want to criticize the project, we'll be thankful if you resume your "
 "criticism and send it to the mailing list."
@@ -918,35 +924,35 @@ msgstr ""
 "Jika Anda ingin memberi kritik proyek ini, kami akan berterima kasih jika "
 "Anda menulis kritik Anda dan mengirimkannya ke milis."
 
-#: templates/popups_content.html:133
+#: templates/popups_content.html:185
 msgid "For anything else, you can contact us via the mailing list which is:"
 msgstr "Untuk hal lain, Anda dapat menghubungi kami melalui milis:"
 
-#: templates/popups_content.html:146
+#: templates/popups_content.html:198
 msgid "How to contribute"
 msgstr "Bagaimana berkontribusi"
 
-#: templates/popups_content.html:154
+#: templates/popups_content.html:206
 msgid "Spreading the word"
 msgstr "Sebarkan"
 
-#: templates/popups_content.html:160
+#: templates/popups_content.html:212
 msgid "Following and sharing our social network pages:"
 msgstr "Ikuti dan Sebarkan Laman Jaringan Sosial kami:"
 
-#: templates/popups_content.html:162
+#: templates/popups_content.html:214
 msgid "Sharing a link to"
 msgstr "Sebarkan tautan ke"
 
-#: templates/popups_content.html:162
+#: templates/popups_content.html:214
 msgid "our website"
 msgstr "Web kamiا"
 
-#: templates/popups_content.html:162
+#: templates/popups_content.html:214
 msgid "via your accounts in Social networks."
 msgstr "Lewat akun jaringan sosial anda."
 
-#: templates/popups_content.html:163
+#: templates/popups_content.html:215
 msgid ""
 "Pointing  skilled developers and Quranic researchers to the importance of "
 "the project."
@@ -954,15 +960,15 @@ msgstr ""
 "pengembang yang terampil dan peneliti Al-Quran yang menunjukkan pentingnya "
 "proyek ini."
 
-#: templates/popups_content.html:164
+#: templates/popups_content.html:216
 msgid "Writing articles about the project in blogs, newspapers."
 msgstr "Tulis artikel tentang proyek di blog atau laman berita."
 
-#: templates/popups_content.html:165
+#: templates/popups_content.html:217
 msgid "Showing a banner on your Blog/Website."
 msgstr "Pasang banner di blog/website."
 
-#: templates/popups_content.html:166
+#: templates/popups_content.html:218
 msgid ""
 "creating an ad for alfanous links using Google adwords or facebook if you're "
 "familiar with that (btw,it needs money)"
@@ -970,11 +976,11 @@ msgstr ""
 "membuat iklan untuk link alfanous menggunakan Google adwords atau facebook "
 "jika Anda terbiasa dengan itu (btw, butuh uang)"
 
-#: templates/popups_content.html:175
+#: templates/popups_content.html:227
 msgid "Or by"
 msgstr ""
 
-#: templates/popups_content.html:180
+#: templates/popups_content.html:232
 msgid ""
 "Managing and Animating our social network pages with news and daily posts "
 "[Arabic, English]:"
@@ -982,47 +988,47 @@ msgstr ""
 "Mengelola dan Animasi laman sosial jaringan kami dengan berita dan posting "
 "harian [Bahasa Arab, Bahasa Inggris]:"
 
-#: templates/popups_content.html:182
+#: templates/popups_content.html:234
 msgid "Translating project interfaces to your language , see:"
 msgstr "Terjemahkan tampilan antar muka proyek ke bahasa anda, lihat:"
 
-#: templates/popups_content.html:183
+#: templates/popups_content.html:235
 msgid "Testing the modules and releases, Reporting bugs , see:"
 msgstr "Pengujian modul dan rilis, Pelaporan kesalahan, lihat:"
 
-#: templates/popups_content.html:184
+#: templates/popups_content.html:236
 msgid "Fixing"
 msgstr "Perbaikan"
 
-#: templates/popups_content.html:184
+#: templates/popups_content.html:236
 msgid "bugs"
 msgstr "Kesalahan"
 
-#: templates/popups_content.html:184
+#: templates/popups_content.html:236
 msgid "Coding"
 msgstr "Pengodean"
 
-#: templates/popups_content.html:184
+#: templates/popups_content.html:236
 msgid "new features"
 msgstr "Fitur baru"
 
-#: templates/popups_content.html:184
+#: templates/popups_content.html:236
 msgid "or Developing"
 msgstr "Atau Pengembangan"
 
-#: templates/popups_content.html:184
+#: templates/popups_content.html:236
 msgid "new interfaces"
 msgstr "Tampilan Baru"
 
-#: templates/popups_content.html:184
+#: templates/popups_content.html:236
 msgid "See:"
 msgstr "Lihat:"
 
-#: templates/popups_content.html:185
+#: templates/popups_content.html:237
 msgid "Designing  Icons, Logos , Banners."
 msgstr "Mendisain Icon, Logo, Banner"
 
-#: templates/popups_content.html:186
+#: templates/popups_content.html:238
 msgid ""
 "Packaging the project for different systems: Windows, Linux distributions, "
 "MacOs."
@@ -1030,75 +1036,75 @@ msgstr ""
 "Proyek dikemas untuk sistem yang berbeda-beda: Windows, Distribusi Linux dan "
 "Mac OS"
 
-#: templates/popups_content.html:187
+#: templates/popups_content.html:239
 msgid ""
 "Donating/Supporting to the project: <em>We're stuck looking for possible "
 "ways for donations/Funding. Any help is appreciated</em>"
 msgstr ""
-"Sumbangan / Dukungan proyek: <em> Kami menerima bantuan berupa "
-"sumbangan/pendanaan. Setiap bantuan sangat kami hargai!</ em>"
+"Sumbangan / Dukungan proyek: <em> Kami menerima bantuan berupa sumbangan/"
+"pendanaan. Setiap bantuan sangat kami hargai!</ em>"
 
-#: templates/popups_content.html:209
+#: templates/popups_content.html:261
 msgid "Windows"
 msgstr "Windows"
 
-#: templates/popups_content.html:212
+#: templates/popups_content.html:264
 msgid "English desktop release 0.4"
 msgstr "Rilis Desktop Inggris 0.4"
 
-#: templates/popups_content.html:215
+#: templates/popups_content.html:267
 msgid "Arabic desktop release 0.3"
 msgstr "Rilis desktop Arab 0.3"
 
-#: templates/popups_content.html:219
+#: templates/popups_content.html:271
 msgid "Linux"
 msgstr "Linux"
 
-#: templates/popups_content.html:222
+#: templates/popups_content.html:274
 msgid "More details"
 msgstr "Keterangan Lebih"
 
-#: templates/popups_content.html:225
+#: templates/popups_content.html:277
 msgid "MacOS"
 msgstr ""
 
-#: templates/popups_content.html:228 templates/popups_content.html.py:234
+#: templates/popups_content.html:280 templates/popups_content.html.py:286
 msgid "Not yet"
 msgstr ""
 
-#: templates/popups_content.html:231
+#: templates/popups_content.html:283
 msgid "Android"
 msgstr ""
 
-#: templates/popups_content.html:247
+#: templates/popups_content.html:299
 msgid "How to translate"
 msgstr "Bagaimana membantu terjemah"
 
-#: templates/popups_content.html:251
+#: templates/popups_content.html:304
 msgid "Check the existance of your language in the available languages list."
 msgstr "Periksa keberadaan bahasa Anda dalam daftar bahasa yang tersedia."
 
-#: templates/popups_content.html:252
+#: templates/popups_content.html:305
 msgid "Download the file:"
 msgstr "Unduh file"
 
-#: templates/popups_content.html:253
+#: templates/popups_content.html:306
 msgid "Use Poedit or Virtaal to edit it."
 msgstr "Gunakan Poedit atau Virtaal untuk mengedit"
 
-#: templates/popups_content.html:254
+#: templates/popups_content.html:307
 msgid "Send the updated file into our mailing list:"
 msgstr "Kirim file update ke kotak surat kami."
 
-#: templates/popups_content.html:256
+#: templates/popups_content.html:309
 msgid "Note:"
 msgstr ""
 
-#: templates/popups_content.html:256
+#: templates/popups_content.html:309
 msgid "You can use launchpad to translate without installing any tool"
 msgstr ""
 
-#: templates/popups_content.html:256
+#: templates/popups_content.html:309
 msgid "here!"
 msgstr ""
 
@@ -1141,3 +1147,6 @@ msgstr "Maaf, Tidak ada daftar terjemah"
 #: templates/translation_search.html:25
 msgid "Show ayah arabic text"
 msgstr "Tampilkan Text Ayat dalam Bahasa Arab"
+
+#~ msgid "Close"
+#~ msgstr "Tutup"
