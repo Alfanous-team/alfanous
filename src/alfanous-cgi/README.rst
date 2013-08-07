@@ -11,7 +11,7 @@ License
 -------
 *  This service is free to use.
 *  We highly recommend to refer Alfanous engine somewhere in your pages using icons or texts like "Alfanous engine", "Powered by Alfanous.org", or "Based on Alfanous.org" linked to "http://www.alfanous.org" or "http://www.alfanous.org/jos2". 
-*  We highly recommend to describe clearly somewhere in your application the relation to the whole Alfanous project.
+*  We highly recommend to describe clearly somewhere in your application the relation to the whole Alfanous project, such as an about button.
 *  Art works you may need are available here_, the Art is licenced with AGPL license.
 
 .. _here: http://www.alfanous.org/art/
