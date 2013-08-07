@@ -112,47 +112,47 @@ see `sample.py <https://github.com/Alfanous-team/alfanous/blob/master/src/alfano
 Flags
 --------------
 
-======== =================== ================= ================ ============================================ ================= ========================================================================================================================================================================
+======== ==================== ================= ================ ============================================ ================= ========================================================================================================================================================================
  number    flag               related action    related unit     description                                   default value    accepted values 
--------- ------------------- ----------------- ---------------- -------------------------------------------- ----------------- ------------------------------------------------------------------------------------------------------------------------------------------------------------------------
- 1         **action**         <none>            <none>           action to perform                             "search"         search | suggest | show
- 2         unit               search, suggest   <none>           search unit                                   "aya"            aya | word | translation
- 2         ident              <all>             <all>            identifier of requester   [experimental]      "undefined"      undefined
- 3         platform           <all>             <all>            platform used by requester                    "undefined"      undefined | wp7 | s60 | android | ios | linux | window
- 4         domain             <all>             <all>            web domain of requester if applicable         "undefined"      \*
- 5a        **query**          search,suggest    <all>            query attached to action                       ""              \*
- 5b        **query**          show              <all>            query attached to action                       ""              all | translations |recitations | information | hints | surates | chapters | defaults | flags | fields | fields_reverse | errors | domains | help_messages 
- 6         highlight          search            <all>            highlight method                              "css"            css | html | genshi | bold | bbcode
- 7         script             search            aya, word        script of aya text                            "standard"       standard | uthmani
- 8         vocalized          search            aya, word        enable vocalization of aya text               "True"           True | False
- 9         recitation         search            aya              recitation id                                 "1"              1 to 30
- 10        translation        search            aya, trans       translation id                                "None"           \*
- 11        romanization       search            aya, word        type of romanization                          "none"           none | buckwalter | iso | arabtex
- 12a       view               search            aya, word        pre-defined configuration for view            "custom"         minimal | normal | full | statistic | linguistic | custom
- 12b       view               search            translation      pre-defined configuration for view            "custom"         minimal | normal | full | custom
- 13        prev_aya           search            aya              enable previous aya retrieving                "False"          True | False
- 14        next_aya           search            aya              enable next aya retrieving                    "False"          True | False
- 15        sura_info          search            aya              enable sura information retrieving            "True"           True | False
- 16        sura_stat_info     search            aya              enable sura stats retrieving                  "False"          True | False
- 17        word_info          search            aya, word        enable word information retrieving            "True"           True | False
- 17a       word_synonyms      search            aya              enable retrieving of keyword synonyms         "False"          True | False
- 17b       word_derivations   search            aya              enable retrieving of keyword derivations      "True"           True | False
- 17c       word_vocalizations search            aya              enable retrieving of keyword vocalizations    "True"           True | False
- 18        aya_position_info  search            aya              enable aya position information retrieving    "True"           True | False
- 19        aya_theme_info     search            aya              enable aya theme information retrieving       "True"           True | False
- 20        aya_stat_info      search            aya              enable aya stat information retrieving        "True"           True | False
- 21        aya_sajda_info     search            aya              enable aya sajda information retrieving       "True"           True | False
- 22        annotation_word    search            aya, word        enable query terms annotations retrieving     "False"          True | False
- 23        annotation_aya     search            aya              enable aya words annotations retrieving       "False"          True | False
- 24        sortedby           search            aya              sorting order of results                      "score"          total | score | mushaf | tanzil | subject
- 25        offset             search            <all>            starting offset of results                    "1"              1 to 6236
- 26        range              search            <all>            range of results                              "10"             1 to 25
- 27        page               search            <all>            page number  [override offset]                "1"              1 to 6236
- 28        perpage            search            <all>            results per page  [override range]            "10"             1 to 25
- 29        fuzzy              search            aya              fuzzy search [exprimental]                          "False"          True | False
- 30        aya                search            word,trans       enable retrieving of aya text                    "True"          True | False
+-------- -------------------- ----------------- ---------------- -------------------------------------------- ----------------- ------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ 1         **action**          <none>            <none>           action to perform                             "search"         search | suggest | show
+ 2         unit                search, suggest   <none>           search unit                                   "aya"            aya | word | translation
+ 2         ident               <all>             <all>            identifier of requester   [experimental]      "undefined"      undefined
+ 3         platform            <all>             <all>            platform used by requester                    "undefined"      undefined | wp7 | s60 | android | ios | linux | window
+ 4         domain              <all>             <all>            web domain of requester if applicable         "undefined"      \*
+ 5a        **query**           search,suggest    <all>            query attached to action                       ""              \*
+ 5b        **query**           show              <all>            query attached to action                       ""              all | translations |recitations | information | hints | surates | chapters | defaults | flags | fields | fields_reverse | errors | domains | help_messages 
+ 6         highlight           search            <all>            highlight method                              "css"            css | html | genshi | bold | bbcode
+ 7         script              search            aya, word        script of aya text                            "standard"       standard | uthmani
+ 8         vocalized           search            aya, word        enable vocalization of aya text               "True"           True | False
+ 9         recitation          search            aya              recitation id                                 "1"              1 to 30
+ 10        translation         search            aya, trans       translation id                                "None"           \*
+ 11        romanization        search            aya, word        type of romanization                          "none"           none | buckwalter | iso | arabtex
+ 12a       view                search            aya, word        pre-defined configuration for view            "custom"         minimal | normal | full | statistic | linguistic | custom
+ 12b       view                search            translation      pre-defined configuration for view            "custom"         minimal | normal | full | custom
+ 13        prev_aya            search            aya              enable previous aya retrieving                "False"          True | False
+ 14        next_aya            search            aya              enable next aya retrieving                    "False"          True | False
+ 15        sura_info           search            aya              enable sura information retrieving            "True"           True | False
+ 16        sura_stat_info      search            aya              enable sura stats retrieving                  "False"          True | False
+ 17        word_info           search            aya, word        enable word information retrieving            "True"           True | False
+ 17a       word_synonyms       search            aya              enable retrieving of keyword synonyms         "False"          True | False
+ 17b       word_derivations    search            aya              enable retrieving of keyword derivations      "True"           True | False
+ 17c       word_vocalizations  search            aya              enable retrieving of keyword vocalizations    "True"           True | False
+ 18        aya_position_info   search            aya              enable aya position information retrieving    "True"           True | False
+ 19        aya_theme_info      search            aya              enable aya theme information retrieving       "True"           True | False
+ 20        aya_stat_info       search            aya              enable aya stat information retrieving        "True"           True | False
+ 21        aya_sajda_info      search            aya              enable aya sajda information retrieving       "True"           True | False
+ 22        annotation_word     search            aya, word        enable query terms annotations retrieving     "False"          True | False
+ 23        annotation_aya      search            aya              enable aya words annotations retrieving       "False"          True | False
+ 24        sortedby            search            aya              sorting order of results                      "score"          total | score | mushaf | tanzil | subject
+ 25        offset              search            <all>            starting offset of results                    "1"              1 to 6236
+ 26        range               search            <all>            range of results                              "10"             1 to 25
+ 27        page                search            <all>            page number  [override offset]                "1"              1 to 6236
+ 28        perpage             search            <all>            results per page  [override range]            "10"             1 to 25
+ 29        fuzzy               search            aya              fuzzy search [exprimental]                          "False"          True | False
+ 30        aya                 search            word,trans       enable retrieving of aya text                    "True"          True | False
 
-======== =================== ================= ================ ============================================ ================= ========================================================================================================================================================================
+======== ==================== ================= ================ ============================================ ================= ========================================================================================================================================================================
 
 -----------------------
 Advanced Query Examples
