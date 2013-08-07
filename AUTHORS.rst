@@ -107,7 +107,7 @@ Translation
   * French: Zineb Pub, Yasmine Houadjli, Abdelkarim Aries, Nassim rehali, Nasreddine Cheniki
   * Indonesian:  Ahmed Jumal , Amy cidra, Mahyuddin Susanto
   * Japanese: Abdelkarim Aries
-  * Spanish: Khiru Barbaross 
+  * Spanish: Khireddine Chekraoui 
 
 * Mobile Web interface 
 
