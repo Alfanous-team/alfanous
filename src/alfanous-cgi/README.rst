@@ -25,7 +25,7 @@ Limitations
 --------------
 Quering Syntax
 --------------
-To get JSON information , use this syntax : http://dj.alfanous.org/jos2?ARGUMENT such as ARGUMENT is compound of those flags: `API flags <https://github.com/Alfanous-team/alfanous/blob/master/src/alfanous/README.rst#flags>`_.
+To get JSON information , use this syntax : http://www.alfanous.org/jos2?ARGUMENT such as ARGUMENT is compound of those flags: `API flags <https://github.com/Alfanous-team/alfanous/blob/master/src/alfanous/README.rst#flags>`_.
 
 --------
 Examples
