@@ -4,7 +4,7 @@
 <div id="faqpanel" class="modal hide fade" tabindex="-1" role="dialog" aria-hidden="true" style="text-align: {{ bidi.align }};  direction: {{ bidi.direction}};">
     <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-        <h3 id="myModalLabel_faq"><i class="icon-question-sign"></i>{{ _("F.A.Q.") }}</h3>
+        <h3 id="myModalLabel_faq"><i class="icon-question-sign"></i> {{ _("F.A.Q.") }}</h3>
     </div>
     <div class="modal-body">
         <p>{{ _("See") }} <a href="https://github.com/Alfanous-team/alfanous/blob/master/FAQ.rst">{{ _("this link") }}</a>.</p>
@@ -18,7 +18,7 @@
 <div id="help" class="modal hide fade" tabindex="-1" role="dialog" aria-hidden="true" style="text-align: {{ bidi.align }};  direction: {{ bidi.direction}};">
     <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-        <h3 id="myModalLabel_help"><i class="icon-exclamation-sign"></i>{{ _("Help") }}</h3>
+        <h3 id="myModalLabel_help"><i class="icon-exclamation-sign"></i> {{ _("Help") }}</h3>
     </div>
     <div class="modal-body">
         <div id="accordion_help" class="accodion">
@@ -32,53 +32,53 @@
                              <tbody>
                                 <tr>
                                     <th >{{ _("Exact search") }} </th>
-                                    <td  ><a  href='/?{% build_search_link params '%20رب' 1 False %}'> رب</a></td>
-                                    <td  ><a  href='/?{% build_search_link params 'فأسقيناكموه' 1 False %}'> فأسقيناكموه </a></td>
+                                    <td  ><a  href='/{{ current.language }}/?{% build_search_link params '%20رب' 1 False %}'> رب</a></td>
+                                    <td  ><a  href='/{{ current.language }}/?{% build_search_link params 'فأسقيناكموه' 1 False %}'> فأسقيناكموه </a></td>
                                 </tr>
                                 <tr>
                                     <th >{{ _("Phrase search") }}  </th>
-                                    <td><a href='/?{% build_search_link params '"رب%20العالمين"' 1 False %}'>"رب العالمين"</a></td>
-                                    <td><a href='/?{% build_search_link params '"رسول%20الله"' 1 False %}'>"رسول الله"</a></td>
+                                    <td><a href='/{{ current.language }}/?{% build_search_link params '"رب%20العالمين"' 1 False %}'>"رب العالمين"</a></td>
+                                    <td><a href='/{{ current.language }}/?{% build_search_link params '"رسول%20الله"' 1 False %}'>"رسول الله"</a></td>
                                 </tr>
                                 <tr>
                                     <th >{{ _("Logical relations") }}</th>
-                                    <td ><a href='/?{% build_search_link params '(الصلاة%20-%20الزكاة)%20+%20سورة:البقرة' 1 False %}'>(الصلاة - الزكاة) + سورة:البقرة</a></td>
-                                    <td ><a href='/?{% build_search_link params 'سميع%20|%20بصير' 1 False %}'> سميع | بصير</a></td>
+                                    <td ><a href='/{{ current.language }}/?{% build_search_link params '(الصلاة%20-%20الزكاة)%20+%20سورة:البقرة' 1 False %}'>(الصلاة - الزكاة) + سورة:البقرة</a></td>
+                                    <td ><a href='/{{ current.language }}/?{% build_search_link params 'سميع%20|%20بصير' 1 False %}'> سميع | بصير</a></td>
                                 </tr> 
                                 <tr>
                                     <th >{{ _("Wildcards") }}</th>
-                                    <td><a href='/?{% build_search_link params '*نبي*' 1 False %}'>*نبي*</a></td>
-                                    <td><a href='/?{% build_search_link params 'نعم؟' 1 False %}'>نعم؟</a></td>
+                                    <td><a href='/{{ current.language }}/?{% build_search_link params '*نبي*' 1 False %}'>*نبي*</a></td>
+                                    <td><a href='/{{ current.language }}/?{% build_search_link params 'نعم؟' 1 False %}'>نعم؟</a></td>
                                 </tr>
                                 <tr>
                                     <th >{{ _("Fields") }}</th>
-                                    <td ><a href='/?{% build_search_link params 'سورة:يس' 1 False %}'>سورة:يس</a></td>
-                                    <td ><a href='/?{% build_search_link params 'سجدة:نعم' 1 False %}'>سجدة:نعم</a></td>
+                                    <td ><a href='/{{ current.language }}/?{% build_search_link params 'سورة:يس' 1 False %}'>سورة:يس</a></td>
+                                    <td ><a href='/{{ current.language }}/?{% build_search_link params 'سجدة:نعم' 1 False %}'>سجدة:نعم</a></td>
                                 </tr>
                                 <tr>
                                     <th >{{ _("Intervals") }} </th>
-                                    <td><a href='/?{% build_search_link params 'رقم_السورة:%5B1%20الى%205%5D%20%2B%20الله' 1 False %}'>  رقم_السورة:[1 الى 5] + الله</a></td>
+                                    <td><a href='/{{ current.language }}/?{% build_search_link params 'رقم_السورة:%5B1%20الى%205%5D%20%2B%20الله' 1 False %}'>  رقم_السورة:[1 الى 5] + الله</a></td>
                                     <td> </td>
                                 </tr>
                                 <tr>
                                     <th >{{ _("Partial vocalization") }} </th>
-                                    <td ><a href="/?{% build_search_link params "آية_:'مَن'" 1 False %}">آية_:'مَن'</a></td>
-                                    <td ><a href="/?{% build_search_link params "آية_:'المَلكُ'" 1 False %}">آية_:'المَلكُ'</a></td>
+                                    <td ><a href="/{{ current.language }}/?{% build_search_link params "آية_:'مَن'" 1 False %}">آية_:'مَن'</a></td>
+                                    <td ><a href="/{{ current.language }}/?{% build_search_link params "آية_:'المَلكُ'" 1 False %}">آية_:'المَلكُ'</a></td>
                                 </tr>
                                 <tr>
                                     <th >{{ _("Word properties") }}</th>
-                                    <td><a href='/?{% build_search_link params '{قول،اسم}' 1 False %}'>{قول،اسم}</a></td>
-                                    <td><a href='/?{% build_search_link params '{ملك،فعل}' 1 False %}'>{ملك،فعل}</a></td>
+                                    <td><a href='/{{ current.language }}/?{% build_search_link params '{قول،اسم}' 1 False %}'>{قول،اسم}</a></td>
+                                    <td><a href='/{{ current.language }}/?{% build_search_link params '{ملك،فعل}' 1 False %}'>{ملك،فعل}</a></td>
                                 </tr>
                                 <tr>
                                     <th>{{ _("Derivations") }}</th>
-                                    <td><a href='/?{% build_search_link params '%3E%3Eملك' 1 False %}'>&gt;&gt;ملك</a></td>
-                                    <td ><a href='/?{% build_search_link params '%3Eملك' 1 False %}'> &gt;ملك</a></td>
+                                    <td><a href='/{{ current.language }}/?{% build_search_link params '%3E%3Eملك' 1 False %}'>&gt;&gt;ملك</a></td>
+                                    <td ><a href='/{{ current.language }}/?{% build_search_link params '%3Eملك' 1 False %}'> &gt;ملك</a></td>
                                 </tr>
                                  <tr>
                                     <th>{{ _("Buckwalter Transliteration") }}</th>
-                                    <td><a href='/?{% build_search_link params 'qawol' 1 False %}'>qawol</a></td>
-                                    <td ><a href='/?{% build_search_link params 'Allah' 1 False %}'>Allah</a></td>
+                                    <td><a href='/{{ current.language }}/?{% build_search_link params 'qawol' 1 False %}'>qawol</a></td>
+                                    <td ><a href='/{{ current.language }}/?{% build_search_link params 'Allah' 1 False %}'>Allah</a></td>
                                 </tr>
                           
                              </tbody>
@@ -139,7 +139,7 @@
 <div id="awapanel" class="modal hide fade" tabindex="-1" role="dialog" aria-hidden="true" style="text-align: {{ bidi.align }};  direction: {{ bidi.direction}};">
     <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-        <h3 id="myModalLabel_awarded">{{ _("Awarded!") }}</h3>
+        <h3 id="myModalLabel_awarded"> {{ _("Awarded!") }}</h3>
     </div>
     <div class="modal-body">
         <p>{{ _("Alfanous.org was chosen as the best-in-technicaity website in the competition AlgeriaWebAwards 2012.") }}</p>
@@ -177,7 +177,7 @@
 <div id="contactpanel" class="modal hide fade" tabindex="-1" role="dialog" aria-hidden="true" style="text-align: {{ bidi.align }};  direction: {{ bidi.direction}};">
     <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-        <h3 id="myModalLabel_contact"><i class="icon-envelope"></i>{{ _("Contact us") }}</h3>
+        <h3 id="myModalLabel_contact"><i class="icon-envelope"></i> {{ _("Contact us") }}</h3>
     </div>
     <div class="modal-body">
         <ul class="list">
@@ -260,7 +260,7 @@
 <div id="download" class="modal hide fade" tabindex="-1" role="dialog" aria-hidden="true" style="text-align: {{ bidi.align }};  direction: {{ bidi.direction}};">
     <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-        <h3 id="myModalLabel_download"><i class="icon-download-alt"></i>{{ _("Download") }}</h3>
+        <h3 id="myModalLabel_download"><i class="icon-download-alt"></i> {{ _("Download") }}</h3>
     </div>
     <div class="modal-body">
         <h4><i class="icon-windows"></i> {{ _("Windows") }}:</h4>
@@ -301,7 +301,7 @@
 <div id="translatepanel" class="modal hide fade" tabindex="-1" role="dialog" aria-hidden="true" style="text-align: {{ bidi.align }};  direction: {{ bidi.direction}};">
     <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-        <h3 id="myModalLabel_translate"><i class="icon-globe"></i>{{ _("How to translate") }}</h3>
+        <h3 id="myModalLabel_translate"><i class="icon-globe"></i> {{ _("How to translate") }}</h3>
     </div>
     <div class="modal-body">
     <!--
