@@ -145,7 +145,7 @@ Translation
 Test & Support
 --------------
 * Test: `Walid Ziouche`_
-* Bugs: xsoh, Yacer~, Jounathan~, BenSali~ , oussama~, Many persons from the community, thanks to all. 
+* Bugs: Ahmed Salem, xsoh, Yacer~, Jounathan~, BenSali~ , oussama~, Many persons from the community, thanks to all. 
 * Vulns:  Jalil~
 
 
