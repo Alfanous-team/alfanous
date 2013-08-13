@@ -3,7 +3,9 @@ Alfanous - Advanced Quranic Search Engine , Authored by Assem Chelli (`@assem-ch
       We gratefully acknowledge contributions from the following.
       Please let us know if we missed anyone, thanks :)
 
-
+===========
+Maintainers
+===========
 ==================== =========================== ================================= ===================
  Name                 Position                    Email                             Twitter
 -------------------- --------------------------- --------------------------------- -------------------
