@@ -4,6 +4,19 @@ Alfanous - Advanced Quranic Search Engine , Authored by Assem Chelli (`@assem-ch
       Please let us know if we missed anyone, thanks :)
 
 
+================== ========================== ================================= =============================================
+Name      		  Position                    Email                            Twitter
+------------------ -------------------------- --------------------------------- ---------------------------------------------
+`Assem Chelli`_     Project Manager/Developer   assem[dot]ch [at] [GMAIL]        `@assem_ch`_
+`Walid Ziouche`_    Tester/Developer            [zero][one]walid [at] [GMAIL]    `@01walid`_  
+`Muslih al aqaad`_  Graphic Designer            muslihzarth [at] [GMAIL]         `@muslihzarth`_
+Yasmine Hoadjli     Community Manager           yhoadjli [at] [GMAIL]            `@yasmamine`_ 
+`Abdellah Chelli`_  Web Developer               sneetsher [at] [GMAIL]           `@sneetsher`_ 
+`Zakaria Smahi`_    Firefox addon Developer     zakaria08esi [at] [GMAIL]        `@zsmahi`_ 
+Kacem Bokraa        Writer                      bk_boukraa [at] esi[dot]dz       `@kacem4dz`_
+================== ========================== ================================= =============================================
+
+
 .. _`Assem Chelli`: https://github.com/assem-ch
 .. _`Abdellah Chelli`: https://github.com/sneetsher 
 .. _`Zakaria Smahi`: https://github.com/zsmahi
@@ -11,6 +24,14 @@ Alfanous - Advanced Quranic Search Engine , Authored by Assem Chelli (`@assem-ch
 .. _`Walid Ziouche`: https://github.com/01walid
 .. _`Muslih al aqaad`: https://github.com/muslih
 .. _`Tedjeddine Meabeo`: https://github.com/tedj
+
+.. _`@assem_ch`: https://twitter.com/assem_ch
+.. _`@sneetsher`: https://twitter.com/sneetsher 
+.. _`@zsmahi`: https://twitter.com/zsmahi
+.. _`@yasmamine`: https://twitter.com/yasmamine
+.. _`@01walid`: https://twitter.com/01walid
+.. _`@muslihzarth`: https://twitter.com/muslihzarth
+.. _`@kacem4dz`: https://twitter.com/kacem4dz
 
 ============ 
 Contributors 
