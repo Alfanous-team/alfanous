@@ -6,10 +6,11 @@ This is the JSON output system version 2 of Alfanous project. This feature is in
 .. _Wikipedia: http://en.wikipedia.org/wiki/JSON
 .. _Official_Website_of_JSON: http://www.json.org/
 
--------
-License
--------
+------------
+Terms of use
+------------
 *  This service is free to use.
+*  Don't name your application "Alfanous" before we are okey about that.
 *  We highly recommend to refer Alfanous engine somewhere in your pages using icons or texts like "Alfanous engine", "Powered by Alfanous.org", or "Based on Alfanous.org" linked to "http://www.alfanous.org" or "http://www.alfanous.org/jos2". 
 *  We highly recommend to describe clearly somewhere in your application the relation to the whole Alfanous project, such as an about button.
 *  Art works you may need are available here_, the Art is licenced with AGPL license.
