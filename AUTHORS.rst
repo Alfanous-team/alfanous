@@ -108,6 +108,7 @@ Translation
   * Indonesian:  Ahmed Jumal , Amy cidra, Mahyuddin Susanto
   * Japanese: Abdelkarim Aries
   * Spanish: Khireddine Chekraoui 
+  * Portuguese: Jonathan Da Fonseca
 
 * Mobile Web interface 
 
