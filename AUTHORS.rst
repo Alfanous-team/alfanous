@@ -103,7 +103,7 @@ Documentation
 Writing
 -------
 * News : Mohamed M Sayed, Yasser Ghemit, Kacem Boukraa, Asmaa Mhimeh, 
-* Blog posts: Muslih Al-aqaad, Ahmed Jumal, 
+* Blog posts: Muslih Al-aqaad, Ahmed Jumal, Aji Fatwa
 
 
 --------------------
