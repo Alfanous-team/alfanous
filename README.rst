@@ -145,6 +145,7 @@ Featured Posts
 - *إصدار نسخة “الياقوت” من موقع الفانوس للبحث القرآني المتقدّم*, kacemb2_
 - *مزية جديدة في الفانوس، أنقر ما تريد لتبحث من جديد!*, chiffra1_
 - *التحقق من أحد المنشورات حول الإعجاز العددي في القرآن الكريم*, chiffra2_
+- *AlFanous, Terdepan dalam Penelusuran Teks dan Informasi Ayat Al Qur’an*, fath_multimedia_ 
 
 **Note:**  If you wrote -yourself- a good post about Alfanous in any language, please just tell us to refer it here!
 
@@ -175,4 +176,5 @@ See also
 .. _kacemb2: http://www.kacemb.com/%D8%A5%D8%B5%D8%AF%D8%A7%D8%B1-%D9%86%D8%B3%D8%AE%D8%A9-%D8%A7%D9%84%D9%8A%D8%A7%D9%82%D9%88%D8%AA-%D9%85%D9%86-%D9%85%D9%88%D9%82%D8%B9-%D8%A7%D9%84%D9%81%D8%A7%D9%86%D9%88%D8%B3-%D9%84%D9%84/
 .. _chiffra1: http://chiffra.blogspot.com/2012/06/blog-post.html
 .. _chiffra2: http://chiffra.blogspot.com/2013/01/blog-post_4.html
+.. _fath_multimedia: http://www.fath-multimedia.blogspot.com/2013/08/alfanous-terdepan-dalam-penelusuran.html
 
