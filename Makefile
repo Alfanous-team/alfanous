@@ -506,6 +506,7 @@ install_web_basic:
 
 
 install_jos2: install_api install_web_basic
+	echo "This is obsolute, run the django app instead  unless you want run the service through cgi"
 	cd $(API_PATH)alfanous-cgi ;  mkdir -p $(WEB_CGI_INSTALL_PATH).alfanous/; cp  -r alfanous_json2.py $(WEB_CGI_INSTALL_PATH);
 	chmod +x $(WEB_CGI_INSTALL_PATH)alfanous_json2.py
 	chmod -R 777 $(WEB_CGI_INSTALL_PATH).alfanous/
@@ -514,10 +515,10 @@ install_jos2: install_api install_web_basic
 
 
 install_wui: install_jos2
+	echo "This is obsolute, run the django app instead"
 	cd ./interfaces/web/ ;  cp  -r wui  $(WEB_INSTALL_PATH) 
 	cd $(WEB_INSTALL_PATH);  cd wui; sed -i 's/www\.alfanous\.org\/json2/alfanous\.local\/cgi\-bin\/alfanous\_json2\.py/g' index.*
 	xdg-open http://alfanous.local/ &  ##launch default browser for test
-
 
 test_pylint:
 	pylint --ignore=whoosh,dynamic_resources,mainform_ui.py src -f colorized | more
