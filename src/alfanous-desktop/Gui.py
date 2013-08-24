@@ -241,7 +241,7 @@ class QUI( Ui_MainWindow ):
                  "page": self.o_page.value(),
                  "reverse_order": self.o_reverse.isChecked(),
                  "word_info":self.o_word_stat.isChecked(),
-                 "highlight":self.o_highlight.isChecked(),
+                 "highlight": "html" if self.o_highlight.isChecked() else None,
                  "script": "uthmani" if self.o_script_uthmani.isChecked()
                             else "standard",
                  "prev_aya":self.o_prev.isChecked(),
