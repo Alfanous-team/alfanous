@@ -90,6 +90,7 @@ LANGUAGES = (
     #( 'ms', "Malay" ),
     #( 'tr', "Turkish" ),
     ( 'es', "Spanish" ),
+    ( 'pt', "Portuguese"),
     #( 'sv', "swedish" )
  )
 
