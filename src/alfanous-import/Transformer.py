@@ -22,7 +22,6 @@
 @contact: assem.ch [at] gmail.com
 @license: AGPL
 
-
 TODO reorganize the importer module ,keep it free of un-needed resources
 '''
 import os.path
@@ -201,9 +200,9 @@ class Transformer:
             i = 0
             for field in schema.field_names():
                 f, v = field, line[i]
-                if v.__class__ == str: write_cmd += f + "=u'" + unicode( v ) + "',"
-                elif v.__class__ == unicode: write_cmd += f + "=u'" + unicode( v ) + "',"
-                elif v.__class__ == int:write_cmd += f + "=" + unicode( v ) + ","        #must change 1 to 0001
+                if v.__class__ == str: write_cmd += f + "=u\"" + unicode( v ) + "\","
+                elif v.__class__ == unicode: write_cmd += f + "=u\"" + unicode( v ) + "\","
+                elif v.__class__ == int:write_cmd += f + "=" + unicode( v ) + "," #must change 1 to 0001
                 else:pass
                 i += 1
 
