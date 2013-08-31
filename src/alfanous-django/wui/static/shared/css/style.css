@@ -1,6 +1,28 @@
 body { 
   padding-top: 60px; /* 60px to make the container go all the way to the bottom of the topbar */
+  font-size: 80%;
+  line-height: 1.6875;
 }
+
+@media only screen and (max-width: 400px) {
+                    body { font-size:70%;}
+     }
+
+@media only screen and (max-width: 1200px) and (min-width: 400px){
+                body { font-size:80%;}
+    }  
+ 
+@media only screen and (max-width: 1600px) and (min-width: 1200px) {
+                body { font-size:90%;}
+    }  
+
+@media only screen and (min-width: 1600px) {
+                    body { font-size:100%;}
+                    
+}
+
+
+
 html, body, .content {
   /* background-color: #eee;*/
 }
@@ -14,6 +36,7 @@ html, body, .content {
   font-family:'ArabeyesQr';
   src:url('../fonts/arabeyes-qr.ttf');
 }
+
 
 @media (max-width: 979px) {
   body {
