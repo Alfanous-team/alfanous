@@ -254,11 +254,32 @@
 					   
 					   
 					    <span class="muted">
-					      <span class="hidden-phone"> {{ _("Result n°") }}</span>
-					       <b> <span class="visible-phone">#</span>{{ ayaresult_id }} </b>
-					     
-		                        
-						 
+					    {% with ayaresult_content.identifier.gid|stringformat:"s" as gid %}
+						    {% with bidi.fields.gid|add:':'|add:gid as new_query %}
+							    <a class="muted" href='?{% build_search_link params new_query 1 False  %}'>
+							      <span class="hidden-phone"> {{ _("Result n°") }}</span>
+							       <b> <span class="visible-phone">#</span>{{ ayaresult_id }} </b>
+							     </a>
+			                 {% endwith %}
+		                 {% endwith %}
+		                 
+		                 {% with ayaresult_content.aya.id|stringformat:"s" as aya_id %}
+									 	{% with bidi.fields.sura|add:':"'|add:ayaresult_content.identifier.sura_name|add:'" + '|add:bidi.fields.aya_id|add:':'|add:aya_id|urlencode  as new_query %}
+										- <a  class="muted" href='?{% build_search_link params  new_query 1 False  %}'> 
+										
+				                        	<span >
+				                        		<small> 
+				                        			{% if bidi.direction == "rtl" %}
+				                        				{{ ayaresult_content.identifier.sura_arabic_name }}
+				                        			{% else %}
+				                        				{{ ayaresult_content.identifier.sura_name }}
+				                        			{% endif %} 
+				                        		</small> 
+				                        		{{ ayaresult_content.aya.id }} 
+				                        	</span>
+				                           </a> 
+						 {% endwith %}
+									{% endwith %}
  						</span>
  						
  						
@@ -275,16 +296,7 @@
 											{% endwith %}
 	                     
 	                      	  </span>		
-	                      	
-	                      	         
-	                      	
-	                         
-	                 
-			                  
-			                    			
-								
-		               	 
-						 
+
 	          
 			  		</legend>
 	                <div class="row-fluid">
@@ -313,7 +325,12 @@
 										- <a href='?{% build_search_link params  new_query 1 False  %}'> 
 										{% endwith %}
 									{% endwith %}
-		                        	<span class=" muted"><small> {{ ayaresult_content.aya.prev_aya.sura }} </small> {{ ayaresult_content.aya.prev_aya.id }} </span></a> 
+		                        	<span class=" muted">
+		                        						<small> 
+		                        									{{ ayaresult_content.aya.prev_aya.sura_arabic }} 
+		                        						</small> 
+		                        						{{ ayaresult_content.aya.prev_aya.id }}
+		                        	 </span></a> 
 								
 		                       </div>	
 		                     {% endif %}
@@ -337,11 +354,11 @@
 										<span class='quran_decoration main_aya'>]</span>
 									
 										{% with ayaresult_content.aya.id|stringformat:"s" as aya_id %}
-									 	{% with bidi.fields.sura|add:':"'|add:ayaresult_content.identifier.sura_name|add:'" + '|add:bidi.fields.aya_id|add:':'|add:aya_id|urlencode  as new_query %}
+									 	{% with bidi.fields.sura_arabic|add:':"'|add:ayaresult_content.identifier.sura_arabic_name|add:'" + '|add:bidi.fields.aya_id|add:':'|add:aya_id|urlencode  as new_query %}
 										- <a href='?{% build_search_link params  new_query 1 False  %}'> 
 										{% endwith %}
 									{% endwith %}
-		                        	<span class="text-success"><small> {{ ayaresult_content.identifier.sura_name }} </small> {{ ayaresult_content.aya.id }} </span></a> 
+		                        	<span class="text-success"><small> {{ ayaresult_content.identifier.sura_arabic_name }} </small> {{ ayaresult_content.aya.id }} </span></a> 
 								
 		                       </div>	
 	
@@ -359,7 +376,7 @@
 										- <a href='?{% build_search_link params  new_query 1 False  %}'> 
 										{% endwith %}
 									{% endwith %}
-		                        	<span class=" muted"><small> {{ ayaresult_content.aya.next_aya.sura }} </small> {{ ayaresult_content.aya.next_aya.id }} </span></a> 
+		                        	<span class=" muted"><small> {{ ayaresult_content.aya.next_aya.sura_arabic }} </small> {{ ayaresult_content.aya.next_aya.id }} </span></a> 
 								
 		                       </div>	
 		                     {% endif %}
@@ -537,17 +554,35 @@
 		                    <div class="text-center">
 		                    	<span class="badge badge-info">{{ _("About surah") }}</span>
 		                        <span class="label label-success">
-		                        	{% with bidi.fields.sura|add:':"'|add:ayaresult_content.sura.name|add:'"' as new_query %}
-									<a href='?{% build_search_link params  new_query 1 True %}'> 
-									{% endwith %}
-									{{ _("Sura") }} | {{ ayaresult_content.sura.name }}</a> 
+		                        	{% if bidi.direction == "rtl" %}
+		                        	
+		                        		{% with bidi.fields.sura_arabic|add:':"'|add:ayaresult_content.sura.arabic_name|add:'"' as new_query %}
+										<a href='?{% build_search_link params  new_query 1 True %}'> 
+										{% endwith %}
+										{{ _("Sura") }} | {{ ayaresult_content.sura.arabic_name }}
+										({{ ayaresult_content.sura.name }})</a> 
+		                        	{% else %}
+			                        	{% with bidi.fields.sura|add:':"'|add:ayaresult_content.sura.name|add:'"' as new_query %}
+										<a href='?{% build_search_link params  new_query 1 True %}'> 
+										{% endwith %}
+										{{ _("Sura") }} | {{ ayaresult_content.sura.name }}
+										( {{ ayaresult_content.sura.english_name }})</a> 
+									{% endif %}
 		                        </span>
+		  
 		                        <span class="label label-inverse"> {{ _("n°") }} | {{ ayaresult_content.sura.id }} </span>
 		                        <span class="label label-success">
+		                        {% if bidi.direction != "rtl" %}
 		                        	{% with bidi.fields.sura_type|add:':'|add:ayaresult_content.sura.type|add:'' as new_query %}
 									<a class='no_decoration' href='?{% build_search_link params  new_query 1 True %}'> 
 									{% endwith %}
 									{{ _("type") }} | {{ ayaresult_content.sura.type }}</a>
+								{% else %}
+									{% with bidi.fields.sura_type_arabic|add:':'|add:ayaresult_content.sura.arabic_type|add:'' as new_query %}
+									<a class='no_decoration' href='?{% build_search_link params  new_query 1 True %}'> 
+									{% endwith %}
+									{{ _("type") }} | {{ ayaresult_content.sura.arabic_type }}</a>
+								{% endif %}
 		                        </span>
 		                        <span class="label label-inverse">
 		                        	{{ _("revelation_order") }}  | {{ ayaresult_content.sura.order }}
