@@ -46,7 +46,7 @@
 						      	 <b> <span class="visible-phone">#</span>{{ translationresult_id }} </b> 
 						      	 	{% if translationresult_content.aya %}
 											  		{% with translationresult_content.identifier.gid|stringformat:"s" as translation_gid %}
-																	{% with "gid:"|add:translation_gid|add:" AND lang:"|add:translationresult_content.info.language as new_query %}
+																	{% with "gid:"|add:translation_gid|add:" AND id:"|add:translationresult_content.identifier.id as new_query %}
 																			<a class=""  href='?{% build_search_link params  new_query 1 False %}'> 
 																	{% endwith %}
 																{% endwith %}
@@ -71,8 +71,11 @@
 						    	<span class="btn-group  pull-{{ bidi.align_inverse }} ">
 	                            <button id="aya_copy_button_{{ ayaresult_id }}" class="btn function_button"><i class="icon-copy"></i></button>
 	                           {% with translationresult_content.identifier.gid|stringformat:"s" as aya_id %}
-									 			{% with bidi.fields.gid|add:':"'|add:translationresult_content.identifier.id|urlencode  as new_query %}
-										 	 		<button class="btn shareme" data-url="http://www.alfanous.org{% url alfanous-django.wui.views.results current.language current.unit %}?{% build_search_link params  new_query 1 False  %}" data-text="{{ translationresult_content.text }} - {{ translationresult_content.identifier.gid }} "></button>
+									 			{% with 'gid:'|add:translationresult_content.identifier.gid|add:" AND id:"|add:translationresult_content.identifier.id|urlencode  as new_query %}
+										 	 		<button class="btn shareme" 
+										 	 		        data-url="http://www.alfanous.org{% url alfanous-django.wui.views.results current.language current.unit %}?{% build_search_link params  new_query 1 False  %}" 
+										 	 		        data-text="{{ translationresult_content.text }} - {{ _('Interpretation of') }} ({% if bidi.direction == 'rtl' %}{{ translationresult_content.aya.sura_name }}{% else %}{{ translationresult_content.aya.sura_name }}{% endif %}{{ translationresult_content.aya.aya_id }})">
+													</button>
 												{% endwith %}
 											{% endwith %}
 	                     
@@ -100,11 +103,14 @@
 									  		] </span>	
 											  	{% if translationresult_content.aya %}
 											  		-	 {% with translationresult_content.identifier.gid|stringformat:"s" as translation_gid %}
-																	{% with "gid:"|add:translation_gid|add:" AND lang:"|add:translationresult_content.info.language as new_query %}
+																	{% with "gid:"|add:translation_gid|add:" AND lang:"|add:translationresult_content.info.language_short as new_query %}
 																			<a class="text-success"  href='?{% build_search_link params  new_query 1 False %}'> 
 																	{% endwith %}
 																{% endwith %}
-													 <small> {{ _("Interpretation of") }} ( {{ translationresult_content.aya.sura_name }} {{ translationresult_content.aya.aya_id }} )</small>  </a> 
+													 <small> {{ _("Interpretation of") }} ( {% if bidi.direction == "rtl" %}  {{ translationresult_content.aya.sura_name }} 
+													 										{% else %} {{ translationresult_content.aya.sura_name }} 
+													 										{% endif %}
+													 										{{ translationresult_content.aya.aya_id }} )</small>  </a> 
 											  	{% endif %}
 							  					
 							  						
@@ -144,7 +150,7 @@
 											<span class="badge badge-info">{{ _("About translation") }}</span>
 															<span class="label label-success" >
 										  					 {% with translationresult_content.identifier.gid|stringformat:"s" as translation_gid %}
-																	{% with "gid:"|add:translation_gid|add:" AND lang:"|add:translationresult_content.info.language as new_query %}
+																	{% with "gid:"|add:translation_gid as new_query %}
 																			<a  href='?{% build_search_link params  new_query 1 False %}'> 
 																	{% endwith %}
 																{% endwith %}
