@@ -87,7 +87,7 @@ LANGUAGES = (
     ( 'id', "Indonesian" ),
     ( 'ja', "Japanese"),
     #( 'ur', "Urdu" ),
-    #( 'ms', "Malay" ),
+    ( 'ms', "Malay" ),
     #( 'tr', "Turkish" ),
     ( 'es', "Spanish" ),
     ( 'pt', "Portuguese"),
