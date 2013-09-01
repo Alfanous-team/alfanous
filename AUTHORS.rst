@@ -132,6 +132,7 @@ Translation
   * Japanese: Abdelkarim Aries
   * Spanish: Khireddine Chekraoui 
   * Portuguese: Jonathan Da Fonseca
+  * Malay: 'abuyop'
 
 * Mobile Web interface 
 

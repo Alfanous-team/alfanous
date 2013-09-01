@@ -38,6 +38,7 @@ from alfanous.TextProcessing import QArabicSymbolsFilter
 from alfanous.Data import *
 from alfanous.Romanization import transliterate
 from alfanous.Misc import LOCATE, FIND, FILTER_DOUBLES
+from alfanous.Constants import LANGS
 
 
 STANDARD2UTHMANI = lambda x: std2uth_words[x] if std2uth_words.has_key( x ) else x
@@ -255,7 +256,11 @@ class Raw():
 		# enable it if you need statistics , disable it you prefer performance
 		self._init_stats()
 		##
-		self._surates = [item for item in self.QSE.list_values( "sura" ) if item]
+		self._surates = { 
+                         "Arabic": [item for item in self.QSE.list_values( "sura_arabic" ) if item],
+                         "English": [item for item in self.QSE.list_values( "sura_english" ) if item],
+                         "Romanized": [item for item in self.QSE.list_values( "sura" ) if item]
+                        }
 		self._chapters = [item for item in self.QSE.list_values( "chapter" ) if item]
 		self._defaults = self.DEFAULTS
 		self._flags = self.DEFAULTS["flags"].keys()
@@ -691,7 +696,7 @@ class Raw():
 			adja_res = self.QSE.find_extended( adja_query, "gid" )
 			adja_ayas = {0:{"aya_":u"----", "uth_":u"----", "sura":u"---", "aya_id":0}, 6237:{"aya_":u"----", "uth_":u"----", "sura":u"---", "aya_id":9999}}
 			for adja in adja_res:
-				adja_ayas[adja["gid"]] = {"aya_":adja["aya_"], "uth_":adja["uth_"], "aya_id":adja["aya_id"], "sura":adja["sura"]}
+				adja_ayas[adja["gid"]] = {"aya_":adja["aya_"], "uth_":adja["uth_"], "aya_id":adja["aya_id"], "sura":adja["sura"],"sura_arabic":adja["sura_arabic"]}
 				extend_runtime += adja_res.runtime
 
 		#translations
@@ -759,6 +764,7 @@ class Raw():
 									 "aya_id":r["aya_id"],
 									 "sura_id":r["sura_id"],
 									 "sura_name":keywords( r["sura"] )[0],
+                                     "sura_arabic_name":keywords( r["sura_arabic"] )[0],
 									},
 
 		              "aya":{
@@ -773,6 +779,7 @@ class Raw():
 		                	"prev_aya":{
 						    "id":adja_ayas[r["gid"] - 1]["aya_id"],
 						    "sura":adja_ayas[r["gid"] - 1]["sura"],
+                            "sura_arabic":adja_ayas[r["gid"] - 1]["sura_arabic"],
 						    "text": V( adja_ayas[r["gid"] - 1]["aya_"] )  if script == "standard"
 		              			else  adja_ayas[r["gid"] - 1]["uth_"] ,
 						    } if prev_aya else None
@@ -780,6 +787,7 @@ class Raw():
 		                	"next_aya":{
 						    "id":adja_ayas[r["gid"] + 1]["aya_id"],
 						    "sura":adja_ayas[r["gid"] + 1]["sura"],
+                            "sura_arabic":adja_ayas[r["gid"] + 1]["sura_arabic"],
 						    "text":  V( adja_ayas[r["gid"] + 1]["aya_"] )  if script == "standard"
 		              			else   adja_ayas[r["gid"] + 1]["uth_"] ,
 						    } if next_aya else None
@@ -790,8 +798,11 @@ class Raw():
 		    		"sura": {} if not sura_info
 					  else  {
 						  "name":keywords( r["sura"] )[0] ,
+                          "arabic_name": keywords( r["sura_arabic"] )[0],
+                          "english_name": keywords( r["sura_english"] )[0],
 							  "id":r["sura_id"],
 							  "type": r["sura_type"] ,
+                              "arabic_type": r["sura_type_arabic"] ,
 							  "order":r["sura_order"],
 							  "ayas":r["s_a"],
 						    "stat":{} if not sura_stat_info
@@ -916,7 +927,8 @@ class Raw():
 			for ay in aya_res:
 				aya_info[ay["gid"]] = { "text": ay["aya_"],
 										"aya_id": ay["aya_id"],
-										"sura_name": ay["sura"]
+										"sura_name": ay["sura"],
+										"sura_arabic_name": ay["sura_arabic"],
 										}
 
 		output["runtime"] = round( extend_runtime, 5 )
@@ -943,7 +955,8 @@ class Raw():
 		              "aya": None if not aya \
 		              			else aya_info[r["gid"]],
 					  "info": {
-								"language": r["lang"],
+								"language": LANGS[r["lang"]],
+                                "language_short":r["lang"],
 								"author": r["author"],
 								"country":r["country"],
 								},
