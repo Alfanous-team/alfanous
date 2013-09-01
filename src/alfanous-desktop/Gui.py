@@ -33,6 +33,8 @@ from re import compile
 
 from pyparsing import ParseException
 from configobj import ConfigObj
+
+
 from PyQt4 import  QtGui, QtCore, uic
 from PyQt4.QtCore import QRect
 
@@ -44,6 +46,7 @@ from alfanous.Data import Paths
 from mainform_ui import Ui_MainWindow
 from preferencesDlg_ui import Ui_preferencesDlg
 from aboutDlg_ui import Ui_Dialog as Ui_aboutDlg
+from Templates import AYA_RESULTS_TEMPLATE 
 
 ## Localization using gettext
 _ = gettext.gettext
@@ -65,12 +68,6 @@ RELATIONS = ["", "", u"|", u"+", u"-"]
 
 SAJDA_TYPE = {u"مستحبة":_( u"recommended" ), u"واجبة":_( u"obliged" )}
 SURA_TYPE = {u"مدنية":_( u"medina" ), u"مكية":_( u"mekka" )}
-
-CSS = """
-        <style type="text/css">
-            #TODO : new simple&clean style
-        </style>
-    """
 
 ## Some functions
 relate = lambda query, filter, index:"( " + unicode( query ) + " ) " + RELATIONS[index] + " ( " + filter + " ) " if  index > 1 else filter if index == 1 else unicode( query ) + " " + filter
@@ -225,20 +222,12 @@ class QUI( Ui_MainWindow ):
 
         limit = self.o_limit.value()
 
-        html = CSS
 
         suggest_flags = {
                 "action":"suggest",
                 "query": self.o_query.currentText()
                 }
-        output = RAWoutput.do( suggest_flags )
-        #print output
-        suggestions = output["suggest"] if output.has_key( "suggest" ) else {}
-        #print suggestions
-        if len( suggestions ):
-            html += _( u"<h1> Suggestions (%(number)s) </h1>" ) % {"number":len( suggestions )}
-            for key, value in suggestions:
-                html += _( u"<span class='green'>  %(word)s </span> : %(suggestions)s. <br />" ) % {"word": unicode( key ), "suggestions":u"،".join( value )}
+        suggestion_output = RAWoutput.do( suggest_flags )
 
         #search
         results, terms = None, []
@@ -252,7 +241,7 @@ class QUI( Ui_MainWindow ):
                  "page": self.o_page.value(),
                  "reverse_order": self.o_reverse.isChecked(),
                  "word_info":self.o_word_stat.isChecked(),
-                 "highlight":self.o_highlight.isChecked(),
+                 "highlight": "html" if self.o_highlight.isChecked() else None,
                  "script": "uthmani" if self.o_script_uthmani.isChecked()
                             else "standard",
                  "prev_aya":self.o_prev.isChecked(),
@@ -263,33 +252,10 @@ class QUI( Ui_MainWindow ):
                  "aya_stat_info":  self.o_aya_info.isChecked(),
                  "aya_sajda_info":  self.o_aya_info.isChecked(),
                  "translation":self.o_traduction.currentText(),
+                 "word_info": self.o_word_stat.isChecked(),
                  }
         self.Queries.insert( 0, search_flags )
-        try:
-            results = RAWoutput.do( search_flags )
-        except ParseException as PE:
-            html += _( "Your query is wrong!,correct it and search again" )
-        except KeyboardInterrupt:
-            html += _( "Interrupted by user" )
-
-
-        #print words_info
-        if self.o_word_stat.isChecked():
-            html += u'<h1> Words ( %(nb_words)d words reported %(nb_matches)d times ): </h1>' % results["search"]["words"]["global"]
-
-            print results["error"]["msg"]
-            for cpt in xrange( results["search"]["words"]["global"]["nb_words"] ) :
-                    this_word_info = results["search"]["words"]["individual"][cpt + 1]
-                    this_word_info["cpt"] = cpt + 1
-                    html += u'''<p>
-                                <span class="green">%(cpt)d. %(word)s : </span>
-                                reported
-                                <span class="green"> %(nb_matches)d </span>
-                                times in
-                                <span class="green"> %(nb_ayas)d </span>
-                                ayas.
-                                </p>''' % this_word_info
-            html += u"<br/>"
+        results = RAWoutput.do( search_flags )
 
         #if self.o_filter.isChecked() and self.last_results:
         #    results = QFilter( self.last_results, results )
@@ -308,98 +274,13 @@ class QUI( Ui_MainWindow ):
         self.o_page.setMaximum( numpage )
         #self.o_page.setValue(  )
 
+        template_vars = {
+						   "results": results, 
+						   "suggestions":suggestion_output ,
+						   "_": lambda x:x 
+						}
 
-        if results["error"]["code"] == 0:
-            html += _( """<h1> Results ( %(interval_start)d to %(interval_end)d of %(interval_total)d ) </h1> <br/>""" ) \
-                    % {
-                                    "interval_start": results["search"]["interval"]["start"] ,
-                                    "interval_end": results["search"]["interval"]["end"],
-                                    "interval_total": results["search"]["interval"]["total"]
-                        }
-
-
-            for cpt, result in results["search"]["ayas"].items():
-                html += _( u"""  %(cpt)d)  -  Aya n° %(aya_id)d of Sura  %(sura_name)s  """ )  \
-                            % {
-                                                "cpt": cpt,
-                                                "aya_id": result["identifier"]["aya_id"],
-                                                "sura_name": result["identifier"]["sura_name"],
-                                                }
-
-                if result["sura"]:
-                    html += _( u" Sura n°: %(sura_id)d ,revel_place : %(sura_type)s, revel_order :  %(sura_order)d, ayas : %(sura_nb_ayas)d " ) \
-                            % {
-                                        "sura_id": result["sura"]["id"],
-                                        "sura_type": SURA_TYPE[result["sura"]["type"]],
-                                        "sura_order": result["sura"]["order"],
-                                        "sura_nb_ayas": result ["sura"]["stat"]["ayas"]
-                            }
-                html += "<br/>"
-
-                if result["aya"]["prev_aya"]:
-                    html += """[ %(prev_aya_text)s ] - %(prev_aya_sura)s %(prev_aya_id)d <br/>
-                             """ % {
-                                     "prev_aya_text": result["aya"]["prev_aya"]["text"] ,
-                                     "prev_aya_sura": result["aya"]["prev_aya"]["sura"],
-                                     "prev_aya_id": result["aya"]["prev_aya"]["id"]
-                                    }
-
-                html += u"[  %(aya_text)s ] <br/> " % {
-                                                 "aya_text": result["aya"]["text"],
-                                                 }
-                if result["aya"]["next_aya"]:
-                    html += u"""[ %(next_aya_text)s ] - %(next_aya_sura)s %(next_aya_id)d <br/>
-                    """ % {
-                           "next_aya_text":result["aya"]["next_aya"]["text"],
-                           "next_aya_sura":result["aya"]["next_aya"]["sura"],
-                           "next_aya_id": result["aya"]["next_aya"]["id"]
-                           }
-                if result["aya"]["translation"]:
-                    html += _( u"""Translation -%(translation_title)s-: %(translation_text)s <br/>
-                            """ ) % {
-                                     "translation_title":"" ,
-                                     "translation_text": result["aya"]["translation"]
-                                     }
-                if result["position"]:
-                    html += _( u"""page: %(position_page)d ; (Hizb : %(position_hizb)d</b> ,Rubu' : %(position_rub)d) ; manzil :%(position_manzil)d ;  ruku' :%(position_ruku)s <br/>
-                            """ ) % {
-                                    "position_page": result["position"]["page"],
-                                    "position_hizb": result["position"]["hizb"],
-                                    "position_rub": result["position"]["rub"],
-                                    "position_manzil": result["position"]["manzil"],
-                                    "position_ruku": result["position"]["ruku"]
-                                    }
-                if result["theme"]:
-                    html += _( """chapter : %(theme_chapter)s ; topic : %(theme_topic)s ; subtopic : %(theme_subtopic)s <br/>
-                            """ ) % {
-                                    "theme_chapter":result["theme"]["chapter"] ,
-                                    "theme_topic": result["theme"]["topic"] ,
-                                    "theme_subtopic": result["theme"]["subtopic"]
-                                    }
-                if result["stat"]:
-                    html += _( """words : %(aya_nb_words)d / %(sura_nb_words)d  ; letters :  %(aya_nb_letters)d / %(sura_nb_letters)d  ;  names of Allaah : %(aya_nb_godnames)d / %(sura_nb_godnames)d <br/>
-                            """ ) % {
-                                    "aya_nb_words": result["stat"]["words"] ,
-                                    "sura_nb_words": result["sura"]["stat"]["words"] ,
-                                    "aya_nb_letters": result["stat"]["letters"],
-                                    "sura_nb_letters": result["sura"]["stat"]["letters"] ,
-                                    "aya_nb_godnames": result["stat"]["godnames"],
-                                    "sura_nb_godnames": result["sura"]["stat"]["godnames"]
-                                    }
-
-
-                if result["sajda"]:
-                    if result["sajda"]["exist"] == u"نعم":
-                        html += _( u""" This aya contain a sajdah -%(sajda_type)s- n° %(sajda_id)d <br/>
-                                """ ) % {
-                                         "sajda_type": SAJDA_TYPE[ result["sajda"]["type"]],
-                                         "sajda_id": result["sajda"]["id"]
-                                        }
-
-        html += "<br/><hr/><br/>"
-        self.o_results.setText( html )
-
-
+        self.o_results.setText( AYA_RESULTS_TEMPLATE.render(template_vars) )
 
     def topics( self, chapter ):
         first = self.o_topic.itemText( 0 )

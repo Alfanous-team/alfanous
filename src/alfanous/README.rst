@@ -191,43 +191,47 @@ Translation Search:
 Fields
 ------
 * Aya Search Fields:
-===== ================= =================== ============== ============================================================
- n     عربي              English             Values         Description   
------ ----------------- ------------------- -------------- ------------------------------------------------------------
- 1     رقم               gid                 1 to 6236      Global order of Aya in the whole Quran 
- 2     رقم_الآية           aya_id              1 to 300       order of Aya inside its Sura  
- 3     آية                aya                 Text           Aya non-vocalized standard text ( used for search) 
- 4     آية_               aya_                Text           Aya vocalized standard text ( used for show/search) 
- 5     عثماني             uth                 Text           Aya vocalized uthmani text ( used for show/search) 
- 6     عثماني_            uth_                Text           Aya vocalized uthmani text ( used for show)
- 7     موضوع             subject             Text           Thematic Division: **Chapter** > **Topic** > **Subtopic** 
- 8     فصل              chapter              Text           Thematic Division: **Chapter** > Topic > Subtopic 
- 9     فرع               topic                Text           Thematic Division: Chapter > **Topic** > Subtopic 
- 10    باب               subtopic             Text           Thematic Division:  Chapter > Topic > **Subtopic** 
- 11    رقم_السورة        sura_id              1 to 114       Order of  Sura in Mus-haf
- 12    سورة              sura                Text           Possible Names of Sura 
- 13    نوع_السورة         sura_type           مدنية | مكية    Revelation place of Sura 
- 14    ترتيب_السورة       sura_order           1 to 114       Revelation order of Sura 
- 15    جزء               juz                  1 to 30        Structural Division : **Juz** > Hizb  > Rub  
- 16    حزب              hizb                 1 to 60        Structural Division : Juz > **Hizb** > Rub 
- 17    نصف              nisf                 1 to 2         Deprecated   
- 18    ربع                rub                  1 to 4         Structural Division : Juz > Hizb  > **Rub**  
- 19    صفحة              page                Number          Structural Division : Page 
- 19b   صفحة_هندي         page_IN             Number          Structural Division : Page (INDIAN MUSHAF)
- 20    منزل               manzil              1 to 7          Structural Division : **Manzil** > Ruku  
- 21    ركوع               ruku                Number          Structural Division : Manzil > **Ruku** 
- 22    سجدة              sajda               نعم | لا        Test existence of a Sajda
- 23    رقم_السجدة         sajda_id            1 | 14         Order of the Sajda if exist 
- 24    نوع_السجدة         sajda_type         واجبة|مستحبة   Type of the Sajda if exist 
- 25    ح_س              s_l                  Number          Number of **letters** in **Sura** 
- 26    ك_س              s_w                  Number          Number of **words** in **Sura** 
- 27    ج_س               s_g                 Number          Number of **God's names** in **Sura** 
- 28    آ_س               s_a                 Number          Number of **Ayas** in **Sura** 
- 29    ر_س               s_r                 Number          Number of **Ruku-s** in **Sura** 
- 30    ح_آ                a_l                 Number          Number of **letters** in **Aya**  
- 31    ك_آ                a_w                 Number          Number of **words** in **Aya** 
- 32    ج_آ                a_g                 Number          Number of **God's names** in **Aya**
-===== ================= =================== ============== ============================================================
+
+===== ==================== =================== =================== ============================================================
+ n     عربي                 English             Values              Description   
+----- -------------------- ------------------- ------------------- ------------------------------------------------------------
+ 1     رقم                  gid                 1 to 6236           Global order of Aya in the whole Quran 
+ 2     رقم_الآية             aya_id              1 to 300            order of Aya inside its Sura  
+ 3     آية                  aya                 Text                Aya non-vocalized standard text ( used for search) 
+ 4     آية_                 aya_                Text                Aya vocalized standard text ( used for show/search) 
+ 5     عثماني               uth                 Text                Aya vocalized uthmani text ( used for show/search) 
+ 6     عثماني_              uth_                Text                Aya vocalized uthmani text ( used for show)
+ 7     موضوع                subject             Text                Thematic Division: **Chapter** > **Topic** > **Subtopic** 
+ 8     فصل                  chapter             Text                Thematic Division: **Chapter** > Topic > Subtopic 
+ 9     فرع                  topic               Text                Thematic Division: Chapter > **Topic** > Subtopic 
+ 10    باب                  subtopic            Text                Thematic Division:  Chapter > Topic > **Subtopic** 
+ 11    رقم_السورة           sura_id             1 to 114            Order of  Sura in Mus-haf
+ 12    سورة                 sura_arabic         Text                Arabic Name of Sura 
+ 12+   سورة_إنجليزي          sura_english        Text                English Name of Sura
+ 12+   سورة_تهجئة            sura                Text                Romanized Name of Sura
+ 13    نوع_السورة           sura_type_arabic    مدنية|مكية          Revelation place of Sura [Arabic]
+ 13+   نوع_السورة_إنجليزي    sura_type           Meccan|Medinan      Revelation place of Sura [English]
+ 14    ترتيب_السورة         sura_order          1 to 114            Revelation order of Sura 
+ 15    جزء                  juz                 1 to 30             Structural Division : **Juz** > Hizb  > Rub  
+ 16    حزب                  hizb                1 to 60             Structural Division : Juz > **Hizb** > Rub 
+ 17    نصف                  nisf                1 to 2              Deprecated   
+ 18    ربع                  rub                 1 to 4              Structural Division : Juz > Hizb  > **Rub**  
+ 19    صفحة                 page                Number              Structural Division : Page 
+ 19+   صفحة_هندي            page_IN             Number              Structural Division : Page (INDIAN MUSHAF)
+ 20    منزل                 manzil              1 to 7              Structural Division : **Manzil** > Ruku  
+ 21    ركوع                 ruku                Number              Structural Division : Manzil > **Ruku** 
+ 22    سجدة                 sajda               نعم | لا             Test existence of a Sajda
+ 23    رقم_السجدة           sajda_id            1 | 14              Order of the Sajda if exist 
+ 24    نوع_السجدة           sajda_type          واجبة|مستحبة        Type of the Sajda if exist 
+ 25    ح_س                  s_l                 Number              Number of **letters** in **Sura** 
+ 26    ك_س                  s_w                 Number              Number of **words** in **Sura** 
+ 27    ج_س                  s_g                 Number              Number of **God's names** in **Sura** 
+ 28    آ_س                  s_a                 Number              Number of **Ayas** in **Sura** 
+ 29    ر_س                  s_r                 Number              Number of **Ruku-s** in **Sura** 
+ 30    ح_آ                  a_l                 Number              Number of **letters** in **Aya**  
+ 31    ك_آ                  a_w                 Number              Number of **words** in **Aya** 
+ 32    ج_آ                  a_g                 Number              Number of **God's names** in **Aya**
+===== ==================== =================== =================== ============================================================
 
 
 ----------------
