@@ -227,7 +227,8 @@ body {
   font-size: 14px;
   line-height: 20px;
   color: #333333;
-  background-color: #ffffff;
+  /*background-color: #ffffff;*/
+  background: -webkit-gradient(radial, center top, 350, center center, 800, from(#FFFFFF), to(#ddd)) !important;
 }
 
 a {
