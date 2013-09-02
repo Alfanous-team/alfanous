@@ -694,7 +694,7 @@ class Raw():
 		# Adjacents
 		if prev_aya or next_aya:
 			adja_res = self.QSE.find_extended( adja_query, "gid" )
-			adja_ayas = {0:{"aya_":u"----", "uth_":u"----", "sura":u"---", "aya_id":0}, 6237:{"aya_":u"----", "uth_":u"----", "sura":u"---", "aya_id":9999}}
+			adja_ayas = {0:{"aya_":u"----", "uth_":u"----", "sura":u"---", "aya_id":0, "sura_arabic":u"---"}, 6237:{"aya_":u"----", "uth_":u"----", "sura":u"---", "aya_id":9999, "sura_arabic":u"---"}}
 			for adja in adja_res:
 				adja_ayas[adja["gid"]] = {"aya_":adja["aya_"], "uth_":adja["uth_"], "aya_id":adja["aya_id"], "sura":adja["sura"],"sura_arabic":adja["sura_arabic"]}
 				extend_runtime += adja_res.runtime
