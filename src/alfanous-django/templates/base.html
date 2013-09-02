@@ -345,7 +345,7 @@
                                 data-bootstro-width="400px" 
                                 data-bootstro-placement='top' data-bootstro-step='3'>
                                         <i class="icon-wrench"></i>
-                                        {{ _("Advanced search") }} [+]
+                                        {{ _("Search options") }} [+]
                                     </a>
                                 </div>
                                 
@@ -359,13 +359,14 @@
                                                 {% block sortedby_panel %}{% endblock %}
                                                 {% block translations_panel %}{% endblock %}
                                                 {% block recitations_panel %} {% endblock %}
-                                                <!-- Button -->
+                                                
+                                                <!--  no need for double submit button
                                                 <div class="control-group">
                                                     <label class="control-label"></label>
                                                     <div class="controls">
                                                         <button type="submit" id="singlebutton" name="singlebutton" class="btn btn-primary" onclick="$('#form').submit(); return false;">{{ _("Bismi'Allah Go!") }}</button>
-                                                    </div>
-                                                </div>
+                                                    </div> 
+                                                </div>-->
                                         </fieldset>
                                     {# </form> #}
                                 </div>

@@ -58,12 +58,12 @@
 													 		  {{ translationresult_content.aya.sura_name }} 
 													 	  {% endif %}
 													 	{{ translationresult_content.aya.aya_id }} )
-													  <span class="hidden-phone"> {{ _("in") }}</span>
-													  <span class="visible-phone"> - </span>
-													   {{ translationresult_content.info.language }} 
 													  <span class="hidden-phone"> 
-													  	{{ _("by") }} {{ translationresult_content.info.author }} 
+													  {{ _("in") }} {{ translationresult_content.info.language }} 
+													  {{ _("by") }} {{ translationresult_content.info.author }} 
 													  </span>
+													  <span class="visible-phone"> - {{ translationresult_content.info.language_short }} </span>
+													
 													 </small>  
 													 	</a> 
 											  	{% endif %}  
