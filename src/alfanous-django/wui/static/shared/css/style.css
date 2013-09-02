@@ -2,7 +2,6 @@ body {
   padding-top: 60px; /* 60px to make the container go all the way to the bottom of the topbar */
   font-size: 80%;
   line-height: 1.6875;
-  background: -webkit-gradient(radial, center top, 350, center center, 800, from(#FFFFFF), to(#ddd)) !important;
 }
 
 @media only screen and (max-width: 400px) {
