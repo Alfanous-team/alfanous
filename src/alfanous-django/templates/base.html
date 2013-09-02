@@ -115,7 +115,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<!-- Bootstrap -->
     {% ifequal bidi.direction "ltr" %}
-        <link id="skin_css" href="/static/ltr/css/bootstrap.min.css" rel="stylesheet">
+        <link id="skin_css" href="/static/ltr/css/skins/bootstrap_default.css" rel="stylesheet">
         <link href="/static/ltr/css/bootstrap-responsive.min.css" rel="stylesheet">      
     {% else %}
         <link href="/static/rtl/css/rtl-bootstrap.min.css" rel="stylesheet">
@@ -290,8 +290,9 @@
                             <li><a href="#contactpanel" data-toggle="modal"><i class="icon-envelope"></i> {{ _("Contact") }}</a></li>
                             <li><a href="#download" data-toggle="modal"><i class="icon-download-alt"></i> {{ _("Download") }}</a></li>
                         <li class="nav-header">{{ _("Contribute:") }}</li>
+                             <li><a class="text-error" href="http://feedback.alfanous.org/"><i class="icon-comment"></i> {{ _("Feedback") }}</a></li>
                             <li><a href="#translatepanel" data-toggle="modal"><i class="icon-globe"></i> {{ _("Translate") }}</a></li>
-                            <li><a href="http://feedback.alfanous.org/"><i class="icon-comment"></i> {{ _("Feedback") }}</a></li>
+                           
                             <li><a href="#donatepanel" data-toggle="modal" title="We really need your help!" class="dropdown-toggle bootstro" data-bootstro-title="{{ _('we really need your help!') }}"
                                 data-bootstro-content="{{ _('We\'re looking to fund the project, if you like it, help us making it even better.') }}"
                                 data-bootstro-width="400px" 
