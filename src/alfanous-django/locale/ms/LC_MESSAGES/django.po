@@ -8,14 +8,14 @@ msgstr ""
 "Project-Id-Version: alfanous\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2013-08-31 18:10+0100\n"
-"PO-Revision-Date: 2013-08-29 08:55+0000\n"
+"PO-Revision-Date: 2013-09-12 09:02+0000\n"
 "Last-Translator: abuyop <Unknown>\n"
 "Language-Team: Malay <ms@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2013-09-01 14:04+0000\n"
-"X-Generator: Launchpad (build 16750)\n"
+"X-Launchpad-Export-Date: 2013-09-12 19:16+0000\n"
+"X-Generator: Launchpad (build 16761)\n"
 
 #: templates/aya_results.html:17 templates/aya_results.html.py:63
 msgid "Keywords"
@@ -53,11 +53,11 @@ msgstr "perkataan"
 
 #: templates/aya_results.html:94 templates/aya_results.html.py:107
 msgid "occurances"
-msgstr ""
+msgstr "kewujudan"
 
 #: templates/aya_results.html:97 templates/aya_results.html.py:116
 msgid "vocalizations"
-msgstr ""
+msgstr "penyuaraan"
 
 #: templates/aya_results.html:111 templates/base.html:76
 msgid "ayates"
@@ -102,7 +102,7 @@ msgstr "POS"
 
 #: templates/aya_results.html:190
 msgid "lemma"
-msgstr ""
+msgstr "lemma"
 
 #: templates/aya_results.html:193
 msgid "root"
@@ -134,7 +134,7 @@ msgstr ""
 
 #: templates/aya_results.html:214
 msgid "person"
-msgstr ""
+msgstr "individu"
 
 #: templates/aya_results.html:217
 msgid "number"
@@ -206,7 +206,7 @@ msgstr "halaman"
 
 #: templates/aya_results.html:508
 msgid "page (indian)"
-msgstr ""
+msgstr "halaman"
 
 #: templates/aya_results.html:528 templates/aya_results.html.py:595
 msgid "letters"
@@ -222,7 +222,7 @@ msgstr "sajadah"
 
 #: templates/aya_results.html:544
 msgid "Hafs"
-msgstr ""
+msgstr "Hafs"
 
 #: templates/aya_results.html:546 templates/aya_results.html.py:573
 msgid "n°"
@@ -262,11 +262,11 @@ msgstr "Gelintar kabur"
 
 #: templates/aya_search.html:18
 msgid "Unvocalized text"
-msgstr ""
+msgstr "Teks tanpa suara"
 
 #: templates/aya_search.html:22
 msgid "Uthmani script"
-msgstr ""
+msgstr "Skrip uthman"
 
 #: templates/aya_search.html:35
 msgid "View"
@@ -359,11 +359,11 @@ msgstr "Pilihan:"
 
 #: templates/base.html:24
 msgid "vocalized"
-msgstr ""
+msgstr "bersuara"
 
 #: templates/base.html:27
 msgid "uthmani"
-msgstr ""
+msgstr "uthman"
 
 #: templates/base.html:30
 msgid "fuzzy"
@@ -497,11 +497,11 @@ msgstr "alfanous"
 
 #: templates/base.html:93
 msgid "vocalized text"
-msgstr ""
+msgstr "teks bersuara"
 
 #: templates/base.html:96
 msgid "uthmani script"
-msgstr ""
+msgstr "skrip uthman"
 
 #: templates/base.html:99
 msgid "fuzzy search"
@@ -631,6 +631,8 @@ msgid ""
 "Here you can learn by example about the full power of Alfanous search engine "
 "and what you can do with it."
 msgstr ""
+"Disini anda boleh ketahui menerusi contoh berkenaan kehebatan enjin gelintar "
+"Alfanous dan apa yang boleh dibuat dengannya."
 
 #: templates/base.html:294 templates/popups_content.html:21
 msgid "Help"
@@ -682,7 +684,7 @@ msgstr "Pautan:"
 
 #: templates/base.html:311
 msgid "Old website"
-msgstr "Laman sesawang lama"
+msgstr "Laman web lama"
 
 #: templates/base.html:330
 msgid "Alfanous is smart!"
@@ -705,6 +707,8 @@ msgid ""
 "You can <strong>sort</strong>, <strong>filter</strong> search reasults or "
 "choose a translation, you can as well choose a recitator!"
 msgstr ""
+"Anda boleh <strong>isih</strong>, <strong>tapis</strong> keputusan gelintar "
+"atau pilih terjemahan, anda juga boleh memilih pembaca al-quran!"
 
 #: templates/base.html:352
 msgid "Advanced search"
@@ -812,7 +816,7 @@ msgstr "Sela"
 
 #: templates/popups_content.html:64
 msgid "Partial vocalization"
-msgstr ""
+msgstr "Penyuaraan separa"
 
 #: templates/popups_content.html:69
 msgid "Word properties"
@@ -835,6 +839,8 @@ msgid ""
 "The website does not work well on Internet Explorer, we suggest to use "
 "another browser such as: "
 msgstr ""
+"Laman sesawang ini tidak berfungsi baik dengan Internet Explorer, kami "
+"sarankan anda guna pelayar lain seperti: "
 
 #: templates/popups_content.html:131
 msgid "Firefox"
@@ -842,7 +848,7 @@ msgstr "Firefox"
 
 #: templates/popups_content.html:142
 msgid "Awarded!"
-msgstr ""
+msgstr "Anugerah!"
 
 #: templates/popups_content.html:145
 msgid ""
@@ -859,6 +865,8 @@ msgid ""
 "We're stuck looking for possible ways for donations/Funding. Any help is "
 "appreciated!"
 msgstr ""
+"Kami memerlukan bantuan dalam bentuk derma/tajaan. Apa jua bantuan sangat "
+"dihargai!"
 
 #: templates/popups_content.html:162
 msgid "Any way you can help by:"
@@ -882,7 +890,7 @@ msgstr "Beli Produk (Baju-T, Topi, Cawan) dari Zazzle"
 
 #: templates/popups_content.html:167
 msgid "Donate by flattr:"
-msgstr ""
+msgstr "Beri sumbangan melalui flattr:"
 
 #: templates/popups_content.html:180
 msgid "Contact us"
@@ -925,6 +933,8 @@ msgid ""
 "If you want to criticize the project, we'll be thankful if you resume your "
 "criticism and send it to the mailing list."
 msgstr ""
+"Jika anda mahu mengkritik projek ini, kami amat berterima kasih jika anda "
+"panjangkan kritikal anda dengan menghantarnya ke senarai mel."
 
 #: templates/popups_content.html:190
 msgid "For anything else, you can contact us via the mailing list which is:"
@@ -974,6 +984,8 @@ msgid ""
 "creating an ad for alfanous links using Google adwords or facebook if you're "
 "familiar with that (btw,it needs money)"
 msgstr ""
+"mencipta iklan untuk pautan alfanous menggunakan Google adwords atau "
+"facebook jika anda biasa menggunakannya (tetapi ia perlukan duit)"
 
 #: templates/popups_content.html:232
 msgid "Or by"
@@ -1073,7 +1085,7 @@ msgstr "Belum lagi dibina"
 
 #: templates/popups_content.html:288
 msgid "Smartphones"
-msgstr ""
+msgstr "Telefon Pintar"
 
 #: templates/popups_content.html:291
 msgid "Android"
@@ -1081,11 +1093,11 @@ msgstr "Android"
 
 #: templates/popups_content.html:294
 msgid "iPhone"
-msgstr ""
+msgstr "iPhone"
 
 #: templates/popups_content.html:297
 msgid "Windows Phone"
-msgstr ""
+msgstr "Telefon Windows"
 
 #: templates/popups_content.html:310
 msgid "How to translate"
@@ -1126,15 +1138,15 @@ msgstr "saat"
 #: templates/translation_results.html:54
 #: templates/translation_results.html:107
 msgid "Interpretation of"
-msgstr ""
+msgstr "Tafsiran"
 
 #: templates/translation_results.html:61
 msgid "in"
-msgstr ""
+msgstr "dalam"
 
 #: templates/translation_results.html:65
 msgid "by"
-msgstr ""
+msgstr "oleh"
 
 #: templates/translation_results.html:144
 msgid "About translation"
