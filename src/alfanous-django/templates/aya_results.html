@@ -38,7 +38,7 @@
 								<td>
 									{% for suggestion_sub_item  in suggestion_item %}
 										{% with suggestion_key|add:","|add:suggestion_sub_item as replacement_args %}
-											{% with params.query|string_replace:replacement_args as new_query %}
+											{% with params.query|string_replace:replacement_args|urlencode as new_query %}
 												<span class="label label-info"><i class="icon-share-alt icon-white"></i><a href="?{% build_search_link params  new_query 1 False %}"> 
 												{{ suggestion_sub_item }}</a></span>
 											{% endwith %}
