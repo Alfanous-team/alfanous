@@ -149,7 +149,7 @@ Translation
 Test & Support
 --------------
 * Test: `Walid Ziouche`_
-* Bugs: Ahmed Salem, xsoh, Yacer~, Jounathan~, BenSali~ , oussama~, Many persons from the community, thanks to all. 
+* Bugs: Oussama Chammam, Ahmed Salem, xsoh, Yacer~, Jounathan~, BenSali~ , Many persons from the community, thanks to all. 
 * Vulns:  Jalil~
 
 
