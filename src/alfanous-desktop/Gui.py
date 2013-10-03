@@ -200,7 +200,7 @@ class QUI( Ui_MainWindow ):
         QtCore.QObject.connect( self.o_add2query_subject, QtCore.SIGNAL( "clicked()" ), self.add2query_subject )
         QtCore.QObject.connect( self.o_add2query_word, QtCore.SIGNAL( "clicked()" ), self.add2query_word )
         QtCore.QObject.connect( self.o_add2query_misc, QtCore.SIGNAL( "clicked()" ), self.add2query_misc )
-        sura_list == _surates["Arabic"] if DIR == "rtl" else _surates["English"]
+        sura_list =  RAWoutput._surates["Arabic"] if DIR == "rtl" else  RAWoutput._surates["English"]
         self.o_chapter.addItems( RAWoutput._chapters )
         self.o_sura_name.addItems( sura_list  )
         self.o_field.addItems( RAWoutput._fields.values() )# x.keys() for Arabic
