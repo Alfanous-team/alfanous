@@ -210,6 +210,7 @@ update_dynamic_resources_postbuild: transfer_postbuild
 # 7. [postbuild] Different vocalizations of each quranic word, see transfer_vocalizations
 transfer_all: transfer_prebuild transfer_postbuild
 transfer_prebuild: transfer_stopwords transfer_synonyms transfer_word_props transfer_derivations transfer_ara2eng_names transfer_standard2uthmani 
+	cp $(API_PATH)/alfanous/__init__.py $(DYNAMIC_RESOURCES_PATH)
 transfer_postbuild: transfer_vocalizations
 	
 transfer_stopwords:
