@@ -17,7 +17,7 @@ install=
 arch=('any')
 
 _gitname=alfanous
-source=("$pkgname"::'git://github.com/Alfanous-team/alfanous.git')
+source=("$pkgname"::'git+https://github.com/Alfanous-team/alfanous.git')
 md5sums=('SKIP')
 
 pkgver() {
