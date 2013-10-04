@@ -61,7 +61,7 @@ def SCAN_SUPERJOKERS( query ):
 	filtred_query = myreg.sub( "", query )
 	super_joker = True if ( len( filtred_query ) < 3 and "*" in query ) \
 						or ( len( filtred_query ) < 2 and ( u"?" in query or u"؟" in query ) ) \
-						or query.count( "*" ) > 1 \
+						or query.count( "*" ) > 2 \
 			 	else False
 	# Exceptions
 	if query in [u"?", u"؟", u"???????????", u"؟؟؟؟؟؟؟؟؟؟؟؟"]:

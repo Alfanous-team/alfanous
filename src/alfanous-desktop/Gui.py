@@ -202,7 +202,7 @@ class QUI( Ui_MainWindow ):
         QtCore.QObject.connect( self.o_add2query_misc, QtCore.SIGNAL( "clicked()" ), self.add2query_misc )
 
         self.o_chapter.addItems( RAWoutput._chapters )
-        self.o_sura_name.addItems( RAWoutput._surates )
+        self.o_sura_name.addItems( RAWoutput._surates["Arabic"] )
         self.o_field.addItems( RAWoutput._fields.values() )# x.keys() for Arabic
         self.o_traduction.addItems( RAWoutput._translations.values() )
         self.load_config()
@@ -467,7 +467,19 @@ class QUI( Ui_MainWindow ):
 
         path = unicode( filenames[0] )
         file = open( path, "w" )
-        file.write( self.o_results.toHtml() + "<br><br>CopyRights(c)<a href='http://www.alfanous.org'>Alfanous</a>  " )
+        html_content = """<html>
+                            <head>
+                                <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+                            </head>
+                            <body>
+                                %s
+                                <br>
+                                <br>
+                                CopyRights(c)<a href='http://www.alfanous.org'>Alfanous</a>  
+                             </body>
+                           </html>
+                            """ % self.o_results.toHtml() 
+        file.write( html_content )
         file.close()
 
     def print_results( self ):
