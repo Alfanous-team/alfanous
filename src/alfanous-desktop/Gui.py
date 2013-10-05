@@ -194,8 +194,8 @@ class QUI( Ui_MainWindow ):
         QtCore.QObject.connect( self.m_about, QtCore.SIGNAL( "triggered(bool)" ), self.about )
         QtCore.QObject.connect( self.action_Send_Feedback, QtCore.SIGNAL( "triggered(bool)" ), self.send_feedback )
 
-        QtCore.QObject.connect( self.a_save, QtCore.SIGNAL( "clicked()" ), self.save_results )
-        QtCore.QObject.connect( self.a_print, QtCore.SIGNAL( "clicked()" ), self.print_results )
+        QtCore.QObject.connect( self.a_save, QtCore.SIGNAL( "triggered()" ), self.save_results )
+        QtCore.QObject.connect( self.a_print, QtCore.SIGNAL( "triggered()" ), self.print_results )
 
         QtCore.QObject.connect( self.o_add2query_advanced, QtCore.SIGNAL( "clicked()" ), self.add2query_advanced )
         QtCore.QObject.connect( self.o_add2query_struct, QtCore.SIGNAL( "clicked()" ), self.add2query_struct )
