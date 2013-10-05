@@ -470,7 +470,7 @@ class QUI( Ui_MainWindow ):
 
         path = unicode( filenames[0] )
         file = open( path, "w" )
-        file.write( self.o_results.toHtml() + "<br><br>CopyRights(c)<a href='http://www.alfanous.org'>Alfanous</a>  " )
+        file.write( self.o_results.toHtml().toUtf8().replace("<head>", "<head><meta charset=\"utf-8\">") + "<br><br>CopyRights(c)<a href='http://www.alfanous.org'>Alfanous</a>  " )
         file.close()
 
     def print_results( self ):
