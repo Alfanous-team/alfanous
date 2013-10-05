@@ -186,8 +186,11 @@ class QUI( Ui_MainWindow ):
         QtCore.QObject.connect( self.o_perpage, QtCore.SIGNAL( "valueChanged(int)" ), self.changePERPAGE )
         QtCore.QObject.connect( self.o_struct_from, QtCore.SIGNAL( "valueChanged(int)" ), self.struct_to_min )
         QtCore.QObject.connect( self.o_stat_from, QtCore.SIGNAL( "valueChanged(int)" ), self.stat_to_min )
-        QtCore.QObject.connect( self.m_exit, QtCore.SIGNAL( "clicked()" ), self.exit )
-        QtCore.QObject.connect( self.m_help, QtCore.SIGNAL( "clicked()" ), self.help )
+        QtCore.QObject.connect( self.m_exit, QtCore.SIGNAL( "triggered()" ), self.exit )
+        QtCore.QObject.connect( self.m_help, QtCore.SIGNAL( "triggered()" ), self.help )
+        #TODO : use new signals
+        #self.m_exit.triggered.connect(self.exit)
+        #self.m_exit.triggered.connect(self.exit)
         QtCore.QObject.connect( self.m_about, QtCore.SIGNAL( "triggered(bool)" ), self.about )
         QtCore.QObject.connect( self.action_Send_Feedback, QtCore.SIGNAL( "triggered(bool)" ), self.send_feedback )
 
