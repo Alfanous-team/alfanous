@@ -186,13 +186,16 @@ class QUI( Ui_MainWindow ):
         QtCore.QObject.connect( self.o_perpage, QtCore.SIGNAL( "valueChanged(int)" ), self.changePERPAGE )
         QtCore.QObject.connect( self.o_struct_from, QtCore.SIGNAL( "valueChanged(int)" ), self.struct_to_min )
         QtCore.QObject.connect( self.o_stat_from, QtCore.SIGNAL( "valueChanged(int)" ), self.stat_to_min )
-        QtCore.QObject.connect( self.m_exit, QtCore.SIGNAL( "clicked()" ), self.exit )
-        QtCore.QObject.connect( self.m_help, QtCore.SIGNAL( "clicked()" ), self.help )
+        QtCore.QObject.connect( self.m_exit, QtCore.SIGNAL( "triggered()" ), self.exit )
+        QtCore.QObject.connect( self.m_help, QtCore.SIGNAL( "triggered()" ), self.help )
+        #TODO : use new signals
+        #self.m_exit.triggered.connect(self.exit)
+        #self.m_exit.triggered.connect(self.exit)
         QtCore.QObject.connect( self.m_about, QtCore.SIGNAL( "triggered(bool)" ), self.about )
         QtCore.QObject.connect( self.action_Send_Feedback, QtCore.SIGNAL( "triggered(bool)" ), self.send_feedback )
 
-        QtCore.QObject.connect( self.a_save, QtCore.SIGNAL( "clicked()" ), self.save_results )
-        QtCore.QObject.connect( self.a_print, QtCore.SIGNAL( "clicked()" ), self.print_results )
+        QtCore.QObject.connect( self.a_save, QtCore.SIGNAL( "triggered()" ), self.save_results )
+        QtCore.QObject.connect( self.a_print, QtCore.SIGNAL( "triggered()" ), self.print_results )
 
         QtCore.QObject.connect( self.o_add2query_advanced, QtCore.SIGNAL( "clicked()" ), self.add2query_advanced )
         QtCore.QObject.connect( self.o_add2query_struct, QtCore.SIGNAL( "clicked()" ), self.add2query_struct )
@@ -200,9 +203,9 @@ class QUI( Ui_MainWindow ):
         QtCore.QObject.connect( self.o_add2query_subject, QtCore.SIGNAL( "clicked()" ), self.add2query_subject )
         QtCore.QObject.connect( self.o_add2query_word, QtCore.SIGNAL( "clicked()" ), self.add2query_word )
         QtCore.QObject.connect( self.o_add2query_misc, QtCore.SIGNAL( "clicked()" ), self.add2query_misc )
-
+        sura_list =  RAWoutput._surates["Arabic"] if DIR == "rtl" else  RAWoutput._surates["English"]
         self.o_chapter.addItems( RAWoutput._chapters )
-        self.o_sura_name.addItems( RAWoutput._surates["Arabic"] )
+        self.o_sura_name.addItems( sura_list  )
         self.o_field.addItems( RAWoutput._fields.values() )# x.keys() for Arabic
         self.o_traduction.addItems( RAWoutput._translations.values() )
         self.load_config()
@@ -467,19 +470,7 @@ class QUI( Ui_MainWindow ):
 
         path = unicode( filenames[0] )
         file = open( path, "w" )
-        html_content = """<html>
-                            <head>
-                                <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-                            </head>
-                            <body>
-                                %s
-                                <br>
-                                <br>
-                                CopyRights(c)<a href='http://www.alfanous.org'>Alfanous</a>  
-                             </body>
-                           </html>
-                            """ % self.o_results.toHtml() 
-        file.write( html_content )
+        file.write( self.o_results.toHtml().toUtf8().replace("<head>", "<head><meta charset=\"utf-8\">") + "<br><br>CopyRights(c)<a href='http://www.alfanous.org'>Alfanous</a>  " )
         file.close()
 
     def print_results( self ):

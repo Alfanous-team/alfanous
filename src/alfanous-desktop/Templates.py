@@ -23,7 +23,7 @@ including separated files in packaging.
 
 from jinja2 import Template
 
-AYA_RESULTS_TEMPLATE = Template("""
+AYA_RESULTS_TEMPLATE = Template(("""
 
 <style type="text/css">
 .results_header {
@@ -375,4 +375,4 @@ AYA_RESULTS_TEMPLATE = Template("""
 
 
 
-""")
+""").decode("utf8"))

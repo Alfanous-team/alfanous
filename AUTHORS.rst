@@ -26,6 +26,7 @@ Maintainers
 .. _`Walid Ziouche`: https://github.com/01walid
 .. _`Muslih al aqaad`: https://github.com/muslih
 .. _`Tedjeddine Meabeo`: https://github.com/tedj
+.. _`Sohaib Afifi`: https://github.com/sohaibafifi
 
 .. _`@assem_ch`: https://twitter.com/assem_ch
 .. _`@sneetsher`: https://twitter.com/sneetsher 
@@ -42,7 +43,7 @@ Contributors
 Coding
 --------
 * API & JSON interface: `Assem Chelli`_    
-* Desktop Interface: `Assem Chelli`_   
+* Desktop Interface: `Assem Chelli`_, `Sohaib Afifi`_
 * Web Interface: `Assem Chelli`_  , `Walid Ziouche`_, `Abdellah Chelli`_ , `Mennouchi Islam Azeddine <https://github.com/islamoc>`_, `Tedjeddine Meabeo`_ , `Muslih al aqaad`_,  `Mouad Debbar`_, Ahmed Ramadan
 * Firefox toolbar: `Zakaria Smahi`_ 
 
@@ -85,7 +86,7 @@ Packaging
 * Windows NSIS installer: Assem Chelli 
 * Ubuntu/Sabily DEB package: Ahmed Almahmoudy
 * Fedora/OpenSuse/Ojuba RPM package: Muhammad Shaban
-* Arch-linux package: Walid Ziouche
+* Arch-linux package: Walid Ziouche, Sohaib Afifi
 
 ------------------
 Resource Enriching
@@ -149,7 +150,7 @@ Translation
 Test & Support
 --------------
 * Test: `Walid Ziouche`_
-* Bugs: Ahmed Salem, xsoh, Yacer~, Jounathan~, BenSali~ , oussama~, Many persons from the community, thanks to all. 
+* Bugs: Oussama Chammam, Ahmed Salem, xsoh, Yacer~, Jounathan~, BenSali~ , Many persons from the community, thanks to all. 
 * Vulns:  Jalil~
 
 
