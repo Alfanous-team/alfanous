@@ -1,6 +1,9 @@
 =================
 What is Alfanous?
 =================
+.. image:: https://travis-ci.org/aert/alfanous.png?branch=master
+        :target: https://travis-ci.org/aert/alfanous
+
 Alfanous is a functional, dynamic, comprehensive Qur’an search engine that has been effectively designed to carry out simple or advanced Quranic searches. Alfanous uses a contemporary, highly developed approach to retrieve vital information, enabling stable efficient, speedy searches to be conducted. Alfanous aims to implement additional features such as highlight, site suggestions, scoring …etc to further improve your search experience.
 Alfanous understands the complex nature of the Arabic language and thus offers effective Arabic language processing, allowing the stemming and successful elimination of ambiguities. The Application Programming Interface can be used as a fundamental base for developers to build and enhance interface types within different systems, ex: Desktop GUI, Web-based UI…etc.
 
