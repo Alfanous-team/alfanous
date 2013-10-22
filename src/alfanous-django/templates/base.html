@@ -418,7 +418,8 @@
 			<div class="row-fluid text-center">
 				<br/>
 			     <br/>
-				<span id="shareme_root" class="span4 offset4 shareme_root" data-url="http://www.alfanous.org" data-text="{{ _('Alfanous') }} - {{ _('Quran Ayah Search') }} #alfanous" data-title="  {{ _('Share!') }}"></span>
+				<span id="shareme_root" class="span4 offset4 shareme_root" data-url="http://www.alfanous.org/{{ current.language }}/{{ current.unit }}/?" 
+				    data-text="{{ _('Alfanous') }} - {% if current.unit == 'aya' %} {{ _('Quran Ayah Search') }} {% elif current.unit == 'word' %} {{ _('Quran Word Search') }} {% elif current.unit == 'translation' %} {{ _('Quran Translation Search') }}{% else %} {{ _('Quran Ayah Search') }} {% endif %}  #alfanous" data-title="  {{ _('Share!') }}"></span>
 			</div>
 			
 		{% endif %}
