@@ -6,8 +6,12 @@ Created on Dec 29, 2012
 
 from django.template import Library
 from django.utils.encoding import iri_to_uri
+from django.utils.html import escape
+from django.utils.http import urlencode
 
 register = Library()
+
+
 
 
 @register.filter
@@ -32,7 +36,7 @@ def string_replace( string, args ):
 
 
 @register.simple_tag
-def build_search_link( params, query, page, filter ):
+def build_search_link( params, query, page, filter, encode=True ):
     """ build a search link based on a new query 
     
     usage: {% build_search_link params query filter %}link</a>
@@ -49,7 +53,12 @@ def build_search_link( params, query, page, filter ):
     else:
     	new_params["query"] = query;
 
-    return iri_to_uri( build_params( new_params ) )
+    built_params = build_params( new_params )
+    if encode:
+        return iri_to_uri(  built_params  )
+    else:
+        return built_params.replace('&', '%26').replace('<', '%3C').replace('>', '%3E').replace('"', '%22').replace("'", '%27')
+     
 
 
 def build_params( params ):
