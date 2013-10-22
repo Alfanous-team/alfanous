@@ -771,7 +771,7 @@ class Raw():
 		              		"id":r["aya_id"],
 		              		"text":   H( V( r["aya_"] ) )  if script == "standard"
 		              			else   H( r["uth_"] ) ,
-                            "text_no_highlight": V( r["aya_"] )   if script == "standard"
+                            "text_no_highlight": r["aya"] if script == "standard"
                                   else   r["uth_"],
 						"translation": trad_text[r["gid"]] if ( translation != "None" and translation and trad_text.has_key( r["gid"] ) ) else None,
 		                	"recitation": None if not recitation or not self._recitations.has_key( recitation ) \
