@@ -1,6 +1,5 @@
 
 
-
 =================
 What is Alfanous?
 =================
@@ -156,6 +155,7 @@ Featured Posts
 - *مزية جديدة في الفانوس، أنقر ما تريد لتبحث من جديد!*, chiffra1_
 - *التحقق من أحد المنشورات حول الإعجاز العددي في القرآن الكريم*, chiffra2_
 - *AlFanous, Terdepan dalam Penelusuran Teks dan Informasi Ayat Al Qur’an*, fath_multimedia_ 
+- *Alfanous, Dakwah Al-Quran Lewat Search Engine*, fimadani_
 
 **Note:**  If you wrote -yourself- a good post about Alfanous in any language, please just tell us to refer it here!
 
@@ -187,4 +187,4 @@ See also
 .. _chiffra1: http://chiffra.blogspot.com/2012/06/blog-post.html
 .. _chiffra2: http://chiffra.blogspot.com/2013/01/blog-post_4.html
 .. _fath_multimedia: http://www.fath-multimedia.blogspot.com/2013/08/alfanous-terdepan-dalam-penelusuran.html
-
+.. _fimadani: http://news.fimadani.com/read/2013/10/22/alfanous-dakwah-al-quran-lewat-search-engine/?utm_source=twitterfeed&utm_medium=twitter
