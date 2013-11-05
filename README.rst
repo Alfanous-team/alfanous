@@ -1,5 +1,4 @@
 
-
 =================
 What is Alfanous?
 =================
@@ -60,6 +59,13 @@ Here also the emails of `Maintainers <https://github.com/Alfanous-team/alfanous/
 * Alfanous is FREE GRATIS: no payment, no ads. 
 
 see `FAQ <https://github.com/Alfanous-team/alfanous/blob/master/FAQ.rst>`_
+
+-------------------
+Research Foundation
+-------------------
+TODO
+http://www.scribd.com/doc/181664193/Proposal-of-an-Advanced-Retrieval-System-for-Noble-Qur%E2%80%99an
+
 
 ----------
 Interfaces
