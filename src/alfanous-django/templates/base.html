@@ -130,7 +130,7 @@
     <!-- v-keyboard css -->
     <link href="/static/shared/css/keyboard.css" rel="stylesheet">
 	<!-- share buttons styling -->
-	{% if params %}
+	{% if False  %}{# params #}
 		<link href="/static/shared/css/share_style.css" rel="stylesheet">
 	{% else %}
 		<link href="/static/shared/css/share_style_root.css" rel="stylesheet">
@@ -375,8 +375,10 @@
                 </div><!--/span4-->
             </div><!--/row-->
         </div>
+
                 
         <div class="row-fluid">
+         
         	    
         	{% block results %}  {% endblock results %}
         </div>
@@ -415,12 +417,7 @@
 		            </div>
 		
 			{% endblock notification %}
-			<div class="row-fluid text-center">
-				<br/>
-			     <br/>
-				<span id="shareme_root" class="span4 offset4 shareme_root" data-url="http://www.alfanous.org/{{ current.language }}/{{ current.unit }}/?" 
-				    data-text="{{ _('Alfanous') }} - {% if current.unit == 'aya' %} {{ _('Quran Ayah Search') }} {% elif current.unit == 'word' %} {{ _('Quran Word Search') }} {% elif current.unit == 'translation' %} {{ _('Quran Translation Search') }}{% else %} {{ _('Quran Ayah Search') }} {% endif %}  #alfanous" data-title="  {{ _('Share!') }}"></span>
-			</div>
+			
 			
 		{% endif %}
 
@@ -430,7 +427,13 @@
     {% include "popups_content.html" %}
 
 
-
+       <div class="row-fluid text-center">
+				 <br/>
+				<span id="shareme_root" class="span4 offset4 shareme_root" data-url="http://www.alfanous.org{% url alfanous-django.wui.views.results current.language current.unit %}?{{ current.request }}" 
+				    data-text="{{ _('Alfanous') }} - {% if current.unit == 'aya' %} {{ _('Quran Ayah Search') }} {% elif current.unit == 'word' %} {{ _('Quran Word Search') }} {% elif current.unit == 'translation' %} {{ _('Quran Translation Search') }}{% else %} {{ _('Quran Ayah Search') }} {% endif %}   #alfanous" data-title="  {{ _('Share!') }}"></span>
+				<br/>
+			    
+			</div>
 
 
 

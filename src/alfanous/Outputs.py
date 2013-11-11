@@ -499,7 +499,7 @@ class Raw():
 			word_vocalizations = True
 			aya_position_info = aya_theme_info = aya_sajda_info = True
 			aya_stat_info = sura_stat_info = True
-			annotation_aya = annotation_word = False
+			annotation_aya = annotation_word = True
 			romanization = "iso"
 		elif view == "statistic":
 			prev_aya = next_aya = False
@@ -525,8 +525,8 @@ class Raw():
 			aya_theme_info = aya_sajda_info = True
 			aya_stat_info = False
 			sura_stat_info = False
-			annotation_aya = False
-			annotation_word = False
+			annotation_aya = True
+			annotation_word = True
 			romanization = "buckwalter"
 		elif view == "recitation":
 			script = "uthmani"
@@ -652,11 +652,16 @@ class Raw():
 										   else []
 					if word_derivations:
 						lemma = LOCATE( derivedict["word_"], derivedict["lemma"], term[1] )
-						root = LOCATE( derivedict["word_"], derivedict["root"], term[1] )
 						if lemma:  # if different of none
 							derivations = FILTER_DOUBLES( FIND( derivedict["lemma"], derivedict["word_"], lemma ) )
 						else:
 							derivations = []
+						# go deeper with derivations
+						root = LOCATE( derivedict["word_"], derivedict["root"], term[1] )
+						if root:  # if different of none
+							derivations_extra = set(FILTER_DOUBLES( FIND( derivedict["root"], derivedict["word_"], lemma ) )) - set(derivations)
+						else:
+							derivations_extra = []
 
 					words_output[ "individual" ][ cpt ] = {
 															 "word":term[1],
@@ -670,7 +675,9 @@ class Raw():
 															 "lemma": lemma if word_derivations else "",
 															 "root": root if word_derivations else "",
 															 "nb_derivations": len( derivations ) if word_derivations else 0, #unneeded
-															 "derivations": derivations if word_derivations else []
+															 "derivations": derivations if word_derivations else [],
+															 "nb_derivations_extra": len(derivations_extra),
+															 "derivations_extra": derivations_extra,
 														 }
 					cpt += 1
 			annotation_word_query += u" ) "
@@ -723,11 +730,11 @@ class Raw():
 					if annot["normalized"] in terms_uthmani:
 						if annotations_by_word.has_key( annot["normalized"] ):
 							if annotations_by_word[annot["normalized"]].has_key( annot["word"] ):
-								annotations_by_word[annot["normalized"]][annot["word"]][annot["order"]] = annot;
+								annotations_by_word[annot["normalized"]][annot["word"]].append(annot);
 							else:
-								annotations_by_word[annot["normalized"]][annot["word"]] = { annot["order"]: annot} ;
+								annotations_by_word[annot["normalized"]][annot["word"]] = [ annot ] ;
 						else:
-							annotations_by_word[annot["normalized"]] = { annot["word"]: { annot["order"]: annot}}
+							annotations_by_word[annot["normalized"]] = { annot["word"]: [ annot ]}
 				if annotation_aya:
 					if annotations_by_position.has_key( ( annot["sura_id"], annot["aya_id"] ) ):
 						annotations_by_position[( annot["sura_id"], annot["aya_id"] )][annot["word_id"]] = annot
