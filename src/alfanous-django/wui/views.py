@@ -68,7 +68,7 @@ def results( request, unit = "aya", language = None ):
     available_units = lambda: SortedDict ( [
 								( "aya", _( "Ayahs" ) ),
 								#( "sura", "Surahs" ),
-								#( "word", "Words" ),
+								( "word", "Words" ),
 								( "translation", _( "Translations" ) ),
 								#  tafsir, hadith, dream, poem
 								] )
