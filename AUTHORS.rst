@@ -3,22 +3,6 @@ Alfanous - Advanced Quranic Search Engine , Authored by Assem Chelli (`@assem-ch
       We gratefully acknowledge contributions from the following.
       Please let us know if we missed anyone, thanks :)
 
-===========
-Maintainers
-===========
-==================== =========================== ================================= ===================
- Name                 Position                    Email                             Twitter
--------------------- --------------------------- --------------------------------- -------------------
- `Assem Chelli`_      Project Manager/Developer   assem[dot]ch [at] [GMAIL]         `@assem_ch`_
- `Walid Ziouche`_     Tester/Developer            [zero][one]walid [at] [GMAIL]     `@01walid`_  
- `Muslih al aqaad`_   Graphic Designer            muslihzarth [at] [GMAIL]          `@muslihzarth`_
- Yasmine Hoadjli      Community Manager           yhoadjli [at] [GMAIL]             `@yasmamine`_ 
- `Abdellah Chelli`_   Web Developer               sneetsher [at] [GMAIL]            `@sneetsher`_ 
- `Zakaria Smahi`_     Firefox addon Developer     zakaria08esi [at] [GMAIL]         `@zsmahi`_ 
- Kacem Bokraa         Writer                      bk_boukraa [at] esi[dot]dz        `@kacem4dz`_
-==================== =========================== ================================= ===================
-
-
 .. _`Assem Chelli`: https://github.com/assem-ch
 .. _`Abdellah Chelli`: https://github.com/sneetsher 
 .. _`Zakaria Smahi`: https://github.com/zsmahi
