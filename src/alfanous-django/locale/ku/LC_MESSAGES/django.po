@@ -1,0 +1,1180 @@
+# Kurdish translation for alfanous
+# Copyright (c) 2013 Rosetta Contributors and Canonical Ltd 2013
+# This file is distributed under the same license as the alfanous package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2013.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: alfanous\n"
+"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2013-08-31 18:10+0100\n"
+"PO-Revision-Date: 2013-11-10 09:47+0000\n"
+"Last-Translator: هيمن درويش <Unknown>\n"
+"Language-Team: Kurdish <ku@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Launchpad-Export-Date: 2013-11-11 21:08+0000\n"
+"X-Generator: Launchpad (build 16820)\n"
+
+#: templates/aya_results.html:17 templates/aya_results.html.py:63
+msgid "Keywords"
+msgstr "ووشة"
+
+#: templates/aya_results.html:19 templates/aya_results.html.py:236
+#: templates/translation_results.html:25
+msgid "Results"
+msgstr "ئەنجام"
+
+#: templates/aya_results.html:21 templates/translation_results.html:17
+msgid "Runtime"
+msgstr "کات"
+
+#: templates/aya_results.html:22
+msgid "s"
+msgstr ""
+
+#: templates/aya_results.html:30
+msgid "Searched keyword:"
+msgstr "ووشەى کردنەوە"
+
+#: templates/aya_results.html:31
+msgid "Suggestions:"
+msgstr "پیش نیار"
+
+#: templates/aya_results.html:47
+msgid "no suggestions!"
+msgstr "پیش نیارنیە"
+
+#: templates/aya_results.html:80 templates/aya_results.html.py:520
+#: templates/aya_results.html:594 templates/base.html:83
+msgid "words"
+msgstr "ووشە"
+
+#: templates/aya_results.html:94 templates/aya_results.html.py:107
+msgid "occurances"
+msgstr "دووبارەکردنەوە"
+
+#: templates/aya_results.html:97 templates/aya_results.html.py:116
+msgid "vocalizations"
+msgstr "ریکخستن"
+
+#: templates/aya_results.html:111 templates/base.html:76
+msgid "ayates"
+msgstr "ئایەت"
+
+#: templates/aya_results.html:132
+msgid "synonyms"
+msgstr "ووشەى بەرامبەر"
+
+#: templates/aya_results.html:149
+msgid "derivations"
+msgstr "وەرگیراوو"
+
+#: templates/aya_results.html:174
+msgid "Annotation"
+msgstr "سەرنج"
+
+#: templates/aya_results.html:175
+msgid "ID"
+msgstr "ژمارە"
+
+#: templates/aya_results.html:176
+msgid "sura,aya"
+msgstr "سورەت , ئایەت"
+
+#: templates/aya_results.html:178
+msgid "token"
+msgstr "ووشەى نهینى"
+
+#: templates/aya_results.html:181
+msgid "part"
+msgstr "جزء"
+
+#: templates/aya_results.html:184 templates/aya_results.html.py:547
+#: templates/aya_results.html:579 templates/aya_results.html.py:584
+msgid "type"
+msgstr "جۆر"
+
+#: templates/aya_results.html:187
+msgid "POS"
+msgstr "بەشى ووتە"
+
+#: templates/aya_results.html:190
+msgid "lemma"
+msgstr "سەرچاوە"
+
+#: templates/aya_results.html:193
+msgid "root"
+msgstr "ناوةرِوَك"
+
+#: templates/aya_results.html:196
+msgid "special"
+msgstr "جياواز"
+
+#: templates/aya_results.html:199
+msgid "aspect"
+msgstr "دةورو ثشت"
+
+#: templates/aya_results.html:202
+msgid "state"
+msgstr "حال"
+
+#: templates/aya_results.html:205
+msgid "form"
+msgstr "شيوە"
+
+#: templates/aya_results.html:208
+msgid "case"
+msgstr "حال"
+
+#: templates/aya_results.html:211
+msgid "derivation"
+msgstr "وەرگیراو"
+
+#: templates/aya_results.html:214
+msgid "person"
+msgstr "کەس"
+
+#: templates/aya_results.html:217
+msgid "number"
+msgstr "ژمارە"
+
+#: templates/aya_results.html:220
+msgid "gender"
+msgstr "رەگەز"
+
+#: templates/aya_results.html:223
+msgid "voice"
+msgstr "دەنگ"
+
+#: templates/aya_results.html:237 templates/translation_results.html:26
+msgid "to"
+msgstr "بۆ"
+
+#: templates/aya_results.html:238 templates/translation_results.html:27
+msgid "of"
+msgstr "ليرەوە"
+
+#: templates/aya_results.html:260 templates/translation_results.html:44
+msgid "Result n°"
+msgstr "ئەنجامى ژمارە"
+
+#: templates/aya_results.html:407
+msgid "Click here to show more details"
+msgstr "كليك ليربکە بۆ دەرکەوتنى روونکردنەوەى زیاتر"
+
+#: templates/aya_results.html:410
+msgid "Show more"
+msgstr "روون کردنەوەى زیاتر"
+
+#: templates/aya_results.html:429
+msgid "Chapter"
+msgstr "بەند"
+
+#: templates/aya_results.html:439
+msgid "Topic"
+msgstr "بابەت"
+
+#: templates/aya_results.html:448
+msgid "Subtopic"
+msgstr "بابەتى لاوەکى"
+
+#: templates/aya_results.html:463
+msgid "About ayah"
+msgstr "لە ئایەتەکەدا"
+
+#: templates/aya_results.html:472
+msgid "manzil"
+msgstr "مال"
+
+#: templates/aya_results.html:480
+msgid "juz"
+msgstr "جزء"
+
+#: templates/aya_results.html:488
+msgid "hizb"
+msgstr "حزب"
+
+#: templates/aya_results.html:491
+msgid "quart"
+msgstr "ضارةك"
+
+#: templates/aya_results.html:499
+msgid "page"
+msgstr "لاپەرە"
+
+#: templates/aya_results.html:508
+msgid "page (indian)"
+msgstr "لاپەرەى (هندى)"
+
+#: templates/aya_results.html:528 templates/aya_results.html.py:595
+msgid "letters"
+msgstr "پیت"
+
+#: templates/aya_results.html:537 templates/aya_results.html.py:596
+msgid "divine names"
+msgstr "ووتەى خواى جلالە جلال"
+
+#: templates/aya_results.html:544
+msgid "sajda"
+msgstr "كرنوش"
+
+#: templates/aya_results.html:544
+msgid "Hafs"
+msgstr ""
+
+#: templates/aya_results.html:546 templates/aya_results.html.py:573
+msgid "n°"
+msgstr "ژمارە"
+
+#: templates/aya_results.html:555
+msgid "About surah"
+msgstr "لەسورەتەکەدا"
+
+#: templates/aya_results.html:562 templates/aya_results.html.py:568
+msgid "Sura"
+msgstr "سورەت"
+
+#: templates/aya_results.html:588
+msgid "revelation_order"
+msgstr "ریزبەندى دابەزین"
+
+#: templates/aya_results.html:591
+msgid "ayahs"
+msgstr "ئایەت"
+
+#: templates/aya_results.html:617 templates/translation_results.html:185
+msgid "Sorry! there is no results for this search query."
+msgstr "ببورە  ئەنجامى نەبوو"
+
+#: templates/aya_results.html:626 templates/translation_results.html:193
+msgid "Error "
+msgstr "هەلەیە "
+
+#: templates/aya_search.html:10
+msgid "Search options"
+msgstr "هەلبژاردنى گەران"
+
+#: templates/aya_search.html:14
+msgid "Fuzzy search"
+msgstr "گەرانى بە نزیکى"
+
+#: templates/aya_search.html:18
+msgid "Unvocalized text"
+msgstr "شاردنەوەى ریخراوەکە"
+
+#: templates/aya_search.html:22
+msgid "Uthmani script"
+msgstr "بەخەتى عوسمانى"
+
+#: templates/aya_search.html:35
+msgid "View"
+msgstr "بينين"
+
+#: templates/aya_search.html:42 templates/aya_search.html.py:93
+#: templates/aya_search.html:115 templates/base.html:237
+msgid "Default"
+msgstr "بةطشتى"
+
+#: templates/aya_search.html:43
+msgid "Minimal"
+msgstr "كةمترين"
+
+#: templates/aya_search.html:44
+msgid "Normal"
+msgstr "ئاسايي"
+
+#: templates/aya_search.html:45
+msgid "Full"
+msgstr "تةواو"
+
+#: templates/aya_search.html:46
+msgid "Statitic"
+msgstr "سەرژمیرى"
+
+#: templates/aya_search.html:47
+msgid "Linguistic"
+msgstr "زمان"
+
+#: templates/aya_search.html:48
+msgid "Recitation"
+msgstr "تیلاوە"
+
+#: templates/aya_search.html:63
+msgid "Sorted by"
+msgstr "ريكخستن بةبى"
+
+#: templates/aya_search.html:70
+msgid "Relevance"
+msgstr "هەلسەنگاندن"
+
+#: templates/aya_search.html:71
+msgid "Mus'haf"
+msgstr "مصحف"
+
+#: templates/aya_search.html:72 templates/translation_search.html:7
+msgid "Tanzil"
+msgstr "دابەزاندن"
+
+#: templates/aya_search.html:73
+msgid "Topics"
+msgstr "بابەت"
+
+#: templates/aya_search.html:74
+msgid "Ayah length"
+msgstr "دریژەى ئایەت"
+
+#: templates/aya_search.html:86
+msgid "Translation"
+msgstr "وەرگیران"
+
+#: templates/aya_search.html:94
+msgid "No translation"
+msgstr "وەرگیرانى تیدانیە"
+
+#: templates/aya_search.html:109
+msgid "Recitation:"
+msgstr "تلاوة"
+
+#: templates/aya_search.html:116
+msgid "No recitation"
+msgstr "بى تيلاوة"
+
+#: templates/base.html:10
+msgid "Page:"
+msgstr "لاپەرە"
+
+#: templates/base.html:14
+msgid "Order:"
+msgstr "ریزبەندى :"
+
+#: templates/base.html:18
+msgid "View:"
+msgstr "نیشان دان"
+
+#: templates/base.html:22
+msgid "Options:"
+msgstr "هەلبژاردن"
+
+#: templates/base.html:24
+msgid "vocalized"
+msgstr "تیکەلاو"
+
+#: templates/base.html:27
+msgid "uthmani"
+msgstr "عوسمانى"
+
+#: templates/base.html:30
+msgid "fuzzy"
+msgstr "بەنزیکى"
+
+#: templates/base.html:35
+msgid "Translation:"
+msgstr "وةرطيَرِان"
+
+#: templates/base.html:42 templates/base.html.py:48 templates/base.html:424
+msgid "Quran Ayah Search"
+msgstr "گەران لە قورئاندا"
+
+#: templates/base.html:44
+msgid "Quran Word Search"
+msgstr "گەران لە ناوەکانى قورئان"
+
+#: templates/base.html:46
+msgid "Quran Translation Search"
+msgstr "گەران و تەرجەمەکردنى ماناى قورئان"
+
+#: templates/base.html:50 templates/base.html.py:424
+msgid "Alfanous"
+msgstr "فانۆس"
+
+#: templates/base.html:57
+msgid "Alfanous search results searching in"
+msgstr "ئەنجامى گەرانى فانۆس لة"
+
+#: templates/base.html:57
+msgid "looking for the query"
+msgstr "سةبارةت بةو ناو نيشانة"
+
+#: templates/base.html:57
+msgid "the page"
+msgstr "سةرةتا"
+
+#: templates/base.html:57
+msgid "the view"
+msgstr "دةرخستن"
+
+#: templates/base.html:57
+msgid "the script"
+msgstr "خەت"
+
+#: templates/base.html:57
+msgid "and the translation"
+msgstr "وةرطيَرِان"
+
+#: templates/base.html:57
+msgid "The fuzzy search is"
+msgstr "طةرِان  بةنزيكةى"
+
+#: templates/base.html:60
+msgid ""
+"Alfanous has the feautre to search in the Quran words, their properties and "
+"occurences"
+msgstr "فانوس تواناى كةران و لةتايبةت مةندى ووشةكانى قوران هةية"
+
+#: templates/base.html:62
+msgid ""
+"Alfanous has the feautre to search in the translations of Quran meanings to "
+"lot of world languages"
+msgstr "دەتوانیت لەفانۆس بگەریت وبۆ ماناى قورئان وبەچەند  زمانیکى جیاواز"
+
+#: templates/base.html:64
+msgid ""
+"Alfanous is a functional, dynamic, comprehensive Qur’an search engine that "
+"has been effectively designed to carry out simple or advanced Quranic "
+"searches."
+msgstr ""
+"فانوس سەرچاوەیەکە جولینەرە بۆ گەران بؤقورئانى زانستى پوختە . وە بەشیوەیەکى "
+"ئاسان"
+
+#: templates/base.html:71
+msgid "quran"
+msgstr "قورئان"
+
+#: templates/base.html:72
+msgid "forqan"
+msgstr "فورقان"
+
+#: templates/base.html:73
+msgid "koran"
+msgstr "قورئان"
+
+#: templates/base.html:74
+msgid "search"
+msgstr "كةران"
+
+#: templates/base.html:75
+msgid "search engine"
+msgstr "جولَيَنةرى طةرِان"
+
+#: templates/base.html:77
+msgid "surates"
+msgstr "سورة"
+
+#: templates/base.html:78
+msgid "advanced"
+msgstr "بيش كةوتو"
+
+#: templates/base.html:79
+msgid "statistics"
+msgstr "ئامارةكان"
+
+#: templates/base.html:80
+msgid "linguistic"
+msgstr "زمان"
+
+#: templates/base.html:81
+msgid "information retrieval"
+msgstr "گەران بەدواى زانیارى"
+
+#: templates/base.html:82
+msgid "natural language processing"
+msgstr "جارةسةرى زمانةوانى"
+
+#: templates/base.html:84
+msgid "Lantern"
+msgstr "فانوس"
+
+#: templates/base.html:85
+msgid "alfanous"
+msgstr "فانوس"
+
+#: templates/base.html:93
+msgid "vocalized text"
+msgstr "دةقى تيكةل"
+
+#: templates/base.html:96
+msgid "uthmani script"
+msgstr "بەخەتى عوسمانى"
+
+#: templates/base.html:99
+msgid "fuzzy search"
+msgstr "گەرانى بە نزیکى"
+
+#: templates/base.html:179 wui/views.py:69
+msgid "Ayahs"
+msgstr "ئايةت"
+
+#: templates/base.html:180 wui/views.py:72
+msgid "Translations"
+msgstr "وةرطيَران"
+
+#: templates/base.html:181
+msgid "Words"
+msgstr "ووشة"
+
+#: templates/base.html:200
+msgid "First, select the search unit"
+msgstr "يةكةم ,يةكةيةك هةلبزيرة بو كةران"
+
+#: templates/base.html:201
+msgid ""
+"You can choose whether to search in Arabic verses of the holly Quran or in "
+"its translations"
+msgstr "هەلبژان و گەران وەگیرانى مانایى"
+
+#: templates/base.html:215
+msgid "Select your language"
+msgstr "زمانیک هەلبژیرە"
+
+#: templates/base.html:216
+msgid ""
+"If you didn't notice, Alfanous User Interface is now translated to other "
+"languages, choose the one that fits you the best, or, you can contribute in "
+"translating it into your native language! (see the translate link)"
+msgstr ""
+"ئةكةر تيبنينت نةكردووة , رووكارى فانوس وةركيراوة بؤ جةند زمانيك ئةوا زمانى "
+"خوت هةلبزيرة ئةكةر هةبوو يا دةتوانى يارمةتى بدةى بو زياكردنى زمانى خوت ئةكةر "
+"بوونى نةبوو"
+
+#: templates/base.html:218
+msgid "Languages"
+msgstr "زمان"
+
+#: templates/base.html:228
+msgid "Current:"
+msgstr "ئيستا"
+
+#: templates/base.html:233
+msgid "Skins"
+msgstr "كليشةكان"
+
+#: templates/base.html:240
+msgid "Cerulean"
+msgstr "شين"
+
+#: templates/base.html:241
+msgid "Cyborg"
+msgstr ""
+
+#: templates/base.html:242
+msgid "Amelia"
+msgstr "اميليا"
+
+#: templates/base.html:243
+msgid "Readable"
+msgstr "ئاسنى خويندن"
+
+#: templates/base.html:244
+msgid "Slate"
+msgstr "اردواز"
+
+#: templates/base.html:245
+msgid "Spacelab"
+msgstr "تاقيكةى ئاسمانى"
+
+#: templates/base.html:246
+msgid "Super Heroes"
+msgstr "بالةوانة بةهيزةكان"
+
+#: templates/base.html:247
+msgid "United"
+msgstr "بيكهاتوو"
+
+#: templates/base.html:269
+msgid "Our page on Facebook"
+msgstr "لابةرةكةمان  لە فەیسبووک"
+
+#: templates/base.html:270
+msgid "Our page on Google+"
+msgstr ""
+
+#: templates/base.html:271
+msgid "Our account on Twitter"
+msgstr "لینکەکەمان لە تویتر"
+
+#: templates/base.html:272
+msgid "Our repository on Github"
+msgstr "ناونيشان مان لة غيتاب"
+
+#: templates/base.html:273
+msgid "Our Mailing list on GoogleGroups"
+msgstr "ليستى بةريد لة كوَمةلةَى جوجل"
+
+#: templates/base.html:287
+msgid "Information:"
+msgstr "زانیارى"
+
+#: templates/base.html:288
+msgid "Quick Tour!"
+msgstr "گەرانى خیرا"
+
+#: templates/base.html:289 templates/popups_content.html:7
+msgid "F.A.Q."
+msgstr "پرسیارى روون"
+
+#: templates/base.html:290
+msgid "Sample search here"
+msgstr "نمونەى گەران لیرە"
+
+#: templates/base.html:291
+msgid ""
+"Here you can learn by example about the full power of Alfanous search engine "
+"and what you can do with it."
+msgstr ""
+"ليرةدا دةتوانى سود ببينى لةو نمونانةى كة بيش كةش كراون كةتيدا توانى كةورةى "
+"كةرانى فانوس روون دةكاتةوة"
+
+#: templates/base.html:294 templates/popups_content.html:21
+msgid "Help"
+msgstr "یارمەتى"
+
+#: templates/base.html:295
+msgid "Contact"
+msgstr "پەیوەندیمان پیوە بکەن"
+
+#: templates/base.html:296 templates/popups_content.html:263
+msgid "Download"
+msgstr "دابەزانن"
+
+#: templates/base.html:297
+msgid "Contribute:"
+msgstr "يارمةتى"
+
+#: templates/base.html:298
+msgid "Translate"
+msgstr "وةرطيَران"
+
+#: templates/base.html:299
+msgid "Feedback"
+msgstr "زانیارى"
+
+#: templates/base.html:300
+msgid "we really need your help!"
+msgstr "ئيمة بيويستمان بةهاوكارى هةية"
+
+#: templates/base.html:301
+msgid ""
+"We're looking to fund the project, if you like it, help us making it even "
+"better."
+msgstr ""
+"ئيمة دةكةرين بةدواى بالشتى مادى بو بروزةكةمان ئةكةر دةتوانيت يارمةتيمان بدةى "
+"بو بةرو بيش جونى بروزةكةمان"
+
+#: templates/base.html:308
+msgid "Donate"
+msgstr "بةخشين"
+
+#: templates/base.html:309
+msgid "Other means"
+msgstr "ريكةكةكانى ديكة"
+
+#: templates/base.html:310
+msgid "Links:"
+msgstr "لينكةكان"
+
+#: templates/base.html:311
+msgid "Old website"
+msgstr "سایتى پیشوو"
+
+#: templates/base.html:330
+msgid "Alfanous is smart!"
+msgstr "فانوس جولاويكى زيرةك"
+
+#: templates/base.html:334
+msgid "search query here ..."
+msgstr "كةران ليرة..."
+
+#: templates/base.html:340
+msgid "Quick search"
+msgstr "كةرانى خيرا"
+
+#: templates/base.html:347
+msgid "Even more!"
+msgstr "زياتر لةوة!"
+
+#: templates/base.html:348
+msgid ""
+"You can <strong>sort</strong>, <strong>filter</strong> search reasults or "
+"choose a translation, you can as well choose a recitator!"
+msgstr ""
+"ئةنجام<strong> هةلبزاردن</strong>, <strong> بالاوتن </strong>  ريكخستن .\r\n"
+"دةتوانيت وةركيران  يا  خويندنةوة يةكى كونجاو"
+
+#: templates/base.html:352
+msgid "Advanced search"
+msgstr "كةرانى بيشةكى"
+
+#: templates/base.html:370
+msgid "Bismi'Allah Go!"
+msgstr "بةناوى خوا"
+
+#: templates/base.html:394
+msgid "Help!"
+msgstr "يارمةتى"
+
+#: templates/base.html:396
+msgid "Please help us translate Alfanous Project into more languages!"
+msgstr "تكاية هاوكاريمان بكة بو وةر كيران بو زمانةكانى تر"
+
+#: templates/base.html:404
+msgid ""
+"Please help us improving Alfanous Project, by taking this survey about "
+"search features in Holy Quran."
+msgstr ""
+"تكاية هاوكاريمان بروزةى فانوس بو بيش كةوتنى فانوس ئةويش لةريكةى كةران لايةن "
+"باشةكانى قوران"
+
+#: templates/base.html:410
+msgid "Info!"
+msgstr "روونة"
+
+#: templates/base.html:412
+msgid "The source of indexed Quran translations is Tanzil Project"
+msgstr "سةرجاوةى وةركيران قورئان و فةهرةست كة بروزةى داكرتن"
+
+#: templates/base.html:424
+msgid "Share!"
+msgstr "بلاَو كردنةوة !"
+
+#: templates/base.html:443
+msgid "Copyright"
+msgstr "مافى دابةزاندن"
+
+#: templates/base.html:443
+msgid "Alfanous Team"
+msgstr "كروبى فانوس"
+
+#: templates/base.html:444
+msgid "released under"
+msgstr "بلاوكراوة لةزير"
+
+#: templates/base.html:444
+msgid "AGPL license"
+msgstr "ريكةوتن AGPL"
+
+#: templates/base.html:449
+msgid "Powered by"
+msgstr "دواكراو ليرة"
+
+#: templates/base.html:458
+msgid "Add to your search bar!"
+msgstr "زياد كرد بو .... كةران"
+
+#: templates/popups_content.html:10
+msgid "See"
+msgstr "ببينة"
+
+#: templates/popups_content.html:10
+msgid "this link"
+msgstr "ئةو لينكانة"
+
+#: templates/popups_content.html:13 templates/popups_content.html.py:134
+#: templates/popups_content.html:148 templates/popups_content.html.py:172
+#: templates/popups_content.html:193 templates/popups_content.html.py:254
+#: templates/popups_content.html:302 templates/popups_content.html.py:323
+msgid " Close "
+msgstr " دا يبخة "
+
+#: templates/popups_content.html:27
+msgid "Searching in Quran Ayahs"
+msgstr ""
+
+#: templates/popups_content.html:34 templates/popups_content.html.py:98
+msgid "Exact search"
+msgstr "گەرانى لیکچوو"
+
+#: templates/popups_content.html:39 templates/popups_content.html.py:103
+msgid "Phrase search"
+msgstr "گەران بە رستە"
+
+#: templates/popups_content.html:44 templates/popups_content.html.py:108
+msgid "Logical relations"
+msgstr "بةيوةندى لوزيكى"
+
+#: templates/popups_content.html:49 templates/popups_content.html.py:113
+msgid "Wildcards"
+msgstr "جوكةر"
+
+#: templates/popups_content.html:54 templates/popups_content.html.py:118
+msgid "Fields"
+msgstr "خانةكان"
+
+#: templates/popups_content.html:59
+msgid "Intervals"
+msgstr "بوارەکان"
+
+#: templates/popups_content.html:64
+msgid "Partial vocalization"
+msgstr "ريكخستنى بةشى"
+
+#: templates/popups_content.html:69
+msgid "Word properties"
+msgstr "تايبةت مةنى ووشة"
+
+#: templates/popups_content.html:74
+msgid "Derivations"
+msgstr "وەر گیراو"
+
+#: templates/popups_content.html:79
+msgid "Buckwalter Transliteration"
+msgstr ""
+
+#: templates/popups_content.html:91
+msgid "Searching in Quran Translations"
+msgstr ""
+
+#: templates/popups_content.html:131
+msgid ""
+"The website does not work well on Internet Explorer, we suggest to use "
+"another browser such as: "
+msgstr ""
+"ئەم سايتة كار ناكات باش لەئەنتەرنیت ئیسکبور .. باشترە بەبەکارهینان شیوە تر "
+"وەک: "
+
+#: templates/popups_content.html:131
+msgid "Firefox"
+msgstr ""
+
+#: templates/popups_content.html:142
+msgid "Awarded!"
+msgstr "ئامادةكراو"
+
+#: templates/popups_content.html:145
+msgid ""
+"Alfanous.org was chosen as the best-in-technicaity website in the "
+"competition AlgeriaWebAwards 2012."
+msgstr ""
+"ئةو بةرةى هةلبتزاردووة وةك باشترين لةرووى بةكار هاتوو لة بيشوو سالى "
+"AlgeriaWebAwards   2012"
+
+#: templates/popups_content.html:156
+msgid "How to donate"
+msgstr "جون دةبوخشى"
+
+#: templates/popups_content.html:159
+msgid ""
+"We're stuck looking for possible ways for donations/Funding. Any help is "
+"appreciated!"
+msgstr ""
+"ريكةوت لةسةر جارةسةر بو كيشةكان لة مةجالى بةخشين بو كةيشتنى هاوكاريةكانتان "
+"بةشيوةى هاوكارى مادى ... بةهةر جورة هاوكاريك لةم مةجالةدا"
+
+#: templates/popups_content.html:162
+msgid "Any way you can help by:"
+msgstr "بو كةيشتنى هاوكاريةكان لةري :"
+
+#: templates/popups_content.html:164
+msgid ""
+"Pay our web hosting monthly bills directly, we create an account for you in "
+"the host to do that."
+msgstr ""
+"بيدانى مانكانة بو زيادكردنى سايت راستةو خو .هةلدةستين بةكردنةوةى حسابيكى "
+"تايبةت بو ئةوةى دةبةخشيت"
+
+#: templates/popups_content.html:165
+msgid ""
+"Lead an advertising compaign for the project website through Google adwords "
+"or Facebook."
+msgstr "بوكواستنةوةى مانكانة ى لابةرة بو بروزة لةرى ى"
+
+#: templates/popups_content.html:166
+msgid "Buy Products (T-shirts, Cups, Hats) from Zazzle"
+msgstr "كرينى بةرهةمى ( قةميس .كوس ) لة"
+
+#: templates/popups_content.html:167
+msgid "Donate by flattr:"
+msgstr "بةخشين لةرى فلاتةر :"
+
+#: templates/popups_content.html:180
+msgid "Contact us"
+msgstr "بةيوةنديمان بيوةبكة"
+
+#: templates/popups_content.html:184
+msgid "If you have a concrete bug report for Alfanous please go to"
+msgstr "ئةكةر دةتةويت لة , تكاية برو بو"
+
+#: templates/popups_content.html:184
+msgid "Issues Tracker"
+msgstr ""
+
+#: templates/popups_content.html:184
+msgid "submit your report and tag it \"bug\"."
+msgstr "تيبينيةكةت لة ثغرة زياد بكةو ناوى بنوسة \\\"bug\\\""
+
+#: templates/popups_content.html:185
+msgid ""
+"If you want to participate in actively developing Alfanous,by testing read"
+msgstr "ئةكةر دةتويت بةشداربيت لةبيش كةوتنى فانوس بخوينة"
+
+#: templates/popups_content.html:185
+msgid "and by coding read "
+msgstr "بةبةرنامة بخوينة "
+
+#: templates/popups_content.html:186
+msgid "If you want to help in Alfanous somehow,  read"
+msgstr "ئةكةر دةنةويت بةشداربيت لة فانوس بةهةر ريكايةك بخوينة"
+
+#: templates/popups_content.html:187
+msgid ""
+"If you have a feature request, a proposition or a question for the project, "
+"you may use the mailing list."
+msgstr ""
+"ئةكةر دةتةويت دواى باشترو بيشنيارى باشتر لة ثرؤزةكة بكةى . دةتوانيت لةرى "
+"بةكار هينانى فايلى بةريدى ئةلكترونيوة"
+
+#: templates/popups_content.html:188
+msgid ""
+"If you want to criticize the project, we'll be thankful if you resume your "
+"criticism and send it to the mailing list."
+msgstr ""
+"ئةطةر رةخنةيةك يا ثيَش نيار هةية بةسوثاسةوة وةرى دةطرين  ثةيوةنديمان ثيَوة "
+"بكة"
+
+#: templates/popups_content.html:190
+msgid "For anything else, you can contact us via the mailing list which is:"
+msgstr "بؤهةرشتيكى تر دةتوانى ثةيوةنديمان بيَوة بكةى لةرِى ئيَملةوة"
+
+#: templates/popups_content.html:203
+msgid "How to contribute"
+msgstr "ضؤن هاوكاريمان دةكةى"
+
+#: templates/popups_content.html:211
+msgid "Spreading the word"
+msgstr "بلاَوكردنةوة رِاو بوَ ضوون"
+
+#: templates/popups_content.html:217
+msgid "Following and sharing our social network pages:"
+msgstr "ئاطادار بونةوة  وةبلاَو كردنةوة لةسةر والَةى كؤمةلاَيةتى"
+
+#: templates/popups_content.html:219
+msgid "Sharing a link to"
+msgstr "بلاَو كردنةوة ئةو لينكة بؤ"
+
+#: templates/popups_content.html:219
+msgid "our website"
+msgstr "ناونيشانمان"
+
+#: templates/popups_content.html:219
+msgid "via your accounts in Social networks."
+msgstr "لةرِىَ ى ناونيشانةكةت لة  تؤرِى كؤمةلاَيةتى"
+
+#: templates/popups_content.html:220
+msgid ""
+"Pointing  skilled developers and Quranic researchers to the importance of "
+"the project."
+msgstr ""
+"ئاطادارى بو ئةوانةى كة ليكؤلينةوة دةكةن لةبوارى قورئان  ئيمة طرنطى بيدةدةين"
+
+#: templates/popups_content.html:221
+msgid "Writing articles about the project in blogs, newspapers."
+msgstr "ثةرتوك و طؤظار و لة ثرِؤذةكةمان لة ناوضةو شوينة جياوازةكان"
+
+#: templates/popups_content.html:222
+msgid "Showing a banner on your Blog/Website."
+msgstr ""
+
+#: templates/popups_content.html:223
+msgid ""
+"creating an ad for alfanous links using Google adwords or facebook if you're "
+"familiar with that (btw,it needs money)"
+msgstr ""
+"دروست كردنى لينك  لةِريَطةى  Google adwords يا تؤرِى فيس بوك ئةكةر ثيَويستى "
+"بةبرِيَك ثارة هةية"
+
+#: templates/popups_content.html:232
+msgid "Or by"
+msgstr "يا  بة"
+
+#: templates/popups_content.html:237
+msgid ""
+"Managing and Animating our social network pages with news and daily posts "
+"[Arabic, English]:"
+msgstr ""
+"رِيكخةرى  مالَثةرةكةمان لة تؤرِى كؤمةلاَيةتى  بة بةردةوامى لةبابةتى نؤى "
+"هةوالَ ئاشناتان دةكات  \r\n"
+"رِوَذانة  وة وةلام دانةوةى ثرسيارو سةرنجةكانتان"
+
+#: templates/popups_content.html:239
+msgid "Translating project interfaces to your language , see:"
+msgstr "وةر طيَرانى ثرِؤذةكةمان بؤ زمانةكةت"
+
+#: templates/popups_content.html:240
+msgid "Testing the modules and releases, Reporting bugs , see:"
+msgstr "تاقى كردنةوة سةير كردنى سةرضاوةكة"
+
+#: templates/popups_content.html:241
+msgid "Fixing"
+msgstr "ضاك كردن"
+
+#: templates/popups_content.html:241
+msgid "bugs"
+msgstr "طؤرانكارى"
+
+#: templates/popups_content.html:241
+msgid "Coding"
+msgstr "بةرنامة"
+
+#: templates/popups_content.html:241
+msgid "new features"
+msgstr "سودة نوى يةكان"
+
+#: templates/popups_content.html:241
+msgid "or Developing"
+msgstr "طوَرِانكارى"
+
+#: templates/popups_content.html:241
+msgid "new interfaces"
+msgstr "لايةنى نؤىَ"
+
+#: templates/popups_content.html:241
+msgid "See:"
+msgstr "سةير بكة:"
+
+#: templates/popups_content.html:242
+msgid "Designing  Icons, Logos , Banners."
+msgstr "دروست كردن  وتاف و  شعار"
+
+#: templates/popups_content.html:243
+msgid ""
+"Packaging the project for different systems: Windows, Linux distributions, "
+"MacOs."
+msgstr ""
+"دروست كردن و لة ثرِؤذةكةمان بةشيَوةى جياواز : ويندوز  وة ريخةرى خاوةنداريتى"
+
+#: templates/popups_content.html:244
+msgid ""
+"Donating/Supporting to the project: <em>We're stuck looking for possible "
+"ways for donations/Funding. Any help is appreciated</em>"
+msgstr "يارمةتى هاوكارى مادى بؤ ثرِؤذةكةمان :"
+
+#: templates/popups_content.html:266
+msgid "Windows"
+msgstr "ويندوز"
+
+#: templates/popups_content.html:269
+msgid "English desktop release 0.4"
+msgstr "بةشيَك لة كيَتبخانة بةزمانى ئينكلزى0.4"
+
+#: templates/popups_content.html:272
+msgid "Arabic desktop release 0.3"
+msgstr "بةشيَك لة كيَتبخانة بةزمانى عةرةبى 0.3"
+
+#: templates/popups_content.html:276
+msgid "Linux"
+msgstr "لينؤكس"
+
+#: templates/popups_content.html:279
+msgid "More details"
+msgstr "زانيارى زياتر"
+
+#: templates/popups_content.html:282
+msgid "MacOS"
+msgstr "رِيَخةرى خاوةنى"
+
+#: templates/popups_content.html:285 templates/popups_content.html.py:291
+#: templates/popups_content.html:294 templates/popups_content.html.py:297
+msgid "Not yet"
+msgstr "ثاش كةميَكى تر"
+
+#: templates/popups_content.html:288
+msgid "Smartphones"
+msgstr ""
+
+#: templates/popups_content.html:291
+msgid "Android"
+msgstr "ئةندرويد"
+
+#: templates/popups_content.html:294
+msgid "iPhone"
+msgstr ""
+
+#: templates/popups_content.html:297
+msgid "Windows Phone"
+msgstr ""
+
+#: templates/popups_content.html:310
+msgid "How to translate"
+msgstr "ضؤن هاوكاريمان دةكةى لة وةرِطيَران"
+
+#: templates/popups_content.html:315
+msgid "Check the existance of your language in the available languages list."
+msgstr "دلَنيابة لةنةبونى زمانةكةت لة ليستى وةرطيَران"
+
+#: templates/popups_content.html:316
+msgid "Download the file:"
+msgstr "دابةزاندنى بابةت"
+
+#: templates/popups_content.html:317
+msgid "Use Poedit or Virtaal to edit it."
+msgstr "بةكاربهيَنة / كردنةوةى بابةت .ملف"
+
+#: templates/popups_content.html:318
+msgid "Send the updated file into our mailing list:"
+msgstr "ناردنى بابةت بؤ ليستى بةريدةكةمان"
+
+#: templates/popups_content.html:320
+msgid "Note:"
+msgstr "تىَ بي نى"
+
+#: templates/popups_content.html:320
+msgid "You can use launchpad to translate without installing any tool"
+msgstr "دةتوانيت وةرطيَرانى ووشة بكةى بةبىَ بةرنامة دابةزاندن"
+
+#: templates/popups_content.html:320
+msgid "here!"
+msgstr "ليَرة!"
+
+#: templates/translation_results.html:18
+msgid "seconds"
+msgstr "دووةم"
+
+#: templates/translation_results.html:54
+#: templates/translation_results.html:107
+msgid "Interpretation of"
+msgstr ""
+
+#: templates/translation_results.html:61
+msgid "in"
+msgstr ""
+
+#: templates/translation_results.html:65
+msgid "by"
+msgstr "بة"
+
+#: templates/translation_results.html:144
+msgid "About translation"
+msgstr "وةرطيَران"
+
+#: templates/translation_results.html:151
+msgid "Aya"
+msgstr "ئایەت"
+
+#: templates/translation_results.html:158
+msgid "Author"
+msgstr "نوسةر"
+
+#: templates/translation_results.html:164
+msgid "Language"
+msgstr "زمانى"
+
+#: templates/translation_search.html:7
+msgid "List of indexed Quran translations"
+msgstr "ليستى وةرطيَرانى  ماناى قوران"
+
+#: templates/translation_search.html:7
+msgid "Translation source:"
+msgstr "سةرضاوةى وةركيران"
+
+#: templates/translation_search.html:7
+msgid "Show/Hide!"
+msgstr "دةرخستن / شاردنةوة"
+
+#: templates/translation_search.html:13
+msgid "Sorry, there is no indexed translations!"
+msgstr "ببورة ليرة ماناى ئةو ووشةيةى نية"
+
+#: templates/translation_search.html:25
+msgid "Show ayah arabic text"
+msgstr ""
