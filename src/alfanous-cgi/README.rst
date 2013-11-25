@@ -31,13 +31,13 @@ To get JSON information , use this syntax : http://www.alfanous.org/jos2?ARGUMEN
 --------
 Examples
 --------
-*  jos2?action=search&unit=aya&query=الحمد &highlight=bbcode &sortedby=tanzil &page=2 &traduction=1&fuzzy=True
-*  jos2?action=show&query=recitations
-*  jos2?action=show&queryfields
-*  jos2?action=show&query=All
-*  jos2?action=show&query=translations 
-*  jos2?action=show&query=errors
-*  jos2?action=suggest&unit=aya&query=مءصدة
+*  `http://www.alfanous.org/jos2?action=search&unit=aya&query=الحمد&highlight=bbcode&sortedby=tanzil&page=2&traduction=1&fuzzy=True`
+*  http://www.alfanous.org/jos2?action=show&query=recitations
+*  http://www.alfanous.org/jos2?action=show&queryfields
+*  http://www.alfanous.org/jos2?action=show&query=All
+*  http://www.alfanous.org/jos2?action=show&query=translations 
+*  http://www.alfanous.org/jos2?action=show&query=errors
+*  `http://www.alfanous.org/jos2?action=suggest&unit=aya&query=مءصدة`
 
 ----------------
 Response Samples
