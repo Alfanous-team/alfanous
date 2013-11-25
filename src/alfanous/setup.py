@@ -75,10 +75,10 @@ setup(
 	classifiers = [
 	"Development Status :: 4 - Beta",
 	"Intended Audience :: Developers",
-	"License :: OSI Approved :: GNU General Public License (GPL)",
+	"License :: OSI Approved :: GNU Affero General Public License v3 or later (AGPLv3+)",
 	"Natural Language :: Arabic",
 	"Operating System :: OS Independent",
-	"Programming Language :: Python :: 2.6",
+	"Programming Language :: Python :: 2.7",
 	"Topic :: Software Development :: Libraries :: Python Modules",
 	],
  )
