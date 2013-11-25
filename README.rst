@@ -9,7 +9,7 @@ Alfanous understands the complex nature of the Arabic language and thus offers e
 
 
 :Authors: `Authors.rst <https://github.com/Alfanous-team/alfanous/blob/master/AUTHORS.rst>`_
-:Release: 0.7  
+:Release: 0.7 BlackStone
 :License: `AGPL <https://github.com/Alfanous-team/alfanous/blob/master/LICENSE>`_
 :Tracker: `Alfanous-team/alfanous/Issues <https://github.com/Alfanous-team/alfanous/issues>`_
 :Mailinglist: `alfanous@googlegroups.com <http://groups.google.com/group/alfanous/>`_
@@ -125,6 +125,8 @@ This is the list of search features already implemented, preview links use Alfan
 -------
 History
 -------
+- **25 November 2013**: Launching "`API 0.7.01 BlackStone release <https://github.com/Alfanous-team/alfanous/releases/tag/API_0.7.01>`_" of the  API: Extensible, More stable, and has Many features.
+
 - **4 August 2013**: Launching "`WEB 0.7.5 alyaqoot release <https://github.com/Alfanous-team/alfanous/releases/tag/WEB_0.7.5>`_" of the  web interface: based on `Twitter Bootstrap <http://twitter.github.io/bootstrap/>`_, Responsive , Simple, Clean , Accept skins, and has many  improvements and bug fixes. kacemb2_
 
 - **10 June 2013**: Launching the django web interface, localizable, indexable, and has many search features, improvements and bug fixes. kacemb_
