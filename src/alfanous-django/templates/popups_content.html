@@ -96,28 +96,28 @@
                              <tbody>
                                 <tr>
 					                <th >{{ _("Exact search") }} </th>
-					                <td  ><a  href='{% url alfanous-django.wui.views.results current.language "translation" %}?{% build_search_link params 'god' 1 False %}'> god </a></td>
-					                <td  ><a  href='{% url alfanous-django.wui.views.results current.language "translation" %}?{% build_search_link params 'time' 1 False %}'> time </a></td>
+					                <td  ><a  href='{% url 'wui.views.results' current.language "translation" %}?{% build_search_link params 'god' 1 False %}'> god </a></td>
+					                <td  ><a  href='{% url 'wui.views.results' current.language "translation" %}?{% build_search_link params 'time' 1 False %}'> time </a></td>
 				                </tr>
 				                <tr>
 					                <th >{{ _("Phrase search") }}  </th>
-					                <td><a href='{% url alfanous-django.wui.views.results current.language "translation" %}?{% build_search_link params '"the%20Lord%20Of%20The%20Creation"' 1 False %}'>"the Lord Of The Creation"</a></td>
-					                <td><a href='{% url alfanous-django.wui.views.results current.language "translation" %}?{% build_search_link params '"seven%20heavens"' 1 False %}'>"seven heavens"</a></td>
+					                <td><a href='{% url 'wui.views.results' current.language "translation" %}?{% build_search_link params '"the%20Lord%20Of%20The%20Creation"' 1 False %}'>"the Lord Of The Creation"</a></td>
+					                <td><a href='{% url 'wui.views.results' current.language "translation" %}?{% build_search_link params '"seven%20heavens"' 1 False %}'>"seven heavens"</a></td>
 				                </tr>
 				                <tr>
 					                <th >{{ _("Logical relations") }}</th>
-					                <td ><a href='{% url alfanous-django.wui.views.results current.language "translation" %}?{% build_search_link params 'prayer%20AND%20charity' 1 False %}'>prayer AND charity</a></td>
-				                    <td ><a href='{% url alfanous-django.wui.views.results current.language "translation" %}?{% build_search_link params 'prayer%20OR%20charity' 1 False %}'>prayer OR charity</a></td>
+					                <td ><a href='{% url 'wui.views.results' current.language "translation" %}?{% build_search_link params 'prayer%20AND%20charity' 1 False %}'>prayer AND charity</a></td>
+				                    <td ><a href='{% url 'wui.views.results' current.language "translation" %}?{% build_search_link params 'prayer%20OR%20charity' 1 False %}'>prayer OR charity</a></td>
 				                </tr> 
 				                <tr>
 					                <th >{{ _("Wildcards") }}</th>
-					                <td><a href='{% url alfanous-django.wui.views.results current.language "translation" %}?{% build_search_link params 'pray*' 1 False %}'>pray*</a></td>
-					                <td><a href='{% url alfanous-django.wui.views.results current.language "translation" %}?{% build_search_link params 'produc?' 1 False %}'>produc?</a></td>
+					                <td><a href='{% url 'wui.views.results' current.language "translation" %}?{% build_search_link params 'pray*' 1 False %}'>pray*</a></td>
+					                <td><a href='{% url 'wui.views.results' current.language "translation" %}?{% build_search_link params 'produc?' 1 False %}'>produc?</a></td>
 				                </tr>
 				                <tr>
 					                <th >{{ _("Fields") }}</th>
-					                <td ><a href='{% url alfanous-django.wui.views.results current.language "translation" %}?{% build_search_link params 'lang:en' 1 False %}'>lang:fr</a></td>
-				                    <td ><a href='{% url alfanous-django.wui.views.results current.language "translation" %}?{% build_search_link params 'author:Shakir' 1 False %}'>author:Shakir
+					                <td ><a href='{% url 'wui.views.results' current.language "translation" %}?{% build_search_link params 'lang:en' 1 False %}'>lang:fr</a></td>
+				                    <td ><a href='{% url 'wui.views.results' current.language "translation" %}?{% build_search_link params 'author:Shakir' 1 False %}'>author:Shakir
 				                    </a></td>
 				                </tr>
                           
