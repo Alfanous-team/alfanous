@@ -19,6 +19,11 @@ def strip_tashkeel(w):
 def strip_tatweel(w):
 	"strip tatweel from a word and return a result word"
 	return re.sub(ur'[%s]' % TATWEEL, 	'', w)
+	
+#--------------------------------------
+def strip_shadda(w):
+	"strip tatweel from a word and return a result word"
+	return re.sub(ur'[%s]' % SHADDA, 	'', w)
 
 
 #--------------------------------------
@@ -26,6 +31,11 @@ def normalize_hamza(w):
 	"strip vowel from a word and return a result word"
 	w = ALEFAT_pat.sub(ALEF, w)
 	return HAMZAT_pat.sub(HAMZA, w)
+
+
+#--------------------------------------
+
+	
 
 #--------------------------------------
 def normalize_lamalef(w):

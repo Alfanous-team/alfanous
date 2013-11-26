@@ -31,7 +31,7 @@ import re
 # from pyarabic.araby  import araby
 
 from alfanous.Support.whoosh.analysis import StopFilter, RegexTokenizer  # LowercaseFilter, StandardAnalyzer,
-from alfanous.Support.ar_ctype import strip_tashkeel, strip_tatweel, normalize_spellerrors, normalize_hamza, normalize_lamalef  # , HARAKAT_pat,
+from alfanous.Support.ar_ctype import strip_tashkeel, strip_tatweel,strip_shadda, normalize_spellerrors, normalize_hamza, normalize_lamalef  # , HARAKAT_pat,
 from alfanous.Support.arabic_const import FATHATAN, DAMMATAN, KASRATAN, FATHA, DAMMA, KASRA, SUKUN, SHADDA  # *
 
 from alfanous.Constants import INVERTEDSHAPING
@@ -60,7 +60,7 @@ class QStopFilter( StopFilter ):
 
 class QArabicSymbolsFilter():
     """        """
-    def __init__( self, shaping = True, tashkil = True, spellerrors = False, hamza = False ):
+    def __init__( self, shaping = True, tashkil = True, spellerrors = False, hamza = False, shadda= False ):
         self.__shaping = shaping
         self.__tashkil = tashkil
         self.__spellerrors = spellerrors
@@ -81,6 +81,7 @@ class QArabicSymbolsFilter():
 
         if self.__hamza:
                 text = normalize_hamza( text )
+
         return text
 
     def __call__( self, tokens ):
@@ -235,7 +236,8 @@ class unicode_( unicode ):
 QStandardAnalyzer = QSpaceTokenizer() | QArabicSymbolsFilter()  # | QStopFilter(stoplist = stopwords_dyn)
 APermissibleAnalyzer = QSpaceTokenizer() | QArabicSymbolsFilter( shaping = True, tashkil = True, spellerrors = True, hamza = True )
 QDiacAnalyzer = QSpaceTokenizer() | QArabicSymbolsFilter( tashkil = False )
-QHighLightAnalyzer = QSpaceTokenizer() | QArabicSymbolsFilter()
+QHighLightAnalyzer =  QSpaceTokenizer() | QArabicSymbolsFilter()
+QDiacHighLightAnalyzer =  QSpaceTokenizer() | QArabicSymbolsFilter( tashkil = False)
 QUthmaniAnalyzer = QSpaceTokenizer() | QArabicSymbolsFilter()
 QUthmaniDiacAnalyzer = QSpaceTokenizer() | QArabicSymbolsFilter( tashkil = False )
 

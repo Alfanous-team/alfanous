@@ -94,8 +94,8 @@ class BasicSearchEngine:
             querystr = querystr.decode( "utf-8" )
         return concat_suggestions( map( lambda X:X.QSuggest( querystr ), self._spellcheckers ) )
 
-    def highlight( self, text, terms, type = "css" ):
-        return self._highlight( text, terms, type )
+    def highlight( self, text, terms, type = "css", strip_vocalization = True ):
+        return self._highlight( text, terms, type, strip_vocalization )
 
 
     def find_extended( self, query, defaultfield ):

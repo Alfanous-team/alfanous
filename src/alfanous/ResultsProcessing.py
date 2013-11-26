@@ -29,7 +29,7 @@
 
 from alfanous.Support.whoosh.scoring import   BM25F #TF_IDF, Frequency,
 from alfanous.Support.whoosh.highlight import highlight, BasicFragmentScorer, Fragment, GenshiFormatter, HtmlFormatter #NullFragmenter,FIRST,
-from alfanous.TextProcessing import QHighLightAnalyzer, Gword_tamdid
+from alfanous.TextProcessing import QHighLightAnalyzer, QDiacHighLightAnalyzer, Gword_tamdid
 
 #from alfanous.Support.whoosh.analysis import StandardAnalyzer
 
@@ -72,7 +72,7 @@ def QPaginate( results, pagelen = 10 ):
         yield ( i / pagelen, results[i:minimal( i + pagelen, l )] )
 
 
-def Qhighlight( text, terms, type = "css" ):
+def Qhighlight( text, terms, type = "css", strip_vocalization = True ):
     """ highlight terms in text
 
     @param type: the type of formatting , html or css or genchi
@@ -94,7 +94,7 @@ def Qhighlight( text, terms, type = "css" ):
     h = highlight( 
                       text,
                       terms,
-                      analyzer = QHighLightAnalyzer,
+                      analyzer = QHighLightAnalyzer if strip_vocalization else QDiacHighLightAnalyzer,
                       fragmenter = QFragmenter(),
                       formatter = formatter,
                       top = 3,
