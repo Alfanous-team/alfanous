@@ -89,6 +89,7 @@ LANGUAGES = (
     ( 'ku', "Kurdish" ),
     #( 'ur', "Urdu" ),
     ( 'ms', "Malay" ),
+    ( 'ml', "Malayalam" ),
     #( 'tr', "Turkish" ),
     ( 'es', "Spanish" ),
     ( 'pt', "Portuguese"),
