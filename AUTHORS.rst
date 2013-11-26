@@ -118,6 +118,8 @@ Translation
   * Spanish: Khireddine Chekraoui 
   * Portuguese: Jonathan Da Fonseca
   * Malay: 'abuyop'
+  * Kurdish: 
+  * Malayalam: `'STyM Alfazz' <https://launchpad.net/~alfasst>`
 
 * Mobile Web interface 
 

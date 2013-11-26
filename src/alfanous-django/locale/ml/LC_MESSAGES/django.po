@@ -1,0 +1,1211 @@
+# Malayalam translation for alfanous
+# Copyright (c) 2013 Rosetta Contributors and Canonical Ltd 2013
+# This file is distributed under the same license as the alfanous package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2013.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: alfanous\n"
+"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2013-08-31 18:10+0100\n"
+"PO-Revision-Date: 2013-11-26 01:30+0000\n"
+"Last-Translator: STyM Alfazz <Unknown>\n"
+"Language-Team: Malayalam <ml@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Launchpad-Export-Date: 2013-11-26 09:32+0000\n"
+"X-Generator: Launchpad (build 16840)\n"
+
+#: templates/aya_results.html:17 templates/aya_results.html.py:63
+msgid "Keywords"
+msgstr "അടയാളവാക്കുകൾ"
+
+#: templates/aya_results.html:19 templates/aya_results.html.py:236
+#: templates/translation_results.html:25
+msgid "Results"
+msgstr "ഫലങ്ങള്‍"
+
+#: templates/aya_results.html:21 templates/translation_results.html:17
+msgid "Runtime"
+msgstr "പ്രവര്‍ത്തനസമയം"
+
+#: templates/aya_results.html:22
+msgid "s"
+msgstr "സെ."
+
+#: templates/aya_results.html:30
+msgid "Searched keyword:"
+msgstr "തിരഞ്ഞ അടയാളവാക്ക്:"
+
+#: templates/aya_results.html:31
+msgid "Suggestions:"
+msgstr "നിര്‍ദ്ദേശങ്ങള്‍:"
+
+#: templates/aya_results.html:47
+msgid "no suggestions!"
+msgstr "നിര്‍ദ്ദേശങ്ങള്‍ ഒന്നുമില്ല!"
+
+#: templates/aya_results.html:80 templates/aya_results.html.py:520
+#: templates/aya_results.html:594 templates/base.html:83
+msgid "words"
+msgstr "വാക്കുകള്‍"
+
+#: templates/aya_results.html:94 templates/aya_results.html.py:107
+msgid "occurances"
+msgstr "സംഭവങ്ങള്‍"
+
+#: templates/aya_results.html:97 templates/aya_results.html.py:116
+msgid "vocalizations"
+msgstr "ഉച്ചാരണങ്ങള്‍"
+
+#: templates/aya_results.html:111 templates/base.html:76
+msgid "ayates"
+msgstr "ആയത്തുകള്‍"
+
+#: templates/aya_results.html:132
+msgid "synonyms"
+msgstr "പര്യായങ്ങള്‍"
+
+#: templates/aya_results.html:149
+msgid "derivations"
+msgstr "ഉത്പന്നങ്ങള്‍"
+
+#: templates/aya_results.html:174
+msgid "Annotation"
+msgstr "വ്യാഖ്യാനം"
+
+#: templates/aya_results.html:175
+msgid "ID"
+msgstr "ഐഡി"
+
+#: templates/aya_results.html:176
+msgid "sura,aya"
+msgstr "സൂറത്ത്,ആയത്ത്"
+
+#: templates/aya_results.html:178
+msgid "token"
+msgstr "അടയാളം"
+
+#: templates/aya_results.html:181
+msgid "part"
+msgstr "ഭാഗം"
+
+#: templates/aya_results.html:184 templates/aya_results.html.py:547
+#: templates/aya_results.html:579 templates/aya_results.html.py:584
+msgid "type"
+msgstr "തരം"
+
+#: templates/aya_results.html:187
+msgid "POS"
+msgstr "പോസ്"
+
+#: templates/aya_results.html:190
+msgid "lemma"
+msgstr "ലെമ്മ"
+
+#: templates/aya_results.html:193
+msgid "root"
+msgstr "മൂലം"
+
+#: templates/aya_results.html:196
+msgid "special"
+msgstr "പ്രത്യേകം"
+
+#: templates/aya_results.html:199
+msgid "aspect"
+msgstr "സ്വഭാവം"
+
+#: templates/aya_results.html:202
+msgid "state"
+msgstr "സ്ഥിതി"
+
+#: templates/aya_results.html:205
+msgid "form"
+msgstr "രീതി"
+
+#: templates/aya_results.html:208
+msgid "case"
+msgstr "ആവരണം"
+
+#: templates/aya_results.html:211
+msgid "derivation"
+msgstr "ഉത്പന്നം"
+
+#: templates/aya_results.html:214
+msgid "person"
+msgstr "വ്യക്തി"
+
+#: templates/aya_results.html:217
+msgid "number"
+msgstr "സംഖ്യ‌"
+
+#: templates/aya_results.html:220
+msgid "gender"
+msgstr "ലിംഗം"
+
+#: templates/aya_results.html:223
+msgid "voice"
+msgstr "ശബ്ദം"
+
+#: templates/aya_results.html:237 templates/translation_results.html:26
+msgid "to"
+msgstr "വരെ"
+
+#: templates/aya_results.html:238 templates/translation_results.html:27
+msgid "of"
+msgstr "ന്റെ"
+
+#: templates/aya_results.html:260 templates/translation_results.html:44
+msgid "Result n°"
+msgstr "ഫലം n°"
+
+#: templates/aya_results.html:407
+msgid "Click here to show more details"
+msgstr "കൂടുതല്‍ വിവരങ്ങള്‍ക്കായി ഇവിടെ അമര്‍ത്തുക"
+
+#: templates/aya_results.html:410
+msgid "Show more"
+msgstr "കൂടുതല്‍ കാണിക്കുക"
+
+#: templates/aya_results.html:429
+msgid "Chapter"
+msgstr "അധ്യായം"
+
+#: templates/aya_results.html:439
+msgid "Topic"
+msgstr "വിഷയം"
+
+#: templates/aya_results.html:448
+msgid "Subtopic"
+msgstr "ഉപവിഷയം"
+
+#: templates/aya_results.html:463
+msgid "About ayah"
+msgstr "ആയത്തിനെ സംബന്ധിച്ച്"
+
+#: templates/aya_results.html:472
+msgid "manzil"
+msgstr "മന്‍സില്‍"
+
+#: templates/aya_results.html:480
+msgid "juz"
+msgstr "ജുസ്അ"
+
+#: templates/aya_results.html:488
+msgid "hizb"
+msgstr "ഹിസ്ബ്"
+
+#: templates/aya_results.html:491
+msgid "quart"
+msgstr "അളവ്"
+
+#: templates/aya_results.html:499
+msgid "page"
+msgstr "താള്‍"
+
+#: templates/aya_results.html:508
+msgid "page (indian)"
+msgstr "താള്‍ (ഇന്ത്യന്‍)"
+
+#: templates/aya_results.html:528 templates/aya_results.html.py:595
+msgid "letters"
+msgstr "അക്ഷരങ്ങള്‍"
+
+#: templates/aya_results.html:537 templates/aya_results.html.py:596
+msgid "divine names"
+msgstr "ദൈവിക നാമങ്ങള്‍"
+
+#: templates/aya_results.html:544
+msgid "sajda"
+msgstr "സജ്ദ"
+
+#: templates/aya_results.html:544
+msgid "Hafs"
+msgstr "ഹഫ്സുകള്‍"
+
+#: templates/aya_results.html:546 templates/aya_results.html.py:573
+msgid "n°"
+msgstr "n°"
+
+#: templates/aya_results.html:555
+msgid "About surah"
+msgstr "സൂറത്തിനെ സംബന്ധിച്ച്"
+
+#: templates/aya_results.html:562 templates/aya_results.html.py:568
+msgid "Sura"
+msgstr "സൂറത്ത്"
+
+#: templates/aya_results.html:588
+msgid "revelation_order"
+msgstr "ഇറക്കപ്പെട്ട_രീതി"
+
+#: templates/aya_results.html:591
+msgid "ayahs"
+msgstr "ആയത്തുകള്‍"
+
+#: templates/aya_results.html:617 templates/translation_results.html:185
+msgid "Sorry! there is no results for this search query."
+msgstr "ക്ഷമിക്കണം! ഈ തിരച്ചിലിന് ഫലങ്ങള്‍ ഒന്നും ലഭ്യമല്ല."
+
+#: templates/aya_results.html:626 templates/translation_results.html:193
+msgid "Error "
+msgstr "പിശക് "
+
+#: templates/aya_search.html:10
+msgid "Search options"
+msgstr "തിരച്ചില്‍ ഐച്ഛികങ്ങള്‍"
+
+#: templates/aya_search.html:14
+msgid "Fuzzy search"
+msgstr "അവ്യക്തമായ തിരച്ചില്‍"
+
+#: templates/aya_search.html:18
+msgid "Unvocalized text"
+msgstr "ആഖ്യാനമില്ലാത്ത പദാവലി"
+
+#: templates/aya_search.html:22
+msgid "Uthmani script"
+msgstr "ഉസ്മാനി രചനാശൈലി"
+
+#: templates/aya_search.html:35
+msgid "View"
+msgstr "കാഴ്ച"
+
+#: templates/aya_search.html:42 templates/aya_search.html.py:93
+#: templates/aya_search.html:115 templates/base.html:237
+msgid "Default"
+msgstr "സ്വതേ"
+
+#: templates/aya_search.html:43
+msgid "Minimal"
+msgstr "ചുരുങ്ങിയത്"
+
+#: templates/aya_search.html:44
+msgid "Normal"
+msgstr "സാധാരണ"
+
+#: templates/aya_search.html:45
+msgid "Full"
+msgstr "മുഴുവനും"
+
+#: templates/aya_search.html:46
+msgid "Statitic"
+msgstr "സ്ഥിരം"
+
+#: templates/aya_search.html:47
+msgid "Linguistic"
+msgstr "ഭാഷാ സംബന്ധി"
+
+#: templates/aya_search.html:48
+msgid "Recitation"
+msgstr "പാരായണം"
+
+#: templates/aya_search.html:63
+msgid "Sorted by"
+msgstr "ക്രമീകരിച്ചിരിക്കുന്നത്"
+
+#: templates/aya_search.html:70
+msgid "Relevance"
+msgstr "പ്രാധാന്യം"
+
+#: templates/aya_search.html:71
+msgid "Mus'haf"
+msgstr "മുസ്ഹഫ്"
+
+#: templates/aya_search.html:72 templates/translation_search.html:7
+msgid "Tanzil"
+msgstr "തന്‍സീല്‍"
+
+#: templates/aya_search.html:73
+msgid "Topics"
+msgstr "വിഷയങ്ങള്‍"
+
+#: templates/aya_search.html:74
+msgid "Ayah length"
+msgstr "ആയത്തിന്റെ വലുപ്പം"
+
+#: templates/aya_search.html:86
+msgid "Translation"
+msgstr "പരിഭാഷ"
+
+#: templates/aya_search.html:94
+msgid "No translation"
+msgstr "പരിഭാഷയില്ല"
+
+#: templates/aya_search.html:109
+msgid "Recitation:"
+msgstr "പാരായണം:"
+
+#: templates/aya_search.html:116
+msgid "No recitation"
+msgstr "പാരായണമില്ല"
+
+#: templates/base.html:10
+msgid "Page:"
+msgstr "താള്‍:"
+
+#: templates/base.html:14
+msgid "Order:"
+msgstr "ക്രമം:"
+
+#: templates/base.html:18
+msgid "View:"
+msgstr "കാഴ്ച:"
+
+#: templates/base.html:22
+msgid "Options:"
+msgstr "ഐച്ഛികങ്ങള്‍:"
+
+#: templates/base.html:24
+msgid "vocalized"
+msgstr "ആഖ്യാനിച്ചത്"
+
+#: templates/base.html:27
+msgid "uthmani"
+msgstr "ഉസ്മാനി"
+
+#: templates/base.html:30
+msgid "fuzzy"
+msgstr "അവ്യക്തം"
+
+#: templates/base.html:35
+msgid "Translation:"
+msgstr "പരിഭാഷ:"
+
+#: templates/base.html:42 templates/base.html.py:48 templates/base.html:424
+msgid "Quran Ayah Search"
+msgstr "ഖുര്‍ആന്‍ ആയത്ത് തിരയല്‍"
+
+#: templates/base.html:44
+msgid "Quran Word Search"
+msgstr "ഖുര്‍ആന്‍ വാക്ക് തിരയല്‍"
+
+#: templates/base.html:46
+msgid "Quran Translation Search"
+msgstr "ഖുര്‍ആന്‍ പരിഭാഷ തിരയല്‍"
+
+#: templates/base.html:50 templates/base.html.py:424
+msgid "Alfanous"
+msgstr "അല്‍ഫാനൂസ്"
+
+#: templates/base.html:57
+msgid "Alfanous search results searching in"
+msgstr "തിരഞ്ഞതിലെ അല്‍ഫാനൂസ് തിരച്ചില്‍ ഫലങ്ങള്‍"
+
+#: templates/base.html:57
+msgid "looking for the query"
+msgstr "ക്വറിക്കായി നോക്കുന്നു"
+
+#: templates/base.html:57
+msgid "the page"
+msgstr "താള്‍"
+
+#: templates/base.html:57
+msgid "the view"
+msgstr "കാഴ്ച"
+
+#: templates/base.html:57
+msgid "the script"
+msgstr "രചന"
+
+#: templates/base.html:57
+msgid "and the translation"
+msgstr "പിന്നെ പരിഭാഷ"
+
+#: templates/base.html:57
+msgid "The fuzzy search is"
+msgstr "അവ്യക്തമായ തിരയലാണ്"
+
+#: templates/base.html:60
+msgid ""
+"Alfanous has the feautre to search in the Quran words, their properties and "
+"occurences"
+msgstr ""
+"ഖുര്‍ആനിലെ വാചകങ്ങളെയും അവയുടെ ഗുണഗണങ്ങളെയും സന്ദര്‍ഭങ്ങളേയും തിരഞ്ഞ് "
+"കണ്ടെത്താന് അല്‍ഫാനൂസിന് കഴിയും."
+
+#: templates/base.html:62
+msgid ""
+"Alfanous has the feautre to search in the translations of Quran meanings to "
+"lot of world languages"
+msgstr "വിവിധ ലോകഭാഷകളിലെ ഖുര്‍ആന്‍ പരിഭാഷകളില്‍ തിരയാന്‍ അല്‍ഫാനൂസിനാവും"
+
+#: templates/base.html:64
+msgid ""
+"Alfanous is a functional, dynamic, comprehensive Qur’an search engine that "
+"has been effectively designed to carry out simple or advanced Quranic "
+"searches."
+msgstr ""
+"ലളിതവും വികസിതവുമായ തിരയലുകള്‍ ഖുര്‍ആനില്‍ നടത്താനുള്ള ഒരു "
+"പ്രവര്‍ത്തനക്ഷമവും ചലനാത്മകമാവും വിശാലവുമായ തിരയല്‍ തന്ത്രമാണ് അല്‍ഫാനൂസ്."
+
+#: templates/base.html:71
+msgid "quran"
+msgstr "ഖുര്‍ആന്‍"
+
+#: templates/base.html:72
+msgid "forqan"
+msgstr "ഫുര്‍ഖാന്‍"
+
+#: templates/base.html:73
+msgid "koran"
+msgstr "ഖുര്‍-ആന്‍"
+
+#: templates/base.html:74
+msgid "search"
+msgstr "തിരയല്‍"
+
+#: templates/base.html:75
+msgid "search engine"
+msgstr "തിരയല്‍ യന്ത്രം"
+
+#: templates/base.html:77
+msgid "surates"
+msgstr "സൂറത്തുകള്‍"
+
+#: templates/base.html:78
+msgid "advanced"
+msgstr "വികസിതമായത്"
+
+#: templates/base.html:79
+msgid "statistics"
+msgstr "സ്ഥിതിവിവരക്കണക്ക്"
+
+#: templates/base.html:80
+msgid "linguistic"
+msgstr "ഭാഷാപരം"
+
+#: templates/base.html:81
+msgid "information retrieval"
+msgstr "വിവരം വീണ്ടെടുക്കല്‍"
+
+#: templates/base.html:82
+msgid "natural language processing"
+msgstr "സ്വാഭാവിക ഭാഷാ സംസ്കരണം"
+
+#: templates/base.html:84
+msgid "Lantern"
+msgstr "റാന്തല്‍"
+
+#: templates/base.html:85
+msgid "alfanous"
+msgstr "അല്‍ഫാനൂസ്"
+
+#: templates/base.html:93
+msgid "vocalized text"
+msgstr "ആഖ്യാനിച്ച പദാവലി"
+
+#: templates/base.html:96
+msgid "uthmani script"
+msgstr "ഉസ്മാനി രചന"
+
+#: templates/base.html:99
+msgid "fuzzy search"
+msgstr "അവ്യക്തമായ തിരയല്‍"
+
+#: templates/base.html:179 wui/views.py:69
+msgid "Ayahs"
+msgstr "ആയത്തുകള്‍"
+
+#: templates/base.html:180 wui/views.py:72
+msgid "Translations"
+msgstr "പരിഭാഷകള്‍"
+
+#: templates/base.html:181
+msgid "Words"
+msgstr "വാക്കുകള്‍"
+
+#: templates/base.html:200
+msgid "First, select the search unit"
+msgstr "ആദ്യം തിരയല്‍ മാനകം തെരെഞ്ഞെടുക്കുക"
+
+#: templates/base.html:201
+msgid ""
+"You can choose whether to search in Arabic verses of the holly Quran or in "
+"its translations"
+msgstr ""
+"വിശുദ്ധ ഖുര്‍ആനിലെ അറബിക് വാചകങ്ങളിലോ അല്ലെങ്കില്‍ പരിഭാഷകളിലോ താങ്കള്‍ക്ക് "
+"തിരയാം"
+
+#: templates/base.html:215
+msgid "Select your language"
+msgstr "നിങ്ങളുടെ ഭാഷ തിരഞ്ഞെടുക്കുക"
+
+#: templates/base.html:216
+msgid ""
+"If you didn't notice, Alfanous User Interface is now translated to other "
+"languages, choose the one that fits you the best, or, you can contribute in "
+"translating it into your native language! (see the translate link)"
+msgstr ""
+"നിങ്ങള്‍ ശ്രദ്ധിച്ചിട്ടില്ലെങ്കില്‍, അല്‍ഫാനൂസ് സമ്പര്‍ക്കമുഖം ഇപ്പോള്‍ "
+"മറ്റു ഭാഷകളിലേക്കും പരിഭാഷപ്പെടുത്തല്‍ നടക്കുന്നുണ്ട്. താങ്കള്‍ക്ക് "
+"അനുയോജ്യമായ ഒന്ന തെരെഞ്ഞെടുക്കൂ. അല്ലെങ്കില്‍ താങ്കള്‍ക്ക് ഈ പ്രോഗ്രാം "
+"മാതൃഭാഷയിലേക്ക് പരിഭാഷ നടത്തുന്നതിലൂടെ സംഭാവനകളും നല്‍കാം! (പരാഭാഷാ കണ്ണി "
+"കാണൂ)"
+
+#: templates/base.html:218
+msgid "Languages"
+msgstr "ഭാഷകള്‍"
+
+#: templates/base.html:228
+msgid "Current:"
+msgstr "നിലവില്‍:"
+
+#: templates/base.html:233
+msgid "Skins"
+msgstr "രൂപഭാവങ്ങള്‍"
+
+#: templates/base.html:240
+msgid "Cerulean"
+msgstr "സെറൂലിയന്‍"
+
+#: templates/base.html:241
+msgid "Cyborg"
+msgstr "സൈബോര്‍ഗ്"
+
+#: templates/base.html:242
+msgid "Amelia"
+msgstr "അമേലിയ"
+
+#: templates/base.html:243
+msgid "Readable"
+msgstr "വായിക്കാവുന്നത്"
+
+#: templates/base.html:244
+msgid "Slate"
+msgstr "സ്ലേറ്റ്"
+
+#: templates/base.html:245
+msgid "Spacelab"
+msgstr "ശൂന്യകാശപരീക്ഷണശാല"
+
+#: templates/base.html:246
+msgid "Super Heroes"
+msgstr "അമാനുഷ നായകര്‍"
+
+#: templates/base.html:247
+msgid "United"
+msgstr "ഐക്യത്തോടെ"
+
+#: templates/base.html:269
+msgid "Our page on Facebook"
+msgstr "ഞങ്ങളുടെ ഫേസ്ബുക്ക് താള്‍"
+
+#: templates/base.html:270
+msgid "Our page on Google+"
+msgstr "ഞങ്ങളുടെ ഗുഗിള്‍+ താള്‍"
+
+#: templates/base.html:271
+msgid "Our account on Twitter"
+msgstr "ഞങ്ങളുടെ ട്വിറ്റര്‍ അക്കൗണ്ട്"
+
+#: templates/base.html:272
+msgid "Our repository on Github"
+msgstr "ഞങ്ങളുടെ ഗിറ്ഹബ്ബ് നിലവറ"
+
+#: templates/base.html:273
+msgid "Our Mailing list on GoogleGroups"
+msgstr "ഞങ്ങളുടെ ഗൂഗിള്‍ഗ്രൂപ്പ്സ് മെയിലിംഗ് ലിസ്റ്റ്"
+
+#: templates/base.html:287
+msgid "Information:"
+msgstr "വിവരം:"
+
+#: templates/base.html:288
+msgid "Quick Tour!"
+msgstr "അതിവേഗ സഞ്ചാരം!"
+
+#: templates/base.html:289 templates/popups_content.html:7
+msgid "F.A.Q."
+msgstr "സാധാരണ ചോദിക്കുന്ന ചോദ്യങ്ങള്‍"
+
+#: templates/base.html:290
+msgid "Sample search here"
+msgstr "ഉദാഹരണ തിരയല്‍ ഇവിടെ"
+
+#: templates/base.html:291
+msgid ""
+"Here you can learn by example about the full power of Alfanous search engine "
+"and what you can do with it."
+msgstr ""
+"ഉദാഹരണങ്ങള്‍ വഴി താങ്കള്‍ക്ക് ഇവിടെ അല്‍ഫാനൂസ് തിരയല്‍ യന്ത്രത്തിന്റ "
+"മുഴുവന്‍ ശക്തി മനസ്സിലാക്കുകയും അതുപയോഗിച്ച് എന്തെല്ലാം ചെയ്യാം എന്നും "
+"മനസ്സിലാക്കാം."
+
+#: templates/base.html:294 templates/popups_content.html:21
+msgid "Help"
+msgstr "സഹായം"
+
+#: templates/base.html:295
+msgid "Contact"
+msgstr "ബന്ധപ്പെടുക"
+
+#: templates/base.html:296 templates/popups_content.html:263
+msgid "Download"
+msgstr "ഇറക്കുമതി ചെയ്യുക"
+
+#: templates/base.html:297
+msgid "Contribute:"
+msgstr "സംഭാവന ചെയ്യുക:"
+
+#: templates/base.html:298
+msgid "Translate"
+msgstr "പരിഭാഷപ്പെടുത്തുക"
+
+#: templates/base.html:299
+msgid "Feedback"
+msgstr "പ്രതികരണം"
+
+#: templates/base.html:300
+msgid "we really need your help!"
+msgstr "ഞങ്ങള്‍ക്ക് നിങ്ങളുടെ സഹായം അത്യാവശ്യമാണ്!"
+
+#: templates/base.html:301
+msgid ""
+"We're looking to fund the project, if you like it, help us making it even "
+"better."
+msgstr ""
+"ഞങ്ങള്‍ ഈ പദ്ധതി ഫണ്ട് ചെയ്യാന്‍ താത്പര്യമുള്ളവരെ അന്വേഷിക്കുന്നുണ്ട്. "
+"താങ്കള്‍ക്ക് താത്പര്യമുണ്ടെങ്കില്‍ ഈ പദ്ധതി കുറച്ചുകൂടി മെച്ചപ്പെട്ടതാക്കാം."
+
+#: templates/base.html:308
+msgid "Donate"
+msgstr "സംഭാവന ചെയ്യുക"
+
+#: templates/base.html:309
+msgid "Other means"
+msgstr "മറ്റു അര്‍ത്ഥങ്ങള്‍"
+
+#: templates/base.html:310
+msgid "Links:"
+msgstr "കണ്ണികള്‍:"
+
+#: templates/base.html:311
+msgid "Old website"
+msgstr "പഴയ വെബ്സൈറ്റ്"
+
+#: templates/base.html:330
+msgid "Alfanous is smart!"
+msgstr "അല്‍ഫാനൂസ് കാര്യക്ഷമമാണ്"
+
+#: templates/base.html:334
+msgid "search query here ..."
+msgstr "തിരയല്‍ വാക്ക് ഇവിടെ ..."
+
+#: templates/base.html:340
+msgid "Quick search"
+msgstr "പെട്ടെന്ന് തിരയുക"
+
+#: templates/base.html:347
+msgid "Even more!"
+msgstr "ഇനിയും കൂടുതല്‍!"
+
+#: templates/base.html:348
+msgid ""
+"You can <strong>sort</strong>, <strong>filter</strong> search reasults or "
+"choose a translation, you can as well choose a recitator!"
+msgstr ""
+"തിരച്ചില്‍ ഫലങ്ങള്‍ താങ്കള്‍ക്ക് <strong>sort</strong>, "
+"<strong>അരിക്കാവുന്നതാണ്</strong> അല്ലെങ്കില്‍ ഒരു പരിഭാഷ തിരഞ്ഞെടുക്കാം, "
+"അതുപോലെ പാരായണ കര്‍ത്താവിനേയും താങ്കള്‍ക്ക് തിരഞ്ഞെടുക്കാം!"
+
+#: templates/base.html:352
+msgid "Advanced search"
+msgstr "വികസിതമായ തിരയല്‍"
+
+#: templates/base.html:370
+msgid "Bismi'Allah Go!"
+msgstr "ബിസ്മില്ലാഹ് തുടങ്ങുക!"
+
+#: templates/base.html:394
+msgid "Help!"
+msgstr "സഹായം!"
+
+#: templates/base.html:396
+msgid "Please help us translate Alfanous Project into more languages!"
+msgstr ""
+"കൂടുതല്‍ ഭാഷകളിലേക്ക് അല്‍ഫാനൂസ് പരിഭാഷപ്പെടുത്തി ഞങ്ങളെ സഹായിക്കുന്നു"
+
+#: templates/base.html:404
+msgid ""
+"Please help us improving Alfanous Project, by taking this survey about "
+"search features in Holy Quran."
+msgstr ""
+"ഈ സര്‍വ്വേയില്‍ പങ്കാളിയാവുന്നത് വഴി അല്‍ഫാനൂസിനെ മികച്ചതാക്കാന്‍ ഞങ്ങളെ "
+"സഹായിക്കൂ"
+
+#: templates/base.html:410
+msgid "Info!"
+msgstr "വിവരം!"
+
+#: templates/base.html:412
+msgid "The source of indexed Quran translations is Tanzil Project"
+msgstr ""
+"പട്ടികപ്പെടുത്തിയിരിക്കുന്ന ഖുര്‍ആന്‍ പരിഭാഷകളുടെ ഉറവിടം തന്‍സീല്‍ പദ്ധതിയാണ്"
+
+#: templates/base.html:424
+msgid "Share!"
+msgstr "പങ്കുവെക്കുക!"
+
+#: templates/base.html:443
+msgid "Copyright"
+msgstr "പകര്‍പ്പവകാശം"
+
+#: templates/base.html:443
+msgid "Alfanous Team"
+msgstr "അല്‍ഫാനൂസ് സംഘം"
+
+#: templates/base.html:444
+msgid "released under"
+msgstr "പുറത്തിറക്കിയിരിക്കുന്ന അനുമതിപത്രം"
+
+#: templates/base.html:444
+msgid "AGPL license"
+msgstr "എജിപിഎല്‍ അനുമതിപത്രം"
+
+#: templates/base.html:449
+msgid "Powered by"
+msgstr "ശക്തി നല്‍കിയിരിക്കുന്നത്"
+
+#: templates/base.html:458
+msgid "Add to your search bar!"
+msgstr "താങ്കളുടെ തിരയല്‍കൂടിലേക്ക് ചേര്‍ക്കുക!"
+
+#: templates/popups_content.html:10
+msgid "See"
+msgstr "കാണുക"
+
+#: templates/popups_content.html:10
+msgid "this link"
+msgstr "ഈ കണ്ണി"
+
+#: templates/popups_content.html:13 templates/popups_content.html.py:134
+#: templates/popups_content.html:148 templates/popups_content.html.py:172
+#: templates/popups_content.html:193 templates/popups_content.html.py:254
+#: templates/popups_content.html:302 templates/popups_content.html.py:323
+msgid " Close "
+msgstr " പൂട്ടുക "
+
+#: templates/popups_content.html:27
+msgid "Searching in Quran Ayahs"
+msgstr "ഖുര്‍ആന്‍ ആയത്തുകളില്‍ തിരയുന്നു"
+
+#: templates/popups_content.html:34 templates/popups_content.html.py:98
+msgid "Exact search"
+msgstr "കൃത്യമായ തിരയല്‍"
+
+#: templates/popups_content.html:39 templates/popups_content.html.py:103
+msgid "Phrase search"
+msgstr "വാചകം തിരയുക"
+
+#: templates/popups_content.html:44 templates/popups_content.html.py:108
+msgid "Logical relations"
+msgstr "യുക്തിക ബന്ധങ്ങള്‍"
+
+#: templates/popups_content.html:49 templates/popups_content.html.py:113
+msgid "Wildcards"
+msgstr "വൈല്‍ഡ്കാര്‍ഡുകള്‍"
+
+#: templates/popups_content.html:54 templates/popups_content.html.py:118
+msgid "Fields"
+msgstr "പ്രദേശങ്ങള്‍"
+
+#: templates/popups_content.html:59
+msgid "Intervals"
+msgstr "ഇടവേളകള്‍"
+
+#: templates/popups_content.html:64
+msgid "Partial vocalization"
+msgstr "അര്‍ധ വ്യാഖ്യാനം"
+
+#: templates/popups_content.html:69
+msgid "Word properties"
+msgstr "പദത്തിന്റെ ഗുണഗണങ്ങള്‍"
+
+#: templates/popups_content.html:74
+msgid "Derivations"
+msgstr "ഉത്പന്നങ്ങള്‍"
+
+#: templates/popups_content.html:79
+msgid "Buckwalter Transliteration"
+msgstr "ബക്ക്വാള്‍ട്ടര്‍ ലിപ്യന്തരണം"
+
+#: templates/popups_content.html:91
+msgid "Searching in Quran Translations"
+msgstr "ഖുര്‍ആന്‍ പരിഭാഷകളില്‍ തിരയുന്നു"
+
+#: templates/popups_content.html:131
+msgid ""
+"The website does not work well on Internet Explorer, we suggest to use "
+"another browser such as: "
+msgstr ""
+"ഈ വെബ്സൈറ്റ് ഇന്റർനെറ്റ് എക്സ്‌പ്ലോററില്‍ നന്നായി പ്രവര്‍ത്തിക്കില്ല. "
+"താങ്കള്‍ക്ക് ഉപയോഗിക്കാവുന്ന മറ്റ് ബ്രൗസറുകള്‍: "
+
+#: templates/popups_content.html:131
+msgid "Firefox"
+msgstr "ഫയര്‍ഫോക്സ്‌"
+
+#: templates/popups_content.html:142
+msgid "Awarded!"
+msgstr "സമ്മാനിച്ചിരിക്കുന്നു!"
+
+#: templates/popups_content.html:145
+msgid ""
+"Alfanous.org was chosen as the best-in-technicaity website in the "
+"competition AlgeriaWebAwards 2012."
+msgstr ""
+"2012 അള്‍ജീരിയ വെബ് അവാഡ്സില്‍ അല്‍ഫാനൂസ്.ഓര്‍ഗ് മികച്ച സാങ്കേതിക "
+"ഗുണമേന്മയുള്ള വെബ്സൈറ്റായി തെരെഞ്ഞെടുക്കപ്പെട്ടിട്ടുണ്ട്."
+
+#: templates/popups_content.html:156
+msgid "How to donate"
+msgstr "എങ്ങനെ സംഭാവന ചെയ്യാം"
+
+#: templates/popups_content.html:159
+msgid ""
+"We're stuck looking for possible ways for donations/Funding. Any help is "
+"appreciated!"
+msgstr ""
+"ഞങ്ങള്‍ സംഭാവനകള്‍ക്കും/ഫണ്ടുകള്‍ക്കും ലഭ്യമായ വഴികള്‍ "
+"തേടിക്കൊണ്ടിരിക്കുകയാണ്. ഏതുതരം സഹായവും സ്വാഗതം ചെയ്യപ്പെടും!"
+
+#: templates/popups_content.html:162
+msgid "Any way you can help by:"
+msgstr "എങ്ങനെയായാലും താങ്കള്‍ക്ക് സഹായിക്കാവുന്നത്:"
+
+#: templates/popups_content.html:164
+msgid ""
+"Pay our web hosting monthly bills directly, we create an account for you in "
+"the host to do that."
+msgstr ""
+"മാസം തോറുമുള്ള ഞങ്ങളുടെ വെബ് ഹോസ്റ്റിംഗ് ബില്‍ അടക്കൂ, അതിനായി ഞങ്ങള്‍ "
+"ഹോസ്റ്റില്‍ നിങ്ങള്‍ക്കൊരു അക്കൗണ്ട് സജ്ജീകരിച്ചുതരാം."
+
+#: templates/popups_content.html:165
+msgid ""
+"Lead an advertising compaign for the project website through Google adwords "
+"or Facebook."
+msgstr ""
+"ഈ പദ്ധതിക്കായി ഗുഗിള്‍ ആഡ് വേഡ്സ് വഴിയോ ഫേസ്ബുക്ക് വഴിയോ ഒരു പരസ്യപ്രചാരണം "
+"നടത്തുക"
+
+#: templates/popups_content.html:166
+msgid "Buy Products (T-shirts, Cups, Hats) from Zazzle"
+msgstr ""
+"സാസിലില്‍ നിന്ന് ഉത്പന്നങ്ങള്‍ (ടീഷര്‍ട്ടുകള്‍, കപ്പുകള്‍, തൊപ്പികള്‍) "
+"വാങ്ങുക"
+
+#: templates/popups_content.html:167
+msgid "Donate by flattr:"
+msgstr "ഫ്ലാറ്റര്‍ വഴി സംഭാവന ചെയ്യുക:"
+
+#: templates/popups_content.html:180
+msgid "Contact us"
+msgstr "ഞങ്ങളെ ബന്ധപ്പെടുക"
+
+#: templates/popups_content.html:184
+msgid "If you have a concrete bug report for Alfanous please go to"
+msgstr "അല്‍ഫാനൂസില്‍ ഒരു വലിയ ബഗ് ഉണ്ടെങ്കില്‍ അത് സമര്‍പ്പിക്കാനായി പോവുക"
+
+#: templates/popups_content.html:184
+msgid "Issues Tracker"
+msgstr "പ്രശ്നങ്ങള്‍ കണ്ടത്താനുള്ള ഉപാധി"
+
+#: templates/popups_content.html:184
+msgid "submit your report and tag it \"bug\"."
+msgstr "താങ്കളുടെ റിപ്പോര്‍ട്ട് സമര്‍പ്പിച്ച് അതിനെ ബഗ്ഗെന്ന് ടാഗ് ചെയ്യുക"
+
+#: templates/popups_content.html:185
+msgid ""
+"If you want to participate in actively developing Alfanous,by testing read"
+msgstr ""
+"ടെസ്റ്റിംഗ് വഴി അല്‍ഫാനൂസ് സജീവമായി വികസിപ്പിക്കുന്നതില്‍ താങ്കള്‍ "
+"പങ്കാളിയാവാന്‍ ആഗ്രഹിക്കുന്നുണ്ടെങ്കില്‍, വായിക്കുക"
+
+#: templates/popups_content.html:185
+msgid "and by coding read "
+msgstr "കോഡ് ചെയ്താണെങ്കില്‍ വായിക്കുക "
+
+#: templates/popups_content.html:186
+msgid "If you want to help in Alfanous somehow,  read"
+msgstr ""
+"നിങ്ങള്‍ ഏതെങ്കിലും തരത്തില്‍ അല്‍ഫാനൂസിനെ സഹായിക്കാന്‍ "
+"താത്പര്യപ്പെടുന്നുണ്ടെങ്കില്‍, വായിക്കുക"
+
+#: templates/popups_content.html:187
+msgid ""
+"If you have a feature request, a proposition or a question for the project, "
+"you may use the mailing list."
+msgstr ""
+"ഒരു സവിശേഷത ആവശ്യമാണെങ്കില്‍, ഒരു അഭിപ്രായമുണ്ടെങ്കില്‍, ഒരു ചോദ്യം "
+"ചോദിക്കാനുണ്ടെങ്കില്‍ താങ്കള്‍ക്ക് ഞങ്ങളുടെ മെയിലിംഗ് ലിസ്റ്റ് "
+"ഉപയോഗിക്കാവുന്നതാണ്."
+
+#: templates/popups_content.html:188
+msgid ""
+"If you want to criticize the project, we'll be thankful if you resume your "
+"criticism and send it to the mailing list."
+msgstr ""
+"നിങ്ങള്‍ക്ക് ഈ പദ്ധതിയെ വിമര്‍ശിക്കണമെങ്കില്‍ അതു കേള്‍ക്കുന്നതില്‍ "
+"ഞങ്ങള്‍ക്ക് സന്തോഷമേയുള്ളൂ. താങ്കളുടെ വിവരങ്ങളും വിമര്‍ശനങ്ങളും ഞങ്ങളുടെ "
+"മെയിംലിംഗ് ലിസ്റ്റിലേക്കയക്കൂ."
+
+#: templates/popups_content.html:190
+msgid "For anything else, you can contact us via the mailing list which is:"
+msgstr "മറ്റെന്തിനും ഞങ്ങളെ മെയിലിംഗ് ലിസ്റ്റില്‍ ബന്ധപ്പെടുക, വിലാസം:"
+
+#: templates/popups_content.html:203
+msgid "How to contribute"
+msgstr "എങ്ങനെ സംഭാവന ചെയ്യാം"
+
+#: templates/popups_content.html:211
+msgid "Spreading the word"
+msgstr "ഈ വാചകം പ്രചരിപ്പിക്കുക"
+
+#: templates/popups_content.html:217
+msgid "Following and sharing our social network pages:"
+msgstr ""
+"ഞങ്ങളുടെ സോഷ്യല്‍ നെറ്റ്‌വര്‍ക്ക് താളുകള്‍ പിന്തുടരുകയും പങ്കുവെക്കുകയും "
+"ചെയ്യുക:"
+
+#: templates/popups_content.html:219
+msgid "Sharing a link to"
+msgstr "ഒരു കണ്ണി പങ്കുവെക്കുക"
+
+#: templates/popups_content.html:219
+msgid "our website"
+msgstr "ഞങ്ങളുടെ വെബ്സൈറ്റ്"
+
+#: templates/popups_content.html:219
+msgid "via your accounts in Social networks."
+msgstr "താങ്കളുടെ സോഷ്യല്‍ നെറ്റ്‌വര്‍ക്ക് അക്കൗണ്ടുകളിലൂടെ"
+
+#: templates/popups_content.html:220
+msgid ""
+"Pointing  skilled developers and Quranic researchers to the importance of "
+"the project."
+msgstr ""
+"കഴിവുള്ള ഡെവലപ്പേഴ്സിനും ഖുര്‍ആന്‍ ഗവേഷകര്‍ക്കും ഈ പദ്ധതിയുടെ പ്രാധാന്യം "
+"മനസ്സിലാക്കിക്കൊടുക്കുക."
+
+#: templates/popups_content.html:221
+msgid "Writing articles about the project in blogs, newspapers."
+msgstr "ഈ പദ്ധതിയെ കുറിച്ച് പത്രങ്ങളിലും ബ്ലോഗുകളിലും ലേഖനങ്ങളെഴുതുക"
+
+#: templates/popups_content.html:222
+msgid "Showing a banner on your Blog/Website."
+msgstr "നിങ്ങളുടെ ബ്ലോഗില്‍/വെബ്സൈറ്റില്‍ ഒരു ബാനര്‍ പ്രദര്‍ശിപ്പിക്കുക"
+
+#: templates/popups_content.html:223
+msgid ""
+"creating an ad for alfanous links using Google adwords or facebook if you're "
+"familiar with that (btw,it needs money)"
+msgstr ""
+"താങ്കള്‍ക്ക് മുന്‍പരിചയം ഉണ്ടെങ്കില്‍ ഗൂഗിള്‍ ആഡ് വേഡ്സോ ഫേസ്ബുക്കോ "
+"ഉപയോഗിച്ച് അല്‍ഫാനൂസിന്റെ പരസ്യം നിര്‍മ്മിക്കാം (പക്ഷേ അതിന് കാശ് ചെലവുണ്ട്)"
+
+#: templates/popups_content.html:232
+msgid "Or by"
+msgstr "അല്ലെങ്കില്‍ ഇതുവഴി"
+
+#: templates/popups_content.html:237
+msgid ""
+"Managing and Animating our social network pages with news and daily posts "
+"[Arabic, English]:"
+msgstr ""
+"ദിനേനയുള്ള പോസ്റ്റുകള്‍ [അറിബിക്, ഇംഗ്ലിഷ്] വഴി ഞങ്ങളുടെ സോഷ്യല്‍ "
+"നെറ്റ്‌വര്‍ക്ക് താളുകള്‍ കൈകാര്യം ചെയ്യുകയും നിലനിര്‍ത്തുകയും ചെയ്യുക:"
+
+#: templates/popups_content.html:239
+msgid "Translating project interfaces to your language , see:"
+msgstr ""
+"ഈ പദ്ധതിയുടെ സമ്പര്‍ക്കമുഖങ്ങള്‍ താങ്കളുടെ ഭാഷയിലേക്ക് പരിഭാഷപ്പെടുത്തുക, "
+"കാണുക:"
+
+#: templates/popups_content.html:240
+msgid "Testing the modules and releases, Reporting bugs , see:"
+msgstr ""
+"മൊഡ്യൂളുകളും പതിപ്പുകളും പരീക്ഷിക്കുക, ബഗ്ഗുകള്‍ രേഖപ്പെടുത്തുക, കാണുക:"
+
+#: templates/popups_content.html:241
+msgid "Fixing"
+msgstr "നന്നാക്കല്‍"
+
+#: templates/popups_content.html:241
+msgid "bugs"
+msgstr "ബഗ്ഗുകള്‍"
+
+#: templates/popups_content.html:241
+msgid "Coding"
+msgstr "കോഡ് ചെയ്യല്‍"
+
+#: templates/popups_content.html:241
+msgid "new features"
+msgstr "പുതിയ സവിശേഷതകള്‍"
+
+#: templates/popups_content.html:241
+msgid "or Developing"
+msgstr "അല്ലെങ്കില്‍ വികസിപ്പിക്കല്‍"
+
+#: templates/popups_content.html:241
+msgid "new interfaces"
+msgstr "പുതിയ സമ്പര്‍ക്കമുഖങ്ങള്‍"
+
+#: templates/popups_content.html:241
+msgid "See:"
+msgstr "കാണുക:"
+
+#: templates/popups_content.html:242
+msgid "Designing  Icons, Logos , Banners."
+msgstr "ഐകണുകള്‍, ചിഹ്നങ്ങള്‍, ബാനറുകള്‍ എന്നിവ രൂപകല്‍പന ചെയ്യല്‍."
+
+#: templates/popups_content.html:243
+msgid ""
+"Packaging the project for different systems: Windows, Linux distributions, "
+"MacOs."
+msgstr ""
+"ഈ പദ്ധതി വിവിധ വ്യവസ്ഥകള്‍ക്കായി പാക്കേജ് ചെയ്യല്‍: ലിനക്സ് വിതരണങ്ങള്‍, "
+"വിന്‍ഡോസ്, മാക് ഓഎസുകള്‍"
+
+#: templates/popups_content.html:244
+msgid ""
+"Donating/Supporting to the project: <em>We're stuck looking for possible "
+"ways for donations/Funding. Any help is appreciated</em>"
+msgstr ""
+"ഈ പദ്ധതിയിലേക്ക് സംഭാവന നല്‍കുക / പിന്തുണക്കുക:<em>സംഭാവനയും പിന്തുണയും "
+"ഞങ്ങള്‍ക്ക് അത്യാവശ്യമാണ്. ഏത് സഹായവും സ്വീകരിക്കപ്പെടും</em>"
+
+#: templates/popups_content.html:266
+msgid "Windows"
+msgstr "ജാലകങ്ങള്‍"
+
+#: templates/popups_content.html:269
+msgid "English desktop release 0.4"
+msgstr "ഇംഗ്ലിഷ് ഡെസ്ക്ടോപ്പ് പതിപ്പ് 0.4"
+
+#: templates/popups_content.html:272
+msgid "Arabic desktop release 0.3"
+msgstr "അറബിക് ഡെസ്ക്ടോപ്പ് പതിപ്പ് 0.3"
+
+#: templates/popups_content.html:276
+msgid "Linux"
+msgstr "ലിനക്സ്"
+
+#: templates/popups_content.html:279
+msgid "More details"
+msgstr "കൂടുതല്‍ വിവരങ്ങള്‍"
+
+#: templates/popups_content.html:282
+msgid "MacOS"
+msgstr "മാക്ഓഎസ്"
+
+#: templates/popups_content.html:285 templates/popups_content.html.py:291
+#: templates/popups_content.html:294 templates/popups_content.html.py:297
+msgid "Not yet"
+msgstr "ഇതുവരെയില്ല"
+
+#: templates/popups_content.html:288
+msgid "Smartphones"
+msgstr "സ്മാര്‍ട്ട്ഫോണുകള്‍"
+
+#: templates/popups_content.html:291
+msgid "Android"
+msgstr "ആന്‍ഡ്രോയിഡ്"
+
+#: templates/popups_content.html:294
+msgid "iPhone"
+msgstr "ഐഫോണ്‍"
+
+#: templates/popups_content.html:297
+msgid "Windows Phone"
+msgstr "വിന്‍ഡോസ് ഫോണ്‍"
+
+#: templates/popups_content.html:310
+msgid "How to translate"
+msgstr "എങ്ങനെ പരിഭാഷപ്പെടുത്താം"
+
+#: templates/popups_content.html:315
+msgid "Check the existance of your language in the available languages list."
+msgstr ""
+"ലഭ്യമായ ഭാഷകളുടെ പട്ടികയില്‍ താങ്കളുടെ ഭാഷയുണ്ടോയെന്ന് പരിശോധിക്കുക്ക."
+
+#: templates/popups_content.html:316
+msgid "Download the file:"
+msgstr "രേഖ ഇറക്കുമതി ചെയ്യുക:"
+
+#: templates/popups_content.html:317
+msgid "Use Poedit or Virtaal to edit it."
+msgstr "പോഎഡിറ്റോ വിര്‍റ്റാലോ ഉപയോഗിച്ച് തിരുത്തുക"
+
+#: templates/popups_content.html:318
+msgid "Send the updated file into our mailing list:"
+msgstr "പുതുക്കിയ രേഖ ഞങ്ങളുടെ മെയിലിംഗ് ലിസ്റ്റിലേക്ക് അയക്കുക:"
+
+#: templates/popups_content.html:320
+msgid "Note:"
+msgstr "കുറിപ്പ്:"
+
+#: templates/popups_content.html:320
+msgid "You can use launchpad to translate without installing any tool"
+msgstr ""
+"ലോഞ്ച്പാഡ് ഉപയോഗിച്ച് മറ്റ് ഉപാധികളൊന്നും ഇന്‍സ്റ്റാള്‍ ചെയ്യാതെയും "
+"താങ്കള്‍ക്ക് പരിഭാഷ നടത്താം"
+
+#: templates/popups_content.html:320
+msgid "here!"
+msgstr "ഇവിടെ!"
+
+#: templates/translation_results.html:18
+msgid "seconds"
+msgstr "നിമിഷങ്ങള്‍"
+
+#: templates/translation_results.html:54
+#: templates/translation_results.html:107
+msgid "Interpretation of"
+msgstr "-ന്റെ വിശദീകരണം"
+
+#: templates/translation_results.html:61
+msgid "in"
+msgstr "ഉള്ളില്‍"
+
+#: templates/translation_results.html:65
+msgid "by"
+msgstr "എന്ന്"
+
+#: templates/translation_results.html:144
+msgid "About translation"
+msgstr "പരിഭാഷയെ സംബന്ധിച്ച്"
+
+#: templates/translation_results.html:151
+msgid "Aya"
+msgstr "ആയത്ത്"
+
+#: templates/translation_results.html:158
+msgid "Author"
+msgstr "രചയിതാവ്"
+
+#: templates/translation_results.html:164
+msgid "Language"
+msgstr "ഭാഷ"
+
+#: templates/translation_search.html:7
+msgid "List of indexed Quran translations"
+msgstr "രേഖപ്പെടുത്തിയ ഖുര്‍ആന്‍ പരിഭാഷകളുടെ പട്ടിക"
+
+#: templates/translation_search.html:7
+msgid "Translation source:"
+msgstr "പരിഭാഷ ഉറവിടം:"
+
+#: templates/translation_search.html:7
+msgid "Show/Hide!"
+msgstr "കാണിക്കുക/മറക്കുക!"
+
+#: templates/translation_search.html:13
+msgid "Sorry, there is no indexed translations!"
+msgstr "ക്ഷമിക്കണം, രേഖപ്പെടുത്തിയ പരിഭാഷകളൊന്നും അവിടെയില്ല"
+
+#: templates/translation_search.html:25
+msgid "Show ayah arabic text"
+msgstr "ആയത്ത് അറബിയില്‍ ലഭ്യമാക്കുക"
