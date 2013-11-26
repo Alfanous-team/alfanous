@@ -6,11 +6,11 @@
 			{% block title %} 
 				{% if params.query %}
 					{{ params.query }} 
-					{% if params.page %}
+					{% if params.page and params.page != 1 %}
 						|| {{ _("Page:") }}
 						{{ params.page }}
 					{% endif %}
-					{% if params.order %}
+					{% if params.order and params.page != "score" %}
 						|| {{ _("Order:") }}
 						{{ params.sortedby }}
 					{% endif %}
@@ -20,7 +20,7 @@
 					{% endif %}
 					{% if params.vocalized or params.uthmani or params.fuzzy %}
 						|| {{ _("Options:") }} {
-							{% if params.vocalized %}
+							{% if params.vocalized  %}
 								{{ _("vocalized") }},
 							{% endif %}
 							{% if params.uthmani %}
