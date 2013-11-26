@@ -618,7 +618,7 @@ msgstr "അതിവേഗ സഞ്ചാരം!"
 
 #: templates/base.html:289 templates/popups_content.html:7
 msgid "F.A.Q."
-msgstr "സാധാരണ ചോദിക്കുന്ന ചോദ്യങ്ങള്‍"
+msgstr "F.A.Q."
 
 #: templates/base.html:290
 msgid "Sample search here"
