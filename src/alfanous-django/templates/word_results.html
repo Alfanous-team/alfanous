@@ -63,12 +63,8 @@
 										
 				                        	<span >
 				                        		<small> 
-				                        			{% if bidi.direction == "rtl" %}
-				                        				{{ wordresult_content.identifier.sura_arabic_name }}
-				                        			{% else %}
-				                        				{{ wordresult_content.identifier.sura_name }}
-				                        			{% endif %} 
-				                        			{{ wordresult_content.word.id }} 
+	<small>	{{ _("word") }}  {{ wordresult_content.identifier.word_id }} {{ _("of") }} {{ wordresult_content.aya.sura_name }} {{ wordresult_content.aya.aya_id }} 
+											 </small> </a>
 				                        		</small> 
 				                        	</span>
 				                           </a> 
@@ -109,18 +105,17 @@
 		                      
 		                        <div id="aya_text_{{ wordresult_id }}" class="row text-center arabic-ayah">
 		                       
-						 				<span class='quran_decoration main_aya'>[</span>
+						 			
 						 					{% autoescape off %}
 												{{ wordresult_content.word.text }}
 											{% endautoescape %}
-										<span class='quran_decoration main_aya'>]</span>
 									
 										{% with wordresult_content.word.id|stringformat:"s" as aya_id %}
 									 	{% with 'id:'|add:wordresult_content.identifier.word_gid|add:' + '|urlencode  as new_query %}
 										- <a href='?{% build_search_link params  new_query 1 False  %}'> 
 										{% endwith %}
 									{% endwith %}
-		                        	<span class="text-success">{{ wordresult_content.identifier.sura_id }} - {{ wordresult_content.identifier.aya_id }} - {{ wordresult_content.identifier.word_id }}   </span></a> 
+		                        	<span class="text-success">{{ wordresult_content.identifier.sura_id }}| {{ wordresult_content.identifier.aya_id }}|{{ wordresult_content.identifier.word_id }}   </span></a> 
 								
 		                       </div>	
 	
@@ -136,12 +131,40 @@
 		                       
 		           			   <hr/>
 	                    </div>
-	                    
+	                    {% if wordresult_content.aya %}
+    
+								  		<p class="arabic-ayah">
+									  		<span class='quran_decoration main_aya'>
+									 		 [ </span>
+									  		{% for aya_word in wordresult_content.aya.text|space_split %}
+											    {% spaceless %}
+									          		{% autoescape off %}
+									          		{# TODO optimize this condition, any "in" operation? #}
+														{% if aya_word|first in "<ct> "|make_list  %}
+																{{ aya_word }} 
+														{% else %}
+																<a href="?{% build_search_link params aya_word 1 False %}">{{ aya_word }}</a>
+														{% endif %}
+									          		{% endautoescape %}
+									     		{% endspaceless %}	
+										    {% endfor %}
+									  		<span class='quran_decoration main_aya'>
+									  		] </span>									  		
+											-	<small> <span class="muted">	لفظ  {{ wordresult_content.identifier.word_id }} من </span>
+											{% with wordresult_content.aya.aya_id|stringformat:"s" as aya_id %}
+													 {% with bidi.fields.sura|add:':"'|add:wordresult_content.aya.sura_name|add:'" + '|add:bidi.fields.aya_id|add:':'|add:aya_id|urlencode  as new_query %}
+														<a class="text-success" href="{% url 'wui.views.results' current.language 'aya' %}?{% build_search_link params  new_query 1 False %}"> 
+													{% endwith %}
+												{% endwith %}
+												{{ wordresult_content.aya.sura_arabic_name }} {{ wordresult_content.aya.aya_id }} </small> </a> 
+
+								  		</p>
+						  			{% endif %}
 	                  
 	                    
 	              
 				                		   <hr/>
-											<span class="badge badge-info">{{ _("identifiers") }}</span>
+											<span class="badge badge-info">{{ _("info") }}</span>
 												{% if wordresult_content.word.part %}
 													<span class='label label-success'> {{ _("part") }} | {{ wordresult_content.word.part }} </span>
 												{% endif %}

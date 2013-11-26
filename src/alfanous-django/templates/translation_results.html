@@ -138,7 +138,8 @@
 									  		</span>
 									  		<span class='quran_decoration main_aya'>
 									  		] </span>									  		
-											-	 {% with translationresult_content.aya.aya_id|stringformat:"s" as aya_id %}
+											-	{{ _("word") }} 
+												{% with translationresult_content.aya.aya_id|stringformat:"s" as aya_id %}
 													 {% with bidi.fields.sura|add:':"'|add:translationresult_content.aya.sura_name|add:'" + '|add:bidi.fields.aya_id|add:':'|add:aya_id|urlencode  as new_query %}
 														<a class="text-success" href="{% url 'wui.views.results' current.language 'aya' %}?{% build_search_link params  new_query 1 False %}"> 
 													{% endwith %}

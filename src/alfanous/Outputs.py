@@ -25,7 +25,7 @@ The programming interface, responsible of the output of all results
 
 import json
 import re
-
+from pyparsing import ParseException
 
 from alfanous.main import QuranicSearchEngine, FuzzyQuranicSearchEngine
 from alfanous.main import TraductionSearchEngine, WordSearchEngine
@@ -146,7 +146,8 @@ class Raw():
 	           or more to use * (only two are permitted) and 2 letters or more to use ? (؟)\n
 	     	-- Exceptions: ? (1),  ??????????? (11)
 	     	""",
-	     3: "Parsing Query failed, please reformulate  the query"
+	     3: "Parsing Query failed, please reformulate  the query",
+	     4: "One of specified fields doesn't exist"
 	    }
 
 
@@ -413,7 +414,7 @@ class Raw():
 
 	def _search( self, flags, unit ):
 		""" return the results of search for any unit """
-		try:
+		if True:#try:
 			if unit == "aya":
 				search_results = self._search_aya( flags )
 			elif unit == "translation":
@@ -424,9 +425,10 @@ class Raw():
 				search_results = {}
 			output = { "search": search_results }
 			pass
-		except:
-			output = { "error": {"code":3, "msg":self.ERRORS[3] }}
-
+		#except ParseException:
+		#	output = { "error": {"code":3, "msg":self.ERRORS[3] }}
+		#except Exception as E:
+		#	output = { "error": {"code":-1, "msg":self.ERRORS[-1] + "\n" + str(E) + "\n\n please submit that as a bug here: feedback.alfanous.org!" }}
 		return output
 
 	def _search_aya( self, flags ):
@@ -1001,10 +1003,12 @@ class Raw():
 		# pre-defined views
 		if view == "minimal":
 			vocalized = False
+			aya = False
 		elif view == "normal":
 			pass
 		elif view == "full":
 			romanization = "iso"
+			aya = True
 		elif view == "statistic":
 			pass
 		elif view == "linguistic":
@@ -1012,8 +1016,8 @@ class Raw():
 		elif view == "recitation":
 			script = "uthmani"
 		else: # if view == custom or undefined
-			pass
-
+			aya = TRUE_FALSE( flags["aya"] ) if flags.has_key( "aya" ) \
+                        else self._defaults["flags"]["aya"]
 		#preprocess query
 		query = query.replace( "\\", "" )
 		if not isinstance( query, unicode ):
@@ -1047,6 +1051,13 @@ class Raw():
 								spellerrors = False, \
 								hamza = False \
 								).normalize_all
+		V_shadda = QArabicSymbolsFilter( \
+								shaping = False, \
+								tashkil = False, \
+								spellerrors = False, \
+								hamza = False, \
+								shadda = True
+								).normalize_all
 		# highligh function that consider None value and non-definition
 		H = lambda X:  SE.highlight( X, terms, highlight ) if highlight != "none" and X else X if X else u"-----"
 		# Numbers are 0 if not defined
@@ -1078,6 +1089,25 @@ class Raw():
 			words_output["global"] = {"nb_words":cpt - 1, "nb_matches":matches}
 		output["keywords"] = words_output;
 
+
+		#Magic_loop to built queries of ayas,etc in the same time
+		if aya:
+			aya_query = u"( 0"
+			for r in reslist :
+				if aya: aya_query += u" OR ( sura_id:%s AND aya_id:%s )  " % ( unicode( r["sura_id"] ), unicode( r["aya_id"] ))
+			aya_query += u" )"
+
+		#original ayas
+		if aya:
+			aya_res = self.QSE.find_extended( aya_query, "gid" )
+			extend_runtime += aya_res.runtime
+			aya_info = {}
+			for ay in aya_res:
+				if aya_info.has_key(ay["sura_id"]):
+					aya_info[ay["sura_id"]][ay["aya_id"]]= ay
+				else:
+					aya_info[ay["sura_id"]] = { ay["aya_id"]: ay }
+
 		output["runtime"] = round( extend_runtime, 5 )
 		output["interval"] = {
 							"start":start,
@@ -1103,7 +1133,7 @@ class Raw():
 									},
 
 		              "word":{
-		              		"text":  H( V( r["word"] ) ),
+		              		"text":  r["word"] ,
 		                	"part": r["part"],
 		                	"part_order": r["order"],
 		                	"token": r["arabictoken"],
@@ -1141,6 +1171,14 @@ class Raw():
 							"state": r["state"],
 							"aspect": r["aspect"],
 		              },
+					"aya": None if not aya \
+		              			else {
+		              			        "text": SE.highlight(  aya_info[r["sura_id"]][r["aya_id"]]["uth_"] , [r["word"]], highlight, False ),
+										"aya_id":  aya_info[r["sura_id"]][r["aya_id"]]["aya_id"],
+										"sura_name":  aya_info[r["sura_id"]][r["aya_id"]]["sura"],
+										"sura_arabic_name":  aya_info[r["sura_id"]][r["aya_id"]]["sura_arabic"],
+
+		              			     },
 		    		}
 		return output
 
