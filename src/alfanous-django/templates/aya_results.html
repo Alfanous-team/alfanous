@@ -236,7 +236,7 @@
 													<span class='label'> {{ _("form") }} | {{ annotation_detail.form }} </span>
 												{% endif %}
 												{% if annotation_detail.case %}
-													<span class='label'> {{ _("case") }} | {{ annotation_detail.case }} ( {{ annotation_detail.arabiccase }}) </span>
+													<span class='label'> {{ _("case") }} | {{ annotation_detail.case.english }} ( {{ annotation_detail.case.arabic }}) </span>
 												{% endif %}
 												{% if annotation_detail.derivation %}
 													<span class='label'> {{ _("derivation") }} | {{ annotation_detail.derivation }} </span>
@@ -251,7 +251,7 @@
 													<span class='label'> {{ _("gender") }} | {{ annotation_detail.gender }} </span>
 												{% endif %}
 												{% if annotation_detail.voice %}
-													<div class='label'> {{ _("voice") }} | {{ annotation_detail.voice }} </span>
+													<span class='label'> {{ _("voice") }} | {{ annotation_detail.voice }} </span>
 												{% endif %}
 												
 											</li>
@@ -316,7 +316,6 @@
 		                 {% with ayaresult_content.aya.id|stringformat:"s" as aya_id %}
 									 	{% with bidi.fields.sura|add:':"'|add:ayaresult_content.identifier.sura_name|add:'" + '|add:bidi.fields.aya_id|add:':'|add:aya_id|urlencode  as new_query %}
 										- <a  class="muted" href='?{% build_search_link params  new_query 1 False  %}'> 
-										
 				                        	<span >
 				                        		<small> 
 				                        			{% if bidi.direction == "rtl" %}
