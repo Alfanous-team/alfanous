@@ -42,8 +42,8 @@
 			</div>
 		</div>
 		
-		{% for wordresult_id, wordresult_content in results.search.words.items %}
-
+	 {% for wordresult_id, wordresult_content in results.search.words.items %}
+			
 			<div class='container well well-small span12'>
 				<fieldset class="fieldset">
 					<legend class="text-{{ bidi.align }}">
@@ -63,7 +63,7 @@
 										
 				                        	<span >
 				                        		<small> 
-	<small>	{{ _("word") }}  {{ wordresult_content.identifier.word_id }} {{ _("of") }} {{ wordresult_content.aya.sura_name }} {{ wordresult_content.aya.aya_id }} 
+	<small>	{{ _("Word") }}  {{ wordresult_content.identifier.word_id }} {{ _("of") }} {{ wordresult_content.aya.sura_name }} {{ wordresult_content.aya.aya_id }} 
 											 </small> </a>
 				                        		</small> 
 				                        	</span>
@@ -165,10 +165,11 @@
 
 								  		</p>
 						  			{% endif %}
-	                  
-	                    
+	   
 	              
 				                		   <hr/>
+				     
+	 
 											<span class="badge badge-info">{{ _("info") }}</span>
 												{% if wordresult_content.word.part %}
 													<span class='label label-success'> {{ _("part") }} | {{ wordresult_content.word.part }} </span>
@@ -225,7 +226,6 @@
 	            </fieldset>
 	        </div>
 	    {% endfor %}
-
 	    <!-- Pages control # bottom one -->
 		<div class="span12">
 			{% usekwacro paginationRoutine %}
