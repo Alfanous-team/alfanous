@@ -339,16 +339,20 @@
 	                            <button id="aya_copy_button_{{ ayaresult_id }}" class="btn btn-info function_button"><i class="icon-copy "></i></button>
 	                           </span>	
 	                           <span class="btn-group">
+									    <a class="btn btn-primary dropdown-toggle" data-toggle="dropdown" href="#">
+									    <span class="icon-share"></span>
+									    </a>
+									    <ul class="dropdown-menu">
 	                           {% with ayaresult_content.aya.id|stringformat:"s" as aya_id %}
 									 			{% with bidi.fields.sura|add:':"'|add:ayaresult_content.identifier.sura_name|add:'" + '|add:bidi.fields.aya_id|add:':'|add:aya_id|urlencode  as new_query %}
-									 			<a href="https://twitter.com/intent/tweet?text={{ ayaresult_content.aya.text_no_highlight }} - ({{ ayaresult_content.identifier.sura_arabic_name }},{{ ayaresult_content.aya.id }}) %23alfanous @alfanous &url=http://www.alfanous.org{% url 'wui.views.results' current.language current.unit %}?{% build_search_link params  new_query 1 False False %} " id="aya_share_twitter_button_{{ ayaresult_id }}" target="_blank" class="btn btn-primary "><i class="icon-twitter"></i></a>
-									 			<a href="http://www.facebook.com/sharer/sharer.php?s=100&p[url]=http://www.alfanous.org{% url 'wui.views.results' current.language current.unit %}?{% build_search_link params  new_query 1 False  False %}&p[summary]={{ ayaresult_content.aya.text_no_highlight }} - ({{ ayaresult_content.identifier.sura_arabic_name }},{{ ayaresult_content.aya.id }})" target="_blank" id="aya_share_facebook_button_{{ ayaresult_id }}" class="btn btn-primary "><i class="icon-facebook"></i></a>
-									 			<a href="https://plus.google.com/share?url=http://www.alfanous.org{% url 'wui.views.results' current.language current.unit %}?{% build_search_link params  new_query 1 False False %}" id="aya_share_gplus_button_{{ ayaresult_id }}" target="_blank" class="btn btn-primary "><i class="icon-google-plus"></i></a>
-									 			<a href="http://www.linkedin.com/shareArticle?url=http://www.alfanous.org{% url 'wui.views.results' current.language current.unit %}?{% build_search_link params  new_query 1 False  %}&title={{ ayaresult_content.identifier.sura_name }} {{ ayaresult_content.aya.id }}&summary={{ ayaresult_content.aya.text_no_highlight }} - ({{ ayaresult_content.identifier.sura_arabic_name }},{{ ayaresult_content.aya.id }}" target="_blank" class="btn btn-primary "><i class="icon-linkedin"></i></a>
+									 			<li><a href="https://twitter.com/intent/tweet?text={{ ayaresult_content.aya.text_no_highlight }} - ({{ ayaresult_content.identifier.sura_arabic_name }},{{ ayaresult_content.aya.id }}) %23alfanous @alfanous &url=http://www.alfanous.org{% url 'wui.views.results' current.language current.unit %}?{% build_search_link params  new_query 1 False False %} " id="aya_share_twitter_button_{{ ayaresult_id }}" target="_blank" class=" "><i class="icon-twitter"></i> {{ _("Twitter") }}</a></li>
+									 			<li><a href="http://www.facebook.com/sharer/sharer.php?s=100&p[url]=http://www.alfanous.org{% url 'wui.views.results' current.language current.unit %}?{% build_search_link params  new_query 1 False  False %}&p[summary]={{ ayaresult_content.aya.text_no_highlight }} - ({{ ayaresult_content.identifier.sura_arabic_name }},{{ ayaresult_content.aya.id }})" target="_blank" id="aya_share_facebook_button_{{ ayaresult_id }}" class=""><i class="icon-facebook"></i> {{ _("Facebook") }}</a></li>
+									 			<li><a href="https://plus.google.com/share?url=http://www.alfanous.org{% url 'wui.views.results' current.language current.unit %}?{% build_search_link params  new_query 1 False False %}" id="aya_share_gplus_button_{{ ayaresult_id }}" target="_blank" class=" "><i class="icon-google-plus"></i> {{ _("Google+") }}</a></li>
+									 			<li><a href="http://www.linkedin.com/shareArticle?url=http://www.alfanous.org{% url 'wui.views.results' current.language current.unit %}?{% build_search_link params  new_query 1 False  %}&title={{ ayaresult_content.identifier.sura_name }} {{ ayaresult_content.aya.id }}&summary={{ ayaresult_content.aya.text_no_highlight }} - ({{ ayaresult_content.identifier.sura_arabic_name }},{{ ayaresult_content.aya.id }}" target="_blank" class=" "><i class="icon-linkedin"></i> {{ _("Linkedin") }}</a></li>
 										 	 		<!-- <button class="btn shareme" data-url="http://www.alfanous.org{% url 'wui.views.results' current.language current.unit %}?{% build_search_link params  new_query 1 False  %}" data-text="{{ ayaresult_content.aya.text_no_highlight }} - ({{ ayaresult_content.identifier.sura_name }},{{ ayaresult_content.aya.id }}) "></button> -->
 												{% endwith %}
 											{% endwith %}
-	                     
+	                    				 </ul>
 	                      	  </span>
 	                      	 </span>		
 
