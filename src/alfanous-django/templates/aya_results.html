@@ -163,7 +163,7 @@
 													<span class='label label-inverse'>{{ derivation }} 
 													</span></a>
 												{% endfor %}
-												{% with ">"|add:wordstat.word as new_query %}
+												{% with ">>"|add:wordstat.word as new_query %}
 													<a href="?{% build_search_link params  new_query 1 False %}"> 
 												{% endwith %}
 												<span class='label label-important'><i class="icon-th"> </i> {{ wordstat.nb_derivations_extra|add:wordstat.nb_derivations  }}	</span></a>
