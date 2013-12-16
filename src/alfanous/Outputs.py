@@ -661,7 +661,7 @@ class Raw():
 						# go deeper with derivations
 						root = LOCATE( derivedict["word_"], derivedict["root"], term[1] )
 						if root:  # if different of none
-							derivations_extra = set(FILTER_DOUBLES( FIND( derivedict["root"], derivedict["word_"], lemma ) )) - set(derivations)
+							derivations_extra = list(set(FILTER_DOUBLES( FIND( derivedict["root"], derivedict["word_"], lemma ) )) - set(derivations))
 						else:
 							derivations_extra = []
 
