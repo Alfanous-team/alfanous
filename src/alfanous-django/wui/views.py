@@ -70,7 +70,7 @@ def results( request, unit = "aya", language = None ):
 								#( "sura", "Surahs" ),
 								
 								( "translation", _( "Translations" ) ),
-								( "word", _("Words") ),
+								#( "word", _("Words") ),
 								#  tafsir, hadith, dream, poem
 								] )
 
