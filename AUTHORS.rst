@@ -117,13 +117,14 @@ Translation
   * Japanese: Abdelkarim Aries
   * Spanish: Khireddine Chekraoui 
   * Portuguese: Jonathan Da Fonseca
+  * German: Dennis Baudys
   * Malay: 'abuyop'
   * Kurdish: 
   * Malayalam: `'STyM Alfazz' <https://launchpad.net/~alfasst>`
 
 * Mobile Web interface 
 
-  * Bosnian: Armin Kazic
+  * Bosnian: Armin Kazi
   * Brazilian Portuguese: Aieon.corp(LP)
   * French:  Karim Oulad Chalha, 'yass-pard'
   * Indonesian: Mahyuddin Susanto, 
