@@ -11,13 +11,13 @@
 {% endkwacro %}
 
 {% block results %}
-	<div id="#search_result_static" class="row span9 offset2 text-center">			
+	<div id="#search_result_static" class="row span9 offset2 text-center">
 		{% if results.error.code == 0  %}
 			 <span	class="muted">
-			 {{ _("Runtime") }} 
+			 {{ _("Runtime") }}
 						({{ results.search.runtime|floatformat:"5" }} {{ _("seconds") }})
 			 </span>
-			
+
 			{% if results.search.interval.total %}
 				<!-- translation results -->
 				<div class="row offset1 span10 text-center">
@@ -28,73 +28,73 @@
 					    <li>)</li>
 				    </ul>
 				</div>
-					
+
 				<!-- Pages control # top one -->
 				<div class="row">
 					<div class="span12">
 						{% usekwacro paginationRoutine %}
 					</div>
 				</div>
-				
+
 				{% for translationresult_id, translationresult_content in  	results.search.translations.items %}
 					<div class='container well well-small span12'>
 					    <fieldset class='main_re_item'>
 					    	<legend class="text-{{ bidi.align }}">
 						    	<span class="muted">
 						      	<span class="hidden-phone">{{ _("Result n°") }} </span>
-						      	
-						      	 <b> <span class="visible-phone">#</span>{{ translationresult_id }} </b> 
+
+						      	 <b> <span class="visible-phone">#</span>{{ translationresult_id }} </b>
 						      	 	{% if translationresult_content.aya %}
 											  		{% with translationresult_content.identifier.gid|stringformat:"s" as translation_gid %}
 																	{% with "gid:"|add:translation_gid|add:" AND id:"|add:translationresult_content.identifier.id as new_query %}
-																			<a class=""  href='?{% build_search_link params  new_query 1 False %}'> 
+																			<a class=""  href='?{% build_search_link params  new_query 1 False %}'>
 																	{% endwith %}
 																{% endwith %}
-													 <small> 
+													 <small>
 													 <span class="hidden-phone">  {{ _("Interpretation of") }} </span>
-													 	( {% if bidi.direction == "rtl" %} 
-													 		{{ translationresult_content.aya.sura_arabic_name }} 
-													 	  {% else %} 
-													 		  {{ translationresult_content.aya.sura_name }} 
+													 	( {% if bidi.direction == "rtl" %}
+													 		{{ translationresult_content.aya.sura_arabic_name }}
+													 	  {% else %}
+													 		  {{ translationresult_content.aya.sura_name }}
 													 	  {% endif %}
 													 	{{ translationresult_content.aya.aya_id }} )
-													  <span class="hidden-phone"> 
-													  {{ _("in") }} {{ translationresult_content.info.language }} 
-													  {{ _("by") }} {{ translationresult_content.info.author }} 
+													  <span class="hidden-phone">
+													  {{ _("in") }} {{ translationresult_content.info.language }}
+													  {{ _("by") }} {{ translationresult_content.info.author }}
 													  </span>
 													  <span class="visible-phone"> - {{ translationresult_content.info.language_short }} </span>
-													
-													 </small>  
-													 	</a> 
-											  	{% endif %}  
+
+													 </small>
+													 	</a>
+											  	{% endif %}
 						    	</span>
 						    	<span class="btn-group  pull-{{ bidi.align_inverse }} ">
-						    	
+
 						    	    <a id="aya_copy_button_{{ ayaresult_id }}" class="btn function_button"><i class="icon-copy"></i></a>
 									<span class="btn-group">
 									    <a class="btn btn-primary dropdown-toggle" data-toggle="dropdown" href="#">
 									    <span class="icon-share"></span>
 									    </a>
 									    <ul class="dropdown-menu" style='min-width: 5px;'>
-									  
-									  
+
+
 	                           <li></li>
 	                           {% with translationresult_content.identifier.gid|stringformat:"s" as aya_id %}
 									 			{% with 'gid:'|add:translationresult_content.identifier.gid|add:" AND id:"|add:translationresult_content.identifier.id|urlencode  as new_query %}
-										 	 	<li>	<a href="https://twitter.com/intent/tweet?text={{ translationresult_content.text }} - {{ _('Interpretation of') }} ({% if bidi.direction == 'rtl' %}{{ translationresult_content.aya.sura_name }}{% else %}{{ translationresult_content.aya.sura_name }}{% endif %}{{ translationresult_content.aya.aya_id }}) %23alfanous @alfanous &url=http://www.alfanous.org{% url 'wui.views.results' current.language current.unit %}?{% build_search_link params  new_query 1 False  %}" id="aya_share_twitter_button_{{ ayaresult_id }}" target="_blank" class=""><i class="icon-twitter"></i> <span class='hidden-phone'> {{ _("Twitter") }}<span></a></li>
-									 		<li>		<a href="http://www.facebook.com/sharer/sharer.php?s=100&p[url]=http://www.alfanous.org{% url 'wui.views.results' current.language current.unit %}?{% build_search_link params  new_query 1 False  %}&p[summary]={{ translationresult_content.text }} - {{ _('Interpretation of') }} ({% if bidi.direction == 'rtl' %}{{ translationresult_content.aya.sura_name }}{% else %}{{ translationresult_content.aya.sura_name }}{% endif %}{{ translationresult_content.aya.aya_id }})" target="_blank" id="aya_share_facebook_button_{{ ayaresult_id }}" class=" "><i class="icon-facebook"></i> <span class='hidden-phone'> {{ _("Facebook") }}<span></a></li>
+										 	 	<li>	<a href="https://twitter.com/intent/tweet?text={{ translationresult_content.text }} - {{ _('Interpretation of') }} ({% if bidi.direction == 'rtl' %}{{ translationresult_content.aya.sura_name }}{% else %}{{ translationresult_content.aya.sura_name }}{% endif %}{{ translationresult_content.aya.aya_id }}) %23alfanous @alfanous &url=http://www.alfanous.org{% url 'wui.views.results' current.language current.unit %}?{% build_search_link params  new_query 1 False  %}" id="aya_share_twitter_button_{{ ayaresult_id }}" target="_blank" class=""><i class="icon-twitter"></i> <span class='hidden-phone'> {{ _("Twitter") }}</span></a></li>
+									 		<li>		<a href="http://www.facebook.com/sharer/sharer.php?s=100&p[url]=http://www.alfanous.org{% url 'wui.views.results' current.language current.unit %}?{% build_search_link params  new_query 1 False  %}&p[summary]={{ translationresult_content.text }} - {{ _('Interpretation of') }} ({% if bidi.direction == 'rtl' %}{{ translationresult_content.aya.sura_name }}{% else %}{{ translationresult_content.aya.sura_name }}{% endif %}{{ translationresult_content.aya.aya_id }})" target="_blank" id="aya_share_facebook_button_{{ ayaresult_id }}" class=" "><i class="icon-facebook"></i> <span class='hidden-phone'> {{ _("Facebook") }}</span></a></li>
 									 		<li>		<a href="https://plus.google.com/share?url=http://www.alfanous.org{% url 'wui.views.results' current.language current.unit %}?{% build_search_link params  new_query 1 False  %}" id="aya_share_gplus_button_{{ ayaresult_id }}" target="_blank" class=""><i class="icon-google-plus"></i> <span class='hidden-phone'> {{ _("Google+") }}<span></a></li>
 									 		<li>		<a href="http://www.linkedin.com/shareArticle?url=http://www.alfanous.org{% url 'wui.views.results' current.language current.unit %}?{% build_search_link params  new_query 1 False  %}&title={% if bidi.direction == 'rtl' %}{{ translationresult_content.aya.sura_name }}{% else %}{{ translationresult_content.aya.sura_name }}{% endif %}{{ translationresult_content.aya.aya_id }}&summary={{ translationresult_content.text }} - {{ _('Interpretation of') }} ({% if bidi.direction == 'rtl' %}{{ translationresult_content.aya.sura_name }}{% else %}{{ translationresult_content.aya.sura_name }}{% endif %}{{ translationresult_content.aya.aya_id }})" target="_blank" class=""><i class="icon-linkedin"></i> <span class='hidden-phone'> {{ _("Linkedin") }}<span></a></li>
-										 	 		<!-- <button class="btn shareme" 
-										 	 		        data-url="http://www.alfanous.org{% url 'wui.views.results' current.language current.unit %}?{% build_search_link params  new_query 1 False  %}" 
+										 	 		<!-- <button class="btn shareme"
+										 	 		        data-url="http://www.alfanous.org{% url 'wui.views.results' current.language current.unit %}?{% build_search_link params  new_query 1 False  %}"
 										 	 		        data-text="{{ translationresult_content.text }} - {{ _('Interpretation of') }} ({% if bidi.direction == 'rtl' %}{{ translationresult_content.aya.sura_name }}{% else %}{{ translationresult_content.aya.sura_name }}{% endif %}{{ translationresult_content.aya.aya_id }})">
 													</button> -->
 												{% endwith %}
 											{% endwith %}
 	                     			  </ul>
 								 </span>
-	                      	  </span>		
-	                      	
+	                      	  </span>
+
 				  			</legend>
 				  			<div class="row-fluid">
 			                    <div class="span10 offset1">
@@ -106,36 +106,36 @@
 													{% spaceless %}
 														{% autoescape off %}
 															{% if translation_word|first in "<ct> "|make_list  %}
-																{{ translation_word }} 
-															{% else %} 
-																<a href="?{% build_search_link params translation_word 1 False %}"> {{ translation_word }}</a> 
+																{{ translation_word }}
+															{% else %}
+																<a href="?{% build_search_link params translation_word 1 False %}"> {{ translation_word }}</a>
 															{% endif %}
 														{% endautoescape%}
-													{% endspaceless %}	
+													{% endspaceless %}
 											  	{% endfor %}
 											  	<span class='quran_decoration main_aya'>
-									  		] </span>	
+									  		] </span>
 											  	{% if translationresult_content.aya %}
 											  		-	 {% with translationresult_content.identifier.gid|stringformat:"s" as translation_gid %}
 																	{% with "gid:"|add:translation_gid|add:" AND lang:"|add:translationresult_content.info.language_short as new_query %}
-																			<a class="text-success"  href='?{% build_search_link params  new_query 1 False %}'> 
+																			<a class="text-success"  href='?{% build_search_link params  new_query 1 False %}'>
 																	{% endwith %}
 																{% endwith %}
-													 <small> {{ _("Interpretation of") }} ( {% if bidi.direction == "rtl" %}  {{ translationresult_content.aya.sura_name }} 
-													 										{% else %} {{ translationresult_content.aya.sura_name }} 
+													 <small> {{ _("Interpretation of") }} ( {% if bidi.direction == "rtl" %}  {{ translationresult_content.aya.sura_name }}
+													 										{% else %} {{ translationresult_content.aya.sura_name }}
 													 										{% endif %}
-													 										{{ translationresult_content.aya.aya_id }} )</small>  </a> 
+													 										{{ translationresult_content.aya.aya_id }} )</small>  </a>
 											  	{% endif %}
-							  					
-							  						
-							  				
-																					
+
+
+
+
 				                        </div>
-				              
-		
+
+
 				                    </div>
 			                    </div>
-			                    
+
 			                    <div class="row text-center span12">
 			                    	<hr/>
 			                 		{% if translationresult_content.aya %}
@@ -144,53 +144,53 @@
 									  		<span class='quran_decoration main_aya'>
 									 		 [ </span>
 									  		<span class="aya_words quran main_aya">
-									  		  {{ translationresult_content.aya.text }} 
+									  		  {{ translationresult_content.aya.text }}
 									  		</span>
 									  		<span class='quran_decoration main_aya'>
-									  		] </span>									  		
-											-	{{ _("word") }} 
+									  		] </span>
+											-	{{ _("word") }}
 												{% with translationresult_content.aya.aya_id|stringformat:"s" as aya_id %}
 													 {% with bidi.fields.sura|add:':"'|add:translationresult_content.aya.sura_name|add:'" + '|add:bidi.fields.aya_id|add:':'|add:aya_id|urlencode  as new_query %}
-														<a class="text-success" href="{% url 'wui.views.results' current.language 'aya' %}?{% build_search_link params  new_query 1 False %}"> 
+														<a class="text-success" href="{% url 'wui.views.results' current.language 'aya' %}?{% build_search_link params  new_query 1 False %}">
 													{% endwith %}
 												{% endwith %}
-												<small>{{ translationresult_content.aya.sura_arabic_name }}</small> {{ translationresult_content.aya.aya_id }} </a> 
+												<small>{{ translationresult_content.aya.sura_arabic_name }}</small> {{ translationresult_content.aya.aya_id }} </a>
 
 								  		</p>
 						  			{% endif %}
 				                		</div>
-				                		
+
 				                		<div class="row text-center span12">
 				                		   <hr/>
 											<span class="badge badge-info">{{ _("About translation") }}</span>
 															<span class="label label-success" >
 										  					 {% with translationresult_content.identifier.gid|stringformat:"s" as translation_gid %}
 																	{% with "gid:"|add:translation_gid as new_query %}
-																			<a  href='?{% build_search_link params  new_query 1 False %}'> 
+																			<a  href='?{% build_search_link params  new_query 1 False %}'>
 																	{% endwith %}
 																{% endwith %}
 														    	{{ _("Aya") }} | {{ translationresult_content.identifier.gid }}</a>
 							  							   </span>
-										
+
 												    		<span class="label label-success">
 																{% with "id:"|add:translationresult_content.identifier.id|add:"" as new_query %}
-																	<a href='?{% build_search_link params  new_query 1 True %}'> 
-																{% endwith %} 
+																	<a href='?{% build_search_link params  new_query 1 True %}'>
+																{% endwith %}
 																	{{ _("Author") }} | {{  translationresult_content.info.author }} </a>
 															</span>
 															<span class="label label-inverse">
 																{% with "lang:"|add:translationresult_content.info.language_short as new_query %}
-																	<a href='?{% build_search_link params  new_query 1 True %}'> 
-																{% endwith %} 
+																	<a href='?{% build_search_link params  new_query 1 True %}'>
+																{% endwith %}
 																{{ _("Language") }} | {{ translationresult_content.info.language }}</a>
 															</span>
-										
+
 				                        </div>
 				  			</div>
 					    </fieldset>
 					</div>
 				{% endfor %}
-					
+
 				<!-- Pages control # bottom one -->
 				<div class="row">
 					<div class="span12">
@@ -206,7 +206,7 @@
 						{{ _("Sorry! there is no results for this search query.") }}
 					</div>
 				</div>
-			{% endif %}			
+			{% endif %}
 		{% elif results.error %}
 			<div class="row">
 				<div class="alert alert-error span10 offset1">
@@ -215,6 +215,6 @@
 				</div>
 			</div>
 		{% else %}
-			
+
 		{% endif %}
 {% endblock results %}
