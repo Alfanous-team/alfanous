@@ -1,8 +1,16 @@
 const COOKIE_SKIN_NAME = 'skin';
+const SKIN_CSS_ID = 'skin_css';
 
 function change_skin(skin_id,skin_type) {
-
-   $("#skin_css").attr("href", "/static/ltr/css/skins/bootstrap_" + skin_id +".css" );
+  var $newCSS = $('<link>', {
+    rel: 'stylesheet',
+    type: 'text/css',
+    href: '/static/ltr/css/skins/bootstrap_' + skin_id + '.css'
+  }).on('load', function() {
+    $('#' + SKIN_CSS_ID).remove();
+    $(this).attr('id', SKIN_CSS_ID);
+  });
+  $('head').prepend($newCSS);
 
    /*
    logo_type ="dark"; // dark is the default logo type
