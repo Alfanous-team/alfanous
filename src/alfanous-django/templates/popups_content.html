@@ -44,7 +44,7 @@
                                     <th >{{ _("Logical relations") }}</th>
                                     <td ><a href='/{{ current.language }}/?{% build_search_link params '(الصلاة%20-%20الزكاة)%20+%20سورة:البقرة' 1 False %}'>(الصلاة - الزكاة) + سورة:البقرة</a></td>
                                     <td ><a href='/{{ current.language }}/?{% build_search_link params 'سميع%20|%20بصير' 1 False %}'> سميع | بصير</a></td>
-                                </tr> 
+                                </tr>
                                 <tr>
                                     <th >{{ _("Wildcards") }}</th>
                                     <td><a href='/{{ current.language }}/?{% build_search_link params '*نبي*' 1 False %}'>*نبي*</a></td>
@@ -80,7 +80,7 @@
                                     <td><a href='/{{ current.language }}/?{% build_search_link params 'qawol' 1 False %}'>qawol</a></td>
                                     <td ><a href='/{{ current.language }}/?{% build_search_link params 'Allah' 1 False %}'>Allah</a></td>
                                 </tr>
-                          
+
                              </tbody>
                           </table>
                     </div>
@@ -108,7 +108,7 @@
 					                <th >{{ _("Logical relations") }}</th>
 					                <td ><a href='{% url 'wui.views.results' current.language "translation" %}?{% build_search_link params 'prayer%20AND%20charity' 1 False %}'>prayer AND charity</a></td>
 				                    <td ><a href='{% url 'wui.views.results' current.language "translation" %}?{% build_search_link params 'prayer%20OR%20charity' 1 False %}'>prayer OR charity</a></td>
-				                </tr> 
+				                </tr>
 				                <tr>
 					                <th >{{ _("Wildcards") }}</th>
 					                <td><a href='{% url 'wui.views.results' current.language "translation" %}?{% build_search_link params 'pray*' 1 False %}'>pray*</a></td>
@@ -120,7 +120,7 @@
 				                    <td ><a href='{% url 'wui.views.results' current.language "translation" %}?{% build_search_link params 'author:Shakir' 1 False %}'>author:Shakir
 				                    </a></td>
 				                </tr>
-                          
+
                              </tbody>
                           </table>
                     </div>
@@ -157,7 +157,7 @@
     </div>
     <div class="modal-body">
         <p class="text-center text-info">{{ _("We're stuck looking for possible ways for donations/Funding. Any help is appreciated!") }}</p>
-       	
+
         <hr />
         <h4>{{ _("Any way you can help by:") }}</h4>
         <ul>
@@ -167,7 +167,7 @@
             <li> {{ _("Donate by flattr:") }} <a class="FlattrButton" style="display:none;" rev="flattr;button:compact;" href="http://dj.alfanous.org/"></a></li>
         </ul>
     </div>
-    
+
     <div class="modal-footer">
         <button class="btn" data-dismiss="modal" aria-hidden="true">{{ _(" Close ") }}</button>
     </div>
@@ -181,7 +181,7 @@
     </div>
     <div class="modal-body">
         <ul class="list">
-            <li> {{ _("If you have a concrete bug report for Alfanous please go to") }} <a href="https://github.com/Alfanous-team/alfanous/issues"> {{ _("Issues Tracker") }}</a>, {{ _("submit your report and tag it \"bug\".")}}</li>
+            <li> {{ _("If you have a concrete bug report for Alfanous please go to") }} <a href="https://github.com/Alfanous-team/alfanous/issues"> {{ _("Issues Tracker") }}</a>, {{ _('submit your report and tag it \"bug\".')}}</li>
             <li> {{ _("If you want to participate in actively developing Alfanous,by testing read") }} <a href="https://github.com/Alfanous-team/alfanous/blob/master/FAQ.rst#how-to-help-by-testing"> How to help with testing? </a> {{ _("and by coding read ") }} <a href="https://github.com/Alfanous-team/alfanous/blob/master/FAQ.rst#how-to-contribute-by-coding">How to contribute by coding?</a>.</li>
             <li> {{ _("If you want to help in Alfanous somehow,  read") }} <a href="https://github.com/Alfanous-team/alfanous/blob/master/FAQ.rst#how-you-can-help">How you can help?</a>.</li>
             <li> {{ _("If you have a feature request, a proposition or a question for the project, you may use the mailing list.") }}</li>
@@ -221,13 +221,13 @@
                         <li>{{ _("Writing articles about the project in blogs, newspapers.") }}</li>
                         <li>{{ _("Showing a banner on your Blog/Website.") }}</li>
                         <li>{{ _("creating an ad for alfanous links using Google adwords or facebook if you're familiar with that (btw,it needs money)") }}</li>
-                    </ul>   
+                    </ul>
                 </div>
             </div>
         </div>
         <div class="accordion-group">
             <div class="accordion-heading">
-                
+
                 <a class="accordion-toggle icon-chevron-{{ bidi.align_inverse }}" data-toggle="collapse" data-parent="#accordion2" href="#collapseTwo">
                 {{ _("Or by") }}</a>
             </div>
