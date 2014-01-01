@@ -50,7 +50,7 @@ MY_LOCALE_PATH2 = config.get( 'paths', 'LOCALE_PATH2' )
 DEBUG = MY_DEBUG
 TEMPLATE_DEBUG = MY_TEMPLATE_DEBUG
 
-ADMINS = ( 
+ADMINS = (
      ( 'Assem Chelli', 'assem.ch@gmail.com' ),
  )
 
@@ -80,7 +80,7 @@ TIME_ZONE = 'Africa/Algiers'
 # http://www.i18nguy.com/unicode/language-identifiers.html
 LANGUAGE_CODE = 'en'
 
-LANGUAGES = ( 
+LANGUAGES = (
     ( 'ar', "Arabic" ),
     ( 'en', "English" ),
     ( 'fr', "French" ),
@@ -132,7 +132,7 @@ STATIC_URL = MY_STATIC_URL
 ADMIN_MEDIA_PREFIX = '/static/admin/'
 
 # Additional locations of static files
-STATICFILES_DIRS = ( 
+STATICFILES_DIRS = (
     # Put strings here, like "/home/html/static" or "C:/www/django/static".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
@@ -141,7 +141,7 @@ MY_STATIC_DIR1,
 
 # List of finder classes that know how to find static files in
 # various locations.
-STATICFILES_FINDERS = ( 
+STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
 #    'django.contrib.staticfiles.finders.DefaultStorageFinder',
@@ -152,13 +152,13 @@ SECRET_KEY = MY_SECRET_KEY
 
 
 # List of callables that know how to import templates from various sources.
-TEMPLATE_LOADERS = ( 
+TEMPLATE_LOADERS = (
     'django.template.loaders.filesystem.Loader',
     'django.template.loaders.app_directories.Loader',
 #     'django.template.loaders.eggs.Loader',
  )
 
-MIDDLEWARE_CLASSES = ( 
+MIDDLEWARE_CLASSES = (
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -168,25 +168,31 @@ MIDDLEWARE_CLASSES = (
 
 ROOT_URLCONF = 'urls'
 
-TEMPLATE_DIRS = ( 
+TEMPLATE_DIRS = (
     # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
     MY_TEMPLATE_DIR1,
  )
 
-INSTALLED_APPS = ( 
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.sites',
-    'django.contrib.messages',
-    'django.contrib.staticfiles',
-    'wui',
-    # Uncomment the next line to enable the admin:
-     'django.contrib.admin',
-    # Uncomment the next line to enable admin documentation:
-    # 'django.contrib.admindocs',
+INSTALLED_APPS = (
+  # Uncomment the next line to enable admin documentation:
+  # 'django.contrib.admindocs',
+
+  # Django apps
+  'django.contrib.admin',
+  'django.contrib.auth',
+  'django.contrib.contenttypes',
+  'django.contrib.sessions',
+  'django.contrib.sites',
+  'django.contrib.messages',
+  'django.contrib.staticfiles',
+
+  # 3rd party apps
+  'debug_toolbar',
+
+  # our apps
+  'wui',
  )
 
 # A sample logging configuration. The only tangible logging
@@ -213,7 +219,7 @@ LOGGING = {
 }
 
 
-LOCALE_PATHS = ( 
+LOCALE_PATHS = (
     MY_LOCALE_PATH1,
 	MY_LOCALE_PATH2
  )
