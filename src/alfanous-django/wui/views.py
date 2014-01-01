@@ -20,8 +20,8 @@ from django.utils.translation import get_language_info
 from django.utils.datastructures import SortedDict
 
 ## either append the path of alfanous API as:
+path.insert(0, "../../src") ## a relative path, development mode
 path.append("alfanous.egg/alfanous") ## an egg, portable
-path.append("../../src") ## a relative path, development mode
 path.append("/home/alfanous/alfanous-django/src/") ## absolute  path, server mode
 
 from alfanous.Outputs import Raw
