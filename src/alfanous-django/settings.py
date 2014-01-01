@@ -1,4 +1,8 @@
 # Django settings for alfanousDjango project.
+import os
+
+# the root directory of alfanous-django
+ROOT_DIR = os.path.dirname(__file__)
 
 
 ########################################
@@ -36,12 +40,10 @@ MY_MEDIA_ROOT = config.get( 'paths', 'MEDIA_ROOT' )
 
 MY_STATIC_URL = config.get( 'paths', 'STATIC_URL' )
 MY_STATIC_ROOT = config.get( 'paths', 'STATIC_ROOT' )
-MY_STATIC_DIR1 = config.get( 'paths', 'STATIC_DIR1' )
 
-MY_TEMPLATE_DIR1 = config.get( 'paths', 'TEMPLATE_DIR1' )
+MY_TEMPLATE_DIR = config.get( 'paths', 'TEMPLATE_DIR' )
 
-MY_LOCALE_PATH1 = config.get( 'paths', 'LOCALE_PATH1' )
-MY_LOCALE_PATH2 = config.get( 'paths', 'LOCALE_PATH2' )
+MY_LOCALE_PATH = config.get( 'paths', 'LOCALE_PATH' )
 
 ########################################
 #     Static and Public settings       #
@@ -120,7 +122,7 @@ MEDIA_URL = MY_MEDIA_URL
 # Don't put anything in this directory yourself; store your static files
 # in apps' "static/" subdirectories and in STATICFILES_DIRS.
 # Example: "/home/media/media.lawrence.com/static/"
-STATIC_ROOT = MY_STATIC_ROOT
+STATIC_ROOT = os.path.join(ROOT_DIR, MY_STATIC_ROOT)
 
 # URL prefix for static files.
 # Example: "http://media.lawrence.com/static/"
@@ -136,7 +138,6 @@ STATICFILES_DIRS = (
     # Put strings here, like "/home/html/static" or "C:/www/django/static".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
-MY_STATIC_DIR1,
  )
 
 # List of finder classes that know how to find static files in
@@ -172,7 +173,7 @@ TEMPLATE_DIRS = (
     # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
-    MY_TEMPLATE_DIR1,
+    MY_TEMPLATE_DIR,
  )
 
 INSTALLED_APPS = (
@@ -218,7 +219,7 @@ LOGGING = {
 
 
 LOCALE_PATHS = (
-    MY_LOCALE_PATH1,
-	MY_LOCALE_PATH2
- )
+  os.path.join(ROOT_DIR, MY_LOCALE_PATH),
+)
+
 
