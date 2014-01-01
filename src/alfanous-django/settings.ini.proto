@@ -20,10 +20,8 @@ TEMPLATE_DEBUG: true
 
 [paths]
 MEDIA_URL: /media/
-MEDIA_ROOT: ./media/
+MEDIA_ROOT: media/
 STATIC_URL: /static/
-STATIC_ROOT: /QSE/root/alfanous_git/alfanous-code/src/alfanous-django/static/
-TEMPLATE_DIR1: ./templates/
-STATIC_DIR1: ./wui/static/
-LOCALE_PATH1: ./locale/
-LOCALE_PATH2: ./wui/locale/
+STATIC_ROOT: static/
+TEMPLATE_DIR: templates/
+LOCALE_PATH: locale/
