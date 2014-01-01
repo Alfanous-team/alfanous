@@ -176,11 +176,9 @@ TEMPLATE_DIRS = (
  )
 
 INSTALLED_APPS = (
-  # Uncomment the next line to enable admin documentation:
-  # 'django.contrib.admindocs',
-
   # Django apps
-  'django.contrib.admin',
+  # 'django.contrib.admin',
+  # 'django.contrib.admindocs',
   'django.contrib.auth',
   'django.contrib.contenttypes',
   'django.contrib.sessions',
