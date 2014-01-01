@@ -19,7 +19,7 @@ nosetests.xml
 .project
 .pydevproject
 .settings
-/.idea
+.idea
 
 # Private Keys #
 ################
