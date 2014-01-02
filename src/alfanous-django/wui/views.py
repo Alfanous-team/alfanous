@@ -83,6 +83,15 @@ def tryActivateLanguage(translation, *languages):
     except:
       continue
 
+def doSearch(search_params, suggest_params, show_params):
+  return (
+    #use search as first action
+    RAWoutput.do(search_params) if search_params else None,
+    #use suggest as second action
+    RAWoutput.do(suggest_params) if suggest_params else None,
+    #use show as third action
+    RAWoutput.do(show_params) if show_params else None,
+  )
 
 def results(request, unit="aya", language=None):
   """     """
@@ -113,12 +122,15 @@ def results(request, unit="aya", language=None):
     #override the unit flag
 
   mutable_request["unit"] = unit
-  #use search as first action
-  raw_search = RAWoutput.do(search_params) if search_params else None
-  #use suggest as second action
-  raw_suggest = RAWoutput.do(suggest_params) if suggest_params else None
-  #use show as third action
-  raw_show = RAWoutput.do(show_params) if show_params else None
+  try:
+    search_results, suggestion_results, show_results =\
+      doSearch(search_params, suggest_params, show_params)
+  except:
+    # TODO: we should handle errors, not just ignore them
+    search_params = {}
+    suggest_params = {}
+    search_results, suggestion_results, show_results =\
+      doSearch(search_params, suggest_params, show_params)
 
   language, language_info = tryActivateLanguage(
     translation,
@@ -130,11 +142,11 @@ def results(request, unit="aya", language=None):
 
   # language direction  properties
   bidi_val = language_info['bidi']
-  fields_mapping_en_ar = raw_show["show"]["fields_reverse"]
+  fields_mapping_en_ar = show_results["show"]["fields_reverse"]
   fields_mapping_en_en = dict([(k, k) for k in fields_mapping_en_ar])
 
   # a sorted list of translations
-  translations = raw_show["show"]["translations"]
+  translations = show_results["show"]["translations"]
   sorted_translations = SortedDict(sorted(translations.iteritems(), key=itemgetter(0)))
 
   bidi_properties = {
@@ -172,9 +184,9 @@ def results(request, unit="aya", language=None):
       "translations": sorted_translations
     },
     "params": search_params,
-    "results": raw_search,
-    "suggestions": raw_suggest,
-    "info": raw_show
+    "results": search_results,
+    "suggestions": suggestion_results,
+    "info": show_results
   }
 
   return render_to_response(mytemplate, context)
