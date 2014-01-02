@@ -15,7 +15,6 @@ from django.shortcuts import render_to_response
 from django.conf import settings
 
 from django.utils import translation
-from django.utils.translation import ugettext as _
 from django.utils.translation import get_language_info
 from django.utils.datastructures import SortedDict
 
@@ -63,17 +62,6 @@ def jos2(request):
     response = HttpResponse(response_data)
   return response
 
-
-def getAvailableUnits():
-  return SortedDict([
-    ( "aya", _("Ayahs") ),
-    #( "sura", "Surahs" ),
-
-    ( "translation", _("Translations") ),
-    #( "word", _("Words") ),
-    #  tafsir, hadith, dream, poem
-  ])
-
 def tryActivateLanguage(translation, *languages):
   for lang in languages:
     try:
@@ -86,7 +74,7 @@ def tryActivateLanguage(translation, *languages):
 
 def results(request, unit="aya", language=None):
   """     """
-  if unit not in getAvailableUnits():
+  if unit not in settings.AVAILABLE_UNITS:
     unit = "aya"
   mutable_request = dict(request.GET.items())
   show_params = {"action": "show", "query": "all"}
@@ -168,7 +156,7 @@ def results(request, unit="aya", language=None):
     "language": language_info,
     "available": {
       "languages": settings.LANGUAGES,
-      "units": getAvailableUnits(),
+      "units": settings.AVAILABLE_UNITS,
       "translations": sorted_translations
     },
     "params": search_params,
