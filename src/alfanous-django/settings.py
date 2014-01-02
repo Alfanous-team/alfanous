@@ -1,5 +1,7 @@
 # Django settings for alfanousDjango project.
 import os
+from django.utils.datastructures import SortedDict
+from django.utils.translation import ugettext_lazy as _
 
 # the root directory of alfanous-django
 ROOT_DIR = os.path.dirname(__file__)
@@ -223,3 +225,13 @@ LOCALE_PATHS = (
 )
 
 
+# We are using lazy translation, so these strings will be translated in the
+# template not here.
+AVAILABLE_UNITS = SortedDict([
+  ( "aya", _("Ayahs") ),
+  #( "sura", "Surahs" ),
+
+  ( "translation", _("Translations") ),
+  #( "word", _("Words") ),
+  #  tafsir, hadith, dream, poem
+])
