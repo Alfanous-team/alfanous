@@ -1,11 +1,12 @@
+{% load meta %}
 <!DOCTYPE html>
 <html dir="{{ bidi.direction }}" lang="{{ language.code }}">
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-	<title> 
-			{% block title %} 
+	<title>
+			{% block title %}
 				{% if params.query %}
-					{{ params.query }} 
+					{{ params.query }}
 					{% if params.page and params.page != 1 %}
 						|| {{ _("Page:") }}
 						{{ params.page }}
@@ -35,9 +36,9 @@
 						|| {{ _("Translation:") }}
 							{{ params.translation }},
 					{% endif %}
-					- 
+					-
 				{% endif %}
-				
+
 				{% if current.unit == "aya" %}
 						{{ _("Quran Ayah Search") }}
 					{% elif current.unit == "word" %}
@@ -45,43 +46,28 @@
 					{% elif current.unit == "translation" %}
 						{{ _("Quran Translation Search") }}
 					{% else %}
-						{{ _("Quran Ayah Search") }} 
-				{% endif %} 
-				- {{ _("Alfanous") }} 
-			{% endblock %}  
-	</title>
-	
-	<meta name="description" content="
-		
-			{% if params.query %}
-				{{ _('Alfanous search results searching in') }} {{ current.unit }}  {{ _('looking for the query') }} {{ params.query }}, {{ _('the page') }} {{ params.page }}, {{ _('the view') }} {{ params.view }}, {{ _('the script') }} {{ params.script }} {{ vocalized|yesno:'vocalized,,' }} , {{ _('and the translation') }} {{ params.translation }}. {{ _('The fuzzy search is') }} {{ params.fuzzy|yesno:'activated,deactivated,deactivated' }}.
-			{% else %}	
-			    {% if curren.unit == 'word' %}
-			    	{{ _('Alfanous has the feautre to search in the Quran words, their properties and occurences') }}
-				{% elif  current.unit == 'translation' %}
-					{{ _('Alfanous has the feautre to search in the translations of Quran meanings to lot of world languages') }}
-				{% else %}
-					{{ _('Alfanous is a functional, dynamic, comprehensive Qur’an search engine that has been effectively designed to carry out simple or advanced Quranic searches.') }}
+						{{ _("Quran Ayah Search") }}
 				{% endif %}
-			{% endif %}
-			"/>
-	
-	
-	
+				- {{ _("Alfanous") }}
+			{% endblock %}
+	</title>
+
+  <meta name="description" content="{% meta_description params current.unit vocalized %}">
+
 	<meta name="keywords" content="{{ _('quran') }},
 								   {{ _('forqan') }},
-								   {{ _('koran') }}, 
-								   {{ _('search') }}, 
-								   {{ _('search engine') }}, 
-								   {{ _('ayates') }}, 
-								   {{ _('surates') }}, 
-								   {{ _('advanced') }}, 
-								   {{ _('statistics') }}, 
-								   {{  _('linguistic') }}, 
-								   {{ _('information retrieval') }}, 
-								   {{ _('natural language processing') }}, 
-								   {{ _('words') }}, 
-								   {{ _('Lantern') }}, 
+								   {{ _('koran') }},
+								   {{ _('search') }},
+								   {{ _('search engine') }},
+								   {{ _('ayates') }},
+								   {{ _('surates') }},
+								   {{ _('advanced') }},
+								   {{ _('statistics') }},
+								   {{  _('linguistic') }},
+								   {{ _('information retrieval') }},
+								   {{ _('natural language processing') }},
+								   {{ _('words') }},
+								   {{ _('Lantern') }},
 								   {{ _('alfanous') }},
 								   {% for wordcpt, wordstat in results.search.words.individual.items %}
 								   		{{ wordstat.word }},
@@ -106,7 +92,7 @@
 	<meta name="author" content="Assem Chelli, Ahmed Ramadan, Abdellah Chelli, Mouad Debbar, Walid Ziouche, Islam Azzedine Mennouchi, Muslih Alaqaad" />
 	<meta name="robots" content="index,follow"/>
 
-	<link rel="icon" href="/static/shared/img/icon/icon_32_a.png" sizes="32x32"> 
+	<link rel="icon" href="/static/shared/img/icon/icon_32_a.png" sizes="32x32">
 	<link rel="shortcut icon" href="/static/shared/img/icon/icon_16_a.png">
 
 	<link rel="search" type="application/opensearchdescription+xml" title="Alfanous" href="/static/alfanous-opensearch.xml"/>
@@ -116,10 +102,10 @@
 	<!-- Bootstrap -->
     {% ifequal bidi.direction "ltr" %}
         <link id="skin_css" href="/static/ltr/css/skins/bootstrap_default.css" rel="stylesheet">
-        <link href="/static/ltr/css/bootstrap-responsive.min.css" rel="stylesheet">      
+        <link href="/static/ltr/css/bootstrap-responsive.min.css" rel="stylesheet">
     {% else %}
         <link href="/static/rtl/css/rtl-bootstrap.min.css" rel="stylesheet">
-        <link href="/static/rtl/css/rtl-bootstrap-responsive.min.css" rel="stylesheet">      
+        <link href="/static/rtl/css/rtl-bootstrap-responsive.min.css" rel="stylesheet">
     {% endifequal %}
     <!-- custom html select items -->
     <link href="/static/shared/css/bootstrap-select.min.css" rel="stylesheet">
@@ -144,31 +130,31 @@
     {% ifequal bidi.direction "rtl" %}
     <link href="/static/rtl/css/rtl.css" rel="stylesheet">
     {% endifequal %}
-    
+
     <!--  conditional css style -->
     <style rel="stylesheet">
     @media (min-width: 768px) {
 	    .keyboardInputInitiator{
-	  	
+
 		  	{{ bidi.align }}: 195px;
-		} 
+		}
 	}
-	
+
 	@media (max-width: 767px) {
   		.keyboardInputInitiator{
     			{{ bidi.align_inverse }}: 40px;
  			}
-		}	 
+		}
 
 
-    </style> 
-    
+    </style>
+
 
 
 </head>
 <body>
 
-{% if False %} 
+{% if False %}
 {# block reserved to force localization of automatic values #}
 
 {{ _("Ayahs") }}
@@ -194,11 +180,11 @@
                     		{% ifequal available_unit.0 current.unit %}
                     			<li class="active bootstro" data-bootstro-title="{{ _('First, select the search unit') }}"
                                 data-bootstro-content="{{ _('You can choose whether to search in Arabic verses of the holly Quran or in its translations') }}"
-                                data-bootstro-width="400px" 
+                                data-bootstro-width="400px"
                                 data-bootstro-placement='bottom' data-bootstro-step='0'><a >{{ available_unit.1 }}</a></li>
 							{% else %}
 							<li><a href="{% url 'wui.views.results' current.language available_unit.0 %}">{{ available_unit.1 }}</a></li>
-							{% endifequal %} 
+							{% endifequal %}
 						{% endfor %}
                     </ul>
                     {% if bidi.direction == "rtl" %}
@@ -209,13 +195,13 @@
                         <li class="dropdown">
                             <a href="#" class="dropdown-toggle bootstro" data-toggle="dropdown" data-bootstro-title="{{ _('Select your language') }}"
                                 data-bootstro-content="{{ _('If you didn\'t notice, Alfanous User Interface is now translated to other languages, choose the one that fits you the best, or, you can contribute in translating it into your native language! (see the translate link)') }}"
-                                data-bootstro-width="400px" 
+                                data-bootstro-width="400px"
                                 data-bootstro-placement='bottom' data-bootstro-step='1'>{{ _("Languages") }}<b class="caret"></b></a>
                             <ul class="dropdown-menu">
                                 {% for available_language in available.languages %}
                                     {% if available_language.0 != language.code %}
                                     <li>
-    									<a href="{% url 'wui.views.results' available_language.0 current.unit %}?{{ current.request }}">{{ available_language.1 }}</a> 			
+    									<a href="{% url 'wui.views.results' available_language.0 current.unit %}?{{ current.request }}">{{ available_language.1 }}</a>
     								</li>
                                     {% endif %}
                                 {% endfor %}
@@ -231,7 +217,7 @@
 								    {# Show the skins available for both ltr and rtl #}
 								    <a href="#" onclick="change_skin('default','light');" id="default_skin" >{{ _("Default") }}</a>
 									{# Show the skins available for ltr only #}
-									{% ifequal bidi.direction  "ltr" %} 
+									{% ifequal bidi.direction  "ltr" %}
 									    <a href="#" onclick="change_skin('cerulean','light');" id="cerulean_skin">{{ _("Cerulean") }}</a>
 										<a href="#" onclick="change_skin('cyborg','dark');" id="cyborg_skin">{{ _("Cyborg") }}</a>
 									    <!-- <a href="#" onclick="change_skin('amelia','light');" id="amelia_skin">{{ _("Amelia") }}</a> -->
@@ -241,7 +227,7 @@
 										<!-- <a href="#" onclick="change_skin('superheroes','dark');" id="superheroes_skin">{{ _("Super Heroes") }}</a>  -->
 									    <a href="#" onclick="change_skin('united','light');"  id="united_skin">{{ _("United") }}</a>
 									{% endifequal %}
-								
+
 								</li>
                             </ul>
                         </li>
@@ -266,12 +252,12 @@
                     <li><a class="twitter" target="_blank" href="https://twitter.com/alfanous" data-toggle="tooltip" title="{{ _('Our account on Twitter') }}"><i class="icon-twitter icon-large"></i></a></li>
                     <li><a class="github" target="_blank" href="https://github.com/Alfanous-team/alfanous" data-toggle="tooltip" title="{{ _('Our repository on Github') }}"><i class="icon-github-alt icon-large"></i></a></li>
                     <li><a class="mailing-list" target="_blank" href="http://groups.google.com/group/alfanous/" data-toggle="tooltip" title="{{ _('Our Mailing list on GoogleGroups') }}"><i class="icon-group icon-large"></i></a></li>
-                    
+
 				</ul>
 			</div>
 		</div>
         <!-- end social media icons-->
-        
+
 
 
 		<div class="row">
@@ -284,7 +270,7 @@
                             <li><a href="#faqpanel" data-toggle="modal"><i class="icon-question-sign"></i> {{ _("F.A.Q.") }}</a></li>
                             <li class="bootstro" data-bootstro-title="{{ _('Sample search here') }}"
                                 data-bootstro-content="{{ _('Here you can learn by example about the full power of Alfanous search engine and what you can do with it.') }}"
-                                data-bootstro-width="400px" 
+                                data-bootstro-width="400px"
                                 data-bootstro-placement='{{ bidi.align_inverse }}'
                                 data-bootstro-step='4'>
                             	<a href="#help" data-toggle="modal"><i class="icon-exclamation-sign"></i> {{ _("Help") }}</a>
@@ -297,16 +283,16 @@
                             <li><a href="#donatepanel" data-toggle="modal" title="We really need your help!" class="dropdown-toggle bootstro" data-bootstro-title="{{ _('we really need your help!') }}"
                                 data-bootstro-content="{{ _('We\'re looking to fund the project, if you like it, help us making it even better.') }}"
 
-                                data-bootstro-width="400px" 
+                                data-bootstro-width="400px"
                                 {% if bidi.direction == "rtl" %}
-                                data-bootstro-placement='left' 
+                                data-bootstro-placement='left'
                                 {% else %}
-                                data-bootstro-placement='right' 
+                                data-bootstro-placement='right'
                                 {% endif %}
                                 data-bootstro-step='5'><i class="icon-money"></i> {{ _("Donate") }}</a></li>
                             <li><a href="#otherMeans" data-toggle="modal"><i class="icon-plus"></i> {{ _("Other means") }}</a></li>
-                  		
-                  
+
+
                     </ul>
                 </div><!--/.well -->
             </div><!--/span-->
@@ -325,30 +311,30 @@
                             <div class="input-append bootstro text-right"
                                 data-bootstro-title="{{ _('Alfanous is smart!') }}"
                                 data-bootstro-content="{{ _('Just start typing here! but wait... <strong>Did you know?</strong> Alfanous isn\'t just a typical search function, you can do a lot using operators like: <code>+</code>, <code>-</code>, <code>|</code> and a lot more!') }}"
-                                data-bootstro-width="400px" 
+                                data-bootstro-width="400px"
                                 data-bootstro-placement='bottom' data-bootstro-step='3'>
 								     <input id="appendedInputButtons" name="query" class="search-query enter keyboardInput" placeholder="{{ _('search query here ...') }}" type="text" value="{{ params.query }}" data-provide="typeahead" autocomplete="off"
 		                                data-source=""
 		                                />
-		
+
 		                                <button type="submit" class="btn btn-success search-query" onclick="$('#form').submit(); return false;">
 		                                    <i class="icon-search"></i>
 		                                    <span class="hidden-phone">{{ _("Quick search") }}</span>
 		                                </button>
-		                                
+
                             </div>
                             {% if current.unit == "aya" %}
                                 <div class="advanced-search text-center bootstro" data-toggle="tooltip"
                                     data-bootstro-title="{{ _('Even more!') }}"
                                 data-bootstro-content="{{ _('You can <strong>sort</strong>, <strong>filter</strong> search reasults or choose a translation, you can as well choose a recitator!') }}"
-                                data-bootstro-width="400px" 
+                                data-bootstro-width="400px"
                                 data-bootstro-placement='top' data-bootstro-step='2'>
                                     <a class="text-center show_hide">
                                         <i class="icon-wrench"></i>
                                         {{ _("Search options") }} [+]
                                     </a>
                                 </div>
-                                
+
                                 <div class="row slidingForm  ">
                                     {# <form class="form-horizontal "> #}
                                         <fieldset class="well well-small">
@@ -359,13 +345,13 @@
                                                 {% block sortedby_panel %}{% endblock %}
                                                 {% block translations_panel %}{% endblock %}
                                                 {% block recitations_panel %} {% endblock %}
-                                                
+
                                                 <!--  no need for double submit button
                                                 <div class="control-group">
                                                     <label class="control-label"></label>
                                                     <div class="controls">
                                                         <button type="submit" id="singlebutton" name="singlebutton" class="btn btn-primary" onclick="$('#form').submit(); return false;">{{ _("Bismi'Allah Go!") }}</button>
-                                                    </div> 
+                                                    </div>
                                                 </div>-->
                                         </fieldset>
                                     {# </form> #}
@@ -376,13 +362,13 @@
             </div><!--/row-->
         </div>
 
-                
+
         <div class="row-fluid">
-         
-        	    
+
+
         	{% block results %}  {% endblock results %}
         </div>
-        
+
         {% if not params %}
 			{% block notification %}
 				   <div class="row-fluid">
@@ -394,7 +380,7 @@
 		                        <a href="https://translations.launchpad.net/alfanous/trunk" target="_blank" class="">
 		                        {{ _("Please help us translate Alfanous Project into more languages!") }}
 		                        </a>
-		                        <!-- 
+		                        <!--
 		                        {% ifequal current.language "ar" %}
 		                        <a href="https://docs.google.com/spreadsheet/viewform?formkey=dEZZaE5fQ0NwQXljU2ZyUmpfLW15SVE6MA">
 		                        {% else %}
@@ -415,10 +401,10 @@
 		                    <br/>
 		                </div>
 		            </div>
-		
+
 			{% endblock notification %}
-			
-			
+
+
 		{% endif %}
 
     </div>
@@ -429,10 +415,10 @@
 
        <div class="row-fluid text-center">
 				 <br/>
-				<span id="shareme_root" class="span4 offset4 shareme_root" data-url="http://www.alfanous.org{% url 'wui.views.results' current.language current.unit %}?{{ current.request }}" 
+				<span id="shareme_root" class="span4 offset4 shareme_root" data-url="http://www.alfanous.org{% url 'wui.views.results' current.language current.unit %}?{{ current.request }}"
 				    data-text="{{ _('Alfanous') }} - {% if current.unit == 'aya' %} {{ _('Quran Ayah Search') }} {% elif current.unit == 'word' %} {{ _('Quran Word Search') }} {% elif current.unit == 'translation' %} {{ _('Quran Translation Search') }}{% else %} {{ _('Quran Ayah Search') }} {% endif %}   #alfanous" data-title="  {{ _('Share!') }}"></span>
 				<br/>
-			    
+
 			</div>
 
 
@@ -448,11 +434,11 @@
                 		 <a id="footer-link-jos2" data-placement="top" data-toggle="popover">
                 		 <i class=" icon-chevron-up icon-white"></i>
                  		{{ _("Powered by") }}
-                        
-                        
+
+
                         Alfanous JOS2
                     </a>
-                    </span> 
+                    </span>
                     <span class="label label-success hidden-phone">
                     <a class="footer-link-searchbar" onclick="window.external.AddSearchProvider('http://www.alfanous.org/static/alfanous-opensearch.xml');return false;" href="#">
                         <i class="icon-plus-sign icon-white"></i>
@@ -477,7 +463,7 @@
     {% ifequal bidi.direction "ltr" %}
         <script src="/static/ltr/js/bootstrap.min.js"></script>
     {% else %}
-        <script src="/static/rtl/js/rtl-bootstrap.min.js"></script>     
+        <script src="/static/rtl/js/rtl-bootstrap.min.js"></script>
     {% endifequal %}
     <script src="/static/shared/js/bootstrap-select.min.js"></script>
     <script src="/static/shared/js/keyboard.js"></script>
@@ -487,7 +473,7 @@
     <script src="/static/shared/js/jquery.sharrre-1.3.4.min.js"></script>
      <script src="/static/shared/js/share_functions.js"></script>
     <script src="http://api.html5media.info/1.1.5/html5media.min.js"></script>
-    
+
     <!-- Google analytics #Assem -->
     <script type="text/javascript">var bidi = "{{ bidi.direction }}";</script>
 	<script type="text/javascript">
@@ -502,7 +488,7 @@
         })();
 	</script>
 	<!-- end -->
-	
+
         <!--  flattr donation -->
     <script type="text/javascript">
 		/* <![CDATA[ */
