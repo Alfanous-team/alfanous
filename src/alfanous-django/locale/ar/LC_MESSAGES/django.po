@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-01-04 12:18+0100\n"
+"POT-Creation-Date: 2014-01-04 13:23+0100\n"
 "PO-Revision-Date: 2013-08-06 17:41-0000\n"
 "Last-Translator: Assem Chelli <assem.ch@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,6 +17,18 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Launchpad-Export-Date: 2013-08-04 21:08+0000\n"
 "X-Generator: Poedit 1.5.4\n"
+
+#: settings.py:241 templates/base.html:160
+msgid "Ayahs"
+msgstr "آيات"
+
+#: settings.py:244 templates/base.html:161
+msgid "Translations"
+msgstr "ترجمات"
+
+#: settings.py:245 templates/base.html:162
+msgid "Words"
+msgstr "كلمات"
 
 #: templates/aya_results.html:17 templates/aya_results.html.py:63
 #: templates/word_results.html:17
@@ -469,18 +481,6 @@ msgstr "خط عثماني"
 #: templates/base.html:85
 msgid "fuzzy search"
 msgstr "بحث تقريبي"
-
-#: templates/base.html:160 wui/views.py:69
-msgid "Ayahs"
-msgstr "آيات"
-
-#: templates/base.html:161 wui/views.py:72
-msgid "Translations"
-msgstr "ترجمات"
-
-#: templates/base.html:162
-msgid "Words"
-msgstr "كلمات"
 
 #: templates/base.html:181
 msgid "First, select the search unit"
@@ -1158,8 +1158,9 @@ msgid ""
 "%(vocalized)s, and the translation %(translation)s. The fuzzy search is "
 "%(fuzzy)s."
 msgstr ""
-"نتائج بحث الفانوس في %(unit)s  تنقيبا عن العبارة %(query)s, الصفحة %(page)s, العرض %(view)s,"
-" الخط %(script)s%(vocalized)s, الترجمة %(translation)s البحث التقربي %(fuzzy)s."
+"نتائج بحث الفانوس في %(unit)s  تنقيبا عن العبارة %(query)s, الصفحة %(page)s, "
+"العرض %(view)s, الخط %(script)s%(vocalized)s, الترجمة %(translation)s البحث "
+"التقربي %(fuzzy)s."
 
 #: wui/templatetags/meta.py:25
 msgid ""
