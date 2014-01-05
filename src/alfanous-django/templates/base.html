@@ -1,6 +1,11 @@
+{% load i18n %}
+{% load languages %}
 {% load meta %}
+{% get_current_language as LANGUAGE_CODE %}
+{% get_available_languages as LANGUAGES %}
+{% get_current_language_bidi as LANGUAGE_BIDI %}
 <!DOCTYPE html>
-<html dir="{{ bidi.direction }}" lang="{{ language.code }}">
+<html dir="{{ bidi.direction }}" lang="{{ LANGUAGE_CODE }}">
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 	<title>
@@ -85,8 +90,8 @@
 										{{ _('fuzzy search') }},
 								   {% endif %}
 								   {{ params.sortedby }} order,
-								   {{ language.name }},
-								   {{ language.name_local }},
+								   {{ LANGUAGE_CODE|my_language_name }},
+								   {{ LANGUAGE_CODE|my_language_name_local }},
 								   "/>
 	<!-- meta name="copyright" content="&copy; Alfanous Team, AGPL" -->
 	<meta name="author" content="Assem Chelli, Ahmed Ramadan, Abdellah Chelli, Mouad Debbar, Walid Ziouche, Islam Azzedine Mennouchi, Muslih Alaqaad" />
@@ -174,19 +179,19 @@
                 </button>
                 <a class="brand" href="#"></a>
                 <div class="nav-collapse collapse">
-                    <ul class="nav">
-                    <li><a href="/{{ current.language }}/"><i class="icon-home icon-large"></i></a></li>
-                    	{% for available_unit in available.units.items %}
-                    		{% ifequal available_unit.0 current.unit %}
-                    			<li class="active bootstro" data-bootstro-title="{{ _('First, select the search unit') }}"
-                                data-bootstro-content="{{ _('You can choose whether to search in Arabic verses of the holly Quran or in its translations') }}"
-                                data-bootstro-width="400px"
-                                data-bootstro-placement='bottom' data-bootstro-step='0'><a >{{ available_unit.1 }}</a></li>
-							{% else %}
-							<li><a href="{% url 'wui.views.results' current.language available_unit.0 %}">{{ available_unit.1 }}</a></li>
-							{% endifequal %}
-						{% endfor %}
-                    </ul>
+                  <ul class="nav">
+                    <li><a href="/{{ LANGUAGE_CODE }}/"><i class="icon-home icon-large"></i></a></li>
+                    {% for available_unit in available.units.items %}
+                      {% ifequal available_unit.0 current.unit %}
+                        <li class="active bootstro" data-bootstro-title="{{ _('First, select the search unit') }}"
+                            data-bootstro-content="{{ _('You can choose whether to search in Arabic verses of the holly Quran or in its translations') }}"
+                            data-bootstro-width="400px"
+                            data-bootstro-placement='bottom' data-bootstro-step='0'><a >{{ available_unit.1 }}</a></li>
+                      {% else %}
+                      <li><a href="{% url 'wui.views.results' available_unit.0 %}">{{ available_unit.1 }}</a></li>
+                      {% endifequal %}
+                    {% endfor %}
+                  </ul>
                     {% if bidi.direction == "rtl" %}
                     <ul class="nav pull-left">
                     {% else %}
@@ -194,20 +199,22 @@
                     {% endif %}
                         <li class="dropdown">
                             <a href="#" class="dropdown-toggle bootstro" data-toggle="dropdown" data-bootstro-title="{{ _('Select your language') }}"
-                                data-bootstro-content="{{ _('If you didn\'t notice, Alfanous User Interface is now translated to other languages, choose the one that fits you the best, or, you can contribute in translating it into your native language! (see the translate link)') }}"
+                                data-bootstro-content="{{ _("If you didn't notice, Alfanous User Interface is now translated to other languages, choose the one that fits you the best, or, you can contribute in translating it into your native language! (see the translate link)") }}"
                                 data-bootstro-width="400px"
                                 data-bootstro-placement='bottom' data-bootstro-step='1'>{{ _("Languages") }}<b class="caret"></b></a>
                             <ul class="dropdown-menu">
-                                {% for available_language in available.languages %}
-                                    {% if available_language.0 != language.code %}
-                                    <li>
-    									<a href="{% url 'wui.views.results' available_language.0 current.unit %}?{{ current.request }}">{{ available_language.1 }}</a>
-    								</li>
-                                    {% endif %}
-                                {% endfor %}
-                                   	<li class="divider"></li>
-                                	<li class="nav-header">{{ _("Current:") }}</li>
-                                	<li class="disabled"><a>{{ language.name }}</a></li>
+                              {% for lang_code, lang_name in LANGUAGES %}
+                                {% if lang_code != LANGUAGE_CODE %}
+                                {% language lang_code %}
+                                <li>
+                                  <a href="{% url 'wui.views.results' current.unit %}?{{ current.request }}">{{ lang_code|my_language_name_local }}</a>
+                                </li>
+                                {% endlanguage %}
+                                {% endif %}
+                              {% endfor %}
+                              <li class="divider"></li>
+                              <li class="nav-header">{{ _("Current:") }}</li>
+                              <li class="disabled"><a>{{ LANGUAGE_CODE|my_language_name }}</a></li>
                             </ul>
                         </li>
                         <li class="dropdown">
@@ -300,9 +307,9 @@
 
             <div class="row offset2 span9 text-center">
                 <div class="span6 offset1">
-                    <a class="logo" href="{% url 'wui.views.results' current.language current.unit %}">
-                    {% if current.language == "ar" or  current.language == "fr" or current.language == "id" %}
-                  	  <img src="/static/shared/img/logo_{{ current.unit }}_{{ current.language }}.png" alt="logo">
+                    <a class="logo" href="{% url 'wui.views.results' current.unit %}">
+                    {% if LANGUAGE_CODE == "ar" or  LANGUAGE_CODE == "fr" or LANGUAGE_CODE == "id" %}
+                  	  <img src="/static/shared/img/logo_{{ current.unit }}_{{ LANGUAGE_CODE }}.png" alt="logo">
                   	 {% else %}
                   	 	 <img src="/static/shared/img/logo_{{ current.unit }}_en.png" alt="logo">
                   	  {% endif %}
@@ -381,7 +388,7 @@
 		                        <a href="https://translations.launchpad.net/alfanous/trunk" target="_blank" class="">
 		                        {{ _("Please help us translate Alfanous Project into more languages!") }}
 		                        </a>
-		                        {% ifequal current.language "ar" %}
+		                        {% ifequal LANGUAGE_CODE "ar" %}
 		                        <a href="https://docs.google.com/spreadsheet/viewform?formkey=dEZZaE5fQ0NwQXljU2ZyUmpfLW15SVE6MA">
 		                        {% else %}
 		                        <a href="https://docs.google.com/spreadsheet/viewform?formkey=dHNKQU1JSkEzbDNKR2tvM2M2cDA2SXc6MQ">
@@ -416,7 +423,7 @@
 
        <div class="row-fluid text-center">
 				 <br/>
-				<span id="shareme_root" class="span4 offset4 shareme_root" data-url="http://www.alfanous.org{% url 'wui.views.results' current.language current.unit %}?{{ current.request }}"
+				<span id="shareme_root" class="span4 offset4 shareme_root" data-url="http://www.alfanous.org{% url 'wui.views.results' current.unit %}?{{ current.request }}"
 				    data-text="{{ _('Alfanous') }} - {% if current.unit == 'aya' %} {{ _('Quran Ayah Search') }} {% elif current.unit == 'word' %} {{ _('Quran Word Search') }} {% elif current.unit == 'translation' %} {{ _('Quran Translation Search') }}{% else %} {{ _('Quran Ayah Search') }} {% endif %}   #alfanous" data-title="  {{ _('Share!') }}"></span>
 				<br/>
 

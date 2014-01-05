@@ -19,6 +19,8 @@ from django.utils.translation import get_language_info
 from django.utils.datastructures import SortedDict
 
 ## either append the path of alfanous API as:
+from wui.templatetags.languages import my_get_language_info
+
 path.insert(0, "../../src") ## a relative path, development mode
 path.append("alfanous.egg/alfanous") ## an egg, portable
 path.append("/home/alfanous/alfanous-django/src/") ## absolute  path, server mode
@@ -62,18 +64,8 @@ def jos2(request):
     response = HttpResponse(response_data)
   return response
 
-def tryActivateLanguage(translation, *languages):
-  for lang in languages:
-    try:
-      translation.activate(lang)
-      lang_info = get_language_info(lang)
-      return lang, lang_info
-    except:
-      continue
 
-
-def results(request, unit="aya", language=None):
-  """     """
+def results(request, unit="aya"):
   if unit not in settings.AVAILABLE_UNITS:
     unit = "aya"
   mutable_request = dict(request.GET.items())
@@ -108,16 +100,11 @@ def results(request, unit="aya", language=None):
   #use show as third action
   raw_show = RAWoutput.do(show_params) if show_params else None
 
-  language, language_info = tryActivateLanguage(
-    translation,
-    language,
-    translation.get_language_from_request(request)[:2],
-    translation.get_language()
-  )
-  request.LANGUAGE_CODE = language
+  # TODO: We shouldn't get the language info here. We have to get the bidi info in the
+  # template, same as we do with the other language stuff.
 
   # language direction  properties
-  bidi_val = language_info['bidi']
+  bidi_val = my_get_language_info(request.LANGUAGE_CODE)['bidi']
   fields_mapping_en_ar = raw_show["show"]["fields_reverse"]
   fields_mapping_en_en = dict([(k, k) for k in fields_mapping_en_ar])
 
@@ -150,12 +137,9 @@ def results(request, unit="aya", language=None):
       'path': request.path,
       'request': request.GET.urlencode(),
       'unit': unit,
-      'language': language,
     },
     "bidi": bidi_properties[bidi_val],
-    "language": language_info,
     "available": {
-      "languages": settings.LANGUAGES,
       "units": settings.AVAILABLE_UNITS,
       "translations": sorted_translations
     },
