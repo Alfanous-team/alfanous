@@ -76,22 +76,20 @@
 									    <span class="icon-share"></span>
 									    </a>
 									    <ul class="dropdown-menu" style='min-width: 5px;'>
-
-
-	                           <li></li>
-	                           {% with translationresult_content.identifier.gid|stringformat:"s" as aya_id %}
-									 			{% with 'gid:'|add:translationresult_content.identifier.gid|add:" AND id:"|add:translationresult_content.identifier.id|urlencode  as new_query %}
-										 	 	<li>	<a href="https://twitter.com/intent/tweet?text={{ translationresult_content.text }} - {{ _('Interpretation of') }} ({% if bidi.direction == 'rtl' %}{{ translationresult_content.aya.sura_name }}{% else %}{{ translationresult_content.aya.sura_name }}{% endif %}{{ translationresult_content.aya.aya_id }}) %23alfanous @alfanous &url=http://www.alfanous.org{% url 'wui.views.results' current.language current.unit %}?{% build_search_link params  new_query 1 False  %}" id="aya_share_twitter_button_{{ ayaresult_id }}" target="_blank" class=""><i class="icon-twitter"></i> <span class='hidden-phone'> {{ _("Twitter") }}</span></a></li>
-									 		<li>		<a href="http://www.facebook.com/sharer/sharer.php?s=100&p[url]=http://www.alfanous.org{% url 'wui.views.results' current.language current.unit %}?{% build_search_link params  new_query 1 False  %}&p[summary]={{ translationresult_content.text }} - {{ _('Interpretation of') }} ({% if bidi.direction == 'rtl' %}{{ translationresult_content.aya.sura_name }}{% else %}{{ translationresult_content.aya.sura_name }}{% endif %}{{ translationresult_content.aya.aya_id }})" target="_blank" id="aya_share_facebook_button_{{ ayaresult_id }}" class=" "><i class="icon-facebook"></i> <span class='hidden-phone'> {{ _("Facebook") }}</span></a></li>
-									 		<li>		<a href="https://plus.google.com/share?url=http://www.alfanous.org{% url 'wui.views.results' current.language current.unit %}?{% build_search_link params  new_query 1 False  %}" id="aya_share_gplus_button_{{ ayaresult_id }}" target="_blank" class=""><i class="icon-google-plus"></i> <span class='hidden-phone'> {{ _("Google+") }}<span></a></li>
-									 		<li>		<a href="http://www.linkedin.com/shareArticle?url=http://www.alfanous.org{% url 'wui.views.results' current.language current.unit %}?{% build_search_link params  new_query 1 False  %}&title={% if bidi.direction == 'rtl' %}{{ translationresult_content.aya.sura_name }}{% else %}{{ translationresult_content.aya.sura_name }}{% endif %}{{ translationresult_content.aya.aya_id }}&summary={{ translationresult_content.text }} - {{ _('Interpretation of') }} ({% if bidi.direction == 'rtl' %}{{ translationresult_content.aya.sura_name }}{% else %}{{ translationresult_content.aya.sura_name }}{% endif %}{{ translationresult_content.aya.aya_id }})" target="_blank" class=""><i class="icon-linkedin"></i> <span class='hidden-phone'> {{ _("Linkedin") }}<span></a></li>
-										 	 		<!-- <button class="btn shareme"
-										 	 		        data-url="http://www.alfanous.org{% url 'wui.views.results' current.language current.unit %}?{% build_search_link params  new_query 1 False  %}"
-										 	 		        data-text="{{ translationresult_content.text }} - {{ _('Interpretation of') }} ({% if bidi.direction == 'rtl' %}{{ translationresult_content.aya.sura_name }}{% else %}{{ translationresult_content.aya.sura_name }}{% endif %}{{ translationresult_content.aya.aya_id }})">
-													</button> -->
+                        <li></li>
+                        {% with translationresult_content.identifier.gid|stringformat:"s" as aya_id %}
+                        {% with 'gid:'|add:translationresult_content.identifier.gid|add:" AND id:"|add:translationresult_content.identifier.id|urlencode  as new_query %}
+                        <li><a href="https://twitter.com/intent/tweet?text={{ translationresult_content.text }} - {{ _('Interpretation of') }} ({% if bidi.direction == 'rtl' %}{{ translationresult_content.aya.sura_name }}{% else %}{{ translationresult_content.aya.sura_name }}{% endif %}{{ translationresult_content.aya.aya_id }}) %23alfanous @alfanous &url=http://www.alfanous.org{% url 'wui.views.results' current.unit %}?{% build_search_link params  new_query 1 False  %}" id="aya_share_twitter_button_{{ ayaresult_id }}" target="_blank" class=""><i class="icon-twitter"></i> <span class='hidden-phone'> {{ _("Twitter") }}</span></a></li>
+                        <li><a href="http://www.facebook.com/sharer/sharer.php?s=100&p[url]=http://www.alfanous.org{% url 'wui.views.results' current.unit %}?{% build_search_link params  new_query 1 False  %}&p[summary]={{ translationresult_content.text }} - {{ _('Interpretation of') }} ({% if bidi.direction == 'rtl' %}{{ translationresult_content.aya.sura_name }}{% else %}{{ translationresult_content.aya.sura_name }}{% endif %}{{ translationresult_content.aya.aya_id }})" target="_blank" id="aya_share_facebook_button_{{ ayaresult_id }}" class=" "><i class="icon-facebook"></i> <span class='hidden-phone'> {{ _("Facebook") }}</span></a></li>
+                        <li><a href="https://plus.google.com/share?url=http://www.alfanous.org{% url 'wui.views.results' current.unit %}?{% build_search_link params  new_query 1 False  %}" id="aya_share_gplus_button_{{ ayaresult_id }}" target="_blank" class=""><i class="icon-google-plus"></i> <span class='hidden-phone'> {{ _("Google+") }}</span></a></li>
+                        <li><a href="http://www.linkedin.com/shareArticle?url=http://www.alfanous.org{% url 'wui.views.results' current.unit %}?{% build_search_link params  new_query 1 False  %}&title={% if bidi.direction == 'rtl' %}{{ translationresult_content.aya.sura_name }}{% else %}{{ translationresult_content.aya.sura_name }}{% endif %}{{ translationresult_content.aya.aya_id }}&summary={{ translationresult_content.text }} - {{ _('Interpretation of') }} ({% if bidi.direction == 'rtl' %}{{ translationresult_content.aya.sura_name }}{% else %}{{ translationresult_content.aya.sura_name }}{% endif %}{{ translationresult_content.aya.aya_id }})" target="_blank" class=""><i class="icon-linkedin"></i> <span class='hidden-phone'> {{ _("Linkedin") }}</span></a></li>
+                        <!-- <button class="btn shareme"
+                                data-url="http://www.alfanous.org{% url 'wui.views.results' current.unit %}?{% build_search_link params  new_query 1 False  %}"
+                                data-text="{{ translationresult_content.text }} - {{ _('Interpretation of') }} ({% if bidi.direction == 'rtl' %}{{ translationresult_content.aya.sura_name }}{% else %}{{ translationresult_content.aya.sura_name }}{% endif %}{{ translationresult_content.aya.aya_id }})">
+                        </button> -->
 												{% endwith %}
-											{% endwith %}
-	                     			  </ul>
+											  {% endwith %}
+	                    </ul>
 								 </span>
 	                      	  </span>
 
@@ -149,12 +147,12 @@
 									  		<span class='quran_decoration main_aya'>
 									  		] </span>									  		
 											-	{% with translationresult_content.aya.aya_id|stringformat:"s" as aya_id %}
-													 {% with bidi.fields.sura|add:':"'|add:translationresult_content.aya.sura_name|add:'" + '|add:bidi.fields.aya_id|add:':'|add:aya_id|urlencode  as new_query %}
-														<a class="text-success" href="{% url 'wui.views.results' current.language 'aya' %}?{% build_search_link params  new_query 1 False %}">
-													{% endwith %}
+												{% with bidi.fields.sura|add:':"'|add:translationresult_content.aya.sura_name|add:'" + '|add:bidi.fields.aya_id|add:':'|add:aya_id|urlencode  as new_query %}
+													<a class="text-success" href="{% url 'wui.views.results' 'aya' %}?{% build_search_link params  new_query 1 False %}">
+												    <small>{{ translationresult_content.aya.sura_arabic_name }}</small> {{ translationresult_content.aya.aya_id }}
+                          </a>
 												{% endwith %}
-												<small>{{ translationresult_content.aya.sura_arabic_name }}</small> {{ translationresult_content.aya.aya_id }} </a>
-
+												{% endwith %}
 								  		</p>
 						  			{% endif %}
 				                		</div>

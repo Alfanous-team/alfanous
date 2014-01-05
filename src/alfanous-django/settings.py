@@ -105,6 +105,24 @@ LANGUAGES = (
   #( 'sv', "swedish" )
 )
 
+# These are languages not supported by Django core. We have to provide
+# their info here so we can use them in our templates. This is mainly
+# used in `wui.templatetags.languages`.
+EXTRA_LANGUAGES = {
+  'ku': {
+    'code': 'ku',
+    'name': 'Kurdish',
+    'bidi': True,
+    'name_local': 'Kurdish'
+  },
+  'ms': {
+    'code': 'ms',
+    'name': 'Malay',
+    'bidi': False,
+    'name_local': 'Malay'
+  },
+}
+
 
 SITE_ID = 1
 
@@ -172,6 +190,7 @@ MIDDLEWARE_CLASSES = (
   'django.middleware.csrf.CsrfViewMiddleware',
   'django.contrib.auth.middleware.AuthenticationMiddleware',
   'django.contrib.messages.middleware.MessageMiddleware',
+  'django.middleware.locale.LocaleMiddleware',
 )
 
 ROOT_URLCONF = 'urls'
