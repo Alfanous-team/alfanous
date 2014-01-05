@@ -12,6 +12,6 @@ urlpatterns = patterns( '',
 
 # These URLs accept the language prefix.
 urlpatterns += i18n_patterns('',
-  url(r'^(?P<unit>\w{3,15})', 'wui.views.results'),
+  url(r'^(?P<unit>\w{3,15})/', 'wui.views.results'),
   url(r'^', 'wui.views.results'),
 )

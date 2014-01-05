@@ -207,7 +207,7 @@
                                 {% if lang_code != LANGUAGE_CODE %}
                                 {% language lang_code %}
                                 <li>
-                                  <a href="{% url 'wui.views.results' current.unit %}?{{ current.request }}">{{ lang_name }}</a>
+                                  <a href="{% url 'wui.views.results' current.unit %}?{{ current.request }}">{{ lang_code|my_language_name_local }}</a>
                                 </li>
                                 {% endlanguage %}
                                 {% endif %}
