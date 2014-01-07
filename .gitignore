@@ -25,6 +25,10 @@ nosetests.xml
 ################
 *.pem
 
+# dynamic resources #
+#####################
+dynamic_resources/
+
 # generated indexes #
 #####################
 _*.dcz
