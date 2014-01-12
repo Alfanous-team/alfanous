@@ -63,10 +63,11 @@ a {
   cursor: pointer;
 }
 
-span a, span a:hover {
+span.label a,
+span.label a:hover {
   color: white;
   cursor: pointer;
-  text-decoration: none; 
+  text-decoration: none;
 }
 
 #social-icons a {
@@ -127,7 +128,7 @@ div.help {
   line-height: 220%; 
 }
 
-.arabic-ayah-prev,  .arabic-ayah-next  {
+.arabic-ayah-secondary  {
   direction: rtl;
   font-family: me_quran, Scheherazade,  KacstBook, KacstQurn, ArabeyesQr, "KFGQPC Uthman Taha Naskh", Arial;
   font-size: 13px;
