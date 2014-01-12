@@ -7,57 +7,11 @@
 <!DOCTYPE html>
 <html dir="{{ bidi.direction }}" lang="{{ LANGUAGE_CODE }}">
 <head>
-	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-	<title>
-			{% block title %}
-				{% if params.query %}
-					{{ params.query }}
-					{% if params.page and params.page != 1 %}
-						|| {{ _("Page:") }}
-						{{ params.page }}
-					{% endif %}
-					{% if params.order and params.page != "score" %}
-						|| {{ _("Order:") }}
-						{{ params.sortedby }}
-					{% endif %}
-					{% if params.view and params.view != "default" %}
-						|| {{ _("View:") }}
-						{{ params.view }}
-					{% endif %}
-					{% if params.vocalized or params.uthmani or params.fuzzy %}
-						|| {{ _("Options:") }} {
-							{% if params.vocalized  %}
-								{{ _("vocalized") }},
-							{% endif %}
-							{% if params.uthmani %}
-								{{ _("uthmani") }},
-							{% endif %}
-							{% if params.fuzzy %}
-								{{ _("fuzzy") }},
-							{% endif %}
-						}
-					{% endif %}
-					{% if params.translation and params.translation != "en.transliteration" %}
-						|| {{ _("Translation:") }}
-							{{ params.translation }},
-					{% endif %}
-					-
-				{% endif %}
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 
-				{% if current.unit == "aya" %}
-						{{ _("Quran Ayah Search") }}
-					{% elif current.unit == "word" %}
-						{{ _("Quran Word Search") }}
-					{% elif current.unit == "translation" %}
-						{{ _("Quran Translation Search") }}
-					{% else %}
-						{{ _("Quran Ayah Search") }}
-				{% endif %}
-				- {{ _("Alfanous") }}
-			{% endblock %}
-	</title>
+  <title>{% page_title %}</title>
 
-  <meta name="description" content="{% meta_description params current.unit vocalized %}">
+  <meta name="description" content="{% meta_description %}">
 
 	<meta name="keywords" content="{{ _('quran') }},
 								   {{ _('forqan') }},
