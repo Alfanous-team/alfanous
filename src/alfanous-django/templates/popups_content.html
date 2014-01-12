@@ -1,4 +1,4 @@
-{% load custom_filters %}
+{% load query %}
 
 <!-- F.A.Q. -->
 <div id="faqpanel" class="modal hide fade" tabindex="-1" role="dialog" aria-hidden="true" style="text-align: {{ bidi.align }};  direction: {{ bidi.direction}};">
@@ -32,53 +32,53 @@
                              <tbody>
                                 <tr>
                                     <th >{{ _("Exact search") }} </th>
-                                    <td  ><a  href='/{{ LANGUAGE_CODE }}/?{% build_search_link params '%20رب' 1 False %}'> رب</a></td>
-                                    <td  ><a  href='/{{ LANGUAGE_CODE }}/?{% build_search_link params 'فأسقيناكموه' 1 False %}'> فأسقيناكموه </a></td>
+                                    <td  ><a  href='/{{ LANGUAGE_CODE }}/?{% custom_query 'رب ' 1 False %}'> رب</a></td>
+                                    <td  ><a  href='/{{ LANGUAGE_CODE }}/?{% custom_query 'فأسقيناكموه' 1 False %}'> فأسقيناكموه </a></td>
                                 </tr>
                                 <tr>
                                     <th >{{ _("Phrase search") }}  </th>
-                                    <td><a href='/{{ LANGUAGE_CODE }}/?{% build_search_link params '"رب%20العالمين"' 1 False %}'>"رب العالمين"</a></td>
-                                    <td><a href='/{{ LANGUAGE_CODE }}/?{% build_search_link params '"رسول%20الله"' 1 False %}'>"رسول الله"</a></td>
+                                    <td><a href='/{{ LANGUAGE_CODE }}/?{% custom_query '"رب العالمين"' 1 False %}'>"رب العالمين"</a></td>
+                                    <td><a href='/{{ LANGUAGE_CODE }}/?{% custom_query '"رسول الله"' 1 False %}'>"رسول الله"</a></td>
                                 </tr>
                                 <tr>
                                     <th >{{ _("Logical relations") }}</th>
-                                    <td ><a href='/{{ LANGUAGE_CODE }}/?{% build_search_link params '(الصلاة%20-%20الزكاة)%20+%20سورة:البقرة' 1 False %}'>(الصلاة - الزكاة) + سورة:البقرة</a></td>
-                                    <td ><a href='/{{ LANGUAGE_CODE }}/?{% build_search_link params 'سميع%20|%20بصير' 1 False %}'> سميع | بصير</a></td>
+                                    <td ><a href='/{{ LANGUAGE_CODE }}/?{% custom_query '(الصلاة - الزكاة) + سورة:البقرة' 1 False %}'>(الصلاة - الزكاة) + سورة:البقرة</a></td>
+                                    <td ><a href='/{{ LANGUAGE_CODE }}/?{% custom_query ' سميع | بصير' 1 False %}'> سميع | بصير</a></td>
                                 </tr>
                                 <tr>
                                     <th >{{ _("Wildcards") }}</th>
-                                    <td><a href='/{{ LANGUAGE_CODE }}/?{% build_search_link params '*نبي*' 1 False %}'>*نبي*</a></td>
-                                    <td><a href='/{{ LANGUAGE_CODE }}/?{% build_search_link params 'نعم؟' 1 False %}'>نعم؟</a></td>
+                                    <td><a href='/{{ LANGUAGE_CODE }}/?{% custom_query '*نبي*' 1 False %}'>*نبي*</a></td>
+                                    <td><a href='/{{ LANGUAGE_CODE }}/?{% custom_query 'نعم؟' 1 False %}'>نعم؟</a></td>
                                 </tr>
                                 <tr>
                                     <th >{{ _("Fields") }}</th>
-                                    <td ><a href='/{{ LANGUAGE_CODE }}/?{% build_search_link params 'سورة:يس' 1 False %}'>سورة:يس</a></td>
-                                    <td ><a href='/{{ LANGUAGE_CODE }}/?{% build_search_link params 'سجدة:نعم' 1 False %}'>سجدة:نعم</a></td>
+                                    <td ><a href='/{{ LANGUAGE_CODE }}/?{% custom_query 'سورة:يس' 1 False %}'>سورة:يس</a></td>
+                                    <td ><a href='/{{ LANGUAGE_CODE }}/?{% custom_query 'سجدة:نعم' 1 False %}'>سجدة:نعم</a></td>
                                 </tr>
                                 <tr>
                                     <th >{{ _("Intervals") }} </th>
-                                    <td><a href='/{{ LANGUAGE_CODE }}/?{% build_search_link params 'رقم_السورة:%5B1%20الى%205%5D%20%2B%20الله' 1 False %}'>  رقم_السورة:[1 الى 5] + الله</a></td>
+                                    <td><a href='/{{ LANGUAGE_CODE }}/?{% custom_query '  رقم_السورة:[1 الى 5] + الله' 1 False %}'>  رقم_السورة:[1 الى 5] + الله</a></td>
                                     <td> </td>
                                 </tr>
                                 <tr>
                                     <th >{{ _("Partial vocalization") }} </th>
-                                    <td ><a href="/{{ LANGUAGE_CODE }}/?{% build_search_link params "آية_:'مَن'" 1 False %}">آية_:'مَن'</a></td>
-                                    <td ><a href="/{{ LANGUAGE_CODE }}/?{% build_search_link params "آية_:'المَلكُ'" 1 False %}">آية_:'المَلكُ'</a></td>
+                                    <td ><a href="/{{ LANGUAGE_CODE }}/?{% custom_query "آية_:'مَن'" 1 False %}">آية_:'مَن'</a></td>
+                                    <td ><a href="/{{ LANGUAGE_CODE }}/?{% custom_query "آية_:'المَلكُ'" 1 False %}">آية_:'المَلكُ'</a></td>
                                 </tr>
                                 <tr>
                                     <th >{{ _("Word properties") }}</th>
-                                    <td><a href='/{{ LANGUAGE_CODE }}/?{% build_search_link params '{قول،اسم}' 1 False %}'>{قول،اسم}</a></td>
-                                    <td><a href='/{{ LANGUAGE_CODE }}/?{% build_search_link params '{ملك،فعل}' 1 False %}'>{ملك،فعل}</a></td>
+                                    <td><a href='/{{ LANGUAGE_CODE }}/?{% custom_query '{قول،اسم}' 1 False %}'>{قول،اسم}</a></td>
+                                    <td><a href='/{{ LANGUAGE_CODE }}/?{% custom_query '{ملك،فعل}' 1 False %}'>{ملك،فعل}</a></td>
                                 </tr>
                                 <tr>
                                     <th>{{ _("Derivations") }}</th>
-                                    <td><a href='/{{ LANGUAGE_CODE }}/?{% build_search_link params '%3E%3Eملك' 1 False %}'>&gt;&gt;ملك</a></td>
-                                    <td ><a href='/{{ LANGUAGE_CODE }}/?{% build_search_link params '%3Eملك' 1 False %}'> &gt;ملك</a></td>
+                                    <td><a href='/{{ LANGUAGE_CODE }}/?{% custom_query '>>ملك' 1 False %}'>&gt;&gt;ملك</a></td>
+                                    <td ><a href='/{{ LANGUAGE_CODE }}/?{% custom_query '>ملك' 1 False %}'> &gt;ملك</a></td>
                                 </tr>
                                  <tr>
                                     <th>{{ _("Buckwalter Transliteration") }}</th>
-                                    <td><a href='/{{ LANGUAGE_CODE }}/?{% build_search_link params 'qawol' 1 False %}'>qawol</a></td>
-                                    <td ><a href='/{{ LANGUAGE_CODE }}/?{% build_search_link params 'Allah' 1 False %}'>Allah</a></td>
+                                    <td><a href='/{{ LANGUAGE_CODE }}/?{% custom_query 'qawol' 1 False %}'>qawol</a></td>
+                                    <td ><a href='/{{ LANGUAGE_CODE }}/?{% custom_query 'Allah' 1 False %}'>Allah</a></td>
                                 </tr>
 
                              </tbody>
@@ -96,28 +96,28 @@
                              <tbody>
                                 <tr>
 					                <th >{{ _("Exact search") }} </th>
-					                <td  ><a  href='{% url 'wui.views.results' "translation" %}?{% build_search_link params 'god' 1 False %}'> god </a></td>
-					                <td  ><a  href='{% url 'wui.views.results' "translation" %}?{% build_search_link params 'time' 1 False %}'> time </a></td>
+					                <td  ><a  href='{% url 'wui.views.results' "translation" %}?{% custom_query 'god' 1 False %}'> god </a></td>
+					                <td  ><a  href='{% url 'wui.views.results' "translation" %}?{% custom_query 'time' 1 False %}'> time </a></td>
 				                </tr>
 				                <tr>
 					                <th >{{ _("Phrase search") }}  </th>
-					                <td><a href='{% url 'wui.views.results' "translation" %}?{% build_search_link params '"the%20Lord%20Of%20The%20Creation"' 1 False %}'>"the Lord Of The Creation"</a></td>
-					                <td><a href='{% url 'wui.views.results' "translation" %}?{% build_search_link params '"seven%20heavens"' 1 False %}'>"seven heavens"</a></td>
+					                <td><a href='{% url 'wui.views.results' "translation" %}?{% custom_query '"the%20Lord%20Of%20The%20Creation"' 1 False %}'>"the Lord Of The Creation"</a></td>
+					                <td><a href='{% url 'wui.views.results' "translation" %}?{% custom_query '"seven%20heavens"' 1 False %}'>"seven heavens"</a></td>
 				                </tr>
 				                <tr>
 					                <th >{{ _("Logical relations") }}</th>
-					                <td ><a href='{% url 'wui.views.results' "translation" %}?{% build_search_link params 'prayer%20AND%20charity' 1 False %}'>prayer AND charity</a></td>
-				                    <td ><a href='{% url 'wui.views.results' "translation" %}?{% build_search_link params 'prayer%20OR%20charity' 1 False %}'>prayer OR charity</a></td>
+					                <td ><a href='{% url 'wui.views.results' "translation" %}?{% custom_query 'prayer%20AND%20charity' 1 False %}'>prayer AND charity</a></td>
+				                    <td ><a href='{% url 'wui.views.results' "translation" %}?{% custom_query 'prayer%20OR%20charity' 1 False %}'>prayer OR charity</a></td>
 				                </tr>
 				                <tr>
 					                <th >{{ _("Wildcards") }}</th>
-					                <td><a href='{% url 'wui.views.results' "translation" %}?{% build_search_link params 'pray*' 1 False %}'>pray*</a></td>
-					                <td><a href='{% url 'wui.views.results' "translation" %}?{% build_search_link params 'produc?' 1 False %}'>produc?</a></td>
+					                <td><a href='{% url 'wui.views.results' "translation" %}?{% custom_query 'pray*' 1 False %}'>pray*</a></td>
+					                <td><a href='{% url 'wui.views.results' "translation" %}?{% custom_query 'produc?' 1 False %}'>produc?</a></td>
 				                </tr>
 				                <tr>
 					                <th >{{ _("Fields") }}</th>
-					                <td ><a href='{% url 'wui.views.results' "translation" %}?{% build_search_link params 'lang:en' 1 False %}'>lang:fr</a></td>
-				                    <td ><a href='{% url 'wui.views.results' "translation" %}?{% build_search_link params 'author:Shakir' 1 False %}'>author:Shakir
+					                <td ><a href='{% url 'wui.views.results' "translation" %}?{% custom_query 'lang:en' 1 False %}'>lang:fr</a></td>
+				                    <td ><a href='{% url 'wui.views.results' "translation" %}?{% custom_query 'author:Shakir' 1 False %}'>author:Shakir
 				                    </a></td>
 				                </tr>
 
