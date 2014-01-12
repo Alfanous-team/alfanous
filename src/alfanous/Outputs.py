@@ -43,8 +43,14 @@ from alfanous.Constants import LANGS
 
 STANDARD2UTHMANI = lambda x: std2uth_words[x] if std2uth_words.has_key( x ) else x
 
+FALSE_PATTERN = '^false|no|off|0$'
 ## a function to decide what is True and what is false
-TRUE_FALSE = lambda x: False if x in [False, "False", "false", "no", "0", 0, None] else True
+def TRUE_FALSE(val):
+  if val == '':
+    return True
+  if not val or re.match(FALSE_PATTERN, val, re.IGNORECASE):
+    return False
+  return True
 
 #
 def SCAN_SUPERJOKERS( query ):
