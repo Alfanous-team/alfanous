@@ -5,9 +5,6 @@ Created on Dec 29, 2012
 '''
 
 from django.template import Library
-from django.utils.encoding import iri_to_uri
-from django.utils.html import escape
-from django.utils.http import urlencode
 
 register = Library()
 
@@ -16,8 +13,12 @@ register = Library()
 
 @register.filter
 def get_range( value ):
-	"""  make a range from a number starting of 1 """
-	return range( 1, value + 1 )
+  """  make a range from a number starting of 1 """
+  try:
+    value = int(value)
+  except ValueError:
+    value = 1
+  return range( 1, value + 1 )
 
 
 @register.filter
@@ -33,42 +34,3 @@ def string_replace( string, args ):
     oldword = arg_list[0]
     newword = arg_list[1]
     return string.replace( oldword, newword )
-
-
-@register.simple_tag
-def build_search_link( params, query, page, filter, encode=True ):
-    """ build a search link based on a new query 
-    
-    usage: {% build_search_link params query filter %}link</a>
-    
-    """
-    # create a mutuable params object
-    new_params = {}
-    for k, v in params.items():
-    	new_params[k] = v
-    # update params
-    new_params["page"] = page
-    if filter == "True" and params["query"] != query:
-    	new_params["query"] = "(" + params["query"] + ") + " + query;
-    else:
-    	new_params["query"] = query;
-
-    built_params = build_params( new_params )
-    if encode:
-        return iri_to_uri(  built_params  )
-    else:
-        return built_params.replace('&', '%26').replace('<', '%3C').replace('>', '%3E').replace('"', '%22').replace("'", '%27')
-     
-
-
-def build_params( params ):
-	""" Concatenate the params to build a url GET request
-	
-	TODO: use a standard url builder if exists
-	TODO: encode the generated url
-
-	"""
-	get_request = ""
-	for k, v in params.items():
-		get_request = get_request + unicode( k ) + "=" + unicode( v ) + "&amp;"
-	return get_request[:-5] #remove the last "&amp;" #5 symbols
