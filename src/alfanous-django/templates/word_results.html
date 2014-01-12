@@ -2,6 +2,7 @@
 
 {% load custom_filters %}
 {% load kwacros %}
+{% load query %}
 
 {% kwacro paginationRoutine %}
 	{% block pagination %} {% endblock %}
@@ -42,27 +43,28 @@
 			</div>
 		</div>
 
-	 {% for wordresult_id, wordresult_content in results.search.words.items %}
+	 {% for result_id, result_content in results.search.words.items %}
 
 			<div class='container well well-small span12'>
 				<fieldset class="fieldset">
 					<legend class="text-{{ bidi.align }}">
-					    <span class="muted">
-					    {% with wordresult_content.identifier.gid|stringformat:"s" as gid %}
+
+            <span class="muted">
+					    {% with result_content.identifier.gid|stringformat:"s" as gid %}
 						    {% with bidi.fields.gid|add:':'|add:gid as new_query %}
-							    <a class="muted" href='?{% build_search_link params new_query 1 False  %}'>
+							    <a class="muted" href='?{% custom_query new_query 1 False  %}'>
 							      <span class="hidden-phone"> {{ _("Result n°") }}</span>
-							       <b> <span class="visible-phone">#</span>{{ wordresult_id }} </b>
+							       <b> <span class="visible-phone">#</span>{{ result_id }} </b>
 							     </a>
 			                 {% endwith %}
 		                 {% endwith %}
 
-		                 {% with wordresult_content.word.id|stringformat:"s" as word_id %}
-									 	{% with bidi.fields.word_gid|add:':"'|add:wordresult_content.identifier.gid  as new_query %}
-										- <a  class="muted" href='?{% build_search_link params  new_query 1 False  %}'>
+		                 {% with result_content.word.id|stringformat:"s" as word_id %}
+									 	{% with bidi.fields.word_gid|add:':"'|add:result_content.identifier.gid  as new_query %}
+										- <a  class="muted" href='?{% custom_query  new_query 1 False  %}'>
 
 				                        	<span >
-	<small>	{{ _("Word") }}  {{ wordresult_content.identifier.word_id }} {{ _("of") }} {{ wordresult_content.aya.sura_name }} {{ wordresult_content.aya.aya_id }}
+	<small>	{{ _("Word") }}  {{ result_content.identifier.word_id }} {{ _("of") }} {{ result_content.aya.sura_name }} {{ result_content.aya.aya_id }}
 											 </small></span> </a>
 				                        		</small>
 				                        	</span>
@@ -71,35 +73,11 @@
 									{% endwith %}
  						</span>
 
- 						     <span class="pull-{{ bidi.align_inverse }}">
- 					 			<span class="btn-group">
-	                            {% if wordresult_content.aya.recitation %}
-	                            	<button id="aya_audio_button_{{ wordresult_id }}" class="btn btn-info function_button"><i class="icon-play-circle"></i></button>
-	                            {% endif %}
-	                            <button id="aya_copy_button_{{ wordresult_id }}" class="btn btn-info function_button"><i class="icon-copy "></i></button>
-	                           </span>
-	                           <span class="btn-group">
-									    <a class="btn btn-primary dropdown-toggle" data-toggle="dropdown" href="#">
-									    <span class="icon-share"></span>
-									    </a>
-									    <ul class="dropdown-menu" style='min-width: 5px;'>
-                        {% with wordresult_content.identifier.sura_id|stringformat:"s" as sura_id %}
-                        {% with wordresult_content.identifier.aya_id|stringformat:"s" as aya_id %}
-                        {% with wordresult_content.identifier.word_id|stringformat:"s" as word_id %}
-									 			{% with 'sura_id:'|add:wordresult_content.identifier.sura_id|add:' + aya_id:'|add:aya_id|add:' + word_id:'|add:word_id|urlencode  as new_query %}
-                        <li><a href="https://twitter.com/intent/tweet?text={{ wordresult_content.aya.text_no_highlight }} - ({{ wordresult_content.identifier.sura_arabic_name }},{{ wordresult_content.aya.id }}) %23alfanous @alfanous &url=http://www.alfanous.org{% url 'wui.views.results' current.unit %}?{% build_search_link params  new_query 1 False False %} " id="aya_share_twitter_button_{{ wordresult_id }}" target="_blank" class=" "><i class="icon-twitter"></i><span class='hidden-phone'> {{ _("Twitter") }}</span></a></li>
-                        <li><a href="http://www.facebook.com/sharer/sharer.php?s=100&p[url]=http://www.alfanous.org{% url 'wui.views.results' current.unit %}?{% build_search_link params  new_query 1 False  False %}&p[summary]={{ wordresult_content.aya.text_no_highlight }} - ({{ wordresult_content.identifier.sura_arabic_name }},{{ wordresult_content.aya.id }})" target="_blank" id="aya_share_facebook_button_{{ wordresult_id }}" class=" "><i class="icon-facebook"></i><span class='hidden-phone'> {{ _("Facebook") }}</span></a></li>
-                        <li><a href="https://plus.google.com/share?url=http://www.alfanous.org{% url 'wui.views.results' current.unit %}?{% build_search_link params  new_query 1 False False %}" id="aya_share_gplus_button_{{ wordresult_id }}" target="_blank" class=" "><i class="icon-google-plus"></i><span class='hidden-phone'> {{ _("Google-Plus") }}</span></a></li>
-                        <li><a href="http://www.linkedin.com/shareArticle?url=http://www.alfanous.org{% url 'wui.views.results' current.unit %}?{% build_search_link params  new_query 1 False  %}&title={{ wordresult_content.identifier.sura_name }} {{ wordresult_content.aya.id }}&summary={{ wordresult_content.aya.text_no_highlight }} - ({{ wordresult_content.identifier.sura_arabic_name }},{{ wordresult_content.aya.id }}" target="_blank" class=""><i class="icon-linkedin"></i><span class='hidden-phone'> {{ _("Linkedin") }}</span></a></li>
-										 	 	<!-- <button class="btn shareme" data-url="http://www.alfanous.org{% url 'wui.views.results' current.unit %}?{% build_search_link params  new_query 1 False  %}" data-text="{{ wordresult_content.aya.text_no_highlight }} - ({{ wordresult_content.identifier.sura_name }},{{ wordresult_content.aya.id }}) "></button> -->
-												{% endwith %}
-                        {% endwith %}
-                        {% endwith %}
-                        {% endwith %}
-                      </ul>
-
-	                      	  </span>
-	                      	 </span>
+            <span class="pull-{{ bidi.align_inverse }}">
+              {% url 'wui.views.results' current.unit as share_path %}
+              {% simple_query ' + ' sura_id=result_content.identifier.sura_id aya_id=result_content.identifier.aya_id word_id=result_content.identifier.word_id as share_params %}
+              {% include 'wui/result/header_buttons.html' %}
+            </span>
 
 
 			  		</legend>
@@ -107,58 +85,58 @@
 	                    <div class="span11 offset1">
 		                    <div class="row">
 
-		                        <div id="aya_text_{{ wordresult_id }}" class="row text-center arabic-ayah">
+		                        <div id="aya_text_{{ result_id }}" class="row text-center arabic-ayah">
 
 
 						 					{% autoescape off %}
-												{{ wordresult_content.word.text }}
+												{{ result_content.word.text }}
 											{% endautoescape %}
 
-										{% with wordresult_content.word.id|stringformat:"s" as aya_id %}
-									 	{% with 'id:'|add:wordresult_content.identifier.word_gid|add:' + '|urlencode  as new_query %}
-										- <a href='?{% build_search_link params  new_query 1 False  %}'>
+										{% with result_content.word.id|stringformat:"s" as aya_id %}
+									 	{% with 'id:'|add:result_content.identifier.word_gid|add:' + '  as new_query %}
+										- <a href='?{% custom_query  new_query 1 False  %}'>
 										{% endwith %}
 									{% endwith %}
-		                        	<span class="text-success">{{ wordresult_content.identifier.sura_id }}| {{ wordresult_content.identifier.aya_id }}|{{ wordresult_content.identifier.word_id }}   </span></a>
+		                        	<span class="text-success">{{ result_content.identifier.sura_id }}| {{ result_content.identifier.aya_id }}|{{ result_content.identifier.word_id }}   </span></a>
 
 		                       </div>
 
 		                    </div>
-		                        	{% if wordresult_content.word.translation %}
+		                        	{% if result_content.word.translation %}
 		                        	   <div class="row text-center non-arabic-ayah">
 		                                 <hr />
 									  		{% autoescape off %}
-									  		  {{ wordresult_content.word.translation }}
+									  		  {{ result_content.word.translation }}
 									  		{% endautoescape %}
 		                                  </div>
 		                            {% endif %}
 
 		           			   <hr/>
 	                    </div>
-	                    {% if wordresult_content.aya %}
+	                    {% if result_content.aya %}
 
 								  		<p class="arabic-ayah">
 									  		<span class='quran_decoration main_aya'>
 									 		 [ </span>
-									  		{% for aya_word in wordresult_content.aya.text|space_split %}
+									  		{% for aya_word in result_content.aya.text|space_split %}
 											    {% spaceless %}
 									          		{% autoescape off %}
 									          		{# TODO optimize this condition, any "in" operation? #}
 														{% if aya_word|first in "<ct> "|make_list  %}
 																{{ aya_word }}
 														{% else %}
-																<a href="?{% build_search_link params aya_word 1 False %}">{{ aya_word }}</a>
+																<a href="?{% custom_query aya_word 1 False %}">{{ aya_word }}</a>
 														{% endif %}
 									          		{% endautoescape %}
 									     		{% endspaceless %}
 										    {% endfor %}
 									  		<span class='quran_decoration main_aya'>
 									  		] </span>
-											-	<small> <span class="muted">	لفظ  {{ wordresult_content.identifier.word_id }} من </span>
-											  {% with wordresult_content.aya.aya_id|stringformat:"s" as aya_id %}
-												{% with bidi.fields.sura|add:':"'|add:wordresult_content.aya.sura_name|add:'" + '|add:bidi.fields.aya_id|add:':'|add:aya_id|urlencode  as new_query %}
-                          <a class="text-success" href="{% url 'wui.views.results' 'aya' %}?{% build_search_link params  new_query 1 False %}">
-												    {{ wordresult_content.aya.sura_arabic_name }} {{ wordresult_content.aya.aya_id }}
+											-	<small> <span class="muted">	لفظ  {{ result_content.identifier.word_id }} من </span>
+											  {% with result_content.aya.aya_id|stringformat:"s" as aya_id %}
+												{% with bidi.fields.sura|add:':"'|add:result_content.aya.sura_name|add:'" + '|add:bidi.fields.aya_id|add:':'|add:aya_id  as new_query %}
+                          <a class="text-success" href="{% url 'wui.views.results' 'aya' %}?{% custom_query  new_query 1 False %}">
+												    {{ result_content.aya.sura_arabic_name }} {{ result_content.aya.aya_id }}
                           </a>
 												{% endwith %}
 												{% endwith %}
@@ -171,54 +149,54 @@
 
 
 											<span class="badge badge-info">{{ _("info") }}</span>
-												{% if wordresult_content.word.part %}
-													<span class='label label-success'> {{ _("part") }} | {{ wordresult_content.word.part }} </span>
+												{% if result_content.word.part %}
+													<span class='label label-success'> {{ _("part") }} | {{ result_content.word.part }} </span>
 												{% endif %}
-												{% if wordresult_content.word.arabiclemma %}
-													<span class='label label-info'> {{ _("lemma") }} | {{ wordresult_content.word.lemma  }} ({{ wordresult_content.word.arabiclemma }}) </span>
+												{% if result_content.word.arabiclemma %}
+													<span class='label label-info'> {{ _("lemma") }} | {{ result_content.word.lemma  }} ({{ result_content.word.arabiclemma }}) </span>
 												{% endif %}
-												{% if wordresult_content.word.arabicroot %}
-													<span class='label label-info'> {{ _("root") }} | {{ wordresult_content.word.root }} ({{ wordresult_content.word.arabicroot }}) </span>
+												{% if result_content.word.arabicroot %}
+													<span class='label label-info'> {{ _("root") }} | {{ result_content.word.root }} ({{ result_content.word.arabicroot }}) </span>
 												{% endif %}
-												{% if wordresult_content.word.arabicspecial %}
-													<span class='label label-info'> {{ _("special") }} | {{ wordresult_content.word.special }} ({{ wordresult_content.word.arabicspecial }}) </span>
+												{% if result_content.word.arabicspecial %}
+													<span class='label label-info'> {{ _("special") }} | {{ result_content.word.special }} ({{ result_content.word.arabicspecial }}) </span>
 												{% endif %}
-												{% if wordresult_content.word.token %}
-													<span class='label label-info'> {{ _("token") }} | {{ wordresult_content.word.token }} ( {{ wordresult_content.word.arabictoken }}) </span>
+												{% if result_content.word.token %}
+													<span class='label label-info'> {{ _("token") }} | {{ result_content.word.token }} ( {{ result_content.word.arabictoken }}) </span>
 												{% endif %}
-												{% if wordresult_content.word.type %}
-													<span class='label'> {{ _("type") }} | {{ wordresult_content.word.type }} </span>
+												{% if result_content.word.type %}
+													<span class='label'> {{ _("type") }} | {{ result_content.word.type }} </span>
 												{% endif %}
-												{% if wordresult_content.word.pos %}
-													<span class='label'> {{ _("POS") }} | {{ wordresult_content.word.pos }} ({{ wordresult_content.word.arabicpos }}) </span>
+												{% if result_content.word.pos %}
+													<span class='label'> {{ _("POS") }} | {{ result_content.word.pos }} ({{ result_content.word.arabicpos }}) </span>
 												{% endif %}
 
-												{% if wordresult_content.word.aspect %}
-													<span class='label'> {{ _("aspect") }} | {{ wordresult_content.word.aspect }} </span>
+												{% if result_content.word.aspect %}
+													<span class='label'> {{ _("aspect") }} | {{ result_content.word.aspect }} </span>
 												{% endif %}
-												{% if wordresult_content.word.state %}
-													<span class='label'> {{ _("state") }} | {{ wordresult_content.word.state }} </span>
+												{% if result_content.word.state %}
+													<span class='label'> {{ _("state") }} | {{ result_content.word.state }} </span>
 												{% endif %}
-												{% if wordresult_content.word.form %}
-													<span class='label'> {{ _("form") }} | {{ wordresult_content.word.form }} </span>
+												{% if result_content.word.form %}
+													<span class='label'> {{ _("form") }} | {{ result_content.word.form }} </span>
 												{% endif %}
-												{% if wordresult_content.word.case %}
-													<span class='label'> {{ _("case") }} | {{ wordresult_content.word.case.english }} ( {{ wordresult_content.word.case.arabic }}) </span>
+												{% if result_content.word.case %}
+													<span class='label'> {{ _("case") }} | {{ result_content.word.case.english }} ( {{ result_content.word.case.arabic }}) </span>
 												{% endif %}
-												{% if wordresult_content.word.derivation %}
-													<span class='label'> {{ _("derivation") }} | {{ wordresult_content.word.derivation }} </span>
+												{% if result_content.word.derivation %}
+													<span class='label'> {{ _("derivation") }} | {{ result_content.word.derivation }} </span>
 												{% endif %}
-												{% if wordresult_content.word.person %}
-													<span class='label'> {{ _("person") }} | {{ wordresult_content.word.person }} </span>
+												{% if result_content.word.person %}
+													<span class='label'> {{ _("person") }} | {{ result_content.word.person }} </span>
 												{% endif %}
-												{% if wordresult_content.word.number %}
-													<span class='label'> {{ _("number") }} | {{ wordresult_content.word.number }} </span>
+												{% if result_content.word.number %}
+													<span class='label'> {{ _("number") }} | {{ result_content.word.number }} </span>
 												{% endif %}
-												{% if wordresult_content.word.gender %}
-													<span class='label'> {{ _("gender") }} | {{ wordresult_content.word.gender }} </span>
+												{% if result_content.word.gender %}
+													<span class='label'> {{ _("gender") }} | {{ result_content.word.gender }} </span>
 												{% endif %}
-												{% if wordresult_content.word.voice %}
-													<span class='label'> {{ _("voice") }} | {{ wordresult_content.word.voice }} </span>
+												{% if result_content.word.voice %}
+													<span class='label'> {{ _("voice") }} | {{ result_content.word.voice }} </span>
 												{% endif %}
 
 				                        </div>

@@ -1,0 +1,32 @@
+{% load query %}
+
+<span class="muted">
+  {% with result_content.identifier.gid|stringformat:"s" as gid %}
+  {% with bidi.fields.gid|add:':'|add:gid as new_query %}
+  <a class="muted" href='?{% custom_query new_query 1 False %}'>
+    <span class="hidden-phone"> {{ _("Result n°") }}</span>
+    <b><span class="visible-phone">#</span>{{ result_id }}</b>
+  </a>
+  {% endwith %}
+  {% endwith %}
+
+  -
+  <a class="muted" href='?{% aya_query result_content %}'>
+    <span >
+      <small>
+        {% if bidi.direction == "rtl" %}
+          {{ result_content.identifier.sura_arabic_name }}
+        {% else %}
+          {{ result_content.identifier.sura_name }}
+        {% endif %}
+        {{ result_content.aya.id }}
+      </small>
+    </span>
+  </a>
+</span>
+
+<div class="pull-{{ bidi.align_inverse }}">
+  {% url 'wui.views.results' current.unit as share_path %}
+  {% aya_query result_content as share_params %}
+  {% include 'wui/result/header_buttons.html' %}
+</div>

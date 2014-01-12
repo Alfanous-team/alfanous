@@ -1,6 +1,7 @@
 {% extends "word_results.html" %}
 
 {% load custom_filters %}
+{% load query %}
 
 
 
@@ -22,129 +23,8 @@
 {% endblock %}
 
 
-{% block pagination %} 
-		{% if results.search.interval.nb_pages > 1 %}
-			<div class="pagination pagination-centered visible-desktop">
-				<ul>
-					{% if results.search.interval.page != 1 %}
-						{% with results.search.interval.page|add:"-1"|stringformat:"s" as prev_page %}
-						<li><a class='no_decoration' href='?{% build_search_link params params.query prev_page False%}'> 
-						{% endwith %} 
-						<span>&laquo;</span>
-						</a></li>
-					{% endif %}
-
-					{% for i in results.search.interval.nb_pages|get_range %}
-						{% with results.search.interval.page as page %}
-							{% if  i == page %}
-								<li class="disabled"><a>{{ i }}</a></li>
-							{% elif i <= page|add:"+7" and i >= page|add:"-3"  %} 
-								{# pages  in range [-3,+7] #} 
-								<li><a class='page_link' href="?{% build_search_link params params.query|urlencode i False %}">{{ i }}</a></li>
-							{% elif i|divisibleby:"50" and i < page or i == 1  %} {# Prio: Left #}
-								{# first page ; and every 50 pages before current page #}
-								<li><a class='page_link' href="?{% build_search_link params params.query|urlencode i False %}">{{ i }}</a></li>
-								<li class="disabled"><a>..</a></li>
-							{% elif i|divisibleby:"50" and i > page or i == results.search.interval.nb_pages  %}
-								{# last page;  and every 50 pages after current page #}
-								<li class="disabled"><a>..</a></li>
-								<li><a class='page_link' href="?{% build_search_link params params.query|urlencode i False %}">{{ i }}</a></li>
-							{% endif %}	
-						{% endwith %}
-					{% endfor %}
-
-					{% if results.search.interval.page != results.search.interval.nb_pages %}
-						{% with results.search.interval.page|add:"+1"|stringformat:"s" as next_page %}
-							<li><a class='no_decoration' href='?{% build_search_link params params.query|urlencode next_page False%}'> 
-						{% endwith %} 
-						<span>&raquo;</span></a></li>
-					{% endif %}
-				</ul>
-			</div>
-		{% endif %}
+{% block pagination %}
+  {% if results.search.interval.nb_pages > 1 %}
+    {% include 'wui/pagination.html' with page=results.search.interval.page nb_pages=results.search.interval.nb_pages %}
+  {% endif %}
 {% endblock %}
-
-{% block pagination_tablet %} 
-		{% if results.search.interval.nb_pages > 1 %}
-			<div class="pagination pagination-centered pagination-small visible-tablet">
-				<ul>
-					{% if results.search.interval.page != 1 %}
-						{% with results.search.interval.page|add:"-1"|stringformat:"s" as prev_page %}
-						<li><a class='no_decoration' href='?{% build_search_link params params.query prev_page False%}'> 
-						{% endwith %} 
-						<span>&laquo;</span>
-						</a></li>
-					{% endif %}
-
-					{% for i in results.search.interval.nb_pages|get_range %}
-						{% with results.search.interval.page as page %}
-							{% if  i == page %}
-								<li class="disabled"><a>{{ i }}</a></li>
-							{% elif i <= page|add:"+7" and i >= page|add:"-3"  %} 
-								{# pages  in range [-3,+7] #} 
-								<li><a class='page_link' href="?{% build_search_link params params.query i False %}">{{ i }}</a></li>
-							{% elif i|divisibleby:"50" and i < page or i == 1  %} {# Prio: Left #}
-								{# first page ; and every 50 pages before current page #}
-								<li><a class='page_link' href="?{% build_search_link params params.query i False %}">{{ i }}</a></li>
-								<li class="disabled"><a>..</a></li>
-							{% elif i|divisibleby:"50" and i > page or i == results.search.interval.nb_pages  %}
-								{# last page;  and every 50 pages after current page #}
-								<li class="disabled"><a>..</a></li>
-								<li><a class='page_link' href="?{% build_search_link params params.query i False %}">{{ i }}</a></li>
-							{% endif %}	
-						{% endwith %}
-					{% endfor %}
-
-					{% if results.search.interval.page != results.search.interval.nb_pages %}
-						{% with results.search.interval.page|add:"+1"|stringformat:"s" as next_page %}
-							<li><a class='no_decoration' href='?{% build_search_link params params.query next_page False%}'> 
-						{% endwith %} 
-						<span>&raquo;</span></a></li>
-					{% endif %}
-				</ul>
-			</div>
-		{% endif %}
-{% endblock %}
-
-{% block pagination_phone %} 
-		{% if results.search.interval.nb_pages > 1 %}
-			<div class="pagination pagination-centered pagination-mini visible-phone">
-				<ul>
-					{% if results.search.interval.page != 1 %}
-						{% with results.search.interval.page|add:"-1"|stringformat:"s" as prev_page %}
-						<li><a class='no_decoration' href='?{% build_search_link params params.query prev_page False%}'> 
-						{% endwith %} 
-						<span>&laquo;</span>
-						</a></li>
-					{% endif %}
-
-					{% for i in results.search.interval.nb_pages|get_range %}
-						{% with results.search.interval.page as page %}
-							{% if  i == page %}
-								<li class="disabled"><a>{{ i }}</a></li>
-							{% elif i <= page|add:"+7" and i >= page|add:"-3"  %} 
-								{# pages  in range [-3,+7] #} 
-								<li><a class='page_link' href="?{% build_search_link params params.query i False %}">{{ i }}</a></li>
-							{% elif i|divisibleby:"50" and i < page or i == 1  %} {# Prio: Left #}
-								{# first page ; and every 50 pages before current page #}
-								<li><a class='page_link' href="?{% build_search_link params params.query i False %}">{{ i }}</a></li>
-								<li class="disabled"><a>..</a></li>
-							{% elif i|divisibleby:"50" and i > page or i == results.search.interval.nb_pages  %}
-								{# last page;  and every 50 pages after current page #}
-								<li class="disabled"><a>..</a></li>
-								<li><a class='page_link' href="?{% build_search_link params params.query i False %}">{{ i }}</a></li>
-							{% endif %}	
-						{% endwith %}
-					{% endfor %}
-
-					{% if results.search.interval.page != results.search.interval.nb_pages %}
-						{% with results.search.interval.page|add:"+1"|stringformat:"s" as next_page %}
-							<li><a class='no_decoration' href='?{% build_search_link params params.query next_page False%}'> 
-						{% endwith %} 
-						<span>&raquo;</span></a></li>
-					{% endif %}
-				</ul>
-			</div>
-		{% endif %}
-{% endblock %}
-

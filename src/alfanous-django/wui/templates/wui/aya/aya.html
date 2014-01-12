@@ -1,0 +1,21 @@
+{# @aya_text - The text of the aya #}
+
+{% load custom_filters %}
+{% load query %}
+
+<span class='quran_decoration'>[</span>
+<span dir="rtl">
+{% for aya_word in aya_text|space_split %}
+  {% spaceless %}
+    {% autoescape off %}
+      {# TODO optimize this condition, any "in" operation? #}
+      {% if aya_word|first in "<ct> "|make_list  %}
+        {{ aya_word }}
+      {% else %}
+        <a href="?{% custom_query aya_word 1 False %}">{{ aya_word }}</a>
+      {% endif %}
+    {% endautoescape %}
+  {% endspaceless %}
+{% endfor %}
+</span>
+<span class='quran_decoration'>]</span>
