@@ -55,6 +55,5 @@ def ar_aya_query(context, result_content):
 
 @register.optional_assignment_tag(takes_context=True)
 def simple_query(context, separator, **kwargs):
-  print kwargs
   query = OrderedDict(kwargs.iteritems())
   return build_query(context['params'], query, separator=separator)
