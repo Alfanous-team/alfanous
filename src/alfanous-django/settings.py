@@ -214,8 +214,8 @@ INSTALLED_APPS = (
   'django.contrib.staticfiles',
 
   # 3rd party apps
-  'debug_toolbar',
-  'template_timings_panel',
+  # 'debug_toolbar',
+  # 'template_timings_panel',
 
   # our apps
   'wui',
