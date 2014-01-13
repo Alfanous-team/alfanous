@@ -16,7 +16,7 @@ TITLE_SUFFIX = {
 TITLE_CLEANER = re.compile('[^\w_]+', re.UNICODE)
 
 def query_for_title(query):
-  return TITLE_CLEANER.sub(' ', query)
+  return TITLE_CLEANER.sub(' ', query).encode('UTF-8')
 
 @register.simple_tag(takes_context=True)
 def page_title(context):
@@ -34,6 +34,7 @@ def page_title(context):
   ))
   return escape(' '.join(parts))
 
+
 def get_search_description(params, unit):
   return _(
     '"Alfanous search results searching in %(unit)s looking for the query %(query)s, the page %(page)s, '
@@ -44,7 +45,6 @@ def get_search_description(params, unit):
     'vocalized': ' vocalized' if params.get('vocalized') else '',
     'fuzzy': 'activated' if params.get('fuzzy') else 'deactivated',
   })
-
 
 @register.simple_tag(takes_context=True)
 def meta_description(context):
@@ -63,3 +63,24 @@ def meta_description(context):
       'Quranic searches.'
     )
   return escape(description)
+
+# Open Graph tags
+# https://developers.facebook.com/docs/opengraph/howtos/maximizing-distribution-media-content
+
+# To check how FB is seeing our website:
+# https://developers.facebook.com/tools/debug/og/object?q=www.alfanous.org
+
+@register.simple_tag(takes_context=True)
+def og_title(context):
+  params = xget(context, 'params')
+  unit = xget(context, 'current.unit')
+
+  parts = []
+  if 'query' in params:
+    parts.extend((query_for_title(params['query']), '-'))
+  parts.append(TITLE_SUFFIX[unit].encode('UTF-8'))
+  return ' '.join(parts)
+
+@register.simple_tag(takes_context=True)
+def og_description(context):
+  return meta_description(context)
