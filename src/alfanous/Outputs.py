@@ -43,8 +43,16 @@ from alfanous.Constants import LANGS
 
 STANDARD2UTHMANI = lambda x: std2uth_words[x] if std2uth_words.has_key( x ) else x
 
+FALSE_PATTERN = '^false|no|off|0$'
 ## a function to decide what is True and what is false
-TRUE_FALSE = lambda x: False if x in [False, "False", "false", "no", "0", 0, None] else True
+def IS_FLAG(flags, key):
+  default = Raw.DEFAULTS['flags'][key]
+  val = flags.get(key, default)
+  if val is None or val == '':
+    return default
+  if not val or re.match(FALSE_PATTERN, str(val), re.IGNORECASE):
+    return False
+  return True
 
 #
 def SCAN_SUPERJOKERS( query ):
@@ -457,10 +465,8 @@ class Raw():
 					else self._defaults["flags"]["highlight"]
 		script = flags["script"] if flags.has_key( "script" ) \
 				 else self._defaults["flags"]["script"]
-		vocalized = TRUE_FALSE( flags["vocalized"] ) if flags.has_key( "vocalized" ) \
-					else self._defaults["flags"]["vocalized"]
-		fuzzy = TRUE_FALSE( flags["fuzzy"] ) if flags.has_key( "fuzzy" ) \
-				else self._defaults["flags"]["fuzzy"]
+		vocalized = IS_FLAG(flags, 'vocalized')
+		fuzzy = IS_FLAG(flags, 'fuzzy')
 		view = flags["view"] if flags.has_key( "view" ) \
 				else self._defaults["flags"]["view"]
 
@@ -546,35 +552,21 @@ class Raw():
 			annotation_aya = False
 			annotation_word = False
 		else: # if view == custom or undefined
-			prev_aya = TRUE_FALSE( flags["prev_aya"] ) if flags.has_key( "prev_aya" ) \
-						else self._defaults["flags"]["prev_aya"]
-			next_aya = TRUE_FALSE( flags["next_aya"] ) if flags.has_key( "next_aya" ) \
-						else self._defaults["flags"]["next_aya"]
-			sura_info = TRUE_FALSE( flags["sura_info"] ) if flags.has_key( "sura_info" ) \
-						else self._defaults["flags"]["sura_info"]
-			sura_stat_info = TRUE_FALSE( flags["sura_stat_info"] ) if flags.has_key( "sura_stat_info" ) \
-						else self._defaults["flags"]["sura_stat_info"]
-			word_info = TRUE_FALSE( flags["word_info"] ) if flags.has_key( "word_info" ) \
-						else self._defaults["flags"]["word_info"]
-			word_synonyms = TRUE_FALSE( flags["word_synonyms"] ) if flags.has_key( "word_synonyms" ) \
-						else self._defaults["flags"]["word_synonyms"]
-			word_derivations = TRUE_FALSE( flags["word_derivations"] ) if flags.has_key( "word_derivations" ) \
-						else self._defaults["flags"]["word_derivations"]
-			word_vocalizations = TRUE_FALSE( flags["word_vocalizations"] ) if flags.has_key( "word_vocalizations" ) \
-						else self._defaults["flags"]["word_vocalizations"]
+			prev_aya = IS_FLAG(flags, 'prev_aya')
+			next_aya = IS_FLAG(flags, 'next_aya')
+			sura_info = IS_FLAG(flags, 'sura_info')
+			sura_stat_info = IS_FLAG(flags, 'sura_stat_info')
+			word_info = IS_FLAG(flags, 'word_info')
+			word_synonyms = IS_FLAG(flags, 'word_synonyms')
+			word_derivations = IS_FLAG(flags, 'word_derivations')
+			word_vocalizations = IS_FLAG(flags, 'word_vocalizations')
 
-			aya_position_info = TRUE_FALSE( flags["aya_position_info"] ) if flags.has_key( "aya_position_info" ) \
-								else self._defaults["flags"]["aya_position_info"]
-			aya_theme_info = TRUE_FALSE( flags["aya_theme_info"] ) if flags.has_key( "aya_theme_info" ) \
-							 else self._defaults["flags"]["aya_theme_info"]
-			aya_stat_info = TRUE_FALSE( flags["aya_stat_info"] ) if flags.has_key( "aya_stat_info" ) \
-							else self._defaults["flags"]["aya_stat_info"]
-			aya_sajda_info = TRUE_FALSE( flags["aya_sajda_info"] ) if flags.has_key( "aya_sajda_info" ) \
-							 else self._defaults["flags"]["aya_sajda_info"]
-			annotation_aya = TRUE_FALSE( flags["annotation_aya"] ) if flags.has_key( "annotation_aya" ) \
-							 else self._defaults["flags"]["annotation_aya"]
-			annotation_word = TRUE_FALSE( flags["annotation_word"] ) if flags.has_key( "annotation_word" ) \
-							 else self._defaults["flags"]["annotation_word"]
+			aya_position_info = IS_FLAG(flags, 'aya_position_info')
+			aya_theme_info = IS_FLAG(flags, 'aya_theme_info')
+			aya_stat_info = IS_FLAG(flags, 'aya_stat_info')
+			aya_sajda_info = IS_FLAG(flags, 'aya_sajda_info')
+			annotation_aya = IS_FLAG(flags, 'annotation_aya')
+			annotation_word = IS_FLAG(flags, 'annotation_word')
 
 		#print query
 		#preprocess query
@@ -888,8 +880,7 @@ class Raw():
 		elif view == "full":
 			aya = True
 		else: # if view == custom or undefined
-			aya = TRUE_FALSE( flags["aya"] ) if flags.has_key( "aya" ) \
-						else self._defaults["flags"]["aya"]
+			aya = IS_FLAG(flags, 'aya')
 		#preprocess query
 		query = query.replace( "\\", "" )
 		if not isinstance( query, unicode ):
@@ -995,8 +986,7 @@ class Raw():
 					else self._defaults["flags"]["highlight"]
 		script = flags["script"] if flags.has_key( "script" ) \
 				 else self._defaults["flags"]["script"]
-		vocalized = TRUE_FALSE( flags["vocalized"] ) if flags.has_key( "vocalized" ) \
-					else self._defaults["flags"]["vocalized"]
+		vocalized = IS_FLAG(flags, 'vocalized')
 		view = flags["view"] if flags.has_key( "view" ) \
 				else self._defaults["flags"]["view"]
 
@@ -1016,8 +1006,7 @@ class Raw():
 		elif view == "recitation":
 			script = "uthmani"
 		else: # if view == custom or undefined
-			aya = TRUE_FALSE( flags["aya"] ) if flags.has_key( "aya" ) \
-                        else self._defaults["flags"]["aya"]
+			aya = IS_FLAG(flags, 'aya')
 		#preprocess query
 		query = query.replace( "\\", "" )
 		if not isinstance( query, unicode ):
