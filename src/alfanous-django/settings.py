@@ -8,51 +8,11 @@ ROOT_DIR = os.path.dirname(__file__)
 
 
 ########################################
-#     Dynamic or Private settings      #
-########################################
-from ConfigParser import RawConfigParser
-
-
-# set the path of your private config file here.
-# the file have to be a system-config like, ini-style file, see settings.ini.proto for a prototype
-configFile = "./settings.ini.proto" # e,g. '/etc/whatever/settings.ini'
-
-if configFile[:2] == "./":
-  print "WARNING: You need to specify a reliable absolute path to the config file, see settings.py"
-
-
-config = RawConfigParser()
-config.read( configFile )
-
-# fetching critical info from the config file
-DATABASE_USER = config.get( 'database', 'DATABASE_USER' )
-DATABASE_PASSWORD = config.get( 'database', 'DATABASE_PASSWORD' )
-DATABASE_HOST = config.get( 'database', 'DATABASE_HOST' )
-DATABASE_PORT = config.get( 'database', 'DATABASE_PORT' )
-DATABASE_ENGINE = config.get( 'database', 'DATABASE_ENGINE' )
-DATABASE_NAME = config.get( 'database', 'DATABASE_NAME' )
-
-MY_DEBUG = config.get( 'debug', 'DEBUG' ) in ["true", "True"]
-MY_TEMPLATE_DEBUG = config.get( 'debug', 'TEMPLATE_DEBUG' ) in ["true", "True"]
-
-MY_SECRET_KEY = config.get( 'secrets', 'SECRET_KEY' )
-
-MY_MEDIA_URL = config.get( 'paths', 'MEDIA_URL' )
-MY_MEDIA_ROOT = config.get( 'paths', 'MEDIA_ROOT' )
-
-MY_STATIC_URL = config.get( 'paths', 'STATIC_URL' )
-MY_STATIC_ROOT = config.get( 'paths', 'STATIC_ROOT' )
-
-MY_TEMPLATE_DIR = config.get( 'paths', 'TEMPLATE_DIR' )
-
-MY_LOCALE_PATH = config.get( 'paths', 'LOCALE_PATH' )
-
-########################################
 #     Static and Public settings       #
 ########################################
 
-DEBUG = MY_DEBUG
-TEMPLATE_DEBUG = MY_TEMPLATE_DEBUG
+DEBUG = True
+TEMPLATE_DEBUG = True
 
 ADMINS = (
   ( 'Assem Chelli', 'assem.ch@gmail.com' ),
@@ -63,12 +23,8 @@ MANAGERS = ADMINS
 
 DATABASES = {
   'default': {
-    'ENGINE': DATABASE_ENGINE,      # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
-    'NAME': DATABASE_NAME,          # Or path to database file if using sqlite3.
-    'USER': DATABASE_USER,          # Not used with sqlite3.
-    'PASSWORD': DATABASE_PASSWORD,  # Not used with sqlite3.
-    'HOST': DATABASE_HOST,          # Set to empty string for localhost. Not used with sqlite3.
-    'PORT': DATABASE_PORT,          # Set to empty string for default. Not used with sqlite3.
+    'ENGINE': 'django.db.backends.sqlite3',
+    'NAME': 'wui.db',
   }
 }
 
@@ -136,22 +92,22 @@ USE_L10N = True
 
 # Absolute filesystem path to the directory that will hold user-uploaded files.
 # Example: "/home/media/media.lawrence.com/media/"
-MEDIA_ROOT = MY_MEDIA_ROOT
+MEDIA_ROOT = os.path.join(ROOT_DIR, 'media/')
 
 # URL that handles the media served from MEDIA_ROOT. Make sure to use a
 # trailing slash.
 # Examples: "http://media.lawrence.com/media/", "http://example.com/media/"
-MEDIA_URL = MY_MEDIA_URL
+MEDIA_URL = '/media/'
 
 # Absolute path to the directory static files should be collected to.
 # Don't put anything in this directory yourself; store your static files
 # in apps' "static/" subdirectories and in STATICFILES_DIRS.
 # Example: "/home/media/media.lawrence.com/static/"
-STATIC_ROOT = os.path.join(ROOT_DIR, MY_STATIC_ROOT)
+STATIC_ROOT = os.path.join(ROOT_DIR, 'static/')
 
 # URL prefix for static files.
 # Example: "http://media.lawrence.com/static/"
-STATIC_URL = MY_STATIC_URL
+STATIC_URL = '/static/'
 
 # URL prefix for admin static files -- CSS, JavaScript and images.
 # Make sure to use a trailing slash.
@@ -174,7 +130,7 @@ STATICFILES_FINDERS = (
 )
 
 # Make this unique, and don't share it with anybody.
-SECRET_KEY = MY_SECRET_KEY
+SECRET_KEY = 'kl2wmaaul8-roi3k9*@1j9kse%z^durtud=8l-*6+r#h2mo*80'
 
 
 # List of callables that know how to import templates from various sources.
@@ -199,7 +155,7 @@ TEMPLATE_DIRS = (
   # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
   # Always use forward slashes, even on Windows.
   # Don't forget to use absolute paths, not relative paths.
-  MY_TEMPLATE_DIR,
+  'templates/',
 )
 
 INSTALLED_APPS = (
@@ -273,7 +229,7 @@ DEBUG_TOOLBAR_PANELS += (
 
 
 LOCALE_PATHS = (
-  os.path.join(ROOT_DIR, MY_LOCALE_PATH),
+  os.path.join(ROOT_DIR, 'locale/'),
 )
 
 # We are using lazy translation, so these strings will be translated in the
@@ -286,3 +242,16 @@ AVAILABLE_UNITS = SortedDict([
   ( "word", _("Words") ),
   #  tafsir, hadith, dream, poem
 ])
+
+
+
+################################
+#     Production settings      #
+################################
+## Keep this part at the end of this file
+try:
+  # load production settings if there is any
+  from settings_prod import *
+except ImportError:
+  # There are no prod settings
+  pass
