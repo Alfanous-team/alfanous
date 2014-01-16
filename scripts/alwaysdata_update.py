@@ -38,7 +38,7 @@ FILES_TO_LINK = {
   os.path.join(DEFAULT_DIR, PUBLIC_DIR, '.htaccess'  ): os.path.join(PUBLIC_DIR, '.htaccess'),
   os.path.join(DEFAULT_DIR, PUBLIC_DIR, 'robots.txt' ): os.path.join(PUBLIC_DIR, 'robots.txt'),
   os.path.join(DEFAULT_DIR, 'settings_prod.py'): os.path.join(DJANGO_DIR, 'settings_prod.py'),
-}
+  }
 
 # messages
 USAGE = 'Usage: %s <DIR>'
@@ -54,6 +54,7 @@ PYP_PLACED = '`%s` placed successfully in `%s`'
 BUILDING = '== Building...'
 UPDATING_QURANIC_CORPUS = '== Updating the Quranic corpus...'
 INDEXING_WORDS = '== Indexing words...'
+COMPILING_LOCAL = '== Compiling localization PO files...'
 
 LINKING_TO_DEFAULTS = '== Linking to default files:'
 LINKING_FILE = '`%s` => `%s`'
@@ -108,6 +109,12 @@ def build(dir):
   print UPDATING_QURANIC_CORPUS; os.system('make update_quranic_corpus')
   # print INDEXING_WORDS; os.system('make index_word')
 
+def compile_local(dir):
+  os.chdir(os.path.join(ROOT_DIR, dir))
+
+  # Compile localization files
+  print COMPILING_LOCAL; os.system('make local_mo_compile')
+
 
 # link to default files from the project
 def default(dir):
@@ -147,7 +154,10 @@ if __name__ == '__main__':
     # if a local repo already exists => pull
     git_pull(dir)
     print '-' * 30
+    compile_local(dir)
+    print '-' * 30
     static(dir)
+
   else:
     # if there is no local repo => clone + get pyparsing + build
     git_clone(dir)
@@ -157,5 +167,7 @@ if __name__ == '__main__':
     build(dir)
     print '-' * 30
     default(dir)
+    print '-' * 30
+    compile_local(dir)
     print '-' * 30
     static(dir)
