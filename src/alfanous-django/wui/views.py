@@ -10,6 +10,7 @@ from operator import itemgetter
 from sys import path
 
 from django.http import HttpResponse
+from django.http.response import Http404
 from django.shortcuts import render_to_response
 
 from django.conf import settings
@@ -67,7 +68,7 @@ def jos2(request):
 
 def results(request, unit="aya"):
   if unit not in settings.AVAILABLE_UNITS:
-    unit = "aya"
+    raise Http404()
   mutable_request = dict(request.GET.items())
   show_params = {"action": "show", "query": "all"}
 
