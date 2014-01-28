@@ -10,6 +10,13 @@ import re
 
 from araby import araby
 
+__all__ = ['letters', 'diacritics', 'letter_count', 'hamza_count', 'words',
+    'gwords', 'sunletters', 'moonletters']
+
+word_pattern = re.compile( "[^\n\r \t]+" )
+gword_pattern = re.compile( u"لله" )
+GWORDS_FORMS = set( [u"أبالله", u"وتالله", u"بالله", u"تالله", u"والله", u"الله", u"ولله", u"اللهم", u"آلله", u"فلله", u"لله", u"فالله", ] )
+
 araby = araby()
 
 def letters( text ):
@@ -27,13 +34,10 @@ def hamza_count( text ):
 
 
 def words( text ):
-    word_pattern = re.compile( "[^\n\r \t]+" )
     return len( word_pattern.findall( text ) )
 
 def gwords( text ):
     """ Search by regular expression then filter the possibilities """
-    gword_pattern = re.compile( u"لله" )
-    GWORDS_FORMS = set( [u"أبالله", u"وتالله", u"بالله", u"تالله", u"والله", u"الله", u"ولله", u"اللهم", u"آلله", u"فلله", u"لله", u"فالله", ] )
     results = set( gword_pattern.findall( araby.stripTashkeel( text ) ) ) & GWORDS_FORMS
     return len( results )
 
