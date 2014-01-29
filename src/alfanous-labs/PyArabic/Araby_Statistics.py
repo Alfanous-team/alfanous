@@ -15,7 +15,8 @@ __all__ = ['letters', 'diacritics', 'letter_count', 'hamza_count', 'words',
 
 word_pattern = re.compile( "\S+" )
 gword_pattern = re.compile( u"لله" )
-GWORDS_FORMS = set( [u"أبالله", u"وتالله", u"بالله", u"تالله", u"والله", u"الله", u"ولله", u"اللهم", u"آلله", u"فلله", u"لله", u"فالله", ] )
+GWORDS_FORMS = set( [u"أبالله", u"وتالله", u"بالله", u"تالله", u"والله", u"الله",
+    u"ولله", u"اللهم", u"آلله", u"فلله", u"لله", u"فالله", ] )
 
 araby = araby()
 
@@ -25,6 +26,21 @@ declared in __all__, it is private to this module.
 '''
 TEST_FIXTURES = {'text': u" اللّهم يضلله يً ْيسئء سبي شبيشيش شسيشسي",
     'letter': u"ش"}
+
+
+def count( f, iterable ):
+    ''' ((object) -> boolean, iterable) -> int
+    Return the count of elements in the given iterable that return True for
+    the function f.
+    '''
+    count = 0
+
+    for elt in iterable:
+        if f( elt ):
+            count += 1
+
+    return count
+
 
 def letters( text ):
     ''' (string) -> int
@@ -43,8 +59,8 @@ def letters( text ):
     >>> letters( TEST_FIXTURES['text'] )
     30
     '''
+    return count( lambda char: char in araby.LETTERS, text )
 
-    return len( [char for char in text if char in araby.LETTERS] )
 
 def diacritics( text ):
     ''' (string) -> int
@@ -62,8 +78,8 @@ def diacritics( text ):
     >>> diacritics( TEST_FIXTURES['text'] )
     3
     '''
+    return count( lambda char: char in araby.TASHKEEL, text )
 
-    return len( [char for char in text if char in araby.TASHKEEL] )
 
 def letter_count( text, letter ):
     ''' (string, string) -> int
@@ -75,13 +91,14 @@ def letter_count( text, letter ):
     0
     >>> letter_count( '', 'abc' )
     0
-    >>> letter_count( araby.ALEF + 'a' + araby.ALEF + 'b' + araby.ALEF, araby.ALEF )
+    >>> letter_count( araby.ALEF + 'a' + araby.ALEF + 'b' + araby.ALEF,\
+        araby.ALEF )
     3
     >>> letter_count( TEST_FIXTURES['text'], TEST_FIXTURES['letter'] )
     5
     '''
+    return count( lambda char: char == letter, text )
 
-    return len( [char for char in text if char == letter] )
 
 def hamza_count( text ):
     ''' (string) -> int
@@ -94,13 +111,13 @@ def hamza_count( text ):
     0
     >>> hamza_count( araby.HAMZA )
     1
-    >>> hamza_count( araby.HAMZA + 'ab' + araby.ALEF + araby.WAW_HAMZA + araby.YEH_HAMZA )
+    >>> hamza_count( araby.HAMZA + 'ab' + araby.ALEF + araby.WAW_HAMZA +\
+        araby.YEH_HAMZA )
     3
     >>> hamza_count( TEST_FIXTURES['text'] )
     2
     '''
-
-    return len( [char for char in text if char in araby.HAMZAT] )
+    return count( lambda char: char in araby.HAMZAT, text )
 
 
 def words( text ):
@@ -108,6 +125,8 @@ def words( text ):
     Return the number of words in the given text.
 
     >>> words( '' )
+    0
+    >>> words( '  \\n\\t\\r' )
     0
     >>> words( araby.ALEF )
     1
@@ -121,17 +140,43 @@ def words( text ):
 
     return len( word_pattern.findall( text ) )
 
+
+#FIXME: currently this function only returns either 0 or 1
 def gwords( text ):
+    ''' (string) -> int
+
+    >>> gwords( '' )
+    0
+    >>> gwords( ' abc ' )
+    0
+    '''
     """ Search by regular expression then filter the possibilities """
     results = set( gword_pattern.findall( araby.stripTashkeel( text ) ) ) & GWORDS_FORMS
     return len( results )
 
+
 def sunletters( text ):
-    return len( [char for char in text if char in araby.SUN] )
+    ''' (string) -> int
+    Return the number of occurrences of sun letters in the given text.
+
+    >>> sunletters( '' )
+    0
+    >>> sunletters( TEST_FIXTURES['text'] )
+    14
+    '''
+    return count( lambda char: char in araby.SUN, text )
+
 
 def moonletters( text ):
-    return len( [char for char in text if char in araby.MOON] )
+    ''' (string) -> int
+    Return the number of occurrences of moon letters in the given text.
 
+    >>> moonletters( '' )
+    0
+    >>> moonletters( TEST_FIXTURES['text'] )
+    15
+    '''
+    return count( lambda char: char in araby.MOON, text )
 
 
 if __name__ == "__main__":
