@@ -13,7 +13,6 @@ from araby import araby
 __all__ = ['letters', 'diacritics', 'letter_count', 'hamza_count', 'words',
     'gwords', 'sunletters', 'moonletters']
 
-word_pattern = re.compile( "\S+" )
 gword_pattern = re.compile( u"لله" )
 GWORDS_FORMS = set( [u"أبالله", u"وتالله", u"بالله", u"تالله", u"والله", u"الله",
     u"ولله", u"اللهم", u"آلله", u"فلله", u"لله", u"فالله", ] )
@@ -25,7 +24,7 @@ A sample data to be used in docstring tests. Since this variables isn't
 declared in __all__, it is private to this module.
 '''
 TEST_FIXTURES = {'text': u" اللّهم يضلله يً ْيسئء سبي شبيشيش شسيشسي",
-    'letter': u"ش"}
+    'letter': u"ش", 'gwords': [u"أبالله", u"وتالله", u"بالله"]}
 
 
 def count( f, iterable ):
@@ -33,13 +32,7 @@ def count( f, iterable ):
     Return the count of elements in the given iterable that return True for
     the function f.
     '''
-    count = 0
-
-    for elt in iterable:
-        if f( elt ):
-            count += 1
-
-    return count
+    return sum( 1 for x in iterable if f(x) )
 
 
 def letters( text ):
@@ -137,22 +130,35 @@ def words( text ):
     >>> words( TEST_FIXTURES['text'] )
     7
     '''
+    return len( text.split() )
 
-    return len( word_pattern.findall( text ) )
 
-
-#FIXME: currently this function only returns either 0 or 1
 def gwords( text ):
     ''' (string) -> int
+    Return the number of variants (not occurrences) of gwords in the given text.
 
     >>> gwords( '' )
     0
     >>> gwords( ' abc ' )
     0
+    >>> gwords( TEST_FIXTURES['gwords'][0] + ' ' + TEST_FIXTURES['gwords'][1] )
+    2
+    >>> gwords( "%s %s %s" % (TEST_FIXTURES['gwords'][0],\
+        TEST_FIXTURES['gwords'][1], TEST_FIXTURES['gwords'][1]) )
+    2
+    >>> gwords( "%s%s %s" % (TEST_FIXTURES['gwords'][0],\
+        TEST_FIXTURES['gwords'][1], TEST_FIXTURES['gwords'][1]) )
+    1
+    >>> gwords( "%s%s %s %s" % (TEST_FIXTURES['gwords'][0],\
+        araby.DAMMA, TEST_FIXTURES['gwords'][1], TEST_FIXTURES['gwords'][1]) )
+    2
+    >>> gwords( "%s%s %s%s %s" % (TEST_FIXTURES['gwords'][0],\
+        araby.DAMMA, 'abc', TEST_FIXTURES['gwords'][1], TEST_FIXTURES['gwords'][1]) )
+    2
     '''
     """ Search by regular expression then filter the possibilities """
-    results = set( gword_pattern.findall( araby.stripTashkeel( text ) ) ) & GWORDS_FORMS
-    return len( results )
+    words_set = set( araby.stripTashkeel( text ).split() )
+    return len( words_set & GWORDS_FORMS )
 
 
 def sunletters( text ):
