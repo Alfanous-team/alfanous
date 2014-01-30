@@ -78,7 +78,10 @@
 		            		<table class="table table-striped table-bordered">
 		            			<tr>
 									<td >
-									<span class="badge badge-info">{{ _("words") }}: {{ results.search.words.global.nb_words }}</span>
+									<span class="badge badge-info">{{ _("words") }}</span>
+									<span class='label '><i class="icon-th"> </i>
+									     {{ results.search.words.global.nb_words }}
+									</span>
 									{% for wordcpt, wordstat in results.search.words.individual.items %}
 						              <span class="label label-success">
 						              	<a href="?{% custom_query wordstat.word 1 False %}">
@@ -87,15 +90,22 @@
 						              </span>
 		         				   {% endfor %}
 
+		         				   
+
 									</td>
 
-
 								</tr>
 								<tr>
-									<td><span class="badge badge-info">{{ _("occurances") }}: {{ results.search.words.global.nb_matches }}</span></td>
+									<td><span class="badge badge-info">{{ _("occurances") }}</span>
+									 <span class='label '><i class="icon-th"> </i> {{ results.search.words.global.nb_matches }}
+											</span>
+									</td>
 								</tr>
 								<tr>
-									<td><span class="badge badge-info">{{ _("vocalizations") }}: {{ results.search.words.global.nb_vocalizations }}</span></td>
+									<td><span class="badge badge-info">{{ _("vocalizations") }} </span>
+									 <span class='label '><i class="icon-th"> </i> {{ results.search.words.global.nb_vocalizations }}
+											</span>
+									</td>
 								</tr>
 							</table>
 						</div>
@@ -105,17 +115,25 @@
 						<div class="tab-pane" id="{{ wordstat.word }}">
 							   <table class="table table-striped table-bordered">
 								<tr>
-									<td><span class="badge badge-info">{{ _("occurances") }}: {{ wordstat.nb_matches }}</span></td>
+									<td>
+									    <span class="badge badge-info">{{ _("occurances") }}</span>
+			                            <span class='label '><i class="icon-th"> </i> {{ wordstat.nb_matches }}	</span>
+									</td>
 								</tr>
 
 								<tr>
-									<td><span class="badge badge-info">{{ _("ayates") }}:  {{ wordstat.nb_ayas }}</span></td>
+									<td>
+									    <span class="badge badge-info">{{ _("ayates") }} </span>
+									    <span class='label '><i class="icon-th"> </i> {{ wordstat.nb_ayas }}	</span>
+									</td>
 								</tr>
 
 
 								<tr>
-									<td><span class="badge badge-info">{{ _("vocalizations") }}: {{ wordstat.nb_vocalizations }}</span>
-
+									<td><span class="badge badge-info">{{ _("vocalizations") }}</span>
+                                        <a href="?{% custom_query wordstat.word 1 False %}">
+											<span class='label label-warning'><i class="icon-th"> </i> {{ wordstat.nb_vocalizations }}
+											</span></a>
 										{% for vocalization in wordstat.vocalizations %}
 											{% with bidi.fields.aya_|add:":"|add:vocalization|add:"" as new_query %}
 												<a href="?{% custom_query new_query 1 False %}">
@@ -123,51 +141,50 @@
 											<span class='label label-success'> {{ vocalization }}
 											</span></a>
 										{% endfor %}
-										 <a href="?{% custom_query wordstat.word 1 False %}">
-											<span class='label label-warning'><i class="icon-th"> </i> {{ wordstat.nb_vocalizations }}
-											</span></a>
+										 
 									</td>
 								</tr>
 								{% ifnotequal wordstat.nb_synonyms 0 %}
 									<tr>
-										<td><span class="badge badge-info">{{ _("synonyms") }}: {{ wordstat.nb_synonyms }}</span>
-
-											{% for synonym in wordstat.synonyms %}
-												<a href="?{% custom_query synonym 1 False %}">
-												<span class='label label-success'> {{ synonym }} </span></a>
-											{% endfor %}
-											{% with "~"|add:wordstat.word as new_query %}
+										<td><span class="badge badge-info">{{ _("synonyms") }}</span>
+                                            {% with "~"|add:wordstat.word as new_query %}
 												<a href="?{% custom_query new_query 1 False %}">
 											{% endwith %}
 											<span class='label label-warning'><i class="icon-th"> </i> {{ wordstat.nb_synonyms }}
 											</span></a>
+											{% for synonym in wordstat.synonyms %}
+												<a href="?{% custom_query synonym 1 False %}">
+												<span class='label label-success'> {{ synonym }} </span></a>
+											{% endfor %}
+											
 										</td>
 									</tr>
 								{% endifnotequal %}
 
 								{% ifnotequal wordstat.nb_derivations 0 %}
 									<tr>
-										<td><span class="badge badge-info">{{ _("derivations") }}: {{ wordstat.nb_derivations }}</span>
-
+										<td><span class="badge badge-info">{{ _("derivations") }}</span>
+											{% with ">"|add:wordstat.word as new_query %}
+												<a href="?{% custom_query new_query 1 False %}">
+											{% endwith %}
+											<span class='label label-warning'><i class="icon-th"> </i> {{ wordstat.nb_derivations }}	</span></a>
 											{% for derivation in wordstat.derivations %}
 												<a href="?{% custom_query derivation 1 False %}">
 												<span class='label label-success'>{{ derivation }}
 												</span></a>
 											{% endfor %}
-											{% with ">"|add:wordstat.word as new_query %}
-												<a href="?{% custom_query new_query 1 False %}">
-											{% endwith %}
-											<span class='label label-warning'><i class="icon-th"> </i> {{ wordstat.nb_derivations }}	</span></a>
+
 											{% ifnotequal wordstat.nb_derivations_extra 0 %}
+											    {% with ">>"|add:wordstat.word as new_query %}
+													<a href="?{% custom_query new_query 1 False %}">
+												{% endwith %}
+												<span class='label label-important'><i class="icon-th"> </i> +{{ wordstat.nb_derivations_extra  }}	</span></a>
 												{% for derivation in wordstat.derivations_extra %}
 													<a href="?{% custom_query derivation 1 False %}">
 													<span class='label label-inverse'>{{ derivation }}
 													</span></a>
 												{% endfor %}
-												{% with ">>"|add:wordstat.word as new_query %}
-													<a href="?{% custom_query new_query 1 False %}">
-												{% endwith %}
-												<span class='label label-important'><i class="icon-th"> </i> {{ wordstat.nb_derivations_extra|add:wordstat.nb_derivations  }}	</span></a>
+
 											{% endifnotequal %}
 
 										</td>
@@ -177,8 +194,9 @@
 									<tr>
 										<td>
 
-										<span class="badge badge-info">{{ _("annotations") }}: {{ wordstat.nb_annotations }}</span>
-										<span class="text-error"> <a class="label label-important" href="http://feedback.alfanous.org" target_="_blank"> feedback</a></span>
+										<span class="badge badge-info">{{ _("annotations") }}</span>
+										<span class='label '><i class="icon-th"> </i>  {{ wordstat.nb_annotations }}	</span>
+										<span class="text-error"> <a class="label label-important" href="http://feedback.alfanous.org" target_="_blank"> feedback!</a></span>
 										{% for annotation_word, parts in wordstat.annotations.items %}
 											{% regroup parts by word as word_list %}
 
