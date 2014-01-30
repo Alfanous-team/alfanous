@@ -13,7 +13,6 @@ from araby import araby
 __all__ = ['letters', 'diacritics', 'letter_count', 'hamza_count', 'words',
     'gwords', 'sunletters', 'moonletters']
 
-word_pattern = re.compile( "\S+" )
 gword_pattern = re.compile( u"لله" )
 GWORDS_FORMS = set( [u"أبالله", u"وتالله", u"بالله", u"تالله", u"والله", u"الله",
     u"ولله", u"اللهم", u"آلله", u"فلله", u"لله", u"فالله", ] )
