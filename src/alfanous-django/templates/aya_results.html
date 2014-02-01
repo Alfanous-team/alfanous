@@ -65,10 +65,9 @@
 						</a>
 					</li>
 					{% for wordcpt, wordstat in results.search.words.individual.items %}
-		              <li class="">
-		              	<a href="#{{ wordstat.word }}" data-toggle="tab">
+		              <li class="{% if not wordstat.nb_matches %} disabled {% endif %}">
+		              	<a {% if wordstat.nb_matches %} href="#{{ wordstat.word }}" data-toggle="tab" {% endif %}>
 		              			{{ wordcpt }}. {{ wordstat.word }} {% if wordstat.romanization %} ( {{ wordstat.romanization }} ) {%  endif %}
-
 		              	</a>
 		              </li>
 		            {% endfor %}
@@ -83,10 +82,10 @@
 									     {{ results.search.words.global.nb_words }}
 									</span>
 									{% for wordcpt, wordstat in results.search.words.individual.items %}
-						              <span class="label label-success">
-						              	<a href="?{% custom_query wordstat.word 1 False %}">
+						              <span class="label {% if wordstat.nb_matches %} label-success {% endif %}">
+						              	{% if wordstat.nb_matches %}<a  href="?{% custom_query wordstat.word 1 False %}"> {% endif %}
 						              			 {{ wordstat.word }}  {% if wordstat.romanization %} ( {{ wordstat.romanization }} ) {%  endif %}
-						              	</a>
+						              {% if wordstat.nb_matches %}	</a>{% endif %}
 						              </span>
 		         				   {% endfor %}
 
