@@ -28,8 +28,9 @@ Coding
 --------
 * API & JSON interface: `Assem Chelli`_    
 * Desktop Interface: `Assem Chelli`_, `Sohaib Afifi`_
-* Web Interface: `Assem Chelli`_  , `Walid Ziouche`_, `Abdellah Chelli`_ , `Mennouchi Islam Azeddine <https://github.com/islamoc>`_, `Tedjeddine Meabeo`_ , `Muslih al aqaad`_,  `Mouad Debbar`_, Ahmed Ramadan
+* Web Interface: `Assem Chelli`_  , `Walid Ziouche`_, `Abdellah Chelli`_ , `Mouad Debbar`_,  `Mennouchi Islam Azeddine <https://github.com/islamoc>`_, `Muslih al aqaad`_, `Tedjeddine Meabeo`_ ,   , Ahmed Ramadan
 * Firefox toolbar: `Zakaria Smahi`_ 
+* PyArabic(Integrated): Taha Zerrouki, Assem Chelli, Ahimta~
 
 --------
 Research
@@ -61,7 +62,7 @@ Research
 Graphics & Design
 -----------------
 * Icons,Logos: Abdellah Chelli, Muslih Al-Aqaad, Ahmed Ramadan, Moussa Drihem
-* Wallpapers: Aji Fatwa
+* Wallpapers: Aji Fatwa, Abd Madjid Kemari
 * Joomla Template: Muslih Al-aqaad
 
 --------- 
