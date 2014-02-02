@@ -24,7 +24,12 @@ def strip_tatweel(w):
 def strip_shadda(w):
 	"strip tatweel from a word and return a result word"
 	return re.sub(ur'[%s]' % SHADDA, 	'', w)
-
+#--------------------------------------
+def normalize_uthmani_symbols(w):
+    "normalize specail letters on uthmani script, and strip extra symbols "
+    w = re.sub(ur'[%s]' % MINI_ALEF+SMALL_WAW+SMALL_YEH, 	'', w)
+    w = re.sub(ur'[%s]' % ALEF_WASLA, 	ALEF, w)
+    return w
 
 #--------------------------------------
 def normalize_hamza(w):
@@ -32,10 +37,6 @@ def normalize_hamza(w):
 	w = ALEFAT_pat.sub(ALEF, w)
 	return HAMZAT_pat.sub(HAMZA, w)
 
-
-#--------------------------------------
-
-	
 
 #--------------------------------------
 def normalize_lamalef(w):
