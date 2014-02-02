@@ -3,95 +3,136 @@
 
 
 <tr>
-										<td>
+    <td>
+        <span class="badge badge-info">{{ _("annotations") }}</span>
+        <span class='label '>
+            <i class="icon-th"></i>
+            {{ wordstat.nb_annotations }}
+        </span>
+        <span class="text-error"> 
+            <a class="label label-important" href="http://feedback.alfanous.org" target_="_blank">
+                feedback!
+            </a>
+        </span>
+        {% for annotation_word, parts in wordstat.annotations.items %}
+            {% regroup parts by word as word_list %}
+            {% for word in word_list %}
+                <br />
+                <span class='badge badge-inverse'> 
+                    {{ word.grouper }}
+                </span>
+                {% regroup word.list by word_gid as occ_list %}
+                {% with occ_list|first as occurance  %}
+                    {% for annotation_detail in occurance.list %}
+                        <span class='badge badge-inverse'> 
+                            (
+                            {{ annotation_detail.sura_id }},
+                            {{ annotation_detail.aya_id }},
+                            {{ annotation_detail.word_id }}
+                            ) 
+                        </span>
+                    {% endfor %}
+                    <span class='label label-warning'> 
+                        <i class="icon-th"> </i> 
+                        {{ occ_list|length }}
+                    </span>
+                {% endwith %}
+                {% with occ_list|first as occurance  %}
+                    <ul>
+                        {% for annotation_detail in occurance.list %}
+                            <li>
+                                {% if annotation_detail.part %}
+                                    <span class='label label-success'> 
+                                        {{ _("part") }} | {{ annotation_detail.part }}
+                                    </span>
+                                {% endif %}
+                                {% if annotation_detail.arabiclemma %}
+                                    <span class='label label-info'> 
+                                        {{ _("lemma") }} | {{ annotation_detail.lemma  }} 
+                                        ({{ annotation_detail.arabiclemma }}) 
+                                    </span>
+                                {% endif %}
+                                {% if annotation_detail.arabicroot %}
+                                    <span class='label label-info'> 
+                                        {{ _("root") }} | {{ annotation_detail.root }} 
+                                        ({{ annotation_detail.arabicroot }}) 
+                                    </span>
+                                {% endif %}
+                                {% if annotation_detail.arabicspecial %}
+                                    <span class='label label-info'> 
+                                        {{ _("special") }} | {{ annotation_detail.special }} 
+                                        ({{ annotation_detail.arabicspecial }})
+                                    </span>
+                                {% endif %}
+                                {% if annotation_detail.token %}
+                                    <span class='label label-info'> 
+                                        {{ _("token") }} | {{ annotation_detail.token }} 
+                                        ( {{ annotation_detail.arabictoken }}) 
+                                    </span>
+                                {% endif %}
+                                {% if annotation_detail.type %}
+                                    <span class='label'> 
+                                        {{ _("type") }} | {{ annotation_detail.type }} 
+                                    </span>
+                                {% endif %}
+                                {% if annotation_detail.pos %}
+                                    <span class='label'> 
+                                        {{ _("POS") }} | {{ annotation_detail.pos }} 
+                                        ({{ annotation_detail.arabicpos }}) 
+                                    </span>
+                                {% endif %}
+                                {% if annotation_detail.aspect %}
+                                    <span class='label'> 
+                                        {{ _("aspect") }} | {{ annotation_detail.aspect }}
+                                    </span>
+                                {% endif %}
+                                {% if annotation_detail.state %}
+                                    <span class='label'> 
+                                        {{ _("state") }} | {{ annotation_detail.state }} 
+                                    </span>
+                                {% endif %}
+                                {% if annotation_detail.form %}
+                                    <span class='label'> 
+                                        {{ _("form") }} | {{ annotation_detail.form }} 
+                                    </span>
+                                {% endif %}
+                                {% if annotation_detail.case %}
+                                    <span class='label'> 
+                                        {{ _("case") }} | {{ annotation_detail.case.english }}
+                                        ( {{ annotation_detail.case.arabic }})
+                                    </span>
+                                {% endif %}
+                                {% if annotation_detail.derivation %}
+                                    <span class='label'> 
+                                        {{ _("derivation") }} | {{ annotation_detail.derivation }} 
+                                    </span>
+                                {% endif %}
+                                {% if annotation_detail.person %}
+                                    <span class='label'> 
+                                        {{ _("person") }} | {{ annotation_detail.person }} 
+                                    </span>
+                                {% endif %}
+                                {% if annotation_detail.number %}
+                                    <span class='label'> 
+                                        {{ _("number") }} | {{ annotation_detail.number }}
+                                    </span>
+                                {% endif %}
+                                {% if annotation_detail.gender %}
+                                    <span class='label'> 
+                                        {{ _("gender") }} | {{ annotation_detail.gender }} 
+                                    </span>
+                                {% endif %}
+                                {% if annotation_detail.voice %}
+                                    <span class='label'> 
+                                        {{ _("voice") }} | {{ annotation_detail.voice }} 
+                                    </span>
+                                {% endif %}
+                            </li>
+                        {% endfor %}
+                    </ul>
+                {% endwith %}
+            {% endfor %}
+        {% endfor %}
+    <td>
+</tr>
 
-										<span class="badge badge-info">{{ _("annotations") }}</span>
-										<span class='label '><i class="icon-th"> </i>  {{ wordstat.nb_annotations }}	</span>
-										<span class="text-error"> <a class="label label-important" href="http://feedback.alfanous.org" target_="_blank"> feedback!</a></span>
-										{% for annotation_word, parts in wordstat.annotations.items %}
-											{% regroup parts by word as word_list %}
-
-											{% for word in word_list %}
-											<br />
-											<span class='badge badge-inverse'>  {{ word.grouper }} </span>
-
-
-											{% regroup word.list by word_gid as occ_list %}
-
-
-											{% with occ_list|first as occurance  %}
-										 		{% for annotation_detail in occurance.list %}
-										 			<span class='badge badge-inverse'> ({{ annotation_detail.sura_id }},{{ annotation_detail.aya_id }},{{ annotation_detail.word_id }}) </span>
-												{% endfor %}
-													<span class='label label-warning'> <i class="icon-th"> </i> {{ occ_list|length }}	</span>
-
-											{% endwith %}
-
-										 	{% with occ_list|first as occurance  %}
-										 	<ul>
-												{% for annotation_detail in occurance.list %}
-											<li>
-
-
-
-												{% if annotation_detail.part %}
-													<span class='label label-success'> {{ _("part") }} | {{ annotation_detail.part }} </span>
-												{% endif %}
-												{% if annotation_detail.arabiclemma %}
-													<span class='label label-info'> {{ _("lemma") }} | {{ annotation_detail.lemma  }} ({{ annotation_detail.arabiclemma }}) </span>
-												{% endif %}
-												{% if annotation_detail.arabicroot %}
-													<span class='label label-info'> {{ _("root") }} | {{ annotation_detail.root }} ({{ annotation_detail.arabicroot }}) </span>
-												{% endif %}
-												{% if annotation_detail.arabicspecial %}
-													<span class='label label-info'> {{ _("special") }} | {{ annotation_detail.special }} ({{ annotation_detail.arabicspecial }}) </span>
-												{% endif %}
-												{% if annotation_detail.token %}
-													<span class='label label-info'> {{ _("token") }} | {{ annotation_detail.token }} ( {{ annotation_detail.arabictoken }}) </span>
-												{% endif %}
-												{% if annotation_detail.type %}
-													<span class='label'> {{ _("type") }} | {{ annotation_detail.type }} </span>
-												{% endif %}
-												{% if annotation_detail.pos %}
-													<span class='label'> {{ _("POS") }} | {{ annotation_detail.pos }} ({{ annotation_detail.arabicpos }}) </span>
-												{% endif %}
-
-												{% if annotation_detail.aspect %}
-													<span class='label'> {{ _("aspect") }} | {{ annotation_detail.aspect }} </span>
-												{% endif %}
-												{% if annotation_detail.state %}
-													<span class='label'> {{ _("state") }} | {{ annotation_detail.state }} </span>
-												{% endif %}
-												{% if annotation_detail.form %}
-													<span class='label'> {{ _("form") }} | {{ annotation_detail.form }} </span>
-												{% endif %}
-												{% if annotation_detail.case %}
-													<span class='label'> {{ _("case") }} | {{ annotation_detail.case.english }} ( {{ annotation_detail.case.arabic }}) </span>
-												{% endif %}
-												{% if annotation_detail.derivation %}
-													<span class='label'> {{ _("derivation") }} | {{ annotation_detail.derivation }} </span>
-												{% endif %}
-												{% if annotation_detail.person %}
-													<span class='label'> {{ _("person") }} | {{ annotation_detail.person }} </span>
-												{% endif %}
-												{% if annotation_detail.number %}
-													<span class='label'> {{ _("number") }} | {{ annotation_detail.number }} </span>
-												{% endif %}
-												{% if annotation_detail.gender %}
-													<span class='label'> {{ _("gender") }} | {{ annotation_detail.gender }} </span>
-												{% endif %}
-												{% if annotation_detail.voice %}
-													<span class='label'> {{ _("voice") }} | {{ annotation_detail.voice }} </span>
-												{% endif %}
-
-											</li>
-											{% endfor %}
-											</ul>
-											{% endwith %}
-
-
-											{% endfor %}
-
-										{% endfor %}
-									<td>
-								</tr>
