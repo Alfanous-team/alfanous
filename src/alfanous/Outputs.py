@@ -1035,17 +1035,19 @@ class Raw():
 		#if True:
 		## strip vocalization when vocalized = true
 		V = QArabicSymbolsFilter( \
-								shaping = False, \
+								shaping = True, \
 								tashkil = not vocalized, \
 								spellerrors = False, \
-								hamza = False \
+								hamza = False, \
+								uthmani_symbols = True \
 								).normalize_all
 		V_shadda = QArabicSymbolsFilter( \
 								shaping = False, \
 								tashkil = False, \
 								spellerrors = False, \
 								hamza = False, \
-								shadda = True
+								shadda = True, \
+								uthmani_symbols = True 
 								).normalize_all
 		# highligh function that consider None value and non-definition
 		H = lambda X:  SE.highlight( X, terms, highlight ) if highlight != "none" and X else X if X else u"-----"
@@ -1123,9 +1125,11 @@ class Raw():
 
 		              "word":{
 		              		"text":  r["word"] ,
-		                	"part": r["part"],
+		                	"part": u"جذع",
 		                	"part_order": r["order"],
 		                	"token": r["arabictoken"],
+		                	"prefixes": r["prefix"],
+		                	"suffixes": r["suffix"],
 		                	"POS": {
 										  	"english": r["pos"],
 										  	"arabic": r["arabicpos"],
