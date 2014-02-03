@@ -1034,21 +1034,21 @@ class Raw():
 
 		#if True:
 		## strip vocalization when vocalized = true
-		V = QArabicSymbolsFilter( \
-								shaping = True, \
-								tashkil = not vocalized, \
-								spellerrors = False, \
-								hamza = False, \
-								uthmani_symbols = True \
-								).normalize_all
-		V_shadda = QArabicSymbolsFilter( \
-								shaping = False, \
-								tashkil = False, \
-								spellerrors = False, \
-								hamza = False, \
-								shadda = True, \
-								uthmani_symbols = True 
-								).normalize_all
+		V = QArabicSymbolsFilter( **{
+                                      'shaping': True,
+                                      'tashkil': not vocalized,
+                                      'spellerrors': False,
+                                      'hamza': False,
+                                      'uthmani_symbols': True,
+                                    }).normalize_all
+		V_shadda = QArabicSymbolsFilter( **{
+								            'shaping' : False, 
+								            'tashkil' : False, 
+								            'spellerrors' : False, 
+								            'hamza' : False, 
+								            'shadda' : True, 
+								            'uthmani_symbols' : True 
+								            }).normalize_all
 		# highligh function that consider None value and non-definition
 		H = lambda X:  SE.highlight( X, terms, highlight ) if highlight != "none" and X else X if X else u"-----"
 		# Numbers are 0 if not defined

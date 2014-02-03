@@ -120,7 +120,7 @@ class QuranicCorpusImporter:
         from PyCorpus.QuranyCorpus import API as QC
         A = QC( source = QC_PATH )
         print ".OK\n"
-        IFEXIST = lambda d, attrib: d[attrib].encode( "utf-8" ) if d.has_key( attrib ) else ""
+        IFEXIST = lambda d, attrib: d[attrib].encode( "utf-8" ) if attrib in d else ""
         gid, word_gid = 0, 0
         print ">inserting values of gid...",
         for iteration in A.all_words_generator():

@@ -198,7 +198,6 @@ class API:
                     prefixDict["arabictoken"] = PREFIX[prefix][0]
                     prefixDict["type"] = reverse_class( PREFIXclass )[prefix][0]
                     Dict["prefixes"].append( prefixDict )
-                #print "prefixes -->", Dict
 
 
             #word base
