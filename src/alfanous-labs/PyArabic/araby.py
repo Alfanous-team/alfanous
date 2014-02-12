@@ -24,6 +24,12 @@ Arabic module
 import re
 from araby_constants import *
 
+def _andmap(iterable):
+    return reduce( lambda x,y: x and y, iterable )
+
+def _ormap(iterable):
+    return reduce( lambda x,y: x or y, iterable )
+
 ################################################
 #{ is letter functions
 ################################################
@@ -31,74 +37,97 @@ def isSukun( archar ):
     """Checks for Arabic Sukun Mark.
     @param archar: arabic unicode char
     @type archar: unicode
+    
+    >>> _ormap( [isSukun( x ) for x in LETTERS] )
+    False
+    >>> isSukun( SUKUN )
+    True
     """
-    if archar == SUKUN:
-        return True;
-    else: return False;
+    return archar == SUKUN
 
 def isShadda( archar ):
     """Checks for Arabic Shadda Mark.
     @param archar: arabic unicode char
     @type archar: unicode
+    
+    >>> _ormap( [isShadda( x ) for x in LETTERS] )
+    False
+    >>> isShadda( SHADDA )
+    True
     """
-    if archar == SHADDA:
-        return True;
-    else: return False;
+    return archar == SHADDA
 
 def isTatweel( archar ):
     """Checks for Arabic Tatweel letter modifier.
     @param archar: arabic unicode char
     @type archar: unicode
+    
+    >>> _ormap( [isTatweel( x ) for x in LETTERS] )
+    False
+    >>> isTatweel( TATWEEL )
+    True
     """
-    if archar == TATWEEL:
-        return True;
-    else: return False;
+    return archar == TATWEEL
+
 def isTanwin( archar ):
     """Checks for Arabic Tanwin Marks (FATHATAN, DAMMATAN, KASRATAN).
     @param archar: arabic unicode char
     @type archar: unicode
+    
+    >>> _ormap( [isTanwin( x ) for x in LETTERS] )
+    False
+    >>> _andmap( [isTanwin(letter) for letter in TANWIN] )
+    True
     """
-    if archar in TANWIN:
-        return True;
-    else: return False;
+    return archar in TANWIN
 
 def isTashkeel( archar ):
     """Checks for Arabic Tashkeel Marks (FATHA,DAMMA,KASRA, SUKUN, SHADDA, FATHATAN,DAMMATAN, KASRATAn).
     @param archar: arabic unicode char
     @type archar: unicode
+    >>> _ormap( [isTashkeel( char ) for char in LETTERS] )
+    False
+    >>> _andmap( [isTashkeel( char ) for char in TASHKEEL] )
+    True
     """
-    if re.search(TASHKEEL,word):
-        if  archar in  TASHKEEL:
-            return True;
-    else: return False;
+    return archar in TASHKEEL
 
 def isHaraka( archar ):
     """Checks for Arabic Harakat Marks (FATHA,DAMMA,KASRA,SUKUN,TANWIN).
     @param archar: arabic unicode char
     @type archar: unicode
+    
+    >>> _ormap( [isHaraka(letter) for letter in LETTERS] )
+    False
+    >>> _andmap( [isHaraka(letter) for letter in HARAKAT] )
+    True
     """
-    if archar in HARAKAT:
-        return True;
-    else: return False;
+    return archar in HARAKAT
 
 def isShortharaka( archar ):
     """Checks for Arabic  short Harakat Marks (FATHA,DAMMA,KASRA,SUKUN).
     @param archar: arabic unicode char
     @type archar: unicode
+    
+    >>> _ormap( [isShortharaka(letter) for letter in LETTERS] )
+    False
+    >>> _andmap( [isShortharaka(letter) for letter in SHORTHARAKAT] )
+    True
     """
-    if archar in SHORTHARAKAT:
-        return True;
-    else: return False;
+    return archar in SHORTHARAKAT
 
 def isLigature( archar ):
     """Checks for Arabic  Ligatures like LamAlef.
     (LAM_ALEF, LAM_ALEF_HAMZA_ABOVE, LAM_ALEF_HAMZA_BELOW, LAM_ALEF_MADDA_ABOVE)
     @param archar: arabic unicode char
     @type archar: unicode
+    
+    >>> _ormap([isLigature( char ) for char in LETTERS])
+    False
+    >>> _andmap([isLigature( char ) for char in LIGUATURES])
+    True
     """
-    if archar in LIGUATURES:
-        return True;
-    else: return False;
+    return archar in LIGUATURES
 
 def isHamza( archar ):
     """Checks for Arabic  Hamza forms.
@@ -106,9 +135,7 @@ def isHamza( archar ):
     @param archar: arabic unicode char
     @type archar: unicode
     """
-    if archar in HAMZAT:
-        return True;
-    else: return False;
+    return archar in HAMZAT
 
 def isAlef( archar ):
     """Checks for Arabic Alef forms.
@@ -116,9 +143,7 @@ def isAlef( archar ):
     @param archar: arabic unicode char
     @type archar: unicode
     """
-    if archar in ALEFAT:
-        return True;
-    else: return False;
+    return archar in ALEFAT
 
 def isYehlike( archar ):
     """Checks for Arabic Yeh forms.
@@ -126,9 +151,7 @@ def isYehlike( archar ):
     @param archar: arabic unicode char
     @type archar: unicode
     """
-    if archar in YEHLIKE:
-        return True;
-    else: return False;
+    return archar in YEHLIKE
 
 def isWawlike( archar ):
     """Checks for Arabic Waw like forms.
@@ -136,9 +159,7 @@ def isWawlike( archar ):
     @param archar: arabic unicode char
     @type archar: unicode
     """
-    if archar in WAWLIKE:
-        return True;
-    else: return False;
+    return archar in WAWLIKE
 
 def isTeh( archar ):
     """Checks for Arabic Teh forms.
@@ -146,18 +167,15 @@ def isTeh( archar ):
     @param archar: arabic unicode char
     @type archar: unicode
     """
-    if archar in TEHLIKE:
-        return True;
-    else: return False;
+    return archar in TEHLIKE
+
 def isSmall( archar ):
     """Checks for Arabic Small letters.
     SMALL Letters : SMALL ALEF, SMALL WAW, SMALL YEH
     @param archar: arabic unicode char
     @type archar: unicode
     """
-    if archar in SMALL:
-        return True;
-    else: return False;
+    return archar in SMALL
 
 def isWeak( archar ):
     """Checks for Arabic Weak letters.
@@ -165,9 +183,7 @@ def isWeak( archar ):
     @param archar: arabic unicode char
     @type archar: unicode
     """
-    if archar in WEAK:
-        return True;
-    else: return False;
+    return archar in WEAK
 
 def isMoon( archar ):
     """Checks for Arabic Moon letters.
@@ -176,9 +192,7 @@ def isMoon( archar ):
     @type archar: unicode
     """
 
-    if archar in MOON:
-        return True;
-    else: return False;
+    return archar in MOON
 
 def isSun( archar ):
     """Checks for Arabic Sun letters.
@@ -186,9 +200,8 @@ def isSun( archar ):
     @param archar: arabic unicode char
     @type archar: unicode
     """
-    if archar in SUN:
-        return True;
-    else: return False;
+    return archar in SUN
+
 #####################################
 #{ general  letter functions
 #####################################
@@ -202,8 +215,8 @@ def order( archar ):
     @rtype: integer;
     """
     if AlphabeticOrder.has_key( archar ):
-        return AlphabeticOrder[archar];
-    else: return 0;
+        return AlphabeticOrder[archar]
+    else: return 0
 
 def name( archar ):
     """return Arabic letter name in arabic.
@@ -215,9 +228,9 @@ def name( archar ):
     @rtype: unicode;
     """
     if NAMES.has_key( archar ):
-        return NAMES[archar];
+        return NAMES[archar]
     else:
-        return u'';
+        return u''
 
 def arabicrange( self ):
     """return a list of arabic characteres .
@@ -242,10 +255,7 @@ def hasShadda( word ):
     @param word: arabic unicode char
     @type word: unicode
     """
-    if re.search( SHADDA, word ):
-        return True;
-    else:
-        return False;
+    return re.search( SHADDA, word )
 
 #####################################
 #{ word and text functions
@@ -256,23 +266,16 @@ def isVocalized( word ):
     @param word: arabic unicode char
     @type word: unicode
     """
-    if word.isalpha(): return False;
-     # n (FATHA,DAMMAN,KASRA):
-    else:
-        if re.search( HARAKAT_pattern, word ):
-            return True;
-        else:
-            return False;
+    return not word.isalpha() and re.search( HARAKAT_pattern, word )
+
 def isVocalizedtext( text ):
     """Checks if the arabic text is vocalized.
     The text can contain many words and spaces
     @param text: arabic unicode char
     @type text: unicode
     """
-    if re.search( HARAKAT_pattern, text ):
-        return True;
-    else:
-        return False;
+    return re.search( HARAKAT_pattern, text )
+
 def isArabicstring( text):
     """ Checks for an  Arabic Unicode block characters;
     @param text: input text
@@ -280,9 +283,7 @@ def isArabicstring( text):
     @return: True if all charaters are in Arabic block
     @rtype: Boolean
     """
-    if re.search(u"([^\u0600-\u0652%s%s%s\w])"%(LAM_ALEF, LAM_ALEF_HAMZA_ABOVE,LAM_ALEF_MADDA_ABOVE),text):
-        return False;
-    return True;
+    return not re.search(u"([^\u0600-\u0652%s%s%s\w])"%(LAM_ALEF,LAM_ALEF_HAMZA_ABOVE,LAM_ALEF_MADDA_ABOVE),text)
 
 def isArabicword( word ):
     """ Checks for an valid Arabic  word.
@@ -315,8 +316,8 @@ def stripHarakat( text ):
     	- SUKUN
     	- FATHATAN, DAMMATAN, KASRATAN, , , .
     Example:
-    	>>> text=u"الْعَرَبِيّةُ"
-    	>>> stripTashkeel(text)
+    	#>>> text=u"الْعَرَبِيّةُ"
+    	#>>> stripTashkeel(text)
     	العربيّة
 
     @param text: arabic text.
@@ -334,9 +335,9 @@ def stripTashkeel( text ):
     	- SHADDA
     	- FATHATAN, DAMMATAN, KASRATAN, , , .
     Example:
-    	>>> text=u"الْعَرَبِيّةُ"
-    	>>> stripTashkeel(text)
-    	العربية
+    	#>>> text=u"الْعَرَبِيّةُ"
+    	#>>> stripTashkeel(text)
+    	العربية#
 
     @param text: arabic text.
     @type text: unicode.
@@ -350,8 +351,8 @@ def stripTatweel( text ):
     Strip tatweel from a text and return a result text.
 
     Example:
-    	>>> text=u"العـــــربية"
-    	>>> stripTatweel(text)
+    	#>>> text=u"العـــــربية"
+    	#>>> stripTatweel(text)
     	العربية
 
     @param text: arabic text.
@@ -368,8 +369,8 @@ def normalizeLigature( text ):
 		- LAM_ALEF, LAM_ALEF_HAMZA_ABOVE, LAM_ALEF_HAMZA_BELOW, LAM_ALEF_MADDA_ABOVE
 
 	Example:
-		>>> text=u"لانها لالء الاسلام"
-		>>> normalize_lamalef(text)
+		#>>> text=u"لانها لالء الاسلام"
+		#>>> normalize_lamalef(text)
 		لانها لالئ الاسلام
 
 	@param text: arabic text.
