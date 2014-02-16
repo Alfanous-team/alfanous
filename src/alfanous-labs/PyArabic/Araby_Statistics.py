@@ -7,8 +7,7 @@ a module to calculate different statistics on coranic text
 @author: assem
 '''
 import re
-
-from araby import araby
+import araby
 
 __all__ = ['letters', 'diacritics', 'letter_count', 'hamza_count', 'words',
     'gwords', 'sunletters', 'moonletters']
@@ -16,8 +15,6 @@ __all__ = ['letters', 'diacritics', 'letter_count', 'hamza_count', 'words',
 gword_pattern = re.compile( u"لله" )
 GWORDS_FORMS = set( [u"أبالله", u"وتالله", u"بالله", u"تالله", u"والله", u"الله",
     u"ولله", u"اللهم", u"آلله", u"فلله", u"لله", u"فالله", ] )
-
-araby = araby()
 
 '''
 A sample data to be used in docstring tests. Since this variables isn't
