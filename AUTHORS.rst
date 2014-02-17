@@ -95,10 +95,9 @@ Writing
 --------------------
 Community Management
 --------------------
-* FB page: Yasmine Hoadjli 
-* G+ page: Yasmine Hoadjli
-* G+ Community: Zineb Laouici
-* Twitter: ~
+* Yasmine Hoadjli
+* Zineb Laouici
+* Meriem Bounif
 
 -----------
 Translation
