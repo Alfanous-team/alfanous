@@ -117,8 +117,8 @@ class QUI( Ui_MainWindow ):
         self.o_traduction.setCurrentIndex( int( config["extend"]["traduction"] ) if config.has_key( "extend" ) else 0 )
         self.o_recitation.setCurrentIndex( int( config["extend"]["recitation"] ) if config.has_key( "extend" ) else 0 )
 
-        self.o_script_uthmani.setChecked( boolean( config["script"]["uthmani"] ) if config.has_key( "script" ) else False )
-        self.o_script_standard.setChecked( boolean( config["script"]["standard"] ) if config.has_key( "script" ) else True )
+        self.actionUthmani.setChecked( boolean( config["script"]["uthmani"] ) if config.has_key( "script" ) else False )
+        self.actionStandard.setChecked( boolean( config["script"]["standard"] ) if config.has_key( "script" ) else True )
 
         self.w_features.setHidden( not boolean( config["widgets"]["features"] ) if config.has_key( "widgets" ) else True )
         self.w_options.setHidden( not boolean( config["widgets"]["options"] ) if config.has_key( "widgets" ) else True )
@@ -156,8 +156,8 @@ class QUI( Ui_MainWindow ):
         config["extend"]["sura_info"] = self.o_sura_info.isChecked()
 
         config["script"] = {}
-        config["script"]["uthmani"] = self.o_script_uthmani.isChecked()
-        config["script"]["standard"] = self.o_script_standard.isChecked()
+        config["script"]["uthmani"] = self.actionUthmani.isChecked()
+        config["script"]["standard"] = self.actionStandard.isChecked()
 
         config["widgets"] = {}
         config["widgets"]["features"] = not self.w_features.isHidden()
@@ -205,6 +205,10 @@ class QUI( Ui_MainWindow ):
             field_action.setText( val )
             self.menuFields.addAction( field_action )
             self.sorted_by_group.addAction( field_action )
+        # make options->script menu as a radio button
+        self.script_group = QtGui.QActionGroup( MainWindow )
+        self.script_group.addAction( self.actionStandard )
+        self.script_group.addAction( self.actionUthmani )
 
         if DIR == "rtl":
             MainWindow.setLayoutDirection( QtCore.Qt.RightToLeft )
@@ -276,7 +280,7 @@ class QUI( Ui_MainWindow ):
                  "reverse_order": self.actionInverse.isChecked(),
                  "word_info":self.o_word_stat.isChecked(),
                  "highlight": "html" if self.o_highlight.isChecked() else None,
-                 "script": "uthmani" if self.o_script_uthmani.isChecked()
+                 "script": "uthmani" if self.actionUthmani.isChecked()
                             else "standard",
                  "prev_aya":self.o_prev.isChecked(),
                  "next_aya": self.o_suiv.isChecked(),
