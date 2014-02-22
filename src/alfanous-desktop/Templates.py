@@ -888,7 +888,6 @@ font-family: ArabeyesQr, Scheherazade;
 			</h2><br/>
 			
 			{% for ayaresult_id, ayaresult_content in  	results.search.ayas.items() %}
-			    <hr />
 			    <fieldset class='main_re_item'>
 				  <legend class='main_re_item_title' style=' direction:ltr;' >
 				    <span style='text-align:left; color:#0000ff;'>
@@ -1032,7 +1031,7 @@ font-family: ArabeyesQr, Scheherazade;
 								<div class='details_label aya_pos2'> {{ _("quart") }} | {{ ayaresult_content.position.rub + 1 }} </div>		
 								<div class='details_label aya_pos3 clickable filter'> {{ _("page") }} | {{ ayaresult_content.position.page }} </div>
 							{% endif %}
-						  </div><br /><br />
+						  </div><br />
 					  {% endif %}
 					  {% if  ayaresult_content.sajda.exist %}
 					  		<br /><div>
@@ -1042,7 +1041,9 @@ font-family: ArabeyesQr, Scheherazade;
 							</div><br />
 					  {% endif %}
 				
-			     </fieldset><br />
+			     </fieldset>
+			     <hr />
+			     <br />
 			{% endfor %}
 			
 		

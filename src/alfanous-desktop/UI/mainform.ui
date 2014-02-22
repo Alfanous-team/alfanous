@@ -387,6 +387,7 @@
     <property name="title">
      <string>&amp;View</string>
     </property>
+    <addaction name="separator"/>
     <addaction name="m_options"/>
     <addaction name="m_features"/>
    </widget>
@@ -422,7 +423,7 @@
     </widget>
     <widget class="QMenu" name="menuScript">
      <property name="enabled">
-      <bool>false</bool>
+      <bool>true</bool>
      </property>
      <property name="title">
       <string>Script</string>
@@ -432,7 +433,7 @@
     </widget>
     <widget class="QMenu" name="menuTranslation">
      <property name="enabled">
-      <bool>false</bool>
+      <bool>true</bool>
      </property>
      <property name="title">
       <string>Translation</string>
@@ -450,7 +451,7 @@
     </widget>
     <widget class="QMenu" name="menuShow">
      <property name="enabled">
-      <bool>false</bool>
+      <bool>true</bool>
      </property>
      <property name="title">
       <string>Show</string>
@@ -611,123 +612,10 @@ border : 0px solid white;
           <x>0</x>
           <y>0</y>
           <width>231</width>
-          <height>689</height>
+          <height>518</height>
          </rect>
         </property>
         <layout class="QVBoxLayout" name="verticalLayout_5">
-         <item>
-          <widget class="QGroupBox" name="groupBox">
-           <property name="minimumSize">
-            <size>
-             <width>0</width>
-             <height>0</height>
-            </size>
-           </property>
-           <property name="title">
-            <string>Order by</string>
-           </property>
-           <layout class="QVBoxLayout" name="verticalLayout">
-            <item>
-             <widget class="QRadioButton" name="o_sortedbyscore">
-              <property name="minimumSize">
-               <size>
-                <width>0</width>
-                <height>12</height>
-               </size>
-              </property>
-              <property name="text">
-               <string>Relevance</string>
-              </property>
-              <property name="checked">
-               <bool>true</bool>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QRadioButton" name="o_sortedbymushaf">
-              <property name="minimumSize">
-               <size>
-                <width>0</width>
-                <height>12</height>
-               </size>
-              </property>
-              <property name="text">
-               <string>Position in Mus-haf </string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QRadioButton" name="o_sortedbytanzil">
-              <property name="minimumSize">
-               <size>
-                <width>0</width>
-                <height>12</height>
-               </size>
-              </property>
-              <property name="text">
-               <string>Revelation</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QRadioButton" name="o_sortedbysubject">
-              <property name="minimumSize">
-               <size>
-                <width>0</width>
-                <height>12</height>
-               </size>
-              </property>
-              <property name="text">
-               <string>Subject fields</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <layout class="QHBoxLayout" name="horizontalLayout_17">
-              <item>
-               <widget class="QRadioButton" name="o_sortedbyfield">
-                <property name="minimumSize">
-                 <size>
-                  <width>0</width>
-                  <height>25</height>
-                 </size>
-                </property>
-                <property name="text">
-                 <string>Field:</string>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QComboBox" name="o_field">
-                <property name="minimumSize">
-                 <size>
-                  <width>0</width>
-                  <height>0</height>
-                 </size>
-                </property>
-                <property name="baseSize">
-                 <size>
-                  <width>0</width>
-                  <height>28</height>
-                 </size>
-                </property>
-               </widget>
-              </item>
-             </layout>
-            </item>
-            <item>
-             <widget class="QCheckBox" name="o_reverse">
-              <property name="text">
-               <string>Inverse</string>
-              </property>
-              <property name="checked">
-               <bool>false</bool>
-              </property>
-             </widget>
-            </item>
-           </layout>
-          </widget>
-         </item>
          <item>
           <widget class="QGroupBox" name="groupBox_6">
            <property name="sizePolicy">
@@ -3781,13 +3669,11 @@ border : 0px solid white;
   <tabstop>o_sura_name</tabstop>
   <tabstop>o_sajdah_type</tabstop>
   <tabstop>o_relation_misc</tabstop>
-  <tabstop>o_sortedbymushaf</tabstop>
   <tabstop>o_derivation_deep</tabstop>
   <tabstop>o_allwords</tabstop>
   <tabstop>o_struct_as</tabstop>
   <tabstop>o_struct_from</tabstop>
   <tabstop>o_stat_in</tabstop>
-  <tabstop>o_reverse</tabstop>
   <tabstop>o_struct_to</tabstop>
   <tabstop>o_relation_advanced</tabstop>
   <tabstop>o_script_standard</tabstop>
@@ -3798,11 +3684,6 @@ border : 0px solid white;
   <tabstop>o_traduction</tabstop>
   <tabstop>o_add2query_struct</tabstop>
   <tabstop>scrollArea</tabstop>
-  <tabstop>o_sortedbyscore</tabstop>
-  <tabstop>o_sortedbytanzil</tabstop>
-  <tabstop>o_sortedbysubject</tabstop>
-  <tabstop>o_sortedbyfield</tabstop>
-  <tabstop>o_field</tabstop>
   <tabstop>o_recitation</tabstop>
   <tabstop>o_word_root</tabstop>
   <tabstop>o_word_type</tabstop>
@@ -3862,22 +3743,6 @@ border : 0px solid white;
     <hint type="destinationlabel">
      <x>119</x>
      <y>403</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>o_field</sender>
-   <signal>activated(int)</signal>
-   <receiver>o_sortedbyfield</receiver>
-   <slot>toggle()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>970</x>
-     <y>177</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>821</x>
-     <y>178</y>
     </hint>
    </hints>
   </connection>
