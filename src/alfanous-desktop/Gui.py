@@ -98,14 +98,14 @@ class QUI( Ui_MainWindow ):
         self.o_limit.setValue( int( config["options"]["limit"] ) if config.has_key( "options" ) else 100 )
         self.o_perpage.setValue( int( config["options"]["perpage"] ) if config.has_key( "options" ) else 10 )
 
-        self.o_sortedbyscore.setChecked( boolean( config["sorting"]["sortedbyscore"] ) if config.has_key( "sorting" ) else True )
-        self.o_sortedbymushaf.setChecked( boolean( config["sorting"]["sortedbymushaf"] ) if config.has_key( "sorting" ) else False )
-        self.o_sortedbytanzil.setChecked( boolean( config["sorting"]["sortedbytanzil"] ) if config.has_key( "sorting" ) else False )
-        self.o_sortedbysubject.setChecked( boolean( config["sorting"]["sortedbysubject"] ) if config.has_key( "sorting" ) else False )
-        self.o_sortedbyfield.setChecked( boolean( config["sorting"]["sortedbyfield"] ) if config.has_key( "sorting" ) else False )
+        self.actionRelevance.setChecked( boolean( config["sorting"]["sortedbyscore"] ) if config.has_key( "sorting" ) else True )
+        self.actionPosition_in_Mus_haf.setChecked( boolean( config["sorting"]["sortedbymushaf"] ) if config.has_key( "sorting" ) else False )
+        self.actionRevelation.setChecked( boolean( config["sorting"]["sortedbytanzil"] ) if config.has_key( "sorting" ) else False )
+        self.actionSubject.setChecked( boolean( config["sorting"]["sortedbysubject"] ) if config.has_key( "sorting" ) else False )
+        ## TODO save field sorting choice
+        #self.o_sortedbyfield.setChecked( boolean( config["sorting"]["sortedbyfield"] ) if config.has_key( "sorting" ) else False )
 
-        self.o_field.setCurrentIndex( int( config["sorting"]["field"] ) if config.has_key( "sorting" ) else 0 )
-        self.o_reverse.setChecked( boolean( config["sorting"]["reverse"] )if config.has_key( "sorting" ) else False )
+        self.actionInverse.setChecked( boolean( config["sorting"]["reverse"] )if config.has_key( "sorting" ) else False )
 
         self.o_prev.setChecked( boolean( config["extend"]["prev"] ) if config.has_key( "extend" ) else False )
         self.o_suiv.setChecked( boolean( config["extend"]["suiv"] ) if config.has_key( "extend" ) else False )
@@ -138,13 +138,13 @@ class QUI( Ui_MainWindow ):
         config["options"]["highlight"] = self.o_highlight.isChecked()
 
         config["sorting"] = {}
-        config["sorting"]["sortedbyscore"] = self.o_sortedbyscore.isChecked()
-        config["sorting"]["sortedbymushaf"] = self.o_sortedbymushaf.isChecked()
-        config["sorting"]["sortedbytanzil"] = self.o_sortedbytanzil.isChecked()
-        config["sorting"]["sortedbysubject"] = self.o_sortedbysubject.isChecked()
-        config["sorting"]["sortedbyfield"] = self.o_sortedbyfield.isChecked()
-        config["sorting"]["field"] = self.o_field.currentIndex()
-        config["sorting"]["reverse"] = self.o_reverse.isChecked()
+        config["sorting"]["sortedbyscore"] = self.actionRelevance.isChecked()
+        config["sorting"]["sortedbymushaf"] = self.actionPosition_in_Mus_haf.isChecked()
+        config["sorting"]["sortedbytanzil"] = self.actionRevelation.isChecked()
+        config["sorting"]["sortedbysubject"] = self.actionSubject.isChecked()
+        #config["sorting"]["sortedbyfield"] = self.o_sortedbyfield.isChecked()
+        #config["sorting"]["field"] = self.o_field.currentIndex()
+        config["sorting"]["reverse"] = self.actionInverse.isChecked()
 
         config["extend"] = {}
         config["extend"]["prev"] = self.o_prev.isChecked()
@@ -191,14 +191,20 @@ class QUI( Ui_MainWindow ):
         self.setupWebView()
         
         # make sorted_by menu items as a group of radio buttons
-        sorted_by_group = QtGui.QActionGroup( MainWindow )
-        sorted_by_group.addAction( self.actionRelevance )
-        sorted_by_group.addAction( self.actionRevelation )
-        sorted_by_group.addAction( self.actionPosition_in_Mus_haf )
-        sorted_by_group.addAction( self.actionSubject )
-        sorted_by_group.addAction( self.actionRevelation )
-        for v in RAWoutput._fields.values(): #x.keys() for Arabic
-            self.menuFields.addAction( v )
+        self.sorted_by_group = QtGui.QActionGroup( MainWindow )
+        self.sorted_by_group.addAction( self.actionRelevance )
+        self.sorted_by_group.addAction( self.actionRevelation )
+        self.sorted_by_group.addAction( self.actionPosition_in_Mus_haf )
+        self.sorted_by_group.addAction( self.actionSubject )
+        self.sorted_by_group.addAction( self.actionRevelation )
+        for val in RAWoutput._fields.values(): #x.keys() for Arabic
+            field_action = QtGui.QAction(MainWindow)
+            field_action.setCheckable(True)
+            field_action.setChecked(False)
+            field_action.setObjectName("action_field_" + val)
+            field_action.setText( val )
+            self.menuFields.addAction( field_action )
+            self.sorted_by_group.addAction( field_action )
 
         if DIR == "rtl":
             MainWindow.setLayoutDirection( QtCore.Qt.RightToLeft )
@@ -232,7 +238,7 @@ class QUI( Ui_MainWindow ):
         sura_list =  RAWoutput._surates["Arabic"] if DIR == "rtl" else  RAWoutput._surates["English"]
         self.o_chapter.addItems( RAWoutput._chapters )
         self.o_sura_name.addItems( sura_list  )
-        self.o_field.addItems( RAWoutput._fields.values() )# x.keys() for Arabic
+        # self.o_field.addItems( RAWoutput._fields.values() ) # x.keys() for Arabic
         self.o_traduction.addItems( RAWoutput._translations.values() )
         self.load_config()
 
@@ -251,7 +257,6 @@ class QUI( Ui_MainWindow ):
 
         limit = self.o_limit.value()
 
-
         suggest_flags = {
                 "action":"suggest",
                 "query": self.o_query.currentText()
@@ -262,13 +267,13 @@ class QUI( Ui_MainWindow ):
         results, terms = None, []
         search_flags = {"action":"search",
                  "query": unicode( self.o_query.currentText() ),
-                 "sortedby":"score" if self.o_sortedbyscore.isChecked() \
-                        else "mushaf" if self.o_sortedbymushaf.isChecked() \
-                        else "tanzil" if self.o_sortedbytanzil.isChecked() \
-                        else "subject" if self.o_sortedbysubject.isChecked() \
-                        else unicode( self.o_field.currentText() ), # ara2eng_names[self.o_field.currentText()] for Arabic,
+                 "sortedby":"score" if self.actionRelevance.isChecked() \
+                        else "mushaf" if self.actionPosition_in_Mus_haf.isChecked() \
+                        else "tanzil" if self.actionRevelation.isChecked() \
+                        else "subject" if self.actionSubject.isChecked() \
+                        else unicode( self.sorted_by_group.checkedAction().text() ), # ara2eng_names[self.sorted_by_group.checkedAction().text()] for Arabic,
                  "page": self.o_page.value(),
-                 "reverse_order": self.o_reverse.isChecked(),
+                 "reverse_order": self.actionInverse.isChecked(),
                  "word_info":self.o_word_stat.isChecked(),
                  "highlight": "html" if self.o_highlight.isChecked() else None,
                  "script": "uthmani" if self.o_script_uthmani.isChecked()
