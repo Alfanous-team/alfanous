@@ -35,8 +35,8 @@ from pyparsing import ParseException
 from configobj import ConfigObj
 
 
-from PyQt4 import  QtGui, QtCore, uic
-from PyQt4.QtCore import QRect
+from PySide import  QtGui, QtCore
+from PySide.QtCore import QRect
 
 sys.path.insert(0, "../../src") ## a relative path, development mode
 sys.path.append("alfanous.egg/alfanous") ## an egg, portable
