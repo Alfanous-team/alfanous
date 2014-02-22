@@ -95,8 +95,8 @@ class QUI( Ui_MainWindow ):
         boolean = lambda s:True if s == "True" else False
         self.o_query.clear()
         self.o_query.addItems( map( lambda x:x.decode( "utf-8" ), config["history"] ) if config.has_key( "history" ) else [u"الحمد لله"] )
-        self.o_limit.setValue( int( config["options"]["limit"] ) if config.has_key( "options" ) else 100 )
-        self.o_perpage.setValue( int( config["options"]["perpage"] ) if config.has_key( "options" ) else 10 )
+        #self.o_limit.setValue( int( config["options"]["limit"] ) if config.has_key( "options" ) else 100 )
+        #self.o_perpage.setValue( int( config["options"]["perpage"] ) if config.has_key( "options" ) else 10 )
 
         self.actionRelevance.setChecked( boolean( config["sorting"]["sortedbyscore"] ) if config.has_key( "sorting" ) else True )
         self.actionPosition_in_Mus_haf.setChecked( boolean( config["sorting"]["sortedbymushaf"] ) if config.has_key( "sorting" ) else False )
@@ -107,15 +107,12 @@ class QUI( Ui_MainWindow ):
 
         self.actionInverse.setChecked( boolean( config["sorting"]["reverse"] )if config.has_key( "sorting" ) else False )
 
-        self.o_prev.setChecked( boolean( config["extend"]["prev"] ) if config.has_key( "extend" ) else False )
-        self.o_suiv.setChecked( boolean( config["extend"]["suiv"] ) if config.has_key( "extend" ) else False )
+        self.actionPrevios_aya.setChecked( boolean( config["extend"]["prev"] ) if config.has_key( "extend" ) else False )
+        self.actionNext_aya.setChecked( boolean( config["extend"]["suiv"] ) if config.has_key( "extend" ) else False )
 
-        self.o_word_stat.setChecked( boolean( config["extend"]["word_stat"] )if config.has_key( "extend" ) else False )
-        self.o_aya_info.setChecked( boolean( config["extend"]["aya_info"] )if config.has_key( "extend" ) else False )
-        self.o_sura_info.setChecked( boolean( config["extend"]["sura_info"] )if config.has_key( "extend" ) else False )
-
-        self.o_traduction.setCurrentIndex( int( config["extend"]["traduction"] ) if config.has_key( "extend" ) else 0 )
-        self.o_recitation.setCurrentIndex( int( config["extend"]["recitation"] ) if config.has_key( "extend" ) else 0 )
+        self.actionWord_Info.setChecked( boolean( config["extend"]["word_stat"] )if config.has_key( "extend" ) else False )
+        self.actionAya_Info.setChecked( boolean( config["extend"]["aya_info"] )if config.has_key( "extend" ) else False )
+        self.actionSura_info.setChecked( boolean( config["extend"]["sura_info"] )if config.has_key( "extend" ) else False )
 
         self.actionUthmani.setChecked( boolean( config["script"]["uthmani"] ) if config.has_key( "script" ) else False )
         self.actionStandard.setChecked( boolean( config["script"]["standard"] ) if config.has_key( "script" ) else True )
@@ -133,9 +130,9 @@ class QUI( Ui_MainWindow ):
         config["history"] = map( lambda x:x, config["history"] ) if config.has_key( "history" ) else ["الحمد لله"]
 
         config["options"] = {}
-        config["options"]["limit"] = self.o_limit.value()
-        config["options"]["perpage"] = self.o_perpage.value()
-        config["options"]["highlight"] = self.o_highlight.isChecked()
+        config["options"]["limit"] = self.limit_group.checkedAction().text() 
+        config["options"]["perpage"] = self.perpage_group.checkedAction().text() 
+        config["options"]["highlight"] = self.actionHighlight_Keywords.isChecked()
 
         config["sorting"] = {}
         config["sorting"]["sortedbyscore"] = self.actionRelevance.isChecked()
@@ -147,13 +144,13 @@ class QUI( Ui_MainWindow ):
         config["sorting"]["reverse"] = self.actionInverse.isChecked()
 
         config["extend"] = {}
-        config["extend"]["prev"] = self.o_prev.isChecked()
-        config["extend"]["suiv"] = self.o_suiv.isChecked()
-        config["extend"]["traduction"] = self.o_traduction.currentIndex()
+        config["extend"]["prev"] = self.actionPrevios_aya.isChecked()
+        config["extend"]["suiv"] = self.actionNext_aya.isChecked()
+        config["extend"]["translation"] = self.translation_group.checkedAction().text()
         config["extend"]["recitation"] = self.o_recitation.currentIndex()
-        config["extend"]["word_stat"] = self.o_word_stat.isChecked()
-        config["extend"]["aya_info"] = self.o_aya_info.isChecked()
-        config["extend"]["sura_info"] = self.o_sura_info.isChecked()
+        config["extend"]["word_stat"] = self.actionWord_Info.isChecked()
+        config["extend"]["aya_info"] = self.actionAya_Info.isChecked()
+        config["extend"]["sura_info"] = self.actionSura_info.isChecked()
 
         config["script"] = {}
         config["script"]["uthmani"] = self.actionUthmani.isChecked()
@@ -165,7 +162,7 @@ class QUI( Ui_MainWindow ):
         config.write()
 
     def setupWebView(self):
-        self.o_results = QtWebKit.QWebView(self.groupBox_5)
+        self.o_results = QtWebKit.QWebView(self.frame0)
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Expanding)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -179,10 +176,9 @@ class QUI( Ui_MainWindow ):
         self.o_results.setFont(font)
         self.o_results.setProperty("cursor", QtCore.Qt.IBeamCursor)
         self.o_results.setAutoFillBackground(False)
-        self.o_results.setStyleSheet("")
         self.o_results.setHtml("<img src=\":/resources/alfanous.jpg\" />")
         self.o_results.setObjectName("o_results")
-        self.verticalLayout_15.addWidget(self.o_results)
+        self.verticalLayout33.addWidget(self.o_results)
 
     def setupUi( self, MainWindow ):
         super( QUI, self ).setupUi( MainWindow )
@@ -209,6 +205,32 @@ class QUI( Ui_MainWindow ):
         self.script_group = QtGui.QActionGroup( MainWindow )
         self.script_group.addAction( self.actionStandard )
         self.script_group.addAction( self.actionUthmani )
+        # make options->translations as a radio button
+        self.translation_group = QtGui.QActionGroup( MainWindow )
+        self.translation_group.addAction(self.actionTranslationNone)
+        for val in RAWoutput._translations.values():
+            translation_action = QtGui.QAction(MainWindow)
+            translation_action.setCheckable(True)
+            translation_action.setChecked(False)
+            translation_action.setObjectName("action_translation_" + val)
+            translation_action.setText( val )
+            self.menuTranslation.addAction( translation_action )
+            self.translation_group.addAction( translation_action )
+        
+        # make limit menu items as a group of radio buttons
+        self.limit_group = QtGui.QActionGroup( MainWindow )
+        self.limit_group.addAction( self.actionlimit100 )
+        self.limit_group.addAction( self.actionlimit500 )
+        self.limit_group.addAction( self.actionlimit1000 )
+        self.limit_group.addAction( self.actionlimit6236 )
+        
+        # make perpage menu items as a group of radio buttons
+        self.perpage_group = QtGui.QActionGroup( MainWindow )
+        self.perpage_group.addAction( self.actionpp1 )
+        self.perpage_group.addAction( self.actionpp10 )
+        self.perpage_group.addAction( self.actionpp20 )
+        self.perpage_group.addAction( self.actionpp50 )
+        self.perpage_group.addAction( self.actionpp100 )
 
         if DIR == "rtl":
             MainWindow.setLayoutDirection( QtCore.Qt.RightToLeft )
@@ -219,7 +241,11 @@ class QUI( Ui_MainWindow ):
         QtCore.QObject.connect( self.o_topic, QtCore.SIGNAL( "activated(QString)" ), self.subtopics )
         QtCore.QObject.connect( self.o_sajdah_exist, QtCore.SIGNAL( "activated(int)" ), self.sajda_enable )
         QtCore.QObject.connect( self.o_struct_as, QtCore.SIGNAL( "activated(QString)" ), self.setstructborn )
-        QtCore.QObject.connect( self.o_perpage, QtCore.SIGNAL( "valueChanged(int)" ), self.changePERPAGE )
+        QtCore.QObject.connect( self.actionpp1, QtCore.SIGNAL( "triggered()" ), self.changePERPAGE )
+        QtCore.QObject.connect( self.actionpp10, QtCore.SIGNAL( "triggered()" ), self.changePERPAGE )
+        QtCore.QObject.connect( self.actionpp20, QtCore.SIGNAL( "triggered()" ), self.changePERPAGE )
+        QtCore.QObject.connect( self.actionpp50, QtCore.SIGNAL( "triggered()" ), self.changePERPAGE )
+        QtCore.QObject.connect( self.actionpp100, QtCore.SIGNAL( "triggered()" ), self.changePERPAGE )
         QtCore.QObject.connect( self.o_struct_from, QtCore.SIGNAL( "valueChanged(int)" ), self.struct_to_min )
         QtCore.QObject.connect( self.o_stat_from, QtCore.SIGNAL( "valueChanged(int)" ), self.stat_to_min )
         QtCore.QObject.connect( self.m_exit, QtCore.SIGNAL( "triggered()" ), self.exit )
@@ -242,8 +268,6 @@ class QUI( Ui_MainWindow ):
         sura_list =  RAWoutput._surates["Arabic"] if DIR == "rtl" else  RAWoutput._surates["English"]
         self.o_chapter.addItems( RAWoutput._chapters )
         self.o_sura_name.addItems( sura_list  )
-        # self.o_field.addItems( RAWoutput._fields.values() ) # x.keys() for Arabic
-        self.o_traduction.addItems( RAWoutput._translations.values() )
         self.load_config()
 
 
@@ -259,7 +283,7 @@ class QUI( Ui_MainWindow ):
         self.o_query.addItems( self.history )
         self.o_query.setCurrentIndex( 0 )
 
-        limit = self.o_limit.value()
+        limit = int( self.limit_group.checkedAction().text() )
 
         suggest_flags = {
                 "action":"suggest",
@@ -278,19 +302,19 @@ class QUI( Ui_MainWindow ):
                         else unicode( self.sorted_by_group.checkedAction().text() ), # ara2eng_names[self.sorted_by_group.checkedAction().text()] for Arabic,
                  "page": self.o_page.value(),
                  "reverse_order": self.actionInverse.isChecked(),
-                 "word_info":self.o_word_stat.isChecked(),
-                 "highlight": "html" if self.o_highlight.isChecked() else None,
+                 "word_info":self.actionWord_Info.isChecked(),
+                 "highlight": "html" if self.actionHighlight_Keywords.isChecked() else None,
                  "script": "uthmani" if self.actionUthmani.isChecked()
                             else "standard",
-                 "prev_aya":self.o_prev.isChecked(),
-                 "next_aya": self.o_suiv.isChecked(),
-                 "sura_info": self.o_sura_info.isChecked(),
-                 "aya_position_info":  self.o_aya_info.isChecked(),
-                 "aya_theme_info":  self.o_aya_info.isChecked(),
-                 "aya_stat_info":  self.o_aya_info.isChecked(),
-                 "aya_sajda_info":  self.o_aya_info.isChecked(),
-                 "translation":self.o_traduction.currentText(),
-                 "word_info": self.o_word_stat.isChecked(),
+                 "prev_aya":self.actionPrevios_aya.isChecked(),
+                 "next_aya": self.actionNext_aya.isChecked(),
+                 "sura_info": self.actionSura_info.isChecked(),
+                 "aya_position_info":  self.actionAya_Info.isChecked(),
+                 "aya_theme_info":  self.actionAya_Info.isChecked(),
+                 "aya_stat_info":  self.actionAya_Info.isChecked(),
+                 "aya_sajda_info":  self.actionAya_Info.isChecked(),
+                 "translation":self.translation_group.checkedAction().text(),
+                 "word_info": self.actionWord_Info.isChecked(),
                  }
         self.Queries.insert( 0, search_flags )
         results = RAWoutput.do( search_flags )
@@ -337,9 +361,9 @@ class QUI( Ui_MainWindow ):
         self.o_subtopic.addItems( list )
         pass
 
-    def changePERPAGE( self, perpage ):
+    def changePERPAGE( self ):
         global PERPAGE
-        PERPAGE = perpage
+        PERPAGE = int( self.perpage_group.checkedAction().text() )
 
 
     def add2query_advanced( self ):
