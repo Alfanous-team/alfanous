@@ -611,58 +611,11 @@ border : 0px solid white;
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>231</width>
-          <height>518</height>
+          <width>232</width>
+          <height>499</height>
          </rect>
         </property>
         <layout class="QVBoxLayout" name="verticalLayout_5">
-         <item>
-          <widget class="QGroupBox" name="groupBox_6">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="title">
-            <string>Script</string>
-           </property>
-           <layout class="QVBoxLayout" name="verticalLayout_13">
-            <item>
-             <widget class="QRadioButton" name="o_script_standard">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="text">
-               <string>Script Standard</string>
-              </property>
-              <property name="checked">
-               <bool>true</bool>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QRadioButton" name="o_script_uthmani">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="text">
-               <string>Script Uthmani</string>
-              </property>
-              <property name="checked">
-               <bool>false</bool>
-              </property>
-             </widget>
-            </item>
-           </layout>
-          </widget>
-         </item>
          <item>
           <widget class="QGroupBox" name="groupBox_4">
            <property name="title">
@@ -3676,11 +3629,9 @@ border : 0px solid white;
   <tabstop>o_stat_in</tabstop>
   <tabstop>o_struct_to</tabstop>
   <tabstop>o_relation_advanced</tabstop>
-  <tabstop>o_script_standard</tabstop>
   <tabstop>o_stat_to</tabstop>
   <tabstop>o_stat_num</tabstop>
   <tabstop>o_sajdah_exist</tabstop>
-  <tabstop>o_script_uthmani</tabstop>
   <tabstop>o_traduction</tabstop>
   <tabstop>o_add2query_struct</tabstop>
   <tabstop>scrollArea</tabstop>
