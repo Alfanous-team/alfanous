@@ -118,8 +118,6 @@ class QUI( Ui_MainWindow ):
         self.actionStandard.setChecked( boolean( config["script"]["standard"] ) if config.has_key( "script" ) else True )
 
         self.w_features.setHidden( not boolean( config["widgets"]["features"] ) if config.has_key( "widgets" ) else True )
-        self.w_options.setHidden( not boolean( config["widgets"]["options"] ) if config.has_key( "widgets" ) else True )
-        self.m_options.setChecked ( boolean( config["widgets"]["options"] ) if config.has_key( "widgets" ) else False )
         self.m_features.setChecked ( boolean( config["widgets"]["features"] ) if config.has_key( "widgets" ) else False )
 
     def save_config( self ):
@@ -158,7 +156,6 @@ class QUI( Ui_MainWindow ):
 
         config["widgets"] = {}
         config["widgets"]["features"] = not self.w_features.isHidden()
-        config["widgets"]["options"] = not self.w_options.isHidden()
         config.write()
 
     def setupWebView(self):
@@ -246,6 +243,7 @@ class QUI( Ui_MainWindow ):
         QtCore.QObject.connect( self.actionpp20, QtCore.SIGNAL( "triggered()" ), self.changePERPAGE )
         QtCore.QObject.connect( self.actionpp50, QtCore.SIGNAL( "triggered()" ), self.changePERPAGE )
         QtCore.QObject.connect( self.actionpp100, QtCore.SIGNAL( "triggered()" ), self.changePERPAGE )
+        QtCore.QObject.connect( self.action_Send_Feedback, QtCore.SIGNAL( "triggered()" ), self.feedback_link )
         QtCore.QObject.connect( self.o_struct_from, QtCore.SIGNAL( "valueChanged(int)" ), self.struct_to_min )
         QtCore.QObject.connect( self.o_stat_from, QtCore.SIGNAL( "valueChanged(int)" ), self.stat_to_min )
         QtCore.QObject.connect( self.m_exit, QtCore.SIGNAL( "triggered()" ), self.exit )
@@ -577,6 +575,11 @@ class QUI( Ui_MainWindow ):
         """  deprecated     """
         html = """ to replace with a hints dialog """
         self.o_results.setText( html )
+    
+    def feedback_link(self):
+        ""
+        import webbrowser
+        webbrowser.open('http://feedback.alfanous.org/')
 
 
 def main():
