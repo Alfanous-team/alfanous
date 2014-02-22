@@ -30,6 +30,7 @@ import sys
 import os
 import gettext
 from re import compile
+import codecs
 
 from pyparsing import ParseException
 from configobj import ConfigObj
@@ -83,7 +84,8 @@ class QUI( Ui_MainWindow ):
         self.last_results = None
         self.currentQuery = 0
         self.Queries = []
-        self.history = []
+        self.undo_stack = []
+        self.redo_stack = []
 
     def exit( self ):
         self.save_config()
@@ -273,12 +275,12 @@ class QUI( Ui_MainWindow ):
         """
         The main search function
         """
-        # add to history
-        if self.o_query.currentText() in self.history:
-            self.history.remove( self.o_query.currentText() )
-        self.history.insert( 0, self.o_query.currentText() )
+        # add to undo stack
+        if self.o_query.currentText() in self.undo_stack:
+            self.undo_stack.remove( self.o_query.currentText() )
+        self.undo_stack.insert( 0, self.o_query.currentText() )
         self.o_query.clear()
-        self.o_query.addItems( self.history )
+        self.o_query.addItems( self.undo_stack )
         self.o_query.setCurrentIndex( 0 )
 
         limit = int( self.limit_group.checkedAction().text() )
@@ -526,13 +528,13 @@ class QUI( Ui_MainWindow ):
             filenames = diag.selectedFiles();
 
         path = unicode( filenames[0] )
-        file = open( path, "w" )
-        file.write( self.o_results.toHtml().toUtf8().replace("<head>", "<head><meta charset=\"utf-8\">") + "<br><br>CopyRights(c)<a href='http://www.alfanous.org'>Alfanous</a>  " )
-        file.close()
+        f = codecs.open( path, "w", "utf-8")
+        f.write( self.o_results.page().currentFrame().toHtml().replace("<head>", "<head><meta charset=\"utf-8\">") + "<br><br>CopyRights(c)<a href='http://www.alfanous.org'>Alfanous</a>  " )
+        f.close()
 
     def print_results( self ):
         printer = QtGui.QPrinter()
-        printer.setCreator( self.o_results.toHtml() )
+        printer.setCreator( self.o_results.html() )
         printer.setDocName( _( u"Results" ) + "-" + str( self.o_page.value() ) )
         printer.setPageSize( printer.A4 )
 
