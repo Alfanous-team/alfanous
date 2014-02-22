@@ -38,6 +38,10 @@ from configobj import ConfigObj
 from PyQt4 import  QtGui, QtCore, uic
 from PyQt4.QtCore import QRect
 
+sys.path.insert(0, "../../src") ## a relative path, development mode
+sys.path.append("alfanous.egg/alfanous") ## an egg, portable
+sys.path.append("./src") ## integrated
+
 from alfanous.Outputs import Raw
 ## Specification of resources paths
 from alfanous.Data import Paths
