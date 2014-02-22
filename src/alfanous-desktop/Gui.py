@@ -35,7 +35,7 @@ from pyparsing import ParseException
 from configobj import ConfigObj
 
 
-from PySide import  QtGui, QtCore
+from PySide import  QtGui, QtCore, QtWebKit
 from PySide.QtCore import QRect
 
 sys.path.insert(0, "../../src") ## a relative path, development mode
@@ -164,10 +164,32 @@ class QUI( Ui_MainWindow ):
         config["widgets"]["options"] = not self.w_options.isHidden()
         config.write()
 
+    def setupWebView(self):
+        self.o_results = QtWebKit.QWebView(self.groupBox_5)
+        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Expanding)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.o_results.sizePolicy().hasHeightForWidth())
+        self.o_results.setSizePolicy(sizePolicy)
+        self.o_results.setMinimumSize(QtCore.QSize(300, 25))
+        self.o_results.setMaximumSize(QtCore.QSize(16777215, 16777215))
+        font = QtGui.QFont()
+        font.setFamily("Arial")
+        font.setPointSize(12)
+        self.o_results.setFont(font)
+        self.o_results.setProperty("cursor", QtCore.Qt.IBeamCursor)
+        self.o_results.setAutoFillBackground(False)
+        self.o_results.setStyleSheet("")
+        self.o_results.setHtml("<img src=\":/resources/alfanous.jpg\" />")
+        self.o_results.setObjectName("o_results")
+        self.verticalLayout_15.addWidget(self.o_results)
 
     def setupUi( self, MainWindow ):
         super( QUI, self ).setupUi( MainWindow )
-
+        
+        # prepare QwebView
+        self.setupWebView()
+        
         # make sorted_by menu items as a group of radio buttons
         sorted_by_group = QtGui.QActionGroup( MainWindow )
         sorted_by_group.addAction( self.actionRelevance )
@@ -287,7 +309,7 @@ class QUI( Ui_MainWindow ):
 						   "_": lambda x:x 
 						}
 
-        self.o_results.setText( AYA_RESULTS_TEMPLATE.render(template_vars) )
+        self.o_results.setHtml( AYA_RESULTS_TEMPLATE.render(template_vars) )
 
     def topics( self, chapter ):
         first = self.o_topic.itemText( 0 )
