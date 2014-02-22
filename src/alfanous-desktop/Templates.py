@@ -937,7 +937,7 @@ font-family: ArabeyesQr, Scheherazade;
 					  		 <span class='quran_decoration prev_aya'>
 							 ] </span>
 							 <span style='direction:ltr;' class='prev_aya'>
-								({{ ayaresult_content.aya.prev_aya.sura }} {{ ayaresult_content.aya.prev_aya.id }})  
+								({{ ayaresult_content.aya.prev_aya.sura_arabic }} {{ ayaresult_content.aya.prev_aya.id }})  
 					  		</span>
 					  		 </p>
 					  		
@@ -956,7 +956,7 @@ font-family: ArabeyesQr, Scheherazade;
 					 ] </span>
 					  <span style='direction:rtl;' class='main_aya'>
 					  		   
-											({{ ayaresult_content.identifier.sura_name }} {{ ayaresult_content.aya.id }})  
+											({{ ayaresult_content.identifier.sura_arabic_name }} {{ ayaresult_content.aya.id }})  
 							
 					   
 					  </span>
@@ -976,7 +976,7 @@ font-family: ArabeyesQr, Scheherazade;
 							 <span style='direction:ltr;' class='next_aya'>
 							   
 					
-							({{ ayaresult_content.aya.next_aya.sura }} {{ ayaresult_content.aya.next_aya.id }}) 
+							({{ ayaresult_content.aya.next_aya.sura_arabic }} {{ ayaresult_content.aya.next_aya.id }}) 
 							
 							</span>
 					  		 </p>
@@ -1015,7 +1015,7 @@ font-family: ArabeyesQr, Scheherazade;
 					   {% endif %}
 					  	
 					  {% if ayaresult_content.stat or 	ayaresult_content.position %}		
-						  <div class='aya_details'>
+						  <div class='aya_details' style='text-align:center;'>
 						  	{% if ayaresult_content.stat %}
 			
 							  	<div class='details_label aya_stat0 clickable'> {{ _("words") }} | {{ ayaresult_content.stat.words }} </div>
