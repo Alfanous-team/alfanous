@@ -37,7 +37,7 @@
   </property>
   <property name="windowIcon">
    <iconset resource="../images/main.qrc">
-    <normaloff>:/resources/AlFanous-A2_64_2010-03-25.png</normaloff>:/resources/AlFanous-A2_64_2010-03-25.png</iconset>
+    <normaloff>:/resources/AlFanous.png</normaloff>:/resources/AlFanous.png</iconset>
   </property>
   <property name="whatsThis">
    <string>Alfanous - Qur'anic Search Engine </string>
@@ -681,7 +681,7 @@ border : 0px solid white;
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>252</width>
+          <width>253</width>
           <height>689</height>
          </rect>
         </property>
@@ -3901,7 +3901,6 @@ border : 0px solid white;
   <tabstop>o_relation_struct</tabstop>
  </tabstops>
  <resources>
-  <include location="../images/main.qrc"/>
   <include location="../images/main.qrc"/>
  </resources>
  <connections>
