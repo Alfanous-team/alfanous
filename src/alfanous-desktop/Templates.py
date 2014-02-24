@@ -53,6 +53,693 @@ AYA_RESULTS_TEMPLATE = Template(("""
 	line-height: 1.5em;
 	padding: 2px 5px;
 }
+
+/* Abdellah */
+@import url('reset.css');
+
+@font-face {
+	font-family:'Scheherazade';
+	src:url('../fonts/ScheherazadeRegOT.ttf');
+}
+
+/* original */
+
+.buttons {
+	float: left;
+	padding-bottom: 20px;
+	clear: both;
+}
+
+a.button {
+	background: none repeat scroll 0 0 #6ED0D6;
+	background: -webkit-gradient(linear,0% 40%,0% 70%,from(#6ED0D6),to(#6ED0D6));
+	border: 1px solid #DCDCDC;
+	border-radius: 2px 2px 2px 2px;
+	color: white;
+	display: inline-block;
+	font: bold 16px Helvetica,Arial,sans-serif;
+	height: 15px;
+	padding: 2px 35px 4px 16px;
+	position: relative;
+	text-decoration: none;
+	text-shadow: 0 0 4px #0F9AA1;
+	width: 6px;
+	-webkit-border-radius: 2px;
+	-moz-border-radius: 2px;
+	background: -moz-linear-gradient(linear,0% 40%,0% 70%,from(#F5F5F5),to(#F1F1F1));
+	border: solid 1px #dcdcdc;
+	border-radius: 2px;
+	-webkit-transition: border-color .218s;
+	-moz-transition: border .218s;
+	-o-transition: border-color .218s;
+}
+
+a.button:hover {
+	color: #333;
+	border-color: #999;
+	-moz-box-shadow: 0 2px 0 rgba(0, 0, 0, 0.2) -webkit-box-shadow:0 2px 5px rgba(0, 0, 0, 0.2);
+	box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
+}
+
+a.button:active {
+	color: #000;
+	border-color: #444;
+}
+
+.enter{
+	background: none repeat scroll 0 0 transparent;
+	border: 0 none;
+	color: gray;
+	direction: rtl;
+	font-family: tahoma;
+	font-weight: bold;
+	width: 220px;
+	margin:0;
+}
+
+a{color: gray;}
+.aya_words a { text-decoration: none; }
+a:hover{color: green;}
+.select {
+	background: url("../images/select.gif") no-repeat scroll right top transparent;
+	color: gray;
+	font: 13px/17px tahoma;
+	height: 40px;
+	overflow: hidden;
+	padding: 11px 15px 0 0;
+	position: absolute;
+	width: 191px;
+	text-align:right;
+}
+.styled{height: 40px;
+	margin-right: 3px;
+	opacity: 0;
+	position: relative;
+	width: 130px;
+	z-index: 5;}
+.xtitle
+{
+	color: Gray;
+	font: 12px/29px tahoma;
+}
+
+.xbutton {
+	padding: 7px;
+	cursor: pointer;
+	font-family: Arial, Geneva, Sans-serif;
+	font-size: 10pt;
+	font-weight: bold;
+	color: black;
+	min-width: 70px;
+	margin: 0 5px 9px 0;
+	/* Css3 Effects */
+	border-radius:4px ;
+	-moz-border-radius:4px ;
+	-webkit-border-radius:4px ;
+	opacity:0.8;
+	filter: alpha(opacity=80); }
+	.xbutton:hover,.xbutton:focus {
+	outline: 0;
+	-webkit-box-shadow:0 0 4px silver;
+	-moz-box-shadow:0 0 4px silver;
+	opacity:1;
+	filter: alpha(opacity=100);
+}
+
+.gray {
+	background: #ffffff; /* old browsers */
+	background: -moz-linear-gradient(top, #ffffff 0%, #e5e5e5 100%); /* firefox */
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#ffffff), color-stop(100%,#e5e5e5)); /* webkit */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#e5e5e5',GradientType=0 ); /* ie */
+	text-shadow:0 1px 1px #eeeeee;
+	-moz-text-shadow:0 1px 1px #eeeeee;
+	-webkit-text-shadow:0 1px 1px #eeeeee;
+	border: 1px solid silver;
+}
+
+.green {
+	background: #007419; /* old browsers */
+	background: -moz-linear-gradient(top, #007419 0%, #005011 100%); /* firefox */
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#007419), color-stop(100%,#005011)); /* webkit */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#007419', endColorstr='#005011',GradientType=0 ); /* ie */
+	text-shadow:0 1px 1px #eeeeee;
+	-moz-text-shadow:0 1px 1px #eeeeee;
+	-webkit-text-shadow:0 1px 1px #eeeeee;
+	border: 1px solid silver;
+}
+
+.modal {
+	opacity:1;
+	position:absolute;
+	top:10px;
+	left:10px;
+	background-color:#fff;
+	display:none;
+	width:300px;
+	padding:15px;
+	border:2px solid #333;
+	-moz-border-radius:6px;
+	-webkit-border-radius:6px;
+	-moz-box-shadow: 0 0 50px #ccc;
+	-webkit-box-shadow: 0 0 50px #ccc;
+}
+
+.modal h2 {
+	/*background:url(../images/info.png) 0 50% no-repeat; image missing*/
+	margin:0px;
+	padding:10px 0 10px 45px;
+	border-bottom:1px solid #333;
+	font-size:20px;
+}
+
+.external,.bo {
+	margin:3px;
+	border:0
+}
+
+.external:hover,.bo:hover {
+	margin-left:4px;
+}
+
+.optaly {
+	color: gray;
+	font-size: 12px;
+}
+
+.newur {
+	margin-left: 27px;
+}
+.xbre{
+	border: 2px solid gray;
+	color: #0F9AA1;
+	font-family: Times New Roman;
+	font-size: 28px;
+	font-weight: bold;
+	padding: 6px;
+	text-shadow:0 0 3px gray;
+	-moz-text-shadow:0 0 3px gray;
+	-webkit-text-shadow:0 0 3px gray;
+	-webkit-border-radius: 18px;
+	-moz-border-radius: 18px;
+}
+
+.main_re_item
+{
+	background: url("../images/back_g.gif") repeat scroll 0 0 transparent;
+	-webkit-border-radius: 35px;
+	-moz-border-radius: 35px;
+	border-radius: 35px;
+	border:0;
+	padding: 5px;
+}
+
+.main_re_item_title
+{
+	background: none repeat scroll 0 0 white;
+	border: 1px solid green;
+	-webkit-border-radius: 12px;
+	-moz-border-radius: 12px;
+	border-radius: 12px;
+	font-size: 14pt;
+	margin: 0 15px 0 0;
+	padding: 6px;
+	text-indent: 0;
+	box-shadow: 0 0 8px green;
+}
+
+/* +some fun */
+
+
+.awa-box {
+	border:0 none;
+	display: inline-block;
+	margin:0;
+	padding:0;
+	float: left;
+	position: relative;
+	top: 20px;
+	left: 10px;
+	z-index:95;
+	text-align:center;
+}
+
+.feedback-box {
+
+	left:0;
+	position: fixed;
+	top:220px;
+
+ }
+
+.feedback-box a {
+	margin-left: -38px;
+	line-height:50px;
+	padding:0 10px;
+	font-weight: bold;
+	-webkit-transform: rotate(-90deg);
+	-moz-transform: rotate(-90deg);
+	-ms-transform: rotate(-90deg);
+	-o-transform: rotate(-90deg);
+	transform: rotate(-90deg);
+	background-color: #3AB034; /*#339A63*/
+	color: white;
+	display: block;
+	height: 41px;
+}
+
+
+.follow-box {
+	border:0 none;
+	clear:both;
+	margin:0;
+	padding:0;
+	position: fixed;
+	top:150px;
+	right:0;
+	z-index:95;
+	width:50px;
+	text-align:right;
+}
+
+.follow-box a:hover {
+	margin-right: 7px;
+}
+
+.footer {
+	font-family: tahoma;
+	font-size: 14px;
+	height:20px;
+	margin-top:80px;
+	text-align: center;
+}
+
+#vedio,#vedio3,#vedio4,#vedio5 {
+	width:670px
+}
+
+.style2
+	{
+		width: 293px;
+	}
+	.style3
+	{
+		width: 227px;
+	}
+	.style4
+	{
+		background-color: #CCCCCC;
+	}
+	.style5
+	{
+		width: 293px;
+		background-color: #CCCCCC;
+	}
+	.style6
+	{
+		width: 227px;
+		background-color: #CCCCCC;
+	}
+	.style7
+	{
+		background-color: #C0C0C0;
+	}
+	.style8
+	{
+		width: 293px;
+		background-color: #C0C0C0;
+	}
+	.style9
+	{
+		width: 227px;
+		background-color: #C0C0C0;
+	}
+	.xdrops_continer{direction:rtl;}
+
+/* Abdellah */
+
+/*
+#help_btn {
+	position: absolute;
+	top:10px;
+	right:0;
+	z-index:95;
+}
+
+#down_btn {
+	position: absolute;
+	top:10px;
+	right:50px;
+	z-index:95;
+}
+*/
+
+#vote_btn a {
+	font-weight: normal;
+	text-decoration: none;
+	color: #000069;
+	padding-left: 20px;
+	padding-right: 20px;
+}
+
+
+.pages img, select {
+	cursor:pointer;
+}
+
+#suggestions {
+	background-color: #ecf7f9;
+	margin: 10px 0px 10px 0px;
+	padding: 15px 15px 15px 15px;
+}
+
+#suggestions a {
+	text-decoration: none;
+}
+
+#search_words {
+	background-color: #ecf7f9;
+	margin: 10px 0px 10px 0px;
+	padding: 15px 15px 15px 15px;
+}
+
+.details_label {
+	display: inline;
+	font-size: 12px;
+	padding: 1px 5px 2px 5px;
+	margin: 1px 1px 0px 2px;
+}
+
+.word_item {
+	margin: 1px 0px 1px 0px;
+	padding: 0px 0px 0px 0px;
+}
+
+.result_item0 {
+	background-color: #EFE;
+	margin: 2px 5px 15px 15px;
+	padding: 0px 2px 5px 2px;
+}
+
+.result_item1 {
+	background-color: #DFD;
+	margin: 2px 5px 15px 15px;
+	padding: 0px 2px 5px 2px;
+}
+
+.word_count {
+	background-color: #666;
+	color: #FFF;
+}
+
+.word_info0 {
+	background-color: #F50;
+	color: #FFF;
+	font-size: 14px;
+	font-weight: bold;
+}
+
+.word_stat0 {
+	background-color: #888;
+	color: #FFF;
+}
+
+.word_stat1 {
+	background-color: #555;
+	color: #FFF;
+}
+
+.word_vocalization_nb {
+	background-color: #90A;
+	color: #FFF;
+}
+
+.word_vocalization {
+	background-color: #FFF;
+	color: #90A;
+	/* font-size:100%;*/
+}
+
+.item_number {
+	background-color: #FFF;
+	font-size: 2em;
+	font-weight: bold;
+	left: -10px;
+	padding: 0px 5px 1px 5px;
+	position: relative;
+	top: -10px;
+}
+
+.quran {
+	direction: rtl;
+	font-family: Scheherazade, me_quran, KacstBook, KacstQurn, ArabeyesQr, "KFGQPC Uthman Taha Naskh", Arial;
+	font-size: 2em;
+	margin: 2px 5px 10px 30px;
+}
+
+.match {
+	color: #181;
+}
+
+.word_details, .sura_details, .aya_details {
+	margin: 5px 5px 0px 20px;
+}
+
+.aya_stat0, .sura_stat1 {
+	background-color: #00A;
+	color: #FFF;
+}
+
+.aya_stat1, .sura_stat2 {
+	background-color: #30D;
+	color: #FFF;
+}
+
+.aya_stat2, .sura_stat3 {
+	background-color: #00F;
+	color: #FFF;
+}
+
+.aya_pos0 {
+	background-color: #074;
+	color: #FFF;
+}
+
+.aya_pos1 {
+	background-color: #062;
+	color: #FFF;
+}
+
+.aya_pos2 {
+	background-color: #084;
+	color: #FFF;
+}
+
+.aya_pos3 {
+	background-color: #094;
+	color: #FFF;
+}
+
+.sura_info0 {
+	background-color: #F50;
+	color: #FFF;
+	font-size: 14px;
+	font-weight: bold;
+}
+
+.sura_info1 {
+	background-color: #E80;
+	color: #FFF;
+}
+
+.sura_stat0 {
+	background-color: #90A;
+	color: #FFF;
+}
+
+.sura_ord0 {
+	background-color: #666;
+	color: #FFF;
+}
+
+.sura_ord1 {
+	background-color: #888;
+	color: #FFF;
+}
+
+.sura_ord1 {
+	background-color: #888;
+	color: #FFF;
+}
+
+.sura_ord1 {
+	background-color: #888;
+	color: #FFF;
+}
+
+
+.aya_sajda_exist {
+
+	background-color: #E44;
+	color: #FFF;
+	
+}
+
+.aya_sajda_id {
+	
+	background-color: #C44;
+	color: #FFF;
+	
+}
+
+.aya_sajda_type {
+	background-color: #A44;
+	color: #FFF;
+}
+
+.clickable {
+	font-weight: bold;
+	border-style:solid;
+	border-color:#A0C;
+	border-width:2px;
+}
+
+.filter {
+	
+	border-color:#000;
+	
+}
+
+.no_decoration {
+	text-decoration:none;
+		
+}
+
+/* Abdellah AD.*/
+
+
+.left {
+    float: left;
+}
+
+img.left {
+    margin-right: 10px;
+}
+
+.right {
+    float: right;
+}
+
+img.right {
+    margin-left: 10px;
+}
+
+
+
+/* Footer*/
+
+
+div#footer-big-wrapper {
+    font-family: 'Droid Sans',Georgia, Arial, sans-serif;
+    height: 303px;
+    background-image: url('../images/footer.png');
+    clear: both;
+    color: #aaa;
+}
+
+div#footer-big-wrapper a {
+    text-decoration: none;
+    color: #aaa;
+}
+
+div#footer-big-wrapper a:hover {
+    text-decoration: none;
+    color: #fff;
+}
+
+div#footer-big {
+    height: 303px;
+    width: 960px;
+    margin: auto;
+    font-size: 11px;
+    text-shadow: 0px 1px 1px #000;
+    background-image: url('../images/footer-bg.png');
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+div#footer-big div.column {
+    float: left;
+    width: 180px;
+    padding: 20px 20px 20px 0;
+}
+
+div#footer-big div.last {
+    padding: 20px 0 20px 60px;
+    width: 330px;
+}
+
+div#footer-big div.last img {
+    margin-bottom: 5px;
+}
+
+/* Abdellah only1 */
+div#footer-big div.last p:last-child {
+	line-height: 150%;
+}
+
+div#footer-big h1 {
+    color: #aaa;
+    font-size: 16px;
+    margin-bottom: 20px;
+    text-shadow: none;
+}
+
+div#footer-big ul {
+    width: 150px;
+}
+
+div#footer-big ul li {
+    height: 30px;
+    line-height: 30px;
+    border-top: 1px solid #2e353d;
+}
+
+div#footer-big ul li.last {
+    border-bottom: 1px solid #2e353d;
+}
+
+div#footer-small-wrapper {
+    font-family: 'Droid Sans',Georgia, Arial, sans-serif;
+    height: 30px;
+    background-color: #000;
+    border-top: 1px solid #2e353d;
+    color: #aaa;
+    font-size: 11px;
+
+
+}
+
+div#footer-small {
+    width: 960px;
+    margin: auto;
+    line-height: 30px;
+
+}
+
+div#footer-small a {
+    text-decoration: none;
+    color: #fff;
+}
+
+div#footer-small a:hover {
+    text-decoration: underline;
+}
+
+.quran_decoration {
+direction: rtl;
+font-family: ArabeyesQr, Scheherazade;
+}
+
 </style>
 
 
@@ -250,7 +937,7 @@ AYA_RESULTS_TEMPLATE = Template(("""
 					  		 <span class='quran_decoration prev_aya'>
 							 ] </span>
 							 <span style='direction:ltr;' class='prev_aya'>
-								({{ ayaresult_content.aya.prev_aya.sura }} {{ ayaresult_content.aya.prev_aya.id }})  
+								({{ ayaresult_content.aya.prev_aya.sura_arabic }} {{ ayaresult_content.aya.prev_aya.id }})  
 					  		</span>
 					  		 </p>
 					  		
@@ -269,7 +956,7 @@ AYA_RESULTS_TEMPLATE = Template(("""
 					 ] </span>
 					  <span style='direction:rtl;' class='main_aya'>
 					  		   
-											({{ ayaresult_content.identifier.sura_name }} {{ ayaresult_content.aya.id }})  
+											({{ ayaresult_content.identifier.sura_arabic_name }} {{ ayaresult_content.aya.id }})  
 							
 					   
 					  </span>
@@ -289,7 +976,7 @@ AYA_RESULTS_TEMPLATE = Template(("""
 							 <span style='direction:ltr;' class='next_aya'>
 							   
 					
-							({{ ayaresult_content.aya.next_aya.sura }} {{ ayaresult_content.aya.next_aya.id }}) 
+							({{ ayaresult_content.aya.next_aya.sura_arabic }} {{ ayaresult_content.aya.next_aya.id }}) 
 							
 							</span>
 					  		 </p>
@@ -328,7 +1015,7 @@ AYA_RESULTS_TEMPLATE = Template(("""
 					   {% endif %}
 					  	
 					  {% if ayaresult_content.stat or 	ayaresult_content.position %}		
-						  <div class='aya_details'>
+						  <div class='aya_details' style='text-align:center;'>
 						  	{% if ayaresult_content.stat %}
 			
 							  	<div class='details_label aya_stat0 clickable'> {{ _("words") }} | {{ ayaresult_content.stat.words }} </div>
@@ -344,7 +1031,7 @@ AYA_RESULTS_TEMPLATE = Template(("""
 								<div class='details_label aya_pos2'> {{ _("quart") }} | {{ ayaresult_content.position.rub + 1 }} </div>		
 								<div class='details_label aya_pos3 clickable filter'> {{ _("page") }} | {{ ayaresult_content.position.page }} </div>
 							{% endif %}
-						  </div><br /><br />
+						  </div><br />
 					  {% endif %}
 					  {% if  ayaresult_content.sajda.exist %}
 					  		<br /><div>
@@ -354,7 +1041,9 @@ AYA_RESULTS_TEMPLATE = Template(("""
 							</div><br />
 					  {% endif %}
 				
-			     </fieldset><br />
+			     </fieldset>
+			     <hr />
+			     <br />
 			{% endfor %}
 			
 		

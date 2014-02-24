@@ -6,7 +6,7 @@ Build
 -----
 The API uses many critical resources that must be downloaded and/or prepared to be used. To do that, just run this command in the root path of the project
 
-#. Install all building dependencies: `pyparsing <http://pyparsing.wikispaces.com/>`_, `pyqt4-dev-tools <http://www.riverbankcomputing.co.uk/software/pyqt/download>`_, `epydoc <http://epydoc.sourceforge.net/>`_,
+#. Install all building dependencies: `pyparsing <http://pyparsing.wikispaces.com/>`_, `epydoc <http://epydoc.sourceforge.net/>`_,
    `sphinx <http://sphinx.pocoo.org/>`_.
 
    * (ubuntu 12.04): 
