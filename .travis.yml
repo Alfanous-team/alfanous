@@ -6,9 +6,8 @@ virtualenv:
     system_site_packages: true
 before_install:
     - sudo apt-get update -qq
-    - sudo apt-get install -qq pyqt4-dev-tools
 install:
-    - pip install pyparsing epydoc sphinx nose --use-mirrors
+    - pip install pyparsing epydoc sphinx nose pyside --use-mirrors
     - make build
 notifications:
     email: false
