@@ -42,7 +42,7 @@ from alfanous.main import QuranicSearchEngine
 from alfanous.Indexing import QseDocIndex
 from alfanous.TextProcessing import QStandardAnalyzer, QDiacAnalyzer, QArabicSymbolsFilter, QUthmaniDiacAnalyzer, QUthmaniAnalyzer, APermissibleAnalyzer
 from alfanous.Exceptions import  Ta7rif
-from alfanous.Support.ar_ctype import strip_tashkeel
+from alfanous.Support.PyArabic.ar_ctype import strip_tashkeel
 from alfanous.Searching import QReader
 
 nor_ = strip_tashkeel

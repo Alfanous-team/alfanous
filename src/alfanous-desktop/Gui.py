@@ -25,9 +25,16 @@ TODO use QT Localization instead of gettext
 TODO printing
 """
 
+
+
+
 ## Importing modules
 import sys
 import os
+
+## development mode
+sys.path.insert(0, "../../src") 
+
 import gettext
 from re import compile
 import codecs

@@ -31,8 +31,8 @@ import re
 # from pyarabic.araby  import araby
 
 from alfanous.Support.whoosh.analysis import StopFilter, RegexTokenizer  # LowercaseFilter, StandardAnalyzer,
-from alfanous.Support.ar_ctype import strip_tashkeel, strip_tatweel,strip_shadda, normalize_spellerrors, normalize_hamza, normalize_lamalef  # , HARAKAT_pat,
-from alfanous.Support.arabic_const import FATHATAN, DAMMATAN, KASRATAN, FATHA, DAMMA, KASRA, SUKUN, SHADDA  # *
+from alfanous.Support.PyArabic.ar_ctype import strip_tashkeel, strip_tatweel,strip_shadda, normalize_spellerrors, normalize_hamza, normalize_lamalef, normalize_uthmani_symbols  # , HARAKAT_pat,
+from alfanous.Support.PyArabic.arabic_const  import FATHATAN, DAMMATAN, KASRATAN, FATHA, DAMMA, KASRA, SUKUN, SHADDA  # *
 
 from alfanous.Constants import INVERTEDSHAPING
 # from alfanous.dynamic_resources import stopwords_dyn ##should test existence before importing
@@ -60,27 +60,31 @@ class QStopFilter( StopFilter ):
 
 class QArabicSymbolsFilter():
     """        """
-    def __init__( self, shaping = True, tashkil = True, spellerrors = False, hamza = False, shadda= False ):
-        self.__shaping = shaping
-        self.__tashkil = tashkil
-        self.__spellerrors = spellerrors
-        self.__hamza = hamza
+    def __init__( self, shaping = True, tashkil = True, spellerrors = False, hamza = False, shadda= False, uthmani_symbols = False ):
+        self._shaping = shaping
+        self._tashkil = tashkil
+        self._spellerrors = spellerrors
+        self._hamza = hamza
+        self._uthmani_symbols = uthmani_symbols
 
 
     def normalize_all( self, text ):
-        if self.__shaping:
+        if self._shaping:
                 text = normalize_lamalef( text )
                 text = unicode_.normalize_shaping( text )
                 text = strip_tatweel( text )
 
-        if self.__tashkil:
+        if self._tashkil:
                 text = strip_tashkeel( text )
 
-        if self.__spellerrors:
+        if self._spellerrors:
                 text = normalize_spellerrors( text )
 
-        if self.__hamza:
+        if self._hamza:
                 text = normalize_hamza( text )
+                
+        if self._uthmani_symbols:
+                text = normalize_uthmani_symbols( text )
 
         return text
 
@@ -238,8 +242,8 @@ APermissibleAnalyzer = QSpaceTokenizer() | QArabicSymbolsFilter( shaping = True,
 QDiacAnalyzer = QSpaceTokenizer() | QArabicSymbolsFilter( tashkil = False )
 QHighLightAnalyzer =  QSpaceTokenizer() | QArabicSymbolsFilter()
 QDiacHighLightAnalyzer =  QSpaceTokenizer() | QArabicSymbolsFilter( tashkil = False)
-QUthmaniAnalyzer = QSpaceTokenizer() | QArabicSymbolsFilter()
-QUthmaniDiacAnalyzer = QSpaceTokenizer() | QArabicSymbolsFilter( tashkil = False )
+QUthmaniAnalyzer = QSpaceTokenizer() | QArabicSymbolsFilter( shaping = True, tashkil = True, spellerrors = False, hamza = False, uthmani_symbols = True)
+QUthmaniDiacAnalyzer = QSpaceTokenizer() | QArabicSymbolsFilter( tashkil = False, uthmani_symbols = True )
 
 
 

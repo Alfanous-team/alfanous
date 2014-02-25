@@ -192,8 +192,8 @@ class API:
             prefixes = parsedlist[0]
             Dict["prefixes"] = []
             if prefixes:
-                prefixDict = {}
                 for prefix in prefixes:
+                    prefixDict = {}
                     prefixDict["token"] = PREFIX[prefix][1]
                     prefixDict["arabictoken"] = PREFIX[prefix][0]
                     prefixDict["type"] = reverse_class( PREFIXclass )[prefix][0]

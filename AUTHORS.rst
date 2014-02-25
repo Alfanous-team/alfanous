@@ -1,9 +1,9 @@
-Alfanous - Advanced Quranic Search Engine , Authored by Assem Chelli (`@assem-ch <https://github.com/assem-ch>`_) <assem[DOT]ch[AT]gmail[DOTCOM]>
+Alfanous - Advanced Quranic Search Engine , Authored by A~CH (`@assem-ch <https://github.com/assem-ch>`_)
 
       We gratefully acknowledge contributions from the following.
       Please let us know if we missed anyone, thanks :)
 
-.. _`Assem Chelli`: https://github.com/assem-ch
+.. _`A~CH`: https://github.com/assem-ch
 .. _`Abdellah Chelli`: https://github.com/sneetsher 
 .. _`Zakaria Smahi`: https://github.com/zsmahi
 .. _`Mouad Debbar` : https://github.com/mdebbar
@@ -26,11 +26,11 @@ Contributors
 --------
 Coding
 --------
-* API & JSON interface: `Assem Chelli`_    
-* Desktop Interface: `Assem Chelli`_, `Sohaib Afifi`_
-* Web Interface: `Assem Chelli`_  , `Walid Ziouche`_, `Abdellah Chelli`_ , `Mouad Debbar`_,  `Mennouchi Islam Azeddine <https://github.com/islamoc>`_, `Muslih al aqaad`_, `Tedjeddine Meabeo`_ ,   , Ahmed Ramadan
+* API & JSON interface: `A~CH`_    
+* Desktop Interface: `A~CH`_, `Sohaib Afifi`_
+* Web Interface: `A~CH`_  , `Walid Ziouche`_, `Abdellah Chelli`_ , `Mouad Debbar`_,  `Mennouchi Islam Azeddine <https://github.com/islamoc>`_, `Muslih al aqaad`_, `Tedjeddine Meabeo`_ ,   , Ahmed Ramadan
 * Firefox toolbar: `Zakaria Smahi`_ 
-* PyArabic(Integrated): Taha Zerrouki, Assem Chelli, Ahimta~
+* PyArabic(Integrated): Taha Zerrouki, A~CH, Ahimta~
 
 --------
 Research
@@ -39,20 +39,20 @@ Research
   
   * **Title**:  Développement d'un moteur de recherche et d'indexation dans les documents coraniques
   * **University**: ESI_ - Algiers
-  * **Collaborators**: Assem Chelli (Student), Merouane Dahmani (Student), Taha Zerrouki  ( Supervisor),  Pr. Amar Balla ( Supervisor)  
+  * **Collaborators**: A~CH (Student), Merouane Dahmani (Student), Taha Zerrouki  ( Supervisor),  Pr. Amar Balla ( Supervisor)  
 
 * **March 2011: Arabic Research paper**
   
   * **Title**: An Application Programming Interface for indexing and search in Noble Quran
   * **Original title**: مكتبة برمجية للفهرسة والبحث في القرآن الكريم
   * **Conference**: NITS 2011 KSA 
-  * **Collaborators**:  Assem Chelli, Merouane Dahmani, Taha Zerrouki,  Pr. Amar Balla 
+  * **Collaborators**:  A~CH, Merouane Dahmani, Taha Zerrouki,  Pr. Amar Balla 
    
 * **May 2012: English Research paper** 
   
   * **Title**:. Advanced Search in Quran: Classification and Proposition of All Possible Features     
   * **Conference**:  A pre-conference workshop in LREC 2012 Turkey which is about ”LRE-Rel: Language Resource and Evaluation for Religious Texts”
-  * **Collaborators**: Assem Chelli, Taha Zerrouki,  Pr. Amar Balla
+  * **Collaborators**: A~CH, Taha Zerrouki,  Pr. Amar Balla
 
 
 .. _ESI: http://www.esi.dz
@@ -68,7 +68,7 @@ Graphics & Design
 --------- 
 Packaging 
 ---------
-* Windows NSIS installer: Assem Chelli 
+* Windows NSIS installer: A~CH 
 * Ubuntu/Sabily DEB package: Ahmed Almahmoudy
 * Fedora/OpenSuse/Ojuba RPM package: Muhammad Shaban
 * Arch-linux package: Walid Ziouche, Sohaib Afifi
@@ -76,14 +76,14 @@ Packaging
 ------------------
 Resource Enriching
 ------------------
-* Word index: Taha Zerrouki, Assem Chelli, Asmaa Mhimeh, Rahma Maaref 
+* Word index: Taha Zerrouki, A~CH, Asmaa Mhimeh, Rahma Maaref 
 * Aya index: {Tanzil Project}, Taha Zerrouki (Subjects), Muhi-uddin (Indian mushaf pages)
 * Translations:  {Tanzil Project},
 
 -------------
 Documentation
 -------------
-* Wiki: Assem Chelli, Abdellah Chelli 
+* Wiki: A~CH, Abdellah Chelli 
 
 -------
 Writing
@@ -111,7 +111,7 @@ Translation
 
 * Main Web Interface
 
-  * Arabic: Assem Chelli, Yasmine Houadjli
+  * Arabic: A~CH, Yasmine Houadjli
   * French: Zineb Pub, Yasmine Houadjli, Abdelkarim Aries, Nassim rehali, Nasreddine Cheniki
   * Indonesian:  Ahmed Jumal , Amy cidra, Mahyuddin Susanto
   * Japanese: Abdelkarim Aries
