@@ -5,19 +5,19 @@ Summary: Alfanous is a search engine API provide the simple and advanced search 
 Version: alfanous.version
 Release: alfanous.release%{?dist}
 License: GPL
-Url:     http://alfanous.org
+Url:     http://www.alfanous.org
 #Source0: https://github.com/Alfanous-team/alfanous/archive/master.zip
 Source1: alfanous.xml
 Group:   Quran/Tools
-BuildRequires: python python-setuptools python-distutils-extra python-configobj unzip ImageMagick
+BuildRequires: python python-setuptools python-distutils-extra python-configobj  unzip ImageMagick
 Requires: python python-configobj python-alfanous islamic-menus
 %if 0%{?fedora_version} || 0%{?rhel_version}
-BuildRequires: PyQt4-devel pyparsing
-Requires:  PyQt4 pyparsing
+BuildRequires: pyside pyparsing
+Requires:  pyside pyparsing
 %endif
 %if 0%{?suse_version}
-BuildRequires: python-qt4-devel python-pyparsing
-Requires:  python-qt4 python-pyparsing
+BuildRequires: python-pyside python-pyparsing
+Requires:  python-qt5 python-pyparsing
 %endif
 
 %description
