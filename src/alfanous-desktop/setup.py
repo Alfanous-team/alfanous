@@ -36,7 +36,7 @@ setup(
 	platforms = "ALL",
 	license = "AGPL",
 	packages = ["alfanousDesktop"],
-	install_requires = ['alfanous', 'configobj', 'pyparsing',"jinja2"], #, 'pyqt'
+	install_requires = ['alfanous', 'configobj', 'pyparsing',"jinja2","pyside"],
 	author = "Assem Chelli",
 	author_email = "assem.ch@gmail.com",
 	maintainer = "Assem Chelli",
