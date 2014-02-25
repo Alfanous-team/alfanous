@@ -55,6 +55,11 @@ function prepare_statistics(bunit,gunit,  from, to ) {
 	return gunit+  "_" + bunit + ":[ " + from + " to " + to + " ]";
 }
 
+function prepare_search_by_id(sura_name, aya_id) {
+	
+	return "sura:\""  + sura_name + "\" +  aya_id:" + aya_id ;
+}
+
 
 function AddToSearchBar(query, relation) {
 
