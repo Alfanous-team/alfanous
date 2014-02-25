@@ -38,7 +38,7 @@ setup(
 	packages = ['alfanous', 'alfanous.dynamic_resources', 'alfanous.Support',
             'alfanous.Support.whoosh', 'alfanous.Support.whoosh.filedb',
             'alfanous.Support.whoosh.lang', 'alfanous.Support.whoosh.qparser',
-            'alfanous.Support.whoosh.support'],
+            'alfanous.Support.whoosh.support','alfanous.Support.PyArabic',],
 
 	install_requires = ['pyparsing'], # 'whoosh == 0.3.18',
 

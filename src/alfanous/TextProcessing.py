@@ -31,8 +31,8 @@ import re
 # from pyarabic.araby  import araby
 
 from alfanous.Support.whoosh.analysis import StopFilter, RegexTokenizer  # LowercaseFilter, StandardAnalyzer,
-from Araby.ar_ctype import strip_tashkeel, strip_tatweel,strip_shadda, normalize_spellerrors, normalize_hamza, normalize_lamalef, normalize_uthmani_symbols  # , HARAKAT_pat,
-from Araby.arabic_const  import FATHATAN, DAMMATAN, KASRATAN, FATHA, DAMMA, KASRA, SUKUN, SHADDA  # *
+from alfanous.Support.PyArabic.ar_ctype import strip_tashkeel, strip_tatweel,strip_shadda, normalize_spellerrors, normalize_hamza, normalize_lamalef, normalize_uthmani_symbols  # , HARAKAT_pat,
+from alfanous.Support.PyArabic.arabic_const  import FATHATAN, DAMMATAN, KASRATAN, FATHA, DAMMA, KASRA, SUKUN, SHADDA  # *
 
 from alfanous.Constants import INVERTEDSHAPING
 # from alfanous.dynamic_resources import stopwords_dyn ##should test existence before importing
