@@ -7,7 +7,8 @@ virtualenv:
 before_install:
     - sudo apt-get update -qq
 install:
-    - pip install pyparsing epydoc sphinx nose pyside --use-mirrors
+    - apt-get install python-pyside
+    - pip install pyparsing epydoc sphinx nose  --use-mirrors
     - make build
 notifications:
     email: false
