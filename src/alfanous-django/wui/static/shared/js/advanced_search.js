@@ -46,6 +46,15 @@ function prepare_topics(chapter, topic, subtopic ) {
 	return "فصل:\"" + chapter + "\"";
 }
 
+function prepare_structures(unit, from, to ) {
+	
+	return unit + ":[ " + from + " to " + to + " ]";
+}
+function prepare_statistics(bunit,gunit,  from, to ) {
+	
+	return gunit+  "_" + bunit + ":[ " + from + " to " + to + " ]";
+}
+
 
 function AddToSearchBar(query, relation) {
 
