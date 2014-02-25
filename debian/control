@@ -8,7 +8,7 @@ Build-Depends: debhelper (>= 8)
 Build-Depends-Indep: python (>= 2.6.6-3~),
  python-setuptools, 
  python-pyparsing,
- pyqt4-dev-tools
+ python-pyside
 Standards-Version: 3.9.2
 Homepage: http://alfanous.org
 X-Python-Version: >= 2.5
@@ -17,7 +17,7 @@ Package: alfanous
 Architecture: all
 Depends: ${misc:Depends},
  ${python:Depends},
- python-qt4,
+ python-qt5,
  python-alfanous,
  fonts-arabeyes,
  ttf-me-quran
