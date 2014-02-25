@@ -41,6 +41,11 @@ function prepare_word_properties(root, type ) {
 	return "{" + root + "،" + type + "}";
 }
 
+function prepare_topics(chapter, topic, subtopic ) {
+	
+	return "فصل:\"" + chapter + "\"";
+}
+
 
 function AddToSearchBar(query, relation) {
 
