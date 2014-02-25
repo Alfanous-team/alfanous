@@ -473,6 +473,11 @@ a:hover{color: green;}
 	color: #FFF;
 }
 
+.word_derivation_nb {
+	background-color: #50F;
+	color: #FFF;
+}
+
 .word_vocalization {
 	background-color: #FFF;
 	color: #90A;
@@ -491,9 +496,9 @@ a:hover{color: green;}
 
 .quran {
 	direction: rtl;
-	font-family: Scheherazade, me_quran, KacstBook, KacstQurn, ArabeyesQr, "KFGQPC Uthman Taha Naskh", Arial;
-	font-size: 2em;
-	margin: 2px 5px 10px 30px;
+	font-family: me_quran, ArabeyesQr, Scheherazade,  KacstBook, KacstQurn,  "KFGQPC Uthman Taha Naskh", Arial;
+	font-size: 1em; 
+	margin: 2px 5px 10px 5px;
 }
 
 .match {
@@ -597,10 +602,10 @@ a:hover{color: green;}
 }
 
 .clickable {
-	font-weight: bold;
+	font-weight: bold; 
 	border-style:solid;
 	border-color:#A0C;
-	border-width:2px;
+	border-width:1px;
 }
 
 .filter {
@@ -764,8 +769,9 @@ font-family: ArabeyesQr, Scheherazade;
 			{% endfor %}
 		</div><br />
 		{% endif %}
+
 		{% if results.search.interval.total %}
-			{% if results.search.words.nb_words %}
+			{% if results.search.words.global.nb_words %}
 				<!-- Words list -->
 				<div id='search_words' style=" text-align:left" >
 				  <h2 class='wordheader'> {{ "Words:" }} </h2>
@@ -779,7 +785,7 @@ font-family: ArabeyesQr, Scheherazade;
 					    {{ "vocalizations" }} | {{ results.search.words.global.nb_vocalizations }} 
 					  </div> 
 				  <br />
-				{% for wordcpt, wordstat in results.search.words.individual.items %}
+				{% for wordcpt, wordstat in results.search.words.individual.items() %}
 						<p style='direction:ltr;' >
 						  <div class='word_details'>
 						    <span style=' font-size:14pt; color:#00aa00;'> {{ wordcpt }}.  </span>
@@ -791,7 +797,7 @@ font-family: ArabeyesQr, Scheherazade;
 							<div class='word_extra_details'>
 							<div class='details_label word_vocalization_nb'> {{ _("vocalizations") }} | {{ wordstat.nb_vocalizations }} </div>
 							{% for vocalization in wordstat.vocalizations %} 
-								<div class='details_label word_vocalization clickable quran'> {{ vocalization }} </div>
+								<div class='details_label word_vocalization clickable'> {{ vocalization }} </div>
 							{% endfor %}
 							
 							
@@ -799,9 +805,9 @@ font-family: ArabeyesQr, Scheherazade;
 								<br />
 								<div class='details_label word_synonym_nb'> {{ _("synonyms") }} | {{ wordstat.nb_synonyms }} </div>
 								{% for synonym in wordstat.synonyms %} 
-											<div class='details_label word_synonym clickable quran'> {{ synonym }} </div>
+											<div class='details_label word_synonym clickable'> {{ synonym }} </div>
 								{% endfor %}
-								<div class='details_label word_synonym clickable quran'>  ~  </div>
+							
 							{% endif %}
 							
 			
@@ -810,13 +816,12 @@ font-family: ArabeyesQr, Scheherazade;
 								<div class='details_label word_derivation_nb'> {{ _("derivations") }} | {{ wordstat.nb_derivations }} </div> 
 								{% for derivation in wordstat.derivations %} 
 								
-									<div class='details_label word_derivation clickable quran'> {{ derivation }} </div>
+									<div class='details_label word_derivation clickable'> {{ derivation }} </div>
 								{% endfor %}
-								<div class='details_label word_derivation clickable quran'>  >  </div>
 							{% endif %}
-
-						{% for annotation_word, parts in wordstat.annotations.items %}
-							{% for part_order, annotation_detail in parts.items %} 
+						{% if wordstat.nb_annotations %}
+						{% for annotation_word, parts in wordstat.annotations.items() %}
+							{% for part_order, annotation_detail in parts.items() %} 
 								<p   class='annotation_details'>
 								<div style=' font-size:12pt; color:#99aa88;'> {{ wordcpt }}.{{ forloop.counter }}.{{ part_order }} </div>
 								<div class='details_label word_annotation clickable'> {{ _("Annotation") }} | {{ annotation_word }} </div>
@@ -873,6 +878,7 @@ font-family: ArabeyesQr, Scheherazade;
 								</p>
 							{% endfor %}
 						{% endfor %}
+						{% endif %}
 						   </div>
 						   </div>
 				{% endfor %}

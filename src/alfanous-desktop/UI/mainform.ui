@@ -240,16 +240,7 @@
           <property name="spacing">
            <number>3</number>
           </property>
-          <property name="leftMargin">
-           <number>3</number>
-          </property>
-          <property name="topMargin">
-           <number>3</number>
-          </property>
-          <property name="rightMargin">
-           <number>3</number>
-          </property>
-          <property name="bottomMargin">
+          <property name="margin">
            <number>3</number>
           </property>
           <item>
@@ -678,7 +669,7 @@
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>411</width>
+          <width>253</width>
           <height>528</height>
          </rect>
         </property>
@@ -964,7 +955,7 @@
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>411</width>
+          <width>189</width>
           <height>332</height>
          </rect>
         </property>
@@ -1245,7 +1236,7 @@
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>411</width>
+          <width>193</width>
           <height>192</height>
          </rect>
         </property>
@@ -1417,7 +1408,7 @@
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>411</width>
+          <width>183</width>
           <height>227</height>
          </rect>
         </property>
@@ -1652,7 +1643,7 @@
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>411</width>
+          <width>247</width>
           <height>227</height>
          </rect>
         </property>
@@ -1905,7 +1896,7 @@
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>411</width>
+          <width>235</width>
           <height>262</height>
          </rect>
         </property>
@@ -2164,8 +2155,8 @@
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>424</width>
-          <height>89</height>
+          <width>384</width>
+          <height>73</height>
          </rect>
         </property>
         <attribute name="label">
@@ -2177,7 +2168,7 @@
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>411</width>
+          <width>263</width>
           <height>262</height>
          </rect>
         </property>
@@ -2483,7 +2474,7 @@
     <string>SearchBar</string>
    </property>
    <attribute name="dockWidgetArea">
-    <number>4</number>
+    <number>1</number>
    </attribute>
    <widget class="QWidget" name="dockWidgetContents_7">
     <layout class="QVBoxLayout" name="verticalLayout_11">
