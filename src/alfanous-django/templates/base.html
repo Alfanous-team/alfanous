@@ -189,6 +189,8 @@
 										<!-- <a href="#" onclick="change_skin('spacelab','light');" id="spacelab_skin">{{ _("Spacelab") }}</a> -->
 										<!-- <a href="#" onclick="change_skin('superheroes','dark');" id="superheroes_skin">{{ _("Super Heroes") }}</a>  -->
 									    <a href="#" onclick="change_skin('united','light');"  id="united_skin">{{ _("United") }}</a>
+
+									
 									{% endifequal %}
 
 								</li>
@@ -296,13 +298,32 @@
                                 data-bootstro-placement='top' data-bootstro-step='2'>
                                     <a class="text-center show_hide">
                                         <i class="icon-wrench"></i>
-                                        {{ _("Search options") }} [+]
+                                        {{ _("Advanced Search") }} [+]
                                     </a>
                                 </div>
 
-                                <div class="row slidingForm  ">
-                                    {# <form class="form-horizontal "> #}
-                                        <fieldset class="well well-small">
+                                <div class="row slidingForm well well-small tabbable tabs-left">
+                                <ul id="advanced_search_panel" class="nav nav-tabs text-left ">
+									  <li class="active">
+									    <a href="#advanced_search_options" data-toggle="tab"><i class="icon-cog"></i> <span class="hidden-phone" >{{ _("Options") }}</span></a>
+									  </li>
+									  <li>
+									  		<a href="#advanced_search_advanced_query" data-toggle="tab"><i class="icon-asterisk"></i> <span class="hidden-phone" >{{ _("Advanced Query") }}</span></a>
+									  </li>
+									  <li class="disabled">
+									  		<a href="#advanced_search_linguistic" data-toggle="tab"><i class="icon-font"></i> <span class="hidden-phone" >{{ _("Linguistic Search") }}</span></a>
+									  </li>
+									  <li class="disabled"><a href="#advanced_search_thematic" data-toggle="tab"><i class="icon-book"></i> <span class="hidden-phone" >{{ _("Thematic Search") }}</span></a></li>
+									  <li class="disabled"><a href="#advanced_search_structural" data-toggle="tab"><i class="icon-sitemap"></i> <span class="hidden-phone" >{{ _("Structural Search") }}</span></a></li>
+									  <li class="disabled"><a href="#advanced_search_statistic" data-toggle="tab"><i class="icon-bar-chart"></i> <span class="hidden-phone" >{{ _("Statistical Search") }}</span></a></li>
+									  <li class="disabled"><a href="#advanced_search_misc" data-toggle="tab"><i class="icon-ellipsis-horizontal"></i> <span class="hidden-phone" >{{ _("Miscellaneous") }}</span></a></li>
+									  <li class="disabled" ><a href="#advanced_search_predef" data-toggle="tab"><i class="icon-magic"></i> <span class="hidden-phone" >{{ _("Predefined Queries") }}</span></a></li>
+									  
+									</ul>
+									
+									<div class="tab-content well">
+									  <div class="tab-pane active" id="advanced_search_options">
+											<fieldset class="">
                                                 {% block options %}
                                                 {% endblock %}
 
@@ -310,16 +331,18 @@
                                                 {% block sortedby_panel %}{% endblock %}
                                                 {% block translations_panel %}{% endblock %}
                                                 {% block recitations_panel %} {% endblock %}
+                                        	</fieldset>
 
-                                                <!--  no need for double submit button
-                                                <div class="control-group">
-                                                    <label class="control-label"></label>
-                                                    <div class="controls">
-                                                        <button type="submit" id="singlebutton" name="singlebutton" class="btn btn-primary" onclick="$('#form').submit(); return false;">{{ _("Bismi'Allah Go!") }}</button>
-                                                    </div>
-                                                </div>-->
-                                        </fieldset>
-                                    {# </form> #}
+										</div>
+									  <div class="tab-pane" id="advanced_search_advanced_query">2</div>
+									  <div class="tab-pane" id="advanced_search_linguistic">3</div>
+									  <div class="tab-pane" id="advanced_search_thematic">4</div>
+									  <div class="tab-pane" id="advanced_search_structural">5</div>
+									  <div class="tab-pane" id="advanced_search_statistic">6</div>
+									  <div class="tab-pane" id="advanced_search_misc">7</div>
+									  <div class="tab-pane" id="advanced_search_predef">8</div>
+									</div>
+                                       
                                 </div>
                             {% endif %}
                         </form>
