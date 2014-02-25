@@ -304,6 +304,7 @@
 
                                 <div class="row slidingForm well well-small tabbable tabs-{{ bidi.align }}">
                                 <ul id="advanced_search_panel" class="nav nav-tabs text-{{ bidi.align }} ">
+                                    <li class=""> <a href="#advanced_search_predef" data-toggle="tab"><i class="icon-magic"></i> <span class="hidden-phone" >{{ _("Predefined Queries") }}</span></a></li>
 									  <li class="active">
 									    <a href="#advanced_search_options" data-toggle="tab"><i class="icon-cog"></i> <span class="hidden-phone" >{{ _("Options") }}</span></a>
 									  </li>
@@ -316,9 +317,7 @@
 									  <li class=""><a href="#advanced_search_thematic" data-toggle="tab"><i class="icon-book"></i> <span class="hidden-phone" >{{ _("Thematic Search") }}</span></a></li>
 									  <li class=""><a href="#advanced_search_structural" data-toggle="tab"><i class="icon-sitemap"></i> <span class="hidden-phone" >{{ _("Structural Search") }}</span></a></li>
 									  <li class=""><a href="#advanced_search_statistic" data-toggle="tab"><i class="icon-bar-chart"></i> <span class="hidden-phone" >{{ _("Statistical Search") }}</span></a></li>
-									  <li class="disabled"><a href="#advanced_search_misc" data-toggle="tab"><i class="icon-ellipsis-horizontal"></i> <span class="hidden-phone" >{{ _("Miscellaneous") }}</span></a></li>
-
-									  <li class="disabled"><a href="#advanced_search_predef" data-toggle="tab"><i class="icon-magic"></i> <span class="hidden-phone" >{{ _("Predefined Queries") }}</span></a></li>
+									  <li class="hidden"><a href="#advanced_search_misc" data-toggle="tab"><i class="icon-ellipsis-horizontal"></i> <span class="hidden-phone" >{{ _("Miscellaneous") }}</span></a></li>
 									</ul>
 									
 									<div class=" tab-content well">
@@ -349,8 +348,9 @@
 									  <div class="tab-pane text-{{ bidi.align }}" id="advanced_search_statistic">
 									  	{% include 'wui/advanced_search/statistical.html' %} 
 									  </div>
-									  <div class="tab-pane" id="advanced_search_misc">7</div>
-									  <div class="tab-pane" id="advanced_search_predef">8</div>
+									  <div class="tab-pane text-{{ bidi.align }}" id="advanced_search_predef">
+									  	{% include 'wui/advanced_search/predefined_queries.html' %} 
+									  </div>
 									</div>
                                        
                                 </div>
