@@ -313,7 +313,7 @@
 									  <li>
 									  		<a href="#advanced_search_linguistic" data-toggle="tab"><i class="icon-font"></i> <span class="hidden-phone" >{{ _("Word Properties") }}</span></a>
 									  </li>
-									  <li class="disabled"><a href="#advanced_search_thematic" data-toggle="tab"><i class="icon-book"></i> <span class="hidden-phone" >{{ _("Thematic Search") }}</span></a></li>
+									  <li class=""><a href="#advanced_search_thematic" data-toggle="tab"><i class="icon-book"></i> <span class="hidden-phone" >{{ _("Thematic Search") }}</span></a></li>
 									  <li class="disabled"><a href="#advanced_search_structural" data-toggle="tab"><i class="icon-sitemap"></i> <span class="hidden-phone" >{{ _("Structural Search") }}</span></a></li>
 									  <li class="disabled"><a href="#advanced_search_statistic" data-toggle="tab"><i class="icon-bar-chart"></i> <span class="hidden-phone" >{{ _("Statistical Search") }}</span></a></li>
 									  <li class="disabled"><a href="#advanced_search_misc" data-toggle="tab"><i class="icon-ellipsis-horizontal"></i> <span class="hidden-phone" >{{ _("Miscellaneous") }}</span></a></li>
@@ -340,7 +340,9 @@
 									  <div class="tab-pane text-left" id="advanced_search_linguistic">
 									  	{% include 'wui/advanced_search/linguistic.html' %} 
 										 </div>
-									  <div class="tab-pane" id="advanced_search_thematic">4</div>
+									  <div class="tab-pane" id="advanced_search_thematic">
+										{% include 'wui/advanced_search/thematic.html' %} 
+									</div>
 									  <div class="tab-pane" id="advanced_search_structural">5</div>
 									  <div class="tab-pane" id="advanced_search_statistic">6</div>
 									  <div class="tab-pane" id="advanced_search_misc">7</div>
