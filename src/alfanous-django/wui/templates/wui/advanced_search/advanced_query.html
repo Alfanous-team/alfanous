@@ -1,0 +1,58 @@
+											<span class="row-fluid">
+												<span class="span3">{{ _("Text") }}</span> 
+												<input id="advanced_search_advanced_query_text" type="text" placeholder="{{ _('query') }}"  class="span9 input-medium ">
+											</span>
+											<hr />
+											<label class="radio">
+										  		<input type="radio" name="advanced_search_advanced_query_optionsRadios" id="advanced_search_advanced_query_optionsRadios1" value="phrase" checked>
+											  	{{ _("Phrase search") }} " "
+											</label><br />
+			
+											<label class="radio">
+											  <input type="radio" name="advanced_search_advanced_query_optionsRadios" id="advanced_search_advanced_query_optionsRadios2" value="partofwords">
+											  {{ _("Part of other words") }} * *
+											</label><br />
+											<label class="radio">
+											  <input type="radio" name="advanced_search_advanced_query_optionsRadios" id="advanced_search_advanced_query_optionsRadios3" value="allwords">
+											  {{ _("All these words") }} +
+											</label><br />
+											<label class="radio">
+											  <input type="radio" name="advanced_search_advanced_query_optionsRadios" id="advanced_search_advanced_query_optionsRadios4" value="somewords">
+											  {{ _("At least one of these words") }} |
+											</label><br />
+											<label class="radio">
+											  <input type="radio" name="advanced_search_advanced_query_optionsRadios" id="advanced_search_advanced_query_optionsRadios5" value="exceptwords">
+											  {{ _("Except these words") }} -
+											</label><br />
+											<label class="radio">
+											  <input type="radio" name="advanced_search_advanced_query_optionsRadios" id="advanced_search_advanced_query_optionsRadios6" value="synonyms">
+											  {{ _("Synonyms") }} ~
+											</label><br />
+											<label class="radio">
+											  <input type="radio" name="advanced_search_advanced_query_optionsRadios" id="advanced_search_advanced_query_optionsRadios7" value="partialvocalization">
+											  {{ _("Partial vocalization") }} ' '
+											</label><br />
+											<label class="radio">
+											  <input type="radio" name="advanced_search_advanced_query_optionsRadios" id="advanced_search_advanced_query_optionsRadios8" value="lightstemming">
+											  {{ _("Light Stemming") }} >
+											</label><br />
+											<label class="radio">
+											  <input type="radio" name="advanced_search_advanced_query_optionsRadios" id="advanced_search_advanced_query_optionsRadios9" value="deepstemming">
+											  {{ _("Deep Stemming") }} >>
+											</label><br />
+											<hr />
+											
+											<span class="row-fluid">
+												<span class="span3"> {{ _("Relation") }} </span> 
+												<select id="advanced_search_advanced_query_relation" class=" span9" >
+												  <option value="replace">{{ _("Replacement") }}</option>
+												  <option value="add">{{ _("Addition") }}</option>
+												  <option value="and">{{ _("Conjunction (AND)") }}</option>
+												  <option value="or">{{ _("Disjunction (OR)") }}</option>
+												  <option value="andnot">{{ _("Exception (ANDNOT)") }}</option>
+												</select>
+											</span>
+											<button class="btn btn-primary btn-block" type="button" 
+											onclick="AddToSearchBar( prepare_advanced_query($('#advanced_search_advanced_query_text').val(),$('input:radio[name=advanced_search_advanced_query_optionsRadios]:checked').val()), $('#advanced_search_advanced_query_relation').val() );">
+												{{ _("Add to search bar") }}
+											</button>

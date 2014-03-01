@@ -1,0 +1,42 @@
+{% load query %}
+	<div class="row-fluid">
+			<span class=""> {{ _("Get me the ayah number°") }}</span>
+			<input class="minimal_size" id="direct_access_aya_number" type="number" min="0" max="10"  value="1">
+			<span class=""> {{ _("of surah:") }}</span>
+			<span>
+				<select  class="" id="direct_access_sura_name" >
+												{% for surate in info.show.surates.Romanized %}
+												  <option value="{{ surate }}"> {{ surate }} </option>
+												{% endfor %}
+				</select>
+			</span>
+		 	 <a onclick="AddToSearchBar(prepare_search_by_id($('#direct_access_sura_name').val(),$('#direct_access_aya_number').val()),'replace');$('#form').submit(); return false;" class="btn btn-primary" type="button">{{ _("Go!") }}</a>
+	</div>
+	<hr />
+	<div class="row-fluid">
+			<span class=""> {{ _("Get me all sajadate in Holy Quran (Rewayate Hafs)?") }}</span>
+		 	 <a href='/?{% custom_query "sajda:نعم" 1 False%}' class="btn btn-primary" type="button">Go!</a>
+	</div>
+	<hr />
+
+<!--
+	<div class="row-fluid">
+			Give me all ayahs that contains X letters TODO
+			Give me all ayahs that contains X words TODO
+	</div>
+	<hr />
+	<div class="row-fluid">
+			Search using all words having only one letter
+	</div>
+	<hr />
+
+	<div class="row-fluid">
+			Search using all derivations of the word X
+	</div>
+	<hr />
+
+	<div class="row-fluid">
+			G	</div>
+	<hr />
+
+-->

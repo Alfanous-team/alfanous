@@ -215,3 +215,11 @@ table th.text-center {
 .affix {
   z-index: 2;
 }
+
+#advanced_search_panel  a {
+	min-width: 10px !important;
+}
+
+.minimal_size {
+	width: 80px;
+}
