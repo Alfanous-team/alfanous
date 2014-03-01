@@ -14,3 +14,14 @@ deny from 1.80.0.0/13 1.192.0.0/13 1.202.0.0/15 14.144.0.0/12 14.208.0.0/12 27.8
 
 ## allow compression mod_deflate
 SetOutputFilter DEFLATE 
+
+
+
+############################################
+## Add default Expires header
+## http://developer.yahoo.com/performance/rules.html#expires
+
+<IfModule mod_expires.c>
+    ExpiresActive On
+    ExpiresDefault "access plus 1 year"
+</IfModule>
