@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-02-25 17:09+0100\n"
+"POT-Creation-Date: 2014-03-01 02:20+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1494,20 +1494,20 @@ msgstr ""
 msgid "Particle"
 msgstr ""
 
-#: wui/templates/wui/advanced_search/predefined_queries.html:6
-msgid "Get me the ayah number°"
+#: wui/templates/wui/advanced_search/predefined_queries.html:17
+msgid "Ayah:"
 msgstr ""
 
-#: wui/templates/wui/advanced_search/predefined_queries.html:8
-msgid "of surah:"
+#: wui/templates/wui/advanced_search/predefined_queries.html:21
+msgid "Surah:"
 msgstr ""
 
-#: wui/templates/wui/advanced_search/predefined_queries.html:16
+#: wui/templates/wui/advanced_search/predefined_queries.html:29
 msgid "Go!"
 msgstr ""
 
-#: wui/templates/wui/advanced_search/predefined_queries.html:23
-msgid "Get me all sajadate in Holy Quran (Rewayate Hafs)?"
+#: wui/templates/wui/advanced_search/predefined_queries.html:35
+msgid "All sajadate in Quran?"
 msgstr ""
 
 #: wui/templates/wui/advanced_search/statistical.html:2
