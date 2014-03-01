@@ -261,9 +261,9 @@ class Raw():
 		##
 		self._information = Resources.information( Information_file )
 		##
-		self._stats = Configs.stats( Stats_file )
+		# self._stats = Configs.stats( Stats_file )
 		# enable it if you need statistics , disable it you prefer performance
-		self._init_stats()
+		# self._init_stats()
 		##
 		self._surates = { 
                          "Arabic": [item for item in self.QSE.list_values( "sura_arabic" ) if item],
@@ -310,7 +310,7 @@ class Raw():
 
 		# gather statistics, enable it if you need use statistics
 		# disable it if you prefer performance
-		self._process_stats( flags )
+		# self._process_stats( flags )
 
 		# init the error message with Succes
 		output = self._check( 0, flags )
@@ -1107,14 +1107,12 @@ class Raw():
 							"page": ( ( start - 1 ) / range ) + 1,
 							"nb_pages": ( ( len( res ) - 1 ) / range ) + 1
 							}
-
 		### Words
 		cpt = start - 1
 		output["words"] = {}
 		for r in reslist :
 			cpt += 1
 			output["words"][ cpt ] = {
-
 					  "identifier": {
 									 "gid":r["gid"],
 									 "word_gid": r["word_gid"],

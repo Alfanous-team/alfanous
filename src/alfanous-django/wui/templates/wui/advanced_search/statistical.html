@@ -1,0 +1,44 @@
+											<span class="row-fluid">
+												<span class="span3"> {{ _("Number of") }} </span> 
+												<select id="advanced_search_statistical_basic_unit" class=" span9" >
+												  <option value="l">{{ _("letters") }}</option>
+												  <option value="w">{{ _("words") }}</option>
+												  <option value="g">{{ _("devine names") }}</option>
+												  <option value="a">{{ _("ayahs") }}</option>
+												  <option value="r">{{ _("ruku's") }}</option>
+												</select>
+											</span>
+											
+											<span class="row-fluid">
+												<span class="span3"> {{ _("In") }} </span> 
+												<select id="advanced_search_statistical_global_unit" class=" span9" >
+												  <option value="a">{{ _("ayah") }}</option>
+												  <option value="s">{{ _("surah") }}</option>
+												</select>
+											</span>
+											
+											<span class="row-fluid">
+												<span class="span3"> {{ _("From") }} </span> 
+												<INPUT id="advanced_search_statistical_from" class="span9" TYPE="NUMBER" MIN="0" MAX="6236" STEP="1" VALUE="1" >
+											</span>
+											
+											
+											<span class="row-fluid">
+												<span class="span3"> {{ _("To") }} </span> 
+												<INPUT id="advanced_search_statistical_to" class="span9" TYPE="NUMBER" MIN="0" MAX="6236" STEP="1" VALUE="1" >
+											</span>
+											<hr />
+											<span class="row-fluid">
+												<span class="span3"> {{ _("Relation") }} </span> 
+												<select id="advanced_search_statistical_relation" class=" span9" >
+												  <option value="replace">{{ _("Replacement") }}</option>
+												  <option value="add">{{ _("Addition") }}</option>
+												  <option value="and">{{ _("Conjunction (AND)") }}</option>
+												  <option value="or">{{ _("Disjunction (OR)") }}</option>
+												  <option value="andnot">{{ _("Exception (ANDNOT)") }}</option>
+												</select>
+											</span>
+											<button class="btn btn-primary btn-block" type="button" 
+											onclick="AddToSearchBar( prepare_statistics($('#advanced_search_statistical_basic_unit').val(),$('#advanced_search_statistical_global_unit').val(), $('#advanced_search_statistical_from').val(), $('#advanced_search_statistical_to').val() ), $('#advanced_search_statistical_relation').val() );">
+												{{ _("Add to search bar") }}
+											</button>

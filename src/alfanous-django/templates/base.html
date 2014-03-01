@@ -189,6 +189,8 @@
 										<!-- <a href="#" onclick="change_skin('spacelab','light');" id="spacelab_skin">{{ _("Spacelab") }}</a> -->
 										<!-- <a href="#" onclick="change_skin('superheroes','dark');" id="superheroes_skin">{{ _("Super Heroes") }}</a>  -->
 									    <a href="#" onclick="change_skin('united','light');"  id="united_skin">{{ _("United") }}</a>
+
+									
 									{% endifequal %}
 
 								</li>
@@ -264,7 +266,7 @@
             <!-- end left navbar -->
 
             <div class="row offset2 span9 text-center">
-                <div class="span6 offset1">
+                <div class="span7 offset1">
                     <a class="logo" href="{% url 'wui.views.results' current.unit %}">
                     {% if LANGUAGE_CODE == "ar" or  LANGUAGE_CODE == "fr" or LANGUAGE_CODE == "id" %}
                   	  <img src="/static/shared/img/logo_{{ current.unit }}_{{ LANGUAGE_CODE }}.png" alt="logo">
@@ -296,13 +298,31 @@
                                 data-bootstro-placement='top' data-bootstro-step='2'>
                                     <a class="text-center show_hide">
                                         <i class="icon-wrench"></i>
-                                        {{ _("Search options") }} [+]
+                                        {{ _("Advanced Search") }} [+]
                                     </a>
                                 </div>
 
-                                <div class="row slidingForm  ">
-                                    {# <form class="form-horizontal "> #}
-                                        <fieldset class="well well-small">
+                                <div class="row slidingForm well well-small tabbable tabs-{{ bidi.align }}">
+                                <ul id="advanced_search_panel" class="nav nav-tabs text-{{ bidi.align }} ">
+                                    <li class=""> <a href="#advanced_search_predef" data-toggle="tab"><i class="icon-magic"></i> <span class="hidden-phone" >{{ _("Predefined Queries") }}</span></a></li>
+									  <li class="active">
+									    <a href="#advanced_search_options" data-toggle="tab"><i class="icon-cog"></i> <span class="hidden-phone" >{{ _("Options") }}</span></a>
+									  </li>
+									  <li>
+									  		<a href="#advanced_search_advanced_query" data-toggle="tab"><i class="icon-asterisk"></i> <span class="hidden-phone" >{{ _("Advanced Query") }}</span></a>
+									  </li>
+									  <li>
+									  		<a href="#advanced_search_linguistic" data-toggle="tab"><i class="icon-font"></i> <span class="hidden-phone" >{{ _("Word Properties") }}</span></a>
+									  </li>
+									  <li class=""><a href="#advanced_search_thematic" data-toggle="tab"><i class="icon-book"></i> <span class="hidden-phone" >{{ _("Thematic Search") }}</span></a></li>
+									  <li class=""><a href="#advanced_search_structural" data-toggle="tab"><i class="icon-sitemap"></i> <span class="hidden-phone" >{{ _("Structural Search") }}</span></a></li>
+									  <li class=""><a href="#advanced_search_statistic" data-toggle="tab"><i class="icon-bar-chart"></i> <span class="hidden-phone" >{{ _("Statistical Search") }}</span></a></li>
+									  <li class="hidden"><a href="#advanced_search_misc" data-toggle="tab"><i class="icon-ellipsis-horizontal"></i> <span class="hidden-phone" >{{ _("Miscellaneous") }}</span></a></li>
+									</ul>
+									
+									<div class=" tab-content well">
+									  <div class=" tab-pane active" id="advanced_search_options">
+											<fieldset class="">
                                                 {% block options %}
                                                 {% endblock %}
 
@@ -310,16 +330,29 @@
                                                 {% block sortedby_panel %}{% endblock %}
                                                 {% block translations_panel %}{% endblock %}
                                                 {% block recitations_panel %} {% endblock %}
+                                        	</fieldset>
 
-                                                <!--  no need for double submit button
-                                                <div class="control-group">
-                                                    <label class="control-label"></label>
-                                                    <div class="controls">
-                                                        <button type="submit" id="singlebutton" name="singlebutton" class="btn btn-primary" onclick="$('#form').submit(); return false;">{{ _("Bismi'Allah Go!") }}</button>
-                                                    </div>
-                                                </div>-->
-                                        </fieldset>
-                                    {# </form> #}
+										</div>
+									  <div class="tab-pane text-{{ bidi.align }}" id="advanced_search_advanced_query">
+									  	  {% include 'wui/advanced_search/advanced_query.html' %} 
+									  </div>
+									  <div class="tab-pane text-{{ bidi.align }}" id="advanced_search_linguistic">
+									  	{% include 'wui/advanced_search/linguistic.html' %} 
+										 </div>
+									  <div class="tab-pane text-{{ bidi.align }}" id="advanced_search_thematic">
+										{% include 'wui/advanced_search/thematic.html' %} 
+									</div>
+									  <div class="tab-pane text-{{ bidi.align }}" id="advanced_search_structural">
+									  {% include 'wui/advanced_search/structural.html' %} 
+									  </div> 
+									  <div class="tab-pane text-{{ bidi.align }}" id="advanced_search_statistic">
+									  	{% include 'wui/advanced_search/statistical.html' %} 
+									  </div>
+									  <div class="tab-pane text-{{ bidi.align }}" id="advanced_search_predef">
+									  	{% include 'wui/advanced_search/predefined_queries.html' %} 
+									  </div>
+									</div>
+                                       
                                 </div>
                             {% endif %}
                         </form>
@@ -436,6 +469,7 @@
     <script src="/static/shared/js/style_switcher.js"></script>
     <script src="/static/shared/js/bootstro.min.js"></script>
     <script src="/static/shared/js/alfanous.js"></script>
+    <script src="/static/shared/js/advanced_search.js"></script>
     <script src="/static/shared/js/jquery.sharrre-1.3.4.min.js"></script>
      <script src="/static/shared/js/share_functions.js"></script>
     <script src="http://api.html5media.info/1.1.5/html5media.min.js"></script>
