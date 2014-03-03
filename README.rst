@@ -146,6 +146,7 @@ Featured Posts
 - *مزية جديدة في الفانوس، أنقر ما تريد لتبحث من جديد!*, chiffra1_
 - *التحقق من أحد المنشورات حول الإعجاز العددي في القرآن الكريم*, chiffra2_
 - *AlFanous, Terdepan dalam Penelusuran Teks dan Informasi Ayat Al Qur’an*, fath_multimedia_ 
+- *Alfanous, Dakwah Al-Quran lewat search engine, firmadani_ 
 
 **Note:**  If you wrote -yourself- a good post about Alfanous in any language, please just tell us to refer it here!
 
@@ -169,6 +170,7 @@ See also
 .. _arabic_interface: http://sourceforge.net/projects/alfanous/files/Interfaces/AlfanousDesktop/0.3/alfanousDesktop-windows-0.3ar.exe/download
 .. _ahmadbinhanbalblog: http://ahmadbinhanbal.wordpress.com/2011/10/24/alfanous-mesin-pencari-ayat-al-quran-masa-depan/
 .. _onislam: http://www.onislam.net/arabic/health-a-science/technology/128137-2011-01-24-13-55-24.html
+.. _firmadani : http://news.fimadani.com/read/2013/10/22/alfanous-dakwah-al-quran-lewat-search-engine/
 .. _muslihzarthblog: http://muslihzarth.wordpress.com/2010/12/13/alfanous-quran-search-engine/
 .. _saidmaroc: http://www.saidmaroc.com/2010/07/blog-post_23.html
 .. _arabcrunch: http://arabcrunch.com/ar/2011/09/%D8%A7%D9%84%D9%81%D8%A7%D9%86%D9%88%D8%B3-%D9%85%D8%B4%D8%B1%D9%88%D8%B9-%D9%85%D8%AD%D8%B1%D9%83-%D8%A8%D8%AD%D8%AB-%D9%85%D8%AA%D9%82%D8%AF%D9%85-%D9%84%D9%84%D9%82%D8%B1%D8%A2%D9%86-%D8%A7%D9%84/
