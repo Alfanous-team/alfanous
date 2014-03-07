@@ -8,6 +8,7 @@ before_install:
     - sudo apt-get update -qq
 install:
     - sudo apt-get install python-pyside
+    - sudo apt-get install pyside-tools
     - pip install pyparsing epydoc sphinx nose  --use-mirrors
     - make build
 notifications:
