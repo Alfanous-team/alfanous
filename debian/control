@@ -8,7 +8,7 @@ Build-Depends: debhelper (>= 8)
 Build-Depends-Indep: python (>= 2.6.6-3~),
  python-setuptools, 
  python-pyparsing,
- python-pyside
+ python-pyside,
  pyside-tools
 Standards-Version: 3.9.2
 Homepage: http://alfanous.org
