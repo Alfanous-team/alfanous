@@ -186,7 +186,10 @@ Perspectives
    - Make it available on different Arabic/Islamic Linux distributions: Ojuba, HilalLinux
    - Customize it to work well with  Unity, Gnome Shell
    - Make it available on Mac OSX
-#. **Milestone API 0.8 Iron (الحديد)** - Whoosh 2X - Completely Technical 
+#. **Milestone API 0.8 Iron (الحديد)** - Whoosh 2X upgrade - Completely Technical 
+   - Move from using whoosh 0.3.18 to use 2.4.x 
+   - Optimisation of indexes
+
 #. **Milestone API 0.9 Silver (الفضة)** - Quran Search Features Silver Pack
 
    - Search in Quran Stories (Qassass)
@@ -213,7 +216,14 @@ Perspectives
    - Auto-Completion of Query keywords
    - Offer prayer times
 #. **Milestone API 1.0 Platinum (البلاتين)** - Stability of Alfanous Core - Completely Technical
+   - Write Unit tests 
+   - Auto-building of required resources from setup.py
+   - Separate interfaces
+   - Full Documentation using Sphinx
+   - Manpage for Alfanous linux console interface
+   - Fixing PEP8 conventions
 #. **Milestone API 1.1 Rhodium (الروديوم)** - Python 3000 - Completely Technical
+   - Porting the Code to Python 3000
 #. **Milestone API 1.2 Gold (الذهب)** - Quranic Search Features Golden Pack
 
    - Vocal Search
@@ -231,7 +241,9 @@ Perspectives
    - Integration with Drupal CMS
    - Integration with WordPress
    - ChatBot, You ask him, he will answer you.
-  
+
+#. **Milestone API 2.0 Galaxy Stone (حجر المجرات)** - Multi Search Units
+   - Exploit more search units possibilities 
 --------------
 Featured Posts
 --------------
