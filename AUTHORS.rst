@@ -61,7 +61,7 @@ Research
 -----------------
 Graphics & Design
 -----------------
-* Icons,Logos: Abdellah Chelli, Muslih Al-Aqaad, Ahmed Ramadan, Moussa Drihem
+* Icons,Logos: Abdellah Chelli, Muslih Al-Aqaad, Ahmed Ramadan, Moussa Drihem, Salaheddine Chelli
 * Wallpapers: Aji Fatwa, Abd Madjid Kemari, Walid Boumaza
 * Joomla Template: Muslih Al-aqaad
 
