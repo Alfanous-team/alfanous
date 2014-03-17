@@ -221,15 +221,8 @@ Perspectives
    - Separate interfaces
    - Full Documentation using Sphinx
    - Manpage for Alfanous linux console interface
-   - Fixing PEP8 conventions
-#. **Milestone API 1.1 Rhodium (الروديوم)** - Python 3000 - Completely Technical
-   - Porting the Code to Python 3000
-#. **Milestone API 1.2 Gold (الذهب)** - Quranic Search Features Golden Pack
 
-   - Vocal Search
-   - Real time output 
-   - (lot of features not discussed yet)
-#. **Milestone Extra 1.3 The Pearls (اللآلِئُ)** - Extra applications of Alfanous on different platforms
+#. **Milestone Extra 1.0 The Pearls (اللآلِئُ)** - Extra applications of Alfanous on different platforms
 
    - Twitter Application that posts ayahs daily
    - Facebook application that allow the user to search and share with friends
@@ -242,8 +235,24 @@ Perspectives
    - Integration with WordPress
    - ChatBot, You ask him, he will answer you.
 
-#. **Milestone API 2.0 Galaxy Stone (حجر المجرات)** - Multi Search Units
-   - Exploit more search units possibilities 
+#. **Milestone API 1.1 Rhodium (الروديوم)** - Python 3000 - Completely Technical
+   - Porting the Code to Python 3000
+#. **Milestone API 1.2 Gold (الذهب)** - Quranic Search Features Golden Pack
+
+   - Vocal Search
+   - Real time output 
+   - (lot of features not discussed yet)
+
+#. **Milestone API 2.0 Galaxy Stone (حجر المجرات)** - Multiple Search Units
+   
+   - Exploit more search units possibilities.
+   - (not discussed yet)
+   
+#. **Milestone API 3.0 Technetium (تكنيشيوم)** - To the bestest best optimization 
+   
+   - Fixing PEP8 conventions
+   - (not discussed yet)
+  
 --------------
 Featured Posts
 --------------
