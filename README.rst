@@ -1,4 +1,3 @@
-
 =================
 What is Alfanous?
 =================
@@ -150,6 +149,88 @@ History
 - **21 July 2010**: Uploading the arabic_interface_ of alfanous-Desktop version 0.3 beta for Windows
 
 - **30 September 2009 - 6 July 2010**: Graduation project for obtaining State-Engineer degree in National higher school of computer science (ESI ,ex.INI) - Algiers. The project was entitled *“Developpement  d'un moteur d'indexation et de recherche dans les documents coranique”*. 
+  
+------------
+Perspectives
+------------
+#. **Milestone GUI 0.7 Amber (الكهرمان)** - Cleaning the Desktop application
+
+   - Fix the installer to Ubuntu Linux
+   - Fix the installer to Windows
+   - Tiny fixes
+#. **Milestone API 0.7.5 Coral (المرجان)** - Enriching the linguistic and Quranic resources
+
+   - Search in Islamic Figures
+   - Search&show diverse rewayates 
+   - Enhancement of the search by word derivations
+   - Make the search queries easier and simpler
+   - Search in Prayers as Hisn almuslim
+   - Basic stone for Search in Hadith : 40 nawawiya
+   - Sajadate based on different references 
+   - Search in Quran Boundary Corpus (waqf)
+   - Technical improvements on Alfanous Core 
+#. **Milestone WUI 0.8 Emerald (الزمرد)** - Interactivity of web interface
+
+   - Live suggestions in the search input
+   - Divine Names Highlight 
+   - Syntactic Coloration of ayah words 
+   - Uthmani script with full diacritical marks
+   - Show the linguistic annotations of ayah words as popup tips 
+   - More options on the click-able tags
+   - Make the info tags drag-able into the search input 
+#. **Milestone GUI 0.8 Garnet (العقيق)** - Invasion diverse plate-forms 
+
+   - User Documentation
+   - Localization to diverse languages of the world
+   - Make it available on Debian, one of main Linux distributions
+   - Make it available on different Arabic/Islamic Linux distributions: Ojuba, HilalLinux
+   - Customize it to work well with  Unity, Gnome Shell
+   - Make it available on Mac OSX
+#. **Milestone API 0.8 Iron (الحديد)** - Whoosh 2X - Completely Technical 
+#. **Milestone API 0.9 Silver (الفضة)** - Quran Search Features Silver Pack
+
+   - Search in Quran Stories (Qassass)
+   - Statistical frequencies based on Root/Stem/Lemma (word origins)
+   - Vocalized word frequency 
+   - Faceted Thematic Search to search by topics
+   - Semantically related words Search like synonyms, antonyms..
+   - Qur'anic Parables (الأمثال القرآنية) 
+   - Abrogators and Abrogated ayahs search (الناسخ والمنسوخ)
+   - Repetitions and Allegorical ayahs (التكرار والمتشابهات) 
+   - Search for Recitation marks 
+   - Search by word properties
+   - Search by specific derivations like the verb conjugation
+   - Partial vocalization as default
+   - Romanization systems like Buckwalter, Arabtex
+   - Suggest Collocated words 
+   - Suggest Semantically related keywords
+   - Results grouping by surah, by topic, by revelation event
+   - Simplifying the search for ayah statistics 
+   - Detect the used language in query and suggest the search in appropriate Quran translation
+   - Search using the names of ayas like the sword aya (آية السيف)
+   - Group words by their Lemma instead of the exact word
+   - Guess declinable words and ingnore Declinison case mark 
+   - Auto-Completion of Query keywords
+   - Offer prayer times
+#. **Milestone API 1.0 Platinum (البلاتين)** - Stability of Alfanous Core - Completely Technical
+#. **Milestone API 1.1 Rhodium (الروديوم)** - Python 3000 - Completely Technical
+#. **Milestone API 1.2 Gold (الذهب)** - Quranic Search Features Golden Pack
+
+   - Vocal Search
+   - Real time output 
+   - (lot of features not discussed yet)
+#. **Milestone Extra 1.3 The Pearls (اللآلِئُ)** - Extra applications of Alfanous on different platforms
+
+   - Twitter Application that posts ayahs daily
+   - Facebook application that allow the user to search and share with friends
+   - Application for Android feature-full
+   - Application for Windows Phone
+   - Application for BlackBerry
+   - Application for Symbian
+   - Integration with Joomla CMS
+   - Integration with Drupal CMS
+   - Integration with WordPress
+   - ChatBot, You ask him, he will answer you.
   
 --------------
 Featured Posts
