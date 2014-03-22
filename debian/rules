@@ -11,7 +11,7 @@ override_dh_auto_build:
 
 override_dh_auto_install:
 	dh_auto_install -Dsrc/alfanous
-	dh_auto_install -Dsrc/alfanous-desktop -- --install-lib=/usr/share/alfanous
+	dh_auto_install -Dsrc/alfanous-desktop 
 
 override_dh_auto_clean:
 	dh_auto_clean -Dsrc/alfanous
