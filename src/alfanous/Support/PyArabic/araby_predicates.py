@@ -1,5 +1,9 @@
 from araby_constants import *
+from araby_strip_functions import *
+from araby_predicates import *
+import string
 
+_PUNCTUATION  = string.punctuation + string.whitespace
 
 def _andmap(iterable):
     return reduce( lambda x,y: x and y, iterable )
@@ -242,3 +246,139 @@ def hasShadda( word ):
             return True
     
     return False
+def isVocalized( word ):
+    """Checks if the arabic word is vocalized.
+    the word musn't  have any spaces and pounctuations.
+    @param word: arabic unicode char
+    @type word: unicode
+    
+    >>> isVocalized( '' )
+    False
+    >>> isVocalized('abc')
+    False
+    >>> isVocalized( FATHA )
+    True
+    >>> isVocalized( ALEF + FATHATAN + BEH )
+    True
+    >>> isVocalized( ALEF + BEH + FATHATAN )
+    True
+    >>> isVocalized( FATHATAN + ALEF + BEH )
+    True
+    >>> isVocalized( FATHA + ' ' )
+    False
+    >>> isVocalized( ALEF + ' ' + FATHATAN + BEH )
+    False
+    >>> isVocalized( ALEF + BEH + ' ' + FATHATAN )
+    False
+    >>> isVocalized( FATHATAN + ' ' + ALEF + BEH )
+    False
+    >>> isVocalized( FATHATAN + '!' + ALEF + BEH )
+    False
+    """
+    harakat_count = 0
+    
+    for letter in word:
+        if letter in _PUNCTUATION:
+            return False
+        elif letter in HARAKAT:
+            harakat_count += 1
+
+    return harakat_count > 0
+
+def isVocalizedtext( text ):
+    """Checks if the arabic text is vocalized.
+    The text can contain many words and spaces
+    @param text: arabic unicode char
+    @type text: unicode
+    
+    >>> isVocalizedtext( '' )
+    False
+    >>> isVocalizedtext('abc')
+    False
+    >>> isVocalizedtext( FATHA )
+    True
+    >>> isVocalizedtext( ALEF + FATHATAN + BEH )
+    True
+    >>> isVocalizedtext( ALEF + BEH + FATHATAN )
+    True
+    >>> isVocalizedtext( FATHATAN + ALEF + BEH )
+    True
+    >>> isVocalizedtext( FATHA + ' ' )
+    True
+    >>> isVocalizedtext( ALEF + ' ' + FATHATAN + BEH )
+    True
+    >>> isVocalizedtext( ALEF + BEH + ' ' + FATHATAN )
+    True
+    >>> isVocalizedtext( FATHATAN + ' ' + ALEF + BEH )
+    True
+    >>> isVocalizedtext( FATHATAN + '!' + ALEF + BEH )
+    False
+    """
+    harakat_count = 0
+
+    for letter in text:
+        if letter in string.punctuation:
+            return False
+        elif letter in HARAKAT:
+            harakat_count += 1
+
+    return harakat_count > 0
+
+def isArabicstring( text):
+    """ Checks for an  Arabic Unicode block characters;
+    @param text: input text
+    @type text: unicode
+    @return: True if all charaters are in Arabic block
+    @rtype: Boolean
+    """
+    return not re.search(u"([^\u0600-\u0652%s%s%s\w])"%(LAM_ALEF,LAM_ALEF_HAMZA_ABOVE,LAM_ALEF_MADDA_ABOVE),text)
+
+def isArabicword( word ):
+    """ Checks for an valid Arabic  word.
+    An Arabic word
+    @param word: input word
+    @type word: unicode
+    @return: True if all charaters are in Arabic block
+    @rtype: Boolean
+    """
+    if len( word ) == 0 : return False;
+    elif re.search( u"([^\u0600-\u0652%s%s%s\w])" % ( LAM_ALEF, LAM_ALEF_HAMZA_ABOVE, LAM_ALEF_MADDA_ABOVE ), word ):
+        return False;
+    elif isHaraka( word[0] ) or word[0] in ( WAW_HAMZA, YEH_HAMZA ):
+        return False;
+#  if Teh Marbuta or Alef_Maksura not in the end
+    elif re.match( u"^(.)*[%s](.)+$" % ALEF_MAKSURA, word ):
+        return False;
+    elif re.match( u"^(.)*[%s]([^%s%s%s])(.)+$" % ( TEH_MARBUTA, DAMMA, KASRA, FATHA ), word ):
+        return False;
+    else:
+        return True;
+
+def vocalizedlike( word, vocalized ):
+    """return True if the given word have the same or the partial vocalisation like the pattern vocalized
+
+    @param word: arabic word, full/partial vocalized.
+    @type word: unicode.
+    @param vocalized: arabic full vocalized word.
+    @type vocalized: unicode.
+    @return: True if vocalized.
+    @rtype: unicode.
+
+    >>> vocalizedlike('', '')
+    True
+    >>> vocalizedlike( REH + JEEM + LAM, REH + JEEM + DAMMA + LAM + DAMMATAN )
+    True
+    >>> vocalizedlike( REH + JEEM + TEH + LAM, REH + JEEM + DAMMA + LAM + DAMMATAN )
+    False
+    >>> 
+    """
+    if not isVocalized( vocalized ) or not isVocalized( word ):
+        return stripTashkeel( word ) == stripTashkeel( vocalized )
+
+    else:
+        for mark in TASHKEEL:
+            vocalized = vocalized.replace( mark, mark + '?' )
+
+        pat = re.compile( "^" + vocalized + "$" )
+
+        return pat.match( word )

@@ -12,6 +12,8 @@ ALEF_HAMZA_ABOVE = u'\u0623'
 WAW_HAMZA = u'\u0624'
 ALEF_HAMZA_BELOW = u'\u0625'
 YEH_HAMZA = u'\u0626'
+
+# letters
 ALEF = u'\u0627'
 BEH = u'\u0628'
 TEH_MARBUTA = u'\u0629'
@@ -43,9 +45,12 @@ HEH = u'\u0647'
 WAW = u'\u0648'
 ALEF_MAKSURA = u'\u0649'
 YEH = u'\u064a'
+
 MADDA_ABOVE = u'\u0653'
 HAMZA_ABOVE = u'\u0654'
 HAMZA_BELOW = u'\u0655'
+
+# numbers
 ZERO = u'\u0660'
 ONE = u'\u0661'
 TWO = u'\u0662'
@@ -59,6 +64,7 @@ NINE = u'\u0669'
 PERCENT = u'\u066a'
 DECIMAL = u'\u066b'
 THOUSANDS = u'\u066c'
+
 STAR = u'\u066d'
 MINI_ALEF = u'\u0670'
 ALEF_WASLA = u'\u0671'
@@ -79,6 +85,7 @@ SUKUN = u'\u0652'
 SMALL_ALEF = u"\u0670"
 SMALL_WAW = u"\u06E5"
 SMALL_YEH = u"\u06E6"
+
 #Ligatures
 LAM_ALEF = u'\ufefb'
 LAM_ALEF_HAMZA_ABOVE = u'\ufef7'
@@ -88,6 +95,7 @@ simple_LAM_ALEF = u'\u0644\u0627'
 simple_LAM_ALEF_HAMZA_ABOVE = u'\u0644\u0623'
 simple_LAM_ALEF_HAMZA_BELOW = u'\u0644\u0625'
 simple_LAM_ALEF_MADDA_ABOVE = u'\u0644\u0622'
+
 # groups
 LETTERS = u''.join( [
         ALEF , BEH , TEH  , TEH_MARBUTA  , THEH  , JEEM  , HAH , KHAH ,
@@ -263,7 +271,7 @@ NAMES = {
                 SUKUN            : u'سكون',
                 }
 
-# regular expretion
+# regular expressions
 HARAKAT_pattern = re.compile( ur"[" + u"".join( HARAKAT ) + u"]" )
 TASHKEEL_pattern = re.compile( ur"[" + u"".join( TASHKEEL ) + u"]" )
 HAMZAT_pattern = re.compile( ur"[" + u"".join( HAMZAT ) + u"]" );
