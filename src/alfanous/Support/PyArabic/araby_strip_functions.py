@@ -1,6 +1,6 @@
 from araby_constants import *
 
-__all__ = ['stripHarakat','stripTashkeel','stripTatweel','strip_shadda']
+__all__ = ['stripHarakat','stripTashkeel','strip_tashkeel','stripTatweel','strip_tatweel','strip_shadda']
 
 def stripHarakat( text ):
     """Strip Harakat from arabic word except Shadda.
