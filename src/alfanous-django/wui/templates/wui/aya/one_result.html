@@ -144,18 +144,12 @@
 		                        </span>
 
       <span class="label label-inverse"> {{ _("n°") }} | {{ result_content.sura.id }} </span>
-		                        <span class="label label-success">
-		                        {% if bidi.direction != "rtl" %}
-                              {% with bidi.fields.sura_type|add:':'|add:result_content.sura.type|add:'' as new_query %}
-                                <a class='no_decoration' href='?{% custom_query  new_query 1 True %}'>
-                              {% endwith %}
-                            {{ _("type") }} | {{ result_content.sura.type }}</a>
-                            {% else %}
-                              {% with bidi.fields.sura_type_arabic|add:':'|add:result_content.sura.arabic_type|add:'' as new_query %}
-                                <a class='no_decoration' href='?{% custom_query  new_query 1 True %}'>
-                              {% endwith %}
-                            {{ _("type") }} | {{ result_content.sura.arabic_type }}</a>
-                            {% endif %}
+		                        <span class="label label-inverse">
+		                            {% if bidi.direction != "rtl" %}
+                                            {{ _("type") }} | {{ result_content.sura.type }}
+                                    {% else %}
+                                           {{ _("type") }} | {{ result_content.sura.arabic_type }}
+                                    {% endif %}
 		                        </span>
 		                        <span class="label label-inverse">
 		                        	{{ _("revelation_order") }}  | {{ result_content.sura.order }}
