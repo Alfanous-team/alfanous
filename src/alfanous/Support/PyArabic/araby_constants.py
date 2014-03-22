@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding=utf-8 -*-
 
-# import re
+import re
 
 A = u'\u060C'
 SEMICOLON = u'\u061B'
@@ -272,8 +272,8 @@ NAMES = {
                 }
 
 # regular expressions
-# HARAKAT_pattern = re.compile( ur"[" + u"".join( HARAKAT ) + u"]" )
-# TASHKEEL_pattern = re.compile( ur"[" + u"".join( TASHKEEL ) + u"]" )
-# HAMZAT_pattern = re.compile( ur"[" + u"".join( HAMZAT ) + u"]" );
-# ALEFAT_pattern = re.compile( ur"[" + u"".join( ALEFAT ) + u"]" );
-# LIGUATURES_pattern = re.compile( ur"[" + u"".join( LIGUATURES ) + u"]" );
+HARAKAT_pattern = re.compile( ur"[" + u"".join( HARAKAT ) + u"]" )
+TASHKEEL_pattern = re.compile( ur"[" + u"".join( TASHKEEL ) + u"]" )
+HAMZAT_pattern = re.compile( ur"[" + u"".join( HAMZAT ) + u"]" );
+ALEFAT_pattern = re.compile( ur"[" + u"".join( ALEFAT ) + u"]" );
+LIGUATURES_pattern = re.compile( ur"[" + u"".join( LIGUATURES ) + u"]" );
