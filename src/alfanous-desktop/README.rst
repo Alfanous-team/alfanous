@@ -25,6 +25,7 @@ Building systems
 * rpm package for redhat, fedore, opensuse,centos: https://build.opensuse.org/package/show/home:Kenzy:tahadz/alfanous
 
 **notes:**  
+
 #. The UI folder contains forms and dialogs , you can open them with Qt designer.
 #. Run the command "make qt_all" in project root to compile qt resources to a python module.
 #. Gui.py contains the main code, it's unclean and need cleaning or rewriting from the scratch.
