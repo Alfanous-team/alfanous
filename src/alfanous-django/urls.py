@@ -18,4 +18,4 @@ urlpatterns += i18n_patterns('',
 
 # 404 not found handler
 
-handler404 = 'app.views.custom_404'
+handler404 = 'wui.views.custom_404'
