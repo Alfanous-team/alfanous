@@ -151,3 +151,9 @@ def results(request, unit="aya"):
   }
 
   return render_to_response(mytemplate, context)
+
+
+def custom_404(request):
+	return render_to_response('404.html')
+
+
