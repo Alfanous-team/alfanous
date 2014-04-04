@@ -88,6 +88,7 @@
 
     <!-- Custom Alfanous CSS -->
     <link href="/static/shared/css/style.css" rel="stylesheet">
+    <link href="/static/shared/css/printability.css" rel="stylesheet">
     {% ifequal bidi.direction "rtl" %}
     <link href="/static/rtl/css/rtl.css" rel="stylesheet">
     {% endifequal %}
@@ -205,7 +206,7 @@
 
     <div class="container content">
         <!-- social media icons -->
-		<div class="row">
+		<div class="row hidden-print">
 		    <div id="social-icons" class="social-networks">
                 {% if bidi.direction == "rtl" %}
                 <ul class="inline pull-left">
@@ -227,7 +228,7 @@
 
 		<div class="row">
             <!-- left navbar -->
-            <div class="span2">
+            <div class="span2  hidden-print">
                 <div id="sidebar" class="well well-small sidebar-nav hidden-phone affix">
                     <ul class="nav nav-list">
                         <li class="nav-header">{{ _("Information:") }}</li>
@@ -412,7 +413,7 @@
     {% include "popups_content.html" %}
 
 
-       <div class="row-fluid text-center">
+       <div class="row-fluid text-center hidden-print">
 				 <br/>
 				<span id="shareme_root" class="span4 offset4 shareme_root" data-url="http://www.alfanous.org{% url 'wui.views.results' current.unit %}?{{ current.request }}"
 				    data-text="{{ _('Alfanous') }} - {% if current.unit == 'aya' %} {{ _('Quran Ayah Search') }} {% elif current.unit == 'word' %} {{ _('Quran Word Search') }} {% elif current.unit == 'translation' %} {{ _('Quran Translation Search') }}{% else %} {{ _('Quran Ayah Search') }} {% endif %}   #alfanous" data-title="  {{ _('Share!') }}"></span>
@@ -429,7 +430,7 @@
                 <p class="muted credit">{{ _("Copyright") }} &copy; <a href="https://github.com/Alfanous-team/alfanous/blob/master/AUTHORS.rst">{{ _("Alfanous Team") }}</a> 2010 - 2013</p>
                 <p class="muted credit hidden-phone">&#124; {{ _("released under") }} <a href="http://www.gnu.org/licenses/agpl.html">{{ _("AGPL license") }}</a>.</p>
                 <br/>
-                 <span class="hidden-phone label label-info">
+                 <span class="hidden-phone label label-info hidden-print">
                 		 <a id="footer-link-jos2" data-placement="top" data-toggle="popover">
                 		 <i class=" icon-chevron-up icon-white"></i>
                  		{{ _("Powered by") }}
@@ -438,7 +439,7 @@
                         Alfanous JOS2
                     </a>
                     </span>
-                    <span class="label label-success hidden-phone">
+                    <span class="label label-success hidden-phone hidden-print">
                     <a class="footer-link-searchbar" onclick="window.external.AddSearchProvider('http://www.alfanous.org/static/alfanous-opensearch.xml');return false;" href="#">
                         <i class="icon-plus-sign icon-white"></i>
                         {{ _("Add to your search bar!") }}

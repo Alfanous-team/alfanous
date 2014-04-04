@@ -1,0 +1,10 @@
+@media print {
+
+  a[href]:after {
+    content: "" !important; /* overriding twitter bootstrap */
+  }
+  
+  
+  hidden-print   { display: none !important; }
+
+}
