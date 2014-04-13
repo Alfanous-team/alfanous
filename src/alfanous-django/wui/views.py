@@ -5,7 +5,7 @@
 TODO make a fields English-Arabic mapping based on the "bidi" value to be used in localization
 
 """
-import json
+import json, os
 from operator import itemgetter
 from sys import path
 
@@ -22,7 +22,10 @@ from django.utils.datastructures import SortedDict
 ## either append the path of alfanous API as:
 from wui.templatetags.languages import my_get_language_info
 
-path.insert(0, "../../src") ## a relative path, development mode
+# this is better than using "../../"
+realtive_path = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir, os.pardir))
+
+path.insert(0, realtive_path) ## a relative path, development mode
 path.append("alfanous.egg/alfanous") ## an egg, portable
 path.append("/home/alfanous/alfanous-django/src/") ## absolute  path, server mode
 
