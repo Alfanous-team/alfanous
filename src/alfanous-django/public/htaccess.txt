@@ -25,3 +25,8 @@ SetOutputFilter DEFLATE
     ExpiresActive On
     ExpiresDefault "access plus 1 year"
 </IfModule>
+
+##################################
+## Block baidu chainese search engine bots
+BrowserMatchNoCase Baiduspider bad_bot
+Deny from env=bad_bot
