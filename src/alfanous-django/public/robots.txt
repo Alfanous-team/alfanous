@@ -1,4 +1,60 @@
 User-agent: *
+Crawl-delay: 10
 Disallow: /cgi-bin/*
 Disallow: /json*
 Disallow: /jos2*
+
+#Baiduspider
+User-agent: Baiduspider
+User-agent: Baiduspider-video
+User-agent: Baiduspider-image
+User-agent: baiduspider
+Disallow: /
+
+# Other unwanted bots
+User-agent: Yandex
+User-agent: moget
+User-agent: ichiro
+User-agent: NaverBot
+User-agent: Yeti
+User-agent: sogou spider
+User-agent: YoudaoBot
+User-agent: MJ12bot
+User-agent: grub-client
+User-agent: NPBot
+User-agent: SEOkicks-Robot
+User-agent: 008
+User-agent: Speedy
+User-agent: Sogou web spider
+User-agent: Ezooms
+User-agent: magpie-crawler
+User-agent: YandexImages
+User-agent: YodaoBot
+User-agent: NerdByNature.Bot
+User-agent: discobot
+User-agent: knowaboutBot
+User-agent: UnwindFetchor
+User-agent: sitecheck.internetseer.com
+User-agent: Zealbot
+User-agent: MSIECrawler
+User-agent: WebReaper
+User-agent: SiteSnagger
+User-agent: WebStripper
+User-agent: WebCopier
+User-agent: Fetch
+User-agent: Offline Explorer
+User-agent: Teleport
+User-agent: TeleportPro
+User-agent: WebZIP
+User-agent: linko
+User-agent: HTTrack
+User-agent: Microsoft.URL.Control
+User-agent: Xenu
+User-agent: larbin
+User-agent: libwww
+User-agent: ZyBORG
+User-agent: Download Ninja
+User-agent: Mail.RU_Bot
+User-agent: AhrefsBot
+User-agent: spbot
+Disallow: /
