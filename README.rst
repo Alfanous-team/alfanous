@@ -1,5 +1,4 @@
-**Note:** This project needs more contributors and/or funding. A software does not create itself magically. See `how you can help? <https://github.com/Alfanous-team/alfanous/blob/master/FAQ.rst#how-you-can-help>`_.
-
+  **Note:** This project needs more contributors and/or funding. A software does not create itself magically. See `how you can help? <https://github.com/Alfanous-team/alfanous/blob/master/FAQ.rst#how-you-can-help>`_.
 
 =================
 What is Alfanous?
