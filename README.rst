@@ -1,3 +1,6 @@
+**Note:** This project needs more contributors and/or funding. A software does not create itself magically. See `how you can help? <https://github.com/Alfanous-team/alfanous/blob/master/FAQ.rst#how-you-can-help>`_.
+
+
 =================
 What is Alfanous?
 =================
@@ -62,8 +65,7 @@ see `FAQ <https://github.com/Alfanous-team/alfanous/blob/master/FAQ.rst>`_
 -------------------
 Research Foundation
 -------------------
-TODO
-http://www.scribd.com/doc/181664193/Proposal-of-an-Advanced-Retrieval-System-for-Noble-Qur%E2%80%99an
+link to `thesis on slideshare <http://www.slideshare.net/AssemCHELLI/main-30182032>`_
 
 
 ----------
