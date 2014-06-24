@@ -1,0 +1,6 @@
+Django==1.5.1
+distribute==0.6.31
+pyparsing==2.0.1
+wsgiref==0.1.2
+django-debug-toolbar==1.0
+django-debug-toolbar-template-timings==0.5.5

@@ -1,30 +1,16 @@
-Alfanous - Advanced Quranic Search Engine , Authored by Assem Chelli <assem.ch@gmail.com>
+Alfanous - Advanced Quranic Search Engine , Authored by A~CH (`@assem-ch <https://github.com/assem-ch>`_)
 
       We gratefully acknowledge contributions from the following.
       Please let us know if we missed anyone, thanks :)
 
-
-===========
-Maintainers
-===========
-================== ========================== ================================= =============================================
-Name      		  Position                    Email                            Twitter
------------------- -------------------------- --------------------------------- ---------------------------------------------
-`Assem Chelli`_     Project Manager/Developer   assem.ch [at] gmail.com          `@assem_ch`_
-`Abdellah Chelli`_  Web Developer               sneetsher [at] gmail.com         `@sneetsher`_ 
-`Zakaria Smahi`_       Developer                   zakaria08esi [at] gmail.com   `@zsmahi`_  
-`Walid Ziouche`_    Tester/Developer            01walid [at] gmail.com           `@01walid`_  
-`Muslih al aqaad`_  Graphic Designer            muslihzarth [at] gmail.com       `@muslihzarth`_
-Yasmine Hoadjli     Community Manager           yhoadjli [at] gmail.com          `@yasmamine`_ 
-================== ========================== ================================= =============================================
-
-.. _`Assem Chelli`: https://github.com/assem-ch
+.. _`A~CH`: https://github.com/assem-ch
 .. _`Abdellah Chelli`: https://github.com/sneetsher 
 .. _`Zakaria Smahi`: https://github.com/zsmahi
 .. _`Mouad Debbar` : https://github.com/mdebbar
 .. _`Walid Ziouche`: https://github.com/01walid
 .. _`Muslih al aqaad`: https://github.com/muslih
 .. _`Tedjeddine Meabeo`: https://github.com/tedj
+.. _`Sohaib Afifi`: https://github.com/sohaibafifi
 
 .. _`@assem_ch`: https://twitter.com/assem_ch
 .. _`@sneetsher`: https://twitter.com/sneetsher 
@@ -32,6 +18,7 @@ Yasmine Hoadjli     Community Manager           yhoadjli [at] gmail.com         
 .. _`@yasmamine`: https://twitter.com/yasmamine
 .. _`@01walid`: https://twitter.com/01walid
 .. _`@muslihzarth`: https://twitter.com/muslihzarth
+.. _`@kacem4dz`: https://twitter.com/kacem4dz
 
 ============ 
 Contributors 
@@ -39,17 +26,34 @@ Contributors
 --------
 Coding
 --------
-* API & JSON interface: `Assem Chelli`_    
-* Desktop Interface: `Assem Chelli`_   
-* Web Interface: `Assem Chelli`_  , `Walid Ziouche`_, `Abdellah Chelli`_ , `Mennouchi Islam Azeddine <https://github.com/islamoc>`_, `Tedjeddine Meabeo`_ , `Muslih al aqaad`_,  `Mouad Debbar`_, Ahmed Ramadan
-* Mobile Web Interface: `Abdellah Chelli`_ 
+* API & JSON interface: `A~CH`_    
+* Desktop Interface: `A~CH`_, `Sohaib Afifi`_
+* Web Interface: `A~CH`_  , `Walid Ziouche`_, `Abdellah Chelli`_ , `Mouad Debbar`_,  `Mennouchi Islam Azeddine <https://github.com/islamoc>`_, `Muslih al aqaad`_, `Tedjeddine Meabeo`_ ,   , Ahmed Ramadan
 * Firefox toolbar: `Zakaria Smahi`_ 
+* PyArabic(Integrated): Taha Zerrouki, A~CH, Ahimta~
 
 --------
 Research
 --------
-*  2009-2010: Engineer Thesis( Développement d'un moteur de recherche et d'indexation dans les documents coraniques) @ [ESI_ - Algiers]
-   Assem Chelli (Student), Merouane Dahmani (Student), Taha Zerrouki  ( Supervisor),  Pr. Amar Balla ( Supervisor)  
+* **2009-2010: Engineer Thesis**
+  
+  * **Title**:  Développement d'un moteur de recherche et d'indexation dans les documents coraniques
+  * **University**: ESI_ - Algiers
+  * **Collaborators**: A~CH (Student), Merouane Dahmani (Student), Taha Zerrouki  ( Supervisor),  Pr. Amar Balla ( Supervisor)  
+
+* **March 2011: Arabic Research paper**
+  
+  * **Title**: An Application Programming Interface for indexing and search in Noble Quran
+  * **Original title**: مكتبة برمجية للفهرسة والبحث في القرآن الكريم
+  * **Conference**: NITS 2011 KSA 
+  * **Collaborators**:  A~CH, Merouane Dahmani, Taha Zerrouki,  Pr. Amar Balla 
+   
+* **May 2012: English Research paper** 
+  
+  * **Title**:. Advanced Search in Quran: Classification and Proposition of All Possible Features     
+  * **Conference**:  A pre-conference workshop in LREC 2012 Turkey which is about ”LRE-Rel: Language Resource and Evaluation for Religious Texts”
+  * **Collaborators**: A~CH, Taha Zerrouki,  Pr. Amar Balla
+
 
 .. _ESI: http://www.esi.dz
 
@@ -57,68 +61,70 @@ Research
 -----------------
 Graphics & Design
 -----------------
-* Icons,Logos: Abdellah Chelli, Muslih Al-Aqaad, Ahmed Ramadan, Moussa Drihem
-* Wallpapers: Aji Fatwa
+* Icons,Logos: Abdellah Chelli, Muslih Al-Aqaad, Ahmed Ramadan, Moussa Drihem, Salaheddine Chelli
+* Wallpapers: Aji Fatwa, Abd Madjid Kemari, Walid Boumaza
 * Joomla Template: Muslih Al-aqaad
 
 --------- 
 Packaging 
 ---------
-* Windows NSIS installer: Assem Chelli 
+* Windows NSIS installer: A~CH 
 * Ubuntu/Sabily DEB package: Ahmed Almahmoudy
 * Fedora/OpenSuse/Ojuba RPM package: Muhammad Shaban
-* Arch-linux package: Walid Ziouche
+* Arch-linux package: Walid Ziouche, Sohaib Afifi
 
 ------------------
 Resource Enriching
 ------------------
-* Word index: Taha Zerrouki, Assem Chelli, Asmaa Mhimeh,
+* Word index: Taha Zerrouki, A~CH, Asmaa Mhimeh, Rahma Maaref 
 * Aya index: {Tanzil Project}, Taha Zerrouki (Subjects), Muhi-uddin (Indian mushaf pages)
 * Translations:  {Tanzil Project},
 
 -------------
 Documentation
 -------------
-* Wiki: Assem Chelli, Abdellah Chelli 
+* Wiki: A~CH, Abdellah Chelli 
 
 -------
 Writing
 -------
 * News : Mohamed M Sayed, Yasser Ghemit, Kacem Boukraa, Asmaa Mhimeh, 
-* Blog posts: Muslih Al-aqaad, Ahmed Jumal, 
+* Blog posts: Muslih Al-aqaad, Ahmed Jumal, Aji Fatwa
 
 
 --------------------
 Community Management
 --------------------
-* FB page: Yasmine Hoadjli 
-* G+ page: Yasmine Hoadjli
-* G+ Community: Zineb Laouici
-* Twitter: ~
+* Yasmine Hoadjli
+* Zineb Laouici
+* Meriem Bounif
 
 -----------
 Translation
 -----------
-( to help in translation, contact us in  the mailing list )
+( to help in translation, contact us in  the mailing list <alfanous[at]googlegroups[dotcom]> )
 
-* Bootstrap Web Interface
-
-  * not yet! 
 
 * Desktop application
 
-  * not yet! 
+  * (we'll write about that as soon as we manage the translations made to the desktop application)
 
-* Django Web Interface
+* Main Web Interface
 
-  * Arabic: Yasmine Houdjli
-  * French: Zineb Pub
-  * Indonesian:  Ahmed Jumal , Amy cidra 
+  * Arabic: A~CH, Yasmine Houadjli
+  * French: Zineb Pub, Yasmine Houadjli, Abdelkarim Aries, Nassim rehali, Nasreddine Cheniki
+  * Indonesian:  Ahmed Jumal , Amy cidra, Mahyuddin Susanto
   * Japanese: Abdelkarim Aries
+  * Spanish: Khireddine Chekraoui 
+  * Portuguese: Jonathan Da Fonseca
+  * German: Dennis Baudys
+  * Malay: 'abuyop'
+  * Kurdish: 
+  * Malayalam: `'STyM Alfazz' <https://launchpad.net/~alfasst>`
 
 * Mobile Web interface 
 
-  * Bosnian: Armin Kazic
+  * Bosnian: Armin Kazi
   * Brazilian Portuguese: Aieon.corp(LP)
   * French:  Karim Oulad Chalha, 'yass-pard'
   * Indonesian: Mahyuddin Susanto, 
@@ -127,12 +133,11 @@ Translation
   * Malay: 'abuyop'
 
 
-
 --------------
 Test & Support
 --------------
 * Test: `Walid Ziouche`_
-* Bugs: xsoh, Yacer~, Jounathan~, BenSali~ , oussama~, Many persons from the community, thanks to all. 
+* Bugs: Oussama Chammam, Ahmed Salem, xsoh, Yacer~, Jounathan~, BenSali~ , Many persons from the community, thanks to all. 
 * Vulns:  Jalil~
 
 

@@ -78,11 +78,11 @@ class QuranicCorpusImporter:
                         word varchar(25),
                         normalised varchar(25),
                         spelled varchar(25),
-
-                        part varchar(25),
                         'order' int,
                         token varchar(25),
                         arabictoken varchar(25),
+                        prefixes varchar(25),
+                        suffixes varchar(25),
 
 
                         pos varchar(25),
@@ -108,11 +108,6 @@ class QuranicCorpusImporter:
                         state varchar(25),
                         aspect varchar(25),
 
-
-
-
-
-
                         primary key(gid)
 
                     )
@@ -125,14 +120,26 @@ class QuranicCorpusImporter:
         from PyCorpus.QuranyCorpus import API as QC
         A = QC( source = QC_PATH )
         print ".OK\n"
-        IFEXIST = lambda dict, attrib: dict[attrib].encode( "utf-8" ) if dict.has_key( attrib ) else ""
+        IFEXIST = lambda d, attrib: d[attrib].encode( "utf-8" ) if attrib in d else ""
         gid, word_gid = 0, 0
         print ">inserting values of gid...",
         for iteration in A.all_words_generator():
-            QUERY = lambda d, part: """insert into wordQC(gid,word_gid,word_id,aya_id,sura_id,'order',token,arabictoken,part,type,pos,arabicpos,mood,
+            QASF = QArabicSymbolsFilter( shaping = True, 
+                                         tashkil = True, 
+                                         spellerrors = False, 
+                                         hamza = False, 
+                                         uthmani_symbols = True )
+            QASF_spelled = QArabicSymbolsFilter( shaping = True, 
+                                                 tashkil = True, 
+                                                 spellerrors = True, 
+                                                 hamza = True, 
+                                                 uthmani_symbols = True
+                                                 )
+
+            QUERY = lambda d, glob: """insert into wordQC(gid,word_gid,word_id,aya_id,sura_id,'order',token,arabictoken,prefixes, suffixes,type,pos,arabicpos,mood,
                 arabicmood, 'case', arabiccase, root ,arabicroot, lemma ,arabiclemma, special, arabicspecial,
                 word,normalised,spelled, derivation, form ,gender, person, number,voice, state, aspect) values
-                ("%(gid)d","%(word_gid)d","%(word_id)d","%(aya_id)d","%(sura_id)d","%(order)d","%(token)s","%(arabictoken)s","%(part)s","%(type)s","%(pos)s","%(arabicpos)s","%(mood)s","%(arabicmood)s",
+                ("%(gid)d","%(word_gid)d","%(word_id)d","%(aya_id)d","%(sura_id)d","%(order)d","%(token)s","%(arabictoken)s", "%(prefixes)s", "%(suffixes)s",  "%(type)s","%(pos)s","%(arabicpos)s","%(mood)s","%(arabicmood)s",
                 "%(case)s","%(arabiccase)s","%(root)s","%(arabicroot)s","%(lemma)s","%(arabiclemma)s","%(special)s","%(arabicspecial)s","%(word)s","%(normalised)s","%(spelled)s",
                 "%(derivation)s","%(form)s","%(gender)s","%(person)s","%(number)s","%(voice)s","%(state)s","%(aspect)s")""" % {
 										    "gid":gid,
@@ -143,7 +150,8 @@ class QuranicCorpusImporter:
 										    "order":order,
 										    "token":IFEXIST( d, "token" ),
 										    "arabictoken":IFEXIST( d, "arabictoken" ),
-										    "part":part.encode( "utf-8" ),
+										    "prefixes":";".join([prefix["arabictoken"] for prefix in glob["prefixes"] ]).encode( "utf-8" ),
+										    "suffixes":";".join([suffix["arabictoken"] for suffix in glob["suffixes"] ]).encode( "utf-8" ),
 										    "type":IFEXIST( d, "type" ),
 										    "pos":IFEXIST( d, "pos" ),
 										    "arabicpos":IFEXIST( d, "arabicpos" ),
@@ -158,8 +166,8 @@ class QuranicCorpusImporter:
 										    "special":IFEXIST( d, "special" ),
 										    "arabicspecial":IFEXIST( d, "arabicspecial" ),
 										    "word":iteration["word"].encode( "utf-8" ),
-										    "normalised":QArabicSymbolsFilter( shaping = True, tashkil = True, spellerrors = False, hamza = False ).normalize_all( iteration["word"] ).encode( "utf-8" ),
-										    "spelled":QArabicSymbolsFilter( shaping = True, tashkil = True, spellerrors = True, hamza = True ).normalize_all( iteration["word"] ).encode( "utf-8" ),
+										    "normalised":  QASF.normalize_all( iteration["word"] ).encode( "utf-8" ),
+										    "spelled": QASF_spelled.normalize_all( iteration["word"] ).encode( "utf-8" ),
 										    "derivation":IFEXIST( d, "derivation" ),
 										    "form":IFEXIST( d, "form" ),
 										    "gender":IFEXIST( d, "gender" ),
@@ -170,27 +178,17 @@ class QuranicCorpusImporter:
 										    "aspect":IFEXIST( d, "aspect" )
 										    }
             word_gid += 1
-            print word_gid, "\n" if word_gid % 10 == 0 else "...",
-
-            order = 0
-            for d in iteration["morphology"]["prefixes"]:
-                gid += 1;
-                order += 1
-                cur.execute( QUERY( d, u"سابق" ) )
+            if word_gid % 1000 == 0:
+                print word_gid,
+            print("\n")
 
             order = 0
             for d in iteration["morphology"]["base"]:
                 gid += 1
                 order += 1
-                cur.execute( QUERY( d, u"جذع" ) )
+                cur.execute( QUERY( d, iteration["morphology"] ) )
 
-            order = 0
-            for d in iteration["morphology"]["suffixes"]:
-                gid += 1
-                order += 1
-                cur.execute( QUERY( d, u"لاحق" ) )
-
-        print "OK"
+        print("OK")
         maindb.commit()
 
 
@@ -239,7 +237,7 @@ class ZekrModelsImporter:
         elif l == 0:
             return False
         else:#partial
-            print "\nwarning: the translation (id=", id, ") has incomplete documents nb=", l
+            print("\nwarning: the translation (id= %(id)s ) has incomplete documents nb= %(l)d" % {"id": id,"l":l})
             return l
 
     def index_it( self, doclist ):
@@ -251,7 +249,7 @@ class ZekrModelsImporter:
             print doc['id'], doc['gid']
             writer.commit()
         except Exception as E:
-            print E
+            print(E)
 
 
 
@@ -267,9 +265,9 @@ class ZekrModelsImporter:
 		    if not test:
 			print "indexing translation (%s)..." % props["id"],
 			self.index_it( TM.document_list() )
-			print "  OK"
+			print("  OK")
 		else:
-		    print "ignoring %s.." % filename
+		    print("ignoring %s.." % filename )
             except Exception as E:
                 print E
 

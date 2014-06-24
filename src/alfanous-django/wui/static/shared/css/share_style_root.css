@@ -1,0 +1,59 @@
+
+.shareme_root .box a{
+	color:#808080;
+	text-shadow: 0 3px 3px rgba(200,200,200,.4);
+}
+.shareme_root .box a:hover{
+	text-decoration:none;
+}
+
+.shareme_root .box{
+	/*font-weight:bold;*/
+	font-size:45px;
+	padding: 9px;
+	-webkit-border-radius: 5px;
+	-moz-border-radius: 5px;
+	border-radius: 5px;
+	 border:1px solid #808080;
+	line-height:40px;
+	font-size:45px
+}
+
+.shareme_root .count {
+	font-weight:bold;
+	font-size:12px;
+	/*padding: 9px;
+	-webkit-border-radius: 5px;
+	-moz-border-radius: 5px;
+	border-radius: 5px;
+	 border:1px solid #808080;
+	line-height:40px;*/
+}
+.shareme_root .share {
+	/*font-size:50px;*/
+	width:10px;
+}
+
+.shareme_root .buttons {
+	-webkit-border-radius: 5px;
+	-moz-border-radius: 5px;
+	border-radius: 5px;
+	position: absolute;
+	width:294px;
+	background-color:#fff;
+	border: 1px solid rgba(0,0,0,.2);
+	padding:10px;
+	-webkit-box-shadow: 0 1px 2px rgba(0,0,0,.1);
+	-moz-box-shadow: 0 1px 2px rgba(0,0,0,.1);
+	box-shadow: 0 1px 2px rgba(0,0,0,.1);
+}
+.shareme_root .button {
+float:left;
+max-width:50px;
+margin:0 10px 0 0;
+}
+
+.shareme_root .facebook {
+margin:0 4px 0 0;
+}
+

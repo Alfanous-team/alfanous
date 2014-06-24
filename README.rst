@@ -1,12 +1,16 @@
+  **Note:** This project needs more contributors and/or funding. An open source software does not create itself magically. If you like it, see `how you can help? <https://github.com/Alfanous-team/alfanous/blob/master/FAQ.rst#how-you-can-help>`_.
+
 =================
 What is Alfanous?
 =================
+
+
 Alfanous is a functional, dynamic, comprehensive Qur’an search engine that has been effectively designed to carry out simple or advanced Quranic searches. Alfanous uses a contemporary, highly developed approach to retrieve vital information, enabling stable efficient, speedy searches to be conducted. Alfanous aims to implement additional features such as highlight, site suggestions, scoring …etc to further improve your search experience.
 Alfanous understands the complex nature of the Arabic language and thus offers effective Arabic language processing, allowing the stemming and successful elimination of ambiguities. The Application Programming Interface can be used as a fundamental base for developers to build and enhance interface types within different systems, ex: Desktop GUI, Web-based UI…etc.
 
 
 :Authors: `Authors.rst <https://github.com/Alfanous-team/alfanous/blob/master/AUTHORS.rst>`_
-:Release: 0.7  
+:Release: 0.7 BlackStone
 :License: `AGPL <https://github.com/Alfanous-team/alfanous/blob/master/LICENSE>`_
 :Tracker: `Alfanous-team/alfanous/Issues <https://github.com/Alfanous-team/alfanous/issues>`_
 :Mailinglist: `alfanous@googlegroups.com <http://groups.google.com/group/alfanous/>`_
@@ -16,6 +20,11 @@ Alfanous understands the complex nature of the Arabic language and thus offers e
 :Accounts: `@Facebook <https://www.facebook.com/alfanous>`_ `@Twitter <https://twitter.com/alfanous>`_ `@GooglePlus <https://plus.google.com/111305625425237630318>`_ 
         | `@Sourceforge <http://sourceforge.net/projects/alfanous/>`_ `@Launchpad <http://www.launchpad.net/alfanous/>`_
 
+------------
+Build Status
+------------
+.. image:: https://travis-ci.org/Alfanous-team/alfanous.png?branch=master
+        :target: https://travis-ci.org/Alfanous-team/alfanous
 
 --------
 Contacts
@@ -52,6 +61,12 @@ Here also the emails of `Maintainers <https://github.com/Alfanous-team/alfanous/
 
 see `FAQ <https://github.com/Alfanous-team/alfanous/blob/master/FAQ.rst>`_
 
+-------------------
+Research Foundation
+-------------------
+link to `thesis on slideshare <http://www.slideshare.net/AssemCHELLI/main-30182032>`_
+
+
 ----------
 Interfaces
 ----------
@@ -66,7 +81,7 @@ Interfaces
 #. App for Nokia S60 (prototype), `source <https://github.com/Alfanous-team/alfanous/tree/master/interfaces/smart_phones/alfanousS60>`_.
 #. Facebook app (prototype), `source <https://github.com/Alfanous-team/alfanous/tree/master/interfaces/web/facebook_app>`_.
 #. Third party:
-  * `Alfanous4WP7 <http://www.windowsphone.com/en-US/apps/f9e1504d-ce31-4802-a2d1-24ff9f41a06e>`_ by  Abdelmoumen BOUABDALLAH ,  source: unavailable.
+  * `Alfanous4WP7 <http://www.windowsphone.com/en-US/apps/f9e1504d-ce31-4802-a2d1-24ff9f41a06e>`_ by  Abdelmoumen BOUABDALLAH ,  source: `here <https://bitbucket.org/AbdouMoumen/alfanous>`_.
   * `Alfanous4Iphone <http://itunes.apple.com/us/app/alfanws-mhrk-bhth-qrany-mtqdm/id543646326?mt=8>`_ by i4islam, source: closed.
 
 **note:** you can find the perspective interfaces under the milestone: `Extra Interfaces <https://github.com/Alfanous-team/alfanous/issues?milestone=8&page=1&sort=updated&state=open>`_.
@@ -110,9 +125,13 @@ This is the list of search features already implemented, preview links use Alfan
 -------
 History
 -------
-- **10 June 2013**: Launching the django web interface, localizable, indexable, and has many search features, improvements and bug fixes.
+- **25 November 2013**: Launching "`API 0.7.01 BlackStone release <https://github.com/Alfanous-team/alfanous/releases/tag/API_0.7.01>`_" of the  API: Extensible, More stable, and has Many features.
 
-- **26 June 2012**: Launching the clickable feature, making most of results information searchable.
+- **4 August 2013**: Launching "`WEB 0.7.5 alyaqoot release <https://github.com/Alfanous-team/alfanous/releases/tag/WEB_0.7.5>`_" of the  web interface: based on `Twitter Bootstrap <http://twitter.github.io/bootstrap/>`_, Responsive , Simple, Clean , Accept skins, and has many  improvements and bug fixes. kacemb2_
+
+- **10 June 2013**: Launching the django web interface, localizable, indexable, and has many search features, improvements and bug fixes. kacemb_
+
+- **26 June 2012**: Launching the clickable feature, making most of results information searchable. chiffra1_
 
 - **02 January 2012**: Launching new web interface for mobiles, uses: json_web_service_, link: http://m.alfanous.org/, wiki: mobile_web_interface_
 
@@ -130,7 +149,110 @@ History
 
 - **21 July 2010**: Uploading the arabic_interface_ of alfanous-Desktop version 0.3 beta for Windows
 
-- **30 September 2010 - 6 July 2011**: Graduation project for obtaining State-Engineer degree in National higher school of computer science (ESI ,ex.INI) - Algiers. The project was entitled *“Developpement  d'un moteur d'indexation et de recherche dans les documents coranique”*. 
+- **30 September 2009 - 6 July 2010**: Graduation project for obtaining State-Engineer degree in National higher school of computer science (ESI ,ex.INI) - Algiers. The project was entitled *“Developpement  d'un moteur d'indexation et de recherche dans les documents coranique”*. 
+  
+------------
+Perspectives
+------------
+#. **Milestone GUI 0.7 Amber (الكهرمان)** - Cleaning the Desktop application
+
+   - Fix the installer to Ubuntu Linux
+   - Fix the installer to Windows
+   - Tiny fixes
+#. **Milestone API 0.7.5 Coral (المرجان)** - Enriching the linguistic and Quranic resources
+
+   - Search in Islamic Figures
+   - Search&show diverse rewayates 
+   - Enhancement of the search by word derivations
+   - Make the search queries easier and simpler
+   - Search in Prayers as Hisn almuslim
+   - Basic stone for Search in Hadith : 40 nawawiya
+   - Sajadate based on different references 
+   - Search in Quran Boundary Corpus (waqf)
+   - Technical improvements on Alfanous Core 
+#. **Milestone WUI 0.8 Emerald (الزمرد)** - Interactivity of web interface
+
+   - Live suggestions in the search input
+   - Divine Names Highlight 
+   - Syntactic Coloration of ayah words 
+   - Uthmani script with full diacritical marks
+   - Show the linguistic annotations of ayah words as popup tips 
+   - More options on the click-able tags
+   - Make the info tags drag-able into the search input 
+#. **Milestone GUI 0.8 Garnet (العقيق)** - Invasion diverse plate-forms 
+
+   - User Documentation
+   - Localization to diverse languages of the world
+   - Make it available on Debian, one of main Linux distributions
+   - Make it available on different Arabic/Islamic Linux distributions: Ojuba, HilalLinux
+   - Customize it to work well with  Unity, Gnome Shell
+   - Make it available on Mac OSX
+#. **Milestone API 0.8 Iron (الحديد)** - Whoosh 2X upgrade - Completely Technical 
+   - Move from using whoosh 0.3.18 to use 2.4.x 
+   - Optimisation of indexes
+
+#. **Milestone API 0.9 Silver (الفضة)** - Quran Search Features Silver Pack
+
+   - Search in Quran Stories (Qassass)
+   - Statistical frequencies based on Root/Stem/Lemma (word origins)
+   - Vocalized word frequency 
+   - Faceted Thematic Search to search by topics
+   - Semantically related words Search like synonyms, antonyms..
+   - Qur'anic Parables (الأمثال القرآنية) 
+   - Abrogators and Abrogated ayahs search (الناسخ والمنسوخ)
+   - Repetitions and Allegorical ayahs (التكرار والمتشابهات) 
+   - Search for Recitation marks 
+   - Search by word properties
+   - Search by specific derivations like the verb conjugation
+   - Partial vocalization as default
+   - Romanization systems like Buckwalter, Arabtex
+   - Suggest Collocated words 
+   - Suggest Semantically related keywords
+   - Results grouping by surah, by topic, by revelation event
+   - Simplifying the search for ayah statistics 
+   - Detect the used language in query and suggest the search in appropriate Quran translation
+   - Search using the names of ayas like the sword aya (آية السيف)
+   - Group words by their Lemma instead of the exact word
+   - Guess declinable words and ingnore Declinison case mark 
+   - Auto-Completion of Query keywords
+   - Offer prayer times
+#. **Milestone API 1.0 Platinum (البلاتين)** - Stability of Alfanous Core - Completely Technical
+   - Write Unit tests 
+   - Auto-building of required resources from setup.py
+   - Separate interfaces
+   - Full Documentation using Sphinx
+   - Manpage for Alfanous linux console interface
+
+#. **Milestone Extra 1.0 The Pearls (اللآلِئُ)** - Extra applications of Alfanous on different platforms
+
+   - Twitter Application that posts ayahs daily
+   - Facebook application that allow the user to search and share with friends
+   - Application for Android feature-full
+   - Application for Windows Phone
+   - Application for BlackBerry
+   - Application for Symbian
+   - Integration with Joomla CMS
+   - Integration with Drupal CMS
+   - Integration with WordPress
+   - ChatBot, You ask him, he will answer you.
+
+#. **Milestone API 1.1 Rhodium (الروديوم)** - Python 3000 - Completely Technical
+   - Porting the Code to Python 3000
+#. **Milestone API 1.2 Gold (الذهب)** - Quranic Search Features Golden Pack
+
+   - Vocal Search
+   - Real time output 
+   - (lot of features not discussed yet)
+
+#. **Milestone API 2.0 Galaxy Stone (حجر المجرات)** - Multiple Search Units
+   
+   - Exploit more search units possibilities.
+   - (not discussed yet)
+   
+#. **Milestone API 3.0 Technetium (تكنيشيوم)** - To the bestest best optimization 
+   
+   - Fixing PEP8 conventions
+   - (not discussed yet)
   
 --------------
 Featured Posts
@@ -140,8 +262,11 @@ Featured Posts
 - *جزائري يطلق محرك بحث شامل للقرآن الكريم*, onislam_
 - *Alfanous – Quran Search Engine*, muslihzarthblog_ 
 - *إطلاق الإصدارة الجديدة لموقع الفانوس*, kacemb_
+- *إصدار نسخة “الياقوت” من موقع الفانوس للبحث القرآني المتقدّم*, kacemb2_
 - *مزية جديدة في الفانوس، أنقر ما تريد لتبحث من جديد!*, chiffra1_
 - *التحقق من أحد المنشورات حول الإعجاز العددي في القرآن الكريم*, chiffra2_
+- *AlFanous, Terdepan dalam Penelusuran Teks dan Informasi Ayat Al Qur’an*, fath_multimedia_ 
+- *Alfanous, Dakwah Al-Quran Lewat Search Engine*, fimadani_
 
 **Note:**  If you wrote -yourself- a good post about Alfanous in any language, please just tell us to refer it here!
 
@@ -169,6 +294,8 @@ See also
 .. _saidmaroc: http://www.saidmaroc.com/2010/07/blog-post_23.html
 .. _arabcrunch: http://arabcrunch.com/ar/2011/09/%D8%A7%D9%84%D9%81%D8%A7%D9%86%D9%88%D8%B3-%D9%85%D8%B4%D8%B1%D9%88%D8%B9-%D9%85%D8%AD%D8%B1%D9%83-%D8%A8%D8%AD%D8%AB-%D9%85%D8%AA%D9%82%D8%AF%D9%85-%D9%84%D9%84%D9%82%D8%B1%D8%A2%D9%86-%D8%A7%D9%84/
 .. _kacemb: http://www.kacemb.com/%D8%A5%D8%B7%D9%84%D8%A7%D9%82-%D8%A7%D9%84%D8%A5%D8%B5%D8%AF%D8%A7%D8%B1%D8%A9-%D8%A7%D9%84%D8%AC%D8%AF%D9%8A%D8%AF%D8%A9-%D9%84%D9%85%D9%88%D9%82%D8%B9-%D8%A7%D9%84%D9%81%D8%A7%D9%86%D9%88%D8%B3/
+.. _kacemb2: http://www.kacemb.com/%D8%A5%D8%B5%D8%AF%D8%A7%D8%B1-%D9%86%D8%B3%D8%AE%D8%A9-%D8%A7%D9%84%D9%8A%D8%A7%D9%82%D9%88%D8%AA-%D9%85%D9%86-%D9%85%D9%88%D9%82%D8%B9-%D8%A7%D9%84%D9%81%D8%A7%D9%86%D9%88%D8%B3-%D9%84%D9%84/
 .. _chiffra1: http://chiffra.blogspot.com/2012/06/blog-post.html
 .. _chiffra2: http://chiffra.blogspot.com/2013/01/blog-post_4.html
-
+.. _fath_multimedia: http://www.fath-multimedia.blogspot.com/2013/08/alfanous-terdepan-dalam-penelusuran.html
+.. _fimadani: http://news.fimadani.com/read/2013/10/22/alfanous-dakwah-al-quran-lewat-search-engine/?utm_source=twitterfeed&utm_medium=twitter

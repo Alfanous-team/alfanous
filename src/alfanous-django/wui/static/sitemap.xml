@@ -1,8 +1,57 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 
+
 <url>
    <loc>http://www.alfanous.org/</loc>
+</url>
+<url>
+   <loc>http://www.alfanous.org/en/aya/</loc>
+   <loc>http://www.alfanous.org/en/</loc>
+</url>
+<url>
+   <loc>http://www.alfanous.org/ar/aya/</loc>
+   <loc>http://www.alfanous.org/ar/</loc>
+</url>
+<url>
+   <loc>http://www.alfanous.org/fr/aya/</loc>
+   <loc>http://www.alfanous.org/fr/</loc>
+</url>
+<url>
+   <loc>http://www.alfanous.org/id/aya/</loc>
+   <loc>http://www.alfanous.org/id/</loc>
+</url>
+<url>
+   <loc>http://www.alfanous.org/ja/aya/</loc>
+   <loc>http://www.alfanous.org/ja/</loc>
+</url>
+<url>
+   <loc>http://www.alfanous.org/es/aya/</loc>
+   <loc>http://www.alfanous.org/es/</loc>
+</url>
+<url>
+   <loc>http://www.alfanous.org/en/translation/</loc>
+</url>
+<url>
+   <loc>http://www.alfanous.org/ar/translation/</loc>
+</url>
+<url>
+   <loc>http://www.alfanous.org/fr/translation/</loc>
+</url>
+<url>
+   <loc>http://www.alfanous.org/id/translation/</loc>
+</url>
+<url>
+   <loc>http://www.alfanous.org/ja/translation/</loc>
+</url>
+<url>
+   <loc>http://www.alfanous.org/es/translation/</loc>
+</url>
+<url>
+   <loc>http://www.alfanous.org/jos2/</loc>
+</url>
+<url>
+   <loc>http://feedback.alfanous.org/</loc>
 </url>
  
 </urlset>

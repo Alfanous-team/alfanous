@@ -23,7 +23,7 @@ $(document).ready(function(){
     $(".aya_details").hide();
     
     
-    $("a").click(function(event) {
+    $(".show_hide_aya_details").click(function(event) {
         var id = $(this).attr('id');
         var ayaNum = id.split("_").pop();
 
@@ -42,7 +42,7 @@ $(document).ready(function(){
     });
 
     $(".audio").hide();
-    $("button").click(function(event) {
+    $(".function_button").click(function(event) {
         if ($(this).attr('id').indexOf("audio_button") !== -1) {
             var id = $(this).attr('id');
             var ayaNum = id.split("_").pop();

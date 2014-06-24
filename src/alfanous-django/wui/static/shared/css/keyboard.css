@@ -268,4 +268,7 @@
   margin:0px 3px;
   vertical-align:middle;
   cursor:pointer;
+  position: absolute;
+  top: 9px;
+  z-index: 9;
 }

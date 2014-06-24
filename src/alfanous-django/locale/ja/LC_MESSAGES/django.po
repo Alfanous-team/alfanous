@@ -6,642 +6,721 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-06-18 08:15+0100\n"
-"PO-Revision-Date: 2013-04-30 19:11+0100\n"
-"Last-Translator: Abdelkrime Aries <kariminfo0@gmail.com>\n"
+"POT-Creation-Date: 2014-01-04 13:23+0100\n"
+"PO-Revision-Date: 2013-08-06 13:17+0000\n"
+"Last-Translator: kariminf <Unknown>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: ja\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Virtaal 0.7.1\n"
+"X-Launchpad-Export-Date: 2013-08-06 22:52+0000\n"
+"X-Generator: Launchpad (build 16721)\n"
 
-#: templates/aya_results.html:17 templates/translation_results.html:17
-msgid "Search results"
-msgstr "検索結果"
-
-#: templates/aya_results.html:18 templates/translation_results.html:18
-msgid "seconds"
-msgstr "秒"
-
-#: templates/aya_results.html:26
-msgid "Searched keyword:"
-msgstr ""
-
-#: templates/aya_results.html:27 templates/translation_results.html:27
-msgid "Suggestions:"
-msgstr "提案:"
-
-#: templates/aya_results.html:43 templates/translation_results.html:44
-msgid "no suggestions!"
-msgstr "提案なし!"
-
-#: templates/aya_results.html:59
-#, fuzzy
-msgid "Keywords"
-msgstr "言葉"
-
-#: templates/aya_results.html:75 templates/aya_results.html.py:367
-#: templates/aya_results.html:452 templates/base.html:68
-msgid "words"
-msgstr "言葉"
-
-#: templates/aya_results.html:78 templates/aya_results.html.py:91
-msgid "occurances"
-msgstr "発生"
-
-#: templates/aya_results.html:81 templates/aya_results.html.py:100
-msgid "vocalizations"
-msgstr "発声"
-
-#: templates/aya_results.html:95 templates/base.html:61
-msgid "ayates"
-msgstr "アヤ"
-
-#: templates/aya_results.html:116
-msgid "synonyms"
-msgstr "同意語"
-
-#: templates/aya_results.html:133
-msgid "derivations"
-msgstr "派生語"
-
-#: templates/aya_results.html:158
-msgid "Annotation"
-msgstr "注釈"
-
-#: templates/aya_results.html:159
-msgid "ID"
-msgstr "ID"
-
-#: templates/aya_results.html:160
-msgid "sura,aya"
-msgstr "スーラ、アヤ"
-
-#: templates/aya_results.html:162
-msgid "token"
-msgstr "token"
-
-#: templates/aya_results.html:165
-msgid "part"
-msgstr "パート"
-
-#: templates/aya_results.html:168 templates/aya_results.html.py:424
-#: templates/aya_results.html:443
-msgid "type"
-msgstr "タイプ"
-
-#: templates/aya_results.html:171
-msgid "POS"
-msgstr "POS"
-
-#: templates/aya_results.html:174
-msgid "lemma"
-msgstr "補題"
-
-#: templates/aya_results.html:177
-msgid "root"
-msgstr "語源"
-
-#: templates/aya_results.html:180
-msgid "special"
-msgstr "特別"
-
-#: templates/aya_results.html:183
-msgid "aspect"
-msgstr "アスペクト"
-
-#: templates/aya_results.html:186
-msgid "state"
-msgstr "状態"
-
-#: templates/aya_results.html:189
-msgid "form"
-msgstr "フォーム"
-
-#: templates/aya_results.html:192
-msgid "case"
-msgstr "大/小文字"
-
-#: templates/aya_results.html:195
-msgid "derivation"
-msgstr "派生語"
-
-#: templates/aya_results.html:198
-msgid "person"
-msgstr "人"
-
-#: templates/aya_results.html:201
-msgid "number"
-msgstr "数"
-
-#: templates/aya_results.html:204
-msgid "gender"
-msgstr "性別"
-
-#: templates/aya_results.html:207
-msgid "voice"
-msgstr "音声"
-
-#: templates/aya_results.html:221 templates/translation_results.html:60
-msgid "Results"
-msgstr "結果"
-
-#: templates/aya_results.html:222 templates/translation_results.html:61
-msgid "to"
-msgstr "に"
-
-#: templates/aya_results.html:223 templates/translation_results.html:62
-msgid "of"
-msgstr "の"
-
-#: templates/aya_results.html:240 templates/translation_results.html:79
-msgid "Result n°"
-msgstr "結果 n°"
-
-#: templates/aya_results.html:315
-msgid "Show more"
-msgstr ""
-
-#: templates/aya_results.html:325
-msgid "Chapter"
-msgstr "章"
-
-#: templates/aya_results.html:335
-msgid "Topic"
-msgstr "トピック"
-
-#: templates/aya_results.html:344
-msgid "Subtopic"
-msgstr "サブトピック"
-
-#: templates/aya_results.html:358
-#, fuzzy
-msgid "About ayah:"
-msgstr "Alfanousについて"
-
-#: templates/aya_results.html:375 templates/aya_results.html.py:453
-msgid "letters"
-msgstr "文字"
-
-#: templates/aya_results.html:384 templates/aya_results.html.py:454
-msgid "divine names"
-msgstr "神聖な名前"
-
-#: templates/aya_results.html:395
-msgid "manzil"
-msgstr "マンゼル"
-
-#: templates/aya_results.html:403
-msgid "hizb"
-msgstr "ヒーズブ"
-
-#: templates/aya_results.html:406
-msgid "quart"
-msgstr "クォート"
-
-#: templates/aya_results.html:414
-msgid "page"
-msgstr "ページ"
-
-#: templates/aya_results.html:421
-msgid "sajda"
-msgstr "サージだ"
-
-#: templates/aya_results.html:423 templates/aya_results.html.py:438
-msgid "n°"
-msgstr "n°"
-
-#: templates/aya_results.html:430
-msgid "About Surah:"
-msgstr ""
-
-#: templates/aya_results.html:436
-msgid "Sura"
-msgstr "スーラ"
-
-#: templates/aya_results.html:446
-msgid "revelation_order"
-msgstr "啓示順"
-
-#: templates/aya_results.html:449
-msgid "ayahs"
-msgstr "アヤ"
-
-#: templates/aya_results.html:474 templates/translation_results.html:197
-msgid "Sorry! there is no results for this search query."
-msgstr "すみませんが、この検索クエリの結果がありません。"
-
-#: templates/aya_results.html:482 templates/translation_results.html:205
-msgid "Error "
-msgstr "エラー"
-
-#: templates/aya_search.html:10
-#, fuzzy
-msgid "Search options"
-msgstr "検索結果"
-
-#: templates/aya_search.html:14
-msgid "Fuzzy search"
-msgstr "ファジー検索"
-
-#: templates/aya_search.html:18
-msgid "Unvocalized text"
-msgstr "発声がなくテキスト"
-
-#: templates/aya_search.html:22
-msgid "Uthmani script"
-msgstr "オスマンのスクリプト"
-
-#: templates/aya_search.html:34 templates/popups_content.html:28
-#: templates/translation_search.html:36
-msgid "Exact search"
-msgstr "完全な検索"
-
-#: templates/aya_search.html:39 templates/popups_content.html:33
-#: templates/translation_search.html:41
-msgid "Phrase search"
-msgstr "フレーズ検索"
-
-#: templates/aya_search.html:44 templates/popups_content.html:38
-#: templates/translation_search.html:46
-msgid "Logical relations"
-msgstr "論理関数"
-
-#: templates/aya_search.html:49 templates/popups_content.html:43
-#: templates/translation_search.html:51
-msgid "Wildcards"
-msgstr "ワイルドカード文字"
-
-#: templates/aya_search.html:54 templates/popups_content.html:48
-#: templates/translation_search.html:56
-msgid "Fields"
-msgstr "フィールド"
-
-#: templates/aya_search.html:59 templates/popups_content.html:53
-msgid "Intervals"
-msgstr "間隔"
-
-#: templates/aya_search.html:64 templates/popups_content.html:58
-msgid "Partial vocalization"
-msgstr "部分的な発声"
-
-#: templates/aya_search.html:69 templates/popups_content.html:63
-msgid "Word properties"
-msgstr "単語性質"
-
-#: templates/aya_search.html:74 templates/popups_content.html:68
-msgid "Derivations"
-msgstr "派生語"
-
-#: templates/aya_search.html:80 templates/popups_content.html:74
-#: templates/translation_search.html:63
-msgid ""
-"The website does not work well on Internet Explorer, we suggest to use "
-"another browser such as: "
-msgstr ""
-"ウェブサイトは、Internet Explorerでうまく動作しません。だから、次のような別の"
-"ブラウザを使うことをお勧めします: "
-
-#: templates/aya_search.html:80 templates/popups_content.html:74
-#: templates/translation_search.html:63
-msgid "Firefox"
-msgstr "Firefox"
-
-#: templates/aya_search.html:82 templates/translation_search.html:65
-msgid "Close"
-msgstr "終了"
-
-#: templates/aya_search.html:93
-msgid "View"
-msgstr "表示"
-
-#: templates/aya_search.html:100 templates/aya_search.html.py:151
-#: templates/aya_search.html:173
-msgid "Default"
-msgstr "既定"
-
-#: templates/aya_search.html:101
-msgid "Minimal"
-msgstr "最小"
-
-#: templates/aya_search.html:102
-msgid "Normal"
-msgstr "通常"
-
-#: templates/aya_search.html:103
-msgid "Full"
-msgstr "完全"
-
-#: templates/aya_search.html:104
-msgid "Statitic"
-msgstr "統計"
-
-#: templates/aya_search.html:105
-msgid "Linguistic"
-msgstr "言語学"
-
-#: templates/aya_search.html:106
-msgid "Recitation"
-msgstr "朗読"
-
-#: templates/aya_search.html:121
-msgid "Sorted by"
-msgstr "ソート基準"
-
-#: templates/aya_search.html:128
-msgid "Relevance"
-msgstr "関連性"
-
-#: templates/aya_search.html:129
-msgid "Mus'haf"
-msgstr "ムスハーフ"
-
-#: templates/aya_search.html:130 templates/translation_search.html:7
-msgid "Tanzil"
-msgstr "タンゼール"
-
-#: templates/aya_search.html:131
-msgid "Topics"
-msgstr "トピック"
-
-#: templates/aya_search.html:132
-msgid "Ayah length"
-msgstr "アヤの長さ"
-
-#: templates/aya_search.html:144
-msgid "Translation"
-msgstr "翻訳"
-
-#: templates/aya_search.html:152
-msgid "No translation"
-msgstr "翻訳がない"
-
-#: templates/aya_search.html:167
-msgid "Recitation:"
-msgstr "朗読:"
-
-#: templates/aya_search.html:174
-msgid "No recitation"
-msgstr "朗読がない"
-
-#: templates/base.html:7
-msgid "Alfanous"
-msgstr "Alfanous"
-
-#: templates/base.html:9 templates/base.html.py:15
-#, fuzzy
-msgid "Ayah Search"
-msgstr "アヤの長さ"
-
-#: templates/base.html:11
-#, fuzzy
-msgid "Word Search"
-msgstr "コーラン単語検索"
-
-#: templates/base.html:13
-#, fuzzy
-msgid "Translation Search"
-msgstr "コーラン翻訳検索"
-
-#: templates/base.html:20
-msgid "Query:"
-msgstr ""
-
-#: templates/base.html:23
-msgid "Page:"
-msgstr ""
-
-#: templates/base.html:27
-msgid "Order:"
-msgstr ""
-
-#: templates/base.html:31
-#, fuzzy
-msgid "View:"
-msgstr "表示"
-
-#: templates/base.html:35
-#, fuzzy
-msgid "Options:"
-msgstr "提案:"
-
-#: templates/base.html:37
-#, fuzzy
-msgid "vocalized"
-msgstr "発声がなくテキスト"
-
-#: templates/base.html:40
-msgid "uthmani"
-msgstr ""
-
-#: templates/base.html:43
-msgid "fuzzy"
-msgstr ""
-
-#: templates/base.html:48
-#, fuzzy
-msgid "Translation:"
-msgstr "翻訳"
-
-#: templates/base.html:55
-msgid ""
-"Alfanous is a functional, dynamic, comprehensive Qur’an search engine that "
-"has been effectively designed to carry out simple or advanced Quranic "
-"searches."
-msgstr ""
-"Alfanousは、機能的で動的で包括的なコーラン検索エンジンです。それは効果的に、"
-"単純または高度コーラン検索を行うように設計されている。"
-
-#: templates/base.html:56
-msgid "quran"
-msgstr "コーラン"
-
-#: templates/base.html:57
-msgid "forqan"
-msgstr "フルカーン"
-
-#: templates/base.html:58
-msgid "koran"
-msgstr "コーラン"
-
-#: templates/base.html:59
-msgid "search"
-msgstr "検索"
-
-#: templates/base.html:60
-msgid "search engine"
-msgstr "検索エンジン"
-
-#: templates/base.html:62
-msgid "surates"
-msgstr "スーラ"
-
-#: templates/base.html:63
-msgid "advanced"
-msgstr "上級編"
-
-#: templates/base.html:64
-msgid "statistics"
-msgstr "統計"
-
-#: templates/base.html:65
-msgid "linguistic"
-msgstr "言語学"
-
-#: templates/base.html:66
-msgid "information retrieval"
-msgstr "情報検索"
-
-#: templates/base.html:67
-msgid "natural language processing"
-msgstr "自然言語処理"
-
-#: templates/base.html:69
-msgid "Lantern"
-msgstr "灯籠"
-
-#: templates/base.html:70
-msgid "alfanous"
-msgstr "alfanous"
-
-#: templates/base.html:78
-#, fuzzy
-msgid "vocalized text"
-msgstr "発声がなくテキスト"
-
-#: templates/base.html:81
-#, fuzzy
-msgid "uthmani script"
-msgstr "オスマンのスクリプト"
-
-#: templates/base.html:84
-#, fuzzy
-msgid "fuzzy search"
-msgstr "ファジー検索"
-
-#: templates/base.html:157 wui/views.py:69
+#: settings.py:241 templates/base.html:160
 msgid "Ayahs"
 msgstr "アヤ"
 
-#: templates/base.html:158 wui/views.py:72
+#: settings.py:244 templates/base.html:161
 msgid "Translations"
 msgstr "翻訳"
 
-#: templates/base.html:159
+#: settings.py:245 templates/base.html:162
 msgid "Words"
 msgstr "単語"
 
+#: templates/aya_results.html:17 templates/aya_results.html.py:63
+#: templates/word_results.html:17
+msgid "Keywords"
+msgstr "キーワード"
+
+#: templates/aya_results.html:19 templates/aya_results.html.py:286
+#: templates/translation_results.html:25 templates/word_results.html:19
+#: templates/word_results.html.py:31
+msgid "Results"
+msgstr "結果"
+
+#: templates/aya_results.html:21 templates/translation_results.html:17
+#: templates/word_results.html:21
+msgid "Runtime"
+msgstr "実行時間"
+
+#: templates/aya_results.html:22 templates/word_results.html:22
+msgid "s"
+msgstr "s"
+
+#: templates/aya_results.html:30
+msgid "Searched keyword:"
+msgstr "検索されたキーワード"
+
+#: templates/aya_results.html:31
+msgid "Suggestions:"
+msgstr "提案:"
+
+#: templates/aya_results.html:47
+msgid "no suggestions!"
+msgstr "提案なし!"
+
+#: templates/aya_results.html:80 templates/aya_results.html.py:584
+#: templates/aya_results.html:658 templates/base.html:69
+msgid "words"
+msgstr "言葉"
+
+#: templates/aya_results.html:94 templates/aya_results.html.py:107
+msgid "occurances"
+msgstr "発生"
+
+#: templates/aya_results.html:97 templates/aya_results.html.py:116
+msgid "vocalizations"
+msgstr "発声"
+
+#: templates/aya_results.html:111 templates/base.html:62
+msgid "ayates"
+msgstr "アヤ"
+
+#: templates/aya_results.html:132
+msgid "synonyms"
+msgstr "同意語"
+
+#: templates/aya_results.html:149
+msgid "derivations"
+msgstr "派生語"
+
+#: templates/aya_results.html:179
+msgid "annotations"
+msgstr "注釈"
+
+#: templates/aya_results.html:208 templates/word_results.html:175
+msgid "part"
+msgstr "パート"
+
+#: templates/aya_results.html:211 templates/word_results.html:178
+msgid "lemma"
+msgstr "補題"
+
+#: templates/aya_results.html:214 templates/word_results.html:181
+msgid "root"
+msgstr "語源"
+
+#: templates/aya_results.html:217 templates/word_results.html:184
+msgid "special"
+msgstr "特別"
+
+#: templates/aya_results.html:220 templates/word_results.html:187
+msgid "token"
+msgstr "token"
+
+#: templates/aya_results.html:223 templates/aya_results.html.py:611
+#: templates/aya_results.html:643 templates/aya_results.html.py:648
+#: templates/word_results.html:190
+msgid "type"
+msgstr "タイプ"
+
+#: templates/aya_results.html:226 templates/word_results.html:193
+msgid "POS"
+msgstr "POS"
+
+#: templates/aya_results.html:230 templates/word_results.html:197
+msgid "aspect"
+msgstr "アスペクト"
+
+#: templates/aya_results.html:233 templates/word_results.html:200
+msgid "state"
+msgstr "状態"
+
+#: templates/aya_results.html:236 templates/word_results.html:203
+msgid "form"
+msgstr "フォーム"
+
+#: templates/aya_results.html:239 templates/word_results.html:206
+msgid "case"
+msgstr "大/小文字"
+
+#: templates/aya_results.html:242 templates/word_results.html:209
+msgid "derivation"
+msgstr "派生語"
+
+#: templates/aya_results.html:245 templates/word_results.html:212
+msgid "person"
+msgstr "人"
+
+#: templates/aya_results.html:248 templates/word_results.html:215
+msgid "number"
+msgstr "数"
+
+#: templates/aya_results.html:251 templates/word_results.html:218
+msgid "gender"
+msgstr "性別"
+
+#: templates/aya_results.html:254 templates/word_results.html:221
+msgid "voice"
+msgstr "音声"
+
+#: templates/aya_results.html:287 templates/translation_results.html:26
+#: templates/word_results.html:32
+msgid "to"
+msgstr "に"
+
+#: templates/aya_results.html:288 templates/translation_results.html:27
+#: templates/word_results.html:33 templates/word_results.html.py:65
+msgid "of"
+msgstr "の"
+
+#: templates/aya_results.html:310 templates/translation_results.html:44
+#: templates/word_results.html:54
+msgid "Result n°"
+msgstr "結果 n°"
+
+#: templates/aya_results.html:352 templates/translation_results.html:84
+#: templates/word_results.html:90
+msgid "Twitter"
+msgstr ""
+
+#: templates/aya_results.html:353 templates/translation_results.html:85
+#: templates/word_results.html:91
+msgid "Facebook"
+msgstr ""
+
+#: templates/aya_results.html:354 templates/translation_results.html:86
+msgid "Google+"
+msgstr ""
+
+#: templates/aya_results.html:355 templates/translation_results.html:87
+#: templates/word_results.html:93
+msgid "Linkedin"
+msgstr ""
+
+#: templates/aya_results.html:471
+msgid "Click here to show more details"
+msgstr "詳細を見るには、ここをクリックして下さい"
+
+#: templates/aya_results.html:474
+msgid "Show more"
+msgstr "もっと表示する"
+
+#: templates/aya_results.html:493
+msgid "Chapter"
+msgstr "章"
+
+#: templates/aya_results.html:503
+msgid "Topic"
+msgstr "トピック"
+
+#: templates/aya_results.html:512
+msgid "Subtopic"
+msgstr "サブトピック"
+
+#: templates/aya_results.html:527
+msgid "About ayah"
+msgstr "アヤについて"
+
+#: templates/aya_results.html:536
+msgid "manzil"
+msgstr "マンゼル"
+
+#: templates/aya_results.html:544
+msgid "juz"
+msgstr "ジュズ"
+
+#: templates/aya_results.html:552
+msgid "hizb"
+msgstr "ヒーズブ"
+
+#: templates/aya_results.html:555
+msgid "quart"
+msgstr "クォート"
+
+#: templates/aya_results.html:563
+msgid "page"
+msgstr "ページ"
+
+#: templates/aya_results.html:572
+msgid "page (indian)"
+msgstr "ページ（インド）"
+
+#: templates/aya_results.html:592 templates/aya_results.html.py:659
+msgid "letters"
+msgstr "文字"
+
+#: templates/aya_results.html:601 templates/aya_results.html.py:660
+msgid "divine names"
+msgstr "神聖な名前"
+
+#: templates/aya_results.html:608
+msgid "sajda"
+msgstr "サージだ"
+
+#: templates/aya_results.html:608
+msgid "Hafs"
+msgstr ""
+
+#: templates/aya_results.html:610 templates/aya_results.html.py:637
+msgid "n°"
+msgstr "n°"
+
+#: templates/aya_results.html:619
+msgid "About surah"
+msgstr "スーラについて"
+
+#: templates/aya_results.html:626 templates/aya_results.html.py:632
+msgid "Sura"
+msgstr "スーラ"
+
+#: templates/aya_results.html:652
+msgid "revelation_order"
+msgstr "啓示順"
+
+#: templates/aya_results.html:655
+msgid "ayahs"
+msgstr "アヤ"
+
+#: templates/aya_results.html:681 templates/translation_results.html:205
+#: templates/word_results.html:241
+msgid "Sorry! there is no results for this search query."
+msgstr "すみませんが、この検索クエリの結果がありません。"
+
+#: templates/aya_results.html:690 templates/translation_results.html:213
+#: templates/word_results.html:250
+msgid "Error "
+msgstr "エラー "
+
+#: templates/aya_search.html:13
+msgid "Fuzzy search"
+msgstr "あいまい検索"
+
+#: templates/aya_search.html:17
+msgid "Unvocalized text"
+msgstr "発声がなくテキスト"
+
+#: templates/aya_search.html:21
+msgid "Uthmani script"
+msgstr "オットマンのスクリプト"
+
+#: templates/aya_search.html:34
+msgid "View"
+msgstr "表示"
+
+#: templates/aya_search.html:41 templates/aya_search.html.py:92
+#: templates/aya_search.html:114 templates/base.html:218
+msgid "Default"
+msgstr "既定"
+
+#: templates/aya_search.html:42
+msgid "Minimal"
+msgstr "最小"
+
+#: templates/aya_search.html:43
+msgid "Normal"
+msgstr "通常"
+
+#: templates/aya_search.html:44
+msgid "Full"
+msgstr "完全"
+
+#: templates/aya_search.html:45
+msgid "Statitic"
+msgstr "統計"
+
+#: templates/aya_search.html:46
+msgid "Linguistic"
+msgstr "言語学"
+
+#: templates/aya_search.html:47
+msgid "Recitation"
+msgstr "朗読"
+
+#: templates/aya_search.html:62
+msgid "Sorted by"
+msgstr "ソート基準"
+
+#: templates/aya_search.html:69
+msgid "Relevance"
+msgstr "関連性"
+
+#: templates/aya_search.html:70
+msgid "Mus'haf"
+msgstr "ムスハーフ"
+
+#: templates/aya_search.html:71 templates/translation_search.html:7
+msgid "Tanzil"
+msgstr "タンゼール"
+
+#: templates/aya_search.html:72
+msgid "Topics"
+msgstr "トピック"
+
+#: templates/aya_search.html:73
+msgid "Ayah length"
+msgstr "アヤの長さ"
+
+#: templates/aya_search.html:85
+msgid "Translation"
+msgstr "翻訳"
+
+#: templates/aya_search.html:93
+msgid "No translation"
+msgstr "翻訳がない"
+
+#: templates/aya_search.html:108
+msgid "Recitation:"
+msgstr "朗読:"
+
+#: templates/aya_search.html:115
+msgid "No recitation"
+msgstr "朗読がない"
+
+#: templates/base.html:11
+msgid "Page:"
+msgstr "ページ:"
+
+#: templates/base.html:15
+msgid "Order:"
+msgstr "順番："
+
+#: templates/base.html:19
+msgid "View:"
+msgstr "表示:"
+
+#: templates/base.html:23
+msgid "Options:"
+msgstr "オプション:"
+
+#: templates/base.html:25
+msgid "vocalized"
+msgstr "発声"
+
+#: templates/base.html:28
+msgid "uthmani"
+msgstr "オットマン"
+
+#: templates/base.html:31
+msgid "fuzzy"
+msgstr "あいまい"
+
+#: templates/base.html:36
+msgid "Translation:"
+msgstr "翻訳："
+
+#: templates/base.html:43 templates/base.html.py:49 templates/base.html:419
+msgid "Quran Ayah Search"
+msgstr "コーランのアヤの検索"
+
+#: templates/base.html:45 templates/base.html.py:419
+msgid "Quran Word Search"
+msgstr "コーランの単語の検索"
+
+#: templates/base.html:47 templates/base.html.py:419
+msgid "Quran Translation Search"
+msgstr "コーラン翻訳の検索"
+
+#: templates/base.html:51 templates/base.html.py:419
+msgid "Alfanous"
+msgstr "Alfanous"
+
+#: templates/base.html:57
+msgid "quran"
+msgstr "コーラン"
+
+#: templates/base.html:58
+msgid "forqan"
+msgstr "フルカーン"
+
+#: templates/base.html:59
+msgid "koran"
+msgstr "コーラン"
+
+#: templates/base.html:60
+msgid "search"
+msgstr "検索"
+
+#: templates/base.html:61
+msgid "search engine"
+msgstr "検索エンジン"
+
+#: templates/base.html:63
+msgid "surates"
+msgstr "スーラ"
+
+#: templates/base.html:64
+msgid "advanced"
+msgstr "上級編"
+
+#: templates/base.html:65
+msgid "statistics"
+msgstr "統計"
+
+#: templates/base.html:66
+msgid "linguistic"
+msgstr "言語学"
+
+#: templates/base.html:67
+msgid "information retrieval"
+msgstr "情報検索"
+
+#: templates/base.html:68
+msgid "natural language processing"
+msgstr "自然言語処理"
+
+#: templates/base.html:70
+msgid "Lantern"
+msgstr "灯籠"
+
+#: templates/base.html:71
+msgid "alfanous"
+msgstr "alfanous"
+
+#: templates/base.html:79
+msgid "vocalized text"
+msgstr "テキスト付き発音"
+
+#: templates/base.html:82
+msgid "uthmani script"
+msgstr "オットマンのスクリプト"
+
+#: templates/base.html:85
+msgid "fuzzy search"
+msgstr "あいまい検索"
+
+#: templates/base.html:181
+msgid "First, select the search unit"
+msgstr "まず、探索部を選んで下さい。"
+
+#: templates/base.html:182
+msgid ""
+"You can choose whether to search in Arabic verses of the holly Quran or in "
+"its translations"
+msgstr ""
+"神聖なコーランのアラビア語の節またはその翻訳で検索するかどうかを選べます。"
+
 #: templates/base.html:196
-#, fuzzy
+msgid "Select your language"
+msgstr "ご言語を選択して下さい"
+
+#: templates/base.html:197
+msgid ""
+"If you didn't notice, Alfanous User Interface is now translated to other "
+"languages, choose the one that fits you the best, or, you can contribute in "
+"translating it into your native language! (see the translate link)"
+msgstr ""
+"気づかなかった場合は、Alfanousユーザーインターフェイスは他の言語に翻訳されて"
+"います。最高に合った翻訳をお選びください。または、母国語に翻訳することができ"
+"る！ （翻訳のリンクを参照してください）"
+
+#: templates/base.html:199
 msgid "Languages"
 msgstr "言語"
 
-#: templates/base.html:206
+#: templates/base.html:209
 msgid "Current:"
-msgstr ""
+msgstr "現在："
 
-#: templates/base.html:242
-#, fuzzy
+#: templates/base.html:214
+msgid "Skins"
+msgstr "スキン"
+
+#: templates/base.html:221
+msgid "Cerulean"
+msgstr "Cerulean"
+
+#: templates/base.html:222
+msgid "Cyborg"
+msgstr "Cyborg"
+
+#: templates/base.html:223
+msgid "Amelia"
+msgstr "Amelia"
+
+#: templates/base.html:224
+msgid "Readable"
+msgstr "可読"
+
+#: templates/base.html:225
+msgid "Slate"
+msgstr "スレート"
+
+#: templates/base.html:226
+msgid "Spacelab"
+msgstr "Spacelab"
+
+#: templates/base.html:227
+msgid "Super Heroes"
+msgstr "スーパーヒーロー"
+
+#: templates/base.html:228
+msgid "United"
+msgstr "ユナイテッド"
+
+#: templates/base.html:250
+msgid "Our page on Facebook"
+msgstr "Facebookで、我々のページ"
+
+#: templates/base.html:251
+msgid "Our page on Google+"
+msgstr "Google+で、我々のページ"
+
+#: templates/base.html:252
+msgid "Our account on Twitter"
+msgstr "Twitterで、我々のアカウント"
+
+#: templates/base.html:253
+msgid "Our repository on Github"
+msgstr "Githubで、我々のリポジトリ"
+
+#: templates/base.html:254
+msgid "Our Mailing list on GoogleGroups"
+msgstr "GoogleGroupsで、我々のメーリングリスト"
+
+#: templates/base.html:268
 msgid "Information:"
-msgstr "注釈"
+msgstr "情報："
 
-#: templates/base.html:243
+#: templates/base.html:269
 msgid "Quick Tour!"
-msgstr ""
+msgstr "クイックツアー！"
 
-#: templates/base.html:244 templates/popups_content.html:7
+#: templates/base.html:270 templates/popups_content.html:7
 msgid "F.A.Q."
 msgstr "F.A.Q."
 
-#: templates/base.html:253 templates/popups_content.html:21
+#: templates/base.html:271
+msgid "Sample search here"
+msgstr "ここでサンプル検索"
+
+#: templates/base.html:272
+msgid ""
+"Here you can learn by example about the full power of Alfanous search engine "
+"and what you can do with it."
+msgstr ""
+"ここでは、Alfanous検索エンジンのすべての機能について例によって学ぶことができ"
+"ます。また、それを使って何ができるかを学ぶことができます。"
+
+#: templates/base.html:276 templates/popups_content.html:21
 msgid "Help"
 msgstr "ヘルプ"
 
-#: templates/base.html:254
+#: templates/base.html:278
 msgid "Contact"
 msgstr "連絡先"
 
-#: templates/base.html:255 templates/popups_content.html:206
+#: templates/base.html:279 templates/popups_content.html:263
 msgid "Download"
 msgstr "ダウンロード"
 
-#: templates/base.html:256
-#, fuzzy
+#: templates/base.html:280
 msgid "Contribute:"
-msgstr "協力する"
+msgstr "貢献して下さい："
 
-#: templates/base.html:257
-msgid "Translate"
-msgstr "翻訳する"
-
-#: templates/base.html:258
+#: templates/base.html:281
 msgid "Feedback"
 msgstr "フィードバック"
 
-#: templates/base.html:267
+#: templates/base.html:282
+msgid "Translate"
+msgstr "翻訳する"
+
+#: templates/base.html:283
+msgid "we really need your help!"
+msgstr "我々は本当にお願いします！"
+
+#: templates/base.html:284
+msgid ""
+"We're looking to fund the project, if you like it, help us making it even "
+"better."
+msgstr ""
+"我々はこのプロジェクトに資金を供給するために探している。それを好きなら、それ"
+"をより良い作るのに手伝って下さい。"
+
+#: templates/base.html:292
 msgid "Donate"
 msgstr "ご寄付"
 
-#: templates/base.html:268
+#: templates/base.html:293
 msgid "Other means"
-msgstr ""
+msgstr "他の手段"
 
-#: templates/base.html:289
-#, fuzzy
+#: templates/base.html:312
+msgid "Alfanous is smart!"
+msgstr "Alfanousはスマートです！"
+
+#: templates/base.html:316
+msgid "search query here ..."
+msgstr "ここで検索のクエリ..."
+
+#: templates/base.html:322
 msgid "Quick search"
-msgstr "コーラン節検索"
+msgstr "高速検索"
 
-#: templates/base.html:301
-#, fuzzy
-msgid "Advanced search"
-msgstr "完全な検索"
+#: templates/base.html:328
+msgid "Even more!"
+msgstr "さらに！"
 
-#: templates/base.html:319
-msgid "Bismi'Allah Go!"
+#: templates/base.html:329
+msgid ""
+"You can <strong>sort</strong>, <strong>filter</strong> search reasults or "
+"choose a translation, you can as well choose a recitator!"
 msgstr ""
+"検索結果を<strong>ソート</strong>して<strong>フィルタリング</strong>するこ"
+"と、または翻訳を選ぶことができます。また、暗唱を選べます！"
 
-#: templates/base.html:346
-#, fuzzy
+#: templates/base.html:334
+msgid "Search options"
+msgstr "検索オプション"
+
+#: templates/base.html:353
+msgid "Bismi'Allah Go!"
+msgstr "ビスミーアッラー、行け！"
+
+#: templates/base.html:379
 msgid "Help!"
-msgstr "ヘルプ"
+msgstr "助けて下さい！"
 
-#: templates/base.html:352
-#, fuzzy
+#: templates/base.html:381
+msgid "Please help us translate Alfanous Project into more languages!"
+msgstr "多くの言語にAlfanousプロジェクトを翻訳して助けてください！"
+
+#: templates/base.html:389
 msgid ""
 "Please help us improving Alfanous Project, by taking this survey about "
 "search features in Holy Quran."
 msgstr ""
-"この神聖なコーランの検索機能の調査を取ることによって、Alfanousプロジェクトを"
-"改善する役立ってください"
+"神聖なコーランの検索機能については、この調査を取ることによって、Alfanousプロ"
+"ジェクトを改善する助けてください。"
 
-#: templates/base.html:363
+#: templates/base.html:395
+msgid "Info!"
+msgstr "情報！"
+
+#: templates/base.html:397
+msgid "The source of indexed Quran translations is Tanzil Project"
+msgstr "インデックス付きのコーランの翻訳のソースはTanzilプロジェクトです"
+
+#: templates/base.html:419
+msgid "Share!"
+msgstr "共有する"
+
+#: templates/base.html:430
 msgid "Copyright"
-msgstr ""
+msgstr "Copyright"
 
-#: templates/base.html:363
-#, fuzzy
+#: templates/base.html:430
 msgid "Alfanous Team"
-msgstr "Alfanous"
+msgstr "Alfanousのチーム"
 
-#: templates/base.html:364
+#: templates/base.html:431
 msgid "released under"
-msgstr ""
+msgstr "リリース"
 
-#: templates/base.html:364
+#: templates/base.html:431
 msgid "AGPL license"
-msgstr ""
+msgstr "AGPLライセンス"
 
-#: templates/base.html:369
-#, fuzzy
+#: templates/base.html:436
 msgid "Powered by"
-msgstr "ソート基準"
+msgstr "Powered by"
 
-#: templates/base.html:378
-#, fuzzy
+#: templates/base.html:445
 msgid "Add to your search bar!"
-msgstr "検索バーに追加する"
+msgstr "ご検索バーに追加！"
 
 #: templates/popups_content.html:10
 msgid "See"
@@ -651,18 +730,78 @@ msgstr "参照"
 msgid "this link"
 msgstr "このリンク"
 
-#: templates/popups_content.html:13 templates/popups_content.html.py:77
-#: templates/popups_content.html:91 templates/popups_content.html.py:115
-#: templates/popups_content.html:136 templates/popups_content.html.py:197
-#: templates/popups_content.html:223 templates/popups_content.html.py:242
+#: templates/popups_content.html:13 templates/popups_content.html.py:134
+#: templates/popups_content.html:148 templates/popups_content.html.py:172
+#: templates/popups_content.html:193 templates/popups_content.html.py:254
+#: templates/popups_content.html:302 templates/popups_content.html.py:323
 msgid " Close "
 msgstr " 終了 "
 
-#: templates/popups_content.html:85
+#: templates/popups_content.html:27
+msgid "Searching in Quran Ayahs"
+msgstr "コーランのアヤで検索"
+
+#: templates/popups_content.html:34 templates/popups_content.html.py:98
+msgid "Exact search"
+msgstr "完全な検索"
+
+#: templates/popups_content.html:39 templates/popups_content.html.py:103
+msgid "Phrase search"
+msgstr "フレーズ検索"
+
+#: templates/popups_content.html:44 templates/popups_content.html.py:108
+msgid "Logical relations"
+msgstr "論理関数"
+
+#: templates/popups_content.html:49 templates/popups_content.html.py:113
+msgid "Wildcards"
+msgstr "ワイルドカード文字"
+
+#: templates/popups_content.html:54 templates/popups_content.html.py:118
+msgid "Fields"
+msgstr "フィールド"
+
+#: templates/popups_content.html:59
+msgid "Intervals"
+msgstr "間隔"
+
+#: templates/popups_content.html:64
+msgid "Partial vocalization"
+msgstr "部分的な発声"
+
+#: templates/popups_content.html:69
+msgid "Word properties"
+msgstr "単語性質"
+
+#: templates/popups_content.html:74
+msgid "Derivations"
+msgstr "派生語"
+
+#: templates/popups_content.html:79
+msgid "Buckwalter Transliteration"
+msgstr "と翻訳"
+
+#: templates/popups_content.html:91
+msgid "Searching in Quran Translations"
+msgstr "コーランの翻訳で検索"
+
+#: templates/popups_content.html:131
+msgid ""
+"The website does not work well on Internet Explorer, we suggest to use "
+"another browser such as: "
+msgstr ""
+"ウェブサイトは、Internet Explorerでうまく動作しません。だから、次のような別の"
+"ブラウザを使うことをお勧めします: "
+
+#: templates/popups_content.html:131
+msgid "Firefox"
+msgstr "Firefox"
+
+#: templates/popups_content.html:142
 msgid "Awarded!"
 msgstr "受賞!"
 
-#: templates/popups_content.html:88
+#: templates/popups_content.html:145
 msgid ""
 "Alfanous.org was chosen as the best-in-technicaity website in the "
 "competition AlgeriaWebAwards 2012."
@@ -670,11 +809,11 @@ msgstr ""
 "Alfanous.orgはAlgeriaWebAwards2012年の競技に、最高の専門的なウェブサイトに選"
 "ばれました。"
 
-#: templates/popups_content.html:99
+#: templates/popups_content.html:156
 msgid "How to donate"
 msgstr "寄付のしかた"
 
-#: templates/popups_content.html:102
+#: templates/popups_content.html:159
 msgid ""
 "We're stuck looking for possible ways for donations/Funding. Any help is "
 "appreciated!"
@@ -682,11 +821,11 @@ msgstr ""
 "寄付/資金調達の可能な方法を模索して立ち往生している。すべてのヘルプは大歓迎で"
 "す!"
 
-#: templates/popups_content.html:105
+#: templates/popups_content.html:162
 msgid "Any way you can help by:"
 msgstr "助けることができる任意の方法:"
 
-#: templates/popups_content.html:107
+#: templates/popups_content.html:164
 msgid ""
 "Pay our web hosting monthly bills directly, we create an account for you in "
 "the host to do that."
@@ -694,7 +833,7 @@ msgstr ""
 "直接で毎月の請求書を弊社のWebホスティングを支払ってお願いします。それを行うた"
 "めに、当社はホストであなたのアカウントを作成します。"
 
-#: templates/popups_content.html:108
+#: templates/popups_content.html:165
 msgid ""
 "Lead an advertising compaign for the project website through Google adwords "
 "or Facebook."
@@ -702,42 +841,46 @@ msgstr ""
 "Googleアドワーズ広告やFacebookを通じて、プロジェクトのウェブサイトのための広"
 "告キャンペーンをリードしてお願いします。"
 
-#: templates/popups_content.html:109
-msgid "Donate by flattr:"
-msgstr ""
+#: templates/popups_content.html:166
+msgid "Buy Products (T-shirts, Cups, Hats) from Zazzle"
+msgstr "Zazzleから「T-shirtsやカップや帽子」の製品を買って下さい。"
 
-#: templates/popups_content.html:123
+#: templates/popups_content.html:167
+msgid "Donate by flattr:"
+msgstr "flattrによって寄付して下さい："
+
+#: templates/popups_content.html:180
 msgid "Contact us"
 msgstr "連絡先"
 
-#: templates/popups_content.html:127
+#: templates/popups_content.html:184
 msgid "If you have a concrete bug report for Alfanous please go to"
 msgstr "Alfanousに具体的なバグが見付けたら、レポートしてください"
 
-#: templates/popups_content.html:127
+#: templates/popups_content.html:184
 msgid "Issues Tracker"
 msgstr "課題トラッカー"
 
-#: templates/popups_content.html:127
+#: templates/popups_content.html:184
 msgid "submit your report and tag it \"bug\"."
 msgstr "「bug」というレポートを提出してください。"
 
-#: templates/popups_content.html:128
+#: templates/popups_content.html:185
 msgid ""
 "If you want to participate in actively developing Alfanous,by testing read"
 msgstr ""
 "テストによって積極的にAlfanousの開発に参加したい場合は、この次をお読みくださ"
 "い"
 
-#: templates/popups_content.html:128
+#: templates/popups_content.html:185
 msgid "and by coding read "
-msgstr "コーディングによって、この次をお読みください"
+msgstr "コーディングによって、この次をお読みください "
 
-#: templates/popups_content.html:129
+#: templates/popups_content.html:186
 msgid "If you want to help in Alfanous somehow,  read"
 msgstr "何とかAlfanousに手助けをしたい場合は、この次をお読みください"
 
-#: templates/popups_content.html:130
+#: templates/popups_content.html:187
 msgid ""
 "If you have a feature request, a proposition or a question for the project, "
 "you may use the mailing list."
@@ -745,7 +888,7 @@ msgstr ""
 "機能要求や提案やプロジェクトの質問がある場合は、次のメーリングリストを使用し"
 "てください。"
 
-#: templates/popups_content.html:131
+#: templates/popups_content.html:188
 msgid ""
 "If you want to criticize the project, we'll be thankful if you resume your "
 "criticism and send it to the mailing list."
@@ -753,49 +896,49 @@ msgstr ""
 "プロジェクトを批判する場合は、この批判を再開してメーリングリストに送信するこ"
 "とに感謝します。"
 
-#: templates/popups_content.html:133
+#: templates/popups_content.html:190
 msgid "For anything else, you can contact us via the mailing list which is:"
 msgstr "何もに、メーリングリストを介してお問い合わせしてください："
 
-#: templates/popups_content.html:146
+#: templates/popups_content.html:203
 msgid "How to contribute"
 msgstr "貢献する方法"
 
-#: templates/popups_content.html:154
+#: templates/popups_content.html:211
 msgid "Spreading the word"
 msgstr "言葉を広める"
 
-#: templates/popups_content.html:160
+#: templates/popups_content.html:217
 msgid "Following and sharing our social network pages:"
 msgstr "当社ソーシャルネットワークのページに従ってと共有:"
 
-#: templates/popups_content.html:162
+#: templates/popups_content.html:219
 msgid "Sharing a link to"
 msgstr "リンクを共有する"
 
-#: templates/popups_content.html:162
+#: templates/popups_content.html:219
 msgid "our website"
 msgstr "当社のWebサイト"
 
-#: templates/popups_content.html:162
+#: templates/popups_content.html:219
 msgid "via your accounts in Social networks."
 msgstr "ソーシャルネットワークでごアカウントを経由して。"
 
-#: templates/popups_content.html:163
+#: templates/popups_content.html:220
 msgid ""
 "Pointing  skilled developers and Quranic researchers to the importance of "
 "the project."
 msgstr "プロジェクトの重要性に開発者の熟練やコーランの研究者を指す。"
 
-#: templates/popups_content.html:164
+#: templates/popups_content.html:221
 msgid "Writing articles about the project in blogs, newspapers."
 msgstr "ブログや新聞にプロジェクトについての記事を書く。"
 
-#: templates/popups_content.html:165
+#: templates/popups_content.html:222
 msgid "Showing a banner on your Blog/Website."
 msgstr "ごブログ/ウェブサイトにバナーを表示しています。"
 
-#: templates/popups_content.html:166
+#: templates/popups_content.html:223
 msgid ""
 "creating an ad for alfanous links using Google adwords or facebook if you're "
 "familiar with that (btw,it needs money)"
@@ -803,7 +946,11 @@ msgstr ""
 "Googleアドワーズ広告やfacebookで精通している場合、alfanousリンクの広告を作成"
 "してお願いします。（ところで、それはお金を必要とします）"
 
-#: templates/popups_content.html:180
+#: templates/popups_content.html:232
+msgid "Or by"
+msgstr "または"
+
+#: templates/popups_content.html:237
 msgid ""
 "Managing and Animating our social network pages with news and daily posts "
 "[Arabic, English]:"
@@ -811,49 +958,49 @@ msgstr ""
 "ニュースと日常の記事を使用した当社のソーシャルネットワークページを管理する[ア"
 "ラビア語、英語]:"
 
-#: templates/popups_content.html:182
+#: templates/popups_content.html:239
 msgid "Translating project interfaces to your language , see:"
 msgstr ""
 "ご言語にプロジェクト·インタフェースの翻訳したい場合は、参照してください："
 
-#: templates/popups_content.html:183
+#: templates/popups_content.html:240
 msgid "Testing the modules and releases, Reporting bugs , see:"
 msgstr ""
 "モジュールとリリースをテストしたりバグを報告する場合は、参照してください："
 
-#: templates/popups_content.html:184
+#: templates/popups_content.html:241
 msgid "Fixing"
 msgstr "修正する"
 
-#: templates/popups_content.html:184
+#: templates/popups_content.html:241
 msgid "bugs"
 msgstr "バグ"
 
-#: templates/popups_content.html:184
+#: templates/popups_content.html:241
 msgid "Coding"
 msgstr "コーディング"
 
-#: templates/popups_content.html:184
+#: templates/popups_content.html:241
 msgid "new features"
 msgstr "新しい機能"
 
-#: templates/popups_content.html:184
+#: templates/popups_content.html:241
 msgid "or Developing"
 msgstr "または開発する"
 
-#: templates/popups_content.html:184
+#: templates/popups_content.html:241
 msgid "new interfaces"
 msgstr "新規インターフェース"
 
-#: templates/popups_content.html:184
+#: templates/popups_content.html:241
 msgid "See:"
 msgstr "参照:"
 
-#: templates/popups_content.html:185
+#: templates/popups_content.html:242
 msgid "Designing  Icons, Logos , Banners."
 msgstr "アイコンやロゴやバナーを設計する。"
 
-#: templates/popups_content.html:186
+#: templates/popups_content.html:243
 msgid ""
 "Packaging the project for different systems: Windows, Linux distributions, "
 "MacOs."
@@ -861,7 +1008,7 @@ msgstr ""
 "「WindowsやLinuxディストリビューションやMacOS」とシステムのためのプロジェクト"
 "をパッケージする。"
 
-#: templates/popups_content.html:187
+#: templates/popups_content.html:244
 msgid ""
 "Donating/Supporting to the project: <em>We're stuck looking for possible "
 "ways for donations/Funding. Any help is appreciated</em>"
@@ -869,55 +1016,117 @@ msgstr ""
 "プロジェクトへの寄付/支援: <em>寄付/資金調達の可能な方法を模索して立ち往生し"
 "ている。すべてのヘルプは大歓迎です。</em>"
 
-#: templates/popups_content.html:209
+#: templates/popups_content.html:266
 msgid "Windows"
 msgstr "Windows"
 
-#: templates/popups_content.html:212
+#: templates/popups_content.html:269
 msgid "English desktop release 0.4"
 msgstr "英語デスクトップのリリース　0.4"
 
-#: templates/popups_content.html:215
+#: templates/popups_content.html:272
 msgid "Arabic desktop release 0.3"
 msgstr "アラビア語デスクトップのリリース　0.3"
 
-#: templates/popups_content.html:219
+#: templates/popups_content.html:276
 msgid "Linux"
 msgstr "Linux"
 
-#: templates/popups_content.html:220
+#: templates/popups_content.html:279
 msgid "More details"
 msgstr "詳細"
 
-#: templates/popups_content.html:231
+#: templates/popups_content.html:282
+msgid "MacOS"
+msgstr "MacOS"
+
+#: templates/popups_content.html:285 templates/popups_content.html.py:291
+#: templates/popups_content.html:294 templates/popups_content.html.py:297
+msgid "Not yet"
+msgstr "まだまだ"
+
+#: templates/popups_content.html:288
+msgid "Smartphones"
+msgstr ""
+
+#: templates/popups_content.html:291
+msgid "Android"
+msgstr "Android"
+
+#: templates/popups_content.html:294
+msgid "iPhone"
+msgstr ""
+
+#: templates/popups_content.html:297
+msgid "Windows Phone"
+msgstr "Windows"
+
+#: templates/popups_content.html:310
 msgid "How to translate"
 msgstr "翻訳のしかた"
 
-#: templates/popups_content.html:235
+#: templates/popups_content.html:315
 msgid "Check the existance of your language in the available languages list."
 msgstr "使用可能な言語のリストでご言語の存在を確認してください。"
 
-#: templates/popups_content.html:236
+#: templates/popups_content.html:316
 msgid "Download the file:"
 msgstr "ファイルをダウンロードする"
 
-#: templates/popups_content.html:237
+#: templates/popups_content.html:317
 msgid "Use Poedit or Virtaal to edit it."
 msgstr "それを編集するために、PoeditまたはVirtaalを使用してください。"
 
-#: templates/popups_content.html:238
+#: templates/popups_content.html:318
 msgid "Send the updated file into our mailing list:"
 msgstr "当社メーリング·リストに更新されたファイルを送信します:"
 
-#: templates/translation_results.html:34
-msgid "word"
-msgstr "言葉"
+#: templates/popups_content.html:320
+msgid "Note:"
+msgstr "ノート:"
 
-#: templates/translation_results.html:144
+#: templates/popups_content.html:320
+msgid "You can use launchpad to translate without installing any tool"
+msgstr ""
+"任意のツールをインストールしないで翻訳するためにlaunchpadを使用することができ"
+"ます"
+
+#: templates/popups_content.html:320
+msgid "here!"
+msgstr "ここに！"
+
+#: templates/translation_results.html:18
+msgid "seconds"
+msgstr "秒"
+
+#: templates/translation_results.html:54 templates/translation_results.html:84
+#: templates/translation_results.html:85 templates/translation_results.html:87
+#: templates/translation_results.html:90
+#: templates/translation_results.html:124
+msgid "Interpretation of"
+msgstr ""
+
+#: templates/translation_results.html:62
+msgid "in"
+msgstr ""
+
+#: templates/translation_results.html:63
+msgid "by"
+msgstr ""
+
+#: templates/translation_results.html:164
+msgid "About translation"
+msgstr "翻訳について"
+
+#: templates/translation_results.html:171
+msgid "Aya"
+msgstr "アヤ"
+
+#: templates/translation_results.html:178
 msgid "Author"
 msgstr "作者"
 
-#: templates/translation_results.html:150
+#: templates/translation_results.html:184
 msgid "Language"
 msgstr "言語"
 
@@ -941,114 +1150,82 @@ msgstr "すいませんが、翻訳のインデックス付きはありません
 msgid "Show ayah arabic text"
 msgstr "アヤのアラビア語テキストを表示する"
 
-#~ msgid "Runtime"
-#~ msgstr "実行時間"
+#: templates/word_results.html:65
+msgid "Word"
+msgstr "単語"
 
-#~ msgid "Words:"
-#~ msgstr "言葉："
+#: templates/word_results.html:92
+msgid "Google-Plus"
+msgstr ""
 
-#~ msgid "Previous page"
-#~ msgstr "前のページ"
+#: templates/word_results.html:173
+msgid "info"
+msgstr ""
 
-#~ msgid "Next page"
-#~ msgstr "次のページ"
+#: wui/templatetags/meta.py:10
+#, python-format
+msgid ""
+"Alfanous search results searching in %(unit)s looking for the query "
+"%(query)s, the page %(page)s, the view %(view)s, the script %(script)s"
+"%(vocalized)s, and the translation %(translation)s. The fuzzy search is "
+"%(fuzzy)s."
+msgstr ""
+"Alfanousの検索結果： %(unit)s クエリを探している %(query)s, ページ %(page)s, "
+"表示 %(view)s, スクリプト %(script)s%(vocalized)s, と翻訳 %(translation)s. "
+"あいまい検索は、%(fuzzy)s."
 
-#~ msgid "Ayah Results to Query:"
-#~ msgstr "アヤ結果のクエリ:"
+#: wui/templatetags/meta.py:25
+msgid ""
+"Alfanous has the feautre to search in the Quran words, their properties and "
+"occurences"
+msgstr ""
+"Alfanousはコーランの言葉とプロパティと発生で検索する機能を持っています。"
 
-#~ msgid "Word Results to Query:"
-#~ msgstr "言葉結果のクエリ:"
+#: wui/templatetags/meta.py:27
+msgid ""
+"Alfanous has the feautre to search in the translations of Quran meanings to "
+"lot of world languages"
+msgstr ""
+"Alfanousは、多い世界言語にコーランの意味の翻訳で検索する機能を持っている。"
 
-#~ msgid "Translation Results to Query:"
-#~ msgstr "翻訳結果のクエリ:"
+#: wui/templatetags/meta.py:30
+msgid ""
+"Alfanous is a functional, dynamic, comprehensive Qur'an search engine that "
+"has been effectively designed to carry out simple or advanced Quranic "
+"searches."
+msgstr ""
+"Alfanousは、機能的で動的で包括的なコーラン検索エンジンです。それは効果的に、"
+"単純または高度コーラン検索を行うように設計されている。"
 
-#~ msgid "Results to Query:"
-#~ msgstr "結果のクエリ:"
+#~ msgid "ID"
+#~ msgstr "ID"
 
-#~ msgid "Advanced Quranic Search Engine"
-#~ msgstr "高度なコーラン検索エンジン"
+#~ msgid "sura,aya"
+#~ msgstr "スーラ、アヤ"
 
-#~ msgid "Twitter"
-#~ msgstr "Twitter"
+#~ msgid "Alfanous search results searching in"
+#~ msgstr "Alfanousの検索結果："
 
-#~ msgid "Facebook"
-#~ msgstr "Facebook"
+#~ msgid "looking for the query"
+#~ msgstr "クエリを探している"
 
-#~ msgid "Send to MySpace"
-#~ msgstr "MySpaceに送る"
+#~ msgid "the page"
+#~ msgstr "ページ"
 
-#~ msgid "Share it with friends"
-#~ msgstr "友達と共有しよう"
+#~ msgid "the view"
+#~ msgstr "表示"
 
-#~ msgid "Google Plus"
-#~ msgstr "Google Plus"
+#~ msgid "the script"
+#~ msgstr "スクリプト"
 
-#~ msgid "Quick links"
-#~ msgstr "クイックリンク"
+#~ msgid "The fuzzy search is"
+#~ msgstr "あいまい検索は、"
 
-#~ msgid "Json Output Service"
-#~ msgstr "JSON出力サービス"
+#~ msgid "Links:"
+#~ msgstr "リンク："
 
-#~ msgid "Mobile Web Interface"
-#~ msgstr "モバイルWebインタフェース"
+#~ msgid "Old website"
+#~ msgstr "古いサイト"
 
-#~ msgid "Old jQuery Web Interface"
-#~ msgstr "古いjQueryのWebインターフェース"
-
-#~ msgid "Old HTML Web Interface"
-#~ msgstr "古いHTMLのWebインターフェース"
-
-#~ msgid "@Github"
-#~ msgstr "@Github"
-
-#~ msgid "@Sourceforge"
-#~ msgstr "@Sourceforge"
-
-#~ msgid "@Launchpad"
-#~ msgstr "@Launchpad"
-
-#~ msgid "Community"
-#~ msgstr "コミュニティ"
-
-#~ msgid "Mailinglist"
-#~ msgstr "メーリングリスト"
-
-#~ msgid "+ Report an issue"
-#~ msgstr "+ 問題を報告する"
-
-#~ msgid "@Facebook"
-#~ msgstr "@Facebook"
-
-#~ msgid "@Google Plus"
-#~ msgstr "@Google Plus"
-
-#~ msgid "@Twitter"
-#~ msgstr "@Twitter"
-
-#~ msgid "Best technicality award"
-#~ msgstr "最高の専門的のアワード"
-
-#~ msgid ""
-#~ "The award of best-technicality website in AlgeriaWebAwards2012 competition"
-#~ msgstr ""
-#~ "AlgeriaWebAwards2012年の競技に、最高の専門的なウェブサイトの賞です。"
-
-#~ msgid ""
-#~ "Alfanous is a functional, dynamic, comprehensive Qur’an search engine "
-#~ "that has been effectively designed to carry out simple or advanced "
-#~ "Quranic searches. Alfanous uses a contemporary, highly developed approach "
-#~ "to retrieve vital information, enabling stable efficient, speedy searches "
-#~ "to be conducted. Alfanous aims to implement additional features such as "
-#~ "highlight, site suggestions, scoring …etc to further improve your search "
-#~ "experience. Alfanous understands the complex nature of the Arabic "
-#~ "language and thus offers effective Arabic language processing, allowing "
-#~ "the stemming and successful elimination of ambiguities."
-#~ msgstr ""
-#~ "Alfanousは、機能的で動的で包括的なコーラン検索エンジンです。それは効果的"
-#~ "に、単純または高度コーラン検索を行うように設計されている。Alfanousは、重要"
-#~ "な情報を取得するために、現代的な、高度に発達したアプローチを採用していま"
-#~ "す。それは実施されるように安定した、効率的で迅速な検索を可能にしています。"
-#~ "お検索体験を向上させるために、Alfanousは、ハイライトやサイトの提案や得点よ"
-#~ "うな追加機能を実装することを目指しています。Alfanousはアラビア語の複雑な性"
-#~ "質を理解しています。だから、Alfanousは語幹を可能して、曖昧さを旨く排除する"
-#~ "ように効果的なアラビア語言語処理を提供しています。"
+#~ msgid "Advanced search"
+#~ msgstr "高度な検索"

@@ -3,14 +3,13 @@
 #
 
 
-
 ## Global Version of the project, must be updated in each significant change in 
 ## the API & Desktop Gui
-VERSION=0.7.00
+VERSION=0.7.01
 
 ## Next releases:
 # Beta [0.7.00~0.9.99], Basis [1.0], Silver[~], Golden[~], Crystal[~]
-RELEASE=$(VERSION)Beta
+RELEASE=$(VERSION)BlackStone
 
 ## API path, API contains all python packages 
 API_PATH="./src/"
@@ -61,6 +60,13 @@ WEB_CGI_INSTALL_PATH=$(WEB_INSTALL_PATH)cgi/
 CHROMEADDON_INSTALL_PATH=
 CHROMIUMADDON_INSTALL_PATH=
 
+## Python version and command
+PYTHON_VERSION_MAJ=$(shell python -c 'import sys; print(sys.version_info[0])')
+ifeq '$(PYTHON_VERSION_MAJ)' '2' 
+PYTHON_COMMAND="python"
+else 
+PYTHON_COMMAND="python2"
+endif
 
 ## default target, it's what to do if you typed "make" without target
 default: 
@@ -160,8 +166,8 @@ download_quranic_corpus:
 	@echo "todo"
 
 download_tanzil:
-	export PYTHONPATH=$(API_PATH) ;	python2 $(QIMPORT) -d tanzil_simple_clean $(STORE_PATH)tanzil_simple_clean.xml
-	export PYTHONPATH=$(API_PATH) ;	python2 $(QIMPORT) -d tanzil_uthmani $(STORE_PATH)tanzil_uthmani.xml
+	export PYTHONPATH=$(API_PATH) ;	$(PYTHON_COMMAND) $(QIMPORT) -d tanzil_simple_clean $(STORE_PATH)tanzil_simple_clean.xml
+	export PYTHONPATH=$(API_PATH) ;	$(PYTHON_COMMAND) $(QIMPORT) -d tanzil_uthmani $(STORE_PATH)tanzil_uthmani.xml
 
 
 
@@ -183,11 +189,11 @@ update_pre_build:  update_dynamic_resources_prebuild   #update_quranic_corpus
 
 # update list of indexed translations automatically using Importer
 update_translations_indexed_list:
-	export PYTHONPATH=$(API_PATH) ;	python2 $(QIMPORT) -u translations $(INDEX_PATH)extend/  $(CONFIGS_PATH)translations.json
+	export PYTHONPATH=$(API_PATH) ;	$(PYTHON_COMMAND) $(QIMPORT) -u translations $(INDEX_PATH)extend/  $(CONFIGS_PATH)translations.json
 
 # update quranic corpus in the database automatically using Importer
 update_quranic_corpus:
-	export PYTHONPATH=$(API_PATH) ;	python2 $(QIMPORT) -u wordqc $(STORE_PATH)quranic-corpus-morpology.xml $(DB_PATH)main.db
+	export PYTHONPATH=$(API_PATH) ;	$(PYTHON_COMMAND) $(QIMPORT) -u wordqc $(STORE_PATH)quranic-corpus-morpology.xml $(DB_PATH)main.db
 
 # update recitations offline list TODO
 update_recitations_offline_list:
@@ -211,35 +217,36 @@ update_dynamic_resources_postbuild: transfer_postbuild
 # 7. [postbuild] Different vocalizations of each quranic word, see transfer_vocalizations
 transfer_all: transfer_prebuild transfer_postbuild
 transfer_prebuild: transfer_stopwords transfer_synonyms transfer_word_props transfer_derivations transfer_ara2eng_names transfer_standard2uthmani 
+	cp $(API_PATH)/alfanous/__init__.py $(DYNAMIC_RESOURCES_PATH)
 transfer_postbuild: transfer_vocalizations
 	
 transfer_stopwords:
 	mkdir -p $(DYNAMIC_RESOURCES_PATH)
-	export PYTHONPATH=$(API_PATH) ;	python2 $(QIMPORT) -t stopwords $(DB_PATH)main.db $(DYNAMIC_RESOURCES_PATH)
+	export PYTHONPATH=$(API_PATH) ;	$(PYTHON_COMMAND) $(QIMPORT) -t stopwords $(DB_PATH)main.db $(DYNAMIC_RESOURCES_PATH)
 	
 transfer_synonyms:
 	mkdir -p $(DYNAMIC_RESOURCES_PATH)
-	export PYTHONPATH=$(API_PATH) ;	python2 $(QIMPORT) -t synonyms $(DB_PATH)main.db $(DYNAMIC_RESOURCES_PATH)
+	export PYTHONPATH=$(API_PATH) ;	$(PYTHON_COMMAND) $(QIMPORT) -t synonyms $(DB_PATH)main.db $(DYNAMIC_RESOURCES_PATH)
 
 transfer_word_props:
 	mkdir -p $(DYNAMIC_RESOURCES_PATH)
-	export PYTHONPATH=$(API_PATH) ;	python2 $(QIMPORT) -t word_props $(DB_PATH)main.db $(DYNAMIC_RESOURCES_PATH)
+	export PYTHONPATH=$(API_PATH) ;	$(PYTHON_COMMAND) $(QIMPORT) -t word_props $(DB_PATH)main.db $(DYNAMIC_RESOURCES_PATH)
 
 transfer_derivations:
 	mkdir -p $(DYNAMIC_RESOURCES_PATH)
-	export PYTHONPATH=$(API_PATH) ;	python2 $(QIMPORT) -t derivations $(DB_PATH)main.db $(DYNAMIC_RESOURCES_PATH)
+	export PYTHONPATH=$(API_PATH) ;	$(PYTHON_COMMAND) $(QIMPORT) -t derivations $(DB_PATH)main.db $(DYNAMIC_RESOURCES_PATH)
 
 transfer_vocalizations:
 	mkdir -p $(DYNAMIC_RESOURCES_PATH)
-	export PYTHONPATH=$(API_PATH) ;	python2 $(QIMPORT) -t vocalizations $(DB_PATH)main.db $(INDEX_PATH)main/ $(DYNAMIC_RESOURCES_PATH)
+	export PYTHONPATH=$(API_PATH) ;	$(PYTHON_COMMAND) $(QIMPORT) -t vocalizations $(DB_PATH)main.db $(INDEX_PATH)main/ $(DYNAMIC_RESOURCES_PATH)
 
 transfer_ara2eng_names:
 	mkdir -p $(DYNAMIC_RESOURCES_PATH)
-	export PYTHONPATH=$(API_PATH) ;	python2 $(QIMPORT) -t ara2eng_names $(DB_PATH)main.db $(DYNAMIC_RESOURCES_PATH)
+	export PYTHONPATH=$(API_PATH) ;	$(PYTHON_COMMAND) $(QIMPORT) -t ara2eng_names $(DB_PATH)main.db $(DYNAMIC_RESOURCES_PATH)
 	
 transfer_standard2uthmani:
 	mkdir -p $(DYNAMIC_RESOURCES_PATH)
-	export PYTHONPATH=$(API_PATH) ;	python2 $(QIMPORT) -t std2uth_words $(DB_PATH)main.db $(DYNAMIC_RESOURCES_PATH)
+	export PYTHONPATH=$(API_PATH) ;	$(PYTHON_COMMAND) $(QIMPORT) -t std2uth_words $(DB_PATH)main.db $(DYNAMIC_RESOURCES_PATH)
 	
 
 
@@ -251,13 +258,13 @@ index_all: index_main index_extend #index_word
 	@echo "done;"
 
 index_main:
-	export PYTHONPATH=$(API_PATH) ;	rm -r $(INDEX_PATH)main/; python2 $(QIMPORT) -x main $(DB_PATH)main.db $(INDEX_PATH)main/
+	export PYTHONPATH=$(API_PATH) ;	rm -r $(INDEX_PATH)main/; $(PYTHON_COMMAND) $(QIMPORT) -x main $(DB_PATH)main.db $(INDEX_PATH)main/
 
 index_extend:
-	export PYTHONPATH=$(API_PATH) ;	rm -r $(INDEX_PATH)extend/; python2 $(QIMPORT) -x extend $(STORE_PATH)Translations/ $(INDEX_PATH)extend/
+	export PYTHONPATH=$(API_PATH) ;	rm -r $(INDEX_PATH)extend/; $(PYTHON_COMMAND) $(QIMPORT) -x extend $(STORE_PATH)Translations/ $(INDEX_PATH)extend/
 	
 index_word:
-	export PYTHONPATH=$(API_PATH) ;	rm -r $(INDEX_PATH)word/; python2 $(QIMPORT) -x word $(DB_PATH)main.db $(INDEX_PATH)word/
+	export PYTHONPATH=$(API_PATH) ;	rm -r $(INDEX_PATH)word/; $(PYTHON_COMMAND) $(QIMPORT) -x word $(DB_PATH)main.db $(INDEX_PATH)word/
 	
 
 ## build all spellers:
@@ -268,13 +275,13 @@ speller_all: speller_aya speller_subject #speller_word
 	@echo "done;"
 
 speller_aya:
-	export PYTHONPATH=$(API_PATH) ;	python2 $(QIMPORT) -p aya  $(INDEX_PATH)main/
+	export PYTHONPATH=$(API_PATH) ;	$(PYTHON_COMMAND) $(QIMPORT) -p aya  $(INDEX_PATH)main/
 
 speller_subject:
-	export PYTHONPATH=$(API_PATH) ;	python2 $(QIMPORT) -p subject  $(INDEX_PATH)main/
+	export PYTHONPATH=$(API_PATH) ;	$(PYTHON_COMMAND) $(QIMPORT) -p subject  $(INDEX_PATH)main/
 
 speller_word:
-	export PYTHONPATH=$(API_PATH) ;	python2 $(QIMPORT) -p word  $(INDEX_PATH)word/
+	export PYTHONPATH=$(API_PATH) ;	$(PYTHON_COMMAND) $(QIMPORT) -p word  $(INDEX_PATH)word/
 	
 
 
@@ -295,14 +302,14 @@ help_sphinx:
 qt_all:	 qt_rcc qt_uic
 
 qt_uic:
-	pyuic4 -o $(DESKTOP_INTERFACE_PATH)aboutDlg_ui.py $(QT_UI_PATH)aboutDlg.ui
-	pyuic4 -o $(DESKTOP_INTERFACE_PATH)preferencesDlg_ui.py $(QT_UI_PATH)preferencesDlg.ui
-	pyuic4 -o $(DESKTOP_INTERFACE_PATH)mainform_ui.py $(QT_UI_PATH)mainform.ui #-x
+	pyside-uic -o $(DESKTOP_INTERFACE_PATH)aboutDlg_ui.py $(QT_UI_PATH)aboutDlg.ui
+	pyside-uic -o $(DESKTOP_INTERFACE_PATH)preferencesDlg_ui.py $(QT_UI_PATH)preferencesDlg.ui
+	pyside-uic -o $(DESKTOP_INTERFACE_PATH)mainform_ui.py $(QT_UI_PATH)mainform.ui #-x
 	#sed 's/\"MainWindow\"\,/\"MainWindow\"\,\_(/g' temp.py | sed 's/\, None\,/\)\, None\,/g'| sed 's/from PyQt4/LOCALPATH="\.\/locale\/"\nimport gettext\n\_\=gettext\.gettext\ngettext\.bindtextdomain\(\"alfanousQT\"\, LOCALPATH\)\ngettext\.textdomain\(\"alfanousQT\"\)\nfrom PyQt4/g'> $(DESKTOP_INTERFACE_PATH)mainform_ui.py
 	#rm temp.py
 
 qt_rcc:
-	pyrcc4 $(QT_RC_PATH)main.qrc -o $(DESKTOP_INTERFACE_PATH)main_rc.py
+	pyside-rcc $(QT_RC_PATH)main.qrc -o $(DESKTOP_INTERFACE_PATH)main_rc.py
 
 ## build localization files, this include:
 # 1. Desktop interface , see local_desktop_pot
@@ -319,7 +326,7 @@ local_pot_mobile:
 	xgettext -kT_ --from-code utf-8 -L PHP --no-wrap --package-name="AlfanousMobileWUI" --package-version=$(VERSION) -d alfanousMWUI -o ./localization/pot_files/alfanousMWUIv$(VERSION)/alfanousMWUIv$(VERSION).pot $(MOBILE_WUI_PATH)*.php
 
 local_pot_django:
-	cd  $(DJWUI_PATH); python2 manage.py makemessages  -a 
+	cd  $(DJWUI_PATH); $(PYTHON_COMMAND) manage.py makemessages  -a
 	mkdir -p localization/pot_files/alfanousDJv$(VERSION)
 	cp $(DJWUI_PATH)/locale/default/LC_MESSAGES/django.po localization/pot_files/alfanousDJv$(VERSION)/alfanousDJv$(VERSION).pot
 
@@ -330,7 +337,7 @@ local_mo_download:
 
 ## compile files for django
 local_mo_compile:
-	cd  $(DJWUI_PATH); python2 manage.py compilemessages 
+	cd  $(DJWUI_PATH); $(PYTHON_COMMAND) manage.py compilemessages 
 
 ##   packaging all to:
 # 1. Python egg files, see dist_egg_all
@@ -347,14 +354,14 @@ dist_all: dist_egg_all dist_deb dist_rpm dist_sis dist_xpi dist_crx  dist_app
 # 3. PyZekr [Zekr Translations models reader], see dist_egg_pyzekr
 # 4. Alfanous Importer [Importing, Updating, Downloading, Indexing resources], see dist_egg_qimport
 # 5. Alfanous Desktop Gui , see dist_egg_desktop
-dist_egg_all: dist_egg_api  dist_egg_pycorpus  dist_egg_pyzekr dist_egg_qimport dist_egg_desktop
+dist_egg_all:   dist_egg_pycorpus  dist_egg_pyzekr dist_egg_qimport dist_egg_desktop dist_egg_api
  
 
 # python egg for API
 dist_egg_api: 
 	perl -pi -w -e 's|alfanous.release|$(RELEASE)|g;' $(API_PATH)alfanous/resources/information.json
 	perl -pi -w -e 's|alfanous.version|$(VERSION)|g;' $(API_PATH)alfanous/resources/information.json
-	cd $(API_PATH)alfanous ; python2 setup.py bdist_egg
+	cd $(API_PATH)alfanous ; $(PYTHON_COMMAND) setup.py bdist_egg register upload
 	perl -pi -w -e 's|$(RELEASE)|alfanous.release|g;' $(API_PATH)alfanous/resources/information.json
 	perl -pi -w -e 's|$(VERSION)|alfanous.version|g;' $(API_PATH)alfanous/resources/information.json
 	mkdir -p output/$(VERSION) ; mv $(API_PATH)alfanous/dist/*.egg ./output/$(VERSION)
@@ -362,27 +369,27 @@ dist_egg_api:
 	
 # python egg for PyCorpus extension
 dist_egg_pycorpus: 
-	cd $(API_PATH)PyCorpus ; python2 setup.py bdist_egg 
+	cd $(API_PATH)PyCorpus ; $(PYTHON_COMMAND) setup.py bdist_egg register upload
 	mkdir -p output/$(VERSION) ; mv $(API_PATH)PyCorpus/dist/*.egg ./output/$(VERSION)
 	@echo  "NOTE: you can find the generated egg in ./output"
 	
 
 # python egg for PyZekrModels extension
 dist_egg_pyzekr: 
-	cd $(API_PATH)PyZekrModels ; python2 setup.py bdist_egg 
+	cd $(API_PATH)PyZekrModels ; $(PYTHON_COMMAND) setup.py bdist_egg register upload 
 	mkdir -p output/$(VERSION) ; mv $(API_PATH)PyZekrModels/dist/*.egg ./output/$(VERSION)
 	@echo  "NOTE: you can find the generated egg in ./output"
 	
 # python egg for Qimport extension
 dist_egg_qimport: 
-	cd $(API_PATH)alfanous-import ; python2 setup.py bdist_egg 
+	cd $(API_PATH)alfanous-import ; $(PYTHON_COMMAND) setup.py bdist_egg register  upload
 	mkdir -p output/$(VERSION) ; mv $(API_PATH)alfanous-import/dist/*.egg ./output/$(VERSION)
 	@echo  "NOTE: you can find the generated egg in ./output"
 
 # python egg for alfanousDesktop interface
 dist_egg_desktop: 
 	perl -pi -w -e 's|version = "\d+\.\d+(\.\d+)*"|version = "$(VERSION)"|g;' $(DESKTOP_INTERFACE_PATH)/setup.py
-	cd $(DESKTOP_INTERFACE_PATH) ; python2 setup.py bdist_egg 
+	cd $(DESKTOP_INTERFACE_PATH) ; $(PYTHON_COMMAND) setup.py bdist_egg register upload
 	mkdir -p output/$(VERSION) ; mv $(DESKTOP_INTERFACE_PATH)dist/*.egg ./output/$(VERSION)
 	@echo  "NOTE: you can find the generated egg in ./output"
  
@@ -424,7 +431,7 @@ dist_rpm:
 ## easy_install py2app
 dist_app:  
 	@echo "todo using py2app"
-	# cd $(DESKTOP_INTERFACE_PATH) ; python2 setup.py py2app
+	# cd $(DESKTOP_INTERFACE_PATH) ; $(PYTHON_COMMAND) setup.py py2app
 
 # Nokia symbian package for alfanousPyS60 #required python2.5 
 dist_sis: 
@@ -456,20 +463,20 @@ install_all: install_api install_desktop install_jos2 install_web
 install_api: 
 	perl -pi -w -e 's|alfanous.release|$(RELEASE)|g;' $(API_PATH)alfanous/resources/information.json
 	perl -pi -w -e 's|alfanous.version|$(VERSION)|g;' $(API_PATH)alfanous/resources/information.json
-	cd   "$(API_PATH)alfanous" ; python2 setup.py install --prefix=$(PREFIX) --root=$(DESTDIR)
+	cd   "$(API_PATH)alfanous" ; $(PYTHON_COMMAND) setup.py install --prefix=$(PREFIX) --root=$(DESTDIR)
 	perl -pi -w -e 's|$(RELEASE)|alfanous.release|g;' $(API_PATH)alfanous/resources/information.json
 	perl -pi -w -e 's|$(VERSION)|alfanous.version|g;' $(API_PATH)alfanous/resources/information.json
 
 install_api_no_arguments: 
 	perl -pi -w -e 's|alfanous.release|$(RELEASE)|g;' $(API_PATH)alfanous/resources/information.json
 	perl -pi -w -e 's|alfanous.version|$(VERSION)|g;' $(API_PATH)alfanous/resources/information.json
-	cd   "$(API_PATH)alfanous" ; python2 setup.py install
+	cd   "$(API_PATH)alfanous" ; $(PYTHON_COMMAND) setup.py install
 	perl -pi -w -e 's|$(RELEASE)|alfanous.release|g;' $(API_PATH)alfanous/resources/information.json
 	perl -pi -w -e 's|$(VERSION)|alfanous.version|g;' $(API_PATH)alfanous/resources/information.json
 	
 install_desktop:  install_api qt_all  local_mo_download
 	perl -pi -w -e 's|version = "\d+\.\d+(\.\d+)*"|version = "$(VERSION)"|g;' $(DESKTOP_INTERFACE_PATH)/setup.py
-	cd  $(DESKTOP_INTERFACE_PATH); python2 setup.py install --prefix=$(PREFIX) --root=$(DESTDIR)
+	cd  $(DESKTOP_INTERFACE_PATH); $(PYTHON_COMMAND) setup.py install --prefix=$(PREFIX) --root=$(DESTDIR)
 	mkdir -p $(DESTDIR)$(PREFIX)/share/applications/
 	cp ./resources/launchers/alfanous.desktop $(DESTDIR)$(PREFIX)/share/applications/
 	mkdir -p $(DESTDIR)$(PREFIX)/share/pixmaps/
@@ -481,7 +488,7 @@ install_desktop:  install_api qt_all  local_mo_download
 
 install_desktop_no_arguments:  install_api_no_arguments qt_all  local_mo_download
 	perl -pi -w -e 's|version = "\d+\.\d+(\.\d+)*"|version = "$(VERSION)"|g;' $(DESKTOP_INTERFACE_PATH)/setup.py
-	cd  $(DESKTOP_INTERFACE_PATH); python2 setup.py install
+	cd  $(DESKTOP_INTERFACE_PATH); $(PYTHON_COMMAND) setup.py install
 	mkdir -p $(DESTDIR)$(PREFIX)/share/applications/
 	cp ./resources/launchers/alfanous.desktop $(DESTDIR)$(PREFIX)/share/applications/
 	mkdir -p $(DESTDIR)$(PREFIX)/share/pixmaps/
@@ -507,6 +514,7 @@ install_web_basic:
 
 
 install_jos2: install_api install_web_basic
+	echo "This is obsolute, run the django app instead  unless you want run the service through cgi"
 	cd $(API_PATH)alfanous-cgi ;  mkdir -p $(WEB_CGI_INSTALL_PATH).alfanous/; cp  -r alfanous_json2.py $(WEB_CGI_INSTALL_PATH);
 	chmod +x $(WEB_CGI_INSTALL_PATH)alfanous_json2.py
 	chmod -R 777 $(WEB_CGI_INSTALL_PATH).alfanous/
@@ -515,10 +523,10 @@ install_jos2: install_api install_web_basic
 
 
 install_wui: install_jos2
+	echo "This is obsolute, run the django app instead"
 	cd ./interfaces/web/ ;  cp  -r wui  $(WEB_INSTALL_PATH) 
 	cd $(WEB_INSTALL_PATH);  cd wui; sed -i 's/www\.alfanous\.org\/json2/alfanous\.local\/cgi\-bin\/alfanous\_json2\.py/g' index.*
 	xdg-open http://alfanous.local/ &  ##launch default browser for test
-
 
 test_pylint:
 	pylint --ignore=whoosh,dynamic_resources,mainform_ui.py src -f colorized | more

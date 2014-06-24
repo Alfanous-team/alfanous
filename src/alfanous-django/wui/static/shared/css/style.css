@@ -1,6 +1,28 @@
 body { 
   padding-top: 60px; /* 60px to make the container go all the way to the bottom of the topbar */
+  font-size: 80%;
+  line-height: 1.6875;
 }
+
+@media only screen and (max-width: 400px) {
+                    body { font-size:70%;}
+     }
+
+@media only screen and (max-width: 1200px) and (min-width: 400px){
+                body { font-size:80%;}
+    }  
+ 
+@media only screen and (max-width: 1600px) and (min-width: 1200px) {
+                body { font-size:90%;}
+    }  
+
+@media only screen and (min-width: 1600px) {
+                    body { font-size:100%;}
+                    
+}
+
+
+
 html, body, .content {
   /* background-color: #eee;*/
 }
@@ -14,6 +36,7 @@ html, body, .content {
   font-family:'ArabeyesQr';
   src:url('../fonts/arabeyes-qr.ttf');
 }
+
 
 @media (max-width: 979px) {
   body {
@@ -40,10 +63,11 @@ a {
   cursor: pointer;
 }
 
-span a, span a:hover {
+span.label a,
+span.label a:hover {
   color: white;
   cursor: pointer;
-  text-decoration: none; 
+  text-decoration: none;
 }
 
 #social-icons a {
@@ -104,6 +128,14 @@ div.help {
   line-height: 220%; 
 }
 
+.arabic-ayah-secondary  {
+  direction: rtl;
+  font-family: me_quran, Scheherazade,  KacstBook, KacstQurn, ArabeyesQr, "KFGQPC Uthman Taha Naskh", Arial;
+  font-size: 13px;
+  word-spacing: 3px;
+  line-height: 200%; 
+}
+
 @media (max-width: 480px) {
     .arabic-ayah { 
       font-size: 16px;
@@ -159,6 +191,11 @@ table th.text-center {
     text-align: center !important;
 }
 
+/* Muslih: Absolute image keyboard position*/
+.input-append.text-right{
+  position: relative;
+}
+
 
 
 /* Assem: Terms Static Highlighting colors */
@@ -174,4 +211,15 @@ table th.text-center {
 .term8, .term17 { color: #118; }
 
 
+/* Walid: a little fix for the quick tour */
+.affix {
+  z-index: 2;
+}
 
+#advanced_search_panel  a {
+	min-width: 10px !important;
+}
+
+.minimal_size {
+	width: 80px;
+}

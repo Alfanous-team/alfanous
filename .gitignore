@@ -19,10 +19,15 @@ nosetests.xml
 .project
 .pydevproject
 .settings
+.idea
 
 # Private Keys #
 ################
 *.pem
+
+# dynamic resources #
+#####################
+dynamic_resources/
 
 # generated indexes #
 #####################

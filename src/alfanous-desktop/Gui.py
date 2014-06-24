@@ -25,16 +25,30 @@ TODO use QT Localization instead of gettext
 TODO printing
 """
 
+
+
+
 ## Importing modules
 import sys
 import os
+
+## development mode
+sys.path.insert(0, "../../src") 
+
 import gettext
 from re import compile
+import codecs
 
 from pyparsing import ParseException
 from configobj import ConfigObj
-from PyQt4 import  QtGui, QtCore, uic
-from PyQt4.QtCore import QRect
+
+
+from PySide import  QtGui, QtCore, QtWebKit
+from PySide.QtCore import QRect
+
+sys.path.insert(0, "../../src") ## a relative path, development mode
+sys.path.append("alfanous.egg/alfanous") ## an egg, portable
+sys.path.append("./src") ## integrated
 
 from alfanous.Outputs import Raw
 ## Specification of resources paths
@@ -44,6 +58,7 @@ from alfanous.Data import Paths
 from mainform_ui import Ui_MainWindow
 from preferencesDlg_ui import Ui_preferencesDlg
 from aboutDlg_ui import Ui_Dialog as Ui_aboutDlg
+from Templates import AYA_RESULTS_TEMPLATE 
 
 ## Localization using gettext
 _ = gettext.gettext
@@ -66,12 +81,6 @@ RELATIONS = ["", "", u"|", u"+", u"-"]
 SAJDA_TYPE = {u"مستحبة":_( u"recommended" ), u"واجبة":_( u"obliged" )}
 SURA_TYPE = {u"مدنية":_( u"medina" ), u"مكية":_( u"mekka" )}
 
-CSS = """
-        <style type="text/css">
-            #TODO : new simple&clean style
-        </style>
-    """
-
 ## Some functions
 relate = lambda query, filter, index:"( " + unicode( query ) + " ) " + RELATIONS[index] + " ( " + filter + " ) " if  index > 1 else filter if index == 1 else unicode( query ) + " " + filter
 
@@ -82,7 +91,8 @@ class QUI( Ui_MainWindow ):
         self.last_results = None
         self.currentQuery = 0
         self.Queries = []
-        self.history = []
+        self.undo_stack = []
+        self.redo_stack = []
 
     def exit( self ):
         self.save_config()
@@ -94,34 +104,29 @@ class QUI( Ui_MainWindow ):
         boolean = lambda s:True if s == "True" else False
         self.o_query.clear()
         self.o_query.addItems( map( lambda x:x.decode( "utf-8" ), config["history"] ) if config.has_key( "history" ) else [u"الحمد لله"] )
-        self.o_limit.setValue( int( config["options"]["limit"] ) if config.has_key( "options" ) else 100 )
-        self.o_perpage.setValue( int( config["options"]["perpage"] ) if config.has_key( "options" ) else 10 )
+        #self.o_limit.setValue( int( config["options"]["limit"] ) if config.has_key( "options" ) else 100 )
+        #self.o_perpage.setValue( int( config["options"]["perpage"] ) if config.has_key( "options" ) else 10 )
 
-        self.o_sortedbyscore.setChecked( boolean( config["sorting"]["sortedbyscore"] ) if config.has_key( "sorting" ) else True )
-        self.o_sortedbymushaf.setChecked( boolean( config["sorting"]["sortedbymushaf"] ) if config.has_key( "sorting" ) else False )
-        self.o_sortedbytanzil.setChecked( boolean( config["sorting"]["sortedbytanzil"] ) if config.has_key( "sorting" ) else False )
-        self.o_sortedbysubject.setChecked( boolean( config["sorting"]["sortedbysubject"] ) if config.has_key( "sorting" ) else False )
-        self.o_sortedbyfield.setChecked( boolean( config["sorting"]["sortedbyfield"] ) if config.has_key( "sorting" ) else False )
+        self.actionRelevance.setChecked( boolean( config["sorting"]["sortedbyscore"] ) if config.has_key( "sorting" ) else True )
+        self.actionPosition_in_Mus_haf.setChecked( boolean( config["sorting"]["sortedbymushaf"] ) if config.has_key( "sorting" ) else False )
+        self.actionRevelation.setChecked( boolean( config["sorting"]["sortedbytanzil"] ) if config.has_key( "sorting" ) else False )
+        self.actionSubject.setChecked( boolean( config["sorting"]["sortedbysubject"] ) if config.has_key( "sorting" ) else False )
+        ## TODO save field sorting choice
+        #self.o_sortedbyfield.setChecked( boolean( config["sorting"]["sortedbyfield"] ) if config.has_key( "sorting" ) else False )
 
-        self.o_field.setCurrentIndex( int( config["sorting"]["field"] ) if config.has_key( "sorting" ) else 0 )
-        self.o_reverse.setChecked( boolean( config["sorting"]["reverse"] )if config.has_key( "sorting" ) else False )
+        self.actionInverse.setChecked( boolean( config["sorting"]["reverse"] )if config.has_key( "sorting" ) else False )
 
-        self.o_prev.setChecked( boolean( config["extend"]["prev"] ) if config.has_key( "extend" ) else False )
-        self.o_suiv.setChecked( boolean( config["extend"]["suiv"] ) if config.has_key( "extend" ) else False )
+        self.actionPrevios_aya.setChecked( boolean( config["extend"]["prev"] ) if config.has_key( "extend" ) else False )
+        self.actionNext_aya.setChecked( boolean( config["extend"]["suiv"] ) if config.has_key( "extend" ) else False )
 
-        self.o_word_stat.setChecked( boolean( config["extend"]["word_stat"] )if config.has_key( "extend" ) else False )
-        self.o_aya_info.setChecked( boolean( config["extend"]["aya_info"] )if config.has_key( "extend" ) else False )
-        self.o_sura_info.setChecked( boolean( config["extend"]["sura_info"] )if config.has_key( "extend" ) else False )
+        self.actionWord_Info.setChecked( boolean( config["extend"]["word_stat"] )if config.has_key( "extend" ) else False )
+        self.actionAya_Info.setChecked( boolean( config["extend"]["aya_info"] )if config.has_key( "extend" ) else False )
+        self.actionSura_info.setChecked( boolean( config["extend"]["sura_info"] )if config.has_key( "extend" ) else False )
 
-        self.o_traduction.setCurrentIndex( int( config["extend"]["traduction"] ) if config.has_key( "extend" ) else 0 )
-        self.o_recitation.setCurrentIndex( int( config["extend"]["recitation"] ) if config.has_key( "extend" ) else 0 )
-
-        self.o_script_uthmani.setChecked( boolean( config["script"]["uthmani"] ) if config.has_key( "script" ) else False )
-        self.o_script_standard.setChecked( boolean( config["script"]["standard"] ) if config.has_key( "script" ) else True )
+        self.actionUthmani.setChecked( boolean( config["script"]["uthmani"] ) if config.has_key( "script" ) else False )
+        self.actionStandard.setChecked( boolean( config["script"]["standard"] ) if config.has_key( "script" ) else True )
 
         self.w_features.setHidden( not boolean( config["widgets"]["features"] ) if config.has_key( "widgets" ) else True )
-        self.w_options.setHidden( not boolean( config["widgets"]["options"] ) if config.has_key( "widgets" ) else True )
-        self.m_options.setChecked ( boolean( config["widgets"]["options"] ) if config.has_key( "widgets" ) else False )
         self.m_features.setChecked ( boolean( config["widgets"]["features"] ) if config.has_key( "widgets" ) else False )
 
     def save_config( self ):
@@ -132,50 +137,106 @@ class QUI( Ui_MainWindow ):
         config["history"] = map( lambda x:x, config["history"] ) if config.has_key( "history" ) else ["الحمد لله"]
 
         config["options"] = {}
-        config["options"]["limit"] = self.o_limit.value()
-        config["options"]["perpage"] = self.o_perpage.value()
-        config["options"]["highlight"] = self.o_highlight.isChecked()
+        config["options"]["limit"] = self.limit_group.checkedAction().text() 
+        config["options"]["perpage"] = self.perpage_group.checkedAction().text() 
+        config["options"]["highlight"] = self.actionHighlight_Keywords.isChecked()
 
         config["sorting"] = {}
-        config["sorting"]["sortedbyscore"] = self.o_sortedbyscore.isChecked()
-        config["sorting"]["sortedbymushaf"] = self.o_sortedbymushaf.isChecked()
-        config["sorting"]["sortedbytanzil"] = self.o_sortedbytanzil.isChecked()
-        config["sorting"]["sortedbysubject"] = self.o_sortedbysubject.isChecked()
-        config["sorting"]["sortedbyfield"] = self.o_sortedbyfield.isChecked()
-        config["sorting"]["field"] = self.o_field.currentIndex()
-        config["sorting"]["reverse"] = self.o_reverse.isChecked()
+        config["sorting"]["sortedbyscore"] = self.actionRelevance.isChecked()
+        config["sorting"]["sortedbymushaf"] = self.actionPosition_in_Mus_haf.isChecked()
+        config["sorting"]["sortedbytanzil"] = self.actionRevelation.isChecked()
+        config["sorting"]["sortedbysubject"] = self.actionSubject.isChecked()
+        #config["sorting"]["sortedbyfield"] = self.o_sortedbyfield.isChecked()
+        #config["sorting"]["field"] = self.o_field.currentIndex()
+        config["sorting"]["reverse"] = self.actionInverse.isChecked()
 
         config["extend"] = {}
-        config["extend"]["prev"] = self.o_prev.isChecked()
-        config["extend"]["suiv"] = self.o_suiv.isChecked()
-        config["extend"]["traduction"] = self.o_traduction.currentIndex()
+        config["extend"]["prev"] = self.actionPrevios_aya.isChecked()
+        config["extend"]["suiv"] = self.actionNext_aya.isChecked()
+        config["extend"]["translation"] = self.translation_group.checkedAction().text()
         config["extend"]["recitation"] = self.o_recitation.currentIndex()
-        config["extend"]["word_stat"] = self.o_word_stat.isChecked()
-        config["extend"]["aya_info"] = self.o_aya_info.isChecked()
-        config["extend"]["sura_info"] = self.o_sura_info.isChecked()
+        config["extend"]["word_stat"] = self.actionWord_Info.isChecked()
+        config["extend"]["aya_info"] = self.actionAya_Info.isChecked()
+        config["extend"]["sura_info"] = self.actionSura_info.isChecked()
 
         config["script"] = {}
-        config["script"]["uthmani"] = self.o_script_uthmani.isChecked()
-        config["script"]["standard"] = self.o_script_standard.isChecked()
+        config["script"]["uthmani"] = self.actionUthmani.isChecked()
+        config["script"]["standard"] = self.actionStandard.isChecked()
 
         config["widgets"] = {}
         config["widgets"]["features"] = not self.w_features.isHidden()
-        config["widgets"]["options"] = not self.w_options.isHidden()
         config.write()
 
+    def setupWebView(self):
+        self.o_results = QtWebKit.QWebView(self.frame0)
+        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Expanding)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.o_results.sizePolicy().hasHeightForWidth())
+        self.o_results.setSizePolicy(sizePolicy)
+        self.o_results.setMinimumSize(QtCore.QSize(300, 25))
+        self.o_results.setMaximumSize(QtCore.QSize(16777215, 16777215))
+        font = QtGui.QFont()
+        font.setFamily("Arial")
+        font.setPointSize(12)
+        self.o_results.setFont(font)
+        self.o_results.setProperty("cursor", QtCore.Qt.IBeamCursor)
+        self.o_results.setAutoFillBackground(False)
+        self.o_results.setHtml("<img src=\":/resources/alfanous.jpg\" />")
+        self.o_results.setObjectName("o_results")
+        self.verticalLayout33.addWidget(self.o_results)
 
     def setupUi( self, MainWindow ):
         super( QUI, self ).setupUi( MainWindow )
-
+        
+        # prepare QwebView
+        self.setupWebView()
+        
         # make sorted_by menu items as a group of radio buttons
-        sorted_by_group = QtGui.QActionGroup( MainWindow )
-        sorted_by_group.addAction( self.actionRelevance )
-        sorted_by_group.addAction( self.actionRevelation )
-        sorted_by_group.addAction( self.actionPosition_in_Mus_haf )
-        sorted_by_group.addAction( self.actionSubject )
-        sorted_by_group.addAction( self.actionRevelation )
-        for v in RAWoutput._fields.values(): #x.keys() for Arabic
-            self.menuFields.addAction( v )
+        self.sorted_by_group = QtGui.QActionGroup( MainWindow )
+        self.sorted_by_group.addAction( self.actionRelevance )
+        self.sorted_by_group.addAction( self.actionRevelation )
+        self.sorted_by_group.addAction( self.actionPosition_in_Mus_haf )
+        self.sorted_by_group.addAction( self.actionSubject )
+        self.sorted_by_group.addAction( self.actionRevelation )
+        for val in RAWoutput._fields.values(): #x.keys() for Arabic
+            field_action = QtGui.QAction(MainWindow)
+            field_action.setCheckable(True)
+            field_action.setChecked(False)
+            field_action.setObjectName("action_field_" + val)
+            field_action.setText( val )
+            self.menuFields.addAction( field_action )
+            self.sorted_by_group.addAction( field_action )
+        # make options->script menu as a radio button
+        self.script_group = QtGui.QActionGroup( MainWindow )
+        self.script_group.addAction( self.actionStandard )
+        self.script_group.addAction( self.actionUthmani )
+        # make options->translations as a radio button
+        self.translation_group = QtGui.QActionGroup( MainWindow )
+        self.translation_group.addAction(self.actionTranslationNone)
+        for val in RAWoutput._translations.values():
+            translation_action = QtGui.QAction(MainWindow)
+            translation_action.setCheckable(True)
+            translation_action.setChecked(False)
+            translation_action.setObjectName("action_translation_" + val)
+            translation_action.setText( val )
+            self.menuTranslation.addAction( translation_action )
+            self.translation_group.addAction( translation_action )
+        
+        # make limit menu items as a group of radio buttons
+        self.limit_group = QtGui.QActionGroup( MainWindow )
+        self.limit_group.addAction( self.actionlimit100 )
+        self.limit_group.addAction( self.actionlimit500 )
+        self.limit_group.addAction( self.actionlimit1000 )
+        self.limit_group.addAction( self.actionlimit6236 )
+        
+        # make perpage menu items as a group of radio buttons
+        self.perpage_group = QtGui.QActionGroup( MainWindow )
+        self.perpage_group.addAction( self.actionpp1 )
+        self.perpage_group.addAction( self.actionpp10 )
+        self.perpage_group.addAction( self.actionpp20 )
+        self.perpage_group.addAction( self.actionpp50 )
+        self.perpage_group.addAction( self.actionpp100 )
 
         if DIR == "rtl":
             MainWindow.setLayoutDirection( QtCore.Qt.RightToLeft )
@@ -186,16 +247,24 @@ class QUI( Ui_MainWindow ):
         QtCore.QObject.connect( self.o_topic, QtCore.SIGNAL( "activated(QString)" ), self.subtopics )
         QtCore.QObject.connect( self.o_sajdah_exist, QtCore.SIGNAL( "activated(int)" ), self.sajda_enable )
         QtCore.QObject.connect( self.o_struct_as, QtCore.SIGNAL( "activated(QString)" ), self.setstructborn )
-        QtCore.QObject.connect( self.o_perpage, QtCore.SIGNAL( "valueChanged(int)" ), self.changePERPAGE )
+        QtCore.QObject.connect( self.actionpp1, QtCore.SIGNAL( "triggered()" ), self.changePERPAGE )
+        QtCore.QObject.connect( self.actionpp10, QtCore.SIGNAL( "triggered()" ), self.changePERPAGE )
+        QtCore.QObject.connect( self.actionpp20, QtCore.SIGNAL( "triggered()" ), self.changePERPAGE )
+        QtCore.QObject.connect( self.actionpp50, QtCore.SIGNAL( "triggered()" ), self.changePERPAGE )
+        QtCore.QObject.connect( self.actionpp100, QtCore.SIGNAL( "triggered()" ), self.changePERPAGE )
+        QtCore.QObject.connect( self.action_Send_Feedback, QtCore.SIGNAL( "triggered()" ), self.feedback_link )
         QtCore.QObject.connect( self.o_struct_from, QtCore.SIGNAL( "valueChanged(int)" ), self.struct_to_min )
         QtCore.QObject.connect( self.o_stat_from, QtCore.SIGNAL( "valueChanged(int)" ), self.stat_to_min )
-        QtCore.QObject.connect( self.m_exit, QtCore.SIGNAL( "clicked()" ), self.exit )
-        QtCore.QObject.connect( self.m_help, QtCore.SIGNAL( "clicked()" ), self.help )
+        QtCore.QObject.connect( self.m_exit, QtCore.SIGNAL( "triggered()" ), self.exit )
+        QtCore.QObject.connect( self.m_help, QtCore.SIGNAL( "triggered()" ), self.help )
+        #TODO : use new signals
+        #self.m_exit.triggered.connect(self.exit)
+        #self.m_exit.triggered.connect(self.exit)
         QtCore.QObject.connect( self.m_about, QtCore.SIGNAL( "triggered(bool)" ), self.about )
         QtCore.QObject.connect( self.action_Send_Feedback, QtCore.SIGNAL( "triggered(bool)" ), self.send_feedback )
 
-        QtCore.QObject.connect( self.a_save, QtCore.SIGNAL( "clicked()" ), self.save_results )
-        QtCore.QObject.connect( self.a_print, QtCore.SIGNAL( "clicked()" ), self.print_results )
+        QtCore.QObject.connect( self.a_save, QtCore.SIGNAL( "triggered()" ), self.save_results )
+        QtCore.QObject.connect( self.a_print, QtCore.SIGNAL( "triggered()" ), self.print_results )
 
         QtCore.QObject.connect( self.o_add2query_advanced, QtCore.SIGNAL( "clicked()" ), self.add2query_advanced )
         QtCore.QObject.connect( self.o_add2query_struct, QtCore.SIGNAL( "clicked()" ), self.add2query_struct )
@@ -203,11 +272,9 @@ class QUI( Ui_MainWindow ):
         QtCore.QObject.connect( self.o_add2query_subject, QtCore.SIGNAL( "clicked()" ), self.add2query_subject )
         QtCore.QObject.connect( self.o_add2query_word, QtCore.SIGNAL( "clicked()" ), self.add2query_word )
         QtCore.QObject.connect( self.o_add2query_misc, QtCore.SIGNAL( "clicked()" ), self.add2query_misc )
-
+        sura_list =  RAWoutput._surates["Arabic"] if DIR == "rtl" else  RAWoutput._surates["English"]
         self.o_chapter.addItems( RAWoutput._chapters )
-        self.o_sura_name.addItems( RAWoutput._surates )
-        self.o_field.addItems( RAWoutput._fields.values() )# x.keys() for Arabic
-        self.o_traduction.addItems( RAWoutput._translations.values() )
+        self.o_sura_name.addItems( sura_list  )
         self.load_config()
 
 
@@ -215,81 +282,49 @@ class QUI( Ui_MainWindow ):
         """
         The main search function
         """
-        # add to history
-        if self.o_query.currentText() in self.history:
-            self.history.remove( self.o_query.currentText() )
-        self.history.insert( 0, self.o_query.currentText() )
+        # add to undo stack
+        if self.o_query.currentText() in self.undo_stack:
+            self.undo_stack.remove( self.o_query.currentText() )
+        self.undo_stack.insert( 0, self.o_query.currentText() )
         self.o_query.clear()
-        self.o_query.addItems( self.history )
+        self.o_query.addItems( self.undo_stack )
         self.o_query.setCurrentIndex( 0 )
 
-        limit = self.o_limit.value()
-
-        html = CSS
+        limit = int( self.limit_group.checkedAction().text() )
 
         suggest_flags = {
                 "action":"suggest",
                 "query": self.o_query.currentText()
                 }
-        output = RAWoutput.do( suggest_flags )
-        #print output
-        suggestions = output["suggest"] if output.has_key( "suggest" ) else {}
-        #print suggestions
-        if len( suggestions ):
-            html += _( u"<h1> Suggestions (%(number)s) </h1>" ) % {"number":len( suggestions )}
-            for key, value in suggestions:
-                html += _( u"<span class='green'>  %(word)s </span> : %(suggestions)s. <br />" ) % {"word": unicode( key ), "suggestions":u"،".join( value )}
+        suggestion_output = RAWoutput.do( suggest_flags )
 
         #search
         results, terms = None, []
         search_flags = {"action":"search",
                  "query": unicode( self.o_query.currentText() ),
-                 "sortedby":"score" if self.o_sortedbyscore.isChecked() \
-                        else "mushaf" if self.o_sortedbymushaf.isChecked() \
-                        } else "tanzil" if self.o_sortedbytanzil.isChecked() \
-                        else "subject" if self.o_sortedbysubject.isChecked() \
-                        else unicode( self.o_field.currentText() ), # ara2eng_names[self.o_field.currentText()] for Arabic,
+                 "sortedby":"score" if self.actionRelevance.isChecked() \
+                        else "mushaf" if self.actionPosition_in_Mus_haf.isChecked() \
+                        else "tanzil" if self.actionRevelation.isChecked() \
+                        else "subject" if self.actionSubject.isChecked() \
+                        else unicode( self.sorted_by_group.checkedAction().text() ), # ara2eng_names[self.sorted_by_group.checkedAction().text()] for Arabic,
                  "page": self.o_page.value(),
-                 "reverse_order": self.o_reverse.isChecked(),
-                 "word_info":self.o_word_stat.isChecked(),
-                 "highlight":self.o_highlight.isChecked(),
-                 "script": "uthmani" if self.o_script_uthmani.isChecked()
+                 "reverse_order": self.actionInverse.isChecked(),
+                 "word_info":self.actionWord_Info.isChecked(),
+                 "highlight": "html" if self.actionHighlight_Keywords.isChecked() else None,
+                 "script": "uthmani" if self.actionUthmani.isChecked()
                             else "standard",
-                 "prev_aya":self.o_prev.isChecked(),
-                 "next_aya": self.o_suiv.isChecked(),
-                 "sura_info": self.o_sura_info.isChecked(),
-                 "aya_position_info":  self.o_aya_info.isChecked(),
-                 "aya_theme_info":  self.o_aya_info.isChecked(),
-                 "aya_stat_info":  self.o_aya_info.isChecked(),
-                 "aya_sajda_info":  self.o_aya_info.isChecked(),
-                 "translation":self.o_traduction.currentText(),
+                 "prev_aya":self.actionPrevios_aya.isChecked(),
+                 "next_aya": self.actionNext_aya.isChecked(),
+                 "sura_info": self.actionSura_info.isChecked(),
+                 "aya_position_info":  self.actionAya_Info.isChecked(),
+                 "aya_theme_info":  self.actionAya_Info.isChecked(),
+                 "aya_stat_info":  self.actionAya_Info.isChecked(),
+                 "aya_sajda_info":  self.actionAya_Info.isChecked(),
+                 "translation":self.translation_group.checkedAction().text(),
+                 "word_info": self.actionWord_Info.isChecked(),
                  }
         self.Queries.insert( 0, search_flags )
-        try:
-            results = RAWoutput.do( search_flags )
-        except ParseException as PE:
-            html += _( "Your query is wrong!,correct it and search again" )
-        except KeyboardInterrupt:
-            html += _( "Interrupted by user" )
-
-
-        #print words_info
-        if self.o_word_stat.isChecked():
-            html += u'<h1> Words ( %(nb_words)d words reported %(nb_matches)d times ): </h1>' % results["search"]["words"]["global"]
-
-            print results["error"]["msg"]
-            for cpt in xrange( results["search"]["words"]["global"]["nb_words"] ) :
-                    this_word_info = results["search"]["words"]["individual"][cpt + 1]
-                    this_word_info["cpt"] = cpt + 1
-                    html += u'''<p>
-                                <span class="green">%(cpt)d. %(word)s : </span>
-                                reported
-                                <span class="green"> %(nb_matches)d </span>
-                                times in
-                                <span class="green"> %(nb_ayas)d </span>
-                                ayas.
-                                </p>''' % this_word_info
-            html += u"<br/>"
+        results = RAWoutput.do( search_flags )
 
         #if self.o_filter.isChecked() and self.last_results:
         #    results = QFilter( self.last_results, results )
@@ -308,98 +343,13 @@ class QUI( Ui_MainWindow ):
         self.o_page.setMaximum( numpage )
         #self.o_page.setValue(  )
 
+        template_vars = {
+						   "results": results, 
+						   "suggestions":suggestion_output ,
+						   "_": lambda x:x 
+						}
 
-        if results["error"]["code"] == 0:
-            html += _( """<h1> Results ( %(interval_start)d to %(interval_end)d of %(interval_total)d ) </h1> <br/>""" ) \
-                    % {
-                                    "interval_start": results["search"]["interval"]["start"] ,
-                                    "interval_end": results["search"]["interval"]["end"],
-                                    "interval_total": results["search"]["interval"]["total"]
-                        }
-
-
-            for cpt, result in results["search"]["ayas"].items():
-                html += _( u"""  %(cpt)d)  -  Aya n° %(aya_id)d of Sura  %(sura_name)s  """ )  \
-                            % {
-                                                "cpt": cpt,
-                                                "aya_id": result["identifier"]["aya_id"],
-                                                "sura_name": result["identifier"]["sura_name"],
-                                                }
-
-                if result["sura"]:
-                    html += _( u" Sura n°: %(sura_id)d ,revel_place : %(sura_type)s, revel_order :  %(sura_order)d, ayas : %(sura_nb_ayas)d " ) \
-                            % {
-                                        "sura_id": result["sura"]["id"],
-                                        "sura_type": SURA_TYPE[result["sura"]["type"]],
-                                        "sura_order": result["sura"]["order"],
-                                        "sura_nb_ayas": result ["sura"]["stat"]["ayas"]
-                            }
-                html += "<br/>"
-
-                if result["aya"]["prev_aya"]:
-                    html += """[ %(prev_aya_text)s ] - %(prev_aya_sura)s %(prev_aya_id)d <br/>
-                             """ % {
-                                     "prev_aya_text": result["aya"]["prev_aya"]["text"] ,
-                                     "prev_aya_sura": result["aya"]["prev_aya"]["sura"],
-                                     "prev_aya_id": result["aya"]["prev_aya"]["id"]
-                                    }
-
-                html += u"[  %(aya_text)s ] <br/> " % {
-                                                 "aya_text": result["aya"]["text"],
-                                                 }
-                if result["aya"]["next_aya"]:
-                    html += u"""[ %(next_aya_text)s ] - %(next_aya_sura)s %(next_aya_id)d <br/>
-                    """ % {
-                           "next_aya_text":result["aya"]["next_aya"]["text"],
-                           "next_aya_sura":result["aya"]["next_aya"]["sura"],
-                           "next_aya_id": result["aya"]["next_aya"]["id"]
-                           }
-                if result["aya"]["translation"]:
-                    html += _( u"""Translation -%(translation_title)s-: %(translation_text)s <br/>
-                            """ ) % {
-                                     "translation_title":"" ,
-                                     "translation_text": result["aya"]["translation"]
-                                     }
-                if result["position"]:
-                    html += _( u"""page: %(position_page)d ; (Hizb : %(position_hizb)d</b> ,Rubu' : %(position_rub)d) ; manzil :%(position_manzil)d ;  ruku' :%(position_ruku)s <br/>
-                            """ ) % {
-                                    "position_page": result["position"]["page"],
-                                    "position_hizb": result["position"]["hizb"],
-                                    "position_rub": result["position"]["rub"],
-                                    "position_manzil": result["position"]["manzil"],
-                                    "position_ruku": result["position"]["ruku"]
-                                    }
-                if result["theme"]:
-                    html += _( """chapter : %(theme_chapter)s ; topic : %(theme_topic)s ; subtopic : %(theme_subtopic)s <br/>
-                            """ ) % {
-                                    "theme_chapter":result["theme"]["chapter"] ,
-                                    "theme_topic": result["theme"]["topic"] ,
-                                    "theme_subtopic": result["theme"]["subtopic"]
-                                    }
-                if result["stat"]:
-                    html += _( """words : %(aya_nb_words)d / %(sura_nb_words)d  ; letters :  %(aya_nb_letters)d / %(sura_nb_letters)d  ;  names of Allaah : %(aya_nb_godnames)d / %(sura_nb_godnames)d <br/>
-                            """ ) % {
-                                    "aya_nb_words": result["stat"]["words"] ,
-                                    "sura_nb_words": result["sura"]["stat"]["words"] ,
-                                    "aya_nb_letters": result["stat"]["letters"],
-                                    "sura_nb_letters": result["sura"]["stat"]["letters"] ,
-                                    "aya_nb_godnames": result["stat"]["godnames"],
-                                    "sura_nb_godnames": result["sura"]["stat"]["godnames"]
-                                    }
-
-
-                if result["sajda"]:
-                    if result["sajda"]["exist"] == u"نعم":
-                        html += _( u""" This aya contain a sajdah -%(sajda_type)s- n° %(sajda_id)d <br/>
-                                """ ) % {
-                                         "sajda_type": SAJDA_TYPE[ result["sajda"]["type"]],
-                                         "sajda_id": result["sajda"]["id"]
-                                        }
-
-        html += "<br/><hr/><br/>"
-        self.o_results.setText( html )
-
-
+        self.o_results.setHtml( AYA_RESULTS_TEMPLATE.render(template_vars) )
 
     def topics( self, chapter ):
         first = self.o_topic.itemText( 0 )
@@ -418,9 +368,9 @@ class QUI( Ui_MainWindow ):
         self.o_subtopic.addItems( list )
         pass
 
-    def changePERPAGE( self, perpage ):
+    def changePERPAGE( self ):
         global PERPAGE
-        PERPAGE = perpage
+        PERPAGE = int( self.perpage_group.checkedAction().text() )
 
 
     def add2query_advanced( self ):
@@ -585,13 +535,13 @@ class QUI( Ui_MainWindow ):
             filenames = diag.selectedFiles();
 
         path = unicode( filenames[0] )
-        file = open( path, "w" )
-        file.write( self.o_results.toHtml() + "<br><br>CopyRights(c)<a href='http://www.alfanous.org'>Alfanous</a>  " )
-        file.close()
+        f = codecs.open( path, "w", "utf-8")
+        f.write( self.o_results.page().currentFrame().toHtml().replace("<head>", "<head><meta charset=\"utf-8\">") + "<br><br>CopyRights(c)<a href='http://www.alfanous.org'>Alfanous</a>  " )
+        f.close()
 
     def print_results( self ):
         printer = QtGui.QPrinter()
-        printer.setCreator( self.o_results.toHtml() )
+        printer.setCreator( self.o_results.html() )
         printer.setDocName( _( u"Results" ) + "-" + str( self.o_page.value() ) )
         printer.setPageSize( printer.A4 )
 
@@ -634,6 +584,11 @@ class QUI( Ui_MainWindow ):
         """  deprecated     """
         html = """ to replace with a hints dialog """
         self.o_results.setText( html )
+    
+    def feedback_link(self):
+        ""
+        import webbrowser
+        webbrowser.open('http://feedback.alfanous.org/')
 
 
 def main():

@@ -7,447 +7,582 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-07-04 10:22+0100\n"
-"PO-Revision-Date: 2013-07-04 10:26-0000\n"
-"Last-Translator: Assem Chelli <assem.ch@gmail.com>\n"
+"POT-Creation-Date: 2014-03-02 09:44+0100\n"
+"PO-Revision-Date: 2014-04-09 17:16+0000\n"
+"Last-Translator: Assem Chelli (عاصم شلي) <assem.ch@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 "
-"&& n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5;\n"
-"X-Generator: Poedit 1.5.4\n"
+"X-Launchpad-Export-Date: 2014-04-09 17:20+0000\n"
+"X-Generator: Launchpad (build 16976)\n"
 
-#: templates/aya_results.html:17 templates/aya_results.html.py:63
+#: settings.py:238 public/templates/base.html:174 templates/base.html:121
+#: wui/templates/wui/advanced_search/structural.html:4
+msgid "Ayahs"
+msgstr "آيات"
+
+#: settings.py:241 public/templates/base.html:175 templates/base.html:122
+msgid "Translations"
+msgstr "ترجمات"
+
+#: settings.py:242 public/templates/base.html:176 templates/base.html:123
+msgid "Words"
+msgstr "كلمات"
+
+#: public/templates/aya_results.html:17 public/templates/aya_results.html:63
+#: public/templates/word_results.html:17 templates/aya_keyword_block.html:7
+#: templates/aya_results.html:18 templates/keyword-block.html:7
+#: templates/word_results.html:18
 msgid "Keywords"
 msgstr "الكلمات"
 
-#: templates/aya_results.html:19 templates/aya_results.html.py:236
-#: templates/translation_results.html:60
+#: public/templates/aya_results.html:19 public/templates/aya_results.html:286
+#: public/templates/translation_results.html:25
+#: public/templates/word_results.html:19 public/templates/word_results.html:31
+#: templates/aya_results.html:20 templates/aya_results.html.py:74
+#: templates/translation_results.html:25 templates/word_results.html:20
+#: templates/word_results.html.py:32
 msgid "Results"
 msgstr "النتائج"
 
-#: templates/aya_results.html:21
+#: public/templates/aya_results.html:21
+#: public/templates/translation_results.html:17
+#: public/templates/word_results.html:21 templates/aya_results.html:22
+#: templates/translation_results.html:17 templates/word_results.html:22
 msgid "Runtime"
 msgstr "الزمن"
 
-#: templates/aya_results.html:22
+#: public/templates/aya_results.html:22 public/templates/word_results.html:22
+#: templates/aya_results.html:23 templates/word_results.html:23
 msgid "s"
 msgstr "ثا"
 
-#: templates/aya_results.html:30
+#: public/templates/aya_results.html:30 templates/aya_results.html:31
 msgid "Searched keyword:"
 msgstr "الكلمات المفتاحية:"
 
-#: templates/aya_results.html:31 templates/translation_results.html:27
+#: public/templates/aya_results.html:31 templates/aya_results.html:32
 msgid "Suggestions:"
 msgstr "الإقتراحات:"
 
-#: templates/aya_results.html:47 templates/translation_results.html:44
+#: public/templates/aya_results.html:47 templates/aya_results.html:48
 msgid "no suggestions!"
 msgstr "لا توجد إقتراحات!"
 
-#: templates/aya_results.html:80 templates/aya_results.html.py:449
-#: templates/aya_results.html:505 templates/base.html:68
+#: public/templates/aya_results.html:80 public/templates/aya_results.html:584
+#: public/templates/aya_results.html:658 public/templates/base.html:83
+#: templates/aya_keyword_block.html:28 templates/base.html:30
+#: templates/keyword-block.html:23
+#: wui/templates/wui/advanced_search/statistical.html:5
+#: wui/templates/wui/aya/one_result.html:167
+#: wui/templates/wui/aya/stats.html:61
 msgid "words"
 msgstr "كلمات"
 
-#: templates/aya_results.html:94 templates/aya_results.html.py:107
+#: public/templates/aya_results.html:94 public/templates/aya_results.html:107
+#: templates/aya_keyword_block.html:53 templates/aya_keyword_block.html:81
+#: templates/keyword-block.html:41 templates/keyword-block.html.py:61
 msgid "occurances"
 msgstr "التكرارات"
 
-#: templates/aya_results.html:97 templates/aya_results.html.py:116
+#: public/templates/aya_results.html:97 public/templates/aya_results.html:116
+#: templates/aya_keyword_block.html:64 templates/aya_keyword_block.html:103
+#: templates/keyword-block.html:47 templates/keyword-block.html.py:75
 msgid "vocalizations"
 msgstr "التشكيلات"
 
-#: templates/aya_results.html:111 templates/base.html:61
+#: public/templates/aya_results.html:111 public/templates/base.html:76
+#: templates/aya_keyword_block.html:92 templates/base.html:23
+#: templates/keyword-block.html:68
 msgid "ayates"
 msgstr "الآيات"
 
-#: templates/aya_results.html:132
+#: public/templates/aya_results.html:132 templates/aya_keyword_block.html:126
+#: templates/keyword-block.html:91
 msgid "synonyms"
 msgstr "المرادفات"
 
-#: templates/aya_results.html:149
+#: public/templates/aya_results.html:149 templates/aya_keyword_block.html:151
+#: templates/keyword-block.html:108
 msgid "derivations"
 msgstr "المشتقات"
 
-#: templates/aya_results.html:174
-msgid "Annotation"
-msgstr "التعليق"
+#: public/templates/aya_results.html:179
+#: templates/aya_keyword_annotation_block.html:7
+#: templates/keyword-block.html:139
+msgid "annotations"
+msgstr ""
 
-#: templates/aya_results.html:175
-msgid "ID"
-msgstr "رقم"
-
-#: templates/aya_results.html:176
-msgid "sura,aya"
-msgstr "سورة, آية"
-
-#: templates/aya_results.html:178
-msgid "token"
-msgstr "رمز"
-
-#: templates/aya_results.html:181
+#: public/templates/aya_results.html:208
+#: public/templates/word_results.html:175
+#: templates/aya_keyword_annotation_block.html:46
+#: templates/keyword-block.html:169 templates/word_results.html:153
 msgid "part"
 msgstr "جزء"
 
-#: templates/aya_results.html:184 templates/aya_results.html.py:476
-#: templates/aya_results.html:496
-msgid "type"
-msgstr "نوع"
-
-#: templates/aya_results.html:187
-msgid "POS"
-msgstr "قسم الكلام"
-
-#: templates/aya_results.html:190
+#: public/templates/aya_results.html:211
+#: public/templates/word_results.html:178
+#: templates/aya_keyword_annotation_block.html:51
+#: templates/keyword-block.html:172 templates/word_results.html:156
 msgid "lemma"
 msgstr "مصدر"
 
-#: templates/aya_results.html:193
+#: public/templates/aya_results.html:214
+#: public/templates/word_results.html:181
+#: templates/aya_keyword_annotation_block.html:57
+#: templates/keyword-block.html:175 templates/word_results.html:159
 msgid "root"
 msgstr "جذر"
 
-#: templates/aya_results.html:196
+#: public/templates/aya_results.html:217
+#: public/templates/word_results.html:184
+#: templates/aya_keyword_annotation_block.html:63
+#: templates/keyword-block.html:178 templates/word_results.html:162
 msgid "special"
 msgstr "مميز"
 
-#: templates/aya_results.html:199
+#: public/templates/aya_results.html:220
+#: public/templates/word_results.html:187
+#: templates/aya_keyword_annotation_block.html:69
+#: templates/keyword-block.html:181 templates/word_results.html:165
+msgid "token"
+msgstr "رمز"
+
+#: public/templates/aya_results.html:223 public/templates/aya_results.html:611
+#: public/templates/aya_results.html:643 public/templates/aya_results.html:648
+#: public/templates/word_results.html:190
+#: templates/aya_keyword_annotation_block.html:75
+#: templates/keyword-block.html:184 templates/word_results.html:168
+#: wui/templates/wui/aya/one_result.html:152
+#: wui/templates/wui/aya/one_result.html:157
+#: wui/templates/wui/aya/stats.html:88
+msgid "type"
+msgstr "نوع"
+
+#: public/templates/aya_results.html:226
+#: public/templates/word_results.html:193
+#: templates/aya_keyword_annotation_block.html:80
+#: templates/keyword-block.html:187 templates/word_results.html:171
+msgid "POS"
+msgstr "قسم الكلام"
+
+#: public/templates/aya_results.html:230
+#: public/templates/word_results.html:197
+#: templates/aya_keyword_annotation_block.html:86
+#: templates/keyword-block.html:191 templates/word_results.html:175
 msgid "aspect"
 msgstr "جوانب"
 
-#: templates/aya_results.html:202
+#: public/templates/aya_results.html:233
+#: public/templates/word_results.html:200
+#: templates/aya_keyword_annotation_block.html:91
+#: templates/keyword-block.html:194 templates/word_results.html:178
 msgid "state"
 msgstr "حالة"
 
-#: templates/aya_results.html:205
+#: public/templates/aya_results.html:236
+#: public/templates/word_results.html:203
+#: templates/aya_keyword_annotation_block.html:96
+#: templates/keyword-block.html:197 templates/word_results.html:181
 msgid "form"
 msgstr "شكل"
 
-#: templates/aya_results.html:208
+#: public/templates/aya_results.html:239
+#: public/templates/word_results.html:206
+#: templates/aya_keyword_annotation_block.html:101
+#: templates/keyword-block.html:200 templates/word_results.html:184
 msgid "case"
 msgstr "حالة"
 
-#: templates/aya_results.html:211
+#: public/templates/aya_results.html:242
+#: public/templates/word_results.html:209
+#: templates/aya_keyword_annotation_block.html:107
+#: templates/keyword-block.html:203 templates/word_results.html:187
 msgid "derivation"
 msgstr "مشتقة"
 
-#: templates/aya_results.html:214
+#: public/templates/aya_results.html:245
+#: public/templates/word_results.html:212
+#: templates/aya_keyword_annotation_block.html:112
+#: templates/keyword-block.html:206 templates/word_results.html:190
 msgid "person"
 msgstr "شخص"
 
-#: templates/aya_results.html:217
+#: public/templates/aya_results.html:248
+#: public/templates/word_results.html:215
+#: templates/aya_keyword_annotation_block.html:117
+#: templates/keyword-block.html:209 templates/word_results.html:193
 msgid "number"
 msgstr "عدد"
 
-#: templates/aya_results.html:220
+#: public/templates/aya_results.html:251
+#: public/templates/word_results.html:218
+#: templates/aya_keyword_annotation_block.html:122
+#: templates/keyword-block.html:212 templates/word_results.html:196
 msgid "gender"
 msgstr "جنس"
 
-#: templates/aya_results.html:223
+#: public/templates/aya_results.html:254
+#: public/templates/word_results.html:221
+#: templates/aya_keyword_annotation_block.html:127
+#: templates/keyword-block.html:215 templates/word_results.html:199
 msgid "voice"
 msgstr "صوت"
 
-#: templates/aya_results.html:237 templates/translation_results.html:61
+#: public/templates/aya_results.html:287
+#: public/templates/translation_results.html:26
+#: public/templates/word_results.html:32 templates/aya_results.html:75
+#: templates/translation_results.html:26 templates/word_results.html:33
 msgid "to"
 msgstr "الى"
 
-#: templates/aya_results.html:238 templates/translation_results.html:62
+#: public/templates/aya_results.html:288
+#: public/templates/translation_results.html:27
+#: public/templates/word_results.html:33 public/templates/word_results.html:65
+#: templates/aya_results.html:76 templates/translation_results.html:27
+#: templates/word_results.html:34 templates/word_results.html.py:67
 msgid "of"
 msgstr "من"
 
-#: templates/aya_results.html:257 templates/translation_results.html:79
+#: public/templates/aya_results.html:310
+#: public/templates/translation_results.html:44
+#: public/templates/word_results.html:54 templates/translation_results.html:45
+#: templates/word_results.html:56 wui/templates/wui/result/header.html:7
 msgid "Result n°"
 msgstr "نتيجة رقم"
 
-#: templates/aya_results.html:336
+#: public/templates/aya_results.html:352
+#: public/templates/translation_results.html:84
+#: public/templates/word_results.html:90
+#: wui/templates/wui/result/share_dropdown.html:14
+msgid "Twitter"
+msgstr "تويتر"
+
+#: public/templates/aya_results.html:353
+#: public/templates/translation_results.html:85
+#: public/templates/word_results.html:91
+#: wui/templates/wui/result/share_dropdown.html:20
+msgid "Facebook"
+msgstr "فيسبوك"
+
+#: public/templates/aya_results.html:354
+#: public/templates/translation_results.html:86
+#: wui/templates/wui/result/share_dropdown.html:26
+msgid "Google+"
+msgstr "جوجل بلاس"
+
+#: public/templates/aya_results.html:355
+#: public/templates/translation_results.html:87
+#: public/templates/word_results.html:93
+#: wui/templates/wui/result/share_dropdown.html:32
+msgid "Linkedin"
+msgstr "لينكدإن"
+
+#: public/templates/aya_results.html:471
+#: wui/templates/wui/aya/one_result.html:66
 msgid "Click here to show more details"
 msgstr "أنقر هنا لعرض تفاصيل أكثر"
 
-#: templates/aya_results.html:339
+#: public/templates/aya_results.html:474
+#: wui/templates/wui/aya/one_result.html:69
 msgid "Show more"
 msgstr "عرض أكثر"
 
-#: templates/aya_results.html:358
+#: public/templates/aya_results.html:493
+#: wui/templates/wui/advanced_search/thematic.html:2
+#: wui/templates/wui/aya/one_result.html:88
 msgid "Chapter"
 msgstr "فصل"
 
-#: templates/aya_results.html:368
+#: public/templates/aya_results.html:503
+#: wui/templates/wui/advanced_search/thematic.html:11
+#: wui/templates/wui/aya/one_result.html:98
 msgid "Topic"
 msgstr "موضوع"
 
-#: templates/aya_results.html:377
+#: public/templates/aya_results.html:512
+#: wui/templates/wui/aya/one_result.html:107
 msgid "Subtopic"
 msgstr "موضوع فرعي"
 
-#: templates/aya_results.html:392
+#: public/templates/aya_results.html:527 wui/templates/wui/aya/stats.html:4
 msgid "About ayah"
 msgstr "حول الآية"
 
-#: templates/aya_results.html:401
+#: public/templates/aya_results.html:536 wui/templates/wui/aya/stats.html:13
 msgid "manzil"
 msgstr "المنزل"
 
-#: templates/aya_results.html:409
+#: public/templates/aya_results.html:544 wui/templates/wui/aya/stats.html:21
 msgid "juz"
 msgstr "جزء"
 
-#: templates/aya_results.html:417
+#: public/templates/aya_results.html:552 wui/templates/wui/aya/stats.html:29
 msgid "hizb"
 msgstr "حزب"
 
-#: templates/aya_results.html:420
+#: public/templates/aya_results.html:555 wui/templates/wui/aya/stats.html:32
 msgid "quart"
 msgstr "ربع"
 
-#: templates/aya_results.html:428
+#: public/templates/aya_results.html:563 wui/templates/wui/aya/stats.html:40
 msgid "page"
 msgstr "صفحة"
 
-#: templates/aya_results.html:437
+#: public/templates/aya_results.html:572 wui/templates/wui/aya/stats.html:49
 msgid "page (indian)"
 msgstr "صفحة (هندية)"
 
-#: templates/aya_results.html:457 templates/aya_results.html.py:506
+#: public/templates/aya_results.html:592 public/templates/aya_results.html:659
+#: wui/templates/wui/advanced_search/statistical.html:4
+#: wui/templates/wui/aya/one_result.html:168
+#: wui/templates/wui/aya/stats.html:69
 msgid "letters"
 msgstr "حروف"
 
-#: templates/aya_results.html:466 templates/aya_results.html.py:507
+#: public/templates/aya_results.html:601 public/templates/aya_results.html:660
+#: wui/templates/wui/aya/one_result.html:169
+#: wui/templates/wui/aya/stats.html:78
 msgid "divine names"
 msgstr "ألفاظ الجلالة"
 
-#: templates/aya_results.html:473
+#: public/templates/aya_results.html:608 wui/templates/wui/aya/stats.html:85
 msgid "sajda"
 msgstr "سجدة"
 
-#: templates/aya_results.html:475 templates/aya_results.html.py:491
+#: public/templates/aya_results.html:608 wui/templates/wui/aya/stats.html:85
+msgid "Hafs"
+msgstr "حفص"
+
+#: public/templates/aya_results.html:610 public/templates/aya_results.html:637
+#: wui/templates/wui/aya/one_result.html:146
+#: wui/templates/wui/aya/stats.html:87
 msgid "n°"
 msgstr "رقم"
 
-#: templates/aya_results.html:484
+#: public/templates/aya_results.html:619
+#: wui/templates/wui/aya/one_result.html:128
 msgid "About surah"
 msgstr "حول السورة"
 
-#: templates/aya_results.html:489
+#: public/templates/aya_results.html:626 public/templates/aya_results.html:632
+#: wui/templates/wui/aya/one_result.html:135
+#: wui/templates/wui/aya/one_result.html:141
 msgid "Sura"
 msgstr "سورة"
 
-#: templates/aya_results.html:499
+#: public/templates/aya_results.html:652
+#: wui/templates/wui/aya/one_result.html:161
 msgid "revelation_order"
 msgstr "ترتيب النزول"
 
-#: templates/aya_results.html:502
+#: public/templates/aya_results.html:655
+#: wui/templates/wui/advanced_search/statistical.html:7
+#: wui/templates/wui/aya/one_result.html:164
 msgid "ayahs"
 msgstr "آيات"
 
-#: templates/aya_results.html:527 templates/translation_results.html:197
+#: public/templates/aya_results.html:681
+#: public/templates/translation_results.html:205
+#: public/templates/word_results.html:241 templates/aya_results.html:104
+#: templates/translation_results.html:159 templates/word_results.html:219
 msgid "Sorry! there is no results for this search query."
-msgstr " عذرا! لاتوجد نتائج مطابقة للبحث."
+msgstr "عذرا! لاتوجد نتائج مطابقة للبحث."
 
-#: templates/aya_results.html:535 templates/translation_results.html:205
+#: public/templates/aya_results.html:690
+#: public/templates/translation_results.html:213
+#: public/templates/word_results.html:250 templates/aya_results.html:113
+#: templates/translation_results.html:167 templates/word_results.html:228
 msgid "Error "
-msgstr "خطأ"
+msgstr "خطأ "
 
-#: templates/aya_search.html:10
-msgid "Search options"
-msgstr "خيارات البحث:"
-
-#: templates/aya_search.html:14
+#: public/templates/aya_search.html:13 templates/aya_search.html:12
 msgid "Fuzzy search"
 msgstr "بحث تقريبي"
 
-#: templates/aya_search.html:18
+#: public/templates/aya_search.html:17 templates/aya_search.html:16
 msgid "Unvocalized text"
 msgstr "إخفاء التشكيل"
 
-#: templates/aya_search.html:22
+#: public/templates/aya_search.html:21 templates/aya_search.html:20
 msgid "Uthmani script"
 msgstr "بالخط العثماني"
 
-#: templates/aya_search.html:34 templates/popups_content.html:28
-#: templates/translation_search.html:36
-msgid "Exact search"
-msgstr "بحث مطابق"
-
-#: templates/aya_search.html:39 templates/popups_content.html:33
-#: templates/translation_search.html:41
-msgid "Phrase search"
-msgstr "البحث بالجملة"
-
-#: templates/aya_search.html:44 templates/popups_content.html:38
-#: templates/translation_search.html:46
-msgid "Logical relations"
-msgstr "العلاقات المنطقية"
-
-#: templates/aya_search.html:49 templates/popups_content.html:43
-#: templates/translation_search.html:51
-msgid "Wildcards"
-msgstr "الجوكرز"
-
-#: templates/aya_search.html:54 templates/popups_content.html:48
-#: templates/translation_search.html:56
-msgid "Fields"
-msgstr "حقول"
-
-#: templates/aya_search.html:59 templates/popups_content.html:53
-msgid "Intervals"
-msgstr "المجالات"
-
-#: templates/aya_search.html:64 templates/popups_content.html:58
-msgid "Partial vocalization"
-msgstr "تشكيل جزئي"
-
-#: templates/aya_search.html:69 templates/popups_content.html:63
-msgid "Word properties"
-msgstr "خصائص الكلمة"
-
-#: templates/aya_search.html:74 templates/popups_content.html:68
-msgid "Derivations"
-msgstr "المشتقات"
-
-#: templates/aya_search.html:80 templates/popups_content.html:74
-#: templates/translation_search.html:63
-msgid ""
-"The website does not work well on Internet Explorer, we suggest to use "
-"another browser such as: "
-msgstr "الموقع لايعمل جيدًا في انترنت اكسبلورر, ننصح باستعمال مستعرض آخر مثل:"
-
-#: templates/aya_search.html:80 templates/popups_content.html:74
-#: templates/translation_search.html:63
-msgid "Firefox"
-msgstr "فايرفكس"
-
-#: templates/aya_search.html:82 templates/translation_search.html:65
-msgid "Close"
-msgstr "إغلاق"
-
-#: templates/aya_search.html:93
+#: public/templates/aya_search.html:34 templates/aya_search.html:33
 msgid "View"
 msgstr "عرض"
 
-#: templates/aya_search.html:100 templates/aya_search.html.py:151
-#: templates/aya_search.html:173
+#: public/templates/aya_search.html:41 public/templates/aya_search.html:92
+#: public/templates/aya_search.html:114 public/templates/base.html:232
+#: templates/aya_search.html:40 templates/aya_search.html.py:91
+#: templates/aya_search.html:113 templates/base.html:181
 msgid "Default"
 msgstr "افتراضي"
 
-#: templates/aya_search.html:101
+#: public/templates/aya_search.html:42 templates/aya_search.html:41
 msgid "Minimal"
 msgstr "الحد الأدنى"
 
-#: templates/aya_search.html:102
+#: public/templates/aya_search.html:43 templates/aya_search.html:42
 msgid "Normal"
 msgstr "عادي"
 
-#: templates/aya_search.html:103
+#: public/templates/aya_search.html:44 templates/aya_search.html:43
 msgid "Full"
 msgstr "كامل"
 
-#: templates/aya_search.html:104
+#: public/templates/aya_search.html:45 templates/aya_search.html:44
 msgid "Statitic"
 msgstr "إحصائي"
 
-#: templates/aya_search.html:105
+#: public/templates/aya_search.html:46 templates/aya_search.html:45
 msgid "Linguistic"
 msgstr "لغوي"
 
-#: templates/aya_search.html:106
+#: public/templates/aya_search.html:47 templates/aya_search.html:46
 msgid "Recitation"
 msgstr "التلاوة"
 
-#: templates/aya_search.html:121
+#: public/templates/aya_search.html:62 templates/aya_search.html:61
 msgid "Sorted by"
 msgstr "مرتبة حسب"
 
-#: templates/aya_search.html:128
+#: public/templates/aya_search.html:69 templates/aya_search.html:68
 msgid "Relevance"
 msgstr "التقييم"
 
-#: templates/aya_search.html:129
+#: public/templates/aya_search.html:70 templates/aya_search.html:69
 msgid "Mus'haf"
 msgstr "مصحف"
 
-#: templates/aya_search.html:130 templates/translation_search.html:7
+#: public/templates/aya_search.html:71
+#: public/templates/translation_search.html:7 templates/aya_search.html:70
+#: templates/translation_search.html:8
 msgid "Tanzil"
 msgstr "تنزيل"
 
-#: templates/aya_search.html:131
+#: public/templates/aya_search.html:72 templates/aya_search.html:71
 msgid "Topics"
 msgstr "مواضيع"
 
-#: templates/aya_search.html:132
+#: public/templates/aya_search.html:73 templates/aya_search.html:72
 msgid "Ayah length"
 msgstr "طول االآية"
 
-#: templates/aya_search.html:144
+#: public/templates/aya_search.html:85 templates/aya_search.html:84
 msgid "Translation"
 msgstr "ترجمة"
 
-#: templates/aya_search.html:152
+#: public/templates/aya_search.html:93 templates/aya_search.html:92
 msgid "No translation"
 msgstr "لاتوجد ترجمة"
 
-#: templates/aya_search.html:167
+#: public/templates/aya_search.html:108 templates/aya_search.html:107
 msgid "Recitation:"
 msgstr "تلاوة"
 
-#: templates/aya_search.html:174
+#: public/templates/aya_search.html:115 templates/aya_search.html:114
 msgid "No recitation"
 msgstr "بدون تلاوة"
 
-#: templates/base.html:7
-msgid "Alfanous"
-msgstr "الفانوس"
-
-#: templates/base.html:9 templates/base.html.py:15
-msgid "Ayah Search"
-msgstr "البحث في الآيات"
-
-#: templates/base.html:11
-msgid "Word Search"
-msgstr "البحث في الكلمات"
-
-#: templates/base.html:13
-msgid "Translation Search"
-msgstr "البحث في الترجمات"
-
-#: templates/base.html:20
-msgid "Query:"
-msgstr "عبارة البحث:"
-
-#: templates/base.html:23
+#: public/templates/base.html:10
 msgid "Page:"
 msgstr "الصفحة:"
 
-#: templates/base.html:27
+#: public/templates/base.html:14
 msgid "Order:"
 msgstr "الترتيب:"
 
-#: templates/base.html:31
+#: public/templates/base.html:18
 msgid "View:"
 msgstr "العرض:"
 
-#: templates/base.html:35
+#: public/templates/base.html:22
 msgid "Options:"
 msgstr "الخيارات:"
 
-#: templates/base.html:37
+#: public/templates/base.html:24
 msgid "vocalized"
 msgstr "مشكّل"
 
-#: templates/base.html:40
+#: public/templates/base.html:27
 msgid "uthmani"
 msgstr "عثماني"
 
-#: templates/base.html:43
+#: public/templates/base.html:30
 msgid "fuzzy"
 msgstr "تقريبي"
 
-#: templates/base.html:48
+#: public/templates/base.html:35
 msgid "Translation:"
 msgstr "الترجمة:"
 
-#: templates/base.html:55
+#: public/templates/base.html:42 public/templates/base.html.py:48
+#: public/templates/base.html:433 templates/base.html:418
+#: wui/templatetags/meta.py:11
+msgid "Quran Ayah Search"
+msgstr "بحث في آي القرآن"
+
+#: public/templates/base.html:44 public/templates/base.html.py:433
+#: templates/base.html:418 wui/templatetags/meta.py:13
+msgid "Quran Word Search"
+msgstr "بحث في ألفاظ القرآن"
+
+#: public/templates/base.html:46 public/templates/base.html.py:433
+#: templates/base.html:418 wui/templatetags/meta.py:12
+msgid "Quran Translation Search"
+msgstr "بحث في ترجمات معاني القرآن"
+
+#: public/templates/base.html:50 public/templates/base.html.py:433
+#: templates/base.html:418 wui/templates/wui/og_tags.html:2
+#: wui/templatetags/meta.py:33
+msgid "Alfanous"
+msgstr "الفانوس"
+
+#: public/templates/base.html:57
+msgid "Alfanous search results searching in"
+msgstr "نتائج بحث الفانوس في"
+
+#: public/templates/base.html:57
+msgid "looking for the query"
+msgstr "تنقيبا عن العبارة"
+
+#: public/templates/base.html:57
+msgid "the page"
+msgstr "الصفحة"
+
+#: public/templates/base.html:57
+msgid "the view"
+msgstr "العرض"
+
+#: public/templates/base.html:57
+msgid "the script"
+msgstr "الخط"
+
+#: public/templates/base.html:57
+msgid "and the translation"
+msgstr "الترجمة"
+
+#: public/templates/base.html:57
+msgid "The fuzzy search is"
+msgstr "البحث التقربي"
+
+#: public/templates/base.html:60 wui/templatetags/meta.py:56
+msgid ""
+"Alfanous has the feautre to search in the Quran words, their properties and "
+"occurences"
+msgstr "الفانوس يملك خاصية البحث في ألفاظ القرآن ، خصائصها وأمكنة ورودها."
+
+#: public/templates/base.html:62 wui/templatetags/meta.py:58
+msgid ""
+"Alfanous has the feautre to search in the translations of Quran meanings to "
+"lot of world languages"
+msgstr ""
+"الفانوس يملك خاصية البحث في ترجمات معاني القرآن  إلى عدد معتبر من لغات "
+"العالم."
+
+#: public/templates/base.html:64
 msgid ""
 "Alfanous is a functional, dynamic, comprehensive Qur’an search engine that "
 "has been effectively designed to carry out simple or advanced Quranic "
@@ -456,97 +591,85 @@ msgstr ""
 "الفانوس هو محرك بحث قرآني عملي, وشامل. صمم للقيام بعمليات البحث البسيطة "
 "والمتقدمة في القرآن الكريم."
 
-#: templates/base.html:56
+#: public/templates/base.html:71 templates/base.html:18
 msgid "quran"
 msgstr "قرآن"
 
-#: templates/base.html:57
+#: public/templates/base.html:72 templates/base.html:19
 msgid "forqan"
 msgstr "فرقان"
 
-#: templates/base.html:58
+#: public/templates/base.html:73 templates/base.html:20
 msgid "koran"
 msgstr "قرآن"
 
-#: templates/base.html:59
+#: public/templates/base.html:74 templates/base.html:21
 msgid "search"
 msgstr "بحث"
 
-#: templates/base.html:60
+#: public/templates/base.html:75 templates/base.html:22
 msgid "search engine"
 msgstr "محرك بحث"
 
-#: templates/base.html:62
+#: public/templates/base.html:77 templates/base.html:24
 msgid "surates"
 msgstr "سور"
 
-#: templates/base.html:63
+#: public/templates/base.html:78 templates/base.html:25
 msgid "advanced"
 msgstr "متقدم"
 
-#: templates/base.html:64
+#: public/templates/base.html:79 templates/base.html:26
 msgid "statistics"
 msgstr "إحصائيات"
 
-#: templates/base.html:65
+#: public/templates/base.html:80 templates/base.html:27
 msgid "linguistic"
 msgstr "لغوي"
 
-#: templates/base.html:66
+#: public/templates/base.html:81 templates/base.html:28
 msgid "information retrieval"
 msgstr "البحث عن المعلومات"
 
-#: templates/base.html:67
+#: public/templates/base.html:82 templates/base.html:29
 msgid "natural language processing"
 msgstr "المعالجة اللغوية"
 
-#: templates/base.html:69
+#: public/templates/base.html:84 templates/base.html:31
 msgid "Lantern"
 msgstr "الفانوس"
 
-#: templates/base.html:70
+#: public/templates/base.html:85 templates/base.html:32
 msgid "alfanous"
 msgstr "alfanous"
 
-#: templates/base.html:78
+#: public/templates/base.html:93 templates/base.html:40
 msgid "vocalized text"
 msgstr "نص مشكّل"
 
-#: templates/base.html:81
+#: public/templates/base.html:96 templates/base.html:43
 msgid "uthmani script"
 msgstr "خط عثماني"
 
-#: templates/base.html:84
+#: public/templates/base.html:99 templates/base.html:46
 msgid "fuzzy search"
 msgstr "بحث تقريبي"
 
-#: templates/base.html:135 wui/views.py:69
-msgid "Ayahs"
-msgstr "آيات"
-
-#: templates/base.html:136 wui/views.py:72
-msgid "Translations"
-msgstr "ترجمات"
-
-#: templates/base.html:137
-msgid "Words"
-msgstr "كلمات"
-
-#: templates/base.html:156
+#: public/templates/base.html:195 templates/base.html:142
 msgid "First, select the search unit"
 msgstr "أولا، إختر وحدة البحث"
 
-#: templates/base.html:157
+#: public/templates/base.html:196 templates/base.html:143
 msgid ""
 "You can choose whether to search in Arabic verses of the holly Quran or in "
 "its translations"
 msgstr "يمكنك الإختيار بين البحث في آي القرآن أو في ترجمات معانيه."
 
-#: templates/base.html:171
+#: public/templates/base.html:210 templates/base.html:157
 msgid "Select your language"
 msgstr "إختر لغتك"
 
-#: templates/base.html:172
+#: public/templates/base.html:211 templates/base.html:158
 msgid ""
 "If you didn't notice, Alfanous User Interface is now translated to other "
 "languages, choose the one that fits you the best, or, you can contribute in "
@@ -555,31 +678,88 @@ msgstr ""
 "إن لم تلاحظ، واجهة الفانوس قابلة للترجمة إلى عدّة لغات، إختر لغتك إن وجدت أو "
 "يمكنك المساهمة بإنجازها إن لم توجد."
 
-#: templates/base.html:174
+#: public/templates/base.html:213 templates/base.html:160
 msgid "Languages"
 msgstr "اللغات"
 
-#: templates/base.html:184
+#: public/templates/base.html:223 templates/base.html:172
 msgid "Current:"
 msgstr "الحالية:"
 
-#: templates/base.html:220
+#: public/templates/base.html:228 templates/base.html:177
+msgid "Skins"
+msgstr "التصاميم"
+
+#: public/templates/base.html:235 templates/base.html:184
+msgid "Cerulean"
+msgstr "أزرق"
+
+#: public/templates/base.html:236 templates/base.html:185
+msgid "Cyborg"
+msgstr "Cyborg"
+
+#: public/templates/base.html:237 templates/base.html:186
+msgid "Amelia"
+msgstr "أميليا"
+
+#: public/templates/base.html:238 templates/base.html:187
+msgid "Readable"
+msgstr "سهل القراءة"
+
+#: public/templates/base.html:239 templates/base.html:188
+msgid "Slate"
+msgstr "اردواز"
+
+#: public/templates/base.html:240 templates/base.html:189
+msgid "Spacelab"
+msgstr "المختبر الفضائي"
+
+#: public/templates/base.html:241 templates/base.html:190
+msgid "Super Heroes"
+msgstr "الأبطال الخارقين"
+
+#: public/templates/base.html:242 templates/base.html:191
+msgid "United"
+msgstr "متآلف"
+
+#: public/templates/base.html:264 templates/base.html:215
+msgid "Our page on Facebook"
+msgstr "صفحتنا على الفايسبوك"
+
+#: public/templates/base.html:265 templates/base.html:216
+msgid "Our page on Google+"
+msgstr "صفحتنا على غوغل بلاس"
+
+#: public/templates/base.html:266 templates/base.html:217
+msgid "Our account on Twitter"
+msgstr "حسابنا على تويتر"
+
+#: public/templates/base.html:267 templates/base.html:218
+msgid "Our repository on Github"
+msgstr "حسابنا على غيتهاب"
+
+#: public/templates/base.html:268 templates/base.html:219
+msgid "Our Mailing list on GoogleGroups"
+msgstr "قائمتنا البريدية  في مجموعات غوغل"
+
+#: public/templates/base.html:282 templates/base.html:233
 msgid "Information:"
 msgstr "المعلومات"
 
-#: templates/base.html:221
+#: public/templates/base.html:283 templates/base.html:234
 msgid "Quick Tour!"
 msgstr "جولة سريعة!"
 
-#: templates/base.html:222 templates/popups_content.html:7
+#: public/templates/base.html:284 public/templates/popups_content.html:7
+#: templates/base.html:235 templates/popups_content.html:7
 msgid "F.A.Q."
 msgstr "الأسئلة الشائعة"
 
-#: templates/base.html:223
+#: public/templates/base.html:285 templates/base.html:236
 msgid "Sample search here"
 msgstr "أمثلة للبحث هنا"
 
-#: templates/base.html:224
+#: public/templates/base.html:286 templates/base.html:237
 msgid ""
 "Here you can learn by example about the full power of Alfanous search engine "
 "and what you can do with it."
@@ -587,66 +767,68 @@ msgstr ""
 "هنا يكمنك الإستفادة من الأمثلة المقدمة التي تبين الإمكانات الكبيرة لمحرك بحث "
 "الفانوس."
 
-#: templates/base.html:227 templates/popups_content.html:21
+#: public/templates/base.html:290 public/templates/popups_content.html:21
+#: templates/base.html:241 templates/popups_content.html:21
 msgid "Help"
 msgstr "مساعدة"
 
-#: templates/base.html:228
+#: public/templates/base.html:292 templates/base.html:243
 msgid "Contact"
 msgstr "اتصل بنا"
 
-#: templates/base.html:229 templates/popups_content.html:206
+#: public/templates/base.html:293 public/templates/popups_content.html:263
+#: templates/base.html:244 templates/popups_content.html:263
 msgid "Download"
 msgstr "تحميل"
 
-#: templates/base.html:230
+#: public/templates/base.html:294 templates/base.html:246
 msgid "Contribute:"
 msgstr "ساهم"
 
-#: templates/base.html:231
-msgid "Translate"
-msgstr "ترجم"
-
-#: templates/base.html:232
+#: public/templates/base.html:295 templates/base.html:247
 msgid "Feedback"
 msgstr "تعليقات"
 
-#: templates/base.html:233
+#: public/templates/base.html:296 templates/base.html:248
+msgid "Translate"
+msgstr "ترجم"
+
+#: public/templates/base.html:297 templates/base.html:249
 msgid "we really need your help!"
 msgstr "نحن حقا في حاجة لمساعدتك"
 
-#: templates/base.html:234
+#: public/templates/base.html:298 templates/base.html:250
 msgid ""
 "We're looking to fund the project, if you like it, help us making it even "
 "better."
 msgstr ""
 "نحن نعمل على إيجاد دعم مادي للمشروع، إن أعجبك، يمكنك المساهمة لجعله أفضل."
 
-#: templates/base.html:241
+#: public/templates/base.html:306 templates/base.html:258
 msgid "Donate"
 msgstr "تبرع"
 
-#: templates/base.html:242
+#: public/templates/base.html:307 templates/base.html:260
 msgid "Other means"
 msgstr "طرق أخرى"
 
-#: templates/base.html:253
+#: public/templates/base.html:326 templates/base.html:279
 msgid "Alfanous is smart!"
 msgstr "الفانوس محرّك ذكي!"
 
-#: templates/base.html:257
+#: public/templates/base.html:330 templates/base.html:283
 msgid "search query here ..."
 msgstr "عبارة البحث هنا ..."
 
-#: templates/base.html:263
+#: public/templates/base.html:336 templates/base.html:289
 msgid "Quick search"
 msgstr "بحث سريع"
 
-#: templates/base.html:270
+#: public/templates/base.html:342 templates/base.html:295
 msgid "Even more!"
 msgstr "وأكثر من ذلك!"
 
-#: templates/base.html:271
+#: public/templates/base.html:343 templates/base.html:296
 msgid ""
 "You can <strong>sort</strong>, <strong>filter</strong> search reasults or "
 "choose a translation, you can as well choose a recitator!"
@@ -654,70 +836,165 @@ msgstr ""
 "بإمكانك <strong>ترتيب</strong>, <strong>تصفية</strong> النتائج أو إختيار "
 "ترجمة أو تلاوة للقرآن مناسبة لك!"
 
-#: templates/base.html:275
-msgid "Advanced search"
-msgstr "بحث متقدّم"
+#: public/templates/base.html:348
+msgid "Search options"
+msgstr "خيارات البحث:"
 
-#: templates/base.html:293
+#: public/templates/base.html:367
 msgid "Bismi'Allah Go!"
 msgstr "بسم الله!"
 
-#: templates/base.html:320
+#: public/templates/base.html:393 templates/base.html:378
 msgid "Help!"
 msgstr "مساعدة!"
 
-#: templates/base.html:326
+#: public/templates/base.html:395 templates/base.html:380
+msgid "Please help us translate Alfanous Project into more languages!"
+msgstr "الرجاء المساعدة في ترجمة الموقع إلى لغات أخرى!"
+
+#: public/templates/base.html:403 templates/base.html:387
 msgid ""
 "Please help us improving Alfanous Project, by taking this survey about "
 "search features in Holy Quran."
 msgstr ""
 "من فضلكم المساهمة في تطوير مشروع الفانوس بالإجابة على هذا الاستطلاع حول "
-"مزايا البحث في القرآن "
+"مزايا البحث في القرآن"
 
-#: templates/base.html:337
+#: public/templates/base.html:409 templates/base.html:394
+msgid "Info!"
+msgstr "معلومة"
+
+#: public/templates/base.html:411 templates/base.html:396
+msgid "The source of indexed Quran translations is Tanzil Project"
+msgstr "مصدر ترجمات القرآن المفهرسة هو مشروع تنزيل"
+
+#: public/templates/base.html:433 templates/base.html:418
+msgid "Share!"
+msgstr "أنشر!"
+
+#: public/templates/base.html:444 templates/base.html:429
 msgid "Copyright"
 msgstr "حقوق النسخ"
 
-#: templates/base.html:337
+#: public/templates/base.html:444 templates/base.html:429
 msgid "Alfanous Team"
 msgstr "فريق الفانوس"
 
-#: templates/base.html:338
+#: public/templates/base.html:445 templates/base.html:430
 msgid "released under"
 msgstr "منشور تحت"
 
-#: templates/base.html:338
+#: public/templates/base.html:445 templates/base.html:430
 msgid "AGPL license"
 msgstr "إتفاقية AGPL"
 
-#: templates/base.html:343
+#: public/templates/base.html:450 templates/base.html:435
 msgid "Powered by"
 msgstr "مدعوم من"
 
-#: templates/base.html:352
+#: public/templates/base.html:459 templates/base.html:444
 msgid "Add to your search bar!"
 msgstr "أضف إلى شريط البحث"
 
-#: templates/popups_content.html:10
+#: public/templates/popups_content.html:10 templates/popups_content.html:10
 msgid "See"
 msgstr "أنظر"
 
-#: templates/popups_content.html:10
+#: public/templates/popups_content.html:10 templates/popups_content.html:10
 msgid "this link"
 msgstr "هذا الرابط"
 
-#: templates/popups_content.html:13 templates/popups_content.html.py:77
-#: templates/popups_content.html:91 templates/popups_content.html.py:115
-#: templates/popups_content.html:136 templates/popups_content.html.py:197
-#: templates/popups_content.html:223 templates/popups_content.html.py:242
+#: public/templates/popups_content.html:13
+#: public/templates/popups_content.html:134
+#: public/templates/popups_content.html:148
+#: public/templates/popups_content.html:172
+#: public/templates/popups_content.html:193
+#: public/templates/popups_content.html:254
+#: public/templates/popups_content.html:302
+#: public/templates/popups_content.html:323 templates/popups_content.html:13
+#: templates/popups_content.html.py:134 templates/popups_content.html:148
+#: templates/popups_content.html.py:172 templates/popups_content.html:193
+#: templates/popups_content.html.py:254 templates/popups_content.html:302
+#: templates/popups_content.html.py:323
 msgid " Close "
-msgstr "إغلاق"
+msgstr " إغلاق "
 
-#: templates/popups_content.html:85
+#: public/templates/popups_content.html:27 templates/popups_content.html:27
+msgid "Searching in Quran Ayahs"
+msgstr "البحث في آيات القرآن"
+
+#: public/templates/popups_content.html:34
+#: public/templates/popups_content.html:98 templates/popups_content.html:34
+#: templates/popups_content.html.py:98
+msgid "Exact search"
+msgstr "بحث مطابق"
+
+#: public/templates/popups_content.html:39
+#: public/templates/popups_content.html:103 templates/popups_content.html:39
+#: templates/popups_content.html.py:103
+#: wui/templates/wui/advanced_search/advanced_query.html:8
+msgid "Phrase search"
+msgstr "البحث بالجملة"
+
+#: public/templates/popups_content.html:44
+#: public/templates/popups_content.html:108 templates/popups_content.html:44
+#: templates/popups_content.html.py:108
+msgid "Logical relations"
+msgstr "العلاقات المنطقية"
+
+#: public/templates/popups_content.html:49
+#: public/templates/popups_content.html:113 templates/popups_content.html:49
+#: templates/popups_content.html.py:113
+msgid "Wildcards"
+msgstr "الجوكرز"
+
+#: public/templates/popups_content.html:54
+#: public/templates/popups_content.html:118 templates/popups_content.html:54
+#: templates/popups_content.html.py:118
+msgid "Fields"
+msgstr "حقول"
+
+#: public/templates/popups_content.html:59 templates/popups_content.html:59
+msgid "Intervals"
+msgstr "المجالات"
+
+#: public/templates/popups_content.html:64 templates/popups_content.html:64
+#: wui/templates/wui/advanced_search/advanced_query.html:33
+msgid "Partial vocalization"
+msgstr "تشكيل جزئي"
+
+#: public/templates/popups_content.html:69 templates/popups_content.html:69
+msgid "Word properties"
+msgstr "خصائص الكلمة"
+
+#: public/templates/popups_content.html:74 templates/popups_content.html:74
+msgid "Derivations"
+msgstr "المشتقات"
+
+#: public/templates/popups_content.html:79 templates/popups_content.html:79
+msgid "Buckwalter Transliteration"
+msgstr "تهجئة بُكْوَلْتَر (Buckwalter)"
+
+#: public/templates/popups_content.html:91 templates/popups_content.html:91
+msgid "Searching in Quran Translations"
+msgstr "البحث في ترجمات القرآن"
+
+#: public/templates/popups_content.html:131 templates/popups_content.html:131
+msgid ""
+"The website does not work well on Internet Explorer, we suggest to use "
+"another browser such as: "
+msgstr ""
+"الموقع لايعمل جيدًا في انترنت اكسبلورر, ننصح باستعمال مستعرض آخر مثل: "
+
+#: public/templates/popups_content.html:131 templates/popups_content.html:131
+msgid "Firefox"
+msgstr "فايرفكس"
+
+#: public/templates/popups_content.html:142 templates/popups_content.html:142
 msgid "Awarded!"
 msgstr "الجوائز"
 
-#: templates/popups_content.html:88
+#: public/templates/popups_content.html:145 templates/popups_content.html:145
 msgid ""
 "Alfanous.org was chosen as the best-in-technicaity website in the "
 "competition AlgeriaWebAwards 2012."
@@ -725,11 +1002,11 @@ msgstr ""
 "الموقع أختير كأفضل موقع من حيث التقنية المستعملة فيه في مسابقة "
 "AlgeriaWebAwards   لسنة 2012"
 
-#: templates/popups_content.html:99
+#: public/templates/popups_content.html:156 templates/popups_content.html:156
 msgid "How to donate"
 msgstr "كيف تتبرع"
 
-#: templates/popups_content.html:102
+#: public/templates/popups_content.html:159 templates/popups_content.html:159
 msgid ""
 "We're stuck looking for possible ways for donations/Funding. Any help is "
 "appreciated!"
@@ -737,11 +1014,11 @@ msgstr ""
 "تصادفنا مشاكل في العثور على حل مناسب لاستقبال التبرعات أو الدعم المادي، نرحب "
 "بأي مساعدة في هذا المجال."
 
-#: templates/popups_content.html:105
+#: public/templates/popups_content.html:162 templates/popups_content.html:162
 msgid "Any way you can help by:"
 msgstr "مع ذلك يمكنك المساهمة عبر:"
 
-#: templates/popups_content.html:107
+#: public/templates/popups_content.html:164 templates/popups_content.html:164
 msgid ""
 "Pay our web hosting monthly bills directly, we create an account for you in "
 "the host to do that."
@@ -749,50 +1026,50 @@ msgstr ""
 "دفع المستحقات الشهرية لمستضيف الموقع مباشرة، سنقوم بتوفير حساب خاص لمن يتطوع "
 "لذلك."
 
-#: templates/popups_content.html:108
+#: public/templates/popups_content.html:165 templates/popups_content.html:165
 msgid ""
 "Lead an advertising compaign for the project website through Google adwords "
 "or Facebook."
 msgstr "قد حملة إشهارية لموقع المشروع عبر Google adwords أو Facebook."
 
-#: templates/popups_content.html:109
+#: public/templates/popups_content.html:166 templates/popups_content.html:166
 msgid "Buy Products (T-shirts, Cups, Hats) from Zazzle"
 msgstr "إشتر منتجات (أقمصة، كؤوس، قبعات) من Zazzle"
 
-#: templates/popups_content.html:110
+#: public/templates/popups_content.html:167 templates/popups_content.html:167
 msgid "Donate by flattr:"
 msgstr "التبرع عن طريق فلاتر:"
 
-#: templates/popups_content.html:123
+#: public/templates/popups_content.html:180 templates/popups_content.html:180
 msgid "Contact us"
 msgstr "اتصل بنا"
 
-#: templates/popups_content.html:127
+#: public/templates/popups_content.html:184 templates/popups_content.html:184
 msgid "If you have a concrete bug report for Alfanous please go to"
-msgstr "إذا كنت تريد الإبلاغ عن ثغرة، الرجاء الإنتقال إلى "
+msgstr "إذا كنت تريد الإبلاغ عن ثغرة، الرجاء الإنتقال إلى"
 
-#: templates/popups_content.html:127
+#: public/templates/popups_content.html:184 templates/popups_content.html:184
 msgid "Issues Tracker"
 msgstr "Issues Tracker"
 
-#: templates/popups_content.html:127
+#: public/templates/popups_content.html:184 templates/popups_content.html:184
 msgid "submit your report and tag it \"bug\"."
 msgstr "أدخل تقريرك حول الثغرة وأضف السمة \"bug\"."
 
-#: templates/popups_content.html:128
+#: public/templates/popups_content.html:185 templates/popups_content.html:185
 msgid ""
 "If you want to participate in actively developing Alfanous,by testing read"
 msgstr "إذا كنت تريد المساهمة في تطوير الفانوس، إقرأ:"
 
-#: templates/popups_content.html:128
+#: public/templates/popups_content.html:185 templates/popups_content.html:185
 msgid "and by coding read "
-msgstr "وبالبرمجة إقرأ"
+msgstr "وبالبرمجة إقرأ "
 
-#: templates/popups_content.html:129
+#: public/templates/popups_content.html:186 templates/popups_content.html:186
 msgid "If you want to help in Alfanous somehow,  read"
 msgstr "إذا كنت تريد المساهمة في الفانوس بأي طريقة ممكنة، إقرأ:"
 
-#: templates/popups_content.html:130
+#: public/templates/popups_content.html:187 templates/popups_content.html:187
 msgid ""
 "If you have a feature request, a proposition or a question for the project, "
 "you may use the mailing list."
@@ -800,7 +1077,7 @@ msgstr ""
 "إذا كنت تريد طلب مزية أو إقتراح أو سؤال حول المشروع، يمكنك استعمال القائمة "
 "البريدية."
 
-#: templates/popups_content.html:131
+#: public/templates/popups_content.html:188 templates/popups_content.html:188
 msgid ""
 "If you want to criticize the project, we'll be thankful if you resume your "
 "criticism and send it to the mailing list."
@@ -808,49 +1085,49 @@ msgstr ""
 "إذا أردت إنتقاد المشروع، سنكون ممتنين لك إن قمت بصياغة إنتقادك وإرساله إلى "
 "القائمة البريدية."
 
-#: templates/popups_content.html:133
+#: public/templates/popups_content.html:190 templates/popups_content.html:190
 msgid "For anything else, you can contact us via the mailing list which is:"
 msgstr "لأي شيء آخر يمكنك الإتصال بنا عبر القائمة البريدية."
 
-#: templates/popups_content.html:146
+#: public/templates/popups_content.html:203 templates/popups_content.html:203
 msgid "How to contribute"
 msgstr "كيف تساهم"
 
-#: templates/popups_content.html:154
+#: public/templates/popups_content.html:211 templates/popups_content.html:211
 msgid "Spreading the word"
 msgstr "نشر الفكرة"
 
-#: templates/popups_content.html:160
+#: public/templates/popups_content.html:217 templates/popups_content.html:217
 msgid "Following and sharing our social network pages:"
 msgstr "متابعة ونشر صفحاتنا الإجتماعية:"
 
-#: templates/popups_content.html:162
+#: public/templates/popups_content.html:219 templates/popups_content.html:219
 msgid "Sharing a link to"
 msgstr "نشر رابط إلى"
 
-#: templates/popups_content.html:162
+#: public/templates/popups_content.html:219 templates/popups_content.html:219
 msgid "our website"
 msgstr "موقعنا"
 
-#: templates/popups_content.html:162
+#: public/templates/popups_content.html:219 templates/popups_content.html:219
 msgid "via your accounts in Social networks."
 msgstr "عبر حساباتك في الشبكات الإجتماعية."
 
-#: templates/popups_content.html:163
+#: public/templates/popups_content.html:220 templates/popups_content.html:220
 msgid ""
 "Pointing  skilled developers and Quranic researchers to the importance of "
 "the project."
 msgstr "تنبيه المطورين والباحثين في مجال القرآن إلى المشروع وأهميته."
 
-#: templates/popups_content.html:164
+#: public/templates/popups_content.html:221 templates/popups_content.html:221
 msgid "Writing articles about the project in blogs, newspapers."
 msgstr "كتابة مقالات عن المشروع في المدونات والمواقع الإخبارية والجرائد."
 
-#: templates/popups_content.html:165
+#: public/templates/popups_content.html:222 templates/popups_content.html:222
 msgid "Showing a banner on your Blog/Website."
 msgstr "وضع بانر إشهاري على موقعك أو مدونتك."
 
-#: templates/popups_content.html:166
+#: public/templates/popups_content.html:223 templates/popups_content.html:223
 msgid ""
 "creating an ad for alfanous links using Google adwords or facebook if you're "
 "familiar with that (btw,it needs money)"
@@ -858,11 +1135,11 @@ msgstr ""
 "إنشاء إشهارات لروابط المشروع باستعمال  Google adwords أو فايسبوك إن كنت "
 "خبيرا بذلك (تحتاج إلى مبلغ مالي لفعل ذلك)"
 
-#: templates/popups_content.html:175
+#: public/templates/popups_content.html:232 templates/popups_content.html:232
 msgid "Or by"
 msgstr "أو بـ:"
 
-#: templates/popups_content.html:180
+#: public/templates/popups_content.html:237 templates/popups_content.html:237
 msgid ""
 "Managing and Animating our social network pages with news and daily posts "
 "[Arabic, English]:"
@@ -870,54 +1147,54 @@ msgstr ""
 "إدارة وإحياء صفحاتنا على الشبكات الإجتماعية بإمدادها بأخبار جديدة واشتراكات "
 "يومية والرد على تعليقات الزوار."
 
-#: templates/popups_content.html:182
+#: public/templates/popups_content.html:239 templates/popups_content.html:239
 msgid "Translating project interfaces to your language , see:"
 msgstr "ترجمة واجهات المشروع إلى لغتك، أنظر:"
 
-#: templates/popups_content.html:183
+#: public/templates/popups_content.html:240 templates/popups_content.html:240
 msgid "Testing the modules and releases, Reporting bugs , see:"
 msgstr "إختبار إصدارات المشروع وتقفي الثغرات، أنظر:"
 
-#: templates/popups_content.html:184
+#: public/templates/popups_content.html:241 templates/popups_content.html:241
 msgid "Fixing"
 msgstr "إصلاح"
 
-#: templates/popups_content.html:184
+#: public/templates/popups_content.html:241 templates/popups_content.html:241
 msgid "bugs"
 msgstr "الثغرات"
 
-#: templates/popups_content.html:184
+#: public/templates/popups_content.html:241 templates/popups_content.html:241
 msgid "Coding"
 msgstr "برمجة"
 
-#: templates/popups_content.html:184
+#: public/templates/popups_content.html:241 templates/popups_content.html:241
 msgid "new features"
 msgstr "مزايا جديدة"
 
-#: templates/popups_content.html:184
+#: public/templates/popups_content.html:241 templates/popups_content.html:241
 msgid "or Developing"
 msgstr "أو تطوير"
 
-#: templates/popups_content.html:184
+#: public/templates/popups_content.html:241 templates/popups_content.html:241
 msgid "new interfaces"
 msgstr "واجهات جديدة"
 
-#: templates/popups_content.html:184
+#: public/templates/popups_content.html:241 templates/popups_content.html:241
 msgid "See:"
 msgstr "أنظر:"
 
-#: templates/popups_content.html:185
+#: public/templates/popups_content.html:242 templates/popups_content.html:242
 msgid "Designing  Icons, Logos , Banners."
 msgstr "تصميم الأيقونات، الشعارات، البانرز."
 
-#: templates/popups_content.html:186
+#: public/templates/popups_content.html:243 templates/popups_content.html:243
 msgid ""
 "Packaging the project for different systems: Windows, Linux distributions, "
 "MacOs."
 msgstr ""
 "إنشاء حزم للمشروع لأنظمة مختلفة: الوينداوز، توزيعات لينوكس، نظام الماك."
 
-#: templates/popups_content.html:187
+#: public/templates/popups_content.html:244 templates/popups_content.html:244
 msgid ""
 "Donating/Supporting to the project: <em>We're stuck looking for possible "
 "ways for donations/Funding. Any help is appreciated</em>"
@@ -925,207 +1202,452 @@ msgstr ""
 "التبرع أو الدعم المادي للمشروع:  تصادفنا مشاكل في العثور على حل مناسب "
 "لاستقبال التبرعات أو الدعم المادي، نرحب بأي مساعدة في هذا المجال."
 
-#: templates/popups_content.html:209
+#: public/templates/popups_content.html:266 templates/popups_content.html:266
 msgid "Windows"
 msgstr "ويندوز"
 
-#: templates/popups_content.html:212
+#: public/templates/popups_content.html:269 templates/popups_content.html:269
 msgid "English desktop release 0.4"
-msgstr " النسخة المكتبية باللغة الإنجليزية 0.4"
+msgstr "النسخة المكتبية باللغة الإنجليزية 0.4"
 
-#: templates/popups_content.html:215
+#: public/templates/popups_content.html:272 templates/popups_content.html:272
 msgid "Arabic desktop release 0.3"
 msgstr "النسخة المكتبية باللغة العربية 0.3"
 
-#: templates/popups_content.html:219
+#: public/templates/popups_content.html:276 templates/popups_content.html:276
 msgid "Linux"
 msgstr "لينوكس"
 
-#: templates/popups_content.html:220
+#: public/templates/popups_content.html:279 templates/popups_content.html:279
 msgid "More details"
 msgstr "تفاصيل أكثر"
 
-#: templates/popups_content.html:231
+#: public/templates/popups_content.html:282 templates/popups_content.html:282
+msgid "MacOS"
+msgstr "نظام ماك"
+
+#: public/templates/popups_content.html:285
+#: public/templates/popups_content.html:291
+#: public/templates/popups_content.html:294
+#: public/templates/popups_content.html:297 templates/popups_content.html:285
+#: templates/popups_content.html.py:294 templates/popups_content.html:297
+msgid "Not yet"
+msgstr "ليس بعد"
+
+#: public/templates/popups_content.html:288 templates/popups_content.html:288
+msgid "Smartphones"
+msgstr "هواتف ذكية"
+
+#: public/templates/popups_content.html:291 templates/popups_content.html:291
+msgid "Android"
+msgstr "أندرويد"
+
+#: public/templates/popups_content.html:294 templates/popups_content.html:294
+msgid "iPhone"
+msgstr "أي فون"
+
+#: public/templates/popups_content.html:297 templates/popups_content.html:297
+msgid "Windows Phone"
+msgstr "ويندوز فون"
+
+#: public/templates/popups_content.html:310 templates/popups_content.html:310
 msgid "How to translate"
 msgstr "كيف تساهم في الترجمة"
 
-#: templates/popups_content.html:235
+#: public/templates/popups_content.html:315 templates/popups_content.html:315
 msgid "Check the existance of your language in the available languages list."
 msgstr "تأكد من عدم وجود لغتك في قائمة اللغات المتوفرة."
 
-#: templates/popups_content.html:236
+#: public/templates/popups_content.html:316 templates/popups_content.html:316
 msgid "Download the file:"
 msgstr "قم بتنزيل الملف"
 
-#: templates/popups_content.html:237
+#: public/templates/popups_content.html:317 templates/popups_content.html:317
 msgid "Use Poedit or Virtaal to edit it."
 msgstr "إستعمل Poedit أو Virtaal لتحرير الملف."
 
-#: templates/popups_content.html:238
+#: public/templates/popups_content.html:318 templates/popups_content.html:318
 msgid "Send the updated file into our mailing list:"
 msgstr "أرسل الملف المحرر إلى قائمتنا البريدية."
 
-#: templates/translation_results.html:17
-msgid "Search results"
-msgstr "نتائج البحث"
+#: public/templates/popups_content.html:320 templates/popups_content.html:320
+msgid "Note:"
+msgstr "ملاحظة:"
 
+#: public/templates/popups_content.html:320 templates/popups_content.html:320
+msgid "You can use launchpad to translate without installing any tool"
+msgstr "يمكنك إستعمال منصة لونشباد للترجمة دون تثبيت أي برمجية"
+
+#: public/templates/popups_content.html:320 templates/popups_content.html:320
+msgid "here!"
+msgstr "هنا!"
+
+#: public/templates/translation_results.html:18
 #: templates/translation_results.html:18
 msgid "seconds"
 msgstr "ثانية"
 
-#: templates/translation_results.html:34
-msgid "word"
-msgstr "كلمة"
+#: public/templates/translation_results.html:54
+#: public/templates/translation_results.html:84
+#: public/templates/translation_results.html:85
+#: public/templates/translation_results.html:87
+#: public/templates/translation_results.html:90
+#: public/templates/translation_results.html:124
+#: templates/translation_results.html:51 templates/translation_results.html:84
+#: wui/templatetags/share.py:29
+msgid "Interpretation of"
+msgstr "ترجمة"
 
-#: templates/translation_results.html:144
+#: public/templates/translation_results.html:62
+#: templates/translation_results.html:59
+msgid "in"
+msgstr "في"
+
+#: public/templates/translation_results.html:63
+#: templates/translation_results.html:60
+msgid "by"
+msgstr "من طرف"
+
+#: public/templates/translation_results.html:164
+#: templates/translation_results.html:126
+msgid "About translation"
+msgstr "حول الترجمة"
+
+#: public/templates/translation_results.html:171
+#: templates/translation_results.html:129
+msgid "Aya"
+msgstr "الآية"
+
+#: public/templates/translation_results.html:178
+#: templates/translation_results.html:134
 msgid "Author"
 msgstr "الكاتب"
 
-#: templates/translation_results.html:150
+#: public/templates/translation_results.html:184
+#: templates/translation_results.html:138
 msgid "Language"
 msgstr "اللغة"
 
-#: templates/translation_search.html:7
+#: public/templates/translation_search.html:7
+#: templates/translation_search.html:8
 msgid "List of indexed Quran translations"
 msgstr "قائمة ترجمات معاني القرآن المفهرسة"
 
-#: templates/translation_search.html:7
+#: public/templates/translation_search.html:7
+#: templates/translation_search.html:8
 msgid "Translation source:"
 msgstr "مصدر الترجمات"
 
-#: templates/translation_search.html:7
+#: public/templates/translation_search.html:7
+#: templates/translation_search.html:8
 msgid "Show/Hide!"
 msgstr "عرض/إخفاء!"
 
-#: templates/translation_search.html:13
+#: public/templates/translation_search.html:13
+#: templates/translation_search.html:14
 msgid "Sorry, there is no indexed translations!"
 msgstr "عذرا، ليس هناك ترجمات مفهرسة!"
 
-#: templates/translation_search.html:25
+#: public/templates/translation_search.html:25
+#: templates/translation_search.html:26
 msgid "Show ayah arabic text"
 msgstr "عرض الآية"
 
-#~ msgid "Search Keywords"
-#~ msgstr "الكلمات المفتاحية"
+#: public/templates/word_results.html:65 templates/word_results.html:67
+msgid "Word"
+msgstr "كلمة"
 
-#~ msgid "Ayah Results to Query:"
-#~ msgstr "آيات نتائج البحث"
+#: public/templates/word_results.html:92
+msgid "Google-Plus"
+msgstr "جوجل بلاس"
 
-#~ msgid "Word Results to Query:"
-#~ msgstr "كلمات نتائج البحث"
+#: public/templates/word_results.html:173 templates/word_results.html:151
+msgid "info"
+msgstr "معلومات"
 
-#~ msgid "Translation Results to Query:"
-#~ msgstr "ترجمة نتائج البحث"
+#: templates/base.html:245
+msgid "Dev API"
+msgstr "المكتبة البرمجية"
 
-#~ msgid "Results to Query:"
-#~ msgstr "نتائج البحث لـ:"
+#: templates/base.html:259
+msgid "Code"
+msgstr "رمز"
 
-#~ msgid "Quranic Verse Search"
-#~ msgstr "البحث عن الآية القرآنية"
+#: templates/base.html:301
+msgid "Advanced Search"
+msgstr "بحث متقدّم"
 
-#~ msgid "Advanced Quranic Search Engine"
-#~ msgstr "محرك بحث قرآني متقدم"
+#: templates/base.html:307
+msgid "Predefined Queries"
+msgstr "عبارات بحث جاهزة"
 
-#~ msgid "About words:"
-#~ msgstr "حول الكلمات"
+#: templates/base.html:309
+msgid "Options"
+msgstr "الخيارات"
 
-#~ msgid "Home"
-#~ msgstr "صفحة البداية"
+#: templates/base.html:312
+msgid "Advanced Query"
+msgstr "عبارة البحث المتقدمة"
 
-#~ msgid "Words:"
-#~ msgstr "كلمات:"
+#: templates/base.html:315
+msgid "Word Properties"
+msgstr "خصائص الكلمة"
 
-#~ msgid "Previous page"
-#~ msgstr "الصفحة السابقة"
+#: templates/base.html:317
+msgid "Thematic Search"
+msgstr "البحث الموضوعي"
 
-#~ msgid "Next page"
-#~ msgstr "الصفحة التالية"
+#: templates/base.html:318
+msgid "Structural Search"
+msgstr "البحث الموضعي"
 
-#~ msgid "Twitter"
-#~ msgstr "تويتر"
+#: templates/base.html:319
+msgid "Statistical Search"
+msgstr "البحث الإحصائي"
 
-#~ msgid "Facebook"
-#~ msgstr "فايسبوك"
+#: templates/base.html:320
+msgid "Miscellaneous"
+msgstr "متنوعات"
 
-#~ msgid "Send to MySpace"
-#~ msgstr "ارسال إلى MySpace "
+#: wui/templates/wui/advanced_search/advanced_query.html:2
+msgid "Text"
+msgstr "نصّ"
 
-#~ msgid "Share it with friends"
-#~ msgstr "مشاركة مع الأصدقاء"
+#: wui/templates/wui/advanced_search/advanced_query.html:3
+msgid "query"
+msgstr "العبارة"
 
-#~ msgid "Google Plus"
-#~ msgstr "جوجل +"
+#: wui/templates/wui/advanced_search/advanced_query.html:13
+msgid "Part of other words"
+msgstr "جزء من كلمات أخرى"
 
-#~ msgid "Quick links"
-#~ msgstr "روابط سريعة"
+#: wui/templates/wui/advanced_search/advanced_query.html:17
+msgid "All these words"
+msgstr "كل هذه الكلمات"
 
-#~ msgid "Json Output Service"
-#~ msgstr "واجهة إخراج Json"
+#: wui/templates/wui/advanced_search/advanced_query.html:21
+msgid "At least one of these words"
+msgstr "على الأقل كلمة من هذه الكلمات"
 
-#~ msgid "Mobile Web Interface"
-#~ msgstr "واجهة الويب للجوال"
+#: wui/templates/wui/advanced_search/advanced_query.html:25
+msgid "Except these words"
+msgstr "اسثناء هذه الكلمات"
 
-#~ msgid "Old jQuery Web Interface"
-#~ msgstr "jQuery النسخة القديمة لواجهة الويب  "
+#: wui/templates/wui/advanced_search/advanced_query.html:29
+msgid "Synonyms"
+msgstr "مرادفات"
 
-#~ msgid "Old HTML Web Interface"
-#~ msgstr "HTML النسخة القديمة لواجهة الويب  "
+#: wui/templates/wui/advanced_search/advanced_query.html:37
+msgid "Light Stemming"
+msgstr "التجذيع الخفيف"
 
-#~ msgid "@Github"
-#~ msgstr "@Github"
+#: wui/templates/wui/advanced_search/advanced_query.html:41
+msgid "Deep Stemming"
+msgstr "التجذيع العميق"
 
-#~ msgid "@Sourceforge"
-#~ msgstr "@Sourceforge"
+#: wui/templates/wui/advanced_search/advanced_query.html:46
+#: wui/templates/wui/advanced_search/linguistic.html:16
+#: wui/templates/wui/advanced_search/statistical.html:32
+#: wui/templates/wui/advanced_search/structural.html:27
+#: wui/templates/wui/advanced_search/thematic.html:32
+msgid "Relation"
+msgstr "العلاقة"
 
-#~ msgid "@Launchpad"
-#~ msgstr "@Launchpad"
+#: wui/templates/wui/advanced_search/advanced_query.html:48
+#: wui/templates/wui/advanced_search/linguistic.html:18
+#: wui/templates/wui/advanced_search/statistical.html:34
+#: wui/templates/wui/advanced_search/structural.html:29
+#: wui/templates/wui/advanced_search/thematic.html:34
+msgid "Replacement"
+msgstr "استبدال"
 
-#~ msgid "Community"
-#~ msgstr "تواصل"
+#: wui/templates/wui/advanced_search/advanced_query.html:49
+#: wui/templates/wui/advanced_search/linguistic.html:19
+#: wui/templates/wui/advanced_search/statistical.html:35
+#: wui/templates/wui/advanced_search/structural.html:30
+#: wui/templates/wui/advanced_search/thematic.html:35
+msgid "Addition"
+msgstr "إضافة"
 
-#~ msgid "Mailinglist"
-#~ msgstr "القائمة البريدية"
+#: wui/templates/wui/advanced_search/advanced_query.html:50
+#: wui/templates/wui/advanced_search/linguistic.html:20
+#: wui/templates/wui/advanced_search/statistical.html:36
+#: wui/templates/wui/advanced_search/structural.html:31
+#: wui/templates/wui/advanced_search/thematic.html:36
+msgid "Conjunction (AND)"
+msgstr "وصل (و)"
 
-#~ msgid "+ Report an issue"
-#~ msgstr "الإبلاغ عن مشكلة"
+#: wui/templates/wui/advanced_search/advanced_query.html:51
+#: wui/templates/wui/advanced_search/linguistic.html:21
+#: wui/templates/wui/advanced_search/statistical.html:37
+#: wui/templates/wui/advanced_search/structural.html:32
+#: wui/templates/wui/advanced_search/thematic.html:37
+msgid "Disjunction (OR)"
+msgstr "فصل (أو)"
 
-#~ msgid "@Facebook"
-#~ msgstr "فايسبوك"
+#: wui/templates/wui/advanced_search/advanced_query.html:52
+#: wui/templates/wui/advanced_search/linguistic.html:22
+#: wui/templates/wui/advanced_search/statistical.html:38
+#: wui/templates/wui/advanced_search/structural.html:33
+#: wui/templates/wui/advanced_search/thematic.html:38
+msgid "Exception (ANDNOT)"
+msgstr "استثناء (وليس)"
 
-#~ msgid "@Google Plus"
-#~ msgstr "جوجل بلس"
+#: wui/templates/wui/advanced_search/advanced_query.html:57
+#: wui/templates/wui/advanced_search/linguistic.html:27
+#: wui/templates/wui/advanced_search/statistical.html:43
+#: wui/templates/wui/advanced_search/structural.html:38
+#: wui/templates/wui/advanced_search/thematic.html:43
+msgid "Add to search bar"
+msgstr "أضف إلى شريط البحث"
 
-#~ msgid "@Twitter"
-#~ msgstr "تويتر"
+#: wui/templates/wui/advanced_search/linguistic.html:2
+msgid "Root"
+msgstr "الجذر"
 
-#~ msgid "Best technicality award"
-#~ msgstr "جائزة أحسن تقنية"
+#: wui/templates/wui/advanced_search/linguistic.html:3
+msgid "arabic root eg: قول"
+msgstr "الجذر  مثل: قول"
 
-#~ msgid ""
-#~ "The award of best-technicality website in AlgeriaWebAwards2012 competition"
-#~ msgstr "جائزة أحسن موقع من حيث التقنية في مسابقة AlgeriaWebAwards2012"
+#: wui/templates/wui/advanced_search/linguistic.html:6
+msgid "Type"
+msgstr "النوع"
 
-#~ msgid ""
-#~ "Alfanous is a functional, dynamic, comprehensive Qur’an search engine "
-#~ "that has been effectively designed to carry out simple or advanced "
-#~ "Quranic searches. Alfanous uses a contemporary, highly developed approach "
-#~ "to retrieve vital information, enabling stable efficient, speedy searches "
-#~ "to be conducted. Alfanous aims to implement additional features such as "
-#~ "highlight, site suggestions, scoring …etc to further improve your search "
-#~ "experience. Alfanous understands the complex nature of the Arabic "
-#~ "language and thus offers effective Arabic language processing, allowing "
-#~ "the stemming and successful elimination of ambiguities."
-#~ msgstr ""
-#~ "الفانوس هو محرك بحث قرآني فعّال وشامل تم تصميمه على نحو متكامل للقيام "
-#~ "بعمليات البحث البسيطة أو المتقدمة في القرآن الكريم. الفانوس يستخدم طريقة "
-#~ "معاصرة ومتقنة لإستخراج معلومات عالية الأهمية ،تمكّن من إجراء عملية بحث "
-#~ "سريعة، فعالة ،ومستقرة.   الفانوس يهدف إلى تنفيذ ميزات إضافية مثل تمييز "
-#~ "الكلمات المنقب عنها وتوفير الاقتراحات... الخ. لزيادة تحسين جودة النتائج. "
-#~ "الفانوسص يفهم طبيعة  الغة العربية، ويقدم بالتالي فعالية متميزة في "
-#~ "معالجتها، مما يتيح التخلص من العديد من مواضع الغموض."
+#: wui/templates/wui/advanced_search/linguistic.html:8
+msgid "Verb"
+msgstr "فعل"
 
-#~ msgid "Downloads"
-#~ msgstr "تحميل"
+#: wui/templates/wui/advanced_search/linguistic.html:9
+msgid "Noun"
+msgstr "اسم"
 
-#~ msgid "ALL"
-#~ msgstr "كل"
+#: wui/templates/wui/advanced_search/linguistic.html:10
+msgid "Particle"
+msgstr "أداة"
+
+#: wui/templates/wui/advanced_search/predefined_queries.html:17
+msgid "Ayah:"
+msgstr "آية:"
+
+#: wui/templates/wui/advanced_search/predefined_queries.html:21
+msgid "Surah:"
+msgstr "سورة:"
+
+#: wui/templates/wui/advanced_search/predefined_queries.html:40
+#: wui/templates/wui/advanced_search/predefined_queries.html:53
+#: wui/templates/wui/advanced_search/predefined_queries.html:62
+#: wui/templates/wui/advanced_search/predefined_queries.html:71
+#: wui/templates/wui/advanced_search/predefined_queries.html:80
+msgid "Go!"
+msgstr "إبحث!"
+
+#: wui/templates/wui/advanced_search/predefined_queries.html:46
+msgid "All the derivations of the Arabic root:"
+msgstr "كل إشتقاقات الجذر:"
+
+#: wui/templates/wui/advanced_search/predefined_queries.html:50
+msgid "an arabic root like قول ملك سمو"
+msgstr "جذر مثل: قول، ملك، سمو"
+
+#: wui/templates/wui/advanced_search/predefined_queries.html:59
+msgid "The longest words in Quran?"
+msgstr "أطول الكلمات في القرآن؟"
+
+#: wui/templates/wui/advanced_search/predefined_queries.html:68
+msgid "The shortest words in Quran?"
+msgstr "أقصر الكلمات في القرآن؟"
+
+#: wui/templates/wui/advanced_search/predefined_queries.html:77
+msgid "All sajadate in Quran?"
+msgstr "كل السجدات في القرآن؟"
+
+#: wui/templates/wui/advanced_search/statistical.html:2
+msgid "Number of"
+msgstr "عدد"
+
+#: wui/templates/wui/advanced_search/statistical.html:6
+msgid "devine names"
+msgstr "ألفاظ الجلالة"
+
+#: wui/templates/wui/advanced_search/statistical.html:8
+msgid "ruku's"
+msgstr "الركوعات"
+
+#: wui/templates/wui/advanced_search/statistical.html:13
+msgid "In"
+msgstr "في"
+
+#: wui/templates/wui/advanced_search/statistical.html:15
+msgid "ayah"
+msgstr "الآية"
+
+#: wui/templates/wui/advanced_search/statistical.html:16
+msgid "surah"
+msgstr "السورة"
+
+#: wui/templates/wui/advanced_search/statistical.html:21
+#: wui/templates/wui/advanced_search/structural.html:16
+msgid "From"
+msgstr "مِن"
+
+#: wui/templates/wui/advanced_search/statistical.html:27
+#: wui/templates/wui/advanced_search/structural.html:22
+msgid "To"
+msgstr "إلى"
+
+#: wui/templates/wui/advanced_search/structural.html:2
+msgid "Search in"
+msgstr "ابحث في"
+
+#: wui/templates/wui/advanced_search/structural.html:5
+msgid "Ayahs (Global ID)"
+msgstr "الآيات (الرقم الشامل)"
+
+#: wui/templates/wui/advanced_search/structural.html:6
+msgid "Surahs"
+msgstr "السور"
+
+#: wui/templates/wui/advanced_search/structural.html:7
+msgid "Pages"
+msgstr "الصفحات"
+
+#: wui/templates/wui/advanced_search/structural.html:8
+msgid "Hizbs"
+msgstr "الأحزاب"
+
+#: wui/templates/wui/advanced_search/structural.html:9
+msgid "Juz's"
+msgstr "الأجزاء"
+
+#: wui/templates/wui/advanced_search/structural.html:10
+msgid "Ruku's"
+msgstr "الركوعات"
+
+#: wui/templates/wui/advanced_search/structural.html:11
+msgid "Manzils"
+msgstr "المنازل"
+
+#: wui/templates/wui/advanced_search/thematic.html:21
+msgid "SubTopic"
+msgstr "الموضوع الفرعي"
+
+#: wui/templatetags/meta.py:40
+#, python-format
+msgid ""
+"\"Alfanous search results searching in %(unit)s looking for the query "
+"%(query)s, the page %(page)s, the view %(view)s, the script "
+"%(script)s%(vocalized)s, and the translation %(translation)s. The fuzzy "
+"search is %(fuzzy)s."
+msgstr ""
+"نتائج بحث الفانوس تنقيبا في %(unit)s بحثا عن العبارة %(query)s ، الصفحة "
+"%(page)s ، العرض %(view)s ، الخط %(script)s%(vocalized)s، والترجمة "
+"%(translation)s.  البحث العشوائي: %(fuzzy)s."
+
+#: wui/templatetags/meta.py:61
+msgid ""
+"Alfanous is a functional, dynamic, comprehensive Qur'an search engine that "
+"has been effectively designed to carry out simple or advanced Quranic "
+"searches."
+msgstr ""
+"الفانوس هو مرك بحث في القرآن الكريم فعال، حيوي وشامل  مصمم خصيصا لتوفير "
+"عمليات البحث البسيطة والمتقدمة في القرآن الكريم."
