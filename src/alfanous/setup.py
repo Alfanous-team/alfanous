@@ -38,7 +38,7 @@ setup(
 	packages = ['alfanous', 'alfanous.dynamic_resources', 'alfanous.Support',
             'alfanous.Support.whoosh', 'alfanous.Support.whoosh.filedb',
             'alfanous.Support.whoosh.lang', 'alfanous.Support.whoosh.qparser',
-            'alfanous.Support.whoosh.support'],
+            'alfanous.Support.whoosh.support','alfanous.Support.PyArabic',],
 
 	install_requires = ['pyparsing'], # 'whoosh == 0.3.18',
 
@@ -75,10 +75,10 @@ setup(
 	classifiers = [
 	"Development Status :: 4 - Beta",
 	"Intended Audience :: Developers",
-	"License :: OSI Approved :: GNU General Public License (GPL)",
+	"License :: OSI Approved :: GNU Affero General Public License v3 or later (AGPLv3+)",
 	"Natural Language :: Arabic",
 	"Operating System :: OS Independent",
-	"Programming Language :: Python :: 2.6",
+	"Programming Language :: Python :: 2.7",
 	"Topic :: Software Development :: Libraries :: Python Modules",
 	],
  )

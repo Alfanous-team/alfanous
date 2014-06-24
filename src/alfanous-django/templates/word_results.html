@@ -1,0 +1,235 @@
+{% extends "base.html" %}
+
+{% load custom_filters %}
+{% load kwacros %}
+{% load query %}
+
+{% kwacro paginationRoutine %}
+	{% block pagination %} {% endblock %}
+    {% block pagination_tablet %} {% endblock %}
+    {% block pagination_phone %} {% endblock %}
+{% endkwacro %}
+
+{% block results %}
+	<div id="#search_result_static" class="row span9 offset2  text-center ">
+
+		{% if results.error.code == 0  %}
+			 <span	class="muted">
+			 {{ _("Keywords") }} :
+						{{ results.search.words.global.nb_words }};
+			 {{ _("Results") }} :
+						{{ results.search.interval.total }};
+			 {{ _("Runtime") }} :
+						{{ results.search.runtime|floatformat:"5" }} {{ _("s") }}
+			 </span>
+
+
+		{% if results.search.interval.total %}
+
+		<!-- Words results -->
+		<div class="row offset1 span10 text-center">
+			<ul class="breadcrumb">
+			    <li>{{ _("Results") }}: ( {{ results.search.interval.start }}</li>
+			    <li>{{ _("to") }} {{ results.search.interval.end }}</li>
+			    <li class="active">{{ _("of") }} {{ results.search.interval.total }}</li>
+			    <li>)</li>
+		    </ul>
+		</div>
+
+		<!-- Pages control # top one -->
+		<div class="row">
+			<div class="span12 ">
+				{% usekwacro paginationRoutine %}
+			</div>
+		</div>
+
+	 {% for result_id, result_content in results.search.words.items %}
+
+			<div class='container well well-small span12'>
+				<fieldset class="fieldset">
+					<legend class="text-{{ bidi.align }}">
+
+            <span class="muted">
+					    {% with result_content.identifier.gid|stringformat:"s" as gid %}
+						    {% with bidi.fields.gid|add:':'|add:gid as new_query %}
+							    <a class="muted" href='?{% custom_query new_query 1 False  %}'>
+							      <span class="hidden-phone"> {{ _("Result n°") }}</span>
+							       <b> <span class="visible-phone">#</span>{{ result_id }} </b>
+							     </a>
+			                 {% endwith %}
+		                 {% endwith %}
+
+		                 {% with result_content.word.id|stringformat:"s" as word_id %}
+									 	{% with bidi.fields.word_gid|add:':"'|add:result_content.identifier.gid  as new_query %}
+										- <a  class="muted" href='?{% custom_query  new_query 1 False  %}'>
+
+				                        	<span >
+	<small>	{{ _("Word") }}  {{ result_content.identifier.word_id }} {{ _("of") }} {{ result_content.aya.sura_name }} {{ result_content.aya.aya_id }}
+											 </small></span> </a>
+				                        		</small>
+				                        	</span>
+				                           </a>
+						 {% endwith %}
+									{% endwith %}
+ 						</span>
+
+            <span class="pull-{{ bidi.align_inverse }}">
+              {% url 'wui.views.results' current.unit as share_path %}
+              {% simple_query ' + ' sura_id=result_content.identifier.sura_id aya_id=result_content.identifier.aya_id word_id=result_content.identifier.word_id as share_params %}
+              {% include 'wui/result/header_buttons.html' %}
+            </span>
+
+
+			  		</legend>
+	                <div class="row-fluid">
+	                    <div class="span11 offset1">
+		                    <div class="row">
+
+		                        <div id="aya_text_{{ result_id }}" class="row text-center arabic-ayah">
+
+
+						 					{% autoescape off %}
+												{{ result_content.word.text }}
+											{% endautoescape %}
+
+										{% with result_content.word.id|stringformat:"s" as aya_id %}
+									 	{% with 'id:'|add:result_content.identifier.word_gid|add:' + '  as new_query %}
+										- <a href='?{% custom_query  new_query 1 False  %}'>
+										{% endwith %}
+									{% endwith %}
+		                        	<span class="text-success">{{ result_content.identifier.sura_id }}| {{ result_content.identifier.aya_id }}|{{ result_content.identifier.word_id }}   </span></a>
+
+		                       </div>
+
+		                    </div>
+		                        	{% if result_content.word.translation %}
+		                        	   <div class="row text-center non-arabic-ayah">
+		                                 <hr />
+									  		{% autoescape off %}
+									  		  {{ result_content.word.translation }}
+									  		{% endautoescape %}
+		                                  </div>
+		                            {% endif %}
+
+		           			   <hr/>
+	                    </div>
+	                    {% if result_content.aya %}
+
+								  		<p class="arabic-ayah">
+									  		<span class='quran_decoration main_aya'>
+									 		 [ </span>
+									  		{% for aya_word in result_content.aya.text|space_split %}
+											    {% spaceless %}
+									          		{% autoescape off %}
+									          		{# TODO optimize this condition, any "in" operation? #}
+														{% if aya_word|first in "<ct> "|make_list  %}
+																{{ aya_word }}
+														{% else %}
+																<a href="?{% custom_query aya_word 1 False %}">{{ aya_word }}</a>
+														{% endif %}
+									          		{% endautoescape %}
+									     		{% endspaceless %}
+										    {% endfor %}
+									  		<span class='quran_decoration main_aya'>
+									  		] </span>
+											-	<small> <span class="muted">	لفظ  {{ result_content.identifier.word_id }} من </span>
+											  {% with result_content.aya.aya_id|stringformat:"s" as aya_id %}
+												{% with bidi.fields.sura|add:':"'|add:result_content.aya.sura_name|add:'" + '|add:bidi.fields.aya_id|add:':'|add:aya_id  as new_query %}
+                          <a class="text-success" href="{% url 'wui.views.results' 'aya' %}?{% custom_query  new_query 1 False %}">
+												    {{ result_content.aya.sura_arabic_name }} {{ result_content.aya.aya_id }}
+                          </a>
+												{% endwith %}
+												{% endwith %}
+                        </small>
+								  		</p>
+						  			{% endif %}
+
+
+				                		   <hr/>
+
+
+											<span class="badge badge-info">{{ _("info") }}</span>
+												{% if result_content.word.part %}
+													<span class='label label-success'> {{ _("part") }} | {{ result_content.word.part }} </span>
+												{% endif %}
+												{% if result_content.word.arabiclemma %}
+													<span class='label label-info'> {{ _("lemma") }} | {{ result_content.word.lemma  }} ({{ result_content.word.arabiclemma }}) </span>
+												{% endif %}
+												{% if result_content.word.arabicroot %}
+													<span class='label label-info'> {{ _("root") }} | {{ result_content.word.root }} ({{ result_content.word.arabicroot }}) </span>
+												{% endif %}
+												{% if result_content.word.arabicspecial %}
+													<span class='label label-info'> {{ _("special") }} | {{ result_content.word.special }} ({{ result_content.word.arabicspecial }}) </span>
+												{% endif %}
+												{% if result_content.word.token %}
+													<span class='label label-info'> {{ _("token") }} | {{ result_content.word.token }} ( {{ result_content.word.arabictoken }}) </span>
+												{% endif %}
+												{% if result_content.word.type %}
+													<span class='label'> {{ _("type") }} | {{ result_content.word.type }} </span>
+												{% endif %}
+												{% if result_content.word.pos %}
+													<span class='label'> {{ _("POS") }} | {{ result_content.word.pos }} ({{ result_content.word.arabicpos }}) </span>
+												{% endif %}
+
+												{% if result_content.word.aspect %}
+													<span class='label'> {{ _("aspect") }} | {{ result_content.word.aspect }} </span>
+												{% endif %}
+												{% if result_content.word.state %}
+													<span class='label'> {{ _("state") }} | {{ result_content.word.state }} </span>
+												{% endif %}
+												{% if result_content.word.form %}
+													<span class='label'> {{ _("form") }} | {{ result_content.word.form }} </span>
+												{% endif %}
+												{% if result_content.word.case %}
+													<span class='label'> {{ _("case") }} | {{ result_content.word.case.english }} ( {{ result_content.word.case.arabic }}) </span>
+												{% endif %}
+												{% if result_content.word.derivation %}
+													<span class='label'> {{ _("derivation") }} | {{ result_content.word.derivation }} </span>
+												{% endif %}
+												{% if result_content.word.person %}
+													<span class='label'> {{ _("person") }} | {{ result_content.word.person }} </span>
+												{% endif %}
+												{% if result_content.word.number %}
+													<span class='label'> {{ _("number") }} | {{ result_content.word.number }} </span>
+												{% endif %}
+												{% if result_content.word.gender %}
+													<span class='label'> {{ _("gender") }} | {{ result_content.word.gender }} </span>
+												{% endif %}
+												{% if result_content.word.voice %}
+													<span class='label'> {{ _("voice") }} | {{ result_content.word.voice }} </span>
+												{% endif %}
+
+				                        </div>
+
+	            </fieldset>
+	        </div>
+	    {% endfor %}
+	    <!-- Pages control # bottom one -->
+		<div class="span12">
+			{% usekwacro paginationRoutine %}
+		</div>
+    </div>
+
+
+	{% else %}
+	<br/>
+	<div class="row">
+		<div class="alert alert-error text-center span10 offset1">
+			<button type="button" class="close" data-dismiss="alert">&times;</button>
+			{{ _("Sorry! there is no results for this search query.") }}
+		</div>
+	</div>
+	{% endif %}
+	{% elif results.error %}
+	<br/>
+	<div class="row">
+		<div class="alert alert-error span12 offset1">
+			<button type="button" class="close" data-dismiss="alert">&times;</button>
+			{{ _("Error ") }} ({{ results.error.code }}) : {{ results.error.msg|linebreaksbr }}
+		</div>
+	</div>
+	{% else %}
+
+	{% endif %}
+
+{% endblock results %}

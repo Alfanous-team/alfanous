@@ -39,9 +39,7 @@ You can help us by:
 
 - Managing and Animating our social network pages with news and daily posts [Arabic, English]: `@Facebook <https://www.facebook.com/alfanous>`_ `@Twitter <https://twitter.com/alfanous>`_ `@GooglePlus <https://plus.google.com/111305625425237630318>`_ 
 
-- Translating project interfaces to your language , we are using Launchpad platform for translation:
-
-  - `alfanous web interface for mobiles <http://m.alfanous.org/>`_ , translation platform link: `here <https://translations.launchpad.net/alfanous/trunk/+pots/alfanousmobile>`_.
+- Translating project interfaces to your language , we are using Launchpad platform for translation, link `here <https://translations.launchpad.net/alfanous/trunk>`_.
 
 - Testing the modules and releases, Reporting bugs , see `How to report a bug?`_ and `How to help by testing?`_ .
 - Fixing `bugs <https://github.com/Alfanous-team/alfanous/issues?labels=bug&milestone=&page=1&state=open>`_ , Coding `new features <https://github.com/Alfanous-team/alfanous/issues/milestones>`_ or Developing `new interfaces <https://github.com/Alfanous-team/alfanous/issues?milestone=8&page=1&state=open>`_ , See: `How to Contribute?`_ .
@@ -108,7 +106,7 @@ If you want to help us testing  the project modules, just follow these steps and
 
 #. Run the build: 
 
-   - Install all building dependencies: `pyparsing <http://pyparsing.wikispaces.com/>`_, `pyqt4-dev-tools <http://www.riverbankcomputing.co.uk/software/pyqt/download>`_, `epydoc <http://epydoc.sourceforge.net/>`_,
+   - Install all building dependencies: `pyparsing <http://pyparsing.wikispaces.com/>`_, `pyside <http://qt-project.org/wiki/Get-PySide>`_, `epydoc <http://epydoc.sourceforge.net/>`_,
      `sphinx <http://sphinx.pocoo.org/>`_.
 
    - Go to the root path of the code source and execute this command    
@@ -250,7 +248,7 @@ Best OS for that is Ubuntu (>11.10).
    
        git clone LINK_OF_GITHUB_FORK.
 
-#. Third, install building dependencies :  `pyparsing <http://pyparsing.wikispaces.com/>`_, `pyqt4-dev-tools <http://www.riverbankcomputing.co.uk/software/pyqt/download>`_, `epydoc <http://epydoc.sourceforge.net/>`_,
+#. Third, install building dependencies :  `pyparsing <http://pyparsing.wikispaces.com/>`_, `pyside <http://qt-project.org/wiki/Get-PySide>`_, `epydoc <http://epydoc.sourceforge.net/>`_,
      `sphinx <http://sphinx.pocoo.org/>`_. 
    - then run in the root of your local repo: 
      

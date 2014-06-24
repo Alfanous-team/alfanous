@@ -1,0 +1,197 @@
+{% load custom_filters %}
+{% load query %}
+
+<ul id="Keywords_Tab" class="nav nav-pills">
+    <li class="active">
+        <a href="#total_keywords" data-toggle="tab">
+            {{ _("Keywords") }} ({{  results.search.words.global.nb_words }})
+        </a>
+    </li>
+    {% for wordcpt, wordstat in results.search.words.individual.items %}
+        <li {% if not wordstat.nb_matches %} class="disabled" {% endif %}">
+            <a {% if wordstat.nb_matches %} href="#{{ wordstat.word }}" data-toggle="tab" {% endif %}>
+                {{ wordcpt }}. {{ wordstat.word }} 
+                {% if wordstat.romanization %} 
+                    ( {{ wordstat.romanization }} ) 
+                {%  endif %}
+            </a>
+        </li>
+    {% endfor %}
+</ul>
+
+<div class="tab-content"> <!-- start tab-content -->
+    <div class="tab-pane active" id="total_keywords">
+        <table class="table table-striped table-bordered">
+            <tr>
+                <td>
+                    <span class="badge badge-info">
+                        {{ _("words") }}
+                    </span>
+                    <span class='label '>
+                        <i class="icon-th"> </i>
+                    {{ results.search.words.global.nb_words }}
+                    </span>
+                    {% for wordcpt, wordstat in results.search.words.individual.items %}
+                        <span class="label {% if wordstat.nb_matches %} label-success {% endif %}">
+                            {% if wordstat.nb_matches %}
+                                <a  href="?{% custom_query wordstat.word 1 False %}"> 
+                            {% endif %}
+                                    {{ wordstat.word }}  
+                                    {% if wordstat.romanization %} 
+                                        ( {{ wordstat.romanization }} ) 
+                                    {%  endif %}
+                            {% if wordstat.nb_matches %}
+                                </a>
+                            {% endif %}
+                        </span>
+                    {% endfor %}
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <span class="badge badge-info">
+                        {{ _("occurances") }}
+                    </span>
+                    <span class='label '>
+                        <i class="icon-th"> </i> 
+                        {{ results.search.words.global.nb_matches }}
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <span class="badge badge-info">
+                        {{ _("vocalizations") }}
+                    </span>
+                    <span class='label '>
+                        <i class="icon-th"> </i>
+                        {{ results.search.words.global.nb_vocalizations }}
+                    </span>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    {% for wordcpt, wordstat in results.search.words.individual.items %}
+        <div class="tab-pane" id="{{ wordstat.word }}">
+            <table class="table table-striped table-bordered">
+                <tr>
+                    <td>
+                        <span class="badge badge-info">
+                            {{ _("occurances") }}
+                        </span>
+                        <span class='label '>
+                            <i class="icon-th"> </i>
+                            {{ wordstat.nb_matches }}
+                        </span>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <span class="badge badge-info">
+                            {{ _("ayates") }}
+                        </span>
+                        <span class='label '>
+                            <i class="icon-th"> </i> 
+                            {{ wordstat.nb_ayas }}
+                        </span>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <span class="badge badge-info">
+                            {{ _("vocalizations") }}
+                        </span>
+                        <a href="?{% custom_query wordstat.word 1 False %}">
+                            <span class='label label-warning'>
+                                <i class="icon-th"> </i>
+                                {{ wordstat.nb_vocalizations }}
+                            </span>
+                        </a>
+                        {% for vocalization in wordstat.vocalizations %}
+                            {% with bidi.fields.aya_|add:":"|add:vocalization|add:"" as new_query %}
+                                <a href="?{% custom_query new_query 1 False %}">
+                            {% endwith %}
+                                    <span class='label label-success'> 
+                                            {{ vocalization }}
+                                    </span>
+                                </a>
+                        {% endfor %}
+                    </td>
+                </tr>
+                {% ifnotequal wordstat.nb_synonyms 0 %}
+                    <tr>
+                        <td>
+                            <span class="badge badge-info">
+                                {{ _("synonyms") }}
+                            </span>
+                            {% with "~"|add:wordstat.word as new_query %}
+                                <a href="?{% custom_query new_query 1 False %}">
+                            {% endwith %}
+                                    <span class='label label-warning'>
+                                        <i class="icon-th"> </i> 
+                                        {{ wordstat.nb_synonyms }}
+                                    </span>
+                                </a>
+                            {% for synonym in wordstat.synonyms %}
+                                <a href="?{% custom_query synonym 1 False %}">
+                                    <span class='label label-success'>
+                                        {{ synonym }}
+                                    </span>
+                                </a>
+                            {% endfor %}
+                        </td>
+                    </tr>
+                {% endifnotequal %}
+                
+                {% ifnotequal wordstat.nb_derivations 0 %}
+                    <tr>
+                        <td>
+                            <span class="badge badge-info">
+                                {{ _("derivations") }}
+                            </span>
+                            {% with ">"|add:wordstat.word as new_query %}
+                                <a href="?{% custom_query new_query 1 False %}">
+                            {% endwith %}
+                                    <span class='label label-warning'>
+                                        <i class="icon-th"> </i> 
+                                        {{ wordstat.nb_derivations }}
+                                    </span>
+                                </a>
+                            {% for derivation in wordstat.derivations %}
+                                <a href="?{% custom_query derivation 1 False %}">
+                                    <span class='label label-success'>
+                                        {{ derivation }}
+                                    </span>
+                                </a>
+                            {% endfor %}
+
+                            {% ifnotequal wordstat.nb_derivations_extra 0 %}
+                                {% with ">>"|add:wordstat.word as new_query %}
+                                    <a href="?{% custom_query new_query 1 False %}">
+                                {% endwith %}
+                                        <span class='label label-important'>
+                                            <i class="icon-th"> </i>
+                                            +{{ wordstat.nb_derivations_extra  }}
+                                        </span>
+                                    </a>
+                                {% for derivation in wordstat.derivations_extra %}
+                                    <a href="?{% custom_query derivation 1 False %}">
+                                        <span class='label label-inverse'>
+                                            {{ derivation }}
+                                        </span>
+                                    </a>
+                                {% endfor %}
+                            {% endifnotequal %}
+                        </td>
+                    </tr>
+                {% endifnotequal %}
+                {% if wordstat.nb_annotations %}
+                    {# show the linguistic annotations of each word #}
+                    {% include 'aya_keyword_annotation_block.html' %}
+                {% endif %}
+            </table>
+        </div>
+    {% endfor %}
+<div> <!-- end tab-content -->
+

@@ -6,7 +6,7 @@ Build
 -----
 The API uses many critical resources that must be downloaded and/or prepared to be used. To do that, just run this command in the root path of the project
 
-#. Install all building dependencies: `pyparsing <http://pyparsing.wikispaces.com/>`_, `pyqt4-dev-tools <http://www.riverbankcomputing.co.uk/software/pyqt/download>`_, `epydoc <http://epydoc.sourceforge.net/>`_,
+#. Install all building dependencies: `pyparsing <http://pyparsing.wikispaces.com/>`_, `epydoc <http://epydoc.sourceforge.net/>`_,
    `sphinx <http://sphinx.pocoo.org/>`_.
 
    * (ubuntu 12.04): 
@@ -112,47 +112,47 @@ see `sample.py <https://github.com/Alfanous-team/alfanous/blob/master/src/alfano
 Flags
 --------------
 
-======== =================== ================= ================ ============================================ ================= ========================================================================================================================================================================
+======== ==================== ================= ================ ============================================ ================= ========================================================================================================================================================================
  number    flag               related action    related unit     description                                   default value    accepted values 
--------- ------------------- ----------------- ---------------- -------------------------------------------- ----------------- ------------------------------------------------------------------------------------------------------------------------------------------------------------------------
- 1         **action**         <none>            <none>           action to perform                             "search"         search | suggest | show
- 2         unit               search, suggest   <none>           search unit                                   "aya"            aya | word | translation
- 2         ident              <all>             <all>            identifier of requester   [experimental]      "undefined"      undefined
- 3         platform           <all>             <all>            platform used by requester                    "undefined"      undefined | wp7 | s60 | android | ios | linux | window
- 4         domain             <all>             <all>            web domain of requester if applicable         "undefined"      \*
- 5a        **query**          search,suggest    <all>            query attached to action                       ""              \*
- 5b        **query**          show              <all>            query attached to action                       ""              all | translations |recitations | information | hints | surates | chapters | defaults | flags | fields | fields_reverse | errors | domains | help_messages 
- 6         highlight          search            <all>            highlight method                              "css"            css | html | genshi | bold | bbcode
- 7         script             search            aya, word        script of aya text                            "standard"       standard | uthmani
- 8         vocalized          search            aya, word        enable vocalization of aya text               "True"           True | False
- 9         recitation         search            aya              recitation id                                 "1"              1 to 30
- 10        translation        search            aya, trans       translation id                                "None"           \*
- 11        romanization       search            aya, word        type of romanization                          "none"           none | buckwalter | iso | arabtex
- 12a       view               search            aya, word        pre-defined configuration for view            "custom"         minimal | normal | full | statistic | linguistic | custom
- 12b       view               search            translation      pre-defined configuration for view            "custom"         minimal | normal | full | custom
- 13        prev_aya           search            aya              enable previous aya retrieving                "False"          True | False
- 14        next_aya           search            aya              enable next aya retrieving                    "False"          True | False
- 15        sura_info          search            aya              enable sura information retrieving            "True"           True | False
- 16        sura_stat_info     search            aya              enable sura stats retrieving                  "False"          True | False
- 17        word_info          search            aya, word        enable word information retrieving            "True"           True | False
- 17a       word_synonyms      search            aya              enable retrieving of keyword synonyms         "False"          True | False
- 17b       word_derivations   search            aya              enable retrieving of keyword derivations      "True"           True | False
- 17c       word_vocalizations search            aya              enable retrieving of keyword vocalizations    "True"           True | False
- 18        aya_position_info  search            aya              enable aya position information retrieving    "True"           True | False
- 19        aya_theme_info     search            aya              enable aya theme information retrieving       "True"           True | False
- 20        aya_stat_info      search            aya              enable aya stat information retrieving        "True"           True | False
- 21        aya_sajda_info     search            aya              enable aya sajda information retrieving       "True"           True | False
- 22        annotation_word    search            aya, word        enable query terms annotations retrieving     "False"          True | False
- 23        annotation_aya     search            aya              enable aya words annotations retrieving       "False"          True | False
- 24        sortedby           search            aya              sorting order of results                      "score"          total | score | mushaf | tanzil | subject
- 25        offset             search            <all>            starting offset of results                    "1"              1 to 6236
- 26        range              search            <all>            range of results                              "10"             1 to 25
- 27        page               search            <all>            page number  [override offset]                "1"              1 to 6236
- 28        perpage            search            <all>            results per page  [override range]            "10"             1 to 25
- 29        fuzzy              search            aya              fuzzy search [exprimental]                          "False"          True | False
- 30        aya                search            word,trans       enable retrieving of aya text                    "True"          True | False
+-------- -------------------- ----------------- ---------------- -------------------------------------------- ----------------- ------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ 1         **action**          <none>            <none>           action to perform                             "search"         search | suggest | show
+ 2         unit                search, suggest   <none>           search unit                                   "aya"            aya | word | translation
+ 2         ident               <all>             <all>            identifier of requester   [experimental]      "undefined"      undefined
+ 3         platform            <all>             <all>            platform used by requester                    "undefined"      undefined | wp7 | s60 | android | ios | linux | window
+ 4         domain              <all>             <all>            web domain of requester if applicable         "undefined"      \*
+ 5a        **query**           search,suggest    <all>            query attached to action                       ""              \*
+ 5b        **query**           show              <all>            query attached to action                       ""              all | translations |recitations | information | hints | surates | chapters | defaults | flags | fields | fields_reverse | errors | domains | help_messages 
+ 6         highlight           search            <all>            highlight method                              "css"            css | html | genshi | bold | bbcode
+ 7         script              search            aya, word        script of aya text                            "standard"       standard | uthmani
+ 8         vocalized           search            aya, word        enable vocalization of aya text               "True"           True | False
+ 9         recitation          search            aya              recitation id                                 "1"              1 to 30
+ 10        translation         search            aya, trans       translation id                                "None"           \*
+ 11        romanization        search            aya, word        type of romanization                          "none"           none | buckwalter | iso | arabtex
+ 12a       view                search            aya, word        pre-defined configuration for view            "custom"         minimal | normal | full | statistic | linguistic | custom
+ 12b       view                search            translation      pre-defined configuration for view            "custom"         minimal | normal | full | custom
+ 13        prev_aya            search            aya              enable previous aya retrieving                "False"          True | False
+ 14        next_aya            search            aya              enable next aya retrieving                    "False"          True | False
+ 15        sura_info           search            aya              enable sura information retrieving            "True"           True | False
+ 16        sura_stat_info      search            aya              enable sura stats retrieving                  "False"          True | False
+ 17        word_info           search            aya, word        enable word information retrieving            "True"           True | False
+ 17a       word_synonyms       search            aya              enable retrieving of keyword synonyms         "False"          True | False
+ 17b       word_derivations    search            aya              enable retrieving of keyword derivations      "True"           True | False
+ 17c       word_vocalizations  search            aya              enable retrieving of keyword vocalizations    "True"           True | False
+ 18        aya_position_info   search            aya              enable aya position information retrieving    "True"           True | False
+ 19        aya_theme_info      search            aya              enable aya theme information retrieving       "True"           True | False
+ 20        aya_stat_info       search            aya              enable aya stat information retrieving        "True"           True | False
+ 21        aya_sajda_info      search            aya              enable aya sajda information retrieving       "True"           True | False
+ 22        annotation_word     search            aya, word        enable query terms annotations retrieving     "False"          True | False
+ 23        annotation_aya      search            aya              enable aya words annotations retrieving       "False"          True | False
+ 24        sortedby            search            aya              sorting order of results                      "score"          total | score | mushaf | tanzil | subject
+ 25        offset              search            <all>            starting offset of results                    "1"              1 to 6236
+ 26        range               search            <all>            range of results                              "10"             1 to 25
+ 27        page                search            <all>            page number  [override offset]                "1"              1 to 6236
+ 28        perpage             search            <all>            results per page  [override range]            "10"             1 to 25
+ 29        fuzzy               search            aya              fuzzy search [exprimental]                          "False"          True | False
+ 30        aya                 search            word,trans       enable retrieving of aya text                    "True"          True | False
 
-======== =================== ================= ================ ============================================ ================= ========================================================================================================================================================================
+======== ==================== ================= ================ ============================================ ================= ========================================================================================================================================================================
 
 -----------------------
 Advanced Query Examples
@@ -191,43 +191,47 @@ Translation Search:
 Fields
 ------
 * Aya Search Fields:
-===== ================= =================== ============== ============================================================
- n     عربي              English             Values         Description   
------ ----------------- ------------------- -------------- ------------------------------------------------------------
- 1     رقم               gid                 1 to 6236      Global order of Aya in the whole Quran 
- 2     رقم_الآية           aya_id              1 to 300       order of Aya inside its Sura  
- 3     آية                aya                 Text           Aya non-vocalized standard text ( used for search) 
- 4     آية_               aya_                Text           Aya vocalized standard text ( used for show/search) 
- 5     عثماني             uth                 Text           Aya vocalized uthmani text ( used for show/search) 
- 6     عثماني_            uth_                Text           Aya vocalized uthmani text ( used for show)
- 7     موضوع             subject             Text           Thematic Division: **Chapter** > **Topic** > **Subtopic** 
- 8     فصل              chapter              Text           Thematic Division: **Chapter** > Topic > Subtopic 
- 9     فرع               topic                Text           Thematic Division: Chapter > **Topic** > Subtopic 
- 10    باب               subtopic             Text           Thematic Division:  Chapter > Topic > **Subtopic** 
- 11    رقم_السورة        sura_id              1 to 114       Order of  Sura in Mus-haf
- 12    سورة              sura                Text           Possible Names of Sura 
- 13    نوع_السورة         sura_type           مدنية | مكية    Revelation place of Sura 
- 14    ترتيب_السورة       sura_order           1 to 114       Revelation order of Sura 
- 15    جزء               juz                  1 to 30        Structural Division : **Juz** > Hizb  > Rub  
- 16    حزب              hizb                 1 to 60        Structural Division : Juz > **Hizb** > Rub 
- 17    نصف              nisf                 1 to 2         Deprecated   
- 18    ربع                rub                  1 to 4         Structural Division : Juz > Hizb  > **Rub**  
- 19    صفحة              page                Number          Structural Division : Page 
- 19b   صفحة_هندي         page_IN             Number          Structural Division : Page (INDIAN MUSHAF)
- 20    منزل               manzil              1 to 7          Structural Division : **Manzil** > Ruku  
- 21    ركوع               ruku                Number          Structural Division : Manzil > **Ruku** 
- 22    سجدة              sajda               نعم | لا        Test existence of a Sajda
- 23    رقم_السجدة         sajda_id            1 | 14         Order of the Sajda if exist 
- 24    نوع_السجدة         sajda_type         واجبة|مستحبة   Type of the Sajda if exist 
- 25    ح_س              s_l                  Number          Number of **letters** in **Sura** 
- 26    ك_س              s_w                  Number          Number of **words** in **Sura** 
- 27    ج_س               s_g                 Number          Number of **God's names** in **Sura** 
- 28    آ_س               s_a                 Number          Number of **Ayas** in **Sura** 
- 29    ر_س               s_r                 Number          Number of **Ruku-s** in **Sura** 
- 30    ح_آ                a_l                 Number          Number of **letters** in **Aya**  
- 31    ك_آ                a_w                 Number          Number of **words** in **Aya** 
- 32    ج_آ                a_g                 Number          Number of **God's names** in **Aya**
-===== ================= =================== ============== ============================================================
+
+===== ==================== =================== =================== ============================================================
+ n     عربي                 English             Values              Description   
+----- -------------------- ------------------- ------------------- ------------------------------------------------------------
+ 1     رقم                  gid                 1 to 6236           Global order of Aya in the whole Quran 
+ 2     رقم_الآية             aya_id              1 to 300            order of Aya inside its Sura  
+ 3     آية                  aya                 Text                Aya non-vocalized standard text ( used for search) 
+ 4     آية_                 aya_                Text                Aya vocalized standard text ( used for show/search) 
+ 5     عثماني               uth                 Text                Aya vocalized uthmani text ( used for show/search) 
+ 6     عثماني_              uth_                Text                Aya vocalized uthmani text ( used for show)
+ 7     موضوع                subject             Text                Thematic Division: **Chapter** > **Topic** > **Subtopic** 
+ 8     فصل                  chapter             Text                Thematic Division: **Chapter** > Topic > Subtopic 
+ 9     فرع                  topic               Text                Thematic Division: Chapter > **Topic** > Subtopic 
+ 10    باب                  subtopic            Text                Thematic Division:  Chapter > Topic > **Subtopic** 
+ 11    رقم_السورة           sura_id             1 to 114            Order of  Sura in Mus-haf
+ 12    سورة                 sura_arabic         Text                Arabic Name of Sura 
+ 12+   سورة_إنجليزي          sura_english        Text                English Name of Sura
+ 12+   سورة_تهجئة            sura                Text                Romanized Name of Sura
+ 13    نوع_السورة           sura_type_arabic    مدنية|مكية          Revelation place of Sura [Arabic]
+ 13+   نوع_السورة_إنجليزي    sura_type           Meccan|Medinan      Revelation place of Sura [English]
+ 14    ترتيب_السورة         sura_order          1 to 114            Revelation order of Sura 
+ 15    جزء                  juz                 1 to 30             Structural Division : **Juz** > Hizb  > Rub  
+ 16    حزب                  hizb                1 to 60             Structural Division : Juz > **Hizb** > Rub 
+ 17    نصف                  nisf                1 to 2              Deprecated   
+ 18    ربع                  rub                 1 to 4              Structural Division : Juz > Hizb  > **Rub**  
+ 19    صفحة                 page                Number              Structural Division : Page 
+ 19+   صفحة_هندي            page_IN             Number              Structural Division : Page (INDIAN MUSHAF)
+ 20    منزل                 manzil              1 to 7              Structural Division : **Manzil** > Ruku  
+ 21    ركوع                 ruku                Number              Structural Division : Manzil > **Ruku** 
+ 22    سجدة                 sajda               نعم | لا             Test existence of a Sajda
+ 23    رقم_السجدة           sajda_id            1 | 14              Order of the Sajda if exist 
+ 24    نوع_السجدة           sajda_type          واجبة|مستحبة        Type of the Sajda if exist 
+ 25    ح_س                  s_l                 Number              Number of **letters** in **Sura** 
+ 26    ك_س                  s_w                 Number              Number of **words** in **Sura** 
+ 27    ج_س                  s_g                 Number              Number of **God's names** in **Sura** 
+ 28    آ_س                  s_a                 Number              Number of **Ayas** in **Sura** 
+ 29    ر_س                  s_r                 Number              Number of **Ruku-s** in **Sura** 
+ 30    ح_آ                  a_l                 Number              Number of **letters** in **Aya**  
+ 31    ك_آ                  a_w                 Number              Number of **words** in **Aya** 
+ 32    ج_آ                  a_g                 Number              Number of **God's names** in **Aya**
+===== ==================== =================== =================== ============================================================
 
 
 ----------------

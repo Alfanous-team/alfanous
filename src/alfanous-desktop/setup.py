@@ -36,7 +36,7 @@ setup(
 	platforms = "ALL",
 	license = "AGPL",
 	packages = ["alfanousDesktop"],
-	install_requires = ['alfanous', 'configobj', 'pyparsing'], #, 'pyqt'
+	install_requires = ['alfanous', 'configobj', 'pyparsing',"jinja2","pyside"],
 	author = "Assem Chelli",
 	author_email = "assem.ch@gmail.com",
 	maintainer = "Assem Chelli",
@@ -46,7 +46,7 @@ setup(
 	long_description = """A PyQt GUI interface for alfanous Quranic search engine API""",
 	keywords = "quran search indexing engine alfanous",
 	url = "http://www.alfanous.org/",
-	download_url = "https://sourceforge.net/projects/alfanous/files/",
+	download_url = "",
 
 
   	package_data = {'alfanousDesktop': ['UI/*']},
@@ -54,7 +54,6 @@ setup(
 
 
 	entry_points = { 'gui_scripts': ['alfanous-desktop = alfanousDesktop.Gui:main', ]},
-
 
 
 	## WINDOWS	
@@ -74,7 +73,7 @@ setup(
 
 	classifiers = [
 	"Development Status :: 4 - Beta",
-	"Intended Audience :: Users",
+	"Intended Audience :: Religion",
 	"License :: OSI Approved :: GNU General Public License (GPL)",
 	"Natural Language :: Arabic",
 	"Natural Language :: English",

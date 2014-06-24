@@ -6,10 +6,14 @@ This is the JSON output system version 2 of Alfanous project. This feature is in
 .. _Wikipedia: http://en.wikipedia.org/wiki/JSON
 .. _Official_Website_of_JSON: http://www.json.org/
 
--------
-License
--------
-This service is free to use.We highly recommend to refer Alfanous engine somewhere in your pages using icons or texts like "Alfanous engine", "Powered by Alfanous" linked to http://dj.alfanous.org/jos2. Art works you may need are available here_.
+------------
+Terms of use
+------------
+*  This service is free to use.
+*  Don't name your application "Alfanous" before we are okey about that.
+*  We highly recommend to refer Alfanous engine somewhere in your pages using icons or texts like "Alfanous engine", "Powered by Alfanous.org", or "Based on Alfanous.org" linked to "http://www.alfanous.org" or "http://www.alfanous.org/jos2". 
+*  We highly recommend to describe clearly somewhere in your application the relation to the whole Alfanous project, such as an about button.
+*  Art works you may need are available here_, the Art is licenced with AGPL license.
 
 .. _here: http://www.alfanous.org/art/
 
@@ -22,18 +26,18 @@ Limitations
 --------------
 Quering Syntax
 --------------
-To get JSON information , use this syntax : http://dj.alfanous.org/jos2?ARGUMENT such as ARGUMENT is compound of those flags: `API flags <https://github.com/Alfanous-team/alfanous/blob/master/src/alfanous/README.rst#flags>`_.
+To get JSON information , use this syntax : http://www.alfanous.org/jos2?ARGUMENT such as ARGUMENT is compound of those flags: `API flags <https://github.com/Alfanous-team/alfanous/blob/master/src/alfanous/README.rst#flags>`_.
 
 --------
 Examples
 --------
-*  jos2?action=search&unit=aya&query=الحمد &highlight=bbcode &sortedby=tanzil &page=2 &traduction=1&fuzzy=True
-*  jos2?action=show&query=recitations
-*  jos2?action=show&queryfields
-*  jos2?action=show&query=All
-*  jos2?action=show&query=translations 
-*  jos2?action=show&query=errors
-*  jos2?action=suggest&unit=aya&query=مءصدة
+*  `http://www.alfanous.org/jos2?action=search&unit=aya&query=الحمد&highlight=bbcode&sortedby=tanzil&page=2&traduction=1&fuzzy=True`
+*  http://www.alfanous.org/jos2?action=show&query=recitations
+*  http://www.alfanous.org/jos2?action=show&queryfields
+*  http://www.alfanous.org/jos2?action=show&query=All
+*  http://www.alfanous.org/jos2?action=show&query=translations 
+*  http://www.alfanous.org/jos2?action=show&query=errors
+*  `http://www.alfanous.org/jos2?action=suggest&unit=aya&query=مءصدة`
 
 ----------------
 Response Samples
@@ -73,7 +77,9 @@ Demoes
 Who use this?
 -------------
 If you are using this service, We want to make Alfanous more helpful. We will be happy to know about your applications.
-   * (no application yet!)
+   * Official web interface by AlfanousTeam - `alfanous.org <www.alfanous.org>`_
+   * Application for Android by FenyLab - `link <https://play.google.com/store/apps/details?id=com.fenylab.alfanous>`_
+   * Application for iPhone/iPad by iPhoneIslam - `link <https://itunes.apple.com/us/app/alfanws-mhrk-bhth-qrany-mtqdm/id543646326?mt=8&ign-mpt=uo%3D4>`_ 
 
 
 

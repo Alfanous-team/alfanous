@@ -5,7 +5,7 @@ TODO build paths based on running platform
 '''
 import os
 import json
-
+from pkg_resources import resource_filename
 
 from alfanous.main import QuranicSearchEngine, FuzzyQuranicSearchEngine
 from alfanous.main import TraductionSearchEngine, WordSearchEngine
@@ -15,7 +15,7 @@ from alfanous.main import TraductionSearchEngine, WordSearchEngine
 # default paths
 class Paths:
     """ """
-    ROOT = os.path.dirname( __file__ ) + "/"
+    ROOT = ( os.path.dirname( __file__ ) or resource_filename(".") )  + "/"
     HOME = ( os.getenv( 'USERPROFILE' ) or os.getenv( 'HOME' ) or "." ) + "/"
     # base paths
     ROOT_INDEX = ROOT + "indexes/"

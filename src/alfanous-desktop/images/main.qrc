@@ -1,7 +1,7 @@
 <RCC>
   <qresource prefix="/resources/">
     <file>1downarrow.png</file>
-    <file>AlFanous-A2_64_2010-03-25.png</file>
+    <file>AlFanous.png</file>
     <file>alfanous.jpg</file>
     <file>alfanous.png</file>
     <file>application_exit.png</file>
