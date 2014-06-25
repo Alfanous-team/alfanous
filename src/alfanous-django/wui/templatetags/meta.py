@@ -4,6 +4,7 @@ from django.utils.html import escape
 from django.utils.translation import ugettext_lazy as _
 import re
 from wui.templatetags import xget
+from alfanous.Support.PyArabic.araby_constants import TASHKEEL
 
 register = Library()
 
@@ -13,7 +14,7 @@ TITLE_SUFFIX = {
   'word': _("Quran Word Search"),
 }
 
-TITLE_CLEANER = re.compile('[^\w_]+', re.UNICODE)
+TITLE_CLEANER = re.compile('[^\w%s_]+' % ''.join(TASHKEEL), re.UNICODE)
 
 def query_for_title(query):
   return TITLE_CLEANER.sub(' ', query).encode('UTF-8')
