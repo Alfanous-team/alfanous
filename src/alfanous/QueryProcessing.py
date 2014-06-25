@@ -270,7 +270,7 @@ def _make_arabic_parser():
 
 
 
-    expression <<= ( OneOrMore( operatorAnd | operatorOr | operatorAndNot | \
+    expression << ( OneOrMore( operatorAnd | operatorOr | operatorAndNot | \
 							generalUnit | Suppress( White() ) ) | Empty() )
 
 
