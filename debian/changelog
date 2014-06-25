@@ -1,3 +1,10 @@
+alfanous (0.7.01-0ppa1) unstable; urgency=low
+
+  * Update dependencies
+  * Remove deprecated DM-Upload-Allowed field
+
+ -- Abdellah Chelli <abdellahchelli@gmail.com>  Wed, 25 Jun 2014 14:26:38 +0100
+
 alfanous (0.7-999) unstable; urgency=low
 
   * update the icon of alfanousDesktop
