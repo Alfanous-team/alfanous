@@ -100,10 +100,10 @@ class QUI( Ui_MainWindow ):
 
     def load_config( self ):
         """load configuration"""
-        config = ConfigObj( CONFIGPATH + "/config.ini" )
+        config = ConfigObj( CONFIGPATH + "/config.ini", encoding="utf-8" )
         boolean = lambda s:True if s == "True" else False
         self.o_query.clear()
-        self.o_query.addItems( map( lambda x:x.decode( "utf-8" ), config["history"] ) if config.has_key( "history" ) else [u"الحمد لله"] )
+        self.o_query.addItems( config["history"] if config.has_key( "history" ) else [u"الحمد لله"] )
         #self.o_limit.setValue( int( config["options"]["limit"] ) if config.has_key( "options" ) else 100 )
         #self.o_perpage.setValue( int( config["options"]["perpage"] ) if config.has_key( "options" ) else 10 )
 
@@ -133,12 +133,12 @@ class QUI( Ui_MainWindow ):
         """save configuration """
         if not os.path.isdir( CONFIGPATH ):
             os.makedirs( CONFIGPATH )
-        config = ConfigObj( CONFIGPATH + "/config.ini" )
-        config["history"] = map( lambda x:x, config["history"] ) if config.has_key( "history" ) else ["الحمد لله"]
+        config = ConfigObj( CONFIGPATH + "/config.ini", encoding="utf-8" )
+        config["history"] = config["history"] if config.has_key( "history" ) else [u"الحمد لله"]
 
         config["options"] = {}
         config["options"]["limit"] = self.limit_group.checkedAction().text() 
-        config["options"]["perpage"] = self.perpage_group.checkedAction().text() 
+        #config["options"]["perpage"] = self.perpage_group.checkedAction().text()
         config["options"]["highlight"] = self.actionHighlight_Keywords.isChecked()
 
         config["sorting"] = {}
@@ -154,7 +154,7 @@ class QUI( Ui_MainWindow ):
         config["extend"]["prev"] = self.actionPrevios_aya.isChecked()
         config["extend"]["suiv"] = self.actionNext_aya.isChecked()
         config["extend"]["translation"] = self.translation_group.checkedAction().text()
-        config["extend"]["recitation"] = self.o_recitation.currentIndex()
+        #config["extend"]["recitation"] = self.o_recitation.currentIndex()
         config["extend"]["word_stat"] = self.actionWord_Info.isChecked()
         config["extend"]["aya_info"] = self.actionAya_Info.isChecked()
         config["extend"]["sura_info"] = self.actionSura_info.isChecked()
