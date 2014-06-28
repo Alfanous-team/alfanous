@@ -81,6 +81,7 @@ Interfaces
 #. App for Nokia S60 (prototype), `source <https://github.com/Alfanous-team/alfanous/tree/master/interfaces/smart_phones/alfanousS60>`_.
 #. Facebook app (prototype), `source <https://github.com/Alfanous-team/alfanous/tree/master/interfaces/web/facebook_app>`_.
 #. Third party:
+  * `Alfanous4WinStore <http://apps.microsoft.com/windows/en-us/app/2aaac68f-1896-4f19-aba0-d9731c6b996b>`_ by FenyLab<http://fenylab.com>`_ , source : `here <https://github.com/Alfanous-team/alfanous/tree/master/interfaces/smart_phones/WindowsStore>`_.
   * `Alfanous4WP7 <http://www.windowsphone.com/en-US/apps/f9e1504d-ce31-4802-a2d1-24ff9f41a06e>`_ by  Abdelmoumen BOUABDALLAH ,  source: `here <https://bitbucket.org/AbdouMoumen/alfanous>`_.
   * `Alfanous4Iphone <http://itunes.apple.com/us/app/alfanws-mhrk-bhth-qrany-mtqdm/id543646326?mt=8>`_ by i4islam, source: closed.
 
