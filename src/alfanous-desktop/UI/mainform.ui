@@ -11,7 +11,7 @@
     <x>0</x>
     <y>0</y>
     <width>1422</width>
-    <height>546</height>
+    <height>579</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -44,395 +44,6 @@
   </property>
   <property name="layoutDirection">
    <enum>Qt::LeftToRight</enum>
-  </property>
-  <property name="styleSheet">
-   <string notr="true">
-     QComboBox {
-     border: 1px solid gray;
-     border-radius: 3px;
-     padding: 1px 18px 1px 3px;
-     min-width: 6em;
- }
-
-
- QComboBox::down-arrow {
-     image:url(:/resources/1downarrow.png)
- }
-
- QComboBox::down-arrow:on { /* shift the arrow when popup is open */
-     top: 1px;
-     left: 1px;
- }
-
-
- QToolBox::tab {
-         background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
-                                     stop: 0 #E1F1E1, stop: 0.4 #DDEDDD,
-                                     stop: 0.5 #D8E8D8, stop: 1.0 #D3E3D3);
-         border-radius: 10px;
-         color: rgb(0, 85, 0);
-     border: 1px solid green;
-     }
-
-     QToolBox::tab:selected { /* italicize selected tabs */
-  background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
-                                     stop: 0 #C1D1C1, stop: 0.4 #BDCDBD,
-                                     stop: 0.5 #B8C8B8, stop: 1.0 #B3C3B3);
-         font: italic;
-         color: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:0, stop:0 rgba(255, 0, 0, 255), stop:0.166 rgba(138, 138, 0, 255), stop:0.333 rgba(0, 92, 0, 255), stop:0.5 rgba(0, 0, 0, 255), stop:0.666 rgba(0, 0, 255, 255), stop:0.833 rgba(255, 0, 255, 255), stop:1 rgba(255, 0, 0, 255));
-     border: 2px solid red;
-}
-
-
-QMainWindow::separator {
-    height: 1px;
-	width: 1px;
-
-background-color: qlineargradient(spread:reflect, x1:0.996, y1:0.0113182, x2:1, y2:0, stop:0 rgba(121, 121, 121, 194), stop:0.45 rgba(38, 92, 54, 222), stop:1 rgba(57, 64, 17, 222))
-
-}
-
-QDockWidget {
-     border: 1px solid lightgray;
-
-     titlebar-close-icon: url(:/resources/application_exit.png);
-     titlebar-normal-icon: url(:/resources/bookmark.png);
-    color : white;
-	border-radius:5px;
- 	icon-size: 64px;
- }
-
- QDockWidget::title {
-     text-align: center; /* align the text to the left */
-     background:qlineargradient(spread:pad, x1:0.472273, y1:0.738, x2:0.468818, y2:0.239, stop:0 rgba(60, 53, 48, 246), stop:1 rgba(121, 78, 46, 222));
-     padding-left: 20px;
- }
-
- QDockWidget::close-button, QDockWidget::float-button {
-     border: 1px solid transparent;
-     padding: 0px;
- }
-
- QDockWidget::close-button:hover, QDockWidget::float-button:hover {
-
- }
-
- QDockWidget::close-button:pressed, QDockWidget::float-button:pressed {
-     padding: 1px -1px -1px 1px;
- }
-
-QPushButton { background: qlineargradient(spread:pad, x1:0.504091, y1:0.619, x2:0.487, y2:0, stop:0 rgba(240, 146, 146, 255), stop:1 rgba(238, 197, 197, 255)) ;
- border: 1px solid #f5f6fa;
-     border-radius: 3px; }
-
-QToolButton { background: qlineargradient(spread:pad, x1:0.504091, y1:0.619, x2:0.487, y2:0, stop:0 rgba(162, 200, 160, 255), stop:1 rgba(226, 225, 221, 255));
- border: 1px solid #f5f6fa;
-     border-radius: 3px; }
-
-
-QMenuBar { background: qlineargradient(spread:pad, x1:0.472273, y1:0.738, x2:0.468818, y2:0.239, stop:0 rgba(43, 51, 41, 246), stop:1 rgba(71, 121, 46, 222));
-color : white}
-
-QMenuBar::item {
- background: transparent;
-color:white;
-}
-
-
- QMenuBar::item:selected,QPushButton:hover,QToolButton:hover { /* when selected using mouse or keyboard */
-border: 1px solid #f5f6fa;
-     border-radius: 3px;
-
-     background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1,
-                                       stop:0 #d0d0d0 stop:0.5 #259478 stop:1 #57a792);
- }
-
- QMenuBar::item:pressed,QPushButton:pressed,QToolButton:pressed{
-          border: 1px solid grey;
-     border-radius: 3px;
-
-background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1,
-                                       stop:0 #e0e0e0 stop:0.5 #257894 stop:1 #5792a7);
-
-}
-
-QMenu {
-     background-color: #f1f1f1; /* sets background of the menu */
-     border: 1px solid #979797;
- }
-
-
- QMenu::item { /* when selected using mouse or keyboard */
-
-margin-left: 2px;
-margin-right: 2px;
-
-padding-top: 4px;
-padding-bottom: 4px;
-padding-left: 28px;
-padding-right: 14px;
-
-/*background:blue;*/
-/*padding: 2px 0px 2px -1px;*/
-}
-
- QMenu::item:selected { /* when selected using mouse or keyboard */
-     border: 1px solid #a7dbff;
-     border-radius: 3px;
-
-     background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1,
-                                       stop:0 #f1f1f1 stop:1 #e4f0f5);
-
-margin-left: 1px;
-
-padding-left: 28px;
-
-
-/*padding: 2px 0px 2px -1px;*/
-}
-
-
-
-
-QMenu::indicator:unchecked { /* when selected using mouse or keyboard */
-
-     border-radius: 3px;
-
-}
-
-QMenu::indicator:checked:enabled { /* when selected using mouse or keyboard */
-     border: 1px solid #a7dbff;
-     border-radius: 3px;
-
-     background-color: #e6eff4;
-
-     image: url(:/resources/menu_indicator.png)
-}
-
-
-QMenu::indicator:checked:!enabled { /* when selected using mouse or keyboard */
-     image: url(:/resources/menu_indicator_disabled.png)
-}
-
-
-
-QMenu::separator {
-    height: 2px;
-    margin-left: 0px;
-margin-top: 4px;
-margin-bottom: 4px;
-
-background-color: #aaeeaa;
-
-}
-
-QGroupBox {
-     border: 1px solid green;
-	border-radius:5px;
-	margin: 6px 2px 2px 2px;
-}
-
-QGroupBox::title {
-     subcontrol-origin: margin;
-     subcontrol-position: top left; /* position at the top center */
-     padding: 0 3px;
-}
-
- QCheckBox {
-     spacing: 5px;
- }
-
- QCheckBox::indicator {
-     width: 13px;
-     height: 13px;
- }
-
- QCheckBox::indicator:unchecked {
-     image: url(:/resources/checkbox_off_enabled.png);
- }
-
- QCheckBox::indicator:unchecked:!enabled {
-     image: url(:/resources/checkbox_off_disabled.png);
- }
-
- QCheckBox::indicator:unchecked:hover {
-     image: url(:/resources/checkbox_off_enabled_hover.png);
- }
-
- QCheckBox::indicator:unchecked:pressed {
-     image: url(:/resources/checkbox_off_enabled_pressed.png);
- }
-
- QCheckBox::indicator:checked {
-     image: url(:/resources/checkbox_on_enabled.png);
- }
-
- QCheckBox::indicator:checked:!enabled {
-     image: url(:/resources/checkbox_on_disabled.png);
- }
-
-
- QCheckBox::indicator:checked:hover {
-     image: url(:/resources/checkbox_on_enabled_hover.png);
- }
-
- QCheckBox::indicator:checked:pressed {
-     image: url(:/resources/checkbox_on_enabled_pressed.png);
- }
-
- QCheckBox::indicator:indeterminate:hover {
-     image: url(:/resources/checkbox_inter_enabled_hover.png);
- }
-
- QCheckBox::indicator:indeterminate {
-     image: url(:/resources/checkbox_inter_enabled.png);
- } 
-
- QCheckBox::indicator:indeterminate:!enabled {
-     image: url(:/resources/checkbox_inter_disabled.png);
- }
-
-QRadioButton {
-     spacing: 5px;
- }
-
- QRadioButton::indicator {
-     width: 12px;
-     height: 12px;
- }
-
- QRadioButton::indicator:unchecked {
-     image: url(:/resources/radiobutton_off_enabled.png);
- }
-
- QRadioButton::indicator:checked {
-     image: url(:/resources/radiobutton_on_enabled.png);
- }
-
- QRadioButton::indicator:checked:hover {
-     image: url(:/resources/radiobutton_on_enabled_hover.png);
- }
-
- QRadioButton::indicator:checked:pressed {
-     image: url(:/resources/radiobutton_on_enabled_pressed.png);
-}
-
- QRadioButton::indicator:unchecked:!enabled {
-     image: url(:/resources/radiobutton_off_disabled.png);
- }
-
- QRadioButton::indicator:checked:!enabled {
-     image: url(:/resources/radiobutton_on_disabled.png);
- }
-
- QRadioButton::indicator:unchecked:hover {
-     image: url(:/resources/radiobutton_off_enabled_hover.png);
-}
-
- QRadioButton::indicator:unchecked:pressed {
-     image: url(:/resources/radiobutton_off_enabled_pressed.png);
-}
-
-QLineEdit, QTextEdit, QSpinBox, QDoubleSpinBox, QTextBrowser {
- 	border-top: 1px solid #abadb3;
- 	border-right: 1px solid #abadb3;
-	border-left: 1px solid #e3e9ef;
-	border-bottom: 1px solid #e3e9ef;
-	border-radius: 2px;
-
-     background: white;
-     selection-background-color: #3399ff;
-
-	min-height: 23 px;
-}
-
-QLineEdit:!enabled, QTextEdit:!enabled, QSpinBox:!enabled, QDoubleSpinBox:!enabled {
- 	border: 1px solid #afafaf;
-	border-radius: 2px;
-
-     background: white;
-	color: #afafaf;
-     selection-background-color: #3399ff;
-}
-
-
-QLineEdit:hover:enabled, QTextEdit:hover:enabled, QSpinBox:hover:enabled, QDoubleSpinBox:hover:enabled {
- 	border-top: 1px solid #3d7bad;
- 	border-right: 1px solid #3d7bad;
-	border-left: 1px solid #b7d9ed;
-	border-bottom: 1px solid #b7d9ed;
-}
-
-
-QSpinBox, QDoubleSpinBox {
-	padding-right: 18px;
-}
-
-QSpinBox::up-button:!enabled, QDoubleSpinBox::up-button:!enabled,
-QSpinBox::up-arrow:off, QDoubleSpinBox::up-arrow:off {
-	border-image: url(:/resources/spin_up_disabled.png) 1;
-}
-
-QSpinBox::down-button:!enabled, QDoubleSpinBox::down-button:!enabled,
-QSpinBox::down-arrow:off, QDoubleSpinBox::down-arrow:off {
-	border-image: url(:/resources/spin_down_disabled.png) 1;
-}
-
-QSpinBox::up-button:hover:enabled, QDoubleSpinBox::up-button:hover:enabled {
-	border-image: url(:/resources/spin_up_enabled_hover.png) 1;
-}
-
-QSpinBox::up-button:pressed:enabled, QDoubleSpinBox::up-button:pressed:enabled {
-	border-image: url(:/resources/spin_up_enabled_pressed.png) 1;
-}
-
-QSpinBox::down-button:hover:enabled, QDoubleSpinBox::down-button:hover:enabled {
-	border-image: url(:/resources/spin_down_enabled_hover.png) 1;
-}
-
-QSpinBox::down-button:pressed:enabled, QDoubleSpinBox::down-button:pressed:enabled {
-	border-image: url(:/resources/spin_down_enabled_pressed.png) 1;
-}
-
-QSpinBox::up-button, QDoubleSpinBox::up-button {
-     subcontrol-origin: border;
-     subcontrol-position: top right; /* position at the top right corner */
-
-     width: 16px; /* 16 + 2*1px border-width = 15px padding + 3px parent border */
-     border-width: 2px;
-	border-bottom-width: 0;
-
-	border-image: url(:/resources/spin_up_enabled.png) 1;
-}
-
-QSpinBox::down-button, QDoubleSpinBox::down-button {
-     subcontrol-origin: border;
-     subcontrol-position: bottom right; /* position at bottom right corner */
-
-     width: 16px;
-     border-width: 2px;
-     border-top-width: 0;
-
-	border-image: url(:/resources/spin_down_enabled.png) 1;
-}
-
-
-
-
-
-QComboBox::QFrame {
-	border: 1px solid #828790;
-}
-
-QLabel,QToolBox {
-	border: 0px solid #828790;
-}
-
-
-
-
-
-</string>
   </property>
   <property name="locale">
    <locale language="English" country="UnitedStates"/>
@@ -510,9 +121,6 @@ QLabel,QToolBox {
            </item>
            <item>
             <widget class="QLCDNumber" name="o_time">
-             <property name="styleSheet">
-              <string notr="true">color : gray</string>
-             </property>
              <property name="frameShape">
               <enum>QFrame::NoFrame</enum>
              </property>
@@ -562,8 +170,7 @@ QLabel,QToolBox {
               </font>
              </property>
              <property name="styleSheet">
-              <string notr="true">color : blue
-</string>
+              <string notr="true"/>
              </property>
              <property name="frameShape">
               <enum>QFrame::NoFrame</enum>
@@ -626,7 +233,16 @@ QLabel,QToolBox {
           <property name="spacing">
            <number>3</number>
           </property>
-          <property name="margin">
+          <property name="leftMargin">
+           <number>3</number>
+          </property>
+          <property name="topMargin">
+           <number>3</number>
+          </property>
+          <property name="rightMargin">
+           <number>3</number>
+          </property>
+          <property name="bottomMargin">
            <number>3</number>
           </property>
           <item>
@@ -668,11 +284,8 @@ QLabel,QToolBox {
            <property name="minimumSize">
             <size>
              <width>100</width>
-             <height>25</height>
+             <height>0</height>
             </size>
-           </property>
-           <property name="styleSheet">
-            <string>color : red</string>
            </property>
            <property name="minimum">
             <number>0</number>
@@ -702,9 +315,6 @@ QLabel,QToolBox {
            </property>
            <property name="whatsThis">
             <string>pages number</string>
-           </property>
-           <property name="styleSheet">
-            <string notr="true">color : blue</string>
            </property>
            <property name="frameShape">
             <enum>QFrame::NoFrame</enum>
@@ -755,7 +365,7 @@ QLabel,QToolBox {
      <x>0</x>
      <y>0</y>
      <width>1422</width>
-     <height>25</height>
+     <height>29</height>
     </rect>
    </property>
    <property name="layoutDirection">
@@ -1000,7 +610,7 @@ QLabel,QToolBox {
    <property name="minimumSize">
     <size>
      <width>200</width>
-     <height>364</height>
+     <height>393</height>
     </size>
    </property>
    <property name="windowIcon">
@@ -1008,7 +618,7 @@ QLabel,QToolBox {
      <normaloff>:/resources/editcut.png</normaloff>:/resources/editcut.png</iconset>
    </property>
    <property name="styleSheet">
-    <string notr="true">arora -style=clearlooks</string>
+    <string notr="true"/>
    </property>
    <property name="floating">
     <bool>false</bool>
@@ -1051,15 +661,15 @@ QLabel,QToolBox {
         <number>0</number>
        </property>
        <property name="currentIndex">
-        <number>3</number>
+        <number>1</number>
        </property>
        <widget class="QWidget" name="page_2">
         <property name="geometry">
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>383</width>
-          <height>444</height>
+          <width>248</width>
+          <height>593</height>
          </rect>
         </property>
         <attribute name="label">
@@ -1344,8 +954,8 @@ QLabel,QToolBox {
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>383</width>
-          <height>290</height>
+          <width>218</width>
+          <height>365</height>
          </rect>
         </property>
         <attribute name="label">
@@ -1625,8 +1235,8 @@ QLabel,QToolBox {
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>383</width>
-          <height>166</height>
+          <width>188</width>
+          <height>209</height>
          </rect>
         </property>
         <attribute name="label">
@@ -1797,8 +1407,8 @@ QLabel,QToolBox {
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>383</width>
-          <height>195</height>
+          <width>180</width>
+          <height>248</height>
          </rect>
         </property>
         <attribute name="label">
@@ -2032,8 +1642,8 @@ QLabel,QToolBox {
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>383</width>
-          <height>199</height>
+          <width>243</width>
+          <height>244</height>
          </rect>
         </property>
         <attribute name="label">
@@ -2285,8 +1895,8 @@ QLabel,QToolBox {
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>383</width>
-          <height>230</height>
+          <width>233</width>
+          <height>283</height>
          </rect>
         </property>
         <attribute name="label">
@@ -2544,8 +2154,8 @@ QLabel,QToolBox {
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>396</width>
-          <height>80</height>
+          <width>100</width>
+          <height>30</height>
          </rect>
         </property>
         <attribute name="label">
@@ -2557,8 +2167,8 @@ QLabel,QToolBox {
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>383</width>
-          <height>226</height>
+          <width>256</width>
+          <height>287</height>
          </rect>
         </property>
         <attribute name="label">
@@ -2845,7 +2455,7 @@ QLabel,QToolBox {
      <normaloff>:/resources/Icon (3).ico</normaloff>:/resources/Icon (3).ico</iconset>
    </property>
    <property name="styleSheet">
-    <string notr="true">arora -style=clearlooks</string>
+    <string notr="true"/>
    </property>
    <property name="locale">
     <locale language="English" country="Zimbabwe"/>
@@ -2863,7 +2473,7 @@ QLabel,QToolBox {
     <string>SearchBar</string>
    </property>
    <attribute name="dockWidgetArea">
-    <number>1</number>
+    <number>4</number>
    </attribute>
    <widget class="QWidget" name="dockWidgetContents_7">
     <layout class="QVBoxLayout" name="verticalLayout_11">
@@ -2879,7 +2489,7 @@ QLabel,QToolBox {
          </property>
          <property name="minimumSize">
           <size>
-           <width>125</width>
+           <width>149</width>
            <height>0</height>
           </size>
          </property>
