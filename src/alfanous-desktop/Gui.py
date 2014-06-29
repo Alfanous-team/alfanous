@@ -93,6 +93,7 @@ class QUI( Ui_MainWindow ):
         self.Queries = []
         self.undo_stack = []
         self.redo_stack = []
+        self.style = ""
 
     def exit( self ):
         self.save_config()
@@ -102,32 +103,70 @@ class QUI( Ui_MainWindow ):
         """load configuration"""
         config = ConfigObj( CONFIGPATH + "/config.ini", encoding="utf-8" )
         boolean = lambda s:True if s == "True" else False
+
         self.o_query.clear()
         self.o_query.addItems( config["history"] if config.has_key( "history" ) else [u"الحمد لله"] )
-        #self.o_limit.setValue( int( config["options"]["limit"] ) if config.has_key( "options" ) else 100 )
-        #self.o_perpage.setValue( int( config["options"]["perpage"] ) if config.has_key( "options" ) else 10 )
 
-        self.actionRelevance.setChecked( boolean( config["sorting"]["sortedbyscore"] ) if config.has_key( "sorting" ) else True )
-        self.actionPosition_in_Mus_haf.setChecked( boolean( config["sorting"]["sortedbymushaf"] ) if config.has_key( "sorting" ) else False )
-        self.actionRevelation.setChecked( boolean( config["sorting"]["sortedbytanzil"] ) if config.has_key( "sorting" ) else False )
-        self.actionSubject.setChecked( boolean( config["sorting"]["sortedbysubject"] ) if config.has_key( "sorting" ) else False )
-        ## TODO save field sorting choice
-        #self.o_sortedbyfield.setChecked( boolean( config["sorting"]["sortedbyfield"] ) if config.has_key( "sorting" ) else False )
+        if config.has_key( "options" ):
+            #self.o_limit.setValue( int( config["options"]["limit"] ) if config["options"].has_key( "limit" ) else 100 )
+            #self.o_perpage.setValue( int( config["options"]["perpage"] ) if config["options"].has_key( "perpage" ) else 10 )
+            self.style = config["options"]["style"] if config["options"].has_key( "style" ) else ""
+        else:
+            self.style = ""
 
-        self.actionInverse.setChecked( boolean( config["sorting"]["reverse"] )if config.has_key( "sorting" ) else False )
+        styles = {"": self.actionDefaultStyle.setChecked,
+                "windows": self.actionWindows.setChecked,
+                "motif": self.actionMotif.setChecked,
+                "cde": self.actionCDE.setChecked,
+                "plastique": self.actionPlastique.setChecked,
+                "windowsxp": self.actionWindowsXP.setChecked,
+                "macintosh": self.actionMacintosh.setChecked}
+        styles[self.style](True)
 
-        self.actionPrevios_aya.setChecked( boolean( config["extend"]["prev"] ) if config.has_key( "extend" ) else False )
-        self.actionNext_aya.setChecked( boolean( config["extend"]["suiv"] ) if config.has_key( "extend" ) else False )
+        if config.has_key( "sorting" ):
+            self.actionRelevance.setChecked( boolean( config["sorting"]["sortedbyscore"] ) if config["sorting"].has_key( "sortedbyscore" ) else True )
+            self.actionPosition_in_Mus_haf.setChecked( boolean( config["sorting"]["sortedbymushaf"] ) if config["sorting"].has_key( "sortedbymushaf" ) else False )
+            self.actionRevelation.setChecked( boolean( config["sorting"]["sortedbytanzil"] ) if config["sorting"].has_key( "sortedbytanzil" ) else False )
+            self.actionSubject.setChecked( boolean( config["sorting"]["sortedbysubject"] ) if config["sorting"].has_key( "sortedbysubject" ) else False )
 
-        self.actionWord_Info.setChecked( boolean( config["extend"]["word_stat"] )if config.has_key( "extend" ) else False )
-        self.actionAya_Info.setChecked( boolean( config["extend"]["aya_info"] )if config.has_key( "extend" ) else False )
-        self.actionSura_info.setChecked( boolean( config["extend"]["sura_info"] )if config.has_key( "extend" ) else False )
+            ## TODO save field sorting choice
+            #self.o_sortedbyfield.setChecked( boolean( config["sorting"]["sortedbyfield"] ) if config.has_key( "sorting", "sortedbyfield" ) else False )
+            self.actionInverse.setChecked( boolean( config["sorting"]["reverse"] )if config["sorting"].has_key( "reverse" ) else False )
+        else:
+            self.actionRelevance.setChecked(True)
+            self.actionPosition_in_Mus_haf.setChecked(False)
+            self.actionRevelation.setChecked(False)
+            self.actionSubject.setChecked(False)
+            self.actionInverse.setChecked(False)
 
-        self.actionUthmani.setChecked( boolean( config["script"]["uthmani"] ) if config.has_key( "script" ) else False )
-        self.actionStandard.setChecked( boolean( config["script"]["standard"] ) if config.has_key( "script" ) else True )
+        if config.has_key( "extend" ):
+            self.actionPrevios_aya.setChecked( boolean( config["extend"]["prev"] ) if config["extend"].has_key( "prev" ) else False )
+            self.actionNext_aya.setChecked( boolean( config["extend"]["suiv"] ) if config["extend"].has_key( "suiv" ) else False )
 
-        self.w_features.setHidden( not boolean( config["widgets"]["features"] ) if config.has_key( "widgets" ) else True )
-        self.m_features.setChecked ( boolean( config["widgets"]["features"] ) if config.has_key( "widgets" ) else False )
+            self.actionWord_Info.setChecked( boolean( config["extend"]["word_stat"] )if config["extend"].has_key( "word_stat" ) else True )
+            self.actionAya_Info.setChecked( boolean( config["extend"]["aya_info"] )if config["extend"].has_key( "aya_info" ) else True )
+            self.actionSura_info.setChecked( boolean( config["extend"]["sura_info"] )if config["extend"].has_key( "sura_info" ) else True )
+        else:
+            self.actionPrevios_aya.setChecked(False)
+            self.actionNext_aya.setChecked(False)
+            self.actionWord_Info.setChecked(True)
+            self.actionAya_Info.setChecked(True)
+            self.actionSura_info.setChecked(True)
+
+        if config.has_key( "script" ):
+            self.actionUthmani.setChecked( boolean( config["script"]["uthmani"] ) if config["script"].has_key( "uthmani" ) else False )
+            self.actionStandard.setChecked( boolean( config["script"]["standard"] ) if config["script"].has_key( "standard" ) else True )
+        else:
+            self.actionUthmani.setChecked(False)
+            self.actionStandard.setChecked(True)
+
+
+        if config.has_key( "widgets" ):
+            self.w_features.setHidden( not boolean( config["widgets"]["features"] ) if config["widgets"].has_key( "features" ) else True )
+            self.m_features.setChecked ( boolean( config["widgets"]["features"] ) if config["widgets"].has_key( "features" ) else False )
+        else:
+            self.w_features.setHidden(True)
+            self.m_features.setChecked (False)
 
     def save_config( self ):
         """save configuration """
@@ -140,6 +179,7 @@ class QUI( Ui_MainWindow ):
         config["options"]["limit"] = self.limit_group.checkedAction().text() 
         #config["options"]["perpage"] = self.perpage_group.checkedAction().text()
         config["options"]["highlight"] = self.actionHighlight_Keywords.isChecked()
+        config["options"]["style"] = self.style
 
         config["sorting"] = {}
         config["sorting"]["sortedbyscore"] = self.actionRelevance.isChecked()
@@ -238,6 +278,16 @@ class QUI( Ui_MainWindow ):
         self.perpage_group.addAction( self.actionpp50 )
         self.perpage_group.addAction( self.actionpp100 )
 
+        # make options->script menu as a radio button
+        self.style_group = QtGui.QActionGroup( MainWindow )
+        self.script_group.addAction( self.actionDefaultStyle )
+        self.script_group.addAction( self.actionWindows )
+        self.script_group.addAction( self.actionMotif )
+        self.script_group.addAction( self.actionCDE )
+        self.script_group.addAction( self.actionPlastique )
+        self.script_group.addAction( self.actionWindowsXP )
+        self.script_group.addAction( self.actionMacintosh )
+
         if DIR == "rtl":
             MainWindow.setLayoutDirection( QtCore.Qt.RightToLeft )
         self.o_query.setLayoutDirection( QtCore.Qt.RightToLeft )
@@ -247,11 +297,18 @@ class QUI( Ui_MainWindow ):
         QtCore.QObject.connect( self.o_topic, QtCore.SIGNAL( "activated(QString)" ), self.subtopics )
         QtCore.QObject.connect( self.o_sajdah_exist, QtCore.SIGNAL( "activated(int)" ), self.sajda_enable )
         QtCore.QObject.connect( self.o_struct_as, QtCore.SIGNAL( "activated(QString)" ), self.setstructborn )
-        QtCore.QObject.connect( self.actionpp1, QtCore.SIGNAL( "triggered()" ), self.changePERPAGE )
+        QtCore.QObject.connect( self.actionDefaultStyle, QtCore.SIGNAL( "triggered()" ), lambda: self.changeStyle("") )
+        QtCore.QObject.connect( self.actionWindows, QtCore.SIGNAL( "triggered()" ), lambda: self.changeStyle("windows") )
+        QtCore.QObject.connect( self.actionMotif, QtCore.SIGNAL( "triggered()" ), lambda: self.changeStyle("motif") )
+        QtCore.QObject.connect( self.actionCDE, QtCore.SIGNAL( "triggered()" ), lambda: self.changeStyle("cde") )
+        QtCore.QObject.connect( self.actionPlastique, QtCore.SIGNAL( "triggered()" ), lambda: self.changeStyle("plastique") )
+        QtCore.QObject.connect( self.actionWindowsXP, QtCore.SIGNAL( "triggered()" ), lambda: self.changeStyle("windowsxp") )
+        QtCore.QObject.connect( self.actionMacintosh, QtCore.SIGNAL( "triggered()" ), lambda: self.changeStyle("macintosh") )
         QtCore.QObject.connect( self.actionpp10, QtCore.SIGNAL( "triggered()" ), self.changePERPAGE )
         QtCore.QObject.connect( self.actionpp20, QtCore.SIGNAL( "triggered()" ), self.changePERPAGE )
         QtCore.QObject.connect( self.actionpp50, QtCore.SIGNAL( "triggered()" ), self.changePERPAGE )
         QtCore.QObject.connect( self.actionpp100, QtCore.SIGNAL( "triggered()" ), self.changePERPAGE )
+        QtCore.QObject.connect( self.actionpp1, QtCore.SIGNAL( "triggered()" ), self.changePERPAGE )
         QtCore.QObject.connect( self.action_Send_Feedback, QtCore.SIGNAL( "triggered()" ), self.feedback_link )
         QtCore.QObject.connect( self.o_struct_from, QtCore.SIGNAL( "valueChanged(int)" ), self.struct_to_min )
         QtCore.QObject.connect( self.o_stat_from, QtCore.SIGNAL( "valueChanged(int)" ), self.stat_to_min )
@@ -372,6 +429,8 @@ class QUI( Ui_MainWindow ):
         global PERPAGE
         PERPAGE = int( self.perpage_group.checkedAction().text() )
 
+    def changeStyle( self, style ):
+        self.style = style
 
     def add2query_advanced( self ):
         """
@@ -595,10 +654,10 @@ def main():
     """ the main function"""
     app = QtGui.QApplication( sys.argv )
 
-    #app.setStyle()
     MainWindow = QtGui.QMainWindow()
     ui = QUI()
     ui.setupUi( MainWindow )
+    app.setStyle(ui.style)
 
     MainWindow.show()
     app.exec_()

@@ -523,6 +523,18 @@
      <addaction name="actionpp50"/>
      <addaction name="actionpp100"/>
     </widget>
+    <widget class="QMenu" name="menuStyle">
+     <property name="title">
+      <string>Style</string>
+     </property>
+     <addaction name="actionDefaultStyle"/>
+     <addaction name="actionWindows"/>
+     <addaction name="actionMotif"/>
+     <addaction name="actionCDE"/>
+     <addaction name="actionPlastique"/>
+     <addaction name="actionWindowsXP"/>
+     <addaction name="actionMacintosh"/>
+    </widget>
     <addaction name="menuOrder_by"/>
     <addaction name="separator"/>
     <addaction name="menuScript"/>
@@ -536,6 +548,7 @@
     <addaction name="menuPerPage"/>
     <addaction name="separator"/>
     <addaction name="menuChoose_Language"/>
+    <addaction name="menuStyle"/>
     <addaction name="separator"/>
     <addaction name="actionPreferences"/>
    </widget>
@@ -3401,6 +3414,62 @@
    </property>
    <property name="text">
     <string>100</string>
+   </property>
+  </action>
+  <action name="actionWindows">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Windows</string>
+   </property>
+  </action>
+  <action name="actionMotif">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Motif</string>
+   </property>
+  </action>
+  <action name="actionCDE">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>CDE</string>
+   </property>
+  </action>
+  <action name="actionPlastique">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Plastique</string>
+   </property>
+  </action>
+  <action name="actionWindowsXP">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Windows XP</string>
+   </property>
+  </action>
+  <action name="actionMacintosh">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Macintosh</string>
+   </property>
+  </action>
+  <action name="actionDefaultStyle">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Default</string>
    </property>
   </action>
  </widget>
