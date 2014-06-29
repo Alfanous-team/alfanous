@@ -31,7 +31,7 @@ Coding
 * Web Interface: `A~CH`_  , `Walid Ziouche`_, `Abdellah Chelli`_ , `Mouad Debbar`_,  `Mennouchi Islam Azeddine <https://github.com/islamoc>`_, `Muslih al aqaad`_, `Tedjeddine Meabeo`_ ,   , Ahmed Ramadan
 * Firefox toolbar: `Zakaria Smahi`_ 
 * PyArabic(Integrated): Taha Zerrouki, A~CH, Ahimta~
-* Windows Store : `Mohamed Anas Mostefaoui(FenyLab)`_
+* Windows Store : `Mohamed Anas Mostefaoui(FenyLab) <https://github.com/luffy-dam>`_
 
 --------
 Research
