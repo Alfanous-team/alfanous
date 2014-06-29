@@ -14,6 +14,7 @@ override_dh_auto_install:
 	dh_auto_install -Dsrc/alfanous-desktop 
 
 override_dh_auto_clean:
+	make clean
 	dh_auto_clean -Dsrc/alfanous
 	dh_auto_clean -Dsrc/alfanous-desktop
 

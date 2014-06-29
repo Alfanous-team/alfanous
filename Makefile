@@ -139,14 +139,20 @@ build_desktop: qt_all
 
 ## clean temporary files after a building operation
 # TODO	add all what has to be cleaned!
-clean:
+clean: clean_all
+
+clean_all: clean_deb
 	@echo "Cleaning..." 
 	rm -rf `find . -type f -name Thumbs.db`
 	#rm -rf `find . -name *~`
 	rm -rf `find . -name *.pyc`
 	rm -rf `find . -name *.pyo`
 	rm -rf `find . -type d -name *.egg-info`
-	
+
+clean_deb:
+	@echo "Cleaning python build..."
+	@cd src/alfanous/ ; python setup.py clean --all
+	@cd src/alfanous-desktop/ ; python setup.py clean --all
 
 ## download Quranic resources needed for Alfanous project, which are:
 # 1. Quran translations from zekr.org, see download_translations
