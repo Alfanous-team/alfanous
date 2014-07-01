@@ -113,7 +113,7 @@ edit_hints:
 # never leave it empty till fix that! TODO
 edit_stats:
 	nano $(CONFIGS_PATH)stats.json 
-	chmod 777 $(CONFIGS_PATH)stats.json 
+	chmod -x $(CONFIGS_PATH)stats.json 
 
 # update downloading translation list manually
 edit_translations_to_download_list:
@@ -139,14 +139,20 @@ build_desktop: qt_all
 
 ## clean temporary files after a building operation
 # TODO	add all what has to be cleaned!
-clean:
+clean: clean_all
+
+clean_all: clean_deb
 	@echo "Cleaning..." 
 	rm -rf `find . -type f -name Thumbs.db`
 	#rm -rf `find . -name *~`
 	rm -rf `find . -name *.pyc`
 	rm -rf `find . -name *.pyo`
 	rm -rf `find . -type d -name *.egg-info`
-	
+
+clean_deb:
+	@echo "Cleaning python build..."
+	@cd src/alfanous/ ; python setup.py clean --all
+	@cd src/alfanous-desktop/ ; python setup.py clean --all
 
 ## download Quranic resources needed for Alfanous project, which are:
 # 1. Quran translations from zekr.org, see download_translations
@@ -259,6 +265,7 @@ index_all: index_main index_extend #index_word
 
 index_main:
 	export PYTHONPATH=$(API_PATH) ;	rm -r $(INDEX_PATH)main/; $(PYTHON_COMMAND) $(QIMPORT) -x main $(DB_PATH)main.db $(INDEX_PATH)main/
+	chmod 644  $(INDEX_PATH)main/*_LOCK
 
 index_extend:
 	export PYTHONPATH=$(API_PATH) ;	rm -r $(INDEX_PATH)extend/; $(PYTHON_COMMAND) $(QIMPORT) -x extend $(STORE_PATH)Translations/ $(INDEX_PATH)extend/
@@ -276,9 +283,11 @@ speller_all: speller_aya speller_subject #speller_word
 
 speller_aya:
 	export PYTHONPATH=$(API_PATH) ;	$(PYTHON_COMMAND) $(QIMPORT) -p aya  $(INDEX_PATH)main/
+	chmod 644  $(INDEX_PATH)main/*_LOCK
 
 speller_subject:
 	export PYTHONPATH=$(API_PATH) ;	$(PYTHON_COMMAND) $(QIMPORT) -p subject  $(INDEX_PATH)main/
+	chmod 644  $(INDEX_PATH)main/*_LOCK
 
 speller_word:
 	export PYTHONPATH=$(API_PATH) ;	$(PYTHON_COMMAND) $(QIMPORT) -p word  $(INDEX_PATH)word/
