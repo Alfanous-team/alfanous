@@ -16,13 +16,9 @@
 ##     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 """
-TODO use Table grid for view results , use CSS good schema instead
 TODO relate to PreferenceDlg / Hints dialog
 TODO use css and simplify texts to make a good localization
-TODO sura's name also in English
-TODO add qurany project for Subjects in english
 TODO use QT Localization instead of gettext
-TODO printing
 """
 
 
@@ -600,33 +596,14 @@ class QUI( Ui_MainWindow ):
 
     def print_results( self ):
         printer = QtGui.QPrinter()
-        printer.setCreator( self.o_results.html() )
-        printer.setDocName( _( u"Results" ) + "-" + str( self.o_page.value() ) )
+        printer.setDocName( _( u"Alfanous_Results_Page_" ) + str( self.o_page.value() ) )
         printer.setPageSize( printer.A4 )
-
-
-        dialog = QtGui.QPrintDialog( printer, None )
-        if dialog.exec_():
-            pass
-
-        painter = QtGui.QPainter( printer )
-
-        painter.drawText( 10, 10, _( "This is not a bug,Printing will be available in next releases insha'allah" ) )
-        painter.setFont( QtGui.QFont( "Arabeyesqr" ) )
-        metrics = ( painter.device().width(), painter.device().height() )
-        marginHeight = 6
-        marginWidth = 8
-        body = QRect( marginWidth, marginHeight, metrics[0] - 2 * marginWidth, metrics[1] - 2 * marginHeight )
-        #painter.drawRect(body)
-        i = 0
-        for line in self.o_results.toPlainText().split( "\n" ):
-            i += 1
-            if "[" not in line:
-                painter.drawText( 10, 30 + 10 * i, line )
-
-
-        painter.end()
-
+        preview_dlg = QtGui.QPrintPreviewDialog(printer)
+        preview_dlg.paintRequested.connect(self.printing_results)
+        preview_dlg.exec_()
+        
+    def printing_results(self, printer):
+        self.o_results.print_(printer)
 
     def send_feedback( self , state ):
         """ Open feedback url in an external browser """
