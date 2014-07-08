@@ -251,13 +251,13 @@ SortedBy Options
 ========== =================================================================================
 
 
-==============
+--------------
 Schema Samples
-==============
+--------------
 * Aya Search:
------------
+
 Suggestions
------------
+^^^^^^^^^^^
 flags:
 
 .. code-block:: python
@@ -282,9 +282,9 @@ response:
                 "code": 0
                }
     }
--------
+
 Results
--------
+^^^^^^^
 flags:
 
 .. code-block:: python
@@ -518,14 +518,14 @@ response:
                  }
         }
 
-------------
+
 Translations
-------------
+^^^^^^^^^^^
 TODO
 
------------
+
 Information
------------
+^^^^^^^^^^^
 flags:
 
 .. code-block:: python
@@ -558,9 +558,9 @@ response:
           }
       }
 
------------
+
 Recitations
------------
+^^^^^^^^^^^
 
 flags:
 
@@ -598,9 +598,9 @@ response (sample):
           }
       }
 
-------
+
 Fields
-------
+^^^^^^
 
 flags:
 
