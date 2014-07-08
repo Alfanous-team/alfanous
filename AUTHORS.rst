@@ -112,7 +112,7 @@ Translation
 
 * Main Web Interface
 
-  * Arabic: A~CH, Yasmine Houadjli
+  * Arabic: A~CH, Yasmine Houadjli, Merwan Ali
   * French: Zineb Pub, Yasmine Houadjli, Abdelkarim Aries, Nassim rehali, Nasreddine Cheniki
   * Indonesian:  Ahmed Jumal , Amy cidra, Mahyuddin Susanto
   * Japanese: Abdelkarim Aries
