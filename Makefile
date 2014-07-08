@@ -9,7 +9,7 @@ VERSION=0.7.02
 
 ## Next releases:
 # Beta [0.7.00~0.9.99], Basis [1.0], Silver[~], Golden[~], Crystal[~]
-RELEASE=$(VERSION)BlackStone
+RELEASE=$(VERSION)Kahraman
 
 ## API path, API contains all python packages 
 API_PATH="./src/"
