@@ -5,7 +5,7 @@
 
 ## Global Version of the project, must be updated in each significant change in 
 ## the API & Desktop Gui
-VERSION=0.7.01
+VERSION=0.7.02
 
 ## Next releases:
 # Beta [0.7.00~0.9.99], Basis [1.0], Silver[~], Golden[~], Crystal[~]
@@ -303,7 +303,7 @@ help_epydoc:
 	mkdir -p output/$(VERSION);cd $(API_PATH); epydoc   --html -v --graph all --no-sourcecode     --show-imports  -n alfanous -u alfanous.org  . ;  zip -9   alfanous-epydoc.zip ./html/* ;	mv -f alfanous-epydoc.zip ../output/$(VERSION)/ ; rm -r ./html
 	
 help_sphinx:
-	mkdir -p output/$(VERSION);cd ./docs ; make dirhtml;  zip -9   alfanous-sphinx-doc.zip ./_build/dirhtml/* ; mv -f alfanous-sphinx-doc.zip ../output/$(VERSION)/ ; rm -r  ./_build/dirhtml
+	mkdir -p output/$(VERSION)/sphinx;  sphinx-build . output/$(VERSION)/sphinx;  zip -9 alfanous-sphinx-doc.zip output/$(VERSION)/sphinx ; mv -f alfanous-sphinx-doc.zip ../output/$(VERSION)/ 
 
 ## Qt resources compilation, PyQt is needed: apt-get install pyqt4-dev-tools  pyqt-tools  
 #  1. qrc files, see qt_rcc
@@ -320,10 +320,16 @@ qt_uic:
 qt_rcc:
 	pyside-rcc $(QT_RC_PATH)main.qrc -o $(DESKTOP_INTERFACE_PATH)main_rc.py
 
-## build localization files, this include:
+## build localization files, this includes:
 # 1. Desktop interface , see local_desktop_pot
 # 2. Web User Interface for mobiles, see  local_mobile_pot
-local_pot_all: local_pot_desktop local_pot_mobile local_pot_django
+local_pot_all: local_ts_desktop local_pot_mobile local_pot_django
+
+local_ts_desktop:
+	cd $(DESKTOP_INTERFACE_PATH); pyside-lupdate alfanousDesktop_localization.pro
+
+local_qm_compile:
+	cd $(DESKTOP_INTERFACE_PATH); lrelease alfanousDesktop_localization.pro
 
 local_pot_desktop:
 	xgettext $(DESKTOP_INTERFACE_PATH)*.py  --default-domain=alfanousQT --language=Python --keyword=n_ 
