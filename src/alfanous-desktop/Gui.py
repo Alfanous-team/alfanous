@@ -27,17 +27,12 @@ TODO use QT Localization instead of gettext
 ## Importing modules
 import sys
 import os
-
-## development mode
-sys.path.insert(0, "../../src") 
-
 import gettext
 from re import compile
 import codecs
 
 from pyparsing import ParseException
 from configobj import ConfigObj
-
 
 from PySide import  QtGui, QtCore, QtWebKit
 from PySide.QtCore import QRect
@@ -630,13 +625,20 @@ class QUI( Ui_MainWindow ):
 def main():
     """ the main function"""
     app = QtGui.QApplication( sys.argv )
+    # prepare localization
+    translator = QtCore.QTranslator()
+    lang_code, country_code = QtCore.QLocale().name().split("_")
+    base_path =  os.path.dirname( __file__ ) 
+    translator.load("alfanousDesktop", base_path + "locale/%s/LC_MESSAGES/" % lang_code ) # translation
+    #translator.load("i18n/%s" % lang_code )
+    app.installTranslator(translator)
 
     MainWindow = QtGui.QMainWindow()
     ui = QUI()
     ui.setupUi( MainWindow )
     app.setStyle(ui.style)
 
-    MainWindow.show()
+    MainWindow.showMaximized()
     app.exec_()
 
     ui.exit()
