@@ -95,6 +95,7 @@ lib64
 _build/
 rpmbuild
 %{buildroot}
+.doctrees/*
 
 # Packages #
 ############

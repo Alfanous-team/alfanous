@@ -1,8 +1,10 @@
-  **Note:** This project needs more contributors and/or funding. An open source software does not create itself magically. If you like it, see `how you can help? <https://github.com/Alfanous-team/alfanous/blob/master/FAQ.rst#how-you-can-help>`_.
-
-=================
+   **note** This project needs more contributors and/or funding. An open source software does not create itself magically. If you like it, see `how you can help? <https://github.com/Alfanous-team/alfanous/blob/master/FAQ.rst#how-you-can-help>`_.
+================
+Alfanous Project
+================
+-----------------
 What is Alfanous?
-=================
+-----------------
 
 
 Alfanous is a functional, dynamic, comprehensive Qur’an search engine that has been effectively designed to carry out simple or advanced Quranic searches. Alfanous uses a contemporary, highly developed approach to retrieve vital information, enabling stable efficient, speedy searches to be conducted. Alfanous aims to implement additional features such as highlight, site suggestions, scoring …etc to further improve your search experience.

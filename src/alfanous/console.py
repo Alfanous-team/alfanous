@@ -18,7 +18,6 @@
 a console interface for the API.
 
 TODO show RAW|JSON | BEST-presentation format
-TODO __file__ to use resources and indexes integrated with Alfanous Module
 '''
 
 import sys
