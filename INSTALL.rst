@@ -4,11 +4,11 @@ Install
 
 * **Windows XP/VISTA/SEVEN**: Download the installer from sourceforge: `last version <https://sourceforge.net/projects/alfanous/files/latest/download?source=files>`_
 
-* **Ubuntu-Based**:  you can add Sabily repository and install alfanous from it (`more <http://ubuntuforums.org/showthread.php?t=1370001>`_):
+* **Ubuntu-Based**:  you can add Alfanous ppa repo on Launchpad and install alfanous from it:
 
   .. code-block:: sh
 
-        $ add-apt-repository ppa:sabily.team/ppa && sudo apt-get -q update
+        $ add-apt-repository ppa:team4alfanous/alfanous && sudo apt-get -q update
         $ apt-get install alfanous
 
 * **Fedora-Based**:  follow this  `link1 <http://software.opensuse.org/download.html?project=home:Kenzy:tahadz&package=alfanous>`_  & this `link2 <http://software.opensuse.org/download.html?project=home:Kenzy:tahadz&package=python-alfanous>`_  .
