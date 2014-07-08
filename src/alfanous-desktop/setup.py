@@ -32,7 +32,7 @@ except:
 setup( 
 	name = "alfanousDesktop",
 	description = "Desktop interface for alfanous Quranic search engine API",
-	version = "0.7.00", # Don't modify version here, modify it in Makefile
+	version = "0.7.01", # Don't modify version here, modify it in Makefile
 	platforms = "ALL",
 	license = "AGPL",
 	packages = ["alfanousDesktop"],
@@ -43,14 +43,14 @@ setup(
 	maintainer_email = "assem.ch@gmail.com",
 
 	package_dir = {'alfanousDesktop':'.'},
-	long_description = """A PyQt GUI interface for alfanous Quranic search engine API""",
+	long_description = """A desktop GUI interface for alfanous Quran search engine API""",
 	keywords = "quran search indexing engine alfanous",
 	url = "http://www.alfanous.org/",
 	download_url = "",
 
 
-  	package_data = {'alfanousDesktop': ['UI/*']},
-	include_package_data = False,
+  	package_data = {'alfanousDesktop': ['UI/*.ui', 'templates/*.html', 'babel.ini', 'locale/*/LC_MESSAGES/*', 'i18n/*', '*.pro']},
+	include_package_data = True,
 
 
 	entry_points = { 'gui_scripts': ['alfanous-desktop = alfanousDesktop.Gui:main', ]},
