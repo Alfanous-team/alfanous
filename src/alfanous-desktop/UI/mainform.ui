@@ -33,14 +33,14 @@
    <bool>false</bool>
   </property>
   <property name="windowTitle">
-   <string>Alfanous - Qur'anic Search Engine (Beta Version)</string>
+   <string>Alfanous - Qur'anic Search Engine (Kahraman Release)</string>
   </property>
   <property name="windowIcon">
    <iconset resource="../images/main.qrc">
     <normaloff>:/resources/AlFanous.png</normaloff>:/resources/AlFanous.png</iconset>
   </property>
   <property name="whatsThis">
-   <string>Alfanous - Qur'anic Search Engine </string>
+   <string/>
   </property>
   <property name="layoutDirection">
    <enum>Qt::LeftToRight</enum>
@@ -814,7 +814,7 @@
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>252</width>
+          <width>253</width>
           <height>528</height>
          </rect>
         </property>
@@ -1100,7 +1100,7 @@
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>263</width>
+          <width>202</width>
           <height>332</height>
          </rect>
         </property>
@@ -1381,7 +1381,7 @@
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>214</width>
+          <width>215</width>
           <height>264</height>
          </rect>
         </property>
@@ -1553,7 +1553,7 @@
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>214</width>
+          <width>215</width>
           <height>264</height>
          </rect>
         </property>
@@ -1788,7 +1788,7 @@
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>246</width>
+          <width>247</width>
           <height>251</height>
          </rect>
         </property>
@@ -2041,7 +2041,7 @@
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>233</width>
+          <width>235</width>
           <height>262</height>
          </rect>
         </property>
@@ -2300,7 +2300,7 @@
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>214</width>
+          <width>215</width>
           <height>264</height>
          </rect>
         </property>
@@ -2313,7 +2313,7 @@
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>262</width>
+          <width>263</width>
           <height>262</height>
          </rect>
         </property>
