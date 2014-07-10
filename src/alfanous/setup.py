@@ -70,7 +70,7 @@ setup(
 
 	entry_points = { 'console_scripts': ['alfanous-console = alfanous.console:main', ]},
 
-	zip_safe = True,
+	zip_safe = False,
 
 	classifiers = [
 	"Development Status :: 4 - Beta",
