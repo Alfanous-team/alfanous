@@ -30,6 +30,8 @@ import os
 import gettext
 from re import compile
 import codecs
+from Tkinter import Tk
+import clipboard
 
 from pyparsing import ParseException
 from configobj import ConfigObj
@@ -283,6 +285,7 @@ class QUI( Ui_MainWindow ):
             MainWindow.setLayoutDirection( QtCore.Qt.RightToLeft )
         self.o_query.setLayoutDirection( QtCore.Qt.RightToLeft )
         QtCore.QObject.connect( self.o_search, QtCore.SIGNAL( "clicked()" ), self.search_all )
+        QtCore.QObject.connect( self.actionCopy_Query, QtCore.SIGNAL( "triggered()" ), self.copy_query )
         QtCore.QObject.connect( self.o_page, QtCore.SIGNAL( "valueChanged(int)" ), self.search_all )
         QtCore.QObject.connect( self.o_chapter, QtCore.SIGNAL( "activated(QString)" ), self.topics )
         QtCore.QObject.connect( self.o_topic, QtCore.SIGNAL( "activated(QString)" ), self.subtopics )
@@ -325,7 +328,12 @@ class QUI( Ui_MainWindow ):
         self.o_sura_name.addItems( sura_list  )
         self.load_config()
 
-
+    def copy_query(self):
+		text_C = self.o_query.currentText()
+		cb = QtGui.QApplication.clipboard()
+		cb.clear(mode=cb.Clipboard )
+		cb.setText(text_C, mode=cb.Clipboard)
+		
     def search_all( self, page = 1 ):
         """
         The main search function
