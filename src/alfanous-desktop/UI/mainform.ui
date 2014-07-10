@@ -1381,8 +1381,8 @@
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>186</width>
-          <height>211</height>
+          <width>229</width>
+          <height>228</height>
          </rect>
         </property>
         <attribute name="label">
@@ -1553,7 +1553,7 @@
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>181</width>
+          <width>214</width>
           <height>250</height>
          </rect>
         </property>
@@ -2300,8 +2300,8 @@
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>98</width>
-          <height>28</height>
+          <width>229</width>
+          <height>228</height>
          </rect>
         </property>
         <attribute name="label">
@@ -3137,7 +3137,7 @@
   </action>
   <action name="actionCopy_Query">
    <property name="enabled">
-    <bool>false</bool>
+    <bool>true</bool>
    </property>
    <property name="icon">
     <iconset resource="../images/main.qrc">
