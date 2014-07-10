@@ -7,8 +7,9 @@ What is NSIS?
 
 How to run the script successfully?
     #. Have a windows OS either XP, Vista or Seven.
-    #. Install the python library `py2exe <http://www.py2exe.org/>`_ ,  `setuptools <http://pypi.python.org/pypi/setuptools#files>`_ , and all requirments of AlfanousDesktop: 
-       `PyQt4 <http://www.riverbankcomputing.co.uk/software/pyqt/download>`_, 
+    #. Install the python libraries using easy_install: `py2exe <http://www.py2exe.org/>`_ ,  `setuptools <http://pypi.python.org/pypi/setuptools#files>`_ , and all requirments of AlfanousDesktop: 
+        PySide, 
+		Jinja2,
        `pyparsing <http://pyparsing.wikispaces.com/>`_, 
        `configobj <http://www.voidspace.org.uk/python/configobj.html>`_, 
        `alfanous API <https://github.com/Alfanous-team/alfanous/tree/master/src/alfanous>`_ (build resources then install the API) .
@@ -25,9 +26,9 @@ How to run the script successfully?
     #. Install `NSIS compiler <http://nsis.sourceforge.net/Download>`_ .
     #. Check if the script `make_installer.nsi <https://github.com/Alfanous-team/alfanous/blob/master/dist/nsis/make_installer.nsi>`_ is up to date and includes the right files.
 
-    #. Run the compilation of the installer using the nsis compiler.
-    #. Test the installer built.
-    #. For multiple uses, you can configure the bat script  `make_nsis_installer.win.bat <https://github.com/Alfanous-team/alfanous/blob/master/dist/nsis/make_nsis_installer.win.bat>`_ the command line. Update the variables VERSION, PYTHON, MAKENSIS before using it.
+    #. Run the compiling of the installer using the nsis compiler.
+    #. Test the installer building.
+    #. For multiple uses, run the batch script  **make_nsis_installer.win.bat**. Update the variables VERSION, PYTHON, MAKENSIS before using it.
 
        .. code-block:: bat
 
