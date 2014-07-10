@@ -15,7 +15,7 @@ from alfanous.main import TraductionSearchEngine, WordSearchEngine
 # default paths
 class Paths:
     """ """
-    ROOT = ( os.path.dirname( __file__ ) or resource_filename(".") )  + "/"
+    ROOT = os.path.dirname( __file__ )   + "/"
     HOME = ( os.getenv( 'USERPROFILE' ) or os.getenv( 'HOME' ) or "." ) + "/"
     # base paths
     ROOT_INDEX = ROOT + "indexes/"
