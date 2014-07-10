@@ -3149,7 +3149,7 @@
   </action>
   <action name="actionCopy_Page">
    <property name="enabled">
-    <bool>false</bool>
+    <bool>true</bool>
    </property>
    <property name="icon">
     <iconset resource="../images/main.qrc">
