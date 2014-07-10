@@ -61,16 +61,16 @@
 ;!insertmacro MUI_LANGUAGE  "Dutch"
 !insertmacro MUI_LANGUAGE  "English"
 ;!insertmacro MUI_LANGUAGE  "Estonian"
-!insertmacro MUI_LANGUAGE  "Farsi"
+;!insertmacro MUI_LANGUAGE  "Farsi"
 ;!insertmacro MUI_LANGUAGE  "Finnish"
-!insertmacro MUI_LANGUAGE  "French"
+;!insertmacro MUI_LANGUAGE  "French"
 ;!insertmacro MUI_LANGUAGE  "Galician"
 ;!insertmacro MUI_LANGUAGE  "German"
 ;!insertmacro MUI_LANGUAGE  "Greek"
 ;!insertmacro MUI_LANGUAGE  "Hebrew"
 ;!insertmacro MUI_LANGUAGE  "Hungarian"
 ;!insertmacro MUI_LANGUAGE  "Icelandic"
-!insertmacro MUI_LANGUAGE  "Indonesian"
+;!insertmacro MUI_LANGUAGE  "Indonesian"
 ;!insertmacro MUI_LANGUAGE  "Irish"
 ;!insertmacro MUI_LANGUAGE  "Italian"
 ;!insertmacro MUI_LANGUAGE  "Japanese"
@@ -80,7 +80,7 @@
 ;!insertmacro MUI_LANGUAGE  "Lithuanian"
 ;!insertmacro MUI_LANGUAGE  "Luxembourgish"
 ;!insertmacro MUI_LANGUAGE  "Macedonian"
-!insertmacro MUI_LANGUAGE  "Malay"
+;!insertmacro MUI_LANGUAGE  "Malay"
 ;!insertmacro MUI_LANGUAGE  "Mongolian"
 ;!insertmacro MUI_LANGUAGE  "Norwegian"
 ;!insertmacro MUI_LANGUAGE  "NorwegianNynor"
@@ -94,11 +94,11 @@
 ;!insertmacro MUI_LANGUAGE  "SimpChinese"
 ;!insertmacro MUI_LANGUAGE  "Slovak"
 ;!insertmacro MUI_LANGUAGE  "Slovenian"
-!insertmacro MUI_LANGUAGE  "Spanish"
+;!insertmacro MUI_LANGUAGE  "Spanish"
 ;!insertmacro MUI_LANGUAGE  "Swedish"
 ;!insertmacro MUI_LANGUAGE  "Thai"
 ;!insertmacro MUI_LANGUAGE  "TradChinese"
-!insertmacro MUI_LANGUAGE  "Turkish"
+;!insertmacro MUI_LANGUAGE  "Turkish"
 ;!insertmacro MUI_LANGUAGE  "Ukrainian"
 ;!insertmacro MUI_LANGUAGE  "Uzbek"
 ;!insertmacro MUI_LANGUAGE  "Valencian"
@@ -122,18 +122,20 @@ FunctionEnd
 Section "Application" SEC01
   SetOutPath "$INSTDIR"
   SetOverwrite ifnewer
- # File "dist\mingwm10.dll"
-  SetOverwrite try
   File "dist\bz2.pyd"
   File "dist\alfanousDesktop-win.exe"
   CreateDirectory "$SMPROGRAMS\Alfanous"
   CreateShortCut "$SMPROGRAMS\Alfanous\Alfanous.lnk" "$INSTDIR\alfanousDesktop-win.exe"
   CreateShortCut "$DESKTOP\Alfanous.lnk" "$INSTDIR\alfanousDesktop-win.exe"
-  File "dist\*"
-  SetOverwrite ifnewer
   File "license.txt"
   CreateShortCut "$STARTMENU.lnk" "$INSTDIR\license.txt"
-SectionEnd
+  File /r "dist\*"
+  File /r "..\..\src\alfanous-desktop\templates"
+  SetOutPath "$INSTDIR\alfanous"
+  File /r "..\..\src\alfanous\indexes"
+  File /r "..\..\src\alfanous\configs"
+  File /r "..\..\src\alfanous\resources"
+  SectionEnd
 
 
 
@@ -146,13 +148,6 @@ Section "Fonts" SEC02
   
 SectionEnd
 
-
-Section "Predefined configuration" SEC03
-  SetOutPath "$APPDATA\alfanous\configs"
-  AccessControl::GrantOnFile "$APPDATA\alfanous\configs" "(BU)" "FullAccess"
-  SetOverwrite try
-   File "${ROOT_PATH}resources\configs\config.ini"
-SectionEnd
 
 
 Section -AdditionalIcons
@@ -177,7 +172,6 @@ SectionEnd
 !insertmacro MUI_FUNCTION_DESCRIPTION_BEGIN
   !insertmacro MUI_DESCRIPTION_TEXT ${SEC01} "required"
   !insertmacro MUI_DESCRIPTION_TEXT ${SEC02} "optional"
-  !insertmacro MUI_DESCRIPTION_TEXT ${SEC03} "recommended"
 !insertmacro MUI_FUNCTION_DESCRIPTION_END
 
 
@@ -195,7 +189,6 @@ FunctionEnd
 Section Uninstall
   Delete "$INSTDIR\${PRODUCT_NAME}.url"
   Delete "$INSTDIR\uninst.exe"
-  Delete "$APPDATA\alfanous\configs\*"
 
   Delete "$INSTDIR\*"
 
@@ -206,7 +199,6 @@ Section Uninstall
   Delete "$DESKTOP\Alfanous.lnk"
   Delete "$SMPROGRAMS\Alfanous\Alfanous.lnk"
 
-  RMDir  "$APPDATA\alfanous\configs"
   RMDir "$APPDATA\alfanous"
   RMDir "$SMPROGRAMS\Alfanous"
   RMDir "$INSTDIR"
