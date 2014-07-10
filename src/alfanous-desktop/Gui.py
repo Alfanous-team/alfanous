@@ -284,6 +284,7 @@ class QUI( Ui_MainWindow ):
         self.o_query.setLayoutDirection( QtCore.Qt.RightToLeft )
         QtCore.QObject.connect( self.o_search, QtCore.SIGNAL( "clicked()" ), self.search_all )
         QtCore.QObject.connect( self.actionCopy_Query, QtCore.SIGNAL( "triggered()" ), self.copy_query )
+        QtCore.QObject.connect( self.actionCopy_Page, QtCore.SIGNAL( "triggered()" ), self.copy_result )
         QtCore.QObject.connect( self.o_page, QtCore.SIGNAL( "valueChanged(int)" ), self.search_all )
         QtCore.QObject.connect( self.o_chapter, QtCore.SIGNAL( "activated(QString)" ), self.topics )
         QtCore.QObject.connect( self.o_topic, QtCore.SIGNAL( "activated(QString)" ), self.subtopics )
@@ -331,6 +332,15 @@ class QUI( Ui_MainWindow ):
 		cb = QtGui.QApplication.clipboard()
 		cb.clear(mode=cb.Clipboard )
 		cb.setText(text_C, mode=cb.Clipboard)
+
+    def	copy_result(self):
+		page_C = self.o_results.page()
+		frame_C = page_C.mainFrame()
+		text_C = frame_C.toPlainText ()
+		cb = QtGui.QApplication.clipboard()
+		cb.clear(mode=cb.Clipboard )
+		cb.setText(text_C, mode=cb.Clipboard)
+
 		
     def search_all( self, page = 1 ):
         """
