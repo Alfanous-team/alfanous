@@ -30,8 +30,6 @@ import os
 import gettext
 from re import compile
 import codecs
-from Tkinter import Tk
-import clipboard
 
 from pyparsing import ParseException
 from configobj import ConfigObj
