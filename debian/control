@@ -3,7 +3,6 @@ Section: misc
 Priority: extra
 Maintainer: Debian Islamic Maintainers <debian-islamic-maintainers@lists.alioth.debian.org>
 Uploaders: أحمد المحمودي (Ahmed El-Mahmoudy) <aelmahmoudy@sabily.org>
-DM-Upload-Allowed: yes
 Build-Depends: debhelper (>= 8)
 Build-Depends-Indep: python (>= 2.6.6-3~),
  python-setuptools, 
@@ -21,6 +20,7 @@ Depends: ${misc:Depends},
  python-alfanous,
  fonts-arabeyes,
  ttf-me-quran
+ |fonts-sil-scheherazade
 Recommends: islamic-menus
 Description: Quranic search engine (desktop application)
  Alfanous is a Quranic search engine offers simple and advanced

@@ -31,6 +31,7 @@ Coding
 * Web Interface: `A~CH`_  , `Walid Ziouche`_, `Abdellah Chelli`_ , `Mouad Debbar`_,  `Mennouchi Islam Azeddine <https://github.com/islamoc>`_, `Muslih al aqaad`_, `Tedjeddine Meabeo`_ ,   , Ahmed Ramadan
 * Firefox toolbar: `Zakaria Smahi`_ 
 * PyArabic(Integrated): Taha Zerrouki, A~CH, Ahimta~
+* Windows Store : `Mohamed Anas Mostefaoui(FenyLab) <https://github.com/luffy-dam>`_
 
 --------
 Research
@@ -111,7 +112,7 @@ Translation
 
 * Main Web Interface
 
-  * Arabic: A~CH, Yasmine Houadjli
+  * Arabic: A~CH, Yasmine Houadjli, Merwan Ali
   * French: Zineb Pub, Yasmine Houadjli, Abdelkarim Aries, Nassim rehali, Nasreddine Cheniki
   * Indonesian:  Ahmed Jumal , Amy cidra, Mahyuddin Susanto
   * Japanese: Abdelkarim Aries

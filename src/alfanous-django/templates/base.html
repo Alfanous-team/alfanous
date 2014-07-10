@@ -244,8 +244,10 @@
                             <li><a href="#contactpanel" data-toggle="modal"><i class="icon-envelope"></i> {{ _("Contact") }}</a></li>
                             <li><a href="#download" data-toggle="modal"><i class="icon-download-alt"></i> {{ _("Download") }}</a></li>
                             <li><a href="http://www.alfanous.org/jos2" ><i class="icon-exchange"></i> {{ _("Dev API") }}</a></li>
+                             <li {% if not params %} class="disabled"{% endif %}> <a class="text-warning with_tooltip"  {% if params %}href="/jos2?action=search&unit={{ current.unit }}&{{ current.request }}{% endif %}" data-toggle="tooltip" title="" data-placement="{{ bidi.align_inverse }}" data-original-title="{{ _('Same results in Json format, useful for developers') }}"><i class="icon-exchange"></i> {{ _("JSON Results") }}</a></li>
+                            
                         <li class="nav-header">{{ _("Contribute:") }}</li>
-                             <li><a class="text-error" href="http://feedback.alfanous.org/"><i class="icon-comment"></i> {{ _("Feedback") }}</a></li>
+                             <li><a  href="http://feedback.alfanous.org/"><i class="icon-comment"></i> {{ _("Feedback") }}</a></li>
                             <li><a href="#translatepanel" data-toggle="modal"><i class="icon-globe"></i> {{ _("Translate") }}</a></li>
                             <li><a href="#donatepanel" data-toggle="modal" title="We really need your help!" class="dropdown-toggle bootstro" data-bootstro-title="{{ _('we really need your help!') }}"
                                 data-bootstro-content="{{ _('We\'re looking to fund the project, if you like it, help us making it even better.') }}"
@@ -360,11 +362,7 @@
                 </div><!--/span4-->
             </div><!--/row-->
         </div>
-
-
         <div class="row-fluid">
-
-
         	{% block results %}  {% endblock results %}
         </div>
 
@@ -476,7 +474,10 @@
     <script src="http://api.html5media.info/1.1.5/html5media.min.js"></script>
 
     <!-- Google analytics #Assem -->
-    <script type="text/javascript">var bidi = "{{ bidi.direction }}";</script>
+    <script type="text/javascript">
+        var bidi = "{{ bidi.direction }}";
+        $('.with_tooltip').tooltip()
+    </script>
 	<script type="text/javascript">
         var _gaq = _gaq || [];
         _gaq.push(['_setAccount', 'UA-9859501-4']);

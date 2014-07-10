@@ -5,11 +5,11 @@
 
 ## Global Version of the project, must be updated in each significant change in 
 ## the API & Desktop Gui
-VERSION=0.7.01
+VERSION=0.7.02
 
 ## Next releases:
 # Beta [0.7.00~0.9.99], Basis [1.0], Silver[~], Golden[~], Crystal[~]
-RELEASE=$(VERSION)BlackStone
+RELEASE=$(VERSION)Kahraman
 
 ## API path, API contains all python packages 
 API_PATH="./src/"
@@ -113,7 +113,7 @@ edit_hints:
 # never leave it empty till fix that! TODO
 edit_stats:
 	nano $(CONFIGS_PATH)stats.json 
-	chmod 777 $(CONFIGS_PATH)stats.json 
+	chmod -x $(CONFIGS_PATH)stats.json 
 
 # update downloading translation list manually
 edit_translations_to_download_list:
@@ -139,14 +139,20 @@ build_desktop: qt_all
 
 ## clean temporary files after a building operation
 # TODO	add all what has to be cleaned!
-clean:
+clean: clean_all
+
+clean_all: clean_deb
 	@echo "Cleaning..." 
 	rm -rf `find . -type f -name Thumbs.db`
 	#rm -rf `find . -name *~`
 	rm -rf `find . -name *.pyc`
 	rm -rf `find . -name *.pyo`
 	rm -rf `find . -type d -name *.egg-info`
-	
+
+clean_deb:
+	@echo "Cleaning python build..."
+	@cd src/alfanous/ ; python setup.py clean --all
+	@cd src/alfanous-desktop/ ; python setup.py clean --all
 
 ## download Quranic resources needed for Alfanous project, which are:
 # 1. Quran translations from zekr.org, see download_translations
@@ -259,6 +265,7 @@ index_all: index_main index_extend #index_word
 
 index_main:
 	export PYTHONPATH=$(API_PATH) ;	rm -r $(INDEX_PATH)main/; $(PYTHON_COMMAND) $(QIMPORT) -x main $(DB_PATH)main.db $(INDEX_PATH)main/
+	chmod 644  $(INDEX_PATH)main/*_LOCK
 
 index_extend:
 	export PYTHONPATH=$(API_PATH) ;	rm -r $(INDEX_PATH)extend/; $(PYTHON_COMMAND) $(QIMPORT) -x extend $(STORE_PATH)Translations/ $(INDEX_PATH)extend/
@@ -276,9 +283,11 @@ speller_all: speller_aya speller_subject #speller_word
 
 speller_aya:
 	export PYTHONPATH=$(API_PATH) ;	$(PYTHON_COMMAND) $(QIMPORT) -p aya  $(INDEX_PATH)main/
+	chmod 644  $(INDEX_PATH)main/*_LOCK
 
 speller_subject:
 	export PYTHONPATH=$(API_PATH) ;	$(PYTHON_COMMAND) $(QIMPORT) -p subject  $(INDEX_PATH)main/
+	chmod 644  $(INDEX_PATH)main/*_LOCK
 
 speller_word:
 	export PYTHONPATH=$(API_PATH) ;	$(PYTHON_COMMAND) $(QIMPORT) -p word  $(INDEX_PATH)word/
@@ -294,7 +303,7 @@ help_epydoc:
 	mkdir -p output/$(VERSION);cd $(API_PATH); epydoc   --html -v --graph all --no-sourcecode     --show-imports  -n alfanous -u alfanous.org  . ;  zip -9   alfanous-epydoc.zip ./html/* ;	mv -f alfanous-epydoc.zip ../output/$(VERSION)/ ; rm -r ./html
 	
 help_sphinx:
-	mkdir -p output/$(VERSION);cd ./docs ; make dirhtml;  zip -9   alfanous-sphinx-doc.zip ./_build/dirhtml/* ; mv -f alfanous-sphinx-doc.zip ../output/$(VERSION)/ ; rm -r  ./_build/dirhtml
+	mkdir -p output/$(VERSION)/sphinx;  sphinx-build . output/$(VERSION)/sphinx;  zip -9 alfanous-sphinx-doc.zip output/$(VERSION)/sphinx ; mv -f alfanous-sphinx-doc.zip ../output/$(VERSION)/ 
 
 ## Qt resources compilation, PyQt is needed: apt-get install pyqt4-dev-tools  pyqt-tools  
 #  1. qrc files, see qt_rcc
@@ -311,10 +320,16 @@ qt_uic:
 qt_rcc:
 	pyside-rcc $(QT_RC_PATH)main.qrc -o $(DESKTOP_INTERFACE_PATH)main_rc.py
 
-## build localization files, this include:
+## build localization files, this includes:
 # 1. Desktop interface , see local_desktop_pot
 # 2. Web User Interface for mobiles, see  local_mobile_pot
-local_pot_all: local_pot_desktop local_pot_mobile local_pot_django
+local_pot_all: local_ts_desktop local_pot_mobile local_pot_django
+
+local_ts_desktop:
+	cd $(DESKTOP_INTERFACE_PATH); pyside-lupdate alfanousDesktop_localization.pro
+
+local_qm_compile:
+	cd $(DESKTOP_INTERFACE_PATH); lrelease alfanousDesktop_localization.pro
 
 local_pot_desktop:
 	xgettext $(DESKTOP_INTERFACE_PATH)*.py  --default-domain=alfanousQT --language=Python --keyword=n_ 
