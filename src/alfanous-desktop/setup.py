@@ -32,7 +32,7 @@ except:
 setup( 
 	name = "alfanousDesktop",
 	description = "Desktop interface for alfanous Quranic search engine API",
-	version = "0.7.01", # Don't modify version here, modify it in Makefile
+	version = "0.7.02", # Don't modify version here, modify it in Makefile
 	platforms = "ALL",
 	license = "AGPL",
 	packages = ["alfanousDesktop"],

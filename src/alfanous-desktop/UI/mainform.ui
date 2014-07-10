@@ -190,7 +190,7 @@
       <item>
        <widget class="QCheckBox" name="o_autospell">
         <property name="enabled">
-         <bool>false</bool>
+         <bool>true</bool>
         </property>
         <property name="text">
          <string>Auto Fuzzy Search</string>
@@ -498,7 +498,7 @@
      <x>0</x>
      <y>0</y>
      <width>1422</width>
-     <height>25</height>
+     <height>29</height>
     </rect>
    </property>
    <property name="layoutDirection">
@@ -756,7 +756,7 @@
    <property name="minimumSize">
     <size>
      <width>200</width>
-     <height>393</height>
+     <height>402</height>
     </size>
    </property>
    <property name="windowIcon">
@@ -814,8 +814,8 @@
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>253</width>
-          <height>528</height>
+          <width>249</width>
+          <height>595</height>
          </rect>
         </property>
         <attribute name="label">
@@ -1100,8 +1100,8 @@
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>202</width>
-          <height>332</height>
+          <width>214</width>
+          <height>367</height>
          </rect>
         </property>
         <attribute name="label">
@@ -1381,8 +1381,8 @@
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>215</width>
-          <height>264</height>
+          <width>186</width>
+          <height>211</height>
          </rect>
         </property>
         <attribute name="label">
@@ -1553,8 +1553,8 @@
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>215</width>
-          <height>264</height>
+          <width>181</width>
+          <height>250</height>
          </rect>
         </property>
         <attribute name="label">
@@ -1788,8 +1788,8 @@
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>247</width>
-          <height>251</height>
+          <width>242</width>
+          <height>250</height>
          </rect>
         </property>
         <attribute name="label">
@@ -2041,8 +2041,8 @@
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>235</width>
-          <height>262</height>
+          <width>230</width>
+          <height>289</height>
          </rect>
         </property>
         <attribute name="label">
@@ -2300,8 +2300,8 @@
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>215</width>
-          <height>264</height>
+          <width>98</width>
+          <height>28</height>
          </rect>
         </property>
         <attribute name="label">
@@ -2313,8 +2313,8 @@
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>263</width>
-          <height>262</height>
+          <width>252</width>
+          <height>289</height>
          </rect>
         </property>
         <attribute name="label">
