@@ -369,6 +369,7 @@ class QUI( Ui_MainWindow ):
                  "aya_stat_info":  self.actionAya_Info.isChecked(),
                  "aya_sajda_info":  self.actionAya_Info.isChecked(),
                  "translation":self.translation_group.checkedAction().text(),
+                 "fuzzy": self.o_autospell.isChecked(),
                  "word_info": self.actionWord_Info.isChecked(),
                  }
         self.Queries.insert( 0, search_flags )
