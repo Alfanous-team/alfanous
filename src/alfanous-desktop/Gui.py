@@ -84,11 +84,18 @@ class QUI( Ui_MainWindow ):
         self.Queries = []
         self.undo_stack = []
         self.redo_stack = []
-        self.style = ""
+        self.style = self.get_style_from_config()
 
     def exit( self ):
         self.save_config()
         sys.exit()
+
+    def get_style_from_config(self):
+        config = ConfigObj( CONFIGPATH + "/config.ini", encoding="utf-8" )
+        if config.has_key( "options" ):
+            return config["options"]["style"] if config["options"].has_key( "style" ) else ""
+        else:
+            return ""
 
     def load_config( self ):
         """load configuration"""
@@ -524,6 +531,12 @@ class QUI( Ui_MainWindow ):
 
     def changeStyle( self, style ):
         self.style = style
+        mb = QtGui.QMessageBox(QtGui.QMessageBox.Warning, "Applying skin", "You should restart application in order for the skin to take effect", buttons = QtGui.QMessageBox.Ok)
+        #mb.addButton(QtGui.QMessageBox.Cancel)
+        #[, buttons=QMessageBox.NoButton[, parent=None[, flags=Qt.Dialog | Qt.MSWindowsFixedSizeDialogHint]]]
+        ret = mb.exec_()
+        if ret == QtGui.QMessageBox.Ok:
+            pass
 
     def add2query_advanced( self ):
         """
@@ -739,6 +752,8 @@ class QUI( Ui_MainWindow ):
 
 def main():
     """ the main function"""
+    ui = QUI()
+    QtGui.QApplication.setStyle(ui.style)
     app = QtGui.QApplication( sys.argv )
     # prepare localization
     translator = QtCore.QTranslator()
@@ -749,9 +764,7 @@ def main():
     app.installTranslator(translator)
 
     MainWindow = QtGui.QMainWindow()
-    ui = QUI()
     ui.setupUi( MainWindow )
-    app.setStyle(ui.style)
 
     MainWindow.showMaximized()
     app.exec_()
