@@ -334,7 +334,7 @@ class QUI( Ui_MainWindow ):
 		cb.clear(mode=cb.Clipboard )
 		cb.setText(text_C, mode=cb.Clipboard)
 
-    def	copy_result(self):
+    def copy_result(self):
 		page_C = self.o_results.page()
 		frame_C = page_C.mainFrame()
 		text_C = frame_C.toPlainText ()
