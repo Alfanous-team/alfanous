@@ -1382,8 +1382,8 @@
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>229</width>
-          <height>228</height>
+          <width>186</width>
+          <height>211</height>
          </rect>
         </property>
         <attribute name="label">
@@ -1554,7 +1554,7 @@
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>214</width>
+          <width>181</width>
           <height>250</height>
          </rect>
         </property>
@@ -2301,8 +2301,8 @@
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>229</width>
-          <height>228</height>
+          <width>98</width>
+          <height>28</height>
          </rect>
         </property>
         <attribute name="label">
@@ -3117,7 +3117,7 @@
   </action>
   <action name="actionUndo_Query">
    <property name="enabled">
-    <bool>false</bool>
+    <bool>true</bool>
    </property>
    <property name="icon">
     <iconset resource="../images/main.qrc">
@@ -3129,7 +3129,7 @@
   </action>
   <action name="actionRedo_Query">
    <property name="enabled">
-    <bool>false</bool>
+    <bool>true</bool>
    </property>
    <property name="icon">
     <iconset resource="../images/main.qrc">
