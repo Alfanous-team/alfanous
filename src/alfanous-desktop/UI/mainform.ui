@@ -525,6 +525,7 @@
     <addaction name="menu_Recent_Queries"/>
     <addaction name="separator"/>
     <addaction name="a_save"/>
+    <addaction name="a_save_txt"/>
     <addaction name="a_print"/>
     <addaction name="separator"/>
     <addaction name="m_exit"/>
@@ -2705,7 +2706,10 @@
      <normaloff>:/resources/gnome-dev-floppy.png</normaloff>:/resources/gnome-dev-floppy.png</iconset>
    </property>
    <property name="text">
-    <string>&amp;Export Results</string>
+    <string>&amp;Export Results as HTML</string>
+   </property>
+   <property name="iconText">
+    <string>Export Results as HTML</string>
    </property>
   </action>
   <action name="a_print">
@@ -3156,7 +3160,7 @@
      <normaloff>:/resources/editpaste.png</normaloff>:/resources/editpaste.png</iconset>
    </property>
    <property name="text">
-    <string>Copy Page</string>
+    <string>Copy Result as Text</string>
    </property>
   </action>
   <action name="actionNone">
@@ -3335,6 +3339,11 @@
    </property>
    <property name="text">
     <string>Default</string>
+   </property>
+  </action>
+  <action name="a_save_txt">
+   <property name="text">
+    <string>Export Results as text</string>
    </property>
   </action>
  </widget>

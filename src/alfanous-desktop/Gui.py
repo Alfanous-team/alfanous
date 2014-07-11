@@ -285,6 +285,7 @@ class QUI( Ui_MainWindow ):
         QtCore.QObject.connect( self.o_search, QtCore.SIGNAL( "clicked()" ), self.search_all )
         QtCore.QObject.connect( self.actionCopy_Query, QtCore.SIGNAL( "triggered()" ), self.copy_query )
         QtCore.QObject.connect( self.actionCopy_Page, QtCore.SIGNAL( "triggered()" ), self.copy_result )
+        QtCore.QObject.connect( self.a_save_txt, QtCore.SIGNAL( "triggered()" ), self.save_results_txt )
         QtCore.QObject.connect( self.o_page, QtCore.SIGNAL( "valueChanged(int)" ), self.search_all )
         QtCore.QObject.connect( self.o_chapter, QtCore.SIGNAL( "activated(QString)" ), self.topics )
         QtCore.QObject.connect( self.o_topic, QtCore.SIGNAL( "activated(QString)" ), self.subtopics )
@@ -604,6 +605,21 @@ class QUI( Ui_MainWindow ):
         path = unicode( filenames[0] )
         f = codecs.open( path, "w", "utf-8")
         f.write( self.o_results.page().currentFrame().toHtml().replace("<head>", "<head><meta charset=\"utf-8\">") + "<br><br>CopyRights(c)<a href='http://www.alfanous.org'>Alfanous</a>  " )
+        f.close()
+    
+    def save_results_txt( self ):
+        """save as html file"""
+        diag = QtGui.QFileDialog()
+        diag.setAcceptMode( diag.AcceptSave )
+        diag.setFileMode( diag.AnyFile )
+        diag.setFilter( "*.txt" )
+        filenames = ["./results.txt    "]
+        if ( diag.exec_() ):
+            filenames = diag.selectedFiles();
+
+        path = unicode( filenames[0] )
+        f = codecs.open( path, "w", "utf-8")
+        f.write( self.o_results.page().currentFrame().toPlainText() + "\nCopyRights(c) Alfanous http://www.alfanous.org  " )
         f.close()
 
     def print_results( self ):
