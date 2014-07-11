@@ -285,6 +285,8 @@ class QUI( Ui_MainWindow ):
         QtCore.QObject.connect( self.o_search, QtCore.SIGNAL( "clicked()" ), self.search_all )
         QtCore.QObject.connect( self.actionCopy_Query, QtCore.SIGNAL( "triggered()" ), self.copy_query )
         QtCore.QObject.connect( self.actionCopy_Page, QtCore.SIGNAL( "triggered()" ), self.copy_result )
+        QtCore.QObject.connect( self.actionUndo_Query, QtCore.SIGNAL( "triggered()" ), self.undo_query )
+        QtCore.QObject.connect( self.actionRedo_Query, QtCore.SIGNAL( "triggered()" ), self.redo_query )
         QtCore.QObject.connect( self.a_save_txt, QtCore.SIGNAL( "triggered()" ), self.save_results_txt )
         QtCore.QObject.connect( self.o_page, QtCore.SIGNAL( "valueChanged(int)" ), self.search_all )
         QtCore.QObject.connect( self.o_chapter, QtCore.SIGNAL( "activated(QString)" ), self.topics )
@@ -341,6 +343,88 @@ class QUI( Ui_MainWindow ):
 		cb = QtGui.QApplication.clipboard()
 		cb.clear(mode=cb.Clipboard )
 		cb.setText(text_C, mode=cb.Clipboard)
+	
+    def undo_query(self):
+		self.o_query.setCurrentIndex(self.o_query.currentIndex ()+1)
+		self.search_no_undo()
+
+    def redo_query(self):
+		self.o_query.setCurrentIndex(self.o_query.currentIndex ()-1)
+		self.search_no_undo()
+		
+    def search_no_undo( self, page = 1 ):
+        """
+        The main search function
+        """
+        # add to undo stack
+        #if self.o_query.currentText() in self.undo_stack:
+        #    self.undo_stack.remove( self.o_query.currentText() )
+        #self.undo_stack.insert( 0, self.o_query.currentText() )
+        #self.o_query.clear()
+        #self.o_query.addItems( self.undo_stack )
+        #self.o_query.setCurrentIndex( 0 )
+
+        limit = int( self.limit_group.checkedAction().text() )
+
+        suggest_flags = {
+                "action":"suggest",
+                "query": self.o_query.currentText()
+                }
+        suggestion_output = RAWoutput.do( suggest_flags )
+
+        #search
+        results, terms = None, []
+        search_flags = {"action":"search",
+                 "query": unicode( self.o_query.currentText() ),
+                 "sortedby":"score" if self.actionRelevance.isChecked() \
+                        else "mushaf" if self.actionPosition_in_Mus_haf.isChecked() \
+                        else "tanzil" if self.actionRevelation.isChecked() \
+                        else "subject" if self.actionSubject.isChecked() \
+                        else unicode( self.sorted_by_group.checkedAction().text() ), # ara2eng_names[self.sorted_by_group.checkedAction().text()] for Arabic,
+                 "page": self.o_page.value(),
+                 "reverse_order": self.actionInverse.isChecked(),
+                 "word_info":self.actionWord_Info.isChecked(),
+                 "highlight": "html" if self.actionHighlight_Keywords.isChecked() else None,
+                 "script": "uthmani" if self.actionUthmani.isChecked()
+                            else "standard",
+                 "prev_aya":self.actionPrevios_aya.isChecked(),
+                 "next_aya": self.actionNext_aya.isChecked(),
+                 "sura_info": self.actionSura_info.isChecked(),
+                 "aya_position_info":  self.actionAya_Info.isChecked(),
+                 "aya_theme_info":  self.actionAya_Info.isChecked(),
+                 "aya_stat_info":  self.actionAya_Info.isChecked(),
+                 "aya_sajda_info":  self.actionAya_Info.isChecked(),
+                 "translation":self.translation_group.checkedAction().text(),
+                 "fuzzy": self.o_autospell.isChecked(),
+                 "word_info": self.actionWord_Info.isChecked(),
+                 }
+        self.Queries.insert( 0, search_flags )
+        results = RAWoutput.do( search_flags )
+
+        #if self.o_filter.isChecked() and self.last_results:
+        #    results = QFilter( self.last_results, results )
+        self.last_results = results
+        ayas = results["search"]["ayas"]
+        #outputs
+        self.o_time.display( results["search"]["runtime"] )
+        self.o_resnum.display( results["search"]["interval"]["total"] )
+
+        # get page
+        numpagereal = ( results["search"]["interval"]["total"] - 1 ) / PERPAGE + 1
+        numpagelimit = ( limit - 1 ) / PERPAGE + 1
+        numpage = numpagelimit if numpagelimit < numpagereal else numpagereal
+        self.o_numpage.display( numpage )
+        self.o_page.setMinimum( 1 if numpage else 0 )
+        self.o_page.setMaximum( numpage )
+        #self.o_page.setValue(  )
+
+        template_vars = {
+						   "results": results, 
+						   "suggestions":suggestion_output ,
+						   "_": lambda x:x 
+						}
+
+        self.o_results.setHtml( AYA_RESULTS_TEMPLATE.render(template_vars) )
 
 		
     def search_all( self, page = 1 ):
@@ -598,14 +682,13 @@ class QUI( Ui_MainWindow ):
         diag.setAcceptMode( diag.AcceptSave )
         diag.setFileMode( diag.AnyFile )
         diag.setFilter( "*.html" )
-        filenames = ["./results.html    "]
+        #filenames = ["./results.html    "]
         if ( diag.exec_() ):
             filenames = diag.selectedFiles();
-
-        path = unicode( filenames[0] )
-        f = codecs.open( path, "w", "utf-8")
-        f.write( self.o_results.page().currentFrame().toHtml().replace("<head>", "<head><meta charset=\"utf-8\">") + "<br><br>CopyRights(c)<a href='http://www.alfanous.org'>Alfanous</a>  " )
-        f.close()
+            path = unicode( filenames[0] )
+            f = codecs.open( path, "w", "utf-8")
+            f.write( self.o_results.page().currentFrame().toHtml().replace("<head>", "<head><meta charset=\"utf-8\">") + "<br><br>CopyRights(c)<a href='http://www.alfanous.org'>Alfanous</a>  " )
+            f.close()
     
     def save_results_txt( self ):
         """save as html file"""
@@ -613,14 +696,13 @@ class QUI( Ui_MainWindow ):
         diag.setAcceptMode( diag.AcceptSave )
         diag.setFileMode( diag.AnyFile )
         diag.setFilter( "*.txt" )
-        filenames = ["./results.txt    "]
+        #filenames = ["./results.txt    "]
         if ( diag.exec_() ):
             filenames = diag.selectedFiles();
-
-        path = unicode( filenames[0] )
-        f = codecs.open( path, "w", "utf-8")
-        f.write( self.o_results.page().currentFrame().toPlainText() + "\nCopyRights(c) Alfanous http://www.alfanous.org  " )
-        f.close()
+            path = unicode( filenames[0] )
+            f = codecs.open( path, "w", "utf-8")
+            f.write( self.o_results.page().currentFrame().toPlainText() + "\nCopyRights(c) Alfanous http://www.alfanous.org  " )
+            f.close()
 
     def print_results( self ):
         printer = QtGui.QPrinter()
