@@ -66,8 +66,8 @@ see `FAQ <https://github.com/Alfanous-team/alfanous/blob/master/FAQ.rst>`_
 -------------------
 Research Foundation
 -------------------
-link to `thesis on slideshare <http://www.slideshare.net/AssemCHELLI/main-30182032>`_
-
+* Link to `Magister Thesis <http://www.slideshare.net/AssemCHELLI/main-30182032>`_
+* Link to `General Behavior Schema <http://www.slideshare.net/AssemCHELLI/visio-global-schema>`_.
 
 ----------
 Interfaces
