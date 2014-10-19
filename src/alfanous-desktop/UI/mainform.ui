@@ -329,6 +329,11 @@
         </item>
         <item>
          <widget class="QLCDNumber" name="o_time">
+          <property name="font">
+           <font>
+            <family>Arial</family>
+           </font>
+          </property>
           <property name="frameShape">
            <enum>QFrame::NoFrame</enum>
           </property>
@@ -373,7 +378,7 @@
          <widget class="QLCDNumber" name="o_resnum">
           <property name="font">
            <font>
-            <family>Arial Black</family>
+            <family>Arial</family>
             <pointsize>13</pointsize>
            </font>
           </property>
@@ -446,6 +451,11 @@
       </item>
       <item>
        <widget class="QLCDNumber" name="o_numpage">
+        <property name="font">
+         <font>
+          <family>Arial</family>
+         </font>
+        </property>
         <property name="toolTip">
          <string>pages number</string>
         </property>
@@ -498,7 +508,7 @@
      <x>0</x>
      <y>0</y>
      <width>1422</width>
-     <height>29</height>
+     <height>23</height>
     </rect>
    </property>
    <property name="layoutDirection">
@@ -756,7 +766,7 @@
    </property>
    <property name="minimumSize">
     <size>
-     <width>200</width>
+     <width>300</width>
      <height>402</height>
     </size>
    </property>
@@ -771,13 +781,13 @@
     <bool>false</bool>
    </property>
    <property name="features">
-    <set>QDockWidget::AllDockWidgetFeatures</set>
+    <set>QDockWidget::DockWidgetFloatable|QDockWidget::DockWidgetMovable</set>
    </property>
    <property name="allowedAreas">
     <set>Qt::LeftDockWidgetArea|Qt::RightDockWidgetArea</set>
    </property>
    <property name="windowTitle">
-    <string> Features </string>
+    <string> Search Features </string>
    </property>
    <attribute name="dockWidgetArea">
     <number>1</number>
@@ -808,15 +818,15 @@
         <number>0</number>
        </property>
        <property name="currentIndex">
-        <number>1</number>
+        <number>0</number>
        </property>
        <widget class="QWidget" name="page_2">
         <property name="geometry">
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>249</width>
-          <height>595</height>
+          <width>295</width>
+          <height>537</height>
          </rect>
         </property>
         <attribute name="label">
@@ -1101,8 +1111,8 @@
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>214</width>
-          <height>367</height>
+          <width>295</width>
+          <height>329</height>
          </rect>
         </property>
         <attribute name="label">
@@ -1382,8 +1392,8 @@
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>186</width>
-          <height>211</height>
+          <width>308</width>
+          <height>266</height>
          </rect>
         </property>
         <attribute name="label">
@@ -1554,8 +1564,8 @@
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>181</width>
-          <height>250</height>
+          <width>308</width>
+          <height>266</height>
          </rect>
         </property>
         <attribute name="label">
@@ -1789,8 +1799,8 @@
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>242</width>
-          <height>250</height>
+          <width>308</width>
+          <height>266</height>
          </rect>
         </property>
         <attribute name="label">
@@ -2042,8 +2052,8 @@
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>230</width>
-          <height>289</height>
+          <width>295</width>
+          <height>267</height>
          </rect>
         </property>
         <attribute name="label">
@@ -2301,8 +2311,8 @@
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>98</width>
-          <height>28</height>
+          <width>308</width>
+          <height>266</height>
          </rect>
         </property>
         <attribute name="label">
@@ -2314,8 +2324,8 @@
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>252</width>
-          <height>289</height>
+          <width>308</width>
+          <height>266</height>
          </rect>
         </property>
         <attribute name="label">

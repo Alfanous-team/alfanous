@@ -136,8 +136,8 @@ class QUI( Ui_MainWindow ):
             self.actionAya_Info.setChecked( boolean( config["extend"]["aya_info"] )if config["extend"].has_key( "aya_info" ) else True )
             self.actionSura_info.setChecked( boolean( config["extend"]["sura_info"] )if config["extend"].has_key( "sura_info" ) else True )
         else:
-            self.actionPrevios_aya.setChecked(False)
-            self.actionNext_aya.setChecked(False)
+            self.actionPrevios_aya.setChecked(True)
+            self.actionNext_aya.setChecked(True)
             self.actionWord_Info.setChecked(True)
             self.actionAya_Info.setChecked(True)
             self.actionSura_info.setChecked(True)
@@ -154,8 +154,8 @@ class QUI( Ui_MainWindow ):
             self.w_features.setHidden( not boolean( config["widgets"]["features"] ) if config["widgets"].has_key( "features" ) else True )
             self.m_features.setChecked ( boolean( config["widgets"]["features"] ) if config["widgets"].has_key( "features" ) else False )
         else:
-            self.w_features.setHidden(True)
-            self.m_features.setChecked (False)
+            self.w_features.setHidden(False)
+            self.m_features.setChecked (True)
 
     def save_config( self ):
         """save configuration """
