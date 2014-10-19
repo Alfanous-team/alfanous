@@ -15,16 +15,7 @@
 ##     You should have received a copy of the GNU Affero General Public License
 ##     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-"""
-TODO relate to PreferenceDlg / Hints dialog
-TODO use css and simplify texts to make a good localization
-TODO use QT Localization instead of gettext
-"""
 
-
-
-
-## Importing modules
 import sys
 import os
 import gettext
