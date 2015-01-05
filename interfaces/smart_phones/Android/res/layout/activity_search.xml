@@ -1,0 +1,102 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/white" >
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="50dp"
+        android:src="@drawable/alfanous_logo" />
+
+    <LinearLayout
+        android:id="@+id/searchAria"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:orientation="horizontal" >
+
+        <EditText
+            android:id="@+id/editText"
+            style="@style/EditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:layout_weight="2"
+            android:background="@drawable/styled_edit" />
+
+        <Button
+            android:id="@+id/quickSearchBtn"
+            style="@style/ButtonText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="5dp"
+            android:layout_weight="5"
+            android:background="@drawable/button_green"
+            android:drawablePadding="5dp"
+            android:drawableRight="@drawable/ic_search"
+            android:text="Quick" />
+    </LinearLayout>
+
+	<LinearLayout
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content" 
+	    android:orientation="horizontal"
+	    android:layout_below="@+id/searchAria"
+	    android:layout_centerInParent="true"
+	    android:id="@+id/buttonSearchArea"
+   	    android:layout_marginTop="20dp">
+		<Button
+	        android:id="@+id/historyBtn"
+	        style="@style/ButtonText"
+	        android:layout_width="100dp"
+	        android:layout_height="wrap_content"
+	        android:layout_marginRight="5dp"
+	        android:background="@drawable/button_green_adv"
+	        android:drawablePadding="10dp"
+	        android:text="History" />
+		<Button
+	        android:id="@+id/searchAdvBtn"
+	        style="@style/ButtonText"
+	        android:layout_width="100dp"
+	        android:layout_height="wrap_content"
+	        android:background="@drawable/button_green_adv"
+	        android:drawablePadding="5dp"
+	        android:text="Advanced" />
+	</LinearLayout>
+    
+
+    <ProgressBar
+        android:id="@+id/progressBar1"
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"   
+        android:layout_marginTop="30dp"   
+        android:indeterminate="false" android:visibility="gone"
+        android:layout_below="@+id/buttonSearchArea"
+        android:layout_centerInParent="true"/>
+    <TextView
+        android:id="@+id/searchError"
+        android:layout_below="@+id/buttonSearchArea"
+        android:layout_marginTop="30dp" 
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true" 
+         android:visibility="gone"
+        android:textColor="#FF0000" />
+    
+    <TextView
+        android:id="@+id/textView1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="10dp"
+        android:autoLink="web"
+        android:text="Based on Alfanous.org API | Copyright © FenyLab"
+        android:textColor="@android:color/black" />
+
+</RelativeLayout>
