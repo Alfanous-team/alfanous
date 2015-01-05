@@ -106,6 +106,9 @@ install -D -m 644 %{SOURCE1} %{buildroot}%{_libdir}/firefox/searchplugins
 mkdir -p %{buildroot}%{_datadir}/fonts/alfanous
 mv %{buildroot}%{_datadir}/fonts/*.ttf %{buildroot}%{_datadir}/fonts/alfanous
 
+# fix pyside not found error
+perl -pi -w -e 's|pyside||g;' %{buildroot}%{python_sitelib}/alfanousDesktop-%{version}-py%{pybasever}.egg-info/requires.txt
+
 %clean
 rm -rf %{buildroot}
 
@@ -152,6 +155,9 @@ rm -rf %{buildroot}
 #%{_libdir}/chromium-browser/extensions/alfanousQSE@gmail.com
 
 %changelog
+* Sun Jan 04 2015 Muhammad Shaban <Mr.Muhammad@outlook.com> 0.7.02-5
+- fix pyside not found error
+
 * Thu Jan 01 2015 Muhammad Shaban <Mr.Muhammad@outlook.com> 0.7.02-4
 - update
 - exchange PyQt4 with PySide
