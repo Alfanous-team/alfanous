@@ -1,4 +1,5 @@
-%{!?python_sitelib:  %global python_sitelib  %(%{__python} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())")}
+%global pybasever %(%{__python} -c "import sys ; print(sys.version[:3])")
+%global python_sitelib  %(%{__python} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())")
 
 Name:    alfanous
 Summary: Alfanous is a search engine API provide the simple and advanced search in the Holy Qur'an and more features.
