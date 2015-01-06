@@ -1,24 +1,26 @@
-%{!?python_sitelib:  %global python_sitelib  %(%{__python} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())")}
+%global pybasever %(%{__python} -c "import sys ; print(sys.version[:3])")
+%global python_sitelib  %(%{__python} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())")
 
 Name:    alfanous
 Summary: Alfanous is a search engine API provide the simple and advanced search in the Holy Qur'an and more features.
 Version: alfanous.version
 Release: alfanous.release%{?dist}
-License: GPL
+License: AGPL3
 Url:     http://www.alfanous.org
-#Source0: https://github.com/Alfanous-team/alfanous/archive/master.zip
+Source0: alfanous-alfanous.version.tar.gz
 Source1: alfanous.xml
 Group:   Quran/Tools
-BuildRequires: python python-setuptools python-distutils-extra python-configobj  unzip ImageMagick
-Requires: python python-configobj python-alfanous islamic-menus
-%if 0%{?fedora_version} || 0%{?rhel_version}
-BuildRequires: pyside pyparsing
-Requires:  pyside pyparsing
+BuildRequires: python python-setuptools python-configobj unzip ImageMagick
+Requires:      python python-configobj python-alfanous python-jinja2 islamic-menus
+%if 0%{?fedora_version} || 0%{?rhel_version} || 0%{?centos_version}
+BuildRequires: python-pyside-devel pyside-tools pyparsing
+Requires:      python-pyside pyparsing
 %endif
 %if 0%{?suse_version}
-BuildRequires: python-pyside python-pyparsing
-Requires:  python-qt5 python-pyparsing
+BuildRequires: python-pyside-devel python-pyside-tools python-pyparsing
+Requires:      python-pyside python-pyparsing
 %endif
+BuildArch:     noarch
 
 %description
 Alfanous is a search engine API provide the simple and advanced search in the Holy Qur'an and more features.
@@ -105,6 +107,9 @@ install -D -m 644 %{SOURCE1} %{buildroot}%{_libdir}/firefox/searchplugins
 mkdir -p %{buildroot}%{_datadir}/fonts/alfanous
 mv %{buildroot}%{_datadir}/fonts/*.ttf %{buildroot}%{_datadir}/fonts/alfanous
 
+# fix pyside not found error
+perl -pi -w -e 's|pyside||g;' %{buildroot}%{python_sitelib}/alfanousDesktop-%{version}-py%{pybasever}.egg-info/requires.txt
+
 %clean
 rm -rf %{buildroot}
 
@@ -151,6 +156,14 @@ rm -rf %{buildroot}
 #%{_libdir}/chromium-browser/extensions/alfanousQSE@gmail.com
 
 %changelog
+* Sun Jan 04 2015 Muhammad Shaban <Mr.Muhammad@outlook.com> 0.7.02-5
+- fix pyside not found error
+
+* Thu Jan 01 2015 Muhammad Shaban <Mr.Muhammad@outlook.com> 0.7.02-4
+- update
+- exchange PyQt4 with PySide
+- fix desktop file errors
+
 * Sun Feb 10 2013 Muhammad Shaban <Mr.Muhammad@linuxac.org> 0.7-4
 - split alfanous package to alfanous & python-alfanous
 

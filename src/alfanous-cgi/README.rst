@@ -80,6 +80,6 @@ If you are using this service, We want to make Alfanous more helpful. We will be
    * Official web interface by AlfanousTeam - `alfanous.org <www.alfanous.org>`_
    * Application for Android by FenyLab - `link <https://play.google.com/store/apps/details?id=com.fenylab.alfanous>`_
    * Application for iPhone/iPad by iPhoneIslam - `link <https://itunes.apple.com/us/app/alfanws-mhrk-bhth-qrany-mtqdm/id543646326?mt=8&ign-mpt=uo%3D4>`_ 
-
+   * Qoogle - Application for Android by Amr Ebada - `link <https://play.google.com/store/apps/details?id=com.roic.amr_ebada.qoogle>`_
 
 

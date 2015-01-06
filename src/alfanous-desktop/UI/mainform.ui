@@ -33,14 +33,14 @@
    <bool>false</bool>
   </property>
   <property name="windowTitle">
-   <string>Alfanous - Qur'anic Search Engine (Beta Version)</string>
+   <string>Alfanous - Qur'anic Search Engine (Kahraman Release)</string>
   </property>
   <property name="windowIcon">
    <iconset resource="../images/main.qrc">
     <normaloff>:/resources/AlFanous.png</normaloff>:/resources/AlFanous.png</iconset>
   </property>
   <property name="whatsThis">
-   <string>Alfanous - Qur'anic Search Engine </string>
+   <string/>
   </property>
   <property name="layoutDirection">
    <enum>Qt::LeftToRight</enum>
@@ -190,7 +190,7 @@
       <item>
        <widget class="QCheckBox" name="o_autospell">
         <property name="enabled">
-         <bool>false</bool>
+         <bool>true</bool>
         </property>
         <property name="text">
          <string>Auto Fuzzy Search</string>
@@ -329,6 +329,11 @@
         </item>
         <item>
          <widget class="QLCDNumber" name="o_time">
+          <property name="font">
+           <font>
+            <family>Arial</family>
+           </font>
+          </property>
           <property name="frameShape">
            <enum>QFrame::NoFrame</enum>
           </property>
@@ -373,7 +378,7 @@
          <widget class="QLCDNumber" name="o_resnum">
           <property name="font">
            <font>
-            <family>Arial Black</family>
+            <family>Arial</family>
             <pointsize>13</pointsize>
            </font>
           </property>
@@ -446,6 +451,11 @@
       </item>
       <item>
        <widget class="QLCDNumber" name="o_numpage">
+        <property name="font">
+         <font>
+          <family>Arial</family>
+         </font>
+        </property>
         <property name="toolTip">
          <string>pages number</string>
         </property>
@@ -498,7 +508,7 @@
      <x>0</x>
      <y>0</y>
      <width>1422</width>
-     <height>25</height>
+     <height>23</height>
     </rect>
    </property>
    <property name="layoutDirection">
@@ -525,6 +535,7 @@
     <addaction name="menu_Recent_Queries"/>
     <addaction name="separator"/>
     <addaction name="a_save"/>
+    <addaction name="a_save_txt"/>
     <addaction name="a_print"/>
     <addaction name="separator"/>
     <addaction name="m_exit"/>
@@ -755,8 +766,8 @@
    </property>
    <property name="minimumSize">
     <size>
-     <width>200</width>
-     <height>393</height>
+     <width>300</width>
+     <height>402</height>
     </size>
    </property>
    <property name="windowIcon">
@@ -770,13 +781,13 @@
     <bool>false</bool>
    </property>
    <property name="features">
-    <set>QDockWidget::AllDockWidgetFeatures</set>
+    <set>QDockWidget::DockWidgetFloatable|QDockWidget::DockWidgetMovable</set>
    </property>
    <property name="allowedAreas">
     <set>Qt::LeftDockWidgetArea|Qt::RightDockWidgetArea</set>
    </property>
    <property name="windowTitle">
-    <string> Features </string>
+    <string> Search Features </string>
    </property>
    <attribute name="dockWidgetArea">
     <number>1</number>
@@ -807,15 +818,15 @@
         <number>0</number>
        </property>
        <property name="currentIndex">
-        <number>1</number>
+        <number>0</number>
        </property>
        <widget class="QWidget" name="page_2">
         <property name="geometry">
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>252</width>
-          <height>528</height>
+          <width>295</width>
+          <height>537</height>
          </rect>
         </property>
         <attribute name="label">
@@ -1100,8 +1111,8 @@
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>263</width>
-          <height>332</height>
+          <width>295</width>
+          <height>329</height>
          </rect>
         </property>
         <attribute name="label">
@@ -1381,8 +1392,8 @@
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>214</width>
-          <height>264</height>
+          <width>308</width>
+          <height>266</height>
          </rect>
         </property>
         <attribute name="label">
@@ -1553,8 +1564,8 @@
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>214</width>
-          <height>264</height>
+          <width>308</width>
+          <height>266</height>
          </rect>
         </property>
         <attribute name="label">
@@ -1788,8 +1799,8 @@
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>246</width>
-          <height>251</height>
+          <width>308</width>
+          <height>266</height>
          </rect>
         </property>
         <attribute name="label">
@@ -2041,8 +2052,8 @@
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>233</width>
-          <height>262</height>
+          <width>295</width>
+          <height>267</height>
          </rect>
         </property>
         <attribute name="label">
@@ -2300,8 +2311,8 @@
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>214</width>
-          <height>264</height>
+          <width>308</width>
+          <height>266</height>
          </rect>
         </property>
         <attribute name="label">
@@ -2313,8 +2324,8 @@
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>262</width>
-          <height>262</height>
+          <width>308</width>
+          <height>266</height>
          </rect>
         </property>
         <attribute name="label">
@@ -2705,7 +2716,10 @@
      <normaloff>:/resources/gnome-dev-floppy.png</normaloff>:/resources/gnome-dev-floppy.png</iconset>
    </property>
    <property name="text">
-    <string>&amp;Export Results</string>
+    <string>&amp;Export Results as HTML</string>
+   </property>
+   <property name="iconText">
+    <string>Export Results as HTML</string>
    </property>
   </action>
   <action name="a_print">
@@ -3113,7 +3127,7 @@
   </action>
   <action name="actionUndo_Query">
    <property name="enabled">
-    <bool>false</bool>
+    <bool>true</bool>
    </property>
    <property name="icon">
     <iconset resource="../images/main.qrc">
@@ -3125,7 +3139,7 @@
   </action>
   <action name="actionRedo_Query">
    <property name="enabled">
-    <bool>false</bool>
+    <bool>true</bool>
    </property>
    <property name="icon">
     <iconset resource="../images/main.qrc">
@@ -3137,7 +3151,7 @@
   </action>
   <action name="actionCopy_Query">
    <property name="enabled">
-    <bool>false</bool>
+    <bool>true</bool>
    </property>
    <property name="icon">
     <iconset resource="../images/main.qrc">
@@ -3149,14 +3163,14 @@
   </action>
   <action name="actionCopy_Page">
    <property name="enabled">
-    <bool>false</bool>
+    <bool>true</bool>
    </property>
    <property name="icon">
     <iconset resource="../images/main.qrc">
      <normaloff>:/resources/editpaste.png</normaloff>:/resources/editpaste.png</iconset>
    </property>
    <property name="text">
-    <string>Copy Page</string>
+    <string>Copy Result as Text</string>
    </property>
   </action>
   <action name="actionNone">
@@ -3335,6 +3349,11 @@
    </property>
    <property name="text">
     <string>Default</string>
+   </property>
+  </action>
+  <action name="a_save_txt">
+   <property name="text">
+    <string>Export Results as text</string>
    </property>
   </action>
  </widget>

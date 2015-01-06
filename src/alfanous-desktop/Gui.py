@@ -15,16 +15,7 @@
 ##     You should have received a copy of the GNU Affero General Public License
 ##     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-"""
-TODO relate to PreferenceDlg / Hints dialog
-TODO use css and simplify texts to make a good localization
-TODO use QT Localization instead of gettext
-"""
 
-
-
-
-## Importing modules
 import sys
 import os
 import gettext
@@ -84,11 +75,18 @@ class QUI( Ui_MainWindow ):
         self.Queries = []
         self.undo_stack = []
         self.redo_stack = []
-        self.style = ""
+        self.style = self.get_style_from_config()
 
     def exit( self ):
         self.save_config()
         sys.exit()
+
+    def get_style_from_config(self):
+        config = ConfigObj( CONFIGPATH + "/config.ini", encoding="utf-8" )
+        if config.has_key( "options" ):
+            return config["options"]["style"] if config["options"].has_key( "style" ) else ""
+        else:
+            return ""
 
     def load_config( self ):
         """load configuration"""
@@ -138,8 +136,8 @@ class QUI( Ui_MainWindow ):
             self.actionAya_Info.setChecked( boolean( config["extend"]["aya_info"] )if config["extend"].has_key( "aya_info" ) else True )
             self.actionSura_info.setChecked( boolean( config["extend"]["sura_info"] )if config["extend"].has_key( "sura_info" ) else True )
         else:
-            self.actionPrevios_aya.setChecked(False)
-            self.actionNext_aya.setChecked(False)
+            self.actionPrevios_aya.setChecked(True)
+            self.actionNext_aya.setChecked(True)
             self.actionWord_Info.setChecked(True)
             self.actionAya_Info.setChecked(True)
             self.actionSura_info.setChecked(True)
@@ -156,8 +154,8 @@ class QUI( Ui_MainWindow ):
             self.w_features.setHidden( not boolean( config["widgets"]["features"] ) if config["widgets"].has_key( "features" ) else True )
             self.m_features.setChecked ( boolean( config["widgets"]["features"] ) if config["widgets"].has_key( "features" ) else False )
         else:
-            self.w_features.setHidden(True)
-            self.m_features.setChecked (False)
+            self.w_features.setHidden(False)
+            self.m_features.setChecked (True)
 
     def save_config( self ):
         """save configuration """
@@ -283,6 +281,11 @@ class QUI( Ui_MainWindow ):
             MainWindow.setLayoutDirection( QtCore.Qt.RightToLeft )
         self.o_query.setLayoutDirection( QtCore.Qt.RightToLeft )
         QtCore.QObject.connect( self.o_search, QtCore.SIGNAL( "clicked()" ), self.search_all )
+        QtCore.QObject.connect( self.actionCopy_Query, QtCore.SIGNAL( "triggered()" ), self.copy_query )
+        QtCore.QObject.connect( self.actionCopy_Page, QtCore.SIGNAL( "triggered()" ), self.copy_result )
+        QtCore.QObject.connect( self.actionUndo_Query, QtCore.SIGNAL( "triggered()" ), self.undo_query )
+        QtCore.QObject.connect( self.actionRedo_Query, QtCore.SIGNAL( "triggered()" ), self.redo_query )
+        QtCore.QObject.connect( self.a_save_txt, QtCore.SIGNAL( "triggered()" ), self.save_results_txt )
         QtCore.QObject.connect( self.o_page, QtCore.SIGNAL( "valueChanged(int)" ), self.search_all )
         QtCore.QObject.connect( self.o_chapter, QtCore.SIGNAL( "activated(QString)" ), self.topics )
         QtCore.QObject.connect( self.o_topic, QtCore.SIGNAL( "activated(QString)" ), self.subtopics )
@@ -325,7 +328,103 @@ class QUI( Ui_MainWindow ):
         self.o_sura_name.addItems( sura_list  )
         self.load_config()
 
+    def copy_query(self):
+		text_C = self.o_query.currentText()
+		cb = QtGui.QApplication.clipboard()
+		cb.clear(mode=cb.Clipboard )
+		cb.setText(text_C, mode=cb.Clipboard)
 
+    def copy_result(self):
+		page_C = self.o_results.page()
+		frame_C = page_C.mainFrame()
+		text_C = frame_C.toPlainText ()
+		cb = QtGui.QApplication.clipboard()
+		cb.clear(mode=cb.Clipboard )
+		cb.setText(text_C, mode=cb.Clipboard)
+	
+    def undo_query(self):
+		self.o_query.setCurrentIndex(self.o_query.currentIndex ()+1)
+		self.search_no_undo()
+
+    def redo_query(self):
+		self.o_query.setCurrentIndex(self.o_query.currentIndex ()-1)
+		self.search_no_undo()
+		
+    def search_no_undo( self, page = 1 ):
+        """
+        The main search function
+        """
+        # add to undo stack
+        #if self.o_query.currentText() in self.undo_stack:
+        #    self.undo_stack.remove( self.o_query.currentText() )
+        #self.undo_stack.insert( 0, self.o_query.currentText() )
+        #self.o_query.clear()
+        #self.o_query.addItems( self.undo_stack )
+        #self.o_query.setCurrentIndex( 0 )
+
+        limit = int( self.limit_group.checkedAction().text() )
+
+        suggest_flags = {
+                "action":"suggest",
+                "query": self.o_query.currentText()
+                }
+        suggestion_output = RAWoutput.do( suggest_flags )
+
+        #search
+        results, terms = None, []
+        search_flags = {"action":"search",
+                 "query": unicode( self.o_query.currentText() ),
+                 "sortedby":"score" if self.actionRelevance.isChecked() \
+                        else "mushaf" if self.actionPosition_in_Mus_haf.isChecked() \
+                        else "tanzil" if self.actionRevelation.isChecked() \
+                        else "subject" if self.actionSubject.isChecked() \
+                        else unicode( self.sorted_by_group.checkedAction().text() ), # ara2eng_names[self.sorted_by_group.checkedAction().text()] for Arabic,
+                 "page": self.o_page.value(),
+                 "reverse_order": self.actionInverse.isChecked(),
+                 "word_info":self.actionWord_Info.isChecked(),
+                 "highlight": "html" if self.actionHighlight_Keywords.isChecked() else None,
+                 "script": "uthmani" if self.actionUthmani.isChecked()
+                            else "standard",
+                 "prev_aya":self.actionPrevios_aya.isChecked(),
+                 "next_aya": self.actionNext_aya.isChecked(),
+                 "sura_info": self.actionSura_info.isChecked(),
+                 "aya_position_info":  self.actionAya_Info.isChecked(),
+                 "aya_theme_info":  self.actionAya_Info.isChecked(),
+                 "aya_stat_info":  self.actionAya_Info.isChecked(),
+                 "aya_sajda_info":  self.actionAya_Info.isChecked(),
+                 "translation":self.translation_group.checkedAction().text(),
+                 "fuzzy": self.o_autospell.isChecked(),
+                 "word_info": self.actionWord_Info.isChecked(),
+                 }
+        self.Queries.insert( 0, search_flags )
+        results = RAWoutput.do( search_flags )
+
+        #if self.o_filter.isChecked() and self.last_results:
+        #    results = QFilter( self.last_results, results )
+        self.last_results = results
+        ayas = results["search"]["ayas"]
+        #outputs
+        self.o_time.display( results["search"]["runtime"] )
+        self.o_resnum.display( results["search"]["interval"]["total"] )
+
+        # get page
+        numpagereal = ( results["search"]["interval"]["total"] - 1 ) / PERPAGE + 1
+        numpagelimit = ( limit - 1 ) / PERPAGE + 1
+        numpage = numpagelimit if numpagelimit < numpagereal else numpagereal
+        self.o_numpage.display( numpage )
+        self.o_page.setMinimum( 1 if numpage else 0 )
+        self.o_page.setMaximum( numpage )
+        #self.o_page.setValue(  )
+
+        template_vars = {
+						   "results": results, 
+						   "suggestions":suggestion_output ,
+						   "_": lambda x:x 
+						}
+
+        self.o_results.setHtml( AYA_RESULTS_TEMPLATE.render(template_vars) )
+
+		
     def search_all( self, page = 1 ):
         """
         The main search function
@@ -369,6 +468,7 @@ class QUI( Ui_MainWindow ):
                  "aya_stat_info":  self.actionAya_Info.isChecked(),
                  "aya_sajda_info":  self.actionAya_Info.isChecked(),
                  "translation":self.translation_group.checkedAction().text(),
+                 "fuzzy": self.o_autospell.isChecked(),
                  "word_info": self.actionWord_Info.isChecked(),
                  }
         self.Queries.insert( 0, search_flags )
@@ -422,6 +522,12 @@ class QUI( Ui_MainWindow ):
 
     def changeStyle( self, style ):
         self.style = style
+        mb = QtGui.QMessageBox(QtGui.QMessageBox.Warning, "Applying skin", "You should restart application in order for the skin to take effect", buttons = QtGui.QMessageBox.Ok)
+        #mb.addButton(QtGui.QMessageBox.Cancel)
+        #[, buttons=QMessageBox.NoButton[, parent=None[, flags=Qt.Dialog | Qt.MSWindowsFixedSizeDialogHint]]]
+        ret = mb.exec_()
+        if ret == QtGui.QMessageBox.Ok:
+            pass
 
     def add2query_advanced( self ):
         """
@@ -580,14 +686,27 @@ class QUI( Ui_MainWindow ):
         diag.setAcceptMode( diag.AcceptSave )
         diag.setFileMode( diag.AnyFile )
         diag.setFilter( "*.html" )
-        filenames = ["./results.html    "]
+        #filenames = ["./results.html    "]
         if ( diag.exec_() ):
             filenames = diag.selectedFiles();
-
-        path = unicode( filenames[0] )
-        f = codecs.open( path, "w", "utf-8")
-        f.write( self.o_results.page().currentFrame().toHtml().replace("<head>", "<head><meta charset=\"utf-8\">") + "<br><br>CopyRights(c)<a href='http://www.alfanous.org'>Alfanous</a>  " )
-        f.close()
+            path = unicode( filenames[0] )
+            f = codecs.open( path, "w", "utf-8")
+            f.write( self.o_results.page().currentFrame().toHtml().replace("<head>", "<head><meta charset=\"utf-8\">") + "<br><br>CopyRights(c)<a href='http://www.alfanous.org'>Alfanous</a>  " )
+            f.close()
+    
+    def save_results_txt( self ):
+        """save as html file"""
+        diag = QtGui.QFileDialog()
+        diag.setAcceptMode( diag.AcceptSave )
+        diag.setFileMode( diag.AnyFile )
+        diag.setFilter( "*.txt" )
+        #filenames = ["./results.txt    "]
+        if ( diag.exec_() ):
+            filenames = diag.selectedFiles();
+            path = unicode( filenames[0] )
+            f = codecs.open( path, "w", "utf-8")
+            f.write( self.o_results.page().currentFrame().toPlainText() + "\nCopyRights(c) Alfanous http://www.alfanous.org  " )
+            f.close()
 
     def print_results( self ):
         printer = QtGui.QPrinter()
@@ -624,6 +743,8 @@ class QUI( Ui_MainWindow ):
 
 def main():
     """ the main function"""
+    ui = QUI()
+    QtGui.QApplication.setStyle(ui.style)
     app = QtGui.QApplication( sys.argv )
     # prepare localization
     translator = QtCore.QTranslator()
@@ -634,9 +755,7 @@ def main():
     app.installTranslator(translator)
 
     MainWindow = QtGui.QMainWindow()
-    ui = QUI()
     ui.setupUi( MainWindow )
-    app.setStyle(ui.style)
 
     MainWindow.showMaximized()
     app.exec_()
