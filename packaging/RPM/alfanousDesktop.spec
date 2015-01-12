@@ -1,4 +1,5 @@
-%{!?python_sitelib:  %global python_sitelib  %(%{__python} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())")}
+%global pybasever %(%{__python} -c "import sys ; print(sys.version[:3])")
+%global python_sitelib  %(%{__python} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())")
 
 Name:    alfanous
 Summary: Alfanous is a search engine API provide the simple and advanced search in the Holy Qur'an and more features.
@@ -6,7 +7,7 @@ Version: alfanous.version
 Release: alfanous.release%{?dist}
 License: AGPL3
 Url:     http://www.alfanous.org
-Source0: alfanous-alfanous.version.tar.gz
+#Source0: alfanous-alfanous.version.tar.gz
 Source1: alfanous.xml
 Group:   Quran/Tools
 BuildRequires: python python-setuptools python-configobj unzip ImageMagick
@@ -65,18 +66,18 @@ Alfanous python library.
 #Chromium Toolbar for Alfanous.
 
 %prep
-#%setup -q -n alfanous-master
-rm -rf   %{_builddir}/alfanous-master
-mkdir -p %{_builddir}/alfanous-master
+#%setup -q
+rm -rf   %{_builddir}/alfanous-alfanous.version
+mkdir -p %{_builddir}/alfanous-alfanous.version
 cd ../..
-cp -r `cat list.txt`  %{_builddir}/alfanous-master
+cp -r `cat list.txt`  %{_builddir}/alfanous-alfanous.version
 
 %build
-cd alfanous-master
+cd alfanous-alfanous.version
 make build
 
 %install
-cd alfanous-master
+cd alfanous-alfanous.version
 make install_desktop DESTDIR=%{buildroot}
 
 # Install icon
@@ -155,6 +156,9 @@ rm -rf %{buildroot}
 #%{_libdir}/chromium-browser/extensions/alfanousQSE@gmail.com
 
 %changelog
+* Sun Jan 04 2015 Muhammad Shaban <Mr.Muhammad@outlook.com> 0.7.02-6
+- fix errors when use (make dist_rpm)
+
 * Sun Jan 04 2015 Muhammad Shaban <Mr.Muhammad@outlook.com> 0.7.02-5
 - fix pyside not found error
 
