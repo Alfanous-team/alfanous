@@ -21,12 +21,10 @@ Alfanous understands the complex nature of the Arabic language and thus offers e
 :Feedbacks: `Alfanous Community Feedbacks <http://feedback.alfanous.org/>`_
 :Accounts: `@Facebook <https://www.facebook.com/alfanous>`_ `@Twitter <https://twitter.com/alfanous>`_ `@GooglePlus <https://plus.google.com/111305625425237630318>`_ 
         | `@Sourceforge <http://sourceforge.net/projects/alfanous/>`_ `@Launchpad <http://www.launchpad.net/alfanous/>`_
-
-------------
-Build Status
-------------
 .. image:: https://travis-ci.org/Alfanous-team/alfanous.png?branch=master
         :target: https://travis-ci.org/Alfanous-team/alfanous
+.. image:: https://landscape.io/github/Alfanous-team/alfanous/master/landscape.svg
+        :target: https://landscape.io/github/Alfanous-team/alfanous
 
 --------
 Contacts
