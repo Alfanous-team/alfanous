@@ -46,9 +46,10 @@ from Templates import AYA_RESULTS_TEMPLATE
 reload(sys)
 sys.setdefaultencoding('utf-8')
 
-##  To force a language
-#os.environ['LANGUAGE'] = 'ar'
-#os.environ['LANG'] = 'ar'
+## STATIC GLOBAL variables
+CONFIGPATH = ( os.getenv( 'USERPROFILE' ) or os.getenv( 'HOME' ) or "." ) + "/"
+PERPAGE = 10 #results per page
+RELATIONS = ["", "", u"|", u"+", u"-"]
 
 ## Localization using gettext
 _ = gettext.gettext
@@ -56,17 +57,18 @@ n_ = gettext.ngettext
 gettext.bindtextdomain( "alfanousJinjaT" , "./locale");
 gettext.textdomain( "alfanousJinjaT" );
 
-## Localization using QT way
-tr = QtCore.QCoreApplication.translate
+def get_language_from_config():
+        config = ConfigObj( CONFIGPATH + "/config.ini", encoding="utf-8" )
+        if config.has_key( "options" ):
+            return config["options"]["language"] if config["options"].has_key( "language" ) else ""
+        else:
+            return ""
 
-## Initialize search engines
+lang = get_language_from_config()
+os.environ['LANGUAGE'] = lang
+os.environ['LANG'] = lang
+
 RAWoutput = Raw() # default paths
-
-## STATIC GLOBAL variables
-CONFIGPATH = ( os.getenv( 'USERPROFILE' ) or os.getenv( 'HOME' ) or "." ) + "/"
-PERPAGE = 10 #results per page
-DIR = _( "ltr" ) #direction: default
-RELATIONS = ["", "", u"|", u"+", u"-"]
 
 SAJDA_TYPE = {u"مستحبة":_( u"recommended" ), u"واجبة":_( u"obliged" )}
 SURA_TYPE = {u"مدنية":_( u"medina" ), u"مكية":_( u"mekka" )}
@@ -108,8 +110,10 @@ class QUI( Ui_MainWindow ):
             #self.o_limit.setValue( int( config["options"]["limit"] ) if config["options"].has_key( "limit" ) else 100 )
             #self.o_perpage.setValue( int( config["options"]["perpage"] ) if config["options"].has_key( "perpage" ) else 10 )
             self.style = config["options"]["style"] if config["options"].has_key( "style" ) else ""
+            self.language = config["options"]["language"] if config["options"].has_key( "language" ) else ""
         else:
             self.style = ""
+            self.language = ""
 
         styles = {"": self.actionDefaultStyle.setChecked,
                 "windows": self.actionWindows.setChecked,
@@ -119,6 +123,14 @@ class QUI( Ui_MainWindow ):
                 "windowsxp": self.actionWindowsXP.setChecked,
                 "macintosh": self.actionMacintosh.setChecked}
         styles[self.style](True)
+
+        languages = {"": self.actionSystem.setChecked,
+                "en": self.actionEnglish.setChecked,
+                "ar": self.actionArabic.setChecked,
+                "fr": self.actionFrench.setChecked,
+                "id": self.actionIndonesian.setChecked
+                }
+        languages[self.language](True)
 
         if config.has_key( "sorting" ):
             self.actionRelevance.setChecked( boolean( config["sorting"]["sortedbyscore"] ) if config["sorting"].has_key( "sortedbyscore" ) else True )
@@ -177,6 +189,7 @@ class QUI( Ui_MainWindow ):
         #config["options"]["perpage"] = self.perpage_group.checkedAction().text()
         config["options"]["highlight"] = self.actionHighlight_Keywords.isChecked()
         config["options"]["style"] = self.style
+        config["options"]["language"] = self.language
 
         config["sorting"] = {}
         config["sorting"]["sortedbyscore"] = self.actionRelevance.isChecked()
@@ -285,7 +298,18 @@ class QUI( Ui_MainWindow ):
         self.script_group.addAction( self.actionWindowsXP )
         self.script_group.addAction( self.actionMacintosh )
 
-        if DIR == "rtl":
+        # make options->languages menu as a radio button
+        self.language_group = QtGui.QActionGroup( MainWindow )
+        self.language_group.addAction( self.actionSystem )
+        self.language_group.addAction( self.actionEnglish )
+        self.language_group.addAction( self.actionArabic )
+        self.language_group.addAction( self.actionFrench )
+        self.language_group.addAction( self.actionIndonesian )
+
+        # fix direction for RTL languages
+        print MainWindow.tr( "LTR" )
+        self.direction = "RTL" if MainWindow.tr( "LTR" ) == "RTL" else "LTR";
+        if self.direction == "RTL":
             MainWindow.setLayoutDirection( QtCore.Qt.RightToLeft )
         self.o_query.setLayoutDirection( QtCore.Qt.RightToLeft )
         QtCore.QObject.connect( self.o_search, QtCore.SIGNAL( "clicked()" ), self.search_all )
@@ -306,6 +330,11 @@ class QUI( Ui_MainWindow ):
         QtCore.QObject.connect( self.actionPlastique, QtCore.SIGNAL( "triggered()" ), lambda: self.changeStyle("plastique") )
         QtCore.QObject.connect( self.actionWindowsXP, QtCore.SIGNAL( "triggered()" ), lambda: self.changeStyle("windowsxp") )
         QtCore.QObject.connect( self.actionMacintosh, QtCore.SIGNAL( "triggered()" ), lambda: self.changeStyle("macintosh") )
+        QtCore.QObject.connect( self.actionSystem, QtCore.SIGNAL( "triggered()" ), lambda: self.changeLanguage("") )
+        QtCore.QObject.connect( self.actionEnglish, QtCore.SIGNAL( "triggered()" ), lambda: self.changeLanguage("en") )
+        QtCore.QObject.connect( self.actionArabic, QtCore.SIGNAL( "triggered()" ), lambda: self.changeLanguage("ar") )
+        QtCore.QObject.connect( self.actionFrench, QtCore.SIGNAL( "triggered()" ), lambda: self.changeLanguage("fr") )
+        QtCore.QObject.connect( self.actionIndonesian, QtCore.SIGNAL( "triggered()" ), lambda: self.changeLanguage("id") )
         QtCore.QObject.connect( self.actionpp10, QtCore.SIGNAL( "triggered()" ), self.changePERPAGE )
         QtCore.QObject.connect( self.actionpp20, QtCore.SIGNAL( "triggered()" ), self.changePERPAGE )
         QtCore.QObject.connect( self.actionpp50, QtCore.SIGNAL( "triggered()" ), self.changePERPAGE )
@@ -331,7 +360,7 @@ class QUI( Ui_MainWindow ):
         QtCore.QObject.connect( self.o_add2query_subject, QtCore.SIGNAL( "clicked()" ), self.add2query_subject )
         QtCore.QObject.connect( self.o_add2query_word, QtCore.SIGNAL( "clicked()" ), self.add2query_word )
         QtCore.QObject.connect( self.o_add2query_misc, QtCore.SIGNAL( "clicked()" ), self.add2query_misc )
-        sura_list =  RAWoutput._surates["Arabic"] if DIR == "rtl" else  RAWoutput._surates["English"]
+        sura_list =  RAWoutput._surates["Arabic"] if self.direction == "RTL" else  RAWoutput._surates["English"]
         self.o_chapter.addItems( RAWoutput._chapters )
         self.o_sura_name.addItems( sura_list  )
         self.load_config()
@@ -457,6 +486,15 @@ class QUI( Ui_MainWindow ):
     def changeStyle( self, style ):
         self.style = style
         mb = QtGui.QMessageBox(QtGui.QMessageBox.Warning, "Applying skin", "You should restart application in order for the skin to take effect", buttons = QtGui.QMessageBox.Ok)
+        #mb.addButton(QtGui.QMessageBox.Cancel)
+        #[, buttons=QMessageBox.NoButton[, parent=None[, flags=Qt.Dialog | Qt.MSWindowsFixedSizeDialogHint]]]
+        ret = mb.exec_()
+        if ret == QtGui.QMessageBox.Ok:
+            pass
+
+    def changeLanguage( self, lang ):
+        self.language = lang
+        mb = QtGui.QMessageBox(QtGui.QMessageBox.Warning, "Applying language", "You should restart application in order for the language to take effect", buttons = QtGui.QMessageBox.Ok)
         #mb.addButton(QtGui.QMessageBox.Cancel)
         #[, buttons=QMessageBox.NoButton[, parent=None[, flags=Qt.Dialog | Qt.MSWindowsFixedSizeDialogHint]]]
         ret = mb.exec_()
@@ -678,16 +716,17 @@ class QUI( Ui_MainWindow ):
 def main():
     """ the main function"""
     ui = QUI()
+    ## prepare style
     QtGui.QApplication.setStyle(ui.style)
-    app = QtGui.QApplication( sys.argv )
-    # prepare localization
+    ## prepare localization
     translator = QtCore.QTranslator()
     lang_code, country_code = QtCore.QLocale().name().split("_")
     base_path =  os.path.dirname( __file__ ) 
     translator.load("alfanousDesktop", base_path + "locale/%s/LC_MESSAGES/" % lang_code ) # translation
-    #translator.load("i18n/%s" % lang_code )
+    ##
+    app = QtGui.QApplication( sys.argv )
+    app.tr("QT_LAYOUT_DIRECTION")
     app.installTranslator(translator)
-
     MainWindow = QtGui.QMainWindow()
     ui.setupUi( MainWindow )
 
