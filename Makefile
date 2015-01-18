@@ -326,10 +326,10 @@ qt_rcc:
 local_pot_all: local_ts_desktop local_pot_mobile local_pot_django
 
 local_ts_desktop:
-	cd $(DESKTOP_INTERFACE_PATH); pyside-lupdate alfanousDesktop_localization.pro
+	cd $(DESKTOP_INTERFACE_PATH); pyside-lupdate qt_local.pro
 
 local_qm_compile:
-	cd $(DESKTOP_INTERFACE_PATH); lrelease alfanousDesktop_localization.pro
+	cd $(DESKTOP_INTERFACE_PATH); lrelease qt_local.pro
 
 local_pot_desktop:
 	xgettext $(DESKTOP_INTERFACE_PATH)*.py  --default-domain=alfanousQT --language=Python --keyword=n_ 
