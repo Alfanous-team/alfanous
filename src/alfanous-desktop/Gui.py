@@ -41,11 +41,20 @@ from preferencesDlg_ui import Ui_preferencesDlg
 from aboutDlg_ui import Ui_Dialog as Ui_aboutDlg
 from Templates import AYA_RESULTS_TEMPLATE 
 
+
+## force the use of utf8
+reload(sys)
+sys.setdefaultencoding('utf-8')
+
+##  To force a language
+#os.environ['LANGUAGE'] = 'ar'
+#os.environ['LANG'] = 'ar'
+
 ## Localization using gettext
 _ = gettext.gettext
 n_ = gettext.ngettext
-gettext.bindtextdomain( "alfanousQT" );
-gettext.textdomain( "alfanousQT" );
+gettext.bindtextdomain( "alfanousJinjaT" , "./locale");
+gettext.textdomain( "alfanousJinjaT" );
 
 ## Localization using QT way
 tr = QtCore.QCoreApplication.translate
@@ -343,95 +352,21 @@ class QUI( Ui_MainWindow ):
 	
     def undo_query(self):
 		self.o_query.setCurrentIndex(self.o_query.currentIndex ()+1)
-		self.search_no_undo()
+		self.search_no_undo(log = False)
 
     def redo_query(self):
 		self.o_query.setCurrentIndex(self.o_query.currentIndex ()-1)
-		self.search_no_undo()
-		
-    def search_no_undo( self, page = 1 ):
+		self.search_no_undo(log = False)
+
+    def search_all( self, page = 1 , log = True):
         """
         The main search function
         """
-        # add to undo stack
-        #if self.o_query.currentText() in self.undo_stack:
-        #    self.undo_stack.remove( self.o_query.currentText() )
-        #self.undo_stack.insert( 0, self.o_query.currentText() )
-        #self.o_query.clear()
-        #self.o_query.addItems( self.undo_stack )
-        #self.o_query.setCurrentIndex( 0 )
-
-        limit = int( self.limit_group.checkedAction().text() )
-
-        suggest_flags = {
-                "action":"suggest",
-                "query": self.o_query.currentText()
-                }
-        suggestion_output = RAWoutput.do( suggest_flags )
-
-        #search
-        results, terms = None, []
-        search_flags = {"action":"search",
-                 "query": unicode( self.o_query.currentText() ),
-                 "sortedby":"score" if self.actionRelevance.isChecked() \
-                        else "mushaf" if self.actionPosition_in_Mus_haf.isChecked() \
-                        else "tanzil" if self.actionRevelation.isChecked() \
-                        else "subject" if self.actionSubject.isChecked() \
-                        else unicode( self.sorted_by_group.checkedAction().text() ), # ara2eng_names[self.sorted_by_group.checkedAction().text()] for Arabic,
-                 "page": self.o_page.value(),
-                 "reverse_order": self.actionInverse.isChecked(),
-                 "word_info":self.actionWord_Info.isChecked(),
-                 "highlight": "html" if self.actionHighlight_Keywords.isChecked() else None,
-                 "script": "uthmani" if self.actionUthmani.isChecked()
-                            else "standard",
-                 "prev_aya":self.actionPrevios_aya.isChecked(),
-                 "next_aya": self.actionNext_aya.isChecked(),
-                 "sura_info": self.actionSura_info.isChecked(),
-                 "aya_position_info":  self.actionAya_Info.isChecked(),
-                 "aya_theme_info":  self.actionAya_Info.isChecked(),
-                 "aya_stat_info":  self.actionAya_Info.isChecked(),
-                 "aya_sajda_info":  self.actionAya_Info.isChecked(),
-                 "translation":self.translation_group.checkedAction().text(),
-                 "fuzzy": self.o_autospell.isChecked(),
-                 "word_info": self.actionWord_Info.isChecked(),
-                 }
-        self.Queries.insert( 0, search_flags )
-        results = RAWoutput.do( search_flags )
-
-        #if self.o_filter.isChecked() and self.last_results:
-        #    results = QFilter( self.last_results, results )
-        self.last_results = results
-        ayas = results["search"]["ayas"]
-        #outputs
-        self.o_time.display( results["search"]["runtime"] )
-        self.o_resnum.display( results["search"]["interval"]["total"] )
-
-        # get page
-        numpagereal = ( results["search"]["interval"]["total"] - 1 ) / PERPAGE + 1
-        numpagelimit = ( limit - 1 ) / PERPAGE + 1
-        numpage = numpagelimit if numpagelimit < numpagereal else numpagereal
-        self.o_numpage.display( numpage )
-        self.o_page.setMinimum( 1 if numpage else 0 )
-        self.o_page.setMaximum( numpage )
-        #self.o_page.setValue(  )
-
-        template_vars = {
-						   "results": results, 
-						   "suggestions":suggestion_output ,
-						   "_": lambda x:x 
-						}
-
-        self.o_results.setHtml( AYA_RESULTS_TEMPLATE.render(template_vars) )
-
-		
-    def search_all( self, page = 1 ):
-        """
-        The main search function
-        """
-        # add to undo stack
-        if self.o_query.currentText() in self.undo_stack:
-            self.undo_stack.remove( self.o_query.currentText() )
-        self.undo_stack.insert( 0, self.o_query.currentText() )
+        if (log):
+            # add to undo stack
+            if self.o_query.currentText() in self.undo_stack:
+                self.undo_stack.remove( self.o_query.currentText() )
+            self.undo_stack.insert( 0, self.o_query.currentText() )
         self.o_query.clear()
         self.o_query.addItems( self.undo_stack )
         self.o_query.setCurrentIndex( 0 )
@@ -495,8 +430,8 @@ class QUI( Ui_MainWindow ):
 						   "suggestions":suggestion_output ,
 						   "_": lambda x:x 
 						}
-
-        self.o_results.setHtml( AYA_RESULTS_TEMPLATE.render(template_vars) )
+        t = AYA_RESULTS_TEMPLATE.render(template_vars)
+        self.o_results.setHtml( t )
 
     def topics( self, chapter ):
         first = self.o_topic.itemText( 0 )

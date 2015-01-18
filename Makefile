@@ -5,7 +5,7 @@
 
 ## Global Version of the project, must be updated in each significant change in 
 ## the API & Desktop Gui
-VERSION=0.7.02
+VERSION=0.7.03
 
 ## Next releases:
 # Beta [0.7.00~0.9.99], Basis [1.0], Silver[~], Golden[~], Crystal[~]
@@ -314,7 +314,7 @@ qt_uic:
 	pyside-uic -o $(DESKTOP_INTERFACE_PATH)aboutDlg_ui.py $(QT_UI_PATH)aboutDlg.ui
 	pyside-uic -o $(DESKTOP_INTERFACE_PATH)preferencesDlg_ui.py $(QT_UI_PATH)preferencesDlg.ui
 	pyside-uic -o $(DESKTOP_INTERFACE_PATH)mainform_ui.py $(QT_UI_PATH)mainform.ui #-x
-	#sed 's/\"MainWindow\"\,/\"MainWindow\"\,\_(/g' temp.py | sed 's/\, None\,/\)\, None\,/g'| sed 's/from PyQt4/LOCALPATH="\.\/locale\/"\nimport gettext\n\_\=gettext\.gettext\ngettext\.bindtextdomain\(\"alfanousQT\"\, LOCALPATH\)\ngettext\.textdomain\(\"alfanousQT\"\)\nfrom PyQt4/g'> $(DESKTOP_INTERFACE_PATH)mainform_ui.py
+	#sed 's/\"MainWindow\"\,/\"MainWindow\"\,\_(/g' temp.py | sed 's/\, None\,/\)\, None\,/g'| sed 's/from PyQt4/LOCALPATH="\.\/locale\/"\nimport gettext\n\_\=gettext\.gettext\ngettext\.bindtextdomain\(\"alfanousJinjaT\"\, LOCALPATH\)\ngettext\.textdomain\(\"alfanousJinjaT\"\)\nfrom PyQt4/g'> $(DESKTOP_INTERFACE_PATH)mainform_ui.py
 	#rm temp.py
 
 qt_rcc:
@@ -326,34 +326,58 @@ qt_rcc:
 local_pot_all: local_ts_desktop local_pot_mobile local_pot_django
 
 local_ts_desktop:
-	cd $(DESKTOP_INTERFACE_PATH); pyside-lupdate qt_local.pro
-
-local_qm_compile:
-	cd $(DESKTOP_INTERFACE_PATH); lrelease qt_local.pro
-
-local_pot_desktop:
-	xgettext $(DESKTOP_INTERFACE_PATH)*.py  --default-domain=alfanousQT --language=Python --keyword=n_ 
-	mkdir -p localization/pot_files/alfanousQTv$(VERSION)
-	mv alfanousQT.po localization/pot_files/alfanousQTv$(VERSION)/alfanousQTv$(VERSION).pot
 	
-local_pot_mobile:
-	@if [ ! -d "./localization/pot_files/alfanousMWUIv$(VERSION)/" ]; then mkdir ./localization/pot_files/alfanousMWUIv$(VERSION)/; fi
-	xgettext -kT_ --from-code utf-8 -L PHP --no-wrap --package-name="AlfanousMobileWUI" --package-version=$(VERSION) -d alfanousMWUI -o ./localization/pot_files/alfanousMWUIv$(VERSION)/alfanousMWUIv$(VERSION).pot $(MOBILE_WUI_PATH)*.php
 
-local_pot_django:
+local_desktop_compile:
+	# Qt part
+	cd $(DESKTOP_INTERFACE_PATH); lrelease qt_local.pro
+	# Babel part
+	pybabel compile -d $(DESKTOP_INTERFACE_PATH)/locale
+
+	
+local_desktop_extract:
+	mkdir -p $(DESKTOP_INTERFACE_PATH)/locale/
+	cd $(DESKTOP_INTERFACE_PATH); pybabel extract -F ./babel.ini -o ./locale/alfanousJinjaT.pot ./ --project=Alfanous --version=$(VERSION)
+	
+local_desktop_init_new_language: local_desktop_extract
+	@echo "Add the code of the language you want to create?"
+	@cd $(DESKTOP_INTERFACE_PATH); read lang; pybabel init -i  ./locale/alfanousJinjaT.pot -d ./locale -D alfanousJinjaT --l $$lang
+
+local_desktop_update: local_desktop_extract
+	# Note! init at least one language with local_desktop_init_new_language before calling this
+	# Qt part
+	cd $(DESKTOP_INTERFACE_PATH); pyside-lupdate qt_local.pro
+	# Babel part
+	cd $(DESKTOP_INTERFACE_PATH); pybabel update -i ./locale/alfanousJinjaT.pot -d ./locale -D alfanousJinjaT
+	mkdir -p localization/pot_files/alfanousDesktopv$(VERSION)
+	cp $(DESKTOP_INTERFACE_PATH)/locale/alfanousJinjaT.pot localization/pot_files/alfanousDesktopv$(VERSION)/alfanousJinjaTv$(VERSION).pot
+	cp $(DESKTOP_INTERFACE_PATH)/locale/alfanousDesktop.ts localization/pot_files/alfanousDesktopv$(VERSION)/alfanousDesktopv$(VERSION).ts
+	@## obsolete extraction rotine
+	@#xgettext $(DESKTOP_INTERFACE_PATH)*.py  --default-domain=alfanousJinjaT --language=Python --keyword=n_ 
+	
+	
+local_web_update:
 	cd  $(DJWUI_PATH); $(PYTHON_COMMAND) manage.py makemessages  -a
 	mkdir -p localization/pot_files/alfanousDJv$(VERSION)
 	cp $(DJWUI_PATH)/locale/default/LC_MESSAGES/django.po localization/pot_files/alfanousDJv$(VERSION)/alfanousDJv$(VERSION).pot
 
+## compile files for django
+local_web_compile:
+	cd  $(DJWUI_PATH); $(PYTHON_COMMAND) manage.py compilemessages
+	
+
+local_mwui_extract:
+	@if [ ! -d "./localization/pot_files/alfanousMWUIv$(VERSION)/" ]; then mkdir ./localization/pot_files/alfanousMWUIv$(VERSION)/; fi
+	xgettext -kT_ --from-code utf-8 -L PHP --no-wrap --package-name="AlfanousMobileWUI" --package-version=$(VERSION) -d alfanousMWUI -o ./localization/pot_files/alfanousMWUIv$(VERSION)/alfanousMWUIv$(VERSION).pot $(MOBILE_WUI_PATH)*.php
+
+	
 ## load mo files from launchpad automatically
 local_mo_download:
 	@echo "todo"
 	#wget ; mv to /localization/locale
 
-## compile files for django
-local_mo_compile:
-	cd  $(DJWUI_PATH); $(PYTHON_COMMAND) manage.py compilemessages 
 
+	
 ##   packaging all to:
 # 1. Python egg files, see dist_egg_all
 # 2. Debian/Ubuntu/Sabily DEB packages, see  dist_deb
