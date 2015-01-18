@@ -19,10 +19,9 @@
 import sys
 import os
 import gettext
-from re import compile
+import re
 import codecs
 
-from pyparsing import ParseException
 from configobj import ConfigObj
 
 from PySide import  QtGui, QtCore, QtWebKit
@@ -535,7 +534,7 @@ class QUI( Ui_MainWindow ):
         filter = ""
 
         text = unicode( self.o_feature_text.text() )
-        word_re = compile( "[^ \n\t]+" )
+        word_re = re.compile( "[^ \n\t]+" )
         words = word_re.findall( text )
         if text:
             if self.o_synonyms.isChecked():
