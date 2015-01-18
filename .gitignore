@@ -11,6 +11,7 @@ nosetests.xml
 #Translations #
 ###############
 *.mo
+*.qm
 
 # Mr Developer #
 ################
