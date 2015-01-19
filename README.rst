@@ -25,6 +25,7 @@ Alfanous understands the complex nature of the Arabic language and thus offers e
 :Mailinglist: `alfanous@googlegroups.com <http://groups.google.com/group/alfanous/>`_
 :IRC: #alfanous @ freenode
 :Website: `Alfanous.org <http://www.alfanous.org/>`_
+:Doc: `Readthedocs <http://alfanous.readthedocs.org/en/latest/>`_
 :Feedbacks: `Alfanous Community Feedbacks <http://feedback.alfanous.org/>`_
 :Accounts: `@Facebook <https://www.facebook.com/alfanous>`_ `@Twitter <https://twitter.com/alfanous>`_ `@GooglePlus <https://plus.google.com/111305625425237630318>`_ 
         | `@Sourceforge <http://sourceforge.net/projects/alfanous/>`_ `@Launchpad <http://www.launchpad.net/alfanous/>`_
