@@ -108,7 +108,7 @@ Translation
 
 * Desktop application
 
-  * Indonesian: Arif Rahman Hakim
+  * Indonesian: Arif Rahman Hakim, Muslih Al aqaad
   * Spanish: Ricardo Hermosilla
 
 * Main Web Interface
