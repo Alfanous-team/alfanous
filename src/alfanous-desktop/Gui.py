@@ -48,13 +48,14 @@ sys.setdefaultencoding('utf-8')
 
 ## STATIC GLOBAL variables
 CONFIGPATH = ( os.getenv( 'USERPROFILE' ) or os.getenv( 'HOME' ) or "." ) + "/"
+LOCALPATH = "./locale" #os.getenv('TEXTDOMAINDIR')
 PERPAGE = 10 #results per page
 RELATIONS = ["", "", u"|", u"+", u"-"]
 
 ## Localization using gettext
 _ = gettext.gettext
 n_ = gettext.ngettext
-gettext.bindtextdomain( "alfanousJinjaT" , "./locale");
+gettext.bindtextdomain( "alfanousJinjaT" , LOCALPATH );
 gettext.textdomain( "alfanousJinjaT" );
 
 def get_language_from_config():
@@ -128,7 +129,9 @@ class QUI( Ui_MainWindow ):
                 "en": self.actionEnglish.setChecked,
                 "ar": self.actionArabic.setChecked,
                 "fr": self.actionFrench.setChecked,
-                "id": self.actionIndonesian.setChecked
+                "id": self.actionIndonesian.setChecked,
+                "es": self.actionSpanish.setChecked,
+                "ms": self.actionMalay.setChecked
                 }
         languages[self.language](True)
 
@@ -238,10 +241,10 @@ class QUI( Ui_MainWindow ):
 
     def setupUi( self, MainWindow ):
         super( QUI, self ).setupUi( MainWindow )
-        
+
         # prepare QwebView
         self.setupWebView()
-        
+
         # make sorted_by menu items as a group of radio buttons
         self.sorted_by_group = QtGui.QActionGroup( MainWindow )
         self.sorted_by_group.addAction( self.actionRelevance )
@@ -272,14 +275,14 @@ class QUI( Ui_MainWindow ):
             translation_action.setText( val )
             self.menuTranslation.addAction( translation_action )
             self.translation_group.addAction( translation_action )
-        
+
         # make limit menu items as a group of radio buttons
         self.limit_group = QtGui.QActionGroup( MainWindow )
         self.limit_group.addAction( self.actionlimit100 )
         self.limit_group.addAction( self.actionlimit500 )
         self.limit_group.addAction( self.actionlimit1000 )
         self.limit_group.addAction( self.actionlimit6236 )
-        
+
         # make perpage menu items as a group of radio buttons
         self.perpage_group = QtGui.QActionGroup( MainWindow )
         self.perpage_group.addAction( self.actionpp1 )
@@ -305,6 +308,8 @@ class QUI( Ui_MainWindow ):
         self.language_group.addAction( self.actionArabic )
         self.language_group.addAction( self.actionFrench )
         self.language_group.addAction( self.actionIndonesian )
+        self.language_group.addAction( self.actionSpanish )
+        self.language_group.addAction( self.actionMalay  )
 
         # fix direction for RTL languages
         print MainWindow.tr( "LTR" )
@@ -335,6 +340,8 @@ class QUI( Ui_MainWindow ):
         QtCore.QObject.connect( self.actionArabic, QtCore.SIGNAL( "triggered()" ), lambda: self.changeLanguage("ar") )
         QtCore.QObject.connect( self.actionFrench, QtCore.SIGNAL( "triggered()" ), lambda: self.changeLanguage("fr") )
         QtCore.QObject.connect( self.actionIndonesian, QtCore.SIGNAL( "triggered()" ), lambda: self.changeLanguage("id") )
+        QtCore.QObject.connect( self.actionSpanish, QtCore.SIGNAL( "triggered()" ), lambda: self.changeLanguage("es") )
+        QtCore.QObject.connect( self.actionMalay, QtCore.SIGNAL( "triggered()" ), lambda: self.changeLanguage("ms") )
         QtCore.QObject.connect( self.actionpp10, QtCore.SIGNAL( "triggered()" ), self.changePERPAGE )
         QtCore.QObject.connect( self.actionpp20, QtCore.SIGNAL( "triggered()" ), self.changePERPAGE )
         QtCore.QObject.connect( self.actionpp50, QtCore.SIGNAL( "triggered()" ), self.changePERPAGE )
@@ -345,15 +352,10 @@ class QUI( Ui_MainWindow ):
         QtCore.QObject.connect( self.o_stat_from, QtCore.SIGNAL( "valueChanged(int)" ), self.stat_to_min )
         QtCore.QObject.connect( self.m_exit, QtCore.SIGNAL( "triggered()" ), self.exit )
         QtCore.QObject.connect( self.m_help, QtCore.SIGNAL( "triggered()" ), self.help )
-        #TODO : use new signals
-        #self.m_exit.triggered.connect(self.exit)
-        #self.m_exit.triggered.connect(self.exit)
         QtCore.QObject.connect( self.m_about, QtCore.SIGNAL( "triggered(bool)" ), self.about )
         QtCore.QObject.connect( self.action_Send_Feedback, QtCore.SIGNAL( "triggered(bool)" ), self.send_feedback )
-
         QtCore.QObject.connect( self.a_save, QtCore.SIGNAL( "triggered()" ), self.save_results )
         QtCore.QObject.connect( self.a_print, QtCore.SIGNAL( "triggered()" ), self.print_results )
-
         QtCore.QObject.connect( self.o_add2query_advanced, QtCore.SIGNAL( "clicked()" ), self.add2query_advanced )
         QtCore.QObject.connect( self.o_add2query_struct, QtCore.SIGNAL( "clicked()" ), self.add2query_struct )
         QtCore.QObject.connect( self.o_add2query_stat, QtCore.SIGNAL( "clicked()" ), self.add2query_stat )
@@ -485,7 +487,7 @@ class QUI( Ui_MainWindow ):
 
     def changeStyle( self, style ):
         self.style = style
-        mb = QtGui.QMessageBox(QtGui.QMessageBox.Warning, "Applying skin", "You should restart application in order for the skin to take effect", buttons = QtGui.QMessageBox.Ok)
+        mb = QtGui.QMessageBox(QtGui.QMessageBox.Warning, self.MainWindow.tr("Applying skin"), self.MainWindow.tr("You should restart application in order for the skin to take effect"), buttons = QtGui.QMessageBox.Ok)
         #mb.addButton(QtGui.QMessageBox.Cancel)
         #[, buttons=QMessageBox.NoButton[, parent=None[, flags=Qt.Dialog | Qt.MSWindowsFixedSizeDialogHint]]]
         ret = mb.exec_()
@@ -494,7 +496,7 @@ class QUI( Ui_MainWindow ):
 
     def changeLanguage( self, lang ):
         self.language = lang
-        mb = QtGui.QMessageBox(QtGui.QMessageBox.Warning, "Applying language", "You should restart application in order for the language to take effect", buttons = QtGui.QMessageBox.Ok)
+        mb = QtGui.QMessageBox(QtGui.QMessageBox.Warning, self.MainWindow.tr("Applying language"), self.MainWindow.tr("You should restart application in order for the language to take effect"), buttons = QtGui.QMessageBox.Ok)
         #mb.addButton(QtGui.QMessageBox.Cancel)
         #[, buttons=QMessageBox.NoButton[, parent=None[, flags=Qt.Dialog | Qt.MSWindowsFixedSizeDialogHint]]]
         ret = mb.exec_()
@@ -720,7 +722,11 @@ def main():
     QtGui.QApplication.setStyle(ui.style)
     ## prepare localization
     translator = QtCore.QTranslator()
-    lang_code, country_code = QtCore.QLocale().name().split("_")
+    local = QtCore.QLocale().name()
+    if local == "C":
+          lang_code, country_code = "en", "US"
+    else:
+        lang_code, country_code = local.split("_")
     base_path =  os.path.dirname( __file__ ) 
     translator.load("alfanousDesktop", base_path + "locale/%s/LC_MESSAGES/" % lang_code ) # translation
     ##
