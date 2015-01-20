@@ -110,6 +110,7 @@ Translation
 
   * Arabic: Abdelmonam Kouka, Assem Chelli, LionArt (ghazi.nocturne), Karim Oulad Chalha, Zarrabi
   * Indonesian: Arif Rahman Hakim, Muslih Al aqaad
+  * Malay: Muhammad Fariz
   * Spanish: Ricardo Hermosilla
 
 * Main Web Interface
