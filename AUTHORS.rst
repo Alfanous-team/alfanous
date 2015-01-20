@@ -108,6 +108,7 @@ Translation
 
 * Desktop application
 
+  * Arabic: Abdelmonam Kouka, Assem Chelli, LionArt (ghazi.nocturne), Karim Oulad Chalha, Zarrabi
   * Indonesian: Arif Rahman Hakim, Muslih Al aqaad
   * Spanish: Ricardo Hermosilla
 
