@@ -673,7 +673,7 @@ font-family: ArabeyesQr, Scheherazade;
 			{% if results.search.words.global.nb_words %}
 				<!-- Words list -->
 				<div id='search_words' style=" text-align:left" >
-				  <h2 class='wordheader'> {% trans %}Words:{% endtrans %} </h2>
+				  <h2 class='wordheader'> {% trans %}Words{% endtrans %}: </h2>
 					  <div class='details_label word_count'>  
 					    {% trans %}words{% endtrans %} | {{  results.search.words.global.nb_words }} 
 					  </div>
@@ -691,7 +691,7 @@ font-family: ArabeyesQr, Scheherazade;
 						
 							<div class='details_label word_info0 clickable'> {% trans %} word {% endtrans %}  | {{ wordstat.word }} {% if wordstat.romanization %} ( {{ wordstat.romanization }} ) {%  endif %} </div>
 							<div class='details_label word_stat0'> {% trans %} occurances {% endtrans %}  | {{ wordstat.nb_matches }} </div>
-							<div class='details_label word_stat1'> {% trans %} ayates {% endtrans %}  |  {{ wordstat.nb_ayas }} </div>
+							<div class='details_label word_stat1'> {% trans %} ayates{% endtrans %}  |  {{ wordstat.nb_ayas }} </div>
 							<br />
 							<div class='word_extra_details'>
 							<div class='details_label word_vocalization_nb'> {% trans %} vocalizations {% endtrans %}  | {{ wordstat.nb_vocalizations }} </div>
@@ -923,7 +923,7 @@ font-family: ArabeyesQr, Scheherazade;
 						  <div class='aya_details' style='text-align:center;'>
 						  	{% if ayaresult_content.stat %}
 			
-							  	<div class='details_label aya_stat0 clickable'> {% trans %} words {% endtrans %}  | {{ ayaresult_content.stat.words }} </div>
+							  	<div class='details_label aya_stat0 clickable'> {% trans %}words{% endtrans %}  | {{ ayaresult_content.stat.words }} </div>
 				
 								<div class='details_label aya_stat1 clickable'> {% trans %} letters {% endtrans %}  | {{ ayaresult_content.stat.letters }} </div>
 						
