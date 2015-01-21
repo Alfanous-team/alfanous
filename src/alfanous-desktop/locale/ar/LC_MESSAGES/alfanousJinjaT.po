@@ -7,36 +7,60 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Alfanous 0.7.03\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2015-01-18 21:47+0100\n"
-"PO-Revision-Date: 2015-01-18 21:55-0000\n"
+"POT-Creation-Date: 2015-01-21 16:09+0100\n"
+"PO-Revision-Date: 2015-01-21 20:21-0000\n"
 "Last-Translator: Assem Chelli <assem.ch@gmail.com>\n"
 "Language-Team: ar <LL@li.org>\n"
 "Plural-Forms: nplurals=6; plural=(n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n>=3 && "
 "n<=10 ? 3 : n>=11 && n<=99 ? 4 : 5);\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 1.3\n"
 "X-Generator: Poedit 1.5.4\n"
-"Language: Arabic\n"
+
+#: Gui.py:79
+msgid "recommended"
+msgstr "مستحبة"
+
+#: Gui.py:79
+msgid "obliged"
+msgstr "واجبة"
+
+#: Gui.py:80
+msgid "medina"
+msgstr "مدنية"
+
+#: Gui.py:80
+msgid "mekka"
+msgstr "مكية"
+
+#: Gui.py:693
+msgid "Alfanous_Results_Page_"
+msgstr "نتائج_الفانوس_صفحة_"
+
+#: Gui.py:746
+msgid "LTR"
+msgstr "RTL"
 
 #: templates/aya_results.html:654
 msgid " Suggestions: "
 msgstr "الإقتراحات"
 
 #: templates/aya_results.html:676
-msgid "Words:"
-msgstr "كلمات:"
+msgid "Words"
+msgstr "كلمات"
 
-#: templates/aya_results.html:678
+#: templates/aya_results.html:678 templates/aya_results.html:825
+#: templates/aya_results.html:926
 msgid "words"
 msgstr "كلمات"
 
-#: templates/aya_results.html:681
+#: templates/aya_results.html:681 templates/aya_results.html:693
 msgid "occurances"
 msgstr "مرات الورود"
 
-#: templates/aya_results.html:684
+#: templates/aya_results.html:684 templates/aya_results.html:697
 msgid "vocalizations"
 msgstr "التشكيلات"
 
@@ -44,17 +68,9 @@ msgstr "التشكيلات"
 msgid " word "
 msgstr "كلمة"
 
-#: templates/aya_results.html:693
-msgid " occurances "
-msgstr "مرات الورود"
-
 #: templates/aya_results.html:694
-msgid " ayates "
+msgid " ayates"
 msgstr "الآيات"
-
-#: templates/aya_results.html:697
-msgid " vocalizations "
-msgstr "الترجمات"
 
 #: templates/aya_results.html:705
 msgid " synonyms "
@@ -173,16 +189,12 @@ msgstr "ترتيب_التنزيل"
 msgid " ayahs "
 msgstr "آيات"
 
-#: templates/aya_results.html:825 templates/aya_results.html:926
-msgid " words "
-msgstr "كلمات"
-
 #: templates/aya_results.html:826 templates/aya_results.html:928
-msgid " letters "
+msgid "letters"
 msgstr "حروف"
 
 #: templates/aya_results.html:827 templates/aya_results.html:930
-msgid " divine names "
+msgid "divine names"
 msgstr "ألفاظ الجلالة"
 
 #: templates/aya_results.html:905
@@ -191,7 +203,7 @@ msgstr "الفصل"
 
 #: templates/aya_results.html:909
 msgid " Topic "
-msgstr ""
+msgstr "فرع"
 
 #: templates/aya_results.html:914
 msgid " Subtopic "
@@ -224,3 +236,15 @@ msgstr "عذرا! لا توجد نتائج لعبارة البحث هذه"
 #: templates/aya_results.html:965
 msgid " Error  "
 msgstr "خطأ"
+
+#~ msgid "Words:"
+#~ msgstr "كلمات:"
+
+#~ msgid " occurances "
+#~ msgstr "مرات الورود"
+
+#~ msgid " vocalizations "
+#~ msgstr "التشكيلات"
+
+#~ msgid " words "
+#~ msgstr "كلمات"
