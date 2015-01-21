@@ -1,3 +1,8 @@
+{% set dir = gettext("LTR") %}
+{% set direction = "rtl" if dir == "RTL" else "ltr" %}
+{% set align = "right" if dir == "RTL" else "left" %}
+
+
 <style type="text/css">
 .results_header {
 	font-size:15pt;  
@@ -645,12 +650,11 @@ font-family: ArabeyesQr, Scheherazade;
 }
 
 </style>
-
-
+<div style="direction:{{ direction }};text-align:{{ align }}">
 {% if results.error.code == 0  %} 
 		<!-- Suggestions-->
 		{% if suggestions.error.code == 0 and suggestions.suggest %} 
-			<div id='suggestions' style=" text-align:left" >
+			<div id='suggestions' style=" text-align:{{ align }}" >
 			<h2 class='suggestionheader'>{% trans %} Suggestions: {% endtrans %} </h2>
 			{% for suggestion_key, suggestion_item in suggestions.suggest.items() %}
 				<p style='direction:ltr;' >
@@ -672,7 +676,7 @@ font-family: ArabeyesQr, Scheherazade;
 		{% if results.search.interval.total %}
 			{% if results.search.words.global.nb_words %}
 				<!-- Words list -->
-				<div id='search_words' style=" text-align:left" >
+				<div id='search_words' style=" text-align:{{ align }}" >
 				  <h2 class='wordheader'> {% trans %}Words{% endtrans %}: </h2>
 					  <div class='details_label word_count'>  
 					    {% trans %}words{% endtrans %} | {{  results.search.words.global.nb_words }} 
@@ -685,16 +689,16 @@ font-family: ArabeyesQr, Scheherazade;
 					  </div> 
 				  <br />
 				{% for wordcpt, wordstat in results.search.words.individual.items() %}
-						<p style='direction:ltr;' >
+						<p style='direction:{{ direction }};' >
 						  <div class='word_details'>
 						    <span style=' font-size:14pt; color:#00aa00;'> {{ wordcpt }}.  </span>
 						
 							<div class='details_label word_info0 clickable'> {% trans %} word {% endtrans %}  | {{ wordstat.word }} {% if wordstat.romanization %} ( {{ wordstat.romanization }} ) {%  endif %} </div>
-							<div class='details_label word_stat0'> {% trans %} occurances {% endtrans %}  | {{ wordstat.nb_matches }} </div>
+							<div class='details_label word_stat0'> {% trans %}occurances{% endtrans %}  | {{ wordstat.nb_matches }} </div>
 							<div class='details_label word_stat1'> {% trans %} ayates{% endtrans %}  |  {{ wordstat.nb_ayas }} </div>
 							<br />
 							<div class='word_extra_details'>
-							<div class='details_label word_vocalization_nb'> {% trans %} vocalizations {% endtrans %}  | {{ wordstat.nb_vocalizations }} </div>
+							<div class='details_label word_vocalization_nb'> {% trans %}vocalizations{% endtrans %}  | {{ wordstat.nb_vocalizations }} </div>
 							{% for vocalization in wordstat.vocalizations %} 
 								<div class='details_label word_vocalization clickable'> {{ vocalization }} </div>
 							{% endfor %}
@@ -794,37 +798,31 @@ font-family: ArabeyesQr, Scheherazade;
 			
 			{% for ayaresult_id, ayaresult_content in  	results.search.ayas.items() %}
 			    <fieldset class='main_re_item'>
-				  <legend class='main_re_item_title' style=' direction:ltr;' >
-				    <span style='text-align:left; color:#0000ff;'>
+				  <legend class='main_re_item_title'  >
+				    <span style=' color:#0000ff;'>
 				      {% trans %} Result n° {% endtrans %}  <b> {{ ayaresult_id }} </b> 
+				      - 
+				      ({{ ayaresult_content.sura.arabic_name if dir=="RTL" else  ayaresult_content.sura.name }} {{ ayaresult_content.aya.id }})  
 				    </span>
-				    {% if ayaresult_content.aya.recitation %}
-				    <span style='text-align:right;'>
-						<object width='350' height='24' id='audioplayer_{{ ayaresult_id }}' name='audioplayer_{{ ayaresult_id }}' data='swf/player.swf' type='application/x-shockwave-flash'>
-							<param value='/static/swf/player.swf' name='movie'>
-							<param value='playerID=audioplayer_{{ ayaresult_id }}&amp;soundFile={{ ayaresult_content.aya.recitation}}' name='FlashVars'>
-							<param value='high' name='quality'>
-							<param value='false' name='menu'>
-							<param value='transparent' name='wmode'>
-						</object>
-					</span><br />
-					{% endif %}
-					  
 				   {% if ayaresult_content.sura %}
 					   <div class='sura_details'>
 
-							<div class='details_label sura_info0 clickable filter'> {% trans %} Sura {% endtrans %}  | {{ ayaresult_content.sura.name }} </div> 
+							<div class='details_label sura_info0 clickable filter'> 
+                                {% trans %} Sura {% endtrans %}  | {{ ayaresult_content.sura.arabic_name if dir=="RTL" else  ayaresult_content.sura.name }}
+                                ({{ ayaresult_content.sura.name if dir=="RTL" else  ayaresult_content.sura.english_name }})
+                            </div>
+                                
 							<div class='details_label sura_ord0'> {% trans %} n° {% endtrans %}  | {{ ayaresult_content.sura.id }} </div>
 
-							<div class='details_label sura_info1 clickable filter'> {% trans %} type {% endtrans %}  | {{ ayaresult_content.sura.type }} </div>
+							<div class='details_label sura_info1 clickable filter'> {% trans %} type {% endtrans %}  | {{ ayaresult_content.sura.arabic_type if dir=="RTL" else ayaresult_content.sura.type  }} </div>
 							<div class='details_label sura_ord1'> {% trans %} revelation_order {% endtrans %}   | {{ ayaresult_content.sura.order }}</div>
 							<div class='details_label sura_stat0'> {% trans %} ayahs {% endtrans %}  | {{ ayaresult_content.sura.ayas }} </div> 
 							{% if ayaresult_content.sura.stat %}
 								<br />
 								<div class='sura_stat_details'>
-									<div class='details_label sura_stat1'> {% trans %} words {% endtrans %}  | {{ ayaresult_content.sura.stat.words }} </div>
-									<div class='details_label sura_stat2'> {% trans %} letters {% endtrans %}  | {{ ayaresult_content.sura.stat.letters }} </div>
-									<div class='details_label sura_stat3'> {% trans %} divine names {% endtrans %}  | {{ ayaresult_content.sura.stat.godnames }} </div>
+									<div class='details_label sura_stat1'> {% trans %}words{% endtrans %}  | {{ ayaresult_content.sura.stat.words }} </div>
+									<div class='details_label sura_stat2'> {% trans %}letters{% endtrans %}  | {{ ayaresult_content.sura.stat.letters }} </div>
+									<div class='details_label sura_stat3'> {% trans %}divine names{% endtrans %}  | {{ ayaresult_content.sura.stat.godnames }} </div>
 								</div>
 							{% endif %}
 						</div>
@@ -925,9 +923,9 @@ font-family: ArabeyesQr, Scheherazade;
 			
 							  	<div class='details_label aya_stat0 clickable'> {% trans %}words{% endtrans %}  | {{ ayaresult_content.stat.words }} </div>
 				
-								<div class='details_label aya_stat1 clickable'> {% trans %} letters {% endtrans %}  | {{ ayaresult_content.stat.letters }} </div>
+								<div class='details_label aya_stat1 clickable'> {% trans %}letters{% endtrans %}  | {{ ayaresult_content.stat.letters }} </div>
 						
-								<div class='details_label aya_stat2 clickable'> {% trans %} divine names {% endtrans %}  | {{ ayaresult_content.stat.godnames }} </div>
+								<div class='details_label aya_stat2 clickable'> {% trans %}divine names{% endtrans %}  | {{ ayaresult_content.stat.godnames }} </div>
 							{% endif %}
 							{% if ayaresult_content.position %}
 		
@@ -939,11 +937,12 @@ font-family: ArabeyesQr, Scheherazade;
 						  </div><br />
 					  {% endif %}
 					  {% if  ayaresult_content.sajda.exist %}
-					  		<br /><div>
+					  		<div class='aya_details' style='text-align:center;'>
 					  		<div class='details_label aya_sajda_exist clickable'> {% trans %} sajda {% endtrans %}  </div>
 							<div class='details_label aya_sajda_id'> {% trans %} n° {% endtrans %}  | {{ ayaresult_content.sajda.id }} </div>
 						    <div class='details_label aya_sajda_type'> {% trans %} type {% endtrans %}  | {{ ayaresult_content.sajda.type }}</div>
-							</div><br />
+							</div>
+							<br />
 					  {% endif %}
 				
 			     </fieldset>
@@ -966,3 +965,4 @@ font-family: ArabeyesQr, Scheherazade;
 	{% else %}
 		
 	{% endif %}
+</div>

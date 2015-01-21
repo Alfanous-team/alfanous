@@ -52,7 +52,11 @@ LOCALPATH = "./locale" #os.getenv('TEXTDOMAINDIR')
 PERPAGE = 10 #results per page
 RELATIONS = ["", "", u"|", u"+", u"-"]
 
-## Localization using gettext
+
+## Localization using gettext and Qt
+# QT
+tr = lambda x: QtGui.QApplication.translate("Misc", x, None, QtGui.QApplication.UnicodeUTF8)
+# gettext
 _ = gettext.gettext
 n_ = gettext.ngettext
 gettext.bindtextdomain( "alfanousJinjaT" , LOCALPATH );
@@ -69,6 +73,7 @@ lang = get_language_from_config()
 os.environ['LANGUAGE'] = lang
 os.environ['LANG'] = lang
 
+# Load Alfanous engine
 RAWoutput = Raw() # default paths
 
 SAJDA_TYPE = {u"مستحبة":_( u"recommended" ), u"واجبة":_( u"obliged" )}
@@ -252,7 +257,7 @@ class QUI( Ui_MainWindow ):
         self.sorted_by_group.addAction( self.actionPosition_in_Mus_haf )
         self.sorted_by_group.addAction( self.actionSubject )
         self.sorted_by_group.addAction( self.actionRevelation )
-        for val in RAWoutput._fields.values(): #x.keys() for Arabic
+        for val in RAWoutput._fields.values():
             field_action = QtGui.QAction(MainWindow)
             field_action.setCheckable(True)
             field_action.setChecked(False)
@@ -267,12 +272,12 @@ class QUI( Ui_MainWindow ):
         # make options->translations as a radio button
         self.translation_group = QtGui.QActionGroup( MainWindow )
         self.translation_group.addAction(self.actionTranslationNone)
-        for val in RAWoutput._translations.values():
+        for key in RAWoutput._translations.keys():
             translation_action = QtGui.QAction(MainWindow)
             translation_action.setCheckable(True)
             translation_action.setChecked(False)
-            translation_action.setObjectName("action_translation_" + val)
-            translation_action.setText( val )
+            translation_action.setObjectName("action_translation_" + key)
+            translation_action.setText( key )
             self.menuTranslation.addAction( translation_action )
             self.translation_group.addAction( translation_action )
 
@@ -312,10 +317,12 @@ class QUI( Ui_MainWindow ):
         self.language_group.addAction( self.actionMalay  )
 
         # fix direction for RTL languages
-        print MainWindow.tr( "LTR" )
-        self.direction = "RTL" if MainWindow.tr( "LTR" ) == "RTL" else "LTR";
+        self.direction = "RTL" if _( "LTR" ) == "RTL" else "LTR";
         if self.direction == "RTL":
             MainWindow.setLayoutDirection( QtCore.Qt.RightToLeft )
+            self.centralwidget.setLayoutDirection(QtCore.Qt.RightToLeft)
+            self.menubar.setLayoutDirection(QtCore.Qt.RightToLeft)
+            self.w_features.setLayoutDirection(QtCore.Qt.RightToLeft)
         self.o_query.setLayoutDirection( QtCore.Qt.RightToLeft )
         QtCore.QObject.connect( self.o_search, QtCore.SIGNAL( "clicked()" ), self.search_all )
         QtCore.QObject.connect( self.actionCopy_Query, QtCore.SIGNAL( "triggered()" ), self.copy_query )
@@ -362,9 +369,9 @@ class QUI( Ui_MainWindow ):
         QtCore.QObject.connect( self.o_add2query_subject, QtCore.SIGNAL( "clicked()" ), self.add2query_subject )
         QtCore.QObject.connect( self.o_add2query_word, QtCore.SIGNAL( "clicked()" ), self.add2query_word )
         QtCore.QObject.connect( self.o_add2query_misc, QtCore.SIGNAL( "clicked()" ), self.add2query_misc )
-        sura_list =  RAWoutput._surates["Arabic"] if self.direction == "RTL" else  RAWoutput._surates["English"]
+        self.sura_list =  RAWoutput._surates["Arabic"] if self.direction == "RTL" else  RAWoutput._surates["English"]
         self.o_chapter.addItems( RAWoutput._chapters )
-        self.o_sura_name.addItems( sura_list  )
+        self.o_sura_name.addItems( self.sura_list  )
         self.load_config()
 
     def copy_query(self):
@@ -438,30 +445,33 @@ class QUI( Ui_MainWindow ):
                  }
         self.Queries.insert( 0, search_flags )
         results = RAWoutput.do( search_flags )
+        if results["error"]["code"]==0:
+            #if self.o_filter.isChecked() and self.last_results:
+            #    results = QFilter( self.last_results, results )
+            self.last_results = results
+            #outputs
+            self.o_time.display( results["search"]["runtime"] )
+            self.o_resnum.display( results["search"]["interval"]["total"] )
 
-        #if self.o_filter.isChecked() and self.last_results:
-        #    results = QFilter( self.last_results, results )
-        self.last_results = results
-        ayas = results["search"]["ayas"]
-        #outputs
-        self.o_time.display( results["search"]["runtime"] )
-        self.o_resnum.display( results["search"]["interval"]["total"] )
+            # get page
+            numpagereal = ( results["search"]["interval"]["total"] - 1 ) / PERPAGE + 1
+            numpagelimit = ( limit - 1 ) / PERPAGE + 1
+            numpage = numpagelimit if numpagelimit < numpagereal else numpagereal
+            self.o_numpage.display( numpage )
+            self.o_page.setMinimum( 1 if numpage else 0 )
+            self.o_page.setMaximum( numpage )
+            #self.o_page.setValue(  )
 
-        # get page
-        numpagereal = ( results["search"]["interval"]["total"] - 1 ) / PERPAGE + 1
-        numpagelimit = ( limit - 1 ) / PERPAGE + 1
-        numpage = numpagelimit if numpagelimit < numpagereal else numpagereal
-        self.o_numpage.display( numpage )
-        self.o_page.setMinimum( 1 if numpage else 0 )
-        self.o_page.setMaximum( numpage )
-        #self.o_page.setValue(  )
-
-        template_vars = {
-						   "results": results, 
-						   "suggestions":suggestion_output ,
-						   "_": lambda x:x 
-						}
-        t = AYA_RESULTS_TEMPLATE.render(template_vars)
+            template_vars = {
+                            "results": results, 
+                            "suggestions":suggestion_output ,
+                            "_": lambda x:x 
+                            }
+            t = AYA_RESULTS_TEMPLATE.render(template_vars)
+        else:
+            t = "Error ("+ str(results["error"]["code"]) + "):" + results["error"]["msg"]
+            self.o_time.display( 0 )
+            self.o_resnum.display( 0 )
         self.o_results.setHtml( t )
 
     def topics( self, chapter ):
@@ -487,7 +497,7 @@ class QUI( Ui_MainWindow ):
 
     def changeStyle( self, style ):
         self.style = style
-        mb = QtGui.QMessageBox(QtGui.QMessageBox.Warning, self.MainWindow.tr("Applying skin"), self.MainWindow.tr("You should restart application in order for the skin to take effect"), buttons = QtGui.QMessageBox.Ok)
+        mb = QtGui.QMessageBox(QtGui.QMessageBox.Warning, _("Applying skin"), _("You should restart application in order for the skin to take effect"), buttons = QtGui.QMessageBox.Ok)
         #mb.addButton(QtGui.QMessageBox.Cancel)
         #[, buttons=QMessageBox.NoButton[, parent=None[, flags=Qt.Dialog | Qt.MSWindowsFixedSizeDialogHint]]]
         ret = mb.exec_()
@@ -496,7 +506,7 @@ class QUI( Ui_MainWindow ):
 
     def changeLanguage( self, lang ):
         self.language = lang
-        mb = QtGui.QMessageBox(QtGui.QMessageBox.Warning, self.MainWindow.tr("Applying language"), self.MainWindow.tr("You should restart application in order for the language to take effect"), buttons = QtGui.QMessageBox.Ok)
+        mb = QtGui.QMessageBox(QtGui.QMessageBox.Warning,  _("Applying language"), _("You should restart application in order for the language to take effect"), buttons = QtGui.QMessageBox.Ok)
         #mb.addButton(QtGui.QMessageBox.Cancel)
         #[, buttons=QMessageBox.NoButton[, parent=None[, flags=Qt.Dialog | Qt.MSWindowsFixedSizeDialogHint]]]
         ret = mb.exec_()
@@ -604,7 +614,7 @@ class QUI( Ui_MainWindow ):
         filter = u""
 
         if self.o_sura_name.currentIndex() != 0:
-            filter += u"  سورة:\"" + unicode( sura_reallist[self.o_sura_name.currentIndex() - 1] ) + "\""
+            filter += u"  سورة:\"" + unicode( self.sura_list[self.o_sura_name.currentIndex() - 1] ) + "\""
 
         sura_types = [u"", u"مدنية", u"مكية"]
         if self.o_tanzil.currentIndex() != 0:
@@ -731,7 +741,6 @@ def main():
     translator.load("alfanousDesktop", base_path + "locale/%s/LC_MESSAGES/" % lang_code ) # translation
     ##
     app = QtGui.QApplication( sys.argv )
-    app.tr("QT_LAYOUT_DIRECTION")
     app.installTranslator(translator)
     MainWindow = QtGui.QMainWindow()
     ui.setupUi( MainWindow )
