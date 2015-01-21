@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Alfanous 0.7.03\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2015-01-20 20:12+0100\n"
+"POT-Creation-Date: 2015-01-21 16:09+0100\n"
 "PO-Revision-Date: 2015-01-20 20:10+0000\n"
 "Last-Translator: Assem Chelli <assem.ch@gmail.com>\n"
 "Language-Team: es <LL@li.org>\n"
@@ -16,6 +16,31 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 1.3\n"
+
+#: Gui.py:79
+msgid "recommended"
+msgstr ""
+
+#: Gui.py:79
+msgid "obliged"
+msgstr ""
+
+#: Gui.py:80
+msgid "medina"
+msgstr ""
+
+#: Gui.py:80
+msgid "mekka"
+msgstr ""
+
+#: Gui.py:693
+msgid "Alfanous_Results_Page_"
+msgstr ""
+
+#: Gui.py:746
+#, fuzzy
+msgid "LTR"
+msgstr "Letras"
 
 #: templates/aya_results.html:654
 msgid " Suggestions: "
@@ -26,15 +51,16 @@ msgstr "Sugerencias:"
 msgid "Words"
 msgstr "palabras"
 
-#: templates/aya_results.html:678 templates/aya_results.html:926
+#: templates/aya_results.html:678 templates/aya_results.html:825
+#: templates/aya_results.html:926
 msgid "words"
 msgstr "palabras"
 
-#: templates/aya_results.html:681
+#: templates/aya_results.html:681 templates/aya_results.html:693
 msgid "occurances"
 msgstr ""
 
-#: templates/aya_results.html:684
+#: templates/aya_results.html:684 templates/aya_results.html:697
 msgid "vocalizations"
 msgstr ""
 
@@ -42,18 +68,10 @@ msgstr ""
 msgid " word "
 msgstr "palabra"
 
-#: templates/aya_results.html:693
-msgid " occurances "
-msgstr ""
-
 #: templates/aya_results.html:694
 #, fuzzy
 msgid " ayates"
 msgstr "ayahs"
-
-#: templates/aya_results.html:697
-msgid " vocalizations "
-msgstr ""
 
 #: templates/aya_results.html:705
 msgid " synonyms "
@@ -172,16 +190,13 @@ msgstr ""
 msgid " ayahs "
 msgstr "ayahs"
 
-#: templates/aya_results.html:825
-msgid " words "
-msgstr "palabras"
-
 #: templates/aya_results.html:826 templates/aya_results.html:928
-msgid " letters "
+#, fuzzy
+msgid "letters"
 msgstr "Letras"
 
 #: templates/aya_results.html:827 templates/aya_results.html:930
-msgid " divine names "
+msgid "divine names"
 msgstr ""
 
 #: templates/aya_results.html:905
@@ -229,4 +244,16 @@ msgstr ""
 
 #~ msgid "Words:"
 #~ msgstr "Palabras:"
+
+#~ msgid " occurances "
+#~ msgstr ""
+
+#~ msgid " vocalizations "
+#~ msgstr ""
+
+#~ msgid " words "
+#~ msgstr "palabras"
+
+#~ msgid " divine names "
+#~ msgstr ""
 
