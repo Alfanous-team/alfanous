@@ -133,7 +133,7 @@ build_all: build_api build_desktop
 
 build_api: update_pre_build index_all speller_all update_post_build
 
-build_desktop: qt_all 
+build_desktop: qt_all local_desktop_compile 
 
 
 
@@ -513,7 +513,7 @@ install_api_no_arguments:
 	perl -pi -w -e 's|$(RELEASE)|alfanous.release|g;' $(API_PATH)alfanous/resources/information.json
 	perl -pi -w -e 's|$(VERSION)|alfanous.version|g;' $(API_PATH)alfanous/resources/information.json
 	
-install_desktop:  install_api qt_all  local_mo_download
+install_desktop:  install_api qt_all  local_desktop_compile
 	perl -pi -w -e 's|version = "\d+\.\d+(\.\d+)*"|version = "$(VERSION)"|g;' $(DESKTOP_INTERFACE_PATH)/setup.py
 	cd  $(DESKTOP_INTERFACE_PATH); $(PYTHON_COMMAND) setup.py install --prefix=$(PREFIX) --root=$(DESTDIR)
 	mkdir -p $(DESTDIR)$(PREFIX)/share/applications/
