@@ -330,7 +330,7 @@ local_desktop_compile:
 	# Qt part
 	cd $(DESKTOP_INTERFACE_PATH); lrelease qt_local.pro
 	# Babel part
-	pybabel compile -d $(DESKTOP_INTERFACE_PATH)/locale
+	pybabel compile -d $(DESKTOP_INTERFACE_PATH)locale -D alfanousJinjaT
 
 	
 local_desktop_extract:
