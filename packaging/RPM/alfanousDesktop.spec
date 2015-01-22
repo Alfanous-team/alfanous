@@ -13,7 +13,7 @@ Group:   Quran/Tools
 BuildRequires: python python-setuptools python-configobj unzip ImageMagick
 Requires:      python python-configobj python-alfanous python-jinja2 islamic-menus
 %if 0%{?fedora_version} || 0%{?rhel_version} || 0%{?centos_version}
-BuildRequires: python-pyside-devel pyside-tools pyparsing python-babel qt-devel dejavu-serif-fonts
+BuildRequires: python-pyside-devel pyside-tools pyparsing python-babel babel qt-devel
 Requires:      python-pyside pyparsing
 %endif
 %if 0%{?suse_version}
