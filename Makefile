@@ -5,7 +5,7 @@
 
 ## Global Version of the project, must be updated in each significant change in 
 ## the API & Desktop Gui
-VERSION=0.7.03
+VERSION=0.7.04
 
 ## Next releases:
 # Beta [0.7.00~0.9.99], Basis [1.0], Silver[~], Golden[~], Crystal[~]
@@ -323,10 +323,8 @@ qt_rcc:
 ## build localization files, this includes:
 # 1. Desktop interface , see local_desktop_pot
 # 2. Web User Interface for mobiles, see  local_mobile_pot
-local_pot_all: local_ts_desktop local_pot_mobile local_pot_django
+local_pot_all: local_desktop_extract local_web_update local_mwui_extract
 
-local_ts_desktop:
-	
 
 local_desktop_compile:
 	# Qt part
@@ -349,17 +347,17 @@ local_desktop_update: local_desktop_extract
 	cd $(DESKTOP_INTERFACE_PATH); pyside-lupdate qt_local.pro
 	# Babel part
 	cd $(DESKTOP_INTERFACE_PATH); pybabel update -i ./locale/alfanousJinjaT.pot -d ./locale -D alfanousJinjaT
-	mkdir -p localization/pot_files/alfanousDesktopv$(VERSION)
-	cp $(DESKTOP_INTERFACE_PATH)/locale/alfanousJinjaT.pot localization/pot_files/alfanousDesktopv$(VERSION)/alfanousJinjaTv$(VERSION).pot
-	cp $(DESKTOP_INTERFACE_PATH)/locale/alfanousDesktop.ts localization/pot_files/alfanousDesktopv$(VERSION)/alfanousDesktopv$(VERSION).ts
+	mkdir -p localization/ts_files/alfanousDesktopv$(VERSION)
+	cp $(DESKTOP_INTERFACE_PATH)/locale/alfanousJinjaT.pot localization/ts_files/alfanousDesktopv$(VERSION)
+	cp $(DESKTOP_INTERFACE_PATH)/locale/alfanousDesktop.ts localization/ts_files/alfanousDesktopv$(VERSION)
 	@## obsolete extraction rotine
 	@#xgettext $(DESKTOP_INTERFACE_PATH)*.py  --default-domain=alfanousJinjaT --language=Python --keyword=n_ 
 	
 	
 local_web_update:
-	cd  $(DJWUI_PATH); $(PYTHON_COMMAND) manage.py makemessages  -a
+	cd  $(DJWUI_PATH); $(PYTHON_COMMAND) manage.py makemessages -a
 	mkdir -p localization/pot_files/alfanousDJv$(VERSION)
-	cp $(DJWUI_PATH)/locale/default/LC_MESSAGES/django.po localization/pot_files/alfanousDJv$(VERSION)/alfanousDJv$(VERSION).pot
+	cp $(DJWUI_PATH)/locale/default/LC_MESSAGES/django.po localization/pot_files/alfanousDJv$(VERSION)/alfanousDJ.pot
 
 ## compile files for django
 local_web_compile:
