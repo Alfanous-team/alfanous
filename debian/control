@@ -3,11 +3,12 @@ Section: misc
 Priority: extra
 Maintainer: Debian Islamic Maintainers <debian-islamic-maintainers@lists.alioth.debian.org>
 Uploaders: أحمد المحمودي (Ahmed El-Mahmoudy) <aelmahmoudy@sabily.org>
-Build-Depends: debhelper (>= 8)
+Build-Depends: debhelper (>= 8), qt4-dev-tools
 Build-Depends-Indep: python (>= 2.6.6-3~),
  python-setuptools, 
  python-pyparsing,
  python-pyside,
+ python-babel,
  pyside-tools
 Standards-Version: 3.9.2
 Homepage: http://alfanous.org
