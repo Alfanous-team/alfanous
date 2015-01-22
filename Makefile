@@ -521,7 +521,7 @@ install_desktop:  install_api qt_all  local_desktop_compile
 	mkdir -p $(DESTDIR)$(PREFIX)/share/fonts/
 	cp ./resources/fonts/* $(DESTDIR)$(PREFIX)/share/fonts/
 	mkdir -p $(DESTDIR)$(PREFIX)/share/locale/
-	cp $(DESKTOP_INTERFACE_PATH)/locale/* $(DESTDIR)$(PREFIX)/share/locale/
+	cp -ar $(DESKTOP_INTERFACE_PATH)/locale/* $(DESTDIR)$(PREFIX)/share/locale/
 	#test installation
 	# alfanous-desktop &
 
@@ -535,7 +535,7 @@ install_desktop_no_arguments:  install_api_no_arguments qt_all  local_desktop_co
 	mkdir -p $(DESTDIR)$(PREFIX)/share/fonts/
 	cp ./resources/fonts/* $(DESTDIR)$(PREFIX)/share/fonts/
 	mkdir -p $(DESTDIR)$(PREFIX)/share/locale/
-	cp $(DESKTOP_INTERFACE_PATH)/locale/* $(DESTDIR)$(PREFIX)/share/locale/
+	cp -ar $(DESKTOP_INTERFACE_PATH)/locale/* $(DESTDIR)$(PREFIX)/share/locale/
 	#test installation
 	# alfanous-desktop &
 	
