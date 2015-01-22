@@ -1,29 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS><TS version="1.1" language="ms">
 <context>
-    <name>@default</name>
-    <message>
-        <location filename="Gui.py" line="496"/>
-        <source>Applying skin</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="Gui.py" line="496"/>
-        <source>You should restart application in order for the skin to take effect</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="Gui.py" line="505"/>
-        <source>Applying language</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="Gui.py" line="505"/>
-        <source>You should restart application in order for the language to take effect</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
     <name>Dialog</name>
     <message>
         <location filename="aboutDlg_ui.py" line="204"/>
@@ -46,7 +23,7 @@
     <message>
         <location filename="Gui.py" line="322"/>
         <source>LTR</source>
-        <translation>LTR</translation>
+        <translation type="obsolete">LTR</translation>
     </message>
     <message>
         <location filename="mainform_ui.py" line="1619"/>
@@ -843,14 +820,6 @@
         <source>LTR</source>
         <comment>ar</comment>
         <translation type="obsolete">LTR</translation>
-    </message>
-</context>
-<context>
-    <name>app</name>
-    <message>
-        <location filename="Gui.py" line="748"/>
-        <source>QT_LAYOUT_DIRECTION</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 </TS>
