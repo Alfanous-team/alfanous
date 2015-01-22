@@ -58,6 +58,9 @@
    <set>QMainWindow::AllowTabbedDocks|QMainWindow::AnimatedDocks</set>
   </property>
   <widget class="QWidget" name="centralwidget">
+   <property name="layoutDirection">
+    <enum>Qt::LeftToRight</enum>
+   </property>
    <layout class="QVBoxLayout" name="verticalLayout_2">
     <item>
      <layout class="QHBoxLayout" name="horizontalLayout_4">
@@ -113,12 +116,7 @@
         </property>
         <item>
          <property name="text">
-          <string>الحمد لله</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>آية:(يقول)</string>
+          <string notr="true">الحمد لله</string>
          </property>
         </item>
        </widget>
@@ -193,12 +191,15 @@
          <bool>true</bool>
         </property>
         <property name="text">
-         <string>Auto Fuzzy Search</string>
+         <string>Fuzzy Search</string>
         </property>
        </widget>
       </item>
       <item>
        <widget class="QLabel" name="label_33">
+        <property name="enabled">
+         <bool>true</bool>
+        </property>
         <property name="sizePolicy">
          <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
           <horstretch>0</horstretch>
@@ -218,6 +219,9 @@
       </item>
       <item>
        <widget class="QRadioButton" name="o_search_in_ayas">
+        <property name="enabled">
+         <bool>true</bool>
+        </property>
         <property name="text">
          <string>Verses</string>
         </property>
@@ -382,6 +386,9 @@
             <pointsize>13</pointsize>
            </font>
           </property>
+          <property name="whatsThis">
+           <string notr="true"/>
+          </property>
           <property name="styleSheet">
            <string notr="true"/>
           </property>
@@ -457,10 +464,10 @@
          </font>
         </property>
         <property name="toolTip">
-         <string>pages number</string>
+         <string>page count</string>
         </property>
         <property name="whatsThis">
-         <string>pages number</string>
+         <string notr="true"/>
         </property>
         <property name="frameShape">
          <enum>QFrame::NoFrame</enum>
@@ -508,7 +515,7 @@
      <x>0</x>
      <y>0</y>
      <width>1422</width>
-     <height>23</height>
+     <height>21</height>
     </rect>
    </property>
    <property name="layoutDirection">
@@ -570,6 +577,28 @@
     <property name="title">
      <string>&amp;Options</string>
     </property>
+    <widget class="QMenu" name="menuRecitation">
+     <property name="enabled">
+      <bool>false</bool>
+     </property>
+     <property name="title">
+      <string>Recitation</string>
+     </property>
+     <addaction name="actionDefault_3"/>
+    </widget>
+    <widget class="QMenu" name="menuPerPage">
+     <property name="enabled">
+      <bool>false</bool>
+     </property>
+     <property name="title">
+      <string>PerPage</string>
+     </property>
+     <addaction name="actionpp1"/>
+     <addaction name="actionpp10"/>
+     <addaction name="actionpp20"/>
+     <addaction name="actionpp50"/>
+     <addaction name="actionpp100"/>
+    </widget>
     <widget class="QMenu" name="menuOrder_by">
      <property name="enabled">
       <bool>true</bool>
@@ -590,15 +619,24 @@
      <addaction name="separator"/>
      <addaction name="actionInverse"/>
     </widget>
-    <widget class="QMenu" name="menuScript">
+    <widget class="QMenu" name="menuChoose_Language">
      <property name="enabled">
       <bool>true</bool>
      </property>
      <property name="title">
-      <string>Script</string>
+      <string>Choose &amp;Language</string>
      </property>
-     <addaction name="actionStandard"/>
-     <addaction name="actionUthmani"/>
+     <property name="icon">
+      <iconset resource="../images/main.qrc">
+       <normaloff>:/resources/flag.png</normaloff>:/resources/flag.png</iconset>
+     </property>
+     <addaction name="actionSystem"/>
+     <addaction name="actionEnglish"/>
+     <addaction name="actionArabic"/>
+     <addaction name="actionFrench"/>
+     <addaction name="actionIndonesian"/>
+     <addaction name="actionMalay"/>
+     <addaction name="actionSpanish"/>
     </widget>
     <widget class="QMenu" name="menuTranslation">
      <property name="enabled">
@@ -609,14 +647,36 @@
      </property>
      <addaction name="actionTranslationNone"/>
     </widget>
-    <widget class="QMenu" name="menuRecitation">
+    <widget class="QMenu" name="menuStyle">
+     <property name="title">
+      <string>Style</string>
+     </property>
+     <addaction name="actionDefaultStyle"/>
+     <addaction name="actionWindows"/>
+     <addaction name="actionMotif"/>
+     <addaction name="actionCDE"/>
+     <addaction name="actionPlastique"/>
+     <addaction name="actionWindowsXP"/>
+     <addaction name="actionMacintosh"/>
+    </widget>
+    <widget class="QMenu" name="menuLimit">
+     <property name="title">
+      <string>Limit</string>
+     </property>
+     <addaction name="actionlimit100"/>
+     <addaction name="actionlimit500"/>
+     <addaction name="actionlimit1000"/>
+     <addaction name="actionlimit6236"/>
+    </widget>
+    <widget class="QMenu" name="menuScript">
      <property name="enabled">
-      <bool>false</bool>
+      <bool>true</bool>
      </property>
      <property name="title">
-      <string>Recitation</string>
+      <string>Script</string>
      </property>
-     <addaction name="actionDefault_3"/>
+     <addaction name="actionStandard"/>
+     <addaction name="actionUthmani"/>
     </widget>
     <widget class="QMenu" name="menuShow">
      <property name="enabled">
@@ -631,53 +691,6 @@
      <addaction name="separator"/>
      <addaction name="actionPrevios_aya"/>
      <addaction name="actionNext_aya"/>
-    </widget>
-    <widget class="QMenu" name="menuChoose_Language">
-     <property name="enabled">
-      <bool>false</bool>
-     </property>
-     <property name="title">
-      <string>Choose &amp;Language</string>
-     </property>
-     <property name="icon">
-      <iconset resource="../images/main.qrc">
-       <normaloff>:/resources/flag.png</normaloff>:/resources/flag.png</iconset>
-     </property>
-     <addaction name="actionEnglish"/>
-    </widget>
-    <widget class="QMenu" name="menuLimit">
-     <property name="title">
-      <string>Limit</string>
-     </property>
-     <addaction name="actionlimit100"/>
-     <addaction name="actionlimit500"/>
-     <addaction name="actionlimit1000"/>
-     <addaction name="actionlimit6236"/>
-    </widget>
-    <widget class="QMenu" name="menuPerPage">
-     <property name="enabled">
-      <bool>false</bool>
-     </property>
-     <property name="title">
-      <string>PerPage</string>
-     </property>
-     <addaction name="actionpp1"/>
-     <addaction name="actionpp10"/>
-     <addaction name="actionpp20"/>
-     <addaction name="actionpp50"/>
-     <addaction name="actionpp100"/>
-    </widget>
-    <widget class="QMenu" name="menuStyle">
-     <property name="title">
-      <string>Style</string>
-     </property>
-     <addaction name="actionDefaultStyle"/>
-     <addaction name="actionWindows"/>
-     <addaction name="actionMotif"/>
-     <addaction name="actionCDE"/>
-     <addaction name="actionPlastique"/>
-     <addaction name="actionWindowsXP"/>
-     <addaction name="actionMacintosh"/>
     </widget>
     <addaction name="menuOrder_by"/>
     <addaction name="separator"/>
@@ -767,7 +780,7 @@
    <property name="minimumSize">
     <size>
      <width>300</width>
-     <height>402</height>
+     <height>410</height>
     </size>
    </property>
    <property name="windowIcon">
@@ -825,8 +838,8 @@
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>295</width>
-          <height>537</height>
+          <width>259</width>
+          <height>410</height>
          </rect>
         </property>
         <attribute name="label">
@@ -968,39 +981,6 @@
              </widget>
             </item>
             <item>
-             <layout class="QHBoxLayout" name="horizontalLayout_3">
-              <item>
-               <widget class="QRadioButton" name="o_boost">
-                <property name="sizePolicy">
-                 <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                  <horstretch>0</horstretch>
-                  <verstretch>0</verstretch>
-                 </sizepolicy>
-                </property>
-                <property name="text">
-                 <string>Boosting</string>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QDoubleSpinBox" name="doubleSpinBox">
-                <property name="enabled">
-                 <bool>false</bool>
-                </property>
-                <property name="decimals">
-                 <number>1</number>
-                </property>
-                <property name="singleStep">
-                 <double>0.100000000000000</double>
-                </property>
-                <property name="value">
-                 <double>2.000000000000000</double>
-                </property>
-               </widget>
-              </item>
-             </layout>
-            </item>
-            <item>
              <widget class="QRadioButton" name="o_buckwalter">
               <property name="enabled">
                <bool>false</bool>
@@ -1111,8 +1091,8 @@
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>295</width>
-          <height>329</height>
+          <width>161</width>
+          <height>260</height>
          </rect>
         </property>
         <attribute name="label">
@@ -1167,17 +1147,17 @@
                <widget class="QComboBox" name="o_word_type">
                 <item>
                  <property name="text">
-                  <string>اسم</string>
+                  <string notr="true">اسم</string>
                  </property>
                 </item>
                 <item>
                  <property name="text">
-                  <string>فعل</string>
+                  <string notr="true">فعل</string>
                  </property>
                 </item>
                 <item>
                  <property name="text">
-                  <string>أداة</string>
+                  <string notr="true">أداة</string>
                  </property>
                 </item>
                </widget>
@@ -1392,8 +1372,8 @@
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>308</width>
-          <height>266</height>
+          <width>161</width>
+          <height>140</height>
          </rect>
         </property>
         <attribute name="label">
@@ -1564,8 +1544,8 @@
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>308</width>
-          <height>266</height>
+          <width>161</width>
+          <height>171</height>
          </rect>
         </property>
         <attribute name="label">
@@ -1799,8 +1779,8 @@
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>308</width>
-          <height>266</height>
+          <width>204</width>
+          <height>169</height>
          </rect>
         </property>
         <attribute name="label">
@@ -1902,8 +1882,11 @@
               </item>
               <item>
                <widget class="QSpinBox" name="o_struct_from">
+                <property name="whatsThis">
+                 <string/>
+                </property>
                 <property name="styleSheet">
-                 <string>color : red</string>
+                 <string notr="true">color : red</string>
                 </property>
                 <property name="minimum">
                  <number>1</number>
@@ -1939,7 +1922,7 @@
               <item>
                <widget class="QSpinBox" name="o_struct_to">
                 <property name="styleSheet">
-                 <string>color : red</string>
+                 <string notr="true">color : red</string>
                 </property>
                 <property name="minimum">
                  <number>1</number>
@@ -2052,8 +2035,8 @@
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>295</width>
-          <height>267</height>
+          <width>204</width>
+          <height>199</height>
          </rect>
         </property>
         <attribute name="label">
@@ -2103,7 +2086,7 @@
                 </item>
                 <item>
                  <property name="text">
-                  <string>Words (الله)</string>
+                  <string>Divine  Name</string>
                  </property>
                 </item>
                 <item>
@@ -2180,7 +2163,7 @@
               <item>
                <widget class="QSpinBox" name="o_stat_from">
                 <property name="styleSheet">
-                 <string>color : red</string>
+                 <string notr="true">color : red</string>
                 </property>
                </widget>
               </item>
@@ -2207,7 +2190,7 @@
               <item>
                <widget class="QSpinBox" name="o_stat_to">
                 <property name="styleSheet">
-                 <string>color : red</string>
+                 <string notr="true">color : red</string>
                 </property>
                </widget>
               </item>
@@ -2311,8 +2294,8 @@
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>308</width>
-          <height>266</height>
+          <width>94</width>
+          <height>24</height>
          </rect>
         </property>
         <attribute name="label">
@@ -2324,8 +2307,8 @@
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>308</width>
-          <height>266</height>
+          <width>219</width>
+          <height>201</height>
          </rect>
         </property>
         <attribute name="label">
@@ -2515,7 +2498,7 @@
              </property>
              <item>
               <property name="text">
-               <string> Add</string>
+               <string>Add</string>
               </property>
              </item>
              <item>
@@ -2653,18 +2636,7 @@
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>Advanced Search </string>
-   </property>
-  </action>
-  <action name="m_options">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="checked">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>Show/Hide &amp;options</string>
+    <string>Advanced Search</string>
    </property>
   </action>
   <action name="m_extendbar">
@@ -2731,16 +2703,6 @@
     <string>&amp;Print Results</string>
    </property>
   </action>
-  <action name="action_3">
-   <property name="text">
-    <string>------------</string>
-   </property>
-  </action>
-  <action name="action_7">
-   <property name="text">
-    <string>_________</string>
-   </property>
-  </action>
   <action name="a_mail">
    <property name="icon">
     <iconset resource="../images/main.qrc">
@@ -2766,11 +2728,6 @@
    </property>
    <property name="text">
     <string>Undo</string>
-   </property>
-  </action>
-  <action name="action_4">
-   <property name="text">
-    <string>--</string>
    </property>
   </action>
   <action name="actionZoom_In">
@@ -2843,23 +2800,6 @@
    </property>
    <property name="text">
     <string>Contact us</string>
-   </property>
-  </action>
-  <action name="actionWork_team">
-   <property name="enabled">
-    <bool>false</bool>
-   </property>
-   <property name="icon">
-    <iconset>
-     <normaloff>:/resources/greenhat-avatar.png</normaloff>:/resources/greenhat-avatar.png</iconset>
-   </property>
-   <property name="text">
-    <string>Work team</string>
-   </property>
-  </action>
-  <action name="m_options_show">
-   <property name="text">
-    <string>Show &amp;options</string>
    </property>
   </action>
   <action name="m_features">
@@ -2936,11 +2876,6 @@
     <string>default</string>
    </property>
   </action>
-  <action name="actionDe">
-   <property name="text">
-    <string>de</string>
-   </property>
-  </action>
   <action name="actionStandard">
    <property name="checkable">
     <bool>true</bool>
@@ -2966,6 +2901,9 @@
    </property>
    <property name="text">
     <string>None</string>
+   </property>
+   <property name="toolTip">
+    <string notr="true">None</string>
    </property>
   </action>
   <action name="actionDefault_3">
@@ -3070,14 +3008,18 @@
     <string>&amp;Save Query</string>
    </property>
   </action>
-  <action name="action_Sbb">
-   <property name="text">
-    <string>&amp;Sbb</string>
-   </property>
-  </action>
   <action name="actionEnglish">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>false</bool>
+   </property>
    <property name="text">
-    <string>English </string>
+    <string notr="true">English </string>
+   </property>
+   <property name="toolTip">
+    <string notr="true">English</string>
    </property>
   </action>
   <action name="actionAdd_Translation">
@@ -3105,7 +3047,7 @@
     <string>Change Path</string>
    </property>
    <property name="visible">
-    <bool>true</bool>
+    <bool>false</bool>
    </property>
   </action>
   <action name="actionAdd_Recitation">
@@ -3127,26 +3069,26 @@
   </action>
   <action name="actionUndo_Query">
    <property name="enabled">
-    <bool>true</bool>
+    <bool>false</bool>
    </property>
    <property name="icon">
     <iconset resource="../images/main.qrc">
      <normaloff>:/resources/editundo.png</normaloff>:/resources/editundo.png</iconset>
    </property>
    <property name="text">
-    <string>Undo Query</string>
+    <string notr="true">Undo Query</string>
    </property>
   </action>
   <action name="actionRedo_Query">
    <property name="enabled">
-    <bool>true</bool>
+    <bool>false</bool>
    </property>
    <property name="icon">
     <iconset resource="../images/main.qrc">
      <normaloff>:/resources/editredo.png</normaloff>:/resources/editredo.png</iconset>
    </property>
    <property name="text">
-    <string>Redo Query</string>
+    <string notr="true">Redo Query</string>
    </property>
   </action>
   <action name="actionCopy_Query">
@@ -3158,7 +3100,7 @@
      <normaloff>:/resources/editpaste.png</normaloff>:/resources/editpaste.png</iconset>
    </property>
    <property name="text">
-    <string>Copy Query</string>
+    <string notr="true">Copy Query</string>
    </property>
   </action>
   <action name="actionCopy_Page">
@@ -3175,7 +3117,10 @@
   </action>
   <action name="actionNone">
    <property name="text">
-    <string>None</string>
+    <string notr="true">None</string>
+   </property>
+   <property name="toolTip">
+    <string notr="true">None</string>
    </property>
   </action>
   <action name="m_abou_project">
@@ -3225,7 +3170,10 @@
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>100</string>
+    <string notr="true">100</string>
+   </property>
+   <property name="toolTip">
+    <string notr="true">100</string>
    </property>
   </action>
   <action name="actionlimit500">
@@ -3233,7 +3181,10 @@
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>500</string>
+    <string notr="true">500</string>
+   </property>
+   <property name="toolTip">
+    <string notr="true">500</string>
    </property>
   </action>
   <action name="actionlimit1000">
@@ -3244,7 +3195,13 @@
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>1000</string>
+    <string notr="true">1000</string>
+   </property>
+   <property name="iconText">
+    <string notr="true">1000</string>
+   </property>
+   <property name="toolTip">
+    <string notr="true">1000</string>
    </property>
   </action>
   <action name="actionlimit6236">
@@ -3252,7 +3209,10 @@
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>6236</string>
+    <string notr="true">6236</string>
+   </property>
+   <property name="toolTip">
+    <string notr="true">6236</string>
    </property>
   </action>
   <action name="actionpp1">
@@ -3260,7 +3220,10 @@
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>1</string>
+    <string notr="true">1</string>
+   </property>
+   <property name="toolTip">
+    <string notr="true">1</string>
    </property>
   </action>
   <action name="actionpp10">
@@ -3268,7 +3231,10 @@
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>10</string>
+    <string notr="true">10</string>
+   </property>
+   <property name="toolTip">
+    <string notr="true">10</string>
    </property>
   </action>
   <action name="actionpp20">
@@ -3276,7 +3242,10 @@
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>20</string>
+    <string notr="true">20</string>
+   </property>
+   <property name="toolTip">
+    <string notr="true">20</string>
    </property>
   </action>
   <action name="actionpp50">
@@ -3284,7 +3253,10 @@
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>50</string>
+    <string notr="true">50</string>
+   </property>
+   <property name="toolTip">
+    <string notr="true">50</string>
    </property>
   </action>
   <action name="actionpp100">
@@ -3292,7 +3264,10 @@
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>100</string>
+    <string notr="true">100</string>
+   </property>
+   <property name="toolTip">
+    <string notr="true">100</string>
    </property>
   </action>
   <action name="actionWindows">
@@ -3354,6 +3329,78 @@
   <action name="a_save_txt">
    <property name="text">
     <string>Export Results as text</string>
+   </property>
+  </action>
+  <action name="actionArabic">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string notr="true">العربية</string>
+   </property>
+   <property name="toolTip">
+    <string notr="true">العربية</string>
+   </property>
+  </action>
+  <action name="actionFrench">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string notr="true">Français</string>
+   </property>
+   <property name="toolTip">
+    <string notr="true">Fr</string>
+   </property>
+  </action>
+  <action name="actionIndonesian">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string notr="true">Indonesian</string>
+   </property>
+   <property name="toolTip">
+    <string notr="true">Indonesian</string>
+   </property>
+  </action>
+  <action name="actionSystem">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>System default</string>
+   </property>
+  </action>
+  <action name="actionMalay">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string notr="true">Malay</string>
+   </property>
+   <property name="toolTip">
+    <string notr="true">Malay</string>
+   </property>
+  </action>
+  <action name="actionSpanish">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string notr="true">Spanish</string>
+   </property>
+   <property name="toolTip">
+    <string notr="true">Spanish</string>
    </property>
   </action>
  </widget>
@@ -3440,12 +3487,12 @@
    <slot>click()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>285</x>
-     <y>78</y>
+     <x>593</x>
+     <y>49</y>
     </hint>
     <hint type="destinationlabel">
-     <x>321</x>
-     <y>80</y>
+     <x>1366</x>
+     <y>50</y>
     </hint>
    </hints>
   </connection>
@@ -3456,12 +3503,12 @@
    <slot>clear()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>357</x>
-     <y>80</y>
+     <x>1416</x>
+     <y>50</y>
     </hint>
     <hint type="destinationlabel">
-     <x>282</x>
-     <y>67</y>
+     <x>590</x>
+     <y>49</y>
     </hint>
    </hints>
   </connection>

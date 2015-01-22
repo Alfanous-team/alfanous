@@ -23,7 +23,15 @@ including separated files in packaging.
 
 import os
 import codecs
-from jinja2 import Template
+from jinja2 import Template, Environment
+from PySide import QtCore
+from gettext import gettext, ngettext
+
+env = Environment(extensions=['jinja2.ext.i18n'])
+## use QT translator 
+#env.install_gettext_callables(QtCore.QCoreApplication.translate, QtCore.QCoreApplication.translate, newstyle=False)
+## use gettext
+env.install_gettext_callables(gettext, ngettext)
 
 base_path =  os.path.dirname( __file__ ) 
-AYA_RESULTS_TEMPLATE = Template(codecs.open(base_path + "/templates/aya_results.html","r", "utf-8").read())
+AYA_RESULTS_TEMPLATE = env.from_string(codecs.open(base_path + "/templates/aya_results.html","r", "utf-8").read())

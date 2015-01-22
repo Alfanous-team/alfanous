@@ -107,7 +107,7 @@ If you want to help us testing  the project modules, just follow these steps and
 #. Run the build: 
 
    - Install all building dependencies: `pyparsing <http://pyparsing.wikispaces.com/>`_, `pyside <http://qt-project.org/wiki/Get-PySide>`_, `epydoc <http://epydoc.sourceforge.net/>`_,
-     `sphinx <http://sphinx.pocoo.org/>`_.
+     `sphinx <http://sphinx.pocoo.org/>`_, \Babel <http://babel.pocoo.org/docs/installation/>`_.
 
    - Go to the root path of the code source and execute this command    
    
