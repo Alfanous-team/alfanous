@@ -520,10 +520,12 @@ install_desktop:  install_api qt_all  local_desktop_compile
 	cp ./resources/AlFanous.png  $(DESTDIR)$(PREFIX)/share/pixmaps/
 	mkdir -p $(DESTDIR)$(PREFIX)/share/fonts/
 	cp ./resources/fonts/* $(DESTDIR)$(PREFIX)/share/fonts/
+	mkdir -p $(DESTDIR)$(PREFIX)/share/locale/
+	cp $(DESKTOP_INTERFACE_PATH)/locale/* $(DESTDIR)$(PREFIX)/share/locale/
 	#test installation
 	# alfanous-desktop &
 
-install_desktop_no_arguments:  install_api_no_arguments qt_all  local_mo_download
+install_desktop_no_arguments:  install_api_no_arguments qt_all  local_desktop_compile
 	perl -pi -w -e 's|version = "\d+\.\d+(\.\d+)*"|version = "$(VERSION)"|g;' $(DESKTOP_INTERFACE_PATH)/setup.py
 	cd  $(DESKTOP_INTERFACE_PATH); $(PYTHON_COMMAND) setup.py install
 	mkdir -p $(DESTDIR)$(PREFIX)/share/applications/
@@ -532,6 +534,8 @@ install_desktop_no_arguments:  install_api_no_arguments qt_all  local_mo_downloa
 	cp ./resources/AlFanous.png  $(DESTDIR)$(PREFIX)/share/pixmaps/
 	mkdir -p $(DESTDIR)$(PREFIX)/share/fonts/
 	cp ./resources/fonts/* $(DESTDIR)$(PREFIX)/share/fonts/
+	mkdir -p $(DESTDIR)$(PREFIX)/share/locale/
+	cp $(DESKTOP_INTERFACE_PATH)/locale/* $(DESTDIR)$(PREFIX)/share/locale/
 	#test installation
 	# alfanous-desktop &
 	
