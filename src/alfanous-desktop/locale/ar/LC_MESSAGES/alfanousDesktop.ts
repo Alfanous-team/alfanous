@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS>
-<TS version="2.0" language="ar_DZ">
+<!DOCTYPE TS><TS version="1.1" language="ar_DZ">
 <context>
     <name>@default</name>
     <message>
@@ -464,7 +463,7 @@
         <source>Letters</source>
         <translation>الحروف</translation>
     </message>
-    <message utf8="true">
+    <message encoding="UTF-8">
         <location filename="mainform_ui.py" line="1691"/>
         <source>Words (الله)</source>
         <translation type="obsolete">ألفاظ الجلالة</translation>
@@ -877,7 +876,7 @@
     <message>
         <location filename="Gui.py" line="316"/>
         <source>LTR</source>
-        <translation>RTL</translation>
+        <translation type="obsolete">RTL</translation>
     </message>
     <message>
         <location filename="mainform_ui.py" line="1841"/>
@@ -895,30 +894,7 @@
     <message>
         <location filename="Gui.py" line="735"/>
         <source>QT_LAYOUT_DIRECTION</source>
-        <translation type="unfinished">RTL</translation>
-    </message>
-</context>
-<context>
-    <name>self.MainWindow</name>
-    <message>
-        <location filename="Gui.py" line="490"/>
-        <source>Applying skin</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="Gui.py" line="490"/>
-        <source>You should restart application in order for the skin to take effect</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="Gui.py" line="499"/>
-        <source>Applying language</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="Gui.py" line="499"/>
-        <source>You should restart application in order for the language to take effect</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">RTL</translation>
     </message>
 </context>
 </TS>

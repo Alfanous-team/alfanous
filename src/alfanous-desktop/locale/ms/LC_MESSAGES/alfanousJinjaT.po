@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Alfanous 0.7.03\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2015-01-21 16:09+0100\n"
+"POT-Creation-Date: 2015-01-22 12:46+0100\n"
 "PO-Revision-Date: 2015-01-20 23:43+0000\n"
 "Last-Translator: Assem Chelli <assem.ch@gmail.com>\n"
 "Language-Team: ms <LL@li.org>\n"
@@ -33,207 +33,223 @@ msgstr ""
 msgid "mekka"
 msgstr ""
 
-#: Gui.py:693
-msgid "Alfanous_Results_Page_"
-msgstr ""
-
-#: Gui.py:746
+#: Gui.py:320 templates/aya_results.html:1
 #, fuzzy
 msgid "LTR"
 msgstr "aksara-aksara"
 
-#: templates/aya_results.html:654
+#: Gui.py:500
+msgid "Applying skin"
+msgstr ""
+
+#: Gui.py:500
+msgid "You should restart application in order for the skin to take effect"
+msgstr ""
+
+#: Gui.py:509
+msgid "Applying language"
+msgstr ""
+
+#: Gui.py:509
+msgid "You should restart application in order for the language to take effect"
+msgstr ""
+
+#: Gui.py:697
+msgid "Alfanous_Results_Page_"
+msgstr ""
+
+#: templates/aya_results.html:658
 msgid " Suggestions: "
 msgstr "Cadangan:"
 
-#: templates/aya_results.html:676
+#: templates/aya_results.html:680
 msgid "Words"
 msgstr "Kata-kata"
 
-#: templates/aya_results.html:678 templates/aya_results.html:825
-#: templates/aya_results.html:926
+#: templates/aya_results.html:682 templates/aya_results.html:823
+#: templates/aya_results.html:924
 msgid "words"
 msgstr "kata-kata"
 
-#: templates/aya_results.html:681 templates/aya_results.html:693
+#: templates/aya_results.html:685 templates/aya_results.html:697
 msgid "occurances"
 msgstr ""
 
-#: templates/aya_results.html:684 templates/aya_results.html:697
+#: templates/aya_results.html:688 templates/aya_results.html:701
 msgid "vocalizations"
 msgstr ""
 
-#: templates/aya_results.html:692
+#: templates/aya_results.html:696
 msgid " word "
 msgstr "kata"
 
-#: templates/aya_results.html:694
+#: templates/aya_results.html:698
 msgid " ayates"
 msgstr ""
 
-#: templates/aya_results.html:705
+#: templates/aya_results.html:709
 msgid " synonyms "
 msgstr "Sinonim-sinonim"
 
-#: templates/aya_results.html:715
+#: templates/aya_results.html:719
 msgid " derivations "
 msgstr ""
 
-#: templates/aya_results.html:726
+#: templates/aya_results.html:730
 msgid " Annotation "
 msgstr ""
 
-#: templates/aya_results.html:727
+#: templates/aya_results.html:731
 msgid " ID "
 msgstr ""
 
-#: templates/aya_results.html:728
+#: templates/aya_results.html:732
 msgid " sura,aya "
 msgstr ""
 
-#: templates/aya_results.html:730
+#: templates/aya_results.html:734
 msgid " token "
 msgstr ""
 
-#: templates/aya_results.html:733
+#: templates/aya_results.html:737
 msgid " part "
 msgstr ""
 
-#: templates/aya_results.html:736 templates/aya_results.html:819
-#: templates/aya_results.html:945
+#: templates/aya_results.html:740 templates/aya_results.html:817
+#: templates/aya_results.html:943
 msgid " type "
 msgstr ""
 
-#: templates/aya_results.html:739
+#: templates/aya_results.html:743
 msgid " POS "
 msgstr ""
 
-#: templates/aya_results.html:742
+#: templates/aya_results.html:746
 msgid " lemma "
 msgstr ""
 
-#: templates/aya_results.html:745
+#: templates/aya_results.html:749
 msgid " root "
 msgstr ""
 
-#: templates/aya_results.html:748
+#: templates/aya_results.html:752
 msgid " special "
 msgstr ""
 
-#: templates/aya_results.html:751
+#: templates/aya_results.html:755
 msgid " aspect "
 msgstr ""
 
-#: templates/aya_results.html:754
+#: templates/aya_results.html:758
 msgid " state "
 msgstr ""
 
-#: templates/aya_results.html:757
+#: templates/aya_results.html:761
 msgid " form "
 msgstr ""
 
-#: templates/aya_results.html:760
+#: templates/aya_results.html:764
 msgid " case "
 msgstr ""
 
-#: templates/aya_results.html:763
+#: templates/aya_results.html:767
 msgid " derivation "
 msgstr ""
 
-#: templates/aya_results.html:766
+#: templates/aya_results.html:770
 msgid " person "
 msgstr ""
 
-#: templates/aya_results.html:769
+#: templates/aya_results.html:773
 msgid " number "
 msgstr ""
 
-#: templates/aya_results.html:772
+#: templates/aya_results.html:776
 msgid " gender "
 msgstr ""
 
-#: templates/aya_results.html:775
+#: templates/aya_results.html:779
 msgid " voice "
 msgstr ""
 
-#: templates/aya_results.html:790
+#: templates/aya_results.html:794
 msgid "Results"
 msgstr "Keputusan-keputusan"
 
-#: templates/aya_results.html:791
+#: templates/aya_results.html:795
 msgid " to "
 msgstr "ke"
 
-#: templates/aya_results.html:792
+#: templates/aya_results.html:796
 msgid " of "
 msgstr "dari"
 
-#: templates/aya_results.html:799
+#: templates/aya_results.html:803
 msgid " Result n° "
 msgstr ""
 
-#: templates/aya_results.html:816
+#: templates/aya_results.html:811
 msgid " Sura "
 msgstr ""
 
-#: templates/aya_results.html:817 templates/aya_results.html:944
+#: templates/aya_results.html:815 templates/aya_results.html:942
 msgid " n° "
 msgstr ""
 
-#: templates/aya_results.html:820
+#: templates/aya_results.html:818
 msgid " revelation_order "
 msgstr ""
 
-#: templates/aya_results.html:821
+#: templates/aya_results.html:819
 msgid " ayahs "
 msgstr "Ayat-ayat"
 
-#: templates/aya_results.html:826 templates/aya_results.html:928
+#: templates/aya_results.html:824 templates/aya_results.html:926
 #, fuzzy
 msgid "letters"
 msgstr "aksara-aksara"
 
-#: templates/aya_results.html:827 templates/aya_results.html:930
+#: templates/aya_results.html:825 templates/aya_results.html:928
 msgid "divine names"
 msgstr ""
 
-#: templates/aya_results.html:905
+#: templates/aya_results.html:903
 msgid " Chapter "
 msgstr "Bab"
 
-#: templates/aya_results.html:909
+#: templates/aya_results.html:907
 msgid " Topic "
 msgstr "Topik"
 
-#: templates/aya_results.html:914
+#: templates/aya_results.html:912
 msgid " Subtopic "
 msgstr "Subtopik"
 
-#: templates/aya_results.html:934
+#: templates/aya_results.html:932
 msgid " manzil "
 msgstr ""
 
-#: templates/aya_results.html:935
+#: templates/aya_results.html:933
 msgid " hizb "
 msgstr ""
 
-#: templates/aya_results.html:936
+#: templates/aya_results.html:934
 msgid " quart "
 msgstr ""
 
-#: templates/aya_results.html:937
+#: templates/aya_results.html:935
 msgid " page "
 msgstr "laman"
 
-#: templates/aya_results.html:943
+#: templates/aya_results.html:941
 msgid " sajda "
 msgstr ""
 
-#: templates/aya_results.html:961
+#: templates/aya_results.html:960
 msgid "Sorry! there is no results for this search query"
 msgstr ""
 
-#: templates/aya_results.html:965
+#: templates/aya_results.html:964
 msgid " Error  "
 msgstr ""
 
