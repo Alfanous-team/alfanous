@@ -328,7 +328,7 @@ local_pot_all: local_desktop_extract local_web_update local_mwui_extract
 
 local_desktop_compile:
 	# Qt part
-	cd $(DESKTOP_INTERFACE_PATH); lrelease-qt4 qt_local.pro
+	cd $(DESKTOP_INTERFACE_PATH); lrelease qt_local.pro
 	# Babel part
 	pybabel compile -d $(DESKTOP_INTERFACE_PATH)locale -D alfanousJinjaT
 
