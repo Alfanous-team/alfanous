@@ -13,11 +13,11 @@ Group:   Quran/Tools
 BuildRequires: python python-setuptools python-configobj unzip ImageMagick
 Requires:      python python-configobj python-alfanous python-jinja2 islamic-menus
 %if 0%{?fedora_version} || 0%{?rhel_version} || 0%{?centos_version}
-BuildRequires: python-pyside-devel pyside-tools pyparsing
+BuildRequires: python-pyside-devel pyside-tools pyparsing python-babel babel qt-devel
 Requires:      python-pyside pyparsing
 %endif
 %if 0%{?suse_version}
-BuildRequires: python-pyside-devel python-pyside-tools python-pyparsing
+BuildRequires: python-pyside-devel python-pyside-tools python-pyparsing python-Babel libqt4-linguist
 Requires:      python-pyside python-pyparsing
 %endif
 BuildArch:     noarch
@@ -71,6 +71,9 @@ rm -rf   %{_builddir}/alfanous-alfanous.version
 mkdir -p %{_builddir}/alfanous-alfanous.version
 cd ../..
 cp -r `cat list.txt`  %{_builddir}/alfanous-alfanous.version
+%if 0%{?fedora_version} || 0%{?rhel_version} || 0%{?centos_version}
+perl -pi -w -e 's|lrelease|lrelease-qt4|g;' %{_builddir}/alfanous-alfanous.version/Makefile
+%endif
 
 %build
 cd alfanous-alfanous.version
@@ -120,10 +123,14 @@ rm -rf %{buildroot}
 %{_datadir}/pixmaps/AlFanous.png
 %{_datadir}/icons/hicolor/*/apps/AlFanous.png
 %{_datadir}/fonts/alfanous
+%{_datadir}/locale/alfanous*
+%{_datadir}/locale/*/LC_MESSAGES/alfanous*
 %if 0%{?suse_version}
 %dir %{_datadir}/icons/hicolor
 %dir %{_datadir}/icons/hicolor/*
 %dir %{_datadir}/icons/hicolor/*/apps
+%dir %{_datadir}/locale/*
+%dir %{_datadir}/locale/*/LC_MESSAGES
 %endif
 
 %files firefox-toolbar
