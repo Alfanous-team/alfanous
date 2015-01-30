@@ -68,7 +68,7 @@ setup(
 
 	options = {
 			"py2exe" : {
-					"includes" : ["sip"],
+					"includes" : ["sip","jinja2.ext"],
 					"optimize":2,
 					"skip_archive":True
 				    },
