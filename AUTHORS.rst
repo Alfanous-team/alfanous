@@ -103,12 +103,15 @@ Community Management
 -----------
 Translation
 -----------
-( to help in translation, contact us in  the mailing list <alfanous[at]googlegroups[dotcom]> )
+( to help in translation, contact us in the mailing list <alfanous[at]googlegroups[dotcom]> )
 
 
 * Desktop application
 
-  * (we'll write about that as soon as we manage the translations made to the desktop application)
+  * Arabic: Abdelmonam Kouka, Assem Chelli, LionArt (ghazi.nocturne), Karim Oulad Chalha, Zarrabi
+  * Indonesian: Arif Rahman Hakim, Muslih Al aqaad
+  * Malay: Muhammad Fariz
+  * Spanish: Ricardo Hermosilla
 
 * Main Web Interface
 

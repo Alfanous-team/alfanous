@@ -26,6 +26,7 @@ TODO reorganize the importer module ,keep it free of un-needed resources
 '''
 import os.path
 import re
+import operator
 import sqlite3 as lite
 
 
@@ -360,11 +361,12 @@ class Transformer:
         worddict = {}
         for prop in props:
             worddict[prop] = []
-
         for item in cur.fetchall():
-            i = 0
-            for prop in props:
-                worddict[prop].append( item[i] );i += 1
+            # if one of values is None
+            if reduce(operator.and_, map(bool, item),True ):
+                i = 0
+                for prop in props:
+                    worddict[prop].append( item[i] );i += 1
 
         raw_str = self.dheader + u"\nworddict=" + str( worddict ).replace( ",", ",\n" )
 
