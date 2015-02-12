@@ -239,7 +239,7 @@ AVAILABLE_UNITS = SortedDict([
   #( "sura", "Surahs" ),
 
   ( "translation", _("Translations") ),
-  ( "word", _("Words") ),
+  #( "word", _("Words") ),
   #  tafsir, hadith, dream, poem
 ])
 
