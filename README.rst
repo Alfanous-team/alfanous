@@ -173,11 +173,6 @@ History
 ------------
 Perspectives
 ------------
-#. **Milestone GUI 0.7 Amber (الكهرمان)** - Cleaning the Desktop application
-
-   - Fix the installer to Ubuntu Linux
-   - Fix the installer to Windows
-   - Tiny fixes
 #. **Milestone API 0.7.5 Coral (المرجان)** - Enriching the linguistic and Quranic resources
 
    - Search in Islamic Figures
