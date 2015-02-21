@@ -1,10 +1,24 @@
    **note** This project needs more contributors and/or funding. If you like it, see `how you can help? <https://github.com/Alfanous-team/alfanous/blob/master/FAQ.rst#how-you-can-help>`_.
 
+
+
 * .. image:: https://travis-ci.org/Alfanous-team/alfanous.png?branch=master
             :target: https://travis-ci.org/Alfanous-team/alfanous
 
 * .. image:: https://landscape.io/github/Alfanous-team/alfanous/master/landscape.svg
         :target: https://landscape.io/github/Alfanous-team/alfanous
+        
+* .. image:: https://requires.io/github/Alfanous-team/alfanous/requirements.svg?branch=master
+     :target: https://requires.io/github/Alfanous-team/alfanous/requirements/?branch=master
+     :alt: Requirements Status
+
+* .. image:: https://img.shields.io/github/issues/Alfanous-team/alfanous.svg
+        :target: https://github.com/Alfanous-team/alfanous/issues?q=is%3Aopen+is%3Aissue
+
+* .. image:: https://img.shields.io/pypi/v/alfanous.svg
+        :target: https://pypi.python.org/pypi/alfanous
+  .. image:: https://img.shields.io/pypi/dm/alfanous.svg
+        :target: https://pypi.python.org/pypi/alfanous
 
 ================
 Alfanous Project
@@ -159,11 +173,6 @@ History
 ------------
 Perspectives
 ------------
-#. **Milestone GUI 0.7 Amber (الكهرمان)** - Cleaning the Desktop application
-
-   - Fix the installer to Ubuntu Linux
-   - Fix the installer to Windows
-   - Tiny fixes
 #. **Milestone API 0.7.5 Coral (المرجان)** - Enriching the linguistic and Quranic resources
 
    - Search in Islamic Figures
