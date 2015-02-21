@@ -62,9 +62,10 @@ setup(
 			"icon_resources": [( 1, "../../resources/Alfanous.ico" )]
 		}],
 
-
+	#tested: freezing works, but the folder templates should moved manually
+	# There is a bug when executing the app
 	## MAC
-	#app=["alfanousDesktop-mac.py"],
+	app=["Gui.py"],
 
 	options = {
 			"py2exe" : {
