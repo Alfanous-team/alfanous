@@ -140,7 +140,7 @@ Translation
 --------------
 Test & Support
 --------------
-* Test: `Walid Ziouche`_, Zakaria Smahi
+* Test: `Walid Ziouche`_, Zakaria Smahi, Muslih Alaqaad, 
 * Bugs: Oussama Chammam, Ahmed Salem, xsoh, Yacer~, Jounathan~, BenSali~ , Many persons from the community, thanks to all. 
 * Vulns:  Jalil~
 
