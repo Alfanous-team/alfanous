@@ -674,7 +674,7 @@ font-family: ArabeyesQr, Scheherazade;
 		{% endif %}
 
 		{% if results.search.interval.total %}
-			{% if results.search.words.global.nb_words %}
+			{% if results.search.words.global %}
 				<!-- Words list -->
 				<div id='search_words' style=" text-align:{{ align }}" >
 				  <h2 class='wordheader'> {% trans %}Words{% endtrans %}: </h2>
@@ -802,7 +802,7 @@ font-family: ArabeyesQr, Scheherazade;
 				    <span style=' color:#0000ff;'>
 				      {% trans %} Result n° {% endtrans %}  <b> {{ ayaresult_id }} </b> 
 				      - 
-				      ({{ ayaresult_content.sura.arabic_name if dir=="RTL" else  ayaresult_content.sura.name }} {{ ayaresult_content.aya.id }})  
+				      ({{ ayaresult_content.identifier.sura_arabic_name if dir=="RTL" else  ayaresult_content.identifier.sura_name }} {{ ayaresult_content.aya.id }})  
 				    </span>
 				   {% if ayaresult_content.sura %}
 					   <div class='sura_details'>
