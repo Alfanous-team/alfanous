@@ -48,7 +48,8 @@ sys.setdefaultencoding('utf-8')
 
 ## STATIC GLOBAL variables
 CONFIGPATH = ( os.getenv( 'USERPROFILE' ) or os.getenv( 'HOME' ) or "." ) + "/"
-LOCALPATH = "./locale" #os.getenv('TEXTDOMAINDIR')
+BASEPATH  =  os.path.dirname( os.path.abspath(__file__) )
+LOCALPATH = BASEPATH + "/locale" #os.getenv('TEXTDOMAINDIR')
 PERPAGE = 10 #results per page
 RELATIONS = ["", "", u"|", u"+", u"-"]
 
@@ -737,8 +738,7 @@ def main():
           lang_code, country_code = "en", "US"
     else:
         lang_code, country_code = local.split("_")
-    base_path =  os.path.dirname( __file__ ) 
-    translator.load("alfanousDesktop", base_path + "locale/%s/LC_MESSAGES/" % lang_code ) # translation
+    translator.load("alfanousDesktop", BASEPATH + "/locale/%s/LC_MESSAGES/" % lang_code ) # translation
     ##
     app = QtGui.QApplication( sys.argv )
     app.installTranslator(translator)
