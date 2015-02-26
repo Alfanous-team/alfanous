@@ -619,25 +619,6 @@
      <addaction name="separator"/>
      <addaction name="actionInverse"/>
     </widget>
-    <widget class="QMenu" name="menuChoose_Language">
-     <property name="enabled">
-      <bool>true</bool>
-     </property>
-     <property name="title">
-      <string>Choose &amp;Language</string>
-     </property>
-     <property name="icon">
-      <iconset resource="../images/main.qrc">
-       <normaloff>:/resources/flag.png</normaloff>:/resources/flag.png</iconset>
-     </property>
-     <addaction name="actionSystem"/>
-     <addaction name="actionEnglish"/>
-     <addaction name="actionArabic"/>
-     <addaction name="actionFrench"/>
-     <addaction name="actionIndonesian"/>
-     <addaction name="actionMalay"/>
-     <addaction name="actionSpanish"/>
-    </widget>
     <widget class="QMenu" name="menuTranslation">
      <property name="enabled">
       <bool>true</bool>
@@ -691,6 +672,25 @@
      <addaction name="separator"/>
      <addaction name="actionPrevios_aya"/>
      <addaction name="actionNext_aya"/>
+    </widget>
+    <widget class="QMenu" name="menuChoose_Language">
+     <property name="enabled">
+      <bool>true</bool>
+     </property>
+     <property name="title">
+      <string>Choose &amp;Language</string>
+     </property>
+     <property name="icon">
+      <iconset resource="../images/main.qrc">
+       <normaloff>:/resources/flag.png</normaloff>:/resources/flag.png</iconset>
+     </property>
+     <addaction name="actionSystem"/>
+     <addaction name="actionEnglish"/>
+     <addaction name="actionArabic"/>
+     <addaction name="actionFrench"/>
+     <addaction name="actionIndonesian"/>
+     <addaction name="actionMalay"/>
+     <addaction name="actionSpanish"/>
     </widget>
     <addaction name="menuOrder_by"/>
     <addaction name="separator"/>
@@ -1091,7 +1091,7 @@
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>161</width>
+          <width>276</width>
           <height>260</height>
          </rect>
         </property>
@@ -1372,7 +1372,7 @@
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>161</width>
+          <width>276</width>
           <height>140</height>
          </rect>
         </property>
@@ -1544,7 +1544,7 @@
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>161</width>
+          <width>276</width>
           <height>171</height>
          </rect>
         </property>
@@ -1779,7 +1779,7 @@
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>204</width>
+          <width>276</width>
           <height>169</height>
          </rect>
         </property>
@@ -2035,7 +2035,7 @@
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>204</width>
+          <width>276</width>
           <height>199</height>
          </rect>
         </property>
@@ -2294,8 +2294,8 @@
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>94</width>
-          <height>24</height>
+          <width>276</width>
+          <height>300</height>
          </rect>
         </property>
         <attribute name="label">
@@ -2307,7 +2307,7 @@
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>219</width>
+          <width>276</width>
           <height>201</height>
          </rect>
         </property>
@@ -3336,7 +3336,7 @@
     <bool>true</bool>
    </property>
    <property name="text">
-    <string notr="true">العربية</string>
+    <string>Arabic</string>
    </property>
    <property name="toolTip">
     <string notr="true">العربية</string>
@@ -3350,7 +3350,7 @@
     <bool>true</bool>
    </property>
    <property name="text">
-    <string notr="true">Français</string>
+    <string>French</string>
    </property>
    <property name="toolTip">
     <string notr="true">Fr</string>
