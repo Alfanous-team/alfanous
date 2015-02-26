@@ -1,5 +1,5 @@
-resources/launchers/alfanous-desktop usr/bin/
 resources/launchers/alfanous.desktop usr/share/applications/
 resources/AlFanous.png  usr/share/pixmaps/
+src/alfanous-desktop/locale/* usr/share/locale/
 usr/lib/python*/*/alfanousDesktop/
 usr/lib/python*/*/alfanousDesktop-*.egg-info
