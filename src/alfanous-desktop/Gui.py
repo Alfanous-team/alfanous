@@ -78,7 +78,6 @@ os.environ['LANG'] = lang
 RAWoutput = Raw() # default paths
 
 SAJDA_TYPE = {u"مستحبة":_( u"recommended" ), u"واجبة":_( u"obliged" )}
-SURA_TYPE = {u"مدنية":_( u"medina" ), u"مكية":_( u"mekka" )}
 
 ## Some functions
 relate = lambda query, filter, index:"( " + unicode( query ) + " ) " + RELATIONS[index] + " ( " + filter + " ) " if  index > 1 else filter if index == 1 else unicode( query ) + " " + filter
@@ -623,9 +622,13 @@ class QUI( Ui_MainWindow ):
             else:
                 filter_ += u"  sura:\"" + unicode( RAWoutput._surates["Romanized"][self.o_sura_name.currentIndex() - 1] ) + "\""
 
-        sura_types = [u"", u"مدنية", u"مكية"]
+        sura_types_ar = [u"", u"مدنية", u"مكية"]
+        sura_types_en = [u"", u"Medinan", u"Meccan"]
         if self.o_tanzil.currentIndex() != 0:
-            filter_ += u"  نوع_السورة:" + unicode( sura_types[self.o_tanzil.currentIndex()] )
+            if self.direction == "RTL":
+                filter_ += u"  نوع_السورة:" + unicode( sura_types_ar[self.o_tanzil.currentIndex()] )
+            else:
+                filter_ += u"  sura_type:" + unicode( sura_types_en[self.o_tanzil.currentIndex()] )
 
 
         yes_no = ["", u"لا", u"نعم"]
