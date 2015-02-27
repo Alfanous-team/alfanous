@@ -907,11 +907,6 @@ QSpinBox::down-button:pressed:enabled, QDoubleSpinBox::down-button:pressed:enabl
     </property>
     <addaction name="m_help"/>
     <addaction name="separator"/>
-    <addaction name="action_Send_Feedback"/>
-    <addaction name="actionDeclare_a_bug"/>
-    <addaction name="actionTranslate"/>
-    <addaction name="actionFunds"/>
-    <addaction name="separator"/>
     <addaction name="m_about"/>
    </widget>
    <widget class="QMenu" name="menu_4">
@@ -961,29 +956,6 @@ QSpinBox::down-button:pressed:enabled, QDoubleSpinBox::down-button:pressed:enabl
      <addaction name="actionpp20"/>
      <addaction name="actionpp50"/>
      <addaction name="actionpp100"/>
-    </widget>
-    <widget class="QMenu" name="menuOrder_by">
-     <property name="enabled">
-      <bool>true</bool>
-     </property>
-     <property name="layoutDirection">
-      <enum>Qt::LeftToRight</enum>
-     </property>
-     <property name="title">
-      <string>Sort by</string>
-     </property>
-     <widget class="QMenu" name="menuFields">
-      <property name="title">
-       <string>Field</string>
-      </property>
-     </widget>
-     <addaction name="actionRelevance"/>
-     <addaction name="actionPosition_in_Mus_haf"/>
-     <addaction name="actionRevelation"/>
-     <addaction name="actionSubject"/>
-     <addaction name="menuFields"/>
-     <addaction name="separator"/>
-     <addaction name="actionInverse"/>
     </widget>
     <widget class="QMenu" name="menuTranslation">
      <property name="enabled">
@@ -1058,6 +1030,29 @@ QSpinBox::down-button:pressed:enabled, QDoubleSpinBox::down-button:pressed:enabl
      <addaction name="actionMalay"/>
      <addaction name="actionSpanish"/>
     </widget>
+    <widget class="QMenu" name="menuOrder_by">
+     <property name="enabled">
+      <bool>true</bool>
+     </property>
+     <property name="layoutDirection">
+      <enum>Qt::LeftToRight</enum>
+     </property>
+     <property name="title">
+      <string>Sort by</string>
+     </property>
+     <widget class="QMenu" name="menuFields">
+      <property name="title">
+       <string>Field</string>
+      </property>
+     </widget>
+     <addaction name="actionRelevance"/>
+     <addaction name="actionPosition_in_Mus_haf"/>
+     <addaction name="actionRevelation"/>
+     <addaction name="actionSubject"/>
+     <addaction name="menuFields"/>
+     <addaction name="separator"/>
+     <addaction name="actionInverse"/>
+    </widget>
     <addaction name="menuOrder_by"/>
     <addaction name="separator"/>
     <addaction name="menuScript"/>
@@ -1129,11 +1124,25 @@ QSpinBox::down-button:pressed:enabled, QDoubleSpinBox::down-button:pressed:enabl
     <addaction name="actionCopy_Query"/>
     <addaction name="actionCopy_Page"/>
    </widget>
+   <widget class="QMenu" name="menuContribute">
+    <property name="title">
+     <string>&amp;Contribute</string>
+    </property>
+    <addaction name="action_Say_Thanks"/>
+    <addaction name="actionAsk_a_Question"/>
+    <addaction name="actionShare_an_Idea"/>
+    <addaction name="actionReport_a_Problem"/>
+    <addaction name="separator"/>
+    <addaction name="actionTranslate"/>
+    <addaction name="actionCode"/>
+    <addaction name="actionFunds"/>
+   </widget>
    <addaction name="menu"/>
    <addaction name="menu_Edit"/>
    <addaction name="menu_4"/>
    <addaction name="menuOptions"/>
    <addaction name="menu_Indexes"/>
+   <addaction name="menuContribute"/>
    <addaction name="menu_2"/>
   </widget>
   <widget class="QDockWidget" name="w_features">
@@ -1197,7 +1206,7 @@ QSpinBox::down-button:pressed:enabled, QDoubleSpinBox::down-button:pressed:enabl
         <number>0</number>
        </property>
        <property name="currentIndex">
-        <number>0</number>
+        <number>3</number>
        </property>
        <widget class="QWidget" name="page_2">
         <property name="geometry">
@@ -1761,7 +1770,7 @@ QSpinBox::down-button:pressed:enabled, QDoubleSpinBox::down-button:pressed:enabl
           <x>0</x>
           <y>0</y>
           <width>276</width>
-          <height>168</height>
+          <height>169</height>
          </rect>
         </property>
         <attribute name="label">
@@ -1999,7 +2008,7 @@ QSpinBox::down-button:pressed:enabled, QDoubleSpinBox::down-button:pressed:enabl
           <x>0</x>
           <y>0</y>
           <width>276</width>
-          <height>170</height>
+          <height>304</height>
          </rect>
         </property>
         <attribute name="label">
@@ -2798,7 +2807,7 @@ QSpinBox::down-button:pressed:enabled, QDoubleSpinBox::down-button:pressed:enabl
           <x>0</x>
           <y>0</y>
           <width>276</width>
-          <height>139</height>
+          <height>155</height>
          </rect>
         </property>
         <attribute name="label">
@@ -3170,16 +3179,16 @@ QSpinBox::down-button:pressed:enabled, QDoubleSpinBox::down-button:pressed:enabl
     <string>Hints</string>
    </property>
   </action>
-  <action name="actionDeclare_a_bug">
+  <action name="actionCode">
    <property name="enabled">
-    <bool>false</bool>
+    <bool>true</bool>
    </property>
    <property name="icon">
     <iconset resource="../images/main.qrc">
      <normaloff>:/resources/bug-buddy.png</normaloff>:/resources/bug-buddy.png</iconset>
    </property>
    <property name="text">
-    <string>Report bug</string>
+    <string>&amp;Code</string>
    </property>
   </action>
   <action name="actionFunds">
@@ -3191,7 +3200,7 @@ QSpinBox::down-button:pressed:enabled, QDoubleSpinBox::down-button:pressed:enabl
      <normaloff>:/resources/gnome-money.png</normaloff>:/resources/gnome-money.png</iconset>
    </property>
    <property name="text">
-    <string>Donate us</string>
+    <string>&amp;Donate us!</string>
    </property>
   </action>
   <action name="actionContact_us">
@@ -3219,14 +3228,14 @@ QSpinBox::down-button:pressed:enabled, QDoubleSpinBox::down-button:pressed:enabl
   </action>
   <action name="actionTranslate">
    <property name="enabled">
-    <bool>false</bool>
+    <bool>true</bool>
    </property>
    <property name="icon">
     <iconset>
      <normaloff>:/resources/centrejust.png</normaloff>:/resources/centrejust.png</iconset>
    </property>
    <property name="text">
-    <string>Translate this application</string>
+    <string>&amp;Translate</string>
    </property>
   </action>
   <action name="actionRelevance">
@@ -3542,12 +3551,16 @@ QSpinBox::down-button:pressed:enabled, QDoubleSpinBox::down-button:pressed:enabl
     <string>About project</string>
    </property>
   </action>
-  <action name="action_Send_Feedback">
+  <action name="action_Say_Thanks">
    <property name="enabled">
     <bool>true</bool>
    </property>
+   <property name="icon">
+    <iconset resource="../images/main.qrc">
+     <normaloff>:/feedback/feedback/say_thanks.png</normaloff>:/feedback/feedback/say_thanks.png</iconset>
+   </property>
    <property name="text">
-    <string>&amp;Send Feedback</string>
+    <string>Say &amp;Thanks</string>
    </property>
   </action>
   <action name="actionWord_Info">
@@ -3811,6 +3824,38 @@ QSpinBox::down-button:pressed:enabled, QDoubleSpinBox::down-button:pressed:enabl
    </property>
    <property name="toolTip">
     <string notr="true">Spanish</string>
+   </property>
+  </action>
+  <action name="actionReport_a_Problem">
+   <property name="icon">
+    <iconset resource="../images/main.qrc">
+     <normaloff>:/feedback/feedback/report_a_problem.png</normaloff>:/feedback/feedback/report_a_problem.png</iconset>
+   </property>
+   <property name="text">
+    <string>Report a &amp;Problem</string>
+   </property>
+  </action>
+  <action name="actionAsk_a_Question">
+   <property name="icon">
+    <iconset resource="../images/main.qrc">
+     <normaloff>:/feedback/feedback/ask_a_question.png</normaloff>:/feedback/feedback/ask_a_question.png</iconset>
+   </property>
+   <property name="text">
+    <string>Ask a &amp;Question</string>
+   </property>
+  </action>
+  <action name="actionShare_an_Idea">
+   <property name="icon">
+    <iconset resource="../images/main.qrc">
+     <normaloff>:/feedback/feedback/share_an_idea.png</normaloff>:/feedback/feedback/share_an_idea.png</iconset>
+   </property>
+   <property name="text">
+    <string>Share an &amp;Idea</string>
+   </property>
+  </action>
+  <action name="actionOpen_issues">
+   <property name="text">
+    <string>Open issues</string>
    </property>
   </action>
  </widget>

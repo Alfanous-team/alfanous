@@ -21,6 +21,7 @@ import os
 import gettext
 import re
 import codecs
+import webbrowser
 
 from configobj import ConfigObj
 
@@ -274,12 +275,12 @@ class QUI( Ui_MainWindow ):
         # make options->translations as a radio button
         self.translation_group = QtGui.QActionGroup( MainWindow )
         self.translation_group.addAction(self.actionTranslationNone)
-        for key in RAWoutput._translations.keys():
+        for key, val in RAWoutput._translations.items():
             translation_action = QtGui.QAction(MainWindow)
             translation_action.setCheckable(True)
             translation_action.setChecked(False)
             translation_action.setObjectName("action_translation_" + key)
-            translation_action.setText( key )
+            translation_action.setText( val + " | " + key )
             self.menuTranslation.addAction( translation_action )
             self.translation_group.addAction( translation_action )
 
@@ -354,15 +355,22 @@ class QUI( Ui_MainWindow ):
         QtCore.QObject.connect( self.actionpp50, QtCore.SIGNAL( "triggered()" ), self.changePERPAGE )
         QtCore.QObject.connect( self.actionpp100, QtCore.SIGNAL( "triggered()" ), self.changePERPAGE )
         QtCore.QObject.connect( self.actionpp1, QtCore.SIGNAL( "triggered()" ), self.changePERPAGE )
-        QtCore.QObject.connect( self.action_Send_Feedback, QtCore.SIGNAL( "triggered()" ), self.feedback_link )
         QtCore.QObject.connect( self.o_struct_from, QtCore.SIGNAL( "valueChanged(int)" ), self.struct_to_min )
         QtCore.QObject.connect( self.o_stat_from, QtCore.SIGNAL( "valueChanged(int)" ), self.stat_to_min )
         QtCore.QObject.connect( self.m_exit, QtCore.SIGNAL( "triggered()" ), self.exit )
         QtCore.QObject.connect( self.m_help, QtCore.SIGNAL( "triggered()" ), self.help )
         QtCore.QObject.connect( self.m_about, QtCore.SIGNAL( "triggered(bool)" ), self.about )
-        QtCore.QObject.connect( self.action_Send_Feedback, QtCore.SIGNAL( "triggered(bool)" ), self.send_feedback )
+
+        QtCore.QObject.connect( self.actionShare_an_Idea, QtCore.SIGNAL( "triggered()" ), self.share_an_idea )
+        QtCore.QObject.connect( self.actionAsk_a_Question, QtCore.SIGNAL( "triggered()" ), self.ask_a_question)
+        QtCore.QObject.connect( self.action_Say_Thanks, QtCore.SIGNAL( "triggered()" ), self.say_thanks )
+        QtCore.QObject.connect( self.actionReport_a_Problem, QtCore.SIGNAL( "triggered()" ), self.report_a_problem )
+        QtCore.QObject.connect( self.actionTranslate, QtCore.SIGNAL( "triggered()" ), self.contribute_translate )
+        QtCore.QObject.connect( self.actionCode, QtCore.SIGNAL( "triggered()" ), self.contribute_code )
+
         QtCore.QObject.connect( self.a_save, QtCore.SIGNAL( "triggered()" ), self.save_results )
         QtCore.QObject.connect( self.a_print, QtCore.SIGNAL( "triggered()" ), self.print_results )
+
         QtCore.QObject.connect( self.o_add2query_advanced, QtCore.SIGNAL( "clicked()" ), self.add2query_advanced )
         QtCore.QObject.connect( self.o_add2query_struct, QtCore.SIGNAL( "clicked()" ), self.add2query_struct )
         QtCore.QObject.connect( self.o_add2query_stat, QtCore.SIGNAL( "clicked()" ), self.add2query_stat )
@@ -442,7 +450,7 @@ class QUI( Ui_MainWindow ):
                  "aya_theme_info":  self.actionAya_Info.isChecked(),
                  "aya_stat_info":  self.actionAya_Info.isChecked(),
                  "aya_sajda_info":  self.actionAya_Info.isChecked(),
-                 "translation":self.translation_group.checkedAction().text(),
+                 "translation": "" if self.actionTranslationNone.isChecked() else self.translation_group.checkedAction().text().split("|")[1][0:],
                  "fuzzy": self.o_autospell.isChecked(),
                  "word_info": self.actionWord_Info.isChecked(),
                  }
@@ -730,11 +738,23 @@ class QUI( Ui_MainWindow ):
         html = """ to replace with a hints dialog """
         self.o_results.setText( html )
     
-    def feedback_link(self):
-        ""
-        import webbrowser
-        webbrowser.open('http://feedback.alfanous.org/')
-
+    def share_an_idea(self):
+        webbrowser.open('http://feedback.alfanous.org/response/add/idea/?text=[DESKTOP]')
+    
+    def ask_a_question(self):
+        webbrowser.open('http://feedback.alfanous.org/response/add/question/?text=[DESKTOP]')
+    
+    def say_thanks(self):
+        webbrowser.open('http://feedback.alfanous.org/response/add/thanks/?text=[DESKTOP]')
+    
+    def report_a_problem(self):
+        webbrowser.open('http://feedback.alfanous.org/response/add/problem/?text=[DESKTOP]')
+    
+    def contribute_translate(self):
+        webbrowser.open('https://www.transifex.com/projects/p/alfanous/')
+    
+    def contribute_code(self):
+        webbrowser.open('https://github.com/Alfanous-team/alfanous')
 
 def main():
     """ the main function"""
