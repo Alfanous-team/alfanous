@@ -111,16 +111,13 @@ QToolButton { background: qlineargradient(spread:pad, x1:0.504091, y1:0.619, x2:
 border: 1px solid #f5f6fa;
      border-radius: 3px;
 
-     background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1,
-                                       stop:0 #d0d0d0 stop:0.5 #259478 stop:1 #57a792);
+  
  }
 
  QMenuBar::item:pressed,QPushButton:pressed,QToolButton:pressed{
           border: 1px solid grey;
      border-radius: 3px;
 
-background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1,
-                                       stop:0 #e0e0e0 stop:0.5 #257894 stop:1 #5792a7);
 
 }
 
@@ -144,9 +141,7 @@ padding-right: 14px;
  QMenu::item:selected { /* when selected using mouse or keyboard */
      border: 1px solid #a7dbff;
      border-radius: 3px;
-	color: white;
-     background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1,
-                                       stop:0 #f1f1f1 stop:1 #e4f0f5);
+
 
 margin-left: 1px;
 
@@ -187,7 +182,6 @@ QMenu::separator {
 margin-top: 4px;
 margin-bottom: 4px;
 
-background-color: #aaeeaa;
 
 }
 
@@ -1467,7 +1461,7 @@ QSpinBox::down-button:pressed:enabled, QDoubleSpinBox::down-button:pressed:enabl
           <x>0</x>
           <y>0</y>
           <width>276</width>
-          <height>304</height>
+          <height>257</height>
          </rect>
         </property>
         <attribute name="label">
@@ -1767,7 +1761,7 @@ QSpinBox::down-button:pressed:enabled, QDoubleSpinBox::down-button:pressed:enabl
           <x>0</x>
           <y>0</y>
           <width>276</width>
-          <height>304</height>
+          <height>168</height>
          </rect>
         </property>
         <attribute name="label">
@@ -2005,7 +1999,7 @@ QSpinBox::down-button:pressed:enabled, QDoubleSpinBox::down-button:pressed:enabl
           <x>0</x>
           <y>0</y>
           <width>276</width>
-          <height>304</height>
+          <height>170</height>
          </rect>
         </property>
         <attribute name="label">
@@ -2264,7 +2258,7 @@ QSpinBox::down-button:pressed:enabled, QDoubleSpinBox::down-button:pressed:enabl
           <x>0</x>
           <y>0</y>
           <width>276</width>
-          <height>304</height>
+          <height>200</height>
          </rect>
         </property>
         <attribute name="label">
@@ -2526,7 +2520,7 @@ QSpinBox::down-button:pressed:enabled, QDoubleSpinBox::down-button:pressed:enabl
           <x>0</x>
           <y>0</y>
           <width>276</width>
-          <height>304</height>
+          <height>198</height>
          </rect>
         </property>
         <attribute name="label">
@@ -2804,7 +2798,7 @@ QSpinBox::down-button:pressed:enabled, QDoubleSpinBox::down-button:pressed:enabl
           <x>0</x>
           <y>0</y>
           <width>276</width>
-          <height>304</height>
+          <height>139</height>
          </rect>
         </property>
         <attribute name="label">
@@ -3733,6 +3727,9 @@ QSpinBox::down-button:pressed:enabled, QDoubleSpinBox::down-button:pressed:enabl
   </action>
   <action name="actionDefaultStyle">
    <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
     <bool>true</bool>
    </property>
    <property name="text">
