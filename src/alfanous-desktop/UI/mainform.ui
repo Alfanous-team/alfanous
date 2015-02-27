@@ -1203,7 +1203,7 @@ QSpinBox::down-button:pressed:enabled, QDoubleSpinBox::down-button:pressed:enabl
         <number>0</number>
        </property>
        <property name="currentIndex">
-        <number>7</number>
+        <number>0</number>
        </property>
        <widget class="QWidget" name="page_2">
         <property name="geometry">
@@ -1396,7 +1396,7 @@ QSpinBox::down-button:pressed:enabled, QDoubleSpinBox::down-button:pressed:enabl
            <item>
             <widget class="QComboBox" name="o_relation_advanced">
              <property name="currentIndex">
-              <number>0</number>
+              <number>1</number>
              </property>
              <item>
               <property name="text">
@@ -1522,17 +1522,17 @@ QSpinBox::down-button:pressed:enabled, QDoubleSpinBox::down-button:pressed:enabl
                <widget class="QComboBox" name="o_word_type">
                 <item>
                  <property name="text">
-                  <string notr="true">اسم</string>
+                  <string>Noun</string>
                  </property>
                 </item>
                 <item>
                  <property name="text">
-                  <string notr="true">فعل</string>
+                  <string>Verb</string>
                  </property>
                 </item>
                 <item>
                  <property name="text">
-                  <string notr="true">أداة</string>
+                  <string>Preposition</string>
                  </property>
                 </item>
                </widget>
@@ -1676,7 +1676,7 @@ QSpinBox::down-button:pressed:enabled, QDoubleSpinBox::down-button:pressed:enabl
            <item>
             <widget class="QComboBox" name="o_relation_word">
              <property name="currentIndex">
-              <number>0</number>
+              <number>1</number>
              </property>
              <item>
               <property name="text">
