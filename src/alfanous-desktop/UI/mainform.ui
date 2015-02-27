@@ -1203,13 +1203,13 @@ QSpinBox::down-button:pressed:enabled, QDoubleSpinBox::down-button:pressed:enabl
         <number>0</number>
        </property>
        <property name="currentIndex">
-        <number>0</number>
+        <number>7</number>
        </property>
        <widget class="QWidget" name="page_2">
         <property name="geometry">
          <rect>
           <x>0</x>
-          <y>0</y>
+          <y>-33</y>
           <width>259</width>
           <height>337</height>
          </rect>
@@ -1395,6 +1395,9 @@ QSpinBox::down-button:pressed:enabled, QDoubleSpinBox::down-button:pressed:enabl
            </item>
            <item>
             <widget class="QComboBox" name="o_relation_advanced">
+             <property name="currentIndex">
+              <number>0</number>
+             </property>
              <item>
               <property name="text">
                <string>Add</string>
@@ -1407,12 +1410,12 @@ QSpinBox::down-button:pressed:enabled, QDoubleSpinBox::down-button:pressed:enabl
              </item>
              <item>
               <property name="text">
-               <string>Conjuction (AND)</string>
+               <string>Disjunction (OR)</string>
               </property>
              </item>
              <item>
               <property name="text">
-               <string>(OR)</string>
+               <string>Conjuction (AND)</string>
               </property>
              </item>
              <item>
@@ -1672,6 +1675,9 @@ QSpinBox::down-button:pressed:enabled, QDoubleSpinBox::down-button:pressed:enabl
            </item>
            <item>
             <widget class="QComboBox" name="o_relation_word">
+             <property name="currentIndex">
+              <number>0</number>
+             </property>
              <item>
               <property name="text">
                <string>Add</string>
@@ -1684,17 +1690,17 @@ QSpinBox::down-button:pressed:enabled, QDoubleSpinBox::down-button:pressed:enabl
              </item>
              <item>
               <property name="text">
-               <string>(OR)</string>
+               <string>Disjunction (OR)</string>
               </property>
              </item>
              <item>
               <property name="text">
-               <string>(AND)</string>
+               <string>Conjuction (AND)</string>
               </property>
              </item>
              <item>
               <property name="text">
-               <string>(ANDNOT)</string>
+               <string>Exception (ANDNOT)</string>
               </property>
              </item>
             </widget>
@@ -1745,7 +1751,7 @@ QSpinBox::down-button:pressed:enabled, QDoubleSpinBox::down-button:pressed:enabl
           <x>0</x>
           <y>0</y>
           <width>276</width>
-          <height>139</height>
+          <height>304</height>
          </rect>
         </property>
         <attribute name="label">
@@ -1844,6 +1850,12 @@ QSpinBox::down-button:pressed:enabled, QDoubleSpinBox::down-button:pressed:enabl
            </item>
            <item>
             <widget class="QComboBox" name="o_relation_word_2">
+             <property name="enabled">
+              <bool>false</bool>
+             </property>
+             <property name="currentIndex">
+              <number>1</number>
+             </property>
              <item>
               <property name="text">
                <string>Add</string>
@@ -1856,17 +1868,17 @@ QSpinBox::down-button:pressed:enabled, QDoubleSpinBox::down-button:pressed:enabl
              </item>
              <item>
               <property name="text">
-               <string>(OR)</string>
+               <string>Disjunction (OR)</string>
               </property>
              </item>
              <item>
               <property name="text">
-               <string>(AND)</string>
+               <string>Conjuction (AND)</string>
               </property>
              </item>
              <item>
               <property name="text">
-               <string>(ANDNOT)</string>
+               <string>Exception (ANDNOT)</string>
               </property>
              </item>
             </widget>
@@ -1875,6 +1887,9 @@ QSpinBox::down-button:pressed:enabled, QDoubleSpinBox::down-button:pressed:enabl
          </item>
          <item>
           <widget class="QPushButton" name="o_add2query_translationsearch">
+           <property name="enabled">
+            <bool>false</bool>
+           </property>
            <property name="font">
             <font>
              <weight>50</weight>
@@ -1917,7 +1932,7 @@ QSpinBox::down-button:pressed:enabled, QDoubleSpinBox::down-button:pressed:enabl
           <x>0</x>
           <y>0</y>
           <width>276</width>
-          <height>168</height>
+          <height>304</height>
          </rect>
         </property>
         <attribute name="label">
@@ -2073,6 +2088,9 @@ QSpinBox::down-button:pressed:enabled, QDoubleSpinBox::down-button:pressed:enabl
              <property name="enabled">
               <bool>true</bool>
              </property>
+             <property name="currentIndex">
+              <number>1</number>
+             </property>
              <item>
               <property name="text">
                <string>Add</string>
@@ -2152,7 +2170,7 @@ QSpinBox::down-button:pressed:enabled, QDoubleSpinBox::down-button:pressed:enabl
           <x>0</x>
           <y>0</y>
           <width>276</width>
-          <height>170</height>
+          <height>304</height>
          </rect>
         </property>
         <attribute name="label">
@@ -2332,6 +2350,9 @@ QSpinBox::down-button:pressed:enabled, QDoubleSpinBox::down-button:pressed:enabl
            </item>
            <item>
             <widget class="QComboBox" name="o_relation_struct">
+             <property name="currentIndex">
+              <number>1</number>
+             </property>
              <item>
               <property name="text">
                <string>Add</string>
@@ -2408,7 +2429,7 @@ QSpinBox::down-button:pressed:enabled, QDoubleSpinBox::down-button:pressed:enabl
           <x>0</x>
           <y>0</y>
           <width>276</width>
-          <height>200</height>
+          <height>304</height>
          </rect>
         </property>
         <attribute name="label">
@@ -2591,6 +2612,9 @@ QSpinBox::down-button:pressed:enabled, QDoubleSpinBox::down-button:pressed:enabl
            </item>
            <item>
             <widget class="QComboBox" name="o_relation_stat">
+             <property name="currentIndex">
+              <number>1</number>
+             </property>
              <item>
               <property name="text">
                <string>Add</string>
@@ -2667,7 +2691,7 @@ QSpinBox::down-button:pressed:enabled, QDoubleSpinBox::down-button:pressed:enabl
           <x>0</x>
           <y>0</y>
           <width>276</width>
-          <height>198</height>
+          <height>304</height>
          </rect>
         </property>
         <attribute name="label">
@@ -2853,7 +2877,7 @@ QSpinBox::down-button:pressed:enabled, QDoubleSpinBox::down-button:pressed:enabl
            <item>
             <widget class="QComboBox" name="o_relation_misc">
              <property name="currentIndex">
-              <number>0</number>
+              <number>1</number>
              </property>
              <item>
               <property name="text">
