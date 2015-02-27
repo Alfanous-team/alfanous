@@ -1203,7 +1203,7 @@ QSpinBox::down-button:pressed:enabled, QDoubleSpinBox::down-button:pressed:enabl
         <number>0</number>
        </property>
        <property name="currentIndex">
-        <number>0</number>
+        <number>1</number>
        </property>
        <widget class="QWidget" name="page_2">
         <property name="geometry">
@@ -1487,16 +1487,32 @@ QSpinBox::down-button:pressed:enabled, QDoubleSpinBox::down-button:pressed:enabl
              <layout class="QHBoxLayout" name="horizontalLayout_22">
               <item>
                <widget class="QLabel" name="label_28">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
                 <property name="text">
                  <string>Root</string>
-                </property>
-                <property name="buddy">
-                 <cstring>o_word_root</cstring>
                 </property>
                </widget>
               </item>
               <item>
-               <widget class="QLineEdit" name="o_word_root"/>
+               <widget class="QComboBox" name="o_word_root">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="layoutDirection">
+                 <enum>Qt::LeftToRight</enum>
+                </property>
+                <property name="editable">
+                 <bool>true</bool>
+                </property>
+               </widget>
               </item>
              </layout>
             </item>
@@ -1750,8 +1766,8 @@ QSpinBox::down-button:pressed:enabled, QDoubleSpinBox::down-button:pressed:enabl
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>276</width>
-          <height>304</height>
+          <width>259</width>
+          <height>139</height>
          </rect>
         </property>
         <attribute name="label">
@@ -1773,9 +1789,6 @@ QSpinBox::down-button:pressed:enabled, QDoubleSpinBox::down-button:pressed:enabl
                <widget class="QLabel" name="label_36">
                 <property name="text">
                  <string>Text</string>
-                </property>
-                <property name="buddy">
-                 <cstring>o_word_root</cstring>
                 </property>
                </widget>
               </item>
@@ -1931,8 +1944,8 @@ QSpinBox::down-button:pressed:enabled, QDoubleSpinBox::down-button:pressed:enabl
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>276</width>
-          <height>304</height>
+          <width>259</width>
+          <height>168</height>
          </rect>
         </property>
         <attribute name="label">
@@ -2169,8 +2182,8 @@ QSpinBox::down-button:pressed:enabled, QDoubleSpinBox::down-button:pressed:enabl
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>276</width>
-          <height>304</height>
+          <width>259</width>
+          <height>170</height>
          </rect>
         </property>
         <attribute name="label">
@@ -2428,8 +2441,8 @@ QSpinBox::down-button:pressed:enabled, QDoubleSpinBox::down-button:pressed:enabl
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>276</width>
-          <height>304</height>
+          <width>259</width>
+          <height>200</height>
          </rect>
         </property>
         <attribute name="label">
@@ -2690,8 +2703,8 @@ QSpinBox::down-button:pressed:enabled, QDoubleSpinBox::down-button:pressed:enabl
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>276</width>
-          <height>304</height>
+          <width>259</width>
+          <height>198</height>
          </rect>
         </property>
         <attribute name="label">
@@ -3822,7 +3835,6 @@ QSpinBox::down-button:pressed:enabled, QDoubleSpinBox::down-button:pressed:enabl
   <tabstop>o_stat_num</tabstop>
   <tabstop>o_sajdah_exist</tabstop>
   <tabstop>o_add2query_struct</tabstop>
-  <tabstop>o_word_root</tabstop>
   <tabstop>o_word_type</tabstop>
   <tabstop>o_relation_word</tabstop>
   <tabstop>o_chapter</tabstop>

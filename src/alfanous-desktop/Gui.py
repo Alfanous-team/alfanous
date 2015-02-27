@@ -370,9 +370,11 @@ class QUI( Ui_MainWindow ):
         QtCore.QObject.connect( self.o_add2query_subject, QtCore.SIGNAL( "clicked()" ), self.add2query_subject )
         QtCore.QObject.connect( self.o_add2query_word, QtCore.SIGNAL( "clicked()" ), self.add2query_word )
         QtCore.QObject.connect( self.o_add2query_misc, QtCore.SIGNAL( "clicked()" ), self.add2query_misc )
+
         self.sura_list =  RAWoutput._surates["Arabic"] if self.direction == "RTL" else  RAWoutput._surates["English"]
+        self.o_sura_name.addItems( self.sura_list )
         self.o_chapter.addItems( RAWoutput._chapters )
-        self.o_sura_name.addItems( self.sura_list  )
+        self.o_word_root.addItems( RAWoutput._roots )
         self.load_config()
 
     def copy_query(self):
@@ -637,7 +639,7 @@ class QUI( Ui_MainWindow ):
 
     def add2query_word( self ):
         filter_ = ""
-        root = unicode( self.o_word_root.text() )
+        root = unicode( self.o_word_root.currentText() )
 
         type_values = [u"اسم", u"فعل", u"أداة"]
         type_ = type_values[self.o_word_type.currentIndex()]
