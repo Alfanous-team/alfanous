@@ -1,8 +1,14 @@
+alfanous (0.7.10) unstable; urgency=low
+
+  * tiny fixes on interface
+
+ -- Assem Chelli <assem.ch@gmail.com>  Fri, 27 Feb 2015 11:53:00 +0100
+
 alfanous (0.7.04) unstable; urgency=high
 
   * Localization
 
- -- Assem Chelli <assem.ch@gmail.com>  Thu, 22 Jan 2014 15:54:30 +0100
+ -- Assem Chelli <assem.ch@gmail.com>  Thu, 22 Jan 2015 15:54:30 +0100
 
 alfanous (0.7.01-0ppa1) unstable; urgency=low
 
