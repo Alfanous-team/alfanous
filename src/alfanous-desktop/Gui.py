@@ -241,7 +241,7 @@ class QUI( Ui_MainWindow ):
         self.o_results.setFont(font)
         self.o_results.setProperty("cursor", QtCore.Qt.IBeamCursor)
         self.o_results.setAutoFillBackground(False)
-        self.o_results.setHtml("<img src=\":/resources/alfanous.jpg\" />")
+        self.o_results.setHtml("<img src=\":/resources/alfanous.png\" /> ")
         self.o_results.setObjectName("o_results")
         self.verticalLayout33.addWidget(self.o_results)
 
@@ -636,16 +636,17 @@ class QUI( Ui_MainWindow ):
 
 
     def add2query_word( self ):
-        filter = ""
+        filter_ = ""
         root = unicode( self.o_word_root.text() )
 
         type_values = [u"اسم", u"فعل", u"أداة"]
-        type = type_values[self.o_word_type.currentIndex()]
-        filter = u" {" + root + u"،" + type + u"}"
+        type_ = type_values[self.o_word_type.currentIndex()]
+        filter_ = u" {" + root + u"،" + type_ + u"}"
 
         index = self.o_relation_word.currentIndex()
-        newquery = relate( self.o_query.currentText(), filter, index )
-        if root:self.o_query.setEditText( newquery )
+        newquery = relate( self.o_query.currentText(), filter_, index )
+        if root:
+            self.o_query.setEditText( newquery )
 
     def setstructborn( self ):
         items_max = [286, 6236, 565, 114, 604, 240, 60, 30, 7]
