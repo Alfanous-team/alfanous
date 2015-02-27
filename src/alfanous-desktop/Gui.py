@@ -371,7 +371,8 @@ class QUI( Ui_MainWindow ):
         QtCore.QObject.connect( self.o_add2query_word, QtCore.SIGNAL( "clicked()" ), self.add2query_word )
         QtCore.QObject.connect( self.o_add2query_misc, QtCore.SIGNAL( "clicked()" ), self.add2query_misc )
 
-        self.sura_list =  RAWoutput._surates["Arabic"] if self.direction == "RTL" else  RAWoutput._surates["English"]
+        self.sura_list =  ["%s (%s)" % t for t in zip(RAWoutput._surates["Arabic"], RAWoutput._surates["Romanized"])] if self.direction == "RTL" \
+            else  ["%s (%s)" % t for t in zip(RAWoutput._surates["Romanized"],RAWoutput._surates["English"])]
         self.o_sura_name.addItems( self.sura_list )
         self.o_chapter.addItems( RAWoutput._chapters )
         self.o_word_root.addItems( RAWoutput._roots )
@@ -614,27 +615,31 @@ class QUI( Ui_MainWindow ):
 
     def add2query_misc( self ):
         """         """
-        filter = u""
+        filter_ = u""
 
         if self.o_sura_name.currentIndex() != 0:
-            filter += u"  سورة:\"" + unicode( self.sura_list[self.o_sura_name.currentIndex() - 1] ) + "\""
+            if self.direction == "RTL":
+                filter_ += u"  سورة:\"" + unicode( RAWoutput._surates["Arabic"][self.o_sura_name.currentIndex() - 1] ) + "\""
+            else:
+                filter_ += u"  sura:\"" + unicode( RAWoutput._surates["Romanized"][self.o_sura_name.currentIndex() - 1] ) + "\""
 
         sura_types = [u"", u"مدنية", u"مكية"]
         if self.o_tanzil.currentIndex() != 0:
-            filter += u"  نوع_السورة:" + unicode( sura_types[self.o_tanzil.currentIndex()] )
+            filter_ += u"  نوع_السورة:" + unicode( sura_types[self.o_tanzil.currentIndex()] )
 
 
         yes_no = ["", u"لا", u"نعم"]
         sajdah_types = ["", u"مستحبة", u"واجبة"]
         if self.o_sajdah_exist.currentIndex() != 0:
             if self.o_sajdah_type.currentIndex() == 0:
-                filter += u"  سجدة:" + unicode( yes_no[self.o_sajdah_exist.currentIndex()] )
+                filter_ += u"  سجدة:" + unicode( yes_no[self.o_sajdah_exist.currentIndex()] )
             else:
-                filter += u"  نوع_السجدة:" + unicode( sajdah_types[self.o_sajdah_type.currentIndex()] )
+                filter_ += u"  نوع_السجدة:" + unicode( sajdah_types[self.o_sajdah_type.currentIndex()] )
 
         index = self.o_relation_misc.currentIndex()
-        newquery = relate( self.o_query.currentText(), filter, index )
-        if filter:self.o_query.setEditText( newquery )
+        newquery = relate( self.o_query.currentText(), filter_, index )
+        if filter_:
+            self.o_query.setEditText( newquery )
 
 
     def add2query_word( self ):
@@ -645,7 +650,7 @@ class QUI( Ui_MainWindow ):
         type_ = type_values[self.o_word_type.currentIndex()]
         filter_ = u" {" + root + u"،" + type_ + u"}"
 
-        index = self.o_relation_word.currentIndex()
+        index = self.o_relation_worad.currentIndex()
         newquery = relate( self.o_query.currentText(), filter_, index )
         if root:
             self.o_query.setEditText( newquery )
