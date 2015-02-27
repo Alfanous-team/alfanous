@@ -45,6 +45,365 @@
   <property name="layoutDirection">
    <enum>Qt::LeftToRight</enum>
   </property>
+  <property name="styleSheet">
+   <string notr="true"> QToolBox::tab {
+         background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
+                                     stop: 0 #E1F1E1, stop: 0.4 #DDEDDD,
+                                     stop: 0.5 #D8E8D8, stop: 1.0 #D3E3D3);
+         border-radius: 10px;
+         color: rgb(0, 85, 0);
+     border: 1px solid green;
+     }
+
+     QToolBox::tab:selected { /* italicize selected tabs */
+  background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
+                                     stop: 0 #C1D1C1, stop: 0.4 #BDCDBD,
+                                     stop: 0.5 #B8C8B8, stop: 1.0 #B3C3B3);
+         font: italic;
+         color: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:0, stop:0 rgba(255, 0, 0, 255), stop:0.166 rgba(138, 138, 0, 255), stop:0.333 rgba(0, 92, 0, 255), stop:0.5 rgba(0, 0, 0, 255), stop:0.666 rgba(0, 0, 255, 255), stop:0.833 rgba(255, 0, 255, 255), stop:1 rgba(255, 0, 0, 255));
+     border: 2px solid red;
+}
+
+
+
+
+QDockWidget {
+     border: 1px solid lightgray;
+
+     titlebar-close-icon: url(:/resources/application_exit.png);
+	border-radius:5px;
+ 	icon-size: 64px;
+ }
+
+ QDockWidget::title {
+     text-align: center; /* align the text to the left */
+
+     padding-left: 20px;
+ }
+
+ QDockWidget::close-button, QDockWidget::float-button {
+     border: 1px solid transparent;
+     padding: 0px;
+ }
+
+ QDockWidget::close-button:hover, QDockWidget::float-button:hover {
+
+ }
+
+ QDockWidget::close-button:pressed, QDockWidget::float-button:pressed {
+     padding: 1px -1px -1px 1px;
+ }
+
+QPushButton { background: qlineargradient(spread:pad, x1:0.504091, y1:0.619, x2:0.487, y2:0, stop:0 rgba(240, 146, 146, 255), stop:1 rgba(238, 197, 197, 255)) ;
+ border: 1px solid #f5f6fa;
+     border-radius: 3px; }
+
+QToolButton { background: qlineargradient(spread:pad, x1:0.504091, y1:0.619, x2:0.487, y2:0, stop:0 rgba(162, 200, 160, 255), stop:1 rgba(226, 225, 221, 255));
+ border: 1px solid #f5f6fa;
+     border-radius: 3px; }
+
+
+
+
+
+
+ QMenuBar::item:selected,QPushButton:hover,QToolButton:hover { /* when selected using mouse or keyboard */
+border: 1px solid #f5f6fa;
+     border-radius: 3px;
+
+     background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                                       stop:0 #d0d0d0 stop:0.5 #259478 stop:1 #57a792);
+ }
+
+ QMenuBar::item:pressed,QPushButton:pressed,QToolButton:pressed{
+          border: 1px solid grey;
+     border-radius: 3px;
+
+background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                                       stop:0 #e0e0e0 stop:0.5 #257894 stop:1 #5792a7);
+
+}
+
+
+
+
+ QMenu::item { /* when selected using mouse or keyboard */
+
+margin-left: 2px;
+margin-right: 2px;
+
+padding-top: 4px;
+padding-bottom: 4px;
+padding-left: 28px;
+padding-right: 14px;
+
+/*background:blue;*/
+/*padding: 2px 0px 2px -1px;*/
+}
+
+ QMenu::item:selected { /* when selected using mouse or keyboard */
+     border: 1px solid #a7dbff;
+     border-radius: 3px;
+	color: white;
+     background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                                       stop:0 #f1f1f1 stop:1 #e4f0f5);
+
+margin-left: 1px;
+
+padding-left: 28px;
+
+
+/*padding: 2px 0px 2px -1px;*/
+}
+
+
+
+
+QMenu::indicator:unchecked { /* when selected using mouse or keyboard */
+
+     border-radius: 3px;
+
+}
+
+QMenu::indicator:checked:enabled { /* when selected using mouse or keyboard */
+     border: 1px solid #a7dbff;
+     border-radius: 3px;
+
+     background-color: #e6eff4;
+
+     image: url(:/resources/menu_indicator.png)
+}
+
+
+QMenu::indicator:checked:!enabled { /* when selected using mouse or keyboard */
+     image: url(:/resources/menu_indicator_disabled.png)
+}
+
+
+
+QMenu::separator {
+    height: 2px;
+    margin-left: 0px;
+margin-top: 4px;
+margin-bottom: 4px;
+
+background-color: #aaeeaa;
+
+}
+
+QGroupBox {
+     border: 1px solid green;
+	border-radius:5px;
+	margin: 6px 2px 2px 2px;
+}
+
+QGroupBox::title {
+     subcontrol-origin: margin;
+     subcontrol-position: top left; /* position at the top center */
+     padding: 0 3px;
+}
+
+ QCheckBox {
+     spacing: 5px;
+ }
+
+ QCheckBox::indicator {
+     width: 13px;
+     height: 13px;
+ }
+
+ QCheckBox::indicator:unchecked {
+     image: url(:/resources/checkbox_off_enabled.png);
+ }
+
+ QCheckBox::indicator:unchecked:!enabled {
+     image: url(:/resources/checkbox_off_disabled.png);
+ }
+
+ QCheckBox::indicator:unchecked:hover {
+     image: url(:/resources/checkbox_off_enabled_hover.png);
+ }
+
+ QCheckBox::indicator:unchecked:pressed {
+     image: url(:/resources/checkbox_off_enabled_pressed.png);
+ }
+
+ QCheckBox::indicator:checked {
+     image: url(:/resources/checkbox_on_enabled.png);
+ }
+
+ QCheckBox::indicator:checked:!enabled {
+     image: url(:/resources/checkbox_on_disabled.png);
+ }
+
+
+ QCheckBox::indicator:checked:hover {
+     image: url(:/resources/checkbox_on_enabled_hover.png);
+ }
+
+ QCheckBox::indicator:checked:pressed {
+     image: url(:/resources/checkbox_on_enabled_pressed.png);
+ }
+
+ QCheckBox::indicator:indeterminate:hover {
+     image: url(:/resources/checkbox_inter_enabled_hover.png);
+ }
+
+ QCheckBox::indicator:indeterminate {
+     image: url(:/resources/checkbox_inter_enabled.png);
+ } 
+
+ QCheckBox::indicator:indeterminate:!enabled {
+     image: url(:/resources/checkbox_inter_disabled.png);
+ }
+
+QRadioButton {
+     spacing: 5px;
+ }
+
+ QRadioButton::indicator {
+     width: 12px;
+     height: 12px;
+ }
+
+ QRadioButton::indicator:unchecked {
+     image: url(:/resources/radiobutton_off_enabled.png);
+ }
+
+ QRadioButton::indicator:checked {
+     image: url(:/resources/radiobutton_on_enabled.png);
+ }
+
+ QRadioButton::indicator:checked:hover {
+     image: url(:/resources/radiobutton_on_enabled_hover.png);
+ }
+
+ QRadioButton::indicator:checked:pressed {
+     image: url(:/resources/radiobutton_on_enabled_pressed.png);
+}
+
+ QRadioButton::indicator:unchecked:!enabled {
+     image: url(:/resources/radiobutton_off_disabled.png);
+ }
+
+ QRadioButton::indicator:checked:!enabled {
+     image: url(:/resources/radiobutton_on_disabled.png);
+ }
+
+ QRadioButton::indicator:unchecked:hover {
+     image: url(:/resources/radiobutton_off_enabled_hover.png);
+}
+
+ QRadioButton::indicator:unchecked:pressed {
+     image: url(:/resources/radiobutton_off_enabled_pressed.png);
+}
+
+QLineEdit, QTextEdit, QSpinBox, QDoubleSpinBox, QTextBrowser {
+
+	border-radius: 2px;
+
+
+}
+
+
+
+
+
+
+
+
+QComboBox::QFrame {
+	border: 1px solid #828790;
+}
+
+QLabel,QToolBox {
+	border: 0px solid #828790;
+}
+
+QSpinBox::up-button, QDoubleSpinBox::up-button {
+     subcontrol-origin: border;
+     subcontrol-position: top right; /* position at the top right corner */
+
+     width: 16px; /* 16 + 2*1px border-width = 15px padding + 3px parent border */
+     border-width: 2px;
+	border-bottom-width: 0;
+
+	border-image: url(:/resources/spin_up_enabled.png) 1;
+}
+
+QSpinBox::down-button, QDoubleSpinBox::down-button {
+     subcontrol-origin: border;
+     subcontrol-position: bottom right; /* position at bottom right corner */
+
+     width: 16px;
+     border-width: 2px;
+     border-top-width: 0;
+
+	border-image: url(:/resources/spin_down_enabled.png) 1;
+}
+
+QLineEdit, QTextEdit, QSpinBox, QDoubleSpinBox, QTextBrowser {
+ 	border-top: 1px solid #abadb3;
+ 	border-right: 1px solid #abadb3;
+	border-left: 1px solid #e3e9ef;
+	border-bottom: 1px solid #e3e9ef;
+	border-radius: 2px;
+
+     background: white;
+     selection-background-color: #3399ff;
+
+	min-height: 23 px;
+}
+
+QLineEdit:!enabled, QTextEdit:!enabled, QSpinBox:!enabled, QDoubleSpinBox:!enabled {
+ 	border: 1px solid #afafaf;
+	border-radius: 2px;
+
+     background: white;
+	color: #afafaf;
+     selection-background-color: #3399ff;
+}
+
+
+QLineEdit:hover:enabled, QTextEdit:hover:enabled, QSpinBox:hover:enabled, QDoubleSpinBox:hover:enabled {
+ 	border-top: 1px solid #3d7bad;
+ 	border-right: 1px solid #3d7bad;
+	border-left: 1px solid #b7d9ed;
+	border-bottom: 1px solid #b7d9ed;
+}
+
+
+QSpinBox, QDoubleSpinBox {
+	padding-right: 18px;
+}
+
+QSpinBox::up-button:!enabled, QDoubleSpinBox::up-button:!enabled,
+QSpinBox::up-arrow:off, QDoubleSpinBox::up-arrow:off {
+	border-image: url(:/resources/spin_up_disabled.png) 1;
+}
+
+QSpinBox::down-button:!enabled, QDoubleSpinBox::down-button:!enabled,
+QSpinBox::down-arrow:off, QDoubleSpinBox::down-arrow:off {
+	border-image: url(:/resources/spin_down_disabled.png) 1;
+}
+
+QSpinBox::up-button:hover:enabled, QDoubleSpinBox::up-button:hover:enabled {
+	border-image: url(:/resources/spin_up_enabled_hover.png) 1;
+}
+
+QSpinBox::up-button:pressed:enabled, QDoubleSpinBox::up-button:pressed:enabled {
+	border-image: url(:/resources/spin_up_enabled_pressed.png) 1;
+}
+
+QSpinBox::down-button:hover:enabled, QDoubleSpinBox::down-button:hover:enabled {
+	border-image: url(:/resources/spin_down_enabled_hover.png) 1;
+}
+
+QSpinBox::down-button:pressed:enabled, QDoubleSpinBox::down-button:pressed:enabled {
+	border-image: url(:/resources/spin_down_enabled_pressed.png) 1;
+}
+</string>
+  </property>
   <property name="locale">
    <locale language="English" country="UnitedStates"/>
   </property>
@@ -74,7 +433,7 @@
         </property>
         <property name="minimumSize">
          <size>
-          <width>149</width>
+          <width>0</width>
           <height>0</height>
          </size>
         </property>
@@ -335,7 +694,8 @@
          <widget class="QLCDNumber" name="o_time">
           <property name="font">
            <font>
-            <family>Arial</family>
+            <family>Andale Mono</family>
+            <italic>true</italic>
            </font>
           </property>
           <property name="frameShape">
@@ -432,7 +792,7 @@
         <property name="minimumSize">
          <size>
           <width>100</width>
-          <height>0</height>
+          <height>25</height>
          </size>
         </property>
         <property name="minimum">
@@ -571,11 +931,20 @@
     <property name="enabled">
      <bool>true</bool>
     </property>
+    <property name="layoutDirection">
+     <enum>Qt::LeftToRight</enum>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">text-align:center;</string>
+    </property>
     <property name="tearOffEnabled">
      <bool>false</bool>
     </property>
     <property name="title">
      <string>&amp;Options</string>
+    </property>
+    <property name="separatorsCollapsible">
+     <bool>true</bool>
     </property>
     <widget class="QMenu" name="menuRecitation">
      <property name="enabled">
@@ -602,6 +971,9 @@
     <widget class="QMenu" name="menuOrder_by">
      <property name="enabled">
       <bool>true</bool>
+     </property>
+     <property name="layoutDirection">
+      <enum>Qt::LeftToRight</enum>
      </property>
      <property name="title">
       <string>Sort by</string>
@@ -839,7 +1211,7 @@
           <x>0</x>
           <y>0</y>
           <width>259</width>
-          <height>410</height>
+          <height>337</height>
          </rect>
         </property>
         <attribute name="label">
@@ -1092,7 +1464,7 @@
           <x>0</x>
           <y>0</y>
           <width>276</width>
-          <height>260</height>
+          <height>304</height>
          </rect>
         </property>
         <attribute name="label">
@@ -1373,7 +1745,7 @@
           <x>0</x>
           <y>0</y>
           <width>276</width>
-          <height>140</height>
+          <height>139</height>
          </rect>
         </property>
         <attribute name="label">
@@ -1545,7 +1917,7 @@
           <x>0</x>
           <y>0</y>
           <width>276</width>
-          <height>171</height>
+          <height>168</height>
          </rect>
         </property>
         <attribute name="label">
@@ -1780,7 +2152,7 @@
           <x>0</x>
           <y>0</y>
           <width>276</width>
-          <height>169</height>
+          <height>170</height>
          </rect>
         </property>
         <attribute name="label">
@@ -2036,7 +2408,7 @@
           <x>0</x>
           <y>0</y>
           <width>276</width>
-          <height>199</height>
+          <height>200</height>
          </rect>
         </property>
         <attribute name="label">
@@ -2289,26 +2661,13 @@
          </item>
         </layout>
        </widget>
-       <widget class="QWidget" name="p_predefined">
-        <property name="geometry">
-         <rect>
-          <x>0</x>
-          <y>0</y>
-          <width>276</width>
-          <height>300</height>
-         </rect>
-        </property>
-        <attribute name="label">
-         <string>Predefined Queries</string>
-        </attribute>
-       </widget>
        <widget class="QWidget" name="p_misc">
         <property name="geometry">
          <rect>
           <x>0</x>
           <y>0</y>
           <width>276</width>
-          <height>201</height>
+          <height>198</height>
          </rect>
         </property>
         <attribute name="label">
@@ -2565,6 +2924,20 @@
           </spacer>
          </item>
         </layout>
+       </widget>
+       <widget class="QWidget" name="p_predefined">
+        <property name="geometry">
+         <rect>
+          <x>0</x>
+          <y>0</y>
+          <width>276</width>
+          <height>304</height>
+         </rect>
+        </property>
+        <attribute name="label">
+         <string>Predefined Queries</string>
+        </attribute>
+        <layout class="QHBoxLayout" name="horizontalLayout_3"/>
        </widget>
       </widget>
      </item>
@@ -2878,6 +3251,9 @@
   </action>
   <action name="actionStandard">
    <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
     <bool>true</bool>
    </property>
    <property name="text">
