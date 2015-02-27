@@ -70,4 +70,10 @@
     <file>zoomin.png</file>
     <file>zoomout.png</file>
   </qresource>
+  <qresource prefix="feedback">
+    <file>feedback/ask_a_question.png</file>
+    <file>feedback/report_a_problem.png</file>
+    <file>feedback/say_thanks.png</file>
+    <file>feedback/share_an_idea.png</file>
+  </qresource>
 </RCC>
