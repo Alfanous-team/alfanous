@@ -275,6 +275,7 @@ class Raw():
 		self._flags = self.DEFAULTS["flags"].keys()
 		self._fields = Fields
 		self._fields_reverse = dict( ( v, k ) for k, v in Fields.iteritems() )
+		self._roots = sorted(filter(bool, set(derivedict["root"])))
 		self._errors = self.ERRORS
 		self._domains = self.DOMAINS
 		self._helpmessages = self.HELPMESSAGES
@@ -292,7 +293,8 @@ class Raw():
 			  "fields_reverse":self._fields_reverse,
 			  "errors":self._errors,
 			  "domains": self._domains,
-			  "help_messages": self._helpmessages
+			  "help_messages": self._helpmessages,
+			  "roots": self._roots
 			  }
 
 
