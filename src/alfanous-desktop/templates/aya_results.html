@@ -409,7 +409,7 @@ a:hover{color: green;}
 	color: #181;
 }
 
-.word_details, .sura_details, .aya_details {
+.word_details, .word_extra_details, .sura_details, .aya_details {
 	margin: 5px 5px 0px 20px;
 }
 
@@ -703,25 +703,27 @@ font-family: ArabeyesQr, Scheherazade;
 								<div class='details_label word_vocalization clickable'> {{ vocalization }} </div>
 							{% endfor %}
 							
-							
+							</div>
+                            <div class='word_extra_details'>
 							{% if wordstat.nb_synonyms != 0 %}
-								<br />
 								<div class='details_label word_synonym_nb'> {% trans %} synonyms {% endtrans %}  | {{ wordstat.nb_synonyms }} </div>
 								{% for synonym in wordstat.synonyms %} 
 											<div class='details_label word_synonym clickable'> {{ synonym }} </div>
 								{% endfor %}
 							
 							{% endif %}
-							
+							</div>
+                            <div class='word_extra_details'>
 			
 							{% if wordstat.nb_derivations != 0 %}
-								<br />
 								<div class='details_label word_derivation_nb'> {% trans %} derivations {% endtrans %}  | {{ wordstat.nb_derivations }} </div> 
 								{% for derivation in wordstat.derivations %} 
 								
 									<div class='details_label word_derivation clickable'> {{ derivation }} </div>
 								{% endfor %}
 							{% endif %}
+							</div>
+                            <div class='word_extra_details'>
 						{% if wordstat.nb_annotations %}
 						{% for annotation_word, parts in wordstat.annotations.items() %}
 							{% for part_order, annotation_detail in parts.items() %} 
