@@ -145,9 +145,6 @@ class QUI( Ui_MainWindow ):
             self.actionPosition_in_Mus_haf.setChecked( boolean( config["sorting"]["sortedbymushaf"] ) if config["sorting"].has_key( "sortedbymushaf" ) else False )
             self.actionRevelation.setChecked( boolean( config["sorting"]["sortedbytanzil"] ) if config["sorting"].has_key( "sortedbytanzil" ) else False )
             self.actionSubject.setChecked( boolean( config["sorting"]["sortedbysubject"] ) if config["sorting"].has_key( "sortedbysubject" ) else False )
-
-            ## TODO save field sorting choice
-            #self.o_sortedbyfield.setChecked( boolean( config["sorting"]["sortedbyfield"] ) if config.has_key( "sorting", "sortedbyfield" ) else False )
             self.actionInverse.setChecked( boolean( config["sorting"]["reverse"] )if config["sorting"].has_key( "reverse" ) else False )
         else:
             self.actionRelevance.setChecked(True)
@@ -204,8 +201,7 @@ class QUI( Ui_MainWindow ):
         config["sorting"]["sortedbymushaf"] = self.actionPosition_in_Mus_haf.isChecked()
         config["sorting"]["sortedbytanzil"] = self.actionRevelation.isChecked()
         config["sorting"]["sortedbysubject"] = self.actionSubject.isChecked()
-        #config["sorting"]["sortedbyfield"] = self.o_sortedbyfield.isChecked()
-        #config["sorting"]["field"] = self.o_field.currentIndex()
+        #config["sorting"]["field"] = unicode( RAWoutput._fields[self.sorted_by_group.checkedAction().text()] if self.direction == "RTL" else self.sorted_by_group.checkedAction().text() )
         config["sorting"]["reverse"] = self.actionInverse.isChecked()
 
         config["extend"] = {}
@@ -246,6 +242,9 @@ class QUI( Ui_MainWindow ):
 
     def setupUi( self, MainWindow ):
         super( QUI, self ).setupUi( MainWindow )
+        
+        # fix direction for RTL languages
+        self.direction = "RTL" if _( "LTR" ) == "RTL" else "LTR";
 
         # prepare QwebView
         self.setupWebView()
@@ -257,12 +256,15 @@ class QUI( Ui_MainWindow ):
         self.sorted_by_group.addAction( self.actionPosition_in_Mus_haf )
         self.sorted_by_group.addAction( self.actionSubject )
         self.sorted_by_group.addAction( self.actionRevelation )
-        for val in RAWoutput._fields.values():
+        for key, val in RAWoutput._fields.items():
             field_action = QtGui.QAction(MainWindow)
             field_action.setCheckable(True)
             field_action.setChecked(False)
             field_action.setObjectName("action_field_" + val)
-            field_action.setText( val )
+            if self.direction == "RTL":
+                field_action.setText( key )
+            else:
+                field_action.setText( val )
             self.menuFields.addAction( field_action )
             self.sorted_by_group.addAction( field_action )
         # make options->script menu as a radio button
@@ -316,8 +318,6 @@ class QUI( Ui_MainWindow ):
         self.language_group.addAction( self.actionSpanish )
         self.language_group.addAction( self.actionMalay  )
 
-        # fix direction for RTL languages
-        self.direction = "RTL" if _( "LTR" ) == "RTL" else "LTR";
         if self.direction == "RTL":
             MainWindow.setLayoutDirection( QtCore.Qt.RightToLeft )
             self.centralwidget.setLayoutDirection(QtCore.Qt.RightToLeft)
@@ -428,7 +428,7 @@ class QUI( Ui_MainWindow ):
                         else "mushaf" if self.actionPosition_in_Mus_haf.isChecked() \
                         else "tanzil" if self.actionRevelation.isChecked() \
                         else "subject" if self.actionSubject.isChecked() \
-                        else unicode( self.sorted_by_group.checkedAction().text() ), # ara2eng_names[self.sorted_by_group.checkedAction().text()] for Arabic,
+                        else unicode( RAWoutput._fields[self.sorted_by_group.checkedAction().text()] if self.direction == "RTL" else self.sorted_by_group.checkedAction().text() ),
                  "page": self.o_page.value(),
                  "reverse_order": self.actionInverse.isChecked(),
                  "word_info":self.actionWord_Info.isChecked(),
@@ -629,7 +629,6 @@ class QUI( Ui_MainWindow ):
                 filter_ += u"  نوع_السورة:" + unicode( sura_types_ar[self.o_tanzil.currentIndex()] )
             else:
                 filter_ += u"  sura_type:" + unicode( sura_types_en[self.o_tanzil.currentIndex()] )
-
 
         yes_no = ["", u"لا", u"نعم"]
         sajdah_types = ["", u"مستحبة", u"واجبة"]
