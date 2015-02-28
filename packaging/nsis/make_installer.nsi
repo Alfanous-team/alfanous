@@ -9,7 +9,7 @@
 
 ; HM NIS Edit Wizard helper defines
 !define PRODUCT_NAME "Alfanous"
-!define PRODUCT_VERSION "0.7"
+!define PRODUCT_VERSION "0.7.10"
 !define PRODUCT_PUBLISHER "Assem Chelli"
 !define PRODUCT_WEB_SITE "http://www.alfanous.org"
 !define PRODUCT_DIR_REGKEY "Software\Microsoft\Windows\CurrentVersion\App Paths\alfanousDesktop-win.exe"
@@ -63,14 +63,14 @@
 ;!insertmacro MUI_LANGUAGE  "Estonian"
 ;!insertmacro MUI_LANGUAGE  "Farsi"
 ;!insertmacro MUI_LANGUAGE  "Finnish"
-;!insertmacro MUI_LANGUAGE  "French"
+!insertmacro MUI_LANGUAGE  "French"
 ;!insertmacro MUI_LANGUAGE  "Galician"
 ;!insertmacro MUI_LANGUAGE  "German"
 ;!insertmacro MUI_LANGUAGE  "Greek"
 ;!insertmacro MUI_LANGUAGE  "Hebrew"
 ;!insertmacro MUI_LANGUAGE  "Hungarian"
 ;!insertmacro MUI_LANGUAGE  "Icelandic"
-;!insertmacro MUI_LANGUAGE  "Indonesian"
+!insertmacro MUI_LANGUAGE  "Indonesian"
 ;!insertmacro MUI_LANGUAGE  "Irish"
 ;!insertmacro MUI_LANGUAGE  "Italian"
 ;!insertmacro MUI_LANGUAGE  "Japanese"
@@ -80,7 +80,7 @@
 ;!insertmacro MUI_LANGUAGE  "Lithuanian"
 ;!insertmacro MUI_LANGUAGE  "Luxembourgish"
 ;!insertmacro MUI_LANGUAGE  "Macedonian"
-;!insertmacro MUI_LANGUAGE  "Malay"
+!insertmacro MUI_LANGUAGE  "Malay"
 ;!insertmacro MUI_LANGUAGE  "Mongolian"
 ;!insertmacro MUI_LANGUAGE  "Norwegian"
 ;!insertmacro MUI_LANGUAGE  "NorwegianNynor"
@@ -122,7 +122,6 @@ FunctionEnd
 Section "Application" SEC01
   SetOutPath "$INSTDIR"
   SetOverwrite ifnewer
-  File "dist\bz2.pyd"
   File "dist\alfanousDesktop-win.exe"
   CreateDirectory "$SMPROGRAMS\Alfanous"
   CreateShortCut "$SMPROGRAMS\Alfanous\Alfanous.lnk" "$INSTDIR\alfanousDesktop-win.exe"
@@ -131,6 +130,7 @@ Section "Application" SEC01
   CreateShortCut "$STARTMENU.lnk" "$INSTDIR\license.txt"
   File /r "dist\*"
   File /r "..\..\src\alfanous-desktop\templates"
+  File /r "..\..\src\alfanous-desktop\locale"
   SetOutPath "$INSTDIR\alfanous"
   File /r "..\..\src\alfanous\indexes"
   File /r "..\..\src\alfanous\configs"
@@ -201,7 +201,7 @@ Section Uninstall
 
   RMDir "$APPDATA\alfanous"
   RMDir "$SMPROGRAMS\Alfanous"
-  RMDir "$INSTDIR"
+  RMDir  /r "$INSTDIR"
 
 
   DeleteRegKey ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}"
