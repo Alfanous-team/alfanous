@@ -13,14 +13,6 @@ Alfanous - Advanced Quranic Search Engine , Authored by A~CH (`@assem-ch <https:
 .. _`Tedjeddine Meabeo`: https://github.com/tedj
 .. _`Sohaib Afifi`: https://github.com/sohaibafifi
 
-.. _`@assem_ch`: https://twitter.com/assem_ch
-.. _`@sneetsher`: https://twitter.com/sneetsher 
-.. _`@zsmahi`: https://twitter.com/zsmahi
-.. _`@yasmamine`: https://twitter.com/yasmamine
-.. _`@01walid`: https://twitter.com/01walid
-.. _`@muslihzarth`: https://twitter.com/muslihzarth
-.. _`@kacem4dz`: https://twitter.com/kacem4dz
-
 =========== 
 Maintainers
 ===========
@@ -38,7 +30,7 @@ Maintainers
             - Packaging to Ubuntu
             - Windows Installer(py2exe, nsis)
             - Twitter account
-      If you are interested, contact `@assem-ch <https://github.com/assem-ch>`_
+      If you are interested, contact `@assem-ch <https://github.com/assem-ch>`_ or mailing list <alfanous[at]googlegroups[dotcom]>
 
 
 
@@ -125,7 +117,7 @@ Community Management
 -----------
 Translation
 -----------
-( to help in translation, contact us in the mailing list <alfanous[at]googlegroups[dotcom]> )
+      To help in translation, contact us in the mailing list <alfanous[at]googlegroups[dotcom]>
 
 
 * Desktop application
