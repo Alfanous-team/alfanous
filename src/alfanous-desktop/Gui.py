@@ -660,7 +660,7 @@ class QUI( Ui_MainWindow ):
         type_ = type_values[self.o_word_type.currentIndex()]
         filter_ = u" {" + root + u"،" + type_ + u"}"
 
-        index = self.o_relation_worad.currentIndex()
+        index = self.o_relation_word.currentIndex()
         newquery = relate( self.o_query.currentText(), filter_, index )
         if root:
             self.o_query.setEditText( newquery )
@@ -702,6 +702,7 @@ class QUI( Ui_MainWindow ):
         diag = QtGui.QFileDialog()
         diag.setAcceptMode( diag.AcceptSave )
         diag.setFileMode( diag.AnyFile )
+        diag.setLabelText (QtGui.QFileDialog.LookIn, "txt")
         diag.setFilter( "*.txt" )
         #filenames = ["./results.txt    "]
         if ( diag.exec_() ):
