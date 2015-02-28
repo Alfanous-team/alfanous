@@ -3,6 +3,7 @@ Alfanous - Advanced Quranic Search Engine , Authored by A~CH (`@assem-ch <https:
       We gratefully acknowledge contributions from the following.
       Please let us know if we missed anyone, thanks :)
 
+
 .. _`A~CH`: https://github.com/assem-ch
 .. _`Abdellah Chelli`: https://github.com/sneetsher 
 .. _`Zakaria Smahi`: https://github.com/zsmahi
@@ -19,6 +20,27 @@ Alfanous - Advanced Quranic Search Engine , Authored by A~CH (`@assem-ch <https:
 .. _`@01walid`: https://twitter.com/01walid
 .. _`@muslihzarth`: https://twitter.com/muslihzarth
 .. _`@kacem4dz`: https://twitter.com/kacem4dz
+
+=========== 
+Maintainers
+===========
+* Assem Chelli `@assem-ch <https://github.com/assem-ch>`_ (API)
+* Walid Ziouche `@01walid <https://github.com/01walid>`_ (packaging to ArchLinux)
+* Muhammad Shaban `@MuhammadShaban <https://github.com/MuhammadShaban>`_ (packaging to Fedora Linux)
+* Zaki Smahi `@zsmahi <https://github.com/zsmahi>`_ (Firefox toolbar)
+* Muslih Aqqad `@muslih <https://github.com/muslih>`_ (Design)
+* Zineb Laouici `@Zinebl <https://github.com/Zinebl>`_ (Facebook/G+ pages)
+
+      We are looking for maintainers for those:
+            - Android app(Java)
+            - Desktop application (PyQt)
+            - Website (Django)
+            - Packaging to Ubuntu
+            - Windows Installer(py2exe, nsis)
+            - Twitter account
+      If you are interested, contact `@assem-ch <https://github.com/assem-ch>`_
+
+
 
 ============ 
 Contributors 
