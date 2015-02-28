@@ -1,0 +1,252 @@
+/*
+	Demo JSON Search Form with jQuery for Alfanous
+
+	Author: Abdellah Chelli
+	Date:	2011.07.29
+*/
+
+@font-face {
+	font-family:'Scheherazade';
+	src:url('../font/ScheherazadeRegOT.ttf');
+}
+
+body {
+	direction: ltr;
+	font-family: Verdana, "Bitstream Vera Sans", "DejaVu Sans", Tahoma, Geneva, Arial, Sans-serif;
+	font-size: 14px;
+	margin: 0px;
+	padding: 0px;
+}
+
+.latin {
+	font-family: Verdana, "Bitstream Vera Sans", "DejaVu Sans", Tahoma, Geneva, Arial, Sans-serif;
+}
+
+
+/* form */
+#search_form {
+	background-color: #EEF;
+	border-bottom: 1px solid #00F;
+	padding-bottom: 5px;
+	padding-top: 5px;
+	text-align: center;
+	width: 100%;
+}
+
+#logo {
+	display: inline-block;
+	left: -30px;
+	margin-bottom: 5px;
+	padding: 5px 10px 5px 10px;
+	text-align: left;
+	position: relative;
+}
+
+#logo a, #logo img {
+	border-style: none;
+	color: #00A;
+	font-size: 2em;
+	text-decoration: none;
+}
+
+#logo a {
+
+}
+
+#logo img {
+	display: inline-block;
+	margin-right: 20px;
+	vertical-align:middle;
+}
+
+#search_box {
+	border: 1px solid #00F;
+	direction: rtl;
+	height: 25px;
+	padding: 2px 5px 2px 5px;
+	width: 500px;
+}
+
+#search_box:hover {
+	border-color: #F50;
+}
+
+#submit	{
+	background-color: #00F;
+	border: 1px solid #00F;
+	color: #FFF;
+	font-weight: bold;
+	height: 31px;
+	padding: 2px 10px 3px 10px;
+}
+
+#submit:hover {
+	background-color: #F50;
+	border-color: #F50;
+}
+
+/* note + error */
+#error {
+	color: #F00;
+}
+
+#note {
+	background-color: #FEE;
+	margin: 5px 5px 10px 5px;
+	padding: 5px 10px 5px 10px;
+}
+
+/* pages */
+.pages {
+	clear: both;
+	margin: 5px 5px 10px 5px;
+	text-align: center;
+}
+
+.pages a {
+	background-color: #FEA;
+	color: #00F;
+	padding: 0px 2px 1px 3px;
+	text-decoration: none;
+}
+
+.pages a:hover {
+	text-decoration: underline;
+}
+/* result */
+#search_result {
+	clear: both;
+}
+
+#search_words {
+	background-color: #DFD;
+	margin: 2px 5px 15px 15px;
+	padding: 0px 2px 5px 2px;
+}
+
+#search_ayas {
+}
+
+.details_label {
+	display: inline;
+	font-size: 10px;
+	padding: 1px 5px 2px 5px;
+	margin: 1px 1px 0px 2px;
+}
+
+.word_item {
+	margin: 1px 0px 1px 0px;
+	padding: 0px 0px 0px 0px;
+}
+
+.result_item0 {
+	background-color: #EFE;
+	margin: 2px 5px 15px 15px;
+	padding: 0px 2px 5px 2px;
+}
+
+.result_item1 {
+	background-color: #DFD;
+	margin: 2px 5px 15px 15px;
+	padding: 0px 2px 5px 2px;
+}
+
+.word_count {
+	background-color: #666;
+	color: #FFF;
+}
+
+.word_info0 {
+	background-color: #F50;
+	color: #FFF;
+	font-size: 12px;
+	font-weight: bold;
+}
+
+.word_stat0 {
+	background-color: #888;
+	color: #FFF;
+}
+
+.word_stat1 {
+	background-color: #90A;
+	color: #FFF;
+}
+
+
+.item_number {
+	background-color: #FFF;
+	font-size: 2em;
+	font-weight: bold;
+	left: -10px;
+	padding: 0px 5px 1px 5px;
+	position: relative;
+	top: -10px;
+}
+
+.quran {
+	direction: rtl;
+	font-family: Scheherazade, me_quran, KacstBook, KacstQurn, ArabeyesQr, "KFGQPC Uthman Taha Naskh", Arial;
+	font-size: 2em;
+	margin: 2px 5px 10px 30px;
+}
+
+.match {
+	color: #181;
+}
+
+.word_details, .sura_details, .aya_details {
+	margin: 5px 5px 0px 20px;
+}
+
+.aya_stat0, .sura_stat1 {
+	background-color: #00A;
+	color: #FFF;
+}
+
+.aya_stat1, .sura_stat2 {
+	background-color: #30D;
+	color: #FFF;
+}
+
+.aya_stat2, .sura_stat3 {
+	background-color: #00F;
+	color: #FFF;
+}
+
+.aya_pos0 {
+	background-color: #074;
+	color: #FFF;
+}
+
+.aya_pos1 {
+	background-color: #094;
+	color: #FFF;
+}
+
+.sura_info0 {
+	background-color: #F50;
+	color: #FFF;
+	font-size: 12px;
+	font-weight: bold;
+}
+
+.sura_info1 {
+	background-color: #E80;
+	color: #FFF;
+}
+
+.sura_stat0 {
+	background-color: #90A;
+	color: #FFF;
+}
+
+.sura_ord0 {
+	background-color: #666;
+	color: #FFF;
+}
+
+.sura_ord1 {
+	background-color: #888;
+	color: #FFF;
+}
