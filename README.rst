@@ -8,12 +8,9 @@
 * .. image:: https://landscape.io/github/Alfanous-team/alfanous/master/landscape.svg
         :target: https://landscape.io/github/Alfanous-team/alfanous
         
-* .. image:: https://requires.io/github/Alfanous-team/alfanous/requirements.svg?branch=master
+  .. image:: https://requires.io/github/Alfanous-team/alfanous/requirements.svg?branch=master
      :target: https://requires.io/github/Alfanous-team/alfanous/requirements/?branch=master
      :alt: Requirements Status
-
-* .. image:: https://img.shields.io/github/issues/Alfanous-team/alfanous.svg
-        :target: https://github.com/Alfanous-team/alfanous/issues?q=is%3Aopen+is%3Aissue
 
 * .. image:: https://img.shields.io/pypi/v/alfanous.svg
         :target: https://pypi.python.org/pypi/alfanous
