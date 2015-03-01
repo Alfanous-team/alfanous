@@ -212,3 +212,8 @@ See also
 .. _chiffra2: http://chiffra.blogspot.com/2013/01/blog-post_4.html
 .. _fath_multimedia: http://www.fath-multimedia.blogspot.com/2013/08/alfanous-terdepan-dalam-penelusuran.html
 .. _fimadani: http://news.fimadani.com/read/2013/10/22/alfanous-dakwah-al-quran-lewat-search-engine/?utm_source=twitterfeed&utm_medium=twitter
+
+
+.. image:: https://badges.gitter.im/Join%20Chat.svg
+   :alt: Join the chat at https://gitter.im/Alfanous-team/alfanous
+   :target: https://gitter.im/Alfanous-team/alfanous?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge
