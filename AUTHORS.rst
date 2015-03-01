@@ -17,8 +17,9 @@ Alfanous - Advanced Quranic Search Engine , Authored by A~CH (`@assem-ch <https:
 Maintainers
 ===========
 * Assem Chelli `@assem-ch <https://github.com/assem-ch>`_ (API)
-* Walid Ziouche `@01walid <https://github.com/01walid>`_ (packaging to ArchLinux)
 * Muhammad Shaban `@MuhammadShaban <https://github.com/MuhammadShaban>`_ (packaging to Fedora Linux)
+* Walid Ziouche `@01walid <https://github.com/01walid>`_ (packaging to ArchLinux)
+* Sohaib Afifi `@sohaibafifi <https://github.com/sohaibafifi>`_ (packaging to ArchLinux | git version)
 * Zaki Smahi `@zsmahi <https://github.com/zsmahi>`_ (Firefox toolbar)
 * Muslih Aqqad `@muslih <https://github.com/muslih>`_ (Design)
 * Zineb Laouici `@Zinebl <https://github.com/Zinebl>`_ (Facebook/G+ pages)
