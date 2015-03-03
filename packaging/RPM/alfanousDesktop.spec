@@ -49,30 +49,14 @@ Requires:   python
 %description -n python-alfanous
 Alfanous python library.
 
-#%package chrome-toolbar
-#Summary:    Chrome Toolbar for Alfanous.
-#Group:      Quran/Tools
-#Requires:   google-chrome-stable
-
-#%description chrome-toolbar
-#Chrome Toolbar for Alfanous.
-
-#%package chromium-toolbar
-#Summary:    Chromium Toolbar for Alfanous.
-#Group:      Quran/Tools
-#Requires:   chromium
-
-#%description chromium-toolbar
-#Chromium Toolbar for Alfanous.
-
 %prep
 #%setup -q
 rm -rf   %{_builddir}/alfanous-alfanous.version
 mkdir -p %{_builddir}/alfanous-alfanous.version
 cd ../..
 cp -r `cat list.txt`  %{_builddir}/alfanous-alfanous.version
-%if 0%{?fedora_version} || 0%{?rhel_version} || 0%{?centos_version}
-perl -pi -w -e 's|lrelease|lrelease-qt4|g;' %{_builddir}/alfanous-alfanous.version/Makefile
+%if 0%{?suse_version}
+perl -pi -w -e 's|lrelease-qt4|lrelease|g;' Makefile
 %endif
 
 %build
@@ -98,14 +82,6 @@ cp -r interfaces/toolbars/firefox/* %{buildroot}%{_datadir}/mozilla/extensions/{
 install -d -m 755 %{buildroot}%{_libdir}/firefox/searchplugins
 install -D -m 644 %{SOURCE1} %{buildroot}%{_libdir}/firefox/searchplugins
 
-#Install chrome toolbar
-#install -d -m 755 %{buildroot}/opt/google/chrome/extensions/alfanousQSE@gmail.com
-#cp -r interfaces/toolbars/chrome/* %{buildroot}/opt/google/chrome/extensions/alfanousQSE@gmail.com
-
-#Install chromium toolbar
-#install -d -m 755 %{buildroot}%{_libdir}/chromium-browser/extensions
-#cp -r interfaces/toolbars/chrome/* %{buildroot}%{_libdir}/chromium-browser/extensions
-
 # move fonts to alfanous folder
 mkdir -p %{buildroot}%{_datadir}/fonts/alfanous
 mv %{buildroot}%{_datadir}/fonts/*.ttf %{buildroot}%{_datadir}/fonts/alfanous
@@ -123,14 +99,10 @@ rm -rf %{buildroot}
 %{_datadir}/pixmaps/AlFanous.png
 %{_datadir}/icons/hicolor/*/apps/AlFanous.png
 %{_datadir}/fonts/alfanous
-%{_datadir}/locale/alfanous*
-%{_datadir}/locale/*/LC_MESSAGES/alfanous*
 %if 0%{?suse_version}
 %dir %{_datadir}/icons/hicolor
 %dir %{_datadir}/icons/hicolor/*
 %dir %{_datadir}/icons/hicolor/*/apps
-%dir %{_datadir}/locale/*
-%dir %{_datadir}/locale/*/LC_MESSAGES
 %endif
 
 %files firefox-toolbar
@@ -154,15 +126,10 @@ rm -rf %{buildroot}
 %defattr(-,root,root)
 %{python_sitelib}/alfanous*
 
-#%files chrome-toolbar
-#%defattr(-,root,root)
-#/opt/google/chrome/extensions/alfanousQSE@gmail.com
-
-#%files chromium-toolbar
-#%defattr(-,root,root)
-#%{_libdir}/chromium-browser/extensions/alfanousQSE@gmail.com
-
 %changelog
+* Tue Mar 03 2015 Muhammad Shaban <Mr.Muhammad@outlook.com> 0.7.10-3
+- update
+
 * Sun Jan 04 2015 Muhammad Shaban <Mr.Muhammad@outlook.com> 0.7.02-6
 - fix errors when use (make dist_rpm)
 
