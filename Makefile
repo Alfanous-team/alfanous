@@ -347,9 +347,9 @@ local_desktop_update: local_desktop_extract
 	cd $(DESKTOP_INTERFACE_PATH); pyside-lupdate qt_local.pro
 	# Babel part
 	cd $(DESKTOP_INTERFACE_PATH); pybabel update -i ./locale/alfanousJinjaT.pot -d ./locale -D alfanousJinjaT
-	mkdir -p localization/ts_files/alfanousDesktopv$(VERSION)
-	cp $(DESKTOP_INTERFACE_PATH)/locale/alfanousJinjaT.pot localization/ts_files/alfanousDesktopv$(VERSION)
-	cp $(DESKTOP_INTERFACE_PATH)/locale/alfanousDesktop.ts localization/ts_files/alfanousDesktopv$(VERSION)
+	mkdir -p localization/ts_files/alfanousDesktop_sync
+	cp $(DESKTOP_INTERFACE_PATH)/locale/alfanousJinjaT.pot localization/ts_files/alfanousDesktop_sync
+	cp $(DESKTOP_INTERFACE_PATH)/locale/alfanousDesktop.ts localization/ts_files/alfanousDesktop_sync
 	@## obsolete extraction rotine
 	@#xgettext $(DESKTOP_INTERFACE_PATH)*.py  --default-domain=alfanousJinjaT --language=Python --keyword=n_ 
 	
