@@ -903,7 +903,6 @@ QSpinBox::down-button:pressed:enabled, QDoubleSpinBox::down-button:pressed:enabl
     <property name="title">
      <string>&amp;View</string>
     </property>
-    <addaction name="separator"/>
     <addaction name="m_features"/>
    </widget>
    <widget class="QMenu" name="menuOptions">
@@ -1057,49 +1056,7 @@ QSpinBox::down-button:pressed:enabled, QDoubleSpinBox::down-button:pressed:enabl
     <addaction name="separator"/>
     <addaction name="menuChoose_Language"/>
     <addaction name="menuStyle"/>
-    <addaction name="separator"/>
     <addaction name="actionPreferences"/>
-   </widget>
-   <widget class="QMenu" name="menu_Indexes">
-    <property name="enabled">
-     <bool>true</bool>
-    </property>
-    <property name="title">
-     <string>&amp;Indexes</string>
-    </property>
-    <widget class="QMenu" name="menuRemove_Translation">
-     <property name="enabled">
-      <bool>false</bool>
-     </property>
-     <property name="title">
-      <string>Remove Translation</string>
-     </property>
-     <property name="icon">
-      <iconset>
-       <normaloff>:/resources/button_cancel.png</normaloff>:/resources/button_cancel.png</iconset>
-     </property>
-     <addaction name="actionDefault_4"/>
-    </widget>
-    <widget class="QMenu" name="menuRemove_Recitation">
-     <property name="enabled">
-      <bool>false</bool>
-     </property>
-     <property name="title">
-      <string>Remove Recitation</string>
-     </property>
-     <property name="icon">
-      <iconset>
-       <normaloff>:/resources/button_cancel.png</normaloff>:/resources/button_cancel.png</iconset>
-     </property>
-     <addaction name="actionDefault_5"/>
-    </widget>
-    <addaction name="actionChange_Index_Path"/>
-    <addaction name="separator"/>
-    <addaction name="actionAdd_Translation"/>
-    <addaction name="menuRemove_Translation"/>
-    <addaction name="separator"/>
-    <addaction name="actionAdd_Recitation"/>
-    <addaction name="menuRemove_Recitation"/>
    </widget>
    <widget class="QMenu" name="menu_Edit">
     <property name="enabled">
@@ -1108,9 +1065,6 @@ QSpinBox::down-button:pressed:enabled, QDoubleSpinBox::down-button:pressed:enabl
     <property name="title">
      <string>&amp;Edit</string>
     </property>
-    <addaction name="actionUndo_Query"/>
-    <addaction name="actionRedo_Query"/>
-    <addaction name="separator"/>
     <addaction name="actionCopy_Query"/>
     <addaction name="actionCopy_Page"/>
    </widget>
@@ -1131,7 +1085,6 @@ QSpinBox::down-button:pressed:enabled, QDoubleSpinBox::down-button:pressed:enabl
    <addaction name="menu_Edit"/>
    <addaction name="menu_4"/>
    <addaction name="menuOptions"/>
-   <addaction name="menu_Indexes"/>
    <addaction name="menuContribute"/>
    <addaction name="menu_2"/>
   </widget>
@@ -1203,8 +1156,8 @@ QSpinBox::down-button:pressed:enabled, QDoubleSpinBox::down-button:pressed:enabl
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>259</width>
-          <height>337</height>
+          <width>276</width>
+          <height>331</height>
          </rect>
         </property>
         <attribute name="label">
@@ -1296,26 +1249,6 @@ QSpinBox::down-button:pressed:enabled, QDoubleSpinBox::down-button:pressed:enabl
              </widget>
             </item>
             <item>
-             <widget class="QRadioButton" name="o_antonyms">
-              <property name="enabled">
-               <bool>false</bool>
-              </property>
-              <property name="text">
-               <string>Antonyms</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QRadioButton" name="o_orthograph">
-              <property name="enabled">
-               <bool>false</bool>
-              </property>
-              <property name="text">
-               <string>Ignore Spell Errors</string>
-              </property>
-             </widget>
-            </item>
-            <item>
              <widget class="QRadioButton" name="o_vocalization">
               <property name="enabled">
                <bool>true</bool>
@@ -1342,16 +1275,6 @@ QSpinBox::down-button:pressed:enabled, QDoubleSpinBox::down-button:pressed:enabl
               </property>
               <property name="text">
                <string>Deep Stemming (Root)</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QRadioButton" name="o_buckwalter">
-              <property name="enabled">
-               <bool>false</bool>
-              </property>
-              <property name="text">
-               <string>Buckwalter</string>
               </property>
              </widget>
             </item>
@@ -1459,8 +1382,8 @@ QSpinBox::down-button:pressed:enabled, QDoubleSpinBox::down-button:pressed:enabl
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>276</width>
-          <height>257</height>
+          <width>259</width>
+          <height>137</height>
          </rect>
         </property>
         <attribute name="label">
@@ -1545,122 +1468,6 @@ QSpinBox::down-button:pressed:enabled, QDoubleSpinBox::down-button:pressed:enabl
                  </property>
                 </item>
                </widget>
-              </item>
-             </layout>
-            </item>
-            <item>
-             <layout class="QHBoxLayout" name="horizontalLayout_37">
-              <item>
-               <widget class="QLabel" name="label_35">
-                <property name="enabled">
-                 <bool>false</bool>
-                </property>
-                <property name="sizePolicy">
-                 <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
-                  <horstretch>0</horstretch>
-                  <verstretch>0</verstretch>
-                 </sizepolicy>
-                </property>
-                <property name="text">
-                 <string>SubType</string>
-                </property>
-                <property name="buddy">
-                 <cstring>o_word_type</cstring>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QComboBox" name="o_word_subtype">
-                <property name="enabled">
-                 <bool>false</bool>
-                </property>
-               </widget>
-              </item>
-             </layout>
-            </item>
-            <item>
-             <layout class="QHBoxLayout" name="horizontalLayout_42">
-              <item>
-               <widget class="QLabel" name="label_40">
-                <property name="enabled">
-                 <bool>false</bool>
-                </property>
-                <property name="sizePolicy">
-                 <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
-                  <horstretch>0</horstretch>
-                  <verstretch>0</verstretch>
-                 </sizepolicy>
-                </property>
-                <property name="text">
-                 <string>Gender</string>
-                </property>
-                <property name="buddy">
-                 <cstring>o_word_type</cstring>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QComboBox" name="o_word_gender">
-                <property name="enabled">
-                 <bool>false</bool>
-                </property>
-               </widget>
-              </item>
-             </layout>
-            </item>
-            <item>
-             <layout class="QHBoxLayout" name="horizontalLayout_43">
-              <item>
-               <widget class="QLabel" name="label_41">
-                <property name="enabled">
-                 <bool>false</bool>
-                </property>
-                <property name="sizePolicy">
-                 <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
-                  <horstretch>0</horstretch>
-                  <verstretch>0</verstretch>
-                 </sizepolicy>
-                </property>
-                <property name="text">
-                 <string>Number</string>
-                </property>
-                <property name="buddy">
-                 <cstring>o_word_type</cstring>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QComboBox" name="o_word_number">
-                <property name="enabled">
-                 <bool>false</bool>
-                </property>
-               </widget>
-              </item>
-             </layout>
-            </item>
-            <item>
-             <layout class="QHBoxLayout" name="horizontalLayout_44">
-              <item>
-               <widget class="QLabel" name="label_42">
-                <property name="enabled">
-                 <bool>false</bool>
-                </property>
-                <property name="sizePolicy">
-                 <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
-                  <horstretch>0</horstretch>
-                  <verstretch>0</verstretch>
-                 </sizepolicy>
-                </property>
-                <property name="text">
-                 <string>Person</string>
-                </property>
-                <property name="buddy">
-                 <cstring>o_word_type</cstring>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QComboBox" name="o_word_person"/>
               </item>
              </layout>
             </item>
@@ -1759,8 +1566,8 @@ QSpinBox::down-button:pressed:enabled, QDoubleSpinBox::down-button:pressed:enabl
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>276</width>
-          <height>208</height>
+          <width>259</width>
+          <height>168</height>
          </rect>
         </property>
         <attribute name="label">
@@ -1997,7 +1804,7 @@ QSpinBox::down-button:pressed:enabled, QDoubleSpinBox::down-button:pressed:enabl
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>276</width>
+          <width>259</width>
           <height>170</height>
          </rect>
         </property>
@@ -2256,8 +2063,8 @@ QSpinBox::down-button:pressed:enabled, QDoubleSpinBox::down-button:pressed:enabl
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>276</width>
-          <height>240</height>
+          <width>259</width>
+          <height>200</height>
          </rect>
         </property>
         <attribute name="label">
@@ -2518,8 +2325,8 @@ QSpinBox::down-button:pressed:enabled, QDoubleSpinBox::down-button:pressed:enabl
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>276</width>
-          <height>238</height>
+          <width>259</width>
+          <height>198</height>
          </rect>
         </property>
         <attribute name="label">
@@ -3014,6 +2821,9 @@ QSpinBox::down-button:pressed:enabled, QDoubleSpinBox::down-button:pressed:enabl
    <property name="text">
     <string>&amp;Donate us!</string>
    </property>
+   <property name="visible">
+    <bool>false</bool>
+   </property>
   </action>
   <action name="actionContact_us">
    <property name="enabled">
@@ -3207,6 +3017,9 @@ QSpinBox::down-button:pressed:enabled, QDoubleSpinBox::down-button:pressed:enabl
    </property>
    <property name="text">
     <string>Preferences</string>
+   </property>
+   <property name="visible">
+    <bool>false</bool>
    </property>
   </action>
   <action name="action_Load_Query">
@@ -3406,6 +3219,9 @@ QSpinBox::down-button:pressed:enabled, QDoubleSpinBox::down-button:pressed:enabl
    </property>
    <property name="toolTip">
     <string notr="true">100</string>
+   </property>
+   <property name="visible">
+    <bool>false</bool>
    </property>
   </action>
   <action name="actionlimit500">
@@ -3705,9 +3521,7 @@ QSpinBox::down-button:pressed:enabled, QDoubleSpinBox::down-button:pressed:enabl
   <tabstop>o_somewords</tabstop>
   <tabstop>o_nowords</tabstop>
   <tabstop>o_synonyms</tabstop>
-  <tabstop>o_orthograph</tabstop>
   <tabstop>o_stat_from</tabstop>
-  <tabstop>o_antonyms</tabstop>
   <tabstop>o_relation_struct</tabstop>
  </tabstops>
  <resources>
