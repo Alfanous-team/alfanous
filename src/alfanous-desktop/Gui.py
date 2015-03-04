@@ -21,6 +21,7 @@ import os
 import gettext
 import re
 import codecs
+import webbrowser
 
 from configobj import ConfigObj
 
@@ -48,7 +49,8 @@ sys.setdefaultencoding('utf-8')
 
 ## STATIC GLOBAL variables
 CONFIGPATH = ( os.getenv( 'USERPROFILE' ) or os.getenv( 'HOME' ) or "." ) + "/"
-LOCALPATH = "./locale" #os.getenv('TEXTDOMAINDIR')
+BASEPATH  =  os.path.dirname( os.path.abspath(__file__) )
+LOCALPATH = BASEPATH + "/locale" #os.getenv('TEXTDOMAINDIR')
 PERPAGE = 10 #results per page
 RELATIONS = ["", "", u"|", u"+", u"-"]
 
@@ -77,7 +79,6 @@ os.environ['LANG'] = lang
 RAWoutput = Raw() # default paths
 
 SAJDA_TYPE = {u"مستحبة":_( u"recommended" ), u"واجبة":_( u"obliged" )}
-SURA_TYPE = {u"مدنية":_( u"medina" ), u"مكية":_( u"mekka" )}
 
 ## Some functions
 relate = lambda query, filter, index:"( " + unicode( query ) + " ) " + RELATIONS[index] + " ( " + filter + " ) " if  index > 1 else filter if index == 1 else unicode( query ) + " " + filter
@@ -145,9 +146,6 @@ class QUI( Ui_MainWindow ):
             self.actionPosition_in_Mus_haf.setChecked( boolean( config["sorting"]["sortedbymushaf"] ) if config["sorting"].has_key( "sortedbymushaf" ) else False )
             self.actionRevelation.setChecked( boolean( config["sorting"]["sortedbytanzil"] ) if config["sorting"].has_key( "sortedbytanzil" ) else False )
             self.actionSubject.setChecked( boolean( config["sorting"]["sortedbysubject"] ) if config["sorting"].has_key( "sortedbysubject" ) else False )
-
-            ## TODO save field sorting choice
-            #self.o_sortedbyfield.setChecked( boolean( config["sorting"]["sortedbyfield"] ) if config.has_key( "sorting", "sortedbyfield" ) else False )
             self.actionInverse.setChecked( boolean( config["sorting"]["reverse"] )if config["sorting"].has_key( "reverse" ) else False )
         else:
             self.actionRelevance.setChecked(True)
@@ -204,8 +202,7 @@ class QUI( Ui_MainWindow ):
         config["sorting"]["sortedbymushaf"] = self.actionPosition_in_Mus_haf.isChecked()
         config["sorting"]["sortedbytanzil"] = self.actionRevelation.isChecked()
         config["sorting"]["sortedbysubject"] = self.actionSubject.isChecked()
-        #config["sorting"]["sortedbyfield"] = self.o_sortedbyfield.isChecked()
-        #config["sorting"]["field"] = self.o_field.currentIndex()
+        #config["sorting"]["field"] = unicode( RAWoutput._fields[self.sorted_by_group.checkedAction().text()] if self.direction == "RTL" else self.sorted_by_group.checkedAction().text() )
         config["sorting"]["reverse"] = self.actionInverse.isChecked()
 
         config["extend"] = {}
@@ -240,12 +237,15 @@ class QUI( Ui_MainWindow ):
         self.o_results.setFont(font)
         self.o_results.setProperty("cursor", QtCore.Qt.IBeamCursor)
         self.o_results.setAutoFillBackground(False)
-        self.o_results.setHtml("<img src=\":/resources/alfanous.jpg\" />")
+        self.o_results.setHtml("<img src=\":/resources/alfanous.png\" /> ")
         self.o_results.setObjectName("o_results")
         self.verticalLayout33.addWidget(self.o_results)
 
     def setupUi( self, MainWindow ):
         super( QUI, self ).setupUi( MainWindow )
+        
+        # fix direction for RTL languages
+        self.direction = "RTL" if _( "LTR" ) == "RTL" else "LTR";
 
         # prepare QwebView
         self.setupWebView()
@@ -257,12 +257,15 @@ class QUI( Ui_MainWindow ):
         self.sorted_by_group.addAction( self.actionPosition_in_Mus_haf )
         self.sorted_by_group.addAction( self.actionSubject )
         self.sorted_by_group.addAction( self.actionRevelation )
-        for val in RAWoutput._fields.values():
+        for key, val in RAWoutput._fields.items():
             field_action = QtGui.QAction(MainWindow)
             field_action.setCheckable(True)
             field_action.setChecked(False)
             field_action.setObjectName("action_field_" + val)
-            field_action.setText( val )
+            if self.direction == "RTL":
+                field_action.setText( key )
+            else:
+                field_action.setText( val )
             self.menuFields.addAction( field_action )
             self.sorted_by_group.addAction( field_action )
         # make options->script menu as a radio button
@@ -272,12 +275,12 @@ class QUI( Ui_MainWindow ):
         # make options->translations as a radio button
         self.translation_group = QtGui.QActionGroup( MainWindow )
         self.translation_group.addAction(self.actionTranslationNone)
-        for key in RAWoutput._translations.keys():
+        for key, val in RAWoutput._translations.items():
             translation_action = QtGui.QAction(MainWindow)
             translation_action.setCheckable(True)
             translation_action.setChecked(False)
             translation_action.setObjectName("action_translation_" + key)
-            translation_action.setText( key )
+            translation_action.setText( val + " | " + key )
             self.menuTranslation.addAction( translation_action )
             self.translation_group.addAction( translation_action )
 
@@ -316,8 +319,6 @@ class QUI( Ui_MainWindow ):
         self.language_group.addAction( self.actionSpanish )
         self.language_group.addAction( self.actionMalay  )
 
-        # fix direction for RTL languages
-        self.direction = "RTL" if _( "LTR" ) == "RTL" else "LTR";
         if self.direction == "RTL":
             MainWindow.setLayoutDirection( QtCore.Qt.RightToLeft )
             self.centralwidget.setLayoutDirection(QtCore.Qt.RightToLeft)
@@ -354,24 +355,34 @@ class QUI( Ui_MainWindow ):
         QtCore.QObject.connect( self.actionpp50, QtCore.SIGNAL( "triggered()" ), self.changePERPAGE )
         QtCore.QObject.connect( self.actionpp100, QtCore.SIGNAL( "triggered()" ), self.changePERPAGE )
         QtCore.QObject.connect( self.actionpp1, QtCore.SIGNAL( "triggered()" ), self.changePERPAGE )
-        QtCore.QObject.connect( self.action_Send_Feedback, QtCore.SIGNAL( "triggered()" ), self.feedback_link )
         QtCore.QObject.connect( self.o_struct_from, QtCore.SIGNAL( "valueChanged(int)" ), self.struct_to_min )
         QtCore.QObject.connect( self.o_stat_from, QtCore.SIGNAL( "valueChanged(int)" ), self.stat_to_min )
         QtCore.QObject.connect( self.m_exit, QtCore.SIGNAL( "triggered()" ), self.exit )
         QtCore.QObject.connect( self.m_help, QtCore.SIGNAL( "triggered()" ), self.help )
         QtCore.QObject.connect( self.m_about, QtCore.SIGNAL( "triggered(bool)" ), self.about )
-        QtCore.QObject.connect( self.action_Send_Feedback, QtCore.SIGNAL( "triggered(bool)" ), self.send_feedback )
+
+        QtCore.QObject.connect( self.actionShare_an_Idea, QtCore.SIGNAL( "triggered()" ), self.share_an_idea )
+        QtCore.QObject.connect( self.actionAsk_a_Question, QtCore.SIGNAL( "triggered()" ), self.ask_a_question)
+        QtCore.QObject.connect( self.action_Say_Thanks, QtCore.SIGNAL( "triggered()" ), self.say_thanks )
+        QtCore.QObject.connect( self.actionReport_a_Problem, QtCore.SIGNAL( "triggered()" ), self.report_a_problem )
+        QtCore.QObject.connect( self.actionTranslate, QtCore.SIGNAL( "triggered()" ), self.contribute_translate )
+        QtCore.QObject.connect( self.actionCode, QtCore.SIGNAL( "triggered()" ), self.contribute_code )
+
         QtCore.QObject.connect( self.a_save, QtCore.SIGNAL( "triggered()" ), self.save_results )
         QtCore.QObject.connect( self.a_print, QtCore.SIGNAL( "triggered()" ), self.print_results )
+
         QtCore.QObject.connect( self.o_add2query_advanced, QtCore.SIGNAL( "clicked()" ), self.add2query_advanced )
         QtCore.QObject.connect( self.o_add2query_struct, QtCore.SIGNAL( "clicked()" ), self.add2query_struct )
         QtCore.QObject.connect( self.o_add2query_stat, QtCore.SIGNAL( "clicked()" ), self.add2query_stat )
         QtCore.QObject.connect( self.o_add2query_subject, QtCore.SIGNAL( "clicked()" ), self.add2query_subject )
         QtCore.QObject.connect( self.o_add2query_word, QtCore.SIGNAL( "clicked()" ), self.add2query_word )
         QtCore.QObject.connect( self.o_add2query_misc, QtCore.SIGNAL( "clicked()" ), self.add2query_misc )
-        self.sura_list =  RAWoutput._surates["Arabic"] if self.direction == "RTL" else  RAWoutput._surates["English"]
+
+        self.sura_list =  ["%s (%s)" % t for t in zip(RAWoutput._surates["Arabic"], RAWoutput._surates["Romanized"])] if self.direction == "RTL" \
+            else  ["%s (%s)" % t for t in zip(RAWoutput._surates["Romanized"],RAWoutput._surates["English"])]
+        self.o_sura_name.addItems( self.sura_list )
         self.o_chapter.addItems( RAWoutput._chapters )
-        self.o_sura_name.addItems( self.sura_list  )
+        self.o_word_root.addItems( RAWoutput._roots )
         self.load_config()
 
     def copy_query(self):
@@ -425,7 +436,7 @@ class QUI( Ui_MainWindow ):
                         else "mushaf" if self.actionPosition_in_Mus_haf.isChecked() \
                         else "tanzil" if self.actionRevelation.isChecked() \
                         else "subject" if self.actionSubject.isChecked() \
-                        else unicode( self.sorted_by_group.checkedAction().text() ), # ara2eng_names[self.sorted_by_group.checkedAction().text()] for Arabic,
+                        else unicode( RAWoutput._fields[self.sorted_by_group.checkedAction().text()] if self.direction == "RTL" else self.sorted_by_group.checkedAction().text() ),
                  "page": self.o_page.value(),
                  "reverse_order": self.actionInverse.isChecked(),
                  "word_info":self.actionWord_Info.isChecked(),
@@ -439,7 +450,7 @@ class QUI( Ui_MainWindow ):
                  "aya_theme_info":  self.actionAya_Info.isChecked(),
                  "aya_stat_info":  self.actionAya_Info.isChecked(),
                  "aya_sajda_info":  self.actionAya_Info.isChecked(),
-                 "translation":self.translation_group.checkedAction().text(),
+                 "translation": "" if self.actionTranslationNone.isChecked() else self.translation_group.checkedAction().text().split("|")[1][0:],
                  "fuzzy": self.o_autospell.isChecked(),
                  "word_info": self.actionWord_Info.isChecked(),
                  }
@@ -611,40 +622,48 @@ class QUI( Ui_MainWindow ):
 
     def add2query_misc( self ):
         """         """
-        filter = u""
+        filter_ = u""
 
         if self.o_sura_name.currentIndex() != 0:
-            filter += u"  سورة:\"" + unicode( self.sura_list[self.o_sura_name.currentIndex() - 1] ) + "\""
+            if self.direction == "RTL":
+                filter_ += u"  سورة:\"" + unicode( RAWoutput._surates["Arabic"][self.o_sura_name.currentIndex() - 1] ) + "\""
+            else:
+                filter_ += u"  sura:\"" + unicode( RAWoutput._surates["Romanized"][self.o_sura_name.currentIndex() - 1] ) + "\""
 
-        sura_types = [u"", u"مدنية", u"مكية"]
+        sura_types_ar = [u"", u"مدنية", u"مكية"]
+        sura_types_en = [u"", u"Medinan", u"Meccan"]
         if self.o_tanzil.currentIndex() != 0:
-            filter += u"  نوع_السورة:" + unicode( sura_types[self.o_tanzil.currentIndex()] )
-
+            if self.direction == "RTL":
+                filter_ += u"  نوع_السورة:" + unicode( sura_types_ar[self.o_tanzil.currentIndex()] )
+            else:
+                filter_ += u"  sura_type:" + unicode( sura_types_en[self.o_tanzil.currentIndex()] )
 
         yes_no = ["", u"لا", u"نعم"]
         sajdah_types = ["", u"مستحبة", u"واجبة"]
         if self.o_sajdah_exist.currentIndex() != 0:
             if self.o_sajdah_type.currentIndex() == 0:
-                filter += u"  سجدة:" + unicode( yes_no[self.o_sajdah_exist.currentIndex()] )
+                filter_ += u"  سجدة:" + unicode( yes_no[self.o_sajdah_exist.currentIndex()] )
             else:
-                filter += u"  نوع_السجدة:" + unicode( sajdah_types[self.o_sajdah_type.currentIndex()] )
+                filter_ += u"  نوع_السجدة:" + unicode( sajdah_types[self.o_sajdah_type.currentIndex()] )
 
         index = self.o_relation_misc.currentIndex()
-        newquery = relate( self.o_query.currentText(), filter, index )
-        if filter:self.o_query.setEditText( newquery )
+        newquery = relate( self.o_query.currentText(), filter_, index )
+        if filter_:
+            self.o_query.setEditText( newquery )
 
 
     def add2query_word( self ):
-        filter = ""
-        root = unicode( self.o_word_root.text() )
+        filter_ = ""
+        root = unicode( self.o_word_root.currentText() )
 
         type_values = [u"اسم", u"فعل", u"أداة"]
-        type = type_values[self.o_word_type.currentIndex()]
-        filter = u" {" + root + u"،" + type + u"}"
+        type_ = type_values[self.o_word_type.currentIndex()]
+        filter_ = u" {" + root + u"،" + type_ + u"}"
 
         index = self.o_relation_word.currentIndex()
-        newquery = relate( self.o_query.currentText(), filter, index )
-        if root:self.o_query.setEditText( newquery )
+        newquery = relate( self.o_query.currentText(), filter_, index )
+        if root:
+            self.o_query.setEditText( newquery )
 
     def setstructborn( self ):
         items_max = [286, 6236, 565, 114, 604, 240, 60, 30, 7]
@@ -683,6 +702,7 @@ class QUI( Ui_MainWindow ):
         diag = QtGui.QFileDialog()
         diag.setAcceptMode( diag.AcceptSave )
         diag.setFileMode( diag.AnyFile )
+        diag.setLabelText (QtGui.QFileDialog.LookIn, "txt")
         diag.setFilter( "*.txt" )
         #filenames = ["./results.txt    "]
         if ( diag.exec_() ):
@@ -719,11 +739,23 @@ class QUI( Ui_MainWindow ):
         html = """ to replace with a hints dialog """
         self.o_results.setText( html )
     
-    def feedback_link(self):
-        ""
-        import webbrowser
-        webbrowser.open('http://feedback.alfanous.org/')
-
+    def share_an_idea(self):
+        webbrowser.open('http://feedback.alfanous.org/response/add/idea/?text=[DESKTOP]')
+    
+    def ask_a_question(self):
+        webbrowser.open('http://feedback.alfanous.org/response/add/question/?text=[DESKTOP]')
+    
+    def say_thanks(self):
+        webbrowser.open('http://feedback.alfanous.org/response/add/thanks/?text=[DESKTOP]')
+    
+    def report_a_problem(self):
+        webbrowser.open('http://feedback.alfanous.org/response/add/problem/?text=[DESKTOP]')
+    
+    def contribute_translate(self):
+        webbrowser.open('https://www.transifex.com/projects/p/alfanous/')
+    
+    def contribute_code(self):
+        webbrowser.open('https://github.com/Alfanous-team/alfanous')
 
 def main():
     """ the main function"""
@@ -737,8 +769,7 @@ def main():
           lang_code, country_code = "en", "US"
     else:
         lang_code, country_code = local.split("_")
-    base_path =  os.path.dirname( __file__ ) 
-    translator.load("alfanousDesktop", base_path + "locale/%s/LC_MESSAGES/" % lang_code ) # translation
+    translator.load("alfanousDesktop", BASEPATH + "/locale/%s/LC_MESSAGES/" % lang_code ) # translation
     ##
     app = QtGui.QApplication( sys.argv )
     app.installTranslator(translator)

@@ -1,134 +1,128 @@
 # Translations template for Alfanous.
 # Copyright (C) 2015 ORGANIZATION
 # This file is distributed under the same license as the Alfanous project.
-# 
-# Translators:
-# Assem Chelli <assem.ch@gmail.com>, 2011,2015
-# HALIT Mahmoud <m_halit@esi.dz>, 2015
-# Nadjib <infoman4ever@gmail.com>, 2015
-# jmehdi <jmehdi@sabily.org>, 2011
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2015.
+#
+#, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: Alfanous\n"
+"Project-Id-Version: Alfanous 0.7.10\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
 "POT-Creation-Date: 2015-03-03 02:51+0100\n"
-"PO-Revision-Date: 2015-03-03 20:31+0000\n"
-"Last-Translator: HALIT Mahmoud <m_halit@esi.dz>\n"
-"Language-Team: French (http://www.transifex.com/projects/p/alfanous/language/fr/)\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 1.3\n"
-"Language: fr\n"
-"Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
 #: Gui.py:81 build/lib.linux-i686-2.7/alfanousDesktop/Gui.py:81
 msgid "recommended"
-msgstr "Recommandé"
+msgstr ""
 
 #: Gui.py:81 build/lib.linux-i686-2.7/alfanousDesktop/Gui.py:81
 msgid "obliged"
-msgstr "Obligé"
+msgstr ""
 
 #: Gui.py:248 build/lib.linux-i686-2.7/alfanousDesktop/Gui.py:248
 #: templates/aya_results.html:1
 msgid "LTR"
-msgstr "LTR"
+msgstr ""
 
 #: Gui.py:511 build/lib.linux-i686-2.7/alfanousDesktop/Gui.py:511
 msgid "Applying skin"
-msgstr "Appliquant la peau..."
+msgstr ""
 
 #: Gui.py:511 build/lib.linux-i686-2.7/alfanousDesktop/Gui.py:511
 msgid "You should restart application in order for the skin to take effect"
-msgstr "Vous devez redémarrer l'application pour que la peau prenne effet"
+msgstr ""
 
 #: Gui.py:520 build/lib.linux-i686-2.7/alfanousDesktop/Gui.py:520
 msgid "Applying language"
-msgstr "Appliquant la langue..."
+msgstr ""
 
 #: Gui.py:520 build/lib.linux-i686-2.7/alfanousDesktop/Gui.py:520
-msgid ""
-"You should restart application in order for the language to take effect"
-msgstr "Vous devez redémarrer l'application pour que la langue prenne effet"
+msgid "You should restart application in order for the language to take effect"
+msgstr ""
 
 #: Gui.py:717 build/lib.linux-i686-2.7/alfanousDesktop/Gui.py:717
 msgid "Alfanous_Results_Page_"
-msgstr "Alfanous page de résultats"
+msgstr ""
 
 #: templates/aya_results.html:658
 msgid " Suggestions: "
-msgstr "Suggestions:"
+msgstr ""
 
 #: templates/aya_results.html:680
 msgid "Words"
-msgstr "Mots"
+msgstr ""
 
 #: templates/aya_results.html:682 templates/aya_results.html:825
 #: templates/aya_results.html:926
 msgid "words"
-msgstr "mots"
+msgstr ""
 
 #: templates/aya_results.html:685 templates/aya_results.html:697
 msgid "occurances"
-msgstr "occurrences "
+msgstr ""
 
 #: templates/aya_results.html:688 templates/aya_results.html:701
 msgid "vocalizations"
-msgstr "vocalisations"
+msgstr ""
 
 #: templates/aya_results.html:696
 msgid " word "
-msgstr "mot"
+msgstr ""
 
 #: templates/aya_results.html:698
 msgid " ayates"
-msgstr "verses"
+msgstr ""
 
 #: templates/aya_results.html:709
 msgid " synonyms "
-msgstr "synonyme "
+msgstr ""
 
 #: templates/aya_results.html:719
 msgid " derivations "
-msgstr "dérivations"
+msgstr ""
 
 #: templates/aya_results.html:732
 msgid " Annotation "
-msgstr "Annotation"
+msgstr ""
 
 #: templates/aya_results.html:733
 msgid " ID "
-msgstr "ID"
+msgstr ""
 
 #: templates/aya_results.html:734
 msgid " sura,aya "
-msgstr "sourate,ayat"
+msgstr ""
 
 #: templates/aya_results.html:736
 msgid " token "
-msgstr "jeton"
+msgstr ""
 
 #: templates/aya_results.html:739
 msgid " part "
-msgstr "partie"
+msgstr ""
 
 #: templates/aya_results.html:742 templates/aya_results.html:819
 #: templates/aya_results.html:945
 msgid " type "
-msgstr "type"
+msgstr ""
 
 #: templates/aya_results.html:745
 msgid " POS "
-msgstr "POS"
+msgstr ""
 
 #: templates/aya_results.html:748
 msgid " lemma "
-msgstr "lemme"
+msgstr ""
 
 #: templates/aya_results.html:751
 msgid " root "
-msgstr "racine"
+msgstr ""
 
 #: templates/aya_results.html:754
 msgid " special "
@@ -136,116 +130,117 @@ msgstr ""
 
 #: templates/aya_results.html:757
 msgid " aspect "
-msgstr "aspect"
+msgstr ""
 
 #: templates/aya_results.html:760
 msgid " state "
-msgstr "état"
+msgstr ""
 
 #: templates/aya_results.html:763
 msgid " form "
-msgstr "forme"
+msgstr ""
 
 #: templates/aya_results.html:766
 msgid " case "
-msgstr "cas"
+msgstr ""
 
 #: templates/aya_results.html:769
 msgid " derivation "
-msgstr "dérivation"
+msgstr ""
 
 #: templates/aya_results.html:772
 msgid " person "
-msgstr "personne"
+msgstr ""
 
 #: templates/aya_results.html:775
 msgid " number "
-msgstr "numéro"
+msgstr ""
 
 #: templates/aya_results.html:778
 msgid " gender "
-msgstr "genre"
+msgstr ""
 
 #: templates/aya_results.html:781
 msgid " voice "
-msgstr "voix"
+msgstr ""
 
 #: templates/aya_results.html:796
 msgid "Results"
-msgstr "Résultats"
+msgstr ""
 
 #: templates/aya_results.html:797
 msgid " to "
-msgstr "à"
+msgstr ""
 
 #: templates/aya_results.html:798
 msgid " of "
-msgstr "de"
+msgstr ""
 
 #: templates/aya_results.html:805
 msgid " Result n° "
-msgstr "Résultat num."
+msgstr ""
 
 #: templates/aya_results.html:813
 msgid " Sura "
-msgstr "Sourate"
+msgstr ""
 
 #: templates/aya_results.html:817 templates/aya_results.html:944
 msgid " n° "
-msgstr "num."
+msgstr ""
 
 #: templates/aya_results.html:820
 msgid " revelation_order "
-msgstr "odre_de_révélation"
+msgstr ""
 
 #: templates/aya_results.html:821
 msgid " ayahs "
-msgstr "ayats"
+msgstr ""
 
 #: templates/aya_results.html:826 templates/aya_results.html:928
 msgid "letters"
-msgstr "lettres"
+msgstr ""
 
 #: templates/aya_results.html:827 templates/aya_results.html:930
 msgid "divine names"
-msgstr "noms divins"
+msgstr ""
 
 #: templates/aya_results.html:905
 msgid " Chapter "
-msgstr "Chapitre"
+msgstr ""
 
 #: templates/aya_results.html:909
 msgid " Topic "
-msgstr "Sujet"
+msgstr ""
 
 #: templates/aya_results.html:914
 msgid " Subtopic "
-msgstr "Sous-sujet"
+msgstr ""
 
 #: templates/aya_results.html:934
 msgid " manzil "
-msgstr "manzil"
+msgstr ""
 
 #: templates/aya_results.html:935
 msgid " hizb "
-msgstr "hizb"
+msgstr ""
 
 #: templates/aya_results.html:936
 msgid " quart "
-msgstr "quart"
+msgstr ""
 
 #: templates/aya_results.html:937
 msgid " page "
-msgstr "page"
+msgstr ""
 
 #: templates/aya_results.html:943
 msgid " sajda "
-msgstr "sejda"
+msgstr ""
 
 #: templates/aya_results.html:962
 msgid "Sorry! there is no results for this search query"
-msgstr "Désolé! il n'y a pas de résultats pour cette requête de recherche"
+msgstr ""
 
 #: templates/aya_results.html:966
 msgid " Error  "
-msgstr "Erreur"
+msgstr ""
+

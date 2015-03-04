@@ -45,6 +45,359 @@
   <property name="layoutDirection">
    <enum>Qt::LeftToRight</enum>
   </property>
+  <property name="styleSheet">
+   <string notr="true"> QToolBox::tab {
+         background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
+                                     stop: 0 #E1F1E1, stop: 0.4 #DDEDDD,
+                                     stop: 0.5 #D8E8D8, stop: 1.0 #D3E3D3);
+         border-radius: 10px;
+         color: rgb(0, 85, 0);
+     border: 1px solid green;
+     }
+
+     QToolBox::tab:selected { /* italicize selected tabs */
+  background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
+                                     stop: 0 #C1D1C1, stop: 0.4 #BDCDBD,
+                                     stop: 0.5 #B8C8B8, stop: 1.0 #B3C3B3);
+         font: italic;
+         color: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:0, stop:0 rgba(255, 0, 0, 255), stop:0.166 rgba(138, 138, 0, 255), stop:0.333 rgba(0, 92, 0, 255), stop:0.5 rgba(0, 0, 0, 255), stop:0.666 rgba(0, 0, 255, 255), stop:0.833 rgba(255, 0, 255, 255), stop:1 rgba(255, 0, 0, 255));
+     border: 2px solid red;
+}
+
+
+
+
+QDockWidget {
+     border: 1px solid lightgray;
+
+     titlebar-close-icon: url(:/resources/application_exit.png);
+	border-radius:5px;
+ 	icon-size: 64px;
+ }
+
+ QDockWidget::title {
+     text-align: center; /* align the text to the left */
+
+     padding-left: 20px;
+ }
+
+ QDockWidget::close-button, QDockWidget::float-button {
+     border: 1px solid transparent;
+     padding: 0px;
+ }
+
+ QDockWidget::close-button:hover, QDockWidget::float-button:hover {
+
+ }
+
+ QDockWidget::close-button:pressed, QDockWidget::float-button:pressed {
+     padding: 1px -1px -1px 1px;
+ }
+
+QPushButton { background: qlineargradient(spread:pad, x1:0.504091, y1:0.619, x2:0.487, y2:0, stop:0 rgba(240, 146, 146, 255), stop:1 rgba(238, 197, 197, 255)) ;
+ border: 1px solid #f5f6fa;
+     border-radius: 3px; }
+
+QToolButton { background: qlineargradient(spread:pad, x1:0.504091, y1:0.619, x2:0.487, y2:0, stop:0 rgba(162, 200, 160, 255), stop:1 rgba(226, 225, 221, 255));
+ border: 1px solid #f5f6fa;
+     border-radius: 3px; }
+
+
+
+
+
+
+ QMenuBar::item:selected,QPushButton:hover,QToolButton:hover { /* when selected using mouse or keyboard */
+border: 1px solid #f5f6fa;
+     border-radius: 3px;
+
+  
+ }
+
+ QMenuBar::item:pressed,QPushButton:pressed,QToolButton:pressed{
+          border: 1px solid grey;
+     border-radius: 3px;
+
+
+}
+
+
+
+
+ QMenu::item { /* when selected using mouse or keyboard */
+
+margin-left: 2px;
+margin-right: 2px;
+
+padding-top: 4px;
+padding-bottom: 4px;
+padding-left: 28px;
+padding-right: 14px;
+
+/*background:blue;*/
+/*padding: 2px 0px 2px -1px;*/
+}
+
+ QMenu::item:selected { /* when selected using mouse or keyboard */
+     border: 1px solid #a7dbff;
+     border-radius: 3px;
+
+
+margin-left: 1px;
+
+padding-left: 28px;
+
+
+/*padding: 2px 0px 2px -1px;*/
+}
+
+
+
+
+QMenu::indicator:unchecked { /* when selected using mouse or keyboard */
+
+     border-radius: 3px;
+
+}
+
+QMenu::indicator:checked:enabled { /* when selected using mouse or keyboard */
+     border: 1px solid #a7dbff;
+     border-radius: 3px;
+
+     background-color: #e6eff4;
+
+     image: url(:/resources/menu_indicator.png)
+}
+
+
+QMenu::indicator:checked:!enabled { /* when selected using mouse or keyboard */
+     image: url(:/resources/menu_indicator_disabled.png)
+}
+
+
+
+QMenu::separator {
+    height: 2px;
+    margin-left: 0px;
+margin-top: 4px;
+margin-bottom: 4px;
+
+
+}
+
+QGroupBox {
+     border: 1px solid green;
+	border-radius:5px;
+	margin: 6px 2px 2px 2px;
+}
+
+QGroupBox::title {
+     subcontrol-origin: margin;
+     subcontrol-position: top left; /* position at the top center */
+     padding: 0 3px;
+}
+
+ QCheckBox {
+     spacing: 5px;
+ }
+
+ QCheckBox::indicator {
+     width: 13px;
+     height: 13px;
+ }
+
+ QCheckBox::indicator:unchecked {
+     image: url(:/resources/checkbox_off_enabled.png);
+ }
+
+ QCheckBox::indicator:unchecked:!enabled {
+     image: url(:/resources/checkbox_off_disabled.png);
+ }
+
+ QCheckBox::indicator:unchecked:hover {
+     image: url(:/resources/checkbox_off_enabled_hover.png);
+ }
+
+ QCheckBox::indicator:unchecked:pressed {
+     image: url(:/resources/checkbox_off_enabled_pressed.png);
+ }
+
+ QCheckBox::indicator:checked {
+     image: url(:/resources/checkbox_on_enabled.png);
+ }
+
+ QCheckBox::indicator:checked:!enabled {
+     image: url(:/resources/checkbox_on_disabled.png);
+ }
+
+
+ QCheckBox::indicator:checked:hover {
+     image: url(:/resources/checkbox_on_enabled_hover.png);
+ }
+
+ QCheckBox::indicator:checked:pressed {
+     image: url(:/resources/checkbox_on_enabled_pressed.png);
+ }
+
+ QCheckBox::indicator:indeterminate:hover {
+     image: url(:/resources/checkbox_inter_enabled_hover.png);
+ }
+
+ QCheckBox::indicator:indeterminate {
+     image: url(:/resources/checkbox_inter_enabled.png);
+ } 
+
+ QCheckBox::indicator:indeterminate:!enabled {
+     image: url(:/resources/checkbox_inter_disabled.png);
+ }
+
+QRadioButton {
+     spacing: 5px;
+ }
+
+ QRadioButton::indicator {
+     width: 12px;
+     height: 12px;
+ }
+
+ QRadioButton::indicator:unchecked {
+     image: url(:/resources/radiobutton_off_enabled.png);
+ }
+
+ QRadioButton::indicator:checked {
+     image: url(:/resources/radiobutton_on_enabled.png);
+ }
+
+ QRadioButton::indicator:checked:hover {
+     image: url(:/resources/radiobutton_on_enabled_hover.png);
+ }
+
+ QRadioButton::indicator:checked:pressed {
+     image: url(:/resources/radiobutton_on_enabled_pressed.png);
+}
+
+ QRadioButton::indicator:unchecked:!enabled {
+     image: url(:/resources/radiobutton_off_disabled.png);
+ }
+
+ QRadioButton::indicator:checked:!enabled {
+     image: url(:/resources/radiobutton_on_disabled.png);
+ }
+
+ QRadioButton::indicator:unchecked:hover {
+     image: url(:/resources/radiobutton_off_enabled_hover.png);
+}
+
+ QRadioButton::indicator:unchecked:pressed {
+     image: url(:/resources/radiobutton_off_enabled_pressed.png);
+}
+
+QLineEdit, QTextEdit, QSpinBox, QDoubleSpinBox, QTextBrowser {
+
+	border-radius: 2px;
+
+
+}
+
+
+
+
+
+
+
+
+QComboBox::QFrame {
+	border: 1px solid #828790;
+}
+
+QLabel,QToolBox {
+	border: 0px solid #828790;
+}
+
+QSpinBox::up-button, QDoubleSpinBox::up-button {
+     subcontrol-origin: border;
+     subcontrol-position: top right; /* position at the top right corner */
+
+     width: 16px; /* 16 + 2*1px border-width = 15px padding + 3px parent border */
+     border-width: 2px;
+	border-bottom-width: 0;
+
+	border-image: url(:/resources/spin_up_enabled.png) 1;
+}
+
+QSpinBox::down-button, QDoubleSpinBox::down-button {
+     subcontrol-origin: border;
+     subcontrol-position: bottom right; /* position at bottom right corner */
+
+     width: 16px;
+     border-width: 2px;
+     border-top-width: 0;
+
+	border-image: url(:/resources/spin_down_enabled.png) 1;
+}
+
+QLineEdit, QTextEdit, QSpinBox, QDoubleSpinBox, QTextBrowser {
+ 	border-top: 1px solid #abadb3;
+ 	border-right: 1px solid #abadb3;
+	border-left: 1px solid #e3e9ef;
+	border-bottom: 1px solid #e3e9ef;
+	border-radius: 2px;
+
+     background: white;
+     selection-background-color: #3399ff;
+
+	min-height: 23 px;
+}
+
+QLineEdit:!enabled, QTextEdit:!enabled, QSpinBox:!enabled, QDoubleSpinBox:!enabled {
+ 	border: 1px solid #afafaf;
+	border-radius: 2px;
+
+     background: white;
+	color: #afafaf;
+     selection-background-color: #3399ff;
+}
+
+
+QLineEdit:hover:enabled, QTextEdit:hover:enabled, QSpinBox:hover:enabled, QDoubleSpinBox:hover:enabled {
+ 	border-top: 1px solid #3d7bad;
+ 	border-right: 1px solid #3d7bad;
+	border-left: 1px solid #b7d9ed;
+	border-bottom: 1px solid #b7d9ed;
+}
+
+
+QSpinBox, QDoubleSpinBox {
+	padding-right: 18px;
+}
+
+QSpinBox::up-button:!enabled, QDoubleSpinBox::up-button:!enabled,
+QSpinBox::up-arrow:off, QDoubleSpinBox::up-arrow:off {
+	border-image: url(:/resources/spin_up_disabled.png) 1;
+}
+
+QSpinBox::down-button:!enabled, QDoubleSpinBox::down-button:!enabled,
+QSpinBox::down-arrow:off, QDoubleSpinBox::down-arrow:off {
+	border-image: url(:/resources/spin_down_disabled.png) 1;
+}
+
+QSpinBox::up-button:hover:enabled, QDoubleSpinBox::up-button:hover:enabled {
+	border-image: url(:/resources/spin_up_enabled_hover.png) 1;
+}
+
+QSpinBox::up-button:pressed:enabled, QDoubleSpinBox::up-button:pressed:enabled {
+	border-image: url(:/resources/spin_up_enabled_pressed.png) 1;
+}
+
+QSpinBox::down-button:hover:enabled, QDoubleSpinBox::down-button:hover:enabled {
+	border-image: url(:/resources/spin_down_enabled_hover.png) 1;
+}
+
+QSpinBox::down-button:pressed:enabled, QDoubleSpinBox::down-button:pressed:enabled {
+	border-image: url(:/resources/spin_down_enabled_pressed.png) 1;
+}
+</string>
+  </property>
   <property name="locale">
    <locale language="English" country="UnitedStates"/>
   </property>
@@ -74,7 +427,7 @@
         </property>
         <property name="minimumSize">
          <size>
-          <width>149</width>
+          <width>0</width>
           <height>0</height>
          </size>
         </property>
@@ -241,16 +594,6 @@
        </widget>
       </item>
       <item>
-       <widget class="QRadioButton" name="o_search_in_words">
-        <property name="enabled">
-         <bool>false</bool>
-        </property>
-        <property name="text">
-         <string>Words</string>
-        </property>
-       </widget>
-      </item>
-      <item>
        <spacer name="horizontalSpacer_8">
         <property name="orientation">
          <enum>Qt::Horizontal</enum>
@@ -335,7 +678,8 @@
          <widget class="QLCDNumber" name="o_time">
           <property name="font">
            <font>
-            <family>Arial</family>
+            <family>Andale Mono</family>
+            <italic>true</italic>
            </font>
           </property>
           <property name="frameShape">
@@ -432,7 +776,7 @@
         <property name="minimumSize">
          <size>
           <width>100</width>
-          <height>0</height>
+          <height>25</height>
          </size>
         </property>
         <property name="minimum">
@@ -553,29 +897,32 @@
     </property>
     <addaction name="m_help"/>
     <addaction name="separator"/>
-    <addaction name="action_Send_Feedback"/>
-    <addaction name="actionDeclare_a_bug"/>
-    <addaction name="actionTranslate"/>
-    <addaction name="actionFunds"/>
-    <addaction name="separator"/>
     <addaction name="m_about"/>
    </widget>
    <widget class="QMenu" name="menu_4">
     <property name="title">
      <string>&amp;View</string>
     </property>
-    <addaction name="separator"/>
     <addaction name="m_features"/>
    </widget>
    <widget class="QMenu" name="menuOptions">
     <property name="enabled">
      <bool>true</bool>
     </property>
+    <property name="layoutDirection">
+     <enum>Qt::LeftToRight</enum>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">text-align:center;</string>
+    </property>
     <property name="tearOffEnabled">
      <bool>false</bool>
     </property>
     <property name="title">
      <string>&amp;Options</string>
+    </property>
+    <property name="separatorsCollapsible">
+     <bool>true</bool>
     </property>
     <widget class="QMenu" name="menuRecitation">
      <property name="enabled">
@@ -598,45 +945,6 @@
      <addaction name="actionpp20"/>
      <addaction name="actionpp50"/>
      <addaction name="actionpp100"/>
-    </widget>
-    <widget class="QMenu" name="menuOrder_by">
-     <property name="enabled">
-      <bool>true</bool>
-     </property>
-     <property name="title">
-      <string>Sort by</string>
-     </property>
-     <widget class="QMenu" name="menuFields">
-      <property name="title">
-       <string>Field</string>
-      </property>
-     </widget>
-     <addaction name="actionRelevance"/>
-     <addaction name="actionPosition_in_Mus_haf"/>
-     <addaction name="actionRevelation"/>
-     <addaction name="actionSubject"/>
-     <addaction name="menuFields"/>
-     <addaction name="separator"/>
-     <addaction name="actionInverse"/>
-    </widget>
-    <widget class="QMenu" name="menuChoose_Language">
-     <property name="enabled">
-      <bool>true</bool>
-     </property>
-     <property name="title">
-      <string>Choose &amp;Language</string>
-     </property>
-     <property name="icon">
-      <iconset resource="../images/main.qrc">
-       <normaloff>:/resources/flag.png</normaloff>:/resources/flag.png</iconset>
-     </property>
-     <addaction name="actionSystem"/>
-     <addaction name="actionEnglish"/>
-     <addaction name="actionArabic"/>
-     <addaction name="actionFrench"/>
-     <addaction name="actionIndonesian"/>
-     <addaction name="actionMalay"/>
-     <addaction name="actionSpanish"/>
     </widget>
     <widget class="QMenu" name="menuTranslation">
      <property name="enabled">
@@ -692,6 +1000,48 @@
      <addaction name="actionPrevios_aya"/>
      <addaction name="actionNext_aya"/>
     </widget>
+    <widget class="QMenu" name="menuChoose_Language">
+     <property name="enabled">
+      <bool>true</bool>
+     </property>
+     <property name="title">
+      <string>Choose &amp;Language</string>
+     </property>
+     <property name="icon">
+      <iconset resource="../images/main.qrc">
+       <normaloff>:/resources/flag.png</normaloff>:/resources/flag.png</iconset>
+     </property>
+     <addaction name="actionSystem"/>
+     <addaction name="actionEnglish"/>
+     <addaction name="actionArabic"/>
+     <addaction name="actionFrench"/>
+     <addaction name="actionIndonesian"/>
+     <addaction name="actionMalay"/>
+     <addaction name="actionSpanish"/>
+    </widget>
+    <widget class="QMenu" name="menuOrder_by">
+     <property name="enabled">
+      <bool>true</bool>
+     </property>
+     <property name="layoutDirection">
+      <enum>Qt::LeftToRight</enum>
+     </property>
+     <property name="title">
+      <string>Sort by</string>
+     </property>
+     <widget class="QMenu" name="menuFields">
+      <property name="title">
+       <string>Field</string>
+      </property>
+     </widget>
+     <addaction name="actionRelevance"/>
+     <addaction name="actionPosition_in_Mus_haf"/>
+     <addaction name="actionRevelation"/>
+     <addaction name="actionSubject"/>
+     <addaction name="menuFields"/>
+     <addaction name="separator"/>
+     <addaction name="actionInverse"/>
+    </widget>
     <addaction name="menuOrder_by"/>
     <addaction name="separator"/>
     <addaction name="menuScript"/>
@@ -706,49 +1056,7 @@
     <addaction name="separator"/>
     <addaction name="menuChoose_Language"/>
     <addaction name="menuStyle"/>
-    <addaction name="separator"/>
     <addaction name="actionPreferences"/>
-   </widget>
-   <widget class="QMenu" name="menu_Indexes">
-    <property name="enabled">
-     <bool>true</bool>
-    </property>
-    <property name="title">
-     <string>&amp;Indexes</string>
-    </property>
-    <widget class="QMenu" name="menuRemove_Translation">
-     <property name="enabled">
-      <bool>false</bool>
-     </property>
-     <property name="title">
-      <string>Remove Translation</string>
-     </property>
-     <property name="icon">
-      <iconset>
-       <normaloff>:/resources/button_cancel.png</normaloff>:/resources/button_cancel.png</iconset>
-     </property>
-     <addaction name="actionDefault_4"/>
-    </widget>
-    <widget class="QMenu" name="menuRemove_Recitation">
-     <property name="enabled">
-      <bool>false</bool>
-     </property>
-     <property name="title">
-      <string>Remove Recitation</string>
-     </property>
-     <property name="icon">
-      <iconset>
-       <normaloff>:/resources/button_cancel.png</normaloff>:/resources/button_cancel.png</iconset>
-     </property>
-     <addaction name="actionDefault_5"/>
-    </widget>
-    <addaction name="actionChange_Index_Path"/>
-    <addaction name="separator"/>
-    <addaction name="actionAdd_Translation"/>
-    <addaction name="menuRemove_Translation"/>
-    <addaction name="separator"/>
-    <addaction name="actionAdd_Recitation"/>
-    <addaction name="menuRemove_Recitation"/>
    </widget>
    <widget class="QMenu" name="menu_Edit">
     <property name="enabled">
@@ -757,17 +1065,27 @@
     <property name="title">
      <string>&amp;Edit</string>
     </property>
-    <addaction name="actionUndo_Query"/>
-    <addaction name="actionRedo_Query"/>
-    <addaction name="separator"/>
     <addaction name="actionCopy_Query"/>
     <addaction name="actionCopy_Page"/>
+   </widget>
+   <widget class="QMenu" name="menuContribute">
+    <property name="title">
+     <string>&amp;Contribute</string>
+    </property>
+    <addaction name="action_Say_Thanks"/>
+    <addaction name="actionAsk_a_Question"/>
+    <addaction name="actionShare_an_Idea"/>
+    <addaction name="actionReport_a_Problem"/>
+    <addaction name="separator"/>
+    <addaction name="actionTranslate"/>
+    <addaction name="actionCode"/>
+    <addaction name="actionFunds"/>
    </widget>
    <addaction name="menu"/>
    <addaction name="menu_Edit"/>
    <addaction name="menu_4"/>
    <addaction name="menuOptions"/>
-   <addaction name="menu_Indexes"/>
+   <addaction name="menuContribute"/>
    <addaction name="menu_2"/>
   </widget>
   <widget class="QDockWidget" name="w_features">
@@ -838,8 +1156,8 @@
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>259</width>
-          <height>410</height>
+          <width>276</width>
+          <height>331</height>
          </rect>
         </property>
         <attribute name="label">
@@ -931,26 +1249,6 @@
              </widget>
             </item>
             <item>
-             <widget class="QRadioButton" name="o_antonyms">
-              <property name="enabled">
-               <bool>false</bool>
-              </property>
-              <property name="text">
-               <string>Antonyms</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QRadioButton" name="o_orthograph">
-              <property name="enabled">
-               <bool>false</bool>
-              </property>
-              <property name="text">
-               <string>Ignore Spell Errors</string>
-              </property>
-             </widget>
-            </item>
-            <item>
              <widget class="QRadioButton" name="o_vocalization">
               <property name="enabled">
                <bool>true</bool>
@@ -977,16 +1275,6 @@
               </property>
               <property name="text">
                <string>Deep Stemming (Root)</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QRadioButton" name="o_buckwalter">
-              <property name="enabled">
-               <bool>false</bool>
-              </property>
-              <property name="text">
-               <string>Buckwalter</string>
               </property>
              </widget>
             </item>
@@ -1023,6 +1311,9 @@
            </item>
            <item>
             <widget class="QComboBox" name="o_relation_advanced">
+             <property name="currentIndex">
+              <number>1</number>
+             </property>
              <item>
               <property name="text">
                <string>Add</string>
@@ -1035,12 +1326,12 @@
              </item>
              <item>
               <property name="text">
-               <string>Conjuction (AND)</string>
+               <string>Disjunction (OR)</string>
               </property>
              </item>
              <item>
               <property name="text">
-               <string>(OR)</string>
+               <string>Conjuction (AND)</string>
               </property>
              </item>
              <item>
@@ -1091,8 +1382,8 @@
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>161</width>
-          <height>260</height>
+          <width>259</width>
+          <height>137</height>
          </rect>
         </property>
         <attribute name="label">
@@ -1112,16 +1403,32 @@
              <layout class="QHBoxLayout" name="horizontalLayout_22">
               <item>
                <widget class="QLabel" name="label_28">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
                 <property name="text">
                  <string>Root</string>
-                </property>
-                <property name="buddy">
-                 <cstring>o_word_root</cstring>
                 </property>
                </widget>
               </item>
               <item>
-               <widget class="QLineEdit" name="o_word_root"/>
+               <widget class="QComboBox" name="o_word_root">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="layoutDirection">
+                 <enum>Qt::LeftToRight</enum>
+                </property>
+                <property name="editable">
+                 <bool>true</bool>
+                </property>
+               </widget>
               </item>
              </layout>
             </item>
@@ -1147,136 +1454,20 @@
                <widget class="QComboBox" name="o_word_type">
                 <item>
                  <property name="text">
-                  <string notr="true">اسم</string>
+                  <string>Noun</string>
                  </property>
                 </item>
                 <item>
                  <property name="text">
-                  <string notr="true">فعل</string>
+                  <string>Verb</string>
                  </property>
                 </item>
                 <item>
                  <property name="text">
-                  <string notr="true">أداة</string>
+                  <string>Preposition</string>
                  </property>
                 </item>
                </widget>
-              </item>
-             </layout>
-            </item>
-            <item>
-             <layout class="QHBoxLayout" name="horizontalLayout_37">
-              <item>
-               <widget class="QLabel" name="label_35">
-                <property name="enabled">
-                 <bool>false</bool>
-                </property>
-                <property name="sizePolicy">
-                 <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
-                  <horstretch>0</horstretch>
-                  <verstretch>0</verstretch>
-                 </sizepolicy>
-                </property>
-                <property name="text">
-                 <string>SubType</string>
-                </property>
-                <property name="buddy">
-                 <cstring>o_word_type</cstring>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QComboBox" name="o_word_subtype">
-                <property name="enabled">
-                 <bool>false</bool>
-                </property>
-               </widget>
-              </item>
-             </layout>
-            </item>
-            <item>
-             <layout class="QHBoxLayout" name="horizontalLayout_42">
-              <item>
-               <widget class="QLabel" name="label_40">
-                <property name="enabled">
-                 <bool>false</bool>
-                </property>
-                <property name="sizePolicy">
-                 <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
-                  <horstretch>0</horstretch>
-                  <verstretch>0</verstretch>
-                 </sizepolicy>
-                </property>
-                <property name="text">
-                 <string>Gender</string>
-                </property>
-                <property name="buddy">
-                 <cstring>o_word_type</cstring>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QComboBox" name="o_word_gender">
-                <property name="enabled">
-                 <bool>false</bool>
-                </property>
-               </widget>
-              </item>
-             </layout>
-            </item>
-            <item>
-             <layout class="QHBoxLayout" name="horizontalLayout_43">
-              <item>
-               <widget class="QLabel" name="label_41">
-                <property name="enabled">
-                 <bool>false</bool>
-                </property>
-                <property name="sizePolicy">
-                 <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
-                  <horstretch>0</horstretch>
-                  <verstretch>0</verstretch>
-                 </sizepolicy>
-                </property>
-                <property name="text">
-                 <string>Number</string>
-                </property>
-                <property name="buddy">
-                 <cstring>o_word_type</cstring>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QComboBox" name="o_word_number">
-                <property name="enabled">
-                 <bool>false</bool>
-                </property>
-               </widget>
-              </item>
-             </layout>
-            </item>
-            <item>
-             <layout class="QHBoxLayout" name="horizontalLayout_44">
-              <item>
-               <widget class="QLabel" name="label_42">
-                <property name="enabled">
-                 <bool>false</bool>
-                </property>
-                <property name="sizePolicy">
-                 <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
-                  <horstretch>0</horstretch>
-                  <verstretch>0</verstretch>
-                 </sizepolicy>
-                </property>
-                <property name="text">
-                 <string>Person</string>
-                </property>
-                <property name="buddy">
-                 <cstring>o_word_type</cstring>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QComboBox" name="o_word_person"/>
               </item>
              </layout>
             </item>
@@ -1300,6 +1491,9 @@
            </item>
            <item>
             <widget class="QComboBox" name="o_relation_word">
+             <property name="currentIndex">
+              <number>1</number>
+             </property>
              <item>
               <property name="text">
                <string>Add</string>
@@ -1312,17 +1506,17 @@
              </item>
              <item>
               <property name="text">
-               <string>(OR)</string>
+               <string>Disjunction (OR)</string>
               </property>
              </item>
              <item>
               <property name="text">
-               <string>(AND)</string>
+               <string>Conjuction (AND)</string>
               </property>
              </item>
              <item>
               <property name="text">
-               <string>(ANDNOT)</string>
+               <string>Exception (ANDNOT)</string>
               </property>
              </item>
             </widget>
@@ -1367,185 +1561,13 @@
          </item>
         </layout>
        </widget>
-       <widget class="QWidget" name="page_3">
-        <property name="geometry">
-         <rect>
-          <x>0</x>
-          <y>0</y>
-          <width>161</width>
-          <height>140</height>
-         </rect>
-        </property>
-        <attribute name="label">
-         <string>Translation Text Search</string>
-        </attribute>
-        <layout class="QVBoxLayout" name="verticalLayout_24">
-         <item>
-          <widget class="QGroupBox" name="groupBox_13">
-           <property name="title">
-            <string/>
-           </property>
-           <property name="flat">
-            <bool>false</bool>
-           </property>
-           <layout class="QVBoxLayout" name="verticalLayout_23">
-            <item>
-             <layout class="QHBoxLayout" name="horizontalLayout_38">
-              <item>
-               <widget class="QLabel" name="label_36">
-                <property name="text">
-                 <string>Text</string>
-                </property>
-                <property name="buddy">
-                 <cstring>o_word_root</cstring>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QLineEdit" name="o_word_root_2">
-                <property name="enabled">
-                 <bool>false</bool>
-                </property>
-               </widget>
-              </item>
-             </layout>
-            </item>
-            <item>
-             <layout class="QHBoxLayout" name="horizontalLayout_39">
-              <item>
-               <widget class="QLabel" name="label_37">
-                <property name="sizePolicy">
-                 <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
-                  <horstretch>0</horstretch>
-                  <verstretch>0</verstretch>
-                 </sizepolicy>
-                </property>
-                <property name="text">
-                 <string>Type</string>
-                </property>
-                <property name="buddy">
-                 <cstring>o_word_type</cstring>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QComboBox" name="o_word_type_2">
-                <property name="enabled">
-                 <bool>false</bool>
-                </property>
-                <item>
-                 <property name="text">
-                  <string>Translation</string>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string/>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string/>
-                 </property>
-                </item>
-               </widget>
-              </item>
-             </layout>
-            </item>
-           </layout>
-          </widget>
-         </item>
-         <item>
-          <layout class="QHBoxLayout" name="horizontalLayout_49">
-           <item>
-            <widget class="QLabel" name="label_46">
-             <property name="sizePolicy">
-              <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
-               <horstretch>0</horstretch>
-               <verstretch>0</verstretch>
-              </sizepolicy>
-             </property>
-             <property name="text">
-              <string>Relation</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QComboBox" name="o_relation_word_2">
-             <item>
-              <property name="text">
-               <string>Add</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>Replace</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>(OR)</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>(AND)</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>(ANDNOT)</string>
-              </property>
-             </item>
-            </widget>
-           </item>
-          </layout>
-         </item>
-         <item>
-          <widget class="QPushButton" name="o_add2query_translationsearch">
-           <property name="font">
-            <font>
-             <weight>50</weight>
-             <bold>false</bold>
-             <underline>true</underline>
-             <strikeout>false</strikeout>
-             <kerning>false</kerning>
-            </font>
-           </property>
-           <property name="cursor">
-            <cursorShape>PointingHandCursor</cursorShape>
-           </property>
-           <property name="text">
-            <string>Add to SearchBar</string>
-           </property>
-           <property name="icon">
-            <iconset resource="../images/main.qrc">
-             <normaloff>:/resources/up-16.png</normaloff>:/resources/up-16.png</iconset>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <spacer name="verticalSpacer_5">
-           <property name="orientation">
-            <enum>Qt::Vertical</enum>
-           </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>20</width>
-             <height>40</height>
-            </size>
-           </property>
-          </spacer>
-         </item>
-        </layout>
-       </widget>
        <widget class="QWidget" name="p_subject">
         <property name="geometry">
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>161</width>
-          <height>171</height>
+          <width>259</width>
+          <height>168</height>
          </rect>
         </property>
         <attribute name="label">
@@ -1701,6 +1723,9 @@
              <property name="enabled">
               <bool>true</bool>
              </property>
+             <property name="currentIndex">
+              <number>1</number>
+             </property>
              <item>
               <property name="text">
                <string>Add</string>
@@ -1779,8 +1804,8 @@
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>204</width>
-          <height>169</height>
+          <width>259</width>
+          <height>170</height>
          </rect>
         </property>
         <attribute name="label">
@@ -1960,6 +1985,9 @@
            </item>
            <item>
             <widget class="QComboBox" name="o_relation_struct">
+             <property name="currentIndex">
+              <number>1</number>
+             </property>
              <item>
               <property name="text">
                <string>Add</string>
@@ -2035,8 +2063,8 @@
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>204</width>
-          <height>199</height>
+          <width>259</width>
+          <height>200</height>
          </rect>
         </property>
         <attribute name="label">
@@ -2219,6 +2247,9 @@
            </item>
            <item>
             <widget class="QComboBox" name="o_relation_stat">
+             <property name="currentIndex">
+              <number>1</number>
+             </property>
              <item>
               <property name="text">
                <string>Add</string>
@@ -2289,26 +2320,13 @@
          </item>
         </layout>
        </widget>
-       <widget class="QWidget" name="p_predefined">
-        <property name="geometry">
-         <rect>
-          <x>0</x>
-          <y>0</y>
-          <width>94</width>
-          <height>24</height>
-         </rect>
-        </property>
-        <attribute name="label">
-         <string>Predefined Queries</string>
-        </attribute>
-       </widget>
        <widget class="QWidget" name="p_misc">
         <property name="geometry">
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>219</width>
-          <height>201</height>
+          <width>259</width>
+          <height>198</height>
          </rect>
         </property>
         <attribute name="label">
@@ -2494,7 +2512,7 @@
            <item>
             <widget class="QComboBox" name="o_relation_misc">
              <property name="currentIndex">
-              <number>0</number>
+              <number>1</number>
              </property>
              <item>
               <property name="text">
@@ -2565,6 +2583,20 @@
           </spacer>
          </item>
         </layout>
+       </widget>
+       <widget class="QWidget" name="p_predefined">
+        <property name="geometry">
+         <rect>
+          <x>0</x>
+          <y>0</y>
+          <width>276</width>
+          <height>331</height>
+         </rect>
+        </property>
+        <attribute name="label">
+         <string>Predefined Queries</string>
+        </attribute>
+        <layout class="QHBoxLayout" name="horizontalLayout_3"/>
        </widget>
       </widget>
      </item>
@@ -2766,16 +2798,16 @@
     <string>Hints</string>
    </property>
   </action>
-  <action name="actionDeclare_a_bug">
+  <action name="actionCode">
    <property name="enabled">
-    <bool>false</bool>
+    <bool>true</bool>
    </property>
    <property name="icon">
     <iconset resource="../images/main.qrc">
      <normaloff>:/resources/bug-buddy.png</normaloff>:/resources/bug-buddy.png</iconset>
    </property>
    <property name="text">
-    <string>Report bug</string>
+    <string>&amp;Code</string>
    </property>
   </action>
   <action name="actionFunds">
@@ -2787,7 +2819,10 @@
      <normaloff>:/resources/gnome-money.png</normaloff>:/resources/gnome-money.png</iconset>
    </property>
    <property name="text">
-    <string>Donate us</string>
+    <string>&amp;Donate us!</string>
+   </property>
+   <property name="visible">
+    <bool>false</bool>
    </property>
   </action>
   <action name="actionContact_us">
@@ -2815,14 +2850,14 @@
   </action>
   <action name="actionTranslate">
    <property name="enabled">
-    <bool>false</bool>
+    <bool>true</bool>
    </property>
    <property name="icon">
     <iconset>
      <normaloff>:/resources/centrejust.png</normaloff>:/resources/centrejust.png</iconset>
    </property>
    <property name="text">
-    <string>Translate this application</string>
+    <string>&amp;Translate</string>
    </property>
   </action>
   <action name="actionRelevance">
@@ -2878,6 +2913,9 @@
   </action>
   <action name="actionStandard">
    <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
     <bool>true</bool>
    </property>
    <property name="text">
@@ -2979,6 +3017,9 @@
    </property>
    <property name="text">
     <string>Preferences</string>
+   </property>
+   <property name="visible">
+    <bool>false</bool>
    </property>
   </action>
   <action name="action_Load_Query">
@@ -3135,12 +3176,16 @@
     <string>About project</string>
    </property>
   </action>
-  <action name="action_Send_Feedback">
+  <action name="action_Say_Thanks">
    <property name="enabled">
     <bool>true</bool>
    </property>
+   <property name="icon">
+    <iconset resource="../images/main.qrc">
+     <normaloff>:/feedback/feedback/say_thanks.png</normaloff>:/feedback/feedback/say_thanks.png</iconset>
+   </property>
    <property name="text">
-    <string>&amp;Send Feedback</string>
+    <string>Say &amp;Thanks</string>
    </property>
   </action>
   <action name="actionWord_Info">
@@ -3174,6 +3219,9 @@
    </property>
    <property name="toolTip">
     <string notr="true">100</string>
+   </property>
+   <property name="visible">
+    <bool>false</bool>
    </property>
   </action>
   <action name="actionlimit500">
@@ -3322,6 +3370,9 @@
    <property name="checkable">
     <bool>true</bool>
    </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
    <property name="text">
     <string>Default</string>
    </property>
@@ -3336,7 +3387,7 @@
     <bool>true</bool>
    </property>
    <property name="text">
-    <string notr="true">العربية</string>
+    <string>Arabic</string>
    </property>
    <property name="toolTip">
     <string notr="true">العربية</string>
@@ -3350,7 +3401,7 @@
     <bool>true</bool>
    </property>
    <property name="text">
-    <string notr="true">Français</string>
+    <string>French</string>
    </property>
    <property name="toolTip">
     <string notr="true">Fr</string>
@@ -3403,6 +3454,38 @@
     <string notr="true">Spanish</string>
    </property>
   </action>
+  <action name="actionReport_a_Problem">
+   <property name="icon">
+    <iconset resource="../images/main.qrc">
+     <normaloff>:/feedback/feedback/report_a_problem.png</normaloff>:/feedback/feedback/report_a_problem.png</iconset>
+   </property>
+   <property name="text">
+    <string>Report a &amp;Problem</string>
+   </property>
+  </action>
+  <action name="actionAsk_a_Question">
+   <property name="icon">
+    <iconset resource="../images/main.qrc">
+     <normaloff>:/feedback/feedback/ask_a_question.png</normaloff>:/feedback/feedback/ask_a_question.png</iconset>
+   </property>
+   <property name="text">
+    <string>Ask a &amp;Question</string>
+   </property>
+  </action>
+  <action name="actionShare_an_Idea">
+   <property name="icon">
+    <iconset resource="../images/main.qrc">
+     <normaloff>:/feedback/feedback/share_an_idea.png</normaloff>:/feedback/feedback/share_an_idea.png</iconset>
+   </property>
+   <property name="text">
+    <string>Share an &amp;Idea</string>
+   </property>
+  </action>
+  <action name="actionOpen_issues">
+   <property name="text">
+    <string>Open issues</string>
+   </property>
+  </action>
  </widget>
  <tabstops>
   <tabstop>o_search</tabstop>
@@ -3422,7 +3505,6 @@
   <tabstop>o_stat_num</tabstop>
   <tabstop>o_sajdah_exist</tabstop>
   <tabstop>o_add2query_struct</tabstop>
-  <tabstop>o_word_root</tabstop>
   <tabstop>o_word_type</tabstop>
   <tabstop>o_relation_word</tabstop>
   <tabstop>o_chapter</tabstop>
@@ -3439,9 +3521,7 @@
   <tabstop>o_somewords</tabstop>
   <tabstop>o_nowords</tabstop>
   <tabstop>o_synonyms</tabstop>
-  <tabstop>o_orthograph</tabstop>
   <tabstop>o_stat_from</tabstop>
-  <tabstop>o_antonyms</tabstop>
   <tabstop>o_relation_struct</tabstop>
  </tabstops>
  <resources>

@@ -1,7 +1,7 @@
 @echo off
 
 
-set VERSION="0.7.03"
+set VERSION="0.7.10"
 set PYTHON="C:\Python27\python.exe"
 set MAKENSIS="C:\Program Files\NSIS\makensis.exe"
 set ALFANOUSDESKTOP="..\..\src\alfanous-desktop"

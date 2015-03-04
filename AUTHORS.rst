@@ -3,6 +3,7 @@ Alfanous - Advanced Quranic Search Engine , Authored by A~CH (`@assem-ch <https:
       We gratefully acknowledge contributions from the following.
       Please let us know if we missed anyone, thanks :)
 
+
 .. _`A~CH`: https://github.com/assem-ch
 .. _`Abdellah Chelli`: https://github.com/sneetsher 
 .. _`Zakaria Smahi`: https://github.com/zsmahi
@@ -12,13 +13,27 @@ Alfanous - Advanced Quranic Search Engine , Authored by A~CH (`@assem-ch <https:
 .. _`Tedjeddine Meabeo`: https://github.com/tedj
 .. _`Sohaib Afifi`: https://github.com/sohaibafifi
 
-.. _`@assem_ch`: https://twitter.com/assem_ch
-.. _`@sneetsher`: https://twitter.com/sneetsher 
-.. _`@zsmahi`: https://twitter.com/zsmahi
-.. _`@yasmamine`: https://twitter.com/yasmamine
-.. _`@01walid`: https://twitter.com/01walid
-.. _`@muslihzarth`: https://twitter.com/muslihzarth
-.. _`@kacem4dz`: https://twitter.com/kacem4dz
+=========== 
+Maintainers
+===========
+* Assem Chelli `@assem-ch <https://github.com/assem-ch>`_ (API)
+* Muhammad Shaban `@MuhammadShaban <https://github.com/MuhammadShaban>`_ (packaging to Fedora Linux)
+* Walid Ziouche `@01walid <https://github.com/01walid>`_ (packaging to ArchLinux)
+* Sohaib Afifi `@sohaibafifi <https://github.com/sohaibafifi>`_ (packaging to ArchLinux | git version)
+* Zaki Smahi `@zsmahi <https://github.com/zsmahi>`_ (Firefox toolbar)
+* Muslih Aqqad `@muslih <https://github.com/muslih>`_ (Design)
+* Zineb Laouici `@Zinebl <https://github.com/Zinebl>`_ (Facebook/G+ pages)
+
+      We are looking for maintainers for those:
+            - Android app(Java)
+            - Desktop application (PyQt)
+            - Website (Django)
+            - Packaging to Ubuntu
+            - Windows Installer(py2exe, nsis)
+            - Twitter account
+      If you are interested, contact `@assem-ch <https://github.com/assem-ch>`_ or mailing list <alfanous[at]googlegroups[dotcom]>
+
+
 
 ============ 
 Contributors 
@@ -103,7 +118,7 @@ Community Management
 -----------
 Translation
 -----------
-( to help in translation, contact us in the mailing list <alfanous[at]googlegroups[dotcom]> )
+      To help in translation, contact us in the mailing list <alfanous[at]googlegroups[dotcom]>
 
 
 * Desktop application
@@ -140,7 +155,7 @@ Translation
 --------------
 Test & Support
 --------------
-* Test: `Walid Ziouche`_
+* Test: `Walid Ziouche`_, Zakaria Smahi, Muslih Alaqaad, 
 * Bugs: Oussama Chammam, Ahmed Salem, xsoh, Yacer~, Jounathan~, BenSali~ , Many persons from the community, thanks to all. 
 * Vulns:  Jalil~
 

@@ -5,7 +5,7 @@
 
 ## Global Version of the project, must be updated in each significant change in 
 ## the API & Desktop Gui
-VERSION=0.7.04
+VERSION=0.7.10
 
 ## Next releases:
 # Beta [0.7.00~0.9.99], Basis [1.0], Silver[~], Golden[~], Crystal[~]
@@ -347,9 +347,9 @@ local_desktop_update: local_desktop_extract
 	cd $(DESKTOP_INTERFACE_PATH); pyside-lupdate qt_local.pro
 	# Babel part
 	cd $(DESKTOP_INTERFACE_PATH); pybabel update -i ./locale/alfanousJinjaT.pot -d ./locale -D alfanousJinjaT
-	mkdir -p localization/ts_files/alfanousDesktopv$(VERSION)
-	cp $(DESKTOP_INTERFACE_PATH)/locale/alfanousJinjaT.pot localization/ts_files/alfanousDesktopv$(VERSION)
-	cp $(DESKTOP_INTERFACE_PATH)/locale/alfanousDesktop.ts localization/ts_files/alfanousDesktopv$(VERSION)
+	mkdir -p localization/ts_files/alfanousDesktop_sync
+	cp $(DESKTOP_INTERFACE_PATH)/locale/alfanousJinjaT.pot localization/ts_files/alfanousDesktop_sync
+	cp $(DESKTOP_INTERFACE_PATH)/locale/alfanousDesktop.ts localization/ts_files/alfanousDesktop_sync
 	@## obsolete extraction rotine
 	@#xgettext $(DESKTOP_INTERFACE_PATH)*.py  --default-domain=alfanousJinjaT --language=Python --keyword=n_ 
 	
@@ -520,10 +520,6 @@ install_desktop:  install_api qt_all  local_desktop_compile
 	cp ./resources/AlFanous.png  $(DESTDIR)$(PREFIX)/share/pixmaps/
 	mkdir -p $(DESTDIR)$(PREFIX)/share/fonts/
 	cp ./resources/fonts/* $(DESTDIR)$(PREFIX)/share/fonts/
-	mkdir -p $(DESTDIR)$(PREFIX)/share/locale/
-	cp -ar $(DESKTOP_INTERFACE_PATH)/locale/* $(DESTDIR)$(PREFIX)/share/locale/
-	#test installation
-	# alfanous-desktop &
 
 install_desktop_no_arguments:  install_api_no_arguments qt_all  local_desktop_compile
 	perl -pi -w -e 's|version = "\d+\.\d+(\.\d+)*"|version = "$(VERSION)"|g;' $(DESKTOP_INTERFACE_PATH)/setup.py
@@ -534,8 +530,6 @@ install_desktop_no_arguments:  install_api_no_arguments qt_all  local_desktop_co
 	cp ./resources/AlFanous.png  $(DESTDIR)$(PREFIX)/share/pixmaps/
 	mkdir -p $(DESTDIR)$(PREFIX)/share/fonts/
 	cp ./resources/fonts/* $(DESTDIR)$(PREFIX)/share/fonts/
-	mkdir -p $(DESTDIR)$(PREFIX)/share/locale/
-	cp -ar $(DESKTOP_INTERFACE_PATH)/locale/* $(DESTDIR)$(PREFIX)/share/locale/
 	#test installation
 	# alfanous-desktop &
 	

@@ -121,7 +121,7 @@ Flags
  3         platform            <all>             <all>            platform used by requester                    "undefined"      undefined | wp7 | s60 | android | ios | linux | window
  4         domain              <all>             <all>            web domain of requester if applicable         "undefined"      \*
  5a        **query**           search,suggest    <all>            query attached to action                       ""              \*
- 5b        **query**           show              <all>            query attached to action                       ""              all | translations |recitations | information | hints | surates | chapters | defaults | flags | fields | fields_reverse | errors | domains | help_messages 
+ 5b        **query**           show              <all>            query attached to action                       ""              all | translations |recitations | information | hints | surates | chapters | defaults | flags | fields | fields_reverse | errors | domains | help_messages | roots
  6         highlight           search            <all>            highlight method                              "css"            css | html | genshi | bold | bbcode
  7         script              search            aya, word        script of aya text                            "standard"       standard | uthmani
  8         vocalized           search            aya, word        enable vocalization of aya text               "True"           True | False
