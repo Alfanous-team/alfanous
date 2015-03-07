@@ -137,7 +137,8 @@ class QUI( Ui_MainWindow ):
                 "fr": self.actionFrench.setChecked,
                 "id": self.actionIndonesian.setChecked,
                 "es": self.actionSpanish.setChecked,
-                "ms": self.actionMalay.setChecked
+                "ms": self.actionMalay.setChecked,
+                "sq": self.actionAlbanian.setChecked
                 }
         languages[self.language](True)
 
@@ -240,6 +241,7 @@ class QUI( Ui_MainWindow ):
         self.o_results.setHtml("<img src=\":/resources/alfanous.png\" /> ")
         self.o_results.setObjectName("o_results")
         self.verticalLayout33.addWidget(self.o_results)
+        QtCore.QObject.connect( self.o_results, QtCore.SIGNAL( "linkIsClicked()" ), self.link_is_clicked )
 
     def setupUi( self, MainWindow ):
         super( QUI, self ).setupUi( MainWindow )
@@ -350,6 +352,8 @@ class QUI( Ui_MainWindow ):
         QtCore.QObject.connect( self.actionIndonesian, QtCore.SIGNAL( "triggered()" ), lambda: self.changeLanguage("id") )
         QtCore.QObject.connect( self.actionSpanish, QtCore.SIGNAL( "triggered()" ), lambda: self.changeLanguage("es") )
         QtCore.QObject.connect( self.actionMalay, QtCore.SIGNAL( "triggered()" ), lambda: self.changeLanguage("ms") )
+        QtCore.QObject.connect( self.actionAlbanian, QtCore.SIGNAL( "triggered()" ), lambda: self.changeLanguage("sq") )
+        
         QtCore.QObject.connect( self.actionpp10, QtCore.SIGNAL( "triggered()" ), self.changePERPAGE )
         QtCore.QObject.connect( self.actionpp20, QtCore.SIGNAL( "triggered()" ), self.changePERPAGE )
         QtCore.QObject.connect( self.actionpp50, QtCore.SIGNAL( "triggered()" ), self.changePERPAGE )
@@ -410,6 +414,9 @@ class QUI( Ui_MainWindow ):
     def redo_query(self):
 		self.o_query.setCurrentIndex(self.o_query.currentIndex ()-1)
 		self.search_no_undo(log = False)
+
+    def link_is_clicked():
+        pass
 
     def search_all( self, page = 1 , log = True):
         """
@@ -744,7 +751,7 @@ class QUI( Ui_MainWindow ):
         preview_dlg = QtGui.QPrintPreviewDialog(printer)
         preview_dlg.paintRequested.connect(self.printing_results)
         preview_dlg.exec_()
-        
+
     def printing_results(self, printer):
         self.o_results.print_(printer)
 
