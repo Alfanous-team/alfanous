@@ -1,0 +1,248 @@
+# Translations template for Alfanous.
+# Copyright (C) 2015 ORGANIZATION
+# This file is distributed under the same license as the Alfanous project.
+# 
+# Translators:
+# lav hal <lavdimhalilaj@hotmail.com>, 2015
+msgid ""
+msgstr ""
+"Project-Id-Version: Alfanous\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2015-03-03 02:51+0100\n"
+"PO-Revision-Date: 2015-03-06 22:13+0000\n"
+"Last-Translator: lav hal <lavdimhalilaj@hotmail.com>\n"
+"Language-Team: Albanian (http://www.transifex.com/projects/p/alfanous/language/sq/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 1.3\n"
+"Language: sq\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: Gui.py:81 build/lib.linux-i686-2.7/alfanousDesktop/Gui.py:81
+msgid "recommended"
+msgstr "rekomanduar"
+
+#: Gui.py:81 build/lib.linux-i686-2.7/alfanousDesktop/Gui.py:81
+msgid "obliged"
+msgstr "obliguar"
+
+#: Gui.py:248 build/lib.linux-i686-2.7/alfanousDesktop/Gui.py:248
+#: templates/aya_results.html:1
+msgid "LTR"
+msgstr "LTR"
+
+#: Gui.py:511 build/lib.linux-i686-2.7/alfanousDesktop/Gui.py:511
+msgid "Applying skin"
+msgstr "Pamja duke u aplikuar"
+
+#: Gui.py:511 build/lib.linux-i686-2.7/alfanousDesktop/Gui.py:511
+msgid "You should restart application in order for the skin to take effect"
+msgstr "Që ndërrimi të ketë efekt, duhet të restartoni aplikacionin!"
+
+#: Gui.py:520 build/lib.linux-i686-2.7/alfanousDesktop/Gui.py:520
+msgid "Applying language"
+msgstr "Duke u ndërruar gjuha"
+
+#: Gui.py:520 build/lib.linux-i686-2.7/alfanousDesktop/Gui.py:520
+msgid ""
+"You should restart application in order for the language to take effect"
+msgstr "Që ndërrimi të ketë efekt, duhet të restartoni aplikacionin!"
+
+#: Gui.py:717 build/lib.linux-i686-2.7/alfanousDesktop/Gui.py:717
+msgid "Alfanous_Results_Page_"
+msgstr "Alfanous_Rezultatet_"
+
+#: templates/aya_results.html:658
+msgid " Suggestions: "
+msgstr "Sugjerimet:"
+
+#: templates/aya_results.html:680
+msgid "Words"
+msgstr "Fjaletë"
+
+#: templates/aya_results.html:682 templates/aya_results.html:825
+#: templates/aya_results.html:926
+msgid "words"
+msgstr "fjalët"
+
+#: templates/aya_results.html:685 templates/aya_results.html:697
+msgid "occurances"
+msgstr ""
+
+#: templates/aya_results.html:688 templates/aya_results.html:701
+msgid "vocalizations"
+msgstr "shiptimi"
+
+#: templates/aya_results.html:696
+msgid " word "
+msgstr "fjalë"
+
+#: templates/aya_results.html:698
+msgid " ayates"
+msgstr "ajetet"
+
+#: templates/aya_results.html:709
+msgid " synonyms "
+msgstr "sinonimet"
+
+#: templates/aya_results.html:719
+msgid " derivations "
+msgstr "derivimet"
+
+#: templates/aya_results.html:732
+msgid " Annotation "
+msgstr ""
+
+#: templates/aya_results.html:733
+msgid " ID "
+msgstr "ID"
+
+#: templates/aya_results.html:734
+msgid " sura,aya "
+msgstr "surja,ajeti"
+
+#: templates/aya_results.html:736
+msgid " token "
+msgstr ""
+
+#: templates/aya_results.html:739
+msgid " part "
+msgstr ""
+
+#: templates/aya_results.html:742 templates/aya_results.html:819
+#: templates/aya_results.html:945
+msgid " type "
+msgstr "tipi"
+
+#: templates/aya_results.html:745
+msgid " POS "
+msgstr "POS"
+
+#: templates/aya_results.html:748
+msgid " lemma "
+msgstr ""
+
+#: templates/aya_results.html:751
+msgid " root "
+msgstr "rrënja"
+
+#: templates/aya_results.html:754
+msgid " special "
+msgstr "speciale"
+
+#: templates/aya_results.html:757
+msgid " aspect "
+msgstr "aspekt"
+
+#: templates/aya_results.html:760
+msgid " state "
+msgstr "gjendja"
+
+#: templates/aya_results.html:763
+msgid " form "
+msgstr "forma"
+
+#: templates/aya_results.html:766
+msgid " case "
+msgstr "rast"
+
+#: templates/aya_results.html:769
+msgid " derivation "
+msgstr "derivimi"
+
+#: templates/aya_results.html:772
+msgid " person "
+msgstr "personi"
+
+#: templates/aya_results.html:775
+msgid " number "
+msgstr "numri"
+
+#: templates/aya_results.html:778
+msgid " gender "
+msgstr "zhanri"
+
+#: templates/aya_results.html:781
+msgid " voice "
+msgstr "zëri"
+
+#: templates/aya_results.html:796
+msgid "Results"
+msgstr "Rezultatet"
+
+#: templates/aya_results.html:797
+msgid " to "
+msgstr "deri"
+
+#: templates/aya_results.html:798
+msgid " of "
+msgstr "të"
+
+#: templates/aya_results.html:805
+msgid " Result n° "
+msgstr " Rezultatet n° "
+
+#: templates/aya_results.html:813
+msgid " Sura "
+msgstr "Surja"
+
+#: templates/aya_results.html:817 templates/aya_results.html:944
+msgid " n° "
+msgstr " n° "
+
+#: templates/aya_results.html:820
+msgid " revelation_order "
+msgstr "renditja e shpalljeve"
+
+#: templates/aya_results.html:821
+msgid " ayahs "
+msgstr "ajetet"
+
+#: templates/aya_results.html:826 templates/aya_results.html:928
+msgid "letters"
+msgstr "shkronjat"
+
+#: templates/aya_results.html:827 templates/aya_results.html:930
+msgid "divine names"
+msgstr "emrat hyjnor"
+
+#: templates/aya_results.html:905
+msgid " Chapter "
+msgstr "Kapitulli"
+
+#: templates/aya_results.html:909
+msgid " Topic "
+msgstr "Tema"
+
+#: templates/aya_results.html:914
+msgid " Subtopic "
+msgstr "Nëntema"
+
+#: templates/aya_results.html:934
+msgid " manzil "
+msgstr ""
+
+#: templates/aya_results.html:935
+msgid " hizb "
+msgstr ""
+
+#: templates/aya_results.html:936
+msgid " quart "
+msgstr ""
+
+#: templates/aya_results.html:937
+msgid " page "
+msgstr "faqe"
+
+#: templates/aya_results.html:943
+msgid " sajda "
+msgstr ""
+
+#: templates/aya_results.html:962
+msgid "Sorry! there is no results for this search query"
+msgstr "Na vjen keq! nuk ka rezultatet për këtë pyetosor"
+
+#: templates/aya_results.html:966
+msgid " Error  "
+msgstr "Gabim"

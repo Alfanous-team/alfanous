@@ -124,9 +124,11 @@ Translation
 * Desktop application
 
   * Arabic: Abdelmonam Kouka, Assem Chelli, LionArt (ghazi.nocturne), Karim Oulad Chalha, Zarrabi
-  * Indonesian: Arif Rahman Hakim, Muslih Al aqaad
+  * Indonesian: Amy Cidra, Arif Rahman Hakim, Muslih Al aqaad
   * Malay: Muhammad Fariz
   * Spanish: Ricardo Hermosilla
+  * French: Mohamed Nadjib Mami, Mahmoud Halit
+  * Albanian: 'lavhal'
 
 * Main Web Interface
 
@@ -141,7 +143,7 @@ Translation
   * Kurdish: 
   * Malayalam: `'STyM Alfazz' <https://launchpad.net/~alfasst>`
 
-* Mobile Web interface 
+* Old Mobile Web interface 
 
   * Bosnian: Armin Kazi
   * Brazilian Portuguese: Aieon.corp(LP)

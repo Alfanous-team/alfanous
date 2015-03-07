@@ -990,25 +990,6 @@ QSpinBox::down-button:pressed:enabled, QDoubleSpinBox::down-button:pressed:enabl
      <addaction name="actionPrevios_aya"/>
      <addaction name="actionNext_aya"/>
     </widget>
-    <widget class="QMenu" name="menuChoose_Language">
-     <property name="enabled">
-      <bool>true</bool>
-     </property>
-     <property name="title">
-      <string>Choose &amp;Language</string>
-     </property>
-     <property name="icon">
-      <iconset resource="../images/main.qrc">
-       <normaloff>:/resources/flag.png</normaloff>:/resources/flag.png</iconset>
-     </property>
-     <addaction name="actionSystem"/>
-     <addaction name="actionEnglish"/>
-     <addaction name="actionArabic"/>
-     <addaction name="actionFrench"/>
-     <addaction name="actionIndonesian"/>
-     <addaction name="actionMalay"/>
-     <addaction name="actionSpanish"/>
-    </widget>
     <widget class="QMenu" name="menuOrder_by">
      <property name="enabled">
       <bool>true</bool>
@@ -1041,6 +1022,26 @@ QSpinBox::down-button:pressed:enabled, QDoubleSpinBox::down-button:pressed:enabl
      </property>
      <addaction name="actionStandard"/>
      <addaction name="actionUthmani"/>
+    </widget>
+    <widget class="QMenu" name="menuChoose_Language">
+     <property name="enabled">
+      <bool>true</bool>
+     </property>
+     <property name="title">
+      <string>Choose &amp;Language</string>
+     </property>
+     <property name="icon">
+      <iconset resource="../images/main.qrc">
+       <normaloff>:/resources/flag.png</normaloff>:/resources/flag.png</iconset>
+     </property>
+     <addaction name="actionSystem"/>
+     <addaction name="actionAlbanian"/>
+     <addaction name="actionArabic"/>
+     <addaction name="actionEnglish"/>
+     <addaction name="actionFrench"/>
+     <addaction name="actionIndonesian"/>
+     <addaction name="actionMalay"/>
+     <addaction name="actionSpanish"/>
     </widget>
     <addaction name="menuOrder_by"/>
     <addaction name="separator"/>
@@ -1339,8 +1340,8 @@ QSpinBox::down-button:pressed:enabled, QDoubleSpinBox::down-button:pressed:enabl
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>276</width>
-          <height>331</height>
+          <width>259</width>
+          <height>280</height>
          </rect>
         </property>
         <attribute name="label">
@@ -1749,7 +1750,7 @@ QSpinBox::down-button:pressed:enabled, QDoubleSpinBox::down-button:pressed:enabl
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>276</width>
+          <width>259</width>
           <height>168</height>
          </rect>
         </property>
@@ -1987,7 +1988,7 @@ QSpinBox::down-button:pressed:enabled, QDoubleSpinBox::down-button:pressed:enabl
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>276</width>
+          <width>259</width>
           <height>170</height>
          </rect>
         </property>
@@ -2246,7 +2247,7 @@ QSpinBox::down-button:pressed:enabled, QDoubleSpinBox::down-button:pressed:enabl
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>276</width>
+          <width>259</width>
           <height>200</height>
          </rect>
         </property>
@@ -2508,7 +2509,7 @@ QSpinBox::down-button:pressed:enabled, QDoubleSpinBox::down-button:pressed:enabl
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>276</width>
+          <width>259</width>
           <height>198</height>
          </rect>
         </property>
@@ -3653,6 +3654,11 @@ QSpinBox::down-button:pressed:enabled, QDoubleSpinBox::down-button:pressed:enabl
   <action name="actionOpen_issues">
    <property name="text">
     <string>Open issues</string>
+   </property>
+  </action>
+  <action name="actionAlbanian">
+   <property name="text">
+    <string>Albanian</string>
    </property>
   </action>
  </widget>
