@@ -976,16 +976,6 @@ QSpinBox::down-button:pressed:enabled, QDoubleSpinBox::down-button:pressed:enabl
      <addaction name="actionlimit1000"/>
      <addaction name="actionlimit6236"/>
     </widget>
-    <widget class="QMenu" name="menuScript">
-     <property name="enabled">
-      <bool>true</bool>
-     </property>
-     <property name="title">
-      <string>Script</string>
-     </property>
-     <addaction name="actionStandard"/>
-     <addaction name="actionUthmani"/>
-    </widget>
     <widget class="QMenu" name="menuShow">
      <property name="enabled">
       <bool>true</bool>
@@ -1041,6 +1031,16 @@ QSpinBox::down-button:pressed:enabled, QDoubleSpinBox::down-button:pressed:enabl
      <addaction name="menuFields"/>
      <addaction name="separator"/>
      <addaction name="actionInverse"/>
+    </widget>
+    <widget class="QMenu" name="menuScript">
+     <property name="enabled">
+      <bool>true</bool>
+     </property>
+     <property name="title">
+      <string>Script</string>
+     </property>
+     <addaction name="actionStandard"/>
+     <addaction name="actionUthmani"/>
     </widget>
     <addaction name="menuOrder_by"/>
     <addaction name="separator"/>
@@ -1151,6 +1151,189 @@ QSpinBox::down-button:pressed:enabled, QDoubleSpinBox::down-button:pressed:enabl
        <property name="currentIndex">
         <number>0</number>
        </property>
+       <widget class="QWidget" name="p_predefined">
+        <property name="geometry">
+         <rect>
+          <x>0</x>
+          <y>0</y>
+          <width>276</width>
+          <height>331</height>
+         </rect>
+        </property>
+        <attribute name="label">
+         <string>Predefined Queries</string>
+        </attribute>
+        <layout class="QVBoxLayout" name="verticalLayout_5">
+         <item>
+          <widget class="QGroupBox" name="groupBox">
+           <property name="title">
+            <string/>
+           </property>
+           <layout class="QVBoxLayout" name="verticalLayout">
+            <item>
+             <layout class="QHBoxLayout" name="horizontalLayout_8">
+              <item>
+               <widget class="QRadioButton" name="o_predefined_goto">
+                <property name="text">
+                 <string>Go to</string>
+                </property>
+                <property name="checked">
+                 <bool>true</bool>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QComboBox" name="o_predefined_sura">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QSpinBox" name="o_predefined_aya">
+                <property name="prefix">
+                 <string>aya </string>
+                </property>
+                <property name="minimum">
+                 <number>1</number>
+                </property>
+                <property name="maximum">
+                 <number>286</number>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </item>
+            <item>
+             <layout class="QHBoxLayout" name="horizontalLayout_29">
+              <item>
+               <widget class="QRadioButton" name="o_predefined_all_deriv">
+                <property name="text">
+                 <string>All derivations of word</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QComboBox" name="o_predefined_root">
+                <property name="enabled">
+                 <bool>false</bool>
+                </property>
+                <property name="editable">
+                 <bool>true</bool>
+                </property>
+                <item>
+                 <property name="text">
+                  <string>رحم</string>
+                 </property>
+                </item>
+               </widget>
+              </item>
+             </layout>
+            </item>
+            <item>
+             <layout class="QHBoxLayout" name="horizontalLayout_36">
+              <item>
+               <widget class="QRadioButton" name="o_predefined_respect_tashkeel">
+                <property name="text">
+                 <string>Respect Tashkeel and Search</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLineEdit" name="o_predefined_vocalized_word">
+                <property name="enabled">
+                 <bool>false</bool>
+                </property>
+                <property name="text">
+                 <string>المُلك</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </item>
+            <item>
+             <layout class="QHBoxLayout" name="horizontalLayout_33">
+              <item>
+               <widget class="QRadioButton" name="o_predefined_longest_words">
+                <property name="enabled">
+                 <bool>true</bool>
+                </property>
+                <property name="text">
+                 <string>The longest words in Quran</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </item>
+            <item>
+             <layout class="QHBoxLayout" name="horizontalLayout_5">
+              <item>
+               <widget class="QRadioButton" name="o_predefined_shortest_words">
+                <property name="text">
+                 <string>The shortest words in Quran</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </item>
+            <item>
+             <layout class="QHBoxLayout" name="horizontalLayout_34">
+              <item>
+               <widget class="QRadioButton" name="o_predefined_all_sajadate">
+                <property name="text">
+                 <string>All sajadate in Quran</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </item>
+           </layout>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="o_add2query_predefined">
+           <property name="font">
+            <font>
+             <weight>50</weight>
+             <bold>false</bold>
+             <underline>true</underline>
+             <strikeout>false</strikeout>
+             <kerning>false</kerning>
+            </font>
+           </property>
+           <property name="cursor">
+            <cursorShape>PointingHandCursor</cursorShape>
+           </property>
+           <property name="toolTip">
+            <string/>
+           </property>
+           <property name="text">
+            <string>Add to SearchBar</string>
+           </property>
+           <property name="icon">
+            <iconset resource="../images/main.qrc">
+             <normaloff>:/resources/up-16.png</normaloff>:/resources/up-16.png</iconset>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <spacer name="verticalSpacer">
+           <property name="orientation">
+            <enum>Qt::Vertical</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>20</width>
+             <height>40</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+        </layout>
+       </widget>
        <widget class="QWidget" name="page_2">
         <property name="geometry">
          <rect>
@@ -1282,19 +1465,6 @@ QSpinBox::down-button:pressed:enabled, QDoubleSpinBox::down-button:pressed:enabl
           </widget>
          </item>
          <item>
-          <spacer name="verticalSpacer_8">
-           <property name="orientation">
-            <enum>Qt::Vertical</enum>
-           </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>20</width>
-             <height>40</height>
-            </size>
-           </property>
-          </spacer>
-         </item>
-         <item>
           <layout class="QHBoxLayout" name="horizontalLayout_20">
            <item>
             <widget class="QLabel" name="label_10">
@@ -1375,6 +1545,19 @@ QSpinBox::down-button:pressed:enabled, QDoubleSpinBox::down-button:pressed:enabl
            </property>
           </widget>
          </item>
+         <item>
+          <spacer name="verticalSpacer_8">
+           <property name="orientation">
+            <enum>Qt::Vertical</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>20</width>
+             <height>40</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
         </layout>
        </widget>
        <widget class="QWidget" name="page">
@@ -1382,8 +1565,8 @@ QSpinBox::down-button:pressed:enabled, QDoubleSpinBox::down-button:pressed:enabl
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>259</width>
-          <height>137</height>
+          <width>276</width>
+          <height>165</height>
          </rect>
         </property>
         <attribute name="label">
@@ -1566,7 +1749,7 @@ QSpinBox::down-button:pressed:enabled, QDoubleSpinBox::down-button:pressed:enabl
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>259</width>
+          <width>276</width>
           <height>168</height>
          </rect>
         </property>
@@ -1804,7 +1987,7 @@ QSpinBox::down-button:pressed:enabled, QDoubleSpinBox::down-button:pressed:enabl
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>259</width>
+          <width>276</width>
           <height>170</height>
          </rect>
         </property>
@@ -2063,7 +2246,7 @@ QSpinBox::down-button:pressed:enabled, QDoubleSpinBox::down-button:pressed:enabl
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>259</width>
+          <width>276</width>
           <height>200</height>
          </rect>
         </property>
@@ -2325,7 +2508,7 @@ QSpinBox::down-button:pressed:enabled, QDoubleSpinBox::down-button:pressed:enabl
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>259</width>
+          <width>276</width>
           <height>198</height>
          </rect>
         </property>
@@ -2583,20 +2766,6 @@ QSpinBox::down-button:pressed:enabled, QDoubleSpinBox::down-button:pressed:enabl
           </spacer>
          </item>
         </layout>
-       </widget>
-       <widget class="QWidget" name="p_predefined">
-        <property name="geometry">
-         <rect>
-          <x>0</x>
-          <y>0</y>
-          <width>276</width>
-          <height>331</height>
-         </rect>
-        </property>
-        <attribute name="label">
-         <string>Predefined Queries</string>
-        </attribute>
-        <layout class="QHBoxLayout" name="horizontalLayout_3"/>
        </widget>
       </widget>
      </item>
@@ -3567,12 +3736,12 @@ QSpinBox::down-button:pressed:enabled, QDoubleSpinBox::down-button:pressed:enabl
    <slot>click()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>593</x>
-     <y>49</y>
+     <x>901</x>
+     <y>48</y>
     </hint>
     <hint type="destinationlabel">
-     <x>1366</x>
-     <y>50</y>
+     <x>1390</x>
+     <y>45</y>
     </hint>
    </hints>
   </connection>
@@ -3584,11 +3753,75 @@ QSpinBox::down-button:pressed:enabled, QDoubleSpinBox::down-button:pressed:enabl
    <hints>
     <hint type="sourcelabel">
      <x>1416</x>
-     <y>50</y>
+     <y>45</y>
     </hint>
     <hint type="destinationlabel">
-     <x>590</x>
-     <y>49</y>
+     <x>898</x>
+     <y>48</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>o_predefined_goto</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>o_predefined_sura</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>33</x>
+     <y>105</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>103</x>
+     <y>104</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>o_predefined_goto</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>o_predefined_aya</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>49</x>
+     <y>107</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>200</x>
+     <y>99</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>o_predefined_all_deriv</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>o_predefined_root</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>153</x>
+     <y>137</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>191</x>
+     <y>132</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>o_predefined_respect_tashkeel</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>o_predefined_vocalized_word</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>104</x>
+     <y>166</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>249</x>
+     <y>166</y>
     </hint>
    </hints>
   </connection>
