@@ -1227,7 +1227,7 @@ QSpinBox::down-button:pressed:enabled, QDoubleSpinBox::down-button:pressed:enabl
                 </property>
                 <item>
                  <property name="text">
-                  <string>رحم</string>
+                  <string notr="true">rHm</string>
                  </property>
                 </item>
                </widget>
@@ -1249,7 +1249,7 @@ QSpinBox::down-button:pressed:enabled, QDoubleSpinBox::down-button:pressed:enabl
                  <bool>false</bool>
                 </property>
                 <property name="text">
-                 <string>المُلك</string>
+                 <string notr="true"/>
                 </property>
                </widget>
               </item>
@@ -1340,7 +1340,7 @@ QSpinBox::down-button:pressed:enabled, QDoubleSpinBox::down-button:pressed:enabl
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>259</width>
+          <width>276</width>
           <height>280</height>
          </rect>
         </property>
@@ -1750,7 +1750,7 @@ QSpinBox::down-button:pressed:enabled, QDoubleSpinBox::down-button:pressed:enabl
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>259</width>
+          <width>276</width>
           <height>168</height>
          </rect>
         </property>
@@ -1988,7 +1988,7 @@ QSpinBox::down-button:pressed:enabled, QDoubleSpinBox::down-button:pressed:enabl
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>259</width>
+          <width>276</width>
           <height>170</height>
          </rect>
         </property>
@@ -2247,7 +2247,7 @@ QSpinBox::down-button:pressed:enabled, QDoubleSpinBox::down-button:pressed:enabl
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>259</width>
+          <width>276</width>
           <height>200</height>
          </rect>
         </property>
@@ -2509,7 +2509,7 @@ QSpinBox::down-button:pressed:enabled, QDoubleSpinBox::down-button:pressed:enabl
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>259</width>
+          <width>276</width>
           <height>198</height>
          </rect>
         </property>
@@ -3659,6 +3659,9 @@ QSpinBox::down-button:pressed:enabled, QDoubleSpinBox::down-button:pressed:enabl
   <action name="actionAlbanian">
    <property name="text">
     <string>Albanian</string>
+   </property>
+   <property name="toolTip">
+    <string notr="true">Albanian</string>
    </property>
   </action>
  </widget>
