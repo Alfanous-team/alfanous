@@ -377,12 +377,16 @@ class QUI( Ui_MainWindow ):
         QtCore.QObject.connect( self.o_add2query_subject, QtCore.SIGNAL( "clicked()" ), self.add2query_subject )
         QtCore.QObject.connect( self.o_add2query_word, QtCore.SIGNAL( "clicked()" ), self.add2query_word )
         QtCore.QObject.connect( self.o_add2query_misc, QtCore.SIGNAL( "clicked()" ), self.add2query_misc )
+        QtCore.QObject.connect( self.o_add2query_predefined, QtCore.SIGNAL( "clicked()" ), self.add2query_predefined )
+
 
         self.sura_list =  ["%s (%s)" % t for t in zip(RAWoutput._surates["Arabic"], RAWoutput._surates["Romanized"])] if self.direction == "RTL" \
             else  ["%s (%s)" % t for t in zip(RAWoutput._surates["Romanized"],RAWoutput._surates["English"])]
         self.o_sura_name.addItems( self.sura_list )
+        self.o_predefined_sura.addItems(RAWoutput._surates["Arabic"] if self.direction == "RTL" else RAWoutput._surates["Romanized"] )
         self.o_chapter.addItems( RAWoutput._chapters )
         self.o_word_root.addItems( RAWoutput._roots )
+        self.o_predefined_root.addItems(RAWoutput._roots)
         self.load_config()
 
     def copy_query(self):
@@ -535,8 +539,6 @@ class QUI( Ui_MainWindow ):
         if text:
             if self.o_synonyms.isChecked():
                 for word in words:filter += " ~" + word
-            elif self.o_antonyms.isChecked():
-                for word in words:filter = " #" + word
             elif self.o_orthograph.isChecked():
                 for word in words: filter = " %" + word
             elif self.o_vocalization.isChecked():
@@ -651,6 +653,29 @@ class QUI( Ui_MainWindow ):
         if filter_:
             self.o_query.setEditText( newquery )
 
+
+    def add2query_predefined( self ):
+        """ Predefined Queries in Advanced search panel """
+        filter_ = u""
+        if self.o_predefined_goto.isChecked():
+            if self.direction == "RTL":
+                filter_ = u'سورة:"%s" +  رقم_الآية:%d' % (self.o_predefined_sura.currentText() , self.o_predefined_aya.value())
+            else:
+                filter_ = u'sura:"%s" +  aya_id:%d' % (self.o_predefined_sura.currentText() , self.o_predefined_aya.value()) 
+        elif self.o_predefined_all_deriv.isChecked():
+            filter_ = ">>" + self.o_predefined_root.currentText().strip("\t ")
+        elif self.o_predefined_respect_tashkeel.isChecked():
+            filter_ = ( u"آية_:'" if self.direction == "RTL" else u"aya_:'" ) + self.o_predefined_vocalized_word.text() + "'"
+        elif self.o_predefined_longest_words.isChecked():
+            filter_ = u"؟؟؟؟؟؟؟؟؟؟؟" if self.direction == "RTL" else "???????????"
+        elif self.o_predefined_shortest_words.isChecked():
+            filter_ = u"؟" if self.direction == "RTL" else u"?"
+        elif self.o_predefined_all_sajadate.isChecked():
+            filter_ = u"سجدة:نعم" if self.direction == "RTL" else u"sajda:نعم"
+
+        newquery = relate( self.o_query.currentText(), filter_, 1 )
+        if filter_:
+            self.o_query.setEditText( newquery )
 
     def add2query_word( self ):
         filter_ = ""
