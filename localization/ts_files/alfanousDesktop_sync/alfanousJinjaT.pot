@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Alfanous 0.7.10\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2015-03-07 22:31+0100\n"
+"POT-Creation-Date: 2015-03-07 23:42+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -25,28 +25,28 @@ msgstr ""
 msgid "obliged"
 msgstr ""
 
-#: Gui.py:249 build/lib.linux-i686-2.7/alfanousDesktop/Gui.py:248
+#: Gui.py:250 build/lib.linux-i686-2.7/alfanousDesktop/Gui.py:248
 #: templates/aya_results.html:1
 msgid "LTR"
 msgstr ""
 
-#: Gui.py:516 build/lib.linux-i686-2.7/alfanousDesktop/Gui.py:511
+#: Gui.py:522 build/lib.linux-i686-2.7/alfanousDesktop/Gui.py:511
 msgid "Applying skin"
 msgstr ""
 
-#: Gui.py:516 build/lib.linux-i686-2.7/alfanousDesktop/Gui.py:511
+#: Gui.py:522 build/lib.linux-i686-2.7/alfanousDesktop/Gui.py:511
 msgid "You should restart application in order for the skin to take effect"
 msgstr ""
 
-#: Gui.py:525 build/lib.linux-i686-2.7/alfanousDesktop/Gui.py:520
+#: Gui.py:531 build/lib.linux-i686-2.7/alfanousDesktop/Gui.py:520
 msgid "Applying language"
 msgstr ""
 
-#: Gui.py:525 build/lib.linux-i686-2.7/alfanousDesktop/Gui.py:520
+#: Gui.py:531 build/lib.linux-i686-2.7/alfanousDesktop/Gui.py:520
 msgid "You should restart application in order for the language to take effect"
 msgstr ""
 
-#: Gui.py:743 build/lib.linux-i686-2.7/alfanousDesktop/Gui.py:717
+#: Gui.py:749 build/lib.linux-i686-2.7/alfanousDesktop/Gui.py:717
 msgid "Alfanous_Results_Page_"
 msgstr ""
 
