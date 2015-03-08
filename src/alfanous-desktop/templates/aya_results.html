@@ -649,6 +649,10 @@ direction: rtl;
 font-family: ArabeyesQr, Scheherazade;
 }
 
+a {
+      text-decoration:none;
+   }
+
 </style>
 <div style="direction:{{ direction }};text-align:{{ align }}">
 {% if results.error.code == 0  %} 
@@ -663,7 +667,7 @@ font-family: ArabeyesQr, Scheherazade;
 				<div class='details_label word_info0'>  {{ "word" }} |  {{ suggestion_key }} </div>
 				{% for suggestion_sub_item  in suggestion_item %}
 	
-							<div class='details_label word_stat1 clickable'> {{ suggestion_sub_item }}</div>
+							<a href="{{  suggestion_sub_item  }}"><div class='details_label word_stat1 clickable'> {{ suggestion_sub_item }}</div></a>
 	
 				{% else %}
 					<div class='details_label word_stat0'> {{ "no suggestions!" }} </div>
@@ -693,14 +697,14 @@ font-family: ArabeyesQr, Scheherazade;
 						  <div class='word_details'>
 						    <span style=' font-size:14pt; color:#00aa00;'> {{ wordcpt }}.  </span>
 						
-							<div class='details_label word_info0 clickable'> {% trans %} word {% endtrans %}  | {{ wordstat.word }} {% if wordstat.romanization %} ( {{ wordstat.romanization }} ) {%  endif %} </div>
+							<a href="{{ wordstat.word }}"><div class='details_label word_info0 clickable'> {% trans %} word {% endtrans %}  | {{ wordstat.word }} {% if wordstat.romanization %} ( {{ wordstat.romanization }} ) {%  endif %} </div></a>
 							<div class='details_label word_stat0'> {% trans %}occurances{% endtrans %}  | {{ wordstat.nb_matches }} </div>
 							<div class='details_label word_stat1'> {% trans %} ayates{% endtrans %}  |  {{ wordstat.nb_ayas }} </div>
 							<br />
 							<div class='word_extra_details'>
 							<div class='details_label word_vocalization_nb'> {% trans %}vocalizations{% endtrans %}  | {{ wordstat.nb_vocalizations }} </div>
 							{% for vocalization in wordstat.vocalizations %} 
-								<div class='details_label word_vocalization clickable'> {{ vocalization }} </div>
+							<a href="{{ 'آية_:\'' if dir=='RTL' else 'aya_:\'' }}{{ vocalization }}'">	<div class='details_label word_vocalization clickable'> {{ vocalization }} </div></a>
 							{% endfor %}
 							
 							</div>
@@ -719,7 +723,7 @@ font-family: ArabeyesQr, Scheherazade;
 								<div class='details_label word_derivation_nb'> {% trans %} derivations {% endtrans %}  | {{ wordstat.nb_derivations }} </div> 
 								{% for derivation in wordstat.derivations %} 
 								
-									<div class='details_label word_derivation clickable'> {{ derivation }} </div>
+								<a href="{{ derivation }}"><div class='details_label word_derivation clickable'> {{ derivation }} </div></a>
 								{% endfor %}
 							{% endif %}
 							</div>
@@ -797,7 +801,7 @@ font-family: ArabeyesQr, Scheherazade;
 			  {% trans %} to {% endtrans %}  {{ results.search.interval.end }}
 			  {% trans %} of {% endtrans %}  {{ results.search.interval.total }} )
 			</h2><br/>
-			
+		
 			{% for ayaresult_id, ayaresult_content in  	results.search.ayas.items() %}
 			    <fieldset class='main_re_item'>
 				  <legend class='main_re_item_title'  >

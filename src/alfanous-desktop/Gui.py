@@ -241,7 +241,7 @@ class QUI( Ui_MainWindow ):
         self.o_results.setHtml("<img src=\":/resources/alfanous.png\" /> ")
         self.o_results.setObjectName("o_results")
         self.verticalLayout33.addWidget(self.o_results)
-        QtCore.QObject.connect( self.o_results, QtCore.SIGNAL( "linkIsClicked()" ), self.link_is_clicked )
+        self.o_results.page().setLinkDelegationPolicy(QtWebKit.QWebPage.DelegateAllLinks)
 
     def setupUi( self, MainWindow ):
         super( QUI, self ).setupUi( MainWindow )
@@ -383,6 +383,8 @@ class QUI( Ui_MainWindow ):
         QtCore.QObject.connect( self.o_add2query_misc, QtCore.SIGNAL( "clicked()" ), self.add2query_misc )
         QtCore.QObject.connect( self.o_add2query_predefined, QtCore.SIGNAL( "clicked()" ), self.add2query_predefined )
 
+        QtCore.QObject.connect( self.o_results, QtCore.SIGNAL( "linkClicked(QUrl)" ), self.link_is_clicked )
+
 
         self.sura_list =  ["%s (%s)" % t for t in zip(RAWoutput._surates["Arabic"], RAWoutput._surates["Romanized"])] if self.direction == "RTL" \
             else  ["%s (%s)" % t for t in zip(RAWoutput._surates["Romanized"],RAWoutput._surates["English"])]
@@ -415,8 +417,10 @@ class QUI( Ui_MainWindow ):
 		self.o_query.setCurrentIndex(self.o_query.currentIndex ()-1)
 		self.search_no_undo(log = False)
 
-    def link_is_clicked():
-        pass
+    def link_is_clicked(self, url):
+        new_query = url.toString()
+        self.o_query.setEditText(new_query)
+        self.search_all()
 
     def search_all( self, page = 1 , log = True):
         """
