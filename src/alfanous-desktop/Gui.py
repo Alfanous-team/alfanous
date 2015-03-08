@@ -277,7 +277,8 @@ class QUI( Ui_MainWindow ):
         # make options->translations as a radio button
         self.translation_group = QtGui.QActionGroup( MainWindow )
         self.translation_group.addAction(self.actionTranslationNone)
-        for key, val in RAWoutput._translations.items():
+        self.translation_group.addAction(self.actionTranslationDefault)
+        for key, val in sorted(RAWoutput._translations.items()):
             translation_action = QtGui.QAction(MainWindow)
             translation_action.setCheckable(True)
             translation_action.setChecked(False)
@@ -465,9 +466,11 @@ class QUI( Ui_MainWindow ):
                  "aya_theme_info":  self.actionAya_Info.isChecked(),
                  "aya_stat_info":  self.actionAya_Info.isChecked(),
                  "aya_sajda_info":  self.actionAya_Info.isChecked(),
-                 "translation": "" if self.actionTranslationNone.isChecked() else self.translation_group.checkedAction().text().split("|")[1][0:],
+                 "translation": "en.shakir"  if self.actionTranslationDefault.isChecked() else "" if self.actionTranslationNone.isChecked() else self.translation_group.checkedAction().text().split("|")[1][0:],
                  "fuzzy": self.o_autospell.isChecked(),
                  "word_info": self.actionWord_Info.isChecked(),
+                 "romanization":"iso"
+
                  }
         self.Queries.insert( 0, search_flags )
         results = RAWoutput.do( search_flags )

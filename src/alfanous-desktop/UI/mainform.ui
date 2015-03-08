@@ -946,15 +946,6 @@ QSpinBox::down-button:pressed:enabled, QDoubleSpinBox::down-button:pressed:enabl
      <addaction name="actionpp50"/>
      <addaction name="actionpp100"/>
     </widget>
-    <widget class="QMenu" name="menuTranslation">
-     <property name="enabled">
-      <bool>true</bool>
-     </property>
-     <property name="title">
-      <string>Translation</string>
-     </property>
-     <addaction name="actionTranslationNone"/>
-    </widget>
     <widget class="QMenu" name="menuStyle">
      <property name="title">
       <string>Style</string>
@@ -1042,6 +1033,17 @@ QSpinBox::down-button:pressed:enabled, QDoubleSpinBox::down-button:pressed:enabl
      <addaction name="actionIndonesian"/>
      <addaction name="actionMalay"/>
      <addaction name="actionSpanish"/>
+    </widget>
+    <widget class="QMenu" name="menuTranslation">
+     <property name="enabled">
+      <bool>true</bool>
+     </property>
+     <property name="title">
+      <string>Translation</string>
+     </property>
+     <addaction name="actionTranslationNone"/>
+     <addaction name="actionTranslationDefault"/>
+     <addaction name="separator"/>
     </widget>
     <addaction name="menuOrder_by"/>
     <addaction name="separator"/>
@@ -1157,7 +1159,7 @@ QSpinBox::down-button:pressed:enabled, QDoubleSpinBox::down-button:pressed:enabl
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>276</width>
+          <width>312</width>
           <height>331</height>
          </rect>
         </property>
@@ -1340,7 +1342,7 @@ QSpinBox::down-button:pressed:enabled, QDoubleSpinBox::down-button:pressed:enabl
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>276</width>
+          <width>295</width>
           <height>280</height>
          </rect>
         </property>
@@ -1566,8 +1568,8 @@ QSpinBox::down-button:pressed:enabled, QDoubleSpinBox::down-button:pressed:enabl
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>276</width>
-          <height>165</height>
+          <width>312</width>
+          <height>158</height>
          </rect>
         </property>
         <attribute name="label">
@@ -1750,7 +1752,7 @@ QSpinBox::down-button:pressed:enabled, QDoubleSpinBox::down-button:pressed:enabl
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>276</width>
+          <width>295</width>
           <height>168</height>
          </rect>
         </property>
@@ -1988,7 +1990,7 @@ QSpinBox::down-button:pressed:enabled, QDoubleSpinBox::down-button:pressed:enabl
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>276</width>
+          <width>295</width>
           <height>170</height>
          </rect>
         </property>
@@ -2247,7 +2249,7 @@ QSpinBox::down-button:pressed:enabled, QDoubleSpinBox::down-button:pressed:enabl
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>276</width>
+          <width>295</width>
           <height>200</height>
          </rect>
         </property>
@@ -2509,7 +2511,7 @@ QSpinBox::down-button:pressed:enabled, QDoubleSpinBox::down-button:pressed:enabl
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>276</width>
+          <width>295</width>
           <height>198</height>
          </rect>
         </property>
@@ -3105,7 +3107,7 @@ QSpinBox::down-button:pressed:enabled, QDoubleSpinBox::down-button:pressed:enabl
     <bool>true</bool>
    </property>
    <property name="checked">
-    <bool>true</bool>
+    <bool>false</bool>
    </property>
    <property name="text">
     <string>None</string>
@@ -3311,7 +3313,7 @@ QSpinBox::down-button:pressed:enabled, QDoubleSpinBox::down-button:pressed:enabl
      <normaloff>:/resources/editpaste.png</normaloff>:/resources/editpaste.png</iconset>
    </property>
    <property name="text">
-    <string notr="true">Copy Query</string>
+    <string>Copy Query</string>
    </property>
   </action>
   <action name="actionCopy_Page">
@@ -3662,6 +3664,17 @@ QSpinBox::down-button:pressed:enabled, QDoubleSpinBox::down-button:pressed:enabl
    </property>
    <property name="toolTip">
     <string notr="true">Albanian</string>
+   </property>
+  </action>
+  <action name="actionTranslationDefault">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Default</string>
    </property>
   </action>
  </widget>
