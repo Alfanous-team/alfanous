@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Alfanous\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2015-03-03 02:51+0100\n"
+"POT-Creation-Date: 2015-03-07 23:42+0100\n"
 "PO-Revision-Date: 2015-03-04 08:10+0000\n"
 "Last-Translator: amy sidra <amysidra@gmail.com>\n"
 "Language-Team: Indonesian (http://www.transifex.com/projects/p/alfanous/language/id/)\n"
@@ -30,29 +30,29 @@ msgstr "direkomendasikan"
 msgid "obliged"
 msgstr "dipaksa"
 
-#: Gui.py:248 build/lib.linux-i686-2.7/alfanousDesktop/Gui.py:248
+#: Gui.py:250 build/lib.linux-i686-2.7/alfanousDesktop/Gui.py:248
 #: templates/aya_results.html:1
 msgid "LTR"
 msgstr "LTR"
 
-#: Gui.py:511 build/lib.linux-i686-2.7/alfanousDesktop/Gui.py:511
+#: Gui.py:522 build/lib.linux-i686-2.7/alfanousDesktop/Gui.py:511
 msgid "Applying skin"
 msgstr "Sedang mengaplikasikan tema"
 
-#: Gui.py:511 build/lib.linux-i686-2.7/alfanousDesktop/Gui.py:511
+#: Gui.py:522 build/lib.linux-i686-2.7/alfanousDesktop/Gui.py:511
 msgid "You should restart application in order for the skin to take effect"
 msgstr "Silahkan nyalakan ulang aplikasi ini untuk melihat perubahannya"
 
-#: Gui.py:520 build/lib.linux-i686-2.7/alfanousDesktop/Gui.py:520
+#: Gui.py:531 build/lib.linux-i686-2.7/alfanousDesktop/Gui.py:520
 msgid "Applying language"
 msgstr "Sedang mengaplikasikan bahasa"
 
-#: Gui.py:520 build/lib.linux-i686-2.7/alfanousDesktop/Gui.py:520
+#: Gui.py:531 build/lib.linux-i686-2.7/alfanousDesktop/Gui.py:520
 msgid ""
 "You should restart application in order for the language to take effect"
 msgstr "Silahkan nyalakan kembali aplikasi anda untuk melihat perubahannya"
 
-#: Gui.py:717 build/lib.linux-i686-2.7/alfanousDesktop/Gui.py:717
+#: Gui.py:749 build/lib.linux-i686-2.7/alfanousDesktop/Gui.py:717
 msgid "Alfanous_Results_Page_"
 msgstr "Halaman_Hasil_Alfanous"
 
