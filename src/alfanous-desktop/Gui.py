@@ -137,7 +137,8 @@ class QUI( Ui_MainWindow ):
                 "fr": self.actionFrench.setChecked,
                 "id": self.actionIndonesian.setChecked,
                 "es": self.actionSpanish.setChecked,
-                "ms": self.actionMalay.setChecked
+                "ms": self.actionMalay.setChecked,
+                "sq": self.actionAlbanian.setChecked
                 }
         languages[self.language](True)
 
@@ -240,6 +241,7 @@ class QUI( Ui_MainWindow ):
         self.o_results.setHtml("<img src=\":/resources/alfanous.png\" /> ")
         self.o_results.setObjectName("o_results")
         self.verticalLayout33.addWidget(self.o_results)
+        self.o_results.page().setLinkDelegationPolicy(QtWebKit.QWebPage.DelegateAllLinks)
 
     def setupUi( self, MainWindow ):
         super( QUI, self ).setupUi( MainWindow )
@@ -275,7 +277,8 @@ class QUI( Ui_MainWindow ):
         # make options->translations as a radio button
         self.translation_group = QtGui.QActionGroup( MainWindow )
         self.translation_group.addAction(self.actionTranslationNone)
-        for key, val in RAWoutput._translations.items():
+        self.translation_group.addAction(self.actionTranslationDefault)
+        for key, val in sorted(RAWoutput._translations.items()):
             translation_action = QtGui.QAction(MainWindow)
             translation_action.setCheckable(True)
             translation_action.setChecked(False)
@@ -350,6 +353,8 @@ class QUI( Ui_MainWindow ):
         QtCore.QObject.connect( self.actionIndonesian, QtCore.SIGNAL( "triggered()" ), lambda: self.changeLanguage("id") )
         QtCore.QObject.connect( self.actionSpanish, QtCore.SIGNAL( "triggered()" ), lambda: self.changeLanguage("es") )
         QtCore.QObject.connect( self.actionMalay, QtCore.SIGNAL( "triggered()" ), lambda: self.changeLanguage("ms") )
+        QtCore.QObject.connect( self.actionAlbanian, QtCore.SIGNAL( "triggered()" ), lambda: self.changeLanguage("sq") )
+        
         QtCore.QObject.connect( self.actionpp10, QtCore.SIGNAL( "triggered()" ), self.changePERPAGE )
         QtCore.QObject.connect( self.actionpp20, QtCore.SIGNAL( "triggered()" ), self.changePERPAGE )
         QtCore.QObject.connect( self.actionpp50, QtCore.SIGNAL( "triggered()" ), self.changePERPAGE )
@@ -377,12 +382,18 @@ class QUI( Ui_MainWindow ):
         QtCore.QObject.connect( self.o_add2query_subject, QtCore.SIGNAL( "clicked()" ), self.add2query_subject )
         QtCore.QObject.connect( self.o_add2query_word, QtCore.SIGNAL( "clicked()" ), self.add2query_word )
         QtCore.QObject.connect( self.o_add2query_misc, QtCore.SIGNAL( "clicked()" ), self.add2query_misc )
+        QtCore.QObject.connect( self.o_add2query_predefined, QtCore.SIGNAL( "clicked()" ), self.add2query_predefined )
+
+        QtCore.QObject.connect( self.o_results, QtCore.SIGNAL( "linkClicked(QUrl)" ), self.link_is_clicked )
+
 
         self.sura_list =  ["%s (%s)" % t for t in zip(RAWoutput._surates["Arabic"], RAWoutput._surates["Romanized"])] if self.direction == "RTL" \
             else  ["%s (%s)" % t for t in zip(RAWoutput._surates["Romanized"],RAWoutput._surates["English"])]
         self.o_sura_name.addItems( self.sura_list )
+        self.o_predefined_sura.addItems(RAWoutput._surates["Arabic"] if self.direction == "RTL" else RAWoutput._surates["Romanized"] )
         self.o_chapter.addItems( RAWoutput._chapters )
         self.o_word_root.addItems( RAWoutput._roots )
+        self.o_predefined_root.addItems(RAWoutput._roots)
         self.load_config()
 
     def copy_query(self):
@@ -406,6 +417,11 @@ class QUI( Ui_MainWindow ):
     def redo_query(self):
 		self.o_query.setCurrentIndex(self.o_query.currentIndex ()-1)
 		self.search_no_undo(log = False)
+
+    def link_is_clicked(self, url):
+        new_query = url.toString()
+        self.o_query.setEditText(new_query)
+        self.search_all()
 
     def search_all( self, page = 1 , log = True):
         """
@@ -450,9 +466,11 @@ class QUI( Ui_MainWindow ):
                  "aya_theme_info":  self.actionAya_Info.isChecked(),
                  "aya_stat_info":  self.actionAya_Info.isChecked(),
                  "aya_sajda_info":  self.actionAya_Info.isChecked(),
-                 "translation": "" if self.actionTranslationNone.isChecked() else self.translation_group.checkedAction().text().split("|")[1][0:],
+                 "translation": "en.shakir"  if self.actionTranslationDefault.isChecked() else "" if self.actionTranslationNone.isChecked() else self.translation_group.checkedAction().text().split("|")[1][0:],
                  "fuzzy": self.o_autospell.isChecked(),
                  "word_info": self.actionWord_Info.isChecked(),
+                 "romanization":"iso"
+
                  }
         self.Queries.insert( 0, search_flags )
         results = RAWoutput.do( search_flags )
@@ -535,8 +553,6 @@ class QUI( Ui_MainWindow ):
         if text:
             if self.o_synonyms.isChecked():
                 for word in words:filter += " ~" + word
-            elif self.o_antonyms.isChecked():
-                for word in words:filter = " #" + word
             elif self.o_orthograph.isChecked():
                 for word in words: filter = " %" + word
             elif self.o_vocalization.isChecked():
@@ -652,6 +668,29 @@ class QUI( Ui_MainWindow ):
             self.o_query.setEditText( newquery )
 
 
+    def add2query_predefined( self ):
+        """ Predefined Queries in Advanced search panel """
+        filter_ = u""
+        if self.o_predefined_goto.isChecked():
+            if self.direction == "RTL":
+                filter_ = u'سورة:"%s" +  رقم_الآية:%d' % (self.o_predefined_sura.currentText() , self.o_predefined_aya.value())
+            else:
+                filter_ = u'sura:"%s" +  aya_id:%d' % (self.o_predefined_sura.currentText() , self.o_predefined_aya.value()) 
+        elif self.o_predefined_all_deriv.isChecked():
+            filter_ = ">>" + self.o_predefined_root.currentText().strip("\t ")
+        elif self.o_predefined_respect_tashkeel.isChecked():
+            filter_ = ( u"آية_:'" if self.direction == "RTL" else u"aya_:'" ) + self.o_predefined_vocalized_word.text() + "'"
+        elif self.o_predefined_longest_words.isChecked():
+            filter_ = u"؟؟؟؟؟؟؟؟؟؟؟" if self.direction == "RTL" else "???????????"
+        elif self.o_predefined_shortest_words.isChecked():
+            filter_ = u"؟" if self.direction == "RTL" else u"?"
+        elif self.o_predefined_all_sajadate.isChecked():
+            filter_ = u"سجدة:نعم" if self.direction == "RTL" else u"sajda:نعم"
+
+        newquery = relate( self.o_query.currentText(), filter_, 1 )
+        if filter_:
+            self.o_query.setEditText( newquery )
+
     def add2query_word( self ):
         filter_ = ""
         root = unicode( self.o_word_root.currentText() )
@@ -719,7 +758,7 @@ class QUI( Ui_MainWindow ):
         preview_dlg = QtGui.QPrintPreviewDialog(printer)
         preview_dlg.paintRequested.connect(self.printing_results)
         preview_dlg.exec_()
-        
+
     def printing_results(self, printer):
         self.o_results.print_(printer)
 

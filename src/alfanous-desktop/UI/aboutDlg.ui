@@ -26,7 +26,7 @@
    <item>
     <widget class="QTabWidget" name="tabWidget">
      <property name="currentIndex">
-      <number>4</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="tab">
       <attribute name="title">
@@ -295,7 +295,8 @@ p, li { white-space: pre-wrap; }
 &lt;li style=&quot; font-family:'Helvetica Neue,Helvetica,Segoe UI,Arial,freesans,sans-serif'; color:#333333;&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:16px; font-weight:600;&quot;&gt;Indonesian&lt;/span&gt;&lt;span style=&quot; font-size:16px;&quot;&gt;: Amy Cidra, Arif Rahman Hakim, Muslih Al aqaad&lt;/span&gt;&lt;/li&gt;
 &lt;li style=&quot; font-family:'Helvetica Neue,Helvetica,Segoe UI,Arial,freesans,sans-serif'; color:#333333;&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:16px; font-weight:600;&quot;&gt;Malay&lt;/span&gt;&lt;span style=&quot; font-size:16px;&quot;&gt;: Muhammad Fariz&lt;/span&gt;&lt;/li&gt;
 &lt;li style=&quot; font-family:'Helvetica Neue,Helvetica,Segoe UI,Arial,freesans,sans-serif'; color:#333333;&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:16px; font-weight:600;&quot;&gt;Spanish&lt;/span&gt;&lt;span style=&quot; font-size:16px;&quot;&gt;: Ricardo Hermosilla&lt;/span&gt;&lt;/li&gt;
-&lt;li style=&quot; font-family:'Helvetica Neue,Helvetica,Segoe UI,Arial,freesans,sans-serif'; font-size:16px; color:#333333;&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:16px; font-weight:600;&quot;&gt;French: &lt;/span&gt;&lt;span style=&quot; font-size:16px;&quot;&gt;Mohamed Nadjib Mami, Mahmoud Halit&lt;/span&gt;&lt;/li&gt;&lt;/ul&gt;
+&lt;li style=&quot; font-family:'Helvetica Neue,Helvetica,Segoe UI,Arial,freesans,sans-serif'; font-size:16px; color:#333333;&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:16px; font-weight:600;&quot;&gt;French: &lt;/span&gt;&lt;span style=&quot; font-size:16px;&quot;&gt;Mohamed Nadjib Mami, Mahmoud Halit&lt;/span&gt;&lt;/li&gt;
+&lt;li style=&quot; font-family:'Helvetica Neue,Helvetica,Segoe UI,Arial,freesans,sans-serif'; font-size:16px; color:#333333;&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:16px; font-weight:600;&quot;&gt;Albanian: &lt;/span&gt;&lt;span style=&quot; font-size:16px;&quot;&gt;'lavhal'&lt;/span&gt;&lt;/li&gt;&lt;/ul&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
          </property>
          <property name="overwriteMode">

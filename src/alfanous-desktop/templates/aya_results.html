@@ -649,6 +649,10 @@ direction: rtl;
 font-family: ArabeyesQr, Scheherazade;
 }
 
+a {
+      text-decoration:none;
+   }
+
 </style>
 <div style="direction:{{ direction }};text-align:{{ align }}">
 {% if results.error.code == 0  %} 
@@ -663,7 +667,7 @@ font-family: ArabeyesQr, Scheherazade;
 				<div class='details_label word_info0'>  {{ "word" }} |  {{ suggestion_key }} </div>
 				{% for suggestion_sub_item  in suggestion_item %}
 	
-							<div class='details_label word_stat1 clickable'> {{ suggestion_sub_item }}</div>
+							<a href="{{  suggestion_sub_item  }}"><div class='details_label word_stat1 clickable'> {{ suggestion_sub_item }}</div></a>
 	
 				{% else %}
 					<div class='details_label word_stat0'> {{ "no suggestions!" }} </div>
@@ -693,14 +697,14 @@ font-family: ArabeyesQr, Scheherazade;
 						  <div class='word_details'>
 						    <span style=' font-size:14pt; color:#00aa00;'> {{ wordcpt }}.  </span>
 						
-							<div class='details_label word_info0 clickable'> {% trans %} word {% endtrans %}  | {{ wordstat.word }} {% if wordstat.romanization %} ( {{ wordstat.romanization }} ) {%  endif %} </div>
+							<a href="{{ wordstat.word }}"><div class='details_label word_info0 clickable'> {% trans %} word {% endtrans %}  | {{ wordstat.word }} {% if wordstat.romanization %} ( {{ wordstat.romanization }} ) {%  endif %} </div></a>
 							<div class='details_label word_stat0'> {% trans %}occurances{% endtrans %}  | {{ wordstat.nb_matches }} </div>
 							<div class='details_label word_stat1'> {% trans %} ayates{% endtrans %}  |  {{ wordstat.nb_ayas }} </div>
 							<br />
 							<div class='word_extra_details'>
 							<div class='details_label word_vocalization_nb'> {% trans %}vocalizations{% endtrans %}  | {{ wordstat.nb_vocalizations }} </div>
 							{% for vocalization in wordstat.vocalizations %} 
-								<div class='details_label word_vocalization clickable'> {{ vocalization }} </div>
+							<a href="{{ 'آية_:\'' if dir=='RTL' else 'aya_:\'' }}{{ vocalization }}'">	<div class='details_label word_vocalization clickable'> {{ vocalization }} </div></a>
 							{% endfor %}
 							
 							</div>
@@ -719,7 +723,7 @@ font-family: ArabeyesQr, Scheherazade;
 								<div class='details_label word_derivation_nb'> {% trans %} derivations {% endtrans %}  | {{ wordstat.nb_derivations }} </div> 
 								{% for derivation in wordstat.derivations %} 
 								
-									<div class='details_label word_derivation clickable'> {{ derivation }} </div>
+								<a href="{{ derivation }}"><div class='details_label word_derivation clickable'> {{ derivation }} </div></a>
 								{% endfor %}
 							{% endif %}
 							</div>
@@ -797,7 +801,7 @@ font-family: ArabeyesQr, Scheherazade;
 			  {% trans %} to {% endtrans %}  {{ results.search.interval.end }}
 			  {% trans %} of {% endtrans %}  {{ results.search.interval.total }} )
 			</h2><br/>
-			
+		
 			{% for ayaresult_id, ayaresult_content in  	results.search.ayas.items() %}
 			    <fieldset class='main_re_item'>
 				  <legend class='main_re_item_title'  >
@@ -842,7 +846,9 @@ font-family: ArabeyesQr, Scheherazade;
 					  		 <span class='quran_decoration prev_aya'>
 							 ] </span>
 							 <span style='direction:ltr;' class='prev_aya'>
-								({{ ayaresult_content.aya.prev_aya.sura_arabic }} {{ ayaresult_content.aya.prev_aya.id }})  
+                                <a href='{{ ("سورة:\"%s\"  + رقم_الآية:%d"  if dir=="RTL" else "sura_arabic:\"%s\"  + aya_id:%d") % (ayaresult_content.aya.prev_aya.sura_arabic, ayaresult_content.aya.prev_aya.id )}}'>
+                                    ({{ ayaresult_content.aya.prev_aya.sura_arabic }} {{ ayaresult_content.aya.prev_aya.id }})
+                                </a>
 					  		</span>
 					  		 </p>
 					  		
@@ -860,9 +866,9 @@ font-family: ArabeyesQr, Scheherazade;
 					 <span class='quran_decoration main_aya'>
 					 ] </span>
 					  <span style='direction:rtl;' class='main_aya'>
-					  		   
+					  	<a href='{{ ("سورة:\"%s\"  + رقم_الآية:%d"  if dir=="RTL" else "sura_arabic:\"%s\"  + aya_id:%d") % (ayaresult_content.identifier.sura_arabic_name, ayaresult_content.aya.id )}}'>
 											({{ ayaresult_content.identifier.sura_arabic_name }} {{ ayaresult_content.aya.id }})  
-							
+                        </a>
 					   
 					  </span>
 					  <br />
@@ -880,9 +886,9 @@ font-family: ArabeyesQr, Scheherazade;
 							 ] </span>
 							 <span style='direction:ltr;' class='next_aya'>
 							   
-					
+                             <a href='{{ ("سورة:\"%s\"  + رقم_الآية:%d"  if dir=="RTL" else "sura_arabic:\"%s\"  + aya_id:%d") % (ayaresult_content.aya.next_aya.sura_arabic , ayaresult_content.aya.next_aya.id )}}'>
 							({{ ayaresult_content.aya.next_aya.sura_arabic }} {{ ayaresult_content.aya.next_aya.id }}) 
-							
+							</a>
 							</span>
 					  		 </p>
 					  		
@@ -902,19 +908,23 @@ font-family: ArabeyesQr, Scheherazade;
 						  <p style='text-align:center;' class='theme_details' >
 						  	<span style=' color:#808080;'>
 						  	{% if ayaresult_content.theme.chapter %}
+						  		<a href='{{ ("فصل:\"%s\""  if dir=="RTL" else "chapter:\"%s\"") % (ayaresult_content.theme.chapter)}}'>
 						  		{% trans %} Chapter {% endtrans %}  :  
 										  		<b> {{ ayaresult_content.theme.chapter }} </b>
+                                </a>
 						  	{% endif %}
 							{% if ayaresult_content.theme.topic %} 
+							<a href='{{ ("فرع:\"%s\""  if dir=="RTL" else "topic:\"%s\"") % (ayaresult_content.theme.topic)}}'>
 								{% trans %} Topic {% endtrans %}  :  
-				
 								<b> {{ ayaresult_content.theme.topic }} </b>
+							</a>
 							{% endif %}
 							{% if ayaresult_content.theme.subtopic %}
+							<a href='{{ ("باب:\"%s\""  if dir=="RTL" else "subtopic:\"%s\"") % (ayaresult_content.theme.subtopic)}}'>
 								{% trans %} Subtopic {% endtrans %} :  
-						
 								<b> {{ ayaresult_content.theme.subtopic }} </b> 
-							{% endif %}			
+							</a>
+							{% endif %}	
 							</span>
 						  </p>
 					   {% endif %}
@@ -922,25 +932,35 @@ font-family: ArabeyesQr, Scheherazade;
 					  {% if ayaresult_content.stat or 	ayaresult_content.position %}		
 						  <div class='aya_details' style='text-align:center;'>
 						  	{% if ayaresult_content.stat %}
-			
-							  	<div class='details_label aya_stat0 clickable'> {% trans %}words{% endtrans %}  | {{ ayaresult_content.stat.words }} </div>
-				
+                                <a href='{{ ("ك_آ:%s"  if dir=="RTL" else "a_w:%s") % (ayaresult_content.stat.words)}}'>
+                                    <div class='details_label aya_stat0 clickable'> {% trans %}words{% endtrans %}  | {{ ayaresult_content.stat.words }} </div>
+							  	</a>
+                                <a href='{{ ("ح_آ:%s"  if dir=="RTL" else "a_l:%s") % (ayaresult_content.stat.letters)}}'>
 								<div class='details_label aya_stat1 clickable'> {% trans %}letters{% endtrans %}  | {{ ayaresult_content.stat.letters }} </div>
-						
+								</a>
+                                <a href='{{ ("ج_آ:%s"  if dir=="RTL" else "a_g:%s") % (ayaresult_content.stat.godnames)}}'>
 								<div class='details_label aya_stat2 clickable'> {% trans %}divine names{% endtrans %}  | {{ ayaresult_content.stat.godnames }} </div>
+								</a>
 							{% endif %}
 							{% if ayaresult_content.position %}
-		
-								<div class='details_label aya_pos0 clickable filter'> {% trans %} manzil {% endtrans %}  | {{ ayaresult_content.position.manzil }} </div>
-								<div class='details_label aya_pos1 clickable filter'> {% trans %} hizb {% endtrans %}  | {{ ayaresult_content.position.hizb }} </div>
-								<div class='details_label aya_pos2'> {% trans %} quart {% endtrans %}  | {{ ayaresult_content.position.rub + 1 }} </div>		
+                                <a href='{{ ("منزل:%s"  if dir=="RTL" else "manzil:%s") % (ayaresult_content.position.manzil)}}'>
+                                    <div class='details_label aya_pos0 clickable filter'> {% trans %} manzil {% endtrans %}  | {{ ayaresult_content.position.manzil }} </div>
+                                </a>
+                                <a href='{{ ("حزب:%s"  if dir=="RTL" else "hizb:%s") % (ayaresult_content.position.hizb)}}'>
+                                    <div class='details_label aya_pos1 clickable filter'> {% trans %} hizb {% endtrans %}  | {{ ayaresult_content.position.hizb }} </div>
+								</a>
+								<div class='details_label aya_pos2'> {% trans %} quart {% endtrans %}  | {{ ayaresult_content.position.rub + 1 }} </div>
+								<a href='{{ ("صفحة:%s"  if dir=="RTL" else "page:%s") % (ayaresult_content.position.page)}}'>
 								<div class='details_label aya_pos3 clickable filter'> {% trans %} page {% endtrans %}  | {{ ayaresult_content.position.page }} </div>
+								</a>
 							{% endif %}
 						  </div><br />
 					  {% endif %}
 					  {% if  ayaresult_content.sajda.exist %}
 					  		<div class='aya_details' style='text-align:center;'>
-					  		<div class='details_label aya_sajda_exist clickable'> {% trans %} sajda {% endtrans %}  </div>
+					  		<a href='{{ ("سجدة:نعم"  if dir=="RTL" else "sajda:نعم") }}'>
+                                <div class='details_label aya_sajda_exist clickable'> {% trans %} sajda {% endtrans %}  </div>
+					  		</a>
 							<div class='details_label aya_sajda_id'> {% trans %} n° {% endtrans %}  | {{ ayaresult_content.sajda.id }} </div>
 						    <div class='details_label aya_sajda_type'> {% trans %} type {% endtrans %}  | {{ ayaresult_content.sajda.type }}</div>
 							</div>

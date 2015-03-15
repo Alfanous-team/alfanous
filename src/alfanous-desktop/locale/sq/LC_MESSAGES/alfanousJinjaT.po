@@ -1,99 +1,94 @@
-# None translations for Alfanous.
+# Translations template for Alfanous.
 # Copyright (C) 2015 ORGANIZATION
 # This file is distributed under the same license as the Alfanous project.
-#
+# 
 # Translators:
-# Abdelmonam Kouka <abdelmonam.kouka@gmail.com>, 2011
-# Assem Chelli <assem.ch@gmail.com>, 2011,2015
-# FIRST AUTHOR <EMAIL@ADDRESS>, 2015
-# Ghazi Triki <ghazi.nocturne@gmail.com>, 2013
-# Karim Oulad Chalha <herr.linux88@gmail.com>, 2011
-# Zarrabi <zarrabi@scs.carleton.ca>, 2011
+# lav hal <lavdimhalilaj@hotmail.com>, 2015
 msgid ""
 msgstr ""
-"Project-Id-Version: Alfanous \n"
+"Project-Id-Version: Alfanous\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2015-03-07 23:42+0100\n"
-"PO-Revision-Date: 2015-03-03 02:14+0000\n"
-"Last-Translator: Assem Chelli <assem.ch@gmail.com>\n"
-"Language-Team: Arabic "
-"(http://www.transifex.com/projects/p/alfanous/language/ar/)\n"
-"Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : "
-"n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5\n"
+"POT-Creation-Date: 2015-03-03 02:51+0100\n"
+"PO-Revision-Date: 2015-03-06 22:13+0000\n"
+"Last-Translator: lav hal <lavdimhalilaj@hotmail.com>\n"
+"Language-Team: Albanian (http://www.transifex.com/projects/p/alfanous/language/sq/)\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=utf-8\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 1.3\n"
+"Language: sq\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: Gui.py:81 build/lib.linux-i686-2.7/alfanousDesktop/Gui.py:81
 msgid "recommended"
-msgstr "مستحبة"
+msgstr "rekomanduar"
 
 #: Gui.py:81 build/lib.linux-i686-2.7/alfanousDesktop/Gui.py:81
 msgid "obliged"
-msgstr "واجبة"
+msgstr "obliguar"
 
-#: Gui.py:250 build/lib.linux-i686-2.7/alfanousDesktop/Gui.py:248
+#: Gui.py:248 build/lib.linux-i686-2.7/alfanousDesktop/Gui.py:248
 #: templates/aya_results.html:1
 msgid "LTR"
-msgstr "RTL"
+msgstr "LTR"
 
-#: Gui.py:522 build/lib.linux-i686-2.7/alfanousDesktop/Gui.py:511
+#: Gui.py:511 build/lib.linux-i686-2.7/alfanousDesktop/Gui.py:511
 msgid "Applying skin"
-msgstr "تطبيق السمة"
+msgstr "Pamja duke u aplikuar"
 
-#: Gui.py:522 build/lib.linux-i686-2.7/alfanousDesktop/Gui.py:511
+#: Gui.py:511 build/lib.linux-i686-2.7/alfanousDesktop/Gui.py:511
 msgid "You should restart application in order for the skin to take effect"
-msgstr "عليك إعادة تشغيل التطبيق لكي تعمل السمة."
+msgstr "Që ndërrimi të ketë efekt, duhet të restartoni aplikacionin!"
 
-#: Gui.py:531 build/lib.linux-i686-2.7/alfanousDesktop/Gui.py:520
+#: Gui.py:520 build/lib.linux-i686-2.7/alfanousDesktop/Gui.py:520
 msgid "Applying language"
-msgstr "تطبيق اللغة"
+msgstr "Duke u ndërruar gjuha"
 
-#: Gui.py:531 build/lib.linux-i686-2.7/alfanousDesktop/Gui.py:520
-msgid "You should restart application in order for the language to take effect"
-msgstr "عليك إعادة تشغيل التطبيق لكي تطبق اللغة."
+#: Gui.py:520 build/lib.linux-i686-2.7/alfanousDesktop/Gui.py:520
+msgid ""
+"You should restart application in order for the language to take effect"
+msgstr "Që ndërrimi të ketë efekt, duhet të restartoni aplikacionin!"
 
-#: Gui.py:749 build/lib.linux-i686-2.7/alfanousDesktop/Gui.py:717
+#: Gui.py:717 build/lib.linux-i686-2.7/alfanousDesktop/Gui.py:717
 msgid "Alfanous_Results_Page_"
-msgstr "نتائج_الفانوس_صفحة_"
+msgstr "Alfanous_Rezultatet_"
 
 #: templates/aya_results.html:658
 msgid " Suggestions: "
-msgstr "الإقتراحات"
+msgstr "Sugjerimet:"
 
 #: templates/aya_results.html:680
 msgid "Words"
-msgstr "كلمات"
+msgstr "Fjaletë"
 
 #: templates/aya_results.html:682 templates/aya_results.html:825
 #: templates/aya_results.html:926
 msgid "words"
-msgstr "كلمات"
+msgstr "fjalët"
 
 #: templates/aya_results.html:685 templates/aya_results.html:697
 msgid "occurances"
-msgstr "مرات الورود"
+msgstr ""
 
 #: templates/aya_results.html:688 templates/aya_results.html:701
 msgid "vocalizations"
-msgstr "التشكيلات"
+msgstr "shiptimi"
 
 #: templates/aya_results.html:696
 msgid " word "
-msgstr "كلمة"
+msgstr "fjalë"
 
 #: templates/aya_results.html:698
 msgid " ayates"
-msgstr "الآيات"
+msgstr "ajetet"
 
 #: templates/aya_results.html:709
 msgid " synonyms "
-msgstr "المرادفات"
+msgstr "sinonimet"
 
 #: templates/aya_results.html:719
 msgid " derivations "
-msgstr "المشتقات"
+msgstr "derivimet"
 
 #: templates/aya_results.html:732
 msgid " Annotation "
@@ -101,11 +96,11 @@ msgstr ""
 
 #: templates/aya_results.html:733
 msgid " ID "
-msgstr "المعرف"
+msgstr "ID"
 
 #: templates/aya_results.html:734
 msgid " sura,aya "
-msgstr "سورة، آية"
+msgstr "surja,ajeti"
 
 #: templates/aya_results.html:736
 msgid " token "
@@ -113,142 +108,141 @@ msgstr ""
 
 #: templates/aya_results.html:739
 msgid " part "
-msgstr "جزء"
+msgstr ""
 
 #: templates/aya_results.html:742 templates/aya_results.html:819
 #: templates/aya_results.html:945
 msgid " type "
-msgstr "نوع"
+msgstr "tipi"
 
 #: templates/aya_results.html:745
 msgid " POS "
-msgstr ""
+msgstr "POS"
 
 #: templates/aya_results.html:748
 msgid " lemma "
-msgstr "جذع"
+msgstr ""
 
 #: templates/aya_results.html:751
 msgid " root "
-msgstr "جذر"
+msgstr "rrënja"
 
 #: templates/aya_results.html:754
 msgid " special "
-msgstr "خاص"
+msgstr "speciale"
 
 #: templates/aya_results.html:757
 msgid " aspect "
-msgstr ""
+msgstr "aspekt"
 
 #: templates/aya_results.html:760
 msgid " state "
-msgstr "حالة"
+msgstr "gjendja"
 
 #: templates/aya_results.html:763
 msgid " form "
-msgstr ""
+msgstr "forma"
 
 #: templates/aya_results.html:766
 msgid " case "
-msgstr ""
+msgstr "rast"
 
 #: templates/aya_results.html:769
 msgid " derivation "
-msgstr "إشتقاق"
+msgstr "derivimi"
 
 #: templates/aya_results.html:772
 msgid " person "
-msgstr "شخص"
+msgstr "personi"
 
 #: templates/aya_results.html:775
 msgid " number "
-msgstr "عدد"
+msgstr "numri"
 
 #: templates/aya_results.html:778
 msgid " gender "
-msgstr "جنس"
+msgstr "zhanri"
 
 #: templates/aya_results.html:781
 msgid " voice "
-msgstr ""
+msgstr "zëri"
 
 #: templates/aya_results.html:796
 msgid "Results"
-msgstr "النتائج"
+msgstr "Rezultatet"
 
 #: templates/aya_results.html:797
 msgid " to "
-msgstr "إلى"
+msgstr "deri"
 
 #: templates/aya_results.html:798
 msgid " of "
-msgstr "من"
+msgstr "të"
 
 #: templates/aya_results.html:805
 msgid " Result n° "
-msgstr "النتيجة رقم"
+msgstr " Rezultatet n° "
 
 #: templates/aya_results.html:813
 msgid " Sura "
-msgstr "سورة"
+msgstr "Surja"
 
 #: templates/aya_results.html:817 templates/aya_results.html:944
 msgid " n° "
-msgstr "رقم"
+msgstr " n° "
 
 #: templates/aya_results.html:820
 msgid " revelation_order "
-msgstr "ترتيب_التنزيل"
+msgstr "renditja e shpalljeve"
 
 #: templates/aya_results.html:821
 msgid " ayahs "
-msgstr "آيات"
+msgstr "ajetet"
 
 #: templates/aya_results.html:826 templates/aya_results.html:928
 msgid "letters"
-msgstr "حروف"
+msgstr "shkronjat"
 
 #: templates/aya_results.html:827 templates/aya_results.html:930
 msgid "divine names"
-msgstr "ألفاظ الجلالة"
+msgstr "emrat hyjnor"
 
 #: templates/aya_results.html:905
 msgid " Chapter "
-msgstr "الفصل"
+msgstr "Kapitulli"
 
 #: templates/aya_results.html:909
 msgid " Topic "
-msgstr "فرع"
+msgstr "Tema"
 
 #: templates/aya_results.html:914
 msgid " Subtopic "
-msgstr "الباب"
+msgstr "Nëntema"
 
 #: templates/aya_results.html:934
 msgid " manzil "
-msgstr "المنزل"
+msgstr ""
 
 #: templates/aya_results.html:935
 msgid " hizb "
-msgstr "الحزب"
+msgstr ""
 
 #: templates/aya_results.html:936
 msgid " quart "
-msgstr "الربع"
+msgstr ""
 
 #: templates/aya_results.html:937
 msgid " page "
-msgstr "الصفحة"
+msgstr "faqe"
 
 #: templates/aya_results.html:943
 msgid " sajda "
-msgstr "السجدة"
+msgstr ""
 
 #: templates/aya_results.html:962
 msgid "Sorry! there is no results for this search query"
-msgstr "عذرا! لا توجد نتائج لعبارة البحث هذه"
+msgstr "Na vjen keq! nuk ka rezultatet për këtë pyetosor"
 
 #: templates/aya_results.html:966
 msgid " Error  "
-msgstr "خطأ"
-
+msgstr "Gabim"
