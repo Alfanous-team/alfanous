@@ -124,7 +124,7 @@ Translation
 * Desktop application
 
   * Arabic: Abdelmonam Kouka, Assem Chelli, LionArt (ghazi.nocturne), Karim Oulad Chalha, Zarrabi
-  * Indonesian: Amy Cidra, Arif Rahman Hakim, Muslih Al aqaad
+  * Indonesian: Amy Sidra, Arif Rahman Hakim, Muslih Al aqaad
   * Malay: Muhammad Fariz
   * Spanish: Ricardo Hermosilla
   * French: Mohamed Nadjib Mami, Mahmoud Halit
@@ -134,7 +134,7 @@ Translation
 
   * Arabic: A~CH, Yasmine Houadjli, Merwan Ali
   * French: Zineb Pub, Yasmine Houadjli, Abdelkarim Aries, Nassim rehali, Nasreddine Cheniki
-  * Indonesian:  Ahmed Jumal , Amy cidra, Mahyuddin Susanto
+  * Indonesian:  Ahmed Jumal , Amy Sidra, Mahyuddin Susanto
   * Japanese: Abdelkarim Aries
   * Spanish: Khireddine Chekraoui 
   * Portuguese: Jonathan Da Fonseca
