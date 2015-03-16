@@ -238,7 +238,7 @@ class QUI( Ui_MainWindow ):
         self.o_results.setFont(font)
         self.o_results.setProperty("cursor", QtCore.Qt.IBeamCursor)
         self.o_results.setAutoFillBackground(False)
-        self.o_results.setHtml("<img src=\":/resources/alfanous.png\" /> ")
+        self.o_results.setHtml("""""")
         self.o_results.setObjectName("o_results")
         self.verticalLayout33.addWidget(self.o_results)
         self.o_results.page().setLinkDelegationPolicy(QtWebKit.QWebPage.DelegateAllLinks)

@@ -5,10 +5,9 @@
 
 ## Global Version of the project, must be updated in each significant change in 
 ## the API & Desktop Gui
-VERSION=0.7.10
+VERSION=0.7.13
 
 ## Next releases:
-# Beta [0.7.00~0.9.99], Basis [1.0], Silver[~], Golden[~], Crystal[~]
 RELEASE=$(VERSION)Kahraman
 
 ## API path, API contains all python packages 
