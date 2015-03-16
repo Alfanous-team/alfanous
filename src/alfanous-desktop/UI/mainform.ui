@@ -1014,6 +1014,17 @@ QSpinBox::down-button:pressed:enabled, QDoubleSpinBox::down-button:pressed:enabl
      <addaction name="actionStandard"/>
      <addaction name="actionUthmani"/>
     </widget>
+    <widget class="QMenu" name="menuTranslation">
+     <property name="enabled">
+      <bool>true</bool>
+     </property>
+     <property name="title">
+      <string>Translation</string>
+     </property>
+     <addaction name="actionTranslationNone"/>
+     <addaction name="actionTranslationDefault"/>
+     <addaction name="separator"/>
+    </widget>
     <widget class="QMenu" name="menuChoose_Language">
      <property name="enabled">
       <bool>true</bool>
@@ -1033,17 +1044,6 @@ QSpinBox::down-button:pressed:enabled, QDoubleSpinBox::down-button:pressed:enabl
      <addaction name="actionIndonesian"/>
      <addaction name="actionMalay"/>
      <addaction name="actionSpanish"/>
-    </widget>
-    <widget class="QMenu" name="menuTranslation">
-     <property name="enabled">
-      <bool>true</bool>
-     </property>
-     <property name="title">
-      <string>Translation</string>
-     </property>
-     <addaction name="actionTranslationNone"/>
-     <addaction name="actionTranslationDefault"/>
-     <addaction name="separator"/>
     </widget>
     <addaction name="menuOrder_by"/>
     <addaction name="separator"/>
@@ -1342,7 +1342,7 @@ QSpinBox::down-button:pressed:enabled, QDoubleSpinBox::down-button:pressed:enabl
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>295</width>
+          <width>312</width>
           <height>280</height>
          </rect>
         </property>
@@ -1752,7 +1752,7 @@ QSpinBox::down-button:pressed:enabled, QDoubleSpinBox::down-button:pressed:enabl
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>295</width>
+          <width>312</width>
           <height>168</height>
          </rect>
         </property>
@@ -1990,7 +1990,7 @@ QSpinBox::down-button:pressed:enabled, QDoubleSpinBox::down-button:pressed:enabl
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>295</width>
+          <width>312</width>
           <height>170</height>
          </rect>
         </property>
@@ -2249,7 +2249,7 @@ QSpinBox::down-button:pressed:enabled, QDoubleSpinBox::down-button:pressed:enabl
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>295</width>
+          <width>312</width>
           <height>200</height>
          </rect>
         </property>
@@ -2511,7 +2511,7 @@ QSpinBox::down-button:pressed:enabled, QDoubleSpinBox::down-button:pressed:enabl
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>295</width>
+          <width>312</width>
           <height>198</height>
          </rect>
         </property>
@@ -3559,7 +3559,7 @@ QSpinBox::down-button:pressed:enabled, QDoubleSpinBox::down-button:pressed:enabl
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>Arabic</string>
+    <string notr="true">Arabic</string>
    </property>
    <property name="toolTip">
     <string notr="true">العربية</string>
@@ -3573,7 +3573,7 @@ QSpinBox::down-button:pressed:enabled, QDoubleSpinBox::down-button:pressed:enabl
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>French</string>
+    <string notr="true">French</string>
    </property>
    <property name="toolTip">
     <string notr="true">Fr</string>
@@ -3660,7 +3660,7 @@ QSpinBox::down-button:pressed:enabled, QDoubleSpinBox::down-button:pressed:enabl
   </action>
   <action name="actionAlbanian">
    <property name="text">
-    <string>Albanian</string>
+    <string notr="true">Albanian</string>
    </property>
    <property name="toolTip">
     <string notr="true">Albanian</string>
