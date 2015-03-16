@@ -59,10 +59,11 @@ RELATIONS = ["", "", u"|", u"+", u"-"]
 # QT
 tr = lambda x: QtGui.QApplication.translate("Misc", x, None, QtGui.QApplication.UnicodeUTF8)
 # gettext
-_ = gettext.gettext
-n_ = gettext.ngettext
+gettext.bind_textdomain_codeset("alfanousJinjaT", "utf-8");
 gettext.bindtextdomain( "alfanousJinjaT" , LOCALPATH );
 gettext.textdomain( "alfanousJinjaT" );
+_ = gettext.gettext
+n_ = gettext.ngettext
 
 def get_language_from_config():
         config = ConfigObj( CONFIGPATH + "/config.ini", encoding="utf-8" )
@@ -75,7 +76,7 @@ lang = get_language_from_config()
 os.environ['LANGUAGE'] = lang
 os.environ['LANG'] = lang
 
-# Load Alfanous engine
+# Load Alfanous engi
 RAWoutput = Raw() # default paths
 
 SAJDA_TYPE = {u"مستحبة":_( u"recommended" ), u"واجبة":_( u"obliged" )}
@@ -526,7 +527,7 @@ class QUI( Ui_MainWindow ):
 
     def changeStyle( self, style ):
         self.style = style
-        mb = QtGui.QMessageBox(QtGui.QMessageBox.Warning, _("Applying skin"), _("You should restart application in order for the skin to take effect"), buttons = QtGui.QMessageBox.Ok)
+        mb = QtGui.QMessageBox(QtGui.QMessageBox.Warning, unicode(_(u"Applying skin")), unicode(_(u"You should restart application in order for the skin to take effect")), buttons = QtGui.QMessageBox.Ok)
         #mb.addButton(QtGui.QMessageBox.Cancel)
         #[, buttons=QMessageBox.NoButton[, parent=None[, flags=Qt.Dialog | Qt.MSWindowsFixedSizeDialogHint]]]
         ret = mb.exec_()
@@ -535,7 +536,7 @@ class QUI( Ui_MainWindow ):
 
     def changeLanguage( self, lang ):
         self.language = lang
-        mb = QtGui.QMessageBox(QtGui.QMessageBox.Warning,  _("Applying language"), _("You should restart application in order for the language to take effect"), buttons = QtGui.QMessageBox.Ok)
+        mb = QtGui.QMessageBox(QtGui.QMessageBox.Warning, unicode(_(u"Applying language")), unicode(_(u"You should restart application in order for the language to take effect")), buttons = QtGui.QMessageBox.Ok)
         #mb.addButton(QtGui.QMessageBox.Cancel)
         #[, buttons=QMessageBox.NoButton[, parent=None[, flags=Qt.Dialog | Qt.MSWindowsFixedSizeDialogHint]]]
         ret = mb.exec_()
@@ -753,7 +754,7 @@ class QUI( Ui_MainWindow ):
 
     def print_results( self ):
         printer = QtGui.QPrinter()
-        printer.setDocName( _( u"Alfanous_Results_Page_" ) + str( self.o_page.value() ) )
+        printer.setDocName( unicode(_( u"Alfanous_Results_Page_" )) + unicode( self.o_page.value() ) )
         printer.setPageSize( printer.A4 )
         preview_dlg = QtGui.QPrintPreviewDialog(printer)
         preview_dlg.paintRequested.connect(self.printing_results)
