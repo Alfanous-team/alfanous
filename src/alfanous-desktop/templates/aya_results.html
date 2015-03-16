@@ -405,9 +405,19 @@ a:hover{color: green;}
 	margin: 2px 5px 10px 5px;
 }
 
-.match {
-	color: #181;
-}
+/* Assem: Terms Static Highlighting colors */
+.match { color: #181; }
+.term0, .term9 { color: #F50; }
+.term1, .term10 { color: #f00; }
+.term2, .term11 { color: #f39; }
+.term3, .term12 { color: #811; }
+.term4, .term13 { color: #807; }
+.term5, .term14 { color: #660; }
+.term6, .term15 { color: #5C3; }
+.term7, .term16 { color: #444; }
+.term8, .term17 { color: #118; }
+
+
 
 .word_details, .word_extra_details, .sura_details, .aya_details {
 	margin: 5px 5px 0px 20px;
@@ -859,7 +869,13 @@ a {
 					 [ </span>
 					 
 					 <span  class='aya_words quran main_aya'>
-					  		 {{ ayaresult_content.aya.text }} 
+					  		 {% for aya_word in ayaresult_content.aya.text.split(" ") %}
+                                      {% if aya_word[0] in "<ct> " %}
+                                            {{ aya_word | safe }}
+                                        {% else %}
+                                            <a href="{{ aya_word }}">{{ aya_word }}</a>
+                                        {% endif %}
+					  		 {% endfor %}
 					  </span> 
 					 
 					  
