@@ -1,5 +1,6 @@
 <RCC>
   <qresource prefix="/resources/">
+    <file>back_g.gif</file>
     <file>1downarrow.png</file>
     <file>AlFanous.png</file>
     <file>alfanous.jpg</file>
@@ -69,6 +70,11 @@
     <file>up.png</file>
     <file>zoomin.png</file>
     <file>zoomout.png</file>
+  </qresource>
+  <qresource prefix="fonts">
+    <file>fonts/arabeyes-qr.ttf</file>
+    <file>fonts/me_quran_volt_mark2.ttf</file>
+    <file>fonts/ScheherazadeRegOT.ttf</file>
   </qresource>
   <qresource prefix="feedback">
     <file>feedback/ask_a_question.png</file>
