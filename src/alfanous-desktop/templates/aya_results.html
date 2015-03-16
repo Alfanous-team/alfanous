@@ -32,57 +32,21 @@
 	padding: 2px 5px;
 }
 
-/* Abdellah */
-@import url('reset.css');
+@font-face {
+    font-family:'Scheherazade';
+    src:url('qrc:/fonts/ScheherazadeRegOT.ttf');
+}
 
 @font-face {
-	font-family:'Scheherazade';
-	src:url('../fonts/ScheherazadeRegOT.ttf');
+    font-family:'me_quran';
+    src:url('qrc:/fonts/fonts/me_quran_volt_mark2.ttf');
 }
 
-/* original */
-
-.buttons {
-	float: left;
-	padding-bottom: 20px;
-	clear: both;
+@font-face {
+    font-family:'ArabeyesQr';
+    src:url('qrc:/fonts/fonts/arabeyes-qr.ttf');
 }
 
-a.button {
-	background: none repeat scroll 0 0 #6ED0D6;
-	background: -webkit-gradient(linear,0% 40%,0% 70%,from(#6ED0D6),to(#6ED0D6));
-	border: 1px solid #DCDCDC;
-	border-radius: 2px 2px 2px 2px;
-	color: white;
-	display: inline-block;
-	font: bold 16px Helvetica,Arial,sans-serif;
-	height: 15px;
-	padding: 2px 35px 4px 16px;
-	position: relative;
-	text-decoration: none;
-	text-shadow: 0 0 4px #0F9AA1;
-	width: 6px;
-	-webkit-border-radius: 2px;
-	-moz-border-radius: 2px;
-	background: -moz-linear-gradient(linear,0% 40%,0% 70%,from(#F5F5F5),to(#F1F1F1));
-	border: solid 1px #dcdcdc;
-	border-radius: 2px;
-	-webkit-transition: border-color .218s;
-	-moz-transition: border .218s;
-	-o-transition: border-color .218s;
-}
-
-a.button:hover {
-	color: #333;
-	border-color: #999;
-	-moz-box-shadow: 0 2px 0 rgba(0, 0, 0, 0.2) -webkit-box-shadow:0 2px 5px rgba(0, 0, 0, 0.2);
-	box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
-}
-
-a.button:active {
-	color: #000;
-	border-color: #444;
-}
 
 .enter{
 	background: none repeat scroll 0 0 transparent;
@@ -95,8 +59,11 @@ a.button:active {
 	margin:0;
 }
 
-a{color: gray;}
-.aya_words a { text-decoration: none; }
+a { 
+    color: inherit; 
+    text-decoration:none; 
+  }
+
 a:hover{color: green;}
 .select {
 	background: url("../images/select.gif") no-repeat scroll right top transparent;
@@ -223,7 +190,7 @@ a:hover{color: green;}
 
 .main_re_item
 {
-	background: url("../images/back_g.gif") repeat scroll 0 0 transparent;
+	background: url("qrc:/resources/back_g.gif") repeat scroll 0 0 transparent;
 	-webkit-border-radius: 35px;
 	-moz-border-radius: 35px;
 	border-radius: 35px;
@@ -659,9 +626,6 @@ direction: rtl;
 font-family: ArabeyesQr, Scheherazade;
 }
 
-a {
-      text-decoration:none;
-   }
 
 </style>
 <div style="direction:{{ direction }};text-align:{{ align }}">
@@ -686,7 +650,6 @@ a {
 			{% endfor %}
 		</div><br />
 		{% endif %}
-
 		{% if results.search.interval.total %}
 			{% if results.search.words.global and results.search.words.global.nb_words!=0 %}
 				<!-- Words list -->
@@ -818,7 +781,11 @@ a {
 				    <span style=' color:#0000ff;'>
 				      {% trans %} Result n° {% endtrans %}  <b> {{ ayaresult_id }} </b> 
 				      - 
-				      ({{ ayaresult_content.identifier.sura_arabic_name if dir=="RTL" else  ayaresult_content.identifier.sura_name }} {{ ayaresult_content.aya.id }})  
+				      {% if dir=="RTL"  %}
+                            <a href='سورة:"{{ ayaresult_content.identifier.sura_arabic_name }}" + رقم_الآية: {{ ayaresult_content.aya.id }}'> ({{ ayaresult_content.identifier.sura_arabic_name }} {{ ayaresult_content.aya.id }})</a>
+                       {% else %}
+                         <a href='sura:"{{ ayaresult_content.identifier.sura_name }}" + aya_id: {{ ayaresult_content.aya.id }}'> ({{ ayaresult_content.identifier.sura_name }} {{ ayaresult_content.aya.id }})</a>
+                       {% endif %}
 				    </span>
 				   {% if ayaresult_content.sura %}
 					   <div class='sura_details'>
@@ -850,8 +817,9 @@ a {
 					  		<span class='quran_decoration prev_aya'>
 							 [ </span>
 					  		<span class="quran prev_aya">
-					  		  {{ ayaresult_content.aya.prev_aya.text }} 
-					  		  
+					  		 {% for aya_word in ayaresult_content.aya.prev_aya.text.split(" ") %}
+                                            <a href="{{ aya_word }}">{{ aya_word }}</a>
+                             {% endfor %}
 					  		 </span>
 					  		 <span class='quran_decoration prev_aya'>
 							 ] </span>
@@ -895,7 +863,9 @@ a {
 					  		<span class='quran_decoration next_aya'>
 							 [ </span>
 					  		<span class="quran next_aya">
-					  		  {{ ayaresult_content.aya.next_aya.text }} 
+					  		 {% for aya_word in ayaresult_content.aya.next_aya.text.split(" ") %}
+                                            <a href="{{ aya_word }}">{{ aya_word }}</a>
+                             {% endfor %}
 					  		  
 					  		 </span>
 					  		 <span class='quran_decoration next_aya'>
@@ -984,7 +954,6 @@ a {
 					  {% endif %}
 				
 			     </fieldset>
-			     <hr />
 			     <br />
 			{% endfor %}
 			
