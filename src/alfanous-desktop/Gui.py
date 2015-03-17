@@ -554,8 +554,6 @@ class QUI( Ui_MainWindow ):
         if text:
             if self.o_synonyms.isChecked():
                 for word in words:filter += " ~" + word
-            elif self.o_orthograph.isChecked():
-                for word in words: filter = " %" + word
             elif self.o_vocalization.isChecked():
                 filter = u" آية_:'" + text + "'"
             elif self.o_phrase.isChecked():
