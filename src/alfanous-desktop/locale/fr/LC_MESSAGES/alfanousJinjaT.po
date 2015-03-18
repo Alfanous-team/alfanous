@@ -11,9 +11,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Alfanous\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2015-03-03 02:51+0100\n"
-"PO-Revision-Date: 2015-03-03 20:31+0000\n"
-"Last-Translator: HALIT Mahmoud <m_halit@esi.dz>\n"
+"POT-Creation-Date: 2015-03-07 23:42+0100\n"
+"PO-Revision-Date: 2015-03-07 22:21+0000\n"
+"Last-Translator: Nadjib <infoman4ever@gmail.com>\n"
 "Language-Team: French (http://www.transifex.com/projects/p/alfanous/language/fr/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -30,29 +30,29 @@ msgstr "Recommandé"
 msgid "obliged"
 msgstr "Obligé"
 
-#: Gui.py:248 build/lib.linux-i686-2.7/alfanousDesktop/Gui.py:248
+#: Gui.py:250 build/lib.linux-i686-2.7/alfanousDesktop/Gui.py:248
 #: templates/aya_results.html:1
 msgid "LTR"
 msgstr "LTR"
 
-#: Gui.py:511 build/lib.linux-i686-2.7/alfanousDesktop/Gui.py:511
+#: Gui.py:522 build/lib.linux-i686-2.7/alfanousDesktop/Gui.py:511
 msgid "Applying skin"
 msgstr "Appliquant la peau..."
 
-#: Gui.py:511 build/lib.linux-i686-2.7/alfanousDesktop/Gui.py:511
+#: Gui.py:522 build/lib.linux-i686-2.7/alfanousDesktop/Gui.py:511
 msgid "You should restart application in order for the skin to take effect"
 msgstr "Vous devez redémarrer l'application pour que la peau prenne effet"
 
-#: Gui.py:520 build/lib.linux-i686-2.7/alfanousDesktop/Gui.py:520
+#: Gui.py:531 build/lib.linux-i686-2.7/alfanousDesktop/Gui.py:520
 msgid "Applying language"
 msgstr "Appliquant la langue..."
 
-#: Gui.py:520 build/lib.linux-i686-2.7/alfanousDesktop/Gui.py:520
+#: Gui.py:531 build/lib.linux-i686-2.7/alfanousDesktop/Gui.py:520
 msgid ""
 "You should restart application in order for the language to take effect"
 msgstr "Vous devez redémarrer l'application pour que la langue prenne effet"
 
-#: Gui.py:717 build/lib.linux-i686-2.7/alfanousDesktop/Gui.py:717
+#: Gui.py:749 build/lib.linux-i686-2.7/alfanousDesktop/Gui.py:717
 msgid "Alfanous_Results_Page_"
 msgstr "Alfanous page de résultats"
 
@@ -132,7 +132,7 @@ msgstr "racine"
 
 #: templates/aya_results.html:754
 msgid " special "
-msgstr ""
+msgstr "spécial"
 
 #: templates/aya_results.html:757
 msgid " aspect "
