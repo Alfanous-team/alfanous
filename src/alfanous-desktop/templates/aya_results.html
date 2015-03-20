@@ -490,7 +490,8 @@ font-family: ArabeyesQr, Scheherazade;
 						  <div class='word_details'>
 						    <span style=' font-size:14pt; color:#00aa00;'> {{ wordcpt }}.  </span>
 						
-							<a href="{{ wordstat.word }}"><div class='details_label word_info0 clickable'> {% trans %} word {% endtrans %}  | {{ wordstat.word }} {% if wordstat.romanization %} ( {{ wordstat.romanization }} ) {%  endif %} </div></a>
+							<a href="{{ wordstat.word }}"><div class='details_label word_info0 clickable'> {% trans %} word {% endtrans %}  | {{ wordstat.word }}  </div></a>
+							{% if wordstat.romanization %} <a href="{{ wordstat.romanization }}"><div class='details_label word_info0 clickable'> {{ wordstat.romanization  }}  </div></a> {%  endif %}
 							<div class='details_label word_stat0'> {% trans %}occurances{% endtrans %}  | {{ wordstat.nb_matches }} </div>
 							<div class='details_label word_stat1'> {% trans %} ayates{% endtrans %}  |  {{ wordstat.nb_ayas }} </div>
 							<br />
