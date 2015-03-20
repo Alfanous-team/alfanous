@@ -9,6 +9,34 @@
 	color:#ff0000;
 }
 
+
+.isa_info, .isa_success, .isa_warning, .isa_error {
+margin: 10px 0px;
+padding:12px;
+}
+.isa_info {
+    color: #00529B;
+    background-color: #BDE5F8;
+}
+.isa_success {
+    color: #4F8A10;
+    background-color: #DFF2BF;
+}
+.isa_warning {
+    color: #9F6000;
+    background-color: #FEEFB3;
+}
+.isa_error {
+    color: #D8000C;
+    background-color: #FFBABA;
+}
+.isa_info i, .isa_success i, .isa_warning i, .isa_error i {
+    margin:10px 22px;
+    font-size:2em;
+    vertical-align:middle;
+}
+
+
 .main_re_item {
 
    -moz-background-inline-policy: continuous;
@@ -885,7 +913,11 @@ font-family: ArabeyesQr, Scheherazade;
 					  {% if ayaresult_content.aya.translation %}
 					  		<p style='direction:ltr;text-align:center;' >
 					  		<span class="quran_translation">
-					  	  		  {{ ayaresult_content.aya.translation }} 
+					  	  
+					  	  	 {% for translation_word in  ayaresult_content.aya.translation.split(" ") %}
+                                            <a href="#translation# {{ translation_word }}">{{ translation_word }}</a>
+                             {% endfor %}
+					  	  		  
 					   		</span></p>
 					  		<br />
 					  {% endif %}
@@ -964,7 +996,12 @@ font-family: ArabeyesQr, Scheherazade;
 			
 		{% else %}
 			<br />
-			<div class='notfound'><p> {% trans %}Sorry! there is no results for this search query{% endtrans %} </p></div>
+			<div class='isa_warning'>{% trans %}Sorry! there is no results for this search query{% endtrans %}.</div>
+            {% if extra_results.search.interval.total %}
+                <div class='isa_info'>
+                {% trans %}You may search in <b>Quran translations</b> instead, there are{% endtrans %} <b>{{ extra_results.search.interval.total }}</b> {% trans %}results   {% endtrans %}. <b><a href="#translation# {{ flags.query }}"> {% trans %}Click to search!{% endtrans %}</a><b>
+                </div>
+             {% endif %}
 			<br />
 		{% endif %}		
 	{% elif results.error %}

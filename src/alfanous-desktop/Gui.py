@@ -40,7 +40,7 @@ from alfanous.Data import Paths
 from mainform_ui import Ui_MainWindow
 from preferencesDlg_ui import Ui_preferencesDlg
 from aboutDlg_ui import Ui_Dialog as Ui_aboutDlg
-from Templates import AYA_RESULTS_TEMPLATE 
+from Templates import AYA_RESULTS_TEMPLATE, TRANSLATION_RESULTS_TEMPLATE
 
 
 ## force the use of utf8
@@ -88,7 +88,6 @@ class QUI( Ui_MainWindow ):
     """ the main UI """
 
     def __init__( self ):
-        self.last_results = None
         self.currentQuery = 0
         self.Queries = []
         self.undo_stack = []
@@ -119,6 +118,8 @@ class QUI( Ui_MainWindow ):
             #self.o_perpage.setValue( int( config["options"]["perpage"] ) if config["options"].has_key( "perpage" ) else 10 )
             self.style = config["options"]["style"] if config["options"].has_key( "style" ) else ""
             self.language = config["options"]["language"] if config["options"].has_key( "language" ) else ""
+            self.o_autospell.setChecked(boolean(config["options"]["fuzzy"]) if config["options"].has_key( "fuzzy" ) else False)
+            self.o_search_in_trads.setChecked(config["options"]["unit"] == "translation" if config["options"].has_key( "unit" ) else False)
         else:
             self.style = ""
             self.language = ""
@@ -190,7 +191,7 @@ class QUI( Ui_MainWindow ):
         if not os.path.isdir( CONFIGPATH ):
             os.makedirs( CONFIGPATH )
         config = ConfigObj( CONFIGPATH + "/config.ini", encoding="utf-8" )
-        config["history"] = config["history"] if config.has_key( "history" ) else [u"الحمد لله"]
+        config["history"] = [self.o_query.itemText(i) for i in range(self.o_query.count())]
 
         config["options"] = {}
         config["options"]["limit"] = self.limit_group.checkedAction().text() 
@@ -198,6 +199,8 @@ class QUI( Ui_MainWindow ):
         config["options"]["highlight"] = self.actionHighlight_Keywords.isChecked()
         config["options"]["style"] = self.style
         config["options"]["language"] = self.language
+        config["options"]["fuzzy"] = self.o_autospell.isChecked()
+        config["options"]["unit"] = "translation" if self.o_search_in_trads.isChecked() else "aya"
 
         config["sorting"] = {}
         config["sorting"]["sortedbyscore"] = self.actionRelevance.isChecked()
@@ -421,6 +424,12 @@ class QUI( Ui_MainWindow ):
 
     def link_is_clicked(self, url):
         new_query = url.toString()
+        if "#aya#" in new_query:
+            self.o_search_in_ayas.setChecked(True)
+            new_query = new_query[5:]
+        if "#translation#" in new_query:
+            self.o_search_in_trads.setChecked(True)
+            new_query = new_query[13:]
         self.o_query.setEditText(new_query)
         self.search_all()
 
@@ -445,9 +454,9 @@ class QUI( Ui_MainWindow ):
                 }
         suggestion_output = RAWoutput.do( suggest_flags )
 
-        #search
+        #search verses
         results, terms = None, []
-        search_flags = {"action":"search",
+        aya_search_flags = {"action":"search",
                  "query": unicode( self.o_query.currentText() ),
                  "sortedby":"score" if self.actionRelevance.isChecked() \
                         else "mushaf" if self.actionPosition_in_Mus_haf.isChecked() \
@@ -470,15 +479,28 @@ class QUI( Ui_MainWindow ):
                  "translation": "en.shakir"  if self.actionTranslationDefault.isChecked() else "" if self.actionTranslationNone.isChecked() else self.translation_group.checkedAction().text().split("|")[1][0:],
                  "fuzzy": self.o_autospell.isChecked(),
                  "word_info": self.actionWord_Info.isChecked(),
-                 "romanization":"iso"
+                 "romanization":"buckwalter"
 
                  }
-        self.Queries.insert( 0, search_flags )
-        results = RAWoutput.do( search_flags )
+
+        aya_results = RAWoutput.do( aya_search_flags )
+        
+        #search translations
+        trans_search_flags = {"action":"search",
+                              "unit": "translation",
+                              "aya": True,
+                 "query": unicode( self.o_query.currentText() ),
+                 "page": self.o_page.value(),
+                 "highlight": "css" if self.actionHighlight_Keywords.isChecked() else None,
+                 }
+
+        trans_results = RAWoutput.do( trans_search_flags )
+
+        results = aya_results if self.o_search_in_ayas.isChecked() else trans_results
+        extra_results =  trans_results if self.o_search_in_ayas.isChecked() else aya_results
+        flags = aya_search_flags if self.o_search_in_ayas.isChecked() else trans_search_flags
+
         if results["error"]["code"]==0:
-            #if self.o_filter.isChecked() and self.last_results:
-            #    results = QFilter( self.last_results, results )
-            self.last_results = results
             #outputs
             self.o_time.display( results["search"]["runtime"] )
             self.o_resnum.display( results["search"]["interval"]["total"] )
@@ -495,9 +517,12 @@ class QUI( Ui_MainWindow ):
             template_vars = {
                             "results": results, 
                             "suggestions":suggestion_output ,
+                            "extra_results": extra_results,
+                            "flags":flags,
                             "_": lambda x:x 
                             }
-            t = AYA_RESULTS_TEMPLATE.render(template_vars)
+            results_template = AYA_RESULTS_TEMPLATE if self.o_search_in_ayas.isChecked() else TRANSLATION_RESULTS_TEMPLATE
+            t = results_template.render(template_vars)
         else:
             t = "Error ("+ str(results["error"]["code"]) + "):" + results["error"]["msg"]
             self.o_time.display( 0 )
