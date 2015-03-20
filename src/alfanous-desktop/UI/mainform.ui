@@ -452,11 +452,14 @@ QSpinBox::down-button:pressed:enabled, QDoubleSpinBox::down-button:pressed:enabl
         <property name="currentIndex">
          <number>0</number>
         </property>
+        <property name="maxVisibleItems">
+         <number>5</number>
+        </property>
         <property name="maxCount">
-         <number>50</number>
+         <number>5</number>
         </property>
         <property name="insertPolicy">
-         <enum>QComboBox::InsertAlphabetically</enum>
+         <enum>QComboBox::InsertAtTop</enum>
         </property>
         <property name="duplicatesEnabled">
          <bool>false</bool>
