@@ -1,16 +1,10 @@
 ===========================
 Web User Interface [Django]
-===========================
-what is this?
-    aaaaaaaaaaaaaaaaaaaaaaaaaaa
-    
-
-why?
-    bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
-
+==========================
+This is the  source code for alfanous.org, it is a django app that use Alfanous API. 
 
 how to contribute on it?
-    cccccccccccccccccccccccccccccccc
+    contact mailing list alfanous [at] googlegroups [dot] [com]
 
 ---------- 
 Highlights
@@ -24,18 +18,6 @@ screen shots and features , used technologies
 * Hash
 * OpenSearch
 * OpenGraph
-
------------ 
-Some Todo's
------------
-
-* I18n/L10n
-* jQueryUI
-
-you can find more todo's in the Issue tracker under the milestone: `Web Interface 0.7`_
-
-.. _`Web Interface 0.7`: https://github.com/Alfanous-team/alfanous/issues?milestone=6&page=1&state=open
-
 
 .. _wui.alfanous.org: http://wui.alfanous.org/
 .. _alfanous.org: http://www.alfanous.org/
