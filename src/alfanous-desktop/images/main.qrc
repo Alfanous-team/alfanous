@@ -1,6 +1,6 @@
 <RCC>
   <qresource prefix="/resources/">
-    <file>back_g.gif</file>
+    <file>back_g.png</file>
     <file>1downarrow.png</file>
     <file>AlFanous.png</file>
     <file>alfanous.jpg</file>
