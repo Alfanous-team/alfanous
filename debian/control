@@ -11,7 +11,7 @@ Build-Depends-Indep: python (>= 2.6.6-3~),
  python-babel,
  pyside-tools,
  qt4-linguist-tools
-Standards-Version: 3.9.2
+Standards-Version: 3.9.5
 Homepage: http://alfanous.org
 X-Python-Version: >= 2.5
 
