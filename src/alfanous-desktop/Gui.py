@@ -431,6 +431,7 @@ class QUI( Ui_MainWindow ):
             self.o_search_in_trads.setChecked(True)
             new_query = new_query[13:]
         self.o_query.setEditText(new_query)
+        self.o_page.setValue(1)
         self.search_all()
 
     def search_all( self, page = 1 , log = True):
