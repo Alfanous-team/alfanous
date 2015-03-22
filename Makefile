@@ -382,7 +382,13 @@ local_mo_download:
 # 4. Nokia Symbian sis package, see dist_sis
 # 5. firefox toolbar xpi file, see dist_xpi
 # 6. MacOS applications app, see  dist_app
-dist_all: dist_egg_all dist_deb dist_rpm dist_sis dist_xpi dist_crx  dist_app
+dist_all: dist_source dist_egg_all dist_deb dist_rpm dist_sis dist_xpi dist_crx  dist_app
+
+## generate a clean source tar.gz archive without platform dependent packaging files (ex. ./debian/)
+dist: dist_source
+
+dist_source: clean
+	tar c -z --exclude-vcs --exclude="output" --exclude="debian" --exclude="packaging" -f ../alfanous_$(VERSION).tar.gz ./*
 
 ## generate all extentions and API's eggs:
 # 1. Alfanous main API, see dist_egg_api
