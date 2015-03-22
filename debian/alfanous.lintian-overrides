@@ -1,3 +1,4 @@
 #it's agpl,check its web page directly
 alfanous: copyright-should-refer-to-common-license-file-for-gpl
-
+#single word command, no need
+alfanous: binary-without-manpage usr/bin/alfanous-desktop

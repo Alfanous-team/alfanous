@@ -268,10 +268,11 @@ index_main:
 
 index_extend:
 	export PYTHONPATH=$(API_PATH) ;	rm -r $(INDEX_PATH)extend/; $(PYTHON_COMMAND) $(QIMPORT) -x extend $(STORE_PATH)Translations/ $(INDEX_PATH)extend/
+	chmod 644  $(INDEX_PATH)extend/*_LOCK
 	
 index_word:
 	export PYTHONPATH=$(API_PATH) ;	rm -r $(INDEX_PATH)word/; $(PYTHON_COMMAND) $(QIMPORT) -x word $(DB_PATH)main.db $(INDEX_PATH)word/
-	
+	chmod 644  $(INDEX_PATH)word/*_LOCK
 
 ## build all spellers:
 # 1. Speller of ayah unvocalized standard text words, see speller_aya
@@ -290,7 +291,7 @@ speller_subject:
 
 speller_word:
 	export PYTHONPATH=$(API_PATH) ;	$(PYTHON_COMMAND) $(QIMPORT) -p word  $(INDEX_PATH)word/
-	
+	chmod 644  $(INDEX_PATH)word/*_LOCK
 
 
 ## build help based on those methods:
@@ -382,12 +383,12 @@ local_mo_download:
 # 4. Nokia Symbian sis package, see dist_sis
 # 5. firefox toolbar xpi file, see dist_xpi
 # 6. MacOS applications app, see  dist_app
-dist_all: dist_source dist_egg_all dist_deb dist_rpm dist_sis dist_xpi dist_crx  dist_app
+dist_all: dist_src dist_egg_all dist_deb dist_rpm dist_sis dist_xpi dist_crx  dist_app
 
 ## generate a clean source tar.gz archive without platform dependent packaging files (ex. ./debian/)
-dist: dist_source
+dist: dist_src
 
-dist_source: clean
+dist_src: clean
 	tar c -z --exclude-vcs --exclude="output" --exclude="debian" --exclude="packaging" -f ../alfanous_$(VERSION).tar.gz ./*
 
 ## generate all extentions and API's eggs:
