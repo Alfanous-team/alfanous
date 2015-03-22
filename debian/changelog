@@ -1,4 +1,4 @@
-alfanous (0.7.19-0) stable; urgency=low
+alfanous (0.7.19-0) trusty; urgency=low
 
   * Fix: a bug in paging when clicking to search
 
