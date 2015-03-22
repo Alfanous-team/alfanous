@@ -471,7 +471,7 @@ font-family: ArabeyesQr, Scheherazade;
 		</div><br />
 		{% endif %}
 		{% if results.search.interval.total %}
-			{% if results.search.words.global and results.search.words.global.nb_words!=0 %}
+			{% if results.search.words.global and results.search.words.global.nb_words!=0 and results.search.interval.start==1  %}
 				<!-- Words list -->
 				<div id='search_words' style=" text-align:{{ align }}" >
 				  <h2 class='wordheader'> {% trans %}Words{% endtrans %}: </h2>
