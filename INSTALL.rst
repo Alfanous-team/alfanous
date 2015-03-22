@@ -54,7 +54,7 @@ Install
 	Install from the source by downloading the tarbal and executing those commands carefully:
 	  
 	  .. code-block:: sh
-	
+		====> install build dependencies: pyparsing, pyside, epydoc, sphinx, Babel.
 	        $ make build
 	        $ sudo make install_api_no_arguments # to install the api and alfanous-console.
 	        $ sudo make install_desktop_no_arguments # to install alfanous-desktop.
