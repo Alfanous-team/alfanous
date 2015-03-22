@@ -1,4 +1,4 @@
-alfanous (0.7.19) stable; urgency=low
+alfanous (0.7.19-0) trusty; urgency=low
 
   * Fix: a bug in paging when clicking to search
 
@@ -4193,12 +4193,6 @@ alfanous (0.7-1) unstable; urgency=low
   * create a box for ads in the top-left of the web user interface and show the icon of "best technicality award" inside it
 
  -- Assem Chelli <assem.ch@gmail.com>  Tue, 5 Jun 2012 21:22:37 +0100
-
-alfanous () unstable; urgency=low
-
-  * Initial commit
-
- -- Assem K <assem.ch@gmail.com>  Tue, 5 Jun 2012 10:01:54 -0700
 
 alfanous (0.7) unstable; urgency=low
 
