@@ -193,6 +193,8 @@ See also
 
 #. `Django application <https://github.com/Alfanous-team/alfanous/tree/master/src/alfanous-django>`_
 
+#. `Packaging <https://github.com/Alfanous-team/alfanous/tree/packaging>`_
+
 
 
 .. _json_web_service: https://github.com/assem-ch/alfanous/blob/master/src/alfanous-cgi/README.rst
