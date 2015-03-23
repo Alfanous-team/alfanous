@@ -15,14 +15,11 @@
      :alt: Requirements Status
 
 
-* API
-
-  .. image:: https://img.shields.io/pypi/dm/alfanous.svg
+* .. image:: https://img.shields.io/pypi/dm/alfanous.svg
         :target: https://pypi.python.org/pypi/alfanous
-  DESKTOP
-
   .. image:: https://img.shields.io/sourceforge/dm/alfanous.svg
-        :target: https://sourceforge.net/projects/alfanous/files/latest/download
+        :target: https://sourceforge.net/projects/alfanous
+  
 
 
 ================
