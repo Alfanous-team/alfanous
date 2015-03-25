@@ -9,6 +9,34 @@
 	color:#ff0000;
 }
 
+
+.isa_info, .isa_success, .isa_warning, .isa_error {
+margin: 10px 0px;
+padding:12px;
+}
+.isa_info {
+    color: #00529B;
+    background-color: #BDE5F8;
+}
+.isa_success {
+    color: #4F8A10;
+    background-color: #DFF2BF;
+}
+.isa_warning {
+    color: #9F6000;
+    background-color: #FEEFB3;
+}
+.isa_error {
+    color: #D8000C;
+    background-color: #FFBABA;
+}
+.isa_info i, .isa_success i, .isa_warning i, .isa_error i {
+    margin:10px 22px;
+    font-size:2em;
+    vertical-align:middle;
+}
+
+
 .main_re_item {
 
    -moz-background-inline-policy: continuous;
@@ -32,57 +60,21 @@
 	padding: 2px 5px;
 }
 
-/* Abdellah */
-@import url('reset.css');
+@font-face {
+    font-family:'Scheherazade';
+    src:url('qrc:/fonts/ScheherazadeRegOT.ttf');
+}
 
 @font-face {
-	font-family:'Scheherazade';
-	src:url('../fonts/ScheherazadeRegOT.ttf');
+    font-family:'me_quran';
+    src:url('qrc:/fonts/fonts/me_quran_volt_mark2.ttf');
 }
 
-/* original */
-
-.buttons {
-	float: left;
-	padding-bottom: 20px;
-	clear: both;
+@font-face {
+    font-family:'ArabeyesQr';
+    src:url('qrc:/fonts/fonts/arabeyes-qr.ttf');
 }
 
-a.button {
-	background: none repeat scroll 0 0 #6ED0D6;
-	background: -webkit-gradient(linear,0% 40%,0% 70%,from(#6ED0D6),to(#6ED0D6));
-	border: 1px solid #DCDCDC;
-	border-radius: 2px 2px 2px 2px;
-	color: white;
-	display: inline-block;
-	font: bold 16px Helvetica,Arial,sans-serif;
-	height: 15px;
-	padding: 2px 35px 4px 16px;
-	position: relative;
-	text-decoration: none;
-	text-shadow: 0 0 4px #0F9AA1;
-	width: 6px;
-	-webkit-border-radius: 2px;
-	-moz-border-radius: 2px;
-	background: -moz-linear-gradient(linear,0% 40%,0% 70%,from(#F5F5F5),to(#F1F1F1));
-	border: solid 1px #dcdcdc;
-	border-radius: 2px;
-	-webkit-transition: border-color .218s;
-	-moz-transition: border .218s;
-	-o-transition: border-color .218s;
-}
-
-a.button:hover {
-	color: #333;
-	border-color: #999;
-	-moz-box-shadow: 0 2px 0 rgba(0, 0, 0, 0.2) -webkit-box-shadow:0 2px 5px rgba(0, 0, 0, 0.2);
-	box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
-}
-
-a.button:active {
-	color: #000;
-	border-color: #444;
-}
 
 .enter{
 	background: none repeat scroll 0 0 transparent;
@@ -95,8 +87,11 @@ a.button:active {
 	margin:0;
 }
 
-a{color: gray;}
-.aya_words a { text-decoration: none; }
+a { 
+    color: inherit; 
+    text-decoration:none; 
+  }
+
 a:hover{color: green;}
 .select {
 	background: url("../images/select.gif") no-repeat scroll right top transparent;
@@ -115,115 +110,15 @@ a:hover{color: green;}
 	position: relative;
 	width: 130px;
 	z-index: 5;}
-.xtitle
-{
-	color: Gray;
-	font: 12px/29px tahoma;
-}
 
-.xbutton {
-	padding: 7px;
-	cursor: pointer;
-	font-family: Arial, Geneva, Sans-serif;
-	font-size: 10pt;
-	font-weight: bold;
-	color: black;
-	min-width: 70px;
-	margin: 0 5px 9px 0;
-	/* Css3 Effects */
-	border-radius:4px ;
-	-moz-border-radius:4px ;
-	-webkit-border-radius:4px ;
-	opacity:0.8;
-	filter: alpha(opacity=80); }
-	.xbutton:hover,.xbutton:focus {
-	outline: 0;
-	-webkit-box-shadow:0 0 4px silver;
-	-moz-box-shadow:0 0 4px silver;
-	opacity:1;
-	filter: alpha(opacity=100);
-}
 
-.gray {
-	background: #ffffff; /* old browsers */
-	background: -moz-linear-gradient(top, #ffffff 0%, #e5e5e5 100%); /* firefox */
-	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#ffffff), color-stop(100%,#e5e5e5)); /* webkit */
-	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#e5e5e5',GradientType=0 ); /* ie */
-	text-shadow:0 1px 1px #eeeeee;
-	-moz-text-shadow:0 1px 1px #eeeeee;
-	-webkit-text-shadow:0 1px 1px #eeeeee;
-	border: 1px solid silver;
-}
 
-.green {
-	background: #007419; /* old browsers */
-	background: -moz-linear-gradient(top, #007419 0%, #005011 100%); /* firefox */
-	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#007419), color-stop(100%,#005011)); /* webkit */
-	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#007419', endColorstr='#005011',GradientType=0 ); /* ie */
-	text-shadow:0 1px 1px #eeeeee;
-	-moz-text-shadow:0 1px 1px #eeeeee;
-	-webkit-text-shadow:0 1px 1px #eeeeee;
-	border: 1px solid silver;
-}
 
-.modal {
-	opacity:1;
-	position:absolute;
-	top:10px;
-	left:10px;
-	background-color:#fff;
-	display:none;
-	width:300px;
-	padding:15px;
-	border:2px solid #333;
-	-moz-border-radius:6px;
-	-webkit-border-radius:6px;
-	-moz-box-shadow: 0 0 50px #ccc;
-	-webkit-box-shadow: 0 0 50px #ccc;
-}
 
-.modal h2 {
-	/*background:url(../images/info.png) 0 50% no-repeat; image missing*/
-	margin:0px;
-	padding:10px 0 10px 45px;
-	border-bottom:1px solid #333;
-	font-size:20px;
-}
-
-.external,.bo {
-	margin:3px;
-	border:0
-}
-
-.external:hover,.bo:hover {
-	margin-left:4px;
-}
-
-.optaly {
-	color: gray;
-	font-size: 12px;
-}
-
-.newur {
-	margin-left: 27px;
-}
-.xbre{
-	border: 2px solid gray;
-	color: #0F9AA1;
-	font-family: Times New Roman;
-	font-size: 28px;
-	font-weight: bold;
-	padding: 6px;
-	text-shadow:0 0 3px gray;
-	-moz-text-shadow:0 0 3px gray;
-	-webkit-text-shadow:0 0 3px gray;
-	-webkit-border-radius: 18px;
-	-moz-border-radius: 18px;
-}
 
 .main_re_item
 {
-	background: url("../images/back_g.gif") repeat scroll 0 0 transparent;
+	background: url("qrc:/resources/back_g.png") repeat scroll 0 0 transparent;
 	-webkit-border-radius: 35px;
 	-moz-border-radius: 35px;
 	border-radius: 35px;
@@ -262,15 +157,6 @@ a:hover{color: green;}
 
 
 /* +some fun */
-
-
-.footer {
-	font-family: tahoma;
-	font-size: 14px;
-	height:20px;
-	margin-top:80px;
-	text-align: center;
-}
 
 
 .style2
@@ -405,9 +291,19 @@ a:hover{color: green;}
 	margin: 2px 5px 10px 5px;
 }
 
-.match {
-	color: #181;
-}
+/* Assem: Terms Static Highlighting colors */
+.match { color: #181; }
+.term0, .term9 { color: #F50; }
+.term1, .term10 { color: #f00; }
+.term2, .term11 { color: #f39; }
+.term3, .term12 { color: #811; }
+.term4, .term13 { color: #807; }
+.term5, .term14 { color: #660; }
+.term6, .term15 { color: #5C3; }
+.term7, .term16 { color: #444; }
+.term8, .term17 { color: #118; }
+
+
 
 .word_details, .word_extra_details, .sura_details, .aya_details {
 	margin: 5px 5px 0px 20px;
@@ -544,114 +440,12 @@ img.right {
 
 
 
-/* Footer*/
-
-
-div#footer-big-wrapper {
-    font-family: 'Droid Sans',Georgia, Arial, sans-serif;
-    height: 303px;
-    background-image: url('../images/footer.png');
-    clear: both;
-    color: #aaa;
-}
-
-div#footer-big-wrapper a {
-    text-decoration: none;
-    color: #aaa;
-}
-
-div#footer-big-wrapper a:hover {
-    text-decoration: none;
-    color: #fff;
-}
-
-div#footer-big {
-    height: 303px;
-    width: 960px;
-    margin: auto;
-    font-size: 11px;
-    text-shadow: 0px 1px 1px #000;
-    background-image: url('../images/footer-bg.png');
-    background-position: center;
-    background-repeat: no-repeat;
-}
-
-div#footer-big div.column {
-    float: left;
-    width: 180px;
-    padding: 20px 20px 20px 0;
-}
-
-div#footer-big div.last {
-    padding: 20px 0 20px 60px;
-    width: 330px;
-}
-
-div#footer-big div.last img {
-    margin-bottom: 5px;
-}
-
-/* Abdellah only1 */
-div#footer-big div.last p:last-child {
-	line-height: 150%;
-}
-
-div#footer-big h1 {
-    color: #aaa;
-    font-size: 16px;
-    margin-bottom: 20px;
-    text-shadow: none;
-}
-
-div#footer-big ul {
-    width: 150px;
-}
-
-div#footer-big ul li {
-    height: 30px;
-    line-height: 30px;
-    border-top: 1px solid #2e353d;
-}
-
-div#footer-big ul li.last {
-    border-bottom: 1px solid #2e353d;
-}
-
-div#footer-small-wrapper {
-    font-family: 'Droid Sans',Georgia, Arial, sans-serif;
-    height: 30px;
-    background-color: #000;
-    border-top: 1px solid #2e353d;
-    color: #aaa;
-    font-size: 11px;
-
-
-}
-
-div#footer-small {
-    width: 960px;
-    margin: auto;
-    line-height: 30px;
-
-}
-
-div#footer-small a {
-    text-decoration: none;
-    color: #fff;
-}
-
-div#footer-small a:hover {
-    text-decoration: underline;
-}
 
 .quran_decoration {
 direction: rtl;
 font-family: ArabeyesQr, Scheherazade;
 }
 
-a {
-      text-decoration:none;
-   }
 
 </style>
 <div style="direction:{{ direction }};text-align:{{ align }}">
@@ -676,9 +470,8 @@ a {
 			{% endfor %}
 		</div><br />
 		{% endif %}
-
 		{% if results.search.interval.total %}
-			{% if results.search.words.global and results.search.words.global.nb_words!=0 %}
+			{% if results.search.words.global and results.search.words.global.nb_words!=0 and results.search.interval.start==1  %}
 				<!-- Words list -->
 				<div id='search_words' style=" text-align:{{ align }}" >
 				  <h2 class='wordheader'> {% trans %}Words{% endtrans %}: </h2>
@@ -697,7 +490,8 @@ a {
 						  <div class='word_details'>
 						    <span style=' font-size:14pt; color:#00aa00;'> {{ wordcpt }}.  </span>
 						
-							<a href="{{ wordstat.word }}"><div class='details_label word_info0 clickable'> {% trans %} word {% endtrans %}  | {{ wordstat.word }} {% if wordstat.romanization %} ( {{ wordstat.romanization }} ) {%  endif %} </div></a>
+							<a href="{{ wordstat.word }}"><div class='details_label word_info0 clickable'> {% trans %} word {% endtrans %}  | {{ wordstat.word }}  </div></a>
+							{% if wordstat.romanization %} <a href="{{ wordstat.romanization }}"><div class='details_label word_info0 clickable'> {{ wordstat.romanization  }}  </div></a> {%  endif %}
 							<div class='details_label word_stat0'> {% trans %}occurances{% endtrans %}  | {{ wordstat.nb_matches }} </div>
 							<div class='details_label word_stat1'> {% trans %} ayates{% endtrans %}  |  {{ wordstat.nb_ayas }} </div>
 							<br />
@@ -808,7 +602,11 @@ a {
 				    <span style=' color:#0000ff;'>
 				      {% trans %} Result n° {% endtrans %}  <b> {{ ayaresult_id }} </b> 
 				      - 
-				      ({{ ayaresult_content.identifier.sura_arabic_name if dir=="RTL" else  ayaresult_content.identifier.sura_name }} {{ ayaresult_content.aya.id }})  
+				      {% if dir=="RTL"  %}
+                            <a href='سورة:"{{ ayaresult_content.identifier.sura_arabic_name }}" + رقم_الآية: {{ ayaresult_content.aya.id }}'> ({{ ayaresult_content.identifier.sura_arabic_name }} {{ ayaresult_content.aya.id }})</a>
+                       {% else %}
+                         <a href='sura:"{{ ayaresult_content.identifier.sura_name }}" + aya_id: {{ ayaresult_content.aya.id }}'> ({{ ayaresult_content.identifier.sura_name }} {{ ayaresult_content.aya.id }})</a>
+                       {% endif %}
 				    </span>
 				   {% if ayaresult_content.sura %}
 					   <div class='sura_details'>
@@ -840,8 +638,9 @@ a {
 					  		<span class='quran_decoration prev_aya'>
 							 [ </span>
 					  		<span class="quran prev_aya">
-					  		  {{ ayaresult_content.aya.prev_aya.text }} 
-					  		  
+					  		 {% for aya_word in ayaresult_content.aya.prev_aya.text.split(" ") %}
+                                            <a href="{{ aya_word }}">{{ aya_word }}</a>
+                             {% endfor %}
 					  		 </span>
 					  		 <span class='quran_decoration prev_aya'>
 							 ] </span>
@@ -859,7 +658,13 @@ a {
 					 [ </span>
 					 
 					 <span  class='aya_words quran main_aya'>
-					  		 {{ ayaresult_content.aya.text }} 
+					  		 {% for aya_word in ayaresult_content.aya.text.split(" ") %}
+                                      {% if aya_word[0] in "<ct> " %}
+                                            {{ aya_word | safe }}
+                                        {% else %}
+                                            <a href="{{ aya_word }}">{{ aya_word }}</a>
+                                        {% endif %}
+					  		 {% endfor %}
 					  </span> 
 					 
 					  
@@ -879,7 +684,9 @@ a {
 					  		<span class='quran_decoration next_aya'>
 							 [ </span>
 					  		<span class="quran next_aya">
-					  		  {{ ayaresult_content.aya.next_aya.text }} 
+					  		 {% for aya_word in ayaresult_content.aya.next_aya.text.split(" ") %}
+                                            <a href="{{ aya_word }}">{{ aya_word }}</a>
+                             {% endfor %}
 					  		  
 					  		 </span>
 					  		 <span class='quran_decoration next_aya'>
@@ -899,7 +706,11 @@ a {
 					  {% if ayaresult_content.aya.translation %}
 					  		<p style='direction:ltr;text-align:center;' >
 					  		<span class="quran_translation">
-					  	  		  {{ ayaresult_content.aya.translation }} 
+					  	  
+					  	  	 {% for translation_word in  ayaresult_content.aya.translation.split(" ") %}
+                                            <a href="#translation# {{ translation_word }}">{{ translation_word }}</a>
+                             {% endfor %}
+					  	  		  
 					   		</span></p>
 					  		<br />
 					  {% endif %}
@@ -968,7 +779,6 @@ a {
 					  {% endif %}
 				
 			     </fieldset>
-			     <hr />
 			     <br />
 			{% endfor %}
 			
@@ -979,7 +789,12 @@ a {
 			
 		{% else %}
 			<br />
-			<div class='notfound'><p> {% trans %}Sorry! there is no results for this search query{% endtrans %} </p></div>
+			<div class='isa_warning'>{% trans %}Sorry! there is no results for this search query{% endtrans %}.</div>
+            {% if extra_results.search.interval.total %}
+                <div class='isa_info'>
+                {% trans %}You may search in <b>Quran translations</b> instead, there are{% endtrans %} <b>{{ extra_results.search.interval.total }}</b> {% trans %}results   {% endtrans %}. <b><a href="#translation# {{ flags.query }}"> {% trans %}Click to search!{% endtrans %}</a><b>
+                </div>
+             {% endif %}
 			<br />
 		{% endif %}		
 	{% elif results.error %}

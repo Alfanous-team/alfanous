@@ -35,3 +35,4 @@ env.install_gettext_callables(gettext, ngettext)
 
 base_path =  os.path.dirname( __file__ ) 
 AYA_RESULTS_TEMPLATE = env.from_string(codecs.open(base_path + "/templates/aya_results.html","r", "utf-8").read())
+TRANSLATION_RESULTS_TEMPLATE = env.from_string(codecs.open(base_path + "/templates/translation_results.html","r", "utf-8").read())

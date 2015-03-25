@@ -11,7 +11,7 @@
     <x>0</x>
     <y>0</y>
     <width>1422</width>
-    <height>580</height>
+    <height>703</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -452,11 +452,14 @@ QSpinBox::down-button:pressed:enabled, QDoubleSpinBox::down-button:pressed:enabl
         <property name="currentIndex">
          <number>0</number>
         </property>
+        <property name="maxVisibleItems">
+         <number>5</number>
+        </property>
         <property name="maxCount">
-         <number>50</number>
+         <number>5</number>
         </property>
         <property name="insertPolicy">
-         <enum>QComboBox::InsertAlphabetically</enum>
+         <enum>QComboBox::InsertAtTop</enum>
         </property>
         <property name="duplicatesEnabled">
          <bool>false</bool>
@@ -516,9 +519,12 @@ QSpinBox::down-button:pressed:enabled, QDoubleSpinBox::down-button:pressed:enabl
     <item>
      <layout class="QHBoxLayout" name="horizontalLayout_45">
       <item>
-       <widget class="QCheckBox" name="o_filter">
+       <widget class="QCheckBox" name="o_autospell">
+        <property name="enabled">
+         <bool>true</bool>
+        </property>
         <property name="text">
-         <string>Filter recent results</string>
+         <string>Fuzzy Search</string>
         </property>
        </widget>
       </item>
@@ -537,16 +543,6 @@ QSpinBox::down-button:pressed:enabled, QDoubleSpinBox::down-button:pressed:enabl
          </size>
         </property>
        </spacer>
-      </item>
-      <item>
-       <widget class="QCheckBox" name="o_autospell">
-        <property name="enabled">
-         <bool>true</bool>
-        </property>
-        <property name="text">
-         <string>Fuzzy Search</string>
-        </property>
-       </widget>
       </item>
       <item>
        <widget class="QLabel" name="label_33">
@@ -586,7 +582,7 @@ QSpinBox::down-button:pressed:enabled, QDoubleSpinBox::down-button:pressed:enabl
       <item>
        <widget class="QRadioButton" name="o_search_in_trads">
         <property name="enabled">
-         <bool>false</bool>
+         <bool>true</bool>
         </property>
         <property name="text">
          <string>Translations</string>
@@ -1014,6 +1010,17 @@ QSpinBox::down-button:pressed:enabled, QDoubleSpinBox::down-button:pressed:enabl
      <addaction name="actionStandard"/>
      <addaction name="actionUthmani"/>
     </widget>
+    <widget class="QMenu" name="menuTranslation">
+     <property name="enabled">
+      <bool>true</bool>
+     </property>
+     <property name="title">
+      <string>Translation</string>
+     </property>
+     <addaction name="actionTranslationNone"/>
+     <addaction name="actionTranslationDefault"/>
+     <addaction name="separator"/>
+    </widget>
     <widget class="QMenu" name="menuChoose_Language">
      <property name="enabled">
       <bool>true</bool>
@@ -1033,17 +1040,6 @@ QSpinBox::down-button:pressed:enabled, QDoubleSpinBox::down-button:pressed:enabl
      <addaction name="actionIndonesian"/>
      <addaction name="actionMalay"/>
      <addaction name="actionSpanish"/>
-    </widget>
-    <widget class="QMenu" name="menuTranslation">
-     <property name="enabled">
-      <bool>true</bool>
-     </property>
-     <property name="title">
-      <string>Translation</string>
-     </property>
-     <addaction name="actionTranslationNone"/>
-     <addaction name="actionTranslationDefault"/>
-     <addaction name="separator"/>
     </widget>
     <addaction name="menuOrder_by"/>
     <addaction name="separator"/>
@@ -1159,8 +1155,8 @@ QSpinBox::down-button:pressed:enabled, QDoubleSpinBox::down-button:pressed:enabl
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>312</width>
-          <height>331</height>
+          <width>309</width>
+          <height>454</height>
          </rect>
         </property>
         <attribute name="label">
@@ -1342,7 +1338,7 @@ QSpinBox::down-button:pressed:enabled, QDoubleSpinBox::down-button:pressed:enabl
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>295</width>
+          <width>292</width>
           <height>280</height>
          </rect>
         </property>
@@ -1568,8 +1564,8 @@ QSpinBox::down-button:pressed:enabled, QDoubleSpinBox::down-button:pressed:enabl
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>312</width>
-          <height>158</height>
+          <width>309</width>
+          <height>220</height>
          </rect>
         </property>
         <attribute name="label">
@@ -1752,8 +1748,8 @@ QSpinBox::down-button:pressed:enabled, QDoubleSpinBox::down-button:pressed:enabl
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>295</width>
-          <height>168</height>
+          <width>309</width>
+          <height>208</height>
          </rect>
         </property>
         <attribute name="label">
@@ -1990,8 +1986,8 @@ QSpinBox::down-button:pressed:enabled, QDoubleSpinBox::down-button:pressed:enabl
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>295</width>
-          <height>170</height>
+          <width>309</width>
+          <height>208</height>
          </rect>
         </property>
         <attribute name="label">
@@ -2249,8 +2245,8 @@ QSpinBox::down-button:pressed:enabled, QDoubleSpinBox::down-button:pressed:enabl
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>295</width>
-          <height>200</height>
+          <width>309</width>
+          <height>224</height>
          </rect>
         </property>
         <attribute name="label">
@@ -2511,8 +2507,8 @@ QSpinBox::down-button:pressed:enabled, QDoubleSpinBox::down-button:pressed:enabl
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>295</width>
-          <height>198</height>
+          <width>309</width>
+          <height>223</height>
          </rect>
         </property>
         <attribute name="label">
@@ -3559,7 +3555,7 @@ QSpinBox::down-button:pressed:enabled, QDoubleSpinBox::down-button:pressed:enabl
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>Arabic</string>
+    <string notr="true">Arabic</string>
    </property>
    <property name="toolTip">
     <string notr="true">العربية</string>
@@ -3573,7 +3569,7 @@ QSpinBox::down-button:pressed:enabled, QDoubleSpinBox::down-button:pressed:enabl
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>French</string>
+    <string notr="true">French</string>
    </property>
    <property name="toolTip">
     <string notr="true">Fr</string>
@@ -3660,7 +3656,7 @@ QSpinBox::down-button:pressed:enabled, QDoubleSpinBox::down-button:pressed:enabl
   </action>
   <action name="actionAlbanian">
    <property name="text">
-    <string>Albanian</string>
+    <string notr="true">Albanian</string>
    </property>
    <property name="toolTip">
     <string notr="true">Albanian</string>
@@ -3810,8 +3806,8 @@ QSpinBox::down-button:pressed:enabled, QDoubleSpinBox::down-button:pressed:enabl
      <y>107</y>
     </hint>
     <hint type="destinationlabel">
-     <x>200</x>
-     <y>99</y>
+     <x>308</x>
+     <y>115</y>
     </hint>
    </hints>
   </connection>
@@ -3844,6 +3840,86 @@ QSpinBox::down-button:pressed:enabled, QDoubleSpinBox::down-button:pressed:enabl
     <hint type="destinationlabel">
      <x>249</x>
      <y>166</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>o_search_in_trads</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>w_features</receiver>
+   <slot>setDisabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>751</x>
+     <y>62</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>231</x>
+     <y>28</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>o_search_in_trads</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>menuOrder_by</receiver>
+   <slot>setDisabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>736</x>
+     <y>64</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>67</x>
+     <y>101</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>o_search_in_trads</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>menuScript</receiver>
+   <slot>setDisabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>736</x>
+     <y>64</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>67</x>
+     <y>50</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>o_search_in_trads</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>menuShow</receiver>
+   <slot>setDisabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>736</x>
+     <y>64</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>85</x>
+     <y>90</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>o_search_in_trads</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>menuTranslation</receiver>
+   <slot>setDisabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>736</x>
+     <y>64</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>67</x>
+     <y>55</y>
     </hint>
    </hints>
   </connection>
