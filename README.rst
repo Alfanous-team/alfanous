@@ -1,21 +1,26 @@
    **note** This project needs more contributors and/or funding. If you like it, see `how you can help? <https://github.com/Alfanous-team/alfanous/blob/master/FAQ.rst#how-you-can-help>`_.
 
 
+* .. image:: https://img.shields.io/pypi/v/alfanous.svg
+        :target: https://pypi.python.org/pypi/alfanous
 
-* .. image:: https://travis-ci.org/Alfanous-team/alfanous.png?branch=master
+  .. image:: https://travis-ci.org/Alfanous-team/alfanous.png?branch=master
             :target: https://travis-ci.org/Alfanous-team/alfanous
 
-* .. image:: https://landscape.io/github/Alfanous-team/alfanous/master/landscape.svg
+  .. image:: https://landscape.io/github/Alfanous-team/alfanous/master/landscape.svg
         :target: https://landscape.io/github/Alfanous-team/alfanous
         
   .. image:: https://requires.io/github/Alfanous-team/alfanous/requirements.svg?branch=master
      :target: https://requires.io/github/Alfanous-team/alfanous/requirements/?branch=master
      :alt: Requirements Status
 
-* .. image:: https://img.shields.io/pypi/v/alfanous.svg
+
+* .. image:: https://img.shields.io/pypi/dm/alfanous.svg
         :target: https://pypi.python.org/pypi/alfanous
-  .. image:: https://img.shields.io/pypi/dm/alfanous.svg
-        :target: https://pypi.python.org/pypi/alfanous
+  .. image:: https://img.shields.io/sourceforge/dm/alfanous.svg
+        :target: https://sourceforge.net/projects/alfanous
+  
+
 
 ================
 Alfanous Project
@@ -192,6 +197,8 @@ See also
 #. `Desktop Interface <https://github.com/Alfanous-team/alfanous/tree/master/src/alfanous-desktop>`_
 
 #. `Django application <https://github.com/Alfanous-team/alfanous/tree/master/src/alfanous-django>`_
+
+#. `Packaging <https://github.com/Alfanous-team/alfanous/tree/packaging>`_
 
 
 
