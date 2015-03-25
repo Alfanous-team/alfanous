@@ -23,6 +23,15 @@ How to contact us?
 ------------------
 see `contacts <https://github.com/Alfanous-team/alfanous#contacts>`_.
 
+---------------------------------------------------
+It didnt find the word X while I checked it exists!
+---------------------------------------------------
+Alfanous use the exact matching for words as default, so if you look for alzaytoon (الزيتون), you will not find it because it occurs in Quran as wazzaytoon (والزيتون). Yet, you will find it in suggestions or derivations. You can activate fuzzy search to search all close words to searched words.
+
+- Why we use exact match?
+- It is better for statistical search.
+
+
 -----------------
 How you can help?
 -----------------
