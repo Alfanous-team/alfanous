@@ -1,5 +1,4 @@
 apply plugin: 'com.android.library'
-
 android {
     compileSdkVersion 16
     buildToolsVersion "22.0.1"
@@ -15,4 +14,9 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
         }
     }
+}
+
+dependencies {
+    compile 'com.android.support:support-v4:22.0.0'
+    compile project(':com.thoughtworks.xstream')
 }

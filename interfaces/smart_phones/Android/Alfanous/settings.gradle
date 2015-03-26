@@ -1,2 +1,2 @@
-include ':library'
-include ':android'
+include ':com.viewpagerindicator', ':com.thoughtworks.xstream'
+include ':org.alfanous.alfanous'
