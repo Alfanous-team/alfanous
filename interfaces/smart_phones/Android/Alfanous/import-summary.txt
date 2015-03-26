@@ -1,0 +1,247 @@
+ECLIPSE ANDROID PROJECT IMPORT SUMMARY
+======================================
+
+Manifest Merging:
+-----------------
+Your project uses libraries that provide manifests, and your Eclipse
+project did not explicitly turn on manifest merging. In Android Gradle
+projects, manifests are always merged (meaning that contents from your
+libraries' manifests will be merged into the app manifest. If you had
+manually copied contents from library manifests into your app manifest
+you may need to remove these for the app to build correctly.
+
+Ignored Files:
+--------------
+The following files were *not* copied into the new Gradle project; you
+should evaluate whether these are still needed in your project and if
+so manually move them:
+
+From Android:
+* Android-ViewPagerIndicator-master/
+* Android-ViewPagerIndicator-master/.gitignore
+* Android-ViewPagerIndicator-master/CHANGELOG.md
+* Android-ViewPagerIndicator-master/README.md
+* Android-ViewPagerIndicator-master/checkstyle.xml
+* Android-ViewPagerIndicator-master/library/
+* Android-ViewPagerIndicator-master/library/AndroidManifest.xml
+* Android-ViewPagerIndicator-master/library/gen/
+* Android-ViewPagerIndicator-master/library/gen/com/
+* Android-ViewPagerIndicator-master/library/gen/com/viewpagerindicator/
+* Android-ViewPagerIndicator-master/library/gen/com/viewpagerindicator/BuildConfig.java
+* Android-ViewPagerIndicator-master/library/gen/com/viewpagerindicator/Manifest.java
+* Android-ViewPagerIndicator-master/library/gen/com/viewpagerindicator/R.java
+* Android-ViewPagerIndicator-master/library/library.iml
+* Android-ViewPagerIndicator-master/library/pom.xml
+* Android-ViewPagerIndicator-master/library/project.properties
+* Android-ViewPagerIndicator-master/library/res/
+* Android-ViewPagerIndicator-master/library/res/color/
+* Android-ViewPagerIndicator-master/library/res/color/vpi__dark_theme.xml
+* Android-ViewPagerIndicator-master/library/res/color/vpi__light_theme.xml
+* Android-ViewPagerIndicator-master/library/res/drawable-hdpi/
+* Android-ViewPagerIndicator-master/library/res/drawable-hdpi/vpi__tab_selected_focused_holo.9.png
+* Android-ViewPagerIndicator-master/library/res/drawable-hdpi/vpi__tab_selected_holo.9.png
+* Android-ViewPagerIndicator-master/library/res/drawable-hdpi/vpi__tab_selected_pressed_holo.9.png
+* Android-ViewPagerIndicator-master/library/res/drawable-hdpi/vpi__tab_unselected_focused_holo.9.png
+* Android-ViewPagerIndicator-master/library/res/drawable-hdpi/vpi__tab_unselected_holo.9.png
+* Android-ViewPagerIndicator-master/library/res/drawable-hdpi/vpi__tab_unselected_pressed_holo.9.png
+* Android-ViewPagerIndicator-master/library/res/drawable-mdpi/
+* Android-ViewPagerIndicator-master/library/res/drawable-mdpi/vpi__tab_selected_focused_holo.9.png
+* Android-ViewPagerIndicator-master/library/res/drawable-mdpi/vpi__tab_selected_holo.9.png
+* Android-ViewPagerIndicator-master/library/res/drawable-mdpi/vpi__tab_selected_pressed_holo.9.png
+* Android-ViewPagerIndicator-master/library/res/drawable-mdpi/vpi__tab_unselected_focused_holo.9.png
+* Android-ViewPagerIndicator-master/library/res/drawable-mdpi/vpi__tab_unselected_holo.9.png
+* Android-ViewPagerIndicator-master/library/res/drawable-mdpi/vpi__tab_unselected_pressed_holo.9.png
+* Android-ViewPagerIndicator-master/library/res/drawable-xhdpi/
+* Android-ViewPagerIndicator-master/library/res/drawable-xhdpi/vpi__tab_selected_focused_holo.9.png
+* Android-ViewPagerIndicator-master/library/res/drawable-xhdpi/vpi__tab_selected_holo.9.png
+* Android-ViewPagerIndicator-master/library/res/drawable-xhdpi/vpi__tab_selected_pressed_holo.9.png
+* Android-ViewPagerIndicator-master/library/res/drawable-xhdpi/vpi__tab_unselected_focused_holo.9.png
+* Android-ViewPagerIndicator-master/library/res/drawable-xhdpi/vpi__tab_unselected_holo.9.png
+* Android-ViewPagerIndicator-master/library/res/drawable-xhdpi/vpi__tab_unselected_pressed_holo.9.png
+* Android-ViewPagerIndicator-master/library/res/drawable/
+* Android-ViewPagerIndicator-master/library/res/drawable/vpi__tab_indicator.xml
+* Android-ViewPagerIndicator-master/library/res/values/
+* Android-ViewPagerIndicator-master/library/res/values/vpi__attrs.xml
+* Android-ViewPagerIndicator-master/library/res/values/vpi__colors.xml
+* Android-ViewPagerIndicator-master/library/res/values/vpi__defaults.xml
+* Android-ViewPagerIndicator-master/library/res/values/vpi__styles.xml
+* Android-ViewPagerIndicator-master/library/src/
+* Android-ViewPagerIndicator-master/library/src/com/
+* Android-ViewPagerIndicator-master/library/src/com/viewpagerindicator/
+* Android-ViewPagerIndicator-master/library/src/com/viewpagerindicator/CirclePageIndicator.java
+* Android-ViewPagerIndicator-master/library/src/com/viewpagerindicator/IconPageIndicator.java
+* Android-ViewPagerIndicator-master/library/src/com/viewpagerindicator/IconPagerAdapter.java
+* Android-ViewPagerIndicator-master/library/src/com/viewpagerindicator/IcsLinearLayout.java
+* Android-ViewPagerIndicator-master/library/src/com/viewpagerindicator/LinePageIndicator.java
+* Android-ViewPagerIndicator-master/library/src/com/viewpagerindicator/PageIndicator.java
+* Android-ViewPagerIndicator-master/library/src/com/viewpagerindicator/TabPageIndicator.java
+* Android-ViewPagerIndicator-master/library/src/com/viewpagerindicator/TitlePageIndicator.java
+* Android-ViewPagerIndicator-master/library/src/com/viewpagerindicator/UnderlinePageIndicator.java
+* Android-ViewPagerIndicator-master/pom.xml
+* Android-ViewPagerIndicator-master/sample/
+* Android-ViewPagerIndicator-master/sample/AndroidManifest.xml
+* Android-ViewPagerIndicator-master/sample/gen/
+* Android-ViewPagerIndicator-master/sample/gen/com/
+* Android-ViewPagerIndicator-master/sample/gen/com/viewpagerindicator/
+* Android-ViewPagerIndicator-master/sample/gen/com/viewpagerindicator/sample/
+* Android-ViewPagerIndicator-master/sample/gen/com/viewpagerindicator/sample/BuildConfig.java
+* Android-ViewPagerIndicator-master/sample/gen/com/viewpagerindicator/sample/Manifest.java
+* Android-ViewPagerIndicator-master/sample/gen/com/viewpagerindicator/sample/R.java
+* Android-ViewPagerIndicator-master/sample/logo.png
+* Android-ViewPagerIndicator-master/sample/pom.xml
+* Android-ViewPagerIndicator-master/sample/project.properties
+* Android-ViewPagerIndicator-master/sample/psd/
+* Android-ViewPagerIndicator-master/sample/psd/icon_hdpi.psd
+* Android-ViewPagerIndicator-master/sample/psd/icon_mdpi.psd
+* Android-ViewPagerIndicator-master/sample/psd/icon_xhdpi.psd
+* Android-ViewPagerIndicator-master/sample/psd/logo.psd
+* Android-ViewPagerIndicator-master/sample/psd/web.psd
+* Android-ViewPagerIndicator-master/sample/res/
+* Android-ViewPagerIndicator-master/sample/res/drawable-hdpi/
+* Android-ViewPagerIndicator-master/sample/res/drawable-hdpi/custom_tab_indicator_divider.9.png
+* Android-ViewPagerIndicator-master/sample/res/drawable-hdpi/custom_tab_indicator_focused.9.png
+* Android-ViewPagerIndicator-master/sample/res/drawable-hdpi/custom_tab_indicator_selected.9.png
+* Android-ViewPagerIndicator-master/sample/res/drawable-hdpi/custom_tab_indicator_selected_pressed.9.png
+* Android-ViewPagerIndicator-master/sample/res/drawable-hdpi/custom_tab_indicator_unselected.9.png
+* Android-ViewPagerIndicator-master/sample/res/drawable-hdpi/custom_tab_indicator_unselected_focused.9.png
+* Android-ViewPagerIndicator-master/sample/res/drawable-hdpi/custom_tab_indicator_unselected_pressed.9.png
+* Android-ViewPagerIndicator-master/sample/res/drawable-hdpi/icon.png
+* Android-ViewPagerIndicator-master/sample/res/drawable-hdpi/perm_group_calendar_normal.png
+* Android-ViewPagerIndicator-master/sample/res/drawable-hdpi/perm_group_calendar_selected.png
+* Android-ViewPagerIndicator-master/sample/res/drawable-hdpi/perm_group_camera_normal.png
+* Android-ViewPagerIndicator-master/sample/res/drawable-hdpi/perm_group_camera_selected.png
+* Android-ViewPagerIndicator-master/sample/res/drawable-hdpi/perm_group_device_alarms_normal.png
+* Android-ViewPagerIndicator-master/sample/res/drawable-hdpi/perm_group_device_alarms_selected.png
+* Android-ViewPagerIndicator-master/sample/res/drawable-hdpi/perm_group_location_normal.png
+* Android-ViewPagerIndicator-master/sample/res/drawable-hdpi/perm_group_location_selected.png
+* Android-ViewPagerIndicator-master/sample/res/drawable-mdpi/
+* Android-ViewPagerIndicator-master/sample/res/drawable-mdpi/custom_tab_indicator_divider.9.png
+* Android-ViewPagerIndicator-master/sample/res/drawable-mdpi/custom_tab_indicator_selected.9.png
+* Android-ViewPagerIndicator-master/sample/res/drawable-mdpi/custom_tab_indicator_selected_focused.9.png
+* Android-ViewPagerIndicator-master/sample/res/drawable-mdpi/custom_tab_indicator_selected_pressed.9.png
+* Android-ViewPagerIndicator-master/sample/res/drawable-mdpi/custom_tab_indicator_unselected.9.png
+* Android-ViewPagerIndicator-master/sample/res/drawable-mdpi/custom_tab_indicator_unselected_focused.9.png
+* Android-ViewPagerIndicator-master/sample/res/drawable-mdpi/custom_tab_indicator_unselected_pressed.9.png
+* Android-ViewPagerIndicator-master/sample/res/drawable-mdpi/icon.png
+* Android-ViewPagerIndicator-master/sample/res/drawable-mdpi/perm_group_calendar_normal.png
+* Android-ViewPagerIndicator-master/sample/res/drawable-mdpi/perm_group_calendar_selected.png
+* Android-ViewPagerIndicator-master/sample/res/drawable-mdpi/perm_group_camera_normal.png
+* Android-ViewPagerIndicator-master/sample/res/drawable-mdpi/perm_group_camera_selected.png
+* Android-ViewPagerIndicator-master/sample/res/drawable-mdpi/perm_group_device_alarms_normal.png
+* Android-ViewPagerIndicator-master/sample/res/drawable-mdpi/perm_group_device_alarms_selected.png
+* Android-ViewPagerIndicator-master/sample/res/drawable-mdpi/perm_group_location_normal.png
+* Android-ViewPagerIndicator-master/sample/res/drawable-mdpi/perm_group_location_selected.png
+* Android-ViewPagerIndicator-master/sample/res/drawable-xhdpi/
+* Android-ViewPagerIndicator-master/sample/res/drawable-xhdpi/custom_tab_indicator_divider.9.png
+* Android-ViewPagerIndicator-master/sample/res/drawable-xhdpi/custom_tab_indicator_selected.9.png
+* Android-ViewPagerIndicator-master/sample/res/drawable-xhdpi/custom_tab_indicator_selected_focused.9.png
+* Android-ViewPagerIndicator-master/sample/res/drawable-xhdpi/custom_tab_indicator_selected_pressed.9.png
+* Android-ViewPagerIndicator-master/sample/res/drawable-xhdpi/custom_tab_indicator_unselected.9.png
+* Android-ViewPagerIndicator-master/sample/res/drawable-xhdpi/custom_tab_indicator_unselected_focused.9.png
+* Android-ViewPagerIndicator-master/sample/res/drawable-xhdpi/custom_tab_indicator_unselected_pressed.9.png
+* Android-ViewPagerIndicator-master/sample/res/drawable-xhdpi/icon.png
+* Android-ViewPagerIndicator-master/sample/res/drawable-xhdpi/perm_group_calendar_normal.png
+* Android-ViewPagerIndicator-master/sample/res/drawable-xhdpi/perm_group_calendar_selected.png
+* Android-ViewPagerIndicator-master/sample/res/drawable-xhdpi/perm_group_camera_normal.png
+* Android-ViewPagerIndicator-master/sample/res/drawable-xhdpi/perm_group_camera_selected.png
+* Android-ViewPagerIndicator-master/sample/res/drawable-xhdpi/perm_group_device_alarms_normal.png
+* Android-ViewPagerIndicator-master/sample/res/drawable-xhdpi/perm_group_device_alarms_selected.png
+* Android-ViewPagerIndicator-master/sample/res/drawable-xhdpi/perm_group_location_normal.png
+* Android-ViewPagerIndicator-master/sample/res/drawable-xhdpi/perm_group_location_selected.png
+* Android-ViewPagerIndicator-master/sample/res/drawable/
+* Android-ViewPagerIndicator-master/sample/res/drawable/custom_tab_indicator.xml
+* Android-ViewPagerIndicator-master/sample/res/drawable/perm_group_calendar.xml
+* Android-ViewPagerIndicator-master/sample/res/drawable/perm_group_camera.xml
+* Android-ViewPagerIndicator-master/sample/res/drawable/perm_group_device_alarms.xml
+* Android-ViewPagerIndicator-master/sample/res/drawable/perm_group_location.xml
+* Android-ViewPagerIndicator-master/sample/res/layout/
+* Android-ViewPagerIndicator-master/sample/res/layout/simple_circles.xml
+* Android-ViewPagerIndicator-master/sample/res/layout/simple_circles_vertical.xml
+* Android-ViewPagerIndicator-master/sample/res/layout/simple_icons.xml
+* Android-ViewPagerIndicator-master/sample/res/layout/simple_lines.xml
+* Android-ViewPagerIndicator-master/sample/res/layout/simple_tabs.xml
+* Android-ViewPagerIndicator-master/sample/res/layout/simple_titles.xml
+* Android-ViewPagerIndicator-master/sample/res/layout/simple_titles_bottom.xml
+* Android-ViewPagerIndicator-master/sample/res/layout/simple_underlines.xml
+* Android-ViewPagerIndicator-master/sample/res/layout/themed_circles.xml
+* Android-ViewPagerIndicator-master/sample/res/layout/themed_lines.xml
+* Android-ViewPagerIndicator-master/sample/res/layout/themed_titles.xml
+* Android-ViewPagerIndicator-master/sample/res/layout/themed_underlines.xml
+* Android-ViewPagerIndicator-master/sample/res/menu/
+* Android-ViewPagerIndicator-master/sample/res/menu/menu.xml
+* Android-ViewPagerIndicator-master/sample/res/values/
+* Android-ViewPagerIndicator-master/sample/res/values/styles.xml
+* Android-ViewPagerIndicator-master/sample/sample.iml
+* Android-ViewPagerIndicator-master/sample/screens.png
+* Android-ViewPagerIndicator-master/sample/src/
+* Android-ViewPagerIndicator-master/sample/src/com/
+* Android-ViewPagerIndicator-master/sample/src/com/viewpagerindicator/
+* Android-ViewPagerIndicator-master/sample/src/com/viewpagerindicator/sample/
+* Android-ViewPagerIndicator-master/sample/src/com/viewpagerindicator/sample/BaseSampleActivity.java
+* Android-ViewPagerIndicator-master/sample/src/com/viewpagerindicator/sample/ListSamples.java
+* Android-ViewPagerIndicator-master/sample/src/com/viewpagerindicator/sample/SampleCirclesDefault.java
+* Android-ViewPagerIndicator-master/sample/src/com/viewpagerindicator/sample/SampleCirclesInitialPage.java
+* Android-ViewPagerIndicator-master/sample/src/com/viewpagerindicator/sample/SampleCirclesSnap.java
+* Android-ViewPagerIndicator-master/sample/src/com/viewpagerindicator/sample/SampleCirclesStyledLayout.java
+* Android-ViewPagerIndicator-master/sample/src/com/viewpagerindicator/sample/SampleCirclesStyledMethods.java
+* Android-ViewPagerIndicator-master/sample/src/com/viewpagerindicator/sample/SampleCirclesStyledTheme.java
+* Android-ViewPagerIndicator-master/sample/src/com/viewpagerindicator/sample/SampleCirclesWithListener.java
+* Android-ViewPagerIndicator-master/sample/src/com/viewpagerindicator/sample/SampleIconsDefault.java
+* Android-ViewPagerIndicator-master/sample/src/com/viewpagerindicator/sample/SampleLinesDefault.java
+* Android-ViewPagerIndicator-master/sample/src/com/viewpagerindicator/sample/SampleLinesStyledLayout.java
+* Android-ViewPagerIndicator-master/sample/src/com/viewpagerindicator/sample/SampleLinesStyledMethods.java
+* Android-ViewPagerIndicator-master/sample/src/com/viewpagerindicator/sample/SampleLinesStyledTheme.java
+* Android-ViewPagerIndicator-master/sample/src/com/viewpagerindicator/sample/SampleTabsDefault.java
+* Android-ViewPagerIndicator-master/sample/src/com/viewpagerindicator/sample/SampleTabsStyled.java
+* Android-ViewPagerIndicator-master/sample/src/com/viewpagerindicator/sample/SampleTabsWithIcons.java
+* Android-ViewPagerIndicator-master/sample/src/com/viewpagerindicator/sample/SampleTitlesBottom.java
+* Android-ViewPagerIndicator-master/sample/src/com/viewpagerindicator/sample/SampleTitlesCenterClickListener.java
+* Android-ViewPagerIndicator-master/sample/src/com/viewpagerindicator/sample/SampleTitlesDefault.java
+* Android-ViewPagerIndicator-master/sample/src/com/viewpagerindicator/sample/SampleTitlesInitialPage.java
+* Android-ViewPagerIndicator-master/sample/src/com/viewpagerindicator/sample/SampleTitlesStyledLayout.java
+* Android-ViewPagerIndicator-master/sample/src/com/viewpagerindicator/sample/SampleTitlesStyledMethods.java
+* Android-ViewPagerIndicator-master/sample/src/com/viewpagerindicator/sample/SampleTitlesStyledTheme.java
+* Android-ViewPagerIndicator-master/sample/src/com/viewpagerindicator/sample/SampleTitlesTriangle.java
+* Android-ViewPagerIndicator-master/sample/src/com/viewpagerindicator/sample/SampleTitlesWithListener.java
+* Android-ViewPagerIndicator-master/sample/src/com/viewpagerindicator/sample/SampleUnderlinesDefault.java
+* Android-ViewPagerIndicator-master/sample/src/com/viewpagerindicator/sample/SampleUnderlinesNoFade.java
+* Android-ViewPagerIndicator-master/sample/src/com/viewpagerindicator/sample/SampleUnderlinesStyledLayout.java
+* Android-ViewPagerIndicator-master/sample/src/com/viewpagerindicator/sample/SampleUnderlinesStyledMethods.java
+* Android-ViewPagerIndicator-master/sample/src/com/viewpagerindicator/sample/SampleUnderlinesStyledTheme.java
+* Android-ViewPagerIndicator-master/sample/src/com/viewpagerindicator/sample/TestFragment.java
+* Android-ViewPagerIndicator-master/sample/src/com/viewpagerindicator/sample/TestFragmentAdapter.java
+* Android-ViewPagerIndicator-master/sample/web.png
+* ic_launcher-web.png
+* proguard-project.txt
+From library:
+* library.iml
+* pom.xml
+
+Moved Files:
+------------
+Android Gradle projects use a different directory structure than ADT
+Eclipse projects. Here's how the projects were restructured:
+
+In library:
+* AndroidManifest.xml => library/src/main/AndroidManifest.xml
+* res/ => library/src/main/res/
+* src/ => library/src/main/java/
+In Android:
+* AndroidManifest.xml => android/src/main/AndroidManifest.xml
+* res/ => android/src/main/res/
+* src/ => android/src/main/java/
+
+Next Steps:
+-----------
+You can now build the project. The Gradle project needs network
+connectivity to download dependencies.
+
+Bugs:
+-----
+If for some reason your project does not build, and you determine that
+it is due to a bug or limitation of the Eclipse to Gradle importer,
+please file a bug at http://b.android.com with category
+Component-Tools.
+
+(This import summary is for your information only, and can be deleted
+after import once you are satisfied with the results.)
