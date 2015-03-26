@@ -1,0 +1,2 @@
+include ':com.viewpagerindicator', ':com.thoughtworks.xstream'
+include ':org.alfanous.alfanous'
