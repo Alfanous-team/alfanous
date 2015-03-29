@@ -432,6 +432,23 @@ class QUI( Ui_MainWindow ):
         elif new_query.startswith("#translation#"):
             self.o_search_in_trads.setChecked(True)
             new_query = new_query.strip("#translation#")
+        deleted_chars = {ord(":"):None,
+                         ord(","):None,
+                         ord(":"):None,
+                         ord("."):None,
+                         ord("'"):None,
+                         ord("<"):None,
+                         ord(">"):None,
+                         ord("/"):None,
+                         ord("\\"):None,
+                         ord("-"):None,
+                         ord("*"):None,
+                         ord("_"):None,
+                         ord("?"):None,
+                         ord("!"):None
+                         }
+        new_query = new_query.translate(deleted_chars )
+        print new_query
         self.o_query.setEditText(new_query)
         self.o_page.setValue(1)
         self.search_all()
