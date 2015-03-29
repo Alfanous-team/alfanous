@@ -29,7 +29,8 @@ from PyZekrModels.Models import TranslationModel
 
 from alfanous.Support.whoosh.fields import Schema, STORED, ID, KEYWORD, TEXT, NUMERIC
 from alfanous.Support.whoosh.filedb.filestore import FileStorage
-from alfanous.Support.whoosh import index
+from alfanous.Support.whoosh import index 
+from alfanous.Support.whoosh.analysis import RegexTokenizer, LowercaseFilter
 
 from alfanous.TextProcessing import QArabicSymbolsFilter
 
@@ -199,7 +200,7 @@ class ZekrModelsImporter:
     schema = Schema( 
 						gid = NUMERIC( stored = True ),
 						id = TEXT( stored = True ),
-						text = TEXT( stored = True ),
+						text = TEXT( stored = True, analyzer= RegexTokenizer() | LowercaseFilter()  ),
 						type = KEYWORD( stored = True ),
 						lang = KEYWORD( stored = True ),
 						country = KEYWORD( stored = True ),
