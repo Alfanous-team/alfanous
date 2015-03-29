@@ -424,12 +424,14 @@ class QUI( Ui_MainWindow ):
 
     def link_is_clicked(self, url):
         new_query = url.toString()
-        if "#aya#" in new_query:
+        if new_query.startswith("about:blank"): # Windows add about:blank to urls not starting by X://
+            new_query = new_query.strip("about:blank")
+        if new_query.startswith("#aya#"):
             self.o_search_in_ayas.setChecked(True)
-            new_query = new_query[5:]
-        if "#translation#" in new_query:
+            new_query = new_query.strip("#aya#")
+        elif new_query.startswith("#translation#"):
             self.o_search_in_trads.setChecked(True)
-            new_query = new_query[13:]
+            new_query = new_query.strip("#translation#")
         self.o_query.setEditText(new_query)
         self.o_page.setValue(1)
         self.search_all()
