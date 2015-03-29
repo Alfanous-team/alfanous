@@ -111,18 +111,18 @@ class QSearcher:
     def __init__( self, docindex, qparser ):
         self._searcher = docindex.get_index().searcher
         self._qparser = qparser
-        self.searcher = self._searcher( weighting = QScore() )
 
     def search( self, querystr, limit = 6236, sortedby = "score", reverse = False ):
+        searcher = self._searcher( weighting = QScore() )
         query = self._qparser.parse( querystr )
-        results = self.searcher.search( query, limit, QSort( sortedby ), reverse )
+        results = searcher.search( query, limit, QSort( sortedby ), reverse )
         terms = set()
         try:
             query.all_terms( terms )
         except:
             pass
 
-        return results, terms
+        return results, terms, searcher
 
 
 
