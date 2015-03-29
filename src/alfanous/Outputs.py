@@ -582,7 +582,7 @@ class Raw():
 
 		#Search
 		SE = self.FQSE if fuzzy else self.QSE
-		res, termz = SE.search_all( query  , self._defaults["results_limit"]["aya"], sortedby = sortedby )
+		res, termz, searcher = SE.search_all( query  , self._defaults["results_limit"]["aya"], sortedby = sortedby )
 		terms = [term[1] for term in list( termz )[:self._defaults["maxkeywords"]]]
 		terms_uthmani = map( STANDARD2UTHMANI, terms )
 		#pagination
@@ -593,6 +593,8 @@ class Raw():
 		end = interval_end if interval_end < len( res ) else len( res )
 		start = offset if offset <= len( res ) else -1
 		reslist = [] if end == 0 or start == -1 else list( res )[start - 1:end]
+		#closing the searcher
+		searcher.close()
 		output = {}
 
 		## disable annotations for aya words if there is more then one result
@@ -696,19 +698,21 @@ class Raw():
 
 		# Adjacents
 		if prev_aya or next_aya:
-			adja_res = self.QSE.find_extended( adja_query, "gid" )
+			adja_res, searcher = self.QSE.find_extended( adja_query, "gid" )
 			adja_ayas = {0:{"aya_":u"----", "uth_":u"----", "sura":u"---", "aya_id":0, "sura_arabic":u"---"}, 6237:{"aya_":u"----", "uth_":u"----", "sura":u"---", "aya_id":9999, "sura_arabic":u"---"}}
 			for adja in adja_res:
 				adja_ayas[adja["gid"]] = {"aya_":adja["aya_"], "uth_":adja["uth_"], "aya_id":adja["aya_id"], "sura":adja["sura"],"sura_arabic":adja["sura_arabic"]}
 				extend_runtime += adja_res.runtime
+			searcher.close()
 
 		#translations
 		if translation:
-			trad_res = self.TSE.find_extended( trad_query, "gid" )
+			trad_res, searcher = self.TSE.find_extended( trad_query, "gid" )
 			extend_runtime += trad_res.runtime
 			trad_text = {}
 			for tr in trad_res:
 				trad_text[tr["gid"]] = tr["text"]
+			searcher.close()
 
 		#annotations for aya words
 		if annotation_aya or ( annotation_word and word_info ) :
@@ -716,7 +720,7 @@ class Raw():
 			annotation_aya_query = annotation_aya_query if annotation_aya else u"()"
 			annotation_query = annotation_aya_query + u" OR  " + annotation_word_query
 			#print annotation_query.encode( "utf-8" )
-			annot_res = self.WSE.find_extended( annotation_query, "gid" )
+			annot_res, searcher = self.WSE.find_extended( annotation_query, "gid" )
 			extend_runtime += annot_res.runtime
 			## prepare annotations for use
 			annotations_by_word = {}
@@ -736,6 +740,7 @@ class Raw():
 						annotations_by_position[( annot["sura_id"], annot["aya_id"] )][annot["word_id"]] = annot
 					else:
 						annotations_by_position[( annot["sura_id"], annot["aya_id"] )] = { annot["word_id"]: annot }
+			searcher.close()
 
 		## merge word annotations to word output
 		if ( annotation_word and word_info ):
@@ -852,6 +857,8 @@ class Raw():
 				"annotations": {} if not annotation_aya or not annotations_by_position.has_key( ( r["sura_id"], r["aya_id"] ) )
 							else annotations_by_position[( r["sura_id"], r["aya_id"] )]
 		    		}
+		
+
 		return output
 
 	def _search_translation( self, flags ):
@@ -890,7 +897,7 @@ class Raw():
 
 		#Search
 		SE = self.TSE
-		res, termz = SE.search_all( query  , self._defaults["results_limit"]["translation"] )
+		res, termz, searcher = SE.search_all( query  , self._defaults["results_limit"]["translation"] )
 		terms = [term[1] for term in list( termz )[:self._defaults["maxkeywords"]]]
 		#pagination
 		offset = 1 if offset < 1 else offset;
@@ -906,6 +913,9 @@ class Raw():
 											else self._defaults["results_limit"]["translation"]
 
 		reslist = [] if end == 0 or start == -1 else list( res )[start - 1:end]
+		#closing the searcher
+		searcher.close()
+		
 		output = {}
 
 		# highligh function that consider None value and non-definition
@@ -923,7 +933,7 @@ class Raw():
 
 		#original ayas
 		if aya:
-			aya_res = self.QSE.find_extended( aya_query, "gid" )
+			aya_res, searcher = self.QSE.find_extended( aya_query, "gid" )
 			extend_runtime += aya_res.runtime
 			aya_info = {}
 			for ay in aya_res:
@@ -932,6 +942,7 @@ class Raw():
 										"sura_name": ay["sura"],
 										"sura_arabic_name": ay["sura_arabic"],
 										}
+			searcher.close()
 
 		output["runtime"] = round( extend_runtime, 5 )
 		output["interval"] = {
@@ -1020,7 +1031,7 @@ class Raw():
 
 		#Search
 		SE = self.WSE
-		res, termz = SE.search_all( query  , self._defaults["results_limit"]["word"], sortedby = sortedby )
+		res, termz, searcher = SE.search_all( query  , self._defaults["results_limit"]["word"], sortedby = sortedby )
 		terms = [term[1] for term in list( termz )[:self._defaults["maxkeywords"]]]
 
 		#pagination
@@ -1031,8 +1042,10 @@ class Raw():
 		end = interval_end if interval_end < len( res ) else len( res )
 		start = offset if offset <= len( res ) else -1
 		reslist = [] if end == 0 or start == -1 else list( res )[start - 1:end]
+		#closing the searcher
+		searcher.close()
+		
 		output = {}
-
 
 		#if True:
 		## strip vocalization when vocalized = true

@@ -76,8 +76,8 @@ class BasicSearchEngine:
         if querystr.__class__ is not unicode:
             querystr = querystr.decode( "utf-8" )
 
-        results, termes = self._searcher.search( querystr, limit, sortedby, reverse )
-        return ( results, list( self._reader.term_stats( termes ) ) )
+        results, terms, searcher = self._searcher.search( querystr, limit, sortedby, reverse )
+        return ( results, list( self._reader.term_stats( terms ) ), searcher )
 
     def most_frequent_words( self, nb, fieldname ):
         return list( self._reader.reader.most_frequent_terms( fieldname, nb ) )
@@ -103,8 +103,8 @@ class BasicSearchEngine:
         a simple search operation on extended document index
 
         """
-        searcher = self._docindex.get_searcher()
-        return searcher().find( defaultfield, query )
+        searcher = self._docindex.get_searcher()()
+        return searcher.find( defaultfield, query ), searcher
 
 
     def list_values( self, fieldname, double = False, conditions = [] ):

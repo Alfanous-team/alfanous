@@ -1338,7 +1338,7 @@ QSpinBox::down-button:pressed:enabled, QDoubleSpinBox::down-button:pressed:enabl
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>292</width>
+          <width>212</width>
           <height>280</height>
          </rect>
         </property>
@@ -1564,8 +1564,8 @@ QSpinBox::down-button:pressed:enabled, QDoubleSpinBox::down-button:pressed:enabl
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>309</width>
-          <height>220</height>
+          <width>212</width>
+          <height>137</height>
          </rect>
         </property>
         <attribute name="label">
@@ -1748,8 +1748,8 @@ QSpinBox::down-button:pressed:enabled, QDoubleSpinBox::down-button:pressed:enabl
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>309</width>
-          <height>208</height>
+          <width>154</width>
+          <height>168</height>
          </rect>
         </property>
         <attribute name="label">
@@ -1986,8 +1986,8 @@ QSpinBox::down-button:pressed:enabled, QDoubleSpinBox::down-button:pressed:enabl
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>309</width>
-          <height>208</height>
+          <width>196</width>
+          <height>170</height>
          </rect>
         </property>
         <attribute name="label">
@@ -2245,8 +2245,8 @@ QSpinBox::down-button:pressed:enabled, QDoubleSpinBox::down-button:pressed:enabl
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>309</width>
-          <height>224</height>
+          <width>198</width>
+          <height>200</height>
          </rect>
         </property>
         <attribute name="label">
@@ -2507,8 +2507,8 @@ QSpinBox::down-button:pressed:enabled, QDoubleSpinBox::down-button:pressed:enabl
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>309</width>
-          <height>223</height>
+          <width>213</width>
+          <height>198</height>
          </rect>
         </property>
         <attribute name="label">
@@ -3748,22 +3748,6 @@ QSpinBox::down-button:pressed:enabled, QDoubleSpinBox::down-button:pressed:enabl
    </hints>
   </connection>
   <connection>
-   <sender>o_query</sender>
-   <signal>activated(QString)</signal>
-   <receiver>o_search</receiver>
-   <slot>click()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>901</x>
-     <y>48</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>1390</x>
-     <y>45</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
    <sender>o_clear</sender>
    <signal>clicked()</signal>
    <receiver>o_query</receiver>
@@ -3850,8 +3834,8 @@ QSpinBox::down-button:pressed:enabled, QDoubleSpinBox::down-button:pressed:enabl
    <slot>setDisabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>751</x>
-     <y>62</y>
+     <x>649</x>
+     <y>71</y>
     </hint>
     <hint type="destinationlabel">
      <x>231</x>
@@ -3866,8 +3850,8 @@ QSpinBox::down-button:pressed:enabled, QDoubleSpinBox::down-button:pressed:enabl
    <slot>setDisabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>736</x>
-     <y>64</y>
+     <x>649</x>
+     <y>71</y>
     </hint>
     <hint type="destinationlabel">
      <x>67</x>
@@ -3882,8 +3866,8 @@ QSpinBox::down-button:pressed:enabled, QDoubleSpinBox::down-button:pressed:enabl
    <slot>setDisabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>736</x>
-     <y>64</y>
+     <x>649</x>
+     <y>71</y>
     </hint>
     <hint type="destinationlabel">
      <x>67</x>
@@ -3898,28 +3882,12 @@ QSpinBox::down-button:pressed:enabled, QDoubleSpinBox::down-button:pressed:enabl
    <slot>setDisabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>736</x>
-     <y>64</y>
+     <x>649</x>
+     <y>71</y>
     </hint>
     <hint type="destinationlabel">
      <x>85</x>
      <y>90</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>o_search_in_trads</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>menuTranslation</receiver>
-   <slot>setDisabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>736</x>
-     <y>64</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>67</x>
-     <y>55</y>
     </hint>
    </hints>
   </connection>

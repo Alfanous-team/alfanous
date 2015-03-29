@@ -391,6 +391,7 @@ class QUI( Ui_MainWindow ):
         QtCore.QObject.connect( self.o_results, QtCore.SIGNAL( "linkClicked(QUrl)" ), self.link_is_clicked )
 
 
+
         self.sura_list =  ["%s (%s)" % t for t in zip(RAWoutput._surates["Arabic"], RAWoutput._surates["Romanized"])] if self.direction == "RTL" \
             else  ["%s (%s)" % t for t in zip(RAWoutput._surates["Romanized"],RAWoutput._surates["English"])]
         self.o_sura_name.addItems( self.sura_list )
@@ -424,15 +425,62 @@ class QUI( Ui_MainWindow ):
 
     def link_is_clicked(self, url):
         new_query = url.toString()
-        if "#aya#" in new_query:
+        if new_query.startswith("about:blank"): # Windows add about:blank to urls not starting by X://
+            new_query = new_query.strip("about:blank")
+        if new_query.startswith("#aya#"):
             self.o_search_in_ayas.setChecked(True)
-            new_query = new_query[5:]
-        if "#translation#" in new_query:
+            new_query = new_query.strip("#aya#")
+        elif new_query.startswith("#translation#"):
             self.o_search_in_trads.setChecked(True)
-            new_query = new_query[13:]
+            new_query = new_query.strip("#translation#")
+
+
         self.o_query.setEditText(new_query)
         self.o_page.setValue(1)
         self.search_all()
+
+    def aya_search(self):
+        """ """
+        aya_search_flags = {
+					 "action":"search",
+					 "query": unicode( self.o_query.currentText() ),
+					 "sortedby":"score" if self.actionRelevance.isChecked() \
+							else "mushaf" if self.actionPosition_in_Mus_haf.isChecked() \
+							else "tanzil" if self.actionRevelation.isChecked() \
+							else "subject" if self.actionSubject.isChecked() \
+							else unicode( RAWoutput._fields[self.sorted_by_group.checkedAction().text()] if self.direction == "RTL" else self.sorted_by_group.checkedAction().text() ),
+					 "page": self.o_page.value(),
+					 "reverse_order": self.actionInverse.isChecked(),
+					 "word_info":self.actionWord_Info.isChecked(),
+					 "highlight": "css" if self.actionHighlight_Keywords.isChecked() else None,
+					 "script": "uthmani" if self.actionUthmani.isChecked()
+								else "standard",
+					 "prev_aya":self.actionPrevios_aya.isChecked(),
+					 "next_aya": self.actionNext_aya.isChecked(),
+					 "sura_info": self.actionSura_info.isChecked(),
+					 "aya_position_info":  self.actionAya_Info.isChecked(),
+					 "aya_theme_info":  self.actionAya_Info.isChecked(),
+					 "aya_stat_info":  self.actionAya_Info.isChecked(),
+					 "aya_sajda_info":  self.actionAya_Info.isChecked(),
+					 "translation": "en.shakir"  if self.actionTranslationDefault.isChecked() else "" if self.actionTranslationNone.isChecked() else self.translation_group.checkedAction().text().split("|")[1][0:],
+					 "fuzzy": self.o_autospell.isChecked(),
+					 "word_info": self.actionWord_Info.isChecked(),
+					 "romanization":"buckwalter"
+					 }
+
+        return aya_search_flags, RAWoutput.do( aya_search_flags )
+
+    def translation_search(self):
+        """"""
+        trans_search_flags = {"action":"search",
+								  "unit": "translation",
+								  "aya": True,
+					 "query": unicode( self.o_query.currentText() ),
+					 "page": self.o_page.value(),
+					 "highlight": "css" if self.actionHighlight_Keywords.isChecked() else None,
+					 }
+
+        return trans_search_flags, RAWoutput.do( trans_search_flags )
 
     def search_all( self, page = 1 , log = True):
         """
@@ -446,64 +494,36 @@ class QUI( Ui_MainWindow ):
         self.o_query.clear()
         self.o_query.addItems( self.undo_stack )
         self.o_query.setCurrentIndex( 0 )
-
         limit = int( self.limit_group.checkedAction().text() )
 
         suggest_flags = {
-                "action":"suggest",
-                "query": self.o_query.currentText()
-                }
+					"action":"suggest",
+					"query": self.o_query.currentText()
+					}
         suggestion_output = RAWoutput.do( suggest_flags )
+		
+        results, extra_results, terms = None, None, []
+		
+        if self.o_search_in_ayas.isChecked():
+            #search verses
+            aya_search_flags, aya_results = self.aya_search();
 
-        #search verses
-        results, terms = None, []
-        aya_search_flags = {"action":"search",
-                 "query": unicode( self.o_query.currentText() ),
-                 "sortedby":"score" if self.actionRelevance.isChecked() \
-                        else "mushaf" if self.actionPosition_in_Mus_haf.isChecked() \
-                        else "tanzil" if self.actionRevelation.isChecked() \
-                        else "subject" if self.actionSubject.isChecked() \
-                        else unicode( RAWoutput._fields[self.sorted_by_group.checkedAction().text()] if self.direction == "RTL" else self.sorted_by_group.checkedAction().text() ),
-                 "page": self.o_page.value(),
-                 "reverse_order": self.actionInverse.isChecked(),
-                 "word_info":self.actionWord_Info.isChecked(),
-                 "highlight": "css" if self.actionHighlight_Keywords.isChecked() else None,
-                 "script": "uthmani" if self.actionUthmani.isChecked()
-                            else "standard",
-                 "prev_aya":self.actionPrevios_aya.isChecked(),
-                 "next_aya": self.actionNext_aya.isChecked(),
-                 "sura_info": self.actionSura_info.isChecked(),
-                 "aya_position_info":  self.actionAya_Info.isChecked(),
-                 "aya_theme_info":  self.actionAya_Info.isChecked(),
-                 "aya_stat_info":  self.actionAya_Info.isChecked(),
-                 "aya_sajda_info":  self.actionAya_Info.isChecked(),
-                 "translation": "en.shakir"  if self.actionTranslationDefault.isChecked() else "" if self.actionTranslationNone.isChecked() else self.translation_group.checkedAction().text().split("|")[1][0:],
-                 "fuzzy": self.o_autospell.isChecked(),
-                 "word_info": self.actionWord_Info.isChecked(),
-                 "romanization":"buckwalter"
-
-                 }
-
-        aya_results = RAWoutput.do( aya_search_flags )
-        
-        #search translations
-        trans_search_flags = {"action":"search",
-                              "unit": "translation",
-                              "aya": True,
-                 "query": unicode( self.o_query.currentText() ),
-                 "page": self.o_page.value(),
-                 "highlight": "css" if self.actionHighlight_Keywords.isChecked() else None,
-                 }
-
-        trans_results = RAWoutput.do( trans_search_flags )
+        else:
+            #search translations
+            trans_search_flags, trans_results = self.translation_search();
 
         results = aya_results if self.o_search_in_ayas.isChecked() else trans_results
-        extra_results =  trans_results if self.o_search_in_ayas.isChecked() else aya_results
         flags = aya_search_flags if self.o_search_in_ayas.isChecked() else trans_search_flags
 
+
         if results["error"]["code"]==0:
+            runtime = results["search"]["runtime"]
+            if results["search"]["interval"]["total"] == 0:
+                 extra_flags ,extra_results =  self.translation_search() if self.o_search_in_ayas.isChecked() else self.aya_search()
+                 runtime += extra_results["search"]["runtime"]
+
             #outputs
-            self.o_time.display( results["search"]["runtime"] )
+            self.o_time.display( runtime )
             self.o_resnum.display( results["search"]["interval"]["total"] )
 
             # get page
