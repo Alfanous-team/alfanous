@@ -438,9 +438,7 @@ class QUI( Ui_MainWindow ):
                          ord("."):None,
                          ord("/"):None,
                          ord("\\"):None,
-                         ord("-"):None,
                          ord("*"):None,
-                         ord("_"):None,
                          ord("?"):None,
                          ord("!"):None
                          }
