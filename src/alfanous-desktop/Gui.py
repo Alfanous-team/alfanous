@@ -391,6 +391,7 @@ class QUI( Ui_MainWindow ):
         QtCore.QObject.connect( self.o_results, QtCore.SIGNAL( "linkClicked(QUrl)" ), self.link_is_clicked )
 
 
+
         self.sura_list =  ["%s (%s)" % t for t in zip(RAWoutput._surates["Arabic"], RAWoutput._surates["Romanized"])] if self.direction == "RTL" \
             else  ["%s (%s)" % t for t in zip(RAWoutput._surates["Romanized"],RAWoutput._surates["English"])]
         self.o_sura_name.addItems( self.sura_list )
@@ -432,13 +433,8 @@ class QUI( Ui_MainWindow ):
         elif new_query.startswith("#translation#"):
             self.o_search_in_trads.setChecked(True)
             new_query = new_query.strip("#translation#")
-        deleted_chars = {ord(":"):None,
-                         ord(","):None,
-                         ord(":"):None,
+        deleted_chars = {ord(","):None,
                          ord("."):None,
-                         ord("'"):None,
-                         ord("<"):None,
-                         ord(">"):None,
                          ord("/"):None,
                          ord("\\"):None,
                          ord("-"):None,
@@ -448,7 +444,6 @@ class QUI( Ui_MainWindow ):
                          ord("!"):None
                          }
         new_query = new_query.translate(deleted_chars )
-        print new_query
         self.o_query.setEditText(new_query)
         self.o_page.setValue(1)
         self.search_all()
@@ -465,7 +460,6 @@ class QUI( Ui_MainWindow ):
         self.o_query.clear()
         self.o_query.addItems( self.undo_stack )
         self.o_query.setCurrentIndex( 0 )
-
         limit = int( self.limit_group.checkedAction().text() )
 
         suggest_flags = {
