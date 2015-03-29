@@ -509,7 +509,7 @@ font-family: ArabeyesQr, Scheherazade;
                                       {% if translation_word[0] in "<ct> " %}
                                             {{ translation_word | safe }}
                                         {% else %}
-                                            <a href="{{ translation_word }}">{{ translation_word }}</a>
+                                            <a href="{{ translation_word.strip(':').strip(';').strip(',').strip('.').strip('?') }}">{{ translation_word }}</a>
                                         {% endif %}
                              {% endfor %}
                       ]
@@ -517,7 +517,7 @@ font-family: ArabeyesQr, Scheherazade;
 
                         {% if translationresult_content.aya %}
                           -
-                          <a class=""  href='gid:{{ translationresult_content.identifier.gid }} + lang:{{ translationresult_content.info.language_short }}'>
+                          <a class=""  href='gid:{{ translationresult_content.identifier.gid }} AND lang:{{ translationresult_content.info.language_short }}'>
                             <small>
                               {% trans %}Interpretation of{% endtrans %} (
                                 {% if direction == "rtl" %}  {{ translationresult_content.aya.sura_name }}
