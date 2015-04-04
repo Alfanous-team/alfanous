@@ -55,6 +55,14 @@
 
 	<link rel="icon" href="/static/shared/img/icon/icon_32_a.png" sizes="32x32">
 	<link rel="shortcut icon" href="/static/shared/img/icon/icon_16_a.png">
+	
+	<link rel="alternate" href="http://www.alfanous.org{% url 'wui.views.results' current.unit  %}?{{ current.request }}" hreflang="x-default" />
+    {% for lang_code, lang_name in LANGUAGES %}
+                                {% language lang_code %}
+
+    <link rel="alternate" href="http://www.alfanous.org{% url 'wui.views.results' current.unit  %}?{{ current.request }}" hreflang="lang_code" />
+                                {% endlanguage %}
+   {% endfor %}
 
 	<link rel="search" type="application/opensearchdescription+xml" title="Alfanous" href="/static/alfanous-opensearch.xml"/>
 
