@@ -60,7 +60,7 @@
     {% for lang_code, lang_name in LANGUAGES %}
                                 {% language lang_code %}
 
-    <link rel="alternate" href="http://www.alfanous.org{% url 'wui.views.results' current.unit  %}?{{ current.request }}" hreflang="lang_code" />
+    <link rel="alternate" href="http://www.alfanous.org{% url 'wui.views.results' current.unit  %}?{{ current.request }}" hreflang="{{ lang_code }}" />
                                 {% endlanguage %}
    {% endfor %}
 
