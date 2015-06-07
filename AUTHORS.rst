@@ -1,4 +1,4 @@
-Alfanous - Advanced Quranic Search Engine , Authored by A~CH (`@assem-ch <https://github.com/assem-ch>`_)
+Alfanous - Advanced Quranic Search Engine
 
       We gratefully acknowledge contributions from the following.
       Please let us know if we missed anyone, thanks :)
