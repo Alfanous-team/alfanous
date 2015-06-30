@@ -46,6 +46,38 @@ Alfanous understands the complex nature of the Arabic language and thus offers e
 :Accounts: `@Facebook <https://www.facebook.com/alfanous>`_ `@Twitter <https://twitter.com/alfanous>`_ `@GooglePlus <https://plus.google.com/111305625425237630318>`_ 
         | `@Sourceforge <http://sourceforge.net/projects/alfanous/>`_ `@Launchpad <http://www.launchpad.net/alfanous/>`_
 
+-----
+Usage
+-----
+Install it from Pypi:
+
+.. code-block:: sh
+
+    $ sudo pip install alfanous
+or from source:
+
+.. code-block:: sh
+
+    $ make build
+    $ sudo make install_api_no_argument
+
+You can use it from console:
+
+.. code-block:: sh
+
+    $ alfanous-console -a search -q الله 
+
+or from Python:
+
+.. code-block:: python
+
+    >>> import alfanous
+    >>> alfanous.do({"action":"search","query":u"الله"})
+
+You can use it also from the web service: 
+http://alfanous.org/jos2 ? action=search & query=لله
+
+
 --------
 Contacts
 --------
