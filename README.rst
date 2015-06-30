@@ -54,12 +54,6 @@ Install it from Pypi:
 .. code-block:: sh
 
     $ sudo pip install alfanous
-or from source:
-
-.. code-block:: sh
-
-    $ make build
-    $ sudo make install_api_no_argument
 
 You can use it from console:
 
@@ -77,6 +71,8 @@ or from Python:
 You can use it also from the web service: 
 http://alfanous.org/jos2 ? action=search & query=لله
 
+More about `Install<https://github.com/Alfanous-team/alfanous/blob/master/INSTALL.rst>`_
+More about `API<https://github.com/Alfanous-team/alfanous/tree/master/src/alfanous>`_
 
 --------
 Contacts
