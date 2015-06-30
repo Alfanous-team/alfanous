@@ -1,4 +1,10 @@
 include *.py *.txt
+include UI/*.ui
+include templates/*.html
+include babel.ini
+include locale/*/LC_MESSAGES/*
+include i18n/*
+include *.pro
 exclude *.pyc
 prune UI
 
