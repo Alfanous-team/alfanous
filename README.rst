@@ -67,8 +67,8 @@ or from Python:
 .. code-block:: python
 
     >>> import alfanous
-    >>> alfanous.do({"action":"search","query":u"الله"})
-    >>> alfanous.do({"action":"search","query":u"Allh"}) # Buckwalter transliteration
+    >>> alfanous.search(u"الله")
+    >>> alfanous.search(u"qwl")     # Buckwalter transliteration
 
 You can use it also from the web service: 
 
