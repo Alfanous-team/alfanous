@@ -71,7 +71,9 @@ or from Python:
     >>> alfanous.do({"action":"search","query":u"Allh"}) # Buckwalter transliteration
 
 You can use it also from the web service: 
+
 http://alfanous.org/jos2 ? action=search & query=الله
+
 http://alfanous.org/jos2 ? action=search & query=Allh
 
 - More about `Install <https://github.com/Alfanous-team/alfanous/blob/master/INSTALL.rst>`_
