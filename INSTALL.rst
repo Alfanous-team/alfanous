@@ -80,6 +80,3 @@ Install Desktop Application
 	        $ make build
 	        $ sudo make install_api_no_arguments # to install the api and alfanous-console.
 	        $ sudo make install_desktop_no_arguments # to install alfanous-desktop.
-
-
-
