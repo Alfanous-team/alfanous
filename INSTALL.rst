@@ -1,6 +1,28 @@
-========
-Install
-========
+==================
+Install python API
+==================
+
+.. code-block:: sh
+    
+    $ sudo pip install alfanous
+    
+or 
+
+.. code-block:: sh
+    
+    $ sudo easy_install alfanous
+
+or from source code:
+
+.. code-block:: sh
+
+    $ make build
+    $ sudo make install_api_no_argument
+
+
+===========================
+Install Desktop Application
+===========================
 
 #. **Windows XP/VISTA/SEVEN**: 
 
@@ -58,6 +80,3 @@ Install
 	        $ make build
 	        $ sudo make install_api_no_arguments # to install the api and alfanous-console.
 	        $ sudo make install_desktop_no_arguments # to install alfanous-desktop.
-
-
-
