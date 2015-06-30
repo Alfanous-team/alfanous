@@ -15,14 +15,19 @@
 ##     You should have received a copy of the GNU Affero General Public License
 ##     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-""" hint: use `alfanous.do` method for search, suggestion and get most useful info"""
+""" hint: 
+
+    Use `alfanous.search` for searching in Quran verses and translations.
+    Use `alfanous.get_info` for getting meta info.
+    Use `alfanous.do` method for search, suggestion and get most useful info.
+    """
 
 # import Output object
 from alfanous.Outputs import Raw as _search_engine
 # import default Paths
 from alfanous.Data import Paths as PATHS
 
-DEFAULTS, DOMAINS, HELPMESSAGES, ERRORS = _search_engine.DEFAULTS, _search_engine.DOMAINS, _search_engine.HELPMESSAGES, _search_engine.ERRORS
+DEFAULTS, DOMAINS, HELPMESSAGES = _search_engine.DEFAULTS, _search_engine.DOMAINS, _search_engine.HELPMESSAGES
 FLAGS = DEFAULTS["flags"].keys()
 
 from alfanous.Outputs import Fields as _fields
@@ -36,7 +41,7 @@ _R = _search_engine()
 # Pivot function for search, suggestion, show info
 def do(flags):
     """
-    Perform action defined in `flags` and return results as `dict`.
+    Perform the action defined in `flags` and return results as `dict`.
     
     flags is a dict with values for those keys:
     - "action": action to be performed, could be "search" or "suggest" or "show". default is "search"
@@ -54,19 +59,40 @@ ihah', 'aya_id': 2}
     """
     return _R.do(flags)
 
-# search in aya
-def search_aya(query):
-    "search in verses of Quran"
-    return do({"query":query})
+def search(query, unit="aya", page = 1, sortedby = "relevance", fuzzy = False, view= "normal", highlight = "bold",  flags={}):
+    """ Search for query in Quran
+    
+    @param query: search query, examples: الحمد, qwl, gid:1.
+    @param unit: search unit, possible values = ['aya', 'word', 'translation']
+    @param page: page to be retrieved, possible values = 1..INF
+    @param sortedby: order of results, possible values = ['relevance', 'mushaf', 'tanzil', 'subject', 'ayalength']
+    @param fuzzy: use fuzzy search, possible values = [True, False]
+    @param view: information to be retrieved, possible values = ['minimal', 'normal', 'full', 'statistic', 'linguistic', 'recitation','costum']
+    @param highlight: type of highlight, possible values = ['css', 'html', 'genshi', 'bold', 'bbcode']
+    @param flags: extra flags as a dict , check alfanous.FLAGS and alfanous.DOMAINS.
+    
+    
+    Example:
+    -------
+        >>> search("qawol",page=2, fuzzy = True)
 
-def search_aya_minimal(query):
-    "search in verses of Quran (minimal info)"
-    return do({"query":query, "view":"minimal", "highlight":"none"})
+    """
+    all_flags = flags
+    all_flags.update({"action":"search", 
+                      "unit":unit,
+                      "query":query,
+                      "page": page,
+                      "sortedby":sortedby,
+                      "fuzzy":fuzzy,
+                      "view": view,
+                      "highlight": highlight
+                       })
+    return do(all_flags)
 
-# search in translation
-def search_translation(query):
-    "search in translations of Quran"
-    return do({"query":query,"unit":"translation"})
-
-def show_all_info():
-    return do({"action":"show","query":"all"})
+def get_info(query = "all"):
+    """
+    Show useful meta info.
+    
+    @param query: info to be retrieved, possible_values = ['chapters', 'defaults', 'domains', 'errors', 'fields', 'fields_reverse', 'flags', 'help_messages', 'hints', 'information', 'recitations', 'roots', 'surates', 'translations']
+    """
+    return do({"action":"show","query":query})
