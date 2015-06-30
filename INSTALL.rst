@@ -11,7 +11,13 @@ or
 .. code-block:: sh
     
     $ sudo easy_install alfanous
-    
+
+or from source code:
+
+.. code-block:: sh
+
+    $ make build
+    $ sudo make install_api_no_argument
 
 
 ===========================
