@@ -5,7 +5,7 @@
 
 ## Global Version of the project, must be updated in each significant change in 
 ## the API & Desktop Gui
-VERSION=0.7.23
+VERSION=0.7.28
 
 ## Next releases:
 RELEASE=$(VERSION)Kahraman

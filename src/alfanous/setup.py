@@ -25,7 +25,10 @@ information = json.loads( information_file.read() ) if information_file else {}
 current_version = information["version"] if information.has_key( "version" ) \
 		  else 0.7
 current_description = information["description"] if information.has_key( "description" ) \
-		  else """ Alfanous is a search engine provide the simple and advanced search in the Holy Qur'an and more features.."""
+            else """ Alfanous is a search engine provide the simple and advanced search in the Holy Qur'an and more features.."""
+current_lib_usage = information["lib_usage"] if information.has_key( "lib_usage" ) \
+            else "    $ sudo pip install alfanous"
+
 #TODO may add pre-install code here
 
 setup( 
@@ -48,7 +51,7 @@ setup(
 	maintainer_email = "assem.ch@gmail.com",
 
 	package_dir = {'alfanous':'.'},
-	long_description = current_description,
+	long_description = current_description+current_lib_usage,
 	keywords = "quran search indexing engine alfanous",
 	url = "http://www.alfanous.org/",
 	#download_url = "https://sourceforge.net/projects/alfanous/files/",
