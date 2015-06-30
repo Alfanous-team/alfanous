@@ -1,6 +1,22 @@
-========
-Install
-========
+==================
+Install python API
+==================
+
+.. code-block:: sh
+    
+    $ sudo pip install alfanous
+    
+or 
+
+.. code-block:: sh
+    
+    $ sudo easy_install alfanous
+    
+
+
+===========================
+Install Desktop Application
+===========================
 
 #. **Windows XP/VISTA/SEVEN**: 
 
