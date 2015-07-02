@@ -5,7 +5,7 @@
 
 ## Global Version of the project, must be updated in each significant change in 
 ## the API & Desktop Gui
-VERSION=0.7.28
+VERSION=0.7.29
 
 ## Next releases:
 RELEASE=$(VERSION)Kahraman
@@ -222,35 +222,35 @@ update_dynamic_resources_postbuild: transfer_postbuild
 # 7. [postbuild] Different vocalizations of each quranic word, see transfer_vocalizations
 transfer_all: transfer_prebuild transfer_postbuild
 transfer_prebuild: transfer_stopwords transfer_synonyms transfer_word_props transfer_derivations transfer_ara2eng_names transfer_standard2uthmani 
-	cp $(API_PATH)/alfanous/__init__.py $(DYNAMIC_RESOURCES_PATH)
+	touch $(DYNAMIC_RESOURCES_PATH)__init__.py
 transfer_postbuild: transfer_vocalizations
 	
 transfer_stopwords:
-	mkdir -p $(DYNAMIC_RESOURCES_PATH)
+	mkdir -p $(DYNAMIC_RESOURCES_PATH); touch $(DYNAMIC_RESOURCES_PATH)__init__.py
 	export PYTHONPATH=$(API_PATH) ;	$(PYTHON_COMMAND) $(QIMPORT) -t stopwords $(DB_PATH)main.db $(DYNAMIC_RESOURCES_PATH)
 	
 transfer_synonyms:
-	mkdir -p $(DYNAMIC_RESOURCES_PATH)
+	mkdir -p $(DYNAMIC_RESOURCES_PATH);touch $(DYNAMIC_RESOURCES_PATH)__init__.py
 	export PYTHONPATH=$(API_PATH) ;	$(PYTHON_COMMAND) $(QIMPORT) -t synonyms $(DB_PATH)main.db $(DYNAMIC_RESOURCES_PATH)
 
 transfer_word_props:
-	mkdir -p $(DYNAMIC_RESOURCES_PATH)
+	mkdir -p $(DYNAMIC_RESOURCES_PATH);touch $(DYNAMIC_RESOURCES_PATH)__init__.py
 	export PYTHONPATH=$(API_PATH) ;	$(PYTHON_COMMAND) $(QIMPORT) -t word_props $(DB_PATH)main.db $(DYNAMIC_RESOURCES_PATH)
 
 transfer_derivations:
-	mkdir -p $(DYNAMIC_RESOURCES_PATH)
+	mkdir -p $(DYNAMIC_RESOURCES_PATH);touch $(DYNAMIC_RESOURCES_PATH)__init__.py
 	export PYTHONPATH=$(API_PATH) ;	$(PYTHON_COMMAND) $(QIMPORT) -t derivations $(DB_PATH)main.db $(DYNAMIC_RESOURCES_PATH)
 
 transfer_vocalizations:
-	mkdir -p $(DYNAMIC_RESOURCES_PATH)
+	mkdir -p $(DYNAMIC_RESOURCES_PATH);touch $(DYNAMIC_RESOURCES_PATH)__init__.py
 	export PYTHONPATH=$(API_PATH) ;	$(PYTHON_COMMAND) $(QIMPORT) -t vocalizations $(DB_PATH)main.db $(INDEX_PATH)main/ $(DYNAMIC_RESOURCES_PATH)
 
 transfer_ara2eng_names:
-	mkdir -p $(DYNAMIC_RESOURCES_PATH)
+	mkdir -p $(DYNAMIC_RESOURCES_PATH);touch $(DYNAMIC_RESOURCES_PATH)__init__.py
 	export PYTHONPATH=$(API_PATH) ;	$(PYTHON_COMMAND) $(QIMPORT) -t ara2eng_names $(DB_PATH)main.db $(DYNAMIC_RESOURCES_PATH)
 	
 transfer_standard2uthmani:
-	mkdir -p $(DYNAMIC_RESOURCES_PATH)
+	mkdir -p $(DYNAMIC_RESOURCES_PATH);touch $(DYNAMIC_RESOURCES_PATH)__init__.py
 	export PYTHONPATH=$(API_PATH) ;	$(PYTHON_COMMAND) $(QIMPORT) -t std2uth_words $(DB_PATH)main.db $(DYNAMIC_RESOURCES_PATH)
 	
 
