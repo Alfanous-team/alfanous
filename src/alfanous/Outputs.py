@@ -29,11 +29,26 @@ from pyparsing import ParseException
 
 from alfanous.main import QuranicSearchEngine, FuzzyQuranicSearchEngine
 from alfanous.main import TraductionSearchEngine, WordSearchEngine
-from alfanous.dynamic_resources.arabicnames_dyn import ara2eng_names as Fields
-from alfanous.dynamic_resources.std2uth_dyn import std2uth_words
-from alfanous.dynamic_resources.vocalizations_dyn import vocalization_dict
-from alfanous.dynamic_resources.synonymes_dyn import syndict
-from alfanous.dynamic_resources.derivations_dyn import derivedict
+try:
+    from alfanous.dynamic_resources.arabicnames_dyn import ara2eng_names as Fields
+except:
+    Fields = {}
+try:
+    from alfanous.dynamic_resources.std2uth_dyn import std2uth_words
+except:
+    std2uth_words = {}
+try:
+    from alfanous.dynamic_resources.vocalizations_dyn import vocalization_dict
+except:
+    vocalization_dict = {}
+try:
+    from alfanous.dynamic_resources.synonymes_dyn import syndict
+except:
+    syndict = {}
+try:
+    from alfanous.dynamic_resources.derivations_dyn import derivedict
+except:
+    derivedict = {}
 from alfanous.TextProcessing import QArabicSymbolsFilter
 from alfanous.Data import *
 from alfanous.Romanization import transliterate
