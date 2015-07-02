@@ -67,6 +67,7 @@ or from Python:
 .. code-block:: python
 
     >>> import alfanous
+    >>> alfanous.search(u"الله")
     >>> alfanous.do({"action":"search","query":u"الله"})
     >>> alfanous.do({"action":"search","query":u"Allh"}) # Buckwalter transliteration
 
