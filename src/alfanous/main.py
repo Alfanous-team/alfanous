@@ -109,7 +109,10 @@ class BasicSearchEngine:
 
     def list_values( self, fieldname, double = False, conditions = [] ):
         """ list all stored values of a field  """
-        return self._reader.list_values( fieldname, double = double, conditions = conditions, )
+        if "_reader" in self.__dict__:
+            return self._reader.list_values( fieldname, double = double, conditions = conditions, )
+        else:
+            return []
 
     def __call__( self ):
         return self.OK
