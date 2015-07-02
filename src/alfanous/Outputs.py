@@ -48,7 +48,7 @@ except:
 try:
     from alfanous.dynamic_resources.derivations_dyn import derivedict
 except:
-    derivedict = {}
+    derivedict = {"root":[]}
 from alfanous.TextProcessing import QArabicSymbolsFilter
 from alfanous.Data import *
 from alfanous.Romanization import transliterate
