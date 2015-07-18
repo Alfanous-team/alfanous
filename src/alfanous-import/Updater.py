@@ -1,4 +1,4 @@
-#!/bin/python
+#!/usr/bin/python2
 # config : utf-8
 
 import json
