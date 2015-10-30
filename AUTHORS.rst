@@ -1,4 +1,4 @@
-Alfanous - Advanced Quranic Search Engine , Authored by A~CH (`@assem-ch <https://github.com/assem-ch>`_)
+Alfanous - Advanced Quranic Search Engine
 
       We gratefully acknowledge contributions from the following.
       Please let us know if we missed anyone, thanks :)
@@ -16,7 +16,7 @@ Alfanous - Advanced Quranic Search Engine , Authored by A~CH (`@assem-ch <https:
 =========== 
 Maintainers
 ===========
-* Assem Chelli `@assem-ch <https://github.com/assem-ch>`_ (API)
+* Assem BigOther `@assem-ch <https://github.com/assem-ch>`_ (API)
 * Muhammad Shaban `@MuhammadShaban <https://github.com/MuhammadShaban>`_ (packaging to Fedora Linux)
 * Zaki Smahi `@zsmahi <https://github.com/zsmahi>`_ (Firefox toolbar)
 * Muslih Aqqad `@muslih <https://github.com/muslih>`_ (Design)

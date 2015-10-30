@@ -46,6 +46,40 @@ Alfanous understands the complex nature of the Arabic language and thus offers e
 :Accounts: `@Facebook <https://www.facebook.com/alfanous>`_ `@Twitter <https://twitter.com/alfanous>`_ `@GooglePlus <https://plus.google.com/111305625425237630318>`_ 
         | `@Sourceforge <http://sourceforge.net/projects/alfanous/>`_ `@Launchpad <http://www.launchpad.net/alfanous/>`_
 
+-----
+Usage
+-----
+Install it from Pypi:
+
+.. code-block:: sh
+
+    $ sudo pip install alfanous
+
+You can use it from console:
+
+.. code-block:: sh
+
+    $ alfanous-console -a search -q الله 
+    $ alfanous-console -a search -q Allh 
+
+or from Python:
+
+.. code-block:: python
+
+    >>> import alfanous
+    >>> alfanous.search(u"الله")
+    >>> alfanous.do({"action":"search","query":u"الله"})
+    >>> alfanous.do({"action":"search","query":u"Allh"}) # Buckwalter transliteration
+
+You can use it also from the web service: 
+
+http://alfanous.org/jos2 ? action=search & query=الله
+
+http://alfanous.org/jos2 ? action=search & query=Allh
+
+- More about `Install <https://github.com/Alfanous-team/alfanous/blob/master/INSTALL.rst>`_
+- More about `API <https://github.com/Alfanous-team/alfanous/tree/master/src/alfanous>`_
+
 --------
 Contacts
 --------

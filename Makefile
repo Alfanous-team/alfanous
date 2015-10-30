@@ -5,7 +5,7 @@
 
 ## Global Version of the project, must be updated in each significant change in 
 ## the API & Desktop Gui
-VERSION=0.7.20
+VERSION=0.7.29
 
 ## Next releases:
 RELEASE=$(VERSION)Kahraman
@@ -222,35 +222,35 @@ update_dynamic_resources_postbuild: transfer_postbuild
 # 7. [postbuild] Different vocalizations of each quranic word, see transfer_vocalizations
 transfer_all: transfer_prebuild transfer_postbuild
 transfer_prebuild: transfer_stopwords transfer_synonyms transfer_word_props transfer_derivations transfer_ara2eng_names transfer_standard2uthmani 
-	cp $(API_PATH)/alfanous/__init__.py $(DYNAMIC_RESOURCES_PATH)
+	touch $(DYNAMIC_RESOURCES_PATH)__init__.py
 transfer_postbuild: transfer_vocalizations
 	
 transfer_stopwords:
-	mkdir -p $(DYNAMIC_RESOURCES_PATH)
+	mkdir -p $(DYNAMIC_RESOURCES_PATH); touch $(DYNAMIC_RESOURCES_PATH)__init__.py
 	export PYTHONPATH=$(API_PATH) ;	$(PYTHON_COMMAND) $(QIMPORT) -t stopwords $(DB_PATH)main.db $(DYNAMIC_RESOURCES_PATH)
 	
 transfer_synonyms:
-	mkdir -p $(DYNAMIC_RESOURCES_PATH)
+	mkdir -p $(DYNAMIC_RESOURCES_PATH);touch $(DYNAMIC_RESOURCES_PATH)__init__.py
 	export PYTHONPATH=$(API_PATH) ;	$(PYTHON_COMMAND) $(QIMPORT) -t synonyms $(DB_PATH)main.db $(DYNAMIC_RESOURCES_PATH)
 
 transfer_word_props:
-	mkdir -p $(DYNAMIC_RESOURCES_PATH)
+	mkdir -p $(DYNAMIC_RESOURCES_PATH);touch $(DYNAMIC_RESOURCES_PATH)__init__.py
 	export PYTHONPATH=$(API_PATH) ;	$(PYTHON_COMMAND) $(QIMPORT) -t word_props $(DB_PATH)main.db $(DYNAMIC_RESOURCES_PATH)
 
 transfer_derivations:
-	mkdir -p $(DYNAMIC_RESOURCES_PATH)
+	mkdir -p $(DYNAMIC_RESOURCES_PATH);touch $(DYNAMIC_RESOURCES_PATH)__init__.py
 	export PYTHONPATH=$(API_PATH) ;	$(PYTHON_COMMAND) $(QIMPORT) -t derivations $(DB_PATH)main.db $(DYNAMIC_RESOURCES_PATH)
 
 transfer_vocalizations:
-	mkdir -p $(DYNAMIC_RESOURCES_PATH)
+	mkdir -p $(DYNAMIC_RESOURCES_PATH);touch $(DYNAMIC_RESOURCES_PATH)__init__.py
 	export PYTHONPATH=$(API_PATH) ;	$(PYTHON_COMMAND) $(QIMPORT) -t vocalizations $(DB_PATH)main.db $(INDEX_PATH)main/ $(DYNAMIC_RESOURCES_PATH)
 
 transfer_ara2eng_names:
-	mkdir -p $(DYNAMIC_RESOURCES_PATH)
+	mkdir -p $(DYNAMIC_RESOURCES_PATH);touch $(DYNAMIC_RESOURCES_PATH)__init__.py
 	export PYTHONPATH=$(API_PATH) ;	$(PYTHON_COMMAND) $(QIMPORT) -t ara2eng_names $(DB_PATH)main.db $(DYNAMIC_RESOURCES_PATH)
 	
 transfer_standard2uthmani:
-	mkdir -p $(DYNAMIC_RESOURCES_PATH)
+	mkdir -p $(DYNAMIC_RESOURCES_PATH);touch $(DYNAMIC_RESOURCES_PATH)__init__.py
 	export PYTHONPATH=$(API_PATH) ;	$(PYTHON_COMMAND) $(QIMPORT) -t std2uth_words $(DB_PATH)main.db $(DYNAMIC_RESOURCES_PATH)
 	
 
@@ -404,7 +404,7 @@ dist_egg_all:   dist_egg_pycorpus  dist_egg_pyzekr dist_egg_qimport dist_egg_des
 dist_egg_api: 
 	perl -pi -w -e 's|alfanous.release|$(RELEASE)|g;' $(API_PATH)alfanous/resources/information.json
 	perl -pi -w -e 's|alfanous.version|$(VERSION)|g;' $(API_PATH)alfanous/resources/information.json
-	cd $(API_PATH)alfanous ; $(PYTHON_COMMAND) setup.py bdist_egg register upload
+	cd $(API_PATH)alfanous ; $(PYTHON_COMMAND) setup.py sdist bdist_egg register upload
 	perl -pi -w -e 's|$(RELEASE)|alfanous.release|g;' $(API_PATH)alfanous/resources/information.json
 	perl -pi -w -e 's|$(VERSION)|alfanous.version|g;' $(API_PATH)alfanous/resources/information.json
 	mkdir -p output/$(VERSION) ; mv $(API_PATH)alfanous/dist/*.egg ./output/$(VERSION)
@@ -412,27 +412,27 @@ dist_egg_api:
 	
 # python egg for PyCorpus extension
 dist_egg_pycorpus: 
-	cd $(API_PATH)PyCorpus ; $(PYTHON_COMMAND) setup.py bdist_egg register upload
+	cd $(API_PATH)PyCorpus ; $(PYTHON_COMMAND) setup.py sdist bdist_egg register upload
 	mkdir -p output/$(VERSION) ; mv $(API_PATH)PyCorpus/dist/*.egg ./output/$(VERSION)
 	@echo  "NOTE: you can find the generated egg in ./output"
 	
 
 # python egg for PyZekrModels extension
 dist_egg_pyzekr: 
-	cd $(API_PATH)PyZekrModels ; $(PYTHON_COMMAND) setup.py bdist_egg register upload 
+	cd $(API_PATH)PyZekrModels ; $(PYTHON_COMMAND) setup.py sdist bdist_egg register upload 
 	mkdir -p output/$(VERSION) ; mv $(API_PATH)PyZekrModels/dist/*.egg ./output/$(VERSION)
 	@echo  "NOTE: you can find the generated egg in ./output"
 	
 # python egg for Qimport extension
 dist_egg_qimport: 
-	cd $(API_PATH)alfanous-import ; $(PYTHON_COMMAND) setup.py bdist_egg register  upload
+	cd $(API_PATH)alfanous-import ; $(PYTHON_COMMAND) setup.py sdist bdist_egg register  upload
 	mkdir -p output/$(VERSION) ; mv $(API_PATH)alfanous-import/dist/*.egg ./output/$(VERSION)
 	@echo  "NOTE: you can find the generated egg in ./output"
 
 # python egg for alfanousDesktop interface
 dist_egg_desktop: 
 	perl -pi -w -e 's|version = "\d+\.\d+(\.\d+)*"|version = "$(VERSION)"|g;' $(DESKTOP_INTERFACE_PATH)/setup.py
-	cd $(DESKTOP_INTERFACE_PATH) ; $(PYTHON_COMMAND) setup.py bdist_egg register upload
+	cd $(DESKTOP_INTERFACE_PATH) ; $(PYTHON_COMMAND) setup.py sdist bdist_egg register upload
 	mkdir -p output/$(VERSION) ; mv $(DESKTOP_INTERFACE_PATH)dist/*.egg ./output/$(VERSION)
 	@echo  "NOTE: you can find the generated egg in ./output"
  

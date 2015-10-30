@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python2
 import os, sys
 
 _PROJECT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
