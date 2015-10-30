@@ -13,7 +13,9 @@
   .. image:: https://requires.io/github/Alfanous-team/alfanous/requirements.svg?branch=master
      :target: https://requires.io/github/Alfanous-team/alfanous/requirements/?branch=master
      :alt: Requirements Status
-
+  .. image:: https://www.quantifiedcode.com/api/v1/project/61cf34208a3240b086211acb257f9ab4/badge.svg
+    :target: https://www.quantifiedcode.com/app/project/61cf34208a3240b086211acb257f9ab4
+    :alt: Code issues
 
 * .. image:: https://img.shields.io/pypi/dm/alfanous.svg
         :target: https://pypi.python.org/pypi/alfanous
