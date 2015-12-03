@@ -154,3 +154,12 @@ def results(request, unit="aya"):
   }
 
   return render_to_response(mytemplate, context)
+
+# custom error 404
+def custom_404(request):
+    from random import randint
+    raw_search = RAWoutput.do({"action":"search", "unit":"aya", "query":"gid:%d" % randint(1,6236)})
+    return render_to_response('404.html',raw_search )
+
+
+

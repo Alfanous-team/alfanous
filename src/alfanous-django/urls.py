@@ -7,6 +7,7 @@ from django.conf.urls.i18n import i18n_patterns
 
 urlpatterns = patterns( '',
   url( r'^jos2', 'wui.views.jos2' ),
+  url(r'^$', 'wui.views.results'),
   # url( r'^admin/', include( admin.site.urls ) ),
 )
 
@@ -15,3 +16,7 @@ urlpatterns += i18n_patterns('',
   url(r'^$', 'wui.views.results'),
   url(r'^(?P<unit>\w{3,15})/', 'wui.views.results'),
 )
+
+# 404 not found handler
+
+handler404 = 'wui.views.custom_404'

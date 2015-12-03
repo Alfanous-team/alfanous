@@ -13,7 +13,9 @@
   .. image:: https://requires.io/github/Alfanous-team/alfanous/requirements.svg?branch=master
      :target: https://requires.io/github/Alfanous-team/alfanous/requirements/?branch=master
      :alt: Requirements Status
-
+  .. image:: https://www.quantifiedcode.com/api/v1/project/44c2ac165d184c75ab43b770e10932b2/badge.svg
+    :target: https://www.quantifiedcode.com/app/project/44c2ac165d184c75ab43b770e10932b2
+    :alt: Code issues
 
 * .. image:: https://img.shields.io/pypi/dm/alfanous.svg
         :target: https://pypi.python.org/pypi/alfanous
@@ -117,7 +119,7 @@ see `FAQ <https://github.com/Alfanous-team/alfanous/blob/master/FAQ.rst>`_
 -------------------
 Research Foundation
 -------------------
-* Link to `Magister Thesis <http://www.slideshare.net/AssemCHELLI/main-30182032>`_
+* Link to Magister Thesis `Research gate <https://www.researchgate.net/publication/284726630_Proposal_of_an_Advanced_Retrieval_System_for_Noble_Quran>`_ `Slideshare <http://www.slideshare.net/AssemCHELLI/main-30182032>`_
 * Link to `General Behavior Schema <http://www.slideshare.net/AssemCHELLI/visio-global-schema>`_.
 
 ----------
