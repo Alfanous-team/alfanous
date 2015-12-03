@@ -15,3 +15,7 @@ urlpatterns += i18n_patterns('',
   url(r'^$', 'wui.views.results'),
   url(r'^(?P<unit>\w{3,15})/', 'wui.views.results'),
 )
+
+# 404 not found handler
+
+handler404 = 'wui.views.custom_404'
