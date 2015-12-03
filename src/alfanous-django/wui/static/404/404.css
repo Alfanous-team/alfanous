@@ -29,10 +29,7 @@ body
 	overflow:hidden
 }
 
-h5
-{
-	color:white;
-}
+
 .wrap
 {
 
@@ -63,6 +60,11 @@ h5
 	font-size: 32px;
     text-shadow: 2px 2px #000
 
+}
+
+.wrap_content  h5
+{
+    color:white;
 }
 
 .wrap_content p{
