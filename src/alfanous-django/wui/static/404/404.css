@@ -9,7 +9,7 @@
 
 html, body
 {
-	margin: 0;
+
 	padding: 0;
 	width: 100%;
 	height: 100%;
@@ -32,8 +32,7 @@ body
 
 .wrap
 {
-	overflow: hidden;
-	position: relative;
+
 }
 
 /* === HEADER SECTION === */
@@ -44,26 +43,23 @@ body
 /* === CONTENT SECTION === */
 .wrap_content{
 	margin: 0px auto;
-	width: 980px;
-	height: 250px;
-	padding-top: 200px;
+
+	padding-top: 150px;
 	text-align: center;
 	z-index: 1;
 }
 .wrap_content h1{
-	color: #ffffff;
-	font-family: "Share", Arial;
-	font-size: 82px!important;
-	letter-spacing: -2px;
-	font-weight: bold;
+	color: #000;
+	font-size: 22px;
+    text-shadow: 1px 1px #fff
+
 }
 
 .wrap_content h2{
 	color: #ffffff;
-	font-family: "Share", Arial;
-	font-size: 75px!important;
-	letter-spacing: -2px;
-	font-weight: bold;
+	font-size: 32px;
+    text-shadow: 2px 2px #000
+
 }
 
 .wrap_content p{
@@ -75,13 +71,20 @@ body
 }
 
 .wrap_content a{
-	color: #0000ff;
+	color: #fff;
 	text-decoration: none;
+
+    text-shadow: 2px 2px #000
+    
 }
 
 .wrap_content a:hover{
-	color: #106a2d;
-	text-decoration: underline;
+	color: #eeeeff;
+    text-decoration: underline;  
+    text-shadow: 2px 2px #000
+    
+    
+    
 }
 
 
