@@ -1,0 +1,87 @@
+/* === Import font === */
+@import url(http://fonts.googleapis.com/css?family=Share:400,400italic,700,700italic);
+@import url(http://fonts.googleapis.com/css?family=Lato:400,700);
+
+/* === STYLE === */
+* {
+	margin: 0;
+}
+
+html, body
+{
+	margin: 0;
+	padding: 0;
+	width: 100%;
+	height: 100%;
+}
+body
+{
+	/*background: #020202;*/
+	background-image:url(./404.jpg);
+	background-position: center center;
+	background-repeat: no-repeat; 
+	background-attachment: fixed; 
+	background-size: cover; 
+	-moz-background-size: 100% 100%;     /* Gecko 1.9.2 (Firefox 3.6) */
+	-o-background-size: 100% 100%;        /* Opera 9.5 */
+	-webkit-background-size: 100% 100%;   /* Safari 3.0 */
+	background-size: 100% 100%;           /* Gecko 2.0 (Firefox 4.0) > CSS3 */ 
+	overflow:hidden
+}
+
+
+.wrap
+{
+	overflow: hidden;
+	position: relative;
+}
+
+/* === HEADER SECTION === */
+.wrap_header{
+	
+}
+
+/* === CONTENT SECTION === */
+.wrap_content{
+	margin: 0px auto;
+	width: 980px;
+	height: 250px;
+	padding-top: 200px;
+	text-align: center;
+	z-index: 1;
+}
+.wrap_content h1{
+	color: #ffffff;
+	font-family: "Share", Arial;
+	font-size: 82px!important;
+	letter-spacing: -2px;
+	font-weight: bold;
+}
+
+.wrap_content h2{
+	color: #ffffff;
+	font-family: "Share", Arial;
+	font-size: 75px!important;
+	letter-spacing: -2px;
+	font-weight: bold;
+}
+
+.wrap_content p{
+	color: #ffffff;
+	font-family: 'Lato', sans-serif;
+	font-size: 18px;
+	line-height: 23px;
+	font-weight: bold;
+}
+
+.wrap_content a{
+	color: #0000ff;
+	text-decoration: none;
+}
+
+.wrap_content a:hover{
+	color: #106a2d;
+	text-decoration: underline;
+}
+
+
