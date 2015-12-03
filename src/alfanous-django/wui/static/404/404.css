@@ -62,6 +62,11 @@ body
 
 }
 
+.wrap_content  h5
+{
+    color:white;
+}
+
 .wrap_content p{
 	color: #ffffff;
 	font-family: 'Lato', sans-serif;
