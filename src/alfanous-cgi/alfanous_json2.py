@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python2
 # -*- coding: UTF-8 -*- 
 
 ##     Copyright (C) 2009-2012 Assem Chelli <assem.ch [at] gmail.com>
