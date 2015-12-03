@@ -119,7 +119,7 @@ see `FAQ <https://github.com/Alfanous-team/alfanous/blob/master/FAQ.rst>`_
 -------------------
 Research Foundation
 -------------------
-* Link to `Magister Thesis <http://www.slideshare.net/AssemCHELLI/main-30182032>`_
+* Link to Magister Thesis `Research gate <https://www.researchgate.net/publication/284726630_Proposal_of_an_Advanced_Retrieval_System_for_Noble_Quran>`_ `Slideshare <http://www.slideshare.net/AssemCHELLI/main-30182032>`_
 * Link to `General Behavior Schema <http://www.slideshare.net/AssemCHELLI/visio-global-schema>`_.
 
 ----------
