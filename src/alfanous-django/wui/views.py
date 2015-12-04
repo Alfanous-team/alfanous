@@ -8,6 +8,8 @@ TODO make a fields English-Arabic mapping based on the "bidi" value to be used i
 import json, os
 from operator import itemgetter
 from sys import path
+from random import randint
+
 
 from django.http import HttpResponse
 from django.http.response import Http404
@@ -157,7 +159,6 @@ def results(request, unit="aya"):
 
 # custom error 404
 def custom_404(request):
-    from random import randint
     raw_search = RAWoutput.do({"action":"search", "unit":"aya", "query":"gid:%d" % randint(1,6236)})
     return render_to_response('404.html',raw_search )
 
