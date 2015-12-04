@@ -171,6 +171,7 @@ def one_aya_page(request, is404 = False):
     if int(bg) not in xrange(1, nb_bg+1):
         bg = randint(1, nb_bg)
     api = mutable_request.get('api', 0) 
+    simple = mutable_request.get('simple', 0)
     raw_search = RAWoutput.do({"action":"search", "unit":"aya", "query":"gid:%d" % int(gid)})
     response = HttpResponse(
       json.dumps(raw_search, sort_keys=False, indent=4),
@@ -179,7 +180,8 @@ def one_aya_page(request, is404 = False):
     raw_search["params"] = { "bg": bg, 
                              "gid":gid, 
                              "is404": is404,
-                             "isRandom": isRandom
+                             "isRandom": isRandom,
+                             "simple":simple
                              }
     return render_to_response('one_aya_page.html',raw_search ) if not api else response
 

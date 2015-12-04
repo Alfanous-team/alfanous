@@ -71,13 +71,13 @@
       {% endif %}
       <br/>
  
-
+    {% if not params.simple %}
             <ul  class="inline" style='min-width: 5px;'>
             <li>
               <a href="/r"  title="{{ _('Randomize') }}"><i class="icon-refresh"></i></a>
             </li>
             <li>
-              <a href="/r?id={{ params.gid }}&amp;bg={{ params.bg }}" title="{{ _('Link') }}"><i class="icon-link"></i></a>
+              <a href="/r?id={{ params.gid }}&amp;bg={{ params.bg }}&amp;simple=1" title="{{ _('Hide social icons') }}"><i class="icon-eye-close "></i></a>
             </li>
             <li>
                    <a href="/r?id={{ search.ayas.1.identifier.gid }}&amp;api=1" title="{{ _('API result') }}"><i class="icon-exchange  icon-large"></i></a>
@@ -106,10 +106,10 @@
             </li>
 
             </ul>
-            
+
        <a href="/"> ALFANOUS.ORG </a>
 
-       
+       {% endif %}
     </div>
     <div class="row span1">
     </div>
