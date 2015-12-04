@@ -156,6 +156,8 @@
                       <li><a href="{% url 'wui.views.results' available_unit.0 %}">{{ available_unit.1 }}</a></li>
                       {% endifequal %}
                     {% endfor %}
+                    <li><a href="/r">{{ _("Random") }} </a></li>
+                    
                   </ul>
                     {% if bidi.direction == "rtl" %}
                     <ul class="nav pull-left">
