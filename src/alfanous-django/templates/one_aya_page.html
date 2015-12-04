@@ -1,7 +1,11 @@
 <!DOCTYPE html>
 <html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-  <title>{% if is404 %}
+  <title>{% if params.is404 %}
       {{ _("Page not found!") }}
+      
+      {% elif params.isRandom %}
+      
+      {{ _("Random") }}
       
        {% else %}
   سورة {{ search.ayas.1.identifier.sura_arabic_name }} ، الآية {{ search.ayas.1.identifier.aya_id }}
@@ -13,7 +17,7 @@
  
  <meta charset="utf-8">
 
-  <meta name="description" content="{{ search.ayas.1.aya.text }}">
+  <meta name="description" content="{% if params.is404 %} 404 error {% elif params.isRandom %} {{ _('show a random verse of the quran') }}  {% else %}{{ search.ayas.1.aya.text }} {% endif %}">
   <meta name="keywords" content="{{ search.ayas.1.identifier.sura_arabic_name }}, Quran, قرآن, sura, aya">
   <meta name="author" content="Alfanous Team, ACH">
   <!-- SHARE -->
