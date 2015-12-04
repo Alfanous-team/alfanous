@@ -165,7 +165,7 @@ def one_aya_page(request):
     nb_bg=4
     bg = mutable_request.get('bg', randint(1, nb_bg)) 
     if int(bg) not in xrange( nb_bg+1):
-        bg = randint(1,4)
+        bg = randint(1, nb_bg)
     api = mutable_request.get('api', 0) 
     raw_search = RAWoutput.do({"action":"search", "unit":"aya", "query":"gid:%d" % int(gid)})
     response = HttpResponse(
