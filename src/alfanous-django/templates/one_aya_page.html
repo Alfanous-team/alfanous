@@ -57,22 +57,32 @@
 
             <ul  class="inline" style='min-width: 5px;'>
             <li>
-                <a href="https://twitter.com/intent/tweet?text={{ search.ayas.1.aya.text_no_highlight }} - {{ search.ayas.1.identifier.sura_arabic_name }} {{ search.ayas.1.identifier.aya_id }} &amp;url=http://www.alfanous.org/r?id={{ search.ayas.1.identifier.gid }}" target="_blank">
+              <a href="#" onclick="location.reload();" title="{{ _('Refresh') }}"><i class="icon-refresh"></i></a>
+            </li>
+            <li>
+              <a href="/r?id={{ params.gid }}&amp;bg={{ params.bg }}" title="{{ _('Link') }}"><i class="icon-link"></i></a>
+            </li>
+            <li>
+                   <a href="/r?id={{ search.ayas.1.identifier.gid }}&amp;api=1" title="{{ _('API result') }}"><i class="icon-exchange  icon-large"></i></a>
+            </li>
+           |
+            <li>
+                <a href="https://twitter.com/intent/tweet?text={{ search.ayas.1.aya.text_no_highlight }} - {{ search.ayas.1.identifier.sura_arabic_name }} {{ search.ayas.1.identifier.aya_id }} &amp;url=http://www.alfanous.org/r?id={{ search.ayas.1.identifier.gid }}" target="_blank" title="{{ _('Share to Twitter') }}">
                 <i class="icon-twitter"></i>
                 </a>
             </li>
             <li>
-                <a href="https://www.facebook.com/sharer/sharer.php?u=http://www.alfanous.org/r?id={{ search.ayas.1.identifier.gid }}" target="_blank">
+                <a href="https://www.facebook.com/sharer/sharer.php?u=http://www.alfanous.org/r?id={{ search.ayas.1.identifier.gid }}&amp;t='test'" target="_blank" title="{{ _('Share to Facebook') }}">
                 <i class="icon-facebook"></i>
                 </a>
             </li>
             <li>
                 <a href="https://plus.google.com/share?url=http://www.alfanous.org/r?id={{ search.ayas.1.identifier.gid }}" target="_blank">
-                <i class="icon-google-plus"></i>
+                <i class="icon-google-plus" title="{{ _('Share to Google+') }}"></i>
                 </a>
             </li>
             <li>
-                <a href="https://www.linkedin.com/shareArticle?mini=true&url=http://www.alfanous.org/r?id={{ search.ayas.1.identifier.gid }}&amp;title=سورة {{ search.ayas.1.identifier.sura_arabic_name }} ، الآية {{ search.ayas.1.identifier.aya_id }}&amp;summary=&amp;source=" target="_blank">
+                <a href="https://www.linkedin.com/shareArticle?mini=true&url=http://www.alfanous.org/r?id={{ search.ayas.1.identifier.gid }}&amp;title=سورة {{ search.ayas.1.identifier.sura_arabic_name }} ، الآية {{ search.ayas.1.identifier.aya_id }}&amp;summary=&amp;source=" target="_blank" title="{{ _('Share to Linkedin') }}">
                 <i class="icon-linkedin"></i>
               
                 </a>
@@ -81,7 +91,6 @@
             </ul>
             
        <a href="/"> ALFANOUS.ORG </a>
-       <a href="/r?id={{ search.ayas.1.identifier.gid }}&amp;api=1"><i class="icon-exchange  icon-large"></i></a>
 
        
     </div>
