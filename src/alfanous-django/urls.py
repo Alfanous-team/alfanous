@@ -7,7 +7,7 @@ from django.conf.urls.i18n import i18n_patterns
 
 urlpatterns = patterns( '',
   url( r'^jos2', 'wui.views.jos2' ),
-  url(r'^r$', 'wui.views.one_aya_page'),
+  url(r'^r', 'wui.views.one_aya_page'),
   url(r'^$', 'wui.views.results'),
   # url( r'^admin/', include( admin.site.urls ) ),
 )
