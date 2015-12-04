@@ -157,10 +157,30 @@ def results(request, unit="aya"):
 
   return render_to_response(mytemplate, context)
 
+
+# one aya page
+def one_aya_page(request):
+    mutable_request = dict(request.GET.items())
+    gid = mutable_request.get('id', randint(1,6236))
+    nb_bg=4
+    bg = mutable_request.get('bg', randint(1, nb_bg)) 
+    if int(bg) not in xrange( nb_bg+1):
+        bg = randint(1,4)
+    api = mutable_request.get('api', 0) 
+    raw_search = RAWoutput.do({"action":"search", "unit":"aya", "query":"gid:%d" % int(gid)})
+    response = HttpResponse(
+      json.dumps(raw_search, sort_keys=False, indent=4),
+      mimetype="application/json"
+    )
+    raw_search["params"] = { "bg": bg, "gid":gid }
+    return render_to_response('one_aya_page.html',raw_search ) if not api else response
+
 # custom error 404
 def custom_404(request):
     raw_search = RAWoutput.do({"action":"search", "unit":"aya", "query":"gid:%d" % randint(1,6236)})
     return render_to_response('404.html',raw_search )
+
+
 
 
 

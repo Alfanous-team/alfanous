@@ -1,0 +1,83 @@
+/* === Import font === */
+@import url(http://fonts.googleapis.com/css?family=Share:400,400italic,700,700italic);
+@import url(http://fonts.googleapis.com/css?family=Lato:400,700);
+
+/* === STYLE === */
+* {
+	margin: 0;
+}
+
+html, body
+{
+
+	padding: 0;
+	width: 100%;
+	height: 100%;
+}
+
+
+
+
+.wrap
+{
+
+}
+
+/* === HEADER SECTION === */
+.wrap_header{
+	
+}
+
+/* === CONTENT SECTION === */
+.wrap_content{
+	margin: 0px auto;
+
+	padding-top: 150px;
+	text-align: center;
+	z-index: 1;
+}
+.wrap_content h3{
+	color: #000;
+    font-size: 32px;
+    text-shadow: 1px 1px #fff
+
+}
+
+.wrap_content h2{
+	color: #ffffff;
+	font-size: 42px;
+    text-shadow: 2px 2px #000
+
+}
+
+.wrap_content  h5
+{
+    color:white;
+}
+
+.wrap_content p{
+	color: #ffffff;
+	font-family: 'Lato', sans-serif;
+	font-size: 18px;
+	line-height: 23px;
+	font-weight: bold;
+}
+
+a {
+    color: #fff!important;
+	text-decoration: none;
+    font-size: 18px;
+    text-shadow: 2px 2px #000
+    
+}
+
+.wrap_content a:hover{
+	color: #eeeeff;
+    text-decoration: underline;  
+    text-shadow: 2px 2px #000
+    
+    
+    
+}
+
+
