@@ -32,7 +32,7 @@ html, body
 .wrap_content{
 	margin: 0px auto;
 
-	padding-top: 150px;
+	padding-top: 100px;
 	text-align: center;
 	z-index: 1;
 }
