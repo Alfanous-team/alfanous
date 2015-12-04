@@ -1,7 +1,17 @@
 <!DOCTYPE html>
 <html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-  <title>سورة {{ search.ayas.1.identifier.sura_arabic_name }} ، الآية {{ search.ayas.1.identifier.aya_id }}</title>
-  <meta charset="utf-8">
+  <title>{% if is404 %}
+      {{ _("Page not found!") }}
+      
+       {% else %}
+  سورة {{ search.ayas.1.identifier.sura_arabic_name }} ، الآية {{ search.ayas.1.identifier.aya_id }}
+
+
+    
+ {% endif %}
+ </title>
+ 
+ <meta charset="utf-8">
 
   <meta name="description" content="{{ search.ayas.1.aya.text }}">
   <meta name="keywords" content="{{ search.ayas.1.identifier.sura_arabic_name }}, Quran, قرآن, sura, aya">
@@ -52,12 +62,15 @@
       
       <br/>
       <br/>
+      {% if is404 %}
+     <div class="alert alert-error" role="alert"> {{ _("Page not found!") }}</div>
+      {% endif %}
       <br/>
  
 
             <ul  class="inline" style='min-width: 5px;'>
             <li>
-              <a href="#" onclick="location.reload();" title="{{ _('Refresh') }}"><i class="icon-refresh"></i></a>
+              <a href="/r"  title="{{ _('Randomize') }}"><i class="icon-refresh"></i></a>
             </li>
             <li>
               <a href="/r?id={{ params.gid }}&amp;bg={{ params.bg }}" title="{{ _('Link') }}"><i class="icon-link"></i></a>
