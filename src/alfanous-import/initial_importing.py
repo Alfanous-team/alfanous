@@ -18,9 +18,9 @@
 
 
 '''
-Its one time importing system,dont use it else if you are sure what you're doing
+The is an obsolete importing system,dont use it else if you are sure what you're doing
 
-@todo: this script must be clean , we need it to build the indexes for the original ressources
+@todo: this script must be clean , we need it to build the indexes for the original resources
 @author: Assem Chelli
 @contact: assem.ch [at] gmail.com
 
@@ -30,10 +30,8 @@ import re
 import sqlite3 as lite
 import os
 import xlrd
-import re
 import Misc
 import xml.dom.minidom as dom
-import pyparsing as pyp
 from pyparsing import *
 from Indexing import QseDocIndex
 from Searching import QReader
