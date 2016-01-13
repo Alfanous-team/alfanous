@@ -118,7 +118,7 @@ class QUI( Ui_MainWindow ):
             #self.o_perpage.setValue( int( config["options"]["perpage"] ) if config["options"].has_key( "perpage" ) else 10 )
             self.style = config["options"]["style"] if config["options"].has_key( "style" ) else ""
             self.language = config["options"]["language"] if config["options"].has_key( "language" ) else ""
-            self.o_autospell.setChecked(boolean(config["options"]["fuzzy"]) if config["options"].has_key( "fuzzy" ) else False)
+            self.o_autospell.setChecked(boolean(config["options"]["fuzzy"]) if config["options"].has_key( "fuzzy" ) else True)
             self.o_search_in_trads.setChecked(config["options"]["unit"] == "translation" if config["options"].has_key( "unit" ) else False)
         else:
             self.style = ""
