@@ -304,6 +304,7 @@
 
                             </div>
                             {% if current.unit == "aya" %}
+				{% block options %}{% endblock %}
                                 <div class="advanced-search text-center bootstro" data-toggle="tooltip"
                                     data-bootstro-title="{{ _('Even more!') }}"
                                 data-bootstro-content="{{ _('You can <strong>sort</strong>, <strong>filter</strong> search reasults or choose a translation, you can as well choose a recitator!') }}"
@@ -336,8 +337,7 @@
 									<div class=" tab-content well">
 									  <div class=" tab-pane active" id="advanced_search_options">
 											<fieldset class="">
-                                                {% block options %}
-                                                {% endblock %}
+                                                
 
                                                 {% block views_panel %}{% endblock %}
                                                 {% block sortedby_panel %}{% endblock %}
