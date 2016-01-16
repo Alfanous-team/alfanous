@@ -181,6 +181,7 @@ This is the list of search features already implemented, preview links use Alfan
 -------
 History
 -------
+- **4 Mar2015**: Launching "GUI 0.7.20 Kahraman release" of the GUI: clean, uptodate technologies, localization, translation search.
 - **25 November 2013**: Launching "`API 0.7.01 BlackStone release <https://github.com/Alfanous-team/alfanous/releases/tag/API_0.7.01>`_" of the  API: Extensible, More stable, and has Many features.
 
 - **4 August 2013**: Launching "`WEB 0.7.5 alyaqoot release <https://github.com/Alfanous-team/alfanous/releases/tag/WEB_0.7.5>`_" of the  web interface: based on `Twitter Bootstrap <http://twitter.github.io/bootstrap/>`_, Responsive , Simple, Clean , Accept skins, and has many  improvements and bug fixes. kacemb2_
