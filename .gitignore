@@ -133,3 +133,7 @@ rpmbuild
 Icon?
 *.db
 desktop.ini
+
+# virtual env for web interface #
+#################################
+src/alfanous-django/venv/
