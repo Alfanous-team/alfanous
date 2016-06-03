@@ -1,3 +1,6 @@
+.. image:: https://badge.waffle.io/Alfanous-team/alfanous.png?label=ready&title=Ready 
+ :target: https://waffle.io/Alfanous-team/alfanous
+ :alt: 'Stories in Ready'
    **note** This project needs more contributors and/or funding. If you like it, see `how you can help? <https://github.com/Alfanous-team/alfanous/blob/master/FAQ.rst#how-you-can-help>`_.
 
 
