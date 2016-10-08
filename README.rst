@@ -1,7 +1,16 @@
-.. image:: https://badge.waffle.io/Alfanous-team/alfanous.png?label=ready&title=Ready 
- :target: https://waffle.io/Alfanous-team/alfanous
- :alt: 'Stories in Ready'
+
+ 
+ 
+ 
    **note** This project needs more contributors and/or funding. If you like it, see `how you can help? <https://github.com/Alfanous-team/alfanous/blob/master/FAQ.rst#how-you-can-help>`_.
+
+* .. image:: https://badges.gitter.im/Alfanous-team/alfanous.svg
+        :alt: Join the chat at https://gitter.im/Alfanous-team/alfanous
+        :target: https://gitter.im/Alfanous-team/alfanous?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge 
+ 
+  .. image:: https://badge.waffle.io/Alfanous-team/alfanous.png?label=ready&title=Ready 
+        :target: https://waffle.io/Alfanous-team/alfanous
+        :alt: 'Stories in Ready'
 
 
 * .. image:: https://img.shields.io/pypi/v/alfanous.svg
@@ -259,7 +268,3 @@ See also
 .. _fath_multimedia: http://www.fath-multimedia.blogspot.com/2013/08/alfanous-terdepan-dalam-penelusuran.html
 .. _fimadani: http://news.fimadani.com/read/2013/10/22/alfanous-dakwah-al-quran-lewat-search-engine/?utm_source=twitterfeed&utm_medium=twitter
 
-
-.. image:: https://badges.gitter.im/Alfanous-team/alfanous.svg
-   :alt: Join the chat at https://gitter.im/Alfanous-team/alfanous
-   :target: https://gitter.im/Alfanous-team/alfanous?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge
