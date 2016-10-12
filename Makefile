@@ -189,8 +189,11 @@ update_post_build:  update_dynamic_resources_postbuild   update_translations_ind
 # 1. Quranic Arabic Corpus, see update_quranic_corpus
 # 2. Linguistic resources on the form of python dictionarries to accelerate the loading , see update_dynamic_resources
 
-update_pre_build:  update_dynamic_resources_prebuild   #update_quranic_corpus
+update_pre_build:  construct_database update_dynamic_resources_prebuild   #update_quranic_corpus
 
+# Construct database from dump file
+construct_database:
+	cd $(DB_PATH); rm  main.db ; cat main.sql | sqlite3 main.db
 
 # update list of indexed translations automatically using Importer
 update_translations_indexed_list:

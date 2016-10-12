@@ -121,7 +121,7 @@ rpmbuild
 # Logs and databases #
 ######################
 *.log
-*.sql
+
 
 # OS generated files #
 ######################
