@@ -97,6 +97,7 @@ _build/
 rpmbuild
 %{buildroot}
 .doctrees/*
+src/alfanous/resources/information.json
 
 # Packages #
 ############
