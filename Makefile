@@ -147,6 +147,8 @@ clean_all: clean_deb
 	rm -rf `find . -name *.pyc`
 	rm -rf `find . -name *.pyo`
 	rm -rf `find . -type d -name *.egg-info`
+	find . -type f -iname \*.mo -exec rm {} \;
+	find . -type f -iname \*.qm -exec rm {} \;
 
 clean_deb:
 	@echo "Cleaning python build..."
