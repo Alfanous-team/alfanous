@@ -4,7 +4,7 @@ alfanous (0.7.29-1) stable; urgency=low
 
  -- Abdellah Chelli <abdellahchelli@gmail.com>  Sun, 30 Apr 2017 17:56:05 +0100
 
-alfanous (0.7.19-0) trusty; urgency=low
+alfanous (0.7.19-1) trusty; urgency=low
 
   * Fix: a bug in paging when clicking to search
 
