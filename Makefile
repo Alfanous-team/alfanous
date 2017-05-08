@@ -147,6 +147,8 @@ clean_all: clean_deb
 	rm -rf `find . -name *.pyc`
 	rm -rf `find . -name *.pyo`
 	rm -rf `find . -type d -name *.egg-info`
+	find . -type f -iname \*.mo -exec rm {} \;
+	find . -type f -iname \*.qm -exec rm {} \;
 
 clean_deb:
 	@echo "Cleaning python build..."
@@ -194,6 +196,7 @@ update_pre_build:  construct_database update_dynamic_resources_prebuild   #updat
 # Construct database from dump file
 construct_database:
 	cd $(DB_PATH); rm  main.db ; cat main.sql | sqlite3 main.db
+	perl -p -w -e 's|alfanous.release|$(RELEASE)|g;s|alfanous.version|$(VERSION)|g;' $(API_PATH)alfanous/resources/information.json.in > $(API_PATH)alfanous/resources/information.json
 
 # update list of indexed translations automatically using Importer
 update_translations_indexed_list:
@@ -405,11 +408,8 @@ dist_egg_all:   dist_egg_pycorpus  dist_egg_pyzekr dist_egg_qimport dist_egg_des
 
 # python egg for API
 dist_egg_api: 
-	perl -pi -w -e 's|alfanous.release|$(RELEASE)|g;' $(API_PATH)alfanous/resources/information.json
-	perl -pi -w -e 's|alfanous.version|$(VERSION)|g;' $(API_PATH)alfanous/resources/information.json
+	perl -p -w -e 's|alfanous.release|$(RELEASE)|g;s|alfanous.version|$(VERSION)|g;' $(API_PATH)alfanous/resources/information.json.in > $(API_PATH)alfanous/resources/information.json
 	cd $(API_PATH)alfanous ; $(PYTHON_COMMAND) setup.py sdist bdist_egg register upload
-	perl -pi -w -e 's|$(RELEASE)|alfanous.release|g;' $(API_PATH)alfanous/resources/information.json
-	perl -pi -w -e 's|$(VERSION)|alfanous.version|g;' $(API_PATH)alfanous/resources/information.json
 	mkdir -p output/$(VERSION) ; mv $(API_PATH)alfanous/dist/*.egg ./output/$(VERSION)
 	@echo  "NOTE: you can find the generated egg in ./output"
 	
@@ -507,18 +507,12 @@ install_all: install_api install_desktop install_jos2 install_web
 
 
 install_api: 
-	perl -pi -w -e 's|alfanous.release|$(RELEASE)|g;' $(API_PATH)alfanous/resources/information.json
-	perl -pi -w -e 's|alfanous.version|$(VERSION)|g;' $(API_PATH)alfanous/resources/information.json
+	perl -p -w -e 's|alfanous.release|$(RELEASE)|g;s|alfanous.version|$(VERSION)|g;' $(API_PATH)alfanous/resources/information.json.in > $(API_PATH)alfanous/resources/information.json
 	cd   "$(API_PATH)alfanous" ; $(PYTHON_COMMAND) setup.py install --prefix=$(PREFIX) --root=$(DESTDIR)
-	perl -pi -w -e 's|$(RELEASE)|alfanous.release|g;' $(API_PATH)alfanous/resources/information.json
-	perl -pi -w -e 's|$(VERSION)|alfanous.version|g;' $(API_PATH)alfanous/resources/information.json
 
 install_api_no_arguments: 
-	perl -pi -w -e 's|alfanous.release|$(RELEASE)|g;' $(API_PATH)alfanous/resources/information.json
-	perl -pi -w -e 's|alfanous.version|$(VERSION)|g;' $(API_PATH)alfanous/resources/information.json
+	perl -p -w -e 's|alfanous.release|$(RELEASE)|g;s|alfanous.version|$(VERSION)|g;' $(API_PATH)alfanous/resources/information.json.in > $(API_PATH)alfanous/resources/information.json
 	cd   "$(API_PATH)alfanous" ; $(PYTHON_COMMAND) setup.py install
-	perl -pi -w -e 's|$(RELEASE)|alfanous.release|g;' $(API_PATH)alfanous/resources/information.json
-	perl -pi -w -e 's|$(VERSION)|alfanous.version|g;' $(API_PATH)alfanous/resources/information.json
 	
 install_desktop:  install_api qt_all  local_desktop_compile
 	perl -pi -w -e 's|version = "\d+\.\d+(\.\d+)*"|version = "$(VERSION)"|g;' $(DESKTOP_INTERFACE_PATH)/setup.py
