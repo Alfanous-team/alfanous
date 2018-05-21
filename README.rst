@@ -21,17 +21,9 @@
 
   .. image:: https://landscape.io/github/Alfanous-team/alfanous/master/landscape.svg
         :target: https://landscape.io/github/Alfanous-team/alfanous
-        
-  .. image:: https://requires.io/github/Alfanous-team/alfanous/requirements.svg?branch=master
-     :target: https://requires.io/github/Alfanous-team/alfanous/requirements/?branch=master
-     :alt: Requirements Status
-  .. image:: https://www.quantifiedcode.com/api/v1/project/44c2ac165d184c75ab43b770e10932b2/badge.svg
-    :target: https://www.quantifiedcode.com/app/project/44c2ac165d184c75ab43b770e10932b2
-    :alt: Code issues
+       
 
-* .. image:: https://img.shields.io/pypi/dm/alfanous.svg
-        :target: https://pypi.python.org/pypi/alfanous
-  .. image:: https://img.shields.io/sourceforge/dm/alfanous.svg
+* .. image:: https://img.shields.io/sourceforge/dm/alfanous.svg
         :target: https://sourceforge.net/projects/alfanous
   
 
