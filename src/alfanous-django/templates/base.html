@@ -63,9 +63,9 @@
 	<link rel="alternate" href="http://www.alfanous.org{% url 'wui.views.results' current.unit  %}{% if current.request %}?{{ current.request }}{% endif %}" hreflang="{{ lang_code }}" />
                                 {% endlanguage %}
     {% endfor %}
-
+    {# todo:  restructure base.html with generic blocks that allows extending any part like header #}
+    {% block pagination_rel_block %}{% endblock %}
 	<link rel="search" type="application/opensearchdescription+xml" title="Alfanous" href="/static/alfanous-opensearch.xml"/>
-
 
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<!-- Bootstrap -->

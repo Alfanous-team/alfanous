@@ -10,6 +10,10 @@
   {% block pagination_phone %} {% endblock %}
 {% endkwacro %}
 
+{% block pagination_rel_block %}
+  {% include 'wui/pagination_rel.html' with page=results.search.interval.page nb_pages=results.search.interval.nb_pages %}
+{% endblock %}
+
 {% block results %}
 	<div id="#search_result_static" class="row span9 offset2  text-center ">
 
