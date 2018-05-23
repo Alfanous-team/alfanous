@@ -10,7 +10,7 @@
     {% autoescape off %}
       {# TODO optimize this condition, any "in" operation? #}
       {% if aya_word|first in "<ct> "|make_list  %}
-        {{ aya_word }}
+        {# <mark> fixme:need change in API #}{{ aya_word }}{# </mark> #}
       {% else %}
         <a href="?{% custom_query aya_word 1 False %}">{{ aya_word }}</a>
       {% endif %}

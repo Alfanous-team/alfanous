@@ -98,6 +98,11 @@ span.label a:hover {
   color:white;
 }
 
+h1 {
+  display: inline;
+  font: inherit;
+}
+
 .popoverInnerText {
   font-weight: normal;
   text-shadow:none;

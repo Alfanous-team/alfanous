@@ -12,6 +12,7 @@
 
 {% block results %}
 	<div id="#search_result_static" class="row span9 offset2  text-center ">
+	<main>
 
 		{% if results.error.code == 0  %}
 			 <span	class="muted">
@@ -86,7 +87,9 @@
 		</div>
 
     {% for result_id, result_content in results.search.ayas.items %}
+      <section>
       {% include 'wui/aya/one_result.html' %}
+      </section>
     {% endfor %}
 
 	    <!-- Pages control # bottom one -->
@@ -117,5 +120,6 @@
 
 	{% endif %}
 
+</main>
 </div>
 {% endblock results %}
