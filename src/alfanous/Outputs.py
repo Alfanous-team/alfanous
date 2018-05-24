@@ -28,6 +28,7 @@ import re
 from pyparsing import ParseException
 import traceback
 
+
 from alfanous.main import QuranicSearchEngine, FuzzyQuranicSearchEngine
 from alfanous.main import TraductionSearchEngine, WordSearchEngine
 try:
@@ -1122,6 +1123,7 @@ class Raw():
 		#original ayas
 		if aya:
 			aya_res, searcher = self.QSE.find_extended( aya_query, "gid" )
+
 			extend_runtime += aya_res.runtime
 			aya_info = {}
 			for ay in aya_res:

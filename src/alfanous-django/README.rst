@@ -1,6 +1,7 @@
 ===========================
 Web User Interface [Django]
-==========================
+===========================
+
 This is the  source code for alfanous.org, it is a django app that use Alfanous API. 
 
 how to contribute on it?
@@ -30,7 +31,7 @@ Test
     
    .. code :: sh
    
-	   $ python manage.py syncdb
+       $ python manage.py syncdb
        $ python manage.py runserver
 
 

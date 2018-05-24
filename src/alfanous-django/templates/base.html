@@ -16,15 +16,16 @@
   <meta name="description" content="{% meta_description %}">
   <meta name="google-site-verification" content="SqRr5YSggCEdzVRxx1KuWWwKmtctzUoxuYTCLV1Vbwo" />
 
-  <meta name="keywords" content="{{ _('quran') }},
-								 {{ _('forqan') }},
-								 {{ _('koran') }},
-								 {{ _('search') }},
-								 {{ _('search engine') }},
-								 {{ _('ayates') }},
-								 {{ _('surates') }},
-								 {{ _('advanced') }},
-								 {{ _('statistics') }},
+	<meta name="keywords" content="{{ _('quran') }},
+								   {{ _('forqan') }},
+								   {{ _('koran') }},
+								   {{ _('search') }},
+								   {{ _('search engine') }},
+								   {{ _('ayates') }},
+								   {{ _('surates') }},
+								   {{ _('advanced') }},
+								   {{ _('statistics') }},
+
 								   {{  _('linguistic') }},
 								   {{ _('information retrieval') }},
 								   {{ _('natural language processing') }},
@@ -56,7 +57,6 @@
 
 	<link rel="icon" href="/static/shared/img/icon/icon_32_a.png" sizes="32x32">
 	<link rel="shortcut icon" href="/static/shared/img/icon/icon_16_a.png">
-
 	<link rel="alternate" href="http://www.alfanous.org/{{ current.unit }}/?{{ current.request }}" hreflang="x-default" />
     {% for lang_code, lang_name in LANGUAGES %}
                                 {% language lang_code %}
@@ -257,6 +257,7 @@
                             <li><a href="http://www.alfanous.org/jos2" ><i class="icon-exchange"></i> {{ _("Dev API") }}</a></li>
                              <li {% if not params %} class="disabled"{% endif %}> <a class="text-warning with_tooltip"  {% if params %}href="/jos2?action=search&unit={{ current.unit }}&{{ current.request }}{% endif %}" data-toggle="tooltip" title="" data-placement="{{ bidi.align_inverse }}" data-original-title="{{ _('Same results in Json format, useful for developers') }}"><i class="icon-exchange"></i> {{ _("JSON Results") }}</a></li>
 
+
                         <li class="nav-header">{{ _("Contribute:") }}</li>
                              <li><a  href="http://feedback.alfanous.org/"><i class="icon-comment"></i> {{ _("Feedback") }}</a></li>
                             <li><a href="#translatepanel" data-toggle="modal"><i class="icon-globe"></i> {{ _("Translate") }}</a></li>
@@ -324,10 +325,11 @@
 									  <li class=""><a href="#advanced_search_statistic" data-toggle="tab"><i class="icon-bar-chart"></i> <span class="hidden-phone" >{{ _("Statistical Search") }}</span></a></li>
 									  <li class="hidden"><a href="#advanced_search_misc" data-toggle="tab"><i class="icon-ellipsis-horizontal"></i> <span class="hidden-phone" >{{ _("Miscellaneous") }}</span></a></li>
 									</ul>
-
+							
 									<div class=" tab-content well">
 									  <div class=" tab-pane active" id="advanced_search_options">
 											<fieldset class="">
+                                                
 
 
                                                 {% block views_panel %}{% endblock %}
@@ -338,24 +340,26 @@
 
 										</div>
 									  <div class="tab-pane text-{{ bidi.align }}" id="advanced_search_advanced_query">
-									  	  {% include 'wui/advanced_search/advanced_query.html' %}
+
+									  	  {% include 'wui/advanced_search/advanced_query.html' %} 
 									  </div>
 									  <div class="tab-pane text-{{ bidi.align }}" id="advanced_search_linguistic">
-									  	{% include 'wui/advanced_search/linguistic.html' %}
+									  	{% include 'wui/advanced_search/linguistic.html' %} 
 										 </div>
 									  <div class="tab-pane text-{{ bidi.align }}" id="advanced_search_thematic">
-										{% include 'wui/advanced_search/thematic.html' %}
+										{% include 'wui/advanced_search/thematic.html' %} 
 									</div>
 									  <div class="tab-pane text-{{ bidi.align }}" id="advanced_search_structural">
-									  {% include 'wui/advanced_search/structural.html' %}
-									  </div>
+									  {% include 'wui/advanced_search/structural.html' %} 
+									  </div> 
 									  <div class="tab-pane text-{{ bidi.align }}" id="advanced_search_statistic">
-									  	{% include 'wui/advanced_search/statistical.html' %}
+									  	{% include 'wui/advanced_search/statistical.html' %} 
 									  </div>
 									  <div class="tab-pane text-{{ bidi.align }}" id="advanced_search_predef">
-									  	{% include 'wui/advanced_search/predefined_queries.html' %}
+									  	{% include 'wui/advanced_search/predefined_queries.html' %} 
 									  </div>
 									</div>
+                                       
 
                                 </div>
                             {% endif %}
@@ -380,7 +384,6 @@
 		                        {{ _("Please help us translate Alfanous Project into more languages!") }}
 		                        </a>
 		                      
-
 		                    </div>
 
 		                    <!-- <div class="alert alert-info span8 offset3 text-center">
@@ -408,14 +411,15 @@
 
 
        <!-- <div class="row-fluid text-center hidden-print">
+
 				 <br/>
 				<span id="shareme_root" class="span4 offset4 shareme_root" data-url="http://www.alfanous.org{% url 'wui.views.results' current.unit %}?{{ current.request }}"
 				    data-text="{{ _('Alfanous') }} - {% if current.unit == 'aya' %} {{ _('Quran Ayah Search') }} {% elif current.unit == 'word' %} {{ _('Quran Word Search') }} {% elif current.unit == 'translation' %} {{ _('Quran Translation Search') }}{% else %} {{ _('Quran Ayah Search') }} {% endif %}   #alfanous" data-title="  {{ _('Share!') }}"></span>
 				<br/>
-
 			</div>-->
 		<br/>
 		<br/>
+
 
 
 	<div id="footer" class="navbar navbar-inverse  text-center">

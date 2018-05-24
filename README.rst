@@ -1,4 +1,13 @@
-   **note** This project needs more contributors and/or funding. If you like it, see `how you can help? <https://github.com/Alfanous-team/alfanous/blob/master/FAQ.rst#how-you-can-help>`_.
+    **note** This project needs more contributors and/or funding. If you like it, see `how you can help? <https://github.com/Alfanous-team/alfanous/blob/master/FAQ.rst#how-you-can-help>`_.
+
+* .. image:: https://badges.gitter.im/Alfanous-team/alfanous.svg
+        :alt: Join the chat at https://gitter.im/Alfanous-team/alfanous
+        :target: https://gitter.im/Alfanous-team/alfanous?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge 
+ 
+  .. image:: https://badge.waffle.io/Alfanous-team/alfanous.png?label=ready&title=Ready 
+        :target: https://waffle.io/Alfanous-team/alfanous
+        :alt: 'Stories in Ready'
+
 
 
 * .. image:: https://img.shields.io/pypi/v/alfanous.svg
@@ -9,17 +18,8 @@
 
   .. image:: https://landscape.io/github/Alfanous-team/alfanous/master/landscape.svg
         :target: https://landscape.io/github/Alfanous-team/alfanous
-        
-  .. image:: https://requires.io/github/Alfanous-team/alfanous/requirements.svg?branch=master
-     :target: https://requires.io/github/Alfanous-team/alfanous/requirements/?branch=master
-     :alt: Requirements Status
-  .. image:: https://www.quantifiedcode.com/api/v1/project/44c2ac165d184c75ab43b770e10932b2/badge.svg
-    :target: https://www.quantifiedcode.com/app/project/44c2ac165d184c75ab43b770e10932b2
-    :alt: Code issues
 
-* .. image:: https://img.shields.io/pypi/dm/alfanous.svg
-        :target: https://pypi.python.org/pypi/alfanous
-  .. image:: https://img.shields.io/sourceforge/dm/alfanous.svg
+* .. image:: https://img.shields.io/sourceforge/dm/alfanous.svg
         :target: https://sourceforge.net/projects/alfanous
   
 
@@ -181,6 +181,8 @@ This is the list of search features already implemented, preview links use Alfan
 -------
 History
 -------
+- **4 Mar2015**: Launching "GUI 0.7.20 Kahraman release" of the GUI: clean, uptodate technologies, localization, translation search.
+
 - **25 November 2013**: Launching "`API 0.7.01 BlackStone release <https://github.com/Alfanous-team/alfanous/releases/tag/API_0.7.01>`_" of the  API: Extensible, More stable, and has Many features.
 
 - **4 August 2013**: Launching "`WEB 0.7.5 alyaqoot release <https://github.com/Alfanous-team/alfanous/releases/tag/WEB_0.7.5>`_" of the  web interface: based on `Twitter Bootstrap <http://twitter.github.io/bootstrap/>`_, Responsive , Simple, Clean , Accept skins, and has many  improvements and bug fixes. kacemb2_

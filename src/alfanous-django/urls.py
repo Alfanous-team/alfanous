@@ -1,5 +1,8 @@
 from django.conf.urls import patterns, include, url
 from django.conf.urls.i18n import i18n_patterns
+from django.views.generic import RedirectView
+from django.conf import settings
+
 
 # Uncomment the next two lines to enable the admin:
 # from django.contrib import admin
@@ -17,6 +20,13 @@ urlpatterns += i18n_patterns('',
   url(r'^$', 'wui.views.results'),
   url(r'^(?P<unit>\w{3,15})/', 'wui.views.results'),
 )
+
+# Fall-back for non-supported languages from URL swich: xx-YY to xx to default (en)
+urlpatterns += patterns('',
+  url(r'^(?P<lang>[a-z]{2})-[A-Za-z]{2}/(?P<path>.*)$', RedirectView.as_view(url='/%(lang)s/%(path)s',query_string=True)),
+  url(r'^[a-z]{2}/(?P<path>.*)$', RedirectView.as_view(url='/{}/%(path)s'.format(settings.LANGUAGE_CODE),query_string=True)),
+)
+
 
 # 404 not found handler
 
