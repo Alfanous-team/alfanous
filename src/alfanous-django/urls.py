@@ -3,6 +3,7 @@ from django.conf.urls.i18n import i18n_patterns
 from django.views.generic import RedirectView
 from django.conf import settings
 
+
 # Uncomment the next two lines to enable the admin:
 # from django.contrib import admin
 # admin.autodiscover()
@@ -25,6 +26,7 @@ urlpatterns += patterns('',
   url(r'^(?P<lang>[a-z]{2})-[A-Za-z]{2}/(?P<path>.*)$', RedirectView.as_view(url='/%(lang)s/%(path)s',query_string=True)),
   url(r'^[a-z]{2}/(?P<path>.*)$', RedirectView.as_view(url='/{}/%(path)s'.format(settings.LANGUAGE_CODE),query_string=True)),
 )
+
 
 # 404 not found handler
 
