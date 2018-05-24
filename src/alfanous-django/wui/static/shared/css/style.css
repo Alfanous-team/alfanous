@@ -98,7 +98,8 @@ span.label a:hover {
   color:white;
 }
 
-h1 {
+h2,
+h3 {
   display: inline;
   font: inherit;
 }

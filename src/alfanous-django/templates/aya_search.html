@@ -14,6 +14,7 @@
 <div class="control-group">
   <div class="controls">
     <label class="checkbox inline">
+      {# todo: replace fuzzy search with exact search (inversed logic),needs translation update #}
       <input type="checkbox"  name="fuzzy" value="True" {% if params.query  %}{{ params.fuzzy|yesno:"checked," }}{% else %}checked="yes"{% endif %} />
       {{ _("Fuzzy search") }}
     </label>

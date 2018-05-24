@@ -281,16 +281,18 @@
             </div><!--/span-->
             </nav>
             <!-- end left navbar -->
-
+            <main>
             <div class="row offset2 span9 text-center">
                 <div class="span7 offset1">
+                  <h1>
                     <a class="logo" href="{% url 'wui.views.results' current.unit %}">
                     {% if LANGUAGE_CODE == "ar" or  LANGUAGE_CODE == "fr" or LANGUAGE_CODE == "id" %}
-                  	  <img src="/static/shared/img/logo_{{ current.unit }}_{{ LANGUAGE_CODE }}.png" alt="logo">
-                  	 {% else %}
-                  	 	 <img src="/static/shared/img/logo_{{ current.unit }}_en.png" alt="logo">
-                  	  {% endif %}
+                       <img src="/static/shared/img/logo_{{ current.unit }}_{{ LANGUAGE_CODE }}.png" alt="Alfanous logo">
+                    {% else %}
+                       <img src="/static/shared/img/logo_{{ current.unit }}_en.png" alt="Alfanous logo">
+                    {% endif %}
                     </a>
+                  </h1>
                         <form class="form-search" id="form" name="form" method="GET" action=".">
                             <div class="input-append bootstro text-right"
                                 data-bootstro-title="{{ _('Alfanous is smart!') }}"
@@ -418,7 +420,7 @@
 
 
 		{% endif %}
-
+	</main>
     </div>
 </div>
 

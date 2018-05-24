@@ -12,15 +12,16 @@
 
 {% block results %}
 	<div id="#search_result_static" class="row span9 offset2  text-center ">
-	<main>
 
 		{% if results.error.code == 0  %}
+			 <h2 class="muted">{{ params.query|escape }}</h2>
 			 <span	class="muted">
-			 {{ _("Keywords") }} :
-						{{ results.search.words.global.nb_words }};
-			 {{ _("Results") }} :
-						{{ results.search.interval.total }};
-			 {{ _("Runtime") }} :
+			 &#8226
+			 {{ _("Keywords") }}:
+						{{ results.search.words.global.nb_words }} &#8226
+			 {{ _("Results") }}:
+						{{ results.search.interval.total }} &#8226
+			 {{ _("Runtime") }}:
 						{{ results.search.runtime|floatformat:"5" }} {{ _("s") }}
 			 </span>
 			<!-- Suggestions-->
@@ -120,6 +121,5 @@
 
 	{% endif %}
 
-</main>
 </div>
 {% endblock results %}

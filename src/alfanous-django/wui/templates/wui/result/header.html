@@ -1,6 +1,5 @@
 {% load query %}
 
-<h1>
 <span class="muted">
   {% with result_content.identifier.gid|stringformat:"s" as gid %}
   {% with bidi.fields.gid|add:':'|add:gid as new_query %}
@@ -12,6 +11,7 @@
   {% endwith %}
 
   -
+  <h3>
   <a class="muted" href='?{% aya_query result_content %}'>
     <span >
       <small>
@@ -24,8 +24,8 @@
       </small>
     </span>
   </a>
+  </h3>
 </span>
-</h1>
 
 <div class="pull-{{ bidi.align_inverse }}">
   {% url 'wui.views.results' current.unit as share_path %}
