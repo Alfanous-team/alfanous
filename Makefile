@@ -150,6 +150,7 @@ clean_all: clean_deb
 	find . -type f -iname \*.mo -exec rm {} \;
 	find . -type f -iname \*.qm -exec rm {} \;
 
+
 clean_deb:
 	@echo "Cleaning python build..."
 	@cd src/alfanous/ ; python setup.py clean --all
@@ -197,6 +198,7 @@ update_pre_build:  construct_database update_dynamic_resources_prebuild   #updat
 construct_database:
 	cd $(DB_PATH); rm  main.db ; cat main.sql | sqlite3 main.db
 	perl -p -w -e 's|alfanous.release|$(RELEASE)|g;s|alfanous.version|$(VERSION)|g;' $(API_PATH)alfanous/resources/information.json.in > $(API_PATH)alfanous/resources/information.json
+
 
 # update list of indexed translations automatically using Importer
 update_translations_indexed_list:
@@ -513,6 +515,7 @@ install_api:
 install_api_no_arguments: 
 	perl -p -w -e 's|alfanous.release|$(RELEASE)|g;s|alfanous.version|$(VERSION)|g;' $(API_PATH)alfanous/resources/information.json.in > $(API_PATH)alfanous/resources/information.json
 	cd   "$(API_PATH)alfanous" ; $(PYTHON_COMMAND) setup.py install
+
 	
 install_desktop:  install_api qt_all  local_desktop_compile
 	perl -pi -w -e 's|version = "\d+\.\d+(\.\d+)*"|version = "$(VERSION)"|g;' $(DESKTOP_INTERFACE_PATH)/setup.py

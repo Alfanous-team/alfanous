@@ -26,6 +26,8 @@ The programming interface, responsible of the output of all results
 import json
 import re
 from pyparsing import ParseException
+import traceback
+
 
 from alfanous.main import QuranicSearchEngine, FuzzyQuranicSearchEngine
 from alfanous.main import TraductionSearchEngine, WordSearchEngine
@@ -1120,7 +1122,8 @@ class Raw():
 
 		#original ayas
 		if aya:
-			aya_res = self.QSE.find_extended( aya_query, "gid" )
+			aya_res, searcher = self.QSE.find_extended( aya_query, "gid" )
+
 			extend_runtime += aya_res.runtime
 			aya_info = {}
 			for ay in aya_res:
@@ -1128,6 +1131,7 @@ class Raw():
 					aya_info[ay["sura_id"]][ay["aya_id"]]= ay
 				else:
 					aya_info[ay["sura_id"]] = { ay["aya_id"]: ay }
+			searcher.close()
 
 		output["runtime"] = round( extend_runtime, 5 )
 		output["interval"] = {
