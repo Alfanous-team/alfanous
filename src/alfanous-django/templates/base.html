@@ -258,8 +258,9 @@
                             </li>
                             <li><a href="#contactpanel" data-toggle="modal"><i class="icon-envelope"></i> {{ _("Contact") }}</a></li>
                             <li><a href="#download" data-toggle="modal"><i class="icon-download-alt"></i> {{ _("Download") }}</a></li>
-                            <li><a href="http://www.alfanous.org/jos2" ><i class="icon-exchange"></i> {{ _("Dev API") }}</a></li>
-                             <li {% if not params %} class="disabled"{% endif %}> <a class="text-warning with_tooltip"  {% if params %}href="/jos2?action=search&unit={{ current.unit }}&{{ current.request }}{% endif %}" data-toggle="tooltip" title="" data-placement="{{ bidi.align_inverse }}" data-original-title="{{ _('Same results in Json format, useful for developers') }}"><i class="icon-exchange"></i> {{ _("JSON Results") }}</a></li>
+
+                             <li><a class="text-warning with_tooltip"  href="/jos2{% if params %}?action=search&unit={{ current.unit }}&{{ current.request }}{% endif %}" data-toggle="tooltip" title="" data-placement="{{ bidi.align_inverse }}" data-original-title="{{ _('Same results in Json format, useful for developers') }}"><i class="icon-exchange"></i> {{ _("Dev API") }}</a></li>
+
 
 
                         <li class="nav-header">{{ _("Contribute:") }}</li>
