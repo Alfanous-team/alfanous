@@ -23,7 +23,6 @@ Maintainers
 * Zineb Laouici `@Zinebl <https://github.com/Zinebl>`_ (Facebook/G+ pages)
 
       We are looking for maintainers for those:
-            - Android app(Java)
             - Desktop application (PyQt)
             - Website (Django)
             - Packaging to Ubuntu/Debian
@@ -132,15 +131,16 @@ Translation
 * Main Web Interface
 
   * Arabic: A~CH, Yasmine Houadjli, Merwan Ali
-  * French: Zineb Pub, Yasmine Houadjli, Abdelkarim Aries, Nassim rehali, Nasreddine Cheniki
+  * French: Zineb Pub, Yasmine Houadjli, Abdelkarim Aries, Nassim rehali, Nasreddine Cheniki, Jean-Marc
   * Indonesian:  Ahmed Jumal , Amy Sidra, Mahyuddin Susanto
   * Japanese: Abdelkarim Aries
   * Spanish: Khireddine Chekraoui 
   * Portuguese: Jonathan Da Fonseca
   * German: Dennis Baudys
-  * Malay: 'abuyop'
-  * Kurdish: 
-  * Malayalam: `'STyM Alfazz' <https://launchpad.net/~alfasst>`
+  * Malay: 'abuyop', 'manwgn'
+  * Kurdish:  Rokar, هيمن درويش
+  * Turkish: Ali Aksın, Muhammet Elbir
+  * Malayalam: 'STyM Alfazz'
 
 * Old Mobile Web interface 
 
