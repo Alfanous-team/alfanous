@@ -5,7 +5,6 @@ Disallow: /json*
 Disallow: /jos2*
 Disallow: /r
 
-
 #Baiduspider
 User-agent: Baiduspider
 User-agent: Baiduspider-video
