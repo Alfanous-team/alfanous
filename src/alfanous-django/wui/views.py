@@ -183,7 +183,13 @@ def one_aya_page(request, is404 = False):
                              "isRandom": isRandom,
                              "simple":simple
                              }
-    return render_to_response('one_aya_page.html',raw_search ) if not api else response
+
+
+    new_response = render_to_response('one_aya_page.html',raw_search ) if not api else response
+    if is404:
+        new_response.status_code = 404
+
+    return new_response
 
 # custom error 404
 def custom_404(request):
