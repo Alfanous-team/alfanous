@@ -21,10 +21,11 @@
     <div class="row">
       {# previous aya #}
       {% if result_content.aya.prev_aya  and result_content.aya.prev_aya.id != 0 %}
-        {% include 'wui/aya/secondary_aya.html' with primary_aya_id=result_id aya=result_content.aya.prev_aya %}
+        <p>{% include 'wui/aya/secondary_aya.html' with primary_aya_id=result_id aya=result_content.aya.prev_aya %}</p>
       {% endif %}
 
       <div id="aya_text_{{ result_id }}" class="row text-center arabic-ayah">
+        <p>
         {% include 'wui/aya/aya.html' with aya_text=result_content.aya.text %}
         -
         <a href='?{% ar_aya_query result_content %}'>
@@ -33,11 +34,12 @@
             {{ result_content.aya.id }}
           </span>
         </a>
+        </p> 
       </div>
 
       {# next aya #}
       {% if result_content.aya.next_aya  and result_content.aya.next_aya.id != 9999 %}
-        {% include 'wui/aya/secondary_aya.html' with primary_aya_id=result_id aya=result_content.aya.next_aya %}
+        <p>{% include 'wui/aya/secondary_aya.html' with primary_aya_id=result_id aya=result_content.aya.next_aya %}</p>
       {% endif %}
     </div>
 
@@ -74,6 +76,7 @@
 {% else %}
   <br/>
 {% endif %}
+{# <details> fixme:need style change #}
 <div id="aya_details_{{ result_id }}_content"
   {% if params.view == "default" %}
      class="aya_details"
@@ -165,5 +168,6 @@
     </div>
   {% endif %}
 </div>
+{# </details> #}
 </fieldset>
 </div>

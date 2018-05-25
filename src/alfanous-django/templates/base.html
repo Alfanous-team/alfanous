@@ -57,16 +57,17 @@
 
 	<link rel="icon" href="/static/shared/img/icon/icon_32_a.png" sizes="32x32">
 	<link rel="shortcut icon" href="/static/shared/img/icon/icon_16_a.png">
-	<link rel="alternate" href="http://www.alfanous.org/{{ current.unit }}/?{{ current.request }}" hreflang="x-default" />
+
+	<link rel="canonical" href="http://www.alfanous.org/{{ LANGUAGE_CODE }}/{{ current.unit }}/{% if params.query %}?query={{ params.query }}{% endif %}" />
+	<link rel="alternate" href="http://www.alfanous.org/{{ current.unit }}/{% if current.request %}?{{ current.request }}{% endif %}" hreflang="x-default" />
     {% for lang_code, lang_name in LANGUAGES %}
                                 {% language lang_code %}
-
-    <link rel="alternate" href="http://www.alfanous.org{% url 'wui.views.results' current.unit  %}?{{ current.request }}" hreflang="{{ lang_code }}" />
+	<link rel="alternate" href="http://www.alfanous.org{% url 'wui.views.results' current.unit  %}{% if current.request %}?{{ current.request }}{% endif %}" hreflang="{{ lang_code }}" />
                                 {% endlanguage %}
-   {% endfor %}
-
+    {% endfor %}
+    {# todo:  restructure base.html with generic blocks that allows extending any part like header #}
+    {% block pagination_rel_block %}{% endblock %}
 	<link rel="search" type="application/opensearchdescription+xml" title="Alfanous" href="/static/alfanous-opensearch.xml"/>
-
 
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<!-- Bootstrap -->
@@ -135,6 +136,7 @@
 
 {% endif %}
     <!-- Fixed navbar -->
+    <nav>
     <div class='navbar navbar-inverse navbar-fixed-top'>
         <div class="navbar-inner ">
             <div class="container">
@@ -213,6 +215,7 @@
             </div>
         </div>
     </div>
+    </nav>
     <!-- End fixed navbar -->
 
     <div class="container content">
@@ -239,6 +242,7 @@
 
 		<div class="row">
             <!-- left navbar -->
+            <nav>
             <div class="span2  hidden-print">
                 <div id="sidebar" class="well well-small sidebar-nav hidden-phone affix">
                     <ul class="nav nav-list">
@@ -268,17 +272,20 @@
                     </ul>
                 </div><!--/.well -->
             </div><!--/span-->
+            </nav>
             <!-- end left navbar -->
-
+            <main>
             <div class="row offset2 span9 text-center">
                 <div class="span7 offset1">
+                  <h1>
                     <a class="logo" href="{% url 'wui.views.results' current.unit %}">
                     {% if LANGUAGE_CODE == "ar" or  LANGUAGE_CODE == "fr" or LANGUAGE_CODE == "id" %}
-                  	  <img src="/static/shared/img/logo_{{ current.unit }}_{{ LANGUAGE_CODE }}.png" alt="logo">
-                  	 {% else %}
-                  	 	 <img src="/static/shared/img/logo_{{ current.unit }}_en.png" alt="logo">
-                  	  {% endif %}
+                       <img src="/static/shared/img/logo_{{ current.unit }}_{{ LANGUAGE_CODE }}.png" alt="Alfanous logo">
+                    {% else %}
+                       <img src="/static/shared/img/logo_{{ current.unit }}_en.png" alt="Alfanous logo">
+                    {% endif %}
                     </a>
+                  </h1>
                         <form class="form-search" id="form" name="form" method="GET" action=".">
                             <div class="input-append bootstro text-right"
                                 data-bootstro-title="{{ _('Alfanous is smart!') }}"
@@ -403,7 +410,7 @@
 
 
 		{% endif %}
-
+	</main>
     </div>
 </div>
 
@@ -421,7 +428,7 @@
 		<br/>
 
 
-
+	<footer>
 	<div id="footer" class="navbar navbar-inverse  text-center">
 	<div class="push"><!--//--></div>
             <div class="container narrow row-fluid ">
@@ -448,6 +455,7 @@
             </div>
 
     </div>
+    </footer>
 
     <div id="popoverInner" class="hidden">
         <p class="popoverInnerText">This website is powered by the<a href='http://json.org/'>JSON</a> output system 2 of <a href="http://www.alfanous.org">Alfanous</a> project, we call it <i><b>Alfanous JOS2</b></i>. This feature is in Alpha test and the Json schema may be it's not stable . We are waiting for real feedback and suggestions to improve its efficacy,quality and stability. To contact the author ,please send a direct email to <b> assem[dot]ch[at]gmail[dot]com</b> or to the mailing list <b>alfanous [at] googlegroups [dot] com</b>

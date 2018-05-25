@@ -3,21 +3,28 @@
 {% load custom_filters %}
 {% load query %}
 
+{% block pagination_rel_block %}
+  {% if results.search.interval.nb_pages > 1 %}
+    {% include 'wui/pagination_rel.html' with page=results.search.interval.page nb_pages=results.search.interval.nb_pages %}
+  {% endif %}
+{% endblock %}
+
 {% block options %}
 <!-- Multiple Checkboxes -->
 <div class="control-group">
   <div class="controls">
     <label class="checkbox inline">
-    	<input type="checkbox"  name="fuzzy" value="True" {{ params.fuzzy|yesno:"checked," }} /> 
-		{{ _("Fuzzy search") }}
+      {# todo: replace fuzzy search with exact search (inversed logic),needs translation update #}
+      <input type="checkbox"  name="fuzzy" value="True" {% if params.query  %}{{ params.fuzzy|yesno:"checked," }}{% else %}checked="yes"{% endif %} />
+      {{ _("Fuzzy search") }}
     </label>
     <label class="checkbox  inline">
-		<input type="checkbox" name="vocalized" value="False" {{ params.vocalized|yesno:"checked," }} /> 
-		{{ _("Unvocalized text") }}
+      <input type="checkbox" name="vocalized" value="False" {{ params.vocalized|yesno:"checked," }} /> 
+      {{ _("Unvocalized text") }}
     </label>
     <label class="checkbox inline">
-		<input type="checkbox" name="script" value="uthmani" {{ params.script|yesno:"checked," }} /> 
-		{{ _("Uthmani script") }}
+      <input type="checkbox" name="script" value="uthmani" {{ params.script|yesno:"checked," }} /> 
+      {{ _("Uthmani script") }}
     </label>
   </div>
 </div>
