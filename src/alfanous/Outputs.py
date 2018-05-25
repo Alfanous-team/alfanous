@@ -453,7 +453,7 @@ class Raw():
 		except ParseException:
 			output = { "error": {"code":3, "msg":self.ERRORS[3] }}
 		except Exception as E:
-			output = { "error": {"code":-1, "msg":self.ERRORS[-1] + "\n" + str(E) + "\n\n please submit that as a bug here: feedback.alfanous.org!" }}
+			output = { "error": {"code":-1, "msg":self.ERRORS[-1] + "\n" + str(E) + "\n\n please submit that as a bug here: github.com/Alfanous-team/alfanous!" }}
 		return output
 
 	def _search_aya( self, flags ):
