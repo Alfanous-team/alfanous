@@ -26,8 +26,8 @@
                           "{{ result_content.identifier.sura_name }} {{ result_content.aya.id }}"
                         {% endif %},
             "description":"{{ result_content.aya.text }}",
-            "url":"{% aya_query result_content %}",
-            "sameAs": "{% ar_aya_query result_content %}"
+            "url":"http://www.alfanous.org/en/aya/{% aya_query result_content %}",
+            "sameAs": "http://www.alfanous.org/en/aya/{% ar_aya_query result_content %}"
             }
           }{% if not forloop.last %},{% endif %}
            {% endfor %}
