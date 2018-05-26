@@ -809,7 +809,7 @@ class QUI( Ui_MainWindow ):
 
     def send_feedback( self , state ):
         """ Open feedback url in an external browser """
-        #QtGui.QDesktopServices.openUrl() ## How to specify the URL , feedback url github.com/Alfanous-team/alfanous/issues/
+        #QtGui.QDesktopServices.openUrl() ## How to specify the URL , feedback.alfanous.org
 
     def about( self , state ):
         """ Show about-dialog """
@@ -824,16 +824,16 @@ class QUI( Ui_MainWindow ):
         self.o_results.setText( html )
     
     def share_an_idea(self):
-        webbrowser.open('https://github.com/Alfanous-team/alfanous/issues/')
+        webbrowser.open('http://feedback.alfanous.org/response/add/idea/?text=[DESKTOP]')
     
     def ask_a_question(self):
-        webbrowser.open('https://github.com/Alfanous-team/alfanous/issues/')
+        webbrowser.open('http://feedback.alfanous.org/response/add/question/?text=[DESKTOP]')
     
     def say_thanks(self):
-        webbrowser.open('http://groups.google.com/group/alfanous/')
+        webbrowser.open('http://feedback.alfanous.org/response/add/thanks/?text=[DESKTOP]')
     
     def report_a_problem(self):
-        webbrowser.open('https://github.com/Alfanous-team/alfanous/issues/')
+        webbrowser.open('http://feedback.alfanous.org/response/add/problem/?text=[DESKTOP]')
     
     def contribute_translate(self):
         webbrowser.open('https://www.transifex.com/projects/p/alfanous/')
