@@ -55,7 +55,7 @@ LANGUAGES = (
   #( 'ur', "Urdu" ),
   ( 'ms', "Malay" ),
   ( 'ml', "Malayalam" ),
-  #( 'tr', "Turkish" ),
+  ( 'tr', "Turkish" ),
   ( 'es', "Spanish" ),
   ( 'pt', "Portuguese"),
   #( 'sv', "swedish" )
