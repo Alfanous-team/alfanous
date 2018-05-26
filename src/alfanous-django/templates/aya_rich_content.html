@@ -5,7 +5,7 @@
         {
          "@context": "http://schema.org",
          "@type": "BreadcrumbList",
-         "numberOfItems": {{ results.search.interval.total }},
+         {#  "numberOfItems": {{ results.search.interval.total }}, #}
          "itemListElement":
          [
            {% for result_id, result_content in results.search.ayas.items %}
@@ -14,7 +14,7 @@
            "position": {{ result_id }},
            "item":
            {
-            "@id": "aya-{{ result_content.identifier.gid }}",
+            "@id": "?query=gid:{{ result_content.identifier.gid }}",
             "name": {% if bidi.direction == "rtl" %}
                           "{{ result_content.identifier.sura_arabic_name }} {{ result_content.aya.id }}"
                         {% else %}
@@ -26,8 +26,8 @@
                           "{{ result_content.identifier.sura_name }} {{ result_content.aya.id }}"
                         {% endif %},
             "description":"{{ result_content.aya.text }}",
-            "url":"http://www.alfanous.org/en/aya/{% aya_query result_content %}",
-            "sameAs": "http://www.alfanous.org/en/aya/{% ar_aya_query result_content %}"
+            "url":"{% aya_query result_content %}",
+            "sameAs": "{% ar_aya_query result_content %}"
             }
           }{% if not forloop.last %},{% endif %}
            {% endfor %}
