@@ -41,15 +41,19 @@ class Configs:
 
     @staticmethod
     def recitations( path = Paths.RECITATIONS_LIST_FILE ):
-        myfile = open( path )
+        try:
+            myfile = open( path )
+        except IOError:
+            return {}
         return json.loads( myfile.read() ) if myfile else {}
-        myfile.close()
 
     @staticmethod
     def translations( path = Paths.TRANSLATIONS_LIST_FILE ):
-        myfile = open( path )
+        try:
+            myfile = open(path)
+        except IOError:
+            return {}
         return json.loads( myfile.read() ) if myfile else {}
-        myfile.close()
 
 
     @staticmethod
