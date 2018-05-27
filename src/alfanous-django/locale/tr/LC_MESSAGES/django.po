@@ -1221,7 +1221,7 @@ msgid ""
 msgstr ""
 "Projeye Bağış / Destek: <em> Bağışlar / Finansman adına olası yollar bulmak "
 "için sıkışmış durumdayız. Herhangi bir yardım memnuniyetle karşılanacaktır. "
-"</ em>"
+"</em>"
 
 #: public/templates/popups_content.html:266 templates/popups_content.html:266
 msgid "Windows"

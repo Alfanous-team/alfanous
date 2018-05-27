@@ -196,7 +196,7 @@ update_pre_build:  construct_database update_translations_indexed_list update_dy
 
 # Construct database from dump file
 construct_database:
-	cd $(DB_PATH); rm  main.db ; cat main.sql | sqlite3 main.db
+	cd $(DB_PATH); rm main.db || true ; cat main.sql | sqlite3 main.db
 	perl -p -w -e 's|alfanous.release|$(RELEASE)|g;s|alfanous.version|$(VERSION)|g;' $(API_PATH)alfanous/resources/information.json.in > $(API_PATH)alfanous/resources/information.json
 
 # update list of indexed translations automatically using Importer

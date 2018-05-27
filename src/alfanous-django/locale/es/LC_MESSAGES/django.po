@@ -1017,7 +1017,7 @@ msgid ""
 "ways for donations/Funding. Any help is appreciated</em>"
 msgstr ""
 "Donación / Apoyo al proyecto: <em> Estamos atrapados en busca de posibles "
-"formas de donación / financiación. Se agradece cualquier ayuda </ em>"
+"formas de donación / financiación. Se agradece cualquier ayuda </em>"
 
 #: templates/popups_content.html:266
 msgid "Windows"
