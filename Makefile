@@ -186,22 +186,22 @@ download_tanzil:
 # 1. list of indexed translations, see update_translations_indexed_list
 # 2. list of offline recitations, see update_recitations_offline_list
 # 3. list of online recitations, see update_recitations_online_list  
-update_post_build:  update_dynamic_resources_postbuild   update_translations_indexed_list update_recitations_offline_list #update_recitations_online_list   
+update_post_build:  update_dynamic_resources_postbuild update_recitations_offline_list #update_recitations_online_list   
 
 ##  update resources that must be updated before indexing phase, which are:
 # 1. Quranic Arabic Corpus, see update_quranic_corpus
 # 2. Linguistic resources on the form of python dictionarries to accelerate the loading , see update_dynamic_resources
 
-update_pre_build:  construct_database update_dynamic_resources_prebuild   #update_quranic_corpus
+update_pre_build:  construct_database update_translations_indexed_list update_dynamic_resources_prebuild   #update_quranic_corpus
 
 # Construct database from dump file
 construct_database:
-	cd $(DB_PATH); rm  main.db ; cat main.sql | sqlite3 main.db
+	cd $(DB_PATH); rm main.db || true ; cat main.sql | sqlite3 main.db
 	perl -p -w -e 's|alfanous.release|$(RELEASE)|g;s|alfanous.version|$(VERSION)|g;' $(API_PATH)alfanous/resources/information.json.in > $(API_PATH)alfanous/resources/information.json
-
 
 # update list of indexed translations automatically using Importer
 update_translations_indexed_list:
+	echo "{}" > $(CONFIGS_PATH)translations.json
 	export PYTHONPATH=$(API_PATH) ;	$(PYTHON_COMMAND) $(QIMPORT) -u translations $(INDEX_PATH)extend/  $(CONFIGS_PATH)translations.json
 
 # update quranic corpus in the database automatically using Importer

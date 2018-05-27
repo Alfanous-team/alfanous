@@ -67,7 +67,7 @@
     {% endfor %}
     {# todo:  restructure base.html with generic blocks that allows extending any part like header #}
     {% block pagination_rel_block %}{% endblock %}
-	<link rel="search" type="application/opensearchdescription+xml" title="Alfanous" href="/static/alfanous-opensearch.xml"/>
+	<link rel="search" type="application/opensearchdescription+xml" title="Alfanous" href="/opensearch.xml"/>
 
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<!-- Bootstrap -->
@@ -121,6 +121,11 @@
 
     </style>
 
+    {% include "rich_content/organization.html" %}
+    {% include "rich_content/products.html" %}
+    {% if current.unit == "aya" and results.search.interval.total %}
+      {% include "rich_content/aya_list.html" %}
+    {% endif  %}
 
 
 </head>
@@ -264,7 +269,7 @@
 
 
                         <li class="nav-header">{{ _("Contribute:") }}</li>
-                             <li><a  href="https://github.com/Alfanous-team/alfanous/issues"><i class="icon-comment"></i> {{ _("Feedback") }}</a></li>
+                             <li><a  href="https://github.com/Alfanous-team/alfanous/issues/"><i class="icon-comment"></i> {{ _("Feedback") }}</a></li>
                             <li><a href="#translatepanel" data-toggle="modal"><i class="icon-globe"></i> {{ _("Translate") }}</a></li>
                              <li><a href="https://github.com/Alfanous-team/alfanous/blob/master/FAQ.rst#how-to-contribute-by-coding" ><i class="icon-code"></i> {{ _("Code") }}</a></li>
                             <li><a href="#otherMeans" data-toggle="modal"><i class="icon-plus"></i> {{ _("Other means") }}</a></li>
@@ -373,7 +378,9 @@
                             {% endif %}
                         </form>
                 </div><!--/span4-->
+
             </div><!--/row-->
+            </main>
         </div>
         <div class="row-fluid">
         	{% block results %}  {% endblock results %}
@@ -411,9 +418,8 @@
 
 
 		{% endif %}
-	</main>
+
     </div>
-</div>
 
     {% include "popups_content.html" %}
 
@@ -447,7 +453,7 @@
                     </a>
                     </span>
                     <span class="label label-success hidden-phone hidden-print">
-                    <a class="footer-link-searchbar" onclick="window.external.AddSearchProvider('http://www.alfanous.org/static/alfanous-opensearch.xml');return false;" href="#">
+                    <a class="footer-link-searchbar" onclick="window.external.AddSearchProvider('http://www.alfanous.org/opensearch.xml');return false;" href="#">
                         <i class="icon-plus-sign icon-white"></i>
                         {{ _("Add to your search bar!") }}
                     </a>
@@ -501,17 +507,6 @@
 	</script>
 	<!-- end -->
 
-        <!--  flattr donation -->
-    <script type="text/javascript">
-		/* <![CDATA[ */
-	    (function() {
-	        var s = document.createElement('script'), t = document.getElementsByTagName('script')[0];
-	        s.type = 'text/javascript';
-	        s.async = true;
-	        s.src = 'http://api.flattr.com/js/0.6/load.js?mode=auto';
-	        t.parentNode.insertBefore(s, t);
-	    })();
-		/* ]]> */
-	</script>
+
 </body>
 </html>

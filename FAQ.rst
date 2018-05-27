@@ -54,7 +54,7 @@ You can help us by:
 - Fixing `bugs <https://github.com/Alfanous-team/alfanous/issues?labels=bug&milestone=&page=1&state=open>`_ , Coding `new features <https://github.com/Alfanous-team/alfanous/issues/milestones>`_ or Developing `new interfaces <https://github.com/Alfanous-team/alfanous/issues?milestone=8&page=1&state=open>`_ , See: `How to Contribute?`_ .
 - Designing  Icons, Logoes , Banners.
 - Packaging the project for different systems: Windows, Linux distributions, MacOs.
-- Donating/Supporting to the project: *We're stuck looking for possible ways for donations/Funding. Any help is appreciated!*
+- Donation to cover the project costs
 
 For more discussion, you can contact us via the mailing list : `alfanous@googlegroups.com <http://groups.google.com/group/alfanous/>`_
 
