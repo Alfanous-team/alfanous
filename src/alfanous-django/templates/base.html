@@ -67,7 +67,7 @@
     {% endfor %}
     {# todo:  restructure base.html with generic blocks that allows extending any part like header #}
     {% block pagination_rel_block %}{% endblock %}
-	<link rel="search" type="application/opensearchdescription+xml" title="Alfanous" href="/static/alfanous-opensearch.xml"/>
+	<link rel="search" type="application/opensearchdescription+xml" title="Alfanous" href="/opensearch.xml"/>
 
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<!-- Bootstrap -->
@@ -447,7 +447,7 @@
                     </a>
                     </span>
                     <span class="label label-success hidden-phone hidden-print">
-                    <a class="footer-link-searchbar" onclick="window.external.AddSearchProvider('http://www.alfanous.org/static/alfanous-opensearch.xml');return false;" href="#">
+                    <a class="footer-link-searchbar" onclick="window.external.AddSearchProvider('http://www.alfanous.org/opensearch.xml');return false;" href="#">
                         <i class="icon-plus-sign icon-white"></i>
                         {{ _("Add to your search bar!") }}
                     </a>
