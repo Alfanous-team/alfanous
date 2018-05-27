@@ -1,6 +1,6 @@
 from django.conf.urls import patterns, include, url
 from django.conf.urls.i18n import i18n_patterns
-from django.views.generic import RedirectView
+from django.views.generic import RedirectView,TemplateView
 from django.conf import settings
 
 
@@ -9,6 +9,10 @@ from django.conf import settings
 # admin.autodiscover()
 
 urlpatterns = patterns( '',
+  url( r'^robots.txt$', TemplateView.as_view(
+    template_name='robots.txt', content_type='text/plain')),
+  url( r'^opensearch.xml$', TemplateView.as_view(
+    template_name='opensearch.xml', content_type='application/opensearchdescription+xml')),
   url( r'^jos2', 'wui.views.jos2' ),
   url(r'^r', 'wui.views.one_aya_page'),
   url(r'^$', 'wui.views.results'),

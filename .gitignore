@@ -69,19 +69,13 @@ src/alfanous-tests/*.csv
 resources/configs/*.js
 WORD_SPELL_LOCK
 localization/pot_files/*.00
-*.debhelper
-*.substvars
-debian/tmp/
-debian/alfanous/
-debian/files
-debian/python-alfanous/
 *~
 *.swp
 
 # Debug, Release and build directories #
 ###########################################
-Debug/*
-Release/*
+Debug/
+Release/
 dist
 build
 eggs
@@ -96,8 +90,15 @@ lib64
 _build/
 rpmbuild
 %{buildroot}
-.doctrees/*
-
+.doctrees/
+*.debhelper
+*.substvars
+debian/tmp/
+debian/alfanous/
+debian/files
+debian/python-alfanous/
+translations.json
+information.json
 
 # Packages #
 ############
@@ -136,4 +137,3 @@ Icon?
 *.db
 desktop.ini
 src/alfanous-django/venv/
-

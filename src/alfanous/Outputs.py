@@ -326,6 +326,7 @@ class Raw():
 		ident = flags["ident"] if flags.has_key( "ident" ) else self._defaults["flags"]["ident"]
 		platform = flags["platform"] if flags.has_key( "platform" ) else self._defaults["flags"]["platform"]
 		domain = flags["domain"] if flags.has_key( "domain" ) else self._defaults["flags"]["domain"]
+                query = flags["query"] if flags.has_key( "query" ) else self._defaults["flags"]["query"]
 
 		# gather statistics, enable it if you need use statistics
 		# disable it if you prefer performance
@@ -334,7 +335,7 @@ class Raw():
 		# init the error message with Succes
 		output = self._check( 0, flags )
 		if action == "search":
-			if SCAN_SUPERJOKERS( flags["query"] ): #Quick fix!!
+			if SCAN_SUPERJOKERS( query ): #Quick fix!!
 				output = self._check( 2, flags )
 			else:
 				output.update( self._search( flags, unit ) )
@@ -455,7 +456,7 @@ class Raw():
 		except ParseException:
 			output = { "error": {"code":3, "msg":self.ERRORS[3] }}
 		except Exception as E:
-			output = { "error": {"code":-1, "msg":self.ERRORS[-1] + "\n" + str(E) + "\n\n please submit that as a bug here: feedback.alfanous.org!" }}
+			output = { "error": {"code":-1, "msg":self.ERRORS[-1] + "\n" + str(E) + "\n\n please submit that as a bug here: github.com/Alfanous-team/alfanous!" }}
 		return output
 
 	def _search_aya( self, flags ):
