@@ -58,7 +58,7 @@ LANGUAGES = (
   ( 'tr', "Turkish" ),
   ( 'es', "Spanish" ),
   ( 'pt', "Portuguese"),
-  #( 'sv', "swedish" )
+  #( 'sv', "Swedish" )
 )
 
 # These are languages not supported by Django core. We have to provide
@@ -250,8 +250,8 @@ AVAILABLE_UNITS = SortedDict([
 ################################
 ## Keep this part at the end of this file
 try:
-  # load production settings if there is any
-  from settings_prod import *
+    # load production settings if there is any
+    from settings_prod import *
 except ImportError:
-  # There are no prod settings
-  pass
+    # There are no prod settings
+    pass

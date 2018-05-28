@@ -2,7 +2,7 @@ User-agent: *
 Crawl-delay: 10
 Disallow: /cgi-bin/*
 Disallow: /json*
-Disallow: /jos2*
+Disallow: /jos2/*
 Disallow: /r
 
 #Baiduspider
