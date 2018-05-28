@@ -9,17 +9,17 @@ from django.conf import settings
 # admin.autodiscover()
 
 urlpatterns = patterns( '',
-  url( r'^robots.txt$', TemplateView.as_view(
-    template_name='robots.txt', content_type='text/plain')),
-  url( r'^sitemap.xml$', TemplateView.as_view(
-    template_name='sitemap.xml', content_type='application/xml')),
-  url( r'^opensearch.xml$', TemplateView.as_view(
-    template_name='opensearch.xml', content_type='application/opensearchdescription+xml')),
-  url( r'^jos2', 'wui.views.jos2' ),
-  url(r'^r', 'wui.views.one_aya_page'),
-  url(r'^$', 'wui.views.results'),
-  # url( r'^admin/', include( admin.site.urls ) ),
-)
+                        url( r'^robots.txt$', TemplateView.as_view(
+    template_name='protocols/robots.txt', content_type='text/plain')),
+                        url( r'^opensearch.xml$', TemplateView.as_view(
+    template_name='protocols/opensearch.xml', content_type='application/opensearchdescription+xml')),
+                        url(r'^sitemap.xml$', TemplateView.as_view(
+     template_name='protocols/sitemap.xml', content_type='application/xml')),
+                        url( r'^jos2', 'wui.views.jos2' ),
+                        url(r'^r', 'wui.views.one_aya_page'),
+                        url(r'^$', 'wui.views.results'),
+                        # url( r'^admin/', include( admin.site.urls ) ),
+                        )
 
 # These URLs accept the language prefix.
 urlpatterns += i18n_patterns('',

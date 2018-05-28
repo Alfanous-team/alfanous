@@ -53,6 +53,11 @@
     hreflang="pt"
     href="http://www.alfanous.org/pt/aya/"
     />
+  <xhtml:link
+    rel="alternate"
+    hreflang="tr"
+    href="http://www.alfanous.org/tr/aya/"
+    />
 </url>
 <url>
   <loc>http://www.alfanous.org/en/translation/</loc>
@@ -101,9 +106,15 @@
     hreflang="pt"
     href="http://www.alfanous.org/pt/translation/"
     />
+    <xhtml:link
+    rel="alternate"
+    hreflang="tr"
+    href="http://www.alfanous.org/tr/translation/"
+    />
 </url>
 <url>
-  <loc>http://www.alfanous.org/en/word/
+  <loc> http://www.alfanous.org/en/word/</loc>
+
   <xhtml:link
     rel="alternate"
     hreflang="ar"
@@ -148,6 +159,11 @@
     rel="alternate"
     hreflang="pt"
     href="http://www.alfanous.org/pt/word/"
+    />
+   <xhtml:link
+    rel="alternate"
+    hreflang="tr"
+    href="http://www.alfanous.org/tr/word/"
     />
 </url>
 <url>
