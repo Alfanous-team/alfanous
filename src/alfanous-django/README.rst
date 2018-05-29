@@ -4,8 +4,8 @@ Web User Interface [Django]
 
 This is the  source code for alfanous.org, it is a django app that use Alfanous API. 
 
-how to contribute on it?
-    contact mailing list alfanous [at] googlegroups [dot] [com]
+Project home: https://github.com/Alfanous-team/alfanous/
+
 
 ---------- 
 Highlights
@@ -29,10 +29,10 @@ Test
 #. Install the requirements: `Django <https://www.djangoproject.com/download/>`_, `Alfanous API <https://github.com/Alfanous-team/alfanous/tree/master/src/alfanous>`_ .
 #. Use the manage.py script to synchronize the database and run the local server:
     
-   .. code :: sh
+    .. code :: sh
    
-       $ python manage.py syncdb
-       $ python manage.py runserver
+        $ python manage.py syncdb
+        $ python manage.py runserver
 
 
 
