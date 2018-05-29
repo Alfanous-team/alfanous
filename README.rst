@@ -1,4 +1,3 @@
-    **note** This project needs more contributors and/or funding. If you like it, see `how you can help? <https://github.com/Alfanous-team/alfanous/blob/master/FAQ.rst#how-you-can-help>`_.
 
 * .. image:: https://badges.gitter.im/Alfanous-team/alfanous.svg
         :alt: Join the chat at https://gitter.im/Alfanous-team/alfanous
@@ -7,7 +6,6 @@
   .. image:: https://badge.waffle.io/Alfanous-team/alfanous.png?label=ready&title=Ready 
         :target: https://waffle.io/Alfanous-team/alfanous
         :alt: 'Stories in Ready'
-
 
 
 * .. image:: https://img.shields.io/pypi/v/alfanous.svg
@@ -19,8 +17,6 @@
   .. image:: https://landscape.io/github/Alfanous-team/alfanous/master/landscape.svg
         :target: https://landscape.io/github/Alfanous-team/alfanous
 
-* .. image:: https://img.shields.io/sourceforge/dm/alfanous.svg
-        :target: https://sourceforge.net/projects/alfanous
   
 
 
