@@ -11,18 +11,20 @@ ERROR_MESSAGE = (
 
 
 def my_get_language_info(lang_code):
-  try:
-    return translation.get_language_info(lang_code)
-  except KeyError:
-    if lang_code in settings.EXTRA_LANGUAGES:
-      return settings.EXTRA_LANGUAGES[lang_code]
-    else:
-      raise KeyError(ERROR_MESSAGE % lang_code)
+    try:
+        return translation.get_language_info(lang_code)
+    except KeyError:
+        if lang_code in settings.EXTRA_LANGUAGES:
+            return settings.EXTRA_LANGUAGES[lang_code]
+        else:
+            raise KeyError(ERROR_MESSAGE % lang_code)
+
 
 @register.filter
 def my_language_name(lang_code):
-  return my_get_language_info(lang_code)['name']
+    return my_get_language_info(lang_code)['name']
+
 
 @register.filter
 def my_language_name_local(lang_code):
-  return my_get_language_info(lang_code)['name_local']
+    return my_get_language_info(lang_code)['name_local']

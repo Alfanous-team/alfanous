@@ -3,12 +3,6 @@
 {% load custom_filters %}
 {% load query %}
 
-{% block pagination_rel_block %}
-  {% if results.search.interval.nb_pages > 1 %}
-    {% include 'wui/pagination_rel.html' with page=results.search.interval.page nb_pages=results.search.interval.nb_pages %}
-  {% endif %}
-{% endblock %}
-
 {% block options %}
 {% endblock %}
 

@@ -40,11 +40,11 @@ API Modules, Files (alfanous)
 :Misc.py: a pre-implementing test module.
 :Support.*: Some third-party libraries.
 :configs.*: Configuration files in a Json format.
-:resources.*: Quranic & Lingustic data in a Json format to replace the binary sqlite database.
+:resources.*: Quranic & Linguistic data in a Json format to replace the binary sqlite database.
 :dynamic_resources.*: Compiled linguistic data to python modules to gain speed.
 :indexes.*:  All needed indexes on Whoosh indexes format.
 :setup.py: the script of installation & packaging (setuptools)
-:ez_setup.py: an alternatif for setuptools library.
+:ez_setup.py: an alternative for setuptools library.
 
 
 
