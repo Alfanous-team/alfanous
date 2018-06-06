@@ -15,7 +15,7 @@ Terms of use
 *  We highly recommend to describe clearly somewhere in your application the relation to the whole Alfanous project, such as an about button.
 *  Art works you may need are available here_, the Art is licenced with AGPL license.
 
-.. _here: http://www.alfanous.org/art/
+.. _here: http://art.alfanous.org/
 
 -----------
 Limitations
