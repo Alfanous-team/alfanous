@@ -33,7 +33,7 @@ Examples
 --------
 *  `http://www.alfanous.org/jos2?action=search&unit=aya&query=الحمد&highlight=bbcode&sortedby=tanzil&page=2&traduction=1&fuzzy=True`
 *  http://www.alfanous.org/jos2?action=show&query=recitations
-*  http://www.alfanous.org/jos2?action=show&queryfields
+*  http://www.alfanous.org/jos2?action=show&query=fields
 *  http://www.alfanous.org/jos2?action=show&query=All
 *  http://www.alfanous.org/jos2?action=show&query=translations 
 *  http://www.alfanous.org/jos2?action=show&query=errors
