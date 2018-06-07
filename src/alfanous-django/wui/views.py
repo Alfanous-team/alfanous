@@ -155,7 +155,11 @@ def results(request, unit="aya"):
     "info": raw_show
   }
 
-  return render_to_response(mytemplate, context)
+  response = render_to_response(mytemplate, context)
+  if results["error"]["status"] != 0 or not results["search"]["interval"]["total"]:
+    response.status_code = 204
+
+  return response
 
 
 # one aya page
