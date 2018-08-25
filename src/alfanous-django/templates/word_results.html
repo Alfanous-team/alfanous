@@ -53,8 +53,7 @@
 					    {% with result_content.identifier.gid|stringformat:"s" as gid %}
 						    {% with bidi.fields.gid|add:':'|add:gid as new_query %}
 							    <a class="muted" href='?{% custom_query new_query 1 False  %}'>
-							      <span class="hidden-phone"> {{ _("Result n°") }}</span>
-							       <b> <span class="visible-phone">#</span>{{ result_id }} </b>
+							       <b>#{{ result_id }} </b>
 							     </a>
 			                 {% endwith %}
 		                 {% endwith %}

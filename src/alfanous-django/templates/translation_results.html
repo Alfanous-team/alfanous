@@ -42,8 +42,7 @@
               <legend class="text-{{ bidi.align }}">
                 {# TODO: use wui/header.html #}
                 <span class="muted">
-                  <span class="hidden-phone">{{ _("Result n°") }} </span>
-                  <b> <span class="visible-phone">#</span>{{ result_id }} </b>
+                  <b>#{{ result_id }}</b>
                   {% if result_content.aya %}
                     <h3>
                     <a class=""  href='?{% simple_query ' AND ' gid=result_content.identifier.gid id=result_content.identifier.id %}'>

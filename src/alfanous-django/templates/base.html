@@ -215,6 +215,33 @@
 								</li>
                             </ul>
                         </li>
+                         <li class="dropdown">
+							<a href="#" class="dropdown-toggle" data-toggle="dropdown">{{ _("Support") }}<b class="caret"></b></a>
+                            <ul class="dropdown-menu">
+								<li>
+                            <a id="QuickTour" href="#"><i class="icon-lightbulb"></i> {{ _("Quick Tour!") }}</a>
+{#                            <a href="#faqpanel" data-toggle="modal"><i class="icon-question-sign"></i> {{ _("F.A.Q.") }}</a>#}
+                            <a href="#help" data-toggle="modal"><i class="icon-exclamation-sign"></i> {{ _("Help") }}</a>
+
+{#                           <a href="#contactpanel" data-toggle="modal"><i class="icon-envelope"></i> {{ _("Contact") }}</a>#}
+								</li>
+                              <li class="divider"></li>
+                            <li class="nav-header">{{ _("Contribute:") }}</li>
+
+                             <li >
+							<a  href="https://github.com/Alfanous-team/alfanous/issues/"><i class="icon-comment"></i> {{ _("Feedback") }}</a>
+                            <a href="#translatepanel" data-toggle="modal"><i class="icon-globe"></i> {{ _("Translate") }}</a>
+                             <a href="https://github.com/Alfanous-team/alfanous/blob/master/FAQ.rst#how-to-contribute-by-coding" ><i class="icon-code"></i> {{ _("Code") }}</a>
+                           <a href="#otherMeans" data-toggle="modal"><i class="icon-plus"></i> {{ _("Other means") }}</a>
+
+
+                        </li>
+
+                            </ul>
+                        </li>
+
+
+
                     </ul>
                 </div><!--/.nav-collapse -->
             </div>
@@ -246,43 +273,9 @@
 
 
 		<div class="row">
-            <!-- left navbar -->
-            <nav>
-            <div class="span2  hidden-print">
-                <div id="sidebar" class="well well-small sidebar-nav hidden-phone affix">
-                    <ul class="nav nav-list">
-                        <li class="nav-header">{{ _("Information:") }}</li>
-                            <li><a id="QuickTour" href="#"><i class="icon-lightbulb"></i> {{ _("Quick Tour!") }}</a></li>
-                            <li><a href="#faqpanel" data-toggle="modal"><i class="icon-question-sign"></i> {{ _("F.A.Q.") }}</a></li>
-                            <li class="bootstro" data-bootstro-title="{{ _('Sample search here') }}"
-                                data-bootstro-content="{{ _('Here you can learn by example about the full power of Alfanous search engine and what you can do with it.') }}"
-                                data-bootstro-width="400px"
-                                data-bootstro-placement='{{ bidi.align_inverse }}'
-                                data-bootstro-step='4'>
-                            	<a href="#help" data-toggle="modal"><i class="icon-exclamation-sign"></i> {{ _("Help") }}</a>
-                            </li>
-                            <li><a href="#contactpanel" data-toggle="modal"><i class="icon-envelope"></i> {{ _("Contact") }}</a></li>
-                            <li><a href="#download" data-toggle="modal"><i class="icon-download-alt"></i> {{ _("Download") }}</a></li>
-
-                             <li><a class="text-warning with_tooltip"  href="/jos2{% if params %}?action=search&unit={{ current.unit }}&{{ current.request }}{% endif %}" data-toggle="tooltip" title="" data-placement="{{ bidi.align_inverse }}" data-original-title="{{ _('Same results in Json format, useful for developers') }}"><i class="icon-exchange"></i> {{ _("Dev API") }}</a></li>
-
-
-
-                        <li class="nav-header">{{ _("Contribute:") }}</li>
-                             <li><a  href="https://github.com/Alfanous-team/alfanous/issues/"><i class="icon-comment"></i> {{ _("Feedback") }}</a></li>
-                            <li><a href="#translatepanel" data-toggle="modal"><i class="icon-globe"></i> {{ _("Translate") }}</a></li>
-                             <li><a href="https://github.com/Alfanous-team/alfanous/blob/master/FAQ.rst#how-to-contribute-by-coding" ><i class="icon-code"></i> {{ _("Code") }}</a></li>
-                            <li><a href="#otherMeans" data-toggle="modal"><i class="icon-plus"></i> {{ _("Other means") }}</a></li>
-
-
-                    </ul>
-                </div><!--/.well -->
-            </div><!--/span-->
-            </nav>
-            <!-- end left navbar -->
             <!--main-->
-            <div class="row offset2 span9 text-center">
-                <div class="span7 offset1">
+            <div class="row offset0 span12 text-center">
+                <div class="span12">
                   <h1>
                     <a class="logo" href="{% url 'wui.views.results' current.unit %}">
                     {% if LANGUAGE_CODE == "ar" or  LANGUAGE_CODE == "fr" or LANGUAGE_CODE == "id" %}
@@ -391,15 +384,15 @@
 				   <div class="row-fluid">
 						<div class="hidden-phone text-center help">
 
-		                    <div class="alert alert-warning span7 offset3 text-center">
-		                        <button type="button" class="close" data-dismiss="alert">&times;</button>
-		                        <i class="icon-screenshot"></i>
-		                        <strong>{{ _("Help!") }} </strong>
-		                        <a href="https://translations.launchpad.net/alfanous/trunk" target="_blank" class="">
-		                        {{ _("Please help us translate Alfanous Project into more languages!") }}
-		                        </a>
-		                      
-		                    </div>
+{#		                    <div class="alert alert-warning span7 offset3 text-center">#}
+{#		                        <button type="button" class="close" data-dismiss="alert">&times;</button>#}
+{#		                        <i class="icon-screenshot"></i>#}
+{#		                        <strong>{{ _("Help!") }} </strong>#}
+{#		                        <a href="https://translations.launchpad.net/alfanous/trunk" target="_blank" class="">#}
+{#		                        {{ _("Please help us translate Alfanous Project into more languages!") }}#}
+{#		                        </a>#}
+{#		                      #}
+{#		                    </div>#}
 
 		                    <!-- <div class="alert alert-info span8 offset3 text-center">
 		                        <button type="button" class="close" data-dismiss="alert">&times;</button>
@@ -435,40 +428,43 @@
 		<br/>
 
 
-	<footer>
+	<footer  style="padding-top: 50px;">
 	<div id="footer" class="navbar navbar-inverse  text-center">
+
+
 	<div class="push"><!--//--></div>
             <div class="container narrow row-fluid ">
 
                 <p class="muted credit">{{ _("Copyright") }} &copy; <a href="https://github.com/Alfanous-team/alfanous/blob/master/AUTHORS.rst">{{ _("Alfanous Team") }}</a> 2010 - {% now "Y" %}</p>
-                <p class="muted credit hidden-phone">&#124; {{ _("released under") }} <a href="http://www.gnu.org/licenses/agpl.html">{{ _("AGPL license") }}</a>.</p>
+{#                <p class="muted credit hidden-phone">&#124; {{ _("released under") }} <a href="http://www.gnu.org/licenses/agpl.html">{{ _("AGPL license") }}</a>.</p>#}
                 <br/>
+                   <span class="label label-success hidden-phone hidden-print">
+                          <a href="#download" data-toggle="modal"><i class="icon-download-alt"></i> {{ _("Download") }}</a>
+                    </span>
+
                  <span class="hidden-phone label label-info hidden-print">
-                		 <a id="footer-link-jos2" data-placement="top" data-toggle="popover">
-                		 <i class=" icon-chevron-up icon-white"></i>
-                 		{{ _("Powered by") }}
+
+                      <a href="/jos2{% if params %}?action=search&unit={{ current.unit }}&{{ current.request }}{% endif %}">
+                               		 <i class=" icon-chevron-up icon-white"></i>
+                             Alfanous API
+                     </a>
+                    </span>
 
 
-                        Alfanous JOS2
-                    </a>
-                    </span>
-                    <span class="label label-success hidden-phone hidden-print">
-                    <a class="footer-link-searchbar" onclick="window.external.AddSearchProvider('http://www.alfanous.org/opensearch.xml');return false;" href="#">
-                        <i class="icon-plus-sign icon-white"></i>
-                        {{ _("Add to your search bar!") }}
-                    </a>
-                    </span>
+
+{#                    <span class="label label-success hidden-phone hidden-print">#}
+{#                    <a class="footer-link-searchbar" onclick="window.external.AddSearchProvider('http://www.alfanous.org/opensearch.xml');return false;" href="#">#}
+{#                        <i class="icon-plus-sign icon-white"></i>#}
+{#                        {{ _("Add to your search bar!") }}#}
+{#                    </a>#}
+{#                    </span>#}
 
             </div>
 
     </div>
     </footer>
 
-    <div id="popoverInner" class="hidden">
-        <p class="popoverInnerText">This website is powered by the<a href='http://json.org/'>JSON</a> output system 2 of <a href="http://www.alfanous.org">Alfanous</a> project, we call it <i><b>Alfanous JOS2</b></i>. This feature is in Alpha test and the Json schema may be it's not stable . We are waiting for real feedback and suggestions to improve its efficacy,quality and stability. To contact the author ,please send a direct email to <b> assem[dot]ch[at]gmail[dot]com</b> or to the mailing list <b>alfanous [at] googlegroups [dot] com</b>
-        <br/><br/> For more details  visit the page of this service <a class="badge badge-inverse" href="https://github.com/Alfanous-team/alfanous/blob/master/src/alfanous-cgi/README.rst">here</a>
-        </p>
-    </div>
+
 
     <!-- The javascript
     ================================================== -->

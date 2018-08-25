@@ -107,11 +107,9 @@ h3 {
 .popoverInnerText {
   font-weight: normal;
   text-shadow:none;
-  color: rgb(51, 200, 51);
 }
 .popoverInnerText a, .popoverInnerText a:hover{
   font-weight: bold;
-  color: rgb(200, 150, 51);
 }
 p.credit {
   display:inline;

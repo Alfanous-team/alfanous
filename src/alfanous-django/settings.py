@@ -24,7 +24,7 @@ MANAGERS = ADMINS
 DATABASES = {
   'default': {
     'ENGINE': 'django.db.backends.sqlite3',
-    'NAME': 'wui.db',
+    'NAME': 'main.db',
   }
 }
 
@@ -160,18 +160,21 @@ TEMPLATE_DIRS = (
 
 INSTALLED_APPS = (
   # Django apps
-  # 'django.contrib.admin',
-  # 'django.contrib.admindocs',
+  'django.contrib.admin',
+  'django.contrib.admindocs',
+  # 'suit',
   'django.contrib.auth',
   'django.contrib.contenttypes',
   'django.contrib.sessions',
   'django.contrib.sites',
   'django.contrib.messages',
   'django.contrib.staticfiles',
-
+  # 'rest_framework',
+  # 'dynamic_rest',
+  # 'rest_framework.authtoken',
   # 3rd party apps
-  # 'debug_toolbar',
-  # 'template_timings_panel',
+  'debug_toolbar',
+  'template_timings_panel',
 
   # our apps
   'wui',
@@ -239,7 +242,7 @@ AVAILABLE_UNITS = SortedDict([
   #( "sura", "Surahs" ),
 
   ( "translation", _("Translations") ),
-  ( "word", _("Words") ),
+  # ( "word", _("Words") ),
   #  tafsir, hadith, dream, poem
 ])
 
