@@ -157,7 +157,7 @@ def results(request, unit="aya"):
 
   response = render_to_response(mytemplate, context)
   if raw_search and (raw_search["error"]["code"] or not raw_search["search"]["interval"]["total"]):
-    response.status_code = 200
+    response.status_code = 404
 
   return response
 

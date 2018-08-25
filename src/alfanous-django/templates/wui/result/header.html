@@ -3,7 +3,7 @@
 <span class="muted">
   {% with result_content.identifier.gid|stringformat:"s" as gid %}
   {% with bidi.fields.gid|add:':'|add:gid as new_query %}
-  <a class="muted" href='?{% custom_query new_query 1 False %}'>
+  <a class="muted" id="r{{ result_id }}" href='#r{{ result_id }}'>
     <b>#{{ result_id }}</b>
   </a>
   {% endwith %}

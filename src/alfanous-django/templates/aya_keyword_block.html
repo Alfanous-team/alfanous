@@ -10,7 +10,7 @@
     {% for wordcpt, wordstat in results.search.words.individual.items %}
         <li {% if not wordstat.nb_matches %} class="disabled" {% endif %}">
             <a {% if wordstat.nb_matches %} href="#{{ wordstat.word }}" data-toggle="tab" {% endif %}>
-                {{ wordcpt }}. {{ wordstat.word }} 
+              {{ wordstat.word }}
                 {% if wordstat.romanization %} 
                     ( {{ wordstat.romanization }} ) 
                 {%  endif %}
