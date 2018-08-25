@@ -74,7 +74,6 @@ def jos2(request):
     response = HttpResponse(response_data)
   return response
 
-
 @gzip_page
 @minified_response
 def results(request, unit="aya"):
@@ -167,8 +166,8 @@ def results(request, unit="aya"):
 
   return response
 
-@minified_response
 @gzip_page
+@minified_response
 def one_aya_page(request, is404 = False):
     mutable_request = dict(request.GET.items())
     gid = mutable_request.get('id', -1)
@@ -177,18 +176,18 @@ def one_aya_page(request, is404 = False):
         isRandom = True
         gid = randint(1, 6236)
     nb_bg=4
-    bg = mutable_request.get('bg', randint(1, nb_bg)) 
+    bg = mutable_request.get('bg', randint(1, nb_bg))
     if int(bg) not in xrange(1, nb_bg+1):
         bg = randint(1, nb_bg)
-    api = mutable_request.get('api', 0) 
+    api = mutable_request.get('api', 0)
     simple = mutable_request.get('simple', 0)
     raw_search = RAWoutput.do({"action":"search", "unit":"aya", "query":"gid:%d" % int(gid)})
     response = HttpResponse(
       json.dumps(raw_search, sort_keys=False, indent=4),
       mimetype="application/json"
     )
-    raw_search["params"] = { "bg": bg, 
-                             "gid":gid, 
+    raw_search["params"] = { "bg": bg,
+                             "gid":gid,
                              "is404": is404,
                              "isRandom": isRandom,
                              "simple":simple

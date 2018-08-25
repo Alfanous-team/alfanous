@@ -184,9 +184,10 @@ MIDDLEWARE_CLASSES = (
   'django.contrib.auth.middleware.AuthenticationMiddleware',
   'django.contrib.messages.middleware.MessageMiddleware',
   'django.middleware.locale.LocaleMiddleware',
-  'debug_toolbar.middleware.DebugToolbarMiddleware',
   'htmlmin.middleware.HtmlMinifyMiddleware',
   'htmlmin.middleware.MarkRequestMiddleware',
+  'debug_toolbar.middleware.DebugToolbarMiddleware',
+
 )
 
 ROOT_URLCONF = 'urls'
@@ -259,6 +260,8 @@ AVAILABLE_UNITS = SortedDict([
 ])
 
 HTML_MINIFY = True
+
+EXCLUDE_FROM_MINIFYING = ('^',)
 
 COMPRESS_ENABLED = True
 COMPRESS_OFFLINE = False
