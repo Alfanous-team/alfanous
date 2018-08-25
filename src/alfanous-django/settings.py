@@ -238,10 +238,7 @@ DEBUG_TOOLBAR_PANELS = (
   'debug_toolbar.panels.redirects.RedirectsPanel',
 )
 
-# added by @mdebbar
-DEBUG_TOOLBAR_PANELS += (
-  'template_timings_panel.panels.TemplateTimings.TemplateTimings',
-)
+
 
 
 LOCALE_PATHS = (
