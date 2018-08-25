@@ -265,7 +265,7 @@ EXCLUDE_FROM_MINIFYING = ('^',)
 
 COMPRESS_ENABLED = True
 COMPRESS_OFFLINE = False
-COMPRESS_STORAGE = 'compressor.storage.BrotliCompressorFileStorage'
+COMPRESS_STORAGE = 'compressor.storage.GzipCompressorFileStorage'
 GZIP_CONTENT_TYPES = (
     'text/css',
     'application/javascript',
