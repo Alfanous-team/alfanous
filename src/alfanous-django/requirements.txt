@@ -1,4 +1,4 @@
-Django==1.5.1
+Django
 distribute==0.6.31
 pyparsing==2.0.1
 wsgiref==0.1.2
@@ -11,3 +11,6 @@ django-rest-swagger
 markdown
 django-filter
 https://github.com/darklow/django-suit/tarball/v2
+django_compressor
+csscompressor
+brotlipy

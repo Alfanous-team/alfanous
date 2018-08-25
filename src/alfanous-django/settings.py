@@ -256,7 +256,8 @@ AVAILABLE_UNITS = SortedDict([
   #  tafsir, hadith, dream, poem
 ])
 
-
+COMPRESS_ENABLED = True
+COMPRESS_OFFLINE = False
 
 ################################
 #     Production settings      #

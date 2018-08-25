@@ -2,9 +2,11 @@
 {% load languages %}
 {% load meta %}
 {% load compress %}
+
 {% get_current_language as LANGUAGE_CODE %}
 {% get_available_languages as LANGUAGES %}
 {% get_current_language_bidi as LANGUAGE_BIDI %}
+
 <!DOCTYPE html>
 <html dir="{{ bidi.direction }}" lang="{{ LANGUAGE_CODE }}">
 <head>
@@ -16,7 +18,6 @@
 
     <meta name="description" content="{% meta_description %}">
     <meta name="google-site-verification" content="SqRr5YSggCEdzVRxx1KuWWwKmtctzUoxuYTCLV1Vbwo"/>
-
     <meta name="keywords" content="{{ _('quran') }},
 								   {{ _('forqan') }},
 								   {{ _('koran') }},
@@ -76,60 +77,64 @@
     {% block pagination_rel_block %}{% endblock %}
     <link rel="search" type="application/opensearchdescription+xml" title="Alfanous" href="/opensearch.xml"/>
 
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- Bootstrap -->
-    {% ifequal bidi.direction "ltr" %}
-        <link id="skin_css" href="/static/ltr/css/skins/bootstrap_default.min.css" rel="stylesheet">
-        <link href="/static/ltr/css/bootstrap-responsive.min.css" rel="stylesheet">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    {% compress css %}
+        <!-- Bootstrap -->
+        {% ifequal bidi.direction "ltr" %}
+            <link id="skin_css" href="/static/ltr/css/skins/bootstrap_default.min.css" rel="stylesheet">
+            <link href="/static/ltr/css/bootstrap-responsive.min.css" rel="stylesheet">
+            {% else %}
+            <link href="/static/rtl/css/rtl-bootstrap.min.css" rel="stylesheet">
+            <link href="/static/rtl/css/rtl-bootstrap-responsive.min.css" rel="stylesheet">
+        {% endifequal %}
+        <!-- custom html select items -->
+        <link href="/static/shared/css/bootstrap-select.min.css" rel="stylesheet">
+        <!-- Quick tour -->
+        <link href="/static/shared/css/bootstro.min.css" rel="stylesheet">
+        <!-- Font Awesome -->
+        <link rel="stylesheet" href="/static/shared/css/font-awesome.min.css">
+        <!-- v-keyboard css -->
+        <link href="/static/shared/css/keyboard.css" rel="stylesheet">
+        <!-- share buttons styling -->
+        {% if False %}{# params #}
+            <link href="/static/shared/css/share_style.css" rel="stylesheet">
         {% else %}
-        <link href="/static/rtl/css/rtl-bootstrap.min.css" rel="stylesheet">
-        <link href="/static/rtl/css/rtl-bootstrap-responsive.min.css" rel="stylesheet">
-    {% endifequal %}
-    <!-- custom html select items -->
-    <link href="/static/shared/css/bootstrap-select.min.css" rel="stylesheet">
-    <!-- Quick tour -->
-    <link href="/static/shared/css/bootstro.min.css" rel="stylesheet">
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="/static/shared/css/font-awesome.min.css">
-    <!-- v-keyboard css -->
-    <link href="/static/shared/css/keyboard.css" rel="stylesheet">
-    <!-- share buttons styling -->
-    {% if False %}{# params #}
-        <link href="/static/shared/css/share_style.css" rel="stylesheet">
-    {% else %}
-        <link href="/static/shared/css/share_style_root.css" rel="stylesheet">
-    {% endif %}
-    <!--[if IE 7]>
-    <link rel="stylesheet" href="/static/shared/css/font-awesome-ie7.min.css">
-    <![endif]-->
+            <link href="/static/shared/css/share_style_root.css" rel="stylesheet">
+        {% endif %}
+        <!--[if IE 7]>
+        <link rel="stylesheet" href="/static/shared/css/font-awesome-ie7.min.css">
+        <![endif]-->
 
-    <!-- Custom Alfanous CSS -->
-    <link href="/static/shared/css/style.css" rel="stylesheet">
-    <link href="/static/shared/css/printability.css" rel="stylesheet" media="print">
-    {% ifequal bidi.direction "rtl" %}
-        <link href="/static/rtl/css/rtl.css" rel="stylesheet">
-    {% endifequal %}
+        <!-- Custom Alfanous CSS -->
+        <link href="/static/shared/css/style.css" rel="stylesheet">
+        <link href="/static/shared/css/printability.css" rel="stylesheet" media="print">
+        {% ifequal bidi.direction "rtl" %}
+            <link href="/static/rtl/css/rtl.css" rel="stylesheet">
+        {% endifequal %}
+    {% endcompress %}
+        <!--  conditional css style -->
+        <style rel="stylesheet">
+            @media (min-width: 768px) {
+                .keyboardInputInitiator {
 
-    <!--  conditional css style -->
-    <style rel="stylesheet">
-        @media (min-width: 768px) {
-            .keyboardInputInitiator {
-
-            {{ bidi.align }}: 195 px;
+                {{ bidi.align }}: 195 px;
+                }
             }
-        }
 
-        @media (max-width: 767px) {
-            .keyboardInputInitiator {
-            {{ bidi.align_inverse }}: 40 px;
+            @media (max-width: 767px) {
+                .keyboardInputInitiator {
+                {{ bidi.align_inverse }}: 40 px;
+                }
             }
-        }
 
 
-    </style>
+        </style>
 
-    {% include "rich_content/organization.html" %}
-    {% include "rich_content/products.html" %}
+
+
+{#    {% include "rich_content/organization.html" %}#}
+{#    {% include "rich_content/products.html" %}#}
     {% if current.unit == "aya" and results.search.interval.total %}
         {% include "rich_content/aya_list.html" %}
     {% endif %}
@@ -513,6 +518,7 @@
 <!-- The javascript
 ================================================== -->
 <!-- Placed at the end of the document so the pages load faster -->
+{% compress js %}
 <script src="/static/shared/js/jquery-1.9.1.min.js"></script>
 {% ifequal bidi.direction "ltr" %}
     <script src="/static/ltr/js/bootstrap.min.js"></script>
@@ -527,7 +533,7 @@
 <script src="/static/shared/js/advanced_search.js"></script>
 <script src="/static/shared/js/jquery.sharrre-1.3.4.min.js"></script>
 <script src="/static/shared/js/share_functions.js"></script>
-<script src="http://api.html5media.info/1.1.5/html5media.min.js"></script>
+
 
 <!-- Google analytics #Assem -->
 <script type="text/javascript">
@@ -549,7 +555,9 @@
     })();
 </script>
 <!-- end -->
+{% endcompress %}
 
+<script src="http://api.html5media.info/1.1.5/html5media.min.js"></script>
 
 </body>
 </html>
