@@ -27,7 +27,7 @@
 </span>
 
 <div class="pull-{{ bidi.align_inverse }}">
-  {% url 'wui.views.results' current.unit as share_path %}
+  {% url 'results_i18n' current.unit as share_path %}
   {% aya_query result_content as share_params %}
   {% include 'wui/result/header_buttons.html' %}
 </div>

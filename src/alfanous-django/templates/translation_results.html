@@ -65,7 +65,7 @@
                   {% endif %}
                 </span>
                 <div class="pull-{{ bidi.align_inverse }} ">
-                  {% url 'wui.views.results' current.unit as share_path %}
+                  {% url 'results_i18n' current.unit as share_path %}
                   {% simple_query ' AND ' gid=result_content.identifier.gid id=result_content.identifier.id as share_params %}
                   {% include 'wui/result/header_buttons.html' %}
                 </div>
@@ -113,7 +113,7 @@
 									  		<span class='quran_decoration main_aya'>
 									  		] </span>									  		
 											-	<a class="text-success"
-                             href="{% url 'wui.views.results' 'aya' %}?{% aya_query result_content.aya %}">
+                             href="{% url 'results_i18n' 'aya' %}?{% aya_query result_content.aya %}">
 												  <small>{{ result_content.aya.sura_arabic_name }}</small>
                           {{ result_content.aya.aya_id }}
                         </a>

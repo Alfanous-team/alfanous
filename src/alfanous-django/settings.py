@@ -1,6 +1,6 @@
 # Django settings for alfanousDjango project.
 import os
-from django.utils.datastructures import SortedDict
+from collections import OrderedDict as SortedDict
 from django.utils.translation import ugettext_lazy as _
 
 # the root directory of alfanous-django
@@ -12,7 +12,31 @@ ROOT_DIR = os.path.dirname(__file__)
 ########################################
 
 DEBUG = True
-TEMPLATE_DEBUG = True
+
+INSTALLED_APPS = (
+  # Django apps
+  'django.contrib.admin',
+  'django.contrib.admindocs',
+  # 'suit',
+  'django.contrib.auth',
+  'django.contrib.contenttypes',
+  'django.contrib.sessions',
+  'django.contrib.sites',
+  'django.contrib.messages',
+  'django.contrib.staticfiles',
+  # 'rest_framework',
+  # 'dynamic_rest',
+  # 'rest_framework.authtoken',
+  # 3rd party apps
+  'debug_toolbar',
+  'template_timings_panel',
+
+  # our apps
+  'wui',
+  "compressor",
+)
+
+
 
 ADMINS = (
   ( 'Assem Chelli', 'assem.ch@gmail.com' ),
@@ -127,18 +151,31 @@ STATICFILES_FINDERS = (
   'django.contrib.staticfiles.finders.FileSystemFinder',
   'django.contrib.staticfiles.finders.AppDirectoriesFinder',
   # 'django.contrib.staticfiles.finders.DefaultStorageFinder',
+  'compressor.finders.CompressorFinder',
 )
 
 # Make this unique, and don't share it with anybody.
 SECRET_KEY = 'kl2wmaaul8-roi3k9*@1j9kse%z^durtud=8l-*6+r#h2mo*80'
 
 
-# List of callables that know how to import templates from various sources.
-TEMPLATE_LOADERS = (
-  'django.template.loaders.filesystem.Loader',
-  'django.template.loaders.app_directories.Loader',
-  # 'django.template.loaders.eggs.Loader',
-)
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+
+TEMPLATES = [
+    {
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'DIRS': [os.path.join(BASE_DIR, 'alfanous-django/templates')],
+
+        'APP_DIRS': True,
+      'OPTIONS': {
+        'context_processors': [
+          'django.template.context_processors.request',
+          'django.contrib.auth.context_processors.auth',
+          'django.contrib.messages.context_processors.messages',
+        ],
+      },
+    },
+]
 
 MIDDLEWARE_CLASSES = (
   'django.middleware.common.CommonMiddleware',
@@ -147,38 +184,11 @@ MIDDLEWARE_CLASSES = (
   'django.contrib.auth.middleware.AuthenticationMiddleware',
   'django.contrib.messages.middleware.MessageMiddleware',
   'django.middleware.locale.LocaleMiddleware',
+'debug_toolbar.middleware.DebugToolbarMiddleware',
 )
 
 ROOT_URLCONF = 'urls'
 
-TEMPLATE_DIRS = (
-  # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
-  # Always use forward slashes, even on Windows.
-  # Don't forget to use absolute paths, not relative paths.
-  os.path.join(ROOT_DIR, 'templates/'),
-)
-
-INSTALLED_APPS = (
-  # Django apps
-  'django.contrib.admin',
-  'django.contrib.admindocs',
-  # 'suit',
-  'django.contrib.auth',
-  'django.contrib.contenttypes',
-  'django.contrib.sessions',
-  'django.contrib.sites',
-  'django.contrib.messages',
-  'django.contrib.staticfiles',
-  # 'rest_framework',
-  # 'dynamic_rest',
-  # 'rest_framework.authtoken',
-  # 3rd party apps
-  'debug_toolbar',
-  'template_timings_panel',
-
-  # our apps
-  'wui',
-)
 
 # A sample logging configuration. The only tangible logging
 # performed by this configuration is to send an email to

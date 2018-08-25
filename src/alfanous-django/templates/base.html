@@ -1,6 +1,7 @@
 {% load i18n %}
 {% load languages %}
 {% load meta %}
+{#{% load compress %}#}
 {% get_current_language as LANGUAGE_CODE %}
 {% get_available_languages as LANGUAGES %}
 {% get_current_language_bidi as LANGUAGE_BIDI %}
@@ -62,7 +63,7 @@
 	<link rel="alternate" href="http://www.alfanous.org/{{ current.unit }}/{% if current.request %}?{{ current.request }}{% endif %}" hreflang="x-default" />
     {% for lang_code, lang_name in LANGUAGES %}
                                 {% language lang_code %}
-	<link rel="alternate" href="http://www.alfanous.org{% url 'wui.views.results' current.unit  %}{% if current.request %}?{{ current.request }}{% endif %}" hreflang="{{ lang_code }}" />
+	<link rel="alternate" href="http://www.alfanous.org{% url 'results_i18n' current.unit  %}{% if current.request %}?{{ current.request }}{% endif %}" hreflang="{{ lang_code }}" />
                                 {% endlanguage %}
     {% endfor %}
     {# todo:  restructure base.html with generic blocks that allows extending any part like header #}
@@ -72,7 +73,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<!-- Bootstrap -->
     {% ifequal bidi.direction "ltr" %}
-        <link id="skin_css" href="/static/ltr/css/skins/bootstrap_default.css" rel="stylesheet">
+        <link id="skin_css" href="/static/ltr/css/skins/bootstrap_default.min.css" rel="stylesheet">
         <link href="/static/ltr/css/bootstrap-responsive.min.css" rel="stylesheet">
     {% else %}
         <link href="/static/rtl/css/rtl-bootstrap.min.css" rel="stylesheet">
@@ -161,7 +162,7 @@
                             data-bootstro-width="400px"
                             data-bootstro-placement='bottom' data-bootstro-step='0'><a >{{ available_unit.1 }}</a></li>
                       {% else %}
-                      <li><a href="{% url 'wui.views.results' available_unit.0 %}">{{ available_unit.1 }}</a></li>
+                      <li><a href="{% url 'results_i18n' available_unit.0 %}">{{ available_unit.1 }}</a></li>
                       {% endifequal %}
                     {% endfor %}
                     <li><a href="/r">{{ _("Random") }} </a></li>
@@ -182,7 +183,7 @@
                                 {% if lang_code != LANGUAGE_CODE %}
                                 {% language lang_code %}
                                 <li>
-                                  <a href="{% url 'wui.views.results' current.unit %}?{{ current.request }}">{{ lang_code|my_language_name_local }}</a>
+                                  <a href="{% url 'results_i18n' current.unit %}?{{ current.request }}">{{ lang_code|my_language_name_local }}</a>
                                 </li>
                                 {% endlanguage %}
                                 {% endif %}
@@ -277,7 +278,7 @@
             <div class="row offset0 span12 text-center">
                 <div class="span12">
                   <h1>
-                    <a class="logo" href="{% url 'wui.views.results' current.unit %}">
+                    <a class="logo" href="{% url 'results_i18n' current.unit %}">
                     {% if LANGUAGE_CODE == "ar" or  LANGUAGE_CODE == "fr" or LANGUAGE_CODE == "id" %}
                        <img src="/static/shared/img/logo_{{ current.unit }}_{{ LANGUAGE_CODE }}.png" alt="Alfanous logo">
                     {% else %}
@@ -417,7 +418,7 @@
        <!-- <div class="row-fluid text-center hidden-print">
 
 				 <br/>
-				<span id="shareme_root" class="span4 offset4 shareme_root" data-url="http://www.alfanous.org{% url 'wui.views.results' current.unit %}?{{ current.request }}"
+				<span id="shareme_root" class="span4 offset4 shareme_root" data-url="http://www.alfanous.org{% url 'results_i18n' current.unit %}?{{ current.request }}"
 				    data-text="{{ _('Alfanous') }} - {% if current.unit == 'aya' %} {{ _('Quran Ayah Search') }} {% elif current.unit == 'word' %} {{ _('Quran Word Search') }} {% elif current.unit == 'translation' %} {{ _('Quran Translation Search') }}{% else %} {{ _('Quran Ayah Search') }} {% endif %}   #alfanous" data-title="  {{ _('Share!') }}"></span>
 				<br/>
 			</div>-->

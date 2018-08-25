@@ -19,7 +19,7 @@ from django.conf import settings
 
 from django.utils import translation
 from django.utils.translation import get_language_info
-from django.utils.datastructures import SortedDict
+from collections import OrderedDict as SortedDict
 
 ## either append the path of alfanous API as:
 from django.views.decorators.gzip import gzip_page

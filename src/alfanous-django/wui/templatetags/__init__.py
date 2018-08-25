@@ -1,6 +1,7 @@
 from inspect import getargspec
 import urllib
-from django.template.base import TagHelperNode, TemplateSyntaxError, parse_bits, generic_tag_compiler
+from django.template.base import TemplateSyntaxError
+from django.template.library import TagHelperNode, parse_bits
 
 
 class Params(dict):
@@ -49,8 +50,8 @@ def optional_assignment_tag(register, func=None, takes_context=None, name=None):
         return func(*resolved_args, **resolved_kwargs)
 
     class AssignmentNode(TagHelperNode):
-      def __init__(self, takes_context, args, kwargs, target_var):
-        super(AssignmentNode, self).__init__(takes_context, args, kwargs)
+      def __init__(self, func, takes_context, args, kwargs, target_var):
+        super(AssignmentNode, self).__init__(func, takes_context, args, kwargs)
         self.target_var = target_var
 
       def render(self, context):
@@ -70,12 +71,12 @@ def optional_assignment_tag(register, func=None, takes_context=None, name=None):
         args, kwargs = parse_bits(
           parser, bits, params, varargs, varkw, defaults, takes_context, function_name
         )
-        return AssignmentNode(takes_context, args, kwargs, target_var)
+        return AssignmentNode(function_name, takes_context, args, kwargs, target_var)
       else:
         args, kwargs = parse_bits(
           parser, bits, params, varargs, varkw, defaults, takes_context, function_name
         )
-        return SimpleNode(takes_context, args, kwargs)
+        return SimpleNode(function_name, takes_context, args, kwargs)
 
     compile_func.__doc__ = func.__doc__
     register.tag(function_name, compile_func)

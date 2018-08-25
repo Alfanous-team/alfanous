@@ -34,7 +34,7 @@
                     {% for wordcpt, wordstat in results.search.words.individual.items %}
                         <span class="label {% if wordstat.nb_matches %} label-success {% endif %}">
                             {% if wordstat.nb_matches %}
-                                <a  href="?{% custom_query wordstat.word 1 False %}"> 
+                                <a  href="?{% custom_query wordstat.word 1 False %}">
                             {% endif %}
                                     {{ wordstat.word }}  
                                     {% if wordstat.romanization %} 
