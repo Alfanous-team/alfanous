@@ -3,8 +3,7 @@
 //bidi = "{{ bidi.direction }}";
 
 $(document).ready(function(){
-	//$('head').append('<link rel="stylesheet" href="/static/shared/css/skins/bootstrap.min.css" type="text/css" />')
-	
+
 	GetSkinCookieAndApply(); //change the skin based on the cookie value
 	
 	$(".slidingForm").hide();
@@ -59,15 +58,6 @@ $(document).ready(function(){
         
     });
 
-    $('#footer-link-jos2').popover(
-    {
-        html:true,
-        title:'<span class="popoverInnerText">About JOS2<span>',
-        animation: true,
-        content: function() {
-            return $('#popoverInner').html();
-        },
-    });
 
     $('select').selectpicker();
 
@@ -108,10 +98,6 @@ function get_results (param) { // this function will be used to require suggesti
         };
 };
 
-/*$(document).ready(function() {
-	//$('head').append('<link rel="stylesheet" href="/static/shared/css/skins/bootstrap.min.css" type="text/css" />"');
-	$('head').append('islam');
-});*/
 
 
 function show_results (json, param) {       }

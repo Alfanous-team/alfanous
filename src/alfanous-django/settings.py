@@ -1,6 +1,6 @@
 # Django settings for alfanousDjango project.
 import os
-from django.utils.datastructures import SortedDict
+from collections import OrderedDict as SortedDict
 from django.utils.translation import ugettext_lazy as _
 
 # the root directory of alfanous-django
@@ -12,7 +12,29 @@ ROOT_DIR = os.path.dirname(__file__)
 ########################################
 
 DEBUG = True
-TEMPLATE_DEBUG = True
+
+INSTALLED_APPS = (
+  # Django apps
+  'django.contrib.admin',
+  'django.contrib.admindocs',
+  # 'suit',
+  'django.contrib.auth',
+  'django.contrib.contenttypes',
+  'django.contrib.sessions',
+  'django.contrib.sites',
+  'django.contrib.messages',
+  'django.contrib.staticfiles',
+  # 'rest_framework',
+  # 'dynamic_rest',
+  # 'rest_framework.authtoken',
+  # 3rd party apps
+
+  # our apps
+  'wui',
+  "compressor",
+)
+
+
 
 ADMINS = (
   ( 'Assem Chelli', 'assem.ch@gmail.com' ),
@@ -24,13 +46,13 @@ MANAGERS = ADMINS
 DATABASES = {
   'default': {
     'ENGINE': 'django.db.backends.sqlite3',
-    'NAME': 'wui.db',
+    'NAME': 'main.db',
   }
 }
 
 # Hosts/domain names that are valid for this site; required if DEBUG is False
 # See https://docs.djangoproject.com/en/1.5/ref/settings/#allowed-hosts
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['.afalnous.org']
 
 # Local time zone for this installation. Choices can be found here:
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
@@ -127,55 +149,50 @@ STATICFILES_FINDERS = (
   'django.contrib.staticfiles.finders.FileSystemFinder',
   'django.contrib.staticfiles.finders.AppDirectoriesFinder',
   # 'django.contrib.staticfiles.finders.DefaultStorageFinder',
+  'compressor.finders.CompressorFinder',
 )
 
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 # Make this unique, and don't share it with anybody.
 SECRET_KEY = 'kl2wmaaul8-roi3k9*@1j9kse%z^durtud=8l-*6+r#h2mo*80'
 
 
-# List of callables that know how to import templates from various sources.
-TEMPLATE_LOADERS = (
-  'django.template.loaders.filesystem.Loader',
-  'django.template.loaders.app_directories.Loader',
-  # 'django.template.loaders.eggs.Loader',
-)
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+
+TEMPLATES = [
+    {
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'DIRS': [os.path.join(BASE_DIR, 'alfanous-django/templates')],
+
+        'APP_DIRS': True,
+      'OPTIONS': {
+        'context_processors': [
+          'django.template.context_processors.request',
+          'django.contrib.auth.context_processors.auth',
+          'django.contrib.messages.context_processors.messages',
+        ],
+      },
+    },
+]
 
 MIDDLEWARE_CLASSES = (
-  'django.middleware.common.CommonMiddleware',
+    'django.middleware.cache.UpdateCacheMiddleware',
+    'django.middleware.common.CommonMiddleware',
+    'django.middleware.cache.FetchFromCacheMiddleware',
   'django.contrib.sessions.middleware.SessionMiddleware',
   'django.middleware.csrf.CsrfViewMiddleware',
   'django.contrib.auth.middleware.AuthenticationMiddleware',
   'django.contrib.messages.middleware.MessageMiddleware',
   'django.middleware.locale.LocaleMiddleware',
+'whitenoise.middleware.WhiteNoiseMiddleware',
+  'htmlmin.middleware.HtmlMinifyMiddleware',
+  'htmlmin.middleware.MarkRequestMiddleware',
+
 )
 
 ROOT_URLCONF = 'urls'
 
-TEMPLATE_DIRS = (
-  # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
-  # Always use forward slashes, even on Windows.
-  # Don't forget to use absolute paths, not relative paths.
-  os.path.join(ROOT_DIR, 'templates/'),
-)
-
-INSTALLED_APPS = (
-  # Django apps
-  # 'django.contrib.admin',
-  # 'django.contrib.admindocs',
-  'django.contrib.auth',
-  'django.contrib.contenttypes',
-  'django.contrib.sessions',
-  'django.contrib.sites',
-  'django.contrib.messages',
-  'django.contrib.staticfiles',
-
-  # 3rd party apps
-  # 'debug_toolbar',
-  # 'template_timings_panel',
-
-  # our apps
-  'wui',
-)
 
 # A sample logging configuration. The only tangible logging
 # performed by this configuration is to send an email to
@@ -222,10 +239,7 @@ DEBUG_TOOLBAR_PANELS = (
   'debug_toolbar.panels.redirects.RedirectsPanel',
 )
 
-# added by @mdebbar
-DEBUG_TOOLBAR_PANELS += (
-  'template_timings_panel.panels.TemplateTimings.TemplateTimings',
-)
+
 
 
 LOCALE_PATHS = (
@@ -239,11 +253,23 @@ AVAILABLE_UNITS = SortedDict([
   #( "sura", "Surahs" ),
 
   ( "translation", _("Translations") ),
-  ( "word", _("Words") ),
+  # ( "word", _("Words") ),
   #  tafsir, hadith, dream, poem
 ])
 
+HTML_MINIFY = True
 
+EXCLUDE_FROM_MINIFYING = ('^',)
+
+COMPRESS_ENABLED = True
+COMPRESS_OFFLINE = False
+COMPRESS_STORAGE = 'compressor.storage.GzipCompressorFileStorage'
+GZIP_CONTENT_TYPES = (
+    'text/css',
+    'application/javascript',
+    'application/x-javascript',
+    'text/javascript'
+)
 
 ################################
 #     Production settings      #
@@ -255,3 +281,23 @@ try:
 except ImportError:
   # There are no prod settings
   pass
+
+
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+
+    },
+    'TIMEOUT': 60,
+    'OPTIONS': {
+        'MAX_ENTRIES': 10
+    }
+}
+
+
+
+if DEBUG:
+    ALLOWED_HOSTS+=['*']
+    INSTALLED_APPS += (  'debug_toolbar',)
+    MIDDLEWARE_CLASSES += ( 'debug_toolbar.middleware.DebugToolbarMiddleware', )
+

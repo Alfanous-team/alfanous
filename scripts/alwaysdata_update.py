@@ -34,9 +34,7 @@ PYP_FILE = 'pyparsing.py'
 
 # default
 FILES_TO_LINK = {
-  os.path.join(DEFAULT_DIR, PUBLIC_DIR, 'django.fcgi'): os.path.join(PUBLIC_DIR, 'django.fcgi'),
-  os.path.join(DEFAULT_DIR, PUBLIC_DIR, '.htaccess'  ): os.path.join(PUBLIC_DIR, '.htaccess'),
-  os.path.join(DEFAULT_DIR, PUBLIC_DIR, 'robots.txt' ): os.path.join(PUBLIC_DIR, 'robots.txt'),
+  os.path.join(DEFAULT_DIR, PUBLIC_DIR, 'wsgi.py'): os.path.join(PUBLIC_DIR, 'app.wsgi'),
   os.path.join(DEFAULT_DIR, 'settings_prod.py'): os.path.join(DJANGO_DIR, 'settings_prod.py'),
 }
 

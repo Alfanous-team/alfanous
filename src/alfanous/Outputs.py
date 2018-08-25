@@ -141,13 +141,13 @@ class Raw():
 			      "romanization": None,
 			      "prev_aya": True,
 			      "next_aya": True,
-			      "sura_info": True,
+			      "sura_info": False,
 			      "sura_stat_info":False,
-			      "word_info": True,
+			      "word_info": False,
 			      "word_synonyms":False,
-			      "word_derivations":True,
-			      "word_vocalizations":True,
-			      "aya_position_info":	True,
+			      "word_derivations":False,
+			      "word_vocalizations":False,
+			      "aya_position_info":	False,
 			      "aya_theme_info":	True,
 			      "aya_stat_info":	True,
 			      "aya_sajda_info":	True,
@@ -508,7 +508,7 @@ class Raw():
 			sura_stat_info = False
 			annotation_aya = annotation_word = False
 		elif view == "normal":
-			prev_aya = next_aya = False
+			prev_aya = next_aya = True
 			sura_info = True
 			word_info = True
 			word_synonyms = False
