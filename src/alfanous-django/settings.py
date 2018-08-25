@@ -152,6 +152,7 @@ STATICFILES_FINDERS = (
   'compressor.finders.CompressorFinder',
 )
 
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 # Make this unique, and don't share it with anybody.
 SECRET_KEY = 'kl2wmaaul8-roi3k9*@1j9kse%z^durtud=8l-*6+r#h2mo*80'
 
@@ -184,6 +185,7 @@ MIDDLEWARE_CLASSES = (
   'django.contrib.auth.middleware.AuthenticationMiddleware',
   'django.contrib.messages.middleware.MessageMiddleware',
   'django.middleware.locale.LocaleMiddleware',
+'whitenoise.middleware.WhiteNoiseMiddleware',
   'htmlmin.middleware.HtmlMinifyMiddleware',
   'htmlmin.middleware.MarkRequestMiddleware',
 

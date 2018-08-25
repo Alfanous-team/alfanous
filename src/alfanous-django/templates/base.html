@@ -3,6 +3,8 @@
 {% load meta %}
 {% load compress %}
 
+{% load static from staticfiles %}
+
 {% get_current_language as LANGUAGE_CODE %}
 {% get_available_languages as LANGUAGES %}
 {% get_current_language_bidi as LANGUAGE_BIDI %}
@@ -245,7 +247,11 @@
                                         class="icon-exclamation-sign"></i> {{ _("Help") }}</a>
 
                                 {#                           <a href="#contactpanel" data-toggle="modal"><i class="icon-envelope"></i> {{ _("Contact") }}</a>#}
+                            <a class="mailing-list" target="_blank" href="http://groups.google.com/group/alfanous/"
+                   data-toggle="tooltip" title="{{ _('Our Mailing list on GoogleGroups') }}"><i
+                    class="icon-group"></i> {{ _("Mailing list") }}</a>
                             </li>
+
                             <li class="divider"></li>
                             <li class="nav-header">{{ _("Contribute:") }}</li>
 
@@ -286,17 +292,13 @@
             {% endif %}
             <li><a class="facebook" target="_blank" href="https://www.facebook.com/Alfanous" data-toggle="tooltip"
                    title="{{ _('Our page on Facebook') }}"><i class="icon-facebook icon-large success"></i></a></li>
-            <li><a class="googleplus" target="_blank" href="https://plus.google.com/u/0/111305625425237630318"
-                   data-toggle="tooltip" title="{{ _('Our page on Google+') }}"><i
-                    class="icon-google-plus icon-large"></i></a></li>
-            <li><a class="twitter" target="_blank" href="https://twitter.com/alfanous" data-toggle="tooltip"
-                   title="{{ _('Our account on Twitter') }}"><i class="icon-twitter icon-large"></i></a></li>
+{#            <li><a class="googleplus" target="_blank" href="https://plus.google.com/u/0/111305625425237630318"#}
+{#                   data-toggle="tooltip" title="{{ _('Our page on Google+') }}"><i#}
+{#                    class="icon-google-plus icon-large"></i></a></li>#}
+{#            <li><a class="twitter" target="_blank" href="https://twitter.com/alfanous" data-toggle="tooltip"#}
+{#                   title="{{ _('Our account on Twitter') }}"><i class="icon-twitter icon-large"></i></a></li>#}
             <li><a class="github" target="_blank" href="https://github.com/Alfanous-team/alfanous" data-toggle="tooltip"
                    title="{{ _('Our repository on Github') }}"><i class="icon-github-alt icon-large"></i></a></li>
-            <li><a class="mailing-list" target="_blank" href="http://groups.google.com/group/alfanous/"
-                   data-toggle="tooltip" title="{{ _('Our Mailing list on GoogleGroups') }}"><i
-                    class="icon-group icon-large"></i></a></li>
-
             </ul>
         </div>
     </div>
