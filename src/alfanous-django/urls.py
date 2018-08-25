@@ -5,8 +5,8 @@ from django.conf import settings
 
 
 # Uncomment the next two lines to enable the admin:
-from django.contrib import admin
-admin.autodiscover()
+# from django.contrib import admin
+# admin.autodiscover()
 
 from wui.views import jos2, one_aya_page, results
 
@@ -24,7 +24,7 @@ urlpatterns = [
 
 # These URLs accept the language prefix.
 urlpatterns += i18n_patterns(
-  url(r'^$', results),
+  url(r'^$', results, name='results'),
   url(r'^(?P<unit>\w{3,15})/', results, name='results_i18n'),
 )
 

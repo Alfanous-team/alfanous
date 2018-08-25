@@ -28,8 +28,6 @@ INSTALLED_APPS = (
   # 'dynamic_rest',
   # 'rest_framework.authtoken',
   # 3rd party apps
-  'debug_toolbar',
-  'template_timings_panel',
 
   # our apps
   'wui',
@@ -186,7 +184,6 @@ MIDDLEWARE_CLASSES = (
   'django.middleware.locale.LocaleMiddleware',
   'htmlmin.middleware.HtmlMinifyMiddleware',
   'htmlmin.middleware.MarkRequestMiddleware',
-  'debug_toolbar.middleware.DebugToolbarMiddleware',
 
 )
 
@@ -280,3 +277,9 @@ try:
 except ImportError:
   # There are no prod settings
   pass
+
+
+if DEBUG:
+    INSTALLED_APPS += (  'debug_toolbar',)
+    MIDDLEWARE_CLASSES += ( 'debug_toolbar.middleware.DebugToolbarMiddleware', )
+
