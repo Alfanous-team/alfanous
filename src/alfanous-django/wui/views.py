@@ -75,7 +75,6 @@ def jos2(request):
   return response
 
 @gzip_page
-@minified_response
 def results(request, unit="aya"):
   if unit not in settings.AVAILABLE_UNITS:
     raise Http404()
@@ -167,7 +166,6 @@ def results(request, unit="aya"):
   return response
 
 @gzip_page
-@minified_response
 def one_aya_page(request, is404 = False):
     mutable_request = dict(request.GET.items())
     gid = mutable_request.get('id', -1)
@@ -207,7 +205,6 @@ def one_aya_page(request, is404 = False):
 
 
 @gzip_page
-@minified_response
 def custom_404(request):
     return one_aya_page(request, is404 = True)
 
