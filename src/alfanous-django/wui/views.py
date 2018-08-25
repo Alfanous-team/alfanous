@@ -7,6 +7,8 @@ TODO make a fields English-Arabic mapping based on the "bidi" value to be used i
 """
 import json
 import os
+from sys import path
+
 from collections import OrderedDict as SortedDict
 from operator import itemgetter
 from random import randint
