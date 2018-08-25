@@ -22,6 +22,7 @@ from django.utils.translation import get_language_info
 from django.utils.datastructures import SortedDict
 
 ## either append the path of alfanous API as:
+from django.views.decorators.gzip import gzip_page
 from wui.templatetags.languages import my_get_language_info
 
 # this is better than using "../../"
@@ -47,7 +48,7 @@ def control_access(request):
   #print "is ajax?", request.is_ajax()
   return True
 
-
+@gzip_page
 def jos2(request):
   """ JSON Output System II """
   control_access(request)
@@ -70,7 +71,7 @@ def jos2(request):
     response = HttpResponse(response_data)
   return response
 
-
+@gzip_page
 def results(request, unit="aya"):
   if unit not in settings.AVAILABLE_UNITS:
     raise Http404()
@@ -162,7 +163,7 @@ def results(request, unit="aya"):
   return response
 
 
-# one aya page
+@gzip_page
 def one_aya_page(request, is404 = False):
     mutable_request = dict(request.GET.items())
     gid = mutable_request.get('id', -1)
@@ -195,7 +196,7 @@ def one_aya_page(request, is404 = False):
 
     return new_response
 
-# custom error 404
+@gzip_page
 def custom_404(request):
     return one_aya_page(request, is404 = True)
 
