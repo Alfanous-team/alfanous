@@ -26,7 +26,7 @@ from django.views.decorators.gzip import gzip_page
 from wui.templatetags.languages import my_get_language_info
 
 
-from htmlmin.decorators import not_minified_response
+from htmlmin.decorators import minified_response
 
 # this is better than using "../../"
 realtive_path = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir, os.pardir))
