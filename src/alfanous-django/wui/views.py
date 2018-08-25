@@ -27,9 +27,9 @@ from wui.templatetags.languages import my_get_language_info
 # this is better than using "../../"
 realtive_path = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir, os.pardir))
 
-path.insert(0, realtive_path) ## a relative path, development mode
-path.append("alfanous.egg/alfanous") ## an egg, portable
-path.append("/home/alfanous/alfanous-django/src/") ## absolute  path, server mode
+# path.insert(0, realtive_path) ## a relative path, development mode
+# path.append("alfanous.egg/alfanous") ## an egg, portable
+# path.append("/home/alfanous/alfanous-django/src/") ## absolute  path, server mode
 
 from alfanous.Outputs import Raw
 
@@ -156,7 +156,7 @@ def results(request, unit="aya"):
   }
 
   response = render_to_response(mytemplate, context)
-  if results["error"]["status"] != 0 or not results["search"]["interval"]["total"]:
+  if raw_search and (raw_search["error"]["code"] or not raw_search["search"]["interval"]["total"]):
     response.status_code = 204
 
   return response
