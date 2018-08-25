@@ -52,7 +52,7 @@ DATABASES = {
 
 # Hosts/domain names that are valid for this site; required if DEBUG is False
 # See https://docs.djangoproject.com/en/1.5/ref/settings/#allowed-hosts
-ALLOWED_HOSTS = ['afalnous.org']
+ALLOWED_HOSTS = ['.afalnous.org']
 
 # Local time zone for this installation. Choices can be found here:
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
@@ -176,9 +176,9 @@ TEMPLATES = [
 ]
 
 MIDDLEWARE_CLASSES = (
-    # 'django.middleware.cache.UpdateCacheMiddleware',
+    'django.middleware.cache.UpdateCacheMiddleware',
     'django.middleware.common.CommonMiddleware',
-    # 'django.middleware.cache.FetchFromCacheMiddleware',
+    'django.middleware.cache.FetchFromCacheMiddleware',
   'django.contrib.sessions.middleware.SessionMiddleware',
   'django.middleware.csrf.CsrfViewMiddleware',
   'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -281,17 +281,17 @@ except ImportError:
   pass
 
 
-# CACHES = {
-#     'default': {
-#         'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
-#
-#     },
-#     'TIMEOUT': 60,
-#     'OPTIONS': {
-#         'MAX_ENTRIES': 10
-#     }
-# }
-#
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+
+    },
+    'TIMEOUT': 60,
+    'OPTIONS': {
+        'MAX_ENTRIES': 10
+    }
+}
+
 
 
 if DEBUG:
