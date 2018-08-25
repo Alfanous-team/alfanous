@@ -258,6 +258,7 @@ AVAILABLE_UNITS = SortedDict([
 
 COMPRESS_ENABLED = True
 COMPRESS_OFFLINE = False
+COMPRESS_STORAGE = 'compressor.storage.GzipCompressorFileStorage'
 
 ################################
 #     Production settings      #
