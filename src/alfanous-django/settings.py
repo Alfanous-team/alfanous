@@ -259,6 +259,12 @@ AVAILABLE_UNITS = SortedDict([
 COMPRESS_ENABLED = True
 COMPRESS_OFFLINE = False
 COMPRESS_STORAGE = 'compressor.storage.GzipCompressorFileStorage'
+GZIP_CONTENT_TYPES = (
+    'text/css',
+    'application/javascript',
+    'application/x-javascript',
+    'text/javascript'
+)
 
 ################################
 #     Production settings      #
