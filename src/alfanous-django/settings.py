@@ -283,12 +283,12 @@ except ImportError:
 
 CACHES = {
     'default': {
-        'BACKEND': 'django.core.cache.backends.db.DatabaseCache',
-        'LOCATION': 'cache_table',
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+
     },
-    'TIMEOUT': 3600,
+    'TIMEOUT': 60,
     'OPTIONS': {
-        'MAX_ENTRIES': 1000
+        'MAX_ENTRIES': 10
     }
 }
 if DEBUG:
