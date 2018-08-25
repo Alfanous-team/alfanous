@@ -176,9 +176,9 @@ TEMPLATES = [
 ]
 
 MIDDLEWARE_CLASSES = (
-    'django.middleware.cache.UpdateCacheMiddleware',
+    # 'django.middleware.cache.UpdateCacheMiddleware',
     'django.middleware.common.CommonMiddleware',
-    'django.middleware.cache.FetchFromCacheMiddleware',
+    # 'django.middleware.cache.FetchFromCacheMiddleware',
   'django.contrib.sessions.middleware.SessionMiddleware',
   'django.middleware.csrf.CsrfViewMiddleware',
   'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -291,6 +291,7 @@ CACHES = {
         'MAX_ENTRIES': 10
     }
 }
+
 if DEBUG:
     ALLOWED_HOSTS+=['127.0.0.1']
     INSTALLED_APPS += (  'debug_toolbar',)
