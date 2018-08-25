@@ -15,4 +15,4 @@ django_compressor
 csscompressor
 brotlipy
 django-htmlmin
-whitenoisebrotli
+whitenoise
