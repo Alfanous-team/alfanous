@@ -281,19 +281,21 @@ except ImportError:
   pass
 
 
-CACHES = {
-    'default': {
-        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+# CACHES = {
+#     'default': {
+#         'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+#
+#     },
+#     'TIMEOUT': 60,
+#     'OPTIONS': {
+#         'MAX_ENTRIES': 10
+#     }
+# }
+#
 
-    },
-    'TIMEOUT': 60,
-    'OPTIONS': {
-        'MAX_ENTRIES': 10
-    }
-}
 
 if DEBUG:
-    ALLOWED_HOSTS+=['127.0.0.1']
+    ALLOWED_HOSTS+=['*']
     INSTALLED_APPS += (  'debug_toolbar',)
     MIDDLEWARE_CLASSES += ( 'debug_toolbar.middleware.DebugToolbarMiddleware', )
 
