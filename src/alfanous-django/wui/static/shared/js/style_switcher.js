@@ -5,7 +5,7 @@ function change_skin(skin_id,skin_type) {
   var $newCSS = $('<link>', {
     rel: 'stylesheet',
     type: 'text/css',
-    href: '/static/ltr/css/skins/bootstrap_' + skin_id + '.css'
+    href: '/static/ltr/css/skins/bootstrap_' + skin_id + '.min.css'
   }).on('load', function() {
     $('#' + SKIN_CSS_ID).remove();
     $(this).attr('id', SKIN_CSS_ID);
