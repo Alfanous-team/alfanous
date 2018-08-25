@@ -25,6 +25,9 @@ from collections import OrderedDict as SortedDict
 from django.views.decorators.gzip import gzip_page
 from wui.templatetags.languages import my_get_language_info
 
+
+from htmlmin.decorators import not_minified_response
+
 # this is better than using "../../"
 realtive_path = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir, os.pardir))
 
@@ -71,6 +74,7 @@ def jos2(request):
     response = HttpResponse(response_data)
   return response
 
+@minified_response
 @gzip_page
 def results(request, unit="aya"):
   if unit not in settings.AVAILABLE_UNITS:
@@ -162,7 +166,7 @@ def results(request, unit="aya"):
 
   return response
 
-
+@minified_response
 @gzip_page
 def one_aya_page(request, is404 = False):
     mutable_request = dict(request.GET.items())
@@ -196,6 +200,12 @@ def one_aya_page(request, is404 = False):
 
     return new_response
 
+
+
+
+
+
+@minified_response
 @gzip_page
 def custom_404(request):
     return one_aya_page(request, is404 = True)

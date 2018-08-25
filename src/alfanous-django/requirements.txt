@@ -14,3 +14,4 @@ https://github.com/darklow/django-suit/tarball/v2
 django_compressor
 csscompressor
 brotlipy
+django-htmlmin

@@ -184,7 +184,9 @@ MIDDLEWARE_CLASSES = (
   'django.contrib.auth.middleware.AuthenticationMiddleware',
   'django.contrib.messages.middleware.MessageMiddleware',
   'django.middleware.locale.LocaleMiddleware',
-'debug_toolbar.middleware.DebugToolbarMiddleware',
+  'debug_toolbar.middleware.DebugToolbarMiddleware',
+  'htmlmin.middleware.HtmlMinifyMiddleware',
+  'htmlmin.middleware.MarkRequestMiddleware',
 )
 
 ROOT_URLCONF = 'urls'
@@ -255,6 +257,8 @@ AVAILABLE_UNITS = SortedDict([
   # ( "word", _("Words") ),
   #  tafsir, hadith, dream, poem
 ])
+
+HTML_MINIFY = True
 
 COMPRESS_ENABLED = True
 COMPRESS_OFFLINE = False
