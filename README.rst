@@ -1,14 +1,4 @@
-
-* .. image:: https://badges.gitter.im/Alfanous-team/alfanous.svg
-        :alt: Join the chat at https://gitter.im/Alfanous-team/alfanous
-        :target: https://gitter.im/Alfanous-team/alfanous?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge 
- 
-  .. image:: https://badge.waffle.io/Alfanous-team/alfanous.png?label=ready&title=Ready 
-        :target: https://waffle.io/Alfanous-team/alfanous
-        :alt: 'Stories in Ready'
-
-
-* .. image:: https://img.shields.io/pypi/v/alfanous.svg
+  .. image:: https://img.shields.io/pypi/v/alfanous.svg
         :target: https://pypi.python.org/pypi/alfanous
 
   .. image:: https://travis-ci.org/Alfanous-team/alfanous.png?branch=master
@@ -16,9 +6,6 @@
 
   .. image:: https://landscape.io/github/Alfanous-team/alfanous/master/landscape.svg
         :target: https://landscape.io/github/Alfanous-team/alfanous
-
-  
-
 
 ================
 Alfanous Project
@@ -37,10 +24,8 @@ Alfanous understands the complex nature of the Arabic language and thus offers e
 :License: `AGPL <https://github.com/Alfanous-team/alfanous/blob/master/LICENSE>`_
 :Tracker: `Alfanous-team/alfanous/Issues <https://github.com/Alfanous-team/alfanous/issues>`_
 :Mailinglist: `alfanous@googlegroups.com <http://groups.google.com/group/alfanous/>`_
-:IRC: #alfanous @ freenode
 :Website: `Alfanous.org <http://www.alfanous.org/>`_
 :Doc: `Readthedocs <http://alfanous.readthedocs.org/en/latest/>`_
-:Feedbacks: `Alfanous Community Feedbacks <https://github.com/Alfanous-team/alfanous/issues>`_
 :Accounts: `@Facebook <https://www.facebook.com/alfanous>`_ `@Twitter <https://twitter.com/alfanous>`_ `@GooglePlus <https://plus.google.com/111305625425237630318>`_ 
         | `@Sourceforge <http://sourceforge.net/projects/alfanous/>`_ `@Launchpad <http://www.launchpad.net/alfanous/>`_
 
@@ -177,7 +162,7 @@ This is the list of search features already implemented, preview links use Alfan
 -------
 History
 -------
-- **4 Mar2015**: Launching "GUI 0.7.20 Kahraman release" of the GUI: clean, uptodate technologies, localization, translation search.
+- **4 March 2015**: Launching "GUI 0.7.20 Kahraman release" of the GUI: clean, uptodate technologies, localization, translation search.
 
 - **25 November 2013**: Launching "`API 0.7.01 BlackStone release <https://github.com/Alfanous-team/alfanous/releases/tag/API_0.7.01>`_" of the  API: Extensible, More stable, and has Many features.
 
