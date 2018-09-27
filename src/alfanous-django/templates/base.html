@@ -20,7 +20,20 @@
 
     <meta name="description" content="{% meta_description %}">
     <meta name="google-site-verification" content="SqRr5YSggCEdzVRxx1KuWWwKmtctzUoxuYTCLV1Vbwo"/>
-    <meta name="keywords" content="{{ _('quran') }},
+    <meta name="keywords" content="{{ _('search in quran') }},
+								   {{ _('search in holy quran') }},
+								   {{ _('search in holy quran by word') }},
+								   {{ _('search a word in quran') }},
+								   {{ _('search ayas in noble quran') }},
+								   {{ _('text search in quran') }},
+								   {{ _('search holy quran words') }},
+								   {{ _('search an aya of holy quran') }},
+								   {{ _('search engine in holy quran') }},
+								   {{ _('quranic search engine') }},
+								   {{ _('search aya in mushaf') }},
+								   {{ _('search an aya in quran') }},
+								   {{ _('search a word in quran') }},
+                                    {{ _('quran') }},
 								   {{ _('forqan') }},
 								   {{ _('koran') }},
 								   {{ _('search') }},
@@ -81,13 +94,20 @@
 
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    {% compress css %}
-        <!-- Bootstrap -->
-        {% ifequal bidi.direction "ltr" %}
+
+  {% ifequal bidi.direction "ltr" %}
             <link id="skin_css" href="/static/ltr/css/skins/bootstrap_default.min.css" rel="stylesheet">
-            <link href="/static/ltr/css/bootstrap-responsive.min.css" rel="stylesheet">
             {% else %}
             <link href="/static/rtl/css/rtl-bootstrap.min.css" rel="stylesheet">
+        {% endifequal %}
+        <!--[if IE 7]>
+        <link rel="stylesheet" href="/static/shared/css/font-awesome-ie7.min.css">
+        <![endif]-->
+
+        <!-- Bootstrap -->
+        {% ifequal bidi.direction "ltr" %}
+            <link href="/static/ltr/css/bootstrap-responsive.min.css" rel="stylesheet">
+            {% else %}
             <link href="/static/rtl/css/rtl-bootstrap-responsive.min.css" rel="stylesheet">
         {% endifequal %}
         <!-- custom html select items -->
@@ -99,22 +119,18 @@
         <!-- v-keyboard css -->
         <link href="/static/shared/css/keyboard.css" rel="stylesheet">
         <!-- share buttons styling -->
-        {% if False %}{# params #}
             <link href="/static/shared/css/share_style.css" rel="stylesheet">
-        {% else %}
-            <link href="/static/shared/css/share_style_root.css" rel="stylesheet">
-        {% endif %}
-        <!--[if IE 7]>
-        <link rel="stylesheet" href="/static/shared/css/font-awesome-ie7.min.css">
-        <![endif]-->
 
+    {% compress css %}
         <!-- Custom Alfanous CSS -->
         <link href="/static/shared/css/style.css" rel="stylesheet">
+
+    {% endcompress %}
         <link href="/static/shared/css/printability.css" rel="stylesheet" media="print">
+
         {% ifequal bidi.direction "rtl" %}
             <link href="/static/rtl/css/rtl.css" rel="stylesheet">
         {% endifequal %}
-    {% endcompress %}
         <!--  conditional css style -->
         <style rel="stylesheet">
             @media (min-width: 768px) {
@@ -309,22 +325,27 @@
         <!--main-->
         <div class="row offset0 span12 text-center">
             <div class="span12">
-                <h1>
-                    <a class="logo" href="{% url 'results_i18n' current.unit %}">
-                        {% if LANGUAGE_CODE == "ar" or  LANGUAGE_CODE == "fr" or LANGUAGE_CODE == "id" %}
-                            <img src="/static/shared/img/logo_{{ current.unit }}_{{ LANGUAGE_CODE }}.png"
-                                 alt="Alfanous logo">
-                        {% else %}
-                            <img src="/static/shared/img/logo_{{ current.unit }}_en.png" alt="Alfanous logo">
-                        {% endif %}
-                    </a>
-                </h1>
-                <form class="form-search" id="form" name="form" method="GET" action=".">
+                    <h1>
+                        <a class="logo" href="{% url 'results_i18n' current.unit %}">
+                            {% if LANGUAGE_CODE == "ar" or  LANGUAGE_CODE == "fr" or LANGUAGE_CODE == "id" %}
+                                <img src=" {/static/shared/img/logo_{{ current.unit }}_{{ LANGUAGE_CODE }}.png"
+                                     alt="Alfanous - Search in Quran ayahs">
+                            {% else %}
+                                <img src="/static/shared/img/logo_{{ current.unit }}_en.png" alt="Alfanous - Search in Quran ayahs">
+                            {% endif %}
+                        </a>
+                    </h1>
+
+
+
+                <form class="form-search" id="form" name="form" method="GET" action="/{{ LANGUAGE_CODE }}/{{  current.unit }}/">
+
                     <div class="input-append bootstro text-right"
                          data-bootstro-title="{{ _('Alfanous is smart!') }}"
                          data-bootstro-content="{{ _('Just start typing here! but wait... <strong>Did you know?</strong> Alfanous isn\'t just a typical search function, you can do a lot using operators like: <code>+</code>, <code>-</code>, <code>|</code> and a lot more!') }}"
                          data-bootstro-width="400px"
                          data-bootstro-placement='bottom' data-bootstro-step='3'>
+
                         <input id="appendedInputButtons" name="query" class="search-query enter keyboardInput"
                                placeholder="{{ _('search query here ...') }}" type="text" value="{{ params.query }}"
                                data-provide="typeahead" autocomplete="off"
@@ -336,6 +357,8 @@
                             <i class="icon-search"></i>
                             <span class="hidden-phone">{{ _("Quick search") }}</span>
                         </button>
+
+
 
                     </div>
                     {% if current.unit == "aya" %}
@@ -486,11 +509,12 @@
         <div class="push"><!--//--></div>
         <div class="container narrow row-fluid ">
 
-            <p class="muted credit">{{ _("Copyright") }} &copy; <a
-                    href="https://github.com/Alfanous-team/alfanous/blob/master/AUTHORS.rst">{{ _("Alfanous Team") }}</a>
-                2010 - {% now "Y" %}</p>
+            <p class="muted credit">{{ _("Copyright") }} &copy;
+                <a class="muted" href="https://github.com/Alfanous-team/alfanous/blob/master/AUTHORS.rst">{{ _("Alfanous Team") }}</a>,
+                2010-{% now "Y" %}</p>
             {#                <p class="muted credit hidden-phone">&#124; {{ _("released under") }} <a href="http://www.gnu.org/licenses/agpl.html">{{ _("AGPL license") }}</a>.</p>#}
             <br/>
+
             <span class="label label-success hidden-phone hidden-print">
                           <a href="#download" data-toggle="modal"><i class="icon-download-alt"></i> {{ _("Download") }}</a>
                     </span>
@@ -502,6 +526,15 @@
                              Alfanous API
                      </a>
                     </span>
+        <br/>
+                <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
+
+                    <input type="hidden" name="cmd" value="_donations.">
+                    <input type="hidden" name="encrypted" value="-----BEGIN PKCS7-----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-----END PKCS7-----
+                    ">
+                    <input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
+                    <img alt="" border="0" src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" width="1" height="1">
+                </form>
 
 
             {#                    <span class="label label-success hidden-phone hidden-print">#}
@@ -559,7 +592,7 @@
 <!-- end -->
 {% endcompress %}
 
-<script src="http://api.html5media.info/1.1.5/html5media.min.js"></script>
+<script src="https://api.html5media.info/1.1.5/html5media.min.js"></script>
 
 </body>
 </html>

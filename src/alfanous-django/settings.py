@@ -65,7 +65,7 @@ TIME_ZONE = 'Africa/Algiers'
 
 # Language code for this installation. All choices can be found here:
 # http://www.i18nguy.com/unicode/language-identifiers.html
-LANGUAGE_CODE = 'en'
+LANGUAGE_CODE = 'ar'
 
 LANGUAGES = (
   ( 'ar', "Arabic" ),
@@ -263,7 +263,7 @@ EXCLUDE_FROM_MINIFYING = ('^',)
 
 COMPRESS_ENABLED = True
 COMPRESS_OFFLINE = False
-COMPRESS_STORAGE = 'compressor.storage.GzipCompressorFileStorage'
+COMPRESS_STORAGE = STATICFILES_STORAGE
 GZIP_CONTENT_TYPES = (
     'text/css',
     'application/javascript',

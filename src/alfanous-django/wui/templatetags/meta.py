@@ -3,7 +3,7 @@ from django.template import Library
 from django.utils.html import escape
 from django.utils.translation import ugettext_lazy as _
 import re
-from wui.templatetags import xget
+from . import xget
 from alfanous.Support.PyArabic.araby_constants import TASHKEEL
 
 register = Library()

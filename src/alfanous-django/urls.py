@@ -8,7 +8,7 @@ from django.conf import settings
 # from django.contrib import admin
 # admin.autodiscover()
 
-from wui.views import jos2, one_aya_page, results
+from wui.views import jos2, one_aya_page, results, browse_aya
 
 urlpatterns = [
                        url( r'^robots.txt$', TemplateView.as_view(
@@ -19,12 +19,15 @@ urlpatterns = [
      template_name='protocols/sitemap.xml', content_type='application/xml')),
                        url( r'^jos2', jos2 ),
                        url(r'^r', one_aya_page),
+
                        # url( r'^a/', include( admin.site.urls)),
 ]
 
 # These URLs accept the language prefix.
 urlpatterns += i18n_patterns(
-  url(r'^$', results, name='results'),
+    url(r'^surah/(?P<surah>[\w\-\ \']{2,20})/ayah/(?P<ayah>\d{1,8})', browse_aya, name='browse_aya'),
+
+    url(r'^$', results, name='results'),
   url(r'^(?P<unit>\w{3,15})/', results, name='results_i18n'),
 )
 

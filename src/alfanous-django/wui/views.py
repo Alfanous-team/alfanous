@@ -23,9 +23,9 @@ from wui.templatetags.languages import my_get_language_info
 # this is better than using "../../"
 realtive_path = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir, os.pardir))
 
-path.insert(0, realtive_path) ## a relative path, development mode
-path.append("alfanous.egg/alfanous") ## an egg, portable
-path.append("/home/alfanous/alfanous-django/src/") ## absolute  path, server mode
+# path.insert(0, realtive_path) ## a relative path, development mode
+# path.append("alfanous.egg/alfanous") ## an egg, portable
+# path.append("/home/alfanous/alfanous-django/src/") ## absolute  path, server mode
 
 from alfanous.Outputs import Raw
 
@@ -69,13 +69,11 @@ def jos2(request):
 
 @gzip_page
 def results(request, unit="aya"):
-
-
     if unit not in settings.AVAILABLE_UNITS:
         raise Http404()
     mutable_request = dict(request.GET.items())
-    show_params = {"action": "show", "query": "all"}
 
+    show_params = {"action": "show", "query": "all"}
     if 'query' in mutable_request and mutable_request.get('action', 'search') == 'search':
         search_params = mutable_request
         suggest_params = {"action": "suggest", "query": mutable_request["query"]}
@@ -135,6 +133,7 @@ def results(request, unit="aya"):
             "fields": fields_mapping_en_ar
         }
     }
+
     mytemplate = unit + '_search.html'
 
     context = {
@@ -151,6 +150,75 @@ def results(request, unit="aya"):
         "params": search_params,
         "results": raw_search,
         "suggestions": raw_suggest,
+        "info": raw_show
+    }
+
+    response = render_to_response(mytemplate, context)
+    if raw_search and (raw_search["error"]["code"] or not raw_search["search"]["interval"]["total"]):
+        response.status_code = 404
+
+    return response
+
+
+@gzip_page
+def browse_aya(request, surah, ayah):
+
+    mutable_request = dict(request.GET.items())
+
+    search_params = {
+            "action": "search",
+            "query": 'sura:"{surah}" + aya_id:{ayah}'.format(surah=surah, ayah=ayah),
+            # "view":'full'
+    }
+
+    show_params = {"action": "show", "query": "all"}
+    raw_search = RAWoutput.do(search_params)
+    raw_show = RAWoutput.do(show_params)
+
+    # language direction  properties
+    bidi_val = my_get_language_info(request.LANGUAGE_CODE)['bidi']
+    fields_mapping_en_ar = raw_show["show"]["fields_reverse"]
+    fields_mapping_en_en = dict([(k, k) for k in fields_mapping_en_ar])
+
+    # a sorted list of translations
+    translations = raw_show["show"]["translations"]
+    sorted_translations = SortedDict(sorted(translations.iteritems(), key=itemgetter(0)))
+
+    bidi_properties = {
+        False: {
+            "val": bidi_val,
+            "direction": "ltr",
+            "align": "left",
+            "align_inverse": "right",
+            "image_extension": "_en",
+            "fields": fields_mapping_en_en
+        },
+        True: {
+            "val": bidi_val,
+            "direction": "rtl",
+            "align": "right",
+            "align_inverse": "left",
+            "image_extension": "_ar",
+            "fields": fields_mapping_en_ar
+        }
+    }
+
+    mytemplate = 'aya_search.html'
+
+    context = {
+        'current': {
+            'path': request.path,
+            'request': request.GET.urlencode(),
+            'unit': 'aya',
+        },
+        "bidi": bidi_properties[bidi_val],
+        "available": {
+            "units": settings.AVAILABLE_UNITS,
+            "translations": sorted_translations
+        },
+        "params": search_params,
+        "results": raw_search,
+        "suggestions": None,
         "info": raw_show
     }
 

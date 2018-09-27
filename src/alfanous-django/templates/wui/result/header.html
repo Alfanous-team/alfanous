@@ -11,7 +11,7 @@
 
   -
   <h3>
-  <a class="muted" href='?{% aya_query result_content %}'>
+  <a class="muted" href='{% url 'browse_aya' result_content.identifier.sura_name result_content.identifier.aya_id|stringformat:"i" %}'>
     <span >
       <small>
         {% if bidi.direction == "rtl" %}
