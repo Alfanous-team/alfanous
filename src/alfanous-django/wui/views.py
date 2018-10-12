@@ -18,6 +18,7 @@ from django.http import HttpResponse
 from django.http.response import Http404
 from django.shortcuts import render_to_response
 from django.views.decorators.gzip import gzip_page
+from rest_framework import status
 from wui.templatetags.languages import my_get_language_info
 
 # this is better than using "../../"
@@ -44,13 +45,18 @@ def control_access(request):
 
 
 @gzip_page
-def jos2(request):
+def api(request,action='search'):
     """ JSON Output System II """
+
+
+    if action not in RAWoutput._domains['action']:
+        return HttpResponse('action should be one of: {}'.format(','.join(RAWoutput._domains['action'])), status=status.HTTP_400_BAD_REQUEST)
+
     control_access(request)
     if len(request.GET):
         response_data = RAWoutput.do(request.GET)
         response = HttpResponse(
-            json.dumps(response_data, sort_keys=False, indent=4),
+            json.dumps(response_data, sort_keys=False),
             content_type="application/json"
         )
         response['charset'] = 'utf-8'

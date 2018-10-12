@@ -1,4 +1,4 @@
-Django
+django
 distribute==0.6.31
 pyparsing==2.0.1
 wsgiref==0.1.2
@@ -16,3 +16,4 @@ csscompressor
 brotlipy
 django-htmlmin
 whitenoise
+django-swagger-ui

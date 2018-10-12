@@ -24,6 +24,7 @@ INSTALLED_APPS = (
   'django.contrib.sites',
   'django.contrib.messages',
   'django.contrib.staticfiles',
+  'swagger_ui',
   # 'rest_framework',
   # 'dynamic_rest',
   # 'rest_framework.authtoken',
@@ -301,3 +302,5 @@ if DEBUG:
     INSTALLED_APPS += (  'debug_toolbar',)
     MIDDLEWARE_CLASSES += ( 'debug_toolbar.middleware.DebugToolbarMiddleware', )
 
+
+SWAGGER_YAML_FILE = 'doc/api.yaml'

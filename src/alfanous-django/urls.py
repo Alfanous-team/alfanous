@@ -1,3 +1,4 @@
+import swagger_ui
 from django.conf.urls import include, url
 from django.conf.urls.i18n import i18n_patterns
 from django.views.generic import RedirectView,TemplateView
@@ -8,7 +9,7 @@ from django.conf import settings
 # from django.contrib import admin
 # admin.autodiscover()
 
-from wui.views import jos2, one_aya_page, results, browse_aya
+from wui.views import api, one_aya_page, results, browse_aya
 
 urlpatterns = [
                        url( r'^robots.txt$', TemplateView.as_view(
@@ -16,9 +17,11 @@ urlpatterns = [
                        url( r'^opensearch.xml$', TemplateView.as_view(
     template_name='protocols/opensearch.xml', content_type='application/opensearchdescription+xml')),
                        url(r'^sitemap.xml$', TemplateView.as_view(
-     template_name='protocols/sitemap.xml', content_type='application/xml')),
-                       url( r'^jos2', jos2 ),
-                       url(r'^r', one_aya_page),
+     template_name='protocols/sitemap.xml', content_type='application/xml')), #TODO generate for all ayas
+                        url(r'^api/(?P<action>\w{3,15})/?', api, name='api'),
+                        url(r'^', include(swagger_ui.urls)),
+
+                    url(r'^r', one_aya_page),
 
                        # url( r'^a/', include( admin.site.urls)),
 ]
