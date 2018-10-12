@@ -44,6 +44,7 @@ def control_access(request):
     return True
 
 
+
 @gzip_page
 def api(request,action='search'):
     """ JSON Output System II """
@@ -71,6 +72,30 @@ def api(request,action='search'):
         }
         response = HttpResponse(response_data)
     return response
+
+@gzip_page
+def jos2(request): # TODO to be removed
+    """ JSON Output System II """
+    control_access(request)
+    if len(request.GET):
+        response_data = RAWoutput.do(request.GET)
+        response = HttpResponse(
+            json.dumps(response_data, sort_keys=False, indent=4),
+            content_type="application/json"
+        )
+        response['charset'] = 'utf-8'
+        response['Access-Control-Allow-Origin'] = '*'
+        response['Access-Control-Allow-Methods'] = 'GET'
+        # response['Content-Encoding'] = 'gzip'
+    else:
+        response_html = "<html><head> <title> %(title)s </title> </head><body> %(body)s </body> </html>"
+        response_data = response_html % {
+            "title": "JSON Output System 2 (JOS2)",
+            "body": RAWoutput._information["json_output_system_note"]
+        }
+        response = HttpResponse(response_data)
+    return response
+
 
 
 @gzip_page

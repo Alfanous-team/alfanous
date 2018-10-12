@@ -9,7 +9,7 @@ from django.conf import settings
 # from django.contrib import admin
 # admin.autodiscover()
 
-from wui.views import api, one_aya_page, results, browse_aya
+from wui.views import api, one_aya_page, results, browse_aya, jos2
 
 urlpatterns = [
                        url( r'^robots.txt$', TemplateView.as_view(
@@ -19,7 +19,9 @@ urlpatterns = [
                        url(r'^sitemap.xml$', TemplateView.as_view(
      template_name='protocols/sitemap.xml', content_type='application/xml')), #TODO generate for all ayas
                         url(r'^api/(?P<action>\w{3,15})/?', api, name='api'),
-                        url(r'^', include(swagger_ui.urls)),
+                         url(r'^jos2', jos2, name='jos2'),
+
+                             url(r'^', include(swagger_ui.urls)),
 
                     url(r'^r', one_aya_page),
 
