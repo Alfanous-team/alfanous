@@ -66,7 +66,7 @@ def api(request,action='search'):
     else:
         response_html = "<html><head> <title> %(title)s </title> </head><body> %(body)s </body> </html>"
         response_data = response_html % {
-            "title": "JSON Output System 2 (JOS2)",
+            "title": "Alfanous API",
             "body": RAWoutput._information["json_output_system_note"]
         }
         response = HttpResponse(response_data)

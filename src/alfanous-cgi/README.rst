@@ -11,7 +11,7 @@ Terms of use
 ------------
 *  This service is free to use.
 *  Don't name your application "Alfanous" before we are okey about that.
-*  We highly recommend to refer Alfanous engine somewhere in your pages using icons or texts like "Alfanous engine", "Powered by Alfanous.org", or "Based on Alfanous.org" linked to "http://www.alfanous.org" or "http://www.alfanous.org/jos2". 
+*  We highly recommend to refer Alfanous engine somewhere in your pages using icons or texts like "Alfanous engine", "Powered by Alfanous.org", or "Based on Alfanous.org" linked to "http://www.alfanous.org"
 *  We highly recommend to describe clearly somewhere in your application the relation to the whole Alfanous project, such as an about button.
 *  Art works you may need are available here_, the Art is licenced with AGPL license.
 
@@ -26,18 +26,18 @@ Limitations
 --------------
 Quering Syntax
 --------------
-To get JSON information , use this syntax : http://www.alfanous.org/jos2?ARGUMENT such as ARGUMENT is compound of those flags: `API flags <https://github.com/Alfanous-team/alfanous/blob/master/src/alfanous/README.rst#flags>`_.
+To get JSON information , use this syntax : http://www.alfanous.org/api/:action/?ARGUMENT such as :action is search, suggest, or show, and  ARGUMENT is compound of those flags: `API flags <https://github.com/Alfanous-team/alfanous/blob/master/src/alfanous/README.rst#flags>`_.
 
 --------
 Examples
 --------
-*  `http://www.alfanous.org/jos2?action=search&unit=aya&query=الحمد&highlight=bbcode&sortedby=tanzil&page=2&traduction=1&fuzzy=True`
-*  http://www.alfanous.org/jos2?action=show&query=recitations
-*  http://www.alfanous.org/jos2?action=show&query=fields
-*  http://www.alfanous.org/jos2?action=show&query=All
-*  http://www.alfanous.org/jos2?action=show&query=translations 
-*  http://www.alfanous.org/jos2?action=show&query=errors
-*  `http://www.alfanous.org/jos2?action=suggest&unit=aya&query=مءصدة`
+*  `http://www.alfanous.org/api/search?unit=aya&query=الحمد&highlight=bbcode&sortedby=tanzil&page=2&traduction=1&fuzzy=True`
+*  http://www.alfanous.org/api/show?query=recitations
+*  http://www.alfanous.org/api/show?query=fields
+*  http://www.alfanous.org/api/show?query=All
+*  http://www.alfanous.org/api/show?query=translations
+*  http://www.alfanous.org/api/show?query=errors
+*  `http://www.alfanous.org/api/suggest?unit=aya&query=مءصدة`
 
 ----------------
 Response Samples

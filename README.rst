@@ -71,9 +71,9 @@ or from Python:
 
 You can use it also from the web service: 
 
-http://alfanous.org/jos2 ? action=search & query=الله
+http://alfanous.org/api/search?query=الله
 
-http://alfanous.org/jos2 ? action=search & query=Allh
+http://alfanous.org/api/search?query=Allh
 
 - More about `Install <https://github.com/Alfanous-team/alfanous/blob/master/INSTALL.rst>`_
 - More about `API <https://github.com/Alfanous-team/alfanous/tree/master/src/alfanous>`_
