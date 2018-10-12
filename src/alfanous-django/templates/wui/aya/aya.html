@@ -12,7 +12,7 @@
       {% if aya_word|first in "<ct> "|make_list  %}
         {# <mark> fixme:need change in API #}{{ aya_word }}{# </mark> #}
       {% else %}
-        <a href="?{% custom_query aya_word 1 False %}">{{ aya_word }}</a>
+        <a href="/{{ LANGUAGE_CODE }}/{{ current.unit }}/?{% custom_query aya_word 1 False %}">{{ aya_word }}</a>
       {% endif %}
     {% endautoescape %}
   {% endspaceless %}
