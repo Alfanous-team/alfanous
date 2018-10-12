@@ -68,7 +68,6 @@
 								   {{ LANGUAGE_CODE|my_language_name }},
 								   {{ LANGUAGE_CODE|my_language_name_local }},
 								   "/>
-    <!-- meta name="copyright" content="&copy; Alfanous Team, AGPL" -->
     <meta name="author"
           content="Assem Chelli, Ahmed Ramadan, Abdellah Chelli, Mouad Debbar, Walid Ziouche, Islam Azzedine Mennouchi, Muslih Alaqaad"/>
     <meta name="robots" content="index,follow"/>
@@ -96,7 +95,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 
     {% ifequal bidi.direction "ltr" %}
-        <link id="skin_css" href="/static/ltr/css/skins/bootstrap_default.min.css" rel="stylesheet">
+        <link id="skin_css" href="/static/ltr/css/bootstrap_default.min.css" rel="stylesheet">
         {% else %}
         <link href="/static/rtl/css/rtl-bootstrap.min.css" rel="stylesheet">
     {% endifequal %}
@@ -236,12 +235,8 @@
                                        id="cerulean_skin">{{ _("Cerulean") }}</a>
                                     <a href="#" onclick="change_skin('cyborg','dark');"
                                        id="cyborg_skin">{{ _("Cyborg") }}</a>
-                                    <!-- <a href="#" onclick="change_skin('amelia','light');" id="amelia_skin">{{ _("Amelia") }}</a> -->
-                                    <!-- <a href="#" onclick="change_skin('readable','light');" id="readable_skin">{{ _("Readable") }}</a> -->
                                     <a href="#" onclick="change_skin('slate','dark');"
                                        id="slate_skin">{{ _("Slate") }}</a>
-                                    <!-- <a href="#" onclick="change_skin('spacelab','light');" id="spacelab_skin">{{ _("Spacelab") }}</a> -->
-                                    <!-- <a href="#" onclick="change_skin('superheroes','dark');" id="superheroes_skin">{{ _("Super Heroes") }}</a>  -->
                                     <a href="#" onclick="change_skin('united','light');"
                                        id="united_skin">{{ _("United") }}</a>
 
@@ -257,11 +252,9 @@
                         <ul class="dropdown-menu">
                             <li>
                                 <a id="QuickTour" href="#"><i class="icon-lightbulb"></i> {{ _("Quick Tour!") }}</a>
-                                {#                            <a href="#faqpanel" data-toggle="modal"><i class="icon-question-sign"></i> {{ _("F.A.Q.") }}</a>#}
                                 <a href="#help" data-toggle="modal"><i
                                         class="icon-exclamation-sign"></i> {{ _("Help") }}</a>
 
-                                {#                           <a href="#contactpanel" data-toggle="modal"><i class="icon-envelope"></i> {{ _("Contact") }}</a>#}
                                 <a class="mailing-list" target="_blank" href="http://groups.google.com/group/alfanous/"
                                    data-toggle="tooltip" title="{{ _('Our Mailing list on GoogleGroups') }}"><i
                                         class="icon-group"></i> {{ _("Mailing list") }}</a>
@@ -277,10 +270,6 @@
                                         class="icon-globe"></i> {{ _("Translate") }}</a>
                                 <a href="https://github.com/Alfanous-team/alfanous/blob/master/FAQ.rst#how-to-contribute-by-coding"><i
                                         class="icon-code"></i> {{ _("Code") }}</a>
-                                <a href="#otherMeans" data-toggle="modal"><i
-                                        class="icon-plus"></i> {{ _("Other means") }}</a>
-
-
                             </li>
 
                         </ul>
@@ -451,41 +440,20 @@
 
     {% if not params %}
 
-        {% block notification %}
-            <div class="row-fluid text-center">
+                        <br/>
+                        <br/>
+                        <br/>
 
+
+        {% block notification %}
+
+            <div class="row-fluid text-center">
                 <h1>
                     {{ _("Alfanous is a Quranic search engine, that can find any word or aya in the Holy Quran") }}
                 </h1>
-
-                <div class="hidden-phone text-center help">
-
-
-                    {#		                    <div class="alert alert-warning span7 offset3 text-center">#}
-                    {#		                        <button type="button" class="close" data-dismiss="alert">&times;</button>#}
-                    {#		                        <i class="icon-screenshot"></i>#}
-                    {#		                        <strong>{{ _("Help!") }} </strong>#}
-                    {#		                        <a href="https://translations.launchpad.net/alfanous/trunk" target="_blank" class="">#}
-                    {#		                        {{ _("Please help us translate Alfanous Project into more languages!") }}#}
-                    {#		                        </a>#}
-                    {#		                      #}
-                    {#		                    </div>#}
-
-                    <!-- <div class="alert alert-info span8 offset3 text-center">
-		                        <button type="button" class="close" data-dismiss="alert">&times;</button>
-		                        <i class="icon-info-sign"></i>
-		                        <strong>{{ _("Info!") }} </strong>
-		                        <a href="tani" target="_blank">
-		                        {{ _("The source of indexed Quran translations is Tanzil Project") }}
-		                        </a>
-		                    </div>  -->
-                    <br/>
-                    <br/>
-                </div>
             </div>
 
         {% endblock notification %}
-
 
     {% endif %}
 
@@ -493,17 +461,6 @@
 
 {% include "popups_content.html" %}
 
-
-<!-- <div class="row-fluid text-center hidden-print">
-
-				 <br/>
-				<span id="shareme_root" class="span4 offset4 shareme_root" data-url="http://www.alfanous.org{% url 'results_i18n' current.unit %}?{{ current.request }}"
-				    data-text="{{ _('Alfanous') }} - {% if current.unit == 'aya' %} {{ _('Quran Ayah Search') }}
-     {% elif current.unit == 'word' %} {{ _('Quran Word Search') }} {% elif current.unit == 'translation' %}
-    {{ _('Quran Translation Search') }}{% else %} {{ _('Quran Ayah Search') }}
-     {% endif %}   #alfanous" data-title="  {{ _('Share!') }}"></span>
-				<br/>
-			</div>-->
 <br/>
 <br/>
 
@@ -519,7 +476,6 @@
                 <a class="muted"
                    href="https://github.com/Alfanous-team/alfanous/blob/master/AUTHORS.rst">{{ _("Alfanous Team") }}</a>,
                 2010-{% now "Y" %}</p>
-            {#                <p class="muted credit hidden-phone">&#124; {{ _("released under") }} <a href="http://www.gnu.org/licenses/agpl.html">{{ _("AGPL license") }}</a>.</p>#}
             <br/>
 
             <span class="label label-success hidden-phone hidden-print">
@@ -534,24 +490,6 @@
                      </a>
                     </span>
             <br/>
-{#            <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">#}
-{##}
-{#                <input type="hidden" name="cmd" value="_donations.">#}
-{#                <input type="hidden" name="encrypted" value="-----BEGIN PKCS7-----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-----END PKCS7-----#}
-{#                    ">#}
-{#                <input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif" border="0"#}
-{#                       name="submit" alt="PayPal - The safer, easier way to pay online!">#}
-{#                <img alt="" border="0" src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" width="1" height="1">#}
-{#            </form>#}
-
-
-            {#                    <span class="label label-success hidden-phone hidden-print">#}
-            {#                    <a class="footer-link-searchbar" onclick="window.external.AddSearchProvider('http://www.alfanous.org/opensearch.xml');return false;" href="#">#}
-            {#                        <i class="icon-plus-sign icon-white"></i>#}
-            {#                        {{ _("Add to your search bar!") }}#}
-            {#                    </a>#}
-            {#                    </span>#}
-
         </div>
 
     </div>

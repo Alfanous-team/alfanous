@@ -48,6 +48,21 @@
     background-size: 100% 100%;           /* Gecko 2.0 (Firefox 4.0) > CSS3 */ 
     overflow:hidden
 }
+
+        .random_aya {
+                direction: rtl;
+    font-family: me_quran, Scheherazade, KacstBook, KacstQurn, ArabeyesQr, "KFGQPC Uthman Taha Naskh", Arial;
+    font-size: 13px;
+    word-spacing: 3px;
+    line-height: 200%;
+            display: block;
+    font-size: 1.5em;
+    margin-block-start: 0.83em;
+    margin-block-end: 0.83em;
+    margin-inline-start: 0px;
+    margin-inline-end: 0px;
+    font-weight: bold;
+        }
     
     
     </style>
@@ -58,9 +73,11 @@
     <!-- BEGIN CONTENT -->
      <div class="container">
     
-    <div class="wrap_content row offset1 span10">
+    <div class="wrap_content row  text-center offset1 span12">
+        <br/>
+      <br/>
 
-      <h2 class="arabic-ayah-secondary"><span class="quran_decoration">[</span>{{ search.ayas.1.aya.text }}<span class="quran_decoration">]</span></h2>
+      <h2 class="random_aya arabic-ayah-secondary"><span class="quran_decoration">[</span>{{ search.ayas.1.aya.text }}<span class="quran_decoration">]</span></h2>
       
       <h3><a href="/r?id={{ params.gid }}&amp;bg={{ params.bg }}">{{ search.ayas.1.identifier.sura_arabic_name }} {{ search.ayas.1.identifier.aya_id }}</a></h3>
       
@@ -70,51 +87,46 @@
      <div class="alert alert-error" role="alert"> {{ _("Page not found!") }}</div>
       {% endif %}
       <br/>
- 
-    {% if not params.simple %}
-            <ul  class="inline" style='min-width: 5px;'>
-            <li>
-              <a href="/r"  title="{{ _('Randomize') }}"><i class="icon-refresh"></i></a>
-            </li>
-            <li>
-              <a href="/r?id={{ params.gid }}&amp;bg={{ params.bg }}&amp;simple=1" title="{{ _('Hide social icons') }}"><i class="icon-eye-close "></i></a>
-            </li>
-            <li>
-                   <a href="/r?id={{ search.ayas.1.identifier.gid }}&amp;api=1" title="{{ _('API result') }}"><i class="icon-exchange  icon-large"></i></a>
-            </li>
-           |
-            <li>
-                <a href="https://twitter.com/intent/tweet?text={{ search.ayas.1.aya.text_no_highlight }} - {{ search.ayas.1.identifier.sura_arabic_name }} {{ search.ayas.1.identifier.aya_id }} &amp;url=http://www.alfanous.org/r?id={{ search.ayas.1.identifier.gid }}" target="_blank" title="{{ _('Share to Twitter') }}">
-                <i class="icon-twitter"></i>
-                </a>
-            </li>
-            <li>
-                <a href="https://www.facebook.com/sharer/sharer.php?u=http://www.alfanous.org/r?id={{ search.ayas.1.identifier.gid }}&amp;t='test'" target="_blank" title="{{ _('Share to Facebook') }}">
-                <i class="icon-facebook"></i>
-                </a>
-            </li>
-            <li>
-                <a href="https://plus.google.com/share?url=http://www.alfanous.org/r?id={{ search.ayas.1.identifier.gid }}" target="_blank">
-                <i class="icon-google-plus" title="{{ _('Share to Google+') }}"></i>
-                </a>
-            </li>
-            <li>
-                <a href="https://www.linkedin.com/shareArticle?mini=true&url=http://www.alfanous.org/r?id={{ search.ayas.1.identifier.gid }}&amp;title=سورة {{ search.ayas.1.identifier.sura_arabic_name }} ، الآية {{ search.ayas.1.identifier.aya_id }}&amp;summary=&amp;source=" target="_blank" title="{{ _('Share to Linkedin') }}">
-                <i class="icon-linkedin"></i>
-              
-                </a>
-            </li>
-
-            </ul>
-
-       <a href="/"> ALFANOUS.ORG </a>
-
-       {% endif %}
+{#     {% if not params.simple %}#}
+{#            <ul  class="inline" style='min-width: 5px;'>#}
+{#            <li>#}
+{#              <a href="/r"  title="{{ _('Randomize') }}"><i class="icon-refresh"></i></a>#}
+{#            </li>#}
+{#            <li>#}
+{#              <a href="/r?id={{ params.gid }}&amp;bg={{ params.bg }}&amp;simple=1" title="{{ _('Hide social icons') }}"><i class="icon-eye-close "></i></a>#}
+{#            </li>#}
+{#            <li>#}
+{#                   <a href="/r?id={{ search.ayas.1.identifier.gid }}&amp;api=1" title="{{ _('API result') }}"><i class="icon-exchange  icon-large"></i></a>#}
+{#            </li>#}
+{#           |#}
+{#            <li>#}
+{#                <a href="https://twitter.com/intent/tweet?text={{ search.ayas.1.aya.text_no_highlight }} - {{ search.ayas.1.identifier.sura_arabic_name }} {{ search.ayas.1.identifier.aya_id }} &amp;url=http://www.alfanous.org/r?id={{ search.ayas.1.identifier.gid }}" target="_blank" title="{{ _('Share to Twitter') }}">#}
+{#                <i class="icon-twitter"></i>#}
+{#                </a>#}
+{#            </li>#}
+{#            <li>#}
+{#                <a href="https://www.facebook.com/sharer/sharer.php?u=http://www.alfanous.org/r?id={{ search.ayas.1.identifier.gid }}&amp;t='test'" target="_blank" title="{{ _('Share to Facebook') }}">#}
+{#                <i class="icon-facebook"></i>#}
+{#                </a>#}
+{#            </li>#}
+{#            <li>#}
+{#                <a href="https://plus.google.com/share?url=http://www.alfanous.org/r?id={{ search.ayas.1.identifier.gid }}" target="_blank">#}
+{#                <i class="icon-google-plus" title="{{ _('Share to Google+') }}"></i>#}
+{#                </a>#}
+{#            </li>#}
+{#            <li>#}
+{#                <a href="https://www.linkedin.com/shareArticle?mini=true&url=http://www.alfanous.org/r?id={{ search.ayas.1.identifier.gid }}&amp;title=سورة {{ search.ayas.1.identifier.sura_arabic_name }} ، الآية {{ search.ayas.1.identifier.aya_id }}&amp;summary=&amp;source=" target="_blank" title="{{ _('Share to Linkedin') }}">#}
+{#                <i class="icon-linkedin"></i>#}
+{##}
+{#                </a>#}
+{#            </li>#}
+{##}
+{#            </ul>#}
+{##}
+{#       <a href="/"> ALFANOUS.ORG </a>#}
+{##}
+{#       {% endif %}#}
     </div>
-    <div class="row span1">
-    </div>
-      
-      </div><!-- End div content -->
     <!-- END CONTENT -->
     
     <!-- Google analytics #Assem -->

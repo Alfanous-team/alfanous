@@ -21,13 +21,6 @@ from django.views.decorators.gzip import gzip_page
 from rest_framework import status
 from wui.templatetags.languages import my_get_language_info
 
-# this is better than using "../../"
-realtive_path = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir, os.pardir))
-
-path.insert(0, realtive_path) ## a relative path, development mode
-path.append("alfanous.egg/alfanous") ## an egg, portable
-path.append("/home/alfanous/alfanous-django/src/") ## absolute  path, server mode
-
 from alfanous.Outputs import Raw
 
 # load the search engine, use default paths
