@@ -325,7 +325,6 @@
         <!--main-->
         <div class="row offset0 span12 text-center">
             <div class="span12">
-                    <h1>
                         <a class="logo" href="{% url 'results_i18n' current.unit %}">
                             {% if LANGUAGE_CODE == "ar" or  LANGUAGE_CODE == "fr" or LANGUAGE_CODE == "id" %}
                                 <img src="/static/shared/img/logo_{{ current.unit }}_{{ LANGUAGE_CODE }}.png"
@@ -334,7 +333,7 @@
                                 <img src="/static/shared/img/logo_{{ current.unit }}_en.png" alt="Alfanous - Search in Quran ayahs">
                             {% endif %}
                         </a>
-                    </h1>
+
 
 
 
@@ -447,13 +446,22 @@
         <!--/main-->
     </div>
     <div class="row-fluid">
-        {% block results %}  {% endblock results %}
+        {% block results %}
+
+        {% endblock results %}
     </div>
 
     {% if not params %}
+
         {% block notification %}
-            <div class="row-fluid">
+            <div class="row-fluid text-center">
+
+                <h1>
+                         {{ _("Alfanous is a Quranic search engine, that can find any word or aya in the Holy Quran") }}
+                </h1>
+
                 <div class="hidden-phone text-center help">
+
 
                     {#		                    <div class="alert alert-warning span7 offset3 text-center">#}
                     {#		                        <button type="button" class="close" data-dismiss="alert">&times;</button>#}
