@@ -8,7 +8,7 @@
   <span class="muted">{{ aya.text }} </span>
   <span class='quran_decoration muted'>]</span>
   -
-  <a href='?{% aya_query aya %}'>
+  <a href='{% url 'browse_aya' aya.sura aya.id|stringformat:"i" %}'>
     <span class="muted">
       <small>{{ aya.sura_arabic }}</small>
       {{ aya.id }}
