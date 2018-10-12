@@ -328,7 +328,7 @@
                     <h1>
                         <a class="logo" href="{% url 'results_i18n' current.unit %}">
                             {% if LANGUAGE_CODE == "ar" or  LANGUAGE_CODE == "fr" or LANGUAGE_CODE == "id" %}
-                                <img src=" {/static/shared/img/logo_{{ current.unit }}_{{ LANGUAGE_CODE }}.png"
+                                <img src="/static/shared/img/logo_{{ current.unit }}_{{ LANGUAGE_CODE }}.png"
                                      alt="Alfanous - Search in Quran ayahs">
                             {% else %}
                                 <img src="/static/shared/img/logo_{{ current.unit }}_en.png" alt="Alfanous - Search in Quran ayahs">
