@@ -20,54 +20,17 @@
 
     <meta name="description" content="{% meta_description %}">
     <meta name="google-site-verification" content="SqRr5YSggCEdzVRxx1KuWWwKmtctzUoxuYTCLV1Vbwo"/>
-    <meta name="keywords" content="{{ _('search in quran') }},
-								   {{ _('search in holy quran') }},
-								   {{ _('search in holy quran by word') }},
-								   {{ _('search a word in quran') }},
-								   {{ _('search ayas in noble quran') }},
-								   {{ _('text search in quran') }},
-								   {{ _('search holy quran words') }},
-								   {{ _('search an aya of holy quran') }},
-								   {{ _('search engine in holy quran') }},
-								   {{ _('quranic search engine') }},
-								   {{ _('search aya in mushaf') }},
-								   {{ _('search an aya in quran') }},
-								   {{ _('search a word in quran') }},
-                                    {{ _('quran') }},
-								   {{ _('forqan') }},
-								   {{ _('koran') }},
-								   {{ _('search') }},
-								   {{ _('search engine') }},
-								   {{ _('ayates') }},
-								   {{ _('surates') }},
-								   {{ _('advanced') }},
-								   {{ _('statistics') }},
-
-								   {{ _('linguistic') }},
-								   {{ _('information retrieval') }},
-								   {{ _('natural language processing') }},
-								   {{ _('words') }},
-								   {{ _('Lantern') }},
-								   {{ _('alfanous') }},
-								   {% for wordcpt, wordstat in results.search.words.individual.items %}
-								   		{{ wordstat.word }},
-								   		{% if wordstat.romanization %} {{ wordstat.romanization }}, {% endif %}
-								   {% endfor %}
-								   {{ params.translation }},
-								   {{ params.view }} view,
-								   {% if params.vocalized %}
-										{{ _('vocalized text') }},
-								   {% endif %}
-								   {% if params.uthmani %}
-										{{ _('uthmani script') }},
-								   {% endif %}
-								   {% if params.fuzzy %}
-										{{ _('fuzzy search') }},
-								   {% endif %}
-								   {{ params.sortedby }} order,
-								   {{ LANGUAGE_CODE|my_language_name }},
-								   {{ LANGUAGE_CODE|my_language_name_local }},
-								   "/>
+    <meta name="keywords" content="{{ _('search in quran') }},{{ _('search in holy quran') }},{{ _('search in holy quran by word') }},{{ _('search a word in quran') }},
+{{ _('search ayas in noble quran') }},{{ _('text search in quran') }},{{ _('search holy quran words') }},{{ _('search an aya of holy quran') }},
+{{ _('search engine in holy quran') }},{{ _('quranic search engine') }},{{ _('search aya in mushaf') }},
+{{ _('search an aya in quran') }},{{ _('search a word in quran') }},{{ _('quran') }},{{ _('forqan') }},{{ _('koran') }},
+{{ _('search') }},{{ _('search engine') }},{{ _('ayates') }},{{ _('surates') }},{{ _('advanced') }},
+{{ _('statistics') }}, {{ _('linguistic') }},{{ _('information retrieval') }},{{ _('natural language processing') }},
+{{ _('words') }},{{ _('Lantern') }},{{ _('alfanous') }},
+{% for wordcpt, wordstat in results.search.words.individual.items %} {{ wordstat.word }}, {% if wordstat.romanization %} {{ wordstat.romanization }}, {% endif %}{% endfor %}
+{{ params.translation }}, {{ params.view }} view, {% if params.vocalized %} {{ _('vocalized text') }}, {% endif %}
+{% if params.uthmani %} {{ _('uthmani script') }}, {% endif %}{% if params.fuzzy %} {{ _('fuzzy search') }}, {% endif %}
+{{ params.sortedby }} order, {{ LANGUAGE_CODE|my_language_name_local }}"/>
     <meta name="author"
           content="Assem Chelli, Ahmed Ramadan, Abdellah Chelli, Mouad Debbar, Walid Ziouche, Islam Azzedine Mennouchi, Muslih Alaqaad"/>
     <meta name="robots" content="index,follow"/>
@@ -82,8 +45,7 @@
           hreflang="x-default"/>
     {% for lang_code, lang_name in LANGUAGES %}
         {% language lang_code %}
-            <link rel="alternate" href="http://www.alfanous.org
-                    {% url 'results_i18n' current.unit %}{% if current.request %}?{{ current.request }}{% endif %}"
+            <link rel="alternate" href="http://www.alfanous.org{% url 'results_i18n' current.unit %}{% if current.request %}?{{ current.request }}{% endif %}"
                   hreflang="{{ lang_code }}"/>
         {% endlanguage %}
     {% endfor %}

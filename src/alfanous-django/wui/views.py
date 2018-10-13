@@ -1,17 +1,15 @@
 # Create your views here.
 
-"""
 
-TODO make a fields English-Arabic mapping based on the "bidi" value to be used in localization
-
-"""
 import json
-import os
-from sys import path
+
 
 from collections import OrderedDict as SortedDict
 from operator import itemgetter
 from random import randint
+
+from django.template import loader
+from htmlmin.minify import html_minify
 
 from django.conf import settings
 from django.http import HttpResponse
@@ -20,7 +18,6 @@ from django.shortcuts import render_to_response
 from django.views.decorators.gzip import gzip_page
 from rest_framework import status
 from wui.templatetags.languages import my_get_language_info
-
 from alfanous.Outputs import Raw
 
 # load the search engine, use default paths
@@ -158,6 +155,8 @@ def results(request, unit="aya"):
         }
     }
 
+
+
     mytemplate = unit + '_search.html'
 
     context = {
@@ -177,7 +176,15 @@ def results(request, unit="aya"):
         "info": raw_show
     }
 
-    response = render_to_response(mytemplate, context)
+    template = loader.get_template(mytemplate)
+
+    html = template.render(context, request)
+
+    minified_html = html_minify(html)  # or html_minify(html) as encoding parameter defaults to 'utf-8'
+
+
+    response = HttpResponse(minified_html)
+
     if raw_search and (raw_search["error"]["code"] or not raw_search["search"]["interval"]["total"]):
         response.status_code = 404
 

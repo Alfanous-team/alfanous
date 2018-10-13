@@ -11,7 +11,7 @@ ROOT_DIR = os.path.dirname(__file__)
 #     Static and Public settings       #
 ########################################
 
-DEBUG = False
+DEBUG = True
 
 INSTALLED_APPS = (
   # Django apps
@@ -179,6 +179,7 @@ TEMPLATES = [
 
 MIDDLEWARE_CLASSES = (
     'django.middleware.cache.UpdateCacheMiddleware',
+    'htmlmin.middleware.HtmlMinifyMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.cache.FetchFromCacheMiddleware',
   'django.contrib.sessions.middleware.SessionMiddleware',
@@ -187,7 +188,6 @@ MIDDLEWARE_CLASSES = (
   'django.contrib.messages.middleware.MessageMiddleware',
   'django.middleware.locale.LocaleMiddleware',
 'whitenoise.middleware.WhiteNoiseMiddleware',
-  'htmlmin.middleware.HtmlMinifyMiddleware',
   'htmlmin.middleware.MarkRequestMiddleware',
 
 )
@@ -258,9 +258,9 @@ AVAILABLE_UNITS = SortedDict([
   #  tafsir, hadith, dream, poem
 ])
 
-HTML_MINIFY = True
+HTML_MINIFY = False
 
-EXCLUDE_FROM_MINIFYING = ('^',)
+# EXCLUDE_FROM_MINIFYING = ('^',)
 
 COMPRESS_ENABLED = True
 COMPRESS_OFFLINE = False
