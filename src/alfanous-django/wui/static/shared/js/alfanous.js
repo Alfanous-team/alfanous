@@ -80,7 +80,7 @@ function build_search_link(param,query,filter)
 function get_results (param) { // this function will be used to require suggestions
     if ($.trim(param.query) != "" && param.action == "search") {
         $.ajax({
-            url: "/jos2/", // http://www.alfanous.org/jos2
+            url: "/api/search/",
             async: false,
             type: "GET",
             dataType: "json",

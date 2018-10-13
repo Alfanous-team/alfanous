@@ -98,6 +98,7 @@ span.label a:hover {
   color:white;
 }
 
+h1,
 h2,
 h3 {
   display: inline;
@@ -113,6 +114,7 @@ h3 {
 }
 p.credit {
   display:inline;
+    font-size:14px;
 }
 
 .topic, .chapter {

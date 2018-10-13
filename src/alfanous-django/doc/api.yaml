@@ -1,0 +1,486 @@
+swagger: '2.0'
+info:
+  description: ""
+  version: "0.8"
+  title: "Alfanous API"
+  termsOfService: ".."
+  contact:
+    name: "Alfanous"
+    url: "http://www.alfanous.org/"
+    email: "alfanous@googlegroups.com"
+  license:
+    name: "AGPL 3.0"
+    url: "https://www.gnu.org/licenses/agpl-3.0.en.html"
+host: "www.alfanous.org"
+basePath: "/api/"
+schemes:
+- "https"
+- "http"
+paths:
+  /search:
+    get:
+      summary: "Search for a query"
+      description: ""
+      operationId: "search"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "unit"
+        in: "query"
+        description: "Search unit"
+        required: false
+        type: "array"
+        items:
+          type: string
+          enum:
+          - "aya"
+          - "word"
+          - "translation"
+          default: "aya"
+      - name: "ident"
+        in: "query"
+        description: "Identifier of requester"
+        required: false
+        type: "string"
+        default: "undefined"
+      - name: "platform"
+        in: "query"
+        description: "Platform used by requester"
+        required: false
+        type: "array"
+        items:
+          type: string
+          enum:
+          - "undefined"
+          - "wp7"
+          - "s60"
+          - "android"
+          - "ios"
+          - "linux"
+          - "window"
+          default: "undefined"
+      - name: "domain"
+        in: "query"
+        description: "Web domain of requester if applicable"
+        required: false
+        type: string
+        default: "css"
+      - name: "query"
+        in: "query"
+        description: "Query attached to action "
+        required: false
+        type: "string"
+        default: ""
+      - name: "highlight"
+        in: "query"
+        description: "Highlight method"
+        required: false
+        type: "array"
+        items:
+          type: string
+          enum:
+                - "css"
+                - "html"
+                - "genshi"
+                - "bold"
+                - "bbcode"
+          default: "css"
+      - name: "script"
+        in: "query"
+        description: "Script of aya text"
+        required: false
+        type: "array"
+        items:
+                type: string
+                enum:
+                - "standard"
+                - "uthmani"
+                default: "standard"
+      - name: "vocalized"
+        in: "query"
+        description: "Enable vocalization of aya text"
+        required: false
+        type: "array"
+        items:
+          enum:
+            - "True"
+            - "False"
+          default: "True"
+      - name: "recitation"
+        in: "query"
+        description: "Recitation id"
+        required: false
+        type: integer
+        minimum: 1
+        maximum: 30
+        default: 1
+      - name: "translation"
+        in: "query"
+        description: "Translation id"
+        required: false
+        type: string
+        default: "None"
+      - name: "romanization"
+        in: "query"
+        description: "Type of romanization"
+        required: false
+        type: "array"
+        items:
+          enum:
+          - "none"
+          - "buckwalter"
+          - "iso"
+          - "arabtex"
+          default: "none"
+      - name: "view"
+        in: "query"
+        description: "Pre-defined configuration for view"
+        required: false
+        type: "array"
+        items:
+          enum:
+          - "minimal"
+          - "normal"
+          - "full"
+          - "statistic"
+          - "linguistic"
+          - "custom"
+          default: "custom"
+      - name: "prev_aya"
+        in: "query"
+        description: "Enable previous aya retrieving"
+        required: false
+        type: "array"
+        items:
+          enum:
+            - "True"
+            - "False"
+        default: "False"
+      - name: "next_aya"
+        in: "query"
+        description: "Enable next aya retrieving"
+        required: false
+        type: "array"
+        items:
+          enum:
+            - "True"
+            - "False"
+        default: "False"
+      - name: "sura_info"
+        in: "query"
+        description: "Enable sura information retrieving"
+        required: false
+        type: "array"
+        items:
+          enum:
+            - "True"
+            - "False"
+        default: "True"
+      - name: "sura_stat_info"
+        in: "query"
+        description: "Enable sura stats retrieving"
+        required: false
+        type: "array"
+        items:
+          enum:
+            - "True"
+            - "False"
+        default: "False"
+      - name: "word_info"
+        in: "query"
+        description: "Enable word information retrieving"
+        required: false
+        type: "array"
+        items:
+          enum:
+            - "True"
+            - "False"
+        default: "True"
+      - name: "word_synonyms"
+        in: "query"
+        description: "Enable retrieving of keyword synonyms"
+        required: false
+        type: "array"
+        items:
+          enum:
+            - "True"
+            - "False"
+        default: "False"
+      - name: "word_derivations"
+        in: "query"
+        description: "Enable retrieving of keyword derivations"
+        required: false
+        type: "array"
+        items:
+          enum:
+            - "True"
+            - "False"
+        default: "True"
+      - name: "word_vocalizations"
+        in: "query"
+        description: "Enable retrieving of keyword vocalizations"
+        required: false
+        type: "array"
+        items:
+          enum:
+            - "True"
+            - "False"
+        default: "True"
+      - name: "aya_position_info"
+        in: "query"
+        description: "Enable aya position information retrieving"
+        required: false
+        type: "array"
+        items:
+          enum:
+            - "True"
+            - "False"
+        default: "True"
+      - name: "aya_theme_info"
+        in: "query"
+        description: "Enable aya theme information retrieving"
+        required: false
+        type: "array"
+        items:
+          enum:
+            - "True"
+            - "False"
+        default: "True"
+      - name: "aya_stat_info"
+        in: "query"
+        description: "Enable aya stat information retrieving"
+        required: false
+        type: "array"
+        items:
+          enum:
+            - "True"
+            - "False"
+        default: "True"
+      - name: "aya_sajda_info"
+        in: "query"
+        description: "Enable aya sajda information retrieving"
+        required: false
+        type: "array"
+        items:
+          enum:
+            - "True"
+            - "False"
+        default: "True"
+      - name: "annotation_word"
+        in: "query"
+        description: "Enable query terms annotations retrieving"
+        required: false
+        type: "array"
+        items:
+          enum:
+            - "True"
+            - "False"
+        default: "False"
+      - name: "annotation_aya"
+        in: "query"
+        description: "Enable aya words annotations retrieving"
+        required: false
+        type: "array"
+        items:
+          enum:
+            - "True"
+            - "False"
+        default: "False"
+      - name: "sortedby"
+        in: "query"
+        description: "Sorting order of Results"
+        required: false
+        type: "array"
+        items:
+          enum:
+            - "total"
+            - "score"
+            - "mushaf"
+            - "tanzil"
+            - "subject"
+          default: "score"
+      - name: "offset"
+        in: "query"
+        description: "Starting offset of Results"
+        required: false
+        type: integer
+        minimum: 1
+        maximum: 6236
+        default: 1
+      - name: "range"
+        in: "query"
+        description: "Range of Results"
+        required: false
+        type: integer
+        minimum: 1
+        maximum: 25
+        default: 10
+      - name: "page"
+        in: "query"
+        description: "Page number [override offset]"
+        required: false
+        type: integer
+        minimum: 1
+        maximum: 6236
+        default: 1
+      - name: "perpage"
+        in: "query"
+        description: "Results per page [override range]"
+        required: false
+        type: integer
+        minimum: 1
+        maximum: 25
+        default: 10
+      - name: "fuzzy"
+        in: "query"
+        description: "Fuzzy search [exprimental]"
+        required: false
+        type: "array"
+        items:
+          enum:
+            - "True"
+            - "False"
+        default: "False"
+      - name: "aya"
+        in: "query"
+        description: "Enable retrieving of aya text"
+        required: false
+        type: "array"
+        items:
+          enum:
+            - "True"
+            - "False"
+        default: "True"
+      responses:
+        200:
+         description: "Successful operation."
+        400:
+          description: "Invalid status value."
+  /suggest:
+    get:
+      summary: "Execute a suggestion query"
+      description: ""
+      operationId: "suggest"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "unit"
+        in: "query"
+        description: "Search unit"
+        required: false
+        type: "array"
+        items:
+          type: string
+          enum:
+          - "aya"
+          - "word"
+          - "translation"
+          default: "aya"
+      - name: "ident"
+        in: "query"
+        description: "Identifier of requester"
+        required: false
+        type: "string"
+        default: "undefined"
+      - name: "platform"
+        in: "query"
+        description: "Platform used by requester"
+        required: false
+        type: "array"
+        items:
+          type: string
+          enum:
+          - "undefined"
+          - "wp7"
+          - "s60"
+          - "android"
+          - "ios"
+          - "linux"
+          - "window"
+          default: "undefined"
+      - name: "domain"
+        in: "query"
+        description: "Web domain of requester if applicable"
+        required: false
+        type: string
+        default: "css"
+      - name: "query"
+        in: "query"
+        description: "Query attached to action "
+        required: false
+        type: "string"
+        default: ""
+      responses:
+        200:
+         description: "Successful operation."
+        400:
+          description: "Invalid status value."
+  /show:
+    get:
+      summary: "Show meta infos"
+      description: ""
+      operationId: "show"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "ident"
+        in: "query"
+        description: "Identifier of requester"
+        required: false
+        type: "string"
+        default: "undefined"
+      - name: "platform"
+        in: "query"
+        description: "Platform used by requester"
+        required: false
+        type: "array"
+        items:
+          type: string
+          enum:
+          - "undefined"
+          - "wp7"
+          - "s60"
+          - "android"
+          - "ios"
+          - "linux"
+          - "window"
+          default: "undefined"
+      - name: "domain"
+        in: "query"
+        description: "Web domain of requester if applicable"
+        required: false
+        type: string
+        default: "css"
+      - name: "query"
+        in: "query"
+        description: "Query attached to action"
+        required: false
+        type: "array"
+        items:
+          type: "string"
+          enum:
+          - "all"
+          - "translations"
+          - "recitations"
+          - "information"
+          - "hints"
+          - "surates"
+          - "chapters"
+          - "defaults"
+          - "flags"
+          - "fields"
+          - "fields_reverse"
+          - "errors"
+          - "domains"
+          - "help_messages"
+          - "roots"
+          default: ""
+
+      responses:
+        200:
+         description: "Successful operation."
+        400:
+          description: "Invalid status value."
+externalDocs:
+  description: "Find out more about Swagger"
+  url: "http://swagger.io"

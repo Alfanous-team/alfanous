@@ -24,6 +24,7 @@ INSTALLED_APPS = (
   'django.contrib.sites',
   'django.contrib.messages',
   'django.contrib.staticfiles',
+  'swagger_ui',
   # 'rest_framework',
   # 'dynamic_rest',
   # 'rest_framework.authtoken',
@@ -52,7 +53,7 @@ DATABASES = {
 
 # Hosts/domain names that are valid for this site; required if DEBUG is False
 # See https://docs.djangoproject.com/en/1.5/ref/settings/#allowed-hosts
-ALLOWED_HOSTS = ['.afalnous.org']
+ALLOWED_HOSTS = ['127.0.0.1', '.alfanous.org']
 
 # Local time zone for this installation. Choices can be found here:
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
@@ -65,7 +66,7 @@ TIME_ZONE = 'Africa/Algiers'
 
 # Language code for this installation. All choices can be found here:
 # http://www.i18nguy.com/unicode/language-identifiers.html
-LANGUAGE_CODE = 'en'
+LANGUAGE_CODE = 'ar'
 
 LANGUAGES = (
   ( 'ar', "Arabic" ),
@@ -153,6 +154,7 @@ STATICFILES_FINDERS = (
 )
 
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+WHITENOISE_MAX_AGE = 31557600
 # Make this unique, and don't share it with anybody.
 SECRET_KEY = 'kl2wmaaul8-roi3k9*@1j9kse%z^durtud=8l-*6+r#h2mo*80'
 
@@ -178,6 +180,7 @@ TEMPLATES = [
 
 MIDDLEWARE_CLASSES = (
     'django.middleware.cache.UpdateCacheMiddleware',
+    'htmlmin.middleware.HtmlMinifyMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.cache.FetchFromCacheMiddleware',
   'django.contrib.sessions.middleware.SessionMiddleware',
@@ -186,7 +189,6 @@ MIDDLEWARE_CLASSES = (
   'django.contrib.messages.middleware.MessageMiddleware',
   'django.middleware.locale.LocaleMiddleware',
 'whitenoise.middleware.WhiteNoiseMiddleware',
-  'htmlmin.middleware.HtmlMinifyMiddleware',
   'htmlmin.middleware.MarkRequestMiddleware',
 
 )
@@ -257,13 +259,13 @@ AVAILABLE_UNITS = SortedDict([
   #  tafsir, hadith, dream, poem
 ])
 
-HTML_MINIFY = True
+HTML_MINIFY = False
 
-EXCLUDE_FROM_MINIFYING = ('^',)
+# EXCLUDE_FROM_MINIFYING = ('^',)
 
 COMPRESS_ENABLED = True
 COMPRESS_OFFLINE = False
-COMPRESS_STORAGE = 'compressor.storage.GzipCompressorFileStorage'
+COMPRESS_STORAGE = STATICFILES_STORAGE
 GZIP_CONTENT_TYPES = (
     'text/css',
     'application/javascript',
@@ -301,3 +303,5 @@ if DEBUG:
     INSTALLED_APPS += (  'debug_toolbar',)
     MIDDLEWARE_CLASSES += ( 'debug_toolbar.middleware.DebugToolbarMiddleware', )
 
+
+SWAGGER_YAML_FILE = 'doc/api.yaml'

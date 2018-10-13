@@ -12,7 +12,7 @@
     <div class="row text-center">
       <div id="aya_audio_{{ result_id }}" class="audio">
         {% if result_content.aya.recitation %}
-          <audio class="audio-player" src="{{ result_content.aya.recitation }}" controls preload></audio>
+          <audio class="audio-player" src="{{ result_content.aya.recitation }}" controls ></audio>
         {% endif %}
       </div>
     </div>
@@ -28,7 +28,7 @@
         <p>
         {% include 'wui/aya/aya.html' with aya_text=result_content.aya.text %}
         -
-        <a href='?{% ar_aya_query result_content %}'>
+        <a href='{% url 'browse_aya' result_content.identifier.sura_name result_content.identifier.aya_id|stringformat:"i" %}'>
           <span class="text-success">
             <small>{{ result_content.identifier.sura_arabic_name }}</small>
             {{ result_content.aya.id }}
