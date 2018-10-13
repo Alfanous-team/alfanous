@@ -93,15 +93,15 @@
 
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    {% compress css %}
 
     {% ifequal bidi.direction "ltr" %}
         <link id="skin_css" href="/static/ltr/css/bootstrap_default.min.css" rel="stylesheet">
         {% else %}
         <link href="/static/rtl/css/rtl-bootstrap.min.css" rel="stylesheet">
     {% endifequal %}
-    <!--[if IE 7]>
-        <link rel="stylesheet" href="/static/shared/css/font-awesome-ie7.min.css">
-        <![endif]-->
+
+
 
     <!-- Bootstrap -->
     {% ifequal bidi.direction "ltr" %}
@@ -109,7 +109,7 @@
         {% else %}
         <link href="/static/rtl/css/rtl-bootstrap-responsive.min.css" rel="stylesheet">
     {% endifequal %}
-    {% compress css %}
+
     <!-- custom html select items -->
     <link href="/static/shared/css/bootstrap-select.min.css" rel="stylesheet">
     <!-- Font Awesome -->
@@ -121,12 +121,13 @@
         <!-- Custom Alfanous CSS -->
         <link href="/static/shared/css/style.css" rel="stylesheet">
 
-    {% endcompress %}
-    <link href="/static/shared/css/printability.css" rel="stylesheet" media="print">
 
+    <link href="/static/shared/css/printability.css" rel="stylesheet" media="print">
     {% ifequal bidi.direction "rtl" %}
         <link href="/static/rtl/css/rtl.css" rel="stylesheet">
     {% endifequal %}
+
+    {% endcompress %}
     <!--  conditional css style -->
     <style rel="stylesheet">
         @media (min-width: 768px) {
