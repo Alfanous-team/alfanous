@@ -251,19 +251,9 @@
                                 class="caret"></b></a>
                         <ul class="dropdown-menu">
                             <li>
-                                <a id="QuickTour" href="#"><i class="icon-lightbulb"></i> {{ _("Quick Tour!") }}</a>
-                                <a href="#help" data-toggle="modal"><i
-                                        class="icon-exclamation-sign"></i> {{ _("Help") }}</a>
-
                                 <a class="mailing-list" target="_blank" href="http://groups.google.com/group/alfanous/"
                                    data-toggle="tooltip" title="{{ _('Our Mailing list on GoogleGroups') }}"><i
                                         class="icon-group"></i> {{ _("Mailing list") }}</a>
-                            </li>
-
-                            <li class="divider"></li>
-                            <li class="nav-header">{{ _("Contribute:") }}</li>
-
-                            <li>
                                 <a href="https://github.com/Alfanous-team/alfanous/issues/"><i
                                         class="icon-comment"></i> {{ _("Feedback") }}</a>
                                 <a href="#translatepanel" data-toggle="modal"><i
@@ -477,12 +467,16 @@
                    href="https://github.com/Alfanous-team/alfanous/blob/master/AUTHORS.rst">{{ _("Alfanous Team") }}</a>,
                 2010-{% now "Y" %}</p>
             <br/>
+                       <span class="label label-success  hidden-phone hidden-print">
+                        <a href="#help" data-toggle="modal"><i
+                                        class="icon-exclamation-sign"></i> {{ _("Help") }}</a>
+                           </span>
 
-            <span class="label label-success hidden-phone hidden-print">
+            <span class="label label-info  hidden-phone hidden-print">
                           <a href="#download" data-toggle="modal"><i class="icon-download-alt"></i> {{ _("Download") }}</a>
                     </span>
 
-            <span class="hidden-phone label label-info hidden-print">
+            <span class="hidden-phone label label-inverse hidden-print">
 
                       <a href="/api-doc/">
                                		 <i class=" icon-chevron-up icon-white"></i>
