@@ -154,6 +154,7 @@ STATICFILES_FINDERS = (
 )
 
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+WHITENOISE_MAX_AGE = 31557600
 # Make this unique, and don't share it with anybody.
 SECRET_KEY = 'kl2wmaaul8-roi3k9*@1j9kse%z^durtud=8l-*6+r#h2mo*80'
 

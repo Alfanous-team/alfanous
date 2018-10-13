@@ -45,7 +45,7 @@
           hreflang="x-default"/>
     {% for lang_code, lang_name in LANGUAGES %}
         {% language lang_code %}
-            <link rel="alternate" href="http://www.alfanous.org{% url 'results_i18n' current.unit %}{% if current.request %}?{{ current.request }}{% endif %}"
+            <link rel="alternate" href="http://www.alfanous.org{% url 'results_i18n' current.unit %}{% if params.query %}?query={{ params.query }}{% endif %}"
                   hreflang="{{ lang_code }}"/>
         {% endlanguage %}
     {% endfor %}
