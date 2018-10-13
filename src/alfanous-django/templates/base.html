@@ -111,8 +111,6 @@
     {% endifequal %}
     <!-- custom html select items -->
     <link href="/static/shared/css/bootstrap-select.min.css" rel="stylesheet">
-    <!-- Quick tour -->
-    <link href="/static/shared/css/bootstro.min.css" rel="stylesheet">
     <!-- Font Awesome -->
     <link rel="stylesheet" href="/static/shared/css/font-awesome.min.css">
     <!-- v-keyboard css -->
@@ -184,10 +182,7 @@
                         <li><a href="/{{ LANGUAGE_CODE }}/"><i class="icon-home icon-large"></i></a></li>
                         {% for available_unit in available.units.items %}
                         {% ifequal available_unit.0 current.unit %}
-                        <li class="active bootstro" data-bootstro-title="{{ _('First, select the search unit') }}"
-                            data-bootstro-content="{{ _('You can choose whether to search in Arabic verses of the holly Quran or in its translations') }}"
-                            data-bootstro-width="400px"
-                            data-bootstro-placement='bottom' data-bootstro-step='0'><a>{{ available_unit.1 }}</a></li>
+                        <li class="active"><a>{{ available_unit.1 }}</a></li>
                         {% else %}
                         <li><a href="{% url 'results_i18n' available_unit.0 %}">{{ available_unit.1 }}</a></li>
                         {% endifequal %}
@@ -201,12 +196,7 @@
                         <ul class="nav pull-right">
                     {% endif %}
                     <li class="dropdown">
-                        <a href="#" class="dropdown-toggle bootstro" data-toggle="dropdown"
-                           data-bootstro-title="{{ _('Select your language') }}"
-                           data-bootstro-content="{{ _("If you didn't notice, Alfanous User Interface is now translated to other languages, choose the one that fits you the best, or, you can contribute in translating it into your native language! (see the translate link)") }}"
-                           data-bootstro-width="400px"
-                           data-bootstro-placement='bottom' data-bootstro-step='1'>{{ _("Languages") }}<b
-                                class="caret"></b></a>
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">{{ _("Languages") }}<b class="caret"></b></a>
                         <ul class="dropdown-menu">
                             {% for lang_code, lang_name in LANGUAGES %}
                                 {% if lang_code != LANGUAGE_CODE %}
@@ -317,11 +307,7 @@
                 <form class="form-search" id="form" name="form" method="GET"
                       action="/{{ LANGUAGE_CODE }}/{{ current.unit }}/">
 
-                    <div class="input-append bootstro text-right"
-                         data-bootstro-title="{{ _('Alfanous is smart!') }}"
-                         data-bootstro-content="{{ _('Just start typing here! but wait... <strong>Did you know?</strong> Alfanous isn\'t just a typical search function, you can do a lot using operators like: <code>+</code>, <code>-</code>, <code>|</code> and a lot more!') }}"
-                         data-bootstro-width="400px"
-                         data-bootstro-placement='bottom' data-bootstro-step='3'>
+                    <div class="input-appendtext-right">
 
                         <input id="appendedInputButtons" name="query" class="search-query enter keyboardInput"
                                placeholder="{{ _('search query here ...') }}" type="text" value="{{ params.query }}"
@@ -339,11 +325,7 @@
                     </div>
                     {% if current.unit == "aya" %}
                         {% block options %}{% endblock %}
-                        <div class="advanced-search text-center bootstro" data-toggle="tooltip"
-                             data-bootstro-title="{{ _('Even more!') }}"
-                             data-bootstro-content="{{ _('You can <strong>sort</strong>, <strong>filter</strong> search reasults or choose a translation, you can as well choose a recitator!') }}"
-                             data-bootstro-width="400px"
-                             data-bootstro-placement='top' data-bootstro-step='2'>
+                        <div class="advanced-search text-center" data-toggle="tooltip">
                             <a class="text-center show_hide">
                                 <i class="icon-wrench"></i>
                                 {{ _("Advanced Search") }} [+]
@@ -503,11 +485,8 @@
     <script src="/static/shared/js/bootstrap-select.min.js"></script>
     <script src="/static/shared/js/keyboard.js"></script>
     <script src="/static/shared/js/style_switcher.js"></script>
-    <script src="/static/shared/js/bootstro.min.js"></script>
     <script src="/static/shared/js/alfanous.js"></script>
     <script src="/static/shared/js/advanced_search.js"></script>
-    <script src="/static/shared/js/jquery.sharrre-1.3.4.min.js"></script>
-    <script src="/static/shared/js/share_functions.js"></script>
 
 
     <!-- Google analytics #Assem -->
