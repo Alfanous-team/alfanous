@@ -4,33 +4,12 @@
 
 {% load share %}
 
-<a class="btn btn-primary dropdown-toggle" data-toggle="dropdown" href="#">
-  <span class="icon-share"></span>
-</a>
-<ul class="dropdown-menu" style='min-width: 5px;'>
-  <li>
-    <a href="{% twitter_share result_content share_path share_params %}" target="_blank">
-      <i class="icon-twitter"></i>
-      <span class='hidden-phone'>{{ _("Twitter") }}</span>
+
+    <a class="btn btn-primary" href="{% twitter_share result_content share_path share_params %}" target="_blank">
+      <span class='icon-twitter'></span>
     </a>
-  </li>
-  <li>
-    <a href="{% facebook_share result_content share_path share_params %}" target="_blank">
-      <i class="icon-facebook"></i>
-      <span class='hidden-phone'>{{ _("Facebook") }}</span>
+   <a class="btn btn-primary" href="{% facebook_share result_content share_path share_params %}" target="_blank">
+
+      <span class='icon-facebook'></span>
     </a>
-  </li>
-  <li>
-    <a href="{% gplus_share result_content share_path share_params %}" target="_blank">
-      <i class="icon-google-plus"></i>
-      <span class='hidden-phone'>{{ _("Google+") }}</span>
-    </a>
-  </li>
-  <li>
-    <a href="{% linkedin_share result_content share_path share_params %}" target="_blank">
-      <i class="icon-linkedin"></i>
-      <span class='hidden-phone'>{{ _("Linkedin") }}</span>
-    </a>
-  </li>
-  {# <button class="btn shareme" data-url="http://www.alfanous.org{{ share_path }}?{{ share_params }}" data-text="{{ result_content.aya.text_no_highlight }} - ({{ result_content.identifier.sura_name }},{{ result_content.aya.id }}) "></button> #}
-</ul>
+
