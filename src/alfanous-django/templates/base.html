@@ -109,16 +109,15 @@
         {% else %}
         <link href="/static/rtl/css/rtl-bootstrap-responsive.min.css" rel="stylesheet">
     {% endifequal %}
+    {% compress css %}
     <!-- custom html select items -->
     <link href="/static/shared/css/bootstrap-select.min.css" rel="stylesheet">
     <!-- Font Awesome -->
     <link rel="stylesheet" href="/static/shared/css/font-awesome.min.css">
     <!-- v-keyboard css -->
     <link href="/static/shared/css/keyboard.css" rel="stylesheet">
-    <!-- share buttons styling -->
-    <link href="/static/shared/css/share_style.css" rel="stylesheet">
 
-    {% compress css %}
+
         <!-- Custom Alfanous CSS -->
         <link href="/static/shared/css/style.css" rel="stylesheet">
 
@@ -475,8 +474,11 @@
 <!-- The javascript
 ================================================== -->
 <!-- Placed at the end of the document so the pages load faster -->
+    <script
+  src="https://code.jquery.com/jquery-1.9.1.min.js"
+  integrity="sha256-wS9gmOZBqsqWxgIVgA8Y9WcQOa7PgSIX+rPA0VL2rbQ="
+  crossorigin="anonymous"></script>
 {% compress js %}
-    <script src="/static/shared/js/jquery-1.9.1.min.js"></script>
     {% ifequal bidi.direction "ltr" %}
         <script src="/static/ltr/js/bootstrap.min.js"></script>
         {% else %}
