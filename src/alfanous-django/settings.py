@@ -39,7 +39,6 @@ INSTALLED_APPS = (
 
 ADMINS = (
   ( 'Assem Chelli', 'assem.ch@gmail.com' ),
-  ( 'Mouad Debbar', 'mouad.debbar@gmail.com' ),
 )
 
 MANAGERS = ADMINS
