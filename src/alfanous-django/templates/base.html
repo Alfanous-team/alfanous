@@ -71,7 +71,7 @@
         <link href="/static/rtl/css/rtl-bootstrap-responsive.min.css" rel="stylesheet">
     {% endifequal %}
 
-    {% compress css %}    {% endcompress %}
+    {% compress css %}
 
     <!-- custom html select items -->
     <link href="/static/shared/css/bootstrap-select.min.css" rel="stylesheet">
@@ -87,7 +87,7 @@
 
     <link href="/static/shared/css/printability.css" rel="stylesheet" media="print">
 
-
+    {% endcompress %}
 
     {% ifequal bidi.direction "rtl" %}
         <link href="/static/rtl/css/rtl.css" rel="stylesheet">
