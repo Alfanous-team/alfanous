@@ -303,4 +303,4 @@ if DEBUG:
     MIDDLEWARE_CLASSES += ( 'debug_toolbar.middleware.DebugToolbarMiddleware', )
 
 
-SWAGGER_YAML_FILE = 'doc/api.yaml'
+SWAGGER_YAML_FILE = os.path.join(os.path.dirname(__file__), 'doc/api.yaml')
