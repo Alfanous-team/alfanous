@@ -35,8 +35,8 @@
           content="Assem Chelli, Ahmed Ramadan, Abdellah Chelli, Mouad Debbar, Walid Ziouche, Islam Azzedine Mennouchi, Muslih Alaqaad"/>
     <meta name="robots" content="index,follow"/>
 
-    <link rel="icon" href="/static/shared/img/icon/icon_32_a.png" sizes="32x32">
-    <link rel="shortcut icon" href="/static/shared/img/icon/icon_16_a.png">
+    <link rel="icon"  type="image/png"  href="/static/shared/img/icon/icon_32_a.png" sizes="32x32">
+    <link rel="shortcut icon"  type="image/png"  href="/static/shared/img/icon/icon_16_a.png">
 
     <link rel="canonical"
           href="http://www.alfanous.org/{{ LANGUAGE_CODE }}/{{ current.unit }}/{% if params.query %}?query={{ params.query }}{% endif %}"/>
@@ -56,19 +56,17 @@
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 
-    {% ifequal bidi.direction "ltr" %}
-        <link id="skin_css" href="/static/ltr/css/bootstrap_default.min.css" rel="stylesheet">
-        {% else %}
-        <link href="/static/rtl/css/rtl-bootstrap.min.css" rel="stylesheet">
-    {% endifequal %}
-
 
 
     <!-- Bootstrap -->
     {% ifequal bidi.direction "ltr" %}
+
+        <link id="skin_css" href="/static/ltr/css/bootstrap_default.min.css" rel="stylesheet">
         <link href="/static/ltr/css/bootstrap-responsive.min.css" rel="stylesheet">
         {% else %}
-        <link href="/static/rtl/css/rtl-bootstrap-responsive.min.css" rel="stylesheet">
+                <link href="/static/rtl/css/rtl-bootstrap-responsive.min.css" rel="stylesheet">
+                <link href="/static/rtl/css/rtl-bootstrap.min.css" rel="stylesheet">
+                <link href="/static/rtl/css/rtl.css" rel="stylesheet">
     {% endifequal %}
 
     {% compress css %}
@@ -89,9 +87,6 @@
 
     {% endcompress %}
 
-    {% ifequal bidi.direction "rtl" %}
-        <link href="/static/rtl/css/rtl.css" rel="stylesheet">
-    {% endifequal %}
     <!--  conditional css style -->
     <style rel="stylesheet">
         @media (min-width: 768px) {
@@ -106,7 +101,6 @@
             {{ bidi.align_inverse }}: 40px;
             }
         }
-
 
     </style>
 
