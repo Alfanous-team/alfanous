@@ -40,7 +40,6 @@ $(document).ready(function(){
         
     });
 
-    $(".audio").hide();
     $(".function_button").click(function(event) {
         if ($(this).attr('id').indexOf("audio_button") !== -1) {
             var id = $(this).attr('id');

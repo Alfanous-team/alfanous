@@ -8,9 +8,9 @@
   </a>
   {% endwith %}
   {% endwith %}
+ &nbsp;
 
-  -
-  <h3>
+    <h3>
   <a class="muted" href='{% url 'browse_aya' result_content.identifier.sura_name result_content.identifier.aya_id|stringformat:"i" %}'>
     <span >
       <small>
@@ -25,6 +25,8 @@
   </a>
   </h3>
 </span>
+
+
 
 <div class="pull-{{ bidi.align_inverse }}">
   {% url 'results_i18n' current.unit as share_path %}

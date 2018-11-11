@@ -11,7 +11,7 @@ ROOT_DIR = os.path.dirname(__file__)
 #     Static and Public settings       #
 ########################################
 
-DEBUG = True
+DEBUG = False
 
 INSTALLED_APPS = (
   # Django apps
@@ -39,7 +39,6 @@ INSTALLED_APPS = (
 
 ADMINS = (
   ( 'Assem Chelli', 'assem.ch@gmail.com' ),
-  ( 'Mouad Debbar', 'mouad.debbar@gmail.com' ),
 )
 
 MANAGERS = ADMINS
@@ -153,10 +152,10 @@ STATICFILES_FINDERS = (
   'compressor.finders.CompressorFinder',
 )
 
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+# STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.ManifestStaticFilesStorage'
 WHITENOISE_MAX_AGE = 31557600
-# Make this unique, and don't share it with anybody.
-SECRET_KEY = 'kl2wmaaul8-roi3k9*@1j9kse%z^durtud=8l-*6+r#h2mo*80'
+
+SECRET_KEY = 'kl2wmaaul8-roi3k9*@1j9kse%z^durtud=8l-*6+r#h2mo*80' # this is to be replaced in PROD
 
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -265,7 +264,7 @@ HTML_MINIFY = False
 
 COMPRESS_ENABLED = True
 COMPRESS_OFFLINE = False
-COMPRESS_STORAGE = STATICFILES_STORAGE
+# COMPRESS_STORAGE = STATICFILES_STORAGE
 GZIP_CONTENT_TYPES = (
     'text/css',
     'application/javascript',
@@ -304,4 +303,4 @@ if DEBUG:
     MIDDLEWARE_CLASSES += ( 'debug_toolbar.middleware.DebugToolbarMiddleware', )
 
 
-SWAGGER_YAML_FILE = 'doc/api.yaml'
+SWAGGER_YAML_FILE = os.path.join(os.path.dirname(__file__), 'doc/api.yaml')

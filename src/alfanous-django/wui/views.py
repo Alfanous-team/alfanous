@@ -44,7 +44,7 @@ def api(request,action='search'):
         return HttpResponse('action should be one of: {}'.format(','.join(RAWoutput._domains['action'])), status=status.HTTP_400_BAD_REQUEST)
 
     control_access(request)
-    if len(request.GET):
+    if request.GET.get('query'):
         response_data = RAWoutput.do(request.GET)
         response = HttpResponse(
             json.dumps(response_data, sort_keys=False),
@@ -55,19 +55,17 @@ def api(request,action='search'):
         response['Access-Control-Allow-Methods'] = 'GET'
         # response['Content-Encoding'] = 'gzip'
     else:
-        response_html = "<html><head> <title> %(title)s </title> </head><body> %(body)s </body> </html>"
-        response_data = response_html % {
-            "title": "Alfanous API",
-            "body": RAWoutput._information["json_output_system_note"]
-        }
-        response = HttpResponse(response_data)
+        response = HttpResponse(
+            json.dumps({}, sort_keys=False, indent=4),
+            content_type="application/json"
+        )
     return response
 
 @gzip_page
 def jos2(request): # TODO to be removed
     """ JSON Output System II """
     control_access(request)
-    if len(request.GET):
+    if request.GET.get('query'):
         response_data = RAWoutput.do(request.GET)
         response = HttpResponse(
             json.dumps(response_data, sort_keys=False, indent=4),
@@ -78,12 +76,11 @@ def jos2(request): # TODO to be removed
         response['Access-Control-Allow-Methods'] = 'GET'
         # response['Content-Encoding'] = 'gzip'
     else:
-        response_html = "<html><head> <title> %(title)s </title> </head><body> %(body)s </body> </html>"
-        response_data = response_html % {
-            "title": "JSON Output System 2 (JOS2)",
-            "body": RAWoutput._information["json_output_system_note"]
-        }
-        response = HttpResponse(response_data)
+        response = HttpResponse(
+            json.dumps({}, sort_keys=False, indent=4),
+            content_type="application/json"
+        )
+
     return response
 
 

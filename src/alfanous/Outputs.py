@@ -801,7 +801,7 @@ class Raw():
                                   else   r["uth_"],
 						"translation": trad_text[r["gid"]] if ( translation != "None" and translation and trad_text.has_key( r["gid"] ) ) else None,
 		                	"recitation": None if not recitation or not self._recitations.has_key( recitation ) \
-		                				  else u"http://www.everyayah.com/data/" + self._recitations[recitation]["subfolder"].encode( "utf-8" ) + "/%03d%03d.mp3" % ( r["sura_id"], r["aya_id"] ),
+		                				  else u"https://www.everyayah.com/data/" + self._recitations[recitation]["subfolder"].encode( "utf-8" ) + "/%03d%03d.mp3" % ( r["sura_id"], r["aya_id"] ),
 		                	"prev_aya":{
 						    "id":adja_ayas[r["gid"] - 1]["aya_id"],
 						    "sura":adja_ayas[r["gid"] - 1]["sura"],

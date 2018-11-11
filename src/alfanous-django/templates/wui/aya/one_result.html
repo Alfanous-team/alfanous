@@ -9,13 +9,6 @@
 <div class="row-fluid">
   <div class="span10 offset1">
 
-    <div class="row text-center">
-      <div id="aya_audio_{{ result_id }}" class="audio">
-        {% if result_content.aya.recitation %}
-          <audio class="audio-player" src="{{ result_content.aya.recitation }}" controls ></audio>
-        {% endif %}
-      </div>
-    </div>
 
 
     <div class="row">
@@ -42,6 +35,12 @@
         <p>{% include 'wui/aya/secondary_aya.html' with primary_aya_id=result_id aya=result_content.aya.next_aya %}</p>
       {% endif %}
     </div>
+
+        {% if result_content.aya.recitation %}
+              <hr/>
+          <audio class="audio-player" controls src="{{ result_content.aya.recitation }}" >test</audio>
+        {% endif %}
+
 
 
     {% if result_content.aya.translation %}

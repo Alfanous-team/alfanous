@@ -35,8 +35,8 @@
           content="Assem Chelli, Ahmed Ramadan, Abdellah Chelli, Mouad Debbar, Walid Ziouche, Islam Azzedine Mennouchi, Muslih Alaqaad"/>
     <meta name="robots" content="index,follow"/>
 
-    <link rel="icon" href="/static/shared/img/icon/icon_32_a.png" sizes="32x32">
-    <link rel="shortcut icon" href="/static/shared/img/icon/icon_16_a.png">
+    <link rel="icon"  type="image/png"  href="/static/shared/img/icon/icon_32_a.png" sizes="32x32">
+    <link rel="shortcut icon"  type="image/png"  href="/static/shared/img/icon/icon_16_a.png">
 
     <link rel="canonical"
           href="http://www.alfanous.org/{{ LANGUAGE_CODE }}/{{ current.unit }}/{% if params.query %}?query={{ params.query }}{% endif %}"/>
@@ -55,41 +55,38 @@
 
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    {% compress css %}
-
-    {% ifequal bidi.direction "ltr" %}
-        <link id="skin_css" href="/static/ltr/css/bootstrap_default.min.css" rel="stylesheet">
-        {% else %}
-        <link href="/static/rtl/css/rtl-bootstrap.min.css" rel="stylesheet">
-    {% endifequal %}
 
 
 
     <!-- Bootstrap -->
     {% ifequal bidi.direction "ltr" %}
+
+        <link id="skin_css" href="/static/ltr/css/bootstrap_default.min.css" rel="stylesheet">
         <link href="/static/ltr/css/bootstrap-responsive.min.css" rel="stylesheet">
         {% else %}
-        <link href="/static/rtl/css/rtl-bootstrap-responsive.min.css" rel="stylesheet">
+                <link href="/static/rtl/css/rtl-bootstrap-responsive.min.css" rel="stylesheet">
+                <link href="/static/rtl/css/rtl-bootstrap.min.css" rel="stylesheet">
+                <link href="/static/rtl/css/rtl.css" rel="stylesheet">
     {% endifequal %}
+
+    {% compress css %}
 
     <!-- custom html select items -->
     <link href="/static/shared/css/bootstrap-select.min.css" rel="stylesheet">
+
     <!-- Font Awesome -->
     <link rel="stylesheet" href="/static/shared/css/font-awesome.min.css">
     <!-- v-keyboard css -->
     <link href="/static/shared/css/keyboard.css" rel="stylesheet">
 
-
-        <!-- Custom Alfanous CSS -->
-        <link href="/static/shared/css/style.css" rel="stylesheet">
+    <!-- Custom Alfanous CSS -->
+    <link href="/static/shared/css/style.css" rel="stylesheet">
 
 
     <link href="/static/shared/css/printability.css" rel="stylesheet" media="print">
-    {% ifequal bidi.direction "rtl" %}
-        <link href="/static/rtl/css/rtl.css" rel="stylesheet">
-    {% endifequal %}
 
     {% endcompress %}
+
     <!--  conditional css style -->
     <style rel="stylesheet">
         @media (min-width: 768px) {
@@ -104,7 +101,6 @@
             {{ bidi.align_inverse }}: 40px;
             }
         }
-
 
     </style>
 
@@ -160,6 +156,9 @@
                     <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">{{ _("Languages") }}<b class="caret"></b></a>
                         <ul class="dropdown-menu">
+                            <li class="nav-header">{{ _("Current:") }}</li>
+                            <li class="disabled"><a>{{ LANGUAGE_CODE|my_language_name }}</a></li>
+                             <li class="divider"></li>
                             {% for lang_code, lang_name in LANGUAGES %}
                                 {% if lang_code != LANGUAGE_CODE %}
                                     {% language lang_code %}
@@ -169,10 +168,7 @@
                                     {% endlanguage %}
                                 {% endif %}
                             {% endfor %}
-                            <li class="divider"></li>
-                            <li class="nav-header">{{ _("Current:") }}</li>
-                            <li class="disabled"><a>{{ LANGUAGE_CODE|my_language_name }}</a></li>
-                        </ul>
+                             </ul>
                     </li>
                     <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">{{ _("Skins") }}<b class="caret"></b></a>
@@ -238,12 +234,7 @@
             {% endif %}
             <li><a class="facebook" target="_blank" href="https://www.facebook.com/Alfanous" data-toggle="tooltip"
                    title="{{ _('Our page on Facebook') }}"><i class="icon-facebook icon-large success"></i></a></li>
-            {#            <li><a class="googleplus" target="_blank" href="https://plus.google.com/u/0/111305625425237630318"#}
-            {#                   data-toggle="tooltip" title="{{ _('Our page on Google+') }}"><i#}
-            {#                    class="icon-google-plus icon-large"></i></a></li>#}
-            {#            <li><a class="twitter" target="_blank" href="https://twitter.com/alfanous" data-toggle="tooltip"#}
-            {#                   title="{{ _('Our account on Twitter') }}"><i class="icon-twitter icon-large"></i></a></li>#}
-            <li><a class="github" target="_blank" href="https://github.com/Alfanous-team/alfanous" data-toggle="tooltip"
+              <li><a class="github" target="_blank" href="https://github.com/Alfanous-team/alfanous" data-toggle="tooltip"
                    title="{{ _('Our repository on Github') }}"><i class="icon-github-alt icon-large"></i></a></li>
             </ul>
         </div>
