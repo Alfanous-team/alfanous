@@ -17,20 +17,6 @@ Alfanous - Advanced Quranic Search Engine
 Maintainers
 ===========
 * Assem BigOther `@assem-ch <https://github.com/assem-ch>`_ (API)
-* Muhammad Shaban `@MuhammadShaban <https://github.com/MuhammadShaban>`_ (packaging to Fedora Linux)
-* Zaki Smahi `@zsmahi <https://github.com/zsmahi>`_ (Firefox toolbar)
-* Muslih Aqqad `@muslih <https://github.com/muslih>`_ (Design)
-* Zineb Laouici `@Zinebl <https://github.com/Zinebl>`_ (Facebook/G+ pages)
-
-      We are looking for maintainers for those:
-            - Desktop application (PyQt)
-            - Website (Django)
-            - Packaging to Ubuntu/Debian
-            - Packaging to Archlinux
-            - Windows Installer(py2exe, nsis)
-            - Twitter account
-      If you are interested, contact `@assem-ch <https://github.com/assem-ch>`_ or mailing list <alfanous[at]googlegroups[dotcom]>
-
 
 
 ============ 
