@@ -55,7 +55,7 @@ from alfanous.TextProcessing import QArabicSymbolsFilter
 from alfanous.Data import *
 from alfanous.Romanization import transliterate
 from alfanous.Misc import LOCATE, FIND, FILTER_DOUBLES
-from alfanous.Constants import LANGS
+from alfanous.constants import LANGS
 
 
 STANDARD2UTHMANI = lambda x: std2uth_words[x] if std2uth_words.has_key( x ) else x
