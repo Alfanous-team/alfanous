@@ -34,7 +34,7 @@ from alfanous.Support.whoosh.analysis import StopFilter, RegexTokenizer  # Lower
 from alfanous.Support.PyArabic.araby import strip_tashkeel, strip_tatweel,strip_shadda, normalize_spellerrors, normalize_hamza, normalize_lamalef, normalize_uthmani_symbols  # , HARAKAT_pat,
 from alfanous.Support.PyArabic.araby  import FATHATAN, DAMMATAN, KASRATAN, FATHA, DAMMA, KASRA, SUKUN, SHADDA  # *
 
-from alfanous.Constants import INVERTEDSHAPING
+from alfanous.constants import INVERTEDSHAPING
 # from alfanous.dynamic_resources import stopwords_dyn ##should test existence before importing
 
 
