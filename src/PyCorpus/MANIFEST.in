@@ -1,0 +1,5 @@
+include *.py *.txt
+include quranic-corpus-morpology.xml
+exclude *.pyc
+exclude setup.sh
+

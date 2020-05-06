@@ -1,0 +1,140 @@
+# Installer logs #
+##################
+pip-log.txt
+
+# Unit test / coverage reports #
+################################
+.coverage
+.tox
+nosetests.xml
+
+#Translations #
+###############
+*.mo
+*.qm
+
+# Mr Developer #
+################
+.mr.developer.cfg
+/output
+.project
+.pydevproject
+.settings
+.idea
+
+# Private Keys #
+################
+*.pem
+
+# dynamic resources #
+#####################
+dynamic_resources/
+
+# generated indexes #
+#####################
+_*.dcz
+_*.dci
+_*.pst
+_*.tiz
+_*.toc
+_*.fvz
+_*.vps
+*_LOCK
+
+# Compiled source #
+###################
+*.com
+*.class
+*.dll
+*.exe
+*.o
+*.so
+*.[oa]
+*.py[co]
+
+# Compiler or editor generated files #
+######################################
+*.pro.user*
+*.Debug
+*.Release
+Makefile*
+*.autosave
+*.mk
+*.inf
+*.cache
+*_rc.py
+*_dyn.py
+*_ui.py
+src/alfanous-tests/*.csv
+resources/configs/*.js
+WORD_SPELL_LOCK
+localization/pot_files/*.00
+*~
+*.swp
+
+# Debug, Release and build directories #
+###########################################
+Debug/
+Release/
+dist
+build
+eggs
+parts
+bin
+var
+sdist
+develop-eggs
+.installed.cfg
+lib
+lib64
+_build/
+rpmbuild
+%{buildroot}
+.doctrees/
+*.debhelper
+*.substvars
+debian/tmp/
+debian/alfanous/
+debian/files
+debian/python-alfanous/
+translations.json
+information.json
+
+# Packages #
+############
+# it's better to unpack these files and commit the raw source
+# git has its own built in compression methods
+*.7z
+*.dmg
+*.gz
+*.iso
+*.jar
+*.rar
+*.tar
+*.zip
+*.egg
+*.egg-info
+*.rpm
+*.deb
+*.crx
+
+
+
+# Logs and databases #
+######################
+*.log
+*.sql
+
+
+# OS generated files #
+######################
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+Icon?
+*.db
+desktop.ini
+venv/
+
