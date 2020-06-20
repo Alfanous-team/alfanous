@@ -7,10 +7,10 @@ A sample script that emphasize the basic operations of Alfanous API.
 
 
 # import Output object
-from alfanous.Outputs import Raw
+from alfanous.outputs import Raw
 
 # import default Paths
-from alfanous.Data import Paths
+from alfanous.data import Paths
 
 # Initialize search engines
 RAWoutput = Raw(
@@ -54,6 +54,6 @@ search_flags = {
              }
 
 results = RAWoutput.do( search_flags )
-
+print(results)
 print "runtime", results["search"]["runtime"]
 print "total", results["search"]["interval"]["total"]

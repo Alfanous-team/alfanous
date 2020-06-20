@@ -1,23 +1,16 @@
 #!/usr/bin/env python2
 #coding=utf-8
 
-"""
-
-TODO include the main database as a package data
-
-"""
-
 from setuptools import setup
 
-
 setup( 
-	name = "Qimport",
+	name = "alfanous-import",
 	description = "Importing system for quranic indexes",
 	version = 0.1,
 	platforms = "ALL",
 	license = "AGPL",
 	packages = ["Qimport"],
-	install_requires = ["whoosh", "PyCorpus"],
+	install_requires = ["whoosh", "quran_corpus_reader"],
 
 	author = "Assem Chelli",
 	author_email = "assem.ch@gmail.com",

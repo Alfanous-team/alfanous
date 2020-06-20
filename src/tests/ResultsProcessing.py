@@ -5,7 +5,7 @@ This is a test module for alfanous.ResultsProcessing.
 
 """
 
-from alfanous.ResultsProcessing import Qhighlight
+from alfanous.results_processing import Qhighlight
 
 if __name__ == "__main__":
     H = Qhighlight( 
