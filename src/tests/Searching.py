@@ -5,7 +5,7 @@ This is a test module for alfanous.Searching
 
 """
 
-from alfanous.Searching import QseDocIndex, QuranicParser, QSearcher, QReader
+from alfanous.searching import QseDocIndex, QuranicParser, QSearcher, QReader
 
 if __name__ == "__main__":
     D = QseDocIndex( "../alfanous/indexes/main/" )

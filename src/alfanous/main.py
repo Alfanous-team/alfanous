@@ -20,11 +20,11 @@ The main module that relay all the modules.
 
 '''
 #from alfanous.dynamic_resources.arabicnames_dyn import ara2eng_names
-from alfanous.Searching import QSearcher, QReader
-from alfanous.Indexing import QseDocIndex, ExtDocIndex, BasicDocIndex
-from alfanous.ResultsProcessing import Qhighlight , QPaginate# , QFilter
-from alfanous.QueryProcessing import QuranicParser, StandardParser, FuzzyQuranicParser #,  ArabicParser
-from alfanous.Suggestions import  QAyaSpellChecker, QSubjectSpellChecker, concat_suggestions, QWordChecker #, QSuggester
+from alfanous.searching import QSearcher, QReader
+from alfanous.indexing import QseDocIndex, ExtDocIndex, BasicDocIndex
+from alfanous.results_processing import Qhighlight , QPaginate# , QFilter
+from alfanous.query_processing import QuranicParser, StandardParser, FuzzyQuranicParser #,  ArabicParser
+from alfanous.suggestions import  QAyaSpellChecker, QSubjectSpellChecker, concat_suggestions, QWordChecker #, QSuggester
 
 class BasicSearchEngine:
     """

@@ -29,7 +29,7 @@
 
 from alfanous.Support.whoosh.scoring import   BM25F #TF_IDF, Frequency,
 from alfanous.Support.whoosh.highlight import highlight, BasicFragmentScorer, Fragment, GenshiFormatter, HtmlFormatter #NullFragmenter,FIRST,
-from alfanous.TextProcessing import QHighLightAnalyzer, QDiacHighLightAnalyzer, Gword_tamdid
+from alfanous.text_processing import QHighLightAnalyzer, QDiacHighLightAnalyzer, Gword_tamdid
 
 #from alfanous.Support.whoosh.analysis import StandardAnalyzer
 

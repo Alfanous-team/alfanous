@@ -20,9 +20,9 @@
 '''
 @author: assem
 '''
-from alfanous.Indexing import QseDocIndex
-from alfanous.QueryProcessing import QuranicParser
-from alfanous.ResultsProcessing import QSort, QScore
+from alfanous.indexing import QseDocIndex
+from alfanous.query_processing import QuranicParser
+from alfanous.results_processing import QSort, QScore
 
 
 class QReader:

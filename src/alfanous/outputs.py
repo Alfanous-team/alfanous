@@ -1,21 +1,6 @@
 #!/usr/bin/python2
 # -*- coding: UTF-8 -*-
 
-##     Copyright (C) 2009-2012 Assem Chelli <assem.ch [at] gmail.com>
-
-##     This program is free software: you can redistribute it and/or modify
-##     it under the terms of the GNU Affero General Public License as published by
-##     the Free Software Foundation, either version 3 of the License, or
-##     (at your option) any later version.
-
-##     This program is distributed in the hope that it will be useful,
-##     but WITHOUT ANY WARRANTY; without even the implied warranty of
-##     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-##     GNU Affero General Public License for more details.
-
-##     You should have received a copy of the GNU Affero General Public License
-##     along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
 
 """
 The programming interface, responsible of the output of all results
@@ -51,10 +36,10 @@ try:
     from alfanous.dynamic_resources.derivations_dyn import derivedict
 except:
     derivedict = {"root":[]}
-from alfanous.TextProcessing import QArabicSymbolsFilter
-from alfanous.Data import *
-from alfanous.Romanization import transliterate
-from alfanous.Misc import LOCATE, FIND, FILTER_DOUBLES
+from alfanous.text_processing import QArabicSymbolsFilter
+from alfanous.data import *
+from alfanous.romanization import transliterate
+from alfanous.misc import LOCATE, FIND, FILTER_DOUBLES
 from alfanous.constants import LANGS
 
 
@@ -282,7 +267,7 @@ class Raw():
 		# enable it if you need statistics , disable it you prefer performance
 		# self._init_stats()
 		##
-		self._surates = { 
+		self._surates = {
                          "Arabic": [item for item in self.QSE.list_values( "sura_arabic" ) if item],
                          "English": [item for item in self.QSE.list_values( "sura_english" ) if item],
                          "Romanized": [item for item in self.QSE.list_values( "sura" ) if item]
@@ -666,6 +651,7 @@ class Raw():
 					if word_synonyms:
 						synonyms = syndict[term[1]] if syndict.has_key( term[1] ) \
 										   else []
+					derivations_extra = []
 					if word_derivations:
 						lemma = LOCATE( derivedict["word_"], derivedict["lemma"], term[1] )
 						if lemma:  # if different of none
@@ -676,8 +662,7 @@ class Raw():
 						root = LOCATE( derivedict["word_"], derivedict["root"], term[1] )
 						if root:  # if different of none
 							derivations_extra = list(set(FILTER_DOUBLES( FIND( derivedict["root"], derivedict["word_"], lemma ) )) - set(derivations))
-						else:
-							derivations_extra = []
+
 
 					words_output[ "individual" ][ cpt ] = {
 															 "word":term[1],
@@ -875,7 +860,7 @@ class Raw():
 				"annotations": {} if not annotation_aya or not annotations_by_position.has_key( ( r["sura_id"], r["aya_id"] ) )
 							else annotations_by_position[( r["sura_id"], r["aya_id"] )]
 		    		}
-		
+
 
 		return output
 
@@ -933,7 +918,7 @@ class Raw():
 		reslist = [] if end == 0 or start == -1 else list( res )[start - 1:end]
 		#closing the searcher
 		searcher.close()
-		
+
 		output = {}
 
 		# highligh function that consider None value and non-definition
@@ -1062,7 +1047,7 @@ class Raw():
 		reslist = [] if end == 0 or start == -1 else list( res )[start - 1:end]
 		#closing the searcher
 		searcher.close()
-		
+
 		output = {}
 
 		#if True:
@@ -1075,12 +1060,12 @@ class Raw():
                                       'uthmani_symbols': True,
                                     }).normalize_all
 		V_shadda = QArabicSymbolsFilter( **{
-								            'shaping' : False, 
-								            'tashkil' : False, 
-								            'spellerrors' : False, 
-								            'hamza' : False, 
-								            'shadda' : True, 
-								            'uthmani_symbols' : True 
+								            'shaping' : False,
+								            'tashkil' : False,
+								            'spellerrors' : False,
+								            'hamza' : False,
+								            'shadda' : True,
+								            'uthmani_symbols' : True
 								            }).normalize_all
 		# highligh function that consider None value and non-definition
 		H = lambda X:  SE.highlight( X, terms, highlight ) if highlight != "none" and X else X if X else u"-----"
