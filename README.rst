@@ -1,3 +1,5 @@
+**note**: if you are looking for alfanous legacy code, you can fine it under `legacy` branch
+
 ============
 Alfanous API
 ============
