@@ -71,11 +71,11 @@ try:
 except ImportError:
     antdict = {}
 
-from alfanous.Indexing import QseDocIndex
-from alfanous.Exceptions import  FeedBack  # , NotImplemented
-from alfanous.TextProcessing import QArabicSymbolsFilter, unicode_
+from alfanous.indexing import QseDocIndex
+from alfanous.exceptions import  FeedBack  # , NotImplemented
+from alfanous.text_processing import QArabicSymbolsFilter, unicode_
 
-from alfanous.Misc import LOCATE, FIND, FILTER_DOUBLES
+from alfanous.misc import LOCATE, FIND, FILTER_DOUBLES
 
 
 FEEDBACK = True

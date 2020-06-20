@@ -24,7 +24,7 @@ import sys
 import json
 from argparse import ArgumentParser
 
-from alfanous.Outputs import Raw
+from alfanous.outputs import Raw
 
 RAWoutput = Raw() #use default paths
 

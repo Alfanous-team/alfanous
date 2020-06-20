@@ -5,9 +5,9 @@ This is a test module for alfanous.QueryProcessing
 
 """
 
-from alfanous.QueryProcessing import _make_arabic_parser
-from alfanous.QueryProcessing import QseDocIndex
-from alfanous.QueryProcessing import FuzzyQuranicParser
+from alfanous.query_processing import _make_arabic_parser
+from alfanous.query_processing import QseDocIndex
+from alfanous.query_processing import FuzzyQuranicParser
 
 
 

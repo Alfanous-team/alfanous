@@ -1,29 +1,6 @@
 #!/usr/bin/env python2
 # coding: utf-8
 
-##     Copyright (C) 2009-2012 Assem Chelli <assem.ch [at] gmail.com>
-
-##     This program is free software: you can redistribute it and/or modify
-##     it under the terms of the GNU Affero General Public License as published by
-##     the Free Software Foundation, either version 3 of the License, or
-##     (at your option) any later version.
-
-##     This program is distributed in the hope that it will be useful,
-##     but WITHOUT ANY WARRANTY; without even the implied warranty of
-##     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-##     GNU Affero General Public License for more details.
-
-##     You should have received a copy of the GNU Affero General Public License
-##     along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
-
-'''
-@author: assem
-@contact: assem.ch [at] gmail.com
-@license: AGPL
-
-TODO reorganize the importer module ,keep it free of un-needed resources
-'''
 import os.path
 import re
 import operator
@@ -40,11 +17,11 @@ from alfanous.Support.whoosh import  index
 
 
 from alfanous.main import QuranicSearchEngine
-from alfanous.Indexing import QseDocIndex
-from alfanous.TextProcessing import QStandardAnalyzer, QDiacAnalyzer, QArabicSymbolsFilter, QUthmaniDiacAnalyzer, QUthmaniAnalyzer, APermissibleAnalyzer
-from alfanous.Exceptions import  Ta7rif
+from alfanous.indexing import QseDocIndex
+from alfanous.text_processing import QStandardAnalyzer, QDiacAnalyzer, QArabicSymbolsFilter, QUthmaniDiacAnalyzer, QUthmaniAnalyzer, APermissibleAnalyzer
+from alfanous.exceptions import  Ta7rif
 from alfanous.Support.PyArabic.araby import strip_tashkeel
-from alfanous.Searching import QReader
+from alfanous.searching import QReader
 
 nor_ = strip_tashkeel
 
@@ -54,10 +31,6 @@ class FrequencyZ( Frequency ):
 
 
 class Transformer:
-    """load the data from the main database to create schema and document index
-
-    """
-
     def __init__( self, ixpath, dypypath, dbpath = "main.db" ):
         if dbpath:
             self.__mainDb = self.__connect( dbpath )

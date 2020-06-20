@@ -27,7 +27,7 @@ Coding
 --------
 * API & JSON interface: `A~CH`_    
 * Desktop Interface: `A~CH`_, `Sohaib Afifi`_
-* Web Interface: `A~CH`_  , `Walid Ziouche`_, `Abdellah Chelli`_ , `Mouad Debbar`_,  `Mennouchi Islam Azeddine <https://github.com/islamoc>`_, `Muslih al aqaad`_, `Tedjeddine Meabeo`_ ,   , Ahmed Ramadan
+* Web Interface: `A~CH`_  , `Walid Ziouche`_, `Abdellah Chelli`_ , `Mouad Debbar`,  `Mennouchi Islam Azeddine <https://github.com/islamoc>`_, `Muslih al aqaad`_, `Tedjeddine Meabeo`_ ,   , Ahmed Ramadan
 * Firefox toolbar: `Zakaria Smahi`_ 
 * PyArabic(Integrated): Taha Zerrouki, A~CH, Ahimta~
 * Windows Store : `Mohamed Anas Mostefaoui(FenyLab) <https://github.com/luffy-dam>`_

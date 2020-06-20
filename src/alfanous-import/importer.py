@@ -25,39 +25,20 @@
 '''
 import os.path
 
-from PyZekrModels.Models import TranslationModel
+from zekr_model_reader.main import TranslationModel
 
 from alfanous.Support.whoosh.fields import Schema, STORED, ID, KEYWORD, TEXT, NUMERIC
 from alfanous.Support.whoosh.filedb.filestore import FileStorage
 from alfanous.Support.whoosh import index 
 from alfanous.Support.whoosh.analysis import RegexTokenizer, LowercaseFilter
 
-from alfanous.TextProcessing import QArabicSymbolsFilter
+from alfanous.text_processing import QArabicSymbolsFilter
 
-class GenericImporter:
-    """  TODO: generic importer for loading any type of data
-    """
-    pass
-
-
-class TanzilImporter:
-    """ TODO:import all info contained in Tanzil
-
-    """
-    pass
 
 
 class QuranicCorpusImporter:
-    """ import Quranic Corpus to use in Analyser
 
-    TODO: Import derivation levels
-    TODO: Import words properties
-
-    """
-
-
-    def __init__( self, QC_PATH = "../../store/quranic-corpus-morpology.xml", DB = "main.db" ):
-        """ make word table """
+    def __init__( self, QC_PATH = "../../../store/quranic-corpus-morpology.xml", DB = "main.db" ):
 
         import sqlite3
 
@@ -118,7 +99,7 @@ class QuranicCorpusImporter:
 
 
         print ">loading Qurany Corpus...",
-        from PyCorpus.QuranyCorpus import API as QC
+        from quran_corpus_reader.main import API as QC
         A = QC( source = QC_PATH )
         print ".OK\n"
         IFEXIST = lambda d, attrib: d[attrib].encode( "utf-8" ) if attrib in d else ""
