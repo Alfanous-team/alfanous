@@ -15,7 +15,7 @@ API_PATH="./src/"
 
 ## Importer package path, the importer is the responsible of downloading quranic
 ## resources, updating them , indexing them.
-QIMPORT=$(API_PATH)"alfanous-import/main.py" 
+QIMPORT=$(API_PATH)"alfanous-import/cli.py"
 	
 ## Dynamic resources, are some auto-generated python modules that contain some 
 ## linguistic resources on the form of python dictionaries		

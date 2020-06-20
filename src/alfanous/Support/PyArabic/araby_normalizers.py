@@ -9,29 +9,11 @@ _HAMZAT = (WAW_HAMZA, YEH_HAMZA)
 _LAMALEFAT = (LAM_ALEF, LAM_ALEF_HAMZA_ABOVE, LAM_ALEF_HAMZA_BELOW, LAM_ALEF_MADDA_ABOVE)
 
 def normalize_uthmani_symbols(w):
-    '''
-    normalize specail letters on uthmani script, and strip extra symbols
-    
-    >>> normalize_uthmani_symbols('')
-    u''
-    >>> normalize_uthmani_symbols(MINI_ALEF+SMALL_WAW+SMALL_YEH+ALEF+BEH+ALEF_WASLA+TEH+ALEF_WASLA) == (ALEF + BEH + ALEF + TEH + ALEF)
-    True
-    '''
-    
     return w.replace(MINI_ALEF+SMALL_WAW+SMALL_YEH, '').replace(ALEF_WASLA, ALEF)
 
 #--------------------------------------
 def normalize_hamza(w):
-    '''
-    strip vowel from a word and return a result word
-    
-    >>> normalize_hamza('')
-    ''
-    >>> normalize_hamza(_HAMZAT[0] + _ALEFAT[1] + ALEF + BEH + _ALEFAT[0] + TEH + _HAMZAT[1]) == (HAMZA + ALEF + ALEF + BEH + ALEF + TEH + HAMZA)
-    True
-    '''
     s = ''
-    
     for letter in w:
         if letter in _ALEFAT: s += ALEF
         elif letter in _HAMZAT: s += HAMZA
@@ -42,14 +24,6 @@ def normalize_hamza(w):
 
 #--------------------------------------
 def normalize_lamalef(w):
-    '''
-    strip vowel from a word and return a result word
-    
-    >>> normalize_lamalef('')
-    ''
-    >>> normalize_lamalef(_LAMALEFAT[0] + ALEF + BEH + _LAMALEFAT[1] + _LAMALEFAT[2] + TEH + _LAMALEFAT[3]) == (LAM+ALEF+ALEF+BEH+LAM+ALEF+LAM+ALEF+TEH+LAM+ALEF)
-    True
-    '''
     s = ''
     
     for letter in w:

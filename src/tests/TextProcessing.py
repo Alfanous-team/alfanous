@@ -5,7 +5,7 @@ This is a test module for alfanous.TextProcessing
 
 """
 
-from alfanous.TextProcessing import QArabicSymbolsFilter, unicode_
+from alfanous.text_processing import QArabicSymbolsFilter, unicode_
 
 
 if __name__ == "__main__":

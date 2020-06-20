@@ -51,9 +51,9 @@ import xml.etree.ElementTree
 from pyparsing import Keyword, Word, Group, Literal, CharsNotIn, alphas
 from pyparsing import SkipTo, ZeroOrMore, Optional, OneOrMore
 
-from QuranyCorpusConstantes import DERIVclass, NOMclass, PGNclass, VERBclass, PREFIXclass, POSclass
-from QuranyCorpusConstantes import DERIV, PREFIX, PGN, POS, VERB, NOM, PRON
-from QuranyCorpusConstantes import BUCKWALTER2UNICODE
+from constants import DERIVclass, NOMclass, PGNclass, VERBclass, PREFIXclass, POSclass
+from constants import DERIV, PREFIX, PGN, POS, VERB, NOM, PRON
+from constants import BUCKWALTER2UNICODE
 
 def reverse_class( dictionary ):
     """ invert a dictionary """

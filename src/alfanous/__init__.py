@@ -23,14 +23,14 @@
     """
 
 # import Output object
-from alfanous.Outputs import Raw as _search_engine
+from alfanous.outputs import Raw as _search_engine
 # import default Paths
-from alfanous.Data import Paths as PATHS
+from alfanous.data import Paths as PATHS
 
 DEFAULTS, DOMAINS, HELPMESSAGES = _search_engine.DEFAULTS, _search_engine.DOMAINS, _search_engine.HELPMESSAGES
 FLAGS = DEFAULTS["flags"].keys()
 
-from alfanous.Outputs import Fields as _fields
+from alfanous.outputs import Fields as _fields
 
 FIELDS_ARABIC = _fields.keys()
 FIELDS_ENGLISH = _fields.values()
