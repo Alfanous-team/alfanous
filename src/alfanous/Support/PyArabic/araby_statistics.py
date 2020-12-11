@@ -12,16 +12,16 @@ import araby
 __all__ = ['letters', 'diacritics', 'letter_count', 'hamza_count', 'words',
     'gwords', 'sunletters', 'moonletters']
 
-gword_pattern = re.compile( u"لله" )
-GWORDS_FORMS = set( [u"أبالله", u"وتالله", u"بالله", u"تالله", u"والله", u"الله",
-    u"ولله", u"اللهم", u"آلله", u"فلله", u"لله", u"فالله", ] )
+gword_pattern = re.compile( "لله" )
+GWORDS_FORMS = set( ["أبالله", "وتالله", "بالله", "تالله", "والله", "الله",
+    "ولله", "اللهم", "آلله", "فلله", "لله", "فالله", ] )
 
 '''
 A sample data to be used in docstring tests. Since this variables isn't
 declared in __all__, it is private to this module.
 '''
-TEST_FIXTURES = {'text': u" اللّهم يضلله يً ْيسئء سبي شبيشيش شسيشسي",
-    'letter': u"ش", 'gwords': [u"أبالله", u"وتالله", u"بالله"]}
+TEST_FIXTURES = {'text': " اللّهم يضلله يً ْيسئء سبي شبيشيش شسيشسي",
+    'letter': "ش", 'gwords': ["أبالله", "وتالله", "بالله"]}
 
 
 def count( f, iterable ):
@@ -183,12 +183,12 @@ def moonletters( text ):
 
 
 if __name__ == "__main__":
-    str = u" اللّهم يضلله يً ْيسئء سبي شبيشيش شسيشسي"
-    print( "letters=", letters( str ) )
-    print( "diacritics=", diacritics( str ) )
-    print( "letter_count=", letter_count( str, u"ش" ) )
-    print( "hamza_count=", hamza_count( str ) )
-    print( "words=", words( str ) )
-    print( "gwords=", gwords( str ) )
-    print( "sunletters=", sunletters( str ) )
-    print( "moonletters=", moonletters( str ) )
+    str = " اللّهم يضلله يً ْيسئء سبي شبيشيش شسيشسي"
+    print("letters=", letters( str ) )
+    print("diacritics=", diacritics( str ) )
+    print("letter_count=", letter_count( str, "ش" ) )
+    print("hamza_count=", hamza_count( str ) )
+    print("words=", words( str ) )
+    print("gwords=", gwords( str ) )
+    print("sunletters=", sunletters( str ) )
+    print("moonletters=", moonletters( str ) )

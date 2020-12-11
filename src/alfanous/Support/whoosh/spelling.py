@@ -14,6 +14,9 @@
 # limitations under the License.
 #===============================================================================
 
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
 """This module contains functions/classes using a Whoosh index as a backend for
 a spell-checking engine.
 """
@@ -22,7 +25,8 @@ from collections import defaultdict
 
 from alfanous.Support.whoosh import analysis, fields, query
 from alfanous.Support.whoosh.scoring import TF_IDF
-from alfanous.Support.whoosh.support.levenshtein import relative, distance
+from alfanous.Support.whoosh.support.levenshtein import distance
+from six.moves import range
 
 
 class SpellChecker(object):
@@ -96,7 +100,7 @@ class SpellChecker(object):
         freqtype = FieldType(format=Frequency(SimpleAnalyzer()))
 
         fls = [("word", STORED), ("score", STORED)]
-        for size in xrange(self.mingram, self.maxgram + 1):
+        for size in range(self.mingram, self.maxgram + 1):
             fls.extend([("start%s" % size, idtype),
                         ("end%s" % size, idtype),
                         ("gram%s" % size, freqtype)])
@@ -127,14 +131,14 @@ class SpellChecker(object):
             weighting = TF_IDF()
 
         grams = defaultdict(list)
-        for size in xrange(self.mingram, self.maxgram + 1):
+        for size in range(self.mingram, self.maxgram + 1):
             key = "gram%s" % size
             nga = analysis.NgramAnalyzer(size)
             for t in nga(text):
                 grams[key].append(t.text)
 
         queries = []
-        for size in xrange(self.mingram, min(self.maxgram + 1, len(text))):
+        for size in range(self.mingram, min(self.maxgram + 1, len(text))):
             key = "gram%s" % size
             gramlist = grams[key]
             queries.append(query.Term("start%s" % size, gramlist[0],
@@ -217,7 +221,7 @@ class SpellChecker(object):
         writer = self.index().writer()
         for text, score in ws:
             fields = {"word": text, "score": score}
-            for size in xrange(self.mingram, self.maxgram + 1):
+            for size in range(self.mingram, self.maxgram + 1):
                 nga = analysis.NgramAnalyzer(size)
                 gramlist = [t.text for t in nga(text)]
                 if len(gramlist) > 0:

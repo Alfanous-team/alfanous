@@ -14,6 +14,9 @@
 # limitations under the License.
 #===============================================================================
 
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
 """
 The classes in this module encode and decode posting information for a field.
 The field format essentially determines what information is stored about each
@@ -21,12 +24,13 @@ occurance of a term.
 """
 
 from collections import defaultdict
-from struct import pack, unpack, calcsize
-from cStringIO import StringIO
+from struct import pack, unpack
 
 from alfanous.Support.whoosh.analysis import unstopped
-from alfanous.Support.whoosh.system import _INT_SIZE, _USHORT_SIZE, _FLOAT_SIZE
+from alfanous.Support.whoosh.system import _INT_SIZE, _FLOAT_SIZE
 from alfanous.Support.whoosh.util import varint, read_varint, float_to_byte, byte_to_float
+from six.moves import range
+import six
 
 
 # Format base class
@@ -190,7 +194,7 @@ class Frequency(Format):
                 seen[t.text] += 1
         
         encode = self.encode
-        return ((w, freq, encode(freq)) for w, freq in seen.iteritems())
+        return ((w, freq, encode(freq)) for w, freq in six.iteritems(seen))
 
     def encode(self, freq):
         return pack("!I", freq)
@@ -219,7 +223,7 @@ class DocBoosts(Frequency):
         
         encode = self.encode
         return ((w, freq, encode((freq, doc_boost)))
-                for w, freq in seen.iteritems())
+                for w, freq in six.iteritems(seen))
     
     def encode(self, freq_docboost):
         freq, docboost = freq_docboost
@@ -257,7 +261,7 @@ class Positions(Format):
         
         encode = self.encode
         return ((w, len(poslist), encode(poslist))
-                for w, poslist in seen.iteritems())
+                for w, poslist in six.iteritems(seen))
     
     def encode(self, positions):
         # positions = [pos1, pos2, ...]
@@ -269,11 +273,11 @@ class Positions(Format):
         return pack("!I", len(positions)) + "".join(codes)
     
     def decode_positions(self, valuestring):
-        read = StringIO(valuestring).read
+        read = six.StringIO(valuestring).read
         freq = unpack("!I", read(_INT_SIZE))[0]
         position = 0
         positions = []
-        for _ in xrange(freq):
+        for _ in range(freq):
             position = read_varint(read) + position
             positions.append(position)
         return positions
@@ -306,7 +310,7 @@ class Characters(Positions):
                                  start_char + t.endchar))
         
         encode = self.encode
-        return ((w, len(ls), encode(ls)) for w, ls in seen.iteritems())
+        return ((w, len(ls), encode(ls)) for w, ls in six.iteritems(seen))
     
     def encode(self, posns_chars):
         # posns_chars = [(pos, startchar, endchar), ...]
@@ -322,12 +326,12 @@ class Characters(Positions):
         return pack("!I", len(posns_chars)) + "".join(codes)
     
     def decode_characters(self, valuestring):
-        read = StringIO(valuestring).read
+        read = six.StringIO(valuestring).read
         freq = unpack("!I", read(_INT_SIZE))[0]
         position = 0
         endchar = 0
         posns_chars = []
-        for _ in xrange(freq):
+        for _ in range(freq):
             position = read_varint(read) + position
             startchar = endchar + read_varint(read)
             endchar = startchar + read_varint(read)
@@ -356,7 +360,7 @@ class PositionBoosts(Positions):
         
         encode = self.encode
         return ((w, len(poslist), encode(poslist))
-                for w, poslist in seen.iteritems())
+                for w, poslist in six.iteritems(seen))
     
     def encode(self, posns_boosts):
         # posns_boosts = [(pos, boost), ...]
@@ -371,7 +375,7 @@ class PositionBoosts(Positions):
         return pack("!If", len(posns_boosts), summedboost) + "".join(codes)
     
     def decode_position_boosts(self, valuestring):
-        f = StringIO(valuestring)
+        f = six.StringIO(valuestring)
         read = f.read
         freq = unpack("!I", read(_INT_SIZE))[0]
         
@@ -380,14 +384,14 @@ class PositionBoosts(Positions):
         
         position = 0
         posns_boosts = []
-        for _ in xrange(freq):
+        for _ in range(freq):
             position = read_varint(read) + position
             boost = byte_to_float(read(1))
             posns_boosts.append((position, boost))
         return posns_boosts
     
     def decode_positions(self, valuestring):
-        f = StringIO(valuestring)
+        f = six.StringIO(valuestring)
         read, seek = f.read, f.seek
         
         freq = unpack("!I", read(_INT_SIZE))[0]
@@ -396,7 +400,7 @@ class PositionBoosts(Positions):
         
         position = 0
         positions = []
-        for _ in xrange(freq):
+        for _ in range(freq):
             position = read_varint(read) + position
             # Skip boost
             seek(1, 1)
@@ -430,7 +434,7 @@ class CharacterBoosts(Characters):
         
         encode = self.encode
         return ((w, len(poslist), encode(poslist))
-                for w, poslist in seen.iteritems())
+                for w, poslist in six.iteritems(seen))
     
     def encode(self, posns_chars_boosts):
         # posns_chars_boosts = [(pos, startchar, endchar, boost), ...]
@@ -452,7 +456,7 @@ class CharacterBoosts(Characters):
         return b + "".join(codes)
     
     def decode_character_boosts(self, valuestring):
-        f = StringIO(valuestring)
+        f = six.StringIO(valuestring)
         read = f.read
         
         freq = unpack("!I", read(_INT_SIZE))[0]
@@ -462,7 +466,7 @@ class CharacterBoosts(Characters):
         position = 0
         endchar = 0
         posns_chars = []
-        for _ in xrange(freq):
+        for _ in range(freq):
             position = read_varint(read) + position
             startchar = endchar + read_varint(read)
             endchar = startchar + read_varint(read)

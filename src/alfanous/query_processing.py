@@ -16,6 +16,9 @@
 # #     You should have received a copy of the GNU Affero General Public License
 # #     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
 """
 This module contains customized query parsers for Arabic and Quran.
 
@@ -38,7 +41,7 @@ from alfanous.Support.whoosh.qparser import QueryParser  # , MultifieldParser
 from alfanous.Support.whoosh.query import Term, MultiTerm
 from alfanous.Support.whoosh.query import Wildcard as whoosh_Wildcard
 from alfanous.Support.whoosh.query import Prefix as whoosh_Prefix
-from alfanous.Support.whoosh.query import Or, NullQuery, Every , And
+from alfanous.Support.whoosh.query import Or, NullQuery, Every
 
 #### Importing dynamically compiled resources
 # # Importing synonyms dictionary
@@ -70,12 +73,12 @@ try:
     from alfanous.dynamic_resources.antonymes_dyn import antdict
 except ImportError:
     antdict = {}
-
-from alfanous.indexing import QseDocIndex
 from alfanous.exceptions import  FeedBack  # , NotImplemented
 from alfanous.text_processing import QArabicSymbolsFilter, unicode_
 
 from alfanous.misc import LOCATE, FIND, FILTER_DOUBLES
+from six.moves import map
+from six.moves import range
 
 
 FEEDBACK = True
@@ -90,12 +93,12 @@ def _make_arabic_parser():
     # for specialchar in '*?^():"{}[] ' + escapechar:
     #    wordchars = wordchars.replace(specialchar, "")
     # wordtext = Word(wordchars)
-    alephba = u"""
+    alephba = """
                 abcdefghijklmnopqrstuvwxyz_
                 األآإـتنمكطدجحخهعغفقثصضشسيبئءؤرىةوزظذ
                 """
 
-    wordtext = CharsNotIn( u'//*؟^():"{}[]$><%~#،,\' +-|' )
+    wordtext = CharsNotIn( '//*؟^():"{}[]$><%~#،,\' +-|' )
     escape = Suppress( escapechar ) \
              + ( Word( printables, exact = 1 ) | White( exact = 1 ) )
     wordtoken = Combine( OneOrMore( wordtext | escape ) )
@@ -104,7 +107,7 @@ def _make_arabic_parser():
     plainWord = Group( wordtoken ).setResultsName( "Word" )
 
     # A wildcard word containing * or ?.
-    wildchars = Word( u"؟?*" )
+    wildchars = Word( "؟?*" )
     # Start with word chars and then have wild chars mixed in
     wildmixed = wordtoken + OneOrMore( wildchars + Optional( wordtoken ) )
     # Or, start with wildchars, and then either a mixture of word and wild chars
@@ -121,8 +124,8 @@ def _make_arabic_parser():
     startfence = Literal( "[" )
     endfence = Literal( "]" )
     rangeitem = QuotedString( '"' ) | wordtoken
-    to = Keyword( u"الى" ) \
-	 | Keyword( u"إلى" ) \
+    to = Keyword( "الى" ) \
+	 | Keyword( "إلى" ) \
 	 | Keyword( "To" ) \
 	 | Keyword( "to" ) \
 	 | Keyword( "TO" )
@@ -152,7 +155,7 @@ def _make_arabic_parser():
 
 
     # derivation level 1,2
-    derive_symbole = Literal( u"<" ) | Literal( u">" )
+    derive_symbole = Literal( "<" ) | Literal( ">" )
     derivation = Group( 
 					OneOrMore( derive_symbole ) + wordtoken
 					).setResultsName( "Derivation" )
@@ -160,7 +163,7 @@ def _make_arabic_parser():
 
     # spellerrors
     # spellerrors=Group(QuotedString('\'')).setResultsName("Errors")
-    spellerrors_symbole = Literal( u"%" )
+    spellerrors_symbole = Literal( "%" )
     spellerrors = Group( 
 					spellerrors_symbole + wordtoken
 					).setResultsName( "SpellErrors" )
@@ -177,7 +180,7 @@ def _make_arabic_parser():
     # tuple search (root,pattern,type)
     starttuple = Literal( "{" )
     endtuple = Literal( "}" )
-    bettuple = Literal( u"،" ) | Literal( "," )
+    bettuple = Literal( "،" ) | Literal( "," )
     wordtuple = Group( Optional( wordtoken ) )
     tuple = Group( 
 				starttuple + \
@@ -225,15 +228,15 @@ def _make_arabic_parser():
 
     # A unit may be "not"-ed.
     operatorNot = Group( 
-					Suppress( Keyword( u"ليس" ) | Keyword( u"NOT" ) ) + \
+					Suppress( Keyword( "ليس" ) | Keyword( "NOT" ) ) + \
 					Suppress( White() ) + \
 					unit
 					).setResultsName( "Not" )
     generalUnit = operatorNot | unit
 
-    andToken = Keyword( u"و" ) | Keyword( u"AND" )
-    orToken = Keyword( u"أو" ) | Keyword( u"او" ) | Keyword( u"OR" )
-    andNotToken = Keyword( u"وليس" ) | Keyword( u"ANDNOT" )
+    andToken = Keyword( "و" ) | Keyword( "AND" )
+    orToken = Keyword( "أو" ) | Keyword( "او" ) | Keyword( "OR" )
+    andNotToken = Keyword( "وليس" ) | Keyword( "ANDNOT" )
 
     operatorAnd = Group( 
 					( generalUnit + \
@@ -242,7 +245,7 @@ def _make_arabic_parser():
 					Suppress( White() ) + \
 					expression ) | \
 					( generalUnit + \
-					Suppress( Literal( u"+" ) ) + \
+					Suppress( Literal( "+" ) ) + \
 					expression )
 					).setResultsName( "And" )
 
@@ -253,7 +256,7 @@ def _make_arabic_parser():
 					Suppress( White() ) + \
 					expression ) | \
 					( generalUnit + \
-					Suppress( Literal( u"|" ) ) + \
+					Suppress( Literal( "|" ) ) + \
 					expression )
 					).setResultsName( "Or" )
 
@@ -264,7 +267,7 @@ def _make_arabic_parser():
 						Suppress( White() ) + \
 						expression ) | \
 						( unit + \
-						Suppress( Literal( u"-" ) ) + \
+						Suppress( Literal( "-" ) ) + \
 						expression )
 						).setResultsName( "AndNot" )
 
@@ -310,7 +313,7 @@ class ArabicParser( StandardParser ):
         self.ara2eng = ara2eng
 
     def _Field( self, node, fieldname ):
-        if self.ara2eng.has_key( node[0] ):
+        if node[0] in self.ara2eng:
             name = self.ara2eng[node[0]]
         else:
             name = node[0]
@@ -338,7 +341,7 @@ class ArabicParser( StandardParser ):
 
     def _Tuple( self, node, fieldname ):
         return self.make_tuple( fieldname,
-							[node[i][0] for i in range( 1, len( node ), 2 )] )
+							[node[i][0] for i in range(1, len( node), 2)] )
 
     def _Prefix( self, node, fieldname ):
         return self.make_prefix( fieldname, node[1] )
@@ -397,7 +400,7 @@ class ArabicParser( StandardParser ):
 					]
 
         def __unicode__( self ):
-            return u"%s:<%s>" % ( self.fieldname, self.text )
+            return "%s:<%s>" % ( self.fieldname, self.text )
 
         def __repr__( self ):
             return "%s(%r, %r, boost=%r)" % ( self.__class__.__name__,
@@ -532,7 +535,7 @@ class ArabicParser( StandardParser ):
 
         def _compare( self, first, second ):
             """ normalize and compare """
-            if first[:2] == u"مو": print first
+            if first[:2] == "مو": print(first)
             eqiv = ( self.ASF.normalize_all( first ) == self.ASF.normalize_all( second ) )
             if eqiv:
                 self.words.append( second )
@@ -607,7 +610,7 @@ class ArabicParser( StandardParser ):
     class Wildcard( whoosh_Wildcard ):
         """customize the wildcards for arabic symbols   """
         def __init__( self, fieldname, text, boost = 1.0 ):
-            new_text = text.replace( u"؟", u"?" )
+            new_text = text.replace( "؟", "?" )
             super( ArabicParser.Wildcard, self ).__init__( fieldname,
 															new_text,
 															boost )
@@ -644,7 +647,7 @@ class QuranicParser( ArabicParser ):
 
         @staticmethod
         def synonyms( word ):
-            if syndict.has_key( word ):
+            if word in syndict:
                 return syndict[word]
             else:
                 return [word]
@@ -658,7 +661,7 @@ class QuranicParser( ArabicParser ):
         """
         @staticmethod
         def antonyms( word ):
-            if antdict.has_key( word ):
+            if word in antdict:
                 return antdict[word]
             else:
                 return [word]
@@ -721,7 +724,7 @@ class QuranicParser( ArabicParser ):
             wset = set()
             firsttime = True
             for propkey in props.keys():
-                if worddict.has_key( propkey ):
+                if propkey in worddict:
                     partial_wset = set( FIND( worddict[propkey], worddict["word_"], props[propkey] ) )
                     if firsttime:
                         wset = partial_wset;firsttime = False
@@ -741,7 +744,7 @@ class QuranicParser( ArabicParser ):
 
         def __init__( self, fieldname, text, boost = 1.0 ):
             self.words = []
-            new_text = text.replace( u"؟", u"?" )
+            new_text = text.replace( "؟", "?" )
             super( QuranicParser.Wildcard, self ).__init__( fieldname,
 															 	new_text,
 															 	boost )
@@ -810,7 +813,7 @@ class SuperFuzzyAll( QuranicParser.FuzzyAll ):
         words |= set( QuranicParser.Synonyms( fieldname, text ).words )
         words |= set( QuranicParser.Derivation( fieldname, text, level = 1 ).words )
         if len( words ) == 1:
-            wildcarded_text = " ".join( map( lambda x: "*" + x + "*", text.split( " " ) ) )
+            wildcarded_text = " ".join( map(lambda x: "*" + x + "*", text.split( " ")))
             words |= set( QuranicParser.Wildcard( fieldname, wildcarded_text ).words )
 
         return list( words )

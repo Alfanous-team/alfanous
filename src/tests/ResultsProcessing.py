@@ -9,8 +9,8 @@ from alfanous.results_processing import Qhighlight
 
 if __name__ == "__main__":
     H = Qhighlight( 
-                   u"الْحَمْدُ لِلَّهِ رَبِّ الْعَالَمِينَ", 
-                   [u"الحمد", u"لله"], 
+                   "الْحَمْدُ لِلَّهِ رَبِّ الْعَالَمِينَ", 
+                   ["الحمد", "لله"], 
                    "html" 
                    )
-    print H
+    print(H)

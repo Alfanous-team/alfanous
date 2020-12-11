@@ -1,13 +1,19 @@
 # coding: utf-8
 
 
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
 import re
 
 from alfanous.Support.whoosh.analysis import StopFilter, RegexTokenizer  # LowercaseFilter, StandardAnalyzer,
-from alfanous.Support.PyArabic.araby import strip_tashkeel, strip_tatweel,strip_shadda, normalize_spellerrors, normalize_hamza, normalize_lamalef, normalize_uthmani_symbols  # , HARAKAT_pat,
-from alfanous.Support.PyArabic.araby  import FATHATAN, DAMMATAN, KASRATAN, FATHA, DAMMA, KASRA, SUKUN, SHADDA  # *
-
+from alfanous.Support.PyArabic.araby_strip_functions import strip_tashkeel, strip_tatweel
+from alfanous.Support.PyArabic.araby_normalizers import normalize_hamza, normalize_lamalef, normalize_uthmani_symbols,normalize_spellerrors  # , HARAKAT_pat,
+from alfanous.Support.PyArabic.araby_constants  import FATHATAN, DAMMATAN, KASRATAN, FATHA, DAMMA, KASRA, SUKUN, SHADDA  # *
 from alfanous.constants import INVERTEDSHAPING
+
+import six
+from six.moves import range
 
 
 class QSpaceTokenizer( RegexTokenizer ):
@@ -67,7 +73,7 @@ class QArabicSymbolsFilter():
 
 def Gword_tamdid( aya ):
     """ add a tamdid to lafdh aljalala to eliminate the double vocalization """
-    return aya.replace( u"لَّه", u"لَّـه" ).replace( u"لَّه", u"لَّـه" )
+    return aya.replace( "لَّه", "لَّـه" ).replace( "لَّه", "لَّـه" )
 
 
 
@@ -113,7 +119,7 @@ def PartialVocalisation():
 
 
 
-class unicode_( unicode ):
+class unicode_( six.text_type):
     """    a subclass of unicode that handle al-tashkil
     @deprecated: its not well organized
      """
@@ -126,7 +132,7 @@ class unicode_( unicode ):
         """"""
         output = ""
         for char in text:
-            if INVERTEDSHAPING.has_key( char ):
+            if char in INVERTEDSHAPING:
                 output += INVERTEDSHAPING[char]
             else:
                 output += char
@@ -139,9 +145,9 @@ class unicode_( unicode ):
             cptH = 0
             hdic = {}
             for ch in self:
-                if unicode( ch ) in [FATHATAN, DAMMATAN, KASRATAN, FATHA, DAMMA, KASRA, SUKUN]:  # , SHADDA
+                if six.text_type(ch)in [FATHATAN, DAMMATAN, KASRATAN, FATHA, DAMMA, KASRA, SUKUN]:  # , SHADDA
                     cptH -= 1
-                    if hdic.has_key( cptH ):
+                    if cptH in hdic:
 
                         hdic[cptH].append( ch )
                     else:
@@ -153,10 +159,10 @@ class unicode_( unicode ):
     @staticmethod
     def compare_harakat( list1, list2 ):
         """compare tow list of harakat"""
-        indices = [indice for indice in list1.keys() + list2.keys()]
+        indices = [indice for indice in list(list1.keys()) + list(list2.keys())]
         ret = True
         for i in indices:
-            if list1.has_key( i ) and list2.has_key( i ):
+            if i in list1 and i in list2:
                 for haraka in list1[i]:
                     if haraka in list2[i]:
                         pass
@@ -170,11 +176,11 @@ class unicode_( unicode ):
                             else:
                                 ret = False
                             break
-            elif list1.has_key( i ):
+            elif i in list1:
                 if SHADDA in list1[i]:
                     ret = False
                     break
-            elif list2.has_key( i ):
+            elif i in list2:
                 if SHADDA in list2[i]:
                     ret = False
                     break
@@ -196,14 +202,14 @@ class unicode_( unicode ):
 
 
     def apply_harakat_list( self, lst ):
-        new = u""
-        for i in range( len( self ) ):
+        new = ""
+        for i in range(len( self)):
             new += self[i]
-            if lst.has_key( i ):
+            if i in lst:
                 new += unicode_( "".join( lst[i] ) )
         return new
 
-    word_sh_pattern = re.compile( u"[^ \t\r\n]+" )
+    word_sh_pattern = re.compile( "[^ \t\r\n]+" )
 
     def tokenize_shakl( self ):
         return self.word_sh_pattern.findall( self )

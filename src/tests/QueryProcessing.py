@@ -6,7 +6,7 @@ This is a test module for alfanous.QueryProcessing
 """
 
 from alfanous.query_processing import _make_arabic_parser
-from alfanous.query_processing import QseDocIndex
+from alfanous.indexing import QseDocIndex
 from alfanous.query_processing import FuzzyQuranicParser
 
 
@@ -14,31 +14,31 @@ from alfanous.query_processing import FuzzyQuranicParser
 if __name__ == "__main__":
     parse = _make_arabic_parser()
 
-    print parse( u"\"عاصم\"" )
-    print parse( u"[1 الى 3]" )
-    print parse( u"{a,b،c}" )
-    print parse( u"#122 ~dsd" )
-    print parse( u">>اية" )
-    print parse( u"%عاصم" )
-    print parse( u"ليس عاصم و الموت أو الحياة وليس غيرهما" )
-    print parse( u"اية:عاصم" )
-    print parse( u"'h h  j'" )
-    print parse( u"a*a" )
-    print parse( u"a*" )
+    print(parse( "\"عاصم\"" ))
+    print(parse( "[1 الى 3]" ))
+    print(parse( "{a,b،c}" ))
+    print(parse( "#122 ~dsd" ))
+    print(parse( ">>اية" ))
+    print(parse( "%عاصم" ))
+    print(parse( "ليس عاصم و الموت أو الحياة وليس غيرهما" ))
+    print(parse( "اية:عاصم" ))
+    print(parse( "'h h  j'" ))
+    print(parse( "a*a" ))
+    print(parse( "a*" ))
     
     D = QseDocIndex( "../alfanous/indexes/main/" )
     QP = FuzzyQuranicParser( D.get_schema(), otherfields = ['subject'] )
 
-    print QP.parse( u"'لو كان البحر '" )
-    print QP.parse( u"\"عاصم\"" )
-    print QP.parse( u"[1 الى 3]" )
-    print QP.parse( u"{ملك,فعل}" )
-    print QP.parse( u"#122 ~dsd" )
-    print QP.parse( u">>سماكم" )
-    print QP.parse( u"%عاصم" )
-    print QP.parse( u"ليس عاصم و الموت أو الحياة وليس غيرهما" )
-    print QP.parse( u"آية:عاصم" )
-    print QP.parse( u"'h h  j'" )
-    print QP.parse( u"a*a" )
-    print QP.parse( u"b*" )
-    print QP.parse( u"*" )
+    print(QP.parse( "'لو كان البحر '" ))
+    print(QP.parse( "\"عاصم\"" ))
+    print(QP.parse( "[1 الى 3]" ))
+    print(QP.parse( "{ملك,فعل}" ))
+    print(QP.parse( "#122 ~dsd" ))
+    print(QP.parse( ">>سماكم" ))
+    print(QP.parse( "%عاصم" ))
+    print(QP.parse( "ليس عاصم و الموت أو الحياة وليس غيرهما" ))
+    print(QP.parse( "آية:عاصم" ))
+    print(QP.parse( "'h h  j'" ))
+    print(QP.parse( "a*a" ))
+    print(QP.parse( "b*" ))
+    print(QP.parse( "*" ))

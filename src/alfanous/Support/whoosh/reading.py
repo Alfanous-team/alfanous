@@ -14,6 +14,9 @@
 # limitations under the License.
 #===============================================================================
 
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
 """This module contains classes that allow reading from an index.
 """
 
@@ -390,7 +393,7 @@ class MultiReader(IndexReader):
 
         current = []
         for it in iterlist:
-            fnum, text, docfreq, termcount = it.next()
+            fnum, text, docfreq, termcount = next(it)
             current.append((fnum, text, docfreq, termcount, it))
         heapify(current)
 
@@ -408,7 +411,7 @@ class MultiReader(IndexReader):
                 termcount += current[0][3]
                 it = current[0][4]
                 try:
-                    fn, t, df, tc = it.next()
+                    fn, t, df, tc = next(it)
                     heapreplace(current, (fn, t, df, tc, it))
                 except StopIteration:
                     heappop(current)

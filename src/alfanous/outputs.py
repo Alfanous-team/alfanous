@@ -2,6 +2,9 @@
 # -*- coding: UTF-8 -*-
 
 
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
 """
 The programming interface, responsible of the output of all results
 
@@ -11,11 +14,6 @@ The programming interface, responsible of the output of all results
 import json
 import re
 from pyparsing import ParseException
-import traceback
-
-
-from alfanous.main import QuranicSearchEngine, FuzzyQuranicSearchEngine
-from alfanous.main import TraductionSearchEngine, WordSearchEngine
 try:
     from alfanous.dynamic_resources.arabicnames_dyn import ara2eng_names as Fields
 except:
@@ -41,9 +39,13 @@ from alfanous.data import *
 from alfanous.romanization import transliterate
 from alfanous.misc import LOCATE, FIND, FILTER_DOUBLES
 from alfanous.constants import LANGS
+import six
+from six.moves import filter
+from six.moves import map
+from six.moves import range
 
 
-STANDARD2UTHMANI = lambda x: std2uth_words[x] if std2uth_words.has_key( x ) else x
+STANDARD2UTHMANI = lambda x: std2uth_words[x] if x in std2uth_words else x
 
 FALSE_PATTERN = '^false|no|off|0$'
 ## a function to decide what is True and what is false
@@ -70,11 +72,11 @@ def SCAN_SUPERJOKERS( query ):
 	myreg = re.compile( "\*+|[\؟\?]{2,9}|[ \t\n\r\(\)\+\-\|]+|[^ ]+:|" )
 	filtred_query = myreg.sub( "", query )
 	super_joker = True if ( len( filtred_query ) < 3 and "*" in query ) \
-						or ( len( filtred_query ) < 2 and ( u"?" in query or u"؟" in query ) ) \
+						or ( len( filtred_query ) < 2 and ( "?" in query or "؟" in query ) ) \
 						or query.count( "*" ) > 2 \
 			 	else False
 	# Exceptions
-	if query in [u"?", u"؟", u"???????????", u"؟؟؟؟؟؟؟؟؟؟؟؟"]:
+	if query in ["?", "؟", "???????????", "؟؟؟؟؟؟؟؟؟؟؟؟"]:
 		super_joker = False
 
 	return super_joker
@@ -149,7 +151,7 @@ class Raw():
 		  }
 
 	ERRORS = {
-	     - 1:"fail, reason unknown",
+	     -1:"fail, reason unknown",
 	     0:"success",
 	     1:"no action is chosen or action undefined",
 	     2:"""SuperJokers are not permitted, you have to add  3 letters 
@@ -276,7 +278,7 @@ class Raw():
 		self._defaults = self.DEFAULTS
 		self._flags = self.DEFAULTS["flags"].keys()
 		self._fields = Fields
-		self._fields_reverse = dict( ( v, k ) for k, v in Fields.iteritems() )
+		self._fields_reverse = dict( ( v, k ) for k, v in six.iteritems(Fields))
 		self._roots = sorted(filter(bool, set(derivedict["root"])))
 		self._errors = self.ERRORS
 		self._domains = self.DOMAINS
@@ -306,12 +308,12 @@ class Raw():
 
 	def _do( self, flags ):
 		#try:
-		action = flags["action"] if flags.has_key( "action" ) else self._defaults["flags"]["action"]
-		unit = flags["unit"] if flags.has_key( "unit" ) else self._defaults["flags"]["unit"]
-		ident = flags["ident"] if flags.has_key( "ident" ) else self._defaults["flags"]["ident"]
-		platform = flags["platform"] if flags.has_key( "platform" ) else self._defaults["flags"]["platform"]
-		domain = flags["domain"] if flags.has_key( "domain" ) else self._defaults["flags"]["domain"]
-                query = flags["query"] if flags.has_key( "query" ) else self._defaults["flags"]["query"]
+		action = flags["action"] if "action" in flags else self._defaults["flags"]["action"]
+		unit = flags["unit"] if "unit" in flags else self._defaults["flags"]["unit"]
+		ident = flags["ident"] if "ident" in flags else self._defaults["flags"]["ident"]
+		platform = flags["platform"] if "platform" in flags else self._defaults["flags"]["platform"]
+		domain = flags["domain"] if "domain" in flags else self._defaults["flags"]["domain"]
+		query = flags["query"] if "query" in flags else self._defaults["flags"]["query"]
 
 		# gather statistics, enable it if you need use statistics
 		# disable it if you prefer performance
@@ -371,7 +373,7 @@ class Raw():
 		#Incrementation
 		for ident in ["TOTAL"]: #["TOTAL",flags[ident]]
 			stats[ident]["total"] += 1
-			if flags.has_key( "action" ):
+			if "action" in flags:
 				action = flags["action"]
 				if action in self._domains["action"]:
 					stats[ident][action]["total"] += 1
@@ -391,10 +393,10 @@ class Raw():
 
 	def _show( self, flags ):
 		"""  show metadata"""
-		query = flags["query"] if flags.has_key( "query" ) else self._defaults["flags"]["query"]
+		query = flags["query"] if "query" in flags else self._defaults["flags"]["query"]
 		if query == "all":
 			return {"show":self._all}
-		elif self._all.has_key( query ):
+		elif query in self._all:
 			return {"show":{query:self._all[query]}}
 		else:
 			return {"show":None}
@@ -413,11 +415,11 @@ class Raw():
 
 	def _suggest_aya( self, flags ):
 		""" return suggestions for aya words """
-		query = flags["query"] if flags.has_key( "query" ) else self._defaults["flags"]["query"]
+		query = flags["query"] if "query" in flags else self._defaults["flags"]["query"]
 		#preprocess query
 		query = query.replace( "\\", "" )
-		if not isinstance( query, unicode ):
-			query = unicode( query , 'utf8' )
+		if not isinstance( query, six.text_type):
+			query = six.text_type(query, 'utf8')
 		try:
 			output = self.QSE.suggest_all( query )
 		except Exception:
@@ -449,31 +451,19 @@ class Raw():
 		return the results of aya search as a dictionary data structure
 		"""
 		#flags
-		query = flags["query"] if flags.has_key( "query" ) \
-				else self._defaults["flags"]["query"]
-		sortedby = flags["sortedby"] if flags.has_key( "sortedby" ) \
-				   else self._defaults["flags"]["sortedby"]
-		range = int( flags["perpage"] ) if  flags.has_key( "perpage" )  \
-				else flags["range"] if flags.has_key( "range" ) \
-									else self._defaults["flags"]["range"]
+		query = flags["query"] if "query" in flags else self._defaults["flags"]["query"]
+		sortedby = flags["sortedby"] if "sortedby" in flags else self._defaults["flags"]["sortedby"]
+		range = int( flags["perpage"] ) if  "perpage" in flags else flags["range"] if "range" in flags else self._defaults["flags"]["range"]
 		## offset = (page-1) * perpage   --  mode paging
-		offset = ( ( int( flags["page"] ) - 1 ) * range ) + 1 if flags.has_key( "page" ) \
-				 else int( flags["offset"] ) if flags.has_key( "offset" ) \
-					  else self._defaults["flags"]["offset"]
-		recitation = flags["recitation"] if flags.has_key( "recitation" ) \
-					 else self._defaults["flags"]["recitation"]
-		translation = flags["translation"] if flags.has_key( "translation" ) \
-					  else self._defaults["flags"]["translation"]
-		romanization = flags["romanization"] if flags.has_key( "romanization" ) \
-					  else self._defaults["flags"]["romanization"]
-		highlight = flags["highlight"] if flags.has_key( "highlight" ) \
-					else self._defaults["flags"]["highlight"]
-		script = flags["script"] if flags.has_key( "script" ) \
-				 else self._defaults["flags"]["script"]
+		offset = ( ( int( flags["page"] ) - 1 ) * range ) + 1 if "page" in flags else int( flags["offset"] ) if "offset" in flags else self._defaults["flags"]["offset"]
+		recitation = flags["recitation"] if "recitation" in flags else self._defaults["flags"]["recitation"]
+		translation = flags["translation"] if "translation" in flags else self._defaults["flags"]["translation"]
+		romanization = flags["romanization"] if "romanization" in flags else self._defaults["flags"]["romanization"]
+		highlight = flags["highlight"] if "highlight" in flags else self._defaults["flags"]["highlight"]
+		script = flags["script"] if "script" in flags else self._defaults["flags"]["script"]
 		vocalized = IS_FLAG(flags, 'vocalized')
 		fuzzy = IS_FLAG(flags, 'fuzzy')
-		view = flags["view"] if flags.has_key( "view" ) \
-				else self._defaults["flags"]["view"]
+		view = flags["view"] if "view" in flags else self._defaults["flags"]["view"]
 
 		# pre-defined views
 		if view == "minimal":
@@ -576,18 +566,18 @@ class Raw():
 		#print query
 		#preprocess query
 		query = query.replace( "\\", "" )
-		if not isinstance( query, unicode ):
-			query = unicode( query , 'utf8' )
+		if not isinstance( query, six.text_type):
+			query = six.text_type(query, 'utf8')
 
 		if ":" not in query:
-			query = unicode( transliterate( "buckwalter", query, ignore = "'_\"%*?#~[]{}:>+-|" ) )
+			query = six.text_type(transliterate( "buckwalter", query, ignore = "'_\"%*?#~[]{}:>+-|"))
 
 
 		#Search
 		SE = self.FQSE if fuzzy else self.QSE
 		res, termz, searcher = SE.search_all( query  , self._defaults["results_limit"]["aya"], sortedby = sortedby )
 		terms = [term[1] for term in list( termz )[:self._defaults["maxkeywords"]]]
-		terms_uthmani = map( STANDARD2UTHMANI, terms )
+		terms_uthmani = map(STANDARD2UTHMANI, terms)
 		#pagination
 		offset = 1 if offset < 1 else offset;
 		range = self._defaults["minrange"] if range < self._defaults["minrange"] else range;
@@ -619,11 +609,11 @@ class Raw():
 								hamza = False \
 								).normalize_all
 		# highligh function that consider None value and non-definition
-		H = lambda X:  self.QSE.highlight( X, terms, highlight ) if highlight != "none" and X else X if X else u"-----"
+		H = lambda X:  self.QSE.highlight( X, terms, highlight ) if highlight != "none" and X else X if X else "-----"
 		# Numbers are 0 if not defined
 		N = lambda X:X if X else 0
 		# parse keywords lists , used for Sura names
-		kword = re.compile( u"[^,،]+" )
+		kword = re.compile( "[^,،]+" )
 		keywords = lambda phrase: kword.findall( phrase )
 		##########################################
 		extend_runtime = res.runtime
@@ -634,23 +624,21 @@ class Raw():
 			docs = 0
 			nb_vocalizations_globale = 0
 			cpt = 1;
-			annotation_word_query = u"( 0 "
+			annotation_word_query = "( 0 "
 			for term in termz :
 				if term[0] == "aya" or term[0] == "aya_":
 					if term[2]:
 						matches += term[2]
 					docs += term[3]
 					if term[0] == "aya_":
-						annotation_word_query += u" OR word:%s " % term[1]
+						annotation_word_query += " OR word:%s " % term[1]
 					else: #if aya
-						annotation_word_query += u" OR normalized:%s " % STANDARD2UTHMANI( term[1] )
+						annotation_word_query += " OR normalized:%s " % STANDARD2UTHMANI( term[1] )
 					if word_vocalizations:
-						vocalizations = vocalization_dict[ strip_vocalization( term[1] ) ] if vocalization_dict.has_key( strip_vocalization( term[1] ) ) \
-										   else []
+						vocalizations = vocalization_dict[ strip_vocalization( term[1] ) ] if strip_vocalization( term[1]) in vocalization_dict else []
 						nb_vocalizations_globale += len( vocalizations )
 					if word_synonyms:
-						synonyms = syndict[term[1]] if syndict.has_key( term[1] ) \
-										   else []
+						synonyms = syndict[term[1]] if term[1] in syndict else []
 					derivations_extra = []
 					if word_derivations:
 						lemma = LOCATE( derivedict["word_"], derivedict["lemma"], term[1] )
@@ -681,28 +669,28 @@ class Raw():
 															 "derivations_extra": derivations_extra,
 														 }
 					cpt += 1
-			annotation_word_query += u" ) "
+			annotation_word_query += " ) "
 			words_output["global"] = {"nb_words":cpt - 1, "nb_matches":matches, "nb_vocalizations": nb_vocalizations_globale}
 		output["words"] = words_output;
 		#Magic_loop to built queries of Adjacents,translations and annotations in the same time
 		if prev_aya or next_aya or translation or  annotation_aya:
-			adja_query = trad_query = annotation_aya_query = u"( 0"
+			adja_query = trad_query = annotation_aya_query = "( 0"
 
 			for r in reslist :
-				if prev_aya: adja_query += u" OR gid:%s " % unicode( r["gid"] - 1 )
-				if next_aya: adja_query += u" OR gid:%s " % unicode( r["gid"] + 1 )
-				if translation: trad_query += u" OR gid:%s " % unicode( r["gid"] )
-				if annotation_aya: annotation_aya_query += u" OR  ( aya_id:%s AND  sura_id:%s ) " % ( unicode( r["aya_id"] ) , unicode( r["sura_id"] ) )
+				if prev_aya: adja_query += " OR gid:%s " % six.text_type(r["gid"] - 1)
+				if next_aya: adja_query += " OR gid:%s " % six.text_type(r["gid"] + 1)
+				if translation: trad_query += " OR gid:%s " % six.text_type(r["gid"])
+				if annotation_aya: annotation_aya_query += " OR  ( aya_id:%s AND  sura_id:%s ) " % ( six.text_type(r["aya_id"]), six.text_type(r["sura_id"]))
 
-			adja_query += u" )"
-			trad_query += u" )" + u" AND id:%s " % unicode( translation )
-			annotation_aya_query += u" )"
+			adja_query += " )"
+			trad_query += " )" + " AND id:%s " % six.text_type(translation)
+			annotation_aya_query += " )"
 
 
 		# Adjacents
 		if prev_aya or next_aya:
 			adja_res, searcher = self.QSE.find_extended( adja_query, "gid" )
-			adja_ayas = {0:{"aya_":u"----", "uth_":u"----", "sura":u"---", "aya_id":0, "sura_arabic":u"---"}, 6237:{"aya_":u"----", "uth_":u"----", "sura":u"---", "aya_id":9999, "sura_arabic":u"---"}}
+			adja_ayas = {0:{"aya_":"----", "uth_":"----", "sura":"---", "aya_id":0, "sura_arabic":"---"}, 6237:{"aya_":"----", "uth_":"----", "sura":"---", "aya_id":9999, "sura_arabic":"---"}}
 			for adja in adja_res:
 				adja_ayas[adja["gid"]] = {"aya_":adja["aya_"], "uth_":adja["uth_"], "aya_id":adja["aya_id"], "sura":adja["sura"],"sura_arabic":adja["sura_arabic"]}
 				extend_runtime += adja_res.runtime
@@ -719,9 +707,9 @@ class Raw():
 
 		#annotations for aya words
 		if annotation_aya or ( annotation_word and word_info ) :
-			annotation_word_query = annotation_word_query if annotation_word and word_info else u"()"
-			annotation_aya_query = annotation_aya_query if annotation_aya else u"()"
-			annotation_query = annotation_aya_query + u" OR  " + annotation_word_query
+			annotation_word_query = annotation_word_query if annotation_word and word_info else "()"
+			annotation_aya_query = annotation_aya_query if annotation_aya else "()"
+			annotation_query = annotation_aya_query + " OR  " + annotation_word_query
 			#print annotation_query.encode( "utf-8" )
 			annot_res, searcher = self.WSE.find_extended( annotation_query, "gid" )
 			extend_runtime += annot_res.runtime
@@ -731,15 +719,15 @@ class Raw():
 			for annot in annot_res:
 				if ( annotation_word and word_info ) :
 					if annot["normalized"] in terms_uthmani:
-						if annotations_by_word.has_key( annot["normalized"] ):
-							if annotations_by_word[annot["normalized"]].has_key( annot["word"] ):
+						if annot["normalized"] in annotations_by_word:
+							if annot["word"] in annotations_by_word[annot["normalized"]]:
 								annotations_by_word[annot["normalized"]][annot["word"]].append(annot);
 							else:
 								annotations_by_word[annot["normalized"]][annot["word"]] = [ annot ] ;
 						else:
 							annotations_by_word[annot["normalized"]] = { annot["word"]: [ annot ]}
 				if annotation_aya:
-					if annotations_by_position.has_key( ( annot["sura_id"], annot["aya_id"] ) ):
+					if ( annot["sura_id"], annot["aya_id"]) in annotations_by_position:
 						annotations_by_position[( annot["sura_id"], annot["aya_id"] )][annot["word_id"]] = annot
 					else:
 						annotations_by_position[( annot["sura_id"], annot["aya_id"] )] = { annot["word_id"]: annot }
@@ -747,10 +735,10 @@ class Raw():
 
 		## merge word annotations to word output
 		if ( annotation_word and word_info ):
-			for cpt in xrange( 1, len( output["words"]["individual"] ) + 1 ):
+			for cpt in range(1, len( output["words"]["individual"]) + 1):
 				current_word = STANDARD2UTHMANI( output["words"]["individual"][cpt]["word"] )
 				#print current_word.encode( "utf-8" ), "=>", annotations_by_word, "=>", list( annot_res )
-				if annotations_by_word.has_key( current_word ):
+				if current_word in annotations_by_word:
 					current_word_annotations = annotations_by_word[ current_word ]
 					output["words"]["individual"][cpt]["annotations"] = current_word_annotations
 					output["words"]["individual"][cpt]["nb_annotations"] = len ( current_word_annotations )
@@ -784,9 +772,8 @@ class Raw():
 		              			else   H( r["uth_"] ) ,
                             "text_no_highlight": r["aya"] if script == "standard"
                                   else   r["uth_"],
-						"translation": trad_text[r["gid"]] if ( translation != "None" and translation and trad_text.has_key( r["gid"] ) ) else None,
-		                	"recitation": None if not recitation or not self._recitations.has_key( recitation ) \
-		                				  else u"https://www.everyayah.com/data/" + self._recitations[recitation]["subfolder"].encode( "utf-8" ) + "/%03d%03d.mp3" % ( r["sura_id"], r["aya_id"] ),
+						"translation": trad_text[r["gid"]] if ( translation != "None" and translation and r["gid"] in trad_text) else None,
+		                	"recitation": None if not recitation or not recitation in self._recitations else "https://www.everyayah.com/data/" + six.ensure_binary(self._recitations[recitation]["subfolder"], "utf-8")+ "/%03d%03d.mp3" % ( r["sura_id"], r["aya_id"] ),
 		                	"prev_aya":{
 						    "id":adja_ayas[r["gid"] - 1]["aya_id"],
 						    "sura":adja_ayas[r["gid"] - 1]["sura"],
@@ -852,12 +839,12 @@ class Raw():
 
 				"sajda":{} if not aya_sajda_info
 		                else    {
-		    				"exist":( r["sajda"] == u"نعم" ),
-		    				"type": r["sajda_type"]  if ( r["sajda"] == u"نعم" ) else None,
-		    				"id":N( r["sajda_id"] ) if ( r["sajda"] == u"نعم" ) else None,
+		    				"exist":( r["sajda"] == "نعم" ),
+		    				"type": r["sajda_type"]  if ( r["sajda"] == "نعم" ) else None,
+		    				"id":N( r["sajda_id"] ) if ( r["sajda"] == "نعم" ) else None,
 		    			},
 
-				"annotations": {} if not annotation_aya or not annotations_by_position.has_key( ( r["sura_id"], r["aya_id"] ) )
+				"annotations": {} if not annotation_aya or not ( r["sura_id"], r["aya_id"]) in annotations_by_position
 							else annotations_by_position[( r["sura_id"], r["aya_id"] )]
 		    		}
 
@@ -869,19 +856,12 @@ class Raw():
 		return the results of translation search as a dictionary data structure
 		"""
 		#flags
-		query = flags["query"] if flags.has_key( "query" ) \
-				else self._defaults["flags"]["query"]
-		range = int( flags["perpage"] ) if  flags.has_key( "perpage" )  \
-				else flags["range"] if flags.has_key( "range" ) \
-									else self._defaults["flags"]["range"]
+		query = flags["query"] if "query" in flags else self._defaults["flags"]["query"]
+		range = int( flags["perpage"] ) if  "perpage" in flags else flags["range"] if "range" in flags else self._defaults["flags"]["range"]
 		## offset = (page-1) * perpage   --  mode paging
-		offset = ( ( int( flags["page"] ) - 1 ) * range ) + 1 if flags.has_key( "page" ) \
-				 else int( flags["offset"] ) if flags.has_key( "offset" ) \
-					  else self._defaults["flags"]["offset"]
-		highlight = flags["highlight"] if flags.has_key( "highlight" ) \
-					else self._defaults["flags"]["highlight"]
-		view = flags["view"] if flags.has_key( "view" ) \
-				else self._defaults["flags"]["view"]
+		offset = ( ( int( flags["page"] ) - 1 ) * range ) + 1 if "page" in flags else int( flags["offset"] ) if "offset" in flags else self._defaults["flags"]["offset"]
+		highlight = flags["highlight"] if "highlight" in flags else self._defaults["flags"]["highlight"]
+		view = flags["view"] if "view" in flags else self._defaults["flags"]["view"]
 
 		# pre-defined views
 		if view == "minimal":
@@ -895,8 +875,8 @@ class Raw():
 			aya = IS_FLAG(flags, 'aya')
 		#preprocess query
 		query = query.replace( "\\", "" )
-		if not isinstance( query, unicode ):
-			query = unicode( query , 'utf8' )
+		if not isinstance( query, six.text_type):
+			query = six.text_type(query, 'utf8')
 
 		#Search
 		SE = self.TSE
@@ -922,17 +902,17 @@ class Raw():
 		output = {}
 
 		# highligh function that consider None value and non-definition
-		H = lambda X:  SE.highlight( X, terms, highlight ) if highlight != "none" and X else X if X else u"-----"
+		H = lambda X:  SE.highlight( X, terms, highlight ) if highlight != "none" and X else X if X else "-----"
 		# Numbers are 0 if not defined
 		N = lambda X:X if X else 0
 		extend_runtime = res.runtime
 
 		#Magic_loop to built queries of ayas,etc in the same time
 		if aya:
-			aya_query = u"( 0"
+			aya_query = "( 0"
 			for r in reslist :
-				if aya: aya_query += u" OR gid:%s " % unicode( r["gid"] )
-			aya_query += u" )"
+				if aya: aya_query += " OR gid:%s " % six.text_type(r["gid"])
+			aya_query += " )"
 
 		#original ayas
 		if aya:
@@ -985,26 +965,16 @@ class Raw():
 		return the results of word search as a dictionary data structure
 		"""
 		#flags
-		query = flags["query"] if flags.has_key( "query" ) \
-				else self._defaults["flags"]["query"]
-		sortedby = flags["sortedby"] if flags.has_key( "sortedby" ) \
-				   else self._defaults["flags"]["sortedby"]
-		range = int( flags["perpage"] ) if  flags.has_key( "perpage" )  \
-				else flags["range"] if flags.has_key( "range" ) \
-									else self._defaults["flags"]["range"]
+		query = flags["query"] if "query" in flags else self._defaults["flags"]["query"]
+		sortedby = flags["sortedby"] if "sortedby" in flags else self._defaults["flags"]["sortedby"]
+		range = int( flags["perpage"] ) if  "perpage" in flags else flags["range"] if "range" in flags else self._defaults["flags"]["range"]
 		## offset = (page-1) * perpage   --  mode paging
-		offset = ( ( int( flags["page"] ) - 1 ) * range ) + 1 if flags.has_key( "page" ) \
-				 else int( flags["offset"] ) if flags.has_key( "offset" ) \
-					  else self._defaults["flags"]["offset"]
-		romanization = flags["romanization"] if flags.has_key( "romanization" ) \
-					  else self._defaults["flags"]["romanization"]
-		highlight = flags["highlight"] if flags.has_key( "highlight" ) \
-					else self._defaults["flags"]["highlight"]
-		script = flags["script"] if flags.has_key( "script" ) \
-				 else self._defaults["flags"]["script"]
+		offset = ( ( int( flags["page"] ) - 1 ) * range ) + 1 if "page" in flags else int( flags["offset"] ) if "offset" in flags else self._defaults["flags"]["offset"]
+		romanization = flags["romanization"] if "romanization" in flags else self._defaults["flags"]["romanization"]
+		highlight = flags["highlight"] if "highlight" in flags else self._defaults["flags"]["highlight"]
+		script = flags["script"] if "script" in flags else self._defaults["flags"]["script"]
 		vocalized = IS_FLAG(flags, 'vocalized')
-		view = flags["view"] if flags.has_key( "view" ) \
-				else self._defaults["flags"]["view"]
+		view = flags["view"] if "view" in flags else self._defaults["flags"]["view"]
 
 		# pre-defined views
 		if view == "minimal":
@@ -1025,11 +995,11 @@ class Raw():
 			aya = IS_FLAG(flags, 'aya')
 		#preprocess query
 		query = query.replace( "\\", "" )
-		if not isinstance( query, unicode ):
-			query = unicode( query , 'utf8' )
+		if not isinstance( query, six.text_type):
+			query = six.text_type(query, 'utf8')
 
 		if ":" not in query:
-			query = unicode( transliterate( "buckwalter", query, ignore = "'_\"%*?#~[]{}:>+-|" ) )
+			query = six.text_type(transliterate( "buckwalter", query, ignore = "'_\"%*?#~[]{}:>+-|"))
 
 
 		#Search
@@ -1068,11 +1038,11 @@ class Raw():
 								            'uthmani_symbols' : True
 								            }).normalize_all
 		# highligh function that consider None value and non-definition
-		H = lambda X:  SE.highlight( X, terms, highlight ) if highlight != "none" and X else X if X else u"-----"
+		H = lambda X:  SE.highlight( X, terms, highlight ) if highlight != "none" and X else X if X else "-----"
 		# Numbers are 0 if not defined
 		N = lambda X:X if X else 0
 		# parse keywords lists , used for Sura names
-		kword = re.compile( u"[^,،]+" )
+		kword = re.compile( "[^,،]+" )
 		keywords = lambda phrase: kword.findall( phrase )
 		#####################################################
 		extend_runtime = res.runtime
@@ -1101,10 +1071,10 @@ class Raw():
 
 		#Magic_loop to built queries of ayas,etc in the same time
 		if aya:
-			aya_query = u"( 0"
+			aya_query = "( 0"
 			for r in reslist :
-				if aya: aya_query += u" OR ( sura_id:%s AND aya_id:%s )  " % ( unicode( r["sura_id"] ), unicode( r["aya_id"] ))
-			aya_query += u" )"
+				if aya: aya_query += " OR ( sura_id:%s AND aya_id:%s )  " % ( six.text_type(r["sura_id"]), six.text_type(r["aya_id"]))
+			aya_query += " )"
 
 		#original ayas
 		if aya:
@@ -1113,7 +1083,7 @@ class Raw():
 			extend_runtime += aya_res.runtime
 			aya_info = {}
 			for ay in aya_res:
-				if aya_info.has_key(ay["sura_id"]):
+				if ay["sura_id"] in aya_info:
 					aya_info[ay["sura_id"]][ay["aya_id"]]= ay
 				else:
 					aya_info[ay["sura_id"]] = { ay["aya_id"]: ay }
@@ -1143,7 +1113,7 @@ class Raw():
 
 		              "word":{
 		              		"text":  r["word"] ,
-		                	"part": u"جذع",
+		                	"part": "جذع",
 		                	"part_order": r["order"],
 		                	"token": r["arabictoken"],
 		                	"prefixes": r["prefix"],

@@ -1,12 +1,13 @@
-from araby_constants import *
-from araby_strip_functions import *
-from araby_predicates import *
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
 import string
+from functools import reduce
 
 _PUNCTUATION  = string.punctuation + string.whitespace
 
 def _andmap(iterable):
-    return reduce( lambda x,y: x and y, iterable )
+    return reduce(lambda x,y: x and y, iterable)
 
 def _ormap(iterable):
     return reduce( lambda x,y: x or y, iterable )
@@ -124,7 +125,7 @@ def isArabicstring( text):
     @return: True if all charaters are in Arabic block
     @rtype: Boolean
     """
-    return not re.search(u"([^\u0600-\u0652%s%s%s\w])"%(LAM_ALEF,LAM_ALEF_HAMZA_ABOVE,LAM_ALEF_MADDA_ABOVE),text)
+    return not re.search("([^\u0600-\u0652%s%s%s\w])"%(LAM_ALEF,LAM_ALEF_HAMZA_ABOVE,LAM_ALEF_MADDA_ABOVE),text)
 
 def isArabicword( word ):
     """ Checks for an valid Arabic  word.
@@ -135,14 +136,14 @@ def isArabicword( word ):
     @rtype: Boolean
     """
     if len( word ) == 0 : return False;
-    elif re.search( u"([^\u0600-\u0652%s%s%s\w])" % ( LAM_ALEF, LAM_ALEF_HAMZA_ABOVE, LAM_ALEF_MADDA_ABOVE ), word ):
+    elif re.search( "([^\u0600-\u0652%s%s%s\w])" % ( LAM_ALEF, LAM_ALEF_HAMZA_ABOVE, LAM_ALEF_MADDA_ABOVE ), word ):
         return False;
     elif isHaraka( word[0] ) or word[0] in ( WAW_HAMZA, YEH_HAMZA ):
         return False;
 #  if Teh Marbuta or Alef_Maksura not in the end
-    elif re.match( u"^(.)*[%s](.)+$" % ALEF_MAKSURA, word ):
+    elif re.match( "^(.)*[%s](.)+$" % ALEF_MAKSURA, word ):
         return False;
-    elif re.match( u"^(.)*[%s]([^%s%s%s])(.)+$" % ( TEH_MARBUTA, DAMMA, KASRA, FATHA ), word ):
+    elif re.match( "^(.)*[%s]([^%s%s%s])(.)+$" % ( TEH_MARBUTA, DAMMA, KASRA, FATHA ), word ):
         return False;
     else:
         return True;

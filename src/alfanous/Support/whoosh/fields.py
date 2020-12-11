@@ -14,14 +14,18 @@
 # limitations under the License.
 #===============================================================================
 
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
 """ Contains functions and classes related to fields.
 """
 
 import datetime, re, struct
 
-from analysis import (IDAnalyzer, RegexAnalyzer, KeywordAnalyzer,
+from alfanous.Support.whoosh.analysis import (IDAnalyzer, RegexAnalyzer, KeywordAnalyzer,
                              StandardAnalyzer, NgramAnalyzer)
-from formats import Format, Existence, Frequency, Positions
+from alfanous.Support.whoosh.formats import Format, Existence, Frequency, Positions
+import six
 
 # Exceptions
 
@@ -106,7 +110,7 @@ class FieldType(object):
         
         if not self.format:
             raise Exception("%s field cannot index without a format" % self.__class__)
-        if not isinstance(value, unicode):
+        if not isinstance(value, six.text_type):
             raise ValueError("%r is not unicode" % value)
         return self.format.word_values(value, mode="index", **kwargs)
     
@@ -184,7 +188,7 @@ class NUMERIC(FieldType):
     @staticmethod
     def int_to_text(x):
         x += (1 << (4 << 2)) - 1 # 4 means 32-bits
-        return u"%08x" % x
+        return "%08x" % x
     
     @staticmethod
     def text_to_int(text):
@@ -195,7 +199,7 @@ class NUMERIC(FieldType):
     @staticmethod
     def long_to_text(x):
         x += (1 << (8 << 2)) - 1
-        return u"%016x" % x
+        return "%016x" % x
     
     @staticmethod
     def text_to_long(text):
@@ -207,7 +211,7 @@ class NUMERIC(FieldType):
     def float_to_text(x):
         x = struct.unpack("<q", struct.pack("<d", x))[0]
         x += (1 << (8 << 2)) - 1
-        return u"%016x" % x
+        return "%016x" % x
     
     @staticmethod
     def text_to_float(text):
@@ -250,9 +254,9 @@ class DATETIME(FieldType):
     
 
 class BOOLEAN(FieldType):
-    strings = (u"t", u"f")
-    trues = frozenset((u"t", u"true", u"yes", u"1"))
-    falses = frozenset((u"f", u"false", u"no", u"0"))
+    strings = ("t", "f")
+    trues = frozenset(("t", "true", "yes", "1"))
+    falses = frozenset(("f", "false", "no", "0"))
     
     __inittypes__ = dict(stored=bool)
     
@@ -427,7 +431,7 @@ class Schema(object):
         :param id: A field name or field number.
         """
         
-        if isinstance(id, basestring):
+        if isinstance(id, six.string_types):
             return self._by_name[id]
         return self._by_number[id]
     
@@ -465,7 +469,7 @@ class Schema(object):
         """Yields ("fieldname", field_object) pairs for the fields in this
         schema.
         """
-        return self._by_name.iteritems()
+        return six.iteritems(self._by_name)
     
     def field_names(self):
         """Returns a list of the names of the fields in this schema.
@@ -492,7 +496,7 @@ class Schema(object):
         if type(fieldtype) is type:
             try:
                 fieldtype = fieldtype()
-            except Exception, e:
+            except Exception as e:
                 raise FieldConfigurationError("Error: %s instantiating field %r: %r" % (e, name, fieldtype))
         if not isinstance(fieldtype, FieldType):
             raise FieldConfigurationError("%r is not a FieldType object" % fieldtype)

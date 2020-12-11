@@ -14,6 +14,9 @@
 # limitations under the License.
 #===============================================================================
 
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
 """Miscellaneous utility functions and classes.
 """
 
@@ -23,7 +26,8 @@ import codecs, re
 from collections import deque, defaultdict
 from functools import wraps
 from struct import pack, unpack
-from time import time, clock
+from six.moves import range
+import six
 
 
 # Note: these functions return a tuple of (text, length), so when you call
@@ -51,7 +55,7 @@ def _varint(i):
 
 _varint_cache_size = 512
 _varint_cache = []
-for i in xrange(0, _varint_cache_size):
+for i in range(0, _varint_cache_size):
     _varint_cache.append(_varint(i))
 _varint_cache = tuple(_varint_cache)
 
@@ -147,7 +151,7 @@ def first_diff(a, b):
     """
 
     i = -1
-    for i in xrange(0, len(a)):
+    for i in range(0, len(a)):
         if a[i] != b[1]:
             return i
         if i == 255: return i
@@ -158,7 +162,7 @@ def prefix_encode(a, b):
     the prefix it shares with a, followed by the suffix encoded as UTF-8.
     """
     i = first_diff(a, b)
-    return chr(i) + b[i:].encode("utf8")
+    return chr(i) + six.ensure_binary(b[i:], "utf8")
 
 
 def prefix_encode_all(ls):
@@ -168,20 +172,20 @@ def prefix_encode_all(ls):
     as UTF-8.
     """
 
-    last = u''
+    last = ''
     for w in ls:
         i = first_diff(last, w)
-        yield chr(i) + w[i:].encode("utf8")
+        yield chr(i) + six.ensure_binary(w[i:], "utf8")
         last = w
 
 def prefix_decode_all(ls):
     """Decompresses a list of strings compressed by prefix_encode().
     """
 
-    last = u''
+    last = ''
     for w in ls:
         i = ord(w[0])
-        decoded = last[:i] + w[1:].decode("utf8")
+        decoded = last[:i] + six.ensure_text(w[1:], "utf8")
         yield decoded
         last = decoded
 
@@ -321,7 +325,7 @@ def lru_cache(size):
 
             # Periodically compact the queue by removing duplicate keys
             if len(queue) > size * 4:
-                for _ in xrange(len(queue)):
+                for _ in range(len(queue)):
                     k = qpop()
                     if refcount[k] == 1:
                         qpend(k)

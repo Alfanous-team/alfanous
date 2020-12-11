@@ -14,6 +14,9 @@
 #  $Revision: 0.1 $
 #  This program is written under the Gnu Public License.
 #
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
 """
 Arabic module
 
@@ -21,10 +24,8 @@ Arabic module
 @todo: statistics calculator
 
 """
-from araby_strip_functions import *
-from araby_normalizers import *
-from araby_predicates import *
-from araby_constants import *
+from six.moves import range
+from six.moves import map
 
 
 _arabic_range = None
@@ -39,7 +40,7 @@ def order( archar ):
     @return: arabic order.
     @rtype: integer;
     """
-    if AlphabeticOrder.has_key( archar ):
+    if archar in AlphabeticOrder:
         return AlphabeticOrder[archar]
     else: return 0
 
@@ -52,10 +53,10 @@ def name( archar ):
     @return: arabic name.
     @rtype: unicode;
     """
-    if NAMES.has_key( archar ):
+    if archar in NAMES:
         return NAMES[archar]
     else:
-        return u''
+        return ''
 
 def arabicrange():
     """return a list of arabic characteres .
@@ -70,4 +71,4 @@ def arabicrange():
     True
     """
     if _arabic_range: return _arabic_range
-    else: return map( unichr, range( 0x0600, 0x00653 ) )
+    else: return map(unichr, range(0x0600, 0x00653))

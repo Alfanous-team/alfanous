@@ -1,4 +1,7 @@
-from araby_constants import *
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+from six.moves import filter
 
 __all__ = ['stripHarakat','stripTashkeel','strip_tashkeel','stripTatweel','strip_tatweel','strip_shadda']
 
@@ -26,7 +29,7 @@ def stripHarakat( text ):
     >>> stripHarakat( FATHA + ALEF + BEH + DAMMA + TEH + KASRATAN ) == ( ALEF + BEH + TEH )
     True
     """
-    return  filter( lambda letter: letter not in HARAKAT, text)
+    return  filter(lambda letter: letter not in HARAKAT, text)
 
 def stripTashkeel( text ):
     """Strip vowels from a text, include Shadda.

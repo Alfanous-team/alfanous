@@ -14,6 +14,9 @@
 # limitations under the License.
 #===============================================================================
 
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
 """Classes and functions for turning a piece of text into an indexable stream
 of "tokens" (usually equivalent to words). There are three general types of
 classes/functions involved in analysis:
@@ -56,6 +59,8 @@ import copy, re
 from itertools import chain
 
 from alfanous.Support.whoosh.lang.porter import stem
+import six
+from six.moves import range
 
 # Default list of stop words (words so common it's usually wasteful to index
 # them). This list is used by the StopFilter class, which allows you to supply
@@ -132,7 +137,7 @@ class Token(object):
     
     def __repr__(self):
         parms = ", ".join("%s=%r" % (name, value)
-                          for name, value in self.__dict__.iteritems())
+                          for name, value in six.iteritems(self.__dict__))
         return "%s(%s)" % (self.__class__.__name__, parms)
         
     def copy(self):
@@ -151,7 +156,7 @@ class Composable(object):
         if self.__dict__:
             attrs = ", ".join("%s=%r" % (key, value)
                               for key, value
-                              in self.__dict__.iteritems())
+                              in six.iteritems(self.__dict__))
         return self.__class__.__name__ + "(%s)" % attrs
 
 
@@ -178,7 +183,7 @@ class IDTokenizer(Tokenizer):
                  keeporiginal=False, removestops=True,
                  start_pos=0, start_char=0, mode='',
                  **kwargs):
-        assert isinstance(value, unicode), "%r is not unicode" % value
+        assert isinstance(value, six.text_type), "%r is not unicode" % value
         t = Token(positions, chars, removestops=removestops, mode=mode)
         t.text = value
         if keeporiginal:
@@ -200,7 +205,7 @@ class RegexTokenizer(Tokenizer):
     [u"hi", u"there", u"3.141", u"big", u"time", u"under_score"]
     """
     
-    __inittypes__ = dict(expression=unicode, gaps=bool)
+    __inittypes__ = dict(expression=six.text_type, gaps=bool)
     
     def __init__(self, expression=r"\w+(\.?\w+)*", gaps=False):
         """
@@ -212,7 +217,7 @@ class RegexTokenizer(Tokenizer):
             than matching on the expression.
         """
         
-        if isinstance(expression, basestring):
+        if isinstance(expression, six.string_types):
             self.expression = re.compile(expression, re.UNICODE)
         else:
             self.expression = expression
@@ -241,7 +246,7 @@ class RegexTokenizer(Tokenizer):
         :param tokenize: if True, the text should be tokenized. 
         """
         
-        assert isinstance(value, unicode), "%r is not unicode" % value
+        assert isinstance(value, six.text_type), "%r is not unicode" % value
         
         t = Token(positions, chars, removestops=removestops, mode=mode)
         if not tokenize:
@@ -357,7 +362,7 @@ class CharsetTokenizer(Tokenizer):
         :param tokenize: if True, the text should be tokenized. 
         """
         
-        assert isinstance(value, unicode), "%r is not unicode" % value
+        assert isinstance(value, six.text_type), "%r is not unicode" % value
         
         t = Token(positions, chars, removestops=removestops, mode=mode)
         if not tokenize:
@@ -368,7 +373,7 @@ class CharsetTokenizer(Tokenizer):
                 t.endchar = start_char + len(value)
             yield t
         else:
-            text = u""
+            text = ""
             charmap = self.charmap
             pos = start_pos
             startchar = currentchar = start_char
@@ -389,7 +394,7 @@ class CharsetTokenizer(Tokenizer):
                             t.endchar = currentchar
                         yield t
                     startchar = currentchar + 1
-                    text = u""
+                    text = ""
                     
                 currentchar += 1
             
@@ -468,13 +473,13 @@ class NgramTokenizer(Tokenizer):
                  keeporiginal=False, removestops=True,
                  start_pos=0, start_char=0,
                  **kwargs):
-        assert isinstance(value, unicode), "%r is not unicode" % value
+        assert isinstance(value, six.text_type), "%r is not unicode" % value
         
         inlen = len(value)
         t = Token(positions, chars, removestops=removestops)
         pos = start_pos
-        for start in xrange(0, inlen - self.min + 1):
-            for size in xrange(self.min, self.max + 1):
+        for start in range(0, inlen - self.min + 1):
+            for size in range(self.min, self.max + 1):
                 end = start + size
                 if end > inlen: continue
                 
@@ -555,7 +560,7 @@ class MultiFilter(Filter):
     
     def __call__(self, tokens):
         # Only selects on the first token
-        t = tokens.next()
+        t = next(tokens)
         filter = self.filters[t.mode]
         return filter(chain([t], tokens))
         
@@ -803,8 +808,8 @@ class NgramFilter(Filter):
             # so we'll leave the token's original position
             # untouched.
             
-            for start in xrange(0, len(text) - self.min):
-                for size in xrange(self.min, self.max + 1):
+            for start in range(0, len(text) - self.min):
+                for size in range(self.min, self.max + 1):
                     end = start + size
                     if end > len(text): continue
                     
@@ -874,8 +879,8 @@ class IntraWordFilter(Filter):
     digits = array("u")
     uppers = array("u")
     lowers = array("u")
-    for n in xrange(2 ** 16 - 1):
-        ch = unichr(n)
+    for n in range(2 ** 16 - 1):
+        ch = chr(n)
         if ch.islower(): lowers.append(ch)
         elif ch.isupper(): uppers.append(ch)
         elif ch.isdigit(): digits.append(ch)
@@ -886,10 +891,10 @@ class IntraWordFilter(Filter):
     lowers = re.escape("".join(lowers))
     letters = uppers + lowers
     
-    __inittypes__ = dict(delims=unicode, splitwords=bool, splitnums=bool,
+    __inittypes__ = dict(delims=six.text_type, splitwords=bool, splitnums=bool,
                          mergewords=bool, mergenums=bool)
     
-    def __init__(self, delims=u"-_'\"()!@#$%^&*[]{}<>\|;:,./?`~=+",
+    def __init__(self, delims="-_'\"()!@#$%^&*[]{}<>\|;:,./?`~=+",
                  splitwords=True, splitnums=True,
                  mergewords=False, mergenums=False):
         """
@@ -907,22 +912,22 @@ class IntraWordFilter(Filter):
         self.delims = re.escape(delims)
         
         # Expression for splitting at delimiter characters
-        self.splitter = re.compile(u"[%s]+" % (self.delims,), re.UNICODE)
+        self.splitter = re.compile("[%s]+" % (self.delims,), re.UNICODE)
         # Expression for removing "'s" from the end of sub-words
-        dispat = u"(?<=[%s])'[Ss](?=$|[%s])" % (self.letters, self.delims)
+        dispat = "(?<=[%s])'[Ss](?=$|[%s])" % (self.letters, self.delims)
         self.disposses = re.compile(dispat, re.UNICODE)
         
         # Expression for finding case and letter-number transitions
-        lower2upper = u"[%s][%s]" % (self.lowers, self.uppers)
-        letter2digit = u"[%s][%s]" % (self.letters, self.digits)
-        digit2letter = u"[%s][%s]" % (self.digits, self.letters)
+        lower2upper = "[%s][%s]" % (self.lowers, self.uppers)
+        letter2digit = "[%s][%s]" % (self.letters, self.digits)
+        digit2letter = "[%s][%s]" % (self.digits, self.letters)
         if splitwords and splitnums:
-            splitpat = u"(%s|%s|%s)" % (lower2upper, letter2digit, digit2letter)
+            splitpat = "(%s|%s|%s)" % (lower2upper, letter2digit, digit2letter)
             self.boundary = re.compile(splitpat, re.UNICODE)
         elif splitwords:
-            self.boundary = re.compile(unicode(lower2upper), re.UNICODE)
+            self.boundary = re.compile(six.text_type(lower2upper), re.UNICODE)
         elif splitnums:
-            numpat = u"(%s|%s)" % (letter2digit, digit2letter)
+            numpat = "(%s|%s)" % (letter2digit, digit2letter)
             self.boundary = re.compile(numpat, re.UNICODE)
         
         self.splitting = splitwords or splitnums
@@ -986,7 +991,7 @@ class IntraWordFilter(Filter):
                 if len(buf) > 1:
                     # If the buffer has at least two parts in it, merge them
                     # and add them to the original list of parts.
-                    parts.insert(insertat, (pos - 1, u"".join(buf)))
+                    parts.insert(insertat, (pos - 1, "".join(buf)))
                     insertat += 1
                 # Reset the buffer
                 buf = [part]
@@ -996,7 +1001,7 @@ class IntraWordFilter(Filter):
         # If there are parts left in the buffer at the end, merge them and add
         # them to the original list.
         if len(buf) > 1:
-            parts.append((pos, u"".join(buf)))
+            parts.append((pos, "".join(buf)))
     
     def __call__(self, tokens):
         disposses = self.disposses.sub
@@ -1300,7 +1305,7 @@ def RegexAnalyzer(expression=r"\w+(\.?\w+)*", gaps=False):
     """
     
     return RegexTokenizer(expression=expression, gaps=gaps)
-RegexAnalyzer.__inittypes__ = dict(expression=unicode, gaps=bool)
+RegexAnalyzer.__inittypes__ = dict(expression=six.text_type, gaps=bool)
 
 
 def SimpleAnalyzer(expression=r"\w+(\.?\w+)*", gaps=False):
@@ -1316,7 +1321,7 @@ def SimpleAnalyzer(expression=r"\w+(\.?\w+)*", gaps=False):
     """
     
     return RegexTokenizer(expression=expression, gaps=gaps) | LowercaseFilter()
-SimpleAnalyzer.__inittypes__ = dict(expression=unicode, gaps=bool)
+SimpleAnalyzer.__inittypes__ = dict(expression=six.text_type, gaps=bool)
 
 def StandardAnalyzer(expression=r"\w+(\.?\w+)*", stoplist=STOP_WORDS,
                      minsize=2, gaps=False):
@@ -1340,7 +1345,7 @@ def StandardAnalyzer(expression=r"\w+(\.?\w+)*", stoplist=STOP_WORDS,
     if stoplist is not None:
         chain = chain | StopFilter(stoplist=stoplist, minsize=minsize)
     return chain
-StandardAnalyzer.__inittypes__ = dict(expression=unicode, gaps=bool,
+StandardAnalyzer.__inittypes__ = dict(expression=six.text_type, gaps=bool,
                                       stoplist=list, minsize=int)
 
 
@@ -1366,7 +1371,7 @@ def StemmingAnalyzer(expression=r"\w+(\.?\w+)*", stoplist=STOP_WORDS,
     if stoplist is not None:
         chain = chain | StopFilter(stoplist=stoplist, minsize=minsize)
     return chain | StemFilter(stemfn=stemfn, ignore=ignore)
-StemmingAnalyzer.__inittypes__ = dict(expression=unicode, gaps=bool,
+StemmingAnalyzer.__inittypes__ = dict(expression=six.text_type, gaps=bool,
                                       stoplist=list, minsize=int)
 
 
@@ -1395,7 +1400,7 @@ def FancyAnalyzer(expression=r"\s+", stoplist=STOP_WORDS, minsize=2, gaps=True,
     swf = StopFilter(stoplist=stoplist, minsize=minsize)
     
     return ret | iwf | lcf | swf
-FancyAnalyzer.__inittypes__ = dict(expression=unicode, gaps=bool,
+FancyAnalyzer.__inittypes__ = dict(expression=six.text_type, gaps=bool,
                                    stoplist=list, minsize=int)
 
 

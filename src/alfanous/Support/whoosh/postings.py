@@ -14,6 +14,9 @@
 # limitations under the License.
 #===============================================================================
 
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
 """
 This module contains classes for writing and reading postings.
 
@@ -370,7 +373,7 @@ class MultiPostingReader(PostingReader):
         
         readers = self.readers
         current = self.current
-        readers[current].next()
+        next(readers[current])
         while current < len(readers) - 1 and self.readers[current].id is None:
             current += 1
             
@@ -446,7 +449,7 @@ class Exclude(PostingReader):
         self.id = pr.id
     
     def next(self):
-        self.postreader.next()
+        next(self.postreader)
         self._find_nonexcluded()
     
     def skip_to(self, target):
@@ -642,7 +645,7 @@ class IntersectionScorer(QueryScorer):
         if all(r.id == id for r in state[1:]):
             self.id = id
         else:
-            self.next()
+            next(self)
 
     def reset(self):
         for r in self.state:
@@ -666,7 +669,7 @@ class IntersectionScorer(QueryScorer):
         id = self.id
         state = self.state
         for r in state:
-            if r.id == id: r.next()
+            if r.id == id: next(r)
         state.sort()
         
         while True:
@@ -750,14 +753,14 @@ class UnionScorer(QueryScorer):
         elif len(state) == 1:
             # Short circuit if there's only one reader
             r = state[0]
-            r.next()
+            next(r)
             self.id = r.id
         else:
             # Advance all the readers that match the current id
             lowid = state[0].id
             while state and state[0].id == lowid:
                 r = state[0]
-                r.next()
+                next(r)
                 if r.id is None:
                     heappop(state)
                 else:
@@ -827,7 +830,7 @@ class AndNotScorer(QueryScorer):
         if neg.id < pos.id:
             neg.skip_to(pos.id)
         while pos.id == neg.id:
-            pos.next()
+            next(pos)
             neg.skip_to(pos.id)
         self.id = pos.id
     
@@ -835,7 +838,7 @@ class AndNotScorer(QueryScorer):
         if self.id is None:
             raise ReadTooFar
         
-        self.positive.next()
+        next(self.positive)
         self._find_next()
         
     def skip_to(self, target):
@@ -879,7 +882,7 @@ class InverseScorer(QueryScorer):
         while self.id == self.scorer.id and not self.is_deleted(self.id):
             self.id += 1
             if self.scorer.id is not None:
-                self.scorer.next()
+                next(self.scorer)
         if self.id >= self.maxid:
             self.id = None
     
@@ -942,7 +945,7 @@ class AndMaybeScorer(QueryScorer):
         self.optional.reset()
         
     def next(self):
-        self.required.next()
+        next(self.required)
         self.optional.skip_to(self.required.id)
 
     def skip_to(self, target):

@@ -185,7 +185,7 @@ def version(storage, indexname = None):
         
         ix = storage.open_index(indexname)
         return (ix.release, ix.version)
-    except IndexVersionError, e:
+    except IndexVersionError as e:
         return (None, e.version)
 
 

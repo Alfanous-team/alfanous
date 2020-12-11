@@ -32,7 +32,7 @@ suggest_flags = {
 
 results = RAWoutput.do( suggest_flags )
 
-print "number of missed words", len(results["suggest"])
+print("number of missed words", len(results["suggest"]))
 
 
 ## prepare a search query
@@ -55,5 +55,5 @@ search_flags = {
 
 results = RAWoutput.do( search_flags )
 print(results)
-print "runtime", results["search"]["runtime"]
-print "total", results["search"]["interval"]["total"]
+print("runtime", results["search"]["runtime"])
+print("total", results["search"]["interval"]["total"])

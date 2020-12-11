@@ -14,12 +14,16 @@
 # limitations under the License.
 #===============================================================================
 
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
 """Classes and functions for classifying and extracting information from
 documents.
 """
 
 from collections import defaultdict
 from math import log
+import six
 
 
 # Expansion models
@@ -132,7 +136,7 @@ class Expander(object):
         maxweight = 0
         collection_freq = self.collection_freq
         
-        for word, weight in self.topN_weight.iteritems():
+        for word, weight in six.iteritems(self.topN_weight):
             score = model.score(weight, collection_freq[word], self.top_total)
             if score > maxweight: maxweight = score
             tlist.append((score, word))

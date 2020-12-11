@@ -18,118 +18,121 @@
 
 
 # Buckwalter Romanization  letters mapping
-BUCKWALTER2UNICODE = {u"'": u"\u0621", # hamza-on-the-line
-                u"|": u"\u0622", # madda
-                u">": u"\u0623", # hamza-on-'alif
-                u"&": u"\u0624", # hamza-on-waaw
-                u"<": u"\u0625", # hamza-under-'alif
-                u"}": u"\u0626", # hamza-on-yaa'
-                u"A": u"\u0627", # bare 'alif
-                u"b": u"\u0628", # baa'
-                u"p": u"\u0629", # taa' marbuuTa
-                u"t": u"\u062A", # taa'
-                u"v": u"\u062B", # thaa'
-                u"j": u"\u062C", # jiim
-                u"H": u"\u062D", # Haa'
-                u"x": u"\u062E", # khaa'
-                u"d": u"\u062F", # daal
-                u"*": u"\u0630", # dhaal
-                u"r": u"\u0631", # raa'
-                u"z": u"\u0632", # zaay
-                u"s": u"\u0633", # siin
-                u"$": u"\u0634", # shiin
-                u"S": u"\u0635", # Saad
-                u"D": u"\u0636", # Daad
-                u"T": u"\u0637", # Taa'
-                u"Z": u"\u0638", # Zaa' (DHaa')
-                u"E": u"\u0639", # cayn
-                u"g": u"\u063A", # ghayn
-                u"_": u"\u0640", # taTwiil
-                u"f": u"\u0641", # faa'
-                u"q": u"\u0642", # qaaf
-                u"k": u"\u0643", # kaaf
-                u"l": u"\u0644", # laam
-                u"m": u"\u0645", # miim
-                u"n": u"\u0646", # nuun
-                u"h": u"\u0647", # haa'
-                u"w": u"\u0648", # waaw
-                u"Y": u"\u0649", # 'alif maqSuura
-                u"y": u"\u064A", # yaa'
-                u"F": u"\u064B", # fatHatayn
-                u"N": u"\u064C", # Dammatayn
-                u"K": u"\u064D", # kasratayn
-                u"a": u"\u064E", # fatHa
-                u"u": u"\u064F", # Damma
-                u"i": u"\u0650", # kasra
-                u"~": u"\u0651", # shaddah
-                u"o": u"\u0652", # sukuun
-                u"`": u"\u0670", # dagger 'alif
-                u"{": u"\u0671", # waSla
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+BUCKWALTER2UNICODE = {"'": "\u0621", # hamza-on-the-line
+                "|": "\u0622", # madda
+                ">": "\u0623", # hamza-on-'alif
+                "&": "\u0624", # hamza-on-waaw
+                "<": "\u0625", # hamza-under-'alif
+                "}": "\u0626", # hamza-on-yaa'
+                "A": "\u0627", # bare 'alif
+                "b": "\u0628", # baa'
+                "p": "\u0629", # taa' marbuuTa
+                "t": "\u062A", # taa'
+                "v": "\u062B", # thaa'
+                "j": "\u062C", # jiim
+                "H": "\u062D", # Haa'
+                "x": "\u062E", # khaa'
+                "d": "\u062F", # daal
+                "*": "\u0630", # dhaal
+                "r": "\u0631", # raa'
+                "z": "\u0632", # zaay
+                "s": "\u0633", # siin
+                "$": "\u0634", # shiin
+                "S": "\u0635", # Saad
+                "D": "\u0636", # Daad
+                "T": "\u0637", # Taa'
+                "Z": "\u0638", # Zaa' (DHaa')
+                "E": "\u0639", # cayn
+                "g": "\u063A", # ghayn
+                "_": "\u0640", # taTwiil
+                "f": "\u0641", # faa'
+                "q": "\u0642", # qaaf
+                "k": "\u0643", # kaaf
+                "l": "\u0644", # laam
+                "m": "\u0645", # miim
+                "n": "\u0646", # nuun
+                "h": "\u0647", # haa'
+                "w": "\u0648", # waaw
+                "Y": "\u0649", # 'alif maqSuura
+                "y": "\u064A", # yaa'
+                "F": "\u064B", # fatHatayn
+                "N": "\u064C", # Dammatayn
+                "K": "\u064D", # kasratayn
+                "a": "\u064E", # fatHa
+                "u": "\u064F", # Damma
+                "i": "\u0650", # kasra
+                "~": "\u0651", # shaddah
+                "o": "\u0652", # sukuun
+                "`": "\u0670", # dagger 'alif
+                "{": "\u0671", # waSla
                 #extended here
-                u"^": u"\u0653", # Maddah
-                u"#": u"\u0654", # HamzaAbove
+                "^": "\u0653", # Maddah
+                "#": "\u0654", # HamzaAbove
 
-                u":"  : u"\u06DC", # SmallHighSeen
-                u"@"  : u"\u06DF", # SmallHighRoundedZero
-                u"\"" : u"\u06E0", # SmallHighUprightRectangularZero
-                u"["  : u"\u06E2", # SmallHighMeemIsolatedForm
-                u";"  : u"\u06E3", # SmallLowSeen
-                u","  : u"\u06E5", # SmallWaw
-                u"."  : u"\u06E6", # SmallYa
-                u"!"  : u"\u06E8", # SmallHighNoon
-                u"-"  : u"\u06EA", # EmptyCentreLowStop
-                u"+"  : u"\u06EB", # EmptyCentreHighStop
-                u"%"  : u"\u06EC", # RoundedHighStopWithFilledCentre
-                u"]"  : u"\u06ED"          #
+                ":"  : "\u06DC", # SmallHighSeen
+                "@"  : "\u06DF", # SmallHighRoundedZero
+                "\"" : "\u06E0", # SmallHighUprightRectangularZero
+                "["  : "\u06E2", # SmallHighMeemIsolatedForm
+                ";"  : "\u06E3", # SmallLowSeen
+                ","  : "\u06E5", # SmallWaw
+                "."  : "\u06E6", # SmallYa
+                "!"  : "\u06E8", # SmallHighNoon
+                "-"  : "\u06EA", # EmptyCentreLowStop
+                "+"  : "\u06EB", # EmptyCentreHighStop
+                "%"  : "\u06EC", # RoundedHighStopWithFilledCentre
+                "]"  : "\u06ED"          #
 
                 }
 
 # ISO233-2 romanization letter mapping
-ISO2UNICODE = { u"ˌ": u"\u0621", # hamza-on-the-line
+ISO2UNICODE = { "ˌ": "\u0621", # hamza-on-the-line
                 #u"|": u"\u0622", # madda
-                u"ˈ": u"\u0623", # hamza-on-'alif
-                u"ˈ": u"\u0624", # hamza-on-waaw
+                "ˈ": "\u0623", # hamza-on-'alif
+                "ˈ": "\u0624", # hamza-on-waaw
                 #u"<": u"\u0625", # hamza-under-'alif
-                u"ˈ": u"\u0626", # hamza-on-yaa'
-                u"ʾ": u"\u0627", # bare 'alif
-                u"b": u"\u0628", # baa'
-                u"ẗ": u"\u0629", # taa' marbuuTa
-                u"t": u"\u062A", # taa'
-                u"ṯ": u"\u062B", # thaa'
-                u"ǧ": u"\u062C", # jiim
-                u"ḥ": u"\u062D", # Haa'
-                u"ẖ": u"\u062E", # khaa'
-                u"d": u"\u062F", # daal
-                u"ḏ": u"\u0630", # dhaal
-                u"r": u"\u0631", # raa'
-                u"z": u"\u0632", # zaay
-                u"s": u"\u0633", # siin
-                u"š": u"\u0634", # shiin
-                u"ṣ": u"\u0635", # Saad
-                u"ḍ": u"\u0636", # Daad
-                u"ṭ": u"\u0637", # Taa'
-                u"ẓ": u"\u0638", # Zaa' (DHaa')
-                u"ʿ": u"\u0639", # cayn
-                u"ġ": u"\u063A", # ghayn
+                "ˈ": "\u0626", # hamza-on-yaa'
+                "ʾ": "\u0627", # bare 'alif
+                "b": "\u0628", # baa'
+                "ẗ": "\u0629", # taa' marbuuTa
+                "t": "\u062A", # taa'
+                "ṯ": "\u062B", # thaa'
+                "ǧ": "\u062C", # jiim
+                "ḥ": "\u062D", # Haa'
+                "ẖ": "\u062E", # khaa'
+                "d": "\u062F", # daal
+                "ḏ": "\u0630", # dhaal
+                "r": "\u0631", # raa'
+                "z": "\u0632", # zaay
+                "s": "\u0633", # siin
+                "š": "\u0634", # shiin
+                "ṣ": "\u0635", # Saad
+                "ḍ": "\u0636", # Daad
+                "ṭ": "\u0637", # Taa'
+                "ẓ": "\u0638", # Zaa' (DHaa')
+                "ʿ": "\u0639", # cayn
+                "ġ": "\u063A", # ghayn
                 #u"_": u"\u0640", # taTwiil
-                u"f": u"\u0641", # faa'
-                u"q": u"\u0642", # qaaf
-                u"k": u"\u0643", # kaaf
-                u"l": u"\u0644", # laam
-                u"m": u"\u0645", # miim
-                u"n": u"\u0646", # nuun
-                u"h": u"\u0647", # haa'
-                u"w": u"\u0648", # waaw
-                u"ỳ": u"\u0649", # 'alif maqSuura
-                u"y": u"\u064A", # yaa'
-                u"á": u"\u064B", # fatHatayn
-                u"ú": u"\u064C", # Dammatayn
-                u"í": u"\u064D", # kasratayn
-                u"a": u"\u064E", # fatHa
-                u"u": u"\u064F", # Damma
-                u"i": u"\u0650", # kasra
+                "f": "\u0641", # faa'
+                "q": "\u0642", # qaaf
+                "k": "\u0643", # kaaf
+                "l": "\u0644", # laam
+                "m": "\u0645", # miim
+                "n": "\u0646", # nuun
+                "h": "\u0647", # haa'
+                "w": "\u0648", # waaw
+                "ỳ": "\u0649", # 'alif maqSuura
+                "y": "\u064A", # yaa'
+                "á": "\u064B", # fatHatayn
+                "ú": "\u064C", # Dammatayn
+                "í": "\u064D", # kasratayn
+                "a": "\u064E", # fatHa
+                "u": "\u064F", # Damma
+                "i": "\u0650", # kasra
                 #u"~": u"\u0651", # shaddah
-                u"°": u"\u0652", # sukuun
+                "°": "\u0652", # sukuun
                 #u"`": u"\u0670", # dagger 'alif
                 #u"{": u"\u0671", # waSla
                 ##extended here
@@ -165,10 +168,10 @@ def guess_romanization_system():
 	pass
 
 
-def transliterate( mode, string, ignore = u"" , reverse = False ):
+def transliterate( mode, string, ignore = "" , reverse = False ):
 	""" encode & decode different  romanization systems """
 
-	if ROMANIZATION_SYSTEMS_MAPPINGS.has_key( mode ):
+	if mode in ROMANIZATION_SYSTEMS_MAPPINGS:
 		MAPPING = ROMANIZATION_SYSTEMS_MAPPINGS[mode]
 	else:
 		MAPPING = {}
@@ -183,7 +186,7 @@ def transliterate( mode, string, ignore = u"" , reverse = False ):
 
 	result = ""
 	for char in string :
-		if mapping.has_key( char ) and char not in ignore:
+		if char in mapping and char not in ignore:
 			result += mapping[ char ] #test
 		else :
 			result += char

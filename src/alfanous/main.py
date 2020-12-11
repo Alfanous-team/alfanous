@@ -15,6 +15,9 @@
 ##     You should have received a copy of the GNU Affero General Public License
 ##     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
 '''
 The main module that relay all the modules.
 
@@ -22,9 +25,11 @@ The main module that relay all the modules.
 #from alfanous.dynamic_resources.arabicnames_dyn import ara2eng_names
 from alfanous.searching import QSearcher, QReader
 from alfanous.indexing import QseDocIndex, ExtDocIndex, BasicDocIndex
-from alfanous.results_processing import Qhighlight , QPaginate# , QFilter
+from alfanous.results_processing import Qhighlight# , QFilter
 from alfanous.query_processing import QuranicParser, StandardParser, FuzzyQuranicParser #,  ArabicParser
 from alfanous.suggestions import  QAyaSpellChecker, QSubjectSpellChecker, concat_suggestions, QWordChecker #, QSuggester
+from six.moves import map
+import six
 
 class BasicSearchEngine:
     """
@@ -45,7 +50,7 @@ class BasicSearchEngine:
             #
             self._reader = qreader( self._docindex )
             #
-            self._spellcheckers = map( lambda X:X( self._docindex, self._parser ), qspellcheckers )
+            self._spellcheckers = map(lambda X:X( self._docindex, self._parser), qspellcheckers)
             #
             self._highlight = qhighlight
             self.OK = True
@@ -73,8 +78,8 @@ class BasicSearchEngine:
         @return: the lists of terms and results
 
         """
-        if querystr.__class__ is not unicode:
-            querystr = querystr.decode( "utf-8" )
+        if querystr.__class__ is not six.text_type:
+            querystr = six.ensure_text(querystr, "utf-8")
 
         results, terms, searcher = self._searcher.search( querystr, limit, sortedby, reverse )
         return ( results, list( self._reader.term_stats( terms ) ), searcher )
@@ -90,8 +95,8 @@ class BasicSearchEngine:
             >>>    print key, ":", ",".join(value)
             عاصمو : عاصم
         """
-        if querystr.__class__ is not unicode:
-            querystr = querystr.decode( "utf-8" )
+        if querystr.__class__ is not six.text_type:
+            querystr = six.ensure_text(querystr, "utf-8")
         return concat_suggestions( map( lambda X:X.QSuggest( querystr ), self._spellcheckers ) )
 
     def highlight( self, text, terms, type = "css", strip_vocalization = True ):

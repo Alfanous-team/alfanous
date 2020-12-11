@@ -17,6 +17,9 @@
 ##     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
 '''
 
 
@@ -30,6 +33,7 @@
 from alfanous.Support.whoosh.scoring import   BM25F #TF_IDF, Frequency,
 from alfanous.Support.whoosh.highlight import highlight, BasicFragmentScorer, Fragment, GenshiFormatter, HtmlFormatter #NullFragmenter,FIRST,
 from alfanous.text_processing import QHighLightAnalyzer, QDiacHighLightAnalyzer, Gword_tamdid
+from six.moves import range
 
 #from alfanous.Support.whoosh.analysis import StandardAnalyzer
 
@@ -68,7 +72,7 @@ def QPaginate( results, pagelen = 10 ):
     """generator of pages"""
     l = len( results )
     minimal = lambda x, y:y if x > y  else  x
-    for i in range( 0, l, 10 ):
+    for i in range(0, l, 10):
         yield ( i / pagelen, results[i:minimal( i + pagelen, l )] )
 
 

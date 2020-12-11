@@ -14,6 +14,8 @@
 # limitations under the License.
 #===============================================================================
 
+from __future__ import absolute_import
+from __future__ import print_function
 """This module contains classes and functions related to searching the index.
 """
 
@@ -26,6 +28,8 @@ import sys, time
 from alfanous.Support.whoosh import classify, query, scoring
 from alfanous.Support.whoosh.scoring import Sorter, FieldSorter
 from alfanous.Support.whoosh.support.bitvector import BitVector
+from six.moves import zip
+import six
 
 if sys.platform == 'win32':
     now = time.clock
@@ -155,7 +159,7 @@ class Searcher(object):
         >>> docnums = list(searcher.document_numbers(emailto=u"matt@whoosh.ca"))
         """
 
-        q = query.And([query.Term(k, v) for k, v in kw.iteritems()])
+        q = query.And([query.Term(k, v) for k, v in six.iteritems(kw)])
         q = q.normalize()
         if q:
             return q.docs(self)
@@ -253,7 +257,7 @@ class Searcher(object):
 
         t = now()
         if sortedby is not None:
-            if isinstance(sortedby, basestring):
+            if isinstance(sortedby, six.string_types):
                 sorter = scoring.FieldSorter(sortedby)
             elif isinstance(sortedby, (list, tuple)):
                 sorter = scoring.MultiFieldSorter([FieldSorter(fn)

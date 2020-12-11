@@ -3,101 +3,101 @@
 
 import re
 
-A = u'\u060C'
-SEMICOLON = u'\u061B'
-QUESTION = u'\u061F'
-HAMZA = u'\u0621'
-ALEF_MADDA = u'\u0622'
-ALEF_HAMZA_ABOVE = u'\u0623'
-WAW_HAMZA = u'\u0624'
-ALEF_HAMZA_BELOW = u'\u0625'
-YEH_HAMZA = u'\u0626'
+A = '\u060C'
+SEMICOLON = '\u061B'
+QUESTION = '\u061F'
+HAMZA = '\u0621'
+ALEF_MADDA = '\u0622'
+ALEF_HAMZA_ABOVE = '\u0623'
+WAW_HAMZA = '\u0624'
+ALEF_HAMZA_BELOW = '\u0625'
+YEH_HAMZA = '\u0626'
 
 # letters
-ALEF = u'\u0627'
-BEH = u'\u0628'
-TEH_MARBUTA = u'\u0629'
-TEH = u'\u062a'
-THEH = u'\u062b'
-JEEM = u'\u062c'
-HAH = u'\u062d'
-KHAH = u'\u062e'
-DAL = u'\u062f'
-THAL = u'\u0630'
-REH = u'\u0631'
-ZAIN = u'\u0632'
-SEEN = u'\u0633'
-SHEEN = u'\u0634'
-SAD = u'\u0635'
-DAD = u'\u0636'
-TAH = u'\u0637'
-ZAH = u'\u0638'
-AIN = u'\u0639'
-GHAIN = u'\u063a'
-TATWEEL = u'\u0640'
-FEH = u'\u0641'
-QAF = u'\u0642'
-KAF = u'\u0643'
-LAM = u'\u0644'
-MEEM = u'\u0645'
-NOON = u'\u0646'
-HEH = u'\u0647'
-WAW = u'\u0648'
-ALEF_MAKSURA = u'\u0649'
-YEH = u'\u064a'
+ALEF = '\u0627'
+BEH = '\u0628'
+TEH_MARBUTA = '\u0629'
+TEH = '\u062a'
+THEH = '\u062b'
+JEEM = '\u062c'
+HAH = '\u062d'
+KHAH = '\u062e'
+DAL = '\u062f'
+THAL = '\u0630'
+REH = '\u0631'
+ZAIN = '\u0632'
+SEEN = '\u0633'
+SHEEN = '\u0634'
+SAD = '\u0635'
+DAD = '\u0636'
+TAH = '\u0637'
+ZAH = '\u0638'
+AIN = '\u0639'
+GHAIN = '\u063a'
+TATWEEL = '\u0640'
+FEH = '\u0641'
+QAF = '\u0642'
+KAF = '\u0643'
+LAM = '\u0644'
+MEEM = '\u0645'
+NOON = '\u0646'
+HEH = '\u0647'
+WAW = '\u0648'
+ALEF_MAKSURA = '\u0649'
+YEH = '\u064a'
 
-MADDA_ABOVE = u'\u0653'
-HAMZA_ABOVE = u'\u0654'
-HAMZA_BELOW = u'\u0655'
+MADDA_ABOVE = '\u0653'
+HAMZA_ABOVE = '\u0654'
+HAMZA_BELOW = '\u0655'
 
 # numbers
-ZERO = u'\u0660'
-ONE = u'\u0661'
-TWO = u'\u0662'
-THREE = u'\u0663'
-FOUR = u'\u0664'
-FIVE = u'\u0665'
-SIX = u'\u0666'
-SEVEN = u'\u0667'
-EIGHT = u'\u0668'
-NINE = u'\u0669'
-PERCENT = u'\u066a'
-DECIMAL = u'\u066b'
-THOUSANDS = u'\u066c'
+ZERO = '\u0660'
+ONE = '\u0661'
+TWO = '\u0662'
+THREE = '\u0663'
+FOUR = '\u0664'
+FIVE = '\u0665'
+SIX = '\u0666'
+SEVEN = '\u0667'
+EIGHT = '\u0668'
+NINE = '\u0669'
+PERCENT = '\u066a'
+DECIMAL = '\u066b'
+THOUSANDS = '\u066c'
 
-STAR = u'\u066d'
-MINI_ALEF = u'\u0670'
-ALEF_WASLA = u'\u0671'
-FULL_STOP = u'\u06d4'
-BYTE_ORDER_MARK = u'\ufeff'
+STAR = '\u066d'
+MINI_ALEF = '\u0670'
+ALEF_WASLA = '\u0671'
+FULL_STOP = '\u06d4'
+BYTE_ORDER_MARK = '\ufeff'
 
 # Diacritics
-FATHATAN = u'\u064b'
-DAMMATAN = u'\u064c'
-KASRATAN = u'\u064d'
-FATHA = u'\u064e'
-DAMMA = u'\u064f'
-KASRA = u'\u0650'
-SHADDA = u'\u0651'
-SUKUN = u'\u0652'
+FATHATAN = '\u064b'
+DAMMATAN = '\u064c'
+KASRATAN = '\u064d'
+FATHA = '\u064e'
+DAMMA = '\u064f'
+KASRA = '\u0650'
+SHADDA = '\u0651'
+SUKUN = '\u0652'
 
 # Small Letters
-SMALL_ALEF = u"\u0670"
-SMALL_WAW = u"\u06E5"
-SMALL_YEH = u"\u06E6"
+SMALL_ALEF = "\u0670"
+SMALL_WAW = "\u06E5"
+SMALL_YEH = "\u06E6"
 
 #Ligatures
-LAM_ALEF = u'\ufefb'
-LAM_ALEF_HAMZA_ABOVE = u'\ufef7'
-LAM_ALEF_HAMZA_BELOW = u'\ufef9'
-LAM_ALEF_MADDA_ABOVE = u'\ufef5'
-simple_LAM_ALEF = u'\u0644\u0627'
-simple_LAM_ALEF_HAMZA_ABOVE = u'\u0644\u0623'
-simple_LAM_ALEF_HAMZA_BELOW = u'\u0644\u0625'
-simple_LAM_ALEF_MADDA_ABOVE = u'\u0644\u0622'
+LAM_ALEF = '\ufefb'
+LAM_ALEF_HAMZA_ABOVE = '\ufef7'
+LAM_ALEF_HAMZA_BELOW = '\ufef9'
+LAM_ALEF_MADDA_ABOVE = '\ufef5'
+simple_LAM_ALEF = '\u0644\u0627'
+simple_LAM_ALEF_HAMZA_ABOVE = '\u0644\u0623'
+simple_LAM_ALEF_HAMZA_BELOW = '\u0644\u0625'
+simple_LAM_ALEF_MADDA_ABOVE = '\u0644\u0622'
 
 # groups
-LETTERS = u''.join( [
+LETTERS = ''.join( [
         ALEF , BEH , TEH  , TEH_MARBUTA  , THEH  , JEEM  , HAH , KHAH ,
         DAL   , THAL  , REH   , ZAIN  , SEEN   , SHEEN  , SAD , DAD , TAH   , ZAH   ,
         AIN   , GHAIN   , FEH  , QAF , KAF , LAM , MEEM , NOON, HEH , WAW, YEH  ,
@@ -223,57 +223,57 @@ AlphabeticOrder = {
                 YEH_HAMZA        : 29,
                 }
 NAMES = {
-                ALEF             :  u"ألف",
-                BEH              : u"باء",
-                TEH              : u'تاء' ,
-                TEH_MARBUTA      : u'تاء مربوطة' ,
-                THEH             : u'ثاء' ,
-                JEEM             : u'جيم' ,
-                HAH              : u'حاء' ,
-                KHAH             : u'خاء' ,
-                DAL              : u'دال' ,
-                THAL             : u'ذال' ,
-                REH              : u'راء' ,
-                ZAIN             : u'زاي' ,
-                SEEN             : u'سين' ,
-                SHEEN            : u'شين' ,
-                SAD              : u'صاد' ,
-                DAD              : u'ضاد' ,
-                TAH              : u'طاء' ,
-                ZAH              : u'ظاء' ,
-                AIN              : u'عين' ,
-                GHAIN            : u'غين' ,
-                FEH              : u'فاء' ,
-                QAF              : u'قاف' ,
-                KAF              : u'كاف' ,
-                LAM              : u'لام' ,
-                MEEM             : u'ميم' ,
-                NOON             : u'نون' ,
-                HEH              : u'هاء' ,
-                WAW              : u'واو' ,
-                YEH              : u'ياء' ,
-                HAMZA            : u'همزة' ,
+                ALEF             :  "ألف",
+                BEH              : "باء",
+                TEH              : 'تاء' ,
+                TEH_MARBUTA      : 'تاء مربوطة' ,
+                THEH             : 'ثاء' ,
+                JEEM             : 'جيم' ,
+                HAH              : 'حاء' ,
+                KHAH             : 'خاء' ,
+                DAL              : 'دال' ,
+                THAL             : 'ذال' ,
+                REH              : 'راء' ,
+                ZAIN             : 'زاي' ,
+                SEEN             : 'سين' ,
+                SHEEN            : 'شين' ,
+                SAD              : 'صاد' ,
+                DAD              : 'ضاد' ,
+                TAH              : 'طاء' ,
+                ZAH              : 'ظاء' ,
+                AIN              : 'عين' ,
+                GHAIN            : 'غين' ,
+                FEH              : 'فاء' ,
+                QAF              : 'قاف' ,
+                KAF              : 'كاف' ,
+                LAM              : 'لام' ,
+                MEEM             : 'ميم' ,
+                NOON             : 'نون' ,
+                HEH              : 'هاء' ,
+                WAW              : 'واو' ,
+                YEH              : 'ياء' ,
+                HAMZA            : 'همزة' ,
 
-                TATWEEL          : u'تطويل' ,
-                ALEF_MADDA       : u'ألف ممدودة' ,
-                ALEF_MAKSURA      : u'ألف مقصورة' ,
-                ALEF_HAMZA_ABOVE : u'همزة على الألف' ,
-                WAW_HAMZA        : u'همزة على الواو' ,
-                ALEF_HAMZA_BELOW : u'همزة تحت الألف' ,
-                YEH_HAMZA        : u'همزة على الياء' ,
-                FATHATAN         : u'فتحتان',
-                DAMMATAN         : u'ضمتان',
-                KASRATAN         : u'كسرتان',
-                FATHA            : u'فتحة',
-                DAMMA            : u'ضمة',
-                KASRA            : u'كسرة',
-                SHADDA           : u'شدة',
-                SUKUN            : u'سكون',
+                TATWEEL          : 'تطويل' ,
+                ALEF_MADDA       : 'ألف ممدودة' ,
+                ALEF_MAKSURA      : 'ألف مقصورة' ,
+                ALEF_HAMZA_ABOVE : 'همزة على الألف' ,
+                WAW_HAMZA        : 'همزة على الواو' ,
+                ALEF_HAMZA_BELOW : 'همزة تحت الألف' ,
+                YEH_HAMZA        : 'همزة على الياء' ,
+                FATHATAN         : 'فتحتان',
+                DAMMATAN         : 'ضمتان',
+                KASRATAN         : 'كسرتان',
+                FATHA            : 'فتحة',
+                DAMMA            : 'ضمة',
+                KASRA            : 'كسرة',
+                SHADDA           : 'شدة',
+                SUKUN            : 'سكون',
                 }
 
 # regular expressions
-HARAKAT_pattern = re.compile( ur"[" + u"".join( HARAKAT ) + u"]" )
-TASHKEEL_pattern = re.compile( ur"[" + u"".join( TASHKEEL ) + u"]" )
-HAMZAT_pattern = re.compile( ur"[" + u"".join( HAMZAT ) + u"]" );
-ALEFAT_pattern = re.compile( ur"[" + u"".join( ALEFAT ) + u"]" );
-LIGUATURES_pattern = re.compile( ur"[" + u"".join( LIGUATURES ) + u"]" );
+HARAKAT_pattern = re.compile( r"[" + "".join( HARAKAT ) + "]" )
+TASHKEEL_pattern = re.compile( r"[" + "".join( TASHKEEL ) + "]" )
+HAMZAT_pattern = re.compile( r"[" + "".join( HAMZAT ) + "]" );
+ALEFAT_pattern = re.compile( r"[" + "".join( ALEFAT ) + "]" );
+LIGUATURES_pattern = re.compile( r"[" + "".join( LIGUATURES ) + "]" );
