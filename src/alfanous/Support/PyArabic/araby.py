@@ -24,6 +24,10 @@ Arabic module
 @todo: statistics calculator
 
 """
+from araby_strip_functions import *
+from araby_normalizers import *
+from araby_predicates import *
+from araby_constants import *
 from six.moves import range
 from six.moves import map
 
