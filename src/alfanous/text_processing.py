@@ -7,9 +7,8 @@ from __future__ import print_function
 import re
 
 from alfanous.Support.whoosh.analysis import StopFilter, RegexTokenizer  # LowercaseFilter, StandardAnalyzer,
-from alfanous.Support.PyArabic.araby_strip_functions import strip_tashkeel, strip_tatweel
-from alfanous.Support.PyArabic.araby_normalizers import normalize_hamza, normalize_lamalef, normalize_uthmani_symbols,normalize_spellerrors  # , HARAKAT_pat,
-from alfanous.Support.PyArabic.araby_constants  import FATHATAN, DAMMATAN, KASRATAN, FATHA, DAMMA, KASRA, SUKUN, SHADDA  # *
+from alfanous.Support.PyArabic.araby import strip_tashkeel, strip_tatweel,strip_shadda, normalize_spellerrors, normalize_hamza, normalize_lamalef, normalize_uthmani_symbols  # , HARAKAT_pat,
+from alfanous.Support.PyArabic.araby  import FATHATAN, DAMMATAN, KASRATAN, FATHA, DAMMA, KASRA, SUKUN, SHADDA  # *
 from alfanous.constants import INVERTEDSHAPING
 
 import six

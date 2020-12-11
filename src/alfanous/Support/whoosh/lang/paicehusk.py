@@ -107,7 +107,7 @@ class PaiceHuskStemmer(object):
                             continue
                     
                     is_intact = False
-                    stem = stem[:0-num] + append
+                    stem = stem[:0 -num] + append
                     
                     continuing = cont
                     break

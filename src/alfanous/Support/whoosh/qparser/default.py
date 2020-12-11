@@ -199,7 +199,7 @@ class PyparsingBasedParser(object):
 
             texts = list(field.process_text(text, mode="query"))
             if not texts:
-                return self.termclass(fieldname, u'')
+                return self.termclass(fieldname, '')
             elif len(texts) == 1:
                 return self.termclass(fieldname, texts[0])
             else:
@@ -227,9 +227,9 @@ class PyparsingBasedParser(object):
         if not start and not end:
             raise QueryError("TermRange must have start and/or end")
         if not start:
-            start = u''
+            start = ''
         if not end:
-            end = u'\uFFFF'
+            end = '\uFFFF'
         return TermRange(fieldname, start, end, startexcl, endexcl)
 
     def make_and(self, qs):

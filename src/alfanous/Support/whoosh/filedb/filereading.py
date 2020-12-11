@@ -14,6 +14,9 @@
 # limitations under the License.
 #===============================================================================
 
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
 from threading import Lock
 
 from alfanous.Support.whoosh.fields import FieldConfigurationError
@@ -26,6 +29,8 @@ from alfanous.Support.whoosh.filedb.filetables import (FileTableReader, FileReco
 from alfanous.Support.whoosh.postings import Exclude
 from alfanous.Support.whoosh.reading import IndexReader, TermNotFound
 from alfanous.Support.whoosh.util import protected
+from six.moves import zip
+from six.moves import range
 
 
 # Convenience functions
@@ -130,7 +135,7 @@ class SegmentReader(IndexReader):
     @protected
     def all_stored_fields(self):
         is_deleted = self.segment.is_deleted
-        for docnum in xrange(0, self.segment.doc_count_all()):
+        for docnum in range(0, self.segment.doc_count_all()):
             if not is_deleted(docnum):
                 yield self.docstable[docnum]
 

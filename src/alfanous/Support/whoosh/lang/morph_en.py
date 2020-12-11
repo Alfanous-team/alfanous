@@ -1,3 +1,6 @@
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
 """
 Contains the variations() function for expanding an English word into multiple variations
 by programmatically adding and removing suffixes.
@@ -7,6 +10,8 @@ Sun's `Minion search engine <https://minion.dev.java.net/>`_.
 """
 
 import re
+from six.moves import range
+import six
 
 # Rule exceptions
 
@@ -886,9 +891,9 @@ rules = (
 
 _partition_size = 20
 _partitions = []
-for p in xrange(0, len(rules) // _partition_size + 1):
+for p in range(0, len(rules) // _partition_size + 1):
     start = p * _partition_size
-    end = (p+1) * _partition_size
+    end = (p +1) * _partition_size
     pattern = "|".join("(?P<_g%s>%s)$" % (i, r[0]) for i,r in enumerate(rules[start:end]))
     _partitions.append(re.compile(pattern))
 
@@ -910,13 +915,13 @@ def variations(word):
         match = p.search(word)
         if match:
             # Get the named group that matched
-            num = int([k for k, v in match.groupdict().iteritems()
+            num = int([k for k, v in six.iteritems(match.groupdict())
                        if v is not None and k.startswith("_g")][0][2:])
             # Get the positional groups for the matched group (all other
             # positional groups are None)
             groups = [g for g in match.groups() if g is not None]
             ending = groups[-1]
-            root = word[:0-len(ending)] if ending else word 
+            root = word[:0 -len(ending)] if ending else word 
 
             out = set((word, ))
             results = rules[i * _partition_size + num][1]
@@ -936,6 +941,6 @@ if __name__ == '__main__':
     import time
     t = time.clock()
     s = variations("rendering")
-    print time.clock() - t
-    print len(s)
+    print(time.clock() - t)
+    print(len(s))
     

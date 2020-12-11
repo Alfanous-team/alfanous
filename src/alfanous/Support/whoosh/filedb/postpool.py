@@ -15,6 +15,9 @@
 # limitations under the License.
 #===============================================================================
 
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
 """Support functions and classes implementing the KinoSearch-like external sort
 merging model. This module does not contain any user-level objects.
 """
@@ -72,7 +75,7 @@ def merge(run_readers, max_chunk_size):
     # The list is sorted, and the runs are already sorted, so the first term in
     # this list should be the absolute "lowest" term.
 
-    current = [(r.next(), i) for i, r
+    current = [(next(r), i) for i, r
                in enumerate(run_readers)]
     heapify(current)
 
@@ -113,7 +116,7 @@ def merge(run_readers, max_chunk_size):
             # "current" list in sorted order. The current list must always stay
             # sorted, so the first item is always the lowest.
 
-            p = run_readers[i].next()
+            p = next(run_readers[i])
             if p:
                 heapreplace(current, (p, i))
             else:

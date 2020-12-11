@@ -14,6 +14,9 @@
 # limitations under the License.
 #===============================================================================
 
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
 """This module defines writer and reader classes for a fast, immutable
 on-disk key-value database format. The current format is identical
 to D. J. Bernstein's CDB format (http://cr.yp.to/cdb.html).
@@ -27,12 +30,13 @@ from struct import Struct
 
 from alfanous.Support.whoosh.system import _USHORT_SIZE, _INT_SIZE
 from alfanous.Support.whoosh.util import utf8encode, utf8decode
+from six.moves import range
 
 
 def cdb_hash(key):
-    h = 5381L
+    h = 5381
     for c in key:
-        h = (h + (h << 5)) & 0xffffffffL ^ ord(c)
+        h = (h + (h << 5)) & 0xffffffff ^ ord(c)
     return h
 
 # Read/write convenience functions
@@ -130,7 +134,7 @@ class FileHashWriter(object):
         directory = self.directory = []
 
         pos = dbfile.tell()
-        for i in xrange(0, 256):
+        for i in range(0, 256):
             entries = hashes[i]
             numslots = 2 * len(entries)
             directory.append((pos, numslots))
@@ -245,7 +249,7 @@ class FileHashReader(object):
             return
 
         slotpos = hpos + (((keyhash >> 8) % hslots) << 3)
-        for _ in xrange(0, hslots):
+        for _ in range(0, hslots):
             u, pos = read2ints(slotpos)
             if not pos:
                 return
@@ -512,18 +516,18 @@ def dump_hash(hashreader):
     eod = hashreader.end_of_data
 
     # Dump hashtables
-    for bucketnum in xrange(0, 255):
+    for bucketnum in range(0, 255):
         pos, numslots = read2ints(bucketnum * 8)
         if numslots:
-            print "Bucket %d: %d slots" % (bucketnum, numslots)
+            print("Bucket %d: %d slots" % (bucketnum, numslots))
 
             dbfile.seek(pos)
-            for j in xrange(0, numslots):
-                print "  %X : %d" % read2ints(pos)
+            for j in range(0, numslots):
+                print("  %X : %d" % read2ints(pos))
                 pos += 8
 
     # Dump keys and values
-    print "-----"
+    print("-----")
     dbfile.seek(2048)
     pos = 2048
     while pos < eod:
@@ -532,7 +536,7 @@ def dump_hash(hashreader):
         datapos = pos + 8 + keylen
         key = read(keypos, keylen)
         data = read(datapos, datalen)
-        print "%d +%d,%d:%r->%r" % (pos, keylen, datalen, key, data)
+        print("%d +%d,%d:%r->%r" % (pos, keylen, datalen, key, data))
         pos = datapos + datalen
 
 

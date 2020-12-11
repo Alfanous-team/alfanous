@@ -14,8 +14,11 @@
 # limitations under the License.
 #===============================================================================
 
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
 import os
-from cStringIO import StringIO
+from six import StringIO
 from threading import Lock
 
 from alfanous.Support.whoosh.index import _DEF_INDEX_NAME

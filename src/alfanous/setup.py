@@ -51,7 +51,7 @@ setup(
 	maintainer_email = "assem.ch@gmail.com",
 
 	package_dir = {'alfanous':'.'},
-	long_description = current_description +current_lib_usage,
+	long_description = current_description+current_lib_usage,
 	keywords = "quran search indexing engine alfanous",
 	url = "http://www.alfanous.org/",
 	#download_url = "https://sourceforge.net/projects/alfanous/files/",

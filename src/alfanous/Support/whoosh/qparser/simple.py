@@ -14,7 +14,11 @@
 # limitations under the License.
 #===============================================================================
 
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
 from alfanous.Support.whoosh.query import Term, DisjunctionMax, And, Or, AndMaybe, AndNot, Phrase
+import six
 
 
 class SimpleParser(object):
@@ -37,9 +41,9 @@ class SimpleParser(object):
             c = input[pos]
             wordstart = start == pos
             if wordstart and c == '"':
-                end = input.find('"', pos+1)
-                if end > pos+1:
-                    clauses.append(input[pos+1:end])
+                end = input.find('"', pos +1)
+                if end > pos +1:
+                    clauses.append(input[pos +1:end])
                     pos = end + 1
                     start = pos
                 else:
@@ -145,18 +149,18 @@ class DisMaxParser(SimpleParser):
         
     def make_clause(self, text):
         clauses = [self.make_basic_clause(fieldname, text, boost=boost)
-                   for fieldname, boost in self.fieldboosts.iteritems()]
+                   for fieldname, boost in six.iteritems(self.fieldboosts)]
         return DisjunctionMax(clauses, tiebreak=self.tiebreak)
 
     def make_filter_clause(self, text):
         return Or([self.make_basic_clause(fieldname, text)
-                   for fieldname in self.fieldboosts.iterkeys()])
+                   for fieldname in six.iterkeys(self.fieldboosts)])
         
 
 
 if __name__ == "__main__":
-    print SimpleParser("a").parse('alfa +bravo -"charlie delta" echo')
-    print DisMaxParser({"a": 1.0, "b": 0.5}, minpercent=0.8).parse('alfa bravo charlie delta echo foxtrot golf hotel india')
+    print(SimpleParser("a").parse('alfa +bravo -"charlie delta" echo'))
+    print(DisMaxParser({"a": 1.0, "b": 0.5}, minpercent=0.8).parse('alfa bravo charlie delta echo foxtrot golf hotel india'))
     
 
 

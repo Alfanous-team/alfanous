@@ -15,8 +15,8 @@
 #===============================================================================
 
 import mmap, os
-from cPickle import dump as dump_pickle
-from cPickle import load as load_pickle
+from six.moves.cPickle import dump as dump_pickle
+from six.moves.cPickle import load as load_pickle
 from struct import calcsize, unpack, Struct
 
 from alfanous.Support.whoosh.system import _INT_SIZE, _USHORT_SIZE, _ULONG_SIZE, _FLOAT_SIZE

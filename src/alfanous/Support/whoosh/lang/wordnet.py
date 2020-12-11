@@ -14,6 +14,9 @@
 # limitations under the License.
 #===============================================================================
 
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
 """This module contains low-level functions and a high-level class for parsing
 the prolog file "wn_s.pl" from the WordNet prolog download
 into an object suitable for looking up synonyms and performing query expansion.
@@ -24,7 +27,7 @@ http://wordnetcode.princeton.edu/3.0/WNprolog-3.0.tar.gz
 from collections import defaultdict
 
 from whoosh.fields import Schema, ID, STORED
-from whoosh.index import Index
+import six
 
 
 def parse_file(f):
@@ -42,7 +45,7 @@ def parse_file(f):
         line = line[2:]
         num = int(line[:line.find(",")])
         qt = line.find("'")
-        line = line[qt+1:]
+        line = line[qt +1:]
         qt = line.find("'")
         word = line[:qt].lower()
 
@@ -64,9 +67,9 @@ def make_index(storage, indexname, word2nums, num2words):
     schema = Schema(word=ID, syns=STORED)
     ix = storage.create_index(schema, indexname=indexname)
     w = ix.writer()
-    for word in word2nums.iterkeys():
+    for word in six.iterkeys(word2nums):
         syns = synonyms(word2nums, num2words, word)
-        w.add_document(word=unicode(word), syns=syns)
+        w.add_document(word=six.text_type(word), syns=syns)
     w.commit()
     return ix
 
@@ -250,10 +253,9 @@ if __name__ == "__main__":
     
     t = clock()
     th = Thesaurus.from_storage(st)
-    print clock() - t
+    print(clock() - t)
     
     t = clock()
-    print th.synonyms("hail")
-    print clock() - t
-    
+    print(th.synonyms("hail"))
+    print(clock() - t)
     

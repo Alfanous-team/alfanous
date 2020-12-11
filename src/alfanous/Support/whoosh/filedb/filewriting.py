@@ -14,6 +14,9 @@
 # limitations under the License.
 #===============================================================================
 
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
 from array import array
 from collections import defaultdict
 
@@ -29,6 +32,8 @@ from alfanous.Support.whoosh.filedb.filetables import (FileTableWriter, FileList
                                       encode_vectorkey, encode_terminfo,
                                       enpickle, packint)
 from alfanous.Support.whoosh.util import fib
+from six.moves import range
+import six
 
 
 DOCLENGTH_TYPE = "H"
@@ -282,7 +287,7 @@ class SegmentWriter(object):
         # Merge document info
         docnum = 0
         vectored_fieldnums = schema.vectored_fields()
-        for docnum in xrange(reader.doc_count_all()):
+        for docnum in range(reader.doc_count_all()):
             if not reader.is_deleted(docnum):
                 # Copy the stored fields and field lengths from the reader
                 # into this segment
@@ -420,7 +425,7 @@ class SegmentWriter(object):
 
         offset = vpostwriter.start(vformat)
         for text, valuestring in vlist:
-            assert isinstance(text, unicode), "%r is not unicode" % text
+            assert isinstance(text, six.text_type), "%r is not unicode" % text
             vpostwriter.write(text, valuestring)
         vpostwriter.finish()
 

@@ -1,5 +1,5 @@
-from alfanous.Support.PyArabic.araby_constants import *
-import alfanous.Support.PyArabic.araby
+from araby_constants import *
+import araby
 
 __all__ = ['normalize_uthmani_symbols','normalize_hamza','normalize_lamalef',
            'normalize_spellerrors','normalize_text']

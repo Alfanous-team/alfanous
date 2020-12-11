@@ -173,7 +173,7 @@ def stem(w):
     return w
 
 if __name__ == '__main__':
-    print stem("fundamentally")
+    print(stem("fundamentally"))
     
     
     

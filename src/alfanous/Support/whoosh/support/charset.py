@@ -1,13 +1,17 @@
 # coding=utf-8
 
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
 """This module contains tools for working with Sphinx charset table files. These files
 are useful for doing case and accent folding.
 See :class:`whoosh.analysis.CharsetTokenizer` and :class:`whoosh.analysis.CharsetFilter`.
 """
 
 from collections import defaultdict
-from itertools import izip
 import re
+from six.moves import zip
+from six.moves import range
 
 # This charset table taken from http://speeple.com/unicode-maps.txt
 default_charset = """
@@ -594,8 +598,8 @@ def charset_table_to_dict(tablestring):
                 end2 = charspec_to_int(match.group(4))
                 assert (end1 - start1) == (end2 - start2)
                 try:
-                    for fromord, tooord in izip(xrange(start1, end1+1), xrange(start2, end2+1)):
-                        map[fromord] = unichr(tooord)
+                    for fromord, tooord in zip(range(start1, end1 +1), range(start2, end2 +1)):
+                        map[fromord] = chr(tooord)
                 except ValueError:
                     pass
                 continue
@@ -605,7 +609,7 @@ def charset_table_to_dict(tablestring):
                 fromord = charspec_to_int(match.group(1))
                 toord = charspec_to_int(match.group(2))
                 try:
-                    map[fromord] = unichr(toord)
+                    map[fromord] = chr(toord)
                 except ValueError:
                     pass
                 continue
@@ -614,7 +618,7 @@ def charset_table_to_dict(tablestring):
             if match:
                 ord = charspec_to_int(match.group(0))
                 try:
-                    map[ord] = unichr(ord)
+                    map[ord] = chr(ord)
                 except ValueError:
                     pass
                 continue
@@ -624,8 +628,8 @@ def charset_table_to_dict(tablestring):
                 start = charspec_to_int(match.group(1))
                 end = charspec_to_int(match.group(2))
                 try:
-                    for ord in xrange(start, end+1):
-                            map[ord] = unichr(ord)
+                    for ord in range(start, end +1):
+                            map[ord] = chr(ord)
                 except ValueError:
                     pass
                 continue
@@ -634,11 +638,11 @@ def charset_table_to_dict(tablestring):
             if match:
                 fromord = charspec_to_int(match.group(1))
                 toord = charspec_to_int(match.group(2))
-                assert toord-fromord % 2 == 0
-                for ord in xrange(fromord, toord + 1, 2):
+                assert toord -fromord % 2 == 0
+                for ord in range(fromord, toord + 1, 2):
                     try:
-                        map[ord] = unichr(ord+1)
-                        map[ord+1] = unichr(ord+1)
+                        map[ord] = chr(ord +1)
+                        map[ord +1] = chr(ord +1)
                     except ValueError:
                         pass
                 continue

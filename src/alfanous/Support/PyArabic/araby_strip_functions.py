@@ -2,6 +2,7 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 from six.moves import filter
+from araby_constants import *
 
 __all__ = ['stripHarakat','stripTashkeel','strip_tashkeel','stripTatweel','strip_tatweel','strip_shadda']
 

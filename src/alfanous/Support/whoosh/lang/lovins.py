@@ -461,10 +461,10 @@ def remove_ending(word):
     el = 11
     while el > 0:
         if length - el > 1:
-            ending = word[length-el:]
+            ending = word[length -el:]
             cond = m[el].get(ending)
             if cond:
-                base = word[:length-el]
+                base = word[:length -el]
                 if cond(base):
                     return base
         el -= 1
@@ -525,10 +525,10 @@ def fix_ending(word):
         if word.endswith(target):
             if len(endingrule) > 2:
                 exceptafter = endingrule[2]
-                c = word[0-(len(target)+1)]
+                c = word[0 -(len(target)+1)]
                 if c in exceptafter: return word
             
-            return word[:0-len(target)] + newend
+            return word[:0 -len(target)] + newend
     
     return word
 

@@ -1,9 +1,13 @@
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
 """
 An implementation of an object that acts like a collection of on/off bits.
 """
 
 import operator
 from array import array
+from six.moves import range
 
 #: Table of the number of '1' bits in each byte (0-255)
 BYTE_COUNTS = array('B',[
@@ -90,14 +94,14 @@ class BitVector(object):
     
     def __iter__(self):
         get = self.__getitem__
-        for i in xrange(0, self.size):
+        for i in range(0, self.size):
             if get(i):
                 yield i
     
     def __str__(self):
         get = self.__getitem__
         return "".join("1" if get(i) else "0"
-                       for i in xrange(0, self.size)) 
+                       for i in range(0, self.size)) 
     
     def __nonzero__(self):
         return self.count() > 0
@@ -141,7 +145,7 @@ class BitVector(object):
         return self._logic(operator.__xor__, other)
     
     def __invert__(self):
-        return BitVector(self.size, source=(x for x in xrange(self.size) if x not in self))
+        return BitVector(self.size, source=(x for x in range(self.size)if x not in self))
     
     def count(self):
         """Returns the number of "on" bits in the bit array."""
@@ -184,20 +188,19 @@ if __name__ == "__main__":
     b.set(1)
     b.set(9)
     b.set(5)
-    print b
-    print b[2]
-    print b[5]
+    print(b)
+    print(b[2])
+    print(b[5])
     b.clear(5)
-    print b[5]
-    print b
+    print(b[5])
+    print(b)
     
     c = BitVector(10)
     c.set(1)
     c.set(5)
-    print " ", b
-    print "^", c
-    print "=", b ^ c
-    
+    print(" ", b)
+    print("^", c)
+    print("=", b ^ c)
     
     
     
