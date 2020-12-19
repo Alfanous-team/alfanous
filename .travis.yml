@@ -9,4 +9,4 @@ install:
     - pip install pyparsing
     - make build
 script:
-    - pytest
+    - pytest -vv --rootdir=./

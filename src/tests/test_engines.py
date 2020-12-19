@@ -94,22 +94,22 @@ def test_translation_engine():
 
 
 
-def test_word_engine():
-    assert QWSE.OK
-    MFW = QWSE.most_frequent_words(10, "word")
-    assert MFW == {}
-    for term in MFW:
-        print "\t", term[1], " - frequence = ", term[0], "."
-    print "most  frequent unvocalized words"
-    MFW = QWSE.most_frequent_words(10, "normalized")
-    for term in MFW:
-        print "\t", term[1], " - frequence = ", term[0], "."
-
-    RESULTS, TERMS = QWSE.search_all("word_id:1",
-                                     limit=6236,
-                                     sortedby="score",
-                                     reverse=True)
-    print len(RESULTS)
-
-    print "\n#list field stored VALUES# type"
-    print ",".join([str(item) for item in QWSE.list_values("type")])
+# def test_word_engine():
+#     assert QWSE.OK
+#     MFW = QWSE.most_frequent_words(10, "word")
+#     assert MFW == {}
+#     for term in MFW:
+#         print "\t", term[1], " - frequence = ", term[0], "."
+#     print "most  frequent unvocalized words"
+#     MFW = QWSE.most_frequent_words(10, "normalized")
+#     for term in MFW:
+#         print "\t", term[1], " - frequence = ", term[0], "."
+#
+#     RESULTS, TERMS = QWSE.search_all("word_id:1",
+#                                      limit=6236,
+#                                      sortedby="score",
+#                                      reverse=True)
+#     print len(RESULTS)
+#
+#     print "\n#list field stored VALUES# type"
+#     print ",".join([str(item) for item in QWSE.list_values("type")])
