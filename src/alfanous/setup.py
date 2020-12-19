@@ -12,7 +12,6 @@ XXX Index building pre-install script?
 
 
 import json
-#import glob
 
 try:
 	from setuptools import setup#,find_packages
@@ -37,13 +36,12 @@ setup(
 	version = current_version,
 	platforms = "ALL",
 	license = "AGPL",
-	#packages=find_packages(where='..', exclude=()),
 	packages = ['alfanous', 'alfanous.dynamic_resources', 'alfanous.Support',
             'alfanous.Support.whoosh', 'alfanous.Support.whoosh.filedb',
             'alfanous.Support.whoosh.lang', 'alfanous.Support.whoosh.qparser',
             'alfanous.Support.whoosh.support','alfanous.Support.PyArabic',],
 
-	install_requires = ['pyparsing'], # 'whoosh == 0.3.18',
+	install_requires = ['pyparsing']
 
 	author = "Assem Chelli",
 	author_email = "assem.ch@gmail.com",
@@ -53,9 +51,7 @@ setup(
 	package_dir = {'alfanous':'.'},
 	long_description = current_description+current_lib_usage,
 	keywords = "quran search indexing engine alfanous",
-	url = "http://www.alfanous.org/",
-	#download_url = "https://sourceforge.net/projects/alfanous/files/",
-
+	url = "https://github.com/Alfanous-team/alfanous",
 	include_package_data = True,
 
 	package_data = {'alfanous': ['configs/*',
