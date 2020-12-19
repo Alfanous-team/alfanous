@@ -41,7 +41,7 @@ setup(
             'alfanous.Support.whoosh.lang', 'alfanous.Support.whoosh.qparser',
             'alfanous.Support.whoosh.support','alfanous.Support.PyArabic',],
 
-	install_requires = ['pyparsing']
+	install_requires = ['pyparsing'],
 
 	author = "Assem Chelli",
 	author_email = "assem.ch@gmail.com",
