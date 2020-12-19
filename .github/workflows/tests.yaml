@@ -20,4 +20,4 @@ jobs:
         make build
     - name: Test with pytest
       run: |
-        pytest -vv --rootdir=./
+        pytest -vv --rootdir=src/
