@@ -127,6 +127,8 @@ class SegmentReader(IndexReader):
     def stored_fields(self, docnum):
         return self.docstable[docnum]
 
+
+
     @protected
     def all_stored_fields(self):
         is_deleted = self.segment.is_deleted

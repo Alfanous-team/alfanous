@@ -16,10 +16,9 @@ from alfanous.Support.whoosh.spelling import SpellChecker
 from alfanous.Support.whoosh import  index
 
 
-from alfanous.main import QuranicSearchEngine
+from alfanous.engines import QuranicSearchEngine
 from alfanous.indexing import QseDocIndex
 from alfanous.text_processing import QStandardAnalyzer, QDiacAnalyzer, QArabicSymbolsFilter, QUthmaniDiacAnalyzer, QUthmaniAnalyzer, APermissibleAnalyzer
-from alfanous.exceptions import  Ta7rif
 from alfanous.Support.PyArabic.araby import strip_tashkeel
 from alfanous.searching import QReader
 
@@ -87,13 +86,13 @@ class Transformer:
                 #4
                 is_stored = self.__3states( str( line[3] ) )
                 if is_stored in ["True", "False"]:
-                    if Comma == True:Schema_raw += ","
+                    if Comma:Schema_raw += ","
                     Schema_raw += "stored=" + is_stored
                     Comma = True
                 #5
                 boost = str( line[4] )
                 if not( boost == "None" or boost == "" ):
-                    if Comma == True:Schema_raw += ","
+                    if Comma:Schema_raw += ","
                     Schema_raw += "field_boost=" + boost
                     Comma = True
                 #6
@@ -111,14 +110,14 @@ class Transformer:
                 #8
                 is_unique = self.__3states( str( line[7] ) )
                 if is_unique in ["True", "False"]:
-                    if Comma == True:Schema_raw += ","
+                    if Comma:Schema_raw += ","
                     Schema_raw += "unique=" + is_stored
                     Comma = True
 
                 #9
                 format = str( line[8] )
                 if not( format == "None" or format == "" ):
-                    if Comma == True:Schema_raw += ","
+                    if Comma:Schema_raw += ","
                     Schema_raw += "vector=" + format
                     Comma = True
 

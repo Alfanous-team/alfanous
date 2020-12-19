@@ -25,7 +25,7 @@
 # import Output object
 from alfanous.outputs import Raw as _search_engine
 # import default Paths
-from alfanous.data import Paths as PATHS
+from alfanous.data import paths as PATHS
 
 DEFAULTS, DOMAINS, HELPMESSAGES = _search_engine.DEFAULTS, _search_engine.DOMAINS, _search_engine.HELPMESSAGES
 FLAGS = DEFAULTS["flags"].keys()

@@ -28,16 +28,9 @@ HowTo
         {'prefixes': [{'token': 'fa', 'type': '--undefined--'}], 'base': [{'lemma': 'maA', 'arabiclemma': u'\u0645\u064e\u0627', 'arabicpos': u'\u062d\u0631\u0641 \u0627\u0633\u062a\u0641\u0647\u0627\u0645', 'type': 'Particles', 'pos': 'Interogative particle'}], 'suffixes': []}
 
 
-@author: Assem Chelli
-@contact: assem.ch [at] gmail.com
-@license: GPL
-
-
 FIXME the generated python dict is too big and waste time
 
 TODO dont load the total XML file,Just Ask! key:XPath
-
-
 '''
 
 
@@ -136,7 +129,6 @@ class API:
 
             genderK = TagKeywords( ["M", "F"] )
             numberK = TagKeywords( ["S", "D", "P"] )
-            personK = TagKeywords( ["1", "2", "3"] )
 
             genderL = TagLiterals( ["M", "F"] )
             numberL = TagLiterals( ["S", "D", "P"] )

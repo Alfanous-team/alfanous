@@ -70,49 +70,6 @@ def Gword_tamdid( aya ):
     return aya.replace( u"لَّه", u"لَّـه" ).replace( u"لَّه", u"لَّـه" )
 
 
-
-
-def PartialVocalisation():
-    """  TODO complete it"""
-
-    def __init__():
-        pass
-
-    transitions = {
-                 "harf":{
-                         "harf":["comp", "i++", "j++"],
-
-                        "haraka":["j++"],
-
-                        "shadda":["j++"]
-
-                        },
-
-
-                 "haraka":{
-                         "harf":["i++"],
-
-
-                        "haraka":["comp", "i++", "j++"],
-
-                        "shadda":["i++"]
-                        },
-
-                 "shadda":{
-                         "harf":["exit"],
-
-
-                        "haraka":["j++"],
-
-                        "shadda":["i++", "j++"]
-
-                        },
-
-                 }
-
-
-
-
 class unicode_( unicode ):
     """    a subclass of unicode that handle al-tashkil
     @deprecated: its not well organized

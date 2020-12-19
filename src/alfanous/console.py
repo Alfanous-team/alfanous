@@ -86,7 +86,7 @@ def main():
     # Get the arguments as a dictionary and remove None-valued keys.
     flags = {}
     for k, v in args.__dict__.items():
-        if v != None:
+        if v is not None:
             flags[k] = v
 
     if args.action and args.query:
