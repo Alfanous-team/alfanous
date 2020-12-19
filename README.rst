@@ -1,121 +1,51 @@
-**note**: if you are looking for alfanous legacy code, you can find it under `legacy` branch
-
 ============
 Alfanous API
 ============
------
-Build
------
-The API uses many critical resources that must be downloaded and/or prepared to be used. To do that, just run this command in the root path of the project
 
-#. Install all building dependencies: `pyparsing <http://pyparsing.wikispaces.com/>`_, `epydoc <http://epydoc.sourceforge.net/>`_,
-   `sphinx <http://sphinx.pocoo.org/>`_.
+:Authors: `Authors.rst <https://github.com/Alfanous-team/alfanous/blob/master/AUTHORS.rst>`_
+:Release: 0.7.10 Kahraman
+:License: `AGPL <https://github.com/Alfanous-team/alfanous/blob/master/LICENSE>`_
+:Tracker: `Alfanous-team/alfanous/Issues <https://github.com/Alfanous-team/alfanous/issues>`_
+:Mailinglist: `alfanous@googlegroups.com <http://groups.google.com/group/alfanous/>`_
 
-   * (ubuntu 12.04): 
-      
-     .. code-block:: sh
-     
-        $ sudo apt-get install python-qt4 qt4-dev-tools python-qt4-dev pyqt4-dev-tools
-        $ sudo apt-get install python-distutils-extra
-        $ sudo easy_install pyparsing epydoc sphinx
-
-
-
-
-#. Run the build command:
-
-   .. code-block:: sh
-        
-        $ cd ../../
-        $ make build
-
-
-
-For more details check  `Makefile <https://github.com/Alfanous-team/alfanous/blob/master/Makefile>`_
-
-
--------
-Install
--------
-To install the API from the source (After Build_ ):
+=====
+Usage
+=====
+Install it from Pypi:
 
 .. code-block:: sh
 
-    $ sudo python setup.py install
+    $ sudo pip install alfanous
 
-A console interface will  be installed automatically with the API:
+You can use it from console:
 
 .. code-block:: sh
 
-    $ alfanous-console -h
-    usage: alfanous-console [flags]
+    $ alfanous-console -a search -q الله
+    $ alfanous-console -a search -q Allh
 
------------
-Quick Start
------------
+or from Python:
+
 .. code-block:: python
 
-    # coding: utf-8
-    
-    # import Output object 
-    from alfanous.Outputs import Raw
-    
-    # import default Paths
-    from alfanous.Data import Paths
-    
-    # Initialize search engines 
-    RAWoutput = Raw( 
-                        QSE_index = Paths.QSE_INDEX    , # Quranic Main index path
-                        TSE_index = Paths.TSE_INDEX,  # Translations index path
-                        WSE_index = Paths.WSE_INDEX,  # Quranic words index path
-                        Recitations_list_file = Paths.RECITATIONS_LIST_FILE, 
-                        Translations_list_file = Paths.TRANSLATIONS_LIST_FILE , 
-                        Hints_file = Paths.HINTS_FILE,
-                        Stats_file = Paths.STATS_FILE,
-                        Information_file = Paths.INFORMATION_FILE
-                    ) 
+    >>> import alfanous
+    >>> alfanous.search(u"الله")
+    >>> alfanous.do({"action":"search","query":u"الله"})
+    >>> alfanous.do({"action":"search","query":u"Allh"}) # Buckwalter transliteration
 
-     ## prepare a suggestion query
-     suggest_flags = {
-                "action":"suggest",
-                "query": "ابراهيم"
-                }
-     results = RAWoutput.do( suggest_flags )
+You can use it also from the web service:
 
-     print "number of missed words", len(results["suggest"]) 
-     
+http://alfanous.org/api/search?query=الله
 
-     ## prepare a search query
-     search_flags = {
-                 "action":"search",
-                 "query": "الحمد لله",
-                 "sortedby":"mushaf",
-                 "reverse_order": False,        
-                 "page": 1,
-                 "word_info": True,
-                 "highlight": "css",
-                 "script": "standard",
-                 "sura_info": True,
-                 "aya_position_info":  True,
-                 "aya_theme_info":  False,
-                 "aya_stat_info":  False,
-                 "aya_sajda_info":  True,
-                 "translation": 2,
-                 }
+http://alfanous.org/api/search?query=Allh
 
-      results = RAWoutput.do( search_flags )
-
-      print "runtime", results["search"]["runtime"] 
-      print "total", results["search"]["interval"]["total"] 
-
-see `sample.py <https://github.com/Alfanous-team/alfanous/blob/master/src/alfanous-tests/sample.py>`_.
 
 --------------
 Flags
 --------------
 
 ======== ==================== ================= ================ ============================================ ================= ========================================================================================================================================================================
- number    flag               related action    related unit     description                                   default value    accepted values 
+ number    flag               related action    related unit     description                                   default value    accepted values
 -------- -------------------- ----------------- ---------------- -------------------------------------------- ----------------- ------------------------------------------------------------------------------------------------------------------------------------------------------------------------
  1         **action**          <none>            <none>           action to perform                             "search"         search | suggest | show
  2         unit                search, suggest   <none>           search unit                                   "aya"            aya | word | translation
@@ -162,20 +92,20 @@ Advanced Query Examples
 
 Aya Search:
 
-*  Simple search: الحمد    
-*  Phrases : "الحمد لله"    
-*  Logical relations - ANDNOT : (الصلاة - الزكاة)    
-*  Logical relations - AND :   الصلاة + الزكاة    
-*  Logical relations - OR : الصلاة | الزكاة    
-*  Joker \* :   \*نبي\*    
-*  Joker \? :   نعم؟    
-*  Fielded search :      سورة:يس  ( look for other Fields_  )   
-*  Fielded search (2) :  سجدة:نعم    
-*  Intervals :       رقم_السورة:[1 الى 5] و الله    
-*  Partial vocalization :      آية_:'مَن'    
-*  Tuples (root,type= أداة | اسم | فعل) as: {قول،اسم}    
-*  Derivations - lemma :      >مالك    
-*  Derivations - root :       >>مالك   
+*  Simple search: الحمد
+*  Phrases : "الحمد لله"
+*  Logical relations - ANDNOT : (الصلاة - الزكاة)
+*  Logical relations - AND :   الصلاة + الزكاة
+*  Logical relations - OR : الصلاة | الزكاة
+*  Joker \* :   \*نبي\*
+*  Joker \? :   نعم؟
+*  Fielded search :      سورة:يس  ( look for other Fields_  )
+*  Fielded search (2) :  سجدة:نعم
+*  Intervals :       رقم_السورة:[1 الى 5] و الله
+*  Partial vocalization :      آية_:'مَن'
+*  Tuples (root,type= أداة | اسم | فعل) as: {قول،اسم}
+*  Derivations - lemma :      >مالك
+*  Derivations - root :       >>مالك
 
 Translation Search:
 
@@ -184,10 +114,10 @@ Translation Search:
 * Logical relations - OR:	prayer ANDNOT charity
 * Logical relations - AND: prayer AND charity
 * Logical relations - OR:	prayer OR charity
-* Wildcards - Joker \*: pray* 	
+* Wildcards - Joker \*: pray*
 * Wildcards - Joker \?: produc?
-* Fielded search: 	lang:fr 	
-* Fielded search (2) : author:Shakir 
+* Fielded search: 	lang:fr
+* Fielded search (2) : author:Shakir
 
 ------
 Fields
@@ -195,43 +125,43 @@ Fields
 * Aya Search Fields:
 
 ===== ==================== =================== =================== ============================================================
- n     عربي                 English             Values              Description   
+ n     عربي                 English             Values              Description
 ----- -------------------- ------------------- ------------------- ------------------------------------------------------------
- 1     رقم                  gid                 1 to 6236           Global order of Aya in the whole Quran 
- 2     رقم_الآية             aya_id              1 to 300            order of Aya inside its Sura  
- 3     آية                  aya                 Text                Aya non-vocalized standard text ( used for search) 
- 4     آية_                 aya_                Text                Aya vocalized standard text ( used for show/search) 
- 5     عثماني               uth                 Text                Aya vocalized uthmani text ( used for show/search) 
+ 1     رقم                  gid                 1 to 6236           Global order of Aya in the whole Quran
+ 2     رقم_الآية             aya_id              1 to 300            order of Aya inside its Sura
+ 3     آية                  aya                 Text                Aya non-vocalized standard text ( used for search)
+ 4     آية_                 aya_                Text                Aya vocalized standard text ( used for show/search)
+ 5     عثماني               uth                 Text                Aya vocalized uthmani text ( used for show/search)
  6     عثماني_              uth_                Text                Aya vocalized uthmani text ( used for show)
- 7     موضوع                subject             Text                Thematic Division: **Chapter** > **Topic** > **Subtopic** 
- 8     فصل                  chapter             Text                Thematic Division: **Chapter** > Topic > Subtopic 
- 9     فرع                  topic               Text                Thematic Division: Chapter > **Topic** > Subtopic 
- 10    باب                  subtopic            Text                Thematic Division:  Chapter > Topic > **Subtopic** 
+ 7     موضوع                subject             Text                Thematic Division: **Chapter** > **Topic** > **Subtopic**
+ 8     فصل                  chapter             Text                Thematic Division: **Chapter** > Topic > Subtopic
+ 9     فرع                  topic               Text                Thematic Division: Chapter > **Topic** > Subtopic
+ 10    باب                  subtopic            Text                Thematic Division:  Chapter > Topic > **Subtopic**
  11    رقم_السورة           sura_id             1 to 114            Order of  Sura in Mus-haf
- 12    سورة                 sura_arabic         Text                Arabic Name of Sura 
+ 12    سورة                 sura_arabic         Text                Arabic Name of Sura
  12+   سورة_إنجليزي          sura_english        Text                English Name of Sura
  12+   سورة_تهجئة            sura                Text                Romanized Name of Sura
  13    نوع_السورة           sura_type_arabic    مدنية|مكية          Revelation place of Sura [Arabic]
  13+   نوع_السورة_إنجليزي    sura_type           Meccan|Medinan      Revelation place of Sura [English]
- 14    ترتيب_السورة         sura_order          1 to 114            Revelation order of Sura 
- 15    جزء                  juz                 1 to 30             Structural Division : **Juz** > Hizb  > Rub  
- 16    حزب                  hizb                1 to 60             Structural Division : Juz > **Hizb** > Rub 
- 17    نصف                  nisf                1 to 2              Deprecated   
- 18    ربع                  rub                 1 to 4              Structural Division : Juz > Hizb  > **Rub**  
- 19    صفحة                 page                Number              Structural Division : Page 
+ 14    ترتيب_السورة         sura_order          1 to 114            Revelation order of Sura
+ 15    جزء                  juz                 1 to 30             Structural Division : **Juz** > Hizb  > Rub
+ 16    حزب                  hizb                1 to 60             Structural Division : Juz > **Hizb** > Rub
+ 17    نصف                  nisf                1 to 2              Deprecated
+ 18    ربع                  rub                 1 to 4              Structural Division : Juz > Hizb  > **Rub**
+ 19    صفحة                 page                Number              Structural Division : Page
  19+   صفحة_هندي            page_IN             Number              Structural Division : Page (INDIAN MUSHAF)
- 20    منزل                 manzil              1 to 7              Structural Division : **Manzil** > Ruku  
- 21    ركوع                 ruku                Number              Structural Division : Manzil > **Ruku** 
+ 20    منزل                 manzil              1 to 7              Structural Division : **Manzil** > Ruku
+ 21    ركوع                 ruku                Number              Structural Division : Manzil > **Ruku**
  22    سجدة                 sajda               نعم | لا             Test existence of a Sajda
- 23    رقم_السجدة           sajda_id            1 | 14              Order of the Sajda if exist 
- 24    نوع_السجدة           sajda_type          واجبة|مستحبة        Type of the Sajda if exist 
- 25    ح_س                  s_l                 Number              Number of **letters** in **Sura** 
- 26    ك_س                  s_w                 Number              Number of **words** in **Sura** 
- 27    ج_س                  s_g                 Number              Number of **God's names** in **Sura** 
- 28    آ_س                  s_a                 Number              Number of **Ayas** in **Sura** 
- 29    ر_س                  s_r                 Number              Number of **Ruku-s** in **Sura** 
- 30    ح_آ                  a_l                 Number              Number of **letters** in **Aya**  
- 31    ك_آ                  a_w                 Number              Number of **words** in **Aya** 
+ 23    رقم_السجدة           sajda_id            1 | 14              Order of the Sajda if exist
+ 24    نوع_السجدة           sajda_type          واجبة|مستحبة        Type of the Sajda if exist
+ 25    ح_س                  s_l                 Number              Number of **letters** in **Sura**
+ 26    ك_س                  s_w                 Number              Number of **words** in **Sura**
+ 27    ج_س                  s_g                 Number              Number of **God's names** in **Sura**
+ 28    آ_س                  s_a                 Number              Number of **Ayas** in **Sura**
+ 29    ر_س                  s_r                 Number              Number of **Ruku-s** in **Sura**
+ 30    ح_آ                  a_l                 Number              Number of **letters** in **Aya**
+ 31    ك_آ                  a_w                 Number              Number of **words** in **Aya**
  32    ج_آ                  a_g                 Number              Number of **God's names** in **Aya**
 ===== ==================== =================== =================== ============================================================
 
@@ -275,12 +205,12 @@ response:
 
     {
     "suggest": [
-                  ["\u0645\u0621\u0635\u062f\u0629", 
+                  ["\u0645\u0621\u0635\u062f\u0629",
                       ["\u0645\u0642\u062a\u0635\u062f\u0629", "\u0645\u0624\u0635\u062f\u0629"]
                   ]
-                ], 
+                ],
     "error": {
-                "msg": "success ## action=suggest ; query=\u0645\u0621\u0635\u062f\u0629", 
+                "msg": "success ## action=suggest ; query=\u0645\u0621\u0635\u062f\u0629",
                 "code": 0
                }
     }
@@ -290,7 +220,7 @@ Results
 flags:
 
 .. code-block:: python
- 
+
     {
        "action":"search",
        "query": "الكوثر",
@@ -316,207 +246,207 @@ flags:
 response:
 
 .. code-block:: python
-    
+
     {
-        
+
         "search": {
-                    "runtime": 1.0951571464538574, 
+                    "runtime": 1.0951571464538574,
                     "interval": {
-                                    "start": 1, 
-                                    "total": 1, 
+                                    "start": 1,
+                                    "total": 1,
                                     "end": 1
                                 }
                     "words": {
                                 "global": {
                                             "nb_words": 1,
-                                            "nb_matches": 1, 
-                                            "nb_vocalizations": 1, 
+                                            "nb_matches": 1,
+                                            "nb_vocalizations": 1,
                                             },
                                 "individual": {
-                                
+
 				                                "1": {
-				                                        "word": "\u0627\u0644\u0643\u0648\u062b\u0631", 
-				                                        "nb_matches": 1, 
+				                                        "word": "\u0627\u0644\u0643\u0648\u062b\u0631",
+				                                        "nb_matches": 1,
 				                                        "nb_ayas": 1,
-				                                        "nb_vocalizations": 1, 
-				                                        "vocalizations": ["\u0627\u0644\u0652\u0643\u064e\u0648\u0652\u062b\u064e\u0631\u064e"], 
-				                                      }, 
+				                                        "nb_vocalizations": 1,
+				                                        "vocalizations": ["\u0627\u0644\u0652\u0643\u064e\u0648\u0652\u062b\u064e\u0631\u064e"],
+				                                      },
 				                               },
 
-                             }, 
+                             },
 
                     "ayas": {
                                 "1": {
-                                        
-                                            "identifier": {
-                                                                "gid": 6205, 
-                                                                "aya_id": 1,
-                                                                "sura_id": 108, 
-                                                                "sura_name": "\u0627\u0644\u0643\u0648\u062b\u0631", 
 
-                                                             }, 
+                                            "identifier": {
+                                                                "gid": 6205,
+                                                                "aya_id": 1,
+                                                                "sura_id": 108,
+                                                                "sura_name": "\u0627\u0644\u0643\u0648\u062b\u0631",
+
+                                                             },
                                             "aya": {
                                                     "id": 1,
                                                     "text": "\u0625\u0650\u0646\u0651\u064e\u0627 \u0623\u064e\u0639\u0652\u0637\u064e\u064a\u0652\u0646\u064e\u0627\u0643\u064e <span class=\"match term0\">\u0627\u0644\u0652\u0643\u064e\u0648\u0652\u062b\u064e\u0631\u064e</span>",
-                                                    "recitation": "http://www.everyayah.com/data/Abdul_Basit_Murattal_64kbps/108001.mp3", 
-                                                    "translation": null, 
+                                                    "recitation": "http://www.everyayah.com/data/Abdul_Basit_Murattal_64kbps/108001.mp3",
+                                                    "translation": null,
                                                     "prev_aya": {
-                                                                    "id": 7, 
+                                                                    "id": 7,
                                                                     "sura": "\u0627\u0644\u0645\u0627\u0639\u0648\u0646",
-                                                                    "text": "\u0648\u064e\u064a\u064e\u0645\u0652\u0646\u064e\u0639\u064f\u0648\u0646\u064e \u0627\u0644\u0652\u0645\u064e\u0627\u0639\u064f\u0648\u0646\u064e", 
-                                                                }, 
+                                                                    "text": "\u0648\u064e\u064a\u064e\u0645\u0652\u0646\u064e\u0639\u064f\u0648\u0646\u064e \u0627\u0644\u0652\u0645\u064e\u0627\u0639\u064f\u0648\u0646\u064e",
+                                                                },
                                                     "next_aya": {
-                                                                    "id": 2, 
+                                                                    "id": 2,
                                                                     "sura": "\u0627\u0644\u0643\u0648\u062b\u0631",
-                                                                    "text": "\u0641\u064e\u0635\u064e\u0644\u0651\u0650 \u0644\u0650\u0631\u064e\u0628\u0651\u0650\u0643\u064e \u0648\u064e\u0627\u0646\u0652\u062d\u064e\u0631\u0652", 
-                                                                }, 
+                                                                    "text": "\u0641\u064e\u0635\u064e\u0644\u0651\u0650 \u0644\u0650\u0631\u064e\u0628\u0651\u0650\u0643\u064e \u0648\u064e\u0627\u0646\u0652\u062d\u064e\u0631\u0652",
+                                                                },
                                                     },
 
 
                                             "sura": {
                                                         "id": 108,
-                                                        "name": "\u0627\u0644\u0643\u0648\u062b\u0631", 
-                                                        "type": "\u0645\u0643\u064a\u0629", 
-                                                        "order": 15, 
+                                                        "name": "\u0627\u0644\u0643\u0648\u062b\u0631",
+                                                        "type": "\u0645\u0643\u064a\u0629",
+                                                        "order": 15,
                                                         "ayas": 3,
                                                         "stat": {
                                                                     "words": 10,
-                                                                    "letters": 42, 
-                                                                    "godnames": 0, 
+                                                                    "letters": 42,
+                                                                    "godnames": 0,
 
-                                                                  }, 
-                                                    }, 
+                                                                  },
+                                                    },
                                             "theme": {
-                                                                "chapter": "\u0623\u0631\u0643\u0627\u0646 \u0627\u0644\u0625\u0633\u0644\u0627\u0645 ", 
-                                                                "topic": "\u0627\u0644\u062d\u062c \u0648\u0627\u0644\u0639\u0645\u0631\u0629 ", 
+                                                                "chapter": "\u0623\u0631\u0643\u0627\u0646 \u0627\u0644\u0625\u0633\u0644\u0627\u0645 ",
+                                                                "topic": "\u0627\u0644\u062d\u062c \u0648\u0627\u0644\u0639\u0645\u0631\u0629 ",
                                                                 "subtopic": null
-                                                      }, 
+                                                      },
 
-                                            
+
                                             "position": {
-                                                            "rub": 0, 
-                                                            "manzil": 7, 
-                                                            "ruku": 550, 
-                                                            "hizb": 60, 
+                                                            "rub": 0,
+                                                            "manzil": 7,
+                                                            "ruku": 550,
+                                                            "hizb": 60,
                                                             "page": 602
-                                                        }, 
+                                                        },
                                             "sajda": {
-                                                        "exist": false, 
+                                                        "exist": false,
                                                         "id": null,
                                                         "type": null
-                                                     }, 
-            
+                                                     },
+
                                             "stat": {
-                                                        "letters": 16, 
-                                                        "godnames": 0, 
+                                                        "letters": 16,
+                                                        "godnames": 0,
                                                         "words": 3
-                                                    }, 
+                                                    },
                                             "annotations": {
                                                                 "1": {
-                                                                        "arabicroot": null, 
-                                                                        "arabicmood": null, 
-                                                                        "number": null, 
-                                                                        "spelled": "\u0627\u0646\u0627\u0653", 
-                                                                        "aspect": null, 
-                                                                        "word_gid": 75871, 
-                                                                        "word_id": 1, 
-                                                                        "mood": null, 
-                                                                        "arabicspecial": "\u0625\u0650\u0646\u0651", 
-                                                                        "state": null, 
-                                                                        "arabiclemma": "\u0625\u0650\u0646\u0651", 
-                                                                        "gid": 116333, 
-                                                                        "type": "Particles", 
-                                                                        "aya_id": 1, 
-                                                                        "arabictoken": null, 
-                                                                        "form": null, 
-                                                                        "pos": "Accusative particle", 
-                                                                        "arabiccase": "\u0645\u0646\u0635\u0648\u0628", 
-                                                                        "part": "\u062c\u0630\u0639", 
-                                                                        "normalized": "\u0625\u0646\u0627\u0653", 
-                                                                        "case": "Accusative case", 
-                                                                        "sura_id": 108, 
-                                                                        "word": "\u0625\u0650\u0646\u0651\u064e\u0627\u0653", 
-                                                                        "derivation": null, 
-                                                                        "arabicpos": "\u062d\u0631\u0641 \u0646\u0635\u0628", 
-                                                                        "person": null, 
-                                                                        "token": null, 
-                                                                        "gender": null, 
-                                                                        "voice": null, 
+                                                                        "arabicroot": null,
+                                                                        "arabicmood": null,
+                                                                        "number": null,
+                                                                        "spelled": "\u0627\u0646\u0627\u0653",
+                                                                        "aspect": null,
+                                                                        "word_gid": 75871,
+                                                                        "word_id": 1,
+                                                                        "mood": null,
+                                                                        "arabicspecial": "\u0625\u0650\u0646\u0651",
+                                                                        "state": null,
+                                                                        "arabiclemma": "\u0625\u0650\u0646\u0651",
+                                                                        "gid": 116333,
+                                                                        "type": "Particles",
+                                                                        "aya_id": 1,
+                                                                        "arabictoken": null,
+                                                                        "form": null,
+                                                                        "pos": "Accusative particle",
+                                                                        "arabiccase": "\u0645\u0646\u0635\u0648\u0628",
+                                                                        "part": "\u062c\u0630\u0639",
+                                                                        "normalized": "\u0625\u0646\u0627\u0653",
+                                                                        "case": "Accusative case",
+                                                                        "sura_id": 108,
+                                                                        "word": "\u0625\u0650\u0646\u0651\u064e\u0627\u0653",
+                                                                        "derivation": null,
+                                                                        "arabicpos": "\u062d\u0631\u0641 \u0646\u0635\u0628",
+                                                                        "person": null,
+                                                                        "token": null,
+                                                                        "gender": null,
+                                                                        "voice": null,
                                                                         "order": 1
-                                                                     }, 
+                                                                     },
                                                                 "2": {
-                                                                        "arabicroot": "\u0639\u0637\u0648", 
-                                                                        "arabicmood": null, 
-                                                                        "number": "\u062c\u0645\u0639", 
-                                                                        "spelled": "\u0627\u0639\u0637\u064a\u0646\u0670\u0643", 
-                                                                        "aspect": "Perfect verb", 
-                                                                        "word_gid": 75872, 
-                                                                        "word_id": 2, 
-                                                                        "mood": null, 
-                                                                        "arabicspecial": null, 
-                                                                        "state": null, 
-                                                                        "arabiclemma": null, 
-                                                                        "gid": 116335, 
-                                                                        "type": "Verbs", 
-                                                                        "aya_id": 1, 
-                                                                        "arabictoken": null, 
-                                                                        "form": "Fourth form", 
-                                                                        "pos": "Verb", 
-                                                                        "arabiccase": null, 
-                                                                        "part": "\u062c\u0630\u0639", 
-                                                                        "normalized": "\u0623\u0639\u0637\u064a\u0646\u0670\u0643", 
-                                                                        "case": null, 
-                                                                        "sura_id": 108, 
-                                                                        "word": "\u0623\u064e\u0639\u0652\u0637\u064e\u064a\u0652\u0646\u064e\u0670\u0643\u064e", 
-                                                                        "derivation": null, 
-                                                                        "arabicpos": "\u0641\u0639\u0644", 
-                                                                        "person": "\u0645\u062a\u0643\u0644\u0645", 
-                                                                        "token": null, 
-                                                                        "gender": "\u0645\u0630\u0651\u0643\u0631", 
-                                                                        "voice": null, 
+                                                                        "arabicroot": "\u0639\u0637\u0648",
+                                                                        "arabicmood": null,
+                                                                        "number": "\u062c\u0645\u0639",
+                                                                        "spelled": "\u0627\u0639\u0637\u064a\u0646\u0670\u0643",
+                                                                        "aspect": "Perfect verb",
+                                                                        "word_gid": 75872,
+                                                                        "word_id": 2,
+                                                                        "mood": null,
+                                                                        "arabicspecial": null,
+                                                                        "state": null,
+                                                                        "arabiclemma": null,
+                                                                        "gid": 116335,
+                                                                        "type": "Verbs",
+                                                                        "aya_id": 1,
+                                                                        "arabictoken": null,
+                                                                        "form": "Fourth form",
+                                                                        "pos": "Verb",
+                                                                        "arabiccase": null,
+                                                                        "part": "\u062c\u0630\u0639",
+                                                                        "normalized": "\u0623\u0639\u0637\u064a\u0646\u0670\u0643",
+                                                                        "case": null,
+                                                                        "sura_id": 108,
+                                                                        "word": "\u0623\u064e\u0639\u0652\u0637\u064e\u064a\u0652\u0646\u064e\u0670\u0643\u064e",
+                                                                        "derivation": null,
+                                                                        "arabicpos": "\u0641\u0639\u0644",
+                                                                        "person": "\u0645\u062a\u0643\u0644\u0645",
+                                                                        "token": null,
+                                                                        "gender": "\u0645\u0630\u0651\u0643\u0631",
+                                                                        "voice": null,
                                                                         "order": 1
-                                                                     }, 
+                                                                     },
                                                                 "3": {
-                                                                        "arabicroot": null, 
-                                                                        "arabicmood": null, 
-                                                                        "number": null, 
-                                                                        "spelled": "\u0671\u0644\u0643\u0648\u062b\u0631", 
-                                                                        "aspect": null, 
-                                                                        "word_gid": 75873, 
-                                                                        "word_id": 3, 
-                                                                        "mood": null, 
-                                                                        "arabicspecial": null, 
-                                                                        "state": null, 
-                                                                        "arabiclemma": null, 
-                                                                        "gid": 116337, 
-                                                                        "type": "determiner", 
-                                                                        "aya_id": 1, 
-                                                                        "arabictoken": "\u0627\u0644", 
-                                                                        "form": null, 
-                                                                        "pos": null, 
-                                                                        "arabiccase": null, 
-                                                                        "part": "\u0633\u0627\u0628\u0642", 
-                                                                        "normalized": "\u0671\u0644\u0643\u0648\u062b\u0631", 
-                                                                        "case": null, 
-                                                                        "sura_id": 108, 
-                                                                        "word": "\u0671\u0644\u0652\u0643\u064e\u0648\u0652\u062b\u064e\u0631\u064e", 
-                                                                        "derivation": null, 
-                                                                        "arabicpos": null, 
-                                                                        "person": null, 
-                                                                        "token": "al", 
-                                                                        "gender": null, 
-                                                                        "voice": null, 
+                                                                        "arabicroot": null,
+                                                                        "arabicmood": null,
+                                                                        "number": null,
+                                                                        "spelled": "\u0671\u0644\u0643\u0648\u062b\u0631",
+                                                                        "aspect": null,
+                                                                        "word_gid": 75873,
+                                                                        "word_id": 3,
+                                                                        "mood": null,
+                                                                        "arabicspecial": null,
+                                                                        "state": null,
+                                                                        "arabiclemma": null,
+                                                                        "gid": 116337,
+                                                                        "type": "determiner",
+                                                                        "aya_id": 1,
+                                                                        "arabictoken": "\u0627\u0644",
+                                                                        "form": null,
+                                                                        "pos": null,
+                                                                        "arabiccase": null,
+                                                                        "part": "\u0633\u0627\u0628\u0642",
+                                                                        "normalized": "\u0671\u0644\u0643\u0648\u062b\u0631",
+                                                                        "case": null,
+                                                                        "sura_id": 108,
+                                                                        "word": "\u0671\u0644\u0652\u0643\u064e\u0648\u0652\u062b\u064e\u0631\u064e",
+                                                                        "derivation": null,
+                                                                        "arabicpos": null,
+                                                                        "person": null,
+                                                                        "token": "al",
+                                                                        "gender": null,
+                                                                        "voice": null,
                                                                         "order": 1
                                                                      }
                                                             },
                                                 },
-                            }, 
-                    "translation_info": {}, 
-                    }, 
+                            },
+                    "translation_info": {},
+                    },
 
         "error": {
                     "code": 0,
-                    "msg": "success ## action=search ; query=\u0627\u0644\u0643\u0648\u062b\u0631", 
+                    "msg": "success ## action=search ; query=\u0627\u0644\u0643\u0648\u062b\u0631",
                  }
         }
 
@@ -540,7 +470,7 @@ flags:
 response:
 
 .. code-block:: python
-      
+
       {
           "show": {
               "information": {
@@ -576,7 +506,7 @@ flags:
 response (sample):
 
 .. code-block:: python
-      
+
       {
           "show": {
               "recitations": {
@@ -590,8 +520,8 @@ response (sample):
                       "name": "Salah Al Budair",
                       "subfolder": "Salah_Al_Budair_128kbps"
                   }
-                  
-      
+
+
               }
           },
           "error": {
@@ -616,7 +546,7 @@ flags:
 response:
 
 .. code-block:: python
-            
+
       {
           "show": {
               "fields": {
@@ -659,6 +589,63 @@ response:
               "code": 0
           }
       }
+
+
+=======
+Hacking
+=======
+-----
+Build
+-----
+
+The API uses many critical resources that must be downloaded and/or prepared to be used. To do that, just run this command in the root path of the project
+
+#. Install all building dependencies: `pyparsing <http://pyparsing.wikispaces.com/>`_, `epydoc <http://epydoc.sourceforge.net/>`_,
+   `sphinx <http://sphinx.pocoo.org/>`_.
+
+   * (ubuntu 12.04): 
+      
+     .. code-block:: sh
+     
+        $ sudo apt-get install python-qt4 qt4-dev-tools python-qt4-dev pyqt4-dev-tools
+        $ sudo apt-get install python-distutils-extra
+        $ sudo easy_install pyparsing epydoc sphinx
+
+
+
+
+#. Run the build command:
+
+   .. code-block:: sh
+        
+        $ cd ../../
+        $ make build
+
+
+
+For more details check  `Makefile <https://github.com/Alfanous-team/alfanous/blob/master/Makefile>`_
+
+
+-------
+Install
+-------
+To install the API from the source (After Build_ ):
+
+.. code-block:: sh
+
+    $ sudo python setup.py install
+
+A console interface will  be installed automatically with the API:
+
+.. code-block:: sh
+
+    $ alfanous-console -h
+    usage: alfanous-console [flags]
+
+
+
+**note**: if you are looking for alfanous legacy code, you can find it under `legacy` branch
+
 
 
 
