@@ -274,10 +274,6 @@ install:
 # python egg for API
 dist:
 	perl -p -w -e 's|alfanous.release|$(RELEASE)|g;s|alfanous.version|$(VERSION)|g;' $(API_PATH)alfanous/resources/information.json.in > $(API_PATH)alfanous/resources/information.json
-	cd $(API_PATH)alfanous ; $(PYTHON_COMMAND) setup.py sdist bdist_egg register upload
+	cd $(API_PATH)alfanous ; rm -r dist; $(PYTHON_COMMAND) setup.py sdist bdist_wheel; twine upload dist/* -u assemch
 	mkdir -p output/$(VERSION) ; mv $(API_PATH)alfanous/dist/*.egg ./output/$(VERSION)
 	@echo  "NOTE: you can find the generated egg in ./output"
-	
-
-pylint:
-	pylint --ignore=whoosh,dynamic_resources,mainform_ui.py src -f colorized | more
