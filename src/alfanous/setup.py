@@ -8,76 +8,65 @@ TODO include resources in installation
 XXX Index building pre-install script?
 """
 
-
-
-
 import json
 
-try:
-	from setuptools import setup#,find_packages
-except ImportError:
-	from alfanous.ez_setup import use_setuptools
-	use_setuptools()
+from setuptools import setup
 
-information_file = open( "./resources/information.json" )
-information = json.loads( information_file.read() ) if information_file else {}
-current_version = information["version"] if information.has_key( "version" ) \
-		  else 0.7
-current_description = information["description"] if information.has_key( "description" ) \
-            else """ Alfanous is a search engine provide the simple and advanced search in the Holy Qur'an and more features.."""
-current_lib_usage = information["lib_usage"] if information.has_key( "lib_usage" ) \
-            else "    $ sudo pip install alfanous"
+information_file = open("./resources/information.json")
+information = json.loads(information_file.read()) if information_file else {}
+current_version = information["version"] if information.has_key("version") \
+    else 0.7
+current_description = information["description"] if information.has_key("description") \
+    else """ Alfanous is a search engine provide the simple and advanced search in the Holy Qur'an and more features.."""
+current_lib_usage = information["lib_usage"] if information.has_key("lib_usage") \
+    else "    $ sudo pip install alfanous"
 
-#TODO may add pre-install code here
+# TODO may add pre-install code here
 
-setup( 
-	name = "alfanous",
-	description = "Quranic search engine API",
-	version = current_version,
-	platforms = "ALL",
-	license = "AGPL",
-	packages = ['alfanous', 'alfanous.dynamic_resources', 'alfanous.Support',
-            'alfanous.Support.whoosh', 'alfanous.Support.whoosh.filedb',
-            'alfanous.Support.whoosh.lang', 'alfanous.Support.whoosh.qparser',
-            'alfanous.Support.whoosh.support','alfanous.Support.PyArabic',],
+setup(
 
-	install_requires = ['pyparsing'],
+    version=current_version,
 
-	author = "Assem Chelli",
-	author_email = "assem.ch@gmail.com",
-	maintainer = "Assem Chelli",
-	maintainer_email = "assem.ch@gmail.com",
+    packages=['alfanous', 'alfanous.dynamic_resources', 'alfanous.Support',
+              'alfanous.Support.whoosh', 'alfanous.Support.whoosh.filedb',
+              'alfanous.Support.whoosh.lang', 'alfanous.Support.whoosh.qparser',
+              'alfanous.Support.whoosh.support', 'alfanous.Support.PyArabic', ],
 
-	package_dir = {'alfanous':'.'},
-	long_description = current_description+current_lib_usage,
-	keywords = "quran search indexing engine alfanous",
-	url = "https://github.com/Alfanous-team/alfanous",
-	include_package_data = True,
+    install_requires=['pyparsing'],
 
-	package_data = {'alfanous': ['configs/*',
-								'indexes/main/*',
-								'indexes/extend/*',
-								'indexes/word/*',
-								'resources/*']},
+    author="Assem Chelli",
+    author_email="assem.ch@gmail.com",
 
-	#data_files = [
-	#			 ( 'indexes/main', glob.glob( '../../indexes/main/*' ) ),
-	#			 ( 'indexes/extend', glob.glob( '../../indexes/extend/*' ) ),
-	#			 ( 'indexes/word', glob.glob( '../../indexes/word/*' ) ),
-	#			 ( 'resources/configs', glob.glob( '../../resources/configs/*' ) )
-	#			 ] ,
+    package_dir={'alfanous': '.'},
+    long_description=current_description + current_lib_usage,
+    keywords="quran search indexing engine alfanous",
+    url="https://github.com/Alfanous-team/alfanous",
+    include_package_data=True,
 
-	entry_points = { 'console_scripts': ['alfanous-console = alfanous.console:main', ]},
+    package_data={'alfanous': ['configs/*',
+                               'indexes/main/*',
+                               'indexes/extend/*',
+                               'indexes/word/*',
+                               'resources/*']},
 
-	zip_safe = False,
+    # data_files = [
+    #			 ( 'indexes/main', glob.glob( '../../indexes/main/*' ) ),
+    #			 ( 'indexes/extend', glob.glob( '../../indexes/extend/*' ) ),
+    #			 ( 'indexes/word', glob.glob( '../../indexes/word/*' ) ),
+    #			 ( 'resources/configs', glob.glob( '../../resources/configs/*' ) )
+    #			 ] ,
 
-	classifiers = [
-	"Development Status :: 4 - Beta",
-	"Intended Audience :: Developers",
-	"License :: OSI Approved :: GNU Affero General Public License v3 or later (AGPLv3+)",
-	"Natural Language :: Arabic",
-	"Operating System :: OS Independent",
-	"Programming Language :: Python :: 2.7",
-	"Topic :: Software Development :: Libraries :: Python Modules",
-	],
- )
+    entry_points={'console_scripts': ['alfanous-console = alfanous.console:main', ]},
+
+    zip_safe=False,
+
+    classifiers=[
+        "Development Status :: 4 - Beta",
+        "Intended Audience :: Developers",
+        "License :: OSI Approved :: GNU Affero General Public License v3 or later (AGPLv3+)",
+        "Natural Language :: Arabic",
+        "Operating System :: OS Independent",
+        "Programming Language :: Python :: 2.7",
+        "Topic :: Software Development :: Libraries :: Python Modules",
+    ],
+)

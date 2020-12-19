@@ -56,20 +56,6 @@ default:
 	@echo "pylint \n\t run the tests of pylint on the API "
 	
 
-## This target englob all the targets on this makefile
-## it may help when you are going to make a release
-## it will do every thing:
-# 1. edit text resources before building
-# 2. download all Quranic resources that we can't include in Git or tarball because of license or huge size
-# 3. build all indexes, update all resources, qt files,  localization files, help files
-# 4. generate all documentations
-# 5. make a tarball that contains all downloaded and generated data
-# 6. generate all possible distribution files for all interfaces: API, Desktop interface
-
-## Kaboom! @TODO: must test this well
-all:  edit_all download_all  build_all local_pot_all help_all  tarball_data  dist_all  clean  #install_all	 
-
-
 ##  This target is to edit text resources before building, which are:
 # 1. api information, see update_information
 # 2. globl hints (deprecated), see update_hints
@@ -84,11 +70,6 @@ edit_information:
 edit_hints:
 	nano $(CONFIGS_PATH)hints.json
 
-# update stats manually, to initiate it just leave it as an empty json object {}
-# never leave it empty till fix that! TODO
-edit_stats:
-	nano $(CONFIGS_PATH)stats.json 
-	chmod -x $(CONFIGS_PATH)stats.json 
 
 # update downloading translation list manually
 edit_translations_to_download_list:
@@ -124,26 +105,16 @@ clean_all: clean_deb
 ## download Quranic resources needed for Alfanous project, which are:
 # 1. Quran translations from zekr.org, see download_translations
 # 2. 
-download_all: download_translations download_recitations download_quranic_corpus download_tanzil local_mo_download
+download_all: download_translations   download_tanzil
 
 download_translations:
 	#  download from  http://zekr.org/resources.html to ./store/traductions
 	cd $(STORE_PATH)Translations;  wget -i translations.list
 
-download_recitations:
-	#  auto download from  http://zekr.org/resources.html to ./store/recitations  + VerseByVerse recitations list
-	@echo "todo"
-
-download_quranic_corpus:
-	# Qimport.Downloader
-	@echo "todo"
 
 download_tanzil:
 	export PYTHONPATH=$(API_PATH) ;	$(PYTHON_COMMAND) $(QIMPORT) -d tanzil_simple_clean $(STORE_PATH)tanzil_simple_clean.xml
 	export PYTHONPATH=$(API_PATH) ;	$(PYTHON_COMMAND) $(QIMPORT) -d tanzil_uthmani $(STORE_PATH)tanzil_uthmani.xml
-
-
-
 
 
 

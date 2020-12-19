@@ -225,6 +225,20 @@ class IndexReader(ClosableMixin):
                 current_fieldname = num2name(fn)
             yield (current_fieldname, t)
 
+    def field_terms(self, fieldname):
+        num2name = self.schema.number_to_name
+        current_fieldnum = None
+        current_fieldname = None
+
+        for fn, t, _, _ in self:
+            # Only call self.schema.number_to_name when the
+            # field number changes.
+            if fn != current_fieldnum:
+                current_fieldnum = fn
+                current_fieldname = num2name(fn)
+            if current_fieldname == fieldname:
+                yield t
+
     def iter_field(self, fieldid, prefix=''):
         """Yields (text, doc_freq, index_freq) tuples for all terms in the
         given field.

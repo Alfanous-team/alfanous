@@ -17,62 +17,50 @@
 ##     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
-'''
-
-
-@author: Assem Chelli
-@contact: assem.ch [at] gmail.com
-@license: AGPL
-
-
-'''
-
-from alfanous.Support.whoosh.scoring import   BM25F #TF_IDF, Frequency,
-from alfanous.Support.whoosh.highlight import highlight, BasicFragmentScorer, Fragment, GenshiFormatter, HtmlFormatter #NullFragmenter,FIRST,
+from alfanous.Support.whoosh.scoring import BM25F
+from alfanous.Support.whoosh.highlight import highlight, BasicFragmentScorer, Fragment, GenshiFormatter, \
+    HtmlFormatter
 from alfanous.text_processing import QHighLightAnalyzer, QDiacHighLightAnalyzer, Gword_tamdid
 
-#from alfanous.Support.whoosh.analysis import StandardAnalyzer
 
-#Results.extend(results)Results.upgrade(results)Results.upgrade_and_extend(results)    
-def QScore( methode = None ):
-    """ chooose the methode of score
-        - Cosine
-        - BM25F
-        - TF_IDF
-        - Frequency
+def QScore():
+    return BM25F(B=0.75, K1=1.2)
 
-    """
-    if not methode:methode = BM25F( B = 0.75, K1 = 1.2 )#Frequency
-    return methode
 
-def QSort( sortedby ):
+def QSort(sortedby):
     """  Controls the results sorting options    """
-    if sortedby == "mushaf": sortedby = "gid"
-    elif sortedby == "tanzil": sortedby = ( "sura_order", "aya_id" )
-    elif sortedby == "subject": sortedby = ( "chapter", "topic", "subtopic" )
-    elif sortedby == "ayalength": sortedby = ( "a_l", "a_w" )
-    elif sortedby == "relevance" or sortedby == "score": sortedby = None
-    else: sortedby = sortedby
+    if sortedby == "mushaf":
+        return "gid"
+    elif sortedby == "tanzil":
+        return "sura_order", "aya_id"
+    elif sortedby == "subject":
+        return "chapter", "topic", "subtopic"
+    elif sortedby == "ayalength":
+        return "a_l", "a_w"
+    elif sortedby in ["relevance", "score"]:
+        return None
+
     return sortedby
 
 
-def QFilter( results, new_results ):
+
+def QFilter(results, new_results):
     """ Filter give results with new results"""
-    results.filter( new_results )
+    results.filter(new_results)
     return results
 
-def QExtend():
-    pass
 
-def QPaginate( results, pagelen = 10 ):
+
+
+def QPaginate(results, pagelen=10):
     """generator of pages"""
-    l = len( results )
-    minimal = lambda x, y:y if x > y  else  x
-    for i in range( 0, l, 10 ):
-        yield ( i / pagelen, results[i:minimal( i + pagelen, l )] )
+    l = len(results)
+    minimal = lambda x, y: y if x > y else x
+    for i in range(0, l, 10):
+        yield (i / pagelen, results[i:minimal(i + pagelen, l)])
 
 
-def Qhighlight( text, terms, type = "css", strip_vocalization = True ):
+def Qhighlight(text, terms, type="css", strip_vocalization=True):
     """ highlight terms in text
 
     @param type: the type of formatting , html or css or genchi
@@ -86,137 +74,137 @@ def Qhighlight( text, terms, type = "css", strip_vocalization = True ):
         formatter = QBoldFormatter()
     elif type == "bbcode":
         formatter = QBBcodeFormatter()
-    else: #css
-        formatter = HtmlFormatter( tagname = "span", classname = "match", termclass = "term", maxclasses = 8 )
+    else:  # css
+        formatter = HtmlFormatter(tagname="span", classname="match", termclass="term", maxclasses=8)
 
+    h = highlight(
+        text,
+        terms,
+        analyzer=QHighLightAnalyzer if strip_vocalization else QDiacHighLightAnalyzer,
+        fragmenter=QFragmenter(),
+        formatter=formatter,
+        top=3,
+        scorer=BasicFragmentScorer,
+        minscore=1
+    )
 
+    if h:
+        return h
+    else:
+        return text
 
-    h = highlight( 
-                      text,
-                      terms,
-                      analyzer = QHighLightAnalyzer if strip_vocalization else QDiacHighLightAnalyzer,
-                      fragmenter = QFragmenter(),
-                      formatter = formatter,
-                      top = 3,
-                      scorer = BasicFragmentScorer,
-                      minscore = 1
-                )
-
-    if h:return h
-    else:return text
 
 class QFragmenter:
     """ TO DO """
-    def __init__( self ):
+
+    def __init__(self):
         pass
 
-    def __call__( self, text, tokens ):
-        return [Fragment( list( tokens ) )]
+    def __call__(self, text, tokens):
+        return [Fragment(list(tokens))]
 
 
-class QHtmlFormatter( object ):
+class QHtmlFormatter(object):
     """ add the style tags to the text """
-    def __init__( self, change_size = True, color_cycle = ["red", "green", "orange", "blue"] ):
+
+    def __init__(self, change_size=True, color_cycle=["red", "green", "orange", "blue"]):
 
         self._change_size = True
         self._color_cycle = color_cycle
 
+    def _format(self, text, color, score=1):
+        if self._change_size:
+            ration = 100 + (score - 1) * 0.25
+        else:
+            ration = 100
 
-    def _format( self, text, color, score = 1 ):
-        if self._change_size:ration = 100 + ( score - 1 ) * 0.25
-        else:ration = 100
+        return "<span style=\"color:" + color + ";font-size:" + str(ration) + "%\"><b>" + Gword_tamdid(
+            text) + "</b></span>"
 
-        return "<span style=\"color:" + color + ";font-size:" + str( ration ) + "%\"><b>" + Gword_tamdid( text ) + "</b></span>"
-
-
-
-    def _format_fragment( self, text, fragment ):
+    def _format_fragment(self, text, fragment):
         output = []
         index = fragment.startchar
         CC = self._color_cycle
         CPT = 0
-        MAX = len( CC )
+        MAX = len(CC)
         for t in fragment.matches:
             if t.startchar > index:
-                output.append( text[index:t.startchar] )
+                output.append(text[index:t.startchar])
 
             ttxt = text[t.startchar:t.endchar]
             if t.matched:
-                ttxt = self._format( ttxt, color = CC[CPT] )#:TO DO: SCORE score=BasicFragmentScorer(fragment)
-                CPT = ( CPT + 1 ) % MAX
-            output.append( ttxt )
+                ttxt = self._format(ttxt, color=CC[CPT])  #:TO DO: SCORE score=BasicFragmentScorer(fragment)
+                CPT = (CPT + 1) % MAX
+            output.append(ttxt)
             index = t.endchar
 
-        output.append( text[index:fragment.endchar] )
-        return "".join( output )
+        output.append(text[index:fragment.endchar])
+        return "".join(output)
 
-    def __call__( self, text, fragments ):
-        return "".join( ( self._format_fragment( text, fragment )
-                                  for fragment in fragments ) )
-class QBBcodeFormatter( object ):
+    def __call__(self, text, fragments):
+        return "".join((self._format_fragment(text, fragment)
+                        for fragment in fragments))
+
+
+class QBBcodeFormatter(object):
     """ format to bbcode(forums syntax) """
-    def __init__( self, change_size = True, color_cycle = ["red", "green", "orange", "blue"] ):
+
+    def __init__(self, change_size=True, color_cycle=["red", "green", "orange", "blue"]):
 
         self._change_size = True
         self._color_cycle = color_cycle
 
+    def _format(self, text, color, score=1):
+        return "[color=" + color + "]" + "[B]" + Gword_tamdid(text) + "[/B][/color]"
 
-    def _format( self, text, color, score = 1 ):
-        return "[color=" + color + "]" + "[B]" + Gword_tamdid( text ) + "[/B][/color]"
-
-
-
-    def _format_fragment( self, text, fragment ):
+    def _format_fragment(self, text, fragment):
         output = []
         index = fragment.startchar
         CC = self._color_cycle
         CPT = 0
-        MAX = len( CC )
+        MAX = len(CC)
         for t in fragment.matches:
             if t.startchar > index:
-                output.append( text[index:t.startchar] )
+                output.append(text[index:t.startchar])
 
             ttxt = text[t.startchar:t.endchar]
             if t.matched:
-                ttxt = self._format( ttxt, color = CC[CPT] )#:TO DO: SCORE score=BasicFragmentScorer(fragment)
-                CPT = ( CPT + 1 ) % MAX
-            output.append( ttxt )
+                ttxt = self._format(ttxt, color=CC[CPT])  #:TO DO: SCORE score=BasicFragmentScorer(fragment)
+                CPT = (CPT + 1) % MAX
+            output.append(ttxt)
             index = t.endchar
 
-        output.append( text[index:fragment.endchar] )
-        return "".join( output )
+        output.append(text[index:fragment.endchar])
+        return "".join(output)
 
-    def __call__( self, text, fragments ):
-        return "".join( ( self._format_fragment( text, fragment )
-                                  for fragment in fragments ) )
+    def __call__(self, text, fragments):
+        return "".join((self._format_fragment(text, fragment)
+                        for fragment in fragments))
 
-class QBoldFormatter( object ):
+
+class QBoldFormatter(object):
     """ add the style tags to the text """
 
-    def _format( self, text ):
-        return "<b>" + Gword_tamdid( text ) + "</b>"
+    def _format(self, text):
+        return "<b>" + Gword_tamdid(text) + "</b>"
 
-
-
-    def _format_fragment( self, text, fragment ):
+    def _format_fragment(self, text, fragment):
         output = []
         index = fragment.startchar
 
         for t in fragment.matches:
             if t.startchar > index:
-                output.append( text[index:t.startchar] )
+                output.append(text[index:t.startchar])
 
             ttxt = text[t.startchar:t.endchar]
             if t.matched:
-                ttxt = self._format( ttxt )
-            output.append( ttxt )
+                ttxt = self._format(ttxt)
+            output.append(ttxt)
             index = t.endchar
 
-        output.append( text[index:fragment.endchar] )
-        return "".join( output )
+        output.append(text[index:fragment.endchar])
+        return "".join(output)
 
-    def __call__( self, text, fragments ):
-        return "".join( ( self._format_fragment( text, fragment )
-                                  for fragment in fragments ) )
-
-
+    def __call__(self, text, fragments):
+        return "".join((self._format_fragment(text, fragment)
+                        for fragment in fragments))
