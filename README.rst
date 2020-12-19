@@ -1,9 +1,11 @@
+.. image:: https://github.com/Alfanous-team/alfanous/workflows/tests/badge.svg
+
 ============
 Alfanous API
 ============
 
 :Authors: `Authors.rst <https://github.com/Alfanous-team/alfanous/blob/master/AUTHORS.rst>`_
-:Release: 0.7.10 Kahraman
+:Release: 0.7.30
 :License: `AGPL <https://github.com/Alfanous-team/alfanous/blob/master/LICENSE>`_
 :Tracker: `Alfanous-team/alfanous/Issues <https://github.com/Alfanous-team/alfanous/issues>`_
 :Mailinglist: `alfanous@googlegroups.com <http://groups.google.com/group/alfanous/>`_
