@@ -1,3 +1,5 @@
+![master](https://github.com/Alfanous-team/alfanous/workflows/tests/badge.svg?branch=master)
+
 ============
 Alfanous API
 ============
