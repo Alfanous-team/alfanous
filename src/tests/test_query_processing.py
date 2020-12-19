@@ -4,6 +4,7 @@
 This is a test module for alfanous.QueryProcessing 
 
 """
+from alfanous import paths
 from alfanous.indexing import QseDocIndex
 from alfanous.query_processing import _make_arabic_parser, QuranicParser
 
@@ -26,7 +27,7 @@ def test_parsing():
 
 
 def test_parsing_with_schema():
-    D = QseDocIndex("alfanous/indexes/main/")
+    D = QseDocIndex(paths.QSE_INDEX)
     QP = QuranicParser(D.get_schema(), otherfields=['subject'])
 
     assert QP.parse(u"'لو كان البحر '").__dict__ == {'boost': 1.0,
