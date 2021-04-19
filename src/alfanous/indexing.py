@@ -1,7 +1,7 @@
 # coding: utf-8
 from alfanous.exceptions import Ta7rif
-from alfanous.Support.whoosh.filedb.filestore import FileStorage
-from alfanous.Support.whoosh import index
+from whoosh.filedb.filestore import FileStorage
+from whoosh import index
 
 
 class BasicDocIndex:

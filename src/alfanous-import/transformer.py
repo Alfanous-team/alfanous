@@ -8,12 +8,10 @@ import sqlite3 as lite
 
 
 ## attention : these libraries will be pickled in the indexes
-from alfanous.Support.whoosh.fields import Schema, STORED, ID, KEYWORD, TEXT, NUMERIC
-from alfanous.Support.whoosh.formats import Positions, Frequency
-from alfanous.Support.whoosh.filedb.filestore import FileStorage
-from alfanous.Support.whoosh.store import LockError
-from alfanous.Support.whoosh.spelling import SpellChecker
-from alfanous.Support.whoosh import  index
+from whoosh.fields import Schema, STORED, ID, KEYWORD, TEXT, NUMERIC
+from whoosh.formats import Positions, Frequency
+from whoosh.filedb.filestore import FileStorage
+from whoosh import  index
 
 
 from alfanous.engines import QuranicSearchEngine
@@ -141,7 +139,7 @@ class Transformer:
         schema = ix.schema
         cur = self.__mainDb.cursor()
         seq = []
-        for field in schema.field_names():
+        for field in schema._fields.keys():
             seq.append( field )
         query = "select name,search_name from field where search_name IN ('" + "','".join( seq ) + "')"
         cur.execute( query )
@@ -152,7 +150,7 @@ class Transformer:
             names_dict[line[1]] = line[0]
 
         seq = []
-        for field in schema.field_names():
+        for field in schema._fields.keys():
             seq.append( names_dict[field] )
 
 
@@ -171,7 +169,7 @@ class Transformer:
         for line in Data:
             write_cmd = "writer.add_document("
             i = 0
-            for field in schema.field_names():
+            for field in schema._fields.keys():
                 f, v = field, line[i]
                 if v.__class__ == str: write_cmd += f + "=u\"" + unicode( v ) + "\","
                 elif v.__class__ == unicode: write_cmd += f + "=u\"" + unicode( v ) + "\","

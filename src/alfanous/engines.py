@@ -19,8 +19,7 @@ from alfanous.searching import QSearcher, QReader
 from alfanous.indexing import QseDocIndex, ExtDocIndex, BasicDocIndex
 from alfanous.results_processing import Qhighlight
 from alfanous.query_processing import QuranicParser, StandardParser, FuzzyQuranicParser
-from alfanous.suggestions import QAyaSpellChecker, QSubjectSpellChecker, concat_suggestions, \
-    QWordChecker
+
 
 
 class BasicSearchEngine:
@@ -29,7 +28,7 @@ class BasicSearchEngine:
 
     """
 
-    def __init__(self, qdocindex, qparser, mainfield, otherfields, qsearcher, qreader, qspellcheckers, qhighlight):
+    def __init__(self, qdocindex, qparser, mainfield, otherfields, qsearcher, qreader, qhighlight):
 
         self.OK = False
         if qdocindex.OK:
@@ -42,8 +41,6 @@ class BasicSearchEngine:
             self._searcher = qsearcher(self._docindex, self._parser)
             #
             self._reader = qreader(self._docindex)
-            #
-            self._spellcheckers = map(lambda X: X(self._docindex, self._parser), qspellcheckers)
             #
             self._highlight = qhighlight
             self.OK = True
@@ -77,7 +74,7 @@ class BasicSearchEngine:
         return (results, list(self._reader.term_stats(terms)), searcher)
 
     def most_frequent_words(self, nb, fieldname):
-        return list(self._reader.reader.most_frequent_terms(fieldname, nb))
+        return list([ (x[0], x[1].decode('utf-8')) for x in self._reader.reader.most_frequent_terms(fieldname, nb)])
 
     def suggest_all(self, querystr):
         """suggest the missed words
@@ -88,7 +85,7 @@ class BasicSearchEngine:
         """
         if querystr.__class__ is not unicode:
             querystr = querystr.decode("utf-8")
-        return concat_suggestions(map(lambda X: X.QSuggest(querystr), self._spellcheckers))
+        return None #TODO
 
     def highlight(self, text, terms, type="css", strip_vocalization=True):
         return self._highlight(text, terms, type, strip_vocalization)
@@ -119,7 +116,6 @@ def QuranicSearchEngine(indexpath="../../indexes/main/", qparser=QuranicParser):
                              , otherfields=[]
                              , qsearcher=QSearcher
                              , qreader=QReader
-                             , qspellcheckers=[QAyaSpellChecker, QSubjectSpellChecker]
                              , qhighlight=Qhighlight
                              )
 
@@ -131,7 +127,6 @@ def FuzzyQuranicSearchEngine(indexpath="../indexes/main/", qparser=FuzzyQuranicP
                              , otherfields=["subject", ]
                              , qsearcher=QSearcher
                              , qreader=QReader
-                             , qspellcheckers=[QAyaSpellChecker, QSubjectSpellChecker]
                              , qhighlight=Qhighlight
                              )
 
@@ -144,7 +139,6 @@ def TraductionSearchEngine(indexpath="../indexes/extend/", qparser=StandardParse
                              , otherfields=[]
                              , qsearcher=QSearcher
                              , qreader=QReader
-                             , qspellcheckers=[]
                              , qhighlight=Qhighlight
                              )
 
@@ -156,6 +150,5 @@ def WordSearchEngine(indexpath="../indexes/word/", qparser=StandardParser):
                              , otherfields=["word", "spelled"]
                              , qsearcher=QSearcher
                              , qreader=QReader
-                             , qspellcheckers=[QWordChecker]
                              , qhighlight=Qhighlight
                              )

@@ -208,15 +208,12 @@ index_all: index_main index_extend #index_word
 
 index_main:
 	export PYTHONPATH=$(API_PATH) ;	rm -r $(INDEX_PATH)main/; $(PYTHON_COMMAND) $(QIMPORT) -x main $(DB_PATH)main.db $(INDEX_PATH)main/
-	chmod 644  $(INDEX_PATH)main/*_LOCK
 
 index_extend:
 	export PYTHONPATH=$(API_PATH) ;	rm -r $(INDEX_PATH)extend/; $(PYTHON_COMMAND) $(QIMPORT) -x extend $(STORE_PATH)Translations/ $(INDEX_PATH)extend/
-	chmod 644  $(INDEX_PATH)extend/*_LOCK
-	
+
 index_word:
 	export PYTHONPATH=$(API_PATH) ;	rm -r $(INDEX_PATH)word/; $(PYTHON_COMMAND) $(QIMPORT) -x word $(DB_PATH)main.db $(INDEX_PATH)word/
-	chmod 644  $(INDEX_PATH)word/*_LOCK
 
 ## build all spellers:
 # 1. Speller of ayah unvocalized standard text words, see speller_aya

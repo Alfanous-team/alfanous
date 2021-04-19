@@ -32,12 +32,13 @@ from pyparsing import Group, Combine, Suppress, Optional, FollowedBy
 from pyparsing import Literal, CharsNotIn, Word, Keyword
 from pyparsing import Empty, White, Forward, QuotedString
 from pyparsing import StringEnd
+from whoosh import qparser
 
-from alfanous.Support.whoosh.qparser import QueryParser
-from alfanous.Support.whoosh.query import Term, MultiTerm
-from alfanous.Support.whoosh.query import Wildcard as whoosh_Wildcard
-from alfanous.Support.whoosh.query import Prefix as whoosh_Prefix
-from alfanous.Support.whoosh.query import Or, NullQuery, Every, And
+from whoosh.qparser import QueryParser
+from whoosh.query import Term, MultiTerm
+from whoosh.query import Wildcard as whoosh_Wildcard
+from whoosh.query import Prefix as whoosh_Prefix
+from whoosh.query import Or, NullQuery, Every, And
 
 #### Importing dynamically compiled resources
 # # Importing synonyms dictionary
@@ -265,7 +266,7 @@ class StandardParser(QueryParser):  #
         super(StandardParser, self).__init__(
             mainfield,
             schema=schema,
-            conjunction=Or,
+            group=qparser.OrGroup,
             termclass=termclass
         )
 

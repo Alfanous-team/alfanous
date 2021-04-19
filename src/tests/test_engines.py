@@ -23,7 +23,7 @@ def test_aya_engine():
 
 
 def test_most_frequent_words():
-    print "\n#most frequent words#"
+    print("\n#most frequent words#")
     MFW = QSE.most_frequent_words(9999999, "uth_")
     assert len(MFW) == 19003
     assert MFW[0:5] == [(1972, u'\u06da'),
@@ -34,6 +34,7 @@ def test_most_frequent_words():
 
 
 def test_list_values():
+    assert QSE.list_values("gid") == None
     assert len(list(QSE.list_values("gid"))) == 6236
 
 

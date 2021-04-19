@@ -27,10 +27,10 @@ import os.path
 
 from zekr_model_reader.main import TranslationModel
 
-from alfanous.Support.whoosh.fields import Schema, STORED, KEYWORD, TEXT, NUMERIC
-from alfanous.Support.whoosh.filedb.filestore import FileStorage
-from alfanous.Support.whoosh import index 
-from alfanous.Support.whoosh.analysis import RegexTokenizer, LowercaseFilter
+from whoosh.fields import Schema, STORED, KEYWORD, TEXT, NUMERIC
+from whoosh.filedb.filestore import FileStorage
+from whoosh import index
+from whoosh.analysis import RegexTokenizer, LowercaseFilter
 
 from alfanous.text_processing import QArabicSymbolsFilter
 

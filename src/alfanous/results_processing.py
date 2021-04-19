@@ -17,8 +17,8 @@
 ##     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
-from alfanous.Support.whoosh.scoring import BM25F
-from alfanous.Support.whoosh.highlight import highlight, BasicFragmentScorer, Fragment, GenshiFormatter, \
+from whoosh.scoring import BM25F
+from whoosh.highlight import highlight, BasicFragmentScorer, Fragment, GenshiFormatter, \
     HtmlFormatter
 from alfanous.text_processing import QHighLightAnalyzer, QDiacHighLightAnalyzer, Gword_tamdid
 
