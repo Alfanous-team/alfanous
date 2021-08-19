@@ -28,12 +28,13 @@ class QSuggester(SpellChecker):
         self._reader = docindex.get_reader()
         self.fields = fields
         super(QSuggester, self).__init__(storage,
-                                         indexname=spellindexname)
+                                         indexname=spellindexname,
+                                         booststart=5.0,
+                                         boostend=0.5,
+                                         mingram=3, maxgram=4
+                                         )
 
-    def _filter_doubles(self, words):
-        return list(set(words))
-
-    def QSuggest(self, querystr):
+    def qsuggest(self, querystr):
         suggestion_result = {}
         missing = set()
         query = self._qparser.parse(querystr)
@@ -43,22 +44,26 @@ class QSuggester(SpellChecker):
                              phrases=True)
         for fieldname, termtext in missing:
             if fieldname in self.fields:
-                suggestions = self._filter_doubles(
-                    self.suggest(termtext)
-                )
-            else:
-                suggestions = None
-            if suggestions:
-                suggestion_result[termtext] = suggestions
+                suggestions = list(set(self.suggest(termtext, number=3)))
+                if suggestions:
+                    suggestion_result[termtext] = suggestions
 
         return suggestion_result
 
+    def qautocomplete(self, querystr):
+        suggestion_result = {}
+
+        query = self._qparser.parse(querystr)
+        fieldname, termtext = query.all_terms().pop()
+        print(termtext,fieldname)
+        if fieldname in self.fields:
+            return list(set(self.suggest(termtext, number=10, usescores=True)))
 
 def QAyaSpellChecker(docindex, qparser):
     """spellchecking the words of aya fields"""
     return QSuggester(docindex,
                       qparser,
-                      fields=["aya", "uth", "aya_", "uth_"],
+                      fields=["aya",  "aya_"],
                       spellindexname="AYA_SPELL")
 
 

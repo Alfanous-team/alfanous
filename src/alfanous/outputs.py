@@ -115,7 +115,7 @@ class Raw():
         - 1: "fail, reason unknown",
         0: "success",
         1: "no action is chosen or action undefined",
-        2: """SuperJokers are not permitted, you have to add  3 letters 
+        2: """This query is not permitted, you have to add  3 letters 
 	           or more to use * (only two are permitted) and 2 letters or more to use ? (؟)\n
 	     	-- Exceptions: ? (1),  ??????????? (11)
 	     	""",
@@ -232,6 +232,7 @@ class Raw():
             "Romanized": list(self.QSE.list_values("sura"))
         }
         self._chapters = list(self.QSE.list_values("chapter"))
+
         self._defaults = self.DEFAULTS
         self._flags = self.DEFAULTS["flags"].keys()
         self._fields = Fields
@@ -386,9 +387,8 @@ class Raw():
             pass
         except ParseException:
             output = {"error": {"code": 3, "msg": self.ERRORS[3]}}
-        except Exception as E:
-            output = {"error": {"code": -1, "msg": self.ERRORS[-1] + "\n" + str(
-                E) + "\n\n please submit that as a bug here: github.com/Alfanous-team/alfanous!"}}
+        except Exception:
+            output = {"error": {"code": -1, "msg": self.ERRORS[-1]}}
         return output
 
     def _search_aya(self, flags):

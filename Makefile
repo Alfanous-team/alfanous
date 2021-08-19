@@ -53,8 +53,7 @@ default:
 	@echo "download_all \n\t to download all Quranic resources that we can't \n\t include in Git or tarball because of license or huge size" 
 	@echo "build \n\t to build all indexes, update all resources, qt files, \n\t localization files"
 	@echo "dist \n\t to generate all distribution files for the API and \n\t the Desktop interface"
-	@echo "pylint \n\t run the tests of pylint on the API "
-	
+
 
 ##  This target is to edit text resources before building, which are:
 # 1. api information, see update_information
@@ -73,7 +72,7 @@ edit_hints:
 
 # update downloading translation list manually
 edit_translations_to_download_list:
-	nano $(STORE_PATH)Translations/translations.list
+	nano $(STORE_PATH)translations/translations.list
 
 
 
@@ -94,7 +93,6 @@ clean: clean_all
 clean_all: clean_deb
 	@echo "Cleaning..." 
 	rm -rf `find . -type f -name Thumbs.db`
-	#rm -rf `find . -name *~`
 	rm -rf `find . -name *.pyc`
 	rm -rf `find . -name *.pyo`
 	rm -rf `find . -type d -name *.egg-info`
@@ -109,7 +107,7 @@ download_all: download_translations   download_tanzil
 
 download_translations:
 	#  download from  http://zekr.org/resources.html to ./store/traductions
-	cd $(STORE_PATH)Translations;  wget -i translations.list
+	cd $(STORE_PATH)translations;  wget -i translations.list
 
 
 download_tanzil:
@@ -211,7 +209,7 @@ index_main:
 	chmod 644  $(INDEX_PATH)main/*_LOCK
 
 index_extend:
-	export PYTHONPATH=$(API_PATH) ;	rm -r $(INDEX_PATH)extend/; $(PYTHON_COMMAND) $(QIMPORT) -x extend $(STORE_PATH)Translations/ $(INDEX_PATH)extend/
+	export PYTHONPATH=$(API_PATH) ;	rm -r $(INDEX_PATH)extend/; $(PYTHON_COMMAND) $(QIMPORT) -x extend $(STORE_PATH)translations/ $(INDEX_PATH)extend/
 	chmod 644  $(INDEX_PATH)extend/*_LOCK
 	
 index_word:
@@ -248,3 +246,8 @@ dist:
 	cd $(API_PATH)alfanous ; rm -r dist; $(PYTHON_COMMAND) setup.py sdist bdist_wheel; twine upload dist/* -u assemch
 	mkdir -p output/$(VERSION) ; mv $(API_PATH)alfanous/dist/*.egg ./output/$(VERSION)
 	@echo  "NOTE: you can find the generated egg in ./output"
+
+
+
+release: dist
+

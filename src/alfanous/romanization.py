@@ -18,7 +18,8 @@
 
 
 # Buckwalter Romanization  letters mapping
-BUCKWALTER2UNICODE = {u"'": u"\u0621", # hamza-on-the-line
+BUCKWALTER2UNICODE = {
+                u"'": u"\u0621", # hamza-on-the-line
                 u"|": u"\u0622", # madda
                 u">": u"\u0623", # hamza-on-'alif
                 u"&": u"\u0624", # hamza-on-waaw

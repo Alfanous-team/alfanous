@@ -533,13 +533,12 @@ class ArabicParser(StandardParser):
 
         def _compare(self, first, second):
             """ normalize and compare """
-            word1 = unicode_(first)
-            word2 = unicode_(second)
-            eqiv = (word1 == word2)
-            if eqiv:
-                self.words.append(second)
 
-            return eqiv
+            if unicode_(first) == unicode_(second):
+                self.words.append(second)
+                return True
+
+            return False
 
     class Tuple(QMultiTerm):
         """

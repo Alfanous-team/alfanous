@@ -37,11 +37,14 @@ def test_list_values():
     assert len(list(QSE.list_values("gid"))) == 6236
 
 
-def test_suggestion():
+def test_missing_suggetion():
     assert QSE.suggest_all(u"النسر").items() == [(u'\u0627\u0644\u0646\u0633\u0631',
                                                   [u'\u0627\u0644\u0646\u0648\u0631',
                                                    u'\u0627\u0644\u0646\u0635\u0631',
                                                    u'\u0627\u0644\u0646\u0630\u0631'])]
+
+def test_autocomplete():
+    assert QSE.autocomplete(u"رسول") == []
 
 
 def test_search():

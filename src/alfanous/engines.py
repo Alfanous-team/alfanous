@@ -88,7 +88,12 @@ class BasicSearchEngine:
         """
         if querystr.__class__ is not unicode:
             querystr = querystr.decode("utf-8")
-        return concat_suggestions(map(lambda X: X.QSuggest(querystr), self._spellcheckers))
+        return concat_suggestions(map(lambda x: x.qsuggest(querystr), self._spellcheckers))
+
+    def autocomplete(self, querystr):
+        if querystr.__class__ is not unicode:
+            querystr = querystr.decode("utf-8")
+        return QAyaSpellChecker(self._docindex, self._parser).qautocomplete(querystr)
 
     def highlight(self, text, terms, type="css", strip_vocalization=True):
         return self._highlight(text, terms, type, strip_vocalization)
