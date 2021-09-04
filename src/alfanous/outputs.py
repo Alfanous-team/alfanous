@@ -237,7 +237,6 @@ class Raw():
         action = flags.get("action") or self._defaults["flags"]["action"]
         unit = flags.get("unit") or self._defaults["flags"]["unit"]
         query = flags.get("query") or self._defaults["flags"]["query"]
-        logging.error(query)
         # init the error message with Succes
         output = self._check(0, flags)
         if action == "search":
@@ -344,10 +343,8 @@ class Raw():
         return {"search": search_results}
 
     def _search_aya(self, flags):
-        logging.error(flags)
 
         flags = {**self._defaults["flags"], **flags}
-        logging.error(flags)
         query = flags["query"]
         sortedby = flags["sortedby"]
         range = int(flags["perpage"]) if flags.get("perpage") \

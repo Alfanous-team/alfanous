@@ -53,11 +53,8 @@ class QSearcher:
         searcher = self._searcher(weighting=QScore())
         query = self._qparser.parse(querystr)
         results = searcher.search(q=query, limit=limit, sortedby=QSort(sortedby), reverse=reverse)
-        logging.error(results)
-        logging.error(query)
-        logging.error(querystr)
 
         terms = query.all_terms()
-        logging.error(terms)
+
 
         return results, terms, searcher
