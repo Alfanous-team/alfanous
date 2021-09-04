@@ -1,5 +1,4 @@
 # coding: utf-8
-from alfanous.exceptions import Ta7rif
 from whoosh.filedb.filestore import FileStorage
 from whoosh import index
 
@@ -109,12 +108,9 @@ class QseDocIndex(BasicDocIndex):
                + str(self._ix.doc_count()) + ">"
 
     def verify(self):
-        """raise a  ta7rif exception if it is wrong"""
-        nb = -1
         if self.OK:
-            nb = len(self)
-            assert nb == 6236, "Ayas count is not exact"
-        return nb
+            assert len(self) == 6236, "Ayas count is not exact"
+
 
 
 class ExtDocIndex(BasicDocIndex):
