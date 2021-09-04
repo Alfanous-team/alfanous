@@ -7,7 +7,7 @@ a module to calculate different statistics on coranic text
 @author: assem
 '''
 import re
-import araby
+import .araby
 
 __all__ = ['letters', 'diacritics', 'letter_count', 'hamza_count', 'words',
     'gwords', 'sunletters', 'moonletters']

@@ -113,8 +113,7 @@ class QseDocIndex(BasicDocIndex):
         nb = -1
         if self.OK:
             nb = len(self)
-            if nb != 6236:
-                raise Ta7rif("Ayas count is not exact", value=nb, original=6236, msg="you must update your indexes")
+            assert nb == 6236, "Ayas count is not exact"
         return nb
 
 

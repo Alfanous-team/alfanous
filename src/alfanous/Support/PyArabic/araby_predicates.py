@@ -1,6 +1,6 @@
-from araby_constants import *
-from araby_strip_functions import *
-from araby_predicates import *
+from .araby_constants import *
+from .araby_strip_functions import *
+from .araby_predicates import *
 import string
 
 _PUNCTUATION  = string.punctuation + string.whitespace

@@ -40,43 +40,11 @@ _R = _search_engine()
 
 # Pivot function for search, suggestion, show info
 def do(flags):
-    """
-    Perform the action defined in `flags` and return results as `dict`.
-    
-    flags is a dict with values for those keys:
-    - "action": action to be performed, could be "search" or "suggest" or "show". default is "search"
-    - "query": query for action to be pefromed
-    - "unit": search unit, could be "aya" or "translation". default is "aya"
-    Check alfanous.FLAGS for the list of all flags, alfanous.HELPMESSAGES for their discriptions, alfanous.DOMAINS for their possible values and alfanous.DEFAULTS for their default values.
-    
-        >>> results = do({"query":u"الحمد لله"})
-        >>> results["error"]
-        {'msg': 'success', 'code': 0}
-        >>> results["search"]["ayas"][1]["identifier"]
-        {'sura_id': 1, 'gid': 2, 'sura_arabic_name': u'\u0627\u0644\u0641\u0627\u062a\u062d\u0629', 'sura_name': u'Al-Fat
-ihah', 'aya_id': 2}
 
-    """
     return _R.do(flags)
 
 def search(query, unit="aya", page = 1, sortedby = "relevance", fuzzy = False, view= "normal", highlight = "bold",  flags={}):
-    """ Search for query in Quran
-    
-    @param query: search query, examples: الحمد, qwl, gid:1.
-    @param unit: search unit, possible values = ['aya', 'word', 'translation']
-    @param page: page to be retrieved, possible values = 1..INF
-    @param sortedby: order of results, possible values = ['relevance', 'mushaf', 'tanzil', 'subject', 'ayalength']
-    @param fuzzy: use fuzzy search, possible values = [True, False]
-    @param view: information to be retrieved, possible values = ['minimal', 'normal', 'full', 'statistic', 'linguistic', 'recitation','costum']
-    @param highlight: type of highlight, possible values = ['css', 'html', 'genshi', 'bold', 'bbcode']
-    @param flags: extra flags as a dict , check alfanous.FLAGS and alfanous.DOMAINS.
-    
-    
-    Example:
-    -------
-        >>> search("qawol",page=2, fuzzy = True)
 
-    """
     all_flags = flags
     all_flags.update({"action":"search", 
                       "unit":unit,

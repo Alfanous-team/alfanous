@@ -1,4 +1,4 @@
-from araby_constants import *
+from .araby_constants import *
 
 __all__ = ['stripHarakat','stripTashkeel','strip_tashkeel','stripTatweel','strip_tatweel','strip_shadda']
 
@@ -26,7 +26,7 @@ def stripHarakat( text ):
     >>> stripHarakat( FATHA + ALEF + BEH + DAMMA + TEH + KASRATAN ) == ( ALEF + BEH + TEH )
     True
     """
-    return  filter( lambda letter: letter not in HARAKAT, text)
+    return  "".join(filter( lambda letter: letter not in HARAKAT, text))
 
 def stripTashkeel( text ):
     """Strip vowels from a text, include Shadda.
@@ -53,7 +53,7 @@ def stripTashkeel( text ):
     >>> stripTashkeel( FATHA + ALEF + SHADDA + BEH + DAMMA + TEH + KASRATAN ) == ( ALEF + BEH + TEH )
     True
     """
-    return filter( lambda letter: letter not in TASHKEEL, text )
+    return "".join(filter( lambda letter: letter not in TASHKEEL, text ))
 
 def stripTatweel( text ):
     """
@@ -75,7 +75,7 @@ def stripTatweel( text ):
     >>> stripTatweel( TATWEEL + ALEF + BEH +  TATWEEL + TEH + TATWEEL ) == (ALEF + BEH + TEH)
     True
     """
-    return filter( lambda letter: letter != TATWEEL, text )
+    return "".join(filter( lambda letter: letter != TATWEEL, text ))
 
 def strip_tashkeel(w):
     '''
@@ -122,4 +122,4 @@ def strip_shadda(w):
     >>> strip_shadda(SHADDA + ALEF + BEH + SHADDA + TEH + SHADDA) == (ALEF + BEH + TEH)
     True
     '''
-    return filter(lambda letter: letter != SHADDA, w)
+    return "".join(filter(lambda letter: letter != SHADDA, w))

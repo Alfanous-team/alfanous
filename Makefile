@@ -15,7 +15,7 @@ API_PATH="./src/"
 
 ## Importer package path, the importer is the responsible of downloading quranic
 ## resources, updating them , indexing them.
-QIMPORT=$(API_PATH)"alfanous-import/cli.py"
+QIMPORT=$(API_PATH)"alfanous_import/cli.py"
 	
 ## Dynamic resources, are some auto-generated python modules that contain some 
 ## linguistic resources on the form of python dictionaries		
@@ -38,13 +38,8 @@ INDEX_PATH=$(API_PATH)"alfanous/indexes/"
 
 
 
-## Python version and command
-PYTHON_VERSION_MAJ=$(shell python -c 'import sys; print(sys.version_info[0])')
-ifeq '$(PYTHON_VERSION_MAJ)' '2' 
 PYTHON_COMMAND="python"
-else 
-PYTHON_COMMAND="python2"
-endif
+
 
 ## default target, it's what to do if you typed "make" without target
 default: 
@@ -53,8 +48,7 @@ default:
 	@echo "download_all \n\t to download all Quranic resources that we can't \n\t include in Git or tarball because of license or huge size" 
 	@echo "build \n\t to build all indexes, update all resources, qt files, \n\t localization files"
 	@echo "dist \n\t to generate all distribution files for the API and \n\t the Desktop interface"
-	@echo "pylint \n\t run the tests of pylint on the API "
-	
+
 
 ##  This target is to edit text resources before building, which are:
 # 1. api information, see update_information
@@ -73,16 +67,15 @@ edit_hints:
 
 # update downloading translation list manually
 edit_translations_to_download_list:
-	nano $(STORE_PATH)Translations/translations.list
+	nano $(STORE_PATH)translations/translations.list
 
 
 
 ## this target is to build all what have to be built:
 # 1. Update Quranic resources needed for indexing phase, see update_pre_build
 # 2. Generate all Indexes, see  index_all
-# 3. Generate all spelling dictionaries, see speller_all
 # 4. Update all resources that must be updated after indexing phase or independently, see  update_post_build
-build: update_pre_build index_all speller_all update_post_build
+build: update_pre_build index_all  update_post_build
 
 
 
@@ -94,7 +87,6 @@ clean: clean_all
 clean_all: clean_deb
 	@echo "Cleaning..." 
 	rm -rf `find . -type f -name Thumbs.db`
-	#rm -rf `find . -name *~`
 	rm -rf `find . -name *.pyc`
 	rm -rf `find . -name *.pyo`
 	rm -rf `find . -type d -name *.egg-info`
@@ -109,7 +101,7 @@ download_all: download_translations   download_tanzil
 
 download_translations:
 	#  download from  http://zekr.org/resources.html to ./store/traductions
-	cd $(STORE_PATH)Translations;  wget -i translations.list
+	cd $(STORE_PATH)translations;  wget -i translations.list
 
 
 download_tanzil:
@@ -210,29 +202,9 @@ index_main:
 	export PYTHONPATH=$(API_PATH) ;	rm -r $(INDEX_PATH)main/; $(PYTHON_COMMAND) $(QIMPORT) -x main $(DB_PATH)main.db $(INDEX_PATH)main/
 
 index_extend:
-	export PYTHONPATH=$(API_PATH) ;	rm -r $(INDEX_PATH)extend/; $(PYTHON_COMMAND) $(QIMPORT) -x extend $(STORE_PATH)Translations/ $(INDEX_PATH)extend/
-
+	export PYTHONPATH=$(API_PATH) ;	rm -r $(INDEX_PATH)extend/; $(PYTHON_COMMAND) $(QIMPORT) -x extend $(STORE_PATH)translations/ $(INDEX_PATH)extend/
 index_word:
 	export PYTHONPATH=$(API_PATH) ;	rm -r $(INDEX_PATH)word/; $(PYTHON_COMMAND) $(QIMPORT) -x word $(DB_PATH)main.db $(INDEX_PATH)word/
-
-## build all spellers:
-# 1. Speller of ayah unvocalized standard text words, see speller_aya
-# 2. Speller of subject fields (deprecated), see speller_subject
-# 3. Speller of quranic unvocalized uthmani words, see speller_word
-speller_all: speller_aya speller_subject #speller_word
-	@echo "done;"
-
-speller_aya:
-	export PYTHONPATH=$(API_PATH) ;	$(PYTHON_COMMAND) $(QIMPORT) -p aya  $(INDEX_PATH)main/
-	chmod 644  $(INDEX_PATH)main/*_LOCK
-
-speller_subject:
-	export PYTHONPATH=$(API_PATH) ;	$(PYTHON_COMMAND) $(QIMPORT) -p subject  $(INDEX_PATH)main/
-	chmod 644  $(INDEX_PATH)main/*_LOCK
-
-speller_word:
-	export PYTHONPATH=$(API_PATH) ;	$(PYTHON_COMMAND) $(QIMPORT) -p word  $(INDEX_PATH)word/
-	chmod 644  $(INDEX_PATH)word/*_LOCK
 
 
 install:
@@ -245,3 +217,7 @@ dist:
 	cd $(API_PATH)alfanous ; rm -r dist; $(PYTHON_COMMAND) setup.py sdist bdist_wheel; twine upload dist/* -u assemch
 	mkdir -p output/$(VERSION) ; mv $(API_PATH)alfanous/dist/*.egg ./output/$(VERSION)
 	@echo  "NOTE: you can find the generated egg in ./output"
+
+
+release: dist
+

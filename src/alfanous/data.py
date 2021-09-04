@@ -2,7 +2,7 @@ import os
 import json
 
 from alfanous import paths
-from alfanous.engines import QuranicSearchEngine, FuzzyQuranicSearchEngine
+from alfanous.engines import QuranicSearchEngine
 from alfanous.engines import TraductionSearchEngine, WordSearchEngine
 
 
@@ -51,8 +51,6 @@ def QSE(path=paths.QSE_INDEX):
     return QuranicSearchEngine(path)
 
 
-def FQSE(path=paths.QSE_INDEX):
-    return FuzzyQuranicSearchEngine(path)
 
 
 def TSE(path=paths.TSE_INDEX):

@@ -1,20 +1,3 @@
-#!/usr/bin/env python2
-# coding: utf-8
-
-# #     Copyright (C) 2009-2012 Assem Chelli <assem.ch [at] gmail.com>
-
-# #     This program is free software: you can redistribute it and/or modify
-# #     it under the terms of the GNU Affero General Public License as published
-# #     by the Free Software Foundation, either version 3 of the License, or
-# #     (at your option) any later version.
-
-# #     This program is distributed in the hope that it will be useful,
-# #     but WITHOUT ANY WARRANTY; without even the implied warranty of
-# #     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# #     GNU Affero General Public License for more details.
-
-# #     You should have received a copy of the GNU Affero General Public License
-# #     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 """
 This module contains customized query parsers for Arabic and Quran.
@@ -71,7 +54,7 @@ try:
 except ImportError:
     antdict = {}
 
-from alfanous.text_processing import QArabicSymbolsFilter, unicode_
+from alfanous.text_processing import QArabicSymbolsFilter
 
 from alfanous.misc import LOCATE, FIND, FILTER_DOUBLES
 
@@ -83,7 +66,7 @@ def _make_arabic_parser():
                 األآإـتنمكطدجحخهعغفقثصضشسيبئءؤرىةوزظذ
                 """
 
-    wordtext = CharsNotIn(u'//*؟^():"{}[]$><%~#،,\' +-|')
+    wordtext = CharsNotIn('//*؟^():"{}[]$><%~#،,\' +-|')
     escape = Suppress(escapechar) \
              + (Word(printables, exact=1) | White(exact=1))
     wordtoken = Combine(OneOrMore(wordtext | escape))
@@ -289,11 +272,7 @@ class ArabicParser(StandardParser):
         self.ara2eng = ara2eng
 
     def _Field(self, node, fieldname):
-        if self.ara2eng.has_key(node[0]):
-            name = self.ara2eng[node[0]]
-        else:
-            name = node[0]
-        return self._eval(node[1], name)
+        return self._eval(node[1], self.ara2eng.get(node[0]) or node[0])
 
     def _Synonyms(self, node, fieldname):
         return self.make_synonyms(fieldname, node[1])
@@ -376,7 +355,7 @@ class ArabicParser(StandardParser):
                 if (fieldname, word) in ixreader
             ]
 
-        def __unicode__(self):
+        def __str__(self):
             return u"%s:<%s>" % (self.fieldname, self.text)
 
         def __repr__(self):
@@ -503,11 +482,10 @@ class ArabicParser(StandardParser):
 
         def _compare(self, first, second):
             """ normalize and compare """
-            if first[:2] == u"مو": print first
-            eqiv = (self.ASF.normalize_all(first) == self.ASF.normalize_all(second))
-            if eqiv:
+            matched = (self.ASF.normalize_all(first) == self.ASF.normalize_all(second))
+            if matched:
                 self.words.append(second)
-            return eqiv
+            return matched
 
     class Tashkil(QMultiTerm):
         """
@@ -534,13 +512,10 @@ class ArabicParser(StandardParser):
 
         def _compare(self, first, second):
             """ normalize and compare """
-            word1 = unicode_(first)
-            word2 = unicode_(second)
-            eqiv = (word1 == word2)
-            if eqiv:
-                self.words.append(second)
 
-            return eqiv
+            if first == second: # todo tshkil comparing
+                self.words.append(second)
+                return True
 
     class Tuple(QMultiTerm):
         """
@@ -611,10 +586,8 @@ class QuranicParser(ArabicParser):
 
         @staticmethod
         def synonyms(word):
-            if syndict.has_key(word):
-                return syndict[word]
-            else:
-                return [word]
+            syndict.get(word) or [word]
+
 
     class Antonyms(ArabicParser.Antonyms):
         """
@@ -624,10 +597,7 @@ class QuranicParser(ArabicParser):
 
         @staticmethod
         def antonyms(word):
-            if antdict.has_key(word):
-                return antdict[word]
-            else:
-                return [word]
+            antdict.get(word) or [word]
 
     class Derivation(ArabicParser.Derivation):
         """
@@ -688,21 +658,14 @@ class QuranicParser(ArabicParser):
         def tuple(props):
             """ search the words that have the specific properties """
 
-            wset = set()
-            firsttime = True
+            wset = None
             for propkey in props.keys():
-                if worddict.has_key(propkey):
+                if worddict.get(propkey):
                     partial_wset = set(FIND(worddict[propkey], worddict["word_"], props[propkey]))
-                    if firsttime:
-                        wset = partial_wset;
-                        firsttime = False
+                    if wset is None:
+                        wset = partial_wset
                     else:
                         wset &= partial_wset
-
-                else:
-                    # property has now index
-                    pass
-
             return list(wset)
 
     class Wildcard(ArabicParser.Wildcard, ArabicParser.QMultiTerm):
@@ -792,7 +755,7 @@ class FuzzyQuranicParser(QuranicParser):
     def __init__(self,
                  schema,
                  mainfield="aya",
-                 otherfields=[],
+                 otherfields=tuple(),
                  termclass=SuperFuzzyAll,
                  ara2eng=ara2eng_names):
         super(FuzzyQuranicParser, self).__init__(schema=schema,

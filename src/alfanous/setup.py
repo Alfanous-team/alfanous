@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python
 # coding = utf-8
 
 """
@@ -14,14 +14,10 @@ from setuptools import setup
 
 information_file = open("./resources/information.json")
 information = json.loads(information_file.read()) if information_file else {}
-current_version = information["version"] if information.has_key("version") \
-    else 0.7
-current_description = information["description"] if information.has_key("description") \
-    else """ Alfanous is a search engine provide the simple and advanced search in the Holy Qur'an and more features.."""
-current_lib_usage = information["lib_usage"] if information.has_key("lib_usage") \
-    else "    $ sudo pip install alfanous"
+current_version = information.get("version") or 0.7
+current_description = information.get("description") or """ Alfanous is a search engine provide the simple and advanced search in the Holy Qur'an and more features.."""
+current_lib_usage = information.get("lib_usage") or "    $ sudo pip install alfanous"
 
-# TODO may add pre-install code here
 
 setup(
 
@@ -29,7 +25,7 @@ setup(
 
     packages=['alfanous', 'alfanous.dynamic_resources', 'alfanous.Support',
               'whoosh', 'whoosh.filedb',
-              'whoosh.lang', 'whoosh.qparser',
+              'whoosh.lang', 'whoosh.query_parser',
               'whoosh.support', 'alfanous.Support.PyArabic', ],
 
     install_requires=['pyparsing', 'whoosh'],
@@ -48,13 +44,6 @@ setup(
                                'indexes/extend/*',
                                'indexes/word/*',
                                'resources/*']},
-
-    # data_files = [
-    #			 ( 'indexes/main', glob.glob( '../../indexes/main/*' ) ),
-    #			 ( 'indexes/extend', glob.glob( '../../indexes/extend/*' ) ),
-    #			 ( 'indexes/word', glob.glob( '../../indexes/word/*' ) ),
-    #			 ( 'resources/configs', glob.glob( '../../resources/configs/*' ) )
-    #			 ] ,
 
     entry_points={'console_scripts': ['alfanous-console = alfanous.console:main', ]},
 

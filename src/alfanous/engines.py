@@ -1,19 +1,5 @@
-# coding: utf-8
-
-##     Copyright (C) 2009-2012 Assem Chelli <assem.ch [at] gmail.com>
-
-##     This program is free software: you can redistribute it and/or modify
-##     it under the terms of the GNU Affero General Public License as published by
-##     the Free Software Foundation, either version 3 of the License, or
-##     (at your option) any later version.
-
-##     This program is distributed in the hope that it will be useful,
-##     but WITHOUT ANY WARRANTY; without even the implied warranty of
-##     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-##     GNU Affero General Public License for more details.
-
-##     You should have received a copy of the GNU Affero General Public License
-##     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+from whoosh import qparser
+from whoosh.qparser import QueryParser
 
 from alfanous.searching import QSearcher, QReader
 from alfanous.indexing import QseDocIndex, ExtDocIndex, BasicDocIndex
@@ -23,12 +9,7 @@ from alfanous.query_processing import QuranicParser, StandardParser, FuzzyQurani
 
 
 class BasicSearchEngine:
-    """
-    the basic search engine
-
-    """
-
-    def __init__(self, qdocindex, qparser, mainfield, otherfields, qsearcher, qreader, qhighlight):
+    def __init__(self, qdocindex, query_parser, main_field, otherfields, qsearcher, qreader, qhighlight):
 
         self.OK = False
         if qdocindex.OK:
@@ -36,7 +17,7 @@ class BasicSearchEngine:
             #
             self._schema = self._docindex.get_schema()
             #        
-            self._parser = qparser(self._schema, mainfield=mainfield, otherfields=otherfields)
+            self._parser = query_parser(main_field, self._schema, group=qparser.OrGroup)
             #
             self._searcher = qsearcher(self._docindex, self._parser)
             #
@@ -48,29 +29,7 @@ class BasicSearchEngine:
     # end  __init__
 
     def search_all(self, querystr, limit=6236, sortedby="score", reverse=False):
-        """
-        search in the quran
-
-                >>> results,terms=search_all(u"الحمد",limit=10,sortby="mushaf")
-                >>> print ",".join([term[1] for term in list(terms)])
-                الحمد
-                >>> for r in results:
-                >>>         print "(" + r["aya_id"] + "," + r["sura_id"] + ") :" + u"<p>" + Qhighlight(r["aya_"], terms) + u"</p>"
-                (2,1) :<p><span style="color:red;font-size:100.0%"><b>الْحَمْدُ</b></span> لِلَّهِ رَبِّ الْعَالَمِينَ</p>
-
-        @param querystr: the query
-        @type querystr: unicode
-        @param limit: the limit of results
-        @type limit: int
-        @param sortedby: the methode of sorting the results
-        @type sortedby: string
-        @return: the lists of terms and results
-
-        """
-        if querystr.__class__ is not unicode:
-            querystr = querystr.decode("utf-8")
-
-        results, terms, searcher = self._searcher.search(querystr, limit, sortedby, reverse)
+        results, terms, searcher = self._searcher.search(querystr, limit=limit, sortedby=sortedby, reverse=reverse)
         return (results, list(self._reader.term_stats(terms)), searcher)
 
     def most_frequent_words(self, nb, fieldname):
@@ -83,9 +42,10 @@ class BasicSearchEngine:
             >>>    print key, ":", ",".join(value)
             عاصمو : عاصم
         """
-        if querystr.__class__ is not unicode:
-            querystr = querystr.decode("utf-8")
-        return None #TODO
+        return {}#TODO
+
+    def autocomplete(self, querystr):
+        return {} # TODO
 
     def highlight(self, text, terms, type="css", strip_vocalization=True):
         return self._highlight(text, terms, type, strip_vocalization)
@@ -109,33 +69,23 @@ class BasicSearchEngine:
         return self.OK
 
 
-def QuranicSearchEngine(indexpath="../../indexes/main/", qparser=QuranicParser):
+def QuranicSearchEngine(indexpath="../indexes/main/",
+                        qparser=QueryParser):
     return BasicSearchEngine(qdocindex=QseDocIndex(indexpath)
-                             , qparser=qparser
-                             , mainfield="aya"
-                             , otherfields=[]
-                             , qsearcher=QSearcher
-                             , qreader=QReader
-                             , qhighlight=Qhighlight
-                             )
-
-
-def FuzzyQuranicSearchEngine(indexpath="../indexes/main/", qparser=FuzzyQuranicParser):
-    return BasicSearchEngine(qdocindex=QseDocIndex(indexpath)
-                             , qparser=qparser
-                             , mainfield="aya"
+                             , query_parser=qparser
+                             , main_field="aya"
                              , otherfields=["subject", ]
                              , qsearcher=QSearcher
                              , qreader=QReader
                              , qhighlight=Qhighlight
                              )
 
-
-def TraductionSearchEngine(indexpath="../indexes/extend/", qparser=StandardParser):
+# TODO merge into main
+def TraductionSearchEngine(indexpath="../indexes/extend/", qparser=QueryParser):
     """             """
     return BasicSearchEngine(qdocindex=ExtDocIndex(indexpath)
-                             , qparser=qparser
-                             , mainfield="text"
+                             , query_parser=qparser
+                             , main_field="text"
                              , otherfields=[]
                              , qsearcher=QSearcher
                              , qreader=QReader
@@ -145,8 +95,8 @@ def TraductionSearchEngine(indexpath="../indexes/extend/", qparser=StandardParse
 
 def WordSearchEngine(indexpath="../indexes/word/", qparser=StandardParser):
     return BasicSearchEngine(qdocindex=BasicDocIndex(indexpath)
-                             , qparser=qparser  # termclass=QuranicParser.FuzzyAll
-                             , mainfield="normalized"
+                             , query_parser=qparser  # termclass=QuranicParser.FuzzyAll
+                             , main_field="normalized"
                              , otherfields=["word", "spelled"]
                              , qsearcher=QSearcher
                              , qreader=QReader

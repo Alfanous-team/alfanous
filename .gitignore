@@ -8,7 +8,7 @@ pip-log.txt
 .tox
 nosetests.xml
 
-#Translations #
+#translations #
 ###############
 *.mo
 *.qm
@@ -32,6 +32,8 @@ dynamic_resources/
 
 # generated indexes #
 #####################
+*.seg
+*_WRITELOCK
 _*.dcz
 _*.dci
 _*.pst
@@ -117,6 +119,7 @@ information.json
 *.rpm
 *.deb
 *.crx
+
 
 
 

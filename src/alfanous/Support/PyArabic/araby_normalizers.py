@@ -1,5 +1,4 @@
-from araby_constants import *
-import araby
+from .araby_constants import *
 
 __all__ = ['normalize_uthmani_symbols','normalize_hamza','normalize_lamalef',
            'normalize_spellerrors','normalize_text']
@@ -9,7 +8,12 @@ _HAMZAT = (WAW_HAMZA, YEH_HAMZA)
 _LAMALEFAT = (LAM_ALEF, LAM_ALEF_HAMZA_ABOVE, LAM_ALEF_HAMZA_BELOW, LAM_ALEF_MADDA_ABOVE)
 
 def normalize_uthmani_symbols(w):
-    return w.replace(MINI_ALEF+SMALL_WAW+SMALL_YEH, '').replace(ALEF_WASLA, ALEF)
+    return w.replace(MINI_ALEF, '')\
+        .replace(SMALL_YEH, '')\
+        .replace(SMALL_WAW, '')\
+        .replace(ALEF_WASLA, ALEF)\
+        .replace(SMALL_HIGH_LIGATURE, '')\
+        .replace(SMALL_HIGH_JEEM, '')
 
 #--------------------------------------
 def normalize_hamza(w):
