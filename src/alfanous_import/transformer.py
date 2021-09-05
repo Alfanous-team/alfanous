@@ -170,7 +170,7 @@ class Transformer:
 
             writer.add_document(
                 **{
-                    fields[i]: str(line[i]) for i in range(len(fields)) if line[i]
+                    fields[i]: line[i] for i in range(len(fields)) if line[i]
                 }
             )
 
