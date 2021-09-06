@@ -10,6 +10,8 @@ from pyparsing import ParseException
 
 from alfanous.text_processing import QArabicSymbolsFilter
 from alfanous.data import *
+from alfanous.resources import *
+
 from alfanous.romanization import transliterate
 from alfanous.misc import LOCATE, FIND, FILTER_DOUBLES
 from alfanous.constants import LANGS
@@ -92,7 +94,7 @@ class Raw():
 	     	-- Exceptions: ? (1),  ??????????? (11)
 	     	""",
         3: "Parsing Query failed, please reformulate  the query",
-        4: "One of specified fields doesn't exist"
+        4: "One of specified arabic_to_english_fields doesn't exist"
     }
 
     DOMAINS = {
@@ -206,8 +208,8 @@ class Raw():
 
         self._defaults = self.DEFAULTS
         self._flags = self.DEFAULTS["flags"].keys()
-        self._fields = Fields
-        self._fields_reverse = {v: k for k, v in Fields.items()}
+        self._fields = arabic_to_english_fields
+        self._fields_reverse = {v: k for k, v in arabic_to_english_fields.items()}
         self._roots = sorted(filter(bool, set(derivedict["root"])))
         self._errors = self.ERRORS
         self._domains = self.DOMAINS
@@ -222,7 +224,7 @@ class Raw():
             "chapters": self._chapters,
             "defaults": self._defaults,
             "flags": self._flags,
-            "fields": self._fields,
+            "arabic_to_english_fields": self._fields,
             "fields_reverse": self._fields_reverse,
             "errors": self._errors,
             "domains": self._domains,
@@ -650,8 +652,7 @@ class Raw():
                     "hizb": r["hizb"],
                     "rub": int(r["rub"]) % 4,
                     "page": r["page"],
-                    "page_IN": r["page_IN"],
-                    "ruku": r["ruku"],
+                    "page_IN": r["page_IN"]
                 },
 
                 "theme": {} if not aya_theme_info

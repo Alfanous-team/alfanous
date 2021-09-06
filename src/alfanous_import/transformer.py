@@ -20,7 +20,7 @@ from alfanous.Support.PyArabic.araby import strip_tashkeel
 from alfanous.searching import QReader
 from functools import reduce
 
-nor_ = strip_tashkeel
+logging.basicConfig(level=logging.INFO)
 
 
 class FrequencyZ(Frequency):
@@ -28,19 +28,30 @@ class FrequencyZ(Frequency):
         pass
 
 
+def unicode_decode(word):
+    import codecs
+    return word
+
 class Transformer:
     def __init__(self, ixpath, dypypath, dbpath="main.db"):
         if dbpath:
             self.__mainDb = self.__connect(dbpath)
+            self.cur = self.__mainDb.cursor()
         if not (os.path.exists(ixpath)):
             os.makedirs(ixpath)
         self.__storage = FileStorage(ixpath)
         self.__ixpath = ixpath
         self.__dypypath = dypypath
-        pass
 
     def __str__(self):
         return "< Alfanous.Transformer >"
+
+    def print_to_json(self, d, filename):
+        with  open(f"{self.__dypypath}{filename}.json", "w") as f:
+            import json
+            json.dump(d, f, indent=4, sort_keys=True, ensure_ascii=False)
+
+        return "OK"
 
     def __connect(self, dbpath):
         return lite.connect(dbpath)
@@ -59,7 +70,7 @@ class Transformer:
     def build_schema(self, tablename):
         """build schema from field table"""
 
-        print("require list of fields ...")
+        print("require list of arabic_to_english_fields ...")
         cur = self.__mainDb.cursor()
         cur.execute(
             "select search_name,type,analyser,is_stored,boost,phrase,is_scorable,is_unique,format from field where table_name='" + tablename + "' and is_indexed='yes'")
@@ -136,7 +147,7 @@ class Transformer:
     def transfer(self, ix, tablename="aya"):
         """transfer from database to index"""
         self.__unlock_docindex(ix)
-        # print "search fields real names ..."
+        # print "search arabic_to_english_fields real names ..."
 
         schema = ix.schema
         cur = self.__mainDb.cursor()
@@ -161,7 +172,7 @@ class Transformer:
         cur.execute(query)
         Data = cur.fetchall()
 
-        print("writing documents in index (total: %d) ...." % len(Data))
+        logging.info(f"writing documents in index (total: {len(Data)}) ....")
         writer = ix.writer()
 
         cpt = 0
@@ -175,9 +186,9 @@ class Transformer:
             )
 
             cpt += 1
-            if not cpt % 1000:
-                print(" - milestone:", cpt, "( %d%% )" % (cpt * 100 / len(Data)))
-        logging.debug("done.")
+            if not cpt % 1559:
+                logging.info(f" - milestone:  {cpt} ( {cpt * 100 / len(Data)}% )")
+        logging.info("done.")
         writer.commit()
         self.__lock_docindex(ix)
 
@@ -208,197 +219,82 @@ class Transformer:
         ix = self.__storage.open_index()
         # return ix.unlock()
 
-    dheader = """#coding:utf-8\n
-    #THIS FILE IS DYNAMIC!! DONT EDIT IT.
-
+    dheader = """
     """
 
     def transfer_stopwords(self):
-        """ load stopwords from database and save them as a list in a dynamic py """
 
-        cur = self.__mainDb.cursor()
-        cur.execute("select word from stopwords")
-        stoplist = "["
-        for item in cur.fetchall():
-            stoplist += "'" + str(item[0]) + "',"
-        stoplist += "]"
-        raw_str = self.dheader + "\nstoplist=" + stoplist.replace(",", ",\n")
+        self.cur.execute("select word from stopwords")
+        stop_words = [item[0] for item in self.cur.fetchall()]
 
-        fich = open(self.__dypypath + "stopwords_dyn.py", "w+")
-        fich.write(raw_str)
-
-        return raw_str
+        return self.print_to_json(stop_words, 'stop_words')
 
     def transfer_std2uth_words(self):
-        """ load a mapping standard:uthmani and save it as a list in a dynamic py """
-        cur = self.__mainDb.cursor()
-        cur.execute("select word_,uthmani   from word")
-        standard2uthmani = {}
-        for item in cur.fetchall():
-            if item[0] != item[1] and item[1]:
-                standard2uthmani[item[0]] = item[1]
 
-        raw_str = self.dheader + "\nstd2uth_words=" + str(standard2uthmani).replace(",", ",\n")
+        self.cur.execute("select word_,uthmani   from word")
+        standard2uthmani = {item[0]: item[1] for item in self.cur.fetchall() if item[0] != item[1] and item[1]}
 
-        fich = open(self.__dypypath + "std2uth_dyn.py", "w+")
-        fich.write(raw_str)
-
-        return raw_str
+        return self.print_to_json(standard2uthmani, 'standard_to_uthmani')
 
     def transfer_synonymes(self):
-        """ load synonymes from database and save them as a list in a dynamic py """
 
-        cur = self.__mainDb.cursor()
-        cur.execute("select word,synonymes from synonymes")
-        wordregex = re.compile("[^ ,،]+")
-        syndict = {}
-        for item in cur.fetchall():
-            synlist = []
-            for w in wordregex.findall(item[1]):
-                synlist.append(nor_(w))
+        self.cur.execute("select word,synonymes from synonymes")
+        word_regex = re.compile("[^ ,،]+")
+        syn_dict = {}
+        for item in self.cur.fetchall():
+            syn_dict[strip_tashkeel(item[0])] = [strip_tashkeel(w) for w in word_regex.findall(item[1])]
 
-            syndict[nor_(item[0])] = synlist  #
-
-        raw_str = self.dheader + "\nsyndict=" + str(syndict).replace(",", ",\n")
-
-        fich = open(self.__dypypath + "synonymes_dyn.py", "w+")
-        fich.write(raw_str)
-
-        return raw_str
+        return self.print_to_json(syn_dict, 'synonyms')
 
     def transfer_ara2eng_names(self):
-        """ load the arabic names of fields and save the as a dictionary"""
+        """ load the arabic names of arabic_to_english_fields and save the as a dictionary"""
 
-        cur = self.__mainDb.cursor()
-        cur.execute("select name_arabic,search_name from field where table_name='aya'")
-        # wordregex=re.compile(u"[^ ,،]+")
-        ara2engdict = {}
-        for item in cur.fetchall():
-            ara2engdict[item[0]] = item[1]
+        self.cur.execute("select name_arabic,search_name from field where table_name='aya'")
+        ar_to_en_dict = {item[0]: item[1] for item in self.cur.fetchall()}
 
-        raw_str = self.dheader + "\nara2eng_names=" + str(ara2engdict).replace(",", ",\n")
-
-        fich = open(self.__dypypath + "arabicnames_dyn.py", "w+")
-        fich.write(raw_str)
-
-        return raw_str
-
-    def make_spellerrors_dict(self):
-        """ make the spell errors dictionary
-        @deprecated: forget this!
-        """
-
-        D = QseDocIndex()
-        R = QReader(D)
-        nor = QArabicSymbolsFilter(True, True, True, True).normalize_all
-        spell_err = {}
-        for term in R.reader.all_terms():
-            if term[0] in ["aya"]:
-                normalized = nor(term[1])
-                if normalized in spell_err:
-                    spell_err[normalized].append(term[1])
-                else:
-                    spell_err[normalized] = [term[1]]
-
-
-        raw_str = self.dheader + "\nspell_err=" + str(spell_err)
-
-        fich = open(self.__dypypath + "spellerrors_dyn.py", "w+")
-        fich.write(raw_str)
-
+        return self.print_to_json(ar_to_en_dict, 'arabic_names')
 
     def transfer_word_props(self):
-        """ load word props from database and save them as a list in a dynamic py """
-        cur = self.__mainDb.cursor()
+
         props = ["word", "word_", "root", "type"]
-        cur.execute("select " + ",".join(props) + " from word")
-        worddict = {}
-        for prop in props:
-            worddict[prop] = []
-        for item in cur.fetchall():
-            # if one of values is None
+        word_props = {prop: [] for prop in props}
+
+        self.cur.execute(f'select {",".join(props)} from word')
+
+        for item in self.cur.fetchall():
             if reduce(operator.and_, list(map(bool, item)), True):
-                i = 0
-                for prop in props:
-                    worddict[prop].append(item[i]);
-                    i += 1
+                for i, prop in zip(range(len(props)), props):
+                    word_props[prop].append(item[i])
 
-        raw_str = self.dheader + "\nworddict=" + str(worddict).replace(",", ",\n")
-
-        fich = open(self.__dypypath + "word_props_dyn.py", "w+")
-        fich.write(raw_str)
-
-        return raw_str
+        return self.print_to_json(word_props, 'word_props')
 
     def transfer_derivations(self):
-        """ load word derivations from database and save them as a list in a dynamic py """
-        cur = self.__mainDb.cursor()
         levels = ["word_", "lemma", "root"]
-        cur.execute("select " + ",".join(levels) + " from word")
-        derivedict = {}
-        for level in levels:
-            derivedict[level] = []
+        derivations = {level: [] for level in levels}
 
-        for item in cur.fetchall():
-            i = 0
-            for level in levels:
-                derivedict[level].append(item[i])
-                i += 1
+        self.cur.execute(f'select {",".join(levels)} from word')
 
-        raw_str = self.dheader + "\nderivedict=" + str(derivedict).replace(",", ",\n")
+        for item in self.cur.fetchall():
+            for i, level in zip(range(len(levels)), levels):
+                derivations[level].append(item[i])
 
-        fich = open(self.__dypypath + "derivations_dyn.py", "w+")
-        fich.write(raw_str)
-
-        return raw_str
+        return self.print_to_json(derivations, 'derivations')
 
     def transfer_vocalizations(self):
-        """ load indexed vocalized words  from the main index and save them as a list in a dynamic py """
         QSE = QuranicSearchEngine(self.__ixpath)
 
-        if QSE.OK:
-            mfw = QSE.most_frequent_words(9999999, "aya_")
-        else:
-            mfw = []
+        if not QSE.OK:
+            return
 
-        V = QArabicSymbolsFilter(
-            shaping=False,
-            tashkil=True,
-            spellerrors=False,
-            hamza=False
-        ).normalize_all
+        mfw = QSE.most_frequent_words(9999999, "aya_")
+        vocalization_dict = { strip_tashkeel(word): unicode_decode(word) for _,word in mfw}
 
-        vocalization_dict = {}
-        for w in mfw:
-            word = w[1]
-            if V(word) in vocalization_dict:
-                vocalization_dict[V(word)].append(word)
-            else:
-                vocalization_dict[V(word)] = [word]
-
-        raw_str = self.dheader + "\nvocalization_dict=" + str(vocalization_dict).replace(",", ",\n")
-
-        fich = open(self.__dypypath + "vocalizations_dyn.py", "w+")
-        fich.write(raw_str)
-
-        return raw_str
+        return self.print_to_json(vocalization_dict, "vocalizations")
 
 
 if __name__ == "__main__":
-    T = Transformer(ixpath="../../indexes/main/", dypypath="../alfanous/dynamic_resources/",
+    T = Transformer(ixpath="../../indexes/main/", dypypath="../alfanous/resources/",
                     dbpath="../../resources/databases/main.db")
-    # T = Transformer( ixpath = "../../indexes/word/" , dypypath = "../alfanous/dynamic_resources/", dbpath = "../../resources/DB/main.db" )
-    # T.transfer_stopwords()
-    # T.transfer_synonymes()
-    # T.transfer_word_props()
-    # T.transfer_derivations()
+
     T.transfer_vocalizations()
-    # T.transfer_ara2eng_names()
-    # T.transfer_std2uth_words()
-    # T.make_spellerrors_dict()
 
-    # ayaSchema=T.build_schema(tablename='aya')
-    # T.build_docindex(ayaSchema)
-
-    # wordqcSchema = T.build_schema( tablename = 'wordqc' )
-    # T.build_docindex(wordqcSchema,tablename='wordqc')

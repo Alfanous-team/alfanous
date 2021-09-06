@@ -23,7 +23,7 @@ arg_parser = ArgumentParser(
 #
 Boolean_choices = ["true", "false"]
 
-# add arguments ## TODO this should be automatized using the fields list
+# add arguments ## TODO this should be automatized using the arabic_to_english_fields list
 arg_parser.add_argument("-a", "--action", dest="action", type=str, choices=DOMAINS["action"],
                         help=HELPMESSAGES["action"])
 arg_parser.add_argument("-u", "--unit", dest="unit", type=str, choices=DOMAINS["unit"], help=HELPMESSAGES["unit"])

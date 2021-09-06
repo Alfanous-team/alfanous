@@ -23,37 +23,7 @@ from whoosh.query import Wildcard as whoosh_Wildcard
 from whoosh.query import Prefix as whoosh_Prefix
 from whoosh.query import Or, NullQuery, Every, And
 
-#### Importing dynamically compiled resources
-# # Importing synonyms dictionary
-try:
-    from alfanous.dynamic_resources.synonymes_dyn import syndict
-except ImportError:
-    syndict = {}
-
-# # Importing field names arabic-to-english mapping dictionary
-try:
-    from alfanous.dynamic_resources.arabicnames_dyn import ara2eng_names
-except ImportError:
-    ara2eng_names = {}
-
-# # Importing word properties dictionary
-try:
-    from alfanous.dynamic_resources.word_props_dyn import worddict
-except ImportError:
-    worddict = {}
-
-# # Importing derivations dictionary
-try:
-    from alfanous.dynamic_resources.derivations_dyn import derivedict
-except ImportError:
-    derivedict = {}
-
-# # Importing antonyms dictionary
-try:
-    from alfanous.dynamic_resources.antonymes_dyn import antdict
-except ImportError:
-    antdict = {}
-
+from alfanous.resources import syndict, derivedict, worddict, arabic_to_english_fields
 from alfanous.text_processing import QArabicSymbolsFilter
 
 from alfanous.misc import LOCATE, FIND, FILTER_DOUBLES
@@ -81,8 +51,8 @@ def _make_arabic_parser():
     # Or, start with wildchars, and then either a mixture of word and wild chars
     # , or the next token
     wildstart = wildchars \
-                + (OneOrMore(wordtoken + Optional(wildchars)) \
-                   | FollowedBy(White() \
+                + (OneOrMore(wordtoken + Optional(wildchars))
+                   | FollowedBy(White()
                                 | StringEnd()))
     wildcard = Group(
         Combine(wildmixed | wildstart)
@@ -262,7 +232,7 @@ class ArabicParser(StandardParser):
                  mainfield,
                  otherfields=[],
                  termclass=Term,
-                 ara2eng=ara2eng_names):
+                 ara2eng=arabic_to_english_fields):
 
         super(ArabicParser, self).__init__(schema=schema,
                                            mainfield=mainfield,
@@ -563,7 +533,7 @@ class QuranicParser(ArabicParser):
                  mainfield="aya",
                  otherfields=[],
                  termclass=Term,
-                 ara2eng=ara2eng_names):
+                 ara2eng=arabic_to_english_fields):
         super(QuranicParser, self).__init__(schema=schema,
                                             mainfield=mainfield,
                                             otherfields=otherfields,
@@ -589,15 +559,7 @@ class QuranicParser(ArabicParser):
             syndict.get(word) or [word]
 
 
-    class Antonyms(ArabicParser.Antonyms):
-        """
-                query that automatically searches for antonyms
-                of the given word in the same field.
-        """
 
-        @staticmethod
-        def antonyms(word):
-            antdict.get(word) or [word]
 
     class Derivation(ArabicParser.Derivation):
         """
@@ -757,7 +719,7 @@ class FuzzyQuranicParser(QuranicParser):
                  mainfield="aya",
                  otherfields=tuple(),
                  termclass=SuperFuzzyAll,
-                 ara2eng=ara2eng_names):
+                 ara2eng=arabic_to_english_fields):
         super(FuzzyQuranicParser, self).__init__(schema=schema,
                                                  mainfield=mainfield,
                                                  otherfields=otherfields,

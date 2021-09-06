@@ -44,40 +44,18 @@ def stats(path=paths.STATS_FILE, ref_path=paths.STATS_REFERENCE_FILE):
 
 def information(path=paths.INFORMATION_FILE):
     myfile = open(path)
-    return json.loads(myfile.read()) if myfile else {}
+    return json.load(myfile) if myfile else {}
 
 
 def QSE(path=paths.QSE_INDEX):
     return QuranicSearchEngine(path)
 
-
-
-
 def TSE(path=paths.TSE_INDEX):
     return TraductionSearchEngine(path)
-
 
 def WSE(path=paths.WSE_INDEX):
     return WordSearchEngine(path)
 
 
-try:
-    from alfanous.dynamic_resources.arabicnames_dyn import ara2eng_names as Fields
-except:
-    Fields = {}
-try:
-    from alfanous.dynamic_resources.std2uth_dyn import std2uth_words
-except:
-    std2uth_words = {}
-try:
-    from alfanous.dynamic_resources.vocalizations_dyn import vocalization_dict
-except:
-    vocalization_dict = {}
-try:
-    from alfanous.dynamic_resources.synonymes_dyn import syndict
-except:
-    syndict = {}
-try:
-    from alfanous.dynamic_resources.derivations_dyn import derivedict
-except:
-    derivedict = {"root": []}
+
+
