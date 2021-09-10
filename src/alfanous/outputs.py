@@ -1,12 +1,5 @@
-# -*- coding: UTF-8 -*-
-
-
-"""
-The programming interface, responsible of the output of all results
-"""
 import logging
 import re
-from pyparsing import ParseException
 
 from alfanous.text_processing import QArabicSymbolsFilter
 from alfanous.data import *
@@ -14,7 +7,6 @@ from alfanous.resources import *
 
 from alfanous.romanization import transliterate
 from alfanous.misc import LOCATE, FIND, FILTER_DOUBLES
-from alfanous.constants import LANGS
 
 STANDARD2UTHMANI = lambda x: std2uth_words.get(x) or x
 
@@ -37,7 +29,7 @@ def scan_no_wildcards(query):
     return not ({"*", "?", "؟"} & set(query))
 
 
-class Raw():
+class Raw:
     DEFAULTS = {
         "minrange": 1,
         "maxrange": 25,
@@ -492,24 +484,24 @@ class Raw():
 
         # if True:
         ## strip vocalization when vocalized = true
-        V = QArabicSymbolsFilter( \
-            shaping=False, \
-            tashkil=not vocalized, \
-            spellerrors=False, \
-            hamza=False \
-            ).normalize_all
-        strip_vocalization = QArabicSymbolsFilter( \
-            shaping=False, \
-            tashkil=True, \
-            spellerrors=False, \
-            hamza=False \
-            ).normalize_all
+        V = QArabicSymbolsFilter(
+            shaping=False,
+            tashkil=not vocalized,
+            spellerrors=False,
+            hamza=False
+        ).normalize_all
+        strip_vocalization = QArabicSymbolsFilter(
+            shaping=False,
+            tashkil=True,
+            spellerrors=False,
+            hamza=False
+        ).normalize_all
         # highligh function that consider None value and non-definition
-        H = lambda X: self.QSE.highlight(X, terms, highlight) if highlight != "none" and X else X if X else u"-----"
+        H = lambda X: self.QSE.highlight(X, terms, highlight) if highlight != "none" and X else X if X else "-----"
         # Numbers are 0 if not defined
         N = lambda X: X if X else 0
         # parse keywords lists , used for Sura names
-        kword = re.compile(u"[^,،]+")
+        kword = re.compile("[^,،]+")
         keywords = lambda phrase: kword.findall(phrase)
         ##########################################
         extend_runtime = res.runtime
@@ -519,17 +511,17 @@ class Raw():
             matches = 0
             docs = 0
             nb_vocalizations_globale = 0
-            cpt = 1;
-            annotation_word_query = u"( 0 "
+            cpt = 1
+            annotation_word_query = "( 0 "
             for term in termz:
                 if term[0] == "aya" or term[0] == "aya_":
                     if term[2]:
                         matches += term[2]
                     docs += term[3]
                     if term[0] == "aya_":
-                        annotation_word_query += u" OR word:%s " % term[1]
+                        annotation_word_query += " OR word:%s " % term[1]
                     else:  # if aya
-                        annotation_word_query += u" OR normalized:%s " % STANDARD2UTHMANI(term[1])
+                        annotation_word_query += " OR normalized:%s " % STANDARD2UTHMANI(term[1])
                     if word_vocalizations:
                         vocalizations = vocalization_dict.get(strip_vocalization(term[1])) or []
                         nb_vocalizations_globale += len(vocalizations)
@@ -568,15 +560,48 @@ class Raw():
                         "derivations_extra": derivations_extra,
                     }
                     cpt += 1
-            annotation_word_query += u" ) "
+            annotation_word_query += " ) "
             words_output["global"] = {"nb_words": cpt - 1, "nb_matches": matches,
                                       "nb_vocalizations": nb_vocalizations_globale}
-        output["words"] = words_output;
+        output["words"] = words_output
+        # Magic_loop to built queries of Adjacents,translations and annotations in the same time
+        if prev_aya or next_aya or translation or annotation_aya:
+            adja_query = trad_query = annotation_aya_query = "( 0"
 
+            for r in reslist:
+                if prev_aya:
+                    adja_query += " OR gid:%s " % str(r["gid"] - 1)
+                    logging.error(r['gid'])
+                if next_aya:
+                    adja_query += " OR gid:%s " % str(r["gid"] + 1)
+                if translation:
+                    trad_query += " OR gid:%s " % str(r["gid"])
 
+            adja_query += " )"
+            trad_query += " )" + " AND id:%s " % translation
+            annotation_aya_query += " )"
 
+        if prev_aya or next_aya:
+            adja_res, searcher = self.QSE.find_extended(adja_query, "gid")
+            adja_ayas = {0:
+                             {"aya_": "----",
+                              "uth_": "----",
+                              "sura": "---",
+                              "aya_id": 0, "sura_arabic": "---"},
+                         6237: {"aya_": "----", "uth_": "----", "sura": "---", "aya_id": 9999,
+                                "sura_arabic": "---"}}
+            for adja in adja_res:
+                adja_ayas[adja["gid"]] = {"aya_": adja["aya_"], "uth_": adja["uth_"], "aya_id": adja["aya_id"],
+                                          "sura": adja["sura"], "sura_arabic": adja["sura_arabic"]}
+                extend_runtime += adja_res.runtime
 
-
+        # translations
+        if translation:
+            trad_res, searcher = self.TSE.find_extended(trad_query, "gid")
+            extend_runtime += trad_res.runtime
+            trad_text = {}
+            for tr in trad_res:
+                trad_text[tr["gid"]] = tr["text"]
         output["runtime"] = round(extend_runtime, 5)
         output["interval"] = {
             "start": start,
@@ -589,7 +614,9 @@ class Raw():
         ### Ayas
         cpt = start - 1
         output["ayas"] = {}
+        logging.error(adja_ayas.keys())
         for r in reslist:
+            logging.error(r['gid'])
             cpt += 1
             output["ayas"][cpt] = {
 
@@ -606,21 +633,25 @@ class Raw():
                     else H(r["uth_"]),
                     "text_no_highlight": r["aya"] if script == "standard"
                     else r["uth_"],
-                    "translation": None,
+                    "translation": trad_text.get(r["gid"]) if (translation != "None" and translation ) else None,
+
                     "recitation": None if not recitation or not self._recitations.get(recitation) \
-                        else f'https://www.everyayah.com/data/{self._recitations[recitation]["subfolder"]}/%03d%03d.mp3' % (int(r["sura_id"]), int(r["aya_id"])),
+                        else f'https://www.everyayah.com/data/{self._recitations[recitation]["subfolder"]}/%03d%03d.mp3' % (
+                    int(r["sura_id"]), int(r["aya_id"])),
                     "prev_aya": {
-                        "id": None,
-                        "sura": None,
-                        "sura_arabic": None,
-                        "text": None,
+                        "id": adja_ayas[r["gid"] - 1]["aya_id"],
+                        "sura": adja_ayas[r["gid"] - 1]["sura"],
+                        "sura_arabic": adja_ayas[r["gid"] - 1]["sura_arabic"],
+                        "text": V(adja_ayas[r["gid"] - 1]["aya_"]) if script == "standard"
+                        else adja_ayas[r["gid"] - 1]["uth_"],
                     } if prev_aya else None
                     ,
                     "next_aya": {
-                        "id": None,
-                        "sura": None,
-                        "sura_arabic": None,
-                        "text": None,
+                        "id": adja_ayas[r["gid"] + 1]["aya_id"],
+                        "sura": adja_ayas[r["gid"] + 1]["sura"],
+                        "sura_arabic": adja_ayas[r["gid"] + 1]["sura_arabic"],
+                        "text": V(adja_ayas[r["gid"] + 1]["aya_"]) if script == "standard"
+                        else adja_ayas[r["gid"] + 1]["uth_"],
                     } if next_aya else None
                     ,
 
@@ -671,15 +702,16 @@ class Raw():
 
                 "sajda": {} if not aya_sajda_info
                 else {
-                    "exist": (r["sajda"] == u"نعم"),
-                    "type": r["sajda_type"] if (r["sajda"] == u"نعم") else None,
-                    "id": N(r["sajda_id"]) if (r["sajda"] == u"نعم") else None,
+                    "exist": (r["sajda"] == "نعم"),
+                    "type": r["sajda_type"] if (r["sajda"] == "نعم") else None,
+                    "id": N(r["sajda_id"]) if (r["sajda"] == "نعم") else None,
                 },
 
                 "annotations": {}
             }
         searcher.close()
         return output
+
 
 class Json(Raw):
     """ JSON output format """

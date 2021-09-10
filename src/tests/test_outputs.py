@@ -1,4 +1,3 @@
-# coding: utf-8
 
 """
 A sample script that emphasize the basic operations of Alfanous API.
@@ -61,24 +60,30 @@ def test_search():
     assert results["search"]["interval"]["total"] == 116
 
     del results["search"]["runtime"]
+
     assert results == {'error': {'code': 0, 'msg': 'success'},
  'search': {'ayas': {1: {'annotations': {},
                          'aya': {'id': 2,
                                  'next_aya': {'id': 3,
                                               'sura': 'Al-Fatihah',
-                                              'sura_arabic': '\u0627\u0644\u0641\u0627\u062a\u062d\u0629',
-                                              'text': '\u0627\u0644\u0631\u0651\u064e\u062d\u0652\u0645\u064e\u0646\u0650 \u0627\u0644\u0631\u0651\u064e\u062d\u0650\u064a\u0645\u0650'},
+                                              'sura_arabic': 'الفاتحة',
+                                              'text': 'الرَّحْمَنِ الرَّحِيمِ'},
                                  'prev_aya': {'id': 1,
                                               'sura': 'Al-Fatihah',
-                                              'sura_arabic': '\u0627\u0644\u0641\u0627\u062a\u062d\u0629',
-                                              'text': '\u0628\u0650\u0633\u0652\u0645\u0650 \u0627\u0644\u0644\u0651\u064e\u0647\u0650 \u0627\u0644\u0631\u0651\u064e\u062d\u0652\u0645\u064e\u0646\u0650 \u0627\u0644\u0631\u0651\u064e\u062d\u0650\u064a\u0645\u0650'},
+                                              'sura_arabic': 'الفاتحة',
+                                              'text': 'بِسْمِ اللَّهِ '
+                                                      'الرَّحْمَنِ الرَّحِيمِ'},
                                  'recitation': 'https://www.everyayah.com/data/Abdul_Basit_Murattal_64kbps/001002.mp3',
-                                 'text': '<span class="match term0">\u0627\u0644\u0652\u062d\u064e\u0645\u0652\u062f\u064f</span> <span class="match term1">\u0644\u0650\u0644\u0651\u064e\u0647\u0650</span> \u0631\u064e\u0628\u0651\u0650 \u0627\u0644\u0652\u0639\u064e\u0627\u0644\u064e\u0645\u0650\u064a\u0646\u064e',
-                                 'text_no_highlight': '\u0627\u0644\u062d\u0645\u062f \u0644\u0644\u0647 \u0631\u0628 \u0627\u0644\u0639\u0627\u0644\u0645\u064a\u0646',
-                                 'translation': 'Al<u>h</U>amdu lill<u>a</U>hi rabbi alAA<u>a</U>lameen<b>a</b>'},
+                                 'text': '<span class="match '
+                                         'term0">الْحَمْدُ</span> <span '
+                                         'class="match term1">لِلَّهِ</span> '
+                                         'رَبِّ الْعَالَمِينَ',
+                                 'text_no_highlight': 'الحمد لله رب العالمين',
+                                 'translation': 'All praise is due to Allah, '
+                                                'the Lord of the Worlds.'},
                          'identifier': {'aya_id': 2,
                                         'gid': 2,
-                                        'sura_arabic_name': '\u0627\u0644\u0641\u0627\u062a\u062d\u0629',
+                                        'sura_arabic_name': 'الفاتحة',
                                         'sura_id': 1,
                                         'sura_name': 'Al-Fatihah'},
                          'position': {'hizb': 1,
@@ -86,14 +91,11 @@ def test_search():
                                       'manzil': 1,
                                       'page': 1,
                                       'page_IN': 2,
-                                      'rub': 1,
-                                      'ruk': 1},
-                         'sajda': {'exist': False,
-                                   'id': None,
-                                   'type': None},
+                                      'rub': 1},
+                         'sajda': {'exist': False, 'id': None, 'type': None},
                          'stat': {},
-                         'sura': {'arabic_name': '\u0627\u0644\u0641\u0627\u062a\u062d\u0629',
-                                  'arabic_type': '\u0645\u0643\u064a\u0629',
+                         'sura': {'arabic_name': 'الفاتحة',
+                                  'arabic_type': 'مكية',
                                   'ayas': 7,
                                   'english_name': 'The Opening',
                                   'id': 1,
@@ -106,19 +108,51 @@ def test_search():
                          'aya': {'id': 22,
                                  'next_aya': {'id': 23,
                                               'sura': 'Al-Baqarah',
-                                              'sura_arabic': '\u0627\u0644\u0628\u0642\u0631\u0629',
-                                              'text': '\u0648\u064e\u0625\u0650\u0646\u0652 \u0643\u064f\u0646\u0652\u062a\u064f\u0645\u0652 \u0641\u0650\u064a \u0631\u064e\u064a\u0652\u0628\u064d \u0645\u0650\u0645\u0651\u064e\u0627 \u0646\u064e\u0632\u0651\u064e\u0644\u0652\u0646\u064e\u0627 \u0639\u064e\u0644\u064e\u0649 \u0639\u064e\u0628\u0652\u062f\u0650\u0646\u064e\u0627 \u0641\u064e\u0623\u0652\u062a\u064f\u0648\u0627 \u0628\u0650\u0633\u064f\u0648\u0631\u064e\u0629\u064d \u0645\u0650\u0646\u0652 \u0645\u0650\u062b\u0652\u0644\u0650\u0647\u0650 \u0648\u064e\u0627\u062f\u0652\u0639\u064f\u0648\u0627 \u0634\u064f\u0647\u064e\u062f\u064e\u0627\u0621\u064e\u0643\u064f\u0645\u0652 \u0645\u0650\u0646\u0652 \u062f\u064f\u0648\u0646\u0650 \u0627\u0644\u0644\u0651\u064e\u0647\u0650 \u0625\u0650\u0646\u0652 \u0643\u064f\u0646\u0652\u062a\u064f\u0645\u0652 \u0635\u064e\u0627\u062f\u0650\u0642\u0650\u064a\u0646\u064e'},
+                                              'sura_arabic': 'البقرة',
+                                              'text': 'وَإِنْ كُنْتُمْ فِي '
+                                                      'رَيْبٍ مِمَّا '
+                                                      'نَزَّلْنَا عَلَى '
+                                                      'عَبْدِنَا فَأْتُوا '
+                                                      'بِسُورَةٍ مِنْ مِثْلِهِ '
+                                                      'وَادْعُوا شُهَدَاءَكُمْ '
+                                                      'مِنْ دُونِ اللَّهِ إِنْ '
+                                                      'كُنْتُمْ صَادِقِينَ'},
                                  'prev_aya': {'id': 21,
                                               'sura': 'Al-Baqarah',
-                                              'sura_arabic': '\u0627\u0644\u0628\u0642\u0631\u0629',
-                                              'text': '\u064a\u064e\u0627 \u0623\u064e\u064a\u0651\u064f\u0647\u064e\u0627 \u0627\u0644\u0646\u0651\u064e\u0627\u0633\u064f \u0627\u0639\u0652\u0628\u064f\u062f\u064f\u0648\u0627 \u0631\u064e\u0628\u0651\u064e\u0643\u064f\u0645\u064f \u0627\u0644\u0651\u064e\u0630\u0650\u064a \u062e\u064e\u0644\u064e\u0642\u064e\u0643\u064f\u0645\u0652 \u0648\u064e\u0627\u0644\u0651\u064e\u0630\u0650\u064a\u0646\u064e \u0645\u0650\u0646\u0652 \u0642\u064e\u0628\u0652\u0644\u0650\u0643\u064f\u0645\u0652 \u0644\u064e\u0639\u064e\u0644\u0651\u064e\u0643\u064f\u0645\u0652 \u062a\u064e\u062a\u0651\u064e\u0642\u064f\u0648\u0646\u064e'},
+                                              'sura_arabic': 'البقرة',
+                                              'text': 'يَا أَيُّهَا النَّاسُ '
+                                                      'اعْبُدُوا رَبَّكُمُ '
+                                                      'الَّذِي خَلَقَكُمْ '
+                                                      'وَالَّذِينَ مِنْ '
+                                                      'قَبْلِكُمْ لَعَلَّكُمْ '
+                                                      'تَتَّقُونَ'},
                                  'recitation': 'https://www.everyayah.com/data/Abdul_Basit_Murattal_64kbps/002022.mp3',
-                                 'text': '\u0627\u0644\u0651\u064e\u0630\u0650\u064a \u062c\u064e\u0639\u064e\u0644\u064e \u0644\u064e\u0643\u064f\u0645\u064f \u0627\u0644\u0652\u0623\u064e\u0631\u0652\u0636\u064e \u0641\u0650\u0631\u064e\u0627\u0634\u064b\u0627 \u0648\u064e\u0627\u0644\u0633\u0651\u064e\u0645\u064e\u0627\u0621\u064e \u0628\u0650\u0646\u064e\u0627\u0621\u064b \u0648\u064e\u0623\u064e\u0646\u0652\u0632\u064e\u0644\u064e \u0645\u0650\u0646\u064e \u0627\u0644\u0633\u0651\u064e\u0645\u064e\u0627\u0621\u0650 \u0645\u064e\u0627\u0621\u064b \u0641\u064e\u0623\u064e\u062e\u0652\u0631\u064e\u062c\u064e \u0628\u0650\u0647\u0650 \u0645\u0650\u0646\u064e \u0627\u0644\u062b\u0651\u064e\u0645\u064e\u0631\u064e\u0627\u062a\u0650 \u0631\u0650\u0632\u0652\u0642\u064b\u0627 \u0644\u064e\u0643\u064f\u0645\u0652 \u0641\u064e\u0644\u064e\u0627 \u062a\u064e\u062c\u0652\u0639\u064e\u0644\u064f\u0648\u0627 <span class="match term0">\u0644\u0650\u0644\u0651\u064e\u0647\u0650</span> \u0623\u064e\u0646\u0652\u062f\u064e\u0627\u062f\u064b\u0627 \u0648\u064e\u0623\u064e\u0646\u0652\u062a\u064f\u0645\u0652 \u062a\u064e\u0639\u0652\u0644\u064e\u0645\u064f\u0648\u0646\u064e',
-                                 'text_no_highlight': '\u0627\u0644\u0630\u064a \u062c\u0639\u0644 \u0644\u0643\u0645 \u0627\u0644\u0623\u0631\u0636 \u0641\u0631\u0627\u0634\u0627 \u0648\u0627\u0644\u0633\u0645\u0627\u0621 \u0628\u0646\u0627\u0621 \u0648\u0623\u0646\u0632\u0644 \u0645\u0646 \u0627\u0644\u0633\u0645\u0627\u0621 \u0645\u0627\u0621 \u0641\u0623\u062e\u0631\u062c \u0628\u0647 \u0645\u0646 \u0627\u0644\u062b\u0645\u0631\u0627\u062a \u0631\u0632\u0642\u0627 \u0644\u0643\u0645 \u0641\u0644\u0627 \u062a\u062c\u0639\u0644\u0648\u0627 \u0644\u0644\u0647 \u0623\u0646\u062f\u0627\u062f\u0627 \u0648\u0623\u0646\u062a\u0645 \u062a\u0639\u0644\u0645\u0648\u0646',
-                                 'translation': 'Alla<u>th</u>ee jaAAala lakumu alar<u>d</u>a fir<u>a</u>shan wa<b>al</b>ssam<u>a</u>a bin<u>a</u>an waanzala mina a<b>l</b>ssam<u>a</u>i m<u>a</u>an faakhraja bihi mina a<b>l</b>ththamar<u>a</u>ti rizqan lakum fal<u>a</u> tajAAaloo lill<u>a</u>hi and<u>a</u>dan waantum taAAlamoon<b>a</b>'},
+                                 'text': 'الَّذِي جَعَلَ لَكُمُ الْأَرْضَ '
+                                         'فِرَاشًا وَالسَّمَاءَ بِنَاءً '
+                                         'وَأَنْزَلَ مِنَ السَّمَاءِ مَاءً '
+                                         'فَأَخْرَجَ بِهِ مِنَ الثَّمَرَاتِ '
+                                         'رِزْقًا لَكُمْ فَلَا تَجْعَلُوا '
+                                         '<span class="match '
+                                         'term0">لِلَّهِ</span> أَنْدَادًا '
+                                         'وَأَنْتُمْ تَعْلَمُونَ',
+                                 'text_no_highlight': 'الذي جعل لكم الأرض '
+                                                      'فراشا والسماء بناء '
+                                                      'وأنزل من السماء ماء '
+                                                      'فأخرج به من الثمرات '
+                                                      'رزقا لكم فلا تجعلوا لله '
+                                                      'أندادا وأنتم تعلمون',
+                                 'translation': 'Who made the earth a resting '
+                                                'place for you and the heaven '
+                                                'a canopy and (Who) sends down '
+                                                'rain from the cloud, then '
+                                                'brings forth with it '
+                                                'subsistence for you of the '
+                                                'fruits; therefore do not set '
+                                                'up rivals to Allah while you '
+                                                'know.'},
                          'identifier': {'aya_id': 22,
                                         'gid': 29,
-                                        'sura_arabic_name': '\u0627\u0644\u0628\u0642\u0631\u0629',
+                                        'sura_arabic_name': 'البقرة',
                                         'sura_id': 2,
                                         'sura_name': 'Al-Baqarah'},
                          'position': {'hizb': 1,
@@ -126,14 +160,11 @@ def test_search():
                                       'manzil': 1,
                                       'page': 4,
                                       'page_IN': 6,
-                                      'rub': 1,
-                                      'ruk': 4},
-                         'sajda': {'exist': False,
-                                   'id': None,
-                                   'type': None},
+                                      'rub': 1},
+                         'sajda': {'exist': False, 'id': None, 'type': None},
                          'stat': {},
-                         'sura': {'arabic_name': '\u0627\u0644\u0628\u0642\u0631\u0629',
-                                  'arabic_type': '\u0645\u062f\u0646\u064a\u0629',
+                         'sura': {'arabic_name': 'البقرة',
+                                  'arabic_type': 'مدنية',
                                   'ayas': 286,
                                   'english_name': 'The Cow',
                                   'id': 2,
@@ -146,19 +177,42 @@ def test_search():
                          'aya': {'id': 98,
                                  'next_aya': {'id': 99,
                                               'sura': 'Al-Baqarah',
-                                              'sura_arabic': '\u0627\u0644\u0628\u0642\u0631\u0629',
-                                              'text': '\u0648\u064e\u0644\u064e\u0642\u064e\u062f\u0652 \u0623\u064e\u0646\u0652\u0632\u064e\u0644\u0652\u0646\u064e\u0627 \u0625\u0650\u0644\u064e\u064a\u0652\u0643\u064e \u0622\u064a\u064e\u0627\u062a\u064d \u0628\u064e\u064a\u0651\u0650\u0646\u064e\u0627\u062a\u064d \u0648\u064e\u0645\u064e\u0627 \u064a\u064e\u0643\u0652\u0641\u064f\u0631\u064f \u0628\u0650\u0647\u064e\u0627 \u0625\u0650\u0644\u0651\u064e\u0627 \u0627\u0644\u0652\u0641\u064e\u0627\u0633\u0650\u0642\u064f\u0648\u0646\u064e'},
+                                              'sura_arabic': 'البقرة',
+                                              'text': 'وَلَقَدْ أَنْزَلْنَا '
+                                                      'إِلَيْكَ آيَاتٍ '
+                                                      'بَيِّنَاتٍ وَمَا '
+                                                      'يَكْفُرُ بِهَا إِلَّا '
+                                                      'الْفَاسِقُونَ'},
                                  'prev_aya': {'id': 97,
                                               'sura': 'Al-Baqarah',
-                                              'sura_arabic': '\u0627\u0644\u0628\u0642\u0631\u0629',
-                                              'text': '\u0642\u064f\u0644\u0652 \u0645\u064e\u0646\u0652 \u0643\u064e\u0627\u0646\u064e \u0639\u064e\u062f\u064f\u0648\u0651\u064b\u0627 \u0644\u0650\u062c\u0650\u0628\u0652\u0631\u0650\u064a\u0644\u064e \u0641\u064e\u0625\u0650\u0646\u0651\u064e\u0647\u064f \u0646\u064e\u0632\u0651\u064e\u0644\u064e\u0647\u064f \u0639\u064e\u0644\u064e\u0649 \u0642\u064e\u0644\u0652\u0628\u0650\u0643\u064e \u0628\u0650\u0625\u0650\u0630\u0652\u0646\u0650 \u0627\u0644\u0644\u0651\u064e\u0647\u0650 \u0645\u064f\u0635\u064e\u062f\u0651\u0650\u0642\u064b\u0627 \u0644\u0650\u0645\u064e\u0627 \u0628\u064e\u064a\u0652\u0646\u064e \u064a\u064e\u062f\u064e\u064a\u0652\u0647\u0650 \u0648\u064e\u0647\u064f\u062f\u064b\u0649 \u0648\u064e\u0628\u064f\u0634\u0652\u0631\u064e\u0649 \u0644\u0650\u0644\u0652\u0645\u064f\u0624\u0652\u0645\u0650\u0646\u0650\u064a\u0646\u064e'},
+                                              'sura_arabic': 'البقرة',
+                                              'text': 'قُلْ مَنْ كَانَ '
+                                                      'عَدُوًّا لِجِبْرِيلَ '
+                                                      'فَإِنَّهُ نَزَّلَهُ '
+                                                      'عَلَى قَلْبِكَ بِإِذْنِ '
+                                                      'اللَّهِ مُصَدِّقًا '
+                                                      'لِمَا بَيْنَ يَدَيْهِ '
+                                                      'وَهُدًى وَبُشْرَى '
+                                                      'لِلْمُؤْمِنِينَ'},
                                  'recitation': 'https://www.everyayah.com/data/Abdul_Basit_Murattal_64kbps/002098.mp3',
-                                 'text': '\u0645\u064e\u0646\u0652 \u0643\u064e\u0627\u0646\u064e \u0639\u064e\u062f\u064f\u0648\u0651\u064b\u0627 <span class="match term0">\u0644\u0650\u0644\u0651\u064e\u0647\u0650</span> \u0648\u064e\u0645\u064e\u0644\u064e\u0627\u0626\u0650\u0643\u064e\u062a\u0650\u0647\u0650 \u0648\u064e\u0631\u064f\u0633\u064f\u0644\u0650\u0647\u0650 \u0648\u064e\u062c\u0650\u0628\u0652\u0631\u0650\u064a\u0644\u064e \u0648\u064e\u0645\u0650\u064a\u0643\u064e\u0627\u0644\u064e \u0641\u064e\u0625\u0650\u0646\u0651\u064e \u0627\u0644\u0644\u0651\u064e\u0647\u064e \u0639\u064e\u062f\u064f\u0648\u0651\u064c \u0644\u0650\u0644\u0652\u0643\u064e\u0627\u0641\u0650\u0631\u0650\u064a\u0646\u064e',
-                                 'text_no_highlight': '\u0645\u0646 \u0643\u0627\u0646 \u0639\u062f\u0648\u0627 \u0644\u0644\u0647 \u0648\u0645\u0644\u0627\u0626\u0643\u062a\u0647 \u0648\u0631\u0633\u0644\u0647 \u0648\u062c\u0628\u0631\u064a\u0644 \u0648\u0645\u064a\u0643\u0627\u0644 \u0641\u0625\u0646 \u0627\u0644\u0644\u0647 \u0639\u062f\u0648 \u0644\u0644\u0643\u0627\u0641\u0631\u064a\u0646',
-                                 'translation': 'Man k<u>a</u>na AAaduwwan lill<u>a</u>hi wamal<u>a</u>ikatihi warusulihi wajibreela wameek<u>a</u>la fainna All<u>a</u>ha AAaduwwun lilk<u>a</u>fireen<b>a</b>'},
+                                 'text': 'مَنْ كَانَ عَدُوًّا <span '
+                                         'class="match term0">لِلَّهِ</span> '
+                                         'وَمَلَائِكَتِهِ وَرُسُلِهِ '
+                                         'وَجِبْرِيلَ وَمِيكَالَ فَإِنَّ '
+                                         'اللَّهَ عَدُوٌّ لِلْكَافِرِينَ',
+                                 'text_no_highlight': 'من كان عدوا لله '
+                                                      'وملائكته ورسله وجبريل '
+                                                      'وميكال فإن الله عدو '
+                                                      'للكافرين',
+                                 'translation': 'Whoever is the enemy of Allah '
+                                                'and His angels and His '
+                                                'apostles and Jibreel and '
+                                                'Meekaeel, so surely Allah is '
+                                                'the enemy of the '
+                                                'unbelievers.'},
                          'identifier': {'aya_id': 98,
                                         'gid': 105,
-                                        'sura_arabic_name': '\u0627\u0644\u0628\u0642\u0631\u0629',
+                                        'sura_arabic_name': 'البقرة',
                                         'sura_id': 2,
                                         'sura_name': 'Al-Baqarah'},
                          'position': {'hizb': 2,
@@ -166,14 +220,11 @@ def test_search():
                                       'manzil': 1,
                                       'page': 15,
                                       'page_IN': 20,
-                                      'rub': 2,
-                                      'ruk': 13},
-                         'sajda': {'exist': False,
-                                   'id': None,
-                                   'type': None},
+                                      'rub': 2},
+                         'sajda': {'exist': False, 'id': None, 'type': None},
                          'stat': {},
-                         'sura': {'arabic_name': '\u0627\u0644\u0628\u0642\u0631\u0629',
-                                  'arabic_type': '\u0645\u062f\u0646\u064a\u0629',
+                         'sura': {'arabic_name': 'البقرة',
+                                  'arabic_type': 'مدنية',
                                   'ayas': 286,
                                   'english_name': 'The Cow',
                                   'id': 2,
@@ -186,19 +237,51 @@ def test_search():
                          'aya': {'id': 112,
                                  'next_aya': {'id': 113,
                                               'sura': 'Al-Baqarah',
-                                              'sura_arabic': '\u0627\u0644\u0628\u0642\u0631\u0629',
-                                              'text': '\u0648\u064e\u0642\u064e\u0627\u0644\u064e\u062a\u0650 \u0627\u0644\u0652\u064a\u064e\u0647\u064f\u0648\u062f\u064f \u0644\u064e\u064a\u0652\u0633\u064e\u062a\u0650 \u0627\u0644\u0646\u0651\u064e\u0635\u064e\u0627\u0631\u064e\u0649 \u0639\u064e\u0644\u064e\u0649 \u0634\u064e\u064a\u0652\u0621\u064d \u0648\u064e\u0642\u064e\u0627\u0644\u064e\u062a\u0650 \u0627\u0644\u0646\u0651\u064e\u0635\u064e\u0627\u0631\u064e\u0649 \u0644\u064e\u064a\u0652\u0633\u064e\u062a\u0650 \u0627\u0644\u0652\u064a\u064e\u0647\u064f\u0648\u062f\u064f \u0639\u064e\u0644\u064e\u0649 \u0634\u064e\u064a\u0652\u0621\u064d \u0648\u064e\u0647\u064f\u0645\u0652 \u064a\u064e\u062a\u0652\u0644\u064f\u0648\u0646\u064e \u0627\u0644\u0652\u0643\u0650\u062a\u064e\u0627\u0628\u064e \u0643\u064e\u0630\u064e\u0644\u0650\u0643\u064e \u0642\u064e\u0627\u0644\u064e \u0627\u0644\u0651\u064e\u0630\u0650\u064a\u0646\u064e \u0644\u064e\u0627 \u064a\u064e\u0639\u0652\u0644\u064e\u0645\u064f\u0648\u0646\u064e \u0645\u0650\u062b\u0652\u0644\u064e \u0642\u064e\u0648\u0652\u0644\u0650\u0647\u0650\u0645\u0652 \u0641\u064e\u0627\u0644\u0644\u0651\u064e\u0647\u064f \u064a\u064e\u062d\u0652\u0643\u064f\u0645\u064f \u0628\u064e\u064a\u0652\u0646\u064e\u0647\u064f\u0645\u0652 \u064a\u064e\u0648\u0652\u0645\u064e \u0627\u0644\u0652\u0642\u0650\u064a\u064e\u0627\u0645\u064e\u0629\u0650 \u0641\u0650\u064a\u0645\u064e\u0627 \u0643\u064e\u0627\u0646\u064f\u0648\u0627 \u0641\u0650\u064a\u0647\u0650 \u064a\u064e\u062e\u0652\u062a\u064e\u0644\u0650\u0641\u064f\u0648\u0646\u064e'},
+                                              'sura_arabic': 'البقرة',
+                                              'text': 'وَقَالَتِ الْيَهُودُ '
+                                                      'لَيْسَتِ النَّصَارَى '
+                                                      'عَلَى شَيْءٍ وَقَالَتِ '
+                                                      'النَّصَارَى لَيْسَتِ '
+                                                      'الْيَهُودُ عَلَى شَيْءٍ '
+                                                      'وَهُمْ يَتْلُونَ '
+                                                      'الْكِتَابَ كَذَلِكَ '
+                                                      'قَالَ الَّذِينَ لَا '
+                                                      'يَعْلَمُونَ مِثْلَ '
+                                                      'قَوْلِهِمْ فَاللَّهُ '
+                                                      'يَحْكُمُ بَيْنَهُمْ '
+                                                      'يَوْمَ الْقِيَامَةِ '
+                                                      'فِيمَا كَانُوا فِيهِ '
+                                                      'يَخْتَلِفُونَ'},
                                  'prev_aya': {'id': 111,
                                               'sura': 'Al-Baqarah',
-                                              'sura_arabic': '\u0627\u0644\u0628\u0642\u0631\u0629',
-                                              'text': '\u0648\u064e\u0642\u064e\u0627\u0644\u064f\u0648\u0627 \u0644\u064e\u0646\u0652 \u064a\u064e\u062f\u0652\u062e\u064f\u0644\u064e \u0627\u0644\u0652\u062c\u064e\u0646\u0651\u064e\u0629\u064e \u0625\u0650\u0644\u0651\u064e\u0627 \u0645\u064e\u0646\u0652 \u0643\u064e\u0627\u0646\u064e \u0647\u064f\u0648\u062f\u064b\u0627 \u0623\u064e\u0648\u0652 \u0646\u064e\u0635\u064e\u0627\u0631\u064e\u0649 \u062a\u0650\u0644\u0652\u0643\u064e \u0623\u064e\u0645\u064e\u0627\u0646\u0650\u064a\u0651\u064f\u0647\u064f\u0645\u0652 \u0642\u064f\u0644\u0652 \u0647\u064e\u0627\u062a\u064f\u0648\u0627 \u0628\u064f\u0631\u0652\u0647\u064e\u0627\u0646\u064e\u0643\u064f\u0645\u0652 \u0625\u0650\u0646\u0652 \u0643\u064f\u0646\u0652\u062a\u064f\u0645\u0652 \u0635\u064e\u0627\u062f\u0650\u0642\u0650\u064a\u0646\u064e'},
+                                              'sura_arabic': 'البقرة',
+                                              'text': 'وَقَالُوا لَنْ يَدْخُلَ '
+                                                      'الْجَنَّةَ إِلَّا مَنْ '
+                                                      'كَانَ هُودًا أَوْ '
+                                                      'نَصَارَى تِلْكَ '
+                                                      'أَمَانِيُّهُمْ قُلْ '
+                                                      'هَاتُوا بُرْهَانَكُمْ '
+                                                      'إِنْ كُنْتُمْ '
+                                                      'صَادِقِينَ'},
                                  'recitation': 'https://www.everyayah.com/data/Abdul_Basit_Murattal_64kbps/002112.mp3',
-                                 'text': '\u0628\u064e\u0644\u064e\u0649 \u0645\u064e\u0646\u0652 \u0623\u064e\u0633\u0652\u0644\u064e\u0645\u064e \u0648\u064e\u062c\u0652\u0647\u064e\u0647\u064f <span class="match term0">\u0644\u0650\u0644\u0651\u064e\u0647\u0650</span> \u0648\u064e\u0647\u064f\u0648\u064e \u0645\u064f\u062d\u0652\u0633\u0650\u0646\u064c \u0641\u064e\u0644\u064e\u0647\u064f \u0623\u064e\u062c\u0652\u0631\u064f\u0647\u064f \u0639\u0650\u0646\u0652\u062f\u064e \u0631\u064e\u0628\u0651\u0650\u0647\u0650 \u0648\u064e\u0644\u064e\u0627 \u062e\u064e\u0648\u0652\u0641\u064c \u0639\u064e\u0644\u064e\u064a\u0652\u0647\u0650\u0645\u0652 \u0648\u064e\u0644\u064e\u0627 \u0647\u064f\u0645\u0652 \u064a\u064e\u062d\u0652\u0632\u064e\u0646\u064f\u0648\u0646\u064e',
-                                 'text_no_highlight': '\u0628\u0644\u0649 \u0645\u0646 \u0623\u0633\u0644\u0645 \u0648\u062c\u0647\u0647 \u0644\u0644\u0647 \u0648\u0647\u0648 \u0645\u062d\u0633\u0646 \u0641\u0644\u0647 \u0623\u062c\u0631\u0647 \u0639\u0646\u062f \u0631\u0628\u0647 \u0648\u0644\u0627 \u062e\u0648\u0641 \u0639\u0644\u064a\u0647\u0645 \u0648\u0644\u0627 \u0647\u0645 \u064a\u062d\u0632\u0646\u0648\u0646',
-                                 'translation': 'Bal<u>a</u> man aslama wajhahu lill<u>a</u>hi wahuwa mu<u>h</u>sinun falahu ajruhu AAinda rabbihi wal<u>a</u> khawfun AAalayhim wal<u>a</u> hum ya<u>h</u>zanoon<b>a</b>'},
+                                 'text': 'بَلَى مَنْ أَسْلَمَ وَجْهَهُ <span '
+                                         'class="match term0">لِلَّهِ</span> '
+                                         'وَهُوَ مُحْسِنٌ فَلَهُ أَجْرُهُ '
+                                         'عِنْدَ رَبِّهِ وَلَا خَوْفٌ '
+                                         'عَلَيْهِمْ وَلَا هُمْ يَحْزَنُونَ',
+                                 'text_no_highlight': 'بلى من أسلم وجهه لله '
+                                                      'وهو محسن فله أجره عند '
+                                                      'ربه ولا خوف عليهم ولا '
+                                                      'هم يحزنون',
+                                 'translation': 'Yes! whoever submits himself '
+                                                'entirely to Allah and he is '
+                                                'the doer of good (to others) '
+                                                'he has his reward from his '
+                                                'Lord, and there is no fear '
+                                                'for him nor shall he grieve.'},
                          'identifier': {'aya_id': 112,
                                         'gid': 119,
-                                        'sura_arabic_name': '\u0627\u0644\u0628\u0642\u0631\u0629',
+                                        'sura_arabic_name': 'البقرة',
                                         'sura_id': 2,
                                         'sura_name': 'Al-Baqarah'},
                          'position': {'hizb': 2,
@@ -206,14 +289,11 @@ def test_search():
                                       'manzil': 1,
                                       'page': 17,
                                       'page_IN': 23,
-                                      'rub': 3,
-                                      'ruk': 14},
-                         'sajda': {'exist': False,
-                                   'id': None,
-                                   'type': None},
+                                      'rub': 3},
+                         'sajda': {'exist': False, 'id': None, 'type': None},
                          'stat': {},
-                         'sura': {'arabic_name': '\u0627\u0644\u0628\u0642\u0631\u0629',
-                                  'arabic_type': '\u0645\u062f\u0646\u064a\u0629',
+                         'sura': {'arabic_name': 'البقرة',
+                                  'arabic_type': 'مدنية',
                                   'ayas': 286,
                                   'english_name': 'The Cow',
                                   'id': 2,
@@ -226,19 +306,60 @@ def test_search():
                          'aya': {'id': 142,
                                  'next_aya': {'id': 143,
                                               'sura': 'Al-Baqarah',
-                                              'sura_arabic': '\u0627\u0644\u0628\u0642\u0631\u0629',
-                                              'text': '\u0648\u064e\u0643\u064e\u0630\u064e\u0644\u0650\u0643\u064e \u062c\u064e\u0639\u064e\u0644\u0652\u0646\u064e\u0627\u0643\u064f\u0645\u0652 \u0623\u064f\u0645\u0651\u064e\u0629\u064b \u0648\u064e\u0633\u064e\u0637\u064b\u0627 \u0644\u0650\u062a\u064e\u0643\u064f\u0648\u0646\u064f\u0648\u0627 \u0634\u064f\u0647\u064e\u062f\u064e\u0627\u0621\u064e \u0639\u064e\u0644\u064e\u0649 \u0627\u0644\u0646\u0651\u064e\u0627\u0633\u0650 \u0648\u064e\u064a\u064e\u0643\u064f\u0648\u0646\u064e \u0627\u0644\u0631\u0651\u064e\u0633\u064f\u0648\u0644\u064f \u0639\u064e\u0644\u064e\u064a\u0652\u0643\u064f\u0645\u0652 \u0634\u064e\u0647\u0650\u064a\u062f\u064b\u0627 \u0648\u064e\u0645\u064e\u0627 \u062c\u064e\u0639\u064e\u0644\u0652\u0646\u064e\u0627 \u0627\u0644\u0652\u0642\u0650\u0628\u0652\u0644\u064e\u0629\u064e \u0627\u0644\u0651\u064e\u062a\u0650\u064a \u0643\u064f\u0646\u0652\u062a\u064e \u0639\u064e\u0644\u064e\u064a\u0652\u0647\u064e\u0627 \u0625\u0650\u0644\u0651\u064e\u0627 \u0644\u0650\u0646\u064e\u0639\u0652\u0644\u064e\u0645\u064e \u0645\u064e\u0646\u0652 \u064a\u064e\u062a\u0651\u064e\u0628\u0650\u0639\u064f \u0627\u0644\u0631\u0651\u064e\u0633\u064f\u0648\u0644\u064e \u0645\u0650\u0645\u0651\u064e\u0646\u0652 \u064a\u064e\u0646\u0652\u0642\u064e\u0644\u0650\u0628\u064f \u0639\u064e\u0644\u064e\u0649 \u0639\u064e\u0642\u0650\u0628\u064e\u064a\u0652\u0647\u0650 \u0648\u064e\u0625\u0650\u0646\u0652 \u0643\u064e\u0627\u0646\u064e\u062a\u0652 \u0644\u064e\u0643\u064e\u0628\u0650\u064a\u0631\u064e\u0629\u064b \u0625\u0650\u0644\u0651\u064e\u0627 \u0639\u064e\u0644\u064e\u0649 \u0627\u0644\u0651\u064e\u0630\u0650\u064a\u0646\u064e \u0647\u064e\u062f\u064e\u0649 \u0627\u0644\u0644\u0651\u064e\u0647\u064f \u0648\u064e\u0645\u064e\u0627 \u0643\u064e\u0627\u0646\u064e \u0627\u0644\u0644\u0651\u064e\u0647\u064f \u0644\u0650\u064a\u064f\u0636\u0650\u064a\u0639\u064e \u0625\u0650\u064a\u0645\u064e\u0627\u0646\u064e\u0643\u064f\u0645\u0652 \u0625\u0650\u0646\u0651\u064e \u0627\u0644\u0644\u0651\u064e\u0647\u064e \u0628\u0650\u0627\u0644\u0646\u0651\u064e\u0627\u0633\u0650 \u0644\u064e\u0631\u064e\u0621\u064f\u0648\u0641\u064c \u0631\u064e\u062d\u0650\u064a\u0645\u064c'},
+                                              'sura_arabic': 'البقرة',
+                                              'text': 'وَكَذَلِكَ '
+                                                      'جَعَلْنَاكُمْ أُمَّةً '
+                                                      'وَسَطًا لِتَكُونُوا '
+                                                      'شُهَدَاءَ عَلَى '
+                                                      'النَّاسِ وَيَكُونَ '
+                                                      'الرَّسُولُ عَلَيْكُمْ '
+                                                      'شَهِيدًا وَمَا '
+                                                      'جَعَلْنَا الْقِبْلَةَ '
+                                                      'الَّتِي كُنْتَ '
+                                                      'عَلَيْهَا إِلَّا '
+                                                      'لِنَعْلَمَ مَنْ '
+                                                      'يَتَّبِعُ الرَّسُولَ '
+                                                      'مِمَّنْ يَنْقَلِبُ '
+                                                      'عَلَى عَقِبَيْهِ وَإِنْ '
+                                                      'كَانَتْ لَكَبِيرَةً '
+                                                      'إِلَّا عَلَى الَّذِينَ '
+                                                      'هَدَى اللَّهُ وَمَا '
+                                                      'كَانَ اللَّهُ لِيُضِيعَ '
+                                                      'إِيمَانَكُمْ إِنَّ '
+                                                      'اللَّهَ بِالنَّاسِ '
+                                                      'لَرَءُوفٌ رَحِيمٌ'},
                                  'prev_aya': {'id': 141,
                                               'sura': 'Al-Baqarah',
-                                              'sura_arabic': '\u0627\u0644\u0628\u0642\u0631\u0629',
-                                              'text': '\u062a\u0650\u0644\u0652\u0643\u064e \u0623\u064f\u0645\u0651\u064e\u0629\u064c \u0642\u064e\u062f\u0652 \u062e\u064e\u0644\u064e\u062a\u0652 \u0644\u064e\u0647\u064e\u0627 \u0645\u064e\u0627 \u0643\u064e\u0633\u064e\u0628\u064e\u062a\u0652 \u0648\u064e\u0644\u064e\u0643\u064f\u0645\u0652 \u0645\u064e\u0627 \u0643\u064e\u0633\u064e\u0628\u0652\u062a\u064f\u0645\u0652 \u0648\u064e\u0644\u064e\u0627 \u062a\u064f\u0633\u0652\u0623\u064e\u0644\u064f\u0648\u0646\u064e \u0639\u064e\u0645\u0651\u064e\u0627 \u0643\u064e\u0627\u0646\u064f\u0648\u0627 \u064a\u064e\u0639\u0652\u0645\u064e\u0644\u064f\u0648\u0646\u064e'},
+                                              'sura_arabic': 'البقرة',
+                                              'text': 'تِلْكَ أُمَّةٌ قَدْ '
+                                                      'خَلَتْ لَهَا مَا '
+                                                      'كَسَبَتْ وَلَكُمْ مَا '
+                                                      'كَسَبْتُمْ وَلَا '
+                                                      'تُسْأَلُونَ عَمَّا '
+                                                      'كَانُوا يَعْمَلُونَ'},
                                  'recitation': 'https://www.everyayah.com/data/Abdul_Basit_Murattal_64kbps/002142.mp3',
-                                 'text': '\u0633\u064e\u064a\u064e\u0642\u064f\u0648\u0644\u064f \u0627\u0644\u0633\u0651\u064f\u0641\u064e\u0647\u064e\u0627\u0621\u064f \u0645\u0650\u0646\u064e \u0627\u0644\u0646\u0651\u064e\u0627\u0633\u0650 \u0645\u064e\u0627 \u0648\u064e\u0644\u0651\u064e\u0627\u0647\u064f\u0645\u0652 \u0639\u064e\u0646\u0652 \u0642\u0650\u0628\u0652\u0644\u064e\u062a\u0650\u0647\u0650\u0645\u064f \u0627\u0644\u0651\u064e\u062a\u0650\u064a \u0643\u064e\u0627\u0646\u064f\u0648\u0627 \u0639\u064e\u0644\u064e\u064a\u0652\u0647\u064e\u0627 \u0642\u064f\u0644\u0652 <span class="match term0">\u0644\u0650\u0644\u0651\u064e\u0647\u0650</span> \u0627\u0644\u0652\u0645\u064e\u0634\u0652\u0631\u0650\u0642\u064f \u0648\u064e\u0627\u0644\u0652\u0645\u064e\u063a\u0652\u0631\u0650\u0628\u064f \u064a\u064e\u0647\u0652\u062f\u0650\u064a \u0645\u064e\u0646\u0652 \u064a\u064e\u0634\u064e\u0627\u0621\u064f \u0625\u0650\u0644\u064e\u0649 \u0635\u0650\u0631\u064e\u0627\u0637\u064d \u0645\u064f\u0633\u0652\u062a\u064e\u0642\u0650\u064a\u0645\u064d',
-                                 'text_no_highlight': '\u0633\u064a\u0642\u0648\u0644 \u0627\u0644\u0633\u0641\u0647\u0627\u0621 \u0645\u0646 \u0627\u0644\u0646\u0627\u0633 \u0645\u0627 \u0648\u0644\u0627\u0647\u0645 \u0639\u0646 \u0642\u0628\u0644\u062a\u0647\u0645 \u0627\u0644\u062a\u064a \u0643\u0627\u0646\u0648\u0627 \u0639\u0644\u064a\u0647\u0627 \u0642\u0644 \u0644\u0644\u0647 \u0627\u0644\u0645\u0634\u0631\u0642 \u0648\u0627\u0644\u0645\u063a\u0631\u0628 \u064a\u0647\u062f\u064a \u0645\u0646 \u064a\u0634\u0627\u0621 \u0625\u0644\u0649 \u0635\u0631\u0627\u0637 \u0645\u0633\u062a\u0642\u064a\u0645',
-                                 'translation': 'Sayaqoolu a<b>l</b>ssufah<u>a</u>o mina a<b>l</b>nn<u>a</u>si m<u>a</u> wall<u>a</u>hum AAan qiblatihimu allatee k<u>a</u>noo AAalayh<u>a</u> qul lill<u>a</u>hi almashriqu wa<b>a</b>lmaghribu yahdee man yash<u>a</u>o il<u>a</u> <u>s</u>ir<u>at</u>in mustaqeem<b>in</b>'},
+                                 'text': 'سَيَقُولُ السُّفَهَاءُ مِنَ النَّاسِ '
+                                         'مَا وَلَّاهُمْ عَنْ قِبْلَتِهِمُ '
+                                         'الَّتِي كَانُوا عَلَيْهَا قُلْ <span '
+                                         'class="match term0">لِلَّهِ</span> '
+                                         'الْمَشْرِقُ وَالْمَغْرِبُ يَهْدِي '
+                                         'مَنْ يَشَاءُ إِلَى صِرَاطٍ '
+                                         'مُسْتَقِيمٍ',
+                                 'text_no_highlight': 'سيقول السفهاء من الناس '
+                                                      'ما ولاهم عن قبلتهم التي '
+                                                      'كانوا عليها قل لله '
+                                                      'المشرق والمغرب يهدي من '
+                                                      'يشاء إلى صراط مستقيم',
+                                 'translation': 'The fools among the people '
+                                                'will say: What has turned '
+                                                'them from their qiblah which '
+                                                'they had? Say: The East and '
+                                                'the West belong only to '
+                                                'Allah; He guides whom He '
+                                                'likes to the right path.'},
                          'identifier': {'aya_id': 142,
                                         'gid': 149,
-                                        'sura_arabic_name': '\u0627\u0644\u0628\u0642\u0631\u0629',
+                                        'sura_arabic_name': 'البقرة',
                                         'sura_id': 2,
                                         'sura_name': 'Al-Baqarah'},
                          'position': {'hizb': 3,
@@ -246,14 +367,11 @@ def test_search():
                                       'manzil': 1,
                                       'page': 22,
                                       'page_IN': 29,
-                                      'rub': 1,
-                                      'ruk': 18},
-                         'sajda': {'exist': False,
-                                   'id': None,
-                                   'type': None},
+                                      'rub': 1},
+                         'sajda': {'exist': False, 'id': None, 'type': None},
                          'stat': {},
-                         'sura': {'arabic_name': '\u0627\u0644\u0628\u0642\u0631\u0629',
-                                  'arabic_type': '\u0645\u062f\u0646\u064a\u0629',
+                         'sura': {'arabic_name': 'البقرة',
+                                  'arabic_type': 'مدنية',
                                   'ayas': 286,
                                   'english_name': 'The Cow',
                                   'id': 2,
@@ -266,19 +384,38 @@ def test_search():
                          'aya': {'id': 156,
                                  'next_aya': {'id': 157,
                                               'sura': 'Al-Baqarah',
-                                              'sura_arabic': '\u0627\u0644\u0628\u0642\u0631\u0629',
-                                              'text': '\u0623\u064f\u0648\u0644\u064e\u0626\u0650\u0643\u064e \u0639\u064e\u0644\u064e\u064a\u0652\u0647\u0650\u0645\u0652 \u0635\u064e\u0644\u064e\u0648\u064e\u0627\u062a\u064c \u0645\u0650\u0646\u0652 \u0631\u064e\u0628\u0651\u0650\u0647\u0650\u0645\u0652 \u0648\u064e\u0631\u064e\u062d\u0652\u0645\u064e\u0629\u064c \u0648\u064e\u0623\u064f\u0648\u0644\u064e\u0626\u0650\u0643\u064e \u0647\u064f\u0645\u064f \u0627\u0644\u0652\u0645\u064f\u0647\u0652\u062a\u064e\u062f\u064f\u0648\u0646\u064e'},
+                                              'sura_arabic': 'البقرة',
+                                              'text': 'أُولَئِكَ عَلَيْهِمْ '
+                                                      'صَلَوَاتٌ مِنْ '
+                                                      'رَبِّهِمْ وَرَحْمَةٌ '
+                                                      'وَأُولَئِكَ هُمُ '
+                                                      'الْمُهْتَدُونَ'},
                                  'prev_aya': {'id': 155,
                                               'sura': 'Al-Baqarah',
-                                              'sura_arabic': '\u0627\u0644\u0628\u0642\u0631\u0629',
-                                              'text': '\u0648\u064e\u0644\u064e\u0646\u064e\u0628\u0652\u0644\u064f\u0648\u064e\u0646\u0651\u064e\u0643\u064f\u0645\u0652 \u0628\u0650\u0634\u064e\u064a\u0652\u0621\u064d \u0645\u0650\u0646\u064e \u0627\u0644\u0652\u062e\u064e\u0648\u0652\u0641\u0650 \u0648\u064e\u0627\u0644\u0652\u062c\u064f\u0648\u0639\u0650 \u0648\u064e\u0646\u064e\u0642\u0652\u0635\u064d \u0645\u0650\u0646\u064e \u0627\u0644\u0652\u0623\u064e\u0645\u0652\u0648\u064e\u0627\u0644\u0650 \u0648\u064e\u0627\u0644\u0652\u0623\u064e\u0646\u0652\u0641\u064f\u0633\u0650 \u0648\u064e\u0627\u0644\u062b\u0651\u064e\u0645\u064e\u0631\u064e\u0627\u062a\u0650 \u0648\u064e\u0628\u064e\u0634\u0651\u0650\u0631\u0650 \u0627\u0644\u0635\u0651\u064e\u0627\u0628\u0650\u0631\u0650\u064a\u0646\u064e'},
+                                              'sura_arabic': 'البقرة',
+                                              'text': 'وَلَنَبْلُوَنَّكُمْ '
+                                                      'بِشَيْءٍ مِنَ الْخَوْفِ '
+                                                      'وَالْجُوعِ وَنَقْصٍ '
+                                                      'مِنَ الْأَمْوَالِ '
+                                                      'وَالْأَنْفُسِ '
+                                                      'وَالثَّمَرَاتِ '
+                                                      'وَبَشِّرِ '
+                                                      'الصَّابِرِينَ'},
                                  'recitation': 'https://www.everyayah.com/data/Abdul_Basit_Murattal_64kbps/002156.mp3',
-                                 'text': '\u0627\u0644\u0651\u064e\u0630\u0650\u064a\u0646\u064e \u0625\u0650\u0630\u064e\u0627 \u0623\u064e\u0635\u064e\u0627\u0628\u064e\u062a\u0652\u0647\u064f\u0645\u0652 \u0645\u064f\u0635\u0650\u064a\u0628\u064e\u0629\u064c \u0642\u064e\u0627\u0644\u064f\u0648\u0627 \u0625\u0650\u0646\u0651\u064e\u0627 <span class="match term0">\u0644\u0650\u0644\u0651\u064e\u0647\u0650</span> \u0648\u064e\u0625\u0650\u0646\u0651\u064e\u0627 \u0625\u0650\u0644\u064e\u064a\u0652\u0647\u0650 \u0631\u064e\u0627\u062c\u0650\u0639\u064f\u0648\u0646\u064e',
-                                 'text_no_highlight': '\u0627\u0644\u0630\u064a\u0646 \u0625\u0630\u0627 \u0623\u0635\u0627\u0628\u062a\u0647\u0645 \u0645\u0635\u064a\u0628\u0629 \u0642\u0627\u0644\u0648\u0627 \u0625\u0646\u0627 \u0644\u0644\u0647 \u0648\u0625\u0646\u0627 \u0625\u0644\u064a\u0647 \u0631\u0627\u062c\u0639\u0648\u0646',
-                                 'translation': 'Alla<u>th</u>eena i<u>tha</u> a<u>sa</u>bathum mu<u>s</u>eebatun q<u>a</u>loo inn<u>a</u> lill<u>a</u>hi wainn<u>a</u> ilayhi r<u>a</u>jiAAoon<b>a</b>'},
+                                 'text': 'الَّذِينَ إِذَا أَصَابَتْهُمْ '
+                                         'مُصِيبَةٌ قَالُوا إِنَّا <span '
+                                         'class="match term0">لِلَّهِ</span> '
+                                         'وَإِنَّا إِلَيْهِ رَاجِعُونَ',
+                                 'text_no_highlight': 'الذين إذا أصابتهم مصيبة '
+                                                      'قالوا إنا لله وإنا إليه '
+                                                      'راجعون',
+                                 'translation': 'Who, when a misfortune '
+                                                'befalls them, say: Surely we '
+                                                "are Allah's and to Him we "
+                                                'shall surely return.'},
                          'identifier': {'aya_id': 156,
                                         'gid': 163,
-                                        'sura_arabic_name': '\u0627\u0644\u0628\u0642\u0631\u0629',
+                                        'sura_arabic_name': 'البقرة',
                                         'sura_id': 2,
                                         'sura_name': 'Al-Baqarah'},
                          'position': {'hizb': 3,
@@ -286,14 +423,11 @@ def test_search():
                                       'manzil': 1,
                                       'page': 24,
                                       'page_IN': 32,
-                                      'rub': 1,
-                                      'ruk': 20},
-                         'sajda': {'exist': False,
-                                   'id': None,
-                                   'type': None},
+                                      'rub': 1},
+                         'sajda': {'exist': False, 'id': None, 'type': None},
                          'stat': {},
-                         'sura': {'arabic_name': '\u0627\u0644\u0628\u0642\u0631\u0629',
-                                  'arabic_type': '\u0645\u062f\u0646\u064a\u0629',
+                         'sura': {'arabic_name': 'البقرة',
+                                  'arabic_type': 'مدنية',
                                   'ayas': 286,
                                   'english_name': 'The Cow',
                                   'id': 2,
@@ -306,19 +440,72 @@ def test_search():
                          'aya': {'id': 165,
                                  'next_aya': {'id': 166,
                                               'sura': 'Al-Baqarah',
-                                              'sura_arabic': '\u0627\u0644\u0628\u0642\u0631\u0629',
-                                              'text': '\u0625\u0650\u0630\u0652 \u062a\u064e\u0628\u064e\u0631\u0651\u064e\u0623\u064e \u0627\u0644\u0651\u064e\u0630\u0650\u064a\u0646\u064e \u0627\u062a\u0651\u064f\u0628\u0650\u0639\u064f\u0648\u0627 \u0645\u0650\u0646\u064e \u0627\u0644\u0651\u064e\u0630\u0650\u064a\u0646\u064e \u0627\u062a\u0651\u064e\u0628\u064e\u0639\u064f\u0648\u0627 \u0648\u064e\u0631\u064e\u0623\u064e\u0648\u064f\u0627 \u0627\u0644\u0652\u0639\u064e\u0630\u064e\u0627\u0628\u064e \u0648\u064e\u062a\u064e\u0642\u064e\u0637\u0651\u064e\u0639\u064e\u062a\u0652 \u0628\u0650\u0647\u0650\u0645\u064f \u0627\u0644\u0652\u0623\u064e\u0633\u0652\u0628\u064e\u0627\u0628\u064f'},
+                                              'sura_arabic': 'البقرة',
+                                              'text': 'إِذْ تَبَرَّأَ '
+                                                      'الَّذِينَ اتُّبِعُوا '
+                                                      'مِنَ الَّذِينَ '
+                                                      'اتَّبَعُوا وَرَأَوُا '
+                                                      'الْعَذَابَ '
+                                                      'وَتَقَطَّعَتْ بِهِمُ '
+                                                      'الْأَسْبَابُ'},
                                  'prev_aya': {'id': 164,
                                               'sura': 'Al-Baqarah',
-                                              'sura_arabic': '\u0627\u0644\u0628\u0642\u0631\u0629',
-                                              'text': '\u0625\u0650\u0646\u0651\u064e \u0641\u0650\u064a \u062e\u064e\u0644\u0652\u0642\u0650 \u0627\u0644\u0633\u0651\u064e\u0645\u064e\u0627\u0648\u064e\u0627\u062a\u0650 \u0648\u064e\u0627\u0644\u0652\u0623\u064e\u0631\u0652\u0636\u0650 \u0648\u064e\u0627\u062e\u0652\u062a\u0650\u0644\u064e\u0627\u0641\u0650 \u0627\u0644\u0644\u0651\u064e\u064a\u0652\u0644\u0650 \u0648\u064e\u0627\u0644\u0646\u0651\u064e\u0647\u064e\u0627\u0631\u0650 \u0648\u064e\u0627\u0644\u0652\u0641\u064f\u0644\u0652\u0643\u0650 \u0627\u0644\u0651\u064e\u062a\u0650\u064a \u062a\u064e\u062c\u0652\u0631\u0650\u064a \u0641\u0650\u064a \u0627\u0644\u0652\u0628\u064e\u062d\u0652\u0631\u0650 \u0628\u0650\u0645\u064e\u0627 \u064a\u064e\u0646\u0652\u0641\u064e\u0639\u064f \u0627\u0644\u0646\u0651\u064e\u0627\u0633\u064e \u0648\u064e\u0645\u064e\u0627 \u0623\u064e\u0646\u0652\u0632\u064e\u0644\u064e \u0627\u0644\u0644\u0651\u064e\u0647\u064f \u0645\u0650\u0646\u064e \u0627\u0644\u0633\u0651\u064e\u0645\u064e\u0627\u0621\u0650 \u0645\u0650\u0646\u0652 \u0645\u064e\u0627\u0621\u064d \u0641\u064e\u0623\u064e\u062d\u0652\u064a\u064e\u0627 \u0628\u0650\u0647\u0650 \u0627\u0644\u0652\u0623\u064e\u0631\u0652\u0636\u064e \u0628\u064e\u0639\u0652\u062f\u064e \u0645\u064e\u0648\u0652\u062a\u0650\u0647\u064e\u0627 \u0648\u064e\u0628\u064e\u062b\u0651\u064e \u0641\u0650\u064a\u0647\u064e\u0627 \u0645\u0650\u0646\u0652 \u0643\u064f\u0644\u0651\u0650 \u062f\u064e\u0627\u0628\u0651\u064e\u0629\u064d \u0648\u064e\u062a\u064e\u0635\u0652\u0631\u0650\u064a\u0641\u0650 \u0627\u0644\u0631\u0651\u0650\u064a\u064e\u0627\u062d\u0650 \u0648\u064e\u0627\u0644\u0633\u0651\u064e\u062d\u064e\u0627\u0628\u0650 \u0627\u0644\u0652\u0645\u064f\u0633\u064e\u062e\u0651\u064e\u0631\u0650 \u0628\u064e\u064a\u0652\u0646\u064e \u0627\u0644\u0633\u0651\u064e\u0645\u064e\u0627\u0621\u0650 \u0648\u064e\u0627\u0644\u0652\u0623\u064e\u0631\u0652\u0636\u0650 \u0644\u064e\u0622\u064a\u064e\u0627\u062a\u064d \u0644\u0650\u0642\u064e\u0648\u0652\u0645\u064d \u064a\u064e\u0639\u0652\u0642\u0650\u0644\u064f\u0648\u0646\u064e'},
+                                              'sura_arabic': 'البقرة',
+                                              'text': 'إِنَّ فِي خَلْقِ '
+                                                      'السَّمَاوَاتِ '
+                                                      'وَالْأَرْضِ '
+                                                      'وَاخْتِلَافِ اللَّيْلِ '
+                                                      'وَالنَّهَارِ '
+                                                      'وَالْفُلْكِ الَّتِي '
+                                                      'تَجْرِي فِي الْبَحْرِ '
+                                                      'بِمَا يَنْفَعُ النَّاسَ '
+                                                      'وَمَا أَنْزَلَ اللَّهُ '
+                                                      'مِنَ السَّمَاءِ مِنْ '
+                                                      'مَاءٍ فَأَحْيَا بِهِ '
+                                                      'الْأَرْضَ بَعْدَ '
+                                                      'مَوْتِهَا وَبَثَّ '
+                                                      'فِيهَا مِنْ كُلِّ '
+                                                      'دَابَّةٍ وَتَصْرِيفِ '
+                                                      'الرِّيَاحِ وَالسَّحَابِ '
+                                                      'الْمُسَخَّرِ بَيْنَ '
+                                                      'السَّمَاءِ وَالْأَرْضِ '
+                                                      'لَآيَاتٍ لِقَوْمٍ '
+                                                      'يَعْقِلُونَ'},
                                  'recitation': 'https://www.everyayah.com/data/Abdul_Basit_Murattal_64kbps/002165.mp3',
-                                 'text': '\u0648\u064e\u0645\u0650\u0646\u064e \u0627\u0644\u0646\u0651\u064e\u0627\u0633\u0650 \u0645\u064e\u0646\u0652 \u064a\u064e\u062a\u0651\u064e\u062e\u0650\u0630\u064f \u0645\u0650\u0646\u0652 \u062f\u064f\u0648\u0646\u0650 \u0627\u0644\u0644\u0651\u064e\u0647\u0650 \u0623\u064e\u0646\u0652\u062f\u064e\u0627\u062f\u064b\u0627 \u064a\u064f\u062d\u0650\u0628\u0651\u064f\u0648\u0646\u064e\u0647\u064f\u0645\u0652 \u0643\u064e\u062d\u064f\u0628\u0651\u0650 \u0627\u0644\u0644\u0651\u064e\u0647\u0650 \u0648\u064e\u0627\u0644\u0651\u064e\u0630\u0650\u064a\u0646\u064e \u0622\u0645\u064e\u0646\u064f\u0648\u0627 \u0623\u064e\u0634\u064e\u062f\u0651\u064f \u062d\u064f\u0628\u0651\u064b\u0627 <span class="match term0">\u0644\u0650\u0644\u0651\u064e\u0647\u0650</span> \u0648\u064e\u0644\u064e\u0648\u0652 \u064a\u064e\u0631\u064e\u0649 \u0627\u0644\u0651\u064e\u0630\u0650\u064a\u0646\u064e \u0638\u064e\u0644\u064e\u0645\u064f\u0648\u0627 \u0625\u0650\u0630\u0652 \u064a\u064e\u0631\u064e\u0648\u0652\u0646\u064e \u0627\u0644\u0652\u0639\u064e\u0630\u064e\u0627\u0628\u064e \u0623\u064e\u0646\u0651\u064e \u0627\u0644\u0652\u0642\u064f\u0648\u0651\u064e\u0629\u064e <span class="match term0">\u0644\u0650\u0644\u0651\u064e\u0647\u0650</span> \u062c\u064e\u0645\u0650\u064a\u0639\u064b\u0627 \u0648\u064e\u0623\u064e\u0646\u0651\u064e \u0627\u0644\u0644\u0651\u064e\u0647\u064e \u0634\u064e\u062f\u0650\u064a\u062f\u064f \u0627\u0644\u0652\u0639\u064e\u0630\u064e\u0627\u0628\u0650',
-                                 'text_no_highlight': '\u0648\u0645\u0646 \u0627\u0644\u0646\u0627\u0633 \u0645\u0646 \u064a\u062a\u062e\u0630 \u0645\u0646 \u062f\u0648\u0646 \u0627\u0644\u0644\u0647 \u0623\u0646\u062f\u0627\u062f\u0627 \u064a\u062d\u0628\u0648\u0646\u0647\u0645 \u0643\u062d\u0628 \u0627\u0644\u0644\u0647 \u0648\u0627\u0644\u0630\u064a\u0646 \u0622\u0645\u0646\u0648\u0627 \u0623\u0634\u062f \u062d\u0628\u0627 \u0644\u0644\u0647 \u0648\u0644\u0648 \u064a\u0631\u0649 \u0627\u0644\u0630\u064a\u0646 \u0638\u0644\u0645\u0648\u0627 \u0625\u0630 \u064a\u0631\u0648\u0646 \u0627\u0644\u0639\u0630\u0627\u0628 \u0623\u0646 \u0627\u0644\u0642\u0648\u0629 \u0644\u0644\u0647 \u062c\u0645\u064a\u0639\u0627 \u0648\u0623\u0646 \u0627\u0644\u0644\u0647 \u0634\u062f\u064a\u062f \u0627\u0644\u0639\u0630\u0627\u0628',
-                                 'translation': 'Wamina a<b>l</b>nn<u>a</u>si man yattakhi<u>th</u>u min dooni All<u>a</u>hi and<u>a</u>dan yu<u>h</u>ibboonahum ka<u>h</u>ubbi All<u>a</u>hi wa<b>a</b>lla<u>th</u>eena <u>a</u>manoo ashaddu <u>h</u>ubban lill<u>a</u>hi walaw yar<u>a</u> alla<u>th</u>eena <i><u>th</u></i>alamoo i<u>th</u> yarawna alAAa<u>tha</u>ba anna alquwwata lill<u>a</u>hi jameeAAan waanna All<u>a</u>ha shadeedu alAAa<u>tha</u>b<b>i</b>'},
+                                 'text': 'وَمِنَ النَّاسِ مَنْ يَتَّخِذُ مِنْ '
+                                         'دُونِ اللَّهِ أَنْدَادًا '
+                                         'يُحِبُّونَهُمْ كَحُبِّ اللَّهِ '
+                                         'وَالَّذِينَ آمَنُوا أَشَدُّ حُبًّا '
+                                         '<span class="match '
+                                         'term0">لِلَّهِ</span> وَلَوْ يَرَى '
+                                         'الَّذِينَ ظَلَمُوا إِذْ يَرَوْنَ '
+                                         'الْعَذَابَ أَنَّ الْقُوَّةَ <span '
+                                         'class="match term0">لِلَّهِ</span> '
+                                         'جَمِيعًا وَأَنَّ اللَّهَ شَدِيدُ '
+                                         'الْعَذَابِ',
+                                 'text_no_highlight': 'ومن الناس من يتخذ من '
+                                                      'دون الله أندادا يحبونهم '
+                                                      'كحب الله والذين آمنوا '
+                                                      'أشد حبا لله ولو يرى '
+                                                      'الذين ظلموا إذ يرون '
+                                                      'العذاب أن القوة لله '
+                                                      'جميعا وأن الله شديد '
+                                                      'العذاب',
+                                 'translation': 'And there are some among men '
+                                                'who take for themselves '
+                                                'objects of worship besides '
+                                                'Allah, whom they love as they '
+                                                'love Allah, and those who '
+                                                'believe are stronger in love '
+                                                'for Allah and O, that those '
+                                                'who are unjust had seen, when '
+                                                'they see the chastisement, '
+                                                'that the power is wholly '
+                                                "Allah's and that Allah is "
+                                                'severe in requiting (evil).'},
                          'identifier': {'aya_id': 165,
                                         'gid': 172,
-                                        'sura_arabic_name': '\u0627\u0644\u0628\u0642\u0631\u0629',
+                                        'sura_arabic_name': 'البقرة',
                                         'sura_id': 2,
                                         'sura_name': 'Al-Baqarah'},
                          'position': {'hizb': 3,
@@ -326,14 +513,11 @@ def test_search():
                                       'manzil': 1,
                                       'page': 25,
                                       'page_IN': 33,
-                                      'rub': 2,
-                                      'ruk': 21},
-                         'sajda': {'exist': False,
-                                   'id': None,
-                                   'type': None},
+                                      'rub': 2},
+                         'sajda': {'exist': False, 'id': None, 'type': None},
                          'stat': {},
-                         'sura': {'arabic_name': '\u0627\u0644\u0628\u0642\u0631\u0629',
-                                  'arabic_type': '\u0645\u062f\u0646\u064a\u0629',
+                         'sura': {'arabic_name': 'البقرة',
+                                  'arabic_type': 'مدنية',
                                   'ayas': 286,
                                   'english_name': 'The Cow',
                                   'id': 2,
@@ -346,19 +530,45 @@ def test_search():
                          'aya': {'id': 172,
                                  'next_aya': {'id': 173,
                                               'sura': 'Al-Baqarah',
-                                              'sura_arabic': '\u0627\u0644\u0628\u0642\u0631\u0629',
-                                              'text': '\u0625\u0650\u0646\u0651\u064e\u0645\u064e\u0627 \u062d\u064e\u0631\u0651\u064e\u0645\u064e \u0639\u064e\u0644\u064e\u064a\u0652\u0643\u064f\u0645\u064f \u0627\u0644\u0652\u0645\u064e\u064a\u0652\u062a\u064e\u0629\u064e \u0648\u064e\u0627\u0644\u062f\u0651\u064e\u0645\u064e \u0648\u064e\u0644\u064e\u062d\u0652\u0645\u064e \u0627\u0644\u0652\u062e\u0650\u0646\u0652\u0632\u0650\u064a\u0631\u0650 \u0648\u064e\u0645\u064e\u0627 \u0623\u064f\u0647\u0650\u0644\u0651\u064e \u0628\u0650\u0647\u0650 \u0644\u0650\u063a\u064e\u064a\u0652\u0631\u0650 \u0627\u0644\u0644\u0651\u064e\u0647\u0650 \u0641\u064e\u0645\u064e\u0646\u0650 \u0627\u0636\u0652\u0637\u064f\u0631\u0651\u064e \u063a\u064e\u064a\u0652\u0631\u064e \u0628\u064e\u0627\u063a\u064d \u0648\u064e\u0644\u064e\u0627 \u0639\u064e\u0627\u062f\u064d \u0641\u064e\u0644\u064e\u0627 \u0625\u0650\u062b\u0652\u0645\u064e \u0639\u064e\u0644\u064e\u064a\u0652\u0647\u0650 \u0625\u0650\u0646\u0651\u064e \u0627\u0644\u0644\u0651\u064e\u0647\u064e \u063a\u064e\u0641\u064f\u0648\u0631\u064c \u0631\u064e\u062d\u0650\u064a\u0645\u064c'},
+                                              'sura_arabic': 'البقرة',
+                                              'text': 'إِنَّمَا حَرَّمَ '
+                                                      'عَلَيْكُمُ الْمَيْتَةَ '
+                                                      'وَالدَّمَ وَلَحْمَ '
+                                                      'الْخِنْزِيرِ وَمَا '
+                                                      'أُهِلَّ بِهِ لِغَيْرِ '
+                                                      'اللَّهِ فَمَنِ اضْطُرَّ '
+                                                      'غَيْرَ بَاغٍ وَلَا '
+                                                      'عَادٍ فَلَا إِثْمَ '
+                                                      'عَلَيْهِ إِنَّ اللَّهَ '
+                                                      'غَفُورٌ رَحِيمٌ'},
                                  'prev_aya': {'id': 171,
                                               'sura': 'Al-Baqarah',
-                                              'sura_arabic': '\u0627\u0644\u0628\u0642\u0631\u0629',
-                                              'text': '\u0648\u064e\u0645\u064e\u062b\u064e\u0644\u064f \u0627\u0644\u0651\u064e\u0630\u0650\u064a\u0646\u064e \u0643\u064e\u0641\u064e\u0631\u064f\u0648\u0627 \u0643\u064e\u0645\u064e\u062b\u064e\u0644\u0650 \u0627\u0644\u0651\u064e\u0630\u0650\u064a \u064a\u064e\u0646\u0652\u0639\u0650\u0642\u064f \u0628\u0650\u0645\u064e\u0627 \u0644\u064e\u0627 \u064a\u064e\u0633\u0652\u0645\u064e\u0639\u064f \u0625\u0650\u0644\u0651\u064e\u0627 \u062f\u064f\u0639\u064e\u0627\u0621\u064b \u0648\u064e\u0646\u0650\u062f\u064e\u0627\u0621\u064b \u0635\u064f\u0645\u0651\u064c \u0628\u064f\u0643\u0652\u0645\u064c \u0639\u064f\u0645\u0652\u064a\u064c \u0641\u064e\u0647\u064f\u0645\u0652 \u0644\u064e\u0627 \u064a\u064e\u0639\u0652\u0642\u0650\u0644\u064f\u0648\u0646\u064e'},
+                                              'sura_arabic': 'البقرة',
+                                              'text': 'وَمَثَلُ الَّذِينَ '
+                                                      'كَفَرُوا كَمَثَلِ '
+                                                      'الَّذِي يَنْعِقُ بِمَا '
+                                                      'لَا يَسْمَعُ إِلَّا '
+                                                      'دُعَاءً وَنِدَاءً صُمٌّ '
+                                                      'بُكْمٌ عُمْيٌ فَهُمْ '
+                                                      'لَا يَعْقِلُونَ'},
                                  'recitation': 'https://www.everyayah.com/data/Abdul_Basit_Murattal_64kbps/002172.mp3',
-                                 'text': '\u064a\u064e\u0627 \u0623\u064e\u064a\u0651\u064f\u0647\u064e\u0627 \u0627\u0644\u0651\u064e\u0630\u0650\u064a\u0646\u064e \u0622\u0645\u064e\u0646\u064f\u0648\u0627 \u0643\u064f\u0644\u064f\u0648\u0627 \u0645\u0650\u0646\u0652 \u0637\u064e\u064a\u0651\u0650\u0628\u064e\u0627\u062a\u0650 \u0645\u064e\u0627 \u0631\u064e\u0632\u064e\u0642\u0652\u0646\u064e\u0627\u0643\u064f\u0645\u0652 \u0648\u064e\u0627\u0634\u0652\u0643\u064f\u0631\u064f\u0648\u0627 <span class="match term0">\u0644\u0650\u0644\u0651\u064e\u0647\u0650</span> \u0625\u0650\u0646\u0652 \u0643\u064f\u0646\u0652\u062a\u064f\u0645\u0652 \u0625\u0650\u064a\u0651\u064e\u0627\u0647\u064f \u062a\u064e\u0639\u0652\u0628\u064f\u062f\u064f\u0648\u0646\u064e',
-                                 'text_no_highlight': '\u064a\u0627 \u0623\u064a\u0647\u0627 \u0627\u0644\u0630\u064a\u0646 \u0622\u0645\u0646\u0648\u0627 \u0643\u0644\u0648\u0627 \u0645\u0646 \u0637\u064a\u0628\u0627\u062a \u0645\u0627 \u0631\u0632\u0642\u0646\u0627\u0643\u0645 \u0648\u0627\u0634\u0643\u0631\u0648\u0627 \u0644\u0644\u0647 \u0625\u0646 \u0643\u0646\u062a\u0645 \u0625\u064a\u0627\u0647 \u062a\u0639\u0628\u062f\u0648\u0646',
-                                 'translation': 'Y<u>a</u> ayyuh<u>a</u> alla<u>th</u>eena <u>a</u>manoo kuloo min <u>t</u>ayyib<u>a</u>ti m<u>a</u> razaqn<u>a</u>kum wa<b>o</b>shkuroo lill<u>a</u>hi in kuntum iyy<u>a</u>hu taAAbudoon<b>a</b>'},
+                                 'text': 'يَا أَيُّهَا الَّذِينَ آمَنُوا '
+                                         'كُلُوا مِنْ طَيِّبَاتِ مَا '
+                                         'رَزَقْنَاكُمْ وَاشْكُرُوا <span '
+                                         'class="match term0">لِلَّهِ</span> '
+                                         'إِنْ كُنْتُمْ إِيَّاهُ تَعْبُدُونَ',
+                                 'text_no_highlight': 'يا أيها الذين آمنوا '
+                                                      'كلوا من طيبات ما '
+                                                      'رزقناكم واشكروا لله إن '
+                                                      'كنتم إياه تعبدون',
+                                 'translation': 'O you who believe! eat of the '
+                                                'good things that We have '
+                                                'provided you with, and give '
+                                                'thanks to Allah if Him it is '
+                                                'that you serve.'},
                          'identifier': {'aya_id': 172,
                                         'gid': 179,
-                                        'sura_arabic_name': '\u0627\u0644\u0628\u0642\u0631\u0629',
+                                        'sura_arabic_name': 'البقرة',
                                         'sura_id': 2,
                                         'sura_name': 'Al-Baqarah'},
                          'position': {'hizb': 3,
@@ -366,14 +576,11 @@ def test_search():
                                       'manzil': 1,
                                       'page': 26,
                                       'page_IN': 34,
-                                      'rub': 2,
-                                      'ruk': 22},
-                         'sajda': {'exist': False,
-                                   'id': None,
-                                   'type': None},
+                                      'rub': 2},
+                         'sajda': {'exist': False, 'id': None, 'type': None},
                          'stat': {},
-                         'sura': {'arabic_name': '\u0627\u0644\u0628\u0642\u0631\u0629',
-                                  'arabic_type': '\u0645\u062f\u0646\u064a\u0629',
+                         'sura': {'arabic_name': 'البقرة',
+                                  'arabic_type': 'مدنية',
                                   'ayas': 286,
                                   'english_name': 'The Cow',
                                   'id': 2,
@@ -386,19 +593,44 @@ def test_search():
                          'aya': {'id': 193,
                                  'next_aya': {'id': 194,
                                               'sura': 'Al-Baqarah',
-                                              'sura_arabic': '\u0627\u0644\u0628\u0642\u0631\u0629',
-                                              'text': '\u0627\u0644\u0634\u0651\u064e\u0647\u0652\u0631\u064f \u0627\u0644\u0652\u062d\u064e\u0631\u064e\u0627\u0645\u064f \u0628\u0650\u0627\u0644\u0634\u0651\u064e\u0647\u0652\u0631\u0650 \u0627\u0644\u0652\u062d\u064e\u0631\u064e\u0627\u0645\u0650 \u0648\u064e\u0627\u0644\u0652\u062d\u064f\u0631\u064f\u0645\u064e\u0627\u062a\u064f \u0642\u0650\u0635\u064e\u0627\u0635\u064c \u0641\u064e\u0645\u064e\u0646\u0650 \u0627\u0639\u0652\u062a\u064e\u062f\u064e\u0649 \u0639\u064e\u0644\u064e\u064a\u0652\u0643\u064f\u0645\u0652 \u0641\u064e\u0627\u0639\u0652\u062a\u064e\u062f\u064f\u0648\u0627 \u0639\u064e\u0644\u064e\u064a\u0652\u0647\u0650 \u0628\u0650\u0645\u0650\u062b\u0652\u0644\u0650 \u0645\u064e\u0627 \u0627\u0639\u0652\u062a\u064e\u062f\u064e\u0649 \u0639\u064e\u0644\u064e\u064a\u0652\u0643\u064f\u0645\u0652 \u0648\u064e\u0627\u062a\u0651\u064e\u0642\u064f\u0648\u0627 \u0627\u0644\u0644\u0651\u064e\u0647\u064e \u0648\u064e\u0627\u0639\u0652\u0644\u064e\u0645\u064f\u0648\u0627 \u0623\u064e\u0646\u0651\u064e \u0627\u0644\u0644\u0651\u064e\u0647\u064e \u0645\u064e\u0639\u064e \u0627\u0644\u0652\u0645\u064f\u062a\u0651\u064e\u0642\u0650\u064a\u0646\u064e'},
+                                              'sura_arabic': 'البقرة',
+                                              'text': 'الشَّهْرُ الْحَرَامُ '
+                                                      'بِالشَّهْرِ الْحَرَامِ '
+                                                      'وَالْحُرُمَاتُ قِصَاصٌ '
+                                                      'فَمَنِ اعْتَدَى '
+                                                      'عَلَيْكُمْ فَاعْتَدُوا '
+                                                      'عَلَيْهِ بِمِثْلِ مَا '
+                                                      'اعْتَدَى عَلَيْكُمْ '
+                                                      'وَاتَّقُوا اللَّهَ '
+                                                      'وَاعْلَمُوا أَنَّ '
+                                                      'اللَّهَ مَعَ '
+                                                      'الْمُتَّقِينَ'},
                                  'prev_aya': {'id': 192,
                                               'sura': 'Al-Baqarah',
-                                              'sura_arabic': '\u0627\u0644\u0628\u0642\u0631\u0629',
-                                              'text': '\u0641\u064e\u0625\u0650\u0646\u0650 \u0627\u0646\u0652\u062a\u064e\u0647\u064e\u0648\u0652\u0627 \u0641\u064e\u0625\u0650\u0646\u0651\u064e \u0627\u0644\u0644\u0651\u064e\u0647\u064e \u063a\u064e\u0641\u064f\u0648\u0631\u064c \u0631\u064e\u062d\u0650\u064a\u0645\u064c'},
+                                              'sura_arabic': 'البقرة',
+                                              'text': 'فَإِنِ انْتَهَوْا '
+                                                      'فَإِنَّ اللَّهَ غَفُورٌ '
+                                                      'رَحِيمٌ'},
                                  'recitation': 'https://www.everyayah.com/data/Abdul_Basit_Murattal_64kbps/002193.mp3',
-                                 'text': '\u0648\u064e\u0642\u064e\u0627\u062a\u0650\u0644\u064f\u0648\u0647\u064f\u0645\u0652 \u062d\u064e\u062a\u0651\u064e\u0649 \u0644\u064e\u0627 \u062a\u064e\u0643\u064f\u0648\u0646\u064e \u0641\u0650\u062a\u0652\u0646\u064e\u0629\u064c \u0648\u064e\u064a\u064e\u0643\u064f\u0648\u0646\u064e \u0627\u0644\u062f\u0651\u0650\u064a\u0646\u064f <span class="match term0">\u0644\u0650\u0644\u0651\u064e\u0647\u0650</span> \u0641\u064e\u0625\u0650\u0646\u0650 \u0627\u0646\u0652\u062a\u064e\u0647\u064e\u0648\u0652\u0627 \u0641\u064e\u0644\u064e\u0627 \u0639\u064f\u062f\u0652\u0648\u064e\u0627\u0646\u064e \u0625\u0650\u0644\u0651\u064e\u0627 \u0639\u064e\u0644\u064e\u0649 \u0627\u0644\u0638\u0651\u064e\u0627\u0644\u0650\u0645\u0650\u064a\u0646\u064e',
-                                 'text_no_highlight': '\u0648\u0642\u0627\u062a\u0644\u0648\u0647\u0645 \u062d\u062a\u0649 \u0644\u0627 \u062a\u0643\u0648\u0646 \u0641\u062a\u0646\u0629 \u0648\u064a\u0643\u0648\u0646 \u0627\u0644\u062f\u064a\u0646 \u0644\u0644\u0647 \u0641\u0625\u0646 \u0627\u0646\u062a\u0647\u0648\u0627 \u0641\u0644\u0627 \u0639\u062f\u0648\u0627\u0646 \u0625\u0644\u0627 \u0639\u0644\u0649 \u0627\u0644\u0638\u0627\u0644\u0645\u064a\u0646',
-                                 'translation': 'Waq<u>a</u>tiloohum <u>h</u>att<u>a</u> l<u>a</u> takoona fitnatun wayakoona a<b>l</b>ddeenu lill<u>a</u>hi faini intahaw fal<u>a</u> AAudw<u>a</u>na ill<u>a</u> AAal<u>a</u> a<b>l</b><i><u>thth</u></i><u>a</u>limeen<b>a</b>'},
+                                 'text': 'وَقَاتِلُوهُمْ حَتَّى لَا تَكُونَ '
+                                         'فِتْنَةٌ وَيَكُونَ الدِّينُ <span '
+                                         'class="match term0">لِلَّهِ</span> '
+                                         'فَإِنِ انْتَهَوْا فَلَا عُدْوَانَ '
+                                         'إِلَّا عَلَى الظَّالِمِينَ',
+                                 'text_no_highlight': 'وقاتلوهم حتى لا تكون '
+                                                      'فتنة ويكون الدين لله '
+                                                      'فإن انتهوا فلا عدوان '
+                                                      'إلا على الظالمين',
+                                 'translation': 'And fight with them until '
+                                                'there is no persecution, and '
+                                                'religion should be only for '
+                                                'Allah, but if they desist, '
+                                                'then there should be no '
+                                                'hostility except against the '
+                                                'oppressors.'},
                          'identifier': {'aya_id': 193,
                                         'gid': 200,
-                                        'sura_arabic_name': '\u0627\u0644\u0628\u0642\u0631\u0629',
+                                        'sura_arabic_name': 'البقرة',
                                         'sura_id': 2,
                                         'sura_name': 'Al-Baqarah'},
                          'position': {'hizb': 3,
@@ -406,14 +638,11 @@ def test_search():
                                       'manzil': 1,
                                       'page': 30,
                                       'page_IN': 40,
-                                      'rub': 0,
-                                      'ruk': 25},
-                         'sajda': {'exist': False,
-                                   'id': None,
-                                   'type': None},
+                                      'rub': 0},
+                         'sajda': {'exist': False, 'id': None, 'type': None},
                          'stat': {},
-                         'sura': {'arabic_name': '\u0627\u0644\u0628\u0642\u0631\u0629',
-                                  'arabic_type': '\u0645\u062f\u0646\u064a\u0629',
+                         'sura': {'arabic_name': 'البقرة',
+                                  'arabic_type': 'مدنية',
                                   'ayas': 286,
                                   'english_name': 'The Cow',
                                   'id': 2,
@@ -426,19 +655,103 @@ def test_search():
                           'aya': {'id': 196,
                                   'next_aya': {'id': 197,
                                                'sura': 'Al-Baqarah',
-                                               'sura_arabic': '\u0627\u0644\u0628\u0642\u0631\u0629',
-                                               'text': '\u0627\u0644\u0652\u062d\u064e\u062c\u0651\u064f \u0623\u064e\u0634\u0652\u0647\u064f\u0631\u064c \u0645\u064e\u0639\u0652\u0644\u064f\u0648\u0645\u064e\u0627\u062a\u064c \u0641\u064e\u0645\u064e\u0646\u0652 \u0641\u064e\u0631\u064e\u0636\u064e \u0641\u0650\u064a\u0647\u0650\u0646\u0651\u064e \u0627\u0644\u0652\u062d\u064e\u062c\u0651\u064e \u0641\u064e\u0644\u064e\u0627 \u0631\u064e\u0641\u064e\u062b\u064e \u0648\u064e\u0644\u064e\u0627 \u0641\u064f\u0633\u064f\u0648\u0642\u064e \u0648\u064e\u0644\u064e\u0627 \u062c\u0650\u062f\u064e\u0627\u0644\u064e \u0641\u0650\u064a \u0627\u0644\u0652\u062d\u064e\u062c\u0651\u0650 \u0648\u064e\u0645\u064e\u0627 \u062a\u064e\u0641\u0652\u0639\u064e\u0644\u064f\u0648\u0627 \u0645\u0650\u0646\u0652 \u062e\u064e\u064a\u0652\u0631\u064d \u064a\u064e\u0639\u0652\u0644\u064e\u0645\u0652\u0647\u064f \u0627\u0644\u0644\u0651\u064e\u0647\u064f \u0648\u064e\u062a\u064e\u0632\u064e\u0648\u0651\u064e\u062f\u064f\u0648\u0627 \u0641\u064e\u0625\u0650\u0646\u0651\u064e \u062e\u064e\u064a\u0652\u0631\u064e \u0627\u0644\u0632\u0651\u064e\u0627\u062f\u0650 \u0627\u0644\u062a\u0651\u064e\u0642\u0652\u0648\u064e\u0649 \u0648\u064e\u0627\u062a\u0651\u064e\u0642\u064f\u0648\u0646\u0650 \u064a\u064e\u0627 \u0623\u064f\u0648\u0644\u0650\u064a \u0627\u0644\u0652\u0623\u064e\u0644\u0652\u0628\u064e\u0627\u0628\u0650'},
+                                               'sura_arabic': 'البقرة',
+                                               'text': 'الْحَجُّ أَشْهُرٌ '
+                                                       'مَعْلُومَاتٌ فَمَنْ '
+                                                       'فَرَضَ فِيهِنَّ '
+                                                       'الْحَجَّ فَلَا رَفَثَ '
+                                                       'وَلَا فُسُوقَ وَلَا '
+                                                       'جِدَالَ فِي الْحَجِّ '
+                                                       'وَمَا تَفْعَلُوا مِنْ '
+                                                       'خَيْرٍ يَعْلَمْهُ '
+                                                       'اللَّهُ وَتَزَوَّدُوا '
+                                                       'فَإِنَّ خَيْرَ '
+                                                       'الزَّادِ التَّقْوَى '
+                                                       'وَاتَّقُونِ يَا أُولِي '
+                                                       'الْأَلْبَابِ'},
                                   'prev_aya': {'id': 195,
                                                'sura': 'Al-Baqarah',
-                                               'sura_arabic': '\u0627\u0644\u0628\u0642\u0631\u0629',
-                                               'text': '\u0648\u064e\u0623\u064e\u0646\u0652\u0641\u0650\u0642\u064f\u0648\u0627 \u0641\u0650\u064a \u0633\u064e\u0628\u0650\u064a\u0644\u0650 \u0627\u0644\u0644\u0651\u064e\u0647\u0650 \u0648\u064e\u0644\u064e\u0627 \u062a\u064f\u0644\u0652\u0642\u064f\u0648\u0627 \u0628\u0650\u0623\u064e\u064a\u0652\u062f\u0650\u064a\u0643\u064f\u0645\u0652 \u0625\u0650\u0644\u064e\u0649 \u0627\u0644\u062a\u0651\u064e\u0647\u0652\u0644\u064f\u0643\u064e\u0629\u0650 \u0648\u064e\u0623\u064e\u062d\u0652\u0633\u0650\u0646\u064f\u0648\u0627 \u0625\u0650\u0646\u0651\u064e \u0627\u0644\u0644\u0651\u064e\u0647\u064e \u064a\u064f\u062d\u0650\u0628\u0651\u064f \u0627\u0644\u0652\u0645\u064f\u062d\u0652\u0633\u0650\u0646\u0650\u064a\u0646\u064e'},
+                                               'sura_arabic': 'البقرة',
+                                               'text': 'وَأَنْفِقُوا فِي '
+                                                       'سَبِيلِ اللَّهِ وَلَا '
+                                                       'تُلْقُوا بِأَيْدِيكُمْ '
+                                                       'إِلَى التَّهْلُكَةِ '
+                                                       'وَأَحْسِنُوا إِنَّ '
+                                                       'اللَّهَ يُحِبُّ '
+                                                       'الْمُحْسِنِينَ'},
                                   'recitation': 'https://www.everyayah.com/data/Abdul_Basit_Murattal_64kbps/002196.mp3',
-                                  'text': '\u0648\u064e\u0623\u064e\u062a\u0650\u0645\u0651\u064f\u0648\u0627 \u0627\u0644\u0652\u062d\u064e\u062c\u0651\u064e \u0648\u064e\u0627\u0644\u0652\u0639\u064f\u0645\u0652\u0631\u064e\u0629\u064e <span class="match term0">\u0644\u0650\u0644\u0651\u064e\u0647\u0650</span> \u0641\u064e\u0625\u0650\u0646\u0652 \u0623\u064f\u062d\u0652\u0635\u0650\u0631\u0652\u062a\u064f\u0645\u0652 \u0641\u064e\u0645\u064e\u0627 \u0627\u0633\u0652\u062a\u064e\u064a\u0652\u0633\u064e\u0631\u064e \u0645\u0650\u0646\u064e \u0627\u0644\u0652\u0647\u064e\u062f\u0652\u064a\u0650 \u0648\u064e\u0644\u064e\u0627 \u062a\u064e\u062d\u0652\u0644\u0650\u0642\u064f\u0648\u0627 \u0631\u064f\u0621\u064f\u0648\u0633\u064e\u0643\u064f\u0645\u0652 \u062d\u064e\u062a\u0651\u064e\u0649 \u064a\u064e\u0628\u0652\u0644\u064f\u063a\u064e \u0627\u0644\u0652\u0647\u064e\u062f\u0652\u064a\u064f \u0645\u064e\u062d\u0650\u0644\u0651\u064e\u0647\u064f \u0641\u064e\u0645\u064e\u0646\u0652 \u0643\u064e\u0627\u0646\u064e \u0645\u0650\u0646\u0652\u0643\u064f\u0645\u0652 \u0645\u064e\u0631\u0650\u064a\u0636\u064b\u0627 \u0623\u064e\u0648\u0652 \u0628\u0650\u0647\u0650 \u0623\u064e\u0630\u064b\u0649 \u0645\u0650\u0646\u0652 \u0631\u064e\u0623\u0652\u0633\u0650\u0647\u0650 \u0641\u064e\u0641\u0650\u062f\u0652\u064a\u064e\u0629\u064c \u0645\u0650\u0646\u0652 \u0635\u0650\u064a\u064e\u0627\u0645\u064d \u0623\u064e\u0648\u0652 \u0635\u064e\u062f\u064e\u0642\u064e\u0629\u064d \u0623\u064e\u0648\u0652 \u0646\u064f\u0633\u064f\u0643\u064d \u0641\u064e\u0625\u0650\u0630\u064e\u0627 \u0623\u064e\u0645\u0650\u0646\u0652\u062a\u064f\u0645\u0652 \u0641\u064e\u0645\u064e\u0646\u0652 \u062a\u064e\u0645\u064e\u062a\u0651\u064e\u0639\u064e \u0628\u0650\u0627\u0644\u0652\u0639\u064f\u0645\u0652\u0631\u064e\u0629\u0650 \u0625\u0650\u0644\u064e\u0649 \u0627\u0644\u0652\u062d\u064e\u062c\u0651\u0650 \u0641\u064e\u0645\u064e\u0627 \u0627\u0633\u0652\u062a\u064e\u064a\u0652\u0633\u064e\u0631\u064e \u0645\u0650\u0646\u064e \u0627\u0644\u0652\u0647\u064e\u062f\u0652\u064a\u0650 \u0641\u064e\u0645\u064e\u0646\u0652 \u0644\u064e\u0645\u0652 \u064a\u064e\u062c\u0650\u062f\u0652 \u0641\u064e\u0635\u0650\u064a\u064e\u0627\u0645\u064f \u062b\u064e\u0644\u064e\u0627\u062b\u064e\u0629\u0650 \u0623\u064e\u064a\u0651\u064e\u0627\u0645\u064d \u0641\u0650\u064a \u0627\u0644\u0652\u062d\u064e\u062c\u0651\u0650 \u0648\u064e\u0633\u064e\u0628\u0652\u0639\u064e\u0629\u064d \u0625\u0650\u0630\u064e\u0627 \u0631\u064e\u062c\u064e\u0639\u0652\u062a\u064f\u0645\u0652 \u062a\u0650\u0644\u0652\u0643\u064e \u0639\u064e\u0634\u064e\u0631\u064e\u0629\u064c \u0643\u064e\u0627\u0645\u0650\u0644\u064e\u0629\u064c \u0630\u064e\u0644\u0650\u0643\u064e \u0644\u0650\u0645\u064e\u0646\u0652 \u0644\u064e\u0645\u0652 \u064a\u064e\u0643\u064f\u0646\u0652 \u0623\u064e\u0647\u0652\u0644\u064f\u0647\u064f \u062d\u064e\u0627\u0636\u0650\u0631\u0650\u064a \u0627\u0644\u0652\u0645\u064e\u0633\u0652\u062c\u0650\u062f\u0650 \u0627\u0644\u0652\u062d\u064e\u0631\u064e\u0627\u0645\u0650 \u0648\u064e\u0627\u062a\u0651\u064e\u0642\u064f\u0648\u0627 \u0627\u0644\u0644\u0651\u064e\u0647\u064e \u0648\u064e\u0627\u0639\u0652\u0644\u064e\u0645\u064f\u0648\u0627 \u0623\u064e\u0646\u0651\u064e \u0627\u0644\u0644\u0651\u064e\u0647\u064e \u0634\u064e\u062f\u0650\u064a\u062f\u064f \u0627\u0644\u0652\u0639\u0650\u0642\u064e\u0627\u0628\u0650',
-                                  'text_no_highlight': '\u0648\u0623\u062a\u0645\u0648\u0627 \u0627\u0644\u062d\u062c \u0648\u0627\u0644\u0639\u0645\u0631\u0629 \u0644\u0644\u0647 \u0641\u0625\u0646 \u0623\u062d\u0635\u0631\u062a\u0645 \u0641\u0645\u0627 \u0627\u0633\u062a\u064a\u0633\u0631 \u0645\u0646 \u0627\u0644\u0647\u062f\u064a \u0648\u0644\u0627 \u062a\u062d\u0644\u0642\u0648\u0627 \u0631\u0621\u0648\u0633\u0643\u0645 \u062d\u062a\u0649 \u064a\u0628\u0644\u063a \u0627\u0644\u0647\u062f\u064a \u0645\u062d\u0644\u0647 \u0641\u0645\u0646 \u0643\u0627\u0646 \u0645\u0646\u0643\u0645 \u0645\u0631\u064a\u0636\u0627 \u0623\u0648 \u0628\u0647 \u0623\u0630\u0649 \u0645\u0646 \u0631\u0623\u0633\u0647 \u0641\u0641\u062f\u064a\u0629 \u0645\u0646 \u0635\u064a\u0627\u0645 \u0623\u0648 \u0635\u062f\u0642\u0629 \u0623\u0648 \u0646\u0633\u0643 \u0641\u0625\u0630\u0627 \u0623\u0645\u0646\u062a\u0645 \u0641\u0645\u0646 \u062a\u0645\u062a\u0639 \u0628\u0627\u0644\u0639\u0645\u0631\u0629 \u0625\u0644\u0649 \u0627\u0644\u062d\u062c \u0641\u0645\u0627 \u0627\u0633\u062a\u064a\u0633\u0631 \u0645\u0646 \u0627\u0644\u0647\u062f\u064a \u0641\u0645\u0646 \u0644\u0645 \u064a\u062c\u062f \u0641\u0635\u064a\u0627\u0645 \u062b\u0644\u0627\u062b\u0629 \u0623\u064a\u0627\u0645 \u0641\u064a \u0627\u0644\u062d\u062c \u0648\u0633\u0628\u0639\u0629 \u0625\u0630\u0627 \u0631\u062c\u0639\u062a\u0645 \u062a\u0644\u0643 \u0639\u0634\u0631\u0629 \u0643\u0627\u0645\u0644\u0629 \u0630\u0644\u0643 \u0644\u0645\u0646 \u0644\u0645 \u064a\u0643\u0646 \u0623\u0647\u0644\u0647 \u062d\u0627\u0636\u0631\u064a \u0627\u0644\u0645\u0633\u062c\u062f \u0627\u0644\u062d\u0631\u0627\u0645 \u0648\u0627\u062a\u0642\u0648\u0627 \u0627\u0644\u0644\u0647 \u0648\u0627\u0639\u0644\u0645\u0648\u0627 \u0623\u0646 \u0627\u0644\u0644\u0647 \u0634\u062f\u064a\u062f \u0627\u0644\u0639\u0642\u0627\u0628',
-                                  'translation': 'Waatimmoo al<u>h</u>ajja wa<b>a</b>lAAumrata lill<u>a</u>hi fain o<u>hs</u>irtum fam<u>a</u> istaysara mina alhadyi wal<u>a</u> ta<u>h</u>liqoo ruoosakum <u>h</u>att<u>a</u> yablugha alhadyu ma<u>h</u>illahu faman k<u>a</u>na minkum maree<u>d</u>an aw bihi a<u>th</u>an min rasihi fafidyatun min <u>s</u>iy<u>a</u>min aw <u>s</u>adaqatin aw nusukin fai<u>tha</u> amintum faman tamattaAAa bi<b>a</b>lAAumrati il<u>a</u> al<u>h</u>ajji fam<u>a</u> istaysara mina alhadyi faman lam yajid fa<u>s</u>iy<u>a</u>mu thal<u>a</u>thati ayy<u>a</u>min fee al<u>h</u>ajji wasabAAatin i<u>tha</u> rajaAAtum tilka AAasharatun k<u>a</u>milatun <u>tha</u>lika liman lam yakun ahluhu <u>had</u>iree almasjidi al<u>h</u>ar<u>a</u>mi wa<b>i</b>ttaqoo All<u>a</u>ha wa<b>i</b>AAlamoo anna All<u>a</u>ha shadeedu alAAiq<u>a</u>b<b>i</b>'},
+                                  'text': 'وَأَتِمُّوا الْحَجَّ وَالْعُمْرَةَ '
+                                          '<span class="match '
+                                          'term0">لِلَّهِ</span> فَإِنْ '
+                                          'أُحْصِرْتُمْ فَمَا اسْتَيْسَرَ مِنَ '
+                                          'الْهَدْيِ وَلَا تَحْلِقُوا '
+                                          'رُءُوسَكُمْ حَتَّى يَبْلُغَ '
+                                          'الْهَدْيُ مَحِلَّهُ فَمَنْ كَانَ '
+                                          'مِنْكُمْ مَرِيضًا أَوْ بِهِ أَذًى '
+                                          'مِنْ رَأْسِهِ فَفِدْيَةٌ مِنْ '
+                                          'صِيَامٍ أَوْ صَدَقَةٍ أَوْ نُسُكٍ '
+                                          'فَإِذَا أَمِنْتُمْ فَمَنْ تَمَتَّعَ '
+                                          'بِالْعُمْرَةِ إِلَى الْحَجِّ فَمَا '
+                                          'اسْتَيْسَرَ مِنَ الْهَدْيِ فَمَنْ '
+                                          'لَمْ يَجِدْ فَصِيَامُ ثَلَاثَةِ '
+                                          'أَيَّامٍ فِي الْحَجِّ وَسَبْعَةٍ '
+                                          'إِذَا رَجَعْتُمْ تِلْكَ عَشَرَةٌ '
+                                          'كَامِلَةٌ ذَلِكَ لِمَنْ لَمْ يَكُنْ '
+                                          'أَهْلُهُ حَاضِرِي الْمَسْجِدِ '
+                                          'الْحَرَامِ وَاتَّقُوا اللَّهَ '
+                                          'وَاعْلَمُوا أَنَّ اللَّهَ شَدِيدُ '
+                                          'الْعِقَابِ',
+                                  'text_no_highlight': 'وأتموا الحج والعمرة '
+                                                       'لله فإن أحصرتم فما '
+                                                       'استيسر من الهدي ولا '
+                                                       'تحلقوا رءوسكم حتى يبلغ '
+                                                       'الهدي محله فمن كان '
+                                                       'منكم مريضا أو به أذى '
+                                                       'من رأسه ففدية من صيام '
+                                                       'أو صدقة أو نسك فإذا '
+                                                       'أمنتم فمن تمتع بالعمرة '
+                                                       'إلى الحج فما استيسر من '
+                                                       'الهدي فمن لم يجد فصيام '
+                                                       'ثلاثة أيام في الحج '
+                                                       'وسبعة إذا رجعتم تلك '
+                                                       'عشرة كاملة ذلك لمن لم '
+                                                       'يكن أهله حاضري المسجد '
+                                                       'الحرام واتقوا الله '
+                                                       'واعلموا أن الله شديد '
+                                                       'العقاب',
+                                  'translation': 'And accomplish the '
+                                                 'pilgrimage and the visit for '
+                                                 'Allah, but if, you are '
+                                                 'prevented, (send) whatever '
+                                                 'offering is easy to obtain, '
+                                                 'and do not shave your heads '
+                                                 'until the offering reaches '
+                                                 'its destination; but whoever '
+                                                 'among you is sick or has an '
+                                                 'ailment of the head, he '
+                                                 '(should effect) a '
+                                                 'compensation by fasting or '
+                                                 'alms or sacrificing, then '
+                                                 'when you are secure, whoever '
+                                                 'profits by combining the '
+                                                 'visit with the pilgrimage '
+                                                 '(should take) what offering '
+                                                 'is easy to obtain; but he '
+                                                 'who cannot find (any '
+                                                 'offering) should fast for '
+                                                 'three days during the '
+                                                 'pilgrimage and for seven '
+                                                 'days when you return; these '
+                                                 '(make) ten (days) complete; '
+                                                 'this is for him whose family '
+                                                 'is not present in the Sacred '
+                                                 'Mosque, and be careful (of '
+                                                 'your duty) to Allah, and '
+                                                 'know that Allah is severe in '
+                                                 'requiting (evil).'},
                           'identifier': {'aya_id': 196,
                                          'gid': 203,
-                                         'sura_arabic_name': '\u0627\u0644\u0628\u0642\u0631\u0629',
+                                         'sura_arabic_name': 'البقرة',
                                          'sura_id': 2,
                                          'sura_name': 'Al-Baqarah'},
                           'position': {'hizb': 3,
@@ -446,14 +759,11 @@ def test_search():
                                        'manzil': 1,
                                        'page': 30,
                                        'page_IN': 41,
-                                       'rub': 0,
-                                       'ruk': 25},
-                          'sajda': {'exist': False,
-                                    'id': None,
-                                    'type': None},
+                                       'rub': 0},
+                          'sajda': {'exist': False, 'id': None, 'type': None},
                           'stat': {},
-                          'sura': {'arabic_name': '\u0627\u0644\u0628\u0642\u0631\u0629',
-                                   'arabic_type': '\u0645\u062f\u0646\u064a\u0629',
+                          'sura': {'arabic_name': 'البقرة',
+                                   'arabic_type': 'مدنية',
                                    'ayas': 286,
                                    'english_name': 'The Cow',
                                    'id': 2,
@@ -463,39 +773,39 @@ def test_search():
                                    'type': 'Medinan'},
                           'theme': {}}},
             'interval': {'end': 10,
-                         'nb_pages': 12,
-                         'page': 1,
+                         'nb_pages': 12.5,
+                         'page': 1.0,
                          'start': 1,
                          'total': 116},
             'translation_info': {},
-            'words': {'global': {'nb_matches': 142,
+            'words': {'global': {'nb_matches': 284.0,
                                  'nb_vocalizations': 0,
                                  'nb_words': 2},
                       'individual': {1: {'derivations': [],
                                          'derivations_extra': [],
                                          'lemma': '',
-                                         'nb_ayas': 25,
-                                         'nb_derivations': 0,
-                                         'nb_derivations_extra': 0,
-                                         'nb_matches': 26,
-                                         'nb_synonyms': 0,
-                                         'nb_vocalizations': 0,
-                                         'romanization': None,
-                                         'root': '',
-                                         'synonyms': [],
-                                         'vocalizations': [],
-                                         'word': '\u0627\u0644\u062d\u0645\u062f'},
-                                     2: {'derivations': [],
-                                         'derivations_extra': [],
-                                         'lemma': '',
                                          'nb_ayas': 113,
                                          'nb_derivations': 0,
                                          'nb_derivations_extra': 0,
-                                         'nb_matches': 116,
+                                         'nb_matches': 232.0,
                                          'nb_synonyms': 0,
                                          'nb_vocalizations': 0,
                                          'romanization': None,
                                          'root': '',
                                          'synonyms': [],
                                          'vocalizations': [],
-                                         'word': '\u0644\u0644\u0647'}}}}}
+                                         'word': 'لله'},
+                                     2: {'derivations': [],
+                                         'derivations_extra': [],
+                                         'lemma': '',
+                                         'nb_ayas': 25,
+                                         'nb_derivations': 0,
+                                         'nb_derivations_extra': 0,
+                                         'nb_matches': 52.0,
+                                         'nb_synonyms': 0,
+                                         'nb_vocalizations': 0,
+                                         'romanization': None,
+                                         'root': '',
+                                         'synonyms': [],
+                                         'vocalizations': [],
+                                         'word': 'الحمد'}}}}}

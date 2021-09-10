@@ -30,7 +30,7 @@ class BasicSearchEngine:
 
     def search_all(self, querystr, limit=6236, sortedby="score", reverse=False):
         results, terms, searcher = self._searcher.search(querystr, limit=limit, sortedby=sortedby, reverse=reverse)
-        return (results, list(self._reader.term_stats(terms)), searcher)
+        return results, list(self._reader.term_stats(terms)), searcher
 
     def most_frequent_words(self, nb, fieldname):
         return list([ (x[0], x[1].decode('utf-8')) for x in self._reader.reader.most_frequent_terms(fieldname, nb)])
@@ -47,8 +47,8 @@ class BasicSearchEngine:
     def autocomplete(self, querystr):
         return {} # TODO
 
-    def highlight(self, text, terms, type="css", strip_vocalization=True):
-        return self._highlight(text, terms, type, strip_vocalization)
+    def highlight(self, text, terms, highlight_type="css", strip_vocalization=True):
+        return self._highlight(text, terms, highlight_type, strip_vocalization)
 
     def find_extended(self, query, defaultfield):
         """
@@ -56,7 +56,7 @@ class BasicSearchEngine:
 
         """
         searcher = self._docindex.get_searcher()()
-        return searcher.find(defaultfield, query), searcher
+        return searcher.find(defaultfield, query,limit=6236), searcher
 
     def list_values(self, fieldname):
         """ list all stored values of a field  """

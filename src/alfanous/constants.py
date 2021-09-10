@@ -1,25 +1,7 @@
-# coding: utf-8
-
-
-##     Copyright (C) 2009-2012 Assem Chelli <assem.ch [at] gmail.com>
-
-##     This program is free software: you can redistribute it and/or modify
-##     it under the terms of the GNU Affero General Public License as published
-##     by the Free Software Foundation, either version 3 of the License, or
-##     (at your option) any later version.
-
-##     This program is distributed in the hope that it will be useful,
-##     but WITHOUT ANY WARRANTY; without even the implied warranty of
-##     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-##     GNU Affero General Public License for more details.
-
-##     You should have received a copy of the GNU Affero General Public License
-##     along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
 
 #:shaping table
 SHAPING = {
-    '\u0621': ('\uFE80'),
+    '\u0621': ('\uFE80',),
     '\u0622': ('\uFE81', '\uFE82'),
     '\u0623': ('\uFE83', '\uFE84'),
     '\u0624': ('\uFE85', '\uFE86'),
@@ -45,7 +27,7 @@ SHAPING = {
     '\u0638': ('\uFEC5', '\uFEC7', '\uFEC8', '\uFEC6'),
     '\u0639': ('\uFEC9', '\uFECB', '\uFECC', '\uFECA'),
     '\u063A': ('\uFECD', '\uFECF', '\uFED0', '\uFECE'),
-    '\u0640': ('\u0640'),
+    '\u0640': ('\u0640',),
     '\u0641': ('\uFED1', '\uFED3', '\uFED4', '\uFED2'),
     '\u0642': ('\uFED5', '\uFED7', '\uFED8', '\uFED6'),
     '\u0643': ('\uFED9', '\uFEDB', '\uFEDC', '\uFEDA'),

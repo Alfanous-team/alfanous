@@ -171,39 +171,39 @@ def _make_arabic_parser():
     andNotToken = Keyword(u"وليس") | Keyword(u"ANDNOT")
 
     operatorAnd = Group(
-        (generalUnit + \
-         Suppress(White()) + \
-         Suppress(andToken) + \
-         Suppress(White()) + \
+        (generalUnit +
+         Suppress(White()) +
+         Suppress(andToken) +
+         Suppress(White()) +
          expression) | \
-        (generalUnit + \
-         Suppress(Literal(u"+")) + \
+        (generalUnit +
+         Suppress(Literal(u"+")) +
          expression)
     ).setResultsName("And")
 
     operatorOr = Group(
-        (generalUnit + \
-         Suppress(White()) + \
-         Suppress(orToken) + \
-         Suppress(White()) + \
+        (generalUnit +
+         Suppress(White()) +
+         Suppress(orToken) +
+         Suppress(White()) +
          expression) | \
-        (generalUnit + \
-         Suppress(Literal(u"|")) + \
+        (generalUnit +
+         Suppress(Literal(u"|")) +
          expression)
     ).setResultsName("Or")
 
     operatorAndNot = Group(
-        (unit + \
-         Suppress(White()) + \
-         Suppress(andNotToken) + \
-         Suppress(White()) + \
+        (unit +
+         Suppress(White()) +
+         Suppress(andNotToken) +
+         Suppress(White()) +
          expression) | \
-        (unit + \
-         Suppress(Literal(u"-")) + \
+        (unit +
+         Suppress(Literal(u"-")) +
          expression)
     ).setResultsName("AndNot")
 
-    expression << (OneOrMore(operatorAnd | operatorOr | operatorAndNot | \
+    expression << (OneOrMore(operatorAnd | operatorOr | operatorAndNot |
                              generalUnit | Suppress(White())) | Empty())
 
     toplevel = Group(expression).setResultsName("Toplevel") + StringEnd()

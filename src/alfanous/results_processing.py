@@ -1,7 +1,7 @@
 
 from whoosh.scoring import BM25F
 from whoosh.highlight import highlight, Fragment, \
-    HtmlFormatter, ContextFragmenter, BasicFragmentScorer
+    HtmlFormatter, ContextFragmenter, BasicFragmentScorer, WholeFragmenter
 from alfanous.text_processing import QHighLightAnalyzer, QDiacHighLightAnalyzer, Gword_tamdid
 
 
@@ -39,15 +39,11 @@ def QPaginate(results, pagelen=10):
     l = len(results)
     minimal = lambda x, y: y if x > y else x
     for i in range(0, l, 10):
-        yield (i / pagelen, results[i:minimal(i + pagelen, l)])
+        yield i / pagelen, results[i:minimal(i + pagelen, l)]
 
 
-def Qhighlight(text, terms, type="css", strip_vocalization=True):
-    """ highlight terms in text
+def Qhighlight(text, terms,     type="css", strip_vocalization=True):
 
-    @param type: the type of formatting , html or css or genchi
-
-    """
     if type == "bold":
         formatter = QBoldFormatter()
     else:  # css
@@ -57,7 +53,7 @@ def Qhighlight(text, terms, type="css", strip_vocalization=True):
         text,
         terms,
         analyzer=QHighLightAnalyzer if strip_vocalization else QDiacHighLightAnalyzer,
-        fragmenter=ContextFragmenter,
+        fragmenter=WholeFragmenter,
         formatter=formatter,
         top=3,
         scorer=BasicFragmentScorer,

@@ -1,21 +1,3 @@
-# coding: utf-8
-
-
-##     Copyright (C) 2009-2012 Assem Chelli <assem.ch [at] gmail.com>
-
-##     This program is free software: you can redistribute it and/or modify
-##     it under the terms of the GNU Affero General Public License as published by
-##     the Free Software Foundation, either version 3 of the License, or
-##     (at your option) any later version.
-
-##     This program is distributed in the hope that it will be useful,
-##     but WITHOUT ANY WARRANTY; without even the implied warranty of
-##     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-##     GNU Affero General Public License for more details.
-
-##     You should have received a copy of the GNU Affero General Public License
-##     along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
 
 # Buckwalter Romanization  letters mapping
 BUCKWALTER2UNICODE = {
@@ -89,9 +71,9 @@ BUCKWALTER2UNICODE = {
 ISO2UNICODE = {u"ˌ": u"\u0621",  # hamza-on-the-line
                # u"|": u"\u0622", # madda
                u"ˈ": u"\u0623",  # hamza-on-'alif
-               u"ˈ": u"\u0624",  # hamza-on-waaw
+               #u"ˈ": u"\u0624",  # hamza-on-waaw
                # u"<": u"\u0625", # hamza-under-'alif
-               u"ˈ": u"\u0626",  # hamza-on-yaa'
+               #u"ˈ": u"\u0626",  # hamza-on-yaa'
                u"ʾ": u"\u0627",  # bare 'alif
                u"b": u"\u0628",  # baa'
                u"ẗ": u"\u0629",  # taa' marbuuTa
@@ -155,14 +137,11 @@ ISO2UNICODE = {u"ˌ": u"\u0621",  # hamza-on-the-line
 # Available romanization systems
 ROMANIZATION_SYSTEMS_MAPPINGS = {
     "buckwalter": BUCKWALTER2UNICODE,
-    "iso": ISO2UNICODE,
-    "arabtex": None,
+
 }
 
 
-def guess_romanization_system():
-    """ @todo """
-    pass
+
 
 
 def transliterate(mode, string, ignore=u"", reverse=False):
