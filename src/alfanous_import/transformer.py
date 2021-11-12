@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-
+import json
 import logging
 import os.path
 import re
@@ -23,43 +23,27 @@ from functools import reduce
 logging.basicConfig(level=logging.INFO)
 
 
-class FrequencyZ(Frequency):
-    def clean(self):
-        pass
-
-
-def unicode_decode(word):
-    import codecs
-    return word
 
 class Transformer:
-    def __init__(self, ixpath, dypypath, dbpath="main.db"):
-        if dbpath:
-            self.__mainDb = self.__connect(dbpath)
-            self.cur = self.__mainDb.cursor()
-        if not (os.path.exists(ixpath)):
-            os.makedirs(ixpath)
-        self.__storage = FileStorage(ixpath)
-        self.__ixpath = ixpath
-        self.__dypypath = dypypath
+    def __init__(self, index_path, resource_path):
+        if not (os.path.exists(index_path)):
+            os.makedirs(index_path)
 
-    def __str__(self):
-        return "< Alfanous.Transformer >"
+        self.index_path = index_path
+        self.resource_path = resource_path
+
 
     def print_to_json(self, d, filename):
-        with  open(f"{self.__dypypath}{filename}.json", "w") as f:
+        with  open(f"{self.resource_path}{filename}.generated.json", "w") as f:
             import json
             json.dump(d, f, indent=4, sort_keys=True, ensure_ascii=False)
 
         return "OK"
 
-    def __connect(self, dbpath):
-        return lite.connect(dbpath)
 
-    def change_DB(self, dbpath):
-        return self.__connect(dbpath)
 
     def __3states(self, str):
+
         if str == "yes":
             return "True"
         elif str == "no":
@@ -70,16 +54,11 @@ class Transformer:
     def build_schema(self, tablename):
         """build schema from field table"""
 
-        print("require list of arabic_to_english_fields ...")
-        cur = self.__mainDb.cursor()
-        cur.execute(
-            "select search_name,type,analyser,is_stored,boost,phrase,is_scorable,is_unique,format from field where table_name='" + tablename + "' and is_indexed='yes'")
-        res = cur.fetchall()
-
-        print("processing list found  and building raw schema ...")
+        field_file = open(f"{self.resource_path}/fields.json")
+        res = [field for field in json.load(field_file) if field["table_name"] == tablename]
+        Schema()
         Schema_raw = "Schema("
         for line in res:
-            print(line)
             search_name = str(line[0])
             if search_name not in ["", "None"]:
                 # 1
@@ -145,10 +124,6 @@ class Transformer:
         return ldict.get('res_schema')
 
     def transfer(self, ix, tablename="aya"):
-        """transfer from database to index"""
-        self.__unlock_docindex(ix)
-        # print "search arabic_to_english_fields real names ..."
-
         schema = ix.schema
         cur = self.__mainDb.cursor()
         seq = []
@@ -190,44 +165,15 @@ class Transformer:
                 logging.info(f" - milestone:  {cpt} ( {cpt * 100 / len(Data)}% )")
         logging.info("done.")
         writer.commit()
-        self.__lock_docindex(ix)
 
     def build_docindex(self, schema, tablename="aya"):
         """build document index from aya table"""
         assert schema, "schema is empty"
-        ix = self.__storage.create_index(schema)
+        ix = FileStorage(self.index_path).create_index(schema)
         self.transfer(ix, tablename)
         return "OK"
 
-    def update_docindex(self, schema, tablename="aya"):
-        """update the data in document index
-            index schema must have at least an id
 
-            """
-        ix = self.__storage.open_index()
-        self.__transfer(ix, tablename)
-        return "OK"
-
-    def __lock_docindex(self, ix):
-        """ lock index """
-        # try:
-        #    ix.lock()
-        # except LockError as LE:
-        #    print LE
-
-    def __unlock_docindex(self, ix):
-        ix = self.__storage.open_index()
-        # return ix.unlock()
-
-    dheader = """
-    """
-
-    def transfer_stopwords(self):
-
-        self.cur.execute("select word from stopwords")
-        stop_words = [item[0] for item in self.cur.fetchall()]
-
-        return self.print_to_json(stop_words, 'stop_words')
 
     def transfer_std2uth_words(self):
 
@@ -236,15 +182,6 @@ class Transformer:
 
         return self.print_to_json(standard2uthmani, 'standard_to_uthmani')
 
-    def transfer_synonymes(self):
-
-        self.cur.execute("select word,synonymes from synonymes")
-        word_regex = re.compile("[^ ,،]+")
-        syn_dict = {}
-        for item in self.cur.fetchall():
-            syn_dict[strip_tashkeel(item[0])] = [strip_tashkeel(w) for w in word_regex.findall(item[1])]
-
-        return self.print_to_json(syn_dict, 'synonyms')
 
     def transfer_ara2eng_names(self):
         """ load the arabic names of arabic_to_english_fields and save the as a dictionary"""
@@ -281,19 +218,19 @@ class Transformer:
         return self.print_to_json(derivations, 'derivations')
 
     def transfer_vocalizations(self):
-        QSE = QuranicSearchEngine(self.__ixpath)
+        QSE = QuranicSearchEngine(self.index_path)
 
         if not QSE.OK:
             return
 
         mfw = QSE.most_frequent_words(9999999, "aya_")
-        vocalization_dict = { strip_tashkeel(word): unicode_decode(word) for _,word in mfw}
+        vocalization_dict = { strip_tashkeel(word): word for _,word in mfw}
 
         return self.print_to_json(vocalization_dict, "vocalizations")
 
 
 if __name__ == "__main__":
-    T = Transformer(ixpath="../../indexes/main/", dypypath="../alfanous/resources/",
+    T = Transformer(index_path="../../indexes/main/", resource_path="../alfanous/resources/",
                     dbpath="../../resources/databases/main.db")
 
     T.transfer_vocalizations()

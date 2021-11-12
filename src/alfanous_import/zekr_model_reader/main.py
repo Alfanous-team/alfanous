@@ -1,29 +1,3 @@
-# coding: utf-8
-
-#    Copyright (C) 2009-2010 Assem Chelli <assem.ch@gmail.com>
-#    This program is free software; you can redistribute it and/or modify
-#    it under the terms of the GNU General Public License as published by
-#    the Free Software Foundation; either version 3 of the License, or
-#    (at your option) any later version.
-#
-#    This program is distributed in the hope that it will be useful,
-#    but WITHOUT ANY WARRANTY; without even the implied warranty of
-#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#    GNU General Public License for more details.
-#
-#    You should have received a copy of the GNU General Public License along
-#    with this program; if not, write to the Free Software Foundation, Inc.,
-#    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-
-
-'''
-Created on 22 avr. 2010
-
-@author: Assem Chelli
-@contact: Assem.ch [at] gmail.com
-@license: AGPL
-'''
-
 import os.path
 import re
 from zipfile import ZipFile
@@ -32,9 +6,9 @@ from zipfile import ZipFile
 
 class TranslationModel:
 
-    def __init__(self, path="./example.zip"):
+    def __init__(self, path="./example.zip_file"):
         """
-            @param path:the path of model directory or zip file
+            @param path:the path of model directory or zip_file file
             @attention: add the last slash for directories
             """
         print(path)
@@ -45,9 +19,9 @@ class TranslationModel:
         else:
             assert False, "type of path is not defined : %s" % path
 
-    def open_zip(self, zip, temp="/tmp/alfanous/"):
+    def open_zip(self, zip_file, temp="/tmp/alfanous/"):
         """ """
-        ZF = ZipFile(zip)
+        ZF = ZipFile(zip_file)
         if not os.path.exists(temp):
             os.mkdir(temp)
         ZF.extractall(temp)
@@ -89,5 +63,5 @@ class TranslationModel:
 
 
 if __name__ == "__main__":
-    TM = TranslationModel("./example.zip")
+    TM = TranslationModel("./example.zip_file")
     props = TM.translation_properties()

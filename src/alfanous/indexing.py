@@ -1,4 +1,3 @@
-# coding: utf-8
 from whoosh.filedb.filestore import FileStorage
 from whoosh import index
 

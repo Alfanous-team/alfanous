@@ -173,21 +173,21 @@ class ZekrModelsImporter:
         else:
             self.index = storage.open_index()
 
-    def test_existence(self, id):
+    def test_existence(self, identifier):
         """ test existance of all documents of a translation in the index
 
-        @param id: the id of the translation
+        @param identifier: the id of the translation
 
         """
         searcher = self.index.searcher()
-        results = searcher.find("id", str(id))
+        results = searcher.find("id", str(identifier))
         l = len(results)
         if l == 6236:
             return True
         elif l == 0:
             return False
         else:  # partial
-            print(("\nwarning: the translation (id= %(id)s ) has incomplete documents nb= %(l)d" % {"id": id, "l": l}))
+            print(("\nwarning: the translation (id= %(id)s ) has incomplete documents nb= %(l)d" % {"id": identifier, "l": l}))
             return l
 
     def index_it(self, doclist):

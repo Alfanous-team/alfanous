@@ -1,4 +1,3 @@
-# coding: utf-8
 
 
 FILTER_DOUBLES = filter_doubles = lambda lst:list( set( lst ) )

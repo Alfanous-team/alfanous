@@ -140,4 +140,5 @@ Icon?
 *.db
 desktop.ini
 venv/
+venv2/
 

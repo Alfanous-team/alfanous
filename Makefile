@@ -152,14 +152,9 @@ update_dynamic_resources_postbuild: transfer_postbuild
 # 6. [prebuild] Quranic words mapping Standard to Uthmani, see transfer_standard2uthmani
 # 7. [postbuild] Different vocalizations of each quranic word, see transfer_vocalizations
 transfer_all: transfer_prebuild transfer_postbuild
-transfer_prebuild: transfer_stopwords transfer_synonyms transfer_word_props transfer_derivations transfer_ara2eng_names transfer_standard2uthmani
+transfer_prebuild: transfer_word_props transfer_derivations transfer_ara2eng_names transfer_standard2uthmani
 transfer_postbuild: transfer_vocalizations
 	
-transfer_stopwords:
-	export PYTHONPATH=$(API_PATH) ;	$(PYTHON_COMMAND) $(QIMPORT) -t stopwords $(DB_PATH)main.db $(RESOURCES_PATH)
-	
-transfer_synonyms:
-	export PYTHONPATH=$(API_PATH) ;	$(PYTHON_COMMAND) $(QIMPORT) -t synonyms $(DB_PATH)main.db $(RESOURCES_PATH)
 
 transfer_word_props:
 	export PYTHONPATH=$(API_PATH) ;	$(PYTHON_COMMAND) $(QIMPORT) -t word_props $(DB_PATH)main.db $(RESOURCES_PATH)

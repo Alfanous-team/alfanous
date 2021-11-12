@@ -1,4 +1,3 @@
-# coding: utf-8
 
 
 from alfanous_import.importer import ZekrModelsImporter, QuranicCorpusImporter
@@ -16,7 +15,7 @@ commands.add_option("-x", "--index", dest="index", type="choice", choices=["main
                     help="create  indexes", metavar="TYPE")
 
 commands.add_option("-t", "--transfer", dest="transfer", type="choice",
-                    choices=["stopwords", "synonyms", "word_props", "derivations", "vocalizations", "ara2eng_names",
+                    choices=[ "word_props", "derivations", "vocalizations", "ara2eng_names",
                              "std2uth_words"],
                     help="transfer from database to dynamic resources", metavar="RESOURCE")
 
@@ -48,7 +47,7 @@ if options.index:
         parser.error("Choose SOURCE_PATH and DISTINATION_PATH")
 
     if options.index == "main":
-        T = Transformer(ixpath=DESTINATION, dypypath=None, dbpath=SOURCE)
+        T = Transformer(index_path=DESTINATION, resource_path=None, dbpath=SOURCE)
         ayaSchema = T.build_schema(tablename='aya')
         T.build_docindex(ayaSchema)
 
@@ -57,7 +56,7 @@ if options.index:
         E.load_translationModels()
 
     elif options.index == "word":
-        T = Transformer(ixpath=DESTINATION, dypypath=None, dbpath=SOURCE)
+        T = Transformer(index_path=DESTINATION, resource_path=None, dbpath=SOURCE)
         wordqcSchema = T.build_schema(tablename='wordqc')
         T.build_docindex(wordqcSchema, tablename='wordqc')
 
@@ -74,12 +73,8 @@ if options.transfer:
     else:
         parser.error("Choose SOURCE_PATH and DISTINATION_PATH")
 
-    T = Transformer(ixpath=SOURCE2, dypypath=DESTINATION, dbpath=SOURCE)
-    if options.transfer == "stopwords":
-        T.transfer_stopwords()
-    elif options.transfer == "synonyms":
-        T.transfer_synonymes()
-    elif options.transfer == "word_props":
+    T = Transformer(index_path=SOURCE2, resource_path=DESTINATION, dbpath=SOURCE)
+    if options.transfer == "word_props":
         T.transfer_word_props()
     elif options.transfer == "derivations":
         T.transfer_derivations()
