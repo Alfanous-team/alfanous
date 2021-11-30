@@ -217,7 +217,7 @@ class Raw():
         self.WSE = WSE(WSE_index)
         ##
         self._recitations = recitations(Recitations_list_file)
-        self._translations = translations(Translations_list_file)
+        self._translations = list(self.TSE.list_values("id"))
         self._hints = hints(Hints_file)
         ##
         self._information = information(Information_file)
@@ -232,6 +232,8 @@ class Raw():
             "Romanized": list(self.QSE.list_values("sura"))
         }
         self._chapters = list(self.QSE.list_values("chapter"))
+        self._topics = list(self.QSE.list_values("topic"))
+        self._subtopics = list(self.QSE.list_values("subtopic"))
 
         self._defaults = self.DEFAULTS
         self._flags = self.DEFAULTS["flags"].keys()
@@ -249,6 +251,8 @@ class Raw():
             "hints": self._hints,
             "surates": self._surates,
             "chapters": self._chapters,
+            "topics": self._topics,
+            "subtopics": self._subtopics,
             "defaults": self._defaults,
             "flags": self._flags,
             "fields": self._fields,
