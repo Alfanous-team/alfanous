@@ -217,7 +217,7 @@ class Raw():
         self.WSE = WSE(WSE_index)
         ##
         self._recitations = recitations(Recitations_list_file)
-        self._translations = list(self.TSE.list_values("id"))
+        self._translations = { id: id for id in self.TSE.list_values("id")}
         self._hints = hints(Hints_file)
         ##
         self._information = information(Information_file)
