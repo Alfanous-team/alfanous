@@ -1,7 +1,9 @@
-from .araby_constants import *
+from .constants import *
 
 __all__ = ['normalize_uthmani_symbols','normalize_hamza','normalize_lamalef',
            'normalize_spellerrors','normalize_text']
+
+from .strip_functions import stripTashkeel, stripTatweel
 
 _ALEFAT = (ALEF_MADDA, ALEF_HAMZA_ABOVE, ALEF_HAMZA_BELOW, HAMZA_ABOVE, HAMZA_BELOW)
 _HAMZAT = (WAW_HAMZA, YEH_HAMZA)
@@ -62,8 +64,8 @@ def normalize_text(text):
     >>> normalize_text('')
     u''
     '''
-    text = araby.stripTashkeel(text)
-    text = araby.stripTatweel(text)
+    text = stripTashkeel(text)
+    text = stripTatweel(text)
     text = normalize_lamalef(text)
     text = normalize_hamza(text)
     text = normalize_spellerrors(text)

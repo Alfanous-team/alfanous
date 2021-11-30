@@ -1,4 +1,4 @@
-from .araby_constants import *
+from .constants import *
 
 __all__ = ['stripHarakat','stripTashkeel','strip_tashkeel','stripTatweel','strip_tatweel','strip_shadda']
 

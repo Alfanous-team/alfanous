@@ -21,10 +21,10 @@ Arabic module
 @todo: statistics calculator
 
 """
-from .araby_strip_functions import *
-from .araby_normalizers import *
-from .araby_predicates import *
-from .araby_constants import *
+from .strip_functions import *
+from .normalizers import *
+from .predicates import *
+from .constants import *
 
 
 _arabic_range = None

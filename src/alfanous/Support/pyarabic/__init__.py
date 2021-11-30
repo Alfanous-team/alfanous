@@ -1,4 +1,4 @@
-# PyArabic -- Regression testing
+# pyarabic -- Regression testing
 #
 # Copyright (C) 2010 Taha Zerrouki
 # Author: Taha Zerrouki <taha zerrouki at gawab dot com>
