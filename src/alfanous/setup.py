@@ -23,7 +23,7 @@ setup(
 
     version=current_version,
 
-    packages=['alfanous',  'alfanous.Support', 'alfanous.Support.PyArabic', ],
+    packages=['alfanous',  'alfanous.Support', 'alfanous.Support.pyarabic', ],
 
     install_requires=['pyparsing', 'whoosh'],
 

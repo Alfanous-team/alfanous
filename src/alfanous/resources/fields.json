@@ -1,0 +1,1939 @@
+[
+  {
+    "id": 1,
+    "name": "gid",
+    "name_arabic": "رقم",
+    "table_name": "aya",
+    "comment": "المفتاح الرئيسي:ترتيب الآية في المصحف",
+    "type": "NUMERIC",
+    
+    
+    "stored": true,
+    
+    "unique": true,
+    
+    
+    
+    
+    "search_name": "gid",
+    "analyzer": null
+    
+    
+  },
+  {
+    "id": 2,
+    "name": "sura_id",
+    "name_arabic": "رقم_السورة",
+    "table_name": "aya",
+    "comment": "ترتيب السورة في المصحف",
+    "type": "NUMERIC",
+    
+    
+    "stored": true,
+    "is_spellchecked": null,
+    
+    "unique": null,
+    "source": "tanzil.info",
+    
+    
+    
+    "search_name": "sura_id",
+    "analyzer": null
+    
+    
+  },
+  {
+    "id": 3,
+    "name": "aya_id",
+    "name_arabic": "رقم_الآية",
+    "table_name": "aya",
+    "comment": "ترتيب الآية في السورة",
+    "type": "NUMERIC",
+    
+    
+    "stored": true,
+    "is_spellchecked": null,
+    
+    "unique": null,
+    "source": "tanzil.info",
+    
+    
+    
+    "search_name": "aya_id",
+    "analyzer": null
+    
+    
+  },
+  {
+    "id": 4,
+    "name": "standard",
+    "name_arabic": "آية",
+    "table_name": "aya",
+    "comment": "نص الآية بالخط الاملائي و غير مشكول",
+    "type": "TEXT",
+    
+    
+    "stored": true,
+    "is_spellchecked": null,
+    
+    "unique": null,
+    "source": "tanzil.info",
+    
+    
+    
+    "search_name": "aya",
+    "analyzer": "QStandardAnalyzer",
+    "field_boost": "2.0"
+    
+    
+  },
+  {
+    "id": 5,
+    "name": "standard_full",
+    "name_arabic": "آية_",
+    "table_name": "aya",
+    "comment": "نص الآية بالخط الاملائي و  مشكول",
+    "type": "TEXT",
+    
+    
+    "stored": true,
+    "is_spellchecked": null,
+    
+    "unique": null,
+    "source": "tanzil.info",
+    
+    
+    
+    "search_name": "aya_",
+    "analyzer": "QDiacAnalyzer"
+    
+    
+  },
+  {
+    "id": 6,
+    "name": "uthmani",
+    "name_arabic": "عثماني_",
+    "table_name": "aya",
+    "comment": "نص الآية بالخط العثماني  و   مشكول",
+    "type": "TEXT",
+    
+    
+    "stored": true,
+    "is_spellchecked": null,
+    
+    "unique": null,
+    "source": "tanzil.info",
+    
+    
+    
+    "search_name": "uth_",
+    "analyzer": "QUthmaniDiacAnalyzer",
+    "field_boost": "2.0"
+    
+    
+  },
+  {
+    "id": 7,
+    "name": "uthmani_min",
+    "name_arabic": "عثماني ",
+    "table_name": "aya",
+    "comment": "نص الآية بالخط الاملائي و غير مشكول",
+    "type": "TEXT",
+    
+    
+    "stored": true,
+    "is_spellchecked": null,
+    
+    "unique": null,
+    "source": "tanzil.info",
+    
+    
+    
+    "search_name": "uth",
+    "analyzer": "QUthmaniAnalyzer"
+    
+    
+  },
+  {
+    "id": 8,
+    "name": "chapter",
+    "name_arabic": "فصل",
+    "table_name": "aya",
+    "comment": "الفصل حسب التقسيم الى مواضيع",
+    "type": "TEXT",
+    
+    
+    "stored": true,
+    "is_spellchecked": null,
+    
+    "unique": null,
+    "source": "taha_zerrouki",
+    
+    
+    
+    "search_name": "chapter",
+    "analyzer": null
+    
+    
+  },
+  {
+    "id": 9,
+    "name": "topic",
+    "name_arabic": "فرع",
+    "table_name": "aya",
+    "comment": null,
+    "type": "TEXT",
+    
+    
+    "stored": true,
+    "is_spellchecked": null,
+    
+    "unique": null,
+    "source": "taha_zerrouki",
+    
+    
+    
+    "search_name": "topic",
+    "analyzer": null
+    
+    
+  },
+  {
+    "id": 10,
+    "name": "subtopic",
+    "name_arabic": "باب",
+    "table_name": "aya",
+    "comment": null,
+    "type": "TEXT",
+    
+    
+    "stored": true,
+    "is_spellchecked": null,
+    
+    "unique": null,
+    "source": "taha_zerrouki",
+    
+    
+    
+    "search_name": "subtopic",
+    "analyzer": null
+    
+    
+  },
+  {
+    "id": 11,
+    "name": "subject",
+    "name_arabic": "موضوع",
+    "table_name": "aya",
+    "comment": "دمج الحقول الثلاثة للمواضيع",
+    "type": "KEYWORD",
+    
+    
+    "stored": "no",
+    "is_spellchecked": null,
+    
+    "unique": null,
+    
+    
+    
+    
+    "search_name": "subject",
+    "analyzer": null
+    
+    
+  },
+  {
+    "id": 12,
+    "name": "rub_gid",
+    "name_arabic": "ربع",
+    "table_name": "aya",
+    "comment": null,
+    "type": "NUMERIC",
+    
+    
+    "stored": true,
+    "is_spellchecked": null,
+    
+    "unique": null,
+    "source": "tanzil.info",
+    
+    
+    
+    "search_name": "rub",
+    "analyzer": null
+    
+    
+  },
+  {
+    "id": 13,
+    "name": "nisf_gid",
+    "name_arabic": "نصف",
+    "table_name": "aya",
+    "comment": null,
+    "type": "NUMERIC",
+    
+    
+    "stored": true,
+    "is_spellchecked": null,
+    
+    "unique": null,
+    
+    
+    
+    
+    "search_name": "nisf",
+    "analyzer": null
+    
+    
+  },
+  {
+    "id": 14,
+    "name": "hizb_gid",
+    "name_arabic": "حزب",
+    "table_name": "aya",
+    "comment": null,
+    "type": "NUMERIC",
+    
+    
+    "stored": true,
+    "is_spellchecked": null,
+    
+    "unique": null,
+    
+    
+    
+    
+    "search_name": "hizb",
+    "analyzer": null
+    
+    
+  },
+  {
+    "id": 15,
+    "name": "juz_gid",
+    "name_arabic": "جزء",
+    "table_name": "aya",
+    "comment": null,
+    "type": "NUMERIC",
+    
+    
+    "stored": true,
+    "is_spellchecked": null,
+    
+    "unique": null,
+    
+    
+    
+    
+    "search_name": "juz",
+    "analyzer": null
+    
+    
+  },
+  {
+    "id": 20,
+    "name": "page_id",
+    "name_arabic": "صفحة",
+    "table_name": "aya",
+    "comment": null,
+    "type": "NUMERIC",
+    
+    
+    "stored": true,
+    "is_spellchecked": null,
+    
+    "unique": null,
+    
+    
+    
+    
+    "search_name": "page",
+    "analyzer": null
+    
+    
+  },
+  {
+    "id": 21,
+    "name": "ruku_id",
+    "name_arabic": "ركوع",
+    "table_name": "aya",
+    "comment": null,
+    "type": "NUMERIC",
+    
+    
+    "stored": true,
+    "is_spellchecked": null,
+    
+    "unique": null,
+    
+    
+    
+    
+    "search_name": "ruk",
+    "analyzer": null
+    
+    
+  },
+  {
+    "id": 22,
+    "name": "manzil_id",
+    "name_arabic": "منزل",
+    "table_name": "aya",
+    "comment": null,
+    "type": "NUMERIC",
+    
+    
+    "stored": true,
+    "is_spellchecked": null,
+    
+    "unique": null,
+    
+    
+    
+    
+    "search_name": "manzil",
+    "analyzer": null
+    
+    
+  },
+  {
+    "id": 23,
+    "name": "sajda",
+    "name_arabic": "سجدة",
+    "table_name": "aya",
+    "comment": null,
+    "type": "KEYWORD",
+    
+    
+    "stored": true,
+    "is_spellchecked": null,
+    
+    "unique": null,
+    
+    
+    
+    
+    "search_name": "sajda",
+    "analyzer": null
+    
+    
+  },
+  {
+    "id": 24,
+    "name": "sajda_id",
+    "name_arabic": "رقم_السجدة",
+    "table_name": "aya",
+    "comment": null,
+    "type": "NUMERIC",
+    
+    
+    "stored": true,
+    "is_spellchecked": null,
+    
+    "unique": null,
+    "source": "tanzil.info",
+    
+    
+    
+    "search_name": "sajda_id",
+    "analyzer": null
+    
+    
+  },
+  {
+    "id": 25,
+    "name": "sajda_type",
+    "name_arabic": "نوع_السجدة",
+    "table_name": "aya",
+    "comment": null,
+    "type": "KEYWORD",
+    
+    
+    "stored": true,
+    "is_spellchecked": null,
+    
+    "unique": null,
+    "source": "tanzil.info",
+    
+    
+    
+    "search_name": "sajda_type",
+    "analyzer": null
+    
+    
+  },
+  {
+    "id": 26,
+    "name": "sura_name",
+    "name_arabic": "سورة",
+    "table_name": "aya",
+    "comment": null,
+    "type": "TEXT",
+    
+    
+    "stored": true,
+    "is_spellchecked": null,
+    
+    "unique": null,
+    "source": "tanzil.info",
+    
+    
+    
+    "search_name": "sura_arabic",
+    "analyzer": "APermissibleAnalyzer"
+    
+    
+  },
+  {
+    "id": 27,
+    "name": "sura_type",
+    "name_arabic": "نوع_السورة",
+    "table_name": "aya",
+    "comment": null,
+    "type": "KEYWORD",
+    
+    
+    "stored": true,
+    "is_spellchecked": null,
+    
+    "unique": null,
+    "source": "tanzil.info",
+    
+    
+    
+    "search_name": "sura_type_arabic",
+    "analyzer": null
+    
+    
+  },
+  {
+    "id": 28,
+    "name": "sura_order",
+    "name_arabic": "ترتيب_السورة",
+    "table_name": "aya",
+    "comment": null,
+    "type": "NUMERIC",
+    
+    
+    "stored": true,
+    "is_spellchecked": null,
+    
+    "unique": null,
+    "source": "tanzil.info",
+    
+    
+    
+    "search_name": "sura_order",
+    "analyzer": null
+    
+    
+  },
+  {
+    "id": 29,
+    "name": "sura_ayas_nb",
+    "name_arabic": "آ_س",
+    "table_name": "aya",
+    "comment": null,
+    "type": "NUMERIC",
+    
+    
+    "stored": true,
+    "is_spellchecked": null,
+    
+    "unique": null,
+    "source": "tanzil.info",
+    
+    
+    
+    "search_name": "s_a",
+    "analyzer": null
+    
+    
+  },
+  {
+    "id": 30,
+    "name": "sura_gnames_nb",
+    "name_arabic": "ج_س",
+    "table_name": "aya",
+    "comment": null,
+    "type": "NUMERIC",
+    
+    
+    "stored": true,
+    "is_spellchecked": null,
+    
+    "unique": null,
+    
+    
+    
+    
+    "search_name": "s_g",
+    "analyzer": null
+    
+    
+  },
+  {
+    "id": 31,
+    "name": "sura_words_nb",
+    "name_arabic": "ك_س",
+    "table_name": "aya",
+    "comment": null,
+    "type": "NUMERIC",
+    
+    
+    "stored": true,
+    "is_spellchecked": null,
+    
+    "unique": null,
+    
+    
+    
+    
+    "search_name": "s_w",
+    "analyzer": null
+    
+    
+  },
+  {
+    "id": 32,
+    "name": "sura_letters_nb",
+    "name_arabic": "ح_س",
+    "table_name": "aya",
+    "comment": null,
+    "type": "NUMERIC",
+    
+    
+    "stored": true,
+    "is_spellchecked": null,
+    
+    "unique": null,
+    
+    
+    
+    
+    "search_name": "s_l",
+    "analyzer": null
+    
+    
+  },
+  {
+    "id": 33,
+    "name": "sura_rukus_nb",
+    "name_arabic": "ر_س",
+    "table_name": "aya",
+    "comment": null,
+    "type": "NUMERIC",
+    
+    
+    "stored": true,
+    "is_spellchecked": null,
+    
+    "unique": null,
+    
+    
+    
+    
+    "search_name": "s_r",
+    "analyzer": null
+    
+    
+  },
+  {
+    "id": 34,
+    "name": "aya_gnames_nb",
+    "name_arabic": "ج_آ",
+    "table_name": "aya",
+    "comment": null,
+    "type": "NUMERIC",
+    
+    
+    "stored": true,
+    "is_spellchecked": null,
+    
+    "unique": null,
+    
+    
+    
+    
+    "search_name": "a_g",
+    "analyzer": null
+    
+    
+  },
+  {
+    "id": 35,
+    "name": "aya_words_nb",
+    "name_arabic": "ك_آ",
+    "table_name": "aya",
+    "comment": null,
+    "type": "NUMERIC",
+    
+    
+    "stored": true,
+    "is_spellchecked": null,
+    
+    "unique": null,
+    
+    
+    
+    
+    "search_name": "a_w",
+    "analyzer": null
+    
+    
+  },
+  {
+    "id": 36,
+    "name": "aya_letters_nb",
+    "name_arabic": "ح_آ",
+    "table_name": "aya",
+    "comment": null,
+    "type": "NUMERIC",
+    
+    
+    "stored": true,
+    "is_spellchecked": null,
+    
+    "unique": null,
+    
+    
+    
+    
+    "search_name": "a_l",
+    "analyzer": null
+    
+    
+  },
+  {
+    "id": 37,
+    "name": "gid",
+    "name_arabic": "رقم",
+    "table_name": "word",
+    "comment": null,
+    "type": "KEYWORD",
+    
+
+    "stored": null,
+    "is_spellchecked": null,
+
+    "unique": null,
+    
+    
+    
+    
+    "search_name": null,
+    "analyzer": null
+
+
+  },
+  {
+    "id": 38,
+    "name": "sura_id",
+    "name_arabic": "رقم_السورة",
+    "table_name": "word",
+    "comment": null,
+    "type": "KEYWORD",
+
+    "is_indexed": null,
+    "stored": null,
+    "is_spellchecked": null,
+
+    "unique": null,
+    
+    
+    
+    
+    "search_name": null,
+    "analyzer": null
+
+
+  },
+  {
+    "id": 39,
+    "name": "aya_id",
+    "name_arabic": "رقم_الآية",
+    "table_name": "word",
+    "comment": null,
+    "type": "KEYWORD",
+
+    "is_indexed": null,
+    "stored": null,
+    "is_spellchecked": null,
+
+    "unique": null,
+    
+    
+    
+    
+    "search_name": null,
+    "analyzer": null
+
+
+  },
+  {
+    "id": 40,
+    "name": "word_id",
+    "name_arabic": "رقم_اللفظ",
+    "table_name": "word",
+    "comment": null,
+    "type": "NUMERIC",
+
+    "is_indexed": null,
+    "stored": null,
+    "is_spellchecked": null,
+
+    "unique": null,
+    
+    
+    
+    
+    "search_name": null,
+    "analyzer": null
+
+
+  },
+  {
+    "id": 41,
+    "name": "word",
+    "name_arabic": "لفظ",
+    "table_name": "word",
+    "comment": null,
+    "type": null,
+
+    "is_indexed": null,
+    "stored": null,
+    "is_spellchecked": null,
+
+    "unique": null,
+    
+    
+    
+    
+    "search_name": null,
+    "analyzer": null
+
+
+  },
+  {
+    "id": 42,
+    "name": "uthmani",
+    "name_arabic": "عثماني",
+    "table_name": "word",
+    "comment": null,
+    "type": null,
+
+    "is_indexed": null,
+    "stored": null,
+    "is_spellchecked": null,
+
+    "unique": null,
+    
+    
+    
+    
+    "search_name": null,
+    "analyzer": null
+
+
+  },
+  {
+    "id": 43,
+    "name": "lemma",
+    "name_arabic": "مصدر",
+    "table_name": "word",
+    "comment": null,
+    "type": null,
+
+    "is_indexed": null,
+    "stored": null,
+    "is_spellchecked": null,
+
+    "unique": null,
+    
+    
+    
+    
+    "search_name": null,
+    "analyzer": null
+
+
+  },
+  {
+    "id": 44,
+    "name": "root",
+    "name_arabic": "جذر",
+    "table_name": "word",
+    "comment": null,
+    "type": null,
+
+    "is_indexed": null,
+    "stored": null,
+    "is_spellchecked": null,
+
+    "unique": null,
+    
+    
+    
+    
+    "search_name": null,
+    "analyzer": null
+
+
+  },
+  {
+    "id": 45,
+    "name": "type",
+    "name_arabic": "نوع",
+    "table_name": "word",
+    "comment": null,
+    "type": null,
+
+    "is_indexed": null,
+    "stored": null,
+    "is_spellchecked": null,
+
+    "unique": null,
+    
+    
+    
+    
+    "search_name": null,
+    "analyzer": null
+
+
+  },
+  {
+    "id": 46,
+    "name": "pattern",
+    "name_arabic": "وزن",
+    "table_name": "word",
+    "comment": null,
+    "type": null,
+
+    "is_indexed": null,
+    "stored": null,
+    "is_spellchecked": null,
+
+    "unique": null,
+    
+    
+    
+    
+    "search_name": null,
+    "analyzer": null
+
+
+  },
+  {
+    "id": 47,
+    "name": "gender",
+    "name_arabic": null,
+    "table_name": "word",
+    "comment": null,
+    "type": null,
+
+    "is_indexed": null,
+    "stored": null,
+    "is_spellchecked": null,
+
+    "unique": null,
+    
+    
+    
+    
+    "search_name": null,
+    "analyzer": null
+
+
+  },
+  {
+    "id": 48,
+    "name": "number",
+    "name_arabic": "عدد",
+    "table_name": "word",
+    "comment": null,
+    "type": null,
+
+    "is_indexed": null,
+    "stored": null,
+    "is_spellchecked": null,
+
+    "unique": null,
+    
+    
+    
+    
+    "search_name": null,
+    "analyzer": null
+
+
+  },
+  {
+    "id": 49,
+    "name": "person",
+    "name_arabic": null,
+    "table_name": "word",
+    "comment": null,
+    "type": null,
+
+    "is_indexed": null,
+    "stored": null,
+    "is_spellchecked": null,
+
+    "unique": null,
+    
+    
+    
+    
+    "search_name": null,
+    "analyzer": null
+
+
+  },
+  {
+    "id": 50,
+    "name": "i3rab",
+    "name_arabic": "اعراب",
+    "table_name": "word",
+    "comment": null,
+    "type": null,
+
+    "is_indexed": null,
+    "stored": null,
+    "is_spellchecked": null,
+
+    "unique": null,
+    
+    
+    
+    
+    "search_name": null,
+    "analyzer": null
+
+
+  },
+  {
+    "id": 51,
+    "name": "prefix",
+    "name_arabic": "سابق",
+    "table_name": "word",
+    "comment": null,
+    "type": null,
+
+    "is_indexed": null,
+    "stored": null,
+    "is_spellchecked": null,
+
+    "unique": null,
+    
+    
+    
+    
+    "search_name": null,
+    "analyzer": null
+
+
+  },
+  {
+    "id": 52,
+    "name": "suffix",
+    "name_arabic": "لاحق",
+    "table_name": "word",
+    "comment": null,
+    "type": null,
+
+    "is_indexed": null,
+    "stored": null,
+    "is_spellchecked": null,
+
+    "unique": null,
+    
+    
+    
+    
+    "search_name": null,
+    "analyzer": null
+
+
+  },
+  {
+    "id": 53,
+    "name": "synonymes",
+    "name_arabic": "مترادفات",
+    "table_name": "word",
+    "comment": null,
+    "type": null,
+
+    "is_indexed": null,
+    "stored": null,
+    "is_spellchecked": null,
+
+    "unique": null,
+    
+    
+    
+    
+    "search_name": null,
+    "analyzer": null
+
+
+  },
+  {
+    "id": 54,
+    "name": "word_letters_nb",
+    "name_arabic": "ح_ك",
+    "table_name": "word",
+    "comment": null,
+    "type": null,
+
+    "is_indexed": null,
+    "stored": null,
+    "is_spellchecked": null,
+    
+    "unique": null,
+    
+    
+    
+    
+    "search_name": null,
+    "analyzer": null
+    
+    
+  },
+  {
+    "id": 55,
+    "name": "gid",
+    "name_arabic": "",
+    "table_name": "wordqc",
+    "comment": null,
+    "type": "NUMERIC",
+    
+    
+    "stored": true,
+    "is_spellchecked": "",
+    
+    "unique": true,
+    
+    
+    
+    
+    "search_name": "gid",
+    "analyzer": null
+    
+    
+  },
+  {
+    "id": 56,
+    "name": "word_gid",
+    "name_arabic": "رقم",
+    "table_name": "wordqc",
+    "comment": null,
+    "type": "NUMERIC",
+    
+    
+    "stored": true,
+    "is_spellchecked": null,
+    
+    "unique": null,
+    
+    
+    
+    
+    "search_name": "word_gid",
+    "analyzer": null
+    
+    
+  },
+  {
+    "id": 57,
+    "name": "word_id",
+    "name_arabic": "رقم_الكلمة",
+    "table_name": "wordqc",
+    "comment": null,
+    "type": "NUMERIC",
+    
+    
+    "stored": true,
+    "is_spellchecked": null,
+    
+    "unique": null,
+    
+    
+    
+    
+    "search_name": "word_id",
+    "analyzer": null
+    
+    
+  },
+  {
+    "id": 58,
+    "name": "aya_id",
+    "name_arabic": "رقم_الآية",
+    "table_name": "wordqc",
+    "comment": null,
+    "type": "NUMERIC",
+    
+    
+    "stored": true,
+    "is_spellchecked": null,
+    
+    "unique": null,
+    
+    
+    
+    
+    "search_name": "aya_id",
+    "analyzer": null
+    
+    
+  },
+  {
+    "id": 59,
+    "name": "sura_id",
+    "name_arabic": "رقم_السورة",
+    "table_name": "wordqc",
+    "comment": null,
+    "type": "NUMERIC",
+    
+    
+    "stored": true,
+    "is_spellchecked": null,
+    
+    "unique": null,
+    
+    
+    
+    
+    "search_name": "sura_id",
+    "analyzer": null
+    
+    
+  },
+  {
+    "id": 60,
+    "name": "word",
+    "name_arabic": "كلمة",
+    "table_name": "wordqc",
+    "comment": null,
+    "type": "TEXT",
+    
+    
+    "stored": true,
+    "is_spellchecked": null,
+    
+    "unique": null,
+    
+    
+    
+    
+    "search_name": "word",
+    "analyzer": "QUthmaniDiacAnalyzer"
+    
+    
+  },
+  {
+    "id": 61,
+    "name": "normalised",
+    "name_arabic": "",
+    "table_name": "wordqc",
+    "comment": null,
+    "type": "TEXT",
+    
+    
+    "stored": true,
+    "is_spellchecked": null,
+    
+    "unique": null,
+    
+    
+    
+    
+    "search_name": "normalized",
+    "analyzer": "QUthmaniAnalyzer"
+    
+    
+  },
+  {
+    "id": 62,
+    "name": "spelled",
+    "name_arabic": null,
+    "table_name": "wordqc",
+    "comment": null,
+    "type": "KEYWORD",
+    
+    
+    "stored": true,
+    "is_spellchecked": null,
+    
+    "unique": null,
+    
+    
+    
+    
+    "search_name": "spelled",
+    "analyzer": null
+    
+    
+  },
+  {
+    "id": 64,
+    "name": "order",
+    "name_arabic": "ترتيب",
+    "table_name": "wordqc",
+    "comment": null,
+    "type": "NUMERIC",
+    
+    
+    "stored": true,
+    "is_spellchecked": null,
+    
+    "unique": null,
+    
+    
+    
+    
+    "search_name": "order",
+    "analyzer": null
+    
+    
+  },
+  {
+    "id": 65,
+    "name": "token",
+    "name_arabic": "",
+    "table_name": "wordqc",
+    "comment": null,
+    "type": "KEYWORD",
+    
+    
+    "stored": true,
+    "is_spellchecked": null,
+    
+    "unique": null,
+    
+    
+    
+    
+    "search_name": "token",
+    "analyzer": null
+    
+    
+  },
+  {
+    "id": 66,
+    "name": "arabictoken",
+    "name_arabic": "قيمة",
+    "table_name": "wordqc",
+    "comment": null,
+    "type": "KEYWORD",
+    
+    
+    "stored": true,
+    "is_spellchecked": null,
+    
+    "unique": null,
+    
+    
+    
+    
+    "search_name": "arabictoken",
+    "analyzer": null
+    
+    
+  },
+  {
+    "id": 67,
+    "name": "pos",
+    "name_arabic": "",
+    "table_name": "wordqc",
+    "comment": null,
+    "type": "KEYWORD",
+    
+    
+    "stored": true,
+    "is_spellchecked": null,
+    
+    "unique": null,
+    
+    
+    
+    
+    "search_name": "pos",
+    "analyzer": null
+    
+    
+  },
+  {
+    "id": 68,
+    "name": "type",
+    "name_arabic": "نوع",
+    "table_name": "wordqc",
+    "comment": null,
+    "type": "KEYWORD",
+    
+    
+    "stored": true,
+    "is_spellchecked": null,
+    
+    "unique": null,
+    
+    
+    
+    
+    "search_name": "type",
+    "analyzer": null
+    
+    
+  },
+  {
+    "id": 69,
+    "name": "arabicpos",
+    "name_arabic": "اعراب",
+    "table_name": "wordqc",
+    "comment": null,
+    "type": "KEYWORD",
+    
+    
+    "stored": true,
+    "is_spellchecked": null,
+    
+    "unique": null,
+    
+    
+    
+    
+    "search_name": "arabicpos",
+    "analyzer": null
+    
+    
+  },
+  {
+    "id": 70,
+    "name": "mood",
+    "name_arabic": null,
+    "table_name": "wordqc",
+    "comment": null,
+    "type": "KEYWORD",
+    
+    
+    "stored": true,
+    "is_spellchecked": null,
+    
+    "unique": null,
+    
+    
+    
+    
+    "search_name": "mood",
+    "analyzer": null
+    
+    
+  },
+  {
+    "id": 71,
+    "name": "arabicmood",
+    "name_arabic": null,
+    "table_name": "wordqc",
+    "comment": null,
+    "type": "KEYWORD",
+    
+    
+    "stored": true,
+    "is_spellchecked": null,
+    
+    "unique": null,
+    
+    
+    
+    
+    "search_name": "arabicmood",
+    "analyzer": null
+    
+    
+  },
+  {
+    "id": 72,
+    "name": "case",
+    "name_arabic": "",
+    "table_name": "wordqc",
+    "comment": null,
+    "type": "KEYWORD",
+    
+    
+    "stored": true,
+    "is_spellchecked": null,
+    
+    "unique": null,
+    
+    
+    
+    
+    "search_name": "case",
+    "analyzer": null
+    
+    
+  },
+  {
+    "id": 73,
+    "name": "arabiccase",
+    "name_arabic": "حالة",
+    "table_name": "wordqc",
+    "comment": null,
+    "type": "KEYWORD",
+    
+    
+    "stored": true,
+    "is_spellchecked": null,
+    
+    "unique": null,
+    
+    
+    
+    
+    "search_name": "arabiccase",
+    "analyzer": null
+    
+    
+  },
+  {
+    "id": 74,
+    "name": "root",
+    "name_arabic": "",
+    "table_name": "wordqc",
+    "comment": null,
+    "type": "KEYWORD",
+    
+    
+    "stored": true,
+    "is_spellchecked": null,
+    
+    "unique": null,
+    
+    
+    
+    
+    "search_name": "",
+    "analyzer": null
+    
+    
+  },
+  {
+    "id": 75,
+    "name": "arabicroot",
+    "name_arabic": "جذر",
+    "table_name": "wordqc",
+    "comment": null,
+    "type": "KEYWORD",
+    
+    
+    "stored": true,
+    "is_spellchecked": null,
+    
+    "unique": null,
+    
+    
+    
+    
+    "search_name": "arabicroot",
+    "analyzer": null
+    
+    
+  },
+  {
+    "id": 76,
+    "name": "lemma",
+    "name_arabic": "",
+    "table_name": "wordqc",
+    "comment": null,
+    "type": "KEYWORD",
+    
+    
+    "stored": true,
+    "is_spellchecked": null,
+    
+    "unique": null,
+    
+    
+    
+    
+    "search_name": "",
+    "analyzer": null
+    
+    
+  },
+  {
+    "id": 77,
+    "name": "arabiclemma",
+    "name_arabic": "ساق",
+    "table_name": "wordqc",
+    "comment": null,
+    "type": "KEYWORD",
+    
+    
+    "stored": true,
+    "is_spellchecked": null,
+    
+    "unique": null,
+    
+    
+    
+    
+    "search_name": "arabiclemma",
+    "analyzer": null
+    
+    
+  },
+  {
+    "id": 78,
+    "name": "special",
+    "name_arabic": null,
+    "table_name": "wordqc",
+    "comment": null,
+    "type": "KEYWORD",
+    
+    
+    "stored": true,
+    "is_spellchecked": null,
+    
+    "unique": null,
+    
+    
+    
+    
+    "search_name": null,
+    "analyzer": null
+    
+    
+  },
+  {
+    "id": 79,
+    "name": "arabicspecial",
+    "name_arabic": "خاص",
+    "table_name": "wordqc",
+    "comment": null,
+    "type": "KEYWORD",
+    
+    
+    "stored": true,
+    "is_spellchecked": null,
+    
+    "unique": null,
+    
+    
+    
+    
+    "search_name": "arabicspecial",
+    "analyzer": null
+    
+    
+  },
+  {
+    "id": 80,
+    "name": "derivation",
+    "name_arabic": "اشتقاق",
+    "table_name": "wordqc",
+    "comment": null,
+    "type": "KEYWORD",
+    
+    
+    "stored": true,
+    "is_spellchecked": null,
+    
+    "unique": null,
+    
+    
+    
+    
+    "search_name": "derivation",
+    "analyzer": null
+    
+    
+  },
+  {
+    "id": 81,
+    "name": "form",
+    "name_arabic": "هيئة",
+    "table_name": "wordqc",
+    "comment": null,
+    "type": "KEYWORD",
+    
+    
+    "stored": true,
+    "is_spellchecked": null,
+    
+    "unique": null,
+    
+    
+    
+    
+    "search_name": "form",
+    "analyzer": null
+    
+    
+  },
+  {
+    "id": 82,
+    "name": "gender",
+    "name_arabic": "جنس",
+    "table_name": "wordqc",
+    "comment": null,
+    "type": "KEYWORD",
+    
+    
+    "stored": true,
+    "is_spellchecked": null,
+    
+    "unique": null,
+    
+    
+    
+    
+    "search_name": "gender",
+    "analyzer": null
+    
+    
+  },
+  {
+    "id": 83,
+    "name": "person",
+    "name_arabic": "شخص",
+    "table_name": "wordqc",
+    "comment": null,
+    "type": "KEYWORD",
+    
+    
+    "stored": true,
+    "is_spellchecked": null,
+    
+    "unique": null,
+    
+    
+    
+    
+    "search_name": "person",
+    "analyzer": null
+    
+    
+  },
+  {
+    "id": 84,
+    "name": "number",
+    "name_arabic": "عدد",
+    "table_name": "wordqc",
+    "comment": null,
+    "type": "KEYWORD",
+    
+    
+    "stored": true,
+    "is_spellchecked": null,
+    
+    "unique": null,
+    
+    
+    
+    
+    "search_name": "number",
+    "analyzer": null
+    
+    
+  },
+  {
+    "id": 85,
+    "name": "voice",
+    "name_arabic": null,
+    "table_name": "wordqc",
+    "comment": null,
+    "type": "KEYWORD",
+    
+    
+    "stored": true,
+    "is_spellchecked": null,
+    
+    "unique": null,
+    
+    
+    
+    
+    "search_name": "voice",
+    "analyzer": null
+    
+    
+  },
+  {
+    "id": 86,
+    "name": "state",
+    "name_arabic": null,
+    "table_name": "wordqc",
+    "comment": null,
+    "type": "KEYWORD",
+    
+    
+    "stored": true,
+    "is_spellchecked": null,
+    
+    "unique": null,
+    
+    
+    
+    
+    "search_name": "state",
+    "analyzer": null
+    
+    
+  },
+  {
+    "id": 87,
+    "name": "aspect",
+    "name_arabic": null,
+    "table_name": "wordqc",
+    "comment": null,
+    "type": "KEYWORD",
+    
+    
+    "stored": true,
+    "is_spellchecked": null,
+    
+    "unique": null,
+    
+    
+    
+    
+    "search_name": "aspect",
+    "analyzer": null
+    
+    
+  },
+  {
+    "id": 88,
+    "name": "page_id_indian",
+    "name_arabic": "صفحة_هندي",
+    "table_name": "aya",
+    "comment": "(specific to indian mushafs)",
+    "type": "NUMERIC",
+    
+    
+    "stored": true,
+    "is_spellchecked": null,
+    
+    "unique": null,
+    "source": "mmuhiuddin(at)googlemail",
+    
+    
+    
+    "search_name": "page_IN",
+    "analyzer": null
+    
+    
+  },
+  {
+    "id": 89,
+    "name": "sura_type_en",
+    "name_arabic": "نوع_السورة_إنجليزي",
+    "table_name": "aya",
+    "comment": null,
+    "type": "KEYWORD",
+    
+    
+    "stored": true,
+    "is_spellchecked": null,
+    
+    "unique": null,
+    
+    
+    
+    
+    "search_name": "sura_type",
+    "analyzer": null
+    
+    
+  },
+  {
+    "id": 90,
+    "name": "sura_name_en",
+    "name_arabic": "سورة_إنجليزي",
+    "table_name": "aya",
+    "comment": null,
+    "type": "TEXT",
+    
+    
+    "stored": true,
+    "is_spellchecked": null,
+    
+    "unique": null,
+    
+    
+    
+    
+    "search_name": "sura_english",
+    "analyzer": null
+    
+    
+  },
+  {
+    "id": 91,
+    "name": "sura_name_romanization",
+    "name_arabic": "سورة_تهجئة",
+    "table_name": "aya",
+    "comment": null,
+    "type": "TEXT",
+    
+    
+    "stored": true,
+    "is_spellchecked": null,
+    
+    "unique": null,
+    
+    
+    
+    
+    "search_name": "sura",
+    "analyzer": null
+    
+    
+  },
+  {
+    "id": 92,
+    "name": "prefixes",
+    "name_arabic": "سابق",
+    "table_name": "wordqc",
+    "comment": null,
+    "type": "KEYWORD",
+    
+    
+    "stored": true,
+    "is_spellchecked": null,
+    
+    "unique": null,
+    
+    "source_comment": "quranic arabic corpus",
+    
+    
+    "search_name": "prefix",
+    "analyzer": null
+    
+    
+  },
+  {
+    "id": 93,
+    "name": "suffixes",
+    "name_arabic": "لاحق",
+    "table_name": "wordqc",
+    "comment": null,
+    "type": "KEYWORD",
+    
+    
+    "stored": true,
+    "is_spellchecked": null,
+    
+    "unique": null,
+    
+    
+    
+    
+    "search_name": "suffix",
+    "analyzer": null
+    
+    
+  }
+]

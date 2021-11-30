@@ -9,7 +9,7 @@ class BasicDocIndex:
     def __init__(self, ixpath):
         self._ixpath = ixpath
         self._ix, self.OK = self.load()
-        self.verify()
+        self.OK = self.OK and self.verify()
 
     def load(self):
         """
@@ -25,10 +25,7 @@ class BasicDocIndex:
         return ix, ok
 
     def verify(self):
-        """
-        verify the data of index after loading
-        """
-        pass
+        return True
 
     def __str__(self):
         return "<alfanous.Indexing.BasicDocIndex '" \
@@ -107,9 +104,7 @@ class QseDocIndex(BasicDocIndex):
                + str(self._ix.doc_count()) + ">"
 
     def verify(self):
-        if self.OK:
-            assert len(self) == 6236, "Ayas count is not exact"
-
+        return len(self) == 6236
 
 
 class ExtDocIndex(BasicDocIndex):
