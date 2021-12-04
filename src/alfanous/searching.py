@@ -67,5 +67,5 @@ class QSearcher:
         d = {}
         corrector = self._searcher(weighting=QScore()).corrector('aya')
         for mistyped_word in querystr.split():
-            d[mistyped_word] =  corrector.suggest(mistyped_word, limit=3,maxdist=1, prefix=True)
+            d[mistyped_word] =  corrector.suggest(mistyped_word, limit=3,maxdist=1, prefix=False)
         return d

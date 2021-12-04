@@ -33,9 +33,7 @@ def test_suggestion():
 
     results = RAWoutput.do( suggest_flags )
 
-    assert results["suggest"] == {'\u0627\u0628\u0631\u0627\u0647\u064a\u0645': ['\u0644\u0625\u0628\u0631\u0627\u0647\u064a\u0645',
-                                                 '\u0625\u0628\u0631\u0627\u0647\u064a\u0645',
-                                                 '\u0648\u0625\u0628\u0631\u0627\u0647\u064a\u0645']}
+    assert results["suggest"] == {'ابراهيم': ['إبراهيم']}
 
 def test_search():
     ## prepare a search query
