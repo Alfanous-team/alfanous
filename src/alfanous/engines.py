@@ -39,7 +39,9 @@ class BasicSearchEngine:
         return self._searcher.suggest(querystr)
 
     def autocomplete(self, querystr):
-        return {} # TODO
+        return { "base": "".join(querystr.split()[:-1]),
+                 "completion": self._reader.autocomplete(querystr.split()[-1])
+                 }
 
     def highlight(self, text, terms, highlight_type="css", strip_vocalization=True):
         return self._highlight(text, terms, highlight_type, strip_vocalization)

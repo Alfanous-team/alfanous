@@ -40,7 +40,14 @@ def test_missing_suggetion():
 
 
 def test_autocomplete():
-    assert QSE.autocomplete(u"رسول") == []
+    assert QSE.autocomplete("رسول") == {'base': '',
+ 'completion': ['رسول',
+                'رسولا',
+                'رسولكم',
+                'رسولنا',
+                'رسوله',
+                'رسولها',
+                'رسولهم']}
 
 
 def test_search():

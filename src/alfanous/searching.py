@@ -41,6 +41,9 @@ class QReader:
             lst.extend([self.reader.frequency(*term), self.reader.doc_frequency(*term)])
             yield tuple(lst)
 
+    def autocomplete(self, word):
+        return [x.decode('utf-8') for x in self.reader.expand_prefix('aya', word)]
+
 
 class QSearcher:
     """ search"""
