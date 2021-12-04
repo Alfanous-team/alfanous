@@ -3,14 +3,12 @@
 This is a test module for most of features provided by alfanous.engines module.
 
 """
-import profile
 
 from alfanous.engines import QuranicSearchEngine
 from alfanous.engines import TraductionSearchEngine
 from alfanous.engines import WordSearchEngine
 from alfanous import paths
 
-from alfanous.results_processing import QPaginate
 
 QSE = QuranicSearchEngine(paths.QSE_INDEX)
 TSE = TraductionSearchEngine(paths.TSE_INDEX)
@@ -77,16 +75,11 @@ def test_search():
 
     assert results.runtime < 0.1
     assert len(results) == 1
-    assert results.key_terms("aya", docs=1, numterms=15) == [('الأمل', 0.12383807073722287),
-                                                             ('ويتمتعوا', 0.12383807073722287),
-                                                             ('ويلههم', 0.12383807073722287),
-                                                             ('يأكلوا', 0.12383807073722287),
-                                                             ('ذرهم', 0.1131763058235371),
-                                                             ('فسوف', 0.07387262366619061),
-                                                             ('يعلمون', 0.05660024365436764)]
+    assert [ item[0] for item in results.key_terms("aya", docs=1, numterms=15)] == ['الأمل', 'ويتمتعوا', 'ويلههم', 'يأكلوا', 'ذرهم', 'فسوف', 'يعلمون']
 
-    assert terms == [('aya', u'\u0627\u0644\u0623\u0645\u0644', 2.0, 1)]
-    assert dict(results[0]) == {'a_l': 39,
+    assert terms[0][:2] == ('aya', u'\u0627\u0644\u0623\u0645\u0644')
+    assert dict(results[0]) == {'a_g': 0,
+                                'a_l': 39,
                                 'a_w': 7,
                                 'aya': 'ذرهم يأكلوا ويتمتعوا ويلههم الأمل فسوف يعلمون',
                                 'aya_': 'ذَرْهُمْ يَأْكُلُوا وَيَتَمَتَّعُوا وَيُلْهِهِمُ الْأَمَلُ فَسَوْفَ '
@@ -108,6 +101,8 @@ def test_search():
                                 's_r': 6,
                                 's_w': 654,
                                 'sajda': 'لا',
+                                'subject': 'الأخلاق المذمومة ,الانشغال بشهوات الدنيا,',
+                                'subtopic': '',
                                 'sura': 'Al-Hijr',
                                 'sura_arabic': 'الحجر',
                                 'sura_english': 'The Stoneland',
@@ -126,7 +121,7 @@ def test_translation_engine():
 
     results, searcher = TSE.find_extended(u"gid:1 OR gid:2", defaultfield="gid")
     assert len(results)
-    assert set(TSE.list_values("id")) == {'en.shakir', 'en.transliteration'}
+    assert {'en.shakir', 'en.transliteration'} & set(TSE.list_values("id"))
 
 # def test_word_engine():
 #     assert WSE.OK

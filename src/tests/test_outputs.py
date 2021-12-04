@@ -53,7 +53,7 @@ def test_search():
                  "aya_theme_info": False,
                  "aya_stat_info": False,
                  "aya_sajda_info": True,
-                 "translation": 2,
+                 "translation": "en.shakir",
                  }
 
     results = RAWoutput.do( search_flags )
@@ -778,7 +778,7 @@ def test_search():
                          'start': 1,
                          'total': 116},
             'translation_info': {},
-            'words': {'global': {'nb_matches': 284.0,
+            'words': {'global': {'nb_matches': 142.0,
                                  'nb_vocalizations': 0,
                                  'nb_words': 2},
                       'individual': {1: {'derivations': [],
@@ -787,7 +787,7 @@ def test_search():
                                          'nb_ayas': 113,
                                          'nb_derivations': 0,
                                          'nb_derivations_extra': 0,
-                                         'nb_matches': 232.0,
+                                         'nb_matches': 116.0,
                                          'nb_synonyms': 0,
                                          'nb_vocalizations': 0,
                                          'romanization': None,
@@ -801,7 +801,7 @@ def test_search():
                                          'nb_ayas': 25,
                                          'nb_derivations': 0,
                                          'nb_derivations_extra': 0,
-                                         'nb_matches': 52.0,
+                                         'nb_matches': 26.0,
                                          'nb_synonyms': 0,
                                          'nb_vocalizations': 0,
                                          'romanization': None,
