@@ -83,6 +83,7 @@
     
     "search_name": "aya",
     "analyzer": "QStandardAnalyzer",
+    "spelling": true,
     "field_boost": "2.0"
     
     

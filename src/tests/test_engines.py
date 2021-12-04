@@ -36,10 +36,7 @@ def test_list_values():
 
 
 def test_missing_suggetion():
-    assert QSE.suggest_all(u"النسر").items() == [('\u0627\u0644\u0646\u0633\u0631',
-                                                  ['\u0627\u0644\u0646\u0648\u0631',
-                                                   '\u0627\u0644\u0646\u0635\u0631',
-                                                   '\u0627\u0644\u0646\u0630\u0631'])]
+    assert list(QSE.suggest_all(u"النسر").items()) == [('النسر', ['النار', 'النور', 'النذر'])]
 
 
 def test_autocomplete():

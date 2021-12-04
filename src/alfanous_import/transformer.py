@@ -42,9 +42,10 @@ class Transformer:
             assert search_name, "search name should not be null!"
             type = str(line['type']).upper() or "STORED"
 
-            params = {k: getattr(text_processing, v) if k == 'analyzer' else v
+            params = {
+                      k: getattr(text_processing, v) if k == 'analyzer' else v
                       for k, v in line.items()
-                      if k in ['analyzer', 'stored',  'unique']
+                      if k in ['analyzer', 'stored',  'unique', 'spelling']
                       and v
                       }
             kwargs[search_name] = getattr(fields, type)(**params)
