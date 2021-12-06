@@ -36,16 +36,12 @@ class BasicSearchEngine:
         return list([ (x[0], x[1].decode('utf-8')) for x in self._reader.reader.most_frequent_terms(fieldname, nb)])
 
     def suggest_all(self, querystr):
-        """suggest the missed words
-
-            >>> for key, value in suggest_all(u" عاصمو ").items():
-            >>>    print key, ":", ",".join(value)
-            عاصمو : عاصم
-        """
-        return {}#TODO
+        return self._searcher.suggest(querystr)
 
     def autocomplete(self, querystr):
-        return {} # TODO
+        return { "base": "".join(querystr.split()[:-1]),
+                 "completion": self._reader.autocomplete(querystr.split()[-1])
+                 }
 
     def highlight(self, text, terms, highlight_type="css", strip_vocalization=True):
         return self._highlight(text, terms, highlight_type, strip_vocalization)

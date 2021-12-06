@@ -41,6 +41,9 @@ class QReader:
             lst.extend([self.reader.frequency(*term), self.reader.doc_frequency(*term)])
             yield tuple(lst)
 
+    def autocomplete(self, word):
+        return [x.decode('utf-8') for x in self.reader.expand_prefix('aya', word)]
+
 
 class QSearcher:
     """ search"""
@@ -58,3 +61,11 @@ class QSearcher:
 
 
         return results, terms, searcher
+
+
+    def suggest(self, querystr):
+        d = {}
+        corrector = self._searcher(weighting=QScore()).corrector('aya')
+        for mistyped_word in querystr.split():
+            d[mistyped_word] =  corrector.suggest(mistyped_word, limit=3,maxdist=1, prefix=False)
+        return d

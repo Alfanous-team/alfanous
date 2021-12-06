@@ -1,4 +1,3 @@
-# coding: utf-8
 
 """
 This is a test module for alfanous.ResultsProcessing.

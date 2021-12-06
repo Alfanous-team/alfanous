@@ -1,12 +1,11 @@
-# coding: utf-8
 
 
 import re
 
 from whoosh.analysis import StopFilter, RegexTokenizer, Filter  # LowercaseFilter, StandardAnalyzer,
-from alfanous.Support.PyArabic.araby import strip_tashkeel, strip_tatweel, strip_shadda, normalize_spellerrors, \
+from alfanous.Support.pyarabic.main import strip_tashkeel, strip_tatweel, strip_shadda, normalize_spellerrors, \
     normalize_hamza, normalize_lamalef, normalize_uthmani_symbols  # , HARAKAT_pat,
-from alfanous.Support.PyArabic.araby import FATHATAN, DAMMATAN, KASRATAN, FATHA, DAMMA, KASRA, SUKUN, SHADDA  # *
+from alfanous.Support.pyarabic.main import FATHATAN, DAMMATAN, KASRATAN, FATHA, DAMMA, KASRA, SUKUN, SHADDA  # *
 
 from alfanous.constants import INVERTEDSHAPING
 
