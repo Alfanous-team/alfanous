@@ -1,24 +1,3 @@
-# coding: utf-8
-
-##      Copyright (C) 2009-2010 Assem Chelli <assem.ch@gmail.com>
-##     This program is free software: you can redistribute it and/or modify
-##     it under the terms of the GNU Affero General Public License as published
-##     by the Free Software Foundation, either version 3 of the License, or
-##     (at your option) any later version.
-
-##     This program is distributed in the hope that it will be useful,
-##     but WITHOUT ANY WARRANTY; without even the implied warranty of
-##     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-##     GNU Affero General Public License for more details.
-
-##     You should have received a copy of the GNU Affero General Public License
-##     along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
-'''
-a console interface for the API.
-
-TODO show RAW|JSON | BEST-presentation format
-'''
 
 import sys
 import json
@@ -42,7 +21,7 @@ arg_parser = ArgumentParser(
 #
 Boolean_choices = ["true", "false"]
 
-# add arguments ## TODO this should be automatized using the fields list
+# add arguments ## TODO this should be automatized using the arabic_to_english_fields list
 arg_parser.add_argument("-a", "--action", dest="action", type=str, choices=DOMAINS["action"],
                         help=HELPMESSAGES["action"])
 arg_parser.add_argument("-u", "--unit", dest="unit", type=str, choices=DOMAINS["unit"], help=HELPMESSAGES["unit"])
@@ -106,6 +85,6 @@ def main():
             flags[k] = v
 
     if args.action and args.query:
-        print json.dumps(RAWoutput.do(flags), sort_keys=False, indent=4)
+        print(json.dumps(RAWoutput.do(flags), sort_keys=False, indent=4))
     else:
-        print RAWoutput._information["console_note"]
+        print(RAWoutput._information["console_note"])

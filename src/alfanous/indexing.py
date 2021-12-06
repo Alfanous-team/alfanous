@@ -1,7 +1,5 @@
-# coding: utf-8
-from alfanous.exceptions import Ta7rif
-from alfanous.Support.whoosh.filedb.filestore import FileStorage
-from alfanous.Support.whoosh import index
+from whoosh.filedb.filestore import FileStorage
+from whoosh import index
 
 
 class BasicDocIndex:
@@ -11,7 +9,7 @@ class BasicDocIndex:
     def __init__(self, ixpath):
         self._ixpath = ixpath
         self._ix, self.OK = self.load()
-        self.verify()
+        self.OK = self.OK and self.verify()
 
     def load(self):
         """
@@ -27,10 +25,7 @@ class BasicDocIndex:
         return ix, ok
 
     def verify(self):
-        """
-        verify the data of index after loading
-        """
-        pass
+        return True
 
     def __str__(self):
         return "<alfanous.Indexing.BasicDocIndex '" \
@@ -109,13 +104,7 @@ class QseDocIndex(BasicDocIndex):
                + str(self._ix.doc_count()) + ">"
 
     def verify(self):
-        """raise a  ta7rif exception if it is wrong"""
-        nb = -1
-        if self.OK:
-            nb = len(self)
-            if nb != 6236:
-                raise Ta7rif("Ayas count is not exact", value=nb, original=6236, msg="you must update your indexes")
-        return nb
+        return len(self) == 6236
 
 
 class ExtDocIndex(BasicDocIndex):
