@@ -21,12 +21,12 @@ from whoosh.qparser import QueryParser
 from whoosh.query import Term, MultiTerm
 from whoosh.query import Wildcard as whoosh_Wildcard
 from whoosh.query import Prefix as whoosh_Prefix
-from whoosh.query import Or, NullQuery, Every, And
+from whoosh.query import Or, NullQuery, Every
 
-from alfanous.resources import syndict, derivedict, worddict, arabic_to_english_fields
+from alfanous.data import syndict, derivedict, worddict, arabic_to_english_fields
 from alfanous.text_processing import QArabicSymbolsFilter
 
-from alfanous.misc import LOCATE, FIND, FILTER_DOUBLES
+from alfanous.misc import locate, find, filter_doubles
 
 
 def _make_arabic_parser():
@@ -590,9 +590,9 @@ class QuranicParser(ArabicParser):
 
             lst = []
             if indexsrc:  # if index source level is defined
-                itm = LOCATE(derivedict[indexsrc], derivedict[indexdist], word)
+                itm = locate(derivedict[indexsrc], derivedict[indexdist], word)
                 if itm:  # if different of none
-                    lst = FILTER_DOUBLES(FIND(derivedict[indexdist], derivedict["word_"], itm))
+                    lst = filter_doubles(find(derivedict[indexdist], derivedict["word_"], itm))
                 else:
                     lst = [word]
 
@@ -623,7 +623,7 @@ class QuranicParser(ArabicParser):
             wset = None
             for propkey in props.keys():
                 if worddict.get(propkey):
-                    partial_wset = set(FIND(worddict[propkey], worddict["word_"], props[propkey]))
+                    partial_wset = set(find(worddict[propkey], worddict["word_"], props[propkey]))
                     if wset is None:
                         wset = partial_wset
                     else:

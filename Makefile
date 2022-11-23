@@ -66,8 +66,7 @@ edit_translations_to_download_list:
 ## this target is to build all what have to be built:
 # 1. Update Quranic resources needed for indexing phase, see update_pre_build
 # 2. Generate all Indexes, see  index_all
-# 4. Update all resources that must be updated after indexing phase or independently, see  update_post_build
-build: update_pre_build index_all  update_post_build
+build: update_pre_build index_all
 
 
 
@@ -101,11 +100,6 @@ download_tanzil:
 	export PYTHONPATH=$(API_PATH) ;	$(PYTHON_COMMAND) $(QIMPORT) -d tanzil_uthmani $(STORE_PATH)tanzil_uthmani.xml
 
 
-
-##  update resources that must be updated after (or independent to) indexing phase, which are:
-# 1. list of indexed translations, see update_translations_indexed_list
-# 3. list of online recitations, see update_recitations_online_list
-update_post_build:  update_dynamic_resources_postbuild  #update_recitations_online_list
 
 ##  update resources that must be updated before indexing phase, which are:
 # 1. Quranic Arabic Corpus, see update_quranic_corpus
