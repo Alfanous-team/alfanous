@@ -3,10 +3,9 @@ import re
 
 from alfanous.text_processing import QArabicSymbolsFilter
 from alfanous.data import *
-from alfanous.resources import *
 
 from alfanous.romanization import transliterate
-from alfanous.misc import LOCATE, FIND, FILTER_DOUBLES
+from alfanous.misc import locate, find, filter_doubles
 
 STANDARD2UTHMANI = lambda x: std2uth_words.get(x) or x
 
@@ -529,16 +528,16 @@ class Raw:
                         synonyms = syndict.get(term[1]) or []
                     derivations_extra = []
                     if word_derivations:
-                        lemma = LOCATE(derivedict["word_"], derivedict["lemma"], term[1])
+                        lemma = locate(derivedict["word_"], derivedict["lemma"], term[1])
                         if lemma:  # if different of none
-                            derivations = FILTER_DOUBLES(FIND(derivedict["lemma"], derivedict["word_"], lemma))
+                            derivations = filter_doubles(find(derivedict["lemma"], derivedict["word_"], lemma))
                         else:
                             derivations = []
                         # go deeper with derivations
-                        root = LOCATE(derivedict["word_"], derivedict["root"], term[1])
+                        root = locate(derivedict["word_"], derivedict["root"], term[1])
                         if root:  # if different of none
                             derivations_extra = list(
-                                set(FILTER_DOUBLES(FIND(derivedict["root"], derivedict["word_"], lemma))) - set(
+                                set(filter_doubles(find(derivedict["root"], derivedict["word_"], lemma))) - set(
                                     derivations))
 
                     words_output["individual"][cpt] = {

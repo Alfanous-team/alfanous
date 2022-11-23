@@ -17,23 +17,17 @@ Install it from Pypi:
 
 .. code-block:: sh
 
-    $ sudo pip install alfanous
+    $ pip install alfanous
 
-You can use it from console:
 
-.. code-block:: sh
-
-    $ alfanous-console -a search -q الله
-    $ alfanous-console -a search -q Allh
-
-or from Python:
+You can use it:
 
 .. code-block:: python
 
-    >>> import alfanous
-    >>> alfanous.search(u"الله")
-    >>> alfanous.do({"action":"search","query":u"الله"})
-    >>> alfanous.do({"action":"search","query":u"Allh"}) # Buckwalter transliteration
+    >>> from alfanous import api
+    >>> api.search(u"الله")
+    >>> api.do({"action":"search","query":u"الله"})
+    >>> api.do({"action":"search","query":u"Allh"}) # Buckwalter transliteration
 
 You can use it also from the web service:
 

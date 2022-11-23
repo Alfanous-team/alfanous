@@ -2,7 +2,7 @@
 
 import re
 
-from whoosh.analysis import StopFilter, RegexTokenizer, Filter  # LowercaseFilter, StandardAnalyzer,
+from whoosh.analysis import  RegexTokenizer, Filter  # LowercaseFilter, StandardAnalyzer,
 from alfanous.Support.pyarabic.main import strip_tashkeel, strip_tatweel, strip_shadda, normalize_spellerrors, \
     normalize_hamza, normalize_lamalef, normalize_uthmani_symbols  # , HARAKAT_pat,
 from alfanous.Support.pyarabic.main import FATHATAN, DAMMATAN, KASRATAN, FATHA, DAMMA, KASRA, SUKUN, SHADDA  # *
@@ -15,10 +15,6 @@ class QSpaceTokenizer(RegexTokenizer):
         super(QSpaceTokenizer, self).__init__(expression=expression)
 
 
-class QAffixesTokenizer(QSpaceTokenizer):
-    def __init__(self, expression=r"[^ \t\r\n]+"):
-        super(QAffixesTokenizer, self).__init__(expression=expression)
-        raise NotImplemented()
 
 
 class QArabicSymbolsFilter(Filter):
