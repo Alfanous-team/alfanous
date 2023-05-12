@@ -14,11 +14,11 @@ from setuptools import setup
 
 information_file = open("./resources/information.json")
 information = json.loads(information_file.read()) if information_file else {}
-current_version = information["version"] if information.has_key("version") \
+current_version = information["version"] if "version" in information \
     else 0.7
-current_description = information["description"] if information.has_key("description") \
+current_description = information["description"] if "description" in information \
     else """ Alfanous is a search engine provide the simple and advanced search in the Holy Qur'an and more features.."""
-current_lib_usage = information["lib_usage"] if information.has_key("lib_usage") \
+current_lib_usage = information["lib_usage"] if "lib_usage" in information \
     else "    $ sudo pip install alfanous"
 
 # TODO may add pre-install code here
