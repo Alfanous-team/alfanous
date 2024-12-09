@@ -1,12 +1,30 @@
 from whoosh import qparser
-from whoosh.qparser import QueryParser
+from whoosh.qparser import TaggingPlugin, syntax, QueryParser
+from whoosh.query import Variations
 
 from alfanous.searching import QSearcher, QReader
 from alfanous.indexing import QseDocIndex, ExtDocIndex, BasicDocIndex
 from alfanous.results_processing import Qhighlight
 from alfanous.query_processing import QuranicParser, StandardParser, FuzzyQuranicParser
 
+word_derivations = {
+    'ملك': ['ملك', 'ملائكة', 'الملك']
+}
+class Derivations(Variations):
+    def _btexts(self, ixreader):
+        for word in (word_derivations.get(self.text) or []):
+            yield word  # to_bytes()
 
+class DerivationPlugin(TaggingPlugin):
+    class DerivationNode(syntax.WordNode):
+        qclass = Derivations
+
+        def r(self):
+            return ">>%r" % self.text
+
+    expr = "(?P<text>\>\>.*)"
+    nodetype = DerivationNode
+    priority = 100
 
 class BasicSearchEngine:
     def __init__(self, qdocindex, query_parser, main_field, otherfields, qsearcher, qreader, qhighlight):
@@ -16,9 +34,12 @@ class BasicSearchEngine:
             self._docindex = qdocindex
             #
             self._schema = self._docindex.get_schema()
-            #        
-            self._parser = query_parser(main_field, self._schema, group=qparser.OrGroup)
             #
+            self._parser = query_parser(main_field, self._schema, group=qparser.OrGroup)
+            self._parser.add_plugin(DerivationPlugin)
+            q = self._parser.parse(">>ملك")
+            l = list(q.expanded_terms(ixreader=self._docindex.get_index().reader()))
+
             self._searcher = qsearcher(self._docindex, self._parser)
             #
             self._reader = qreader(self._docindex)

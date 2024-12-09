@@ -150,12 +150,12 @@ class unicode_(str):
         return self.word_sh_pattern.findall( self )
 
 # analyzers
-QStandardAnalyzer = QSpaceTokenizer() | QArabicSymbolsFilter()
-APermissibleAnalyzer = QSpaceTokenizer() | QArabicSymbolsFilter(shaping=True, tashkil=True, spellerrors=True,
+QStandardAnalyzer = RegexTokenizer() | QArabicSymbolsFilter()
+APermissibleAnalyzer = RegexTokenizer() | QArabicSymbolsFilter(shaping=True, tashkil=True, spellerrors=True,
                                                                 hamza=True)
-QDiacAnalyzer = QSpaceTokenizer() | QArabicSymbolsFilter(tashkil=False)
-QHighLightAnalyzer = QSpaceTokenizer() | QArabicSymbolsFilter()
-QDiacHighLightAnalyzer = QSpaceTokenizer() | QArabicSymbolsFilter(tashkil=False)
-QUthmaniAnalyzer = QSpaceTokenizer() | QArabicSymbolsFilter(shaping=True, tashkil=True, spellerrors=False, hamza=False,
+QDiacAnalyzer = RegexTokenizer() | QArabicSymbolsFilter(tashkil=False)
+QHighLightAnalyzer = RegexTokenizer() | QArabicSymbolsFilter()
+QDiacHighLightAnalyzer = RegexTokenizer() | QArabicSymbolsFilter(tashkil=False)
+QUthmaniAnalyzer = RegexTokenizer() | QArabicSymbolsFilter(shaping=True, tashkil=True, spellerrors=False, hamza=False,
                                                             uthmani_symbols=True)
-QUthmaniDiacAnalyzer = QSpaceTokenizer() | QArabicSymbolsFilter(tashkil=False, uthmani_symbols=True)
+QUthmaniDiacAnalyzer = RegexTokenizer() | QArabicSymbolsFilter(tashkil=False, uthmani_symbols=True)
