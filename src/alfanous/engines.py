@@ -37,9 +37,7 @@ class BasicSearchEngine:
             #
             self._parser = query_parser(main_field, self._schema, group=qparser.OrGroup)
             self._parser.add_plugin(DerivationPlugin)
-            q = self._parser.parse(">>ملك")
-            l = list(q.expanded_terms(ixreader=self._docindex.get_index().reader()))
-
+            
             self._searcher = qsearcher(self._docindex, self._parser)
             #
             self._reader = qreader(self._docindex)
