@@ -17,7 +17,7 @@ Install it from PyPI:
 
 .. code-block:: sh
 
-    $ pip install alfanous_x
+    $ pip install alfanous3
 
 
 You can use it:
