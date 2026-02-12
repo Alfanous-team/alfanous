@@ -6,7 +6,7 @@ Acknowledgment
 	
 We gratefully acknowledge the following:
 	
-* Sabily team (sabily.org)
+* Sabily team (sabily-org)
 * Linux Arab Community (linuxac.org)
-* IT Scoop (it-scoop.com)
-* Tech echo (tech-echo.com)
+* IT Scoop (it-scoop-com)
+* Tech echo (tech-echo-com)
