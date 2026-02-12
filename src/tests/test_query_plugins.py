@@ -117,7 +117,7 @@ def test_tuple_plugin_multiple_items():
 def test_tuple_plugin_arabic_comma():
     """Test tuple plugin with Arabic comma ({item1،item2})"""
     parser = create_test_parser()
-    query = parser.parse(u"{test1،test2}")
+    query = parser.parse("{test1،test2}")
     assert isinstance(query, TupleQuery)
 
 
@@ -132,7 +132,7 @@ def test_arabic_wildcard_asterisk():
 def test_arabic_wildcard_question_mark():
     """Test Arabic wildcard with Arabic question mark (te؟t)"""
     parser = create_test_parser()
-    query = parser.parse(u"te؟t")
+    query = parser.parse("te؟t")
     assert isinstance(query, ArabicWildcardQuery)
 
 
@@ -175,15 +175,15 @@ def test_arabic_text_parsing():
     parser = create_test_parser()
     
     # Test Arabic synonym
-    query = parser.parse(u"~الله")
+    query = parser.parse("~الله")
     assert isinstance(query, SynonymsQuery)
     
     # Test Arabic derivation
-    query = parser.parse(u">>الصلاة")
+    query = parser.parse(">>الصلاة")
     assert isinstance(query, DerivationQuery)
     
     # Test Arabic tuple
-    query = parser.parse(u"{ملك،فعل}")
+    query = parser.parse("{ملك،فعل}")
     assert isinstance(query, TupleQuery)
 
 

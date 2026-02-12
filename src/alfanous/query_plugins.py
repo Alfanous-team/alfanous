@@ -77,13 +77,18 @@ class SynonymsQuery(QMultiTerm):
 
 
 class AntonymsQuery(QMultiTerm):
-    """Query that searches for antonyms of the given word"""
+    """Query that searches for antonyms of the given word
+    
+    Note: This is a placeholder implementation. Full antonym lookup
+    functionality requires an Arabic antonyms thesaurus to be implemented.
+    Currently returns the original word only.
+    """
 
     def __init__(self, fieldname, text, boost=1.0):
         self.fieldname = fieldname
         self.text = text
         self.boost = boost
-        self.words = [text]  # TODO: implement proper antonyms lookup
+        self.words = [text]  # TODO: implement proper antonyms lookup with thesaurus
 
 
 class DerivationQuery(QMultiTerm):
@@ -162,7 +167,13 @@ class SpellErrorsQuery(QMultiTerm):
 
 
 class TashkilQuery(QMultiTerm):
-    """Query that searches for different tashkil (diacritics) of words"""
+    """Query that searches for different tashkil (diacritics) of words
+    
+    Note: The current implementation uses simple equality checking. For proper
+    tashkil-aware comparison, the _compare method needs to implement normalized
+    comparison that ignores or properly handles diacritical marks while matching
+    the underlying characters.
+    """
 
     def __init__(self, fieldname, text, boost=1.0):
         self.fieldname = fieldname
@@ -191,7 +202,10 @@ class TashkilQuery(QMultiTerm):
         for field, indexed_text in ixreader.all_terms():
             if field == self.fieldname:
                 for word in self.text:
-                    if word == indexed_text:  # TODO: tashkil comparing
+                    # TODO: Implement proper tashkil-aware comparison
+                    # Should normalize both strings removing/handling diacritics
+                    # and compare the underlying characters
+                    if word == indexed_text:
                         self.words.append(indexed_text)
                         yield indexed_text
 
