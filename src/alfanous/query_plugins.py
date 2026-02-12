@@ -35,6 +35,17 @@ class QMultiTerm(MultiTerm):
             self.boost
         )
 
+    def __hash__(self):
+        return hash((self.__class__.__name__, self.fieldname, self.text, self.boost))
+
+    def __eq__(self, other):
+        return (
+            self.__class__ is other.__class__
+            and self.fieldname == other.fieldname
+            and self.text == other.text
+            and self.boost == other.boost
+        )
+
     def _all_terms(self, termset, phrases=True):
         for word in self.words:
             termset.add((self.fieldname, word))
@@ -218,6 +229,19 @@ class ArabicWildcardQuery(Wildcard):
         # Replace Arabic question mark with standard wildcard
         new_text = text.replace(u"؟", u"?")
         super(ArabicWildcardQuery, self).__init__(fieldname, new_text, boost)
+        # Store original text for hash/eq
+        self._original_text = text
+
+    def __hash__(self):
+        return hash((self.__class__.__name__, self.fieldname, self._original_text, self.boost))
+
+    def __eq__(self, other):
+        return (
+            self.__class__ is other.__class__
+            and self.fieldname == other.fieldname
+            and getattr(self, '_original_text', self.text) == getattr(other, '_original_text', other.text)
+            and self.boost == other.boost
+        )
 
 
 # Plugin classes
