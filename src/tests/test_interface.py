@@ -2,13 +2,13 @@
 
 
 
-import alfanous
+import alfanous.api
 
 
 def test_search():
-    alfanous.search(u"الله", sortedby='mushaf')
+    alfanous.api.search(u"الله", sortedby='mushaf')
 
-    results = alfanous.do({"action": "search", "query": u"الله"})
+    results = alfanous.api.do({"action": "search", "query": u"الله"})
     del results['search']['runtime']
 
     assert results['search']['interval'] == {'end': 10, 'nb_pages': 157.5, 'page': 1.0, 'start': 1, 'total': 1566}

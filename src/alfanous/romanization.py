@@ -1,4 +1,3 @@
-
 # Buckwalter Romanization  letters mapping
 BUCKWALTER2UNICODE = {
     u"'": u"\u0621",  # hamza-on-the-line
@@ -71,9 +70,9 @@ BUCKWALTER2UNICODE = {
 ISO2UNICODE = {u"ˌ": u"\u0621",  # hamza-on-the-line
                # u"|": u"\u0622", # madda
                u"ˈ": u"\u0623",  # hamza-on-'alif
-               #u"ˈ": u"\u0624",  # hamza-on-waaw
+               # u"ˈ": u"\u0624",  # hamza-on-waaw
                # u"<": u"\u0625", # hamza-under-'alif
-               #u"ˈ": u"\u0626",  # hamza-on-yaa'
+               # u"ˈ": u"\u0626",  # hamza-on-yaa'
                u"ʾ": u"\u0627",  # bare 'alif
                u"b": u"\u0628",  # baa'
                u"ẗ": u"\u0629",  # taa' marbuuTa
@@ -141,9 +140,6 @@ ROMANIZATION_SYSTEMS_MAPPINGS = {
 }
 
 
-
-
-
 def transliterate(mode, string, ignore=u"", reverse=False):
     """ encode & decode different  romanization systems """
 
@@ -159,7 +155,7 @@ def transliterate(mode, string, ignore=u"", reverse=False):
 
     result = ""
     for char in string:
-        if char not in ignore and mapping.get(char) :
+        if char not in ignore and mapping.get(char):
             result += mapping[char]
         else:
             result += char

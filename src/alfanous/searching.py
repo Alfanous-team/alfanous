@@ -1,5 +1,3 @@
-import logging
-
 from alfanous.results_processing import QSort, QScore
 
 

@@ -1,4 +1,3 @@
-
 from whoosh.scoring import BM25F
 from whoosh.highlight import highlight, Fragment, \
     HtmlFormatter, ContextFragmenter, BasicFragmentScorer, WholeFragmenter
@@ -25,25 +24,7 @@ def QSort(sortedby):
     return sortedby
 
 
-
-def QFilter(results, new_results):
-    """ Filter give results with new results"""
-    results.filter(new_results)
-    return results
-
-
-
-
-def QPaginate(results, pagelen=10):
-    """generator of pages"""
-    l = len(results)
-    minimal = lambda x, y: y if x > y else x
-    for i in range(0, l, 10):
-        yield i / pagelen, results[i:minimal(i + pagelen, l)]
-
-
-def Qhighlight(text, terms,     type="css", strip_vocalization=True):
-
+def Qhighlight(text, terms, type="css", strip_vocalization=True):
     if type == "bold":
         formatter = QBoldFormatter()
     else:  # css
@@ -60,11 +41,7 @@ def Qhighlight(text, terms,     type="css", strip_vocalization=True):
         minscore=1
     )
 
-
     return highlighted or text
-
-
-
 
 
 class QBoldFormatter(object):
