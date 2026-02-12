@@ -32,6 +32,8 @@ dynamic_resources/
 
 # generated indexes #
 #####################
+*.seg
+*_WRITELOCK
 _*.dcz
 _*.dci
 _*.pst
@@ -120,6 +122,7 @@ information.json
 
 
 
+
 # Logs and databases #
 ######################
 *.log
@@ -137,4 +140,5 @@ Icon?
 *.db
 desktop.ini
 venv/
+venv2/
 

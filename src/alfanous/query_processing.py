@@ -1,20 +1,3 @@
-#!/usr/bin/env python2
-# coding: utf-8
-
-# #     Copyright (C) 2009-2012 Assem Chelli <assem.ch [at] gmail.com>
-
-# #     This program is free software: you can redistribute it and/or modify
-# #     it under the terms of the GNU Affero General Public License as published
-# #     by the Free Software Foundation, either version 3 of the License, or
-# #     (at your option) any later version.
-
-# #     This program is distributed in the hope that it will be useful,
-# #     but WITHOUT ANY WARRANTY; without even the implied warranty of
-# #     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# #     GNU Affero General Public License for more details.
-
-# #     You should have received a copy of the GNU Affero General Public License
-# #     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 """
 This module contains customized query parsers for Arabic and Quran.
@@ -32,47 +15,18 @@ from pyparsing import Group, Combine, Suppress, Optional, FollowedBy
 from pyparsing import Literal, CharsNotIn, Word, Keyword
 from pyparsing import Empty, White, Forward, QuotedString
 from pyparsing import StringEnd
+from whoosh import qparser
 
-from alfanous.Support.whoosh.qparser import QueryParser
-from alfanous.Support.whoosh.query import Term, MultiTerm
-from alfanous.Support.whoosh.query import Wildcard as whoosh_Wildcard
-from alfanous.Support.whoosh.query import Prefix as whoosh_Prefix
-from alfanous.Support.whoosh.query import Or, NullQuery, Every, And
+from whoosh.qparser import QueryParser
+from whoosh.query import Term, MultiTerm
+from whoosh.query import Wildcard as whoosh_Wildcard
+from whoosh.query import Prefix as whoosh_Prefix
+from whoosh.query import Or, NullQuery, Every
 
-#### Importing dynamically compiled resources
-# # Importing synonyms dictionary
-try:
-    from alfanous.dynamic_resources.synonymes_dyn import syndict
-except ImportError:
-    syndict = {}
+from alfanous.data import syndict, derivedict, worddict, arabic_to_english_fields
+from alfanous.text_processing import QArabicSymbolsFilter
 
-# # Importing field names arabic-to-english mapping dictionary
-try:
-    from alfanous.dynamic_resources.arabicnames_dyn import ara2eng_names
-except ImportError:
-    ara2eng_names = {}
-
-# # Importing word properties dictionary
-try:
-    from alfanous.dynamic_resources.word_props_dyn import worddict
-except ImportError:
-    worddict = {}
-
-# # Importing derivations dictionary
-try:
-    from alfanous.dynamic_resources.derivations_dyn import derivedict
-except ImportError:
-    derivedict = {}
-
-# # Importing antonyms dictionary
-try:
-    from alfanous.dynamic_resources.antonymes_dyn import antdict
-except ImportError:
-    antdict = {}
-
-from alfanous.text_processing import QArabicSymbolsFilter, unicode_
-
-from alfanous.misc import LOCATE, FIND, FILTER_DOUBLES
+from alfanous.misc import locate, find, filter_doubles
 
 
 def _make_arabic_parser():
@@ -82,7 +36,7 @@ def _make_arabic_parser():
                 األآإـتنمكطدجحخهعغفقثصضشسيبئءؤرىةوزظذ
                 """
 
-    wordtext = CharsNotIn(u'//*؟^():"{}[]$><%~#،,\' +-|')
+    wordtext = CharsNotIn('//*؟^():"{}[]$><%~#،,\' +-|')
     escape = Suppress(escapechar) \
              + (Word(printables, exact=1) | White(exact=1))
     wordtoken = Combine(OneOrMore(wordtext | escape))
@@ -97,8 +51,8 @@ def _make_arabic_parser():
     # Or, start with wildchars, and then either a mixture of word and wild chars
     # , or the next token
     wildstart = wildchars \
-                + (OneOrMore(wordtoken + Optional(wildchars)) \
-                   | FollowedBy(White() \
+                + (OneOrMore(wordtoken + Optional(wildchars))
+                   | FollowedBy(White()
                                 | StringEnd()))
     wildcard = Group(
         Combine(wildmixed | wildstart)
@@ -217,39 +171,39 @@ def _make_arabic_parser():
     andNotToken = Keyword(u"وليس") | Keyword(u"ANDNOT")
 
     operatorAnd = Group(
-        (generalUnit + \
-         Suppress(White()) + \
-         Suppress(andToken) + \
-         Suppress(White()) + \
+        (generalUnit +
+         Suppress(White()) +
+         Suppress(andToken) +
+         Suppress(White()) +
          expression) | \
-        (generalUnit + \
-         Suppress(Literal(u"+")) + \
+        (generalUnit +
+         Suppress(Literal(u"+")) +
          expression)
     ).setResultsName("And")
 
     operatorOr = Group(
-        (generalUnit + \
-         Suppress(White()) + \
-         Suppress(orToken) + \
-         Suppress(White()) + \
+        (generalUnit +
+         Suppress(White()) +
+         Suppress(orToken) +
+         Suppress(White()) +
          expression) | \
-        (generalUnit + \
-         Suppress(Literal(u"|")) + \
+        (generalUnit +
+         Suppress(Literal(u"|")) +
          expression)
     ).setResultsName("Or")
 
     operatorAndNot = Group(
-        (unit + \
-         Suppress(White()) + \
-         Suppress(andNotToken) + \
-         Suppress(White()) + \
+        (unit +
+         Suppress(White()) +
+         Suppress(andNotToken) +
+         Suppress(White()) +
          expression) | \
-        (unit + \
-         Suppress(Literal(u"-")) + \
+        (unit +
+         Suppress(Literal(u"-")) +
          expression)
     ).setResultsName("AndNot")
 
-    expression << (OneOrMore(operatorAnd | operatorOr | operatorAndNot | \
+    expression << (OneOrMore(operatorAnd | operatorOr | operatorAndNot |
                              generalUnit | Suppress(White())) | Empty())
 
     toplevel = Group(expression).setResultsName("Toplevel") + StringEnd()
@@ -265,7 +219,7 @@ class StandardParser(QueryParser):  #
         super(StandardParser, self).__init__(
             mainfield,
             schema=schema,
-            conjunction=Or,
+            group=qparser.OrGroup,
             termclass=termclass
         )
 
@@ -278,7 +232,7 @@ class ArabicParser(StandardParser):
                  mainfield,
                  otherfields=[],
                  termclass=Term,
-                 ara2eng=ara2eng_names):
+                 ara2eng=arabic_to_english_fields):
 
         super(ArabicParser, self).__init__(schema=schema,
                                            mainfield=mainfield,
@@ -288,11 +242,7 @@ class ArabicParser(StandardParser):
         self.ara2eng = ara2eng
 
     def _Field(self, node, fieldname):
-        if self.ara2eng.has_key(node[0]):
-            name = self.ara2eng[node[0]]
-        else:
-            name = node[0]
-        return self._eval(node[1], name)
+        return self._eval(node[1], self.ara2eng.get(node[0]) or node[0])
 
     def _Synonyms(self, node, fieldname):
         return self.make_synonyms(fieldname, node[1])
@@ -375,7 +325,7 @@ class ArabicParser(StandardParser):
                 if (fieldname, word) in ixreader
             ]
 
-        def __unicode__(self):
+        def __str__(self):
             return u"%s:<%s>" % (self.fieldname, self.text)
 
         def __repr__(self):
@@ -502,11 +452,10 @@ class ArabicParser(StandardParser):
 
         def _compare(self, first, second):
             """ normalize and compare """
-            if first[:2] == u"مو": print first
-            eqiv = (self.ASF.normalize_all(first) == self.ASF.normalize_all(second))
-            if eqiv:
+            matched = (self.ASF.normalize_all(first) == self.ASF.normalize_all(second))
+            if matched:
                 self.words.append(second)
-            return eqiv
+            return matched
 
     class Tashkil(QMultiTerm):
         """
@@ -534,11 +483,9 @@ class ArabicParser(StandardParser):
         def _compare(self, first, second):
             """ normalize and compare """
 
-            if unicode_(first) == unicode_(second):
+            if first == second: # todo tshkil comparing
                 self.words.append(second)
                 return True
-
-            return False
 
     class Tuple(QMultiTerm):
         """
@@ -586,7 +533,7 @@ class QuranicParser(ArabicParser):
                  mainfield="aya",
                  otherfields=[],
                  termclass=Term,
-                 ara2eng=ara2eng_names):
+                 ara2eng=arabic_to_english_fields):
         super(QuranicParser, self).__init__(schema=schema,
                                             mainfield=mainfield,
                                             otherfields=otherfields,
@@ -609,23 +556,10 @@ class QuranicParser(ArabicParser):
 
         @staticmethod
         def synonyms(word):
-            if syndict.has_key(word):
-                return syndict[word]
-            else:
-                return [word]
+            syndict.get(word) or [word]
 
-    class Antonyms(ArabicParser.Antonyms):
-        """
-                query that automatically searches for antonyms
-                of the given word in the same field.
-        """
 
-        @staticmethod
-        def antonyms(word):
-            if antdict.has_key(word):
-                return antdict[word]
-            else:
-                return [word]
+
 
     class Derivation(ArabicParser.Derivation):
         """
@@ -656,9 +590,9 @@ class QuranicParser(ArabicParser):
 
             lst = []
             if indexsrc:  # if index source level is defined
-                itm = LOCATE(derivedict[indexsrc], derivedict[indexdist], word)
+                itm = locate(derivedict[indexsrc], derivedict[indexdist], word)
                 if itm:  # if different of none
-                    lst = FILTER_DOUBLES(FIND(derivedict[indexdist], derivedict["word_"], itm))
+                    lst = filter_doubles(find(derivedict[indexdist], derivedict["word_"], itm))
                 else:
                     lst = [word]
 
@@ -686,21 +620,14 @@ class QuranicParser(ArabicParser):
         def tuple(props):
             """ search the words that have the specific properties """
 
-            wset = set()
-            firsttime = True
+            wset = None
             for propkey in props.keys():
-                if worddict.has_key(propkey):
-                    partial_wset = set(FIND(worddict[propkey], worddict["word_"], props[propkey]))
-                    if firsttime:
-                        wset = partial_wset;
-                        firsttime = False
+                if worddict.get(propkey):
+                    partial_wset = set(find(worddict[propkey], worddict["word_"], props[propkey]))
+                    if wset is None:
+                        wset = partial_wset
                     else:
                         wset &= partial_wset
-
-                else:
-                    # property has now index
-                    pass
-
             return list(wset)
 
     class Wildcard(ArabicParser.Wildcard, ArabicParser.QMultiTerm):
@@ -790,9 +717,9 @@ class FuzzyQuranicParser(QuranicParser):
     def __init__(self,
                  schema,
                  mainfield="aya",
-                 otherfields=[],
+                 otherfields=tuple(),
                  termclass=SuperFuzzyAll,
-                 ara2eng=ara2eng_names):
+                 ara2eng=arabic_to_english_fields):
         super(FuzzyQuranicParser, self).__init__(schema=schema,
                                                  mainfield=mainfield,
                                                  otherfields=otherfields,

@@ -1,22 +1,3 @@
-# coding: utf-8
-
-
-##     Copyright (C) 2009-2012 Assem Chelli <assem.ch [at] gmail.com>
-
-##     This program is free software: you can redistribute it and/or modify
-##     it under the terms of the GNU Affero General Public License as published by
-##     the Free Software Foundation, either version 3 of the License, or
-##     (at your option) any later version.
-
-##     This program is distributed in the hope that it will be useful,
-##     but WITHOUT ANY WARRANTY; without even the implied warranty of
-##     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-##     GNU Affero General Public License for more details.
-
-##     You should have received a copy of the GNU Affero General Public License
-##     along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
-
 from alfanous.results_processing import QSort, QScore
 
 
@@ -28,7 +9,8 @@ class QReader:
         self.schema = docindex.get_schema()
 
     def list_values(self, fieldname):
-        return set(self.reader.field_terms(fieldname))
+
+        return list(filter(lambda x: type(x) is not int or x>=0, self.reader.field_terms(fieldname)))
 
 
     def list_terms(self, fieldname=None, double=False):
@@ -57,6 +39,9 @@ class QReader:
             lst.extend([self.reader.frequency(*term), self.reader.doc_frequency(*term)])
             yield tuple(lst)
 
+    def autocomplete(self, word):
+        return [x.decode('utf-8') for x in self.reader.expand_prefix('aya', word)]
+
 
 class QSearcher:
     """ search"""
@@ -68,11 +53,17 @@ class QSearcher:
     def search(self, querystr, limit=6236, sortedby="score", reverse=False):
         searcher = self._searcher(weighting=QScore())
         query = self._qparser.parse(querystr)
-        results = searcher.search(query, limit, QSort(sortedby), reverse)
-        terms = set()
-        try:
-            query.all_terms(terms)
-        except:
-            pass
+        results = searcher.search(q=query, limit=limit, sortedby=QSort(sortedby), reverse=reverse)
+
+        terms = query.all_terms()
+
 
         return results, terms, searcher
+
+
+    def suggest(self, querystr):
+        d = {}
+        corrector = self._searcher(weighting=QScore()).corrector('aya')
+        for mistyped_word in querystr.split():
+            d[mistyped_word] =  corrector.suggest(mistyped_word, limit=3,maxdist=1, prefix=False)
+        return d

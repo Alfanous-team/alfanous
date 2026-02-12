@@ -2,8 +2,7 @@ import os
 import json
 
 from alfanous import paths
-from alfanous.engines import QuranicSearchEngine, FuzzyQuranicSearchEngine
-from alfanous.engines import TraductionSearchEngine, WordSearchEngine
+
 
 
 def recitations(path=paths.RECITATIONS_LIST_FILE):
@@ -44,42 +43,46 @@ def stats(path=paths.STATS_FILE, ref_path=paths.STATS_REFERENCE_FILE):
 
 def information(path=paths.INFORMATION_FILE):
     myfile = open(path)
-    return json.loads(myfile.read()) if myfile else {}
+    return json.load(myfile) if myfile else {}
 
 
 def QSE(path=paths.QSE_INDEX):
+    from alfanous.engines import QuranicSearchEngine
     return QuranicSearchEngine(path)
 
 
-def FQSE(path=paths.QSE_INDEX):
-    return FuzzyQuranicSearchEngine(path)
-
-
 def TSE(path=paths.TSE_INDEX):
+    from alfanous.engines import TraductionSearchEngine
     return TraductionSearchEngine(path)
 
 
 def WSE(path=paths.WSE_INDEX):
+    from alfanous.engines import WordSearchEngine
     return WordSearchEngine(path)
 
 
 try:
-    from alfanous.dynamic_resources.arabicnames_dyn import ara2eng_names as Fields
+    arabic_to_english_fields = json.load(open(paths.ARABIC_NAMES_FILE))
 except:
-    Fields = {}
+    arabic_to_english_fields = {}
 try:
-    from alfanous.dynamic_resources.std2uth_dyn import std2uth_words
+    std2uth_words = json.load(open(paths.STANDARD_TO_UTHMANI_FILE))
 except:
     std2uth_words = {}
 try:
-    from alfanous.dynamic_resources.vocalizations_dyn import vocalization_dict
+    vocalization_dict = json.load(open(paths.VOCALIZATIONS_FILE))
 except:
     vocalization_dict = {}
 try:
-    from alfanous.dynamic_resources.synonymes_dyn import syndict
+    syndict = json.load(open(paths.SYNONYMS_FILE))
 except:
     syndict = {}
 try:
-    from alfanous.dynamic_resources.derivations_dyn import derivedict
+    derivedict = json.load(open(paths.DERIVATIONS_FILE))
 except:
     derivedict = {"root": []}
+
+try:
+    worddict = json.load(open(paths.WORD_PROPS_FILE))
+except:
+    worddict = {}

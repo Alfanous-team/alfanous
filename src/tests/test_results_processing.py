@@ -1,5 +1,3 @@
-# coding: utf-8
-
 """
 This is a test module for alfanous.ResultsProcessing.
 
@@ -7,10 +5,11 @@ This is a test module for alfanous.ResultsProcessing.
 
 from alfanous.results_processing import Qhighlight
 
-if __name__ == "__main__":
-    H = Qhighlight( 
-                   u"الْحَمْدُ لِلَّهِ رَبِّ الْعَالَمِينَ", 
-                   [u"الحمد", u"لله"], 
-                   "html" 
-                   )
-    print H
+
+def test_highlight():
+    assert Qhighlight(
+        u"الْحَمْدُ لِلَّهِ رَبِّ الْعَالَمِينَ",
+        [u"الحمد", u"لله"],
+        "html"
+    ) == ('<span class="match term0">الْحَمْدُ</span> <span class="match '
+          'term1">لِلَّهِ</span> رَبِّ الْعَالَمِينَ')
