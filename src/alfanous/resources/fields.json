@@ -6,19 +6,19 @@
     "table_name": "aya",
     "comment": "المفتاح الرئيسي:ترتيب الآية في المصحف",
     "type": "NUMERIC",
-    
-    
+
+
     "stored": true,
-    
+
     "unique": true,
-    
-    
-    
-    
+
+
+
+
     "search_name": "gid",
     "analyzer": null
-    
-    
+
+
   },
   {
     "id": 2,
@@ -27,20 +27,20 @@
     "table_name": "aya",
     "comment": "ترتيب السورة في المصحف",
     "type": "NUMERIC",
-    
-    
+
+
     "stored": true,
     "is_spellchecked": null,
-    
+
     "unique": null,
     "source": "tanzil.info",
-    
-    
-    
+
+
+
     "search_name": "sura_id",
     "analyzer": null
-    
-    
+
+
   },
   {
     "id": 3,
@@ -49,20 +49,20 @@
     "table_name": "aya",
     "comment": "ترتيب الآية في السورة",
     "type": "NUMERIC",
-    
-    
+
+
     "stored": true,
     "is_spellchecked": null,
-    
+
     "unique": null,
     "source": "tanzil.info",
-    
-    
-    
+
+
+
     "search_name": "aya_id",
     "analyzer": null
-    
-    
+
+
   },
   {
     "id": 4,
@@ -71,22 +71,22 @@
     "table_name": "aya",
     "comment": "نص الآية بالخط الاملائي و غير مشكول",
     "type": "TEXT",
-    
-    
+
+
     "stored": true,
     "is_spellchecked": null,
-    
+
     "unique": null,
     "source": "tanzil.info",
-    
-    
-    
+
+
+
     "search_name": "aya",
     "analyzer": "QStandardAnalyzer",
     "spelling": true,
     "field_boost": "2.0"
-    
-    
+
+
   },
   {
     "id": 5,
@@ -95,20 +95,20 @@
     "table_name": "aya",
     "comment": "نص الآية بالخط الاملائي و  مشكول",
     "type": "TEXT",
-    
-    
+
+
     "stored": true,
     "is_spellchecked": null,
-    
+
     "unique": null,
     "source": "tanzil.info",
-    
-    
-    
+
+
+
     "search_name": "aya_",
     "analyzer": "QDiacAnalyzer"
-    
-    
+
+
   },
   {
     "id": 6,
@@ -117,21 +117,21 @@
     "table_name": "aya",
     "comment": "نص الآية بالخط العثماني  و   مشكول",
     "type": "TEXT",
-    
-    
+
+
     "stored": true,
     "is_spellchecked": null,
-    
+
     "unique": null,
     "source": "tanzil.info",
-    
-    
-    
+
+
+
     "search_name": "uth_",
     "analyzer": "QUthmaniDiacAnalyzer",
     "field_boost": "2.0"
-    
-    
+
+
   },
   {
     "id": 7,
@@ -140,20 +140,20 @@
     "table_name": "aya",
     "comment": "نص الآية بالخط الاملائي و غير مشكول",
     "type": "TEXT",
-    
-    
+
+
     "stored": true,
     "is_spellchecked": null,
-    
+
     "unique": null,
     "source": "tanzil.info",
-    
-    
-    
+
+
+
     "search_name": "uth",
     "analyzer": "QUthmaniAnalyzer"
-    
-    
+
+
   },
   {
     "id": 8,
@@ -162,20 +162,20 @@
     "table_name": "aya",
     "comment": "الفصل حسب التقسيم الى مواضيع",
     "type": "TEXT",
-    
-    
+
+
     "stored": true,
     "is_spellchecked": null,
-    
+
     "unique": null,
     "source": "taha_zerrouki",
-    
-    
-    
+
+
+
     "search_name": "chapter",
     "analyzer": null
-    
-    
+
+
   },
   {
     "id": 9,
@@ -184,20 +184,20 @@
     "table_name": "aya",
     "comment": null,
     "type": "TEXT",
-    
-    
+
+
     "stored": true,
     "is_spellchecked": null,
-    
+
     "unique": null,
     "source": "taha_zerrouki",
-    
-    
-    
+
+
+
     "search_name": "topic",
     "analyzer": null
-    
-    
+
+
   },
   {
     "id": 10,
@@ -206,20 +206,20 @@
     "table_name": "aya",
     "comment": null,
     "type": "TEXT",
-    
-    
+
+
     "stored": true,
     "is_spellchecked": null,
-    
+
     "unique": null,
     "source": "taha_zerrouki",
-    
-    
-    
+
+
+
     "search_name": "subtopic",
     "analyzer": null
-    
-    
+
+
   },
   {
     "id": 11,
@@ -228,20 +228,20 @@
     "table_name": "aya",
     "comment": "دمج الحقول الثلاثة للمواضيع",
     "type": "KEYWORD",
-    
-    
-    "stored": "no",
+
+
+    "stored": false,
     "is_spellchecked": null,
-    
+
     "unique": null,
-    
-    
-    
-    
+
+
+
+
     "search_name": "subject",
     "analyzer": null
-    
-    
+
+
   },
   {
     "id": 12,
@@ -250,20 +250,20 @@
     "table_name": "aya",
     "comment": null,
     "type": "NUMERIC",
-    
-    
+
+
     "stored": true,
     "is_spellchecked": null,
-    
+
     "unique": null,
     "source": "tanzil.info",
-    
-    
-    
+
+
+
     "search_name": "rub",
     "analyzer": null
-    
-    
+
+
   },
   {
     "id": 13,
@@ -272,20 +272,20 @@
     "table_name": "aya",
     "comment": null,
     "type": "NUMERIC",
-    
-    
+
+
     "stored": true,
     "is_spellchecked": null,
-    
+
     "unique": null,
-    
-    
-    
-    
+
+
+
+
     "search_name": "nisf",
     "analyzer": null
-    
-    
+
+
   },
   {
     "id": 14,
@@ -294,20 +294,20 @@
     "table_name": "aya",
     "comment": null,
     "type": "NUMERIC",
-    
-    
+
+
     "stored": true,
     "is_spellchecked": null,
-    
+
     "unique": null,
-    
-    
-    
-    
+
+
+
+
     "search_name": "hizb",
     "analyzer": null
-    
-    
+
+
   },
   {
     "id": 15,
@@ -316,20 +316,20 @@
     "table_name": "aya",
     "comment": null,
     "type": "NUMERIC",
-    
-    
+
+
     "stored": true,
     "is_spellchecked": null,
-    
+
     "unique": null,
-    
-    
-    
-    
+
+
+
+
     "search_name": "juz",
     "analyzer": null
-    
-    
+
+
   },
   {
     "id": 20,
@@ -338,20 +338,20 @@
     "table_name": "aya",
     "comment": null,
     "type": "NUMERIC",
-    
-    
+
+
     "stored": true,
     "is_spellchecked": null,
-    
+
     "unique": null,
-    
-    
-    
-    
+
+
+
+
     "search_name": "page",
     "analyzer": null
-    
-    
+
+
   },
   {
     "id": 21,
@@ -360,20 +360,20 @@
     "table_name": "aya",
     "comment": null,
     "type": "NUMERIC",
-    
-    
+
+
     "stored": true,
     "is_spellchecked": null,
-    
+
     "unique": null,
-    
-    
-    
-    
+
+
+
+
     "search_name": "ruk",
     "analyzer": null
-    
-    
+
+
   },
   {
     "id": 22,
@@ -382,20 +382,20 @@
     "table_name": "aya",
     "comment": null,
     "type": "NUMERIC",
-    
-    
+
+
     "stored": true,
     "is_spellchecked": null,
-    
+
     "unique": null,
-    
-    
-    
-    
+
+
+
+
     "search_name": "manzil",
     "analyzer": null
-    
-    
+
+
   },
   {
     "id": 23,
@@ -404,20 +404,20 @@
     "table_name": "aya",
     "comment": null,
     "type": "KEYWORD",
-    
-    
+
+
     "stored": true,
     "is_spellchecked": null,
-    
+
     "unique": null,
-    
-    
-    
-    
+
+
+
+
     "search_name": "sajda",
     "analyzer": null
-    
-    
+
+
   },
   {
     "id": 24,
@@ -426,20 +426,20 @@
     "table_name": "aya",
     "comment": null,
     "type": "NUMERIC",
-    
-    
+
+
     "stored": true,
     "is_spellchecked": null,
-    
+
     "unique": null,
     "source": "tanzil.info",
-    
-    
-    
+
+
+
     "search_name": "sajda_id",
     "analyzer": null
-    
-    
+
+
   },
   {
     "id": 25,
@@ -448,20 +448,20 @@
     "table_name": "aya",
     "comment": null,
     "type": "KEYWORD",
-    
-    
+
+
     "stored": true,
     "is_spellchecked": null,
-    
+
     "unique": null,
     "source": "tanzil.info",
-    
-    
-    
+
+
+
     "search_name": "sajda_type",
     "analyzer": null
-    
-    
+
+
   },
   {
     "id": 26,
@@ -470,20 +470,20 @@
     "table_name": "aya",
     "comment": null,
     "type": "TEXT",
-    
-    
+
+
     "stored": true,
     "is_spellchecked": null,
-    
+
     "unique": null,
     "source": "tanzil.info",
-    
-    
-    
+
+
+
     "search_name": "sura_arabic",
     "analyzer": "APermissibleAnalyzer"
-    
-    
+
+
   },
   {
     "id": 27,
@@ -492,20 +492,20 @@
     "table_name": "aya",
     "comment": null,
     "type": "KEYWORD",
-    
-    
+
+
     "stored": true,
     "is_spellchecked": null,
-    
+
     "unique": null,
     "source": "tanzil.info",
-    
-    
-    
+
+
+
     "search_name": "sura_type_arabic",
     "analyzer": null
-    
-    
+
+
   },
   {
     "id": 28,
@@ -514,20 +514,20 @@
     "table_name": "aya",
     "comment": null,
     "type": "NUMERIC",
-    
-    
+
+
     "stored": true,
     "is_spellchecked": null,
-    
+
     "unique": null,
     "source": "tanzil.info",
-    
-    
-    
+
+
+
     "search_name": "sura_order",
     "analyzer": null
-    
-    
+
+
   },
   {
     "id": 29,
@@ -536,20 +536,20 @@
     "table_name": "aya",
     "comment": null,
     "type": "NUMERIC",
-    
-    
+
+
     "stored": true,
     "is_spellchecked": null,
-    
+
     "unique": null,
     "source": "tanzil.info",
-    
-    
-    
+
+
+
     "search_name": "s_a",
     "analyzer": null
-    
-    
+
+
   },
   {
     "id": 30,
@@ -558,20 +558,20 @@
     "table_name": "aya",
     "comment": null,
     "type": "NUMERIC",
-    
-    
+
+
     "stored": true,
     "is_spellchecked": null,
-    
+
     "unique": null,
-    
-    
-    
-    
+
+
+
+
     "search_name": "s_g",
     "analyzer": null
-    
-    
+
+
   },
   {
     "id": 31,
@@ -580,20 +580,20 @@
     "table_name": "aya",
     "comment": null,
     "type": "NUMERIC",
-    
-    
+
+
     "stored": true,
     "is_spellchecked": null,
-    
+
     "unique": null,
-    
-    
-    
-    
+
+
+
+
     "search_name": "s_w",
     "analyzer": null
-    
-    
+
+
   },
   {
     "id": 32,
@@ -602,20 +602,20 @@
     "table_name": "aya",
     "comment": null,
     "type": "NUMERIC",
-    
-    
+
+
     "stored": true,
     "is_spellchecked": null,
-    
+
     "unique": null,
-    
-    
-    
-    
+
+
+
+
     "search_name": "s_l",
     "analyzer": null
-    
-    
+
+
   },
   {
     "id": 33,
@@ -624,20 +624,20 @@
     "table_name": "aya",
     "comment": null,
     "type": "NUMERIC",
-    
-    
+
+
     "stored": true,
     "is_spellchecked": null,
-    
+
     "unique": null,
-    
-    
-    
-    
+
+
+
+
     "search_name": "s_r",
     "analyzer": null
-    
-    
+
+
   },
   {
     "id": 34,
@@ -646,20 +646,20 @@
     "table_name": "aya",
     "comment": null,
     "type": "NUMERIC",
-    
-    
+
+
     "stored": true,
     "is_spellchecked": null,
-    
+
     "unique": null,
-    
-    
-    
-    
+
+
+
+
     "search_name": "a_g",
     "analyzer": null
-    
-    
+
+
   },
   {
     "id": 35,
@@ -668,20 +668,20 @@
     "table_name": "aya",
     "comment": null,
     "type": "NUMERIC",
-    
-    
+
+
     "stored": true,
     "is_spellchecked": null,
-    
+
     "unique": null,
-    
-    
-    
-    
+
+
+
+
     "search_name": "a_w",
     "analyzer": null
-    
-    
+
+
   },
   {
     "id": 36,
@@ -690,20 +690,20 @@
     "table_name": "aya",
     "comment": null,
     "type": "NUMERIC",
-    
-    
+
+
     "stored": true,
     "is_spellchecked": null,
-    
+
     "unique": null,
-    
-    
-    
-    
+
+
+
+
     "search_name": "a_l",
     "analyzer": null
-    
-    
+
+
   },
   {
     "id": 37,
@@ -712,16 +712,16 @@
     "table_name": "word",
     "comment": null,
     "type": "KEYWORD",
-    
+
 
     "stored": null,
     "is_spellchecked": null,
 
     "unique": null,
-    
-    
-    
-    
+
+
+
+
     "search_name": null,
     "analyzer": null
 
@@ -740,10 +740,10 @@
     "is_spellchecked": null,
 
     "unique": null,
-    
-    
-    
-    
+
+
+
+
     "search_name": null,
     "analyzer": null
 
@@ -762,10 +762,10 @@
     "is_spellchecked": null,
 
     "unique": null,
-    
-    
-    
-    
+
+
+
+
     "search_name": null,
     "analyzer": null
 
@@ -784,10 +784,10 @@
     "is_spellchecked": null,
 
     "unique": null,
-    
-    
-    
-    
+
+
+
+
     "search_name": null,
     "analyzer": null
 
@@ -806,10 +806,10 @@
     "is_spellchecked": null,
 
     "unique": null,
-    
-    
-    
-    
+
+
+
+
     "search_name": null,
     "analyzer": null
 
@@ -828,10 +828,10 @@
     "is_spellchecked": null,
 
     "unique": null,
-    
-    
-    
-    
+
+
+
+
     "search_name": null,
     "analyzer": null
 
@@ -850,10 +850,10 @@
     "is_spellchecked": null,
 
     "unique": null,
-    
-    
-    
-    
+
+
+
+
     "search_name": null,
     "analyzer": null
 
@@ -872,10 +872,10 @@
     "is_spellchecked": null,
 
     "unique": null,
-    
-    
-    
-    
+
+
+
+
     "search_name": null,
     "analyzer": null
 
@@ -894,10 +894,10 @@
     "is_spellchecked": null,
 
     "unique": null,
-    
-    
-    
-    
+
+
+
+
     "search_name": null,
     "analyzer": null
 
@@ -916,10 +916,10 @@
     "is_spellchecked": null,
 
     "unique": null,
-    
-    
-    
-    
+
+
+
+
     "search_name": null,
     "analyzer": null
 
@@ -938,10 +938,10 @@
     "is_spellchecked": null,
 
     "unique": null,
-    
-    
-    
-    
+
+
+
+
     "search_name": null,
     "analyzer": null
 
@@ -960,10 +960,10 @@
     "is_spellchecked": null,
 
     "unique": null,
-    
-    
-    
-    
+
+
+
+
     "search_name": null,
     "analyzer": null
 
@@ -982,10 +982,10 @@
     "is_spellchecked": null,
 
     "unique": null,
-    
-    
-    
-    
+
+
+
+
     "search_name": null,
     "analyzer": null
 
@@ -1004,10 +1004,10 @@
     "is_spellchecked": null,
 
     "unique": null,
-    
-    
-    
-    
+
+
+
+
     "search_name": null,
     "analyzer": null
 
@@ -1026,10 +1026,10 @@
     "is_spellchecked": null,
 
     "unique": null,
-    
-    
-    
-    
+
+
+
+
     "search_name": null,
     "analyzer": null
 
@@ -1048,10 +1048,10 @@
     "is_spellchecked": null,
 
     "unique": null,
-    
-    
-    
-    
+
+
+
+
     "search_name": null,
     "analyzer": null
 
@@ -1070,10 +1070,10 @@
     "is_spellchecked": null,
 
     "unique": null,
-    
-    
-    
-    
+
+
+
+
     "search_name": null,
     "analyzer": null
 
@@ -1090,16 +1090,16 @@
     "is_indexed": null,
     "stored": null,
     "is_spellchecked": null,
-    
+
     "unique": null,
-    
-    
-    
-    
+
+
+
+
     "search_name": null,
     "analyzer": null
-    
-    
+
+
   },
   {
     "id": 55,
@@ -1108,20 +1108,20 @@
     "table_name": "wordqc",
     "comment": null,
     "type": "NUMERIC",
-    
-    
+
+
     "stored": true,
     "is_spellchecked": "",
-    
+
     "unique": true,
-    
-    
-    
-    
+
+
+
+
     "search_name": "gid",
     "analyzer": null
-    
-    
+
+
   },
   {
     "id": 56,
@@ -1130,20 +1130,20 @@
     "table_name": "wordqc",
     "comment": null,
     "type": "NUMERIC",
-    
-    
+
+
     "stored": true,
     "is_spellchecked": null,
-    
+
     "unique": null,
-    
-    
-    
-    
+
+
+
+
     "search_name": "word_gid",
     "analyzer": null
-    
-    
+
+
   },
   {
     "id": 57,
@@ -1152,20 +1152,20 @@
     "table_name": "wordqc",
     "comment": null,
     "type": "NUMERIC",
-    
-    
+
+
     "stored": true,
     "is_spellchecked": null,
-    
+
     "unique": null,
-    
-    
-    
-    
+
+
+
+
     "search_name": "word_id",
     "analyzer": null
-    
-    
+
+
   },
   {
     "id": 58,
@@ -1174,20 +1174,20 @@
     "table_name": "wordqc",
     "comment": null,
     "type": "NUMERIC",
-    
-    
+
+
     "stored": true,
     "is_spellchecked": null,
-    
+
     "unique": null,
-    
-    
-    
-    
+
+
+
+
     "search_name": "aya_id",
     "analyzer": null
-    
-    
+
+
   },
   {
     "id": 59,
@@ -1196,20 +1196,20 @@
     "table_name": "wordqc",
     "comment": null,
     "type": "NUMERIC",
-    
-    
+
+
     "stored": true,
     "is_spellchecked": null,
-    
+
     "unique": null,
-    
-    
-    
-    
+
+
+
+
     "search_name": "sura_id",
     "analyzer": null
-    
-    
+
+
   },
   {
     "id": 60,
@@ -1218,20 +1218,20 @@
     "table_name": "wordqc",
     "comment": null,
     "type": "TEXT",
-    
-    
+
+
     "stored": true,
     "is_spellchecked": null,
-    
+
     "unique": null,
-    
-    
-    
-    
+
+
+
+
     "search_name": "word",
     "analyzer": "QUthmaniDiacAnalyzer"
-    
-    
+
+
   },
   {
     "id": 61,
@@ -1240,20 +1240,20 @@
     "table_name": "wordqc",
     "comment": null,
     "type": "TEXT",
-    
-    
+
+
     "stored": true,
     "is_spellchecked": null,
-    
+
     "unique": null,
-    
-    
-    
-    
+
+
+
+
     "search_name": "normalized",
     "analyzer": "QUthmaniAnalyzer"
-    
-    
+
+
   },
   {
     "id": 62,
@@ -1262,20 +1262,20 @@
     "table_name": "wordqc",
     "comment": null,
     "type": "KEYWORD",
-    
-    
+
+
     "stored": true,
     "is_spellchecked": null,
-    
+
     "unique": null,
-    
-    
-    
-    
+
+
+
+
     "search_name": "spelled",
     "analyzer": null
-    
-    
+
+
   },
   {
     "id": 64,
@@ -1284,20 +1284,20 @@
     "table_name": "wordqc",
     "comment": null,
     "type": "NUMERIC",
-    
-    
+
+
     "stored": true,
     "is_spellchecked": null,
-    
+
     "unique": null,
-    
-    
-    
-    
+
+
+
+
     "search_name": "order",
     "analyzer": null
-    
-    
+
+
   },
   {
     "id": 65,
@@ -1306,20 +1306,20 @@
     "table_name": "wordqc",
     "comment": null,
     "type": "KEYWORD",
-    
-    
+
+
     "stored": true,
     "is_spellchecked": null,
-    
+
     "unique": null,
-    
-    
-    
-    
+
+
+
+
     "search_name": "token",
     "analyzer": null
-    
-    
+
+
   },
   {
     "id": 66,
@@ -1328,20 +1328,20 @@
     "table_name": "wordqc",
     "comment": null,
     "type": "KEYWORD",
-    
-    
+
+
     "stored": true,
     "is_spellchecked": null,
-    
+
     "unique": null,
-    
-    
-    
-    
+
+
+
+
     "search_name": "arabictoken",
     "analyzer": null
-    
-    
+
+
   },
   {
     "id": 67,
@@ -1350,20 +1350,20 @@
     "table_name": "wordqc",
     "comment": null,
     "type": "KEYWORD",
-    
-    
+
+
     "stored": true,
     "is_spellchecked": null,
-    
+
     "unique": null,
-    
-    
-    
-    
+
+
+
+
     "search_name": "pos",
     "analyzer": null
-    
-    
+
+
   },
   {
     "id": 68,
@@ -1372,20 +1372,20 @@
     "table_name": "wordqc",
     "comment": null,
     "type": "KEYWORD",
-    
-    
+
+
     "stored": true,
     "is_spellchecked": null,
-    
+
     "unique": null,
-    
-    
-    
-    
+
+
+
+
     "search_name": "type",
     "analyzer": null
-    
-    
+
+
   },
   {
     "id": 69,
@@ -1394,20 +1394,20 @@
     "table_name": "wordqc",
     "comment": null,
     "type": "KEYWORD",
-    
-    
+
+
     "stored": true,
     "is_spellchecked": null,
-    
+
     "unique": null,
-    
-    
-    
-    
+
+
+
+
     "search_name": "arabicpos",
     "analyzer": null
-    
-    
+
+
   },
   {
     "id": 70,
@@ -1416,20 +1416,20 @@
     "table_name": "wordqc",
     "comment": null,
     "type": "KEYWORD",
-    
-    
+
+
     "stored": true,
     "is_spellchecked": null,
-    
+
     "unique": null,
-    
-    
-    
-    
+
+
+
+
     "search_name": "mood",
     "analyzer": null
-    
-    
+
+
   },
   {
     "id": 71,
@@ -1438,20 +1438,20 @@
     "table_name": "wordqc",
     "comment": null,
     "type": "KEYWORD",
-    
-    
+
+
     "stored": true,
     "is_spellchecked": null,
-    
+
     "unique": null,
-    
-    
-    
-    
+
+
+
+
     "search_name": "arabicmood",
     "analyzer": null
-    
-    
+
+
   },
   {
     "id": 72,
@@ -1460,20 +1460,20 @@
     "table_name": "wordqc",
     "comment": null,
     "type": "KEYWORD",
-    
-    
+
+
     "stored": true,
     "is_spellchecked": null,
-    
+
     "unique": null,
-    
-    
-    
-    
+
+
+
+
     "search_name": "case",
     "analyzer": null
-    
-    
+
+
   },
   {
     "id": 73,
@@ -1482,20 +1482,20 @@
     "table_name": "wordqc",
     "comment": null,
     "type": "KEYWORD",
-    
-    
+
+
     "stored": true,
     "is_spellchecked": null,
-    
+
     "unique": null,
-    
-    
-    
-    
+
+
+
+
     "search_name": "arabiccase",
     "analyzer": null
-    
-    
+
+
   },
   {
     "id": 74,
@@ -1504,20 +1504,20 @@
     "table_name": "wordqc",
     "comment": null,
     "type": "KEYWORD",
-    
-    
+
+
     "stored": true,
     "is_spellchecked": null,
-    
+
     "unique": null,
-    
-    
-    
-    
+
+
+
+
     "search_name": "",
     "analyzer": null
-    
-    
+
+
   },
   {
     "id": 75,
@@ -1526,20 +1526,20 @@
     "table_name": "wordqc",
     "comment": null,
     "type": "KEYWORD",
-    
-    
+
+
     "stored": true,
     "is_spellchecked": null,
-    
+
     "unique": null,
-    
-    
-    
-    
+
+
+
+
     "search_name": "arabicroot",
     "analyzer": null
-    
-    
+
+
   },
   {
     "id": 76,
@@ -1548,20 +1548,20 @@
     "table_name": "wordqc",
     "comment": null,
     "type": "KEYWORD",
-    
-    
+
+
     "stored": true,
     "is_spellchecked": null,
-    
+
     "unique": null,
-    
-    
-    
-    
+
+
+
+
     "search_name": "",
     "analyzer": null
-    
-    
+
+
   },
   {
     "id": 77,
@@ -1570,20 +1570,20 @@
     "table_name": "wordqc",
     "comment": null,
     "type": "KEYWORD",
-    
-    
+
+
     "stored": true,
     "is_spellchecked": null,
-    
+
     "unique": null,
-    
-    
-    
-    
+
+
+
+
     "search_name": "arabiclemma",
     "analyzer": null
-    
-    
+
+
   },
   {
     "id": 78,
@@ -1592,20 +1592,20 @@
     "table_name": "wordqc",
     "comment": null,
     "type": "KEYWORD",
-    
-    
+
+
     "stored": true,
     "is_spellchecked": null,
-    
+
     "unique": null,
-    
-    
-    
-    
+
+
+
+
     "search_name": null,
     "analyzer": null
-    
-    
+
+
   },
   {
     "id": 79,
@@ -1614,20 +1614,20 @@
     "table_name": "wordqc",
     "comment": null,
     "type": "KEYWORD",
-    
-    
+
+
     "stored": true,
     "is_spellchecked": null,
-    
+
     "unique": null,
-    
-    
-    
-    
+
+
+
+
     "search_name": "arabicspecial",
     "analyzer": null
-    
-    
+
+
   },
   {
     "id": 80,
@@ -1636,20 +1636,20 @@
     "table_name": "wordqc",
     "comment": null,
     "type": "KEYWORD",
-    
-    
+
+
     "stored": true,
     "is_spellchecked": null,
-    
+
     "unique": null,
-    
-    
-    
-    
+
+
+
+
     "search_name": "derivation",
     "analyzer": null
-    
-    
+
+
   },
   {
     "id": 81,
@@ -1658,20 +1658,20 @@
     "table_name": "wordqc",
     "comment": null,
     "type": "KEYWORD",
-    
-    
+
+
     "stored": true,
     "is_spellchecked": null,
-    
+
     "unique": null,
-    
-    
-    
-    
+
+
+
+
     "search_name": "form",
     "analyzer": null
-    
-    
+
+
   },
   {
     "id": 82,
@@ -1680,20 +1680,20 @@
     "table_name": "wordqc",
     "comment": null,
     "type": "KEYWORD",
-    
-    
+
+
     "stored": true,
     "is_spellchecked": null,
-    
+
     "unique": null,
-    
-    
-    
-    
+
+
+
+
     "search_name": "gender",
     "analyzer": null
-    
-    
+
+
   },
   {
     "id": 83,
@@ -1702,20 +1702,20 @@
     "table_name": "wordqc",
     "comment": null,
     "type": "KEYWORD",
-    
-    
+
+
     "stored": true,
     "is_spellchecked": null,
-    
+
     "unique": null,
-    
-    
-    
-    
+
+
+
+
     "search_name": "person",
     "analyzer": null
-    
-    
+
+
   },
   {
     "id": 84,
@@ -1724,20 +1724,20 @@
     "table_name": "wordqc",
     "comment": null,
     "type": "KEYWORD",
-    
-    
+
+
     "stored": true,
     "is_spellchecked": null,
-    
+
     "unique": null,
-    
-    
-    
-    
+
+
+
+
     "search_name": "number",
     "analyzer": null
-    
-    
+
+
   },
   {
     "id": 85,
@@ -1746,20 +1746,20 @@
     "table_name": "wordqc",
     "comment": null,
     "type": "KEYWORD",
-    
-    
+
+
     "stored": true,
     "is_spellchecked": null,
-    
+
     "unique": null,
-    
-    
-    
-    
+
+
+
+
     "search_name": "voice",
     "analyzer": null
-    
-    
+
+
   },
   {
     "id": 86,
@@ -1768,20 +1768,20 @@
     "table_name": "wordqc",
     "comment": null,
     "type": "KEYWORD",
-    
-    
+
+
     "stored": true,
     "is_spellchecked": null,
-    
+
     "unique": null,
-    
-    
-    
-    
+
+
+
+
     "search_name": "state",
     "analyzer": null
-    
-    
+
+
   },
   {
     "id": 87,
@@ -1790,20 +1790,20 @@
     "table_name": "wordqc",
     "comment": null,
     "type": "KEYWORD",
-    
-    
+
+
     "stored": true,
     "is_spellchecked": null,
-    
+
     "unique": null,
-    
-    
-    
-    
+
+
+
+
     "search_name": "aspect",
     "analyzer": null
-    
-    
+
+
   },
   {
     "id": 88,
@@ -1812,20 +1812,20 @@
     "table_name": "aya",
     "comment": "(specific to indian mushafs)",
     "type": "NUMERIC",
-    
-    
+
+
     "stored": true,
     "is_spellchecked": null,
-    
+
     "unique": null,
     "source": "mmuhiuddin(at)googlemail",
-    
-    
-    
+
+
+
     "search_name": "page_IN",
     "analyzer": null
-    
-    
+
+
   },
   {
     "id": 89,
@@ -1834,20 +1834,20 @@
     "table_name": "aya",
     "comment": null,
     "type": "KEYWORD",
-    
-    
+
+
     "stored": true,
     "is_spellchecked": null,
-    
+
     "unique": null,
-    
-    
-    
-    
+
+
+
+
     "search_name": "sura_type",
     "analyzer": null
-    
-    
+
+
   },
   {
     "id": 90,
@@ -1856,20 +1856,20 @@
     "table_name": "aya",
     "comment": null,
     "type": "TEXT",
-    
-    
+
+
     "stored": true,
     "is_spellchecked": null,
-    
+
     "unique": null,
-    
-    
-    
-    
+
+
+
+
     "search_name": "sura_english",
     "analyzer": null
-    
-    
+
+
   },
   {
     "id": 91,
@@ -1878,20 +1878,20 @@
     "table_name": "aya",
     "comment": null,
     "type": "TEXT",
-    
-    
+
+
     "stored": true,
     "is_spellchecked": null,
-    
+
     "unique": null,
-    
-    
-    
-    
+
+
+
+
     "search_name": "sura",
     "analyzer": null
-    
-    
+
+
   },
   {
     "id": 92,
@@ -1900,20 +1900,20 @@
     "table_name": "wordqc",
     "comment": null,
     "type": "KEYWORD",
-    
-    
+
+
     "stored": true,
     "is_spellchecked": null,
-    
+
     "unique": null,
-    
+
     "source_comment": "quranic arabic corpus",
-    
-    
+
+
     "search_name": "prefix",
     "analyzer": null
-    
-    
+
+
   },
   {
     "id": 93,
@@ -1922,19 +1922,19 @@
     "table_name": "wordqc",
     "comment": null,
     "type": "KEYWORD",
-    
-    
+
+
     "stored": true,
     "is_spellchecked": null,
-    
+
     "unique": null,
-    
-    
-    
-    
+
+
+
+
     "search_name": "suffix",
     "analyzer": null
-    
-    
+
+
   }
 ]
