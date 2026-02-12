@@ -54,9 +54,10 @@ def test_synonyms_plugin():
     query = parser.parse("~جنة")
     assert isinstance(query, SynonymsQuery)
     assert query.text == "جنة"
-    # Verify the results contain synonyms (جنة should return itself and synonyms)
+    # Verify the results contain actual synonyms of جنة
+    assert query.words == ['جنة', 'سعر', 'سفاهة', 'سوء']
     assert "جنة" in query.words
-    assert len(query.words) >= 1  # Should have at least the word itself
+    assert "سعر" in query.words
 
 
 def test_antonyms_plugin():
@@ -85,9 +86,10 @@ def test_derivation_plugin_single():
     assert query.level == 1
     assert query.text == "مالك"
     # Verify results contain derivations of مالك at lemma level
-    assert len(query.words) >= 1
-    assert "مالك" in query.words  # Should include the word itself
-    # Lemma level should have fewer results than root level
+    assert query.words == ['مالكون', 'مالك']
+    assert "مالك" in query.words
+    assert "مالكون" in query.words
+    assert len(query.words) == 2  # Lemma level should have fewer results
 
 
 def test_derivation_plugin_double():
@@ -101,10 +103,15 @@ def test_derivation_plugin_double():
     assert query.level == 2
     assert query.text == "مالك"
     # Verify results contain derivations of مالك at root level
-    assert len(query.words) >= 1
-    # Root level should return more results than lemma level (from test_derivation_plugin_single)
+    # Check for expected words (order may vary)
+    assert len(query.words) == 23  # Should have 23 derivations
+    assert "مالك" in query.words
+    assert "ملكوت" in query.words
+    assert "يملك" in query.words
+    assert "الملك" in query.words
+    # Root level should return more results than lemma level
     query_lemma = parser.parse(">مالك")
-    assert len(query.words) >= len(query_lemma.words)  # Root level has wider results
+    assert len(query.words) > len(query_lemma.words)  # Root level has wider results
 
 
 def test_spell_errors_plugin():
@@ -165,8 +172,12 @@ def test_tuple_plugin_multiple_items():
     assert query.props.get("root") == "قول"
     assert query.props.get("type") == "اسم"
     # Verify results contain words with root قول and type اسم (noun)
-    assert len(query.words) >= 1
-    # Should include words like قول، قولا، قولكم، etc.
+    assert len(query.words) == 11  # Should have 11 nouns
+    assert "قول" in query.words
+    assert "قولا" in query.words
+    assert "قولكم" in query.words
+    assert "قوله" in query.words
+    assert "الأقاويل" in query.words
 
 
 def test_tuple_plugin_root_and_type():
@@ -180,8 +191,11 @@ def test_tuple_plugin_root_and_type():
     assert query.props.get("root") == "ملك"
     assert query.props.get("type") == "فعل"
     # Verify results contain words with root ملك and type فعل (verb)
-    assert len(query.words) >= 1
-    # Should include verbs like ملكتم، يملك، تملك، etc.
+    assert len(query.words) == 8  # Should have 8 verbs
+    assert "يملك" in query.words
+    assert "ملكتم" in query.words
+    assert "تملك" in query.words
+    assert "أملك" in query.words
 
 
 def test_arabic_wildcard_asterisk():
