@@ -13,11 +13,11 @@ Alfanous API
 =====
 Usage
 =====
-Install it from Pypi:
+Install it from PyPI:
 
 .. code-block:: sh
 
-    $ pip install alfanous
+    $ pip install alfanous_x
 
 
 You can use it:
