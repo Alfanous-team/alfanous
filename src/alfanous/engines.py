@@ -1,5 +1,6 @@
 from whoosh import qparser
 from whoosh.qparser import QueryParser
+from whoosh.qparser.plugins import SingleQuotePlugin
 
 from alfanous.searching import QSearcher, QReader
 from alfanous.indexing import QseDocIndex, ExtDocIndex, BasicDocIndex
@@ -25,6 +26,9 @@ class BasicSearchEngine:
             self._schema = self._docindex.get_schema()
             #
             self._parser = query_parser(main_field, self._schema, group=qparser.OrGroup)
+            
+            # Remove SingleQuotePlugin to allow our TashkilPlugin to work
+            self._parser.remove_plugin_class(SingleQuotePlugin)
             
             # Add all Arabic query plugins
             self._parser.add_plugin(SynonymsPlugin)

@@ -176,6 +176,17 @@ class TashkilQuery(QMultiTerm):
         )
         self.words = [ASF.normalize_all(word) for word in self.text]
 
+    def __hash__(self):
+        return hash((self.__class__.__name__, self.fieldname, tuple(self.text), self.boost))
+
+    def __eq__(self, other):
+        return (
+            self.__class__ is other.__class__
+            and self.fieldname == other.fieldname
+            and self.text == other.text
+            and self.boost == other.boost
+        )
+
     def _words(self, ixreader):
         for field, indexed_text in ixreader.all_terms():
             if field == self.fieldname:
