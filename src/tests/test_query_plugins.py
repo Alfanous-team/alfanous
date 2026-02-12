@@ -48,16 +48,21 @@ def create_test_parser():
 def test_synonyms_plugin():
     """Test synonyms plugin (~word) - Example from README: ~synonym search
     
-    Note: جحيم (hell) doesn't have synonyms in syndict. Using جنة (heaven) instead.
+    Note: Using آثر (preferred/chose) which has proper synonyms in syndict.
+    The word جنة (heaven) in syndict has incorrect synonyms data (should include 
+    فردوس but shows ['جنة', 'سعر', 'سفاهة', 'سوء'] instead).
     """
     parser = create_test_parser()
-    query = parser.parse("~جنة")
+    query = parser.parse("~آثر")
     assert isinstance(query, SynonymsQuery)
-    assert query.text == "جنة"
-    # Verify the results contain actual synonyms of جنة
-    assert query.words == ['جنة', 'سعر', 'سفاهة', 'سوء']
-    assert "جنة" in query.words
-    assert "سعر" in query.words
+    assert query.text == "آثر"
+    # Verify the results contain actual synonyms of آثر (preferred/chose)
+    # Expected: ['آثر', 'اختار', 'اصطفى', 'فضل']
+    assert query.words == ['آثر', 'اختار', 'اصطفى', 'فضل']
+    assert "آثر" in query.words
+    assert "اختار" in query.words  # chose
+    assert "اصطفى" in query.words  # selected
+    assert "فضل" in query.words     # preferred
 
 
 def test_antonyms_plugin():
@@ -86,7 +91,7 @@ def test_derivation_plugin_single():
     assert query.level == 1
     assert query.text == "مالك"
     # Verify results contain derivations of مالك at lemma level
-    assert query.words == ['مالكون', 'مالك']
+    assert query.words == ['مالك', 'مالكون']
     assert "مالك" in query.words
     assert "مالكون" in query.words
     assert len(query.words) == 2  # Lemma level should have fewer results
