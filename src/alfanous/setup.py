@@ -21,6 +21,7 @@ current_lib_usage = information.get("lib_usage") or "    $ sudo pip install alfa
 
 setup(
 
+    name='alfanous3',
     version=current_version,
 
     packages=['alfanous',  'alfanous.Support', 'alfanous.Support.pyarabic', ],

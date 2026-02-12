@@ -1,0 +1,57 @@
+name: Publish to PyPI
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+jobs:
+  build-and-publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.x'
+    
+    - name: Install build dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install build twine wheel setuptools
+    
+    - name: Generate information.json from template
+      run: |
+        VERSION="${GITHUB_REF#refs/tags/v}"
+        if [ -z "$VERSION" ] || [ "$VERSION" = "$GITHUB_REF" ]; then
+          # Fallback: extract version from Makefile if not triggered by tag
+          VERSION=$(grep '^VERSION=' Makefile | cut -d'=' -f2)
+          if [ -z "$VERSION" ]; then
+            VERSION="0.0.0-dev"
+          fi
+        fi
+        RELEASE="${VERSION}"
+        perl -p -w -e "s|alfanous.release|${RELEASE}|g;s|alfanous.version|${VERSION}|g;" \
+          src/alfanous/resources/information.json.in > src/alfanous/resources/information.json
+    
+    - name: Build package
+      run: |
+        cd src/alfanous
+        python -m build
+    
+    - name: Check distribution
+      run: |
+        cd src/alfanous
+        twine check dist/*
+    
+    - name: Publish to PyPI
+      uses: pypa/gh-action-pypi-publish@release/v1
+      with:
+        packages-dir: src/alfanous/dist/
+        skip-existing: true
