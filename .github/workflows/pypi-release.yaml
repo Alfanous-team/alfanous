@@ -21,7 +21,7 @@ jobs:
     - name: Install build dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install build twine wheel setuptools
+        pip install build twine wheel setuptools pyparsing whoosh
     
     - name: Generate information.json from template
       run: |
@@ -36,6 +36,10 @@ jobs:
         RELEASE="${VERSION}"
         perl -p -w -e "s|alfanous.release|${RELEASE}|g;s|alfanous.version|${VERSION}|g;" \
           src/alfanous/resources/information.json.in > src/alfanous/resources/information.json
+    
+    - name: Build indexes
+      run: |
+        make build
     
     - name: Build package
       run: |
