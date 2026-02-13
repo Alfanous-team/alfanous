@@ -815,7 +815,7 @@ def test_search():
             'translation_info': {},
             'words': {'global': {'nb_matches': 142.0,
                                  'nb_vocalizations': 0,
-                                 'nb_words': 2}}}}}
+                                 'nb_words': 2}}}}
     
     # Compare words->individual separately (order-independent check)
     assert sorted(actual_words_individual.keys()) == sorted(expected_words_individual.keys())
