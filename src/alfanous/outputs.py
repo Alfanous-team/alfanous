@@ -74,6 +74,8 @@ class Raw:
             "perpage": 10,  # overridden with range
             "fuzzy": False,
             "aya": True,
+            "facets": None,
+            "filter": None,
         }
     }
 
@@ -357,6 +359,36 @@ class Raw:
         vocalized = IS_FLAG(flags, 'vocalized')
         fuzzy = IS_FLAG(flags, 'fuzzy')
         view = flags["view"]
+        
+        # Parse facets parameter
+        facets_param = flags.get("facets")
+        facets_list = None
+        if facets_param:
+            if isinstance(facets_param, str):
+                facets_list = [f.strip() for f in facets_param.split(",") if f.strip()]
+            elif isinstance(facets_param, list):
+                facets_list = facets_param
+        
+        # Parse filter parameter
+        filter_param = flags.get("filter")
+        filter_dict = None
+        if filter_param:
+            if isinstance(filter_param, dict):
+                filter_dict = filter_param
+            elif isinstance(filter_param, str):
+                # Parse "field:value,field2:value2" format
+                filter_dict = {}
+                for item in filter_param.split(","):
+                    if ":" in item:
+                        field, value = item.split(":", 1)
+                        field = field.strip()
+                        value = value.strip()
+                        # Try to convert to int if possible
+                        try:
+                            value = int(value)
+                        except ValueError:
+                            pass
+                        filter_dict[field] = value
 
         # pre-defined views # TODO remove this feature , complexity for no real benifit
         if view == "minimal":
@@ -465,7 +497,7 @@ class Raw:
 
         # Search
         SE = self.QSE
-        res, termz, searcher = SE.search_all(query, limit=self._defaults["results_limit"]["aya"], sortedby=sortedby)
+        res, termz, searcher = SE.search_all(query, limit=self._defaults["results_limit"]["aya"], sortedby=sortedby, facets=facets_list, filter_dict=filter_dict)
         terms = [term[1] for term in list(termz)[:self._defaults["maxkeywords"]]]
         terms_uthmani = map(STANDARD2UTHMANI, terms)
         # pagination
@@ -614,6 +646,21 @@ class Raw:
             "nb_pages": ((len(res) - 1) / range) + 1
         }
         output["translation_info"] = {}
+        
+        # Add facets to output if requested
+        if facets_list and res:
+            output["facets"] = {}
+            for facet_field in facets_list:
+                try:
+                    facet_groups = res.groups(facet_field)
+                    # facet_groups is a dict where keys are values and values are lists of docnums
+                    output["facets"][facet_field] = [
+                        {"value": value, "count": len(doclist)}
+                        for value, doclist in sorted(facet_groups.items(), key=lambda x: len(x[1]), reverse=True)
+                    ]
+                except:
+                    # If facet field doesn't exist or error, skip it
+                    pass
         ### Ayas
         cpt = start - 1
         output["ayas"] = {}

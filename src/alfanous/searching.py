@@ -1,4 +1,6 @@
 from alfanous.results_processing import QSort, QScore
+from whoosh.sorting import Facets, FieldFacet
+from whoosh import query as wquery
 
 
 class QReader:
@@ -50,10 +52,36 @@ class QSearcher:
         self._searcher = docindex.get_index().searcher
         self._qparser = qparser
 
-    def search(self, querystr, limit=6236, sortedby="score", reverse=False):
+    def search(self, querystr, limit=6236, sortedby="score", reverse=False, facets=None, filter_dict=None):
         searcher = self._searcher(weighting=QScore())
         query = self._qparser.parse(querystr)
-        results = searcher.search(q=query, limit=limit, sortedby=QSort(sortedby), reverse=reverse)
+        
+        # Prepare facets if requested
+        groupedby = None
+        if facets:
+            groupedby = Facets()
+            for facet_field in facets:
+                groupedby.add_field(facet_field)
+        
+        # Prepare filter if provided
+        filter_query = None
+        if filter_dict:
+            filter_queries = []
+            for field, value in filter_dict.items():
+                if isinstance(value, list):
+                    # Multiple values for same field (OR condition)
+                    or_queries = [wquery.Term(field, v) for v in value]
+                    filter_queries.append(wquery.Or(or_queries))
+                else:
+                    # Single value
+                    filter_queries.append(wquery.Term(field, value))
+            
+            if len(filter_queries) == 1:
+                filter_query = filter_queries[0]
+            elif len(filter_queries) > 1:
+                filter_query = wquery.And(filter_queries)
+        
+        results = searcher.search(q=query, limit=limit, sortedby=QSort(sortedby), reverse=reverse, groupedby=groupedby, filter=filter_query)
 
         terms = query.all_terms()
 

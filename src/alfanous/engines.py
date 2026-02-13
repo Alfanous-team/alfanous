@@ -34,8 +34,8 @@ class BasicSearchEngine:
 
     # end  __init__
 
-    def search_all(self, querystr, limit=6236, sortedby="score", reverse=False):
-        results, terms, searcher = self._searcher.search(querystr, limit=limit, sortedby=sortedby, reverse=reverse)
+    def search_all(self, querystr, limit=6236, sortedby="score", reverse=False, facets=None, filter_dict=None):
+        results, terms, searcher = self._searcher.search(querystr, limit=limit, sortedby=sortedby, reverse=reverse, facets=facets, filter_dict=filter_dict)
         return results, list(self._reader.term_stats(terms)), searcher
 
     def most_frequent_words(self, nb, fieldname):
