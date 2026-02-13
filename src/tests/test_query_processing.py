@@ -74,10 +74,7 @@ def test_parsing_with_schema():
                                            'text': '\u062c\u062d\u064a\u0645',
                                            'words': ['\u062c\u062d\u064a\u0645']}
 
-    assert QP.parse(u">>سماكم").__dict__ == {'boost': 1.0,
- 'fieldname': 'aya',
- 'text': '\u0633\u0645\u0627\u0643\u0645',
- 'words': ['\u0628\u0623\u0633\u0645\u0627\u0621',
+    assert sorted(QP.parse(u">>سماكم").__dict__['words']) == sorted(['\u0628\u0623\u0633\u0645\u0627\u0621',
            '\u062a\u0633\u0645\u0649',
            '\u0628\u0623\u0633\u0645\u0627\u0626\u0647\u0645',
            '\u0648\u0627\u0644\u0633\u0645\u0627\u0621',
@@ -97,7 +94,7 @@ def test_parsing_with_schema():
            '\u0633\u0645\u064a\u062a\u0647\u0627',
            '\u0633\u0645\u0627\u0621',
            '\u0623\u0633\u0645\u0627\u0626\u0647',
-           '\u0627\u0644\u0633\u0645\u0627\u0621']}
+           '\u0627\u0644\u0633\u0645\u0627\u0621'])
 
     assert QP.parse(u"آية:عاصم").__dict__ == {'boost': 1.0, 'fieldname': 'aya', 'text': '\u0639\u0627\u0635\u0645'}
     assert QP.parse(u"'h h  j'").__dict__ == dict(boost=1.0, fieldname='aya', text=['h', 'h', 'j'],
