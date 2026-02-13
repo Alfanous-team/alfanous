@@ -18,6 +18,7 @@ DERIVATIONS_FILE = ROOT_RESOURCE + "derivations.json"
 STANDARD_TO_UTHMANI_FILE = ROOT_RESOURCE + "standard_to_uthmani.json"
 STOP_WORDS_FILE = ROOT_RESOURCE + "stop_words.json"
 SYNONYMS_FILE = ROOT_RESOURCE + "synonyms.json"
+ANTONYMS_FILE = ROOT_RESOURCE + "antonyms.json"
 VOCALIZATIONS_FILE = ROOT_RESOURCE + "vocalizations.json"
 WORD_PROPS_FILE = ROOT_RESOURCE + "word_props.json"
 

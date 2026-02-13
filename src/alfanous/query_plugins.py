@@ -9,7 +9,7 @@ tashkil (diacritics), and more.
 from whoosh.qparser import TaggingPlugin, syntax
 from whoosh.query import MultiTerm, Variations, Or, Term, Wildcard, Prefix
 
-from alfanous.data import syndict, derivedict, worddict
+from alfanous.data import syndict, antdict, derivedict, worddict
 from alfanous.text_processing import QArabicSymbolsFilter
 from alfanous.misc import locate, find, filter_doubles
 
@@ -77,18 +77,18 @@ class SynonymsQuery(QMultiTerm):
 
 
 class AntonymsQuery(QMultiTerm):
-    """Query that searches for antonyms of the given word
-    
-    Note: This is a placeholder implementation. Full antonym lookup
-    functionality requires an Arabic antonyms thesaurus to be implemented.
-    Currently returns the original word only.
-    """
+    """Query that searches for antonyms of the given word"""
 
     def __init__(self, fieldname, text, boost=1.0):
         self.fieldname = fieldname
         self.text = text
         self.boost = boost
-        self.words = [text]  # TODO: implement proper antonyms lookup with thesaurus
+        self.words = self._get_antonyms(text)
+
+    @staticmethod
+    def _get_antonyms(word):
+        """Get antonyms for a word"""
+        return antdict.get(word, [word])
 
 
 class DerivationQuery(QMultiTerm):
