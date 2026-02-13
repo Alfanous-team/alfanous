@@ -35,6 +35,24 @@ def test_suggestion():
 
     assert results["suggest"] == {'ابراهيم': ['إبراهيم']}
 
+def test_autocomplete():
+    ## prepare an autocomplete query
+    autocomplete_flags = {
+                "action":"autocomplete",
+                "query": "الحمد ل",
+                "limit": 10
+                }
+
+    results = RAWoutput.do( autocomplete_flags )
+
+    # Check that we get autocomplete results
+    assert "autocomplete" in results
+    assert isinstance(results["autocomplete"], list)
+    assert len(results["autocomplete"]) <= 10
+    # Check that results start with the last word prefix "ل"
+    if results["autocomplete"]:
+        assert all(word.startswith('ل') for word in results["autocomplete"])
+
 def test_search():
     ## prepare a search query
     search_flags = {

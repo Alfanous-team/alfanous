@@ -50,6 +50,27 @@ def test_autocomplete():
                 'رسولهم']}
 
 
+def test_autocomplete_phrase():
+    # Test with a phrase containing multiple words
+    result = QSE.autocomplete_phrase("الحمد ل", limit=10)
+    assert isinstance(result, list)
+    assert len(result) <= 10
+    # Check that results start with the last word prefix "ل"
+    if result:
+        assert all(word.startswith('ل') for word in result)
+
+    # Test with single word
+    result_single = QSE.autocomplete_phrase("رسول", limit=5)
+    assert isinstance(result_single, list)
+    assert len(result_single) <= 5
+    if result_single:
+        assert all(word.startswith('رسول') for word in result_single)
+
+    # Test with empty query
+    result_empty = QSE.autocomplete_phrase("", limit=10)
+    assert result_empty == []
+
+
 def test_search():
     QUERY1 = "الأمل"
     results, terms, searcher = QSE.search_all(QUERY1,
