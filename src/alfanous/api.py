@@ -53,7 +53,7 @@ def autocomplete(query, unit="aya", limit=10, flags={}):
     @param flags: Additional flags
     @return: Autocomplete results with top relevant keywords
     """
-    all_flags = flags
+    all_flags = flags.copy()
     all_flags.update({"action": "autocomplete",
                       "unit": unit,
                       "query": query,

@@ -41,8 +41,12 @@ class QReader:
             lst.extend([self.reader.frequency(*term), self.reader.doc_frequency(*term)])
             yield tuple(lst)
 
+    def _decode_term(self, term):
+        """Helper method to decode a term from bytes to UTF-8 string."""
+        return term.decode('utf-8') if isinstance(term, bytes) else term
+
     def autocomplete(self, word):
-        return [x.decode('utf-8') for x in self.reader.expand_prefix('aya', word)]
+        return [self._decode_term(x) for x in self.reader.expand_prefix('aya', word)]
 
     def autocomplete_phrase(self, phrase, limit=10):
         """
@@ -60,8 +64,7 @@ class QReader:
         last_word = words[-1]
         
         # Get completions for the last word using prefix expansion
-        completions = [x.decode('utf-8') if isinstance(x, bytes) else x 
-                      for x in self.reader.expand_prefix('aya', last_word)]
+        completions = [self._decode_term(x) for x in self.reader.expand_prefix('aya', last_word)]
         
         # Limit to top N results
         return completions[:limit]
