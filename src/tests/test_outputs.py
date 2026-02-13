@@ -58,8 +58,45 @@ def test_search():
     assert results["search"]["interval"]["total"] == 116
 
     del results["search"]["runtime"]
+    
+    # Extract words->individual for separate comparison (order-independent)
+    actual_words_individual = results["search"]["words"]["individual"]
+    expected_words_individual = {1: {'derivations': [],
+                                     'derivations_extra': [],
+                                     'lemma': '',
+                                     'nb_ayas': 113,
+                                     'nb_derivations': 0,
+                                     'nb_derivations_extra': 0,
+                                     'nb_matches': 116.0,
+                                     'nb_synonyms': 0,
+                                     'nb_vocalizations': 0,
+                                     'romanization': None,
+                                     'root': '',
+                                     'synonyms': [],
+                                     'vocalizations': [],
+                                     'word': 'لله'},
+                                 2: {'derivations': [],
+                                     'derivations_extra': [],
+                                     'lemma': '',
+                                     'nb_ayas': 25,
+                                     'nb_derivations': 0,
+                                     'nb_derivations_extra': 0,
+                                     'nb_matches': 26.0,
+                                     'nb_synonyms': 0,
+                                     'nb_vocalizations': 0,
+                                     'romanization': None,
+                                     'root': '',
+                                     'synonyms': [],
+                                     'vocalizations': [],
+                                     'word': 'الحمد'}}
+    
+    # Remove words->individual from results for main comparison
+    results_without_words_individual = results.copy()
+    results_without_words_individual["search"] = results["search"].copy()
+    results_without_words_individual["search"]["words"] = results["search"]["words"].copy()
+    del results_without_words_individual["search"]["words"]["individual"]
 
-    assert results == {'error': {'code': 0, 'msg': 'success'},
+    assert results_without_words_individual == {'error': {'code': 0, 'msg': 'success'},
  'search': {'ayas': {1: {'annotations': {},
                          'aya': {'id': 2,
                                  'next_aya': {'id': 3,
@@ -778,32 +815,9 @@ def test_search():
             'translation_info': {},
             'words': {'global': {'nb_matches': 142.0,
                                  'nb_vocalizations': 0,
-                                 'nb_words': 2},
-                      'individual': {1: {'derivations': [],
-                                         'derivations_extra': [],
-                                         'lemma': '',
-                                         'nb_ayas': 113,
-                                         'nb_derivations': 0,
-                                         'nb_derivations_extra': 0,
-                                         'nb_matches': 116.0,
-                                         'nb_synonyms': 0,
-                                         'nb_vocalizations': 0,
-                                         'romanization': None,
-                                         'root': '',
-                                         'synonyms': [],
-                                         'vocalizations': [],
-                                         'word': 'لله'},
-                                     2: {'derivations': [],
-                                         'derivations_extra': [],
-                                         'lemma': '',
-                                         'nb_ayas': 25,
-                                         'nb_derivations': 0,
-                                         'nb_derivations_extra': 0,
-                                         'nb_matches': 26.0,
-                                         'nb_synonyms': 0,
-                                         'nb_vocalizations': 0,
-                                         'romanization': None,
-                                         'root': '',
-                                         'synonyms': [],
-                                         'vocalizations': [],
-                                         'word': 'الحمد'}}}}}
+                                 'nb_words': 2}}}}}
+    
+    # Compare words->individual separately (order-independent check)
+    assert sorted(actual_words_individual.keys()) == sorted(expected_words_individual.keys())
+    for key in expected_words_individual:
+        assert actual_words_individual[key] == expected_words_individual[key]
