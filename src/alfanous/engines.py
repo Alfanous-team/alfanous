@@ -80,7 +80,9 @@ class BasicSearchEngine:
         
         # 2. Add spell correction suggestions if we need more
         if len(suggestions) < limit:
-            corrections = self._searcher.suggest(last_word).get(last_word, [])
+            correction_dict = self._searcher.suggest(last_word)
+            # Get corrections for the last word (handle case where key might be different)
+            corrections = correction_dict.get(last_word, [])
             for correction in corrections:
                 if correction not in seen and len(suggestions) < limit:
                     suggestions.append(correction)
