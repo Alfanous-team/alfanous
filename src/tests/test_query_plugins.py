@@ -49,9 +49,9 @@ def create_test_parser():
 def test_synonyms_plugin():
     """Test synonyms plugin (~word) - Example from README: ~synonym search
     
-    Note: Using آثر (preferred/chose) which has proper synonyms in syndict.
-    The word جنة (heaven) in syndict has incorrect synonyms data (should include 
-    فردوس but shows ['جنة', 'سعر', 'سفاهة', 'سوء'] instead).
+    Tests that SynonymsPlugin properly returns synonyms from the synonyms dictionary.
+    Uses آثر (preferred/chose) which has proper synonyms, and also validates
+    the fix for جنة (paradise) which should now include فردوس.
     """
     parser = create_test_parser()
     query = parser.parse("~آثر")
@@ -64,21 +64,30 @@ def test_synonyms_plugin():
     assert "اختار" in query.words  # chose
     assert "اصطفى" in query.words  # selected
     assert "فضل" in query.words     # preferred
+    
+    # Test the fixed جنة entry - should now include فردوس
+    query = parser.parse("~جنة")
+    assert isinstance(query, SynonymsQuery)
+    assert query.text == "جنة"
+    assert "فردوس" in query.words  # paradise
+    assert "جنة" in query.words
+    assert "نعيم" in query.words  # bliss
 
 
 def test_antonyms_plugin():
     """Test antonyms plugin (#word) - Arabic antonym search
     
-    Note: Antonyms functionality is a placeholder. It should return antonyms
-    like جنة (heaven) for جحيم (hell), but currently returns the original word.
+    Tests that AntonymsPlugin properly returns antonyms from the Arabic antonyms thesaurus.
+    For example, جحيم (hell) should return جنة and فردوس (paradise) as antonyms.
     """
     parser = create_test_parser()
     query = parser.parse("#جحيم")
     assert isinstance(query, AntonymsQuery)
     assert query.text == "جحيم"
-    # Currently returns original word (placeholder implementation - needs Arabic antonym thesaurus)
-    assert sorted(query.words) == sorted(["جحيم"])
-    # TODO: When antonym thesaurus is implemented, should include "جنة" (heaven)
+    # Should now return proper antonyms from antonyms thesaurus
+    assert sorted(query.words) == sorted(["جنة", "فردوس"])
+    assert "جنة" in query.words  # paradise (heaven)
+    assert "فردوس" in query.words  # paradise
 
 
 def test_derivation_plugin_single():

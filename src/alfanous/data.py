@@ -78,6 +78,10 @@ try:
 except:
     syndict = {}
 try:
+    antdict = json.load(open(paths.ANTONYMS_FILE))
+except:
+    antdict = {}
+try:
     derivedict = json.load(open(paths.DERIVATIONS_FILE))
 except:
     derivedict = {"root": []}
