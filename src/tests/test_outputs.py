@@ -49,7 +49,8 @@ def test_autocomplete():
     assert "autocomplete" in results
     assert isinstance(results["autocomplete"], list)
     assert len(results["autocomplete"]) <= 10
-    # Check that results start with the last word prefix "ل"
+    # Check that results start with the last word prefix "ل" 
+    # (extracted from the phrase "الحمد ل")
     if results["autocomplete"]:
         assert all(word.startswith('ل') for word in results["autocomplete"])
 

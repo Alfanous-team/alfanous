@@ -44,7 +44,7 @@ result = api.do({
 - Accepts phrases (multiple words)
 - Returns top N relevant keywords based on the last word prefix
 - Default limit is 10 keywords, customizable via the `limit` parameter
-- Works with both Arabic text and Buckwalter transliteration
+- Works with Arabic text
 - Gracefully handles empty queries
 
 ## Facet Search Examples
