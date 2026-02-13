@@ -25,14 +25,7 @@ class BasicSearchEngine:
             #
             self._schema = self._docindex.get_schema()
             #
-            # Check if the parser supports otherfields (custom parsers like QuranicParser)
-            # or just uses fieldname (Whoosh QueryParser)
-            try:
-                # Try custom parser signature (schema, mainfield, otherfields)
-                self._parser = query_parser(self._schema, mainfield=main_field, otherfields=otherfields)
-            except TypeError:
-                # Fall back to Whoosh QueryParser signature (fieldname, schema, group)
-                self._parser = query_parser(main_field, self._schema, group=qparser.OrGroup)
+            self._parser = query_parser(main_field, self._schema, group=qparser.OrGroup)
             
             # Remove SingleQuotePlugin to allow our TashkilPlugin to work
             self._parser.remove_plugin_class(SingleQuotePlugin)
