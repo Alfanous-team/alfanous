@@ -91,12 +91,12 @@ download: download_translations   download_tanzil
 
 download_translations:
 	#  download from  http://zekr.org/resources.html to ./store/Translations
-	cd $(STORE_PATH)Translations;  wget -i translations.list
+	cd $(STORE_PATH)Translations; grep -v '^#' translations.list | grep -v '^$$' | wget -nc -i - || true
 
 
 download_tanzil:
-	export PYTHONPATH=$(API_PATH) ;	$(PYTHON_COMMAND) $(QIMPORT) -d tanzil_simple_clean $(STORE_PATH)tanzil_simple_clean.xml
-	export PYTHONPATH=$(API_PATH) ;	$(PYTHON_COMMAND) $(QIMPORT) -d tanzil_uthmani $(STORE_PATH)tanzil_uthmani.xml
+	export PYTHONPATH=$(API_PATH) ;	$(PYTHON_COMMAND) $(QIMPORT) -d tanzil_simple_clean $(STORE_PATH)tanzil_simple_clean.xml || true
+	export PYTHONPATH=$(API_PATH) ;	$(PYTHON_COMMAND) $(QIMPORT) -d tanzil_uthmani $(STORE_PATH)tanzil_uthmani.xml || true
 
 
 
