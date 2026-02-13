@@ -13,6 +13,7 @@ from alfanous.data import syndict, derivedict, worddict
 from alfanous.text_processing import QArabicSymbolsFilter
 from alfanous.misc import locate, find, filter_doubles
 from alfanous.Support.pyarabic.normalizers import normalize_hamza
+from alfanous.Support.pyarabic.constants import HAMZA, ALEF
 
 
 class QMultiTerm(MultiTerm):
@@ -248,19 +249,17 @@ class TupleQuery(QMultiTerm):
         Returns:
             List of matching items from dist
         """
-        from alfanous.Support.pyarabic.constants import HAMZA
-        
         # Normalize the search term
         normalized_search = normalize_hamza(search_term)
         # Also normalize standalone hamza (ء) to alef for matching
-        normalized_search = normalized_search.replace(HAMZA, '\u0627')  # ALEF
+        normalized_search = normalized_search.replace(HAMZA, ALEF)
         
         results = []
         for i in range(len(source)):
             # Normalize each source item
             normalized_source = normalize_hamza(source[i])
             # Also normalize standalone hamza in source
-            normalized_source = normalized_source.replace(HAMZA, '\u0627')  # ALEF
+            normalized_source = normalized_source.replace(HAMZA, ALEF)
             
             if normalized_source == normalized_search:
                 results.append(dist[i])
