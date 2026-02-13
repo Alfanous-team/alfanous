@@ -72,7 +72,7 @@ class BasicSearchEngine:
 
 
 def QuranicSearchEngine(indexpath="../indexes/main/",
-                        qparser=QueryParser):
+                        qparser=QuranicParser):
     return BasicSearchEngine(qdocindex=QseDocIndex(indexpath)
                              , query_parser=qparser
                              , main_field="aya"
