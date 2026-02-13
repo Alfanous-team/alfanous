@@ -209,9 +209,9 @@ def _make_arabic_parser():
     expression << (OneOrMore(operatorAnd | operatorOr | operatorAndNot |
                              generalUnit | Suppress(White())) | Empty())
 
-    toplevel = Group(expression).setResultsName("Toplevel") + StringEnd()
+    toplevel = Group(expression).set_results_name("Toplevel") + StringEnd()
 
-    return toplevel.parseString
+    return toplevel.parse_string
 
 
 ARABIC_PARSER_FN = _make_arabic_parser()
