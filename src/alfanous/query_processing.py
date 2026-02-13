@@ -259,14 +259,14 @@ class ArabicParser(StandardParser):
         # Remove SingleQuotePlugin to allow our TashkilPlugin to work
         self.remove_plugin_class(SingleQuotePlugin)
         
-        # Add all Arabic query plugins
-        self.add_plugin(SynonymsPlugin)
-        self.add_plugin(AntonymsPlugin)
-        self.add_plugin(DerivationPlugin)
-        self.add_plugin(SpellErrorsPlugin)
-        self.add_plugin(TashkilPlugin)
-        self.add_plugin(TuplePlugin)
-        self.add_plugin(ArabicWildcardPlugin)
+        # Add all Arabic query plugins (instantiate plugin classes)
+        self.add_plugin(SynonymsPlugin())
+        self.add_plugin(AntonymsPlugin())
+        self.add_plugin(DerivationPlugin())
+        self.add_plugin(SpellErrorsPlugin())
+        self.add_plugin(TashkilPlugin())
+        self.add_plugin(TuplePlugin())
+        self.add_plugin(ArabicWildcardPlugin())
 
     def _Field(self, node, fieldname):
         return self._eval(node[1], self.ara2eng.get(node[0]) or node[0])
