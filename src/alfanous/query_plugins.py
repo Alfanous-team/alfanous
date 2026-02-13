@@ -12,6 +12,7 @@ from whoosh.query import MultiTerm, Variations, Or, Term, Wildcard, Prefix
 from alfanous.data import syndict, derivedict, worddict
 from alfanous.text_processing import QArabicSymbolsFilter
 from alfanous.misc import locate, find, filter_doubles
+from alfanous.Support.pyarabic.normalizers import normalize_hamza
 
 
 class QMultiTerm(MultiTerm):
@@ -232,14 +233,57 @@ class TupleQuery(QMultiTerm):
         return D
 
     @staticmethod
+    def _find_with_hamza_normalization(source, dist, search_term):
+        """
+        Find items in dist where source matches search_term with hamza normalization.
+        
+        This allows matching roots regardless of hamza spelling variations.
+        For example: سوأ, سوء, سوا all normalize to the same form.
+        
+        Args:
+            source: List of values to search in (e.g., roots)
+            dist: List of corresponding values to return (e.g., words)
+            search_term: Term to search for
+            
+        Returns:
+            List of matching items from dist
+        """
+        from alfanous.Support.pyarabic.constants import HAMZA
+        
+        # Normalize the search term
+        normalized_search = normalize_hamza(search_term)
+        # Also normalize standalone hamza (ء) to alef for matching
+        normalized_search = normalized_search.replace(HAMZA, '\u0627')  # ALEF
+        
+        results = []
+        for i in range(len(source)):
+            # Normalize each source item
+            normalized_source = normalize_hamza(source[i])
+            # Also normalize standalone hamza in source
+            normalized_source = normalized_source.replace(HAMZA, '\u0627')  # ALEF
+            
+            if normalized_source == normalized_search:
+                results.append(dist[i])
+        
+        return results
+
+    @staticmethod
     def _get_words_by_properties(props):
         """Search words that have specific properties"""
         wset = None
         for propkey in props.keys():
             if worddict.get(propkey):
-                partial_wset = set(
-                    find(worddict[propkey], worddict["word_"], props[propkey])
-                )
+                # Use hamza normalization for root matching
+                if propkey == "root":
+                    partial_wset = set(
+                        TupleQuery._find_with_hamza_normalization(
+                            worddict[propkey], worddict["word_"], props[propkey]
+                        )
+                    )
+                else:
+                    partial_wset = set(
+                        find(worddict[propkey], worddict["word_"], props[propkey])
+                    )
                 if wset is None:
                     wset = partial_wset
                 else:

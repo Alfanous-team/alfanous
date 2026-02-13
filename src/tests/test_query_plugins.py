@@ -211,6 +211,45 @@ def test_tuple_plugin_root_and_type():
     assert "أملك" in query.words
 
 
+def test_tuple_plugin_hamza_normalization():
+    """Test tuple plugin with hamza normalization - Issue: Cannot find فعل for multiple verbs
+    
+    The root سوأ (س-و-ء) should be found when searching with different hamza spellings:
+    - {سوأ،فعل} - root with ALEF_HAMZA_ABOVE (stored form)
+    - {سوء،فعل} - root with standalone HAMZA at end  
+    - {سوا،فعل} - root with hamza normalized away
+    
+    All three variations should return the same verb results from root سوأ.
+    """
+    parser = create_test_parser()
+    
+    # Test with original form (ALEF_HAMZA_ABOVE)
+    query1 = parser.parse("{سوأ،فعل}")
+    assert isinstance(query1, TupleQuery)
+    assert query1.props.get("root") == "سوأ"
+    assert query1.props.get("type") == "فعل"
+    assert len(query1.words) == 8
+    assert "ساء" in query1.words  # The verb from the issue
+    assert "أساء" in query1.words
+    assert "تسؤهم" in query1.words
+    
+    # Test with standalone hamza at end
+    query2 = parser.parse("{سوء،فعل}")
+    assert isinstance(query2, TupleQuery)
+    assert len(query2.words) == 8
+    assert "ساء" in query2.words
+    # Should return same results as query1
+    assert set(query1.words) == set(query2.words)
+    
+    # Test with normalized form (no hamza)
+    query3 = parser.parse("{سوا،فعل}")
+    assert isinstance(query3, TupleQuery)
+    assert len(query3.words) == 8
+    assert "ساء" in query3.words
+    # Should return same results as query1 and query2
+    assert set(query1.words) == set(query3.words)
+
+
 def test_arabic_wildcard_asterisk():
     """Test Arabic wildcard with * - Example from README: *نبي*
     
