@@ -26,7 +26,7 @@ def do(flags):
     return _R.do(flags)
 
 
-def search(query, unit="aya", page=1, sortedby="relevance", fuzzy=False, view="normal", highlight="bold", flags={}, facets=None):
+def search(query, unit="aya", page=1, sortedby="relevance", fuzzy=False, view="normal", highlight="bold", flags={}, facets=None, filter=None):
     all_flags = flags
     all_flags.update({"action": "search",
                       "unit": unit,
@@ -36,7 +36,8 @@ def search(query, unit="aya", page=1, sortedby="relevance", fuzzy=False, view="n
                       "fuzzy": fuzzy,
                       "view": view,
                       "highlight": highlight,
-                      "facets": facets
+                      "facets": facets,
+                      "filter": filter
                       })
     return do(all_flags)
 

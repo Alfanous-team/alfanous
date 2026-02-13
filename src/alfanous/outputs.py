@@ -75,6 +75,7 @@ class Raw:
             "fuzzy": False,
             "aya": True,
             "facets": None,
+            "filter": None,
         }
     }
 
@@ -367,6 +368,27 @@ class Raw:
                 facets_list = [f.strip() for f in facets_param.split(",") if f.strip()]
             elif isinstance(facets_param, list):
                 facets_list = facets_param
+        
+        # Parse filter parameter
+        filter_param = flags.get("filter")
+        filter_dict = None
+        if filter_param:
+            if isinstance(filter_param, dict):
+                filter_dict = filter_param
+            elif isinstance(filter_param, str):
+                # Parse "field:value,field2:value2" format
+                filter_dict = {}
+                for item in filter_param.split(","):
+                    if ":" in item:
+                        field, value = item.split(":", 1)
+                        field = field.strip()
+                        value = value.strip()
+                        # Try to convert to int if possible
+                        try:
+                            value = int(value)
+                        except ValueError:
+                            pass
+                        filter_dict[field] = value
 
         # pre-defined views # TODO remove this feature , complexity for no real benifit
         if view == "minimal":
@@ -475,7 +497,7 @@ class Raw:
 
         # Search
         SE = self.QSE
-        res, termz, searcher = SE.search_all(query, limit=self._defaults["results_limit"]["aya"], sortedby=sortedby, facets=facets_list)
+        res, termz, searcher = SE.search_all(query, limit=self._defaults["results_limit"]["aya"], sortedby=sortedby, facets=facets_list, filter_dict=filter_dict)
         terms = [term[1] for term in list(termz)[:self._defaults["maxkeywords"]]]
         terms_uthmani = map(STANDARD2UTHMANI, terms)
         # pagination

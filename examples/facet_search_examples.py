@@ -94,6 +94,63 @@ def example_5_using_do_method():
     for facet in results['search']['facets']['sura_type']:
         print(f"  {facet['value']}: {facet['count']} occurrences")
 
+def example_6_filter_without_query():
+    """Example 6: Using filter parameter to filter without modifying query"""
+    print("Example 6: Filter results without modifying the search query")
+    print_separator()
+    
+    # Search for "الله" only in Sura 2 using filter parameter
+    results = api.search(query="الله", filter={"sura_id": 2}, flags={"perpage": 5})
+    
+    print(f"Query: 'الله' (without sura in the query)")
+    print(f"Filter: sura_id=2")
+    print(f"Total results in Sura 2: {results['search']['interval']['total']}")
+    
+    print(f"\nFirst 5 results:")
+    for i, aya in list(results['search']['ayas'].items())[:5]:
+        print(f"  [{i}] {aya['identifier']['sura_id']}:{aya['identifier']['aya_id']} - {aya['identifier']['sura_name']}")
+
+def example_7_filter_with_facets():
+    """Example 7: Combine filters with facets"""
+    print("Example 7: Combine filter and facets for powerful analysis")
+    print_separator()
+    
+    # Search in Juz 1 and get sura distribution
+    results = api.search(
+        query="الله",
+        filter={"juz": 1},
+        facets="sura_id",
+        flags={"perpage": 3, "aya_position_info": True}
+    )
+    
+    print(f"Query: 'الله' in Juz 1 only")
+    print(f"Total results: {results['search']['interval']['total']}")
+    
+    print(f"\nDistribution by Sura in Juz 1:")
+    for facet in results['search']['facets']['sura_id']:
+        print(f"  Sura {facet['value']}: {facet['count']} occurrences")
+
+def example_8_multiple_filters():
+    """Example 8: Apply multiple filters at once"""
+    print("Example 8: Multiple filters for precise results")
+    print_separator()
+    
+    # Search for "الله" in Sura 2, verses 1-20
+    results = api.search(
+        query="الله",
+        filter={"sura_id": 2, "aya_id": list(range(1, 21))},
+        flags={"perpage": 5}
+    )
+    
+    print(f"Query: 'الله'")
+    print(f"Filters: sura_id=2 AND aya_id in [1-20]")
+    print(f"Total results: {results['search']['interval']['total']}")
+    
+    print(f"\nResults:")
+    for i, aya in results['search']['ayas'].items():
+        print(f"  [{i}] Verse {aya['identifier']['aya_id']}: {aya['aya']['text_no_highlight'][:50]}...")
+
+
 def main():
     print("\n")
     print("*" * 70)
@@ -105,6 +162,9 @@ def main():
     example_3_filter_and_facet()
     example_4_juz_distribution()
     example_5_using_do_method()
+    example_6_filter_without_query()
+    example_7_filter_with_facets()
+    example_8_multiple_filters()
     
     print_separator()
     print("All examples completed successfully!")
@@ -114,6 +174,10 @@ def main():
     print("  - chapter: Group by main topic/chapter")
     print("  - topic: Group by subtopic")
     print("  - sura_type: Group by Meccan/Medinan classification")
+    print("\nFilter parameter:")
+    print("  - Use filter={field: value} to filter without modifying query")
+    print("  - Supports multiple filters and list values")
+    print("  - Can be combined with facets for powerful analysis")
     print()
 
 if __name__ == "__main__":

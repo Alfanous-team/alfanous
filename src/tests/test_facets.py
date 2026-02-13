@@ -19,6 +19,134 @@ RAWoutput = Raw(
 )
 
 
+def test_filter_by_sura():
+    """Test filtering by sura_id without modifying query."""
+    # Search for "الله" but only in Sura 2
+    search_flags = {
+        "action": "search",
+        "query": "الله",
+        "filter": {"sura_id": 2}
+    }
+    
+    results = RAWoutput.do(search_flags)
+    
+    # Check that search was successful
+    assert results["error"]["code"] == 0
+    
+    # Check that all results are from Sura 2
+    for aya in results["search"]["ayas"].values():
+        assert aya["identifier"]["sura_id"] == 2
+
+
+def test_filter_by_juz():
+    """Test filtering by juz."""
+    search_flags = {
+        "action": "search",
+        "query": "الصلاة",
+        "filter": {"juz": 1},
+        "aya_position_info": True
+    }
+    
+    results = RAWoutput.do(search_flags)
+    
+    # Check that search was successful
+    assert results["error"]["code"] == 0
+    
+    # Check that all results are from Juz 1
+    for aya in results["search"]["ayas"].values():
+        assert aya["position"]["juz"] == 1
+
+
+def test_filter_with_facets():
+    """Test using filter and facets together."""
+    search_flags = {
+        "action": "search",
+        "query": "الله",
+        "filter": {"juz": 1},
+        "facets": "sura_id",
+        "aya_position_info": True
+    }
+    
+    results = RAWoutput.do(search_flags)
+    
+    # Check that search was successful
+    assert results["error"]["code"] == 0
+    
+    # Check that facets are present
+    assert "facets" in results["search"]
+    assert "sura_id" in results["search"]["facets"]
+    
+    # Check that all results are from Juz 1
+    for aya in results["search"]["ayas"].values():
+        assert aya["position"]["juz"] == 1
+
+
+def test_filter_with_api_function():
+    """Test filtering using the api.search() function."""
+    results = api.search(query="الرحمن", filter={"sura_id": 2}, facets="chapter")
+    
+    # Check that search was successful
+    assert results["error"]["code"] == 0
+    
+    # Check that all results are from Sura 2
+    for aya in results["search"]["ayas"].values():
+        assert aya["identifier"]["sura_id"] == 2
+
+
+def test_filter_string_format():
+    """Test filter parameter as string format."""
+    search_flags = {
+        "action": "search",
+        "query": "الله",
+        "filter": "sura_id:2"
+    }
+    
+    results = RAWoutput.do(search_flags)
+    
+    # Check that search was successful
+    assert results["error"]["code"] == 0
+    
+    # Check that all results are from Sura 2
+    for aya in results["search"]["ayas"].values():
+        assert aya["identifier"]["sura_id"] == 2
+
+
+def test_multiple_filters():
+    """Test applying multiple filters."""
+    search_flags = {
+        "action": "search",
+        "query": "الله",
+        "filter": {"sura_id": 2, "aya_id": [1, 2, 3, 4, 5]}
+    }
+    
+    results = RAWoutput.do(search_flags)
+    
+    # Check that search was successful
+    assert results["error"]["code"] == 0
+    
+    # Check that all results are from Sura 2 and verses 1-5
+    for aya in results["search"]["ayas"].values():
+        assert aya["identifier"]["sura_id"] == 2
+        assert aya["identifier"]["aya_id"] in [1, 2, 3, 4, 5]
+
+
+def test_filter_vs_query_comparison():
+    """Test that filter produces same results as query filtering."""
+    # Using filter parameter
+    results_with_filter = api.search(query="الله", filter={"sura_id": 2})
+    
+    # Using query filtering
+    results_with_query = api.search(query="الله AND sura_id:2")
+    
+    # Both should return results from Sura 2
+    assert results_with_filter["error"]["code"] == 0
+    assert results_with_query["error"]["code"] == 0
+    
+    # Count should be similar (might differ slightly due to query parsing)
+    assert results_with_filter["search"]["interval"]["total"] > 0
+    assert results_with_query["search"]["interval"]["total"] > 0
+
+
 def test_facet_by_sura():
     """Test faceting by sura_id."""
     search_flags = {

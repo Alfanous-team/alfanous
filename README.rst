@@ -125,6 +125,26 @@ Faceted search allows you to get aggregated counts of results grouped by fields 
     # Filter by sura and get facets
     >>> results = api.search(query="sura_id:2", facets="chapter")
 
+**Filtering Without Modifying Query**
+
+You can filter results by field values using the ``filter`` parameter, keeping your search query clean:
+
+.. code-block:: python
+
+    >>> from alfanous import api
+    
+    # Filter by sura without modifying query
+    >>> results = api.search(query="الله", filter={"sura_id": 2})
+    
+    # Multiple filters
+    >>> results = api.search(query="الله", filter={"sura_id": 2, "aya_id": [1, 2, 3]})
+    
+    # Filter + facets
+    >>> results = api.search(query="الله", filter={"juz": 1}, facets="sura_id")
+    
+    # String format (field:value)
+    >>> results = api.search(query="الله", filter="sura_id:2")
+
 Using the web service:
 
 .. code-block:: sh
@@ -134,6 +154,9 @@ Using the web service:
     
     # Get multiple facets
     http://alfanous.org/api/search?query=الصلاة&facets=sura_id,juz
+    
+    # Filter results
+    http://alfanous.org/api/search?query=الله&filter=sura_id:2
 
 Available facet fields:
 
