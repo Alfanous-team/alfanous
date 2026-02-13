@@ -18,7 +18,7 @@ class BasicSearchEngine:
             # Try to instantiate parser with otherfields (for custom parsers like QuranicParser)
             # Fall back to standard Whoosh QueryParser signature if that fails
             try:
-                self._parser = query_parser(main_field, self._schema, otherfields)
+                self._parser = query_parser(schema=self._schema, mainfield=main_field, otherfields=otherfields)
             except TypeError:
                 self._parser = query_parser(main_field, self._schema, group=qparser.OrGroup)
             
