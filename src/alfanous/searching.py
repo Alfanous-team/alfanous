@@ -50,11 +50,12 @@ class QReader:
 
     def autocomplete_phrase(self, phrase, limit=10):
         """
-        Autocomplete that accepts phrases and returns top relevant keywords.
+        Autocomplete that accepts phrases and returns complete phrase suggestions.
+        Returns full phrases with the last word completed using prefix matching.
         
         @param phrase: The input phrase (can contain multiple words)
-        @param limit: Maximum number of keywords to return (default: 10)
-        @return: List of top relevant keywords based on the phrase
+        @param limit: Maximum number of phrase suggestions to return (default: 10)
+        @return: List of complete phrase suggestions with the last word completed
         """
         # Get the last word from the phrase for prefix matching
         words = phrase.strip().split()
@@ -62,12 +63,21 @@ class QReader:
             return []
         
         last_word = words[-1]
+        base_phrase = " ".join(words[:-1])
         
-        # Get completions for the last word using prefix expansion
+        # Get prefix completions for the last word
         completions = [self._decode_term(x) for x in self.reader.expand_prefix('aya', last_word)]
         
         # Limit to top N results
-        return completions[:limit]
+        completions = completions[:limit]
+        
+        # Build complete phrases by combining base phrase with completions
+        if base_phrase:
+            complete_phrases = [f"{base_phrase} {completion}" for completion in completions]
+        else:
+            complete_phrases = completions
+        
+        return complete_phrases
 
 
 class QSearcher:

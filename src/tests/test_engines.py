@@ -55,10 +55,10 @@ def test_autocomplete_phrase():
     result = QSE.autocomplete_phrase("الحمد ل", limit=10)
     assert isinstance(result, list)
     assert len(result) <= 10
-    # Check that results start with the last word prefix "ل"
-    # (extracted from the phrase "الحمد ل")
+    # Check that results are complete phrases starting with "الحمد "
+    # and the last word starts with "ل"
     if result:
-        assert all(word.startswith('ل') for word in result)
+        assert all(phrase.startswith('الحمد ل') for phrase in result)
 
     # Test with single word
     result_single = QSE.autocomplete_phrase("رسول", limit=5)

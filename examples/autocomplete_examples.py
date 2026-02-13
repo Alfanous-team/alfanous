@@ -2,8 +2,8 @@
 """
 Autocomplete Examples for Alfanous API
 
-This script demonstrates how to use the new autocomplete feature
-to get keyword suggestions for phrases.
+This script demonstrates how to use the autocomplete feature
+to get complete phrase suggestions with spell correction.
 """
 
 import sys
@@ -24,7 +24,7 @@ print("-" * 70)
 print("Query: 'الحمد ل'")
 result = api.autocomplete("الحمد ل", limit=10)
 print(f"Status: {result['error']['msg']}")
-print(f"Suggestions ({len(result['autocomplete'])}):")
+print(f"Complete phrase suggestions ({len(result['autocomplete'])}):")
 for i, suggestion in enumerate(result['autocomplete'][:10], 1):
     print(f"  {i}. {suggestion}")
 
@@ -69,8 +69,17 @@ print(f"Suggestions ({len(result['autocomplete'])}):")
 for i, suggestion in enumerate(result['autocomplete'], 1):
     print(f"  {i}. {suggestion}")
 
-# Example 6: Empty query handling
-print("\n6. Empty query handling")
+# Example 6: Spell correction in autocomplete
+print("\n6. Autocomplete with spell correction")
+print("-" * 70)
+print("Query: 'الحمد النسر' (contains misspelling)")
+result = api.autocomplete("الحمد النسر", limit=5)
+print(f"Complete phrase suggestions with corrections ({len(result['autocomplete'])}):")
+for i, suggestion in enumerate(result['autocomplete'], 1):
+    print(f"  {i}. {suggestion}")
+
+# Example 7: Empty query handling
+print("\n7. Empty query handling")
 print("-" * 70)
 print("Query: ''")
 result = api.autocomplete("", limit=10)
@@ -82,7 +91,8 @@ print("Examples completed successfully!")
 print("=" * 70)
 print("\nNotes:")
 print("- The autocomplete feature accepts phrases (multiple words)")
-print("- It returns the top N relevant keywords based on the last word prefix")
-print("- Default limit is 10 keywords, but can be customized")
+print("- It returns complete phrases with the last word completed/corrected")
+print("- Combines prefix matching and spell correction")
+print("- Default limit is 10 suggestions, but can be customized")
 print("- Works with Arabic text")
 print("=" * 70)

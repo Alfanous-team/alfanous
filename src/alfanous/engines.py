@@ -51,13 +51,48 @@ class BasicSearchEngine:
 
     def autocomplete_phrase(self, querystr, limit=10):
         """
-        Autocomplete that accepts phrases and returns top relevant keywords.
+        Autocomplete that accepts phrases and returns complete phrase suggestions.
+        Combines prefix matching and spell correction.
         
         @param querystr: The input phrase (can contain multiple words)
-        @param limit: Maximum number of keywords to return (default: 10)
-        @return: List of top relevant keywords
+        @param limit: Maximum number of phrase suggestions to return (default: 10)
+        @return: List of complete phrase suggestions
         """
-        return self._reader.autocomplete_phrase(querystr, limit=limit)
+        words = querystr.strip().split()
+        if not words:
+            return []
+        
+        last_word = words[-1]
+        base_phrase = " ".join(words[:-1])
+        
+        # Collect suggestions from both prefix expansion and spell correction
+        suggestions = []
+        seen = set()
+        
+        # 1. Get prefix completions (higher priority)
+        prefix_completions = self._reader.autocomplete(last_word)
+        for completion in prefix_completions:
+            if completion not in seen:
+                suggestions.append(completion)
+                seen.add(completion)
+                if len(suggestions) >= limit:
+                    break
+        
+        # 2. Add spell correction suggestions if we need more
+        if len(suggestions) < limit:
+            corrections = self._searcher.suggest(last_word).get(last_word, [])
+            for correction in corrections:
+                if correction not in seen and len(suggestions) < limit:
+                    suggestions.append(correction)
+                    seen.add(correction)
+        
+        # Build complete phrases by combining base phrase with suggestions
+        if base_phrase:
+            complete_phrases = [f"{base_phrase} {suggestion}" for suggestion in suggestions]
+        else:
+            complete_phrases = suggestions
+        
+        return complete_phrases
 
     def highlight(self, text, terms, highlight_type="css", strip_vocalization=True):
         return self._highlight(text, terms, highlight_type, strip_vocalization)

@@ -4,7 +4,7 @@ This directory contains example scripts demonstrating various features of the Al
 
 ## Autocomplete Examples
 
-The `autocomplete_examples.py` script demonstrates how to use the new autocomplete feature to get keyword suggestions for phrases.
+The `autocomplete_examples.py` script demonstrates how to use the autocomplete feature to get complete phrase suggestions with spell correction.
 
 ### Running the Example
 
@@ -15,20 +15,26 @@ PYTHONPATH=src python3 examples/autocomplete_examples.py
 
 ### What the Example Demonstrates
 
-1. **Basic autocomplete** - Get keyword suggestions for a phrase
+1. **Basic autocomplete** - Get complete phrase suggestions
 2. **Single word autocomplete** - Complete a single word prefix
 3. **Custom limits** - Control the number of suggestions returned
 4. **Using api.do()** - Use the low-level do() method for autocomplete
 5. **Common Quranic phrases** - Autocomplete common Quranic expressions
-6. **Empty query handling** - Handle edge cases gracefully
+6. **Spell correction** - Autocomplete with automatic spell correction
+7. **Empty query handling** - Handle edge cases gracefully
 
 ### Usage
 
 ```python
 from alfanous import api
 
-# Basic usage - returns top 10 suggestions
+# Basic usage - returns top 10 complete phrase suggestions
 result = api.autocomplete("الحمد ل", limit=10)
+# Returns: ['الحمد لآبائهم', 'الحمد لآت', 'الحمد لآتوها', ...]
+
+# With spell correction
+result = api.autocomplete("الحمد النسر", limit=5)
+# Returns: ['الحمد النار', 'الحمد النور', 'الحمد النذر']
 
 # Using api.do() method
 result = api.do({
@@ -42,8 +48,9 @@ result = api.do({
 ### Features
 
 - Accepts phrases (multiple words)
-- Returns top N relevant keywords based on the last word prefix
-- Default limit is 10 keywords, customizable via the `limit` parameter
+- Returns complete phrases with the last word completed/corrected
+- Combines prefix matching and spell correction
+- Default limit is 10 suggestions, customizable via the `limit` parameter
 - Works with Arabic text
 - Gracefully handles empty queries
 
