@@ -149,12 +149,19 @@ def test_tashkil_plugin_single_word():
 
 
 def test_tashkil_plugin_multiple_words():
-    """Test tashkil plugin with multiple words ('word1 word2') - Example: 'لو كان البحر'"""
+    """Test tashkil plugin with multiple words ('word1 word2') - Example: 'لو كان البحر'
+    
+    For multiple words, TashkilPlugin creates an Or query with Term subqueries.
+    """
     parser = create_test_parser()
     query = parser.parse("'لو كان البحر'")
-    assert isinstance(query, TashkilQuery)
-    # Should parse multiple words
-    assert len(query.text) >= 3
+    # For multiple words, should create Or query with Term subqueries
+    assert isinstance(query, Or)
+    assert hasattr(query, 'subqueries')
+    assert len(query.subqueries) >= 3
+    # Check that subqueries are Term objects
+    for subq in query.subqueries:
+        assert isinstance(subq, Term)
 
 
 def test_tuple_plugin_single_item():
