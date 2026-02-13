@@ -37,6 +37,10 @@ jobs:
         perl -p -w -e "s|alfanous.release|${RELEASE}|g;s|alfanous.version|${VERSION}|g;" \
           src/alfanous/resources/information.json.in > src/alfanous/resources/information.json
     
+    - name: Download Quranic resources
+      run: |
+        make download
+    
     - name: Build indexes
       run: |
         make build
