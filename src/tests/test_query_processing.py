@@ -61,11 +61,15 @@ def test_parsing_with_schema():
                                     '\u064a\u0645\u0644\u0643\u0648\u0646',
                                     '\u062a\u0645\u0644\u0643\u0647\u0645'])
     assert QP.parse(u"#جحيم").__dict__ == {'boost': 1.0,
+                                           'startchar': 0,
+                                           'endchar': 5,
                                            'fieldname': 'aya',
                                            'text': '\u062c\u062d\u064a\u0645',
                                            'words': ['\u062c\u062d\u064a\u0645']}
 
     assert QP.parse(u"~جحيم").__dict__ == {'boost': 1.0,
+                                           'startchar': 0,
+                                           'endchar': 5,
                                            'fieldname': 'aya',
                                            'text': '\u062c\u062d\u064a\u0645',
                                            'words': ['\u062c\u062d\u064a\u0645']}
