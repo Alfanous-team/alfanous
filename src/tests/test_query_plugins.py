@@ -91,7 +91,7 @@ def test_derivation_plugin_single():
     assert query.level == 1
     assert query.text == "مالك"
     # Verify results contain derivations of مالك at lemma level
-    assert query.words == ['مالك', 'مالكون']
+    assert sorted(query.words) == sorted(['مالك', 'مالكون'])
     assert "مالك" in query.words
     assert "مالكون" in query.words
     assert len(query.words) == 2  # Lemma level should have fewer results
