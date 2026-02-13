@@ -50,7 +50,7 @@ jobs:
     - name: Publish to PyPI
       uses: pypa/gh-action-pypi-publish@release/v1
       with:
-        user: assemch
+        user: __token__
         password: ${{ secrets.ALFANOUS_PYPI_TOKEN }}
         packages-dir: src/alfanous/dist/
         skip-existing: true
