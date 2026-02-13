@@ -4,6 +4,7 @@ Tests for Whoosh 2.7 plugin-based query parser implementation
 import pytest
 from whoosh.qparser import QueryParser
 from whoosh.fields import Schema, TEXT
+from whoosh.query import Or, Term
 
 from alfanous.query_plugins import (
     SynonymsPlugin,
