@@ -1,20 +1,10 @@
 from whoosh import qparser
 from whoosh.qparser import QueryParser
-from whoosh.qparser.plugins import SingleQuotePlugin
 
 from alfanous.searching import QSearcher, QReader
 from alfanous.indexing import QseDocIndex, ExtDocIndex, BasicDocIndex
 from alfanous.results_processing import Qhighlight
 from alfanous.query_processing import QuranicParser, StandardParser, FuzzyQuranicParser
-from alfanous.query_plugins import (
-    SynonymsPlugin,
-    AntonymsPlugin,
-    DerivationPlugin,
-    SpellErrorsPlugin,
-    TashkilPlugin,
-    TuplePlugin,
-    ArabicWildcardPlugin
-)
 
 class BasicSearchEngine:
     def __init__(self, qdocindex, query_parser, main_field, otherfields, qsearcher, qreader, qhighlight):
@@ -32,17 +22,8 @@ class BasicSearchEngine:
             except TypeError:
                 self._parser = query_parser(main_field, self._schema, group=qparser.OrGroup)
             
-            # Remove SingleQuotePlugin to allow our TashkilPlugin to work
-            self._parser.remove_plugin_class(SingleQuotePlugin)
-            
-            # Add all Arabic query plugins
-            self._parser.add_plugin(SynonymsPlugin)
-            self._parser.add_plugin(AntonymsPlugin)
-            self._parser.add_plugin(DerivationPlugin)
-            self._parser.add_plugin(SpellErrorsPlugin)
-            self._parser.add_plugin(TashkilPlugin)
-            self._parser.add_plugin(TuplePlugin)
-            self._parser.add_plugin(ArabicWildcardPlugin)
+            # Note: Plugins are added in the parser's own __init__ method
+            # (see ArabicParser and its subclasses in query_processing.py)
             
             self._searcher = qsearcher(self._docindex, self._parser)
             #
