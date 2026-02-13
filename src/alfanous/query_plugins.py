@@ -345,10 +345,22 @@ class TashkilPlugin(TaggingPlugin):
 
     class TashkilNode(syntax.TextNode):
         def query(self, parser):
+            from whoosh import query as wquery
             fieldname = parser.fieldname
             # Split text and filter out empty tokens
             words = [w for w in self.text.split() if w.strip()]
-            return TashkilQuery(fieldname, words, boost=self.boost)
+            
+            # If multiple words, create an Or query with Term subqueries
+            # This allows proper search across multiple terms with tashkil
+            if len(words) > 1:
+                subqueries = [wquery.Term(fieldname, word) for word in words]
+                return wquery.Or(subqueries, boost=self.boost)
+            elif len(words) == 1:
+                # Single word - use TashkilQuery for tashkil-aware search
+                return TashkilQuery(fieldname, words, boost=self.boost)
+            else:
+                # No words - return empty query
+                return wquery.NullQuery()
 
         def r(self):
             return "'%s'" % self.text
