@@ -91,7 +91,7 @@ class Raw:
     }
 
     DOMAINS = {
-        "action": ["search", "suggest", "show"],
+        "action": ["search", "suggest", "autocomplete", "show"],
         "unit": ["aya", "word", "translation"],
         "ident": ["undefined"],
         "platform": ["undefined", "wp7", "s60", "android", "ios", "linux", "window"],
@@ -243,6 +243,8 @@ class Raw:
             output.update(self._search(flags, unit))
         elif action == "suggest":
             output.update(self._suggest(flags, unit))
+        elif action == "autocomplete":
+            output.update(self._autocomplete(flags, unit))
         elif action == "show":
             output.update(self._show(flags))
         else:
@@ -332,6 +334,28 @@ class Raw:
         query = query.replace("\\", "")
 
         return self.QSE.suggest_all(query)
+
+    def _autocomplete(self, flags, unit):
+        """ return autocomplete suggestions for any search unit """
+        if unit == "aya":
+            autocomplete_results = self._autocomplete_aya(flags)
+        elif unit == "translation":
+            autocomplete_results = None
+        else:
+            autocomplete_results = []
+
+        return {"autocomplete": autocomplete_results}
+
+    def _autocomplete_aya(self, flags):
+        """ return autocomplete suggestions for aya phrases """
+        query = flags.get("query") or self._defaults["flags"]["query"]
+        # preprocess query
+        query = query.replace("\\", "")
+        
+        # Get limit from flags, default to 10
+        limit = int(flags.get("limit", 10))
+        
+        return self.QSE.autocomplete_phrase(query, limit=limit)
 
     def _search(self, flags, unit):
         if unit == "aya":

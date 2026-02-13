@@ -44,6 +44,28 @@ class QReader:
     def autocomplete(self, word):
         return [x.decode('utf-8') for x in self.reader.expand_prefix('aya', word)]
 
+    def autocomplete_phrase(self, phrase, limit=10):
+        """
+        Autocomplete that accepts phrases and returns top relevant keywords.
+        
+        @param phrase: The input phrase (can contain multiple words)
+        @param limit: Maximum number of keywords to return (default: 10)
+        @return: List of top relevant keywords based on the phrase
+        """
+        # Get the last word from the phrase for prefix matching
+        words = phrase.strip().split()
+        if not words:
+            return []
+        
+        last_word = words[-1]
+        
+        # Get completions for the last word using prefix expansion
+        completions = [x.decode('utf-8') if isinstance(x, bytes) else x 
+                      for x in self.reader.expand_prefix('aya', last_word)]
+        
+        # Limit to top N results
+        return completions[:limit]
+
 
 class QSearcher:
     """ search"""

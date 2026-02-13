@@ -49,6 +49,16 @@ class BasicSearchEngine:
                  "completion": self._reader.autocomplete(querystr.split()[-1])
                  }
 
+    def autocomplete_phrase(self, querystr, limit=10):
+        """
+        Autocomplete that accepts phrases and returns top relevant keywords.
+        
+        @param querystr: The input phrase (can contain multiple words)
+        @param limit: Maximum number of keywords to return (default: 10)
+        @return: List of top relevant keywords
+        """
+        return self._reader.autocomplete_phrase(querystr, limit=limit)
+
     def highlight(self, text, terms, highlight_type="css", strip_vocalization=True):
         return self._highlight(text, terms, highlight_type, strip_vocalization)
 

@@ -1,8 +1,9 @@
 """ hint:
 
     Use `alfanous.search` for searching in Quran verses and translations.
+    Use `alfanous.autocomplete` for getting autocomplete suggestions for phrases.
     Use `alfanous.get_info` for getting meta info.
-    Use `alfanous.do` method for search, suggestion and get most useful info.
+    Use `alfanous.do` method for search, suggestion, autocomplete and get most useful info.
     """
 
 # import Output object
@@ -38,6 +39,25 @@ def search(query, unit="aya", page=1, sortedby="relevance", fuzzy=False, view="n
                       "highlight": highlight,
                       "facets": facets,
                       "filter": filter
+                      })
+    return do(all_flags)
+
+
+def autocomplete(query, unit="aya", limit=10, flags={}):
+    """
+    Get autocomplete suggestions for a phrase.
+    
+    @param query: The input phrase (can contain multiple words)
+    @param unit: Search unit (currently only "aya" is supported)
+    @param limit: Maximum number of keywords to return (default: 10)
+    @param flags: Additional flags
+    @return: Autocomplete results with top relevant keywords
+    """
+    all_flags = flags
+    all_flags.update({"action": "autocomplete",
+                      "unit": unit,
+                      "query": query,
+                      "limit": limit
                       })
     return do(all_flags)
 
