@@ -49,7 +49,9 @@ def test_parsing_with_schema():
     query_dict = query.__dict__.copy()
     words = query_dict.pop('words', [])
     assert query_dict == {'boost': 1.0,
+                          'endchar': 5,
                           'fieldname': 'aya',
+                          'startchar': 0,
                           'props': {'root': '\u0645\u0644\u0643', 'type': '\u0641\u0639\u0644'},
                           'text': '(\u0645\u0644\u0643,\u0641\u0639\u0644)'}
     assert sorted(words) == sorted(['\u0645\u0644\u0643\u062a\u0645',
