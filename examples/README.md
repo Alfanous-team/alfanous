@@ -2,6 +2,58 @@
 
 This directory contains example scripts demonstrating various features of the Alfanous API.
 
+## Autocomplete Examples
+
+The `autocomplete_examples.py` script demonstrates how to use the autocomplete feature to get phrase suggestions that actually exist in the Quran.
+
+### Running the Example
+
+```bash
+# From the repository root
+PYTHONPATH=src python3 examples/autocomplete_examples.py
+```
+
+### What the Example Demonstrates
+
+1. **Basic autocomplete** - Get actual Quran phrases from partial input
+2. **Complete phrase** - Extend existing phrases with more context
+3. **Longer phrases** - Complete multi-word phrases with partial last word
+4. **Using api.do()** - Use the low-level do() method for autocomplete
+5. **Common Quranic phrases** - Autocomplete common Quranic expressions
+6. **Empty query handling** - Handle edge cases gracefully
+
+### Usage
+
+```python
+from alfanous import api
+
+# Basic usage - returns actual Quran phrases
+result = api.autocomplete("الحمد ل", limit=10)
+# Returns actual phrases from Quran:
+# ['الحمد لله رب العالمين', 'الحمد لله الذي له ما', ...]
+
+# Complete phrase continuation
+result = api.autocomplete("بسم الله الر", limit=5)
+# Returns: ['بسم الله الرحمن الرحيم']
+
+# Using api.do() method
+result = api.do({
+    "action": "autocomplete",
+    "query": "الحمد لله",
+    "unit": "aya",
+    "limit": 10
+})
+```
+
+### Features
+
+- Accepts phrases (multiple words) including partial last word
+- Returns actual phrases that exist in the Quran text
+- Supports prefix matching on the last word
+- Default limit is 10 suggestions, customizable via the `limit` parameter
+- Works with Arabic text
+- Gracefully handles empty queries
+
 ## Facet Search Examples
 
 The `facet_search_examples.py` script demonstrates how to use the faceted search feature to get aggregated counts of search results grouped by various fields.

@@ -41,8 +41,43 @@ class QReader:
             lst.extend([self.reader.frequency(*term), self.reader.doc_frequency(*term)])
             yield tuple(lst)
 
+    def _decode_term(self, term):
+        """Helper method to decode a term from bytes to UTF-8 string."""
+        return term.decode('utf-8') if isinstance(term, bytes) else term
+
     def autocomplete(self, word):
-        return [x.decode('utf-8') for x in self.reader.expand_prefix('aya', word)]
+        return [self._decode_term(x) for x in self.reader.expand_prefix('aya', word)]
+
+    def autocomplete_phrase(self, phrase, limit=10):
+        """
+        Autocomplete that accepts phrases and returns complete phrase suggestions.
+        Returns full phrases with the last word completed using prefix matching.
+        
+        @param phrase: The input phrase (can contain multiple words)
+        @param limit: Maximum number of phrase suggestions to return (default: 10)
+        @return: List of complete phrase suggestions with the last word completed
+        """
+        # Get the last word from the phrase for prefix matching
+        words = phrase.strip().split()
+        if not words:
+            return []
+        
+        last_word = words[-1]
+        base_phrase = " ".join(words[:-1])
+        
+        # Get prefix completions for the last word
+        completions = [self._decode_term(x) for x in self.reader.expand_prefix('aya', last_word)]
+        
+        # Limit to top N results
+        completions = completions[:limit]
+        
+        # Build complete phrases by combining base phrase with completions
+        if base_phrase:
+            complete_phrases = [f"{base_phrase} {completion}" for completion in completions]
+        else:
+            complete_phrases = completions
+        
+        return complete_phrases
 
 
 class QSearcher:
