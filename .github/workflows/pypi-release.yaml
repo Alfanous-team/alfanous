@@ -9,9 +9,6 @@ on:
 jobs:
   build-and-publish:
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      id-token: write
     
     steps:
     - uses: actions/checkout@v3
@@ -53,5 +50,7 @@ jobs:
     - name: Publish to PyPI
       uses: pypa/gh-action-pypi-publish@release/v1
       with:
+        user: __token__
+        password: ${{ secrets.ALFANOUS_PYPI_TOKEN }}
         packages-dir: src/alfanous/dist/
         skip-existing: true
