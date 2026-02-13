@@ -74,8 +74,8 @@ make install
 ## Code Style and Conventions
 
 ### Python Code Style
-- Use UTF-8 encoding for all source files (default in Python 3.8+)
-- Follow standard Python naming conventions
+- All source files use UTF-8 encoding by default (Python 3 standard)
+- Follow standard Python naming conventions (PEP 8)
 - Add docstrings to modules, classes, and functions
 - Use type hints where appropriate for better code clarity
 
