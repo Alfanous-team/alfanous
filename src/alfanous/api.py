@@ -45,21 +45,21 @@ def search(query, unit="aya", page=1, sortedby="relevance", fuzzy=False, view="n
 
 def autocomplete(query, unit="aya", limit=10, flags={}):
     """
-    Get autocomplete suggestions for a phrase with spell correction.
+    Get autocomplete suggestions that actually exist in the Quran.
     
-    Returns complete phrases with the last word completed/corrected.
-    Combines prefix matching and spell correction to provide relevant suggestions.
+    Returns actual phrases from the Quran that match the input query.
+    Supports partial word completion on the last word.
     
-    @param query: The input phrase (can contain multiple words)
+    @param query: The input phrase (can contain multiple words with partial last word)
     @param unit: Search unit (currently only "aya" is supported)
-    @param limit: Maximum number of complete phrase suggestions to return (default: 10)
+    @param limit: Maximum number of phrase suggestions to return (default: 10)
     @param flags: Additional flags
-    @return: Autocomplete results with complete phrase suggestions
+    @return: Autocomplete results with actual Quran phrases
     
     Example:
         >>> result = autocomplete("الحمد ل", limit=5)
         >>> result['autocomplete']
-        ['الحمد لآبائهم', 'الحمد لآت', 'الحمد لآتوها', ...]
+        ['الحمد لله رب العالمين', 'الحمد لله الذي له ما', ...]
     """
     all_flags = flags.copy()
     all_flags.update({"action": "autocomplete",

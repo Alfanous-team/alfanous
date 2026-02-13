@@ -4,7 +4,7 @@ This directory contains example scripts demonstrating various features of the Al
 
 ## Autocomplete Examples
 
-The `autocomplete_examples.py` script demonstrates how to use the autocomplete feature to get complete phrase suggestions with spell correction.
+The `autocomplete_examples.py` script demonstrates how to use the autocomplete feature to get phrase suggestions that actually exist in the Quran.
 
 ### Running the Example
 
@@ -15,31 +15,31 @@ PYTHONPATH=src python3 examples/autocomplete_examples.py
 
 ### What the Example Demonstrates
 
-1. **Basic autocomplete** - Get complete phrase suggestions
-2. **Single word autocomplete** - Complete a single word prefix
-3. **Custom limits** - Control the number of suggestions returned
+1. **Basic autocomplete** - Get actual Quran phrases from partial input
+2. **Complete phrase** - Extend existing phrases with more context
+3. **Longer phrases** - Complete multi-word phrases with partial last word
 4. **Using api.do()** - Use the low-level do() method for autocomplete
 5. **Common Quranic phrases** - Autocomplete common Quranic expressions
-6. **Spell correction** - Autocomplete with automatic spell correction
-7. **Empty query handling** - Handle edge cases gracefully
+6. **Empty query handling** - Handle edge cases gracefully
 
 ### Usage
 
 ```python
 from alfanous import api
 
-# Basic usage - returns top 10 complete phrase suggestions
+# Basic usage - returns actual Quran phrases
 result = api.autocomplete("الحمد ل", limit=10)
-# Returns: ['الحمد لآبائهم', 'الحمد لآت', 'الحمد لآتوها', ...]
+# Returns actual phrases from Quran:
+# ['الحمد لله رب العالمين', 'الحمد لله الذي له ما', ...]
 
-# With spell correction
-result = api.autocomplete("الحمد النسر", limit=5)
-# Returns: ['الحمد النار', 'الحمد النور', 'الحمد النذر']
+# Complete phrase continuation
+result = api.autocomplete("بسم الله الر", limit=5)
+# Returns: ['بسم الله الرحمن الرحيم']
 
 # Using api.do() method
 result = api.do({
     "action": "autocomplete",
-    "query": "بسم الله",
+    "query": "الحمد لله",
     "unit": "aya",
     "limit": 10
 })
@@ -47,9 +47,9 @@ result = api.do({
 
 ### Features
 
-- Accepts phrases (multiple words)
-- Returns complete phrases with the last word completed/corrected
-- Combines prefix matching and spell correction
+- Accepts phrases (multiple words) including partial last word
+- Returns actual phrases that exist in the Quran text
+- Supports prefix matching on the last word
 - Default limit is 10 suggestions, customizable via the `limit` parameter
 - Works with Arabic text
 - Gracefully handles empty queries

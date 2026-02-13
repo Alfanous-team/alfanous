@@ -3,7 +3,7 @@
 Autocomplete Examples for Alfanous API
 
 This script demonstrates how to use the autocomplete feature
-to get complete phrase suggestions with spell correction.
+to get phrase suggestions that actually exist in the Quran.
 """
 
 import sys
@@ -18,45 +18,45 @@ print("=" * 70)
 print("Alfanous Autocomplete Examples")
 print("=" * 70)
 
-# Example 1: Basic autocomplete with a phrase
-print("\n1. Basic autocomplete - completing a phrase")
+# Example 1: Basic autocomplete with a partial phrase
+print("\n1. Basic autocomplete - completing a partial phrase")
 print("-" * 70)
-print("Query: 'الحمد ل'")
+print("Query: 'الحمد ل' (partial last word)")
 result = api.autocomplete("الحمد ل", limit=10)
 print(f"Status: {result['error']['msg']}")
-print(f"Complete phrase suggestions ({len(result['autocomplete'])}):")
+print(f"Actual Quran phrases starting with query ({len(result['autocomplete'])}):")
 for i, suggestion in enumerate(result['autocomplete'][:10], 1):
     print(f"  {i}. {suggestion}")
 
-# Example 2: Autocomplete with single word
-print("\n2. Single word autocomplete")
+# Example 2: Autocomplete with complete phrase
+print("\n2. Autocomplete with complete phrase")
 print("-" * 70)
-print("Query: 'رسول'")
-result = api.autocomplete("رسول", limit=10)
-print(f"Suggestions ({len(result['autocomplete'])}):")
+print("Query: 'الحمد لله'")
+result = api.autocomplete("الحمد لله", limit=5)
+print(f"Actual Quran phrases ({len(result['autocomplete'])}):")
 for i, suggestion in enumerate(result['autocomplete'], 1):
     print(f"  {i}. {suggestion}")
 
-# Example 3: Autocomplete with different limits
-print("\n3. Custom limit - getting top 5 suggestions")
+# Example 3: Autocomplete with partial word in longer phrase
+print("\n3. Longer phrase with partial last word")
 print("-" * 70)
-print("Query: 'بسم الله'")
-result = api.autocomplete("بسم الله", limit=5)
-print(f"Suggestions ({len(result['autocomplete'])}):")
+print("Query: 'بسم الله الر'")
+result = api.autocomplete("بسم الله الر", limit=5)
+print(f"Actual Quran phrases ({len(result['autocomplete'])}):")
 for i, suggestion in enumerate(result['autocomplete'], 1):
     print(f"  {i}. {suggestion}")
 
 # Example 4: Using do() method directly with flags
 print("\n4. Using api.do() method directly")
 print("-" * 70)
-print("Query: 'ال'")
+print("Query: 'رب'")
 result = api.do({
     "action": "autocomplete",
-    "query": "ال",
+    "query": "رب",
     "unit": "aya",
     "limit": 8
 })
-print(f"Suggestions ({len(result['autocomplete'])}):")
+print(f"Actual Quran phrases ({len(result['autocomplete'])}):")
 for i, suggestion in enumerate(result['autocomplete'], 1):
     print(f"  {i}. {suggestion}")
 
@@ -64,22 +64,13 @@ for i, suggestion in enumerate(result['autocomplete'], 1):
 print("\n5. Autocomplete for common Quranic phrase beginning")
 print("-" * 70)
 print("Query: 'يا أيها الذين آم'")
-result = api.autocomplete("يا أيها الذين آم", limit=10)
-print(f"Suggestions ({len(result['autocomplete'])}):")
+result = api.autocomplete("يا أيها الذين آم", limit=5)
+print(f"Actual Quran phrases ({len(result['autocomplete'])}):")
 for i, suggestion in enumerate(result['autocomplete'], 1):
     print(f"  {i}. {suggestion}")
 
-# Example 6: Spell correction in autocomplete
-print("\n6. Autocomplete with spell correction")
-print("-" * 70)
-print("Query: 'الحمد النسر' (contains misspelling)")
-result = api.autocomplete("الحمد النسر", limit=5)
-print(f"Complete phrase suggestions with corrections ({len(result['autocomplete'])}):")
-for i, suggestion in enumerate(result['autocomplete'], 1):
-    print(f"  {i}. {suggestion}")
-
-# Example 7: Empty query handling
-print("\n7. Empty query handling")
+# Example 6: Empty query handling
+print("\n6. Empty query handling")
 print("-" * 70)
 print("Query: ''")
 result = api.autocomplete("", limit=10)
@@ -91,8 +82,8 @@ print("Examples completed successfully!")
 print("=" * 70)
 print("\nNotes:")
 print("- The autocomplete feature accepts phrases (multiple words)")
-print("- It returns complete phrases with the last word completed/corrected")
-print("- Combines prefix matching and spell correction")
+print("- Returns actual phrases that exist in the Quran text")
+print("- Supports partial word completion (e.g., 'الحمد ل' → 'الحمد لله ...')")
 print("- Default limit is 10 suggestions, but can be customized")
 print("- Works with Arabic text")
 print("=" * 70)
