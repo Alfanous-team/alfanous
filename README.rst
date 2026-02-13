@@ -103,6 +103,47 @@ Aya Search:
 *  Derivations - lemma :      >مالك
 *  Derivations - root :       >>مالك
 
+--------------
+Facet Search
+--------------
+
+Faceted search allows you to get aggregated counts of results grouped by fields like sura, juz, or chapter:
+
+.. code-block:: python
+
+    >>> from alfanous import api
+    
+    # Search with facets by sura_id
+    >>> results = api.search(query="الله", facets="sura_id")
+    >>> print(f"Total: {results['search']['interval']['total']}")
+    >>> for facet in results['search']['facets']['sura_id'][:5]:
+    ...     print(f"Sura {facet['value']}: {facet['count']} occurrences")
+    
+    # Search with multiple facets
+    >>> results = api.search(query="الصلاة", facets="sura_id,juz,chapter")
+    
+    # Filter by sura and get facets
+    >>> results = api.search(query="sura_id:2", facets="chapter")
+
+Using the web service:
+
+.. code-block:: sh
+
+    # Get facets for search results
+    http://alfanous.org/api/search?query=الله&facets=sura_id
+    
+    # Get multiple facets
+    http://alfanous.org/api/search?query=الصلاة&facets=sura_id,juz
+
+Available facet fields:
+
+* **sura_id** - Group by Sura (chapter) number
+* **juz** - Group by Juz (part) number
+* **chapter** - Group by main topic/chapter
+* **topic** - Group by subtopic
+* **sura_type** - Group by Meccan/Medinan classification
+
+
 Translation Search:
 
 * Exact search: god

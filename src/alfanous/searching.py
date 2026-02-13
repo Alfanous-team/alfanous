@@ -1,4 +1,5 @@
 from alfanous.results_processing import QSort, QScore
+from whoosh.sorting import Facets, FieldFacet
 
 
 class QReader:
@@ -50,10 +51,18 @@ class QSearcher:
         self._searcher = docindex.get_index().searcher
         self._qparser = qparser
 
-    def search(self, querystr, limit=6236, sortedby="score", reverse=False):
+    def search(self, querystr, limit=6236, sortedby="score", reverse=False, facets=None):
         searcher = self._searcher(weighting=QScore())
         query = self._qparser.parse(querystr)
-        results = searcher.search(q=query, limit=limit, sortedby=QSort(sortedby), reverse=reverse)
+        
+        # Prepare facets if requested
+        groupedby = None
+        if facets:
+            groupedby = Facets()
+            for facet_field in facets:
+                groupedby.add_field(facet_field)
+        
+        results = searcher.search(q=query, limit=limit, sortedby=QSort(sortedby), reverse=reverse, groupedby=groupedby)
 
         terms = query.all_terms()
 
