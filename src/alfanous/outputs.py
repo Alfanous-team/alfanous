@@ -606,7 +606,6 @@ class Raw:
             for r in reslist:
                 if prev_aya:
                     adja_query += " OR gid:%s " % str(r["gid"] - 1)
-                    logging.error(r['gid'])
                 if next_aya:
                     adja_query += " OR gid:%s " % str(r["gid"] + 1)
                 if translation:
@@ -664,9 +663,7 @@ class Raw:
         ### Ayas
         cpt = start - 1
         output["ayas"] = {}
-        logging.error(adja_ayas.keys())
         for r in reslist:
-            logging.error(r['gid'])
             cpt += 1
             output["ayas"][cpt] = {
 
