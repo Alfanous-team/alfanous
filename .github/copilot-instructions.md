@@ -19,6 +19,8 @@ alfanous/
 │   │   ├── outputs.py     # Output formatting
 │   │   ├── indexing.py    # Index management
 │   │   ├── searching.py   # Search functionality
+│   │   ├── Support/       # Support libraries
+│   │   │   └── pyarabic/  # Arabic text processing
 │   │   ├── configs/       # Configuration files
 │   │   ├── resources/     # Static resources
 │   │   └── indexes/       # Search indexes
@@ -36,9 +38,11 @@ alfanous/
    pip install pyparsing pytest whoosh
    ```
 
-2. Generate required configuration:
+2. Generate required configuration (use VERSION from Makefile):
    ```bash
-   perl -p -w -e 's|alfanous.release|0.7.33Kahraman|g;s|alfanous.version|0.7.33|g;' src/alfanous/resources/information.json.in > src/alfanous/resources/information.json
+   make install
+   # Or manually:
+   # perl -p -w -e 's|alfanous.release|$(VERSION)|g;s|alfanous.version|$(VERSION)|g;' src/alfanous/resources/information.json.in > src/alfanous/resources/information.json
    ```
 
 3. Build indexes:
@@ -70,10 +74,10 @@ make install
 ## Code Style and Conventions
 
 ### Python Code Style
-- Use UTF-8 encoding for all source files
-- Include `# coding = utf-8` comment in file headers when needed
+- Use UTF-8 encoding for all source files (default in Python 3.8+)
 - Follow standard Python naming conventions
 - Add docstrings to modules, classes, and functions
+- Use type hints where appropriate for better code clarity
 
 ### File Naming
 - Python modules use lowercase with underscores: `text_processing.py`
