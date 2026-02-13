@@ -60,12 +60,15 @@ def test_parsing_with_schema():
                                     '\u062a\u0645\u0644\u0643',
                                     '\u064a\u0645\u0644\u0643\u0648\u0646',
                                     '\u062a\u0645\u0644\u0643\u0647\u0645'])
-    assert QP.parse(u"#جحيم").__dict__ == {'boost': 1.0,
-                                           'startchar': 0,
-                                           'endchar': 5,
-                                           'fieldname': 'aya',
-                                           'text': '\u062c\u062d\u064a\u0645',
-                                           'words': ['\u062c\u062d\u064a\u0645']}
+    # Test antonyms plugin - جحيم (hell) should return its antonyms
+    antonym_query = QP.parse(u"#جحيم")
+    assert antonym_query.boost == 1.0
+    assert antonym_query.startchar == 0
+    assert antonym_query.endchar == 5
+    assert antonym_query.fieldname == 'aya'
+    assert antonym_query.text == '\u062c\u062d\u064a\u0645'  # جحيم
+    # Should return antonyms: جنة (paradise) and فردوس (paradise)
+    assert sorted(antonym_query.words) == sorted(['\u062c\u0646\u0629', '\u0641\u0631\u062f\u0648\u0633'])
 
     assert QP.parse(u"~جحيم").__dict__ == {'boost': 1.0,
                                            'startchar': 0,
