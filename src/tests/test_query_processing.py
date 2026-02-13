@@ -45,18 +45,21 @@ def test_parsing_with_schema():
                                                'fieldname': 'aya',
                                                'start': '1',
                                                'startexcl': False}
-    assert QP.parse(u"{ملك,فعل}").__dict__ == {'boost': 1.0,
-                                               'fieldname': 'aya',
-                                               'props': {'root': '\u0645\u0644\u0643', 'type': '\u0641\u0639\u0644'},
-                                               'text': '(\u0645\u0644\u0643,\u0641\u0639\u0644)',
-                                               'words': ['\u0645\u0644\u0643\u062a\u0645',
-                                                         '\u0623\u0645\u0644\u0643',
-                                                         '\u0645\u0644\u0643\u062a',
-                                                         '\u064a\u0645\u0644\u0643',
-                                                         '\u062a\u0645\u0644\u0643\u0648\u0646',
-                                                         '\u062a\u0645\u0644\u0643',
-                                                         '\u064a\u0645\u0644\u0643\u0648\u0646',
-                                                         '\u062a\u0645\u0644\u0643\u0647\u0645']}
+    query = QP.parse(u"{ملك,فعل}")
+    query_dict = query.__dict__.copy()
+    words = query_dict.pop('words', [])
+    assert query_dict == {'boost': 1.0,
+                          'fieldname': 'aya',
+                          'props': {'root': '\u0645\u0644\u0643', 'type': '\u0641\u0639\u0644'},
+                          'text': '(\u0645\u0644\u0643,\u0641\u0639\u0644)'}
+    assert sorted(words) == sorted(['\u0645\u0644\u0643\u062a\u0645',
+                                    '\u0623\u0645\u0644\u0643',
+                                    '\u0645\u0644\u0643\u062a',
+                                    '\u064a\u0645\u0644\u0643',
+                                    '\u062a\u0645\u0644\u0643\u0648\u0646',
+                                    '\u062a\u0645\u0644\u0643',
+                                    '\u064a\u0645\u0644\u0643\u0648\u0646',
+                                    '\u062a\u0645\u0644\u0643\u0647\u0645'])
     assert QP.parse(u"#جحيم").__dict__ == {'boost': 1.0,
                                            'fieldname': 'aya',
                                            'text': '\u062c\u062d\u064a\u0645',
