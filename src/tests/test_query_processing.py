@@ -96,7 +96,7 @@ def test_parsing_with_schema():
     assert QP.parse(u"'h h  j'").__dict__ == dict(boost=1.0, fieldname='aya', text=['h', 'h', 'j'],
                                                   words=['h', 'h', 'j'])
     assert QP.parse(u"*").__dict__ == {'boost': 1.0}
-    assert QP.parse(u"%عاصم").words == ['عاصم']
+    assert sorted(QP.parse(u"%عاصم").words) == sorted(['عاصم'])
     assert QP.parse(u"ليس عاصم و الموت أو الحياة وليس غيرهما").__dict__
     assert QP.parse(u"a*a").prefix == 'a'
     assert QP.parse(u"b*").text == 'b'

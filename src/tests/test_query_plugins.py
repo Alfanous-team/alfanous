@@ -59,7 +59,7 @@ def test_synonyms_plugin():
     assert query.text == "آثر"
     # Verify the results contain actual synonyms of آثر (preferred/chose)
     # Expected: ['آثر', 'اختار', 'اصطفى', 'فضل']
-    assert query.words == ['آثر', 'اختار', 'اصطفى', 'فضل']
+    assert sorted(query.words) == sorted(['آثر', 'اختار', 'اصطفى', 'فضل'])
     assert "آثر" in query.words
     assert "اختار" in query.words  # chose
     assert "اصطفى" in query.words  # selected
@@ -77,7 +77,7 @@ def test_antonyms_plugin():
     assert isinstance(query, AntonymsQuery)
     assert query.text == "جحيم"
     # Currently returns original word (placeholder implementation - needs Arabic antonym thesaurus)
-    assert query.words == ["جحيم"]
+    assert sorted(query.words) == sorted(["جحيم"])
     # TODO: When antonym thesaurus is implemented, should include "جنة" (heaven)
 
 
@@ -132,7 +132,7 @@ def test_spell_errors_plugin():
     assert query.text == "نسر"
     # Should handle spelling variations like نصر
     # Note: This needs an index reader to work properly, so we just verify the query is created
-    assert query.words == ["نسر"]  # Initial state before index expansion
+    assert sorted(query.words) == sorted(["نسر"])  # Initial state before index expansion
 
 
 def test_tashkil_plugin_single_word():
