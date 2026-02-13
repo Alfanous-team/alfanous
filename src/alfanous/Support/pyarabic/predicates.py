@@ -148,7 +148,7 @@ def isArabicstring(text):
     @return: True if all charaters are in Arabic block
     @rtype: Boolean
     """
-    return not re.search(u"([^\u0600-\u0652%s%s%s\w])" % (LAM_ALEF, LAM_ALEF_HAMZA_ABOVE, LAM_ALEF_MADDA_ABOVE), text)
+    return not re.search(u"([^\u0600-\u0652%s%s%s\\w])" % (LAM_ALEF, LAM_ALEF_HAMZA_ABOVE, LAM_ALEF_MADDA_ABOVE), text)
 
 
 def isArabicword(word):
@@ -161,7 +161,7 @@ def isArabicword(word):
     """
     if len(word) == 0:
         return False;
-    elif re.search(u"([^\u0600-\u0652%s%s%s\w])" % (LAM_ALEF, LAM_ALEF_HAMZA_ABOVE, LAM_ALEF_MADDA_ABOVE), word):
+    elif re.search(u"([^\u0600-\u0652%s%s%s\\w])" % (LAM_ALEF, LAM_ALEF_HAMZA_ABOVE, LAM_ALEF_MADDA_ABOVE), word):
         return False;
     elif isHaraka(word[0]) or word[0] in (WAW_HAMZA, YEH_HAMZA):
         return False;

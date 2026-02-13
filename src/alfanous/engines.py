@@ -1,30 +1,10 @@
 from whoosh import qparser
-from whoosh.qparser import TaggingPlugin, syntax, QueryParser
-from whoosh.query import Variations
+from whoosh.qparser import QueryParser
 
 from alfanous.searching import QSearcher, QReader
 from alfanous.indexing import QseDocIndex, ExtDocIndex, BasicDocIndex
 from alfanous.results_processing import Qhighlight
 from alfanous.query_processing import QuranicParser, StandardParser, FuzzyQuranicParser
-
-word_derivations = {
-    'ملك': ['ملك', 'ملائكة', 'الملك']
-}
-class Derivations(Variations):
-    def _btexts(self, ixreader):
-        for word in (word_derivations.get(self.text) or []):
-            yield word  # to_bytes()
-
-class DerivationPlugin(TaggingPlugin):
-    class DerivationNode(syntax.WordNode):
-        qclass = Derivations
-
-        def r(self):
-            return ">>%r" % self.text
-
-    expr = "(?P<text>\>\>.*)"
-    nodetype = DerivationNode
-    priority = 100
 
 class BasicSearchEngine:
     def __init__(self, qdocindex, query_parser, main_field, otherfields, qsearcher, qreader, qhighlight):
@@ -35,8 +15,15 @@ class BasicSearchEngine:
             #
             self._schema = self._docindex.get_schema()
             #
-            self._parser = query_parser(main_field, self._schema, group=qparser.OrGroup)
-            self._parser.add_plugin(DerivationPlugin)
+            # Try to instantiate parser with otherfields (for custom parsers like QuranicParser)
+            # Fall back to standard Whoosh QueryParser signature if that fails
+            try:
+                self._parser = query_parser(schema=self._schema, mainfield=main_field, otherfields=otherfields)
+            except TypeError:
+                self._parser = query_parser(main_field, self._schema, group=qparser.OrGroup)
+            
+            # Note: Plugins are added in the parser's own __init__ method
+            # (see ArabicParser and its subclasses in query_processing.py)
             
             self._searcher = qsearcher(self._docindex, self._parser)
             #
@@ -85,7 +72,7 @@ class BasicSearchEngine:
 
 
 def QuranicSearchEngine(indexpath="../indexes/main/",
-                        qparser=QueryParser):
+                        qparser=QuranicParser):
     return BasicSearchEngine(qdocindex=QseDocIndex(indexpath)
                              , query_parser=qparser
                              , main_field="aya"

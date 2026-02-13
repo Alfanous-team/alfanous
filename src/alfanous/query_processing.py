@@ -28,6 +28,9 @@ from alfanous.text_processing import QArabicSymbolsFilter
 
 from alfanous.misc import locate, find, filter_doubles
 
+# Import query plugins for integration with Whoosh 2.7
+from whoosh.qparser.plugins import SingleQuotePlugin
+
 
 def _make_arabic_parser():
     escapechar = "//"
@@ -206,9 +209,9 @@ def _make_arabic_parser():
     expression << (OneOrMore(operatorAnd | operatorOr | operatorAndNot |
                              generalUnit | Suppress(White())) | Empty())
 
-    toplevel = Group(expression).setResultsName("Toplevel") + StringEnd()
+    toplevel = Group(expression).set_results_name("Toplevel") + StringEnd()
 
-    return toplevel.parseString
+    return toplevel.parse_string
 
 
 ARABIC_PARSER_FN = _make_arabic_parser()
@@ -240,6 +243,30 @@ class ArabicParser(StandardParser):
                                            termclass=termclass)
         self.parser = ARABIC_PARSER_FN
         self.ara2eng = ara2eng
+        
+        # Add Whoosh 2.7 query plugins for custom Arabic syntax
+        # Import here to avoid circular dependency
+        from alfanous.query_plugins import (
+            SynonymsPlugin,
+            AntonymsPlugin,
+            DerivationPlugin,
+            SpellErrorsPlugin,
+            TashkilPlugin,
+            TuplePlugin,
+            ArabicWildcardPlugin
+        )
+        
+        # Remove SingleQuotePlugin to allow our TashkilPlugin to work
+        self.remove_plugin_class(SingleQuotePlugin)
+        
+        # Add all Arabic query plugins (instantiate plugin classes)
+        self.add_plugin(SynonymsPlugin())
+        self.add_plugin(AntonymsPlugin())
+        self.add_plugin(DerivationPlugin())
+        self.add_plugin(SpellErrorsPlugin())
+        self.add_plugin(TashkilPlugin())
+        self.add_plugin(TuplePlugin())
+        self.add_plugin(ArabicWildcardPlugin())
 
     def _Field(self, node, fieldname):
         return self._eval(node[1], self.ara2eng.get(node[0]) or node[0])

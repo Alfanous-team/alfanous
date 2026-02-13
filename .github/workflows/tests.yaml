@@ -6,7 +6,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: [2.7]
+        python-version: ['3.8', '3.9', '3.10', '3.11', '3.12']
     steps:
     - uses: actions/checkout@v2
     - name: Set up Python ${{ matrix.python-version }}
@@ -15,7 +15,10 @@ jobs:
         python-version: ${{ matrix.python-version }}
     - name: Install dependencies
       run: |
-        pip install pyparsing pytest
+        pip install pyparsing pytest whoosh
+    - name: Generate information.json for tests
+      run: |
+        perl -p -w -e 's|alfanous.release|0.7.33Kahraman|g;s|alfanous.version|0.7.33|g;' src/alfanous/resources/information.json.in > src/alfanous/resources/information.json
     - name: Run build
       run: |
         make build

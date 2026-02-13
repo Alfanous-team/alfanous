@@ -58,7 +58,7 @@ edit_hints:
 
 # update downloading translation list manually
 edit_translations_to_download_list:
-	nano $(STORE_PATH)translations/translations.list
+	nano $(STORE_PATH)Translations/translations.list
 
 
 
@@ -90,8 +90,8 @@ clean_all: clean_deb
 download: download_translations   download_tanzil
 
 download_translations:
-	#  download from  http://zekr.org/resources.html to ./store/traductions
-	cd $(STORE_PATH)translations;  wget -i translations.list
+	#  download from  http://zekr.org/resources.html to ./store/Translations
+	cd $(STORE_PATH)Translations;  wget -i translations.list
 
 
 download_tanzil:
@@ -133,7 +133,7 @@ index_main:
 	export PYTHONPATH=$(API_PATH) ;	rm -r $(INDEX_PATH)main/; $(PYTHON_COMMAND) $(QIMPORT) -x main $(RESOURCES_PATH) $(INDEX_PATH)main/
 
 index_extend:
-	export PYTHONPATH=$(API_PATH) ;	rm -r $(INDEX_PATH)extend/; $(PYTHON_COMMAND) $(QIMPORT) -x extend $(STORE_PATH)translations/ $(INDEX_PATH)extend/
+	export PYTHONPATH=$(API_PATH) ;	rm -r $(INDEX_PATH)extend/; $(PYTHON_COMMAND) $(QIMPORT) -x extend $(STORE_PATH)Translations/ $(INDEX_PATH)extend/
 
 
 install:
