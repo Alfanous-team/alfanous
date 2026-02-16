@@ -19,7 +19,7 @@ from typing import Optional, Dict, Any, Union, List, Literal
 from collections.abc import KeysView, ValuesView, ItemsView
 from fastapi import FastAPI, HTTPException, Query
 from fastapi.responses import JSONResponse
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_validator, ValidationError
 import json
 import logging
 import alfanous.api as alfanous_api
@@ -46,10 +46,40 @@ def make_serializable(obj):
         return obj
 
 
-# Helper function to validate API results
+# Pydantic models for response validation
+class ErrorResponse(BaseModel):
+    """Model for error field in API responses"""
+    code: int = Field(..., description="Error code (0 for success)")
+    msg: str = Field(..., description="Error message")
+
+
+class SearchResponse(BaseModel):
+    """Model for search API response validation"""
+    error: ErrorResponse
+    search: Optional[Dict[str, Any]] = Field(None, description="Search results")
+    
+    @field_validator('error')
+    @classmethod
+    def check_error_code(cls, v: ErrorResponse) -> ErrorResponse:
+        """Validate that if error code is 0, we have search results"""
+        return v
+
+
+class SuggestResponse(BaseModel):
+    """Model for suggest API response validation"""
+    error: ErrorResponse
+    suggest: Optional[Dict[str, Any]] = Field(None, description="Suggestion results")
+
+
+class InfoResponse(BaseModel):
+    """Model for info API response validation"""
+    error: ErrorResponse
+    show: Optional[Dict[str, Any]] = Field(None, description="Info data")
+
+
 def validate_api_result(result: Dict[str, Any], action: str) -> Dict[str, Any]:
     """
-    Validate the structure of API results.
+    Validate the structure of API results using Pydantic models.
     
     Args:
         result: The result dictionary from Alfanous API
@@ -61,46 +91,53 @@ def validate_api_result(result: Dict[str, Any], action: str) -> Dict[str, Any]:
     Raises:
         HTTPException: If the result structure is invalid
     """
-    if not isinstance(result, dict):
-        logger.error(f"API result is not a dictionary: {type(result)}")
+    try:
+        # Select appropriate Pydantic model based on action
+        if action == "search":
+            validated = SearchResponse(**result)
+            # Check if error code is 0 but search field is missing
+            if validated.error.code == 0 and validated.search is None:
+                logger.error("Search result missing 'search' field despite success error code")
+                raise HTTPException(status_code=500, detail="Invalid search response format")
+            # If there's an error from the API, return it as a bad request
+            if validated.error.code != 0:
+                logger.warning(f"API returned error {validated.error.code}: {validated.error.msg}")
+                raise HTTPException(status_code=400, detail=validated.error.msg)
+        elif action == "suggest":
+            validated = SuggestResponse(**result)
+            # Check if error code is 0 but suggest field is missing
+            if validated.error.code == 0 and validated.suggest is None:
+                logger.error("Suggest result missing 'suggest' field despite success error code")
+                raise HTTPException(status_code=500, detail="Invalid suggest response format")
+            # If there's an error from the API, return it as a bad request
+            if validated.error.code != 0:
+                logger.warning(f"API returned error {validated.error.code}: {validated.error.msg}")
+                raise HTTPException(status_code=400, detail=validated.error.msg)
+        elif action == "show":
+            validated = InfoResponse(**result)
+            # Check if error code is 0 but show field is missing
+            if validated.error.code == 0 and validated.show is None:
+                logger.error("Info result missing 'show' field despite success error code")
+                raise HTTPException(status_code=500, detail="Invalid info response format")
+            # If there's an error from the API, return it as a bad request
+            if validated.error.code != 0:
+                logger.warning(f"API returned error {validated.error.code}: {validated.error.msg}")
+                raise HTTPException(status_code=400, detail=validated.error.msg)
+        else:
+            logger.error(f"Unknown action type: {action}")
+            raise HTTPException(status_code=500, detail="Invalid action type")
+        
+        return result
+        
+    except ValidationError as e:
+        logger.error(f"Response validation failed: {e}")
         raise HTTPException(status_code=500, detail="Invalid response format from search engine")
-    
-    # Check for error field
-    if "error" not in result:
-        logger.error("API result missing 'error' field")
-        raise HTTPException(status_code=500, detail="Invalid response format from search engine")
-    
-    error = result["error"]
-    if not isinstance(error, dict):
-        logger.error(f"Error field is not a dictionary: {type(error)}")
-        raise HTTPException(status_code=500, detail="Invalid response format from search engine")
-    
-    error_code = error.get("code")
-    if error_code is None:
-        logger.error("Error field missing 'code'")
-        raise HTTPException(status_code=500, detail="Invalid response format from search engine")
-    
-    # If there's an error from the API, return it as a bad request
-    if error_code != 0:
-        error_msg = error.get("msg", "Unknown error")
-        logger.warning(f"API returned error {error_code}: {error_msg}")
-        raise HTTPException(status_code=400, detail=error_msg)
-    
-    # Validate based on action type
-    if action == "search":
-        if "search" not in result:
-            logger.error("Search result missing 'search' field")
-            raise HTTPException(status_code=500, detail="Invalid search response format")
-    elif action == "suggest":
-        if "suggest" not in result:
-            logger.error("Suggest result missing 'suggest' field")
-            raise HTTPException(status_code=500, detail="Invalid suggest response format")
-    elif action == "show":
-        if "show" not in result:
-            logger.error("Show result missing 'show' field")
-            raise HTTPException(status_code=500, detail="Invalid info response format")
-    
-    return result
+    except HTTPException:
+        # Re-raise HTTP exceptions as-is
+        raise
+    except Exception as e:
+        logger.exception(f"Unexpected error during validation: {e}")
+        raise HTTPException(status_code=500, detail="Error validating API response")
 
 
 # FastAPI app instance
