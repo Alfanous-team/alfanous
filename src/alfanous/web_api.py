@@ -19,7 +19,25 @@ from typing import Optional, Dict, Any, Union, List
 from fastapi import FastAPI, HTTPException, Query
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel, Field
+import json
 import alfanous.api as alfanous_api
+
+
+# Helper function to convert dict_keys and other non-serializable objects to lists
+def make_serializable(obj):
+    """
+    Recursively convert non-JSON-serializable objects to JSON-serializable types.
+    Converts dict_keys, dict_values, and dict_items to lists.
+    """
+    if isinstance(obj, dict):
+        return {key: make_serializable(value) for key, value in obj.items()}
+    elif isinstance(obj, (list, tuple)):
+        return [make_serializable(item) for item in obj]
+    elif isinstance(obj, (type({}.keys()), type({}.values()), type({}.items()))):
+        # Convert dict_keys, dict_values, dict_items to list
+        return list(obj)
+    else:
+        return obj
 
 
 # FastAPI app instance
@@ -183,6 +201,7 @@ async def search_post(request: SearchRequest):
         
         # Execute search
         result = alfanous_api.do(flags)
+        result = make_serializable(result)
         return JSONResponse(content=result)
         
     except Exception as e:
@@ -258,6 +277,7 @@ async def search_get(
         
         # Execute search
         result = alfanous_api.do(flags)
+        result = make_serializable(result)
         return JSONResponse(content=result)
         
     except Exception as e:
@@ -284,6 +304,7 @@ async def suggest(request: SuggestRequest):
         }
         
         result = alfanous_api.do(flags)
+        result = make_serializable(result)
         return JSONResponse(content=result)
         
     except Exception as e:
@@ -310,6 +331,7 @@ async def get_info_all():
     """
     try:
         result = alfanous_api.get_info("all")
+        result = make_serializable(result)
         return JSONResponse(content=result)
         
     except Exception as e:
@@ -341,6 +363,7 @@ async def get_info_category(category: str):
     """
     try:
         result = alfanous_api.get_info(category)
+        result = make_serializable(result)
         return JSONResponse(content=result)
         
     except Exception as e:
