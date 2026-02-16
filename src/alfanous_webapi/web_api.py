@@ -70,6 +70,42 @@ class InfoResponse(BaseModel):
     show: Optional[Dict[str, Any]] = Field(None, description="Info data")
 
 
+# Helper function to convert and validate API results
+def create_validated_response(result: Dict[str, Any], response_model: type[BaseModel]) -> BaseModel:
+    """
+    Convert API result to Pydantic model and check for errors.
+    
+    Args:
+        result: The result dictionary from Alfanous API
+        response_model: The Pydantic model class to use for validation
+    
+    Returns:
+        The validated Pydantic model instance
+        
+    Raises:
+        HTTPException: If validation fails or API returns an error
+    """
+    try:
+        # Make result serializable
+        result = make_serializable(result)
+        
+        # Convert to Pydantic model - FastAPI will validate and serialize
+        response = response_model(**result)
+        
+        # Check for API errors
+        if response.error.code != 0:
+            logger.warning(f"API returned error {response.error.code}: {response.error.msg}")
+            raise HTTPException(status_code=400, detail=response.error.msg)
+        
+        return response
+        
+    except ValidationError as e:
+        logger.error(f"Response validation failed: {e}")
+        raise HTTPException(status_code=500, detail="Invalid response format from search engine")
+    except HTTPException:
+        raise
+
+
 # FastAPI app instance
 app = FastAPI(
     title="Alfanous API",
@@ -229,23 +265,10 @@ async def search_post(request: SearchRequest) -> SearchResponse:
         if request.filter is not None:
             flags["filter"] = request.filter
         
-        # Execute search
+        # Execute search and validate response
         result = alfanous_api.do(flags)
-        result = make_serializable(result)
+        return create_validated_response(result, SearchResponse)
         
-        # Convert to Pydantic model - FastAPI will validate and serialize
-        response = SearchResponse(**result)
-        
-        # Check for API errors
-        if response.error.code != 0:
-            logger.warning(f"API returned error {response.error.code}: {response.error.msg}")
-            raise HTTPException(status_code=400, detail=response.error.msg)
-        
-        return response
-        
-    except ValidationError as e:
-        logger.error(f"Response validation failed: {e}")
-        raise HTTPException(status_code=500, detail="Invalid response format from search engine")
     except HTTPException:
         raise
     except ValueError as e:
@@ -323,23 +346,10 @@ async def search_get(
         if aya_stat_info is not None:
             flags["aya_stat_info"] = aya_stat_info
         
-        # Execute search
+        # Execute search and validate response
         result = alfanous_api.do(flags)
-        result = make_serializable(result)
+        return create_validated_response(result, SearchResponse)
         
-        # Convert to Pydantic model - FastAPI will validate and serialize
-        response = SearchResponse(**result)
-        
-        # Check for API errors
-        if response.error.code != 0:
-            logger.warning(f"API returned error {response.error.code}: {response.error.msg}")
-            raise HTTPException(status_code=400, detail=response.error.msg)
-        
-        return response
-        
-    except ValidationError as e:
-        logger.error(f"Response validation failed: {e}")
-        raise HTTPException(status_code=500, detail="Invalid response format from search engine")
     except HTTPException:
         raise
     except ValueError as e:
@@ -370,21 +380,8 @@ async def suggest(request: SuggestRequest) -> SuggestResponse:
         }
         
         result = alfanous_api.do(flags)
-        result = make_serializable(result)
+        return create_validated_response(result, SuggestResponse)
         
-        # Convert to Pydantic model - FastAPI will validate and serialize
-        response = SuggestResponse(**result)
-        
-        # Check for API errors
-        if response.error.code != 0:
-            logger.warning(f"API returned error {response.error.code}: {response.error.msg}")
-            raise HTTPException(status_code=400, detail=response.error.msg)
-        
-        return response
-        
-    except ValidationError as e:
-        logger.error(f"Response validation failed: {e}")
-        raise HTTPException(status_code=500, detail="Invalid response format from search engine")
     except HTTPException:
         raise
     except ValueError as e:
@@ -415,21 +412,8 @@ async def get_info_all() -> InfoResponse:
     """
     try:
         result = alfanous_api.get_info("all")
-        result = make_serializable(result)
+        return create_validated_response(result, InfoResponse)
         
-        # Convert to Pydantic model - FastAPI will validate and serialize
-        response = InfoResponse(**result)
-        
-        # Check for API errors
-        if response.error.code != 0:
-            logger.warning(f"API returned error {response.error.code}: {response.error.msg}")
-            raise HTTPException(status_code=400, detail=response.error.msg)
-        
-        return response
-        
-    except ValidationError as e:
-        logger.error(f"Response validation failed: {e}")
-        raise HTTPException(status_code=500, detail="Invalid response format from search engine")
     except HTTPException:
         raise
     except ValueError as e:
@@ -465,21 +449,8 @@ async def get_info_category(category: str) -> InfoResponse:
     """
     try:
         result = alfanous_api.get_info(category)
-        result = make_serializable(result)
+        return create_validated_response(result, InfoResponse)
         
-        # Convert to Pydantic model - FastAPI will validate and serialize
-        response = InfoResponse(**result)
-        
-        # Check for API errors
-        if response.error.code != 0:
-            logger.warning(f"API returned error {response.error.code}: {response.error.msg}")
-            raise HTTPException(status_code=400, detail=response.error.msg)
-        
-        return response
-        
-    except ValidationError as e:
-        logger.error(f"Response validation failed: {e}")
-        raise HTTPException(status_code=500, detail="Invalid response format from search engine")
     except HTTPException:
         raise
     except ValueError as e:
