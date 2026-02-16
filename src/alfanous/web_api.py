@@ -16,11 +16,17 @@ Usage:
 """
 
 from typing import Optional, Dict, Any, Union, List
+from collections.abc import KeysView, ValuesView, ItemsView
 from fastapi import FastAPI, HTTPException, Query
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel, Field
 import json
+import logging
 import alfanous.api as alfanous_api
+
+
+# Configure logging
+logger = logging.getLogger(__name__)
 
 
 # Helper function to convert dict_keys and other non-serializable objects to lists
@@ -33,8 +39,8 @@ def make_serializable(obj):
         return {key: make_serializable(value) for key, value in obj.items()}
     elif isinstance(obj, (list, tuple)):
         return [make_serializable(item) for item in obj]
-    elif isinstance(obj, (type({}.keys()), type({}.values()), type({}.items()))):
-        # Convert dict_keys, dict_values, dict_items to list
+    elif isinstance(obj, (KeysView, ValuesView, ItemsView)):
+        # Convert dict views to list
         return list(obj)
     else:
         return obj
@@ -204,8 +210,12 @@ async def search_post(request: SearchRequest):
         result = make_serializable(result)
         return JSONResponse(content=result)
         
+    except ValueError as e:
+        logger.error(f"Invalid search parameters: {e}")
+        raise HTTPException(status_code=400, detail=f"Invalid search parameters: {str(e)}")
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        logger.exception("Error processing search request")
+        raise HTTPException(status_code=500, detail="An error occurred while processing your search request")
 
 
 # Search endpoint (GET)
@@ -280,8 +290,12 @@ async def search_get(
         result = make_serializable(result)
         return JSONResponse(content=result)
         
+    except ValueError as e:
+        logger.error(f"Invalid search parameters: {e}")
+        raise HTTPException(status_code=400, detail=f"Invalid search parameters: {str(e)}")
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        logger.exception("Error processing search request")
+        raise HTTPException(status_code=500, detail="An error occurred while processing your search request")
 
 
 # Suggest endpoint
@@ -307,8 +321,12 @@ async def suggest(request: SuggestRequest):
         result = make_serializable(result)
         return JSONResponse(content=result)
         
+    except ValueError as e:
+        logger.error(f"Invalid suggest parameters: {e}")
+        raise HTTPException(status_code=400, detail=f"Invalid suggest parameters: {str(e)}")
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        logger.exception("Error processing suggest request")
+        raise HTTPException(status_code=500, detail="An error occurred while processing your suggest request")
 
 
 # Info endpoint - get all metadata
@@ -334,8 +352,12 @@ async def get_info_all():
         result = make_serializable(result)
         return JSONResponse(content=result)
         
+    except ValueError as e:
+        logger.error(f"Invalid info query: {e}")
+        raise HTTPException(status_code=400, detail=f"Invalid info query: {str(e)}")
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        logger.exception("Error retrieving info")
+        raise HTTPException(status_code=500, detail="An error occurred while retrieving information")
 
 
 # Info endpoint - get specific category
@@ -366,8 +388,12 @@ async def get_info_category(category: str):
         result = make_serializable(result)
         return JSONResponse(content=result)
         
+    except ValueError as e:
+        logger.error(f"Invalid info category: {e}")
+        raise HTTPException(status_code=400, detail=f"Invalid info category: {str(e)}")
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        logger.exception("Error retrieving info category")
+        raise HTTPException(status_code=500, detail="An error occurred while retrieving information")
 
 
 # Entry point for console script

@@ -49,7 +49,7 @@ setup(
 
     entry_points={'console_scripts': [
         'alfanous-console = alfanous.console:main',
-        'alfanous-server = alfanous.web_api:main [web]',
+        'alfanous-server = alfanous.web_api:main',
     ]},
 
     zip_safe=False,
