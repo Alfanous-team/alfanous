@@ -12,14 +12,22 @@ import os
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
 
 import pytest
-from fastapi.testclient import TestClient
 
-# Import after path is set
-from alfanous_webapi.web_api import app, SearchResponse, SuggestResponse, InfoResponse, HealthResponse
+# Try to import FastAPI dependencies - skip all tests if not available
+try:
+    from fastapi.testclient import TestClient
+    from alfanous_webapi.web_api import app, SearchResponse, SuggestResponse, InfoResponse, HealthResponse
+    FASTAPI_AVAILABLE = True
+except ImportError:
+    FASTAPI_AVAILABLE = False
+    pytestmark = pytest.mark.skip(reason="FastAPI dependencies not installed. Install with: pip install alfanous-webapi or pip install fastapi httpx")
 
 
-# Create test client
-client = TestClient(app)
+# Create test client only if FastAPI is available
+if FASTAPI_AVAILABLE:
+    client = TestClient(app)
+else:
+    client = None
 
 
 class TestRootEndpoint:

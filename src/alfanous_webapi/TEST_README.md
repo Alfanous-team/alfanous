@@ -2,6 +2,17 @@
 
 The comprehensive test suite for the Alfanous FastAPI web application is located in `src/tests/test_web_api.py`.
 
+## Important Notes
+
+**Optional Tests**: These tests are automatically skipped if FastAPI dependencies are not installed. This allows the core Alfanous test suite to run without requiring web framework dependencies.
+
+To run these tests, you need to install FastAPI dependencies:
+```bash
+pip install fastapi httpx
+# Or install the full alfanous-webapi package
+pip install alfanous-webapi
+```
+
 ## Test Coverage
 
 The test suite includes 43 tests organized into the following categories:
