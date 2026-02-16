@@ -19,7 +19,7 @@ from typing import Optional, Dict, Any, Union, List, Literal
 from collections.abc import KeysView, ValuesView, ItemsView
 from fastapi import FastAPI, HTTPException, Query
 from fastapi.responses import JSONResponse
-from pydantic import BaseModel, Field, field_validator
+from pydantic import BaseModel, Field
 import json
 import logging
 import alfanous.api as alfanous_api
@@ -70,7 +70,7 @@ def validate_api_result(result: Dict[str, Any], action: str) -> Dict[str, Any]:
         logger.error("API result missing 'error' field")
         raise HTTPException(status_code=500, detail="Invalid response format from search engine")
     
-    error = result.get("error", {})
+    error = result["error"]
     if not isinstance(error, dict):
         logger.error(f"Error field is not a dictionary: {type(error)}")
         raise HTTPException(status_code=500, detail="Invalid response format from search engine")
