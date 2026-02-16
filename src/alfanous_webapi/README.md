@@ -13,17 +13,19 @@ A minimal FastAPI application that exposes the Alfanous Quranic search API throu
 
 ## Installation
 
-### Install with web dependencies
+### Install the web API package
 
 ```bash
-pip install alfanous3[web]
+pip install alfanous-webapi
 ```
+
+This will automatically install `alfanous3` as a dependency along with FastAPI and Uvicorn.
 
 Or install manually:
 
 ```bash
 pip install alfanous3
-pip install fastapi uvicorn[standard] pydantic
+pip install alfanous-webapi
 ```
 
 ## Usage
@@ -39,13 +41,13 @@ alfanous-server
 #### Using Python module:
 
 ```bash
-python -m alfanous.web_api
+python -m alfanous_webapi.web_api
 ```
 
 #### Using uvicorn directly:
 
 ```bash
-uvicorn alfanous.web_api:app --reload
+uvicorn alfanous_webapi.web_api:app --reload
 ```
 
 The server will start at `http://localhost:8000`
@@ -268,13 +270,13 @@ All endpoints return JSON responses with the following structure:
 ### Running in Development Mode
 
 ```bash
-uvicorn alfanous.web_api:app --reload --host 0.0.0.0 --port 8000
+uvicorn alfanous_webapi.web_api:app --reload --host 0.0.0.0 --port 8000
 ```
 
 ### Custom Configuration
 
 ```python
-from alfanous.web_api import app
+from alfanous_webapi.web_api import app
 import uvicorn
 
 if __name__ == "__main__":

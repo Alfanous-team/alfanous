@@ -8,11 +8,11 @@ A minimal FastAPI application that exposes the Alfanous Quranic search API
 through RESTful endpoints.
 
 Usage:
-    uvicorn alfanous.web_api:app --reload
+    uvicorn alfanous_webapi.web_api:app --reload
     
     or
     
-    python -m alfanous.web_api
+    python -m alfanous_webapi.web_api
 """
 
 from typing import Optional, Dict, Any, Union, List, Literal
@@ -462,7 +462,7 @@ async def get_info_category(category: str):
 def main():
     """Entry point for alfanous-server command"""
     import uvicorn
-    uvicorn.run("alfanous.web_api:app", host="0.0.0.0", port=8000, reload=False)
+    uvicorn.run("alfanous_webapi.web_api:app", host="0.0.0.0", port=8000, reload=False)
 
 
 # Entry point for running the server directly
