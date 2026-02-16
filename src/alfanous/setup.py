@@ -27,6 +27,10 @@ setup(
     packages=['alfanous',  'alfanous.Support', 'alfanous.Support.pyarabic', ],
 
     install_requires=['pyparsing', 'whoosh'],
+    
+    extras_require={
+        'web': ['fastapi>=0.104.0', 'uvicorn[standard]>=0.24.0', 'pydantic>=2.0.0'],
+    },
 
     author="Assem Chelli",
     author_email="assem.ch@gmail.com",
@@ -43,7 +47,10 @@ setup(
                                'indexes/word/*',
                                'resources/*']},
 
-    entry_points={'console_scripts': ['alfanous-console = alfanous.console:main', ]},
+    entry_points={'console_scripts': [
+        'alfanous-console = alfanous.console:main',
+        'alfanous-server = alfanous.web_api:main [web]',
+    ]},
 
     zip_safe=False,
 
