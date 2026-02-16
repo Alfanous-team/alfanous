@@ -57,12 +57,6 @@ class SearchResponse(BaseModel):
     """Model for search API response validation"""
     error: ErrorResponse
     search: Optional[Dict[str, Any]] = Field(None, description="Search results")
-    
-    @field_validator('error')
-    @classmethod
-    def check_error_code(cls, v: ErrorResponse) -> ErrorResponse:
-        """Validate that if error code is 0, we have search results"""
-        return v
 
 
 class SuggestResponse(BaseModel):
@@ -75,6 +69,32 @@ class InfoResponse(BaseModel):
     """Model for info API response validation"""
     error: ErrorResponse
     show: Optional[Dict[str, Any]] = Field(None, description="Info data")
+
+
+def _check_validated_response(validated: BaseModel, field_name: str, action: str) -> None:
+    """
+    Helper function to check validated response for errors and required fields.
+    
+    Args:
+        validated: The validated Pydantic model
+        field_name: The name of the field to check (e.g., 'search', 'suggest', 'show')
+        action: The action type for error messages
+        
+    Raises:
+        HTTPException: If validation fails
+    """
+    error = validated.error
+    result_field = getattr(validated, field_name, None)
+    
+    # Check if error code is 0 but result field is missing
+    if error.code == 0 and result_field is None:
+        logger.error(f"{action.capitalize()} result missing '{field_name}' field despite success error code")
+        raise HTTPException(status_code=500, detail=f"Invalid {action} response format")
+    
+    # If there's an error from the API, return it as a bad request
+    if error.code != 0:
+        logger.warning(f"API returned error {error.code}: {error.msg}")
+        raise HTTPException(status_code=400, detail=error.msg)
 
 
 def validate_api_result(result: Dict[str, Any], action: str) -> Dict[str, Any]:
@@ -95,34 +115,13 @@ def validate_api_result(result: Dict[str, Any], action: str) -> Dict[str, Any]:
         # Select appropriate Pydantic model based on action
         if action == "search":
             validated = SearchResponse(**result)
-            # Check if error code is 0 but search field is missing
-            if validated.error.code == 0 and validated.search is None:
-                logger.error("Search result missing 'search' field despite success error code")
-                raise HTTPException(status_code=500, detail="Invalid search response format")
-            # If there's an error from the API, return it as a bad request
-            if validated.error.code != 0:
-                logger.warning(f"API returned error {validated.error.code}: {validated.error.msg}")
-                raise HTTPException(status_code=400, detail=validated.error.msg)
+            _check_validated_response(validated, "search", action)
         elif action == "suggest":
             validated = SuggestResponse(**result)
-            # Check if error code is 0 but suggest field is missing
-            if validated.error.code == 0 and validated.suggest is None:
-                logger.error("Suggest result missing 'suggest' field despite success error code")
-                raise HTTPException(status_code=500, detail="Invalid suggest response format")
-            # If there's an error from the API, return it as a bad request
-            if validated.error.code != 0:
-                logger.warning(f"API returned error {validated.error.code}: {validated.error.msg}")
-                raise HTTPException(status_code=400, detail=validated.error.msg)
+            _check_validated_response(validated, "suggest", action)
         elif action == "show":
             validated = InfoResponse(**result)
-            # Check if error code is 0 but show field is missing
-            if validated.error.code == 0 and validated.show is None:
-                logger.error("Info result missing 'show' field despite success error code")
-                raise HTTPException(status_code=500, detail="Invalid info response format")
-            # If there's an error from the API, return it as a bad request
-            if validated.error.code != 0:
-                logger.warning(f"API returned error {validated.error.code}: {validated.error.msg}")
-                raise HTTPException(status_code=400, detail=validated.error.msg)
+            _check_validated_response(validated, "show", action)
         else:
             logger.error(f"Unknown action type: {action}")
             raise HTTPException(status_code=500, detail="Invalid action type")
