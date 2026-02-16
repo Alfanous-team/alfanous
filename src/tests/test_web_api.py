@@ -5,8 +5,16 @@ This module contains comprehensive tests for all endpoints in the web API,
 including search, suggest, info, health, and root endpoints.
 """
 
+import sys
+import os
+
+# Add parent directory to path to enable imports
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
+
 import pytest
 from fastapi.testclient import TestClient
+
+# Import after path is set
 from alfanous_webapi.web_api import app, SearchResponse, SuggestResponse, InfoResponse, HealthResponse
 
 

@@ -1,10 +1,10 @@
 # Alfanous Web API Tests
 
-This directory contains comprehensive tests for the Alfanous FastAPI web application.
+The comprehensive test suite for the Alfanous FastAPI web application is located in `src/tests/test_web_api.py`.
 
 ## Test Coverage
 
-The test suite (`test_web_api.py`) includes 43 tests organized into the following categories:
+The test suite includes 43 tests organized into the following categories:
 
 ### 1. Root Endpoint Tests (3 tests)
 - Tests that root endpoint returns 200 status code
@@ -56,24 +56,24 @@ The test suite (`test_web_api.py`) includes 43 tests organized into the followin
 
 ## Running the Tests
 
-### Run all tests:
+### Run all web API tests:
 ```bash
-pytest src/alfanous_webapi/test_web_api.py -v
+pytest src/tests/test_web_api.py -v
 ```
 
 ### Run specific test class:
 ```bash
-pytest src/alfanous_webapi/test_web_api.py::TestSearchEndpoints -v
+pytest src/tests/test_web_api.py::TestSearchEndpoints -v
 ```
 
 ### Run specific test:
 ```bash
-pytest src/alfanous_webapi/test_web_api.py::TestSearchEndpoints::test_search_get_basic -v
+pytest src/tests/test_web_api.py::TestSearchEndpoints::test_search_get_basic -v
 ```
 
 ### Run with coverage:
 ```bash
-pytest src/alfanous_webapi/test_web_api.py --cov=alfanous_webapi --cov-report=html
+pytest src/tests/test_web_api.py --cov=alfanous_webapi --cov-report=html
 ```
 
 ## Prerequisites
