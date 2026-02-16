@@ -15,11 +15,11 @@ Usage:
     python -m alfanous.web_api
 """
 
-from typing import Optional, Dict, Any, Union, List
+from typing import Optional, Dict, Any, Union, List, Literal
 from collections.abc import KeysView, ValuesView, ItemsView
 from fastapi import FastAPI, HTTPException, Query
 from fastapi.responses import JSONResponse
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_validator
 import json
 import logging
 import alfanous.api as alfanous_api
@@ -44,6 +44,63 @@ def make_serializable(obj):
         return list(obj)
     else:
         return obj
+
+
+# Helper function to validate API results
+def validate_api_result(result: Dict[str, Any], action: str) -> Dict[str, Any]:
+    """
+    Validate the structure of API results.
+    
+    Args:
+        result: The result dictionary from Alfanous API
+        action: The action that was performed (search, suggest, show)
+    
+    Returns:
+        The validated result
+        
+    Raises:
+        HTTPException: If the result structure is invalid
+    """
+    if not isinstance(result, dict):
+        logger.error(f"API result is not a dictionary: {type(result)}")
+        raise HTTPException(status_code=500, detail="Invalid response format from search engine")
+    
+    # Check for error field
+    if "error" not in result:
+        logger.error("API result missing 'error' field")
+        raise HTTPException(status_code=500, detail="Invalid response format from search engine")
+    
+    error = result.get("error", {})
+    if not isinstance(error, dict):
+        logger.error(f"Error field is not a dictionary: {type(error)}")
+        raise HTTPException(status_code=500, detail="Invalid response format from search engine")
+    
+    error_code = error.get("code")
+    if error_code is None:
+        logger.error("Error field missing 'code'")
+        raise HTTPException(status_code=500, detail="Invalid response format from search engine")
+    
+    # If there's an error from the API, return it as a bad request
+    if error_code != 0:
+        error_msg = error.get("msg", "Unknown error")
+        logger.warning(f"API returned error {error_code}: {error_msg}")
+        raise HTTPException(status_code=400, detail=error_msg)
+    
+    # Validate based on action type
+    if action == "search":
+        if "search" not in result:
+            logger.error("Search result missing 'search' field")
+            raise HTTPException(status_code=500, detail="Invalid search response format")
+    elif action == "suggest":
+        if "suggest" not in result:
+            logger.error("Suggest result missing 'suggest' field")
+            raise HTTPException(status_code=500, detail="Invalid suggest response format")
+    elif action == "show":
+        if "show" not in result:
+            logger.error("Show result missing 'show' field")
+            raise HTTPException(status_code=500, detail="Invalid info response format")
+    
+    return result
 
 
 # FastAPI app instance
@@ -76,7 +133,7 @@ class SearchRequest(BaseModel):
     fuzzy: bool = Field(False, description="Enable fuzzy search")
     view: str = Field("normal", description="View mode: 'minimal', 'normal', 'full', 'statistic', 'linguistic', 'custom'")
     highlight: str = Field("bold", description="Highlight mode: 'css', 'html', 'bold', 'bbcode'")
-    script: Optional[str] = Field(None, description="Script type: 'standard' or 'uthmani'")
+    script: Optional[Literal["standard", "uthmani"]] = Field(None, description="Script type: 'standard' or 'uthmani'")
     vocalized: Optional[bool] = Field(None, description="Include vocalization (tashkeel)")
     translation: Optional[str] = Field(None, description="Translation ID")
     recitation: Optional[str] = Field(None, description="Recitation ID")
@@ -207,6 +264,7 @@ async def search_post(request: SearchRequest):
         
         # Execute search
         result = alfanous_api.do(flags)
+        result = validate_api_result(result, "search")
         result = make_serializable(result)
         return JSONResponse(content=result)
         
@@ -229,7 +287,7 @@ async def search_get(
     fuzzy: bool = Query(False, description="Enable fuzzy search"),
     view: str = Query("normal", description="View mode: 'minimal', 'normal', 'full', 'statistic', 'linguistic', 'custom'"),
     highlight: str = Query("bold", description="Highlight mode: 'css', 'html', 'bold', 'bbcode'"),
-    script: Optional[str] = Query(None, description="Script type: 'standard' or 'uthmani'"),
+    script: Optional[Literal["standard", "uthmani"]] = Query(None, description="Script type: 'standard' or 'uthmani'"),
     vocalized: Optional[bool] = Query(None, description="Include vocalization (tashkeel)"),
     translation: Optional[str] = Query(None, description="Translation ID"),
     recitation: Optional[str] = Query(None, description="Recitation ID"),
@@ -287,6 +345,7 @@ async def search_get(
         
         # Execute search
         result = alfanous_api.do(flags)
+        result = validate_api_result(result, "search")
         result = make_serializable(result)
         return JSONResponse(content=result)
         
@@ -318,6 +377,7 @@ async def suggest(request: SuggestRequest):
         }
         
         result = alfanous_api.do(flags)
+        result = validate_api_result(result, "suggest")
         result = make_serializable(result)
         return JSONResponse(content=result)
         
@@ -349,6 +409,7 @@ async def get_info_all():
     """
     try:
         result = alfanous_api.get_info("all")
+        result = validate_api_result(result, "show")
         result = make_serializable(result)
         return JSONResponse(content=result)
         
@@ -385,6 +446,7 @@ async def get_info_category(category: str):
     """
     try:
         result = alfanous_api.get_info(category)
+        result = validate_api_result(result, "show")
         result = make_serializable(result)
         return JSONResponse(content=result)
         
