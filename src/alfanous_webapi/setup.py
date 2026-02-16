@@ -6,6 +6,17 @@ Alfanous Web API Setup Script
 """
 
 from setuptools import setup, find_packages
+import os
+
+
+def read_readme():
+    """Read README file with proper resource cleanup."""
+    readme_path = os.path.join(os.path.dirname(__file__), "README.md")
+    if os.path.exists(readme_path):
+        with open(readme_path, encoding='utf-8') as f:
+            return f.read()
+    return ""
+
 
 setup(
     name='alfanous-webapi',
@@ -24,7 +35,7 @@ setup(
     author_email="assem.ch@gmail.com",
     
     description="FastAPI web interface for Alfanous Quranic search API",
-    long_description=open("README.md").read() if __name__ == '__main__' else "",
+    long_description=read_readme(),
     long_description_content_type="text/markdown",
     keywords="quran search api fastapi alfanous web rest",
     url="https://github.com/Alfanous-team/alfanous",
