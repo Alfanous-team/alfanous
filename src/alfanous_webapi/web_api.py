@@ -18,8 +18,7 @@ Usage:
 from typing import Optional, Dict, Any, Union, List, Literal
 from collections.abc import KeysView, ValuesView, ItemsView
 from fastapi import FastAPI, HTTPException, Query
-from fastapi.responses import JSONResponse
-from pydantic import BaseModel, Field, field_validator, ValidationError
+from pydantic import BaseModel, Field, ValidationError
 import json
 import logging
 import alfanous.api as alfanous_api
@@ -69,74 +68,6 @@ class InfoResponse(BaseModel):
     """Model for info API response validation"""
     error: ErrorResponse
     show: Optional[Dict[str, Any]] = Field(None, description="Info data")
-
-
-def _check_validated_response(validated: BaseModel, field_name: str, action: str) -> None:
-    """
-    Helper function to check validated response for errors and required fields.
-    
-    Args:
-        validated: The validated Pydantic model
-        field_name: The name of the field to check (e.g., 'search', 'suggest', 'show')
-        action: The action type for error messages
-        
-    Raises:
-        HTTPException: If validation fails
-    """
-    error = validated.error
-    result_field = getattr(validated, field_name, None)
-    
-    # Check if error code is 0 but result field is missing
-    if error.code == 0 and result_field is None:
-        logger.error(f"{action.capitalize()} result missing '{field_name}' field despite success error code")
-        raise HTTPException(status_code=500, detail=f"Invalid {action} response format")
-    
-    # If there's an error from the API, return it as a bad request
-    if error.code != 0:
-        logger.warning(f"API returned error {error.code}: {error.msg}")
-        raise HTTPException(status_code=400, detail=error.msg)
-
-
-def validate_api_result(result: Dict[str, Any], action: str) -> Dict[str, Any]:
-    """
-    Validate the structure of API results using Pydantic models.
-    
-    Args:
-        result: The result dictionary from Alfanous API
-        action: The action that was performed (search, suggest, show)
-    
-    Returns:
-        The validated result
-        
-    Raises:
-        HTTPException: If the result structure is invalid
-    """
-    try:
-        # Select appropriate Pydantic model based on action
-        if action == "search":
-            validated = SearchResponse(**result)
-            _check_validated_response(validated, "search", action)
-        elif action == "suggest":
-            validated = SuggestResponse(**result)
-            _check_validated_response(validated, "suggest", action)
-        elif action == "show":
-            validated = InfoResponse(**result)
-            _check_validated_response(validated, "show", action)
-        else:
-            logger.error(f"Unknown action type: {action}")
-            raise HTTPException(status_code=500, detail="Invalid action type")
-        
-        return result
-        
-    except ValidationError as e:
-        logger.error(f"Response validation failed: {e}")
-        raise HTTPException(status_code=500, detail="Invalid response format from search engine")
-    except HTTPException:
-        # Re-raise HTTP exceptions as-is
-        raise
-    except Exception as e:
-        logger.exception(f"Unexpected error during validation: {e}")
-        raise HTTPException(status_code=500, detail="Error validating API response")
 
 
 # FastAPI app instance
@@ -247,8 +178,8 @@ async def health_check():
 
 
 # Search endpoint (POST)
-@app.post("/api/search", tags=["Search"])
-async def search_post(request: SearchRequest):
+@app.post("/api/search", response_model=SearchResponse, tags=["Search"])
+async def search_post(request: SearchRequest) -> SearchResponse:
     """
     Search in Quranic verses and translations (POST method).
     
@@ -300,10 +231,23 @@ async def search_post(request: SearchRequest):
         
         # Execute search
         result = alfanous_api.do(flags)
-        result = validate_api_result(result, "search")
         result = make_serializable(result)
-        return JSONResponse(content=result)
         
+        # Convert to Pydantic model - FastAPI will validate and serialize
+        response = SearchResponse(**result)
+        
+        # Check for API errors
+        if response.error.code != 0:
+            logger.warning(f"API returned error {response.error.code}: {response.error.msg}")
+            raise HTTPException(status_code=400, detail=response.error.msg)
+        
+        return response
+        
+    except ValidationError as e:
+        logger.error(f"Response validation failed: {e}")
+        raise HTTPException(status_code=500, detail="Invalid response format from search engine")
+    except HTTPException:
+        raise
     except ValueError as e:
         logger.error(f"Invalid search parameters: {e}")
         raise HTTPException(status_code=400, detail=f"Invalid search parameters: {str(e)}")
@@ -313,7 +257,7 @@ async def search_post(request: SearchRequest):
 
 
 # Search endpoint (GET)
-@app.get("/api/search", tags=["Search"])
+@app.get("/api/search", response_model=SearchResponse, tags=["Search"])
 async def search_get(
     query: str = Query(..., description="Search query in Arabic or Buckwalter transliteration"),
     unit: str = Query("aya", description="Search unit: 'aya', 'word', or 'translation'"),
@@ -333,7 +277,7 @@ async def search_get(
     word_info: Optional[bool] = Query(None, description="Include word information"),
     aya_theme_info: Optional[bool] = Query(None, description="Include verse theme information"),
     aya_stat_info: Optional[bool] = Query(None, description="Include verse statistics"),
-):
+) -> SearchResponse:
     """
     Search in Quranic verses and translations (GET method).
     
@@ -381,10 +325,23 @@ async def search_get(
         
         # Execute search
         result = alfanous_api.do(flags)
-        result = validate_api_result(result, "search")
         result = make_serializable(result)
-        return JSONResponse(content=result)
         
+        # Convert to Pydantic model - FastAPI will validate and serialize
+        response = SearchResponse(**result)
+        
+        # Check for API errors
+        if response.error.code != 0:
+            logger.warning(f"API returned error {response.error.code}: {response.error.msg}")
+            raise HTTPException(status_code=400, detail=response.error.msg)
+        
+        return response
+        
+    except ValidationError as e:
+        logger.error(f"Response validation failed: {e}")
+        raise HTTPException(status_code=500, detail="Invalid response format from search engine")
+    except HTTPException:
+        raise
     except ValueError as e:
         logger.error(f"Invalid search parameters: {e}")
         raise HTTPException(status_code=400, detail=f"Invalid search parameters: {str(e)}")
@@ -394,8 +351,8 @@ async def search_get(
 
 
 # Suggest endpoint
-@app.post("/api/suggest", tags=["Search"])
-async def suggest(request: SuggestRequest):
+@app.post("/api/suggest", response_model=SuggestResponse, tags=["Search"])
+async def suggest(request: SuggestRequest) -> SuggestResponse:
     """
     Get search suggestions and autocompletion.
     
@@ -413,10 +370,23 @@ async def suggest(request: SuggestRequest):
         }
         
         result = alfanous_api.do(flags)
-        result = validate_api_result(result, "suggest")
         result = make_serializable(result)
-        return JSONResponse(content=result)
         
+        # Convert to Pydantic model - FastAPI will validate and serialize
+        response = SuggestResponse(**result)
+        
+        # Check for API errors
+        if response.error.code != 0:
+            logger.warning(f"API returned error {response.error.code}: {response.error.msg}")
+            raise HTTPException(status_code=400, detail=response.error.msg)
+        
+        return response
+        
+    except ValidationError as e:
+        logger.error(f"Response validation failed: {e}")
+        raise HTTPException(status_code=500, detail="Invalid response format from search engine")
+    except HTTPException:
+        raise
     except ValueError as e:
         logger.error(f"Invalid suggest parameters: {e}")
         raise HTTPException(status_code=400, detail=f"Invalid suggest parameters: {str(e)}")
@@ -426,8 +396,8 @@ async def suggest(request: SuggestRequest):
 
 
 # Info endpoint - get all metadata
-@app.get("/api/info", tags=["Info"])
-async def get_info_all():
+@app.get("/api/info", response_model=InfoResponse, tags=["Info"])
+async def get_info_all() -> InfoResponse:
     """
     Get all available metadata information.
     
@@ -445,10 +415,23 @@ async def get_info_all():
     """
     try:
         result = alfanous_api.get_info("all")
-        result = validate_api_result(result, "show")
         result = make_serializable(result)
-        return JSONResponse(content=result)
         
+        # Convert to Pydantic model - FastAPI will validate and serialize
+        response = InfoResponse(**result)
+        
+        # Check for API errors
+        if response.error.code != 0:
+            logger.warning(f"API returned error {response.error.code}: {response.error.msg}")
+            raise HTTPException(status_code=400, detail=response.error.msg)
+        
+        return response
+        
+    except ValidationError as e:
+        logger.error(f"Response validation failed: {e}")
+        raise HTTPException(status_code=500, detail="Invalid response format from search engine")
+    except HTTPException:
+        raise
     except ValueError as e:
         logger.error(f"Invalid info query: {e}")
         raise HTTPException(status_code=400, detail=f"Invalid info query: {str(e)}")
@@ -458,8 +441,8 @@ async def get_info_all():
 
 
 # Info endpoint - get specific category
-@app.get("/api/info/{category}", tags=["Info"])
-async def get_info_category(category: str):
+@app.get("/api/info/{category}", response_model=InfoResponse, tags=["Info"])
+async def get_info_category(category: str) -> InfoResponse:
     """
     Get specific metadata information.
     
@@ -482,10 +465,23 @@ async def get_info_category(category: str):
     """
     try:
         result = alfanous_api.get_info(category)
-        result = validate_api_result(result, "show")
         result = make_serializable(result)
-        return JSONResponse(content=result)
         
+        # Convert to Pydantic model - FastAPI will validate and serialize
+        response = InfoResponse(**result)
+        
+        # Check for API errors
+        if response.error.code != 0:
+            logger.warning(f"API returned error {response.error.code}: {response.error.msg}")
+            raise HTTPException(status_code=400, detail=response.error.msg)
+        
+        return response
+        
+    except ValidationError as e:
+        logger.error(f"Response validation failed: {e}")
+        raise HTTPException(status_code=500, detail="Invalid response format from search engine")
+    except HTTPException:
+        raise
     except ValueError as e:
         logger.error(f"Invalid info category: {e}")
         raise HTTPException(status_code=400, detail=f"Invalid info category: {str(e)}")
