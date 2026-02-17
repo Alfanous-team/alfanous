@@ -4,11 +4,13 @@ The comprehensive test suite for the Alfanous FastAPI web application is located
 
 ## Important Notes
 
-**Optional Tests**: These tests are automatically skipped if FastAPI dependencies are not installed. This allows the core Alfanous test suite to run without requiring web framework dependencies.
+**CI Testing**: These tests run automatically in CI as FastAPI dependencies are installed in the test workflow.
 
-To run these tests, you need to install FastAPI dependencies:
+**Local Development**: These tests are automatically skipped if FastAPI dependencies are not installed locally. This allows developers to run the core Alfanous test suite without requiring web framework dependencies.
+
+To run these tests locally, you need to install FastAPI dependencies:
 ```bash
-pip install fastapi httpx
+pip install fastapi httpx pydantic
 # Or install the full alfanous-webapi package
 pip install alfanous-webapi
 ```
