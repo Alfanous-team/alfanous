@@ -43,7 +43,9 @@ setup(
                                'indexes/word/*',
                                'resources/*']},
 
-    entry_points={'console_scripts': ['alfanous-console = alfanous.console:main', ]},
+    entry_points={'console_scripts': [
+        'alfanous-console = alfanous.console:main',
+    ]},
 
     zip_safe=False,
 
