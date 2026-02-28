@@ -325,10 +325,24 @@ class Raw:
         Show keywords (most frequent or all unique) for a given field.
         
         Parameters via flags:
-        - unit: Search unit ('aya', 'word', 'translation') to query from (default: 'aya')
+        - unit: Search unit to query from (default: 'aya')
+                Valid values: 'aya', 'translation', 'word'
+                Invalid values default to 'aya'
         - field: The field name to query (e.g., 'aya_', 'topic', 'chapter')
+                 Auto-adjusted based on unit if using default 'aya_':
+                 - 'word' unit: defaults to 'normalized' field
+                 - 'translation' unit: defaults to 'text' field
         - mode: 'frequent' for top N most frequent, 'unique' for all unique values (default: 'unique')
         - limit: Number of results for 'frequent' mode (default: 20)
+        
+        Returns:
+        - unit: The search unit used
+        - field: The field queried
+        - mode: The query mode used
+        - keywords: List of keywords (format depends on mode)
+        - count: Number of keywords returned
+        - limit: (only in frequent mode) The limit applied
+        - error: (if error occurred) Error message
         """
         unit = flags.get("unit", "aya")
         field = flags.get("field", "aya_")
