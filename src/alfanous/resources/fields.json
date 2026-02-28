@@ -1179,5 +1179,37 @@
     "unique": null,
     "search_name": "suffix",
     "analyzer": null
+  },
+  {
+    "id": 94,
+    "name": "translation_en_shakir",
+    "name_arabic": "ترجمة_شاكر",
+    "table_name": "aya",
+    "comment": "English translation by Mohammad Habib Shakir",
+    "type": "TEXT",
+    "stored": true,
+    "is_spellchecked": null,
+    "unique": null,
+    "source": "tanzil.net",
+    "search_name": "translation_en_shakir",
+    "analyzer": null,
+    "spelling": false,
+    "field_boost": null
+  },
+  {
+    "id": 95,
+    "name": "translation_en_transliteration",
+    "name_arabic": "ترجمة_صوتية",
+    "table_name": "aya",
+    "comment": "English transliteration of Quran text",
+    "type": "TEXT",
+    "stored": true,
+    "is_spellchecked": null,
+    "unique": null,
+    "source": "tanzil.net",
+    "search_name": "translation_en_transliteration",
+    "analyzer": null,
+    "spelling": false,
+    "field_boost": null
   }
 ]
