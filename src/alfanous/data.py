@@ -1,10 +1,12 @@
 import os
 import json
+from functools import lru_cache
 
 from alfanous import paths
 
 
 
+@lru_cache(maxsize=1)
 def recitations(path=paths.RECITATIONS_LIST_FILE):
     """
     Load recitations metadata from JSON file.
@@ -19,6 +21,7 @@ def recitations(path=paths.RECITATIONS_LIST_FILE):
         return {}
 
 
+@lru_cache(maxsize=1)
 def translations(path=paths.TRANSLATIONS_LIST_FILE):
     """
     Load translations metadata from JSON file.
@@ -33,6 +36,7 @@ def translations(path=paths.TRANSLATIONS_LIST_FILE):
         return {}
 
 
+@lru_cache(maxsize=1)
 def hints(path=paths.HINTS_FILE):
     """
     Load search hints from JSON file.
@@ -47,6 +51,7 @@ def hints(path=paths.HINTS_FILE):
         return {}
 
 
+@lru_cache(maxsize=1)
 def stats(path=paths.STATS_FILE, ref_path=paths.STATS_REFERENCE_FILE):
     """
     Load statistics data from JSON file, creating from reference if needed.
@@ -72,6 +77,7 @@ def stats(path=paths.STATS_FILE, ref_path=paths.STATS_REFERENCE_FILE):
         return json.loads(content)
 
 
+@lru_cache(maxsize=1)
 def information(path=paths.INFORMATION_FILE):
     """
     Load API information from JSON file.
