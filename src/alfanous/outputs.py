@@ -6,6 +6,7 @@ from alfanous.data import *
 from alfanous.constants import QURAN_TOTAL_VERSES
 from alfanous.romanization import transliterate
 from alfanous.misc import locate, find, filter_doubles
+from alfanous.keyword_tracker import get_tracker
 
 STANDARD2UTHMANI = lambda x: std2uth_words.get(x) or x
 
@@ -240,6 +241,14 @@ class Raw:
         output = self._check(0, flags)
         if action == "search":
             assert scan_no_wildcards(query), self._check(2, flags)
+            # Track the search keyword
+            if query:
+                try:
+                    tracker = get_tracker()
+                    tracker.track(query)
+                except Exception as e:
+                    # Don't fail the search if tracking fails
+                    logger.debug(f"Failed to track keyword: {e}")
             output.update(self._search(flags, unit))
         elif action == "suggest":
             output.update(self._suggest(flags, unit))

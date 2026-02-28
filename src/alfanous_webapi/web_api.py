@@ -22,6 +22,7 @@ from pydantic import BaseModel, Field, ValidationError
 import json
 import logging
 import alfanous.api as alfanous_api
+from alfanous.keyword_tracker import get_tracker
 
 
 # Configure logging
@@ -162,6 +163,20 @@ class HealthResponse(BaseModel):
     message: str
 
 
+class KeywordItem(BaseModel):
+    """Model for a single keyword item"""
+    keyword: str = Field(..., description="The search keyword")
+    count: int = Field(..., description="Number of times this keyword was searched")
+    first_searched: str = Field(..., description="ISO timestamp of first search")
+    last_searched: str = Field(..., description="ISO timestamp of last search")
+
+
+class KeywordsResponse(BaseModel):
+    """Response model for keywords endpoint"""
+    keywords: List[KeywordItem] = Field(..., description="List of most searched keywords")
+    total: int = Field(..., description="Total number of keywords returned")
+
+
 class RootResponse(BaseModel):
     """Response model for root endpoint"""
     name: str
@@ -190,6 +205,10 @@ async def root() -> RootResponse:
             "suggest": {
                 "POST": "/api/suggest",
                 "description": "Get search suggestions and autocompletion"
+            },
+            "keywords": {
+                "GET": "/api/keywords",
+                "description": "Get most searched keywords for autocomplete and statistics"
             },
             "info": {
                 "GET": "/api/info",
@@ -399,6 +418,44 @@ async def suggest(request: SuggestRequest) -> SuggestResponse:
     except Exception as e:
         logger.exception("Error processing suggest request")
         raise HTTPException(status_code=500, detail="An error occurred while processing your suggest request")
+
+
+# Keywords endpoint
+@app.get("/api/keywords", response_model=KeywordsResponse, tags=["Search"])
+async def get_keywords(
+    limit: int = Query(10, ge=1, le=100, description="Maximum number of keywords to return"),
+    min_count: int = Query(1, ge=1, description="Minimum search count to include")
+) -> KeywordsResponse:
+    """
+    Get the most searched keywords.
+    
+    This endpoint returns a list of the most frequently searched keywords,
+    which can be used for implementing autocomplete features or displaying
+    search statistics.
+    
+    Args:
+        limit: Maximum number of keywords to return (1-100)
+        min_count: Minimum number of times a keyword must be searched to be included
+    
+    Returns:
+        JSON response with list of most searched keywords, including:
+        - keyword: The search term
+        - count: Number of times searched
+        - first_searched: ISO timestamp of first search
+        - last_searched: ISO timestamp of most recent search
+    """
+    try:
+        tracker = get_tracker()
+        keywords = tracker.get_top_keywords(limit=limit, min_count=min_count)
+        
+        return KeywordsResponse(
+            keywords=keywords,
+            total=len(keywords)
+        )
+        
+    except Exception as e:
+        logger.exception("Error retrieving keywords")
+        raise HTTPException(status_code=500, detail="An error occurred while retrieving keywords")
 
 
 # Info endpoint - get all metadata

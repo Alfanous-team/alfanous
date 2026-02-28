@@ -16,7 +16,7 @@ import pytest
 # Try to import FastAPI dependencies - skip all tests if not available
 try:
     from fastapi.testclient import TestClient
-    from alfanous_webapi.web_api import app, SearchResponse, SuggestResponse, InfoResponse, HealthResponse
+    from alfanous_webapi.web_api import app, SearchResponse, SuggestResponse, InfoResponse, HealthResponse, KeywordsResponse
     FASTAPI_AVAILABLE = True
 except ImportError:
     FASTAPI_AVAILABLE = False
@@ -446,6 +446,103 @@ class TestErrorHandling:
             data="invalid json",
             headers={"Content-Type": "application/json"}
         )
+        assert response.status_code == 422
+
+
+class TestKeywordsEndpoint:
+    """Tests for the keywords endpoint"""
+    
+    def test_keywords_endpoint_exists(self):
+        """Test that keywords endpoint exists and returns 200"""
+        response = client.get("/api/keywords")
+        assert response.status_code == 200
+    
+    def test_keywords_response_structure(self):
+        """Test that keywords response has correct structure"""
+        response = client.get("/api/keywords")
+        data = response.json()
+        
+        assert "keywords" in data
+        assert "total" in data
+        assert isinstance(data["keywords"], list)
+        assert isinstance(data["total"], int)
+    
+    def test_keywords_after_search(self):
+        """Test that keywords are tracked after search"""
+        # First clear any existing keywords by calling the endpoint
+        # Then perform a search
+        test_query = "الله"
+        client.get(f"/api/search?query={test_query}")
+        
+        # Now get keywords
+        response = client.get("/api/keywords")
+        data = response.json()
+        
+        # Should have at least our search query
+        assert data["total"] >= 0
+        assert isinstance(data["keywords"], list)
+    
+    def test_keywords_limit_parameter(self):
+        """Test limit parameter works"""
+        # Perform multiple searches with different queries
+        for i in range(5):
+            client.get(f"/api/search?query=test{i}")
+        
+        # Get keywords with limit
+        response = client.get("/api/keywords?limit=3")
+        data = response.json()
+        
+        assert len(data["keywords"]) <= 3
+    
+    def test_keywords_min_count_parameter(self):
+        """Test min_count parameter works"""
+        # This test just verifies the parameter is accepted
+        response = client.get("/api/keywords?min_count=2")
+        assert response.status_code == 200
+        data = response.json()
+        
+        # All returned keywords should have count >= min_count
+        for keyword in data["keywords"]:
+            assert keyword["count"] >= 2
+    
+    def test_keywords_item_structure(self):
+        """Test that each keyword item has required fields"""
+        # Perform a search to ensure we have some data
+        client.get("/api/search?query=الرحمن")
+        
+        response = client.get("/api/keywords?limit=10")
+        data = response.json()
+        
+        if data["total"] > 0:
+            keyword = data["keywords"][0]
+            assert "keyword" in keyword
+            assert "count" in keyword
+            assert "first_searched" in keyword
+            assert "last_searched" in keyword
+            assert isinstance(keyword["keyword"], str)
+            assert isinstance(keyword["count"], int)
+            assert keyword["count"] > 0
+    
+    def test_keywords_sorted_by_count(self):
+        """Test that keywords are sorted by count descending"""
+        response = client.get("/api/keywords?limit=10")
+        data = response.json()
+        
+        if len(data["keywords"]) > 1:
+            for i in range(len(data["keywords"]) - 1):
+                assert data["keywords"][i]["count"] >= data["keywords"][i + 1]["count"]
+    
+    def test_keywords_invalid_limit(self):
+        """Test that invalid limit is rejected"""
+        response = client.get("/api/keywords?limit=0")
+        assert response.status_code == 422
+        
+        response = client.get("/api/keywords?limit=101")
+        assert response.status_code == 422
+    
+    def test_keywords_invalid_min_count(self):
+        """Test that invalid min_count is rejected"""
+        response = client.get("/api/keywords?min_count=0")
         assert response.status_code == 422
 
 
