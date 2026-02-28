@@ -29,6 +29,9 @@ def scan_no_wildcards(query):
 
 
 class Raw:
+    # Maximum number of derivations to return per word
+    MAX_DERIVATIONS = 20
+    
     DEFAULTS = {
         "minrange": 1,
         "maxrange": 25,
@@ -76,6 +79,7 @@ class Raw:
             "aya": True,
             "facets": None,
             "filter": None,
+            "operation": "vocalize",
         }
     }
 
@@ -91,7 +95,7 @@ class Raw:
     }
 
     DOMAINS = {
-        "action": ["search", "suggest", "show"],
+        "action": ["search", "suggest", "show", "linguistic"],
         "unit": ["aya", "word", "translation"],
         "ident": ["undefined"],
         "platform": ["undefined", "wp7", "s60", "android", "ios", "linux", "window"],
@@ -125,6 +129,7 @@ class Raw:
         "perpage": [],  # range( DEFAULTS["maxrange"] ) , # overridden with range
         "fuzzy": [True, False],
         "aya": [True, False],
+        "operation": ["vocalize", "derive"],
     }
 
     HELPMESSAGES = {
@@ -158,6 +163,7 @@ class Raw:
         "sortedby": "sorting order of results",
         "offset": "starting offset of results",
         "range": "range of results",
+        "operation": "linguistic operation to perform (vocalize or derive)",
         "page": "page number  [override offset]",
         "perpage": "results per page  [override range]",
         "fuzzy": "fuzzy search [exprimental]",
@@ -245,6 +251,8 @@ class Raw:
             output.update(self._suggest(flags, unit))
         elif action == "show":
             output.update(self._show(flags))
+        elif action == "linguistic":
+            output.update(self._linguistic(flags))
         else:
             output.update(self._check(1, flags))
 
@@ -313,6 +321,91 @@ class Raw:
             return {"show": {query: self._all[query]}}
         else:
             return {"show": None}
+
+    def _linguistic(self, flags):
+        """Perform linguistic operations on Arabic text"""
+        query = flags.get("query") or self._defaults["flags"]["query"]
+        operation = flags.get("operation") or self._defaults["flags"]["operation"]
+        
+        if not query:
+            return {"linguistic": {"error": "No text provided"}}
+        
+        from alfanous.Support.pyarabic.main import strip_tashkeel
+        
+        result = {}
+        
+        if operation == "vocalize":
+            # Vocalize the text by looking up each word in the vocalization dictionary
+            words = query.split()
+            vocalized_words = []
+            for word in words:
+                # Remove existing tashkeel before looking up
+                stripped_word = strip_tashkeel(word)
+                vocalized = vocalization_dict.get(stripped_word, word)
+                vocalized_words.append(vocalized)
+            
+            result = {
+                "text": query,
+                "vocalized": " ".join(vocalized_words),
+                "operation": "vocalize"
+            }
+        
+        elif operation == "derive":
+            # Find root and derivations for the text
+            words = query.split()
+            derivations_list = []
+            
+            # Cache derivedict lookups since they don't change
+            derive_words = derivedict.get("word_", [])
+            derive_roots = derivedict.get("root", [])
+            derive_lemmas = derivedict.get("lemma", [])
+            
+            for word in words:
+                # Remove tashkeel for lookup
+                stripped_word = strip_tashkeel(word)
+                
+                # Find root and lemma
+                root = locate(derive_words, derive_roots, stripped_word)
+                lemma = locate(derive_words, derive_lemmas, stripped_word)
+                
+                # Find other words with same lemma or root
+                lemma_derivations = []
+                root_derivations = []
+                
+                if lemma:
+                    lemma_derivations = list(set(find(derive_lemmas, derive_words, lemma)))
+                    # Limit to reasonable number
+                    if len(lemma_derivations) > self.MAX_DERIVATIONS:
+                        lemma_derivations = lemma_derivations[:self.MAX_DERIVATIONS]
+                
+                if root:
+                    root_derivations = list(set(find(derive_roots, derive_words, root)))
+                    # Remove duplicates from lemma derivations
+                    root_derivations = [w for w in root_derivations if w not in lemma_derivations]
+                    # Limit to reasonable number
+                    if len(root_derivations) > self.MAX_DERIVATIONS:
+                        root_derivations = root_derivations[:self.MAX_DERIVATIONS]
+                
+                word_info = {
+                    "word": word,
+                    "lemma": lemma or "",
+                    "root": root or "",
+                    "lemma_derivations": lemma_derivations,
+                    "root_derivations": root_derivations
+                }
+                derivations_list.append(word_info)
+            
+            result = {
+                "text": query,
+                "words": derivations_list,
+                "operation": "derive"
+            }
+        
+        else:
+            result = {"error": f"Unknown operation: {operation}"}
+        
+        return {"linguistic": result}
+
 
     def _suggest(self, flags, unit):
         """ return suggestions for any search unit """

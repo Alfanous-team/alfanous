@@ -2,6 +2,7 @@
 
     Use `alfanous.search` for searching in Quran verses and translations.
     Use `alfanous.get_info` for getting meta info.
+    Use `alfanous.linguistic` for linguistic operations (vocalize, derive).
     Use `alfanous.do` method for search, suggestion and get most useful info.
     """
 
@@ -76,3 +77,15 @@ def get_info(query: str = "all") -> Dict[str, Any]:
     @return: Dictionary of information
     """
     return do({"action": "show", "query": query})
+
+
+def linguistic(text: str, operation: str = "vocalize") -> Dict[str, Any]:
+    """
+    Perform linguistic operations on Arabic text.
+    
+    @param text: Arabic text to process
+    @param operation: Operation to perform ('vocalize' to add diacritics, 'derive' to find roots and derivations)
+    @return: Dictionary of linguistic analysis results
+    """
+    return do({"action": "linguistic", "query": text, "operation": operation})
+
