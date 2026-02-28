@@ -19,6 +19,7 @@ class TestJSONFunctionCaching(unittest.TestCase):
         data.recitations.cache_clear()
         data.translations.cache_clear()
         data.hints.cache_clear()
+        data.stats.cache_clear()
         data.information.cache_clear()
         data.ai_query_translation_rules.cache_clear()
 
@@ -62,6 +63,18 @@ class TestJSONFunctionCaching(unittest.TestCase):
             result2 = data.hints()
             
             assert mock_file.call_count == 1
+            assert result1 is result2
+
+    def test_stats_uses_cache(self):
+        """Test that stats() uses cache on repeated calls."""
+        mock_data = '{"stat1": "value1"}'
+        
+        with patch('builtins.open', mock_open(read_data=mock_data)), \
+             patch('os.path.exists', return_value=True):
+            result1 = data.stats()
+            result2 = data.stats()
+            
+            # File should only be opened once (cache hit on second call)
             assert result1 is result2
 
     def test_information_uses_cache(self):
