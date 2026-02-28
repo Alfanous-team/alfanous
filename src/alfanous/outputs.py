@@ -331,7 +331,12 @@ class Raw:
         """
         field = flags.get("field", "aya_")
         mode = flags.get("mode", "frequent")
-        limit = int(flags.get("limit", 20))
+        
+        # Validate and convert limit parameter
+        try:
+            limit = int(flags.get("limit", 20))
+        except (ValueError, TypeError):
+            limit = 20  # Use default if invalid
         
         result = {
             "field": field,
@@ -348,13 +353,19 @@ class Raw:
                 # Get top N most frequent keywords
                 frequent_words = self.QSE.most_frequent_words(limit, field)
                 result["keywords"] = [
-                    {"word": word, "frequency": int(freq)} 
+                    {"word": word, "frequency": int(freq)}
                     for freq, word in frequent_words
                 ]
                 result["limit"] = limit
                 result["count"] = len(frequent_words)
+        except AttributeError as e:
+            # Handle invalid field names
+            result["error"] = f"Invalid field name '{field}': {str(e)}"
+            result["keywords"] = []
+            result["count"] = 0
         except Exception as e:
-            result["error"] = str(e)
+            # Handle other unexpected errors
+            result["error"] = f"Error retrieving keywords: {str(e)}"
             result["keywords"] = []
             result["count"] = 0
         

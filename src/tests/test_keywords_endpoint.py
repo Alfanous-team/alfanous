@@ -125,3 +125,16 @@ def test_keywords_frequent_subject_field():
         assert 'word' in keyword
         assert 'frequency' in keyword
         assert keyword['frequency'] > 0
+
+
+def test_keywords_invalid_limit_parameter():
+    """Test that invalid limit parameter defaults to 20"""
+    result = api.do({'action': 'show', 'query': 'keywords', 'field': 'aya_', 'limit': 'invalid'})
+    
+    assert 'show' in result
+    assert result['error']['code'] == 0
+    
+    show_data = result['show']
+    assert show_data['limit'] == 20  # Should default to 20
+    assert show_data['count'] == 20
+
