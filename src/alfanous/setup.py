@@ -9,14 +9,41 @@ XXX Index building pre-install script?
 """
 
 import json
+import os
 
 from setuptools import setup
 
-information_file = open("./resources/information.json")
-information = json.loads(information_file.read()) if information_file else {}
-current_version = information.get("version") or 0.7
-current_description = information.get("description") or """ Alfanous is a search engine provide the simple and advanced search in the Holy Qur'an and more features.."""
-current_lib_usage = information.get("lib_usage") or "    $ sudo pip install alfanous"
+# Default values when information.json is missing or incomplete
+DEFAULT_DESCRIPTION = """ Alfanous is a search engine that provides simple and advanced search in the Holy Qur'an and more features.."""
+DEFAULT_LIB_USAGE = "    $ sudo pip install alfanous"
+DEFAULT_VERSION = "1.0"
+
+
+def load_information():
+    """Load description and metadata from information.json.
+    
+    Returns:
+        tuple: (information dict, description string, lib_usage string)
+    """
+    try:
+        with open("./resources/information.json", encoding='utf-8') as f:
+            information = json.load(f)
+        current_description = information.get("description") or DEFAULT_DESCRIPTION
+        current_lib_usage = information.get("lib_usage") or DEFAULT_LIB_USAGE
+        return information, current_description, current_lib_usage
+    except (FileNotFoundError, json.JSONDecodeError):
+        # Fall back to default values if file is missing or invalid
+        return {}, DEFAULT_DESCRIPTION, DEFAULT_LIB_USAGE
+
+
+# Get version from environment variable (set during CI/CD) or fall back to information.json
+current_version = os.environ.get('VERSION') or None
+if not current_version:
+    information, current_description, current_lib_usage = load_information()
+    current_version = information.get("version") or DEFAULT_VERSION
+else:
+    # When VERSION is provided via environment, still read description from information.json
+    _, current_description, current_lib_usage = load_information()
 
 
 setup(
