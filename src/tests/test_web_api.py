@@ -80,6 +80,81 @@ class TestHealthEndpoint:
         # Validate against Pydantic model
         health_response = HealthResponse(**data)
         assert health_response.status == "healthy"
+    
+    def test_health_response_structure(self):
+        """Test that health endpoint returns correct response structure"""
+        response = client.get("/health")
+        data = response.json()
+        assert isinstance(data, dict)
+        assert len(data) == 2  # Should have exactly 2 fields: status and message
+        assert "status" in data
+        assert "message" in data
+    
+    def test_health_response_status_value(self):
+        """Test that health endpoint status field has correct value"""
+        response = client.get("/health")
+        data = response.json()
+        assert data["status"] == "healthy"
+        assert isinstance(data["status"], str)
+    
+    def test_health_response_message_value(self):
+        """Test that health endpoint message field has correct value"""
+        response = client.get("/health")
+        data = response.json()
+        assert data["message"] == "Alfanous API is running"
+        assert isinstance(data["message"], str)
+        assert len(data["message"]) > 0
+    
+    def test_health_response_content_type(self):
+        """Test that health endpoint returns JSON content type"""
+        response = client.get("/health")
+        assert "application/json" in response.headers["content-type"]
+    
+    def test_health_endpoint_accepts_only_get(self):
+        """Test that health endpoint only accepts GET requests"""
+        # POST should return 405 Method Not Allowed
+        response = client.post("/health")
+        assert response.status_code == 405
+        
+        # PUT should return 405 Method Not Allowed
+        response = client.put("/health")
+        assert response.status_code == 405
+        
+        # DELETE should return 405 Method Not Allowed
+        response = client.delete("/health")
+        assert response.status_code == 405
+    
+    def test_health_endpoint_no_query_parameters_needed(self):
+        """Test that health endpoint works without any query parameters"""
+        response = client.get("/health")
+        assert response.status_code == 200
+        data = response.json()
+        assert data["status"] == "healthy"
+    
+    def test_health_endpoint_ignores_query_parameters(self):
+        """Test that health endpoint ignores query parameters"""
+        response = client.get("/health?foo=bar&baz=qux")
+        assert response.status_code == 200
+        data = response.json()
+        assert data["status"] == "healthy"
+        assert data["message"] == "Alfanous API is running"
+    
+    def test_health_multiple_calls_consistent(self):
+        """Test that multiple health check calls return consistent results"""
+        response1 = client.get("/health")
+        response2 = client.get("/health")
+        response3 = client.get("/health")
+        
+        assert response1.status_code == 200
+        assert response2.status_code == 200
+        assert response3.status_code == 200
+        
+        data1 = response1.json()
+        data2 = response2.json()
+        data3 = response3.json()
+        
+        assert data1 == data2 == data3
+        assert data1["status"] == "healthy"
 
 
 class TestSearchEndpoints:
