@@ -415,38 +415,39 @@ class Raw:
                 # This provides better performance and uses standard Whoosh functionality
                 searcher = search_engine._docindex.get_index().searcher(weighting=QScore())
                 
-                # Create facets for the requested field
-                groupedby = Facets()
-                groupedby.add_field(field)
-                
-                # Search all documents
-                results = searcher.search(wquery.Every(), limit=None, groupedby=groupedby)
-                
-                # Get facet groups
-                field_groups = results.groups(field)
-                
-                if mode == "unique":
-                    # Get all unique values for the field
-                    values = list(field_groups.keys())
-                    result["keywords"] = values
-                    result["count"] = len(values)
-                else:  # mode == "frequent"
-                    # Get top N most frequent values with document counts
-                    # Sort by frequency (number of documents) descending
-                    sorted_items = sorted(field_groups.items(), key=lambda x: len(x[1]), reverse=True)
+                try:
+                    # Create facets for the requested field
+                    groupedby = Facets()
+                    groupedby.add_field(field)
                     
-                    # Take top N
-                    top_items = sorted_items[:limit]
+                    # Search all documents
+                    results = searcher.search(wquery.Every(), limit=None, groupedby=groupedby)
                     
-                    result["keywords"] = [
-                        {"word": str(value), "frequency": len(doclist)}
-                        for value, doclist in top_items
-                    ]
-                    result["limit"] = limit
-                    result["count"] = len(top_items)
-                
-                # Close the searcher
-                searcher.close()
+                    # Get facet groups
+                    field_groups = results.groups(field)
+                    
+                    if mode == "unique":
+                        # Get all unique values for the field
+                        values = list(field_groups.keys())
+                        result["keywords"] = values
+                        result["count"] = len(values)
+                    else:  # mode == "frequent"
+                        # Get top N most frequent values with document counts
+                        # Sort by frequency (number of documents) descending
+                        sorted_items = sorted(field_groups.items(), key=lambda x: len(x[1]), reverse=True)
+                        
+                        # Take top N
+                        top_items = sorted_items[:limit]
+                        
+                        result["keywords"] = [
+                            {"word": str(value), "frequency": len(doclist)}
+                            for value, doclist in top_items
+                        ]
+                        result["limit"] = limit
+                        result["count"] = len(top_items)
+                finally:
+                    # Always close the searcher to prevent resource leaks
+                    searcher.close()
             
         except Exception as e:
             # Handle any errors
