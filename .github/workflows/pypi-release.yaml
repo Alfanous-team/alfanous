@@ -40,11 +40,11 @@ jobs:
 import json
 import sys
 try:
-    with open('src/alfanous/resources/information.json', 'r') as f:
+    with open('src/alfanous/resources/information.json', 'r', encoding='utf-8') as f:
         info = json.load(f)
     info['version'] = '${VERSION}'
     info['release'] = '${RELEASE}'
-    with open('src/alfanous/resources/information.json', 'w') as f:
+    with open('src/alfanous/resources/information.json', 'w', encoding='utf-8') as f:
         json.dump(info, f, indent=2, ensure_ascii=False)
         f.write('\n')
     print('Successfully updated information.json')
