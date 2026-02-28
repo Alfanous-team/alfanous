@@ -62,11 +62,11 @@ def arabicrange():
     @return: list of arabic characteres.
     @rtype: unicode;
     
-    >>> expected = list(map( lambda char: chr( char ), range( 0x0600, 0x00653 ) ))
+    >>> expected = list(map(chr, range(0x0600, 0x00653)))
     >>> arabicrange() == expected
     True
     >>> arabicrange() == expected
     True
     """
     if _arabic_range: return _arabic_range
-    else: return list(map( chr, range( 0x0600, 0x00653 ) ))
+    else: return list(map(chr, range(0x0600, 0x00653)))
