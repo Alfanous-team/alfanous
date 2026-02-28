@@ -5,7 +5,7 @@ Please let us know if we missed anyone, thanks :)
 
 ## Maintainers
 
-* Assem BigOther [@assem-ch](https://github.com/assem-ch) (API)
+* Assem [@assem-ch](https://github.com/assem-ch) (API)
 
 ## Contributors
 
