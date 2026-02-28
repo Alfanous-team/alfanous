@@ -80,14 +80,15 @@ class unicode_(str):
     WARNING: This class is kept for backward compatibility but should not be used in new code.
     """
     
-    def __init__(self, *args, **kwargs):
+    def __new__(cls, content=""):
+        """Create a new unicode_ instance with deprecation warning."""
         warnings.warn(
             "unicode_ class is deprecated and not well organized. "
             "Use pyarabic library functions directly for Arabic text processing.",
             DeprecationWarning,
             stacklevel=2
         )
-        super().__init__()
+        return str.__new__(cls, content)
 
     def __eq__( self, other ):
         return self.shakl_compare( self, other )

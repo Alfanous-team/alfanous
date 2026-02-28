@@ -64,10 +64,12 @@ def stats(path=paths.STATS_FILE, ref_path=paths.STATS_REFERENCE_FILE):
             os.makedirs(path_dirpart)
 
         with open(ref_path, "r") as ref_file:
-            with open(path, "w+") as myfile:
-                myfile.write(ref_file.read())
-                myfile.seek(0)
-                return json.load(myfile)
+            content = ref_file.read()
+        
+        with open(path, "w") as myfile:
+            myfile.write(content)
+        
+        return json.loads(content)
 
 
 def information(path=paths.INFORMATION_FILE):
