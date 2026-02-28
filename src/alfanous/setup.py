@@ -21,11 +21,15 @@ DEFAULT_VERSION = 0.7
 
 def load_information():
     """Load description and metadata from information.json"""
-    with open("./resources/information.json", encoding='utf-8') as f:
-        information = json.load(f)
-    current_description = information.get("description") or DEFAULT_DESCRIPTION
-    current_lib_usage = information.get("lib_usage") or DEFAULT_LIB_USAGE
-    return information, current_description, current_lib_usage
+    try:
+        with open("./resources/information.json", encoding='utf-8') as f:
+            information = json.load(f)
+        current_description = information.get("description") or DEFAULT_DESCRIPTION
+        current_lib_usage = information.get("lib_usage") or DEFAULT_LIB_USAGE
+        return information, current_description, current_lib_usage
+    except (FileNotFoundError, json.JSONDecodeError):
+        # Fall back to default values if file is missing or invalid
+        return {}, DEFAULT_DESCRIPTION, DEFAULT_LIB_USAGE
 
 
 # Get version from environment variable (set during CI/CD) or fall back to information.json
