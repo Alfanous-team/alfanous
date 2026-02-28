@@ -13,20 +13,24 @@ import os
 
 from setuptools import setup
 
+
+def load_information():
+    """Load description and metadata from information.json"""
+    with open("./resources/information.json", encoding='utf-8') as f:
+        information = json.load(f) if f else {}
+    current_description = information.get("description") or """ Alfanous is a search engine provides simple and advanced search in the Holy Qur'an and more features.."""
+    current_lib_usage = information.get("lib_usage") or "    $ sudo pip install alfanous"
+    return information, current_description, current_lib_usage
+
+
 # Get version from environment variable (set during CI/CD) or fall back to information.json
 current_version = os.environ.get('VERSION')
 if not current_version:
-    information_file = open("./resources/information.json")
-    information = json.loads(information_file.read()) if information_file else {}
+    information, current_description, current_lib_usage = load_information()
     current_version = information.get("version") or 0.7
-    current_description = information.get("description") or """ Alfanous is a search engine provide the simple and advanced search in the Holy Qur'an and more features.."""
-    current_lib_usage = information.get("lib_usage") or "    $ sudo pip install alfanous"
 else:
     # When VERSION is provided via environment, still read description from information.json
-    information_file = open("./resources/information.json")
-    information = json.loads(information_file.read()) if information_file else {}
-    current_description = information.get("description") or """ Alfanous is a search engine provide the simple and advanced search in the Holy Qur'an and more features.."""
-    current_lib_usage = information.get("lib_usage") or "    $ sudo pip install alfanous"
+    _, current_description, current_lib_usage = load_information()
 
 
 setup(
