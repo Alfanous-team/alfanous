@@ -92,6 +92,7 @@ def information(path=paths.INFORMATION_FILE):
         return {}
 
 
+@lru_cache(maxsize=1)
 def ai_query_translation_rules(path=paths.AI_QUERY_TRANSLATION_RULES_FILE):
     """
     Load AI query translation rules from text file.
@@ -111,6 +112,7 @@ def ai_query_translation_rules(path=paths.AI_QUERY_TRANSLATION_RULES_FILE):
         return {}
 
 
+@lru_cache(maxsize=1)
 def QSE(path=paths.QSE_INDEX):
     """
     Create a Quranic Search Engine instance.
@@ -122,6 +124,7 @@ def QSE(path=paths.QSE_INDEX):
     return QuranicSearchEngine(path)
 
 
+@lru_cache(maxsize=1)
 def TSE(path=paths.TSE_INDEX):
     """
     Create a Translation Search Engine instance.
@@ -133,6 +136,7 @@ def TSE(path=paths.TSE_INDEX):
     return TraductionSearchEngine(path)
 
 
+@lru_cache(maxsize=1)
 def WSE(path=paths.WSE_INDEX):
     """
     Create a Word Search Engine instance.
