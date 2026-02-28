@@ -5,6 +5,7 @@ from alfanous.searching import QSearcher, QReader
 from alfanous.indexing import QseDocIndex, ExtDocIndex, BasicDocIndex
 from alfanous.results_processing import Qhighlight
 from alfanous.query_processing import QuranicParser, StandardParser, FuzzyQuranicParser
+from alfanous.constants import QURAN_TOTAL_VERSES
 
 class BasicSearchEngine:
     def __init__(self, qdocindex, query_parser, main_field, otherfields, qsearcher, qreader, qhighlight):
@@ -34,7 +35,7 @@ class BasicSearchEngine:
 
     # end  __init__
 
-    def search_all(self, querystr, limit=6236, sortedby="score", reverse=False, facets=None, filter_dict=None):
+    def search_all(self, querystr, limit=QURAN_TOTAL_VERSES, sortedby="score", reverse=False, facets=None, filter_dict=None):
         results, terms, searcher = self._searcher.search(querystr, limit=limit, sortedby=sortedby, reverse=reverse, facets=facets, filter_dict=filter_dict)
         return results, list(self._reader.term_stats(terms)), searcher
 
@@ -58,7 +59,7 @@ class BasicSearchEngine:
 
         """
         searcher = self._docindex.get_searcher()()
-        return searcher.find(defaultfield, query,limit=6236), searcher
+        return searcher.find(defaultfield, query,limit=QURAN_TOTAL_VERSES), searcher
 
     def list_values(self, fieldname):
         """ list all stored values of a field  """

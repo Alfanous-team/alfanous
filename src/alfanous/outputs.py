@@ -3,7 +3,7 @@ import re
 
 from alfanous.text_processing import QArabicSymbolsFilter
 from alfanous.data import *
-
+from alfanous.constants import QURAN_TOTAL_VERSES
 from alfanous.romanization import transliterate
 from alfanous.misc import locate, find, filter_doubles
 
@@ -34,7 +34,7 @@ class Raw:
         "maxrange": 25,
         "maxkeywords": 100,
         "results_limit": {
-            "aya": 6236,
+            "aya": QURAN_TOTAL_VERSES,
             "translation": 1000,
             "word": 1000,
         },

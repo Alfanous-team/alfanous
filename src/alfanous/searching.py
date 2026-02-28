@@ -1,5 +1,6 @@
 from alfanous.results_processing import QSort, QScore
-from whoosh.sorting import Facets, FieldFacet
+from alfanous.constants import QURAN_TOTAL_VERSES
+from whoosh.sorting import Facets
 from whoosh import query as wquery
 
 
@@ -52,7 +53,7 @@ class QSearcher:
         self._searcher = docindex.get_index().searcher
         self._qparser = qparser
 
-    def search(self, querystr, limit=6236, sortedby="score", reverse=False, facets=None, filter_dict=None):
+    def search(self, querystr, limit=QURAN_TOTAL_VERSES, sortedby="score", reverse=False, facets=None, filter_dict=None):
         searcher = self._searcher(weighting=QScore())
         query = self._qparser.parse(querystr)
         
