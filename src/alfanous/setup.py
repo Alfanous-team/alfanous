@@ -13,13 +13,18 @@ import os
 
 from setuptools import setup
 
+# Default values when information.json is missing or incomplete
+DEFAULT_DESCRIPTION = """ Alfanous is a search engine provides simple and advanced search in the Holy Qur'an and more features.."""
+DEFAULT_LIB_USAGE = "    $ sudo pip install alfanous"
+DEFAULT_VERSION = 0.7
+
 
 def load_information():
     """Load description and metadata from information.json"""
     with open("./resources/information.json", encoding='utf-8') as f:
-        information = json.load(f) if f else {}
-    current_description = information.get("description") or """ Alfanous is a search engine provides simple and advanced search in the Holy Qur'an and more features.."""
-    current_lib_usage = information.get("lib_usage") or "    $ sudo pip install alfanous"
+        information = json.load(f)
+    current_description = information.get("description") or DEFAULT_DESCRIPTION
+    current_lib_usage = information.get("lib_usage") or DEFAULT_LIB_USAGE
     return information, current_description, current_lib_usage
 
 
@@ -27,7 +32,7 @@ def load_information():
 current_version = os.environ.get('VERSION')
 if not current_version:
     information, current_description, current_lib_usage = load_information()
-    current_version = information.get("version") or 0.7
+    current_version = information.get("version") or DEFAULT_VERSION
 else:
     # When VERSION is provided via environment, still read description from information.json
     _, current_description, current_lib_usage = load_information()
