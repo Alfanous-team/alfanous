@@ -38,7 +38,7 @@ def load_information():
 
 # Get version from environment variable (set during CI/CD) or fall back to information.json
 current_version = os.environ.get('VERSION') or None
-if current_version is None:
+if not current_version:
     information, current_description, current_lib_usage = load_information()
     current_version = information.get("version") or DEFAULT_VERSION
 else:
