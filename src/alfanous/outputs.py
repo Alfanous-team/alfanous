@@ -6,6 +6,9 @@ from alfanous.data import *
 from alfanous.constants import QURAN_TOTAL_VERSES
 from alfanous.romanization import transliterate
 from alfanous.misc import locate, find, filter_doubles
+from whoosh import query as wquery
+from whoosh.sorting import Facets
+from alfanous.results_processing import QScore
 
 STANDARD2UTHMANI = lambda x: std2uth_words.get(x) or x
 
@@ -323,6 +326,7 @@ class Raw:
     def _show_keywords(self, flags):
         """
         Show keywords (most frequent or all unique) for a given field.
+        Uses Whoosh facets for categorical fields and reader methods for text fields.
         
         Parameters via flags:
         - unit: Search unit to query from (default: 'aya')
@@ -381,28 +385,72 @@ class Raw:
                 result["count"] = 0
                 return result
             
-            if mode == "unique":
-                # Get all unique values for the field
-                values = search_engine.list_values(field)
-                result["keywords"] = values
-                result["count"] = len(values)
-            else:  # mode == "frequent"
-                # Get top N most frequent keywords
-                frequent_words = search_engine.most_frequent_words(limit, field)
-                result["keywords"] = [
-                    {"word": word, "frequency": int(freq)}
-                    for freq, word in frequent_words
-                ]
-                result["limit"] = limit
-                result["count"] = len(frequent_words)
-        except AttributeError as e:
-            # Handle invalid field names
-            result["error"] = f"Invalid field name '{field}' for unit '{unit}': {str(e)}"
-            result["keywords"] = []
-            result["count"] = 0
+            # Determine if this is a tokenized text field or a categorical field
+            # TEXT fields are tokenized and we want individual tokens
+            # For KEYWORD, NUMERIC, ID fields we use facets to get unique values
+            schema = search_engine._schema
+            field_obj = schema[field] if field in schema.names() else None
+            
+            from whoosh.fields import TEXT
+            is_text_field = field_obj is not None and isinstance(field_obj, TEXT)
+            
+            if is_text_field:
+                # For text fields, use reader methods to get individual tokens
+                if mode == "unique":
+                    # Get all unique tokens/terms for the field
+                    values = search_engine.list_values(field)
+                    result["keywords"] = values
+                    result["count"] = len(values)
+                else:  # mode == "frequent"
+                    # Get top N most frequent tokens
+                    frequent_words = search_engine.most_frequent_words(limit, field)
+                    result["keywords"] = [
+                        {"word": word, "frequency": int(freq)}
+                        for freq, word in frequent_words
+                    ]
+                    result["limit"] = limit
+                    result["count"] = len(frequent_words)
+            else:
+                # For categorical/keyword fields, use Whoosh facets
+                # This provides better performance and uses standard Whoosh functionality
+                searcher = search_engine._docindex.get_index().searcher(weighting=QScore())
+                
+                # Create facets for the requested field
+                groupedby = Facets()
+                groupedby.add_field(field)
+                
+                # Search all documents
+                results = searcher.search(wquery.Every(), limit=None, groupedby=groupedby)
+                
+                # Get facet groups
+                field_groups = results.groups(field)
+                
+                if mode == "unique":
+                    # Get all unique values for the field
+                    values = list(field_groups.keys())
+                    result["keywords"] = values
+                    result["count"] = len(values)
+                else:  # mode == "frequent"
+                    # Get top N most frequent values with document counts
+                    # Sort by frequency (number of documents) descending
+                    sorted_items = sorted(field_groups.items(), key=lambda x: len(x[1]), reverse=True)
+                    
+                    # Take top N
+                    top_items = sorted_items[:limit]
+                    
+                    result["keywords"] = [
+                        {"word": str(value), "frequency": len(doclist)}
+                        for value, doclist in top_items
+                    ]
+                    result["limit"] = limit
+                    result["count"] = len(top_items)
+                
+                # Close the searcher
+                searcher.close()
+            
         except Exception as e:
-            # Handle other unexpected errors
-            result["error"] = f"Error retrieving keywords: {str(e)}"
+            # Handle any errors
+            result["error"] = f"Error retrieving keywords for field '{field}' in unit '{unit}': {str(e)}"
             result["keywords"] = []
             result["count"] = 0
         
