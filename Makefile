@@ -137,12 +137,12 @@ index_extend:
 
 
 install:
-	perl -p -w -e 's|alfanous.release|$(RELEASE)|g;s|alfanous.version|$(VERSION)|g;' $(API_PATH)alfanous/resources/information.json.in > $(API_PATH)alfanous/resources/information.json
+	@# information.json is pre-committed; no templating needed
 	cd   "$(API_PATH)alfanous" ; $(PYTHON_COMMAND) setup.py install
 
 # python egg for API
 dist:
-	perl -p -w -e 's|alfanous.release|$(RELEASE)|g;s|alfanous.version|$(VERSION)|g;' $(API_PATH)alfanous/resources/information.json.in > $(API_PATH)alfanous/resources/information.json
+	@# information.json is pre-committed; no templating needed
 	cd $(API_PATH)alfanous ; rm -r dist; $(PYTHON_COMMAND) setup.py  bdist_wheel; twine upload dist/* -u assemch
 
 release: dist
