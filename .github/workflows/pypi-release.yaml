@@ -34,6 +34,19 @@ jobs:
           fi
         fi
         RELEASE="${VERSION}"
+        
+        # Update information.json with the extracted version
+        python -c "
+import json
+with open('src/alfanous/resources/information.json', 'r') as f:
+    info = json.load(f)
+info['version'] = '${VERSION}'
+info['release'] = '${RELEASE}'
+with open('src/alfanous/resources/information.json', 'w') as f:
+    json.dump(info, f, indent=2, ensure_ascii=False)
+"
+        
+        echo "Updated information.json with version: ${VERSION}"
 
     - name: Download Quranic resources
       run: |
