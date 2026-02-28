@@ -279,7 +279,7 @@ alfanous/
 ├── store/                 # Quranic data storage
 ├── examples/              # Example scripts
 ├── Makefile              # Build and installation commands
-├── README.rst            # Project documentation
+├── README.md             # Project documentation
 └── CONTRIBUTING.md       # This file
 ```
 
@@ -308,7 +308,7 @@ alfanous/
 
 - Update relevant documentation when adding features
 - Add examples for new functionality
-- Keep README.rst concise - detailed docs can go in separate files
+- Keep README.md concise - detailed docs can go in separate files
 - Use docstrings for in-code documentation
 
 ## Getting Help
@@ -321,7 +321,7 @@ If you need help or have questions:
 
 ## Recognition
 
-All contributors are recognized in our `AUTHORS.rst` file. Thank you for contributing to Alfanous!
+All contributors are recognized in our `AUTHORS.md` file. Thank you for contributing to Alfanous!
 
 ## License
 

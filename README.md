@@ -308,7 +308,7 @@ Alfanous is licensed under the **GNU Affero General Public License v3 or later (
 See [LICENSE](LICENSE) for details.
 
 ## Credits
-* **Contributors**: See [AUTHORS.rst](AUTHORS.rst) and [THANKS.rst](THANKS.rst)
+* **Contributors**: See [AUTHORS.md](AUTHORS.md) and [THANKS.md](THANKS.md)
 
 This project handles sacred religious text (the Holy Qur'an) - please treat the data and code with respect.
 
