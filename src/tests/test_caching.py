@@ -69,12 +69,13 @@ class TestJSONFunctionCaching(unittest.TestCase):
         """Test that stats() uses cache on repeated calls."""
         mock_data = '{"stat1": "value1"}'
         
-        with patch('builtins.open', mock_open(read_data=mock_data)), \
+        with patch('builtins.open', mock_open(read_data=mock_data)) as mock_file, \
              patch('os.path.exists', return_value=True):
             result1 = data.stats()
             result2 = data.stats()
             
             # File should only be opened once (cache hit on second call)
+            assert mock_file.call_count == 1
             assert result1 is result2
 
     def test_information_uses_cache(self):
