@@ -14,6 +14,9 @@ commands = OptionGroup(parser, "Options", "Choose what to do:  ")
 commands.add_option("-x", "--index", dest="index", type="choice", choices=["main", "extend", "word"],
                     help="create  indexes", metavar="TYPE")
 
+commands.add_option("-t", "--translations", dest="translations_path", type="string",
+                    help="path to translations directory (for main index)", metavar="PATH")
+
 commands.add_option("-d", "--download", dest="download", type="choice",
                     choices=["tanzil_simple_clean", "tanzil_uthmani"],
                     help="download Quranic resources", metavar="FIELD")
@@ -36,7 +39,8 @@ if options.index:
         parser.error("Choose SOURCE_PATH and DISTINATION_PATH")
 
     if options.index == "main":
-        T = Transformer(index_path=DESTINATION, resource_path=SOURCE)
+        translations_path = options.translations_path if options.translations_path else None
+        T = Transformer(index_path=DESTINATION, resource_path=SOURCE, translations_path=translations_path)
         ayaSchema = T.build_schema(tablename='aya')
         T.build_docindex(ayaSchema)
 
