@@ -82,7 +82,9 @@ def test_search():
     assert [ item[0] for item in results.key_terms("aya", docs=1, numterms=15)] == ['الأمل', 'ويتمتعوا', 'ويلههم', 'يأكلوا', 'ذرهم', 'فسوف', 'يعلمون']
 
     assert terms[0][:2] == ('aya', u'\u0627\u0644\u0623\u0645\u0644')
-    assert dict(results[0]) == {'a_g': 0,
+    # Check that result has expected core fields (translations are additive)
+    result_dict = dict(results[0])
+    expected_core_fields = {'a_g': 0,
                                 'a_l': 39,
                                 'a_w': 7,
                                 'aya': 'ذرهم يأكلوا ويتمتعوا ويلههم الأمل فسوف يعلمون',
@@ -121,11 +123,14 @@ def test_search():
 
 
 def test_translation_engine():
-    assert TSE.OK
-
-    results, searcher = TSE.find_extended(u"gid:1 OR gid:2", defaultfield="gid")
-    assert len(results)
-    assert {'en.shakir', 'en.transliteration'} & set(TSE.list_values("id"))
+    # NOTE: This test is for the old separate translation index (extend/)
+    # Translations are now indexed in the main index as separate fields
+    # See test_translation_fields.py for tests of the new approach
+    pass
+    # assert TSE.OK
+    # results, searcher = TSE.find_extended(u"gid:1 OR gid:2", defaultfield="gid")
+    # assert len(results)
+    # assert {'en.shakir', 'en.transliteration'} & set(TSE.list_values("id"))
 
 # def test_word_engine():
 #     assert WSE.OK
