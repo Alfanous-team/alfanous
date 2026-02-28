@@ -321,7 +321,7 @@ If you need help or have questions:
 
 ## Recognition
 
-All contributors are recognized in our `AUTHORS.rst` file. Thank you for contributing to Alfanous!
+All contributors are recognized in our `AUTHORS.md` file. Thank you for contributing to Alfanous!
 
 ## License
 
