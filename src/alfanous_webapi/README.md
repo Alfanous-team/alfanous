@@ -13,30 +13,23 @@ A minimal FastAPI application that exposes the Alfanous Quranic search API throu
 
 ## Installation
 
-### Install the web API package
+### Install dependencies
+
+From the `src/alfanous_webapi` directory:
 
 ```bash
-pip install alfanous-webapi
+pip install -r requirements.txt
 ```
 
-This will automatically install `alfanous3` as a dependency along with FastAPI and Uvicorn.
-
-Or install manually:
+Or install dependencies manually:
 
 ```bash
-pip install alfanous3
-pip install alfanous-webapi
+pip install alfanous3 fastapi uvicorn[standard] pydantic
 ```
 
 ## Usage
 
 ### Starting the Server
-
-#### Using the command-line tool:
-
-```bash
-alfanous-server
-```
 
 #### Using Python module:
 

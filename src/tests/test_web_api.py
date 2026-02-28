@@ -20,7 +20,7 @@ try:
     FASTAPI_AVAILABLE = True
 except ImportError:
     FASTAPI_AVAILABLE = False
-    pytestmark = pytest.mark.skip(reason="FastAPI dependencies not installed. Install with: pip install alfanous-webapi or pip install fastapi httpx")
+    pytestmark = pytest.mark.skip(reason="FastAPI dependencies not installed. Install with: pip install -r src/alfanous_webapi/requirements.txt or pip install fastapi httpx pydantic")
 
 
 # Create test client only if FastAPI is available

@@ -8,11 +8,13 @@ The comprehensive test suite for the Alfanous FastAPI web application is located
 
 **Local Development**: These tests are automatically skipped if FastAPI dependencies are not installed locally. This allows developers to run the core Alfanous test suite without requiring web framework dependencies.
 
-To run these tests locally, you need to install FastAPI dependencies:
+To run these tests locally, you need to install the dependencies:
 ```bash
+# Install from requirements.txt
+pip install -r src/alfanous_webapi/requirements.txt
+
+# Or install dependencies manually
 pip install fastapi httpx pydantic
-# Or install the full alfanous-webapi package
-pip install alfanous-webapi
 ```
 
 ## Test Coverage
