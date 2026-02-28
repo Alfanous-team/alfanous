@@ -23,7 +23,7 @@ jobs:
         python -m pip install --upgrade pip
         pip install build twine wheel setuptools pyparsing whoosh
     
-    - name: Generate information.json from template
+    - name: Extract version from tag
       run: |
         VERSION="${GITHUB_REF#refs/tags/v}"
         if [ -z "$VERSION" ] || [ "$VERSION" = "$GITHUB_REF" ]; then
@@ -33,33 +33,8 @@ jobs:
             VERSION="0.0.0-dev"
           fi
         fi
-        RELEASE="${VERSION}"
-        
-        # Update information.json with the extracted version
-        python -c "
-import json
-import sys
-try:
-    with open('src/alfanous/resources/information.json', 'r', encoding='utf-8') as f:
-        info = json.load(f)
-    info['version'] = '${VERSION}'
-    info['release'] = '${RELEASE}'
-    with open('src/alfanous/resources/information.json', 'w', encoding='utf-8') as f:
-        json.dump(info, f, indent=2, ensure_ascii=False)
-        f.write('\n')
-    print('Successfully updated information.json')
-except FileNotFoundError:
-    print('Error: information.json not found', file=sys.stderr)
-    sys.exit(1)
-except json.JSONDecodeError as e:
-    print(f'Error: Invalid JSON in information.json: {e}', file=sys.stderr)
-    sys.exit(1)
-except IOError as e:
-    print(f'Error: Failed to write information.json: {e}', file=sys.stderr)
-    sys.exit(1)
-"
-        
-        echo "Updated information.json with version: ${VERSION}"
+        echo "VERSION=${VERSION}" >> $GITHUB_ENV
+        echo "Extracted version: ${VERSION}"
 
     - name: Download Quranic resources
       run: |
