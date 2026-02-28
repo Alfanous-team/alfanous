@@ -130,19 +130,19 @@ index_all: index_main index_extend #index_word
 	@echo "done;"
 
 index_main:
-	export PYTHONPATH=$(API_PATH) ;	rm -r $(INDEX_PATH)main/; $(PYTHON_COMMAND) $(QIMPORT) -x main $(RESOURCES_PATH) $(INDEX_PATH)main/
+	export PYTHONPATH=$(API_PATH) ;	rm -rf $(INDEX_PATH)main/; $(PYTHON_COMMAND) $(QIMPORT) -x main $(RESOURCES_PATH) $(INDEX_PATH)main/
 
 index_extend:
-	export PYTHONPATH=$(API_PATH) ;	rm -r $(INDEX_PATH)extend/; $(PYTHON_COMMAND) $(QIMPORT) -x extend $(STORE_PATH)Translations/ $(INDEX_PATH)extend/
+	export PYTHONPATH=$(API_PATH) ;	rm -rf $(INDEX_PATH)extend/; $(PYTHON_COMMAND) $(QIMPORT) -x extend $(STORE_PATH)Translations/ $(INDEX_PATH)extend/
 
 
 install:
-	perl -p -w -e 's|alfanous.release|$(RELEASE)|g;s|alfanous.version|$(VERSION)|g;' $(API_PATH)alfanous/resources/information.json.in > $(API_PATH)alfanous/resources/information.json
+	@# information.json is pre-committed; no templating needed
 	cd   "$(API_PATH)alfanous" ; $(PYTHON_COMMAND) setup.py install
 
 # python egg for API
 dist:
-	perl -p -w -e 's|alfanous.release|$(RELEASE)|g;s|alfanous.version|$(VERSION)|g;' $(API_PATH)alfanous/resources/information.json.in > $(API_PATH)alfanous/resources/information.json
+	@# information.json is pre-committed; no templating needed
 	cd $(API_PATH)alfanous ; rm -r dist; $(PYTHON_COMMAND) setup.py  bdist_wheel; twine upload dist/* -u assemch
 
 release: dist
