@@ -16,7 +16,7 @@ from setuptools import setup
 # Default values when information.json is missing or incomplete
 DEFAULT_DESCRIPTION = """ Alfanous is a search engine that provides simple and advanced search in the Holy Qur'an and more features.."""
 DEFAULT_LIB_USAGE = "    $ sudo pip install alfanous"
-DEFAULT_VERSION = 0.7
+DEFAULT_VERSION = "1.0"
 
 
 def load_information():
