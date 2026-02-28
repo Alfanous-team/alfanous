@@ -120,6 +120,14 @@ def test_search():
                                 'uth': 'ذَرهُم يَأكُلوا وَيَتَمَتَّعوا وَيُلهِهِمُ الأَمَلُ فَسَوفَ يَعلَمونَ',
                                 'uth_': 'ذَرْهُمْ يَأْكُلُوا۟ وَيَتَمَتَّعُوا۟ وَيُلْهِهِمُ ٱلْأَمَلُ ۖ '
                                         'فَسَوْفَ يَعْلَمُونَ'}
+    
+    # Verify all expected core fields are present and match (translations are additive)
+    assert all(k in result_dict and result_dict[k] == v for k, v in expected_core_fields.items()), \
+        "Core fields mismatch or missing"
+    
+    # Verify new translation fields are present (additive change)
+    assert 'translation_en_shakir' in result_dict, "Missing translation_en_shakir field"
+    assert 'translation_en_transliteration' in result_dict, "Missing translation_en_transliteration field"
 
 
 def test_translation_engine():
