@@ -40,6 +40,7 @@ python -m alfanous_webapi.web_api
 #### Using uvicorn directly:
 
 ```bash
+cd src/
 uvicorn alfanous_webapi.web_api:app --reload
 ```
 
@@ -263,6 +264,7 @@ All endpoints return JSON responses with the following structure:
 ### Running in Development Mode
 
 ```bash
+cd src/
 uvicorn alfanous_webapi.web_api:app --reload --host 0.0.0.0 --port 8000
 ```
 
