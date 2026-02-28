@@ -86,6 +86,25 @@ def information(path=paths.INFORMATION_FILE):
         return {}
 
 
+def ai_query_translation_rules(path=paths.AI_QUERY_TRANSLATION_RULES_FILE):
+    """
+    Load AI query translation rules from text file.
+    
+    @param path: Path to the AI query translation rules text file
+    @return: Dictionary containing the rules text or empty dict on error
+    """
+    try:
+        with open(path, 'r', encoding='utf-8') as myfile:
+            content = myfile.read()
+            return {
+                "content": content,
+                "length": len(content),
+                "lines": len(content.split('\n'))
+            }
+    except IOError:
+        return {}
+
+
 def QSE(path=paths.QSE_INDEX):
     """
     Create a Quranic Search Engine instance.

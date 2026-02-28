@@ -173,7 +173,8 @@ class Raw:
                  Recitations_list_file=paths.RECITATIONS_LIST_FILE,
                  Translations_list_file=paths.TRANSLATIONS_LIST_FILE,
                  Hints_file=paths.HINTS_FILE,
-                 Information_file=paths.INFORMATION_FILE):
+                 Information_file=paths.INFORMATION_FILE,
+                 AI_Rules_file=paths.AI_QUERY_TRANSLATION_RULES_FILE):
         """
 		initialize the search engines
 		"""
@@ -187,6 +188,7 @@ class Raw:
         self._hints = hints(Hints_file)
         ##
         self._information = information(Information_file)
+        self._ai_query_translation_rules = ai_query_translation_rules(AI_Rules_file)
         ##
         # self._stats = Configs.stats( Stats_file )
         # enable it if you need statistics , disable it you prefer performance
@@ -226,7 +228,8 @@ class Raw:
             "errors": self._errors,
             "domains": self._domains,
             "help_messages": self._helpmessages,
-            "roots": self._roots
+            "roots": self._roots,
+            "ai_query_translation_rules": self._ai_query_translation_rules
         }
 
     def do(self, flags):
