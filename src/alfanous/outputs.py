@@ -6,6 +6,9 @@ from alfanous.data import *
 from alfanous.constants import QURAN_TOTAL_VERSES
 from alfanous.romanization import transliterate
 from alfanous.misc import locate, find, filter_doubles
+from whoosh import query as wquery
+from whoosh.sorting import Facets
+from alfanous.results_processing import QScore
 
 STANDARD2UTHMANI = lambda x: std2uth_words.get(x) or x
 
@@ -314,8 +317,145 @@ class Raw:
             return {"show": self._all}
         elif query in self._all:
             return {"show": {query: self._all[query]}}
+        elif query == "keywords":
+            # Handle keywords query - get top frequent or all unique keywords
+            return {"show": self._show_keywords(flags)}
         else:
             return {"show": None}
+
+    def _show_keywords(self, flags):
+        """
+        Show keywords (most frequent or all unique) for a given field.
+        Uses Whoosh facets for categorical fields and reader methods for text fields.
+        
+        Parameters via flags:
+        - unit: Search unit to query from (default: 'aya')
+                Valid values: 'aya', 'translation', 'word'
+                Invalid values default to 'aya'
+        - field: The field name to query (e.g., 'aya_', 'topic', 'chapter')
+                 Auto-adjusted based on unit if using default 'aya_':
+                 - 'word' unit: defaults to 'normalized' field
+                 - 'translation' unit: defaults to 'text' field
+        - mode: 'frequent' for top N most frequent, 'unique' for all unique values (default: 'unique')
+        - limit: Number of results for 'frequent' mode (default: 20)
+        
+        Returns:
+        - unit: The search unit used
+        - field: The field queried
+        - mode: The query mode used
+        - keywords: List of keywords (format depends on mode)
+        - count: Number of keywords returned
+        - limit: (only in frequent mode) The limit applied
+        - error: (if error occurred) Error message
+        """
+        unit = flags.get("unit", "aya")
+        field = flags.get("field", "aya_")
+        mode = flags.get("mode", "unique")
+        
+        # Select the appropriate search engine based on unit
+        if unit == "word":
+            search_engine = self.WSE
+            if field == "aya_":  # Use default field for word index
+                field = "normalized"
+        elif unit == "translation":
+            search_engine = self.TSE
+            if field == "aya_":  # Use default field for translation index
+                field = "text"
+        else:  # unit == "aya" or any other value defaults to QSE
+            search_engine = self.QSE
+            unit = "aya"  # Normalize unit name
+        
+        # Validate and convert limit parameter
+        try:
+            limit = int(flags.get("limit", 20))
+        except (ValueError, TypeError):
+            limit = 20  # Use default if invalid
+        
+        result = {
+            "unit": unit,
+            "field": field,
+            "mode": mode
+        }
+        
+        try:
+            # Check if search engine is properly initialized
+            if not search_engine.OK:
+                result["error"] = f"Search engine for unit '{unit}' is not available"
+                result["keywords"] = []
+                result["count"] = 0
+                return result
+            
+            # Determine if this is a tokenized text field or a categorical field
+            # TEXT fields are tokenized and we want individual tokens
+            # For KEYWORD, NUMERIC, ID fields we use facets to get unique values
+            schema = search_engine._schema
+            field_obj = schema[field] if field in schema.names() else None
+            
+            from whoosh.fields import TEXT
+            is_text_field = field_obj is not None and isinstance(field_obj, TEXT)
+            
+            if is_text_field:
+                # For text fields, use reader methods to get individual tokens
+                if mode == "unique":
+                    # Get all unique tokens/terms for the field
+                    values = search_engine.list_values(field)
+                    result["keywords"] = values
+                    result["count"] = len(values)
+                else:  # mode == "frequent"
+                    # Get top N most frequent tokens
+                    frequent_words = search_engine.most_frequent_words(limit, field)
+                    result["keywords"] = [
+                        {"word": word, "frequency": int(freq)}
+                        for freq, word in frequent_words
+                    ]
+                    result["limit"] = limit
+                    result["count"] = len(frequent_words)
+            else:
+                # For categorical/keyword fields, use Whoosh facets
+                # This provides better performance and uses standard Whoosh functionality
+                searcher = search_engine._docindex.get_index().searcher(weighting=QScore())
+                
+                try:
+                    # Create facets for the requested field
+                    groupedby = Facets()
+                    groupedby.add_field(field)
+                    
+                    # Search all documents
+                    results = searcher.search(wquery.Every(), limit=None, groupedby=groupedby)
+                    
+                    # Get facet groups
+                    field_groups = results.groups(field)
+                    
+                    if mode == "unique":
+                        # Get all unique values for the field
+                        values = list(field_groups.keys())
+                        result["keywords"] = values
+                        result["count"] = len(values)
+                    else:  # mode == "frequent"
+                        # Get top N most frequent values with document counts
+                        # Sort by frequency (number of documents) descending
+                        sorted_items = sorted(field_groups.items(), key=lambda x: len(x[1]), reverse=True)
+                        
+                        # Take top N
+                        top_items = sorted_items[:limit]
+                        
+                        result["keywords"] = [
+                            {"word": str(value), "frequency": len(doclist)}
+                            for value, doclist in top_items
+                        ]
+                        result["limit"] = limit
+                        result["count"] = len(top_items)
+                finally:
+                    # Always close the searcher to prevent resource leaks
+                    searcher.close()
+            
+        except Exception as e:
+            # Handle any errors
+            result["error"] = f"Error retrieving keywords for field '{field}' in unit '{unit}': {str(e)}"
+            result["keywords"] = []
+            result["count"] = 0
+        
+        return result
 
     def _suggest(self, flags, unit):
         """ return suggestions for any search unit """
