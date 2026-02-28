@@ -469,8 +469,7 @@ class TestKeywordsEndpoint:
     
     def test_keywords_after_search(self):
         """Test that keywords are tracked after search"""
-        # First clear any existing keywords by calling the endpoint
-        # Then perform a search
+        # Perform a search
         test_query = "الله"
         client.get(f"/api/search?query={test_query}")
         

@@ -136,8 +136,8 @@ class KeywordTracker:
                 if data["count"] >= min_count
             ]
             
-            # Sort by count descending, then by last searched
-            filtered.sort(key=lambda x: (-x["count"], x["last_searched"]), reverse=False)
+            # Sort by count descending (negative for descending), then by last searched ascending
+            filtered.sort(key=lambda x: (-x["count"], x["last_searched"]))
             
             return filtered[:limit]
     

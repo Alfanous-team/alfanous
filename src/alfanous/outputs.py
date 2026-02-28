@@ -12,6 +12,9 @@ STANDARD2UTHMANI = lambda x: std2uth_words.get(x) or x
 
 FALSE_PATTERN = '^false|no|off|0$'
 
+# Configure logger for this module
+logger = logging.getLogger(__name__)
+
 
 ## a function to decide what is True and what is false
 def IS_FLAG(flags, key):
