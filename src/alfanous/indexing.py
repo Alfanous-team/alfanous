@@ -1,5 +1,6 @@
 from whoosh.filedb.filestore import FileStorage
 from whoosh import index
+from alfanous.constants import QURAN_TOTAL_VERSES
 
 
 class BasicDocIndex:
@@ -57,7 +58,7 @@ class BasicDocIndex:
         @type doc: dict
 
         """
-        writer = self.index.writer()
+        writer = self._ix.writer()
         writer.add_document(**doc)
         writer.commit()
 
@@ -104,7 +105,7 @@ class QseDocIndex(BasicDocIndex):
                + str(self._ix.doc_count()) + ">"
 
     def verify(self):
-        return len(self) == 6236
+        return len(self) == QURAN_TOTAL_VERSES
 
 
 class ExtDocIndex(BasicDocIndex):

@@ -5,6 +5,7 @@ from alfanous.searching import QSearcher, QReader
 from alfanous.indexing import QseDocIndex, ExtDocIndex, BasicDocIndex
 from alfanous.results_processing import Qhighlight
 from alfanous.query_processing import QuranicParser, StandardParser, FuzzyQuranicParser
+from alfanous.constants import QURAN_TOTAL_VERSES
 
 class BasicSearchEngine:
     def __init__(self, qdocindex, query_parser, main_field, otherfields, qsearcher, qreader, qhighlight):
@@ -34,22 +35,61 @@ class BasicSearchEngine:
 
     # end  __init__
 
-    def search_all(self, querystr, limit=6236, sortedby="score", reverse=False, facets=None, filter_dict=None):
+    def search_all(self, querystr, limit=QURAN_TOTAL_VERSES, sortedby="score", reverse=False, facets=None, filter_dict=None):
+        """
+        Perform a search in the index.
+        
+        @param querystr: The search query string
+        @param limit: Maximum number of results to return
+        @param sortedby: Field to sort results by
+        @param reverse: Whether to reverse the sort order
+        @param facets: Facets to group results by
+        @param filter_dict: Filters to apply to the search
+        @return: Tuple of (results, term_stats, searcher)
+        """
         results, terms, searcher = self._searcher.search(querystr, limit=limit, sortedby=sortedby, reverse=reverse, facets=facets, filter_dict=filter_dict)
         return results, list(self._reader.term_stats(terms)), searcher
 
     def most_frequent_words(self, nb, fieldname):
+        """
+        Get the most frequent words in a field.
+        
+        @param nb: Number of words to return
+        @param fieldname: Field to search in
+        @return: List of (frequency, word) tuples
+        """
         return list([ (x[0], x[1].decode('utf-8')) for x in self._reader.reader.most_frequent_terms(fieldname, nb)])
 
     def suggest_all(self, querystr):
+        """
+        Get search suggestions for a query.
+        
+        @param querystr: The query string to get suggestions for
+        @return: List of suggested queries
+        """
         return self._searcher.suggest(querystr)
 
     def autocomplete(self, querystr):
+        """
+        Get autocomplete suggestions for the last word in a query.
+        
+        @param querystr: The query string to autocomplete
+        @return: Dict with 'base' (all but last word) and 'completion' (suggestions for last word)
+        """
         return { "base": "".join(querystr.split()[:-1]),
                  "completion": self._reader.autocomplete(querystr.split()[-1])
                  }
 
     def highlight(self, text, terms, highlight_type="css", strip_vocalization=True):
+        """
+        Highlight search terms in text.
+        
+        @param text: The text to highlight
+        @param terms: The terms to highlight
+        @param highlight_type: Type of highlighting ('css', 'bold', etc.)
+        @param strip_vocalization: Whether to strip vocalization marks
+        @return: Highlighted text
+        """
         return self._highlight(text, terms, highlight_type, strip_vocalization)
 
     def find_extended(self, query, defaultfield):
@@ -58,7 +98,7 @@ class BasicSearchEngine:
 
         """
         searcher = self._docindex.get_searcher()()
-        return searcher.find(defaultfield, query,limit=6236), searcher
+        return searcher.find(defaultfield, query,limit=QURAN_TOTAL_VERSES), searcher
 
     def list_values(self, fieldname):
         """ list all stored values of a field  """
@@ -68,6 +108,11 @@ class BasicSearchEngine:
             return []
 
     def __call__(self):
+        """
+        Check if the search engine is properly initialized.
+        
+        @return: True if OK, False otherwise
+        """
         return self.OK
 
 
