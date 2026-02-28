@@ -19,9 +19,6 @@ jobs:
     - name: Install web API dependencies
       run: |
         pip install fastapi httpx pydantic
-    - name: Generate information.json for tests
-      run: |
-        perl -p -w -e 's|alfanous.release|0.7.33Kahraman|g;s|alfanous.version|0.7.33|g;' src/alfanous/resources/information.json.in > src/alfanous/resources/information.json
     - name: Run build
       run: |
         make build

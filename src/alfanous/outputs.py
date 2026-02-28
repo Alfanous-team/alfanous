@@ -171,7 +171,6 @@ class Raw:
                  TSE_index=paths.TSE_INDEX,
                  WSE_index=paths.WSE_INDEX,
                  Recitations_list_file=paths.RECITATIONS_LIST_FILE,
-                 Translations_list_file=paths.TRANSLATIONS_LIST_FILE,
                  Hints_file=paths.HINTS_FILE,
                  Information_file=paths.INFORMATION_FILE):
         """
