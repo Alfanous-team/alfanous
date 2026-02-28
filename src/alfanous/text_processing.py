@@ -1,6 +1,6 @@
 
-
 import re
+import warnings
 
 from whoosh.analysis import  RegexTokenizer, Filter  # LowercaseFilter, StandardAnalyzer,
 from alfanous.Support.pyarabic.main import strip_tashkeel, strip_tatweel, strip_shadda, normalize_spellerrors, \
@@ -11,6 +11,9 @@ from alfanous.constants import INVERTEDSHAPING
 
 
 class QSpaceTokenizer(RegexTokenizer):
+    """
+    Custom tokenizer for Quranic text that splits on whitespace.
+    """
     def __init__(self, expression=r"[^ \t\r\n]+"):
         super(QSpaceTokenizer, self).__init__(expression=expression)
 
@@ -18,7 +21,16 @@ class QSpaceTokenizer(RegexTokenizer):
 
 
 class QArabicSymbolsFilter(Filter):
-    """        """
+    """
+    Whoosh filter for normalizing Arabic text symbols.
+    
+    Handles Arabic text normalization including:
+    - Shaping (lamalef, tatweel)
+    - Tashkeel (vocalization marks)
+    - Spelling errors
+    - Hamza normalization
+    - Uthmani symbols
+    """
 
     def __init__(self, shaping=True, tashkil=True, spellerrors=False, hamza=False, shadda=False, uthmani_symbols=False):
         self._shaping = shaping
@@ -59,9 +71,23 @@ def Gword_tamdid(aya):
 
 
 class unicode_(str):
-    """    a subclass of unicode that handle al-tashkil
-    @deprecated: its not well organized
-     """
+    """
+    A subclass of str that handles Arabic tashkeel (vocalization) comparison.
+    
+    @deprecated: This class is not well organized and may be removed in a future version.
+                 Consider using pyarabic library functions directly for Arabic text processing.
+    
+    WARNING: This class is kept for backward compatibility but should not be used in new code.
+    """
+    
+    def __init__(self, *args, **kwargs):
+        warnings.warn(
+            "unicode_ class is deprecated and not well organized. "
+            "Use pyarabic library functions directly for Arabic text processing.",
+            DeprecationWarning,
+            stacklevel=2
+        )
+        super().__init__()
 
     def __eq__( self, other ):
         return self.shakl_compare( self, other )
