@@ -1,5 +1,4 @@
-#!/usr/bin/python2
-# -*- coding=utf-8 -*-
+#!/usr/bin/env python3
 
 # ------------
 # Description:
@@ -39,7 +38,7 @@ def order( archar ):
     @return: arabic order.
     @rtype: integer;
     """
-    if AlphabeticOrder.has_key( archar ):
+    if archar in AlphabeticOrder:
         return AlphabeticOrder[archar]
     else: return 0
 
@@ -52,10 +51,10 @@ def name( archar ):
     @return: arabic name.
     @rtype: unicode;
     """
-    if NAMES.has_key( archar ):
+    if archar in NAMES:
         return NAMES[archar]
     else:
-        return u''
+        return ''
 
 def arabicrange():
     """return a list of arabic characteres .
@@ -63,11 +62,11 @@ def arabicrange():
     @return: list of arabic characteres.
     @rtype: unicode;
     
-    >>> expected = map( lambda char: unichr( char ), range( 0x0600, 0x00653 ) )
+    >>> expected = list(map( lambda char: chr( char ), range( 0x0600, 0x00653 ) ))
     >>> arabicrange() == expected
     True
     >>> arabicrange() == expected
     True
     """
     if _arabic_range: return _arabic_range
-    else: return map( unichr, range( 0x0600, 0x00653 ) )
+    else: return list(map( chr, range( 0x0600, 0x00653 ) ))
