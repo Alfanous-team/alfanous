@@ -314,8 +314,51 @@ class Raw:
             return {"show": self._all}
         elif query in self._all:
             return {"show": {query: self._all[query]}}
+        elif query == "keywords":
+            # Handle keywords query - get top frequent or all unique keywords
+            return {"show": self._show_keywords(flags)}
         else:
             return {"show": None}
+
+    def _show_keywords(self, flags):
+        """
+        Show keywords (most frequent or all unique) for a given field.
+        
+        Parameters via flags:
+        - field: The field name to query (e.g., 'aya_', 'topic', 'chapter')
+        - mode: 'frequent' for top N most frequent, 'unique' for all unique values (default: 'frequent')
+        - limit: Number of results for 'frequent' mode (default: 20)
+        """
+        field = flags.get("field", "aya_")
+        mode = flags.get("mode", "frequent")
+        limit = int(flags.get("limit", 20))
+        
+        result = {
+            "field": field,
+            "mode": mode
+        }
+        
+        try:
+            if mode == "unique":
+                # Get all unique values for the field
+                values = self.QSE.list_values(field)
+                result["keywords"] = values
+                result["count"] = len(values)
+            else:  # mode == "frequent" (default)
+                # Get top N most frequent keywords
+                frequent_words = self.QSE.most_frequent_words(limit, field)
+                result["keywords"] = [
+                    {"word": word, "frequency": int(freq)} 
+                    for freq, word in frequent_words
+                ]
+                result["limit"] = limit
+                result["count"] = len(frequent_words)
+        except Exception as e:
+            result["error"] = str(e)
+            result["keywords"] = []
+            result["count"] = 0
+        
+        return result
 
     def _suggest(self, flags, unit):
         """ return suggestions for any search unit """
