@@ -1,670 +1,356 @@
 .. image:: https://github.com/Alfanous-team/alfanous/workflows/tests/badge.svg
+   :target: https://github.com/Alfanous-team/alfanous/actions
 
 ============
 Alfanous API
 ============
-=====
-Usage
-=====
-Install it from PyPI:
+
+**Alfanous** is a Quranic search engine API that provides simple and advanced search capabilities for the Holy Qur'an. It enables developers to build applications that search through Quranic text in Arabic, with support for Buckwalter transliteration, advanced query syntax, and rich metadata.
+
+Features
+========
+
+* **Powerful Search**: Search Quranic verses with simple queries or advanced Boolean logic
+* **Arabic Support**: Full support for Arabic text and Buckwalter transliteration
+* **Rich Metadata**: Access verse information, translations, recitations, and linguistic data
+* **Flexible API**: Use as a Python library or RESTful web service
+* **Faceted Search**: Aggregate results by Sura, Juz, topics, and more
+* **Multiple Output Formats**: Customize output with different views and highlight styles
+
+==========
+Quickstart
+==========
+
+Installation
+------------
+
+Install from PyPI using pip:
 
 .. code-block:: sh
 
     $ pip install alfanous3
 
+Basic Usage
+-----------
 
-You can use it:
+Python Library
+^^^^^^^^^^^^^^
 
 .. code-block:: python
 
     >>> from alfanous import api
+    
+    # Simple search for a word
     >>> api.search(u"الله")
-    >>> api.do({"action":"search","query":u"الله"})
-    >>> api.do({"action":"search","query":u"Allh"}) # Buckwalter transliteration
+    
+    # Advanced search with options
+    >>> api.do({"action": "search", "query": u"الله", "page": 1, "perpage": 10})
+    
+    # Search using Buckwalter transliteration
+    >>> api.do({"action": "search", "query": u"Allh"})
+    
+    # Get suggestions
+    >>> api.do({"action": "suggest", "query": u"الح"})
+    
+    # Get metadata information
+    >>> api.do({"action": "show", "query": "translations"})
 
-You can use it also from the web service:
+Web Service
+^^^^^^^^^^^
 
-http://alfanous.org/api/search?query=الله
+You can also use the public web service:
 
-http://alfanous.org/api/search?query=Allh
+* Search: http://alfanous.org/api/search?query=الله
+* With transliteration: http://alfanous.org/api/search?query=Allh
 
+Or run your own web service locally (see `alfanous_webapi <src/alfanous_webapi/README.md>`_).
 
---------------
-Flags
---------------
+Quick Examples
+^^^^^^^^^^^^^^
 
-======== ==================== ================= ================ ============================================ ================= ========================================================================================================================================================================
- number    flag               related action    related unit     description                                   default value    accepted values
--------- -------------------- ----------------- ---------------- -------------------------------------------- ----------------- ------------------------------------------------------------------------------------------------------------------------------------------------------------------------
- 1         **action**          <none>            <none>           action to perform                             "search"         search | suggest | show
- 2         unit                search, suggest   <none>           search unit                                   "aya"            aya | word | translation
- 2         ident               <all>             <all>            identifier of requester   [experimental]      "undefined"      undefined
- 3         platform            <all>             <all>            platform used by requester                    "undefined"      undefined | wp7 | s60 | android | ios | linux | window
- 4         domain              <all>             <all>            web domain of requester if applicable         "undefined"      \*
- 5a        **query**           search,suggest    <all>            query attached to action                       ""              \*
- 5b        **query**           show              <all>            query attached to action                       ""              all | translations |recitations | information | hints | surates | chapters | defaults | flags | fields | fields_reverse | errors | domains | help_messages | roots
- 6         highlight           search            <all>            highlight method                              "css"            css | html | genshi | bold | bbcode
- 7         script              search            aya, word        script of aya text                            "standard"       standard | uthmani
- 8         vocalized           search            aya, word        enable vocalization of aya text               "True"           True | False
- 9         recitation          search            aya              recitation id                                 "1"              1 to 30
- 10        translation         search            aya, trans       translation id                                "None"           \*
- 11        romanization        search            aya, word        type of romanization                          "none"           none | buckwalter | iso | arabtex
- 12a       view                search            aya, word        pre-defined configuration for view            "custom"         minimal | normal | full | statistic | linguistic | custom
- 12b       view                search            translation      pre-defined configuration for view            "custom"         minimal | normal | full | custom
- 13        prev_aya            search            aya              enable previous aya retrieving                "False"          True | False
- 14        next_aya            search            aya              enable next aya retrieving                    "False"          True | False
- 15        sura_info           search            aya              enable sura information retrieving            "True"           True | False
- 16        sura_stat_info      search            aya              enable sura stats retrieving                  "False"          True | False
- 17        word_info           search            aya, word        enable word information retrieving            "True"           True | False
- 17a       word_synonyms       search            aya              enable retrieving of keyword synonyms         "False"          True | False
- 17b       word_derivations    search            aya              enable retrieving of keyword derivations      "True"           True | False
- 17c       word_vocalizations  search            aya              enable retrieving of keyword vocalizations    "True"           True | False
- 18        aya_position_info   search            aya              enable aya position information retrieving    "True"           True | False
- 19        aya_theme_info      search            aya              enable aya theme information retrieving       "True"           True | False
- 20        aya_stat_info       search            aya              enable aya stat information retrieving        "True"           True | False
- 21        aya_sajda_info      search            aya              enable aya sajda information retrieving       "True"           True | False
- 22        annotation_word     search            aya, word        enable query terms annotations retrieving     "False"          True | False
- 23        annotation_aya      search            aya              enable aya words annotations retrieving       "False"          True | False
- 24        sortedby            search            aya              sorting order of results                      "score"          total | score | mushaf | tanzil | subject
- 25        offset              search            <all>            starting offset of results                    "1"              1 to 6236
- 26        range               search            <all>            range of results                              "10"             1 to 25
- 27        page                search            <all>            page number  [override offset]                "1"              1 to 6236
- 28        perpage             search            <all>            results per page  [override range]            "10"             1 to 25
- 29        fuzzy               search            aya              fuzzy search [exprimental]                          "False"          True | False
- 30        aya                 search            word,trans       enable retrieving of aya text                    "True"          True | False
-
-======== ==================== ================= ================ ============================================ ================= ========================================================================================================================================================================
-
------------------------
-Advanced Query Examples
------------------------
-
-Aya Search:
-
-*  Simple search: الحمد
-*  Phrases : "الحمد لله"
-*  Logical relations - ANDNOT : (الصلاة - الزكاة)
-*  Logical relations - AND :   الصلاة + الزكاة
-*  Logical relations - OR : الصلاة | الزكاة
-*  Joker \* :   \*نبي\*
-*  Joker \? :   نعم؟
-*  Fielded search :      سورة:يس  ( look for other Fields_  )
-*  Fielded search (2) :  سجدة:نعم
-*  Intervals :       رقم_السورة:[1 الى 5] و الله
-*  Partial vocalization :      آية_:'مَن'
-*  Tuples (root,type= أداة | اسم | فعل) as: {قول،اسم}
-*  Derivations - lemma :      >مالك
-*  Derivations - root :       >>مالك
-
---------------
-Facet Search
---------------
-
-Faceted search allows you to get aggregated counts of results grouped by fields like sura, juz, or chapter:
+Search for phrases:
 
 .. code-block:: python
 
-    >>> from alfanous import api
-    
-    # Search with facets by sura_id
-    >>> results = api.search(query="الله", facets="sura_id")
-    >>> print(f"Total: {results['search']['interval']['total']}")
-    >>> for facet in results['search']['facets']['sura_id'][:5]:
-    ...     print(f"Sura {facet['value']}: {facet['count']} occurrences")
-    
-    # Search with multiple facets
-    >>> results = api.search(query="الصلاة", facets="sura_id,juz,chapter")
-    
-    # Filter by sura and get facets
-    >>> results = api.search(query="sura_id:2", facets="chapter")
+    >>> api.search(u'"الحمد لله"')
 
-**Filtering Without Modifying Query**
-
-You can filter results by field values using the ``filter`` parameter, keeping your search query clean:
+Boolean search (AND, OR, NOT):
 
 .. code-block:: python
 
-    >>> from alfanous import api
-    
-    # Filter by sura without modifying query
-    >>> results = api.search(query="الله", filter={"sura_id": 2})
-    
-    # Multiple filters
-    >>> results = api.search(query="الله", filter={"sura_id": 2, "aya_id": [1, 2, 3]})
-    
-    # Filter + facets
-    >>> results = api.search(query="الله", filter={"juz": 1}, facets="sura_id")
-    
-    # String format (field:value)
-    >>> results = api.search(query="الله", filter="sura_id:2")
+    >>> api.search(u'الصلاة + الزكاة')    # AND
+    >>> api.search(u'الصلاة | الزكاة')    # OR
+    >>> api.search(u'الصلاة - الزكاة')    # NOT
 
-Using the web service:
+Fielded search:
 
-.. code-block:: sh
+.. code-block:: python
 
-    # Get facets for search results
-    http://alfanous.org/api/search?query=الله&facets=sura_id
-    
-    # Get multiple facets
-    http://alfanous.org/api/search?query=الصلاة&facets=sura_id,juz
-    
-    # Filter results
-    http://alfanous.org/api/search?query=الله&filter=sura_id:2
+    >>> api.search(u'سورة:يس')           # Search in Sura Yasin
+    >>> api.search(u'سجدة:نعم')          # Search verses with sajda
+
+Wildcard search:
+
+.. code-block:: python
+
+    >>> api.search(u'*نبي*')             # Words containing "نبي"
+
+Faceted search (aggregate by fields):
+
+.. code-block:: python
+
+    >>> api.do({
+    ...     "action": "search",
+    ...     "query": u"الله",
+    ...     "facets": "sura_id,juz"
+    ... })
+
+=============
+Documentation
+=============
+
+API Reference
+-------------
+
+Core Functions
+^^^^^^^^^^^^^^
+
+* ``api.search(query, **options)`` - Search Quran verses
+* ``api.do(params)`` - Unified interface for all actions (search, suggest, show)
+* ``api.get_info(category)`` - Get metadata information
+
+Search Parameters
+^^^^^^^^^^^^^^^^^
+
+Common parameters for ``api.do()`` with ``action="search"``:
+
+* ``query`` (str): Search query (required)
+* ``unit`` (str): Search unit - "aya", "word", or "translation" (default: "aya")
+* ``page`` (int): Page number (default: 1)
+* ``perpage`` (int): Results per page, 1-100 (default: 10)
+* ``sortedby`` (str): Sort order - "score", "mushaf", "tanzil", "subject" (default: "score")
+* ``view`` (str): Output view - "minimal", "normal", "full", "statistic", "linguistic" (default: "normal")
+* ``highlight`` (str): Highlight style - "css", "html", "bold", "bbcode" (default: "css")
+* ``script`` (str): Text script - "standard" or "uthmani" (default: "standard")
+* ``vocalized`` (bool): Include Arabic vocalization (default: True)
+* ``translation`` (str): Translation ID to include
+* ``recitation`` (str): Recitation ID to include (1-30, default: "1")
+* ``fuzzy`` (bool): Enable fuzzy search (default: False)
+* ``facets`` (str): Comma-separated list of fields for faceted search
+* ``filter`` (dict): Filter results by field values
+
+For a complete list of parameters and options, see the `detailed documentation <#advanced-features>`_.
+
+Advanced Features
+-----------------
+
+Query Syntax
+^^^^^^^^^^^^
+
+Alfanous supports advanced query syntax:
+
+* **Phrases**: Use quotes - ``"الحمد لله"``
+* **Boolean AND**: Use ``+`` - ``الصلاة + الزكاة``
+* **Boolean OR**: Use ``|`` - ``الصلاة | الزكاة``
+* **Boolean NOT**: Use ``-`` - ``الصلاة - الزكاة``
+* **Wildcards**: Use ``*`` for multiple chars, ``?`` for single char - ``*نبي*``, ``نعم؟``
+* **Fielded Search**: Use field name - ``سورة:يس``, ``سجدة:نعم``
+* **Ranges**: Use ``[X الى Y]`` - ``رقم_السورة:[1 الى 5]``
+* **Partial Vocalization**: Search with some diacritics - ``آية_:'مَن'``
+* **Root/Lemma**: Use ``>>`` for root, ``>`` for lemma - ``>>مالك``, ``>مالك``
+* **Tuples**: Use ``{root,type}`` - ``{قول،اسم}``
+
+Faceted Search
+^^^^^^^^^^^^^^
+
+Faceted search allows you to aggregate search results by fields:
+
+.. code-block:: python
+
+    >>> result = api.do({
+    ...     "action": "search",
+    ...     "query": u"الله",
+    ...     "facets": "sura_id,juz,chapter"
+    ... })
+    >>> print(result["search"]["facets"])
 
 Available facet fields:
 
-* **sura_id** - Group by Sura (chapter) number
-* **juz** - Group by Juz (part) number
-* **chapter** - Group by main topic/chapter
-* **topic** - Group by subtopic
-* **sura_type** - Group by Meccan/Medinan classification
+* ``sura_id`` - Sura (chapter) number (1-114)
+* ``juz`` - Juz (part) number (1-30)
+* ``hizb`` - Hizb (section) number
+* ``chapter`` - Main topic/chapter
+* ``topic`` - Subtopic
+* ``sura_type`` - Meccan/Medinan classification
 
+Filtering Results
+^^^^^^^^^^^^^^^^^
 
-Translation Search:
-
-* Exact search: god
-* Phrase search: "seven heavens"
-* Logical relations - OR:	prayer ANDNOT charity
-* Logical relations - AND: prayer AND charity
-* Logical relations - OR:	prayer OR charity
-* Wildcards - Joker \*: pray*
-* Wildcards - Joker \?: produc?
-* Fielded search: 	lang:fr
-* Fielded search (2) : author:Shakir
-
-------
-Fields
-------
-* Aya Search Fields:
-
-===== ==================== =================== =================== ============================================================
- n     عربي                 English             Values              Description
------ -------------------- ------------------- ------------------- ------------------------------------------------------------
- 1     رقم                  gid                 1 to 6236           Global order of Aya in the whole Quran
- 2     رقم_الآية             aya_id              1 to 300            order of Aya inside its Sura
- 3     آية                  aya                 Text                Aya non-vocalized standard text ( used for search)
- 4     آية_                 aya_                Text                Aya vocalized standard text ( used for show/search)
- 5     عثماني               uth                 Text                Aya vocalized uthmani text ( used for show/search)
- 6     عثماني_              uth_                Text                Aya vocalized uthmani text ( used for show)
- 7     موضوع                subject             Text                Thematic Division: **Chapter** > **Topic** > **Subtopic**
- 8     فصل                  chapter             Text                Thematic Division: **Chapter** > Topic > Subtopic
- 9     فرع                  topic               Text                Thematic Division: Chapter > **Topic** > Subtopic
- 10    باب                  subtopic            Text                Thematic Division:  Chapter > Topic > **Subtopic**
- 11    رقم_السورة           sura_id             1 to 114            Order of  Sura in Mus-haf
- 12    سورة                 sura_arabic         Text                Arabic Name of Sura
- 12+   سورة_إنجليزي          sura_english        Text                English Name of Sura
- 12+   سورة_تهجئة            sura                Text                Romanized Name of Sura
- 13    نوع_السورة           sura_type_arabic    مدنية|مكية          Revelation place of Sura [Arabic]
- 13+   نوع_السورة_إنجليزي    sura_type           Meccan|Medinan      Revelation place of Sura [English]
- 14    ترتيب_السورة         sura_order          1 to 114            Revelation order of Sura
- 15    جزء                  juz                 1 to 30             Structural Division : **Juz** > Hizb  > Rub
- 16    حزب                  hizb                1 to 60             Structural Division : Juz > **Hizb** > Rub
- 17    نصف                  nisf                1 to 2              Deprecated
- 18    ربع                  rub                 1 to 4              Structural Division : Juz > Hizb  > **Rub**
- 19    صفحة                 page                Number              Structural Division : Page
- 19+   صفحة_هندي            page_IN             Number              Structural Division : Page (INDIAN MUSHAF)
- 20    منزل                 manzil              1 to 7              Structural Division : **Manzil** > Ruku
- 21    ركوع                 ruku                Number              Structural Division : Manzil > **Ruku**
- 22    سجدة                 sajda               نعم | لا             Test existence of a Sajda
- 23    رقم_السجدة           sajda_id            1 | 14              Order of the Sajda if exist
- 24    نوع_السجدة           sajda_type          واجبة|مستحبة        Type of the Sajda if exist
- 25    ح_س                  s_l                 Number              Number of **letters** in **Sura**
- 26    ك_س                  s_w                 Number              Number of **words** in **Sura**
- 27    ج_س                  s_g                 Number              Number of **God's names** in **Sura**
- 28    آ_س                  s_a                 Number              Number of **Ayas** in **Sura**
- 29    ر_س                  s_r                 Number              Number of **Ruku-s** in **Sura**
- 30    ح_آ                  a_l                 Number              Number of **letters** in **Aya**
- 31    ك_آ                  a_w                 Number              Number of **words** in **Aya**
- 32    ج_آ                  a_g                 Number              Number of **God's names** in **Aya**
-===== ==================== =================== =================== ============================================================
-
-
-----------------
-SortedBy Options
-----------------
-* Aya Search:
-========== =================================================================================
- Option     Description
----------- ---------------------------------------------------------------------------------
- score      The relevance of the results compared to the query keywords
- mushaf     The default order of ayas in Mus-haf
- tanzil     The revelation order
- subject    The alphabetic order of the values for subjects fields
- ayalenght  The length of ayah from the shortest to the longest
- FIELD      The numerical order or alphabetic order of a costum field (see Fields_ )
-
-========== =================================================================================
-
-
---------------
-Schema Samples
---------------
-* Aya Search:
-
-Suggestions
-^^^^^^^^^^^
-flags:
+Filter search results by field values:
 
 .. code-block:: python
 
-    {
-        "action"="suggest",
-        "query"="مءصدة"
-    }
+    >>> api.do({
+    ...     "action": "search",
+    ...     "query": u"الله",
+    ...     "filter": {"sura_id": "2"}  # Only from Sura Al-Baqarah
+    ... })
 
-response:
+Search Fields
+^^^^^^^^^^^^^
 
-.. code-block:: python
+Available fields for fielded search:
 
-    {
-    "suggest": [
-                  ["\u0645\u0621\u0635\u062f\u0629",
-                      ["\u0645\u0642\u062a\u0635\u062f\u0629", "\u0645\u0624\u0635\u062f\u0629"]
-                  ]
-                ],
-    "error": {
-                "msg": "success ## action=suggest ; query=\u0645\u0621\u0635\u062f\u0629",
-                "code": 0
-               }
-    }
+* ``سورة`` (sura) - Sura name
+* ``رقم_السورة`` (sura_id) - Sura number
+* ``رقم_الآية`` (aya_id) - Verse number
+* ``جزء`` (juz) - Juz number
+* ``حزب`` (hizb) - Hizb number
+* ``صفحة`` (page) - Page number in Mushaf
+* ``سجدة`` (sajda) - Has prostration
+* ``موضوع`` (subject) - Subject/theme
+* ``فصل`` (chapter) - Chapter
+* ``باب`` (subtopic) - Subtopic
+* ``نوع_السورة`` (sura_type) - Sura type (Meccan/Medinan)
 
-Results
-^^^^^^^
-flags:
-
-.. code-block:: python
-
-    {
-       "action":"search",
-       "query": "الكوثر",
-       "sortedby":"score",
-       "page": 1,
-       "word_info":True,
-       "highlight":"css",
-       "script": "standard",
-       "prev_aya": True,
-       "next_aya": True,
-       "sura_info": True,
-       "aya_position_info":  True,
-       "aya_theme_info":  True,
-       "aya_stat_info":  True,
-       "aya_sajda_info":  True,
-       "annotation_word": True,
-       "annotation_aya": True,
-       "translation":"None",
-       "recitation": 1
-
-     }
-
-response:
+For the complete field list, call:
 
 .. code-block:: python
 
-    {
+    >>> api.do({"action": "show", "query": "fields"})
 
-        "search": {
-                    "runtime": 1.0951571464538574,
-                    "interval": {
-                                    "start": 1,
-                                    "total": 1,
-                                    "end": 1
-                                }
-                    "words": {
-                                "global": {
-                                            "nb_words": 1,
-                                            "nb_matches": 1,
-                                            "nb_vocalizations": 1,
-                                            },
-                                "individual": {
+Output Views
+^^^^^^^^^^^^
 
-				                                "1": {
-				                                        "word": "\u0627\u0644\u0643\u0648\u062b\u0631",
-				                                        "nb_matches": 1,
-				                                        "nb_ayas": 1,
-				                                        "nb_vocalizations": 1,
-				                                        "vocalizations": ["\u0627\u0644\u0652\u0643\u064e\u0648\u0652\u062b\u064e\u0631\u064e"],
-				                                      },
-				                               },
+Different views provide different levels of detail:
 
-                             },
+* **minimal** - Basic verse text and identifier
+* **normal** - Verse text with essential metadata
+* **full** - All available information
+* **statistic** - Include statistical information
+* **linguistic** - Include linguistic analysis
 
-                    "ayas": {
-                                "1": {
-
-                                            "identifier": {
-                                                                "gid": 6205,
-                                                                "aya_id": 1,
-                                                                "sura_id": 108,
-                                                                "sura_name": "\u0627\u0644\u0643\u0648\u062b\u0631",
-
-                                                             },
-                                            "aya": {
-                                                    "id": 1,
-                                                    "text": "\u0625\u0650\u0646\u0651\u064e\u0627 \u0623\u064e\u0639\u0652\u0637\u064e\u064a\u0652\u0646\u064e\u0627\u0643\u064e <span class=\"match term0\">\u0627\u0644\u0652\u0643\u064e\u0648\u0652\u062b\u064e\u0631\u064e</span>",
-                                                    "recitation": "http://www.everyayah.com/data/Abdul_Basit_Murattal_64kbps/108001.mp3",
-                                                    "translation": null,
-                                                    "prev_aya": {
-                                                                    "id": 7,
-                                                                    "sura": "\u0627\u0644\u0645\u0627\u0639\u0648\u0646",
-                                                                    "text": "\u0648\u064e\u064a\u064e\u0645\u0652\u0646\u064e\u0639\u064f\u0648\u0646\u064e \u0627\u0644\u0652\u0645\u064e\u0627\u0639\u064f\u0648\u0646\u064e",
-                                                                },
-                                                    "next_aya": {
-                                                                    "id": 2,
-                                                                    "sura": "\u0627\u0644\u0643\u0648\u062b\u0631",
-                                                                    "text": "\u0641\u064e\u0635\u064e\u0644\u0651\u0650 \u0644\u0650\u0631\u064e\u0628\u0651\u0650\u0643\u064e \u0648\u064e\u0627\u0646\u0652\u062d\u064e\u0631\u0652",
-                                                                },
-                                                    },
-
-
-                                            "sura": {
-                                                        "id": 108,
-                                                        "name": "\u0627\u0644\u0643\u0648\u062b\u0631",
-                                                        "type": "\u0645\u0643\u064a\u0629",
-                                                        "order": 15,
-                                                        "ayas": 3,
-                                                        "stat": {
-                                                                    "words": 10,
-                                                                    "letters": 42,
-                                                                    "godnames": 0,
-
-                                                                  },
-                                                    },
-                                            "theme": {
-                                                                "chapter": "\u0623\u0631\u0643\u0627\u0646 \u0627\u0644\u0625\u0633\u0644\u0627\u0645 ",
-                                                                "topic": "\u0627\u0644\u062d\u062c \u0648\u0627\u0644\u0639\u0645\u0631\u0629 ",
-                                                                "subtopic": null
-                                                      },
-
-
-                                            "position": {
-                                                            "rub": 0,
-                                                            "manzil": 7,
-                                                            "ruku": 550,
-                                                            "hizb": 60,
-                                                            "page": 602
-                                                        },
-                                            "sajda": {
-                                                        "exist": false,
-                                                        "id": null,
-                                                        "type": null
-                                                     },
-
-                                            "stat": {
-                                                        "letters": 16,
-                                                        "godnames": 0,
-                                                        "words": 3
-                                                    },
-                                            "annotations": {
-                                                                "1": {
-                                                                        "arabicroot": null,
-                                                                        "arabicmood": null,
-                                                                        "number": null,
-                                                                        "spelled": "\u0627\u0646\u0627\u0653",
-                                                                        "aspect": null,
-                                                                        "word_gid": 75871,
-                                                                        "word_id": 1,
-                                                                        "mood": null,
-                                                                        "arabicspecial": "\u0625\u0650\u0646\u0651",
-                                                                        "state": null,
-                                                                        "arabiclemma": "\u0625\u0650\u0646\u0651",
-                                                                        "gid": 116333,
-                                                                        "type": "Particles",
-                                                                        "aya_id": 1,
-                                                                        "arabictoken": null,
-                                                                        "form": null,
-                                                                        "pos": "Accusative particle",
-                                                                        "arabiccase": "\u0645\u0646\u0635\u0648\u0628",
-                                                                        "part": "\u062c\u0630\u0639",
-                                                                        "normalized": "\u0625\u0646\u0627\u0653",
-                                                                        "case": "Accusative case",
-                                                                        "sura_id": 108,
-                                                                        "word": "\u0625\u0650\u0646\u0651\u064e\u0627\u0653",
-                                                                        "derivation": null,
-                                                                        "arabicpos": "\u062d\u0631\u0641 \u0646\u0635\u0628",
-                                                                        "person": null,
-                                                                        "token": null,
-                                                                        "gender": null,
-                                                                        "voice": null,
-                                                                        "order": 1
-                                                                     },
-                                                                "2": {
-                                                                        "arabicroot": "\u0639\u0637\u0648",
-                                                                        "arabicmood": null,
-                                                                        "number": "\u062c\u0645\u0639",
-                                                                        "spelled": "\u0627\u0639\u0637\u064a\u0646\u0670\u0643",
-                                                                        "aspect": "Perfect verb",
-                                                                        "word_gid": 75872,
-                                                                        "word_id": 2,
-                                                                        "mood": null,
-                                                                        "arabicspecial": null,
-                                                                        "state": null,
-                                                                        "arabiclemma": null,
-                                                                        "gid": 116335,
-                                                                        "type": "Verbs",
-                                                                        "aya_id": 1,
-                                                                        "arabictoken": null,
-                                                                        "form": "Fourth form",
-                                                                        "pos": "Verb",
-                                                                        "arabiccase": null,
-                                                                        "part": "\u062c\u0630\u0639",
-                                                                        "normalized": "\u0623\u0639\u0637\u064a\u0646\u0670\u0643",
-                                                                        "case": null,
-                                                                        "sura_id": 108,
-                                                                        "word": "\u0623\u064e\u0639\u0652\u0637\u064e\u064a\u0652\u0646\u064e\u0670\u0643\u064e",
-                                                                        "derivation": null,
-                                                                        "arabicpos": "\u0641\u0639\u0644",
-                                                                        "person": "\u0645\u062a\u0643\u0644\u0645",
-                                                                        "token": null,
-                                                                        "gender": "\u0645\u0630\u0651\u0643\u0631",
-                                                                        "voice": null,
-                                                                        "order": 1
-                                                                     },
-                                                                "3": {
-                                                                        "arabicroot": null,
-                                                                        "arabicmood": null,
-                                                                        "number": null,
-                                                                        "spelled": "\u0671\u0644\u0643\u0648\u062b\u0631",
-                                                                        "aspect": null,
-                                                                        "word_gid": 75873,
-                                                                        "word_id": 3,
-                                                                        "mood": null,
-                                                                        "arabicspecial": null,
-                                                                        "state": null,
-                                                                        "arabiclemma": null,
-                                                                        "gid": 116337,
-                                                                        "type": "determiner",
-                                                                        "aya_id": 1,
-                                                                        "arabictoken": "\u0627\u0644",
-                                                                        "form": null,
-                                                                        "pos": null,
-                                                                        "arabiccase": null,
-                                                                        "part": "\u0633\u0627\u0628\u0642",
-                                                                        "normalized": "\u0671\u0644\u0643\u0648\u062b\u0631",
-                                                                        "case": null,
-                                                                        "sura_id": 108,
-                                                                        "word": "\u0671\u0644\u0652\u0643\u064e\u0648\u0652\u062b\u064e\u0631\u064e",
-                                                                        "derivation": null,
-                                                                        "arabicpos": null,
-                                                                        "person": null,
-                                                                        "token": "al",
-                                                                        "gender": null,
-                                                                        "voice": null,
-                                                                        "order": 1
-                                                                     }
-                                                            },
-                                                },
-                            },
-                    "translation_info": {},
-                    },
-
-        "error": {
-                    "code": 0,
-                    "msg": "success ## action=search ; query=\u0627\u0644\u0643\u0648\u062b\u0631",
-                 }
-        }
-
-
-Translations
-^^^^^^^^^^^
-TODO
-
-
-
-Recitations
-^^^^^^^^^^^
-
-flags:
+Example:
 
 .. code-block:: python
 
-    {
-        "action"="show",
-        "query"="recitations"
-    }
+    >>> api.do({
+    ...     "action": "search",
+    ...     "query": u"الله",
+    ...     "view": "full",
+    ...     "word_info": True,
+    ...     "aya_theme_info": True
+    ... })
 
-response (sample):
+Metadata Access
+^^^^^^^^^^^^^^^
 
-.. code-block:: python
-
-      {
-          "show": {
-              "recitations": {
-                  "45": {
-                      "bitrate": "192kbps",
-                      "name": "English/Ibrahim Walk TEST",
-                      "subfolder": "English/Ibrahim_Walk_192kbps_TEST"
-                  },
-                  "54": {
-                      "bitrate": "128kbps",
-                      "name": "Salah Al Budair",
-                      "subfolder": "Salah_Al_Budair_128kbps"
-                  }
-
-
-              }
-          },
-          "error": {
-              "msg": "success ## action=show ; query=recitations",
-              "code": 0
-          }
-      }
-
-
-Fields
-^^^^^^
-
-flags:
+Get various metadata using the "show" action:
 
 .. code-block:: python
 
-    {
-        "action"="show",
-        "query"="fields"
-    }
+    # Get list of available translations
+    >>> api.do({"action": "show", "query": "translations"})
+    
+    # Get list of recitations
+    >>> api.do({"action": "show", "query": "recitations"})
+    
+    # Get Sura information
+    >>> api.do({"action": "show", "query": "surates"})
+    
+    # Get search fields
+    >>> api.do({"action": "show", "query": "fields"})
+    
+    # Get default values
+    >>> api.do({"action": "show", "query": "defaults"})
 
-response:
+========
+Examples
+========
 
-.. code-block:: python
+The `examples/ <examples/>`_ directory contains example scripts demonstrating various features:
 
-      {
-          "show": {
-              "fields": {
-                  "جزء": "juz",
-                  "عثماني ": "uth",
-                  "نوع_السورة": "sura_type",
-                  "رقم_السجدة": "sajda_id",
-                  "صفحة": "page",
-                  "ربع": "rub",
-                  "ر_س": "s_r",
-                  "ركوع": "ruku",
-                  "رقم_السورة": "sura_id",
-                  "آ_س": "s_a",
-                  "آية_": "aya_",
-                  "موضوع": "subject",
-                  "ج_س": "s_g",
-                  "ك_آ": "a_w",
-                  "فصل": "chapter",
-                  "ح_آ": "a_l",
-                  "سورة": "sura",
-                  "فرع": "topic",
-                  "آية": "aya",
-                  "رقم_الآية": "aya_id",
-                  "عثماني_": "uth_",
-                  "ك_س": "s_w",
-                  "نوع_السجدة": "sajda_type",
-                  "رقم": "gid",
-                  "باب": "subtopic",
-                  "نصف": "nisf",
-                  "ح_س": "s_l",
-                  "حزب": "hizb",
-                  "منزل": "manzil",
-                  "ج_آ": "a_g",
-                  "سجدة": "sajda",
-                  "ترتيب_السورة": "sura_order"
-              }
-          },
-          "error": {
-              "msg": "success ## action=show ; query=fields",
-              "code": 0
-          }
-      }
+* **facet_search_examples.py** - Faceted search and filtering examples
 
+See `examples/README.md <examples/README.md>`_ for more information.
 
-=======
-Hacking
-=======
------
-Build
------
+=============
+Web Interface
+=============
 
-The API uses many critical resources that must be downloaded and/or prepared to be used. To do that, just run this command in the root path of the project
+Alfanous includes a FastAPI-based web service for RESTful access. See `alfanous_webapi/README.md <src/alfanous_webapi/README.md>`_ for:
 
-#. Install all building dependencies: `pyparsing <http://pyparsing.wikispaces.com/>`_, `epydoc <http://epydoc.sourceforge.net/>`_,
-   `sphinx <http://sphinx.pocoo.org/>`_.
+* Installation and setup
+* API endpoints
+* Request/response examples
+* Interactive API documentation (Swagger UI)
 
-   * (ubuntu 12.04): 
-      
-     .. code-block:: sh
-     
-        $ sudo apt-get install python-qt4 qt4-dev-tools python-qt4-dev pyqt4-dev-tools
-        $ sudo apt-get install python-distutils-extra
-        $ sudo easy_install pyparsing epydoc sphinx
-
-
-
-
-#. Run the build command:
-
-   .. code-block:: sh
-        
-        $ cd ../../
-        $ make build
-
-
-
-For more details check  `Makefile <https://github.com/Alfanous-team/alfanous/blob/master/Makefile>`_
-
-
--------
-Install
--------
-To install the API from the source (After Build_ ):
+Quick start:
 
 .. code-block:: sh
 
-    $ sudo python setup.py install
+    $ pip install alfanous3 fastapi uvicorn
+    $ cd src/
+    $ uvicorn alfanous_webapi.web_api:app --reload
 
-A console interface will  be installed automatically with the API:
+Then visit http://localhost:8000/docs for interactive documentation.
+
+=============
+Contributing
+=============
+
+We welcome contributions! See `CONTRIBUTING.md <CONTRIBUTING.md>`_ for:
+
+* Setting up a development environment
+* Building from source
+* Running tests
+* Submitting pull requests
+* Code style guidelines
+
+Quick development setup:
 
 .. code-block:: sh
 
-    $ alfanous-console -h
-    usage: alfanous-console [flags]
+    # Clone the repository
+    $ git clone https://github.com/Alfanous-team/alfanous.git
+    $ cd alfanous
+    
+    # Install dependencies
+    $ pip install pyparsing whoosh pytest
+    
+    # Build indexes (required for development)
+    $ make build
+    
+    # Run tests
+    $ pytest -vv --rootdir=src/
 
+=======
+Support
+=======
 
+* **GitHub Issues**: https://github.com/Alfanous-team/alfanous/issues
+* **Mailing List**: alfanous@googlegroups.com
+* **Website**: http://alfanous.org
 
-**note**: if you are looking for alfanous legacy code, you can find it under `legacy` branch
+=======
+License
+=======
 
+Alfanous is licensed under the **GNU Affero General Public License v3 or later (AGPLv3+)**.
 
+See `LICENSE <LICENSE>`_ for details.
 
+=======
+Credits
+=======
 
+* **Main Developer**: Assem Chelli
+* **Contributors**: See `AUTHORS.rst <AUTHORS.rst>`_ and `THANKS.rst <THANKS.rst>`_
+
+This project handles sacred religious text (the Holy Qur'an) - please treat the data and code with respect.
+
+======
+Legacy
+======
+
+If you are looking for the legacy Alfanous code, you can find it under the ``legacy`` branch.
