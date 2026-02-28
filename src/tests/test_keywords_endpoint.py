@@ -7,7 +7,7 @@ from alfanous import api
 
 
 def test_keywords_top_frequent_default():
-    """Test getting top 20 most frequent keywords in default field (aya_)"""
+    """Test getting all unique keywords in default field (aya_) by default"""
     result = api.do({'action': 'show', 'query': 'keywords'})
     
     assert 'show' in result
@@ -15,25 +15,18 @@ def test_keywords_top_frequent_default():
     
     show_data = result['show']
     assert show_data['field'] == 'aya_'
-    assert show_data['mode'] == 'frequent'
-    assert show_data['limit'] == 20
-    assert show_data['count'] == 20
-    assert len(show_data['keywords']) == 20
+    assert show_data['mode'] == 'unique'
+    assert show_data['count'] == 17574  # Total unique words in aya_ field
+    assert len(show_data['keywords']) == 17574
     
-    # Check structure of keywords
-    first_keyword = show_data['keywords'][0]
-    assert 'word' in first_keyword
-    assert 'frequency' in first_keyword
-    assert isinstance(first_keyword['frequency'], int)
-    
-    # Check that the most frequent word is correct
-    assert first_keyword['word'] == 'مِنْ'
-    assert first_keyword['frequency'] == 1673
+    # Check that it returns a list of unique words
+    assert isinstance(show_data['keywords'], list)
+    assert 'مِنْ' in show_data['keywords']
 
 
 def test_keywords_top_frequent_custom_limit():
-    """Test getting top N most frequent keywords with custom limit"""
-    result = api.do({'action': 'show', 'query': 'keywords', 'field': 'topic', 'limit': 5})
+    """Test getting top N most frequent keywords with custom limit and explicit mode"""
+    result = api.do({'action': 'show', 'query': 'keywords', 'field': 'topic', 'mode': 'frequent', 'limit': 5})
     
     assert 'show' in result
     assert result['error']['code'] == 0
@@ -107,8 +100,8 @@ def test_keywords_sura_id_field():
 
 
 def test_keywords_frequent_subject_field():
-    """Test getting most frequent keywords in subject field"""
-    result = api.do({'action': 'show', 'query': 'keywords', 'field': 'subject', 'limit': 15})
+    """Test getting most frequent keywords in subject field with explicit mode"""
+    result = api.do({'action': 'show', 'query': 'keywords', 'field': 'subject', 'mode': 'frequent', 'limit': 15})
     
     assert 'show' in result
     assert result['error']['code'] == 0
@@ -128,13 +121,14 @@ def test_keywords_frequent_subject_field():
 
 
 def test_keywords_invalid_limit_parameter():
-    """Test that invalid limit parameter defaults to 20"""
-    result = api.do({'action': 'show', 'query': 'keywords', 'field': 'aya_', 'limit': 'invalid'})
+    """Test that invalid limit parameter defaults to 20 when in frequent mode"""
+    result = api.do({'action': 'show', 'query': 'keywords', 'field': 'aya_', 'mode': 'frequent', 'limit': 'invalid'})
     
     assert 'show' in result
     assert result['error']['code'] == 0
     
     show_data = result['show']
+    assert show_data['mode'] == 'frequent'
     assert show_data['limit'] == 20  # Should default to 20
     assert show_data['count'] == 20
 

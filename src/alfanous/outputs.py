@@ -326,11 +326,11 @@ class Raw:
         
         Parameters via flags:
         - field: The field name to query (e.g., 'aya_', 'topic', 'chapter')
-        - mode: 'frequent' for top N most frequent, 'unique' for all unique values (default: 'frequent')
+        - mode: 'frequent' for top N most frequent, 'unique' for all unique values (default: 'unique')
         - limit: Number of results for 'frequent' mode (default: 20)
         """
         field = flags.get("field", "aya_")
-        mode = flags.get("mode", "frequent")
+        mode = flags.get("mode", "unique")
         
         # Validate and convert limit parameter
         try:
