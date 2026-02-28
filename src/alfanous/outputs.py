@@ -29,6 +29,9 @@ def scan_no_wildcards(query):
 
 
 class Raw:
+    # Maximum number of derivations to return per word
+    MAX_DERIVATIONS = 20
+    
     DEFAULTS = {
         "minrange": 1,
         "maxrange": 25,
@@ -352,31 +355,36 @@ class Raw:
             words = query.split()
             derivations_list = []
             
+            # Cache derivedict lookups since they don't change
+            derive_words = derivedict.get("word_", [])
+            derive_roots = derivedict.get("root", [])
+            derive_lemmas = derivedict.get("lemma", [])
+            
             for word in words:
                 # Remove tashkeel for lookup
                 stripped_word = strip_tashkeel(word)
                 
                 # Find root and lemma
-                root = locate(derivedict.get("word_", []), derivedict.get("root", []), stripped_word)
-                lemma = locate(derivedict.get("word_", []), derivedict.get("lemma", []), stripped_word)
+                root = locate(derive_words, derive_roots, stripped_word)
+                lemma = locate(derive_words, derive_lemmas, stripped_word)
                 
                 # Find other words with same lemma or root
                 lemma_derivations = []
                 root_derivations = []
                 
                 if lemma:
-                    lemma_derivations = list(set(find(derivedict.get("lemma", []), derivedict.get("word_", []), lemma)))
+                    lemma_derivations = list(set(find(derive_lemmas, derive_words, lemma)))
                     # Limit to reasonable number
-                    if len(lemma_derivations) > 20:
-                        lemma_derivations = lemma_derivations[:20]
+                    if len(lemma_derivations) > self.MAX_DERIVATIONS:
+                        lemma_derivations = lemma_derivations[:self.MAX_DERIVATIONS]
                 
                 if root:
-                    root_derivations = list(set(find(derivedict.get("root", []), derivedict.get("word_", []), root)))
+                    root_derivations = list(set(find(derive_roots, derive_words, root)))
                     # Remove duplicates from lemma derivations
                     root_derivations = [w for w in root_derivations if w not in lemma_derivations]
                     # Limit to reasonable number
-                    if len(root_derivations) > 20:
-                        root_derivations = root_derivations[:20]
+                    if len(root_derivations) > self.MAX_DERIVATIONS:
+                        root_derivations = root_derivations[:self.MAX_DERIVATIONS]
                 
                 word_info = {
                     "word": word,

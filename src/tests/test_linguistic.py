@@ -53,6 +53,7 @@ def test_linguistic_derive():
     # Check content
     assert linguistic_data['text'] == 'الحمد'
     assert linguistic_data['operation'] == 'derive'
+    assert isinstance(linguistic_data['words'], list)
     assert len(linguistic_data['words']) == 1
     
     word_info = linguistic_data['words'][0]
@@ -116,6 +117,7 @@ def test_linguistic_empty_query():
     result = api.linguistic('', 'vocalize')
     linguistic_data = result['linguistic']
     assert 'error' in linguistic_data
+    assert 'No text provided' in linguistic_data['error']
 
 
 def test_linguistic_unknown_operation():
@@ -127,3 +129,4 @@ def test_linguistic_unknown_operation():
     })
     linguistic_data = result['linguistic']
     assert 'error' in linguistic_data
+    assert 'Unknown operation' in linguistic_data['error']

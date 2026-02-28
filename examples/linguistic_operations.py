@@ -46,10 +46,10 @@ def example_derive():
     
     print(f"\nWord: {text}")
     word_info = result['linguistic']['words'][0]
-    print(f"Lemma (جذر): {word_info['lemma']}")
-    print(f"Root (أصل): {word_info['root']}")
-    print(f"Lemma derivations (اشتقاقات من نفس الجذر): {', '.join(word_info['lemma_derivations'][:5])}")
-    print(f"Root derivations (مشتقات أخرى): {', '.join(word_info['root_derivations'][:5])}")
+    print(f"Lemma (اللمّة): {word_info['lemma']}")
+    print(f"Root (الجذر): {word_info['root']}")
+    print(f"Lemma derivations (مشتقات من نفس اللمّة): {', '.join(word_info['lemma_derivations'][:5])}")
+    print(f"Root derivations (مشتقات أخرى من الجذر): {', '.join(word_info['root_derivations'][:5])}")
     
     # Example 2: Analyze multiple words
     text = "الحمد لله"
