@@ -132,3 +132,85 @@ def test_keywords_invalid_limit_parameter():
     assert show_data['limit'] == 20  # Should default to 20
     assert show_data['count'] == 20
 
+
+def test_keywords_default_unit():
+    """Test that default unit is 'aya'"""
+    result = api.do({'action': 'show', 'query': 'keywords', 'field': 'sura_type'})
+    
+    assert 'show' in result
+    assert result['error']['code'] == 0
+    
+    show_data = result['show']
+    assert show_data['unit'] == 'aya'
+    assert show_data['field'] == 'sura_type'
+    assert show_data['count'] == 2
+
+
+def test_keywords_explicit_aya_unit():
+    """Test explicit aya unit with frequent mode"""
+    result = api.do({'action': 'show', 'query': 'keywords', 'unit': 'aya', 'field': 'topic', 'mode': 'frequent', 'limit': 5})
+    
+    assert 'show' in result
+    assert result['error']['code'] == 0
+    
+    show_data = result['show']
+    assert show_data['unit'] == 'aya'
+    assert show_data['field'] == 'topic'
+    assert show_data['mode'] == 'frequent'
+    assert show_data['limit'] == 5
+    assert show_data['count'] == 5
+    assert len(show_data['keywords']) == 5
+
+
+def test_keywords_translation_unit_unique():
+    """Test translation unit with unique mode"""
+    result = api.do({'action': 'show', 'query': 'keywords', 'unit': 'translation', 'field': 'id', 'mode': 'unique'})
+    
+    assert 'show' in result
+    assert result['error']['code'] == 0
+    
+    show_data = result['show']
+    assert show_data['unit'] == 'translation'
+    assert show_data['field'] == 'id'
+    assert show_data['mode'] == 'unique'
+    assert show_data['count'] == 2
+    assert len(show_data['keywords']) == 2
+    # Check that translation IDs are returned
+    assert all(isinstance(keyword, str) for keyword in show_data['keywords'])
+
+
+def test_keywords_translation_unit_frequent():
+    """Test translation unit with frequent mode"""
+    result = api.do({'action': 'show', 'query': 'keywords', 'unit': 'translation', 'field': 'text', 'mode': 'frequent', 'limit': 10})
+    
+    assert 'show' in result
+    assert result['error']['code'] == 0
+    
+    show_data = result['show']
+    assert show_data['unit'] == 'translation'
+    assert show_data['field'] == 'text'
+    assert show_data['mode'] == 'frequent'
+    assert show_data['limit'] == 10
+    assert show_data['count'] == 10
+    assert len(show_data['keywords']) == 10
+    
+    # Verify structure
+    for keyword in show_data['keywords']:
+        assert 'word' in keyword
+        assert 'frequency' in keyword
+        assert keyword['frequency'] > 0
+
+
+def test_keywords_word_unit_unavailable():
+    """Test that word unit returns appropriate error when unavailable"""
+    result = api.do({'action': 'show', 'query': 'keywords', 'unit': 'word'})
+    
+    assert 'show' in result
+    assert result['error']['code'] == 0
+    
+    show_data = result['show']
+    assert show_data['unit'] == 'word'
+    assert show_data['count'] == 0
+    assert 'error' in show_data
+    assert 'not available' in show_data['error'].lower()
+

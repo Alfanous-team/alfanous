@@ -325,12 +325,27 @@ class Raw:
         Show keywords (most frequent or all unique) for a given field.
         
         Parameters via flags:
+        - unit: Search unit ('aya', 'word', 'translation') to query from (default: 'aya')
         - field: The field name to query (e.g., 'aya_', 'topic', 'chapter')
         - mode: 'frequent' for top N most frequent, 'unique' for all unique values (default: 'unique')
         - limit: Number of results for 'frequent' mode (default: 20)
         """
+        unit = flags.get("unit", "aya")
         field = flags.get("field", "aya_")
         mode = flags.get("mode", "unique")
+        
+        # Select the appropriate search engine based on unit
+        if unit == "word":
+            search_engine = self.WSE
+            if field == "aya_":  # Use default field for word index
+                field = "normalized"
+        elif unit == "translation":
+            search_engine = self.TSE
+            if field == "aya_":  # Use default field for translation index
+                field = "text"
+        else:  # unit == "aya" or any other value defaults to QSE
+            search_engine = self.QSE
+            unit = "aya"  # Normalize unit name
         
         # Validate and convert limit parameter
         try:
@@ -339,19 +354,27 @@ class Raw:
             limit = 20  # Use default if invalid
         
         result = {
+            "unit": unit,
             "field": field,
             "mode": mode
         }
         
         try:
+            # Check if search engine is properly initialized
+            if not search_engine.OK:
+                result["error"] = f"Search engine for unit '{unit}' is not available"
+                result["keywords"] = []
+                result["count"] = 0
+                return result
+            
             if mode == "unique":
                 # Get all unique values for the field
-                values = self.QSE.list_values(field)
+                values = search_engine.list_values(field)
                 result["keywords"] = values
                 result["count"] = len(values)
-            else:  # mode == "frequent" (default)
+            else:  # mode == "frequent"
                 # Get top N most frequent keywords
-                frequent_words = self.QSE.most_frequent_words(limit, field)
+                frequent_words = search_engine.most_frequent_words(limit, field)
                 result["keywords"] = [
                     {"word": word, "frequency": int(freq)}
                     for freq, word in frequent_words
@@ -360,7 +383,7 @@ class Raw:
                 result["count"] = len(frequent_words)
         except AttributeError as e:
             # Handle invalid field names
-            result["error"] = f"Invalid field name '{field}': {str(e)}"
+            result["error"] = f"Invalid field name '{field}' for unit '{unit}': {str(e)}"
             result["keywords"] = []
             result["count"] = 0
         except Exception as e:
