@@ -52,7 +52,6 @@ class QSearcher:
     def __init__(self, docindex, qparser):
         self._searcher = docindex.get_index().searcher
         self._qparser = qparser
-        self._schema = docindex.get_schema()
 
     def search(self, querystr, limit=QURAN_TOTAL_VERSES, sortedby="score", reverse=False, facets=None, filter_dict=None):
         searcher = self._searcher(weighting=QScore())
@@ -63,9 +62,7 @@ class QSearcher:
         if facets:
             groupedby = Facets()
             for facet_field in facets:
-                # Only add facet if the field exists in schema
-                if facet_field in self._schema.names():
-                    groupedby.add_field(facet_field)
+                groupedby.add_field(facet_field)
         
         # Prepare filter if provided
         filter_query = None
