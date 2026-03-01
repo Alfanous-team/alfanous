@@ -140,6 +140,10 @@ def test_word_search_by_id():
                                                reverse=True)
     assert len(results) > 0
     assert results[0]['word_id'] == 1
+    # Verify search terms are returned
+    assert len(terms) > 0
+    # Verify searcher is returned
+    assert searcher is not None
 
 
 def test_word_search_by_lemma():
@@ -149,8 +153,8 @@ def test_word_search_by_lemma():
                                                sortedby="score",
                                                reverse=True)
     assert len(results) > 0
-    # Verify at least one result has the correct lemma
-    assert any(result.get('lemma') == 'أب' for result in results)
+    # Verify all results have the correct lemma (keyword field should match exactly)
+    assert all(result.get('lemma') == 'أب' for result in results)
 
 
 def test_word_search_by_type():
@@ -160,8 +164,8 @@ def test_word_search_by_type():
                                                sortedby="score",
                                                reverse=True)
     assert len(results) > 0
-    # Verify results have the correct type
-    assert results[0].get('type') == 'اسم'
+    # Verify all results have the correct type (keyword field should match exactly)
+    assert all(result.get('type') == 'اسم' for result in results)
 
 
 def test_word_list_types():
