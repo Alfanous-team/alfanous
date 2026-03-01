@@ -479,6 +479,10 @@ class Raw:
     def _search(self, flags, unit):
         if unit == "aya":
             search_results = self._search_aya(flags)
+        elif unit == "translation":
+            search_results = self._search_translation(flags)
+        elif unit == "word":
+            search_results = self._search_word(flags)
         else:
             search_results = {}
 
@@ -899,6 +903,138 @@ class Raw:
 
                 "annotations": {}
             }
+        searcher.close()
+        return output
+
+    def _search_translation(self, flags):
+        flags = {**self._defaults["flags"], **flags}
+        query = flags["query"]
+        sortedby = flags["sortedby"]
+        range = int(flags["perpage"]) if flags.get("perpage") \
+            else flags["range"]
+        offset = ((int(flags["page"]) - 1) * range) + 1 if flags.get("page") \
+            else int(flags["offset"])
+        highlight = flags["highlight"]
+
+        # preprocess query (no Buckwalter transliteration for translation text)
+        query = query.replace("\\", "")
+
+        SE = self.TSE
+        res, termz, searcher = SE.search_all(query, limit=self._defaults["results_limit"]["translation"], sortedby=sortedby)
+        terms = [term[1] for term in list(termz)[:self._defaults["maxkeywords"]]]
+
+        # pagination
+        offset = 1 if offset < 1 else offset
+        range = self._defaults["minrange"] if range < self._defaults["minrange"] else range
+        range = self._defaults["maxrange"] if range > self._defaults["maxrange"] else range
+        interval_end = offset + range - 1
+        end = interval_end if interval_end < len(res) else len(res)
+        start = offset if offset <= len(res) else -1
+        reslist = [] if end == 0 or start == -1 else list(res)[start - 1:end]
+
+        output = {}
+        H = lambda X: SE.highlight(X, terms, highlight) if highlight != "none" and X else X if X else "-----"
+
+        output["runtime"] = round(res.runtime, 5)
+        output["interval"] = {
+            "start": start,
+            "end": end,
+            "total": len(res),
+            "page": ((start - 1) / range) + 1,
+            "nb_pages": ((len(res) - 1) / range) + 1
+        }
+
+        cpt = start - 1
+        output["translations"] = {}
+        for r in reslist:
+            cpt += 1
+            output["translations"][cpt] = {
+                "identifier": {
+                    "gid": r["gid"],
+                    "translation_id": r["id"],
+                },
+                "translation": {
+                    "text": H(r["text"]),
+                    "text_no_highlight": r["text"],
+                    "author": r.get("author"),
+                    "lang": r.get("lang"),
+                },
+            }
+
+        searcher.close()
+        return output
+
+    def _search_word(self, flags):
+        flags = {**self._defaults["flags"], **flags}
+        query = flags["query"]
+        sortedby = flags["sortedby"]
+        range = int(flags["perpage"]) if flags.get("perpage") \
+            else flags["range"]
+        offset = ((int(flags["page"]) - 1) * range) + 1 if flags.get("page") \
+            else int(flags["offset"])
+        highlight = flags["highlight"]
+
+        # preprocess query
+        query = query.replace("\\", "")
+
+        if ":" not in query:
+            query = transliterate("buckwalter", query, ignore="'_\"%*?#~[]{}:>+-|")
+
+        SE = self.WSE
+        if not SE.OK:
+            return {
+                "words": {},
+                "interval": {"start": 0, "end": 0, "total": 0, "page": 1, "nb_pages": 0},
+                "runtime": 0
+            }
+
+        res, termz, searcher = SE.search_all(query, limit=self._defaults["results_limit"]["word"], sortedby=sortedby)
+        terms = [term[1] for term in list(termz)[:self._defaults["maxkeywords"]]]
+
+        # pagination
+        offset = 1 if offset < 1 else offset
+        range = self._defaults["minrange"] if range < self._defaults["minrange"] else range
+        range = self._defaults["maxrange"] if range > self._defaults["maxrange"] else range
+        interval_end = offset + range - 1
+        end = interval_end if interval_end < len(res) else len(res)
+        start = offset if offset <= len(res) else -1
+        reslist = [] if end == 0 or start == -1 else list(res)[start - 1:end]
+
+        output = {}
+        H = lambda X: SE.highlight(X, terms, highlight) if highlight != "none" and X else X if X else "-----"
+
+        output["runtime"] = round(res.runtime, 5)
+        output["interval"] = {
+            "start": start,
+            "end": end,
+            "total": len(res),
+            "page": ((start - 1) / range) + 1,
+            "nb_pages": ((len(res) - 1) / range) + 1
+        }
+
+        cpt = start - 1
+        output["words"] = {}
+        for r in reslist:
+            cpt += 1
+            output["words"][cpt] = {
+                "identifier": {
+                    "gid": r["gid"],
+                    "word_id": r.get("word_id"),
+                    "aya_id": r.get("aya_id"),
+                    "sura_id": r.get("sura_id"),
+                },
+                "word": {
+                    "text": H(r["word"]),
+                    "text_no_highlight": r["word"],
+                    "normalized": r.get("normalized"),
+                    "spelled": r.get("spelled"),
+                    "pos": r.get("pos"),
+                    "type": r.get("type"),
+                    "arabicroot": r.get("arabicroot"),
+                    "arabiclemma": r.get("arabiclemma"),
+                },
+            }
+
         searcher.close()
         return output
 

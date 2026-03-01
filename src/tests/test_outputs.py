@@ -821,3 +821,46 @@ def test_search():
     # assert sorted(actual_words_individual.keys()) == sorted(expected_words_individual.keys())
     # for key in expected_words_individual:
     #     assert actual_words_individual[key] == expected_words_individual[key]
+
+
+def test_search_translation_unit():
+    """Test that searching with unit='translation' returns results, not an empty dict."""
+    search_flags = {
+        "action": "search",
+        "unit": "translation",
+        "query": "praise",
+        "page": 1,
+        "highlight": "none",
+    }
+    results = RAWoutput.do(search_flags)
+    assert "search" in results
+    search = results["search"]
+    assert search != {}, "translation search should not return empty dict"
+    assert "interval" in search, "translation search should have 'interval' key"
+    assert "translations" in search, "translation search should have 'translations' key"
+    assert search["interval"]["total"] > 0, "translation search should find at least one result"
+    # Verify structure of first result
+    first = search["translations"][1]
+    assert "identifier" in first
+    assert "translation" in first
+    assert "gid" in first["identifier"]
+    assert "translation_id" in first["identifier"]
+    assert "text" in first["translation"]
+
+
+def test_search_word_unit_unavailable_engine():
+    """Test that searching with unit='word' when WSE is unavailable returns a structured response."""
+    search_flags = {
+        "action": "search",
+        "unit": "word",
+        "query": "الله",
+        "page": 1,
+        "highlight": "none",
+    }
+    results = RAWoutput.do(search_flags)
+    assert "search" in results
+    search = results["search"]
+    assert search != {}, "word search should not return empty dict"
+    # When WSE is not available, should return a structured response with interval
+    assert "interval" in search
+    assert "words" in search
