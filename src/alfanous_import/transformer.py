@@ -39,7 +39,9 @@ class Transformer:
         kwargs = {}
         for line in self.get_fields(tablename):
             search_name = line['search_name']
-            assert search_name, "search name should not be null!"
+            # Skip fields with empty or null search_name (e.g., non-Arabic versions of fields)
+            if not search_name:
+                continue
             type = str(line['type']).upper() or "STORED"
 
             params = {

@@ -46,8 +46,8 @@ if options.index:
 
     elif options.index == "word":
         T = Transformer(index_path=DESTINATION, resource_path=SOURCE)
-        wordqcSchema = T.build_schema(tablename='wordqc')
-        T.build_docindex(wordqcSchema, tablename='wordqc')
+        wordSchema = T.build_schema(tablename='word')
+        T.build_docindex(wordSchema, tablename='word')
 
 
 if options.update:
