@@ -706,6 +706,8 @@ class Raw:
                         annotation_word_query += " OR normalized:%s " % STANDARD2UTHMANI(term[1])
                     if word_vocalizations:
                         vocalizations = vocalization_dict.get(strip_vocalization(term[1])) or []
+                        if isinstance(vocalizations, str):
+                            vocalizations = [vocalizations]
                         nb_vocalizations_globale += len(vocalizations)
                     if word_synonyms:
                         synonyms = syndict.get(term[1]) or []
