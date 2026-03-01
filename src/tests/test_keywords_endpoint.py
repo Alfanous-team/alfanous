@@ -201,8 +201,8 @@ def test_keywords_translation_unit_frequent():
         assert keyword['frequency'] > 0
 
 
-def test_keywords_word_unit_unavailable():
-    """Test that word unit returns appropriate error when unavailable"""
+def test_keywords_word_unit_unique():
+    """Test getting unique keywords from word index using normalized field"""
     result = api.do({'action': 'show', 'query': 'keywords', 'unit': 'word'})
     
     assert 'show' in result
@@ -210,7 +210,34 @@ def test_keywords_word_unit_unavailable():
     
     show_data = result['show']
     assert show_data['unit'] == 'word'
-    assert show_data['count'] == 0
-    assert 'error' in show_data
-    assert 'not available' in show_data['error'].lower()
+    assert show_data['field'] == 'normalized'  # Default field for word unit
+    assert show_data['mode'] == 'unique'  # Default mode
+    assert show_data['count'] > 0
+    assert len(show_data['keywords']) == show_data['count']
+    
+    # Check that we got a list of words
+    assert isinstance(show_data['keywords'], list)
+    assert all(isinstance(keyword, str) for keyword in show_data['keywords'])
+
+
+def test_keywords_word_unit_frequent():
+    """Test getting most frequent keywords from word index"""
+    result = api.do({'action': 'show', 'query': 'keywords', 'unit': 'word', 'mode': 'frequent', 'limit': 10})
+    
+    assert 'show' in result
+    assert result['error']['code'] == 0
+    
+    show_data = result['show']
+    assert show_data['unit'] == 'word'
+    assert show_data['field'] == 'normalized'
+    assert show_data['mode'] == 'frequent'
+    assert show_data['limit'] == 10
+    assert show_data['count'] == 10
+    assert len(show_data['keywords']) == 10
+    
+    # Verify structure of frequent keywords
+    for keyword in show_data['keywords']:
+        assert 'word' in keyword
+        assert 'frequency' in keyword
+        assert keyword['frequency'] > 0
 

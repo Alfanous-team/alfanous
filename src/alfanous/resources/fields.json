@@ -503,6 +503,20 @@
     "analyzer": null
   },
   {
+    "id": 94,
+    "name": "word_",
+    "name_arabic": "لفظ_مجرد",
+    "table_name": "word",
+    "comment": "Normalized word without diacritics",
+    "type": "TEXT",
+    "is_indexed": null,
+    "stored": true,
+    "is_spellchecked": null,
+    "unique": null,
+    "search_name": "normalized",
+    "analyzer": null
+  },
+  {
     "id": 42,
     "name": "uthmani",
     "name_arabic": "عثماني",
