@@ -126,7 +126,7 @@ update_recitations_online_list:
 # 1. Main index that contains all information related to Ayah or Surah, see index_main
 # 2. Extended index that contains Quranic translations and offline recitations, see index_extend
 # 3. Word index, contains all information related to Word, see index_word
-index_all: index_main index_extend #index_word 
+index_all: index_main index_extend index_word
 	@echo "done;"
 
 index_main:
@@ -134,6 +134,9 @@ index_main:
 
 index_extend:
 	export PYTHONPATH=$(API_PATH) ;	rm -rf $(INDEX_PATH)extend/; $(PYTHON_COMMAND) $(QIMPORT) -x extend $(STORE_PATH)Translations/ $(INDEX_PATH)extend/
+
+index_word:
+	export PYTHONPATH=$(API_PATH) ;	rm -rf $(INDEX_PATH)word/; $(PYTHON_COMMAND) $(QIMPORT) -x word $(RESOURCES_PATH) $(INDEX_PATH)word/
 
 
 install:
