@@ -202,7 +202,7 @@ def test_keywords_translation_unit_frequent():
 
 
 def test_keywords_word_unit_unique():
-    """Test getting unique keywords from word index using normalized field"""
+    """Test retrieving unique keywords from the word index"""
     result = api.do({'action': 'show', 'query': 'keywords', 'unit': 'word'})
     
     assert 'show' in result
@@ -221,7 +221,7 @@ def test_keywords_word_unit_unique():
 
 
 def test_keywords_word_unit_frequent():
-    """Test getting most frequent keywords from word index"""
+    """Test retrieving most frequent keywords from the word index"""
     result = api.do({'action': 'show', 'query': 'keywords', 'unit': 'word', 'mode': 'frequent', 'limit': 10})
     
     assert 'show' in result
