@@ -864,3 +864,28 @@ def test_search_word_unit_unavailable_engine():
     # When WSE is not available, should return a structured response with interval
     assert "interval" in search
     assert "words" in search
+
+
+def test_search_word_vocalizations_returns_list():
+    """Test that vocalizations in search output returns a list of strings, not a single string."""
+    search_flags = {
+        "action": "search",
+        "query": "الحمد لله",
+        "page": 1,
+        "word_info": True,
+        "word_vocalizations": True,
+        "highlight": "none",
+    }
+    results = RAWoutput.do(search_flags)
+    assert "search" in results
+    words_individual = results["search"]["words"]["individual"]
+    for word_data in words_individual.values():
+        vocalizations = word_data["vocalizations"]
+        assert isinstance(vocalizations, list), (
+            f"vocalizations should be a list, got {type(vocalizations).__name__}: {vocalizations!r}"
+        )
+        for v in vocalizations:
+            assert isinstance(v, str), (
+                f"each vocalization should be a string, got {type(v).__name__}: {v!r}"
+            )
+        assert word_data["nb_vocalizations"] == len(vocalizations)
