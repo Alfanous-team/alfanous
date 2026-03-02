@@ -15,6 +15,15 @@ class QReader:
 
         return list(filter(lambda x: type(x) is not int or x>=0, self.reader.field_terms(fieldname)))
 
+    def list_stored_values(self, fieldname):
+        """ List unique stored (non-tokenized) values for a field, preserving full phrases. """
+        values = set()
+        for _, stored_fields in self.reader.iter_docs():
+            value = stored_fields.get(fieldname)
+            if value is not None and value != "":
+                values.add(value)
+        return sorted(filter(lambda x: type(x) is not int or x >= 0, values))
+
 
     def list_terms(self, fieldname=None, double=False):
         """

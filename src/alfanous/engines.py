@@ -107,6 +107,13 @@ class BasicSearchEngine:
         else:
             return []
 
+    def list_stored_values(self, fieldname):
+        """ List all unique stored (non-tokenized) values of a field, preserving full phrases. """
+        if "_reader" in self.__dict__:
+            return self._reader.list_stored_values(fieldname)
+        else:
+            return []
+
     def __call__(self):
         """
         Check if the search engine is properly initialized.
