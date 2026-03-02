@@ -99,7 +99,6 @@ debian/tmp/
 debian/alfanous/
 debian/files
 debian/python-alfanous/
-translations.json
 information.json
 
 # Packages #
