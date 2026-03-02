@@ -208,6 +208,25 @@ class ZekrModelsImporter:
                 except Exception:
                     pass  # Ignore cancellation errors since we're already in an error state
 
+    def index_single_translation(self, zip_path):
+        """ Index a single translation from a zip file.
+
+        @param zip_path: path to the .trans.zip file
+        @type zip_path: str
+        @return: True if indexed, False if already indexed, or raises on error
+        """
+        TM = TranslationModel(zip_path)
+        props = TM.translation_properties()
+        test = self.test_existence(props["id"])
+        if not test:
+            print("indexing translation (%s)..." % props["id"], end=' ')
+            self.index_it(TM.document_list())
+            print("  OK")
+            return True
+        else:
+            print("translation (%s) is already indexed, skipping." % props["id"])
+            return False
+
     def load_translationModels(self):
 
         for filename in os.listdir(self.pathstore):

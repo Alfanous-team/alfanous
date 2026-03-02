@@ -1,0 +1,106 @@
+name: Index Translation
+
+on:
+  workflow_dispatch:
+    inputs:
+      translation_url:
+        description: >
+          URL of the .trans.zip file to download and index
+          (e.g. https://tanzil.net/trans/en.yusufali.trans.zip).
+          The file will be saved to store/Translations/ and committed.
+        required: true
+        type: string
+      friendly_name:
+        description: >
+          Human-readable label for the translation
+          (e.g. "English-Yusufali"). Leave empty to auto-generate
+          from the translation ID using the language table.
+        required: false
+        type: string
+        default: ''
+
+jobs:
+  index-translation:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: pip install pyparsing whoosh
+
+      - name: Download translation zip
+        id: download
+        run: |
+          URL="${{ inputs.translation_url }}"
+          FILENAME=$(basename "$URL")
+          DEST="store/Translations/$FILENAME"
+          echo "Downloading $URL -> $DEST"
+          curl -fL "$URL" -o "$DEST"
+          echo "zip_path=$DEST" >> "$GITHUB_OUTPUT"
+          echo "zip_filename=$FILENAME" >> "$GITHUB_OUTPUT"
+
+      - name: Build main index (required before extend index)
+        run: make index_main
+
+      - name: Build existing extend index
+        run: make index_extend
+
+      - name: Index the new translation
+        run: |
+          export PYTHONPATH=src/
+          python src/alfanous_import/cli.py \
+            -t "${{ steps.download.outputs.zip_path }}" \
+            src/alfanous/indexes/extend/
+
+      - name: Update translations.json
+        run: |
+          export PYTHONPATH=src/
+          python src/alfanous_import/cli.py \
+            -u translations \
+            src/alfanous/indexes/extend/ \
+            src/alfanous/configs/translations.json
+
+      - name: Apply custom friendly name (optional)
+        if: inputs.friendly_name != ''
+        run: |
+          export PYTHONPATH=src/
+          python - <<'EOF'
+          import json, sys, re
+
+          zip_filename = "${{ steps.download.outputs.zip_filename }}"
+          friendly_name = "${{ inputs.friendly_name }}"
+          config_path = "src/alfanous/configs/translations.json"
+
+          # Derive translation ID from filename (e.g. en.yusufali.trans.zip -> en.yusufali)
+          translation_id = re.sub(r'\.trans\.zip$', '', zip_filename)
+
+          with open(config_path) as f:
+              data = json.load(f)
+
+          data[translation_id] = friendly_name
+
+          with open(config_path, "w", encoding="utf-8") as f:
+              json.dump(data, f, indent=2, ensure_ascii=False)
+
+          print(f"Set {translation_id} = {friendly_name}")
+          EOF
+
+      - name: Commit new translation
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add "store/Translations/${{ steps.download.outputs.zip_filename }}"
+          git add src/alfanous/configs/translations.json
+          git diff --cached --quiet && echo "Nothing to commit" && exit 0
+          git commit -m "Add translation: ${{ steps.download.outputs.zip_filename }}"
+          git push
