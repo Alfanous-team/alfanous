@@ -414,8 +414,11 @@ class Raw:
     def _suggest_aya(self, flags):
         """ return suggestions for aya words """
         query = flags.get("query") or self._defaults["flags"]["query"]
-        # preprocess query
-        query = query.replace("\\", "")
+        # strip all non-Arabic characters (keeps Arabic letters, diacritical marks,
+        # and extended Arabic characters; removes ASCII symbols, punctuation, Latin
+        # words, and Arabic punctuation like ، ؛ ؟)
+        query = re.sub(r'[^\u0621-\u065F\u0670-\u06FF\s]', ' ', query)
+        query = ' '.join(w for w in query.split() if w)
 
         return self.QSE.suggest_all(query)
 
