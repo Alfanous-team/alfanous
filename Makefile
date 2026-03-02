@@ -2,12 +2,6 @@
 # This is Alfanous Makefile
 #
 
-## Global Version of the project, must be updated in each significant change in 
-## the API
-VERSION=0.7.33
-## Next releases:
-RELEASE=$(VERSION)Kahraman
-
 ## API path, API contains all python packages 
 API_PATH="./src/"
 
@@ -38,7 +32,6 @@ default:
 	@echo "edit \n\t to edit all resources that should humanly edited "
 	@echo "download \n\t to download all Quranic resources that we can't \n\t include in Git or tarball because of license or huge size"
 	@echo "build \n\t to build all indexes, update all resources, qt files, \n\t localization files"
-	@echo "dist \n\t to generate all distribution files for the API and \n\t the Desktop interface"
 
 
 ##  This target is to edit text resources before building, which are:
@@ -67,21 +60,6 @@ edit_translations_to_download_list:
 # 2. Generate all Indexes, see  index_all
 build: update_pre_build index_all
 
-
-
-
-## clean temporary files after a building operation
-# TODO	add all what has to be cleaned!
-clean: clean_all
-
-clean_all: clean_deb
-	@echo "Cleaning..." 
-	rm -rf `find . -type f -name Thumbs.db`
-	rm -rf `find . -name *.pyc`
-	rm -rf `find . -name *.pyo`
-	rm -rf `find . -type d -name *.egg-info`
-	find . -type f -iname \*.mo -exec rm {} \;
-	find . -type f -iname \*.qm -exec rm {} \;
 
 
 ## download Quranic resources needed for Alfanous project, which are:
@@ -135,15 +113,4 @@ index_main:
 index_extend:
 	export PYTHONPATH=$(API_PATH) ;	rm -rf $(INDEX_PATH)extend/; $(PYTHON_COMMAND) $(QIMPORT) -x extend $(STORE_PATH)Translations/ $(INDEX_PATH)extend/
 
-
-install:
-	@# information.json is pre-committed; no templating needed
-	cd   "$(API_PATH)alfanous" ; $(PYTHON_COMMAND) setup.py install
-
-# python egg for API
-dist:
-	@# information.json is pre-committed; no templating needed
-	cd $(API_PATH)alfanous ; rm -r dist; $(PYTHON_COMMAND) setup.py  bdist_wheel; twine upload dist/* -u assemch
-
-release: dist
 
