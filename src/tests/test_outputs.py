@@ -947,3 +947,100 @@ def test_show_translations_shows_all_indexed_translations():
         assert isinstance(name, str)
         # Human-readable name should either be a proper label or fall back to the ID
         assert name  # not empty
+
+
+def test_domains_view_has_correct_values():
+    """DOMAINS['view'] must list all expected view modes as separate entries."""
+    expected = {"minimal", "normal", "full", "statistic", "linguistic", "recitation", "custom"}
+    assert set(Raw.DOMAINS["view"]) == expected, (
+        f"DOMAINS['view'] has unexpected values: {Raw.DOMAINS['view']}"
+    )
+
+
+def test_view_minimal_limits_output():
+    """view=minimal should suppress optional fields in the search output."""
+    flags = {
+        "action": "search",
+        "query": "الله",
+        "page": 1,
+        "view": "minimal",
+        "highlight": "none",
+    }
+    results = RAWoutput.do(flags)
+    assert results["search"]["ayas"], "Expected at least one search result"
+    aya = list(results["search"]["ayas"].values())[0]
+    assert aya["aya"]["prev_aya"] is None
+    assert aya["aya"]["next_aya"] is None
+    assert aya["sura"] == {}
+    assert aya["position"] == {}
+    assert aya["stat"] == {}
+    assert aya["sajda"] == {}
+    assert aya["theme"] == {}
+
+
+def test_view_normal_expands_output():
+    """view=normal should include common navigation and sura information."""
+    flags = {
+        "action": "search",
+        "query": "الله",
+        "page": 1,
+        "view": "normal",
+        "highlight": "none",
+    }
+    results = RAWoutput.do(flags)
+    assert results["search"]["ayas"], "Expected at least one search result"
+    aya = list(results["search"]["ayas"].values())[0]
+    assert aya["aya"]["prev_aya"] is not None
+    assert aya["aya"]["next_aya"] is not None
+    assert aya["sura"] != {}
+    assert aya["stat"] != {}
+    assert aya["sajda"] != {}
+    assert aya["theme"] != {}
+
+
+def test_view_full_expands_output():
+    """view=full should include all available fields in the search output."""
+    flags = {
+        "action": "search",
+        "query": "الله",
+        "page": 1,
+        "view": "full",
+        "highlight": "none",
+    }
+    results = RAWoutput.do(flags)
+    assert results["search"]["ayas"], "Expected at least one search result"
+    aya = list(results["search"]["ayas"].values())[0]
+    assert aya["aya"]["prev_aya"] is not None
+    assert aya["aya"]["next_aya"] is not None
+    assert aya["sura"] != {}
+    assert aya["sura"]["stat"] != {}
+    assert aya["position"] != {}
+    assert aya["theme"] != {}
+    assert aya["stat"] != {}
+    assert aya["sajda"] != {}
+
+
+def test_view_invalid_falls_back_to_custom():
+    """An unrecognised view value should fall back to the 'custom' defaults."""
+    flags_invalid = {
+        "action": "search",
+        "query": "الله",
+        "page": 1,
+        "view": "nonexistent_view",
+        "highlight": "none",
+    }
+    flags_custom = {
+        "action": "search",
+        "query": "الله",
+        "page": 1,
+        "view": "custom",
+        "highlight": "none",
+    }
+    result_invalid = RAWoutput.do(flags_invalid)
+    result_custom = RAWoutput.do(flags_custom)
+    assert result_invalid["search"]["ayas"], "Expected at least one search result"
+    assert result_custom["search"]["ayas"], "Expected at least one search result"
+    # Both should return the same set of aya keys (structure driven by custom defaults)
+    keys_invalid = set(list(result_invalid["search"]["ayas"].values())[0].keys())
+    keys_custom = set(list(result_custom["search"]["ayas"].values())[0].keys())
+    assert keys_invalid == keys_custom
