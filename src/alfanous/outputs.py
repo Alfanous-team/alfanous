@@ -26,10 +26,6 @@ def IS_FLAG(flags, key):
     return True
 
 
-#
-def scan_no_wildcards(query):
-    return not ({"*", "?", "؟"} & set(query))
-
 
 class Raw:
     DEFAULTS = {
@@ -85,10 +81,6 @@ class Raw:
     ERRORS = {
         0: "success",
         1: "no action is chosen or action undefined",
-        2: """This query is not permitted, you have to add  3 letters 
-	           or more to use * (only two are permitted) and 2 letters or more to use ? (؟)\n
-	     	-- Exceptions: ? (1),  ??????????? (11)
-	     	""",
         3: "Parsing Query failed, please reformulate  the query",
         4: "One of specified arabic_to_english_fields doesn't exist"
     }
@@ -246,7 +238,6 @@ class Raw:
         # init the error message with Succes
         output = self._check(0, flags)
         if action == "search":
-            assert scan_no_wildcards(query), self._check(2, flags)
             output.update(self._search(flags, unit))
         elif action == "suggest":
             output.update(self._suggest(flags, unit))
