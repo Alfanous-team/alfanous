@@ -345,12 +345,16 @@ class ArabicParser(StandardParser):
     class QMultiTerm(MultiTerm):
         """ basic class """
 
-        def _words(self, ixreader):
+        def _btexts(self, ixreader):
             fieldname = self.fieldname
-            return [
-                word for word in self.words \
-                if (fieldname, word) in ixreader
-            ]
+            to_bytes = ixreader.schema[fieldname].to_bytes
+            for word in self.words:
+                try:
+                    btext = to_bytes(word)
+                except ValueError:
+                    continue
+                if (fieldname, btext) in ixreader:
+                    yield btext
 
         def __str__(self):
             return u"%s:<%s>" % (self.fieldname, self.text)
@@ -471,11 +475,14 @@ class ArabicParser(StandardParser):
                                             spellerrors=True,
                                             hamza=True)
 
-        def _words(self, ixreader):
-            for field, indexed_text in ixreader.all_terms():
-                if field == self.fieldname:
+        def _btexts(self, ixreader):
+            fieldname = self.fieldname
+            from_bytes = ixreader.schema[fieldname].from_bytes
+            for field, btext in ixreader.all_terms():
+                if field == fieldname:
+                    indexed_text = from_bytes(btext)
                     if self._compare(self.text, indexed_text):
-                        yield indexed_text
+                        yield btext
 
         def _compare(self, first, second):
             """ normalize and compare """
@@ -500,12 +507,15 @@ class ArabicParser(StandardParser):
                                        hamza=False)
             self.words = [ASF.normalize_all(word) for word in text]
 
-        def _words(self, ixreader):
-            for field, indexed_text in ixreader.all_terms():
-                if field == self.fieldname:
+        def _btexts(self, ixreader):
+            fieldname = self.fieldname
+            from_bytes = ixreader.schema[fieldname].from_bytes
+            for field, btext in ixreader.all_terms():
+                if field == fieldname:
+                    indexed_text = from_bytes(btext)
                     for word in self.text:
                         if self._compare(word, indexed_text):
-                            yield indexed_text
+                            yield btext
 
         def _compare(self, first, second):
             """ normalize and compare """
@@ -669,17 +679,20 @@ class QuranicParser(ArabicParser):
                                                          new_text,
                                                          boost)
 
-        def _words(self, ixreader):
+        def _btexts(self, ixreader):
+            fieldname = self.fieldname
+            from_bytes = ixreader.schema[fieldname].from_bytes
             if self.prefix:
-                candidates = ixreader.expand_prefix(self.fieldname, self.prefix)
+                candidates = ixreader.expand_prefix(fieldname, self.prefix)
             else:
-                candidates = ixreader.lexicon(self.fieldname)
+                candidates = ixreader.lexicon(fieldname)
 
             exp = self.expression
-            for text in candidates:
+            for btext in candidates:
+                text = from_bytes(btext)
                 if exp.match(text):
                     self.words.append(text)
-                    yield text
+                    yield btext
 
         def normalize(self):
             # If there are no wildcard characters in this "wildcard",
@@ -711,14 +724,12 @@ class QuranicParser(ArabicParser):
                                                        text,
                                                        boost)
 
-        def _words(self, ixreader):
-            tt = ixreader.termtable
-            fieldid = ixreader.schema.to_number(self.fieldname)
-            for fn, t in tt.keys_from((fieldid, self.text)):
-                if fn != fieldid or not t.startswith(self.text):
-                    return
-                self.words.append(t)
-                yield t
+        def _btexts(self, ixreader):
+            fieldname = self.fieldname
+            from_bytes = ixreader.schema[fieldname].from_bytes
+            for btext in ixreader.expand_prefix(fieldname, self.text):
+                self.words.append(from_bytes(btext))
+                yield btext
 
 
 class SuperFuzzyAll(QuranicParser.FuzzyAll):
