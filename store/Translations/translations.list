@@ -17,7 +17,7 @@ http://tanzil.net/trans/bn.hoque.trans.zip
 #http://tanzil.net/trans/cs.nykl.trans.zip
 #http://tanzil.net/trans/dv.divehi.trans.zip
 #http://tanzil.net/trans/nl.keyzer.trans.zip
-http://tanzil.net/trans/en.ahmedali.trans.zip
+#http://tanzil.net/trans/en.ahmedali.trans.zip
 #http://tanzil.net/trans/en.ahmedraza.trans.zip
 #http://tanzil.net/trans/en.arberry.trans.zip
 #http://tanzil.net/trans/en.asad.trans.zip
@@ -25,9 +25,9 @@ http://tanzil.net/trans/en.ahmedali.trans.zip
 #http://tanzil.net/trans/en.maududi.trans.zip
 #http://tanzil.net/trans/en.pickthall.trans.zip
 #http://tanzil.net/trans/en.qaribullah.trans.zip
-http://tanzil.net/trans/en.sahih.trans.zip
+#http://tanzil.net/trans/en.sahih.trans.zip
 #http://tanzil.net/trans/en.sarwar.trans.zip
-#http://tanzil.net/trans/en.shakir.trans.zip
+http://tanzil.net/trans/en.shakir.trans.zip
 http://tanzil.net/trans/en.transliteration.trans.zip
 #http://tanzil.net/trans/en.wahiduddin.trans.zip
 #http://tanzil.net/trans/en.yusufali.trans.zip
@@ -73,7 +73,7 @@ http://tanzil.net/trans/ru.abuadel.trans.zip
 #http://tanzil.net/trans/ru.sablukov.trans.zip
 #http://tanzil.net/trans/sd.amroti.trans.zip
 #http://tanzil.net/trans/so.abduh.trans.zip
-http://tanzil.net/trans/es.asad.trans.zip
+#http://tanzil.net/trans/es.asad.trans.zip
 #http://tanzil.net/trans/es.cortes.trans.zip
 #http://tanzil.net/trans/es.garcia.trans.zip
 http://tanzil.net/trans/sw.barwani.trans.zip
@@ -102,6 +102,7 @@ http://tanzil.net/trans/ur.maududi.trans.zip
 #http://tanzil.net/trans/ur.najafi.trans.zip
 #http://tanzil.net/trans/ug.saleh.trans.zip
 #http://tanzil.net/trans/uz.sodik.trans.zip
+http://tanzil.net/trans/am.sadiq.trans.zip
 
 
 

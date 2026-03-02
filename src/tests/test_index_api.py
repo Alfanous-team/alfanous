@@ -96,3 +96,39 @@ def test_index_translations_updates_translations_json(temp_index_dir, temp_trans
     with open(temp_translations_json, encoding="utf-8") as f:
         data = json.load(f)
     assert len(data) >= 2
+
+
+@pytest.mark.skipif(not _STORE_EXISTS, reason="sample translation zips not found in store/Translations/")
+def test_update_translations_list_does_not_preserve_non_indexed(tmp_path):
+    """update_translations_list() must not carry over non-indexed entries from a previous run."""
+    from alfanous_import.updater import update_translations_list
+
+    index_dir = str(tmp_path / "extend")
+    translations_json = str(tmp_path / "translations.json")
+
+    # Pre-populate translations.json with a stale, non-indexed entry
+    with open(translations_json, "w", encoding="utf-8") as f:
+        json.dump({"xx.stale": "Stale-Translation"}, f)
+
+    # Index only two real translations
+    src = str(tmp_path / "src")
+    os.makedirs(src)
+    for zip_path in _SAMPLE_ZIPS:
+        shutil.copy(zip_path, src)
+
+    alfanous.index_translations(
+        source=src,
+        _index_path=index_dir,
+        _translations_list_file=translations_json,
+    )
+
+    with open(translations_json, encoding="utf-8") as f:
+        data = json.load(f)
+
+    # The stale entry must not survive
+    assert "xx.stale" not in data, (
+        "update_translations_list must not preserve non-indexed entries"
+    )
+    # The newly indexed entries must be present
+    assert "en.shakir" in data
+    assert "en.transliteration" in data

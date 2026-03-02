@@ -179,12 +179,11 @@ class Raw:
         ##
         self._recitations = recitations(Recitations_list_file)
         _translations_names = translations(Translations_list_file)
-        # Start with all translations from the config file (includes non-indexed ones)
-        self._translations = dict(_translations_names)
-        # Merge in indexed translations, using config name when available or the ID as fallback
-        for _id in self.TSE.list_values("id"):
-            if _id not in self._translations:
-                self._translations[_id] = _id
+        # Only include translations that are actually indexed
+        self._translations = {
+            _id: _translations_names.get(_id, _id)
+            for _id in self.TSE.list_values("id")
+        }
         ##
         self._information = information(Information_file)
         self._ai_query_translation_rules = ai_query_translation_rules(AI_Rules_file)
