@@ -234,6 +234,6 @@ LANGS = {
     'ug': 'Uughur',
     'am': 'Amharic',
     'ber': 'Berber',
+    'ru': 'Russian',
     'ku': 'Kurdish',
-    'ru': 'Russian'
 }  # languages
