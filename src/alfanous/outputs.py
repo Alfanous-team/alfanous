@@ -194,9 +194,9 @@ class Raw:
             "English": list(self.QSE.list_values("sura_english")),
             "Romanized": list(self.QSE.list_values("sura"))
         }
-        self._chapters = list(self.QSE.list_values("chapter"))
-        self._topics = list(self.QSE.list_values("topic"))
-        self._subtopics = list(self.QSE.list_values("subtopic"))
+        self._chapters = list(self.QSE.list_stored_values("chapter"))
+        self._topics = list(self.QSE.list_stored_values("topic"))
+        self._subtopics = list(self.QSE.list_stored_values("subtopic"))
 
         self._defaults = self.DEFAULTS
         self._flags = self.DEFAULTS["flags"].keys()

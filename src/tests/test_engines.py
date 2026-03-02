@@ -33,6 +33,11 @@ def test_most_frequent_words():
 def test_list_values():
     assert QSE.list_values("sura_id") == list(range(1, 114 + 1))
     assert len(list(QSE.list_values("gid"))) == 6236
+    # chapters, topics, subtopics should return full phrases, not single-word tokens
+    chapters = QSE.list_stored_values("chapter")
+    assert any(' ' in c for c in chapters), "chapters should contain multi-word phrases"
+    topics = QSE.list_stored_values("topic")
+    assert any(' ' in t for t in topics), "topics should contain multi-word phrases"
 
 
 def test_missing_suggetion():
