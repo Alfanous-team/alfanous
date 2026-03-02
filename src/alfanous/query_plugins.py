@@ -17,12 +17,16 @@ from alfanous.misc import locate, find, filter_doubles
 class QMultiTerm(MultiTerm):
     """Base class for multi-term queries with Arabic support"""
 
-    def _words(self, ixreader):
+    def _btexts(self, ixreader):
         fieldname = self.fieldname
-        return [
-            word for word in self.words
-            if (fieldname, word) in ixreader
-        ]
+        to_bytes = ixreader.schema[fieldname].to_bytes
+        for word in self.words:
+            try:
+                btext = to_bytes(word)
+            except ValueError:
+                continue
+            if (fieldname, btext) in ixreader:
+                yield btext
 
     def __str__(self):
         return u"%s:<%s>" % (self.fieldname, self.text)
@@ -150,11 +154,14 @@ class SpellErrorsQuery(QMultiTerm):
             hamza=True
         )
 
-    def _words(self, ixreader):
-        for field, indexed_text in ixreader.all_terms():
-            if field == self.fieldname:
+    def _btexts(self, ixreader):
+        fieldname = self.fieldname
+        from_bytes = ixreader.schema[fieldname].from_bytes
+        for field, btext in ixreader.all_terms():
+            if field == fieldname:
+                indexed_text = from_bytes(btext)
                 if self._compare(self.text, indexed_text):
-                    yield indexed_text
+                    yield btext
 
     def _compare(self, first, second):
         """Normalize and compare"""
@@ -198,16 +205,19 @@ class TashkilQuery(QMultiTerm):
             and self.boost == other.boost
         )
 
-    def _words(self, ixreader):
-        for field, indexed_text in ixreader.all_terms():
-            if field == self.fieldname:
+    def _btexts(self, ixreader):
+        fieldname = self.fieldname
+        from_bytes = ixreader.schema[fieldname].from_bytes
+        for field, btext in ixreader.all_terms():
+            if field == fieldname:
+                indexed_text = from_bytes(btext)
                 for word in self.text:
                     # TODO: Implement proper tashkil-aware comparison
                     # Should normalize both strings removing/handling diacritics
                     # and compare the underlying characters
                     if word == indexed_text:
                         self.words.append(indexed_text)
-                        yield indexed_text
+                        yield btext
 
 
 class TupleQuery(QMultiTerm):
