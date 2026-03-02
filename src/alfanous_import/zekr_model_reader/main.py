@@ -48,11 +48,9 @@ class TranslationModel:
     def document_list(self):
         props = self.translation_properties()
         lines = self.translation_lines(props)
-        if len(lines) != 6236:
-            print(f"warning: translation {props.get('id', 'unknown')} has {len(lines)} lines (expected 6236)")
-        num_lines = min(len(lines), 6236)
+        assert len(lines) == 6236, "the number of lines is not 6236"
 
-        for i in range(num_lines):
+        for i in range(6236):
             doc = {"gid": i + 1, "id": props["id"],
                    "text": lines[i],
                    "type": "translation",
