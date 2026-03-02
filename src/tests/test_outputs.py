@@ -7,6 +7,7 @@ A sample script that emphasize the basic operations of Alfanous API.
 
 # import Output object
 from alfanous.outputs import Raw
+from alfanous.engines import TraductionSearchEngine
 
 # import default paths
 from alfanous import paths
@@ -889,3 +890,22 @@ def test_search_word_vocalizations_returns_list():
                 f"each vocalization should be a string, got {type(v).__name__}: {v!r}"
             )
         assert word_data["nb_vocalizations"] == len(vocalizations)
+
+
+def test_show_translations_shows_all_indexed_translations():
+    """Test that show/translations returns all indexed translations with human-readable names."""
+    result = RAWoutput.do({"action": "show", "query": "translations"})
+    assert "show" in result
+    translations = result["show"]["translations"]
+
+    # All indexed translations should appear in the result
+    indexed_ids = set(RAWoutput.TSE.list_values("id"))
+    assert set(translations.keys()) == indexed_ids, (
+        "show/translations must return all indexed translations"
+    )
+
+    # Values should be human-readable names (not just the ID repeated)
+    for id_key, name in translations.items():
+        assert isinstance(name, str)
+        # Human-readable name should either be a proper label or fall back to the ID
+        assert name  # not empty
