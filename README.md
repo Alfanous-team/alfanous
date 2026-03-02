@@ -241,6 +241,33 @@ Get various metadata using the "show" action:
 >>> api.do({"action": "show", "query": "defaults"})
 ```
 
+#### Adding New Translations
+
+You can extend the local search index with additional Zekr-compatible `.trans.zip` translation files using `index_translations()`. This requires the `alfanous_import` package (included in the repository under `src/alfanous_import/`).
+
+```python
+import alfanous.api as alfanous
+
+# Index all .trans.zip files found in a folder
+count = alfanous.index_translations(source="/path/to/translations")
+print(f"{count} translation(s) newly indexed")
+```
+
+The function:
+- Iterates over every `*.trans.zip` file in `source`
+- Skips translations that are already in the index (idempotent — safe to call repeatedly)
+- Returns the **count** of newly indexed translations (`0` means nothing new was added)
+- Automatically updates `configs/translations.json` so the new translations are immediately visible via `api.get_info("translations")` and searchable with `unit="translation"`
+
+After indexing, search in the new translation:
+
+```python
+# Search in a newly indexed translation
+result = alfanous.search(u"الرحمن", unit="translation", flags={"translation": "en.newt"})
+```
+
+See [`examples/index_translations_example.py`](examples/index_translations_example.py) for a complete walkthrough.
+
 ## Examples
 
 The [examples/](examples/) directory contains example scripts demonstrating various features:

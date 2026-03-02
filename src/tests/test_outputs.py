@@ -892,15 +892,21 @@ def test_search_word_vocalizations_returns_list():
 
 
 def test_show_translations_shows_all_indexed_translations():
-    """Test that show/translations returns all indexed translations with human-readable names."""
+    """Test that show/translations returns all indexed and config-file translations."""
     result = RAWoutput.do({"action": "show", "query": "translations"})
     assert "show" in result
     translations = result["show"]["translations"]
 
-    # All indexed translations should appear in the result
+    # All indexed translations must be present in the result
     indexed_ids = set(RAWoutput.TSE.list_values("id"))
-    assert set(translations.keys()) == indexed_ids, (
-        "show/translations must return all indexed translations"
+    assert indexed_ids.issubset(set(translations.keys())), (
+        "show/translations must include all indexed translations"
+    )
+
+    # The result may also include non-indexed translations from the config file
+    # (so the total count can be >= the number of indexed translations)
+    assert len(translations) >= len(indexed_ids), (
+        "show/translations must return at least as many entries as indexed translations"
     )
 
     # Values should be human-readable names (not just the ID repeated)

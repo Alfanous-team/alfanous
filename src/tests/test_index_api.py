@@ -1,0 +1,98 @@
+"""Tests for alfanous.api.index_translations()."""
+
+import json
+import os
+import shutil
+
+import pytest
+
+alfanous_import = pytest.importorskip(
+    "alfanous_import",
+    reason="alfanous_import package is not installed",
+)
+
+import alfanous.api as alfanous
+
+# Path to the translation store shipped with the repository
+_STORE_DIR = os.path.normpath(os.path.join(
+    os.path.dirname(__file__), "..", "..", "store", "Translations"
+))
+
+# Pick two well-known zip files that are present in the store
+_SAMPLE_ZIPS = [
+    os.path.join(_STORE_DIR, "en.shakir.trans.zip"),
+    os.path.join(_STORE_DIR, "en.transliteration.trans.zip"),
+]
+_STORE_EXISTS = os.path.isdir(_STORE_DIR) and all(
+    os.path.exists(z) for z in _SAMPLE_ZIPS
+)
+
+
+@pytest.fixture()
+def temp_index_dir(tmp_path):
+    """Provide a temporary directory for a fresh extend index."""
+    return str(tmp_path / "extend")
+
+
+@pytest.fixture()
+def temp_translations_json(tmp_path):
+    """Provide a temporary translations.json file."""
+    path = str(tmp_path / "translations.json")
+    with open(path, "w", encoding="utf-8") as f:
+        json.dump({}, f)
+    return path
+
+
+@pytest.fixture()
+def translation_source_dir(tmp_path):
+    """A temporary directory pre-populated with two sample translation zips."""
+    src = str(tmp_path / "translations_src")
+    os.makedirs(src)
+    for zip_path in _SAMPLE_ZIPS:
+        shutil.copy(zip_path, src)
+    return src
+
+
+@pytest.mark.skipif(not _STORE_EXISTS, reason="sample translation zips not found in store/Translations/")
+def test_index_translations_indexes_all_zips(temp_index_dir, temp_translations_json, translation_source_dir):
+    """index_translations() indexes every .trans.zip found in the source folder."""
+    count = alfanous.index_translations(
+        source=translation_source_dir,
+        _index_path=temp_index_dir,
+        _translations_list_file=temp_translations_json,
+    )
+    assert count == 2
+    with open(temp_translations_json, encoding="utf-8") as f:
+        data = json.load(f)
+    assert "en.shakir" in data
+    assert "en.transliteration" in data
+
+
+@pytest.mark.skipif(not _STORE_EXISTS, reason="sample translation zips not found in store/Translations/")
+def test_index_translations_skips_already_indexed(temp_index_dir, temp_translations_json, translation_source_dir):
+    """index_translations() returns 0 when all translations are already indexed."""
+    alfanous.index_translations(
+        source=translation_source_dir,
+        _index_path=temp_index_dir,
+        _translations_list_file=temp_translations_json,
+    )
+    # Second call: nothing new to index
+    count = alfanous.index_translations(
+        source=translation_source_dir,
+        _index_path=temp_index_dir,
+        _translations_list_file=temp_translations_json,
+    )
+    assert count == 0
+
+
+@pytest.mark.skipif(not _STORE_EXISTS, reason="sample translation zips not found in store/Translations/")
+def test_index_translations_updates_translations_json(temp_index_dir, temp_translations_json, translation_source_dir):
+    """index_translations() updates translations.json with all indexed IDs."""
+    alfanous.index_translations(
+        source=translation_source_dir,
+        _index_path=temp_index_dir,
+        _translations_list_file=temp_translations_json,
+    )
+    with open(temp_translations_json, encoding="utf-8") as f:
+        data = json.load(f)
+    assert len(data) >= 2

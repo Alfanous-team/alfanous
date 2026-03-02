@@ -99,8 +99,10 @@ debian/tmp/
 debian/alfanous/
 debian/files
 debian/python-alfanous/
-translations.json
 information.json
+# Allow the committed config file; ignore auto-generated copies elsewhere
+translations.json
+!src/alfanous/configs/translations.json
 
 # Packages #
 ############

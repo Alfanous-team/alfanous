@@ -14,6 +14,12 @@ commands = OptionGroup(parser, "Options", "Choose what to do:  ")
 commands.add_option("-x", "--index", dest="index", type="choice", choices=["main", "extend", "word"],
                     help="create  indexes", metavar="TYPE")
 
+commands.add_option("-t", "--index-translation", dest="index_translation",
+                    help="index a single translation zip file into the extend index. "
+                         "ZIP_FILE is the path to the .trans.zip file; "
+                         "provide the index directory as the single positional argument.",
+                    metavar="ZIP_FILE", default=None)
+
 commands.add_option("-d", "--download", dest="download", type="choice",
                     choices=["tanzil_simple_clean", "tanzil_uthmani"],
                     help="download Quranic resources", metavar="FIELD")
@@ -48,6 +54,15 @@ if options.index:
         T = Transformer(index_path=DESTINATION, resource_path=SOURCE)
         wordqcSchema = T.build_schema(tablename='wordqc')
         T.build_docindex(wordqcSchema, tablename='wordqc')
+
+
+if options.index_translation:
+    if len(args) != 1:
+        parser.error("Provide DESTINATION_PATH (index directory) as the single positional argument")
+    ZIP_FILE = options.index_translation
+    DESTINATION = args[0]
+    E = ZekrModelsImporter(pathindex=DESTINATION, pathstore="")
+    E.index_single_translation(ZIP_FILE)
 
 
 if options.update:

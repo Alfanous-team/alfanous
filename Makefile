@@ -88,7 +88,6 @@ update_pre_build:
 
 # update list of indexed translations automatically using Importer
 update_translations_indexed_list:
-	echo "{}" > $(CONFIGS_PATH)translations.json
 	export PYTHONPATH=$(API_PATH) ;	$(PYTHON_COMMAND) $(QIMPORT) -u translations $(INDEX_PATH)extend/  $(CONFIGS_PATH)translations.json
 
 # update quranic corpus in the database automatically using Importer
