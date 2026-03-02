@@ -94,3 +94,51 @@ To add a new example:
 2. Import the alfanous API: `from alfanous import api`
 3. Add documentation and clear comments
 4. Update this README with information about your example
+
+## Index Translations Example
+
+The `index_translations_example.py` script demonstrates how to extend the Alfanous
+search index with additional Zekr-compatible `.trans.zip` translation files using
+`alfanous.index_translations()`.
+
+### Requirements
+
+- `alfanous3` — `pip install alfanous3`
+- `alfanous_import` — install from the repository: `pip install -e src/alfanous_import/`
+
+### Running the Example
+
+```bash
+# From the repository root (uses store/Translations/ by default)
+PYTHONPATH=src python3 examples/index_translations_example.py
+
+# Or point at any folder containing .trans.zip files
+PYTHONPATH=src python3 examples/index_translations_example.py /path/to/translations
+```
+
+### What the Example Demonstrates
+
+1. **List current translations** — shows translations available before indexing
+2. **Index new translations** — calls `alfanous.index_translations(source=...)` to index every `.trans.zip` in the given folder; already-indexed ones are skipped automatically
+3. **Confirm the update** — lists available translations after indexing, highlighting newly added entries
+4. **Sample search** — searches in one of the indexed translations to confirm it is searchable
+
+### API Summary
+
+```python
+import alfanous.api as alfanous
+
+# Index all .trans.zip files in a folder
+count = alfanous.index_translations(source="/path/to/translations")
+print(f"{count} translation(s) newly indexed")
+
+# The new translations are immediately visible
+translations = alfanous.get_info("translations")
+
+# Search in a newly indexed translation
+result = alfanous.search(u"الرحمن", unit="translation",
+                         flags={"translation": "en.newt"})
+```
+
+`index_translations()` returns the count of **newly** indexed translations.
+Calling it again on the same folder returns `0` — it is safe to call repeatedly.
