@@ -108,7 +108,7 @@ def test_search():
                                               'sura_arabic': 'الفاتحة',
                                               'text': 'بِسْمِ اللَّهِ '
                                                       'الرَّحْمَنِ الرَّحِيمِ'},
-                                 'recitation': 'https://www.everyayah.com/data/Abdul_Basit_Murattal_64kbps/001002.mp3',
+                                 'recitation': 'https://www.everyayah.com/data/Abdul_Basit_Murattal_192kbps/001002.mp3',
                                  'text': '<span class="match '
                                          'term0">الْحَمْدُ</span> <span '
                                          'class="match term1">لِلَّهِ</span> '
@@ -161,7 +161,7 @@ def test_search():
                                                       'وَالَّذِينَ مِنْ '
                                                       'قَبْلِكُمْ لَعَلَّكُمْ '
                                                       'تَتَّقُونَ'},
-                                 'recitation': 'https://www.everyayah.com/data/Abdul_Basit_Murattal_64kbps/002022.mp3',
+                                 'recitation': 'https://www.everyayah.com/data/Abdul_Basit_Murattal_192kbps/002022.mp3',
                                  'text': 'الَّذِي جَعَلَ لَكُمُ الْأَرْضَ '
                                          'فِرَاشًا وَالسَّمَاءَ بِنَاءً '
                                          'وَأَنْزَلَ مِنَ السَّمَاءِ مَاءً '
@@ -229,7 +229,7 @@ def test_search():
                                                       'لِمَا بَيْنَ يَدَيْهِ '
                                                       'وَهُدًى وَبُشْرَى '
                                                       'لِلْمُؤْمِنِينَ'},
-                                 'recitation': 'https://www.everyayah.com/data/Abdul_Basit_Murattal_64kbps/002098.mp3',
+                                 'recitation': 'https://www.everyayah.com/data/Abdul_Basit_Murattal_192kbps/002098.mp3',
                                  'text': 'مَنْ كَانَ عَدُوًّا <span '
                                          'class="match term0">لِلَّهِ</span> '
                                          'وَمَلَائِكَتِهِ وَرُسُلِهِ '
@@ -298,7 +298,7 @@ def test_search():
                                                       'هَاتُوا بُرْهَانَكُمْ '
                                                       'إِنْ كُنْتُمْ '
                                                       'صَادِقِينَ'},
-                                 'recitation': 'https://www.everyayah.com/data/Abdul_Basit_Murattal_64kbps/002112.mp3',
+                                 'recitation': 'https://www.everyayah.com/data/Abdul_Basit_Murattal_192kbps/002112.mp3',
                                  'text': 'بَلَى مَنْ أَسْلَمَ وَجْهَهُ <span '
                                          'class="match term0">لِلَّهِ</span> '
                                          'وَهُوَ مُحْسِنٌ فَلَهُ أَجْرُهُ '
@@ -372,7 +372,7 @@ def test_search():
                                                       'كَسَبْتُمْ وَلَا '
                                                       'تُسْأَلُونَ عَمَّا '
                                                       'كَانُوا يَعْمَلُونَ'},
-                                 'recitation': 'https://www.everyayah.com/data/Abdul_Basit_Murattal_64kbps/002142.mp3',
+                                 'recitation': 'https://www.everyayah.com/data/Abdul_Basit_Murattal_192kbps/002142.mp3',
                                  'text': 'سَيَقُولُ السُّفَهَاءُ مِنَ النَّاسِ '
                                          'مَا وَلَّاهُمْ عَنْ قِبْلَتِهِمُ '
                                          'الَّتِي كَانُوا عَلَيْهَا قُلْ <span '
@@ -436,7 +436,7 @@ def test_search():
                                                       'وَالثَّمَرَاتِ '
                                                       'وَبَشِّرِ '
                                                       'الصَّابِرِينَ'},
-                                 'recitation': 'https://www.everyayah.com/data/Abdul_Basit_Murattal_64kbps/002156.mp3',
+                                 'recitation': 'https://www.everyayah.com/data/Abdul_Basit_Murattal_192kbps/002156.mp3',
                                  'text': 'الَّذِينَ إِذَا أَصَابَتْهُمْ '
                                          'مُصِيبَةٌ قَالُوا إِنَّا <span '
                                          'class="match term0">لِلَّهِ</span> '
@@ -506,7 +506,7 @@ def test_search():
                                                       'السَّمَاءِ وَالْأَرْضِ '
                                                       'لَآيَاتٍ لِقَوْمٍ '
                                                       'يَعْقِلُونَ'},
-                                 'recitation': 'https://www.everyayah.com/data/Abdul_Basit_Murattal_64kbps/002165.mp3',
+                                 'recitation': 'https://www.everyayah.com/data/Abdul_Basit_Murattal_192kbps/002165.mp3',
                                  'text': 'وَمِنَ النَّاسِ مَنْ يَتَّخِذُ مِنْ '
                                          'دُونِ اللَّهِ أَنْدَادًا '
                                          'يُحِبُّونَهُمْ كَحُبِّ اللَّهِ '
@@ -586,7 +586,7 @@ def test_search():
                                                       'دُعَاءً وَنِدَاءً صُمٌّ '
                                                       'بُكْمٌ عُمْيٌ فَهُمْ '
                                                       'لَا يَعْقِلُونَ'},
-                                 'recitation': 'https://www.everyayah.com/data/Abdul_Basit_Murattal_64kbps/002172.mp3',
+                                 'recitation': 'https://www.everyayah.com/data/Abdul_Basit_Murattal_192kbps/002172.mp3',
                                  'text': 'يَا أَيُّهَا الَّذِينَ آمَنُوا '
                                          'كُلُوا مِنْ طَيِّبَاتِ مَا '
                                          'رَزَقْنَاكُمْ وَاشْكُرُوا <span '
@@ -646,7 +646,7 @@ def test_search():
                                               'text': 'فَإِنِ انْتَهَوْا '
                                                       'فَإِنَّ اللَّهَ غَفُورٌ '
                                                       'رَحِيمٌ'},
-                                 'recitation': 'https://www.everyayah.com/data/Abdul_Basit_Murattal_64kbps/002193.mp3',
+                                 'recitation': 'https://www.everyayah.com/data/Abdul_Basit_Murattal_192kbps/002193.mp3',
                                  'text': 'وَقَاتِلُوهُمْ حَتَّى لَا تَكُونَ '
                                          'فِتْنَةٌ وَيَكُونَ الدِّينُ <span '
                                          'class="match term0">لِلَّهِ</span> '
@@ -714,7 +714,7 @@ def test_search():
                                                        'وَأَحْسِنُوا إِنَّ '
                                                        'اللَّهَ يُحِبُّ '
                                                        'الْمُحْسِنِينَ'},
-                                  'recitation': 'https://www.everyayah.com/data/Abdul_Basit_Murattal_64kbps/002196.mp3',
+                                  'recitation': 'https://www.everyayah.com/data/Abdul_Basit_Murattal_192kbps/002196.mp3',
                                   'text': 'وَأَتِمُّوا الْحَجَّ وَالْعُمْرَةَ '
                                           '<span class="match '
                                           'term0">لِلَّهِ</span> فَإِنْ '
