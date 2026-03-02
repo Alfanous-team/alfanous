@@ -35,6 +35,39 @@ def test_suggestion():
 
     assert results["suggest"] == {'ابراهيم': ['إبراهيم']}
 
+def test_suggestion_strips_symbols():
+    ## extra symbols should be stripped before processing
+    suggest_flags = {
+                "action":"suggest",
+                "query": "ابراهيم!!!"
+                }
+
+    results = RAWoutput.do( suggest_flags )
+
+    assert results["suggest"] == {'ابراهيم': ['إبراهيم']}
+
+def test_suggestion_strips_non_arabic_words():
+    ## non-Arabic words should be ignored
+    suggest_flags = {
+                "action":"suggest",
+                "query": "ابراهيم hello"
+                }
+
+    results = RAWoutput.do( suggest_flags )
+
+    assert results["suggest"] == {'ابراهيم': ['إبراهيم']}
+
+def test_suggestion_all_non_arabic():
+    ## query with only non-Arabic words should return empty suggestions
+    suggest_flags = {
+                "action":"suggest",
+                "query": "hello world"
+                }
+
+    results = RAWoutput.do( suggest_flags )
+
+    assert results["suggest"] == {}
+
 def test_search():
     ## prepare a search query
     search_flags = {
