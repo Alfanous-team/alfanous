@@ -423,6 +423,13 @@ class ArabicParser(StandardParser):
             for word in self.words:
                 termset.add((self.fieldname, word))
 
+        def has_terms(self):
+            return True
+
+        def terms(self, phrases=False):
+            for word in self.words:
+                yield (self.fieldname, word)
+
         def _existing_terms(self,
                             ixreader,
                             termset,

@@ -54,6 +54,13 @@ class QMultiTerm(MultiTerm):
         for word in self.words:
             termset.add((self.fieldname, word))
 
+    def has_terms(self):
+        return True
+
+    def terms(self, phrases=False):
+        for word in self.words:
+            yield (self.fieldname, word)
+
     def _existing_terms(self, ixreader, termset, reverse=False, phrases=True):
         fieldname, words = self.fieldname, self.words
         fieldnum = ixreader.fieldname_to_num(fieldname)
