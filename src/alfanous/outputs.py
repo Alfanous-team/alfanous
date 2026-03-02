@@ -167,7 +167,6 @@ class Raw:
                  WSE_index=paths.WSE_INDEX,
                  Recitations_list_file=paths.RECITATIONS_LIST_FILE,
                  Translations_list_file=paths.TRANSLATIONS_LIST_FILE,
-                 Hints_file=paths.HINTS_FILE,
                  Information_file=paths.INFORMATION_FILE,
                  AI_Rules_file=paths.AI_QUERY_TRANSLATION_RULES_FILE):
         """
@@ -181,14 +180,9 @@ class Raw:
         self._recitations = recitations(Recitations_list_file)
         _translations_names = translations(Translations_list_file)
         self._translations = {id: _translations_names.get(id, id) for id in self.TSE.list_values("id")}
-        self._hints = hints(Hints_file)
         ##
         self._information = information(Information_file)
         self._ai_query_translation_rules = ai_query_translation_rules(AI_Rules_file)
-        ##
-        # self._stats = Configs.stats( Stats_file )
-        # enable it if you need statistics , disable it you prefer performance
-        # self._init_stats()
         ##
         self._surates = {
             "Arabic": list(self.QSE.list_values("sura_arabic")),
@@ -212,7 +206,6 @@ class Raw:
             "translations": self._translations,
             "recitations": self._recitations,
             "information": self._information,
-            "hints": self._hints,
             "surates": self._surates,
             "chapters": self._chapters,
             "topics": self._topics,
@@ -254,53 +247,6 @@ class Raw:
             "error": {"code": error_code, "msg": self._errors[error_code] % flags}
 
         }
-
-    def _init_stats(self):
-        ### initialization of stats
-        stats = {}
-        for ident in ["TOTAL"]:  # self._idents.extend(["TOTAL"])
-            stats[ident] = {}
-            stats[ident]["total"] = 0
-            stats[ident]["other"] = {}
-            stats[ident]["other"]["total"] = 0
-            for action in self.DOMAINS["action"]:
-                stats[ident][action] = {}
-                stats[ident][action]["total"] = 0
-                stats[ident][action]["other"] = {}
-                stats[ident][action]["other"]["total"] = 0
-                for flag, domain in self.DOMAINS.items():
-                    stats[ident][action][flag] = {}
-                    stats[ident][action][flag]["total"] = 0
-                    stats[ident][action][flag]['other'] = 0
-                    for val in domain:
-                        stats[ident][action][flag][str(val)] = 0
-        stats.update(self._stats)
-        self._stats = stats
-
-    def _process_stats(self, flags):
-        """ process flags for statistics """
-        stats = self._stats
-        # Incrementation
-        for ident in ["TOTAL"]:  # ["TOTAL",flags[ident]]
-            stats[ident]["total"] += 1
-            if flags.get("action"):
-                action = flags["action"]
-                if action in self._domains["action"]:
-                    stats[ident][action]["total"] += 1
-                    for flag, val in flags.items():
-                        if flag in self._domains.keys():
-                            stats[ident][action][flag]["total"] += 1
-                            if val in self._domains[flag]:
-                                stats[ident][action][flag][str(val)] += 1
-                            else:
-                                stats[ident][action][flag]["other"] += 1
-                        else:
-                            stats[ident][action]["other"]["total"] += 1
-                else:
-                    stats[ident]["other"]["total"] += 1
-        self._stats = stats
-        f = open(paths.STATS_FILE, "w")
-        f.write(json.dumps(self._stats))
 
     def _show(self, flags):
         """  show metadata"""

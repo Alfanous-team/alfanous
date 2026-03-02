@@ -26,6 +26,3 @@ AI_QUERY_TRANSLATION_RULES_FILE = ROOT_RESOURCE + "ai_query_translation_rules.tx
 # configs path suffixes
 RECITATIONS_LIST_FILE = ROOT_CONFIG + "recitations.json"
 TRANSLATIONS_LIST_FILE = ROOT_CONFIG + "translations.json"
-HINTS_FILE = ROOT_CONFIG + "hints.json"
-STATS_FILE = HOME_CONFIG + "stats.json"
-STATS_REFERENCE_FILE = ROOT_CONFIG + "stats.json"
