@@ -152,12 +152,8 @@ class ZekrModelsImporter:
         gid=NUMERIC(stored=True),
         id=TEXT(stored=True),
         text=TEXT(stored=True, analyzer=RegexTokenizer() | LowercaseFilter()),
-        type=KEYWORD(stored=True),
         lang=KEYWORD(stored=True),
-        country=KEYWORD(stored=True),
         author=KEYWORD(stored=True),
-        copyright=STORED,
-        binary=STORED
     )
 
     def __init__(self, pathindex, pathstore):
@@ -196,8 +192,8 @@ class ZekrModelsImporter:
         try:
             writer = self.index.writer()
             for doc in doclist:
-                writer.add_document(gid=doc["gid"], id=doc["id"], text=doc["text"], type=doc["type"], lang=doc["lang"],
-                                    country=doc["country"], author=doc["author"])
+                writer.add_document(gid=doc["gid"], id=doc["id"], text=doc["text"], lang=doc["lang"],
+                                    author=doc["author"])
             print(doc['id'], doc['gid'])
             writer.commit()
         except Exception as E:
