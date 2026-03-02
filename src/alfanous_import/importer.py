@@ -192,6 +192,7 @@ class ZekrModelsImporter:
 
     def index_it(self, doclist):
         """ index a list of documents """
+        writer = None
         try:
             writer = self.index.writer()
             for doc in doclist:
@@ -201,6 +202,11 @@ class ZekrModelsImporter:
             writer.commit()
         except Exception as E:
             print(E)
+            if writer is not None:
+                try:
+                    writer.cancel()
+                except Exception:
+                    pass  # Ignore cancellation errors since we're already in an error state
 
     def load_translationModels(self):
 
