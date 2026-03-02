@@ -3,10 +3,11 @@
     Use `alfanous.search` for searching in Quran verses and translations.
     Use `alfanous.get_info` for getting meta info.
     Use `alfanous.do` method for search, suggestion and get most useful info.
-    Use `alfanous.index` to add a new translation zip file to the local index.
+    Use `alfanous.index_translations` to add translation zip files from a folder to the local index.
     """
 
 from typing import Dict, Optional, Any
+import os
 
 # import Output object
 from alfanous.outputs import Raw as _search_engine
@@ -79,32 +80,33 @@ def get_info(query: str = "all") -> Dict[str, Any]:
     return do({"action": "show", "query": query})
 
 
-def index(translation_zipfile: str,
-          _index_path: Optional[str] = None,
-          _translations_list_file: Optional[str] = None) -> bool:
+def index_translations(source: str,
+                       _index_path: Optional[str] = None,
+                       _translations_list_file: Optional[str] = None) -> int:
     """
-    Index a translation zip file into the local extend index.
+    Index all Zekr-compatible ``.trans.zip`` files found in *source* into the
+    local extend index.
 
-    The zip file must be a Zekr-compatible `.trans.zip` file containing a
-    ``translation.properties`` descriptor and a verse text file with exactly
-    6,236 lines (one per Quranic verse).
+    Each zip must contain a ``translation.properties`` descriptor and a verse
+    text file with exactly 6,236 lines (one per Quranic verse). Files that are
+    already present in the index are silently skipped.
 
-    After indexing, ``configs/translations.json`` is updated so that the new
-    translation is immediately visible via :func:`get_info` and
+    After indexing, ``configs/translations.json`` is updated so that every
+    newly added translation is immediately visible via :func:`get_info` and
     :func:`search`.
 
     Example::
 
         import alfanous.api as alfanous
-        alfanous.index("/path/to/en.yusufali.trans.zip")
+        count = alfanous.index_translations(source="/path/to/translations")
+        print(f"{count} translation(s) newly indexed")
 
-    @param translation_zipfile: Absolute or relative path to the ``.trans.zip`` file.
-    @type translation_zipfile: str
+    @param source: Path to a directory that contains ``.trans.zip`` files.
+    @type source: str
     @param _index_path: Override the extend index directory (for testing only).
     @param _translations_list_file: Override the translations config path (for testing only).
-    @return: True if the translation was newly indexed, False if it was already present.
+    @return: Number of translations that were newly indexed (already-present ones are skipped).
     @raises ImportError: If the ``alfanous_import`` package is not installed.
-    @raises AssertionError: If the zip file does not contain 6,236 verses.
     """
     try:
         from alfanous_import.importer import ZekrModelsImporter
@@ -122,12 +124,18 @@ def index(translation_zipfile: str,
     )
 
     importer = ZekrModelsImporter(pathindex=index_path, pathstore="")
-    newly_indexed = importer.index_single_translation(translation_zipfile)
+    count = 0
+    for zip_file in sorted(
+        f for f in os.listdir(source) if f.endswith(".trans.zip")
+    ):
+        if importer.index_single_translation(os.path.join(source, zip_file)):
+            count += 1
 
-    if newly_indexed:
+    if count:
         update_translations_list(
             TSE_index=index_path,
             translations_list_file=translations_list_file,
         )
 
-    return newly_indexed
+    return count
+
