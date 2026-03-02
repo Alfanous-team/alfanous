@@ -9,6 +9,8 @@ TODO Synonyme-Antonyme Upgrade to related search {syn!  fire }
 FIXME multifields
 """
 
+import re
+
 from pyparsing import printables, alphanums
 from pyparsing import ZeroOrMore, OneOrMore
 from pyparsing import Group, Combine, Suppress, Optional, FollowedBy
@@ -267,6 +269,58 @@ class ArabicParser(StandardParser):
         self.add_plugin(TashkilPlugin())
         self.add_plugin(TuplePlugin())
         self.add_plugin(ArabicWildcardPlugin())
+
+    def _preprocess_query(self, querystr):
+        """Translate Arabic field names, range keywords, and logical operators before Whoosh parsing."""
+        # Split on quoted strings ('...' and "...") to protect their contents
+        parts = re.split(r'("[^"]*"|\'[^\']*\')', querystr)
+
+        result_parts = []
+        for i, part in enumerate(parts):
+            if i % 2 == 1:  # Inside quotes - preserve as-is
+                result_parts.append(part)
+                continue
+
+            p = part
+
+            # 1. Replace Arabic field names with English schema equivalents
+            def replace_field(match):
+                field = match.group(1)
+                return self.ara2eng.get(field, field) + ':'
+            p = re.sub(r'([\w\u0600-\u06FF]+):', replace_field, p)
+
+            # 2. Replace Arabic range keyword 'الى'/'إلى' with 'TO' inside brackets
+            def replace_range(m):
+                inner = re.sub(r'(?<!\S)(الى|إلى)(?!\S)', 'TO', m.group(1))
+                return '[' + inner + ']'
+            p = re.sub(r'\[([^\]]+)\]', replace_range, p)
+
+            # 3. Replace Arabic logical operators (only when surrounded by whitespace)
+            _arabic_ops = {'وليس': 'ANDNOT', 'ليس': 'NOT', 'و': 'AND',
+                           'أو': 'OR', 'او': 'OR'}
+            _arabic_ops_re = re.compile(
+                r'(?<=[^\S\n])(' + '|'.join(re.escape(k) for k in _arabic_ops) + r')(?=[^\S\n])'
+            )
+            p = _arabic_ops_re.sub(lambda m: _arabic_ops[m.group(1)], p)
+            p = re.sub(r'^(' + '|'.join(re.escape(k) for k in ('ليس', 'وليس')) + r')(?=\s)',
+                       lambda m: _arabic_ops[m.group(1)], p)
+
+            # 4. Replace symbol binary operators surrounded by spaces
+            _sym_ops = {'+': 'AND', '|': 'OR', '-': 'ANDNOT'}
+            _sym_ops_re = re.compile(
+                r'(?<=\s)(' + '|'.join(re.escape(k) for k in _sym_ops) + r')(?=\s)'
+            )
+            p = _sym_ops_re.sub(lambda m: _sym_ops[m.group(1)], p)
+
+            result_parts.append(p)
+
+        return ''.join(result_parts)
+
+    def parse(self, querystr, normalize=True, debug=False):
+        """Parse a query string, first preprocessing Arabic field names and range syntax."""
+        return super(ArabicParser, self).parse(
+            self._preprocess_query(querystr), normalize=normalize, debug=debug
+        )
 
     def _Field(self, node, fieldname):
         return self._eval(node[1], self.ara2eng.get(node[0]) or node[0])
@@ -593,7 +647,7 @@ class QuranicParser(ArabicParser):
 
         @staticmethod
         def synonyms(word):
-            syndict.get(word) or [word]
+            return syndict.get(word) or [word]
 
 
 

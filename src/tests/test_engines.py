@@ -146,3 +146,98 @@ def test_translation_engine():
 #
 #     print "\n#list field stored VALUES# type"
 #     print ",".join([str(item) for item in WSE.list_values("type")])
+
+
+def _qse_search(query, **kwargs):
+    """Helper: run a QSE search and return result count."""
+    results, _terms, _searcher = QSE.search_all(
+        query, limit=6236, sortedby="score", reverse=True, **kwargs
+    )
+    return len(results)
+
+
+def test_advanced_search_exact():
+    """1. Exact search — simple word lookup."""
+    assert _qse_search(u"رب") == 126
+    assert _qse_search(u"فأسقيناكموه") == 1
+
+
+def test_advanced_search_phrase():
+    """2. Phrase search — quoted exact multi-word sequence."""
+    assert _qse_search(u'"رب العالمين"') == 34
+    assert _qse_search(u'"رسول الله"') == 17
+
+
+def test_advanced_search_logical_relations():
+    """3. Logical relations — AND (+), OR (|), Arabic و / أو."""
+    and_results = _qse_search(u"الصلاة + الزكاة")
+    assert and_results == _qse_search(u"الصلاة AND الزكاة")
+    assert and_results < _qse_search(u"الصلاة OR الزكاة")
+
+    or_results = _qse_search(u"سميع | بصير")
+    assert or_results == _qse_search(u"سميع OR بصير")
+
+    # Arabic operator keywords
+    assert _qse_search(u"الصلاة و الزكاة") == and_results
+    assert _qse_search(u"سميع أو بصير") == or_results
+
+
+def test_advanced_search_wildcards():
+    """4. Wildcards — * for any chars, ؟ for single char."""
+    assert _qse_search(u"*نبي*") == 76
+    assert _qse_search(u"نعم؟") == 30
+
+
+def test_advanced_search_fields():
+    """5. Fields — Arabic field name followed by colon."""
+    # سورة:يس  →  sura_arabic:يس  (Surah Ya-Sin, 83 verses)
+    assert _qse_search(u"سورة:يس") == 83
+    # سجدة:نعم  →  sajda:نعم  (14 prostration verses)
+    assert _qse_search(u"سجدة:نعم") == 14
+
+
+def test_advanced_search_intervals():
+    """6. Intervals — numeric range with Arabic keyword الى."""
+    range_only = _qse_search(u"رقم_السورة:[1 الى 5]")
+    assert range_only == 789  # verses in suras 1–5
+
+    # Combined with AND: only those verses that also contain الله
+    combined = _qse_search(u"رقم_السورة:[1 الى 5] + الله")
+    assert 0 < combined < range_only
+
+
+def test_advanced_search_partial_vocalization():
+    """7. Partial vocalization (tashkil) — single-quoted words with diacritics."""
+    # 'مَن' — all verses containing the base word من
+    results = _qse_search(u"'مَن'")
+    assert results > 0
+
+    # Explicit field: آية_:'الْمَلكُ'  →  aya_:الملك  (verses with الملك)
+    results_field = _qse_search(u"آية_:'الْمَلكُ'")
+    assert results_field > 0
+
+
+def test_advanced_search_word_properties():
+    """8. Word properties — tuple {root,type} morphological search."""
+    assert _qse_search(u"{قول,اسم}") == 59   # nouns with root قول
+    assert _qse_search(u"{ملك,فعل}") == 42   # verbs with root ملك
+
+
+def test_advanced_search_derivations():
+    """9. Derivations — > (lemma level) and >> (root level)."""
+    lemma_results = _qse_search(u">ملك")
+    root_results = _qse_search(u">>ملك")
+    assert lemma_results == 179
+    assert root_results == 117
+
+
+def test_advanced_search_buckwalter():
+    """10. Buckwalter transliteration — Latin ASCII input converted to Arabic."""
+    from alfanous.romanization import transliterate
+
+    def bw_search(q):
+        arabic_q = transliterate("buckwalter", q, ignore="'_\"%*?#~[]{}:>+-|")
+        return _qse_search(arabic_q)
+
+    assert bw_search("qawol") == 12    # قول
+    assert bw_search("Allah") == 1566  # الله
