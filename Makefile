@@ -56,9 +56,9 @@ edit_translations_to_download_list:
 
 
 ## this target is to build all what have to be built:
-# 1. Update Quranic resources needed for indexing phase, see update_pre_build
-# 2. Generate all Indexes, see  index_all
-build: update_pre_build index_all
+# 1. Generate all Indexes, see  index_all
+# 2. Update Quranic resources needed after indexing phase, see update_post_build
+build: index_all update_post_build
 
 
 
@@ -78,11 +78,13 @@ download_tanzil:
 
 
 
-##  update resources that must be updated before indexing phase, which are:
-# 1. Quranic Arabic Corpus, see update_quranic_corpus
-# 2. Linguistic resources on the form of python dictionarries to accelerate the loading , see update_dynamic_resources
+##  update resources that must be updated after indexing phase, which are:
+# 1. translations list file (based on freshly built index), see update_translations_indexed_list
+update_post_build: update_translations_indexed_list
 
-update_pre_build:  update_translations_indexed_list
+##  update resources that must be updated before indexing phase, which are:
+# (currently unused, kept for potential future use)
+update_pre_build:
 
 # update list of indexed translations automatically using Importer
 update_translations_indexed_list:
