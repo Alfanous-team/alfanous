@@ -11,12 +11,8 @@ from alfanous import paths
 def update_translations_list(TSE_index=paths.TSE_INDEX,
                              translations_list_file=paths.TRANSLATIONS_LIST_FILE):
     TSE = TraductionSearchEngine(TSE_index)
-    # Load any existing translations from the config file to preserve non-indexed entries
-    try:
-        with open(translations_list_file) as f:
-            translation_list = json.load(f)
-    except (IOError, ValueError):
-        translation_list = {}
+    # Only include translations that are actually indexed
+    translation_list = {}
     for translation_id in TSE.list_values("id"):
         try:
             lang, author = translation_id.split('.')
