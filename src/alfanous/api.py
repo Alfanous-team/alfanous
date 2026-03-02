@@ -3,6 +3,7 @@
     Use `alfanous.search` for searching in Quran verses and translations.
     Use `alfanous.get_info` for getting meta info.
     Use `alfanous.do` method for search, suggestion and get most useful info.
+    Use `alfanous.index` to add a new translation zip file to the local index.
     """
 
 from typing import Dict, Optional, Any
@@ -76,3 +77,57 @@ def get_info(query: str = "all") -> Dict[str, Any]:
     @return: Dictionary of information
     """
     return do({"action": "show", "query": query})
+
+
+def index(translation_zipfile: str,
+          _index_path: Optional[str] = None,
+          _translations_list_file: Optional[str] = None) -> bool:
+    """
+    Index a translation zip file into the local extend index.
+
+    The zip file must be a Zekr-compatible `.trans.zip` file containing a
+    ``translation.properties`` descriptor and a verse text file with exactly
+    6,236 lines (one per Quranic verse).
+
+    After indexing, ``configs/translations.json`` is updated so that the new
+    translation is immediately visible via :func:`get_info` and
+    :func:`search`.
+
+    Example::
+
+        import alfanous.api as alfanous
+        alfanous.index("/path/to/en.yusufali.trans.zip")
+
+    @param translation_zipfile: Absolute or relative path to the ``.trans.zip`` file.
+    @type translation_zipfile: str
+    @param _index_path: Override the extend index directory (for testing only).
+    @param _translations_list_file: Override the translations config path (for testing only).
+    @return: True if the translation was newly indexed, False if it was already present.
+    @raises ImportError: If the ``alfanous_import`` package is not installed.
+    @raises AssertionError: If the zip file does not contain 6,236 verses.
+    """
+    try:
+        from alfanous_import.importer import ZekrModelsImporter
+        from alfanous_import.updater import update_translations_list
+    except ImportError:
+        raise ImportError(
+            "The 'alfanous_import' package is required to index translation files. "
+            "Install it from the repository: src/alfanous_import/"
+        )
+
+    index_path = _index_path if _index_path is not None else PATHS.TSE_INDEX
+    translations_list_file = (
+        _translations_list_file if _translations_list_file is not None
+        else PATHS.TRANSLATIONS_LIST_FILE
+    )
+
+    importer = ZekrModelsImporter(pathindex=index_path, pathstore="")
+    newly_indexed = importer.index_single_translation(translation_zipfile)
+
+    if newly_indexed:
+        update_translations_list(
+            TSE_index=index_path,
+            translations_list_file=translations_list_file,
+        )
+
+    return newly_indexed
