@@ -5,19 +5,25 @@ import logging
 
 from alfanous.constants import LANGS
 from alfanous.engines import TraductionSearchEngine
+from alfanous import paths
 
 
-def update_translations_list(TSE_index="../../indexes/extend",
-                             translations_list_file="../../resources/configs/translations.js"):
+def update_translations_list(TSE_index=paths.TSE_INDEX,
+                             translations_list_file=paths.TRANSLATIONS_LIST_FILE):
     TSE = TraductionSearchEngine(TSE_index)
-    translation_list = {}
-    for id in TSE.list_values("id"):
+    # Load any existing translations from the config file to preserve non-indexed entries
+    try:
+        with open(translations_list_file) as f:
+            translation_list = json.load(f)
+    except (IOError, ValueError):
+        translation_list = {}
+    for translation_id in TSE.list_values("id"):
         try:
-            lang, author = id.split('.')
-            translation_list[id] = LANGS[lang] + "-" + author.title()
+            lang, author = translation_id.split('.')
+            translation_list[translation_id] = LANGS[lang] + "-" + author.title()
         except Exception as e:
             logging.error(e)
-    f = open(translations_list_file, "w")
-    f.write(json.dumps(translation_list))
+    with open(translations_list_file, "w", encoding="utf-8") as f:
+        json.dump(translation_list, f, indent=2, ensure_ascii=False)
 
     return translation_list
