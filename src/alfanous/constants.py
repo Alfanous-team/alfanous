@@ -231,5 +231,9 @@ LANGS = {
     'bn': 'Bengali',
     'dv': 'Divehi',
     'ha': 'Hausa',
-    'ug': 'Uughur'
+    'ug': 'Uughur',
+    'am': 'Amharic',
+    'ber': 'Berber',
+    'ku': 'Kurdish',
+    'ru': 'Russian'
 }  # languages
