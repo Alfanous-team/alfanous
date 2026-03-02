@@ -95,7 +95,7 @@ class Raw:
         "highlight": ["css", "html", "genshi", "bold", "bbcode"],
         "script": ["standard", "uthmani"],
         "vocalized": [True, False],
-        "view": ["minimal", "normal", "full", "statistic", "linguistic", "recitation" "custom"],
+        "view": ["minimal", "normal", "full", "statistic", "linguistic", "recitation", "custom"],
         "recitation": [],  # range( 30 ),
         "translation": [],
         "romanization": ["none", "buckwalter", "iso", "arabtex"],  # arabizi is forbidden for show
@@ -452,7 +452,10 @@ class Raw:
         vocalized = IS_FLAG(flags, 'vocalized')
         fuzzy = IS_FLAG(flags, 'fuzzy')
         view = flags["view"]
-        
+        # Validate view parameter; fall back to "custom" if not recognised
+        if view not in self.DOMAINS["view"]:
+            view = self._defaults["flags"]["view"]
+
         # Parse facets parameter
         facets_param = flags.get("facets")
         facets_list = None
