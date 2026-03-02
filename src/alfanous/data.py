@@ -1,4 +1,3 @@
-import os
 import json
 from functools import lru_cache
 
@@ -34,47 +33,6 @@ def translations(path=paths.TRANSLATIONS_LIST_FILE):
             return json.load(myfile)
     except IOError:
         return {}
-
-
-@lru_cache(maxsize=1)
-def hints(path=paths.HINTS_FILE):
-    """
-    Load search hints from JSON file.
-    
-    @param path: Path to the hints JSON file
-    @return: Dictionary of hints or empty dict on error
-    """
-    try:
-        with open(path) as myfile:
-            return json.load(myfile)
-    except IOError:
-        return {}
-
-
-@lru_cache(maxsize=1)
-def stats(path=paths.STATS_FILE, ref_path=paths.STATS_REFERENCE_FILE):
-    """
-    Load statistics data from JSON file, creating from reference if needed.
-    
-    @param path: Path to the stats JSON file
-    @param ref_path: Path to the reference stats file (used if main stats file doesn't exist)
-    @return: Dictionary of statistics
-    """
-    if os.path.exists(path):
-        with open(path) as myfile:
-            return json.load(myfile)
-    else:
-        path_dirpart = os.path.dirname(path)
-        if not os.path.exists(path_dirpart):
-            os.makedirs(path_dirpart)
-
-        with open(ref_path, "r") as ref_file:
-            content = ref_file.read()
-        
-        with open(path, "w") as myfile:
-            myfile.write(content)
-        
-        return json.loads(content)
 
 
 @lru_cache(maxsize=1)

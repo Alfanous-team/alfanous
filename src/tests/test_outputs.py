@@ -19,7 +19,6 @@ RAWoutput = Raw(
                     WSE_index = paths.WSE_INDEX, # Quranic words index path
                     Recitations_list_file = paths.RECITATIONS_LIST_FILE,
                     Translations_list_file = paths.TRANSLATIONS_LIST_FILE ,
-                    Hints_file = paths.HINTS_FILE,
                     Information_file = paths.INFORMATION_FILE
                 )
 
