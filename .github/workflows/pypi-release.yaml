@@ -23,7 +23,7 @@ jobs:
         python -m pip install --upgrade pip
         pip install build twine wheel setuptools pyparsing whoosh
     
-    - name: Generate information.json from template
+    - name: Extract version from tag
       run: |
         VERSION="${GITHUB_REF#refs/tags/v}"
         if [ -z "$VERSION" ] || [ "$VERSION" = "$GITHUB_REF" ]; then
@@ -33,10 +33,9 @@ jobs:
             VERSION="0.0.0-dev"
           fi
         fi
-        RELEASE="${VERSION}"
-        perl -p -w -e "s|alfanous.release|${RELEASE}|g;s|alfanous.version|${VERSION}|g;" \
-          src/alfanous/resources/information.json.in > src/alfanous/resources/information.json
-    
+        echo "VERSION=${VERSION}" >> $GITHUB_ENV
+        echo "Extracted version: ${VERSION}"
+
     - name: Download Quranic resources
       run: |
         make download

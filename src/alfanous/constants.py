@@ -1,4 +1,8 @@
 
+# Quran constants
+#: Total number of verses (ayat) in the Quran
+QURAN_TOTAL_VERSES = 6236
+
 #:shaping table
 SHAPING = {
     '\u0621': ('\uFE80',),

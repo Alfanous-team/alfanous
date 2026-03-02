@@ -305,5 +305,81 @@ def test_complex_query():
     assert query.text == "الله"
 
 
+def create_test_index():
+    """Create a RAM-based test index with Arabic words"""
+    from whoosh.filedb.filestore import RamStorage
+
+    schema = Schema(text=TEXT(stored=True))
+    st = RamStorage()
+    ix = st.create_index(schema)
+    writer = ix.writer()
+    for word in ['مالك', 'مالكون', 'يملك', 'الملك', 'ملكوت']:
+        writer.add_document(text=word)
+    writer.commit()
+    return ix
+
+
+def create_index_parser(ix):
+    """Create a parser configured with all plugins for a given index"""
+    from whoosh.qparser.plugins import SingleQuotePlugin
+
+    parser = QueryParser('text', ix.schema)
+    parser.remove_plugin_class(SingleQuotePlugin)
+    parser.add_plugin(DerivationPlugin())
+    parser.add_plugin(SynonymsPlugin())
+    parser.add_plugin(AntonymsPlugin())
+    parser.add_plugin(SpellErrorsPlugin())
+    parser.add_plugin(TashkilPlugin())
+    return parser
+
+
+def test_derivation_query_executes_against_index():
+    """Test that DerivationQuery can be executed against a Whoosh index.
+
+    This validates the fix for the NotImplementedError caused by Whoosh 2.7
+    calling _btexts() instead of _words() on MultiTerm subclasses.
+    """
+    ix = create_test_index()
+    parser = create_index_parser(ix)
+
+    query = parser.parse('>مالك')
+    assert isinstance(query, DerivationQuery)
+
+    with ix.searcher() as searcher:
+        results = searcher.search(query)
+        result_texts = [r['text'] for r in results]
+        assert 'مالك' in result_texts
+        assert 'مالكون' in result_texts
+
+
+def test_derivation_query_root_level_executes_against_index():
+    """Test that DerivationQuery at root level (>>) executes against a Whoosh index."""
+    ix = create_test_index()
+    parser = create_index_parser(ix)
+
+    query = parser.parse('>>مالك')
+    assert isinstance(query, DerivationQuery)
+
+    with ix.searcher() as searcher:
+        results = searcher.search(query)
+        result_texts = [r['text'] for r in results]
+        # Root level should return more derivations including يملك, الملك
+        assert len(results) >= 2
+
+
+def test_spell_errors_query_executes_against_index():
+    """Test that SpellErrorsQuery can be executed against a Whoosh index."""
+    ix = create_test_index()
+    parser = create_index_parser(ix)
+
+    query = parser.parse('%مالك')
+    assert isinstance(query, SpellErrorsQuery)
+
+    with ix.searcher() as searcher:
+        results = searcher.search(query)
+        result_texts = [r['text'] for r in results]
+        assert 'مالك' in result_texts
+
+
 if __name__ == "__main__":
     pytest.main([__file__, "-v"])

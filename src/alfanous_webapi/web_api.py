@@ -162,17 +162,26 @@ class HealthResponse(BaseModel):
     message: str
 
 
+class RootResponse(BaseModel):
+    """Response model for root endpoint"""
+    name: str
+    description: str
+    version: str
+    endpoints: Dict[str, Any]
+    usage: str
+
+
 # Root endpoint
-@app.get("/", tags=["Info"])
-async def root():
+@app.get("/", response_model=RootResponse, tags=["Info"])
+async def root() -> RootResponse:
     """
     Root endpoint - provides basic API information and available endpoints.
     """
-    return {
-        "name": "Alfanous API",
-        "description": "A search engine API for the Holy Qur'an",
-        "version": "1.0.0",
-        "endpoints": {
+    return RootResponse(
+        name="Alfanous API",
+        description="A search engine API for the Holy Qur'an",
+        version="1.0.0",
+        endpoints={
             "search": {
                 "GET": "/api/search",
                 "POST": "/api/search",
@@ -197,13 +206,13 @@ async def root():
                 "description": "Interactive API documentation"
             }
         },
-        "usage": "Visit /docs for interactive documentation and testing"
-    }
+        usage="Visit /docs for interactive documentation and testing"
+    )
 
 
 # Health check endpoint
 @app.get("/health", response_model=HealthResponse, tags=["Health"])
-async def health_check():
+async def health_check() -> HealthResponse:
     """
     Health check endpoint to verify the API is running.
     """

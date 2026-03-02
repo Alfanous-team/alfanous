@@ -7,6 +7,7 @@ A sample script that emphasize the basic operations of Alfanous API.
 
 # import Output object
 from alfanous.outputs import Raw
+from alfanous.engines import TraductionSearchEngine
 
 # import default paths
 from alfanous import paths
@@ -18,7 +19,6 @@ RAWoutput = Raw(
                     WSE_index = paths.WSE_INDEX, # Quranic words index path
                     Recitations_list_file = paths.RECITATIONS_LIST_FILE,
                     Translations_list_file = paths.TRANSLATIONS_LIST_FILE ,
-                    Hints_file = paths.HINTS_FILE,
                     Information_file = paths.INFORMATION_FILE
                 )
 
@@ -108,7 +108,7 @@ def test_search():
                                               'sura_arabic': 'الفاتحة',
                                               'text': 'بِسْمِ اللَّهِ '
                                                       'الرَّحْمَنِ الرَّحِيمِ'},
-                                 'recitation': 'https://www.everyayah.com/data/Abdul_Basit_Murattal_64kbps/001002.mp3',
+                                 'recitation': 'https://www.everyayah.com/data/Abdul_Basit_Murattal_192kbps/001002.mp3',
                                  'text': '<span class="match '
                                          'term0">الْحَمْدُ</span> <span '
                                          'class="match term1">لِلَّهِ</span> '
@@ -161,7 +161,7 @@ def test_search():
                                                       'وَالَّذِينَ مِنْ '
                                                       'قَبْلِكُمْ لَعَلَّكُمْ '
                                                       'تَتَّقُونَ'},
-                                 'recitation': 'https://www.everyayah.com/data/Abdul_Basit_Murattal_64kbps/002022.mp3',
+                                 'recitation': 'https://www.everyayah.com/data/Abdul_Basit_Murattal_192kbps/002022.mp3',
                                  'text': 'الَّذِي جَعَلَ لَكُمُ الْأَرْضَ '
                                          'فِرَاشًا وَالسَّمَاءَ بِنَاءً '
                                          'وَأَنْزَلَ مِنَ السَّمَاءِ مَاءً '
@@ -229,7 +229,7 @@ def test_search():
                                                       'لِمَا بَيْنَ يَدَيْهِ '
                                                       'وَهُدًى وَبُشْرَى '
                                                       'لِلْمُؤْمِنِينَ'},
-                                 'recitation': 'https://www.everyayah.com/data/Abdul_Basit_Murattal_64kbps/002098.mp3',
+                                 'recitation': 'https://www.everyayah.com/data/Abdul_Basit_Murattal_192kbps/002098.mp3',
                                  'text': 'مَنْ كَانَ عَدُوًّا <span '
                                          'class="match term0">لِلَّهِ</span> '
                                          'وَمَلَائِكَتِهِ وَرُسُلِهِ '
@@ -298,7 +298,7 @@ def test_search():
                                                       'هَاتُوا بُرْهَانَكُمْ '
                                                       'إِنْ كُنْتُمْ '
                                                       'صَادِقِينَ'},
-                                 'recitation': 'https://www.everyayah.com/data/Abdul_Basit_Murattal_64kbps/002112.mp3',
+                                 'recitation': 'https://www.everyayah.com/data/Abdul_Basit_Murattal_192kbps/002112.mp3',
                                  'text': 'بَلَى مَنْ أَسْلَمَ وَجْهَهُ <span '
                                          'class="match term0">لِلَّهِ</span> '
                                          'وَهُوَ مُحْسِنٌ فَلَهُ أَجْرُهُ '
@@ -372,7 +372,7 @@ def test_search():
                                                       'كَسَبْتُمْ وَلَا '
                                                       'تُسْأَلُونَ عَمَّا '
                                                       'كَانُوا يَعْمَلُونَ'},
-                                 'recitation': 'https://www.everyayah.com/data/Abdul_Basit_Murattal_64kbps/002142.mp3',
+                                 'recitation': 'https://www.everyayah.com/data/Abdul_Basit_Murattal_192kbps/002142.mp3',
                                  'text': 'سَيَقُولُ السُّفَهَاءُ مِنَ النَّاسِ '
                                          'مَا وَلَّاهُمْ عَنْ قِبْلَتِهِمُ '
                                          'الَّتِي كَانُوا عَلَيْهَا قُلْ <span '
@@ -436,7 +436,7 @@ def test_search():
                                                       'وَالثَّمَرَاتِ '
                                                       'وَبَشِّرِ '
                                                       'الصَّابِرِينَ'},
-                                 'recitation': 'https://www.everyayah.com/data/Abdul_Basit_Murattal_64kbps/002156.mp3',
+                                 'recitation': 'https://www.everyayah.com/data/Abdul_Basit_Murattal_192kbps/002156.mp3',
                                  'text': 'الَّذِينَ إِذَا أَصَابَتْهُمْ '
                                          'مُصِيبَةٌ قَالُوا إِنَّا <span '
                                          'class="match term0">لِلَّهِ</span> '
@@ -506,7 +506,7 @@ def test_search():
                                                       'السَّمَاءِ وَالْأَرْضِ '
                                                       'لَآيَاتٍ لِقَوْمٍ '
                                                       'يَعْقِلُونَ'},
-                                 'recitation': 'https://www.everyayah.com/data/Abdul_Basit_Murattal_64kbps/002165.mp3',
+                                 'recitation': 'https://www.everyayah.com/data/Abdul_Basit_Murattal_192kbps/002165.mp3',
                                  'text': 'وَمِنَ النَّاسِ مَنْ يَتَّخِذُ مِنْ '
                                          'دُونِ اللَّهِ أَنْدَادًا '
                                          'يُحِبُّونَهُمْ كَحُبِّ اللَّهِ '
@@ -586,7 +586,7 @@ def test_search():
                                                       'دُعَاءً وَنِدَاءً صُمٌّ '
                                                       'بُكْمٌ عُمْيٌ فَهُمْ '
                                                       'لَا يَعْقِلُونَ'},
-                                 'recitation': 'https://www.everyayah.com/data/Abdul_Basit_Murattal_64kbps/002172.mp3',
+                                 'recitation': 'https://www.everyayah.com/data/Abdul_Basit_Murattal_192kbps/002172.mp3',
                                  'text': 'يَا أَيُّهَا الَّذِينَ آمَنُوا '
                                          'كُلُوا مِنْ طَيِّبَاتِ مَا '
                                          'رَزَقْنَاكُمْ وَاشْكُرُوا <span '
@@ -646,7 +646,7 @@ def test_search():
                                               'text': 'فَإِنِ انْتَهَوْا '
                                                       'فَإِنَّ اللَّهَ غَفُورٌ '
                                                       'رَحِيمٌ'},
-                                 'recitation': 'https://www.everyayah.com/data/Abdul_Basit_Murattal_64kbps/002193.mp3',
+                                 'recitation': 'https://www.everyayah.com/data/Abdul_Basit_Murattal_192kbps/002193.mp3',
                                  'text': 'وَقَاتِلُوهُمْ حَتَّى لَا تَكُونَ '
                                          'فِتْنَةٌ وَيَكُونَ الدِّينُ <span '
                                          'class="match term0">لِلَّهِ</span> '
@@ -714,7 +714,7 @@ def test_search():
                                                        'وَأَحْسِنُوا إِنَّ '
                                                        'اللَّهَ يُحِبُّ '
                                                        'الْمُحْسِنِينَ'},
-                                  'recitation': 'https://www.everyayah.com/data/Abdul_Basit_Murattal_64kbps/002196.mp3',
+                                  'recitation': 'https://www.everyayah.com/data/Abdul_Basit_Murattal_192kbps/002196.mp3',
                                   'text': 'وَأَتِمُّوا الْحَجَّ وَالْعُمْرَةَ '
                                           '<span class="match '
                                           'term0">لِلَّهِ</span> فَإِنْ '
@@ -821,3 +821,90 @@ def test_search():
     # assert sorted(actual_words_individual.keys()) == sorted(expected_words_individual.keys())
     # for key in expected_words_individual:
     #     assert actual_words_individual[key] == expected_words_individual[key]
+
+
+def test_search_translation_unit():
+    """Test that searching with unit='translation' returns results, not an empty dict."""
+    search_flags = {
+        "action": "search",
+        "unit": "translation",
+        "query": "praise",
+        "page": 1,
+        "highlight": "none",
+    }
+    results = RAWoutput.do(search_flags)
+    assert "search" in results
+    search = results["search"]
+    assert search != {}, "translation search should not return empty dict"
+    assert "interval" in search, "translation search should have 'interval' key"
+    assert "translations" in search, "translation search should have 'translations' key"
+    assert search["interval"]["total"] > 0, "translation search should find at least one result"
+    # Verify structure of first result
+    first = search["translations"][1]
+    assert "identifier" in first
+    assert "translation" in first
+    assert "gid" in first["identifier"]
+    assert "translation_id" in first["identifier"]
+    assert "text" in first["translation"]
+
+
+def test_search_word_unit_unavailable_engine():
+    """Test that searching with unit='word' when WSE is unavailable returns a structured response."""
+    search_flags = {
+        "action": "search",
+        "unit": "word",
+        "query": "الله",
+        "page": 1,
+        "highlight": "none",
+    }
+    results = RAWoutput.do(search_flags)
+    assert "search" in results
+    search = results["search"]
+    assert search != {}, "word search should not return empty dict"
+    # When WSE is not available, should return a structured response with interval
+    assert "interval" in search
+    assert "words" in search
+
+
+def test_search_word_vocalizations_returns_list():
+    """Test that vocalizations in search output returns a list of strings, not a single string."""
+    search_flags = {
+        "action": "search",
+        "query": "الحمد لله",
+        "page": 1,
+        "word_info": True,
+        "word_vocalizations": True,
+        "highlight": "none",
+    }
+    results = RAWoutput.do(search_flags)
+    assert "search" in results
+    words_individual = results["search"]["words"]["individual"]
+    for word_data in words_individual.values():
+        vocalizations = word_data["vocalizations"]
+        assert isinstance(vocalizations, list), (
+            f"vocalizations should be a list, got {type(vocalizations).__name__}: {vocalizations!r}"
+        )
+        for v in vocalizations:
+            assert isinstance(v, str), (
+                f"each vocalization should be a string, got {type(v).__name__}: {v!r}"
+            )
+        assert word_data["nb_vocalizations"] == len(vocalizations)
+
+
+def test_show_translations_shows_all_indexed_translations():
+    """Test that show/translations returns all indexed translations with human-readable names."""
+    result = RAWoutput.do({"action": "show", "query": "translations"})
+    assert "show" in result
+    translations = result["show"]["translations"]
+
+    # All indexed translations should appear in the result
+    indexed_ids = set(RAWoutput.TSE.list_values("id"))
+    assert set(translations.keys()) == indexed_ids, (
+        "show/translations must return all indexed translations"
+    )
+
+    # Values should be human-readable names (not just the ID repeated)
+    for id_key, name in translations.items():
+        assert isinstance(name, str)
+        # Human-readable name should either be a proper label or fall back to the ID
+        assert name  # not empty

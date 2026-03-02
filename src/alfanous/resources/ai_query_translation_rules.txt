@@ -1,0 +1,600 @@
+AI RULES FOR TRANSLATING HUMAN LANGUAGE TO ALFANOUS QUERY SYNTAX
+====================================================================
+
+This file contains rules and patterns for translating natural language queries
+into Alfanous query syntax. These rules can be used by AI systems or query
+assistants to help users search the Quran more effectively.
+
+VERSION: 1.0
+DATE: 2026-02-28
+LICENSE: AGPL v3 or later
+
+
+TABLE OF CONTENTS
+=================
+1. Query Syntax Overview
+2. Basic Operators
+3. Advanced Features
+4. Arabic-Specific Features
+5. Field Names Reference
+6. Natural Language Translation Patterns
+7. Common Query Examples
+
+
+================================================================================
+1. QUERY SYNTAX OVERVIEW
+================================================================================
+
+Alfanous uses a powerful query language that supports:
+- Boolean operations (AND, OR, NOT)
+- Phrase searching
+- Wildcard patterns
+- Field-specific searches
+- Arabic linguistic features (roots, derivations, synonyms)
+- Range queries
+- Proximity searches
+
+Default behavior: Multiple terms without operators are treated as OR queries.
+
+
+================================================================================
+2. BASIC OPERATORS
+================================================================================
+
+2.1 PHRASE SEARCH
+-----------------
+Syntax: "exact phrase"
+Description: Search for exact phrase in quotes
+Examples:
+  "الحمد لله" → Find exact phrase "praise be to Allah"
+  "رب العالمين" → Find exact phrase "Lord of the worlds"
+
+Translation Rules:
+- If user says "find exact phrase X" → use "X"
+- If user says "find these words together" → use "X"
+- If user says "find this expression" → use "X"
+
+
+2.2 AND OPERATOR
+----------------
+Syntax: term1 + term2  OR  term1 و term2
+Description: Both terms must appear (in any order)
+Examples:
+  الصلاة + الزكاة → verses with both prayer AND charity
+  محمد + رسول → verses with both Muhammad AND messenger
+
+Translation Rules:
+- If user says "verses with both X and Y" → use X + Y
+- If user says "X and Y together" → use X + Y
+- If user says "containing X and also Y" → use X + Y
+
+
+2.3 OR OPERATOR
+---------------
+Syntax: term1 | term2  OR  term1 او term2
+Description: Either term can appear
+Examples:
+  الصلاة | الزكاة → verses with either prayer OR charity
+  جنة | فردوس → verses with paradise OR heaven
+
+Translation Rules:
+- If user says "X or Y" → use X | Y
+- If user says "either X or Y" → use X | Y
+- If user says "X or alternatively Y" → use X | Y
+- Default spacing (X Y) also means OR
+
+
+2.4 NOT OPERATOR
+----------------
+Syntax: term1 - term2  OR  term1 وليس term2
+Description: First term must appear, second must not
+Examples:
+  الله - الشيطان → verses with Allah but NOT Satan
+  جنة - نار → verses with paradise but NOT hellfire
+
+Translation Rules:
+- If user says "X but not Y" → use X - Y
+- If user says "X without Y" → use X - Y
+- If user says "X excluding Y" → use X - Y
+
+
+2.5 GROUPING WITH PARENTHESES
+------------------------------
+Syntax: (term1 + term2) | term3
+Description: Control operator precedence
+Examples:
+  (الصلاة + الصوم) | الزكاة → (prayer AND fasting) OR charity
+  الله + (رحمن | رحيم) → Allah AND (merciful OR compassionate)
+
+Translation Rules:
+- Use parentheses for complex boolean logic
+- Group related terms together
+
+
+================================================================================
+3. ADVANCED FEATURES
+================================================================================
+
+3.1 WILDCARDS
+-------------
+Syntax: *  (zero or more chars)  ?  (single char)
+Description: Pattern matching in words
+Examples:
+  *نبي* → words containing "nabi" (prophet) anywhere
+  نعم؟ → words like نعمة, نعمت (blessing, favor)
+  م*ن → words starting with م and ending with ن
+
+Translation Rules:
+- If user says "words containing X" → use *X*
+- If user says "words starting with X" → use X*
+- If user says "words ending with X" → use *X
+- If user is fuzzy about exact form → suggest wildcards
+
+
+3.2 FIELDED SEARCH
+------------------
+Syntax: field_name:value
+Description: Search in specific field
+Examples:
+  سورة:البقرة → verses from Sura Al-Baqarah
+  رقم_السورة:2 → verses from Sura number 2
+  سجدة:نعم → verses with prostration marks
+
+Translation Rules:
+- If user says "in sura X" → use سورة:X or sura:X
+- If user says "in chapter X" → use سورة:X
+- If user says "verses with prostration" → use سجدة:نعم
+- See Section 5 for all field names
+
+
+3.3 RANGE QUERIES
+-----------------
+Syntax: field:[X الى Y]  OR  field:[X to Y]
+Description: Search within numeric range
+Examples:
+  رقم_السورة:[1 الى 5] → verses from suras 1 to 5
+  رقم_الآية:[1 الى 10] → verses numbered 1 to 10
+  juz:[1 الى 3] → verses from first 3 juz
+
+Translation Rules:
+- If user says "from sura X to Y" → use رقم_السورة:[X الى Y]
+- If user says "in chapters X through Y" → use رقم_السورة:[X الى Y]
+- If user says "first X suras" → use رقم_السورة:[1 الى X]
+
+
+3.4 BOOSTING
+------------
+Syntax: term^boost_value
+Description: Increase relevance weight
+Examples:
+  الله^2.5 → boost "Allah" relevance by 2.5x
+  رحمة^3 + عذاب → mercy (boosted) with punishment
+
+Translation Rules:
+- Use for emphasizing important terms
+- Default boost is 1.0, higher numbers increase importance
+
+
+================================================================================
+4. ARABIC-SPECIFIC FEATURES
+================================================================================
+
+4.1 SYNONYMS
+------------
+Syntax: ~word
+Description: Search for synonyms of the word
+Examples:
+  ~آثر → finds اختار, اصطفى, فضل (prefer, choose)
+  ~جنة → finds فردوس, نعيم (paradise, bliss)
+
+Translation Rules:
+- If user says "synonyms of X" → use ~X
+- If user says "similar meanings to X" → use ~X
+- If user says "X or similar words" → use ~X
+
+
+4.2 ANTONYMS
+------------
+Syntax: #word
+Description: Search for antonyms/opposites
+Examples:
+  #جحيم → finds جنة, فردوس (heaven, opposite of hell)
+  #كفر → finds إيمان (faith, opposite of disbelief)
+
+Translation Rules:
+- If user says "opposite of X" → use #X
+- If user says "antonym of X" → use #X
+- If user says "contrary to X" → use #X
+
+
+4.3 DERIVATIONS (LEMMA LEVEL)
+------------------------------
+Syntax: >word
+Description: Search all forms of the same lemma
+Examples:
+  >مالك → finds مالك, مالكون (owner, owners)
+  >كتب → finds كتب, كتاب, مكتوب (wrote, book, written)
+
+Translation Rules:
+- If user says "all forms of X" → use >X
+- If user says "X and its derivatives" → use >X
+- Use for grammatical variations (singular, plural, etc.)
+
+
+4.4 ROOT-LEVEL DERIVATIONS
+---------------------------
+Syntax: >>word
+Description: Search all words from same root
+Examples:
+  >>مالك → finds 23+ forms: ملك, ملكوت, يملك, مالك, etc.
+  >>كتب → finds كتاب, كتب, مكتوب, كاتب, مكتبة, etc.
+
+Translation Rules:
+- If user says "root words of X" → use >>X
+- If user says "all root derivatives of X" → use >>X
+- Use for comprehensive semantic search
+- Most powerful linguistic search feature
+
+
+4.5 SPELL ERROR TOLERANCE
+--------------------------
+Syntax: %word
+Description: Ignore letter variations (ة↔ه, ى↔ي, etc.)
+Examples:
+  %رحمة → finds رحمة, رحمه (mercy, with variation)
+  %هدى → finds هدى, هدي (guidance, with variation)
+
+Translation Rules:
+- If user is unsure of exact spelling → use %word
+- If user mentions "spelling variants" → use %word
+
+
+4.6 TASHKIL (DIACRITICS)
+------------------------
+Syntax: 'word with diacritics'
+Description: Search with or without vowel marks
+Examples:
+  'قُلْ' → finds قل with exact diacritics
+  قل → finds قل with any or no diacritics
+
+Translation Rules:
+- If user provides vocalized text → use 'word'
+- If no diacritics specified → plain word searches all forms
+
+
+4.7 TUPLE SEARCH (LINGUISTIC PROPERTIES)
+-----------------------------------------
+Syntax: {root,type,pattern}
+Description: Search by morphological features
+Examples:
+  {كتب,اسم,*} → all nouns from root ك-ت-ب
+  {قول,فعل,*} → all verbs from root ق-و-ل
+
+Translation Rules:
+- For advanced linguistic queries
+- Types: اسم (noun), فعل (verb), حرف (particle)
+
+
+================================================================================
+5. FIELD NAMES REFERENCE
+================================================================================
+
+5.1 VERSE LOCATION FIELDS
+--------------------------
+Arabic Name       | English Name  | Description              | Example Value
+------------------|---------------|--------------------------|---------------
+رقم               | gid           | Global verse ID          | 1-6236
+رقم_السورة       | sura_id       | Sura number              | 1-114
+رقم_الآية        | aya_id        | Verse number in sura     | 1-286
+سورة              | sura          | Sura name                | البقرة, الفاتحة
+جزء               | juz           | Juz (part) number        | 1-30
+حزب               | hizb          | Hizb number              | 1-60
+ربع               | quarter       | Quarter number           | 1-240
+صفحة              | page          | Mushaf page              | 1-604
+
+
+5.2 CLASSIFICATION FIELDS
+--------------------------
+Arabic Name       | English Name  | Description              | Example Value
+------------------|---------------|--------------------------|---------------
+نزول              | sura_type     | Revelation location      | مكية, مدنية
+موضوع             | subject       | Main topic               | العقيدة, العبادات
+فصل               | chapter       | Chapter/category         | الإيمان بالله
+باب               | subtopic      | Subcategory              | أسماء الله
+
+
+5.3 CONTENT FIELDS
+-------------------
+Arabic Name       | English Name  | Description              | Example Value
+------------------|---------------|--------------------------|---------------
+آية               | standard      | Verse text (standard)    | بسم الله...
+عثماني           | uthmani       | Verse text (Uthmani)     | بِسۡمِ ٱللَّهِ...
+ترجمة             | translation   | Translation text         | In the name...
+سجدة              | sajda         | Has prostration mark?    | نعم, لا
+
+
+5.4 LINGUISTIC FIELDS
+---------------------
+Arabic Name       | English Name  | Description              | Example Value
+------------------|---------------|--------------------------|---------------
+جذر               | root          | Word root                | كتب, قول
+نوع               | type          | Word type                | اسم, فعل, حرف
+
+
+================================================================================
+6. NATURAL LANGUAGE TRANSLATION PATTERNS
+================================================================================
+
+6.1 LOCATION-BASED QUERIES
+---------------------------
+Natural Language                    | Alfanous Query
+------------------------------------|----------------------------------
+"Find verses in Sura Al-Baqarah"   | سورة:البقرة
+"Show me Sura 2"                    | رقم_السورة:2
+"Verses from chapters 1 to 5"      | رقم_السورة:[1 الى 5]
+"Find in the first juz"             | جزء:1
+"Meccan verses"                     | نزول:مكية
+"Medinan suras"                     | نزول:مدنية
+"Verses with prostration marks"     | سجدة:نعم
+"Page 10 of the Mushaf"             | صفحة:10
+
+
+6.2 CONTENT-BASED QUERIES
+--------------------------
+Natural Language                    | Alfanous Query
+------------------------------------|----------------------------------
+"Find word Allah"                   | الله
+"Verses about prayer"               | صلاة
+"Verses with patience and faith"    | صبر + إيمان
+"Mercy or forgiveness"              | رحمة | مغفرة
+"Paradise but not hellfire"         | جنة - نار
+"Exact phrase 'praise be to Allah'"| "الحمد لله"
+"Verses containing 'prophet'"       | *نبي*
+"Words starting with 'عب'"         | عب*
+
+
+6.3 LINGUISTIC QUERIES
+-----------------------
+Natural Language                    | Alfanous Query
+------------------------------------|----------------------------------
+"Synonyms of 'prefer'"              | ~آثر
+"Opposite of 'disbelief'"           | #كفر
+"All forms of 'owner'"              | >مالك
+"Root derivatives of 'write'"       | >>كتب
+"Spelling variations of 'mercy'"    | %رحمة
+
+
+6.4 COMBINED/COMPLEX QUERIES
+-----------------------------
+Natural Language                    | Alfanous Query
+------------------------------------|----------------------------------
+"Allah in Sura Al-Fatiha"          | الله + سورة:الفاتحة
+"Prayer in Meccan suras"            | صلاة + نزول:مكية
+"Mercy and forgiveness in first 3 suras" | (رحمة + مغفرة) + رقم_السورة:[1 الى 3]
+"Root words of 'mercy' in Medinan suras" | >>رحم + نزول:مدنية
+"Exact phrase in Sura 2, verses 1-10" | "بسم الله" + رقم_السورة:2 + رقم_الآية:[1 الى 10]
+
+
+6.5 TOPICAL QUERIES
+--------------------
+Natural Language                    | Alfanous Query
+------------------------------------|----------------------------------
+"Verses about faith/belief"         | موضوع:الإيمان
+"Verses about worship"              | موضوع:العبادات
+"Stories of prophets"               | موضوع:القصص
+"Legal rulings"                     | موضوع:الأحكام
+"About God's names"                 | فصل:أسماء_الله
+
+
+================================================================================
+7. COMMON QUERY EXAMPLES
+================================================================================
+
+7.1 SIMPLE SEARCHES
+--------------------
+Query: الله
+Description: Find all verses containing "Allah"
+
+Query: "بسم الله الرحمن الرحيم"
+Description: Find the exact Basmala phrase
+
+Query: رحمة | مغفرة
+Description: Find verses with either mercy or forgiveness
+
+
+7.2 BOOLEAN COMBINATIONS
+-------------------------
+Query: الصلاة + الزكاة
+Description: Verses with both prayer and charity
+
+Query: جنة - نار
+Description: Verses with paradise but not hellfire
+
+Query: (إبراهيم | إسماعيل) + نبي
+Description: Verses about prophet Ibrahim or Ismail
+
+
+7.3 WILDCARD SEARCHES
+----------------------
+Query: *نبي*
+Description: Words containing "prophet" anywhere
+
+Query: رحم*
+Description: Words starting with "mercy" root
+
+Query: *ين
+Description: Words ending in "ين"
+
+
+7.4 FIELD SEARCHES
+-------------------
+Query: سورة:يس
+Description: All verses from Sura Yasin
+
+Query: رقم_السورة:2
+Description: All verses from Sura 2 (Al-Baqarah)
+
+Query: موضوع:العقيدة
+Description: Verses about creed/theology
+
+
+7.5 LINGUISTIC SEARCHES
+------------------------
+Query: >>رحم
+Description: All words from root ر-ح-م (mercy, compassion, womb, etc.)
+
+Query: >كتب
+Description: All grammatical forms of "write" (wrote, book, written)
+
+Query: ~صبر
+Description: Synonyms of patience (endurance, perseverance)
+
+Query: #ظلم
+Description: Antonyms of injustice (justice, fairness)
+
+
+7.6 ADVANCED COMBINATIONS
+--------------------------
+Query: >>قرأ + سورة:العلق
+Description: Root words of "read/recite" in Sura Al-Alaq
+
+Query: (رحمة + مغفرة) + نزول:مدنية
+Description: Mercy and forgiveness in Medinan suras
+
+Query: الله^3 + رحمن^2
+Description: Allah (boosted 3x) with merciful (boosted 2x)
+
+Query: "الحمد لله" + رقم_السورة:[1 الى 10]
+Description: Exact phrase in first 10 suras
+
+
+================================================================================
+8. TRANSLATION STRATEGY GUIDELINES
+================================================================================
+
+8.1 UNDERSTANDING USER INTENT
+------------------------------
+1. Identify if user wants:
+   - Exact phrase → use quotes "..."
+   - Multiple terms → determine if AND (+) or OR (|)
+   - Location-specific → use field:value
+   - Linguistic features → use >, >>, ~, #
+
+2. Look for keywords:
+   - "and", "both", "together" → AND operator (+)
+   - "or", "either" → OR operator (|)
+   - "not", "without", "except" → NOT operator (-)
+   - "exact", "phrase" → quotes "..."
+   - "in sura/chapter" → sura: or رقم_السورة:
+   - "root", "derivatives" → >> or >
+   - "similar", "synonyms" → ~
+   - "opposite", "antonym" → #
+
+
+8.2 QUERY OPTIMIZATION TIPS
+----------------------------
+1. Default to broader searches first (use OR or single terms)
+2. Add operators progressively for refinement
+3. Use root search (>>) for comprehensive semantic search
+4. Combine location filters (sura, juz) with content terms
+5. Use wildcards (*) when user is uncertain of exact form
+6. Suggest synonyms (~) for better recall
+7. Apply boosting (^) for emphasis on key terms
+
+
+8.3 HANDLING AMBIGUITY
+-----------------------
+1. If user query is vague:
+   - Offer multiple interpretations
+   - Start with simple query, provide refinement options
+   
+2. If user uses colloquial language:
+   - Map to formal Quranic terms
+   - Example: "heaven" → جنة or فردوس
+   
+3. If translating from English:
+   - Convert to Arabic terms when possible
+   - Use field names in Arabic or English (both work)
+
+
+8.4 COMMON MISTAKES TO AVOID
+-----------------------------
+1. Don't use AND (+) when OR (|) is intended
+   - Default spacing means OR, not AND
+   
+2. Don't forget quotes for exact phrases
+   - Without quotes: individual word search (OR)
+   - With quotes: exact sequence match
+   
+3. Don't over-specify initially
+   - Start broad, then narrow down
+   
+4. Don't mix incompatible operators
+   - Can't use > and >> on same word
+   - Choose appropriate linguistic level
+
+
+================================================================================
+9. RESPONSE FORMAT FOR AI ASSISTANTS
+================================================================================
+
+When translating a natural language query, provide:
+
+1. TRANSLATED QUERY: The Alfanous syntax query
+2. EXPLANATION: Brief description of what the query does
+3. COMPONENTS: Break down each part of the query
+4. ALTERNATIVES: Suggest variations if applicable
+
+Example Response Format:
+------------------------
+User Query: "Find verses about patience in Sura Al-Baqarah"
+
+TRANSLATED QUERY: صبر + سورة:البقرة
+
+EXPLANATION: This searches for verses containing the word "patience" (صبر) 
+specifically in Sura Al-Baqarah.
+
+COMPONENTS:
+- صبر: The Arabic word for patience
+- +: AND operator (both conditions must be met)
+- سورة:البقرة: Field search limiting to Sura Al-Baqarah
+
+ALTERNATIVES:
+- >>صبر + سورة:البقرة  (include all root derivatives of patience)
+- ~صبر + سورة:البقرة  (include synonyms of patience)
+- رقم_السورة:2 + صبر  (using sura number instead of name)
+
+
+================================================================================
+10. API INTEGRATION NOTES
+================================================================================
+
+When integrating with Alfanous API:
+
+1. Use api.search(query) for basic searches
+2. Additional parameters to consider:
+   - page: For pagination (default: 1)
+   - perpage: Results per page (default: 10, max: 100)
+   - sortedby: "score", "mushaf", "tanzil", "subject"
+   - view: "minimal", "normal", "full"
+   - highlight: For highlighting matched terms
+   - script: "standard" or "uthmani"
+
+3. For filtering, use filter parameter:
+   filter={"sura_id": 2, "juz": [1,3]}
+
+4. For faceted search, use facets parameter:
+   facets="sura_id,juz,subject"
+
+
+================================================================================
+END OF AI QUERY TRANSLATION RULES
+================================================================================
+
+For updates and more information:
+- Repository: https://github.com/Alfanous-team/alfanous
+- API Documentation: http://alfanous.org/api/
+- Issue Tracker: https://github.com/Alfanous-team/alfanous/issues
+
+This file is maintained as part of the Alfanous project and should be updated
+as new features are added to the query syntax.

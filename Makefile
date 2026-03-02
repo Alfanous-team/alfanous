@@ -2,12 +2,6 @@
 # This is Alfanous Makefile
 #
 
-## Global Version of the project, must be updated in each significant change in 
-## the API
-VERSION=0.7.33
-## Next releases:
-RELEASE=$(VERSION)Kahraman
-
 ## API path, API contains all python packages 
 API_PATH="./src/"
 
@@ -38,7 +32,6 @@ default:
 	@echo "edit \n\t to edit all resources that should humanly edited "
 	@echo "download \n\t to download all Quranic resources that we can't \n\t include in Git or tarball because of license or huge size"
 	@echo "build \n\t to build all indexes, update all resources, qt files, \n\t localization files"
-	@echo "dist \n\t to generate all distribution files for the API and \n\t the Desktop interface"
 
 
 ##  This target is to edit text resources before building, which are:
@@ -63,25 +56,10 @@ edit_translations_to_download_list:
 
 
 ## this target is to build all what have to be built:
-# 1. Update Quranic resources needed for indexing phase, see update_pre_build
-# 2. Generate all Indexes, see  index_all
-build: update_pre_build index_all
+# 1. Generate all Indexes, see  index_all
+# 2. Update Quranic resources needed after indexing phase, see update_post_build
+build: index_all update_post_build
 
-
-
-
-## clean temporary files after a building operation
-# TODO	add all what has to be cleaned!
-clean: clean_all
-
-clean_all: clean_deb
-	@echo "Cleaning..." 
-	rm -rf `find . -type f -name Thumbs.db`
-	rm -rf `find . -name *.pyc`
-	rm -rf `find . -name *.pyo`
-	rm -rf `find . -type d -name *.egg-info`
-	find . -type f -iname \*.mo -exec rm {} \;
-	find . -type f -iname \*.qm -exec rm {} \;
 
 
 ## download Quranic resources needed for Alfanous project, which are:
@@ -100,11 +78,13 @@ download_tanzil:
 
 
 
-##  update resources that must be updated before indexing phase, which are:
-# 1. Quranic Arabic Corpus, see update_quranic_corpus
-# 2. Linguistic resources on the form of python dictionarries to accelerate the loading , see update_dynamic_resources
+##  update resources that must be updated after indexing phase, which are:
+# 1. translations list file (based on freshly built index), see update_translations_indexed_list
+update_post_build: update_translations_indexed_list
 
-update_pre_build:  update_translations_indexed_list
+##  update resources that must be updated before indexing phase, which are:
+# (currently unused, kept for potential future use)
+update_pre_build:
 
 # update list of indexed translations automatically using Importer
 update_translations_indexed_list:
@@ -135,15 +115,4 @@ index_main:
 index_extend:
 	export PYTHONPATH=$(API_PATH) ;	rm -rf $(INDEX_PATH)extend/; $(PYTHON_COMMAND) $(QIMPORT) -x extend $(STORE_PATH)Translations/ $(INDEX_PATH)extend/
 
-
-install:
-	@# information.json is pre-committed; no templating needed
-	cd   "$(API_PATH)alfanous" ; $(PYTHON_COMMAND) setup.py install
-
-# python egg for API
-dist:
-	@# information.json is pre-committed; no templating needed
-	cd $(API_PATH)alfanous ; rm -r dist; $(PYTHON_COMMAND) setup.py  bdist_wheel; twine upload dist/* -u assemch
-
-release: dist
 

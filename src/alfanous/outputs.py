@@ -3,9 +3,12 @@ import re
 
 from alfanous.text_processing import QArabicSymbolsFilter
 from alfanous.data import *
-
+from alfanous.constants import QURAN_TOTAL_VERSES
 from alfanous.romanization import transliterate
 from alfanous.misc import locate, find, filter_doubles
+from whoosh import query as wquery
+from whoosh.sorting import Facets
+from alfanous.results_processing import QScore
 
 STANDARD2UTHMANI = lambda x: std2uth_words.get(x) or x
 
@@ -23,10 +26,6 @@ def IS_FLAG(flags, key):
     return True
 
 
-#
-def scan_no_wildcards(query):
-    return not ({"*", "?", "؟"} & set(query))
-
 
 class Raw:
     DEFAULTS = {
@@ -34,7 +33,7 @@ class Raw:
         "maxrange": 25,
         "maxkeywords": 100,
         "results_limit": {
-            "aya": 6236,
+            "aya": QURAN_TOTAL_VERSES,
             "translation": 1000,
             "word": 1000,
         },
@@ -82,10 +81,6 @@ class Raw:
     ERRORS = {
         0: "success",
         1: "no action is chosen or action undefined",
-        2: """This query is not permitted, you have to add  3 letters 
-	           or more to use * (only two are permitted) and 2 letters or more to use ? (؟)\n
-	     	-- Exceptions: ? (1),  ??????????? (11)
-	     	""",
         3: "Parsing Query failed, please reformulate  the query",
         4: "One of specified arabic_to_english_fields doesn't exist"
     }
@@ -172,8 +167,8 @@ class Raw:
                  WSE_index=paths.WSE_INDEX,
                  Recitations_list_file=paths.RECITATIONS_LIST_FILE,
                  Translations_list_file=paths.TRANSLATIONS_LIST_FILE,
-                 Hints_file=paths.HINTS_FILE,
-                 Information_file=paths.INFORMATION_FILE):
+                 Information_file=paths.INFORMATION_FILE,
+                 AI_Rules_file=paths.AI_QUERY_TRANSLATION_RULES_FILE):
         """
 		initialize the search engines
 		"""
@@ -183,14 +178,11 @@ class Raw:
         self.WSE = WSE(WSE_index)
         ##
         self._recitations = recitations(Recitations_list_file)
-        self._translations = { id: id for id in self.TSE.list_values("id")}
-        self._hints = hints(Hints_file)
+        _translations_names = translations(Translations_list_file)
+        self._translations = {id: _translations_names.get(id, id) for id in self.TSE.list_values("id")}
         ##
         self._information = information(Information_file)
-        ##
-        # self._stats = Configs.stats( Stats_file )
-        # enable it if you need statistics , disable it you prefer performance
-        # self._init_stats()
+        self._ai_query_translation_rules = ai_query_translation_rules(AI_Rules_file)
         ##
         self._surates = {
             "Arabic": list(self.QSE.list_values("sura_arabic")),
@@ -214,7 +206,6 @@ class Raw:
             "translations": self._translations,
             "recitations": self._recitations,
             "information": self._information,
-            "hints": self._hints,
             "surates": self._surates,
             "chapters": self._chapters,
             "topics": self._topics,
@@ -226,7 +217,8 @@ class Raw:
             "errors": self._errors,
             "domains": self._domains,
             "help_messages": self._helpmessages,
-            "roots": self._roots
+            "roots": self._roots,
+            "ai_query_translation_rules": self._ai_query_translation_rules
         }
 
     def do(self, flags):
@@ -239,7 +231,6 @@ class Raw:
         # init the error message with Succes
         output = self._check(0, flags)
         if action == "search":
-            assert scan_no_wildcards(query), self._check(2, flags)
             output.update(self._search(flags, unit))
         elif action == "suggest":
             output.update(self._suggest(flags, unit))
@@ -257,53 +248,6 @@ class Raw:
 
         }
 
-    def _init_stats(self):
-        ### initialization of stats
-        stats = {}
-        for ident in ["TOTAL"]:  # self._idents.extend(["TOTAL"])
-            stats[ident] = {}
-            stats[ident]["total"] = 0
-            stats[ident]["other"] = {}
-            stats[ident]["other"]["total"] = 0
-            for action in self.DOMAINS["action"]:
-                stats[ident][action] = {}
-                stats[ident][action]["total"] = 0
-                stats[ident][action]["other"] = {}
-                stats[ident][action]["other"]["total"] = 0
-                for flag, domain in self.DOMAINS.items():
-                    stats[ident][action][flag] = {}
-                    stats[ident][action][flag]["total"] = 0
-                    stats[ident][action][flag]['other'] = 0
-                    for val in domain:
-                        stats[ident][action][flag][str(val)] = 0
-        stats.update(self._stats)
-        self._stats = stats
-
-    def _process_stats(self, flags):
-        """ process flags for statistics """
-        stats = self._stats
-        # Incrementation
-        for ident in ["TOTAL"]:  # ["TOTAL",flags[ident]]
-            stats[ident]["total"] += 1
-            if flags.get("action"):
-                action = flags["action"]
-                if action in self._domains["action"]:
-                    stats[ident][action]["total"] += 1
-                    for flag, val in flags.items():
-                        if flag in self._domains.keys():
-                            stats[ident][action][flag]["total"] += 1
-                            if val in self._domains[flag]:
-                                stats[ident][action][flag][str(val)] += 1
-                            else:
-                                stats[ident][action][flag]["other"] += 1
-                        else:
-                            stats[ident][action]["other"]["total"] += 1
-                else:
-                    stats[ident]["other"]["total"] += 1
-        self._stats = stats
-        f = open(paths.STATS_FILE, "w")
-        f.write(json.dumps(self._stats))
-
     def _show(self, flags):
         """  show metadata"""
         query = flags.get("query") or self._defaults["flags"]["query"]
@@ -311,8 +255,145 @@ class Raw:
             return {"show": self._all}
         elif query in self._all:
             return {"show": {query: self._all[query]}}
+        elif query == "keywords":
+            # Handle keywords query - get top frequent or all unique keywords
+            return {"show": self._show_keywords(flags)}
         else:
             return {"show": None}
+
+    def _show_keywords(self, flags):
+        """
+        Show keywords (most frequent or all unique) for a given field.
+        Uses Whoosh facets for categorical fields and reader methods for text fields.
+        
+        Parameters via flags:
+        - unit: Search unit to query from (default: 'aya')
+                Valid values: 'aya', 'translation', 'word'
+                Invalid values default to 'aya'
+        - field: The field name to query (e.g., 'aya_', 'topic', 'chapter')
+                 Auto-adjusted based on unit if using default 'aya_':
+                 - 'word' unit: defaults to 'normalized' field
+                 - 'translation' unit: defaults to 'text' field
+        - mode: 'frequent' for top N most frequent, 'unique' for all unique values (default: 'unique')
+        - limit: Number of results for 'frequent' mode (default: 20)
+        
+        Returns:
+        - unit: The search unit used
+        - field: The field queried
+        - mode: The query mode used
+        - keywords: List of keywords (format depends on mode)
+        - count: Number of keywords returned
+        - limit: (only in frequent mode) The limit applied
+        - error: (if error occurred) Error message
+        """
+        unit = flags.get("unit", "aya")
+        field = flags.get("field", "aya_")
+        mode = flags.get("mode", "unique")
+        
+        # Select the appropriate search engine based on unit
+        if unit == "word":
+            search_engine = self.WSE
+            if field == "aya_":  # Use default field for word index
+                field = "normalized"
+        elif unit == "translation":
+            search_engine = self.TSE
+            if field == "aya_":  # Use default field for translation index
+                field = "text"
+        else:  # unit == "aya" or any other value defaults to QSE
+            search_engine = self.QSE
+            unit = "aya"  # Normalize unit name
+        
+        # Validate and convert limit parameter
+        try:
+            limit = int(flags.get("limit", 20))
+        except (ValueError, TypeError):
+            limit = 20  # Use default if invalid
+        
+        result = {
+            "unit": unit,
+            "field": field,
+            "mode": mode
+        }
+        
+        try:
+            # Check if search engine is properly initialized
+            if not search_engine.OK:
+                result["error"] = f"Search engine for unit '{unit}' is not available"
+                result["keywords"] = []
+                result["count"] = 0
+                return result
+            
+            # Determine if this is a tokenized text field or a categorical field
+            # TEXT fields are tokenized and we want individual tokens
+            # For KEYWORD, NUMERIC, ID fields we use facets to get unique values
+            schema = search_engine._schema
+            field_obj = schema[field] if field in schema.names() else None
+            
+            from whoosh.fields import TEXT
+            is_text_field = field_obj is not None and isinstance(field_obj, TEXT)
+            
+            if is_text_field:
+                # For text fields, use reader methods to get individual tokens
+                if mode == "unique":
+                    # Get all unique tokens/terms for the field
+                    values = search_engine.list_values(field)
+                    result["keywords"] = values
+                    result["count"] = len(values)
+                else:  # mode == "frequent"
+                    # Get top N most frequent tokens
+                    frequent_words = search_engine.most_frequent_words(limit, field)
+                    result["keywords"] = [
+                        {"word": word, "frequency": int(freq)}
+                        for freq, word in frequent_words
+                    ]
+                    result["limit"] = limit
+                    result["count"] = len(frequent_words)
+            else:
+                # For categorical/keyword fields, use Whoosh facets
+                # This provides better performance and uses standard Whoosh functionality
+                searcher = search_engine._docindex.get_index().searcher(weighting=QScore())
+                
+                try:
+                    # Create facets for the requested field
+                    groupedby = Facets()
+                    groupedby.add_field(field)
+                    
+                    # Search all documents
+                    results = searcher.search(wquery.Every(), limit=None, groupedby=groupedby)
+                    
+                    # Get facet groups
+                    field_groups = results.groups(field)
+                    
+                    if mode == "unique":
+                        # Get all unique values for the field
+                        values = list(field_groups.keys())
+                        result["keywords"] = values
+                        result["count"] = len(values)
+                    else:  # mode == "frequent"
+                        # Get top N most frequent values with document counts
+                        # Sort by frequency (number of documents) descending
+                        sorted_items = sorted(field_groups.items(), key=lambda x: len(x[1]), reverse=True)
+                        
+                        # Take top N
+                        top_items = sorted_items[:limit]
+                        
+                        result["keywords"] = [
+                            {"word": str(value), "frequency": len(doclist)}
+                            for value, doclist in top_items
+                        ]
+                        result["limit"] = limit
+                        result["count"] = len(top_items)
+                finally:
+                    # Always close the searcher to prevent resource leaks
+                    searcher.close()
+            
+        except Exception as e:
+            # Handle any errors
+            result["error"] = f"Error retrieving keywords for field '{field}' in unit '{unit}': {str(e)}"
+            result["keywords"] = []
+            result["count"] = 0
+        
+        return result
 
     def _suggest(self, flags, unit):
         """ return suggestions for any search unit """
@@ -336,6 +417,10 @@ class Raw:
     def _search(self, flags, unit):
         if unit == "aya":
             search_results = self._search_aya(flags)
+        elif unit == "translation":
+            search_results = self._search_translation(flags)
+        elif unit == "word":
+            search_results = self._search_word(flags)
         else:
             search_results = {}
 
@@ -559,6 +644,8 @@ class Raw:
                         annotation_word_query += " OR normalized:%s " % STANDARD2UTHMANI(term[1])
                     if word_vocalizations:
                         vocalizations = vocalization_dict.get(strip_vocalization(term[1])) or []
+                        if isinstance(vocalizations, str):
+                            vocalizations = [vocalizations]
                         nb_vocalizations_globale += len(vocalizations)
                     if word_synonyms:
                         synonyms = syndict.get(term[1]) or []
@@ -756,6 +843,138 @@ class Raw:
 
                 "annotations": {}
             }
+        searcher.close()
+        return output
+
+    def _search_translation(self, flags):
+        flags = {**self._defaults["flags"], **flags}
+        query = flags["query"]
+        sortedby = flags["sortedby"]
+        range = int(flags["perpage"]) if flags.get("perpage") \
+            else flags["range"]
+        offset = ((int(flags["page"]) - 1) * range) + 1 if flags.get("page") \
+            else int(flags["offset"])
+        highlight = flags["highlight"]
+
+        # preprocess query (no Buckwalter transliteration for translation text)
+        query = query.replace("\\", "")
+
+        SE = self.TSE
+        res, termz, searcher = SE.search_all(query, limit=self._defaults["results_limit"]["translation"], sortedby=sortedby)
+        terms = [term[1] for term in list(termz)[:self._defaults["maxkeywords"]]]
+
+        # pagination
+        offset = 1 if offset < 1 else offset
+        range = self._defaults["minrange"] if range < self._defaults["minrange"] else range
+        range = self._defaults["maxrange"] if range > self._defaults["maxrange"] else range
+        interval_end = offset + range - 1
+        end = interval_end if interval_end < len(res) else len(res)
+        start = offset if offset <= len(res) else -1
+        reslist = [] if end == 0 or start == -1 else list(res)[start - 1:end]
+
+        output = {}
+        H = lambda X: SE.highlight(X, terms, highlight) if highlight != "none" and X else X if X else "-----"
+
+        output["runtime"] = round(res.runtime, 5)
+        output["interval"] = {
+            "start": start,
+            "end": end,
+            "total": len(res),
+            "page": ((start - 1) / range) + 1,
+            "nb_pages": ((len(res) - 1) / range) + 1
+        }
+
+        cpt = start - 1
+        output["translations"] = {}
+        for r in reslist:
+            cpt += 1
+            output["translations"][cpt] = {
+                "identifier": {
+                    "gid": r["gid"],
+                    "translation_id": r["id"],
+                },
+                "translation": {
+                    "text": H(r["text"]),
+                    "text_no_highlight": r["text"],
+                    "author": r.get("author"),
+                    "lang": r.get("lang"),
+                },
+            }
+
+        searcher.close()
+        return output
+
+    def _search_word(self, flags):
+        flags = {**self._defaults["flags"], **flags}
+        query = flags["query"]
+        sortedby = flags["sortedby"]
+        range = int(flags["perpage"]) if flags.get("perpage") \
+            else flags["range"]
+        offset = ((int(flags["page"]) - 1) * range) + 1 if flags.get("page") \
+            else int(flags["offset"])
+        highlight = flags["highlight"]
+
+        # preprocess query
+        query = query.replace("\\", "")
+
+        if ":" not in query:
+            query = transliterate("buckwalter", query, ignore="'_\"%*?#~[]{}:>+-|")
+
+        SE = self.WSE
+        if not SE.OK:
+            return {
+                "words": {},
+                "interval": {"start": 0, "end": 0, "total": 0, "page": 1, "nb_pages": 0},
+                "runtime": 0
+            }
+
+        res, termz, searcher = SE.search_all(query, limit=self._defaults["results_limit"]["word"], sortedby=sortedby)
+        terms = [term[1] for term in list(termz)[:self._defaults["maxkeywords"]]]
+
+        # pagination
+        offset = 1 if offset < 1 else offset
+        range = self._defaults["minrange"] if range < self._defaults["minrange"] else range
+        range = self._defaults["maxrange"] if range > self._defaults["maxrange"] else range
+        interval_end = offset + range - 1
+        end = interval_end if interval_end < len(res) else len(res)
+        start = offset if offset <= len(res) else -1
+        reslist = [] if end == 0 or start == -1 else list(res)[start - 1:end]
+
+        output = {}
+        H = lambda X: SE.highlight(X, terms, highlight) if highlight != "none" and X else X if X else "-----"
+
+        output["runtime"] = round(res.runtime, 5)
+        output["interval"] = {
+            "start": start,
+            "end": end,
+            "total": len(res),
+            "page": ((start - 1) / range) + 1,
+            "nb_pages": ((len(res) - 1) / range) + 1
+        }
+
+        cpt = start - 1
+        output["words"] = {}
+        for r in reslist:
+            cpt += 1
+            output["words"][cpt] = {
+                "identifier": {
+                    "gid": r["gid"],
+                    "word_id": r.get("word_id"),
+                    "aya_id": r.get("aya_id"),
+                    "sura_id": r.get("sura_id"),
+                },
+                "word": {
+                    "text": H(r["word"]),
+                    "text_no_highlight": r["word"],
+                    "normalized": r.get("normalized"),
+                    "spelled": r.get("spelled"),
+                    "pos": r.get("pos"),
+                    "type": r.get("type"),
+                    "arabicroot": r.get("arabicroot"),
+                    "arabiclemma": r.get("arabiclemma"),
+                },
+            }
+
         searcher.close()
         return output
 

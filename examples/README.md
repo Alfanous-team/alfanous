@@ -2,6 +2,38 @@
 
 This directory contains example scripts demonstrating various features of the Alfanous API.
 
+## AI Query Translation Rules Example
+
+The `ai_query_translation_example.py` script demonstrates how to access and use the AI query translation rules file that helps translate natural language queries into Alfanous query syntax.
+
+### Running the Example
+
+```bash
+# From the repository root
+PYTHONPATH=src python3 examples/ai_query_translation_example.py
+```
+
+### What the Example Demonstrates
+
+1. **Loading the AI rules file** - Access the rules from the resources directory
+2. **Rules summary** - Display table of contents and file statistics
+3. **Translation patterns** - Show examples of natural language to query syntax translation
+4. **Integration guidance** - How AI systems can use the rules
+5. **Practical usage** - Example code for implementing query translation
+
+### AI Rules File Features
+
+The rules file includes comprehensive documentation for:
+- Basic operators (AND, OR, NOT, phrases)
+- Advanced features (wildcards, field searches, ranges, boosting)
+- Arabic-specific features (synonyms, antonyms, root derivations, tashkil)
+- Field name reference (Arabic and English)
+- Natural language translation patterns
+- Common query examples
+- Integration strategies for AI systems
+
+The rules file is located at: `src/alfanous/resources/ai_query_translation_rules.txt`
+
 ## Facet Search Examples
 
 The `facet_search_examples.py` script demonstrates how to use the faceted search feature to get aggregated counts of search results grouped by various fields.
