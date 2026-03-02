@@ -54,6 +54,13 @@ class QMultiTerm(MultiTerm):
         for word in self.words:
             termset.add((self.fieldname, word))
 
+    def has_terms(self):
+        return True
+
+    def terms(self, phrases=False):
+        for word in self.words:
+            yield (self.fieldname, word)
+
     def _existing_terms(self, ixreader, termset, reverse=False, phrases=True):
         fieldname, words = self.fieldname, self.words
         fieldnum = ixreader.fieldname_to_num(fieldname)
@@ -207,17 +214,20 @@ class TashkilQuery(QMultiTerm):
 
     def _btexts(self, ixreader):
         fieldname = self.fieldname
+        ASF = QArabicSymbolsFilter(shaping=False, tashkil=True, spellerrors=False, hamza=False)
         from_bytes = ixreader.schema[fieldname].from_bytes
+        seen_words = set(self.words)
         for field, btext in ixreader.all_terms():
             if field == fieldname:
                 indexed_text = from_bytes(btext)
+                normalized_indexed = ASF.normalize_all(indexed_text)
                 for word in self.text:
-                    # TODO: Implement proper tashkil-aware comparison
-                    # Should normalize both strings removing/handling diacritics
-                    # and compare the underlying characters
-                    if word == indexed_text:
-                        self.words.append(indexed_text)
+                    if ASF.normalize_all(word) == normalized_indexed:
+                        if indexed_text not in seen_words:
+                            self.words.append(indexed_text)
+                            seen_words.add(indexed_text)
                         yield btext
+                        break
 
 
 class TupleQuery(QMultiTerm):
