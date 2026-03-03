@@ -26,7 +26,7 @@ from whoosh.query import Prefix as whoosh_Prefix
 from whoosh.query import Or, NullQuery, Every
 
 from alfanous.data import syndict, derivedict, worddict, arabic_to_english_fields
-from alfanous.text_processing import QArabicSymbolsFilter
+from alfanous.text_processing import QArabicSymbolsFilter, get_arabic_stemmer
 
 from alfanous.misc import locate, find, filter_doubles
 
@@ -448,6 +448,7 @@ class ArabicParser(StandardParser):
         """  do all possible operations to make a  fuzzy search
                     - Synonyms
                     - root derivation
+                    - stemming (Arabic Snowball stemmer via PyStemmer)
                     - spell
                     - tashkil
         """
@@ -457,12 +458,23 @@ class ArabicParser(StandardParser):
             self.text = text
             self.boost = boost
             self.words = self.pipeline(self.fieldname, self.text)
+            self._stemming = ArabicParser.Stemming(fieldname, text)
 
         def pipeline(self, fieldname, text):
             words = set()
             words |= set(ArabicParser.Synonyms(fieldname, text).words)
             words |= set(ArabicParser.Derivation(fieldname, text).words)
             return list(words)
+
+        def _btexts(self, ixreader):
+            seen = set()
+            for btext in super()._btexts(ixreader):
+                seen.add(btext)
+                yield btext
+            for btext in self._stemming._btexts(ixreader):
+                if btext not in seen:
+                    seen.add(btext)
+                    yield btext
 
     class Synonyms(QMultiTerm):
         """
@@ -551,6 +563,38 @@ class ArabicParser(StandardParser):
             if matched:
                 self.words.append(second)
             return matched
+
+    class Stemming(QMultiTerm):
+        """
+        Query that searches for words in the index sharing the same Arabic stem.
+        Uses PyStemmer's Arabic (Snowball) stemmer algorithm.
+        Falls back gracefully if PyStemmer is not installed.
+        """
+
+        def __init__(self, fieldname, text, boost=1.0):
+            self.fieldname = fieldname
+            self.text = text
+            self.boost = boost
+            self.words = [text]
+            self._stemmer = get_arabic_stemmer()
+            self._stem = self._stemmer.stemWord(text) if self._stemmer else text
+
+        def _btexts(self, ixreader):
+            # NOTE: This performs an O(n) scan of all indexed terms to find stem
+            # matches. This is consistent with the SpellErrors class approach and
+            # acceptable for Quranic corpus sizes. For very large indexes a
+            # pre-built stem→words mapping would be more efficient.
+            if not self._stemmer:
+                return
+            fieldname = self.fieldname
+            from_bytes = ixreader.schema[fieldname].from_bytes
+            for field, btext in ixreader.all_terms():
+                if field == fieldname:
+                    indexed_text = from_bytes(btext)
+                    if self._stemmer.stemWord(indexed_text) == self._stem:
+                        if indexed_text not in self.words:
+                            self.words.append(indexed_text)
+                        yield btext
 
     class Tashkil(QMultiTerm):
         """

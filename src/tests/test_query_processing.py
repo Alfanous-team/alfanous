@@ -7,7 +7,7 @@ from whoosh.query import Term
 
 from alfanous import paths
 from alfanous.indexing import QseDocIndex
-from alfanous.query_processing import _make_arabic_parser, QuranicParser
+from alfanous.query_processing import _make_arabic_parser, QuranicParser, ArabicParser
 
 
 def test_parsing():
@@ -98,3 +98,24 @@ def test_parsing_with_schema():
            '\u0633\u0645\u0627\u0621',
            '\u0623\u0633\u0645\u0627\u0626\u0647',
            '\u0627\u0644\u0633\u0645\u0627\u0621'])
+
+
+def test_stemming_query():
+    stemming = ArabicParser.Stemming('aya', u'كتب')
+    assert stemming.text == u'كتب'
+    assert stemming._stemmer is not None
+    # The stem of the word should match itself (already a root-like form)
+    assert stemming._stem == stemming._stemmer.stemWord(u'كتب')
+    # Initial words list contains only the query word
+    assert stemming.words == [u'كتب']
+
+
+def test_fuzzy_all_has_stemming():
+    from alfanous import paths
+    from alfanous.indexing import QseDocIndex
+    D = QseDocIndex(paths.QSE_INDEX)
+    QP = QuranicParser(D.get_schema())
+    fuzzy = QP.FuzzyAll('aya', u'كتب')
+    assert hasattr(fuzzy, '_stemming')
+    assert isinstance(fuzzy._stemming, ArabicParser.Stemming)
+    assert fuzzy._stemming.text == u'كتب'

@@ -79,6 +79,19 @@ class QArabicSymbolsFilter(Filter):
             yield t
 
 
+def get_arabic_stemmer():
+    """Return a PyStemmer Arabic stemmer instance, or None if not available.
+
+    Uses the Snowball Arabic stemming algorithm via the PyStemmer package.
+    Install with: pip install PyStemmer
+    """
+    try:
+        import Stemmer
+        return Stemmer.Stemmer('arabic')
+    except ImportError:
+        return None
+
+
 def Gword_tamdid(aya):
     """ add a tamdid to lafdh aljalala to eliminate the double vocalization """
     return aya.replace(u"لَّه", u"لَّـه").replace(u"لَّه", u"لَّـه")
