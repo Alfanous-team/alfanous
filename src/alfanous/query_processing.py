@@ -240,7 +240,6 @@ class ArabicParser(StandardParser):
                                            mainfield=mainfield,
                                            otherfields=otherfields,
                                            termclass=termclass)
-        self.parser = ARABIC_PARSER_FN
         self.ara2eng = ara2eng
         
         # Add Whoosh 2.7 query plugins for custom Arabic syntax

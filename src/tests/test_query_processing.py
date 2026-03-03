@@ -7,7 +7,8 @@ from whoosh.query import Term
 
 from alfanous import paths
 from alfanous.indexing import QseDocIndex
-from alfanous.query_processing import _make_arabic_parser, QuranicParser
+from alfanous.query_processing import _make_arabic_parser, QuranicParser, ArabicParser
+from alfanous.data import arabic_to_english_fields
 
 
 def test_parsing():
@@ -37,6 +38,34 @@ def test_parsing():
     assert and_node[0].as_list() == [u"أصحاب"]
     assert and_node[1].get_name() == "Field"
     assert and_node[1].as_list() == [u"سورة", [u"الكهف"]]
+
+
+def test_preprocess_query():
+    """Test that ArabicParser._preprocess_query translates Arabic operators and field names.
+
+    This tests the production path used by ArabicParser.parse(): Arabic logical
+    operators (و/أو/او/وليس/ليس) and field name aliases are translated to their
+    Whoosh equivalents before the Whoosh query parser processes the string.
+    """
+
+    class _Stub:
+        ara2eng = arabic_to_english_fields
+    _preprocess = ArabicParser._preprocess_query.__get__(_Stub())
+
+    # و → AND (the bug case: word AND field:value)
+    assert _preprocess(u"أصحاب و سورة:الكهف") == u"أصحاب AND sura_arabic:الكهف"
+    # أو / او → OR
+    assert _preprocess(u"أصحاب أو سورة:الكهف") == u"أصحاب OR sura_arabic:الكهف"
+    assert _preprocess(u"أصحاب او سورة:الكهف") == u"أصحاب OR sura_arabic:الكهف"
+    # وليس → ANDNOT
+    assert _preprocess(u"أصحاب وليس سورة:الكهف") == u"أصحاب ANDNOT sura_arabic:الكهف"
+    # ليس → NOT (prefix)
+    assert _preprocess(u"ليس سورة:الكهف") == u"NOT sura_arabic:الكهف"
+    # Reversed operands (already worked before the fix)
+    assert _preprocess(u"سورة:الكهف و أصحاب") == u"sura_arabic:الكهف AND أصحاب"
+    # Plain words with no field
+    assert _preprocess(u"الصلاة و الزكاة") == u"الصلاة AND الزكاة"
+    assert _preprocess(u"سميع أو بصير") == u"سميع OR بصير"
 
 
 def test_parsing_with_schema():
