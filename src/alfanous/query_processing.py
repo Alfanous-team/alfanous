@@ -36,10 +36,7 @@ from whoosh.qparser.plugins import SingleQuotePlugin
 
 def _make_arabic_parser():
     escapechar = "//"
-    alephba = u"""
-                abcdefghijklmnopqrstuvwxyz_
-                األآإـتنمكطدجحخهعغفقثصضشسيبئءؤرىةوزظذ
-                """
+    alephba = u"abcdefghijklmnopqrstuvwxyz_األآإـتنمكطدجحخهعغفقثصضشسيبئءؤرىةوزظذ"
 
     wordtext = CharsNotIn('//*؟^():"{}[]$><%~#،,\' +-|')
     escape = Suppress(escapechar) \

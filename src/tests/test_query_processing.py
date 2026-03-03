@@ -26,6 +26,18 @@ def test_parsing():
     assert parse(u"a*a")
     assert parse(u"a*")
 
+    # Regression test: word AND field:value should parse as AND operation,
+    # not as a field lookup where the field name includes the word and operator.
+    # Bug was caused by 'alephba' containing spaces, which let Word(alephba)
+    # match through whitespace like "أصحاب و سورة" as a single field name.
+    result = parse(u"أصحاب و سورة:الكهف")
+    and_node = result[0][0]
+    assert and_node.get_name() == "And", \
+        "Expected 'أصحاب و سورة:الكهف' to parse as And, not as %s" % and_node.get_name()
+    assert and_node[0].as_list() == [u"أصحاب"]
+    assert and_node[1].get_name() == "Field"
+    assert and_node[1].as_list() == [u"سورة", [u"الكهف"]]
+
 
 def test_parsing_with_schema():
     D = QseDocIndex(paths.QSE_INDEX)
