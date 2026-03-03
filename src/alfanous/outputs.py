@@ -698,8 +698,8 @@ class Raw:
                         "romanization": transliterate(romanization, term[1], ignore="", reverse=True) if romanization in
                                                                                                          self.DOMAINS[
                                                                                                              "romanization"] else None,
-                        "nb_matches": term[2],
-                        "nb_matches_in_results": term_matches_in_results,
+                        "nb_matches_overall": term[2],
+                        "nb_matches": term_matches_in_results,
                         "nb_ayas": term[3],
                         "nb_vocalizations": len(vocalizations) if word_vocalizations else 0,  # unneeded
                         "vocalizations": vocalizations if word_vocalizations else [],
@@ -714,8 +714,8 @@ class Raw:
                     }
                     cpt += 1
             annotation_word_query += " ) "
-            words_output["global"] = {"nb_words": cpt - 1, "nb_matches": matches,
-                                      "nb_matches_in_results": matches_in_results,
+            words_output["global"] = {"nb_words": cpt - 1, "nb_matches_overall": matches,
+                                      "nb_matches": matches_in_results,
                                       "nb_vocalizations": nb_vocalizations_globale}
         output["words"] = words_output
         # Magic_loop to built queries of Adjacents,translations and annotations in the same time
