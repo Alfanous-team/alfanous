@@ -110,7 +110,6 @@ def test_search():
                                 's_r': 6,
                                 's_w': 654,
                                 'sajda': 'لا',
-                                'subject': 'الأخلاق المذمومة,الانشغال بشهوات الدنيا,',
                                 'subtopic': '',
                                 'sura': 'Al-Hijr',
                                 'sura_arabic': 'الحجر',
