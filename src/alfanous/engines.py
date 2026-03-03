@@ -3,7 +3,7 @@ from whoosh.qparser import QueryParser
 
 from alfanous.searching import QSearcher, QReader
 from alfanous.indexing import QseDocIndex, ExtDocIndex, BasicDocIndex
-from alfanous.results_processing import Qhighlight
+from alfanous.results_processing import Qhighlight, QTranslationHighlight
 from alfanous.query_processing import QuranicParser, StandardParser
 from alfanous.constants import QURAN_TOTAL_VERSES
 
@@ -143,7 +143,7 @@ def TraductionSearchEngine(indexpath="../indexes/extend/", qparser=QueryParser):
                              , otherfields=[]
                              , qsearcher=QSearcher
                              , qreader=QReader
-                             , qhighlight=Qhighlight
+                             , qhighlight=QTranslationHighlight
                              )
 
 
