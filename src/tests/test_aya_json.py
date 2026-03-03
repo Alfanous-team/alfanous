@@ -65,3 +65,10 @@ def test_subject_empty_when_all_empty():
             if a.get("subject"):
                 violations.append({"gid": a["gid"], "subject": a["subject"]})
     assert not violations, f"subject should be empty when all fields empty: {violations[:5]}"
+
+
+def test_all_ayas_have_chapter():
+    """Every aya must have a non-empty chapter field."""
+    data = _load_aya_data()
+    missing = [a["gid"] for a in data if not a.get("chapter")]
+    assert not missing, f"{len(missing)} ayas still have empty chapter: first gids={missing[:10]}"
