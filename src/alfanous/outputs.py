@@ -113,7 +113,7 @@ class Raw:
         "aya_sajda_info": [True, False],
         "annotation_word": [True, False],
         "annotation_aya": [True, False],
-        "sortedby": ["score", "relevance", "mushaf", "tanzil", "subject", "ayalength"],
+        "sortedby": ["score", "relevance", "mushaf", "tanzil", "ayalength"],
         "offset": [],  # range(6237)
         "range": [],  # range(DEFAULTS["maxrange"]) , # used as "perpage" in paging mode
         "page": [],  # range(6237),  # overridden with offset

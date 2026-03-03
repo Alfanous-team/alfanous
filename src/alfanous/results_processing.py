@@ -14,8 +14,6 @@ def QSort(sortedby):
         return "gid"
     elif sortedby == "tanzil":
         return "sura_order", "aya_id"
-    elif sortedby == "subject":
-        return "chapter", "topic", "subtopic"
     elif sortedby == "ayalength":
         return "a_l", "a_w"
     elif sortedby in ["relevance", "score"]:

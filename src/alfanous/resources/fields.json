@@ -141,19 +141,6 @@
     "analyzer": null
   },
   {
-    "id": 11,
-    "name": "subject",
-    "name_arabic": "موضوع",
-    "table_name": "aya",
-    "comment": "دمج الحقول الثلاثة للمواضيع",
-    "type": "KEYWORD",
-    "stored": true,
-    "is_spellchecked": null,
-    "unique": null,
-    "search_name": "subject",
-    "analyzer": null
-  },
-  {
     "id": 12,
     "name": "rub_gid",
     "name_arabic": "ربع",

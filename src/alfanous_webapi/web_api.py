@@ -132,7 +132,7 @@ class SearchRequest(BaseModel):
     unit: str = Field("aya", description="Search unit: 'aya' (verse), 'word', or 'translation'")
     page: int = Field(1, ge=1, description="Page number for pagination")
     perpage: int = Field(10, ge=1, le=100, description="Results per page")
-    sortedby: str = Field("relevance", description="Sort order: 'score', 'relevance', 'mushaf', 'tanzil', 'subject'")
+    sortedby: str = Field("relevance", description="Sort order: 'score', 'relevance', 'mushaf', 'tanzil', 'ayalength'")
     fuzzy: bool = Field(False, description="Enable fuzzy search")
     view: str = Field("normal", description="View mode: 'minimal', 'normal', 'full', 'statistic', 'linguistic', 'custom'")
     highlight: str = Field("bold", description="Highlight mode: 'css', 'html', 'bold', 'bbcode'")
@@ -295,7 +295,7 @@ async def search_get(
     unit: str = Query("aya", description="Search unit: 'aya', 'word', or 'translation'"),
     page: int = Query(1, ge=1, description="Page number for pagination"),
     perpage: int = Query(10, ge=1, le=100, description="Results per page"),
-    sortedby: str = Query("relevance", description="Sort order: 'score', 'relevance', 'mushaf', 'tanzil', 'subject'"),
+    sortedby: str = Query("relevance", description="Sort order: 'score', 'relevance', 'mushaf', 'tanzil', 'ayalength'"),
     fuzzy: bool = Query(False, description="Enable fuzzy search"),
     view: str = Query("normal", description="View mode: 'minimal', 'normal', 'full', 'statistic', 'linguistic', 'custom'"),
     highlight: str = Query("bold", description="Highlight mode: 'css', 'html', 'bold', 'bbcode'"),

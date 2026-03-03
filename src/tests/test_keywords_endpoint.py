@@ -99,27 +99,6 @@ def test_keywords_sura_id_field():
     assert show_data['keywords'] == list(range(1, 115))
 
 
-def test_keywords_frequent_subject_field():
-    """Test getting most frequent keywords in subject field with explicit mode"""
-    result = api.do({'action': 'show', 'query': 'keywords', 'field': 'subject', 'mode': 'frequent', 'limit': 15})
-    
-    assert 'show' in result
-    assert result['error']['code'] == 0
-    
-    show_data = result['show']
-    assert show_data['field'] == 'subject'
-    assert show_data['mode'] == 'frequent'
-    assert show_data['limit'] == 15
-    assert show_data['count'] == 15
-    assert len(show_data['keywords']) == 15
-    
-    # Verify structure
-    for keyword in show_data['keywords']:
-        assert 'word' in keyword
-        assert 'frequency' in keyword
-        assert keyword['frequency'] > 0
-
-
 def test_keywords_invalid_limit_parameter():
     """Test that invalid limit parameter defaults to 20 when in frequent mode"""
     result = api.do({'action': 'show', 'query': 'keywords', 'field': 'aya_', 'mode': 'frequent', 'limit': 'invalid'})
