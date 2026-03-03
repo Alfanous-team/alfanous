@@ -314,3 +314,110 @@ def test_facet_with_topic():
     if "facets" in results["search"] and "topic" in results["search"]["facets"]:
         facets = results["search"]["facets"]["topic"]
         assert isinstance(facets, list)
+
+
+def test_hierarchical_facet_juz_hizb():
+    """Test hierarchical facets for juz > hizb."""
+    search_flags = {
+        "action": "search",
+        "query": "الصلاة",
+        "hierarchical_facets": "juz>hizb",
+        "aya_position_info": True,
+    }
+
+    results = RAWoutput.do(search_flags)
+
+    assert results["error"]["code"] == 0
+    assert "hierarchical_facets" in results["search"]
+    assert "juz>hizb" in results["search"]["hierarchical_facets"]
+
+    top_nodes = results["search"]["hierarchical_facets"]["juz>hizb"]
+    assert isinstance(top_nodes, list)
+    assert len(top_nodes) > 0
+
+    for node in top_nodes:
+        assert "value" in node
+        assert "count" in node
+        assert "children" in node
+        assert isinstance(node["count"], int)
+        assert node["count"] > 0
+        # juz values must be in valid range
+        assert 1 <= node["value"] <= 30
+        # each child represents a hizb within this juz
+        child_total = sum(c["count"] for c in node["children"])
+        assert child_total == node["count"]
+        for child in node["children"]:
+            assert "value" in child
+            assert "count" in child
+            assert "children" in child
+            # hizb values are 1-60
+            assert 1 <= child["value"] <= 60
+
+
+def test_hierarchical_facet_chapter_topic_subtopic():
+    """Test hierarchical facets for chapter > topic > subtopic."""
+    search_flags = {
+        "action": "search",
+        "query": "الجنة",
+        "hierarchical_facets": "chapter>topic>subtopic",
+    }
+
+    results = RAWoutput.do(search_flags)
+
+    assert results["error"]["code"] == 0
+    assert "hierarchical_facets" in results["search"]
+    assert "chapter>topic>subtopic" in results["search"]["hierarchical_facets"]
+
+    top_nodes = results["search"]["hierarchical_facets"]["chapter>topic>subtopic"]
+    assert isinstance(top_nodes, list)
+
+    for node in top_nodes:
+        assert "value" in node
+        assert "count" in node
+        assert "children" in node
+        assert isinstance(node["count"], int)
+        assert node["count"] > 0
+
+
+def test_hierarchical_facets_multiple_hierarchies():
+    """Test requesting multiple hierarchies at once via semicolon separator."""
+    search_flags = {
+        "action": "search",
+        "query": "الله",
+        "hierarchical_facets": "juz>hizb;chapter>topic",
+    }
+
+    results = RAWoutput.do(search_flags)
+
+    assert results["error"]["code"] == 0
+    assert "hierarchical_facets" in results["search"]
+    assert "juz>hizb" in results["search"]["hierarchical_facets"]
+    assert "chapter>topic" in results["search"]["hierarchical_facets"]
+
+
+def test_hierarchical_facets_via_api():
+    """Test hierarchical facets using the api.search() function."""
+    results = api.search(query="الرحمن", hierarchical_facets="juz>hizb")
+
+    assert results["error"]["code"] == 0
+    assert "hierarchical_facets" in results["search"]
+    assert "juz>hizb" in results["search"]["hierarchical_facets"]
+
+
+def test_hierarchical_facets_counts_sum_to_total():
+    """Test that top-level hierarchical facet counts sum to total results."""
+    search_flags = {
+        "action": "search",
+        "query": "sura_id:1",
+        "hierarchical_facets": "juz>hizb",
+        "aya_position_info": True,
+    }
+
+    results = RAWoutput.do(search_flags)
+
+    assert results["error"]["code"] == 0
+    assert "hierarchical_facets" in results["search"]
+    nodes = results["search"]["hierarchical_facets"].get("juz>hizb", [])
+
+    total_from_facets = sum(n["count"] for n in nodes)
+    assert total_from_facets == results["search"]["interval"]["total"]

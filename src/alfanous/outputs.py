@@ -15,6 +15,55 @@ STANDARD2UTHMANI = lambda x: std2uth_words.get(x) or x
 FALSE_PATTERN = '^false|no|off|0$'
 
 
+def _build_hierarchical_facets(res, hierarchy_fields):
+    """Build hierarchical facet counts from a Whoosh result set.
+
+    Each document in *res* is visited once; its stored values for
+    ``hierarchy_fields`` are read and placed into a tree structure.
+
+    Example for ``hierarchy_fields = ["juz", "hizb"]``::
+
+        [
+            {"value": 1, "count": 20, "children": [
+                {"value": 1, "count": 12, "children": []},
+                {"value": 2, "count": 8,  "children": []},
+            ]},
+            ...
+        ]
+
+    @param res: Whoosh :class:`~whoosh.searching.Results` object.
+    @param hierarchy_fields: Ordered list of field names, from most
+        general (parent) to most specific (leaf).
+    @return: List of top-level facet nodes, each with ``value``,
+        ``count``, and ``children``.
+    """
+    from collections import defaultdict
+
+    doc_paths = []
+    for hit in res:
+        path = []
+        for field in hierarchy_fields:
+            val = hit.get(field)
+            if val is None or val == "":
+                break
+            path.append(val)
+        if path:
+            doc_paths.append(tuple(path))
+
+    def build_level(paths, depth):
+        groups = defaultdict(list)
+        for path in paths:
+            if len(path) > depth:
+                groups[path[depth]].append(path)
+        result = []
+        for value, sub_paths in sorted(groups.items(), key=lambda x: len(x[1]), reverse=True):  # sort by doc count
+            children = build_level(sub_paths, depth + 1) if depth + 1 < len(hierarchy_fields) else []
+            result.append({"value": value, "count": len(sub_paths), "children": children})
+        return result
+
+    return build_level(doc_paths, 0)
+
+
 ## a function to decide what is True and what is false
 def IS_FLAG(flags, key):
     default = Raw.DEFAULTS['flags'][key]
@@ -75,6 +124,7 @@ class Raw:
             "aya": True,
             "facets": None,
             "filter": None,
+            "hierarchical_facets": None,
         }
     }
 
@@ -157,6 +207,9 @@ class Raw:
         "perpage": "results per page  [override range]",
         "fuzzy": "fuzzy search [exprimental]",
         "aya": "enable retrieving of aya text in the case of translation search",
+        "facets": "comma-separated list of fields to compute flat facet counts for",
+        "filter": "field:value filter applied before search (dict or 'field:value' string)",
+        "hierarchical_facets": "semicolon-separated hierarchies using '>' notation, e.g. 'juz>hizb;chapter>topic>subtopic'",
     }
 
     IDS = ["ALFANOUS_WUI_2342R52"]
@@ -485,6 +538,22 @@ class Raw:
                             pass
                         filter_dict[field] = value
 
+        # Parse hierarchical_facets parameter
+        # Accepts semicolon-separated hierarchies using '>' notation,
+        # e.g. "juz>hizb" or "juz>hizb;chapter>topic>subtopic"
+        hierarchical_facets_param = flags.get("hierarchical_facets")
+        hierarchical_facets_list = []
+        if hierarchical_facets_param:
+            if isinstance(hierarchical_facets_param, str):
+                for hier in hierarchical_facets_param.split(";"):
+                    hier = hier.strip()
+                    if ">" in hier:
+                        fields = [f.strip() for f in hier.split(">") if f.strip()]
+                        if len(fields) >= 2:
+                            hierarchical_facets_list.append(fields)
+            elif isinstance(hierarchical_facets_param, list):
+                hierarchical_facets_list = hierarchical_facets_param
+
         # pre-defined views # TODO remove this feature , complexity for no real benifit
         if view == "minimal":
             # fuzzy = True
@@ -756,6 +825,16 @@ class Raw:
                     ]
                 except:
                     # If facet field doesn't exist or error, skip it
+                    pass
+
+        # Add hierarchical facets to output if requested
+        if hierarchical_facets_list and res:
+            output["hierarchical_facets"] = {}
+            for hierarchy_fields in hierarchical_facets_list:
+                hierarchy_name = ">".join(hierarchy_fields)
+                try:
+                    output["hierarchical_facets"][hierarchy_name] = _build_hierarchical_facets(res, hierarchy_fields)
+                except Exception:
                     pass
         ### Ayas
         cpt = start - 1
