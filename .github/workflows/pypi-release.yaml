@@ -35,10 +35,6 @@ jobs:
         fi
         echo "VERSION=${VERSION}" >> $GITHUB_ENV
         echo "Extracted version: ${VERSION}"
-
-    - name: Download Quranic resources
-      run: |
-        make download
     
     - name: Build indexes
       run: |
