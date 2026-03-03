@@ -405,6 +405,14 @@ def test_arabizi_transliteration():
     result_enta = arabizi_to_arabic_list("enta")
     assert u"\u0625\u0646\u062A" in result_enta   # إنت
 
+    # Rule D extension: initial 'u'/'o' → also أ (hamza-on-alef, U+0623)
+    # e.g. Ummah→أمة, Ommah→أمة (dialectal)
+    result_ummah = arabizi_to_arabic_list("ummah")
+    assert any(c.startswith(u"\u0623") for c in result_ummah)   # أ at start
+    assert u"\u0623\u0645\u0629" in result_ummah   # أمة
+    result_ommah = arabizi_to_arabic_list("ommah")
+    assert any(c.startswith(u"\u0623") for c in result_ommah)   # أ at start
+
     # Gemination also produces unvocalized (shadda-free) form for wordset matching:
     # "Jannah" → جنّة (with shadda) AND جنة (without shadda, for Quran filter)
     result_jannah = arabizi_to_arabic_list("jannah")
@@ -463,3 +471,73 @@ def test_arabizi_quran_word_filter():
     # مسلم is Quranic; "muslim" → مسلم (s→س)
     result_muslim = filtered("muslim")
     assert u"\u0645\u0633\u0644\u0645" in result_muslim   # مسلم
+
+    # ── Prophets and historical figures (49-example set) ──────────────────────
+
+    # أمة is Quranic; "ummah"/"ommah" → أمة (initial u/o→أ, mm→م gemination, ah→ة)
+    result_ummah = filtered("ummah")
+    assert u"\u0623\u0645\u0629" in result_ummah   # أمة
+    # Style 4 dialectal: initial 'o' also triggers the أ rule
+    result_ommah = filtered("ommah")
+    assert u"\u0623\u0645\u0629" in result_ommah   # أمة
+
+    # فتنة is Quranic; "fitnah" → فتنة (ah digraph → ة)
+    result_fitnah = filtered("fitnah")
+    assert u"\u0641\u062A\u0646\u0629" in result_fitnah   # فتنة
+
+    # جهنم is Quranic; "jahannam" → جهنم (j→ج, h→ه, nn→ن gemination, m→م)
+    result_jahannam = filtered("jahannam")
+    assert u"\u062C\u0647\u0646\u0645" in result_jahannam   # جهنم
+
+    # نوح is Quranic; "nuh" → نوح (n→ن, u→و, h→ح)
+    result_nuh = filtered("nuh")
+    assert u"\u0646\u0648\u062D" in result_nuh   # نوح
+
+    # Style 2: "Noo7" → نوح (n→ن, oo→و + omit, 7→ح)
+    result_noo7 = filtered("noo7")
+    assert u"\u0646\u0648\u062D" in result_noo7   # نوح
+
+    # إبراهيم is Quranic; "ibrahim" → إبراهيم (initial i→إ, b→ب, r→ر, a→ا, h→ه, i→ي, m→م)
+    result_ibrahim = filtered("ibrahim")
+    assert u"\u0625\u0628\u0631\u0627\u0647\u064A\u0645" in result_ibrahim   # إبراهيم
+
+    # موسى is Quranic; "musa" → موسى (m→م, u→و, s→س, a→ى terminal)
+    result_musa = filtered("musa")
+    assert u"\u0645\u0648\u0633\u0649" in result_musa   # موسى
+
+    # محمد is Quranic; "mo7ammad" → محمد (style 2: 7→ح, mm→م gemination)
+    result_mo7ammad = filtered("mo7ammad")
+    assert u"\u0645\u062D\u0645\u062F" in result_mo7ammad   # محمد
+
+    # مريم is Quranic; "maryam" → مريم (m→م, a→omit, r→ر, y→ي, a→omit, m→م;
+    # internal 'a' is omitted via short-vowel omission for unvocalized Arabic match)
+    result_maryam = filtered("maryam")
+    assert u"\u0645\u0631\u064A\u0645" in result_maryam   # مريم
+
+    # يحيى is Quranic; "yahya" → يحيى (y→ي, h→ح, y→ي, a→ى terminal)
+    result_yahya = filtered("yahya")
+    assert u"\u064A\u062D\u064A\u0649" in result_yahya   # يحيى
+
+    # لوط is Quranic; "lut" → لوط (l→ل, u→و, t→ط emphatic)
+    result_lut = filtered("lut")
+    assert u"\u0644\u0648\u0637" in result_lut   # لوط
+
+    # هود is Quranic; "hud" → هود (h→ه, u→و, d→د)
+    result_hud = filtered("hud")
+    assert u"\u0647\u0648\u062F" in result_hud   # هود
+
+    # سليمان is Quranic; "sulayman" → سليمان (s→س, u→omit, l→ل, a→omit, y→ي, m→م, a→ا, n→ن)
+    result_sulayman = filtered("sulayman")
+    assert u"\u0633\u0644\u064A\u0645\u0627\u0646" in result_sulayman   # سليمان
+
+    # زكريا is Quranic; "zakariya" → زكريا (z→ز, terminal a→ى or ا)
+    result_zakariya = filtered("zakariya")
+    assert u"\u0632\u0643\u0631\u064A\u0627" in result_zakariya   # زكريا
+
+    # طالوت is Quranic; "6aloot" → طالوت (style 2: 6→ط, a→ا, l→ل, oo→و, t→ت)
+    result_6aloot = filtered("6aloot")
+    assert u"\u0637\u0627\u0644\u0648\u062A" in result_6aloot   # طالوت
+
+    # جالوت is Quranic; "jalut" → جالوت (j→ج, a→ا, l→ل, u→و, t→ت)
+    result_jalut = filtered("jalut")
+    assert u"\u062C\u0627\u0644\u0648\u062A" in result_jalut   # جالوت

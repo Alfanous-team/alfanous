@@ -348,6 +348,17 @@ def arabizi_to_arabic_list(string, ignore=u""):
                 for ac in arabic_chars:
                     for suffix in suffixes:
                         results.append(ac + suffix)  # ي + rest (standard ya mapping)
+            elif c in (u"u", u"o") and at_word_start:
+                # Rule D extension: initial 'u'/'o' also yields أ (hamza-on-alef,
+                # U+0623) in addition to و.  Covers: Ummah→أمة, Ommah→أمة
+                # (dialectal form of أمة where users write initial 'o' for the
+                # glottal-stop vowel sound), and similar Islamic/dialectal forms
+                # where a word-initial short vowel is represented with 'u' or 'o'.
+                for suffix in suffixes:
+                    results.append(u"\u0623" + suffix)  # أ + rest
+                for ac in arabic_chars:
+                    for suffix in suffixes:
+                        results.append(ac + suffix)  # و + rest (standard waw mapping)
             else:
                 for ac in arabic_chars:
                     for suffix in suffixes:
