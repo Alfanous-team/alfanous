@@ -7,50 +7,18 @@ from whoosh.query import Term
 
 from alfanous import paths
 from alfanous.indexing import QseDocIndex
-from alfanous.query_processing import _make_arabic_parser, QuranicParser, ArabicParser
+from alfanous.query_processing import QuranicParser, ArabicParser
 from alfanous.data import arabic_to_english_fields
 
 
-def test_parsing():
-    parse = _make_arabic_parser()
-
-    assert parse(u"\"عاصم\"")
-    assert parse(u"[1 الى 3]")
-    assert parse(u"{a,b،c}")
-    assert parse(u"#122 ~dsd")
-    assert parse(u">>اية")
-    assert parse(u"%عاصم")
-    assert parse(u"ليس عاصم و الموت أو الحياة وليس غيرهما")
-    assert parse(u"اية:عاصم")\
-
-    assert parse(u"'h h  j'")
-    assert parse(u"a*a")
-    assert parse(u"a*")
-
-    # Regression test: word AND field:value should parse as AND operation,
-    # not as a field lookup where the field name includes the word and operator.
-    # Bug was caused by 'alephba' containing spaces, which let Word(alephba)
-    # match through whitespace like "أصحاب و سورة" as a single field name.
-    result = parse(u"أصحاب و سورة:الكهف")
-    and_node = result[0][0]
-    assert and_node.get_name() == "And", \
-        "Expected 'أصحاب و سورة:الكهف' to parse as And, not as %s" % and_node.get_name()
-    assert and_node[0].as_list() == [u"أصحاب"]
-    assert and_node[1].get_name() == "Field"
-    assert and_node[1].as_list() == [u"سورة", [u"الكهف"]]
-
-
 def test_preprocess_query():
-    """Test that ArabicParser._preprocess_query translates Arabic operators and field names.
-
-    This tests the production path used by ArabicParser.parse(): Arabic logical
-    operators (و/أو/او/وليس/ليس) and field name aliases are translated to their
-    Whoosh equivalents before the Whoosh query parser processes the string.
+    """Test Arabic-to-Whoosh query translation: operators (و/أو/وليس/ليس) and field name
+    aliases are converted by _preprocess_query before the Whoosh query parser processes them.
     """
 
-    class _Stub:
+    class _ArabicParserStub:
         ara2eng = arabic_to_english_fields
-    _preprocess = ArabicParser._preprocess_query.__get__(_Stub())
+    _preprocess = ArabicParser._preprocess_query.__get__(_ArabicParserStub())
 
     # و → AND (the bug case: word AND field:value)
     assert _preprocess(u"أصحاب و سورة:الكهف") == u"أصحاب AND sura_arabic:الكهف"
