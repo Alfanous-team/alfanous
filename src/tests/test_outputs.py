@@ -847,6 +847,7 @@ def test_search():
                          'total': 116},
             'translation_info': {},
             'words': {'global': {'nb_matches': 142.0,
+                                 'nb_matches_in_results': 142,
                                  'nb_vocalizations': 0,
                                  'nb_words': 2}}}}
     
@@ -856,7 +857,64 @@ def test_search():
     #     assert actual_words_individual[key] == expected_words_individual[key]
 
 
-def test_search_translation_unit():
+def test_nb_matches_in_results():
+    """Test that nb_matches_in_results counts word occurrences within the result set, not globally."""
+    # Search for a word that appears in many places across the Quran
+    # but filter to a single sura to ensure nb_matches_in_results < global nb_matches
+    search_flags = {
+        "action": "search",
+        "query": "الله",
+        "word_info": True,
+        "filter": {"sura_id": 1},  # Only Al-Fatihah (sura 1)
+        "highlight": "none",
+    }
+    results = RAWoutput.do(search_flags)
+    assert results["error"]["code"] == 0
+
+    words = results["search"]["words"]
+    global_info = words["global"]
+
+    # nb_matches_in_results must be present
+    assert "nb_matches_in_results" in global_info, "words.global must include nb_matches_in_results"
+
+    # nb_matches is global (all Quran), nb_matches_in_results is for the result set
+    # Al-Fatihah has 1 aya with الله, Quran-wide has many more
+    assert global_info["nb_matches_in_results"] <= global_info["nb_matches"], (
+        "nb_matches_in_results must not exceed global nb_matches"
+    )
+    assert global_info["nb_matches_in_results"] > 0, "should find at least one match in results"
+
+    # Per-word data must also include nb_matches_in_results
+    for word_data in words["individual"].values():
+        assert "nb_matches_in_results" in word_data, "words.individual entries must include nb_matches_in_results"
+        assert word_data["nb_matches_in_results"] <= word_data["nb_matches"], (
+            "per-word nb_matches_in_results must not exceed its global nb_matches"
+        )
+
+
+def test_nb_matches_in_results_equals_global_when_unfiltered():
+    """Test that nb_matches_in_results equals global nb_matches when results cover all occurrences."""
+    # For a rare word that appears only a few times, an OR search returns all occurrences
+    # so nb_matches_in_results should equal nb_matches
+    search_flags = {
+        "action": "search",
+        "query": "وزوجك",  # Rare word, appears only twice in the Quran
+        "word_info": True,
+        "highlight": "none",
+    }
+    results = RAWoutput.do(search_flags)
+    assert results["error"]["code"] == 0
+
+    words = results["search"]["words"]
+    global_info = words["global"]
+
+    assert "nb_matches_in_results" in global_info
+    # Since the OR query returns all documents that contain the word,
+    # nb_matches_in_results must equal nb_matches
+    assert global_info["nb_matches_in_results"] == global_info["nb_matches"]
+
+
+
     """Test that searching with unit='translation' returns results, not an empty dict."""
     search_flags = {
         "action": "search",
