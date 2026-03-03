@@ -262,8 +262,8 @@ def test_advanced_search_arabizi():
         return _qse_search(arabic_q)
 
     # Digit-based Arabizi: unambiguous phoneme representation
-    assert arabizi_search("9br") > 0   # صبر (sabr/patience)
-    assert arabizi_search("7md") > 0   # حمد (hamd/praise)
+    assert arabizi_search("9br") > 0      # صبر (sabr/patience)
+    assert arabizi_search("el 7md") > 0   # الحمد (al-hamd/praise)
 
 
 def test_arabizi_transliteration():
