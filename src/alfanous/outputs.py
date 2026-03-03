@@ -4,7 +4,7 @@ import re
 from alfanous.text_processing import QArabicSymbolsFilter
 from alfanous.data import *
 from alfanous.constants import QURAN_TOTAL_VERSES
-from alfanous.romanization import transliterate
+from alfanous.romanization import transliterate, arabizi_to_arabic_list
 from alfanous.misc import locate, find, filter_doubles
 from whoosh import query as wquery
 from whoosh.sorting import Facets
@@ -588,7 +588,13 @@ class Raw:
         query = query.replace("\\", "")
 
         if ":" not in query:
-            query = transliterate("buckwalter", query, ignore="'_\"%*?#~[]{}:>+-|")
+            # If the query contains no Arabic characters, treat it as Arabizi
+            # (Latin/digit-based Arabic chat alphabet) and expand to all potential
+            # Arabic candidates (OR semantics via space-separated terms).
+            if not re.search(r'[\u0600-\u06FF]', query):
+                _ignore = "'_\"%*?#~[]{}:>+-|"
+                candidates = arabizi_to_arabic_list(query, ignore=_ignore)
+                query = " ".join(candidates) if candidates else query
 
         # Search
         SE = self.QSE

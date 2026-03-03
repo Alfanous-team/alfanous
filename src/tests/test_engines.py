@@ -252,16 +252,18 @@ def test_advanced_search_derivations():
     assert root_results == 117
 
 
-def test_advanced_search_buckwalter():
-    """10. Buckwalter transliteration — Latin ASCII input converted to Arabic."""
-    from alfanous.romanization import transliterate
+def test_advanced_search_arabizi():
+    """10. Arabizi transliteration — Latin input expanded to Arabic candidates for QSE."""
+    from alfanous.romanization import arabizi_to_arabic_list
 
-    def bw_search(q):
-        arabic_q = transliterate("buckwalter", q, ignore="'_\"%*?#~[]{}:>+-|")
+    def arabizi_search(q):
+        candidates = arabizi_to_arabic_list(q, ignore="'_\"%*?#~[]{}:>+-|")
+        arabic_q = " ".join(candidates) if candidates else q
         return _qse_search(arabic_q)
 
-    assert bw_search("qawol") == 12    # قول
-    assert bw_search("Allah") == 1566  # الله
+    # Digit-based Arabizi: unambiguous phoneme representation
+    assert arabizi_search("9br") > 0   # صبر (sabr/patience)
+    assert arabizi_search("7md") > 0   # حمد (hamd/praise)
 
 
 def test_arabizi_transliteration():
