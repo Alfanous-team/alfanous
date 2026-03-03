@@ -39,7 +39,7 @@ def do(flags: Dict[str, Any]) -> Dict[str, Any]:
 def search(query: str, unit: str = "aya", page: int = 1, sortedby: str = "relevance", 
            fuzzy: bool = False, view: str = "normal", highlight: str = "bold", 
            flags: Optional[Dict[str, Any]] = None, facets: Optional[str] = None, 
-           filter: Optional[str] = None) -> Dict[str, Any]:
+           filter: Optional[str] = None, hierarchical_facets: Optional[str] = None) -> Dict[str, Any]:
     """
     Search in Quran verses and translations.
     
@@ -51,8 +51,10 @@ def search(query: str, unit: str = "aya", page: int = 1, sortedby: str = "releva
     @param view: View mode ('normal', 'minimal', etc.)
     @param highlight: Highlight style ('bold', 'css', etc.)
     @param flags: Additional flags dictionary
-    @param facets: Facets to group results by
+    @param facets: Flat facets to group results by (comma-separated field names)
     @param filter: Filter to apply to results
+    @param hierarchical_facets: Hierarchical facets using '>' notation, e.g.
+        ``"juz>hizb"`` or ``"juz>hizb;chapter>topic>subtopic"``
     @return: Dictionary of search results
     """
     all_flags = flags if flags is not None else {}
@@ -65,7 +67,8 @@ def search(query: str, unit: str = "aya", page: int = 1, sortedby: str = "releva
                       "view": view,
                       "highlight": highlight,
                       "facets": facets,
-                      "filter": filter
+                      "filter": filter,
+                      "hierarchical_facets": hierarchical_facets,
                       })
     return do(all_flags)
 
