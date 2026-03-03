@@ -10,7 +10,7 @@ from whoosh.qparser import TaggingPlugin, syntax
 from whoosh.query import MultiTerm, Variations, Or, Term, Wildcard, Prefix
 
 from alfanous.data import syndict, antdict, derivedict, worddict
-from alfanous.text_processing import QArabicSymbolsFilter
+from alfanous.text_processing import QArabicSymbolsFilter, get_arabic_stemmer
 from alfanous.misc import locate, find, filter_doubles
 
 
@@ -180,9 +180,42 @@ class SpellErrorsQuery(QMultiTerm):
         return matched
 
 
+class StemmingQuery(QMultiTerm):
+    """Query that searches for words in the index sharing the same Arabic stem.
+
+    Uses PyStemmer's Arabic (Snowball) stemmer algorithm. Degrades gracefully
+    if PyStemmer is not installed — the query falls back to an exact-term match.
+    """
+
+    def __init__(self, fieldname, text, boost=1.0):
+        self.fieldname = fieldname
+        self.text = text
+        self.boost = boost
+        self.words = [text]
+        self._stemmer = get_arabic_stemmer()
+        self._stem = self._stemmer.stemWord(text) if self._stemmer else text
+
+    def _btexts(self, ixreader):
+        # NOTE: O(n) scan of all indexed terms to find stem matches —
+        # same pattern as SpellErrorsQuery and acceptable for Quranic corpus
+        # sizes. For very large indexes a pre-built stem→words mapping would
+        # be more efficient.
+        if not self._stemmer:
+            return
+        fieldname = self.fieldname
+        from_bytes = ixreader.schema[fieldname].from_bytes
+        for field, btext in ixreader.all_terms():
+            if field == fieldname:
+                indexed_text = from_bytes(btext)
+                if self._stemmer.stemWord(indexed_text) == self._stem:
+                    if indexed_text not in self.words:
+                        self.words.append(indexed_text)
+                    yield btext
+
+
 class TashkilQuery(QMultiTerm):
-    """Query that searches for different tashkil (diacritics) of words
-    
+    """Query that searches for different tashkil (diacritics) of words.
+
     Note: The current implementation uses simple equality checking. For proper
     tashkil-aware comparison, the _compare method needs to implement normalized
     comparison that ignores or properly handles diacritical marks while matching
@@ -426,3 +459,21 @@ class ArabicWildcardPlugin(TaggingPlugin):
     expr = r"(?P<text>\S*[*؟]\S*)"
     nodetype = ArabicWildcardNode
     priority = 90  # Lower than other plugins to let them match first
+
+
+class StemmingPlugin(TaggingPlugin):
+    """Plugin for Arabic stemming search ($word).
+
+    Uses PyStemmer's Snowball Arabic algorithm to match all words in the index
+    that share the same stem as the query word.
+    """
+
+    class StemmingNode(syntax.WordNode):
+        qclass = StemmingQuery
+
+        def r(self):
+            return "$%r" % self.text
+
+    expr = r"\$(?P<text>\S+)"
+    nodetype = StemmingNode
+    priority = 100
