@@ -4,7 +4,7 @@ import re
 from alfanous.text_processing import QArabicSymbolsFilter
 from alfanous.data import *
 from alfanous.constants import QURAN_TOTAL_VERSES
-from alfanous.romanization import transliterate
+from alfanous.romanization import transliterate, arabizi_to_arabic_list, filter_candidates_by_wordset
 from alfanous.misc import locate, find, filter_doubles
 from whoosh import query as wquery
 from whoosh.sorting import Facets
@@ -588,7 +588,23 @@ class Raw:
         query = query.replace("\\", "")
 
         if ":" not in query:
-            query = transliterate("buckwalter", query, ignore="'_\"%*?#~[]{}:>+-|")
+            # If the query contains no Arabic characters, treat it as Arabizi
+            # (Latin/digit-based Arabic chat alphabet) and expand to all potential
+            # Arabic candidates (OR semantics via space-separated terms).
+            if not re.search(r'[\u0600-\u06FF]', query):
+                _ignore = "'_\"%*?#~[]{}:>+-|"
+                candidates = arabizi_to_arabic_list(query, ignore=_ignore)
+                # Filter candidates to those that appear as actual Quranic words.
+                # Each candidate may be a multi-word string (space-separated); a
+                # candidate is accepted when every individual token is a known
+                # unvocalized Quranic word.  If no candidates pass the filter,
+                # fall back to the full unfiltered list so the search still runs.
+                # quran_unvocalized_words() is @lru_cache so this is O(1) after
+                # the first call.
+                _qwords = quran_unvocalized_words()
+                if _qwords:
+                    candidates = filter_candidates_by_wordset(candidates, _qwords)
+                query = " ".join(candidates) if candidates else query
 
         # Search
         SE = self.QSE
