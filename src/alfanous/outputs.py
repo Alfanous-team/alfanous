@@ -635,10 +635,28 @@ class Raw:
         keywords = lambda phrase: kword.findall(phrase)
         ##########################################
         extend_runtime = res.runtime
+        # Pre-compute result docnums for counting matches within the result set
+        _result_docnums = set(hit.docnum for hit in res)
+        _index_reader = searcher.reader()
+
+        def _count_term_in_results(field, term_text):
+            """Count occurrences of a term within the search result documents."""
+            count = 0
+            try:
+                m = _index_reader.postings(field, term_text)
+                while m.is_active():
+                    if m.id() in _result_docnums:
+                        count += m.value_as("frequency")
+                    m.next()
+            except Exception:
+                pass
+            return count
+
         # Words & Annotations
         words_output = {"individual": {}}
         if word_info:
             matches = 0
+            matches_in_results = 0
             docs = 0
             nb_vocalizations_globale = 0
             cpt = 1
@@ -648,6 +666,8 @@ class Raw:
                     if term[2]:
                         matches += term[2]
                     docs += term[3]
+                    term_matches_in_results = _count_term_in_results(term[0], term[1])
+                    matches_in_results += term_matches_in_results
                     if term[0] == "aya_":
                         annotation_word_query += " OR word:%s " % term[1]
                     else:  # if aya
@@ -678,7 +698,8 @@ class Raw:
                         "romanization": transliterate(romanization, term[1], ignore="", reverse=True) if romanization in
                                                                                                          self.DOMAINS[
                                                                                                              "romanization"] else None,
-                        "nb_matches": term[2],
+                        "nb_matches_overall": int(term[2]) if term[2] else 0,
+                        "nb_matches": term_matches_in_results,
                         "nb_ayas": term[3],
                         "nb_vocalizations": len(vocalizations) if word_vocalizations else 0,  # unneeded
                         "vocalizations": vocalizations if word_vocalizations else [],
@@ -693,7 +714,8 @@ class Raw:
                     }
                     cpt += 1
             annotation_word_query += " ) "
-            words_output["global"] = {"nb_words": cpt - 1, "nb_matches": matches,
+            words_output["global"] = {"nb_words": cpt - 1, "nb_matches_overall": int(matches),
+                                      "nb_matches": matches_in_results,
                                       "nb_vocalizations": nb_vocalizations_globale}
         output["words"] = words_output
         # Magic_loop to built queries of Adjacents,translations and annotations in the same time
