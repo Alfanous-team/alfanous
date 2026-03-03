@@ -203,6 +203,10 @@ def arabizi_to_arabic_list(string, ignore=u""):
     - Rule D: Initial ``a`` also yields ``أ`` (hamza-on-alef); terminal ``a``
       also yields ``ى``; the digraph ``eh`` at any position yields ``ة``
       (ta marbuta).
+    - Short vowel omission: every vowel (``a``, ``e``, ``i``, ``o``, ``u``)
+      also yields an empty string, because short vowels are not written in
+      unvocalized Arabic script.  This allows e.g. ``salameh`` to produce
+      ``سلامة`` (alongside ``سالامة``).
 
     :param string: Arabizi input string (case-insensitive)
     :param ignore: characters that are passed through unchanged
@@ -257,6 +261,12 @@ def arabizi_to_arabic_list(string, ignore=u""):
         elif c in ARABIZI2UNICODE:
             arabic_char = ARABIZI2UNICODE[c]
             suffixes = _convert(s[1:], at_word_start=False)
+            # Short vowel omission: in unvocalized Arabic, short vowels are not
+            # written.  Generate an empty-string candidate for every vowel so that
+            # e.g. "salameh" → 'سلامة' (in addition to 'سالامة').
+            if c in _VOWELS:
+                for suffix in suffixes:
+                    results.append(suffix)
             if c == u"a":
                 # Rule D: initial 'a' → أ (U+0623) in addition to ا
                 if at_word_start:
@@ -280,6 +290,25 @@ def arabizi_to_arabic_list(string, ignore=u""):
         return list(set(results))
 
     return _convert(string, at_word_start=True)
+
+
+def filter_candidates_by_wordset(candidates, wordset):
+    """Filter Arabizi transliteration candidates to those present in *wordset*.
+
+    Each candidate may be a multi-word string (space-separated tokens, as
+    produced when the input contains spaces).  A candidate is accepted when
+    **every** space-separated token appears in *wordset*.  If no candidates
+    pass the filter the full unfiltered list is returned so that queries never
+    produce an empty result.
+
+    :param candidates: list of Arabic candidate strings (output of
+        :func:`arabizi_to_arabic_list`)
+    :param wordset: a set or frozenset of known Arabic words to filter against
+    :return: filtered list, or *candidates* unchanged if no entry matches
+    """
+    filtered = [c for c in candidates
+                if all(tok in wordset for tok in c.split())]
+    return filtered if filtered else candidates
 
 
 def transliterate(mode, string, ignore=u"", reverse=False):

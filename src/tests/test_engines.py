@@ -340,3 +340,37 @@ def test_arabizi_transliteration():
     # Rule D: initial 'a' → also أ (hamza-on-alef)
     result_a5barak = arabizi_to_arabic_list("a5barak")
     assert any(c.startswith(u"\u0623") for c in result_a5barak)  # أخبارك starts with أ
+
+    # Short vowel omission: vowels also generate an empty-string candidate so
+    # that unvocalized Arabic forms are produced.  e.g. "salameh":
+    #   s → س, a → '' (omitted), l → ل, a → ا, m → م, eh → ة  →  سلامة
+    result_salameh = arabizi_to_arabic_list("salameh")
+    assert u"\u0633\u0644\u0627\u0645\u0629" in result_salameh   # سلامة
+    # Verify a5barak produces the unvocalized form where internal 'a' is omitted
+    assert u"\u0623\u062E\u0628\u0627\u0631\u0643" in result_a5barak   # أخبارك
+    assert u"\u0627\u062E\u0628\u0627\u0631\u0643" in result_a5barak   # اخبارك
+
+
+def test_arabizi_quran_word_filter():
+    """12. arabizi candidates filtered to unvocalized Quranic words."""
+    from alfanous.romanization import arabizi_to_arabic_list, filter_candidates_by_wordset
+    from alfanous.data import quran_unvocalized_words
+
+    qwords = quran_unvocalized_words()
+    assert len(qwords) > 0, "Quran word set should not be empty"
+
+    def filtered(arabizi):
+        cands = arabizi_to_arabic_list(arabizi.lower())
+        return filter_candidates_by_wordset(cands, qwords)
+
+    # يعطيك is a real Quranic word; Arabizi "ya36eek" should resolve to it
+    result = filtered("ya36eek")
+    assert u"\u064A\u0639\u0637\u064A\u0643" in result   # يعطيك
+
+    # بكرة is a Quranic word; "bokreh" → بكرة after filtering
+    result_bokra = filtered("bokreh")
+    assert u"\u0628\u0643\u0631\u0629" in result_bokra   # بكرة
+
+    # For non-Quranic Arabizi words the fallback is all candidates (no empty result)
+    result_fallback = filtered("salameh")
+    assert len(result_fallback) > 0   # should fall back gracefully
