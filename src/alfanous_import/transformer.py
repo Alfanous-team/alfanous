@@ -64,6 +64,16 @@ class Transformer:
         fields_mapping = {f["name"]: f["search_name"] for f in self.get_fields(tablename)}
 
         for line in data_list:
+            # Normalize chapter/topic/subtopic and derive subject for consistency
+            if tablename == "aya":
+                line = {**line,
+                        'chapter': line.get('chapter', '').strip(),
+                        'topic': line.get('topic', '').strip(),
+                        'subtopic': line.get('subtopic', '').strip()}
+                if line['chapter'] or line['topic'] or line['subtopic']:
+                    line['subject'] = line['chapter'] + ',' + line['topic'] + ',' + line['subtopic']
+                else:
+                    line['subject'] = ''
             writer.add_document(
                 **{fields_mapping[k]: v for k, v in line.items() if k in fields_mapping}
             )
