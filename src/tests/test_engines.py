@@ -310,3 +310,33 @@ def test_arabizi_transliteration():
     assert u"\u0648" in arabizi_to_arabic_list("u")   # و
     result_shu = arabizi_to_arabic_list("shu")
     assert u"\u0634\u0648" in result_shu   # شو (digraph sh + u→و)
+
+    # Rule B: word-initial el/al → ال (Arabic definite article)
+    assert u"\u0627\u0644" in arabizi_to_arabic_list("el")   # ال
+    assert u"\u0627\u0644" in arabizi_to_arabic_list("al")   # ال
+    # In a multi-word string, el- at the start of the second word also triggers Rule B
+    result_el_7al = arabizi_to_arabic_list("el 7al")
+    # At least one candidate must start with ال (definite article prefix)
+    assert any(c.startswith(u"\u0627\u0644 ") for c in result_el_7al)  # 'ال حال' candidate
+
+    # Rule C: gemination — doubled consonant → letter + shadda (ّ U+0651)
+    result_ll = arabizi_to_arabic_list("ll")
+    assert u"\u0644\u0651" in result_ll   # لّ (lam + shadda)
+    result_tt = arabizi_to_arabic_list("tt")
+    assert u"\u062A\u0651" in result_tt   # تّ (ta + shadda)
+    # Doubled vowels are NOT geminated (vowels don't take shadda in Arabic)
+    result_aa = arabizi_to_arabic_list("aa")
+    assert u"\u0627\u0651" not in result_aa  # no shadda on alef
+
+    # Rule D: digraph "eh" → ة (ta marbuta — common terminal feminine suffix)
+    assert u"\u0629" in arabizi_to_arabic_list("eh")   # ة
+    result_salameh = arabizi_to_arabic_list("salameh")
+    assert any(c.endswith(u"\u0629") for c in result_salameh)  # at least one ends with ة
+
+    # Rule D: terminal 'a' → also ى (alef maqsura)
+    result_3la = arabizi_to_arabic_list("3la")
+    assert any(c.endswith(u"\u0649") for c in result_3la)   # ى at end (e.g. على)
+
+    # Rule D: initial 'a' → also أ (hamza-on-alef)
+    result_a5barak = arabizi_to_arabic_list("a5barak")
+    assert any(c.startswith(u"\u0623") for c in result_a5barak)  # أخبارك starts with أ

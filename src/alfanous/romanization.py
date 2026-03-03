@@ -181,6 +181,7 @@ ARABIZI_DIGRAPHS = {
     u"kh": u"\u062E",  # خ kha
     u"dh": u"\u0630",  # ذ dhal
     u"gh": u"\u063A",  # غ ghain
+    u"eh": u"\u0629",  # ة ta marbuta (Rule D: terminal feminine suffix)
 }
 
 
@@ -194,40 +195,91 @@ def arabizi_to_arabic_list(string, ignore=u""):
     possible segmentations and returns every distinct Arabic string that
     can result from the input.
 
+    Additional rules applied during conversion:
+
+    - Rule B: Word-initial ``el`` / ``al`` maps to the definite article ال.
+    - Rule C: Doubled consonants (e.g. ``ll``, ``tt``) produce the letter
+      followed by a shadda (ّ), representing gemination.
+    - Rule D: Initial ``a`` also yields ``أ`` (hamza-on-alef); terminal ``a``
+      also yields ``ى``; the digraph ``eh`` at any position yields ``ة``
+      (ta marbuta).
+
     :param string: Arabizi input string (case-insensitive)
     :param ignore: characters that are passed through unchanged
     :return: list of potential Arabic strings (deduplicated)
     """
 
-    def _convert(s):
+    # Vowels are excluded from gemination (Rule C)
+    _VOWELS = frozenset(u"aeiou")
+
+    def _convert(s, at_word_start=True):
         if not s:
             return [u""]
 
         results = []
+        c = s[0].lower()
 
-        # Try digraph (two-character mapping) when neither char is ignored
+        # Word boundary: a space resets the word-start flag for what follows
+        if s[0] == u" ":
+            for suffix in _convert(s[1:], at_word_start=True):
+                results.append(u" " + suffix)
+            return list(set(results))
+
+        # Rule B: el/al at word start → ال (Arabic definite article)
+        if (at_word_start and len(s) >= 2
+                and s[0] not in ignore and s[1] not in ignore):
+            prefix2 = s[:2].lower()
+            if prefix2 in (u"el", u"al"):
+                for suffix in _convert(s[2:], at_word_start=False):
+                    results.append(u"\u0627\u0644" + suffix)  # ال
+
+        # Rule C: Gemination — doubled consonant → letter + shadda (ّ U+0651).
+        # Note: digraphs like "sh" are treated as units; doubling them (e.g. "shsh")
+        # produces two distinct letters (شش), not a geminated one (شّ), because
+        # the digraph check below takes precedence over each individual character.
+        if (len(s) >= 2 and s[0] not in ignore and s[1] not in ignore
+                and c == s[1].lower() and c in ARABIZI2UNICODE
+                and c not in _VOWELS):
+            for suffix in _convert(s[2:], at_word_start=False):
+                results.append(ARABIZI2UNICODE[c] + u"\u0651" + suffix)
+
+        # Try digraph first (Rule A: multi-char codes before single chars)
         if len(s) >= 2 and s[0] not in ignore and s[1] not in ignore:
             digraph = s[:2].lower()
             if digraph in ARABIZI_DIGRAPHS:
-                for suffix in _convert(s[2:]):
+                for suffix in _convert(s[2:], at_word_start=False):
                     results.append(ARABIZI_DIGRAPHS[digraph] + suffix)
 
         # Try single-character mapping
-        char = s[0].lower()
         if s[0] in ignore:
-            for suffix in _convert(s[1:]):
+            for suffix in _convert(s[1:], at_word_start=False):
                 results.append(s[0] + suffix)
-        elif char in ARABIZI2UNICODE:
-            for suffix in _convert(s[1:]):
-                results.append(ARABIZI2UNICODE[char] + suffix)
+        elif c in ARABIZI2UNICODE:
+            arabic_char = ARABIZI2UNICODE[c]
+            suffixes = _convert(s[1:], at_word_start=False)
+            if c == u"a":
+                # Rule D: initial 'a' → أ (U+0623) in addition to ا
+                if at_word_start:
+                    for suffix in suffixes:
+                        results.append(u"\u0623" + suffix)  # أ + rest
+                # Rule D: terminal 'a' → ى (U+0649) in addition to ا
+                if len(s) == 1:
+                    for suffix in suffixes:  # suffixes == [""] when terminal
+                        results.append(u"\u0649" + suffix)  # ى
+                # Standard ا mapping always included
+                for suffix in suffixes:
+                    results.append(arabic_char + suffix)
+            else:
+                for suffix in suffixes:
+                    results.append(arabic_char + suffix)
         else:
             # Keep unmapped characters as-is
-            for suffix in _convert(s[1:]):
+            for suffix in _convert(s[1:], at_word_start=False):
                 results.append(s[0] + suffix)
 
         return list(set(results))
 
-    return _convert(string)
+    return _convert(string, at_word_start=True)
 
 
 def transliterate(mode, string, ignore=u"", reverse=False):
