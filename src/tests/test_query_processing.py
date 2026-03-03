@@ -29,7 +29,7 @@ def test_parsing():
 
 def test_parsing_with_schema():
     D = QseDocIndex(paths.QSE_INDEX)
-    QP = QuranicParser(D.get_schema(), otherfields=['subject'])
+    QP = QuranicParser(D.get_schema(), otherfields=[])
 
     assert QP.parse(u"'لو كان البحر '").subqueries == [Term('aya', 'لو'), Term('aya', 'كان'), Term('aya', 'البحر')]
     assert QP.parse(u"\"عاصم\"").__dict__ == {'boost': 1.0,
