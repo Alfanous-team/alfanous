@@ -139,39 +139,41 @@ ROMANIZATION_SYSTEMS_MAPPINGS = {
 
 }
 
-# Arabizi (Arabic chat alphabet) single-character mappings
-# Numbers represent Arabic sounds absent from the Latin alphabet
+# Arabizi (Arabic chat alphabet) single-character mappings.
+# Each key maps to a *list* of possible Arabic characters so that one Latin
+# letter can produce multiple candidates (e.g. 's' for both س and ص).
+# The Quran wordset filter then selects the phonetically correct form.
 ARABIZI2UNICODE = {
-    u"2": u"\u0621",  # ء hamza
-    u"3": u"\u0639",  # ع ain
-    u"5": u"\u062E",  # خ kha
-    u"6": u"\u0637",  # ط ta (emphatic)
-    u"7": u"\u062D",  # ح ha (pharyngeal)
-    u"8": u"\u0642",  # ق qaf (number-based chat: 8ala=قال, 8aloo=قالوا)
-    u"-": u"",        # transparent separator (e.g. Al-Hamd, Ar-Rahman)
-    u"9": u"\u0635",  # ص sad
-    u"a": u"\u0627",  # ا alef
-    u"b": u"\u0628",  # ب ba
-    u"t": u"\u062A",  # ت ta
-    u"g": u"\u062C",  # ج jim (dialectal: Ganna=جنة, Gihaad=جهاد; single g only — gh→غ takes precedence)
-    u"j": u"\u062C",  # ج jim
-    u"d": u"\u062F",  # د dal
-    u"r": u"\u0631",  # ر ra
-    u"z": u"\u0632",  # ز zayn
-    u"s": u"\u0633",  # س sin
-    u"f": u"\u0641",  # ف fa
-    u"q": u"\u0642",  # ق qaf
-    u"k": u"\u0643",  # ك kaf
-    u"l": u"\u0644",  # ل lam
-    u"m": u"\u0645",  # م mim
-    u"n": u"\u0646",  # ن nun
-    u"h": u"\u0647",  # ه ha
-    u"w": u"\u0648",  # و waw
-    u"y": u"\u064A",  # ي ya
-    u"e": u"\u064A",  # ي ya (long 'ee' sound, e.g. "Keefak" → كيفك)
-    u"o": u"\u0648",  # و waw
-    u"u": u"\u0648",  # و waw (long 'oo'/'uu' sound, e.g. "shu" → شو)
-    u"i": u"\u064A",  # ي ya (long i)
+    u"2": [u"\u0621"],              # ء hamza
+    u"3": [u"\u0639"],              # ع ain
+    u"5": [u"\u062E"],              # خ kha
+    u"6": [u"\u0637"],              # ط ta (emphatic)
+    u"7": [u"\u062D"],              # ح ha (pharyngeal)
+    u"8": [u"\u0642"],              # ق qaf (number-based chat: 8ala=قال)
+    u"-": [u""],                    # transparent separator (e.g. Al-Hamd)
+    u"9": [u"\u0635"],              # ص sad
+    u"a": [u"\u0627"],              # ا alef
+    u"b": [u"\u0628"],              # ب ba
+    u"t": [u"\u062A", u"\u0637"],  # ت ta, ط emphatic (Taqwa→تقوى, Talha→طلحة)
+    u"g": [u"\u062C"],              # ج jim (dialectal; gh→غ takes precedence)
+    u"j": [u"\u062C"],              # ج jim
+    u"d": [u"\u062F", u"\u0636"],  # د dal, ض dad emphatic (Dallin→ضالين)
+    u"r": [u"\u0631"],              # ر ra
+    u"z": [u"\u0632", u"\u0638"],  # ز zayn, ظ dhal emphatic (Zulum→ظلم)
+    u"s": [u"\u0633", u"\u0635"],  # س sin, ص sad (Muslim→مسلم, Salah→صلاة)
+    u"f": [u"\u0641"],              # ف fa
+    u"q": [u"\u0642"],              # ق qaf
+    u"k": [u"\u0643", u"\u0642"],  # ك kaf, ق qaf dialectal (Kiyamah→قيامة)
+    u"l": [u"\u0644"],              # ل lam
+    u"m": [u"\u0645"],              # م mim
+    u"n": [u"\u0646"],              # ن nun
+    u"h": [u"\u0647", u"\u062D"],  # ه ha, ح pharyngeal (Hajj→حج, Hisab→حساب)
+    u"w": [u"\u0648"],              # و waw
+    u"y": [u"\u064A"],              # ي ya
+    u"e": [u"\u064A"],              # ي ya (long 'ee' sound, e.g. "Keefak"→كيفك)
+    u"o": [u"\u0648"],              # و waw
+    u"u": [u"\u0648"],              # و waw (long 'oo'/'uu' sound, e.g. "shu"→شو)
+    u"i": [u"\u064A"],              # ي ya (long i)
 }
 
 # Arabizi digraph mappings: two Latin characters → one Arabic letter
@@ -286,9 +288,10 @@ def arabizi_to_arabic_list(string, ignore=u""):
         if (len(s) >= 2 and s[0] not in ignore and s[1] not in ignore
                 and c == s[1].lower() and c in ARABIZI2UNICODE
                 and c not in _VOWELS):
-            for suffix in _convert(s[2:], at_word_start=False):
-                results.append(ARABIZI2UNICODE[c] + u"\u0651" + suffix)  # with shadda
-                results.append(ARABIZI2UNICODE[c] + suffix)              # without shadda (unvocalized match)
+            for ac in ARABIZI2UNICODE[c]:
+                for suffix in _convert(s[2:], at_word_start=False):
+                    results.append(ac + u"\u0651" + suffix)  # with shadda
+                    results.append(ac + suffix)              # without shadda (unvocalized match)
 
         # Try digraph first (Rule A: multi-char codes before single chars)
         if len(s) >= 2 and s[0] not in ignore and s[1] not in ignore:
@@ -302,7 +305,7 @@ def arabizi_to_arabic_list(string, ignore=u""):
             for suffix in _convert(s[1:], at_word_start=False):
                 results.append(s[0] + suffix)
         elif c in ARABIZI2UNICODE:
-            arabic_char = ARABIZI2UNICODE[c]
+            arabic_chars = ARABIZI2UNICODE[c]  # list of possible Arabic chars
             suffixes = _convert(s[1:], at_word_start=False)
             # Short vowel omission: in unvocalized Arabic, short vowels are not
             # written.  Generate an empty-string candidate for every vowel so that
@@ -315,33 +318,49 @@ def arabizi_to_arabic_list(string, ignore=u""):
                 if at_word_start:
                     for suffix in suffixes:
                         results.append(u"\u0623" + suffix)  # أ + rest
-                # Rule D: terminal 'a' → ى (U+0649) in addition to ا
+                # Rule D: terminal 'a' → ى (U+0649) and ة (U+0629) in addition to ا
+                # ة covers feminine endings: Ganna=جنة, Ra7ma=رحمة
                 if len(s) == 1:
                     for suffix in suffixes:  # suffixes == [""] when terminal
                         results.append(u"\u0649" + suffix)  # ى
-                # Standard ا mapping always included
-                for suffix in suffixes:
-                    results.append(arabic_char + suffix)
+                        results.append(u"\u0629" + suffix)  # ة (feminine ta marbuta)
+                # Standard ا mapping always included (arabic_chars == ["ا"])
+                for ac in arabic_chars:
+                    for suffix in suffixes:
+                        results.append(ac + suffix)
             elif c == u"2":
-                # Rule D: initial '2' also yields أ (hamza-on-alef) in addition to ء
-                # This covers number-based chat style: 2anta=أنت, 2ism=اسم
+                # Rule D: initial '2' also yields أ (hamza-on-alef) and إ (hamza-
+                # under-alef) in addition to ء.  Covers: 2anta=أنت, 2iman=إيمان.
                 if at_word_start:
                     for suffix in suffixes:
                         results.append(u"\u0623" + suffix)  # أ + rest
-                for suffix in suffixes:
-                    results.append(arabic_char + suffix)  # ء + rest
+                        results.append(u"\u0625" + suffix)  # إ + rest
+                for ac in arabic_chars:
+                    for suffix in suffixes:
+                        results.append(ac + suffix)  # ء + rest
             elif c in (u"i", u"e") and at_word_start:
                 # Rule D extension: initial 'i'/'e' also yields إ (hamza-under-alef,
                 # U+0625) in addition to ي.  Covers: Iman→إيمان, Iblis→إبليس,
                 # Ikhlas→إخلاص, Enta→إنت.
-                # Note: arabic_char here is ي (ya, U+064A) for both 'i' and 'e'.
+                # Note: arabic_chars is [ي (ya, U+064A)] for both 'i' and 'e'.
                 for suffix in suffixes:
                     results.append(u"\u0625" + suffix)  # إ + rest
-                for suffix in suffixes:
-                    results.append(arabic_char + suffix)  # ي + rest (standard ya mapping)
+                for ac in arabic_chars:
+                    for suffix in suffixes:
+                        results.append(ac + suffix)  # ي + rest (standard ya mapping)
             else:
-                for suffix in suffixes:
-                    results.append(arabic_char + suffix)
+                for ac in arabic_chars:
+                    for suffix in suffixes:
+                        results.append(ac + suffix)
+                # Rule D extension: terminal 'h' or 't' at word-end also yields
+                # ة (ta marbuta).  In standard transliteration the feminine suffix
+                # ة is written as trailing 'h' (Salah=صلاة, Rahmah=رحمة) or 't'
+                # (Zakat=زكاة, Hayat=حياة, Salat=صلاة).  The 'at'/'ah' digraphs
+                # already handle many cases, but a bare terminal 'h'/'t' (when
+                # the preceding vowel was omitted) also needs this candidate.
+                if c in (u"h", u"t") and (len(s) == 1 or (len(s) > 1 and s[1] == u" ")):
+                    for suffix in suffixes:
+                        results.append(u"\u0629" + suffix)  # ة
         else:
             # Keep unmapped characters as-is
             for suffix in _convert(s[1:], at_word_start=False):
@@ -349,7 +368,15 @@ def arabizi_to_arabic_list(string, ignore=u""):
 
         return list(set(results))
 
-    return _convert(string, at_word_start=True)
+    raw = _convert(string, at_word_start=True)
+    # Normalize ءا → آ (alef madda, U+0622): in Arabic orthography the sequence
+    # hamza + alef is written as آ, e.g. قرءان → قرآن (Quran), آية (aya).
+    normalized = []
+    for c in raw:
+        replaced = c.replace(u"\u0621\u0627", u"\u0622")  # ءا → آ
+        if replaced != c:
+            normalized.append(replaced)
+    return list(set(raw + normalized))
 
 
 def filter_candidates_by_wordset(candidates, wordset):

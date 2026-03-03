@@ -279,17 +279,19 @@ def test_arabizi_transliteration():
     result_kitab = arabizi_to_arabic_list("ktab")   # كتاب
     assert u"\u0643\u062A\u0627\u0628" in result_kitab  # كتاب
 
-    # Digraph "sh": generates two candidates (ش vs. س+ه)
+    # Digraph "sh": generates candidates (ش digraph + single-char permutations)
+    # With multi-mappings s→[س,ص] and h→[ه,ح], plus terminal-h→ة rule
     result_sh = arabizi_to_arabic_list("sh")
     assert u"\u0634" in result_sh          # ش  (digraph interpretation)
-    assert u"\u0633\u0647" in result_sh    # سه (two-letter interpretation)
-    assert len(result_sh) == 2
+    assert u"\u0633\u0647" in result_sh    # سه (s→س, h→ه)
+    assert u"\u0635\u062D" in result_sh    # صح (s→ص, h→ح)
+    assert len(result_sh) >= 2             # at least two candidates
 
-    # Digraph "th": generates two candidates (ث vs. ت+ه)
+    # Digraph "th": generates candidates (ث digraph + single-char permutations)
     result_th = arabizi_to_arabic_list("th")
     assert u"\u062B" in result_th          # ث  (digraph interpretation)
-    assert u"\u062A\u0647" in result_th    # ته (two-letter interpretation)
-    assert len(result_th) == 2
+    assert u"\u062A\u0647" in result_th    # ته (two-letter, t→ت, h→ه)
+    assert len(result_th) >= 2             # at least two candidates
 
     # Word with digraph: "sha3b" → شاعب (sh=ش, a=ا, 3=ع, b=ب)
     #                         or  → سهاعب (s=س, h=ه, a=ا, 3=ع, b=ب)
@@ -445,3 +447,19 @@ def test_arabizi_quran_word_filter():
     # توبة is a Quranic word; "tobah" → توبة (ah digraph → ة)
     result_tobah = filtered("tobah")
     assert u"\u062A\u0648\u0628\u0629" in result_tobah   # توبة
+
+    # صلاة is Quranic; "Salah" → صلاة (s→ص, a→omit, l→ل, a→ا, h→ة terminal rule)
+    result_salah = filtered("salah")
+    assert u"\u0635\u0644\u0627\u0629" in result_salah   # صلاة
+
+    # حياة is Quranic; "hayat" → حياة (h→ح, a→omit, y→ي, a→ا, t→ة terminal rule)
+    result_hayat = filtered("hayat")
+    assert u"\u062D\u064A\u0627\u0629" in result_hayat   # حياة
+
+    # صبر is Quranic; "sabr" → صبر (s→ص)
+    result_sabr = filtered("sabr")
+    assert u"\u0635\u0628\u0631" in result_sabr   # صبر
+
+    # مسلم is Quranic; "muslim" → مسلم (s→س)
+    result_muslim = filtered("muslim")
+    assert u"\u0645\u0633\u0644\u0645" in result_muslim   # مسلم
