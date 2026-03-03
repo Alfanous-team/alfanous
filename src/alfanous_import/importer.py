@@ -7,7 +7,7 @@ from whoosh.filedb.filestore import FileStorage
 from whoosh import index
 from whoosh.analysis import RegexTokenizer, LowercaseFilter
 
-from alfanous.text_processing import QArabicSymbolsFilter
+from alfanous.text_processing import QArabicSymbolsFilter, TRANSLATION_ANALYZERS
 
 class QuranicCorpusImporter:
 
@@ -154,6 +154,10 @@ class ZekrModelsImporter:
         text=TEXT(stored=True, analyzer=RegexTokenizer() | LowercaseFilter()),
         lang=KEYWORD(stored=True),
         author=KEYWORD(stored=True),
+        **{
+            f"text_{lang}": TEXT(stored=False, analyzer=analyzer)
+            for lang, analyzer in TRANSLATION_ANALYZERS.items()
+        }
     )
 
     def __init__(self, pathindex, pathstore):
@@ -192,8 +196,19 @@ class ZekrModelsImporter:
         try:
             writer = self.index.writer()
             for doc in doclist:
-                writer.add_document(gid=doc["gid"], id=doc["id"], text=doc["text"], lang=doc["lang"],
-                                    author=doc["author"])
+                lang_code = doc.get("lang", "")
+                lang_field = f"text_{lang_code}"
+                doc_data = dict(
+                    gid=doc["gid"],
+                    id=doc["id"],
+                    text=doc["text"],
+                    lang=doc["lang"],
+                    author=doc["author"],
+                )
+                # Populate language-specific stemmed field when present in the schema
+                if lang_field in self.index.schema.names():
+                    doc_data[lang_field] = doc["text"]
+                writer.add_document(**doc_data)
             print(doc['id'], doc['gid'])
             writer.commit()
         except Exception as E:

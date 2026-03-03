@@ -135,11 +135,24 @@ def QuranicSearchEngine(indexpath="../indexes/main/",
                              )
 
 # TODO merge into main
-def TraductionSearchEngine(indexpath="../indexes/extend/", qparser=QueryParser):
-    """             """
-    return BasicSearchEngine(qdocindex=ExtDocIndex(indexpath)
+def TraductionSearchEngine(indexpath="../indexes/extend/", qparser=QueryParser, lang=None):
+    """
+    Build a search engine for Quran translations.
+
+    When *lang* is supplied (ISO 639-1 code, e.g. ``'en'``, ``'fr'``), the
+    engine searches the language-specific stemmed field ``text_<lang>`` if it
+    exists in the index schema, falling back to the generic ``text`` field
+    otherwise.  Omitting *lang* always uses the generic ``text`` field.
+    """
+    docindex = ExtDocIndex(indexpath)
+    main_field = "text"
+    if lang and docindex.OK:
+        candidate = f"text_{lang}"
+        if candidate in docindex.get_schema().names():
+            main_field = candidate
+    return BasicSearchEngine(qdocindex=docindex
                              , query_parser=qparser
-                             , main_field="text"
+                             , main_field=main_field
                              , otherfields=[]
                              , qsearcher=QSearcher
                              , qreader=QReader
