@@ -262,3 +262,39 @@ def test_advanced_search_buckwalter():
 
     assert bw_search("qawol") == 12    # قول
     assert bw_search("Allah") == 1566  # الله
+
+
+def test_arabizi_transliteration():
+    """11. Arabizi transliteration — generates a list of potential Arabic words."""
+    from alfanous.romanization import arabizi_to_arabic_list
+
+    # Number mappings: each digit maps to a single Arabic letter unambiguously
+    assert u"\u062D" in arabizi_to_arabic_list("7")   # ح
+    assert u"\u0639" in arabizi_to_arabic_list("3")   # ع
+    assert u"\u0635" in arabizi_to_arabic_list("9")   # ص
+
+    # Simple word without digraphs: only one result expected
+    result_kitab = arabizi_to_arabic_list("ktab")   # كتاب
+    assert u"\u0643\u062A\u0627\u0628" in result_kitab  # كتاب
+
+    # Digraph "sh": generates two candidates (ش vs. س+ه)
+    result_sh = arabizi_to_arabic_list("sh")
+    assert u"\u0634" in result_sh          # ش  (digraph interpretation)
+    assert u"\u0633\u0647" in result_sh    # سه (two-letter interpretation)
+    assert len(result_sh) == 2
+
+    # Digraph "th": generates two candidates (ث vs. ت+ه)
+    result_th = arabizi_to_arabic_list("th")
+    assert u"\u062B" in result_th          # ث  (digraph interpretation)
+    assert u"\u062A\u0647" in result_th    # ته (two-letter interpretation)
+    assert len(result_th) == 2
+
+    # Word with digraph: "sha3b" → شاعب (sh=ش, a=ا, 3=ع, b=ب)
+    #                         or  → سهاعب (s=س, h=ه, a=ا, 3=ع, b=ب)
+    result_sha3b = arabizi_to_arabic_list("sha3b")
+    assert u"\u0634\u0627\u0639\u0628" in result_sha3b   # شاعب
+    assert u"\u0633\u0647\u0627\u0639\u0628" in result_sha3b  # سهاعب
+
+    # Ignored characters are preserved unchanged
+    result_ignore = arabizi_to_arabic_list("k*b", ignore="*")
+    assert u"\u0643*\u0628" in result_ignore  # ك*ب

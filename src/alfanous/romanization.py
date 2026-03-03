@@ -139,6 +139,95 @@ ROMANIZATION_SYSTEMS_MAPPINGS = {
 
 }
 
+# Arabizi (Arabic chat alphabet) single-character mappings
+# Numbers represent Arabic sounds absent from the Latin alphabet
+ARABIZI2UNICODE = {
+    u"2": u"\u0621",  # ء hamza
+    u"3": u"\u0639",  # ع ain
+    u"5": u"\u062E",  # خ kha
+    u"6": u"\u0637",  # ط ta (emphatic)
+    u"7": u"\u062D",  # ح ha (pharyngeal)
+    u"8": u"\u063A",  # غ ghain
+    u"9": u"\u0635",  # ص sad
+    u"a": u"\u0627",  # ا alef
+    u"b": u"\u0628",  # ب ba
+    u"t": u"\u062A",  # ت ta
+    u"j": u"\u062C",  # ج jim
+    u"d": u"\u062F",  # د dal
+    u"r": u"\u0631",  # ر ra
+    u"z": u"\u0632",  # ز zayn
+    u"s": u"\u0633",  # س sin
+    u"f": u"\u0641",  # ف fa
+    u"q": u"\u0642",  # ق qaf
+    u"k": u"\u0643",  # ك kaf
+    u"l": u"\u0644",  # ل lam
+    u"m": u"\u0645",  # م mim
+    u"n": u"\u0646",  # ن nun
+    u"h": u"\u0647",  # ه ha
+    u"w": u"\u0648",  # و waw
+    u"y": u"\u064A",  # ي ya
+    u"e": u"\u0639",  # ع ain (alternative to 3)
+    u"o": u"\u0648",  # و waw
+    u"i": u"\u064A",  # ي ya (long i)
+}
+
+# Arabizi digraph mappings: two Latin characters → one Arabic letter
+# These create ambiguity with their component single-character mappings,
+# which is why arabizi_to_arabic_list() returns multiple candidates.
+ARABIZI_DIGRAPHS = {
+    u"sh": u"\u0634",  # ش sheen
+    u"th": u"\u062B",  # ث tha
+    u"kh": u"\u062E",  # خ kha
+    u"dh": u"\u0630",  # ذ dhal
+    u"gh": u"\u063A",  # غ ghain
+}
+
+
+def arabizi_to_arabic_list(string, ignore=u""):
+    """Convert an Arabizi string to a list of potential Arabic strings.
+
+    Arabizi (Arabic chat alphabet) uses Latin characters and digits to
+    approximate Arabic sounds.  Because certain digraphs (e.g. "sh") can
+    be read either as a single Arabic letter (ش) or as two separate letters
+    (س + ه), the mapping is ambiguous.  This function explores all
+    possible segmentations and returns every distinct Arabic string that
+    can result from the input.
+
+    :param string: Arabizi input string (case-insensitive)
+    :param ignore: characters that are passed through unchanged
+    :return: list of potential Arabic strings (deduplicated)
+    """
+
+    def _convert(s):
+        if not s:
+            return [u""]
+
+        results = []
+
+        # Try digraph (two-character mapping) when neither char is ignored
+        if len(s) >= 2 and s[0] not in ignore and s[1] not in ignore:
+            digraph = s[:2].lower()
+            if digraph in ARABIZI_DIGRAPHS:
+                for suffix in _convert(s[2:]):
+                    results.append(ARABIZI_DIGRAPHS[digraph] + suffix)
+
+        # Try single-character mapping
+        char = s[0].lower()
+        if s[0] in ignore:
+            for suffix in _convert(s[1:]):
+                results.append(s[0] + suffix)
+        elif char in ARABIZI2UNICODE:
+            for suffix in _convert(s[1:]):
+                results.append(ARABIZI2UNICODE[char] + suffix)
+        else:
+            # Keep unmapped characters as-is
+            for suffix in _convert(s[1:]):
+                results.append(s[0] + suffix)
+
+        return list(set(results))
+
+    return _convert(string)
+
 
 def transliterate(mode, string, ignore=u"", reverse=False):
     """ encode & decode different  romanization systems """
