@@ -381,6 +381,34 @@ def test_arabizi_transliteration():
     result_3prime_ayr = arabizi_to_arabic_list(u"3'ayr")
     assert u"\u063A\u064A\u0631" in result_3prime_ayr   # غير
 
+    # Dialectal 'g' → ج (Egyptian/Gulf: Ganna=جنة, Gihaad=جهاد, Gabril=جبريل)
+    assert u"\u062C" in arabizi_to_arabic_list("g")   # ج
+    assert u"\u062C\u0647\u0627\u062F" in arabizi_to_arabic_list("gihaad")   # جهاد
+
+    # Digraph "ah" → ة (terminal -ah feminine suffix: Rahmah=رحمة, tobah=توبة)
+    assert u"\u0629" in arabizi_to_arabic_list("ah")   # ة
+    result_tobah = arabizi_to_arabic_list("tobah")
+    assert any(c.endswith(u"\u0629") for c in result_tobah)   # at least one ends with ة
+
+    # Digraph "ch" → ش (dialectal variant: Chokr=شكر)
+    assert u"\u0634" in arabizi_to_arabic_list("ch")   # ش
+    result_chokr = arabizi_to_arabic_list("chokr")
+    assert u"\u0634\u0643\u0631" in result_chokr   # شكر
+
+    # Rule D extension: initial 'i'/'e' → also إ (hamza-under-alef, U+0625)
+    # e.g. Iblis→إبليس, Enta→إنت
+    result_iblis = arabizi_to_arabic_list("iblis")
+    assert any(c.startswith(u"\u0625") for c in result_iblis)   # إ at start
+    assert u"\u0625\u0628\u0644\u064A\u0633" in result_iblis   # إبليس
+    result_enta = arabizi_to_arabic_list("enta")
+    assert u"\u0625\u0646\u062A" in result_enta   # إنت
+
+    # Gemination also produces unvocalized (shadda-free) form for wordset matching:
+    # "Jannah" → جنّة (with shadda) AND جنة (without shadda, for Quran filter)
+    result_jannah = arabizi_to_arabic_list("jannah")
+    assert u"\u062C\u0646\u0651\u0629" in result_jannah   # جنّة with shadda
+    assert u"\u062C\u0646\u0629" in result_jannah          # جنة without shadda (unvocalized)
+
 
 def test_arabizi_quran_word_filter():
     """12. arabizi candidates filtered to unvocalized Quranic words."""
@@ -405,3 +433,15 @@ def test_arabizi_quran_word_filter():
     # For non-Quranic Arabizi words the fallback is all candidates (no empty result)
     result_fallback = filtered("salameh")
     assert len(result_fallback) > 0   # should fall back gracefully
+
+    # إبليس is a Quranic word; "iblis" → إبليس after filtering (initial i→إ rule)
+    result_iblis = filtered("iblis")
+    assert u"\u0625\u0628\u0644\u064A\u0633" in result_iblis   # إبليس
+
+    # جنة is a Quranic word; "jannah" → جنة (gemination without shadda = unvocalized)
+    result_jannah = filtered("jannah")
+    assert u"\u062C\u0646\u0629" in result_jannah   # جنة
+
+    # توبة is a Quranic word; "tobah" → توبة (ah digraph → ة)
+    result_tobah = filtered("tobah")
+    assert u"\u062A\u0648\u0628\u0629" in result_tobah   # توبة

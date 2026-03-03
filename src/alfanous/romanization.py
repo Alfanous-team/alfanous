@@ -153,6 +153,7 @@ ARABIZI2UNICODE = {
     u"a": u"\u0627",  # ا alef
     u"b": u"\u0628",  # ب ba
     u"t": u"\u062A",  # ت ta
+    u"g": u"\u062C",  # ج jim (dialectal: Ganna=جنة, Gihaad=جهاد; single g only — gh→غ takes precedence)
     u"j": u"\u062C",  # ج jim
     u"d": u"\u062F",  # د dal
     u"r": u"\u0631",  # ر ra
@@ -183,6 +184,8 @@ ARABIZI_DIGRAPHS = {
     u"dh": u"\u0630",  # ذ dhal
     u"gh": u"\u063A",  # غ ghain
     u"3'": u"\u063A",  # غ ghain (number-apostrophe notation: 3'ayr=غير)
+    u"ch": u"\u0634",  # ش sheen (dialectal: Chokr=شكر)
+    u"ah": u"\u0629",  # ة ta marbuta (terminal -ah suffix: Salah=صلاة, Rahmah=رحمة)
     u"eh": u"\u0629",  # ة ta marbuta (Rule D: terminal feminine suffix)
 }
 
@@ -206,8 +209,10 @@ def arabizi_to_arabic_list(string, ignore=u""):
     - Rule C: Doubled consonants (e.g. ``ll``, ``tt``) produce the letter
       followed by a shadda (ّ), representing gemination.
     - Rule D: Initial ``a`` or ``2`` also yields ``أ`` (hamza-on-alef);
-      terminal ``a`` also yields ``ى``; the digraph ``eh`` at any position
-      yields ``ة`` (ta marbuta).
+      initial ``i`` or ``e`` also yields ``إ`` (hamza-under-alef, e.g.
+      ``Iman``→إيمان, ``Iblis``→إبليس); terminal ``a`` also yields ``ى``;
+      the digraphs ``eh`` and ``ah`` at any position yield ``ة``
+      (ta marbuta, e.g. ``Salah``→صلاة, ``Rahmah``→رحمة).
     - Short vowel omission: every vowel (``a``, ``e``, ``i``, ``o``, ``u``)
       also yields an empty string, because short vowels are not written in
       unvocalized Arabic script.  This allows e.g. ``salameh`` to produce
@@ -272,6 +277,9 @@ def arabizi_to_arabic_list(string, ignore=u""):
                     results.append(u"\u0627\u0644" + suffix)  # ال
 
         # Rule C: Gemination — doubled consonant → letter + shadda (ّ U+0651).
+        # Also produces the letter WITHOUT shadda so that the unvocalized Quran
+        # wordset (which has no diacritic marks) can be matched (e.g. "Jannah"
+        # → جنة as well as جنّة).
         # Note: digraphs like "sh" are treated as units; doubling them (e.g. "shsh")
         # produces two distinct letters (شش), not a geminated one (شّ), because
         # the digraph check below takes precedence over each individual character.
@@ -279,7 +287,8 @@ def arabizi_to_arabic_list(string, ignore=u""):
                 and c == s[1].lower() and c in ARABIZI2UNICODE
                 and c not in _VOWELS):
             for suffix in _convert(s[2:], at_word_start=False):
-                results.append(ARABIZI2UNICODE[c] + u"\u0651" + suffix)
+                results.append(ARABIZI2UNICODE[c] + u"\u0651" + suffix)  # with shadda
+                results.append(ARABIZI2UNICODE[c] + suffix)              # without shadda (unvocalized match)
 
         # Try digraph first (Rule A: multi-char codes before single chars)
         if len(s) >= 2 and s[0] not in ignore and s[1] not in ignore:
@@ -321,6 +330,15 @@ def arabizi_to_arabic_list(string, ignore=u""):
                         results.append(u"\u0623" + suffix)  # أ + rest
                 for suffix in suffixes:
                     results.append(arabic_char + suffix)  # ء + rest
+            elif c in (u"i", u"e") and at_word_start:
+                # Rule D extension: initial 'i'/'e' also yields إ (hamza-under-alef,
+                # U+0625) in addition to ي.  Covers: Iman→إيمان, Iblis→إبليس,
+                # Ikhlas→إخلاص, Enta→إنت.
+                # Note: arabic_char here is ي (ya, U+064A) for both 'i' and 'e'.
+                for suffix in suffixes:
+                    results.append(u"\u0625" + suffix)  # إ + rest
+                for suffix in suffixes:
+                    results.append(arabic_char + suffix)  # ي + rest (standard ya mapping)
             else:
                 for suffix in suffixes:
                     results.append(arabic_char + suffix)
