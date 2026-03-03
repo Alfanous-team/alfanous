@@ -541,3 +541,77 @@ def test_arabizi_quran_word_filter():
     # جالوت is Quranic; "jalut" → جالوت (j→ج, a→ا, l→ل, u→و, t→ت)
     result_jalut = filtered("jalut")
     assert u"\u062C\u0627\u0644\u0648\u062A" in result_jalut   # جالوت
+
+    # ── Selected examples from new batch ─────────────────────────────────────
+
+    # ضلال is Quranic; style 2 "6alal" → ضلال (6→ض emphatic in number-based chat)
+    result_6alal = filtered("6alal")
+    assert u"\u0636\u0644\u0627\u0644" in result_6alal   # ضلال
+
+    # ذهب is Quranic; dialectal "zahab"/"dahab" → ذهب (z/d can map to ذ in dialects)
+    result_zahab = filtered("zahab")
+    assert u"\u0630\u0647\u0628" in result_zahab   # ذهب
+    result_dahab = filtered("dahab")
+    assert u"\u0630\u0647\u0628" in result_dahab   # ذهب
+
+    # ذنب is Quranic; "zanb" → ذنب (dialectal z→ذ, dhanb works via dh digraph)
+    result_zanb = filtered("zanb")
+    assert u"\u0630\u0646\u0628" in result_zanb   # ذنب
+
+    # رزق is Quranic; "rizq"/"rez8" → رزق (style 2: 8→ق)
+    result_rizq = filtered("rizq")
+    assert u"\u0631\u0632\u0642" in result_rizq   # رزق
+    result_rez8 = filtered("rez8")
+    assert u"\u0631\u0632\u0642" in result_rez8   # رزق
+
+    # حسنة is Quranic; "7asana"/"hasanah" → حسنة
+    result_7asana = filtered("7asana")
+    assert u"\u062D\u0633\u0646\u0629" in result_7asana   # حسنة
+
+    # نور is Quranic; "nur"/"noor" → نور
+    result_nur = filtered("nur")
+    assert u"\u0646\u0648\u0631" in result_nur   # نور
+
+    # هدى is Quranic; "huda"/"hoda" → هدى (terminal a→ى)
+    result_huda = filtered("huda")
+    assert u"\u0647\u062F\u0649" in result_huda   # هدى
+
+    # نهار is Quranic; "nahar" → نهار
+    result_nahar = filtered("nahar")
+    assert u"\u0646\u0647\u0627\u0631" in result_nahar   # نهار
+
+    # عرش is Quranic; "3arsh" → عرش
+    result_3arsh = filtered("3arsh")
+    assert u"\u0639\u0631\u0634" in result_3arsh   # عرش
+
+    # جنات is Quranic; "jannat"/"gannat" → جنات (gemination)
+    result_jannat = filtered("jannat")
+    assert u"\u062C\u0646\u0627\u062A" in result_jannat   # جنات
+
+    # نخل is Quranic; "na5l" → نخل (5→خ)
+    result_na5l = filtered("na5l")
+    assert u"\u0646\u062E\u0644" in result_na5l   # نخل
+
+    # عسل is Quranic; "3asal" → عسل
+    result_3asal = filtered("3asal")
+    assert u"\u0639\u0633\u0644" in result_3asal   # عسل
+
+    # لحم is Quranic; "la7m" → لحم
+    result_la7m = filtered("la7m")
+    assert u"\u0644\u062D\u0645" in result_la7m   # لحم
+
+    # طعام is Quranic; "6a3am" → طعام (6→ط, 3→ع)
+    result_6a3am = filtered("6a3am")
+    assert u"\u0637\u0639\u0627\u0645" in result_6a3am   # طعام
+
+    # شراب is Quranic; "charab" → شراب (dialectal ch→ش)
+    result_charab = filtered("charab")
+    assert u"\u0634\u0631\u0627\u0628" in result_charab   # شراب
+
+    # حرير is Quranic; "7areer" → حرير (7→ح, ee→ي)
+    result_7areer = filtered("7areer")
+    assert u"\u062D\u0631\u064A\u0631" in result_7areer   # حرير
+
+    # لؤلؤ is Quranic; "lolo" → لؤلؤ (dialectal simplification: ؤ written as o)
+    result_lolo = filtered("lolo")
+    assert len(result_lolo) > 0   # graceful fallback even if not exact match

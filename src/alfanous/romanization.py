@@ -147,7 +147,7 @@ ARABIZI2UNICODE = {
     u"2": [u"\u0621"],              # ء hamza
     u"3": [u"\u0639"],              # ع ain
     u"5": [u"\u062E"],              # خ kha
-    u"6": [u"\u0637"],              # ط ta (emphatic)
+    u"6": [u"\u0637", u"\u0636"],  # ط ta emphatic, ض dad (6alal=ضلال in number-based chat)
     u"7": [u"\u062D"],              # ح ha (pharyngeal)
     u"8": [u"\u0642"],              # ق qaf (number-based chat: 8ala=قال)
     u"-": [u""],                    # transparent separator (e.g. Al-Hamd)
@@ -157,9 +157,9 @@ ARABIZI2UNICODE = {
     u"t": [u"\u062A", u"\u0637"],  # ت ta, ط emphatic (Taqwa→تقوى, Talha→طلحة)
     u"g": [u"\u062C"],              # ج jim (dialectal; gh→غ takes precedence)
     u"j": [u"\u062C"],              # ج jim
-    u"d": [u"\u062F", u"\u0636"],  # د dal, ض dad emphatic (Dallin→ضالين)
+    u"d": [u"\u062F", u"\u0636", u"\u0630"],  # د dal, ض dad emphatic (Dallin→ضالين), ذ dhal (Dahab→ذهب)
     u"r": [u"\u0631"],              # ر ra
-    u"z": [u"\u0632", u"\u0638"],  # ز zayn, ظ dhal emphatic (Zulum→ظلم)
+    u"z": [u"\u0632", u"\u0638", u"\u0630"],  # ز zay, ظ dhal emphatic, ذ dhal (Zahab=ذهب, Zanb=ذنب)
     u"s": [u"\u0633", u"\u0635"],  # س sin, ص sad (Muslim→مسلم, Salah→صلاة)
     u"f": [u"\u0641"],              # ف fa
     u"q": [u"\u0642"],              # ق qaf
