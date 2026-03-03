@@ -166,8 +166,9 @@ ARABIZI2UNICODE = {
     u"h": u"\u0647",  # ه ha
     u"w": u"\u0648",  # و waw
     u"y": u"\u064A",  # ي ya
-    u"e": u"\u0639",  # ع ain (alternative to 3)
+    u"e": u"\u064A",  # ي ya (long 'ee' sound, e.g. "Keefak" → كيفك)
     u"o": u"\u0648",  # و waw
+    u"u": u"\u0648",  # و waw (long 'oo'/'uu' sound, e.g. "shu" → شو)
     u"i": u"\u064A",  # ي ya (long i)
 }
 

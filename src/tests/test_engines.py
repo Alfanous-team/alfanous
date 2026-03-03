@@ -300,3 +300,13 @@ def test_arabizi_transliteration():
     # Ignored characters are preserved unchanged
     result_ignore = arabizi_to_arabic_list("k*b", ignore="*")
     assert u"\u0643*\u0628" in result_ignore  # ك*ب
+
+    # 'e' maps to ي (ya), NOT to ع — 'e' is a vowel sound in Arabizi;
+    # ع is already covered by the digit '3'.
+    assert u"\u064A" in arabizi_to_arabic_list("e")   # ي
+    assert u"\u0639" not in arabizi_to_arabic_list("e")  # not ع
+
+    # 'u' maps to و (waw) — e.g. "shu" → شو (or سهو)
+    assert u"\u0648" in arabizi_to_arabic_list("u")   # و
+    result_shu = arabizi_to_arabic_list("shu")
+    assert u"\u0634\u0648" in result_shu   # شو (digraph sh + u→و)
