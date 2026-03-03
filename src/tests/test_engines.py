@@ -350,6 +350,37 @@ def test_arabizi_transliteration():
     assert u"\u0623\u062E\u0628\u0627\u0631\u0643" in result_a5barak   # أخبارك
     assert u"\u0627\u062E\u0628\u0627\u0631\u0643" in result_a5barak   # اخبارك
 
+    # Style 2 (number-based): '8' maps to ق (qaf) — e.g. "8ala" → قال
+    assert u"\u0642" in arabizi_to_arabic_list("8")   # ق
+    assert u"\u0642\u0627\u0644" in arabizi_to_arabic_list("8ala")   # قال
+
+    # Style 2 (number-based): '2' at word start → أ (hamza-on-alef) as well as ء
+    # e.g. "2anta" → أنت (Style 2: 2anta=أنت)
+    result_2anta = arabizi_to_arabic_list("2anta")
+    assert any(c.startswith(u"\u0623") for c in result_2anta)   # أ at start
+    assert u"\u0623\u0646\u062A" in result_2anta   # أنت specifically
+
+    # Extended Rule B: 'ar'/'er' prefix → ال (sun-letter assimilation)
+    assert u"\u0627\u0644" in arabizi_to_arabic_list("ar")   # ال
+    assert u"\u0627\u0644" in arabizi_to_arabic_list("er")   # ال
+    # 'an' prefix → ال  (e.g. "an-nas" = الناس)
+    assert u"\u0627\u0644" in arabizi_to_arabic_list("an")   # ال
+    # 3-char 'ash'/'esh' prefix → ال  (e.g. "ash-shaytan" = الشيطان)
+    assert u"\u0627\u0644" in arabizi_to_arabic_list("ash")   # ال
+
+    # Transparent '-': "al-7amd" generates الحمد (ال + حمد with vowel omission)
+    result_al_hamd = arabizi_to_arabic_list("al-7amd")
+    assert u"\u0627\u0644\u062D\u0645\u062F" in result_al_hamd   # الحمد
+
+    # "ar-ra7man" generates الرحمن (ar=ال + transparent '-' + رحمن)
+    result_ar_ra7man = arabizi_to_arabic_list("ar-ra7man")
+    assert u"\u0627\u0644\u0631\u062D\u0645\u0646" in result_ar_ra7man   # الرحمن
+
+    # Digraph "3'" → غ (ghain, number-apostrophe notation: 3'ayr=غير)
+    assert u"\u063A" in arabizi_to_arabic_list(u"3'")   # غ
+    result_3prime_ayr = arabizi_to_arabic_list(u"3'ayr")
+    assert u"\u063A\u064A\u0631" in result_3prime_ayr   # غير
+
 
 def test_arabizi_quran_word_filter():
     """12. arabizi candidates filtered to unvocalized Quranic words."""

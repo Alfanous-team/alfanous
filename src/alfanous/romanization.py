@@ -147,7 +147,8 @@ ARABIZI2UNICODE = {
     u"5": u"\u062E",  # خ kha
     u"6": u"\u0637",  # ط ta (emphatic)
     u"7": u"\u062D",  # ح ha (pharyngeal)
-    u"8": u"\u063A",  # غ ghain
+    u"8": u"\u0642",  # ق qaf (number-based chat: 8ala=قال, 8aloo=قالوا)
+    u"-": u"",        # transparent separator (e.g. Al-Hamd, Ar-Rahman)
     u"9": u"\u0635",  # ص sad
     u"a": u"\u0627",  # ا alef
     u"b": u"\u0628",  # ب ba
@@ -181,6 +182,7 @@ ARABIZI_DIGRAPHS = {
     u"kh": u"\u062E",  # خ kha
     u"dh": u"\u0630",  # ذ dhal
     u"gh": u"\u063A",  # غ ghain
+    u"3'": u"\u063A",  # غ ghain (number-apostrophe notation: 3'ayr=غير)
     u"eh": u"\u0629",  # ة ta marbuta (Rule D: terminal feminine suffix)
 }
 
@@ -198,15 +200,25 @@ def arabizi_to_arabic_list(string, ignore=u""):
     Additional rules applied during conversion:
 
     - Rule B: Word-initial ``el`` / ``al`` maps to the definite article ال.
+      Assimilation variants ``ar``, ``er``, ``an``, ``en``, ``as``, ``es``,
+      ``ad``, ``ed`` and the three-character prefix ``ash`` / ``esh`` are
+      also handled (e.g. ``ar-ra7man`` → includes الرحمن).
     - Rule C: Doubled consonants (e.g. ``ll``, ``tt``) produce the letter
       followed by a shadda (ّ), representing gemination.
-    - Rule D: Initial ``a`` also yields ``أ`` (hamza-on-alef); terminal ``a``
-      also yields ``ى``; the digraph ``eh`` at any position yields ``ة``
-      (ta marbuta).
+    - Rule D: Initial ``a`` or ``2`` also yields ``أ`` (hamza-on-alef);
+      terminal ``a`` also yields ``ى``; the digraph ``eh`` at any position
+      yields ``ة`` (ta marbuta).
     - Short vowel omission: every vowel (``a``, ``e``, ``i``, ``o``, ``u``)
       also yields an empty string, because short vowels are not written in
       unvocalized Arabic script.  This allows e.g. ``salameh`` to produce
       ``سلامة`` (alongside ``سالامة``).
+    - The hyphen ``-`` is treated as a transparent separator so that forms
+      like ``al-7amd`` and ``ar-ra7man`` are handled correctly (the hyphen
+      is consumed without adding any Arabic character).  When ``-`` is
+      included in the *ignore* set, the ``if char in ignore`` guard takes
+      precedence over the ARABIZI2UNICODE lookup, so the hyphen is passed
+      through as a literal ``-`` in the output (useful for preserving
+      Whoosh search operators).
 
     :param string: Arabizi input string (case-insensitive)
     :param ignore: characters that are passed through unchanged
@@ -215,6 +227,19 @@ def arabizi_to_arabic_list(string, ignore=u""):
 
     # Vowels are excluded from gemination (Rule C)
     _VOWELS = frozenset(u"aeiou")
+
+    # Rule B: two-char definite-article prefix variants → ال
+    # Covers standard (al/el) and sun-letter assimilation forms
+    # (ar/er for ر, an/en for ن, as/es for س, ad/ed for د, etc.)
+    _AL_PREFIXES_2 = frozenset([
+        u"al", u"el",
+        u"ar", u"er",
+        u"an", u"en",
+        u"as", u"es",
+        u"ad", u"ed",
+    ])
+    # Three-char prefixes (ash/esh for ش assimilation: Ash-shaytan → الشيطان)
+    _AL_PREFIXES_3 = frozenset([u"ash", u"esh"])
 
     def _convert(s, at_word_start=True):
         if not s:
@@ -229,11 +254,20 @@ def arabizi_to_arabic_list(string, ignore=u""):
                 results.append(u" " + suffix)
             return list(set(results))
 
-        # Rule B: el/al at word start → ال (Arabic definite article)
+        # Rule B: definite article prefix → ال
+        # Check 3-char prefixes first (e.g. ash/esh: Ash-shaytan → الشيطان)
+        if (at_word_start and len(s) >= 3
+                and s[0] not in ignore and s[1] not in ignore and s[2] not in ignore):
+            prefix3 = s[:3].lower()
+            if prefix3 in _AL_PREFIXES_3:
+                for suffix in _convert(s[3:], at_word_start=False):
+                    results.append(u"\u0627\u0644" + suffix)  # ال
+
+        # Then check 2-char prefixes (al/el and sun-letter assimilation variants)
         if (at_word_start and len(s) >= 2
                 and s[0] not in ignore and s[1] not in ignore):
             prefix2 = s[:2].lower()
-            if prefix2 in (u"el", u"al"):
+            if prefix2 in _AL_PREFIXES_2:
                 for suffix in _convert(s[2:], at_word_start=False):
                     results.append(u"\u0627\u0644" + suffix)  # ال
 
@@ -279,6 +313,14 @@ def arabizi_to_arabic_list(string, ignore=u""):
                 # Standard ا mapping always included
                 for suffix in suffixes:
                     results.append(arabic_char + suffix)
+            elif c == u"2":
+                # Rule D: initial '2' also yields أ (hamza-on-alef) in addition to ء
+                # This covers number-based chat style: 2anta=أنت, 2ism=اسم
+                if at_word_start:
+                    for suffix in suffixes:
+                        results.append(u"\u0623" + suffix)  # أ + rest
+                for suffix in suffixes:
+                    results.append(arabic_char + suffix)  # ء + rest
             else:
                 for suffix in suffixes:
                     results.append(arabic_char + suffix)
