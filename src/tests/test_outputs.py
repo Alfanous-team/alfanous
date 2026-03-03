@@ -100,7 +100,7 @@ def test_search():
                                      'nb_ayas': 113,
                                      'nb_derivations': 0,
                                      'nb_derivations_extra': 0,
-                                     'nb_matches_overall': 116.0,
+                                     'nb_matches_overall': 116,
                                      'nb_synonyms': 0,
                                      'nb_vocalizations': 0,
                                      'romanization': None,
@@ -114,7 +114,7 @@ def test_search():
                                      'nb_ayas': 25,
                                      'nb_derivations': 0,
                                      'nb_derivations_extra': 0,
-                                     'nb_matches_overall': 26.0,
+                                     'nb_matches_overall': 26,
                                      'nb_synonyms': 0,
                                      'nb_vocalizations': 0,
                                      'romanization': None,
@@ -847,7 +847,7 @@ def test_search():
                          'total': 116},
             'translation_info': {},
             'words': {'global': {'nb_matches': 142,
-                                 'nb_matches_overall': 142.0,
+                                 'nb_matches_overall': 142,
                                  'nb_vocalizations': 0,
                                  'nb_words': 2}}}}
     

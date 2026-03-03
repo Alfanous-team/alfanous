@@ -698,7 +698,7 @@ class Raw:
                         "romanization": transliterate(romanization, term[1], ignore="", reverse=True) if romanization in
                                                                                                          self.DOMAINS[
                                                                                                              "romanization"] else None,
-                        "nb_matches_overall": term[2],
+                        "nb_matches_overall": int(term[2]) if term[2] else 0,
                         "nb_matches": term_matches_in_results,
                         "nb_ayas": term[3],
                         "nb_vocalizations": len(vocalizations) if word_vocalizations else 0,  # unneeded
@@ -714,7 +714,7 @@ class Raw:
                     }
                     cpt += 1
             annotation_word_query += " ) "
-            words_output["global"] = {"nb_words": cpt - 1, "nb_matches_overall": matches,
+            words_output["global"] = {"nb_words": cpt - 1, "nb_matches_overall": int(matches),
                                       "nb_matches": matches_in_results,
                                       "nb_vocalizations": nb_vocalizations_globale}
         output["words"] = words_output
