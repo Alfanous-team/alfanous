@@ -131,11 +131,10 @@ def index_translations(source: str,
         if importer.index_single_translation(os.path.join(source, zip_file)):
             count += 1
 
-    if count:
-        update_translations_list(
-            TSE_index=index_path,
-            translations_list_file=translations_list_file,
-        )
+    update_translations_list(
+        TSE_index=index_path,
+        translations_list_file=translations_list_file,
+    )
 
     return count
 

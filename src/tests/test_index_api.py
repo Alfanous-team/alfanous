@@ -86,6 +86,41 @@ def test_index_translations_skips_already_indexed(temp_index_dir, temp_translati
 
 
 @pytest.mark.skipif(not _STORE_EXISTS, reason="sample translation zips not found in store/Translations/")
+def test_index_translations_removes_stale_entry_when_count_zero(temp_index_dir, temp_translations_json, translation_source_dir):
+    """index_translations() must update translations.json even when no new translations are indexed (count=0)."""
+    # First call: index the translations
+    alfanous.index_translations(
+        source=translation_source_dir,
+        _index_path=temp_index_dir,
+        _translations_list_file=temp_translations_json,
+    )
+
+    # Manually inject a stale (non-indexed) entry into translations.json
+    with open(temp_translations_json, encoding="utf-8") as f:
+        data = json.load(f)
+    data["xx.stale"] = "Stale-Translation"
+    with open(temp_translations_json, "w", encoding="utf-8") as f:
+        json.dump(data, f)
+
+    # Second call: count=0 (all already indexed), but translations.json should still be cleaned up
+    count = alfanous.index_translations(
+        source=translation_source_dir,
+        _index_path=temp_index_dir,
+        _translations_list_file=temp_translations_json,
+    )
+    assert count == 0
+
+    with open(temp_translations_json, encoding="utf-8") as f:
+        data = json.load(f)
+
+    assert "xx.stale" not in data, (
+        "stale entry must be removed even when count=0 (no new translations indexed)"
+    )
+    assert "en.shakir" in data
+    assert "en.transliteration" in data
+
+
+@pytest.mark.skipif(not _STORE_EXISTS, reason="sample translation zips not found in store/Translations/")
 def test_index_translations_updates_translations_json(temp_index_dir, temp_translations_json, translation_source_dir):
     """index_translations() updates translations.json with all indexed IDs."""
     alfanous.index_translations(
