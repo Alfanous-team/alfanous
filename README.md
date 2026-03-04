@@ -285,7 +285,7 @@ Alfanous ships an [MCP (Model Context Protocol)](https://modelcontextprotocol.io
 Quick start:
 
 ```sh
-$ pip install alfanous3 mcp
+$ pip install alfanous3-mcp
 $ python -m alfanous_mcp.mcp_server        # stdio – works with Claude Desktop
 ```
 
