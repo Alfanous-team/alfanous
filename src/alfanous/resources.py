@@ -4,31 +4,38 @@ from alfanous import paths
 
 
 try:
-    arabic_to_english_fields = json.load(open(paths.ARABIC_NAMES_FILE))
+    with open(paths.ARABIC_NAMES_FILE) as f:
+        arabic_to_english_fields = json.load(f)
 except:
     arabic_to_english_fields = {}
 try:
-    std2uth_words = json.load(open(paths.STANDARD_TO_UTHMANI_FILE))
+    with open(paths.STANDARD_TO_UTHMANI_FILE) as f:
+        std2uth_words = json.load(f)
 except:
     std2uth_words = {}
 try:
-    vocalization_dict = json.load(open(paths.VOCALIZATIONS_FILE))
+    with open(paths.VOCALIZATIONS_FILE) as f:
+        vocalization_dict = json.load(f)
 except:
     vocalization_dict = {}
 try:
-    syndict = json.load(open(paths.SYNONYMS_FILE))
+    with open(paths.SYNONYMS_FILE) as f:
+        syndict = json.load(f)
 except:
     syndict = {}
 try:
-    antdict = json.load(open(paths.ANTONYMS_FILE))
+    with open(paths.ANTONYMS_FILE) as f:
+        antdict = json.load(f)
 except:
     antdict = {}
 try:
-    derivedict = json.load(open(paths.DERIVATIONS_FILE))
+    with open(paths.DERIVATIONS_FILE) as f:
+        derivedict = json.load(f)
 except:
     derivedict = {"root": []}
 
 try:
-    worddict = json.load(open(paths.WORD_PROPS_FILE))
+    with open(paths.WORD_PROPS_FILE) as f:
+        worddict = json.load(f)
 except:
     worddict = {}

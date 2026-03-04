@@ -58,9 +58,8 @@ class BasicDocIndex:
         @type doc: dict
 
         """
-        writer = self._ix.writer()
-        writer.add_document(**doc)
-        writer.commit()
+        with self._ix.writer() as writer:
+            writer.add_document(**doc)
 
     def add_documents(self, doclist):
         """ add a new documents
@@ -69,10 +68,9 @@ class BasicDocIndex:
         @type doclist: list(dict)
 
         """
-        writer = self._ix.writer()
-        for doc in doclist:
-            writer.add_document(**doc)
-        writer.commit()
+        with self._ix.writer() as writer:
+            for doc in doclist:
+                writer.add_document(**doc)
 
     def update_documents(self, doclist):
         """ update documents
@@ -81,16 +79,14 @@ class BasicDocIndex:
         @type doclist: list(dict)
 
         """
-        writer = self._ix.writer()
-        for doc in doclist:
-            writer.update_document(**doc)
-        writer.commit()
+        with self._ix.writer() as writer:
+            for doc in doclist:
+                writer.update_document(**doc)
 
     def delete_by_query(self, query):
         """ delete a set of documents retrieved by a query """
-        writer = self._ix.writer()
-        writer.delete_by_query(query)
-        writer.commit()
+        with self._ix.writer() as writer:
+            writer.delete_by_query(query)
 
     def __call__(self):
         return self.OK

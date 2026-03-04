@@ -101,7 +101,11 @@ class QSearcher:
 
     def suggest(self, querystr):
         d = {}
-        corrector = self._searcher(weighting=QScore()).corrector(self._qparser.fieldname)
-        for mistyped_word in querystr.split():
-            d[mistyped_word] =  corrector.suggest(mistyped_word, limit=3,maxdist=1, prefix=False)
+        searcher = self._searcher(weighting=QScore())
+        try:
+            corrector = searcher.corrector(self._qparser.fieldname)
+            for mistyped_word in querystr.split():
+                d[mistyped_word] = corrector.suggest(mistyped_word, limit=3, maxdist=1, prefix=False)
+        finally:
+            searcher.close()
         return d
