@@ -1,5 +1,7 @@
 [![Tests](https://github.com/Alfanous-team/alfanous/workflows/tests/badge.svg)](https://github.com/Alfanous-team/alfanous/actions)
 
+<!-- mcp-name: io.github.Alfanous-team/alfanous -->
+
 # Alfanous API
 
 **Alfanous** is a Quranic search engine API that provides simple and advanced search capabilities for the Holy Qur'an. It enables developers to build applications that search through Quranic text in Arabic, with support for Buckwalter transliteration, advanced query syntax, and rich metadata.

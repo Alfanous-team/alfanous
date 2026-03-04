@@ -10,6 +10,7 @@ XXX Index building pre-install script?
 
 import json
 import os
+from pathlib import Path
 
 from setuptools import setup
 
@@ -17,6 +18,15 @@ from setuptools import setup
 DEFAULT_DESCRIPTION = """ Alfanous is a search engine that provides simple and advanced search in the Holy Qur'an and more features.."""
 DEFAULT_LIB_USAGE = "    $ sudo pip install alfanous"
 DEFAULT_VERSION = "1.0"
+
+
+def read_readme():
+    """Read the top-level README.md for use as long_description."""
+    readme_path = Path(__file__).resolve().parents[2] / "README.md"
+    try:
+        return readme_path.read_text(encoding="utf-8")
+    except FileNotFoundError:
+        return DEFAULT_DESCRIPTION
 
 
 def load_information():
@@ -59,7 +69,8 @@ setup(
     author_email="assem.ch@gmail.com",
 
     package_dir={'alfanous': '.'},
-    long_description=current_description + current_lib_usage,
+    long_description=read_readme(),
+    long_description_content_type="text/markdown",
     keywords="quran search indexing engine alfanous",
     url="https://github.com/Alfanous-team/alfanous",
     include_package_data=True,
