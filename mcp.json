@@ -1,0 +1,45 @@
+{
+  "$schema": "https://raw.githubusercontent.com/modelcontextprotocol/registry/main/registry/schema/server.schema.json",
+  "name": "alfanous",
+  "display_name": "Alfanous - Quranic Search Engine",
+  "description": "Search and explore the Holy Qur'an using the Alfanous search engine. Supports Arabic text, Buckwalter transliteration, boolean operators, phrase search, wildcards, fuzzy matching, field filters, facets, and more.",
+  "repository": {
+    "url": "https://github.com/Alfanous-team/alfanous",
+    "source": "github"
+  },
+  "version_detail": {
+    "version": "1.0.0"
+  },
+  "packages": [
+    {
+      "registry_name": "pypi",
+      "name": "alfanous3",
+      "version": "1.0.0",
+      "runtime_arguments": [
+        {
+          "type": "positional",
+          "value": "-m"
+        },
+        {
+          "type": "positional",
+          "value": "alfanous_mcp.mcp_server"
+        }
+      ],
+      "environment_variables": []
+    }
+  ],
+  "tools": [
+    {
+      "name": "search_quran",
+      "description": "Search for verses in the Holy Qur'an. Supports Arabic text, Buckwalter transliteration, boolean operators, phrase search, wildcards, field filters, and fuzzy matching."
+    },
+    {
+      "name": "get_quran_info",
+      "description": "Retrieve metadata about the Qur'an such as chapter names, available translations, recitations, search field names, and API defaults."
+    },
+    {
+      "name": "suggest_query",
+      "description": "Get auto-completion suggestions for a partial Quranic search query."
+    }
+  ]
+}

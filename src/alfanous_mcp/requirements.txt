@@ -1,0 +1,7 @@
+# Alfanous MCP Server Dependencies
+
+# Core Alfanous library
+alfanous3
+
+# MCP Python SDK
+mcp>=1.0.0

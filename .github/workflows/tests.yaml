@@ -19,6 +19,9 @@ jobs:
     - name: Install web API dependencies
       run: |
         pip install fastapi httpx pydantic
+    - name: Install MCP dependencies
+      run: |
+        pip install mcp
     - name: Run build
       run: |
         make build
