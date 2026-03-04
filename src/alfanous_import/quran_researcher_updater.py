@@ -7,6 +7,7 @@ SQL URL: https://raw.githubusercontent.com/iTarek/Quran-Researcher/refs/heads/ma
 The script parses the MySQL dump and:
 - Updates the ``uthmani`` field in aya.json from the ``ayahs`` table.
 - Updates the ``root`` field in word.json using the ``words`` and ``roots`` tables.
+- Updates the ``root`` column in word_props.json from the updated word.json.
 """
 
 import json
@@ -211,7 +212,48 @@ def update_word_json(word_json_path, word_root_map):
     print(f"word.json: updated {updated}/{len(words)} entries with root data.")
 
 
-def run(sql_source=None, aya_json=None, word_json=None):
+def update_word_props_json(word_props_json_path, word_json_path):
+    """
+    Update word_props.json in-place using root data from the (already updated) word.json.
+
+    Existing entries whose root value differs from word.json are updated.
+    Words that now have a root in word.json but are not yet in word_props.json
+    are appended as new entries.
+    """
+    with open(word_props_json_path, encoding="utf-8") as fh:
+        props = json.load(fh)
+    with open(word_json_path, encoding="utf-8") as fh:
+        words = json.load(fh)
+
+    # Build index: vocalized word -> position in props arrays
+    word_pos = {w: i for i, w in enumerate(props["word"])}
+
+    updated = 0
+    added = 0
+    for word_entry in words:
+        word_text = word_entry.get("word", "")
+        root = word_entry.get("root") or ""
+        if not root:
+            continue
+        if word_text in word_pos:
+            i = word_pos[word_text]
+            if props["root"][i] != root:
+                props["root"][i] = root
+                updated += 1
+        else:
+            props["root"].append(root)
+            props["type"].append(word_entry.get("type") or "")
+            props["word"].append(word_text)
+            props["word_"].append(word_entry.get("word_") or "")
+            added += 1
+
+    with open(word_props_json_path, "w", encoding="utf-8") as fh:
+        json.dump(props, fh, ensure_ascii=False, indent=4)
+
+    print(f"word_props.json: updated {updated}, added {added} entries.")
+
+
+def run(sql_source=None, aya_json=None, word_json=None, word_props_json=None):
     """
     Main entry point.
 
@@ -225,6 +267,9 @@ def run(sql_source=None, aya_json=None, word_json=None):
     word_json:
         Path to word.json.  Defaults to the standard resource path relative
         to this file.
+    word_props_json:
+        Path to word_props.json.  Defaults to the standard resource path
+        relative to this file.
     """
     import os
 
@@ -233,6 +278,8 @@ def run(sql_source=None, aya_json=None, word_json=None):
         aya_json = os.path.join(base, "aya.json")
     if word_json is None:
         word_json = os.path.join(base, "word.json")
+    if word_props_json is None:
+        word_props_json = os.path.join(base, "word_props.json")
 
     if sql_source is None:
         print(f"Downloading SQL from {SQL_URL} …")
@@ -260,6 +307,9 @@ def run(sql_source=None, aya_json=None, word_json=None):
     print(f"Updating {word_json} …")
     update_word_json(word_json, word_root_map)
 
+    print(f"Updating {word_props_json} …")
+    update_word_props_json(word_props_json, word_json)
+
     print("Done.")
 
 
@@ -267,7 +317,7 @@ if __name__ == "__main__":
     import argparse
 
     parser = argparse.ArgumentParser(
-        description="Update aya.json and word.json from Quran-Researcher SQL dump."
+        description="Update aya.json, word.json and word_props.json from Quran-Researcher SQL dump."
     )
     parser.add_argument(
         "--sql",
@@ -284,5 +334,15 @@ if __name__ == "__main__":
         metavar="FILE",
         help="Path to word.json (default: src/alfanous/resources/word.json).",
     )
+    parser.add_argument(
+        "--word-props-json",
+        metavar="FILE",
+        help="Path to word_props.json (default: src/alfanous/resources/word_props.json).",
+    )
     args = parser.parse_args()
-    run(sql_source=args.sql, aya_json=args.aya_json, word_json=args.word_json)
+    run(
+        sql_source=args.sql,
+        aya_json=args.aya_json,
+        word_json=args.word_json,
+        word_props_json=args.word_props_json,
+    )
