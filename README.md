@@ -278,6 +278,32 @@ The [examples/](examples/) directory contains example scripts demonstrating vari
 
 See [examples/README.md](examples/README.md) for more information.
 
+## MCP Server
+
+Alfanous ships an [MCP (Model Context Protocol)](https://modelcontextprotocol.io/) server that lets AI assistants (Claude, Copilot, etc.) search and explore the Qur'an directly. See [alfanous_mcp/README.md](src/alfanous_mcp/README.md) for the full reference.
+
+Quick start:
+
+```sh
+$ pip install alfanous3-mcp
+$ python -m alfanous_mcp.mcp_server        # stdio – works with Claude Desktop
+```
+
+To connect Claude Desktop, add the following to your `claude_desktop_config.json`:
+
+```json
+{
+  "mcpServers": {
+    "alfanous": {
+      "command": "python",
+      "args": ["-m", "alfanous_mcp.mcp_server"]
+    }
+  }
+}
+```
+
+The server is also published to the [GitHub MCP Registry](https://github.com/mcp/io.github.Alfanous-team/alfanous) — you can install it with a single click from there.
+
 ## Web Interface
 
 Alfanous includes a FastAPI-based web service for RESTful access. See [alfanous_webapi/README.md](src/alfanous_webapi/README.md) for:

@@ -13,7 +13,7 @@
   "packages": [
     {
       "registry_name": "pypi",
-      "name": "alfanous3",
+      "name": "alfanous3-mcp",
       "version": "1.0.0",
       "runtime_arguments": [
         {
