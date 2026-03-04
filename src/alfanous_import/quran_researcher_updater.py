@@ -1,8 +1,8 @@
 """
 Update aya.json and word.json from the Quran-Researcher database dump.
 
-Source: https://github.com/iTarek/Quran-Researcher
-SQL URL: https://raw.githubusercontent.com/iTarek/Quran-Researcher/refs/heads/main/quran-researcher.sql
+Source: https://github.com/assem-ch/Quran-Researcher
+SQL URL: https://raw.githubusercontent.com/assem-ch/Quran-Researcher/refs/heads/main/quran-researcher.sql
 
 The script parses the MySQL dump and:
 - Updates the ``uthmani`` field in aya.json from the ``ayahs`` table.
@@ -17,7 +17,7 @@ import urllib.request
 
 
 SQL_URL = (
-    "https://raw.githubusercontent.com/iTarek/Quran-Researcher"
+    "https://raw.githubusercontent.com/assem-ch/Quran-Researcher"
     "/refs/heads/main/quran-researcher.sql"
 )
 

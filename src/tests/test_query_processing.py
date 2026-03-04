@@ -1,14 +1,12 @@
-
 """
 This is a test module for alfanous.QueryProcessing 
 
 """
-from whoosh.query import Term
-
 from alfanous import paths
+from alfanous.data import arabic_to_english_fields
 from alfanous.indexing import QseDocIndex
 from alfanous.query_processing import QuranicParser, ArabicParser
-from alfanous.data import arabic_to_english_fields
+from whoosh.query import Term
 
 
 def test_preprocess_query():
@@ -18,6 +16,7 @@ def test_preprocess_query():
 
     class _ArabicParserStub:
         ara2eng = arabic_to_english_fields
+
     _preprocess = ArabicParser._preprocess_query.__get__(_ArabicParserStub())
 
     # و → AND (the bug case: word AND field:value)
@@ -42,18 +41,18 @@ def test_parsing_with_schema():
 
     assert QP.parse(u"'لو كان البحر '").subqueries == [Term('aya', 'لو'), Term('aya', 'كان'), Term('aya', 'البحر')]
     assert QP.parse(u"\"عاصم\"").__dict__ == {'boost': 1.0,
- 'endchar': 5,
- 'fieldname': 'aya',
- 'minquality': None,
- 'startchar': 1,
- 'text': 'عاصم'}
+                                              'endchar': 5,
+                                              'fieldname': 'aya',
+                                              'minquality': None,
+                                              'startchar': 1,
+                                              'text': 'عاصم'}
     assert QP.parse(u"[1 to 3]").__dict__ == {'boost': 1.0,
                                               'constantscore': True,
-                                               'end': '3',
-                                               'endexcl': False,
-                                               'fieldname': 'aya',
-                                               'start': '1',
-                                               'startexcl': False}
+                                              'end': '3',
+                                              'endexcl': False,
+                                              'fieldname': 'aya',
+                                              'start': '1',
+                                              'startexcl': False}
     query = QP.parse(u"{ملك,فعل}")
     query_dict = query.__dict__.copy()
     words = query_dict.pop('words', [])
@@ -86,24 +85,7 @@ def test_parsing_with_schema():
                                            'text': '\u062c\u062d\u064a\u0645',
                                            'words': ['\u062c\u062d\u064a\u0645']}
 
-    assert sorted(QP.parse(u">>سماكم").__dict__['words']) == sorted(['\u0628\u0623\u0633\u0645\u0627\u0621',
-           '\u062a\u0633\u0645\u0649',
-           '\u0628\u0623\u0633\u0645\u0627\u0626\u0647\u0645',
-           '\u0648\u0627\u0644\u0633\u0645\u0627\u0621',
-           '\u0627\u0633\u0645\u0647',
-           '\u0628\u0633\u0645',
-           '\u062a\u0633\u0645\u064a\u0629',
-           '\u0633\u0645\u064a\u062a\u0645\u0648\u0647\u0627',
-           '\u0628\u0627\u0633\u0645',
-           '\u0627\u0644\u0627\u0633\u0645',
-           '\u0633\u0645\u0627\u0643\u0645',
-           '\u0627\u0644\u0623\u0633\u0645\u0627\u0621',
-           '\u0633\u0645\u0627\u0648\u0627\u062a',
-           '\u0627\u0633\u0645',
-           '\u0644\u064a\u0633\u0645\u0648\u0646',
-           '\u0623\u0633\u0645\u0627\u0621',
-           '\u0633\u0645\u0648\u0647\u0645',
-           '\u0633\u0645\u064a\u062a\u0647\u0627',
-           '\u0633\u0645\u0627\u0621',
-           '\u0623\u0633\u0645\u0627\u0626\u0647',
-           '\u0627\u0644\u0633\u0645\u0627\u0621'])
+    assert sorted(QP.parse(u">>سماكم").__dict__['words']) == ['أسماء', 'أسمائه', 'اسم', 'اسمه', 'الأسماء', 'الاسم',
+                                                              'السماء', 'بأسماء', 'بأسمائهم', 'باسم', 'بسم', 'تسمى',
+                                                              'تسمية', 'سماء', 'سماكم', 'سماوات', 'سموهم', 'سميا',
+                                                              'سميتموها', 'سميتها', 'ليسمون', 'والسماء']
