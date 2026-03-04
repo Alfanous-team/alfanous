@@ -94,6 +94,10 @@ update_translations_indexed_list:
 update_quranic_corpus:
 	export PYTHONPATH=$(API_PATH) ;	$(PYTHON_COMMAND) $(QIMPORT) -u wordqc $(STORE_PATH)quranic-corpus-morpology.xml $(DB_PATH)main.db
 
+# update aya.json and word.json from the Quran-Researcher database
+update_from_quran_researcher:
+	export PYTHONPATH=$(API_PATH) ;	$(PYTHON_COMMAND) -m alfanous_import.quran_researcher_updater
+
 
 
 # update recitations online list automatically from the project every ayah
