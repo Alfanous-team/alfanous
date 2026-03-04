@@ -8,6 +8,7 @@ The script parses the MySQL dump and:
 - Updates the ``uthmani`` field in aya.json from the ``ayahs`` table.
 - Updates the ``root`` field in word.json using the ``words`` and ``roots`` tables.
 - Updates the ``root`` column in word_props.json from the updated word.json.
+- Updates the ``root`` column in derivations.json from the updated word.json.
 """
 
 import json
@@ -253,7 +254,32 @@ def update_word_props_json(word_props_json_path, word_json_path):
     print(f"word_props.json: updated {updated}, added {added} entries.")
 
 
-def run(sql_source=None, aya_json=None, word_json=None, word_props_json=None):
+def update_derivations_json(derivations_json_path, word_json_path):
+    """
+    Update derivations.json in-place using root data from the (already updated) word.json.
+
+    derivations.json and word.json share the same row order (aligned by index), so root
+    values are transferred positionally.  Only non-empty roots from word.json are written.
+    """
+    with open(derivations_json_path, encoding="utf-8") as fh:
+        deriv = json.load(fh)
+    with open(word_json_path, encoding="utf-8") as fh:
+        words = json.load(fh)
+
+    updated = 0
+    for i, word_entry in enumerate(words):
+        root = word_entry.get("root") or ""
+        if root and root != deriv["root"][i]:
+            deriv["root"][i] = root
+            updated += 1
+
+    with open(derivations_json_path, "w", encoding="utf-8") as fh:
+        json.dump(deriv, fh, ensure_ascii=False, indent=4)
+
+    print(f"derivations.json: updated {updated} root entries.")
+
+
+def run(sql_source=None, aya_json=None, word_json=None, word_props_json=None, derivations_json=None):
     """
     Main entry point.
 
@@ -270,6 +296,9 @@ def run(sql_source=None, aya_json=None, word_json=None, word_props_json=None):
     word_props_json:
         Path to word_props.json.  Defaults to the standard resource path
         relative to this file.
+    derivations_json:
+        Path to derivations.json.  Defaults to the standard resource path
+        relative to this file.
     """
     import os
 
@@ -280,6 +309,8 @@ def run(sql_source=None, aya_json=None, word_json=None, word_props_json=None):
         word_json = os.path.join(base, "word.json")
     if word_props_json is None:
         word_props_json = os.path.join(base, "word_props.json")
+    if derivations_json is None:
+        derivations_json = os.path.join(base, "derivations.json")
 
     if sql_source is None:
         print(f"Downloading SQL from {SQL_URL} …")
@@ -310,6 +341,9 @@ def run(sql_source=None, aya_json=None, word_json=None, word_props_json=None):
     print(f"Updating {word_props_json} …")
     update_word_props_json(word_props_json, word_json)
 
+    print(f"Updating {derivations_json} …")
+    update_derivations_json(derivations_json, word_json)
+
     print("Done.")
 
 
@@ -317,7 +351,7 @@ if __name__ == "__main__":
     import argparse
 
     parser = argparse.ArgumentParser(
-        description="Update aya.json, word.json and word_props.json from Quran-Researcher SQL dump."
+        description="Update aya.json, word.json, word_props.json and derivations.json from Quran-Researcher SQL dump."
     )
     parser.add_argument(
         "--sql",
@@ -339,10 +373,16 @@ if __name__ == "__main__":
         metavar="FILE",
         help="Path to word_props.json (default: src/alfanous/resources/word_props.json).",
     )
+    parser.add_argument(
+        "--derivations-json",
+        metavar="FILE",
+        help="Path to derivations.json (default: src/alfanous/resources/derivations.json).",
+    )
     args = parser.parse_args()
     run(
         sql_source=args.sql,
         aya_json=args.aya_json,
         word_json=args.word_json,
         word_props_json=args.word_props_json,
+        derivations_json=args.derivations_json,
     )
