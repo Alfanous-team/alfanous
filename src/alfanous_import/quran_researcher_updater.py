@@ -5,7 +5,7 @@ Source: https://github.com/iTarek/Quran-Researcher
 SQL URL: https://raw.githubusercontent.com/iTarek/Quran-Researcher/refs/heads/main/quran-researcher.sql
 
 The script parses the MySQL dump and:
-- Updates ``uthmani`` and ``uthmani_min`` fields in aya.json from the ``ayahs`` table.
+- Updates the ``uthmani`` field in aya.json from the ``ayahs`` table.
 - Updates the ``root`` field in word.json using the ``words`` and ``roots`` tables.
 """
 
@@ -119,7 +119,7 @@ def _split_mysql_row(row):
 
 
 def parse_ayahs(sql):
-    """Return a dict mapping aya gid -> {uthmani, standard, tafseer}."""
+    """Return a dict mapping aya gid -> {uthmani}."""
     columns = ["id", "sura_id", "ayah_num", "text_othmani", "text_clean", "tafseer"]
     result = {}
     for row_str in _iter_insert_rows(sql, "ayahs"):
@@ -132,7 +132,6 @@ def parse_ayahs(sql):
         othmani = _OTHMANI_SUFFIX_RE.sub("", row["text_othmani"] or "").strip()
         result[gid] = {
             "uthmani": othmani,
-            "uthmani_min": row["text_clean"] or "",
         }
     return result
 
@@ -174,7 +173,7 @@ def parse_words(sql, roots):
 
 
 def update_aya_json(aya_json_path, ayahs_data):
-    """Update aya.json in-place with uthmani and uthmani_min fields."""
+    """Update aya.json in-place with the uthmani field."""
     with open(aya_json_path, encoding="utf-8") as fh:
         ayas = json.load(fh)
 
@@ -184,7 +183,6 @@ def update_aya_json(aya_json_path, ayahs_data):
         if gid in ayahs_data:
             data = ayahs_data[gid]
             aya["uthmani"] = data["uthmani"]
-            aya["uthmani_min"] = data["uthmani_min"]
             updated += 1
 
     with open(aya_json_path, "w", encoding="utf-8") as fh:
