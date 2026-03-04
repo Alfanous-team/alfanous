@@ -770,7 +770,7 @@ class Raw:
             annotation_aya_query += " )"
 
         if prev_aya or next_aya:
-            adja_res, searcher = self.QSE.find_extended(adja_query, "gid")
+            adja_res, adja_searcher = self.QSE.find_extended(adja_query, "gid")
             adja_ayas = {0:
                              {"aya_": "----",
                               "uth_": "----",
@@ -782,14 +782,16 @@ class Raw:
                 adja_ayas[adja["gid"]] = {"aya_": adja["aya_"], "uth_": adja["uth_"], "aya_id": adja["aya_id"],
                                           "sura": adja["sura"], "sura_arabic": adja["sura_arabic"]}
                 extend_runtime += adja_res.runtime
+            adja_searcher.close()
 
         # translations
         if translation:
-            trad_res, searcher = self.TSE.find_extended(trad_query, "gid")
+            trad_res, trad_searcher = self.TSE.find_extended(trad_query, "gid")
             extend_runtime += trad_res.runtime
             trad_text = {}
             for tr in trad_res:
                 trad_text[tr["gid"]] = tr["text"]
+            trad_searcher.close()
         output["runtime"] = round(extend_runtime, 5)
         output["interval"] = {
             "start": start,
