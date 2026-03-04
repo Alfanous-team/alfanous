@@ -2,7 +2,7 @@
   "$schema": "https://raw.githubusercontent.com/modelcontextprotocol/registry/main/registry/schema/server.schema.json",
   "name": "alfanous",
   "display_name": "Alfanous - Quranic Search Engine",
-  "description": "Search and explore the Holy Qur'an using the Alfanous search engine. Supports Arabic text, Buckwalter transliteration, boolean operators, phrase search, wildcards, fuzzy matching, field filters, facets, and more.",
+  "description": "Quranic search engine supporting Arabic text, transliteration, phrase search, wildcards, and more.",
   "repository": {
     "url": "https://github.com/Alfanous-team/alfanous",
     "source": "github"
