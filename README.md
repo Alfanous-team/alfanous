@@ -302,6 +302,8 @@ To connect Claude Desktop, add the following to your `claude_desktop_config.json
 }
 ```
 
+The server is also published to the [GitHub MCP Registry](https://github.com/mcp/io.github.Alfanous-team/alfanous) — you can install it with a single click from there.
+
 ## Web Interface
 
 Alfanous includes a FastAPI-based web service for RESTful access. See [alfanous_webapi/README.md](src/alfanous_webapi/README.md) for:
