@@ -330,7 +330,7 @@ $ pytest -vv --rootdir=src/
 
 ## License
 
-Alfanous is licensed under the **GNU Affero General Public License v3 or later (AGPLv3+)**.
+Alfanous is licensed under the **GNU Lesser General Public License v3 or later (LGPLv3+)**.
 
 See [LICENSE](LICENSE) for details.
 
