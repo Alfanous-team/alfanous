@@ -84,7 +84,7 @@ def test_search():
                  "aya_theme_info": False,
                  "aya_stat_info": False,
                  "aya_sajda_info": True,
-                 "translation": "en.shakir",
+                 "translation": "en.pickthall",
                  }
 
     results = RAWoutput.do( search_flags )

@@ -20,7 +20,7 @@ _STORE_DIR = os.path.normpath(os.path.join(
 
 # Pick two well-known zip files that are present in the store
 _SAMPLE_ZIPS = [
-    os.path.join(_STORE_DIR, "en.shakir.trans.zip"),
+    os.path.join(_STORE_DIR, "en.pickthall.trans.zip"),
     os.path.join(_STORE_DIR, "en.transliteration.trans.zip"),
 ]
 _STORE_EXISTS = os.path.isdir(_STORE_DIR) and all(
@@ -64,7 +64,7 @@ def test_index_translations_indexes_all_zips(temp_index_dir, temp_translations_j
     assert count == 2
     with open(temp_translations_json, encoding="utf-8") as f:
         data = json.load(f)
-    assert "en.shakir" in data
+    assert "en.pickthall" in data
     assert "en.transliteration" in data
 
 
@@ -116,7 +116,7 @@ def test_index_translations_removes_stale_entry_when_count_zero(temp_index_dir, 
     assert "xx.stale" not in data, (
         "stale entry must be removed even when count=0 (no new translations indexed)"
     )
-    assert "en.shakir" in data
+    assert "en.pickthall" in data
     assert "en.transliteration" in data
 
 
@@ -165,5 +165,5 @@ def test_update_translations_list_does_not_preserve_non_indexed(tmp_path):
         "update_translations_list must not preserve non-indexed entries"
     )
     # The newly indexed entries must be present
-    assert "en.shakir" in data
+    assert "en.pickthall" in data
     assert "en.transliteration" in data

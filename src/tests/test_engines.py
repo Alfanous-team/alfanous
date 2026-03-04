@@ -128,7 +128,7 @@ def test_translation_engine():
 
     results, searcher = TSE.find_extended(u"gid:1 OR gid:2", defaultfield="gid")
     assert len(results)
-    assert {'en.shakir', 'en.transliteration'} & set(TSE.list_values("id"))
+    assert {'en.pickthall', 'en.transliteration'} & set(TSE.list_values("id"))
 
 # def test_word_engine():
 #     assert WSE.OK
