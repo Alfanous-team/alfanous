@@ -42,12 +42,12 @@ jobs:
     
     - name: Build package
       run: |
-        cd src/alfanous
+        cd src
         python -m build
     
     - name: Check distribution
       run: |
-        cd src/alfanous
+        cd src
         twine check dist/*
     
     - name: Publish to PyPI
@@ -55,5 +55,5 @@ jobs:
       with:
         user: __token__
         password: ${{ secrets.ALFANOUS_PYPI_TOKEN }}
-        packages-dir: src/alfanous/dist/
+        packages-dir: src/dist/
         skip-existing: true

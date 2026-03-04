@@ -1,0 +1,8 @@
+include *.py *.txt
+exclude *.pyc
+include alfanous/configs/*
+include alfanous/indexes/main/*
+include alfanous/indexes/extend/*
+include alfanous/indexes/word/*
+include alfanous/resources/*
+include alfanous_mcp/*.py

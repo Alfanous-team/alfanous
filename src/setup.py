@@ -22,7 +22,7 @@ DEFAULT_VERSION = "1.0"
 
 def read_readme():
     """Read the top-level README.md for use as long_description."""
-    readme_path = Path(__file__).resolve().parents[2] / "README.md"
+    readme_path = Path(__file__).resolve().parents[1] / "README.md"
     try:
         return readme_path.read_text(encoding="utf-8")
     except FileNotFoundError:
@@ -36,7 +36,7 @@ def load_information():
         tuple: (information dict, description string, lib_usage string)
     """
     try:
-        with open("./resources/information.json", encoding='utf-8') as f:
+        with open("./alfanous/resources/information.json", encoding='utf-8') as f:
             information = json.load(f)
         current_description = information.get("description") or DEFAULT_DESCRIPTION
         current_lib_usage = information.get("lib_usage") or DEFAULT_LIB_USAGE
@@ -46,11 +46,19 @@ def load_information():
         return {}, DEFAULT_DESCRIPTION, DEFAULT_LIB_USAGE
 
 
+def get_version(information):
+    """Extract a valid version string, falling back to DEFAULT_VERSION for placeholders."""
+    version = information.get("version", "")
+    if not version or version == "-":
+        return DEFAULT_VERSION
+    return version
+
+
 # Get version from environment variable (set during CI/CD) or fall back to information.json
-current_version = os.environ.get('VERSION') or None
+current_version = os.environ.get('VERSION')
 if not current_version:
     information, current_description, current_lib_usage = load_information()
-    current_version = information.get("version") or DEFAULT_VERSION
+    current_version = get_version(information)
 else:
     # When VERSION is provided via environment, still read description from information.json
     _, current_description, current_lib_usage = load_information()
@@ -68,7 +76,7 @@ setup(
     author="Assem Chelli",
     author_email="assem.ch@gmail.com",
 
-    package_dir={'alfanous': '.', 'alfanous_mcp': '../alfanous_mcp'},
+    package_dir={'alfanous': 'alfanous', 'alfanous_mcp': 'alfanous_mcp'},
     long_description=read_readme(),
     long_description_content_type="text/markdown",
     keywords="quran search indexing engine alfanous",
