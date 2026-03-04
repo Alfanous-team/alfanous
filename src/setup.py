@@ -69,14 +69,14 @@ setup(
     name='alfanous3',
     version=current_version,
 
-    packages=['alfanous', 'alfanous.Support', 'alfanous.Support.pyarabic', 'alfanous_mcp'],
+    packages=['alfanous', 'alfanous.Support', 'alfanous.Support.pyarabic'],
 
-    install_requires=['pyparsing', 'whoosh', 'mcp>=1.0.0'],
+    install_requires=['pyparsing', 'whoosh'],
 
     author="Assem Chelli",
     author_email="assem.ch@gmail.com",
 
-    package_dir={'alfanous': 'alfanous', 'alfanous_mcp': 'alfanous_mcp'},
+    package_dir={'alfanous': 'alfanous'},
     long_description=read_readme(),
     long_description_content_type="text/markdown",
     keywords="quran search indexing engine alfanous",
@@ -91,7 +91,6 @@ setup(
 
     entry_points={'console_scripts': [
         'alfanous-console = alfanous.console:main',
-        'alfanous-mcp = alfanous_mcp.mcp_server:main',
     ]},
 
     zip_safe=False,
