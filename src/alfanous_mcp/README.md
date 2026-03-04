@@ -1,3 +1,5 @@
+<!-- mcp-name: io.github.Alfanous-team/alfanous -->
+
 # Alfanous MCP Server
 
 An [MCP (Model Context Protocol)](https://modelcontextprotocol.io/) server that
