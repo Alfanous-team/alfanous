@@ -202,7 +202,7 @@ def update_word_json(word_json_path, word_root_map):
     for word_entry in words:
         word_text = word_entry.get("word", "")
         if word_text in word_root_map:
-            root = word_root_map[word_text]
+            root = word_root_map[word_text].replace(" ", "")
             if root:
                 word_entry["root"] = root
                 updated += 1
