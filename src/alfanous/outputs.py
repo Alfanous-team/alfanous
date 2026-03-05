@@ -15,6 +15,20 @@ STANDARD2UTHMANI = lambda x: std2uth_words.get(x) or x
 FALSE_PATTERN = '^false|no|off|0$'
 
 
+def _edit_distance(s, t):
+    """Compute the Levenshtein edit distance between two strings."""
+    m, n = len(s), len(t)
+    if abs(m - n) > max(m, n, 1):
+        return abs(m - n)
+    d = list(range(n + 1))
+    for i in range(1, m + 1):
+        prev = d[:]
+        d[0] = i
+        for j in range(1, n + 1):
+            d[j] = min(prev[j] + 1, d[j - 1] + 1, prev[j - 1] + (s[i - 1] != t[j - 1]))
+    return d[n]
+
+
 ## a function to decide what is True and what is false
 def IS_FLAG(flags, key):
     default = Raw.DEFAULTS['flags'][key]
@@ -615,6 +629,9 @@ class Raw:
         res, termz, searcher = SE.search_all(query, limit=self._defaults["results_limit"]["aya"], sortedby=sortedby, facets=facets_list, filter_dict=filter_dict, fuzzy=fuzzy, fuzzy_maxdist=fuzzy_maxdist)
         terms = [term[1] for term in list(termz)[:self._defaults["maxkeywords"]]]
         terms_uthmani = map(STANDARD2UTHMANI, terms)
+        # All matched aya_ac variation terms (only populated when fuzzy=True).
+        # Used in the word_info loop to derive per-word variation lists.
+        _all_ac_variations = [term[1] for term in termz if term[0] == "aya_ac"]
         # pagination
         offset = 1 if offset < 1 else offset
         range = self._defaults["minrange"] if range < self._defaults["minrange"] else range
@@ -729,6 +746,17 @@ class Raw:
                                 set(filter_doubles(find(derivedict["root"], derivedict["word_"], lemma))) - set(
                                     derivations))
 
+                    # Compute variations specific to this word: among all
+                    # matched aya_ac terms, keep only those within
+                    # fuzzy_maxdist edit distance of this word's unvocalized
+                    # form.  This correctly scopes variations to each
+                    # individual query word in multi-word queries.
+                    word_normalized = strip_vocalization(term[1])
+                    word_variations = [
+                        v for v in _all_ac_variations
+                        if _edit_distance(word_normalized, v) <= fuzzy_maxdist
+                    ]
+
                     words_output["individual"][cpt] = {
                         "word": term[1],
                         "romanization": transliterate(romanization, term[1], ignore="", reverse=True) if romanization in
@@ -748,6 +776,8 @@ class Raw:
                         "derivations": derivations if word_derivations else [],
                         "nb_derivations_extra": len(derivations_extra),
                         "derivations_extra": derivations_extra,
+                        "nb_variations": len(word_variations),
+                        "variations": word_variations,
                     }
                     cpt += 1
             annotation_word_query += " ) "
