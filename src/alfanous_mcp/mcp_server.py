@@ -39,6 +39,8 @@ mcp = FastMCP(
     instructions=(
         "Alfanous is a search engine for the Holy Qur'an. "
         "Use the search_quran tool to find Quranic verses by keyword or phrase. "
+        "Use search_translations to search within Quranic translation texts in "
+        "languages such as English, French, Urdu, and more. "
         "Use get_quran_info to retrieve metadata such as chapter names, "
         "available translations, and recitations. "
         "Use suggest_query to get auto-completion suggestions while typing a query. "
@@ -129,6 +131,70 @@ def search_quran(
         "sortedby": sortedby,
         "fuzzy": fuzzy,
         "view": view,
+        "highlight": highlight,
+    }
+    if translation is not None:
+        flags["translation"] = translation
+    if facets is not None:
+        flags["facets"] = facets
+    if field_filter is not None:
+        flags["filter"] = field_filter
+
+    result = alfanous_api.do(flags)
+    return _make_serializable(result)
+
+
+@mcp.tool(
+    title="Search Qur'an Translations",
+    description=(
+        "Search within Quranic translation texts (e.g. English, French, Urdu). "
+        "Use this tool when the query is in a non-Arabic language or when the "
+        "user wants to find verses by their translated meaning. "
+        "Optionally specify a translation identifier (see get_quran_info with "
+        "category='translations' for available options). "
+        "Returns a paginated list of matching translation snippets with verse metadata."
+    ),
+)
+def search_translations(
+    query: str,
+    translation: Optional[str] = None,
+    page: int = 1,
+    perpage: int = 10,
+    sortedby: str = "relevance",
+    fuzzy: bool = False,
+    highlight: str = "bold",
+    facets: Optional[str] = None,
+    field_filter: Optional[str] = None,
+) -> dict:
+    """Search within Quranic translation texts.
+
+    Args:
+        query: Search query in any language (e.g. English, French, Urdu).
+        translation: Translation identifier to search in (e.g. "en.pickthall").
+            Use get_quran_info(category='translations') to list available IDs.
+            When omitted, all indexed translations are searched.
+        page: Page number for pagination (starts at 1).
+        perpage: Number of results per page (1–100).
+        sortedby: Sort order — one of "relevance", "score", "mushaf",
+            "tanzil", or "ayalength".
+        fuzzy: Enable fuzzy (approximate) matching.
+        highlight: Highlight style for matched terms — one of "bold",
+            "css", "html", or "bbcode".
+        facets: Comma-separated list of fields to aggregate as facets.
+        field_filter: Field filter expression (e.g. "sura_number:2").
+
+    Returns:
+        Dictionary with search results including matched translation snippets,
+        pagination info, and optional facets.
+    """
+    flags: dict = {
+        "action": "search",
+        "query": query,
+        "unit": "translation",
+        "page": page,
+        "range": perpage,
+        "sortedby": sortedby,
+        "fuzzy": fuzzy,
         "highlight": highlight,
     }
     if translation is not None:
