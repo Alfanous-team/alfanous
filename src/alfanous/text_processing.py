@@ -1,7 +1,9 @@
 
+import copy
+import json
 import re
 
-from whoosh.analysis import RegexTokenizer, Filter, LowercaseFilter  # StandardAnalyzer,
+from whoosh.analysis import RegexTokenizer, Filter, LowercaseFilter, MultiFilter  # StandardAnalyzer,
 from alfanous.Support.pyarabic.main import strip_tashkeel, strip_tatweel, strip_shadda, normalize_spellerrors, \
     normalize_hamza, normalize_lamalef, normalize_uthmani_symbols  # , HARAKAT_pat,
 
@@ -84,6 +86,110 @@ def Gword_tamdid(aya):
     return aya.replace(u"لَّه", u"لَّـه").replace(u"لَّه", u"لَّـه")
 
 
+class QArabicStemFilter(Filter):
+    """
+    Whoosh filter that applies Arabic stemming using PyStemmer (Snowball).
+
+    Requires the ``pystemmer`` package (``pip install pystemmer``).
+    Falls back to a no-op if the package is not installed.
+    """
+
+    def __init__(self):
+        try:
+            import Stemmer
+            self._stemmer = Stemmer.Stemmer('arabic')
+        except ImportError:
+            self._stemmer = None
+
+    def __call__(self, tokens):
+        if self._stemmer is None:
+            yield from tokens
+            return
+        for t in tokens:
+            if t.text:
+                t.text = self._stemmer.stemWord(t.text)
+            yield t
+
+
+class QStopFilter(Filter):
+    """
+    Whoosh filter that removes Arabic stop words.
+
+    Tokens whose text matches an entry in *stopwords* are discarded.
+    The ``stopped`` attribute of the token is set to ``True`` before
+    the token is dropped so that downstream phrase-position accounting
+    remains correct.
+    """
+
+    def __init__(self, stopwords=None):
+        self._stopwords = frozenset(stopwords) if stopwords else frozenset()
+
+    def __call__(self, tokens):
+        for t in tokens:
+            if t.text in self._stopwords:
+                t.stopped = True
+            else:
+                yield t
+
+
+class QSynonymsFilter(Filter):
+    """
+    Whoosh filter that expands each token with its synonyms.
+
+    Each input token is yielded unchanged, followed by one additional
+    token per synonym (with the same position, so they are treated as
+    alternatives).  Designed for **index-time** use inside a
+    :class:`~whoosh.analysis.MultiFilter`.
+    """
+
+    def __init__(self, syndict=None):
+        self._syndict = syndict if syndict is not None else {}
+
+    def __call__(self, tokens):
+        for t in tokens:
+            yield t
+            for syn in self._syndict.get(t.text, []):
+                if syn != t.text:
+                    u = copy.copy(t)
+                    u.text = syn
+                    yield u
+
+
+def _load_stop_words():
+    """Load stop words from resources/stop_words.json, returning an empty list on failure."""
+    try:
+        from alfanous import paths
+        with open(paths.STOP_WORDS_FILE, encoding='utf-8') as f:
+            return json.load(f)
+    except Exception:
+        return []
+
+
+def _load_syndict():
+    """Load synonyms dictionary from resources/synonyms.json, returning an empty dict on failure."""
+    try:
+        from alfanous import paths
+        with open(paths.SYNONYMS_FILE, encoding='utf-8') as f:
+            return json.load(f)
+    except Exception:
+        return {}
+
+
+def _build_fuzzy_analyzer():
+    """Build and return the QFuzzyAnalyzer pipeline."""
+    stop_filter = QStopFilter(_load_stop_words())
+    # Synonym expansion only at index time; stemming at both index and query time
+    syn_filter = MultiFilter(index=QSynonymsFilter(_load_syndict()))
+    stem_filter = QArabicStemFilter()
+    return (
+        QSpaceTokenizer()
+        | QArabicSymbolsFilter(shaping=True, tashkil=True, spellerrors=True, hamza=True)
+        | stop_filter
+        | syn_filter
+        | stem_filter
+    )
+
+
 # analyzers
 QStandardAnalyzer = QSpaceTokenizer() | QArabicSymbolsFilter()
 APermissibleAnalyzer = QSpaceTokenizer() | QArabicSymbolsFilter(shaping=True, tashkil=True, spellerrors=True,
@@ -95,3 +201,4 @@ QUthmaniAnalyzer = QSpaceTokenizer() | QArabicSymbolsFilter(shaping=True, tashki
                                                             uthmani_symbols=True)
 QUthmaniDiacAnalyzer = QSpaceTokenizer() | QArabicSymbolsFilter(tashkil=False, uthmani_symbols=True)
 TranslationHighLightAnalyzer = RegexTokenizer() | LowercaseFilter()
+QFuzzyAnalyzer = _build_fuzzy_analyzer()
