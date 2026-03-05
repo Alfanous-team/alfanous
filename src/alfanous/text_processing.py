@@ -95,10 +95,26 @@ class QArabicStemFilter(Filter):
     """
 
     def __init__(self):
+        self._available = self._make_stemmer()
+
+    def _make_stemmer(self):
         try:
             import Stemmer
             self._stemmer = Stemmer.Stemmer('arabic')
+            return True
         except ImportError:
+            self._stemmer = None
+            return False
+
+    # pystemmer's Stemmer (Cython) is not picklable; only persist availability flag.
+    def __getstate__(self):
+        return {'_available': self._available}
+
+    def __setstate__(self, state):
+        self._available = state['_available']
+        if self._available:
+            self._make_stemmer()
+        else:
             self._stemmer = None
 
     def __call__(self, tokens):
