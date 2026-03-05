@@ -52,7 +52,6 @@
     "source": "tanzil.info",
     "search_name": "aya",
     "analyzer": "QFuzzyAnalyzer",
-    "spelling": true,
     "field_boost": "2.0"
   },
   {

@@ -63,19 +63,43 @@ class QSearcher:
         self._qparser = qparser
         self._schema = docindex.get_schema()
 
-    def search(self, querystr, limit=QURAN_TOTAL_VERSES, sortedby="score", reverse=False, facets=None, filter_dict=None, fuzzy=False):
+    def search(self, querystr, limit=QURAN_TOTAL_VERSES, sortedby="score", reverse=False, facets=None, filter_dict=None, fuzzy=False, fuzzy_maxdist=1):
         searcher = self._searcher(weighting=QScore())
         query = self._qparser.parse(querystr)
 
         if fuzzy:
-            # Also search the normalised/stemmed 'aya' field so that
+            from whoosh.qparser import QueryParser
+            from whoosh.query import Or, FuzzyTerm
+
+            # Strategy 2: Also search the normalised/stemmed 'aya' field so that
             # stop-word removal, synonym expansion and stemming applied at
             # index time can broaden the result set.
-            from whoosh.qparser import QueryParser
-            from whoosh.query import Or
             aya_parser = QueryParser("aya", schema=self._schema)
             aya_query = aya_parser.parse(querystr)
-            query = Or([query, aya_query])
+
+            # Strategy 3: Levenshtein distance matching on 'aya_ac'
+            # (unvocalized, non-stemmed) to handle spelling variants and typos.
+            # Only applied to Arabic-script terms; structured/numeric terms are skipped.
+            levenshtein_subqueries = [
+                # prefixlength=1 keeps the first character fixed so that
+                # Levenshtein expansion is bounded to plausible variants of
+                # the same word (e.g. "الكتاب" → "الكتابة") rather than
+                # unrelated words that happen to be edit-close.  This trades
+                # a small amount of recall for a large gain in precision and
+                # index-scan performance.
+                FuzzyTerm("aya_ac", term, maxdist=fuzzy_maxdist, prefixlength=1)
+                for fieldname, term in query.all_terms()
+                if term and any('\u0600' <= c <= '\u06FF' for c in term)
+            ]
+
+            parts = [query, aya_query]
+            if levenshtein_subqueries:
+                parts.append(
+                    Or(levenshtein_subqueries)
+                    if len(levenshtein_subqueries) > 1
+                    else levenshtein_subqueries[0]
+                )
+            query = Or(parts)
         
         # Prepare facets if requested
         groupedby = None
@@ -114,7 +138,8 @@ class QSearcher:
         d = {}
         searcher = self._searcher(weighting=QScore())
         try:
-            corrector = searcher.corrector(self._qparser.fieldname)
+            # Use aya_ac: unvocalized, non-stemmed field with spelling index
+            corrector = searcher.corrector("aya_ac")
             for mistyped_word in querystr.split():
                 d[mistyped_word] = corrector.suggest(mistyped_word, limit=3, maxdist=1, prefix=False)
         finally:

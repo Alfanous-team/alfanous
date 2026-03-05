@@ -72,6 +72,7 @@ class Raw:
             "page": 1,  # overridden with offset
             "perpage": 10,  # overridden with range
             "fuzzy": False,
+            "fuzzy_maxdist": 1,
             "aya": True,
             "facets": None,
             "filter": None,
@@ -119,6 +120,7 @@ class Raw:
         "page": [],  # range(6237),  # overridden with offset
         "perpage": [],  # range( DEFAULTS["maxrange"] ) , # overridden with range
         "fuzzy": [True, False],
+        "fuzzy_maxdist": [],
         "aya": [True, False],
     }
 
@@ -155,7 +157,8 @@ class Raw:
         "range": "range of results",
         "page": "page number  [override offset]",
         "perpage": "results per page  [override range]",
-        "fuzzy": "fuzzy search [exprimental]",
+        "fuzzy": "fuzzy search — searches aya_ (exact) and aya (normalised/stemmed) with Levenshtein distance matching",
+        "fuzzy_maxdist": "maximum Levenshtein edit distance for fuzzy term matching (default: 1, only used when fuzzy=True)",
         "aya": "enable retrieving of aya text in the case of translation search",
     }
 
@@ -450,6 +453,7 @@ class Raw:
         script = flags["script"]
         vocalized = IS_FLAG(flags, 'vocalized')
         fuzzy = IS_FLAG(flags, 'fuzzy')
+        fuzzy_maxdist = int(flags.get('fuzzy_maxdist', self._defaults['flags']['fuzzy_maxdist']))
         view = flags["view"]
         # Validate view parameter; fall back to "custom" if not recognised
         if view not in self.DOMAINS["view"]:
@@ -608,7 +612,7 @@ class Raw:
 
         # Search
         SE = self.QSE
-        res, termz, searcher = SE.search_all(query, limit=self._defaults["results_limit"]["aya"], sortedby=sortedby, facets=facets_list, filter_dict=filter_dict, fuzzy=fuzzy)
+        res, termz, searcher = SE.search_all(query, limit=self._defaults["results_limit"]["aya"], sortedby=sortedby, facets=facets_list, filter_dict=filter_dict, fuzzy=fuzzy, fuzzy_maxdist=fuzzy_maxdist)
         terms = [term[1] for term in list(termz)[:self._defaults["maxkeywords"]]]
         terms_uthmani = map(STANDARD2UTHMANI, terms)
         # pagination

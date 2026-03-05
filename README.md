@@ -121,7 +121,8 @@ Common parameters for `api.do()` with `action="search"`:
 * `vocalized` (bool): Include Arabic vocalization (default: True)
 * `translation` (str): Translation ID to include
 * `recitation` (str): Recitation ID to include (1-30, default: "1")
-* `fuzzy` (bool): Enable fuzzy search — searches both `aya_` (exact) and `aya` (normalised/stemmed) fields (default: False). See [Exact Search vs Fuzzy Search](#exact-search-vs-fuzzy-search).
+* `fuzzy` (bool): Enable fuzzy search — searches both `aya_` (exact) and `aya` (normalised/stemmed) fields, plus Levenshtein distance matching (default: False). See [Exact Search vs Fuzzy Search](#exact-search-vs-fuzzy-search).
+* `fuzzy_maxdist` (int): Maximum Levenshtein edit distance for fuzzy term matching — `1`, `2`, or `3` (default: `1`, only used when `fuzzy=True`).
 * `facets` (str): Comma-separated list of fields for faceted search
 * `filter` (dict): Filter results by field values
 
@@ -161,19 +162,31 @@ When fuzzy search is **on**, queries run against **both** the `aya_` field (exac
 
 No heavy operations are performed on the query string at search time; all the linguistic enrichment lives in the index.
 
+Additionally, for each Arabic term in the query, a **Levenshtein distance** search is performed against the `aya_ac` field (unvocalized, non-stemmed). This catches spelling variants and typos within a configurable edit-distance budget controlled by `fuzzy_maxdist`.
+
 ```python
-# Fuzzy search — aya_ (exact) + aya (normalised/stemmed) fields are both searched
+# Fuzzy search — aya_ (exact) + aya (normalised/stemmed) + Levenshtein distance on aya_ac
 >>> api.search(u"الكتاب", fuzzy=True)
+
+# Increase edit distance to 2 to tolerate more spelling variation
+>>> api.search(u"الكتاب", fuzzy=True, fuzzy_maxdist=2)
 
 # Via the unified interface
 >>> api.do({
 ...     "action": "search",
 ...     "query": u"مؤمن",
 ...     "fuzzy": True,
+...     "fuzzy_maxdist": 1,
 ...     "page": 1,
 ...     "perpage": 10
 ... })
 ```
+
+| `fuzzy_maxdist` | Behaviour |
+|---|---|
+| `1` (default) | Catches single-character insertions, deletions, or substitutions |
+| `2` | Broader tolerance — useful for longer words or noisy input |
+| `3` | Maximum supported — use with care as recall increases significantly |
 
 Fuzzy mode is particularly useful when:
 

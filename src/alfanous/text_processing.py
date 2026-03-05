@@ -178,7 +178,8 @@ def _load_syndict():
 def _build_fuzzy_analyzer():
     """Build and return the QFuzzyAnalyzer pipeline."""
     stop_filter = QStopFilter(_load_stop_words())
-    # Synonym expansion only at index time; stemming at both index and query time
+    # Synonym expansion only at index time (MultiFilter with mode="index");
+    # stemming applies at both index and query time.
     syn_filter = MultiFilter(index=QSynonymsFilter(_load_syndict()))
     stem_filter = QArabicStemFilter()
     return (
