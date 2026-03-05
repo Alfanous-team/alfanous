@@ -12,6 +12,7 @@ from the Holy Qur'an.
 - **Search Quranic verses** with full support for Arabic text, Buckwalter
   transliteration, boolean operators, phrase search, wildcards, fuzzy matching,
   field filters, and facets.
+- **Search translations** across many languages (English, French, Urdu, and more).
 - **Retrieve metadata** – chapter names, available translations, recitations,
   search field descriptions, and API defaults.
 - **Query auto-completion** – get suggestions while typing a search query.
@@ -26,9 +27,9 @@ from the Holy Qur'an.
 1. Install the **Alfanous** core library and build the indexes:
 
    ```bash
-   pip install alfanous3
+   pip install alfanous3 pystemmer
    # or from source:
-   pip install pyparsing whoosh
+   pip install pyparsing whoosh pystemmer
    cd /path/to/alfanous && make build
    ```
 
@@ -73,19 +74,37 @@ Add the following to your `claude_desktop_config.json`:
 
 Search for verses in the Holy Qur'an.
 
-| Parameter   | Type    | Default       | Description |
-|-------------|---------|---------------|-------------|
-| `query`     | string  | *(required)*  | Arabic text or Buckwalter transliteration |
-| `unit`      | string  | `"aya"`       | `"aya"`, `"word"`, or `"translation"` |
-| `page`      | int     | `1`           | Page number |
-| `perpage`   | int     | `10`          | Results per page (1–100) |
-| `sortedby`  | string  | `"relevance"` | `"relevance"`, `"score"`, `"mushaf"`, `"tanzil"`, `"ayalength"` |
-| `fuzzy`     | bool    | `false`       | Enable approximate matching |
-| `view`      | string  | `"normal"`    | `"minimal"`, `"normal"`, `"full"`, `"statistic"`, `"linguistic"` |
-| `highlight` | string  | `"bold"`      | `"bold"`, `"css"`, `"html"`, `"bbcode"` |
-| `translation` | string | `null`       | Translation identifier |
-| `facets`    | string  | `null`        | Comma-separated facet fields |
-| `filter`    | string  | `null`        | Field filter expression |
+| Parameter      | Type    | Default       | Description |
+|----------------|---------|---------------|-------------|
+| `query`        | string  | *(required)*  | Arabic text or Buckwalter transliteration |
+| `unit`         | string  | `"aya"`       | `"aya"`, `"word"`, or `"translation"` |
+| `page`         | int     | `1`           | Page number |
+| `perpage`      | int     | `10`          | Results per page (1–100) |
+| `sortedby`     | string  | `"relevance"` | `"relevance"`, `"score"`, `"mushaf"`, `"tanzil"`, `"ayalength"` |
+| `fuzzy`        | bool    | `false`       | Enable fuzzy search (see [Fuzzy Search](#fuzzy-search)) |
+| `fuzzy_maxdist`| int     | `1`           | Levenshtein edit distance — `1`, `2`, or `3` (only used when `fuzzy=true`) |
+| `view`         | string  | `"normal"`    | `"minimal"`, `"normal"`, `"full"`, `"statistic"`, `"linguistic"` |
+| `highlight`    | string  | `"bold"`      | `"bold"`, `"css"`, `"html"`, `"bbcode"` |
+| `translation`  | string  | `null`        | Translation identifier to include alongside each verse |
+| `facets`       | string  | `null`        | Comma-separated facet fields |
+| `field_filter` | string  | `null`        | Field filter expression (e.g. `"sura_number:2"`) |
+
+### `search_translations`
+
+Search within Quranic translation texts (English, French, Urdu, etc.).
+
+| Parameter      | Type    | Default       | Description |
+|----------------|---------|---------------|-------------|
+| `query`        | string  | *(required)*  | Query in any language |
+| `translation`  | string  | `null`        | Translation ID (e.g. `"en.pickthall"`); omit to search all |
+| `page`         | int     | `1`           | Page number |
+| `perpage`      | int     | `10`          | Results per page (1–100) |
+| `sortedby`     | string  | `"relevance"` | `"relevance"`, `"score"`, `"mushaf"`, `"tanzil"`, `"ayalength"` |
+| `fuzzy`        | bool    | `false`       | Enable fuzzy search (see [Fuzzy Search](#fuzzy-search)) |
+| `fuzzy_maxdist`| int     | `1`           | Levenshtein edit distance — `1`, `2`, or `3` (only used when `fuzzy=true`) |
+| `highlight`    | string  | `"bold"`      | `"bold"`, `"css"`, `"html"`, `"bbcode"` |
+| `facets`       | string  | `null`        | Comma-separated facet fields |
+| `field_filter` | string  | `null`        | Field filter expression |
 
 ### `get_quran_info`
 
@@ -114,6 +133,33 @@ Get auto-completion suggestions for a partial query.
 | `query`   | string | *(required)* | Partial search string |
 | `unit`    | string | `"aya"`  | `"aya"`, `"word"`, or `"translation"` |
 
+## Fuzzy Search
+
+When `fuzzy=true` the engine uses three complementary strategies simultaneously:
+
+| # | Strategy | Field | Description |
+|---|----------|-------|-------------|
+| 1 | **Exact** | `aya_` | Fully-vocalized Quranic text — precise, statistical matching |
+| 2 | **Normalised / stemmed** | `aya` | Text indexed with stop-word removal, synonym expansion (index time), and Arabic stemming via [Snowball / pystemmer](https://snowballstem.org/). Handles morphological variants (كَتَبَ / كِتَاب / مَكْتُوب). |
+| 3 | **Levenshtein distance** | `aya_ac` | Finds indexed terms within `fuzzy_maxdist` edit operations of each query term. Handles typos and minor spelling variants. |
+
+Results from all three strategies are OR-combined, so the result set is always
+a superset of the exact-only results.
+
+### Choosing `fuzzy_maxdist`
+
+| Value | Typical use |
+|-------|-------------|
+| `1` *(default)* | Single-character typos (insertion / deletion / substitution) |
+| `2` | Longer words or noisier input |
+| `3` | Maximum tolerance — recall increases significantly |
+
+**Example** (via an AI assistant prompt):
+
+> "Search for verses about رحمن with fuzzy matching and edit distance 1"
+>
+> → `search_quran(query="رحمن", fuzzy=True, fuzzy_maxdist=1)`
+
 ## Resources
 
 ### `quran://ai-rules`
@@ -135,7 +181,7 @@ and over 100 practical examples.
 | Phrase | `"بسم الله"` | Exact phrase |
 | Wildcard | `رحم*` | Words starting with رحم |
 | Field filter | `sura_number:2` | Surah 2 only |
-| Fuzzy | `الله~` | Approximate match |
+| Fuzzy | `fuzzy=true` parameter | Broad approximate match |
 
 ## License
 

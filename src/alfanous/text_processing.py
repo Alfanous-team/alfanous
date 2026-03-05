@@ -161,7 +161,7 @@ def _load_stop_words():
         from alfanous import paths
         with open(paths.STOP_WORDS_FILE, encoding='utf-8') as f:
             return json.load(f)
-    except Exception:
+    except (OSError, json.JSONDecodeError):
         return []
 
 
@@ -171,7 +171,7 @@ def _load_syndict():
         from alfanous import paths
         with open(paths.SYNONYMS_FILE, encoding='utf-8') as f:
             return json.load(f)
-    except Exception:
+    except (OSError, json.JSONDecodeError):
         return {}
 
 

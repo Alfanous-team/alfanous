@@ -80,13 +80,15 @@ class QSearcher:
             # Strategy 3: Levenshtein distance matching on 'aya_ac'
             # (unvocalized, non-stemmed) to handle spelling variants and typos.
             # Only applied to Arabic-script terms; structured/numeric terms are skipped.
+            # Levenshtein distance matching on 'aya_ac' (unvocalized, non-stemmed)
+            # handles spelling variants and typos.  Only applied to Arabic-script
+            # terms; structured/numeric terms are skipped.
+            # prefixlength=1 keeps the first character fixed so that expansion
+            # is bounded to plausible variants (e.g. "الكتاب" → "الكتابة") rather
+            # than unrelated words that happen to be edit-close.  This trades a
+            # small amount of recall for a large gain in precision and scan
+            # performance.
             levenshtein_subqueries = [
-                # prefixlength=1 keeps the first character fixed so that
-                # Levenshtein expansion is bounded to plausible variants of
-                # the same word (e.g. "الكتاب" → "الكتابة") rather than
-                # unrelated words that happen to be edit-close.  This trades
-                # a small amount of recall for a large gain in precision and
-                # index-scan performance.
                 FuzzyTerm("aya_ac", term, maxdist=fuzzy_maxdist, prefixlength=1)
                 for fieldname, term in query.all_terms()
                 if term and any('\u0600' <= c <= '\u06FF' for c in term)

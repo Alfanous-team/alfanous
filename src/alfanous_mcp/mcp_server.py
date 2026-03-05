@@ -168,6 +168,7 @@ def search_translations(
     perpage: int = 10,
     sortedby: str = "relevance",
     fuzzy: bool = False,
+    fuzzy_maxdist: int = 1,
     highlight: str = "bold",
     facets: Optional[str] = None,
     field_filter: Optional[str] = None,
@@ -183,7 +184,11 @@ def search_translations(
         perpage: Number of results per page (1–100).
         sortedby: Sort order — one of "relevance", "score", "mushaf",
             "tanzil", or "ayalength".
-        fuzzy: Enable fuzzy (approximate) matching.
+        fuzzy: Enable fuzzy (approximate) matching. Combines exact search
+            on aya_ with normalised/stemmed search on aya and Levenshtein
+            distance matching on aya_ac.
+        fuzzy_maxdist: Maximum Levenshtein edit distance for fuzzy term
+            matching (default 1, only used when fuzzy=True).
         highlight: Highlight style for matched terms — one of "bold",
             "css", "html", or "bbcode".
         facets: Comma-separated list of fields to aggregate as facets.
@@ -201,6 +206,7 @@ def search_translations(
         "range": perpage,
         "sortedby": sortedby,
         "fuzzy": fuzzy,
+        "fuzzy_maxdist": fuzzy_maxdist,
         "highlight": highlight,
     }
     if translation is not None:
