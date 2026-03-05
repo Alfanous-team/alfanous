@@ -128,10 +128,25 @@ class QSearcher:
             elif len(filter_queries) > 1:
                 filter_query = wquery.And(filter_queries)
         
-        results = searcher.search(q=query, limit=limit, sortedby=QSort(sortedby), reverse=reverse, groupedby=groupedby, filter=filter_query)
+        results = searcher.search(q=query, limit=limit, sortedby=QSort(sortedby), reverse=reverse, groupedby=groupedby, filter=filter_query, terms=fuzzy)
 
-        terms = query.all_terms()
-
+        if fuzzy:
+            # Use matched_terms() to capture the actual index terms that were
+            # hit, including all fuzzy variations expanded by FuzzyTerm.
+            # Whoosh returns term texts as bytes; decode to unicode strings so
+            # downstream code (highlighting, term stats) can handle them.
+            # matched_terms() returns None when terms=True was not passed, and
+            # an empty set when there are no results.
+            raw_matched = results.matched_terms()
+            if raw_matched is not None and raw_matched:
+                terms = frozenset(
+                    (fieldname, text.decode("utf-8") if isinstance(text, bytes) else text)
+                    for fieldname, text in raw_matched
+                )
+            else:
+                terms = query.all_terms()
+        else:
+            terms = query.all_terms()
 
         return results, terms, searcher
 

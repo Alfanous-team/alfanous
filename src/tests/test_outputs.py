@@ -1162,3 +1162,126 @@ def test_view_invalid_falls_back_to_custom():
     keys_invalid = set(list(result_invalid["search"]["ayas"].values())[0].keys())
     keys_custom = set(list(result_custom["search"]["ayas"].values())[0].keys())
     assert keys_invalid == keys_custom
+
+
+def test_fuzzy_search_highlights_variations():
+    """Fuzzy search should highlight variation words (not just the exact query term).
+
+    When fuzzy=True, Levenshtein-distance matching on 'aya_ac' expands the
+    query to include related forms.  For example, searching for كتاب should
+    also match and highlight كتابه (his book), كتابا (a book), كتابك
+    (your book), and كتب (books).  Before the fix, only the exact query
+    word كتاب was in the highlight terms list, so these variant forms were
+    returned in results but not visually highlighted.
+    """
+    from alfanous.text_processing import QArabicSymbolsFilter
+    _strip = QArabicSymbolsFilter(shaping=False, tashkil=True, spellerrors=False, hamza=False).normalize_all
+
+    search_flags = {
+        "action": "search",
+        "query": "كتاب",
+        "fuzzy": True,
+        "highlight": "css",
+        "perpage": 300,
+    }
+    results = RAWoutput.do(search_flags)
+    assert results["error"]["code"] == 0
+
+    # Fuzzy search must return more results than non-fuzzy (includes variations)
+    non_fuzzy_flags = {**search_flags, "fuzzy": False}
+    non_fuzzy_results = RAWoutput.do(non_fuzzy_flags)
+    assert results["search"]["interval"]["total"] > non_fuzzy_results["search"]["interval"]["total"], (
+        "Fuzzy search should return more results than exact search"
+    )
+
+    highlighted_variation_found = False
+    for aya_data in results["search"]["ayas"].values():
+        text = aya_data["aya"]["text"]
+        if "<span" not in text:
+            continue
+        # Get all highlighted spans
+        import re as _re
+        spans = _re.findall(r"<span[^>]*>(.*?)</span>", text)
+        for span in spans:
+            # Strip tashkeel to get the base unvocalized form using the
+            # project's own Arabic normalization utility
+            stripped = _strip(span)
+            # A "variation" is a highlighted word that is NOT the exact query term
+            if stripped != "كتاب":
+                highlighted_variation_found = True
+                break
+        if highlighted_variation_found:
+            break
+
+    assert highlighted_variation_found, (
+        "Fuzzy search must highlight variation words (e.g. كتابه، كتابا، كتب) "
+        "in addition to the exact query term كتاب"
+    )
+
+def test_fuzzy_search_word_info_includes_variations():
+    """Fuzzy search word_info should include a non-empty 'variations' list.
+
+    When fuzzy=True and word_info=True, each word in words.individual must
+    expose the fuzzy-matched variation terms via the 'variations' key.
+    """
+    search_flags = {
+        "action": "search",
+        "query": "كتاب",
+        "fuzzy": True,
+        "word_info": True,
+        "highlight": "none",
+    }
+    results = RAWoutput.do(search_flags)
+    assert results["error"]["code"] == 0
+
+    words_individual = results["search"]["words"]["individual"]
+    assert words_individual, "words.individual must not be empty"
+
+    for word_data in words_individual.values():
+        assert "variations" in word_data, (
+            "words.individual entries must include 'variations' when fuzzy=True"
+        )
+        assert "nb_variations" in word_data, (
+            "words.individual entries must include 'nb_variations' when fuzzy=True"
+        )
+        assert isinstance(word_data["variations"], list)
+        assert word_data["nb_variations"] == len(word_data["variations"])
+
+    # For كتاب with fuzzy, we expect variations like كتابا، كتابه، كتب, etc.
+    first_word = words_individual[1]
+    assert first_word["nb_variations"] > 0, (
+        "Fuzzy search for كتاب must return at least one variation term"
+    )
+    assert "كتاب" in first_word["variations"], (
+        "The query term itself should appear in the variations list"
+    )
+
+
+def test_non_fuzzy_search_variations_is_empty():
+    """Non-fuzzy search must return empty variations list in word_info."""
+    search_flags = {
+        "action": "search",
+        "query": "الحمد",
+        "fuzzy": False,
+        "word_info": True,
+        "highlight": "none",
+    }
+    results = RAWoutput.do(search_flags)
+    assert results["error"]["code"] == 0
+
+    words_individual = results["search"]["words"]["individual"]
+    assert words_individual, "words.individual must not be empty"
+
+    for word_data in words_individual.values():
+        assert "variations" in word_data, (
+            "words.individual entries must always include 'variations' key"
+        )
+        assert "nb_variations" in word_data, (
+            "words.individual entries must always include 'nb_variations' key"
+        )
+        assert word_data["variations"] == [], (
+            "Non-fuzzy search must have empty variations list"
+        )
+        assert word_data["nb_variations"] == 0, (
+            "Non-fuzzy search must have nb_variations == 0"
+        )
