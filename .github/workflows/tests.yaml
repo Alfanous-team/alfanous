@@ -15,7 +15,7 @@ jobs:
         python-version: ${{ matrix.python-version }}
     - name: Install dependencies
       run: |
-        pip install pyparsing pytest whoosh
+        pip install pyparsing pytest whoosh pystemmer
     - name: Install web API dependencies
       run: |
         pip install fastapi httpx pydantic

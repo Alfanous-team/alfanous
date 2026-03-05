@@ -52,7 +52,7 @@ class QReader:
             yield tuple(lst)
 
     def autocomplete(self, word):
-        return [x.decode('utf-8') for x in self.reader.expand_prefix('aya', word)]
+        return [x.decode('utf-8') for x in self.reader.expand_prefix('aya_ac', word)]
 
 
 class QSearcher:
@@ -61,10 +61,21 @@ class QSearcher:
     def __init__(self, docindex, qparser):
         self._searcher = docindex.get_index().searcher
         self._qparser = qparser
+        self._schema = docindex.get_schema()
 
-    def search(self, querystr, limit=QURAN_TOTAL_VERSES, sortedby="score", reverse=False, facets=None, filter_dict=None):
+    def search(self, querystr, limit=QURAN_TOTAL_VERSES, sortedby="score", reverse=False, facets=None, filter_dict=None, fuzzy=False):
         searcher = self._searcher(weighting=QScore())
         query = self._qparser.parse(querystr)
+
+        if fuzzy:
+            # Also search the normalised/stemmed 'aya' field so that
+            # stop-word removal, synonym expansion and stemming applied at
+            # index time can broaden the result set.
+            from whoosh.qparser import QueryParser
+            from whoosh.query import Or
+            aya_parser = QueryParser("aya", schema=self._schema)
+            aya_query = aya_parser.parse(querystr)
+            query = Or([query, aya_query])
         
         # Prepare facets if requested
         groupedby = None

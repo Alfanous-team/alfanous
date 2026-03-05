@@ -608,7 +608,7 @@ class Raw:
 
         # Search
         SE = self.QSE
-        res, termz, searcher = SE.search_all(query, limit=self._defaults["results_limit"]["aya"], sortedby=sortedby, facets=facets_list, filter_dict=filter_dict)
+        res, termz, searcher = SE.search_all(query, limit=self._defaults["results_limit"]["aya"], sortedby=sortedby, facets=facets_list, filter_dict=filter_dict, fuzzy=fuzzy)
         terms = [term[1] for term in list(termz)[:self._defaults["maxkeywords"]]]
         terms_uthmani = map(STANDARD2UTHMANI, terms)
         # pagination

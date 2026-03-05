@@ -121,13 +121,67 @@ Common parameters for `api.do()` with `action="search"`:
 * `vocalized` (bool): Include Arabic vocalization (default: True)
 * `translation` (str): Translation ID to include
 * `recitation` (str): Recitation ID to include (1-30, default: "1")
-* `fuzzy` (bool): Enable fuzzy search (default: False)
+* `fuzzy` (bool): Enable fuzzy search — searches both `aya_` (exact) and `aya` (normalised/stemmed) fields (default: False). See [Exact Search vs Fuzzy Search](#exact-search-vs-fuzzy-search).
 * `facets` (str): Comma-separated list of fields for faceted search
 * `filter` (dict): Filter results by field values
 
 For a complete list of parameters and options, see the [detailed documentation](#advanced-features).
 
 ### Advanced Features
+
+#### Exact Search vs Fuzzy Search
+
+Alfanous provides two complementary search modes that control which index fields are queried.
+
+##### Exact Search (default — `fuzzy=False`)
+
+When fuzzy search is **off** (the default), queries run against the **`aya_`** field, which stores the fully-vocalized Quranic text with diacritical marks (tashkeel) preserved. This mode is designed for precise, statistical matching:
+
+* Diacritics in the query are significant — `مَلِكِ` and `مَالِكِ` are treated as different words.
+* No stop-word removal, synonym expansion, or stemming is applied to the query.
+* Ideal when you need exact phrase matches, reproducible result counts, or statistical analysis.
+
+```python
+# Default exact search — only the vocalized aya_ field is used
+>>> api.search(u"الله")
+>>> api.search(u"الله", fuzzy=False)
+
+# Phrase match with full diacritics
+>>> api.search(u'"الْحَمْدُ لِلَّهِ"')
+```
+
+##### Fuzzy Search (`fuzzy=True`)
+
+When fuzzy search is **on**, queries run against **both** the `aya_` field (exact matches) **and** the `aya` field (a separate index built for broad, forgiving search). At index time the `aya` field is processed through a richer pipeline:
+
+1. **Normalisation** — shaped letters, tatweel, hamza variants and common spelling errors are unified.
+2. **Stop-word removal** — high-frequency function words (e.g. مِنْ، فِي، مَا) are filtered out so they do not dilute result relevance.
+3. **Synonym expansion** — each token is stored together with its synonyms, so a query for one word automatically matches equivalent words.
+4. **Arabic stemming** — words are reduced to their stem using the [Snowball Arabic stemmer](https://snowballstem.org/) (via `pystemmer`), so different morphological forms of the same root match each other.
+
+No heavy operations are performed on the query string at search time; all the linguistic enrichment lives in the index.
+
+```python
+# Fuzzy search — aya_ (exact) + aya (normalised/stemmed) fields are both searched
+>>> api.search(u"الكتاب", fuzzy=True)
+
+# Via the unified interface
+>>> api.do({
+...     "action": "search",
+...     "query": u"مؤمن",
+...     "fuzzy": True,
+...     "page": 1,
+...     "perpage": 10
+... })
+```
+
+Fuzzy mode is particularly useful when:
+
+* The user does not know the exact vocalized form of a word.
+* You want morphologically related words to appear in the same result set (e.g. searching *كتب* also surfaces *كتاب*, *كاتب*, *مكتوب*).
+* You want synonym-aware retrieval without writing explicit OR queries.
+
+> **Note:** `pystemmer` must be installed for stemming to take effect (`pip install pystemmer`). If the package is absent the stem filter degrades silently to a no-op, leaving normalisation and stop-word removal still active.
 
 #### Query Syntax
 
@@ -341,7 +395,7 @@ $ git clone https://github.com/Alfanous-team/alfanous.git
 $ cd alfanous
 
 # Install dependencies
-$ pip install pyparsing whoosh pytest
+$ pip install pyparsing whoosh pystemmer pytest
 
 # Build indexes (required for development)
 $ make build

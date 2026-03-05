@@ -51,9 +51,24 @@
     "unique": null,
     "source": "tanzil.info",
     "search_name": "aya",
-    "analyzer": "QStandardAnalyzer",
+    "analyzer": "QFuzzyAnalyzer",
     "spelling": true,
     "field_boost": "2.0"
+  },
+  {
+    "id": 41,
+    "name": "standard",
+    "name_arabic": "آية_إكمال",
+    "table_name": "aya",
+    "comment": "نص الآية بالخط الاملائي و غير مشكول — للإكمال التلقائي واقتراح الإملاء (بدون جذع أو تصفية)",
+    "type": "TEXT",
+    "stored": false,
+    "is_spellchecked": null,
+    "unique": null,
+    "source": "tanzil.info",
+    "search_name": "aya_ac",
+    "analyzer": "QStandardAnalyzer",
+    "spelling": true
   },
   {
     "id": 5,

@@ -35,7 +35,7 @@ class BasicSearchEngine:
 
     # end  __init__
 
-    def search_all(self, querystr, limit=QURAN_TOTAL_VERSES, sortedby="score", reverse=False, facets=None, filter_dict=None):
+    def search_all(self, querystr, limit=QURAN_TOTAL_VERSES, sortedby="score", reverse=False, facets=None, filter_dict=None, fuzzy=False):
         """
         Perform a search in the index.
         
@@ -45,9 +45,10 @@ class BasicSearchEngine:
         @param reverse: Whether to reverse the sort order
         @param facets: Facets to group results by
         @param filter_dict: Filters to apply to the search
+        @param fuzzy: When True, also search the normalised/stemmed 'aya' field
         @return: Tuple of (results, term_stats, searcher)
         """
-        results, terms, searcher = self._searcher.search(querystr, limit=limit, sortedby=sortedby, reverse=reverse, facets=facets, filter_dict=filter_dict)
+        results, terms, searcher = self._searcher.search(querystr, limit=limit, sortedby=sortedby, reverse=reverse, facets=facets, filter_dict=filter_dict, fuzzy=fuzzy)
         return results, list(self._reader.term_stats(terms)), searcher
 
     def most_frequent_words(self, nb, fieldname):
@@ -127,7 +128,7 @@ def QuranicSearchEngine(indexpath="../indexes/main/",
                         qparser=QuranicParser):
     return BasicSearchEngine(qdocindex=QseDocIndex(indexpath)
                              , query_parser=qparser
-                             , main_field="aya"
+                             , main_field="aya_"
                              , otherfields=[]
                              , qsearcher=QSearcher
                              , qreader=QReader
