@@ -71,7 +71,7 @@ setup(
 
     packages=['alfanous', 'alfanous.Support', 'alfanous.Support.pyarabic'],
 
-    install_requires=['pyparsing', 'whoosh'],
+    install_requires=['pyparsing', 'whoosh', 'pystemmer'],
 
     author="Assem Chelli",
     author_email="assem.ch@gmail.com",

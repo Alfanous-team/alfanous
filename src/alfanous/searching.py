@@ -52,7 +52,7 @@ class QReader:
             yield tuple(lst)
 
     def autocomplete(self, word):
-        return [x.decode('utf-8') for x in self.reader.expand_prefix('aya', word)]
+        return [x.decode('utf-8') for x in self.reader.expand_prefix('aya_ac', word)]
 
 
 class QSearcher:
@@ -61,10 +61,47 @@ class QSearcher:
     def __init__(self, docindex, qparser):
         self._searcher = docindex.get_index().searcher
         self._qparser = qparser
+        self._schema = docindex.get_schema()
 
-    def search(self, querystr, limit=QURAN_TOTAL_VERSES, sortedby="score", reverse=False, facets=None, filter_dict=None):
+    def search(self, querystr, limit=QURAN_TOTAL_VERSES, sortedby="score", reverse=False, facets=None, filter_dict=None, fuzzy=False, fuzzy_maxdist=1):
         searcher = self._searcher(weighting=QScore())
         query = self._qparser.parse(querystr)
+
+        if fuzzy:
+            from whoosh.qparser import QueryParser
+            from whoosh.query import Or, FuzzyTerm
+
+            # Strategy 2: Search the normalised/stemmed 'aya_fuzzy' field (fed
+            # from the same vocalized source text as aya_, processed at index
+            # time: diacritics stripped → stop words removed → synonyms expanded
+            # → Snowball Arabic stem).  This broadens the result set without any
+            # query-time CPU cost.
+            aya_fuzzy_parser = QueryParser("aya_fuzzy", schema=self._schema)
+            aya_fuzzy_query = aya_fuzzy_parser.parse(querystr)
+
+            # Strategy 3: Levenshtein distance matching on 'aya_ac'
+            # (unvocalized, non-stemmed) to handle spelling variants and typos.
+            # Only applied to Arabic-script terms; structured/numeric terms are
+            # skipped.
+            # prefixlength=1 keeps the first character fixed so that expansion
+            # is bounded to plausible variants (e.g. "الكتاب" → "الكتابة") rather
+            # than unrelated words that happen to be edit-close.  This trades a
+            # small amount of recall for a large gain in precision and scan
+            # performance.
+            levenshtein_subqueries = [
+                FuzzyTerm("aya_ac", term, maxdist=fuzzy_maxdist, prefixlength=1)
+                for fieldname, term in query.all_terms()
+                if term and any('\u0600' <= c <= '\u06FF' for c in term)
+            ]
+
+            parts = [query, aya_fuzzy_query]
+            if levenshtein_subqueries:
+                parts.append(
+                    Or(levenshtein_subqueries)
+                    if len(levenshtein_subqueries) > 1
+                    else levenshtein_subqueries[0]
+                )
+            query = Or(parts)
         
         # Prepare facets if requested
         groupedby = None
@@ -103,7 +140,8 @@ class QSearcher:
         d = {}
         searcher = self._searcher(weighting=QScore())
         try:
-            corrector = searcher.corrector(self._qparser.fieldname)
+            # Use aya_ac: unvocalized, non-stemmed field with spelling index
+            corrector = searcher.corrector("aya_ac")
             for mistyped_word in querystr.split():
                 d[mistyped_word] = corrector.suggest(mistyped_word, limit=3, maxdist=1, prefix=False)
         finally:
