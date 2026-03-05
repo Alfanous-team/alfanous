@@ -135,24 +135,61 @@ def QuranicSearchEngine(indexpath="../indexes/main/",
                              )
 
 # TODO merge into main
-def TraductionSearchEngine(indexpath="../indexes/extend/", qparser=QueryParser, lang=None):
+def TraductionSearchEngine(indexpath="../indexes/extend/", qparser=None, lang=None):
     """
     Build a search engine for Quran translations.
 
+    By default the engine searches across **all** ``text*`` fields present in
+    the index (``text``, ``text_en``, ``text_fr``, ``text_ar``, …) using a
+    :func:`~whoosh.qparser.MultifieldParser`.  This ensures that every
+    language-specific stemmed field contributes to recall.
+
     When *lang* is supplied (ISO 639-1 code, e.g. ``'en'``, ``'fr'``), the
-    engine searches the language-specific stemmed field ``text_<lang>`` if it
-    exists in the index schema, falling back to the generic ``text`` field
-    otherwise.  Omitting *lang* always uses the generic ``text`` field.
+    ``text_<lang>`` field receives a 2× relevance boost while still searching
+    all other ``text*`` fields.
+
+    *qparser* can be used to override the default ``MultifieldParser``-based
+    factory when a custom single-field parser is required (e.g. during testing).
     """
+    from whoosh.qparser import MultifieldParser as _MultifieldParser
+    from whoosh import qparser as _qparser
+
     docindex = ExtDocIndex(indexpath)
-    main_field = "text"
-    if lang and docindex.OK:
-        candidate = f"text_{lang}"
-        if candidate in docindex.get_schema().names():
-            main_field = candidate
+
+    # Collect all text* field names from the live index schema.
+    # Fall back to ["text"] when the index is unavailable.
+    text_fields = ["text"]
+    if docindex.OK:
+        schema_names = docindex.get_schema().names()
+        all_text_fields = sorted(
+            f for f in schema_names if f == "text" or f.startswith("text_")
+        )
+        if all_text_fields:
+            text_fields = all_text_fields
+
+    # Optional per-language relevance boost
+    fieldboosts = None
+    if lang:
+        lang_field = f"text_{lang}"
+        if lang_field in text_fields:
+            fieldboosts = {lang_field: 2.0}
+
+    def _parser_factory(schema, mainfield, otherfields):
+        # mainfield/otherfields are passed by BasicSearchEngine but intentionally
+        # ignored here: MultifieldParser already covers all text* fields via the
+        # captured text_fields list, so the outer "mainfield" concept is redundant.
+        return _MultifieldParser(
+            text_fields, schema, fieldboosts=fieldboosts, group=_qparser.OrGroup
+        )
+
+    effective_parser = qparser if qparser is not None else _parser_factory
+
+    # text_fields[0] ("text") is passed as main_field only to satisfy
+    # BasicSearchEngine's interface; the actual search scope is determined by
+    # _parser_factory using all text* fields via MultifieldParser.
     return BasicSearchEngine(qdocindex=docindex
-                             , query_parser=qparser
-                             , main_field=main_field
+                             , query_parser=effective_parser
+                             , main_field=text_fields[0]
                              , otherfields=[]
                              , qsearcher=QSearcher
                              , qreader=QReader
