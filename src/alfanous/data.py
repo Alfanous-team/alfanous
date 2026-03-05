@@ -106,6 +106,26 @@ def WSE(path=paths.WSE_INDEX):
     return WordSearchEngine(path)
 
 
+@lru_cache(maxsize=1)
+def quran_unvocalized_words(path=paths.WORD_FILE):
+    """Return the set of unvocalized words appearing in the Quran.
+
+    Loads ``word.json`` and extracts the ``word_`` field (unvocalized form)
+    for every entry.  The result is cached as a frozenset for O(1) lookup.
+
+    :param path: Path to the word JSON file
+    :return: frozenset of unvocalized Quranic word strings
+    """
+    try:
+        with open(path, encoding="utf-8") as f:
+            words = json.load(f)
+        return frozenset(w["word_"] for w in words if w.get("word_"))
+    except (IOError, json.JSONDecodeError, KeyError):
+        # Return an empty frozenset on any error; callers should treat an
+        # empty set as "filtering unavailable" and fall back to all candidates.
+        return frozenset()
+
+
 try:
     with open(paths.ARABIC_NAMES_FILE) as f:
         arabic_to_english_fields = json.load(f)

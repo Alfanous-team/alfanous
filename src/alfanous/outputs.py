@@ -4,7 +4,7 @@ import re
 from alfanous.text_processing import QArabicSymbolsFilter
 from alfanous.data import *
 from alfanous.constants import QURAN_TOTAL_VERSES
-from alfanous.romanization import transliterate
+from alfanous.romanization import transliterate, arabizi_to_arabic_list, filter_candidates_by_wordset
 from alfanous.misc import locate, find, filter_doubles
 from whoosh import query as wquery
 from whoosh.sorting import Facets
@@ -588,7 +588,23 @@ class Raw:
         query = query.replace("\\", "")
 
         if ":" not in query:
-            query = transliterate("buckwalter", query, ignore="'_\"%*?#~[]{}:>+-|")
+            # If the query contains no Arabic characters, treat it as Arabizi
+            # (Latin/digit-based Arabic chat alphabet) and expand to all potential
+            # Arabic candidates (OR semantics via space-separated terms).
+            if not re.search(r'[\u0600-\u06FF]', query):
+                _ignore = "'_\"%*?#~[]{}:>+-|"
+                candidates = arabizi_to_arabic_list(query, ignore=_ignore)
+                # Filter candidates to those that appear as actual Quranic words.
+                # Each candidate may be a multi-word string (space-separated); a
+                # candidate is accepted when every individual token is a known
+                # unvocalized Quranic word.  If no candidates pass the filter,
+                # fall back to the full unfiltered list so the search still runs.
+                # quran_unvocalized_words() is @lru_cache so this is O(1) after
+                # the first call.
+                _qwords = quran_unvocalized_words()
+                if _qwords:
+                    candidates = filter_candidates_by_wordset(candidates, _qwords)
+                query = " ".join(candidates) if candidates else query
 
         # Search
         SE = self.QSE
@@ -652,12 +668,26 @@ class Raw:
                 pass
             return count
 
+        def _count_ayas_in_results(field, term_text):
+            """Count unique ayas (documents) containing a term within the search result documents."""
+            count = 0
+            try:
+                m = _index_reader.postings(field, term_text)
+                while m.is_active():
+                    if m.id() in _result_docnums:
+                        count += 1
+                    m.next()
+            except Exception:
+                pass
+            return count
+
         # Words & Annotations
         words_output = {"individual": {}}
         if word_info:
             matches = 0
             matches_in_results = 0
             docs = 0
+            docs_in_results = 0
             nb_vocalizations_globale = 0
             cpt = 1
             annotation_word_query = "( 0 "
@@ -668,6 +698,8 @@ class Raw:
                     docs += term[3]
                     term_matches_in_results = _count_term_in_results(term[0], term[1])
                     matches_in_results += term_matches_in_results
+                    term_ayas_in_results = _count_ayas_in_results(term[0], term[1])
+                    docs_in_results += term_ayas_in_results
                     if term[0] == "aya_":
                         annotation_word_query += " OR word:%s " % term[1]
                     else:  # if aya
@@ -700,7 +732,8 @@ class Raw:
                                                                                                              "romanization"] else None,
                         "nb_matches_overall": int(term[2]) if term[2] else 0,
                         "nb_matches": term_matches_in_results,
-                        "nb_ayas": term[3],
+                        "nb_ayas_overall": term[3],
+                        "nb_ayas": term_ayas_in_results,
                         "nb_vocalizations": len(vocalizations) if word_vocalizations else 0,  # unneeded
                         "vocalizations": vocalizations if word_vocalizations else [],
                         "nb_synonyms": len(synonyms) if word_synonyms else 0,  # unneeded
@@ -716,6 +749,8 @@ class Raw:
             annotation_word_query += " ) "
             words_output["global"] = {"nb_words": cpt - 1, "nb_matches_overall": int(matches),
                                       "nb_matches": matches_in_results,
+                                      "nb_ayas_overall": docs,
+                                      "nb_ayas": docs_in_results,
                                       "nb_vocalizations": nb_vocalizations_globale}
         output["words"] = words_output
         # Magic_loop to built queries of Adjacents,translations and annotations in the same time
@@ -735,7 +770,7 @@ class Raw:
             annotation_aya_query += " )"
 
         if prev_aya or next_aya:
-            adja_res, searcher = self.QSE.find_extended(adja_query, "gid")
+            adja_res, adja_searcher = self.QSE.find_extended(adja_query, "gid")
             adja_ayas = {0:
                              {"aya_": "----",
                               "uth_": "----",
@@ -747,14 +782,16 @@ class Raw:
                 adja_ayas[adja["gid"]] = {"aya_": adja["aya_"], "uth_": adja["uth_"], "aya_id": adja["aya_id"],
                                           "sura": adja["sura"], "sura_arabic": adja["sura_arabic"]}
                 extend_runtime += adja_res.runtime
+            adja_searcher.close()
 
         # translations
         if translation:
-            trad_res, searcher = self.TSE.find_extended(trad_query, "gid")
+            trad_res, trad_searcher = self.TSE.find_extended(trad_query, "gid")
             extend_runtime += trad_res.runtime
             trad_text = {}
             for tr in trad_res:
                 trad_text[tr["gid"]] = tr["text"]
+            trad_searcher.close()
         output["runtime"] = round(extend_runtime, 5)
         output["interval"] = {
             "start": start,

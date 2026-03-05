@@ -7,7 +7,7 @@ Alfanous is a search engine API for the Holy Qur'an that provides simple and adv
 - **Language**: Python 3.8+
 - **Core Dependencies**: pyparsing, whoosh
 - **Testing Framework**: pytest
-- **License**: AGPL v3 or later
+- **License**: LGPL v3 or later
 
 ## Project Structure
 ```

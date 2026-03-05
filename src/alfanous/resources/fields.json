@@ -85,20 +85,6 @@
     "field_boost": "2.0"
   },
   {
-    "id": 7,
-    "name": "uthmani_min",
-    "name_arabic": "عثماني ",
-    "table_name": "aya",
-    "comment": "نص الآية بالخط الاملائي و غير مشكول",
-    "type": "TEXT",
-    "stored": true,
-    "is_spellchecked": null,
-    "unique": null,
-    "source": "tanzil.info",
-    "search_name": "uth",
-    "analyzer": "QUthmaniAnalyzer"
-  },
-  {
     "id": 8,
     "name": "chapter",
     "name_arabic": "فصل",

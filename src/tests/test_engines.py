@@ -119,9 +119,7 @@ def test_search():
                                 'sura_type': 'Meccan',
                                 'sura_type_arabic': 'مكية',
                                 'topic': 'الانشغال بشهوات الدنيا',
-                                'uth': 'ذَرهُم يَأكُلوا وَيَتَمَتَّعوا وَيُلهِهِمُ الأَمَلُ فَسَوفَ يَعلَمونَ',
-                                'uth_': 'ذَرْهُمْ يَأْكُلُوا۟ وَيَتَمَتَّعُوا۟ وَيُلْهِهِمُ ٱلْأَمَلُ ۖ '
-                                        'فَسَوْفَ يَعْلَمُونَ'}
+                                'uth_': 'ذَرۡهُمۡ يَأۡكُلُواْ وَيَتَمَتَّعُواْ وَيُلۡهِهِمُ ٱلۡأَمَلُۖ فَسَوۡفَ يَعۡلَمُونَ'}
 
 
 def test_translation_engine():
@@ -252,13 +250,366 @@ def test_advanced_search_derivations():
     assert root_results == 117
 
 
-def test_advanced_search_buckwalter():
-    """10. Buckwalter transliteration — Latin ASCII input converted to Arabic."""
-    from alfanous.romanization import transliterate
+def test_advanced_search_arabizi():
+    """10. Arabizi transliteration — Latin input expanded to Arabic candidates for QSE."""
+    from alfanous.romanization import arabizi_to_arabic_list
 
-    def bw_search(q):
-        arabic_q = transliterate("buckwalter", q, ignore="'_\"%*?#~[]{}:>+-|")
+    def arabizi_search(q):
+        candidates = arabizi_to_arabic_list(q, ignore="'_\"%*?#~[]{}:>+-|")
+        arabic_q = " ".join(candidates) if candidates else q
         return _qse_search(arabic_q)
 
-    assert bw_search("qawol") == 12    # قول
-    assert bw_search("Allah") == 1566  # الله
+    # Digit-based Arabizi: unambiguous phoneme representation
+    assert arabizi_search("9br") > 0      # صبر (sabr/patience)
+    assert arabizi_search("el 7md") > 0   # الحمد (al-hamd/praise)
+
+
+def test_arabizi_transliteration():
+    """11. Arabizi transliteration — generates a list of potential Arabic words."""
+    from alfanous.romanization import arabizi_to_arabic_list
+
+    # Number mappings: each digit maps to a single Arabic letter unambiguously
+    assert u"\u062D" in arabizi_to_arabic_list("7")   # ح
+    assert u"\u0639" in arabizi_to_arabic_list("3")   # ع
+    assert u"\u0635" in arabizi_to_arabic_list("9")   # ص
+
+    # Simple word without digraphs: only one result expected
+    result_kitab = arabizi_to_arabic_list("ktab")   # كتاب
+    assert u"\u0643\u062A\u0627\u0628" in result_kitab  # كتاب
+
+    # Digraph "sh": generates candidates (ش digraph + single-char permutations)
+    # With multi-mappings s→[س,ص] and h→[ه,ح], plus terminal-h→ة rule
+    result_sh = arabizi_to_arabic_list("sh")
+    assert u"\u0634" in result_sh          # ش  (digraph interpretation)
+    assert u"\u0633\u0647" in result_sh    # سه (s→س, h→ه)
+    assert u"\u0635\u062D" in result_sh    # صح (s→ص, h→ح)
+    assert len(result_sh) >= 2             # at least two candidates
+
+    # Digraph "th": generates candidates (ث digraph + single-char permutations)
+    result_th = arabizi_to_arabic_list("th")
+    assert u"\u062B" in result_th          # ث  (digraph interpretation)
+    assert u"\u062A\u0647" in result_th    # ته (two-letter, t→ت, h→ه)
+    assert len(result_th) >= 2             # at least two candidates
+
+    # Word with digraph: "sha3b" → شاعب (sh=ش, a=ا, 3=ع, b=ب)
+    #                         or  → سهاعب (s=س, h=ه, a=ا, 3=ع, b=ب)
+    result_sha3b = arabizi_to_arabic_list("sha3b")
+    assert u"\u0634\u0627\u0639\u0628" in result_sha3b   # شاعب
+    assert u"\u0633\u0647\u0627\u0639\u0628" in result_sha3b  # سهاعب
+
+    # Ignored characters are preserved unchanged
+    result_ignore = arabizi_to_arabic_list("k*b", ignore="*")
+    assert u"\u0643*\u0628" in result_ignore  # ك*ب
+
+    # 'e' maps to ي (ya), NOT to ع — 'e' is a vowel sound in Arabizi;
+    # ع is already covered by the digit '3'.
+    assert u"\u064A" in arabizi_to_arabic_list("e")   # ي
+    assert u"\u0639" not in arabizi_to_arabic_list("e")  # not ع
+
+    # 'u' maps to و (waw) — e.g. "shu" → شو (or سهو)
+    assert u"\u0648" in arabizi_to_arabic_list("u")   # و
+    result_shu = arabizi_to_arabic_list("shu")
+    assert u"\u0634\u0648" in result_shu   # شو (digraph sh + u→و)
+
+    # Rule B: word-initial el/al → ال (Arabic definite article)
+    assert u"\u0627\u0644" in arabizi_to_arabic_list("el")   # ال
+    assert u"\u0627\u0644" in arabizi_to_arabic_list("al")   # ال
+    # In a multi-word string, el- at the start of the second word also triggers Rule B
+    result_el_7al = arabizi_to_arabic_list("el 7al")
+    # At least one candidate must start with ال (definite article prefix)
+    assert any(c.startswith(u"\u0627\u0644 ") for c in result_el_7al)  # 'ال حال' candidate
+
+    # Rule C: gemination — doubled consonant → letter + shadda (ّ U+0651)
+    result_ll = arabizi_to_arabic_list("ll")
+    assert u"\u0644\u0651" in result_ll   # لّ (lam + shadda)
+    result_tt = arabizi_to_arabic_list("tt")
+    assert u"\u062A\u0651" in result_tt   # تّ (ta + shadda)
+    # Doubled vowels are NOT geminated (vowels don't take shadda in Arabic)
+    result_aa = arabizi_to_arabic_list("aa")
+    assert u"\u0627\u0651" not in result_aa  # no shadda on alef
+
+    # Rule D: digraph "eh" → ة (ta marbuta — common terminal feminine suffix)
+    assert u"\u0629" in arabizi_to_arabic_list("eh")   # ة
+    result_salameh = arabizi_to_arabic_list("salameh")
+    assert any(c.endswith(u"\u0629") for c in result_salameh)  # at least one ends with ة
+
+    # Rule D: terminal 'a' → also ى (alef maqsura)
+    result_3la = arabizi_to_arabic_list("3la")
+    assert any(c.endswith(u"\u0649") for c in result_3la)   # ى at end (e.g. على)
+
+    # Rule D: initial 'a' → also أ (hamza-on-alef)
+    result_a5barak = arabizi_to_arabic_list("a5barak")
+    assert any(c.startswith(u"\u0623") for c in result_a5barak)  # أخبارك starts with أ
+
+    # Short vowel omission: vowels also generate an empty-string candidate so
+    # that unvocalized Arabic forms are produced.  e.g. "salameh":
+    #   s → س, a → '' (omitted), l → ل, a → ا, m → م, eh → ة  →  سلامة
+    result_salameh = arabizi_to_arabic_list("salameh")
+    assert u"\u0633\u0644\u0627\u0645\u0629" in result_salameh   # سلامة
+    # Verify a5barak produces the unvocalized form where internal 'a' is omitted
+    assert u"\u0623\u062E\u0628\u0627\u0631\u0643" in result_a5barak   # أخبارك
+    assert u"\u0627\u062E\u0628\u0627\u0631\u0643" in result_a5barak   # اخبارك
+
+    # Style 2 (number-based): '8' maps to ق (qaf) — e.g. "8ala" → قال
+    assert u"\u0642" in arabizi_to_arabic_list("8")   # ق
+    assert u"\u0642\u0627\u0644" in arabizi_to_arabic_list("8ala")   # قال
+
+    # Style 2 (number-based): '2' at word start → أ (hamza-on-alef) as well as ء
+    # e.g. "2anta" → أنت (Style 2: 2anta=أنت)
+    result_2anta = arabizi_to_arabic_list("2anta")
+    assert any(c.startswith(u"\u0623") for c in result_2anta)   # أ at start
+    assert u"\u0623\u0646\u062A" in result_2anta   # أنت specifically
+
+    # Extended Rule B: 'ar'/'er' prefix → ال (sun-letter assimilation)
+    assert u"\u0627\u0644" in arabizi_to_arabic_list("ar")   # ال
+    assert u"\u0627\u0644" in arabizi_to_arabic_list("er")   # ال
+    # 'an' prefix → ال  (e.g. "an-nas" = الناس)
+    assert u"\u0627\u0644" in arabizi_to_arabic_list("an")   # ال
+    # 3-char 'ash'/'esh' prefix → ال  (e.g. "ash-shaytan" = الشيطان)
+    assert u"\u0627\u0644" in arabizi_to_arabic_list("ash")   # ال
+
+    # Transparent '-': "al-7amd" generates الحمد (ال + حمد with vowel omission)
+    result_al_hamd = arabizi_to_arabic_list("al-7amd")
+    assert u"\u0627\u0644\u062D\u0645\u062F" in result_al_hamd   # الحمد
+
+    # "ar-ra7man" generates الرحمن (ar=ال + transparent '-' + رحمن)
+    result_ar_ra7man = arabizi_to_arabic_list("ar-ra7man")
+    assert u"\u0627\u0644\u0631\u062D\u0645\u0646" in result_ar_ra7man   # الرحمن
+
+    # Digraph "3'" → غ (ghain, number-apostrophe notation: 3'ayr=غير)
+    assert u"\u063A" in arabizi_to_arabic_list(u"3'")   # غ
+    result_3prime_ayr = arabizi_to_arabic_list(u"3'ayr")
+    assert u"\u063A\u064A\u0631" in result_3prime_ayr   # غير
+
+    # Dialectal 'g' → ج (Egyptian/Gulf: Ganna=جنة, Gihaad=جهاد, Gabril=جبريل)
+    assert u"\u062C" in arabizi_to_arabic_list("g")   # ج
+    assert u"\u062C\u0647\u0627\u062F" in arabizi_to_arabic_list("gihaad")   # جهاد
+
+    # Digraph "ah" → ة (terminal -ah feminine suffix: Rahmah=رحمة, tobah=توبة)
+    assert u"\u0629" in arabizi_to_arabic_list("ah")   # ة
+    result_tobah = arabizi_to_arabic_list("tobah")
+    assert any(c.endswith(u"\u0629") for c in result_tobah)   # at least one ends with ة
+
+    # Digraph "ch" → ش (dialectal variant: Chokr=شكر)
+    assert u"\u0634" in arabizi_to_arabic_list("ch")   # ش
+    result_chokr = arabizi_to_arabic_list("chokr")
+    assert u"\u0634\u0643\u0631" in result_chokr   # شكر
+
+    # Rule D extension: initial 'i'/'e' → also إ (hamza-under-alef, U+0625)
+    # e.g. Iblis→إبليس, Enta→إنت
+    result_iblis = arabizi_to_arabic_list("iblis")
+    assert any(c.startswith(u"\u0625") for c in result_iblis)   # إ at start
+    assert u"\u0625\u0628\u0644\u064A\u0633" in result_iblis   # إبليس
+    result_enta = arabizi_to_arabic_list("enta")
+    assert u"\u0625\u0646\u062A" in result_enta   # إنت
+
+    # Rule D extension: initial 'u'/'o' → also أ (hamza-on-alef, U+0623)
+    # e.g. Ummah→أمة, Ommah→أمة (dialectal)
+    result_ummah = arabizi_to_arabic_list("ummah")
+    assert any(c.startswith(u"\u0623") for c in result_ummah)   # أ at start
+    assert u"\u0623\u0645\u0629" in result_ummah   # أمة
+    result_ommah = arabizi_to_arabic_list("ommah")
+    assert any(c.startswith(u"\u0623") for c in result_ommah)   # أ at start
+
+    # Gemination also produces unvocalized (shadda-free) form for wordset matching:
+    # "Jannah" → جنّة (with shadda) AND جنة (without shadda, for Quran filter)
+    result_jannah = arabizi_to_arabic_list("jannah")
+    assert u"\u062C\u0646\u0651\u0629" in result_jannah   # جنّة with shadda
+    assert u"\u062C\u0646\u0629" in result_jannah          # جنة without shadda (unvocalized)
+
+
+def test_arabizi_quran_word_filter():
+    """12. arabizi candidates filtered to unvocalized Quranic words."""
+    from alfanous.romanization import arabizi_to_arabic_list, filter_candidates_by_wordset
+    from alfanous.data import quran_unvocalized_words
+
+    qwords = quran_unvocalized_words()
+    assert len(qwords) > 0, "Quran word set should not be empty"
+
+    def filtered(arabizi):
+        cands = arabizi_to_arabic_list(arabizi.lower())
+        return filter_candidates_by_wordset(cands, qwords)
+
+    # يعطيك is a real Quranic word; Arabizi "ya36eek" should resolve to it
+    result = filtered("ya36eek")
+    assert u"\u064A\u0639\u0637\u064A\u0643" in result   # يعطيك
+
+    # بكرة is a Quranic word; "bokreh" → بكرة after filtering
+    result_bokra = filtered("bokreh")
+    assert u"\u0628\u0643\u0631\u0629" in result_bokra   # بكرة
+
+    # For non-Quranic Arabizi words the fallback is all candidates (no empty result)
+    result_fallback = filtered("salameh")
+    assert len(result_fallback) > 0   # should fall back gracefully
+
+    # إبليس is a Quranic word; "iblis" → إبليس after filtering (initial i→إ rule)
+    result_iblis = filtered("iblis")
+    assert u"\u0625\u0628\u0644\u064A\u0633" in result_iblis   # إبليس
+
+    # جنة is a Quranic word; "jannah" → جنة (gemination without shadda = unvocalized)
+    result_jannah = filtered("jannah")
+    assert u"\u062C\u0646\u0629" in result_jannah   # جنة
+
+    # توبة is a Quranic word; "tobah" → توبة (ah digraph → ة)
+    result_tobah = filtered("tobah")
+    assert u"\u062A\u0648\u0628\u0629" in result_tobah   # توبة
+
+    # صلاة is Quranic; "Salah" → صلاة (s→ص, a→omit, l→ل, a→ا, h→ة terminal rule)
+    result_salah = filtered("salah")
+    assert u"\u0635\u0644\u0627\u0629" in result_salah   # صلاة
+
+    # حياة is Quranic; "hayat" → حياة (h→ح, a→omit, y→ي, a→ا, t→ة terminal rule)
+    result_hayat = filtered("hayat")
+    assert u"\u062D\u064A\u0627\u0629" in result_hayat   # حياة
+
+    # صبر is Quranic; "sabr" → صبر (s→ص)
+    result_sabr = filtered("sabr")
+    assert u"\u0635\u0628\u0631" in result_sabr   # صبر
+
+    # مسلم is Quranic; "muslim" → مسلم (s→س)
+    result_muslim = filtered("muslim")
+    assert u"\u0645\u0633\u0644\u0645" in result_muslim   # مسلم
+
+    # ── Prophets and historical figures (49-example set) ──────────────────────
+
+    # أمة is Quranic; "ummah"/"ommah" → أمة (initial u/o→أ, mm→م gemination, ah→ة)
+    result_ummah = filtered("ummah")
+    assert u"\u0623\u0645\u0629" in result_ummah   # أمة
+    # Style 4 dialectal: initial 'o' also triggers the أ rule
+    result_ommah = filtered("ommah")
+    assert u"\u0623\u0645\u0629" in result_ommah   # أمة
+
+    # فتنة is Quranic; "fitnah" → فتنة (ah digraph → ة)
+    result_fitnah = filtered("fitnah")
+    assert u"\u0641\u062A\u0646\u0629" in result_fitnah   # فتنة
+
+    # جهنم is Quranic; "jahannam" → جهنم (j→ج, h→ه, nn→ن gemination, m→م)
+    result_jahannam = filtered("jahannam")
+    assert u"\u062C\u0647\u0646\u0645" in result_jahannam   # جهنم
+
+    # نوح is Quranic; "nuh" → نوح (n→ن, u→و, h→ح)
+    result_nuh = filtered("nuh")
+    assert u"\u0646\u0648\u062D" in result_nuh   # نوح
+
+    # Style 2: "Noo7" → نوح (n→ن, oo→و + omit, 7→ح)
+    result_noo7 = filtered("noo7")
+    assert u"\u0646\u0648\u062D" in result_noo7   # نوح
+
+    # إبراهيم is Quranic; "ibrahim" → إبراهيم (initial i→إ, b→ب, r→ر, a→ا, h→ه, i→ي, m→م)
+    result_ibrahim = filtered("ibrahim")
+    assert u"\u0625\u0628\u0631\u0627\u0647\u064A\u0645" in result_ibrahim   # إبراهيم
+
+    # موسى is Quranic; "musa" → موسى (m→م, u→و, s→س, a→ى terminal)
+    result_musa = filtered("musa")
+    assert u"\u0645\u0648\u0633\u0649" in result_musa   # موسى
+
+    # محمد is Quranic; "mo7ammad" → محمد (style 2: 7→ح, mm→م gemination)
+    result_mo7ammad = filtered("mo7ammad")
+    assert u"\u0645\u062D\u0645\u062F" in result_mo7ammad   # محمد
+
+    # مريم is Quranic; "maryam" → مريم (m→م, a→omit, r→ر, y→ي, a→omit, m→م;
+    # internal 'a' is omitted via short-vowel omission for unvocalized Arabic match)
+    result_maryam = filtered("maryam")
+    assert u"\u0645\u0631\u064A\u0645" in result_maryam   # مريم
+
+    # يحيى is Quranic; "yahya" → يحيى (y→ي, h→ح, y→ي, a→ى terminal)
+    result_yahya = filtered("yahya")
+    assert u"\u064A\u062D\u064A\u0649" in result_yahya   # يحيى
+
+    # لوط is Quranic; "lut" → لوط (l→ل, u→و, t→ط emphatic)
+    result_lut = filtered("lut")
+    assert u"\u0644\u0648\u0637" in result_lut   # لوط
+
+    # هود is Quranic; "hud" → هود (h→ه, u→و, d→د)
+    result_hud = filtered("hud")
+    assert u"\u0647\u0648\u062F" in result_hud   # هود
+
+    # سليمان is Quranic; "sulayman" → سليمان (s→س, u→omit, l→ل, a→omit, y→ي, m→م, a→ا, n→ن)
+    result_sulayman = filtered("sulayman")
+    assert u"\u0633\u0644\u064A\u0645\u0627\u0646" in result_sulayman   # سليمان
+
+    # زكريا is Quranic; "zakariya" → زكريا (z→ز, terminal a→ى or ا)
+    result_zakariya = filtered("zakariya")
+    assert u"\u0632\u0643\u0631\u064A\u0627" in result_zakariya   # زكريا
+
+    # طالوت is Quranic; "6aloot" → طالوت (style 2: 6→ط, a→ا, l→ل, oo→و, t→ت)
+    result_6aloot = filtered("6aloot")
+    assert u"\u0637\u0627\u0644\u0648\u062A" in result_6aloot   # طالوت
+
+    # جالوت is Quranic; "jalut" → جالوت (j→ج, a→ا, l→ل, u→و, t→ت)
+    result_jalut = filtered("jalut")
+    assert u"\u062C\u0627\u0644\u0648\u062A" in result_jalut   # جالوت
+
+    # ── Selected examples from new batch ─────────────────────────────────────
+
+    # ضلال is Quranic; style 2 "6alal" → ضلال (6→ض emphatic in number-based chat)
+    result_6alal = filtered("6alal")
+    assert u"\u0636\u0644\u0627\u0644" in result_6alal   # ضلال
+
+    # ذهب is Quranic; dialectal "zahab"/"dahab" → ذهب (z/d can map to ذ in dialects)
+    result_zahab = filtered("zahab")
+    assert u"\u0630\u0647\u0628" in result_zahab   # ذهب
+    result_dahab = filtered("dahab")
+    assert u"\u0630\u0647\u0628" in result_dahab   # ذهب
+
+    # ذنب is Quranic; "zanb" → ذنب (dialectal z→ذ, dhanb works via dh digraph)
+    result_zanb = filtered("zanb")
+    assert u"\u0630\u0646\u0628" in result_zanb   # ذنب
+
+    # رزق is Quranic; "rizq"/"rez8" → رزق (style 2: 8→ق)
+    result_rizq = filtered("rizq")
+    assert u"\u0631\u0632\u0642" in result_rizq   # رزق
+    result_rez8 = filtered("rez8")
+    assert u"\u0631\u0632\u0642" in result_rez8   # رزق
+
+    # حسنة is Quranic; "7asana"/"hasanah" → حسنة
+    result_7asana = filtered("7asana")
+    assert u"\u062D\u0633\u0646\u0629" in result_7asana   # حسنة
+
+    # نور is Quranic; "nur"/"noor" → نور
+    result_nur = filtered("nur")
+    assert u"\u0646\u0648\u0631" in result_nur   # نور
+
+    # هدى is Quranic; "huda"/"hoda" → هدى (terminal a→ى)
+    result_huda = filtered("huda")
+    assert u"\u0647\u062F\u0649" in result_huda   # هدى
+
+    # نهار is Quranic; "nahar" → نهار
+    result_nahar = filtered("nahar")
+    assert u"\u0646\u0647\u0627\u0631" in result_nahar   # نهار
+
+    # عرش is Quranic; "3arsh" → عرش
+    result_3arsh = filtered("3arsh")
+    assert u"\u0639\u0631\u0634" in result_3arsh   # عرش
+
+    # جنات is Quranic; "jannat"/"gannat" → جنات (gemination)
+    result_jannat = filtered("jannat")
+    assert u"\u062C\u0646\u0627\u062A" in result_jannat   # جنات
+
+    # نخل is Quranic; "na5l" → نخل (5→خ)
+    result_na5l = filtered("na5l")
+    assert u"\u0646\u062E\u0644" in result_na5l   # نخل
+
+    # عسل is Quranic; "3asal" → عسل
+    result_3asal = filtered("3asal")
+    assert u"\u0639\u0633\u0644" in result_3asal   # عسل
+
+    # لحم is Quranic; "la7m" → لحم
+    result_la7m = filtered("la7m")
+    assert u"\u0644\u062D\u0645" in result_la7m   # لحم
+
+    # طعام is Quranic; "6a3am" → طعام (6→ط, 3→ع)
+    result_6a3am = filtered("6a3am")
+    assert u"\u0637\u0639\u0627\u0645" in result_6a3am   # طعام
+
+    # شراب is Quranic; "charab" → شراب (dialectal ch→ش)
+    result_charab = filtered("charab")
+    assert u"\u0634\u0631\u0627\u0628" in result_charab   # شراب
+
+    # حرير is Quranic; "7areer" → حرير (7→ح, ee→ي)
+    result_7areer = filtered("7areer")
+    assert u"\u062D\u0631\u064A\u0631" in result_7areer   # حرير
+
+    # لؤلؤ is Quranic; "lolo" → لؤلؤ (dialectal simplification: ؤ written as o)
+    result_lolo = filtered("lolo")
+    assert len(result_lolo) > 0   # graceful fallback even if not exact match

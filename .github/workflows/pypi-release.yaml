@@ -40,20 +40,32 @@ jobs:
       run: |
         make build
     
-    - name: Build package
+    - name: Build package (alfanous3)
       run: |
-        cd src/alfanous
+        cd src
+        python -m build
+    
+    - name: Build package (alfanous3-mcp)
+      run: |
+        cd src/alfanous_mcp
         python -m build
     
     - name: Check distribution
       run: |
-        cd src/alfanous
-        twine check dist/*
+        twine check src/dist/* src/alfanous_mcp/dist/*
     
-    - name: Publish to PyPI
+    - name: Publish alfanous3 to PyPI
       uses: pypa/gh-action-pypi-publish@release/v1
       with:
         user: __token__
         password: ${{ secrets.ALFANOUS_PYPI_TOKEN }}
-        packages-dir: src/alfanous/dist/
+        packages-dir: src/dist/
+        skip-existing: true
+    
+    - name: Publish alfanous3-mcp to PyPI
+      uses: pypa/gh-action-pypi-publish@release/v1
+      with:
+        user: __token__
+        password: ${{ secrets.ALFANOUS_MCP_PYPI_TOKEN }}
+        packages-dir: src/alfanous_mcp/dist/
         skip-existing: true

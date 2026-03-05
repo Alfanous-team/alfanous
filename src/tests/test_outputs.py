@@ -97,6 +97,7 @@ def test_search():
     expected_words_individual = {1: {'derivations': [],
                                      'derivations_extra': [],
                                      'lemma': '',
+                                     'nb_ayas_overall': 113,
                                      'nb_ayas': 113,
                                      'nb_derivations': 0,
                                      'nb_derivations_extra': 0,
@@ -111,6 +112,7 @@ def test_search():
                                  2: {'derivations': [],
                                      'derivations_extra': [],
                                      'lemma': '',
+                                     'nb_ayas_overall': 25,
                                      'nb_ayas': 25,
                                      'nb_derivations': 0,
                                      'nb_derivations_extra': 0,
@@ -848,6 +850,8 @@ def test_search():
             'translation_info': {},
             'words': {'global': {'nb_matches': 142,
                                  'nb_matches_overall': 142,
+                                 'nb_ayas_overall': 138,
+                                 'nb_ayas': 138,
                                  'nb_vocalizations': 0,
                                  'nb_words': 2}}}}
     
@@ -914,6 +918,62 @@ def test_nb_matches_in_results_equals_global_when_unfiltered():
     # Since the OR query returns all documents that contain the word,
     # nb_matches must equal nb_matches_overall
     assert global_info["nb_matches"] == global_info["nb_matches_overall"]
+
+
+def test_nb_ayas_in_results():
+    """Test that nb_ayas counts unique ayas within the result set, not globally."""
+    search_flags = {
+        "action": "search",
+        "query": "الله",
+        "word_info": True,
+        "filter": {"sura_id": 1},  # Only Al-Fatihah (sura 1)
+        "highlight": "none",
+    }
+    results = RAWoutput.do(search_flags)
+    assert results["error"]["code"] == 0
+
+    words = results["search"]["words"]
+    global_info = words["global"]
+
+    # nb_ayas must be present (scoped to result set)
+    assert "nb_ayas" in global_info, "words.global must include nb_ayas"
+    assert "nb_ayas_overall" in global_info, "words.global must include nb_ayas_overall"
+
+    # nb_ayas_overall is global (all Quran), nb_ayas is for the result set
+    # Al-Fatihah has 1 aya with الله, Quran-wide has many more
+    assert global_info["nb_ayas"] <= global_info["nb_ayas_overall"], (
+        "nb_ayas must not exceed nb_ayas_overall"
+    )
+    assert global_info["nb_ayas"] > 0, "should find at least one aya in results"
+
+    # Per-word data must also include nb_ayas (scoped) and nb_ayas_overall (global)
+    for word_data in words["individual"].values():
+        assert "nb_ayas" in word_data, "words.individual entries must include nb_ayas"
+        assert "nb_ayas_overall" in word_data, "words.individual entries must include nb_ayas_overall"
+        assert word_data["nb_ayas"] <= word_data["nb_ayas_overall"], (
+            "per-word nb_ayas must not exceed nb_ayas_overall"
+        )
+
+
+def test_nb_ayas_in_results_equals_overall_when_unfiltered():
+    """Test that nb_ayas equals nb_ayas_overall when results cover all occurrences."""
+    search_flags = {
+        "action": "search",
+        "query": "وزوجك",  # Rare word, appears only twice in the Quran
+        "word_info": True,
+        "highlight": "none",
+    }
+    results = RAWoutput.do(search_flags)
+    assert results["error"]["code"] == 0
+
+    words = results["search"]["words"]
+    global_info = words["global"]
+
+    assert "nb_ayas" in global_info
+    assert "nb_ayas_overall" in global_info
+    # Since the OR query returns all documents that contain the word,
+    # nb_ayas must equal nb_ayas_overall
+    assert global_info["nb_ayas"] == global_info["nb_ayas_overall"]
 
 
 def test_search_translation_unit():

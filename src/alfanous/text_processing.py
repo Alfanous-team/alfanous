@@ -1,7 +1,7 @@
 
 import re
 
-from whoosh.analysis import  RegexTokenizer, Filter  # LowercaseFilter, StandardAnalyzer,
+from whoosh.analysis import RegexTokenizer, Filter, LowercaseFilter  # StandardAnalyzer,
 from alfanous.Support.pyarabic.main import strip_tashkeel, strip_tatweel, strip_shadda, normalize_spellerrors, \
     normalize_hamza, normalize_lamalef, normalize_uthmani_symbols  # , HARAKAT_pat,
 
@@ -107,3 +107,4 @@ QDiacHighLightAnalyzer = QSpaceTokenizer() | QArabicSymbolsFilter(tashkil=False)
 QUthmaniAnalyzer = QSpaceTokenizer() | QArabicSymbolsFilter(shaping=True, tashkil=True, spellerrors=False, hamza=False,
                                                             uthmani_symbols=True)
 QUthmaniDiacAnalyzer = QSpaceTokenizer() | QArabicSymbolsFilter(tashkil=False, uthmani_symbols=True)
+TranslationHighLightAnalyzer = RegexTokenizer() | LowercaseFilter()
