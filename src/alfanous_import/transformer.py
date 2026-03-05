@@ -61,7 +61,13 @@ class Transformer:
 
         cpt = 0
 
-        fields_mapping = {f["name"]: f["search_name"] for f in self.get_fields(tablename)}
+        # Build a mapping from source field name → list of search field names.
+        # A single source field (e.g. "standard") may feed multiple index fields
+        # with different analyzers (e.g. aya, aya_ac, aya_fuzzy).
+        from collections import defaultdict
+        fields_mapping: dict = defaultdict(list)
+        for f in self.get_fields(tablename):
+            fields_mapping[f["name"]].append(f["search_name"])
 
         for line in data_list:
             # Normalize chapter/topic/subtopic
@@ -70,9 +76,12 @@ class Transformer:
                         'chapter': line.get('chapter', '').strip(),
                         'topic': line.get('topic', '').strip(),
                         'subtopic': line.get('subtopic', '').strip()}
-            writer.add_document(
-                **{fields_mapping[k]: v for k, v in line.items() if k in fields_mapping}
-            )
+            doc = {}
+            for k, v in line.items():
+                if k in fields_mapping:
+                    for search_name in fields_mapping[k]:
+                        doc[search_name] = v
+            writer.add_document(**doc)
             cpt += 1
             if not cpt % 1559:
                 logging.info(f" - milestone:  {cpt} ( {cpt * 100 / len(data_list)}% )")

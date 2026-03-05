@@ -51,12 +51,12 @@
     "unique": null,
     "source": "tanzil.info",
     "search_name": "aya",
-    "analyzer": "QFuzzyAnalyzer",
+    "analyzer": "QStandardAnalyzer",
     "field_boost": "2.0"
   },
   {
     "id": 41,
-    "name": "standard",
+    "name": "standard_full",
     "name_arabic": "آية_إكمال",
     "table_name": "aya",
     "comment": "نص الآية بالخط الاملائي و غير مشكول — للإكمال التلقائي واقتراح الإملاء (بدون جذع أو تصفية)",
@@ -68,6 +68,20 @@
     "search_name": "aya_ac",
     "analyzer": "QStandardAnalyzer",
     "spelling": true
+  },
+  {
+    "id": 42,
+    "name": "standard_full",
+    "name_arabic": "آية_ضبابي",
+    "table_name": "aya",
+    "comment": "نص الآية للبحث الضبابي — مطبَّع، بدون كلمات وقفية، مع مرادفات وجذع (للفهرسة فقط)",
+    "type": "TEXT",
+    "stored": false,
+    "is_spellchecked": null,
+    "unique": null,
+    "source": "tanzil.info",
+    "search_name": "aya_fuzzy",
+    "analyzer": "QFuzzyAnalyzer"
   },
   {
     "id": 5,

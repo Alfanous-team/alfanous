@@ -71,18 +71,18 @@ class QSearcher:
             from whoosh.qparser import QueryParser
             from whoosh.query import Or, FuzzyTerm
 
-            # Strategy 2: Also search the normalised/stemmed 'aya' field so that
-            # stop-word removal, synonym expansion and stemming applied at
-            # index time can broaden the result set.
-            aya_parser = QueryParser("aya", schema=self._schema)
-            aya_query = aya_parser.parse(querystr)
+            # Strategy 2: Search the normalised/stemmed 'aya_fuzzy' field (fed
+            # from the same vocalized source text as aya_, processed at index
+            # time: diacritics stripped → stop words removed → synonyms expanded
+            # → Snowball Arabic stem).  This broadens the result set without any
+            # query-time CPU cost.
+            aya_fuzzy_parser = QueryParser("aya_fuzzy", schema=self._schema)
+            aya_fuzzy_query = aya_fuzzy_parser.parse(querystr)
 
             # Strategy 3: Levenshtein distance matching on 'aya_ac'
             # (unvocalized, non-stemmed) to handle spelling variants and typos.
-            # Only applied to Arabic-script terms; structured/numeric terms are skipped.
-            # Levenshtein distance matching on 'aya_ac' (unvocalized, non-stemmed)
-            # handles spelling variants and typos.  Only applied to Arabic-script
-            # terms; structured/numeric terms are skipped.
+            # Only applied to Arabic-script terms; structured/numeric terms are
+            # skipped.
             # prefixlength=1 keeps the first character fixed so that expansion
             # is bounded to plausible variants (e.g. "الكتاب" → "الكتابة") rather
             # than unrelated words that happen to be edit-close.  This trades a
@@ -94,7 +94,7 @@ class QSearcher:
                 if term and any('\u0600' <= c <= '\u06FF' for c in term)
             ]
 
-            parts = [query, aya_query]
+            parts = [query, aya_fuzzy_query]
             if levenshtein_subqueries:
                 parts.append(
                     Or(levenshtein_subqueries)
