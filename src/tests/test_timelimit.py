@@ -59,8 +59,40 @@ def _make_mock_results():
     return mock_results
 
 
-def test_qsearcher_passes_timelimit_to_whoosh():
-    """QSearcher.search must forward timelimit to whoosh's searcher.search()."""
+def test_qsearcher_passes_timelimit_via_collector():
+    """QSearcher.search must use TimeLimitCollector when timelimit is given."""
+    mock_results = _make_mock_results()
+
+    mock_collector = MagicMock()
+    mock_collector.results.return_value = mock_results
+
+    mock_whoosh_searcher = MagicMock()
+    mock_whoosh_searcher.collector.return_value = mock_collector
+
+    mock_index = MagicMock()
+    mock_index.get_index.return_value.searcher.return_value = mock_whoosh_searcher
+    mock_index.get_schema.return_value = MagicMock()
+
+    mock_parser = MagicMock()
+    mock_parser.parse.return_value = MagicMock(all_terms=MagicMock(return_value=[]))
+
+    with patch("alfanous.searching.TimeLimitCollector") as MockTLC:
+        mock_tlc = MagicMock()
+        mock_tlc.results.return_value = mock_results
+        MockTLC.return_value = mock_tlc
+
+        searcher = QSearcher(mock_index, mock_parser)
+        searcher.search("test query", timelimit=3.0)
+
+        MockTLC.assert_called_once()
+        _, tlc_kwargs = MockTLC.call_args
+        assert tlc_kwargs.get("timelimit") == 3.0, "TimeLimitCollector must receive timelimit=3.0"
+        mock_whoosh_searcher.search_with_collector.assert_called_once()
+        mock_whoosh_searcher.search.assert_not_called()
+
+
+def test_qsearcher_no_timelimit_uses_search_directly():
+    """When timelimit=None, QSearcher.search must call searcher.search() without TimeLimitCollector."""
     mock_results = _make_mock_results()
 
     mock_whoosh_searcher = MagicMock()
@@ -73,34 +105,15 @@ def test_qsearcher_passes_timelimit_to_whoosh():
     mock_parser = MagicMock()
     mock_parser.parse.return_value = MagicMock(all_terms=MagicMock(return_value=[]))
 
-    searcher = QSearcher(mock_index, mock_parser)
-    searcher.search("test query", timelimit=3.0)
+    with patch("alfanous.searching.TimeLimitCollector") as MockTLC:
+        searcher = QSearcher(mock_index, mock_parser)
+        searcher.search("test query", timelimit=None)
 
-    call_kwargs = mock_whoosh_searcher.search.call_args
-    assert "timelimit" in call_kwargs.kwargs, "timelimit must be passed to whoosh searcher.search"
-    assert call_kwargs.kwargs["timelimit"] == 3.0
-
-
-def test_qsearcher_no_timelimit_kwarg_when_none():
-    """When timelimit=None, QSearcher.search must NOT pass timelimit to whoosh."""
-    mock_results = _make_mock_results()
-
-    mock_whoosh_searcher = MagicMock()
-    mock_whoosh_searcher.search.return_value = mock_results
-
-    mock_index = MagicMock()
-    mock_index.get_index.return_value.searcher.return_value = mock_whoosh_searcher
-    mock_index.get_schema.return_value = MagicMock()
-
-    mock_parser = MagicMock()
-    mock_parser.parse.return_value = MagicMock(all_terms=MagicMock(return_value=[]))
-
-    searcher = QSearcher(mock_index, mock_parser)
-    searcher.search("test query", timelimit=None)
-
-    call_kwargs = mock_whoosh_searcher.search.call_args
-    assert "timelimit" not in call_kwargs.kwargs, \
-        "timelimit must NOT be passed to whoosh when it is None"
+        MockTLC.assert_not_called()
+        mock_whoosh_searcher.search.assert_called_once()
+        call_kwargs = mock_whoosh_searcher.search.call_args
+        assert "timelimit" not in call_kwargs.kwargs, \
+            "timelimit must NOT be passed to whoosh when it is None"
 
 
 def test_basic_search_engine_passes_timelimit_to_qsearcher():
