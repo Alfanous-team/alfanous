@@ -18,7 +18,11 @@ import pytest
 
 # Try to import MCP server components – skip all tests if mcp is not installed
 try:
-    from alfanous_mcp.mcp_server import search_quran, search_translations, get_quran_info, suggest_query, get_ai_rules
+    from alfanous_mcp.mcp_server import (
+        search_quran, search_translations, get_quran_info, suggest_query,
+        get_ai_rules, search_quran_by_themes, search_quran_by_stats,
+        search_quran_by_position,
+    )
     MCP_AVAILABLE = True
 except ImportError:
     MCP_AVAILABLE = False
@@ -323,6 +327,230 @@ class TestGetAiRules:
         """Content should mention Arabic-specific features."""
         result = get_ai_rules()
         assert "SYNONYMS" in result or "synonyms" in result.lower()
+
+
+# ---------------------------------------------------------------------------
+# search_quran_by_themes
+# ---------------------------------------------------------------------------
+
+class TestSearchQuranByThemes:
+    """Tests for the search_quran_by_themes MCP tool."""
+
+    def test_returns_dict(self):
+        """search_quran_by_themes should return a dictionary."""
+        result = search_quran_by_themes(chapter="prayer")
+        assert isinstance(result, dict)
+
+    def test_contains_error_key(self):
+        """Result should contain an 'error' key."""
+        result = search_quran_by_themes(chapter="prayer")
+        assert "error" in result
+
+    def test_no_error(self):
+        """Successful search should have error code 0."""
+        result = search_quran_by_themes(chapter="prayer")
+        assert result["error"]["code"] == 0
+
+    def test_contains_search_key(self):
+        """Result should contain a 'search' key with results."""
+        result = search_quran_by_themes(chapter="prayer")
+        assert "search" in result
+
+    def test_with_topic_filter(self):
+        """Filtering by topic alone should succeed."""
+        result = search_quran_by_themes(topic="faith")
+        assert isinstance(result, dict)
+        assert "error" in result
+
+    def test_with_subtopic_filter(self):
+        """Filtering by subtopic alone should succeed."""
+        result = search_quran_by_themes(subtopic="believers")
+        assert isinstance(result, dict)
+        assert "error" in result
+
+    def test_with_combined_filters(self):
+        """Combining chapter, topic, and subtopic filters should succeed."""
+        result = search_quran_by_themes(chapter="prayer", topic="faith", subtopic="believers")
+        assert isinstance(result, dict)
+        assert "error" in result
+
+    def test_with_free_text_query(self):
+        """A free-text query combined with a theme filter should succeed."""
+        result = search_quran_by_themes(query="الله", chapter="prayer")
+        assert isinstance(result, dict)
+        assert "error" in result
+
+    def test_no_filters_returns_results(self):
+        """Calling with no filters should return results (wildcard search)."""
+        result = search_quran_by_themes()
+        assert isinstance(result, dict)
+        assert "error" in result
+
+    def test_with_pagination(self):
+        """Pagination parameters should be accepted."""
+        result = search_quran_by_themes(chapter="prayer", page=1, perpage=5)
+        assert result["error"]["code"] == 0
+
+    def test_result_is_serializable(self):
+        """Result should contain only JSON-serializable types."""
+        import json
+        result = search_quran_by_themes(chapter="prayer", perpage=3)
+        json.dumps(result)
+
+
+# ---------------------------------------------------------------------------
+# search_quran_by_stats
+# ---------------------------------------------------------------------------
+
+class TestSearchQuranByStats:
+    """Tests for the search_quran_by_stats MCP tool."""
+
+    def test_returns_dict(self):
+        """search_quran_by_stats should return a dictionary."""
+        result = search_quran_by_stats(words_in_verse="7")
+        assert isinstance(result, dict)
+
+    def test_contains_error_key(self):
+        """Result should contain an 'error' key."""
+        result = search_quran_by_stats(words_in_verse="7")
+        assert "error" in result
+
+    def test_no_error(self):
+        """Successful search should have error code 0."""
+        result = search_quran_by_stats(words_in_verse="7")
+        assert result["error"]["code"] == 0
+
+    def test_contains_search_key(self):
+        """Result should contain a 'search' key."""
+        result = search_quran_by_stats(words_in_verse="7")
+        assert "search" in result
+
+    def test_words_in_sura_filter(self):
+        """Filtering by words_in_sura should succeed."""
+        result = search_quran_by_stats(words_in_sura="100")
+        assert isinstance(result, dict)
+        assert "error" in result
+
+    def test_verses_in_sura_filter(self):
+        """Filtering by verses_in_sura should succeed."""
+        result = search_quran_by_stats(verses_in_sura="7")
+        assert isinstance(result, dict)
+        assert "error" in result
+
+    def test_combined_stat_filters(self):
+        """Combining multiple stat filters should succeed."""
+        result = search_quran_by_stats(words_in_verse="7", verses_in_sura="7")
+        assert isinstance(result, dict)
+        assert "error" in result
+
+    def test_with_free_text_query(self):
+        """A free-text query combined with stat filters should succeed."""
+        result = search_quran_by_stats(query="الله", words_in_verse="3")
+        assert isinstance(result, dict)
+        assert "error" in result
+
+    def test_no_filters_returns_results(self):
+        """Calling with no filters should return results (wildcard search)."""
+        result = search_quran_by_stats()
+        assert isinstance(result, dict)
+        assert "error" in result
+
+    def test_with_pagination(self):
+        """Pagination parameters should be accepted."""
+        result = search_quran_by_stats(words_in_verse="7", page=1, perpage=5)
+        assert result["error"]["code"] == 0
+
+    def test_result_is_serializable(self):
+        """Result should contain only JSON-serializable types."""
+        import json
+        result = search_quran_by_stats(words_in_verse="7", perpage=3)
+        json.dumps(result)
+
+
+# ---------------------------------------------------------------------------
+# search_quran_by_position
+# ---------------------------------------------------------------------------
+
+class TestSearchQuranByPosition:
+    """Tests for the search_quran_by_position MCP tool."""
+
+    def test_returns_dict(self):
+        """search_quran_by_position should return a dictionary."""
+        result = search_quran_by_position(sura_number="2")
+        assert isinstance(result, dict)
+
+    def test_contains_error_key(self):
+        """Result should contain an 'error' key."""
+        result = search_quran_by_position(sura_number="2")
+        assert "error" in result
+
+    def test_no_error(self):
+        """Successful search should have error code 0."""
+        result = search_quran_by_position(sura_number="2")
+        assert result["error"]["code"] == 0
+
+    def test_contains_search_key(self):
+        """Result should contain a 'search' key."""
+        result = search_quran_by_position(sura_number="2")
+        assert "search" in result
+
+    def test_juz_filter(self):
+        """Filtering by juz should succeed."""
+        result = search_quran_by_position(juz="1")
+        assert isinstance(result, dict)
+        assert "error" in result
+
+    def test_hizb_filter(self):
+        """Filtering by hizb should succeed."""
+        result = search_quran_by_position(hizb="1")
+        assert isinstance(result, dict)
+        assert "error" in result
+
+    def test_page_filter(self):
+        """Filtering by page should succeed."""
+        result = search_quran_by_position(page="1")
+        assert isinstance(result, dict)
+        assert "error" in result
+
+    def test_manzil_filter(self):
+        """Filtering by manzil should succeed."""
+        result = search_quran_by_position(manzil="1")
+        assert isinstance(result, dict)
+        assert "error" in result
+
+    def test_combined_position_filters(self):
+        """Combining sura and verse number filters should succeed."""
+        result = search_quran_by_position(sura_number="2", verse_number="255")
+        assert isinstance(result, dict)
+        assert "error" in result
+
+    def test_with_free_text_query(self):
+        """A free-text query combined with position filters should succeed."""
+        result = search_quran_by_position(query="الله", juz="1")
+        assert isinstance(result, dict)
+        assert "error" in result
+
+    def test_no_filters_returns_results(self):
+        """Calling with no filters should return results (wildcard search)."""
+        result = search_quran_by_position()
+        assert isinstance(result, dict)
+        assert "error" in result
+
+    def test_with_pagination(self):
+        """Pagination parameters should be accepted."""
+        result = search_quran_by_position(juz="1", page_int=1, perpage=5)
+        assert result["error"]["code"] == 0
+
+    def test_result_is_serializable(self):
+        """Result should contain only JSON-serializable types."""
+        import json
+        result = search_quran_by_position(sura_number="1", perpage=3)
+        json.dumps(result)
+
+    def test_sortedby_defaults_to_mushaf(self):
+        """Default sortedby should be 'mushaf' for positional queries."""
+        result = search_quran_by_position(sura_number="2")
+        assert result["error"]["code"] == 0
 
 
 # ---------------------------------------------------------------------------

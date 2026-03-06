@@ -41,6 +41,12 @@ mcp = FastMCP(
         "Use the search_quran tool to find Quranic verses by keyword or phrase. "
         "Use search_translations to search within Quranic translation texts in "
         "languages such as English, French, Urdu, and more. "
+        "Use search_quran_by_themes to find verses by thematic classification "
+        "(chapter, topic, subtopic). "
+        "Use search_quran_by_stats to find verses by statistical attributes such "
+        "as word count per verse or verse count per sura. "
+        "Use search_quran_by_position to retrieve verses from a specific structural "
+        "location such as a juz, hizb, page, or sura range. "
         "Use get_quran_info to retrieve metadata such as chapter names, "
         "available translations, and recitations. "
         "Use suggest_query to get auto-completion suggestions while typing a query. "
@@ -254,6 +260,278 @@ def get_quran_info(category: str = "all") -> dict:
         Dictionary with the requested metadata.
     """
     result = alfanous_api.get_info(category)
+    return _make_serializable(result)
+
+
+@mcp.tool(
+    title="Search Qur'an by Themes",
+    description=(
+        "Search for Quranic verses by thematic classification. "
+        "Filter by chapter (broad thematic division), topic (subject area), "
+        "and/or subtopic within the Qur'an's thematic index. "
+        "An optional free-text query can further narrow results. "
+        "Use this tool when looking for verses on a specific theme or subject matter."
+    ),
+)
+def search_quran_by_themes(
+    query: str = "",
+    chapter: Optional[str] = None,
+    topic: Optional[str] = None,
+    subtopic: Optional[str] = None,
+    page: int = 1,
+    perpage: int = 10,
+    sortedby: str = "relevance",
+    view: str = "normal",
+    highlight: str = "bold",
+    facets: Optional[str] = None,
+) -> dict:
+    """Search for Quranic verses by thematic classification.
+
+    Args:
+        query: Optional free-text search query in Arabic or Buckwalter
+            transliteration to further narrow results within the theme.
+        chapter: Broad thematic chapter/division to filter by
+            (maps to the 'chapter' field).
+        topic: Topic or subject area to filter by (maps to the 'topic' field).
+        subtopic: Subtopic to filter by (maps to the 'subtopic' field).
+        page: Page number for pagination (starts at 1).
+        perpage: Number of results per page (1–100).
+        sortedby: Sort order — one of "relevance", "score", "mushaf",
+            "tanzil", or "ayalength".
+        view: Result detail level — one of "minimal", "normal", "full",
+            "statistic", "linguistic", or "custom".
+        highlight: Highlight style for matched terms — one of "bold",
+            "css", "html", or "bbcode".
+        facets: Comma-separated list of fields to aggregate as facets.
+
+    Returns:
+        Dictionary with search results including matched verses, pagination
+        info, and optional facets.
+    """
+    parts = []
+    if query:
+        parts.append(query)
+    if chapter is not None:
+        parts.append(f"chapter:{chapter}")
+    if topic is not None:
+        parts.append(f"topic:{topic}")
+    if subtopic is not None:
+        parts.append(f"subtopic:{subtopic}")
+
+    combined_query = " ".join(parts) if parts else "*"
+
+    flags: dict = {
+        "action": "search",
+        "query": combined_query,
+        "unit": "aya",
+        "page": page,
+        "range": perpage,
+        "sortedby": sortedby,
+        "view": view,
+        "highlight": highlight,
+    }
+    if facets is not None:
+        flags["facets"] = facets
+
+    result = alfanous_api.do(flags)
+    return _make_serializable(result)
+
+
+@mcp.tool(
+    title="Search Qur'an by Statistics",
+    description=(
+        "Search for Quranic verses by statistical attributes. "
+        "Filter by the number of words in a verse, the number of words or "
+        "verses in a sura, or other numeric statistical fields. "
+        "Accepts exact values or Whoosh range expressions (e.g. '[5 TO 10]'). "
+        "Use this tool for statistical or linguistic analysis of the Qur'an."
+    ),
+)
+def search_quran_by_stats(
+    query: str = "",
+    words_in_verse: Optional[str] = None,
+    words_in_sura: Optional[str] = None,
+    verses_in_sura: Optional[str] = None,
+    verses_to_juz: Optional[str] = None,
+    suras_to_juz: Optional[str] = None,
+    verses_to_hizb: Optional[str] = None,
+    suras_to_hizb: Optional[str] = None,
+    suras_to_ruku: Optional[str] = None,
+    page: int = 1,
+    perpage: int = 10,
+    sortedby: str = "relevance",
+    view: str = "normal",
+    highlight: str = "bold",
+    facets: Optional[str] = None,
+) -> dict:
+    """Search for Quranic verses by statistical attributes.
+
+    Args:
+        query: Optional free-text search query in Arabic or Buckwalter
+            transliteration to further narrow results.
+        words_in_verse: Filter by number of words in the verse (field: a_w).
+            Accepts an exact integer or a Whoosh range expression such as
+            '[5 TO 10]'.
+        words_in_sura: Filter by total word count of the sura (field: s_w).
+        verses_in_sura: Filter by total verse count of the sura (field: s_a).
+        verses_to_juz: Filter by cumulative verse count up to the verse's
+            juz (field: a_g).
+        suras_to_juz: Filter by cumulative sura count up to the verse's
+            juz (field: s_g).
+        verses_to_hizb: Filter by cumulative verse count up to the verse's
+            hizb (field: a_l).
+        suras_to_hizb: Filter by cumulative sura count up to the verse's
+            hizb (field: s_l).
+        suras_to_ruku: Filter by cumulative sura count up to the verse's
+            ruku (field: s_r).
+        page: Page number for pagination (starts at 1).
+        perpage: Number of results per page (1–100).
+        sortedby: Sort order — one of "relevance", "score", "mushaf",
+            "tanzil", or "ayalength".
+        view: Result detail level — one of "minimal", "normal", "full",
+            "statistic", "linguistic", or "custom".
+        highlight: Highlight style for matched terms — one of "bold",
+            "css", "html", or "bbcode".
+        facets: Comma-separated list of fields to aggregate as facets.
+
+    Returns:
+        Dictionary with search results including matched verses, pagination
+        info, and optional facets.
+    """
+    stat_filters = {
+        "a_w": words_in_verse,
+        "s_w": words_in_sura,
+        "s_a": verses_in_sura,
+        "a_g": verses_to_juz,
+        "s_g": suras_to_juz,
+        "a_l": verses_to_hizb,
+        "s_l": suras_to_hizb,
+        "s_r": suras_to_ruku,
+    }
+
+    parts = []
+    if query:
+        parts.append(query)
+    for field, value in stat_filters.items():
+        if value is not None:
+            parts.append(f"{field}:{value}")
+
+    combined_query = " ".join(parts) if parts else "*"
+
+    flags: dict = {
+        "action": "search",
+        "query": combined_query,
+        "unit": "aya",
+        "page": page,
+        "range": perpage,
+        "sortedby": sortedby,
+        "view": view,
+        "highlight": highlight,
+    }
+    if facets is not None:
+        flags["facets"] = facets
+
+    result = alfanous_api.do(flags)
+    return _make_serializable(result)
+
+
+@mcp.tool(
+    title="Search Qur'an by Position",
+    description=(
+        "Search for Quranic verses by their structural position. "
+        "Filter by sura (chapter) number, verse number, juz (part), "
+        "hizb, ruku, page, or manzil. "
+        "Accepts exact values or Whoosh range expressions (e.g. '[2 TO 5]'). "
+        "Use this tool to retrieve verses from a specific location or range "
+        "within the Qur'an's structural divisions."
+    ),
+)
+def search_quran_by_position(
+    query: str = "",
+    sura_number: Optional[str] = None,
+    verse_number: Optional[str] = None,
+    global_id: Optional[str] = None,
+    juz: Optional[str] = None,
+    hizb: Optional[str] = None,
+    ruku: Optional[str] = None,
+    rub: Optional[str] = None,
+    page: Optional[str] = None,
+    manzil: Optional[str] = None,
+    page_int: int = 1,
+    perpage: int = 10,
+    sortedby: str = "mushaf",
+    view: str = "normal",
+    highlight: str = "bold",
+    facets: Optional[str] = None,
+) -> dict:
+    """Search for Quranic verses by structural position.
+
+    Args:
+        query: Optional free-text search query in Arabic or Buckwalter
+            transliteration to further narrow results.
+        sura_number: Sura (chapter) number (1–114) to filter by
+            (field: sura_id). Accepts an exact integer or a Whoosh range
+            expression such as '[2 TO 5]'.
+        verse_number: Verse number within its sura (1–286) to filter by
+            (field: aya_id).
+        global_id: Global verse ID across the entire Qur'an (1–6236)
+            (field: gid).
+        juz: Juz (part) number (1–30) to filter by (field: juz).
+        hizb: Hizb number to filter by (field: hizb).
+        ruku: Ruku number to filter by (field: ruk).
+        rub: Rub (quarter) number to filter by (field: rub).
+        page: Mushaf page number to filter by (field: page).
+        manzil: Manzil number to filter by (field: manzil).
+        page_int: Page number for pagination (starts at 1).
+        perpage: Number of results per page (1–100).
+        sortedby: Sort order — one of "relevance", "score", "mushaf",
+            "tanzil", or "ayalength". Defaults to "mushaf" for positional
+            queries.
+        view: Result detail level — one of "minimal", "normal", "full",
+            "statistic", "linguistic", or "custom".
+        highlight: Highlight style for matched terms — one of "bold",
+            "css", "html", or "bbcode".
+        facets: Comma-separated list of fields to aggregate as facets.
+
+    Returns:
+        Dictionary with search results including matched verses, pagination
+        info, and optional facets.
+    """
+    position_filters = {
+        "sura_id": sura_number,
+        "aya_id": verse_number,
+        "gid": global_id,
+        "juz": juz,
+        "hizb": hizb,
+        "ruk": ruku,
+        "rub": rub,
+        "page": page,
+        "manzil": manzil,
+    }
+
+    parts = []
+    if query:
+        parts.append(query)
+    for field, value in position_filters.items():
+        if value is not None:
+            parts.append(f"{field}:{value}")
+
+    combined_query = " ".join(parts) if parts else "*"
+
+    flags: dict = {
+        "action": "search",
+        "query": combined_query,
+        "unit": "aya",
+        "page": page_int,
+        "range": perpage,
+        "sortedby": sortedby,
+        "view": view,
+        "highlight": highlight,
+    }
+    if facets is not None:
+        flags["facets"] = facets
+
+    result = alfanous_api.do(flags)
     return _make_serializable(result)
 
 
