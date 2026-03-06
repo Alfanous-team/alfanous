@@ -117,6 +117,11 @@ class Transformer:
         if translations_store_path and tablename == "aya":
             translations = _load_all_translations(translations_store_path)
 
+        if translations and tablename == "aya":
+            # Pre-compute which text_{lang} fields exist in the schema to
+            # avoid repeated schema lookups for every translation document.
+            _schema_names = set(ix.schema.names())
+
         for line in data_list:
             # Normalize chapter/topic/subtopic
             if tablename == "aya":
@@ -139,14 +144,23 @@ class Transformer:
                 if gid is not None:
                     idx = gid - 1  # 0-based index into translation lines
                     for trans_id, tdata in translations.items():
-                        writer.add_document(
+                        lang = tdata["lang"]
+                        text = tdata["lines"][idx]
+                        lang_field = f"text_{lang}" if lang else None
+                        child_doc = dict(
                             kind="translation",
                             gid=gid,
                             trans_id=trans_id,
-                            trans_lang=tdata["lang"],
-                            trans_text=tdata["lines"][idx],
+                            trans_lang=lang,
+                            # trans_text kept as stored-only field for backward compat
+                            trans_text=text,
                             trans_author=tdata["author"],
                         )
+                        # Populate the language-specific stemmed field when
+                        # it exists in the schema.
+                        if lang_field and lang_field in _schema_names:
+                            child_doc[lang_field] = text
+                        writer.add_document(**child_doc)
                 writer.end_group()
             else:
                 writer.add_document(**doc)
