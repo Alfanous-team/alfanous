@@ -4,6 +4,7 @@ A sample script that emphasize the basic operations of Alfanous API.
 
 """
 
+import re
 
 # import Output object
 from alfanous.outputs import Raw
@@ -1074,7 +1075,7 @@ def test_domains_view_has_correct_values():
 
 
 def test_view_minimal_limits_output():
-    """view=minimal should suppress optional fields in the search output."""
+    """view=minimal should suppress optional fields but keep text vocalized."""
     flags = {
         "action": "search",
         "query": "الله",
@@ -1092,10 +1093,30 @@ def test_view_minimal_limits_output():
     assert aya["stat"] == {}
     assert aya["sajda"] == {}
     assert aya["theme"] == {}
+    # text should be vocalized (contain Arabic diacritical marks)
+    assert re.search(r'[\u064B-\u0652]', aya["aya"]["text"]), \
+        "Expected vocalized text in minimal view"
+
+
+def test_view_minimal_keeps_translation():
+    """view=minimal should preserve the translation when one is specified."""
+    flags = {
+        "action": "search",
+        "query": "الله",
+        "page": 1,
+        "view": "minimal",
+        "highlight": "none",
+        "translation": "en.shakir",
+    }
+    results = RAWoutput.do(flags)
+    assert results["search"]["ayas"], "Expected at least one search result"
+    aya = list(results["search"]["ayas"].values())[0]
+    assert aya["aya"]["translation"] is not None, \
+        "Expected translation to be preserved in minimal view"
 
 
 def test_view_normal_expands_output():
-    """view=normal should include common navigation and sura information."""
+    """view=normal should include navigation but not sura info or stats."""
     flags = {
         "action": "search",
         "query": "الله",
@@ -1108,8 +1129,8 @@ def test_view_normal_expands_output():
     aya = list(results["search"]["ayas"].values())[0]
     assert aya["aya"]["prev_aya"] is not None
     assert aya["aya"]["next_aya"] is not None
-    assert aya["sura"] != {}
-    assert aya["stat"] != {}
+    assert aya["sura"] == {}
+    assert aya["stat"] == {}
     assert aya["sajda"] != {}
     assert aya["theme"] != {}
 
