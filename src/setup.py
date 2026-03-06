@@ -86,7 +86,6 @@ setup(
     package_data={'alfanous': ['configs/*',
                                'indexes/main/*',
                                'indexes/extend/*',
-                               'indexes/word/*',
                                'resources/*']},
 
     entry_points={'console_scripts': [

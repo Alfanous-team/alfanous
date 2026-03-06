@@ -57,8 +57,10 @@ class BasicSearchEngine:
         """
         # Merge the engine-level default filter (e.g. kind="aya") with any
         # caller-supplied filter.  Caller values take precedence.
-        if self._default_filter:
-            merged = {**self._default_filter, **(filter_dict or {})}
+        # Use getattr so tests that bypass __init__ via __new__ still work.
+        _default = getattr(self, '_default_filter', None)
+        if _default:
+            merged = {**_default, **(filter_dict or {})}
         else:
             merged = filter_dict
         results, terms, searcher = self._searcher.search(querystr, limit=limit, sortedby=sortedby, reverse=reverse, facets=facets, filter_dict=merged, fuzzy=fuzzy, fuzzy_maxdist=fuzzy_maxdist, timelimit=timelimit)
@@ -170,8 +172,10 @@ def QuranicSearchEngine(indexpath="../indexes/main/",
 
 
 def WordSearchEngine(indexpath="../indexes/word/", qparser=StandardParser):
+    """Retained for import compatibility. Word search is now served by
+    kind="word" children nested inside the QSE main index."""
     return BasicSearchEngine(qdocindex=BasicDocIndex(indexpath)
-                             , query_parser=qparser  # termclass=QuranicParser.FuzzyAll
+                             , query_parser=qparser
                              , main_field="normalized"
                              , otherfields=["word", "spelled"]
                              , qsearcher=QSearcher

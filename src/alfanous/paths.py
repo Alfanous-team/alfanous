@@ -9,7 +9,6 @@ HOME_CONFIG = HOME + ".alfanous/"
 ROOT_RESOURCE = ROOT + "resources/"
 # indexes paths
 QSE_INDEX = ROOT_INDEX + "main/"
-WSE_INDEX = ROOT_INDEX + "word/"
 # resources paths
 INFORMATION_FILE = ROOT_RESOURCE + "information.json"
 ARABIC_NAMES_FILE = ROOT_RESOURCE + "arabic_names.json"

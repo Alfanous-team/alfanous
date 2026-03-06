@@ -189,7 +189,6 @@ class Raw:
 
     def __init__(self,
                  QSE_index=paths.QSE_INDEX,
-                 WSE_index=None,
                  Recitations_list_file=paths.RECITATIONS_LIST_FILE,
                  Translations_list_file=paths.TRANSLATIONS_LIST_FILE,
                  Information_file=paths.INFORMATION_FILE,
@@ -199,8 +198,6 @@ class Raw:
 		"""
         ##
         self.QSE = QSE(QSE_index)
-        # WSE_index kept as accepted parameter for backward compatibility but is no longer
-        # used — word search is now served by kind="word" children nested in QSE.
         ##
         self._recitations = recitations(Recitations_list_file)
         _translations_names = translations(Translations_list_file)
@@ -1092,9 +1089,10 @@ class Raw:
 
                 "annotations": {}
             }
-            output["ayas"][cpt]["words"] = aya_words_map.get(
-                (r["sura_id"], r["aya_id"]), []
-            )
+            if word_linguistics:
+                output["ayas"][cpt]["words"] = aya_words_map.get(
+                    (r["sura_id"], r["aya_id"]), []
+                )
         searcher.close()
         return output
 
@@ -1342,7 +1340,7 @@ class Raw:
         if ":" not in query:
             query = transliterate("buckwalter", query, ignore="'_\"%*?#~[]{}:>+-|")
 
-        SE = self.WSE
+        SE = self.QSE
         if not SE.OK:
             return {
                 "words": {},
@@ -1350,7 +1348,7 @@ class Raw:
                 "runtime": 0
             }
 
-        res, termz, searcher = SE.search_all(query, limit=self._defaults["results_limit"]["word"], sortedby=sortedby, timelimit=timelimit)
+        res, termz, searcher = SE.search_all(query, limit=self._defaults["results_limit"]["word"], sortedby=sortedby, filter_dict={"kind": "word"}, timelimit=timelimit)
         terms = [term[1] for term in list(termz)[:self._defaults["maxkeywords"]]]
 
         # pagination

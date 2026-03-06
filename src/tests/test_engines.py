@@ -5,12 +5,10 @@ This is a test module for most of features provided by alfanous.engines module.
 """
 
 from alfanous.engines import QuranicSearchEngine
-from alfanous.engines import WordSearchEngine
 from alfanous import paths
 
 
 QSE = QuranicSearchEngine(paths.QSE_INDEX)
-WSE = WordSearchEngine(paths.WSE_INDEX)
 
 
 def test_aya_engine():

@@ -83,16 +83,11 @@ def QSE(path=paths.QSE_INDEX):
 
 
 @lru_cache(maxsize=1)
-def WSE(path=paths.WSE_INDEX):
-    """
-    Create a Word Search Engine instance.
-    
-    @param path: Path to the word search index
-    @return: WordSearchEngine instance
-    """
+def WSE(path=None):
+    """Retained for import compatibility. Word search is now served by
+    kind="word" children nested inside the QSE main index via QuranicSearchEngine."""
     from alfanous.engines import WordSearchEngine
-    return WordSearchEngine(path)
-
+    return WordSearchEngine(path or "")
 
 @lru_cache(maxsize=1)
 def quran_unvocalized_words(path=paths.WORD_FILE):
