@@ -1105,8 +1105,8 @@ class Raw:
                     "translation_id": r.get("trans_id"),
                     "aya_id": _parent.get("aya_id"),
                     "sura_id": _parent.get("sura_id"),
-                    "sura_name": _keywords(_parent["sura"])[0] if _parent.get("sura") else None,
-                    "sura_arabic_name": _keywords(_parent["sura_arabic"])[0] if _parent.get("sura_arabic") else None,
+                    "sura_name": (_keywords(_parent["sura"]) or [None])[0] if _parent.get("sura") else None,
+                    "sura_arabic_name": (_keywords(_parent["sura_arabic"]) or [None])[0] if _parent.get("sura_arabic") else None,
                 },
                 "aya": {
                     "text": _parent.get("aya"),
