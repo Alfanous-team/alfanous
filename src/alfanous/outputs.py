@@ -847,7 +847,7 @@ class Raw:
                 extend_runtime += adja_res.runtime
             adja_searcher.close()
 
-        # translations + always-present transliteration/tafssir
+        # translations: fetch all nested children for the result page
         trad_text = {}
         all_children = {}  # {gid: {trans_id: {text, id, lang, author}}}
 
@@ -925,9 +925,6 @@ class Raw:
                     "text_no_highlight": r["aya"] if script == "standard"
                     else r["uth_"],
                     "translation": trad_text.get(r["gid"], {}).get("text") if _want_translation else None,
-                    "transliteration": all_children.get(r["gid"], {}).get("en.transliteration", {}).get("text"),
-                    "tafssir": all_children.get(r["gid"], {}).get("ar.jalalayn", {}).get("text"),
-
                     "recitation": None if not recitation or not self._recitations.get(recitation) \
                         else f'https://www.everyayah.com/data/{self._recitations[recitation]["subfolder"]}/%03d%03d.mp3' % (
                     int(r["sura_id"]), int(r["aya_id"])),
