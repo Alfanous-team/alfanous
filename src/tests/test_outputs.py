@@ -97,10 +97,11 @@ def test_search():
     expected_words_individual = {1: {'derivations': [],
                                      'derivations_extra': [],
                                      'lemma': '',
+                                     'nb_ayas_overall': 113,
                                      'nb_ayas': 113,
                                      'nb_derivations': 0,
                                      'nb_derivations_extra': 0,
-                                     'nb_matches': 116.0,
+                                     'nb_matches_overall': 116,
                                      'nb_synonyms': 0,
                                      'nb_vocalizations': 0,
                                      'romanization': None,
@@ -111,10 +112,11 @@ def test_search():
                                  2: {'derivations': [],
                                      'derivations_extra': [],
                                      'lemma': '',
+                                     'nb_ayas_overall': 25,
                                      'nb_ayas': 25,
                                      'nb_derivations': 0,
                                      'nb_derivations_extra': 0,
-                                     'nb_matches': 26.0,
+                                     'nb_matches_overall': 26,
                                      'nb_synonyms': 0,
                                      'nb_vocalizations': 0,
                                      'romanization': None,
@@ -846,7 +848,10 @@ def test_search():
                          'start': 1,
                          'total': 116},
             'translation_info': {},
-            'words': {'global': {'nb_matches': 142.0,
+            'words': {'global': {'nb_matches': 142,
+                                 'nb_matches_overall': 142,
+                                 'nb_ayas_overall': 138,
+                                 'nb_ayas': 138,
                                  'nb_vocalizations': 0,
                                  'nb_words': 2}}}}
     
@@ -856,8 +861,122 @@ def test_search():
     #     assert actual_words_individual[key] == expected_words_individual[key]
 
 
+def test_nb_matches_in_results():
+    """Test that nb_matches counts word occurrences within the result set, not globally."""
+    # Search for a word that appears in many places across the Quran
+    # but filter to a single sura to ensure nb_matches < global nb_matches_overall
+    search_flags = {
+        "action": "search",
+        "query": "الله",
+        "word_info": True,
+        "filter": {"sura_id": 1},  # Only Al-Fatihah (sura 1)
+        "highlight": "none",
+    }
+    results = RAWoutput.do(search_flags)
+    assert results["error"]["code"] == 0
+
+    words = results["search"]["words"]
+    global_info = words["global"]
+
+    # nb_matches must be present (scoped to result set)
+    assert "nb_matches" in global_info, "words.global must include nb_matches"
+
+    # nb_matches_overall is global (all Quran), nb_matches is for the result set
+    # Al-Fatihah has 1 aya with الله, Quran-wide has many more
+    assert global_info["nb_matches"] <= global_info["nb_matches_overall"], (
+        "nb_matches must not exceed nb_matches_overall"
+    )
+    assert global_info["nb_matches"] > 0, "should find at least one match in results"
+
+    # Per-word data must also include nb_matches (scoped) and nb_matches_overall (global)
+    for word_data in words["individual"].values():
+        assert "nb_matches" in word_data, "words.individual entries must include nb_matches"
+        assert "nb_matches_overall" in word_data, "words.individual entries must include nb_matches_overall"
+        assert word_data["nb_matches"] <= word_data["nb_matches_overall"], (
+            "per-word nb_matches must not exceed nb_matches_overall"
+        )
+
+
+def test_nb_matches_in_results_equals_global_when_unfiltered():
+    """Test that nb_matches equals nb_matches_overall when results cover all occurrences."""
+    # For a rare word that appears only a few times, an OR search returns all occurrences
+    # so nb_matches should equal nb_matches_overall
+    search_flags = {
+        "action": "search",
+        "query": "وزوجك",  # Rare word, appears only twice in the Quran
+        "word_info": True,
+        "highlight": "none",
+    }
+    results = RAWoutput.do(search_flags)
+    assert results["error"]["code"] == 0
+
+    words = results["search"]["words"]
+    global_info = words["global"]
+
+    assert "nb_matches" in global_info
+    assert "nb_matches_overall" in global_info
+    # Since the OR query returns all documents that contain the word,
+    # nb_matches must equal nb_matches_overall
+    assert global_info["nb_matches"] == global_info["nb_matches_overall"]
+
+
+def test_nb_ayas_in_results():
+    """Test that nb_ayas counts unique ayas within the result set, not globally."""
+    search_flags = {
+        "action": "search",
+        "query": "الله",
+        "word_info": True,
+        "filter": {"sura_id": 1},  # Only Al-Fatihah (sura 1)
+        "highlight": "none",
+    }
+    results = RAWoutput.do(search_flags)
+    assert results["error"]["code"] == 0
+
+    words = results["search"]["words"]
+    global_info = words["global"]
+
+    # nb_ayas must be present (scoped to result set)
+    assert "nb_ayas" in global_info, "words.global must include nb_ayas"
+    assert "nb_ayas_overall" in global_info, "words.global must include nb_ayas_overall"
+
+    # nb_ayas_overall is global (all Quran), nb_ayas is for the result set
+    # Al-Fatihah has 1 aya with الله, Quran-wide has many more
+    assert global_info["nb_ayas"] <= global_info["nb_ayas_overall"], (
+        "nb_ayas must not exceed nb_ayas_overall"
+    )
+    assert global_info["nb_ayas"] > 0, "should find at least one aya in results"
+
+    # Per-word data must also include nb_ayas (scoped) and nb_ayas_overall (global)
+    for word_data in words["individual"].values():
+        assert "nb_ayas" in word_data, "words.individual entries must include nb_ayas"
+        assert "nb_ayas_overall" in word_data, "words.individual entries must include nb_ayas_overall"
+        assert word_data["nb_ayas"] <= word_data["nb_ayas_overall"], (
+            "per-word nb_ayas must not exceed nb_ayas_overall"
+        )
+
+
+def test_nb_ayas_in_results_equals_overall_when_unfiltered():
+    """Test that nb_ayas equals nb_ayas_overall when results cover all occurrences."""
+    search_flags = {
+        "action": "search",
+        "query": "وزوجك",  # Rare word, appears only twice in the Quran
+        "word_info": True,
+        "highlight": "none",
+    }
+    results = RAWoutput.do(search_flags)
+    assert results["error"]["code"] == 0
+
+    words = results["search"]["words"]
+    global_info = words["global"]
+
+    assert "nb_ayas" in global_info
+    assert "nb_ayas_overall" in global_info
+    # Since the OR query returns all documents that contain the word,
+    # nb_ayas must equal nb_ayas_overall
+    assert global_info["nb_ayas"] == global_info["nb_ayas_overall"]
+
+
 def test_search_translation_unit():
-    """Test that searching with unit='translation' returns results, not an empty dict."""
     search_flags = {
         "action": "search",
         "unit": "translation",
@@ -1043,3 +1162,152 @@ def test_view_invalid_falls_back_to_custom():
     keys_invalid = set(list(result_invalid["search"]["ayas"].values())[0].keys())
     keys_custom = set(list(result_custom["search"]["ayas"].values())[0].keys())
     assert keys_invalid == keys_custom
+
+
+def test_fuzzy_search_highlights_variations():
+    """Fuzzy search should highlight variation words (not just the exact query term).
+
+    When fuzzy=True, Levenshtein-distance matching on 'aya_ac' expands the
+    query to include related forms.  For example, searching for كتاب should
+    also match and highlight كتابه (his book), كتابا (a book), كتابك
+    (your book), and كتب (books).  Before the fix, only the exact query
+    word كتاب was in the highlight terms list, so these variant forms were
+    returned in results but not visually highlighted.
+    """
+    from alfanous.text_processing import QArabicSymbolsFilter
+    _strip = QArabicSymbolsFilter(shaping=False, tashkil=True, spellerrors=False, hamza=False).normalize_all
+
+    search_flags = {
+        "action": "search",
+        "query": "كتاب",
+        "fuzzy": True,
+        "highlight": "css",
+        "perpage": 300,
+    }
+    results = RAWoutput.do(search_flags)
+    assert results["error"]["code"] == 0
+
+    # Fuzzy search must return more results than non-fuzzy (includes variations)
+    non_fuzzy_flags = {**search_flags, "fuzzy": False}
+    non_fuzzy_results = RAWoutput.do(non_fuzzy_flags)
+    assert results["search"]["interval"]["total"] > non_fuzzy_results["search"]["interval"]["total"], (
+        "Fuzzy search should return more results than exact search"
+    )
+
+    highlighted_variation_found = False
+    for aya_data in results["search"]["ayas"].values():
+        text = aya_data["aya"]["text"]
+        if "<span" not in text:
+            continue
+        # Get all highlighted spans
+        import re as _re
+        spans = _re.findall(r"<span[^>]*>(.*?)</span>", text)
+        for span in spans:
+            # Strip tashkeel to get the base unvocalized form using the
+            # project's own Arabic normalization utility
+            stripped = _strip(span)
+            # A "variation" is a highlighted word that is NOT the exact query term
+            if stripped != "كتاب":
+                highlighted_variation_found = True
+                break
+        if highlighted_variation_found:
+            break
+
+    assert highlighted_variation_found, (
+        "Fuzzy search must highlight variation words (e.g. كتابه، كتابا، كتب) "
+        "in addition to the exact query term كتاب"
+    )
+
+def test_fuzzy_search_word_info_includes_variations():
+    """Fuzzy search word_info should include a non-empty 'variations' list.
+
+    When fuzzy=True and word_info=True, each word in words.individual must
+    expose the fuzzy-matched variation terms via the 'variations' key.
+    """
+    search_flags = {
+        "action": "search",
+        "query": "كتاب",
+        "fuzzy": True,
+        "word_info": True,
+        "highlight": "none",
+    }
+    results = RAWoutput.do(search_flags)
+    assert results["error"]["code"] == 0
+
+    words_individual = results["search"]["words"]["individual"]
+    assert words_individual, "words.individual must not be empty"
+
+    for word_data in words_individual.values():
+        assert "variations" in word_data, (
+            "words.individual entries must include 'variations' when fuzzy=True"
+        )
+        assert "nb_variations" in word_data, (
+            "words.individual entries must include 'nb_variations' when fuzzy=True"
+        )
+        assert isinstance(word_data["variations"], list)
+        assert word_data["nb_variations"] == len(word_data["variations"])
+
+    # For كتاب with fuzzy, we expect variations like كتابا، كتابه، كتب, etc.
+    first_word = words_individual[1]
+    assert first_word["nb_variations"] > 0, (
+        "Fuzzy search for كتاب must return at least one variation term"
+    )
+    assert "كتاب" in first_word["variations"], (
+        "The query term itself should appear in the variations list"
+    )
+
+
+def test_non_fuzzy_search_variations_is_empty():
+    """Non-fuzzy search must return empty variations list in word_info."""
+    search_flags = {
+        "action": "search",
+        "query": "الحمد",
+        "fuzzy": False,
+        "word_info": True,
+        "highlight": "none",
+    }
+    results = RAWoutput.do(search_flags)
+    assert results["error"]["code"] == 0
+
+    words_individual = results["search"]["words"]["individual"]
+    assert words_individual, "words.individual must not be empty"
+
+    for word_data in words_individual.values():
+        assert "variations" in word_data, (
+            "words.individual entries must always include 'variations' key"
+        )
+        assert "nb_variations" in word_data, (
+            "words.individual entries must always include 'nb_variations' key"
+        )
+        assert word_data["variations"] == [], (
+            "Non-fuzzy search must have empty variations list"
+        )
+        assert word_data["nb_variations"] == 0, (
+            "Non-fuzzy search must have nb_variations == 0"
+        )
+
+
+def test_fuzzy_search_transliterated_query_no_stopiteration():
+    """Fuzzy search with a fully transliterated (Latin-script) query must not raise StopIteration.
+
+    Regression test for: fuzzy-mode search for 'muhammed rassoul allah' with
+    fuzzy=True caused an unhandled StopIteration from inside the alfanous lib.
+
+    The aya_fuzzy field uses an Arabic analyzer that includes a StopFilter and a
+    stemmer.  When ALL tokens in the transliterated query are stop-words in that
+    analyzer, Whoosh's internal MultiFilter calls next() on an empty token stream
+    and raises StopIteration.  The fix wraps the aya_fuzzy parser call in a
+    try/except so that Strategy 2 is gracefully skipped and the search continues
+    with Strategies 1 and 3 instead of crashing.
+    """
+    search_flags = {
+        "action": "search",
+        "query": "muhammed rassoul allah",
+        "fuzzy": True,
+    }
+    # Must not raise StopIteration (or any other unhandled exception)
+    results = RAWoutput.do(search_flags)
+    assert results["error"]["code"] == 0, (
+        "Fuzzy search with transliterated query must succeed without error"
+    )
+    assert "search" in results

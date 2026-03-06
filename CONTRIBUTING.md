@@ -325,4 +325,4 @@ All contributors are recognized in our `AUTHORS.md` file. Thank you for contribu
 
 ## License
 
-By contributing to Alfanous, you agree that your contributions will be licensed under the GNU Affero General Public License v3 or later (AGPLv3+), the same license as the project.
+By contributing to Alfanous, you agree that your contributions will be licensed under the GNU Lesser General Public License v3 or later (LGPLv3+), the same license as the project.

@@ -37,9 +37,9 @@ def do(flags: Dict[str, Any]) -> Dict[str, Any]:
 
 
 def search(query: str, unit: str = "aya", page: int = 1, sortedby: str = "relevance", 
-           fuzzy: bool = False, view: str = "normal", highlight: str = "bold", 
-           flags: Optional[Dict[str, Any]] = None, facets: Optional[str] = None, 
-           filter: Optional[str] = None) -> Dict[str, Any]:
+           fuzzy: bool = False, fuzzy_maxdist: int = 1, view: str = "normal",
+           highlight: str = "bold", flags: Optional[Dict[str, Any]] = None,
+           facets: Optional[str] = None, filter: Optional[str] = None) -> Dict[str, Any]:
     """
     Search in Quran verses and translations.
     
@@ -47,7 +47,10 @@ def search(query: str, unit: str = "aya", page: int = 1, sortedby: str = "releva
     @param unit: Search unit ('aya', 'word', 'translation')
     @param page: Page number for pagination
     @param sortedby: Sort order ('relevance', 'mushaf', etc.)
-    @param fuzzy: Enable fuzzy search
+    @param fuzzy: Enable fuzzy search — uses aya_ (exact), aya (normalised/stemmed),
+           and Levenshtein distance matching on aya_ac simultaneously
+    @param fuzzy_maxdist: Maximum Levenshtein edit distance for fuzzy term matching
+           (default 1, only used when fuzzy=True)
     @param view: View mode ('normal', 'minimal', etc.)
     @param highlight: Highlight style ('bold', 'css', etc.)
     @param flags: Additional flags dictionary
@@ -62,6 +65,7 @@ def search(query: str, unit: str = "aya", page: int = 1, sortedby: str = "releva
                       "page": page,
                       "sortedby": sortedby,
                       "fuzzy": fuzzy,
+                      "fuzzy_maxdist": fuzzy_maxdist,
                       "view": view,
                       "highlight": highlight,
                       "facets": facets,

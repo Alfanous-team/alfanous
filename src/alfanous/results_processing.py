@@ -1,7 +1,7 @@
 from whoosh.scoring import BM25F
 from whoosh.highlight import highlight, Fragment, \
     HtmlFormatter, ContextFragmenter, BasicFragmentScorer, WholeFragmenter
-from alfanous.text_processing import QHighLightAnalyzer, QDiacHighLightAnalyzer, Gword_tamdid
+from alfanous.text_processing import QHighLightAnalyzer, QDiacHighLightAnalyzer, Gword_tamdid, TranslationHighLightAnalyzer
 
 
 def QScore():
@@ -14,8 +14,6 @@ def QSort(sortedby):
         return "gid"
     elif sortedby == "tanzil":
         return "sura_order", "aya_id"
-    elif sortedby == "subject":
-        return "chapter", "topic", "subtopic"
     elif sortedby == "ayalength":
         return "a_l", "a_w"
     elif sortedby in ["relevance", "score"]:
@@ -34,6 +32,26 @@ def Qhighlight(text, terms, type="css", strip_vocalization=True):
         text,
         terms,
         analyzer=QHighLightAnalyzer if strip_vocalization else QDiacHighLightAnalyzer,
+        fragmenter=WholeFragmenter,
+        formatter=formatter,
+        top=3,
+        scorer=BasicFragmentScorer,
+        minscore=1
+    )
+
+    return highlighted or text
+
+
+def QTranslationHighlight(text, terms, type="css", **kwargs):
+    if type == "bold":
+        formatter = QBoldFormatter()
+    else:  # css
+        formatter = HtmlFormatter(tagname="span", classname="match", termclass="term", maxclasses=8)
+
+    highlighted = highlight(
+        text,
+        terms,
+        analyzer=TranslationHighLightAnalyzer,
         fragmenter=WholeFragmenter,
         formatter=formatter,
         top=3,

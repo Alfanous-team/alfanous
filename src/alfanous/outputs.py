@@ -4,7 +4,7 @@ import re
 from alfanous.text_processing import QArabicSymbolsFilter
 from alfanous.data import *
 from alfanous.constants import QURAN_TOTAL_VERSES
-from alfanous.romanization import transliterate
+from alfanous.romanization import transliterate, arabizi_to_arabic_list, filter_candidates_by_wordset
 from alfanous.misc import locate, find, filter_doubles
 from whoosh import query as wquery
 from whoosh.sorting import Facets
@@ -13,6 +13,20 @@ from alfanous.results_processing import QScore
 STANDARD2UTHMANI = lambda x: std2uth_words.get(x) or x
 
 FALSE_PATTERN = '^false|no|off|0$'
+
+
+def _edit_distance(s, t):
+    """Compute the Levenshtein edit distance between two strings."""
+    m, n = len(s), len(t)
+    if abs(m - n) > max(m, n, 1):
+        return abs(m - n)
+    d = list(range(n + 1))
+    for i in range(1, m + 1):
+        prev = d[:]
+        d[0] = i
+        for j in range(1, n + 1):
+            d[j] = min(prev[j] + 1, d[j - 1] + 1, prev[j - 1] + (s[i - 1] != t[j - 1]))
+    return d[n]
 
 
 ## a function to decide what is True and what is false
@@ -72,6 +86,7 @@ class Raw:
             "page": 1,  # overridden with offset
             "perpage": 10,  # overridden with range
             "fuzzy": False,
+            "fuzzy_maxdist": 1,
             "aya": True,
             "facets": None,
             "filter": None,
@@ -113,12 +128,13 @@ class Raw:
         "aya_sajda_info": [True, False],
         "annotation_word": [True, False],
         "annotation_aya": [True, False],
-        "sortedby": ["score", "relevance", "mushaf", "tanzil", "subject", "ayalength"],
+        "sortedby": ["score", "relevance", "mushaf", "tanzil", "ayalength"],
         "offset": [],  # range(6237)
         "range": [],  # range(DEFAULTS["maxrange"]) , # used as "perpage" in paging mode
         "page": [],  # range(6237),  # overridden with offset
         "perpage": [],  # range( DEFAULTS["maxrange"] ) , # overridden with range
         "fuzzy": [True, False],
+        "fuzzy_maxdist": [],
         "aya": [True, False],
     }
 
@@ -155,7 +171,8 @@ class Raw:
         "range": "range of results",
         "page": "page number  [override offset]",
         "perpage": "results per page  [override range]",
-        "fuzzy": "fuzzy search [exprimental]",
+        "fuzzy": "fuzzy search — searches aya_ (exact) and aya (normalised/stemmed) with Levenshtein distance matching",
+        "fuzzy_maxdist": "maximum Levenshtein edit distance for fuzzy term matching (default: 1, only used when fuzzy=True)",
         "aya": "enable retrieving of aya text in the case of translation search",
     }
 
@@ -450,6 +467,7 @@ class Raw:
         script = flags["script"]
         vocalized = IS_FLAG(flags, 'vocalized')
         fuzzy = IS_FLAG(flags, 'fuzzy')
+        fuzzy_maxdist = int(flags.get('fuzzy_maxdist', self._defaults['flags']['fuzzy_maxdist']))
         view = flags["view"]
         # Validate view parameter; fall back to "custom" if not recognised
         if view not in self.DOMAINS["view"]:
@@ -588,13 +606,32 @@ class Raw:
         query = query.replace("\\", "")
 
         if ":" not in query:
-            query = transliterate("buckwalter", query, ignore="'_\"%*?#~[]{}:>+-|")
+            # If the query contains no Arabic characters, treat it as Arabizi
+            # (Latin/digit-based Arabic chat alphabet) and expand to all potential
+            # Arabic candidates (OR semantics via space-separated terms).
+            if not re.search(r'[\u0600-\u06FF]', query):
+                _ignore = "'_\"%*?#~[]{}:>+-|"
+                candidates = arabizi_to_arabic_list(query, ignore=_ignore)
+                # Filter candidates to those that appear as actual Quranic words.
+                # Each candidate may be a multi-word string (space-separated); a
+                # candidate is accepted when every individual token is a known
+                # unvocalized Quranic word.  If no candidates pass the filter,
+                # fall back to the full unfiltered list so the search still runs.
+                # quran_unvocalized_words() is @lru_cache so this is O(1) after
+                # the first call.
+                _qwords = quran_unvocalized_words()
+                if _qwords:
+                    candidates = filter_candidates_by_wordset(candidates, _qwords)
+                query = " ".join(candidates) if candidates else query
 
         # Search
         SE = self.QSE
-        res, termz, searcher = SE.search_all(query, limit=self._defaults["results_limit"]["aya"], sortedby=sortedby, facets=facets_list, filter_dict=filter_dict)
+        res, termz, searcher = SE.search_all(query, limit=self._defaults["results_limit"]["aya"], sortedby=sortedby, facets=facets_list, filter_dict=filter_dict, fuzzy=fuzzy, fuzzy_maxdist=fuzzy_maxdist)
         terms = [term[1] for term in list(termz)[:self._defaults["maxkeywords"]]]
         terms_uthmani = map(STANDARD2UTHMANI, terms)
+        # All matched aya_ac variation terms (only populated when fuzzy=True).
+        # Used in the word_info loop to derive per-word variation lists.
+        _all_ac_variations = [term[1] for term in termz if term[0] == "aya_ac"]
         # pagination
         offset = 1 if offset < 1 else offset
         range = self._defaults["minrange"] if range < self._defaults["minrange"] else range
@@ -635,11 +672,43 @@ class Raw:
         keywords = lambda phrase: kword.findall(phrase)
         ##########################################
         extend_runtime = res.runtime
+        # Pre-compute result docnums for counting matches within the result set
+        _result_docnums = set(hit.docnum for hit in res)
+        _index_reader = searcher.reader()
+
+        def _count_term_in_results(field, term_text):
+            """Count occurrences of a term within the search result documents."""
+            count = 0
+            try:
+                m = _index_reader.postings(field, term_text)
+                while m.is_active():
+                    if m.id() in _result_docnums:
+                        count += m.value_as("frequency")
+                    m.next()
+            except Exception:
+                pass
+            return count
+
+        def _count_ayas_in_results(field, term_text):
+            """Count unique ayas (documents) containing a term within the search result documents."""
+            count = 0
+            try:
+                m = _index_reader.postings(field, term_text)
+                while m.is_active():
+                    if m.id() in _result_docnums:
+                        count += 1
+                    m.next()
+            except Exception:
+                pass
+            return count
+
         # Words & Annotations
         words_output = {"individual": {}}
         if word_info:
             matches = 0
+            matches_in_results = 0
             docs = 0
+            docs_in_results = 0
             nb_vocalizations_globale = 0
             cpt = 1
             annotation_word_query = "( 0 "
@@ -648,6 +717,10 @@ class Raw:
                     if term[2]:
                         matches += term[2]
                     docs += term[3]
+                    term_matches_in_results = _count_term_in_results(term[0], term[1])
+                    matches_in_results += term_matches_in_results
+                    term_ayas_in_results = _count_ayas_in_results(term[0], term[1])
+                    docs_in_results += term_ayas_in_results
                     if term[0] == "aya_":
                         annotation_word_query += " OR word:%s " % term[1]
                     else:  # if aya
@@ -673,13 +746,26 @@ class Raw:
                                 set(filter_doubles(find(derivedict["root"], derivedict["word_"], lemma))) - set(
                                     derivations))
 
+                    # Compute variations specific to this word: among all
+                    # matched aya_ac terms, keep only those within
+                    # fuzzy_maxdist edit distance of this word's unvocalized
+                    # form.  This correctly scopes variations to each
+                    # individual query word in multi-word queries.
+                    word_normalized = strip_vocalization(term[1])
+                    word_variations = [
+                        v for v in _all_ac_variations
+                        if _edit_distance(word_normalized, v) <= fuzzy_maxdist
+                    ]
+
                     words_output["individual"][cpt] = {
                         "word": term[1],
                         "romanization": transliterate(romanization, term[1], ignore="", reverse=True) if romanization in
                                                                                                          self.DOMAINS[
                                                                                                              "romanization"] else None,
-                        "nb_matches": term[2],
-                        "nb_ayas": term[3],
+                        "nb_matches_overall": int(term[2]) if term[2] else 0,
+                        "nb_matches": term_matches_in_results,
+                        "nb_ayas_overall": term[3],
+                        "nb_ayas": term_ayas_in_results,
                         "nb_vocalizations": len(vocalizations) if word_vocalizations else 0,  # unneeded
                         "vocalizations": vocalizations if word_vocalizations else [],
                         "nb_synonyms": len(synonyms) if word_synonyms else 0,  # unneeded
@@ -690,10 +776,15 @@ class Raw:
                         "derivations": derivations if word_derivations else [],
                         "nb_derivations_extra": len(derivations_extra),
                         "derivations_extra": derivations_extra,
+                        "nb_variations": len(word_variations),
+                        "variations": word_variations,
                     }
                     cpt += 1
             annotation_word_query += " ) "
-            words_output["global"] = {"nb_words": cpt - 1, "nb_matches": matches,
+            words_output["global"] = {"nb_words": cpt - 1, "nb_matches_overall": int(matches),
+                                      "nb_matches": matches_in_results,
+                                      "nb_ayas_overall": docs,
+                                      "nb_ayas": docs_in_results,
                                       "nb_vocalizations": nb_vocalizations_globale}
         output["words"] = words_output
         # Magic_loop to built queries of Adjacents,translations and annotations in the same time
@@ -713,7 +804,7 @@ class Raw:
             annotation_aya_query += " )"
 
         if prev_aya or next_aya:
-            adja_res, searcher = self.QSE.find_extended(adja_query, "gid")
+            adja_res, adja_searcher = self.QSE.find_extended(adja_query, "gid")
             adja_ayas = {0:
                              {"aya_": "----",
                               "uth_": "----",
@@ -725,14 +816,16 @@ class Raw:
                 adja_ayas[adja["gid"]] = {"aya_": adja["aya_"], "uth_": adja["uth_"], "aya_id": adja["aya_id"],
                                           "sura": adja["sura"], "sura_arabic": adja["sura_arabic"]}
                 extend_runtime += adja_res.runtime
+            adja_searcher.close()
 
         # translations
         if translation:
-            trad_res, searcher = self.TSE.find_extended(trad_query, "gid")
+            trad_res, trad_searcher = self.TSE.find_extended(trad_query, "gid")
             extend_runtime += trad_res.runtime
             trad_text = {}
             for tr in trad_res:
                 trad_text[tr["gid"]] = tr["text"]
+            trad_searcher.close()
         output["runtime"] = round(extend_runtime, 5)
         output["interval"] = {
             "start": start,
