@@ -12,6 +12,14 @@ from alfanous.results_processing import QScore, QTranslationHighlight
 
 STANDARD2UTHMANI = lambda x: std2uth_words.get(x) or x
 
+# Language codes for all translation languages present in the dataset.
+# Used to build the list of text_{lang} search fields.
+_TRANSLATION_LANGS = [
+    'am', 'ar', 'ber', 'bn', 'de', 'en', 'fa', 'fr', 'hi', 'id', 'ms', 'ru', 'sw', 'tr', 'ur',
+]
+# All language-specific indexed translation fields (text_en, text_fr, …).
+_TEXT_LANG_FIELDS = [f'text_{l}' for l in _TRANSLATION_LANGS]
+
 FALSE_PATTERN = '^false|no|off|0$'
 
 
@@ -654,9 +662,10 @@ class Raw:
             # NestedParent so results are parent aya documents that have
             # translations matching the query text.
             from whoosh import query as wq
-            from whoosh.qparser import QueryParser as _QP, OrGroup as _OrGroup
-            _trans_parser = _QP("trans_text", self.QSE._schema,
-                                group=_OrGroup)
+            from whoosh.qparser import MultifieldParser as _MFP, OrGroup as _OrGroup
+            # Only include text_{lang} fields that actually exist in the schema.
+            _available_fields = [f for f in _TEXT_LANG_FIELDS if f in self.QSE._schema]
+            _trans_parser = _MFP(_available_fields, self.QSE._schema, group=_OrGroup)
             _trans_q = _trans_parser.parse(query)
             _nested_q = wq.NestedParent(wq.Term("kind", "aya"), _trans_q)
             res, termz, searcher = self.QSE.search_with_query(
@@ -882,12 +891,21 @@ class Raw:
             for ch in child_res:
                 g = ch["gid"]
                 tid = ch.get("trans_id") or ""
+                lang = ch.get("trans_lang") or ""
+                # Read text from the language-specific field when available,
+                # falling back to the stored trans_text for backward compat.
+                text_field = f"text_{lang}" if lang else None
+                text = (
+                    (ch.get(text_field) if text_field else None)
+                    or ch.get("trans_text")
+                    or ""
+                )
                 if g not in all_children:
                     all_children[g] = {}
                 all_children[g][tid] = {
-                    "text": ch.get("trans_text") or "",
+                    "text": text,
                     "id": tid,
-                    "lang": ch.get("trans_lang") or "",
+                    "lang": lang,
                     "author": ch.get("trans_author") or "",
                 }
             child_searcher.close()
@@ -1038,12 +1056,13 @@ class Raw:
 
         query = query.replace("\\", "")
 
-        # Search trans_text in nested child docs directly.
+        # Search text_{lang} fields in nested child docs directly.
         from whoosh import query as wq
         from whoosh.query import NestedParent
-        from whoosh.qparser import QueryParser as _QP, OrGroup as _OrGroup
-        _trans_parser = _QP("trans_text", self.QSE._schema,
-                            group=_OrGroup)
+        from whoosh.qparser import MultifieldParser as _MFP, OrGroup as _OrGroup
+        # Only include text_{lang} fields that actually exist in the schema.
+        _available_fields = [f for f in _TEXT_LANG_FIELDS if f in self.QSE._schema]
+        _trans_parser = _MFP(_available_fields, self.QSE._schema, group=_OrGroup)
         _child_q = wq.And([wq.Term("kind", "translation"), _trans_parser.parse(query)])
         res, termz, searcher = self.QSE.search_with_query(
             _child_q,
@@ -1052,7 +1071,7 @@ class Raw:
             timelimit=timelimit,
         )
         # Extract matched terms from the translation sub-query for highlight.
-        terms = [t for field, t in _child_q.all_terms() if field == "trans_text"]
+        terms = [t for field, t in _child_q.all_terms() if field in _available_fields]
         H = lambda X: QTranslationHighlight(X, terms, type=highlight) if highlight != "none" and X else X if X else "-----"
 
         offset = 1 if offset < 1 else offset
@@ -1099,6 +1118,15 @@ class Raw:
         for r in reslist:
             cpt += 1
             _parent = parent_data.get(r["gid"], {})
+            # Read text from the language-specific field when available,
+            # falling back to the stored trans_text for backward compat.
+            _r_lang = r.get("trans_lang") or ""
+            _r_text_field = f"text_{_r_lang}" if _r_lang else None
+            _r_text = (
+                (r.get(_r_text_field) if _r_text_field else None)
+                or r.get("trans_text")
+                or ""
+            )
             output["translations"][cpt] = {
                 "identifier": {
                     "gid": r["gid"],
@@ -1112,8 +1140,8 @@ class Raw:
                     "text": _parent.get("aya"),
                 },
                 "translation": {
-                    "text": H(r.get("trans_text")),
-                    "text_no_highlight": r.get("trans_text"),
+                    "text": H(_r_text),
+                    "text_no_highlight": _r_text,
                     "author": r.get("trans_author"),
                     "lang": r.get("trans_lang"),
                 },

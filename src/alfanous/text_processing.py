@@ -219,3 +219,117 @@ QUthmaniAnalyzer = QSpaceTokenizer() | QArabicSymbolsFilter(shaping=True, tashki
 QUthmaniDiacAnalyzer = QSpaceTokenizer() | QArabicSymbolsFilter(tashkil=False, uthmani_symbols=True)
 TranslationHighLightAnalyzer = RegexTokenizer() | LowercaseFilter()
 QFuzzyAnalyzer = _build_fuzzy_analyzer()
+
+
+# ---------------------------------------------------------------------------
+# Language-specific translation analyzers (pystemmer / Snowball)
+# ---------------------------------------------------------------------------
+
+# Mapping from ISO 639-1 language codes to PyStemmer / Snowball algorithm names.
+# Only languages that have a confirmed Snowball algorithm are listed here.
+# Translation languages in this dataset that have NO Snowball support and will
+# therefore use the fallback (RegexTokenizer + LowercaseFilter) analyzer:
+#   am (Amharic), ber (Berber), bn (Bengali), fa (Persian), ms (Malay),
+#   sw (Swahili), ur (Urdu).
+_LANG_TO_SNOWBALL = {
+    'ar': 'arabic',
+    'da': 'danish',
+    'nl': 'dutch',
+    'en': 'english',
+    'fi': 'finnish',
+    'fr': 'french',
+    'de': 'german',
+    'el': 'greek',
+    'hi': 'hindi',
+    'hu': 'hungarian',
+    'id': 'indonesian',
+    'it': 'italian',
+    'lt': 'lithuanian',
+    'ne': 'nepali',
+    'no': 'norwegian',
+    'pt': 'portuguese',
+    'ro': 'romanian',
+    'ru': 'russian',
+    'es': 'spanish',
+    'sv': 'swedish',
+    'ta': 'tamil',
+    'tr': 'turkish',
+}
+
+
+class TranslationStemFilter(Filter):
+    """Whoosh filter that applies language-specific stemming using PyStemmer (Snowball).
+
+    Falls back to a no-op if *pystemmer* is not installed or the language is
+    not supported by Snowball.
+
+    @param lang: ISO 639-1 language code (e.g. ``'en'``, ``'fr'``, ``'de'``).
+    """
+
+    def __init__(self, lang):
+        self._lang = lang
+        self._available = self._make_stemmer(lang)
+
+    def _make_stemmer(self, lang):
+        snowball_name = _LANG_TO_SNOWBALL.get(lang)
+        if not snowball_name:
+            self._stemmer = None
+            return False
+        try:
+            import Stemmer
+            self._stemmer = Stemmer.Stemmer(snowball_name)
+            return True
+        except (ImportError, KeyError, ValueError):
+            self._stemmer = None
+            return False
+
+    # pystemmer's Stemmer (Cython) is not picklable; only persist lang and flag.
+    def __getstate__(self):
+        return {'_lang': self._lang, '_available': self._available}
+
+    def __setstate__(self, state):
+        self._lang = state['_lang']
+        self._available = state['_available']
+        if self._available:
+            self._make_stemmer(self._lang)
+        else:
+            self._stemmer = None
+
+    def __call__(self, tokens):
+        if self._stemmer is None:
+            yield from tokens
+            return
+        for t in tokens:
+            if t.text:
+                t.text = self._stemmer.stemWord(t.text)
+            yield t
+
+
+def make_translation_analyzer(lang):
+    """Build a language-specific translation analyzer using Snowball stemming.
+
+    Returns a Whoosh analyzer that tokenizes with :class:`RegexTokenizer`,
+    lowercases, and applies a Snowball stemmer for *lang* (if supported by
+    PyStemmer).  Falls back to ``RegexTokenizer | LowercaseFilter`` for
+    unsupported languages or when *pystemmer* is not installed.
+
+    @param lang: ISO 639-1 language code (e.g. ``'en'``, ``'fr'``).
+    @return: Whoosh analyzer pipeline.
+    """
+    stem_filter = TranslationStemFilter(lang)
+    base = RegexTokenizer() | LowercaseFilter()
+    if stem_filter._available:
+        return base | stem_filter
+    return base
+
+
+# Named language-specific translation analyzer instances.
+# These names are referenced by the 'analyzer' key in fields.json so that
+# Transformer.build_schema() can retrieve them via getattr(text_processing, name).
+# Languages present in the Quran translations dataset (translations.json).
+_TRANSLATION_LANGS = [
+    'am', 'ar', 'ber', 'bn', 'de', 'en', 'fa', 'fr', 'hi', 'id', 'ms', 'ru', 'sw', 'tr', 'ur',
+]
+
+for _tl in _TRANSLATION_LANGS:
+    globals()[f'TranslationAnalyzer_{_tl}'] = make_translation_analyzer(_tl)
