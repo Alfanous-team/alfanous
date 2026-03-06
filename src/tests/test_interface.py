@@ -495,3 +495,60 @@ def test_correct_query_unsupported_unit():
     result = alfanous.api.correct_query("الله", unit="word")
     assert "error" in result
     assert result["correct_query"] is None
+
+
+def test_correct_query_multiword_phrase():
+    # Multi-word query with all known terms — corrected equals original
+    result = alfanous.api.correct_query("الرحمن الرحيم")
+    assert result["error"]["code"] == 0
+    cq = result["correct_query"]
+    assert cq["original"] == "الرحمن الرحيم"
+    assert isinstance(cq["corrected"], str)
+
+
+def test_correct_query_misspelled_phrase():
+    # Misspelled multi-word query — corrector should suggest nearest known terms
+    result = alfanous.api.correct_query("الرحمان الرحيم")
+    assert result["error"]["code"] == 0
+    cq = result["correct_query"]
+    assert cq["original"] == "الرحمان الرحيم"
+    assert isinstance(cq["corrected"], str)
+    # Corrected must differ from original because الرحمان is misspelled
+    assert cq["corrected"] != cq["original"]
+
+
+def test_correct_query_quoted_phrase_no_error():
+    # Quoted phrase with all valid terms — corrected equals original (quotes preserved)
+    result = alfanous.api.correct_query('"الرحمن الرحيم"')
+    assert result["error"]["code"] == 0
+    cq = result["correct_query"]
+    assert cq["original"] == '"الرحمن الرحيم"'
+    assert cq["corrected"] == '"الرحمن الرحيم"'
+
+
+def test_correct_query_quoted_phrase_with_error():
+    # Quoted phrase with a misspelled term — corrector fixes the term inside quotes
+    result = alfanous.api.correct_query('"الرحمان الرحيم"')
+    assert result["error"]["code"] == 0
+    cq = result["correct_query"]
+    assert cq["original"] == '"الرحمان الرحيم"'
+    # Corrected version should differ (الرحمان → الرحمن)
+    assert cq["corrected"] != cq["original"]
+    assert isinstance(cq["corrected"], str)
+
+
+def test_correct_query_long_phrase():
+    # Multi-word phrase including one misspelled word
+    result = alfanous.api.correct_query("بسم الله الرحمان الرحيم")
+    assert result["error"]["code"] == 0
+    cq = result["correct_query"]
+    assert cq["original"] == "بسم الله الرحمان الرحيم"
+    assert cq["corrected"] != cq["original"]
+
+
+def test_correct_query_long_quoted_phrase_no_error():
+    # Well-formed quoted phrase — corrected equals original
+    result = alfanous.api.correct_query('"بسم الله الرحمن الرحيم"')
+    assert result["error"]["code"] == 0
+    cq = result["correct_query"]
+    assert cq["corrected"] == cq["original"]

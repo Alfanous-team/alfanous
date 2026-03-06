@@ -353,6 +353,37 @@ class TestCorrectQuery:
         # Should not raise
         json.dumps(result)
 
+    def test_multiword_phrase(self):
+        """correct_query with a multi-word query of known terms should return the same string."""
+        result = correct_query(query="الرحمن الرحيم")
+        assert result["error"]["code"] == 0
+        cq = result["correct_query"]
+        assert cq["original"] == "الرحمن الرحيم"
+        assert isinstance(cq["corrected"], str)
+
+    def test_misspelled_phrase_is_corrected(self):
+        """A misspelled multi-word query should produce a different corrected string."""
+        result = correct_query(query="الرحمان الرحيم")
+        assert result["error"]["code"] == 0
+        cq = result["correct_query"]
+        assert cq["original"] == "الرحمان الرحيم"
+        assert cq["corrected"] != cq["original"]
+
+    def test_quoted_phrase_no_error(self):
+        """Quoted phrase with all valid terms — corrected equals original (quotes preserved)."""
+        result = correct_query(query='"الرحمن الرحيم"')
+        assert result["error"]["code"] == 0
+        cq = result["correct_query"]
+        assert cq["corrected"] == cq["original"]
+
+    def test_quoted_phrase_with_error(self):
+        """Quoted phrase with a misspelled term — corrector fixes term inside quotes."""
+        result = correct_query(query='"الرحمان الرحيم"')
+        assert result["error"]["code"] == 0
+        cq = result["correct_query"]
+        assert cq["corrected"] != cq["original"]
+        assert isinstance(cq["corrected"], str)
+
 
 # ---------------------------------------------------------------------------
 # get_ai_rules resource
