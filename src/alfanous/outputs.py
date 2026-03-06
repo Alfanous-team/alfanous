@@ -558,10 +558,7 @@ class Raw:
         if view == "minimal":
             # fuzzy = True
             # page = 25
-            vocalized = False
             recitation = None
-            translation = None
-            lang = None
             prev_aya = next_aya = False
             sura_info = False
             word_info = False
@@ -574,13 +571,13 @@ class Raw:
             annotation_aya = annotation_word = False
         elif view == "normal":
             prev_aya = next_aya = True
-            sura_info = True
+            sura_info = False
             word_info = True
             word_synonyms = False
             word_derivations = True
             word_vocalizations = True
             aya_position_info = aya_theme_info = aya_sajda_info = True
-            aya_stat_info = True
+            aya_stat_info = False
             sura_stat_info = False
             annotation_aya = annotation_word = False
         elif view == "full":
