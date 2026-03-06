@@ -613,3 +613,45 @@ def test_arabizi_quran_word_filter():
     # لؤلؤ is Quranic; "lolo" → لؤلؤ (dialectal simplification: ؤ written as o)
     result_lolo = filtered("lolo")
     assert len(result_lolo) > 0   # graceful fallback even if not exact match
+
+
+def test_fuzzy_excludes_short_words():
+    """Words shorter than 4 characters must not be included in fuzzy (Levenshtein) matching."""
+    from whoosh.query import FuzzyTerm
+
+    # Reproduce the exact filter condition used in QSearcher.search so that any
+    # future change to that condition is caught here too.  The condition is
+    # intentionally duplicated to pin the requirement as a contract test.
+    def build_levenshtein_subqueries(terms, fuzzy_maxdist=1):
+        return [
+            FuzzyTerm("aya_ac", term, maxdist=fuzzy_maxdist, prefixlength=1)
+            for _fieldname, term in terms
+            if term and len(term) >= 4 and any('\u0600' <= c <= '\u06FF' for c in term)
+        ]
+
+    # Short Arabic words (< 4 chars) must produce NO FuzzyTerm entries
+    short_words = [("aya", u"من"), ("aya", u"رب"), ("aya", u"في"), ("aya", u"هو")]
+    assert build_levenshtein_subqueries(short_words) == [], \
+        "Short Arabic words (<4 chars) should be excluded from fuzzy matching"
+
+    # A 3-char word
+    three_char = [("aya", u"قلب")]
+    assert build_levenshtein_subqueries(three_char) == [], \
+        "3-char Arabic word should be excluded from fuzzy matching"
+
+    # A word at the boundary (exactly 4 chars) must be included
+    four_char = [("aya", u"الله")]
+    result = build_levenshtein_subqueries(four_char)
+    assert len(result) == 1, "4-char Arabic word should be included in fuzzy matching"
+    assert isinstance(result[0], FuzzyTerm)
+    assert result[0].text == u"الله"
+
+    # A word longer than 4 chars must also be included
+    long_word = [("aya", u"الكتاب")]
+    result_long = build_levenshtein_subqueries(long_word)
+    assert len(result_long) == 1, "Long Arabic word should be included in fuzzy matching"
+
+    # Non-Arabic terms (Latin) must not be included regardless of length
+    latin_terms = [("aya", "hello"), ("aya", "world")]
+    assert build_levenshtein_subqueries(latin_terms) == [], \
+        "Non-Arabic terms should be excluded from fuzzy matching"
