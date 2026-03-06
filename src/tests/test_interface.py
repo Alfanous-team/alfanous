@@ -228,3 +228,75 @@ def test_non_arabic_search_returns_ayas():
     for pos, item in ayas.items():
         assert set(item.keys()) >= expected_keys, f"position {pos} missing aya keys"
         assert isinstance(item["identifier"]["gid"], int)
+
+
+# ---------------------------------------------------------------------------
+# Highlight in translation search
+# ---------------------------------------------------------------------------
+
+def test_translation_search_default_highlight():
+    """Translation search bold highlight wraps the matched term in <b> tags."""
+    result = alfanous.api.search("merciful", unit="translation", highlight="bold")
+    assert result["error"]["code"] == 0
+    trans = result["search"]["translations"]
+    assert len(trans) > 0
+    # At least one item must have the query term wrapped in <b>…</b>.
+    highlighted = [
+        item for item in trans.values()
+        if "<b>" in item["translation"]["text"]
+    ]
+    assert len(highlighted) > 0, (
+        "Expected at least one translation result with bold-highlighted 'merciful'"
+    )
+    for item in highlighted:
+        # The <b>-wrapped segment must be adjacent to the query term.
+        assert "<b>" in item["translation"]["text"] and "</b>" in item["translation"]["text"]
+        # The raw text must not contain markup.
+        assert "<b>" not in item["translation"]["text_no_highlight"]
+
+
+def test_translation_search_css_highlight():
+    """Translation search CSS highlight wraps matched terms in <span class='match'> tags."""
+    result = alfanous.api.search("merciful", unit="translation", highlight="css")
+    assert result["error"]["code"] == 0
+    trans = result["search"]["translations"]
+    assert len(trans) > 0
+    highlighted = [
+        item for item in trans.values()
+        if "<span" in item["translation"]["text"]
+    ]
+    assert len(highlighted) > 0, (
+        "Expected at least one translation result with CSS-highlighted 'merciful'"
+    )
+    for item in highlighted:
+        # The span must carry the 'match' class as produced by HtmlFormatter.
+        assert 'class="match' in item["translation"]["text"], (
+            "CSS highlight must include class='match' on the <span> element"
+        )
+        # The raw text must not contain markup.
+        assert "<span" not in item["translation"]["text_no_highlight"]
+
+
+def test_translation_search_no_highlight():
+    """Translation search with highlight='none' returns text equal to text_no_highlight."""
+    result = alfanous.api.search("merciful", unit="translation", highlight="none")
+    assert result["error"]["code"] == 0
+    trans = result["search"]["translations"]
+    assert len(trans) > 0
+    for pos, item in trans.items():
+        assert item["translation"]["text"] == item["translation"]["text_no_highlight"], (
+            f"position {pos}: 'none' highlight must leave text unchanged"
+        )
+
+
+def test_translation_search_highlight_text_no_highlight_always_plain():
+    """text_no_highlight is always a plain string regardless of highlight setting."""
+    for highlight_mode in ("bold", "css", "none"):
+        result = alfanous.api.search("merciful", unit="translation", highlight=highlight_mode)
+        assert result["error"]["code"] == 0
+        for pos, item in result["search"]["translations"].items():
+            raw = item["translation"]["text_no_highlight"]
+            assert isinstance(raw, str), f"text_no_highlight must be a string (mode={highlight_mode})"
+            assert "<b>" not in raw and "<span" not in raw, (
+                f"text_no_highlight must not contain HTML markup (mode={highlight_mode})"
+            )
