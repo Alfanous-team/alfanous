@@ -63,7 +63,7 @@ def test_nested_qse_parent_count(nested_qse_index):
 
 @pytest.mark.skipif(not _STORE_EXISTS, reason="translation store not found")
 def test_nested_qse_nested_parent_query(nested_qse_index):
-    """NestedParent: searching trans_text returns parent aya documents."""
+    """NestedParent: searching text_en returns parent aya documents."""
     from whoosh.filedb.filestore import FileStorage
     from whoosh import query as wq
     from whoosh.qparser import QueryParser
@@ -71,7 +71,7 @@ def test_nested_qse_nested_parent_query(nested_qse_index):
     with ix.searcher() as s:
         q = wq.NestedParent(
             wq.Term("kind", "aya"),
-            QueryParser("trans_text", ix.schema).parse("merciful"),
+            QueryParser("text_en", ix.schema).parse("merciful"),
         )
         results = s.search(q, limit=10)
         assert len(results) > 0, "NestedParent query must return at least one aya"
