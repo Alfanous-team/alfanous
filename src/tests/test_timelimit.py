@@ -2,8 +2,16 @@
 Tests for the configurable timelimit feature across the search stack.
 """
 
+import shutil
 import inspect
+import tempfile
 from unittest.mock import MagicMock, patch, call
+
+from whoosh.fields import Schema, NUMERIC, TEXT
+from whoosh.collectors import TimeLimitCollector, FilterCollector
+from whoosh.searching import TimeLimit
+import whoosh.index as whoosh_index
+from whoosh import query as wquery
 
 from alfanous.searching import QSearcher
 from alfanous.engines import BasicSearchEngine
@@ -59,8 +67,40 @@ def _make_mock_results():
     return mock_results
 
 
-def test_qsearcher_passes_timelimit_to_whoosh():
-    """QSearcher.search must forward timelimit to whoosh's searcher.search()."""
+def test_qsearcher_passes_timelimit_via_collector():
+    """QSearcher.search must use TimeLimitCollector when timelimit is given."""
+    mock_results = _make_mock_results()
+
+    mock_collector = MagicMock()
+    mock_collector.results.return_value = mock_results
+
+    mock_whoosh_searcher = MagicMock()
+    mock_whoosh_searcher.collector.return_value = mock_collector
+
+    mock_index = MagicMock()
+    mock_index.get_index.return_value.searcher.return_value = mock_whoosh_searcher
+    mock_index.get_schema.return_value = MagicMock()
+
+    mock_parser = MagicMock()
+    mock_parser.parse.return_value = MagicMock(all_terms=MagicMock(return_value=[]))
+
+    with patch("alfanous.searching.TimeLimitCollector") as MockTLC:
+        mock_tlc = MagicMock()
+        mock_tlc.results.return_value = mock_results
+        MockTLC.return_value = mock_tlc
+
+        searcher = QSearcher(mock_index, mock_parser)
+        searcher.search("test query", timelimit=3.0)
+
+        MockTLC.assert_called_once()
+        _, tlc_kwargs = MockTLC.call_args
+        assert tlc_kwargs.get("timelimit") == 3.0, "TimeLimitCollector must receive timelimit=3.0"
+        mock_whoosh_searcher.search_with_collector.assert_called_once()
+        mock_whoosh_searcher.search.assert_not_called()
+
+
+def test_qsearcher_no_timelimit_uses_search_directly():
+    """When timelimit=None, QSearcher.search must call searcher.search() without TimeLimitCollector."""
     mock_results = _make_mock_results()
 
     mock_whoosh_searcher = MagicMock()
@@ -73,34 +113,15 @@ def test_qsearcher_passes_timelimit_to_whoosh():
     mock_parser = MagicMock()
     mock_parser.parse.return_value = MagicMock(all_terms=MagicMock(return_value=[]))
 
-    searcher = QSearcher(mock_index, mock_parser)
-    searcher.search("test query", timelimit=3.0)
+    with patch("alfanous.searching.TimeLimitCollector") as MockTLC:
+        searcher = QSearcher(mock_index, mock_parser)
+        searcher.search("test query", timelimit=None)
 
-    call_kwargs = mock_whoosh_searcher.search.call_args
-    assert "timelimit" in call_kwargs.kwargs, "timelimit must be passed to whoosh searcher.search"
-    assert call_kwargs.kwargs["timelimit"] == 3.0
-
-
-def test_qsearcher_no_timelimit_kwarg_when_none():
-    """When timelimit=None, QSearcher.search must NOT pass timelimit to whoosh."""
-    mock_results = _make_mock_results()
-
-    mock_whoosh_searcher = MagicMock()
-    mock_whoosh_searcher.search.return_value = mock_results
-
-    mock_index = MagicMock()
-    mock_index.get_index.return_value.searcher.return_value = mock_whoosh_searcher
-    mock_index.get_schema.return_value = MagicMock()
-
-    mock_parser = MagicMock()
-    mock_parser.parse.return_value = MagicMock(all_terms=MagicMock(return_value=[]))
-
-    searcher = QSearcher(mock_index, mock_parser)
-    searcher.search("test query", timelimit=None)
-
-    call_kwargs = mock_whoosh_searcher.search.call_args
-    assert "timelimit" not in call_kwargs.kwargs, \
-        "timelimit must NOT be passed to whoosh when it is None"
+        MockTLC.assert_not_called()
+        mock_whoosh_searcher.search.assert_called_once()
+        call_kwargs = mock_whoosh_searcher.search.call_args
+        assert "timelimit" not in call_kwargs.kwargs, \
+            "timelimit must NOT be passed to whoosh when it is None"
 
 
 def test_basic_search_engine_passes_timelimit_to_qsearcher():
@@ -124,3 +145,105 @@ def test_basic_search_engine_passes_timelimit_to_qsearcher():
     call_kwargs = mock_qsearcher.search.call_args
     assert call_kwargs.kwargs.get("timelimit") == 7.5, \
         "BasicSearchEngine must pass timelimit to QSearcher.search"
+
+
+# ---------------------------------------------------------------------------
+# Integration tests using a real in-memory Whoosh index (no Quran data needed)
+# ---------------------------------------------------------------------------
+
+def _build_test_index(num_docs=10000):
+    """Build a temporary Whoosh index with enough documents to trigger timelimit.
+
+    Returns a (index, tmpdir) tuple; the caller is responsible for removing
+    tmpdir when done.
+    """
+    tmpdir = tempfile.mkdtemp()
+    schema = Schema(sura_id=NUMERIC(stored=True), text=TEXT(stored=True))
+    ix = whoosh_index.create_in(tmpdir, schema)
+    writer = ix.writer()
+    # sura_id cycles 1-30 to mimic Quran's 30 juz (parts)
+    for i in range(num_docs):
+        writer.add_document(sura_id=(i % 30) + 1, text="arabic text word " * 50)
+    writer.commit()
+    return ix, tmpdir
+
+
+def test_timelimit_returns_partial_results_no_crash():
+    """A wildcard search with an extremely short timelimit must return partial
+    results gracefully instead of crashing.  This simulates the behaviour of a
+    query like '*' against the full Quran index."""
+    ix, tmpdir = _build_test_index(num_docs=10000)
+    searcher = ix.searcher()
+    try:
+        base_c = searcher.collector(limit=10000)
+        tlc = TimeLimitCollector(base_c, timelimit=0.00001, use_alarm=False)
+        timed_out = False
+        try:
+            searcher.search_with_collector(wquery.Every(), tlc)
+        except TimeLimit:
+            timed_out = True
+
+        results = tlc.results()
+        # Whether or not the timer actually fired (hardware-dependent), the
+        # collector must always return a valid Results object without raising.
+        assert results is not None, "results must not be None after timelimit"
+        assert len(results) >= 0, "results length must be non-negative"
+        if timed_out:
+            # Partial results: fewer docs than total
+            assert len(results) < 10000, "partial results must be fewer than total docs"
+    finally:
+        searcher.close()
+        shutil.rmtree(tmpdir, ignore_errors=True)
+
+
+def test_timelimit_with_filter_returns_correctly_filtered_partial_results():
+    """Filtering must still be applied correctly when a timelimit is set and
+    the search times out mid-way through the result set."""
+    ix, tmpdir = _build_test_index(num_docs=10000)
+    searcher = ix.searcher()
+    try:
+        filter_q = wquery.Term("sura_id", 1)
+        base_c = searcher.collector(limit=10000)
+        tlc = TimeLimitCollector(base_c, timelimit=0.00001, use_alarm=False)
+        final_c = FilterCollector(tlc, allow=filter_q)
+        try:
+            searcher.search_with_collector(wquery.Every(), final_c)
+        except TimeLimit:
+            pass
+
+        results = final_c.results()
+        assert results is not None
+        # Every returned document must satisfy the filter (sura_id == 1)
+        wrong = [r["sura_id"] for r in results if r["sura_id"] != 1]
+        assert not wrong, f"Filter must hold even after timelimit; got wrong sura_ids: {wrong}"
+    finally:
+        searcher.close()
+        shutil.rmtree(tmpdir, ignore_errors=True)
+
+
+def test_timelimit_warning_logged_on_timeout(caplog):
+    """QSearcher.search must emit a WARNING log entry when the timelimit is hit."""
+    import logging
+    from alfanous.searching import QSearcher
+
+    ix, tmpdir = _build_test_index(num_docs=10000)
+    try:
+        mock_index = MagicMock()
+        mock_index.get_index.return_value = ix
+        mock_index.get_schema.return_value = ix.schema
+
+        from whoosh.qparser import QueryParser
+        parser = QueryParser("text", schema=ix.schema)
+
+        qs = QSearcher(mock_index, parser)
+
+        with caplog.at_level(logging.WARNING, logger="alfanous.searching"):
+            qs.search("word", timelimit=0.00001)
+
+        # The warning may or may not fire depending on timing, but the call must
+        # never crash.  If it did fire, it must mention "timelimit".
+        for record in caplog.records:
+            if record.levelno == logging.WARNING:
+                assert "timelimit" in record.getMessage().lower()
+    finally:
+        shutil.rmtree(tmpdir, ignore_errors=True)

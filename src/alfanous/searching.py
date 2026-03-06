@@ -2,6 +2,11 @@ from alfanous.results_processing import QSort, QScore
 from alfanous.constants import QURAN_TOTAL_VERSES
 from whoosh.sorting import Facets
 from whoosh import query as wquery
+from whoosh.collectors import TimeLimitCollector, FilterCollector
+from whoosh.searching import TimeLimit
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 class QReader:
@@ -137,10 +142,23 @@ class QSearcher:
             elif len(filter_queries) > 1:
                 filter_query = wquery.And(filter_queries)
         
-        search_kwargs = dict(q=query, limit=limit, sortedby=QSort(sortedby), reverse=reverse, groupedby=groupedby, filter=filter_query, terms=fuzzy)
+        collector_kwargs = dict(limit=limit, sortedby=QSort(sortedby), reverse=reverse, groupedby=groupedby, terms=fuzzy)
         if timelimit is not None:
-            search_kwargs["timelimit"] = timelimit
-        results = searcher.search(**search_kwargs)
+            c = searcher.collector(**collector_kwargs)
+            tlc = TimeLimitCollector(c, timelimit=timelimit, use_alarm=False)
+            # FilterCollector must wrap TimeLimitCollector (not the other way)
+            # so that filter logic in FilterCollector.collect_matches() is
+            # applied correctly.  Wrapping in the reverse order causes
+            # TimeLimitCollector.collect_matches() to call child.collect()
+            # directly, bypassing FilterCollector's allow-set check.
+            final_c = FilterCollector(tlc, allow=filter_query) if filter_query is not None else tlc
+            try:
+                searcher.search_with_collector(query, final_c)
+            except TimeLimit:
+                logger.warning("Search timelimit of %s seconds reached; returning partial results", timelimit)
+            results = final_c.results()
+        else:
+            results = searcher.search(query, **collector_kwargs, filter=filter_query)
 
         if fuzzy:
             # Use matched_terms() to capture the actual index terms that were
