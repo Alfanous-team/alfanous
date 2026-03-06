@@ -98,7 +98,7 @@ class QSearcher:
             levenshtein_subqueries = [
                 FuzzyTerm("aya_ac", term, maxdist=fuzzy_maxdist, prefixlength=1)
                 for fieldname, term in query.all_terms()
-                if term and any('\u0600' <= c <= '\u06FF' for c in term)
+                if term and len(term) >= 4 and any('\u0600' <= c <= '\u06FF' for c in term)
             ]
 
             parts = [query]
