@@ -627,23 +627,31 @@ class Raw:
         query = query.replace("\\", "")
 
         if ":" not in query:
-            # If the query contains no Arabic characters, treat it as Arabizi
-            # (Latin/digit-based Arabic chat alphabet) and expand to all potential
-            # Arabic candidates (OR semantics via space-separated terms).
             if not re.search(r'[\u0600-\u06FF]', query):
-                _ignore = "'_\"%*?#~[]{}:>+-|"
-                candidates = arabizi_to_arabic_list(query, ignore=_ignore)
-                # Filter candidates to those that appear as actual Quranic words.
-                # Each candidate may be a multi-word string (space-separated); a
-                # candidate is accepted when every individual token is a known
-                # unvocalized Quranic word.  If no candidates pass the filter,
-                # fall back to the full unfiltered list so the search still runs.
-                # quran_unvocalized_words() is @lru_cache so this is O(1) after
-                # the first call.
-                _qwords = quran_unvocalized_words()
-                if _qwords:
-                    candidates = filter_candidates_by_wordset(candidates, _qwords)
-                query = " ".join(candidates) if candidates else query
+                # Non-Arabic query: if the QSE index has a nested `transliteration`
+                # field, route the search there so results come from the embedded
+                # translation text rather than the Arabic verse text.
+                # Fall back to Arabizi conversion when the field is absent (old index).
+                _qse_has_transliteration = (
+                    self.QSE.OK and "transliteration" in self.QSE._schema.names()
+                )
+                if _qse_has_transliteration:
+                    query = "transliteration:" + query
+                else:
+                    # Arabizi (Latin/digit-based Arabic chat alphabet) conversion
+                    _ignore = "'_\"%*?#~[]{}:>+-|"
+                    candidates = arabizi_to_arabic_list(query, ignore=_ignore)
+                    # Filter candidates to those that appear as actual Quranic words.
+                    # Each candidate may be a multi-word string (space-separated); a
+                    # candidate is accepted when every individual token is a known
+                    # unvocalized Quranic word.  If no candidates pass the filter,
+                    # fall back to the full unfiltered list so the search still runs.
+                    # quran_unvocalized_words() is @lru_cache so this is O(1) after
+                    # the first call.
+                    _qwords = quran_unvocalized_words()
+                    if _qwords:
+                        candidates = filter_candidates_by_wordset(candidates, _qwords)
+                    query = " ".join(candidates) if candidates else query
 
         # Search
         SE = self.QSE
@@ -867,16 +875,6 @@ class Raw:
                     }
             trad_searcher.close()
 
-        # Always include en.transliteration and ar.tafssir for every result aya.
-        _fixed_trad_text = {}
-        if reslist and self.TSE.OK:
-            for _fixed_id in ("en.transliteration", "ar.tafssir"):
-                if _fixed_id in self._translations:
-                    _fq = _gid_base_query + " AND id:%s" % _fixed_id
-                    _fr, _fs = self.TSE.find_extended(_fq, "gid")
-                    _fixed_trad_text[_fixed_id] = {r["gid"]: r["text"] for r in _fr}
-                    _fs.close()
-
         output["runtime"] = round(extend_runtime, 5)
         output["interval"] = {
             "start": start,
@@ -922,8 +920,8 @@ class Raw:
                     "text_no_highlight": r["aya"] if script == "standard"
                     else r["uth_"],
                     "translation": trad_text.get(r["gid"]) if _want_translation else None,
-                    "transliteration": _fixed_trad_text.get("en.transliteration", {}).get(r["gid"]),
-                    "tafssir": _fixed_trad_text.get("ar.tafssir", {}).get(r["gid"]),
+                    "transliteration": r.get("transliteration"),
+                    "tafssir": r.get("tafssir"),
 
                     "recitation": None if not recitation or not self._recitations.get(recitation) \
                         else f'https://www.everyayah.com/data/{self._recitations[recitation]["subfolder"]}/%03d%03d.mp3' % (

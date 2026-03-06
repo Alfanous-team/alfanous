@@ -1180,5 +1180,31 @@
         "table_name": "wordqc",
         "type": "KEYWORD",
         "unique": null
+    },
+    {
+        "analyzer": "TranslationHighLightAnalyzer",
+        "comment": "English transliteration (en.transliteration) — stored and searchable for non-Arabic queries",
+        "id": 94,
+        "is_spellchecked": null,
+        "name": "en_transliteration",
+        "name_arabic": "ترجمة_صوتية",
+        "search_name": "transliteration",
+        "stored": true,
+        "table_name": "aya",
+        "type": "TEXT",
+        "unique": null
+    },
+    {
+        "analyzer": null,
+        "comment": "Arabic tafsir text (ar.jalalayn) — stored for display only",
+        "id": 95,
+        "is_spellchecked": null,
+        "name": "ar_jalalayn",
+        "name_arabic": "تفسير",
+        "search_name": "tafssir",
+        "stored": true,
+        "table_name": "aya",
+        "type": "TEXT",
+        "unique": null
     }
 ]

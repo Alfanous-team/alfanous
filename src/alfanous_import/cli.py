@@ -14,6 +14,11 @@ commands = OptionGroup(parser, "Options", "Choose what to do:  ")
 commands.add_option("-x", "--index", dest="index", type="choice", choices=["main", "extend", "word"],
                     help="create  indexes", metavar="TYPE")
 
+commands.add_option("--translations", dest="translations_path",
+                    help="path to translation zips store used to embed transliteration "
+                         "and tafsir text into the main index (used with -x main)",
+                    metavar="TRANSLATIONS_PATH", default=None)
+
 commands.add_option("-t", "--index-translation", dest="index_translation",
                     help="index a single translation zip file into the extend index. "
                          "ZIP_FILE is the path to the .trans.zip file; "
@@ -44,7 +49,7 @@ if options.index:
     if options.index == "main":
         T = Transformer(index_path=DESTINATION, resource_path=SOURCE)
         ayaSchema = T.build_schema(tablename='aya')
-        T.build_docindex(ayaSchema)
+        T.build_docindex(ayaSchema, translations_store_path=options.translations_path)
 
     elif options.index == "extend":
         E = ZekrModelsImporter(pathindex=DESTINATION, pathstore=SOURCE)

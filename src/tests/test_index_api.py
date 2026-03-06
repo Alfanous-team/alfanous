@@ -12,6 +12,7 @@ alfanous_import = pytest.importorskip(
 )
 
 import alfanous.api as alfanous
+from alfanous.constants import QURAN_TOTAL_VERSES
 
 # Path to the translation store shipped with the repository
 _STORE_DIR = os.path.normpath(os.path.join(
@@ -199,5 +200,51 @@ def test_translation_index_gid_field_present(temp_index_dir, temp_translations_j
         last = list(searcher.find("gid", str(_LAST_VERSE_GID)))
         assert last, f"Translation document with gid={_LAST_VERSE_GID} should exist"
         assert last[0].get("gid") == _LAST_VERSE_GID
+
+    ix.close()
+
+
+# Check that both translation zips needed for QSE nesting are present
+_QSE_NESTED_ZIPS = [
+    os.path.join(_STORE_DIR, "en.transliteration.trans.zip"),
+    os.path.join(_STORE_DIR, "ar.jalalayn.trans.zip"),
+]
+_QSE_NESTED_STORE_EXISTS = os.path.isdir(_STORE_DIR) and all(
+    os.path.exists(z) for z in _QSE_NESTED_ZIPS
+)
+
+
+@pytest.mark.skipif(
+    not _QSE_NESTED_STORE_EXISTS,
+    reason="en.transliteration and ar.jalalayn zips not found in store/Translations/",
+)
+def test_qse_main_index_nested_translations(tmp_path):
+    """build_docindex with translations_store_path embeds transliteration and tafssir into QSE."""
+    from whoosh.filedb.filestore import FileStorage
+    from alfanous_import.transformer import Transformer
+
+    index_dir = str(tmp_path / "main")
+    t = Transformer(
+        index_path=index_dir,
+        resource_path=os.path.normpath(
+            os.path.join(os.path.dirname(__file__), "..", "alfanous", "resources")
+        ) + os.sep,
+    )
+    schema = t.build_schema("aya")
+    assert "transliteration" in schema.names(), "transliteration field must be in QSE schema"
+    assert "tafssir" in schema.names(), "tafssir field must be in QSE schema"
+
+    t.build_docindex(schema, translations_store_path=_STORE_DIR)
+
+    ix = FileStorage(index_dir).open_index()
+    assert ix.doc_count() == QURAN_TOTAL_VERSES, "Main index must have all 6236 verses"
+
+    with ix.searcher() as searcher:
+        # First verse (Al-Fatiha, gid=1): check both nested fields are non-empty
+        results = list(searcher.find("gid", "1"))
+        assert results, "gid=1 must exist in the main index"
+        doc = results[0]
+        assert doc.get("transliteration"), "transliteration must be populated for gid=1"
+        assert doc.get("tafssir"), "tafssir must be populated for gid=1"
 
     ix.close()
