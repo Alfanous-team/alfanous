@@ -171,14 +171,3 @@ def QuranicSearchEngine(indexpath="../indexes/main/",
                              )
 
 
-def WordSearchEngine(indexpath="../indexes/word/", qparser=StandardParser):
-    """Retained for import compatibility. Word search is now served by
-    kind="word" children nested inside the QSE main index."""
-    return BasicSearchEngine(qdocindex=BasicDocIndex(indexpath)
-                             , query_parser=qparser
-                             , main_field="normalized"
-                             , otherfields=["word", "spelled"]
-                             , qsearcher=QSearcher
-                             , qreader=QReader
-                             , qhighlight=Qhighlight
-                             )
