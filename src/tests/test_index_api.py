@@ -167,3 +167,71 @@ def test_update_translations_list_does_not_preserve_non_indexed(tmp_path):
     # The newly indexed entries must be present
     assert "en.shakir" in data
     assert "en.transliteration" in data
+
+
+# Known verse coordinates used in index field tests
+_FIRST_VERSE_GID = 1
+_FIRST_VERSE_SURA_ID = 1
+_FIRST_VERSE_AYA_ID = 1
+_LAST_VERSE_GID = 6236
+_LAST_VERSE_SURA_ID = 114
+_LAST_VERSE_AYA_ID = 6
+
+
+@pytest.mark.skipif(not _STORE_EXISTS, reason="sample translation zips not found in store/Translations/")
+def test_translation_index_contains_sura_id_aya_id(temp_index_dir, temp_translations_json, translation_source_dir):
+    """Indexed translation documents must contain sura_id and aya_id fields."""
+    from whoosh.filedb.filestore import FileStorage
+
+    alfanous.index_translations(
+        source=translation_source_dir,
+        _index_path=temp_index_dir,
+        _translations_list_file=temp_translations_json,
+    )
+
+    storage = FileStorage(temp_index_dir)
+    ix = storage.open_index()
+    schema_names = ix.schema.names()
+    assert "sura_id" in schema_names, "sura_id field must be present in translation index schema"
+    assert "aya_id" in schema_names, "aya_id field must be present in translation index schema"
+
+    # Spot-check that the first verse has correct sura_id/aya_id
+    with ix.searcher() as searcher:
+        results = list(searcher.find("gid", str(_FIRST_VERSE_GID)))
+        assert results, f"Translation document with gid={_FIRST_VERSE_GID} should exist"
+        doc = results[0]
+        assert doc.get("sura_id") == _FIRST_VERSE_SURA_ID, (
+            f"Expected sura_id={_FIRST_VERSE_SURA_ID} for gid={_FIRST_VERSE_GID}, got {doc.get('sura_id')}"
+        )
+        assert doc.get("aya_id") == _FIRST_VERSE_AYA_ID, (
+            f"Expected aya_id={_FIRST_VERSE_AYA_ID} for gid={_FIRST_VERSE_GID}, got {doc.get('aya_id')}"
+        )
+
+    ix.close()
+
+
+@pytest.mark.skipif(not _STORE_EXISTS, reason="sample translation zips not found in store/Translations/")
+def test_translation_index_last_verse_sura_aya_ids(temp_index_dir, temp_translations_json, translation_source_dir):
+    """The last verse must have sura_id=114 and aya_id=6."""
+    from whoosh.filedb.filestore import FileStorage
+
+    alfanous.index_translations(
+        source=translation_source_dir,
+        _index_path=temp_index_dir,
+        _translations_list_file=temp_translations_json,
+    )
+
+    storage = FileStorage(temp_index_dir)
+    ix = storage.open_index()
+    with ix.searcher() as searcher:
+        results = list(searcher.find("gid", str(_LAST_VERSE_GID)))
+        assert results, f"Translation document with gid={_LAST_VERSE_GID} should exist"
+        doc = results[0]
+        assert doc.get("sura_id") == _LAST_VERSE_SURA_ID, (
+            f"Expected sura_id={_LAST_VERSE_SURA_ID} for gid={_LAST_VERSE_GID}, got {doc.get('sura_id')}"
+        )
+        assert doc.get("aya_id") == _LAST_VERSE_AYA_ID, (
+            f"Expected aya_id={_LAST_VERSE_AYA_ID} for gid={_LAST_VERSE_GID}, got {doc.get('aya_id')}"
+        )
+
+    ix.close()

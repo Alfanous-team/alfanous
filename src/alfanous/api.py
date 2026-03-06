@@ -40,7 +40,9 @@ def search(query: str, unit: str = "aya", page: int = 1, sortedby: str = "releva
            fuzzy: bool = False, fuzzy_maxdist: int = 1, view: str = "normal",
            highlight: str = "bold", flags: Optional[Dict[str, Any]] = None,
            facets: Optional[str] = None, filter: Optional[str] = None,
-           timelimit: Optional[float] = 5.0) -> Dict[str, Any]:
+           timelimit: Optional[float] = 5.0,
+           translation: Optional[str] = None,
+           lang: Optional[str] = None) -> Dict[str, Any]:
     """
     Search in Quran verses and translations.
     
@@ -59,6 +61,10 @@ def search(query: str, unit: str = "aya", page: int = 1, sortedby: str = "releva
     @param filter: Filter to apply to results
     @param timelimit: Maximum number of seconds to spend on the search query
            (default 5.0). Pass None to disable the limit.
+    @param translation: Translation ID (e.g. 'en.shakir') to include with aya results.
+    @param lang: Language code (e.g. 'en', 'fr', 'ar') to retrieve translations by
+           language at query time. If both ``translation`` and ``lang`` are given,
+           ``translation`` takes precedence.
     @return: Dictionary of search results
     """
     all_flags = flags if flags is not None else {}
@@ -74,6 +80,8 @@ def search(query: str, unit: str = "aya", page: int = 1, sortedby: str = "releva
                       "facets": facets,
                       "filter": filter,
                       "timelimit": timelimit,
+                      "translation": translation,
+                      "lang": lang,
                       })
     return do(all_flags)
 

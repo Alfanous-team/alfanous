@@ -1,7 +1,26 @@
+import json
+import logging
 import os.path
 import re
+from functools import lru_cache
 from zipfile import ZipFile
 
+
+@lru_cache(maxsize=1)
+def _load_gid_verse_map():
+    """Return a dict mapping gid (int) → (sura_id, aya_id) from alfanous aya.json."""
+    try:
+        from alfanous import paths as _alfanous_paths
+        aya_json = os.path.join(_alfanous_paths.ROOT_RESOURCE, "aya.json")
+    except ImportError:
+        # Fallback: resolve relative to this file's location
+        aya_json = os.path.normpath(os.path.join(
+            os.path.dirname(__file__),
+            "..", "..", "alfanous", "resources", "aya.json",
+        ))
+    with open(aya_json, encoding="utf-8") as f:
+        data = json.load(f)
+    return {int(entry["gid"]): (int(entry["sura_id"]), int(entry["aya_id"])) for entry in data}
 
 
 class TranslationModel:
@@ -50,8 +69,18 @@ class TranslationModel:
         lines = self.translation_lines(props)
         assert len(lines) == 6236, "the number of lines is not 6236"
 
+        gid_map = _load_gid_verse_map()
         for i in range(6236):
-            doc = {"gid": i + 1, "id": props["id"],
+            gid = i + 1
+            verse = gid_map.get(gid)
+            if verse is None:
+                logging.warning("gid=%d not found in verse map; sura_id and aya_id will be None", gid)
+                sura_id, aya_id = None, None
+            else:
+                sura_id, aya_id = verse
+            doc = {"gid": gid, "id": props["id"],
+                   "sura_id": sura_id,
+                   "aya_id": aya_id,
                    "text": lines[i],
                    "type": "translation",
                    "lang": props["language"],

@@ -150,6 +150,8 @@ class ZekrModelsImporter:
     """  Import  translations of quran as Zekr models """
     schema = Schema(
         gid=NUMERIC(stored=True),
+        sura_id=NUMERIC(stored=True),
+        aya_id=NUMERIC(stored=True),
         id=TEXT(stored=True),
         text=TEXT(stored=True, analyzer=RegexTokenizer() | LowercaseFilter()),
         lang=KEYWORD(stored=True),
@@ -192,8 +194,15 @@ class ZekrModelsImporter:
         try:
             writer = self.index.writer()
             for doc in doclist:
-                writer.add_document(gid=doc["gid"], id=doc["id"], text=doc["text"], lang=doc["lang"],
-                                    author=doc["author"])
+                writer.add_document(
+                    gid=doc["gid"],
+                    sura_id=doc.get("sura_id"),
+                    aya_id=doc.get("aya_id"),
+                    id=doc["id"],
+                    text=doc["text"],
+                    lang=doc["lang"],
+                    author=doc["author"],
+                )
             print(doc['id'], doc['gid'])
             writer.commit()
         except Exception as E:

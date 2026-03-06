@@ -65,6 +65,7 @@ class Raw:
             "view": "custom",
             "recitation": "1",
             "translation": None,
+            "lang": None,
             "romanization": None,
             "prev_aya": True,
             "next_aya": True,
@@ -114,6 +115,7 @@ class Raw:
         "view": ["minimal", "normal", "full", "statistic", "linguistic", "recitation", "custom"],
         "recitation": [],  # range( 30 ),
         "translation": [],
+        "lang": [],
         "romanization": ["none", "buckwalter", "iso", "arabtex"],  # arabizi is forbidden for show
         "prev_aya": [True, False],
         "next_aya": [True, False],
@@ -153,6 +155,7 @@ class Raw:
         "view": "pre-defined configuration for what information to retrieve",
         "recitation": "recitation id",
         "translation": "translation id",
+        "lang": "language code (e.g. 'en', 'fr', 'ar') to select translation by language at query time",
         "romanization": "type of romanization",
         "prev_aya": "enable previous aya retrieving",
         "next_aya": "enable next aya retrieving",
@@ -477,6 +480,7 @@ class Raw:
             else int(flags["offset"])
         recitation = flags["recitation"]
         translation = flags["translation"]
+        lang = flags.get("lang") or self._defaults["flags"]["lang"]
         romanization = flags["romanization"]
         highlight = flags["highlight"]
         script = flags["script"]
@@ -526,6 +530,7 @@ class Raw:
             vocalized = False
             recitation = None
             translation = None
+            lang = None
             prev_aya = next_aya = False
             sura_info = False
             word_info = False
@@ -804,7 +809,8 @@ class Raw:
                                       "nb_vocalizations": nb_vocalizations_globale}
         output["words"] = words_output
         # Magic_loop to built queries of Adjacents,translations and annotations in the same time
-        if prev_aya or next_aya or translation or annotation_aya:
+        _want_translation = bool(translation or lang)
+        if prev_aya or next_aya or _want_translation or annotation_aya:
             adja_query = trad_query = annotation_aya_query = "( 0"
 
             for r in reslist:
@@ -812,11 +818,14 @@ class Raw:
                     adja_query += " OR gid:%s " % str(r["gid"] - 1)
                 if next_aya:
                     adja_query += " OR gid:%s " % str(r["gid"] + 1)
-                if translation:
+                if _want_translation:
                     trad_query += " OR gid:%s " % str(r["gid"])
 
             adja_query += " )"
-            trad_query += " )" + " AND id:%s " % translation
+            if translation:
+                trad_query += " )" + " AND id:%s " % translation
+            elif lang:
+                trad_query += " )" + " AND lang:%s " % lang
             annotation_aya_query += " )"
 
         if prev_aya or next_aya:
@@ -835,12 +844,28 @@ class Raw:
             adja_searcher.close()
 
         # translations
-        if translation:
+        if _want_translation:
             trad_res, trad_searcher = self.TSE.find_extended(trad_query, "gid")
             extend_runtime += trad_res.runtime
             trad_text = {}
             for tr in trad_res:
-                trad_text[tr["gid"]] = tr["text"]
+                gid_key = tr["gid"]
+                # Keep one translation entry per gid.  When a specific translation
+                # id was requested there is always exactly one match per gid.  When
+                # filtering by language code (lang=) multiple translations in the
+                # same language could theoretically match the same gid; the first
+                # result (highest relevance score) is used in that case.
+                # sura_id and aya_id are included so API consumers have the natural
+                # verse key available without needing a separate gid→sura/aya lookup.
+                if gid_key not in trad_text:
+                    trad_text[gid_key] = {
+                        "text": tr["text"],
+                        "id": tr.get("id"),
+                        "author": tr.get("author"),
+                        "lang": tr.get("lang"),
+                        "sura_id": tr.get("sura_id"),
+                        "aya_id": tr.get("aya_id"),
+                    }
             trad_searcher.close()
         output["runtime"] = round(extend_runtime, 5)
         output["interval"] = {
@@ -886,7 +911,7 @@ class Raw:
                     else H(r["uth_"]),
                     "text_no_highlight": r["aya"] if script == "standard"
                     else r["uth_"],
-                    "translation": trad_text.get(r["gid"]) if (translation != "None" and translation ) else None,
+                    "translation": trad_text.get(r["gid"]) if _want_translation else None,
 
                     "recitation": None if not recitation or not self._recitations.get(recitation) \
                         else f'https://www.everyayah.com/data/{self._recitations[recitation]["subfolder"]}/%03d%03d.mp3' % (
