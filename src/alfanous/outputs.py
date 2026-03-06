@@ -12,11 +12,7 @@ from alfanous.results_processing import QScore, QTranslationHighlight
 
 STANDARD2UTHMANI = lambda x: std2uth_words.get(x) or x
 
-# Language codes for all translation languages present in the dataset.
-# Used to build the list of text_{lang} search fields.
-_TRANSLATION_LANGS = [
-    'am', 'ar', 'ber', 'bn', 'de', 'en', 'fa', 'fr', 'hi', 'id', 'ms', 'ru', 'sw', 'tr', 'ur',
-]
+from alfanous.text_processing import _TRANSLATION_LANGS
 # All language-specific indexed translation fields (text_en, text_fr, …).
 _TEXT_LANG_FIELDS = [f'text_{l}' for l in _TRANSLATION_LANGS]
 
