@@ -248,11 +248,12 @@ class Transformer:
                 # Add word children from quranic corpus (nested alongside translations).
                 if words_by_aya and sura_id is not None and aya_id is not None:
                     for w in words_by_aya.get((sura_id, aya_id), []):
-                        # Exclude 'gid' from word children — the gid field in the
-                        # aya schema is the unique aya identifier (1–6236); using it
-                        # for word occurrence IDs would pollute numeric aya searches.
+                        # Use the parent aya's gid (not the word's own sequential
+                        # occurrence counter) so word children can be fetched with
+                        # the same gid-based query used for translation children.
                         word_doc = {k: v for k, v in w.items()
                                     if v is not None and k != "gid"}
+                        word_doc["gid"] = gid
                         writer.add_document(kind="word", **word_doc)
                 writer.end_group()
             else:

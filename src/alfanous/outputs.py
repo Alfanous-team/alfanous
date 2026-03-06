@@ -928,22 +928,14 @@ class Raw:
                                 break
 
         # Fetch word children (kind="word") for each aya on the result page when
-        # the linguistic view is requested.  Use a Whoosh NestedChildren query
-        # to retrieve children of the matching parent aya documents.  Results
-        # are grouped and sorted by word_id so callers receive tokens in their
-        # natural left-to-right order within the verse.
+        # the linguistic view is requested.  Word children carry the parent aya's
+        # gid so they can be fetched with the same query used for translations.
         aya_words_map = {}  # {(sura_id, aya_id): [word_entry, ...]}
         if word_linguistics and reslist:
             try:
-                _all_parents = wquery.Term("kind", "aya")
-                _specific_parents = wquery.Or(
-                    [wquery.Term("gid", r["gid"]) for r in reslist]
+                wc_res, wc_searcher = self.QSE.find_extended(
+                    _gid_base_query + " AND kind:word", "gid"
                 )
-                _nested_q = wquery.And(
-                    [wquery.NestedChildren(_all_parents, _specific_parents),
-                     wquery.Term("kind", "word")]
-                )
-                wc_res, _, wc_searcher = self.QSE.search_with_query(_nested_q)
                 extend_runtime += wc_res.runtime
                 for w in wc_res:
                     key = (w.get("sura_id"), w.get("aya_id"))
