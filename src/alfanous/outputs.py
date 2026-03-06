@@ -8,7 +8,7 @@ from alfanous.romanization import transliterate, arabizi_to_arabic_list, filter_
 from alfanous.misc import locate, find, filter_doubles
 from whoosh import query as wquery
 from whoosh.sorting import Facets
-from alfanous.results_processing import QScore
+from alfanous.results_processing import QScore, QTranslationHighlight
 
 STANDARD2UTHMANI = lambda x: std2uth_words.get(x) or x
 
@@ -1043,8 +1043,9 @@ class Raw:
             sortedby=sortedby,
             timelimit=timelimit,
         )
-        terms = []
-        H = lambda X: self.QSE.highlight(X, terms, highlight) if highlight != "none" and X else X if X else "-----"
+        # Extract matched terms from the translation sub-query for highlight.
+        terms = [t for field, t in _trans_q.all_terms() if field == "trans_text"]
+        H = lambda X: QTranslationHighlight(X, terms, type=highlight) if highlight != "none" and X else X if X else "-----"
 
         offset = 1 if offset < 1 else offset
         range = self._defaults["minrange"] if range < self._defaults["minrange"] else range
