@@ -135,6 +135,11 @@ def test_search_translation_unit_english():
         ident = item["identifier"]
         assert "gid" in ident and isinstance(ident["gid"], int)
         assert "translation_id" in ident
+        assert "aya_id" in ident
+        assert "sura_id" in ident
+        assert "sura_name" in ident
+        assert "aya" in item, "Expected 'aya' context block in translation result"
+        assert "text" in item["aya"], "Expected 'text' in 'aya' context block"
         translation = item["translation"]
         assert "text" in translation
         assert "lang" in translation

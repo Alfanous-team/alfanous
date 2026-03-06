@@ -1040,18 +1040,19 @@ class Raw:
 
         # Search trans_text in nested child docs directly.
         from whoosh import query as wq
+        from whoosh.query import NestedParent
         from whoosh.qparser import QueryParser as _QP, OrGroup as _OrGroup
         _trans_parser = _QP("trans_text", self.QSE._schema,
                             group=_OrGroup)
-        _trans_q = wq.And([wq.Term("kind", "translation"), _trans_parser.parse(query)])
+        _child_q = wq.And([wq.Term("kind", "translation"), _trans_parser.parse(query)])
         res, termz, searcher = self.QSE.search_with_query(
-            _trans_q,
+            _child_q,
             limit=self._defaults["results_limit"]["translation"],
             sortedby=sortedby,
             timelimit=timelimit,
         )
         # Extract matched terms from the translation sub-query for highlight.
-        terms = [t for field, t in _trans_q.all_terms() if field == "trans_text"]
+        terms = [t for field, t in _child_q.all_terms() if field == "trans_text"]
         H = lambda X: QTranslationHighlight(X, terms, type=highlight) if highlight != "none" and X else X if X else "-----"
 
         offset = 1 if offset < 1 else offset
@@ -1061,6 +1062,28 @@ class Raw:
         end = interval_end if interval_end < len(res) else len(res)
         start = offset if offset <= len(res) else -1
         reslist = [] if end == 0 or start == -1 else list(res)[start - 1:end]
+
+        # Fetch parent aya docs for the current result page using NestedParent.
+        # NestedParent(_child_q) returns the parent aya of every matching translation child.
+        _kword = re.compile("[^,،]+")
+        _keywords = lambda phrase: _kword.findall(phrase)
+        parent_data = {}
+        if reslist:
+            _all_parents_q = wq.Term("kind", "aya")
+            _page_gids = {r["gid"] for r in reslist}
+            _page_child_q = wq.And([
+                wq.Term("kind", "translation"),
+                wq.Or([wq.Term("gid", str(g)) for g in _page_gids]),
+            ])
+            _parent_q = NestedParent(_all_parents_q, _page_child_q)
+            _parent_res, _, _parent_searcher = self.QSE.search_with_query(
+                _parent_q,
+                limit=self._defaults["results_limit"]["aya"],
+                timelimit=timelimit,
+            )
+            for _p in _parent_res:
+                parent_data[_p["gid"]] = _p
+            _parent_searcher.close()
 
         output = {}
         output["runtime"] = round(res.runtime, 5)
@@ -1075,10 +1098,18 @@ class Raw:
         output["translations"] = {}
         for r in reslist:
             cpt += 1
+            _parent = parent_data.get(r["gid"], {})
             output["translations"][cpt] = {
                 "identifier": {
                     "gid": r["gid"],
                     "translation_id": r.get("trans_id"),
+                    "aya_id": _parent.get("aya_id"),
+                    "sura_id": _parent.get("sura_id"),
+                    "sura_name": _keywords(_parent["sura"])[0] if _parent.get("sura") else None,
+                    "sura_arabic_name": _keywords(_parent["sura_arabic"])[0] if _parent.get("sura_arabic") else None,
+                },
+                "aya": {
+                    "text": _parent.get("aya"),
                 },
                 "translation": {
                     "text": H(r.get("trans_text")),
