@@ -162,6 +162,17 @@ class QSearcher:
 
         return results, terms, searcher
 
+    def search_obj(self, q_obj, limit=QURAN_TOTAL_VERSES, sortedby="score", timelimit=5.0):
+        """Run a pre-built Whoosh query object (e.g. NestedParent) directly,
+        bypassing string parsing.  Returns the same ``(results, terms, searcher)``
+        tuple as :meth:`search` but with an empty *terms* list."""
+        searcher = self._searcher(weighting=QScore())
+        search_kwargs = dict(q=q_obj, limit=limit, sortedby=QSort(sortedby))
+        if timelimit is not None:
+            search_kwargs["timelimit"] = timelimit
+        results = searcher.search(**search_kwargs)
+        return results, [], searcher
+
 
     def suggest(self, querystr):
         d = {}

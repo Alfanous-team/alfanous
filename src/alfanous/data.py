@@ -83,18 +83,6 @@ def QSE(path=paths.QSE_INDEX):
 
 
 @lru_cache(maxsize=1)
-def TSE(path=paths.TSE_INDEX):
-    """
-    Create a Translation Search Engine instance.
-    
-    @param path: Path to the translation search index
-    @return: TraductionSearchEngine instance
-    """
-    from alfanous.engines import TraductionSearchEngine
-    return TraductionSearchEngine(path)
-
-
-@lru_cache(maxsize=1)
 def WSE(path=paths.WSE_INDEX):
     """
     Create a Word Search Engine instance.

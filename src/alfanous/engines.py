@@ -56,6 +56,16 @@ class BasicSearchEngine:
         results, terms, searcher = self._searcher.search(querystr, limit=limit, sortedby=sortedby, reverse=reverse, facets=facets, filter_dict=filter_dict, fuzzy=fuzzy, fuzzy_maxdist=fuzzy_maxdist, timelimit=timelimit)
         return results, list(self._reader.term_stats(terms)), searcher
 
+    def search_with_query(self, q_obj, limit=QURAN_TOTAL_VERSES, sortedby="score", timelimit=5.0):
+        """Run a pre-built Whoosh query object (e.g. NestedParent/NestedChildren).
+
+        Useful when the query cannot be expressed as a plain string, for example
+        cross-field nested document queries.  Returns the same
+        ``(results, term_stats, searcher)`` tuple as :meth:`search_all`.
+        """
+        results, terms, searcher = self._searcher.search_obj(q_obj, limit=limit, sortedby=sortedby, timelimit=timelimit)
+        return results, [], searcher
+
     def most_frequent_words(self, nb, fieldname):
         """
         Get the most frequent words in a field.
@@ -138,18 +148,6 @@ def QuranicSearchEngine(indexpath="../indexes/main/",
                              , qsearcher=QSearcher
                              , qreader=QReader
                              , qhighlight=Qhighlight
-                             )
-
-# TODO merge into main
-def TraductionSearchEngine(indexpath="../indexes/extend/", qparser=QueryParser):
-    """             """
-    return BasicSearchEngine(qdocindex=ExtDocIndex(indexpath)
-                             , query_parser=qparser
-                             , main_field="text"
-                             , otherfields=[]
-                             , qsearcher=QSearcher
-                             , qreader=QReader
-                             , qhighlight=QTranslationHighlight
                              )
 
 

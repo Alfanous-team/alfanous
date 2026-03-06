@@ -15,31 +15,25 @@ from alfanous.constants import QURAN_TOTAL_VERSES
 
 logging.basicConfig(level=logging.INFO)
 
-# Translation IDs whose text is embedded into the main QSE index as named fields.
-# Keys are the translation zip IDs; values are the source field names used in
-# fields.json (the `name` attribute that maps to a `search_name` in the schema).
-_NESTED_TRANSLATIONS = {
-    "en.transliteration": "en_transliteration",
-    "ar.jalalayn": "ar_jalalayn",
-}
 
+def _load_all_translations(translations_store_path):
+    """Return a mapping ``{trans_id: {"lines": [...], "lang": ..., "author": ...}}``
+    for every ``.trans.zip`` found under *translations_store_path*.
 
-def _load_nested_translations(translations_store_path):
-    """Return a ``{gid: {field_name: text}}`` mapping loaded from translation zips.
-
-    Only translations listed in :data:`_NESTED_TRANSLATIONS` and whose zip file
-    exists under *translations_store_path* are loaded.  Missing zips are skipped
-    with a warning rather than raising an error so that a partial translations
-    store still produces a usable index.
+    Each entry's ``"lines"`` list has exactly :data:`QURAN_TOTAL_VERSES` items,
+    indexed from 0 (gid = index + 1).  Zips that cannot be parsed or have the
+    wrong line count are skipped with a warning.
     """
     from alfanous_import.zekr_model_reader.main import TranslationModel
 
-    result = {}  # {gid: {field_name: text}}
-    for trans_id, field_name in _NESTED_TRANSLATIONS.items():
-        zip_path = os.path.join(translations_store_path, f"{trans_id}.trans.zip")
-        if not os.path.exists(zip_path):
-            logging.warning("Nested translation zip not found, skipping: %s", zip_path)
+    result = {}
+    if not os.path.isdir(translations_store_path):
+        logging.warning("Translations store path not found, skipping: %s", translations_store_path)
+        return result
+    for filename in sorted(os.listdir(translations_store_path)):
+        if not filename.endswith(".trans.zip"):
             continue
+        zip_path = os.path.join(translations_store_path, filename)
         try:
             tm = TranslationModel(zip_path)
             props = tm.translation_properties()
@@ -47,17 +41,18 @@ def _load_nested_translations(translations_store_path):
             if len(lines) != QURAN_TOTAL_VERSES:
                 logging.warning(
                     "Translation %s has %d lines (expected %d), skipping",
-                    trans_id, len(lines), QURAN_TOTAL_VERSES,
+                    props.get("id", filename), len(lines), QURAN_TOTAL_VERSES,
                 )
                 continue
-            for i, text in enumerate(lines):
-                gid = i + 1
-                if gid not in result:
-                    result[gid] = {}
-                result[gid][field_name] = text
-            logging.info("Loaded nested translation: %s (%d verses)", trans_id, len(lines))
-        except (OSError, ValueError, AssertionError) as exc:
-            logging.warning("Failed to load translation %s: %s", trans_id, exc)
+            trans_id = props["id"]
+            result[trans_id] = {
+                "lines": lines,
+                "lang": props.get("language", ""),
+                "author": props.get("name", ""),
+            }
+            logging.info("Loaded translation: %s (%d verses)", trans_id, len(lines))
+        except (OSError, ValueError, AssertionError, KeyError) as exc:
+            logging.warning("Failed to load translation %s: %s", filename, exc)
     return result
 
 
@@ -116,10 +111,11 @@ class Transformer:
         for f in self.get_fields(tablename):
             fields_mapping[f["name"]].append(f["search_name"])
 
-        # Optionally embed translation text from zip files into each aya document.
-        nested = {}
+        # Load all translation zips if a store path was provided.
+        # translations: {trans_id: {"lines": [6236 texts], "lang": ..., "author": ...}}
+        translations = {}
         if translations_store_path and tablename == "aya":
-            nested = _load_nested_translations(translations_store_path)
+            translations = _load_all_translations(translations_store_path)
 
         for line in data_list:
             # Normalize chapter/topic/subtopic
@@ -133,15 +129,28 @@ class Transformer:
                 if k in fields_mapping:
                     for search_name in fields_mapping[k]:
                         doc[search_name] = v
-            # Merge nested translation fields when available
-            if nested:
+
+            if translations and tablename == "aya":
+                # Write parent aya doc + child translation docs as a nested group.
                 gid = line.get("gid")
+                doc["kind"] = "aya"
+                writer.start_group()
+                writer.add_document(**doc)
                 if gid is not None:
-                    for field_name, text in nested.get(gid, {}).items():
-                        if field_name in fields_mapping:
-                            for search_name in fields_mapping[field_name]:
-                                doc[search_name] = text
-            writer.add_document(**doc)
+                    idx = gid - 1  # 0-based index into translation lines
+                    for trans_id, tdata in translations.items():
+                        writer.add_document(
+                            kind="translation",
+                            gid=gid,
+                            trans_id=trans_id,
+                            trans_lang=tdata["lang"],
+                            trans_text=tdata["lines"][idx],
+                            trans_author=tdata["author"],
+                        )
+                writer.end_group()
+            else:
+                writer.add_document(**doc)
+
             cpt += 1
             if not cpt % 1559:
                 logging.info(f" - milestone:  {cpt} ( {cpt * 100 / len(data_list)}% )")
