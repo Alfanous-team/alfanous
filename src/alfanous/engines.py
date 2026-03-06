@@ -73,6 +73,15 @@ class BasicSearchEngine:
         """
         return self._searcher.suggest(querystr)
 
+    def correct_query(self, querystr):
+        """
+        Return a corrected version of *querystr* using Whoosh's query corrector.
+
+        @param querystr: The raw query string to correct.
+        @return: Dictionary with 'original' and 'corrected' keys.
+        """
+        return self._searcher.correct_query(querystr)
+
     def autocomplete(self, querystr):
         """
         Get autocomplete suggestions for the last word in a query.

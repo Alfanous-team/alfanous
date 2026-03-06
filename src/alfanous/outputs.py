@@ -101,7 +101,7 @@ class Raw:
     }
 
     DOMAINS = {
-        "action": ["search", "suggest", "show"],
+        "action": ["search", "suggest", "correct_query", "show"],
         "unit": ["aya", "word", "translation"],
         "ident": ["undefined"],
         "platform": ["undefined", "wp7", "s60", "android", "ios", "linux", "window"],
@@ -255,6 +255,8 @@ class Raw:
             output.update(self._search(flags, unit))
         elif action == "suggest":
             output.update(self._suggest(flags, unit))
+        elif action == "correct_query":
+            output.update(self._correct_query(flags, unit))
         elif action == "show":
             output.update(self._show(flags))
         else:
@@ -437,6 +439,20 @@ class Raw:
         query = ' '.join(w for w in query.split() if w)
 
         return self.QSE.suggest_all(query)
+
+    def _correct_query(self, flags, unit):
+        """ return a corrected query for any search unit """
+        if unit == "aya":
+            correction = self._correct_query_aya(flags)
+        else:
+            correction = None
+
+        return {"correct_query": correction}
+
+    def _correct_query_aya(self, flags):
+        """ return a corrected query for aya search """
+        query = flags.get("query") or self._defaults["flags"]["query"]
+        return self.QSE.correct_query(query)
 
     def _search(self, flags, unit):
         if unit == "aya":

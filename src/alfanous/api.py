@@ -74,6 +74,29 @@ def search(query: str, unit: str = "aya", page: int = 1, sortedby: str = "releva
     return do(all_flags)
 
 
+def correct_query(query: str, unit: str = "aya",
+                  flags: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
+    """
+    Return a corrected version of *query* using Whoosh's built-in query
+    corrector.
+
+    Compares each term in the parsed query against the index vocabulary and
+    replaces unknown terms with the closest known alternative.  When the query
+    is already valid (all terms appear in the index) the ``corrected`` value in
+    the response is identical to the original input.
+
+    @param query: The raw query string to correct.
+    @param unit: Search unit ('aya', 'word', 'translation').  Only 'aya' is
+                 currently supported; other units return ``None``.
+    @param flags: Additional flags dictionary.
+    @return: Dictionary containing ``correct_query`` with sub-keys ``original``
+             and ``corrected``, plus the standard ``error`` envelope.
+    """
+    all_flags = flags if flags is not None else {}
+    all_flags.update({"action": "correct_query", "query": query, "unit": unit})
+    return do(all_flags)
+
+
 def get_info(query: str = "all") -> Dict[str, Any]:
     """
     Show useful meta info.

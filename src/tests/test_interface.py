@@ -471,3 +471,27 @@ def test_search():
                          'total': 1566},
             'translation_info': {},
             'words': {'individual': {}}}}
+
+def test_correct_query_via_do():
+    result = alfanous.api.do({"action": "correct_query", "query": "الله"})
+    assert "error" in result
+    assert result["error"]["code"] == 0
+    assert "correct_query" in result
+    cq = result["correct_query"]
+    assert "original" in cq
+    assert "corrected" in cq
+    assert cq["original"] == "الله"
+    assert isinstance(cq["corrected"], str)
+
+
+def test_correct_query_function():
+    result = alfanous.api.correct_query("الله")
+    assert "error" in result
+    assert result["error"]["code"] == 0
+    assert "correct_query" in result
+
+
+def test_correct_query_unsupported_unit():
+    result = alfanous.api.correct_query("الله", unit="word")
+    assert "error" in result
+    assert result["correct_query"] is None
