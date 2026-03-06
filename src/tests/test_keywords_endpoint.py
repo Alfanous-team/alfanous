@@ -160,14 +160,14 @@ def test_keywords_translation_unit_unique():
 
 def test_keywords_translation_unit_frequent():
     """Test translation unit with frequent mode"""
-    result = api.do({'action': 'show', 'query': 'keywords', 'unit': 'translation', 'field': 'trans_text', 'mode': 'frequent', 'limit': 10})
+    result = api.do({'action': 'show', 'query': 'keywords', 'unit': 'translation', 'field': 'text_en', 'mode': 'frequent', 'limit': 10})
     
     assert 'show' in result
     assert result['error']['code'] == 0
     
     show_data = result['show']
     assert show_data['unit'] == 'translation'
-    assert show_data['field'] == 'trans_text'
+    assert show_data['field'] == 'text_en'
     assert show_data['mode'] == 'frequent'
     assert show_data['limit'] == 10
     assert show_data['count'] == 10

@@ -11,6 +11,8 @@ from alfanous.text_processing import (
     QSynonymsFilter,
     QFuzzyAnalyzer,
     QStandardAnalyzer,
+    TranslationStemFilter,
+    make_translation_analyzer,
 )
 from whoosh.analysis import Token
 
@@ -180,3 +182,118 @@ def test_standard_analyzer_preserves_word_forms():
     # Both words should appear as-is (no stemming)
     assert "رسولكم" in tokens
     assert "رسولنا" in tokens
+
+
+# ---------------------------------------------------------------------------
+# TranslationStemFilter
+# ---------------------------------------------------------------------------
+
+def test_translation_stem_filter_english():
+    """English TranslationStemFilter should stem English words."""
+    stem_filter = TranslationStemFilter('en')
+    assert stem_filter._available, "pystemmer must be installed for English stemming"
+    tokens = []
+    for word in ['running', 'runs']:
+        tok = Token()
+        tok.text = word
+        tok.boost = 1.0
+        tok.stopped = False
+        tokens.append(tok)
+    stems = set(t.text for t in stem_filter(iter(tokens)))
+    # Both 'running' and 'runs' should reduce to the same stem
+    assert len(stems) == 1, f"Expected one stem for 'running'/'runs', got {stems}"
+
+
+def test_translation_stem_filter_french():
+    """French TranslationStemFilter should stem French words to the same root."""
+    stem_filter = TranslationStemFilter('fr')
+    assert stem_filter._available, "pystemmer must be installed for French stemming"
+    tokens = []
+    for word in ['aimer', 'aimez', 'aimait', 'aimera']:
+        tok = Token()
+        tok.text = word
+        tok.boost = 1.0
+        tok.stopped = False
+        tokens.append(tok)
+    stems = set(t.text for t in stem_filter(iter(tokens)))
+    # All forms of 'aimer' should reduce to the same stem
+    assert len(stems) == 1, f"Expected one stem for French aimer variants, got {stems}"
+
+
+def test_translation_stem_filter_unsupported_language():
+    """TranslationStemFilter for an unsupported language should be a no-op."""
+    stem_filter = TranslationStemFilter('ber')  # Berber is not in Snowball
+    assert not stem_filter._available
+    tok = Token()
+    tok.text = 'hello'
+    tok.boost = 1.0
+    tok.stopped = False
+    (out,) = list(stem_filter(iter([tok])))
+    assert out.text == 'hello'
+
+
+def test_translation_stem_filter_unknown_language():
+    """TranslationStemFilter with an entirely unknown language code is a no-op."""
+    stem_filter = TranslationStemFilter('zz')
+    assert not stem_filter._available
+    tok = Token()
+    tok.text = 'word'
+    tok.boost = 1.0
+    tok.stopped = False
+    (out,) = list(stem_filter(iter([tok])))
+    assert out.text == 'word'
+
+
+def test_translation_stem_filter_pickle():
+    """TranslationStemFilter must survive pickle/unpickle (Whoosh schema serialization)."""
+    import pickle
+    stem_filter = TranslationStemFilter('en')
+    restored = pickle.loads(pickle.dumps(stem_filter))
+    assert restored._available == stem_filter._available
+    tok = Token()
+    tok.text = 'running'
+    tok.boost = 1.0
+    tok.stopped = False
+    (out,) = list(restored(iter([tok])))
+    assert out.text  # non-empty stemmed form
+
+
+# ---------------------------------------------------------------------------
+# make_translation_analyzer
+# ---------------------------------------------------------------------------
+
+def test_make_translation_analyzer_english():
+    """make_translation_analyzer('en') should lowercase and stem English words."""
+    analyzer = make_translation_analyzer('en')
+    # 'running' and 'runs' should produce the same stem
+    tokens_run = [t.text for t in analyzer('running', mode='index')]
+    tokens_runs = [t.text for t in analyzer('runs', mode='index')]
+    assert tokens_run and tokens_runs, "Analyzer should produce tokens"
+    assert all(t == t.lower() for t in tokens_run + tokens_runs), "Tokens should be lowercase"
+    assert tokens_run == tokens_runs, "Both 'running' and 'runs' should produce the same stem"
+
+
+def test_make_translation_analyzer_unsupported_falls_back():
+    """make_translation_analyzer for an unsupported language should still tokenize/lowercase."""
+    analyzer = make_translation_analyzer('ber')  # Berber — no Snowball
+    tokens = [t.text for t in analyzer('Hello World', mode='index')]
+    assert 'hello' in tokens
+    assert 'world' in tokens
+
+
+def test_make_translation_analyzer_named_instances():
+    """Named TranslationAnalyzer_{lang} instances should be accessible from text_processing."""
+    from alfanous import text_processing
+    for lang in ['en', 'fr', 'de', 'ru', 'tr']:
+        attr = f'TranslationAnalyzer_{lang}'
+        assert hasattr(text_processing, attr), f"text_processing.{attr} not found"
+        analyzer = getattr(text_processing, attr)
+        tokens = [t.text for t in analyzer('Test word', mode='index')]
+        assert tokens, f"Analyzer {attr} produced no tokens"
+
+
+def test_make_translation_analyzer_arabic():
+    """make_translation_analyzer('ar') should lowercase and stem Arabic text."""
+    analyzer = make_translation_analyzer('ar')
+    tokens = [t.text for t in analyzer('الكتاب', mode='index')]
+    assert tokens, "Arabic analyzer should produce tokens"
