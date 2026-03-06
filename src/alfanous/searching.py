@@ -103,7 +103,7 @@ class QSearcher:
             levenshtein_subqueries = [
                 FuzzyTerm("aya_ac", term, maxdist=fuzzy_maxdist, prefixlength=1)
                 for fieldname, term in query.all_terms()
-                if term and len(term) >= 4 and any('\u0600' <= c <= '\u06FF' for c in term)
+                if isinstance(term, str) and len(term) >= 4 and any('\u0600' <= c <= '\u06FF' for c in term)
             ]
 
             parts = [query]
@@ -167,12 +167,24 @@ class QSearcher:
             # downstream code (highlighting, term stats) can handle them.
             # matched_terms() returns None when terms=True was not passed, and
             # an empty set when there are no results.
+            # Non-UTF-8 bytes come from numeric fields (e.g. a_g:1 encodes the
+            # integer as raw bytes); skip those entries because they are not
+            # text terms and cannot be used for highlighting or term stats.
             raw_matched = results.matched_terms()
             if raw_matched is not None and raw_matched:
-                terms = frozenset(
-                    (fieldname, text.decode("utf-8") if isinstance(text, bytes) else text)
-                    for fieldname, text in raw_matched
-                )
+                decoded_terms = []
+                for fieldname, text in raw_matched:
+                    if isinstance(text, bytes):
+                        try:
+                            decoded_terms.append((fieldname, text.decode("utf-8")))
+                        except UnicodeDecodeError:
+                            logger.debug(
+                                "Skipping non-UTF-8 matched term in field %r (numeric encoding): %r",
+                                fieldname, text,
+                            )
+                    else:
+                        decoded_terms.append((fieldname, text))
+                terms = frozenset(decoded_terms)
             else:
                 terms = query.all_terms()
         else:
