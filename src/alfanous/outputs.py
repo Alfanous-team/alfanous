@@ -87,6 +87,7 @@ class Raw:
             "perpage": 10,  # overridden with range
             "fuzzy": False,
             "fuzzy_maxdist": 1,
+            "timelimit": 5.0,
             "aya": True,
             "facets": None,
             "filter": None,
@@ -135,6 +136,7 @@ class Raw:
         "perpage": [],  # range( DEFAULTS["maxrange"] ) , # overridden with range
         "fuzzy": [True, False],
         "fuzzy_maxdist": [],
+        "timelimit": [],
         "aya": [True, False],
     }
 
@@ -173,6 +175,7 @@ class Raw:
         "perpage": "results per page  [override range]",
         "fuzzy": "fuzzy search — searches aya_ (exact) and aya (normalised/stemmed) with Levenshtein distance matching",
         "fuzzy_maxdist": "maximum Levenshtein edit distance for fuzzy term matching (default: 1, only used when fuzzy=True)",
+        "timelimit": "maximum number of seconds to spend on a search query (default: 5.0, use None or 0 to disable)",
         "aya": "enable retrieving of aya text in the case of translation search",
     }
 
@@ -244,6 +247,18 @@ class Raw:
 
     def do(self, flags):
         return self._do(flags)
+
+    def _parse_timelimit(self, flags):
+        """Parse and validate the timelimit flag from a flags dict.
+
+        Returns a float (seconds) to pass to Whoosh, or None to run without a
+        limit.  A value of 0 or the empty string is treated as "no limit".
+        """
+        raw = flags.get('timelimit', self._defaults['flags']['timelimit'])
+        try:
+            return float(raw) if raw not in (None, 0, '0', '') else None
+        except (TypeError, ValueError):
+            return self._defaults['flags']['timelimit']
 
     def _do(self, flags):
         action = flags.get("action") or self._defaults["flags"]["action"]
@@ -468,6 +483,7 @@ class Raw:
         vocalized = IS_FLAG(flags, 'vocalized')
         fuzzy = IS_FLAG(flags, 'fuzzy')
         fuzzy_maxdist = int(flags.get('fuzzy_maxdist', self._defaults['flags']['fuzzy_maxdist']))
+        timelimit = self._parse_timelimit(flags)
         view = flags["view"]
         # Validate view parameter; fall back to "custom" if not recognised
         if view not in self.DOMAINS["view"]:
@@ -626,7 +642,7 @@ class Raw:
 
         # Search
         SE = self.QSE
-        res, termz, searcher = SE.search_all(query, limit=self._defaults["results_limit"]["aya"], sortedby=sortedby, facets=facets_list, filter_dict=filter_dict, fuzzy=fuzzy, fuzzy_maxdist=fuzzy_maxdist)
+        res, termz, searcher = SE.search_all(query, limit=self._defaults["results_limit"]["aya"], sortedby=sortedby, facets=facets_list, filter_dict=filter_dict, fuzzy=fuzzy, fuzzy_maxdist=fuzzy_maxdist, timelimit=timelimit)
         terms = [term[1] for term in list(termz)[:self._defaults["maxkeywords"]]]
         terms_uthmani = map(STANDARD2UTHMANI, terms)
         # All matched aya_ac variation terms (only populated when fuzzy=True).
@@ -958,12 +974,13 @@ class Raw:
         offset = ((int(flags["page"]) - 1) * range) + 1 if flags.get("page") \
             else int(flags["offset"])
         highlight = flags["highlight"]
+        timelimit = self._parse_timelimit(flags)
 
         # preprocess query (no Buckwalter transliteration for translation text)
         query = query.replace("\\", "")
 
         SE = self.TSE
-        res, termz, searcher = SE.search_all(query, limit=self._defaults["results_limit"]["translation"], sortedby=sortedby)
+        res, termz, searcher = SE.search_all(query, limit=self._defaults["results_limit"]["translation"], sortedby=sortedby, timelimit=timelimit)
         terms = [term[1] for term in list(termz)[:self._defaults["maxkeywords"]]]
 
         # pagination
@@ -1016,6 +1033,7 @@ class Raw:
         offset = ((int(flags["page"]) - 1) * range) + 1 if flags.get("page") \
             else int(flags["offset"])
         highlight = flags["highlight"]
+        timelimit = self._parse_timelimit(flags)
 
         # preprocess query
         query = query.replace("\\", "")
@@ -1031,7 +1049,7 @@ class Raw:
                 "runtime": 0
             }
 
-        res, termz, searcher = SE.search_all(query, limit=self._defaults["results_limit"]["word"], sortedby=sortedby)
+        res, termz, searcher = SE.search_all(query, limit=self._defaults["results_limit"]["word"], sortedby=sortedby, timelimit=timelimit)
         terms = [term[1] for term in list(termz)[:self._defaults["maxkeywords"]]]
 
         # pagination

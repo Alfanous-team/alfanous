@@ -39,7 +39,8 @@ def do(flags: Dict[str, Any]) -> Dict[str, Any]:
 def search(query: str, unit: str = "aya", page: int = 1, sortedby: str = "relevance", 
            fuzzy: bool = False, fuzzy_maxdist: int = 1, view: str = "normal",
            highlight: str = "bold", flags: Optional[Dict[str, Any]] = None,
-           facets: Optional[str] = None, filter: Optional[str] = None) -> Dict[str, Any]:
+           facets: Optional[str] = None, filter: Optional[str] = None,
+           timelimit: Optional[float] = 5.0) -> Dict[str, Any]:
     """
     Search in Quran verses and translations.
     
@@ -56,6 +57,8 @@ def search(query: str, unit: str = "aya", page: int = 1, sortedby: str = "releva
     @param flags: Additional flags dictionary
     @param facets: Facets to group results by
     @param filter: Filter to apply to results
+    @param timelimit: Maximum number of seconds to spend on the search query
+           (default 5.0). Pass None to disable the limit.
     @return: Dictionary of search results
     """
     all_flags = flags if flags is not None else {}
@@ -69,7 +72,8 @@ def search(query: str, unit: str = "aya", page: int = 1, sortedby: str = "releva
                       "view": view,
                       "highlight": highlight,
                       "facets": facets,
-                      "filter": filter
+                      "filter": filter,
+                      "timelimit": timelimit,
                       })
     return do(all_flags)
 
