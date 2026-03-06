@@ -663,6 +663,9 @@ class Raw:
         reslist = [] if end == 0 or start == -1 else list(res)[start - 1:end]
         # todo pagination should be done inside search operation for better performence
         # closing the searcher
+        # Pre-built gid query for the current result page, used for translation and
+        # fixed-translation lookups without re-iterating reslist multiple times.
+        _gid_base_query = "( 0" + "".join(" OR gid:%s" % str(r["gid"]) for r in reslist) + " )"
 
         output = {}
 
@@ -811,21 +814,21 @@ class Raw:
         # Magic_loop to built queries of Adjacents,translations and annotations in the same time
         _want_translation = bool(translation or lang)
         if prev_aya or next_aya or _want_translation or annotation_aya:
-            adja_query = trad_query = annotation_aya_query = "( 0"
+            adja_query = annotation_aya_query = "( 0"
+            # trad_query starts from the pre-built gid base; AND filter appended below
+            trad_query = _gid_base_query
 
             for r in reslist:
                 if prev_aya:
                     adja_query += " OR gid:%s " % str(r["gid"] - 1)
                 if next_aya:
                     adja_query += " OR gid:%s " % str(r["gid"] + 1)
-                if _want_translation:
-                    trad_query += " OR gid:%s " % str(r["gid"])
 
             adja_query += " )"
             if translation:
-                trad_query += " )" + " AND id:%s " % translation
+                trad_query += " AND id:%s " % translation
             elif lang:
-                trad_query += " )" + " AND lang:%s " % lang
+                trad_query += " AND lang:%s " % lang
             annotation_aya_query += " )"
 
         if prev_aya or next_aya:
@@ -844,10 +847,10 @@ class Raw:
             adja_searcher.close()
 
         # translations
+        trad_text = {}
         if _want_translation:
             trad_res, trad_searcher = self.TSE.find_extended(trad_query, "gid")
             extend_runtime += trad_res.runtime
-            trad_text = {}
             for tr in trad_res:
                 gid_key = tr["gid"]
                 # Keep one translation entry per gid.  When a specific translation
@@ -863,6 +866,17 @@ class Raw:
                         "lang": tr.get("lang"),
                     }
             trad_searcher.close()
+
+        # Always include en.transliteration and ar.tafssir for every result aya.
+        _fixed_trad_text = {}
+        if reslist and self.TSE.OK:
+            for _fixed_id in ("en.transliteration", "ar.tafssir"):
+                if _fixed_id in self._translations:
+                    _fq = _gid_base_query + " AND id:%s" % _fixed_id
+                    _fr, _fs = self.TSE.find_extended(_fq, "gid")
+                    _fixed_trad_text[_fixed_id] = {r["gid"]: r["text"] for r in _fr}
+                    _fs.close()
+
         output["runtime"] = round(extend_runtime, 5)
         output["interval"] = {
             "start": start,
@@ -908,6 +922,8 @@ class Raw:
                     "text_no_highlight": r["aya"] if script == "standard"
                     else r["uth_"],
                     "translation": trad_text.get(r["gid"]) if _want_translation else None,
+                    "transliteration": _fixed_trad_text.get("en.transliteration", {}).get(r["gid"]),
+                    "tafssir": _fixed_trad_text.get("ar.tafssir", {}).get(r["gid"]),
 
                     "recitation": None if not recitation or not self._recitations.get(recitation) \
                         else f'https://www.everyayah.com/data/{self._recitations[recitation]["subfolder"]}/%03d%03d.mp3' % (

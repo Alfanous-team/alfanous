@@ -65,7 +65,11 @@ def search(query: str, unit: str = "aya", page: int = 1, sortedby: str = "releva
     @param lang: Language code (e.g. 'en', 'fr', 'ar') to retrieve translations by
            language at query time. If both ``translation`` and ``lang`` are given,
            ``translation`` takes precedence.
-    @return: Dictionary of search results
+    @return: Dictionary of search results. Each aya entry always includes
+           ``transliteration`` (en.transliteration text) and ``tafssir``
+           (ar.tafssir text) when those translations are indexed, in addition
+           to the optional ``translation`` field controlled by the
+           ``translation``/``lang`` parameters.
     """
     all_flags = flags if flags is not None else {}
     all_flags.update({"action": "search",
