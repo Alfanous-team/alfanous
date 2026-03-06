@@ -50,6 +50,7 @@ mcp = FastMCP(
         "Use get_quran_info to retrieve metadata such as chapter names, "
         "available translations, and recitations. "
         "Use suggest_query to get auto-completion suggestions while typing a query. "
+        "Use correct_query to fix spelling mistakes in a query before searching. "
         "Queries support Arabic script, Buckwalter transliteration, field filters, "
         "boolean operators, phrase search, wildcards, fuzzy matching, and more. "
         "Read the quran://ai-rules resource for a complete guide on how to "
@@ -558,6 +559,34 @@ def suggest_query(query: str, unit: str = "aya") -> dict:
         "unit": unit,
     }
     result = alfanous_api.do(flags)
+    return _make_serializable(result)
+
+
+@mcp.tool(
+    title="Correct Query Spelling",
+    description=(
+        "Correct spelling mistakes in a Quranic search query. "
+        "Uses the Whoosh query corrector to replace unknown terms with the "
+        "closest matching terms found in the index vocabulary. "
+        "Returns the original query alongside the best corrected version. "
+        "When the query is already valid the corrected string is identical to "
+        "the original. Useful as a pre-processing step before calling "
+        "search_quran."
+    ),
+)
+def correct_query(query: str, unit: str = "aya") -> dict:
+    """Correct spelling mistakes in a Quranic search query.
+
+    Args:
+        query: Query string to correct.
+        unit: Search unit — one of "aya" (verse), "word", or "translation".
+              Only "aya" is currently supported; other units return None.
+
+    Returns:
+        Dictionary with 'correct_query' containing 'original' and 'corrected'
+        query strings, plus the standard error envelope.
+    """
+    result = alfanous_api.correct_query(query=query, unit=unit)
     return _make_serializable(result)
 
 

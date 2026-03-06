@@ -146,9 +146,11 @@ class QSearcher:
         if timelimit is not None:
             c = searcher.collector(**collector_kwargs)
             tlc = TimeLimitCollector(c, timelimit=timelimit, use_alarm=False)
-            # FilterCollector must wrap TimeLimitCollector (not the other way) so
-            # that filter logic in FilterCollector.collect_matches() is applied
-            # correctly.
+            # FilterCollector must wrap TimeLimitCollector (not the other way)
+            # so that filter logic in FilterCollector.collect_matches() is
+            # applied correctly.  Wrapping in the reverse order causes
+            # TimeLimitCollector.collect_matches() to call child.collect()
+            # directly, bypassing FilterCollector's allow-set check.
             final_c = FilterCollector(tlc, allow=filter_query) if filter_query is not None else tlc
             try:
                 searcher.search_with_collector(query, final_c)
@@ -208,3 +210,27 @@ class QSearcher:
         finally:
             searcher.close()
         return d
+
+    def correct_query(self, querystr):
+        """Return a corrected version of *querystr* using Whoosh's built-in
+        query corrector.
+
+        Whoosh's ``searcher.correct_query()`` analyses each term in the parsed
+        query against the index vocabulary and replaces unknown terms with the
+        closest known alternative.  It returns a :class:`whoosh.searching.Correction`
+        object whose ``.string`` attribute contains the rewritten query string
+        ready to pass back to the search engine.
+
+        @param querystr: The raw query string entered by the user.
+        @return: Dictionary with keys ``original`` (the input) and
+                 ``corrected`` (the best rewritten query string, identical to
+                 the input when no correction is needed).
+        """
+        searcher = self._searcher(weighting=QScore())
+        try:
+            parsed = self._qparser.parse(querystr)
+            correction = searcher.correct_query(parsed, querystr)
+            corrected_string = correction.string
+        finally:
+            searcher.close()
+        return {"original": querystr, "corrected": corrected_string}

@@ -44,6 +44,9 @@ $ pip install alfanous3
 # Get suggestions
 >>> api.do({"action": "suggest", "query": u"الح"})
 
+# Correct a query
+>>> api.correct_query(u"الكتاب")
+
 # Get metadata information
 >>> api.do({"action": "show", "query": "translations"})
 ```
@@ -103,7 +106,8 @@ Faceted search (aggregate by fields):
 #### Core Functions
 
 * `api.search(query, **options)` - Search Quran verses
-* `api.do(params)` - Unified interface for all actions (search, suggest, show)
+* `api.do(params)` - Unified interface for all actions (search, suggest, show, correct_query)
+* `api.correct_query(query, unit, flags)` - Get a spelling-corrected version of a query
 * `api.get_info(category)` - Get metadata information
 
 #### Search Parameters
@@ -195,6 +199,38 @@ Fuzzy mode is particularly useful when:
 * You want synonym-aware retrieval without writing explicit OR queries.
 
 > **Note:** `pystemmer` must be installed for stemming to take effect (`pip install pystemmer`). If the package is absent the stem filter degrades silently to a no-op, leaving normalisation and stop-word removal still active.
+
+#### Query Correction
+
+`correct_query()` uses Whoosh's built-in spell-checker to compare each term in the query against the index vocabulary and replace unknown terms with the closest known alternative.  When the query is already valid (all terms appear in the index) the `corrected` value in the response is identical to the original input.
+
+```python
+# Correct a query via the dedicated function
+>>> api.correct_query(u"الكتاب")
+# Returns:
+# {"correct_query": {"original": "الكتاب", "corrected": "الكتاب"}, "error": ...}
+
+# Correct a misspelled / out-of-vocabulary term
+>>> api.correct_query(u"الكتب")
+# Returns:
+# {"correct_query": {"original": "الكتب", "corrected": "الكتاب"}, "error": ...}
+
+# Via the unified interface
+>>> api.do({"action": "correct_query", "query": u"الكتب", "unit": "aya"})
+```
+
+**Parameters:**
+
+* `query` (str): The raw query string to correct (required).
+* `unit` (str): Search unit — currently only `"aya"` is supported; other units return `None` (default: `"aya"`).
+* `flags` (dict): Optional dictionary of additional flags.
+
+**Return value:**
+
+A dictionary with a `correct_query` key containing:
+
+* `original` — the input query string as provided.
+* `corrected` — the corrected query string; identical to `original` when no correction is needed.
 
 #### Query Syntax
 

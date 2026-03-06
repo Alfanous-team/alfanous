@@ -21,7 +21,7 @@ try:
     from alfanous_mcp.mcp_server import (
         search_quran, search_translations, get_quran_info, suggest_query,
         get_ai_rules, search_quran_by_themes, search_quran_by_stats,
-        search_quran_by_position,
+        search_quran_by_position, correct_query,
     )
     MCP_AVAILABLE = True
 except ImportError:
@@ -294,6 +294,95 @@ class TestSuggestQuery:
         result = suggest_query(query="الح")
         # Should not raise
         json.dumps(result)
+
+
+# ---------------------------------------------------------------------------
+# correct_query
+# ---------------------------------------------------------------------------
+
+class TestCorrectQuery:
+    """Tests for the correct_query MCP tool."""
+
+    def test_returns_dict(self):
+        """correct_query should return a dictionary."""
+        result = correct_query(query="الله")
+        assert isinstance(result, dict)
+
+    def test_contains_error_key(self):
+        """Result should contain an 'error' key."""
+        result = correct_query(query="الله")
+        assert "error" in result
+
+    def test_no_error(self):
+        """Successful correct_query should have error code 0."""
+        result = correct_query(query="الله")
+        assert result["error"]["code"] == 0
+
+    def test_contains_correct_query_key(self):
+        """Result should contain a 'correct_query' key."""
+        result = correct_query(query="الله")
+        assert "correct_query" in result
+
+    def test_correct_query_has_original_and_corrected(self):
+        """correct_query value should have 'original' and 'corrected' sub-keys."""
+        result = correct_query(query="الله")
+        cq = result["correct_query"]
+        assert "original" in cq
+        assert "corrected" in cq
+
+    def test_original_matches_input(self):
+        """'original' should match the input query."""
+        result = correct_query(query="الله")
+        assert result["correct_query"]["original"] == "الله"
+
+    def test_corrected_is_string(self):
+        """'corrected' should be a string."""
+        result = correct_query(query="الله")
+        assert isinstance(result["correct_query"]["corrected"], str)
+
+    def test_unit_word_returns_none(self):
+        """correct_query with unit='word' should return None correction (unsupported unit)."""
+        result = correct_query(query="الله", unit="word")
+        assert isinstance(result, dict)
+        assert result["correct_query"] is None
+
+    def test_result_is_serializable(self):
+        """Result should contain only JSON-serializable types."""
+        import json
+        result = correct_query(query="الله")
+        # Should not raise
+        json.dumps(result)
+
+    def test_multiword_phrase(self):
+        """correct_query with a multi-word query of known terms should return the same string."""
+        result = correct_query(query="الرحمن الرحيم")
+        assert result["error"]["code"] == 0
+        cq = result["correct_query"]
+        assert cq["original"] == "الرحمن الرحيم"
+        assert isinstance(cq["corrected"], str)
+
+    def test_misspelled_phrase_is_corrected(self):
+        """A misspelled multi-word query should produce a different corrected string."""
+        result = correct_query(query="الرحمان الرحيم")
+        assert result["error"]["code"] == 0
+        cq = result["correct_query"]
+        assert cq["original"] == "الرحمان الرحيم"
+        assert cq["corrected"] != cq["original"]
+
+    def test_quoted_phrase_no_error(self):
+        """Quoted phrase with all valid terms — corrected equals original (quotes preserved)."""
+        result = correct_query(query='"الرحمن الرحيم"')
+        assert result["error"]["code"] == 0
+        cq = result["correct_query"]
+        assert cq["corrected"] == cq["original"]
+
+    def test_quoted_phrase_with_error(self):
+        """Quoted phrase with a misspelled term — corrector fixes term inside quotes."""
+        result = correct_query(query='"الرحمان الرحيم"')
+        assert result["error"]["code"] == 0
+        cq = result["correct_query"]
+        assert cq["corrected"] != cq["original"]
+        assert isinstance(cq["corrected"], str)
 
 
 # ---------------------------------------------------------------------------
