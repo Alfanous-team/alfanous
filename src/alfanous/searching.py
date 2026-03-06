@@ -76,8 +76,15 @@ class QSearcher:
             # time: diacritics stripped → stop words removed → synonyms expanded
             # → Snowball Arabic stem).  This broadens the result set without any
             # query-time CPU cost.
+            # Guard against StopIteration from Whoosh's internal analyzer
+            # pipeline: when every token in querystr is a stop word in the
+            # aya_fuzzy field's analyzer, the MultiFilter inside that analyzer
+            # calls next() on an empty stream and raises StopIteration.
             aya_fuzzy_parser = QueryParser("aya_fuzzy", schema=self._schema)
-            aya_fuzzy_query = aya_fuzzy_parser.parse(querystr)
+            try:
+                aya_fuzzy_query = aya_fuzzy_parser.parse(querystr)
+            except StopIteration:
+                aya_fuzzy_query = None
 
             # Strategy 3: Levenshtein distance matching on 'aya_ac'
             # (unvocalized, non-stemmed) to handle spelling variants and typos.
@@ -94,7 +101,9 @@ class QSearcher:
                 if term and any('\u0600' <= c <= '\u06FF' for c in term)
             ]
 
-            parts = [query, aya_fuzzy_query]
+            parts = [query]
+            if aya_fuzzy_query is not None:
+                parts.append(aya_fuzzy_query)
             if levenshtein_subqueries:
                 parts.append(
                     Or(levenshtein_subqueries)

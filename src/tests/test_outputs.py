@@ -1285,3 +1285,29 @@ def test_non_fuzzy_search_variations_is_empty():
         assert word_data["nb_variations"] == 0, (
             "Non-fuzzy search must have nb_variations == 0"
         )
+
+
+def test_fuzzy_search_transliterated_query_no_stopiteration():
+    """Fuzzy search with a fully transliterated (Latin-script) query must not raise StopIteration.
+
+    Regression test for: fuzzy-mode search for 'muhammed rassoul allah' with
+    fuzzy=True caused an unhandled StopIteration from inside the alfanous lib.
+
+    The aya_fuzzy field uses an Arabic analyzer that includes a StopFilter and a
+    stemmer.  When ALL tokens in the transliterated query are stop-words in that
+    analyzer, Whoosh's internal MultiFilter calls next() on an empty token stream
+    and raises StopIteration.  The fix wraps the aya_fuzzy parser call in a
+    try/except so that Strategy 2 is gracefully skipped and the search continues
+    with Strategies 1 and 3 instead of crashing.
+    """
+    search_flags = {
+        "action": "search",
+        "query": "muhammed rassoul allah",
+        "fuzzy": True,
+    }
+    # Must not raise StopIteration (or any other unhandled exception)
+    results = RAWoutput.do(search_flags)
+    assert results["error"]["code"] == 0, (
+        "Fuzzy search with transliterated query must succeed without error"
+    )
+    assert "search" in results
