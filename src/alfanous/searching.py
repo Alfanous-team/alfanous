@@ -145,7 +145,7 @@ class QSearcher:
         collector_kwargs = dict(limit=limit, sortedby=QSort(sortedby), reverse=reverse, groupedby=groupedby, filter=filter_query, terms=fuzzy)
         if timelimit is not None:
             c = searcher.collector(**collector_kwargs)
-            tlc = TimeLimitCollector(c, timelimit=timelimit)
+            tlc = TimeLimitCollector(c, timelimit=timelimit, use_alarm=False)
             try:
                 searcher.search_with_collector(query, tlc)
             except TimeLimit:
