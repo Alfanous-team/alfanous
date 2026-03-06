@@ -855,16 +855,12 @@ class Raw:
                 # filtering by language code (lang=) multiple translations in the
                 # same language could theoretically match the same gid; the first
                 # result (highest relevance score) is used in that case.
-                # sura_id and aya_id are included so API consumers have the natural
-                # verse key available without needing a separate gid→sura/aya lookup.
                 if gid_key not in trad_text:
                     trad_text[gid_key] = {
                         "text": tr["text"],
                         "id": tr.get("id"),
                         "author": tr.get("author"),
                         "lang": tr.get("lang"),
-                        "sura_id": tr.get("sura_id"),
-                        "aya_id": tr.get("aya_id"),
                     }
             trad_searcher.close()
         output["runtime"] = round(extend_runtime, 5)
