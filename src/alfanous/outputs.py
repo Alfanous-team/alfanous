@@ -924,7 +924,7 @@ class Raw:
                     else H(r["uth_"]),
                     "text_no_highlight": r["aya"] if script == "standard"
                     else r["uth_"],
-                    "translation": trad_text.get(r["gid"]) if _want_translation else None,
+                    "translation": trad_text.get(r["gid"], {}).get("text") if _want_translation else None,
                     "transliteration": all_children.get(r["gid"], {}).get("en.transliteration", {}).get("text"),
                     "tafssir": all_children.get(r["gid"], {}).get("ar.jalalayn", {}).get("text"),
 
