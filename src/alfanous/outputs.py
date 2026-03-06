@@ -8,7 +8,7 @@ from alfanous.romanization import transliterate, arabizi_to_arabic_list, filter_
 from alfanous.misc import locate, find, filter_doubles
 from whoosh import query as wquery
 from whoosh.sorting import Facets
-from alfanous.results_processing import QScore
+from alfanous.results_processing import QScore, QTranslationHighlight
 
 STANDARD2UTHMANI = lambda x: std2uth_words.get(x) or x
 
@@ -65,6 +65,7 @@ class Raw:
             "view": "custom",
             "recitation": "1",
             "translation": None,
+            "lang": None,
             "romanization": None,
             "prev_aya": True,
             "next_aya": True,
@@ -114,6 +115,7 @@ class Raw:
         "view": ["minimal", "normal", "full", "statistic", "linguistic", "recitation", "custom"],
         "recitation": [],  # range( 30 ),
         "translation": [],
+        "lang": [],
         "romanization": ["none", "buckwalter", "iso", "arabtex"],  # arabizi is forbidden for show
         "prev_aya": [True, False],
         "next_aya": [True, False],
@@ -153,6 +155,7 @@ class Raw:
         "view": "pre-defined configuration for what information to retrieve",
         "recitation": "recitation id",
         "translation": "translation id",
+        "lang": "language code (e.g. 'en', 'fr', 'ar') to select translation by language at query time",
         "romanization": "type of romanization",
         "prev_aya": "enable previous aya retrieving",
         "next_aya": "enable next aya retrieving",
@@ -183,7 +186,6 @@ class Raw:
 
     def __init__(self,
                  QSE_index=paths.QSE_INDEX,
-                 TSE_index=paths.TSE_INDEX,
                  WSE_index=paths.WSE_INDEX,
                  Recitations_list_file=paths.RECITATIONS_LIST_FILE,
                  Translations_list_file=paths.TRANSLATIONS_LIST_FILE,
@@ -194,15 +196,14 @@ class Raw:
 		"""
         ##
         self.QSE = QSE(QSE_index)
-        self.TSE = TSE(TSE_index)
         self.WSE = WSE(WSE_index)
         ##
         self._recitations = recitations(Recitations_list_file)
         _translations_names = translations(Translations_list_file)
-        # Only include translations that are actually indexed
         self._translations = {
             _id: _translations_names.get(_id, _id)
-            for _id in self.TSE.list_values("id")
+            for _id in self.QSE.list_values("trans_id")
+            if _id
         }
         ##
         self._information = information(Information_file)
@@ -334,9 +335,9 @@ class Raw:
             if field == "aya_":  # Use default field for word index
                 field = "normalized"
         elif unit == "translation":
-            search_engine = self.TSE
-            if field == "aya_":  # Use default field for translation index
-                field = "text"
+            search_engine = self.QSE
+            if field == "aya_":  # Use trans_text as default field for translation children
+                field = "trans_text"
         else:  # unit == "aya" or any other value defaults to QSE
             search_engine = self.QSE
             unit = "aya"  # Normalize unit name
@@ -396,8 +397,17 @@ class Raw:
                     groupedby = Facets()
                     groupedby.add_field(field)
                     
-                    # Search all documents
-                    results = searcher.search(wquery.Every(), limit=None, groupedby=groupedby)
+                    # In the nested QSE index every group contains both parent aya
+                    # docs and child translation docs.  Restrict the facet query to
+                    # the relevant document kind so child docs don't create spurious
+                    # extra groups in aya-only fields (e.g. sura_type, sura_id).
+                    if unit == "translation":
+                        kind_filter = wquery.Term("kind", "translation")
+                    else:
+                        kind_filter = wquery.Term("kind", "aya")
+                    
+                    # Search matching documents
+                    results = searcher.search(kind_filter, limit=None, groupedby=groupedby)
                     
                     # Get facet groups
                     field_groups = results.groups(field)
@@ -493,6 +503,7 @@ class Raw:
             else int(flags["offset"])
         recitation = flags["recitation"]
         translation = flags["translation"]
+        lang = flags.get("lang") or self._defaults["flags"]["lang"]
         romanization = flags["romanization"]
         highlight = flags["highlight"]
         script = flags["script"]
@@ -542,6 +553,7 @@ class Raw:
             vocalized = False
             recitation = None
             translation = None
+            lang = None
             prev_aya = next_aya = False
             sura_info = False
             word_info = False
@@ -637,33 +649,39 @@ class Raw:
         # preprocess query
         query = query.replace("\\", "")
 
-        if ":" not in query:
-            # If the query contains no Arabic characters, treat it as Arabizi
-            # (Latin/digit-based Arabic chat alphabet) and expand to all potential
-            # Arabic candidates (OR semantics via space-separated terms).
-            if not re.search(r'[\u0600-\u06FF]', query):
-                _ignore = "'_\"%*?#~[]{}:>+-|"
-                candidates = arabizi_to_arabic_list(query, ignore=_ignore)
-                # Filter candidates to those that appear as actual Quranic words.
-                # Each candidate may be a multi-word string (space-separated); a
-                # candidate is accepted when every individual token is a known
-                # unvocalized Quranic word.  If no candidates pass the filter,
-                # fall back to the full unfiltered list so the search still runs.
-                # quran_unvocalized_words() is @lru_cache so this is O(1) after
-                # the first call.
-                _qwords = quran_unvocalized_words()
-                if _qwords:
-                    candidates = filter_candidates_by_wordset(candidates, _qwords)
-                query = " ".join(candidates) if candidates else query
-
-        # Search
-        SE = self.QSE
-        res, termz, searcher = SE.search_all(query, limit=self._defaults["results_limit"]["aya"], sortedby=sortedby, facets=facets_list, filter_dict=filter_dict, fuzzy=fuzzy, fuzzy_maxdist=fuzzy_maxdist, timelimit=timelimit)
-        terms = [term[1] for term in list(termz)[:self._defaults["maxkeywords"]]]
-        terms_uthmani = map(STANDARD2UTHMANI, terms)
-        # All matched aya_ac variation terms (only populated when fuzzy=True).
-        # Used in the word_info loop to derive per-word variation lists.
-        _all_ac_variations = [term[1] for term in termz if term[0] == "aya_ac"]
+        if ":" not in query and not re.search(r'[\u0600-\u06FF]', query):
+            # Non-Arabic query: route to nested child translation docs via
+            # NestedParent so results are parent aya documents that have
+            # translations matching the query text.
+            from whoosh import query as wq
+            from whoosh.qparser import QueryParser as _QP, OrGroup as _OrGroup
+            _trans_parser = _QP("trans_text", self.QSE._schema,
+                                group=_OrGroup)
+            _trans_q = _trans_parser.parse(query)
+            _nested_q = wq.NestedParent(wq.Term("kind", "aya"), _trans_q)
+            res, termz, searcher = self.QSE.search_with_query(
+                _nested_q,
+                limit=self._defaults["results_limit"]["aya"],
+                sortedby=sortedby,
+                timelimit=timelimit,
+            )
+            terms, _all_ac_variations = [], []
+            terms_uthmani = iter([])
+        else:
+            # Arabic (or field-qualified) query — search aya fields directly.
+            # Restrict to parent aya documents only so that nested child
+            # translation docs (which lack aya_id/sura_id) are never returned.
+            aya_query = (
+                f"kind:aya AND ({query})"
+                if "kind" in self.QSE._schema
+                else query
+            )
+            res, termz, searcher = self.QSE.search_all(aya_query, limit=self._defaults["results_limit"]["aya"], sortedby=sortedby, facets=facets_list, filter_dict=filter_dict, fuzzy=fuzzy, fuzzy_maxdist=fuzzy_maxdist, timelimit=timelimit)
+            terms = [term[1] for term in list(termz)[:self._defaults["maxkeywords"]]]
+            terms_uthmani = map(STANDARD2UTHMANI, terms)
+            # All matched aya_ac variation terms (only populated when fuzzy=True).
+            # Used in the word_info loop to derive per-word variation lists.
+            _all_ac_variations = [term[1] for term in termz if term[0] == "aya_ac"]
         # pagination
         offset = 1 if offset < 1 else offset
         range = self._defaults["minrange"] if range < self._defaults["minrange"] else range
@@ -674,6 +692,9 @@ class Raw:
         reslist = [] if end == 0 or start == -1 else list(res)[start - 1:end]
         # todo pagination should be done inside search operation for better performence
         # closing the searcher
+        # Pre-built gid query for the current result page, used for translation and
+        # fixed-translation lookups without re-iterating reslist multiple times.
+        _gid_base_query = "( 0" + "".join(" OR gid:%s" % str(r["gid"]) for r in reslist) + " )"
 
         output = {}
 
@@ -820,19 +841,18 @@ class Raw:
                                       "nb_vocalizations": nb_vocalizations_globale}
         output["words"] = words_output
         # Magic_loop to built queries of Adjacents,translations and annotations in the same time
-        if prev_aya or next_aya or translation or annotation_aya:
-            adja_query = trad_query = annotation_aya_query = "( 0"
+        _want_translation = bool(translation or lang)
+        if prev_aya or next_aya or annotation_aya:
+            adja_query = annotation_aya_query = "( 0"
 
             for r in reslist:
                 if prev_aya:
                     adja_query += " OR gid:%s " % str(r["gid"] - 1)
                 if next_aya:
                     adja_query += " OR gid:%s " % str(r["gid"] + 1)
-                if translation:
-                    trad_query += " OR gid:%s " % str(r["gid"])
 
-            adja_query += " )"
-            trad_query += " )" + " AND id:%s " % translation
+            # Restrict to parent aya documents only (gid also matches children).
+            adja_query += " ) AND kind:aya"
             annotation_aya_query += " )"
 
         if prev_aya or next_aya:
@@ -850,14 +870,39 @@ class Raw:
                 extend_runtime += adja_res.runtime
             adja_searcher.close()
 
-        # translations
-        if translation:
-            trad_res, trad_searcher = self.TSE.find_extended(trad_query, "gid")
-            extend_runtime += trad_res.runtime
-            trad_text = {}
-            for tr in trad_res:
-                trad_text[tr["gid"]] = tr["text"]
-            trad_searcher.close()
+        # translations: fetch all nested children for the result page
+        trad_text = {}
+        all_children = {}  # {gid: {trans_id: {text, id, lang, author}}}
+
+        if reslist:
+            # One query fetches ALL children for the result page.
+            child_q = _gid_base_query + " AND kind:translation"
+            child_res, child_searcher = self.QSE.find_extended(child_q, "gid")
+            extend_runtime += child_res.runtime
+            for ch in child_res:
+                g = ch["gid"]
+                tid = ch.get("trans_id") or ""
+                if g not in all_children:
+                    all_children[g] = {}
+                all_children[g][tid] = {
+                    "text": ch.get("trans_text") or "",
+                    "id": tid,
+                    "lang": ch.get("trans_lang") or "",
+                    "author": ch.get("trans_author") or "",
+                }
+            child_searcher.close()
+
+            # Build trad_text for user-selected translation/lang filter
+            if _want_translation:
+                for g, trans_map in all_children.items():
+                    if translation and translation in trans_map:
+                        trad_text[g] = trans_map[translation]
+                    elif lang:
+                        for tid, tdata in trans_map.items():
+                            if tdata["lang"] == lang:
+                                trad_text[g] = tdata
+                                break
+
         output["runtime"] = round(extend_runtime, 5)
         output["interval"] = {
             "start": start,
@@ -902,8 +947,7 @@ class Raw:
                     else H(r["uth_"]),
                     "text_no_highlight": r["aya"] if script == "standard"
                     else r["uth_"],
-                    "translation": trad_text.get(r["gid"]) if (translation != "None" and translation ) else None,
-
+                    "translation": trad_text.get(r["gid"], {}).get("text") if _want_translation else None,
                     "recitation": None if not recitation or not self._recitations.get(recitation) \
                         else f'https://www.everyayah.com/data/{self._recitations[recitation]["subfolder"]}/%03d%03d.mp3' % (
                     int(r["sura_id"]), int(r["aya_id"])),
@@ -992,14 +1036,25 @@ class Raw:
         highlight = flags["highlight"]
         timelimit = self._parse_timelimit(flags)
 
-        # preprocess query (no Buckwalter transliteration for translation text)
         query = query.replace("\\", "")
 
-        SE = self.TSE
-        res, termz, searcher = SE.search_all(query, limit=self._defaults["results_limit"]["translation"], sortedby=sortedby, timelimit=timelimit)
-        terms = [term[1] for term in list(termz)[:self._defaults["maxkeywords"]]]
+        # Search trans_text in nested child docs directly.
+        from whoosh import query as wq
+        from whoosh.query import NestedParent
+        from whoosh.qparser import QueryParser as _QP, OrGroup as _OrGroup
+        _trans_parser = _QP("trans_text", self.QSE._schema,
+                            group=_OrGroup)
+        _child_q = wq.And([wq.Term("kind", "translation"), _trans_parser.parse(query)])
+        res, termz, searcher = self.QSE.search_with_query(
+            _child_q,
+            limit=self._defaults["results_limit"]["translation"],
+            sortedby=sortedby,
+            timelimit=timelimit,
+        )
+        # Extract matched terms from the translation sub-query for highlight.
+        terms = [t for field, t in _child_q.all_terms() if field == "trans_text"]
+        H = lambda X: QTranslationHighlight(X, terms, type=highlight) if highlight != "none" and X else X if X else "-----"
 
-        # pagination
         offset = 1 if offset < 1 else offset
         range = self._defaults["minrange"] if range < self._defaults["minrange"] else range
         range = self._defaults["maxrange"] if range > self._defaults["maxrange"] else range
@@ -1008,9 +1063,29 @@ class Raw:
         start = offset if offset <= len(res) else -1
         reslist = [] if end == 0 or start == -1 else list(res)[start - 1:end]
 
-        output = {}
-        H = lambda X: SE.highlight(X, terms, highlight) if highlight != "none" and X else X if X else "-----"
+        # Fetch parent aya docs for the current result page using NestedParent.
+        # NestedParent(_child_q) returns the parent aya of every matching translation child.
+        _kword = re.compile("[^,،]+")
+        _keywords = lambda phrase: _kword.findall(phrase)
+        parent_data = {}
+        if reslist:
+            _all_parents_q = wq.Term("kind", "aya")
+            _page_gids = {r["gid"] for r in reslist}
+            _page_child_q = wq.And([
+                wq.Term("kind", "translation"),
+                wq.Or([wq.Term("gid", str(g)) for g in _page_gids]),
+            ])
+            _parent_q = NestedParent(_all_parents_q, _page_child_q)
+            _parent_res, _, _parent_searcher = self.QSE.search_with_query(
+                _parent_q,
+                limit=self._defaults["results_limit"]["aya"],
+                timelimit=timelimit,
+            )
+            for _p in _parent_res:
+                parent_data[_p["gid"]] = _p
+            _parent_searcher.close()
 
+        output = {}
         output["runtime"] = round(res.runtime, 5)
         output["interval"] = {
             "start": start,
@@ -1019,24 +1094,30 @@ class Raw:
             "page": ((start - 1) / range) + 1,
             "nb_pages": ((len(res) - 1) / range) + 1
         }
-
         cpt = start - 1
         output["translations"] = {}
         for r in reslist:
             cpt += 1
+            _parent = parent_data.get(r["gid"], {})
             output["translations"][cpt] = {
                 "identifier": {
                     "gid": r["gid"],
-                    "translation_id": r["id"],
+                    "translation_id": r.get("trans_id"),
+                    "aya_id": _parent.get("aya_id"),
+                    "sura_id": _parent.get("sura_id"),
+                    "sura_name": (_keywords(_parent["sura"]) or [None])[0] if _parent.get("sura") else None,
+                    "sura_arabic_name": (_keywords(_parent["sura_arabic"]) or [None])[0] if _parent.get("sura_arabic") else None,
+                },
+                "aya": {
+                    "text": _parent.get("aya"),
                 },
                 "translation": {
-                    "text": H(r["text"]),
-                    "text_no_highlight": r["text"],
-                    "author": r.get("author"),
-                    "lang": r.get("lang"),
+                    "text": H(r.get("trans_text")),
+                    "text_no_highlight": r.get("trans_text"),
+                    "author": r.get("trans_author"),
+                    "lang": r.get("trans_lang"),
                 },
             }
-
         searcher.close()
         return output
 

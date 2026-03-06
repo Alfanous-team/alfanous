@@ -1,11 +1,50 @@
-from whoosh.scoring import BM25F
+from math import log as _log
+
+from whoosh.scoring import BM25F, BM25FScorer, WeightScorer
 from whoosh.highlight import highlight, Fragment, \
     HtmlFormatter, ContextFragmenter, BasicFragmentScorer, WholeFragmenter
 from alfanous.text_processing import QHighLightAnalyzer, QDiacHighLightAnalyzer, Gword_tamdid, TranslationHighLightAnalyzer
+from alfanous.constants import QURAN_TOTAL_VERSES
+
+
+class QAyaWeighting(BM25F):
+    """BM25F variant that anchors IDF and avgfl to the parent-aya corpus.
+
+    With Whoosh nested documents each Quranic verse is stored as one parent
+    aya doc plus N translation child docs.  Standard BM25F computes IDF and
+    average field length over ``doc_count_all()``, which inflates from 6 236
+    to ~106 000 once translations are indexed.  This changes every Arabic
+    term's IDF and the length-normalisation denominator, producing different
+    relevance rankings than the pre-nested index.
+
+    This subclass fixes both statistics to ``QURAN_TOTAL_VERSES`` (the fixed
+    parent count) so that scores are stable and independent of how many child
+    translation documents exist.
+    """
+
+    def idf(self, searcher, fieldname, text):
+        parent = searcher.get_parent()
+        n = parent.doc_frequency(fieldname, text)
+        N = QURAN_TOTAL_VERSES or 1
+        return _log(N / (n + 1)) + 1
+
+    def scorer(self, searcher, fieldname, text, qf=1):
+        if not searcher.schema[fieldname].scorable:
+            return WeightScorer.for_(searcher, fieldname, text)
+        B = self._field_B.get(fieldname, self.B)
+        sc = BM25FScorer(searcher, fieldname, text, B, self.K1, qf=qf)
+        # Overwrite the cached statistics that BM25FScorer pulls from the
+        # parent searcher so that child translation docs don't pollute them.
+        parent = searcher.get_parent()
+        n = parent.doc_frequency(fieldname, text)
+        N = QURAN_TOTAL_VERSES or 1
+        sc.idf = _log(N / (n + 1)) + 1
+        sc.avgfl = (parent.field_length(fieldname) / N) or 1
+        return sc
 
 
 def QScore():
-    return BM25F(B=0.75, K1=1.2)
+    return QAyaWeighting(B=0.75, K1=1.2)
 
 
 def QSort(sortedby):

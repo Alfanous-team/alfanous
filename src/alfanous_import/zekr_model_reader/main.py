@@ -3,7 +3,6 @@ import re
 from zipfile import ZipFile
 
 
-
 class TranslationModel:
 
     def __init__(self, path="./example.zip_file"):

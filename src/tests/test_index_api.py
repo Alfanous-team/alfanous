@@ -1,8 +1,6 @@
-"""Tests for alfanous.api.index_translations()."""
+"""Tests for the QSE nested-document architecture."""
 
-import json
 import os
-import shutil
 
 import pytest
 
@@ -11,159 +9,92 @@ alfanous_import = pytest.importorskip(
     reason="alfanous_import package is not installed",
 )
 
-import alfanous.api as alfanous
+from alfanous.constants import QURAN_TOTAL_VERSES
 
 # Path to the translation store shipped with the repository
 _STORE_DIR = os.path.normpath(os.path.join(
     os.path.dirname(__file__), "..", "..", "store", "Translations"
 ))
+_STORE_EXISTS = os.path.isdir(_STORE_DIR)
 
-# Pick two well-known zip files that are present in the store
-_SAMPLE_ZIPS = [
-    os.path.join(_STORE_DIR, "en.shakir.trans.zip"),
-    os.path.join(_STORE_DIR, "en.transliteration.trans.zip"),
-]
-_STORE_EXISTS = os.path.isdir(_STORE_DIR) and all(
-    os.path.exists(z) for z in _SAMPLE_ZIPS
-)
+_RESOURCES_PATH = os.path.normpath(
+    os.path.join(os.path.dirname(__file__), "..", "alfanous", "resources")
+) + os.sep
 
 
-@pytest.fixture()
-def temp_index_dir(tmp_path):
-    """Provide a temporary directory for a fresh extend index."""
-    return str(tmp_path / "extend")
+@pytest.fixture(scope="module")
+def nested_qse_index(tmp_path_factory):
+    """Build a QSE index with all available translations nested as children.
+
+    Scoped to the module so the (slow) build only runs once.
+    """
+    from alfanous_import.transformer import Transformer
+    index_dir = str(tmp_path_factory.mktemp("nested_main"))
+    t = Transformer(index_path=index_dir, resource_path=_RESOURCES_PATH)
+    schema = t.build_schema("aya")
+    t.build_docindex(schema, translations_store_path=_STORE_DIR)
+    return index_dir
 
 
-@pytest.fixture()
-def temp_translations_json(tmp_path):
-    """Provide a temporary translations.json file."""
-    path = str(tmp_path / "translations.json")
-    with open(path, "w", encoding="utf-8") as f:
-        json.dump({}, f)
-    return path
+@pytest.mark.skipif(not _STORE_EXISTS, reason="translation store not found")
+def test_nested_qse_schema_has_required_fields(nested_qse_index):
+    """The combined QSE schema must contain both aya-parent and translation-child fields."""
+    from whoosh.filedb.filestore import FileStorage
+    ix = FileStorage(nested_qse_index).open_index()
+    names = ix.schema.names()
+    for f in ("aya", "aya_", "gid", "sura_id", "aya_id"):
+        assert f in names, f"Parent field '{f}' missing from schema"
+    for f in ("kind", "trans_id", "trans_lang", "trans_text", "trans_author"):
+        assert f in names, f"Child field '{f}' missing from schema"
+    ix.close()
 
 
-@pytest.fixture()
-def translation_source_dir(tmp_path):
-    """A temporary directory pre-populated with two sample translation zips."""
-    src = str(tmp_path / "translations_src")
-    os.makedirs(src)
-    for zip_path in _SAMPLE_ZIPS:
-        shutil.copy(zip_path, src)
-    return src
+@pytest.mark.skipif(not _STORE_EXISTS, reason="translation store not found")
+def test_nested_qse_parent_count(nested_qse_index):
+    """Parent aya count must equal QURAN_TOTAL_VERSES."""
+    from whoosh.filedb.filestore import FileStorage
+    from whoosh import query as wq
+    ix = FileStorage(nested_qse_index).open_index()
+    with ix.searcher() as s:
+        parents = s.search(wq.Term("kind", "aya"), limit=QURAN_TOTAL_VERSES + 1)
+        assert len(parents) == QURAN_TOTAL_VERSES
+    ix.close()
 
 
-@pytest.mark.skipif(not _STORE_EXISTS, reason="sample translation zips not found in store/Translations/")
-def test_index_translations_indexes_all_zips(temp_index_dir, temp_translations_json, translation_source_dir):
-    """index_translations() indexes every .trans.zip found in the source folder."""
-    count = alfanous.index_translations(
-        source=translation_source_dir,
-        _index_path=temp_index_dir,
-        _translations_list_file=temp_translations_json,
-    )
-    assert count == 2
-    with open(temp_translations_json, encoding="utf-8") as f:
-        data = json.load(f)
-    assert "en.shakir" in data
-    assert "en.transliteration" in data
+@pytest.mark.skipif(not _STORE_EXISTS, reason="translation store not found")
+def test_nested_qse_nested_parent_query(nested_qse_index):
+    """NestedParent: searching trans_text returns parent aya documents."""
+    from whoosh.filedb.filestore import FileStorage
+    from whoosh import query as wq
+    from whoosh.qparser import QueryParser
+    ix = FileStorage(nested_qse_index).open_index()
+    with ix.searcher() as s:
+        q = wq.NestedParent(
+            wq.Term("kind", "aya"),
+            QueryParser("trans_text", ix.schema).parse("merciful"),
+        )
+        results = s.search(q, limit=10)
+        assert len(results) > 0, "NestedParent query must return at least one aya"
+        for r in results:
+            assert r["kind"] == "aya", "NestedParent must only return parent aya docs"
+    ix.close()
 
 
-@pytest.mark.skipif(not _STORE_EXISTS, reason="sample translation zips not found in store/Translations/")
-def test_index_translations_skips_already_indexed(temp_index_dir, temp_translations_json, translation_source_dir):
-    """index_translations() returns 0 when all translations are already indexed."""
-    alfanous.index_translations(
-        source=translation_source_dir,
-        _index_path=temp_index_dir,
-        _translations_list_file=temp_translations_json,
-    )
-    # Second call: nothing new to index
-    count = alfanous.index_translations(
-        source=translation_source_dir,
-        _index_path=temp_index_dir,
-        _translations_list_file=temp_translations_json,
-    )
-    assert count == 0
-
-
-@pytest.mark.skipif(not _STORE_EXISTS, reason="sample translation zips not found in store/Translations/")
-def test_index_translations_removes_stale_entry_when_count_zero(temp_index_dir, temp_translations_json, translation_source_dir):
-    """index_translations() must update translations.json even when no new translations are indexed (count=0)."""
-    # First call: index the translations
-    alfanous.index_translations(
-        source=translation_source_dir,
-        _index_path=temp_index_dir,
-        _translations_list_file=temp_translations_json,
-    )
-
-    # Manually inject a stale (non-indexed) entry into translations.json
-    with open(temp_translations_json, encoding="utf-8") as f:
-        data = json.load(f)
-    data["xx.stale"] = "Stale-Translation"
-    with open(temp_translations_json, "w", encoding="utf-8") as f:
-        json.dump(data, f)
-
-    # Second call: count=0 (all already indexed), but translations.json should still be cleaned up
-    count = alfanous.index_translations(
-        source=translation_source_dir,
-        _index_path=temp_index_dir,
-        _translations_list_file=temp_translations_json,
-    )
-    assert count == 0
-
-    with open(temp_translations_json, encoding="utf-8") as f:
-        data = json.load(f)
-
-    assert "xx.stale" not in data, (
-        "stale entry must be removed even when count=0 (no new translations indexed)"
-    )
-    assert "en.shakir" in data
-    assert "en.transliteration" in data
-
-
-@pytest.mark.skipif(not _STORE_EXISTS, reason="sample translation zips not found in store/Translations/")
-def test_index_translations_updates_translations_json(temp_index_dir, temp_translations_json, translation_source_dir):
-    """index_translations() updates translations.json with all indexed IDs."""
-    alfanous.index_translations(
-        source=translation_source_dir,
-        _index_path=temp_index_dir,
-        _translations_list_file=temp_translations_json,
-    )
-    with open(temp_translations_json, encoding="utf-8") as f:
-        data = json.load(f)
-    assert len(data) >= 2
-
-
-@pytest.mark.skipif(not _STORE_EXISTS, reason="sample translation zips not found in store/Translations/")
-def test_update_translations_list_does_not_preserve_non_indexed(tmp_path):
-    """update_translations_list() must not carry over non-indexed entries from a previous run."""
-    from alfanous_import.updater import update_translations_list
-
-    index_dir = str(tmp_path / "extend")
-    translations_json = str(tmp_path / "translations.json")
-
-    # Pre-populate translations.json with a stale, non-indexed entry
-    with open(translations_json, "w", encoding="utf-8") as f:
-        json.dump({"xx.stale": "Stale-Translation"}, f)
-
-    # Index only two real translations
-    src = str(tmp_path / "src")
-    os.makedirs(src)
-    for zip_path in _SAMPLE_ZIPS:
-        shutil.copy(zip_path, src)
-
-    alfanous.index_translations(
-        source=src,
-        _index_path=index_dir,
-        _translations_list_file=translations_json,
-    )
-
-    with open(translations_json, encoding="utf-8") as f:
-        data = json.load(f)
-
-    # The stale entry must not survive
-    assert "xx.stale" not in data, (
-        "update_translations_list must not preserve non-indexed entries"
-    )
-    # The newly indexed entries must be present
-    assert "en.shakir" in data
-    assert "en.transliteration" in data
+@pytest.mark.skipif(not _STORE_EXISTS, reason="translation store not found")
+def test_nested_qse_child_query_for_gid(nested_qse_index):
+    """Querying kind:translation AND gid:1 returns exactly one child per translation."""
+    from whoosh.filedb.filestore import FileStorage
+    from whoosh import query as wq
+    ix = FileStorage(nested_qse_index).open_index()
+    with ix.searcher() as s:
+        n_trans = len([f for f in os.listdir(_STORE_DIR) if f.endswith(".trans.zip")])
+        q = wq.And([wq.Term("kind", "translation"), wq.Term("gid", 1)])
+        results = s.search(q, limit=n_trans + 10)
+        assert len(results) == n_trans, (
+            f"Expected {n_trans} children for gid=1, got {len(results)}"
+        )
+        for r in results:
+            assert r["kind"] == "translation"
+            assert r["gid"] == 1
+            assert r.get("trans_text"), "trans_text must be non-empty"
+    ix.close()

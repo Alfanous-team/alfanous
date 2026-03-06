@@ -7,7 +7,6 @@ A sample script that emphasize the basic operations of Alfanous API.
 
 # import Output object
 from alfanous.outputs import Raw
-from alfanous.engines import TraductionSearchEngine
 
 # import default paths
 from alfanous import paths
@@ -15,7 +14,6 @@ from alfanous import paths
 # Initialize search engines
 RAWoutput = Raw(
                     QSE_index = paths.QSE_INDEX, # Quranic Main index path
-                    TSE_index = paths.TSE_INDEX, # Translations index path
                     WSE_index = paths.WSE_INDEX, # Quranic words index path
                     Recitations_list_file = paths.RECITATIONS_LIST_FILE,
                     Translations_list_file = paths.TRANSLATIONS_LIST_FILE ,
@@ -1050,7 +1048,7 @@ def test_show_translations_shows_all_indexed_translations():
     translations = result["show"]["translations"]
 
     # All indexed translations must be present in the result
-    indexed_ids = set(RAWoutput.TSE.list_values("id"))
+    indexed_ids = set(RAWoutput.QSE.list_values("trans_id")) - {""}
     assert indexed_ids.issubset(set(translations.keys())), (
         "show/translations must include all indexed translations"
     )

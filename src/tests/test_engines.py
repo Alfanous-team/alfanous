@@ -5,13 +5,11 @@ This is a test module for most of features provided by alfanous.engines module.
 """
 
 from alfanous.engines import QuranicSearchEngine
-from alfanous.engines import TraductionSearchEngine
 from alfanous.engines import WordSearchEngine
 from alfanous import paths
 
 
 QSE = QuranicSearchEngine(paths.QSE_INDEX)
-TSE = TraductionSearchEngine(paths.TSE_INDEX)
 WSE = WordSearchEngine(paths.WSE_INDEX)
 
 
@@ -98,6 +96,7 @@ def test_search():
                                 'gid': 1805,
                                 'hizb': 27,
                                 'juz': 14,
+                                'kind': 'aya',
                                 'manzil': 3,
                                 'nisf': 53,
                                 'page': 262,
@@ -123,11 +122,15 @@ def test_search():
 
 
 def test_translation_engine():
-    assert TSE.OK
-
-    results, searcher = TSE.find_extended(u"gid:1 OR gid:2", defaultfield="gid")
+    """Translation children are searchable directly in QSE."""
+    results, searcher = QSE.find_extended(
+        "( gid:1 OR gid:2 ) AND kind:translation", defaultfield="gid"
+    )
     assert len(results)
-    assert {'en.shakir', 'en.transliteration'} & set(TSE.list_values("id"))
+    assert {'en.shakir', 'en.transliteration'} & set(
+        r.get("trans_id") for r in results
+    )
+    searcher.close()
 
 # def test_word_engine():
 #     assert WSE.OK

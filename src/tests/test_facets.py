@@ -10,7 +10,6 @@ from alfanous import paths
 
 RAWoutput = Raw(
     QSE_index=paths.QSE_INDEX,
-    TSE_index=paths.TSE_INDEX,
     WSE_index=paths.WSE_INDEX,
     Recitations_list_file=paths.RECITATIONS_LIST_FILE,
     Translations_list_file=paths.TRANSLATIONS_LIST_FILE,

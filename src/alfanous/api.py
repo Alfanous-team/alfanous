@@ -3,11 +3,9 @@
     Use `alfanous.search` for searching in Quran verses and translations.
     Use `alfanous.get_info` for getting meta info.
     Use `alfanous.do` method for search, suggestion and get most useful info.
-    Use `alfanous.index_translations` to add translation zip files from a folder to the local index.
     """
 
 from typing import Dict, Optional, Any
-import os
 
 # import Output object
 from alfanous.outputs import Raw as _search_engine
@@ -40,7 +38,9 @@ def search(query: str, unit: str = "aya", page: int = 1, sortedby: str = "releva
            fuzzy: bool = False, fuzzy_maxdist: int = 1, view: str = "normal",
            highlight: str = "bold", flags: Optional[Dict[str, Any]] = None,
            facets: Optional[str] = None, filter: Optional[str] = None,
-           timelimit: Optional[float] = 5.0) -> Dict[str, Any]:
+           timelimit: Optional[float] = 5.0,
+           translation: Optional[str] = None,
+           lang: Optional[str] = None) -> Dict[str, Any]:
     """
     Search in Quran verses and translations.
     
@@ -59,7 +59,15 @@ def search(query: str, unit: str = "aya", page: int = 1, sortedby: str = "releva
     @param filter: Filter to apply to results
     @param timelimit: Maximum number of seconds to spend on the search query
            (default 5.0). Pass None to disable the limit.
-    @return: Dictionary of search results
+    @param translation: Translation ID (e.g. 'en.shakir') to include with aya results.
+    @param lang: Language code (e.g. 'en', 'fr', 'ar') to retrieve translations by
+           language at query time. If both ``translation`` and ``lang`` are given,
+           ``translation`` takes precedence.
+    @return: Dictionary of search results. Each aya entry includes an optional
+           ``translation`` field controlled by the ``translation``/``lang``
+           parameters. Use ``translation=en.transliteration`` or ``lang=en``
+           to retrieve the English transliteration, and
+           ``translation=ar.jalalayn`` or ``lang=ar`` to retrieve a tafsir.
     """
     all_flags = flags if flags is not None else {}
     all_flags.update({"action": "search",
@@ -74,6 +82,8 @@ def search(query: str, unit: str = "aya", page: int = 1, sortedby: str = "releva
                       "facets": facets,
                       "filter": filter,
                       "timelimit": timelimit,
+                      "translation": translation,
+                      "lang": lang,
                       })
     return do(all_flags)
 
@@ -109,63 +119,3 @@ def get_info(query: str = "all") -> Dict[str, Any]:
     @return: Dictionary of information
     """
     return do({"action": "show", "query": query})
-
-
-def index_translations(source: str,
-                       _index_path: Optional[str] = None,
-                       _translations_list_file: Optional[str] = None) -> int:
-    """
-    Index all Zekr-compatible ``.trans.zip`` files found in *source* into the
-    local extend index.
-
-    Each zip must contain a ``translation.properties`` descriptor and a verse
-    text file with exactly 6,236 lines (one per Quranic verse). Files that are
-    already present in the index are silently skipped.
-
-    After indexing, ``configs/translations.json`` is updated so that every
-    newly added translation is immediately visible via :func:`get_info` and
-    :func:`search`.
-
-    Example::
-
-        import alfanous.api as alfanous
-        count = alfanous.index_translations(source="/path/to/translations")
-        print(f"{count} translation(s) newly indexed")
-
-    @param source: Path to a directory that contains ``.trans.zip`` files.
-    @type source: str
-    @param _index_path: Override the extend index directory (for testing only).
-    @param _translations_list_file: Override the translations config path (for testing only).
-    @return: Number of translations that were newly indexed (already-present ones are skipped).
-    @raises ImportError: If the ``alfanous_import`` package is not installed.
-    """
-    try:
-        from alfanous_import.importer import ZekrModelsImporter
-        from alfanous_import.updater import update_translations_list
-    except ImportError:
-        raise ImportError(
-            "The 'alfanous_import' package is required to index translation files. "
-            "Install it from the repository: src/alfanous_import/"
-        )
-
-    index_path = _index_path if _index_path is not None else PATHS.TSE_INDEX
-    translations_list_file = (
-        _translations_list_file if _translations_list_file is not None
-        else PATHS.TRANSLATIONS_LIST_FILE
-    )
-
-    importer = ZekrModelsImporter(pathindex=index_path, pathstore="")
-    count = 0
-    for zip_file in sorted(
-        f for f in os.listdir(source) if f.endswith(".trans.zip")
-    ):
-        if importer.index_single_translation(os.path.join(source, zip_file)):
-            count += 1
-
-    update_translations_list(
-        TSE_index=index_path,
-        translations_list_file=translations_list_file,
-    )
-
-    return count
-

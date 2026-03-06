@@ -101,7 +101,9 @@ class QseDocIndex(BasicDocIndex):
                + str(self._ix.doc_count()) + ">"
 
     def verify(self):
-        return len(self) == QURAN_TOTAL_VERSES
+        # A nested index stores translation child documents alongside the 6236
+        # parent aya documents, so the total doc count will be larger.
+        return len(self) >= QURAN_TOTAL_VERSES
 
 
 class ExtDocIndex(BasicDocIndex):

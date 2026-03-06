@@ -1180,5 +1180,70 @@
         "table_name": "wordqc",
         "type": "KEYWORD",
         "unique": null
+    },
+    {
+        "id": 94,
+        "table_name": "aya",
+        "name": "kind",
+        "name_arabic": "نوع",
+        "search_name": "kind",
+        "type": "KEYWORD",
+        "stored": true,
+        "analyzer": null,
+        "comment": "Document type: 'aya' for parent verse docs, 'translation' for child translation docs",
+        "is_spellchecked": null,
+        "unique": null
+    },
+    {
+        "id": 95,
+        "table_name": "aya",
+        "name": "trans_id",
+        "name_arabic": "معرف_الترجمة",
+        "search_name": "trans_id",
+        "type": "KEYWORD",
+        "stored": true,
+        "analyzer": null,
+        "comment": "Translation identifier for child docs (e.g. 'en.shakir')",
+        "is_spellchecked": null,
+        "unique": null
+    },
+    {
+        "id": 96,
+        "table_name": "aya",
+        "name": "trans_lang",
+        "name_arabic": "لغة_الترجمة",
+        "search_name": "trans_lang",
+        "type": "KEYWORD",
+        "stored": true,
+        "analyzer": null,
+        "comment": "Language code for child docs (e.g. 'en', 'fr', 'ar')",
+        "is_spellchecked": null,
+        "unique": null
+    },
+    {
+        "id": 97,
+        "table_name": "aya",
+        "name": "trans_text",
+        "name_arabic": "نص_الترجمة",
+        "search_name": "trans_text",
+        "type": "TEXT",
+        "stored": true,
+        "analyzer": "TranslationHighLightAnalyzer",
+        "comment": "Translation text for child docs — stored and searchable (non-Arabic queries)",
+        "is_spellchecked": null,
+        "unique": null
+    },
+    {
+        "id": 98,
+        "table_name": "aya",
+        "name": "trans_author",
+        "name_arabic": "مؤلف_الترجمة",
+        "search_name": "trans_author",
+        "type": "KEYWORD",
+        "stored": true,
+        "analyzer": null,
+        "comment": "Author/translator name for child docs",
+        "is_spellchecked": null,
+        "unique": null
     }
 ]
