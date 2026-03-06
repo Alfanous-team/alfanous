@@ -669,7 +669,14 @@ class Raw:
             terms_uthmani = iter([])
         else:
             # Arabic (or field-qualified) query — search aya fields directly.
-            res, termz, searcher = self.QSE.search_all(query, limit=self._defaults["results_limit"]["aya"], sortedby=sortedby, facets=facets_list, filter_dict=filter_dict, fuzzy=fuzzy, fuzzy_maxdist=fuzzy_maxdist, timelimit=timelimit)
+            # Restrict to parent aya documents only so that nested child
+            # translation docs (which lack aya_id/sura_id) are never returned.
+            aya_query = (
+                f"kind:aya AND ({query})"
+                if "kind" in self.QSE._schema
+                else query
+            )
+            res, termz, searcher = self.QSE.search_all(aya_query, limit=self._defaults["results_limit"]["aya"], sortedby=sortedby, facets=facets_list, filter_dict=filter_dict, fuzzy=fuzzy, fuzzy_maxdist=fuzzy_maxdist, timelimit=timelimit)
             terms = [term[1] for term in list(termz)[:self._defaults["maxkeywords"]]]
             terms_uthmani = map(STANDARD2UTHMANI, terms)
             # All matched aya_ac variation terms (only populated when fuzzy=True).
