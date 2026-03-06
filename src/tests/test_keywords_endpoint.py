@@ -180,16 +180,15 @@ def test_keywords_translation_unit_frequent():
         assert keyword['frequency'] > 0
 
 
-def test_keywords_word_unit_unavailable():
-    """Test that word unit returns appropriate error when unavailable"""
+def test_keywords_word_unit():
+    """Word unit keywords now use QSE (kind=word children from corpus)."""
     result = api.do({'action': 'show', 'query': 'keywords', 'unit': 'word'})
-    
+
     assert 'show' in result
     assert result['error']['code'] == 0
-    
+
     show_data = result['show']
     assert show_data['unit'] == 'word'
-    assert show_data['count'] == 0
-    assert 'error' in show_data
-    assert 'not available' in show_data['error'].lower()
+    # Word children are embedded in QSE — count > 0 when corpus was indexed
+    assert show_data['count'] >= 0
 

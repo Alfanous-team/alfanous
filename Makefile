@@ -107,11 +107,11 @@ update_recitations_online_list:
 
 ## build all indexes:
 # 1. Main index that contains all information related to Ayah or Surah, see index_main
-# 2. Word index, contains all information related to Word, see index_word
-index_all: index_main #index_word 
+
+index_all: index_main
 	@echo "done;"
 
 index_main:
-	export PYTHONPATH=$(API_PATH) ;	rm -rf $(INDEX_PATH)main/; $(PYTHON_COMMAND) $(QIMPORT) -x main $(RESOURCES_PATH) $(INDEX_PATH)main/ --translations $(STORE_PATH)Translations/
+	export PYTHONPATH=$(API_PATH) ;	rm -rf $(INDEX_PATH)main/; $(PYTHON_COMMAND) $(QIMPORT) -x main $(RESOURCES_PATH) $(INDEX_PATH)main/ --translations $(STORE_PATH)Translations/ --corpus $(STORE_PATH)quranic-corpus-morpology.xml
 
 

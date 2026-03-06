@@ -14,7 +14,6 @@ from alfanous import paths
 # Initialize search engines
 RAWoutput = Raw(
                     QSE_index = paths.QSE_INDEX, # Quranic Main index path
-                    WSE_index = paths.WSE_INDEX, # Quranic words index path
                     Recitations_list_file = paths.RECITATIONS_LIST_FILE,
                     Translations_list_file = paths.TRANSLATIONS_LIST_FILE ,
                     Information_file = paths.INFORMATION_FILE
@@ -999,7 +998,7 @@ def test_search_translation_unit():
 
 
 def test_search_word_unit_unavailable_engine():
-    """Test that searching with unit='word' when WSE is unavailable returns a structured response."""
+    """Test that searching with unit='word' returns a structured response."""
     search_flags = {
         "action": "search",
         "unit": "word",
@@ -1011,9 +1010,33 @@ def test_search_word_unit_unavailable_engine():
     assert "search" in results
     search = results["search"]
     assert search != {}, "word search should not return empty dict"
-    # When WSE is not available, should return a structured response with interval
+    # _search_words always returns a structured response with interval and words keys
     assert "interval" in search
     assert "words" in search
+
+
+def test_search_words_returns_structured_response():
+    """_search_words should return interval + words keys regardless of corpus availability."""
+    result = RAWoutput._search_words({
+        "query": "الله",
+        "highlight": "none",
+        "page": 1,
+    })
+    assert "interval" in result
+    assert "words" in result
+    assert isinstance(result["interval"], dict)
+    assert isinstance(result["words"], dict)
+
+
+def test_search_words_linguistic_field_query():
+    """_search_words should accept field:value queries for linguistic properties."""
+    result = RAWoutput._search_words({
+        "query": "arabicroot:رحم",
+        "highlight": "none",
+        "page": 1,
+    })
+    assert "interval" in result
+    assert "words" in result
 
 
 def test_search_word_vocalizations_returns_list():

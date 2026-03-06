@@ -47,6 +47,9 @@ mcp = FastMCP(
         "as word count per verse or verse count per sura. "
         "Use search_quran_by_position to retrieve verses from a specific structural "
         "location such as a juz, hizb, page, or sura range. "
+        "Use search_by_word_linguistics to search Quranic word occurrences by their "
+        "morphological and linguistic properties such as root, part of speech, "
+        "grammatical gender, number, verb aspect, voice, and more. "
         "Use get_quran_info to retrieve metadata such as chapter names, "
         "available translations, and recitations. "
         "Use suggest_query to get auto-completion suggestions while typing a query. "
@@ -587,6 +590,118 @@ def correct_query(query: str, unit: str = "aya") -> dict:
         query strings, plus the standard error envelope.
     """
     result = alfanous_api.correct_query(query=query, unit=unit)
+    return _make_serializable(result)
+
+
+@mcp.tool(
+    title="Search Qur'an Words by Linguistics",
+    description=(
+        "Search Quranic word occurrences by their morphological and linguistic "
+        "properties. Each word token in the Qur'an is indexed with its part of "
+        "speech, grammatical type, Arabic root, lemma, gender, number, person, "
+        "verb aspect, voice, nominal state, derivation, and more. "
+        "Use this tool for linguistic analysis — e.g. find all nouns derived "
+        "from a specific root, all verbs in the passive voice, or all words "
+        "with a particular part of speech. "
+        "An optional free-text query can also search the vocalized or "
+        "unvocalized word form directly."
+    ),
+)
+def search_by_word_linguistics(
+    query: str = "",
+    pos: Optional[str] = None,
+    word_type: Optional[str] = None,
+    root: Optional[str] = None,
+    arabicroot: Optional[str] = None,
+    lemma: Optional[str] = None,
+    arabiclemma: Optional[str] = None,
+    gender: Optional[str] = None,
+    number: Optional[str] = None,
+    person: Optional[str] = None,
+    voice: Optional[str] = None,
+    state: Optional[str] = None,
+    derivation: Optional[str] = None,
+    aspect: Optional[str] = None,
+    form: Optional[str] = None,
+    page: int = 1,
+    perpage: int = 10,
+    sortedby: str = "mushaf",
+    highlight: str = "bold",
+) -> dict:
+    """Search Quranic word occurrences by morphological/linguistic properties.
+
+    Args:
+        query: Optional free-text query searching the vocalized word form and
+            the unvocalized normalized form (Arabic or Buckwalter).
+        pos: Part of speech in English (e.g. "Noun", "Verb", "Particle",
+            "Adjective", "Pronoun").
+        word_type: Grammatical type category (e.g. "Nouns", "Verbs",
+            "Particles", "Pronouns").
+        root: Root in Buckwalter transliteration (e.g. "rHm", "ktb", "Ebd").
+        arabicroot: Root in Arabic script (e.g. "رحم", "كتب", "عبد").
+        lemma: Lemma in Buckwalter transliteration.
+        arabiclemma: Lemma in Arabic script.
+        gender: Grammatical gender — "M" (masculine) or "F" (feminine).
+        number: Grammatical number — "S" (singular), "D" (dual), or "P" (plural).
+        person: Grammatical person — "1", "2", or "3".
+        voice: Verb voice — "ACT" (active) or "PASS" (passive).
+        state: Nominal state — "DEF" (definite) or "INDEF" (indefinite).
+        derivation: Derivation type — "ACT PCPL" (active participle),
+            "PASS PCPL" (passive participle), or "VN" (verbal noun).
+        aspect: Verb aspect — "PERF" (perfect), "IMPF" (imperfect), or
+            "IMPV" (imperative).
+        form: Verb form in Roman numerals — one of "(I)" through "(XII)".
+        page: Page number for pagination (starts at 1).
+        perpage: Number of results per page (1–25).
+        sortedby: Sort order — one of "mushaf", "relevance", "score",
+            "tanzil", or "ayalength".
+        highlight: Highlight style for matched word text — one of "bold",
+            "css", "html", or "bbcode".
+
+    Returns:
+        Dictionary with word search results including matched word occurrences
+        with their full linguistic annotation and pagination info.
+    """
+    # Build field-specific query parts
+    linguistic_filters = {
+        "pos":        pos,
+        "type":       word_type,
+        "root":       root,
+        "arabicroot": arabicroot,
+        "lemma":      lemma,
+        "arabiclemma": arabiclemma,
+        "gender":     gender,
+        "number":     number,
+        "person":     person,
+        "voice":      voice,
+        "state":      state,
+        "derivation": derivation,
+        "aspect":     aspect,
+        "form":       form,
+    }
+
+    parts = []
+    if query:
+        parts.append(query)
+    for field, value in linguistic_filters.items():
+        if value is not None:
+            # Quote multi-word values so the parser treats them as a phrase.
+            safe_value = f'"{value}"' if " " in value else value
+            parts.append(f"{field}:{safe_value}")
+
+    combined_query = " ".join(parts) if parts else "*"
+
+    flags: dict = {
+        "action":   "search",
+        "query":    combined_query,
+        "unit":     "word",
+        "page":     page,
+        "range":    perpage,
+        "sortedby": sortedby,
+        "highlight": highlight,
+    }
+
+    result = alfanous_api.do(flags)
     return _make_serializable(result)
 
 

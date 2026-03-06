@@ -16,6 +16,81 @@ from alfanous.constants import QURAN_TOTAL_VERSES
 logging.basicConfig(level=logging.INFO)
 
 
+def _load_corpus_words(corpus_path):
+    """Read ``quranic-corpus-morpology.xml`` and return word occurrences grouped
+    by ``(sura_id, aya_id)``.
+
+    Each entry is a flat dict whose keys match the word-child search fields
+    defined in ``fields.json`` (table_name="aya", ids 100-124).
+
+    :param corpus_path: Absolute or relative path to the corpus XML file.
+    :returns: ``defaultdict(list)`` keyed by ``(sura_id, aya_id)``.
+    """
+    from collections import defaultdict
+    from alfanous_import.quran_corpus_reader.main import API as CorpusAPI
+    from alfanous.text_processing import QArabicSymbolsFilter
+
+    result = defaultdict(list)
+    try:
+        api = CorpusAPI(source=corpus_path)
+        qasf = QArabicSymbolsFilter(
+            shaping=True, tashkil=True, spellerrors=False,
+            hamza=False, uthmani_symbols=True,
+        )
+        qasf_spelled = QArabicSymbolsFilter(
+            shaping=True, tashkil=True, spellerrors=True,
+            hamza=True, uthmani_symbols=True,
+        )
+        gid = 0
+        for iteration in api.all_words_generator():
+            gid += 1
+            word_text = iteration["word"]
+            base = iteration["morphology"]["base"]
+            first = base[0] if base else {}
+            prefixes = iteration["morphology"].get("prefixes", [])
+            suffixes = iteration["morphology"].get("suffixes", [])
+
+            prefix_str = ";".join(p.get("arabictoken", "") for p in prefixes) or None
+            suffix_str = ";".join(s.get("arabictoken", "") for s in suffixes) or None
+
+            entry = {
+                "gid":         gid,
+                "word_id":     iteration["word_id"],
+                "aya_id":      iteration["aya_id"],
+                "sura_id":     iteration["sura_id"],
+                "word":        word_text,
+                "normalized":  qasf.normalize_all(word_text) or None,
+                "spelled":     qasf_spelled.normalize_all(word_text) or None,
+                "pos":         first.get("pos") or None,
+                "type":        first.get("type") or None,
+                "arabicpos":   first.get("arabicpos") or None,
+                "root":        first.get("root") or None,
+                "arabicroot":  first.get("arabicroot") or None,
+                "lemma":       first.get("lemma") or None,
+                "arabiclemma": first.get("arabiclemma") or None,
+                "prefix":      prefix_str,
+                "suffix":      suffix_str,
+                "gender":      first.get("gender") or None,
+                "number":      first.get("number") or None,
+                "person":      first.get("person") or None,
+                "form":        first.get("form") or None,
+                "voice":       first.get("voice") or None,
+                "state":       first.get("state") or None,
+                "derivation":  first.get("derivation") or None,
+                "aspect":      first.get("aspect") or None,
+                "mood":        first.get("mood") or None,
+                "arabicmood":  first.get("arabicmood") or None,
+                "case":        first.get("case") or None,
+                "arabiccase":  first.get("arabiccase") or None,
+            }
+            result[(iteration["sura_id"], iteration["aya_id"])].append(entry)
+
+        logging.info("Loaded %d word occurrences from corpus.", gid)
+    except Exception as exc:
+        logging.warning("Failed to load corpus words from %s: %s", corpus_path, exc)
+    return result
+
+
 def _load_all_translations(translations_store_path):
     """Return a mapping ``{trans_id: {"lines": [...], "lang": ..., "author": ...}}``
     for every ``.trans.zip`` found under *translations_store_path*.
@@ -94,7 +169,8 @@ class Transformer:
 
         return Schema(**kwargs)
 
-    def transfer(self, ix, tablename="aya", translations_store_path=None):
+    def transfer(self, ix, tablename="aya", translations_store_path=None,
+                 corpus_path=None):
         data_file = open(f"{self.resource_path}{tablename}.json")
         data_list = json.load(data_file)
 
@@ -117,6 +193,12 @@ class Transformer:
         if translations_store_path and tablename == "aya":
             translations = _load_all_translations(translations_store_path)
 
+        # Load corpus word occurrences if a corpus path was provided.
+        # words_by_aya: {(sura_id, aya_id): [word_entry, ...]}
+        words_by_aya = {}
+        if corpus_path and tablename == "aya":
+            words_by_aya = _load_corpus_words(corpus_path)
+
         for line in data_list:
             # Normalize chapter/topic/subtopic
             if tablename == "aya":
@@ -130,13 +212,15 @@ class Transformer:
                     for search_name in fields_mapping[k]:
                         doc[search_name] = v
 
-            if translations and tablename == "aya":
-                # Write parent aya doc + child translation docs as a nested group.
+            if tablename == "aya":
+                # Write parent aya doc + child docs (translations + words) as a nested group.
                 gid = line.get("gid")
+                sura_id = line.get("sura_id")
+                aya_id = line.get("aya_id")
                 doc["kind"] = "aya"
                 writer.start_group()
                 writer.add_document(**doc)
-                if gid is not None:
+                if gid is not None and translations:
                     idx = gid - 1  # 0-based index into translation lines
                     for trans_id, tdata in translations.items():
                         writer.add_document(
@@ -147,6 +231,15 @@ class Transformer:
                             trans_text=tdata["lines"][idx],
                             trans_author=tdata["author"],
                         )
+                # Add word children from quranic corpus (nested alongside translations).
+                if words_by_aya and sura_id is not None and aya_id is not None:
+                    for w in words_by_aya.get((sura_id, aya_id), []):
+                        # Exclude 'gid' from word children — the gid field in the
+                        # aya schema is the unique aya identifier (1–6236); using it
+                        # for word occurrence IDs would pollute numeric aya searches.
+                        word_doc = {k: v for k, v in w.items()
+                                    if v is not None and k != "gid"}
+                        writer.add_document(kind="word", **word_doc)
                 writer.end_group()
             else:
                 writer.add_document(**doc)
@@ -158,10 +251,12 @@ class Transformer:
         logging.info("done.")
         writer.commit()
 
-    def build_docindex(self, schema, tablename="aya", translations_store_path=None):
+    def build_docindex(self, schema, tablename="aya", translations_store_path=None,
+                       corpus_path=None):
         assert schema, "schema is empty"
         ix = FileStorage(self.index_path).create_index(schema)
-        self.transfer(ix, tablename, translations_store_path=translations_store_path)
+        self.transfer(ix, tablename, translations_store_path=translations_store_path,
+                      corpus_path=corpus_path)
         return "OK"
 
 

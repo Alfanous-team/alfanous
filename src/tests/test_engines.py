@@ -30,6 +30,7 @@ def test_most_frequent_words():
 
 def test_list_values():
     assert QSE.list_values("sura_id") == list(range(1, 114 + 1))
+    # gid is only on aya parent docs (1-6236); word children carry no gid
     assert len(list(QSE.list_values("gid"))) == 6236
     # chapters, topics, subtopics should return full phrases, not single-word tokens
     chapters = QSE.list_stored_values("chapter")

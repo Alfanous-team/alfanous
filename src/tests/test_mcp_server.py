@@ -21,7 +21,7 @@ try:
     from alfanous_mcp.mcp_server import (
         search_quran, search_translations, get_quran_info, suggest_query,
         get_ai_rules, search_quran_by_themes, search_quran_by_stats,
-        search_quran_by_position, correct_query,
+        search_quran_by_position, correct_query, search_by_word_linguistics,
     )
     MCP_AVAILABLE = True
 except ImportError:
@@ -648,3 +648,68 @@ class TestSearchQuranByPosition:
 
 if __name__ == "__main__":
     pytest.main([__file__, "-v"])
+
+
+# ---------------------------------------------------------------------------
+# search_by_word_linguistics
+# ---------------------------------------------------------------------------
+
+class TestSearchByWordLinguistics:
+    """Tests for the search_by_word_linguistics MCP tool."""
+
+    def test_returns_dict(self):
+        """search_by_word_linguistics should return a dictionary."""
+        result = search_by_word_linguistics()
+        assert isinstance(result, dict)
+
+    def test_contains_error_key(self):
+        """Result should contain an 'error' key."""
+        result = search_by_word_linguistics()
+        assert "error" in result
+
+    def test_contains_search_key(self):
+        """Result should contain a 'search' key."""
+        result = search_by_word_linguistics()
+        assert "search" in result
+
+    def test_search_key_has_words_and_interval(self):
+        """'search' sub-dict should have 'words' and 'interval' keys."""
+        result = search_by_word_linguistics()
+        assert "words" in result["search"]
+        assert "interval" in result["search"]
+
+    def test_free_text_query(self):
+        """A free-text query should succeed."""
+        result = search_by_word_linguistics(query="الله")
+        assert isinstance(result, dict)
+        assert "error" in result
+
+    def test_arabicroot_filter(self):
+        """Filtering by arabicroot field should succeed."""
+        result = search_by_word_linguistics(arabicroot="رحم")
+        assert isinstance(result, dict)
+        assert "search" in result
+
+    def test_pos_filter(self):
+        """Filtering by part of speech should succeed."""
+        result = search_by_word_linguistics(pos="Noun")
+        assert isinstance(result, dict)
+        assert "search" in result
+
+    def test_combined_filters(self):
+        """Combining multiple linguistic filters should succeed."""
+        result = search_by_word_linguistics(arabicroot="رحم", gender="M")
+        assert isinstance(result, dict)
+        assert "search" in result
+
+    def test_result_is_serializable(self):
+        """Result should contain only JSON-serializable types."""
+        import json
+        result = search_by_word_linguistics(arabicroot="رحم", perpage=5)
+        json.dumps(result)
+
+    def test_pagination(self):
+        """Pagination parameters should be accepted."""
+        result = search_by_word_linguistics(page=1, perpage=5)
+        assert isinstance(result, dict)
+        assert "error" in result
