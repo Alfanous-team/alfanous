@@ -1330,3 +1330,33 @@ def test_fuzzy_search_transliterated_query_no_stopiteration():
         "Fuzzy search with transliterated query must succeed without error"
     )
     assert "search" in results
+
+
+def test_fuzzy_search_field_query_no_crash():
+    """Field query combined with fuzzy=True must not raise TypeError.
+
+    Regression test for: searching with a field-qualified query such as
+    ``a_g:1`` while ``fuzzy=True`` caused a crash:
+
+        TypeError: '<=' not supported between instances of 'str' and 'int'
+
+    When Whoosh parses a numeric field query (e.g. ``a_g:1``), it encodes the
+    value as raw bytes (e.g. ``b'\\x00\\x80\\x00\\x00\\x01'``).  Iterating over
+    a bytes object yields integers, and the Arabic-character check
+    ``'\\u0600' <= c <= '\\u06FF'`` therefore raises TypeError because you
+    cannot compare a str with an int.
+
+    The fix adds an ``isinstance(term, str)`` guard in the Levenshtein subquery
+    list-comprehension so that non-string (bytes/numeric) terms are skipped.
+    """
+    search_flags = {
+        "action": "search",
+        "query": "a_g:1",
+        "fuzzy": True,
+    }
+    # Must not raise TypeError (or any other unhandled exception)
+    results = RAWoutput.do(search_flags)
+    assert results["error"]["code"] == 0, (
+        "Field query with fuzzy=True must succeed without error"
+    )
+    assert "search" in results
