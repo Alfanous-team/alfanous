@@ -35,7 +35,7 @@ class BasicSearchEngine:
 
     # end  __init__
 
-    def search_all(self, querystr, limit=QURAN_TOTAL_VERSES, sortedby="score", reverse=False, facets=None, filter_dict=None, fuzzy=False, fuzzy_maxdist=1):
+    def search_all(self, querystr, limit=QURAN_TOTAL_VERSES, sortedby="score", reverse=False, facets=None, filter_dict=None, fuzzy=False, fuzzy_maxdist=1, timelimit=5.0):
         """
         Perform a search in the index.
         
@@ -49,9 +49,11 @@ class BasicSearchEngine:
                and apply Levenshtein distance matching on 'aya_ac'
         @param fuzzy_maxdist: Maximum Levenshtein edit distance for fuzzy term
                matching (default 1). Only used when fuzzy=True.
+        @param timelimit: Maximum number of seconds to spend on the search
+               (default 5.0). Pass None to disable the limit.
         @return: Tuple of (results, term_stats, searcher)
         """
-        results, terms, searcher = self._searcher.search(querystr, limit=limit, sortedby=sortedby, reverse=reverse, facets=facets, filter_dict=filter_dict, fuzzy=fuzzy, fuzzy_maxdist=fuzzy_maxdist)
+        results, terms, searcher = self._searcher.search(querystr, limit=limit, sortedby=sortedby, reverse=reverse, facets=facets, filter_dict=filter_dict, fuzzy=fuzzy, fuzzy_maxdist=fuzzy_maxdist, timelimit=timelimit)
         return results, list(self._reader.term_stats(terms)), searcher
 
     def most_frequent_words(self, nb, fieldname):

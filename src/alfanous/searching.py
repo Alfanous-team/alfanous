@@ -63,7 +63,7 @@ class QSearcher:
         self._qparser = qparser
         self._schema = docindex.get_schema()
 
-    def search(self, querystr, limit=QURAN_TOTAL_VERSES, sortedby="score", reverse=False, facets=None, filter_dict=None, fuzzy=False, fuzzy_maxdist=1):
+    def search(self, querystr, limit=QURAN_TOTAL_VERSES, sortedby="score", reverse=False, facets=None, filter_dict=None, fuzzy=False, fuzzy_maxdist=1, timelimit=5.0):
         searcher = self._searcher(weighting=QScore())
         query = self._qparser.parse(querystr)
 
@@ -137,7 +137,10 @@ class QSearcher:
             elif len(filter_queries) > 1:
                 filter_query = wquery.And(filter_queries)
         
-        results = searcher.search(q=query, limit=limit, sortedby=QSort(sortedby), reverse=reverse, groupedby=groupedby, filter=filter_query, terms=fuzzy)
+        search_kwargs = dict(q=query, limit=limit, sortedby=QSort(sortedby), reverse=reverse, groupedby=groupedby, filter=filter_query, terms=fuzzy)
+        if timelimit is not None:
+            search_kwargs["timelimit"] = timelimit
+        results = searcher.search(**search_kwargs)
 
         if fuzzy:
             # Use matched_terms() to capture the actual index terms that were
