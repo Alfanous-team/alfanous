@@ -96,6 +96,7 @@ def test_search():
                                 'gid': 1805,
                                 'hizb': 27,
                                 'juz': 14,
+                                'kind': 'aya',
                                 'manzil': 3,
                                 'nisf': 53,
                                 'page': 262,
