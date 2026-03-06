@@ -395,8 +395,17 @@ class Raw:
                     groupedby = Facets()
                     groupedby.add_field(field)
                     
-                    # Search all documents
-                    results = searcher.search(wquery.Every(), limit=None, groupedby=groupedby)
+                    # In the nested QSE index every group contains both parent aya
+                    # docs and child translation docs.  Restrict the facet query to
+                    # the relevant document kind so child docs don't create spurious
+                    # extra groups in aya-only fields (e.g. sura_type, sura_id).
+                    if unit == "translation":
+                        kind_filter = wquery.Term("kind", "translation")
+                    else:
+                        kind_filter = wquery.Term("kind", "aya")
+                    
+                    # Search matching documents
+                    results = searcher.search(kind_filter, limit=None, groupedby=groupedby)
                     
                     # Get facet groups
                     field_groups = results.groups(field)
@@ -629,9 +638,9 @@ class Raw:
             # NestedParent so results are parent aya documents that have
             # translations matching the query text.
             from whoosh import query as wq
-            from whoosh.qparser import QueryParser as _QP
+            from whoosh.qparser import QueryParser as _QP, OrGroup as _OrGroup
             _trans_parser = _QP("trans_text", self.QSE._schema,
-                                group=qparser.OrGroup)
+                                group=_OrGroup)
             _trans_q = _trans_parser.parse(query)
             _nested_q = wq.NestedParent(wq.Term("kind", "aya"), _trans_q)
             res, termz, searcher = self.QSE.search_with_query(
@@ -1011,9 +1020,9 @@ class Raw:
 
         # Search trans_text in nested child docs directly.
         from whoosh import query as wq
-        from whoosh.qparser import QueryParser as _QP
+        from whoosh.qparser import QueryParser as _QP, OrGroup as _OrGroup
         _trans_parser = _QP("trans_text", self.QSE._schema,
-                            group=qparser.OrGroup)
+                            group=_OrGroup)
         _trans_q = wq.And([wq.Term("kind", "translation"), _trans_parser.parse(query)])
         res, termz, searcher = self.QSE.search_with_query(
             _trans_q,
