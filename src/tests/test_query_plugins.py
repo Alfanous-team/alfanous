@@ -2,6 +2,7 @@
 Tests for Whoosh 2.7 plugin-based query parser implementation
 """
 import pytest
+from unittest.mock import patch
 from whoosh.qparser import QueryParser
 from whoosh.fields import Schema, TEXT
 from whoosh.query import Or, Term
@@ -22,6 +23,58 @@ from alfanous.query_plugins import (
     TupleQuery,
     ArabicWildcardQuery
 )
+
+# ---------------------------------------------------------------------------
+# Mock data for _query_word_index (replaces JSON-file-based derivedict /
+# worddict which are now empty by default — the index is the primary source).
+# ---------------------------------------------------------------------------
+
+# Minimal word-index data for مالك (used by derivation tests)
+_MALIK_LEMMA = "مالك"
+_MALIK_ROOT  = "ملك"
+_MALIK_LEMMA_WORDS = ["مالك", "مالكون"]
+_MALIK_ROOT_WORDS  = [
+    "مالك", "مالكون", "يملك", "الملك", "ملكوت", "ملك", "ملكتم",
+    "تملك", "أملك", "ملكت", "يملكون", "ملكناهم", "تملكون",
+    "ملكه", "ملكهم", "ملكتني", "ملكتهم", "يملكه",
+    "ملوك", "مملكة", "تملكه", "يملكوه", "ملككم",
+]  # 23 unique items
+
+# Minimal word-index data for TupleQuery tests
+_QAWL_NOUNS = [
+    "قول", "قولا", "قولكم", "قوله", "الأقاويل", "أقوالهم",
+    "قولهم", "قولك", "قولي", "قولنا", "أقوال",
+]  # 11 items
+_MALIK_VERBS = [
+    "يملك", "ملكتم", "تملك", "أملك", "ملكت", "يملكون",
+    "ملكناهم", "تملكون",
+]  # 8 items
+
+
+def _make_word_index_mock(word, lemma, root, lemma_words, root_words):
+    """Return a side_effect function for patching _query_word_index."""
+    def _mock(filter_dict, field="word", limit=5000):
+        if filter_dict.get("normalized") == word or filter_dict.get("word") == word:
+            if field == "lemma":
+                return [lemma]
+            if field == "root":
+                return [root]
+        if filter_dict.get("lemma") == lemma and field == "normalized":
+            return list(lemma_words)
+        if filter_dict.get("root") == root and field == "normalized":
+            return list(root_words)
+        return []
+    return _mock
+
+
+def _make_tuple_mock(root_words_map):
+    """Return a side_effect function for TupleQuery tests."""
+    def _mock(filter_dict, field="normalized", limit=5000):
+        root = filter_dict.get("root", "")
+        type_ = filter_dict.get("type", "")
+        key = (root, type_)
+        return list(root_words_map.get(key, []))
+    return _mock
 
 
 def create_test_parser():
@@ -91,42 +144,38 @@ def test_antonyms_plugin():
 
 
 def test_derivation_plugin_single():
-    """Test derivation plugin with single > (>word) - Example from README: >مالك
-    
-    Level 1 returns lemma-level derivations (narrow list).
-    """
-    parser = create_test_parser()
-    query = parser.parse(">مالك")
+    """Test derivation plugin with single > (>word) — lemma-level derivations."""
+    _mock = _make_word_index_mock(
+        "مالك", _MALIK_LEMMA, _MALIK_ROOT, _MALIK_LEMMA_WORDS, _MALIK_ROOT_WORDS
+    )
+    with patch("alfanous.query_plugins._query_word_index", side_effect=_mock):
+        parser = create_test_parser()
+        query = parser.parse(">مالك")
     assert isinstance(query, DerivationQuery)
     assert query.level == 1
     assert query.text == "مالك"
-    # Verify results contain derivations of مالك at lemma level
-    assert sorted(query.words) == sorted(['مالك', 'مالكون'])
-    assert "مالك" in query.words
-    assert "مالكون" in query.words
-    assert len(query.words) == 2  # Lemma level should have fewer results
+    assert sorted(query.words) == sorted(_MALIK_LEMMA_WORDS)
+    assert len(query.words) == 2
 
 
 def test_derivation_plugin_double():
-    """Test derivation plugin with double >> (>>word) - Example from README: >>مالك
-    
-    Level 2 returns root-level derivations (wider list than level 1).
-    """
-    parser = create_test_parser()
-    query = parser.parse(">>مالك")
+    """Test derivation plugin with double >> (>>word) — root-level derivations."""
+    _mock = _make_word_index_mock(
+        "مالك", _MALIK_LEMMA, _MALIK_ROOT, _MALIK_LEMMA_WORDS, _MALIK_ROOT_WORDS
+    )
+    with patch("alfanous.query_plugins._query_word_index", side_effect=_mock):
+        parser = create_test_parser()
+        query = parser.parse(">>مالك")
     assert isinstance(query, DerivationQuery)
     assert query.level == 2
     assert query.text == "مالك"
-    # Verify results contain derivations of مالك at root level
-    # Check for expected words (order may vary)
-    assert len(query.words) == 23  # Should have 23 derivations
+    assert len(query.words) == 23
     assert "مالك" in query.words
     assert "ملكوت" in query.words
     assert "يملك" in query.words
     assert "الملك" in query.words
-    # Root level should return more results than lemma level
-    query_lemma = parser.parse(">مالك")
-    assert len(query.words) > len(query_lemma.words)  # Root level has wider results
+    query_lemma_words = _MALIK_LEMMA_WORDS
+    assert len(query.words) > len(query_lemma_words)
 
 
 def test_spell_errors_plugin():
@@ -183,18 +232,15 @@ def test_tuple_plugin_single_item():
 
 
 def test_tuple_plugin_multiple_items():
-    """Test tuple plugin with multiple items - Example from README: {قول،اسم}
-    
-    Should return derivations of قول that are nouns (اسم).
-    """
-    parser = create_test_parser()
-    query = parser.parse("{قول،اسم}")
+    """Test tuple plugin — root قول, type اسم (noun): 11 results."""
+    _mock = _make_tuple_mock({("قول", "اسم"): _QAWL_NOUNS})
+    with patch("alfanous.query_plugins._query_word_index", side_effect=_mock):
+        parser = create_test_parser()
+        query = parser.parse("{قول،اسم}")
     assert isinstance(query, TupleQuery)
-    # Should have root and type properties
     assert query.props.get("root") == "قول"
     assert query.props.get("type") == "اسم"
-    # Verify results contain words with root قول and type اسم (noun)
-    assert len(query.words) == 11  # Should have 11 nouns
+    assert len(query.words) == 11
     assert "قول" in query.words
     assert "قولا" in query.words
     assert "قولكم" in query.words
@@ -203,17 +249,15 @@ def test_tuple_plugin_multiple_items():
 
 
 def test_tuple_plugin_root_and_type():
-    """Test tuple plugin with root and type - Example from README: {ملك،فعل}
-    
-    Should return derivations of ملك that are verbs (فعل).
-    """
-    parser = create_test_parser()
-    query = parser.parse("{ملك،فعل}")
+    """Test tuple plugin — root ملك, type فعل (verb): 8 results."""
+    _mock = _make_tuple_mock({("ملك", "فعل"): _MALIK_VERBS})
+    with patch("alfanous.query_plugins._query_word_index", side_effect=_mock):
+        parser = create_test_parser()
+        query = parser.parse("{ملك،فعل}")
     assert isinstance(query, TupleQuery)
     assert query.props.get("root") == "ملك"
     assert query.props.get("type") == "فعل"
-    # Verify results contain words with root ملك and type فعل (verb)
-    assert len(query.words) == 8  # Should have 8 verbs
+    assert len(query.words) == 8
     assert "يملك" in query.words
     assert "ملكتم" in query.words
     assert "تملك" in query.words
@@ -334,15 +378,16 @@ def create_index_parser(ix):
 
 
 def test_derivation_query_executes_against_index():
-    """Test that DerivationQuery can be executed against a Whoosh index.
-
-    This validates the fix for the NotImplementedError caused by Whoosh 2.7
-    calling _btexts() instead of _words() on MultiTerm subclasses.
-    """
+    """Test that DerivationQuery executes against a Whoosh RAM index."""
+    _mock = _make_word_index_mock(
+        "مالك", _MALIK_LEMMA, _MALIK_ROOT, _MALIK_LEMMA_WORDS, _MALIK_ROOT_WORDS
+    )
     ix = create_test_index()
     parser = create_index_parser(ix)
 
-    query = parser.parse('>مالك')
+    with patch("alfanous.query_plugins._query_word_index", side_effect=_mock):
+        query = parser.parse('>مالك')
+
     assert isinstance(query, DerivationQuery)
 
     with ix.searcher() as searcher:
@@ -353,17 +398,20 @@ def test_derivation_query_executes_against_index():
 
 
 def test_derivation_query_root_level_executes_against_index():
-    """Test that DerivationQuery at root level (>>) executes against a Whoosh index."""
+    """Test that root-level DerivationQuery (>>) executes against a Whoosh RAM index."""
+    _mock = _make_word_index_mock(
+        "مالك", _MALIK_LEMMA, _MALIK_ROOT, _MALIK_LEMMA_WORDS, _MALIK_ROOT_WORDS
+    )
     ix = create_test_index()
     parser = create_index_parser(ix)
 
-    query = parser.parse('>>مالك')
+    with patch("alfanous.query_plugins._query_word_index", side_effect=_mock):
+        query = parser.parse('>>مالك')
+
     assert isinstance(query, DerivationQuery)
 
     with ix.searcher() as searcher:
         results = searcher.search(query)
-        result_texts = [r['text'] for r in results]
-        # Root level should return more derivations including يملك, الملك
         assert len(results) >= 2
 
 

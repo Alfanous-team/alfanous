@@ -130,16 +130,10 @@ try:
         arabic_to_english_fields = json.load(f)
 except (IOError, json.JSONDecodeError):
     arabic_to_english_fields = {}
-try:
-    with open(paths.STANDARD_TO_UTHMANI_FILE) as f:
-        std2uth_words = json.load(f)
-except (IOError, json.JSONDecodeError):
-    std2uth_words = {}
-try:
-    with open(paths.VOCALIZATIONS_FILE) as f:
-        vocalization_dict = json.load(f)
-except (IOError, json.JSONDecodeError):
-    vocalization_dict = {}
+std2uth_words = {}
+vocalization_dict = {}
+derivedict = {}
+worddict = {}
 try:
     with open(paths.SYNONYMS_FILE) as f:
         syndict = json.load(f)
@@ -150,14 +144,3 @@ try:
         antdict = json.load(f)
 except (IOError, json.JSONDecodeError):
     antdict = {}
-try:
-    with open(paths.DERIVATIONS_FILE) as f:
-        derivedict = json.load(f)
-except (IOError, json.JSONDecodeError):
-    derivedict = {"root": []}
-
-try:
-    with open(paths.WORD_PROPS_FILE) as f:
-        worddict = json.load(f)
-except (IOError, json.JSONDecodeError):
-    worddict = {}

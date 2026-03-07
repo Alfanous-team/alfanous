@@ -5,12 +5,11 @@ from alfanous.text_processing import QArabicSymbolsFilter
 from alfanous.data import *
 from alfanous.constants import QURAN_TOTAL_VERSES
 from alfanous.romanization import transliterate
-from alfanous.misc import locate, find, filter_doubles
+
 from whoosh import query as wquery
 from whoosh.sorting import Facets
 from alfanous.results_processing import QScore, QTranslationHighlight
 
-STANDARD2UTHMANI = lambda x: std2uth_words.get(x) or x
 
 from alfanous.text_processing import _TRANSLATION_LANGS
 # All language-specific indexed translation fields (text_en, text_fr, …).
@@ -703,6 +702,7 @@ class Raw:
             )
             terms, _all_ac_variations = [], []
             terms_uthmani = iter([])
+            _std2uth_fn = lambda x: x
         else:
             # Arabic (or field-qualified) query — search aya fields directly.
             # Restrict to parent aya documents only so that nested child
@@ -714,7 +714,23 @@ class Raw:
             )
             res, termz, searcher = self.QSE.search_all(aya_query, limit=self._defaults["results_limit"]["aya"], sortedby=sortedby, facets=facets_list, filter_dict=filter_dict, fuzzy=fuzzy, fuzzy_maxdist=fuzzy_maxdist, timelimit=timelimit)
             terms = [term[1] for term in list(termz)[:self._defaults["maxkeywords"]]]
-            terms_uthmani = map(STANDARD2UTHMANI, terms)
+            # Build standard→Uthmani mapping for matched terms via word index.
+            _std2uth = {}
+            if terms and self.QSE.OK:
+                try:
+                    _uth_parts = [wquery.Term("kind", "word"),
+                                  wquery.Or([wquery.Term("normalized", t) for t in terms])]
+                    _uth_res, _, _uth_srch = self.QSE.search_with_query(
+                        wquery.And(_uth_parts), limit=len(terms) * 5)
+                    for _d in _uth_res:
+                        _n, _w = _d.get("normalized"), _d.get("word")
+                        if _n and _w and _n not in _std2uth:
+                            _std2uth[_n] = _w
+                    _uth_srch.close()
+                except Exception:
+                    pass
+            _std2uth_fn = lambda x: _std2uth.get(x) or x
+            terms_uthmani = map(_std2uth_fn, terms)
             # All matched aya_ac variation terms (only populated when fuzzy=True).
             # Used in the word_info loop to derive per-word variation lists.
             _all_ac_variations = [term[1] for term in termz if term[0] == "aya_ac"]
@@ -813,102 +829,64 @@ class Raw:
                     if term[0] == "aya_":
                         annotation_word_query += " OR word:%s " % term[1]
                     else:  # if aya
-                        annotation_word_query += " OR normalized:%s " % STANDARD2UTHMANI(term[1])
+                        annotation_word_query += " OR normalized:%s " % _std2uth_fn(term[1])
                     if word_vocalizations:
                         _term_normalized = strip_vocalization(term[1])
                         vocalizations = []
-                        try:
-                            if self.QSE.OK:
-                                from whoosh import query as _wq
-                                _voc_q = _wq.And([
-                                    _wq.Term("kind", "word"),
-                                    _wq.Term("normalized", _term_normalized),
-                                ])
-                                _voc_res, _, _voc_searcher = self.QSE.search_with_query(
-                                    _voc_q, limit=500
-                                )
-                                vocalizations = list(
-                                    set(w.get("word") for w in _voc_res if w.get("word")) - {term[1]}
-                                )
-                                _voc_searcher.close()
-                            else:
-                                _raw = vocalization_dict.get(_term_normalized) or []
-                                if isinstance(_raw, str):
-                                    _raw = [_raw]
-                                vocalizations = [v for v in _raw if v != term[1]]
-                        except Exception:
-                            _raw = vocalization_dict.get(_term_normalized) or []
-                            if isinstance(_raw, str):
-                                _raw = [_raw]
-                            vocalizations = [v for v in _raw if v != term[1]]
+                        if self.QSE.OK:
+                            _voc_q = wquery.And([
+                                wquery.Term("kind", "word"),
+                                wquery.Term("normalized", _term_normalized),
+                            ])
+                            _voc_res, _, _voc_searcher = self.QSE.search_with_query(
+                                _voc_q, limit=500
+                            )
+                            vocalizations = list(
+                                set(w.get("word") for w in _voc_res if w.get("word")) - {term[1]}
+                            )
+                            _voc_searcher.close()
                         nb_vocalizations_globale += len(vocalizations)
                     if word_synonyms:
                         synonyms = syndict.get(term[1]) or []
                     derivations_extra = []
                     if word_derivations:
-                        try:
-                            if self.QSE.OK:
-                                from whoosh import query as _wq
-                                _norm_term = strip_vocalization(term[1])
-                                # Find lemma and root of the search term from word index
-                                _word_q = _wq.And([
-                                    _wq.Term("kind", "word"),
-                                    _wq.Term("normalized", _norm_term),
-                                ])
-                                _word_res, _, _word_searcher = self.QSE.search_with_query(
-                                    _word_q, limit=10
-                                )
-                                _word_docs = list(_word_res)
-                                _word_searcher.close()
-                                lemma = next((w.get("lemma") for w in _word_docs if w.get("lemma")), None)
-                                root = next((w.get("root") for w in _word_docs if w.get("root")), None)
-                                if lemma:
-                                    _lem_q = _wq.And([
-                                        _wq.Term("kind", "word"),
-                                        _wq.Term("lemma", lemma),
-                                    ])
-                                    _lem_res, _, _lem_srch = self.QSE.search_with_query(_lem_q, limit=500)
-                                    derivations = list(set(
-                                        w.get("normalized") for w in _lem_res
-                                        if w.get("normalized")
-                                    ))
-                                    _lem_srch.close()
-                                else:
-                                    derivations = []
-                                if root:
-                                    _root_q = _wq.And([
-                                        _wq.Term("kind", "word"),
-                                        _wq.Term("root", root),
-                                    ])
-                                    _root_res, _, _root_srch = self.QSE.search_with_query(_root_q, limit=500)
-                                    _root_norms = list(set(
-                                        w.get("normalized") for w in _root_res
-                                        if w.get("normalized")
-                                    ))
-                                    _root_srch.close()
-                                    derivations_extra = list(set(_root_norms) - set(derivations))
-                            else:
-                                lemma = locate(derivedict.get("word_", []), derivedict.get("lemma", []), term[1])
-                                if lemma:
-                                    derivations = filter_doubles(find(derivedict.get("lemma", []), derivedict.get("word_", []), lemma))
-                                else:
-                                    derivations = []
-                                root = locate(derivedict.get("word_", []), derivedict.get("root", []), term[1])
-                                if root:
-                                    derivations_extra = list(
-                                        set(filter_doubles(find(derivedict.get("root", []), derivedict.get("word_", []), root))) - set(derivations)
-                                    )
-                        except Exception:
-                            lemma = locate(derivedict.get("word_", []), derivedict.get("lemma", []), term[1])
+                        derivations = []
+                        if self.QSE.OK:
+                            _norm_term = strip_vocalization(term[1])
+                            _word_q = wquery.And([
+                                wquery.Term("kind", "word"),
+                                wquery.Term("normalized", _norm_term),
+                            ])
+                            _word_res, _, _word_searcher = self.QSE.search_with_query(
+                                _word_q, limit=10
+                            )
+                            _word_docs = list(_word_res)
+                            _word_searcher.close()
+                            lemma = next((w.get("lemma") for w in _word_docs if w.get("lemma")), None)
+                            root = next((w.get("root") for w in _word_docs if w.get("root")), None)
                             if lemma:
-                                derivations = filter_doubles(find(derivedict.get("lemma", []), derivedict.get("word_", []), lemma))
-                            else:
-                                derivations = []
-                            root = locate(derivedict.get("word_", []), derivedict.get("root", []), term[1])
+                                _lem_q = wquery.And([
+                                    wquery.Term("kind", "word"),
+                                    wquery.Term("lemma", lemma),
+                                ])
+                                _lem_res, _, _lem_srch = self.QSE.search_with_query(_lem_q, limit=500)
+                                derivations = list(set(
+                                    w.get("normalized") for w in _lem_res
+                                    if w.get("normalized")
+                                ))
+                                _lem_srch.close()
                             if root:
-                                derivations_extra = list(
-                                    set(filter_doubles(find(derivedict.get("root", []), derivedict.get("word_", []), root))) - set(derivations)
-                                )
+                                _root_q = wquery.And([
+                                    wquery.Term("kind", "word"),
+                                    wquery.Term("root", root),
+                                ])
+                                _root_res, _, _root_srch = self.QSE.search_with_query(_root_q, limit=500)
+                                _root_norms = list(set(
+                                    w.get("normalized") for w in _root_res
+                                    if w.get("normalized")
+                                ))
+                                _root_srch.close()
+                                derivations_extra = list(set(_root_norms) - set(derivations))
 
                     # Compute variations specific to this word: among all
                     # matched aya_ac terms, keep only those within
@@ -1463,35 +1441,6 @@ class Raw:
         searcher.close()
         return output
 
-        # preprocess query
-        query = query.replace("\\", "")
-
-        if ":" not in query:
-            query = transliterate("buckwalter", query, ignore="'_\"%*?#~[]{}:>+-|")
-
-        SE = self.QSE
-        if not SE.OK:
-            return {
-                "words": {},
-                "interval": {"start": 0, "end": 0, "total": 0, "page": 1, "nb_pages": 0},
-                "runtime": 0
-            }
-
-        res, termz, searcher = SE.search_all(query, limit=self._defaults["results_limit"]["word"], sortedby=sortedby, filter_dict={"kind": "word"}, timelimit=timelimit)
-        terms = [term[1] for term in list(termz)[:self._defaults["maxkeywords"]]]
-
-        # pagination
-        offset = 1 if offset < 1 else offset
-        range = self._defaults["minrange"] if range < self._defaults["minrange"] else range
-        range = self._defaults["maxrange"] if range > self._defaults["maxrange"] else range
-        interval_end = offset + range - 1
-        end = interval_end if interval_end < len(res) else len(res)
-        start = offset if offset <= len(res) else -1
-        reslist = [] if end == 0 or start == -1 else list(res)[start - 1:end]
-
-        output = {}
-        H = lambda X: SE.highlight(X, terms, highlight) if highlight != "none" and X else X if X else "-----"
-
         output["runtime"] = round(res.runtime, 5)
         output["interval"] = {
             "start": start,
@@ -1546,10 +1495,3 @@ class Raw:
 
         searcher.close()
         return output
-
-
-class Json(Raw):
-    """ JSON output format """
-
-    def do(self, flags):
-        return json.dumps(self._do(flags), sort_keys=False, indent=4)
