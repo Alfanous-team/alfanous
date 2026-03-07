@@ -82,8 +82,13 @@ download_tanzil:
 update_post_build: update_translations_indexed_list
 
 ##  update resources that must be updated before indexing phase, which are:
-# (currently unused, kept for potential future use)
-update_pre_build:
+# - arabic_names.json (derived from store/fields.json)
+update_pre_build: generate_arabic_names
+
+# Regenerate src/alfanous/resources/arabic_names.json from store/fields.json.
+# The output maps every indexed field's search_name to its Arabic display name.
+generate_arabic_names:
+	export PYTHONPATH=$(API_PATH) ;	$(PYTHON_COMMAND) -m alfanous_import.generate_arabic_names
 
 # update list of indexed translations automatically using Importer
 update_translations_indexed_list:

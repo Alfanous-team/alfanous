@@ -95,7 +95,6 @@ setup(
                                'resources/stop_words.json',
                                'resources/synonyms.json',
                                'resources/antonyms.json',
-                               'resources/vocalizations.json',
                                'resources/ai_query_translation_rules.txt',
                            ]},
 

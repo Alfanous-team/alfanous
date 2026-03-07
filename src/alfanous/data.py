@@ -114,8 +114,10 @@ def quran_unvocalized_words():
 
 
 try:
-    with open(paths.ARABIC_NAMES_FILE) as f:
-        arabic_to_english_fields = json.load(f)
+    with open(paths.ARABIC_NAMES_FILE, encoding="utf-8") as f:
+        # File format: {search_name: arabic_name}. Reverse so that the
+        # runtime mapping is {arabic_name: search_name} for query parsing.
+        arabic_to_english_fields = {ar: en for en, ar in json.load(f).items()}
 except (IOError, json.JSONDecodeError):
     arabic_to_english_fields = {}
 std2uth_words = {}

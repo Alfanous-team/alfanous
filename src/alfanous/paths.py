@@ -11,11 +11,9 @@ QSE_INDEX = ROOT_INDEX + "main/"
 # resources paths
 INFORMATION_FILE = ROOT_RESOURCE + "information.json"
 ARABIC_NAMES_FILE = ROOT_RESOURCE + "arabic_names.json"
-STANDARD_TO_UTHMANI_FILE = ROOT_RESOURCE + "standard_to_uthmani.json"
 STOP_WORDS_FILE = ROOT_RESOURCE + "stop_words.json"
 SYNONYMS_FILE = ROOT_RESOURCE + "synonyms.json"
 ANTONYMS_FILE = ROOT_RESOURCE + "antonyms.json"
-VOCALIZATIONS_FILE = ROOT_RESOURCE + "vocalizations.json"
 AI_QUERY_TRANSLATION_RULES_FILE = ROOT_RESOURCE + "ai_query_translation_rules.txt"
 
 # configs path suffixes
