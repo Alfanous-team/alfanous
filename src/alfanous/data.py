@@ -86,16 +86,35 @@ def QSE(path=paths.QSE_INDEX):
 def quran_unvocalized_words(path=paths.DERIVATIONS_FILE):
     """Return the set of unvocalized words appearing in the Quran.
 
-    Reads the ``word_`` column from ``derivations.json``, which already
-    contains every unvocalized word form.  Using the derivations file avoids
-    shipping the much larger ``word.json`` as a runtime dependency.
+    Prefers to collect all unique ``normalized`` values from word children
+    in the live QSE index.  Falls back to reading the ``word_`` column from
+    ``derivations.json`` when the index is unavailable so that this function
+    keeps working in environments without a built index.
 
     The result is cached as a frozenset for O(1) lookup.
 
-    :param path: Path to derivations JSON file (parallel-column dict with a
-                 ``word_`` key whose value is a list of unvocalized words).
+    :param path: Path to derivations JSON fallback file.
     :return: frozenset of unvocalized Quranic word strings
     """
+    # --- Primary: word index ------------------------------------------------
+    try:
+        _engine = QSE()
+        if _engine.OK:
+            reader = _engine.qdocindex.get_reader()
+            try:
+                words = frozenset(
+                    t.decode("utf-8") if isinstance(t, bytes) else t
+                    for t in reader.lexicon("normalized")
+                    if t
+                )
+            finally:
+                reader.close()
+            if words:
+                return words
+    except Exception:
+        pass
+
+    # --- Fallback: derivations.json ------------------------------------------
     try:
         with open(path, encoding="utf-8") as f:
             data = json.load(f)

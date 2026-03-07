@@ -22,6 +22,7 @@ try:
         search_quran, search_translations, get_quran_info, suggest_query,
         get_ai_rules, search_quran_by_themes, search_quran_by_stats,
         search_quran_by_position, correct_query, search_by_word_linguistics,
+        get_word_children_schema,
     )
     MCP_AVAILABLE = True
 except ImportError:
@@ -707,3 +708,76 @@ class TestSearchByWordLinguistics:
         result = search_by_word_linguistics(page=1, perpage=5)
         assert isinstance(result, dict)
         assert "error" in result
+
+
+# ---------------------------------------------------------------------------
+# get_word_children_schema
+# ---------------------------------------------------------------------------
+
+class TestGetWordChildrenSchema:
+    """Tests for the get_word_children_schema MCP tool."""
+
+    def test_returns_dict(self):
+        """get_word_children_schema should return a dictionary."""
+        result = get_word_children_schema()
+        assert isinstance(result, dict)
+
+    def test_contains_schema_key(self):
+        """Result should contain a 'schema' key with plain-text documentation."""
+        result = get_word_children_schema()
+        assert "schema" in result
+        assert isinstance(result["schema"], str)
+        assert len(result["schema"]) > 0
+
+    def test_contains_fields_key(self):
+        """Result should contain a 'fields' key listing all word child fields."""
+        result = get_word_children_schema()
+        assert "fields" in result
+        assert isinstance(result["fields"], list)
+        assert len(result["fields"]) > 0
+
+    def test_fields_have_required_keys(self):
+        """Every entry in 'fields' must have name, type, searchable, description."""
+        result = get_word_children_schema()
+        for field in result["fields"]:
+            assert "name" in field, f"Missing 'name' in field: {field}"
+            assert "type" in field, f"Missing 'type' in field: {field}"
+            assert "searchable" in field, f"Missing 'searchable' in field: {field}"
+            assert "description" in field, f"Missing 'description' in field: {field}"
+
+    def test_contains_examples_key(self):
+        """Result should contain an 'examples' key with query examples."""
+        result = get_word_children_schema()
+        assert "examples" in result
+        assert isinstance(result["examples"], list)
+        assert len(result["examples"]) > 0
+
+    def test_examples_have_required_keys(self):
+        """Every example must have 'description', 'unit', and 'query' keys."""
+        result = get_word_children_schema()
+        for ex in result["examples"]:
+            assert "description" in ex, f"Missing 'description' in example: {ex}"
+            assert "unit" in ex, f"Missing 'unit' in example: {ex}"
+            assert "query" in ex, f"Missing 'query' in example: {ex}"
+
+    def test_key_fields_present(self):
+        """Core word child fields must appear in the fields catalogue."""
+        result = get_word_children_schema()
+        field_names = {f["name"] for f in result["fields"]}
+        for expected in ("word", "normalized", "pos", "root", "lemma",
+                         "gender", "number", "voice", "aspect", "derivation",
+                         "word_id", "aya_id", "sura_id", "gid"):
+            assert expected in field_names, f"Field '{expected}' missing from catalogue"
+
+    def test_schema_mentions_parent_child(self):
+        """The schema text should describe the parent-child nesting."""
+        result = get_word_children_schema()
+        schema_text = result["schema"].lower()
+        assert "parent" in schema_text
+        assert "child" in schema_text
+
+    def test_result_is_serializable(self):
+        """Result should contain only JSON-serializable types."""
+        import json
+        result = get_word_children_schema()
+        json.dumps(result)

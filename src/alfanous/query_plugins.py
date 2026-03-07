@@ -14,6 +14,37 @@ from alfanous.text_processing import QArabicSymbolsFilter
 from alfanous.misc import locate, find, filter_doubles
 
 
+def _query_word_index(filter_dict, field="word", limit=5000):
+    """Query the word child documents in the QSE index and return unique values
+    of *field* from matching documents.
+
+    Uses the shared ``data.QSE()`` engine so no extra index handle is opened.
+    Returns an empty list when the index is unavailable.
+
+    :param filter_dict: Mapping of ``{fieldname: value}`` to filter word children.
+    :param field: The document field whose value to collect (default ``"word"``).
+    :param limit: Maximum number of matching word children to inspect.
+    :returns: Deduplicated list of *field* values from matching word children.
+    """
+    try:
+        from alfanous.data import QSE as _QSE
+        from whoosh import query as _wq
+        engine = _QSE()
+        if not engine.OK:
+            return []
+        parts = [_wq.Term("kind", "word")]
+        for fname, fval in filter_dict.items():
+            if fval:
+                parts.append(_wq.Term(fname, fval))
+        q = _wq.And(parts)
+        res, _, searcher = engine.search_with_query(q, limit=limit)
+        values = list(set(r.get(field) for r in res if r.get(field)))
+        searcher.close()
+        return values
+    except Exception:
+        return []
+
+
 class QMultiTerm(MultiTerm):
     """Base class for multi-term queries with Arabic support"""
 
@@ -114,8 +145,54 @@ class DerivationQuery(QMultiTerm):
 
     @staticmethod
     def _get_derivations(word, leveldist):
-        """Get derivations for a word at a specific level"""
-        # Define source level index
+        """Get derivations for a word at a specific level.
+
+        Tries the live word-children index first (via :func:`_query_word_index`).
+        Falls back to the static ``derivedict`` JSON data when the index is
+        unavailable so that queries still work in development environments
+        without a built index.
+
+        Level 0 / 1 → lemma-level derivations (narrow set).
+        Level >= 2  → root-level derivations (wider set).
+        """
+        # --- Primary: word index -------------------------------------------
+        # Determine the level: 0/1 → lemma, >=2 → root
+        use_root_level = leveldist >= 2
+
+        # Find the word in the index to get its lemma / root
+        # Use normalized (unvocalized) form for lookup
+        try:
+            from alfanous.text_processing import QArabicSymbolsFilter as _QASF
+            _strip = _QASF(shaping=False, tashkil=True, spellerrors=False, hamza=False).normalize_all
+            word_norm = _strip(word)
+        except Exception:
+            word_norm = word
+
+        # Try index lookup for lemma/root of this word
+        _word_docs = _query_word_index({"normalized": word_norm}, field="lemma")
+        if not _word_docs:
+            # Also try the vocalized form
+            _word_docs = _query_word_index({"word": word}, field="lemma")
+
+        lemma = _word_docs[0] if _word_docs else None
+
+        if use_root_level:
+            # Get root of the word
+            _root_docs = _query_word_index({"normalized": word_norm}, field="root")
+            if not _root_docs:
+                _root_docs = _query_word_index({"word": word}, field="root")
+            root = _root_docs[0] if _root_docs else None
+            if root:
+                words = _query_word_index({"root": root}, field="normalized")
+                if words:
+                    return list(set(words))
+        else:
+            if lemma:
+                words = _query_word_index({"lemma": lemma}, field="normalized")
+                if words:
+                    return list(set(words))
+
+        # --- Fallback: static derivedict JSON --------------------------------
         if word in derivedict.get("word_", {}):
             indexsrc = "word_"
         elif word in derivedict.get("lemma", {}):
@@ -125,7 +202,6 @@ class DerivationQuery(QMultiTerm):
         else:
             return [word]
 
-        # Define destination level index
         if leveldist == 0:
             indexdist = "word_"
         elif leveldist == 1:
@@ -253,7 +329,25 @@ class TupleQuery(QMultiTerm):
 
     @staticmethod
     def _get_words_by_properties(props):
-        """Search words that have specific properties"""
+        """Search word children that match specific morphological properties.
+
+        Tries the live word-children index first (via :func:`_query_word_index`).
+        Falls back to the static ``worddict`` JSON data when the index is
+        unavailable so that queries still work without a built index.
+
+        :param props: Dict with optional keys ``root``, ``type``, ``pattern``.
+        :returns: List of matching unvocalized word forms.
+        """
+        # --- Primary: word index -------------------------------------------
+        # Build filter from non-empty properties (skip unknown keys)
+        _supported_keys = {"root", "type"}
+        _filter = {k: v for k, v in props.items() if k in _supported_keys and v}
+        if _filter:
+            words = _query_word_index(_filter, field="normalized")
+            if words:
+                return words
+
+        # --- Fallback: static worddict JSON ----------------------------------
         wset = None
         for propkey in props.keys():
             if worddict.get(propkey):

@@ -246,7 +246,15 @@ class Raw:
         self._flags = self.DEFAULTS["flags"].keys()
         self._fields = arabic_to_english_fields
         self._fields_reverse = {v: k for k, v in arabic_to_english_fields.items()}
-        self._roots = sorted(filter(bool, set(derivedict["root"])))
+        # Prefer word index for roots; fall back to derivations.json if unavailable.
+        try:
+            if self.QSE.OK:
+                _idx_roots = list(self.QSE.list_terms("root"))
+                self._roots = sorted(filter(bool, _idx_roots))
+            else:
+                self._roots = sorted(filter(bool, set(derivedict.get("root", []))))
+        except Exception:
+            self._roots = sorted(filter(bool, set(derivedict.get("root", []))))
         self._errors = self.ERRORS
         self._domains = self.DOMAINS
         self._helpmessages = self.HELPMESSAGES
@@ -817,25 +825,100 @@ class Raw:
                     else:  # if aya
                         annotation_word_query += " OR normalized:%s " % STANDARD2UTHMANI(term[1])
                     if word_vocalizations:
-                        vocalizations = vocalization_dict.get(strip_vocalization(term[1])) or []
-                        if isinstance(vocalizations, str):
-                            vocalizations = [vocalizations]
+                        _term_normalized = strip_vocalization(term[1])
+                        vocalizations = []
+                        try:
+                            if self.QSE.OK:
+                                from whoosh import query as _wq
+                                _voc_q = _wq.And([
+                                    _wq.Term("kind", "word"),
+                                    _wq.Term("normalized", _term_normalized),
+                                ])
+                                _voc_res, _, _voc_searcher = self.QSE.search_with_query(
+                                    _voc_q, limit=500
+                                )
+                                vocalizations = list(
+                                    set(w.get("word") for w in _voc_res if w.get("word")) - {term[1]}
+                                )
+                                _voc_searcher.close()
+                            else:
+                                _raw = vocalization_dict.get(_term_normalized) or []
+                                if isinstance(_raw, str):
+                                    _raw = [_raw]
+                                vocalizations = [v for v in _raw if v != term[1]]
+                        except Exception:
+                            _raw = vocalization_dict.get(_term_normalized) or []
+                            if isinstance(_raw, str):
+                                _raw = [_raw]
+                            vocalizations = [v for v in _raw if v != term[1]]
                         nb_vocalizations_globale += len(vocalizations)
                     if word_synonyms:
                         synonyms = syndict.get(term[1]) or []
                     derivations_extra = []
                     if word_derivations:
-                        lemma = locate(derivedict["word_"], derivedict["lemma"], term[1])
-                        if lemma:  # if different of none
-                            derivations = filter_doubles(find(derivedict["lemma"], derivedict["word_"], lemma))
-                        else:
-                            derivations = []
-                        # go deeper with derivations
-                        root = locate(derivedict["word_"], derivedict["root"], term[1])
-                        if root:  # if different of none
-                            derivations_extra = list(
-                                set(filter_doubles(find(derivedict["root"], derivedict["word_"], lemma))) - set(
-                                    derivations))
+                        try:
+                            if self.QSE.OK:
+                                from whoosh import query as _wq
+                                _norm_term = strip_vocalization(term[1])
+                                # Find lemma and root of the search term from word index
+                                _word_q = _wq.And([
+                                    _wq.Term("kind", "word"),
+                                    _wq.Term("normalized", _norm_term),
+                                ])
+                                _word_res, _, _word_searcher = self.QSE.search_with_query(
+                                    _word_q, limit=10
+                                )
+                                _word_docs = list(_word_res)
+                                _word_searcher.close()
+                                lemma = next((w.get("lemma") for w in _word_docs if w.get("lemma")), None)
+                                root = next((w.get("root") for w in _word_docs if w.get("root")), None)
+                                if lemma:
+                                    _lem_q = _wq.And([
+                                        _wq.Term("kind", "word"),
+                                        _wq.Term("lemma", lemma),
+                                    ])
+                                    _lem_res, _, _lem_srch = self.QSE.search_with_query(_lem_q, limit=500)
+                                    derivations = list(set(
+                                        w.get("normalized") for w in _lem_res
+                                        if w.get("normalized")
+                                    ))
+                                    _lem_srch.close()
+                                else:
+                                    derivations = []
+                                if root:
+                                    _root_q = _wq.And([
+                                        _wq.Term("kind", "word"),
+                                        _wq.Term("root", root),
+                                    ])
+                                    _root_res, _, _root_srch = self.QSE.search_with_query(_root_q, limit=500)
+                                    _root_norms = list(set(
+                                        w.get("normalized") for w in _root_res
+                                        if w.get("normalized")
+                                    ))
+                                    _root_srch.close()
+                                    derivations_extra = list(set(_root_norms) - set(derivations))
+                            else:
+                                lemma = locate(derivedict.get("word_", []), derivedict.get("lemma", []), term[1])
+                                if lemma:
+                                    derivations = filter_doubles(find(derivedict.get("lemma", []), derivedict.get("word_", []), lemma))
+                                else:
+                                    derivations = []
+                                root = locate(derivedict.get("word_", []), derivedict.get("root", []), term[1])
+                                if root:
+                                    derivations_extra = list(
+                                        set(filter_doubles(find(derivedict.get("root", []), derivedict.get("word_", []), root))) - set(derivations)
+                                    )
+                        except Exception:
+                            lemma = locate(derivedict.get("word_", []), derivedict.get("lemma", []), term[1])
+                            if lemma:
+                                derivations = filter_doubles(find(derivedict.get("lemma", []), derivedict.get("word_", []), lemma))
+                            else:
+                                derivations = []
+                            root = locate(derivedict.get("word_", []), derivedict.get("root", []), term[1])
+                            if root:
+                                derivations_extra = list(
+                                    set(filter_doubles(find(derivedict.get("root", []), derivedict.get("word_", []), root))) - set(derivations)
+                                )
 
                     # Compute variations specific to this word: among all
                     # matched aya_ac terms, keep only those within
@@ -1236,9 +1319,16 @@ class Raw:
 
         Word children are indexed with ``kind="word"`` alongside translation
         children.  This method searches them using a ``MultifieldParser`` that
-        targets ``word``, ``normalized``, ``root``, and ``lemma``,
-        combined with a ``kind="word"`` filter so only word children are
-        returned.
+        targets all indexed word fields — free-text fields (``word``,
+        ``normalized``) as well as linguistic ID fields (``pos``, ``type``,
+        ``root``, ``arabicroot``, ``lemma``, ``arabiclemma``, ``gender``,
+        ``number``, ``person``, ``form``, ``voice``, ``state``,
+        ``derivation``, ``aspect``, ``mood``, ``case``) — combined with a
+        ``kind="word"`` filter so only word children are returned.
+
+        Field-qualified queries (e.g. ``root:رحم``) are supported for all
+        indexed word fields.  Unqualified queries search across the primary
+        text fields (``word`` and ``normalized``).
 
         The result structure mirrors ``_search_word`` for backward
         compatibility:  ``{"words": {n: {...}}, "interval": {...}, "runtime": ...}``.
@@ -1271,10 +1361,28 @@ class Raw:
 
         schema = self.QSE._schema
 
-        # Build a multi-field parser that searches the main word text fields as
-        # well as the key linguistic fields so queries like "root:رحم" work.
+        # Build a multi-field parser that searches the primary text fields by
+        # default and allows field-qualified queries against ALL indexed word
+        # fields so queries like "root:رحم" or "pos:فعل AND root:كتب" work.
+        # The MultifieldParser already supports "field:value" syntax for any
+        # field defined in the schema; the list here only governs which fields
+        # are searched when no explicit field qualifier is given.
+        _WORD_ALL_INDEXED_FIELDS = [
+            "word", "normalized",
+            "pos", "type",
+            "root", "arabicroot",
+            "lemma", "arabiclemma",
+            "gender", "number", "person",
+            "form", "voice", "state",
+            "derivation", "aspect",
+            "mood", "case",
+        ]
+        # Filter down to fields that actually exist in this index schema
+        _schema_fields = set(schema.names())
+        _all_word_fields = [f for f in _WORD_ALL_INDEXED_FIELDS if f in _schema_fields]
+        _default_fields = [f for f in ["word", "normalized"] if f in _schema_fields] or _all_word_fields or ["word"]
         _word_parser = _qparser.MultifieldParser(
-            ["word", "normalized", "root", "lemma"],
+            _default_fields,
             schema=schema,
             group=_qparser.OrGroup,
         )
@@ -1430,10 +1538,30 @@ class Raw:
                     "text_no_highlight": r["word"],
                     "normalized": r.get("normalized"),
                     "spelled": r.get("spelled"),
+                    # Arabic (primary, indexed)
                     "pos": r.get("pos"),
                     "type": r.get("type"),
                     "root": r.get("root"),
                     "lemma": r.get("lemma"),
+                    "mood": r.get("mood"),
+                    "case": r.get("case"),
+                    "state": r.get("state"),
+                    "special": r.get("special"),
+                    # English (stored-only)
+                    "englishpos": r.get("englishpos"),
+                    "englishmood": r.get("englishmood"),
+                    "englishcase": r.get("englishcase"),
+                    "englishstate": r.get("englishstate"),
+                    # Unchanged fields
+                    "prefix": r.get("prefix"),
+                    "suffix": r.get("suffix"),
+                    "gender": r.get("gender"),
+                    "number": r.get("number"),
+                    "person": r.get("person"),
+                    "form": r.get("form"),
+                    "voice": r.get("voice"),
+                    "derivation": r.get("derivation"),
+                    "aspect": r.get("aspect"),
                 },
             }
 
