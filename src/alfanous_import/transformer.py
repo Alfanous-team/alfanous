@@ -213,6 +213,7 @@ class Transformer:
         # transliteration.  For each aya where the space-split word count
         # matches the corpus word count we can assign each corpus word the
         # corresponding standard-script and transliteration word by index.
+        # When counts differ the aya is simply skipped (no word_standard stored).
         # {(sura_id, aya_id): [word, ...]}
         aya_standard_words: dict = {}
         aya_translit_words: dict = {}
@@ -221,9 +222,10 @@ class Transformer:
                 sid = line.get("sura_id")
                 aid = line.get("aya_id")
                 key = (sid, aid)
-                corpus_count = len(words_by_aya.get(key, []))
-                if corpus_count == 0:
+                corpus_words_for_key = words_by_aya.get(key, [])
+                if not corpus_words_for_key:
                     continue
+                corpus_count = len(corpus_words_for_key)
                 std_tokens = line.get("standard", "").split()
                 if len(std_tokens) == corpus_count:
                     aya_standard_words[key] = std_tokens
@@ -238,6 +240,9 @@ class Transformer:
             #     (e.g. englishcase/englishpos/englishmood/englishstate live in the
             #     wordqc schema but not in the aya schema).
             _schema_names = set(ix.schema.names())
+            # Boolean flags so the per-word loop avoids repeated set lookups.
+            _has_word_standard       = "word_standard"       in _schema_names
+            _has_word_transliteration = "word_transliteration" in _schema_names
 
         for line in data_list:
             # Normalize chapter/topic/subtopic
@@ -295,9 +300,9 @@ class Transformer:
                                     if v is not None and k in _schema_names}
                         # Attach standard-script and transliteration words
                         # by matching position (only when count aligned).
-                        if pos < len(std_tokens) and "word_standard" in _schema_names:
+                        if _has_word_standard and pos < len(std_tokens):
                             word_doc["word_standard"] = std_tokens[pos]
-                        if pos < len(tr_tokens) and "word_transliteration" in _schema_names:
+                        if _has_word_transliteration and pos < len(tr_tokens):
                             word_doc["word_transliteration"] = tr_tokens[pos]
                         # word_gid (word's own sequential counter) is included
                         # in word_doc via the comprehension above; it does not

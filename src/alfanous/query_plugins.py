@@ -170,58 +170,36 @@ class DerivationQuery(QMultiTerm):
         except Exception:
             word_norm = word
 
-        def _collect_roots():
-            """Try word_standard → normalized → word, return unique roots."""
-            roots = set()
+        def _collect_field_values(target_field):
+            """Try word_standard → normalized → word to find unique target_field values."""
+            values = set()
             for _filter in (
                 {"word_standard": word},
                 {"normalized": word_norm},
                 {"word": word},
             ):
-                r = _query_word_index(_filter, field="root")
-                roots.update(r)
-                if roots:
+                found = _query_word_index(_filter, field=target_field)
+                values.update(found)
+                if values:
                     break
-            return list(roots)
-
-        def _collect_lemmas():
-            """Try word_standard → normalized → word, return unique lemmas."""
-            lemmas = set()
-            for _filter in (
-                {"word_standard": word},
-                {"normalized": word_norm},
-                {"word": word},
-            ):
-                l = _query_word_index(_filter, field="lemma")
-                lemmas.update(l)
-                if lemmas:
-                    break
-            return list(lemmas)
+            return list(values)
 
         def _words_for_field(field_values, filter_key, result_field):
-            """For each value in field_values, collect result_field from matching docs."""
+            """For each value, collect result_field from matching word children."""
             words = set()
             for val in field_values:
                 words.update(w for w in _query_word_index({filter_key: val}, field=result_field) if w)
             return list(words)
 
-        if use_root_level:
-            roots = _collect_roots()
-            if roots:
-                # Prefer word_standard (plain Arabic), fall back to normalized
-                words = _words_for_field(roots, "root", "word_standard")
-                if not words:
-                    words = _words_for_field(roots, "root", "normalized")
-                if words:
-                    return words
-        else:
-            lemmas = _collect_lemmas()
-            if lemmas:
-                words = _words_for_field(lemmas, "lemma", "word_standard")
-                if not words:
-                    words = _words_for_field(lemmas, "lemma", "normalized")
-                if words:
-                    return words
+        index_key, index_field = ("root", "root") if use_root_level else ("lemma", "lemma")
+        key_values = _collect_field_values(index_field)
+        if key_values:
+            # Prefer word_standard (plain Arabic), fall back to normalized
+            words = _words_for_field(key_values, index_key, "word_standard")
+            if not words:
+                words = _words_for_field(key_values, index_key, "normalized")
+            if words:
+                return words
 
         return [word]
 
