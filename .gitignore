@@ -146,3 +146,4 @@ venv2/
 
 # Whoosh index files (built artifacts)
 src/alfanous/indexes/
+

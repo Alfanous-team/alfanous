@@ -153,11 +153,12 @@ class DerivationQuery(QMultiTerm):
         Level 0 / 1 → lemma-level derivations (narrow set).
         Level >= 2  → root-level derivations (wider set).
 
-        Lookup strategy: try ``word_standard`` (clean standard aya word) first,
-        then fall back to ``normalized`` and ``word`` fields.  Results are
-        returned as ``word_standard`` values (plain Arabic, compatible with the
-        aya text index); falls back to ``normalized`` when ``word_standard`` is
-        unavailable for older indexes.
+        Lookup strategy: build three candidate forms of the input word
+        (original, normalized, stemmed) then match each against the
+        ``word``, ``normalized``, ``lemma``, and ``root`` fields of word
+        children to collect the target key (lemma or root).  Results are
+        returned as the union of ``word_standard`` and ``normalized`` values
+        for all word children sharing that key.
 
         Returns ``[word]`` when the index is unavailable.
         """
@@ -165,43 +166,40 @@ class DerivationQuery(QMultiTerm):
 
         try:
             from alfanous.text_processing import QArabicSymbolsFilter as _QASF
-            _strip = _QASF(shaping=False, tashkil=True, spellerrors=False, hamza=False).normalize_all
-            word_norm = _strip(word)
+            word_norm = _QASF(shaping=True, tashkil=True, spellerrors=False,
+                              hamza=False).normalize_all(word)
         except Exception:
             word_norm = word
 
-        def _collect_field_values(target_field):
-            """Try word_standard → normalized → word to find unique target_field values."""
-            values = set()
-            for _filter in (
-                {"word_standard": word},
-                {"normalized": word_norm},
-                {"word": word},
-            ):
-                found = _query_word_index(_filter, field=target_field)
-                values.update(found)
-                if values:
-                    break
-            return list(values)
+        try:
+            import Stemmer as _Stemmer
+            word_stem = _Stemmer.Stemmer('arabic').stemWord(word_norm)
+        except Exception:
+            word_stem = word_norm
 
-        def _words_for_field(field_values, filter_key, result_field):
-            """For each value, collect result_field from matching word children."""
-            words = set()
-            for val in field_values:
-                words.update(w for w in _query_word_index({filter_key: val}, field=result_field) if w)
-            return list(words)
+        candidates = {word, word_norm, word_stem} - {''}
+        index_key = 'root' if use_root_level else 'lemma'
 
-        index_key, index_field = ("root", "root") if use_root_level else ("lemma", "lemma")
-        key_values = _collect_field_values(index_field)
-        if key_values:
-            # Prefer word_standard (plain Arabic), fall back to normalized
-            words = _words_for_field(key_values, index_key, "word_standard")
-            if not words:
-                words = _words_for_field(key_values, index_key, "normalized")
-            if words:
-                return words
+        # Collect key values by matching every candidate against every field
+        key_values = set()
+        for val in candidates:
+            for sf in ('word', 'normalized', 'lemma', 'root'):
+                key_values.update(_query_word_index({sf: val}, field=index_key))
+        key_values.discard(None)
+        key_values.discard('')
 
-        return [word]
+        if not key_values:
+            return [word]
+
+        # Collect result words: merge word_standard (primary) + normalized
+        words = set()
+        for kv in key_values:
+            ws = _query_word_index({index_key: kv}, field='word_standard')
+            nm = _query_word_index({index_key: kv}, field='normalized')
+            words.update(w for w in ws if w)
+            words.update(w for w in nm if w)
+
+        return list(words) if words else [word]
 
 
 class SpellErrorsQuery(QMultiTerm):
@@ -339,12 +337,12 @@ class TupleQuery(QMultiTerm):
             if english_type:
                 _filter["type"] = english_type
         if _filter:
-            # Prefer word_standard (plain Arabic, compatible with aya index);
-            # fall back to normalized for indexes built without word_standard.
-            words = _query_word_index(_filter, field="word_standard")
-            if not words:
-                words = _query_word_index(_filter, field="normalized")
-            return words
+            # Merge word_standard (primary) and normalized so that words whose
+            # word_standard is None (e.g. تملك) are still included.
+            words = set(_query_word_index(_filter, field="word_standard"))
+            words.update(_query_word_index(_filter, field="normalized"))
+            words.discard(None)
+            return list(words)
         return []
 
 
