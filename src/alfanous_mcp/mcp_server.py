@@ -612,9 +612,7 @@ def search_by_word_linguistics(
     pos: Optional[str] = None,
     word_type: Optional[str] = None,
     root: Optional[str] = None,
-    arabicroot: Optional[str] = None,
     lemma: Optional[str] = None,
-    arabiclemma: Optional[str] = None,
     gender: Optional[str] = None,
     number: Optional[str] = None,
     person: Optional[str] = None,
@@ -633,19 +631,17 @@ def search_by_word_linguistics(
     Args:
         query: Optional free-text query searching the vocalized word form and
             the unvocalized normalized form (Arabic or Buckwalter).
-        pos: Part of speech in English (e.g. "Noun", "Verb", "Particle",
-            "Adjective", "Pronoun").
+        pos: Part of speech in Arabic script (e.g. "اسم" for Noun, "فعل" for
+            Verb, "حرف" for Particle, "صفة" for Adjective, "ضمير" for Pronoun).
         word_type: Grammatical type category (e.g. "Nouns", "Verbs",
             "Particles", "Pronouns").
-        root: Root in Buckwalter transliteration (e.g. "rHm", "ktb", "Ebd").
-        arabicroot: Root in Arabic script (e.g. "رحم", "كتب", "عبد").
-        lemma: Lemma in Buckwalter transliteration.
-        arabiclemma: Lemma in Arabic script.
+        root: Root in Arabic script (e.g. "رحم", "كتب", "عبد").
+        lemma: Lemma in Arabic script (e.g. "رَحِيم", "كِتَاب").
         gender: Grammatical gender — "M" (masculine) or "F" (feminine).
         number: Grammatical number — "S" (singular), "D" (dual), or "P" (plural).
         person: Grammatical person — "1", "2", or "3".
         voice: Verb voice — "ACT" (active) or "PASS" (passive).
-        state: Nominal state — "DEF" (definite) or "INDEF" (indefinite).
+        state: Nominal state in Arabic script (e.g. "نكرة" for indefinite).
         derivation: Derivation type — "ACT PCPL" (active participle),
             "PASS PCPL" (passive participle), or "VN" (verbal noun).
         aspect: Verb aspect — "PERF" (perfect), "IMPF" (imperfect), or
@@ -667,9 +663,7 @@ def search_by_word_linguistics(
         "pos":        pos,
         "type":       word_type,
         "root":       root,
-        "arabicroot": arabicroot,
         "lemma":      lemma,
-        "arabiclemma": arabiclemma,
         "gender":     gender,
         "number":     number,
         "person":     person,

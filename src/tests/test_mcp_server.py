@@ -684,28 +684,28 @@ class TestSearchByWordLinguistics:
         assert isinstance(result, dict)
         assert "error" in result
 
-    def test_arabicroot_filter(self):
-        """Filtering by arabicroot field should succeed."""
-        result = search_by_word_linguistics(arabicroot="رحم")
+    def test_root_filter(self):
+        """Filtering by root field (Arabic script) should succeed."""
+        result = search_by_word_linguistics(root="رحم")
         assert isinstance(result, dict)
         assert "search" in result
 
     def test_pos_filter(self):
-        """Filtering by part of speech should succeed."""
-        result = search_by_word_linguistics(pos="Noun")
+        """Filtering by part of speech (Arabic script) should succeed."""
+        result = search_by_word_linguistics(pos="اسم")
         assert isinstance(result, dict)
         assert "search" in result
 
     def test_combined_filters(self):
         """Combining multiple linguistic filters should succeed."""
-        result = search_by_word_linguistics(arabicroot="رحم", gender="M")
+        result = search_by_word_linguistics(root="رحم", gender="M")
         assert isinstance(result, dict)
         assert "search" in result
 
     def test_result_is_serializable(self):
         """Result should contain only JSON-serializable types."""
         import json
-        result = search_by_word_linguistics(arabicroot="رحم", perpage=5)
+        result = search_by_word_linguistics(root="رحم", perpage=5)
         json.dumps(result)
 
     def test_pagination(self):

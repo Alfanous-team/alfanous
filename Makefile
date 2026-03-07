@@ -5,8 +5,7 @@
 ## API path, API contains all python packages 
 API_PATH="./src/"
 
-## Importer package path, the importer is the responsible of downloading quranic
-## resources, updating them , indexing them.
+## CLI entry point for building indexes and updating store resources.
 QIMPORT=$(API_PATH)"alfanous_import/cli.py"
 	
 ## resources & configuration files
@@ -89,10 +88,6 @@ update_pre_build:
 # update list of indexed translations automatically using Importer
 update_translations_indexed_list:
 	export PYTHONPATH=$(API_PATH) ;	$(PYTHON_COMMAND) $(QIMPORT) -u translations $(INDEX_PATH)extend/  $(CONFIGS_PATH)translations.json
-
-# update quranic corpus in the database automatically using Importer
-update_quranic_corpus:
-	export PYTHONPATH=$(API_PATH) ;	$(PYTHON_COMMAND) $(QIMPORT) -u wordqc $(STORE_PATH)quranic-corpus-morpology.xml $(DB_PATH)main.db
 
 # update aya.json and word.json from the Quran-Researcher database
 update_from_quran_researcher:

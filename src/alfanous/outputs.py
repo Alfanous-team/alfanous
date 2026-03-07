@@ -940,31 +940,34 @@ class Raw:
                 for w in wc_res:
                     key = (w.get("sura_id"), w.get("aya_id"))
                     entry = {
-                        "word_id":     w.get("word_id"),
-                        "word":        w.get("word"),
-                        "normalized":  w.get("normalized"),
-                        "spelled":     w.get("spelled"),
-                        "pos":         w.get("pos"),
-                        "type":        w.get("type"),
-                        "arabicpos":   w.get("arabicpos"),
-                        "root":        w.get("root"),
-                        "arabicroot":  w.get("arabicroot"),
-                        "lemma":       w.get("lemma"),
-                        "arabiclemma": w.get("arabiclemma"),
-                        "prefix":      w.get("prefix"),
-                        "suffix":      w.get("suffix"),
-                        "gender":      w.get("gender"),
-                        "number":      w.get("number"),
-                        "person":      w.get("person"),
-                        "form":        w.get("form"),
-                        "voice":       w.get("voice"),
-                        "state":       w.get("state"),
-                        "derivation":  w.get("derivation"),
-                        "aspect":      w.get("aspect"),
-                        "mood":        w.get("mood"),
-                        "arabicmood":  w.get("arabicmood"),
-                        "case":        w.get("case"),
-                        "arabiccase":  w.get("arabiccase"),
+                        "word_id":      w.get("word_id"),
+                        "word":         w.get("word"),
+                        "normalized":   w.get("normalized"),
+                        "spelled":      w.get("spelled"),
+                        # Arabic (primary, indexed)
+                        "pos":          w.get("pos"),
+                        "type":         w.get("type"),
+                        "root":         w.get("root"),
+                        "lemma":        w.get("lemma"),
+                        "mood":         w.get("mood"),
+                        "case":         w.get("case"),
+                        "state":        w.get("state"),
+                        "special":      w.get("special"),
+                        # English (stored-only)
+                        "englishpos":   w.get("englishpos"),
+                        "englishmood":  w.get("englishmood"),
+                        "englishcase":  w.get("englishcase"),
+                        "englishstate": w.get("englishstate"),
+                        # Unchanged fields
+                        "prefix":       w.get("prefix"),
+                        "suffix":       w.get("suffix"),
+                        "gender":       w.get("gender"),
+                        "number":       w.get("number"),
+                        "person":       w.get("person"),
+                        "form":         w.get("form"),
+                        "voice":        w.get("voice"),
+                        "derivation":   w.get("derivation"),
+                        "aspect":       w.get("aspect"),
                     }
                     aya_words_map.setdefault(key, []).append(entry)
                 # Sort each aya's word list by word_id (ascending position order).
@@ -1210,7 +1213,7 @@ class Raw:
 
         Word children are indexed with ``kind="word"`` alongside translation
         children.  This method searches them using a ``MultifieldParser`` that
-        targets ``word``, ``normalized``, ``arabicroot``, and ``arabiclemma``,
+        targets ``word``, ``normalized``, ``root``, and ``lemma``,
         combined with a ``kind="word"`` filter so only word children are
         returned.
 
@@ -1246,9 +1249,9 @@ class Raw:
         schema = self.QSE._schema
 
         # Build a multi-field parser that searches the main word text fields as
-        # well as the key linguistic fields so queries like "arabicroot:رحم" work.
+        # well as the key linguistic fields so queries like "root:رحم" work.
         _word_parser = _qparser.MultifieldParser(
-            ["word", "normalized", "arabicroot", "arabiclemma"],
+            ["word", "normalized", "root", "lemma"],
             schema=schema,
             group=_qparser.OrGroup,
         )
@@ -1308,28 +1311,31 @@ class Raw:
                     "text":              H(r.get("word", "")),
                     "text_no_highlight": r.get("word", ""),
                     "normalized":        r.get("normalized"),
-                    "spelled":           r.get("spelled"),
-                    "pos":               r.get("pos"),
-                    "type":              r.get("type"),
-                    "arabicpos":         r.get("arabicpos"),
-                    "root":              r.get("root"),
-                    "arabicroot":        r.get("arabicroot"),
-                    "lemma":             r.get("lemma"),
-                    "arabiclemma":       r.get("arabiclemma"),
-                    "prefix":            r.get("prefix"),
-                    "suffix":            r.get("suffix"),
-                    "gender":            r.get("gender"),
-                    "number":            r.get("number"),
-                    "person":            r.get("person"),
-                    "form":              r.get("form"),
-                    "voice":             r.get("voice"),
-                    "state":             r.get("state"),
-                    "derivation":        r.get("derivation"),
-                    "aspect":            r.get("aspect"),
-                    "mood":              r.get("mood"),
-                    "arabicmood":        r.get("arabicmood"),
-                    "case":              r.get("case"),
-                    "arabiccase":        r.get("arabiccase"),
+                    "spelled":          r.get("spelled"),
+                    # Arabic (primary, indexed)
+                    "pos":              r.get("pos"),
+                    "type":             r.get("type"),
+                    "root":             r.get("root"),
+                    "lemma":            r.get("lemma"),
+                    "mood":             r.get("mood"),
+                    "case":             r.get("case"),
+                    "state":            r.get("state"),
+                    "special":          r.get("special"),
+                    # English (stored-only)
+                    "englishpos":       r.get("englishpos"),
+                    "englishmood":      r.get("englishmood"),
+                    "englishcase":      r.get("englishcase"),
+                    "englishstate":     r.get("englishstate"),
+                    # Unchanged fields
+                    "prefix":           r.get("prefix"),
+                    "suffix":           r.get("suffix"),
+                    "gender":           r.get("gender"),
+                    "number":           r.get("number"),
+                    "person":           r.get("person"),
+                    "form":             r.get("form"),
+                    "voice":            r.get("voice"),
+                    "derivation":       r.get("derivation"),
+                    "aspect":           r.get("aspect"),
                 },
             }
 
@@ -1403,8 +1409,8 @@ class Raw:
                     "spelled": r.get("spelled"),
                     "pos": r.get("pos"),
                     "type": r.get("type"),
-                    "arabicroot": r.get("arabicroot"),
-                    "arabiclemma": r.get("arabiclemma"),
+                    "root": r.get("root"),
+                    "lemma": r.get("lemma"),
                 },
             }
 

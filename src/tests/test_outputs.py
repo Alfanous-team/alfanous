@@ -1021,7 +1021,7 @@ def test_search_words_returns_structured_response():
 def test_search_words_linguistic_field_query():
     """_search_words should accept field:value queries for linguistic properties."""
     result = RAWoutput._search_words({
-        "query": "arabicroot:رحم",
+        "query": "root:رحم",
         "highlight": "none",
         "page": 1,
     })
