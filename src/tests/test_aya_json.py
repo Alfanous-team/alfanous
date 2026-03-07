@@ -4,7 +4,7 @@ import json
 import os
 
 _AYA_JSON_PATH = os.path.join(
-    os.path.dirname(__file__), "..", "alfanous", "resources", "aya.json"
+    os.path.dirname(__file__), "..", "..", "store", "aya.json"
 )
 
 

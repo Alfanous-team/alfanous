@@ -1,6 +1,5 @@
 
 
-from alfanous_import.importer import QuranicCorpusImporter
 from alfanous_import.transformer import Transformer
 from alfanous_import.updater import update_translations_list
 
@@ -19,11 +18,17 @@ commands.add_option("--translations", dest="translations_path",
                          "as nested child documents into the main index (used with -x main)",
                     metavar="TRANSLATIONS_PATH", default=None)
 
+commands.add_option("--corpus", dest="corpus_path",
+                    help="path to quranic corpus morphology XML used to embed word "
+                         "occurrences as nested child documents into the main index "
+                         "(used with -x main)",
+                    metavar="CORPUS_PATH", default=None)
+
 commands.add_option("-d", "--download", dest="download", type="choice",
                     choices=["tanzil_simple_clean", "tanzil_uthmani"],
                     help="download Quranic resources", metavar="FIELD")
 
-commands.add_option("-u", "--update", dest="update", type="choice", choices=["translations", "wordqc"],
+commands.add_option("-u", "--update", dest="update", type="choice", choices=["translations"],
                     help="update store information files", metavar="FIELD")
 
 parser.add_option_group(commands)
@@ -43,7 +48,8 @@ if options.index:
     if options.index == "main":
         T = Transformer(index_path=DESTINATION, resource_path=SOURCE)
         ayaSchema = T.build_schema(tablename='aya')
-        T.build_docindex(ayaSchema, translations_store_path=options.translations_path)
+        T.build_docindex(ayaSchema, translations_store_path=options.translations_path,
+                         corpus_path=options.corpus_path)
 
     elif options.index == "word":
         T = Transformer(index_path=DESTINATION, resource_path=SOURCE)
@@ -60,5 +66,3 @@ if options.update:
 
     if options.update == "translations":
         update_translations_list(translations_list_file=DESTINATION)
-    elif options.update == "wordqc":
-        QCI = QuranicCorpusImporter(SOURCE, DESTINATION)

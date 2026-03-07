@@ -9,7 +9,6 @@ HOME_CONFIG = HOME + ".alfanous/"
 ROOT_RESOURCE = ROOT + "resources/"
 # indexes paths
 QSE_INDEX = ROOT_INDEX + "main/"
-WSE_INDEX = ROOT_INDEX + "word/"
 # resources paths
 INFORMATION_FILE = ROOT_RESOURCE + "information.json"
 ARABIC_NAMES_FILE = ROOT_RESOURCE + "arabic_names.json"
@@ -20,7 +19,6 @@ SYNONYMS_FILE = ROOT_RESOURCE + "synonyms.json"
 ANTONYMS_FILE = ROOT_RESOURCE + "antonyms.json"
 VOCALIZATIONS_FILE = ROOT_RESOURCE + "vocalizations.json"
 WORD_PROPS_FILE = ROOT_RESOURCE + "word_props.json"
-WORD_FILE = ROOT_RESOURCE + "word.json"
 AI_QUERY_TRANSLATION_RULES_FILE = ROOT_RESOURCE + "ai_query_translation_rules.txt"
 
 # configs path suffixes

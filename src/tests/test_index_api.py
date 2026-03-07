@@ -18,7 +18,7 @@ _STORE_DIR = os.path.normpath(os.path.join(
 _STORE_EXISTS = os.path.isdir(_STORE_DIR)
 
 _RESOURCES_PATH = os.path.normpath(
-    os.path.join(os.path.dirname(__file__), "..", "alfanous", "resources")
+    os.path.join(os.path.dirname(__file__), "..", "..", "store")
 ) + os.sep
 
 
@@ -98,3 +98,73 @@ def test_nested_qse_child_query_for_gid(nested_qse_index):
             assert r["gid"] == 1
             assert r.get("trans_text"), "trans_text must be non-empty"
     ix.close()
+
+
+_CORPUS_PATH = os.path.normpath(os.path.join(
+    os.path.dirname(__file__), "..", "..", "store", "quranic-corpus-morpology.xml"
+))
+_CORPUS_EXISTS = os.path.isfile(_CORPUS_PATH)
+
+
+@pytest.fixture(scope="module")
+def corpus_qse_index(tmp_path_factory):
+    """Build a QSE index with word children from the quranic corpus.
+
+    This fixture specifically exercises the code path that was broken by
+    ``UnknownFieldError: No field named 'englishcase'`` — word entries from
+    ``_load_corpus_words`` contain keys (englishcase, englishpos, englishmood,
+    englishstate, special) that are absent from the aya schema.  The fix
+    filters word_doc against ``_schema_names`` before calling
+    ``writer.add_document``.
+    """
+    from alfanous_import.transformer import Transformer
+    index_dir = str(tmp_path_factory.mktemp("corpus_main"))
+    t = Transformer(index_path=index_dir, resource_path=_RESOURCES_PATH)
+    schema = t.build_schema("aya")
+    # Must NOT raise UnknownFieldError
+    t.build_docindex(schema, corpus_path=_CORPUS_PATH)
+    return index_dir
+
+
+@pytest.mark.skipif(not _CORPUS_EXISTS, reason="quranic corpus file not found")
+def test_corpus_index_builds_without_unknown_field_error(corpus_qse_index):
+    """Building a QSE index with --corpus must not raise UnknownFieldError.
+
+    Regression test for the bug where 'englishcase', 'englishpos', 'englishmood',
+    'englishstate' (present in _load_corpus_words output but absent from the aya
+    schema) caused an UnknownFieldError in writer.add_document.
+    """
+    # If we reached this point the fixture built successfully — that's the test.
+    from whoosh.filedb.filestore import FileStorage
+    ix = FileStorage(corpus_qse_index).open_index()
+    names = ix.schema.names()
+    # Word-child fields from the aya schema must be present
+    for f in ("word", "word_id", "pos", "root", "lemma"):
+        assert f in names, f"Word child field '{f}' missing from schema"
+    # The english* fields that caused the crash must NOT be in the aya schema
+    for bad in ("englishcase", "englishpos", "englishmood", "englishstate"):
+        assert bad not in names, (
+            f"Field '{bad}' should not be in the aya schema — "
+            "it belongs only in the wordqc schema"
+        )
+    ix.close()
+
+
+@pytest.mark.skipif(not _CORPUS_EXISTS, reason="quranic corpus file not found")
+def test_corpus_index_word_children_stored(corpus_qse_index):
+    """Word children written with corpus data must be retrievable from the index."""
+    from whoosh.filedb.filestore import FileStorage
+    from whoosh import query as wq
+    ix = FileStorage(corpus_qse_index).open_index()
+    with ix.searcher() as s:
+        q = wq.And([wq.Term("kind", "word"), wq.Term("gid", 1)])
+        results = s.search(q, limit=20)
+        assert len(results) > 0, "At least one word child must be stored for gid=1"
+        for r in results:
+            assert r["kind"] == "word"
+            assert r["gid"] == 1
+            assert r.get("word"), "word field must be non-empty for word children"
+    ix.close()
+
+
+

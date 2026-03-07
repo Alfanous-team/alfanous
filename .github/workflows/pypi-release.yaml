@@ -36,6 +36,10 @@ jobs:
         echo "VERSION=${VERSION}" >> $GITHUB_ENV
         echo "Extracted version: ${VERSION}"
     
+    - name: Download translations
+      run: |
+        make download_translations
+
     - name: Build indexes
       run: |
         make build

@@ -83,11 +83,24 @@ setup(
     url="https://github.com/Alfanous-team/alfanous",
     include_package_data=True,
 
-    package_data={'alfanous': ['configs/*',
+    package_data={'alfanous': [
+                               'configs/*',
                                'indexes/main/*',
                                'indexes/extend/*',
-                               'indexes/word/*',
-                               'resources/*']},
+                               # Runtime-only resources.
+                               # Build-time data files (aya.json, fields.json, word.json)
+                               # live in store/ and are only needed by alfanous_import.
+                               'resources/information.json',
+                               'resources/arabic_names.json',
+                               'resources/stop_words.json',
+                               'resources/synonyms.json',
+                               'resources/antonyms.json',
+                               'resources/derivations.json',
+                               'resources/vocalizations.json',
+                               'resources/standard_to_uthmani.json',
+                               'resources/word_props.json',
+                               'resources/ai_query_translation_rules.txt',
+                           ]},
 
     entry_points={'console_scripts': [
         'alfanous-console = alfanous.console:main',

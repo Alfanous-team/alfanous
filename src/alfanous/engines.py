@@ -8,9 +8,10 @@ from alfanous.query_processing import QuranicParser, StandardParser
 from alfanous.constants import QURAN_TOTAL_VERSES
 
 class BasicSearchEngine:
-    def __init__(self, qdocindex, query_parser, main_field, otherfields, qsearcher, qreader, qhighlight):
+    def __init__(self, qdocindex, query_parser, main_field, otherfields, qsearcher, qreader, qhighlight, default_filter=None):
 
         self.OK = False
+        self._default_filter = default_filter or {}
         if qdocindex.OK:
             self._docindex = qdocindex
             #
@@ -44,7 +45,8 @@ class BasicSearchEngine:
         @param sortedby: Field to sort results by
         @param reverse: Whether to reverse the sort order
         @param facets: Facets to group results by
-        @param filter_dict: Filters to apply to the search
+        @param filter_dict: Filters to apply to the search (merged with any
+               default_filter configured on this engine)
         @param fuzzy: When True, also search the normalised/stemmed 'aya' field
                and apply Levenshtein distance matching on 'aya_ac'
         @param fuzzy_maxdist: Maximum Levenshtein edit distance for fuzzy term
@@ -53,7 +55,15 @@ class BasicSearchEngine:
                (default 5.0). Pass None to disable the limit.
         @return: Tuple of (results, term_stats, searcher)
         """
-        results, terms, searcher = self._searcher.search(querystr, limit=limit, sortedby=sortedby, reverse=reverse, facets=facets, filter_dict=filter_dict, fuzzy=fuzzy, fuzzy_maxdist=fuzzy_maxdist, timelimit=timelimit)
+        # Merge the engine-level default filter (e.g. kind="aya") with any
+        # caller-supplied filter.  Caller values take precedence.
+        # Use getattr so tests that bypass __init__ via __new__ still work.
+        _default = getattr(self, '_default_filter', None)
+        if _default:
+            merged = {**_default, **(filter_dict or {})}
+        else:
+            merged = filter_dict
+        results, terms, searcher = self._searcher.search(querystr, limit=limit, sortedby=sortedby, reverse=reverse, facets=facets, filter_dict=merged, fuzzy=fuzzy, fuzzy_maxdist=fuzzy_maxdist, timelimit=timelimit)
         return results, list(self._reader.term_stats(terms)), searcher
 
     def search_with_query(self, q_obj, limit=QURAN_TOTAL_VERSES, sortedby="score", timelimit=5.0):
@@ -157,15 +167,7 @@ def QuranicSearchEngine(indexpath="../indexes/main/",
                              , qsearcher=QSearcher
                              , qreader=QReader
                              , qhighlight=Qhighlight
+                             , default_filter={"kind": "aya"}
                              )
 
 
-def WordSearchEngine(indexpath="../indexes/word/", qparser=StandardParser):
-    return BasicSearchEngine(qdocindex=BasicDocIndex(indexpath)
-                             , query_parser=qparser  # termclass=QuranicParser.FuzzyAll
-                             , main_field="normalized"
-                             , otherfields=["word", "spelled"]
-                             , qsearcher=QSearcher
-                             , qreader=QReader
-                             , qhighlight=Qhighlight
-                             )

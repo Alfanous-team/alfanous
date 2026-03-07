@@ -12,11 +12,7 @@ from alfanous.results_processing import QScore, QTranslationHighlight
 
 STANDARD2UTHMANI = lambda x: std2uth_words.get(x) or x
 
-# Language codes for all translation languages present in the dataset.
-# Used to build the list of text_{lang} search fields.
-_TRANSLATION_LANGS = [
-    'am', 'ar', 'ber', 'bn', 'de', 'en', 'fa', 'fr', 'hi', 'id', 'ms', 'ru', 'sw', 'tr', 'ur',
-]
+from alfanous.text_processing import _TRANSLATION_LANGS
 # All language-specific indexed translation fields (text_en, text_fr, …).
 _TEXT_LANG_FIELDS = [f'text_{l}' for l in _TRANSLATION_LANGS]
 
@@ -102,6 +98,7 @@ class Raw:
             "word_synonyms": False,
             "word_derivations": False,
             "word_vocalizations": False,
+            "word_linguistics": False,
             "aya_position_info": False,
             "aya_theme_info": True,
             "aya_stat_info": True,
@@ -152,6 +149,7 @@ class Raw:
         "word_synonyms": [True, False],
         "word_derivations": [True, False],
         "word_vocalizations": [True, False],
+        "word_linguistics": [True, False],
         "aya_position_info": [True, False],
         "aya_theme_info": [True, False],
         "aya_stat_info": [True, False],
@@ -192,6 +190,7 @@ class Raw:
         "word_synonyms": "enable  retrieving of keyword synonyms",
         "word_derivations": "enable  retrieving of keyword derivations",
         "word_vocalizations": "enable  retrieving of keyword vocalizations",
+        "word_linguistics": "include per-aya word children with full morphological data (sorted by position)",
         "aya_position_info": "enable aya position information retrieving",
         "aya_theme_info": "enable aya theme information retrieving",
         "aya_stat_info": "enable aya stat information retrieving",
@@ -213,7 +212,6 @@ class Raw:
 
     def __init__(self,
                  QSE_index=paths.QSE_INDEX,
-                 WSE_index=paths.WSE_INDEX,
                  Recitations_list_file=paths.RECITATIONS_LIST_FILE,
                  Translations_list_file=paths.TRANSLATIONS_LIST_FILE,
                  Information_file=paths.INFORMATION_FILE,
@@ -223,7 +221,6 @@ class Raw:
 		"""
         ##
         self.QSE = QSE(QSE_index)
-        self.WSE = WSE(WSE_index)
         ##
         self._recitations = recitations(Recitations_list_file)
         _translations_names = translations(Translations_list_file)
@@ -358,13 +355,13 @@ class Raw:
         
         # Select the appropriate search engine based on unit
         if unit == "word":
-            search_engine = self.WSE
-            if field == "aya_":  # Use default field for word index
+            search_engine = self.QSE
+            if field == "aya_":  # Use default field for word children
                 field = "normalized"
         elif unit == "translation":
             search_engine = self.QSE
-            if field == "aya_":  # Use trans_text as default field for translation children
-                field = "trans_text"
+            if field == "aya_":  # Use text_en as default indexed field for translation children
+                field = "text_en"
         else:  # unit == "aya" or any other value defaults to QSE
             search_engine = self.QSE
             unit = "aya"  # Normalize unit name
@@ -430,6 +427,8 @@ class Raw:
                     # extra groups in aya-only fields (e.g. sura_type, sura_id).
                     if unit == "translation":
                         kind_filter = wquery.Term("kind", "translation")
+                    elif unit == "word":
+                        kind_filter = wquery.Term("kind", "word")
                     else:
                         kind_filter = wquery.Term("kind", "aya")
                     
@@ -512,7 +511,7 @@ class Raw:
         elif unit == "translation":
             search_results = self._search_translation(flags)
         elif unit == "word":
-            search_results = self._search_word(flags)
+            search_results = self._search_words(flags)
         else:
             search_results = {}
 
@@ -584,6 +583,7 @@ class Raw:
             word_synonyms = False
             word_derivations = False
             word_vocalizations = False
+            word_linguistics = False
             aya_position_info = aya_theme_info = aya_sajda_info = False
             aya_stat_info = False
             sura_stat_info = False
@@ -595,6 +595,7 @@ class Raw:
             word_synonyms = False
             word_derivations = True
             word_vocalizations = True
+            word_linguistics = False
             aya_position_info = aya_theme_info = aya_sajda_info = True
             aya_stat_info = False
             sura_stat_info = False
@@ -606,6 +607,7 @@ class Raw:
             word_synonyms = True
             word_derivations = True
             word_vocalizations = True
+            word_linguistics = False
             aya_position_info = aya_theme_info = aya_sajda_info = True
             aya_stat_info = sura_stat_info = True
             annotation_aya = annotation_word = True
@@ -617,6 +619,7 @@ class Raw:
             word_synonyms = False
             word_derivations = True
             word_vocalizations = True
+            word_linguistics = False
             aya_position_info = True
             aya_theme_info = aya_sajda_info = False
             aya_stat_info = True
@@ -630,6 +633,7 @@ class Raw:
             word_synonyms = True
             word_derivations = True
             word_vocalizations = True
+            word_linguistics = True   # include per-aya morphological word children
             aya_position_info = False
             aya_theme_info = aya_sajda_info = True
             aya_stat_info = False
@@ -645,6 +649,7 @@ class Raw:
             word_synonyms = False
             word_derivations = False
             word_vocalizations = False
+            word_linguistics = False
             aya_position_info = True
             aya_theme_info = False
             aya_sajda_info = True
@@ -661,6 +666,7 @@ class Raw:
             word_synonyms = IS_FLAG(flags, 'word_synonyms')
             word_derivations = IS_FLAG(flags, 'word_derivations')
             word_vocalizations = IS_FLAG(flags, 'word_vocalizations')
+            word_linguistics = IS_FLAG(flags, 'word_linguistics')
 
             aya_position_info = IS_FLAG(flags, 'aya_position_info')
             aya_theme_info = IS_FLAG(flags, 'aya_theme_info')
@@ -944,6 +950,56 @@ class Raw:
                                 trad_text[g] = tdata
                                 break
 
+        # Fetch word children (kind="word") for each aya on the result page when
+        # the linguistic view is requested.  Word children carry the parent aya's
+        # gid so they can be fetched with the same query used for translations.
+        aya_words_map = {}  # {(sura_id, aya_id): [word_entry, ...]}
+        if word_linguistics and reslist:
+            try:
+                wc_res, wc_searcher = self.QSE.find_extended(
+                    _gid_base_query + " AND kind:word", "gid"
+                )
+                extend_runtime += wc_res.runtime
+                for w in wc_res:
+                    key = (w.get("sura_id"), w.get("aya_id"))
+                    entry = {
+                        "word_id":      w.get("word_id"),
+                        "word":         w.get("word"),
+                        "normalized":   w.get("normalized"),
+                        "spelled":      w.get("spelled"),
+                        # Arabic (primary, indexed)
+                        "pos":          w.get("pos"),
+                        "type":         w.get("type"),
+                        "root":         w.get("root"),
+                        "lemma":        w.get("lemma"),
+                        "mood":         w.get("mood"),
+                        "case":         w.get("case"),
+                        "state":        w.get("state"),
+                        "special":      w.get("special"),
+                        # English (stored-only)
+                        "englishpos":   w.get("englishpos"),
+                        "englishmood":  w.get("englishmood"),
+                        "englishcase":  w.get("englishcase"),
+                        "englishstate": w.get("englishstate"),
+                        # Unchanged fields
+                        "prefix":       w.get("prefix"),
+                        "suffix":       w.get("suffix"),
+                        "gender":       w.get("gender"),
+                        "number":       w.get("number"),
+                        "person":       w.get("person"),
+                        "form":         w.get("form"),
+                        "voice":        w.get("voice"),
+                        "derivation":   w.get("derivation"),
+                        "aspect":       w.get("aspect"),
+                    }
+                    aya_words_map.setdefault(key, []).append(entry)
+                # Sort each aya's word list by word_id (ascending position order).
+                for key in aya_words_map:
+                    aya_words_map[key].sort(key=lambda e: e.get("word_id") or 0)
+                wc_searcher.close()
+            except Exception:
+                pass  # index built without corpus words — silently skip
+
         output["runtime"] = round(extend_runtime, 5)
         output["interval"] = {
             "start": start,
@@ -1036,8 +1092,7 @@ class Raw:
                     "juz": r["juz"],
                     "hizb": r["hizb"],
                     "rub": int(r["rub"]) % 4,
-                    "page": r["page"],
-                    "page_IN": r["page_IN"]
+                    "page": r["page"]
                 },
 
                 "theme": {} if not aya_theme_info
@@ -1063,6 +1118,10 @@ class Raw:
 
                 "annotations": {}
             }
+            if word_linguistics:
+                output["ayas"][cpt]["words"] = aya_words_map.get(
+                    (r["sura_id"], r["aya_id"]), []
+                )
         searcher.close()
         return output
 
@@ -1172,6 +1231,140 @@ class Raw:
         searcher.close()
         return output
 
+    def _search_words(self, flags):
+        """Search word occurrence child documents nested within QSE aya groups.
+
+        Word children are indexed with ``kind="word"`` alongside translation
+        children.  This method searches them using a ``MultifieldParser`` that
+        targets ``word``, ``normalized``, ``root``, and ``lemma``,
+        combined with a ``kind="word"`` filter so only word children are
+        returned.
+
+        The result structure mirrors ``_search_word`` for backward
+        compatibility:  ``{"words": {n: {...}}, "interval": {...}, "runtime": ...}``.
+        """
+        from whoosh import qparser as _qparser
+
+        flags = {**self._defaults["flags"], **flags}
+        query = flags["query"]
+        sortedby = flags["sortedby"]
+        range_ = int(flags["perpage"]) if flags.get("perpage") \
+            else flags["range"]
+        offset = ((int(flags["page"]) - 1) * range_) + 1 if flags.get("page") \
+            else int(flags["offset"])
+        highlight = flags["highlight"]
+        timelimit = self._parse_timelimit(flags)
+
+        # Transliterate if no field filter is present
+        query = query.replace("\\", "")
+        if ":" not in query:
+            query = transliterate("buckwalter", query, ignore="'_\"%*?#~[]{}:>+-|")
+
+        empty_response = {
+            "words": {},
+            "interval": {"start": 0, "end": 0, "total": 0, "page": 1, "nb_pages": 0},
+            "runtime": 0,
+        }
+
+        if not self.QSE.OK:
+            return empty_response
+
+        schema = self.QSE._schema
+
+        # Build a multi-field parser that searches the main word text fields as
+        # well as the key linguistic fields so queries like "root:رحم" work.
+        _word_parser = _qparser.MultifieldParser(
+            ["word", "normalized", "root", "lemma"],
+            schema=schema,
+            group=_qparser.OrGroup,
+        )
+        try:
+            word_query = _word_parser.parse(query)
+        except Exception:
+            return empty_response
+
+        # Restrict results to word children only.
+        kind_filter = wquery.Term("kind", "word")
+        combined = wquery.And([word_query, kind_filter])
+
+        res, _terms, searcher = self.QSE.search_with_query(
+            combined,
+            limit=self._defaults["results_limit"]["word"],
+            sortedby=sortedby,
+            timelimit=timelimit,
+        )
+
+        # Extract query terms for highlighting (best-effort from the parsed query).
+        terms = [t[1] for t in word_query.all_terms()
+                 if isinstance(t[1], str)][:self._defaults["maxkeywords"]]
+
+        # Pagination
+        offset = 1 if offset < 1 else offset
+        range_ = max(self._defaults["minrange"], min(range_, self._defaults["maxrange"]))
+        interval_end = offset + range_ - 1
+        end = min(interval_end, len(res))
+        start = offset if offset <= len(res) else -1
+        reslist = [] if end == 0 or start == -1 else list(res)[start - 1:end]
+
+        H = lambda X: self.QSE.highlight(X, terms, highlight) \
+            if highlight != "none" and X else (X if X else "-----")
+
+        output = {
+            "runtime": round(res.runtime, 5),
+            "interval": {
+                "start": start,
+                "end": end,
+                "total": len(res),
+                "page": ((start - 1) / range_) + 1 if start > 0 else 1,
+                "nb_pages": ((len(res) - 1) / range_) + 1 if len(res) > 0 else 0,
+            },
+            "words": {},
+        }
+
+        cpt = start - 1
+        for r in reslist:
+            cpt += 1
+            output["words"][cpt] = {
+                "identifier": {
+                    "word_id": r.get("word_id"),
+                    "aya_id":  r.get("aya_id"),
+                    "sura_id": r.get("sura_id"),
+                },
+                "word": {
+                    "text":              H(r.get("word", "")),
+                    "text_no_highlight": r.get("word", ""),
+                    "normalized":        r.get("normalized"),
+                    "spelled":          r.get("spelled"),
+                    # Arabic (primary, indexed)
+                    "pos":              r.get("pos"),
+                    "type":             r.get("type"),
+                    "root":             r.get("root"),
+                    "lemma":            r.get("lemma"),
+                    "mood":             r.get("mood"),
+                    "case":             r.get("case"),
+                    "state":            r.get("state"),
+                    "special":          r.get("special"),
+                    # English (stored-only)
+                    "englishpos":       r.get("englishpos"),
+                    "englishmood":      r.get("englishmood"),
+                    "englishcase":      r.get("englishcase"),
+                    "englishstate":     r.get("englishstate"),
+                    # Unchanged fields
+                    "prefix":           r.get("prefix"),
+                    "suffix":           r.get("suffix"),
+                    "gender":           r.get("gender"),
+                    "number":           r.get("number"),
+                    "person":           r.get("person"),
+                    "form":             r.get("form"),
+                    "voice":            r.get("voice"),
+                    "derivation":       r.get("derivation"),
+                    "aspect":           r.get("aspect"),
+                },
+            }
+
+        searcher.close()
+        return output
+
     def _search_word(self, flags):
         flags = {**self._defaults["flags"], **flags}
         query = flags["query"]
@@ -1189,7 +1382,7 @@ class Raw:
         if ":" not in query:
             query = transliterate("buckwalter", query, ignore="'_\"%*?#~[]{}:>+-|")
 
-        SE = self.WSE
+        SE = self.QSE
         if not SE.OK:
             return {
                 "words": {},
@@ -1197,7 +1390,7 @@ class Raw:
                 "runtime": 0
             }
 
-        res, termz, searcher = SE.search_all(query, limit=self._defaults["results_limit"]["word"], sortedby=sortedby, timelimit=timelimit)
+        res, termz, searcher = SE.search_all(query, limit=self._defaults["results_limit"]["word"], sortedby=sortedby, filter_dict={"kind": "word"}, timelimit=timelimit)
         terms = [term[1] for term in list(termz)[:self._defaults["maxkeywords"]]]
 
         # pagination
@@ -1239,8 +1432,8 @@ class Raw:
                     "spelled": r.get("spelled"),
                     "pos": r.get("pos"),
                     "type": r.get("type"),
-                    "arabicroot": r.get("arabicroot"),
-                    "arabiclemma": r.get("arabiclemma"),
+                    "root": r.get("root"),
+                    "lemma": r.get("lemma"),
                 },
             }
 
