@@ -209,9 +209,12 @@ class Transformer:
         if corpus_path and tablename == "aya":
             words_by_aya = _load_corpus_words(corpus_path)
 
-        if translations and tablename == "aya":
-            # Pre-compute which text_{lang} fields exist in the schema to
-            # avoid repeated schema lookups for every translation document.
+        if tablename == "aya":
+            # Pre-compute schema field names once to:
+            # (a) filter language-specific text_{lang} fields for translation children, and
+            # (b) drop fields absent from the aya schema when writing word children
+            #     (e.g. englishcase/englishpos/englishmood/englishstate live in the
+            #     wordqc schema but not in the aya schema).
             _schema_names = set(ix.schema.names())
 
         for line in data_list:
@@ -262,7 +265,7 @@ class Transformer:
                         # occurrence counter) so word children can be fetched with
                         # the same gid-based query used for translation children.
                         word_doc = {k: v for k, v in w.items()
-                                    if v is not None and k != "gid"}
+                                    if v is not None and k != "gid" and k in _schema_names}
                         word_doc["gid"] = gid
                         writer.add_document(kind="word", **word_doc)
                 writer.end_group()
