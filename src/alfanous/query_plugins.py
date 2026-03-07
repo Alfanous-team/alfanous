@@ -270,12 +270,32 @@ class TupleQuery(QMultiTerm):
 class ArabicWildcardQuery(Wildcard):
     """Wildcard query with Arabic question mark support"""
 
+    # Limit wildcard expansion to prevent broad patterns (e.g. bare "*") from
+    # iterating over the entire index lexicon before the timelimit collector
+    # can stop the query.  20 terms is sufficient for typical prefix-wildcard
+    # searches and keeps response times well within the configured timelimit.
+    MAX_EXPAND = 20
+
     def __init__(self, fieldname, text, boost=1.0):
         # Replace Arabic question mark with standard wildcard
         new_text = text.replace(u"؟", u"?")
         super(ArabicWildcardQuery, self).__init__(fieldname, new_text, boost)
         # Store original text for hash/eq
         self._original_text = text
+
+    def _btexts(self, ixreader):
+        """Yield matching byte-encoded terms from the index, capped at MAX_EXPAND.
+
+        Overrides PatternQuery._btexts to prevent broad wildcard patterns from
+        expanding to thousands of terms, which would cause the search to exceed
+        the configured timelimit before any results are collected.
+        """
+        count = 0
+        for btext in super(ArabicWildcardQuery, self)._btexts(ixreader):
+            if count >= self.MAX_EXPAND:
+                break
+            yield btext
+            count += 1
 
     def __hash__(self):
         return hash((self.__class__.__name__, self.fieldname, self._original_text, self.boost))
