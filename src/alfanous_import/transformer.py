@@ -134,6 +134,21 @@ def _load_all_translations(translations_store_path):
     return result
 
 
+def _make_writer(ix, procs: int, multisegment: bool):
+    """Open an index writer, using multiple processes when *procs* > 1.
+
+    :param ix: Open Whoosh index.
+    :param procs: Number of writer processes.  Values > 1 create a
+        ``MpWriter`` (multi-process).  ``procs=1`` creates a plain
+        ``SegmentWriter``.
+    :param multisegment: When *procs* > 1, skip merging sub-segments into
+        one at commit time.  Ignored for ``procs=1``.
+    """
+    if procs > 1:
+        return ix.writer(procs=procs, multisegment=multisegment)
+    return ix.writer()
+
+
 class Transformer:
     def __init__(self, index_path, resource_path):
         if not (os.path.exists(index_path)):
@@ -180,12 +195,27 @@ class Transformer:
         return Schema(**kwargs)
 
     def transfer(self, ix, tablename="aya", translations_store_path=None,
-                 corpus_path=None, merge=True):
+                 corpus_path=None, merge=True, procs=1, multisegment=False,
+                 batch_size=0):
+        """Write all records from *tablename*.json into the index *ix*.
+
+        :param merge: Passed to ``writer.commit()`` on the final commit.
+            Use ``merge=False`` to skip segment merging (faster, produces
+            multiple segments).
+        :param procs: Number of writer processes.  ``procs > 1`` enables
+            ``MpWriter`` for parallel indexing across CPU cores.
+        :param multisegment: When *procs* > 1, skip merging sub-process
+            segments into one at commit time.  Faster for bulk imports.
+        :param batch_size: Commit after every *batch_size* top-level records
+            and reopen the writer.  ``0`` (default) means a single commit at
+            the end.  Intermediate commits always use ``merge=False``
+            regardless of the *merge* parameter.
+        """
         data_file = open(f"{self.resource_path}{tablename}.json")
         data_list = json.load(data_file)
 
         logging.info(f"writing documents in index (total: {len(data_list)}) ....")
-        writer = ix.writer()
+        writer = _make_writer(ix, procs, multisegment)
 
         cpt = 0
 
@@ -351,18 +381,24 @@ class Transformer:
                 writer.add_document(**doc)
 
             cpt += 1
-            if not cpt % 1559:
+            if batch_size > 0 and cpt % batch_size == 0:
+                writer.commit(merge=False)
+                writer = _make_writer(ix, procs, multisegment)
+                logging.info(f" - batch commit at {cpt} records")
+            elif not cpt % 1559:
                 logging.info(f" - milestone:  {cpt} ( {cpt * 100 / len(data_list)}% )")
 
         logging.info("done.")
         writer.commit(merge=merge)
 
     def build_docindex(self, schema, tablename="aya", translations_store_path=None,
-                       corpus_path=None, merge=True):
+                       corpus_path=None, merge=True, procs=1, multisegment=False,
+                       batch_size=0):
         assert schema, "schema is empty"
         ix = FileStorage(self.index_path).create_index(schema)
         self.transfer(ix, tablename, translations_store_path=translations_store_path,
-                      corpus_path=corpus_path, merge=merge)
+                      corpus_path=corpus_path, merge=merge, procs=procs,
+                      multisegment=multisegment, batch_size=batch_size)
         # ix.optimize()  # merges all segments into one; slow on large corpora —
         # uncomment if a single-segment index (smaller file count) is required
         return "OK"
