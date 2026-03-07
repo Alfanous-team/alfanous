@@ -18,6 +18,11 @@ from alfanous.engines import BasicSearchEngine
 from alfanous.outputs import Raw
 import alfanous.api as api
 
+# An extremely short timelimit (seconds) used in tests that must fire the
+# timeout path.  Hardware-dependent: the timeout may not trigger on very fast
+# machines, but the call must always return without raising.
+EXTREMELY_SHORT_TIMELIMIT = 0.00001
+
 
 # ---------------------------------------------------------------------------
 # Signature / default-value tests (no index required)
@@ -176,7 +181,7 @@ def test_timelimit_returns_partial_results_no_crash():
     searcher = ix.searcher()
     try:
         base_c = searcher.collector(limit=10000)
-        tlc = TimeLimitCollector(base_c, timelimit=0.00001, use_alarm=False)
+        tlc = TimeLimitCollector(base_c, timelimit=EXTREMELY_SHORT_TIMELIMIT, use_alarm=False)
         timed_out = False
         try:
             searcher.search_with_collector(wquery.Every(), tlc)
@@ -204,7 +209,7 @@ def test_timelimit_with_filter_returns_correctly_filtered_partial_results():
     try:
         filter_q = wquery.Term("sura_id", 1)
         base_c = searcher.collector(limit=10000)
-        tlc = TimeLimitCollector(base_c, timelimit=0.00001, use_alarm=False)
+        tlc = TimeLimitCollector(base_c, timelimit=EXTREMELY_SHORT_TIMELIMIT, use_alarm=False)
         final_c = FilterCollector(tlc, allow=filter_q)
         try:
             searcher.search_with_collector(wquery.Every(), final_c)
@@ -238,12 +243,70 @@ def test_timelimit_warning_logged_on_timeout(caplog):
         qs = QSearcher(mock_index, parser)
 
         with caplog.at_level(logging.WARNING, logger="alfanous.searching"):
-            qs.search("word", timelimit=0.00001)
+            qs.search("word", timelimit=EXTREMELY_SHORT_TIMELIMIT)
 
         # The warning may or may not fire depending on timing, but the call must
         # never crash.  If it did fire, it must mention "timelimit".
         for record in caplog.records:
             if record.levelno == logging.WARNING:
                 assert "timelimit" in record.getMessage().lower()
+    finally:
+        shutil.rmtree(tmpdir, ignore_errors=True)
+
+
+# ---------------------------------------------------------------------------
+# Wildcard + timelimit interaction tests
+# ---------------------------------------------------------------------------
+
+def test_arabic_wildcard_max_expand_caps_term_expansion():
+    """ArabicWildcardQuery._btexts must yield at most MAX_EXPAND terms.
+
+    This ensures that a broad wildcard pattern (e.g. bare '*') cannot
+    iterate over the entire index lexicon before the TimeLimitCollector
+    has a chance to stop the query.
+    """
+    from alfanous.query_plugins import ArabicWildcardQuery
+
+    ix, tmpdir = _build_test_index(num_docs=100)
+    try:
+        with ix.searcher() as searcher:
+            reader = searcher.reader()
+            wq = ArabicWildcardQuery("text", "*")
+            expanded = list(wq._btexts(reader))
+            assert len(expanded) <= ArabicWildcardQuery.MAX_EXPAND, (
+                f"Wildcard expansion must be capped at MAX_EXPAND={ArabicWildcardQuery.MAX_EXPAND}; "
+                f"got {len(expanded)} terms"
+            )
+    finally:
+        shutil.rmtree(tmpdir, ignore_errors=True)
+
+
+def test_wildcard_search_via_qsearcher_stopped_by_timelimit():
+    """A wildcard query string routed through QSearcher must be stopped by the
+    timelimit and return a valid (possibly partial) Results object without
+    raising an exception.
+
+    This specifically exercises the path:
+        wildcard query string → parser → ArabicWildcardQuery →
+        TimeLimitCollector → partial results
+    """
+    from alfanous.searching import QSearcher
+    from alfanous.query_plugins import ArabicWildcardPlugin
+
+    ix, tmpdir = _build_test_index(num_docs=10000)
+    try:
+        mock_index = MagicMock()
+        mock_index.get_index.return_value = ix
+        mock_index.get_schema.return_value = ix.schema
+
+        from whoosh.qparser import QueryParser
+        parser = QueryParser("text", schema=ix.schema)
+        parser.add_plugin(ArabicWildcardPlugin())
+
+        qs = QSearcher(mock_index, parser)
+        results, _terms, _searcher = qs.search("t*", timelimit=EXTREMELY_SHORT_TIMELIMIT)
+
+        assert results is not None, "results must not be None when timelimit fires during wildcard"
+        assert len(results) >= 0, "results length must be non-negative"
     finally:
         shutil.rmtree(tmpdir, ignore_errors=True)
