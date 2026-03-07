@@ -161,29 +161,34 @@ class DerivationQuery(QMultiTerm):
         except Exception:
             word_norm = word
 
-        # Try index lookup for lemma/root of this word
-        _word_docs = _query_word_index({"normalized": word_norm}, field="lemma")
-        if not _word_docs:
-            # Also try the vocalized form
-            _word_docs = _query_word_index({"word": word}, field="lemma")
-
-        lemma = _word_docs[0] if _word_docs else None
-
         if use_root_level:
-            # Get root of the word
+            # Collect ALL unique roots for this word (multiple surface forms may
+            # share different roots; use the union for the broadest derivation set).
             _root_docs = _query_word_index({"normalized": word_norm}, field="root")
             if not _root_docs:
                 _root_docs = _query_word_index({"word": word}, field="root")
-            root = _root_docs[0] if _root_docs else None
-            if root:
-                words = _query_word_index({"root": root}, field="normalized")
+            roots = list(set(_root_docs)) if _root_docs else []
+            if roots:
+                words = []
+                for root in roots:
+                    words += _query_word_index({"root": root}, field="normalized")
+                words = list(set(words))
                 if words:
-                    return list(set(words))
+                    return words
         else:
-            if lemma:
-                words = _query_word_index({"lemma": lemma}, field="normalized")
+            # Collect ALL unique lemmas — a single normalized form can belong to
+            # multiple lexemes (e.g. ملك as verb "to own" vs noun "king").
+            _lemma_docs = _query_word_index({"normalized": word_norm}, field="lemma")
+            if not _lemma_docs:
+                _lemma_docs = _query_word_index({"word": word}, field="lemma")
+            lemmas = list(set(_lemma_docs)) if _lemma_docs else []
+            if lemmas:
+                words = []
+                for lemma in lemmas:
+                    words += _query_word_index({"lemma": lemma}, field="normalized")
+                words = list(set(words))
                 if words:
-                    return list(set(words))
+                    return words
 
         return [word]
 
@@ -298,11 +303,15 @@ class TupleQuery(QMultiTerm):
         """Search word children that match specific morphological properties
         via the live word-children index.
 
-        :param props: Dict with optional keys ``root``, ``type``, ``pattern``.
+        :param props: Dict with optional keys ``root``, ``type``.
         :returns: List of matching unvocalized word forms.
         """
-        _supported_keys = {"root", "type"}
-        _filter = {k: v for k, v in props.items() if k in _supported_keys and v}
+        # "type" in the query tuple maps to the "pos" field in the index, which
+        # stores Arabic POS values (e.g. "فعل" for verb, "اسم" for noun).
+        # The "root" key maps directly to the "root" field.
+        _prop_to_field = {"root": "root", "type": "pos"}
+        _filter = {_prop_to_field[k]: v for k, v in props.items()
+                   if k in _prop_to_field and v}
         if _filter:
             return _query_word_index(_filter, field="normalized")
         return []

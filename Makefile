@@ -57,7 +57,7 @@ edit_translations_to_download_list:
 ## this target is to build all what have to be built:
 # 1. Generate all Indexes, see  index_all
 # 2. Update Quranic resources needed after indexing phase, see update_post_build
-build: index_all update_post_build
+build: generate_arabic_names index_all update_post_build
 
 
 

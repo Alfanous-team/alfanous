@@ -68,10 +68,15 @@ def _make_word_index_mock(word, lemma, root, lemma_words, root_words):
 
 
 def _make_tuple_mock(root_words_map):
-    """Return a side_effect function for TupleQuery tests."""
+    """Return a side_effect function for TupleQuery tests.
+
+    TupleQuery._get_words_by_properties maps the user-facing ``type`` property
+    to the ``pos`` index field (which stores Arabic POS values like "فعل"/"اسم").
+    The mock therefore reads the ``pos`` key from filter_dict.
+    """
     def _mock(filter_dict, field="normalized", limit=5000):
         root = filter_dict.get("root", "")
-        type_ = filter_dict.get("type", "")
+        type_ = filter_dict.get("pos", "")  # mapped from "type" → "pos" in _get_words_by_properties
         key = (root, type_)
         return list(root_words_map.get(key, []))
     return _mock

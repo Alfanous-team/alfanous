@@ -96,15 +96,7 @@ def quran_unvocalized_words():
     try:
         _engine = QSE()
         if _engine.OK:
-            reader = _engine.qdocindex.get_reader()
-            try:
-                words = frozenset(
-                    t.decode("utf-8") if isinstance(t, bytes) else t
-                    for t in reader.lexicon("normalized")
-                    if t
-                )
-            finally:
-                reader.close()
+            words = frozenset(t for t in _engine.list_terms("normalized") if t)
             if words:
                 return words
     except Exception:

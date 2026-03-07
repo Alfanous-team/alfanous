@@ -15,6 +15,11 @@ from alfanous.text_processing import _TRANSLATION_LANGS
 # All language-specific indexed translation fields (text_en, text_fr, …).
 _TEXT_LANG_FIELDS = [f'text_{l}' for l in _TRANSLATION_LANGS]
 
+# Characters passed through unchanged during Arabizi conversion inside queries.
+# Whoosh search operators (AND/OR/NOT symbols, field selectors, wildcards, etc.)
+# must not be transliterated to Arabic letters.
+_ARABIZI_IGNORE_CHARS = "'_\"%*?#~[]{}:>+-|"
+
 FALSE_PATTERN = '^false|no|off|0$'
 
 
@@ -677,25 +682,54 @@ class Raw:
         query = query.replace("\\", "")
 
         if ":" not in query and not re.search(r'[\u0600-\u06FF]', query):
-            # Non-Arabic query: route to nested child translation docs via
-            # NestedParent so results are parent aya documents that have
-            # translations matching the query text.
+            # Non-Arabic query: search translations AND try arabizi conversion
+            # to also search the Arabic aya fields ("the word and arabizi(word)").
             from whoosh import query as wq
             from whoosh.qparser import MultifieldParser as _MFP, OrGroup as _OrGroup
-            # Only include text_{lang} fields that actually exist in the schema.
+            from alfanous.romanization import arabizi_to_arabic_list, filter_candidates_by_wordset
+            from alfanous.data import quran_unvocalized_words
+
+            _query_parts = []
+
+            # 1. Translation search: NestedParent over child translation docs
             _available_fields = [f for f in _TEXT_LANG_FIELDS if f in self.QSE._schema]
-            _trans_parser = _MFP(_available_fields, self.QSE._schema, group=_OrGroup)
-            _trans_q = _trans_parser.parse(query)
-            _nested_q = wq.NestedParent(wq.Term("kind", "aya"), _trans_q)
-            # Apply filter_dict to restrict results to specific parent aya fields
-            # (e.g. sura_id:2 limits to Al-Baqara).  Filter terms are AND-ed
-            # directly into the query because search_with_query bypasses the
-            # FilterCollector used in the Arabic path.
+            if _available_fields:
+                _trans_parser = _MFP(_available_fields, self.QSE._schema, group=_OrGroup)
+                _trans_q = _trans_parser.parse(query)
+                _query_parts.append(wq.NestedParent(wq.Term("kind", "aya"), _trans_q))
+
+            # 2. Arabizi search: convert non-Arabic words to Arabic candidates
+            # and search aya text fields directly (no NestedParent needed for aya docs).
+            _arabizi_candidates = arabizi_to_arabic_list(
+                query.lower(), ignore=_ARABIZI_IGNORE_CHARS
+            )
+            _qwords = quran_unvocalized_words()
+            if _qwords:
+                _arabizi_candidates = filter_candidates_by_wordset(_arabizi_candidates, _qwords)
+            if _arabizi_candidates:
+                _arabic_terms = [wq.Term("aya", c) for c in _arabizi_candidates]
+                _arabic_q = wq.Or(_arabic_terms) if len(_arabic_terms) > 1 else _arabic_terms[0]
+                # Scope to parent aya documents so nested child docs are excluded.
+                if "kind" in self.QSE._schema:
+                    _arabic_q = wq.And([wq.Term("kind", "aya"), _arabic_q])
+                _query_parts.append(_arabic_q)
+
+            if not _query_parts:
+                # No fields available and no arabizi candidates — return empty.
+                from whoosh.query import NullQuery as _NullQuery
+                _final_q = _NullQuery()
+            elif len(_query_parts) == 1:
+                _final_q = _query_parts[0]
+            else:
+                _final_q = wq.Or(_query_parts)
+
+            # Apply filter_dict to restrict results (e.g. sura_id:2).
             _filter_parts = _build_filter_query(filter_dict)
             if _filter_parts:
-                _nested_q = wq.And([_nested_q] + _filter_parts)
+                _final_q = wq.And([_final_q] + _filter_parts)
+
             res, termz, searcher = self.QSE.search_with_query(
-                _nested_q,
+                _final_q,
                 limit=self._defaults["results_limit"]["aya"],
                 sortedby=sortedby,
                 timelimit=timelimit,
@@ -836,10 +870,19 @@ class Raw:
                             _word_res, _, _word_searcher = self.QSE.search_with_query(
                                 _word_q, limit=10
                             )
-                            _word_docs = list(_word_res)
+                            # Extract fields while searcher is still open; Hit objects
+                            # access stored fields lazily through the reader, so the
+                            # searcher must not be closed before the field lookups.
+                            # Iterate _word_res once to avoid double-scan.
+                            lemma = root = None
+                            for _w in _word_res:
+                                if lemma is None:
+                                    lemma = _w.get("lemma") or None
+                                if root is None:
+                                    root = _w.get("root") or None
+                                if lemma and root:
+                                    break
                             _word_searcher.close()
-                            lemma = next((w.get("lemma") for w in _word_docs if w.get("lemma")), None)
-                            root = next((w.get("root") for w in _word_docs if w.get("root")), None)
                             if lemma:
                                 _lem_q = wquery.And([
                                     wquery.Term("kind", "word"),
