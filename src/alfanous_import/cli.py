@@ -1,5 +1,6 @@
 
 
+import os
 from alfanous_import.transformer import Transformer
 from alfanous_import.updater import update_translations_list
 
@@ -111,4 +112,7 @@ if options.update:
     DESTINATION = args[1]
 
     if options.update == "translations":
-        update_translations_list(translations_list_file=DESTINATION)
+        update_translations_list(
+            translations_list_file=DESTINATION,
+            translations_store_path=SOURCE if os.path.isdir(SOURCE) else None,
+        )

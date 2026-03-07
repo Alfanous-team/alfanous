@@ -4,6 +4,12 @@ import logging
 import os
 import os.path
 
+# Standard-text particles that fuse with the following word in the corpus.
+# Defined at module level so the pre-pass loop never recreates the set.
+_PARTICLES = {"يا", "ويا", "ها"}
+
+# Line fields that require whitespace stripping during doc building.
+_STRIP_FIELDS = frozenset({"chapter", "topic", "subtopic"})
 
 from whoosh import fields
 from whoosh.fields import Schema
@@ -94,43 +100,80 @@ def _load_corpus_words(corpus_path):
     return result
 
 
-def _load_all_translations(translations_store_path):
-    """Return a mapping ``{trans_id: {"lines": [...], "lang": ..., "author": ...}}``
-    for every ``.trans.zip`` found under *translations_store_path*.
+import re as _re
+import zipfile as _zipfile
 
-    Each entry's ``"lines"`` list has exactly :data:`QURAN_TOTAL_VERSES` items,
-    indexed from 0 (gid = index + 1).  Zips that cannot be parsed or have the
-    wrong line count are skipped with a warning.
+# Pre-compiled pattern used by every translation zip reader.
+_PROPS_RE = _re.compile(r"[^=\r\n#]+")
+
+
+def _iter_translation_zips(store_path):
+    """Yield ``(props_dict, lines_list)`` for every valid ``.trans.zip``
+    found under *store_path*, reading entirely from memory without
+    extracting to disk.
+
+    Zips that are missing required keys or have the wrong line count are
+    skipped with a warning.  Callers that only need properties (not the
+    full lines list) should pass ``lines=False`` — not applicable here, but
+    the helper is shared with :mod:`alfanous_import.updater`.
     """
-    from alfanous_import.zekr_model_reader.main import TranslationModel
-
-    result = {}
-    if not os.path.isdir(translations_store_path):
-        logging.warning("Translations store path not found, skipping: %s", translations_store_path)
-        return result
-    for filename in sorted(os.listdir(translations_store_path)):
+    if not os.path.isdir(store_path):
+        logging.warning("Translations store path not found, skipping: %s", store_path)
+        return
+    for filename in sorted(os.listdir(store_path)):
         if not filename.endswith(".trans.zip"):
             continue
-        zip_path = os.path.join(translations_store_path, filename)
+        zip_path = os.path.join(store_path, filename)
         try:
-            tm = TranslationModel(zip_path)
-            props = tm.translation_properties()
-            lines = tm.translation_lines(props)
-            if len(lines) != QURAN_TOTAL_VERSES:
-                logging.warning(
-                    "Translation %s has %d lines (expected %d), skipping",
-                    props.get("id", filename), len(lines), QURAN_TOTAL_VERSES,
-                )
-                continue
-            trans_id = props["id"]
-            result[trans_id] = {
-                "lines": lines,
-                "lang": props.get("language", ""),
-                "author": props.get("name", ""),
-            }
-            logging.info("Loaded translation: %s (%d verses)", trans_id, len(lines))
-        except (OSError, ValueError, AssertionError, KeyError) as exc:
+            with _zipfile.ZipFile(zip_path, "r") as zf:
+                # ── properties ──────────────────────────────────────────
+                props: dict = {}
+                with zf.open("translation.properties") as pf:
+                    for raw_line in pf.read().decode("utf-8", errors="replace").splitlines():
+                        parts = _PROPS_RE.findall(raw_line)
+                        if len(parts) == 2:
+                            props[parts[0]] = parts[1]
+                required = {"id", "file", "lineDelimiter"}
+                if not required.issubset(props):
+                    logging.warning(
+                        "Translation %s missing keys %s, skipping",
+                        filename, required - props.keys(),
+                    )
+                    continue
+                # ── verse lines ─────────────────────────────────────────
+                with zf.open(props["file"]) as tf:
+                    content = tf.read().decode("utf-8", errors="replace")
+                linerx = _re.compile("[^" + props["lineDelimiter"] + "]+")
+                lines = linerx.findall(content)
+                if len(lines) != QURAN_TOTAL_VERSES:
+                    logging.warning(
+                        "Translation %s has %d lines (expected %d), skipping",
+                        props.get("id", filename), len(lines), QURAN_TOTAL_VERSES,
+                    )
+                    continue
+        except (OSError, KeyError, _zipfile.BadZipFile) as exc:
             logging.warning("Failed to load translation %s: %s", filename, exc)
+            continue
+        yield props, lines
+
+
+def _load_all_translations(translations_store_path):
+    """Return a mapping ``{trans_id: {"lines": [...], "lang": ..., "author": ...}}``
+    for every valid ``.trans.zip`` found under *translations_store_path*.
+
+    Reads entirely in memory — no temp-directory extraction.
+    Each entry's ``"lines"`` list has exactly :data:`QURAN_TOTAL_VERSES` items,
+    indexed from 0 (gid = index + 1).
+    """
+    result = {}
+    for props, lines in _iter_translation_zips(translations_store_path):
+        trans_id = props["id"]
+        result[trans_id] = {
+            "lines":  lines,
+            "lang":   props.get("language", ""),
+            "author": props.get("name", ""),
+        }
+        logging.info("Loaded translation: %s (%d verses)", trans_id, len(lines))
     return result
 
 
@@ -256,13 +299,10 @@ class Transformer:
         # {(sura_id, aya_id): [word, ...]}
         aya_standard_words: dict = {}
         aya_translit_words: dict = {}
-        # Mismatched ayas: {aya_gid: {qc_words, aya_words, mapping}}
-        special: dict = {}
         if words_by_aya and tablename == "aya":
             for line in data_list:
                 sid = line.get("sura_id")
                 aid = line.get("aya_id")
-                aya_gid = line.get("gid")
                 key = (sid, aid)
                 corpus_words_for_key = words_by_aya.get(key, [])
                 if not corpus_words_for_key:
@@ -272,95 +312,111 @@ class Transformer:
                 if len(std_tokens) == corpus_count:
                     aya_standard_words[key] = std_tokens
                 else:
-                    # Try to recover by particle-merging: certain short particles
-                    # in the standard text are fused with the following word in
-                    # the corpus.  The particle is ignored; only the following
-                    # word is stored as word_standard.
+                    # Try to recover when std token count ≠ corpus count.
+                    # The standard text sometimes spells fused corpus tokens as
+                    # separate words.  Three strategies are tried in order:
                     #
-                    #   يا  X  → X      (vocative: يَٰٓأَيُّهَا, يَٰٓأَرْضُ …)
-                    #   ويا X  → X      (و + vocative: وَيَٰقَوْمِ, وَيَٰٓـَٔادَمُ …)
-                    #   ها  X  → X      (attention particle: هَٰٓأَنتُمْ …)
+                    # 1. Particle collapse: يا / ويا / ها + next → next only.
+                    #    e.g. "يا أيها" → "أيها"  (covers ~355 ayas, diff=1)
                     #
-                    # Only accepted when the resulting count matches the corpus.
-                    _PARTICLES = {"يا", "ويا", "ها"}
-                    merged = []
+                    # 2. Extended particle merge: merge (diff+1) tokens starting
+                    #    at the first particle, stored space-joined.
+                    #    e.g. "يا ابن أم" (diff=2) → "يا ابن أم"
+                    #
+                    # 3. Prefix merge: no particle found; merge the leading
+                    #    (diff+1) tokens space-joined.
+                    #    e.g. "وأن لو" (diff=1) → "وأن لو"
+                    diff = len(std_tokens) - corpus_count
+                    resolved = None
+
+                    # Strategy 1: particle collapse.
+                    merged: list = []
                     i = 0
                     while i < len(std_tokens):
                         tok = std_tokens[i]
                         if tok in _PARTICLES and i + 1 < len(std_tokens):
-                            # Skip the particle; store only the following word.
                             merged.append(std_tokens[i + 1])
                             i += 2
                         else:
                             merged.append(tok)
                             i += 1
                     if len(merged) == corpus_count:
-                        aya_standard_words[key] = merged
-                    elif aya_gid is not None:
-                        qc_words = [w["word"] for w in corpus_words_for_key]
-                        special[str(aya_gid)] = {
-                            "qc_words":  qc_words,
-                            "aya_words": std_tokens,
-                            "mapping":   {},
-                        }
+                        resolved = merged
+
+                    # Strategy 2: extended particle merge.
+                    if resolved is None and diff > 0:
+                        for pi, tok in enumerate(std_tokens):
+                            if tok in _PARTICLES and pi + diff < len(std_tokens):
+                                candidate = (
+                                    std_tokens[:pi]
+                                    + [" ".join(std_tokens[pi:pi + diff + 1])]
+                                    + std_tokens[pi + diff + 1:]
+                                )
+                                if len(candidate) == corpus_count:
+                                    resolved = candidate
+                                    break
+
+                    # Strategy 3: prefix merge (no particle anchor found).
+                    if resolved is None and diff > 0:
+                        candidate = (
+                            [" ".join(std_tokens[:diff + 1])]
+                            + std_tokens[diff + 1:]
+                        )
+                        if len(candidate) == corpus_count:
+                            resolved = candidate
+
+                    if resolved is not None:
+                        aya_standard_words[key] = resolved
+
                 tr_tokens = line.get("transliteration", "").split()
                 if len(tr_tokens) == corpus_count:
                     aya_translit_words[key] = tr_tokens
 
-        # Persist the special-mapping file so maintainers can do manual
-        # word alignment for the ayas where automatic count-matching fails.
-        # يا-fixable mismatches are resolved at build time and never written here.
         if tablename == "aya":
-            special_path = os.path.join(
-                os.path.dirname(os.path.abspath(self.resource_path.rstrip("/\\"))),
-                "special.json",
-            )
-            # Merge with any existing manual mappings so repeated builds do
-            # not overwrite entries that have already been hand-edited.
-            # Entries that are now auto-resolved are removed from the file.
-            existing: dict = {}
-            if os.path.isfile(special_path):
-                try:
-                    with open(special_path, encoding="utf-8") as _f:
-                        existing = json.load(_f)
-                except (OSError, json.JSONDecodeError):
-                    pass
-            # Remove any entries that are now automatically resolved.
-            for gid_str in list(existing.keys()):
-                if gid_str not in special:
-                    del existing[gid_str]
-            for gid_str, entry in special.items():
-                if gid_str not in existing:
-                    existing[gid_str] = entry
-                else:
-                    # Preserve any manual mapping already present.
-                    existing[gid_str]["qc_words"]  = entry["qc_words"]
-                    existing[gid_str]["aya_words"] = entry["aya_words"]
-            with open(special_path, "w", encoding="utf-8") as _f:
-                json.dump(existing, _f, ensure_ascii=False, indent=2)
-            logging.info("Wrote %d special-mapping entries to %s", len(existing), special_path)
-
-        if tablename == "aya":
-            # Pre-compute schema field names once to:
-            # (a) filter language-specific text_{lang} fields for translation children, and
-            # (b) drop fields absent from the aya schema when writing word children
-            #     (e.g. englishcase/englishpos/englishmood/englishstate live in the
-            #     wordqc schema but not in the aya schema).
+            # Pre-compute schema field names once.
             _schema_names = set(ix.schema.names())
-            # Boolean flags so the per-word loop avoids repeated set lookups.
-            _has_word_standard       = "word_standard"       in _schema_names
+            _has_word_standard        = "word_standard"        in _schema_names
             _has_word_transliteration = "word_transliteration" in _schema_names
 
+            # Pre-compute per-translation metadata so the inner loop only
+            # does an index lookup + cheap dict copy rather than recomputing
+            # f-strings and set lookups for every one of the 6 236 parent docs.
+            # Each entry: (lines_list, lang_field_or_None, base_child_dict)
+            trans_meta: list = []
+            for trans_id, tdata in translations.items():
+                lang = tdata["lang"]
+                lf = f"text_{lang}" if lang else None
+                if lf and lf not in _schema_names:
+                    lf = None
+                trans_meta.append((
+                    tdata["lines"],
+                    lf,
+                    {
+                        "kind":         "translation",
+                        "trans_id":     trans_id,
+                        "trans_lang":   lang,
+                        "trans_author": tdata["author"],
+                    },
+                ))
+
+            # Pre-compute the subset of word-entry keys that exist in the
+            # schema.  All word entries share the same keys, so one sample
+            # is sufficient.  This replaces a per-word `k in _schema_names`
+            # check across all 75 973 word docs.
+            _word_schema_keys: list = []
+            for _words in words_by_aya.values():
+                if _words:
+                    _word_schema_keys = [k for k in _words[0] if k in _schema_names]
+                    break
+
         for line in data_list:
-            # Normalize chapter/topic/subtopic
-            if tablename == "aya":
-                line = {**line,
-                        'chapter': line.get('chapter', '').strip(),
-                        'topic': line.get('topic', '').strip(),
-                        'subtopic': line.get('subtopic', '').strip()}
             doc = {}
             for k, v in line.items():
                 if k in fields_mapping:
+                    # Strip whitespace from a small set of text fields inline
+                    # rather than copying the entire line dict beforehand.
+                    if k in _STRIP_FIELDS and isinstance(v, str):
+                        v = v.strip()
                     for search_name in fields_mapping[k]:
                         doc[search_name] = v
 
@@ -372,23 +428,12 @@ class Transformer:
                 doc["kind"] = "aya"
                 writer.start_group()
                 writer.add_document(**doc)
-                if gid is not None and translations:
+                if gid is not None and trans_meta:
                     idx = gid - 1  # 0-based index into translation lines
-                    for trans_id, tdata in translations.items():
-                        lang = tdata["lang"]
-                        text = tdata["lines"][idx]
-                        lang_field = f"text_{lang}" if lang else None
-                        child_doc = dict(
-                            kind="translation",
-                            gid=gid,
-                            trans_id=trans_id,
-                            trans_lang=lang,
-                            trans_text=text,
-                            trans_author=tdata["author"],
-                        )
-                        # Populate the language-specific stemmed field when
-                        # it exists in the schema.
-                        if lang_field and lang_field in _schema_names:
+                    for lines, lang_field, base in trans_meta:
+                        text = lines[idx]
+                        child_doc = {**base, "gid": gid, "trans_text": text}
+                        if lang_field:
                             child_doc[lang_field] = text
                         writer.add_document(**child_doc)
                 # Add word children from quranic corpus (nested alongside translations).
@@ -398,22 +443,12 @@ class Transformer:
                     std_tokens = aya_standard_words.get(key, [])
                     tr_tokens  = aya_translit_words.get(key, [])
                     for pos, w in enumerate(corpus_words_for_aya):
-                        # Store the parent aya gid so word children can be
-                        # fetched with the same gid-based nested query used
-                        # for translations.  The word's own sequential
-                        # identifier is preserved in the word_gid field.
-                        word_doc = {k: v for k, v in w.items()
-                                    if v is not None and k in _schema_names}
-                        # Attach standard-script and transliteration words
-                        # by matching position (only when count aligned).
-                        if (_has_word_standard and pos < len(std_tokens)
-                                and std_tokens[pos] is not None):
+                        word_doc = {k: w[k] for k in _word_schema_keys
+                                    if w[k] is not None}
+                        if _has_word_standard and pos < len(std_tokens):
                             word_doc["word_standard"] = std_tokens[pos]
                         if _has_word_transliteration and pos < len(tr_tokens):
                             word_doc["word_transliteration"] = tr_tokens[pos]
-                        # word_gid (word's own sequential counter) is included
-                        # in word_doc via the comprehension above; it does not
-                        # conflict with the parent aya gid assigned below.
                         word_doc["gid"] = gid
                         writer.add_document(kind="word", **word_doc)
                 writer.end_group()
