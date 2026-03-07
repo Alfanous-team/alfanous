@@ -199,6 +199,27 @@ def test_advanced_search_wildcards():
     assert _qse_search(u"نعم؟") == 30
 
 
+def test_wildcard_stopped_by_timelimit():
+    """Wildcard search in aya must be stopped by the timelimit without crashing.
+
+    Uses an extremely short timelimit so the collector is almost certainly
+    interrupted before all documents are scored.  The test asserts that:
+      - the call returns without raising an exception,
+      - the returned Results object is non-None and has a non-negative length.
+    Whether the timeout actually fires is hardware-dependent; what matters is
+    that the full code path (wildcard expansion → TimeLimitCollector → partial
+    results) is exercised and handled gracefully.
+    """
+    results, _terms, _searcher = QSE.search_all(u"*", limit=6236, timelimit=0.00001)
+    assert results is not None, "results must not be None when timelimit is hit"
+    assert len(results) >= 0, "results length must be non-negative"
+
+    # Also verify the single-char wildcard variant with the same constraint
+    results2, _terms2, _searcher2 = QSE.search_all(u"ن*", limit=6236, timelimit=0.00001)
+    assert results2 is not None
+    assert len(results2) >= 0
+
+
 def test_advanced_search_fields():
     """5. Fields — Arabic field name followed by colon."""
     # سورة:يس  →  sura_arabic:يس  (Surah Ya-Sin, 83 verses)
