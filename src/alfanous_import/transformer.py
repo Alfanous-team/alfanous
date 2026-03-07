@@ -180,7 +180,7 @@ class Transformer:
         return Schema(**kwargs)
 
     def transfer(self, ix, tablename="aya", translations_store_path=None,
-                 corpus_path=None):
+                 corpus_path=None, merge=True):
         data_file = open(f"{self.resource_path}{tablename}.json")
         data_list = json.load(data_file)
 
@@ -355,14 +355,14 @@ class Transformer:
                 logging.info(f" - milestone:  {cpt} ( {cpt * 100 / len(data_list)}% )")
 
         logging.info("done.")
-        writer.commit()
+        writer.commit(merge=merge)
 
     def build_docindex(self, schema, tablename="aya", translations_store_path=None,
-                       corpus_path=None):
+                       corpus_path=None, merge=True):
         assert schema, "schema is empty"
         ix = FileStorage(self.index_path).create_index(schema)
         self.transfer(ix, tablename, translations_store_path=translations_store_path,
-                      corpus_path=corpus_path)
+                      corpus_path=corpus_path, merge=merge)
         # ix.optimize()  # merges all segments into one; slow on large corpora —
         # uncomment if a single-segment index (smaller file count) is required
         return "OK"

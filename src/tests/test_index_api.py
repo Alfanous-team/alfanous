@@ -32,7 +32,7 @@ def nested_qse_index(tmp_path_factory):
     index_dir = str(tmp_path_factory.mktemp("nested_main"))
     t = Transformer(index_path=index_dir, resource_path=_RESOURCES_PATH)
     schema = t.build_schema("aya")
-    t.build_docindex(schema, translations_store_path=_STORE_DIR)
+    t.build_docindex(schema, translations_store_path=_STORE_DIR, merge=False)
     return index_dir
 
 
@@ -122,7 +122,7 @@ def corpus_qse_index(tmp_path_factory):
     t = Transformer(index_path=index_dir, resource_path=_RESOURCES_PATH)
     schema = t.build_schema("aya")
     # Must NOT raise UnknownFieldError
-    t.build_docindex(schema, corpus_path=_CORPUS_PATH)
+    t.build_docindex(schema, corpus_path=_CORPUS_PATH, merge=False)
     return index_dir
 
 
