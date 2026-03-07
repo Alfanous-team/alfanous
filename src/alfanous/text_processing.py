@@ -326,9 +326,10 @@ def make_translation_analyzer(lang):
 # Named language-specific translation analyzer instances.
 # These names are referenced by the 'analyzer' key in fields.json so that
 # Transformer.build_schema() can retrieve them via getattr(text_processing, name).
-# Languages present in the Quran translations dataset (translations.json).
+# Active languages (zip files present in store/Translations/) + future targets.
 _TRANSLATION_LANGS = [
-    'am', 'ar', 'ber', 'bn', 'de', 'en', 'fa', 'fr', 'hi', 'id', 'ms', 'ru', 'sw', 'tr', 'ur',
+    'ar', 'en', 'fr', 'id', 'ms', 'tr',   # active — zip files present in store
+    'es', 'ja', 'ku', 'ml', 'pt',           # planned — zip files not yet in store
 ]
 
 for _tl in _TRANSLATION_LANGS:

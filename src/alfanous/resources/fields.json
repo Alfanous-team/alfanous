@@ -1241,20 +1241,6 @@
         "unique": null
     },
     {
-        "id": 99,
-        "table_name": "aya",
-        "name": "text_am",
-        "name_arabic": "نص_am",
-        "search_name": "text_am",
-        "type": "TEXT",
-        "stored": false,
-        "analyzer": "TranslationAnalyzer_am",
-        "comment": "Stemmed Amharic translation text — indexed with a language-specific Snowball analyzer (falls back to RegexTokenizer+LowercaseFilter when Snowball does not support this language)",
-        "is_spellchecked": null,
-        "unique": null,
-        "phrase": false
-    },
-    {
         "id": 100,
         "table_name": "aya",
         "name": "text_ar",
@@ -1264,48 +1250,6 @@
         "stored": false,
         "analyzer": "TranslationAnalyzer_ar",
         "comment": "Stemmed Arabic translation text — indexed with a language-specific Snowball analyzer (falls back to RegexTokenizer+LowercaseFilter when Snowball does not support this language)",
-        "is_spellchecked": null,
-        "unique": null,
-        "phrase": false
-    },
-    {
-        "id": 101,
-        "table_name": "aya",
-        "name": "text_ber",
-        "name_arabic": "نص_ber",
-        "search_name": "text_ber",
-        "type": "TEXT",
-        "stored": false,
-        "analyzer": "TranslationAnalyzer_ber",
-        "comment": "Stemmed Berber translation text — indexed with a language-specific Snowball analyzer (falls back to RegexTokenizer+LowercaseFilter when Snowball does not support this language)",
-        "is_spellchecked": null,
-        "unique": null,
-        "phrase": false
-    },
-    {
-        "id": 102,
-        "table_name": "aya",
-        "name": "text_bn",
-        "name_arabic": "نص_bn",
-        "search_name": "text_bn",
-        "type": "TEXT",
-        "stored": false,
-        "analyzer": "TranslationAnalyzer_bn",
-        "comment": "Stemmed Bengali translation text — indexed with a language-specific Snowball analyzer (falls back to RegexTokenizer+LowercaseFilter when Snowball does not support this language)",
-        "is_spellchecked": null,
-        "unique": null,
-        "phrase": false
-    },
-    {
-        "id": 103,
-        "table_name": "aya",
-        "name": "text_de",
-        "name_arabic": "نص_de",
-        "search_name": "text_de",
-        "type": "TEXT",
-        "stored": false,
-        "analyzer": "TranslationAnalyzer_de",
-        "comment": "Stemmed German translation text — indexed with a language-specific Snowball analyzer (falls back to RegexTokenizer+LowercaseFilter when Snowball does not support this language)",
         "is_spellchecked": null,
         "unique": null,
         "phrase": false
@@ -1325,20 +1269,6 @@
         "phrase": false
     },
     {
-        "id": 105,
-        "table_name": "aya",
-        "name": "text_fa",
-        "name_arabic": "نص_fa",
-        "search_name": "text_fa",
-        "type": "TEXT",
-        "stored": false,
-        "analyzer": "TranslationAnalyzer_fa",
-        "comment": "Stemmed Persian translation text — indexed with a language-specific Snowball analyzer (falls back to RegexTokenizer+LowercaseFilter when Snowball does not support this language)",
-        "is_spellchecked": null,
-        "unique": null,
-        "phrase": false
-    },
-    {
         "id": 106,
         "table_name": "aya",
         "name": "text_fr",
@@ -1348,20 +1278,6 @@
         "stored": false,
         "analyzer": "TranslationAnalyzer_fr",
         "comment": "Stemmed French translation text — indexed with a language-specific Snowball analyzer (falls back to RegexTokenizer+LowercaseFilter when Snowball does not support this language)",
-        "is_spellchecked": null,
-        "unique": null,
-        "phrase": false
-    },
-    {
-        "id": 107,
-        "table_name": "aya",
-        "name": "text_hi",
-        "name_arabic": "نص_hi",
-        "search_name": "text_hi",
-        "type": "TEXT",
-        "stored": false,
-        "analyzer": "TranslationAnalyzer_hi",
-        "comment": "Stemmed Hindi translation text — indexed with a language-specific Snowball analyzer (falls back to RegexTokenizer+LowercaseFilter when Snowball does not support this language)",
         "is_spellchecked": null,
         "unique": null,
         "phrase": false
@@ -1395,34 +1311,6 @@
         "phrase": false
     },
     {
-        "id": 110,
-        "table_name": "aya",
-        "name": "text_ru",
-        "name_arabic": "نص_ru",
-        "search_name": "text_ru",
-        "type": "TEXT",
-        "stored": false,
-        "analyzer": "TranslationAnalyzer_ru",
-        "comment": "Stemmed Russian translation text — indexed with a language-specific Snowball analyzer (falls back to RegexTokenizer+LowercaseFilter when Snowball does not support this language)",
-        "is_spellchecked": null,
-        "unique": null,
-        "phrase": false
-    },
-    {
-        "id": 111,
-        "table_name": "aya",
-        "name": "text_sw",
-        "name_arabic": "نص_sw",
-        "search_name": "text_sw",
-        "type": "TEXT",
-        "stored": false,
-        "analyzer": "TranslationAnalyzer_sw",
-        "comment": "Stemmed Swahili translation text — indexed with a language-specific Snowball analyzer (falls back to RegexTokenizer+LowercaseFilter when Snowball does not support this language)",
-        "is_spellchecked": null,
-        "unique": null,
-        "phrase": false
-    },
-    {
         "id": 112,
         "table_name": "aya",
         "name": "text_tr",
@@ -1432,20 +1320,6 @@
         "stored": false,
         "analyzer": "TranslationAnalyzer_tr",
         "comment": "Stemmed Turkish translation text — indexed with a language-specific Snowball analyzer (falls back to RegexTokenizer+LowercaseFilter when Snowball does not support this language)",
-        "is_spellchecked": null,
-        "unique": null,
-        "phrase": false
-    },
-    {
-        "id": 113,
-        "table_name": "aya",
-        "name": "text_ur",
-        "name_arabic": "نص_ur",
-        "search_name": "text_ur",
-        "type": "TEXT",
-        "stored": false,
-        "analyzer": "TranslationAnalyzer_ur",
-        "comment": "Stemmed Urdu translation text — indexed with a language-specific Snowball analyzer (falls back to RegexTokenizer+LowercaseFilter when Snowball does not support this language)",
         "is_spellchecked": null,
         "unique": null,
         "phrase": false
@@ -1751,5 +1625,73 @@
         "analyzer": null,
         "comment": "Grammatical case in Arabic (kind=word child docs) — stored only, not indexed",
         "unique": null
+    },
+    {
+        "id": 139,
+        "table_name": "aya",
+        "name": "text_ja",
+        "search_name": "text_ja",
+        "type": "TEXT",
+        "stored": false,
+        "phrase": false,
+        "analyzer": "TranslationAnalyzer_ja",
+        "comment": "Japanese translation text (kind=translation child docs)"
+    },
+    {
+        "id": 140,
+        "table_name": "aya",
+        "name": "text_ku",
+        "search_name": "text_ku",
+        "type": "TEXT",
+        "stored": false,
+        "phrase": false,
+        "analyzer": "TranslationAnalyzer_ku",
+        "comment": "Kurdish translation text (kind=translation child docs)"
+    },
+    {
+        "id": 141,
+        "table_name": "aya",
+        "name": "text_ml",
+        "search_name": "text_ml",
+        "type": "TEXT",
+        "stored": false,
+        "phrase": false,
+        "analyzer": "TranslationAnalyzer_ml",
+        "comment": "Malayalam translation text (kind=translation child docs)"
+    },
+    {
+        "id": 142,
+        "table_name": "aya",
+        "name": "text_es",
+        "search_name": "text_es",
+        "type": "TEXT",
+        "stored": false,
+        "phrase": false,
+        "analyzer": "TranslationAnalyzer_es",
+        "comment": "Spanish translation text (kind=translation child docs)"
+    },
+    {
+        "id": 143,
+        "table_name": "aya",
+        "name": "text_pt",
+        "search_name": "text_pt",
+        "type": "TEXT",
+        "stored": false,
+        "phrase": false,
+        "analyzer": "TranslationAnalyzer_pt",
+        "comment": "Portuguese translation text (kind=translation child docs)"
+    },
+    {
+        "id": 144,
+        "table_name": "aya",
+        "name": "transliteration",
+        "name_arabic": "ترجمة_صوتية",
+        "search_name": "transliteration",
+        "source": "tanzil.net",
+        "type": "TEXT",
+        "stored": true,
+        "phrase": false,
+        "analyzer": null,
+        "comment": "Latin-script phonetic transliteration of verse text; loaded from en.transliteration.trans.zip into the parent aya doc (not a child translation)"
     }
 ]
