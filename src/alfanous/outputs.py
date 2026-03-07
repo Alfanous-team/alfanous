@@ -4,7 +4,7 @@ import re
 from alfanous.text_processing import QArabicSymbolsFilter
 from alfanous.data import *
 from alfanous.constants import QURAN_TOTAL_VERSES
-from alfanous.romanization import transliterate, arabizi_to_arabic_list, filter_candidates_by_wordset
+from alfanous.romanization import transliterate
 from alfanous.misc import locate, find, filter_doubles
 from whoosh import query as wquery
 from whoosh.sorting import Facets
@@ -208,8 +208,6 @@ class Raw:
         "aya": "enable retrieving of aya text in the case of translation search",
     }
 
-    IDS = ["ALFANOUS_WUI_2342R52"]
-
     def __init__(self,
                  QSE_index=paths.QSE_INDEX,
                  Recitations_list_file=paths.RECITATIONS_LIST_FILE,
@@ -247,18 +245,10 @@ class Raw:
         self._fields = arabic_to_english_fields
         self._fields_reverse = {v: k for k, v in arabic_to_english_fields.items()}
         # Prefer word index for roots; fall back to derivations.json if unavailable.
-        try:
-            if self.QSE.OK:
-                _idx_roots = list(self.QSE.list_terms("root"))
-                self._roots = sorted(filter(bool, _idx_roots))
-            else:
-                self._roots = sorted(filter(bool, set(derivedict.get("root", []))))
-        except Exception:
-            self._roots = sorted(filter(bool, set(derivedict.get("root", []))))
+        self._roots = sorted(filter(bool, self.QSE.list_terms("root"))) if self.QSE.OK else []
         self._errors = self.ERRORS
         self._domains = self.DOMAINS
         self._helpmessages = self.HELPMESSAGES
-        self._ids = self.IDS  # dont send it to output , it's private
         self._all = {
             "translations": self._translations,
             "recitations": self._recitations,
@@ -1472,17 +1462,6 @@ class Raw:
 
         searcher.close()
         return output
-
-    def _search_word(self, flags):
-        flags = {**self._defaults["flags"], **flags}
-        query = flags["query"]
-        sortedby = flags["sortedby"]
-        range = int(flags["perpage"]) if flags.get("perpage") \
-            else flags["range"]
-        offset = ((int(flags["page"]) - 1) * range) + 1 if flags.get("page") \
-            else int(flags["offset"])
-        highlight = flags["highlight"]
-        timelimit = self._parse_timelimit(flags)
 
         # preprocess query
         query = query.replace("\\", "")

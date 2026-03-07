@@ -19,7 +19,6 @@ Usage:
         python -m alfanous_mcp.mcp_server --transport streamable-http
 """
 
-import json
 import logging
 from typing import Optional, Any
 

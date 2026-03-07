@@ -5,7 +5,6 @@ HOME = (os.getenv('USERPROFILE') or os.getenv('HOME') or ".") + "/"
 # base paths
 ROOT_INDEX = ROOT + "indexes/"
 ROOT_CONFIG = ROOT + "configs/"
-HOME_CONFIG = HOME + ".alfanous/"
 ROOT_RESOURCE = ROOT + "resources/"
 # indexes paths
 QSE_INDEX = ROOT_INDEX + "main/"

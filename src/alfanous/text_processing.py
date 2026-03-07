@@ -5,7 +5,7 @@ import logging
 import re
 
 from whoosh.analysis import RegexTokenizer, Filter, LowercaseFilter, MultiFilter  # StandardAnalyzer,
-from alfanous.Support.pyarabic.main import strip_tashkeel, strip_tatweel, strip_shadda, normalize_spellerrors, \
+from alfanous.Support.pyarabic.main import strip_tashkeel, strip_tatweel, normalize_spellerrors, \
     normalize_hamza, normalize_lamalef, normalize_uthmani_symbols  # , HARAKAT_pat,
 
 from alfanous.constants import INVERTEDSHAPING

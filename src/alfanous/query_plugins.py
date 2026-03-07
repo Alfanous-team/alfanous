@@ -7,7 +7,7 @@ tashkil (diacritics), and more.
 """
 
 from whoosh.qparser import TaggingPlugin, syntax
-from whoosh.query import MultiTerm, Variations, Or, Term, Wildcard, Prefix
+from whoosh.query import MultiTerm, Or, Term, Wildcard
 
 from alfanous.data import syndict, antdict, derivedict, worddict
 from alfanous.text_processing import QArabicSymbolsFilter
