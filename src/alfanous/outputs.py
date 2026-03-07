@@ -341,8 +341,8 @@ class Raw:
                 field = "normalized"
         elif unit == "translation":
             search_engine = self.QSE
-            if field == "aya_":  # Use trans_text as default field for translation children
-                field = "trans_text"
+            if field == "aya_":  # Use text_en as default indexed field for translation children
+                field = "text_en"
         else:  # unit == "aya" or any other value defaults to QSE
             search_engine = self.QSE
             unit = "aya"  # Normalize unit name
