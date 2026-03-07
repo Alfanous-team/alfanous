@@ -1,309 +1,281 @@
-
-'''
-
+"""
+Quranic Corpus morphology XML reader.
 
 HowTo
 =====
-- parse a morphology line
+Parse a morphology line::
 
-        >>> API.MorphologyParser.parse("fa+ POS:INTG LEM:maA l:P+")
-        {'prefixes': [{'token': 'fa', 'type': '--undefined--'}], 'base': [{'lemma': 'maA', 'arabiclemma': '\\u0645\\u064e\\u0627', 'arabicpos': '\\u062d\\u0631\\u0641 \\u0627\\u0633\\u062a\\u0641\\u0647\\u0627\\u0645', 'type': 'Particles', 'pos': 'Interogative particle'}], 'suffixes': []}
+    >>> API.MorphologyParser.parse("fa+ POS:INTG LEM:maA l:P+")
+    {'prefixes': [...], 'base': [...], 'suffixes': []}
+
+"""
+
+from __future__ import annotations
+
+import xml.etree.ElementTree as ET
+from typing import Any, Dict, Generator, List
+
+from pyparsing import (
+    CharsNotIn,
+    Group,
+    Keyword,
+    Literal,
+    OneOrMore,
+    Optional,
+    SkipTo,
+    Word,
+    ZeroOrMore,
+    alphas,
+)
+
+from .constants import (
+    BUCKWALTER2UNICODE,
+    DERIV,
+    DERIVclass,
+    NOM,
+    NOMclass,
+    PGN,
+    PGNclass,
+    POS,
+    POSclass,
+    PREFIX,
+    PREFIXclass,
+    PRON,
+    VERB,
+    VERBclass,
+)
 
 
-FIXME the generated python dict is too big and waste time
-'''
+# ---------------------------------------------------------------------------
+# Helpers
+# ---------------------------------------------------------------------------
 
-
-
-
-
-#import libxml2#,xpath
-import xml.etree.ElementTree
-
-
-from pyparsing import Keyword, Word, Group, Literal, CharsNotIn, alphas
-from pyparsing import SkipTo, ZeroOrMore, Optional, OneOrMore
-
-from .constants import DERIVclass, NOMclass, PGNclass, VERBclass, PREFIXclass, POSclass
-from .constants import DERIV, PREFIX, PGN, POS, VERB, NOM, PRON
-from .constants import BUCKWALTER2UNICODE
-
-def reverse_class( dictionary ):
-    """ invert a dictionary """
-    newdict = {}
+def _reverse_class(dictionary: Dict) -> Dict:
+    """Invert a class-mapping dict (values may be plain values or lists)."""
+    result: Dict = {}
     for key, value in dictionary.items():
-        if value.__class__ != list:value = [value]
+        if not isinstance(value, list):
+            value = [value]
         for v in value:
-            if v in newdict:
-                newdict[v].append( key )
-            else:
-                newdict[v] = [key]
-    return newdict
-
-
-def buck2uni( string ):
-    """ decode buckwalter """
-    result = ""
-    for ch in string:
-        result += BUCKWALTER2UNICODE[ch]
+            result.setdefault(v, []).append(key)
     return result
 
 
+def _buck2uni(string: str) -> str:
+    """Decode a Buckwalter-transliterated string to Unicode Arabic."""
+    return "".join(BUCKWALTER2UNICODE[ch] for ch in string)
 
 
-def TagKeywords( list_tags ):
-    """a specific pyparsing term to match tags return Keywords
-     """
-    res = list_tags[0]
-    for item in list_tags[1:]:
-        res |= Keyword( item )
-    return res
+# ---------------------------------------------------------------------------
+# Pre-computed inverted class dicts (built once at import time)
+# ---------------------------------------------------------------------------
 
-def TagLiterals( list_tags ):
-    """a specific pyparsing term to match tages return Literals"""
+_INV_PREFIX: Dict = _reverse_class(PREFIXclass)
+_INV_POS: Dict    = _reverse_class(POSclass)
+_INV_PGN: Dict    = _reverse_class(PGNclass)
+_INV_DERIV: Dict  = _reverse_class(DERIVclass)
+_INV_VERB: Dict   = _reverse_class(VERBclass)
+_INV_NOM: Dict    = _reverse_class(NOMclass)
 
-    res = list_tags[0]
-    for item in list_tags[1:]:
-        res |= Literal( item )
-    return res
 
+# ---------------------------------------------------------------------------
+# Pyparsing grammar — built once at module level, not per parse() call
+# ---------------------------------------------------------------------------
+
+def _make_keywords(tags: List[str]):
+    result = Keyword(tags[0])
+    for item in tags[1:]:
+        result = result | Keyword(item)
+    return result
+
+
+def _make_literals(tags: List[str]):
+    result = Literal(tags[0])
+    for item in tags[1:]:
+        result = result | Literal(item)
+    return result
+
+
+_begin  = Keyword("$").suppress()
+_center = Keyword("\u00a3").suppress()   # £
+_last   = Keyword("\u00b5").suppress()   # µ
+_end    = Keyword("#").suppress()
+_skip   = SkipTo(_end).suppress()
+
+_prefix   = Word(alphas + "+:")
+_prefixes = Group(ZeroOrMore(~_center + _prefix))
+
+_genderK = _make_keywords(["M", "F"])
+_numberK = _make_keywords(["S", "D", "P"])
+_genderL = _make_literals(["M", "F"])
+_numberL = _make_literals(["S", "D", "P"])
+_personL = _make_literals(["1", "2", "3"])
+
+_person_ = _personL + Optional(_genderL) + Optional(_numberL)
+_gender_ = _genderL + _numberL
+_gen     = _person_ | _gender_ | _numberK | _genderK
+
+_pos   = "POS:" + Word(alphas)
+_lem   = "LEM:" + CharsNotIn(" ")
+_root  = "ROOT:" + CharsNotIn(" ")
+_sp    = "SP:" + CharsNotIn(" ")
+_mood  = "MOOD:" + CharsNotIn(" ")
+
+_aspect = _make_keywords(["PERF", "IMPF", "IMPV"])
+_voice  = _make_keywords(["ACT", "PASS"])
+_form   = _make_keywords([
+    "(I)", "(II)", "(III)", "(IV)", "(V)", "(VI)",
+    "(VII)", "(VIII)", "(IX)", "(X)", "(XI)", "(XII)",
+])
+_verb   = _aspect | _voice | _form
+_voc    = Keyword("+voc").suppress()
+_deriv  = _make_keywords(["ACT", "PCPL", "PASS", "VN"])
+_state  = _make_keywords(["DEF", "INDEF"])
+_case   = _make_keywords(["NOM", "ACC", "GEN"])
+_nom    = _case | _state
+
+_tag      = _lem | _root | _sp | _mood | _gen | _verb | _deriv | _nom | _voc | _skip
+_part     = Group(_center + _pos + ZeroOrMore(~_center + ~_last + ~_end + _tag))
+_base     = Group(OneOrMore(~_end + ~_last + _part))
+_pron     = "PRON:" + Group(_gen)
+_suffixes = Group(ZeroOrMore(~_end + _last + _pron))
+
+_GRAMMAR  = _begin + _prefixes + _base + _suffixes + _end
+
+
+# ---------------------------------------------------------------------------
+# API
+# ---------------------------------------------------------------------------
 
 class API:
-    """ the api """
-    def __init__( self, source = "../../store/quranic-corpus-morpology.xml" ):
-        """ init the API based on XMLfile
+    """Quranic Corpus morphology XML API."""
 
-        @param source: the path of the xml file
-
-        """
-
-
-        self.corpus = xml.etree.ElementTree.parse( source )
-                #libxml2.parseFile(source)  
-        #print xpath.find('//item', source) 
-
-
+    def __init__(self, source: str = "../../store/quranic-corpus-morphology-0.4.txt") -> None:
+        self.corpus = ET.parse(source)
 
     class MorphologyParser:
-        """ parse the Morphology tags """
-        def __init__( self, corpus ):
-            """"""
-            self.corpus = corpus
-        @staticmethod
-        def parse_step1( morph ):
-            """parse the field morphology of qurany corpus
-
-            """
-
-
-            string = "$ " + str( morph ).replace( "POS:", "£ POS:" ).replace( "PRON:", "µ PRON:" ).replace( "&lt;", "<" ).replace( "&gt;", ">" ) + " #"
-            #regular expressions 
-            begin = Keyword( '$' ).suppress()
-            center = Keyword( '£' ).suppress()
-            last = Keyword( 'µ' ).suppress()
-            end = Keyword( '#' ).suppress()
-            skip = SkipTo( end ).suppress()
-
-            prefix = Word( alphas + "+" + ":" )
-            prefixes = Group( ZeroOrMore( ~center + prefix ) )
-
-            genderK = TagKeywords( ["M", "F"] )
-            numberK = TagKeywords( ["S", "D", "P"] )
-
-            genderL = TagLiterals( ["M", "F"] )
-            numberL = TagLiterals( ["S", "D", "P"] )
-            personL = TagLiterals( ["1", "2", "3"] )
-
-            person_ = personL + Optional( genderL ) + Optional( numberL )
-            gender_ = genderL + numberL
-
-
-
-            gen = person_ | gender_ | numberK | genderK
-            pos = "POS:" + Word( alphas )
-            lem = "LEM:" + CharsNotIn( " " )
-            root = "ROOT:" + CharsNotIn( " " )
-            sp = "SP:" + CharsNotIn( " " )
-            mood = "MOOD:" + CharsNotIn( " " )
-
-            aspect = TagKeywords( ["PERF", "IMPF", "IMPV"] )
-
-            voice = TagKeywords( ["ACT", "PASS"] )
-            form = TagKeywords( ["(I)", "(II)", "(III)", "(IV)", "(V)", "(VI)", "(VII)", "(VIII)", "(IX)", "(X)", "(XI)", "(XII)"] )
-            verb = aspect | voice | form
-
-            voc = Keyword( "+voc" ).suppress()
-
-            deriv = TagKeywords( ["ACT", "PCPL", "PASS", "VN"] )
-
-            state = TagKeywords( ["DEF", "INDEF"] )
-            case = TagKeywords( ["NOM", "ACC", "GEN"] )
-            nom = case | state
-
-
-            tag = lem | root | sp | mood | gen | verb | deriv | nom | voc | skip
-            part = Group( center + pos + ZeroOrMore( ~center + ~last + ~end + tag ) )
-
-            base = Group( OneOrMore( ~end + ~last + part ) )
-
-            pron = "PRON:" + Group( gen )
-            suffixes = Group( ZeroOrMore( ~end + last + pron ) )
-
-            whole = begin + prefixes + base + suffixes + end
-
-            parsed = whole.parseString( string )
-
-
-            return parsed
+        """Parse morphology tag strings from the Quranic Corpus XML."""
 
         @staticmethod
-        def parse_step2( parsedlist ):
-            """ return a dict """
-            Dict = {}
-            #prefixes
-            prefixes = parsedlist[0]
-            Dict["prefixes"] = []
-            if prefixes:
-                for prefix in prefixes:
-                    prefixDict = {"token": PREFIX[prefix][1], "arabictoken": PREFIX[prefix][0],
-                                  "type": reverse_class(PREFIXclass)[prefix][0]}
-                    Dict["prefixes"].append( prefixDict )
+        def parse_step1(morph: str):
+            """Tokenise a raw morphology string using the module-level grammar."""
+            string = (
+                "$ "
+                + str(morph)
+                .replace("POS:", "\u00a3 POS:")
+                .replace("PRON:", "\u00b5 PRON:")
+                .replace("&lt;", "<")
+                .replace("&gt;", ">")
+                + " #"
+            )
+            return _GRAMMAR.parseString(string)
 
+        @staticmethod
+        def parse_step2(parsedlist) -> Dict[str, Any]:
+            """Convert the pyparsing result into a plain Python dict."""
+            result: Dict[str, Any] = {}
 
-            #word base
-            parts = parsedlist[1]
-            Dict["base"] = []
-            for part in parts:
-                partDict = {}
-                for i in range( len( part ) ):
-                    tag = part[i]
-                    if tag[-1] == ":":
-                        nexttag = part[i + 1]
+            # --- prefixes ---------------------------------------------------
+            result["prefixes"] = [
+                {
+                    "token":       PREFIX[tok][1],
+                    "arabictoken": PREFIX[tok][0],
+                    "type":        _INV_PREFIX[tok][0],
+                }
+                for tok in parsedlist[0]
+            ]
+
+            # --- base -------------------------------------------------------
+            result["base"] = []
+            for part in parsedlist[1]:
+                part_dict: Dict[str, Any] = {}
+                idx = 0
+                while idx < len(part):
+                    tag = part[idx]
+                    if tag.endswith(":"):
+                        next_tag = part[idx + 1]
                         if tag == "POS:":
-                            partDict["type"] = reverse_class( POSclass )[nexttag][0]
-                            partDict["pos"] = POS[nexttag][1]
-                            partDict["arabicpos"] = POS[nexttag][0]
+                            part_dict["type"]       = _INV_POS[next_tag][0]
+                            part_dict["pos"]        = POS[next_tag][1]
+                            part_dict["arabicpos"]  = POS[next_tag][0]
                         elif tag == "ROOT:":
-                            partDict["root"] = nexttag
-                            partDict["arabicroot"] = buck2uni( nexttag )
+                            part_dict["root"]       = next_tag
+                            part_dict["arabicroot"] = _buck2uni(next_tag)
                         elif tag == "LEM:":
-                            partDict["lemma"] = nexttag
-                            partDict["arabiclemma"] = buck2uni( nexttag )
+                            part_dict["lemma"]       = next_tag
+                            part_dict["arabiclemma"] = _buck2uni(next_tag)
                         elif tag == "SP:":
-                            partDict["special"] = nexttag
-                            partDict["arabicspecial"] = buck2uni( nexttag )
+                            part_dict["special"]       = next_tag
+                            part_dict["arabicspecial"] = _buck2uni(next_tag)
                         elif tag == "MOOD:":
-                            partDict["mood"] = VERB[nexttag][1]
-                            partDict["arabicmood"] = VERB[nexttag][0]
-                        else:
-                            print("new tag!! " + tag)
-                        i += 1
-                    else:
-                        if tag in PGN:
-                            partDict[reverse_class( PGNclass )[tag][0]] = PGN[tag]
-                        elif tag in ["ACT", "PASS"]:
-                            nexttag = part[i + 1] if i + 1 < len( part ) else None
-                            if  nexttag == "PCPL":
-                                partDict[reverse_class( DERIVclass )[tag + " PCPL"][0]] = DERIV[tag + " PCPL"][1]
-                                i += 1
-                        elif tag in VERB:
-                            partDict[reverse_class( VERBclass )[tag][0]] = VERB[tag][1]
+                            part_dict["mood"]       = VERB[next_tag][1]
+                            part_dict["arabicmood"] = VERB[next_tag][0]
+                        idx += 2   # consume both the key and the value
+                        continue
+                    if tag in PGN:
+                        part_dict[_INV_PGN[tag][0]] = PGN[tag]
+                    elif tag in ("ACT", "PASS"):
+                        next_tag = part[idx + 1] if idx + 1 < len(part) else None
+                        if next_tag == "PCPL":
+                            deriv_key = tag + " PCPL"
+                            part_dict[_INV_DERIV[deriv_key][0]] = DERIV[deriv_key][1]
+                            idx += 2   # consume "ACT"/"PASS" + "PCPL"
+                            continue
+                        part_dict[_INV_VERB[tag][0]] = VERB[tag][1]
+                    elif tag in VERB:
+                        part_dict[_INV_VERB[tag][0]] = VERB[tag][1]
+                    elif tag in NOM:
+                        nom_field    = _INV_NOM[tag][0]
+                        arabic_field = "arabicstate" if nom_field == "state" else "arabiccase"
+                        part_dict[nom_field]    = NOM[tag][1]
+                        part_dict[arabic_field] = NOM[tag][0]
+                    elif tag == "VN":
+                        part_dict[_INV_DERIV[tag][0]] = DERIV[tag][1]
+                    idx += 1
+                result["base"].append(part_dict)
 
-                        elif tag in NOM:
-                            arabize = lambda X: "arabicstate" if X == "state" else "arabiccase"
-                            partDict[reverse_class( NOMclass )[tag][0]] = NOM[tag][1]
-                            partDict[arabize( reverse_class( NOMclass )[tag][0] )] = NOM[tag][0]
-
-                        elif tag == "VN":
-                            partDict[reverse_class( DERIVclass )[tag][0]] = DERIV[tag][1]
-
-
-
-
-                Dict["base"].append( partDict )
-
-            #suffixes   
+            # --- suffixes ---------------------------------------------------
+            result["suffixes"] = []
             suffixes = parsedlist[2]
-            Dict["suffixes"] = []
-            if suffixes:
-                for i in range( len( suffixes ) ):
-                    tag = suffixes[i]
-                    if tag == "PRON:":
-                        pronDict = {}
-                        Pset = set( PRON["*"] )
-                        pronprops = suffixes[i + 1]
-                        for tag in pronprops:
-                            if tag in PGN:
-                                pronDict[reverse_class( PGNclass )[tag][0]] = PGN[tag]
-                                Pset &= PRON[tag]
+            idx = 0
+            while idx < len(suffixes):
+                if suffixes[idx] == "PRON:":
+                    pron_dict: Dict[str, Any] = {}
+                    p_set = set(PRON["*"])
+                    for pgn_tag in suffixes[idx + 1]:
+                        if pgn_tag in PGN:
+                            pron_dict[_INV_PGN[pgn_tag][0]] = PGN[pgn_tag]
+                            p_set &= PRON[pgn_tag]
+                    pron_dict["arabictoken"] = p_set.pop() if p_set else ""
+                    result["suffixes"].append(pron_dict)
+                idx += 1
 
-                        pronDict["arabictoken"] = Pset.pop() if Pset else ""
-                        Dict["suffixes"].append( pronDict )
-
-
-
-
-            return Dict
+            return result
 
         @staticmethod
-        def parse( string ):
-                return API.MorphologyParser.parse_step2( API.MorphologyParser.parse_step1( string ) )
+        def parse(string: str) -> Dict[str, Any]:
+            """Parse a morphology string and return a structured dict."""
+            return API.MorphologyParser.parse_step2(
+                API.MorphologyParser.parse_step1(string)
+            )
 
-
-
-
-
-    def unique_words( self ):
-            """return a dictionary: the keys is word tokens and the values is the properties"""
-            D = {}
-            for chapter in  self.corpus.findall( ".//chapter" ):
-                for verse in chapter.findall( "verse" ):
-                    for word in verse.findall( "word" ):
-                        D[word.attrib["token"]] = API.MorphologyParser.parse( word.attrib["morphology"] )
-            return D
-
-
-    def all_words_generator( self ):
-            """
-            Generate words properties ,word by word
-            """
-            for chapter in  self.corpus.findall( ".//chapter" ):
-                for verse in chapter.findall( "verse" ):
-                    for word in verse.findall( "word" ):
-                        res = word.attrib
-                        res["sura_id"] = int( chapter.attrib["number"] )
-                        res["aya_id"] = int( verse.attrib["number"] )
-                        res["word_id"] = int( word.attrib["number"] )
-                        res["word"] = word.attrib["token"]
-                        res["morphology"] = API.MorphologyParser.parse( word.attrib["morphology"] )
-                        yield res
-
-
-
-
+    def all_words_generator(self) -> Generator[Dict[str, Any], None, None]:
+        """Yield one dict per word token across the full corpus."""
+        for chapter in self.corpus.findall(".//chapter"):
+            sura_id = int(chapter.attrib["number"])
+            for verse in chapter.findall("verse"):
+                aya_id = int(verse.attrib["number"])
+                for word in verse.findall("word"):
+                    yield {
+                        "sura_id":    sura_id,
+                        "aya_id":     aya_id,
+                        "word_id":    int(word.attrib["number"]),
+                        "word":       word.attrib["token"],
+                        "morphology": API.MorphologyParser.parse(
+                            word.attrib["morphology"]
+                        ),
+                    }
 
 
 if __name__ == "__main__":
-        A = API( source = "../../store/quranic-corpus-morpology.xml" )
-        """keys=set()
-        for iter in A.all_words_generator():
-            keys|=set(iter.keys())
-            for i in iter["morphology"]["base"]:
-                keys|=set(i.keys())
-            for i in iter["morphology"]["prefixes"]:
-                keys|=set(i.keys())
-            for i in iter["morphology"]["suffixes"]:
-                keys|=set(i.keys())
-            print keys"""
-
-
-        """
-        for i in A.unique_words():
-             print i
-        """
-
-        print(API.MorphologyParser.parse( "fa+ POS:INTG LEM:&lt;maA ROOT:qawol l:P+ " ))
-        #print A.corpus.findtext("@number=’114’")
-
-
-
+    print(API.MorphologyParser.parse("fa+ POS:INTG LEM:maA ROOT:qawol l:P+"))

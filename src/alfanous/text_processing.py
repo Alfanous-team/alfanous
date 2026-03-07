@@ -5,7 +5,7 @@ import logging
 import re
 
 from whoosh.analysis import RegexTokenizer, Filter, LowercaseFilter, MultiFilter  # StandardAnalyzer,
-from alfanous.Support.pyarabic.main import strip_tashkeel, strip_tatweel, strip_shadda, normalize_spellerrors, \
+from alfanous.Support.pyarabic.main import strip_tashkeel, strip_tatweel, normalize_spellerrors, \
     normalize_hamza, normalize_lamalef, normalize_uthmani_symbols  # , HARAKAT_pat,
 
 from alfanous.constants import INVERTEDSHAPING
@@ -16,10 +16,16 @@ logger = logging.getLogger(__name__)
 def normalize_shaping(text):
     """
     Normalize Arabic text by converting shaped forms to base forms.
-    
+
+    Also maps alef-madda (آ U+0622) to plain alef (ا U+0627) so that
+    corpus forms like ``ملآئكة`` match the standard-text forms like
+    ``ملائكة`` stored in the ``aya`` search field.
+
     @param text: Text to normalize
     @return: Normalized text
     """
+    # Alef with madda above (آ U+0622) → plain alef (ا U+0627)
+    text = text.replace('\u0622', '\u0627')
     output = ""
     for char in text:
         if char in INVERTEDSHAPING:

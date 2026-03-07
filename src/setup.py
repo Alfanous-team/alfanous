@@ -85,20 +85,18 @@ setup(
 
     package_data={'alfanous': [
                                'configs/*',
+                               'configs/__generated__/translations.json',
+                               'configs/__generated__/.keep',
                                'indexes/main/*',
                                'indexes/extend/*',
                                # Runtime-only resources.
                                # Build-time data files (aya.json, fields.json, word.json)
                                # live in store/ and are only needed by alfanous_import.
                                'resources/information.json',
-                               'resources/arabic_names.json',
+                               'resources/__generated__/*',
                                'resources/stop_words.json',
                                'resources/synonyms.json',
                                'resources/antonyms.json',
-                               'resources/derivations.json',
-                               'resources/vocalizations.json',
-                               'resources/standard_to_uthmani.json',
-                               'resources/word_props.json',
                                'resources/ai_query_translation_rules.txt',
                            ]},
 

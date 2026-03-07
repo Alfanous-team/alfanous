@@ -1,8 +1,7 @@
 from math import log as _log
 
 from whoosh.scoring import BM25F, BM25FScorer, WeightScorer
-from whoosh.highlight import highlight, Fragment, \
-    HtmlFormatter, ContextFragmenter, BasicFragmentScorer, WholeFragmenter
+from whoosh.highlight import highlight, HtmlFormatter, BasicFragmentScorer, WholeFragmenter
 from alfanous.text_processing import QHighLightAnalyzer, QDiacHighLightAnalyzer, Gword_tamdid, TranslationHighLightAnalyzer
 from alfanous.constants import QURAN_TOTAL_VERSES
 

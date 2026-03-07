@@ -4,17 +4,21 @@ import re
 from alfanous.text_processing import QArabicSymbolsFilter
 from alfanous.data import *
 from alfanous.constants import QURAN_TOTAL_VERSES
-from alfanous.romanization import transliterate, arabizi_to_arabic_list, filter_candidates_by_wordset
-from alfanous.misc import locate, find, filter_doubles
+from alfanous.romanization import transliterate
+
 from whoosh import query as wquery
 from whoosh.sorting import Facets
 from alfanous.results_processing import QScore, QTranslationHighlight
 
-STANDARD2UTHMANI = lambda x: std2uth_words.get(x) or x
 
 from alfanous.text_processing import _TRANSLATION_LANGS
 # All language-specific indexed translation fields (text_en, text_fr, …).
 _TEXT_LANG_FIELDS = [f'text_{l}' for l in _TRANSLATION_LANGS]
+
+# Characters passed through unchanged during Arabizi conversion inside queries.
+# Whoosh search operators (AND/OR/NOT symbols, field selectors, wildcards, etc.)
+# must not be transliterated to Arabic letters.
+_ARABIZI_IGNORE_CHARS = "'_\"%*?#~[]{}:>+-|"
 
 FALSE_PATTERN = '^false|no|off|0$'
 
@@ -208,8 +212,6 @@ class Raw:
         "aya": "enable retrieving of aya text in the case of translation search",
     }
 
-    IDS = ["ALFANOUS_WUI_2342R52"]
-
     def __init__(self,
                  QSE_index=paths.QSE_INDEX,
                  Recitations_list_file=paths.RECITATIONS_LIST_FILE,
@@ -246,11 +248,11 @@ class Raw:
         self._flags = self.DEFAULTS["flags"].keys()
         self._fields = arabic_to_english_fields
         self._fields_reverse = {v: k for k, v in arabic_to_english_fields.items()}
-        self._roots = sorted(filter(bool, set(derivedict["root"])))
+        # Prefer word index for roots.
+        self._roots = sorted(filter(bool, self.QSE.list_terms("root"))) if self.QSE.OK else []
         self._errors = self.ERRORS
         self._domains = self.DOMAINS
         self._helpmessages = self.HELPMESSAGES
-        self._ids = self.IDS  # dont send it to output , it's private
         self._all = {
             "translations": self._translations,
             "recitations": self._recitations,
@@ -680,31 +682,59 @@ class Raw:
         query = query.replace("\\", "")
 
         if ":" not in query and not re.search(r'[\u0600-\u06FF]', query):
-            # Non-Arabic query: route to nested child translation docs via
-            # NestedParent so results are parent aya documents that have
-            # translations matching the query text.
+            # Non-Arabic query: search translations AND try arabizi conversion
+            # to also search the Arabic aya fields ("the word and arabizi(word)").
             from whoosh import query as wq
             from whoosh.qparser import MultifieldParser as _MFP, OrGroup as _OrGroup
-            # Only include text_{lang} fields that actually exist in the schema.
+            from alfanous.romanization import arabizi_to_arabic_list, filter_candidates_by_wordset
+            from alfanous.data import quran_unvocalized_words
+
+            _query_parts = []
+
+            # 1. Translation search: NestedParent over child translation docs
             _available_fields = [f for f in _TEXT_LANG_FIELDS if f in self.QSE._schema]
-            _trans_parser = _MFP(_available_fields, self.QSE._schema, group=_OrGroup)
-            _trans_q = _trans_parser.parse(query)
-            _nested_q = wq.NestedParent(wq.Term("kind", "aya"), _trans_q)
-            # Apply filter_dict to restrict results to specific parent aya fields
-            # (e.g. sura_id:2 limits to Al-Baqara).  Filter terms are AND-ed
-            # directly into the query because search_with_query bypasses the
-            # FilterCollector used in the Arabic path.
+            if _available_fields:
+                _trans_parser = _MFP(_available_fields, self.QSE._schema, group=_OrGroup)
+                _trans_q = _trans_parser.parse(query)
+                _query_parts.append(wq.NestedParent(wq.Term("kind", "aya"), _trans_q))
+
+            # 2. Arabizi search: convert non-Arabic words to Arabic candidates
+            # and search aya text fields directly (no NestedParent needed for aya docs).
+            _arabizi_candidates = arabizi_to_arabic_list(
+                query.lower(), ignore=_ARABIZI_IGNORE_CHARS
+            )
+            _qwords = quran_unvocalized_words()
+            if _qwords:
+                _arabizi_candidates = filter_candidates_by_wordset(_arabizi_candidates, _qwords)
+            if _arabizi_candidates:
+                _arabic_terms = [wq.Term("aya", c) for c in _arabizi_candidates]
+                _arabic_q = wq.Or(_arabic_terms) if len(_arabic_terms) > 1 else _arabic_terms[0]
+                # Scope to parent aya documents so nested child docs are excluded.
+                if "kind" in self.QSE._schema:
+                    _arabic_q = wq.And([wq.Term("kind", "aya"), _arabic_q])
+                _query_parts.append(_arabic_q)
+
+            if not _query_parts:
+                # No fields available and no arabizi candidates — return empty.
+                from whoosh.query import NullQuery as _NullQuery
+                _final_q = _NullQuery()
+            elif len(_query_parts) == 1:
+                _final_q = _query_parts[0]
+            else:
+                _final_q = wq.Or(_query_parts)
+
+            # Apply filter_dict to restrict results (e.g. sura_id:2).
             _filter_parts = _build_filter_query(filter_dict)
             if _filter_parts:
-                _nested_q = wq.And([_nested_q] + _filter_parts)
+                _final_q = wq.And([_final_q] + _filter_parts)
+
             res, termz, searcher = self.QSE.search_with_query(
-                _nested_q,
+                _final_q,
                 limit=self._defaults["results_limit"]["aya"],
                 sortedby=sortedby,
                 timelimit=timelimit,
             )
             terms, _all_ac_variations = [], []
-            terms_uthmani = iter([])
         else:
             # Arabic (or field-qualified) query — search aya fields directly.
             # Restrict to parent aya documents only so that nested child
@@ -716,7 +746,6 @@ class Raw:
             )
             res, termz, searcher = self.QSE.search_all(aya_query, limit=self._defaults["results_limit"]["aya"], sortedby=sortedby, facets=facets_list, filter_dict=filter_dict, fuzzy=fuzzy, fuzzy_maxdist=fuzzy_maxdist, timelimit=timelimit)
             terms = [term[1] for term in list(termz)[:self._defaults["maxkeywords"]]]
-            terms_uthmani = map(STANDARD2UTHMANI, terms)
             # All matched aya_ac variation terms (only populated when fuzzy=True).
             # Used in the word_info loop to derive per-word variation lists.
             _all_ac_variations = [term[1] for term in termz if term[0] == "aya_ac"]
@@ -802,7 +831,6 @@ class Raw:
             docs_in_results = 0
             nb_vocalizations_globale = 0
             cpt = 1
-            annotation_word_query = "( 0 "
             for term in termz:
                 if term[0] == "aya" or term[0] == "aya_":
                     if term[2]:
@@ -812,30 +840,72 @@ class Raw:
                     matches_in_results += term_matches_in_results
                     term_ayas_in_results = _count_ayas_in_results(term[0], term[1])
                     docs_in_results += term_ayas_in_results
-                    if term[0] == "aya_":
-                        annotation_word_query += " OR word:%s " % term[1]
-                    else:  # if aya
-                        annotation_word_query += " OR normalized:%s " % STANDARD2UTHMANI(term[1])
                     if word_vocalizations:
-                        vocalizations = vocalization_dict.get(strip_vocalization(term[1])) or []
-                        if isinstance(vocalizations, str):
-                            vocalizations = [vocalizations]
+                        _term_normalized = strip_vocalization(term[1])
+                        vocalizations = []
+                        if self.QSE.OK:
+                            _voc_q = wquery.And([
+                                wquery.Term("kind", "word"),
+                                wquery.Term("normalized", _term_normalized),
+                            ])
+                            _voc_res, _, _voc_searcher = self.QSE.search_with_query(
+                                _voc_q, limit=500
+                            )
+                            vocalizations = list(
+                                set(w.get("word") for w in _voc_res if w.get("word")) - {term[1]}
+                            )
+                            _voc_searcher.close()
                         nb_vocalizations_globale += len(vocalizations)
                     if word_synonyms:
                         synonyms = syndict.get(term[1]) or []
                     derivations_extra = []
                     if word_derivations:
-                        lemma = locate(derivedict["word_"], derivedict["lemma"], term[1])
-                        if lemma:  # if different of none
-                            derivations = filter_doubles(find(derivedict["lemma"], derivedict["word_"], lemma))
-                        else:
-                            derivations = []
-                        # go deeper with derivations
-                        root = locate(derivedict["word_"], derivedict["root"], term[1])
-                        if root:  # if different of none
-                            derivations_extra = list(
-                                set(filter_doubles(find(derivedict["root"], derivedict["word_"], lemma))) - set(
-                                    derivations))
+                        derivations = []
+                        if self.QSE.OK:
+                            _norm_term = strip_vocalization(term[1])
+                            _word_q = wquery.And([
+                                wquery.Term("kind", "word"),
+                                wquery.Term("normalized", _norm_term),
+                            ])
+                            _word_res, _, _word_searcher = self.QSE.search_with_query(
+                                _word_q, limit=10
+                            )
+                            # Extract fields while searcher is still open; Hit objects
+                            # access stored fields lazily through the reader, so the
+                            # searcher must not be closed before the field lookups.
+                            # Iterate _word_res once to avoid double-scan.
+                            lemma = root = None
+                            for _w in _word_res:
+                                if lemma is None:
+                                    lemma = _w.get("lemma") or None
+                                if root is None:
+                                    root = _w.get("root") or None
+                                if lemma and root:
+                                    break
+                            _word_searcher.close()
+                            if lemma:
+                                _lem_q = wquery.And([
+                                    wquery.Term("kind", "word"),
+                                    wquery.Term("lemma", lemma),
+                                ])
+                                _lem_res, _, _lem_srch = self.QSE.search_with_query(_lem_q, limit=500)
+                                derivations = list(set(
+                                    w.get("normalized") for w in _lem_res
+                                    if w.get("normalized")
+                                ))
+                                _lem_srch.close()
+                            if root:
+                                _root_q = wquery.And([
+                                    wquery.Term("kind", "word"),
+                                    wquery.Term("root", root),
+                                ])
+                                _root_res, _, _root_srch = self.QSE.search_with_query(_root_q, limit=500)
+                                _root_norms = list(set(
+                                    w.get("normalized") for w in _root_res
+                                    if w.get("normalized")
+                                ))
+                                _root_srch.close()
+                                derivations_extra = list(set(_root_norms) - set(derivations))
 
                     # Compute variations specific to this word: among all
                     # matched aya_ac terms, keep only those within
@@ -871,17 +941,16 @@ class Raw:
                         "variations": word_variations,
                     }
                     cpt += 1
-            annotation_word_query += " ) "
             words_output["global"] = {"nb_words": cpt - 1, "nb_matches_overall": int(matches),
                                       "nb_matches": matches_in_results,
                                       "nb_ayas_overall": docs,
                                       "nb_ayas": docs_in_results,
                                       "nb_vocalizations": nb_vocalizations_globale}
         output["words"] = words_output
-        # Magic_loop to built queries of Adjacents,translations and annotations in the same time
+        # Build adjacent-aya query for prev/next aya text.
         _want_translation = bool(translation or lang)
-        if prev_aya or next_aya or annotation_aya:
-            adja_query = annotation_aya_query = "( 0"
+        if prev_aya or next_aya:
+            adja_query = "( 0"
 
             for r in reslist:
                 if prev_aya:
@@ -891,7 +960,6 @@ class Raw:
 
             # Restrict to parent aya documents only (gid also matches children).
             adja_query += " ) AND kind:aya"
-            annotation_aya_query += " )"
 
         if prev_aya or next_aya:
             adja_res, adja_searcher = self.QSE.find_extended(adja_query, "gid")
@@ -956,8 +1024,17 @@ class Raw:
         aya_words_map = {}  # {(sura_id, aya_id): [word_entry, ...]}
         if word_linguistics and reslist:
             try:
-                wc_res, wc_searcher = self.QSE.find_extended(
-                    _gid_base_query + " AND kind:word", "gid"
+                _wl_parent_q = wquery.And([
+                    wquery.Term("kind", "aya"),
+                    wquery.Or([wquery.NumericRange("gid", r["gid"], r["gid"])
+                               for r in reslist]),
+                ])
+                _wl_q = wquery.And([
+                    wquery.NestedChildren(wquery.Term("kind", "aya"), _wl_parent_q),
+                    wquery.Term("kind", "word"),
+                ])
+                wc_res, _, wc_searcher = self.QSE.search_with_query(
+                    _wl_q, limit=len(reslist) * 300
                 )
                 extend_runtime += wc_res.runtime
                 for w in wc_res:
@@ -999,6 +1076,82 @@ class Raw:
                 wc_searcher.close()
             except Exception:
                 pass  # index built without corpus words — silently skip
+
+        # Fetch word children matching query terms for annotation_word.
+        # Word children carry the parent aya gid (not the word's own word_gid)
+        # so the same NestedChildren query used above applies here too.
+        # Only words whose normalized form matches a search term are returned;
+        # results are grouped by aya gid and sorted by word_id (position).
+        annot_words_map = {}  # {gid: [{"word_id", "word", "normalized"}, ...]}
+        if annotation_word and terms and reslist and self.QSE.OK:
+            try:
+                # sorted() for deterministic term ordering across Python runs
+                _norm_terms = sorted(set(strip_vocalization(t) for t in terms if t))
+                if _norm_terms:
+                    _aw_parent_q = wquery.And([
+                        wquery.Term("kind", "aya"),
+                        wquery.Or([wquery.NumericRange("gid", r["gid"], r["gid"])
+                                   for r in reslist]),
+                    ])
+                    _aw_q = wquery.And([
+                        wquery.NestedChildren(wquery.Term("kind", "aya"), _aw_parent_q),
+                        wquery.Term("kind", "word"),
+                        wquery.Or([wquery.Term("normalized", t) for t in _norm_terms]),
+                    ])
+                    # Generous limit: an aya has at most ~50 words; most terms
+                    # match far fewer, but we allow 20 hits per term per aya.
+                    _aw_limit = len(reslist) * max(len(_norm_terms), 1) * 20
+                    _aw_res, _, _aw_srch = self.QSE.search_with_query(
+                        _aw_q, limit=_aw_limit
+                    )
+                    extend_runtime += _aw_res.runtime
+                    for _w in _aw_res:
+                        _g = _w.get("gid")
+                        if _g is not None:
+                            annot_words_map.setdefault(_g, []).append({
+                                "word_id":    _w.get("word_id"),
+                                "word":       _w.get("word"),
+                                "normalized": _w.get("normalized"),
+                            })
+                    for _g in annot_words_map:
+                        annot_words_map[_g].sort(key=lambda e: e.get("word_id") or 0)
+                    _aw_srch.close()
+            except Exception:
+                pass
+
+        # Fetch all word children for annotation_aya (single-result view only;
+        # annotation_aya is disabled when len(res) > 1 earlier in this method).
+        # Returns every word of the matched aya with position, Uthmani text,
+        # and normalized form — a lightweight alternative to word_linguistics.
+        annot_aya_words_map = {}  # {gid: [{"word_id", "word", "normalized"}, ...]}
+        if annotation_aya and reslist and self.QSE.OK:
+            try:
+                _aa_parent_q = wquery.And([
+                    wquery.Term("kind", "aya"),
+                    wquery.Or([wquery.NumericRange("gid", r["gid"], r["gid"])
+                               for r in reslist]),
+                ])
+                _aa_q = wquery.And([
+                    wquery.NestedChildren(wquery.Term("kind", "aya"), _aa_parent_q),
+                    wquery.Term("kind", "word"),
+                ])
+                # An aya has at most ~300 words (safe upper bound for a
+                # single-aya annotation_aya request).
+                _aa_res, _, _aa_srch = self.QSE.search_with_query(_aa_q, limit=300)
+                extend_runtime += _aa_res.runtime
+                for _w in _aa_res:
+                    _g = _w.get("gid")
+                    if _g is not None:
+                        annot_aya_words_map.setdefault(_g, []).append({
+                            "word_id":    _w.get("word_id"),
+                            "word":       _w.get("word"),
+                            "normalized": _w.get("normalized"),
+                        })
+                for _g in annot_aya_words_map:
+                    annot_aya_words_map[_g].sort(key=lambda e: e.get("word_id") or 0)
+                _aa_srch.close()
+            except Exception:
+                pass
 
         output["runtime"] = round(extend_runtime, 5)
         output["interval"] = {
@@ -1116,7 +1269,11 @@ class Raw:
                     "id": N(r["sajda_id"]) if (r["sajda"] == "نعم") else None,
                 },
 
-                "annotations": {}
+                "annotations": (
+                    annot_words_map.get(r["gid"], []) if annotation_word
+                    else annot_aya_words_map.get(r["gid"], []) if annotation_aya
+                    else []
+                )
             }
             if word_linguistics:
                 output["ayas"][cpt]["words"] = aya_words_map.get(
@@ -1236,9 +1393,16 @@ class Raw:
 
         Word children are indexed with ``kind="word"`` alongside translation
         children.  This method searches them using a ``MultifieldParser`` that
-        targets ``word``, ``normalized``, ``root``, and ``lemma``,
-        combined with a ``kind="word"`` filter so only word children are
-        returned.
+        targets all indexed word fields — free-text fields (``word``,
+        ``normalized``) as well as linguistic ID fields (``pos``, ``type``,
+        ``root``, ``arabicroot``, ``lemma``, ``arabiclemma``, ``gender``,
+        ``number``, ``person``, ``form``, ``voice``, ``state``,
+        ``derivation``, ``aspect``, ``mood``, ``case``) — combined with a
+        ``kind="word"`` filter so only word children are returned.
+
+        Field-qualified queries (e.g. ``root:رحم``) are supported for all
+        indexed word fields.  Unqualified queries search across the primary
+        text fields (``word`` and ``normalized``).
 
         The result structure mirrors ``_search_word`` for backward
         compatibility:  ``{"words": {n: {...}}, "interval": {...}, "runtime": ...}``.
@@ -1271,10 +1435,28 @@ class Raw:
 
         schema = self.QSE._schema
 
-        # Build a multi-field parser that searches the main word text fields as
-        # well as the key linguistic fields so queries like "root:رحم" work.
+        # Build a multi-field parser that searches the primary text fields by
+        # default and allows field-qualified queries against ALL indexed word
+        # fields so queries like "root:رحم" or "pos:فعل AND root:كتب" work.
+        # The MultifieldParser already supports "field:value" syntax for any
+        # field defined in the schema; the list here only governs which fields
+        # are searched when no explicit field qualifier is given.
+        _WORD_ALL_INDEXED_FIELDS = [
+            "word", "normalized",
+            "pos", "type",
+            "root", "arabicroot",
+            "lemma", "arabiclemma",
+            "gender", "number", "person",
+            "form", "voice", "state",
+            "derivation", "aspect",
+            "mood", "case",
+        ]
+        # Filter down to fields that actually exist in this index schema
+        _schema_fields = set(schema.names())
+        _all_word_fields = [f for f in _WORD_ALL_INDEXED_FIELDS if f in _schema_fields]
+        _default_fields = [f for f in ["word", "normalized"] if f in _schema_fields] or _all_word_fields or ["word"]
         _word_parser = _qparser.MultifieldParser(
-            ["word", "normalized", "root", "lemma"],
+            _default_fields,
             schema=schema,
             group=_qparser.OrGroup,
         )
@@ -1365,46 +1547,6 @@ class Raw:
         searcher.close()
         return output
 
-    def _search_word(self, flags):
-        flags = {**self._defaults["flags"], **flags}
-        query = flags["query"]
-        sortedby = flags["sortedby"]
-        range = int(flags["perpage"]) if flags.get("perpage") \
-            else flags["range"]
-        offset = ((int(flags["page"]) - 1) * range) + 1 if flags.get("page") \
-            else int(flags["offset"])
-        highlight = flags["highlight"]
-        timelimit = self._parse_timelimit(flags)
-
-        # preprocess query
-        query = query.replace("\\", "")
-
-        if ":" not in query:
-            query = transliterate("buckwalter", query, ignore="'_\"%*?#~[]{}:>+-|")
-
-        SE = self.QSE
-        if not SE.OK:
-            return {
-                "words": {},
-                "interval": {"start": 0, "end": 0, "total": 0, "page": 1, "nb_pages": 0},
-                "runtime": 0
-            }
-
-        res, termz, searcher = SE.search_all(query, limit=self._defaults["results_limit"]["word"], sortedby=sortedby, filter_dict={"kind": "word"}, timelimit=timelimit)
-        terms = [term[1] for term in list(termz)[:self._defaults["maxkeywords"]]]
-
-        # pagination
-        offset = 1 if offset < 1 else offset
-        range = self._defaults["minrange"] if range < self._defaults["minrange"] else range
-        range = self._defaults["maxrange"] if range > self._defaults["maxrange"] else range
-        interval_end = offset + range - 1
-        end = interval_end if interval_end < len(res) else len(res)
-        start = offset if offset <= len(res) else -1
-        reslist = [] if end == 0 or start == -1 else list(res)[start - 1:end]
-
-        output = {}
-        H = lambda X: SE.highlight(X, terms, highlight) if highlight != "none" and X else X if X else "-----"
-
         output["runtime"] = round(res.runtime, 5)
         output["interval"] = {
             "start": start,
@@ -1430,19 +1572,32 @@ class Raw:
                     "text_no_highlight": r["word"],
                     "normalized": r.get("normalized"),
                     "spelled": r.get("spelled"),
+                    # Arabic (primary, indexed)
                     "pos": r.get("pos"),
                     "type": r.get("type"),
                     "root": r.get("root"),
                     "lemma": r.get("lemma"),
+                    "mood": r.get("mood"),
+                    "case": r.get("case"),
+                    "state": r.get("state"),
+                    "special": r.get("special"),
+                    # English (stored-only)
+                    "englishpos": r.get("englishpos"),
+                    "englishmood": r.get("englishmood"),
+                    "englishcase": r.get("englishcase"),
+                    "englishstate": r.get("englishstate"),
+                    # Unchanged fields
+                    "prefix": r.get("prefix"),
+                    "suffix": r.get("suffix"),
+                    "gender": r.get("gender"),
+                    "number": r.get("number"),
+                    "person": r.get("person"),
+                    "form": r.get("form"),
+                    "voice": r.get("voice"),
+                    "derivation": r.get("derivation"),
+                    "aspect": r.get("aspect"),
                 },
             }
 
         searcher.close()
         return output
-
-
-class Json(Raw):
-    """ JSON output format """
-
-    def do(self, flags):
-        return json.dumps(self._do(flags), sort_keys=False, indent=4)

@@ -83,44 +83,35 @@ def QSE(path=paths.QSE_INDEX):
 
 
 @lru_cache(maxsize=1)
-def quran_unvocalized_words(path=paths.DERIVATIONS_FILE):
+def quran_unvocalized_words():
     """Return the set of unvocalized words appearing in the Quran.
 
-    Reads the ``word_`` column from ``derivations.json``, which already
-    contains every unvocalized word form.  Using the derivations file avoids
-    shipping the much larger ``word.json`` as a runtime dependency.
+    Collects all unique ``normalized`` values from word children in the live
+    QSE index.  Returns an empty frozenset when the index is unavailable;
+    callers should treat an empty set as "filtering unavailable" and fall
+    back to all candidates.
 
-    The result is cached as a frozenset for O(1) lookup.
-
-    :param path: Path to derivations JSON file (parallel-column dict with a
-                 ``word_`` key whose value is a list of unvocalized words).
     :return: frozenset of unvocalized Quranic word strings
     """
     try:
-        with open(path, encoding="utf-8") as f:
-            data = json.load(f)
-        return frozenset(w for w in data.get("word_", []) if w)
-    except (IOError, json.JSONDecodeError, KeyError):
-        # Return an empty frozenset on any error; callers should treat an
-        # empty set as "filtering unavailable" and fall back to all candidates.
-        return frozenset()
+        _engine = QSE()
+        if _engine.OK:
+            words = frozenset(t for t in _engine.list_terms("normalized") if t)
+            if words:
+                return words
+    except Exception:
+        pass
+
+    return frozenset()
 
 
 try:
-    with open(paths.ARABIC_NAMES_FILE) as f:
-        arabic_to_english_fields = json.load(f)
+    with open(paths.ARABIC_NAMES_FILE, encoding="utf-8") as f:
+        # File format: {search_name: arabic_name}. Reverse so that the
+        # runtime mapping is {arabic_name: search_name} for query parsing.
+        arabic_to_english_fields = {ar: en for en, ar in json.load(f).items()}
 except (IOError, json.JSONDecodeError):
     arabic_to_english_fields = {}
-try:
-    with open(paths.STANDARD_TO_UTHMANI_FILE) as f:
-        std2uth_words = json.load(f)
-except (IOError, json.JSONDecodeError):
-    std2uth_words = {}
-try:
-    with open(paths.VOCALIZATIONS_FILE) as f:
-        vocalization_dict = json.load(f)
-except (IOError, json.JSONDecodeError):
-    vocalization_dict = {}
 try:
     with open(paths.SYNONYMS_FILE) as f:
         syndict = json.load(f)
@@ -131,14 +122,3 @@ try:
         antdict = json.load(f)
 except (IOError, json.JSONDecodeError):
     antdict = {}
-try:
-    with open(paths.DERIVATIONS_FILE) as f:
-        derivedict = json.load(f)
-except (IOError, json.JSONDecodeError):
-    derivedict = {"root": []}
-
-try:
-    with open(paths.WORD_PROPS_FILE) as f:
-        worddict = json.load(f)
-except (IOError, json.JSONDecodeError):
-    worddict = {}

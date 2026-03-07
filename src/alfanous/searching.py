@@ -30,7 +30,7 @@ class QReader:
         return sorted(filter(lambda x: type(x) is not int or x >= 0, values))
 
 
-    def list_terms(self, fieldname=None, double=False):
+    def list_terms(self, fieldname=None):
         """
         a choosen field indexed terms generator
 

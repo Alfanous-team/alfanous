@@ -19,7 +19,6 @@ Usage:
         python -m alfanous_mcp.mcp_server --transport streamable-http
 """
 
-import json
 import logging
 from typing import Optional, Any
 
@@ -694,6 +693,238 @@ def search_by_word_linguistics(
 
     result = alfanous_api.do(flags)
     return _make_serializable(result)
+
+
+# ---------------------------------------------------------------------------
+# Word children schema documentation tool
+# ---------------------------------------------------------------------------
+
+#: Complete documentation for the word children schema and search syntax.
+_WORD_CHILDREN_SCHEMA_DOC = """\
+Quranic Word Children — Schema and Search Guide
+================================================
+
+Every word token in the Qur'an is indexed as a "word child" document nested
+under its parent aya (verse) document.  Word children carry ``kind="word"``
+and can be searched with ``unit="word"`` in the API or via the
+``search_by_word_linguistics`` MCP tool.
+
+INDEXED FIELDS (searchable with field:value syntax)
+----------------------------------------------------
+| Field        | Type    | Description                                      |
+|--------------|---------|--------------------------------------------------|
+| word         | TEXT    | Vocalized (fully diacritised) Arabic word form   |
+| normalized   | TEXT    | Unvocalized / lightly normalised Arabic form     |
+| pos          | ID      | Part of speech in Arabic script                  |
+|              |         |   اسم = Noun, فعل = Verb, حرف = Particle,        |
+|              |         |   صفة = Adjective, ضمير = Pronoun                 |
+| type         | ID      | Broad grammatical type (Nouns, Verbs, Particles, |
+|              |         |   Pronouns, Adjectives, etc.)                    |
+| root         | ID      | Consonantal root in Arabic (e.g. رحم, كتب, عبد) |
+| arabicroot   | ID      | Alternative Arabic root form                     |
+| lemma        | ID      | Lemma in Arabic script (e.g. رَحِيم, كِتَاب)     |
+| arabiclemma  | ID      | Alternative Arabic lemma form                    |
+| gender       | ID      | Grammatical gender: M (masculine), F (feminine)  |
+| number       | ID      | Grammatical number: S (singular), D (dual),      |
+|              |         |   P (plural)                                     |
+| person       | ID      | Grammatical person: 1, 2, 3                      |
+| form         | ID      | Verb form in Roman numerals: (I)–(XII)           |
+| voice        | ID      | Verb voice: ACT (active), PASS (passive)         |
+| state        | ID      | Nominal state in Arabic (نكرة = indefinite, etc.)|
+| derivation   | ID      | Derivation type: ACT PCPL, PASS PCPL, VN         |
+| aspect       | ID      | Verb aspect: PERF, IMPF, IMPV                    |
+| mood         | ID      | Verb mood in Arabic script                       |
+| case         | ID      | Grammatical case in Arabic script                |
+
+STORED-ONLY FIELDS (returned in results but not searchable)
+-----------------------------------------------------------
+| Field        | Description                                              |
+|--------------|----------------------------------------------------------|
+| spelled      | Fully normalised and spelled-out Arabic form             |
+| englishpos   | Part of speech in English (e.g. "N", "V", "P", "ADJ")  |
+| englishmood  | Verb mood in English                                     |
+| englishcase  | Grammatical case in English (NOM, ACC, GEN)              |
+| englishstate | Nominal state in English (DEF, INDEF)                    |
+| prefix       | Cliticised prefixes separated by semicolons              |
+| suffix       | Cliticised suffixes separated by semicolons              |
+| special      | Special morphological note in Arabic                     |
+
+IDENTIFIER FIELDS (for locating the word in the Qur'an)
+-------------------------------------------------------
+| Field        | Description                                              |
+|--------------|----------------------------------------------------------|
+| word_id      | Sequential word position within the aya (1-based)        |
+| aya_id       | Verse number within the surah                            |
+| sura_id      | Surah (chapter) number                                   |
+| gid          | Global aya ID of the parent verse (1–6236)               |
+
+PARENT-CHILD NESTING
+--------------------
+Word children are grouped under parent aya documents using Whoosh's block
+nesting.  A ``NestedParent`` query can retrieve the parent aya of any
+matching word child:
+
+    from whoosh.query import NestedParent, Term, And
+    child_q  = And([Term("kind", "word"), Term("root", "رحم")])
+    parent_q = NestedParent(Term("kind", "aya"), child_q)
+
+SEARCH EXAMPLES
+---------------
+Find all verb occurrences:
+    unit=word  query=pos:فعل
+
+Find words with root رحم:
+    unit=word  query=root:رحم
+
+Find passive verbs derived from root كتب:
+    unit=word  query=root:كتب AND voice:PASS
+
+Find plural nouns:
+    unit=word  query=type:Nouns AND number:P
+
+Find active participles:
+    unit=word  query=derivation:"ACT PCPL"
+
+Find a specific word form (vocalized):
+    unit=word  query=word:الرَّحْمَنِ
+
+Find unvocalized form across all diacritisations:
+    unit=word  query=normalized:الرحمن
+
+MCP TOOL
+--------
+Use ``search_by_word_linguistics`` to search word children with named
+parameters (pos, root, lemma, gender, number, voice, etc.) without needing
+to compose raw query strings.
+
+QUERY SYNTAX EXTENSIONS
+------------------------
+Two Quranic parser plugins operate at the *aya* search level (unit="aya")
+but internally expand to word children for their match sets:
+
+  {root,type}      Tuple query — finds ayas containing words with the
+                   specified root and type (e.g. {رحم,اسم} = noun from رحم).
+
+  >word / >>word   Derivation query — expands a word to lemma-level (>)
+                   or root-level (>>) derivations before searching the aya
+                   index (e.g. >>مالك finds all root-ملك occurrences).
+
+Both now query the live word-children index when available.
+"""
+
+
+@mcp.tool(
+    title="Get Word Children Schema",
+    description=(
+        "Return detailed documentation about the Quranic word children schema "
+        "and how to search word-level morphological data. "
+        "Covers all indexed fields (part of speech, root, lemma, gender, number, "
+        "person, voice, aspect, derivation, and more), parent-child nesting logic, "
+        "query syntax examples, and the relationship between word children and the "
+        "aya-level tuple/derivation query plugins."
+    ),
+)
+def get_word_children_schema() -> dict:
+    """Return documentation for the Quranic word children schema.
+
+    Returns:
+        Dictionary with:
+        - ``schema``: Full schema documentation as plain text.
+        - ``fields``: Structured field catalogue as a list of dicts.
+        - ``examples``: A list of query example dicts.
+    """
+    fields = [
+        # Indexed text / ID fields
+        {"name": "word",         "type": "TEXT",    "searchable": True,
+         "description": "Vocalized Arabic word form"},
+        {"name": "normalized",   "type": "TEXT",    "searchable": True,
+         "description": "Unvocalized normalised Arabic form"},
+        {"name": "pos",          "type": "ID",      "searchable": True,
+         "description": "Part of speech (Arabic): اسم Noun, فعل Verb, حرف Particle"},
+        {"name": "type",         "type": "ID",      "searchable": True,
+         "description": "Broad grammatical type (Nouns, Verbs, Particles, …)"},
+        {"name": "root",         "type": "ID",      "searchable": True,
+         "description": "Arabic consonantal root (e.g. رحم, كتب)"},
+        {"name": "arabicroot",   "type": "ID",      "searchable": True,
+         "description": "Alternative Arabic root form"},
+        {"name": "lemma",        "type": "ID",      "searchable": True,
+         "description": "Arabic lemma"},
+        {"name": "arabiclemma",  "type": "ID",      "searchable": True,
+         "description": "Alternative Arabic lemma form"},
+        {"name": "gender",       "type": "ID",      "searchable": True,
+         "description": "Grammatical gender: M or F"},
+        {"name": "number",       "type": "ID",      "searchable": True,
+         "description": "Grammatical number: S, D, or P"},
+        {"name": "person",       "type": "ID",      "searchable": True,
+         "description": "Grammatical person: 1, 2, or 3"},
+        {"name": "form",         "type": "ID",      "searchable": True,
+         "description": "Verb form (I)–(XII)"},
+        {"name": "voice",        "type": "ID",      "searchable": True,
+         "description": "Verb voice: ACT or PASS"},
+        {"name": "state",        "type": "ID",      "searchable": True,
+         "description": "Nominal state (Arabic)"},
+        {"name": "derivation",   "type": "ID",      "searchable": True,
+         "description": "Derivation type: ACT PCPL, PASS PCPL, or VN"},
+        {"name": "aspect",       "type": "ID",      "searchable": True,
+         "description": "Verb aspect: PERF, IMPF, or IMPV"},
+        {"name": "mood",         "type": "ID",      "searchable": True,
+         "description": "Verb mood (Arabic)"},
+        {"name": "case",         "type": "ID",      "searchable": True,
+         "description": "Grammatical case (Arabic)"},
+        # Stored-only fields
+        {"name": "spelled",      "type": "STORED",  "searchable": False,
+         "description": "Fully normalised spelled-out Arabic form"},
+        {"name": "englishpos",   "type": "STORED",  "searchable": False,
+         "description": "Part of speech in English"},
+        {"name": "englishmood",  "type": "STORED",  "searchable": False,
+         "description": "Verb mood in English"},
+        {"name": "englishcase",  "type": "STORED",  "searchable": False,
+         "description": "Grammatical case in English (NOM, ACC, GEN)"},
+        {"name": "englishstate", "type": "STORED",  "searchable": False,
+         "description": "Nominal state in English (DEF, INDEF)"},
+        {"name": "prefix",       "type": "KEYWORD", "searchable": False,
+         "description": "Cliticised prefixes (semicolon-separated)"},
+        {"name": "suffix",       "type": "KEYWORD", "searchable": False,
+         "description": "Cliticised suffixes (semicolon-separated)"},
+        {"name": "special",      "type": "STORED",  "searchable": False,
+         "description": "Special morphological note (Arabic)"},
+        # Identifier fields
+        {"name": "word_id",      "type": "NUMERIC", "searchable": True,
+         "description": "Word position within the aya (1-based)"},
+        {"name": "aya_id",       "type": "NUMERIC", "searchable": True,
+         "description": "Verse number within the surah"},
+        {"name": "sura_id",      "type": "NUMERIC", "searchable": True,
+         "description": "Surah (chapter) number"},
+        {"name": "gid",          "type": "NUMERIC", "searchable": True,
+         "description": "Global aya ID of the parent verse (1–6236)"},
+    ]
+
+    examples = [
+        {"description": "Find all verb occurrences",
+         "unit": "word", "query": "pos:فعل"},
+        {"description": "Find words with root رحم",
+         "unit": "word", "query": "root:رحم"},
+        {"description": "Find passive verbs from root كتب",
+         "unit": "word", "query": "root:كتب AND voice:PASS"},
+        {"description": "Find plural nouns",
+         "unit": "word", "query": "type:Nouns AND number:P"},
+        {"description": "Find active participles",
+         "unit": "word", "query": 'derivation:"ACT PCPL"'},
+        {"description": "Find a specific vocalized word form",
+         "unit": "word", "query": "word:الرَّحْمَنِ"},
+        {"description": "Find all diacritisations of an unvocalized form",
+         "unit": "word", "query": "normalized:الرحمن"},
+        {"description": "Find ayas with nouns from root رحم (tuple plugin)",
+         "unit": "aya",  "query": "{رحم,اسم}"},
+        {"description": "Find ayas with root-level derivations of مالك",
+         "unit": "aya",  "query": ">>مالك"},
+    ]
+
+    return {
+        "schema": _WORD_CHILDREN_SCHEMA_DOC,
+        "fields": fields,
+        "examples": examples,
+    }
 
 
 # ---------------------------------------------------------------------------

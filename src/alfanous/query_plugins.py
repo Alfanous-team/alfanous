@@ -7,11 +7,45 @@ tashkil (diacritics), and more.
 """
 
 from whoosh.qparser import TaggingPlugin, syntax
-from whoosh.query import MultiTerm, Variations, Or, Term, Wildcard, Prefix
+from whoosh.query import MultiTerm, Or, Term, Wildcard
 
-from alfanous.data import syndict, antdict, derivedict, worddict
+from alfanous.data import syndict, antdict
 from alfanous.text_processing import QArabicSymbolsFilter
-from alfanous.misc import locate, find, filter_doubles
+
+
+def _query_word_index(filter_dict, field="word", limit=5000):
+    """Query the word child documents in the QSE index and return unique values
+    of *field* from matching documents.
+
+    Iterates stored documents directly via the index reader so that all field
+    types (TEXT, ID, NUMERIC) are compared against their *stored* values
+    without relying on Whoosh's query-time term encoding.  This guarantees
+    correct results regardless of analyser behaviour.
+
+    :param filter_dict: Mapping of ``{fieldname: value}`` to filter word children.
+    :param field: The document field whose value to collect (default ``"word"``).
+    :param limit: Maximum number of unique values to collect before stopping.
+    :returns: Deduplicated list of *field* values from matching word children.
+    """
+    try:
+        from alfanous.data import QSE as _QSE
+        engine = _QSE()
+        if not engine.OK:
+            return []
+        reader = engine._reader.reader
+        values = set()
+        for _, stored in reader.iter_docs():
+            if stored.get("kind") != "word":
+                continue
+            if all(stored.get(k) == v for k, v in filter_dict.items() if v is not None):
+                val = stored.get(field)
+                if val is not None:
+                    values.add(val)
+                    if len(values) >= limit:
+                        break
+        return list(values)
+    except Exception:
+        return []
 
 
 class QMultiTerm(MultiTerm):
@@ -114,36 +148,60 @@ class DerivationQuery(QMultiTerm):
 
     @staticmethod
     def _get_derivations(word, leveldist):
-        """Get derivations for a word at a specific level"""
-        # Define source level index
-        if word in derivedict.get("word_", {}):
-            indexsrc = "word_"
-        elif word in derivedict.get("lemma", {}):
-            indexsrc = "lemma"
-        elif word in derivedict.get("root", {}):
-            indexsrc = "root"
-        else:
+        """Get derivations for a word at a specific level via the word index.
+
+        Level 0 / 1 → lemma-level derivations (narrow set).
+        Level >= 2  → root-level derivations (wider set).
+
+        Lookup strategy: build three candidate forms of the input word
+        (original, normalized, stemmed) then match each against the
+        ``word``, ``normalized``, ``lemma``, and ``root`` fields of word
+        children to collect the target key (lemma or root).  Results are
+        returned as the union of ``word_standard`` and ``normalized`` values
+        for all word children sharing that key.
+
+        Returns ``[word]`` when the index is unavailable.
+        """
+        use_root_level = leveldist >= 2
+
+        try:
+            from alfanous.text_processing import QArabicSymbolsFilter as _QASF
+            word_norm = _QASF(shaping=True, tashkil=True, spellerrors=False,
+                              hamza=False).normalize_all(word)
+        except Exception:
+            word_norm = word
+
+        try:
+            import Stemmer as _Stemmer
+            word_stem = _Stemmer.Stemmer('arabic').stemWord(word_norm)
+        except Exception:
+            word_stem = word_norm
+
+        candidates = {word, word_norm, word_stem} - {''}
+        index_key = 'root' if use_root_level else 'lemma'
+
+        # Collect key values by matching every candidate against every field,
+        # including word_standard so users can type standard-script forms and
+        # find the corpus root via the stored word_standard values.
+        key_values = set()
+        for val in candidates:
+            for sf in ('word', 'normalized', 'lemma', 'root', 'word_standard'):
+                key_values.update(_query_word_index({sf: val}, field=index_key))
+        key_values.discard(None)
+        key_values.discard('')
+
+        if not key_values:
             return [word]
 
-        # Define destination level index
-        if leveldist == 0:
-            indexdist = "word_"
-        elif leveldist == 1:
-            indexdist = "lemma"
-        elif leveldist >= 2:
-            indexdist = "root"
+        # Collect result words: merge word_standard (primary) + normalized
+        words = set()
+        for kv in key_values:
+            ws = _query_word_index({index_key: kv}, field='word_standard')
+            nm = _query_word_index({index_key: kv}, field='normalized')
+            words.update(w for w in ws if w)
+            words.update(w for w in nm if w)
 
-        lst = []
-        if indexsrc:
-            itm = locate(derivedict[indexsrc], derivedict[indexdist], word)
-            if itm:
-                lst = filter_doubles(
-                    find(derivedict[indexdist], derivedict["word_"], itm)
-                )
-            else:
-                lst = [word]
-
-        return lst if lst else [word]
+        return list(words) if words else [word]
 
 
 class SpellErrorsQuery(QMultiTerm):
@@ -233,6 +291,17 @@ class TashkilQuery(QMultiTerm):
 class TupleQuery(QMultiTerm):
     """Query for words matching specific morphological properties"""
 
+    # Map Arabic query type labels to the English "type" field stored in the
+    # word-children index (populated from corpus first.get("type")).
+    # Corpus values: 'Nouns', 'Verbs', 'Particles', 'Nominals', 'Pronouns',
+    #                'Adverbs', 'Prepositions', 'Conjunctions', 'Disconnected Letters'
+    _ARABIC_TO_TYPE = {
+        "اسم": "Nouns",
+        "فعل": "Verbs",
+        "أداة": "Particles",
+        "فواتيح": "Disconnected Letters",
+    }
+
     def __init__(self, fieldname, items, boost=1.0):
         self.fieldname = fieldname
         self.props = self._properties(items)
@@ -253,18 +322,30 @@ class TupleQuery(QMultiTerm):
 
     @staticmethod
     def _get_words_by_properties(props):
-        """Search words that have specific properties"""
-        wset = None
-        for propkey in props.keys():
-            if worddict.get(propkey):
-                partial_wset = set(
-                    find(worddict[propkey], worddict["word_"], props[propkey])
-                )
-                if wset is None:
-                    wset = partial_wset
-                else:
-                    wset &= partial_wset
-        return list(wset) if wset else []
+        """Search word children that match specific morphological properties
+        via the live word-children index.
+
+        :param props: Dict with optional keys ``root``, ``type``.
+        :returns: List of matching standard Arabic word forms.
+        """
+        # "root" maps directly to the "root" field (stores arabicroot, Arabic script).
+        # "type" maps to the "type" field which stores English category values
+        # ("Nouns", "Verbs", "Particles") via _ARABIC_TO_TYPE mapping.
+        _filter = {}
+        if props.get("root"):
+            _filter["root"] = props["root"]
+        if props.get("type"):
+            english_type = TupleQuery._ARABIC_TO_TYPE.get(props["type"])
+            if english_type:
+                _filter["type"] = english_type
+        if _filter:
+            # Merge word_standard (primary) and normalized so that words whose
+            # word_standard is None (e.g. تملك) are still included.
+            words = set(_query_word_index(_filter, field="word_standard"))
+            words.update(_query_word_index(_filter, field="normalized"))
+            words.discard(None)
+            return list(words)
+        return []
 
 
 class ArabicWildcardQuery(Wildcard):

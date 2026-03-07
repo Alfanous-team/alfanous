@@ -57,7 +57,7 @@ edit_translations_to_download_list:
 ## this target is to build all what have to be built:
 # 1. Generate all Indexes, see  index_all
 # 2. Update Quranic resources needed after indexing phase, see update_post_build
-build: index_all update_post_build
+build: generate_arabic_names index_all update_post_build
 
 
 
@@ -82,18 +82,17 @@ download_tanzil:
 update_post_build: update_translations_indexed_list
 
 ##  update resources that must be updated before indexing phase, which are:
-# (currently unused, kept for potential future use)
-update_pre_build:
+# - arabic_names.json (derived from store/fields.json)
+update_pre_build: generate_arabic_names
+
+# Regenerate src/alfanous/resources/__generated__/arabic_names.json from store/fields.json.
+# The output maps every indexed field's search_name to its Arabic display name.
+generate_arabic_names:
+	export PYTHONPATH=$(API_PATH) ;	$(PYTHON_COMMAND) -m alfanous_import.generate_arabic_names
 
 # update list of indexed translations automatically using Importer
 update_translations_indexed_list:
-	export PYTHONPATH=$(API_PATH) ;	$(PYTHON_COMMAND) $(QIMPORT) -u translations $(INDEX_PATH)extend/  $(CONFIGS_PATH)translations.json
-
-# update aya.json and word.json from the Quran-Researcher database
-update_from_quran_researcher:
-	export PYTHONPATH=$(API_PATH) ;	$(PYTHON_COMMAND) -m alfanous_import.quran_researcher_updater
-
-
+	export PYTHONPATH=$(API_PATH) ;	$(PYTHON_COMMAND) $(QIMPORT) -u translations $(INDEX_PATH)extend/  $(CONFIGS_PATH)__generated__/translations.json
 
 # update recitations online list automatically from the project every ayah
 update_recitations_online_list:
@@ -107,6 +106,6 @@ index_all: index_main
 	@echo "done;"
 
 index_main:
-	export PYTHONPATH=$(API_PATH) ;	rm -rf $(INDEX_PATH)main/; $(PYTHON_COMMAND) $(QIMPORT) -x main $(STORE_PATH) $(INDEX_PATH)main/ --translations $(STORE_PATH)Translations/ --corpus $(STORE_PATH)quranic-corpus-morpology.xml
+	export PYTHONPATH=$(API_PATH) ;	rm -rf $(INDEX_PATH)main/; $(PYTHON_COMMAND) $(QIMPORT) -x main $(STORE_PATH) $(INDEX_PATH)main/ --translations $(STORE_PATH)Translations/ --corpus $(STORE_PATH)quranic-corpus-morphology-0.4.txt
 
 

@@ -10,7 +10,18 @@ _HAMZAT = (WAW_HAMZA, YEH_HAMZA)
 _LAMALEFAT = (LAM_ALEF, LAM_ALEF_HAMZA_ABOVE, LAM_ALEF_HAMZA_BELOW, LAM_ALEF_MADDA_ABOVE)
 
 def normalize_uthmani_symbols(w):
-    return w.replace(MINI_ALEF, '')\
+    """Remove or replace Uthmanic-script symbols so the result matches plain Arabic.
+
+    Key mappings:
+    - MINI_ALEF (U+0670, superscript alef): replaced with ALEF so that words
+      like سَمَّٰكُمُ normalize to سماكم matching standard user input.
+    - ALEF_MADDA (U+0622, آ): replaced with ALEF so that السَّمَآءِ
+      normalizes to السماء.
+    - ALEF_WASLA (U+0671): replaced with ALEF.
+    - SMALL_YEH, SMALL_WAW, SMALL_HIGH_LIGATURE, SMALL_HIGH_JEEM: removed.
+    """
+    return w.replace(MINI_ALEF, ALEF)\
+        .replace(ALEF_MADDA, ALEF)\
         .replace(SMALL_YEH, '')\
         .replace(SMALL_WAW, '')\
         .replace(ALEF_WASLA, ALEF)\

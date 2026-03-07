@@ -2,7 +2,7 @@ from whoosh import qparser
 from whoosh.qparser import QueryParser
 
 from alfanous.searching import QSearcher, QReader
-from alfanous.indexing import QseDocIndex, ExtDocIndex, BasicDocIndex
+from alfanous.indexing import QseDocIndex, BasicDocIndex
 from alfanous.results_processing import Qhighlight, QTranslationHighlight
 from alfanous.query_processing import QuranicParser, StandardParser
 from alfanous.constants import QURAN_TOTAL_VERSES
@@ -148,6 +148,13 @@ class BasicSearchEngine:
             return self._reader.list_stored_values(fieldname)
         else:
             return []
+
+    def list_terms(self, fieldname=None):
+        """ List all indexed terms for a field (or all fields if fieldname is None). """
+        if "_reader" in self.__dict__:
+            return self._reader.list_terms(fieldname)
+        else:
+            return iter([])
 
     def __call__(self):
         """

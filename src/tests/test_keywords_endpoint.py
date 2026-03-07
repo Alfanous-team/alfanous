@@ -16,8 +16,8 @@ def test_keywords_top_frequent_default():
     show_data = result['show']
     assert show_data['field'] == 'aya_'
     assert show_data['mode'] == 'unique'
-    assert show_data['count'] == 17574  # Total unique words in aya_ field
-    assert len(show_data['keywords']) == 17574
+    assert show_data['count'] == 17572  # Total unique words in aya_ field
+    assert len(show_data['keywords']) == 17572
     
     # Check that it returns a list of unique words
     assert isinstance(show_data['keywords'], list)
