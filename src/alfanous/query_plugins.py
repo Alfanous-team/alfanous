@@ -17,29 +17,33 @@ def _query_word_index(filter_dict, field="word", limit=5000):
     """Query the word child documents in the QSE index and return unique values
     of *field* from matching documents.
 
-    Uses the shared ``data.QSE()`` engine so no extra index handle is opened.
-    Returns an empty list when the index is unavailable.
+    Iterates stored documents directly via the index reader so that all field
+    types (TEXT, ID, NUMERIC) are compared against their *stored* values
+    without relying on Whoosh's query-time term encoding.  This guarantees
+    correct results regardless of analyser behaviour.
 
     :param filter_dict: Mapping of ``{fieldname: value}`` to filter word children.
     :param field: The document field whose value to collect (default ``"word"``).
-    :param limit: Maximum number of matching word children to inspect.
+    :param limit: Maximum number of unique values to collect before stopping.
     :returns: Deduplicated list of *field* values from matching word children.
     """
     try:
         from alfanous.data import QSE as _QSE
-        from whoosh import query as _wq
         engine = _QSE()
         if not engine.OK:
             return []
-        parts = [_wq.Term("kind", "word")]
-        for fname, fval in filter_dict.items():
-            if fval:
-                parts.append(_wq.Term(fname, fval))
-        q = _wq.And(parts)
-        res, _, searcher = engine.search_with_query(q, limit=limit)
-        values = list(set(r.get(field) for r in res if r.get(field)))
-        searcher.close()
-        return values
+        reader = engine._reader.reader
+        values = set()
+        for _, stored in reader.iter_docs():
+            if stored.get("kind") != "word":
+                continue
+            if all(stored.get(k) == v for k, v in filter_dict.items() if v is not None):
+                val = stored.get(field)
+                if val is not None:
+                    values.add(val)
+                    if len(values) >= limit:
+                        break
+        return list(values)
     except Exception:
         return []
 
@@ -280,6 +284,17 @@ class TashkilQuery(QMultiTerm):
 class TupleQuery(QMultiTerm):
     """Query for words matching specific morphological properties"""
 
+    # Map Arabic query type labels to the English "type" field stored in the
+    # word-children index (populated from corpus first.get("type")).
+    # Corpus values: 'Nouns', 'Verbs', 'Particles', 'Nominals', 'Pronouns',
+    #                'Adverbs', 'Prepositions', 'Conjunctions', 'Disconnected Letters'
+    _ARABIC_TO_TYPE = {
+        "اسم": "Nouns",
+        "فعل": "Verbs",
+        "أداة": "Particles",
+        "فواتيح": "Disconnected Letters",
+    }
+
     def __init__(self, fieldname, items, boost=1.0):
         self.fieldname = fieldname
         self.props = self._properties(items)
@@ -306,12 +321,16 @@ class TupleQuery(QMultiTerm):
         :param props: Dict with optional keys ``root``, ``type``.
         :returns: List of matching unvocalized word forms.
         """
-        # "type" in the query tuple maps to the "pos" field in the index, which
-        # stores Arabic POS values (e.g. "فعل" for verb, "اسم" for noun).
-        # The "root" key maps directly to the "root" field.
-        _prop_to_field = {"root": "root", "type": "pos"}
-        _filter = {_prop_to_field[k]: v for k, v in props.items()
-                   if k in _prop_to_field and v}
+        # "root" maps directly to the "root" field (stores arabicroot, Arabic script).
+        # "type" maps to the "type" field which stores English category values
+        # ("Nouns", "Verbs", "Particles") via _ARABIC_TO_TYPE mapping.
+        _filter = {}
+        if props.get("root"):
+            _filter["root"] = props["root"]
+        if props.get("type"):
+            english_type = TupleQuery._ARABIC_TO_TYPE.get(props["type"])
+            if english_type:
+                _filter["type"] = english_type
         if _filter:
             return _query_word_index(_filter, field="normalized")
         return []
