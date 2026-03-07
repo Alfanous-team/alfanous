@@ -693,9 +693,12 @@ class Raw:
 
             # 1. Translation search: NestedParent over child translation docs
             _available_fields = [f for f in _TEXT_LANG_FIELDS if f in self.QSE._schema]
+            _trans_terms = []
             if _available_fields:
                 _trans_parser = _MFP(_available_fields, self.QSE._schema, group=_OrGroup)
                 _trans_q = _trans_parser.parse(query)
+                _available_fields_set = set(_available_fields)
+                _trans_terms = [t for f, t in _trans_q.all_terms() if f in _available_fields_set]
                 _query_parts.append(wq.NestedParent(wq.Term("kind", "aya"), _trans_q))
 
             # 2. Arabizi search: convert non-Arabic words to Arabic candidates
@@ -749,6 +752,7 @@ class Raw:
             # All matched aya_ac variation terms (only populated when fuzzy=True).
             # Used in the word_info loop to derive per-word variation lists.
             _all_ac_variations = [term[1] for term in termz if term[0] == "aya_ac"]
+            _trans_terms = []
         # pagination
         offset = 1 if offset < 1 else offset
         range = self._defaults["minrange"] if range < self._defaults["minrange"] else range
@@ -785,6 +789,8 @@ class Raw:
         ).normalize_all
         # highligh function that consider None value and non-definition
         H = lambda X: self.QSE.highlight(X, terms, highlight) if highlight != "none" and X else X if X else "-----"
+        # translation highlight function: applies QTranslationHighlight with non-Arabic query terms
+        TH = lambda X: QTranslationHighlight(X, _trans_terms, type=highlight) if highlight != "none" and X and _trans_terms else X if X else "-----"
         # Numbers are 0 if not defined
         N = lambda X: X if X else 0
         # parse keywords lists , used for Sura names
@@ -1197,7 +1203,7 @@ class Raw:
                     else H(r["uth_"]),
                     "text_no_highlight": r["aya"] if script == "standard"
                     else r["uth_"],
-                    "translation": trad_text.get(r["gid"], {}).get("text") if _want_translation else None,
+                    "translation": TH(trad_text.get(r["gid"], {}).get("text")) if _want_translation else None,
                     "recitation": None if not recitation or not self._recitations.get(recitation) \
                         else f'https://www.everyayah.com/data/{self._recitations[recitation]["subfolder"]}/%03d%03d.mp3' % (
                     int(r["sura_id"]), int(r["aya_id"])),

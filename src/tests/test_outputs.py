@@ -1401,3 +1401,57 @@ def test_fuzzy_field_query_matches_same_as_non_fuzzy():
         f"Fuzzy search must return at least as many results as non-fuzzy "
         f"(fuzzy={fuzzy_total}, non_fuzzy={non_fuzzy_total})"
     )
+
+
+def test_non_arabic_aya_search_highlights_translation():
+    """Non-Arabic aya search with highlight=css should highlight keywords in translation text.
+
+    When the query contains no Arabic characters (e.g. 'mercy'), the search
+    matches ayas via their translation children.  The translation text returned
+    in each result's aya.translation field must have the matching keywords
+    wrapped in <span class="match ..."> tags when highlight != 'none'.
+    """
+    search_flags = {
+        "action": "search",
+        "unit": "aya",
+        "query": "mercy",
+        "highlight": "css",
+        "translation": "en.shakir",
+        "page": 1,
+    }
+    results = RAWoutput.do(search_flags)
+    assert results["error"]["code"] == 0
+    ayas = results["search"]["ayas"]
+    assert ayas, "Non-Arabic search should return at least one result"
+
+    highlighted_found = any(
+        aya_data["aya"]["translation"] and "<span" in aya_data["aya"]["translation"]
+        for aya_data in ayas.values()
+    )
+
+    assert highlighted_found, (
+        "Translation text must contain highlighted <span> tags for non-Arabic aya search"
+    )
+
+
+def test_non_arabic_aya_search_no_highlight_when_highlight_none():
+    """Non-Arabic aya search with highlight=none should return plain translation text."""
+    search_flags = {
+        "action": "search",
+        "unit": "aya",
+        "query": "mercy",
+        "highlight": "none",
+        "translation": "en.shakir",
+        "page": 1,
+    }
+    results = RAWoutput.do(search_flags)
+    assert results["error"]["code"] == 0
+    ayas = results["search"]["ayas"]
+    assert ayas, "Non-Arabic search should return at least one result"
+
+    for aya_data in ayas.values():
+        translation_text = aya_data["aya"]["translation"]
+        if translation_text:
+            assert "<span" not in translation_text, (
+                "Translation text must not contain highlight spans when highlight=none"
+            )
