@@ -247,6 +247,18 @@ def test_arabic_wildcard_question_mark():
     # Wildcard queries expand against the index, not at parse time
 
 
+def test_every_plugin_removed():
+    """EveryPlugin is removed from ArabicParser so *:* must not parse to Every."""
+    from whoosh.query import Every
+    from alfanous.query_processing import ArabicParser
+    from whoosh.fields import Schema, TEXT
+
+    schema = Schema(text=TEXT(stored=True))
+    parser = ArabicParser(schema, mainfield='text')
+    query = parser.parse('*:*')
+    assert not isinstance(query, Every), "*:* should not produce an Every (match-all) query"
+
+
 def test_multiple_plugins_combination():
     """Test combination of multiple plugins - Example: AND/OR logic from README"""
     parser = create_test_parser()

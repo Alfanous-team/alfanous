@@ -19,7 +19,7 @@ from whoosh.query import Term
 from alfanous.data import arabic_to_english_fields
 
 # Import query plugins for integration with Whoosh 2.7
-from whoosh.qparser.plugins import SingleQuotePlugin
+from whoosh.qparser.plugins import SingleQuotePlugin, EveryPlugin
 
 
 class StandardParser(QueryParser):  #
@@ -62,6 +62,8 @@ class ArabicParser(StandardParser):
         
         # Remove SingleQuotePlugin to allow our TashkilPlugin to work
         self.remove_plugin_class(SingleQuotePlugin)
+        # Remove EveryPlugin so *:* does not translate to a match-all query
+        self.remove_plugin_class(EveryPlugin)
         
         # Add all Arabic query plugins (instantiate plugin classes)
         self.add_plugin(SynonymsPlugin())
