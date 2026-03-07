@@ -272,33 +272,30 @@ class Transformer:
                 if len(std_tokens) == corpus_count:
                     aya_standard_words[key] = std_tokens
                 else:
-                    # Try to recover by merging each "يا" token with the word
-                    # that follows it (the vocative particle is written as a
-                    # separate word in the standard text but fused with the
-                    # addressee in the corpus).  Only accept the merge when
-                    # the resulting token count matches the corpus count.
+                    # Try to recover by particle-merging: certain short particles
+                    # in the standard text are fused with the following word in
+                    # the corpus.  The particle is ignored; only the following
+                    # word is stored as word_standard.
+                    #
+                    #   يا  X  → X      (vocative: يَٰٓأَيُّهَا, يَٰٓأَرْضُ …)
+                    #   ويا X  → X      (و + vocative: وَيَٰقَوْمِ, وَيَٰٓـَٔادَمُ …)
+                    #   ها  X  → X      (attention particle: هَٰٓأَنتُمْ …)
+                    #
+                    # Only accepted when the resulting count matches the corpus.
+                    _PARTICLES = {"يا", "ويا", "ها"}
                     merged = []
                     i = 0
                     while i < len(std_tokens):
-                        if std_tokens[i] == "يا" and i + 1 < len(std_tokens):
-                            merged.append("يا" + std_tokens[i + 1])
+                        tok = std_tokens[i]
+                        if tok in _PARTICLES and i + 1 < len(std_tokens):
+                            # Skip the particle; store only the following word.
+                            merged.append(std_tokens[i + 1])
                             i += 2
                         else:
-                            merged.append(std_tokens[i])
+                            merged.append(tok)
                             i += 1
                     if len(merged) == corpus_count:
-                        # Store the addressee part only (drop the "يا" prefix)
-                        # so the stored word_standard matches the corpus token.
-                        resolved = []
-                        j = 0
-                        while j < len(std_tokens):
-                            if std_tokens[j] == "يا" and j + 1 < len(std_tokens):
-                                resolved.append(std_tokens[j + 1])
-                                j += 2
-                            else:
-                                resolved.append(std_tokens[j])
-                                j += 1
-                        aya_standard_words[key] = resolved
+                        aya_standard_words[key] = merged
                     elif aya_gid is not None:
                         qc_words = [w["word"] for w in corpus_words_for_key]
                         special[str(aya_gid)] = {
@@ -409,7 +406,8 @@ class Transformer:
                                     if v is not None and k in _schema_names}
                         # Attach standard-script and transliteration words
                         # by matching position (only when count aligned).
-                        if _has_word_standard and pos < len(std_tokens):
+                        if (_has_word_standard and pos < len(std_tokens)
+                                and std_tokens[pos] is not None):
                             word_doc["word_standard"] = std_tokens[pos]
                         if _has_word_transliteration and pos < len(tr_tokens):
                             word_doc["word_transliteration"] = tr_tokens[pos]
