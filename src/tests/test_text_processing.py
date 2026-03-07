@@ -245,7 +245,7 @@ def test_translation_stem_filter_unknown_language():
 
 
 def test_translation_stem_filter_pickle():
-    """TranslationStemFilter must survive pickle/unpickle (Whoosh schema serialization)."""
+    """TranslationStemFilter must survive pickle/unpickle with correct stems."""
     import pickle
     stem_filter = TranslationStemFilter('en')
     restored = pickle.loads(pickle.dumps(stem_filter))
@@ -256,6 +256,47 @@ def test_translation_stem_filter_pickle():
     tok.stopped = False
     (out,) = list(restored(iter([tok])))
     assert out.text  # non-empty stemmed form
+    # Inflected form must produce the same stem as the base form after unpickling.
+    tok2 = Token(); tok2.text = 'fires'; tok2.boost = 1.0; tok2.stopped = False
+    tok3 = Token(); tok3.text = 'fire';  tok3.boost = 1.0; tok3.stopped = False
+    (stem_fires,) = list(restored(iter([tok2])))
+    (stem_fire,)  = list(restored(iter([tok3])))
+    assert stem_fires.text == stem_fire.text, (
+        f"After unpickling, 'fires' and 'fire' must produce the same stem "
+        f"(got {stem_fires.text!r} vs {stem_fire.text!r})"
+    )
+
+
+def test_translation_stem_filter_whoosh_fallback():
+    """Whoosh's Snowball is the primary backend for English; stems must match."""
+    stem_filter = TranslationStemFilter('en')
+    assert stem_filter._available, "Whoosh's Snowball should be available for English"
+    # The stem function module should come from whoosh (not pystemmer).
+    assert 'whoosh' in getattr(stem_filter._stem_fn, '__module__', ''), (
+        f"English should use Whoosh's Snowball as primary; got {stem_filter._stem_fn}"
+    )
+    # 'fires' and 'fire' must both produce the same stem.
+    def stem(word):
+        t = Token(); t.text = word; t.boost = 1.0; t.stopped = False
+        return list(stem_filter(iter([t])))[0].text
+    assert stem('fires') == stem('fire') == 'fire', (
+        f"Whoosh primary: fires->{stem('fires')!r}, fire->{stem('fire')!r}"
+    )
+
+
+def test_translation_stem_filter_pystemmer_fallback():
+    """pystemmer is used as fallback for languages Whoosh does not cover (e.g. Turkish)."""
+    # Turkish is in _LANG_TO_SNOWBALL but not supported by Whoosh's lang module.
+    stem_filter = TranslationStemFilter('tr')
+    if not stem_filter._available:
+        import pytest
+        pytest.skip("Neither Whoosh nor pystemmer supports Turkish in this environment")
+    # Just verify it produces a non-empty stem without error.
+    def stem(word):
+        t = Token(); t.text = word; t.boost = 1.0; t.stopped = False
+        return list(stem_filter(iter([t])))[0].text
+    result = stem('yaziyor')
+    assert result, "pystemmer fallback should produce a non-empty stem for Turkish"
 
 
 # ---------------------------------------------------------------------------

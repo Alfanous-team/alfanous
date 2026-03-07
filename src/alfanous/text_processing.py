@@ -1,6 +1,7 @@
 
 import copy
 import json
+import logging
 import re
 
 from whoosh.analysis import RegexTokenizer, Filter, LowercaseFilter, MultiFilter  # StandardAnalyzer,
@@ -8,6 +9,8 @@ from alfanous.Support.pyarabic.main import strip_tashkeel, strip_tatweel, strip_
     normalize_hamza, normalize_lamalef, normalize_uthmani_symbols  # , HARAKAT_pat,
 
 from alfanous.constants import INVERTEDSHAPING
+
+logger = logging.getLogger(__name__)
 
 
 def normalize_shaping(text):
@@ -258,10 +261,20 @@ _LANG_TO_SNOWBALL = {
 
 
 class TranslationStemFilter(Filter):
-    """Whoosh filter that applies language-specific stemming using PyStemmer (Snowball).
+    """Whoosh filter that applies language-specific Snowball stemming.
 
-    Falls back to a no-op if *pystemmer* is not installed or the language is
-    not supported by Snowball.
+    Priority order:
+    1. Whoosh's built-in pure-Python Snowball stemmer (``whoosh.lang``) —
+       always available, no extra dependency, covers most translation
+       languages (ar, de, en, fr, ru, …).
+    2. pystemmer (C extension) — used only for languages Whoosh does not
+       support (currently hi, id, tr in the dataset).
+    3. No-op — when no Snowball algorithm is available for the language.
+
+    Because both backends implement the same Snowball specification, the
+    stems they produce are identical for the languages they share, so
+    index-time and query-time stems are always consistent regardless of
+    which backend is active.
 
     @param lang: ISO 639-1 language code (e.g. ``'en'``, ``'fr'``, ``'de'``).
     """
@@ -271,37 +284,54 @@ class TranslationStemFilter(Filter):
         self._available = self._make_stemmer(lang)
 
     def _make_stemmer(self, lang):
+        """Set up self._stem_fn and return True if a stemmer is available."""
         snowball_name = _LANG_TO_SNOWBALL.get(lang)
         if not snowball_name:
-            self._stemmer = None
+            self._stem_fn = None
             return False
+        # Prefer Whoosh's pure-Python Snowball (always present, no extra dep).
+        # Probe with a throwaway word to catch broken implementations such as
+        # whoosh.lang.isri (Arabic) which uses invalid regex escapes in
+        # Python 3.12 and would raise re.error at call time.
+        try:
+            from whoosh.lang import stemmer_for_language
+            _fn = stemmer_for_language(snowball_name)
+            _fn('test')  # validate — raises for broken stemmers
+            self._stem_fn = _fn
+            return True
+        except Exception as e:
+            logger.debug('Whoosh stemmer unavailable for %s (%s): %s', lang, snowball_name, e)
+        # Fall back to pystemmer for languages Whoosh does not cover or where
+        # Whoosh's implementation is broken (e.g. Arabic ISRIStemmer on Py 3.12).
         try:
             import Stemmer
-            self._stemmer = Stemmer.Stemmer(snowball_name)
+            _obj = Stemmer.Stemmer(snowball_name)
+            self._stem_fn = _obj.stemWord
             return True
-        except (ImportError, KeyError, ValueError):
-            self._stemmer = None
-            return False
+        except (ImportError, KeyError, ValueError) as e:
+            logger.debug('pystemmer unavailable for %s (%s): %s', lang, snowball_name, e)
+        self._stem_fn = None
+        return False
 
-    # pystemmer's Stemmer (Cython) is not picklable; only persist lang and flag.
+    # Stemmer callables are not safely picklable; only persist lang so
+    # __setstate__ can rebuild the stemmer on load.
     def __getstate__(self):
         return {'_lang': self._lang, '_available': self._available}
 
     def __setstate__(self, state):
         self._lang = state['_lang']
-        self._available = state['_available']
-        if self._available:
-            self._make_stemmer(self._lang)
-        else:
-            self._stemmer = None
+        # Rebuild the stemmer; update _available to reflect the current
+        # environment (pystemmer may have been installed/removed since the
+        # schema was last saved).
+        self._available = self._make_stemmer(self._lang)
 
     def __call__(self, tokens):
-        if self._stemmer is None:
+        if self._stem_fn is None:
             yield from tokens
             return
         for t in tokens:
             if t.text:
-                t.text = self._stemmer.stemWord(t.text)
+                t.text = self._stem_fn(t.text)
             yield t
 
 
@@ -309,9 +339,10 @@ def make_translation_analyzer(lang):
     """Build a language-specific translation analyzer using Snowball stemming.
 
     Returns a Whoosh analyzer that tokenizes with :class:`RegexTokenizer`,
-    lowercases, and applies a Snowball stemmer for *lang* (if supported by
-    PyStemmer).  Falls back to ``RegexTokenizer | LowercaseFilter`` for
-    unsupported languages or when *pystemmer* is not installed.
+    lowercases, and applies a Snowball stemmer for *lang* (if supported).
+    Uses Whoosh's built-in pure-Python Snowball for most languages; falls
+    back to pystemmer for languages Whoosh does not cover; falls back to
+    no stemming when no Snowball implementation is available.
 
     @param lang: ISO 639-1 language code (e.g. ``'en'``, ``'fr'``).
     @return: Whoosh analyzer pipeline.

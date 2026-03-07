@@ -235,6 +235,38 @@ def test_non_arabic_search_returns_ayas():
         assert isinstance(item["identifier"]["gid"], int)
 
 
+def test_non_arabic_aya_search_stemming():
+    """Inflected forms must match the same ayas as the base/stemmed form.
+
+    'fires' and 'fire' must produce identical result counts because the
+    translation fields are indexed and queried with the same Snowball stemmer.
+    """
+    result_fire  = alfanous.api.search("fire")
+    result_fires = alfanous.api.search("fires")
+    assert result_fire["error"]["code"] == 0
+    assert result_fires["error"]["code"] == 0
+    total_fire  = result_fire["search"]["interval"]["total"]
+    total_fires = result_fires["search"]["interval"]["total"]
+    assert total_fires > 0, "Expected results for 'fires'"
+    assert total_fire == total_fires, (
+        f"'fires' ({total_fires}) must return the same count as 'fire' ({total_fire})"
+    )
+
+
+def test_translation_unit_search_stemming():
+    """Translation-unit search: inflected forms match the same translations as base form."""
+    result_fire  = alfanous.api.search("fire",  unit="translation")
+    result_fires = alfanous.api.search("fires", unit="translation")
+    assert result_fire["error"]["code"] == 0
+    assert result_fires["error"]["code"] == 0
+    total_fire  = result_fire["search"]["interval"]["total"]
+    total_fires = result_fires["search"]["interval"]["total"]
+    assert total_fires > 0, "Expected results for 'fires' (translation unit)"
+    assert total_fire == total_fires, (
+        f"translation 'fires' ({total_fires}) must equal 'fire' ({total_fire})"
+    )
+
+
 # ---------------------------------------------------------------------------
 # Highlight in translation search
 # ---------------------------------------------------------------------------
