@@ -1079,6 +1079,18 @@ def test_show_translations_shows_all_indexed_translations():
         assert name  # not empty
 
 
+def test_show_roots_returns_strings_not_bytes():
+    """show/roots must return plain Unicode strings, not binary b'...' values."""
+    result = RAWoutput.do({"action": "show", "query": "roots"})
+    assert "show" in result
+    roots = result["show"]["roots"]
+    assert isinstance(roots, list)
+    for root in roots:
+        assert isinstance(root, str), (
+            f"Root value should be a str, got {type(root)!r}: {root!r}"
+        )
+
+
 def test_domains_view_has_correct_values():
     """DOMAINS['view'] must list all expected view modes as separate entries."""
     expected = {"minimal", "normal", "full", "statistic", "linguistic", "recitation", "custom"}
