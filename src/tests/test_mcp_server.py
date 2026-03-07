@@ -601,12 +601,6 @@ class TestSearchQuranByPosition:
         assert isinstance(result, dict)
         assert "error" in result
 
-    def test_manzil_filter(self):
-        """Filtering by manzil should succeed."""
-        result = search_quran_by_position(manzil="1")
-        assert isinstance(result, dict)
-        assert "error" in result
-
     def test_combined_position_filters(self):
         """Combining sura and verse number filters should succeed."""
         result = search_quran_by_position(sura_number="2", verse_number="255")

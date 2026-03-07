@@ -285,9 +285,8 @@ class Transformer:
         ix = FileStorage(self.index_path).create_index(schema)
         self.transfer(ix, tablename, translations_store_path=translations_store_path,
                       corpus_path=corpus_path)
-        logging.info("Optimising index (merging segments) …")
-        ix.optimize()
-        logging.info("Index optimisation complete.")
+        # ix.optimize()  # merges all segments into one; slow on large corpora —
+        # uncomment if a single-segment index (smaller file count) is required
         return "OK"
 
 

@@ -75,7 +75,6 @@ def test_search():
     # >سماكم
     # سماكم
     # سجدة:نعم
-    # fawoqa
     # \" رب العالمين\"
     # جزء:8
 
@@ -116,7 +115,16 @@ def test_search():
                                 'sura_type': 'Meccan',
                                 'sura_type_arabic': 'مكية',
                                 'topic': 'الانشغال بشهوات الدنيا',
+                                'transliteration': 'Tharhum yakuloo wayatamattaAAoo wayulhihimu alamalu fasawfa yaAAlamoona',
                                 'uth_': 'ذَرۡهُمۡ يَأۡكُلُواْ وَيَتَمَتَّعُواْ وَيُلۡهِهِمُ ٱلۡأَمَلُۖ فَسَوۡفَ يَعۡلَمُونَ'}
+
+    # Transliteration field search: Latin-script phonetic text must be searchable.
+    # "alrrahmani" appears in Al-Fatiha 1:1 and 1:3 transliterations.
+    results_t, terms_t, searcher_t = QSE.search_all("transliteration:alrrahmani", limit=10)
+    assert len(results_t) > 0, "transliteration field search must return results"
+    assert all(r.get("kind") == "aya" for r in results_t)
+    assert any("alrrahmani" in (r.get("transliteration") or "").lower() for r in results_t)
+    searcher_t.close()
 
 
 def test_translation_engine():

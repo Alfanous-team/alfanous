@@ -444,7 +444,7 @@ def search_quran_by_stats(
     description=(
         "Search for Quranic verses by their structural position. "
         "Filter by sura (chapter) number, verse number, juz (part), "
-        "hizb, ruku, page, or manzil. "
+        "hizb, ruku, or page. "
         "Accepts exact values or Whoosh range expressions (e.g. '[2 TO 5]'). "
         "Use this tool to retrieve verses from a specific location or range "
         "within the Qur'an's structural divisions."
@@ -460,7 +460,6 @@ def search_quran_by_position(
     ruku: Optional[str] = None,
     rub: Optional[str] = None,
     page: Optional[str] = None,
-    manzil: Optional[str] = None,
     page_int: int = 1,
     perpage: int = 10,
     sortedby: str = "mushaf",
@@ -485,7 +484,6 @@ def search_quran_by_position(
         ruku: Ruku number to filter by (field: ruk).
         rub: Rub (quarter) number to filter by (field: rub).
         page: Mushaf page number to filter by (field: page).
-        manzil: Manzil number to filter by (field: manzil).
         page_int: Page number for pagination (starts at 1).
         perpage: Number of results per page (1–100).
         sortedby: Sort order — one of "relevance", "score", "mushaf",
@@ -510,7 +508,6 @@ def search_quran_by_position(
         "ruk": ruku,
         "rub": rub,
         "page": page,
-        "manzil": manzil,
     }
 
     parts = []
