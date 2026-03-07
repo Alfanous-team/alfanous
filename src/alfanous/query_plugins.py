@@ -180,10 +180,12 @@ class DerivationQuery(QMultiTerm):
         candidates = {word, word_norm, word_stem} - {''}
         index_key = 'root' if use_root_level else 'lemma'
 
-        # Collect key values by matching every candidate against every field
+        # Collect key values by matching every candidate against every field,
+        # including word_standard so users can type standard-script forms and
+        # find the corpus root via the stored word_standard values.
         key_values = set()
         for val in candidates:
-            for sf in ('word', 'normalized', 'lemma', 'root'):
+            for sf in ('word', 'normalized', 'lemma', 'root', 'word_standard'):
                 key_values.update(_query_word_index({sf: val}, field=index_key))
         key_values.discard(None)
         key_values.discard('')
