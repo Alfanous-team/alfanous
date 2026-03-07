@@ -609,7 +609,7 @@ class Raw:
             word_synonyms = True
             word_derivations = True
             word_vocalizations = True
-            word_linguistics = False
+            word_linguistics = True
             aya_position_info = aya_theme_info = aya_sajda_info = True
             aya_stat_info = sura_stat_info = True
             annotation_aya = annotation_word = True
