@@ -186,6 +186,61 @@ def test_standard_analyzer_preserves_word_forms():
 
 
 # ---------------------------------------------------------------------------
+# QStandardAnalyzer – Uthmani text normalization (issue: fuzzy=off no results)
+# ---------------------------------------------------------------------------
+
+def test_standard_analyzer_strips_uthmani_word():
+    """QStandardAnalyzer must normalize Uthmanic text to bare Arabic letters.
+
+    Searching 'مُّخۡتَلِفٖ' (Uthmani script, contains U+06E1 ARABIC SMALL
+    HIGH NOON and U+0656 ARABIC SUBSCRIPT ALEF) with fuzzy=False on the
+    standard aya field must produce the same token as the indexed plain form
+    'مختلف' so that the search returns results.
+    """
+    uthmani_word = 'مُّخۡتَلِفٖ'  # U+06E1 and U+0656 are the extra marks
+    tokens = _tokenize_query(QStandardAnalyzer, uthmani_word)
+    assert tokens == ['مختلف'], (
+        f"Expected ['مختلف'] but got {tokens!r}; "
+        "QStandardAnalyzer must strip extended diacritics and Uthmani annotation "
+        "marks so that queries against the standard aya field return results"
+    )
+
+
+def test_standard_analyzer_strips_subscript_alef():
+    """QStandardAnalyzer must strip U+0656 (ARABIC SUBSCRIPT ALEF)."""
+    # U+0656 is an extended diacritic not in the classic TASHKEEL range
+    word_with_subscript_alef = 'ف\u0656'
+    tokens = _tokenize_query(QStandardAnalyzer, word_with_subscript_alef)
+    assert tokens == ['ف'], (
+        f"Expected ['ف'] but got {tokens!r}; U+0656 should be stripped"
+    )
+
+
+def test_standard_analyzer_strips_small_high_noon():
+    """QStandardAnalyzer must strip U+06E1 (ARABIC SMALL HIGH NOON)."""
+    # U+06E1 is a Quranic annotation mark (in the U+06D6-U+06ED range)
+    word_with_small_high_noon = 'خ\u06E1ت'
+    tokens = _tokenize_query(QStandardAnalyzer, word_with_small_high_noon)
+    assert tokens == ['خت'], (
+        f"Expected ['خت'] but got {tokens!r}; U+06E1 should be stripped"
+    )
+
+
+def test_strip_tashkeel_strips_extended_diacritics():
+    """strip_tashkeel must strip extended Arabic diacritics U+0653–U+0659."""
+    from alfanous.Support.pyarabic.strip_functions import strip_tashkeel
+
+    for cp in (0x0653, 0x0654, 0x0655, 0x0656, 0x0657, 0x0658, 0x0659):
+        char = chr(cp)
+        word = 'ك' + char + 'ت'
+        result = strip_tashkeel(word)
+        assert char not in result, (
+            f"U+{cp:04X} was not stripped by strip_tashkeel; "
+            "extended Arabic diacritics must be removed when tashkeel is stripped"
+        )
+
+
+# ---------------------------------------------------------------------------
 # TranslationStemFilter
 # ---------------------------------------------------------------------------
 

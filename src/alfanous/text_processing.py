@@ -217,11 +217,11 @@ def _build_fuzzy_analyzer():
 
 
 # analyzers
-QStandardAnalyzer = QSpaceTokenizer() | QArabicSymbolsFilter()
+QStandardAnalyzer = QSpaceTokenizer() | QArabicSymbolsFilter(uthmani_symbols=True)
 APermissibleAnalyzer = QSpaceTokenizer() | QArabicSymbolsFilter(shaping=True, tashkil=True, spellerrors=True,
-                                                                hamza=True)
+                                                                hamza=True, uthmani_symbols=True)
 QDiacAnalyzer = QSpaceTokenizer() | QArabicSymbolsFilter(tashkil=False)
-QHighLightAnalyzer = QSpaceTokenizer() | QArabicSymbolsFilter()
+QHighLightAnalyzer = QSpaceTokenizer() | QArabicSymbolsFilter(uthmani_symbols=True)
 QDiacHighLightAnalyzer = QSpaceTokenizer() | QArabicSymbolsFilter(tashkil=False)
 QUthmaniAnalyzer = QSpaceTokenizer() | QArabicSymbolsFilter(shaping=True, tashkil=True, spellerrors=False, hamza=False,
                                                             uthmani_symbols=True)
