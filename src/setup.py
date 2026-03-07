@@ -87,9 +87,9 @@ setup(
                                'configs/*',
                                'indexes/main/*',
                                'indexes/extend/*',
-                               # Runtime-only resources (excludes build-time data files
-                               # aya.json and fields.json which are only needed by
-                               # alfanous_import when building the search index).
+                               # Runtime-only resources.
+                               # Build-time data files (aya.json, fields.json, word.json)
+                               # live in store/ and are only needed by alfanous_import.
                                'resources/information.json',
                                'resources/arabic_names.json',
                                'resources/stop_words.json',
@@ -99,7 +99,6 @@ setup(
                                'resources/vocalizations.json',
                                'resources/standard_to_uthmani.json',
                                'resources/word_props.json',
-                               'resources/word.json',
                                'resources/ai_query_translation_rules.txt',
                            ]},
 

@@ -19,7 +19,6 @@ SYNONYMS_FILE = ROOT_RESOURCE + "synonyms.json"
 ANTONYMS_FILE = ROOT_RESOURCE + "antonyms.json"
 VOCALIZATIONS_FILE = ROOT_RESOURCE + "vocalizations.json"
 WORD_PROPS_FILE = ROOT_RESOURCE + "word_props.json"
-WORD_FILE = ROOT_RESOURCE + "word.json"
 AI_QUERY_TRANSLATION_RULES_FILE = ROOT_RESOURCE + "ai_query_translation_rules.txt"
 
 # configs path suffixes

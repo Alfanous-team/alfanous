@@ -302,15 +302,15 @@ def run(sql_source=None, aya_json=None, word_json=None, word_props_json=None, de
     """
     import os
 
-    base = os.path.join(os.path.dirname(__file__), "..", "alfanous", "resources")
+    base = os.path.join(os.path.dirname(__file__), "..", "..", "store")
     if aya_json is None:
         aya_json = os.path.join(base, "aya.json")
     if word_json is None:
         word_json = os.path.join(base, "word.json")
     if word_props_json is None:
-        word_props_json = os.path.join(base, "word_props.json")
+        word_props_json = os.path.join(os.path.dirname(__file__), "..", "alfanous", "resources", "word_props.json")
     if derivations_json is None:
-        derivations_json = os.path.join(base, "derivations.json")
+        derivations_json = os.path.join(os.path.dirname(__file__), "..", "alfanous", "resources", "derivations.json")
 
     if sql_source is None:
         print(f"Downloading SQL from {SQL_URL} …")

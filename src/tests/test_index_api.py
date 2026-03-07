@@ -18,7 +18,7 @@ _STORE_DIR = os.path.normpath(os.path.join(
 _STORE_EXISTS = os.path.isdir(_STORE_DIR)
 
 _RESOURCES_PATH = os.path.normpath(
-    os.path.join(os.path.dirname(__file__), "..", "alfanous", "resources")
+    os.path.join(os.path.dirname(__file__), "..", "..", "store")
 ) + os.sep
 
 

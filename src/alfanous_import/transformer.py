@@ -286,4 +286,4 @@ class Transformer:
 
 
 if __name__ == "__main__":
-    T = Transformer(index_path="../../indexes/main/", resource_path="../alfanous/resources/")
+    T = Transformer(index_path="../../indexes/main/", resource_path="../../../store/")

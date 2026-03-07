@@ -284,7 +284,8 @@ def test_make_translation_analyzer_unsupported_falls_back():
 def test_make_translation_analyzer_named_instances():
     """Named TranslationAnalyzer_{lang} instances should be accessible from text_processing."""
     from alfanous import text_processing
-    for lang in ['en', 'fr', 'de', 'ru', 'tr']:
+    from alfanous.text_processing import _TRANSLATION_LANGS
+    for lang in _TRANSLATION_LANGS:
         attr = f'TranslationAnalyzer_{lang}'
         assert hasattr(text_processing, attr), f"text_processing.{attr} not found"
         analyzer = getattr(text_processing, attr)
