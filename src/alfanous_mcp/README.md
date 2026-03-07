@@ -61,8 +61,20 @@ Add the following to your `claude_desktop_config.json`:
 {
   "mcpServers": {
     "alfanous": {
+      "type": "stdio",
       "command": "python",
-      "args": ["-m", "alfanous_mcp.mcp_server"]
+      "args": ["-m", "alfanous_mcp.mcp_server"],
+      "tools": [
+        "search_quran",
+        "search_translations",
+        "get_quran_info",
+        "search_quran_by_themes",
+        "search_quran_by_stats",
+        "search_quran_by_position",
+        "suggest_query",
+        "correct_query",
+        "search_by_word_linguistics"
+      ]
     }
   }
 }
