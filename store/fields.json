@@ -1221,7 +1221,6 @@
     "type": "TEXT",
     "stored": false,
     "analyzer": "TranslationAnalyzer_ar",
-    "comment": "Stemmed Arabic translation text — indexed with a language-specific Snowball analyzer (falls back to RegexTokenizer+LowercaseFilter when Snowball does not support this language)",
     "is_spellchecked": null,
     "unique": null,
     "phrase": false
@@ -1235,7 +1234,6 @@
     "type": "TEXT",
     "stored": false,
     "analyzer": "TranslationAnalyzer_en",
-    "comment": "Stemmed English translation text — indexed with a language-specific Snowball analyzer (falls back to RegexTokenizer+LowercaseFilter when Snowball does not support this language)",
     "is_spellchecked": null,
     "unique": null,
     "phrase": false
@@ -1249,7 +1247,6 @@
     "type": "TEXT",
     "stored": false,
     "analyzer": "TranslationAnalyzer_fr",
-    "comment": "Stemmed French translation text — indexed with a language-specific Snowball analyzer (falls back to RegexTokenizer+LowercaseFilter when Snowball does not support this language)",
     "is_spellchecked": null,
     "unique": null,
     "phrase": false
@@ -1263,7 +1260,6 @@
     "type": "TEXT",
     "stored": false,
     "analyzer": "TranslationAnalyzer_id",
-    "comment": "Stemmed Indonesian translation text — indexed with a language-specific Snowball analyzer (falls back to RegexTokenizer+LowercaseFilter when Snowball does not support this language)",
     "is_spellchecked": null,
     "unique": null,
     "phrase": false
@@ -1277,7 +1273,6 @@
     "type": "TEXT",
     "stored": false,
     "analyzer": "TranslationAnalyzer_ms",
-    "comment": "Stemmed Malay translation text — indexed with a language-specific Snowball analyzer (falls back to RegexTokenizer+LowercaseFilter when Snowball does not support this language)",
     "is_spellchecked": null,
     "unique": null,
     "phrase": false
@@ -1291,7 +1286,6 @@
     "type": "TEXT",
     "stored": false,
     "analyzer": "TranslationAnalyzer_tr",
-    "comment": "Stemmed Turkish translation text — indexed with a language-specific Snowball analyzer (falls back to RegexTokenizer+LowercaseFilter when Snowball does not support this language)",
     "is_spellchecked": null,
     "unique": null,
     "phrase": false
@@ -1606,8 +1600,7 @@
     "type": "TEXT",
     "stored": false,
     "phrase": false,
-    "analyzer": "TranslationAnalyzer_ja",
-    "comment": "Japanese translation text (kind=translation child docs)"
+    "analyzer": "TranslationAnalyzer_ja"
   },
   {
     "id": 140,
@@ -1617,8 +1610,7 @@
     "type": "TEXT",
     "stored": false,
     "phrase": false,
-    "analyzer": "TranslationAnalyzer_ku",
-    "comment": "Kurdish translation text (kind=translation child docs)"
+    "analyzer": "TranslationAnalyzer_ku"
   },
   {
     "id": 141,
@@ -1628,8 +1620,7 @@
     "type": "TEXT",
     "stored": false,
     "phrase": false,
-    "analyzer": "TranslationAnalyzer_ml",
-    "comment": "Malayalam translation text (kind=translation child docs)"
+    "analyzer": "TranslationAnalyzer_ml"
   },
   {
     "id": 142,
@@ -1639,8 +1630,7 @@
     "type": "TEXT",
     "stored": false,
     "phrase": false,
-    "analyzer": "TranslationAnalyzer_es",
-    "comment": "Spanish translation text (kind=translation child docs)"
+    "analyzer": "TranslationAnalyzer_es"
   },
   {
     "id": 143,
@@ -1650,8 +1640,7 @@
     "type": "TEXT",
     "stored": false,
     "phrase": false,
-    "analyzer": "TranslationAnalyzer_pt",
-    "comment": "Portuguese translation text (kind=translation child docs)"
+    "analyzer": "TranslationAnalyzer_pt"
   },
   {
     "id": 144,

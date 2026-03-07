@@ -213,14 +213,18 @@ class Transformer:
         # transliteration.  For each aya where the space-split word count
         # matches the corpus word count we can assign each corpus word the
         # corresponding standard-script and transliteration word by index.
-        # When counts differ the aya is simply skipped (no word_standard stored).
+        # When counts differ the aya is recorded in special.json for manual
+        # mapping and no word_standard/word_transliteration is stored.
         # {(sura_id, aya_id): [word, ...]}
         aya_standard_words: dict = {}
         aya_translit_words: dict = {}
+        # Mismatched ayas: {aya_gid: {qc_words, aya_words, mapping}}
+        special: dict = {}
         if words_by_aya and tablename == "aya":
             for line in data_list:
                 sid = line.get("sura_id")
                 aid = line.get("aya_id")
+                aya_gid = line.get("gid")
                 key = (sid, aid)
                 corpus_words_for_key = words_by_aya.get(key, [])
                 if not corpus_words_for_key:
@@ -229,9 +233,43 @@ class Transformer:
                 std_tokens = line.get("standard", "").split()
                 if len(std_tokens) == corpus_count:
                     aya_standard_words[key] = std_tokens
+                elif aya_gid is not None:
+                    qc_words = [w["word"] for w in corpus_words_for_key]
+                    special[str(aya_gid)] = {
+                        "qc_words":  qc_words,
+                        "aya_words": std_tokens,
+                        "mapping":   {},
+                    }
                 tr_tokens = line.get("transliteration", "").split()
                 if len(tr_tokens) == corpus_count:
                     aya_translit_words[key] = tr_tokens
+
+        # Persist the special-mapping file so maintainers can do manual
+        # word alignment for the ayas where automatic count-matching fails.
+        if special and tablename == "aya":
+            special_path = os.path.join(
+                os.path.dirname(os.path.abspath(self.resource_path.rstrip("/\\"))),
+                "special.json",
+            )
+            # Merge with any existing manual mappings so repeated builds do
+            # not overwrite entries that have already been hand-edited.
+            existing: dict = {}
+            if os.path.isfile(special_path):
+                try:
+                    with open(special_path, encoding="utf-8") as _f:
+                        existing = json.load(_f)
+                except (OSError, json.JSONDecodeError):
+                    pass
+            for gid_str, entry in special.items():
+                if gid_str not in existing:
+                    existing[gid_str] = entry
+                else:
+                    # Preserve any manual mapping already present.
+                    existing[gid_str]["qc_words"]  = entry["qc_words"]
+                    existing[gid_str]["aya_words"] = entry["aya_words"]
+            with open(special_path, "w", encoding="utf-8") as _f:
+                json.dump(existing, _f, ensure_ascii=False, indent=2)
+            logging.info("Wrote %d special-mapping entries to %s", len(special), special_path)
 
         if tablename == "aya":
             # Pre-compute schema field names once to:
@@ -276,7 +314,6 @@ class Transformer:
                             gid=gid,
                             trans_id=trans_id,
                             trans_lang=lang,
-                            # trans_text kept as stored-only field for backward compat
                             trans_text=text,
                             trans_author=tdata["author"],
                         )
