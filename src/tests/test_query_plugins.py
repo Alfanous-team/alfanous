@@ -25,8 +25,8 @@ from alfanous.query_plugins import (
 )
 
 # ---------------------------------------------------------------------------
-# Mock data for _query_word_index (replaces JSON-file-based derivedict /
-# worddict which are now empty by default — the index is the primary source).
+# Mock data for _query_word_index (the index is the primary source for
+# derivation/word lookups).
 # ---------------------------------------------------------------------------
 
 # Minimal word-index data for مالك (used by derivation tests)

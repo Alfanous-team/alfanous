@@ -120,10 +120,6 @@ try:
         arabic_to_english_fields = {ar: en for en, ar in json.load(f).items()}
 except (IOError, json.JSONDecodeError):
     arabic_to_english_fields = {}
-std2uth_words = {}
-vocalization_dict = {}
-derivedict = {}
-worddict = {}
 try:
     with open(paths.SYNONYMS_FILE) as f:
         syndict = json.load(f)
