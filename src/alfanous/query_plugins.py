@@ -6,11 +6,18 @@ with Arabic-specific features like synonyms, derivations, spell errors,
 tashkil (diacritics), and more.
 """
 
+import re
+
 from whoosh.qparser import TaggingPlugin, syntax
 from whoosh.query import MultiTerm, Or, Term, Wildcard
 
 from alfanous.data import syndict, antdict
 from alfanous.text_processing import QArabicSymbolsFilter
+
+# Regex for stripping Uthmanic annotation marks (U+06D6–U+06ED) from derivation
+# result words.  These marks are Quran-specific symbols (small high letters,
+# stops, verse counters) that must not appear in search terms.
+_UTHMANI_ANNOTATION_RE = re.compile(r'[\u06D6-\u06ED]')
 
 
 def _query_word_index(filter_dict, field="word", limit=5000):
@@ -193,13 +200,19 @@ class DerivationQuery(QMultiTerm):
         if not key_values:
             return [word]
 
-        # Collect result words: merge word_standard (primary) + normalized
+        # Collect result words: merge word_standard (primary) + normalized +
+        # word (Uthmanic form).  Including the Uthmanic form lets derivation
+        # keywords be used to highlight Uthmanic aya text.  All collected
+        # values are stripped of U+06D6–U+06ED Quranic annotation marks so
+        # that no Uthmanic-specific symbol leaks into search terms.
         words = set()
         for kv in key_values:
             ws = _query_word_index({index_key: kv}, field='word_standard')
             nm = _query_word_index({index_key: kv}, field='normalized')
-            words.update(w for w in ws if w)
-            words.update(w for w in nm if w)
+            wu = _query_word_index({index_key: kv}, field='word')
+            words.update(_UTHMANI_ANNOTATION_RE.sub('', w) for w in ws if w)
+            words.update(_UTHMANI_ANNOTATION_RE.sub('', w) for w in nm if w)
+            words.update(_UTHMANI_ANNOTATION_RE.sub('', w) for w in wu if w)
 
         return list(words) if words else [word]
 

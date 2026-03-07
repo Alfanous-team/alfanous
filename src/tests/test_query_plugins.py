@@ -449,3 +449,71 @@ def test_spell_errors_query_executes_against_index():
 
 if __name__ == "__main__":
     pytest.main([__file__, "-v"])
+
+
+# ---------------------------------------------------------------------------
+# Derivation results must not contain U+06D6–U+06ED Uthmanic annotation marks
+# ---------------------------------------------------------------------------
+
+def _make_word_index_mock_with_marks(word, lemma, root, lemma_words, root_words):
+    """Like _make_word_index_mock but injects U+06D6–U+06ED marks into the
+    returned word forms.  This simulates the state of the index *before* the
+    normalize_uthmani_symbols fix, where word_standard entries could contain
+    Uthmanic annotation characters."""
+    # Embed a small selection of Uthmanic marks into each word form
+    _MARKS = '\u06D6\u06DF\u06E8'  # SmallHighLigature, SmallHighRoundedZero, SmallHighNoon
+
+    def _inject(words):
+        return [w[0] + _MARKS + w[1:] if len(w) > 1 else w for w in words]
+
+    def _mock(filter_dict, field="word", limit=5000):
+        if filter_dict.get("normalized") == word or filter_dict.get("word") == word:
+            if field == "lemma":
+                return [lemma]
+            if field == "root":
+                return [root]
+        if filter_dict.get("lemma") == lemma and field in ("normalized", "word_standard", "word"):
+            return _inject(list(lemma_words))
+        if filter_dict.get("root") == root and field in ("normalized", "word_standard", "word"):
+            return _inject(list(root_words))
+        return []
+    return _mock
+
+
+_UTHMANI_MARKS_RANGE = range(0x06D6, 0x06EE)
+
+
+def test_derivation_results_contain_no_uthmani_marks_lemma_level():
+    """Lemma-level derivation results (>word) must not contain U+06D6–U+06ED.
+
+    Even when the word index returns values that embed Uthmanic annotation
+    marks (simulating an un-rebuilt index), _get_derivations must strip them
+    before returning."""
+    _mock = _make_word_index_mock_with_marks(
+        "قولهم", "قول", "قول", ["قول", "قولهم", "قولكم"], ["قول", "قولهم", "قولكم"]
+    )
+    with patch("alfanous.query_plugins._query_word_index", side_effect=_mock):
+        result = DerivationQuery._get_derivations("قولهم", leveldist=1)
+
+    for w in result:
+        for cp in _UTHMANI_MARKS_RANGE:
+            assert chr(cp) not in w, (
+                f"Derivation result {w!r} contains Uthmanic mark U+{cp:04X}"
+            )
+
+
+def test_derivation_results_contain_no_uthmani_marks_root_level():
+    """Root-level derivation results (>>word) must not contain U+06D6–U+06ED."""
+    _mock = _make_word_index_mock_with_marks(
+        "قولهم", "قول", "قول",
+        ["قول", "قولهم"],
+        ["قول", "قولهم", "قولكم", "قولنا", "يقول", "يقولون"],
+    )
+    with patch("alfanous.query_plugins._query_word_index", side_effect=_mock):
+        result = DerivationQuery._get_derivations("قولهم", leveldist=2)
+
+    for w in result:
+        for cp in _UTHMANI_MARKS_RANGE:
+            assert chr(cp) not in w, (
+                f"Derivation result {w!r} contains Uthmanic mark U+{cp:04X}"
+            )

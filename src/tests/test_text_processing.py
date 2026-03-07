@@ -339,3 +339,44 @@ def test_make_translation_analyzer_arabic():
     analyzer = make_translation_analyzer('ar')
     tokens = [t.text for t in analyzer('الكتاب', mode='index')]
     assert tokens, "Arabic analyzer should produce tokens"
+
+
+# ---------------------------------------------------------------------------
+# normalize_uthmani_symbols – full U+06D6–U+06ED range
+# ---------------------------------------------------------------------------
+
+def test_normalize_uthmani_symbols_strips_full_range():
+    """normalize_uthmani_symbols must strip every char in U+06D6–U+06ED.
+
+    All code points in that block are Quranic annotation marks (small high
+    letters, stops, verse markers).  None of them should survive normalisation.
+    """
+    from alfanous.Support.pyarabic.normalizers import normalize_uthmani_symbols
+
+    for cp in range(0x06D6, 0x06EE):  # inclusive of 0x06ED
+        char = chr(cp)
+        word_with_mark = 'قول' + char + 'هم'
+        result = normalize_uthmani_symbols(word_with_mark)
+        assert chr(cp) not in result, (
+            f"U+{cp:04X} ({char!r}) was not stripped by normalize_uthmani_symbols"
+        )
+
+
+def test_normalize_uthmani_symbols_preserves_arabic_letters():
+    """normalize_uthmani_symbols must not alter normal Arabic letters."""
+    from alfanous.Support.pyarabic.normalizers import normalize_uthmani_symbols
+
+    text = 'قولهم'
+    assert normalize_uthmani_symbols(text) == text
+
+
+def test_normalize_uthmani_symbols_replaces_mini_alef_and_wasla():
+    """MINI_ALEF and ALEF_WASLA should be replaced with plain ALEF."""
+    from alfanous.Support.pyarabic.normalizers import normalize_uthmani_symbols
+
+    # MINI_ALEF (U+0670) → ALEF
+    assert normalize_uthmani_symbols('\u0670') == '\u0627'
+    # ALEF_WASLA (U+0671) → ALEF
+    assert normalize_uthmani_symbols('\u0671') == '\u0627'
+    # ALEF_MADDA (U+0622) → ALEF
+    assert normalize_uthmani_symbols('\u0622') == '\u0627'

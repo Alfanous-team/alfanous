@@ -1,3 +1,5 @@
+import re
+
 from .constants import *
 
 __all__ = ['normalize_uthmani_symbols','normalize_hamza','normalize_lamalef',
@@ -9,6 +11,11 @@ _ALEFAT = (ALEF_MADDA, ALEF_HAMZA_ABOVE, ALEF_HAMZA_BELOW, HAMZA_ABOVE, HAMZA_BE
 _HAMZAT = (WAW_HAMZA, YEH_HAMZA)
 _LAMALEFAT = (LAM_ALEF, LAM_ALEF_HAMZA_ABOVE, LAM_ALEF_HAMZA_BELOW, LAM_ALEF_MADDA_ABOVE)
 
+# Regex matching all Quranic annotation marks in the U+06D6–U+06ED block.
+# These are Uthmanic-script-specific marks (verse markers, small letters, stops)
+# that should be stripped when producing a normalised standard-Arabic form.
+_UTHMANI_ANNOTATION_RE = re.compile(r'[\u06D6-\u06ED]')
+
 def normalize_uthmani_symbols(w):
     """Remove or replace Uthmanic-script symbols so the result matches plain Arabic.
 
@@ -18,15 +25,14 @@ def normalize_uthmani_symbols(w):
     - ALEF_MADDA (U+0622, آ): replaced with ALEF so that السَّمَآءِ
       normalizes to السماء.
     - ALEF_WASLA (U+0671): replaced with ALEF.
-    - SMALL_YEH, SMALL_WAW, SMALL_HIGH_LIGATURE, SMALL_HIGH_JEEM: removed.
+    - Full U+06D6–U+06ED range (Quranic annotation marks such as small high
+      letters, stops, and verse markers): stripped entirely so that no
+      Uthmanic mark leaks into normalised or word_standard fields.
     """
-    return w.replace(MINI_ALEF, ALEF)\
-        .replace(ALEF_MADDA, ALEF)\
-        .replace(SMALL_YEH, '')\
-        .replace(SMALL_WAW, '')\
-        .replace(ALEF_WASLA, ALEF)\
-        .replace(SMALL_HIGH_LIGATURE, '')\
-        .replace(SMALL_HIGH_JEEM, '')
+    w = w.replace(MINI_ALEF, ALEF)\
+         .replace(ALEF_MADDA, ALEF)\
+         .replace(ALEF_WASLA, ALEF)
+    return _UTHMANI_ANNOTATION_RE.sub('', w)
 
 #--------------------------------------
 def normalize_hamza(w):
