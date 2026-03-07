@@ -11,6 +11,7 @@ from alfanous.text_processing import (
     QSynonymsFilter,
     QFuzzyAnalyzer,
     QStandardAnalyzer,
+    QUthmaniAnalyzer,
     TranslationStemFilter,
     make_translation_analyzer,
 )
@@ -380,3 +381,53 @@ def test_normalize_uthmani_symbols_replaces_mini_alef_and_wasla():
     assert normalize_uthmani_symbols('\u0671') == '\u0627'
     # ALEF_MADDA (U+0622) → ALEF
     assert normalize_uthmani_symbols('\u0622') == '\u0627'
+
+
+# QUthmaniAnalyzer – used by the uthmani aya field
+
+def test_quthmani_analyzer_strips_tashkeel():
+    """QUthmaniAnalyzer (used by the uthmani field) must strip diacritics (tashkeel)."""
+    # بِسْمِ  with tashkeel should normalize to  بسم
+    tokens = _tokenize(QUthmaniAnalyzer, 'بِسْمِ')
+    assert tokens == ['بسم'], f"Expected ['بسم'], got {tokens}"
+
+
+def test_quthmani_analyzer_strips_uthmani_symbols():
+    """QUthmaniAnalyzer must strip Uthmanic annotation marks (U+06D6–U+06ED)."""
+    # Insert a small high seen (U+06DB) into a word
+    tokens = _tokenize(QUthmaniAnalyzer, 'قُلْ\u06DBهُوَ')
+    assert '\u06db' not in tokens[0], f"Uthmani symbol U+06DB survived: {tokens}"
+
+
+def test_quthmani_analyzer_strips_tashkeel_and_uthmani_together():
+    """QUthmaniAnalyzer must strip both tashkeel and uthmani symbols together."""
+    # Word with both diacritics and a small high alef (U+06D8)
+    tokens = _tokenize(QUthmaniAnalyzer, 'ٱلرَّحْمَ\u06D8نِ')
+    for tok in tokens:
+        # No diacritics (U+064B–U+0652)
+        for cp in range(0x064B, 0x0653):
+            assert chr(cp) not in tok, f"Diacritic U+{cp:04X} survived in {tok!r}"
+        # No uthmani annotation marks (U+06D6–U+06ED)
+        for cp in range(0x06D6, 0x06EE):
+            assert chr(cp) not in tok, f"Uthmani symbol U+{cp:04X} survived in {tok!r}"
+
+
+def test_uthmani_field_uses_normalizing_analyzer():
+    """The uthmani aya field in fields.json must use QUthmaniAnalyzer (not QUthmaniDiacAnalyzer)."""
+    import json
+    import os
+    store_path = os.path.join(
+        os.path.dirname(os.path.abspath(__file__)), '..', '..', 'store', 'fields.json'
+    )
+    with open(store_path, encoding='utf-8') as fh:
+        fields = json.load(fh)
+    uthmani_aya = next(
+        (f for f in fields if f.get('id') == 6 and f.get('table_name') == 'aya'),
+        None,
+    )
+    assert uthmani_aya is not None, "Field id=6 (uthmani, table aya) not found in fields.json"
+    assert uthmani_aya['analyzer'] == 'QUthmaniAnalyzer', (
+        f"Expected QUthmaniAnalyzer but got {uthmani_aya['analyzer']!r}; "
+        "the uthmani field should normalize by removing both tashkeel and uthmani symbols"
+    )
+

@@ -1180,6 +1180,7 @@ def test_view_full_expands_output():
     assert aya["theme"] != {}
     assert aya["stat"] != {}
     assert aya["sajda"] != {}
+    assert "words" in aya, "word_linguistics should be True in full view"
 
 
 def test_view_invalid_falls_back_to_custom():
