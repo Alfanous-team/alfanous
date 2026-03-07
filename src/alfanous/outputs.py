@@ -1066,8 +1066,7 @@ class Raw:
                     "juz": r["juz"],
                     "hizb": r["hizb"],
                     "rub": int(r["rub"]) % 4,
-                    "page": r["page"],
-                    "page_IN": r["page_IN"]
+                    "page": r["page"]
                 },
 
                 "theme": {} if not aya_theme_info

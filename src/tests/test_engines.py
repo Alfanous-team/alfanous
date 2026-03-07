@@ -99,7 +99,6 @@ def test_search():
                                 'manzil': 3,
                                 'nisf': 53,
                                 'page': 262,
-                                'page_IN': 365,
                                 'rub': 105,
                                 'ruk': 218,
                                 's_a': 99,

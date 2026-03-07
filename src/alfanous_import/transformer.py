@@ -153,19 +153,26 @@ class Transformer:
     def build_schema(self, tablename):
         """build schema from field table"""
 
+        # Parameters accepted by Whoosh field constructors that may appear in
+        # fields.json.  ``scorable`` is included so filter-only fields can be
+        # explicitly marked non-scoring.  Boolean False values must be passed
+        # through (not filtered), hence the ``is not None`` guard.
+        _PASSABLE = {'analyzer', 'stored', 'unique', 'spelling', 'scorable'}
+
         kwargs = {}
         for line in self.get_fields(tablename):
-            search_name = line['search_name']
-            assert search_name, "search name should not be null!"
-            type = str(line['type']).upper() or "STORED"
+            search_name = line.get('search_name')
+            if not search_name:
+                continue  # skip documentation-only rows without a search name
+            field_type = str(line['type']).upper() or "STORED"
 
-            params = {
-                      k: getattr(text_processing, v) if k == 'analyzer' else v
-                      for k, v in line.items()
-                      if k in ['analyzer', 'stored',  'unique', 'spelling']
-                      and v
-                      }
-            kwargs[search_name] = getattr(fields, type)(**params)
+            params = {}
+            for k, v in line.items():
+                if k not in _PASSABLE or v is None:
+                    continue
+                params[k] = getattr(text_processing, v) if k == 'analyzer' else v
+
+            kwargs[search_name] = getattr(fields, field_type)(**params)
 
         return Schema(**kwargs)
 
@@ -272,6 +279,9 @@ class Transformer:
         ix = FileStorage(self.index_path).create_index(schema)
         self.transfer(ix, tablename, translations_store_path=translations_store_path,
                       corpus_path=corpus_path)
+        logging.info("Optimising index (merging segments) …")
+        ix.optimize()
+        logging.info("Index optimisation complete.")
         return "OK"
 
 

@@ -256,7 +256,7 @@
         "search_name": "sajda",
         "stored": true,
         "table_name": "aya",
-        "type": "KEYWORD",
+        "type": "ID",
         "unique": null
     },
     {
@@ -284,7 +284,7 @@
         "source": "tanzil.info",
         "stored": true,
         "table_name": "aya",
-        "type": "KEYWORD",
+        "type": "ID",
         "unique": null
     },
     {
@@ -312,7 +312,7 @@
         "source": "tanzil.info",
         "stored": true,
         "table_name": "aya",
-        "type": "KEYWORD",
+        "type": "ID",
         "unique": null
     },
     {
@@ -812,7 +812,7 @@
         "search_name": "token",
         "stored": true,
         "table_name": "wordqc",
-        "type": "KEYWORD",
+        "type": "ID",
         "unique": null
     },
     {
@@ -825,7 +825,7 @@
         "search_name": "arabictoken",
         "stored": true,
         "table_name": "wordqc",
-        "type": "KEYWORD",
+        "type": "ID",
         "unique": null
     },
     {
@@ -838,7 +838,7 @@
         "search_name": "pos",
         "stored": true,
         "table_name": "wordqc",
-        "type": "KEYWORD",
+        "type": "ID",
         "unique": null
     },
     {
@@ -851,7 +851,7 @@
         "search_name": "type",
         "stored": true,
         "table_name": "wordqc",
-        "type": "KEYWORD",
+        "type": "ID",
         "unique": null
     },
     {
@@ -864,7 +864,7 @@
         "search_name": "arabicpos",
         "stored": true,
         "table_name": "wordqc",
-        "type": "KEYWORD",
+        "type": "ID",
         "unique": null
     },
     {
@@ -877,7 +877,7 @@
         "search_name": "mood",
         "stored": true,
         "table_name": "wordqc",
-        "type": "KEYWORD",
+        "type": "ID",
         "unique": null
     },
     {
@@ -890,7 +890,7 @@
         "search_name": "arabicmood",
         "stored": true,
         "table_name": "wordqc",
-        "type": "KEYWORD",
+        "type": "ID",
         "unique": null
     },
     {
@@ -903,7 +903,7 @@
         "search_name": "case",
         "stored": true,
         "table_name": "wordqc",
-        "type": "KEYWORD",
+        "type": "ID",
         "unique": null
     },
     {
@@ -916,7 +916,7 @@
         "search_name": "arabiccase",
         "stored": true,
         "table_name": "wordqc",
-        "type": "KEYWORD",
+        "type": "ID",
         "unique": null
     },
     {
@@ -942,7 +942,7 @@
         "search_name": "arabicroot",
         "stored": true,
         "table_name": "wordqc",
-        "type": "KEYWORD",
+        "type": "ID",
         "unique": null
     },
     {
@@ -968,7 +968,7 @@
         "search_name": "arabiclemma",
         "stored": true,
         "table_name": "wordqc",
-        "type": "KEYWORD",
+        "type": "ID",
         "unique": null
     },
     {
@@ -994,7 +994,7 @@
         "search_name": "arabicspecial",
         "stored": true,
         "table_name": "wordqc",
-        "type": "KEYWORD",
+        "type": "ID",
         "unique": null
     },
     {
@@ -1007,7 +1007,7 @@
         "search_name": "derivation",
         "stored": true,
         "table_name": "wordqc",
-        "type": "KEYWORD",
+        "type": "ID",
         "unique": null
     },
     {
@@ -1020,7 +1020,7 @@
         "search_name": "form",
         "stored": true,
         "table_name": "wordqc",
-        "type": "KEYWORD",
+        "type": "ID",
         "unique": null
     },
     {
@@ -1033,7 +1033,7 @@
         "search_name": "gender",
         "stored": true,
         "table_name": "wordqc",
-        "type": "KEYWORD",
+        "type": "ID",
         "unique": null
     },
     {
@@ -1046,7 +1046,7 @@
         "search_name": "person",
         "stored": true,
         "table_name": "wordqc",
-        "type": "KEYWORD",
+        "type": "ID",
         "unique": null
     },
     {
@@ -1059,7 +1059,7 @@
         "search_name": "number",
         "stored": true,
         "table_name": "wordqc",
-        "type": "KEYWORD",
+        "type": "ID",
         "unique": null
     },
     {
@@ -1072,7 +1072,7 @@
         "search_name": "voice",
         "stored": true,
         "table_name": "wordqc",
-        "type": "KEYWORD",
+        "type": "ID",
         "unique": null
     },
     {
@@ -1085,7 +1085,7 @@
         "search_name": "state",
         "stored": true,
         "table_name": "wordqc",
-        "type": "KEYWORD",
+        "type": "ID",
         "unique": null
     },
     {
@@ -1098,21 +1098,7 @@
         "search_name": "aspect",
         "stored": true,
         "table_name": "wordqc",
-        "type": "KEYWORD",
-        "unique": null
-    },
-    {
-        "analyzer": null,
-        "comment": "(specific to indian mushafs)",
-        "id": 88,
-        "is_spellchecked": null,
-        "name": "page_id_indian",
-        "name_arabic": "صفحة_هندي",
-        "search_name": "page_IN",
-        "source": "mmuhiuddin(at)googlemail",
-        "stored": true,
-        "table_name": "aya",
-        "type": "NUMERIC",
+        "type": "ID",
         "unique": null
     },
     {
@@ -1125,7 +1111,7 @@
         "search_name": "sura_type",
         "stored": true,
         "table_name": "aya",
-        "type": "KEYWORD",
+        "type": "ID",
         "unique": null
     },
     {
@@ -1187,7 +1173,7 @@
         "name": "kind",
         "name_arabic": "نوع",
         "search_name": "kind",
-        "type": "KEYWORD",
+        "type": "ID",
         "stored": true,
         "analyzer": null,
         "comment": "Document type: 'aya' for parent verse docs, 'translation' for child translation docs",
@@ -1200,7 +1186,7 @@
         "name": "trans_id",
         "name_arabic": "معرف_الترجمة",
         "search_name": "trans_id",
-        "type": "KEYWORD",
+        "type": "ID",
         "stored": true,
         "analyzer": null,
         "comment": "Translation identifier for child docs (e.g. 'en.shakir')",
@@ -1213,7 +1199,7 @@
         "name": "trans_lang",
         "name_arabic": "لغة_الترجمة",
         "search_name": "trans_lang",
-        "type": "KEYWORD",
+        "type": "ID",
         "stored": true,
         "analyzer": null,
         "comment": "Language code for child docs (e.g. 'en', 'fr', 'ar')",
@@ -1495,7 +1481,7 @@
         "name": "pos",
         "name_arabic": "نوع_النحوي",
         "search_name": "pos",
-        "type": "KEYWORD",
+        "type": "ID",
         "stored": true,
         "analyzer": null,
         "comment": "Part of speech in English (kind=word child docs)",
@@ -1507,7 +1493,7 @@
         "name": "type",
         "name_arabic": "نوع_الصرفي",
         "search_name": "type",
-        "type": "KEYWORD",
+        "type": "ID",
         "stored": true,
         "analyzer": null,
         "comment": "Grammatical type category (kind=word child docs)",
@@ -1531,7 +1517,7 @@
         "name": "root",
         "name_arabic": "جذر_بكوالتر",
         "search_name": "root",
-        "type": "KEYWORD",
+        "type": "ID",
         "stored": true,
         "analyzer": null,
         "comment": "Buckwalter root (kind=word child docs)",
@@ -1543,7 +1529,7 @@
         "name": "arabicroot",
         "name_arabic": "جذر_عربي",
         "search_name": "arabicroot",
-        "type": "KEYWORD",
+        "type": "ID",
         "stored": true,
         "analyzer": null,
         "comment": "Arabic script root (kind=word child docs)",
@@ -1555,7 +1541,7 @@
         "name": "lemma",
         "name_arabic": "مصدر_بكوالتر",
         "search_name": "lemma",
-        "type": "KEYWORD",
+        "type": "ID",
         "stored": true,
         "analyzer": null,
         "comment": "Buckwalter lemma (kind=word child docs)",
@@ -1567,7 +1553,7 @@
         "name": "arabiclemma",
         "name_arabic": "مصدر_عربي",
         "search_name": "arabiclemma",
-        "type": "KEYWORD",
+        "type": "ID",
         "stored": true,
         "analyzer": null,
         "comment": "Arabic script lemma (kind=word child docs)",
@@ -1603,7 +1589,7 @@
         "name": "gender",
         "name_arabic": "جنس",
         "search_name": "gender",
-        "type": "KEYWORD",
+        "type": "ID",
         "stored": true,
         "analyzer": null,
         "comment": "Grammatical gender M/F (kind=word child docs)",
@@ -1615,7 +1601,7 @@
         "name": "number",
         "name_arabic": "عدد_صرفي",
         "search_name": "number",
-        "type": "KEYWORD",
+        "type": "ID",
         "stored": true,
         "analyzer": null,
         "comment": "Grammatical number S/D/P (kind=word child docs)",
@@ -1627,7 +1613,7 @@
         "name": "person",
         "name_arabic": "شخص",
         "search_name": "person",
-        "type": "KEYWORD",
+        "type": "ID",
         "stored": true,
         "analyzer": null,
         "comment": "Grammatical person 1/2/3 (kind=word child docs)",
@@ -1639,7 +1625,7 @@
         "name": "form",
         "name_arabic": "وزن",
         "search_name": "form",
-        "type": "KEYWORD",
+        "type": "ID",
         "stored": true,
         "analyzer": null,
         "comment": "Verb form I-XII (kind=word child docs)",
@@ -1651,7 +1637,7 @@
         "name": "voice",
         "name_arabic": "صيغة",
         "search_name": "voice",
-        "type": "KEYWORD",
+        "type": "ID",
         "stored": true,
         "analyzer": null,
         "comment": "Voice ACT/PASS (kind=word child docs)",
@@ -1663,7 +1649,7 @@
         "name": "state",
         "name_arabic": "حالة_اسمية",
         "search_name": "state",
-        "type": "KEYWORD",
+        "type": "ID",
         "stored": true,
         "analyzer": null,
         "comment": "Nominal state DEF/INDEF (kind=word child docs)",
@@ -1675,7 +1661,7 @@
         "name": "derivation",
         "name_arabic": "اشتقاق",
         "search_name": "derivation",
-        "type": "KEYWORD",
+        "type": "ID",
         "stored": true,
         "analyzer": null,
         "comment": "Derivation ACT PCPL/PASS PCPL/VN (kind=word child docs)",
@@ -1687,7 +1673,7 @@
         "name": "aspect",
         "name_arabic": "صيغة_فعلية",
         "search_name": "aspect",
-        "type": "KEYWORD",
+        "type": "ID",
         "stored": true,
         "analyzer": null,
         "comment": "Verb aspect PERF/IMPF/IMPV (kind=word child docs)",
@@ -1699,7 +1685,7 @@
         "name": "mood",
         "name_arabic": "حالة_فعلية",
         "search_name": "mood",
-        "type": "KEYWORD",
+        "type": "ID",
         "stored": true,
         "analyzer": null,
         "comment": "Verb mood in English (kind=word child docs)",
@@ -1723,7 +1709,7 @@
         "name": "case",
         "name_arabic": "اعراب",
         "search_name": "case",
-        "type": "KEYWORD",
+        "type": "ID",
         "stored": true,
         "analyzer": null,
         "comment": "Grammatical case NOM/ACC/GEN (kind=word child docs)",
