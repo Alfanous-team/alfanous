@@ -72,7 +72,7 @@ class Raw:
     DEFAULTS = {
         "minrange": 1,
         "maxrange": 25,
-        "maxkeywords": 100,
+        "maxkeywords": 20,  # Limit highlighted/annotated terms for performance
         "results_limit": {
             "aya": QURAN_TOTAL_VERSES,
             "translation": 1000,
