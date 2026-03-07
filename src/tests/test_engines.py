@@ -486,13 +486,13 @@ def test_arabizi_quran_word_filter():
     result_tobah = filtered("tobah")
     assert u"\u062A\u0648\u0628\u0629" in result_tobah   # توبة
 
-    # صلاة is Quranic; "Salah" → صلاة (s→ص, a→omit, l→ل, a→ا, h→ة terminal rule)
-    result_salah = filtered("salah")
-    assert u"\u0635\u0644\u0627\u0629" in result_salah   # صلاة
+    # صلواة is the Quranic spelling of prayer; "salwah" → صلواة
+    result_salwah = filtered("salwah")
+    assert u"\u0635\u0644\u0648\u0627\u0629" in result_salwah   # صلواة
 
-    # حياة is Quranic; "hayat" → حياة (h→ح, a→omit, y→ي, a→ا, t→ة terminal rule)
-    result_hayat = filtered("hayat")
-    assert u"\u062D\u064A\u0627\u0629" in result_hayat   # حياة
+    # حيواة is the Quranic spelling of life; "haywat" → حيواة
+    result_haywat = filtered("haywat")
+    assert u"\u062D\u064A\u0648\u0627\u0629" in result_haywat   # حيواة
 
     # صبر is Quranic; "sabr" → صبر (s→ص)
     result_sabr = filtered("sabr")

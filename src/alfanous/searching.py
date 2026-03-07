@@ -9,6 +9,12 @@ import logging
 logger = logging.getLogger(__name__)
 
 
+def _decode_if_bytes(x):
+    if isinstance(x, bytes):
+        return x.decode('utf-8')
+    return x
+
+
 class QReader:
     """ reader of the index """
 
@@ -17,8 +23,8 @@ class QReader:
         self.schema = docindex.get_schema()
 
     def list_values(self, fieldname):
-
-        return list(filter(lambda x: type(x) is not int or x>=0, self.reader.field_terms(fieldname)))
+        return list(filter(lambda x: not isinstance(x, int) or x >= 0,
+                           (_decode_if_bytes(v) for v in self.reader.field_terms(fieldname))))
 
     def list_stored_values(self, fieldname):
         """ List unique stored (non-tokenized) values for a field, preserving full phrases. """
@@ -41,6 +47,7 @@ class QReader:
         prec = []
         for field, value in self.reader.all_terms():
             if field == fieldname or not fieldname:
+                value = _decode_if_bytes(value)
                 if value not in prec:
                     prec.append(value)
                     yield value
