@@ -616,6 +616,93 @@ def test_arabizi_quran_word_filter():
     assert len(result_lolo) > 0   # graceful fallback even if not exact match
 
 
+def test_arabizi_untested_digraphs():
+    """13. Arabizi digraphs kh, dh, gh — not covered by existing tests."""
+    from alfanous.romanization import arabizi_to_arabic_list
+
+    # Digraph "kh" → خ (kha)
+    assert u"\u062E" in arabizi_to_arabic_list("kh")          # خ
+    result_khamr = arabizi_to_arabic_list("khamr")
+    assert u"\u062E\u0645\u0631" in result_khamr               # خمر
+
+    # Digraph "dh" → ذ (dhal)
+    assert u"\u0630" in arabizi_to_arabic_list("dh")           # ذ
+    result_dhanb = arabizi_to_arabic_list("dhanb")
+    assert u"\u0630\u0646\u0628" in result_dhanb               # ذنب
+
+    # Digraph "gh" → غ (ghain — separate from the number-apostrophe notation 3')
+    assert u"\u063A" in arabizi_to_arabic_list("gh")           # غ
+    result_ghayb = arabizi_to_arabic_list("ghayb")
+    assert u"\u063A\u064A\u0628" in result_ghayb               # غيب
+
+
+def test_arabizi_rule_b_remaining_prefixes():
+    """14. Rule B — the en/as/es/ad/ed/esh definite-article prefixes are not covered by
+    existing tests."""
+    from alfanous.romanization import arabizi_to_arabic_list
+
+    AL = u"\u0627\u0644"  # ال
+
+    # Two-character sun-letter assimilation prefixes
+    assert AL in arabizi_to_arabic_list("en")    # ال (e.g. en-nas = الناس)
+    assert AL in arabizi_to_arabic_list("as")    # ال (e.g. as-sama = السماء)
+    assert AL in arabizi_to_arabic_list("es")    # ال
+    assert AL in arabizi_to_arabic_list("ad")    # ال
+    assert AL in arabizi_to_arabic_list("ed")    # ال
+
+    # Three-character prefix "esh" → ال (e.g. esh-shaytan = الشيطان)
+    assert AL in arabizi_to_arabic_list("esh")
+
+    # Compound: "en-nas" should include الناس as a candidate
+    result_en_nas = arabizi_to_arabic_list("en-nas")
+    assert u"\u0627\u0644\u0646\u0627\u0633" in result_en_nas  # الناس
+
+
+def test_arabizi_k_dialectal_qaf():
+    """15. Multi-mapping 'k' → ق (dialectal) in addition to ك — not covered at unit level."""
+    from alfanous.romanization import arabizi_to_arabic_list
+
+    candidates_k = arabizi_to_arabic_list("k")
+    assert u"\u0643" in candidates_k   # ك  (standard)
+    assert u"\u0642" in candidates_k   # ق  (dialectal)
+
+
+def test_arabizi_alef_madda_normalization():
+    """16. ءا → آ normalization: the post-processing step that replaces hamza+alef
+    sequences with alef madda (U+0622) must produce آ-containing candidates."""
+    from alfanous.romanization import arabizi_to_arabic_list
+
+    # "2aya" → contains ءاية which normalises to آية
+    result_2aya = arabizi_to_arabic_list("2aya")
+    assert any(u"\u0622" in c for c in result_2aya), \
+        "alef madda normalization must produce at least one آ-containing candidate"
+    assert u"\u0622\u064A\u0629" in result_2aya   # آية specifically
+
+
+def test_transliterate_buckwalter():
+    """17. transliterate() — Buckwalter romanization to Unicode and back."""
+    from alfanous.romanization import transliterate
+
+    # Forward: Buckwalter → Arabic Unicode
+    assert transliterate("buckwalter", "b") == u"\u0628"    # ب
+    assert transliterate("buckwalter", "s") == u"\u0633"    # س
+    assert transliterate("buckwalter", "m") == u"\u0645"    # م
+    # Multi-character string
+    bsm = transliterate("buckwalter", "bsm")
+    assert bsm == u"\u0628\u0633\u0645"                     # بسم
+
+    # Reverse: Arabic Unicode → Buckwalter
+    assert transliterate("buckwalter", u"\u0628", reverse=True) == "b"
+    assert transliterate("buckwalter", u"\u0628\u0633\u0645", reverse=True) == "bsm"
+
+    # Characters in the ignore set are passed through unchanged
+    result_ignore = transliterate("buckwalter", "b*m", ignore="*")
+    assert result_ignore == u"\u0628*\u0645"                # ب*م
+
+    # Unknown romanization mode: every character is passed through as-is
+    assert transliterate("unknown_mode", "hello") == "hello"
+
+
 def test_fuzzy_excludes_short_words():
     """Words shorter than 4 characters must not be included in fuzzy (Levenshtein) matching."""
     from whoosh.query import FuzzyTerm
