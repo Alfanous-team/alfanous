@@ -1360,3 +1360,31 @@ def test_fuzzy_search_field_query_no_crash():
         "Field query with fuzzy=True must succeed without error"
     )
     assert "search" in results
+    assert results["search"]["interval"]["total"] > 0, (
+        "a_g:1 with fuzzy=True must return results, not an empty set"
+    )
+
+
+def test_fuzzy_field_query_matches_same_as_non_fuzzy():
+    """Field-qualified numeric query ``a_g:1`` must return the same results
+    in fuzzy mode as in non-fuzzy mode.
+
+    Fuzzy mode's extra Levenshtein/aya_fuzzy strategies only apply to
+    Arabic-script text terms; they must not interfere with the exact numeric
+    match for field-qualified queries like ``a_g:1``.
+    """
+    base_flags = {"action": "search", "query": "a_g:1"}
+    non_fuzzy = RAWoutput.do({**base_flags, "fuzzy": False})
+    fuzzy = RAWoutput.do({**base_flags, "fuzzy": True})
+
+    assert non_fuzzy["error"]["code"] == 0, "Non-fuzzy a_g:1 must succeed"
+    assert fuzzy["error"]["code"] == 0, "Fuzzy a_g:1 must succeed"
+
+    non_fuzzy_total = non_fuzzy["search"]["interval"]["total"]
+    fuzzy_total = fuzzy["search"]["interval"]["total"]
+
+    assert non_fuzzy_total > 0, "a_g:1 (non-fuzzy) must return results"
+    assert fuzzy_total >= non_fuzzy_total, (
+        f"Fuzzy search must return at least as many results as non-fuzzy "
+        f"(fuzzy={fuzzy_total}, non_fuzzy={non_fuzzy_total})"
+    )
