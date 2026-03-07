@@ -89,12 +89,6 @@ update_pre_build:
 update_translations_indexed_list:
 	export PYTHONPATH=$(API_PATH) ;	$(PYTHON_COMMAND) $(QIMPORT) -u translations $(INDEX_PATH)extend/  $(CONFIGS_PATH)translations.json
 
-# update aya.json and word.json from the Quran-Researcher database
-update_from_quran_researcher:
-	export PYTHONPATH=$(API_PATH) ;	$(PYTHON_COMMAND) -m alfanous_import.quran_researcher_updater
-
-
-
 # update recitations online list automatically from the project every ayah
 update_recitations_online_list:
 	cd $(CONFIGS_PATH); wget http://www.everyayah.com/data/recitations.js; mv recitations.js recitations.json

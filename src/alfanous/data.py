@@ -83,20 +83,16 @@ def QSE(path=paths.QSE_INDEX):
 
 
 @lru_cache(maxsize=1)
-def quran_unvocalized_words(path=paths.DERIVATIONS_FILE):
+def quran_unvocalized_words():
     """Return the set of unvocalized words appearing in the Quran.
 
-    Prefers to collect all unique ``normalized`` values from word children
-    in the live QSE index.  Falls back to reading the ``word_`` column from
-    ``derivations.json`` when the index is unavailable so that this function
-    keeps working in environments without a built index.
+    Collects all unique ``normalized`` values from word children in the live
+    QSE index.  Returns an empty frozenset when the index is unavailable;
+    callers should treat an empty set as "filtering unavailable" and fall
+    back to all candidates.
 
-    The result is cached as a frozenset for O(1) lookup.
-
-    :param path: Path to derivations JSON fallback file.
     :return: frozenset of unvocalized Quranic word strings
     """
-    # --- Primary: word index ------------------------------------------------
     try:
         _engine = QSE()
         if _engine.OK:
@@ -114,15 +110,7 @@ def quran_unvocalized_words(path=paths.DERIVATIONS_FILE):
     except Exception:
         pass
 
-    # --- Fallback: derivations.json ------------------------------------------
-    try:
-        with open(path, encoding="utf-8") as f:
-            data = json.load(f)
-        return frozenset(w for w in data.get("word_", []) if w)
-    except (IOError, json.JSONDecodeError, KeyError):
-        # Return an empty frozenset on any error; callers should treat an
-        # empty set as "filtering unavailable" and fall back to all candidates.
-        return frozenset()
+    return frozenset()
 
 
 try:

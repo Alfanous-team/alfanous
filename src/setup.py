@@ -95,10 +95,7 @@ setup(
                                'resources/stop_words.json',
                                'resources/synonyms.json',
                                'resources/antonyms.json',
-                               'resources/derivations.json',
                                'resources/vocalizations.json',
-                               'resources/standard_to_uthmani.json',
-                               'resources/word_props.json',
                                'resources/ai_query_translation_rules.txt',
                            ]},
 

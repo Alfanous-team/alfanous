@@ -809,9 +809,7 @@ but internally expand to word children for their match sets:
                    or root-level (>>) derivations before searching the aya
                    index (e.g. >>مالك finds all root-ملك occurrences).
 
-Both now query the live word-children index when available, eliminating
-the dependency on the static word_props.json and derivations.json resource
-files.
+Both now query the live word-children index when available.
 """
 
 
