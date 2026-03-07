@@ -271,26 +271,56 @@ class Transformer:
                 std_tokens = line.get("standard", "").split()
                 if len(std_tokens) == corpus_count:
                     aya_standard_words[key] = std_tokens
-                elif aya_gid is not None:
-                    qc_words = [w["word"] for w in corpus_words_for_key]
-                    special[str(aya_gid)] = {
-                        "qc_words":  qc_words,
-                        "aya_words": std_tokens,
-                        "mapping":   {},
-                    }
+                else:
+                    # Try to recover by merging each "يا" token with the word
+                    # that follows it (the vocative particle is written as a
+                    # separate word in the standard text but fused with the
+                    # addressee in the corpus).  Only accept the merge when
+                    # the resulting token count matches the corpus count.
+                    merged = []
+                    i = 0
+                    while i < len(std_tokens):
+                        if std_tokens[i] == "يا" and i + 1 < len(std_tokens):
+                            merged.append("يا" + std_tokens[i + 1])
+                            i += 2
+                        else:
+                            merged.append(std_tokens[i])
+                            i += 1
+                    if len(merged) == corpus_count:
+                        # Store the addressee part only (drop the "يا" prefix)
+                        # so the stored word_standard matches the corpus token.
+                        resolved = []
+                        j = 0
+                        while j < len(std_tokens):
+                            if std_tokens[j] == "يا" and j + 1 < len(std_tokens):
+                                resolved.append(std_tokens[j + 1])
+                                j += 2
+                            else:
+                                resolved.append(std_tokens[j])
+                                j += 1
+                        aya_standard_words[key] = resolved
+                    elif aya_gid is not None:
+                        qc_words = [w["word"] for w in corpus_words_for_key]
+                        special[str(aya_gid)] = {
+                            "qc_words":  qc_words,
+                            "aya_words": std_tokens,
+                            "mapping":   {},
+                        }
                 tr_tokens = line.get("transliteration", "").split()
                 if len(tr_tokens) == corpus_count:
                     aya_translit_words[key] = tr_tokens
 
         # Persist the special-mapping file so maintainers can do manual
         # word alignment for the ayas where automatic count-matching fails.
-        if special and tablename == "aya":
+        # يا-fixable mismatches are resolved at build time and never written here.
+        if tablename == "aya":
             special_path = os.path.join(
                 os.path.dirname(os.path.abspath(self.resource_path.rstrip("/\\"))),
                 "special.json",
             )
             # Merge with any existing manual mappings so repeated builds do
             # not overwrite entries that have already been hand-edited.
+            # Entries that are now auto-resolved are removed from the file.
             existing: dict = {}
             if os.path.isfile(special_path):
                 try:
@@ -298,6 +328,10 @@ class Transformer:
                         existing = json.load(_f)
                 except (OSError, json.JSONDecodeError):
                     pass
+            # Remove any entries that are now automatically resolved.
+            for gid_str in list(existing.keys()):
+                if gid_str not in special:
+                    del existing[gid_str]
             for gid_str, entry in special.items():
                 if gid_str not in existing:
                     existing[gid_str] = entry
@@ -307,7 +341,7 @@ class Transformer:
                     existing[gid_str]["aya_words"] = entry["aya_words"]
             with open(special_path, "w", encoding="utf-8") as _f:
                 json.dump(existing, _f, ensure_ascii=False, indent=2)
-            logging.info("Wrote %d special-mapping entries to %s", len(special), special_path)
+            logging.info("Wrote %d special-mapping entries to %s", len(existing), special_path)
 
         if tablename == "aya":
             # Pre-compute schema field names once to:
