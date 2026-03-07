@@ -31,7 +31,38 @@ commands.add_option("-d", "--download", dest="download", type="choice",
 commands.add_option("-u", "--update", dest="update", type="choice", choices=["translations"],
                     help="update store information files", metavar="FIELD")
 
+# ── Indexing performance options ─────────────────────────────────────────────
+perf = OptionGroup(parser, "Performance options",
+                   "Control index build speed and output size.")
+
+perf.add_option("--procs", dest="procs", type="int", default=1,
+                help="number of writer processes (default: 1).  "
+                     "Values > 1 enable multi-process indexing for faster builds.",
+                metavar="N")
+
+perf.add_option("--multisegment", dest="multisegment", action="store_true", default=False,
+                help="when --procs > 1, keep sub-process segments separate instead of "
+                     "merging them (faster commit, more segments).  "
+                     "Recommended for test/CI builds.")
+
+perf.add_option("--batch-size", dest="batch_size", type="int", default=0,
+                help="commit every N top-level records and reopen the writer "
+                     "(0 = single commit at the end, default).  "
+                     "Reduces peak memory for very large builds.",
+                metavar="N")
+
+perf.add_option("--optimize", dest="optimize", action="store_true", default=False,
+                help="merge all segments into one on the final commit.  "
+                     "Produces the smallest index and fastest search reads.  "
+                     "Recommended for production builds.")
+
+perf.add_option("--no-merge", dest="no_merge", action="store_true", default=False,
+                help="skip segment merging on the final commit "
+                     "(equivalent to merge=False).  "
+                     "Fastest commit; useful for test/CI builds.")
+
 parser.add_option_group(commands)
+parser.add_option_group(perf)
 
 parser.set_defaults(help=True)
 
@@ -45,16 +76,31 @@ if options.index:
     else:
         parser.error("Choose SOURCE_PATH and DISTINATION_PATH")
 
+    # --optimize implies a full merge; --no-merge skips merging
+    _merge    = not options.no_merge
+    _optimize = options.optimize
+
     if options.index == "main":
         T = Transformer(index_path=DESTINATION, resource_path=SOURCE)
         ayaSchema = T.build_schema(tablename='aya')
-        T.build_docindex(ayaSchema, translations_store_path=options.translations_path,
-                         corpus_path=options.corpus_path)
+        T.build_docindex(ayaSchema,
+                         translations_store_path=options.translations_path,
+                         corpus_path=options.corpus_path,
+                         merge=_merge,
+                         optimize=_optimize,
+                         procs=options.procs,
+                         multisegment=options.multisegment,
+                         batch_size=options.batch_size)
 
     elif options.index == "word":
         T = Transformer(index_path=DESTINATION, resource_path=SOURCE)
         wordqcSchema = T.build_schema(tablename='wordqc')
-        T.build_docindex(wordqcSchema, tablename='wordqc')
+        T.build_docindex(wordqcSchema, tablename='wordqc',
+                         merge=_merge,
+                         optimize=_optimize,
+                         procs=options.procs,
+                         multisegment=options.multisegment,
+                         batch_size=options.batch_size)
 
 
 if options.update:

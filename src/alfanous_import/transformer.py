@@ -184,6 +184,11 @@ class Transformer:
                 continue  # skip documentation-only rows without a search name
             field_type = str(line['type']).upper() or "STORED"
 
+            # STORED fields take no constructor arguments — always use STORED()
+            if field_type == "STORED":
+                kwargs[search_name] = fields.STORED()
+                continue
+
             params = {}
             for k, v in line.items():
                 if k not in _PASSABLE or v is None:
@@ -195,13 +200,16 @@ class Transformer:
         return Schema(**kwargs)
 
     def transfer(self, ix, tablename="aya", translations_store_path=None,
-                 corpus_path=None, merge=True, procs=1, multisegment=False,
-                 batch_size=0):
+                 corpus_path=None, merge=True, optimize=False, procs=1,
+                 multisegment=False, batch_size=0):
         """Write all records from *tablename*.json into the index *ix*.
 
         :param merge: Passed to ``writer.commit()`` on the final commit.
             Use ``merge=False`` to skip segment merging (faster, produces
             multiple segments).
+        :param optimize: When ``True``, merge all segments into a single
+            segment on the final commit.  Produces the smallest index size
+            and fastest read performance.  Overrides *merge*.
         :param procs: Number of writer processes.  ``procs > 1`` enables
             ``MpWriter`` for parallel indexing across CPU cores.
         :param multisegment: When *procs* > 1, skip merging sub-process
@@ -389,16 +397,16 @@ class Transformer:
                 logging.info(f" - milestone:  {cpt} ( {cpt * 100 / len(data_list)}% )")
 
         logging.info("done.")
-        writer.commit(merge=merge)
+        writer.commit(merge=merge, optimize=optimize or None)
 
     def build_docindex(self, schema, tablename="aya", translations_store_path=None,
-                       corpus_path=None, merge=True, procs=1, multisegment=False,
-                       batch_size=0):
+                       corpus_path=None, merge=True, optimize=False, procs=1,
+                       multisegment=False, batch_size=0):
         assert schema, "schema is empty"
         ix = FileStorage(self.index_path).create_index(schema)
         self.transfer(ix, tablename, translations_store_path=translations_store_path,
-                      corpus_path=corpus_path, merge=merge, procs=procs,
-                      multisegment=multisegment, batch_size=batch_size)
+                      corpus_path=corpus_path, merge=merge, optimize=optimize,
+                      procs=procs, multisegment=multisegment, batch_size=batch_size)
         # ix.optimize()  # merges all segments into one; slow on large corpora —
         # uncomment if a single-segment index (smaller file count) is required
         return "OK"
