@@ -102,7 +102,7 @@ def test_nested_qse_child_query_for_gid(nested_qse_index):
 
 
 _CORPUS_PATH = os.path.normpath(os.path.join(
-    os.path.dirname(__file__), "..", "..", "store", "quranic-corpus-morpology.xml"
+    os.path.dirname(__file__), "..", "..", "store", "quranic-corpus-morphology-0.4.txt"
 ))
 _CORPUS_EXISTS = os.path.isfile(_CORPUS_PATH)
 

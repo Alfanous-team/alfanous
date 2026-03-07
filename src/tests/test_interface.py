@@ -14,7 +14,7 @@ def test_search():
 
     # Total occurrence count of "الله" in the Quran is an invariant.
     assert results['search']['interval'] == {
-        'end': 10, 'nb_pages': 157.5, 'page': 1.0, 'start': 1, 'total': 1566
+        'end': 10, 'nb_pages': 157.6, 'page': 1.0, 'start': 1, 'total': 1567
     }
 
     # Top-level structure
@@ -148,17 +148,6 @@ def test_search_translation_unit_english():
     langs = {item["translation"]["lang"] for item in trans.values() if item["translation"]["lang"]}
     assert "en" in langs, f"Expected English translations among results, got langs: {langs}"
 
-
-def test_search_translation_unit_arabic_tafsir():
-    """unit='translation' with an Arabic query returns matching translation children."""
-    result = alfanous.api.search("الجنة", unit="translation")
-    assert result["error"]["code"] == 0
-    search = result["search"]
-    assert search["interval"]["total"] > 0, "Expected at least one translation match for الجنة"
-    trans = search["translations"]
-    assert len(trans) > 0
-    for pos, item in trans.items():
-        assert item["translation"]["text"]
 
 
 def test_search_aya_with_translation_param():

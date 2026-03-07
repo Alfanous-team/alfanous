@@ -150,7 +150,7 @@ _GRAMMAR  = _begin + _prefixes + _base + _suffixes + _end
 class API:
     """Quranic Corpus morphology XML API."""
 
-    def __init__(self, source: str = "../../store/quranic-corpus-morpology.xml") -> None:
+    def __init__(self, source: str = "../../store/quranic-corpus-morphology-0.4.txt") -> None:
         self.corpus = ET.parse(source)
 
     class MorphologyParser:

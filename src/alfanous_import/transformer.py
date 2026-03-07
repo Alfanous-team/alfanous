@@ -23,11 +23,225 @@ logging.basicConfig(level=logging.INFO)
 
 
 def _load_corpus_words(corpus_path):
-    """Read ``quranic-corpus-morpology.xml`` and return word occurrences grouped
+    """Read a Quranic Corpus morphology file and return word occurrences grouped
     by ``(sura_id, aya_id)``.
+
+    Supports two formats, detected by file extension:
+
+    * ``.txt`` — tab-separated v0.4 format (``quranic-corpus-morphology-0.4.txt``)
+    * ``.txt`` — tab-separated v0.4 format (``quranic-corpus-morphology-0.4.txt``)
 
     Each entry is a flat dict whose keys match the word-child search fields
     defined in ``fields.json`` (table_name="aya", ids 100-124).
+
+    :param corpus_path: Absolute or relative path to the corpus file.
+    :returns: ``defaultdict(list)`` keyed by ``(sura_id, aya_id)``.
+    """
+    if corpus_path and corpus_path.endswith(".txt"):
+        return _load_corpus_words_txt(corpus_path)
+    return _load_corpus_words_xml(corpus_path)
+
+
+def _load_corpus_words_txt(corpus_path):
+    """Parse the tab-separated Quranic Corpus morphology v0.4 text file.
+
+    Format (one row per morpheme segment)::
+
+        LOCATION        FORM    TAG     FEATURES
+        (1:1:1:1)       bi      P       PREFIX|bi+
+        (1:1:1:2)       somi    N       STEM|POS:N|LEM:{som|ROOT:smw|M|GEN
+        (1:1:2:1)       {ll~ahi PN      STEM|POS:PN|LEM:{ll~ah|ROOT:Alh|GEN
+
+    Words are grouped by ``(sura, aya, word_pos)``.  The full Arabic word form
+    is reconstructed by converting all segment FORM values from Buckwalter
+    transliteration.  Morphological features are taken from the STEM segment.
+
+    :param corpus_path: Path to the ``.txt`` corpus file.
+    :returns: ``defaultdict(list)`` keyed by ``(sura_id, aya_id)``.
+    """
+    import re as _re2
+    from collections import defaultdict, OrderedDict
+    from alfanous_import.quran_corpus_reader.constants import (
+        BUCKWALTER2UNICODE, POS, PGN, PGNclass, VERB, NOM, DERIV, PREFIX,
+    )
+    # _INV_POS maps raw tag (e.g. "V") → category name (e.g. "Verbs"), matching
+    # what the XML reader stored in the "type" field via _reverse_class(POSclass).
+    from alfanous_import.quran_corpus_reader.main import _INV_POS
+    from alfanous.text_processing import QArabicSymbolsFilter
+
+    def _b2u(s):
+        import unicodedata
+        raw = "".join(BUCKWALTER2UNICODE.get(ch, ch) for ch in s)
+        return unicodedata.normalize('NFC', raw)
+
+    _LOC_RE = _re2.compile(r'\((\d+):(\d+):(\d+):(\d+)\)')
+
+    def _parse_stem_features(features):
+        """Return a dict of morphological attributes from a STEM feature string."""
+        f = {}
+        parts = features.split('|')
+        # Scan for ACT PCPL / PASS PCPL two-token combos first
+        prev = None
+        deriv_skip = set()
+        for idx, part in enumerate(parts):
+            if prev in ('ACT', 'PASS') and part == 'PCPL':
+                combo = prev + ' PCPL'
+                deriv_info = DERIV.get(combo, (None, None))
+                f['derivation'] = deriv_info[1]
+                deriv_skip.add(idx - 1)
+                deriv_skip.add(idx)
+            prev = part
+
+        for idx, part in enumerate(parts):
+            if idx in deriv_skip or part in ('STEM', 'PCPL'):
+                continue
+            if ':' in part:
+                key, val = part.split(':', 1)
+                if key == 'POS':
+                    pos_info = POS.get(val, (None, None))
+                    f['arabicpos']  = pos_info[0]
+                    f['englishpos'] = pos_info[1]
+                    # type stores the English category name (e.g. "Verbs") to
+                    # match what the XML reader stored via _INV_POS lookup.
+                    type_list = _INV_POS.get(val)
+                    f['type'] = type_list[0] if type_list else val
+                elif key == 'LEM':
+                    f['arabiclemma'] = _b2u(val)
+                elif key == 'ROOT':
+                    f['arabicroot'] = _b2u(val)
+                elif key == 'MOOD':
+                    verb_info = VERB.get(val, (None, None))
+                    f['arabicmood']   = verb_info[0]
+                    f['englishmood']  = verb_info[1]
+                elif key == 'SP':
+                    f['arabicspecial'] = _b2u(val)
+            elif part in PGN:
+                for field, tags in PGNclass.items():
+                    if part in tags:
+                        f[field] = PGN[part]
+            elif part in ('NOM', 'ACC', 'GEN'):
+                nom_info = NOM.get(part, (None, None))
+                f['arabiccase']   = nom_info[0]
+                f['englishcase']  = nom_info[1]
+            elif part in ('DEF', 'INDEF'):
+                nom_info = NOM.get(part, (None, None))
+                f['arabicstate']   = nom_info[0]
+                f['englishstate']  = nom_info[1]
+            elif part in ('PERF', 'IMPF', 'IMPV'):
+                f['aspect'] = VERB.get(part, (None, None))[1]
+            elif part in ('ACT', 'PASS'):
+                f['voice'] = VERB.get(part, (None, None))[1]
+            elif part in ('(I)', '(II)', '(III)', '(IV)', '(V)', '(VI)',
+                          '(VII)', '(VIII)', '(IX)', '(X)', '(XI)', '(XII)'):
+                f['form'] = VERB.get(part, (None, None))[1]
+            elif part == 'VN':
+                f['derivation'] = DERIV.get('VN', (None, None))[1]
+        return f
+
+    qasf = QArabicSymbolsFilter(
+        shaping=True, tashkil=True, spellerrors=False,
+        hamza=False, uthmani_symbols=True,
+    )
+    qasf_spelled = QArabicSymbolsFilter(
+        shaping=True, tashkil=True, spellerrors=True,
+        hamza=True, uthmani_symbols=True,
+    )
+
+    # words_buf: OrderedDict keyed by (sura, aya, word_pos) →
+    #   {'segs': [(seg_pos, bw_form, feat_type, features), ...]}
+    words_buf = OrderedDict()
+    result = defaultdict(list)
+
+    try:
+        with open(corpus_path, encoding='utf-8') as fh:
+            for raw_line in fh:
+                line = raw_line.rstrip('\n')
+                if not line or line.startswith('#') or line.startswith('LOCATION'):
+                    continue
+                parts = line.split('\t')
+                if len(parts) < 4:
+                    continue
+                loc, bw_form, _tag, features = parts[0], parts[1], parts[2], parts[3]
+                m = _LOC_RE.match(loc)
+                if not m:
+                    continue
+                sura, aya, word_pos, seg_pos = (int(m.group(i)) for i in range(1, 5))
+                key = (sura, aya, word_pos)
+                feat_type = features.split('|', 1)[0]  # PREFIX / STEM / SUFFIX
+                if key not in words_buf:
+                    words_buf[key] = {'segs': []}
+                words_buf[key]['segs'].append((seg_pos, bw_form, feat_type, features))
+
+        gid = 0
+        for (sura, aya, word_pos), wdata in words_buf.items():
+            segs = sorted(wdata['segs'], key=lambda x: x[0])
+
+            # Full Uthmanic word form = all segment BW forms concatenated → Arabic
+            word_text = _b2u("".join(s[1] for s in segs))
+
+            # Extract morphological info from the STEM segment
+            stem_feats = {}
+            prefix_parts = []
+            suffix_parts = []
+            for _, bw_form, feat_type, features in segs:
+                if feat_type == 'STEM':
+                    stem_feats = _parse_stem_features(features)
+                elif feat_type == 'PREFIX':
+                    arabic_tok = _b2u(bw_form)
+                    if arabic_tok:
+                        prefix_parts.append(arabic_tok)
+                elif feat_type == 'SUFFIX':
+                    arabic_tok = _b2u(bw_form)
+                    if arabic_tok:
+                        suffix_parts.append(arabic_tok)
+
+            prefix_str = ";".join(prefix_parts) or None
+            suffix_str = ";".join(suffix_parts) or None
+
+            gid += 1
+            entry = {
+                "word_gid":     gid,
+                "word_id":      word_pos,
+                "aya_id":       aya,
+                "sura_id":      sura,
+                "word":         word_text,
+                "normalized":   qasf.normalize_all(word_text) or None,
+                "spelled":      qasf_spelled.normalize_all(word_text) or None,
+                # English (stored-only, not indexed)
+                "englishpos":   stem_feats.get("englishpos"),
+                "type":         stem_feats.get("type"),
+                "englishmood":  stem_feats.get("englishmood"),
+                "englishcase":  stem_feats.get("englishcase"),
+                "englishstate": stem_feats.get("englishstate"),
+                # Arabic (primary, indexed)
+                "pos":          stem_feats.get("arabicpos"),
+                "root":         stem_feats.get("arabicroot"),
+                "lemma":        stem_feats.get("arabiclemma"),
+                "special":      stem_feats.get("arabicspecial"),
+                "mood":         stem_feats.get("arabicmood"),
+                "case":         stem_feats.get("arabiccase"),
+                "state":        stem_feats.get("arabicstate"),
+                # Unchanged fields
+                "prefix":       prefix_str,
+                "suffix":       suffix_str,
+                "gender":       stem_feats.get("gender"),
+                "number":       stem_feats.get("number"),
+                "person":       stem_feats.get("person"),
+                "form":         stem_feats.get("form"),
+                "voice":        stem_feats.get("voice"),
+                "derivation":   stem_feats.get("derivation"),
+                "aspect":       stem_feats.get("aspect"),
+            }
+            result[(sura, aya)].append(entry)
+
+        logging.info("Loaded %d word occurrences from corpus.", gid)
+    except Exception as exc:
+        logging.warning("Failed to load corpus words from %s: %s", corpus_path, exc)
+    return result
+
+
+def _load_corpus_words_xml(corpus_path):
+    """Read the legacy XML Quranic Corpus morphology file.
 
     :param corpus_path: Absolute or relative path to the corpus XML file.
     :returns: ``defaultdict(list)`` keyed by ``(sura_id, aya_id)``.

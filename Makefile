@@ -106,6 +106,6 @@ index_all: index_main
 	@echo "done;"
 
 index_main:
-	export PYTHONPATH=$(API_PATH) ;	rm -rf $(INDEX_PATH)main/; $(PYTHON_COMMAND) $(QIMPORT) -x main $(STORE_PATH) $(INDEX_PATH)main/ --translations $(STORE_PATH)Translations/ --corpus $(STORE_PATH)quranic-corpus-morpology.xml
+	export PYTHONPATH=$(API_PATH) ;	rm -rf $(INDEX_PATH)main/; $(PYTHON_COMMAND) $(QIMPORT) -x main $(STORE_PATH) $(INDEX_PATH)main/ --translations $(STORE_PATH)Translations/ --corpus $(STORE_PATH)quranic-corpus-morphology-0.4.txt
 
 

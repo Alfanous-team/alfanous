@@ -18,7 +18,7 @@ def test_aya_engine():
 def test_most_frequent_words():
     print("\n#most frequent words#")
     most_frequent_words = QSE.most_frequent_words(9999999, "aya_")
-    assert len(most_frequent_words) == 17574
+    assert len(most_frequent_words) == 17572
     assert most_frequent_words[0:5] == [(1673.0, 'مِنْ'),
                                         (1185.0, 'فِي'),
                                         (1010.0, 'مَا'),
@@ -256,7 +256,7 @@ def test_advanced_search_derivations():
     lemma_results = _qse_search(u">ملك")
     root_results = _qse_search(u">>ملك")
     assert lemma_results >= 150
-    assert root_results == 117
+    assert root_results == 191
     assert lemma_results >= 1
     assert root_results >= 1
 
