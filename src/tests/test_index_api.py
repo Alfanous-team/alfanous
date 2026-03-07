@@ -98,3 +98,20 @@ def test_nested_qse_child_query_for_gid(nested_qse_index):
             assert r["gid"] == 1
             assert r.get("trans_text"), "trans_text must be non-empty"
     ix.close()
+
+
+_INDEX_SIZE_LIMIT_MB = 99
+
+
+@pytest.mark.skipif(not _STORE_EXISTS, reason="translation store not found")
+def test_nested_qse_index_size_under_limit(nested_qse_index):
+    """Built index (with all translations nested) must stay under 99 MB on disk."""
+    total_bytes = sum(
+        os.path.getsize(os.path.join(nested_qse_index, f))
+        for f in os.listdir(nested_qse_index)
+        if os.path.isfile(os.path.join(nested_qse_index, f))
+    )
+    total_mb = total_bytes / (1024 * 1024)
+    assert total_mb < _INDEX_SIZE_LIMIT_MB, (
+        f"Index size {total_mb:.1f} MB exceeds the {_INDEX_SIZE_LIMIT_MB} MB limit"
+    )

@@ -157,7 +157,7 @@ class Transformer:
         # fields.json.  ``scorable`` is included so filter-only fields can be
         # explicitly marked non-scoring.  Boolean False values must be passed
         # through (not filtered), hence the ``is not None`` guard.
-        _PASSABLE = {'analyzer', 'stored', 'unique', 'spelling', 'scorable'}
+        _PASSABLE = {'analyzer', 'stored', 'unique', 'spelling', 'scorable', 'phrase'}
 
         kwargs = {}
         for line in self.get_fields(tablename):

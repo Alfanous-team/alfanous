@@ -67,7 +67,8 @@
         "stored": false,
         "table_name": "aya",
         "type": "TEXT",
-        "unique": null
+        "unique": null,
+        "phrase": false
     },
     {
         "analyzer": "QFuzzyAnalyzer",
@@ -81,7 +82,8 @@
         "stored": false,
         "table_name": "aya",
         "type": "TEXT",
-        "unique": null
+        "unique": null,
+        "phrase": false
     },
     {
         "analyzer": "QDiacAnalyzer",
@@ -124,7 +126,8 @@
         "stored": true,
         "table_name": "aya",
         "type": "TEXT",
-        "unique": null
+        "unique": null,
+        "phrase": false
     },
     {
         "analyzer": null,
@@ -138,7 +141,8 @@
         "stored": true,
         "table_name": "aya",
         "type": "TEXT",
-        "unique": null
+        "unique": null,
+        "phrase": false
     },
     {
         "analyzer": null,
@@ -152,7 +156,8 @@
         "stored": true,
         "table_name": "aya",
         "type": "TEXT",
-        "unique": null
+        "unique": null,
+        "phrase": false
     },
     {
         "analyzer": null,
@@ -299,7 +304,8 @@
         "stored": true,
         "table_name": "aya",
         "type": "TEXT",
-        "unique": null
+        "unique": null,
+        "phrase": false
     },
     {
         "analyzer": null,
@@ -1125,7 +1131,8 @@
         "stored": true,
         "table_name": "aya",
         "type": "TEXT",
-        "unique": null
+        "unique": null,
+        "phrase": false
     },
     {
         "analyzer": null,
@@ -1138,7 +1145,8 @@
         "stored": true,
         "table_name": "aya",
         "type": "TEXT",
-        "unique": null
+        "unique": null,
+        "phrase": false
     },
     {
         "analyzer": null,
@@ -1243,7 +1251,8 @@
         "analyzer": "TranslationAnalyzer_am",
         "comment": "Stemmed Amharic translation text — indexed with a language-specific Snowball analyzer (falls back to RegexTokenizer+LowercaseFilter when Snowball does not support this language)",
         "is_spellchecked": null,
-        "unique": null
+        "unique": null,
+        "phrase": false
     },
     {
         "id": 100,
@@ -1256,7 +1265,8 @@
         "analyzer": "TranslationAnalyzer_ar",
         "comment": "Stemmed Arabic translation text — indexed with a language-specific Snowball analyzer (falls back to RegexTokenizer+LowercaseFilter when Snowball does not support this language)",
         "is_spellchecked": null,
-        "unique": null
+        "unique": null,
+        "phrase": false
     },
     {
         "id": 101,
@@ -1269,7 +1279,8 @@
         "analyzer": "TranslationAnalyzer_ber",
         "comment": "Stemmed Berber translation text — indexed with a language-specific Snowball analyzer (falls back to RegexTokenizer+LowercaseFilter when Snowball does not support this language)",
         "is_spellchecked": null,
-        "unique": null
+        "unique": null,
+        "phrase": false
     },
     {
         "id": 102,
@@ -1282,7 +1293,8 @@
         "analyzer": "TranslationAnalyzer_bn",
         "comment": "Stemmed Bengali translation text — indexed with a language-specific Snowball analyzer (falls back to RegexTokenizer+LowercaseFilter when Snowball does not support this language)",
         "is_spellchecked": null,
-        "unique": null
+        "unique": null,
+        "phrase": false
     },
     {
         "id": 103,
@@ -1295,7 +1307,8 @@
         "analyzer": "TranslationAnalyzer_de",
         "comment": "Stemmed German translation text — indexed with a language-specific Snowball analyzer (falls back to RegexTokenizer+LowercaseFilter when Snowball does not support this language)",
         "is_spellchecked": null,
-        "unique": null
+        "unique": null,
+        "phrase": false
     },
     {
         "id": 104,
@@ -1308,7 +1321,8 @@
         "analyzer": "TranslationAnalyzer_en",
         "comment": "Stemmed English translation text — indexed with a language-specific Snowball analyzer (falls back to RegexTokenizer+LowercaseFilter when Snowball does not support this language)",
         "is_spellchecked": null,
-        "unique": null
+        "unique": null,
+        "phrase": false
     },
     {
         "id": 105,
@@ -1321,7 +1335,8 @@
         "analyzer": "TranslationAnalyzer_fa",
         "comment": "Stemmed Persian translation text — indexed with a language-specific Snowball analyzer (falls back to RegexTokenizer+LowercaseFilter when Snowball does not support this language)",
         "is_spellchecked": null,
-        "unique": null
+        "unique": null,
+        "phrase": false
     },
     {
         "id": 106,
@@ -1334,7 +1349,8 @@
         "analyzer": "TranslationAnalyzer_fr",
         "comment": "Stemmed French translation text — indexed with a language-specific Snowball analyzer (falls back to RegexTokenizer+LowercaseFilter when Snowball does not support this language)",
         "is_spellchecked": null,
-        "unique": null
+        "unique": null,
+        "phrase": false
     },
     {
         "id": 107,
@@ -1347,7 +1363,8 @@
         "analyzer": "TranslationAnalyzer_hi",
         "comment": "Stemmed Hindi translation text — indexed with a language-specific Snowball analyzer (falls back to RegexTokenizer+LowercaseFilter when Snowball does not support this language)",
         "is_spellchecked": null,
-        "unique": null
+        "unique": null,
+        "phrase": false
     },
     {
         "id": 108,
@@ -1360,7 +1377,8 @@
         "analyzer": "TranslationAnalyzer_id",
         "comment": "Stemmed Indonesian translation text — indexed with a language-specific Snowball analyzer (falls back to RegexTokenizer+LowercaseFilter when Snowball does not support this language)",
         "is_spellchecked": null,
-        "unique": null
+        "unique": null,
+        "phrase": false
     },
     {
         "id": 109,
@@ -1373,7 +1391,8 @@
         "analyzer": "TranslationAnalyzer_ms",
         "comment": "Stemmed Malay translation text — indexed with a language-specific Snowball analyzer (falls back to RegexTokenizer+LowercaseFilter when Snowball does not support this language)",
         "is_spellchecked": null,
-        "unique": null
+        "unique": null,
+        "phrase": false
     },
     {
         "id": 110,
@@ -1386,7 +1405,8 @@
         "analyzer": "TranslationAnalyzer_ru",
         "comment": "Stemmed Russian translation text — indexed with a language-specific Snowball analyzer (falls back to RegexTokenizer+LowercaseFilter when Snowball does not support this language)",
         "is_spellchecked": null,
-        "unique": null
+        "unique": null,
+        "phrase": false
     },
     {
         "id": 111,
@@ -1399,7 +1419,8 @@
         "analyzer": "TranslationAnalyzer_sw",
         "comment": "Stemmed Swahili translation text — indexed with a language-specific Snowball analyzer (falls back to RegexTokenizer+LowercaseFilter when Snowball does not support this language)",
         "is_spellchecked": null,
-        "unique": null
+        "unique": null,
+        "phrase": false
     },
     {
         "id": 112,
@@ -1412,7 +1433,8 @@
         "analyzer": "TranslationAnalyzer_tr",
         "comment": "Stemmed Turkish translation text — indexed with a language-specific Snowball analyzer (falls back to RegexTokenizer+LowercaseFilter when Snowball does not support this language)",
         "is_spellchecked": null,
-        "unique": null
+        "unique": null,
+        "phrase": false
     },
     {
         "id": 113,
@@ -1425,7 +1447,8 @@
         "analyzer": "TranslationAnalyzer_ur",
         "comment": "Stemmed Urdu translation text — indexed with a language-specific Snowball analyzer (falls back to RegexTokenizer+LowercaseFilter when Snowball does not support this language)",
         "is_spellchecked": null,
-        "unique": null
+        "unique": null,
+        "phrase": false
     },
     {
         "id": 114,
@@ -1449,7 +1472,8 @@
         "stored": true,
         "analyzer": "QStandardAnalyzer",
         "comment": "Vocalized word token (kind=word child docs)",
-        "unique": null
+        "unique": null,
+        "phrase": false
     },
     {
         "id": 116,
@@ -1461,7 +1485,8 @@
         "stored": true,
         "analyzer": "QStandardAnalyzer",
         "comment": "Unvocalized normalized form (kind=word child docs)",
-        "unique": null
+        "unique": null,
+        "phrase": false
     },
     {
         "id": 117,
