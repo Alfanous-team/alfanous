@@ -54,7 +54,7 @@ def _load_corpus_words(corpus_path):
             suffix_str = ";".join(s.get("arabictoken", "") for s in suffixes) or None
 
             entry = {
-                "gid":          gid,
+                "word_gid":     gid,
                 "word_id":      iteration["word_id"],
                 "aya_id":       iteration["aya_id"],
                 "sura_id":      iteration["sura_id"],
@@ -261,11 +261,15 @@ class Transformer:
                 # Add word children from quranic corpus (nested alongside translations).
                 if words_by_aya and sura_id is not None and aya_id is not None:
                     for w in words_by_aya.get((sura_id, aya_id), []):
-                        # Use the parent aya's gid (not the word's own sequential
-                        # occurrence counter) so word children can be fetched with
-                        # the same gid-based query used for translation children.
+                        # Store the parent aya gid so word children can be
+                        # fetched with the same gid-based nested query used
+                        # for translations.  The word's own sequential
+                        # identifier is preserved in the word_gid field.
                         word_doc = {k: v for k, v in w.items()
-                                    if v is not None and k != "gid" and k in _schema_names}
+                                    if v is not None and k in _schema_names}
+                        # word_gid (word's own sequential counter) is included
+                        # in word_doc via the comprehension above; it does not
+                        # conflict with the parent aya gid assigned below.
                         word_doc["gid"] = gid
                         writer.add_document(kind="word", **word_doc)
                 writer.end_group()

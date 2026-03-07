@@ -701,8 +701,6 @@ class Raw:
                 timelimit=timelimit,
             )
             terms, _all_ac_variations = [], []
-            terms_uthmani = iter([])
-            _std2uth_fn = lambda x: x
         else:
             # Arabic (or field-qualified) query — search aya fields directly.
             # Restrict to parent aya documents only so that nested child
@@ -714,23 +712,6 @@ class Raw:
             )
             res, termz, searcher = self.QSE.search_all(aya_query, limit=self._defaults["results_limit"]["aya"], sortedby=sortedby, facets=facets_list, filter_dict=filter_dict, fuzzy=fuzzy, fuzzy_maxdist=fuzzy_maxdist, timelimit=timelimit)
             terms = [term[1] for term in list(termz)[:self._defaults["maxkeywords"]]]
-            # Build standard→Uthmani mapping for matched terms via word index.
-            _std2uth = {}
-            if terms and self.QSE.OK:
-                try:
-                    _uth_parts = [wquery.Term("kind", "word"),
-                                  wquery.Or([wquery.Term("normalized", t) for t in terms])]
-                    _uth_res, _, _uth_srch = self.QSE.search_with_query(
-                        wquery.And(_uth_parts), limit=len(terms) * 5)
-                    for _d in _uth_res:
-                        _n, _w = _d.get("normalized"), _d.get("word")
-                        if _n and _w and _n not in _std2uth:
-                            _std2uth[_n] = _w
-                    _uth_srch.close()
-                except Exception:
-                    pass
-            _std2uth_fn = lambda x: _std2uth.get(x) or x
-            terms_uthmani = map(_std2uth_fn, terms)
             # All matched aya_ac variation terms (only populated when fuzzy=True).
             # Used in the word_info loop to derive per-word variation lists.
             _all_ac_variations = [term[1] for term in termz if term[0] == "aya_ac"]
@@ -816,7 +797,6 @@ class Raw:
             docs_in_results = 0
             nb_vocalizations_globale = 0
             cpt = 1
-            annotation_word_query = "( 0 "
             for term in termz:
                 if term[0] == "aya" or term[0] == "aya_":
                     if term[2]:
@@ -826,10 +806,6 @@ class Raw:
                     matches_in_results += term_matches_in_results
                     term_ayas_in_results = _count_ayas_in_results(term[0], term[1])
                     docs_in_results += term_ayas_in_results
-                    if term[0] == "aya_":
-                        annotation_word_query += " OR word:%s " % term[1]
-                    else:  # if aya
-                        annotation_word_query += " OR normalized:%s " % _std2uth_fn(term[1])
                     if word_vocalizations:
                         _term_normalized = strip_vocalization(term[1])
                         vocalizations = []
@@ -922,17 +898,16 @@ class Raw:
                         "variations": word_variations,
                     }
                     cpt += 1
-            annotation_word_query += " ) "
             words_output["global"] = {"nb_words": cpt - 1, "nb_matches_overall": int(matches),
                                       "nb_matches": matches_in_results,
                                       "nb_ayas_overall": docs,
                                       "nb_ayas": docs_in_results,
                                       "nb_vocalizations": nb_vocalizations_globale}
         output["words"] = words_output
-        # Magic_loop to built queries of Adjacents,translations and annotations in the same time
+        # Build adjacent-aya query for prev/next aya text.
         _want_translation = bool(translation or lang)
-        if prev_aya or next_aya or annotation_aya:
-            adja_query = annotation_aya_query = "( 0"
+        if prev_aya or next_aya:
+            adja_query = "( 0"
 
             for r in reslist:
                 if prev_aya:
@@ -942,7 +917,6 @@ class Raw:
 
             # Restrict to parent aya documents only (gid also matches children).
             adja_query += " ) AND kind:aya"
-            annotation_aya_query += " )"
 
         if prev_aya or next_aya:
             adja_res, adja_searcher = self.QSE.find_extended(adja_query, "gid")
@@ -1007,8 +981,17 @@ class Raw:
         aya_words_map = {}  # {(sura_id, aya_id): [word_entry, ...]}
         if word_linguistics and reslist:
             try:
-                wc_res, wc_searcher = self.QSE.find_extended(
-                    _gid_base_query + " AND kind:word", "gid"
+                _wl_parent_q = wquery.And([
+                    wquery.Term("kind", "aya"),
+                    wquery.Or([wquery.NumericRange("gid", r["gid"], r["gid"])
+                               for r in reslist]),
+                ])
+                _wl_q = wquery.And([
+                    wquery.NestedChildren(wquery.Term("kind", "aya"), _wl_parent_q),
+                    wquery.Term("kind", "word"),
+                ])
+                wc_res, _, wc_searcher = self.QSE.search_with_query(
+                    _wl_q, limit=len(reslist) * 300
                 )
                 extend_runtime += wc_res.runtime
                 for w in wc_res:
@@ -1050,6 +1033,82 @@ class Raw:
                 wc_searcher.close()
             except Exception:
                 pass  # index built without corpus words — silently skip
+
+        # Fetch word children matching query terms for annotation_word.
+        # Word children carry the parent aya gid (not the word's own word_gid)
+        # so the same NestedChildren query used above applies here too.
+        # Only words whose normalized form matches a search term are returned;
+        # results are grouped by aya gid and sorted by word_id (position).
+        annot_words_map = {}  # {gid: [{"word_id", "word", "normalized"}, ...]}
+        if annotation_word and terms and reslist and self.QSE.OK:
+            try:
+                # sorted() for deterministic term ordering across Python runs
+                _norm_terms = sorted(set(strip_vocalization(t) for t in terms if t))
+                if _norm_terms:
+                    _aw_parent_q = wquery.And([
+                        wquery.Term("kind", "aya"),
+                        wquery.Or([wquery.NumericRange("gid", r["gid"], r["gid"])
+                                   for r in reslist]),
+                    ])
+                    _aw_q = wquery.And([
+                        wquery.NestedChildren(wquery.Term("kind", "aya"), _aw_parent_q),
+                        wquery.Term("kind", "word"),
+                        wquery.Or([wquery.Term("normalized", t) for t in _norm_terms]),
+                    ])
+                    # Generous limit: an aya has at most ~50 words; most terms
+                    # match far fewer, but we allow 20 hits per term per aya.
+                    _aw_limit = len(reslist) * max(len(_norm_terms), 1) * 20
+                    _aw_res, _, _aw_srch = self.QSE.search_with_query(
+                        _aw_q, limit=_aw_limit
+                    )
+                    extend_runtime += _aw_res.runtime
+                    for _w in _aw_res:
+                        _g = _w.get("gid")
+                        if _g is not None:
+                            annot_words_map.setdefault(_g, []).append({
+                                "word_id":    _w.get("word_id"),
+                                "word":       _w.get("word"),
+                                "normalized": _w.get("normalized"),
+                            })
+                    for _g in annot_words_map:
+                        annot_words_map[_g].sort(key=lambda e: e.get("word_id") or 0)
+                    _aw_srch.close()
+            except Exception:
+                pass
+
+        # Fetch all word children for annotation_aya (single-result view only;
+        # annotation_aya is disabled when len(res) > 1 earlier in this method).
+        # Returns every word of the matched aya with position, Uthmani text,
+        # and normalized form — a lightweight alternative to word_linguistics.
+        annot_aya_words_map = {}  # {gid: [{"word_id", "word", "normalized"}, ...]}
+        if annotation_aya and reslist and self.QSE.OK:
+            try:
+                _aa_parent_q = wquery.And([
+                    wquery.Term("kind", "aya"),
+                    wquery.Or([wquery.NumericRange("gid", r["gid"], r["gid"])
+                               for r in reslist]),
+                ])
+                _aa_q = wquery.And([
+                    wquery.NestedChildren(wquery.Term("kind", "aya"), _aa_parent_q),
+                    wquery.Term("kind", "word"),
+                ])
+                # An aya has at most ~300 words (safe upper bound for a
+                # single-aya annotation_aya request).
+                _aa_res, _, _aa_srch = self.QSE.search_with_query(_aa_q, limit=300)
+                extend_runtime += _aa_res.runtime
+                for _w in _aa_res:
+                    _g = _w.get("gid")
+                    if _g is not None:
+                        annot_aya_words_map.setdefault(_g, []).append({
+                            "word_id":    _w.get("word_id"),
+                            "word":       _w.get("word"),
+                            "normalized": _w.get("normalized"),
+                        })
+                for _g in annot_aya_words_map:
+                    annot_aya_words_map[_g].sort(key=lambda e: e.get("word_id") or 0)
+                _aa_srch.close()
+            except Exception:
+                pass
 
         output["runtime"] = round(extend_runtime, 5)
         output["interval"] = {
@@ -1167,7 +1226,11 @@ class Raw:
                     "id": N(r["sajda_id"]) if (r["sajda"] == "نعم") else None,
                 },
 
-                "annotations": {}
+                "annotations": (
+                    annot_words_map.get(r["gid"], []) if annotation_word
+                    else annot_aya_words_map.get(r["gid"], []) if annotation_aya
+                    else []
+                )
             }
             if word_linguistics:
                 output["ayas"][cpt]["words"] = aya_words_map.get(
