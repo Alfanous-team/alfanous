@@ -1483,10 +1483,10 @@
         "name": "spelled",
         "name_arabic": "لفظ_مهجى",
         "search_name": "spelled",
-        "type": "KEYWORD",
-        "stored": true,
+        "type": "STORED",
+        "stored": null,
         "analyzer": null,
-        "comment": "Alternate spelled form (kind=word child docs)",
+        "comment": "Alternate spelled form (kind=word child docs) — stored only, not indexed",
         "unique": null
     },
     {
@@ -1519,10 +1519,10 @@
         "name": "arabicpos",
         "name_arabic": "نوع_عربي",
         "search_name": "arabicpos",
-        "type": "KEYWORD",
-        "stored": true,
+        "type": "STORED",
+        "stored": null,
         "analyzer": null,
-        "comment": "Part of speech in Arabic (kind=word child docs)",
+        "comment": "Part of speech in Arabic (kind=word child docs) — stored only, not indexed",
         "unique": null
     },
     {
@@ -1711,10 +1711,10 @@
         "name": "arabicmood",
         "name_arabic": "حالة_فعلية_ع",
         "search_name": "arabicmood",
-        "type": "KEYWORD",
-        "stored": true,
+        "type": "STORED",
+        "stored": null,
         "analyzer": null,
-        "comment": "Verb mood in Arabic (kind=word child docs)",
+        "comment": "Verb mood in Arabic (kind=word child docs) — stored only, not indexed",
         "unique": null
     },
     {
@@ -1735,10 +1735,10 @@
         "name": "arabiccase",
         "name_arabic": "اعراب_عربي",
         "search_name": "arabiccase",
-        "type": "KEYWORD",
-        "stored": true,
+        "type": "STORED",
+        "stored": null,
         "analyzer": null,
-        "comment": "Grammatical case in Arabic (kind=word child docs)",
+        "comment": "Grammatical case in Arabic (kind=word child docs) — stored only, not indexed",
         "unique": null
     }
 ]
