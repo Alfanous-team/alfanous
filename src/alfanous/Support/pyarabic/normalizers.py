@@ -10,7 +10,8 @@ _HAMZAT = (WAW_HAMZA, YEH_HAMZA)
 _LAMALEFAT = (LAM_ALEF, LAM_ALEF_HAMZA_ABOVE, LAM_ALEF_HAMZA_BELOW, LAM_ALEF_MADDA_ABOVE)
 
 def normalize_uthmani_symbols(w):
-    return w.replace(MINI_ALEF, '')\
+    return w.replace(MINI_ALEF, ALEF)\
+        .replace(ALEF_MADDA, ALEF)\
         .replace(SMALL_YEH, '')\
         .replace(SMALL_WAW, '')\
         .replace(ALEF_WASLA, ALEF)\

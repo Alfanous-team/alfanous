@@ -209,6 +209,28 @@ class Transformer:
         if corpus_path and tablename == "aya":
             words_by_aya = _load_corpus_words(corpus_path)
 
+        # Build position-based mappings from the aya standard text and
+        # transliteration.  For each aya where the space-split word count
+        # matches the corpus word count we can assign each corpus word the
+        # corresponding standard-script and transliteration word by index.
+        # {(sura_id, aya_id): [word, ...]}
+        aya_standard_words: dict = {}
+        aya_translit_words: dict = {}
+        if words_by_aya and tablename == "aya":
+            for line in data_list:
+                sid = line.get("sura_id")
+                aid = line.get("aya_id")
+                key = (sid, aid)
+                corpus_count = len(words_by_aya.get(key, []))
+                if corpus_count == 0:
+                    continue
+                std_tokens = line.get("standard", "").split()
+                if len(std_tokens) == corpus_count:
+                    aya_standard_words[key] = std_tokens
+                tr_tokens = line.get("transliteration", "").split()
+                if len(tr_tokens) == corpus_count:
+                    aya_translit_words[key] = tr_tokens
+
         if tablename == "aya":
             # Pre-compute schema field names once to:
             # (a) filter language-specific text_{lang} fields for translation children, and
@@ -260,13 +282,23 @@ class Transformer:
                         writer.add_document(**child_doc)
                 # Add word children from quranic corpus (nested alongside translations).
                 if words_by_aya and sura_id is not None and aya_id is not None:
-                    for w in words_by_aya.get((sura_id, aya_id), []):
+                    key = (sura_id, aya_id)
+                    corpus_words_for_aya = words_by_aya.get(key, [])
+                    std_tokens = aya_standard_words.get(key, [])
+                    tr_tokens  = aya_translit_words.get(key, [])
+                    for pos, w in enumerate(corpus_words_for_aya):
                         # Store the parent aya gid so word children can be
                         # fetched with the same gid-based nested query used
                         # for translations.  The word's own sequential
                         # identifier is preserved in the word_gid field.
                         word_doc = {k: v for k, v in w.items()
                                     if v is not None and k in _schema_names}
+                        # Attach standard-script and transliteration words
+                        # by matching position (only when count aligned).
+                        if pos < len(std_tokens) and "word_standard" in _schema_names:
+                            word_doc["word_standard"] = std_tokens[pos]
+                        if pos < len(tr_tokens) and "word_transliteration" in _schema_names:
+                            word_doc["word_transliteration"] = tr_tokens[pos]
                         # word_gid (word's own sequential counter) is included
                         # in word_doc via the comprehension above; it does not
                         # conflict with the parent aya gid assigned below.

@@ -71,12 +71,13 @@ def _make_tuple_mock(root_words_map):
     """Return a side_effect function for TupleQuery tests.
 
     TupleQuery._get_words_by_properties maps the user-facing ``type`` property
-    to the ``pos`` index field (which stores Arabic POS values like "فعل"/"اسم").
-    The mock therefore reads the ``pos`` key from filter_dict.
+    to the ``type`` index field (which stores English category values like
+    "Nouns" / "Verbs") via _ARABIC_TO_TYPE.  The mock therefore reads the
+    ``type`` key from filter_dict.
     """
-    def _mock(filter_dict, field="normalized", limit=5000):
+    def _mock(filter_dict, field="word_standard", limit=5000):
         root = filter_dict.get("root", "")
-        type_ = filter_dict.get("pos", "")  # mapped from "type" → "pos" in _get_words_by_properties
+        type_ = filter_dict.get("type", "")  # English value: "Nouns", "Verbs", …
         key = (root, type_)
         return list(root_words_map.get(key, []))
     return _mock
@@ -238,7 +239,7 @@ def test_tuple_plugin_single_item():
 
 def test_tuple_plugin_multiple_items():
     """Test tuple plugin — root قول, type اسم (noun): 11 results."""
-    _mock = _make_tuple_mock({("قول", "اسم"): _QAWL_NOUNS})
+    _mock = _make_tuple_mock({("قول", "Nouns"): _QAWL_NOUNS})
     with patch("alfanous.query_plugins._query_word_index", side_effect=_mock):
         parser = create_test_parser()
         query = parser.parse("{قول،اسم}")
@@ -255,7 +256,7 @@ def test_tuple_plugin_multiple_items():
 
 def test_tuple_plugin_root_and_type():
     """Test tuple plugin — root ملك, type فعل (verb): 8 results."""
-    _mock = _make_tuple_mock({("ملك", "فعل"): _MALIK_VERBS})
+    _mock = _make_tuple_mock({("ملك", "Verbs"): _MALIK_VERBS})
     with patch("alfanous.query_plugins._query_word_index", side_effect=_mock):
         parser = create_test_parser()
         query = parser.parse("{ملك،فعل}")

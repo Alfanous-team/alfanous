@@ -1677,5 +1677,29 @@
     "unique": null,
     "analyzer": null,
     "comment": "Word's own global sequential identifier (1-based across all Quran words); kind=word child docs only"
+  },
+  {
+    "id": 146,
+    "table_name": "aya",
+    "name": "word_standard",
+    "name_arabic": "الكلمة_المعيارية",
+    "search_name": "word_standard",
+    "type": "ID",
+    "stored": true,
+    "unique": null,
+    "analyzer": null,
+    "comment": "Standard (non-Uthmanic) Arabic word matched by position from aya standard text field (kind=word child docs)"
+  },
+  {
+    "id": 147,
+    "table_name": "aya",
+    "name": "word_transliteration",
+    "name_arabic": "الكلمة_اللاتينية",
+    "search_name": "word_transliteration",
+    "type": "STORED",
+    "stored": true,
+    "unique": null,
+    "analyzer": null,
+    "comment": "Latin transliteration word matched by position from aya transliteration field (kind=word child docs)"
   }
 ]

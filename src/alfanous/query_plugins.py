@@ -152,12 +152,17 @@ class DerivationQuery(QMultiTerm):
 
         Level 0 / 1 → lemma-level derivations (narrow set).
         Level >= 2  → root-level derivations (wider set).
+
+        Lookup strategy: try ``word_standard`` (clean standard aya word) first,
+        then fall back to ``normalized`` and ``word`` fields.  Results are
+        returned as ``word_standard`` values (plain Arabic, compatible with the
+        aya text index); falls back to ``normalized`` when ``word_standard`` is
+        unavailable for older indexes.
+
         Returns ``[word]`` when the index is unavailable.
         """
         use_root_level = leveldist >= 2
 
-        # Find the word in the index to get its lemma / root
-        # Use normalized (unvocalized) form for lookup
         try:
             from alfanous.text_processing import QArabicSymbolsFilter as _QASF
             _strip = _QASF(shaping=False, tashkil=True, spellerrors=False, hamza=False).normalize_all
@@ -165,32 +170,56 @@ class DerivationQuery(QMultiTerm):
         except Exception:
             word_norm = word
 
+        def _collect_roots():
+            """Try word_standard → normalized → word, return unique roots."""
+            roots = set()
+            for _filter in (
+                {"word_standard": word},
+                {"normalized": word_norm},
+                {"word": word},
+            ):
+                r = _query_word_index(_filter, field="root")
+                roots.update(r)
+                if roots:
+                    break
+            return list(roots)
+
+        def _collect_lemmas():
+            """Try word_standard → normalized → word, return unique lemmas."""
+            lemmas = set()
+            for _filter in (
+                {"word_standard": word},
+                {"normalized": word_norm},
+                {"word": word},
+            ):
+                l = _query_word_index(_filter, field="lemma")
+                lemmas.update(l)
+                if lemmas:
+                    break
+            return list(lemmas)
+
+        def _words_for_field(field_values, filter_key, result_field):
+            """For each value in field_values, collect result_field from matching docs."""
+            words = set()
+            for val in field_values:
+                words.update(w for w in _query_word_index({filter_key: val}, field=result_field) if w)
+            return list(words)
+
         if use_root_level:
-            # Collect ALL unique roots for this word (multiple surface forms may
-            # share different roots; use the union for the broadest derivation set).
-            _root_docs = _query_word_index({"normalized": word_norm}, field="root")
-            if not _root_docs:
-                _root_docs = _query_word_index({"word": word}, field="root")
-            roots = list(set(_root_docs)) if _root_docs else []
+            roots = _collect_roots()
             if roots:
-                words = []
-                for root in roots:
-                    words += _query_word_index({"root": root}, field="normalized")
-                words = list(set(words))
+                # Prefer word_standard (plain Arabic), fall back to normalized
+                words = _words_for_field(roots, "root", "word_standard")
+                if not words:
+                    words = _words_for_field(roots, "root", "normalized")
                 if words:
                     return words
         else:
-            # Collect ALL unique lemmas — a single normalized form can belong to
-            # multiple lexemes (e.g. ملك as verb "to own" vs noun "king").
-            _lemma_docs = _query_word_index({"normalized": word_norm}, field="lemma")
-            if not _lemma_docs:
-                _lemma_docs = _query_word_index({"word": word}, field="lemma")
-            lemmas = list(set(_lemma_docs)) if _lemma_docs else []
+            lemmas = _collect_lemmas()
             if lemmas:
-                words = []
-                for lemma in lemmas:
-                    words += _query_word_index({"lemma": lemma}, field="normalized")
-                words = list(set(words))
+                words = _words_for_field(lemmas, "lemma", "word_standard")
+                if not words:
+                    words = _words_for_field(lemmas, "lemma", "normalized")
                 if words:
                     return words
 
@@ -319,7 +348,7 @@ class TupleQuery(QMultiTerm):
         via the live word-children index.
 
         :param props: Dict with optional keys ``root``, ``type``.
-        :returns: List of matching unvocalized word forms.
+        :returns: List of matching standard Arabic word forms.
         """
         # "root" maps directly to the "root" field (stores arabicroot, Arabic script).
         # "type" maps to the "type" field which stores English category values
@@ -332,7 +361,12 @@ class TupleQuery(QMultiTerm):
             if english_type:
                 _filter["type"] = english_type
         if _filter:
-            return _query_word_index(_filter, field="normalized")
+            # Prefer word_standard (plain Arabic, compatible with aya index);
+            # fall back to normalized for indexes built without word_standard.
+            words = _query_word_index(_filter, field="word_standard")
+            if not words:
+                words = _query_word_index(_filter, field="normalized")
+            return words
         return []
 
 
