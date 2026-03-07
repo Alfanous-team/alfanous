@@ -245,7 +245,7 @@ def test_translation_stem_filter_unknown_language():
 
 
 def test_translation_stem_filter_pickle():
-    """TranslationStemFilter must survive pickle/unpickle (Whoosh schema serialization)."""
+    """TranslationStemFilter must survive pickle/unpickle with correct stems."""
     import pickle
     stem_filter = TranslationStemFilter('en')
     restored = pickle.loads(pickle.dumps(stem_filter))
@@ -256,6 +256,53 @@ def test_translation_stem_filter_pickle():
     tok.stopped = False
     (out,) = list(restored(iter([tok])))
     assert out.text  # non-empty stemmed form
+    # Inflected form must produce the same stem as the base form after unpickling.
+    tok2 = Token(); tok2.text = 'fires'; tok2.boost = 1.0; tok2.stopped = False
+    tok3 = Token(); tok3.text = 'fire';  tok3.boost = 1.0; tok3.stopped = False
+    (stem_fires,) = list(restored(iter([tok2])))
+    (stem_fire,)  = list(restored(iter([tok3])))
+    assert stem_fires.text == stem_fire.text, (
+        f"After unpickling, 'fires' and 'fire' must produce the same stem "
+        f"(got {stem_fires.text!r} vs {stem_fire.text!r})"
+    )
+
+
+def test_translation_stem_filter_whoosh_fallback():
+    """TranslationStemFilter must use Whoosh's Snowball when pystemmer is absent."""
+    import pickle
+    stem_filter = TranslationStemFilter('en')
+    assert stem_filter._available
+
+    # Simulate pystemmer being unavailable: patch _make_stemmer to skip it.
+    original_make = TranslationStemFilter._make_stemmer
+
+    def _no_pystemmer(self, lang):
+        from alfanous.text_processing import _LANG_TO_SNOWBALL
+        snowball_name = _LANG_TO_SNOWBALL.get(lang)
+        if not snowball_name:
+            self._stem_fn = None
+            return False
+        try:
+            from whoosh.lang import stemmer_for_language
+            self._stem_fn = stemmer_for_language(snowball_name)
+            return True
+        except Exception:
+            self._stem_fn = None
+            return False
+
+    TranslationStemFilter._make_stemmer = _no_pystemmer
+    try:
+        fallback_filter = TranslationStemFilter('en')
+        assert fallback_filter._available, "Whoosh fallback stemmer should be available for English"
+        tok_fires = Token(); tok_fires.text = 'fires'; tok_fires.boost = 1.0; tok_fires.stopped = False
+        tok_fire  = Token(); tok_fire.text  = 'fire';  tok_fire.boost  = 1.0; tok_fire.stopped  = False
+        (out_fires,) = list(fallback_filter(iter([tok_fires])))
+        (out_fire,)  = list(fallback_filter(iter([tok_fire])))
+        assert out_fires.text == out_fire.text == 'fire', (
+            f"Whoosh fallback: 'fires'->{out_fires.text!r}, 'fire'->{out_fire.text!r}"
+        )
+    finally:
+        TranslationStemFilter._make_stemmer = original_make
 
 
 # ---------------------------------------------------------------------------

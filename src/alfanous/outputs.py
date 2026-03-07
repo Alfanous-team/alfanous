@@ -665,6 +665,19 @@ class Raw:
             _trans_parser = _MFP(_available_fields, self.QSE._schema, group=_OrGroup)
             _trans_q = _trans_parser.parse(query)
             _nested_q = wq.NestedParent(wq.Term("kind", "aya"), _trans_q)
+            # Apply filter_dict to restrict results to specific parent aya fields
+            # (e.g. sura_id:2 limits to Al-Baqara).  Filter terms are AND-ed
+            # directly into the query because search_with_query bypasses the
+            # FilterCollector used in the Arabic path.
+            if filter_dict:
+                _filter_parts = []
+                for _ff, _fv in filter_dict.items():
+                    if isinstance(_fv, list):
+                        _filter_parts.append(wq.Or([wq.Term(_ff, v) for v in _fv]))
+                    else:
+                        _filter_parts.append(wq.Term(_ff, _fv))
+                if _filter_parts:
+                    _nested_q = wq.And([_nested_q] + _filter_parts)
             res, termz, searcher = self.QSE.search_with_query(
                 _nested_q,
                 limit=self._defaults["results_limit"]["aya"],
