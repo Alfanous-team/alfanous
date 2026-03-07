@@ -51,18 +51,18 @@ BUCKWALTER2UNICODE = {"'": "\u0621", # hamza-on-the-line
                 "^": "\u0653", # Maddah
                 "#": "\u0654", # HamzaAbove
 
-                ":"  : "\\u06DC", # SmallHighSeen
-                "@"  : "\\u06DF", # SmallHighRoundedZero
-                "\"" : "\\u06E0", # SmallHighUprightRectangularZero
-                "["  : "\\u06E2", # SmallHighMeemIsolatedForm
-                ";"  : "\\u06E3", # SmallLowSeen
-                ","  : "\\u06E5", # SmallWaw
-                "."  : "\\u06E6", # SmallYa
-                "!"  : "\\u06E8", # SmallHighNoon
-                "-"  : "\\u06EA", # EmptyCentreLowStop
-                "+"  : "\\u06EB", # EmptyCentreHighStop
-                "%"  : "\\u06EC", # RoundedHighStopWithFilledCentre
-                "]"  : "\\u06ED"          #
+                ":"  : "\u06DC", # SmallHighSeen
+                "@"  : "\u06DF", # SmallHighRoundedZero
+                "\"" : "\u06E0", # SmallHighUprightRectangularZero
+                "["  : "\u06E2", # SmallHighMeemIsolatedForm
+                ";"  : "\u06E3", # SmallLowSeen
+                ","  : "\u06E5", # SmallWaw
+                "."  : "\u06E6", # SmallYa
+                "!"  : "\u06E8", # SmallHighNoon
+                "-"  : "\u06EA", # EmptyCentreLowStop
+                "+"  : "\u06EB", # EmptyCentreHighStop
+                "%"  : "\u06EC", # RoundedHighStopWithFilledCentre
+                "]"  : "\u06ED"           #
 
                 }
 

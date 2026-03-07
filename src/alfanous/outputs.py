@@ -1454,7 +1454,9 @@ class Raw:
         # Filter down to fields that actually exist in this index schema
         _schema_fields = set(schema.names())
         _all_word_fields = [f for f in _WORD_ALL_INDEXED_FIELDS if f in _schema_fields]
-        _default_fields = [f for f in ["word", "normalized"] if f in _schema_fields] or _all_word_fields or ["word"]
+        # Include word_standard so standard-form queries match via that field
+        # in addition to the Uthmanic 'word' and 'normalized' fields.
+        _default_fields = [f for f in ["word_standard", "word", "normalized"] if f in _schema_fields] or _all_word_fields or ["word"]
         _word_parser = _qparser.MultifieldParser(
             _default_fields,
             schema=schema,
@@ -1487,6 +1489,19 @@ class Raw:
         end = min(interval_end, len(res))
         start = offset if offset <= len(res) else -1
         reslist = [] if end == 0 or start == -1 else list(res)[start - 1:end]
+
+        # When a result was matched by word_standard, add its Uthmanic 'word'
+        # value to the keywords list so that the Uthmanic form of the word can
+        # also be highlighted in the result text.
+        _terms_set = set(terms)
+        for _r in reslist:
+            if len(terms) >= self._defaults["maxkeywords"]:
+                break
+            _ws = _r.get("word_standard")
+            _wu = _r.get("word")
+            if _ws and _wu and _ws in _terms_set and _wu not in _terms_set:
+                terms.append(_wu)
+                _terms_set.add(_wu)
 
         H = lambda X: self.QSE.highlight(X, terms, highlight) \
             if highlight != "none" and X else (X if X else "-----")
