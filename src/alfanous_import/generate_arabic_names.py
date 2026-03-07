@@ -1,5 +1,5 @@
 """
-Generate src/alfanous/resources/arabic_names.json from store/fields.json.
+Generate src/alfanous/resources/__generated__/arabic_names.json from store/fields.json.
 
 The output maps every *indexed* field's search_name to its Arabic display
 name::
@@ -27,7 +27,7 @@ import os
 _REPO_ROOT = os.path.join(os.path.dirname(__file__), "..", "..")
 FIELDS_JSON = os.path.join(_REPO_ROOT, "store", "fields.json")
 OUTPUT_JSON = os.path.join(
-    os.path.dirname(__file__), "..", "alfanous", "resources", "arabic_names.json"
+    os.path.dirname(__file__), "..", "alfanous", "resources", "__generated__", "arabic_names.json"
 )
 
 

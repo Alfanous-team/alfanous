@@ -99,10 +99,9 @@ debian/tmp/
 debian/alfanous/
 debian/files
 debian/python-alfanous/
-arabic_names.json
+src/alfanous/resources/__generated__/arabic_names.json
 # Allow the committed config file; ignore auto-generated copies elsewhere
-translations.json
-!src/alfanous/configs/translations.json
+src/alfanous/configs/__generated__/translations.json
 
 # Packages #
 ############

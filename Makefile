@@ -85,14 +85,14 @@ update_post_build: update_translations_indexed_list
 # - arabic_names.json (derived from store/fields.json)
 update_pre_build: generate_arabic_names
 
-# Regenerate src/alfanous/resources/arabic_names.json from store/fields.json.
+# Regenerate src/alfanous/resources/__generated__/arabic_names.json from store/fields.json.
 # The output maps every indexed field's search_name to its Arabic display name.
 generate_arabic_names:
 	export PYTHONPATH=$(API_PATH) ;	$(PYTHON_COMMAND) -m alfanous_import.generate_arabic_names
 
 # update list of indexed translations automatically using Importer
 update_translations_indexed_list:
-	export PYTHONPATH=$(API_PATH) ;	$(PYTHON_COMMAND) $(QIMPORT) -u translations $(INDEX_PATH)extend/  $(CONFIGS_PATH)translations.json
+	export PYTHONPATH=$(API_PATH) ;	$(PYTHON_COMMAND) $(QIMPORT) -u translations $(INDEX_PATH)extend/  $(CONFIGS_PATH)__generated__/translations.json
 
 # update recitations online list automatically from the project every ayah
 update_recitations_online_list:
