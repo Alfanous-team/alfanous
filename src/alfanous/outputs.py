@@ -23,6 +23,25 @@ _TEXT_LANG_FIELDS = [f'text_{l}' for l in _TRANSLATION_LANGS]
 FALSE_PATTERN = '^false|no|off|0$'
 
 
+def _build_filter_query(filter_dict):
+    """Convert a filter dict to a list of Whoosh Term/Or query objects.
+
+    Each key-value pair in *filter_dict* becomes a :class:`whoosh.query.Term`
+    (scalar value) or :class:`whoosh.query.Or` of Terms (list value).
+    Returns an empty list when *filter_dict* is falsy.
+    """
+    if not filter_dict:
+        return []
+    from whoosh import query as wq
+    parts = []
+    for field, value in filter_dict.items():
+        if isinstance(value, list):
+            parts.append(wq.Or([wq.Term(field, v) for v in value]))
+        else:
+            parts.append(wq.Term(field, value))
+    return parts
+
+
 def _edit_distance(s, t):
     """Compute the Levenshtein edit distance between two strings."""
     m, n = len(s), len(t)
@@ -669,15 +688,9 @@ class Raw:
             # (e.g. sura_id:2 limits to Al-Baqara).  Filter terms are AND-ed
             # directly into the query because search_with_query bypasses the
             # FilterCollector used in the Arabic path.
-            if filter_dict:
-                _filter_parts = []
-                for _ff, _fv in filter_dict.items():
-                    if isinstance(_fv, list):
-                        _filter_parts.append(wq.Or([wq.Term(_ff, v) for v in _fv]))
-                    else:
-                        _filter_parts.append(wq.Term(_ff, _fv))
-                if _filter_parts:
-                    _nested_q = wq.And([_nested_q] + _filter_parts)
+            _filter_parts = _build_filter_query(filter_dict)
+            if _filter_parts:
+                _nested_q = wq.And([_nested_q] + _filter_parts)
             res, termz, searcher = self.QSE.search_with_query(
                 _nested_q,
                 limit=self._defaults["results_limit"]["aya"],
