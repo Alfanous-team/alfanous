@@ -883,7 +883,7 @@
     "search_name": "englishmood",
     "stored": true,
     "table_name": "wordqc",
-    "type": "STORED",
+    "type": "ID",
     "unique": null
   },
   {
@@ -1052,7 +1052,7 @@
     "search_name": "englishstate",
     "stored": true,
     "table_name": "wordqc",
-    "type": "STORED",
+    "type": "ID",
     "unique": null
   },
   {
@@ -1521,6 +1521,19 @@
     "unique": null
   },
   {
+    "analyzer": null,
+    "comment": null,
+    "id": 148,
+    "is_spellchecked": null,
+    "name": "englishstate",
+    "name_arabic": null,
+    "search_name": "englishstate",
+    "stored": true,
+    "table_name": "aya",
+    "type": "ID",
+    "unique": null
+  },
+  {
     "id": 133,
     "table_name": "aya",
     "name": "derivation",
@@ -1566,6 +1579,19 @@
     "stored": null,
     "analyzer": null,
     "comment": "Verb mood in Arabic (kind=word child docs) — stored only, not indexed",
+    "unique": null
+  },
+  {
+    "analyzer": null,
+    "comment": null,
+    "id": 149,
+    "is_spellchecked": null,
+    "name": "englishmood",
+    "name_arabic": null,
+    "search_name": "englishmood",
+    "stored": true,
+    "table_name": "aya",
+    "type": "ID",
     "unique": null
   },
   {

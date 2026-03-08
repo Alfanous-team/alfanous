@@ -143,11 +143,45 @@ def test_corpus_index_builds_without_unknown_field_error(corpus_qse_index):
     # Word-child fields from the aya schema must be present
     for f in ("word", "word_id", "pos", "root", "lemma"):
         assert f in names, f"Word child field '{f}' missing from schema"
-    # The english* fields that caused the crash must NOT be in the aya schema
-    for bad in ("englishcase", "englishpos", "englishmood", "englishstate"):
+    # englishmood and englishstate are now indexable — they must be in the schema
+    for f in ("englishmood", "englishstate"):
+        assert f in names, (
+            f"Field '{f}' should now be in the aya schema as an indexable ID field"
+        )
+    # englishcase and englishpos remain stored-only and must NOT be in the aya schema
+    for bad in ("englishcase", "englishpos"):
         assert bad not in names, (
             f"Field '{bad}' should not be in the aya schema — "
             "it belongs only in the wordqc schema"
+        )
+    ix.close()
+
+
+@pytest.mark.skipif(not _CORPUS_EXISTS, reason="quranic corpus file not found")
+def test_corpus_index_englishstate_englishmood_indexable(corpus_qse_index):
+    """englishstate and englishmood must be searchable as ID fields in word children."""
+    from whoosh.filedb.filestore import FileStorage
+    from whoosh import query as wq
+    ix = FileStorage(corpus_qse_index).open_index()
+    schema = ix.schema
+    # Both fields must be present and indexable (not STORED-only)
+    from whoosh.fields import STORED
+    for fname in ("englishstate", "englishmood"):
+        assert fname in schema, f"Field '{fname}' must be in the index schema"
+        assert not isinstance(schema[fname], STORED), (
+            f"Field '{fname}' must be an indexable field, not STORED"
+        )
+    # Must be able to search word children by englishstate and englishmood
+    with ix.searcher() as s:
+        q = wq.And([wq.Term("kind", "word"), wq.Term("englishstate", "Indefinite state")])
+        results = s.search(q, limit=5)
+        assert len(results) > 0, (
+            "englishstate:'Indefinite state' query must return at least one word child"
+        )
+        q2 = wq.And([wq.Term("kind", "word"), wq.Term("englishmood", "Jussive mood")])
+        results2 = s.search(q2, limit=5)
+        assert len(results2) > 0, (
+            "englishmood:'Jussive mood' query must return at least one word child"
         )
     ix.close()
 

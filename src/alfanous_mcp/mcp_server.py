@@ -735,9 +735,13 @@ INDEXED FIELDS (searchable with field:value syntax)
 | form         | ID      | Verb form in Roman numerals: (I)–(XII)           |
 | voice        | ID      | Verb voice: ACT (active), PASS (passive)         |
 | state        | ID      | Nominal state in Arabic (نكرة = indefinite, etc.)|
+| englishstate | ID      | Nominal state in English ("Definite state",      |
+|              |         |   "Indefinite state")                            |
 | derivation   | ID      | Derivation type: ACT PCPL, PASS PCPL, VN         |
 | aspect       | ID      | Verb aspect: PERF, IMPF, IMPV                    |
 | mood         | ID      | Verb mood in Arabic script                       |
+| englishmood  | ID      | Verb mood in English ("Indicative mood",         |
+|              |         |   "Subjunctive mood", "Jussive mood")            |
 | case         | ID      | Grammatical case in Arabic script                |
 
 STORED-ONLY FIELDS (returned in results but not searchable)
@@ -746,9 +750,7 @@ STORED-ONLY FIELDS (returned in results but not searchable)
 |--------------|----------------------------------------------------------|
 | spelled      | Fully normalised and spelled-out Arabic form             |
 | englishpos   | Part of speech in English (e.g. "N", "V", "P", "ADJ")  |
-| englishmood  | Verb mood in English                                     |
 | englishcase  | Grammatical case in English (NOM, ACC, GEN)              |
-| englishstate | Nominal state in English (DEF, INDEF)                    |
 | prefix       | Cliticised prefixes separated by semicolons              |
 | suffix       | Cliticised suffixes separated by semicolons              |
 | special      | Special morphological note in Arabic                     |
@@ -880,12 +882,12 @@ def get_word_children_schema() -> dict:
          "description": "Fully normalised spelled-out Arabic form"},
         {"name": "englishpos",   "type": "STORED",  "searchable": False,
          "description": "Part of speech in English"},
-        {"name": "englishmood",  "type": "STORED",  "searchable": False,
-         "description": "Verb mood in English"},
+        {"name": "englishmood",  "type": "ID",      "searchable": True,
+         "description": "Verb mood in English (e.g. 'Indicative mood', 'Jussive mood', 'Subjunctive mood')"},
         {"name": "englishcase",  "type": "STORED",  "searchable": False,
          "description": "Grammatical case in English (NOM, ACC, GEN)"},
-        {"name": "englishstate", "type": "STORED",  "searchable": False,
-         "description": "Nominal state in English (DEF, INDEF)"},
+        {"name": "englishstate", "type": "ID",      "searchable": True,
+         "description": "Nominal state in English (e.g. 'Definite state', 'Indefinite state')"},
         {"name": "prefix",       "type": "KEYWORD", "searchable": False,
          "description": "Cliticised prefixes (semicolon-separated)"},
         {"name": "suffix",       "type": "KEYWORD", "searchable": False,
