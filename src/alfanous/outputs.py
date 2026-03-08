@@ -880,53 +880,60 @@ class Raw:
                 docs_in_results = 0
                 nb_vocalizations_globale = 0
                 cpt = 1
-                for term in termz:
-                    if term[0] == "aya" or term[0] == "aya_":
-                        if term[2]:
-                            matches += term[2]
-                        docs += term[3]
-                        term_matches_in_results = _count_term_in_results(term[0], term[1])
-                        matches_in_results += term_matches_in_results
-                        term_ayas_in_results = _count_ayas_in_results(term[0], term[1])
-                        docs_in_results += term_ayas_in_results
-                        if word_vocalizations:
-                            _term_normalized = strip_vocalization(term[1])
-                            vocalizations = []
-                            if self.QSE.OK:
-                                _voc_q = wquery.And([
-                                    wquery.Term("kind", "word"),
-                                    wquery.Term("normalized", _term_normalized),
-                                ])
-                                _voc_res, _, _voc_searcher = self.QSE.search_with_query(
-                                    _voc_q, limit=500
-                                )
-                                try:
+                # Open ONE shared Whoosh searcher for all per-term word-info
+                # sub-queries (vocalizations, derivation lookup).  Without this,
+                # each search_with_query() call would open and close its own
+                # searcher, paying the segment-open overhead up to 4× per term.
+                _wi_searcher = (
+                    self.QSE.shared_searcher()
+                    if (word_vocalizations or word_derivations) and self.QSE.OK
+                    else None
+                )
+                try:
+                    for term in termz:
+                        if term[0] == "aya" or term[0] == "aya_":
+                            if term[2]:
+                                matches += term[2]
+                            docs += term[3]
+                            term_matches_in_results = _count_term_in_results(term[0], term[1])
+                            matches_in_results += term_matches_in_results
+                            term_ayas_in_results = _count_ayas_in_results(term[0], term[1])
+                            docs_in_results += term_ayas_in_results
+                            if word_vocalizations:
+                                _term_normalized = strip_vocalization(term[1])
+                                vocalizations = []
+                                if _wi_searcher is not None:
+                                    _voc_q = wquery.And([
+                                        wquery.Term("kind", "word"),
+                                        wquery.Term("normalized", _term_normalized),
+                                    ])
+                                    _voc_res = self.QSE.search_with_shared_searcher(
+                                        _wi_searcher, _voc_q, limit=500
+                                    )
                                     vocalizations = list(
                                         set(w.get("word") for w in _voc_res if w.get("word")) - {term[1]}
                                     )
-                                finally:
-                                    _voc_searcher.close()
-                            nb_vocalizations_globale += len(vocalizations)
-                        if word_synonyms:
-                            synonyms = syndict.get(term[1]) or []
-                        derivations_extra = []
-                        if word_derivations:
-                            derivations = []
-                            if self.QSE.OK:
-                                _norm_term = strip_vocalization(term[1])
-                                _word_q = wquery.And([
-                                    wquery.Term("kind", "word"),
-                                    wquery.Term("normalized", _norm_term),
-                                ])
-                                _word_res, _, _word_searcher = self.QSE.search_with_query(
-                                    _word_q, limit=10
-                                )
-                                # Extract fields while searcher is still open; Hit objects
-                                # access stored fields lazily through the reader, so the
-                                # searcher must not be closed before the field lookups.
-                                # Iterate _word_res once to avoid double-scan.
+                                nb_vocalizations_globale += len(vocalizations)
+                            if word_synonyms:
+                                synonyms = syndict.get(term[1]) or []
+                            derivations_extra = []
+                            if word_derivations:
+                                derivations = []
+                                # Always initialize so words_output refs below are safe
+                                # even when the index is unavailable.
                                 lemma = root = None
-                                try:
+                                derivations_set = set()
+                                if _wi_searcher is not None:
+                                    _norm_term = strip_vocalization(term[1])
+                                    _word_q = wquery.And([
+                                        wquery.Term("kind", "word"),
+                                        wquery.Term("normalized", _norm_term),
+                                    ])
+                                    _word_res = self.QSE.search_with_shared_searcher(
+                                        _wi_searcher, _word_q, limit=10
+                                    )
+                                    # Extract fields immediately; Hit objects access
+                                    # stored fields lazily through the reader.
                                     for _w in _word_res:
                                         if lemma is None:
                                             lemma = _w.get("lemma") or None
@@ -934,76 +941,75 @@ class Raw:
                                             root = _w.get("root") or None
                                         if lemma and root:
                                             break
-                                finally:
-                                    _word_searcher.close()
-                                if lemma:
-                                    _lem_q = wquery.And([
-                                        wquery.Term("kind", "word"),
-                                        wquery.Term("lemma", lemma),
-                                    ])
-                                    _lem_res, _, _lem_srch = self.QSE.search_with_query(_lem_q, limit=500)
-                                    try:
+                                    if lemma:
+                                        _lem_q = wquery.And([
+                                            wquery.Term("kind", "word"),
+                                            wquery.Term("lemma", lemma),
+                                        ])
+                                        _lem_res = self.QSE.search_with_shared_searcher(
+                                            _wi_searcher, _lem_q, limit=500
+                                        )
                                         derivations_set = set(
                                             w.get("normalized") for w in _lem_res
                                             if w.get("normalized")
                                         )
                                         derivations = list(derivations_set)
-                                    finally:
-                                        _lem_srch.close()
-                                if root:
-                                    _root_q = wquery.And([
-                                        wquery.Term("kind", "word"),
-                                        wquery.Term("root", root),
-                                    ])
-                                    _root_res, _, _root_srch = self.QSE.search_with_query(_root_q, limit=500)
-                                    try:
+                                    if root:
+                                        _root_q = wquery.And([
+                                            wquery.Term("kind", "word"),
+                                            wquery.Term("root", root),
+                                        ])
+                                        _root_res = self.QSE.search_with_shared_searcher(
+                                            _wi_searcher, _root_q, limit=500
+                                        )
                                         _root_norms_set = set(
                                             w.get("normalized") for w in _root_res
                                             if w.get("normalized")
                                         )
-                                    finally:
-                                        _root_srch.close()
-                                    derivations_extra = list(_root_norms_set - derivations_set)
+                                        derivations_extra = list(_root_norms_set - derivations_set)
     
-                        # Compute variations specific to this word: among all
-                        # matched aya_ac terms, keep only those within
-                        # fuzzy_maxdist edit distance of this word's unvocalized
-                        # form.  This correctly scopes variations to each
-                        # individual query word in multi-word queries.
-                        word_normalized = strip_vocalization(term[1])
-                        word_variations = [
-                            v for v in _all_ac_variations
-                            if _edit_distance(word_normalized, v) <= fuzzy_maxdist
-                        ]
+                            # Compute variations specific to this word: among all
+                            # matched aya_ac terms, keep only those within
+                            # fuzzy_maxdist edit distance of this word's unvocalized
+                            # form.  This correctly scopes variations to each
+                            # individual query word in multi-word queries.
+                            word_normalized = strip_vocalization(term[1])
+                            word_variations = [
+                                v for v in _all_ac_variations
+                                if _edit_distance(word_normalized, v) <= fuzzy_maxdist
+                            ]
     
-                        words_output["individual"][cpt] = {
-                            "word": term[1],
-                            "romanization": transliterate(romanization, term[1], ignore="", reverse=True) if romanization in
-                                                                                                             self.DOMAINS[
-                                                                                                                 "romanization"] else None,
-                            "nb_matches_overall": int(term[2]) if term[2] else 0,
-                            "nb_matches": term_matches_in_results,
-                            "nb_ayas_overall": term[3],
-                            "nb_ayas": term_ayas_in_results,
-                            "nb_vocalizations": len(vocalizations) if word_vocalizations else 0,  # unneeded
-                            "vocalizations": vocalizations if word_vocalizations else [],
-                            "nb_synonyms": len(synonyms) if word_synonyms else 0,  # unneeded
-                            "synonyms": synonyms if word_synonyms else [],
-                            "lemma": lemma if word_derivations else "",
-                            "root": root if word_derivations else "",
-                            "nb_derivations": len(derivations) if word_derivations else 0,  # unneeded
-                            "derivations": derivations if word_derivations else [],
-                            "nb_derivations_extra": len(derivations_extra),
-                            "derivations_extra": derivations_extra,
-                            "nb_variations": len(word_variations),
-                            "variations": word_variations,
-                        }
-                        cpt += 1
-                words_output["global"] = {"nb_words": cpt - 1, "nb_matches_overall": int(matches),
-                                          "nb_matches": matches_in_results,
-                                          "nb_ayas_overall": docs,
-                                          "nb_ayas": docs_in_results,
-                                          "nb_vocalizations": nb_vocalizations_globale}
+                            words_output["individual"][cpt] = {
+                                "word": term[1],
+                                "romanization": transliterate(romanization, term[1], ignore="", reverse=True) if romanization in
+                                                                                                                 self.DOMAINS[
+                                                                                                                     "romanization"] else None,
+                                "nb_matches_overall": int(term[2]) if term[2] else 0,
+                                "nb_matches": term_matches_in_results,
+                                "nb_ayas_overall": term[3],
+                                "nb_ayas": term_ayas_in_results,
+                                "nb_vocalizations": len(vocalizations) if word_vocalizations else 0,  # unneeded
+                                "vocalizations": vocalizations if word_vocalizations else [],
+                                "nb_synonyms": len(synonyms) if word_synonyms else 0,  # unneeded
+                                "synonyms": synonyms if word_synonyms else [],
+                                "lemma": lemma if word_derivations else "",
+                                "root": root if word_derivations else "",
+                                "nb_derivations": len(derivations) if word_derivations else 0,  # unneeded
+                                "derivations": derivations if word_derivations else [],
+                                "nb_derivations_extra": len(derivations_extra),
+                                "derivations_extra": derivations_extra,
+                                "nb_variations": len(word_variations),
+                                "variations": word_variations,
+                            }
+                            cpt += 1
+                    words_output["global"] = {"nb_words": cpt - 1, "nb_matches_overall": int(matches),
+                                              "nb_matches": matches_in_results,
+                                              "nb_ayas_overall": docs,
+                                              "nb_ayas": docs_in_results,
+                                              "nb_vocalizations": nb_vocalizations_globale}
+                finally:
+                    if _wi_searcher is not None:
+                        _wi_searcher.close()
             output["words"] = words_output
             # Build adjacent-aya query for prev/next aya text.
             _want_translation = bool(translation or lang)

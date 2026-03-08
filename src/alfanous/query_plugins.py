@@ -7,6 +7,7 @@ tashkil (diacritics), and more.
 """
 
 import re
+from functools import lru_cache
 
 from whoosh.qparser import TaggingPlugin, syntax
 from whoosh.query import MultiTerm, Or, Term, Wildcard
@@ -30,6 +31,36 @@ _ASF_NORMALIZE = QArabicSymbolsFilter(
 )
 
 
+@lru_cache(maxsize=1024)
+def _query_word_index_cached(filter_key, field, limit):
+    """Cached implementation of word-index lookup.
+
+    *filter_key* is a sorted tuple of ``(fieldname, value)`` pairs — the
+    hashable equivalent of the ``filter_dict`` argument to
+    :func:`_query_word_index`.  Returns a ``tuple`` of unique values (tuples
+    are hashable and therefore storable in the LRU cache).
+    """
+    try:
+        from alfanous.data import QSE as _QSE
+        engine = _QSE()
+        if not engine.OK:
+            return ()
+        reader = engine._reader.reader
+        values = set()
+        for _, stored in reader.iter_docs():
+            if stored.get("kind") != "word":
+                continue
+            if all(stored.get(k) == v for k, v in filter_key):
+                val = stored.get(field)
+                if val is not None:
+                    values.add(val)
+                    if len(values) >= limit:
+                        break
+        return tuple(values)
+    except Exception:
+        return ()
+
+
 def _query_word_index(filter_dict, field="word", limit=5000):
     """Query the word child documents in the QSE index and return unique values
     of *field* from matching documents.
@@ -39,30 +70,77 @@ def _query_word_index(filter_dict, field="word", limit=5000):
     without relying on Whoosh's query-time term encoding.  This guarantees
     correct results regardless of analyser behaviour.
 
+    Results are cached per ``(filter_dict, field, limit)`` combination for the
+    lifetime of the process so that repeated calls with identical arguments
+    (e.g. from :class:`TupleQuery` resolving the same root across multiple
+    requests) pay the full iter_docs cost only once.
+
     :param filter_dict: Mapping of ``{fieldname: value}`` to filter word children.
     :param field: The document field whose value to collect (default ``"word"``).
     :param limit: Maximum number of unique values to collect before stopping.
     :returns: Deduplicated list of *field* values from matching word children.
     """
-    try:
-        from alfanous.data import QSE as _QSE
-        engine = _QSE()
-        if not engine.OK:
-            return []
-        reader = engine._reader.reader
-        values = set()
-        for _, stored in reader.iter_docs():
-            if stored.get("kind") != "word":
-                continue
-            if all(stored.get(k) == v for k, v in filter_dict.items() if v is not None):
-                val = stored.get(field)
-                if val is not None:
-                    values.add(val)
-                    if len(values) >= limit:
-                        break
-        return list(values)
-    except Exception:
+    filter_key = tuple(sorted((k, v) for k, v in filter_dict.items() if v is not None))
+    return list(_query_word_index_cached(filter_key, field, limit))
+
+
+def _collect_derivations_two_pass(candidates, index_key):
+    """Collect derivation words for *candidates* using two single-pass index scans.
+
+    This replaces the previous approach in :meth:`DerivationQuery._get_derivations`
+    which called :func:`_query_word_index` up to 15+ times (once per
+    candidate × field combination in Pass 1, then 3× per matching key value
+    in Pass 2), each time doing a full ``iter_docs()`` scan of ~75 k documents.
+    Two passes over the same corpus reduces I/O by roughly (3 + 3×N) / 2 ×
+    for a query that matches N unique key values.
+
+    **Pass 1** — find all *index_key* values for word documents where any of
+    the five lookup fields (``word``, ``normalized``, ``lemma``, ``root``,
+    ``word_standard``) matches any candidate form.
+
+    **Pass 2** — collect ``word_standard``, ``normalized``, and ``word`` values
+    for all word documents whose *index_key* matches a value from Pass 1.
+
+    :param candidates: Non-empty set of candidate word forms.
+    :param index_key: Either ``'lemma'`` (level ≤ 1) or ``'root'`` (level ≥ 2).
+    :returns: List of unique word forms that are derivations of *candidates*.
+    :raises Exception: If the index is unavailable or the reader raises.
+    """
+    _SEARCH_FIELDS = ('word', 'normalized', 'lemma', 'root', 'word_standard')
+
+    from alfanous.data import QSE as _QSE
+    engine = _QSE()
+    if not engine.OK:
+        raise RuntimeError("QSE index unavailable")
+    reader = engine._reader.reader
+
+    # Pass 1: find all index_key values matching any candidate in any field.
+    key_values = set()
+    for _, stored in reader.iter_docs():
+        if stored.get("kind") != "word":
+            continue
+        for sf in _SEARCH_FIELDS:
+            if stored.get(sf) in candidates:
+                kv = stored.get(index_key)
+                if kv:
+                    key_values.add(kv)
+                break  # one matching field per document is sufficient
+
+    if not key_values:
         return []
+
+    # Pass 2: collect all word forms whose index_key is in key_values.
+    words = set()
+    for _, stored in reader.iter_docs():
+        if stored.get("kind") != "word":
+            continue
+        if stored.get(index_key) in key_values:
+            for field in ('word_standard', 'normalized', 'word'):
+                val = stored.get(field)
+                if val:
+                    words.add(val)
+
+    return list(words)
 
 
 class QMultiTerm(MultiTerm):
@@ -178,20 +256,14 @@ class DerivationQuery(QMultiTerm):
         Level 0 / 1 → lemma-level derivations (narrow set).
         Level >= 2  → root-level derivations (wider set).
 
-        Lookup strategy: build three candidate forms of the input word
-        (original, normalized, stemmed) then match each against the
-        ``word``, ``normalized``, ``lemma``, and ``root`` fields of word
-        children to collect the target key (lemma or root).  Results are
-        returned as the union of ``word_standard`` and ``normalized`` values
-        for all word children sharing that key.
+        Delegates the index scan to :func:`_collect_derivations_two_pass`,
+        which performs exactly two ``iter_docs()`` passes instead of the
+        previous approach of calling :func:`_query_word_index` up to 15+
+        times (once per candidate × field combination, then 3× per matching
+        key value), each doing a full scan of ~75 k documents.
 
-        The old implementation called ``_query_word_index()`` up to 15+ times
-        (once per candidate × field combination, then 3× per matching key
-        value), each doing a full ``iter_docs()`` scan of ~75 k documents.
-        This version does exactly two passes over the index — one to collect
-        key values, one to collect result words — reducing I/O by ~10×.
-
-        Returns ``[word]`` when the index is unavailable.
+        Returns ``[word]`` when the index is unavailable or no derivations
+        are found.
         """
         use_root_level = leveldist >= 2
 
@@ -205,45 +277,14 @@ class DerivationQuery(QMultiTerm):
 
         candidates = {word, word_norm, word_stem} - {''}
         index_key = 'root' if use_root_level else 'lemma'
-        _SEARCH_FIELDS = ('word', 'normalized', 'lemma', 'root', 'word_standard')
 
         try:
-            from alfanous.data import QSE as _QSE
-            engine = _QSE()
-            if not engine.OK:
-                return [word]
-            reader = engine._reader.reader
-
-            # Pass 1: collect all index_key values for word docs that match any
-            # candidate in any of the search fields — single scan, no per-query
-            # reopening.
-            key_values = set()
-            for _, stored in reader.iter_docs():
-                if stored.get("kind") != "word":
-                    continue
-                for sf in _SEARCH_FIELDS:
-                    if stored.get(sf) in candidates:
-                        kv = stored.get(index_key)
-                        if kv:
-                            key_values.add(kv)
-                        break  # one match per document is sufficient
-
-            if not key_values:
-                return [word]
-
-            # Pass 2: collect word_standard / normalized / word values for all
-            # word docs whose index_key is in the set from Pass 1.
-            words = set()
-            for _, stored in reader.iter_docs():
-                if stored.get("kind") != "word":
-                    continue
-                if stored.get(index_key) in key_values:
-                    for field in ('word_standard', 'normalized', 'word'):
-                        val = stored.get(field)
-                        if val:
-                            words.add(_UTHMANI_ANNOTATION_RE.sub('', val))
-
-            return list(words) if words else [word]
+            words = _collect_derivations_two_pass(candidates, index_key)
+            # Strip Uthmanic annotation marks (U+06D6–U+06ED) at this level so
+            # that mocked implementations (tests) and the real implementation
+            # both produce clean results.
+            words = [_UTHMANI_ANNOTATION_RE.sub('', w) for w in words if w]
+            return words if words else [word]
         except Exception:
             return [word]
 

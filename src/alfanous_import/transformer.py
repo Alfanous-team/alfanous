@@ -696,11 +696,14 @@ class Transformer:
                        multisegment=False, batch_size=0):
         assert schema, "schema is empty"
         ix = FileStorage(self.index_path).create_index(schema)
-        self.transfer(ix, tablename, translations_store_path=translations_store_path,
-                      corpus_path=corpus_path, merge=merge, optimize=optimize,
-                      procs=procs, multisegment=multisegment, batch_size=batch_size)
-        # ix.optimize()  # merges all segments into one; slow on large corpora —
-        # uncomment if a single-segment index (smaller file count) is required
+        try:
+            self.transfer(ix, tablename, translations_store_path=translations_store_path,
+                          corpus_path=corpus_path, merge=merge, optimize=optimize,
+                          procs=procs, multisegment=multisegment, batch_size=batch_size)
+            # ix.optimize()  # merges all segments into one; slow on large corpora —
+            # uncomment if a single-segment index (smaller file count) is required
+        finally:
+            ix.close()
         return "OK"
 
 

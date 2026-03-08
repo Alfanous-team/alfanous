@@ -76,6 +76,45 @@ class BasicSearchEngine:
         results, terms, searcher = self._searcher.search_obj(q_obj, limit=limit, sortedby=sortedby, timelimit=timelimit)
         return results, [], searcher
 
+    def shared_searcher(self):
+        """Open a new Whoosh searcher for shared use across multiple queries.
+
+        Unlike :meth:`search_with_query`, this does **not** close the searcher
+        automatically.  The caller must close it — preferably in a
+        ``try/finally`` block — after all queries against it are complete.
+        Using a single shared searcher eliminates the per-query overhead of
+        opening and closing index segments.
+
+        Typical usage::
+
+            searcher = engine.shared_searcher()
+            try:
+                for item in items:
+                    results = engine.search_with_shared_searcher(searcher, query)
+                    ...
+            finally:
+                searcher.close()
+
+        :returns: An open Whoosh ``Searcher`` object.
+        """
+        from alfanous.results_processing import QScore
+        return self._searcher._searcher(weighting=QScore())
+
+    def search_with_shared_searcher(self, whoosh_searcher, q_obj, limit=QURAN_TOTAL_VERSES):
+        """Run a pre-built query against a pre-opened shared Whoosh searcher.
+
+        Use :meth:`shared_searcher` to obtain *whoosh_searcher* and close it
+        when finished.  This method does **not** open or close the searcher,
+        so it can be called many times inside a loop without per-call segment
+        overhead.
+
+        :param whoosh_searcher: An open Whoosh Searcher from :meth:`shared_searcher`.
+        :param q_obj: A pre-built Whoosh query object.
+        :param limit: Maximum number of results to return.
+        :returns: A Whoosh ``Results`` object.
+        """
+        return whoosh_searcher.search(q=q_obj, limit=limit)
+
     def most_frequent_words(self, nb, fieldname):
         """
         Get the most frequent words in a field.
