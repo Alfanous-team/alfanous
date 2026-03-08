@@ -1079,6 +1079,36 @@ def test_show_translations_shows_all_indexed_translations():
         assert name  # not empty
 
 
+def test_show_fields_reverse_lists_all_fields():
+    """show/fields_reverse must list every searchable field that has an Arabic name."""
+    result = RAWoutput.do({"action": "show", "query": "fields_reverse"})
+    assert "show" in result
+    fields_reverse = result["show"]["fields_reverse"]
+    assert isinstance(fields_reverse, dict)
+    assert len(fields_reverse) > 0, "fields_reverse must not be empty"
+
+    # Fields that were previously missing Arabic names (regression guard)
+    expected_fields = {
+        "spelled": "لفظ_مهجى",
+        "token": "رمز_باكوالتر",
+        "text_ja": "نص_ja",
+        "text_ku": "نص_ku",
+        "text_ml": "نص_ml",
+        "text_es": "نص اسباني",
+        "text_pt": "نص_pt",
+        "mood": "حالة_فعلية",
+        "voice": "صيغة",
+        "aspect": "صيغة_فعلية",
+    }
+    for field, arabic_name in expected_fields.items():
+        assert field in fields_reverse, (
+            f"show/fields_reverse is missing field '{field}'"
+        )
+        assert fields_reverse[field] == arabic_name, (
+            f"show/fields_reverse['{field}'] should be '{arabic_name}', got '{fields_reverse[field]}'"
+        )
+
+
 def test_show_roots_returns_strings_not_bytes():
     """show/roots must return plain Unicode strings, not binary b'...' values."""
     result = RAWoutput.do({"action": "show", "query": "roots"})
