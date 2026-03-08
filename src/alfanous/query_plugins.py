@@ -185,6 +185,12 @@ class DerivationQuery(QMultiTerm):
         returned as the union of ``word_standard`` and ``normalized`` values
         for all word children sharing that key.
 
+        The old implementation called ``_query_word_index()`` up to 15+ times
+        (once per candidate × field combination, then 3× per matching key
+        value), each doing a full ``iter_docs()`` scan of ~75 k documents.
+        This version does exactly two passes over the index — one to collect
+        key values, one to collect result words — reducing I/O by ~10×.
+
         Returns ``[word]`` when the index is unavailable.
         """
         use_root_level = leveldist >= 2
@@ -199,35 +205,47 @@ class DerivationQuery(QMultiTerm):
 
         candidates = {word, word_norm, word_stem} - {''}
         index_key = 'root' if use_root_level else 'lemma'
+        _SEARCH_FIELDS = ('word', 'normalized', 'lemma', 'root', 'word_standard')
 
-        # Collect key values by matching every candidate against every field,
-        # including word_standard so users can type standard-script forms and
-        # find the corpus root via the stored word_standard values.
-        key_values = set()
-        for val in candidates:
-            for sf in ('word', 'normalized', 'lemma', 'root', 'word_standard'):
-                key_values.update(_query_word_index({sf: val}, field=index_key))
-        key_values.discard(None)
-        key_values.discard('')
+        try:
+            from alfanous.data import QSE as _QSE
+            engine = _QSE()
+            if not engine.OK:
+                return [word]
+            reader = engine._reader.reader
 
-        if not key_values:
+            # Pass 1: collect all index_key values for word docs that match any
+            # candidate in any of the search fields — single scan, no per-query
+            # reopening.
+            key_values = set()
+            for _, stored in reader.iter_docs():
+                if stored.get("kind") != "word":
+                    continue
+                for sf in _SEARCH_FIELDS:
+                    if stored.get(sf) in candidates:
+                        kv = stored.get(index_key)
+                        if kv:
+                            key_values.add(kv)
+                        break  # one match per document is sufficient
+
+            if not key_values:
+                return [word]
+
+            # Pass 2: collect word_standard / normalized / word values for all
+            # word docs whose index_key is in the set from Pass 1.
+            words = set()
+            for _, stored in reader.iter_docs():
+                if stored.get("kind") != "word":
+                    continue
+                if stored.get(index_key) in key_values:
+                    for field in ('word_standard', 'normalized', 'word'):
+                        val = stored.get(field)
+                        if val:
+                            words.add(_UTHMANI_ANNOTATION_RE.sub('', val))
+
+            return list(words) if words else [word]
+        except Exception:
             return [word]
-
-        # Collect result words: merge word_standard (primary) + normalized +
-        # word (Uthmanic form).  Including the Uthmanic form lets derivation
-        # keywords be used to highlight Uthmanic aya text.  All collected
-        # values are stripped of U+06D6–U+06ED Quranic annotation marks so
-        # that no Uthmanic-specific symbol leaks into search terms.
-        words = set()
-        for kv in key_values:
-            ws = _query_word_index({index_key: kv}, field='word_standard')
-            nm = _query_word_index({index_key: kv}, field='normalized')
-            wu = _query_word_index({index_key: kv}, field='word')
-            words.update(_UTHMANI_ANNOTATION_RE.sub('', w) for w in ws if w)
-            words.update(_UTHMANI_ANNOTATION_RE.sub('', w) for w in nm if w)
-            words.update(_UTHMANI_ANNOTATION_RE.sub('', w) for w in wu if w)
-
-        return list(words) if words else [word]
 
 
 class SpellErrorsQuery(QMultiTerm):

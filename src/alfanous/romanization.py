@@ -382,12 +382,14 @@ def arabizi_to_arabic_list(string, ignore=u""):
     raw = _convert(string, at_word_start=True)
     # Normalize ءا → آ (alef madda, U+0622): in Arabic orthography the sequence
     # hamza + alef is written as آ, e.g. قرءان → قرآن (Quran), آية (aya).
-    normalized = []
+    # Build the result set in-place to avoid creating a temporary concatenated
+    # list before deduplication.
+    result_set = set(raw)
     for c in raw:
         replaced = c.replace(u"\u0621\u0627", u"\u0622")  # ءا → آ
         if replaced != c:
-            normalized.append(replaced)
-    return list(set(raw + normalized))
+            result_set.add(replaced)
+    return list(result_set)
 
 
 def filter_candidates_by_wordset(candidates, wordset):
