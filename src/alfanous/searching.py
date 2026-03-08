@@ -193,6 +193,11 @@ class QSearcher:
         self._qparser = qparser
         self._schema = docindex.get_schema()
         self._shared_searcher = None
+        # Lazily cached parser for the 'aya_fuzzy' field — created on first
+        # fuzzy search and reused thereafter.  The parser is stateless (it
+        # only holds a field name and a schema reference, both of which are
+        # fixed for the lifetime of this QSearcher) so it is safe to cache.
+        self._fuzzy_parser = None
 
     def _get_shared_searcher(self):
         """Return a cached Whoosh searcher, refreshing it when the index changes.
@@ -251,7 +256,6 @@ class QSearcher:
         query = self._qparser.parse(querystr)
 
         if fuzzy:
-            from whoosh.qparser import QueryParser
             from whoosh.query import Or, FuzzyTerm
 
             # Strategy 2: Search the normalised/stemmed 'aya_fuzzy' field (fed
@@ -263,9 +267,11 @@ class QSearcher:
             # pipeline: when every token in querystr is a stop word in the
             # aya_fuzzy field's analyzer, the MultiFilter inside that analyzer
             # calls next() on an empty stream and raises StopIteration.
-            aya_fuzzy_parser = QueryParser("aya_fuzzy", schema=self._schema)
+            if self._fuzzy_parser is None:
+                from whoosh.qparser import QueryParser as _QueryParser
+                self._fuzzy_parser = _QueryParser("aya_fuzzy", schema=self._schema)
             try:
-                aya_fuzzy_query = aya_fuzzy_parser.parse(querystr)
+                aya_fuzzy_query = self._fuzzy_parser.parse(querystr)
             except StopIteration:
                 aya_fuzzy_query = None
 

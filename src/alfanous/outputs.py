@@ -1084,10 +1084,10 @@ class Raw:
                              6237: {"aya_": "----", "uth_": "----", "sura": "---", "aya_id": 9999,
                                     "sura_arabic": "---"}}
                 try:
+                    extend_runtime += adja_res.runtime
                     for adja in adja_res:
                         adja_ayas[adja["gid"]] = {"aya_": adja["aya_"], "uth_": adja["uth_"], "aya_id": adja["aya_id"],
                                                   "sura": adja["sura"], "sura_arabic": adja["sura_arabic"]}
-                        extend_runtime += adja_res.runtime
                 finally:
                     adja_searcher.close()
     
@@ -1476,7 +1476,15 @@ class Raw:
                 )
                 try:
                     for _p in _parent_res:
-                        parent_data[_p["gid"]] = _p
+                        # Extract the stored-field dict immediately so that
+                        # parent_data holds plain dicts rather than Hit objects.
+                        # Hit objects carry a back-reference to their parent
+                        # Results (hit.results), which keeps the entire _parent_res
+                        # Results object (and its Whoosh Searcher reference) alive
+                        # for the duration of this function.  Using _p.fields()
+                        # breaks that reference, allowing _parent_res to be freed
+                        # once no Hit references remain.
+                        parent_data[_p["gid"]] = _p.fields()
                 finally:
                     _parent_searcher.close()
     
