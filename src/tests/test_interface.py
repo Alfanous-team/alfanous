@@ -2,7 +2,16 @@
 
 
 
+import pytest
 import alfanous.api
+from alfanous.data import QSE
+from alfanous import paths
+
+
+@pytest.fixture(autouse=True)
+def _require_index():
+    if not QSE(paths.QSE_INDEX).OK:
+        pytest.skip("Search index not built — run `make build` first")
 
 
 def test_search():

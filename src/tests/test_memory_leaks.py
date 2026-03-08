@@ -570,6 +570,7 @@ class TestMostFrequentWordsDecoding(unittest.TestCase):
     def test_handles_str_terms(self):
         """most_frequent_words must not crash when Whoosh returns str terms."""
         from alfanous.engines import BasicSearchEngine
+        from alfanous.searching import QReader
         engine = BasicSearchEngine.__new__(BasicSearchEngine)
 
         mock_reader = MagicMock()
@@ -577,16 +578,17 @@ class TestMostFrequentWordsDecoding(unittest.TestCase):
             (100.0, 'مِنْ'),
             (50.0, 'الله'),
         ]
-        engine._reader = MagicMock()
-        # Simulate the .reader property returning our mock reader
-        type(engine._reader).reader = PropertyMock(return_value=mock_reader)
-
-        result = engine.most_frequent_words(2, "aya_")
+        engine._reader = QReader.__new__(QReader)
+        engine._reader._qsearcher = None
+        engine._reader._own_reader = None
+        with patch.object(QReader, 'reader', new_callable=PropertyMock, return_value=mock_reader):
+            result = engine.most_frequent_words(2, "aya_")
         self.assertEqual(result, [(100.0, 'مِنْ'), (50.0, 'الله')])
 
     def test_handles_bytes_terms(self):
         """most_frequent_words must decode bytes terms with UTF-8."""
         from alfanous.engines import BasicSearchEngine
+        from alfanous.searching import QReader
         engine = BasicSearchEngine.__new__(BasicSearchEngine)
 
         mock_reader = MagicMock()
@@ -594,10 +596,11 @@ class TestMostFrequentWordsDecoding(unittest.TestCase):
             (100.0, 'مِنْ'.encode('utf-8')),
             (50.0, 'الله'.encode('utf-8')),
         ]
-        engine._reader = MagicMock()
-        type(engine._reader).reader = PropertyMock(return_value=mock_reader)
-
-        result = engine.most_frequent_words(2, "aya_")
+        engine._reader = QReader.__new__(QReader)
+        engine._reader._qsearcher = None
+        engine._reader._own_reader = None
+        with patch.object(QReader, 'reader', new_callable=PropertyMock, return_value=mock_reader):
+            result = engine.most_frequent_words(2, "aya_")
         self.assertEqual(result, [(100.0, 'مِنْ'), (50.0, 'الله')])
 
 
@@ -1024,10 +1027,8 @@ class TestAutocompleteDecodeGuard(unittest.TestCase):
         qr = QReader.__new__(QReader)
         qr._qsearcher = None
         qr._own_reader = None
-        # Patch the reader property
-        type(qr).reader = PropertyMock(return_value=reader_obj)
-
-        result = qr.autocomplete('الل')
+        with patch.object(QReader, 'reader', new_callable=PropertyMock, return_value=reader_obj):
+            result = qr.autocomplete('الل')
         self.assertEqual(result, ['الله', 'اللهم'])
 
     def test_autocomplete_handles_bytes_terms(self):
@@ -1041,9 +1042,8 @@ class TestAutocompleteDecodeGuard(unittest.TestCase):
         qr = QReader.__new__(QReader)
         qr._qsearcher = None
         qr._own_reader = None
-        type(qr).reader = PropertyMock(return_value=reader_obj)
-
-        result = qr.autocomplete('الل')
+        with patch.object(QReader, 'reader', new_callable=PropertyMock, return_value=reader_obj):
+            result = qr.autocomplete('الل')
         self.assertEqual(result, ['الله', 'اللهم'])
 
 

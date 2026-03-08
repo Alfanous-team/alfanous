@@ -5,6 +5,7 @@ A sample script that emphasize the basic operations of Alfanous API.
 """
 
 import re
+import pytest
 
 # import Output object
 from alfanous.outputs import Raw
@@ -20,6 +21,13 @@ RAWoutput = Raw(
                     Information_file = paths.INFORMATION_FILE
                 )
 
+
+# Skip every test in this file when the Quranic search engine is not available
+# (i.e. the index has not been built yet).  Run `make build` first.
+@pytest.fixture(autouse=True)
+def _require_index():
+    if not RAWoutput.QSE.OK:
+        pytest.skip("Search index not built — run `make build` first")
 
 
 def test_suggestion():

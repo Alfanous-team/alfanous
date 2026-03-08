@@ -3,6 +3,7 @@ Test module for facet search functionality in alfanous.
 
 """
 
+import pytest
 from alfanous import api
 from alfanous.outputs import Raw
 from alfanous import paths
@@ -14,6 +15,12 @@ RAWoutput = Raw(
     Translations_list_file=paths.TRANSLATIONS_LIST_FILE,
     Information_file=paths.INFORMATION_FILE
 )
+
+
+@pytest.fixture(autouse=True)
+def _require_index():
+    if not RAWoutput.QSE.OK:
+        pytest.skip("Search index not built — run `make build` first")
 
 
 def test_filter_by_sura():

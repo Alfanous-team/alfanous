@@ -4,6 +4,8 @@ This is a test module for alfanous.TextProcessing
 
 """
 
+import pytest
+
 from alfanous.text_processing import (
     QArabicSymbolsFilter,
     QArabicStemFilter,
@@ -40,6 +42,8 @@ def test_arabic_symbol_filter():
 def test_stem_filter_reduces_suffixes():
     """Morphological variants of the same word should all stem to the same root."""
     stem_filter = QArabicStemFilter()
+    if stem_filter._stemmer is None:
+        pytest.skip("pystemmer not installed — skipping Arabic stemming test")
     stems = set()
     for word in ["رسول", "رسولا", "رسولكم", "رسولنا", "رسوله"]:
         tok = Token()
