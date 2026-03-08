@@ -44,6 +44,10 @@
     {
       "name": "suggest_query",
       "description": "Get auto-completion suggestions for a partial Quranic search query."
+    },
+    {
+      "name": "list_field_values",
+      "description": "Return every unique value indexed for a given field. Use to discover available word annotation categories (pos, gender, number, aspect, voice, etc.) or available translation identifiers (trans_id, trans_lang) before composing a search query."
     }
   ]
 }
