@@ -117,3 +117,22 @@ def get_info(query: str = "all") -> Dict[str, Any]:
     @return: Dictionary of information
     """
     return do({"action": "show", "query": query})
+
+
+def list_values(field: str) -> Dict[str, Any]:
+    """
+    List all unique indexed values for a given field.
+
+    Useful for discovering the possible values of annotation fields such as
+    ``pos``, ``gender``, ``number``, ``person``, ``form``, ``voice``,
+    ``state``, ``derivation``, ``aspect``, ``mood``, ``case``, ``root``,
+    ``lemma``, etc.
+
+    @param field: The indexed field name to query (e.g. 'pos', 'gender').
+    @return: Dictionary with key ``list_values`` containing:
+             - ``field``  – the queried field name
+             - ``values`` – sorted list of unique values in the index
+             - ``count``  – number of values returned
+             - ``error``  – (only on failure) human-readable error message
+    """
+    return do({"action": "list_values", "field": field})

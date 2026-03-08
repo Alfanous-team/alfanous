@@ -306,6 +306,8 @@ class Raw:
             output.update(self._correct_query(flags, unit))
         elif action == "show":
             output.update(self._show(flags))
+        elif action == "list_values":
+            output.update(self._list_values(flags))
         else:
             output.update(self._check(1, flags))
 
@@ -475,6 +477,36 @@ class Raw:
             result["count"] = 0
         
         return result
+
+    def _list_values(self, flags):
+        """
+        List all unique indexed values for a given field.
+
+        Parameters via flags:
+        - field: The field name to list values for (required).
+                 Must be an indexed field in the Whoosh schema.
+
+        Returns a dict with key ``list_values`` containing:
+        - field:  the field that was queried
+        - values: sorted list of unique non-empty values found in the index
+                  (empty strings and None entries that Whoosh may emit for
+                  documents where the field is unset are excluded)
+        - count:  number of values returned
+        - error:  (only present on failure) human-readable error message
+        """
+        field = flags.get("field")
+        if not field:
+            return {"list_values": {"field": None, "values": [], "count": 0,
+                                    "error": "A 'field' parameter is required"}}
+
+        if not self.QSE.OK:
+            return {"list_values": {"field": field, "values": [], "count": 0,
+                                    "error": "Search engine is not available"}}
+
+        # Filter out empty/null index terms that Whoosh may emit for un-set fields,
+        # then sort so the output is deterministic for callers.
+        values = sorted(filter(bool, self.QSE.list_values(field)))
+        return {"list_values": {"field": field, "values": values, "count": len(values)}}
 
     def _suggest(self, flags, unit):
         """ return suggestions for any search unit """
