@@ -1,9 +1,21 @@
 from .constants import *
 from .strip_functions import *
 from .predicates import *
+import re
 import string
+from functools import lru_cache
 
 _PUNCTUATION = string.punctuation + string.whitespace
+
+# Pre-compile constant patterns used by isArabicstring() / isArabicword() so
+# they are not recompiled on every call.
+_ARABIC_NON_WORD_RE = re.compile(
+    u"([^\u0600-\u0652%s%s%s\\w])" % (LAM_ALEF, LAM_ALEF_HAMZA_ABOVE, LAM_ALEF_MADDA_ABOVE)
+)
+_ALEF_MAKSURA_MEDIAL_RE = re.compile(u"^(.)*[%s](.)+$" % ALEF_MAKSURA)
+_TEH_MARBUTA_MEDIAL_RE = re.compile(
+    u"^(.)*[%s]([^%s%s%s])(.)+$" % (TEH_MARBUTA, DAMMA, KASRA, FATHA)
+)
 
 
 def _andmap(iterable):
@@ -148,7 +160,7 @@ def isArabicstring(text):
     @return: True if all charaters are in Arabic block
     @rtype: Boolean
     """
-    return not re.search(u"([^\u0600-\u0652%s%s%s\\w])" % (LAM_ALEF, LAM_ALEF_HAMZA_ABOVE, LAM_ALEF_MADDA_ABOVE), text)
+    return not _ARABIC_NON_WORD_RE.search(text)
 
 
 def isArabicword(word):
@@ -161,17 +173,28 @@ def isArabicword(word):
     """
     if len(word) == 0:
         return False;
-    elif re.search(u"([^\u0600-\u0652%s%s%s\\w])" % (LAM_ALEF, LAM_ALEF_HAMZA_ABOVE, LAM_ALEF_MADDA_ABOVE), word):
+    elif _ARABIC_NON_WORD_RE.search(word):
         return False;
     elif isHaraka(word[0]) or word[0] in (WAW_HAMZA, YEH_HAMZA):
         return False;
     #  if Teh Marbuta or Alef_Maksura not in the end
-    elif re.match(u"^(.)*[%s](.)+$" % ALEF_MAKSURA, word):
+    elif _ALEF_MAKSURA_MEDIAL_RE.match(word):
         return False;
-    elif re.match(u"^(.)*[%s]([^%s%s%s])(.)+$" % (TEH_MARBUTA, DAMMA, KASRA, FATHA), word):
+    elif _TEH_MARBUTA_MEDIAL_RE.match(word):
         return False;
     else:
         return True;
+
+
+@lru_cache(maxsize=256)
+def _vocalizedlike_pattern(vocalized):
+    """Return a compiled regex for *vocalized* with each tashkeel mark made optional.
+
+    Cached so the pattern for each unique vocalized string is compiled only once.
+    """
+    for mark in TASHKEEL:
+        vocalized = vocalized.replace(mark, mark + '?')
+    return re.compile("^" + vocalized + "$")
 
 
 def vocalizedlike(word, vocalized):
@@ -196,9 +219,5 @@ def vocalizedlike(word, vocalized):
         return stripTashkeel(word) == stripTashkeel(vocalized)
 
     else:
-        for mark in TASHKEEL:
-            vocalized = vocalized.replace(mark, mark + '?')
-
-        pat = re.compile("^" + vocalized + "$")
-
+        pat = _vocalizedlike_pattern(vocalized)
         return pat.match(word)

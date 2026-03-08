@@ -7,6 +7,7 @@ tashkil (diacritics), and more.
 """
 
 import re
+from functools import lru_cache
 
 from whoosh.qparser import TaggingPlugin, syntax
 from whoosh.query import MultiTerm, Or, Term, Wildcard
@@ -19,6 +20,46 @@ from alfanous.text_processing import QArabicSymbolsFilter
 # stops, verse counters) that must not appear in search terms.
 _UTHMANI_ANNOTATION_RE = re.compile(r'[\u06D6-\u06ED]')
 
+# Pre-instantiated filter used by TashkilQuery and DerivationQuery — avoids
+# allocating a new QArabicSymbolsFilter object on every search execution.
+_ASF_TASHKIL = QArabicSymbolsFilter(
+    shaping=False, tashkil=True, spellerrors=False, hamza=False
+)
+# Pre-instantiated filter used by DerivationQuery for normalising the query word.
+_ASF_NORMALIZE = QArabicSymbolsFilter(
+    shaping=True, tashkil=True, spellerrors=False, hamza=False
+)
+
+
+@lru_cache(maxsize=1024)
+def _query_word_index_cached(filter_key, field, limit):
+    """Cached implementation of word-index lookup.
+
+    *filter_key* is a sorted tuple of ``(fieldname, value)`` pairs — the
+    hashable equivalent of the ``filter_dict`` argument to
+    :func:`_query_word_index`.  Returns a ``tuple`` of unique values (tuples
+    are hashable and therefore storable in the LRU cache).
+    """
+    try:
+        from alfanous.data import QSE as _QSE
+        engine = _QSE()
+        if not engine.OK:
+            return ()
+        reader = engine._reader.reader
+        values = set()
+        for _, stored in reader.iter_docs():
+            if stored.get("kind") != "word":
+                continue
+            if all(stored.get(k) == v for k, v in filter_key):
+                val = stored.get(field)
+                if val is not None:
+                    values.add(val)
+                    if len(values) >= limit:
+                        break
+        return tuple(values)
+    except Exception:
+        return ()
+
 
 def _query_word_index(filter_dict, field="word", limit=5000):
     """Query the word child documents in the QSE index and return unique values
@@ -29,30 +70,77 @@ def _query_word_index(filter_dict, field="word", limit=5000):
     without relying on Whoosh's query-time term encoding.  This guarantees
     correct results regardless of analyser behaviour.
 
+    Results are cached per ``(filter_dict, field, limit)`` combination for the
+    lifetime of the process so that repeated calls with identical arguments
+    (e.g. from :class:`TupleQuery` resolving the same root across multiple
+    requests) pay the full iter_docs cost only once.
+
     :param filter_dict: Mapping of ``{fieldname: value}`` to filter word children.
     :param field: The document field whose value to collect (default ``"word"``).
     :param limit: Maximum number of unique values to collect before stopping.
     :returns: Deduplicated list of *field* values from matching word children.
     """
-    try:
-        from alfanous.data import QSE as _QSE
-        engine = _QSE()
-        if not engine.OK:
-            return []
-        reader = engine._reader.reader
-        values = set()
-        for _, stored in reader.iter_docs():
-            if stored.get("kind") != "word":
-                continue
-            if all(stored.get(k) == v for k, v in filter_dict.items() if v is not None):
-                val = stored.get(field)
-                if val is not None:
-                    values.add(val)
-                    if len(values) >= limit:
-                        break
-        return list(values)
-    except Exception:
+    filter_key = tuple(sorted((k, v) for k, v in filter_dict.items() if v is not None))
+    return list(_query_word_index_cached(filter_key, field, limit))
+
+
+def _collect_derivations_two_pass(candidates, index_key):
+    """Collect derivation words for *candidates* using two single-pass index scans.
+
+    This replaces the previous approach in :meth:`DerivationQuery._get_derivations`
+    which called :func:`_query_word_index` up to 15+ times (once per
+    candidate × field combination in Pass 1, then 3× per matching key value
+    in Pass 2), each time doing a full ``iter_docs()`` scan of ~75 k documents.
+    Two passes over the same corpus reduces I/O by roughly (3 + 3×N) / 2 ×
+    for a query that matches N unique key values.
+
+    **Pass 1** — find all *index_key* values for word documents where any of
+    the five lookup fields (``word``, ``normalized``, ``lemma``, ``root``,
+    ``word_standard``) matches any candidate form.
+
+    **Pass 2** — collect ``word_standard``, ``normalized``, and ``word`` values
+    for all word documents whose *index_key* matches a value from Pass 1.
+
+    :param candidates: Non-empty set of candidate word forms.
+    :param index_key: Either ``'lemma'`` (level ≤ 1) or ``'root'`` (level ≥ 2).
+    :returns: List of unique word forms that are derivations of *candidates*.
+    :raises Exception: If the index is unavailable or the reader raises.
+    """
+    _SEARCH_FIELDS = ('word', 'normalized', 'lemma', 'root', 'word_standard')
+
+    from alfanous.data import QSE as _QSE
+    engine = _QSE()
+    if not engine.OK:
+        raise RuntimeError("QSE index unavailable")
+    reader = engine._reader.reader
+
+    # Pass 1: find all index_key values matching any candidate in any field.
+    key_values = set()
+    for _, stored in reader.iter_docs():
+        if stored.get("kind") != "word":
+            continue
+        for sf in _SEARCH_FIELDS:
+            if stored.get(sf) in candidates:
+                kv = stored.get(index_key)
+                if kv:
+                    key_values.add(kv)
+                break  # one matching field per document is sufficient
+
+    if not key_values:
         return []
+
+    # Pass 2: collect all word forms whose index_key is in key_values.
+    words = set()
+    for _, stored in reader.iter_docs():
+        if stored.get("kind") != "word":
+            continue
+        if stored.get(index_key) in key_values:
+            for field in ('word_standard', 'normalized', 'word'):
+                val = stored.get(field)
+                if val:
+                    words.add(val)
+
+    return list(words)
 
 
 class QMultiTerm(MultiTerm):
@@ -116,6 +204,10 @@ class QMultiTerm(MultiTerm):
 class SynonymsQuery(QMultiTerm):
     """Query that searches for synonyms of the given word"""
 
+    # Safety cap: prevents unexpectedly large synonym lists from causing
+    # runaway query expansion.
+    MAX_WORDS = 100
+
     def __init__(self, fieldname, text, boost=1.0):
         self.fieldname = fieldname
         self.text = text
@@ -125,11 +217,15 @@ class SynonymsQuery(QMultiTerm):
     @staticmethod
     def _get_synonyms(word):
         """Get synonyms for a word"""
-        return syndict.get(word, [word])
+        return list(syndict.get(word, [word]))[:SynonymsQuery.MAX_WORDS]
 
 
 class AntonymsQuery(QMultiTerm):
     """Query that searches for antonyms of the given word"""
+
+    # Safety cap: prevents unexpectedly large antonym lists from causing
+    # runaway query expansion.
+    MAX_WORDS = 100
 
     def __init__(self, fieldname, text, boost=1.0):
         self.fieldname = fieldname
@@ -140,7 +236,7 @@ class AntonymsQuery(QMultiTerm):
     @staticmethod
     def _get_antonyms(word):
         """Get antonyms for a word"""
-        return antdict.get(word, [word])
+        return list(antdict.get(word, [word]))[:AntonymsQuery.MAX_WORDS]
 
 
 class DerivationQuery(QMultiTerm):
@@ -160,23 +256,18 @@ class DerivationQuery(QMultiTerm):
         Level 0 / 1 → lemma-level derivations (narrow set).
         Level >= 2  → root-level derivations (wider set).
 
-        Lookup strategy: build three candidate forms of the input word
-        (original, normalized, stemmed) then match each against the
-        ``word``, ``normalized``, ``lemma``, and ``root`` fields of word
-        children to collect the target key (lemma or root).  Results are
-        returned as the union of ``word_standard`` and ``normalized`` values
-        for all word children sharing that key.
+        Delegates the index scan to :func:`_collect_derivations_two_pass`,
+        which performs exactly two ``iter_docs()`` passes instead of the
+        previous approach of calling :func:`_query_word_index` up to 15+
+        times (once per candidate × field combination, then 3× per matching
+        key value), each doing a full scan of ~75 k documents.
 
-        Returns ``[word]`` when the index is unavailable.
+        Returns ``[word]`` when the index is unavailable or no derivations
+        are found.
         """
         use_root_level = leveldist >= 2
 
-        try:
-            from alfanous.text_processing import QArabicSymbolsFilter as _QASF
-            word_norm = _QASF(shaping=True, tashkil=True, spellerrors=False,
-                              hamza=False).normalize_all(word)
-        except Exception:
-            word_norm = word
+        word_norm = _ASF_NORMALIZE.normalize_all(word)
 
         try:
             import Stemmer as _Stemmer
@@ -187,38 +278,25 @@ class DerivationQuery(QMultiTerm):
         candidates = {word, word_norm, word_stem} - {''}
         index_key = 'root' if use_root_level else 'lemma'
 
-        # Collect key values by matching every candidate against every field,
-        # including word_standard so users can type standard-script forms and
-        # find the corpus root via the stored word_standard values.
-        key_values = set()
-        for val in candidates:
-            for sf in ('word', 'normalized', 'lemma', 'root', 'word_standard'):
-                key_values.update(_query_word_index({sf: val}, field=index_key))
-        key_values.discard(None)
-        key_values.discard('')
-
-        if not key_values:
+        try:
+            words = _collect_derivations_two_pass(candidates, index_key)
+            # Strip Uthmanic annotation marks (U+06D6–U+06ED) at this level so
+            # that mocked implementations (tests) and the real implementation
+            # both produce clean results.
+            words = [_UTHMANI_ANNOTATION_RE.sub('', w) for w in words if w]
+            return words if words else [word]
+        except Exception:
             return [word]
-
-        # Collect result words: merge word_standard (primary) + normalized +
-        # word (Uthmanic form).  Including the Uthmanic form lets derivation
-        # keywords be used to highlight Uthmanic aya text.  All collected
-        # values are stripped of U+06D6–U+06ED Quranic annotation marks so
-        # that no Uthmanic-specific symbol leaks into search terms.
-        words = set()
-        for kv in key_values:
-            ws = _query_word_index({index_key: kv}, field='word_standard')
-            nm = _query_word_index({index_key: kv}, field='normalized')
-            wu = _query_word_index({index_key: kv}, field='word')
-            words.update(_UTHMANI_ANNOTATION_RE.sub('', w) for w in ws if w)
-            words.update(_UTHMANI_ANNOTATION_RE.sub('', w) for w in nm if w)
-            words.update(_UTHMANI_ANNOTATION_RE.sub('', w) for w in wu if w)
-
-        return list(words) if words else [word]
 
 
 class SpellErrorsQuery(QMultiTerm):
     """Query that ignores spell errors of Arabic letters"""
+
+    # Cap expansion to prevent unbounded memory growth and slow query execution
+    # when many index terms normalise to the same form.  100 is generous compared
+    # to ArabicWildcardQuery.MAX_EXPAND (20) while still bounding worst-case
+    # behaviour on a large Arabic index.
+    MAX_MATCHES = 100
 
     def __init__(self, fieldname, text, boost=1.0):
         self.fieldname = fieldname
@@ -231,22 +309,27 @@ class SpellErrorsQuery(QMultiTerm):
             spellerrors=True,
             hamza=True
         )
+        # Pre-compute once; used in every _compare() call instead of recomputing
+        # it O(index_terms) times during _btexts() iteration.
+        self._text_normalized = self.ASF.normalize_all(text)
 
     def _btexts(self, ixreader):
         fieldname = self.fieldname
         from_bytes = ixreader.schema[fieldname].from_bytes
+        count = 0
         for field, btext in ixreader.all_terms():
+            if count >= self.MAX_MATCHES:
+                break
             if field == fieldname:
                 indexed_text = from_bytes(btext)
-                if self._compare(self.text, indexed_text):
+                if self._compare(indexed_text):
+                    count += 1
                     yield btext
 
-    def _compare(self, first, second):
-        """Normalize and compare"""
-        matched = (
-            self.ASF.normalize_all(first) == self.ASF.normalize_all(second)
-        )
-        if matched:
+    def _compare(self, second):
+        """Normalize and compare against the pre-computed query normalisation."""
+        matched = self.ASF.normalize_all(second) == self._text_normalized
+        if matched and len(self.words) < self.MAX_MATCHES + 1:
             self.words.append(second)
         return matched
 
@@ -259,6 +342,10 @@ class TashkilQuery(QMultiTerm):
     comparison that ignores or properly handles diacritical marks while matching
     the underlying characters.
     """
+
+    # A single word can have many diacritisation variants; cap at 1000 to
+    # prevent full-lexicon scans from accumulating unbounded term sets.
+    MAX_MATCHES = 1000
 
     def __init__(self, fieldname, text, boost=1.0):
         self.fieldname = fieldname
@@ -285,20 +372,24 @@ class TashkilQuery(QMultiTerm):
 
     def _btexts(self, ixreader):
         fieldname = self.fieldname
-        ASF = QArabicSymbolsFilter(shaping=False, tashkil=True, spellerrors=False, hamza=False)
         from_bytes = ixreader.schema[fieldname].from_bytes
+        # Pre-compute the normalised form of every query word once instead of
+        # recomputing it O(index_terms) times inside the inner loop.
+        normalized_query_words = {_ASF_TASHKIL.normalize_all(w) for w in self.text}
         seen_words = set(self.words)
+        count = 0
         for field, btext in ixreader.all_terms():
+            if count >= self.MAX_MATCHES:
+                break
             if field == fieldname:
                 indexed_text = from_bytes(btext)
-                normalized_indexed = ASF.normalize_all(indexed_text)
-                for word in self.text:
-                    if ASF.normalize_all(word) == normalized_indexed:
-                        if indexed_text not in seen_words:
-                            self.words.append(indexed_text)
-                            seen_words.add(indexed_text)
-                        yield btext
-                        break
+                normalized_indexed = _ASF_TASHKIL.normalize_all(indexed_text)
+                if normalized_indexed in normalized_query_words:
+                    if indexed_text not in seen_words:
+                        self.words.append(indexed_text)
+                        seen_words.add(indexed_text)
+                    count += 1
+                    yield btext
 
 
 class TupleQuery(QMultiTerm):

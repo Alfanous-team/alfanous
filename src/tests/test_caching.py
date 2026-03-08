@@ -118,5 +118,49 @@ class TestJSONFunctionCaching(unittest.TestCase):
             assert cache_info.hits == 1
 
 
+class TestQSESingleton(unittest.TestCase):
+    """Tests that the QSE engine is a true singleton regardless of call style."""
+
+    def setUp(self):
+        """Clear the QSE instance cache before each test."""
+        data._QSE_INSTANCES.clear()
+
+    def tearDown(self):
+        """Clear the QSE instance cache after each test."""
+        data._QSE_INSTANCES.clear()
+
+    def test_qse_no_args_and_explicit_path_return_same_instance(self):
+        """QSE() and QSE(paths.QSE_INDEX) must return the exact same object.
+
+        Before the fix, lru_cache keyed on the *exact* arguments so the two
+        calling styles produced different cache keys and thus separate engine
+        instances — each opening the Whoosh index from disk.
+        """
+        e_default = data.QSE()
+        e_explicit = data.QSE(paths.QSE_INDEX)
+        self.assertIs(
+            e_default, e_explicit,
+            "QSE() and QSE(paths.QSE_INDEX) must return the same engine instance "
+            "(index must not be opened twice)."
+        )
+
+    def test_qse_repeated_calls_return_same_instance(self):
+        """Repeated QSE() calls return the same engine instance (no re-loading)."""
+        e1 = data.QSE()
+        e2 = data.QSE()
+        e3 = data.QSE()
+        self.assertIs(e1, e2)
+        self.assertIs(e2, e3)
+
+    def test_qse_only_one_entry_in_cache(self):
+        """After calling both QSE() and QSE(path), the cache holds exactly one entry."""
+        data.QSE()
+        data.QSE(paths.QSE_INDEX)
+        self.assertEqual(
+            len(data._QSE_INSTANCES), 1,
+            "Two call styles for the same path must share a single cache entry."
+        )
+
+
 if __name__ == '__main__':
     unittest.main()

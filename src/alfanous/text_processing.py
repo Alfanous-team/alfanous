@@ -26,13 +26,7 @@ def normalize_shaping(text):
     """
     # Alef with madda above (آ U+0622) → plain alef (ا U+0627)
     text = text.replace('\u0622', '\u0627')
-    output = ""
-    for char in text:
-        if char in INVERTEDSHAPING:
-            output += INVERTEDSHAPING[char]
-        else:
-            output += char
-    return output
+    return "".join(INVERTEDSHAPING.get(char, char) for char in text)
 
 
 class QSpaceTokenizer(RegexTokenizer):

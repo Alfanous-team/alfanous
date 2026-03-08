@@ -25,8 +25,9 @@ from alfanous.query_plugins import (
 )
 
 # ---------------------------------------------------------------------------
-# Mock data for _query_word_index (the index is the primary source for
-# derivation/word lookups).
+# Mock data for _collect_derivations_two_pass and _query_word_index.
+# _collect_derivations_two_pass is used by DerivationQuery._get_derivations.
+# _query_word_index is used by TupleQuery._get_words_by_properties.
 # ---------------------------------------------------------------------------
 
 # Minimal word-index data for مالك (used by derivation tests)
@@ -51,8 +52,30 @@ _MALIK_VERBS = [
 ]  # 8 items
 
 
+def _make_derivation_mock(lemma_words, root_words, fallback_word=""):
+    """Return a side_effect for patching _collect_derivations_two_pass.
+
+    The function signature is ``(candidates, index_key)`` and it returns the
+    list of derivation word forms directly.
+    """
+    def _mock(candidates, index_key):
+        # Verify that candidates is non-empty — a regression here would mean
+        # _get_derivations built an empty candidate set, skipping the lookup.
+        assert candidates, "_collect_derivations_two_pass called with empty candidates"
+        if index_key == 'lemma':
+            return list(lemma_words)
+        elif index_key == 'root':
+            return list(root_words)
+        return [fallback_word] if fallback_word else []
+    return _mock
+
+
 def _make_word_index_mock(word, lemma, root, lemma_words, root_words):
-    """Return a side_effect function for patching _query_word_index."""
+    """Return a side_effect function for patching _query_word_index.
+
+    Used by TupleQuery tests; DerivationQuery tests use
+    _make_derivation_mock instead.
+    """
     def _mock(filter_dict, field="word", limit=5000):
         if filter_dict.get("normalized") == word or filter_dict.get("word") == word:
             if field == "lemma":
@@ -151,10 +174,8 @@ def test_antonyms_plugin():
 
 def test_derivation_plugin_single():
     """Test derivation plugin with single > (>word) — lemma-level derivations."""
-    _mock = _make_word_index_mock(
-        "مالك", _MALIK_LEMMA, _MALIK_ROOT, _MALIK_LEMMA_WORDS, _MALIK_ROOT_WORDS
-    )
-    with patch("alfanous.query_plugins._query_word_index", side_effect=_mock):
+    _mock = _make_derivation_mock(_MALIK_LEMMA_WORDS, _MALIK_ROOT_WORDS, "مالك")
+    with patch("alfanous.query_plugins._collect_derivations_two_pass", side_effect=_mock):
         parser = create_test_parser()
         query = parser.parse(">مالك")
     assert isinstance(query, DerivationQuery)
@@ -166,10 +187,8 @@ def test_derivation_plugin_single():
 
 def test_derivation_plugin_double():
     """Test derivation plugin with double >> (>>word) — root-level derivations."""
-    _mock = _make_word_index_mock(
-        "مالك", _MALIK_LEMMA, _MALIK_ROOT, _MALIK_LEMMA_WORDS, _MALIK_ROOT_WORDS
-    )
-    with patch("alfanous.query_plugins._query_word_index", side_effect=_mock):
+    _mock = _make_derivation_mock(_MALIK_LEMMA_WORDS, _MALIK_ROOT_WORDS, "مالك")
+    with patch("alfanous.query_plugins._collect_derivations_two_pass", side_effect=_mock):
         parser = create_test_parser()
         query = parser.parse(">>مالك")
     assert isinstance(query, DerivationQuery)
@@ -397,13 +416,11 @@ def create_index_parser(ix):
 
 def test_derivation_query_executes_against_index():
     """Test that DerivationQuery executes against a Whoosh RAM index."""
-    _mock = _make_word_index_mock(
-        "مالك", _MALIK_LEMMA, _MALIK_ROOT, _MALIK_LEMMA_WORDS, _MALIK_ROOT_WORDS
-    )
+    _mock = _make_derivation_mock(_MALIK_LEMMA_WORDS, _MALIK_ROOT_WORDS, "مالك")
     ix = create_test_index()
     parser = create_index_parser(ix)
 
-    with patch("alfanous.query_plugins._query_word_index", side_effect=_mock):
+    with patch("alfanous.query_plugins._collect_derivations_two_pass", side_effect=_mock):
         query = parser.parse('>مالك')
 
     assert isinstance(query, DerivationQuery)
@@ -417,13 +434,11 @@ def test_derivation_query_executes_against_index():
 
 def test_derivation_query_root_level_executes_against_index():
     """Test that root-level DerivationQuery (>>) executes against a Whoosh RAM index."""
-    _mock = _make_word_index_mock(
-        "مالك", _MALIK_LEMMA, _MALIK_ROOT, _MALIK_LEMMA_WORDS, _MALIK_ROOT_WORDS
-    )
+    _mock = _make_derivation_mock(_MALIK_LEMMA_WORDS, _MALIK_ROOT_WORDS, "مالك")
     ix = create_test_index()
     parser = create_index_parser(ix)
 
-    with patch("alfanous.query_plugins._query_word_index", side_effect=_mock):
+    with patch("alfanous.query_plugins._collect_derivations_two_pass", side_effect=_mock):
         query = parser.parse('>>مالك')
 
     assert isinstance(query, DerivationQuery)
@@ -466,17 +481,13 @@ def _make_word_index_mock_with_marks(word, lemma, root, lemma_words, root_words)
     def _inject(words):
         return [w[0] + _MARKS + w[1:] if len(w) > 1 else w for w in words]
 
-    def _mock(filter_dict, field="word", limit=5000):
-        if filter_dict.get("normalized") == word or filter_dict.get("word") == word:
-            if field == "lemma":
-                return [lemma]
-            if field == "root":
-                return [root]
-        if filter_dict.get("lemma") == lemma and field in ("normalized", "word_standard", "word"):
+    def _mock(candidates, index_key):
+        assert candidates, "_collect_derivations_two_pass called with empty candidates"
+        if index_key == 'lemma':
             return _inject(list(lemma_words))
-        if filter_dict.get("root") == root and field in ("normalized", "word_standard", "word"):
+        elif index_key == 'root':
             return _inject(list(root_words))
-        return []
+        return [word]
     return _mock
 
 
@@ -492,7 +503,7 @@ def test_derivation_results_contain_no_uthmani_marks_lemma_level():
     _mock = _make_word_index_mock_with_marks(
         "قولهم", "قول", "قول", ["قول", "قولهم", "قولكم"], ["قول", "قولهم", "قولكم"]
     )
-    with patch("alfanous.query_plugins._query_word_index", side_effect=_mock):
+    with patch("alfanous.query_plugins._collect_derivations_two_pass", side_effect=_mock):
         result = DerivationQuery._get_derivations("قولهم", leveldist=1)
 
     for w in result:
@@ -509,7 +520,7 @@ def test_derivation_results_contain_no_uthmani_marks_root_level():
         ["قول", "قولهم"],
         ["قول", "قولهم", "قولكم", "قولنا", "يقول", "يقولون"],
     )
-    with patch("alfanous.query_plugins._query_word_index", side_effect=_mock):
+    with patch("alfanous.query_plugins._collect_derivations_two_pass", side_effect=_mock):
         result = DerivationQuery._get_derivations("قولهم", leveldist=2)
 
     for w in result:

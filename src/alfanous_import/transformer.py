@@ -313,12 +313,16 @@ def _load_corpus_words_xml(corpus_path):
         logging.warning("Failed to load corpus words from %s: %s", corpus_path, exc)
     return result
 
-
 import re as _re
 import zipfile as _zipfile
+from collections import defaultdict
 
 # Pre-compiled pattern used by every translation zip reader.
 _PROPS_RE = _re.compile(r"[^=\r\n#]+")
+
+# Cache of per-delimiter line-splitting patterns so each unique delimiter
+# is compiled at most once across all translation zips.
+_DELIMITER_PATTERNS: "dict[str, _re.Pattern[str]]" = {}
 
 
 def _iter_translation_zips(store_path):
@@ -357,7 +361,10 @@ def _iter_translation_zips(store_path):
                 # ── verse lines ─────────────────────────────────────────
                 with zf.open(props["file"]) as tf:
                     content = tf.read().decode("utf-8", errors="replace")
-                linerx = _re.compile("[^" + props["lineDelimiter"] + "]+")
+                delim = props["lineDelimiter"]
+                if delim not in _DELIMITER_PATTERNS:
+                    _DELIMITER_PATTERNS[delim] = _re.compile("[^" + delim + "]+")
+                linerx = _DELIMITER_PATTERNS[delim]
                 lines = linerx.findall(content)
                 if len(lines) != QURAN_TOTAL_VERSES:
                     logging.warning(
@@ -422,8 +429,8 @@ class Transformer:
         return "OK"
 
     def get_fields(self, tablename):
-        field_file = open(f"{self.resource_path}fields.json")
-        return [field for field in json.load(field_file) if field["table_name"] == tablename]
+        with open(f"{self.resource_path}fields.json") as field_file:
+            return [field for field in json.load(field_file) if field["table_name"] == tablename]
 
     def build_schema(self, tablename):
         """build schema from field table"""
@@ -476,220 +483,227 @@ class Transformer:
             the end.  Intermediate commits always use ``merge=False``
             regardless of the *merge* parameter.
         """
-        data_file = open(f"{self.resource_path}{tablename}.json")
-        data_list = json.load(data_file)
+        with open(f"{self.resource_path}{tablename}.json") as data_file:
+            data_list = json.load(data_file)
 
         logging.info(f"writing documents in index (total: {len(data_list)}) ....")
         writer = _make_writer(ix, procs, multisegment)
-
         cpt = 0
+        try:
+            # Build a mapping from source field name → list of search field names.
+            # A single source field (e.g. "standard") may feed multiple index fields
+            # with different analyzers (e.g. aya, aya_ac, aya_fuzzy).
+            fields_mapping: dict = defaultdict(list)
+            for f in self.get_fields(tablename):
+                fields_mapping[f["name"]].append(f["search_name"])
 
-        # Build a mapping from source field name → list of search field names.
-        # A single source field (e.g. "standard") may feed multiple index fields
-        # with different analyzers (e.g. aya, aya_ac, aya_fuzzy).
-        from collections import defaultdict
-        fields_mapping: dict = defaultdict(list)
-        for f in self.get_fields(tablename):
-            fields_mapping[f["name"]].append(f["search_name"])
+            # Load all translation zips if a store path was provided.
+            # translations: {trans_id: {"lines": [6236 texts], "lang": ..., "author": ...}}
+            translations = {}
+            if translations_store_path and tablename == "aya":
+                translations = _load_all_translations(translations_store_path)
 
-        # Load all translation zips if a store path was provided.
-        # translations: {trans_id: {"lines": [6236 texts], "lang": ..., "author": ...}}
-        translations = {}
-        if translations_store_path and tablename == "aya":
-            translations = _load_all_translations(translations_store_path)
+            # Load corpus word occurrences if a corpus path was provided.
+            # words_by_aya: {(sura_id, aya_id): [word_entry, ...]}
+            words_by_aya = {}
+            if corpus_path and tablename == "aya":
+                words_by_aya = _load_corpus_words(corpus_path)
 
-        # Load corpus word occurrences if a corpus path was provided.
-        # words_by_aya: {(sura_id, aya_id): [word_entry, ...]}
-        words_by_aya = {}
-        if corpus_path and tablename == "aya":
-            words_by_aya = _load_corpus_words(corpus_path)
+            # Build position-based mappings from the aya standard text and
+            # transliteration.  For each aya where the space-split word count
+            # matches the corpus word count we can assign each corpus word the
+            # corresponding standard-script and transliteration word by index.
+            # When counts differ the aya is recorded in special.json for manual
+            # mapping and no word_standard/word_transliteration is stored.
+            # {(sura_id, aya_id): [word, ...]}
+            aya_standard_words: dict = {}
+            aya_translit_words: dict = {}
+            if words_by_aya and tablename == "aya":
+                for line in data_list:
+                    sid = line.get("sura_id")
+                    aid = line.get("aya_id")
+                    key = (sid, aid)
+                    corpus_words_for_key = words_by_aya.get(key, [])
+                    if not corpus_words_for_key:
+                        continue
+                    corpus_count = len(corpus_words_for_key)
+                    std_tokens = line.get("standard", "").split()
+                    if len(std_tokens) == corpus_count:
+                        aya_standard_words[key] = std_tokens
+                    else:
+                        # Try to recover when std token count ≠ corpus count.
+                        # The standard text sometimes spells fused corpus tokens as
+                        # separate words.  Three strategies are tried in order:
+                        #
+                        # 1. Particle collapse: يا / ويا / ها + next → next only.
+                        #    e.g. "يا أيها" → "أيها"  (covers ~355 ayas, diff=1)
+                        #
+                        # 2. Extended particle merge: merge (diff+1) tokens starting
+                        #    at the first particle, stored space-joined.
+                        #    e.g. "يا ابن أم" (diff=2) → "يا ابن أم"
+                        #
+                        # 3. Prefix merge: no particle found; merge the leading
+                        #    (diff+1) tokens space-joined.
+                        #    e.g. "وأن لو" (diff=1) → "وأن لو"
+                        diff = len(std_tokens) - corpus_count
+                        resolved = None
 
-        # Build position-based mappings from the aya standard text and
-        # transliteration.  For each aya where the space-split word count
-        # matches the corpus word count we can assign each corpus word the
-        # corresponding standard-script and transliteration word by index.
-        # When counts differ the aya is recorded in special.json for manual
-        # mapping and no word_standard/word_transliteration is stored.
-        # {(sura_id, aya_id): [word, ...]}
-        aya_standard_words: dict = {}
-        aya_translit_words: dict = {}
-        if words_by_aya and tablename == "aya":
-            for line in data_list:
-                sid = line.get("sura_id")
-                aid = line.get("aya_id")
-                key = (sid, aid)
-                corpus_words_for_key = words_by_aya.get(key, [])
-                if not corpus_words_for_key:
-                    continue
-                corpus_count = len(corpus_words_for_key)
-                std_tokens = line.get("standard", "").split()
-                if len(std_tokens) == corpus_count:
-                    aya_standard_words[key] = std_tokens
-                else:
-                    # Try to recover when std token count ≠ corpus count.
-                    # The standard text sometimes spells fused corpus tokens as
-                    # separate words.  Three strategies are tried in order:
-                    #
-                    # 1. Particle collapse: يا / ويا / ها + next → next only.
-                    #    e.g. "يا أيها" → "أيها"  (covers ~355 ayas, diff=1)
-                    #
-                    # 2. Extended particle merge: merge (diff+1) tokens starting
-                    #    at the first particle, stored space-joined.
-                    #    e.g. "يا ابن أم" (diff=2) → "يا ابن أم"
-                    #
-                    # 3. Prefix merge: no particle found; merge the leading
-                    #    (diff+1) tokens space-joined.
-                    #    e.g. "وأن لو" (diff=1) → "وأن لو"
-                    diff = len(std_tokens) - corpus_count
-                    resolved = None
+                        # Strategy 1: particle collapse.
+                        merged: list = []
+                        i = 0
+                        while i < len(std_tokens):
+                            tok = std_tokens[i]
+                            if tok in _PARTICLES and i + 1 < len(std_tokens):
+                                merged.append(std_tokens[i + 1])
+                                i += 2
+                            else:
+                                merged.append(tok)
+                                i += 1
+                        if len(merged) == corpus_count:
+                            resolved = merged
 
-                    # Strategy 1: particle collapse.
-                    merged: list = []
-                    i = 0
-                    while i < len(std_tokens):
-                        tok = std_tokens[i]
-                        if tok in _PARTICLES and i + 1 < len(std_tokens):
-                            merged.append(std_tokens[i + 1])
-                            i += 2
-                        else:
-                            merged.append(tok)
-                            i += 1
-                    if len(merged) == corpus_count:
-                        resolved = merged
+                        # Strategy 2: extended particle merge.
+                        if resolved is None and diff > 0:
+                            for pi, tok in enumerate(std_tokens):
+                                if tok in _PARTICLES and pi + diff < len(std_tokens):
+                                    candidate = (
+                                        std_tokens[:pi]
+                                        + [" ".join(std_tokens[pi:pi + diff + 1])]
+                                        + std_tokens[pi + diff + 1:]
+                                    )
+                                    if len(candidate) == corpus_count:
+                                        resolved = candidate
+                                        break
 
-                    # Strategy 2: extended particle merge.
-                    if resolved is None and diff > 0:
-                        for pi, tok in enumerate(std_tokens):
-                            if tok in _PARTICLES and pi + diff < len(std_tokens):
-                                candidate = (
-                                    std_tokens[:pi]
-                                    + [" ".join(std_tokens[pi:pi + diff + 1])]
-                                    + std_tokens[pi + diff + 1:]
-                                )
-                                if len(candidate) == corpus_count:
-                                    resolved = candidate
-                                    break
+                        # Strategy 3: prefix merge (no particle anchor found).
+                        if resolved is None and diff > 0:
+                            candidate = (
+                                [" ".join(std_tokens[:diff + 1])]
+                                + std_tokens[diff + 1:]
+                            )
+                            if len(candidate) == corpus_count:
+                                resolved = candidate
 
-                    # Strategy 3: prefix merge (no particle anchor found).
-                    if resolved is None and diff > 0:
-                        candidate = (
-                            [" ".join(std_tokens[:diff + 1])]
-                            + std_tokens[diff + 1:]
-                        )
-                        if len(candidate) == corpus_count:
-                            resolved = candidate
+                        if resolved is not None:
+                            aya_standard_words[key] = resolved
 
-                    if resolved is not None:
-                        aya_standard_words[key] = resolved
-
-                tr_tokens = line.get("transliteration", "").split()
-                if len(tr_tokens) == corpus_count:
-                    aya_translit_words[key] = tr_tokens
-
-        if tablename == "aya":
-            # Pre-compute schema field names once.
-            _schema_names = set(ix.schema.names())
-            _has_word_standard        = "word_standard"        in _schema_names
-            _has_word_transliteration = "word_transliteration" in _schema_names
-
-            # Pre-compute per-translation metadata so the inner loop only
-            # does an index lookup + cheap dict copy rather than recomputing
-            # f-strings and set lookups for every one of the 6 236 parent docs.
-            # Each entry: (lines_list, lang_field_or_None, base_child_dict)
-            trans_meta: list = []
-            for trans_id, tdata in translations.items():
-                lang = tdata["lang"]
-                lf = f"text_{lang}" if lang else None
-                if lf and lf not in _schema_names:
-                    lf = None
-                trans_meta.append((
-                    tdata["lines"],
-                    lf,
-                    {
-                        "kind":         "translation",
-                        "trans_id":     trans_id,
-                        "trans_lang":   lang,
-                        "trans_author": tdata["author"],
-                    },
-                ))
-
-            # Pre-compute the subset of word-entry keys that exist in the
-            # schema.  All word entries share the same keys, so one sample
-            # is sufficient.  This replaces a per-word `k in _schema_names`
-            # check across all 75 973 word docs.
-            _word_schema_keys: list = []
-            for _words in words_by_aya.values():
-                if _words:
-                    _word_schema_keys = [k for k in _words[0] if k in _schema_names]
-                    break
-
-        for line in data_list:
-            doc = {}
-            for k, v in line.items():
-                if k in fields_mapping:
-                    # Strip whitespace from a small set of text fields inline
-                    # rather than copying the entire line dict beforehand.
-                    if k in _STRIP_FIELDS and isinstance(v, str):
-                        v = v.strip()
-                    for search_name in fields_mapping[k]:
-                        doc[search_name] = v
+                    tr_tokens = line.get("transliteration", "").split()
+                    if len(tr_tokens) == corpus_count:
+                        aya_translit_words[key] = tr_tokens
 
             if tablename == "aya":
-                # Write parent aya doc + child docs (translations + words) as a nested group.
-                gid = line.get("gid")
-                sura_id = line.get("sura_id")
-                aya_id = line.get("aya_id")
-                doc["kind"] = "aya"
-                writer.start_group()
-                writer.add_document(**doc)
-                if gid is not None and trans_meta:
-                    idx = gid - 1  # 0-based index into translation lines
-                    for lines, lang_field, base in trans_meta:
-                        text = lines[idx]
-                        child_doc = {**base, "gid": gid, "trans_text": text}
-                        if lang_field:
-                            child_doc[lang_field] = text
-                        writer.add_document(**child_doc)
-                # Add word children from quranic corpus (nested alongside translations).
-                if words_by_aya and sura_id is not None and aya_id is not None:
-                    key = (sura_id, aya_id)
-                    corpus_words_for_aya = words_by_aya.get(key, [])
-                    std_tokens = aya_standard_words.get(key, [])
-                    tr_tokens  = aya_translit_words.get(key, [])
-                    for pos, w in enumerate(corpus_words_for_aya):
-                        word_doc = {k: w[k] for k in _word_schema_keys
-                                    if w[k] is not None}
-                        if _has_word_standard and pos < len(std_tokens):
-                            word_doc["word_standard"] = std_tokens[pos]
-                        if _has_word_transliteration and pos < len(tr_tokens):
-                            word_doc["word_transliteration"] = tr_tokens[pos]
-                        word_doc["gid"] = gid
-                        writer.add_document(kind="word", **word_doc)
-                writer.end_group()
-            else:
-                writer.add_document(**doc)
+                # Pre-compute schema field names once.
+                _schema_names = set(ix.schema.names())
+                _has_word_standard        = "word_standard"        in _schema_names
+                _has_word_transliteration = "word_transliteration" in _schema_names
 
-            cpt += 1
-            if batch_size > 0 and cpt % batch_size == 0:
-                writer.commit(merge=False)
-                writer = _make_writer(ix, procs, multisegment)
-                logging.info(f" - batch commit at {cpt} records")
-            elif not cpt % 1559:
-                logging.info(f" - milestone:  {cpt} ( {cpt * 100 / len(data_list)}% )")
+                # Pre-compute per-translation metadata so the inner loop only
+                # does an index lookup + cheap dict copy rather than recomputing
+                # f-strings and set lookups for every one of the 6 236 parent docs.
+                # Each entry: (lines_list, lang_field_or_None, base_child_dict)
+                trans_meta: list = []
+                for trans_id, tdata in translations.items():
+                    lang = tdata["lang"]
+                    lf = f"text_{lang}" if lang else None
+                    if lf and lf not in _schema_names:
+                        lf = None
+                    trans_meta.append((
+                        tdata["lines"],
+                        lf,
+                        {
+                            "kind":         "translation",
+                            "trans_id":     trans_id,
+                            "trans_lang":   lang,
+                            "trans_author": tdata["author"],
+                        },
+                    ))
 
-        logging.info("done.")
-        writer.commit(merge=merge, optimize=optimize or None)
+                # Pre-compute the subset of word-entry keys that exist in the
+                # schema.  All word entries share the same keys, so one sample
+                # is sufficient.  This replaces a per-word `k in _schema_names`
+                # check across all 75 973 word docs.
+                _word_schema_keys: list = []
+                for _words in words_by_aya.values():
+                    if _words:
+                        _word_schema_keys = [k for k in _words[0] if k in _schema_names]
+                        break
+
+            for line in data_list:
+                doc = {}
+                for k, v in line.items():
+                    if k in fields_mapping:
+                        # Strip whitespace from a small set of text fields inline
+                        # rather than copying the entire line dict beforehand.
+                        if k in _STRIP_FIELDS and isinstance(v, str):
+                            v = v.strip()
+                        for search_name in fields_mapping[k]:
+                            doc[search_name] = v
+
+                if tablename == "aya":
+                    # Write parent aya doc + child docs (translations + words) as a nested group.
+                    gid = line.get("gid")
+                    sura_id = line.get("sura_id")
+                    aya_id = line.get("aya_id")
+                    doc["kind"] = "aya"
+                    writer.start_group()
+                    writer.add_document(**doc)
+                    if gid is not None and trans_meta:
+                        idx = gid - 1  # 0-based index into translation lines
+                        for lines, lang_field, base in trans_meta:
+                            text = lines[idx]
+                            child_doc = {**base, "gid": gid, "trans_text": text}
+                            if lang_field:
+                                child_doc[lang_field] = text
+                            writer.add_document(**child_doc)
+                    # Add word children from quranic corpus (nested alongside translations).
+                    if words_by_aya and sura_id is not None and aya_id is not None:
+                        key = (sura_id, aya_id)
+                        corpus_words_for_aya = words_by_aya.get(key, [])
+                        std_tokens = aya_standard_words.get(key, [])
+                        tr_tokens  = aya_translit_words.get(key, [])
+                        for pos, w in enumerate(corpus_words_for_aya):
+                            word_doc = {k: w[k] for k in _word_schema_keys
+                                        if w[k] is not None}
+                            if _has_word_standard and pos < len(std_tokens):
+                                word_doc["word_standard"] = std_tokens[pos]
+                            if _has_word_transliteration and pos < len(tr_tokens):
+                                word_doc["word_transliteration"] = tr_tokens[pos]
+                            word_doc["gid"] = gid
+                            writer.add_document(kind="word", **word_doc)
+                    writer.end_group()
+                else:
+                    writer.add_document(**doc)
+
+                cpt += 1
+                if batch_size > 0 and cpt % batch_size == 0:
+                    writer.commit(merge=False)
+                    writer = _make_writer(ix, procs, multisegment)
+                    logging.info(f" - batch commit at {cpt} records")
+                elif not cpt % 1559:
+                    logging.info(f" - milestone:  {cpt} ( {cpt * 100 / len(data_list)}% )")
+
+            logging.info("done.")
+            writer.commit(merge=merge, optimize=optimize or None)
+        except Exception:
+            try:
+                writer.cancel()
+            except Exception:
+                pass
+            raise
 
     def build_docindex(self, schema, tablename="aya", translations_store_path=None,
                        corpus_path=None, merge=True, optimize=False, procs=1,
                        multisegment=False, batch_size=0):
         assert schema, "schema is empty"
         ix = FileStorage(self.index_path).create_index(schema)
-        self.transfer(ix, tablename, translations_store_path=translations_store_path,
-                      corpus_path=corpus_path, merge=merge, optimize=optimize,
-                      procs=procs, multisegment=multisegment, batch_size=batch_size)
-        # ix.optimize()  # merges all segments into one; slow on large corpora —
-        # uncomment if a single-segment index (smaller file count) is required
+        try:
+            self.transfer(ix, tablename, translations_store_path=translations_store_path,
+                          corpus_path=corpus_path, merge=merge, optimize=optimize,
+                          procs=procs, multisegment=multisegment, batch_size=batch_size)
+            # ix.optimize()  # merges all segments into one; slow on large corpora —
+            # uncomment if a single-segment index (smaller file count) is required
+        finally:
+            ix.close()
         return "OK"
 
 
