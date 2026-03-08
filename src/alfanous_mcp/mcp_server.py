@@ -55,6 +55,10 @@ mcp = FastMCP(
         "Use correct_query to fix spelling mistakes in a query before searching. "
         "Queries support Arabic script, Buckwalter transliteration, field filters, "
         "boolean operators, phrase search, wildcards, fuzzy matching, and more. "
+        "Use list_field_values to discover every value indexed for a "
+        "particular field — for example all available word annotation "
+        "categories (part of speech, grammatical gender, number, verb aspect, "
+        "voice, derivation, etc.) or all supported translation identifiers. "
         "Read the quran://ai-rules resource for a complete guide on how to "
         "translate natural-language requests into Alfanous query syntax."
     ),
@@ -925,6 +929,82 @@ def get_word_children_schema() -> dict:
         "fields": fields,
         "examples": examples,
     }
+
+
+# ---------------------------------------------------------------------------
+# List indexed field values tool
+# ---------------------------------------------------------------------------
+
+#: Word annotation fields whose values can be discovered via list_field_values.
+_WORD_ANNOTATION_FIELDS = [
+    {"field": "pos",        "description": "Part of speech in Arabic script (e.g. اسم Noun, فعل Verb, حرف Particle, صفة Adjective, ضمير Pronoun)"},
+    {"field": "type",       "description": "Broad grammatical type in English (e.g. Nouns, Verbs, Particles, Pronouns)"},
+    {"field": "root",       "description": "Arabic consonantal root (e.g. رحم, كتب, عبد)"},
+    {"field": "lemma",      "description": "Arabic lemma (vocalized citation form)"},
+    {"field": "gender",     "description": "Grammatical gender — M (masculine) or F (feminine)"},
+    {"field": "number",     "description": "Grammatical number — S (singular), D (dual), or P (plural)"},
+    {"field": "person",     "description": "Grammatical person — 1, 2, or 3"},
+    {"field": "voice",      "description": "Verb voice — ACT (active) or PASS (passive)"},
+    {"field": "aspect",     "description": "Verb aspect — PERF (perfect), IMPF (imperfect), or IMPV (imperative)"},
+    {"field": "form",       "description": "Verb form in Roman numerals — (I) through (XII)"},
+    {"field": "derivation", "description": "Derivation type — ACT PCPL (active participle), PASS PCPL (passive participle), or VN (verbal noun)"},
+    {"field": "state",      "description": "Nominal state in Arabic script (e.g. نكرة indefinite)"},
+    {"field": "mood",       "description": "Verb mood in Arabic script"},
+    {"field": "case",       "description": "Grammatical case in Arabic script"},
+    # Translation-related fields
+    {"field": "trans_id",   "description": "Translation identifier (e.g. 'en.shakir', 'fr.hamidullah', 'ar.jalalayn'). Use list_field_values('trans_id') to enumerate all available translations."},
+    {"field": "trans_lang", "description": "Translation language code (e.g. 'en', 'fr', 'ar', 'id', 'ja')"},
+]
+
+
+@mcp.tool(
+    title="List Indexed Field Values",
+    description=(
+        "Return every unique value indexed for a given field. "
+        "Use this to discover available word annotation categories "
+        "(part of speech, grammatical gender, number, verb aspect, voice, "
+        "derivation, etc.) before calling search_by_word_linguistics, or to "
+        "see the available translation identifiers before calling "
+        "search_translations. "
+        "Call with field='pos' for all part-of-speech tags, field='gender' "
+        "for all gender values, field='trans_id' for all translation IDs, "
+        "and so on. "
+        "The tool also returns a catalogue of well-known word-annotation "
+        "fields and translation-related fields as a convenience reference."
+    ),
+)
+def list_field_values(field: str) -> dict:
+    """Return all unique indexed values for a given Quranic index field.
+
+    Useful for discovering the complete set of possible values for categorical
+    word-annotation fields (e.g. ``pos``, ``gender``, ``number``, ``aspect``,
+    ``voice``, ``derivation``) or translation metadata fields (e.g.
+    ``trans_id``, ``trans_lang``) before composing a search query.
+
+    Args:
+        field: The indexed field name to query.  Well-known word annotation
+            fields include ``pos``, ``type``, ``root``, ``lemma``,
+            ``gender``, ``number``, ``person``, ``voice``, ``aspect``,
+            ``form``, ``derivation``, ``state``, ``mood``, and ``case``.
+            Translation-related fields include ``trans_id`` and
+            ``trans_lang``.  Use ``get_quran_info('translations')`` for the
+            full translation catalogue including author names.
+
+    Returns:
+        Dictionary with:
+        - ``field``: the queried field name
+        - ``values``: sorted list of unique values in the index
+        - ``count``: number of distinct values returned
+        - ``word_annotation_fields``: catalogue of well-known word annotation
+          fields with descriptions (always returned for reference)
+        - ``error``: (only present on failure) human-readable error message
+    """
+    result = alfanous_api.list_values(field)
+    serializable = _make_serializable(result)
+
+    # Attach the field catalogue so the caller has a built-in reference.
+    serializable["word_annotation_fields"] = _WORD_ANNOTATION_FIELDS
+    return serializable
 
 
 # ---------------------------------------------------------------------------

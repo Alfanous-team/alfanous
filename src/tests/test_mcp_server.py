@@ -22,7 +22,7 @@ try:
         search_quran, search_translations, get_quran_info, suggest_query,
         get_ai_rules, search_quran_by_themes, search_quran_by_stats,
         search_quran_by_position, correct_query, search_by_word_linguistics,
-        get_word_children_schema,
+        get_word_children_schema, list_field_values,
     )
     MCP_AVAILABLE = True
 except ImportError:
@@ -780,4 +780,77 @@ class TestGetWordChildrenSchema:
         """Result should contain only JSON-serializable types."""
         import json
         result = get_word_children_schema()
+        json.dumps(result)
+
+
+# ---------------------------------------------------------------------------
+# list_field_values
+# ---------------------------------------------------------------------------
+
+class TestListFieldValues:
+    """Tests for the list_field_values MCP tool."""
+
+    def test_returns_dict(self):
+        """list_field_values should return a dictionary."""
+        result = list_field_values("pos")
+        assert isinstance(result, dict)
+
+    def test_contains_list_values_key(self):
+        """Result should contain a 'list_values' key."""
+        result = list_field_values("pos")
+        assert "list_values" in result
+
+    def test_contains_error_envelope(self):
+        """Result should contain the standard 'error' envelope."""
+        result = list_field_values("pos")
+        assert "error" in result
+
+    def test_list_values_has_required_subkeys(self):
+        """list_values sub-dict must contain 'field', 'values', and 'count'."""
+        result = list_field_values("pos")
+        lv = result["list_values"]
+        assert "field" in lv
+        assert "values" in lv
+        assert "count" in lv
+
+    def test_field_name_echoed_back(self):
+        """The queried field name should be echoed back in the response."""
+        result = list_field_values("gender")
+        assert result["list_values"]["field"] == "gender"
+
+    def test_contains_word_annotation_fields_catalogue(self):
+        """Result should include a 'word_annotation_fields' catalogue."""
+        result = list_field_values("pos")
+        assert "word_annotation_fields" in result
+        catalogue = result["word_annotation_fields"]
+        assert isinstance(catalogue, list)
+        assert len(catalogue) > 0
+
+    def test_word_annotation_fields_have_required_keys(self):
+        """Every entry in 'word_annotation_fields' must have 'field' and 'description'."""
+        result = list_field_values("pos")
+        for entry in result["word_annotation_fields"]:
+            assert "field" in entry, f"Missing 'field' key in entry: {entry}"
+            assert "description" in entry, f"Missing 'description' key in entry: {entry}"
+
+    def test_key_annotation_fields_in_catalogue(self):
+        """Core morphological and translation fields must appear in the word_annotation_fields catalogue."""
+        result = list_field_values("pos")
+        catalogue_fields = {e["field"] for e in result["word_annotation_fields"]}
+        for expected in ("pos", "gender", "number", "voice", "aspect", "derivation",
+                         "trans_id", "trans_lang"):
+            assert expected in catalogue_fields, (
+                f"Field '{expected}' missing from word_annotation_fields catalogue"
+            )
+
+    def test_missing_field_returns_error(self):
+        """Calling list_field_values with an empty string returns an error in list_values."""
+        result = list_field_values("")
+        lv = result["list_values"]
+        assert "error" in lv
+
+    def test_result_is_serializable(self):
+        """Result should contain only JSON-serializable types."""
+        import json
+        result = list_field_values("pos")
         json.dumps(result)
