@@ -3,6 +3,26 @@ from functools import lru_cache
 
 from alfanous import paths
 
+# ---------------------------------------------------------------------------
+# Per-path engine cache for QSE.
+#
+# We use a plain dict instead of @lru_cache(maxsize=1) to avoid a subtle bug:
+# Python's lru_cache keys on the *exact* arguments passed.  The callers of
+# QSE() use two different calling conventions —
+#
+#   • Raw.__init__        calls  QSE(paths.QSE_INDEX)  (explicit positional arg)
+#   • query_plugins       calls  QSE()                 (no arg — uses default)
+#   • quran_unvocalized_words()  calls  QSE()          (no arg — uses default)
+#
+# These produce *different* lru_cache keys even though both resolve to the
+# same path string.  With maxsize=1, the second call would evict the first
+# entry and create a new QuranicSearchEngine, reopening the index from disk.
+#
+# The dict-based approach normalises the path before keying, so both calling
+# styles always hit the same entry.
+# ---------------------------------------------------------------------------
+
+_QSE_INSTANCES: "dict[str, object]" = {}
 
 
 @lru_cache(maxsize=1)
@@ -70,16 +90,23 @@ def ai_query_translation_rules(path=paths.AI_QUERY_TRANSLATION_RULES_FILE):
         return {}
 
 
-@lru_cache(maxsize=1)
 def QSE(path=paths.QSE_INDEX):
     """
-    Create a Quranic Search Engine instance.
-    
-    @param path: Path to the Quranic search index
-    @return: QuranicSearchEngine instance
+    Return the (singleton) Quranic Search Engine for *path*.
+
+    The engine is created on the first call for each unique path and cached
+    for all subsequent calls — regardless of whether the caller passes the
+    path explicitly or relies on the default value.  This guarantees that
+    ``QSE()`` and ``QSE(paths.QSE_INDEX)`` always return the *same* object,
+    which avoids opening the Whoosh index from disk more than once.
+
+    @param path: Path to the Quranic search index directory.
+    @return: QuranicSearchEngine instance.
     """
-    from alfanous.engines import QuranicSearchEngine
-    return QuranicSearchEngine(path)
+    if path not in _QSE_INSTANCES:
+        from alfanous.engines import QuranicSearchEngine
+        _QSE_INSTANCES[path] = QuranicSearchEngine(path)
+    return _QSE_INSTANCES[path]
 
 
 @lru_cache(maxsize=1)
