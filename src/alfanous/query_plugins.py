@@ -126,6 +126,10 @@ class QMultiTerm(MultiTerm):
 class SynonymsQuery(QMultiTerm):
     """Query that searches for synonyms of the given word"""
 
+    # Safety cap: prevents unexpectedly large synonym lists from causing
+    # runaway query expansion.
+    MAX_WORDS = 100
+
     def __init__(self, fieldname, text, boost=1.0):
         self.fieldname = fieldname
         self.text = text
@@ -135,11 +139,15 @@ class SynonymsQuery(QMultiTerm):
     @staticmethod
     def _get_synonyms(word):
         """Get synonyms for a word"""
-        return syndict.get(word, [word])
+        return list(syndict.get(word, [word]))[:SynonymsQuery.MAX_WORDS]
 
 
 class AntonymsQuery(QMultiTerm):
     """Query that searches for antonyms of the given word"""
+
+    # Safety cap: prevents unexpectedly large antonym lists from causing
+    # runaway query expansion.
+    MAX_WORDS = 100
 
     def __init__(self, fieldname, text, boost=1.0):
         self.fieldname = fieldname
@@ -150,7 +158,7 @@ class AntonymsQuery(QMultiTerm):
     @staticmethod
     def _get_antonyms(word):
         """Get antonyms for a word"""
-        return antdict.get(word, [word])
+        return list(antdict.get(word, [word]))[:AntonymsQuery.MAX_WORDS]
 
 
 class DerivationQuery(QMultiTerm):
@@ -276,6 +284,10 @@ class TashkilQuery(QMultiTerm):
     the underlying characters.
     """
 
+    # A single word can have many diacritisation variants; cap at 1000 to
+    # prevent full-lexicon scans from accumulating unbounded term sets.
+    MAX_MATCHES = 1000
+
     def __init__(self, fieldname, text, boost=1.0):
         self.fieldname = fieldname
         self.text = text if isinstance(text, list) else [text]
@@ -306,7 +318,10 @@ class TashkilQuery(QMultiTerm):
         # recomputing it O(index_terms) times inside the inner loop.
         normalized_query_words = {_ASF_TASHKIL.normalize_all(w) for w in self.text}
         seen_words = set(self.words)
+        count = 0
         for field, btext in ixreader.all_terms():
+            if count >= self.MAX_MATCHES:
+                break
             if field == fieldname:
                 indexed_text = from_bytes(btext)
                 normalized_indexed = _ASF_TASHKIL.normalize_all(indexed_text)
@@ -314,6 +329,7 @@ class TashkilQuery(QMultiTerm):
                     if indexed_text not in seen_words:
                         self.words.append(indexed_text)
                         seen_words.add(indexed_text)
+                    count += 1
                     yield btext
 
 

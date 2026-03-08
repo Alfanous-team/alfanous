@@ -801,7 +801,7 @@ class Raw:
                 else query
             )
             res, termz, searcher = self.QSE.search_all(aya_query, limit=self._defaults["results_limit"]["aya"], sortedby=sortedby, facets=facets_list, filter_dict=filter_dict, fuzzy=fuzzy, fuzzy_maxdist=fuzzy_maxdist, timelimit=timelimit)
-            terms = [term[1] for term in list(termz)[:self._defaults["maxkeywords"]]]
+            terms = [term[1] for term in termz[:self._defaults["maxkeywords"]]]
             # All matched aya_ac variation terms (only populated when fuzzy=True).
             # Used in the word_info loop to derive per-word variation lists.
             _all_ac_variations = [term[1] for term in termz if term[0] == "aya_ac"]
@@ -1052,11 +1052,8 @@ class Raw:
                         # Read text from the language-specific field when available,
                         # falling back to the stored trans_text for backward compat.
                         text_field = f"text_{lang}" if lang else None
-                        text = (
-                            (ch.get(text_field) if text_field else None)
-                            or ch.get("trans_text")
-                            or ""
-                        )
+                        field_text = ch.get(text_field) if text_field else None
+                        text = field_text or ch.get("trans_text") or ""
                         if g not in all_children:
                             all_children[g] = {}
                         all_children[g][tid] = {
@@ -1095,7 +1092,7 @@ class Raw:
                         wquery.Term("kind", "word"),
                     ])
                     wc_res, _, wc_searcher = self.QSE.search_with_query(
-                        _wl_q, limit=len(reslist) * 300
+                        _wl_q, limit=min(len(reslist) * 300, 7500)
                     )
                     try:
                         extend_runtime += wc_res.runtime
@@ -1163,7 +1160,8 @@ class Raw:
                         ])
                         # Generous limit: an aya has at most ~50 words; most terms
                         # match far fewer, but we allow 20 hits per term per aya.
-                        _aw_limit = len(reslist) * max(len(_norm_terms), 1) * 20
+                        # Cap at 10 000 to prevent runaway queries with many terms.
+                        _aw_limit = min(len(reslist) * max(len(_norm_terms), 1) * 20, 10000)
                         _aw_res, _, _aw_srch = self.QSE.search_with_query(
                             _aw_q, limit=_aw_limit
                         )
@@ -1247,6 +1245,13 @@ class Raw:
             ### Ayas
             cpt = start - 1
             output["ayas"] = {}
+            # Pre-compute recitation URL template once; the per-aya URL only
+            # differs in sura_id / aya_id, so the subfolder lookup is invariant.
+            _recitation_subfolder = (
+                self._recitations[recitation]["subfolder"]
+                if recitation and self._recitations.get(recitation)
+                else None
+            )
             for r in reslist:
                 cpt += 1
                 output["ayas"][cpt] = {
@@ -1265,9 +1270,11 @@ class Raw:
                         "text_no_highlight": r["aya"] if script == "standard"
                         else r["uth_"],
                         "translation": TH(trad_text.get(r["gid"], {}).get("text")) if _want_translation else None,
-                        "recitation": None if not recitation or not self._recitations.get(recitation) \
-                            else f'https://www.everyayah.com/data/{self._recitations[recitation]["subfolder"]}/%03d%03d.mp3' % (
-                        int(r["sura_id"]), int(r["aya_id"])),
+                        "recitation": (
+                            f'https://www.everyayah.com/data/{_recitation_subfolder}/%03d%03d.mp3' % (
+                                int(r["sura_id"]), int(r["aya_id"]))
+                            if _recitation_subfolder else None
+                        ),
                         "prev_aya": {
                             "id": adja_ayas[r["gid"] - 1]["aya_id"],
                             "sura": adja_ayas[r["gid"] - 1]["sura"],
@@ -1431,11 +1438,8 @@ class Raw:
                 # falling back to the stored trans_text for backward compat.
                 _r_lang = r.get("trans_lang") or ""
                 _r_text_field = f"text_{_r_lang}" if _r_lang else None
-                _r_text = (
-                    (r.get(_r_text_field) if _r_text_field else None)
-                    or r.get("trans_text")
-                    or ""
-                )
+                _r_field_text = r.get(_r_text_field) if _r_text_field else None
+                _r_text = _r_field_text or r.get("trans_text") or ""
                 output["translations"][cpt] = {
                     "identifier": {
                         "gid": r["gid"],
