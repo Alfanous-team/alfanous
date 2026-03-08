@@ -23,8 +23,11 @@ class QReader:
         self.schema = docindex.get_schema()
 
     def list_values(self, fieldname):
-        return list(filter(lambda x: not isinstance(x, int) or x >= 0,
-                           (_decode_if_bytes(v) for v in self.reader.field_terms(fieldname))))
+        try:
+            return list(filter(lambda x: not isinstance(x, int) or x >= 0,
+                               (_decode_if_bytes(v) for v in self.reader.field_terms(fieldname))))
+        except KeyError:
+            return []
 
     def list_stored_values(self, fieldname):
         """ List unique stored (non-tokenized) values for a field, preserving full phrases. """
