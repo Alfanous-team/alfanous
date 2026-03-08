@@ -5,9 +5,14 @@ import re
 from alfanous.text_processing import QArabicSymbolsFilter
 from alfanous.data import *
 from alfanous.constants import QURAN_TOTAL_VERSES
-from alfanous.romanization import transliterate
+from alfanous.romanization import (
+    transliterate,
+    arabizi_to_arabic_list,
+    filter_candidates_by_wordset,
+)
 
 from whoosh import query as wquery
+from whoosh.fields import TEXT as _WhooshTEXT
 from whoosh.sorting import Facets
 from alfanous.results_processing import QTranslationHighlight
 
@@ -72,21 +77,18 @@ def _build_filter_query(filter_dict):
     """
     if not filter_dict:
         return []
-    from whoosh import query as wq
     parts = []
     for field, value in filter_dict.items():
         if isinstance(value, list):
-            parts.append(wq.Or([wq.Term(field, v) for v in value]))
+            parts.append(wquery.Or([wquery.Term(field, v) for v in value]))
         else:
-            parts.append(wq.Term(field, value))
+            parts.append(wquery.Term(field, value))
     return parts
 
 
 def _edit_distance(s, t):
     """Compute the Levenshtein edit distance between two strings."""
     m, n = len(s), len(t)
-    if abs(m - n) > max(m, n, 1):
-        return abs(m - n)
     d = list(range(n + 1))
     for i in range(1, m + 1):
         prev = d[:]
@@ -507,8 +509,7 @@ class Raw:
             schema = search_engine._schema
             field_obj = schema[field] if field in schema.names() else None
             
-            from whoosh.fields import TEXT
-            is_text_field = field_obj is not None and isinstance(field_obj, TEXT)
+            is_text_field = field_obj is not None and isinstance(field_obj, _WhooshTEXT)
             
             if is_text_field:
                 # For text fields, use reader methods to get individual tokens
@@ -827,10 +828,6 @@ class Raw:
         if ":" not in query and not _ARABIC_SCRIPT_RE.search(query):
             # Non-Arabic query: search translations AND try arabizi conversion
             # to also search the Arabic aya fields ("the word and arabizi(word)").
-            from whoosh import query as wq
-            from alfanous.romanization import arabizi_to_arabic_list, filter_candidates_by_wordset
-            from alfanous.data import quran_unvocalized_words
-
             _query_parts = []
 
             # 1. Translation search: NestedParent over child translation docs
@@ -838,7 +835,7 @@ class Raw:
             if self._trans_parser is not None:
                 _trans_q = self._trans_parser.parse(query)
                 _trans_terms = [t for f, t in _trans_q.all_terms() if f in self._trans_fields]
-                _query_parts.append(wq.NestedParent(wq.Term("kind", "aya"), _trans_q))
+                _query_parts.append(wquery.NestedParent(wquery.Term("kind", "aya"), _trans_q))
 
             # 2. Arabizi search: convert non-Arabic words to Arabic candidates
             # and search aya text fields directly (no NestedParent needed for aya docs).
@@ -849,26 +846,25 @@ class Raw:
             if _qwords:
                 _arabizi_candidates = filter_candidates_by_wordset(_arabizi_candidates, _qwords)
             if _arabizi_candidates:
-                _arabic_terms = [wq.Term("aya", c) for c in _arabizi_candidates]
-                _arabic_q = wq.Or(_arabic_terms) if len(_arabic_terms) > 1 else _arabic_terms[0]
+                _arabic_terms = [wquery.Term("aya", c) for c in _arabizi_candidates]
+                _arabic_q = wquery.Or(_arabic_terms) if len(_arabic_terms) > 1 else _arabic_terms[0]
                 # Scope to parent aya documents so nested child docs are excluded.
                 if "kind" in self.QSE._schema:
-                    _arabic_q = wq.And([wq.Term("kind", "aya"), _arabic_q])
+                    _arabic_q = wquery.And([wquery.Term("kind", "aya"), _arabic_q])
                 _query_parts.append(_arabic_q)
 
             if not _query_parts:
                 # No fields available and no arabizi candidates — return empty.
-                from whoosh.query import NullQuery as _NullQuery
-                _final_q = _NullQuery()
+                _final_q = wquery.NullQuery()
             elif len(_query_parts) == 1:
                 _final_q = _query_parts[0]
             else:
-                _final_q = wq.Or(_query_parts)
+                _final_q = wquery.Or(_query_parts)
 
             # Apply filter_dict to restrict results (e.g. sura_id:2).
             _filter_parts = _build_filter_query(filter_dict)
             if _filter_parts:
-                _final_q = wq.And([_final_q] + _filter_parts)
+                _final_q = wquery.And([_final_q] + _filter_parts)
 
             res, termz, searcher = self.QSE.search_with_query(
                 _final_q,
@@ -1467,18 +1463,14 @@ class Raw:
 
         query = query.replace("\\", "")
 
-        # Search text_{lang} fields in nested child docs directly.
-        from whoosh import query as wq
-        from whoosh.query import NestedParent
         # Use the cached translation parser built at __init__ time.
-        _available_fields_set = set(f for f in _TEXT_LANG_FIELDS if f in self.QSE._schema)
         if self._trans_parser is None:
             # No translation fields in schema — return empty result.
             return {
                 "runtime": 0, "interval": {"start": 0, "end": 0, "total": 0, "page": 1, "nb_pages": 0},
                 "translations": {},
             }
-        _child_q = wq.And([wq.Term("kind", "translation"), self._trans_parser.parse(query)])
+        _child_q = wquery.And([wquery.Term("kind", "translation"), self._trans_parser.parse(query)])
         res, termz, searcher = self.QSE.search_with_query(
             _child_q,
             limit=self._defaults["results_limit"]["translation"],
@@ -1504,13 +1496,13 @@ class Raw:
             _keywords = lambda phrase: _KEYWORD_SPLIT_RE.findall(phrase)
             parent_data = {}
             if reslist:
-                _all_parents_q = wq.Term("kind", "aya")
+                _all_parents_q = wquery.Term("kind", "aya")
                 _page_gids = {r["gid"] for r in reslist}
-                _page_child_q = wq.And([
-                    wq.Term("kind", "translation"),
-                    wq.Or([wq.Term("gid", str(g)) for g in _page_gids]),
+                _page_child_q = wquery.And([
+                    wquery.Term("kind", "translation"),
+                    wquery.Or([wquery.Term("gid", str(g)) for g in _page_gids]),
                 ])
-                _parent_q = NestedParent(_all_parents_q, _page_child_q)
+                _parent_q = wquery.NestedParent(_all_parents_q, _page_child_q)
                 _parent_res, _, _parent_searcher = self.QSE.search_with_query(
                     _parent_q,
                     limit=self._defaults["results_limit"]["aya"],

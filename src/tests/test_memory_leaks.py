@@ -601,5 +601,184 @@ class TestMostFrequentWordsDecoding(unittest.TestCase):
         self.assertEqual(result, [(100.0, 'مِنْ'), (50.0, 'الله')])
 
 
+# ---------------------------------------------------------------------------
+# Iteration-2 fixes
+# ---------------------------------------------------------------------------
+
+class TestNoDeadAvailableFieldsSet(unittest.TestCase):
+    """_available_fields_set must not appear in _search_translation."""
+
+    def test_available_fields_set_removed(self):
+        """_search_translation must not compute _available_fields_set (dead code)."""
+        import ast, inspect, textwrap
+        import alfanous.outputs as _outputs_module
+        src = textwrap.dedent(inspect.getsource(_outputs_module.Raw._search_translation))
+        tree = ast.parse(src)
+
+        for node in ast.walk(tree):
+            if isinstance(node, ast.Assign):
+                for target in node.targets:
+                    if (isinstance(target, ast.Name)
+                            and target.id == "_available_fields_set"):
+                        self.fail(
+                            "_search_translation must not assign _available_fields_set — "
+                            "it was dead code (computed but never used)."
+                        )
+
+
+class TestNoFunctionLevelWhooshImports(unittest.TestCase):
+    """Hot-path methods must not contain function-level 'from whoosh import' statements."""
+
+    def _source_has_function_import(self, fn, pattern):
+        import ast, inspect, textwrap
+        src = textwrap.dedent(inspect.getsource(fn))
+        tree = ast.parse(src)
+        for node in ast.walk(tree):
+            if isinstance(node, (ast.Import, ast.ImportFrom)):
+                if pattern in ast.unparse(node):
+                    return True
+        return False
+
+    def test_build_filter_query_no_whoosh_import(self):
+        """_build_filter_query must not contain a per-call 'from whoosh import'."""
+        import alfanous.outputs as _outputs_module
+        self.assertFalse(
+            self._source_has_function_import(_outputs_module._build_filter_query, "whoosh"),
+            "_build_filter_query must use the module-level wquery, not a per-call import"
+        )
+
+    def test_search_aya_no_whoosh_import(self):
+        """_search_aya must not contain a per-call 'from whoosh import query'."""
+        import alfanous.outputs as _outputs_module
+        self.assertFalse(
+            self._source_has_function_import(
+                _outputs_module.Raw._search_aya, "from whoosh import query"
+            ),
+            "_search_aya must use the module-level wquery, not a per-call import"
+        )
+
+    def test_search_translation_no_whoosh_import(self):
+        """_search_translation must not contain a per-call 'from whoosh import'."""
+        import alfanous.outputs as _outputs_module
+        self.assertFalse(
+            self._source_has_function_import(_outputs_module.Raw._search_translation, "whoosh"),
+            "_search_translation must use the module-level wquery, not a per-call import"
+        )
+
+    def test_qsearcher_search_no_function_import(self):
+        """QSearcher.search must not contain per-call 'from whoosh' imports."""
+        import alfanous.searching as _searching_module
+        self.assertFalse(
+            self._source_has_function_import(_searching_module.QSearcher.search, "whoosh"),
+            "QSearcher.search must use module-level names, not per-call imports"
+        )
+
+
+class TestNoRedundantQuranUnvocalizedWordsImport(unittest.TestCase):
+    """_search_aya must not re-import quran_unvocalized_words (already in scope via *-import)."""
+
+    def test_no_per_call_quran_unvocalized_words_import(self):
+        import ast, inspect, textwrap
+        import alfanous.outputs as _outputs_module
+        src = textwrap.dedent(inspect.getsource(_outputs_module.Raw._search_aya))
+        tree = ast.parse(src)
+        for node in ast.walk(tree):
+            if isinstance(node, ast.ImportFrom):
+                if (node.module == "alfanous.data"
+                        and any(a.name == "quran_unvocalized_words" for a in node.names)):
+                    self.fail(
+                        "_search_aya must not import quran_unvocalized_words per-call; "
+                        "it is already in scope via 'from alfanous.data import *'."
+                    )
+
+
+class TestEditDistanceNoDeadBranch(unittest.TestCase):
+    """_edit_distance must not contain the always-False early-exit condition."""
+
+    def test_no_abs_max_dead_branch(self):
+        """The 'if abs(m-n) > max(m,n,1)' branch must be removed."""
+        import ast, inspect
+        import alfanous.outputs as _outputs_module
+        src = inspect.getsource(_outputs_module._edit_distance)
+        tree = ast.parse(src)
+
+        found = False
+        for node in ast.walk(tree):
+            # Look for a Compare node that compares abs(m-n) > max(m,n,1)
+            if isinstance(node, ast.Compare) and len(node.ops) == 1:
+                if isinstance(node.ops[0], ast.Gt):
+                    # Check if left side involves 'abs'
+                    left = node.left
+                    if (isinstance(left, ast.Call)
+                            and isinstance(left.func, ast.Name)
+                            and left.func.id == "abs"):
+                        found = True
+
+        self.assertFalse(
+            found,
+            "_edit_distance must not contain 'abs(m-n) > max(m,n,1)'; "
+            "this condition is always False and is dead code."
+        )
+
+    def test_edit_distance_correctness_unchanged(self):
+        """_edit_distance results must still be correct after removing dead branch."""
+        from alfanous.outputs import _edit_distance
+
+        self.assertEqual(_edit_distance("", ""), 0)
+        self.assertEqual(_edit_distance("abc", "abc"), 0)
+        self.assertEqual(_edit_distance("abc", "ab"), 1)
+        self.assertEqual(_edit_distance("abc", "axc"), 1)
+        self.assertEqual(_edit_distance("abc", "xyz"), 3)
+        self.assertEqual(_edit_distance("", "abc"), 3)
+        self.assertEqual(_edit_distance("abc", ""), 3)
+        # Asymmetric cases
+        self.assertEqual(_edit_distance("kitten", "sitting"), 3)
+
+    def test_edit_distance_short_strings(self):
+        """_edit_distance handles empty and single-character strings."""
+        from alfanous.outputs import _edit_distance
+        self.assertEqual(_edit_distance("", ""), 0)
+        self.assertEqual(_edit_distance("a", ""), 1)
+        self.assertEqual(_edit_distance("", "a"), 1)
+        self.assertEqual(_edit_distance("a", "a"), 0)
+        self.assertEqual(_edit_distance("a", "b"), 1)
+
+
+class TestModuleLevelImports(unittest.TestCase):
+    """Key symbols must be importable directly from the module (module-level)."""
+
+    def test_wquery_accessible_at_module_level(self):
+        """wquery must be a module-level attribute of alfanous.outputs."""
+        import alfanous.outputs as _outputs_module
+        self.assertTrue(
+            hasattr(_outputs_module, 'wquery'),
+            "wquery must be imported at module level in alfanous.outputs"
+        )
+
+    def test_arabizi_to_arabic_list_at_module_level(self):
+        """arabizi_to_arabic_list must be importable from alfanous.outputs module namespace."""
+        import alfanous.outputs as _outputs_module
+        self.assertTrue(
+            hasattr(_outputs_module, 'arabizi_to_arabic_list'),
+            "arabizi_to_arabic_list must be imported at module level in alfanous.outputs"
+        )
+
+    def test_filter_candidates_by_wordset_at_module_level(self):
+        """filter_candidates_by_wordset must be importable from alfanous.outputs module namespace."""
+        import alfanous.outputs as _outputs_module
+        self.assertTrue(
+            hasattr(_outputs_module, 'filter_candidates_by_wordset'),
+            "filter_candidates_by_wordset must be imported at module level in alfanous.outputs"
+        )
+
+    def test_qparser_at_module_level_in_searching(self):
+        """_QueryParser must be importable from alfanous.searching module namespace."""
+        import alfanous.searching as _searching_module
+        self.assertTrue(
+            hasattr(_searching_module, '_QueryParser'),
+            "_QueryParser must be imported at module level in alfanous.searching"
+        )
+
+
 if __name__ == "__main__":
     unittest.main()
