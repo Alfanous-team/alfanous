@@ -149,6 +149,7 @@ class Raw:
             "annotation_word": False,
             "annotation_aya": False,
             "sortedby": "score",
+            "reverse": False,
             "offset": 1,
             "range": 10,  # used as "perpage" in paging mode
             "page": 1,  # overridden with offset
@@ -200,6 +201,7 @@ class Raw:
         "annotation_word": [True, False],
         "annotation_aya": [True, False],
         "sortedby": ["score", "relevance", "mushaf", "tanzil", "ayalength"],
+        "reverse": [True, False],
         "offset": [],  # range(6237)
         "range": [],  # range(DEFAULTS["maxrange"]) , # used as "perpage" in paging mode
         "page": [],  # range(6237),  # overridden with offset
@@ -240,7 +242,13 @@ class Raw:
         "aya_sajda_info": "enable aya sajda information retrieving",
         "annotation_word": "enable query terms annotations retrieving",
         "annotation_aya": "enable aya words annotations retrieving",
-        "sortedby": "sorting order of results",
+        "sortedby": "sorting order of results — one of 'score', 'relevance', 'mushaf', 'tanzil', or 'ayalength'. "
+                    "'score' and 'relevance' rank by Whoosh BM25 relevance score (highest first by default). "
+                    "'mushaf' orders by the traditional Qur'an page order (sura then verse). "
+                    "'tanzil' orders by revelation chronology. "
+                    "'ayalength' orders by verse length in words.",
+        "reverse": "reverse the sort order (default False — inverts the default ordering for each sort type; "
+                    "e.g. with 'score' returns least-relevant results first, with 'mushaf' returns the last verse first)",
         "offset": "starting offset of results",
         "range": "range of results",
         "page": "page number  [override offset]",
@@ -638,6 +646,7 @@ class Raw:
         flags = {**self._defaults["flags"], **flags}
         query = flags["query"]
         sortedby = flags["sortedby"]
+        reverse = IS_FLAG(flags, 'reverse')
         range = int(flags["perpage"]) if flags.get("perpage") \
             else flags["range"]
         ## offset = (page-1) * perpage   --  mode paging
@@ -845,6 +854,7 @@ class Raw:
                 _final_q,
                 limit=self._defaults["results_limit"]["aya"],
                 sortedby=sortedby,
+                reverse=reverse,
                 timelimit=timelimit,
             )
             terms, _all_ac_variations = [], []
@@ -857,7 +867,7 @@ class Raw:
                 if "kind" in self.QSE._schema
                 else query
             )
-            res, termz, searcher = self.QSE.search_all(aya_query, limit=self._defaults["results_limit"]["aya"], sortedby=sortedby, facets=facets_list, filter_dict=filter_dict, fuzzy=fuzzy, fuzzy_maxdist=fuzzy_maxdist, timelimit=timelimit)
+            res, termz, searcher = self.QSE.search_all(aya_query, limit=self._defaults["results_limit"]["aya"], sortedby=sortedby, reverse=reverse, facets=facets_list, filter_dict=filter_dict, fuzzy=fuzzy, fuzzy_maxdist=fuzzy_maxdist, timelimit=timelimit)
             terms = [term[1] for term in termz[:self._defaults["maxkeywords"]]]
             # All matched aya_ac variation terms (only populated when fuzzy=True).
             # Used in the word_info loop to derive per-word variation lists.
@@ -1424,6 +1434,7 @@ class Raw:
         flags = {**self._defaults["flags"], **flags}
         query = flags["query"]
         sortedby = flags["sortedby"]
+        reverse = IS_FLAG(flags, 'reverse')
         range = int(flags["perpage"]) if flags.get("perpage") \
             else flags["range"]
         offset = ((int(flags["page"]) - 1) * range) + 1 if flags.get("page") \
@@ -1449,6 +1460,7 @@ class Raw:
             _child_q,
             limit=self._defaults["results_limit"]["translation"],
             sortedby=sortedby,
+            reverse=reverse,
             timelimit=timelimit,
         )
         try:
@@ -1560,6 +1572,7 @@ class Raw:
         flags = {**self._defaults["flags"], **flags}
         query = flags["query"]
         sortedby = flags["sortedby"]
+        reverse = IS_FLAG(flags, 'reverse')
         range_ = int(flags["perpage"]) if flags.get("perpage") \
             else flags["range"]
         offset = ((int(flags["page"]) - 1) * range_) + 1 if flags.get("page") \
@@ -1599,6 +1612,7 @@ class Raw:
             combined,
             limit=self._defaults["results_limit"]["word"],
             sortedby=sortedby,
+            reverse=reverse,
             timelimit=timelimit,
         )
 

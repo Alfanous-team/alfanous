@@ -854,3 +854,132 @@ class TestListFieldValues:
         import json
         result = list_field_values("pos")
         json.dumps(result)
+
+
+# ---------------------------------------------------------------------------
+# reverse flag and sortedby documentation tests (no index required)
+# ---------------------------------------------------------------------------
+
+class TestReverseFlag:
+    """Verify that the reverse flag is wired through the full stack."""
+
+    def test_api_search_has_reverse_param(self):
+        """api.search must accept a reverse keyword argument."""
+        import inspect
+        from alfanous import api
+        sig = inspect.signature(api.search)
+        assert "reverse" in sig.parameters, "api.search must have a reverse parameter"
+        assert sig.parameters["reverse"].default is False, \
+            "api.search reverse default must be False"
+
+    def test_outputs_defaults_include_reverse(self):
+        """Raw.DEFAULTS['flags'] must contain reverse=False."""
+        from alfanous.outputs import Raw
+        flags = Raw.DEFAULTS["flags"]
+        assert "reverse" in flags, "DEFAULTS['flags'] must contain 'reverse'"
+        assert flags["reverse"] is False, "Default reverse value must be False"
+
+    def test_outputs_domains_include_reverse(self):
+        """Raw.DOMAINS must list valid values for reverse."""
+        from alfanous.outputs import Raw
+        assert "reverse" in Raw.DOMAINS, "DOMAINS must contain 'reverse'"
+        assert set(Raw.DOMAINS["reverse"]) == {True, False}
+
+    def test_outputs_helpmessages_include_reverse(self):
+        """Raw.HELPMESSAGES must document the reverse flag."""
+        from alfanous.outputs import Raw
+        assert "reverse" in Raw.HELPMESSAGES, "HELPMESSAGES must contain 'reverse'"
+        msg = Raw.HELPMESSAGES["reverse"]
+        assert isinstance(msg, str) and len(msg) > 0
+
+    def test_helpmessages_sortedby_documents_values(self):
+        """HELPMESSAGES['sortedby'] must name each valid sort value."""
+        from alfanous.outputs import Raw
+        msg = Raw.HELPMESSAGES["sortedby"]
+        for val in ("score", "relevance", "mushaf", "tanzil", "ayalength"):
+            assert val in msg, \
+                f"HELPMESSAGES['sortedby'] must mention sort value '{val}'"
+
+    def test_search_obj_has_reverse_param(self):
+        """QSearcher.search_obj must accept a reverse parameter."""
+        import inspect
+        from alfanous.searching import QSearcher
+        sig = inspect.signature(QSearcher.search_obj)
+        assert "reverse" in sig.parameters, "QSearcher.search_obj must accept reverse"
+        assert sig.parameters["reverse"].default is False
+
+    def test_search_with_query_has_reverse_param(self):
+        """BasicSearchEngine.search_with_query must accept a reverse parameter."""
+        import inspect
+        from alfanous.engines import BasicSearchEngine
+        sig = inspect.signature(BasicSearchEngine.search_with_query)
+        assert "reverse" in sig.parameters, \
+            "BasicSearchEngine.search_with_query must accept reverse"
+        assert sig.parameters["reverse"].default is False
+
+    def test_mcp_search_quran_has_reverse_param(self):
+        """MCP search_quran must accept reverse."""
+        import inspect
+        sig = inspect.signature(search_quran)
+        assert "reverse" in sig.parameters, "search_quran must accept reverse"
+        assert sig.parameters["reverse"].default is False
+
+    def test_mcp_search_translations_has_reverse_param(self):
+        """MCP search_translations must accept reverse."""
+        import inspect
+        sig = inspect.signature(search_translations)
+        assert "reverse" in sig.parameters, "search_translations must accept reverse"
+
+    def test_mcp_search_quran_by_themes_has_reverse_param(self):
+        """MCP search_quran_by_themes must accept reverse."""
+        import inspect
+        sig = inspect.signature(search_quran_by_themes)
+        assert "reverse" in sig.parameters, "search_quran_by_themes must accept reverse"
+
+    def test_mcp_search_quran_by_stats_has_reverse_param(self):
+        """MCP search_quran_by_stats must accept reverse."""
+        import inspect
+        sig = inspect.signature(search_quran_by_stats)
+        assert "reverse" in sig.parameters, "search_quran_by_stats must accept reverse"
+
+    def test_mcp_search_quran_by_position_has_reverse_param(self):
+        """MCP search_quran_by_position must accept reverse."""
+        import inspect
+        sig = inspect.signature(search_quran_by_position)
+        assert "reverse" in sig.parameters, "search_quran_by_position must accept reverse"
+
+    def test_mcp_search_by_word_linguistics_has_reverse_param(self):
+        """MCP search_by_word_linguistics must accept reverse."""
+        import inspect
+        sig = inspect.signature(search_by_word_linguistics)
+        assert "reverse" in sig.parameters, "search_by_word_linguistics must accept reverse"
+
+    def test_mcp_search_quran_passes_reverse_in_flags(self):
+        """search_quran must forward reverse=True to alfanous_api.do."""
+        from unittest.mock import patch
+        import alfanous_mcp.mcp_server as _mcp
+        captured = {}
+
+        def _spy_do(flags):
+            captured.update(flags)
+            # Return a minimal valid response so search_quran doesn't crash.
+            return {"error": {"code": 0, "message": "ok"}, "search": {}}
+
+        with patch.object(_mcp.alfanous_api, "do", side_effect=_spy_do):
+            search_quran(query="الله", reverse=True)
+
+        assert captured.get("reverse") is True, \
+            "search_quran must pass reverse=True through to alfanous_api.do"
+
+    def test_mcp_search_quran_sortedby_docstring_complete(self):
+        """search_quran docstring must mention all five sortedby values."""
+        doc = search_quran.__doc__ or ""
+        for val in ("relevance", "score", "mushaf", "tanzil", "ayalength"):
+            assert val in doc, \
+                f"search_quran docstring must document sortedby value '{val}'"
+
+    def test_mcp_search_quran_reverse_docstring_present(self):
+        """search_quran docstring must explain the reverse parameter."""
+        doc = search_quran.__doc__ or ""
+        assert "reverse" in doc.lower(), \
+            "search_quran docstring must describe the reverse parameter"

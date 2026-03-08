@@ -378,12 +378,12 @@ class QSearcher:
 
         return results, terms, _SearcherProxy(searcher)
 
-    def search_obj(self, q_obj, limit=QURAN_TOTAL_VERSES, sortedby="score", timelimit=5.0):
+    def search_obj(self, q_obj, limit=QURAN_TOTAL_VERSES, sortedby="score", reverse=False, timelimit=5.0):
         """Run a pre-built Whoosh query object (e.g. NestedParent) directly,
         bypassing string parsing.  Returns the same ``(results, terms, searcher)``
         tuple as :meth:`search` but with an empty *terms* list."""
         searcher = self._get_shared_searcher()
-        search_kwargs = dict(limit=limit, sortedby=QSort(sortedby))
+        search_kwargs = dict(limit=limit, sortedby=QSort(sortedby), reverse=reverse)
         if timelimit is not None:
             c = searcher.collector(**search_kwargs)
             tlc = TimeLimitCollector(c, timelimit=timelimit, use_alarm=False)

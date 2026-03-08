@@ -106,6 +106,7 @@ def search_quran(
     page: int = 1,
     perpage: int = 10,
     sortedby: str = "relevance",
+    reverse: bool = False,
     fuzzy: bool = False,
     fuzzy_maxdist: int = 1,
     view: str = "normal",
@@ -121,8 +122,16 @@ def search_quran(
         unit: Search unit — one of "aya" (verse), "word", or "translation".
         page: Page number for pagination (starts at 1).
         perpage: Number of results per page (1–100).
-        sortedby: Sort order — one of "relevance", "score", "mushaf",
-            "tanzil", or "ayalength".
+        sortedby: Sort order — one of:
+            - "relevance" / "score": rank by BM25 relevance (highest score
+              first by default; use reverse=True for lowest score first).
+            - "mushaf": traditional Qur'an order (sura then verse number).
+            - "tanzil": revelation chronology order.
+            - "ayalength": verse length in words (shortest first by default;
+              use reverse=True for longest first).
+        reverse: Reverse the sort direction (default False). When True the
+            lowest/earliest value is returned first — e.g. shortest verse
+            for "ayalength", or least-relevant result for "score".
         fuzzy: Enable fuzzy (approximate) matching. Combines exact search
             on aya_ with normalised/stemmed search on aya and Levenshtein
             distance matching on aya_ac.
@@ -147,6 +156,7 @@ def search_quran(
         "page": page,
         "range": perpage,
         "sortedby": sortedby,
+        "reverse": reverse,
         "fuzzy": fuzzy,
         "fuzzy_maxdist": fuzzy_maxdist,
         "view": view,
@@ -180,6 +190,7 @@ def search_translations(
     page: int = 1,
     perpage: int = 10,
     sortedby: str = "relevance",
+    reverse: bool = False,
     fuzzy: bool = False,
     fuzzy_maxdist: int = 1,
     highlight: str = "bold",
@@ -195,8 +206,14 @@ def search_translations(
             When omitted, all indexed translations are searched.
         page: Page number for pagination (starts at 1).
         perpage: Number of results per page (1–100).
-        sortedby: Sort order — one of "relevance", "score", "mushaf",
-            "tanzil", or "ayalength".
+        sortedby: Sort order — one of:
+            - "relevance" / "score": rank by BM25 relevance (highest score
+              first by default; use reverse=True for lowest score first).
+            - "mushaf": traditional Qur'an order (sura then verse number).
+            - "tanzil": revelation chronology order.
+            - "ayalength": verse length in words (shortest first by default).
+        reverse: Reverse the sort direction (default False). When True the
+            lowest/earliest value is returned first.
         fuzzy: Enable fuzzy (approximate) matching. Combines exact search
             on aya_ with normalised/stemmed search on aya and Levenshtein
             distance matching on aya_ac.
@@ -218,6 +235,7 @@ def search_translations(
         "page": page,
         "range": perpage,
         "sortedby": sortedby,
+        "reverse": reverse,
         "fuzzy": fuzzy,
         "fuzzy_maxdist": fuzzy_maxdist,
         "highlight": highlight,
@@ -288,6 +306,7 @@ def search_quran_by_themes(
     page: int = 1,
     perpage: int = 10,
     sortedby: str = "relevance",
+    reverse: bool = False,
     view: str = "normal",
     highlight: str = "bold",
     facets: Optional[str] = None,
@@ -303,8 +322,14 @@ def search_quran_by_themes(
         subtopic: Subtopic to filter by (maps to the 'subtopic' field).
         page: Page number for pagination (starts at 1).
         perpage: Number of results per page (1–100).
-        sortedby: Sort order — one of "relevance", "score", "mushaf",
-            "tanzil", or "ayalength".
+        sortedby: Sort order — one of:
+            - "relevance" / "score": rank by BM25 relevance (highest score
+              first by default; use reverse=True for lowest score first).
+            - "mushaf": traditional Qur'an order (sura then verse number).
+            - "tanzil": revelation chronology order.
+            - "ayalength": verse length in words (shortest first by default).
+        reverse: Reverse the sort direction (default False). When True the
+            lowest/earliest value is returned first.
         view: Result detail level — one of "minimal", "normal", "full",
             "statistic", "linguistic", or "custom".
         highlight: Highlight style for matched terms — one of "bold",
@@ -334,6 +359,7 @@ def search_quran_by_themes(
         "page": page,
         "range": perpage,
         "sortedby": sortedby,
+        "reverse": reverse,
         "view": view,
         "highlight": highlight,
     }
@@ -367,6 +393,7 @@ def search_quran_by_stats(
     page: int = 1,
     perpage: int = 10,
     sortedby: str = "relevance",
+    reverse: bool = False,
     view: str = "normal",
     highlight: str = "bold",
     facets: Optional[str] = None,
@@ -393,8 +420,16 @@ def search_quran_by_stats(
             ruku (field: s_r).
         page: Page number for pagination (starts at 1).
         perpage: Number of results per page (1–100).
-        sortedby: Sort order — one of "relevance", "score", "mushaf",
-            "tanzil", or "ayalength".
+        sortedby: Sort order — one of:
+            - "relevance" / "score": rank by BM25 relevance (highest score
+              first by default; use reverse=True for lowest score first).
+            - "mushaf": traditional Qur'an order (sura then verse number).
+            - "tanzil": revelation chronology order.
+            - "ayalength": verse length in words (shortest first by default;
+              use reverse=True for longest first).
+        reverse: Reverse the sort direction (default False). When True the
+            lowest/earliest value is returned first — e.g. set
+            sortedby="ayalength" with reverse=True to get the longest verses.
         view: Result detail level — one of "minimal", "normal", "full",
             "statistic", "linguistic", or "custom".
         highlight: Highlight style for matched terms — one of "bold",
@@ -432,6 +467,7 @@ def search_quran_by_stats(
         "page": page,
         "range": perpage,
         "sortedby": sortedby,
+        "reverse": reverse,
         "view": view,
         "highlight": highlight,
     }
@@ -466,6 +502,7 @@ def search_quran_by_position(
     page_int: int = 1,
     perpage: int = 10,
     sortedby: str = "mushaf",
+    reverse: bool = False,
     view: str = "normal",
     highlight: str = "bold",
     facets: Optional[str] = None,
@@ -489,9 +526,15 @@ def search_quran_by_position(
         page: Mushaf page number to filter by (field: page).
         page_int: Page number for pagination (starts at 1).
         perpage: Number of results per page (1–100).
-        sortedby: Sort order — one of "relevance", "score", "mushaf",
-            "tanzil", or "ayalength". Defaults to "mushaf" for positional
-            queries.
+        sortedby: Sort order — one of:
+            - "mushaf": traditional Qur'an order — sura then verse number
+              (default for positional queries).
+            - "tanzil": revelation chronology order.
+            - "relevance" / "score": rank by BM25 relevance.
+            - "ayalength": verse length in words.
+        reverse: Reverse the sort direction (default False). For example,
+            sortedby="mushaf" with reverse=True returns verses in
+            reverse Qur'an order (last verse first).
         view: Result detail level — one of "minimal", "normal", "full",
             "statistic", "linguistic", or "custom".
         highlight: Highlight style for matched terms — one of "bold",
@@ -529,6 +572,7 @@ def search_quran_by_position(
         "page": page_int,
         "range": perpage,
         "sortedby": sortedby,
+        "reverse": reverse,
         "view": view,
         "highlight": highlight,
     }
@@ -624,6 +668,7 @@ def search_by_word_linguistics(
     page: int = 1,
     perpage: int = 10,
     sortedby: str = "mushaf",
+    reverse: bool = False,
     highlight: str = "bold",
 ) -> dict:
     """Search Quranic word occurrences by morphological/linguistic properties.
@@ -649,8 +694,15 @@ def search_by_word_linguistics(
         form: Verb form in Roman numerals — one of "(I)" through "(XII)".
         page: Page number for pagination (starts at 1).
         perpage: Number of results per page (1–25).
-        sortedby: Sort order — one of "mushaf", "relevance", "score",
-            "tanzil", or "ayalength".
+        sortedby: Sort order — one of:
+            - "mushaf": traditional Qur'an order — sura then verse number
+              (default for word searches).
+            - "relevance" / "score": rank by BM25 relevance.
+            - "tanzil": revelation chronology order.
+            - "ayalength": verse length in words.
+        reverse: Reverse the sort direction (default False). When True the
+            lowest/earliest value is returned first — e.g. sortedby="mushaf"
+            with reverse=True returns occurrences from the last verse first.
         highlight: Highlight style for matched word text — one of "bold",
             "css", "html", or "bbcode".
 
@@ -692,6 +744,7 @@ def search_by_word_linguistics(
         "page":     page,
         "range":    perpage,
         "sortedby": sortedby,
+        "reverse":  reverse,
         "highlight": highlight,
     }
 
