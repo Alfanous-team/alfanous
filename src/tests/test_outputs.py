@@ -1087,15 +1087,21 @@ def test_show_fields_reverse_lists_all_fields():
     assert isinstance(fields_reverse, dict)
     assert len(fields_reverse) > 0, "fields_reverse must not be empty"
 
-    # Fields that were previously missing Arabic names (regression guard)
+    # All translation text fields plus previously-missing fields (regression guard)
     expected_fields = {
+        "text_ar": "نص_عربي",
+        "text_en": "نص_انجليزي",
+        "text_fr": "نص_فرنسي",
+        "text_id": "نص_اندونيسي",
+        "text_ms": "نص_ملايوي",
+        "text_tr": "نص_تركي",
+        "text_ja": "نص_ياباني",
+        "text_ku": "نص_كردي",
+        "text_ml": "نص_مالايالامي",
+        "text_es": "نص_اسباني",
+        "text_pt": "نص_برتغالي",
         "spelled": "لفظ_مهجى",
         "token": "رمز_باكوالتر",
-        "text_ja": "نص_ja",
-        "text_ku": "نص_ku",
-        "text_ml": "نص_ml",
-        "text_es": "نص اسباني",
-        "text_pt": "نص_pt",
         "mood": "حالة_فعلية",
         "voice": "صيغة",
         "aspect": "صيغة_فعلية",
