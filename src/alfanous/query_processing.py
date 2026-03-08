@@ -21,6 +21,53 @@ from alfanous.data import arabic_to_english_fields
 # Import query plugins for integration with Whoosh 2.7
 from whoosh.qparser.plugins import SingleQuotePlugin, EveryPlugin
 
+# ---------------------------------------------------------------------------
+# Pre-compiled regexes and operator tables used by ArabicParser._preprocess_query.
+# Defined at module level so they are compiled once per process, not once per
+# parse() call.
+# ---------------------------------------------------------------------------
+
+# Split a query string on quoted sub-strings to protect their contents.
+_QUOTE_SPLIT_RE = re.compile(r'("[^"]*"|\'[^\']*\')')
+
+# Match a field-name token followed immediately by ':'.
+_FIELD_RE = re.compile(r'([\w\u0600-\u06FF]+):')
+
+# Match a full bracket range expression.
+_RANGE_OUTER_RE = re.compile(r'\[([^\]]+)\]')
+
+# Match the Arabic range word "الى"/"إلى" when not adjacent to non-whitespace.
+_RANGE_INNER_RE = re.compile(r'(?<!\S)(الى|إلى)(?!\S)')
+
+# Arabic logical operator table.  Insertion order is significant: longer
+# tokens (وليس) must appear before their prefixes (و / ليس) so the alternation
+# in _ARABIC_OPS_RE always matches the longest token first.
+_ARABIC_OPS = {
+    'وليس': 'ANDNOT',
+    'ليس':  'NOT',
+    'و':    'AND',
+    'أو':   'OR',
+    'او':   'OR',
+}
+
+# Matches an Arabic logical operator surrounded by horizontal whitespace.
+_ARABIC_OPS_RE = re.compile(
+    r'(?<=[^\S\n])(' + '|'.join(re.escape(k) for k in _ARABIC_OPS) + r')(?=[^\S\n])'
+)
+
+# Matches a leading NOT operator at the very start of a (sub-)expression.
+_START_NOT_RE = re.compile(
+    r'^(' + '|'.join(re.escape(k) for k in ('ليس', 'وليس')) + r')(?=\s)'
+)
+
+# Symbol binary operator table.
+_SYM_OPS = {'+': 'AND', '|': 'OR', '-': 'ANDNOT'}
+
+# Matches a symbol binary operator surrounded by spaces.
+_SYM_OPS_RE = re.compile(
+    r'(?<=\s)(' + '|'.join(re.escape(k) for k in _SYM_OPS) + r')(?=\s)'
+)
+
 
 class StandardParser(QueryParser):  #
     def __init__(self, schema, mainfield, otherfields, termclass=Term):
@@ -77,7 +124,7 @@ class ArabicParser(StandardParser):
     def _preprocess_query(self, querystr):
         """Translate Arabic field names, range keywords, and logical operators before Whoosh parsing."""
         # Split on quoted strings ('...' and "...") to protect their contents
-        parts = re.split(r'("[^"]*"|\'[^\']*\')', querystr)
+        parts = _QUOTE_SPLIT_RE.split(querystr)
 
         result_parts = []
         for i, part in enumerate(parts):
@@ -91,30 +138,20 @@ class ArabicParser(StandardParser):
             def replace_field(match):
                 field = match.group(1)
                 return self.ara2eng.get(field, field) + ':'
-            p = re.sub(r'([\w\u0600-\u06FF]+):', replace_field, p)
+            p = _FIELD_RE.sub(replace_field, p)
 
             # 2. Replace Arabic range keyword 'الى'/'إلى' with 'TO' inside brackets
             def replace_range(m):
-                inner = re.sub(r'(?<!\S)(الى|إلى)(?!\S)', 'TO', m.group(1))
+                inner = _RANGE_INNER_RE.sub('TO', m.group(1))
                 return '[' + inner + ']'
-            p = re.sub(r'\[([^\]]+)\]', replace_range, p)
+            p = _RANGE_OUTER_RE.sub(replace_range, p)
 
             # 3. Replace Arabic logical operators (only when surrounded by whitespace)
-            _arabic_ops = {'وليس': 'ANDNOT', 'ليس': 'NOT', 'و': 'AND',
-                           'أو': 'OR', 'او': 'OR'}
-            _arabic_ops_re = re.compile(
-                r'(?<=[^\S\n])(' + '|'.join(re.escape(k) for k in _arabic_ops) + r')(?=[^\S\n])'
-            )
-            p = _arabic_ops_re.sub(lambda m: _arabic_ops[m.group(1)], p)
-            p = re.sub(r'^(' + '|'.join(re.escape(k) for k in ('ليس', 'وليس')) + r')(?=\s)',
-                       lambda m: _arabic_ops[m.group(1)], p)
+            p = _ARABIC_OPS_RE.sub(lambda m: _ARABIC_OPS[m.group(1)], p)
+            p = _START_NOT_RE.sub(lambda m: _ARABIC_OPS[m.group(1)], p)
 
             # 4. Replace symbol binary operators surrounded by spaces
-            _sym_ops = {'+': 'AND', '|': 'OR', '-': 'ANDNOT'}
-            _sym_ops_re = re.compile(
-                r'(?<=\s)(' + '|'.join(re.escape(k) for k in _sym_ops) + r')(?=\s)'
-            )
-            p = _sym_ops_re.sub(lambda m: _sym_ops[m.group(1)], p)
+            p = _SYM_OPS_RE.sub(lambda m: _SYM_OPS[m.group(1)], p)
 
             result_parts.append(p)
 

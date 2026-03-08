@@ -8,7 +8,7 @@ from alfanous.romanization import transliterate
 
 from whoosh import query as wquery
 from whoosh.sorting import Facets
-from alfanous.results_processing import QScore, QTranslationHighlight
+from alfanous.results_processing import QTranslationHighlight
 
 
 from alfanous.text_processing import _TRANSLATION_LANGS
@@ -25,6 +25,9 @@ FALSE_PATTERN = '^false|no|off|0$'
 # Compiled once at import time — used in every _search_aya / _search_translation
 # call to split comma-separated Sura name strings.
 _KEYWORD_SPLIT_RE = re.compile("[^,،]+")
+
+# Pre-compiled regex for stripping non-Arabic characters from suggestion queries.
+_SUGGEST_STRIP_RE = re.compile(r'[^\u0621-\u065F\u0670-\u06FF\s]')
 
 # Pre-instantiated Arabic text normalisation filters.  Only two configurations
 # are ever used inside _search_aya:
@@ -439,7 +442,7 @@ class Raw:
             else:
                 # For categorical/keyword fields, use Whoosh facets
                 # This provides better performance and uses standard Whoosh functionality
-                searcher = search_engine._docindex.get_index().searcher(weighting=QScore())
+                searcher = search_engine.shared_searcher()
                 
                 try:
                     # Create facets for the requested field
@@ -541,7 +544,7 @@ class Raw:
         # strip all non-Arabic characters (keeps Arabic letters, diacritical marks,
         # and extended Arabic characters; removes ASCII symbols, punctuation, Latin
         # words, and Arabic punctuation like ، ؛ ؟)
-        query = re.sub(r'[^\u0621-\u065F\u0670-\u06FF\s]', ' ', query)
+        query = _SUGGEST_STRIP_RE.sub(' ', query)
         query = ' '.join(w for w in query.split() if w)
 
         return self.QSE.suggest_all(query)

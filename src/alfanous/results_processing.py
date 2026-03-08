@@ -61,10 +61,7 @@ def QSort(sortedby):
 
 
 def Qhighlight(text, terms, type="css", strip_vocalization=True):
-    if type == "bold":
-        formatter = QBoldFormatter()
-    else:  # css
-        formatter = HtmlFormatter(tagname="span", classname="match", termclass="term", maxclasses=8)
+    formatter = _BOLD_FORMATTER if type == "bold" else _HTML_FORMATTER
 
     highlighted = highlight(
         text,
@@ -81,10 +78,7 @@ def Qhighlight(text, terms, type="css", strip_vocalization=True):
 
 
 def QTranslationHighlight(text, terms, type="css", **kwargs):
-    if type == "bold":
-        formatter = QBoldFormatter()
-    else:  # css
-        formatter = HtmlFormatter(tagname="span", classname="match", termclass="term", maxclasses=8)
+    formatter = _BOLD_FORMATTER if type == "bold" else _HTML_FORMATTER
 
     highlighted = highlight(
         text,
@@ -126,3 +120,12 @@ class QBoldFormatter(object):
     def __call__(self, text, fragments):
         return "".join((self._format_fragment(text, fragment)
                         for fragment in fragments))
+
+
+# ---------------------------------------------------------------------------
+# Module-level formatter singletons.  Both Qhighlight and QTranslationHighlight
+# always use the same two configurations so creating them once per process
+# (instead of once per highlight call) eliminates repeated object allocation.
+# ---------------------------------------------------------------------------
+_BOLD_FORMATTER = QBoldFormatter()
+_HTML_FORMATTER = HtmlFormatter(tagname="span", classname="match", termclass="term", maxclasses=8)

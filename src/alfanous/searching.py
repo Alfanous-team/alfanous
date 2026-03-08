@@ -169,12 +169,14 @@ class _SearcherProxy:
 
     def close(self):
         """No-op: the shared searcher is managed by :class:`QSearcher`."""
+        pass
 
     def __enter__(self):
         return self
 
     def __exit__(self, *args):
         """No-op: the shared searcher is managed by :class:`QSearcher`."""
+        pass
 
     def __getattr__(self, name):
         return getattr(object.__getattribute__(self, "_s"), name)
