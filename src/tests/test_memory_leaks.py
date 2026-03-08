@@ -780,5 +780,211 @@ class TestModuleLevelImports(unittest.TestCase):
         )
 
 
+# ---------------------------------------------------------------------------
+# Iteration-3 fixes (outputs.py optimisation pass)
+# ---------------------------------------------------------------------------
+
+class TestNoUnusedQueryInDo(unittest.TestCase):
+    """_do must not assign an unused `query` variable."""
+
+    def test_do_has_no_dead_query_assignment(self):
+        """The unused `query` local variable must be removed from Raw._do."""
+        import ast, inspect, textwrap
+        import alfanous.outputs as _outputs_module
+        src = textwrap.dedent(inspect.getsource(_outputs_module.Raw._do))
+        tree = ast.parse(src)
+        for node in ast.walk(tree):
+            if isinstance(node, ast.Assign):
+                for target in node.targets:
+                    if isinstance(target, ast.Name) and target.id == "query":
+                        self.fail(
+                            "Raw._do must not assign `query` — it is unused in _do "
+                            "and was dead code."
+                        )
+
+
+class TestResultDocnumsAndIndexReaderScoped(unittest.TestCase):
+    """_result_docnums and _index_reader must be created only inside word_info block."""
+
+    def _search_aya_source(self):
+        import inspect, textwrap
+        import alfanous.outputs as m
+        return textwrap.dedent(inspect.getsource(m.Raw._search_aya))
+
+    def test_result_docnums_inside_word_info_block(self):
+        """_result_docnums must only be assigned inside the word_info block."""
+        import ast
+        src = self._search_aya_source()
+        tree = ast.parse(src)
+
+        # Walk the AST and look for top-level assignments of _result_docnums
+        # (i.e., not nested under an `if word_info:` branch).
+        # A simple heuristic: check that the assignment target name appears
+        # only inside a branch whose test includes 'word_info'.
+        def _assigns_outside_word_info(node, in_word_info=False):
+            if isinstance(node, ast.If):
+                test_src = ast.unparse(node.test)
+                is_wi = "word_info" in test_src
+                for child in ast.walk(node):
+                    if child is node:
+                        continue
+                    if isinstance(child, ast.Assign):
+                        for t in child.targets:
+                            if isinstance(t, ast.Name) and t.id == "_result_docnums":
+                                if not is_wi and not in_word_info:
+                                    return True
+            elif isinstance(node, ast.Assign):
+                for t in node.targets:
+                    if isinstance(t, ast.Name) and t.id == "_result_docnums":
+                        if not in_word_info:
+                            return True
+            return False
+
+        # Check top-level statements (direct children of function body)
+        for stmt in ast.parse(src).body[0].body:
+            if _assigns_outside_word_info(stmt):
+                self.fail(
+                    "_result_docnums is assigned outside the word_info block — "
+                    "move it inside `if word_info:` to avoid iterating all results "
+                    "on every request when word_info=False."
+                )
+
+    def test_gid_base_query_removed(self):
+        """_gid_base_query string building must not exist in _search_aya."""
+        import ast
+        src = self._search_aya_source()
+        tree = ast.parse(src)
+        for node in ast.walk(tree):
+            if isinstance(node, ast.Assign):
+                for t in node.targets:
+                    if isinstance(t, ast.Name) and t.id == "_gid_base_query":
+                        self.fail(
+                            "_gid_base_query must be removed — it built a query "
+                            "string that was immediately re-parsed by find_extended. "
+                            "Use a pre-built wquery object instead."
+                        )
+
+    def test_adjacent_aya_uses_search_with_query_not_find_extended(self):
+        """Adjacent-aya lookup must use search_with_query, not find_extended."""
+        import ast
+        src = self._search_aya_source()
+        tree = ast.parse(src)
+        # Check that no Call node invokes find_extended (comments are ignored by AST).
+        for node in ast.walk(tree):
+            if isinstance(node, ast.Call):
+                func = node.func
+                if isinstance(func, ast.Attribute) and func.attr == "find_extended":
+                    self.fail(
+                        "_search_aya must not call find_extended — replace with pre-built "
+                        "wquery objects passed to search_with_query to avoid string parsing overhead."
+                    )
+                if isinstance(func, ast.Name) and func.id == "find_extended":
+                    self.fail(
+                        "_search_aya must not call find_extended — replace with pre-built "
+                        "wquery objects passed to search_with_query to avoid string parsing overhead."
+                    )
+
+
+class TestHighlightCheckedOnce(unittest.TestCase):
+    """H / TH lambdas must not re-evaluate `highlight != 'none'` on every call."""
+
+    def _get_src(self, method_name):
+        import inspect, textwrap
+        import alfanous.outputs as m
+        return textwrap.dedent(inspect.getsource(getattr(m.Raw, method_name)))
+
+    def _lambda_contains_highlight_check(self, src):
+        """Return True if any lambda in src contains 'highlight != 'none''."""
+        import ast
+        tree = ast.parse(src)
+        for node in ast.walk(tree):
+            if isinstance(node, ast.Lambda):
+                lambda_src = ast.unparse(node)
+                if "highlight" in lambda_src and "none" in lambda_src:
+                    return True
+        return False
+
+    def test_search_aya_H_lambda_no_highlight_check(self):
+        """H lambda in _search_aya must not re-check highlight on every call."""
+        self.assertFalse(
+            self._lambda_contains_highlight_check(self._get_src("_search_aya")),
+            "H/TH lambdas in _search_aya must not contain `highlight != 'none'` — "
+            "check once before the lambda definition."
+        )
+
+    def test_search_translation_H_lambda_no_highlight_check(self):
+        """H lambda in _search_translation must not re-check highlight on every call."""
+        self.assertFalse(
+            self._lambda_contains_highlight_check(self._get_src("_search_translation")),
+            "H lambda in _search_translation must not contain `highlight != 'none'`."
+        )
+
+    def test_search_words_H_lambda_no_highlight_check(self):
+        """H lambda in _search_words must not re-check highlight on every call."""
+        self.assertFalse(
+            self._lambda_contains_highlight_check(self._get_src("_search_words")),
+            "H lambda in _search_words must not contain `highlight != 'none'`."
+        )
+
+
+class TestSajdaEvaluatedOnce(unittest.TestCase):
+    """r['sajda'] == 'نعم' must not appear more than once per aya in _search_aya."""
+
+    def test_sajda_comparison_deduplicated(self):
+        import inspect, textwrap
+        import alfanous.outputs as m
+        src = textwrap.dedent(inspect.getsource(m.Raw._search_aya))
+        count = src.count('r["sajda"] == "نعم"') + src.count("r['sajda'] == 'نعم'")
+        self.assertLessEqual(
+            count, 1,
+            f"r['sajda'] == 'نعم' appears {count} times in _search_aya — "
+            "evaluate it once per aya into _is_sajda and reuse."
+        )
+
+
+class TestScriptCheckedOnce(unittest.TestCase):
+    """script == 'standard' must be pre-computed once, not re-evaluated per aya."""
+
+    def test_use_standard_script_variable_present(self):
+        import inspect, textwrap
+        import alfanous.outputs as m
+        src = textwrap.dedent(inspect.getsource(m.Raw._search_aya))
+        self.assertIn(
+            "_use_standard_script",
+            src,
+            "_search_aya must cache `script == 'standard'` as `_use_standard_script` "
+            "before the per-aya loop to avoid re-evaluating it 4× per result."
+        )
+
+    def test_script_standard_not_compared_in_loop(self):
+        """script == 'standard' must not appear in the per-aya result loop body."""
+        import ast, inspect, textwrap
+        import alfanous.outputs as m
+        src = textwrap.dedent(inspect.getsource(m.Raw._search_aya))
+        tree = ast.parse(src)
+
+        # Count Compare nodes that test `script == "standard"` at the AST level.
+        # We expect exactly ONE such node: the `_use_standard_script = script == "standard"` assignment.
+        # Any additional occurrences are in the per-aya loop and should be replaced with _use_standard_script.
+        compare_count = 0
+        for node in ast.walk(tree):
+            if isinstance(node, ast.Compare) and len(node.ops) == 1:
+                if isinstance(node.ops[0], ast.Eq):
+                    left = node.left
+                    comparators = node.comparators
+                    if (isinstance(left, ast.Name) and left.id == "script"
+                            and len(comparators) == 1
+                            and isinstance(comparators[0], ast.Constant)
+                            and comparators[0].value == "standard"):
+                        compare_count += 1
+
+        self.assertLessEqual(
+            compare_count, 1,
+            f"'script == standard' appears as a Compare node {compare_count} time(s) in _search_aya — "
+            "only the single `_use_standard_script = script == 'standard'` definition is allowed; "
+            "the per-aya loop must use `_use_standard_script` instead."
+        )
+
+
 if __name__ == "__main__":
     unittest.main()

@@ -403,7 +403,6 @@ class Raw:
     def _do(self, flags):
         action = flags.get("action") or self._defaults["flags"]["action"]
         unit = flags.get("unit") or self._defaults["flags"]["unit"]
-        query = flags.get("query") or self._defaults["flags"]["query"]
         # init the error message with Succes
         output = self._check(0, flags)
         if action == "search":
@@ -899,64 +898,71 @@ class Raw:
             start = offset if offset <= len(res) else -1
             reslist = [] if end == 0 or start == -1 else res[start - 1:end]
             # todo pagination should be done inside search operation for better performance
-            # closing the searcher
-            # Pre-built gid query for the current result page, used for translation and
-            # fixed-translation lookups without re-iterating reslist multiple times.
-            _gid_base_query = "( 0" + "".join(" OR gid:%s" % str(r["gid"]) for r in reslist) + " )"
-    
+
             output = {}
-    
+
             ## disable annotations for aya words if there is more then one result
             if annotation_aya and len(res) > 1:
                 annotation_aya = False
-    
-            # if True:
+
             ## strip vocalization when vocalized = true
             V = _KEEP_VOCALIZATION if vocalized else _STRIP_VOCALIZATION
             strip_vocalization = _STRIP_VOCALIZATION
+            # Pre-check highlight once — avoids re-evaluating `highlight != "none"` on every H/TH call.
+            _do_highlight = highlight != "none"
             # highligh function that consider None value and non-definition
-            H = lambda X: self.QSE.highlight(X, terms, highlight) if highlight != "none" and X else X if X else "-----"
-            # translation highlight function: applies QTranslationHighlight with non-Arabic query terms
-            TH = lambda X: QTranslationHighlight(X, _trans_terms, type=highlight) if highlight != "none" and X and _trans_terms else X if X else "-----"
+            if _do_highlight:
+                H = lambda X: self.QSE.highlight(X, terms, highlight) if X else "-----"
+                # translation highlight function: applies QTranslationHighlight with non-Arabic query terms
+                TH = lambda X: QTranslationHighlight(X, _trans_terms, type=highlight) if X and _trans_terms else (X if X else "-----")
+            else:
+                H = lambda X: X if X else "-----"
+                TH = lambda X: X if X else "-----"
             # Numbers are 0 if not defined
             N = lambda X: X if X else 0
             # parse keywords lists , used for Sura names
             keywords = lambda phrase: _KEYWORD_SPLIT_RE.findall(phrase)
+            # Pre-check script once — avoids re-evaluating `script == "standard"` per aya in the result loop.
+            _use_standard_script = script == "standard"
             ##########################################
             extend_runtime = res.runtime
-            # Pre-compute result docnums for counting matches within the result set
-            _result_docnums = set(hit.docnum for hit in res)
-            _index_reader = searcher.reader()
-    
-            def _count_term_in_results(field, term_text):
-                """Count occurrences of a term within the search result documents."""
-                count = 0
-                try:
-                    m = _index_reader.postings(field, term_text)
-                    while m.is_active():
-                        if m.id() in _result_docnums:
-                            count += m.value_as("frequency")
-                        m.next()
-                except Exception:
-                    pass
-                return count
-    
-            def _count_ayas_in_results(field, term_text):
-                """Count unique ayas (documents) containing a term within the search result documents."""
-                count = 0
-                try:
-                    m = _index_reader.postings(field, term_text)
-                    while m.is_active():
-                        if m.id() in _result_docnums:
-                            count += 1
-                        m.next()
-                except Exception:
-                    pass
-                return count
-    
+
             # Words & Annotations
             words_output = {"individual": {}}
             if word_info:
+                # _result_docnums and _index_reader are only needed here; building them
+                # unconditionally would iterate ALL results and hold a reader reference
+                # on every request even when word_info is False (the default).
+                _result_docnums = set(hit.docnum for hit in res)
+                _index_reader = searcher.reader()
+
+                def _count_term_in_results(field, term_text):
+                    """Count occurrences of a term within the search result documents."""
+                    count = 0
+                    try:
+                        m = _index_reader.postings(field, term_text)
+                        while m.is_active():
+                            if m.id() in _result_docnums:
+                                count += m.value_as("frequency")
+                            m.next()
+                    except Exception:
+                        pass
+                    return count
+
+                def _count_ayas_in_results(field, term_text):
+                    """Count unique ayas (documents) containing a term within the search result documents."""
+                    count = 0
+                    try:
+                        m = _index_reader.postings(field, term_text)
+                        while m.is_active():
+                            if m.id() in _result_docnums:
+                                count += 1
+                            m.next()
+                    except Exception:
+                        pass
+                    return count
+
+
                 matches = 0
                 matches_in_results = 0
                 docs = 0
@@ -1094,44 +1100,59 @@ class Raw:
                     if _wi_searcher is not None:
                         _wi_searcher.close()
             output["words"] = words_output
-            # Build adjacent-aya query for prev/next aya text.
+            # Build adjacent-aya lookup for prev/next aya text.
             _want_translation = bool(translation or lang)
             if prev_aya or next_aya:
-                _adja_parts = ["( 0"]
-                for r in reslist:
-                    if prev_aya:
-                        _adja_parts.append(" OR gid:%s " % str(r["gid"] - 1))
-                    if next_aya:
-                        _adja_parts.append(" OR gid:%s " % str(r["gid"] + 1))
-                # Restrict to parent aya documents only (gid also matches children).
-                _adja_parts.append(" ) AND kind:aya")
-                adja_query = "".join(_adja_parts)
-    
-            if prev_aya or next_aya:
-                adja_res, adja_searcher = self.QSE.find_extended(adja_query, "gid", timelimit=timelimit)
-                adja_ayas = {0:
-                                 {"aya_": "----",
-                                  "uth_": "----",
-                                  "sura": "---",
-                                  "aya_id": 0, "sura_arabic": "---"},
-                             6237: {"aya_": "----", "uth_": "----", "sura": "---", "aya_id": 9999,
-                                    "sura_arabic": "---"}}
-                try:
-                    extend_runtime += adja_res.runtime
-                    for adja in adja_res:
-                        adja_ayas[adja["gid"]] = {"aya_": adja["aya_"], "uth_": adja["uth_"], "aya_id": adja["aya_id"],
-                                                  "sura": adja["sura"], "sura_arabic": adja["sura_arabic"]}
-                finally:
-                    adja_searcher.close()
-    
+                # Default sentinel values for boundary ayas (gid 0 and 6237 don't exist in the index).
+                adja_ayas = {
+                    0:    {"aya_": "----", "uth_": "----", "sura": "---", "aya_id": 0,    "sura_arabic": "---"},
+                    6237: {"aya_": "----", "uth_": "----", "sura": "---", "aya_id": 9999, "sura_arabic": "---"},
+                }
+                if reslist:
+                    # Collect the unique adjacent gids for this result page and build
+                    # a pre-compiled query — avoids string concatenation + re-parsing
+                    # overhead of the previous find_extended("( 0 OR gid:X ... )") approach.
+                    _adja_gid_set = set()
+                    for r in reslist:
+                        if prev_aya:
+                            _adja_gid_set.add(str(r["gid"] - 1))
+                        if next_aya:
+                            _adja_gid_set.add(str(r["gid"] + 1))
+                    _adja_q = wquery.And([
+                        wquery.Or([wquery.Term("gid", g) for g in _adja_gid_set]),
+                        wquery.Term("kind", "aya"),
+                    ])
+                    adja_res, _, adja_searcher = self.QSE.search_with_query(
+                        _adja_q, limit=len(_adja_gid_set) + 1, timelimit=timelimit
+                    )
+                    try:
+                        extend_runtime += adja_res.runtime
+                        for adja in adja_res:
+                            adja_ayas[adja["gid"]] = {
+                                "aya_": adja["aya_"],
+                                "uth_": adja["uth_"],
+                                "aya_id": adja["aya_id"],
+                                "sura": adja["sura"],
+                                "sura_arabic": adja["sura_arabic"],
+                            }
+                    finally:
+                        adja_searcher.close()
+
             # translations: fetch all nested children for the result page
             trad_text = {}
             all_children = {}  # {gid: {trans_id: {text, id, lang, author}}}
-    
+
             if reslist:
-                # One query fetches ALL children for the result page.
-                child_q = _gid_base_query + " AND kind:translation"
-                child_res, child_searcher = self.QSE.find_extended(child_q, "gid", timelimit=timelimit)
+                # One pre-built query fetches ALL translation children for the result page.
+                # Using search_with_query with a pre-compiled query object avoids the
+                # string-building + re-parsing overhead of the old find_extended approach.
+                child_q = wquery.And([
+                    wquery.Or([wquery.Term("gid", str(r["gid"])) for r in reslist]),
+                    wquery.Term("kind", "translation"),
+                ])
+                child_res, _, child_searcher = self.QSE.search_with_query(
+                    child_q, limit=QURAN_TOTAL_VERSES, timelimit=timelimit
+                )
                 try:
                     extend_runtime += child_res.runtime
                     for ch in child_res:
@@ -1153,7 +1174,7 @@ class Raw:
                         }
                 finally:
                     child_searcher.close()
-    
+
                 # Build trad_text for user-selected translation/lang filter
                 if _want_translation:
                     for g, trans_map in all_children.items():
@@ -1346,6 +1367,8 @@ class Raw:
                 _sura_name = keywords(r["sura"])[0]
                 _sura_arabic_name = keywords(r["sura_arabic"])[0]
                 _sura_english_name = keywords(r["sura_english"])[0] if sura_info else None
+                # Evaluate once per aya — reused in text, prev/next fields.
+                _is_sajda = aya_sajda_info and r["sajda"] == "نعم"
                 output["ayas"][cpt] = {
 
                     "identifier": {"gid": r["gid"],
@@ -1357,9 +1380,9 @@ class Raw:
 
                     "aya": {
                         "id": r["aya_id"],
-                        "text": H(V(r["aya_"])) if script == "standard"
+                        "text": H(V(r["aya_"])) if _use_standard_script
                         else H(r["uth_"]),
-                        "text_no_highlight": r["aya"] if script == "standard"
+                        "text_no_highlight": r["aya"] if _use_standard_script
                         else r["uth_"],
                         "translation": TH(trad_text.get(r["gid"], {}).get("text")) if _want_translation else None,
                         "recitation": (
@@ -1371,7 +1394,7 @@ class Raw:
                             "id": adja_ayas[r["gid"] - 1]["aya_id"],
                             "sura": adja_ayas[r["gid"] - 1]["sura"],
                             "sura_arabic": adja_ayas[r["gid"] - 1]["sura_arabic"],
-                            "text": V(adja_ayas[r["gid"] - 1]["aya_"]) if script == "standard"
+                            "text": V(adja_ayas[r["gid"] - 1]["aya_"]) if _use_standard_script
                             else adja_ayas[r["gid"] - 1]["uth_"],
                         } if prev_aya else None
                         ,
@@ -1379,7 +1402,7 @@ class Raw:
                             "id": adja_ayas[r["gid"] + 1]["aya_id"],
                             "sura": adja_ayas[r["gid"] + 1]["sura"],
                             "sura_arabic": adja_ayas[r["gid"] + 1]["sura_arabic"],
-                            "text": V(adja_ayas[r["gid"] + 1]["aya_"]) if script == "standard"
+                            "text": V(adja_ayas[r["gid"] + 1]["aya_"]) if _use_standard_script
                             else adja_ayas[r["gid"] + 1]["uth_"],
                         } if next_aya else None
                         ,
@@ -1402,9 +1425,9 @@ class Raw:
                             "godnames": N(r["s_g"]),
                             "letters": N(r["s_l"])
                         }
-    
+
                     },
-    
+
                     "position": {} if not aya_position_info
                     else {
                         "manzil": r["manzil"],
@@ -1413,28 +1436,28 @@ class Raw:
                         "rub": int(r["rub"]) % 4,
                         "page": r["page"]
                     },
-    
+
                     "theme": {} if not aya_theme_info
                     else {
                         "chapter": r.get("chapter"),
                         "topic": r.get("topic"),
                         "subtopic": r.get("subtopic")
                     },
-    
+
                     "stat": {} if not aya_stat_info
                     else {
                         "words": N(r["a_w"]),
                         "letters": N(r["a_l"]),
                         "godnames": N(r["a_g"])
                     },
-    
+
                     "sajda": {} if not aya_sajda_info
                     else {
-                        "exist": (r["sajda"] == "نعم"),
-                        "type": r["sajda_type"] if (r["sajda"] == "نعم") else None,
-                        "id": N(r["sajda_id"]) if (r["sajda"] == "نعم") else None,
+                        "exist": _is_sajda,
+                        "type": r["sajda_type"] if _is_sajda else None,
+                        "id": N(r["sajda_id"]) if _is_sajda else None,
                     },
-    
+
                     "annotations": (
                         annot_words_map.get(r["gid"], []) if annotation_word
                         else annot_aya_words_map.get(r["gid"], []) if annotation_aya
@@ -1481,7 +1504,10 @@ class Raw:
         try:
             # Extract matched terms from the translation sub-query for highlight.
             terms = [t for field, t in _child_q.all_terms() if field in self._trans_fields]
-            H = lambda X: QTranslationHighlight(X, terms, type=highlight) if highlight != "none" and X else X if X else "-----"
+            if highlight == "none":
+                H = lambda X: X if X else "-----"
+            else:
+                H = lambda X: QTranslationHighlight(X, terms, type=highlight) if X else "-----"
     
             offset = 1 if offset < 1 else offset
             range = self._defaults["minrange"] if range < self._defaults["minrange"] else range
@@ -1657,8 +1683,10 @@ class Raw:
                     terms.append(_wu)
                     _terms_set.add(_wu)
     
-            H = lambda X: self.QSE.highlight(X, terms, highlight) \
-                if highlight != "none" and X else (X if X else "-----")
+            if highlight == "none":
+                H = lambda X: X if X else "-----"
+            else:
+                H = lambda X: self.QSE.highlight(X, terms, highlight) if X else "-----"
     
             output = {
                 "runtime": round(res.runtime, 5),
