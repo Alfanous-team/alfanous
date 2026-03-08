@@ -1,15 +1,12 @@
 name: Publish to MCP Registry
 
 on:
-  workflow_run:
-    workflows:
-      - "Publish to PyPI"
-    types:
-      - completed
+  push:
+    tags:
+      - 'v*'
 
 jobs:
   publish:
-    if: ${{ github.event.workflow_run.conclusion == 'success' && !contains(toLower(github.event.workflow_run.head_branch), 'rc') }}
     runs-on: ubuntu-latest
     permissions:
       id-token: write  # Required for OIDC authentication
@@ -18,11 +15,6 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-        with:
-          ref: ${{ github.event.workflow_run.head_sha }}
-
-      - name: Wait for PyPI to index the new package
-        run: sleep 60
 
       - name: Install mcp-publisher
         run: |
@@ -30,7 +22,7 @@ jobs:
 
       - name: Set version in server.json
         run: |
-          VERSION="${{ github.event.workflow_run.head_branch }}"
+          VERSION="${{ github.ref_name }}"
           VERSION="${VERSION#v}"
           jq --arg v "$VERSION" '.version = $v | .packages[0].version = $v' server.json > server.tmp && mv server.tmp server.json
 
