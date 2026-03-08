@@ -30,6 +30,9 @@ class BasicSearchEngine:
             self._searcher = qsearcher(self._docindex, self._parser)
             #
             self._reader = qreader(self._docindex)
+            # Share the IndexReader already held by the searcher's cached
+            # Whoosh Searcher so the engine keeps only one IndexReader open.
+            self._reader.attach_to_searcher(self._searcher)
             #
             self._highlight = qhighlight
             self.OK = True

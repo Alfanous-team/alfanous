@@ -19,40 +19,105 @@ class QReader:
     """ reader of the index """
 
     def __init__(self, docindex):
-        self.reader = docindex.get_index().reader()
+        self._docindex = docindex
+        self._own_reader = None  # Opened lazily only when no searcher is attached
+        self._qsearcher = None
         self.schema = docindex.get_schema()
 
+    def _ensure_own_reader(self):
+        """Open and return our own IndexReader, creating it on first call."""
+        if self._own_reader is None:
+            self._own_reader = self._docindex.get_index().reader()
+        return self._own_reader
+
+    @property
+    def reader(self):
+        """Return the active Whoosh IndexReader.
+
+        When :meth:`attach_to_searcher` has been called the reader is
+        borrowed from the shared :class:`QSearcher`'s cached Whoosh
+        Searcher so both components use a single underlying IndexReader.
+        Otherwise an independently-opened reader is returned (opened lazily
+        on first access).
+        """
+        if self._qsearcher is not None:
+            return self._qsearcher.get_reader()
+        return self._ensure_own_reader()
+
+    def attach_to_searcher(self, qsearcher):
+        """Share the IndexReader already open inside *qsearcher*'s cached searcher.
+
+        After this call the QReader no longer maintains its own IndexReader;
+        instead it borrows the one held by the QSearcher's cached Whoosh
+        Searcher via the :attr:`reader` property.  This reduces the number of
+        open IndexReaders per :class:`~alfanous.engines.BasicSearchEngine`
+        from two to one.  When the QSearcher refreshes its searcher (because
+        the index has changed), the QReader automatically picks up the new
+        reader on the next attribute access.
+
+        Because the reader is now lazily opened in standalone mode, calling
+        this method before any :attr:`reader` access means *no* own reader is
+        ever opened, making the attach completely free.
+
+        :param qsearcher: The :class:`QSearcher` instance whose shared reader
+            to borrow.
+        """
+        self._qsearcher = qsearcher
+        if self._own_reader is not None:
+            try:
+                self._own_reader.close()
+            except Exception:
+                pass
+            self._own_reader = None
+
     def close(self):
-        """Close the underlying index reader and release any held resources."""
-        if self.reader is not None:
-            self.reader.close()
-            self.reader = None
+        """Close the owned IndexReader and release any held resources.
+
+        When attached to a :class:`QSearcher` via :meth:`attach_to_searcher`
+        the reader is owned by the searcher and is *not* closed here.
+        """
+        if self._qsearcher is not None:
+            return
+        if self._own_reader is not None:
+            try:
+                self._own_reader.close()
+            except Exception:
+                pass
+            self._own_reader = None
 
     def __del__(self):
-        """Ensure the reader is closed when the object is garbage collected."""
+        """Ensure any owned reader is closed when the object is garbage collected."""
         try:
             self.close()
         except Exception:
             pass
 
+    def __enter__(self):
+        return self
+
+    def __exit__(self, *args):
+        self.close()
+
     def list_values(self, fieldname):
+        reader = self.reader
         try:
             return list(filter(lambda x: not isinstance(x, int) or x >= 0,
-                               (_decode_if_bytes(v) for v in self.reader.field_terms(fieldname))))
+                               (_decode_if_bytes(v) for v in reader.field_terms(fieldname))))
         except KeyError:
             return []
 
     def list_stored_values(self, fieldname):
         """ List unique stored (non-tokenized) values for a field, preserving full phrases. """
+        reader = self.reader
         values = set()
         try:
             # Optimised path: use kind="aya" posting list to visit only parent
             # aya documents.  Thematic fields (chapter, topic, subtopic) only
             # appear on aya docs (~6 236 entries), so iterating all ~300 k docs
             # via iter_docs() would waste ~50× more work.
-            postings = self.reader.postings("kind", "aya")
+            postings = reader.postings("kind", "aya")
             while postings.is_active():
-                stored = self.reader.stored_fields(postings.id())
+                stored = reader.stored_fields(postings.id())
                 value = stored.get(fieldname)
                 if value is not None and value != "":
                     values.add(value)
@@ -65,7 +130,7 @@ class QReader:
                 "falling back to full iter_docs() scan",
                 fieldname,
             )
-            for _, stored_fields in self.reader.iter_docs():
+            for _, stored_fields in reader.iter_docs():
                 value = stored_fields.get(fieldname)
                 if value is not None and value != "":
                     values.add(value)
@@ -76,13 +141,15 @@ class QReader:
          - document frequency
          - matches frequency
          """
+        reader = self.reader
         for term in terms:
             lst = list(term)
-            lst.extend([self.reader.frequency(*term), self.reader.doc_frequency(*term)])
+            lst.extend([reader.frequency(*term), reader.doc_frequency(*term)])
             yield tuple(lst)
 
     def autocomplete(self, word):
-        return [x.decode('utf-8') for x in self.reader.expand_prefix('aya_ac', word)]
+        reader = self.reader
+        return [x.decode('utf-8') for x in reader.expand_prefix('aya_ac', word)]
 
 
 class _SearcherProxy:
@@ -145,6 +212,15 @@ class QSearcher:
                 except Exception:
                     pass
         return self._shared_searcher
+
+    def get_reader(self):
+        """Return the Whoosh IndexReader from the cached shared searcher.
+
+        This is the public accessor used by :class:`QReader` when sharing
+        the underlying IndexReader instead of maintaining its own.  The
+        reader is valid as long as the shared searcher is open.
+        """
+        return self._get_shared_searcher().reader()
 
     def close(self):
         """Close the cached shared searcher and release all held resources."""
