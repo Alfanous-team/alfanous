@@ -45,10 +45,30 @@ class QReader:
     def list_stored_values(self, fieldname):
         """ List unique stored (non-tokenized) values for a field, preserving full phrases. """
         values = set()
-        for _, stored_fields in self.reader.iter_docs():
-            value = stored_fields.get(fieldname)
-            if value is not None and value != "":
-                values.add(value)
+        try:
+            # Optimised path: use kind="aya" posting list to visit only parent
+            # aya documents.  Thematic fields (chapter, topic, subtopic) only
+            # appear on aya docs (~6 236 entries), so iterating all ~300 k docs
+            # via iter_docs() would waste ~50× more work.
+            postings = self.reader.postings("kind", "aya")
+            while postings.is_active():
+                stored = self.reader.stored_fields(postings.id())
+                value = stored.get(fieldname)
+                if value is not None and value != "":
+                    values.add(value)
+                postings.next()
+        except (KeyError, TypeError, AttributeError):
+            # Fallback for indexes built without a "kind" field or with an
+            # incompatible reader implementation.
+            logger.debug(
+                "list_stored_values(%r): 'kind' field unavailable, "
+                "falling back to full iter_docs() scan",
+                fieldname,
+            )
+            for _, stored_fields in self.reader.iter_docs():
+                value = stored_fields.get(fieldname)
+                if value is not None and value != "":
+                    values.add(value)
         return sorted(filter(lambda x: type(x) is not int or x >= 0, values))
 
     def term_stats(self, terms):

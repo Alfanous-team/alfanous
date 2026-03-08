@@ -22,6 +22,22 @@ _ARABIZI_IGNORE_CHARS = "'_\"%*?#~[]{}:>+-|"
 
 FALSE_PATTERN = '^false|no|off|0$'
 
+# Compiled once at import time — used in every _search_aya / _search_translation
+# call to split comma-separated Sura name strings.
+_KEYWORD_SPLIT_RE = re.compile("[^,،]+")
+
+# Pre-instantiated Arabic text normalisation filters.  Only two configurations
+# are ever used inside _search_aya:
+#   _STRIP_VOCALIZATION  — always strips diacritics (tashkil=True)
+#   _KEEP_VOCALIZATION   — identity function when vocalized=True (all flags False)
+# Creating these once at module load avoids two object allocations per request.
+_STRIP_VOCALIZATION = QArabicSymbolsFilter(
+    shaping=False, tashkil=True, spellerrors=False, hamza=False
+).normalize_all
+_KEEP_VOCALIZATION = QArabicSymbolsFilter(
+    shaping=False, tashkil=False, spellerrors=False, hamza=False
+).normalize_all
+
 
 def _build_filter_query(filter_dict):
     """Convert a filter dict to a list of Whoosh Term/Or query objects.
@@ -798,8 +814,8 @@ class Raw:
             interval_end = offset + range - 1
             end = interval_end if interval_end < len(res) else len(res)
             start = offset if offset <= len(res) else -1
-            reslist = [] if end == 0 or start == -1 else list(res)[start - 1:end]
-            # todo pagination should be done inside search operation for better performence
+            reslist = [] if end == 0 or start == -1 else res[start - 1:end]
+            # todo pagination should be done inside search operation for better performance
             # closing the searcher
             # Pre-built gid query for the current result page, used for translation and
             # fixed-translation lookups without re-iterating reslist multiple times.
@@ -813,18 +829,8 @@ class Raw:
     
             # if True:
             ## strip vocalization when vocalized = true
-            V = QArabicSymbolsFilter(
-                shaping=False,
-                tashkil=not vocalized,
-                spellerrors=False,
-                hamza=False
-            ).normalize_all
-            strip_vocalization = QArabicSymbolsFilter(
-                shaping=False,
-                tashkil=True,
-                spellerrors=False,
-                hamza=False
-            ).normalize_all
+            V = _KEEP_VOCALIZATION if vocalized else _STRIP_VOCALIZATION
+            strip_vocalization = _STRIP_VOCALIZATION
             # highligh function that consider None value and non-definition
             H = lambda X: self.QSE.highlight(X, terms, highlight) if highlight != "none" and X else X if X else "-----"
             # translation highlight function: applies QTranslationHighlight with non-Arabic query terms
@@ -832,8 +838,7 @@ class Raw:
             # Numbers are 0 if not defined
             N = lambda X: X if X else 0
             # parse keywords lists , used for Sura names
-            kword = re.compile("[^,،]+")
-            keywords = lambda phrase: kword.findall(phrase)
+            keywords = lambda phrase: _KEYWORD_SPLIT_RE.findall(phrase)
             ##########################################
             extend_runtime = res.runtime
             # Pre-compute result docnums for counting matches within the result set
@@ -1383,12 +1388,11 @@ class Raw:
             interval_end = offset + range - 1
             end = interval_end if interval_end < len(res) else len(res)
             start = offset if offset <= len(res) else -1
-            reslist = [] if end == 0 or start == -1 else list(res)[start - 1:end]
+            reslist = [] if end == 0 or start == -1 else res[start - 1:end]
     
             # Fetch parent aya docs for the current result page using NestedParent.
             # NestedParent(_child_q) returns the parent aya of every matching translation child.
-            _kword = re.compile("[^,،]+")
-            _keywords = lambda phrase: _kword.findall(phrase)
+            _keywords = lambda phrase: _KEYWORD_SPLIT_RE.findall(phrase)
             parent_data = {}
             if reslist:
                 _all_parents_q = wq.Term("kind", "aya")
@@ -1556,7 +1560,7 @@ class Raw:
             interval_end = offset + range_ - 1
             end = min(interval_end, len(res))
             start = offset if offset <= len(res) else -1
-            reslist = [] if end == 0 or start == -1 else list(res)[start - 1:end]
+            reslist = [] if end == 0 or start == -1 else res[start - 1:end]
     
             # When a result was matched by word_standard, add its Uthmanic 'word'
             # value to the keywords list so that the Uthmanic form of the word can

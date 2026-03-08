@@ -313,12 +313,16 @@ def _load_corpus_words_xml(corpus_path):
         logging.warning("Failed to load corpus words from %s: %s", corpus_path, exc)
     return result
 
-
 import re as _re
 import zipfile as _zipfile
+from collections import defaultdict
 
 # Pre-compiled pattern used by every translation zip reader.
 _PROPS_RE = _re.compile(r"[^=\r\n#]+")
+
+# Cache of per-delimiter line-splitting patterns so each unique delimiter
+# is compiled at most once across all translation zips.
+_DELIMITER_PATTERNS: "dict[str, _re.Pattern[str]]" = {}
 
 
 def _iter_translation_zips(store_path):
@@ -357,7 +361,10 @@ def _iter_translation_zips(store_path):
                 # ── verse lines ─────────────────────────────────────────
                 with zf.open(props["file"]) as tf:
                     content = tf.read().decode("utf-8", errors="replace")
-                linerx = _re.compile("[^" + props["lineDelimiter"] + "]+")
+                delim = props["lineDelimiter"]
+                if delim not in _DELIMITER_PATTERNS:
+                    _DELIMITER_PATTERNS[delim] = _re.compile("[^" + delim + "]+")
+                linerx = _DELIMITER_PATTERNS[delim]
                 lines = linerx.findall(content)
                 if len(lines) != QURAN_TOTAL_VERSES:
                     logging.warning(
@@ -486,7 +493,6 @@ class Transformer:
             # Build a mapping from source field name → list of search field names.
             # A single source field (e.g. "standard") may feed multiple index fields
             # with different analyzers (e.g. aya, aya_ac, aya_fuzzy).
-            from collections import defaultdict
             fields_mapping: dict = defaultdict(list)
             for f in self.get_fields(tablename):
                 fields_mapping[f["name"]].append(f["search_name"])
