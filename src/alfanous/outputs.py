@@ -41,6 +41,19 @@ _KEEP_VOCALIZATION = QArabicSymbolsFilter(
     shaping=False, tashkil=False, spellerrors=False, hamza=False
 ).normalize_all
 
+# All word-child index fields targetable by _search_words.
+# Defined at module level so the list is not rebuilt on every request.
+_WORD_ALL_INDEXED_FIELDS = [
+    "word", "normalized",
+    "pos", "type",
+    "root", "arabicroot",
+    "lemma", "arabiclemma",
+    "gender", "number", "person",
+    "form", "voice", "state",
+    "derivation", "aspect",
+    "mood", "case",
+]
+
 
 def _build_filter_query(filter_dict):
     """Convert a filter dict to a list of Whoosh Term/Or query objects.
@@ -295,6 +308,44 @@ class Raw:
             "lemmas": self._lemmas,
             "ai_query_translation_rules": self._ai_query_translation_rules
         }
+
+        # ---------------------------------------------------------------------------
+        # Pre-build parsers that are invariant for the lifetime of this Raw instance.
+        # Both depend only on self.QSE._schema which is fixed after index open.
+        # Caching them avoids one MultifieldParser construction per request.
+        # ---------------------------------------------------------------------------
+        if self.QSE.OK:
+            from whoosh.qparser import MultifieldParser as _MFP, OrGroup as _OrGroup
+            _schema = self.QSE._schema
+            _schema_fields = set(_schema.names())
+
+            # Translation search parser (used in _search_aya non-Arabic path and
+            # _search_translation).
+            _avail_trans = [f for f in _TEXT_LANG_FIELDS if f in _schema_fields]
+            self._trans_parser = _MFP(_avail_trans, _schema, group=_OrGroup) if _avail_trans else None
+            # Frozenset of the same fields — used for fast membership tests
+            # when extracting matched terms for highlighting.
+            self._trans_fields = frozenset(_avail_trans)
+
+            # Word search parser (used in _search_words).
+            _all_word_f = [f for f in _WORD_ALL_INDEXED_FIELDS if f in _schema_fields]
+            _default_word_f = (
+                [f for f in ["word_standard", "word", "normalized"] if f in _schema_fields]
+                or _all_word_f
+            )
+            # Only build the parser when there is at least one usable field.
+            # _search_words already checks for None and returns an empty response.
+            self._word_parser = (
+                _MFP(_default_word_f, schema=_schema, group=_OrGroup)
+                if _default_word_f else None
+            )
+            # Also cache the full list for schema filtering in _search_words.
+            self._all_word_fields = _all_word_f
+        else:
+            self._trans_parser = None
+            self._trans_fields = frozenset()
+            self._word_parser = None
+            self._all_word_fields = []
 
     def do(self, flags):
         return self._do(flags)
@@ -741,20 +792,16 @@ class Raw:
             # Non-Arabic query: search translations AND try arabizi conversion
             # to also search the Arabic aya fields ("the word and arabizi(word)").
             from whoosh import query as wq
-            from whoosh.qparser import MultifieldParser as _MFP, OrGroup as _OrGroup
             from alfanous.romanization import arabizi_to_arabic_list, filter_candidates_by_wordset
             from alfanous.data import quran_unvocalized_words
 
             _query_parts = []
 
             # 1. Translation search: NestedParent over child translation docs
-            _available_fields = [f for f in _TEXT_LANG_FIELDS if f in self.QSE._schema]
             _trans_terms = []
-            if _available_fields:
-                _trans_parser = _MFP(_available_fields, self.QSE._schema, group=_OrGroup)
-                _trans_q = _trans_parser.parse(query)
-                _available_fields_set = set(_available_fields)
-                _trans_terms = [t for f, t in _trans_q.all_terms() if f in _available_fields_set]
+            if self._trans_parser is not None:
+                _trans_q = self._trans_parser.parse(query)
+                _trans_terms = [t for f, t in _trans_q.all_terms() if f in self._trans_fields]
                 _query_parts.append(wq.NestedParent(wq.Term("kind", "aya"), _trans_q))
 
             # 2. Arabizi search: convert non-Arabic words to Arabic candidates
@@ -1382,11 +1429,15 @@ class Raw:
         # Search text_{lang} fields in nested child docs directly.
         from whoosh import query as wq
         from whoosh.query import NestedParent
-        from whoosh.qparser import MultifieldParser as _MFP, OrGroup as _OrGroup
-        # Only include text_{lang} fields that actually exist in the schema.
-        _available_fields = [f for f in _TEXT_LANG_FIELDS if f in self.QSE._schema]
-        _trans_parser = _MFP(_available_fields, self.QSE._schema, group=_OrGroup)
-        _child_q = wq.And([wq.Term("kind", "translation"), _trans_parser.parse(query)])
+        # Use the cached translation parser built at __init__ time.
+        _available_fields_set = set(f for f in _TEXT_LANG_FIELDS if f in self.QSE._schema)
+        if self._trans_parser is None:
+            # No translation fields in schema — return empty result.
+            return {
+                "runtime": 0, "interval": {"start": 0, "end": 0, "total": 0, "page": 1, "nb_pages": 0},
+                "translations": {},
+            }
+        _child_q = wq.And([wq.Term("kind", "translation"), self._trans_parser.parse(query)])
         res, termz, searcher = self.QSE.search_with_query(
             _child_q,
             limit=self._defaults["results_limit"]["translation"],
@@ -1395,7 +1446,7 @@ class Raw:
         )
         try:
             # Extract matched terms from the translation sub-query for highlight.
-            terms = [t for field, t in _child_q.all_terms() if field in _available_fields]
+            terms = [t for field, t in _child_q.all_terms() if field in self._trans_fields]
             H = lambda X: QTranslationHighlight(X, terms, type=highlight) if highlight != "none" and X else X if X else "-----"
     
             offset = 1 if offset < 1 else offset
@@ -1491,8 +1542,6 @@ class Raw:
         The result structure mirrors ``_search_word`` for backward
         compatibility:  ``{"words": {n: {...}}, "interval": {...}, "runtime": ...}``.
         """
-        from whoosh import qparser as _qparser
-
         flags = {**self._defaults["flags"], **flags}
         query = flags["query"]
         sortedby = flags["sortedby"]
@@ -1517,37 +1566,13 @@ class Raw:
         if not self.QSE.OK:
             return empty_response
 
-        schema = self.QSE._schema
+        # Use the cached word parser built at __init__ time (avoids rebuilding
+        # the MultifieldParser and re-filtering schema fields on every request).
+        if self._word_parser is None:
+            return empty_response
 
-        # Build a multi-field parser that searches the primary text fields by
-        # default and allows field-qualified queries against ALL indexed word
-        # fields so queries like "root:رحم" or "pos:فعل AND root:كتب" work.
-        # The MultifieldParser already supports "field:value" syntax for any
-        # field defined in the schema; the list here only governs which fields
-        # are searched when no explicit field qualifier is given.
-        _WORD_ALL_INDEXED_FIELDS = [
-            "word", "normalized",
-            "pos", "type",
-            "root", "arabicroot",
-            "lemma", "arabiclemma",
-            "gender", "number", "person",
-            "form", "voice", "state",
-            "derivation", "aspect",
-            "mood", "case",
-        ]
-        # Filter down to fields that actually exist in this index schema
-        _schema_fields = set(schema.names())
-        _all_word_fields = [f for f in _WORD_ALL_INDEXED_FIELDS if f in _schema_fields]
-        # Include word_standard so standard-form queries match via that field
-        # in addition to the Uthmanic 'word' and 'normalized' fields.
-        _default_fields = [f for f in ["word_standard", "word", "normalized"] if f in _schema_fields] or _all_word_fields or ["word"]
-        _word_parser = _qparser.MultifieldParser(
-            _default_fields,
-            schema=schema,
-            group=_qparser.OrGroup,
-        )
         try:
-            word_query = _word_parser.parse(query)
+            word_query = self._word_parser.parse(query)
         except Exception:
             return empty_response
 

@@ -136,7 +136,13 @@ ISO2UNICODE = {u"ˌ": u"\u0621",  # hamza-on-the-line
 # Available romanization systems
 ROMANIZATION_SYSTEMS_MAPPINGS = {
     "buckwalter": BUCKWALTER2UNICODE,
+}
 
+# Pre-computed reversed mappings (Unicode → romanization code) for each system.
+# Used by transliterate(..., reverse=True) to avoid rebuilding the dict per call.
+ROMANIZATION_SYSTEMS_MAPPINGS_REVERSED = {
+    mode: {v: k for k, v in mapping.items()}
+    for mode, mapping in ROMANIZATION_SYSTEMS_MAPPINGS.items()
 }
 
 # Arabizi (Arabic chat alphabet) single-character mappings.
@@ -414,15 +420,10 @@ def filter_candidates_by_wordset(candidates, wordset):
 def transliterate(mode, string, ignore=u"", reverse=False):
     """ encode & decode different  romanization systems """
 
-    MAPPING = ROMANIZATION_SYSTEMS_MAPPINGS.get(mode) or {}
-
     if reverse:
-        mapping = {}
-        for k, v in MAPPING.items():
-            # reverse the mapping buckwalter <-> unicode
-            mapping[v] = k
+        mapping = ROMANIZATION_SYSTEMS_MAPPINGS_REVERSED.get(mode) or {}
     else:
-        mapping = MAPPING
+        mapping = ROMANIZATION_SYSTEMS_MAPPINGS.get(mode) or {}
 
     result = []
     for char in string:

@@ -171,13 +171,13 @@ class BasicSearchEngine:
         """
         a simple search operation on extended document index
 
+        Uses the engine's cached shared searcher to avoid opening a new
+        Whoosh Searcher on every call.  The returned searcher proxy's
+        ``close()`` is a no-op, so callers can still call it safely without
+        destroying the underlying shared searcher.
         """
-        searcher = self._docindex.get_searcher()()
-        try:
-            results = searcher.find(defaultfield, query, limit=QURAN_TOTAL_VERSES)
-        except Exception:
-            searcher.close()
-            raise
+        searcher = self.shared_searcher()
+        results = searcher.find(defaultfield, query, limit=QURAN_TOTAL_VERSES)
         return results, searcher
 
     def list_values(self, fieldname):
