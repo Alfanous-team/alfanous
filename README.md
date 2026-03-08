@@ -110,12 +110,14 @@ Faceted search (aggregate by fields):
 * `api.correct_query(query, unit, flags)` - Get a spelling-corrected version of a query
 * `api.get_info(category)` - Get metadata information
 
-The underlying `Raw` output engine supports use as a context manager, which ensures index resources are properly released:
+The underlying `Raw` output engine is exposed as `Engine` in `alfanous.api` (and re-exported from `alfanous` directly). Use it as a context manager to ensure index resources are properly released:
 
 ```python
-from alfanous.outputs import Raw
+from alfanous.api import Engine
+# or equivalently:
+# from alfanous import Engine
 
-with Raw() as engine:
+with Engine() as engine:
     result = engine.do({"action": "search", "query": u"الله"})
 ```
 
