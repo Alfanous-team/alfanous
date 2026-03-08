@@ -361,6 +361,28 @@ class Raw:
             self._word_parser = None
             self._all_word_fields = []
 
+    def close(self):
+        """Close all held search engine resources.
+
+        Releases the underlying Whoosh index searcher and reader held by
+        the ``QSE`` engine.  After this call the ``Raw`` instance is no
+        longer usable.
+
+        :meth:`close` is idempotent: calling it multiple times is safe.
+        Typical usage with a context manager::
+
+            with Raw(QSE_index=…) as raw:
+                result = raw.do(flags)
+        """
+        if hasattr(self, 'QSE'):
+            self.QSE.close()
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        self.close()
+
     def do(self, flags):
         return self._do(flags)
 

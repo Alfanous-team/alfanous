@@ -442,5 +442,164 @@ class TestArabiziConvertSetAccumulation(unittest.TestCase):
         )
 
 
+# ---------------------------------------------------------------------------
+# BasicSearchEngine.close() / context-manager tests
+# ---------------------------------------------------------------------------
+
+class TestBasicSearchEngineClose(unittest.TestCase):
+    """BasicSearchEngine must expose close() and a context manager."""
+
+    def _make_engine(self):
+        """Return a BasicSearchEngine backed by mocks (no real index required)."""
+        from whoosh.fields import Schema, TEXT
+        from alfanous.engines import BasicSearchEngine
+        from alfanous.searching import QSearcher, QReader
+
+        schema = Schema(aya=TEXT)
+        mock_docindex = MagicMock()
+        mock_docindex.OK = True
+        mock_docindex.get_schema.return_value = schema
+        mock_index = MagicMock()
+        mock_index.searcher = MagicMock(return_value=MagicMock())
+        mock_docindex.get_index.return_value = mock_index
+
+        engine = BasicSearchEngine(
+            qdocindex=mock_docindex,
+            query_parser=MagicMock(return_value=MagicMock()),
+            main_field="aya",
+            otherfields=[],
+            qsearcher=QSearcher,
+            qreader=QReader,
+            qhighlight=MagicMock(),
+        )
+        return engine
+
+    def test_close_method_exists(self):
+        """BasicSearchEngine must have a close() method."""
+        from alfanous.engines import BasicSearchEngine
+        self.assertTrue(
+            callable(getattr(BasicSearchEngine, 'close', None)),
+            "BasicSearchEngine must have a callable close() method"
+        )
+
+    def test_close_calls_searcher_close(self):
+        """close() must delegate to the internal QSearcher.close()."""
+        engine = self._make_engine()
+        with patch.object(engine._searcher, 'close') as mock_close:
+            engine.close()
+        mock_close.assert_called_once()
+
+    def test_close_is_idempotent(self):
+        """Calling close() multiple times must not raise."""
+        engine = self._make_engine()
+        engine.close()
+        engine.close()  # must not raise
+
+    def test_context_manager_calls_close(self):
+        """Using BasicSearchEngine as a context manager must call close() on exit."""
+        engine = self._make_engine()
+        with patch.object(engine, 'close') as mock_close:
+            with engine:
+                pass
+        mock_close.assert_called_once()
+
+    def test_engine_has_enter_exit(self):
+        """BasicSearchEngine must implement __enter__ and __exit__."""
+        from alfanous.engines import BasicSearchEngine
+        self.assertTrue(hasattr(BasicSearchEngine, '__enter__'), "__enter__ missing")
+        self.assertTrue(hasattr(BasicSearchEngine, '__exit__'), "__exit__ missing")
+
+
+# ---------------------------------------------------------------------------
+# Raw.close() / context-manager tests
+# ---------------------------------------------------------------------------
+
+class TestRawClose(unittest.TestCase):
+    """Raw must expose close() and a context manager."""
+
+    def _make_raw(self):
+        """Return a Raw instance with a mocked QSE engine."""
+        from alfanous.outputs import Raw
+        raw = Raw.__new__(Raw)
+        raw.QSE = MagicMock()
+        raw.QSE.OK = False
+        return raw
+
+    def test_close_method_exists(self):
+        """Raw must have a close() method."""
+        from alfanous.outputs import Raw
+        self.assertTrue(
+            callable(getattr(Raw, 'close', None)),
+            "Raw must have a callable close() method"
+        )
+
+    def test_close_delegates_to_qse(self):
+        """Raw.close() must call self.QSE.close()."""
+        raw = self._make_raw()
+        raw.close()
+        raw.QSE.close.assert_called_once()
+
+    def test_close_is_idempotent(self):
+        """Calling Raw.close() multiple times must not raise."""
+        raw = self._make_raw()
+        raw.close()
+        raw.close()  # must not raise
+
+    def test_context_manager_calls_close(self):
+        """Using Raw as a context manager must call close() on exit."""
+        raw = self._make_raw()
+        with patch.object(raw, 'close') as mock_close:
+            with raw:
+                pass
+        mock_close.assert_called_once()
+
+    def test_raw_has_enter_exit(self):
+        """Raw must implement __enter__ and __exit__."""
+        from alfanous.outputs import Raw
+        self.assertTrue(hasattr(Raw, '__enter__'), "__enter__ missing")
+        self.assertTrue(hasattr(Raw, '__exit__'), "__exit__ missing")
+
+
+# ---------------------------------------------------------------------------
+# most_frequent_words str/bytes robustness test
+# ---------------------------------------------------------------------------
+
+class TestMostFrequentWordsDecoding(unittest.TestCase):
+    """most_frequent_words must handle both bytes and str term values."""
+
+    def test_handles_str_terms(self):
+        """most_frequent_words must not crash when Whoosh returns str terms."""
+        from alfanous.engines import BasicSearchEngine
+        engine = BasicSearchEngine.__new__(BasicSearchEngine)
+
+        mock_reader = MagicMock()
+        mock_reader.most_frequent_terms.return_value = [
+            (100.0, 'مِنْ'),
+            (50.0, 'الله'),
+        ]
+        engine._reader = MagicMock()
+        # Simulate the .reader property returning our mock reader
+        type(engine._reader).reader = PropertyMock(return_value=mock_reader)
+
+        result = engine.most_frequent_words(2, "aya_")
+        self.assertEqual(result, [(100.0, 'مِنْ'), (50.0, 'الله')])
+
+    def test_handles_bytes_terms(self):
+        """most_frequent_words must decode bytes terms with UTF-8."""
+        from alfanous.engines import BasicSearchEngine
+        engine = BasicSearchEngine.__new__(BasicSearchEngine)
+
+        mock_reader = MagicMock()
+        mock_reader.most_frequent_terms.return_value = [
+            (100.0, 'مِنْ'.encode('utf-8')),
+            (50.0, 'الله'.encode('utf-8')),
+        ]
+        engine._reader = MagicMock()
+        type(engine._reader).reader = PropertyMock(return_value=mock_reader)
+
+        result = engine.most_frequent_words(2, "aya_")
+        self.assertEqual(result, [(100.0, 'مِنْ'), (50.0, 'الله')])
+
+
 if __name__ == "__main__":
     unittest.main()

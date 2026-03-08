@@ -134,7 +134,10 @@ class BasicSearchEngine:
         @param fieldname: Field to search in
         @return: List of (frequency, word) tuples
         """
-        return list([ (x[0], x[1].decode('utf-8')) for x in self._reader.reader.most_frequent_terms(fieldname, nb)])
+        return [
+            (x[0], x[1].decode('utf-8') if isinstance(x[1], bytes) else x[1])
+            for x in self._reader.reader.most_frequent_terms(fieldname, nb)
+        ]
 
     def suggest_all(self, querystr):
         """
@@ -231,6 +234,27 @@ class BasicSearchEngine:
             return self._reader.list_stored_values(fieldname)
         else:
             return []
+
+    def close(self):
+        """Close the searcher and reader, releasing all held Whoosh index resources.
+
+        After this call the engine is no longer usable.  Any in-flight
+        :class:`~alfanous.searching._SearcherProxy` instances obtained via
+        :meth:`shared_searcher` will also stop working because they reference
+        the now-closed underlying Whoosh Searcher.
+
+        :meth:`close` is idempotent: calling it multiple times is safe.
+        """
+        if hasattr(self, '_searcher'):
+            self._searcher.close()
+        if hasattr(self, '_reader'):
+            self._reader.close()
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        self.close()
 
     def __call__(self):
         """
