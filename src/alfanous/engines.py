@@ -149,13 +149,6 @@ class BasicSearchEngine:
         else:
             return []
 
-    def list_terms(self, fieldname=None):
-        """ List all indexed terms for a field (or all fields if fieldname is None). """
-        if "_reader" in self.__dict__:
-            return self._reader.list_terms(fieldname)
-        else:
-            return iter([])
-
     def __call__(self):
         """
         Check if the search engine is properly initialized.

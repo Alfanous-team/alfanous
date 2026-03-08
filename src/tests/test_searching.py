@@ -10,5 +10,5 @@ from alfanous.searching import QReader
 def test_searching():
     index = QseDocIndex( paths.QSE_INDEX )
     reader = QReader( index )
-    assert list(reader.list_terms( "sura_name" ))[:10] == []
+    assert list(reader.list_values( "sura_name" ))[:10] == []
 

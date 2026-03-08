@@ -249,7 +249,7 @@ class Raw:
         self._fields = arabic_to_english_fields
         self._fields_reverse = {v: k for k, v in arabic_to_english_fields.items()}
         # Prefer word index for roots.
-        self._roots = sorted(filter(bool, self.QSE.list_terms("root"))) if self.QSE.OK else []
+        self._roots = sorted(filter(bool, self.QSE.list_values("root"))) if self.QSE.OK else []
         self._errors = self.ERRORS
         self._domains = self.DOMAINS
         self._helpmessages = self.HELPMESSAGES
