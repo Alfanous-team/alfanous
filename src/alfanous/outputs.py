@@ -248,8 +248,12 @@ class Raw:
         self._flags = self.DEFAULTS["flags"].keys()
         self._fields = arabic_to_english_fields
         self._fields_reverse = {v: k for k, v in arabic_to_english_fields.items()}
-        # Prefer word index for roots.
+        # Prefer word index for roots and lemmas.
+        # list_values() uses Whoosh's field_terms() which scans only the target
+        # field, making it ~100x faster than list_terms() which walks all_terms().
         self._roots = sorted(filter(bool, self.QSE.list_values("root"))) if self.QSE.OK else []
+        self._lemmas = sorted(filter(bool, self.QSE.list_values("lemma"))) if self.QSE.OK else []
+
         self._errors = self.ERRORS
         self._domains = self.DOMAINS
         self._helpmessages = self.HELPMESSAGES
@@ -269,6 +273,7 @@ class Raw:
             "domains": self._domains,
             "help_messages": self._helpmessages,
             "roots": self._roots,
+            "lemmas": self._lemmas,
             "ai_query_translation_rules": self._ai_query_translation_rules
         }
 
