@@ -1091,6 +1091,45 @@ def test_show_roots_returns_strings_not_bytes():
         )
 
 
+def test_show_lemmas_returns_strings_not_bytes():
+    """show/lemmas must return plain Unicode strings, not binary b'...' values."""
+    result = RAWoutput.do({"action": "show", "query": "lemmas"})
+    assert "show" in result
+    lemmas = result["show"]["lemmas"]
+    assert isinstance(lemmas, list)
+    assert len(lemmas) > 0, "Expected at least one lemma in the index"
+    for lemma in lemmas:
+        assert isinstance(lemma, str), (
+            f"Lemma value should be a str, got {type(lemma)!r}: {lemma!r}"
+        )
+
+
+def test_show_lemmas_is_fast():
+    """show/lemmas lookup must complete quickly (field-specific index scan)."""
+    import time
+    t0 = time.perf_counter()
+    result = RAWoutput.do({"action": "show", "query": "lemmas"})
+    elapsed_ms = (time.perf_counter() - t0) * 1000
+    # The lemmas list is pre-built at init time; the do() call is just a dict
+    # lookup, so it must return in well under 100 ms regardless of index size.
+    assert elapsed_ms < 100, (
+        f"show/lemmas took {elapsed_ms:.1f} ms, expected < 100 ms"
+    )
+    assert result["show"]["lemmas"]  # non-empty
+
+
+def test_show_roots_is_fast():
+    """show/roots lookup must complete quickly (field-specific index scan)."""
+    import time
+    t0 = time.perf_counter()
+    result = RAWoutput.do({"action": "show", "query": "roots"})
+    elapsed_ms = (time.perf_counter() - t0) * 1000
+    assert elapsed_ms < 100, (
+        f"show/roots took {elapsed_ms:.1f} ms, expected < 100 ms"
+    )
+    assert result["show"]["roots"]  # non-empty
+
+
 def test_domains_view_has_correct_values():
     """DOMAINS['view'] must list all expected view modes as separate entries."""
     expected = {"minimal", "normal", "full", "statistic", "linguistic", "recitation", "custom"}
