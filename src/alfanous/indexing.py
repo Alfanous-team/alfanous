@@ -42,7 +42,20 @@ class BasicDocIndex:
         return self._ix.schema
 
     def get_reader(self):
-        """ return reader """
+        """Open and return a new Whoosh IndexReader for this index.
+
+        .. warning::
+            Each call opens a **new** IndexReader.  The caller is responsible
+            for closing the returned reader (e.g. via a ``try/finally`` or
+            ``with`` block) to release the underlying file-descriptor and
+            memory-map resources.  Failing to close the reader is a resource
+            leak.
+
+            In the normal hot path, prefer using the shared reader managed by
+            :class:`~alfanous.searching.QSearcher` (via
+            :class:`~alfanous.searching.QReader`) instead of calling this
+            method directly.
+        """
         return self._ix.reader()
 
     def get_searcher(self):

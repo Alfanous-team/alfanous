@@ -1,11 +1,17 @@
+import logging
+
 from whoosh import qparser
 from whoosh.qparser import QueryParser
+from whoosh.collectors import TimeLimitCollector
+from whoosh.searching import TimeLimit
 
-from alfanous.searching import QSearcher, QReader
+from alfanous.searching import QSearcher, QReader, _SearcherProxy
 from alfanous.indexing import QseDocIndex, BasicDocIndex
 from alfanous.results_processing import Qhighlight, QTranslationHighlight
 from alfanous.query_processing import QuranicParser, StandardParser
 from alfanous.constants import QURAN_TOTAL_VERSES
+
+logger = logging.getLogger(__name__)
 
 class BasicSearchEngine:
     def __init__(self, qdocindex, query_parser, main_field, otherfields, qsearcher, qreader, qhighlight, default_filter=None):
@@ -30,8 +36,15 @@ class BasicSearchEngine:
             self._searcher = qsearcher(self._docindex, self._parser)
             #
             self._reader = qreader(self._docindex)
+            # Share the IndexReader already held by the searcher's cached
+            # Whoosh Searcher so the engine keeps only one IndexReader open.
+            self._reader.attach_to_searcher(self._searcher)
             #
             self._highlight = qhighlight
+            # Per-field QueryParser cache used by find_extended.  Parsers are
+            # stateless once created (they depend only on the field name and the
+            # fixed index schema), so caching them avoids repeated allocations.
+            self._find_parsers = {}
             self.OK = True
 
     # end  __init__
@@ -66,39 +79,37 @@ class BasicSearchEngine:
         results, terms, searcher = self._searcher.search(querystr, limit=limit, sortedby=sortedby, reverse=reverse, facets=facets, filter_dict=merged, fuzzy=fuzzy, fuzzy_maxdist=fuzzy_maxdist, timelimit=timelimit)
         return results, list(self._reader.term_stats(terms)), searcher
 
-    def search_with_query(self, q_obj, limit=QURAN_TOTAL_VERSES, sortedby="score", timelimit=5.0):
+    def search_with_query(self, q_obj, limit=QURAN_TOTAL_VERSES, sortedby="score", reverse=False, timelimit=5.0):
         """Run a pre-built Whoosh query object (e.g. NestedParent/NestedChildren).
 
         Useful when the query cannot be expressed as a plain string, for example
         cross-field nested document queries.  Returns the same
         ``(results, term_stats, searcher)`` tuple as :meth:`search_all`.
         """
-        results, terms, searcher = self._searcher.search_obj(q_obj, limit=limit, sortedby=sortedby, timelimit=timelimit)
+        results, terms, searcher = self._searcher.search_obj(q_obj, limit=limit, sortedby=sortedby, reverse=reverse, timelimit=timelimit)
         return results, [], searcher
 
     def shared_searcher(self):
-        """Open a new Whoosh searcher for shared use across multiple queries.
+        """Return the engine's cached Whoosh Searcher wrapped in a non-closing proxy.
 
-        Unlike :meth:`search_with_query`, this does **not** close the searcher
-        automatically.  The caller must close it — preferably in a
-        ``try/finally`` block — after all queries against it are complete.
-        Using a single shared searcher eliminates the per-query overhead of
-        opening and closing index segments.
+        All attribute access on the returned object is delegated to the shared
+        Whoosh Searcher managed by the internal :class:`~alfanous.searching.QSearcher`;
+        ``close()`` and ``__exit__()`` are no-ops so the underlying shared
+        searcher is not destroyed when the caller is done.
 
         Typical usage::
 
             searcher = engine.shared_searcher()
-            try:
-                for item in items:
-                    results = engine.search_with_shared_searcher(searcher, query)
-                    ...
-            finally:
-                searcher.close()
+            for item in items:
+                results = engine.search_with_shared_searcher(searcher, query)
+                ...
+            # searcher.close() is safe but has no effect
 
-        :returns: An open Whoosh ``Searcher`` object.
+        :returns: A :class:`~alfanous.searching._SearcherProxy` wrapping the
+            engine's single cached Whoosh Searcher.
         """
-        from alfanous.results_processing import QScore
-        return self._searcher._searcher(weighting=QScore())
+        from alfanous.searching import _SearcherProxy
+        return _SearcherProxy(self._searcher._get_shared_searcher())
 
     def search_with_shared_searcher(self, whoosh_searcher, q_obj, limit=QURAN_TOTAL_VERSES):
         """Run a pre-built query against a pre-opened shared Whoosh searcher.
@@ -166,18 +177,46 @@ class BasicSearchEngine:
         """
         return self._highlight(text, terms, highlight_type, strip_vocalization)
 
-    def find_extended(self, query, defaultfield):
-        """
-        a simple search operation on extended document index
+    def find_extended(self, query, defaultfield, timelimit=5.0):
+        """Search the index using a query string and return ``(results, searcher)``.
 
+        ``searcher.close()`` on the returned proxy is a no-op; callers may call
+        it safely without destroying the underlying shared searcher.
+
+        :param query: Whoosh query string (parsed with *defaultfield* as the
+            default field).
+        :param defaultfield: Default field name used by the internal QueryParser.
+        :param timelimit: Maximum seconds to spend on the query (default 5.0).
+            Pass ``None`` to disable.  When the limit is exceeded, a WARNING is
+            logged and partial results are returned rather than raising an
+            exception.
         """
-        searcher = self._docindex.get_searcher()()
-        try:
-            results = searcher.find(defaultfield, query, limit=QURAN_TOTAL_VERSES)
-        except Exception:
-            searcher.close()
-            raise
-        return results, searcher
+        # Get the underlying shared Whoosh Searcher directly so we can pass it
+        # to search_with_collector — the _SearcherProxy wrapper does not expose
+        # that method.
+        whoosh_searcher = self._searcher._get_shared_searcher()
+
+        # Lazily cache one QueryParser per defaultfield so we do not allocate
+        # a new parser object on every call.
+        if defaultfield not in self._find_parsers:
+            self._find_parsers[defaultfield] = QueryParser(defaultfield, schema=self._schema)
+        q = self._find_parsers[defaultfield].parse(query)
+
+        if timelimit is not None:
+            c = whoosh_searcher.collector(limit=QURAN_TOTAL_VERSES)
+            tlc = TimeLimitCollector(c, timelimit=timelimit, use_alarm=False)
+            try:
+                whoosh_searcher.search_with_collector(q, tlc)
+            except TimeLimit:
+                logger.warning(
+                    "find_extended timelimit of %s seconds reached; returning partial results",
+                    timelimit,
+                )
+            results = tlc.results()
+        else:
+            results = whoosh_searcher.search(q, limit=QURAN_TOTAL_VERSES)
+
+        return results, _SearcherProxy(whoosh_searcher)
 
     def list_values(self, fieldname):
         """ list all stored values of a field  """

@@ -6,6 +6,7 @@ with Arabic-specific features like synonyms, derivations, spell errors,
 tashkil (diacritics), and more.
 """
 
+import logging
 import re
 from functools import lru_cache
 
@@ -14,6 +15,8 @@ from whoosh.query import MultiTerm, Or, Term, Wildcard
 
 from alfanous.data import syndict, antdict
 from alfanous.text_processing import QArabicSymbolsFilter
+
+logger = logging.getLogger(__name__)
 
 # Regex for stripping Uthmanic annotation marks (U+06D6–U+06ED) from derivation
 # result words.  These marks are Quran-specific symbols (small high letters,
@@ -29,9 +32,42 @@ _ASF_TASHKIL = QArabicSymbolsFilter(
 _ASF_NORMALIZE = QArabicSymbolsFilter(
     shaping=True, tashkil=True, spellerrors=False, hamza=False
 )
+# Pre-instantiated filter used by SpellErrorsQuery — avoids allocating a new
+# QArabicSymbolsFilter on every SpellErrorsQuery instantiation.
+_ASF_SPELL_ERRORS = QArabicSymbolsFilter(
+    shaping=True, tashkil=False, spellerrors=True, hamza=True
+)
+
+# Tuple of word-child fields searched in the two-pass derivation scan.
+# Defined here so it is not rebuilt on every call to
+# _collect_derivations_two_pass().
+_DERIVATION_SEARCH_FIELDS = ('word', 'normalized', 'lemma', 'root', 'word_standard')
+
+# Lazily-cached Arabic Snowball stemmer for DerivationQuery.  Populated on
+# first use so that a missing pystemmer package does not cause an import error.
+_arabic_stemmer = None
 
 
-@lru_cache(maxsize=1024)
+def _get_arabic_stemmer():
+    """Return a cached Arabic Snowball Stemmer, or None if pystemmer is absent.
+
+    Failure to import or initialise pystemmer is expected and handled
+    gracefully: the stemmer is optional; when absent, derivation queries fall
+    back to the un-stemmed normalised form.  The False sentinel ensures the
+    import is attempted only once per process.
+    """
+    global _arabic_stemmer
+    if _arabic_stemmer is None:
+        try:
+            import Stemmer as _Stemmer
+            _arabic_stemmer = _Stemmer.Stemmer('arabic')
+        except Exception as exc:  # ImportError or any initialisation error
+            logger.debug("pystemmer Arabic stemmer unavailable: %s", exc)
+            _arabic_stemmer = False  # sentinel: attempted but unavailable
+    return _arabic_stemmer if _arabic_stemmer is not False else None
+
+
+@lru_cache(maxsize=256)
 def _query_word_index_cached(filter_key, field, limit):
     """Cached implementation of word-index lookup.
 
@@ -106,8 +142,6 @@ def _collect_derivations_two_pass(candidates, index_key):
     :returns: List of unique word forms that are derivations of *candidates*.
     :raises Exception: If the index is unavailable or the reader raises.
     """
-    _SEARCH_FIELDS = ('word', 'normalized', 'lemma', 'root', 'word_standard')
-
     from alfanous.data import QSE as _QSE
     engine = _QSE()
     if not engine.OK:
@@ -119,7 +153,7 @@ def _collect_derivations_two_pass(candidates, index_key):
     for _, stored in reader.iter_docs():
         if stored.get("kind") != "word":
             continue
-        for sf in _SEARCH_FIELDS:
+        for sf in _DERIVATION_SEARCH_FIELDS:
             if stored.get(sf) in candidates:
                 kv = stored.get(index_key)
                 if kv:
@@ -217,7 +251,9 @@ class SynonymsQuery(QMultiTerm):
     @staticmethod
     def _get_synonyms(word):
         """Get synonyms for a word"""
-        return list(syndict.get(word, [word]))[:SynonymsQuery.MAX_WORDS]
+        # syndict values are already lists; slicing creates the required new
+        # list without the extra copy that list(...) would introduce.
+        return syndict.get(word, [word])[:SynonymsQuery.MAX_WORDS]
 
 
 class AntonymsQuery(QMultiTerm):
@@ -236,7 +272,9 @@ class AntonymsQuery(QMultiTerm):
     @staticmethod
     def _get_antonyms(word):
         """Get antonyms for a word"""
-        return list(antdict.get(word, [word]))[:AntonymsQuery.MAX_WORDS]
+        # antdict values are already lists; slicing creates the required new
+        # list without the extra copy that list(...) would introduce.
+        return antdict.get(word, [word])[:AntonymsQuery.MAX_WORDS]
 
 
 class DerivationQuery(QMultiTerm):
@@ -269,11 +307,8 @@ class DerivationQuery(QMultiTerm):
 
         word_norm = _ASF_NORMALIZE.normalize_all(word)
 
-        try:
-            import Stemmer as _Stemmer
-            word_stem = _Stemmer.Stemmer('arabic').stemWord(word_norm)
-        except Exception:
-            word_stem = word_norm
+        stemmer = _get_arabic_stemmer()
+        word_stem = stemmer.stemWord(word_norm) if stemmer is not None else word_norm
 
         candidates = {word, word_norm, word_stem} - {''}
         index_key = 'root' if use_root_level else 'lemma'
@@ -303,12 +338,7 @@ class SpellErrorsQuery(QMultiTerm):
         self.text = text
         self.boost = boost
         self.words = [text]
-        self.ASF = QArabicSymbolsFilter(
-            shaping=True,
-            tashkil=False,
-            spellerrors=True,
-            hamza=True
-        )
+        self.ASF = _ASF_SPELL_ERRORS
         # Pre-compute once; used in every _compare() call instead of recomputing
         # it O(index_terms) times during _btexts() iteration.
         self._text_normalized = self.ASF.normalize_all(text)
@@ -351,13 +381,7 @@ class TashkilQuery(QMultiTerm):
         self.fieldname = fieldname
         self.text = text if isinstance(text, list) else [text]
         self.boost = boost
-        ASF = QArabicSymbolsFilter(
-            shaping=False,
-            tashkil=True,
-            spellerrors=False,
-            hamza=False
-        )
-        self.words = [ASF.normalize_all(word) for word in self.text]
+        self.words = [_ASF_TASHKIL.normalize_all(word) for word in self.text]
 
     def __hash__(self):
         return hash((self.__class__.__name__, self.fieldname, tuple(self.text), self.boost))

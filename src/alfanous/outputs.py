@@ -8,7 +8,7 @@ from alfanous.romanization import transliterate
 
 from whoosh import query as wquery
 from whoosh.sorting import Facets
-from alfanous.results_processing import QScore, QTranslationHighlight
+from alfanous.results_processing import QTranslationHighlight
 
 
 from alfanous.text_processing import _TRANSLATION_LANGS
@@ -21,10 +21,20 @@ _TEXT_LANG_FIELDS = [f'text_{l}' for l in _TRANSLATION_LANGS]
 _ARABIZI_IGNORE_CHARS = "'_\"%*?#~[]{}:>+-|"
 
 FALSE_PATTERN = '^false|no|off|0$'
+# Compiled once at import time — used by IS_FLAG on every request.
+_FALSE_PATTERN_RE = re.compile(FALSE_PATTERN, re.IGNORECASE)
 
 # Compiled once at import time — used in every _search_aya / _search_translation
 # call to split comma-separated Sura name strings.
 _KEYWORD_SPLIT_RE = re.compile("[^,،]+")
+
+# Pre-compiled regex for stripping non-Arabic characters from suggestion queries.
+_SUGGEST_STRIP_RE = re.compile(r'[^\u0621-\u065F\u0670-\u06FF\s]')
+
+# Pre-compiled regex for detecting whether a query contains Arabic-script
+# characters.  Used in _search_aya on every request to decide between the
+# arabizi/translation path and the direct Arabic path.
+_ARABIC_SCRIPT_RE = re.compile(r'[\u0600-\u06FF]')
 
 # Pre-instantiated Arabic text normalisation filters.  Only two configurations
 # are ever used inside _search_aya:
@@ -37,6 +47,19 @@ _STRIP_VOCALIZATION = QArabicSymbolsFilter(
 _KEEP_VOCALIZATION = QArabicSymbolsFilter(
     shaping=False, tashkil=False, spellerrors=False, hamza=False
 ).normalize_all
+
+# All word-child index fields targetable by _search_words.
+# Defined at module level so the list is not rebuilt on every request.
+_WORD_ALL_INDEXED_FIELDS = [
+    "word", "normalized",
+    "pos", "type",
+    "root", "arabicroot",
+    "lemma", "arabiclemma",
+    "gender", "number", "person",
+    "form", "voice", "state",
+    "derivation", "aspect",
+    "mood", "case",
+]
 
 
 def _build_filter_query(filter_dict):
@@ -78,7 +101,7 @@ def IS_FLAG(flags, key):
     val = flags.get(key, default)
     if val is None or val == '':
         return default
-    if not val or re.match(FALSE_PATTERN, str(val), re.IGNORECASE):
+    if not val or _FALSE_PATTERN_RE.match(str(val)):
         return False
     return True
 
@@ -126,6 +149,7 @@ class Raw:
             "annotation_word": False,
             "annotation_aya": False,
             "sortedby": "score",
+            "reverse": False,
             "offset": 1,
             "range": 10,  # used as "perpage" in paging mode
             "page": 1,  # overridden with offset
@@ -177,6 +201,7 @@ class Raw:
         "annotation_word": [True, False],
         "annotation_aya": [True, False],
         "sortedby": ["score", "relevance", "mushaf", "tanzil", "ayalength"],
+        "reverse": [True, False],
         "offset": [],  # range(6237)
         "range": [],  # range(DEFAULTS["maxrange"]) , # used as "perpage" in paging mode
         "page": [],  # range(6237),  # overridden with offset
@@ -217,7 +242,13 @@ class Raw:
         "aya_sajda_info": "enable aya sajda information retrieving",
         "annotation_word": "enable query terms annotations retrieving",
         "annotation_aya": "enable aya words annotations retrieving",
-        "sortedby": "sorting order of results",
+        "sortedby": "sorting order of results — one of 'score', 'relevance', 'mushaf', 'tanzil', or 'ayalength'. "
+                    "'score' and 'relevance' rank by Whoosh BM25 relevance score (highest first by default). "
+                    "'mushaf' orders by the traditional Qur'an page order (sura then verse). "
+                    "'tanzil' orders by revelation chronology. "
+                    "'ayalength' orders by verse length in words.",
+        "reverse": "reverse the sort order (default False — inverts the default ordering for each sort type; "
+                    "e.g. with 'score' returns least-relevant results first, with 'mushaf' returns the last verse first)",
         "offset": "starting offset of results",
         "range": "range of results",
         "page": "page number  [override offset]",
@@ -292,6 +323,44 @@ class Raw:
             "lemmas": self._lemmas,
             "ai_query_translation_rules": self._ai_query_translation_rules
         }
+
+        # ---------------------------------------------------------------------------
+        # Pre-build parsers that are invariant for the lifetime of this Raw instance.
+        # Both depend only on self.QSE._schema which is fixed after index open.
+        # Caching them avoids one MultifieldParser construction per request.
+        # ---------------------------------------------------------------------------
+        if self.QSE.OK:
+            from whoosh.qparser import MultifieldParser as _MFP, OrGroup as _OrGroup
+            _schema = self.QSE._schema
+            _schema_fields = set(_schema.names())
+
+            # Translation search parser (used in _search_aya non-Arabic path and
+            # _search_translation).
+            _avail_trans = [f for f in _TEXT_LANG_FIELDS if f in _schema_fields]
+            self._trans_parser = _MFP(_avail_trans, _schema, group=_OrGroup) if _avail_trans else None
+            # Frozenset of the same fields — used for fast membership tests
+            # when extracting matched terms for highlighting.
+            self._trans_fields = frozenset(_avail_trans)
+
+            # Word search parser (used in _search_words).
+            _all_word_f = [f for f in _WORD_ALL_INDEXED_FIELDS if f in _schema_fields]
+            _default_word_f = (
+                [f for f in ["word_standard", "word", "normalized"] if f in _schema_fields]
+                or _all_word_f
+            )
+            # Only build the parser when there is at least one usable field.
+            # _search_words already checks for None and returns an empty response.
+            self._word_parser = (
+                _MFP(_default_word_f, schema=_schema, group=_OrGroup)
+                if _default_word_f else None
+            )
+            # Also cache the full list for schema filtering in _search_words.
+            self._all_word_fields = _all_word_f
+        else:
+            self._trans_parser = None
+            self._trans_fields = frozenset()
+            self._word_parser = None
+            self._all_word_fields = []
 
     def do(self, flags):
         return self._do(flags)
@@ -439,7 +508,7 @@ class Raw:
             else:
                 # For categorical/keyword fields, use Whoosh facets
                 # This provides better performance and uses standard Whoosh functionality
-                searcher = search_engine._docindex.get_index().searcher(weighting=QScore())
+                searcher = search_engine.shared_searcher()
                 
                 try:
                     # Create facets for the requested field
@@ -541,7 +610,7 @@ class Raw:
         # strip all non-Arabic characters (keeps Arabic letters, diacritical marks,
         # and extended Arabic characters; removes ASCII symbols, punctuation, Latin
         # words, and Arabic punctuation like ، ؛ ؟)
-        query = re.sub(r'[^\u0621-\u065F\u0670-\u06FF\s]', ' ', query)
+        query = _SUGGEST_STRIP_RE.sub(' ', query)
         query = ' '.join(w for w in query.split() if w)
 
         return self.QSE.suggest_all(query)
@@ -577,6 +646,7 @@ class Raw:
         flags = {**self._defaults["flags"], **flags}
         query = flags["query"]
         sortedby = flags["sortedby"]
+        reverse = IS_FLAG(flags, 'reverse')
         range = int(flags["perpage"]) if flags.get("perpage") \
             else flags["range"]
         ## offset = (page-1) * perpage   --  mode paging
@@ -734,24 +804,20 @@ class Raw:
         # preprocess query
         query = query.replace("\\", "")
 
-        if ":" not in query and not re.search(r'[\u0600-\u06FF]', query):
+        if ":" not in query and not _ARABIC_SCRIPT_RE.search(query):
             # Non-Arabic query: search translations AND try arabizi conversion
             # to also search the Arabic aya fields ("the word and arabizi(word)").
             from whoosh import query as wq
-            from whoosh.qparser import MultifieldParser as _MFP, OrGroup as _OrGroup
             from alfanous.romanization import arabizi_to_arabic_list, filter_candidates_by_wordset
             from alfanous.data import quran_unvocalized_words
 
             _query_parts = []
 
             # 1. Translation search: NestedParent over child translation docs
-            _available_fields = [f for f in _TEXT_LANG_FIELDS if f in self.QSE._schema]
             _trans_terms = []
-            if _available_fields:
-                _trans_parser = _MFP(_available_fields, self.QSE._schema, group=_OrGroup)
-                _trans_q = _trans_parser.parse(query)
-                _available_fields_set = set(_available_fields)
-                _trans_terms = [t for f, t in _trans_q.all_terms() if f in _available_fields_set]
+            if self._trans_parser is not None:
+                _trans_q = self._trans_parser.parse(query)
+                _trans_terms = [t for f, t in _trans_q.all_terms() if f in self._trans_fields]
                 _query_parts.append(wq.NestedParent(wq.Term("kind", "aya"), _trans_q))
 
             # 2. Arabizi search: convert non-Arabic words to Arabic candidates
@@ -788,6 +854,7 @@ class Raw:
                 _final_q,
                 limit=self._defaults["results_limit"]["aya"],
                 sortedby=sortedby,
+                reverse=reverse,
                 timelimit=timelimit,
             )
             terms, _all_ac_variations = [], []
@@ -800,7 +867,7 @@ class Raw:
                 if "kind" in self.QSE._schema
                 else query
             )
-            res, termz, searcher = self.QSE.search_all(aya_query, limit=self._defaults["results_limit"]["aya"], sortedby=sortedby, facets=facets_list, filter_dict=filter_dict, fuzzy=fuzzy, fuzzy_maxdist=fuzzy_maxdist, timelimit=timelimit)
+            res, termz, searcher = self.QSE.search_all(aya_query, limit=self._defaults["results_limit"]["aya"], sortedby=sortedby, reverse=reverse, facets=facets_list, filter_dict=filter_dict, fuzzy=fuzzy, fuzzy_maxdist=fuzzy_maxdist, timelimit=timelimit)
             terms = [term[1] for term in termz[:self._defaults["maxkeywords"]]]
             # All matched aya_ac variation terms (only populated when fuzzy=True).
             # Used in the word_info loop to derive per-word variation lists.
@@ -1025,7 +1092,7 @@ class Raw:
                 adja_query = "".join(_adja_parts)
     
             if prev_aya or next_aya:
-                adja_res, adja_searcher = self.QSE.find_extended(adja_query, "gid")
+                adja_res, adja_searcher = self.QSE.find_extended(adja_query, "gid", timelimit=timelimit)
                 adja_ayas = {0:
                                  {"aya_": "----",
                                   "uth_": "----",
@@ -1034,10 +1101,10 @@ class Raw:
                              6237: {"aya_": "----", "uth_": "----", "sura": "---", "aya_id": 9999,
                                     "sura_arabic": "---"}}
                 try:
+                    extend_runtime += adja_res.runtime
                     for adja in adja_res:
                         adja_ayas[adja["gid"]] = {"aya_": adja["aya_"], "uth_": adja["uth_"], "aya_id": adja["aya_id"],
                                                   "sura": adja["sura"], "sura_arabic": adja["sura_arabic"]}
-                        extend_runtime += adja_res.runtime
                 finally:
                     adja_searcher.close()
     
@@ -1048,7 +1115,7 @@ class Raw:
             if reslist:
                 # One query fetches ALL children for the result page.
                 child_q = _gid_base_query + " AND kind:translation"
-                child_res, child_searcher = self.QSE.find_extended(child_q, "gid")
+                child_res, child_searcher = self.QSE.find_extended(child_q, "gid", timelimit=timelimit)
                 try:
                     extend_runtime += child_res.runtime
                     for ch in child_res:
@@ -1367,6 +1434,7 @@ class Raw:
         flags = {**self._defaults["flags"], **flags}
         query = flags["query"]
         sortedby = flags["sortedby"]
+        reverse = IS_FLAG(flags, 'reverse')
         range = int(flags["perpage"]) if flags.get("perpage") \
             else flags["range"]
         offset = ((int(flags["page"]) - 1) * range) + 1 if flags.get("page") \
@@ -1379,20 +1447,25 @@ class Raw:
         # Search text_{lang} fields in nested child docs directly.
         from whoosh import query as wq
         from whoosh.query import NestedParent
-        from whoosh.qparser import MultifieldParser as _MFP, OrGroup as _OrGroup
-        # Only include text_{lang} fields that actually exist in the schema.
-        _available_fields = [f for f in _TEXT_LANG_FIELDS if f in self.QSE._schema]
-        _trans_parser = _MFP(_available_fields, self.QSE._schema, group=_OrGroup)
-        _child_q = wq.And([wq.Term("kind", "translation"), _trans_parser.parse(query)])
+        # Use the cached translation parser built at __init__ time.
+        _available_fields_set = set(f for f in _TEXT_LANG_FIELDS if f in self.QSE._schema)
+        if self._trans_parser is None:
+            # No translation fields in schema — return empty result.
+            return {
+                "runtime": 0, "interval": {"start": 0, "end": 0, "total": 0, "page": 1, "nb_pages": 0},
+                "translations": {},
+            }
+        _child_q = wq.And([wq.Term("kind", "translation"), self._trans_parser.parse(query)])
         res, termz, searcher = self.QSE.search_with_query(
             _child_q,
             limit=self._defaults["results_limit"]["translation"],
             sortedby=sortedby,
+            reverse=reverse,
             timelimit=timelimit,
         )
         try:
             # Extract matched terms from the translation sub-query for highlight.
-            terms = [t for field, t in _child_q.all_terms() if field in _available_fields]
+            terms = [t for field, t in _child_q.all_terms() if field in self._trans_fields]
             H = lambda X: QTranslationHighlight(X, terms, type=highlight) if highlight != "none" and X else X if X else "-----"
     
             offset = 1 if offset < 1 else offset
@@ -1422,7 +1495,15 @@ class Raw:
                 )
                 try:
                     for _p in _parent_res:
-                        parent_data[_p["gid"]] = _p
+                        # Extract the stored-field dict immediately so that
+                        # parent_data holds plain dicts rather than Hit objects.
+                        # Hit objects carry a back-reference to their parent
+                        # Results (hit.results), which keeps the entire _parent_res
+                        # Results object (and its Whoosh Searcher reference) alive
+                        # for the duration of this function.  Using _p.fields()
+                        # breaks that reference, allowing _parent_res to be freed
+                        # once no Hit references remain.
+                        parent_data[_p["gid"]] = _p.fields()
                 finally:
                     _parent_searcher.close()
     
@@ -1488,11 +1569,10 @@ class Raw:
         The result structure mirrors ``_search_word`` for backward
         compatibility:  ``{"words": {n: {...}}, "interval": {...}, "runtime": ...}``.
         """
-        from whoosh import qparser as _qparser
-
         flags = {**self._defaults["flags"], **flags}
         query = flags["query"]
         sortedby = flags["sortedby"]
+        reverse = IS_FLAG(flags, 'reverse')
         range_ = int(flags["perpage"]) if flags.get("perpage") \
             else flags["range"]
         offset = ((int(flags["page"]) - 1) * range_) + 1 if flags.get("page") \
@@ -1514,37 +1594,13 @@ class Raw:
         if not self.QSE.OK:
             return empty_response
 
-        schema = self.QSE._schema
+        # Use the cached word parser built at __init__ time (avoids rebuilding
+        # the MultifieldParser and re-filtering schema fields on every request).
+        if self._word_parser is None:
+            return empty_response
 
-        # Build a multi-field parser that searches the primary text fields by
-        # default and allows field-qualified queries against ALL indexed word
-        # fields so queries like "root:رحم" or "pos:فعل AND root:كتب" work.
-        # The MultifieldParser already supports "field:value" syntax for any
-        # field defined in the schema; the list here only governs which fields
-        # are searched when no explicit field qualifier is given.
-        _WORD_ALL_INDEXED_FIELDS = [
-            "word", "normalized",
-            "pos", "type",
-            "root", "arabicroot",
-            "lemma", "arabiclemma",
-            "gender", "number", "person",
-            "form", "voice", "state",
-            "derivation", "aspect",
-            "mood", "case",
-        ]
-        # Filter down to fields that actually exist in this index schema
-        _schema_fields = set(schema.names())
-        _all_word_fields = [f for f in _WORD_ALL_INDEXED_FIELDS if f in _schema_fields]
-        # Include word_standard so standard-form queries match via that field
-        # in addition to the Uthmanic 'word' and 'normalized' fields.
-        _default_fields = [f for f in ["word_standard", "word", "normalized"] if f in _schema_fields] or _all_word_fields or ["word"]
-        _word_parser = _qparser.MultifieldParser(
-            _default_fields,
-            schema=schema,
-            group=_qparser.OrGroup,
-        )
         try:
-            word_query = _word_parser.parse(query)
+            word_query = self._word_parser.parse(query)
         except Exception:
             return empty_response
 
@@ -1556,6 +1612,7 @@ class Raw:
             combined,
             limit=self._defaults["results_limit"]["word"],
             sortedby=sortedby,
+            reverse=reverse,
             timelimit=timelimit,
         )
 

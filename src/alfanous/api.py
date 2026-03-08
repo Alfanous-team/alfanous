@@ -32,7 +32,8 @@ def do(flags: Dict[str, Any]) -> Dict[str, Any]:
     return _R.do(flags)
 
 
-def search(query: str, unit: str = "aya", page: int = 1, sortedby: str = "relevance", 
+def search(query: str, unit: str = "aya", page: int = 1, sortedby: str = "relevance",
+           reverse: bool = False,
            fuzzy: bool = False, fuzzy_maxdist: int = 1, view: str = "normal",
            highlight: str = "bold", flags: Optional[Dict[str, Any]] = None,
            facets: Optional[str] = None, filter: Optional[str] = None,
@@ -45,7 +46,14 @@ def search(query: str, unit: str = "aya", page: int = 1, sortedby: str = "releva
     @param query: The search query string
     @param unit: Search unit ('aya', 'word', 'translation')
     @param page: Page number for pagination
-    @param sortedby: Sort order ('relevance', 'mushaf', etc.)
+    @param sortedby: Sort order.  One of:
+           - 'score' / 'relevance': rank by Whoosh BM25 relevance (highest score first by default).
+           - 'mushaf': traditional Qur'an order (sura then verse number).
+           - 'tanzil': revelation chronology order.
+           - 'ayalength': verse length in words (shortest first by default).
+    @param reverse: Reverse the sort order (default False).  When True, the
+           lowest/earliest value comes first (e.g. shortest verse first for
+           'ayalength', or least-relevant result first for 'score').
     @param fuzzy: Enable fuzzy search — uses aya_ (exact), aya (normalised/stemmed),
            and Levenshtein distance matching on aya_ac simultaneously
     @param fuzzy_maxdist: Maximum Levenshtein edit distance for fuzzy term matching
@@ -73,6 +81,7 @@ def search(query: str, unit: str = "aya", page: int = 1, sortedby: str = "releva
                       "query": query,
                       "page": page,
                       "sortedby": sortedby,
+                      "reverse": reverse,
                       "fuzzy": fuzzy,
                       "fuzzy_maxdist": fuzzy_maxdist,
                       "view": view,
