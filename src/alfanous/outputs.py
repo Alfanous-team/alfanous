@@ -790,540 +790,560 @@ class Raw:
             # Used in the word_info loop to derive per-word variation lists.
             _all_ac_variations = [term[1] for term in termz if term[0] == "aya_ac"]
             _trans_terms = []
-        # pagination
-        offset = 1 if offset < 1 else offset
-        range = self._defaults["minrange"] if range < self._defaults["minrange"] else range
-        range = self._defaults["maxrange"] if range > self._defaults["maxrange"] else range
-        interval_end = offset + range - 1
-        end = interval_end if interval_end < len(res) else len(res)
-        start = offset if offset <= len(res) else -1
-        reslist = [] if end == 0 or start == -1 else list(res)[start - 1:end]
-        # todo pagination should be done inside search operation for better performence
-        # closing the searcher
-        # Pre-built gid query for the current result page, used for translation and
-        # fixed-translation lookups without re-iterating reslist multiple times.
-        _gid_base_query = "( 0" + "".join(" OR gid:%s" % str(r["gid"]) for r in reslist) + " )"
-
-        output = {}
-
-        ## disable annotations for aya words if there is more then one result
-        if annotation_aya and len(res) > 1:
-            annotation_aya = False
-
-        # if True:
-        ## strip vocalization when vocalized = true
-        V = QArabicSymbolsFilter(
-            shaping=False,
-            tashkil=not vocalized,
-            spellerrors=False,
-            hamza=False
-        ).normalize_all
-        strip_vocalization = QArabicSymbolsFilter(
-            shaping=False,
-            tashkil=True,
-            spellerrors=False,
-            hamza=False
-        ).normalize_all
-        # highligh function that consider None value and non-definition
-        H = lambda X: self.QSE.highlight(X, terms, highlight) if highlight != "none" and X else X if X else "-----"
-        # translation highlight function: applies QTranslationHighlight with non-Arabic query terms
-        TH = lambda X: QTranslationHighlight(X, _trans_terms, type=highlight) if highlight != "none" and X and _trans_terms else X if X else "-----"
-        # Numbers are 0 if not defined
-        N = lambda X: X if X else 0
-        # parse keywords lists , used for Sura names
-        kword = re.compile("[^,،]+")
-        keywords = lambda phrase: kword.findall(phrase)
-        ##########################################
-        extend_runtime = res.runtime
-        # Pre-compute result docnums for counting matches within the result set
-        _result_docnums = set(hit.docnum for hit in res)
-        _index_reader = searcher.reader()
-
-        def _count_term_in_results(field, term_text):
-            """Count occurrences of a term within the search result documents."""
-            count = 0
-            try:
-                m = _index_reader.postings(field, term_text)
-                while m.is_active():
-                    if m.id() in _result_docnums:
-                        count += m.value_as("frequency")
-                    m.next()
-            except Exception:
-                pass
-            return count
-
-        def _count_ayas_in_results(field, term_text):
-            """Count unique ayas (documents) containing a term within the search result documents."""
-            count = 0
-            try:
-                m = _index_reader.postings(field, term_text)
-                while m.is_active():
-                    if m.id() in _result_docnums:
-                        count += 1
-                    m.next()
-            except Exception:
-                pass
-            return count
-
-        # Words & Annotations
-        words_output = {"individual": {}}
-        if word_info:
-            matches = 0
-            matches_in_results = 0
-            docs = 0
-            docs_in_results = 0
-            nb_vocalizations_globale = 0
-            cpt = 1
-            for term in termz:
-                if term[0] == "aya" or term[0] == "aya_":
-                    if term[2]:
-                        matches += term[2]
-                    docs += term[3]
-                    term_matches_in_results = _count_term_in_results(term[0], term[1])
-                    matches_in_results += term_matches_in_results
-                    term_ayas_in_results = _count_ayas_in_results(term[0], term[1])
-                    docs_in_results += term_ayas_in_results
-                    if word_vocalizations:
-                        _term_normalized = strip_vocalization(term[1])
-                        vocalizations = []
-                        if self.QSE.OK:
-                            _voc_q = wquery.And([
-                                wquery.Term("kind", "word"),
-                                wquery.Term("normalized", _term_normalized),
-                            ])
-                            _voc_res, _, _voc_searcher = self.QSE.search_with_query(
-                                _voc_q, limit=500
-                            )
-                            vocalizations = list(
-                                set(w.get("word") for w in _voc_res if w.get("word")) - {term[1]}
-                            )
-                            _voc_searcher.close()
-                        nb_vocalizations_globale += len(vocalizations)
-                    if word_synonyms:
-                        synonyms = syndict.get(term[1]) or []
-                    derivations_extra = []
-                    if word_derivations:
-                        derivations = []
-                        if self.QSE.OK:
-                            _norm_term = strip_vocalization(term[1])
-                            _word_q = wquery.And([
-                                wquery.Term("kind", "word"),
-                                wquery.Term("normalized", _norm_term),
-                            ])
-                            _word_res, _, _word_searcher = self.QSE.search_with_query(
-                                _word_q, limit=10
-                            )
-                            # Extract fields while searcher is still open; Hit objects
-                            # access stored fields lazily through the reader, so the
-                            # searcher must not be closed before the field lookups.
-                            # Iterate _word_res once to avoid double-scan.
-                            lemma = root = None
-                            for _w in _word_res:
-                                if lemma is None:
-                                    lemma = _w.get("lemma") or None
-                                if root is None:
-                                    root = _w.get("root") or None
-                                if lemma and root:
+        try:
+            # pagination
+            offset = 1 if offset < 1 else offset
+            range = self._defaults["minrange"] if range < self._defaults["minrange"] else range
+            range = self._defaults["maxrange"] if range > self._defaults["maxrange"] else range
+            interval_end = offset + range - 1
+            end = interval_end if interval_end < len(res) else len(res)
+            start = offset if offset <= len(res) else -1
+            reslist = [] if end == 0 or start == -1 else list(res)[start - 1:end]
+            # todo pagination should be done inside search operation for better performence
+            # closing the searcher
+            # Pre-built gid query for the current result page, used for translation and
+            # fixed-translation lookups without re-iterating reslist multiple times.
+            _gid_base_query = "( 0" + "".join(" OR gid:%s" % str(r["gid"]) for r in reslist) + " )"
+    
+            output = {}
+    
+            ## disable annotations for aya words if there is more then one result
+            if annotation_aya and len(res) > 1:
+                annotation_aya = False
+    
+            # if True:
+            ## strip vocalization when vocalized = true
+            V = QArabicSymbolsFilter(
+                shaping=False,
+                tashkil=not vocalized,
+                spellerrors=False,
+                hamza=False
+            ).normalize_all
+            strip_vocalization = QArabicSymbolsFilter(
+                shaping=False,
+                tashkil=True,
+                spellerrors=False,
+                hamza=False
+            ).normalize_all
+            # highligh function that consider None value and non-definition
+            H = lambda X: self.QSE.highlight(X, terms, highlight) if highlight != "none" and X else X if X else "-----"
+            # translation highlight function: applies QTranslationHighlight with non-Arabic query terms
+            TH = lambda X: QTranslationHighlight(X, _trans_terms, type=highlight) if highlight != "none" and X and _trans_terms else X if X else "-----"
+            # Numbers are 0 if not defined
+            N = lambda X: X if X else 0
+            # parse keywords lists , used for Sura names
+            kword = re.compile("[^,،]+")
+            keywords = lambda phrase: kword.findall(phrase)
+            ##########################################
+            extend_runtime = res.runtime
+            # Pre-compute result docnums for counting matches within the result set
+            _result_docnums = set(hit.docnum for hit in res)
+            _index_reader = searcher.reader()
+    
+            def _count_term_in_results(field, term_text):
+                """Count occurrences of a term within the search result documents."""
+                count = 0
+                try:
+                    m = _index_reader.postings(field, term_text)
+                    while m.is_active():
+                        if m.id() in _result_docnums:
+                            count += m.value_as("frequency")
+                        m.next()
+                except Exception:
+                    pass
+                return count
+    
+            def _count_ayas_in_results(field, term_text):
+                """Count unique ayas (documents) containing a term within the search result documents."""
+                count = 0
+                try:
+                    m = _index_reader.postings(field, term_text)
+                    while m.is_active():
+                        if m.id() in _result_docnums:
+                            count += 1
+                        m.next()
+                except Exception:
+                    pass
+                return count
+    
+            # Words & Annotations
+            words_output = {"individual": {}}
+            if word_info:
+                matches = 0
+                matches_in_results = 0
+                docs = 0
+                docs_in_results = 0
+                nb_vocalizations_globale = 0
+                cpt = 1
+                for term in termz:
+                    if term[0] == "aya" or term[0] == "aya_":
+                        if term[2]:
+                            matches += term[2]
+                        docs += term[3]
+                        term_matches_in_results = _count_term_in_results(term[0], term[1])
+                        matches_in_results += term_matches_in_results
+                        term_ayas_in_results = _count_ayas_in_results(term[0], term[1])
+                        docs_in_results += term_ayas_in_results
+                        if word_vocalizations:
+                            _term_normalized = strip_vocalization(term[1])
+                            vocalizations = []
+                            if self.QSE.OK:
+                                _voc_q = wquery.And([
+                                    wquery.Term("kind", "word"),
+                                    wquery.Term("normalized", _term_normalized),
+                                ])
+                                _voc_res, _, _voc_searcher = self.QSE.search_with_query(
+                                    _voc_q, limit=500
+                                )
+                                try:
+                                    vocalizations = list(
+                                        set(w.get("word") for w in _voc_res if w.get("word")) - {term[1]}
+                                    )
+                                finally:
+                                    _voc_searcher.close()
+                            nb_vocalizations_globale += len(vocalizations)
+                        if word_synonyms:
+                            synonyms = syndict.get(term[1]) or []
+                        derivations_extra = []
+                        if word_derivations:
+                            derivations = []
+                            if self.QSE.OK:
+                                _norm_term = strip_vocalization(term[1])
+                                _word_q = wquery.And([
+                                    wquery.Term("kind", "word"),
+                                    wquery.Term("normalized", _norm_term),
+                                ])
+                                _word_res, _, _word_searcher = self.QSE.search_with_query(
+                                    _word_q, limit=10
+                                )
+                                # Extract fields while searcher is still open; Hit objects
+                                # access stored fields lazily through the reader, so the
+                                # searcher must not be closed before the field lookups.
+                                # Iterate _word_res once to avoid double-scan.
+                                lemma = root = None
+                                try:
+                                    for _w in _word_res:
+                                        if lemma is None:
+                                            lemma = _w.get("lemma") or None
+                                        if root is None:
+                                            root = _w.get("root") or None
+                                        if lemma and root:
+                                            break
+                                finally:
+                                    _word_searcher.close()
+                                if lemma:
+                                    _lem_q = wquery.And([
+                                        wquery.Term("kind", "word"),
+                                        wquery.Term("lemma", lemma),
+                                    ])
+                                    _lem_res, _, _lem_srch = self.QSE.search_with_query(_lem_q, limit=500)
+                                    try:
+                                        derivations = list(set(
+                                            w.get("normalized") for w in _lem_res
+                                            if w.get("normalized")
+                                        ))
+                                    finally:
+                                        _lem_srch.close()
+                                if root:
+                                    _root_q = wquery.And([
+                                        wquery.Term("kind", "word"),
+                                        wquery.Term("root", root),
+                                    ])
+                                    _root_res, _, _root_srch = self.QSE.search_with_query(_root_q, limit=500)
+                                    try:
+                                        _root_norms = list(set(
+                                            w.get("normalized") for w in _root_res
+                                            if w.get("normalized")
+                                        ))
+                                    finally:
+                                        _root_srch.close()
+                                    derivations_extra = list(set(_root_norms) - set(derivations))
+    
+                        # Compute variations specific to this word: among all
+                        # matched aya_ac terms, keep only those within
+                        # fuzzy_maxdist edit distance of this word's unvocalized
+                        # form.  This correctly scopes variations to each
+                        # individual query word in multi-word queries.
+                        word_normalized = strip_vocalization(term[1])
+                        word_variations = [
+                            v for v in _all_ac_variations
+                            if _edit_distance(word_normalized, v) <= fuzzy_maxdist
+                        ]
+    
+                        words_output["individual"][cpt] = {
+                            "word": term[1],
+                            "romanization": transliterate(romanization, term[1], ignore="", reverse=True) if romanization in
+                                                                                                             self.DOMAINS[
+                                                                                                                 "romanization"] else None,
+                            "nb_matches_overall": int(term[2]) if term[2] else 0,
+                            "nb_matches": term_matches_in_results,
+                            "nb_ayas_overall": term[3],
+                            "nb_ayas": term_ayas_in_results,
+                            "nb_vocalizations": len(vocalizations) if word_vocalizations else 0,  # unneeded
+                            "vocalizations": vocalizations if word_vocalizations else [],
+                            "nb_synonyms": len(synonyms) if word_synonyms else 0,  # unneeded
+                            "synonyms": synonyms if word_synonyms else [],
+                            "lemma": lemma if word_derivations else "",
+                            "root": root if word_derivations else "",
+                            "nb_derivations": len(derivations) if word_derivations else 0,  # unneeded
+                            "derivations": derivations if word_derivations else [],
+                            "nb_derivations_extra": len(derivations_extra),
+                            "derivations_extra": derivations_extra,
+                            "nb_variations": len(word_variations),
+                            "variations": word_variations,
+                        }
+                        cpt += 1
+                words_output["global"] = {"nb_words": cpt - 1, "nb_matches_overall": int(matches),
+                                          "nb_matches": matches_in_results,
+                                          "nb_ayas_overall": docs,
+                                          "nb_ayas": docs_in_results,
+                                          "nb_vocalizations": nb_vocalizations_globale}
+            output["words"] = words_output
+            # Build adjacent-aya query for prev/next aya text.
+            _want_translation = bool(translation or lang)
+            if prev_aya or next_aya:
+                adja_query = "( 0"
+    
+                for r in reslist:
+                    if prev_aya:
+                        adja_query += " OR gid:%s " % str(r["gid"] - 1)
+                    if next_aya:
+                        adja_query += " OR gid:%s " % str(r["gid"] + 1)
+    
+                # Restrict to parent aya documents only (gid also matches children).
+                adja_query += " ) AND kind:aya"
+    
+            if prev_aya or next_aya:
+                adja_res, adja_searcher = self.QSE.find_extended(adja_query, "gid")
+                adja_ayas = {0:
+                                 {"aya_": "----",
+                                  "uth_": "----",
+                                  "sura": "---",
+                                  "aya_id": 0, "sura_arabic": "---"},
+                             6237: {"aya_": "----", "uth_": "----", "sura": "---", "aya_id": 9999,
+                                    "sura_arabic": "---"}}
+                try:
+                    for adja in adja_res:
+                        adja_ayas[adja["gid"]] = {"aya_": adja["aya_"], "uth_": adja["uth_"], "aya_id": adja["aya_id"],
+                                                  "sura": adja["sura"], "sura_arabic": adja["sura_arabic"]}
+                        extend_runtime += adja_res.runtime
+                finally:
+                    adja_searcher.close()
+    
+            # translations: fetch all nested children for the result page
+            trad_text = {}
+            all_children = {}  # {gid: {trans_id: {text, id, lang, author}}}
+    
+            if reslist:
+                # One query fetches ALL children for the result page.
+                child_q = _gid_base_query + " AND kind:translation"
+                child_res, child_searcher = self.QSE.find_extended(child_q, "gid")
+                try:
+                    extend_runtime += child_res.runtime
+                    for ch in child_res:
+                        g = ch["gid"]
+                        tid = ch.get("trans_id") or ""
+                        lang = ch.get("trans_lang") or ""
+                        # Read text from the language-specific field when available,
+                        # falling back to the stored trans_text for backward compat.
+                        text_field = f"text_{lang}" if lang else None
+                        text = (
+                            (ch.get(text_field) if text_field else None)
+                            or ch.get("trans_text")
+                            or ""
+                        )
+                        if g not in all_children:
+                            all_children[g] = {}
+                        all_children[g][tid] = {
+                            "text": text,
+                            "id": tid,
+                            "lang": lang,
+                            "author": ch.get("trans_author") or "",
+                        }
+                finally:
+                    child_searcher.close()
+    
+                # Build trad_text for user-selected translation/lang filter
+                if _want_translation:
+                    for g, trans_map in all_children.items():
+                        if translation and translation in trans_map:
+                            trad_text[g] = trans_map[translation]
+                        elif lang:
+                            for tid, tdata in trans_map.items():
+                                if tdata["lang"] == lang:
+                                    trad_text[g] = tdata
                                     break
-                            _word_searcher.close()
-                            if lemma:
-                                _lem_q = wquery.And([
-                                    wquery.Term("kind", "word"),
-                                    wquery.Term("lemma", lemma),
-                                ])
-                                _lem_res, _, _lem_srch = self.QSE.search_with_query(_lem_q, limit=500)
-                                derivations = list(set(
-                                    w.get("normalized") for w in _lem_res
-                                    if w.get("normalized")
-                                ))
-                                _lem_srch.close()
-                            if root:
-                                _root_q = wquery.And([
-                                    wquery.Term("kind", "word"),
-                                    wquery.Term("root", root),
-                                ])
-                                _root_res, _, _root_srch = self.QSE.search_with_query(_root_q, limit=500)
-                                _root_norms = list(set(
-                                    w.get("normalized") for w in _root_res
-                                    if w.get("normalized")
-                                ))
-                                _root_srch.close()
-                                derivations_extra = list(set(_root_norms) - set(derivations))
-
-                    # Compute variations specific to this word: among all
-                    # matched aya_ac terms, keep only those within
-                    # fuzzy_maxdist edit distance of this word's unvocalized
-                    # form.  This correctly scopes variations to each
-                    # individual query word in multi-word queries.
-                    word_normalized = strip_vocalization(term[1])
-                    word_variations = [
-                        v for v in _all_ac_variations
-                        if _edit_distance(word_normalized, v) <= fuzzy_maxdist
-                    ]
-
-                    words_output["individual"][cpt] = {
-                        "word": term[1],
-                        "romanization": transliterate(romanization, term[1], ignore="", reverse=True) if romanization in
-                                                                                                         self.DOMAINS[
-                                                                                                             "romanization"] else None,
-                        "nb_matches_overall": int(term[2]) if term[2] else 0,
-                        "nb_matches": term_matches_in_results,
-                        "nb_ayas_overall": term[3],
-                        "nb_ayas": term_ayas_in_results,
-                        "nb_vocalizations": len(vocalizations) if word_vocalizations else 0,  # unneeded
-                        "vocalizations": vocalizations if word_vocalizations else [],
-                        "nb_synonyms": len(synonyms) if word_synonyms else 0,  # unneeded
-                        "synonyms": synonyms if word_synonyms else [],
-                        "lemma": lemma if word_derivations else "",
-                        "root": root if word_derivations else "",
-                        "nb_derivations": len(derivations) if word_derivations else 0,  # unneeded
-                        "derivations": derivations if word_derivations else [],
-                        "nb_derivations_extra": len(derivations_extra),
-                        "derivations_extra": derivations_extra,
-                        "nb_variations": len(word_variations),
-                        "variations": word_variations,
-                    }
-                    cpt += 1
-            words_output["global"] = {"nb_words": cpt - 1, "nb_matches_overall": int(matches),
-                                      "nb_matches": matches_in_results,
-                                      "nb_ayas_overall": docs,
-                                      "nb_ayas": docs_in_results,
-                                      "nb_vocalizations": nb_vocalizations_globale}
-        output["words"] = words_output
-        # Build adjacent-aya query for prev/next aya text.
-        _want_translation = bool(translation or lang)
-        if prev_aya or next_aya:
-            adja_query = "( 0"
-
-            for r in reslist:
-                if prev_aya:
-                    adja_query += " OR gid:%s " % str(r["gid"] - 1)
-                if next_aya:
-                    adja_query += " OR gid:%s " % str(r["gid"] + 1)
-
-            # Restrict to parent aya documents only (gid also matches children).
-            adja_query += " ) AND kind:aya"
-
-        if prev_aya or next_aya:
-            adja_res, adja_searcher = self.QSE.find_extended(adja_query, "gid")
-            adja_ayas = {0:
-                             {"aya_": "----",
-                              "uth_": "----",
-                              "sura": "---",
-                              "aya_id": 0, "sura_arabic": "---"},
-                         6237: {"aya_": "----", "uth_": "----", "sura": "---", "aya_id": 9999,
-                                "sura_arabic": "---"}}
-            for adja in adja_res:
-                adja_ayas[adja["gid"]] = {"aya_": adja["aya_"], "uth_": adja["uth_"], "aya_id": adja["aya_id"],
-                                          "sura": adja["sura"], "sura_arabic": adja["sura_arabic"]}
-                extend_runtime += adja_res.runtime
-            adja_searcher.close()
-
-        # translations: fetch all nested children for the result page
-        trad_text = {}
-        all_children = {}  # {gid: {trans_id: {text, id, lang, author}}}
-
-        if reslist:
-            # One query fetches ALL children for the result page.
-            child_q = _gid_base_query + " AND kind:translation"
-            child_res, child_searcher = self.QSE.find_extended(child_q, "gid")
-            extend_runtime += child_res.runtime
-            for ch in child_res:
-                g = ch["gid"]
-                tid = ch.get("trans_id") or ""
-                lang = ch.get("trans_lang") or ""
-                # Read text from the language-specific field when available,
-                # falling back to the stored trans_text for backward compat.
-                text_field = f"text_{lang}" if lang else None
-                text = (
-                    (ch.get(text_field) if text_field else None)
-                    or ch.get("trans_text")
-                    or ""
-                )
-                if g not in all_children:
-                    all_children[g] = {}
-                all_children[g][tid] = {
-                    "text": text,
-                    "id": tid,
-                    "lang": lang,
-                    "author": ch.get("trans_author") or "",
-                }
-            child_searcher.close()
-
-            # Build trad_text for user-selected translation/lang filter
-            if _want_translation:
-                for g, trans_map in all_children.items():
-                    if translation and translation in trans_map:
-                        trad_text[g] = trans_map[translation]
-                    elif lang:
-                        for tid, tdata in trans_map.items():
-                            if tdata["lang"] == lang:
-                                trad_text[g] = tdata
-                                break
-
-        # Fetch word children (kind="word") for each aya on the result page when
-        # the linguistic view is requested.  Word children carry the parent aya's
-        # gid so they can be fetched with the same query used for translations.
-        aya_words_map = {}  # {(sura_id, aya_id): [word_entry, ...]}
-        if word_linguistics and reslist:
-            try:
-                _wl_parent_q = wquery.And([
-                    wquery.Term("kind", "aya"),
-                    wquery.Or([wquery.NumericRange("gid", r["gid"], r["gid"])
-                               for r in reslist]),
-                ])
-                _wl_q = wquery.And([
-                    wquery.NestedChildren(wquery.Term("kind", "aya"), _wl_parent_q),
-                    wquery.Term("kind", "word"),
-                ])
-                wc_res, _, wc_searcher = self.QSE.search_with_query(
-                    _wl_q, limit=len(reslist) * 300
-                )
-                extend_runtime += wc_res.runtime
-                for w in wc_res:
-                    key = (w.get("sura_id"), w.get("aya_id"))
-                    entry = {
-                        "word_id":      w.get("word_id"),
-                        "word":         w.get("word"),
-                        "normalized":   w.get("normalized"),
-                        "spelled":      w.get("spelled"),
-                        # Arabic (primary, indexed)
-                        "pos":          w.get("pos"),
-                        "type":         w.get("type"),
-                        "root":         w.get("root"),
-                        "lemma":        w.get("lemma"),
-                        "mood":         w.get("mood"),
-                        "case":         w.get("case"),
-                        "state":        w.get("state"),
-                        "special":      w.get("special"),
-                        # English (stored-only)
-                        "englishpos":   w.get("englishpos"),
-                        "englishmood":  w.get("englishmood"),
-                        "englishcase":  w.get("englishcase"),
-                        "englishstate": w.get("englishstate"),
-                        # Unchanged fields
-                        "prefix":       w.get("prefix"),
-                        "suffix":       w.get("suffix"),
-                        "gender":       w.get("gender"),
-                        "number":       w.get("number"),
-                        "person":       w.get("person"),
-                        "form":         w.get("form"),
-                        "voice":        w.get("voice"),
-                        "derivation":   w.get("derivation"),
-                        "aspect":       w.get("aspect"),
-                    }
-                    aya_words_map.setdefault(key, []).append(entry)
-                # Sort each aya's word list by word_id (ascending position order).
-                for key in aya_words_map:
-                    aya_words_map[key].sort(key=lambda e: e.get("word_id") or 0)
-                wc_searcher.close()
-            except Exception:
-                pass  # index built without corpus words — silently skip
-
-        # Fetch word children matching query terms for annotation_word.
-        # Word children carry the parent aya gid (not the word's own word_gid)
-        # so the same NestedChildren query used above applies here too.
-        # Only words whose normalized form matches a search term are returned;
-        # results are grouped by aya gid and sorted by word_id (position).
-        annot_words_map = {}  # {gid: [{"word_id", "word", "normalized"}, ...]}
-        if annotation_word and terms and reslist and self.QSE.OK:
-            try:
-                # sorted() for deterministic term ordering across Python runs
-                _norm_terms = sorted(set(strip_vocalization(t) for t in terms if t))
-                if _norm_terms:
-                    _aw_parent_q = wquery.And([
+    
+            # Fetch word children (kind="word") for each aya on the result page when
+            # the linguistic view is requested.  Word children carry the parent aya's
+            # gid so they can be fetched with the same query used for translations.
+            aya_words_map = {}  # {(sura_id, aya_id): [word_entry, ...]}
+            if word_linguistics and reslist:
+                try:
+                    _wl_parent_q = wquery.And([
                         wquery.Term("kind", "aya"),
                         wquery.Or([wquery.NumericRange("gid", r["gid"], r["gid"])
                                    for r in reslist]),
                     ])
-                    _aw_q = wquery.And([
-                        wquery.NestedChildren(wquery.Term("kind", "aya"), _aw_parent_q),
+                    _wl_q = wquery.And([
+                        wquery.NestedChildren(wquery.Term("kind", "aya"), _wl_parent_q),
                         wquery.Term("kind", "word"),
-                        wquery.Or([wquery.Term("normalized", t) for t in _norm_terms]),
                     ])
-                    # Generous limit: an aya has at most ~50 words; most terms
-                    # match far fewer, but we allow 20 hits per term per aya.
-                    _aw_limit = len(reslist) * max(len(_norm_terms), 1) * 20
-                    _aw_res, _, _aw_srch = self.QSE.search_with_query(
-                        _aw_q, limit=_aw_limit
+                    wc_res, _, wc_searcher = self.QSE.search_with_query(
+                        _wl_q, limit=len(reslist) * 300
                     )
-                    extend_runtime += _aw_res.runtime
-                    for _w in _aw_res:
-                        _g = _w.get("gid")
-                        if _g is not None:
-                            annot_words_map.setdefault(_g, []).append({
-                                "word_id":    _w.get("word_id"),
-                                "word":       _w.get("word"),
-                                "normalized": _w.get("normalized"),
-                            })
-                    for _g in annot_words_map:
-                        annot_words_map[_g].sort(key=lambda e: e.get("word_id") or 0)
-                    _aw_srch.close()
-            except Exception:
-                pass
-
-        # Fetch all word children for annotation_aya (single-result view only;
-        # annotation_aya is disabled when len(res) > 1 earlier in this method).
-        # Returns every word of the matched aya with position, Uthmani text,
-        # and normalized form — a lightweight alternative to word_linguistics.
-        annot_aya_words_map = {}  # {gid: [{"word_id", "word", "normalized"}, ...]}
-        if annotation_aya and reslist and self.QSE.OK:
-            try:
-                _aa_parent_q = wquery.And([
-                    wquery.Term("kind", "aya"),
-                    wquery.Or([wquery.NumericRange("gid", r["gid"], r["gid"])
-                               for r in reslist]),
-                ])
-                _aa_q = wquery.And([
-                    wquery.NestedChildren(wquery.Term("kind", "aya"), _aa_parent_q),
-                    wquery.Term("kind", "word"),
-                ])
-                # An aya has at most ~300 words (safe upper bound for a
-                # single-aya annotation_aya request).
-                _aa_res, _, _aa_srch = self.QSE.search_with_query(_aa_q, limit=300)
-                extend_runtime += _aa_res.runtime
-                for _w in _aa_res:
-                    _g = _w.get("gid")
-                    if _g is not None:
-                        annot_aya_words_map.setdefault(_g, []).append({
-                            "word_id":    _w.get("word_id"),
-                            "word":       _w.get("word"),
-                            "normalized": _w.get("normalized"),
-                        })
-                for _g in annot_aya_words_map:
-                    annot_aya_words_map[_g].sort(key=lambda e: e.get("word_id") or 0)
-                _aa_srch.close()
-            except Exception:
-                pass
-
-        output["runtime"] = round(extend_runtime, 5)
-        output["interval"] = {
-            "start": start,
-            "end": end,
-            "total": len(res),
-            "page": ((start - 1) / range) + 1,
-            "nb_pages": ((len(res) - 1) / range) + 1
-        }
-        output["translation_info"] = {}
-        
-        # Add facets to output if requested
-        if facets_list and res:
-            output["facets"] = {}
-            for facet_field in facets_list:
+                    try:
+                        extend_runtime += wc_res.runtime
+                        for w in wc_res:
+                            key = (w.get("sura_id"), w.get("aya_id"))
+                            entry = {
+                                "word_id":      w.get("word_id"),
+                                "word":         w.get("word"),
+                                "normalized":   w.get("normalized"),
+                                "spelled":      w.get("spelled"),
+                                # Arabic (primary, indexed)
+                                "pos":          w.get("pos"),
+                                "type":         w.get("type"),
+                                "root":         w.get("root"),
+                                "lemma":        w.get("lemma"),
+                                "mood":         w.get("mood"),
+                                "case":         w.get("case"),
+                                "state":        w.get("state"),
+                                "special":      w.get("special"),
+                                # English (stored-only)
+                                "englishpos":   w.get("englishpos"),
+                                "englishmood":  w.get("englishmood"),
+                                "englishcase":  w.get("englishcase"),
+                                "englishstate": w.get("englishstate"),
+                                # Unchanged fields
+                                "prefix":       w.get("prefix"),
+                                "suffix":       w.get("suffix"),
+                                "gender":       w.get("gender"),
+                                "number":       w.get("number"),
+                                "person":       w.get("person"),
+                                "form":         w.get("form"),
+                                "voice":        w.get("voice"),
+                                "derivation":   w.get("derivation"),
+                                "aspect":       w.get("aspect"),
+                            }
+                            aya_words_map.setdefault(key, []).append(entry)
+                        # Sort each aya's word list by word_id (ascending position order).
+                        for key in aya_words_map:
+                            aya_words_map[key].sort(key=lambda e: e.get("word_id") or 0)
+                    finally:
+                        wc_searcher.close()
+                except Exception:
+                    pass  # index built without corpus words — silently skip
+    
+            # Fetch word children matching query terms for annotation_word.
+            # Word children carry the parent aya gid (not the word's own word_gid)
+            # so the same NestedChildren query used above applies here too.
+            # Only words whose normalized form matches a search term are returned;
+            # results are grouped by aya gid and sorted by word_id (position).
+            annot_words_map = {}  # {gid: [{"word_id", "word", "normalized"}, ...]}
+            if annotation_word and terms and reslist and self.QSE.OK:
                 try:
-                    facet_groups = res.groups(facet_field)
-                    # facet_groups is a dict where keys are values and values are lists of docnums
-                    output["facets"][facet_field] = [
-                        {"value": value, "count": len(doclist)}
-                        for value, doclist in sorted(facet_groups.items(), key=lambda x: len(x[1]), reverse=True)
-                    ]
-                except:
-                    # If facet field doesn't exist or error, skip it
+                    # sorted() for deterministic term ordering across Python runs
+                    _norm_terms = sorted(set(strip_vocalization(t) for t in terms if t))
+                    if _norm_terms:
+                        _aw_parent_q = wquery.And([
+                            wquery.Term("kind", "aya"),
+                            wquery.Or([wquery.NumericRange("gid", r["gid"], r["gid"])
+                                       for r in reslist]),
+                        ])
+                        _aw_q = wquery.And([
+                            wquery.NestedChildren(wquery.Term("kind", "aya"), _aw_parent_q),
+                            wquery.Term("kind", "word"),
+                            wquery.Or([wquery.Term("normalized", t) for t in _norm_terms]),
+                        ])
+                        # Generous limit: an aya has at most ~50 words; most terms
+                        # match far fewer, but we allow 20 hits per term per aya.
+                        _aw_limit = len(reslist) * max(len(_norm_terms), 1) * 20
+                        _aw_res, _, _aw_srch = self.QSE.search_with_query(
+                            _aw_q, limit=_aw_limit
+                        )
+                        try:
+                            extend_runtime += _aw_res.runtime
+                            for _w in _aw_res:
+                                _g = _w.get("gid")
+                                if _g is not None:
+                                    annot_words_map.setdefault(_g, []).append({
+                                        "word_id":    _w.get("word_id"),
+                                        "word":       _w.get("word"),
+                                        "normalized": _w.get("normalized"),
+                                    })
+                            for _g in annot_words_map:
+                                annot_words_map[_g].sort(key=lambda e: e.get("word_id") or 0)
+                        finally:
+                            _aw_srch.close()
+                except Exception:
                     pass
-        ### Ayas
-        cpt = start - 1
-        output["ayas"] = {}
-        for r in reslist:
-            cpt += 1
-            output["ayas"][cpt] = {
-
-                "identifier": {"gid": r["gid"],
-                               "aya_id": r["aya_id"],
-                               "sura_id": r["sura_id"],
-                               "sura_name": keywords(r["sura"])[0],
-                               "sura_arabic_name": keywords(r["sura_arabic"])[0],
-                               },
-
-                "aya": {
-                    "id": r["aya_id"],
-                    "text": H(V(r["aya_"])) if script == "standard"
-                    else H(r["uth_"]),
-                    "text_no_highlight": r["aya"] if script == "standard"
-                    else r["uth_"],
-                    "translation": TH(trad_text.get(r["gid"], {}).get("text")) if _want_translation else None,
-                    "recitation": None if not recitation or not self._recitations.get(recitation) \
-                        else f'https://www.everyayah.com/data/{self._recitations[recitation]["subfolder"]}/%03d%03d.mp3' % (
-                    int(r["sura_id"]), int(r["aya_id"])),
-                    "prev_aya": {
-                        "id": adja_ayas[r["gid"] - 1]["aya_id"],
-                        "sura": adja_ayas[r["gid"] - 1]["sura"],
-                        "sura_arabic": adja_ayas[r["gid"] - 1]["sura_arabic"],
-                        "text": V(adja_ayas[r["gid"] - 1]["aya_"]) if script == "standard"
-                        else adja_ayas[r["gid"] - 1]["uth_"],
-                    } if prev_aya else None
-                    ,
-                    "next_aya": {
-                        "id": adja_ayas[r["gid"] + 1]["aya_id"],
-                        "sura": adja_ayas[r["gid"] + 1]["sura"],
-                        "sura_arabic": adja_ayas[r["gid"] + 1]["sura_arabic"],
-                        "text": V(adja_ayas[r["gid"] + 1]["aya_"]) if script == "standard"
-                        else adja_ayas[r["gid"] + 1]["uth_"],
-                    } if next_aya else None
-                    ,
-
-                },
-
-                "sura": {} if not sura_info
-                else {
-                    "name": keywords(r["sura"])[0],
-                    "arabic_name": keywords(r["sura_arabic"])[0],
-                    "english_name": keywords(r["sura_english"])[0],
-                    "id": r["sura_id"],
-                    "type": r["sura_type"],
-                    "arabic_type": r["sura_type_arabic"],
-                    "order": r["sura_order"],
-                    "ayas": r["s_a"],
-                    "stat": {} if not sura_stat_info
-                    else {
-                        "words": N(r["s_w"]),
-                        "godnames": N(r["s_g"]),
-                        "letters": N(r["s_l"])
-                    }
-
-                },
-
-                "position": {} if not aya_position_info
-                else {
-                    "manzil": r["manzil"],
-                    "juz": r["juz"],
-                    "hizb": r["hizb"],
-                    "rub": int(r["rub"]) % 4,
-                    "page": r["page"]
-                },
-
-                "theme": {} if not aya_theme_info
-                else {
-                    "chapter": r.get("chapter"),
-                    "topic": r.get("topic"),
-                    "subtopic": r.get("subtopic")
-                },
-
-                "stat": {} if not aya_stat_info
-                else {
-                    "words": N(r["a_w"]),
-                    "letters": N(r["a_l"]),
-                    "godnames": N(r["a_g"])
-                },
-
-                "sajda": {} if not aya_sajda_info
-                else {
-                    "exist": (r["sajda"] == "نعم"),
-                    "type": r["sajda_type"] if (r["sajda"] == "نعم") else None,
-                    "id": N(r["sajda_id"]) if (r["sajda"] == "نعم") else None,
-                },
-
-                "annotations": (
-                    annot_words_map.get(r["gid"], []) if annotation_word
-                    else annot_aya_words_map.get(r["gid"], []) if annotation_aya
-                    else []
-                )
+    
+            # Fetch all word children for annotation_aya (single-result view only;
+            # annotation_aya is disabled when len(res) > 1 earlier in this method).
+            # Returns every word of the matched aya with position, Uthmani text,
+            # and normalized form — a lightweight alternative to word_linguistics.
+            annot_aya_words_map = {}  # {gid: [{"word_id", "word", "normalized"}, ...]}
+            if annotation_aya and reslist and self.QSE.OK:
+                try:
+                    _aa_parent_q = wquery.And([
+                        wquery.Term("kind", "aya"),
+                        wquery.Or([wquery.NumericRange("gid", r["gid"], r["gid"])
+                                   for r in reslist]),
+                    ])
+                    _aa_q = wquery.And([
+                        wquery.NestedChildren(wquery.Term("kind", "aya"), _aa_parent_q),
+                        wquery.Term("kind", "word"),
+                    ])
+                    # An aya has at most ~300 words (safe upper bound for a
+                    # single-aya annotation_aya request).
+                    _aa_res, _, _aa_srch = self.QSE.search_with_query(_aa_q, limit=300)
+                    try:
+                        extend_runtime += _aa_res.runtime
+                        for _w in _aa_res:
+                            _g = _w.get("gid")
+                            if _g is not None:
+                                annot_aya_words_map.setdefault(_g, []).append({
+                                    "word_id":    _w.get("word_id"),
+                                    "word":       _w.get("word"),
+                                    "normalized": _w.get("normalized"),
+                                })
+                        for _g in annot_aya_words_map:
+                            annot_aya_words_map[_g].sort(key=lambda e: e.get("word_id") or 0)
+                    finally:
+                        _aa_srch.close()
+                except Exception:
+                    pass
+    
+            output["runtime"] = round(extend_runtime, 5)
+            output["interval"] = {
+                "start": start,
+                "end": end,
+                "total": len(res),
+                "page": ((start - 1) / range) + 1,
+                "nb_pages": ((len(res) - 1) / range) + 1
             }
-            if word_linguistics:
-                output["ayas"][cpt]["words"] = aya_words_map.get(
-                    (r["sura_id"], r["aya_id"]), []
-                )
-        searcher.close()
-        return output
+            output["translation_info"] = {}
+            
+            # Add facets to output if requested
+            if facets_list and res:
+                output["facets"] = {}
+                for facet_field in facets_list:
+                    try:
+                        facet_groups = res.groups(facet_field)
+                        # facet_groups is a dict where keys are values and values are lists of docnums
+                        output["facets"][facet_field] = [
+                            {"value": value, "count": len(doclist)}
+                            for value, doclist in sorted(facet_groups.items(), key=lambda x: len(x[1]), reverse=True)
+                        ]
+                    except Exception:
+                        # If facet field doesn't exist or error, skip it
+                        pass
+            ### Ayas
+            cpt = start - 1
+            output["ayas"] = {}
+            for r in reslist:
+                cpt += 1
+                output["ayas"][cpt] = {
+    
+                    "identifier": {"gid": r["gid"],
+                                   "aya_id": r["aya_id"],
+                                   "sura_id": r["sura_id"],
+                                   "sura_name": keywords(r["sura"])[0],
+                                   "sura_arabic_name": keywords(r["sura_arabic"])[0],
+                                   },
+    
+                    "aya": {
+                        "id": r["aya_id"],
+                        "text": H(V(r["aya_"])) if script == "standard"
+                        else H(r["uth_"]),
+                        "text_no_highlight": r["aya"] if script == "standard"
+                        else r["uth_"],
+                        "translation": TH(trad_text.get(r["gid"], {}).get("text")) if _want_translation else None,
+                        "recitation": None if not recitation or not self._recitations.get(recitation) \
+                            else f'https://www.everyayah.com/data/{self._recitations[recitation]["subfolder"]}/%03d%03d.mp3' % (
+                        int(r["sura_id"]), int(r["aya_id"])),
+                        "prev_aya": {
+                            "id": adja_ayas[r["gid"] - 1]["aya_id"],
+                            "sura": adja_ayas[r["gid"] - 1]["sura"],
+                            "sura_arabic": adja_ayas[r["gid"] - 1]["sura_arabic"],
+                            "text": V(adja_ayas[r["gid"] - 1]["aya_"]) if script == "standard"
+                            else adja_ayas[r["gid"] - 1]["uth_"],
+                        } if prev_aya else None
+                        ,
+                        "next_aya": {
+                            "id": adja_ayas[r["gid"] + 1]["aya_id"],
+                            "sura": adja_ayas[r["gid"] + 1]["sura"],
+                            "sura_arabic": adja_ayas[r["gid"] + 1]["sura_arabic"],
+                            "text": V(adja_ayas[r["gid"] + 1]["aya_"]) if script == "standard"
+                            else adja_ayas[r["gid"] + 1]["uth_"],
+                        } if next_aya else None
+                        ,
+    
+                    },
+    
+                    "sura": {} if not sura_info
+                    else {
+                        "name": keywords(r["sura"])[0],
+                        "arabic_name": keywords(r["sura_arabic"])[0],
+                        "english_name": keywords(r["sura_english"])[0],
+                        "id": r["sura_id"],
+                        "type": r["sura_type"],
+                        "arabic_type": r["sura_type_arabic"],
+                        "order": r["sura_order"],
+                        "ayas": r["s_a"],
+                        "stat": {} if not sura_stat_info
+                        else {
+                            "words": N(r["s_w"]),
+                            "godnames": N(r["s_g"]),
+                            "letters": N(r["s_l"])
+                        }
+    
+                    },
+    
+                    "position": {} if not aya_position_info
+                    else {
+                        "manzil": r["manzil"],
+                        "juz": r["juz"],
+                        "hizb": r["hizb"],
+                        "rub": int(r["rub"]) % 4,
+                        "page": r["page"]
+                    },
+    
+                    "theme": {} if not aya_theme_info
+                    else {
+                        "chapter": r.get("chapter"),
+                        "topic": r.get("topic"),
+                        "subtopic": r.get("subtopic")
+                    },
+    
+                    "stat": {} if not aya_stat_info
+                    else {
+                        "words": N(r["a_w"]),
+                        "letters": N(r["a_l"]),
+                        "godnames": N(r["a_g"])
+                    },
+    
+                    "sajda": {} if not aya_sajda_info
+                    else {
+                        "exist": (r["sajda"] == "نعم"),
+                        "type": r["sajda_type"] if (r["sajda"] == "نعم") else None,
+                        "id": N(r["sajda_id"]) if (r["sajda"] == "نعم") else None,
+                    },
+    
+                    "annotations": (
+                        annot_words_map.get(r["gid"], []) if annotation_word
+                        else annot_aya_words_map.get(r["gid"], []) if annotation_aya
+                        else []
+                    )
+                }
+                if word_linguistics:
+                    output["ayas"][cpt]["words"] = aya_words_map.get(
+                        (r["sura_id"], r["aya_id"]), []
+                    )
+            return output
+        finally:
+            searcher.close()
 
     def _search_translation(self, flags):
         flags = {**self._defaults["flags"], **flags}
@@ -1352,84 +1372,88 @@ class Raw:
             sortedby=sortedby,
             timelimit=timelimit,
         )
-        # Extract matched terms from the translation sub-query for highlight.
-        terms = [t for field, t in _child_q.all_terms() if field in _available_fields]
-        H = lambda X: QTranslationHighlight(X, terms, type=highlight) if highlight != "none" and X else X if X else "-----"
-
-        offset = 1 if offset < 1 else offset
-        range = self._defaults["minrange"] if range < self._defaults["minrange"] else range
-        range = self._defaults["maxrange"] if range > self._defaults["maxrange"] else range
-        interval_end = offset + range - 1
-        end = interval_end if interval_end < len(res) else len(res)
-        start = offset if offset <= len(res) else -1
-        reslist = [] if end == 0 or start == -1 else list(res)[start - 1:end]
-
-        # Fetch parent aya docs for the current result page using NestedParent.
-        # NestedParent(_child_q) returns the parent aya of every matching translation child.
-        _kword = re.compile("[^,،]+")
-        _keywords = lambda phrase: _kword.findall(phrase)
-        parent_data = {}
-        if reslist:
-            _all_parents_q = wq.Term("kind", "aya")
-            _page_gids = {r["gid"] for r in reslist}
-            _page_child_q = wq.And([
-                wq.Term("kind", "translation"),
-                wq.Or([wq.Term("gid", str(g)) for g in _page_gids]),
-            ])
-            _parent_q = NestedParent(_all_parents_q, _page_child_q)
-            _parent_res, _, _parent_searcher = self.QSE.search_with_query(
-                _parent_q,
-                limit=self._defaults["results_limit"]["aya"],
-                timelimit=timelimit,
-            )
-            for _p in _parent_res:
-                parent_data[_p["gid"]] = _p
-            _parent_searcher.close()
-
-        output = {}
-        output["runtime"] = round(res.runtime, 5)
-        output["interval"] = {
-            "start": start,
-            "end": end,
-            "total": len(res),
-            "page": ((start - 1) / range) + 1,
-            "nb_pages": ((len(res) - 1) / range) + 1
-        }
-        cpt = start - 1
-        output["translations"] = {}
-        for r in reslist:
-            cpt += 1
-            _parent = parent_data.get(r["gid"], {})
-            # Read text from the language-specific field when available,
-            # falling back to the stored trans_text for backward compat.
-            _r_lang = r.get("trans_lang") or ""
-            _r_text_field = f"text_{_r_lang}" if _r_lang else None
-            _r_text = (
-                (r.get(_r_text_field) if _r_text_field else None)
-                or r.get("trans_text")
-                or ""
-            )
-            output["translations"][cpt] = {
-                "identifier": {
-                    "gid": r["gid"],
-                    "translation_id": r.get("trans_id"),
-                    "aya_id": _parent.get("aya_id"),
-                    "sura_id": _parent.get("sura_id"),
-                    "sura_name": (_keywords(_parent["sura"]) or [None])[0] if _parent.get("sura") else None,
-                    "sura_arabic_name": (_keywords(_parent["sura_arabic"]) or [None])[0] if _parent.get("sura_arabic") else None,
-                },
-                "aya": {
-                    "text": _parent.get("aya"),
-                },
-                "translation": {
-                    "text": H(_r_text),
-                    "text_no_highlight": _r_text,
-                    "author": r.get("trans_author"),
-                    "lang": r.get("trans_lang"),
-                },
+        try:
+            # Extract matched terms from the translation sub-query for highlight.
+            terms = [t for field, t in _child_q.all_terms() if field in _available_fields]
+            H = lambda X: QTranslationHighlight(X, terms, type=highlight) if highlight != "none" and X else X if X else "-----"
+    
+            offset = 1 if offset < 1 else offset
+            range = self._defaults["minrange"] if range < self._defaults["minrange"] else range
+            range = self._defaults["maxrange"] if range > self._defaults["maxrange"] else range
+            interval_end = offset + range - 1
+            end = interval_end if interval_end < len(res) else len(res)
+            start = offset if offset <= len(res) else -1
+            reslist = [] if end == 0 or start == -1 else list(res)[start - 1:end]
+    
+            # Fetch parent aya docs for the current result page using NestedParent.
+            # NestedParent(_child_q) returns the parent aya of every matching translation child.
+            _kword = re.compile("[^,،]+")
+            _keywords = lambda phrase: _kword.findall(phrase)
+            parent_data = {}
+            if reslist:
+                _all_parents_q = wq.Term("kind", "aya")
+                _page_gids = {r["gid"] for r in reslist}
+                _page_child_q = wq.And([
+                    wq.Term("kind", "translation"),
+                    wq.Or([wq.Term("gid", str(g)) for g in _page_gids]),
+                ])
+                _parent_q = NestedParent(_all_parents_q, _page_child_q)
+                _parent_res, _, _parent_searcher = self.QSE.search_with_query(
+                    _parent_q,
+                    limit=self._defaults["results_limit"]["aya"],
+                    timelimit=timelimit,
+                )
+                try:
+                    for _p in _parent_res:
+                        parent_data[_p["gid"]] = _p
+                finally:
+                    _parent_searcher.close()
+    
+            output = {}
+            output["runtime"] = round(res.runtime, 5)
+            output["interval"] = {
+                "start": start,
+                "end": end,
+                "total": len(res),
+                "page": ((start - 1) / range) + 1,
+                "nb_pages": ((len(res) - 1) / range) + 1
             }
-        searcher.close()
-        return output
+            cpt = start - 1
+            output["translations"] = {}
+            for r in reslist:
+                cpt += 1
+                _parent = parent_data.get(r["gid"], {})
+                # Read text from the language-specific field when available,
+                # falling back to the stored trans_text for backward compat.
+                _r_lang = r.get("trans_lang") or ""
+                _r_text_field = f"text_{_r_lang}" if _r_lang else None
+                _r_text = (
+                    (r.get(_r_text_field) if _r_text_field else None)
+                    or r.get("trans_text")
+                    or ""
+                )
+                output["translations"][cpt] = {
+                    "identifier": {
+                        "gid": r["gid"],
+                        "translation_id": r.get("trans_id"),
+                        "aya_id": _parent.get("aya_id"),
+                        "sura_id": _parent.get("sura_id"),
+                        "sura_name": (_keywords(_parent["sura"]) or [None])[0] if _parent.get("sura") else None,
+                        "sura_arabic_name": (_keywords(_parent["sura_arabic"]) or [None])[0] if _parent.get("sura_arabic") else None,
+                    },
+                    "aya": {
+                        "text": _parent.get("aya"),
+                    },
+                    "translation": {
+                        "text": H(_r_text),
+                        "text_no_highlight": _r_text,
+                        "author": r.get("trans_author"),
+                        "lang": r.get("trans_lang"),
+                    },
+                }
+            return output
+        finally:
+            searcher.close()
 
     def _search_words(self, flags):
         """Search word occurrence child documents nested within QSE aya groups.
@@ -1521,141 +1545,89 @@ class Raw:
             timelimit=timelimit,
         )
 
-        # Extract query terms for highlighting (best-effort from the parsed query).
-        terms = [t[1] for t in word_query.all_terms()
-                 if isinstance(t[1], str)][:self._defaults["maxkeywords"]]
-
-        # Pagination
-        offset = 1 if offset < 1 else offset
-        range_ = max(self._defaults["minrange"], min(range_, self._defaults["maxrange"]))
-        interval_end = offset + range_ - 1
-        end = min(interval_end, len(res))
-        start = offset if offset <= len(res) else -1
-        reslist = [] if end == 0 or start == -1 else list(res)[start - 1:end]
-
-        # When a result was matched by word_standard, add its Uthmanic 'word'
-        # value to the keywords list so that the Uthmanic form of the word can
-        # also be highlighted in the result text.
-        _terms_set = set(terms)
-        for _r in reslist:
-            if len(terms) >= self._defaults["maxkeywords"]:
-                break
-            _ws = _r.get("word_standard")
-            _wu = _r.get("word")
-            if _ws and _wu and _ws in _terms_set and _wu not in _terms_set:
-                terms.append(_wu)
-                _terms_set.add(_wu)
-
-        H = lambda X: self.QSE.highlight(X, terms, highlight) \
-            if highlight != "none" and X else (X if X else "-----")
-
-        output = {
-            "runtime": round(res.runtime, 5),
-            "interval": {
-                "start": start,
-                "end": end,
-                "total": len(res),
-                "page": ((start - 1) / range_) + 1 if start > 0 else 1,
-                "nb_pages": ((len(res) - 1) / range_) + 1 if len(res) > 0 else 0,
-            },
-            "words": {},
-        }
-
-        cpt = start - 1
-        for r in reslist:
-            cpt += 1
-            output["words"][cpt] = {
-                "identifier": {
-                    "word_id": r.get("word_id"),
-                    "aya_id":  r.get("aya_id"),
-                    "sura_id": r.get("sura_id"),
+        try:
+            # Extract query terms for highlighting (best-effort from the parsed query).
+            terms = [t[1] for t in word_query.all_terms()
+                     if isinstance(t[1], str)][:self._defaults["maxkeywords"]]
+    
+            # Pagination
+            offset = 1 if offset < 1 else offset
+            range_ = max(self._defaults["minrange"], min(range_, self._defaults["maxrange"]))
+            interval_end = offset + range_ - 1
+            end = min(interval_end, len(res))
+            start = offset if offset <= len(res) else -1
+            reslist = [] if end == 0 or start == -1 else list(res)[start - 1:end]
+    
+            # When a result was matched by word_standard, add its Uthmanic 'word'
+            # value to the keywords list so that the Uthmanic form of the word can
+            # also be highlighted in the result text.
+            _terms_set = set(terms)
+            for _r in reslist:
+                if len(terms) >= self._defaults["maxkeywords"]:
+                    break
+                _ws = _r.get("word_standard")
+                _wu = _r.get("word")
+                if _ws and _wu and _ws in _terms_set and _wu not in _terms_set:
+                    terms.append(_wu)
+                    _terms_set.add(_wu)
+    
+            H = lambda X: self.QSE.highlight(X, terms, highlight) \
+                if highlight != "none" and X else (X if X else "-----")
+    
+            output = {
+                "runtime": round(res.runtime, 5),
+                "interval": {
+                    "start": start,
+                    "end": end,
+                    "total": len(res),
+                    "page": ((start - 1) / range_) + 1 if start > 0 else 1,
+                    "nb_pages": ((len(res) - 1) / range_) + 1 if len(res) > 0 else 0,
                 },
-                "word": {
-                    "text":              H(r.get("word", "")),
-                    "text_no_highlight": r.get("word", ""),
-                    "normalized":        r.get("normalized"),
-                    "spelled":          r.get("spelled"),
-                    # Arabic (primary, indexed)
-                    "pos":              r.get("pos"),
-                    "type":             r.get("type"),
-                    "root":             r.get("root"),
-                    "lemma":            r.get("lemma"),
-                    "mood":             r.get("mood"),
-                    "case":             r.get("case"),
-                    "state":            r.get("state"),
-                    "special":          r.get("special"),
-                    # English (stored-only)
-                    "englishpos":       r.get("englishpos"),
-                    "englishmood":      r.get("englishmood"),
-                    "englishcase":      r.get("englishcase"),
-                    "englishstate":     r.get("englishstate"),
-                    # Unchanged fields
-                    "prefix":           r.get("prefix"),
-                    "suffix":           r.get("suffix"),
-                    "gender":           r.get("gender"),
-                    "number":           r.get("number"),
-                    "person":           r.get("person"),
-                    "form":             r.get("form"),
-                    "voice":            r.get("voice"),
-                    "derivation":       r.get("derivation"),
-                    "aspect":           r.get("aspect"),
-                },
+                "words": {},
             }
+    
+            cpt = start - 1
+            for r in reslist:
+                cpt += 1
+                output["words"][cpt] = {
+                    "identifier": {
+                        "word_id": r.get("word_id"),
+                        "aya_id":  r.get("aya_id"),
+                        "sura_id": r.get("sura_id"),
+                    },
+                    "word": {
+                        "text":              H(r.get("word", "")),
+                        "text_no_highlight": r.get("word", ""),
+                        "normalized":        r.get("normalized"),
+                        "spelled":          r.get("spelled"),
+                        # Arabic (primary, indexed)
+                        "pos":              r.get("pos"),
+                        "type":             r.get("type"),
+                        "root":             r.get("root"),
+                        "lemma":            r.get("lemma"),
+                        "mood":             r.get("mood"),
+                        "case":             r.get("case"),
+                        "state":            r.get("state"),
+                        "special":          r.get("special"),
+                        # English (stored-only)
+                        "englishpos":       r.get("englishpos"),
+                        "englishmood":      r.get("englishmood"),
+                        "englishcase":      r.get("englishcase"),
+                        "englishstate":     r.get("englishstate"),
+                        # Unchanged fields
+                        "prefix":           r.get("prefix"),
+                        "suffix":           r.get("suffix"),
+                        "gender":           r.get("gender"),
+                        "number":           r.get("number"),
+                        "person":           r.get("person"),
+                        "form":             r.get("form"),
+                        "voice":            r.get("voice"),
+                        "derivation":       r.get("derivation"),
+                        "aspect":           r.get("aspect"),
+                    },
+                }
+    
+            return output
+        finally:
+            searcher.close()
 
-        searcher.close()
-        return output
-
-        output["runtime"] = round(res.runtime, 5)
-        output["interval"] = {
-            "start": start,
-            "end": end,
-            "total": len(res),
-            "page": ((start - 1) / range) + 1,
-            "nb_pages": ((len(res) - 1) / range) + 1
-        }
-
-        cpt = start - 1
-        output["words"] = {}
-        for r in reslist:
-            cpt += 1
-            output["words"][cpt] = {
-                "identifier": {
-                    "gid": r["gid"],
-                    "word_id": r.get("word_id"),
-                    "aya_id": r.get("aya_id"),
-                    "sura_id": r.get("sura_id"),
-                },
-                "word": {
-                    "text": H(r["word"]),
-                    "text_no_highlight": r["word"],
-                    "normalized": r.get("normalized"),
-                    "spelled": r.get("spelled"),
-                    # Arabic (primary, indexed)
-                    "pos": r.get("pos"),
-                    "type": r.get("type"),
-                    "root": r.get("root"),
-                    "lemma": r.get("lemma"),
-                    "mood": r.get("mood"),
-                    "case": r.get("case"),
-                    "state": r.get("state"),
-                    "special": r.get("special"),
-                    # English (stored-only)
-                    "englishpos": r.get("englishpos"),
-                    "englishmood": r.get("englishmood"),
-                    "englishcase": r.get("englishcase"),
-                    "englishstate": r.get("englishstate"),
-                    # Unchanged fields
-                    "prefix": r.get("prefix"),
-                    "suffix": r.get("suffix"),
-                    "gender": r.get("gender"),
-                    "number": r.get("number"),
-                    "person": r.get("person"),
-                    "form": r.get("form"),
-                    "voice": r.get("voice"),
-                    "derivation": r.get("derivation"),
-                    "aspect": r.get("aspect"),
-                },
-            }
-
-        searcher.close()
-        return output
