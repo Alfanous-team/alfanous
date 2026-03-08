@@ -986,5 +986,96 @@ class TestScriptCheckedOnce(unittest.TestCase):
         )
 
 
+# ---------------------------------------------------------------------------
+# Iteration-4 fixes
+# ---------------------------------------------------------------------------
+
+class TestAutocompleteDecodeGuard(unittest.TestCase):
+    """QReader.autocomplete must use _decode_if_bytes, not a raw .decode() call."""
+
+    def test_autocomplete_uses_decode_if_bytes(self):
+        """autocomplete must not call .decode() directly — use _decode_if_bytes."""
+        import ast
+        import inspect
+        import textwrap
+        import alfanous.searching as _searching_module
+        src = textwrap.dedent(inspect.getsource(_searching_module.QReader.autocomplete))
+        tree = ast.parse(src)
+
+        # Raw .decode() calls: look for Attribute nodes named 'decode' on any value.
+        for node in ast.walk(tree):
+            if isinstance(node, ast.Call):
+                func = node.func
+                if isinstance(func, ast.Attribute) and func.attr == "decode":
+                    self.fail(
+                        "QReader.autocomplete must not call .decode() directly — "
+                        "use `_decode_if_bytes(x)` instead so it is safe when "
+                        "Whoosh returns str rather than bytes."
+                    )
+
+    def test_autocomplete_handles_str_terms(self):
+        """autocomplete must not raise when expand_prefix yields str instead of bytes."""
+        from alfanous.searching import QReader, _decode_if_bytes
+        from unittest.mock import MagicMock, PropertyMock
+
+        reader_obj = MagicMock()
+        reader_obj.expand_prefix.return_value = ['الله', 'اللهم']  # str terms (newer Whoosh)
+
+        qr = QReader.__new__(QReader)
+        qr._qsearcher = None
+        qr._own_reader = None
+        # Patch the reader property
+        type(qr).reader = PropertyMock(return_value=reader_obj)
+
+        result = qr.autocomplete('الل')
+        self.assertEqual(result, ['الله', 'اللهم'])
+
+    def test_autocomplete_handles_bytes_terms(self):
+        """autocomplete must decode bytes terms correctly."""
+        from alfanous.searching import QReader
+        from unittest.mock import MagicMock, PropertyMock
+
+        reader_obj = MagicMock()
+        reader_obj.expand_prefix.return_value = ['الله'.encode('utf-8'), 'اللهم'.encode('utf-8')]
+
+        qr = QReader.__new__(QReader)
+        qr._qsearcher = None
+        qr._own_reader = None
+        type(qr).reader = PropertyMock(return_value=reader_obj)
+
+        result = qr.autocomplete('الل')
+        self.assertEqual(result, ['الله', 'اللهم'])
+
+
+class TestSharedSearcherNoPerCallImport(unittest.TestCase):
+    """BasicSearchEngine.shared_searcher must not contain a per-call import."""
+
+    def test_no_per_call_import_in_shared_searcher(self):
+        """shared_searcher must not import _SearcherProxy on every call."""
+        import ast
+        import inspect
+        import textwrap
+        import alfanous.engines as _engines_module
+        src = textwrap.dedent(inspect.getsource(_engines_module.BasicSearchEngine.shared_searcher))
+        tree = ast.parse(src)
+
+        for node in ast.walk(tree):
+            if isinstance(node, ast.ImportFrom):
+                if (node.module == "alfanous.searching"
+                        and any(a.name == "_SearcherProxy" for a in node.names)):
+                    self.fail(
+                        "BasicSearchEngine.shared_searcher must not import _SearcherProxy "
+                        "per-call — it is already imported at module level in engines.py."
+                    )
+
+    def test_searcher_proxy_module_level_in_engines(self):
+        """_SearcherProxy must be accessible as a module-level name in engines."""
+        import alfanous.engines as _engines_module
+        self.assertTrue(
+            hasattr(_engines_module, '_SearcherProxy'),
+            "_SearcherProxy must be imported at module level in engines.py"
+        )
+
+
 if __name__ == "__main__":
     unittest.main()

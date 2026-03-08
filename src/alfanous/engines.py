@@ -108,7 +108,6 @@ class BasicSearchEngine:
         :returns: A :class:`~alfanous.searching._SearcherProxy` wrapping the
             engine's single cached Whoosh Searcher.
         """
-        from alfanous.searching import _SearcherProxy
         return _SearcherProxy(self._searcher._get_shared_searcher())
 
     def search_with_shared_searcher(self, whoosh_searcher, q_obj, limit=QURAN_TOTAL_VERSES):

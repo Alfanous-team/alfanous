@@ -150,7 +150,7 @@ class QReader:
 
     def autocomplete(self, word):
         reader = self.reader
-        return [x.decode('utf-8') for x in reader.expand_prefix('aya_ac', word)]
+        return [_decode_if_bytes(x) for x in reader.expand_prefix('aya_ac', word)]
 
 
 class _SearcherProxy:
