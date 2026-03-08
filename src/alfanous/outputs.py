@@ -253,6 +253,7 @@ class Raw:
         # field, making it ~100x faster than list_terms() which walks all_terms().
         self._roots = sorted(filter(bool, self.QSE.list_values("root"))) if self.QSE.OK else []
         self._lemmas = sorted(filter(bool, self.QSE.list_values("lemma"))) if self.QSE.OK else []
+
         self._errors = self.ERRORS
         self._domains = self.DOMAINS
         self._helpmessages = self.HELPMESSAGES

@@ -96,7 +96,7 @@ def quran_unvocalized_words():
     try:
         _engine = QSE()
         if _engine.OK:
-            words = frozenset(t for t in _engine.list_terms("normalized") if t)
+            words = frozenset(t for t in _engine.list_values("normalized") if t)
             if words:
                 return words
     except Exception:

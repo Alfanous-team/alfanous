@@ -23,8 +23,11 @@ class QReader:
         self.schema = docindex.get_schema()
 
     def list_values(self, fieldname):
-        return list(filter(lambda x: not isinstance(x, int) or x >= 0,
-                           (_decode_if_bytes(v) for v in self.reader.field_terms(fieldname))))
+        try:
+            return list(filter(lambda x: not isinstance(x, int) or x >= 0,
+                               (_decode_if_bytes(v) for v in self.reader.field_terms(fieldname))))
+        except KeyError:
+            return []
 
     def list_stored_values(self, fieldname):
         """ List unique stored (non-tokenized) values for a field, preserving full phrases. """
@@ -34,24 +37,6 @@ class QReader:
             if value is not None and value != "":
                 values.add(value)
         return sorted(filter(lambda x: type(x) is not int or x >= 0, values))
-
-
-    def list_terms(self, fieldname=None):
-        """
-        a choosen field indexed terms generator
-
-        @param fieldname: the name of the choosen field
-        @return : indexed terms
-
-        """
-        prec = []
-        for field, value in self.reader.all_terms():
-            if field == fieldname or not fieldname:
-                value = _decode_if_bytes(value)
-                if value not in prec:
-                    prec.append(value)
-                    yield value
-
 
     def term_stats(self, terms):
         """ return all statistiques of a term
