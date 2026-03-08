@@ -1,3 +1,4 @@
+import heapq
 import logging
 import re
 
@@ -283,23 +284,22 @@ class Raw:
         self._ai_query_translation_rules = ai_query_translation_rules(AI_Rules_file)
         ##
         self._surates = {
-            "Arabic": list(self.QSE.list_values("sura_arabic")),
-            "English": list(self.QSE.list_values("sura_english")),
-            "Romanized": list(self.QSE.list_values("sura"))
+            "Arabic": self.QSE.list_values("sura_arabic"),
+            "English": self.QSE.list_values("sura_english"),
+            "Romanized": self.QSE.list_values("sura")
         }
-        self._chapters = list(self.QSE.list_stored_values("chapter"))
-        self._topics = list(self.QSE.list_stored_values("topic"))
-        self._subtopics = list(self.QSE.list_stored_values("subtopic"))
+        self._chapters = self.QSE.list_stored_values("chapter")
+        self._topics = self.QSE.list_stored_values("topic")
+        self._subtopics = self.QSE.list_stored_values("subtopic")
 
         self._defaults = self.DEFAULTS
         self._flags = self.DEFAULTS["flags"].keys()
         self._fields = arabic_to_english_fields
         self._fields_reverse = {v: k for k, v in arabic_to_english_fields.items()}
-        # Prefer word index for roots and lemmas.
+        # Prefer word index for roots.
         # list_values() uses Whoosh's field_terms() which scans only the target
         # field, making it ~100x faster than list_terms() which walks all_terms().
         self._roots = sorted(filter(bool, self.QSE.list_values("root"))) if self.QSE.OK else []
-        self._lemmas = sorted(filter(bool, self.QSE.list_values("lemma"))) if self.QSE.OK else []
 
         self._errors = self.ERRORS
         self._domains = self.DOMAINS
@@ -320,7 +320,6 @@ class Raw:
             "domains": self._domains,
             "help_messages": self._helpmessages,
             "roots": self._roots,
-            "lemmas": self._lemmas,
             "ai_query_translation_rules": self._ai_query_translation_rules
         }
 
@@ -539,11 +538,10 @@ class Raw:
                         result["count"] = len(values)
                     else:  # mode == "frequent"
                         # Get top N most frequent values with document counts
-                        # Sort by frequency (number of documents) descending
-                        sorted_items = sorted(field_groups.items(), key=lambda x: len(x[1]), reverse=True)
-                        
-                        # Take top N
-                        top_items = sorted_items[:limit]
+                        # heapq.nlargest is O(n log k) vs O(n log n) for a full sort
+                        top_items = heapq.nlargest(
+                            limit, field_groups.items(), key=lambda x: len(x[1])
+                        )
                         
                         result["keywords"] = [
                             {"word": str(value), "frequency": len(doclist)}
@@ -1327,15 +1325,18 @@ class Raw:
             )
             for r in reslist:
                 cpt += 1
+                _sura_name = keywords(r["sura"])[0]
+                _sura_arabic_name = keywords(r["sura_arabic"])[0]
+                _sura_english_name = keywords(r["sura_english"])[0] if sura_info else None
                 output["ayas"][cpt] = {
-    
+
                     "identifier": {"gid": r["gid"],
                                    "aya_id": r["aya_id"],
                                    "sura_id": r["sura_id"],
-                                   "sura_name": keywords(r["sura"])[0],
-                                   "sura_arabic_name": keywords(r["sura_arabic"])[0],
+                                   "sura_name": _sura_name,
+                                   "sura_arabic_name": _sura_arabic_name,
                                    },
-    
+
                     "aya": {
                         "id": r["aya_id"],
                         "text": H(V(r["aya_"])) if script == "standard"
@@ -1364,14 +1365,14 @@ class Raw:
                             else adja_ayas[r["gid"] + 1]["uth_"],
                         } if next_aya else None
                         ,
-    
+
                     },
-    
+
                     "sura": {} if not sura_info
                     else {
-                        "name": keywords(r["sura"])[0],
-                        "arabic_name": keywords(r["sura_arabic"])[0],
-                        "english_name": keywords(r["sura_english"])[0],
+                        "name": _sura_name,
+                        "arabic_name": _sura_arabic_name,
+                        "english_name": _sura_english_name,
                         "id": r["sura_id"],
                         "type": r["sura_type"],
                         "arabic_type": r["sura_type_arabic"],

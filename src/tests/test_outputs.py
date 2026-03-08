@@ -1091,11 +1091,12 @@ def test_show_roots_returns_strings_not_bytes():
         )
 
 
-def test_show_lemmas_returns_strings_not_bytes():
-    """show/lemmas must return plain Unicode strings, not binary b'...' values."""
-    result = RAWoutput.do({"action": "show", "query": "lemmas"})
-    assert "show" in result
-    lemmas = result["show"]["lemmas"]
+def test_list_values_lemma_returns_strings_not_bytes():
+    """list_values/lemma must return plain Unicode strings, not binary b'...' values."""
+    result = RAWoutput.do({"action": "list_values", "field": "lemma"})
+    assert "list_values" in result
+    lv = result["list_values"]
+    lemmas = lv["values"]
     assert isinstance(lemmas, list)
     assert len(lemmas) > 0, "Expected at least one lemma in the index"
     for lemma in lemmas:
@@ -1104,18 +1105,23 @@ def test_show_lemmas_returns_strings_not_bytes():
         )
 
 
-def test_show_lemmas_is_fast():
-    """show/lemmas lookup must complete quickly (field-specific index scan)."""
+def test_list_values_lemma_is_fast():
+    """list_values/lemma lookup must complete quickly (on-demand index scan).
+
+    Unlike the old show/lemmas (a pre-built dict lookup, < 100 ms), this action
+    performs a live Whoosh field_terms() scan of the word index on every call.
+    The scan is still fast (single-pass through one B-tree), but inherently
+    slower than a pre-loaded in-memory list, so the threshold is set to 2 s to
+    accommodate slower CI machines without masking real regressions.
+    """
     import time
     t0 = time.perf_counter()
-    result = RAWoutput.do({"action": "show", "query": "lemmas"})
+    result = RAWoutput.do({"action": "list_values", "field": "lemma"})
     elapsed_ms = (time.perf_counter() - t0) * 1000
-    # The lemmas list is pre-built at init time; the do() call is just a dict
-    # lookup, so it must return in well under 100 ms regardless of index size.
-    assert elapsed_ms < 100, (
-        f"show/lemmas took {elapsed_ms:.1f} ms, expected < 100 ms"
+    assert elapsed_ms < 2000, (
+        f"list_values/lemma took {elapsed_ms:.1f} ms, expected < 2000 ms"
     )
-    assert result["show"]["lemmas"]  # non-empty
+    assert result["list_values"]["values"]  # non-empty
 
 
 def test_show_roots_is_fast():
