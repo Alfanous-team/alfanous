@@ -1075,7 +1075,7 @@ class Raw:
                 adja_query = "".join(_adja_parts)
     
             if prev_aya or next_aya:
-                adja_res, adja_searcher = self.QSE.find_extended(adja_query, "gid")
+                adja_res, adja_searcher = self.QSE.find_extended(adja_query, "gid", timelimit=timelimit)
                 adja_ayas = {0:
                                  {"aya_": "----",
                                   "uth_": "----",
@@ -1098,7 +1098,7 @@ class Raw:
             if reslist:
                 # One query fetches ALL children for the result page.
                 child_q = _gid_base_query + " AND kind:translation"
-                child_res, child_searcher = self.QSE.find_extended(child_q, "gid")
+                child_res, child_searcher = self.QSE.find_extended(child_q, "gid", timelimit=timelimit)
                 try:
                     extend_runtime += child_res.runtime
                     for ch in child_res:

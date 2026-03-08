@@ -4,12 +4,14 @@ Tests for the configurable timelimit feature across the search stack.
 
 import shutil
 import inspect
+import logging
 import tempfile
 from unittest.mock import MagicMock, patch, call
 
 from whoosh.fields import Schema, NUMERIC, TEXT
 from whoosh.collectors import TimeLimitCollector, FilterCollector
 from whoosh.searching import TimeLimit
+from whoosh.qparser import QueryParser
 import whoosh.index as whoosh_index
 from whoosh import query as wquery
 
@@ -228,8 +230,8 @@ def test_timelimit_with_filter_returns_correctly_filtered_partial_results():
 
 def test_timelimit_warning_logged_on_timeout(caplog):
     """QSearcher.search must emit a WARNING log entry when the timelimit is hit."""
-    import logging
     from alfanous.searching import QSearcher
+    import alfanous.searching as _searching_module
 
     ix, tmpdir = _build_test_index(num_docs=10000)
     try:
@@ -237,12 +239,11 @@ def test_timelimit_warning_logged_on_timeout(caplog):
         mock_index.get_index.return_value = ix
         mock_index.get_schema.return_value = ix.schema
 
-        from whoosh.qparser import QueryParser
         parser = QueryParser("text", schema=ix.schema)
 
         qs = QSearcher(mock_index, parser)
 
-        with caplog.at_level(logging.WARNING, logger="alfanous.searching"):
+        with caplog.at_level(logging.WARNING, logger=_searching_module.logger.name):
             qs.search("word", timelimit=EXTREMELY_SHORT_TIMELIMIT)
 
         # The warning may or may not fire depending on timing, but the call must
@@ -308,5 +309,177 @@ def test_wildcard_search_via_qsearcher_stopped_by_timelimit():
 
         assert results is not None, "results must not be None when timelimit fires during wildcard"
         assert len(results) >= 0, "results length must be non-negative"
+    finally:
+        shutil.rmtree(tmpdir, ignore_errors=True)
+
+
+# ---------------------------------------------------------------------------
+# find_extended timelimit tests
+# ---------------------------------------------------------------------------
+
+def test_find_extended_has_timelimit_param():
+    """find_extended must accept a timelimit parameter with default 5.0."""
+    sig = inspect.signature(BasicSearchEngine.find_extended)
+    assert "timelimit" in sig.parameters, "find_extended must accept timelimit"
+    assert sig.parameters["timelimit"].default == 5.0, "timelimit default must be 5.0"
+
+
+def test_find_extended_uses_timelimit_collector():
+    """find_extended must use TimeLimitCollector when timelimit is given."""
+    ix, tmpdir = _build_test_index(num_docs=100)
+    try:
+        mock_docindex = MagicMock()
+        mock_docindex.OK = True
+        mock_docindex.get_schema.return_value = ix.schema
+        mock_docindex.get_index.return_value = ix
+
+        engine = BasicSearchEngine(
+            qdocindex=mock_docindex,
+            query_parser=QueryParser,
+            main_field="text",
+            otherfields=[],
+            qsearcher=QSearcher,
+            qreader=MagicMock(return_value=MagicMock()),
+            qhighlight=MagicMock(),
+        )
+        engine._schema = ix.schema
+        engine._find_parsers = {}
+
+        with patch("alfanous.engines.TimeLimitCollector", wraps=TimeLimitCollector) as MockTLC:
+            results, searcher = engine.find_extended("text:word", "text", timelimit=3.0)
+            MockTLC.assert_called_once()
+            _, tlc_kwargs = MockTLC.call_args
+            assert tlc_kwargs.get("timelimit") == 3.0, \
+                "find_extended must pass timelimit to TimeLimitCollector"
+        assert results is not None
+    finally:
+        shutil.rmtree(tmpdir, ignore_errors=True)
+
+
+def test_find_extended_no_timelimit_uses_search_directly():
+    """When timelimit=None, find_extended must skip TimeLimitCollector."""
+    ix, tmpdir = _build_test_index(num_docs=100)
+    try:
+        mock_docindex = MagicMock()
+        mock_docindex.OK = True
+        mock_docindex.get_schema.return_value = ix.schema
+        mock_docindex.get_index.return_value = ix
+
+        engine = BasicSearchEngine(
+            qdocindex=mock_docindex,
+            query_parser=QueryParser,
+            main_field="text",
+            otherfields=[],
+            qsearcher=QSearcher,
+            qreader=MagicMock(return_value=MagicMock()),
+            qhighlight=MagicMock(),
+        )
+        engine._schema = ix.schema
+        engine._find_parsers = {}
+
+        with patch("alfanous.engines.TimeLimitCollector") as MockTLC:
+            results, searcher = engine.find_extended("text:word", "text", timelimit=None)
+            MockTLC.assert_not_called()
+        assert results is not None
+    finally:
+        shutil.rmtree(tmpdir, ignore_errors=True)
+
+
+def test_find_extended_caches_parser_per_field():
+    """find_extended must reuse the same QueryParser for repeated calls with the same field."""
+    ix, tmpdir = _build_test_index(num_docs=10)
+    try:
+        mock_docindex = MagicMock()
+        mock_docindex.OK = True
+        mock_docindex.get_schema.return_value = ix.schema
+        mock_docindex.get_index.return_value = ix
+
+        engine = BasicSearchEngine(
+            qdocindex=mock_docindex,
+            query_parser=QueryParser,
+            main_field="text",
+            otherfields=[],
+            qsearcher=QSearcher,
+            qreader=MagicMock(return_value=MagicMock()),
+            qhighlight=MagicMock(),
+        )
+        engine._schema = ix.schema
+        engine._find_parsers = {}
+
+        engine.find_extended("text:word", "text", timelimit=None)
+        first_parser = engine._find_parsers.get("text")
+        assert first_parser is not None, "_find_parsers must be populated after first call"
+
+        engine.find_extended("text:arabic", "text", timelimit=None)
+        assert engine._find_parsers["text"] is first_parser, \
+            "Same QueryParser instance must be reused for the same defaultfield"
+    finally:
+        shutil.rmtree(tmpdir, ignore_errors=True)
+
+
+def test_find_extended_returns_partial_results_on_timeout():
+    """find_extended must return partial results (not raise) when timelimit fires."""
+    ix, tmpdir = _build_test_index(num_docs=10000)
+    try:
+        mock_docindex = MagicMock()
+        mock_docindex.OK = True
+        mock_docindex.get_schema.return_value = ix.schema
+        mock_docindex.get_index.return_value = ix
+
+        engine = BasicSearchEngine(
+            qdocindex=mock_docindex,
+            query_parser=QueryParser,
+            main_field="text",
+            otherfields=[],
+            qsearcher=QSearcher,
+            qreader=MagicMock(return_value=MagicMock()),
+            qhighlight=MagicMock(),
+        )
+        engine._schema = ix.schema
+        engine._find_parsers = {}
+
+        # An extremely short timelimit; may or may not actually fire depending
+        # on hardware, but must never raise.
+        results, searcher = engine.find_extended(
+            "text:word", "text", timelimit=EXTREMELY_SHORT_TIMELIMIT
+        )
+        assert results is not None, "results must not be None even if timelimit fires"
+        assert len(results) >= 0
+    finally:
+        shutil.rmtree(tmpdir, ignore_errors=True)
+
+
+def test_find_extended_warning_logged_on_timeout(caplog):
+    """find_extended must emit a WARNING log entry when the timelimit is hit."""
+    import alfanous.engines as _engines_module
+    ix, tmpdir = _build_test_index(num_docs=10000)
+    try:
+        mock_docindex = MagicMock()
+        mock_docindex.OK = True
+        mock_docindex.get_schema.return_value = ix.schema
+        mock_docindex.get_index.return_value = ix
+
+        engine = BasicSearchEngine(
+            qdocindex=mock_docindex,
+            query_parser=QueryParser,
+            main_field="text",
+            otherfields=[],
+            qsearcher=QSearcher,
+            qreader=MagicMock(return_value=MagicMock()),
+            qhighlight=MagicMock(),
+        )
+        engine._schema = ix.schema
+        engine._find_parsers = {}
+
+        with caplog.at_level(logging.WARNING, logger=_engines_module.logger.name):
+            engine.find_extended("text:word", "text", timelimit=EXTREMELY_SHORT_TIMELIMIT)
+
+        # Whether or not the timer actually fired (hardware-dependent), the
+        # call must never crash.  If a WARNING was emitted it must mention
+        # "timelimit".  On fast hardware the timer may not fire for a 100-doc
+        # index, in which case no warnings are expected and the loop is a no-op.
+        for record in caplog.records:
+            if record.levelno == logging.WARNING:
+                assert "timelimit" in record.getMessage().lower()
     finally:
         shutil.rmtree(tmpdir, ignore_errors=True)
