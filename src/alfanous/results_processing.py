@@ -61,7 +61,7 @@ def QSort(sortedby):
 
 
 def Qhighlight(text, terms, type="css", strip_vocalization=True):
-    formatter = _BOLD_FORMATTER if type == "bold" else _HTML_FORMATTER
+    formatter = _BOLD_FORMATTER if type == "bold" else HtmlFormatter(**_HTML_FORMATTER_KWARGS)
 
     highlighted = highlight(
         text,
@@ -78,7 +78,7 @@ def Qhighlight(text, terms, type="css", strip_vocalization=True):
 
 
 def QTranslationHighlight(text, terms, type="css", **kwargs):
-    formatter = _BOLD_FORMATTER if type == "bold" else _HTML_FORMATTER
+    formatter = _BOLD_FORMATTER if type == "bold" else HtmlFormatter(**_HTML_FORMATTER_KWARGS)
 
     highlighted = highlight(
         text,
@@ -123,9 +123,12 @@ class QBoldFormatter(object):
 
 
 # ---------------------------------------------------------------------------
-# Module-level formatter singletons.  Both Qhighlight and QTranslationHighlight
-# always use the same two configurations so creating them once per process
-# (instead of once per highlight call) eliminates repeated object allocation.
+# Module-level formatter singletons.
+# QBoldFormatter is stateless so it is safe to share across calls.
+# HtmlFormatter maintains a ``seen`` dict that maps terms to CSS class numbers
+# (term0, term1, …); sharing it across calls causes indices to accumulate
+# across searches, shifting term0→term1 etc.  A fresh instance is therefore
+# created on every highlight call (see Qhighlight / QTranslationHighlight).
 # ---------------------------------------------------------------------------
 _BOLD_FORMATTER = QBoldFormatter()
-_HTML_FORMATTER = HtmlFormatter(tagname="span", classname="match", termclass="term", maxclasses=8)
+_HTML_FORMATTER_KWARGS = dict(tagname="span", classname="match", termclass="term", maxclasses=8)
