@@ -1,6 +1,9 @@
+import logging
 import os.path
 import re
 from zipfile import ZipFile
+
+logger = logging.getLogger(__name__)
 
 
 class TranslationModel:
@@ -10,7 +13,7 @@ class TranslationModel:
             @param path:the path of model directory or zip_file file
             @attention: add the last slash for directories
             """
-        print(path)
+        logger.debug("Loading translation model from path: %s", path)
         assert os.path.exists(path), "path does not exist!!"
 
         if os.path.isfile(path):

@@ -106,9 +106,18 @@ Faceted search (aggregate by fields):
 #### Core Functions
 
 * `api.search(query, **options)` - Search Quran verses
-* `api.do(params)` - Unified interface for all actions (search, suggest, show, correct_query)
+* `api.do(params)` - Unified interface for all actions (search, suggest, show, list_values, correct_query)
 * `api.correct_query(query, unit, flags)` - Get a spelling-corrected version of a query
 * `api.get_info(category)` - Get metadata information
+
+The underlying `Raw` output engine supports use as a context manager, which ensures index resources are properly released:
+
+```python
+from alfanous.outputs import Raw
+
+with Raw() as engine:
+    result = engine.do({"action": "search", "query": u"الله"})
+```
 
 #### Search Parameters
 
@@ -118,7 +127,8 @@ Common parameters for `api.do()` with `action="search"`:
 * `unit` (str): Search unit - "aya", "word", or "translation" (default: "aya")
 * `page` (int): Page number (default: 1)
 * `perpage` (int): Results per page, 1-100 (default: 10)
-* `sortedby` (str): Sort order - "score", "mushaf", "tanzil", "subject" (default: "score")
+* `sortedby` (str): Sort order - "score", "relevance", "mushaf", "tanzil", "ayalength" (default: "score")
+* `reverse` (bool): Reverse the sort order (default: False)
 * `view` (str): Output view - "minimal", "normal", "full", "statistic", "linguistic" (default: "normal")
 * `highlight` (str): Highlight style - "css", "html", "bold", "bbcode" (default: "css")
 * `script` (str): Text script - "standard" or "uthmani" (default: "standard")
@@ -199,6 +209,37 @@ Fuzzy mode is particularly useful when:
 * You want synonym-aware retrieval without writing explicit OR queries.
 
 > **Note:** `pystemmer` must be installed for stemming to take effect (`pip install pystemmer`). If the package is absent the stem filter degrades silently to a no-op, leaving normalisation and stop-word removal still active.
+
+#### List Field Values
+
+`list_values` returns every unique indexed value for a given field. Use it to discover the full vocabulary of searchable fields — for example, all available translation identifiers, part-of-speech tags, or root words — before composing a query.
+
+```python
+# Get all unique root values in the index
+>>> api.do({"action": "list_values", "field": "root"})
+# Returns: {"list_values": {"field": "root", "values": [...], "count": N}}
+
+# Discover all indexed translation IDs
+>>> api.do({"action": "list_values", "field": "trans_id"})
+
+# Discover all part-of-speech categories for word search
+>>> api.do({"action": "list_values", "field": "pos"})
+
+# Retrieve all indexed lemmas on demand (replaces the former show/lemmas)
+>>> api.do({"action": "list_values", "field": "lemma"})
+```
+
+**Parameters:**
+
+* `field` (str): The name of the indexed field whose unique values you want (required).
+
+**Return value:**
+
+A dictionary with a `list_values` key containing:
+
+* `field` — the requested field name.
+* `values` — sorted list of unique non-empty indexed values.
+* `count` — length of the `values` list.
 
 #### Query Correction
 
@@ -297,6 +338,11 @@ Available fields for fielded search:
 * `باب` (subtopic) - Subtopic
 * `نوع_السورة` (sura_type) - Sura type (Meccan/Medinan)
 
+Word-level fields (use with `unit="word"`):
+
+* `englishstate` - Nominal state in English (e.g. "Definite state", "Indefinite state")
+* `englishmood` - Verb mood in English (e.g. "Indicative mood", "Subjunctive mood", "Jussive mood")
+
 For the complete field list, call:
 
 ```python
@@ -345,6 +391,8 @@ Get various metadata using the "show" action:
 # Get default values
 >>> api.do({"action": "show", "query": "defaults"})
 ```
+
+> **Note:** Lemmas are no longer exposed via `show`. Use `api.do({"action": "list_values", "field": "lemma"})` to retrieve them on demand.
 
 #### Adding New Translations
 
@@ -410,7 +458,8 @@ To connect Claude Desktop, add the following to your `claude_desktop_config.json
         "search_quran_by_position",
         "suggest_query",
         "correct_query",
-        "search_by_word_linguistics"
+        "search_by_word_linguistics",
+        "list_field_values"
       ]
     }
   }
