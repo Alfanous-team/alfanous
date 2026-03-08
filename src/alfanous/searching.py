@@ -22,6 +22,19 @@ class QReader:
         self.reader = docindex.get_index().reader()
         self.schema = docindex.get_schema()
 
+    def close(self):
+        """Close the underlying index reader and release any held resources."""
+        if self.reader is not None:
+            self.reader.close()
+            self.reader = None
+
+    def __del__(self):
+        """Ensure the reader is closed when the object is garbage collected."""
+        try:
+            self.close()
+        except Exception:
+            pass
+
     def list_values(self, fieldname):
         try:
             return list(filter(lambda x: not isinstance(x, int) or x >= 0,
@@ -62,145 +75,153 @@ class QSearcher:
 
     def search(self, querystr, limit=QURAN_TOTAL_VERSES, sortedby="score", reverse=False, facets=None, filter_dict=None, fuzzy=False, fuzzy_maxdist=1, timelimit=5.0):
         searcher = self._searcher(weighting=QScore())
-        query = self._qparser.parse(querystr)
+        try:
+            query = self._qparser.parse(querystr)
 
-        if fuzzy:
-            from whoosh.qparser import QueryParser
-            from whoosh.query import Or, FuzzyTerm
+            if fuzzy:
+                from whoosh.qparser import QueryParser
+                from whoosh.query import Or, FuzzyTerm
 
-            # Strategy 2: Search the normalised/stemmed 'aya_fuzzy' field (fed
-            # from the same vocalized source text as aya_, processed at index
-            # time: diacritics stripped → stop words removed → synonyms expanded
-            # → Snowball Arabic stem).  This broadens the result set without any
-            # query-time CPU cost.
-            # Guard against StopIteration from Whoosh's internal analyzer
-            # pipeline: when every token in querystr is a stop word in the
-            # aya_fuzzy field's analyzer, the MultiFilter inside that analyzer
-            # calls next() on an empty stream and raises StopIteration.
-            aya_fuzzy_parser = QueryParser("aya_fuzzy", schema=self._schema)
-            try:
-                aya_fuzzy_query = aya_fuzzy_parser.parse(querystr)
-            except StopIteration:
-                aya_fuzzy_query = None
+                # Strategy 2: Search the normalised/stemmed 'aya_fuzzy' field (fed
+                # from the same vocalized source text as aya_, processed at index
+                # time: diacritics stripped → stop words removed → synonyms expanded
+                # → Snowball Arabic stem).  This broadens the result set without any
+                # query-time CPU cost.
+                # Guard against StopIteration from Whoosh's internal analyzer
+                # pipeline: when every token in querystr is a stop word in the
+                # aya_fuzzy field's analyzer, the MultiFilter inside that analyzer
+                # calls next() on an empty stream and raises StopIteration.
+                aya_fuzzy_parser = QueryParser("aya_fuzzy", schema=self._schema)
+                try:
+                    aya_fuzzy_query = aya_fuzzy_parser.parse(querystr)
+                except StopIteration:
+                    aya_fuzzy_query = None
 
-            # Strategy 3: Levenshtein distance matching on 'aya_ac'
-            # (unvocalized, non-stemmed) to handle spelling variants and typos.
-            # Only applied to Arabic-script terms; structured/numeric terms are
-            # skipped.
-            # prefixlength=1 keeps the first character fixed so that expansion
-            # is bounded to plausible variants (e.g. "الكتاب" → "الكتابة") rather
-            # than unrelated words that happen to be edit-close.  This trades a
-            # small amount of recall for a large gain in precision and scan
-            # performance.
-            levenshtein_subqueries = [
-                FuzzyTerm("aya_ac", term, maxdist=fuzzy_maxdist, prefixlength=1)
-                for fieldname, term in query.all_terms()
-                if isinstance(term, str) and len(term) >= 4 and any('\u0600' <= c <= '\u06FF' for c in term)
-            ]
+                # Strategy 3: Levenshtein distance matching on 'aya_ac'
+                # (unvocalized, non-stemmed) to handle spelling variants and typos.
+                # Only applied to Arabic-script terms; structured/numeric terms are
+                # skipped.
+                # prefixlength=1 keeps the first character fixed so that expansion
+                # is bounded to plausible variants (e.g. "الكتاب" → "الكتابة") rather
+                # than unrelated words that happen to be edit-close.  This trades a
+                # small amount of recall for a large gain in precision and scan
+                # performance.
+                levenshtein_subqueries = [
+                    FuzzyTerm("aya_ac", term, maxdist=fuzzy_maxdist, prefixlength=1)
+                    for fieldname, term in query.all_terms()
+                    if isinstance(term, str) and len(term) >= 4 and any('\u0600' <= c <= '\u06FF' for c in term)
+                ]
 
-            parts = [query]
-            if aya_fuzzy_query is not None:
-                parts.append(aya_fuzzy_query)
-            if levenshtein_subqueries:
-                parts.append(
-                    Or(levenshtein_subqueries)
-                    if len(levenshtein_subqueries) > 1
-                    else levenshtein_subqueries[0]
-                )
-            query = Or(parts)
-        
-        # Prepare facets if requested
-        groupedby = None
-        if facets:
-            groupedby = Facets()
-            for facet_field in facets:
-                groupedby.add_field(facet_field)
-        
-        # Prepare filter if provided
-        filter_query = None
-        if filter_dict:
-            filter_queries = []
-            for field, value in filter_dict.items():
-                if isinstance(value, list):
-                    # Multiple values for same field (OR condition)
-                    or_queries = [wquery.Term(field, v) for v in value]
-                    filter_queries.append(wquery.Or(or_queries))
-                else:
-                    # Single value
-                    filter_queries.append(wquery.Term(field, value))
+                parts = [query]
+                if aya_fuzzy_query is not None:
+                    parts.append(aya_fuzzy_query)
+                if levenshtein_subqueries:
+                    parts.append(
+                        Or(levenshtein_subqueries)
+                        if len(levenshtein_subqueries) > 1
+                        else levenshtein_subqueries[0]
+                    )
+                query = Or(parts)
             
-            if len(filter_queries) == 1:
-                filter_query = filter_queries[0]
-            elif len(filter_queries) > 1:
-                filter_query = wquery.And(filter_queries)
-        
-        collector_kwargs = dict(limit=limit, sortedby=QSort(sortedby), reverse=reverse, groupedby=groupedby, terms=fuzzy)
-        if timelimit is not None:
-            c = searcher.collector(**collector_kwargs)
-            tlc = TimeLimitCollector(c, timelimit=timelimit, use_alarm=False)
-            # FilterCollector must wrap TimeLimitCollector (not the other way)
-            # so that filter logic in FilterCollector.collect_matches() is
-            # applied correctly.  Wrapping in the reverse order causes
-            # TimeLimitCollector.collect_matches() to call child.collect()
-            # directly, bypassing FilterCollector's allow-set check.
-            final_c = FilterCollector(tlc, allow=filter_query) if filter_query is not None else tlc
-            try:
-                searcher.search_with_collector(query, final_c)
-            except TimeLimit:
-                logger.warning("Search timelimit of %s seconds reached; returning partial results", timelimit)
-            results = final_c.results()
-        else:
-            results = searcher.search(query, **collector_kwargs, filter=filter_query)
-
-        if fuzzy:
-            # Use matched_terms() to capture the actual index terms that were
-            # hit, including all fuzzy variations expanded by FuzzyTerm.
-            # Whoosh returns term texts as bytes; decode to unicode strings so
-            # downstream code (highlighting, term stats) can handle them.
-            # matched_terms() returns None when terms=True was not passed, and
-            # an empty set when there are no results.
-            # Non-UTF-8 bytes come from numeric fields (e.g. a_g:1 encodes the
-            # integer as raw bytes); skip those entries because they are not
-            # text terms and cannot be used for highlighting or term stats.
-            raw_matched = results.matched_terms()
-            if raw_matched is not None and raw_matched:
-                decoded_terms = []
-                for fieldname, text in raw_matched:
-                    if isinstance(text, bytes):
-                        try:
-                            decoded_terms.append((fieldname, text.decode("utf-8")))
-                        except UnicodeDecodeError:
-                            logger.debug(
-                                "Skipping non-UTF-8 matched term in field %r (numeric encoding): %r",
-                                fieldname, text,
-                            )
+            # Prepare facets if requested
+            groupedby = None
+            if facets:
+                groupedby = Facets()
+                for facet_field in facets:
+                    groupedby.add_field(facet_field)
+            
+            # Prepare filter if provided
+            filter_query = None
+            if filter_dict:
+                filter_queries = []
+                for field, value in filter_dict.items():
+                    if isinstance(value, list):
+                        # Multiple values for same field (OR condition)
+                        or_queries = [wquery.Term(field, v) for v in value]
+                        filter_queries.append(wquery.Or(or_queries))
                     else:
-                        decoded_terms.append((fieldname, text))
-                terms = frozenset(decoded_terms)
+                        # Single value
+                        filter_queries.append(wquery.Term(field, value))
+                
+                if len(filter_queries) == 1:
+                    filter_query = filter_queries[0]
+                elif len(filter_queries) > 1:
+                    filter_query = wquery.And(filter_queries)
+            
+            collector_kwargs = dict(limit=limit, sortedby=QSort(sortedby), reverse=reverse, groupedby=groupedby, terms=fuzzy)
+            if timelimit is not None:
+                c = searcher.collector(**collector_kwargs)
+                tlc = TimeLimitCollector(c, timelimit=timelimit, use_alarm=False)
+                # FilterCollector must wrap TimeLimitCollector (not the other way)
+                # so that filter logic in FilterCollector.collect_matches() is
+                # applied correctly.  Wrapping in the reverse order causes
+                # TimeLimitCollector.collect_matches() to call child.collect()
+                # directly, bypassing FilterCollector's allow-set check.
+                final_c = FilterCollector(tlc, allow=filter_query) if filter_query is not None else tlc
+                try:
+                    searcher.search_with_collector(query, final_c)
+                except TimeLimit:
+                    logger.warning("Search timelimit of %s seconds reached; returning partial results", timelimit)
+                results = final_c.results()
+            else:
+                results = searcher.search(query, **collector_kwargs, filter=filter_query)
+
+            if fuzzy:
+                # Use matched_terms() to capture the actual index terms that were
+                # hit, including all fuzzy variations expanded by FuzzyTerm.
+                # Whoosh returns term texts as bytes; decode to unicode strings so
+                # downstream code (highlighting, term stats) can handle them.
+                # matched_terms() returns None when terms=True was not passed, and
+                # an empty set when there are no results.
+                # Non-UTF-8 bytes come from numeric fields (e.g. a_g:1 encodes the
+                # integer as raw bytes); skip those entries because they are not
+                # text terms and cannot be used for highlighting or term stats.
+                raw_matched = results.matched_terms()
+                if raw_matched is not None and raw_matched:
+                    decoded_terms = []
+                    for fieldname, text in raw_matched:
+                        if isinstance(text, bytes):
+                            try:
+                                decoded_terms.append((fieldname, text.decode("utf-8")))
+                            except UnicodeDecodeError:
+                                logger.debug(
+                                    "Skipping non-UTF-8 matched term in field %r (numeric encoding): %r",
+                                    fieldname, text,
+                                )
+                        else:
+                            decoded_terms.append((fieldname, text))
+                    terms = frozenset(decoded_terms)
+                else:
+                    terms = query.all_terms()
             else:
                 terms = query.all_terms()
-        else:
-            terms = query.all_terms()
 
-        return results, terms, searcher
+            return results, terms, searcher
+        except Exception:
+            searcher.close()
+            raise
 
     def search_obj(self, q_obj, limit=QURAN_TOTAL_VERSES, sortedby="score", timelimit=5.0):
         """Run a pre-built Whoosh query object (e.g. NestedParent) directly,
         bypassing string parsing.  Returns the same ``(results, terms, searcher)``
         tuple as :meth:`search` but with an empty *terms* list."""
         searcher = self._searcher(weighting=QScore())
-        search_kwargs = dict(limit=limit, sortedby=QSort(sortedby))
-        if timelimit is not None:
-            c = searcher.collector(**search_kwargs)
-            tlc = TimeLimitCollector(c, timelimit=timelimit, use_alarm=False)
-            try:
-                searcher.search_with_collector(q_obj, tlc)
-            except TimeLimit:
-                logger.warning("Search timelimit of %s seconds reached; returning partial results", timelimit)
-            results = tlc.results()
-        else:
-            results = searcher.search(q=q_obj, **search_kwargs)
-        return results, [], searcher
+        try:
+            search_kwargs = dict(limit=limit, sortedby=QSort(sortedby))
+            if timelimit is not None:
+                c = searcher.collector(**search_kwargs)
+                tlc = TimeLimitCollector(c, timelimit=timelimit, use_alarm=False)
+                try:
+                    searcher.search_with_collector(q_obj, tlc)
+                except TimeLimit:
+                    logger.warning("Search timelimit of %s seconds reached; returning partial results", timelimit)
+                results = tlc.results()
+            else:
+                results = searcher.search(q=q_obj, **search_kwargs)
+            return results, [], searcher
+        except Exception:
+            searcher.close()
+            raise
 
 
     def suggest(self, querystr):

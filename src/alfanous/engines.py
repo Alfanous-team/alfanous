@@ -133,7 +133,12 @@ class BasicSearchEngine:
 
         """
         searcher = self._docindex.get_searcher()()
-        return searcher.find(defaultfield, query,limit=QURAN_TOTAL_VERSES), searcher
+        try:
+            results = searcher.find(defaultfield, query, limit=QURAN_TOTAL_VERSES)
+        except Exception:
+            searcher.close()
+            raise
+        return results, searcher
 
     def list_values(self, fieldname):
         """ list all stored values of a field  """
