@@ -943,10 +943,11 @@ class Raw:
                                     ])
                                     _lem_res, _, _lem_srch = self.QSE.search_with_query(_lem_q, limit=500)
                                     try:
-                                        derivations = list(set(
+                                        derivations_set = set(
                                             w.get("normalized") for w in _lem_res
                                             if w.get("normalized")
-                                        ))
+                                        )
+                                        derivations = list(derivations_set)
                                     finally:
                                         _lem_srch.close()
                                 if root:
@@ -956,13 +957,13 @@ class Raw:
                                     ])
                                     _root_res, _, _root_srch = self.QSE.search_with_query(_root_q, limit=500)
                                     try:
-                                        _root_norms = list(set(
+                                        _root_norms_set = set(
                                             w.get("normalized") for w in _root_res
                                             if w.get("normalized")
-                                        ))
+                                        )
                                     finally:
                                         _root_srch.close()
-                                    derivations_extra = list(set(_root_norms) - set(derivations))
+                                    derivations_extra = list(_root_norms_set - derivations_set)
     
                         # Compute variations specific to this word: among all
                         # matched aya_ac terms, keep only those within

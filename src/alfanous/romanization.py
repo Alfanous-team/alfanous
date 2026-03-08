@@ -422,10 +422,10 @@ def transliterate(mode, string, ignore=u"", reverse=False):
     else:
         mapping = MAPPING
 
-    result = ""
+    result = []
     for char in string:
         if char not in ignore and mapping.get(char):
-            result += mapping[char]
+            result.append(mapping[char])
         else:
-            result += char
-    return result
+            result.append(char)
+    return "".join(result)

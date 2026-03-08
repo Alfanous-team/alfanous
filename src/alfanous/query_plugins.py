@@ -225,6 +225,12 @@ class DerivationQuery(QMultiTerm):
 class SpellErrorsQuery(QMultiTerm):
     """Query that ignores spell errors of Arabic letters"""
 
+    # Cap expansion to prevent unbounded memory growth and slow query execution
+    # when many index terms normalise to the same form.  100 is generous compared
+    # to ArabicWildcardQuery.MAX_EXPAND (20) while still bounding worst-case
+    # behaviour on a large Arabic index.
+    MAX_MATCHES = 100
+
     def __init__(self, fieldname, text, boost=1.0):
         self.fieldname = fieldname
         self.text = text
@@ -236,22 +242,27 @@ class SpellErrorsQuery(QMultiTerm):
             spellerrors=True,
             hamza=True
         )
+        # Pre-compute once; used in every _compare() call instead of recomputing
+        # it O(index_terms) times during _btexts() iteration.
+        self._text_normalized = self.ASF.normalize_all(text)
 
     def _btexts(self, ixreader):
         fieldname = self.fieldname
         from_bytes = ixreader.schema[fieldname].from_bytes
+        count = 0
         for field, btext in ixreader.all_terms():
+            if count >= self.MAX_MATCHES:
+                break
             if field == fieldname:
                 indexed_text = from_bytes(btext)
-                if self._compare(self.text, indexed_text):
+                if self._compare(indexed_text):
+                    count += 1
                     yield btext
 
-    def _compare(self, first, second):
-        """Normalize and compare"""
-        matched = (
-            self.ASF.normalize_all(first) == self.ASF.normalize_all(second)
-        )
-        if matched:
+    def _compare(self, second):
+        """Normalize and compare against the pre-computed query normalisation."""
+        matched = self.ASF.normalize_all(second) == self._text_normalized
+        if matched and len(self.words) < self.MAX_MATCHES + 1:
             self.words.append(second)
         return matched
 
