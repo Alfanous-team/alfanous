@@ -10,6 +10,10 @@ from typing import Dict, Optional, Any
 # import Output object
 from alfanous.outputs import Raw as _search_engine
 
+# Public alias: users should import Engine from alfanous.api (or alfanous)
+# instead of reaching into alfanous.outputs directly.
+Engine = _search_engine
+
 DEFAULTS, DOMAINS, HELPMESSAGES = _search_engine.DEFAULTS, _search_engine.DOMAINS, _search_engine.HELPMESSAGES
 FLAGS = DEFAULTS["flags"].keys()
 

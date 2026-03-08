@@ -22,7 +22,10 @@ Run via::
 """
 
 import json
+import logging
 import os
+
+logger = logging.getLogger(__name__)
 
 _REPO_ROOT = os.path.join(os.path.dirname(__file__), "..", "..")
 FIELDS_JSON = os.path.join(_REPO_ROOT, "store", "fields.json")
@@ -55,7 +58,7 @@ def generate(fields_path=FIELDS_JSON, output_path=OUTPUT_JSON):
     with open(output_path, "w", encoding="utf-8") as fh:
         json.dump(mapping, fh, ensure_ascii=False, indent=2, sort_keys=True)
 
-    print(f"Written {len(mapping)} entries to {output_path}")
+    logger.info("Written %d entries to %s", len(mapping), output_path)
     return mapping
 
 

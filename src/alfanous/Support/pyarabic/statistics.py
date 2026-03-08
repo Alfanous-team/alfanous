@@ -1,4 +1,5 @@
 
+import logging
 import re
 
 __all__ = ['letters', 'diacritics', 'letter_count', 'hamza_count', 'words',
@@ -63,12 +64,14 @@ def moonletters( text ):
 
 
 if __name__ == "__main__":
+    logging.basicConfig(level=logging.DEBUG)
+    logger = logging.getLogger(__name__)
     str = u" اللّهم يضلله يً ْيسئء سبي شبيشيش شسيشسي"
-    print( "letters=", letters( str ) )
-    print( "diacritics=", diacritics( str ) )
-    print( "letter_count=", letter_count( str, u"ش" ) )
-    print( "hamza_count=", hamza_count( str ) )
-    print( "words=", words( str ) )
-    print( "gwords=", gwords( str ) )
-    print( "sunletters=", sunletters( str ) )
-    print( "moonletters=", moonletters( str ) )
+    logger.debug("letters= %s", letters(str))
+    logger.debug("diacritics= %s", diacritics(str))
+    logger.debug("letter_count= %s", letter_count(str, u"ش"))
+    logger.debug("hamza_count= %s", hamza_count(str))
+    logger.debug("words= %s", words(str))
+    logger.debug("gwords= %s", gwords(str))
+    logger.debug("sunletters= %s", sunletters(str))
+    logger.debug("moonletters= %s", moonletters(str))

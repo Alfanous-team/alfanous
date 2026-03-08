@@ -12,6 +12,7 @@ Parse a morphology line::
 
 from __future__ import annotations
 
+import logging
 import xml.etree.ElementTree as ET
 from typing import Any, Dict, Generator, List
 
@@ -44,6 +45,8 @@ from .constants import (
     VERB,
     VERBclass,
 )
+
+logger = logging.getLogger(__name__)
 
 
 # ---------------------------------------------------------------------------
@@ -278,4 +281,4 @@ class API:
 
 
 if __name__ == "__main__":
-    print(API.MorphologyParser.parse("fa+ POS:INTG LEM:maA ROOT:qawol l:P+"))
+    logger.debug(API.MorphologyParser.parse("fa+ POS:INTG LEM:maA ROOT:qawol l:P+"))
