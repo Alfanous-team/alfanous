@@ -2,6 +2,8 @@
 This is a test module for alfanous.QueryProcessing 
 
 """
+import os
+import pytest
 from alfanous import paths
 from alfanous.data import arabic_to_english_fields
 from alfanous.indexing import QseDocIndex
@@ -13,6 +15,11 @@ def test_preprocess_query():
     """Test Arabic-to-Whoosh query translation: operators (و/أو/وليس/ليس) and field name
     aliases are converted by _preprocess_query before the Whoosh query parser processes them.
     """
+    if not arabic_to_english_fields:
+        pytest.skip(
+            "arabic_names.json not generated — run `make build` or "
+            "`python -m alfanous_import.generate_arabic_names` first"
+        )
 
     class _ArabicParserStub:
         ara2eng = arabic_to_english_fields
@@ -36,6 +43,8 @@ def test_preprocess_query():
 
 
 def test_parsing_with_schema():
+    if not os.path.isdir(paths.QSE_INDEX) or not QseDocIndex(paths.QSE_INDEX).OK:
+        pytest.skip("Search index not built — run `make build` first")
     D = QseDocIndex(paths.QSE_INDEX)
     QP = QuranicParser(D.get_schema(), otherfields=[])
 

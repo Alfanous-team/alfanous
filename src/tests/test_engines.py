@@ -4,11 +4,18 @@ This is a test module for most of features provided by alfanous.engines module.
 
 """
 
+import pytest
 from alfanous.engines import QuranicSearchEngine
 from alfanous import paths
 
 
 QSE = QuranicSearchEngine(paths.QSE_INDEX)
+
+
+@pytest.fixture(autouse=True)
+def _require_index():
+    if not QSE.OK:
+        pytest.skip("Search index not built — run `make build` first")
 
 
 def test_aya_engine():

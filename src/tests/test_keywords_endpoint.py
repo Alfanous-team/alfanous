@@ -3,7 +3,16 @@ This is a test module for the keywords endpoint feature.
 Tests the ability to query top most frequent keywords or all unique keywords in a field.
 """
 
+import pytest
 from alfanous import api
+from alfanous.data import QSE
+from alfanous import paths
+
+
+@pytest.fixture(autouse=True)
+def _require_index():
+    if not QSE(paths.QSE_INDEX).OK:
+        pytest.skip("Search index not built — run `make build` first")
 
 
 def test_keywords_top_frequent_default():

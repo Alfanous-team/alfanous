@@ -4,6 +4,7 @@ from whoosh.sorting import Facets
 from whoosh import query as wquery
 from whoosh.collectors import TimeLimitCollector, FilterCollector
 from whoosh.searching import TimeLimit
+from whoosh.qparser import QueryParser as _QueryParser
 import logging
 
 logger = logging.getLogger(__name__)
@@ -149,7 +150,7 @@ class QReader:
 
     def autocomplete(self, word):
         reader = self.reader
-        return [x.decode('utf-8') for x in reader.expand_prefix('aya_ac', word)]
+        return [_decode_if_bytes(x) for x in reader.expand_prefix('aya_ac', word)]
 
 
 class _SearcherProxy:
@@ -256,8 +257,6 @@ class QSearcher:
         query = self._qparser.parse(querystr)
 
         if fuzzy:
-            from whoosh.query import Or, FuzzyTerm
-
             # Strategy 2: Search the normalised/stemmed 'aya_fuzzy' field (fed
             # from the same vocalized source text as aya_, processed at index
             # time: diacritics stripped → stop words removed → synonyms expanded
@@ -268,7 +267,6 @@ class QSearcher:
             # aya_fuzzy field's analyzer, the MultiFilter inside that analyzer
             # calls next() on an empty stream and raises StopIteration.
             if self._fuzzy_parser is None:
-                from whoosh.qparser import QueryParser as _QueryParser
                 self._fuzzy_parser = _QueryParser("aya_fuzzy", schema=self._schema)
             try:
                 aya_fuzzy_query = self._fuzzy_parser.parse(querystr)
@@ -285,7 +283,7 @@ class QSearcher:
             # small amount of recall for a large gain in precision and scan
             # performance.
             levenshtein_subqueries = [
-                FuzzyTerm("aya_ac", term, maxdist=fuzzy_maxdist, prefixlength=1)
+                wquery.FuzzyTerm("aya_ac", term, maxdist=fuzzy_maxdist, prefixlength=1)
                 for fieldname, term in query.all_terms()
                 if isinstance(term, str) and len(term) >= 4 and any('\u0600' <= c <= '\u06FF' for c in term)
             ]
@@ -295,11 +293,11 @@ class QSearcher:
                 parts.append(aya_fuzzy_query)
             if levenshtein_subqueries:
                 parts.append(
-                    Or(levenshtein_subqueries)
+                    wquery.Or(levenshtein_subqueries)
                     if len(levenshtein_subqueries) > 1
                     else levenshtein_subqueries[0]
                 )
-            query = Or(parts)
+            query = wquery.Or(parts)
 
         # Prepare facets if requested
         groupedby = None
