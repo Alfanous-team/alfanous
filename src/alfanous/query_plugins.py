@@ -67,7 +67,7 @@ def _get_arabic_stemmer():
     return _arabic_stemmer if _arabic_stemmer is not False else None
 
 
-@lru_cache(maxsize=1024)
+@lru_cache(maxsize=256)
 def _query_word_index_cached(filter_key, field, limit):
     """Cached implementation of word-index lookup.
 
@@ -251,7 +251,9 @@ class SynonymsQuery(QMultiTerm):
     @staticmethod
     def _get_synonyms(word):
         """Get synonyms for a word"""
-        return list(syndict.get(word, [word]))[:SynonymsQuery.MAX_WORDS]
+        # syndict values are already lists; slicing creates the required new
+        # list without the extra copy that list(...) would introduce.
+        return syndict.get(word, [word])[:SynonymsQuery.MAX_WORDS]
 
 
 class AntonymsQuery(QMultiTerm):
@@ -270,7 +272,9 @@ class AntonymsQuery(QMultiTerm):
     @staticmethod
     def _get_antonyms(word):
         """Get antonyms for a word"""
-        return list(antdict.get(word, [word]))[:AntonymsQuery.MAX_WORDS]
+        # antdict values are already lists; slicing creates the required new
+        # list without the extra copy that list(...) would introduce.
+        return antdict.get(word, [word])[:AntonymsQuery.MAX_WORDS]
 
 
 class DerivationQuery(QMultiTerm):

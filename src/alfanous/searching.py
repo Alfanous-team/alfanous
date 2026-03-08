@@ -356,18 +356,20 @@ class QSearcher:
             # text terms and cannot be used for highlighting or term stats.
             raw_matched = results.matched_terms()
             if raw_matched is not None and raw_matched:
-                decoded_terms = []
+                # Accumulate directly into a set to avoid building a temporary
+                # list that is then immediately converted to frozenset.
+                decoded_terms = set()
                 for fieldname, text in raw_matched:
                     if isinstance(text, bytes):
                         try:
-                            decoded_terms.append((fieldname, text.decode("utf-8")))
+                            decoded_terms.add((fieldname, text.decode("utf-8")))
                         except UnicodeDecodeError:
                             logger.debug(
                                 "Skipping non-UTF-8 matched term in field %r (numeric encoding): %r",
                                 fieldname, text,
                             )
                     else:
-                        decoded_terms.append((fieldname, text))
+                        decoded_terms.add((fieldname, text))
                 terms = frozenset(decoded_terms)
             else:
                 terms = query.all_terms()

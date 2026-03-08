@@ -21,6 +21,8 @@ _TEXT_LANG_FIELDS = [f'text_{l}' for l in _TRANSLATION_LANGS]
 _ARABIZI_IGNORE_CHARS = "'_\"%*?#~[]{}:>+-|"
 
 FALSE_PATTERN = '^false|no|off|0$'
+# Compiled once at import time — used by IS_FLAG on every request.
+_FALSE_PATTERN_RE = re.compile(FALSE_PATTERN, re.IGNORECASE)
 
 # Compiled once at import time — used in every _search_aya / _search_translation
 # call to split comma-separated Sura name strings.
@@ -28,6 +30,11 @@ _KEYWORD_SPLIT_RE = re.compile("[^,،]+")
 
 # Pre-compiled regex for stripping non-Arabic characters from suggestion queries.
 _SUGGEST_STRIP_RE = re.compile(r'[^\u0621-\u065F\u0670-\u06FF\s]')
+
+# Pre-compiled regex for detecting whether a query contains Arabic-script
+# characters.  Used in _search_aya on every request to decide between the
+# arabizi/translation path and the direct Arabic path.
+_ARABIC_SCRIPT_RE = re.compile(r'[\u0600-\u06FF]')
 
 # Pre-instantiated Arabic text normalisation filters.  Only two configurations
 # are ever used inside _search_aya:
@@ -94,7 +101,7 @@ def IS_FLAG(flags, key):
     val = flags.get(key, default)
     if val is None or val == '':
         return default
-    if not val or re.match(FALSE_PATTERN, str(val), re.IGNORECASE):
+    if not val or _FALSE_PATTERN_RE.match(str(val)):
         return False
     return True
 
@@ -788,7 +795,7 @@ class Raw:
         # preprocess query
         query = query.replace("\\", "")
 
-        if ":" not in query and not re.search(r'[\u0600-\u06FF]', query):
+        if ":" not in query and not _ARABIC_SCRIPT_RE.search(query):
             # Non-Arabic query: search translations AND try arabizi conversion
             # to also search the Arabic aya fields ("the word and arabizi(word)").
             from whoosh import query as wq

@@ -230,7 +230,6 @@ def test_timelimit_with_filter_returns_correctly_filtered_partial_results():
 
 def test_timelimit_warning_logged_on_timeout(caplog):
     """QSearcher.search must emit a WARNING log entry when the timelimit is hit."""
-    from alfanous.searching import QSearcher
     import alfanous.searching as _searching_module
 
     ix, tmpdir = _build_test_index(num_docs=10000)
