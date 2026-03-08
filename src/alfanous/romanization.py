@@ -191,6 +191,22 @@ ARABIZI_DIGRAPHS = {
     u"eh": u"\u0629",  # ة ta marbuta (Rule D: terminal feminine suffix)
 }
 
+# Vowels excluded from gemination in Arabizi conversion (Rule C).
+_ARABIZI_VOWELS = frozenset(u"aeiou")
+
+# Two-character word-initial prefixes that map to the definite article ال.
+# Covers standard (al/el) and sun-letter assimilation forms.
+_ARABIZI_AL_PREFIXES_2 = frozenset([
+    u"al", u"el",
+    u"ar", u"er",
+    u"an", u"en",
+    u"as", u"es",
+    u"ad", u"ed",
+])
+
+# Three-character prefixes for ش assimilation (ash/esh: Ash-shaytan → الشيطان).
+_ARABIZI_AL_PREFIXES_3 = frozenset([u"ash", u"esh"])
+
 
 def arabizi_to_arabic_list(string, ignore=u""):
     """Convert an Arabizi string to a list of potential Arabic strings.
@@ -232,22 +248,6 @@ def arabizi_to_arabic_list(string, ignore=u""):
     :return: list of potential Arabic strings (deduplicated)
     """
 
-    # Vowels are excluded from gemination (Rule C)
-    _VOWELS = frozenset(u"aeiou")
-
-    # Rule B: two-char definite-article prefix variants → ال
-    # Covers standard (al/el) and sun-letter assimilation forms
-    # (ar/er for ر, an/en for ن, as/es for س, ad/ed for د, etc.)
-    _AL_PREFIXES_2 = frozenset([
-        u"al", u"el",
-        u"ar", u"er",
-        u"an", u"en",
-        u"as", u"es",
-        u"ad", u"ed",
-    ])
-    # Three-char prefixes (ash/esh for ش assimilation: Ash-shaytan → الشيطان)
-    _AL_PREFIXES_3 = frozenset([u"ash", u"esh"])
-
     def _convert(s, at_word_start=True):
         if not s:
             return [u""]
@@ -266,7 +266,7 @@ def arabizi_to_arabic_list(string, ignore=u""):
         if (at_word_start and len(s) >= 3
                 and s[0] not in ignore and s[1] not in ignore and s[2] not in ignore):
             prefix3 = s[:3].lower()
-            if prefix3 in _AL_PREFIXES_3:
+            if prefix3 in _ARABIZI_AL_PREFIXES_3:
                 for suffix in _convert(s[3:], at_word_start=False):
                     results.append(u"\u0627\u0644" + suffix)  # ال
 
@@ -274,7 +274,7 @@ def arabizi_to_arabic_list(string, ignore=u""):
         if (at_word_start and len(s) >= 2
                 and s[0] not in ignore and s[1] not in ignore):
             prefix2 = s[:2].lower()
-            if prefix2 in _AL_PREFIXES_2:
+            if prefix2 in _ARABIZI_AL_PREFIXES_2:
                 for suffix in _convert(s[2:], at_word_start=False):
                     results.append(u"\u0627\u0644" + suffix)  # ال
 
@@ -287,7 +287,7 @@ def arabizi_to_arabic_list(string, ignore=u""):
         # the digraph check below takes precedence over each individual character.
         if (len(s) >= 2 and s[0] not in ignore and s[1] not in ignore
                 and c == s[1].lower() and c in ARABIZI2UNICODE
-                and c not in _VOWELS):
+                and c not in _ARABIZI_VOWELS):
             for ac in ARABIZI2UNICODE[c]:
                 for suffix in _convert(s[2:], at_word_start=False):
                     results.append(ac + u"\u0651" + suffix)  # with shadda
@@ -310,7 +310,7 @@ def arabizi_to_arabic_list(string, ignore=u""):
             # Short vowel omission: in unvocalized Arabic, short vowels are not
             # written.  Generate an empty-string candidate for every vowel so that
             # e.g. "salameh" → 'سلامة' (in addition to 'سالامة').
-            if c in _VOWELS:
+            if c in _ARABIZI_VOWELS:
                 for suffix in suffixes:
                     results.append(suffix)
             if c == u"a":

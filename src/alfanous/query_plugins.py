@@ -19,6 +19,16 @@ from alfanous.text_processing import QArabicSymbolsFilter
 # stops, verse counters) that must not appear in search terms.
 _UTHMANI_ANNOTATION_RE = re.compile(r'[\u06D6-\u06ED]')
 
+# Pre-instantiated filter used by TashkilQuery and DerivationQuery — avoids
+# allocating a new QArabicSymbolsFilter object on every search execution.
+_ASF_TASHKIL = QArabicSymbolsFilter(
+    shaping=False, tashkil=True, spellerrors=False, hamza=False
+)
+# Pre-instantiated filter used by DerivationQuery for normalising the query word.
+_ASF_NORMALIZE = QArabicSymbolsFilter(
+    shaping=True, tashkil=True, spellerrors=False, hamza=False
+)
+
 
 def _query_word_index(filter_dict, field="word", limit=5000):
     """Query the word child documents in the QSE index and return unique values
@@ -171,12 +181,7 @@ class DerivationQuery(QMultiTerm):
         """
         use_root_level = leveldist >= 2
 
-        try:
-            from alfanous.text_processing import QArabicSymbolsFilter as _QASF
-            word_norm = _QASF(shaping=True, tashkil=True, spellerrors=False,
-                              hamza=False).normalize_all(word)
-        except Exception:
-            word_norm = word
+        word_norm = _ASF_NORMALIZE.normalize_all(word)
 
         try:
             import Stemmer as _Stemmer
@@ -285,20 +290,20 @@ class TashkilQuery(QMultiTerm):
 
     def _btexts(self, ixreader):
         fieldname = self.fieldname
-        ASF = QArabicSymbolsFilter(shaping=False, tashkil=True, spellerrors=False, hamza=False)
         from_bytes = ixreader.schema[fieldname].from_bytes
+        # Pre-compute the normalised form of every query word once instead of
+        # recomputing it O(index_terms) times inside the inner loop.
+        normalized_query_words = {_ASF_TASHKIL.normalize_all(w) for w in self.text}
         seen_words = set(self.words)
         for field, btext in ixreader.all_terms():
             if field == fieldname:
                 indexed_text = from_bytes(btext)
-                normalized_indexed = ASF.normalize_all(indexed_text)
-                for word in self.text:
-                    if ASF.normalize_all(word) == normalized_indexed:
-                        if indexed_text not in seen_words:
-                            self.words.append(indexed_text)
-                            seen_words.add(indexed_text)
-                        yield btext
-                        break
+                normalized_indexed = _ASF_TASHKIL.normalize_all(indexed_text)
+                if normalized_indexed in normalized_query_words:
+                    if indexed_text not in seen_words:
+                        self.words.append(indexed_text)
+                        seen_words.add(indexed_text)
+                    yield btext
 
 
 class TupleQuery(QMultiTerm):

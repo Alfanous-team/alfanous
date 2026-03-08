@@ -1007,16 +1007,15 @@ class Raw:
             # Build adjacent-aya query for prev/next aya text.
             _want_translation = bool(translation or lang)
             if prev_aya or next_aya:
-                adja_query = "( 0"
-    
+                _adja_parts = ["( 0"]
                 for r in reslist:
                     if prev_aya:
-                        adja_query += " OR gid:%s " % str(r["gid"] - 1)
+                        _adja_parts.append(" OR gid:%s " % str(r["gid"] - 1))
                     if next_aya:
-                        adja_query += " OR gid:%s " % str(r["gid"] + 1)
-    
+                        _adja_parts.append(" OR gid:%s " % str(r["gid"] + 1))
                 # Restrict to parent aya documents only (gid also matches children).
-                adja_query += " ) AND kind:aya"
+                _adja_parts.append(" ) AND kind:aya")
+                adja_query = "".join(_adja_parts)
     
             if prev_aya or next_aya:
                 adja_res, adja_searcher = self.QSE.find_extended(adja_query, "gid")
