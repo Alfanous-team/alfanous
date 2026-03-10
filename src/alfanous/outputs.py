@@ -1317,6 +1317,7 @@ class Raw:
                             entry = {
                                 "word_id":      w.get("word_id"),
                                 "word":         w.get("word"),
+                                "transliteration": w.get("word_transliteration"),
                                 "normalized":   w.get("normalized"),
                                 "spelled":      w.get("spelled"),
                                 # Arabic (primary, indexed)
@@ -1389,6 +1390,7 @@ class Raw:
                                     annot_words_map[_g].append({
                                         "word_id":    _w.get("word_id"),
                                         "word":       _w.get("word"),
+                                        "transliteration": _w.get("word_transliteration"),
                                         "normalized": _w.get("normalized"),
                                     })
                             for _g in annot_words_map:
@@ -1425,6 +1427,7 @@ class Raw:
                                 annot_aya_words_map[_g].append({
                                     "word_id":    _w.get("word_id"),
                                     "word":       _w.get("word"),
+                                    "transliteration": _w.get("word_transliteration"),
                                     "normalized": _w.get("normalized"),
                                 })
                         for _g in annot_aya_words_map:
@@ -1508,6 +1511,7 @@ class Raw:
                         else H(r["uth_"]),
                         "text_no_highlight": r["aya"] if _use_standard_script
                         else r["uth_"],
+                        "transliteration": r.get("transliteration"),
                         "translation": TH(trad_text.get(_gid, {}).get("text")) if _want_translation else None,
                         "recitation": (
                             f'https://www.everyayah.com/data/{_recitation_subfolder}/%03d%03d.mp3' % (
@@ -1702,6 +1706,7 @@ class Raw:
                     },
                     "aya": {
                         "text": _parent.get("aya"),
+                        "transliteration": _parent.get("transliteration"),
                     },
                     "translation": {
                         "text": H(_r_text),
@@ -1895,6 +1900,7 @@ class Raw:
                     "word": {
                         "text":              H(r.get("word", "")),
                         "text_no_highlight": r.get("word", ""),
+                        "transliteration":   r.get("word_transliteration"),
                         "normalized":        r.get("normalized"),
                         "spelled":          r.get("spelled"),
                         # Arabic (primary, indexed)
