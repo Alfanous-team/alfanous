@@ -1521,3 +1521,77 @@ def test_non_arabic_aya_search_no_highlight_when_highlight_none():
             assert "<span" not in translation_text, (
                 "Translation text must not contain highlight spans when highlight=none"
             )
+
+
+def test_search_words_includes_aya_text():
+    """_search_words results should include the parent aya text in each word entry."""
+    result = RAWoutput._search_words({
+        "query": "root:رحم",
+        "highlight": "none",
+        "page": 1,
+    })
+    assert "words" in result
+    words = result["words"]
+    if not words:
+        pytest.skip("No word results for root:رحم — index may be unavailable")
+    for entry in words.values():
+        assert "aya" in entry, "Each word result must include an 'aya' key"
+        aya = entry["aya"]
+        assert "text" in aya, "'aya' must have a 'text' key"
+        assert "text_no_highlight" in aya, "'aya' must have a 'text_no_highlight' key"
+        # text should not be empty when the index is built with corpus data
+        assert aya["text"] not in (None, ""), "aya.text should be populated"
+
+
+def test_search_words_facets_root():
+    """_search_words should return facet counts for 'root' when requested."""
+    result = RAWoutput._search_words({
+        "query": "root:رحم",
+        "highlight": "none",
+        "page": 1,
+        "facets": "root",
+    })
+    assert "words" in result
+    if not result["words"]:
+        pytest.skip("No word results — index may be unavailable")
+    assert "facets" in result, "_search_words must include 'facets' key when facets= is set"
+    assert "root" in result["facets"], "'root' must be present in facets output"
+    facet_entries = result["facets"]["root"]
+    assert isinstance(facet_entries, list), "facets['root'] must be a list"
+    for entry in facet_entries:
+        assert "value" in entry and "count" in entry
+
+
+def test_search_words_facets_lemma_and_type():
+    """_search_words should return facets for lemma and type when requested."""
+    result = RAWoutput._search_words({
+        "query": "الله",
+        "highlight": "none",
+        "page": 1,
+        "facets": "lemma,type",
+    })
+    assert "words" in result
+    if not result["words"]:
+        pytest.skip("No word results — index may be unavailable")
+    assert "facets" in result
+    # Both requested facet fields should appear
+    assert "lemma" in result["facets"]
+    assert "type" in result["facets"]
+
+
+def test_search_words_facets_unknown_field_ignored():
+    """Facet fields not in _WORD_FACET_FIELDS should be silently ignored."""
+    result = RAWoutput._search_words({
+        "query": "root:رحم",
+        "highlight": "none",
+        "page": 1,
+        "facets": "sura_id,root",   # sura_id is not in _WORD_FACET_FIELDS
+    })
+    assert "words" in result
+    if not result["words"]:
+        pytest.skip("No word results — index may be unavailable")
+    assert "facets" in result
+    # 'root' allowed; 'sura_id' should be silently dropped
+    assert "root" in result["facets"]
+    assert "sura_id" not in result["facets"]
+
