@@ -34,7 +34,7 @@ class QSpaceTokenizer(RegexTokenizer):
     Custom tokenizer for Quranic text that splits on whitespace.
     """
     def __init__(self, expression=r"[^ \t\r\n]+"):
-        super(QSpaceTokenizer, self).__init__(expression=expression)
+        super().__init__(expression=expression)
 
 
 
@@ -86,7 +86,7 @@ class QArabicSymbolsFilter(Filter):
 
 def Gword_tamdid(aya):
     """ add a tamdid to lafdh aljalala to eliminate the double vocalization """
-    return aya.replace(u"لَّه", u"لَّـه").replace(u"لَّه", u"لَّـه")
+    return aya.replace("لَّه", "لَّـه").replace("لَّه", "لَّـه")
 
 
 class QArabicStemFilter(Filter):
