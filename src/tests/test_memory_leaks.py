@@ -1393,5 +1393,252 @@ class TestDerivationTwoPassCached(unittest.TestCase):
         )
 
 
+# ---------------------------------------------------------------------------
+# Iteration-7 fixes
+# ---------------------------------------------------------------------------
+
+class TestResultDocnumsFrozenset(unittest.TestCase):
+    """_result_docnums must be built as a frozenset, not a plain set."""
+
+    def test_result_docnums_is_frozenset(self):
+        """_result_docnums must be initialised with frozenset(...), not set(...)."""
+        import ast, inspect, textwrap
+        import alfanous.outputs as m
+        src = textwrap.dedent(inspect.getsource(m.Raw._search_aya))
+        tree = ast.parse(src)
+
+        # Walk the AST and look for any assignment to _result_docnums that uses
+        # a plain `set(...)` call instead of `frozenset(...)`.
+        for node in ast.walk(tree):
+            if not isinstance(node, ast.Assign):
+                continue
+            for t in node.targets:
+                if isinstance(t, ast.Name) and t.id == "_result_docnums":
+                    val = node.value
+                    if (isinstance(val, ast.Call)
+                            and isinstance(val.func, ast.Name)
+                            and val.func.id == "set"):
+                        self.fail(
+                            "_result_docnums must be built with frozenset(), not set() — "
+                            "it is never mutated after creation, so frozenset avoids "
+                            "unnecessary allocation of a mutable data structure."
+                        )
+
+    def test_result_docnums_uses_frozenset(self):
+        """_result_docnums must explicitly call frozenset()."""
+        import ast, inspect, textwrap
+        import alfanous.outputs as m
+        src = textwrap.dedent(inspect.getsource(m.Raw._search_aya))
+        tree = ast.parse(src)
+
+        found = False
+        for node in ast.walk(tree):
+            if not isinstance(node, ast.Assign):
+                continue
+            for t in node.targets:
+                if isinstance(t, ast.Name) and t.id == "_result_docnums":
+                    val = node.value
+                    if (isinstance(val, ast.Call)
+                            and isinstance(val.func, ast.Name)
+                            and val.func.id == "frozenset"):
+                        found = True
+
+        self.assertTrue(
+            found,
+            "_result_docnums must be assigned frozenset(...) in _search_aya"
+        )
+
+
+class TestBatchDerivDefaultdict(unittest.TestCase):
+    """_batch_deriv_by_lemma and _batch_deriv_by_root must use defaultdict(set)."""
+
+    def _search_aya_source(self):
+        import inspect, textwrap
+        import alfanous.outputs as m
+        return textwrap.dedent(inspect.getsource(m.Raw._search_aya))
+
+    def test_no_setdefault_for_batch_deriv_by_lemma(self):
+        """_batch_deriv_by_lemma must not use .setdefault() — use defaultdict(set)."""
+        import ast
+        src = self._search_aya_source()
+        tree = ast.parse(src)
+        for node in ast.walk(tree):
+            if not isinstance(node, ast.Call):
+                continue
+            func = node.func
+            if not (isinstance(func, ast.Attribute) and func.attr == "setdefault"):
+                continue
+            # Check if the receiver is _batch_deriv_by_lemma
+            if (isinstance(func.value, ast.Name)
+                    and func.value.id == "_batch_deriv_by_lemma"):
+                self.fail(
+                    "_batch_deriv_by_lemma must not use .setdefault() — "
+                    "initialise it as defaultdict(set) and use direct item assignment."
+                )
+
+    def test_no_setdefault_for_batch_deriv_by_root(self):
+        """_batch_deriv_by_root must not use .setdefault() — use defaultdict(set)."""
+        import ast
+        src = self._search_aya_source()
+        tree = ast.parse(src)
+        for node in ast.walk(tree):
+            if not isinstance(node, ast.Call):
+                continue
+            func = node.func
+            if not (isinstance(func, ast.Attribute) and func.attr == "setdefault"):
+                continue
+            if (isinstance(func.value, ast.Name)
+                    and func.value.id == "_batch_deriv_by_root"):
+                self.fail(
+                    "_batch_deriv_by_root must not use .setdefault() — "
+                    "initialise it as defaultdict(set) and use direct item assignment."
+                )
+
+    def test_batch_deriv_by_lemma_initialised_as_defaultdict(self):
+        """_batch_deriv_by_lemma must be initialised with defaultdict(set)."""
+        import ast
+        src = self._search_aya_source()
+        tree = ast.parse(src)
+        found = False
+        for node in ast.walk(tree):
+            # Handle plain assignment and annotated assignment.
+            if isinstance(node, ast.Assign):
+                for t in node.targets:
+                    if isinstance(t, ast.Name) and t.id == "_batch_deriv_by_lemma":
+                        val = node.value
+                        if (isinstance(val, ast.Call)
+                                and isinstance(val.func, ast.Name)
+                                and val.func.id == "defaultdict"):
+                            found = True
+            elif isinstance(node, ast.AnnAssign):
+                t = node.target
+                if (isinstance(t, ast.Name) and t.id == "_batch_deriv_by_lemma"
+                        and node.value is not None):
+                    val = node.value
+                    if (isinstance(val, ast.Call)
+                            and isinstance(val.func, ast.Name)
+                            and val.func.id == "defaultdict"):
+                        found = True
+        self.assertTrue(
+            found,
+            "_batch_deriv_by_lemma must be initialised as defaultdict(set), not {}"
+        )
+
+    def test_batch_deriv_by_root_initialised_as_defaultdict(self):
+        """_batch_deriv_by_root must be initialised with defaultdict(set)."""
+        import ast
+        src = self._search_aya_source()
+        tree = ast.parse(src)
+        found = False
+        for node in ast.walk(tree):
+            if isinstance(node, ast.Assign):
+                for t in node.targets:
+                    if isinstance(t, ast.Name) and t.id == "_batch_deriv_by_root":
+                        val = node.value
+                        if (isinstance(val, ast.Call)
+                                and isinstance(val.func, ast.Name)
+                                and val.func.id == "defaultdict"):
+                            found = True
+            elif isinstance(node, ast.AnnAssign):
+                t = node.target
+                if (isinstance(t, ast.Name) and t.id == "_batch_deriv_by_root"
+                        and node.value is not None):
+                    val = node.value
+                    if (isinstance(val, ast.Call)
+                            and isinstance(val.func, ast.Name)
+                            and val.func.id == "defaultdict"):
+                        found = True
+        self.assertTrue(
+            found,
+            "_batch_deriv_by_root must be initialised as defaultdict(set), not {}"
+        )
+
+    def test_defaultdict_importable_from_outputs(self):
+        """defaultdict must be importable from alfanous.outputs module namespace."""
+        import alfanous.outputs as _outputs
+        self.assertTrue(
+            hasattr(_outputs, "defaultdict"),
+            "defaultdict must be imported at module level in alfanous.outputs"
+        )
+
+
+class TestAyaWordsMapsDefaultdict(unittest.TestCase):
+    """aya_words_map, annot_words_map, annot_aya_words_map must use defaultdict(list)."""
+
+    def _search_aya_source(self):
+        import inspect, textwrap
+        import alfanous.outputs as m
+        return textwrap.dedent(inspect.getsource(m.Raw._search_aya))
+
+    def _check_no_setdefault_for(self, var_name):
+        import ast
+        src = self._search_aya_source()
+        tree = ast.parse(src)
+        for node in ast.walk(tree):
+            if not isinstance(node, ast.Call):
+                continue
+            func = node.func
+            if not (isinstance(func, ast.Attribute) and func.attr == "setdefault"):
+                continue
+            if isinstance(func.value, ast.Name) and func.value.id == var_name:
+                self.fail(
+                    f"{var_name} must not use .setdefault() — "
+                    f"initialise it as defaultdict(list) and use direct item access."
+                )
+
+    def _check_initialised_as_defaultdict(self, var_name):
+        import ast
+        src = self._search_aya_source()
+        tree = ast.parse(src)
+        found = False
+        for node in ast.walk(tree):
+            # Handle both plain assignment (`x = defaultdict(...)`) and
+            # annotated assignment (`x: SomeType = defaultdict(...)`).
+            if isinstance(node, ast.Assign):
+                for t in node.targets:
+                    if isinstance(t, ast.Name) and t.id == var_name:
+                        val = node.value
+                        if (isinstance(val, ast.Call)
+                                and isinstance(val.func, ast.Name)
+                                and val.func.id == "defaultdict"):
+                            found = True
+            elif isinstance(node, ast.AnnAssign):
+                t = node.target
+                if isinstance(t, ast.Name) and t.id == var_name and node.value is not None:
+                    val = node.value
+                    if (isinstance(val, ast.Call)
+                            and isinstance(val.func, ast.Name)
+                            and val.func.id == "defaultdict"):
+                        found = True
+        self.assertTrue(
+            found,
+            f"{var_name} must be initialised as defaultdict(list), not {{}}"
+        )
+
+    def test_aya_words_map_no_setdefault(self):
+        """aya_words_map must not use .setdefault() — use defaultdict(list)."""
+        self._check_no_setdefault_for("aya_words_map")
+
+    def test_aya_words_map_is_defaultdict(self):
+        """aya_words_map must be initialised as defaultdict(list)."""
+        self._check_initialised_as_defaultdict("aya_words_map")
+
+    def test_annot_words_map_no_setdefault(self):
+        """annot_words_map must not use .setdefault() — use defaultdict(list)."""
+        self._check_no_setdefault_for("annot_words_map")
+
+    def test_annot_words_map_is_defaultdict(self):
+        """annot_words_map must be initialised as defaultdict(list)."""
+        self._check_initialised_as_defaultdict("annot_words_map")
+
+    def test_annot_aya_words_map_no_setdefault(self):
+        """annot_aya_words_map must not use .setdefault() — use defaultdict(list)."""
+        self._check_no_setdefault_for("annot_aya_words_map")
+
+    def test_annot_aya_words_map_is_defaultdict(self):
+        """annot_aya_words_map must be initialised as defaultdict(list)."""
+        self._check_initialised_as_defaultdict("annot_aya_words_map")
+
+
 if __name__ == "__main__":
     unittest.main()

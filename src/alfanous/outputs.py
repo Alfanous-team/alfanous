@@ -1,6 +1,7 @@
 import heapq
 import logging
 import re
+from collections import defaultdict
 
 from alfanous.text_processing import QArabicSymbolsFilter
 from alfanous.data import *
@@ -965,7 +966,7 @@ class Raw:
                 # _result_docnums and _index_reader are only needed here; building them
                 # unconditionally would iterate ALL results and hold a reader reference
                 # on every request even when word_info is False (the default).
-                _result_docnums = set(hit.docnum for hit in res)
+                _result_docnums = frozenset(hit.docnum for hit in res)
 
                 # Acquire _wi_searcher BEFORE capturing _index_reader.
                 # shared_searcher() calls _get_shared_searcher().refresh() internally;
@@ -1032,8 +1033,8 @@ class Raw:
                 # _batch_deriv_by_lemma : lemma → set(normalized forms)
                 # _batch_deriv_by_root  : root  → set(normalized forms)
                 _batch_word_data: dict = {}
-                _batch_deriv_by_lemma: dict = {}
-                _batch_deriv_by_root: dict = {}
+                _batch_deriv_by_lemma: defaultdict = defaultdict(set)
+                _batch_deriv_by_root: defaultdict = defaultdict(set)
 
                 if (word_vocalizations or word_derivations) and _wi_searcher is not None:
                     _batch_norms = sorted({
@@ -1111,9 +1112,9 @@ class Raw:
                                     _dl = _d.get("lemma")
                                     _dr = _d.get("root")
                                     if _dl:
-                                        _batch_deriv_by_lemma.setdefault(_dl, set()).add(_dn)
+                                        _batch_deriv_by_lemma[_dl].add(_dn)
                                     if _dr:
-                                        _batch_deriv_by_root.setdefault(_dr, set()).add(_dn)
+                                        _batch_deriv_by_root[_dr].add(_dn)
                 # ── End batch fetch ───────────────────────────────────────────
 
                 try:
@@ -1287,7 +1288,7 @@ class Raw:
             # Fetch word children (kind="word") for each aya on the result page when
             # the linguistic view is requested.  Word children carry the parent aya's
             # gid so they can be fetched with the same query used for translations.
-            aya_words_map = {}  # {(sura_id, aya_id): [word_entry, ...]}
+            aya_words_map: defaultdict = defaultdict(list)  # {(sura_id, aya_id): [word_entry, ...]}
             if word_linguistics and reslist:
                 try:
                     _wl_parent_q = wquery.And([
@@ -1336,7 +1337,7 @@ class Raw:
                                 "derivation":   w.get("derivation"),
                                 "aspect":       w.get("aspect"),
                             }
-                            aya_words_map.setdefault(key, []).append(entry)
+                            aya_words_map[key].append(entry)
                         # Sort each aya's word list by word_id (ascending position order).
                         for key in aya_words_map:
                             aya_words_map[key].sort(key=_WORD_ID_KEY)
@@ -1350,7 +1351,7 @@ class Raw:
             # so the same NestedChildren query used above applies here too.
             # Only words whose normalized form matches a search term are returned;
             # results are grouped by aya gid and sorted by word_id (position).
-            annot_words_map = {}  # {gid: [{"word_id", "word", "normalized"}, ...]}
+            annot_words_map: defaultdict = defaultdict(list)  # {gid: [{"word_id", "word", "normalized"}, ...]}
             if annotation_word and terms and reslist and self.QSE.OK:
                 try:
                     # sorted() for deterministic term ordering across Python runs
@@ -1378,7 +1379,7 @@ class Raw:
                             for _w in _aw_res:
                                 _g = _w.get("gid")
                                 if _g is not None:
-                                    annot_words_map.setdefault(_g, []).append({
+                                    annot_words_map[_g].append({
                                         "word_id":    _w.get("word_id"),
                                         "word":       _w.get("word"),
                                         "normalized": _w.get("normalized"),
@@ -1394,7 +1395,7 @@ class Raw:
             # annotation_aya is disabled when len(res) > 1 earlier in this method).
             # Returns every word of the matched aya with position, Uthmani text,
             # and normalized form — a lightweight alternative to word_linguistics.
-            annot_aya_words_map = {}  # {gid: [{"word_id", "word", "normalized"}, ...]}
+            annot_aya_words_map: defaultdict = defaultdict(list)  # {gid: [{"word_id", "word", "normalized"}, ...]}
             if annotation_aya and reslist and self.QSE.OK:
                 try:
                     _aa_parent_q = wquery.And([
@@ -1414,7 +1415,7 @@ class Raw:
                         for _w in _aa_res:
                             _g = _w.get("gid")
                             if _g is not None:
-                                annot_aya_words_map.setdefault(_g, []).append({
+                                annot_aya_words_map[_g].append({
                                     "word_id":    _w.get("word_id"),
                                     "word":       _w.get("word"),
                                     "normalized": _w.get("normalized"),
