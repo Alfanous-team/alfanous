@@ -513,11 +513,13 @@ class Transformer:
             # transliteration.  For each aya where the space-split word count
             # matches the corpus word count we can assign each corpus word the
             # corresponding standard-script and transliteration word by index.
-            # When counts differ the aya is recorded in special.json for manual
-            # mapping and no word_standard/word_transliteration is stored.
+            # When transliteration token count ≠ corpus word count the aya is
+            # recorded in special_cases.json for manual mapping and no
+            # word_transliteration is stored for that aya.
             # {(sura_id, aya_id): [word, ...]}
             aya_standard_words: dict = {}
             aya_translit_words: dict = {}
+            _translit_special_cases: list = []
             if words_by_aya and tablename == "aya":
                 for line in data_list:
                     sid = line.get("sura_id")
@@ -590,6 +592,26 @@ class Transformer:
                     tr_tokens = line.get("transliteration", "").split()
                     if len(tr_tokens) == corpus_count:
                         aya_translit_words[key] = tr_tokens
+                    elif tr_tokens:
+                        # Token count mismatch: record for special_cases.json.
+                        _translit_special_cases.append({
+                            "sura_id":                    sid,
+                            "aya_id":                     aid,
+                            "corpus_word_count":          corpus_count,
+                            "transliteration_word_count": len(tr_tokens),
+                            "transliteration":            line.get("transliteration", ""),
+                        })
+
+            # Write transliteration mismatches to store/special_cases.json so
+            # they can be reviewed and resolved manually.
+            if _translit_special_cases:
+                _sc_path = self.resource_path + "special_cases.json"
+                with open(_sc_path, "w", encoding="utf-8") as _sc_f:
+                    json.dump(_translit_special_cases, _sc_f, indent=4, ensure_ascii=False)
+                logging.info(
+                    "Wrote %d transliteration special cases to %s",
+                    len(_translit_special_cases), _sc_path,
+                )
 
             if tablename == "aya":
                 # Pre-compute schema field names once.
