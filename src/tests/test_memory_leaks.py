@@ -1077,5 +1077,321 @@ class TestSharedSearcherNoPerCallImport(unittest.TestCase):
         )
 
 
+# ---------------------------------------------------------------------------
+# Iteration-5 fixes
+# ---------------------------------------------------------------------------
+
+class TestNoLimitNoneInFaceting(unittest.TestCase):
+    """outputs.py must not use limit=None for faceting (OOM risk)."""
+
+    def _get_all_limit_none_lines(self, src):
+        """Return a list of line numbers for every searcher.search(limit=None) call."""
+        import ast
+        tree = ast.parse(src)
+        hits = []
+        for node in ast.walk(tree):
+            if not isinstance(node, ast.Call):
+                continue
+            # Look for <something>.search(...)
+            func = node.func
+            if not (isinstance(func, ast.Attribute) and func.attr == "search"):
+                continue
+            for kw in node.keywords:
+                if kw.arg == "limit" and isinstance(kw.value, ast.Constant) and kw.value.value is None:
+                    hits.append(node.lineno)
+        return hits
+
+    def test_no_limit_none_in_outputs(self):
+        """outputs.py must not pass limit=None to any searcher.search() call."""
+        import inspect
+        import alfanous.outputs as _outputs_module
+        src = inspect.getsource(_outputs_module)
+        hits = self._get_all_limit_none_lines(src)
+        self.assertEqual(
+            hits, [],
+            f"outputs.py has searcher.search(limit=None) at line(s) {hits}; "
+            "use _MAX_FACET_DOCS instead to bound memory usage."
+        )
+
+    def test_max_facet_docs_constant_exists(self):
+        """_MAX_FACET_DOCS must be defined as a module-level constant in outputs.py."""
+        import alfanous.outputs as _outputs_module
+        self.assertTrue(
+            hasattr(_outputs_module, "_MAX_FACET_DOCS"),
+            "_MAX_FACET_DOCS must be defined at module level in alfanous.outputs"
+        )
+
+    def test_max_facet_docs_value_is_reasonable(self):
+        """_MAX_FACET_DOCS must be at least QURAN_TOTAL_VERSES and at most 1_000_000."""
+        import alfanous.outputs as _outputs_module
+        from alfanous.constants import QURAN_TOTAL_VERSES
+        cap = _outputs_module._MAX_FACET_DOCS
+        self.assertIsInstance(cap, int, "_MAX_FACET_DOCS must be an integer")
+        self.assertGreaterEqual(
+            cap, QURAN_TOTAL_VERSES,
+            f"_MAX_FACET_DOCS ({cap}) must be >= QURAN_TOTAL_VERSES ({QURAN_TOTAL_VERSES})"
+        )
+        self.assertLessEqual(
+            cap, 1_000_000,
+            f"_MAX_FACET_DOCS ({cap}) must be <= 1_000_000 (otherwise the cap has no practical effect)"
+        )
+
+
+class TestArabiziCandidateCap(unittest.TestCase):
+    """arabizi_to_arabic_list must never produce more than _MAX_ARABIZI_CANDIDATES items."""
+
+    def test_max_arabizi_candidates_constant_exists(self):
+        """_MAX_ARABIZI_CANDIDATES must be defined in alfanous.romanization."""
+        import alfanous.romanization as _rom
+        self.assertTrue(
+            hasattr(_rom, "_MAX_ARABIZI_CANDIDATES"),
+            "_MAX_ARABIZI_CANDIDATES must be defined at module level in alfanous.romanization"
+        )
+
+    def test_max_arabizi_candidates_value_is_positive(self):
+        """_MAX_ARABIZI_CANDIDATES must be a positive integer."""
+        import alfanous.romanization as _rom
+        cap = _rom._MAX_ARABIZI_CANDIDATES
+        self.assertIsInstance(cap, int, "_MAX_ARABIZI_CANDIDATES must be an integer")
+        self.assertGreater(cap, 0, "_MAX_ARABIZI_CANDIDATES must be positive")
+
+    def test_long_ambiguous_input_capped(self):
+        """A long all-vowel input must produce at most _MAX_ARABIZI_CANDIDATES results."""
+        from alfanous.romanization import arabizi_to_arabic_list, _MAX_ARABIZI_CANDIDATES
+        # All vowels: each maps to 2–3 Arabic chars + empty-string option → exponential growth.
+        result = arabizi_to_arabic_list("aeiouaeiou")
+        self.assertLessEqual(
+            len(result), _MAX_ARABIZI_CANDIDATES,
+            f"arabizi_to_arabic_list produced {len(result)} candidates for a 10-vowel input; "
+            f"must be capped at _MAX_ARABIZI_CANDIDATES={_MAX_ARABIZI_CANDIDATES}"
+        )
+
+    def test_normal_input_still_correct(self):
+        """Normal Arabizi inputs must still produce correct Arabic candidates after capping."""
+        from alfanous.romanization import arabizi_to_arabic_list
+        # Short, unambiguous input — should not be affected by the cap.
+        candidates = set(arabizi_to_arabic_list("rahman"))
+        self.assertIn("رحمن", candidates, "rahman must still produce رحمن with the cap in place")
+
+    def test_result_never_exceeds_cap(self):
+        """No call to arabizi_to_arabic_list must return more items than the cap."""
+        from alfanous.romanization import arabizi_to_arabic_list, _MAX_ARABIZI_CANDIDATES
+        for test_input in ("aaaaaaaaaaaa", "eeeeeeeeee", "sssssssssss", "aaabbbccc"):
+            result = arabizi_to_arabic_list(test_input)
+            self.assertLessEqual(
+                len(result), _MAX_ARABIZI_CANDIDATES,
+                f"arabizi_to_arabic_list({test_input!r}) returned {len(result)} candidates; "
+                f"must be <= {_MAX_ARABIZI_CANDIDATES}"
+            )
+
+
+# ---------------------------------------------------------------------------
+# Iteration-6 fixes
+# ---------------------------------------------------------------------------
+
+class TestTashkilNodeNoFunctionLevelImport(unittest.TestCase):
+    """TashkilPlugin.TashkilNode.query must not contain a function-level whoosh import."""
+
+    def test_no_function_level_wquery_import(self):
+        """TashkilNode.query() must not contain 'from whoosh import query'."""
+        import inspect
+        import alfanous.query_plugins as _qp
+        src = inspect.getsource(_qp.TashkilPlugin.TashkilNode.query)
+        self.assertNotIn(
+            "from whoosh import query",
+            src,
+            "TashkilNode.query() contains a per-call function-level import; "
+            "move NullQuery / Or / Term to module-level imports in query_plugins.py"
+        )
+
+    def test_null_query_importable_at_module_level(self):
+        """NullQuery must be importable directly from alfanous.query_plugins."""
+        import alfanous.query_plugins as _qp
+        self.assertTrue(
+            hasattr(_qp, "NullQuery"),
+            "NullQuery must be imported at module level in alfanous.query_plugins"
+        )
+
+    def test_tashkil_empty_string_produces_null_query(self):
+        """TashkilNode.query() with no words must return NullQuery without import errors."""
+        from alfanous.query_plugins import TashkilPlugin, NullQuery
+
+        class _FakeParser:
+            fieldname = "aya"
+
+        # Build a TashkilNode directly with empty text
+        node = TashkilPlugin.TashkilNode("   ")
+        result = node.query(_FakeParser())
+        # NullQuery is a singleton instance (not a class), so compare by identity
+        # or by checking the internal class name.
+        self.assertIs(
+            result, NullQuery,
+            f"Expected NullQuery singleton for empty tashkil text, got {result!r}"
+        )
+
+    def test_tashkil_single_word_no_import_error(self):
+        """TashkilNode.query() with one word must work without a per-call import."""
+        from alfanous.query_plugins import TashkilPlugin, TashkilQuery
+
+        class _FakeParser:
+            fieldname = "aya"
+
+        node = TashkilPlugin.TashkilNode("الله")
+        result = node.query(_FakeParser())
+        self.assertIsInstance(
+            result, TashkilQuery,
+            f"Expected TashkilQuery for single-word tashkil, got {type(result)}"
+        )
+
+    def test_tashkil_multi_word_no_import_error(self):
+        """TashkilNode.query() with multiple words must return Or(Term, ...) without a per-call import."""
+        from alfanous.query_plugins import TashkilPlugin
+        from whoosh.query import Or as WOr, Term as WTerm
+
+        class _FakeParser:
+            fieldname = "aya"
+
+        node = TashkilPlugin.TashkilNode("الله الرحمن")
+        result = node.query(_FakeParser())
+        self.assertIsInstance(
+            result, WOr,
+            f"Expected Or query for multi-word tashkil, got {type(result)}"
+        )
+        self.assertTrue(
+            all(isinstance(sq, WTerm) for sq in result.subqueries),
+            "All sub-queries of the Or must be Term instances"
+        )
+
+
+class TestDerivationTwoPassCached(unittest.TestCase):
+    """_collect_derivations_two_pass must be backed by an LRU cache."""
+
+    def test_cached_helper_exists(self):
+        """_collect_derivations_two_pass_cached must be defined in query_plugins."""
+        import alfanous.query_plugins as _qp
+        self.assertTrue(
+            hasattr(_qp, "_collect_derivations_two_pass_cached"),
+            "_collect_derivations_two_pass_cached must be defined in alfanous.query_plugins"
+        )
+
+    def test_cached_helper_has_lru_cache(self):
+        """_collect_derivations_two_pass_cached must be decorated with @lru_cache."""
+        import alfanous.query_plugins as _qp
+        cached_fn = _qp._collect_derivations_two_pass_cached
+        self.assertTrue(
+            hasattr(cached_fn, "cache_info"),
+            "_collect_derivations_two_pass_cached must be wrapped with @lru_cache "
+            "(missing cache_info attribute)"
+        )
+
+    def test_two_pass_calls_cached_helper(self):
+        """_collect_derivations_two_pass must delegate to the cached helper."""
+        import inspect
+        import alfanous.query_plugins as _qp
+        src = inspect.getsource(_qp._collect_derivations_two_pass)
+        self.assertIn(
+            "_collect_derivations_two_pass_cached",
+            src,
+            "_collect_derivations_two_pass must call _collect_derivations_two_pass_cached"
+        )
+
+    def test_cached_helper_cache_size(self):
+        """_collect_derivations_two_pass_cached must have maxsize >= 64."""
+        import alfanous.query_plugins as _qp
+        info = _qp._collect_derivations_two_pass_cached.cache_info()
+        self.assertGreaterEqual(
+            info.maxsize, 64,
+            f"Cache maxsize {info.maxsize} is too small; use at least 64 to be useful"
+        )
+
+    def test_identical_calls_hit_cache(self):
+        """Calling _collect_derivations_two_pass twice with the same args must use the cache."""
+        from unittest.mock import patch
+        import alfanous.query_plugins as _qp
+
+        # Clear any existing cache state from previous test runs
+        _qp._collect_derivations_two_pass_cached.cache_clear()
+
+        # Patch the cached function to return a fixed tuple without touching the index.
+        with patch(
+            "alfanous.query_plugins._collect_derivations_two_pass_cached",
+            return_value=("word1", "word2"),
+        ) as patched:
+            result1 = _qp._collect_derivations_two_pass({"كتب"}, "root")
+            result2 = _qp._collect_derivations_two_pass({"كتب"}, "root")
+
+        # The mock was called twice (once per outer call) since the mock
+        # itself is not wrapped in @lru_cache.  What we really want to verify
+        # is that the PUBLIC wrapper converts the set to a frozenset before
+        # calling the cached helper (so identical sets produce identical cache
+        # keys), and that it returns a list each time.
+        self.assertIsInstance(result1, list)
+        self.assertIsInstance(result2, list)
+        self.assertEqual(result1, result2)
+        # The patched helper was called with frozenset, not raw set
+        calls = patched.call_args_list
+        self.assertEqual(len(calls), 2)
+        for call in calls:
+            args, _ = call
+            self.assertIsInstance(
+                args[0], frozenset,
+                "_collect_derivations_two_pass must convert candidates to frozenset before calling cached helper"
+            )
+
+    def test_two_pass_accepts_set_input(self):
+        """_collect_derivations_two_pass must accept a plain set (not just frozenset)."""
+        from unittest.mock import patch
+        import alfanous.query_plugins as _qp
+
+        with patch(
+            "alfanous.query_plugins._collect_derivations_two_pass_cached",
+            return_value=("word_a",),
+        ):
+            result = _qp._collect_derivations_two_pass({"كلمة"}, "lemma")
+        self.assertIsInstance(result, list, "Return value must be a list")
+
+    def test_two_pass_returns_list(self):
+        """_collect_derivations_two_pass must always return a list."""
+        from unittest.mock import patch
+        import alfanous.query_plugins as _qp
+
+        with patch(
+            "alfanous.query_plugins._collect_derivations_two_pass_cached",
+            return_value=(),
+        ):
+            result = _qp._collect_derivations_two_pass({"x"}, "root")
+        self.assertIsInstance(result, list)
+        self.assertEqual(result, [])
+
+    def test_cache_hit_on_real_lru_cache(self):
+        """Cache hit counter must increment for repeated identical calls."""
+        import alfanous.query_plugins as _qp
+        from unittest.mock import patch, MagicMock
+
+        _qp._collect_derivations_two_pass_cached.cache_clear()
+
+        # Build a minimal mock engine whose reader iterates zero docs so the
+        # two-pass function returns () without touching the real index.
+        mock_reader = MagicMock()
+        mock_reader.iter_docs.return_value = iter([])  # no docs → empty result
+        mock_engine = MagicMock()
+        mock_engine.OK = True
+        mock_engine._reader.reader = mock_reader
+
+        with patch("alfanous.query_plugins._collect_derivations_two_pass_cached.__module__",
+                   "alfanous.query_plugins", create=True):
+            with patch("alfanous.data.QSE", return_value=mock_engine):
+                # First call: cache miss → runs the function body.
+                _qp._collect_derivations_two_pass_cached(frozenset({"كتب"}), "root")
+                # Second call: identical args → cache hit.
+                _qp._collect_derivations_two_pass_cached(frozenset({"كتب"}), "root")
+
+        info = _qp._collect_derivations_two_pass_cached.cache_info()
+        self.assertGreaterEqual(
+            info.hits, 1,
+            f"Expected at least 1 cache hit for identical frozen-set args; got {info}"
+        )
+
+
 if __name__ == "__main__":
     unittest.main()

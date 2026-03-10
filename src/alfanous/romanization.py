@@ -213,6 +213,15 @@ _ARABIZI_AL_PREFIXES_2 = frozenset([
 # Three-character prefixes for ش assimilation (ash/esh: Ash-shaytan → الشيطان).
 _ARABIZI_AL_PREFIXES_3 = frozenset([u"ash", u"esh"])
 
+# Hard cap on the number of candidate Arabic strings produced by the recursive
+# _convert() helper inside arabizi_to_arabic_list().  Without a cap, adversarial
+# or very long inputs can cause combinatorial explosion: a 10-char string with
+# 5 Arabic mappings per position yields up to 5^10 = 10 million candidates,
+# exhausting hundreds of MB of memory.  The Quran word-set filter that follows
+# is only meaningful on a small list of plausible forms, so stopping at 1,000
+# candidates loses no recall for legitimate queries.
+_MAX_ARABIZI_CANDIDATES = 1000
+
 
 def arabizi_to_arabic_list(string, ignore=u""):
     """Convert an Arabizi string to a list of potential Arabic strings.
@@ -265,6 +274,8 @@ def arabizi_to_arabic_list(string, ignore=u""):
         if s[0] == u" ":
             for suffix in _convert(s[1:], at_word_start=True):
                 results.add(u" " + suffix)
+                if len(results) >= _MAX_ARABIZI_CANDIDATES:
+                    return results
             return results
 
         # Rule B: definite article prefix → ال
@@ -275,6 +286,8 @@ def arabizi_to_arabic_list(string, ignore=u""):
             if prefix3 in _ARABIZI_AL_PREFIXES_3:
                 for suffix in _convert(s[3:], at_word_start=False):
                     results.add(u"\u0627\u0644" + suffix)  # ال
+                    if len(results) >= _MAX_ARABIZI_CANDIDATES:
+                        return results
 
         # Then check 2-char prefixes (al/el and sun-letter assimilation variants)
         if (at_word_start and len(s) >= 2
@@ -283,6 +296,12 @@ def arabizi_to_arabic_list(string, ignore=u""):
             if prefix2 in _ARABIZI_AL_PREFIXES_2:
                 for suffix in _convert(s[2:], at_word_start=False):
                     results.add(u"\u0627\u0644" + suffix)  # ال
+                    if len(results) >= _MAX_ARABIZI_CANDIDATES:
+                        return results
+
+        # Early-exit check after Rule B (prefix candidates alone could saturate the cap)
+        if len(results) >= _MAX_ARABIZI_CANDIDATES:
+            return results
 
         # Rule C: Gemination — doubled consonant → letter + shadda (ّ U+0651).
         # Also produces the letter WITHOUT shadda so that the unvocalized Quran
@@ -298,6 +317,8 @@ def arabizi_to_arabic_list(string, ignore=u""):
                 for suffix in _convert(s[2:], at_word_start=False):
                     results.add(ac + u"\u0651" + suffix)  # with shadda
                     results.add(ac + suffix)              # without shadda (unvocalized match)
+                    if len(results) >= _MAX_ARABIZI_CANDIDATES:
+                        return results
 
         # Try digraph first (Rule A: multi-char codes before single chars)
         if len(s) >= 2 and s[0] not in ignore and s[1] not in ignore:
@@ -305,11 +326,15 @@ def arabizi_to_arabic_list(string, ignore=u""):
             if digraph in ARABIZI_DIGRAPHS:
                 for suffix in _convert(s[2:], at_word_start=False):
                     results.add(ARABIZI_DIGRAPHS[digraph] + suffix)
+                    if len(results) >= _MAX_ARABIZI_CANDIDATES:
+                        return results
 
         # Try single-character mapping
         if s[0] in ignore:
             for suffix in _convert(s[1:], at_word_start=False):
                 results.add(s[0] + suffix)
+                if len(results) >= _MAX_ARABIZI_CANDIDATES:
+                    return results
         elif c in ARABIZI2UNICODE:
             arabic_chars = ARABIZI2UNICODE[c]  # list of possible Arabic chars
             suffixes = _convert(s[1:], at_word_start=False)
@@ -318,21 +343,29 @@ def arabizi_to_arabic_list(string, ignore=u""):
             # e.g. "salameh" → 'سلامة' (in addition to 'سالامة').
             if c in _ARABIZI_VOWELS:
                 results.update(suffixes)
+                if len(results) >= _MAX_ARABIZI_CANDIDATES:
+                    return results
             if c == u"a":
                 # Rule D: initial 'a' → أ (U+0623) in addition to ا
                 if at_word_start:
                     for suffix in suffixes:
                         results.add(u"\u0623" + suffix)  # أ + rest
+                        if len(results) >= _MAX_ARABIZI_CANDIDATES:
+                            return results
                 # Rule D: terminal 'a' → ى (U+0649) and ة (U+0629) in addition to ا
                 # ة covers feminine endings: Ganna=جنة, Ra7ma=رحمة
                 if len(s) == 1:
                     for suffix in suffixes:  # suffixes == {""} when terminal
                         results.add(u"\u0649" + suffix)  # ى
                         results.add(u"\u0629" + suffix)  # ة (feminine ta marbuta)
+                        if len(results) >= _MAX_ARABIZI_CANDIDATES:
+                            return results
                 # Standard ا mapping always included (arabic_chars == ["ا"])
                 for ac in arabic_chars:
                     for suffix in suffixes:
                         results.add(ac + suffix)
+                        if len(results) >= _MAX_ARABIZI_CANDIDATES:
+                            return results
             elif c == u"2":
                 # Rule D: initial '2' also yields أ (hamza-on-alef) and إ (hamza-
                 # under-alef) in addition to ء.  Covers: 2anta=أنت, 2iman=إيمان.
@@ -340,9 +373,13 @@ def arabizi_to_arabic_list(string, ignore=u""):
                     for suffix in suffixes:
                         results.add(u"\u0623" + suffix)  # أ + rest
                         results.add(u"\u0625" + suffix)  # إ + rest
+                        if len(results) >= _MAX_ARABIZI_CANDIDATES:
+                            return results
                 for ac in arabic_chars:
                     for suffix in suffixes:
                         results.add(ac + suffix)  # ء + rest
+                        if len(results) >= _MAX_ARABIZI_CANDIDATES:
+                            return results
             elif c in (u"i", u"e") and at_word_start:
                 # Rule D extension: initial 'i'/'e' also yields إ (hamza-under-alef,
                 # U+0625) in addition to ي.  Covers: Iman→إيمان, Iblis→إبليس,
@@ -350,9 +387,13 @@ def arabizi_to_arabic_list(string, ignore=u""):
                 # Note: arabic_chars is [ي (ya, U+064A)] for both 'i' and 'e'.
                 for suffix in suffixes:
                     results.add(u"\u0625" + suffix)  # إ + rest
+                    if len(results) >= _MAX_ARABIZI_CANDIDATES:
+                        return results
                 for ac in arabic_chars:
                     for suffix in suffixes:
                         results.add(ac + suffix)  # ي + rest (standard ya mapping)
+                        if len(results) >= _MAX_ARABIZI_CANDIDATES:
+                            return results
             elif c in (u"u", u"o") and at_word_start:
                 # Rule D extension: initial 'u'/'o' also yields أ (hamza-on-alef,
                 # U+0623) in addition to و.  Covers: Ummah→أمة, Ommah→أمة
@@ -361,13 +402,19 @@ def arabizi_to_arabic_list(string, ignore=u""):
                 # where a word-initial short vowel is represented with 'u' or 'o'.
                 for suffix in suffixes:
                     results.add(u"\u0623" + suffix)  # أ + rest
+                    if len(results) >= _MAX_ARABIZI_CANDIDATES:
+                        return results
                 for ac in arabic_chars:
                     for suffix in suffixes:
                         results.add(ac + suffix)  # و + rest (standard waw mapping)
+                        if len(results) >= _MAX_ARABIZI_CANDIDATES:
+                            return results
             else:
                 for ac in arabic_chars:
                     for suffix in suffixes:
                         results.add(ac + suffix)
+                        if len(results) >= _MAX_ARABIZI_CANDIDATES:
+                            return results
                 # Rule D extension: terminal 'h' or 't' at word-end also yields
                 # ة (ta marbuta).  In standard transliteration the feminine suffix
                 # ة is written as trailing 'h' (Salah=صلاة, Rahmah=رحمة) or 't'
@@ -377,10 +424,14 @@ def arabizi_to_arabic_list(string, ignore=u""):
                 if c in (u"h", u"t") and (len(s) == 1 or (len(s) > 1 and s[1] == u" ")):
                     for suffix in suffixes:
                         results.add(u"\u0629" + suffix)  # ة
+                        if len(results) >= _MAX_ARABIZI_CANDIDATES:
+                            return results
         else:
             # Keep unmapped characters as-is
             for suffix in _convert(s[1:], at_word_start=False):
                 results.add(s[0] + suffix)
+                if len(results) >= _MAX_ARABIZI_CANDIDATES:
+                    return results
 
         # Return the accumulated set directly — no per-level list(set(...))
         # conversion needed because results is already a set with duplicates

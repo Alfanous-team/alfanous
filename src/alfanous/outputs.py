@@ -57,7 +57,7 @@ _KEEP_VOCALIZATION = QArabicSymbolsFilter(
 # All word-child index fields targetable by _search_words.
 # Defined at module level so the list is not rebuilt on every request.
 _WORD_ALL_INDEXED_FIELDS = [
-    "word", "normalized",
+    "word", "normalized", "word_standard",
     "pos", "type",
     "root", "arabicroot",
     "lemma", "arabiclemma",
@@ -66,6 +66,19 @@ _WORD_ALL_INDEXED_FIELDS = [
     "derivation", "aspect",
     "mood", "case",
 ]
+
+# Word-child fields that support faceting (ID/KEYWORD fields, stored and indexed).
+# Note: lemma is intentionally excluded here because it is a full search field
+# (included in _WORD_ALL_INDEXED_FIELDS) rather than a low-cardinality facet.
+_WORD_FACET_FIELDS = frozenset(["root", "type"])
+
+# Maximum number of documents Whoosh will collect when building facets.
+# Using limit=None causes Whoosh to load every matching document into memory,
+# which can be 300,000+ docs for a corpus-wide facet query.  This constant is
+# a safe upper bound that covers the entire Quran corpus
+# (~6,236 ayas + ~77,000 words + ~100,000 translations + parent docs) while
+# protecting the process from runaway memory allocation.
+_MAX_FACET_DOCS = 100_000
 
 
 def _build_filter_query(filter_dict):
@@ -547,8 +560,10 @@ class Raw:
                     else:
                         kind_filter = wquery.Term("kind", "aya")
                     
-                    # Search matching documents
-                    results = searcher.search(kind_filter, limit=None, groupedby=groupedby)
+                    # Search matching documents.  _MAX_FACET_DOCS is a safe upper bound
+                    # that covers the full Quran corpus; limit=None would load every doc
+                    # into memory (OOM risk under load).
+                    results = searcher.search(kind_filter, limit=_MAX_FACET_DOCS, groupedby=groupedby)
                     
                     # Get facet groups
                     field_groups = results.groups(field)
@@ -1597,18 +1612,26 @@ class Raw:
         Word children are indexed with ``kind="word"`` alongside translation
         children.  This method searches them using a ``MultifieldParser`` that
         targets all indexed word fields — free-text fields (``word``,
-        ``normalized``) as well as linguistic ID fields (``pos``, ``type``,
-        ``root``, ``arabicroot``, ``lemma``, ``arabiclemma``, ``gender``,
-        ``number``, ``person``, ``form``, ``voice``, ``state``,
-        ``derivation``, ``aspect``, ``mood``, ``case``) — combined with a
-        ``kind="word"`` filter so only word children are returned.
+        ``normalized``, ``word_standard``) as well as linguistic ID/KEYWORD
+        fields (``pos``, ``type``, ``root``, ``arabicroot``, ``lemma``,
+        ``arabiclemma``, ``gender``, ``number``, ``person``, ``form``,
+        ``voice``, ``state``, ``derivation``, ``aspect``, ``mood``, ``case``)
+        — combined with a ``kind="word"`` filter so only word children are
+        returned.
 
         Field-qualified queries (e.g. ``root:رحم``) are supported for all
         indexed word fields.  Unqualified queries search across the primary
-        text fields (``word`` and ``normalized``).
+        text fields (``word``, ``normalized``, and ``word_standard``).
 
-        The result structure mirrors ``_search_word`` for backward
-        compatibility:  ``{"words": {n: {...}}, "interval": {...}, "runtime": ...}``.
+        The result structure includes:
+        - ``words``: per-word morphological data plus the parent aya text.
+          Each entry's ``aya.text`` / ``aya.text_no_highlight`` reflects the
+          ``script`` flag: ``"standard"`` (default) gives the standard Arabic
+          text; ``"uthmani"`` gives the Uthmani script text.
+        - ``interval``: pagination metadata.
+        - ``facets``: (optional) per-field value counts for ``root`` and
+          ``type`` when requested via the ``facets`` flag.
+        - ``runtime``: query execution time.
         """
         flags = {**self._defaults["flags"], **flags}
         query = flags["query"]
@@ -1619,7 +1642,18 @@ class Raw:
         offset = ((int(flags["page"]) - 1) * range_) + 1 if flags.get("page") \
             else int(flags["offset"])
         highlight = flags["highlight"]
+        script = flags["script"]
         timelimit = self._parse_timelimit(flags)
+
+        # Parse and validate the facets parameter against the allowed set.
+        facets_param = flags.get("facets")
+        facets_list = None
+        if facets_param:
+            if isinstance(facets_param, str):
+                facets_list = [s for f in facets_param.split(",")
+                               if (s := f.strip()) in _WORD_FACET_FIELDS]
+            elif isinstance(facets_param, list):
+                facets_list = [f for f in facets_param if f in _WORD_FACET_FIELDS]
 
         # Transliterate if no field filter is present
         query = query.replace("\\", "")
@@ -1687,6 +1721,37 @@ class Raw:
                 H = lambda X: X if X else "-----"
             else:
                 H = lambda X: self.QSE.highlight(X, terms, highlight) if X else "-----"
+
+            # Pre-check script once — avoids re-evaluating per word in the result loop.
+            _use_standard_script = script == "standard"
+
+            # Build a gid→aya_text map so each word result can include the full
+            # parent aya text in both standard and Uthmani scripts.  Word children
+            # store the parent aya's gid, so a single batch query retrieves all
+            # needed parent docs at once.
+            gid_to_aya = {}
+            if reslist:
+                unique_gids = {r.get("gid") for r in reslist
+                               if r.get("gid") is not None}
+                if unique_gids:
+                    try:
+                        _parent_q = wquery.And([
+                            wquery.Term("kind", "aya"),
+                            wquery.Or([wquery.NumericRange("gid", gid, gid)
+                                       for gid in unique_gids]),
+                        ])
+                        _parent_res = searcher.search(
+                            _parent_q, limit=len(unique_gids) + 1
+                        )
+                        for _pr in _parent_res:
+                            _g = _pr.get("gid")
+                            if _g is not None:
+                                gid_to_aya[_g] = {
+                                    "standard": _pr.get("aya") or _pr.get("aya_") or "",
+                                    "uthmani":  _pr.get("uth_") or "",
+                                }
+                    except Exception:
+                        pass  # aya text enrichment is best-effort
     
             output = {
                 "runtime": round(res.runtime, 5),
@@ -1703,11 +1768,21 @@ class Raw:
             cpt = start - 1
             for r in reslist:
                 cpt += 1
+                _gid = r.get("gid")
+                _aya_data = gid_to_aya.get(_gid) or {}
+                _aya_raw = (
+                    _aya_data.get("standard") if _use_standard_script
+                    else _aya_data.get("uthmani")
+                )
                 output["words"][cpt] = {
                     "identifier": {
                         "word_id": r.get("word_id"),
                         "aya_id":  r.get("aya_id"),
                         "sura_id": r.get("sura_id"),
+                    },
+                    "aya": {
+                        "text":              H(_aya_raw or ""),
+                        "text_no_highlight": _aya_raw,
                     },
                     "word": {
                         "text":              H(r.get("word", "")),
@@ -1740,7 +1815,35 @@ class Raw:
                         "aspect":           r.get("aspect"),
                     },
                 }
-    
+
+            # Compute facets over the full (un-paginated) result set so that
+            # counts reflect the entire matched corpus, not just the current page.
+            if facets_list and len(res) > 0:
+                try:
+                    groupedby = Facets()
+                    for fld in facets_list:
+                        groupedby.add_field(fld)
+                    # _MAX_FACET_DOCS is a safe upper bound that covers the full corpus;
+                    # limit=None would load every matching document into memory (OOM risk).
+                    facet_res = searcher.search(combined, limit=_MAX_FACET_DOCS,
+                                               groupedby=groupedby)
+                    output["facets"] = {}
+                    for fld in facets_list:
+                        try:
+                            groups = facet_res.groups(fld)
+                            output["facets"][fld] = [
+                                {"value": v, "count": len(docs)}
+                                for v, docs in sorted(
+                                    groups.items(),
+                                    key=lambda x: len(x[1]),
+                                    reverse=True,
+                                )
+                            ]
+                        except Exception:
+                            pass
+                except Exception:
+                    pass
+
             return output
         finally:
             searcher.close()

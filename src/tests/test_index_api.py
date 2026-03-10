@@ -151,8 +151,7 @@ def test_corpus_index_builds_without_unknown_field_error(corpus_qse_index):
     # englishcase and englishpos remain stored-only and must NOT be in the aya schema
     for bad in ("englishcase", "englishpos"):
         assert bad not in names, (
-            f"Field '{bad}' should not be in the aya schema — "
-            "it belongs only in the wordqc schema"
+            f"Field '{bad}' should not be in the aya schema"
         )
     ix.close()
 
