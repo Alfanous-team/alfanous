@@ -8,6 +8,14 @@ import os.path
 # Defined at module level so the pre-pass loop never recreates the set.
 _PARTICLES = {"يا", "ويا", "ها"}
 
+# Transliteration equivalents of _PARTICLES (lowercase; compared
+# case-insensitively so that sentence-initial "Ya"/"Waya" and mid-sentence
+# "ya"/"waya" are both matched).
+#   يا  → "ya"
+#   ويا → "waya"  (the و prefix is fused: wa + ya)
+#   ها  → "ha"
+_TRANSLIT_PARTICLES = {"ya", "waya", "ha"}
+
 # Line fields that require whitespace stripping during doc building.
 _STRIP_FIELDS = frozenset({"chapter", "topic", "subtopic"})
 
@@ -593,14 +601,67 @@ class Transformer:
                     if len(tr_tokens) == corpus_count:
                         aya_translit_words[key] = tr_tokens
                     elif tr_tokens:
-                        # Token count mismatch: record for special_cases.json.
-                        _translit_special_cases.append({
-                            "sura_id":                    sid,
-                            "aya_id":                     aid,
-                            "corpus_word_count":          corpus_count,
-                            "transliteration_word_count": len(tr_tokens),
-                            "transliteration":            line.get("transliteration", ""),
-                        })
+                        # Token count mismatch.  Apply the same three alignment
+                        # strategies used for the standard-text tokens above,
+                        # substituting _TRANSLIT_PARTICLES for _PARTICLES and
+                        # comparing case-insensitively (sentence-initial "Ya"
+                        # and mid-sentence "ya" are the same particle).
+                        tr_diff = len(tr_tokens) - corpus_count
+                        tr_resolved = None
+
+                        # Strategy 1: particle collapse — drop each particle and
+                        # keep the following word, mirroring how يا/ها fuse with
+                        # the next word in the Quranic Corpus.
+                        tr_merged: list = []
+                        j = 0
+                        while j < len(tr_tokens):
+                            ttok = tr_tokens[j]
+                            if ttok.lower() in _TRANSLIT_PARTICLES and j + 1 < len(tr_tokens):
+                                tr_merged.append(tr_tokens[j + 1])
+                                j += 2
+                            else:
+                                tr_merged.append(ttok)
+                                j += 1
+                        if len(tr_merged) == corpus_count:
+                            tr_resolved = tr_merged
+
+                        # Strategy 2: extended particle merge — when diff > 1
+                        # the particle plus the following *diff* tokens are
+                        # joined with spaces into a single token.
+                        if tr_resolved is None and tr_diff > 0:
+                            for pi, ttok in enumerate(tr_tokens):
+                                if (ttok.lower() in _TRANSLIT_PARTICLES
+                                        and pi + tr_diff < len(tr_tokens)):
+                                    candidate = (
+                                        tr_tokens[:pi]
+                                        + [" ".join(tr_tokens[pi:pi + tr_diff + 1])]
+                                        + tr_tokens[pi + tr_diff + 1:]
+                                    )
+                                    if len(candidate) == corpus_count:
+                                        tr_resolved = candidate
+                                        break
+
+                        # Strategy 3: prefix merge — no particle anchor found;
+                        # merge the leading (diff+1) tokens.
+                        if tr_resolved is None and tr_diff > 0:
+                            candidate = (
+                                [" ".join(tr_tokens[:tr_diff + 1])]
+                                + tr_tokens[tr_diff + 1:]
+                            )
+                            if len(candidate) == corpus_count:
+                                tr_resolved = candidate
+
+                        if tr_resolved is not None:
+                            aya_translit_words[key] = tr_resolved
+                        else:
+                            # All strategies failed — record for manual review.
+                            _translit_special_cases.append({
+                                "sura_id":                    sid,
+                                "aya_id":                     aid,
+                                "corpus_word_count":          corpus_count,
+                                "transliteration_word_count": len(tr_tokens),
+                                "transliteration":            line.get("transliteration", ""),
+                            })
 
             # Write transliteration mismatches to store/special_cases.json so
             # they can be reviewed and resolved manually.

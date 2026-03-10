@@ -80,6 +80,27 @@ _WORD_FACET_FIELDS = frozenset(["root", "type"])
 # protecting the process from runaway memory allocation.
 _MAX_FACET_DOCS = 100_000
 
+# Sort-key functions defined once at module level so every list.sort() and
+# heapq.nlargest() call in the hot path reuses the same function object
+# rather than allocating a new lambda on every request.
+def _WORD_ID_KEY(e):
+    return e.get("word_id") or 0
+
+def _FACET_COUNT_KEY(x):
+    return len(x[1])
+
+# Zero-coalesce helper — replaces `N = lambda X: X if X else 0` that was
+# allocated on every _search_aya call and called ~6× per result (≈150 calls
+# per 25-result page).
+def _ZERO_IF_NONE(x):
+    return x if x else 0
+
+# Keyword-split helper — replaces the per-request lambda
+# `keywords = lambda phrase: _KEYWORD_SPLIT_RE.findall(phrase)`.
+# Binding the method once at module level avoids allocating a new closure
+# on every _search_aya and _search_translation call.
+_KEYWORD_FIND = _KEYWORD_SPLIT_RE.findall
+
 
 def _build_filter_query(filter_dict):
     """Convert a filter dict to a list of Whoosh Term/Or query objects.
@@ -577,7 +598,7 @@ class Raw:
                         # Get top N most frequent values with document counts
                         # heapq.nlargest is O(n log k) vs O(n log n) for a full sort
                         top_items = heapq.nlargest(
-                            limit, field_groups.items(), key=lambda x: len(x[1])
+                            limit, field_groups.items(), key=_FACET_COUNT_KEY
                         )
                         
                         result["keywords"] = [
@@ -933,10 +954,6 @@ class Raw:
             else:
                 H = lambda X: X if X else "-----"
                 TH = lambda X: X if X else "-----"
-            # Numbers are 0 if not defined
-            N = lambda X: X if X else 0
-            # parse keywords lists , used for Sura names
-            keywords = lambda phrase: _KEYWORD_SPLIT_RE.findall(phrase)
             # Pre-check script once — avoids re-evaluating `script == "standard"` per aya in the result loop.
             _use_standard_script = script == "standard"
             ##########################################
@@ -949,7 +966,24 @@ class Raw:
                 # unconditionally would iterate ALL results and hold a reader reference
                 # on every request even when word_info is False (the default).
                 _result_docnums = set(hit.docnum for hit in res)
-                _index_reader = searcher.reader()
+
+                # Acquire _wi_searcher BEFORE capturing _index_reader.
+                # shared_searcher() calls _get_shared_searcher().refresh() internally;
+                # if the Whoosh index has changed since the main search, the old shared
+                # searcher (and the reader returned by searcher.reader()) is closed at
+                # that point.  Grabbing _index_reader first would leave a stale, closed
+                # reader that raises ReaderClosed on any subsequent postings() call.
+                # By obtaining _wi_searcher first we ensure any pending refresh runs
+                # before we ask for the reader, so get_shared_reader() always returns
+                # an open reader belonging to the current shared searcher.
+                _wi_searcher = (
+                    self.QSE.shared_searcher()
+                    if (word_vocalizations or word_derivations) and self.QSE.OK
+                    else None
+                )
+                # get_shared_reader() resolves through _get_shared_searcher(), so it
+                # returns the reader of the NOW-current (post-refresh) shared searcher.
+                _index_reader = self.QSE.get_shared_reader()
 
                 def _count_term_in_results(field, term_text):
                     """Count occurrences of a term within the search result documents."""
@@ -984,15 +1018,104 @@ class Raw:
                 docs_in_results = 0
                 nb_vocalizations_globale = 0
                 cpt = 1
-                # Open ONE shared Whoosh searcher for all per-term word-info
-                # sub-queries (vocalizations, derivation lookup).  Without this,
-                # each search_with_query() call would open and close its own
-                # searcher, paying the segment-open overhead up to 4× per term.
-                _wi_searcher = (
-                    self.QSE.shared_searcher()
-                    if (word_vocalizations or word_derivations) and self.QSE.OK
-                    else None
-                )
+
+                # ── Batch fetch word-child data for ALL query terms ───────────
+                # Instead of issuing up to 4 separate word-index queries *per
+                # query term* (vocalization lookup, word-data lookup, lemma
+                # derivation, root derivation), we issue at most 2 batch queries
+                # before the term loop and build in-memory lookup dicts.
+                # For a 20-term query this reduces ≤80 round-trips to ≤2.
+                #
+                # _batch_word_data : norm → {"lemma": str|None,
+                #                            "root":  str|None,
+                #                            "words": set(vocalized forms)}
+                # _batch_deriv_by_lemma : lemma → set(normalized forms)
+                # _batch_deriv_by_root  : root  → set(normalized forms)
+                _batch_word_data: dict = {}
+                _batch_deriv_by_lemma: dict = {}
+                _batch_deriv_by_root: dict = {}
+
+                if (word_vocalizations or word_derivations) and _wi_searcher is not None:
+                    _batch_norms = sorted({
+                        strip_vocalization(t[1])
+                        for t in termz if t[0] in ("aya", "aya_")
+                    })
+                    if _batch_norms:
+                        # Batch query 1 – word forms, lemma, root for every term.
+                        _bq1_norm = (
+                            wquery.Or([wquery.Term("normalized", n) for n in _batch_norms])
+                            if len(_batch_norms) > 1
+                            else wquery.Term("normalized", _batch_norms[0])
+                        )
+                        _bq1 = wquery.And([wquery.Term("kind", "word"), _bq1_norm])
+                        _bq1_res = self.QSE.search_with_shared_searcher(
+                            _wi_searcher, _bq1, limit=len(_batch_norms) * 50
+                        )
+                        for _bw in _bq1_res:
+                            _bn = _bw.get("normalized")
+                            if not _bn:
+                                continue
+                            if _bn not in _batch_word_data:
+                                _batch_word_data[_bn] = {
+                                    "lemma": None, "root": None, "words": set()
+                                }
+                            _be = _batch_word_data[_bn]
+                            if _be["lemma"] is None:
+                                _be["lemma"] = _bw.get("lemma") or None
+                            if _be["root"] is None:
+                                _be["root"] = _bw.get("root") or None
+                            _wf = _bw.get("word")
+                            if _wf:
+                                _be["words"].add(_wf)
+
+                        if word_derivations:
+                            # Batch query 2 – derivation siblings by lemma & root.
+                            _all_lemmas = sorted({
+                                d["lemma"] for d in _batch_word_data.values()
+                                if d["lemma"]
+                            })
+                            _all_roots = sorted({
+                                d["root"] for d in _batch_word_data.values()
+                                if d["root"]
+                            })
+                            _bq2_parts = []
+                            if _all_lemmas:
+                                _bq2_parts.append(
+                                    wquery.Or([wquery.Term("lemma", l) for l in _all_lemmas])
+                                    if len(_all_lemmas) > 1
+                                    else wquery.Term("lemma", _all_lemmas[0])
+                                )
+                            if _all_roots:
+                                _bq2_parts.append(
+                                    wquery.Or([wquery.Term("root", r) for r in _all_roots])
+                                    if len(_all_roots) > 1
+                                    else wquery.Term("root", _all_roots[0])
+                                )
+                            if _bq2_parts:
+                                _bq2_filter = (
+                                    wquery.Or(_bq2_parts)
+                                    if len(_bq2_parts) > 1
+                                    else _bq2_parts[0]
+                                )
+                                _bq2 = wquery.And([
+                                    wquery.Term("kind", "word"), _bq2_filter
+                                ])
+                                _bq2_res = self.QSE.search_with_shared_searcher(
+                                    _wi_searcher, _bq2,
+                                    limit=(len(_all_lemmas) + len(_all_roots)) * 500,
+                                )
+                                for _d in _bq2_res:
+                                    _dn = _d.get("normalized")
+                                    if not _dn:
+                                        continue
+                                    _dl = _d.get("lemma")
+                                    _dr = _d.get("root")
+                                    if _dl:
+                                        _batch_deriv_by_lemma.setdefault(_dl, set()).add(_dn)
+                                    if _dr:
+                                        _batch_deriv_by_root.setdefault(_dr, set()).add(_dn)
+                # ── End batch fetch ───────────────────────────────────────────
+
                 try:
                     for term in termz:
                         if term[0] == "aya" or term[0] == "aya_":
@@ -1005,73 +1128,33 @@ class Raw:
                             docs_in_results += term_ayas_in_results
                             if word_vocalizations:
                                 _term_normalized = strip_vocalization(term[1])
-                                vocalizations = []
-                                if _wi_searcher is not None:
-                                    _voc_q = wquery.And([
-                                        wquery.Term("kind", "word"),
-                                        wquery.Term("normalized", _term_normalized),
-                                    ])
-                                    _voc_res = self.QSE.search_with_shared_searcher(
-                                        _wi_searcher, _voc_q, limit=500
-                                    )
-                                    vocalizations = list(
-                                        set(w.get("word") for w in _voc_res if w.get("word")) - {term[1]}
-                                    )
+                                _wdata = _batch_word_data.get(_term_normalized, {})
+                                vocalizations = list(
+                                    _wdata.get("words", set()) - {term[1]}
+                                )
                                 nb_vocalizations_globale += len(vocalizations)
                             if word_synonyms:
                                 synonyms = syndict.get(term[1]) or []
                             derivations_extra = []
                             if word_derivations:
-                                derivations = []
-                                # Always initialize so words_output refs below are safe
-                                # even when the index is unavailable.
-                                lemma = root = None
-                                derivations_set = set()
-                                if _wi_searcher is not None:
-                                    _norm_term = strip_vocalization(term[1])
-                                    _word_q = wquery.And([
-                                        wquery.Term("kind", "word"),
-                                        wquery.Term("normalized", _norm_term),
-                                    ])
-                                    _word_res = self.QSE.search_with_shared_searcher(
-                                        _wi_searcher, _word_q, limit=10
+                                _norm_term = strip_vocalization(term[1])
+                                _wdata = _batch_word_data.get(_norm_term, {})
+                                lemma = _wdata.get("lemma")
+                                root = _wdata.get("root")
+                                derivations_set = (
+                                    _batch_deriv_by_lemma.get(lemma, set())
+                                    if lemma else set()
+                                )
+                                derivations = list(derivations_set)
+                                if root:
+                                    derivations_extra = list(
+                                        _batch_deriv_by_root.get(root, set())
+                                        - derivations_set
                                     )
-                                    # Extract fields immediately; Hit objects access
-                                    # stored fields lazily through the reader.
-                                    for _w in _word_res:
-                                        if lemma is None:
-                                            lemma = _w.get("lemma") or None
-                                        if root is None:
-                                            root = _w.get("root") or None
-                                        if lemma and root:
-                                            break
-                                    if lemma:
-                                        _lem_q = wquery.And([
-                                            wquery.Term("kind", "word"),
-                                            wquery.Term("lemma", lemma),
-                                        ])
-                                        _lem_res = self.QSE.search_with_shared_searcher(
-                                            _wi_searcher, _lem_q, limit=500
-                                        )
-                                        derivations_set = set(
-                                            w.get("normalized") for w in _lem_res
-                                            if w.get("normalized")
-                                        )
-                                        derivations = list(derivations_set)
-                                    if root:
-                                        _root_q = wquery.And([
-                                            wquery.Term("kind", "word"),
-                                            wquery.Term("root", root),
-                                        ])
-                                        _root_res = self.QSE.search_with_shared_searcher(
-                                            _wi_searcher, _root_q, limit=500
-                                        )
-                                        _root_norms_set = set(
-                                            w.get("normalized") for w in _root_res
-                                            if w.get("normalized")
-                                        )
-                                        derivations_extra = list(_root_norms_set - derivations_set)
-    
+                            else:
+                                lemma = root = None
+                                derivations = []
+
                             # Compute variations specific to this word: among all
                             # matched aya_ac terms, keep only those within
                             # fuzzy_maxdist edit distance of this word's unvocalized
@@ -1256,7 +1339,7 @@ class Raw:
                             aya_words_map.setdefault(key, []).append(entry)
                         # Sort each aya's word list by word_id (ascending position order).
                         for key in aya_words_map:
-                            aya_words_map[key].sort(key=lambda e: e.get("word_id") or 0)
+                            aya_words_map[key].sort(key=_WORD_ID_KEY)
                     finally:
                         wc_searcher.close()
                 except Exception:
@@ -1301,7 +1384,7 @@ class Raw:
                                         "normalized": _w.get("normalized"),
                                     })
                             for _g in annot_words_map:
-                                annot_words_map[_g].sort(key=lambda e: e.get("word_id") or 0)
+                                annot_words_map[_g].sort(key=_WORD_ID_KEY)
                         finally:
                             _aw_srch.close()
                 except Exception:
@@ -1337,7 +1420,7 @@ class Raw:
                                     "normalized": _w.get("normalized"),
                                 })
                         for _g in annot_aya_words_map:
-                            annot_aya_words_map[_g].sort(key=lambda e: e.get("word_id") or 0)
+                            annot_aya_words_map[_g].sort(key=_WORD_ID_KEY)
                     finally:
                         _aa_srch.close()
                 except Exception:
@@ -1359,10 +1442,14 @@ class Raw:
                 for facet_field in facets_list:
                     try:
                         facet_groups = res.groups(facet_field)
-                        # facet_groups is a dict where keys are values and values are lists of docnums
+                        # heapq.nlargest is O(n log k) vs O(n log n) for a full sort
+                        # when returning only the top-50 facet values — and avoids
+                        # materialising a sorted copy of the entire groups dict.
                         output["facets"][facet_field] = [
                             {"value": value, "count": len(doclist)}
-                            for value, doclist in sorted(facet_groups.items(), key=lambda x: len(x[1]), reverse=True)
+                            for value, doclist in heapq.nlargest(
+                                50, facet_groups.items(), key=_FACET_COUNT_KEY
+                            )
                         ]
                     except Exception:
                         # If facet field doesn't exist or error, skip it
@@ -1379,46 +1466,60 @@ class Raw:
             )
             for r in reslist:
                 cpt += 1
-                _sura_name = keywords(r["sura"])[0]
-                _sura_arabic_name = keywords(r["sura_arabic"])[0]
-                _sura_english_name = keywords(r["sura_english"])[0] if sura_info else None
+                # Cache the gid and frequently-accessed identifiers once per
+                # iteration so that subsequent accesses are plain local-variable
+                # lookups instead of repeated Hit.__getitem__ → fields() calls.
+                _gid = r["gid"]
+                _aya_id = r["aya_id"]
+                _sura_id = r["sura_id"]
+                _sura_name = _KEYWORD_FIND(r["sura"])[0]
+                _sura_arabic_name = _KEYWORD_FIND(r["sura_arabic"])[0]
+                _sura_english_name = _KEYWORD_FIND(r["sura_english"])[0] if sura_info else None
                 # Evaluate once per aya — reused in text, prev/next fields.
                 _is_sajda = aya_sajda_info and r["sajda"] == "نعم"
+                # Cache adjacent-aya dicts once per iteration; each is accessed
+                # 4× (id, sura, sura_arabic, text) when prev_aya/next_aya is True.
+                # The _prev_adja/_next_adja dict accesses below are guarded by the
+                # same `if prev_aya` / `if next_aya` condition, so when the flag is
+                # False the variable is never dereferenced (Python short-circuits
+                # the conditional expression `{ ... } if flag else None`).
+                _prev_adja = adja_ayas[_gid - 1] if prev_aya else None
+                _next_adja = adja_ayas[_gid + 1] if next_aya else None
                 output["ayas"][cpt] = {
 
-                    "identifier": {"gid": r["gid"],
-                                   "aya_id": r["aya_id"],
-                                   "sura_id": r["sura_id"],
+                    "identifier": {"gid": _gid,
+                                   "aya_id": _aya_id,
+                                   "sura_id": _sura_id,
                                    "sura_name": _sura_name,
                                    "sura_arabic_name": _sura_arabic_name,
                                    },
 
                     "aya": {
-                        "id": r["aya_id"],
+                        "id": _aya_id,
                         "text": H(V(r["aya_"])) if _use_standard_script
                         else H(r["uth_"]),
                         "text_no_highlight": r["aya"] if _use_standard_script
                         else r["uth_"],
-                        "translation": TH(trad_text.get(r["gid"], {}).get("text")) if _want_translation else None,
+                        "translation": TH(trad_text.get(_gid, {}).get("text")) if _want_translation else None,
                         "recitation": (
                             f'https://www.everyayah.com/data/{_recitation_subfolder}/%03d%03d.mp3' % (
-                                int(r["sura_id"]), int(r["aya_id"]))
+                                int(_sura_id), int(_aya_id))
                             if _recitation_subfolder else None
                         ),
                         "prev_aya": {
-                            "id": adja_ayas[r["gid"] - 1]["aya_id"],
-                            "sura": adja_ayas[r["gid"] - 1]["sura"],
-                            "sura_arabic": adja_ayas[r["gid"] - 1]["sura_arabic"],
-                            "text": V(adja_ayas[r["gid"] - 1]["aya_"]) if _use_standard_script
-                            else adja_ayas[r["gid"] - 1]["uth_"],
+                            "id": _prev_adja["aya_id"],
+                            "sura": _prev_adja["sura"],
+                            "sura_arabic": _prev_adja["sura_arabic"],
+                            "text": V(_prev_adja["aya_"]) if _use_standard_script
+                            else _prev_adja["uth_"],
                         } if prev_aya else None
                         ,
                         "next_aya": {
-                            "id": adja_ayas[r["gid"] + 1]["aya_id"],
-                            "sura": adja_ayas[r["gid"] + 1]["sura"],
-                            "sura_arabic": adja_ayas[r["gid"] + 1]["sura_arabic"],
-                            "text": V(adja_ayas[r["gid"] + 1]["aya_"]) if _use_standard_script
-                            else adja_ayas[r["gid"] + 1]["uth_"],
+                            "id": _next_adja["aya_id"],
+                            "sura": _next_adja["sura"],
+                            "sura_arabic": _next_adja["sura_arabic"],
+                            "text": V(_next_adja["aya_"]) if _use_standard_script
+                            else _next_adja["uth_"],
                         } if next_aya else None
                         ,
 
@@ -1429,16 +1530,16 @@ class Raw:
                         "name": _sura_name,
                         "arabic_name": _sura_arabic_name,
                         "english_name": _sura_english_name,
-                        "id": r["sura_id"],
+                        "id": _sura_id,
                         "type": r["sura_type"],
                         "arabic_type": r["sura_type_arabic"],
                         "order": r["sura_order"],
                         "ayas": r["s_a"],
                         "stat": {} if not sura_stat_info
                         else {
-                            "words": N(r["s_w"]),
-                            "godnames": N(r["s_g"]),
-                            "letters": N(r["s_l"])
+                            "words": _ZERO_IF_NONE(r["s_w"]),
+                            "godnames": _ZERO_IF_NONE(r["s_g"]),
+                            "letters": _ZERO_IF_NONE(r["s_l"])
                         }
 
                     },
@@ -1461,27 +1562,27 @@ class Raw:
 
                     "stat": {} if not aya_stat_info
                     else {
-                        "words": N(r["a_w"]),
-                        "letters": N(r["a_l"]),
-                        "godnames": N(r["a_g"])
+                        "words": _ZERO_IF_NONE(r["a_w"]),
+                        "letters": _ZERO_IF_NONE(r["a_l"]),
+                        "godnames": _ZERO_IF_NONE(r["a_g"])
                     },
 
                     "sajda": {} if not aya_sajda_info
                     else {
                         "exist": _is_sajda,
                         "type": r["sajda_type"] if _is_sajda else None,
-                        "id": N(r["sajda_id"]) if _is_sajda else None,
+                        "id": _ZERO_IF_NONE(r["sajda_id"]) if _is_sajda else None,
                     },
 
                     "annotations": (
-                        annot_words_map.get(r["gid"], []) if annotation_word
-                        else annot_aya_words_map.get(r["gid"], []) if annotation_aya
+                        annot_words_map.get(_gid, []) if annotation_word
+                        else annot_aya_words_map.get(_gid, []) if annotation_aya
                         else []
                     )
                 }
                 if word_linguistics:
                     output["ayas"][cpt]["words"] = aya_words_map.get(
-                        (r["sura_id"], r["aya_id"]), []
+                        (_sura_id, _aya_id), []
                     )
             return output
         finally:
@@ -1534,7 +1635,6 @@ class Raw:
     
             # Fetch parent aya docs for the current result page using NestedParent.
             # NestedParent(_child_q) returns the parent aya of every matching translation child.
-            _keywords = lambda phrase: _KEYWORD_SPLIT_RE.findall(phrase)
             parent_data = {}
             if reslist:
                 _all_parents_q = wquery.Term("kind", "aya")
@@ -1589,8 +1689,8 @@ class Raw:
                         "translation_id": r.get("trans_id"),
                         "aya_id": _parent.get("aya_id"),
                         "sura_id": _parent.get("sura_id"),
-                        "sura_name": (_keywords(_parent["sura"]) or [None])[0] if _parent.get("sura") else None,
-                        "sura_arabic_name": (_keywords(_parent["sura_arabic"]) or [None])[0] if _parent.get("sura_arabic") else None,
+                        "sura_name": (_KEYWORD_FIND(_parent["sura"]) or [None])[0] if _parent.get("sura") else None,
+                        "sura_arabic_name": (_KEYWORD_FIND(_parent["sura_arabic"]) or [None])[0] if _parent.get("sura_arabic") else None,
                     },
                     "aya": {
                         "text": _parent.get("aya"),
@@ -1833,10 +1933,8 @@ class Raw:
                             groups = facet_res.groups(fld)
                             output["facets"][fld] = [
                                 {"value": v, "count": len(docs)}
-                                for v, docs in sorted(
-                                    groups.items(),
-                                    key=lambda x: len(x[1]),
-                                    reverse=True,
+                                for v, docs in heapq.nlargest(
+                                    50, groups.items(), key=_FACET_COUNT_KEY
                                 )
                             ]
                         except Exception:

@@ -16,6 +16,22 @@ def _decode_if_bytes(x):
     return x
 
 
+def _is_valid_term(x):
+    """Return True for non-integer values and non-negative integers.
+
+    Whoosh stores some numeric field values as Python ``int`` objects using an
+    internal encoding where negative integers are sentinels that should not be
+    surfaced as searchable term values.  Non-integer term values (strings) are
+    always valid.  This predicate is used by :meth:`QReader.list_values` and
+    :meth:`QReader.list_stored_values` to filter such internal sentinels from
+    the public-facing term lists.
+
+    Defined once at module level to avoid allocating a new closure on every
+    ``list_values`` / ``list_stored_values`` call.
+    """
+    return not isinstance(x, int) or x >= 0
+
+
 class QReader:
     """ reader of the index """
 
@@ -102,7 +118,7 @@ class QReader:
     def list_values(self, fieldname):
         reader = self.reader
         try:
-            return list(filter(lambda x: not isinstance(x, int) or x >= 0,
+            return list(filter(_is_valid_term,
                                (_decode_if_bytes(v) for v in reader.field_terms(fieldname))))
         except KeyError:
             return []
@@ -135,7 +151,7 @@ class QReader:
                 value = stored_fields.get(fieldname)
                 if value is not None and value != "":
                     values.add(value)
-        return sorted(filter(lambda x: type(x) is not int or x >= 0, values))
+        return sorted(filter(_is_valid_term, values))
 
     def term_stats(self, terms):
         """ return all statistiques of a term
