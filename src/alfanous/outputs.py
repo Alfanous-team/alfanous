@@ -1,6 +1,7 @@
 import heapq
 import logging
 import re
+from collections import defaultdict
 
 from alfanous.text_processing import QArabicSymbolsFilter
 from alfanous.data import *
@@ -95,6 +96,13 @@ def _FACET_COUNT_KEY(x):
 def _ZERO_IF_NONE(x):
     return x if x else 0
 
+# Text-coalesce helper — replaces `lambda X: X if X else "-----"` that was
+# allocated on every _search_aya / _search_translation / _search_words call
+# for the no-highlight (H / TH) path.  Defining it once at module level avoids
+# one function-object allocation per request on each of the three search methods.
+def _COALESCE_TEXT(x):
+    return x if x else "-----"
+
 # Keyword-split helper — replaces the per-request lambda
 # `keywords = lambda phrase: _KEYWORD_SPLIT_RE.findall(phrase)`.
 # Binding the method once at module level avoids allocating a new closure
@@ -134,7 +142,7 @@ def _edit_distance(s, t):
 
 ## a function to decide what is True and what is false
 def IS_FLAG(flags, key):
-    default = Raw.DEFAULTS['flags'][key]
+    default = _FLAG_DEFAULTS[key]
     val = flags.get(key, default)
     if val is None or val == '':
         return default
@@ -952,8 +960,8 @@ class Raw:
                 # translation highlight function: applies QTranslationHighlight with non-Arabic query terms
                 TH = lambda X: QTranslationHighlight(X, _trans_terms, type=highlight) if X and _trans_terms else (X if X else "-----")
             else:
-                H = lambda X: X if X else "-----"
-                TH = lambda X: X if X else "-----"
+                H = _COALESCE_TEXT
+                TH = _COALESCE_TEXT
             # Pre-check script once — avoids re-evaluating `script == "standard"` per aya in the result loop.
             _use_standard_script = script == "standard"
             ##########################################
@@ -965,7 +973,7 @@ class Raw:
                 # _result_docnums and _index_reader are only needed here; building them
                 # unconditionally would iterate ALL results and hold a reader reference
                 # on every request even when word_info is False (the default).
-                _result_docnums = set(hit.docnum for hit in res)
+                _result_docnums = frozenset(hit.docnum for hit in res)
 
                 # Acquire _wi_searcher BEFORE capturing _index_reader.
                 # shared_searcher() calls _get_shared_searcher().refresh() internally;
@@ -1032,8 +1040,8 @@ class Raw:
                 # _batch_deriv_by_lemma : lemma → set(normalized forms)
                 # _batch_deriv_by_root  : root  → set(normalized forms)
                 _batch_word_data: dict = {}
-                _batch_deriv_by_lemma: dict = {}
-                _batch_deriv_by_root: dict = {}
+                _batch_deriv_by_lemma: defaultdict = defaultdict(set)
+                _batch_deriv_by_root: defaultdict = defaultdict(set)
 
                 if (word_vocalizations or word_derivations) and _wi_searcher is not None:
                     _batch_norms = sorted({
@@ -1111,9 +1119,9 @@ class Raw:
                                     _dl = _d.get("lemma")
                                     _dr = _d.get("root")
                                     if _dl:
-                                        _batch_deriv_by_lemma.setdefault(_dl, set()).add(_dn)
+                                        _batch_deriv_by_lemma[_dl].add(_dn)
                                     if _dr:
-                                        _batch_deriv_by_root.setdefault(_dr, set()).add(_dn)
+                                        _batch_deriv_by_root[_dr].add(_dn)
                 # ── End batch fetch ───────────────────────────────────────────
 
                 try:
@@ -1287,7 +1295,7 @@ class Raw:
             # Fetch word children (kind="word") for each aya on the result page when
             # the linguistic view is requested.  Word children carry the parent aya's
             # gid so they can be fetched with the same query used for translations.
-            aya_words_map = {}  # {(sura_id, aya_id): [word_entry, ...]}
+            aya_words_map: defaultdict = defaultdict(list)  # {(sura_id, aya_id): [word_entry, ...]}
             if word_linguistics and reslist:
                 try:
                     _wl_parent_q = wquery.And([
@@ -1336,7 +1344,7 @@ class Raw:
                                 "derivation":   w.get("derivation"),
                                 "aspect":       w.get("aspect"),
                             }
-                            aya_words_map.setdefault(key, []).append(entry)
+                            aya_words_map[key].append(entry)
                         # Sort each aya's word list by word_id (ascending position order).
                         for key in aya_words_map:
                             aya_words_map[key].sort(key=_WORD_ID_KEY)
@@ -1350,7 +1358,7 @@ class Raw:
             # so the same NestedChildren query used above applies here too.
             # Only words whose normalized form matches a search term are returned;
             # results are grouped by aya gid and sorted by word_id (position).
-            annot_words_map = {}  # {gid: [{"word_id", "word", "normalized"}, ...]}
+            annot_words_map: defaultdict = defaultdict(list)  # {gid: [{"word_id", "word", "normalized"}, ...]}
             if annotation_word and terms and reslist and self.QSE.OK:
                 try:
                     # sorted() for deterministic term ordering across Python runs
@@ -1378,7 +1386,7 @@ class Raw:
                             for _w in _aw_res:
                                 _g = _w.get("gid")
                                 if _g is not None:
-                                    annot_words_map.setdefault(_g, []).append({
+                                    annot_words_map[_g].append({
                                         "word_id":    _w.get("word_id"),
                                         "word":       _w.get("word"),
                                         "normalized": _w.get("normalized"),
@@ -1394,7 +1402,7 @@ class Raw:
             # annotation_aya is disabled when len(res) > 1 earlier in this method).
             # Returns every word of the matched aya with position, Uthmani text,
             # and normalized form — a lightweight alternative to word_linguistics.
-            annot_aya_words_map = {}  # {gid: [{"word_id", "word", "normalized"}, ...]}
+            annot_aya_words_map: defaultdict = defaultdict(list)  # {gid: [{"word_id", "word", "normalized"}, ...]}
             if annotation_aya and reslist and self.QSE.OK:
                 try:
                     _aa_parent_q = wquery.And([
@@ -1414,7 +1422,7 @@ class Raw:
                         for _w in _aa_res:
                             _g = _w.get("gid")
                             if _g is not None:
-                                annot_aya_words_map.setdefault(_g, []).append({
+                                annot_aya_words_map[_g].append({
                                     "word_id":    _w.get("word_id"),
                                     "word":       _w.get("word"),
                                     "normalized": _w.get("normalized"),
@@ -1621,7 +1629,7 @@ class Raw:
             # Extract matched terms from the translation sub-query for highlight.
             terms = [t for field, t in _child_q.all_terms() if field in self._trans_fields]
             if highlight == "none":
-                H = lambda X: X if X else "-----"
+                H = _COALESCE_TEXT
             else:
                 H = lambda X: QTranslationHighlight(X, terms, type=highlight) if X else "-----"
     
@@ -1818,7 +1826,7 @@ class Raw:
                     _terms_set.add(_wu)
     
             if highlight == "none":
-                H = lambda X: X if X else "-----"
+                H = _COALESCE_TEXT
             else:
                 H = lambda X: self.QSE.highlight(X, terms, highlight) if X else "-----"
 
@@ -1945,4 +1953,13 @@ class Raw:
             return output
         finally:
             searcher.close()
+
+
+# ---------------------------------------------------------------------------
+# Module-level binding resolved after Raw is defined.
+#
+# IS_FLAG() accesses this instead of Raw.DEFAULTS['flags'][key] (3 lookups)
+# so each of its ~20 calls per _search_aya request costs only 1 dict lookup.
+# ---------------------------------------------------------------------------
+_FLAG_DEFAULTS = Raw.DEFAULTS['flags']
 

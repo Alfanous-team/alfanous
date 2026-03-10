@@ -1393,5 +1393,447 @@ class TestDerivationTwoPassCached(unittest.TestCase):
         )
 
 
+# ---------------------------------------------------------------------------
+# Iteration-7 fixes
+# ---------------------------------------------------------------------------
+
+class TestResultDocnumsFrozenset(unittest.TestCase):
+    """_result_docnums must be built as a frozenset, not a plain set."""
+
+    def test_result_docnums_is_frozenset(self):
+        """_result_docnums must be initialised with frozenset(...), not set(...)."""
+        import ast, inspect, textwrap
+        import alfanous.outputs as m
+        src = textwrap.dedent(inspect.getsource(m.Raw._search_aya))
+        tree = ast.parse(src)
+
+        # Walk the AST and look for any assignment to _result_docnums that uses
+        # a plain `set(...)` call instead of `frozenset(...)`.
+        for node in ast.walk(tree):
+            if not isinstance(node, ast.Assign):
+                continue
+            for t in node.targets:
+                if isinstance(t, ast.Name) and t.id == "_result_docnums":
+                    val = node.value
+                    if (isinstance(val, ast.Call)
+                            and isinstance(val.func, ast.Name)
+                            and val.func.id == "set"):
+                        self.fail(
+                            "_result_docnums must be built with frozenset(), not set() — "
+                            "it is never mutated after creation, so frozenset avoids "
+                            "unnecessary allocation of a mutable data structure."
+                        )
+
+    def test_result_docnums_uses_frozenset(self):
+        """_result_docnums must explicitly call frozenset()."""
+        import ast, inspect, textwrap
+        import alfanous.outputs as m
+        src = textwrap.dedent(inspect.getsource(m.Raw._search_aya))
+        tree = ast.parse(src)
+
+        found = False
+        for node in ast.walk(tree):
+            if not isinstance(node, ast.Assign):
+                continue
+            for t in node.targets:
+                if isinstance(t, ast.Name) and t.id == "_result_docnums":
+                    val = node.value
+                    if (isinstance(val, ast.Call)
+                            and isinstance(val.func, ast.Name)
+                            and val.func.id == "frozenset"):
+                        found = True
+
+        self.assertTrue(
+            found,
+            "_result_docnums must be assigned frozenset(...) in _search_aya"
+        )
+
+
+class TestBatchDerivDefaultdict(unittest.TestCase):
+    """_batch_deriv_by_lemma and _batch_deriv_by_root must use defaultdict(set)."""
+
+    def _search_aya_source(self):
+        import inspect, textwrap
+        import alfanous.outputs as m
+        return textwrap.dedent(inspect.getsource(m.Raw._search_aya))
+
+    def test_no_setdefault_for_batch_deriv_by_lemma(self):
+        """_batch_deriv_by_lemma must not use .setdefault() — use defaultdict(set)."""
+        import ast
+        src = self._search_aya_source()
+        tree = ast.parse(src)
+        for node in ast.walk(tree):
+            if not isinstance(node, ast.Call):
+                continue
+            func = node.func
+            if not (isinstance(func, ast.Attribute) and func.attr == "setdefault"):
+                continue
+            # Check if the receiver is _batch_deriv_by_lemma
+            if (isinstance(func.value, ast.Name)
+                    and func.value.id == "_batch_deriv_by_lemma"):
+                self.fail(
+                    "_batch_deriv_by_lemma must not use .setdefault() — "
+                    "initialise it as defaultdict(set) and use direct item assignment."
+                )
+
+    def test_no_setdefault_for_batch_deriv_by_root(self):
+        """_batch_deriv_by_root must not use .setdefault() — use defaultdict(set)."""
+        import ast
+        src = self._search_aya_source()
+        tree = ast.parse(src)
+        for node in ast.walk(tree):
+            if not isinstance(node, ast.Call):
+                continue
+            func = node.func
+            if not (isinstance(func, ast.Attribute) and func.attr == "setdefault"):
+                continue
+            if (isinstance(func.value, ast.Name)
+                    and func.value.id == "_batch_deriv_by_root"):
+                self.fail(
+                    "_batch_deriv_by_root must not use .setdefault() — "
+                    "initialise it as defaultdict(set) and use direct item assignment."
+                )
+
+    def test_batch_deriv_by_lemma_initialised_as_defaultdict(self):
+        """_batch_deriv_by_lemma must be initialised with defaultdict(set)."""
+        import ast
+        src = self._search_aya_source()
+        tree = ast.parse(src)
+        found = False
+        for node in ast.walk(tree):
+            # Handle plain assignment and annotated assignment.
+            if isinstance(node, ast.Assign):
+                for t in node.targets:
+                    if isinstance(t, ast.Name) and t.id == "_batch_deriv_by_lemma":
+                        val = node.value
+                        if (isinstance(val, ast.Call)
+                                and isinstance(val.func, ast.Name)
+                                and val.func.id == "defaultdict"):
+                            found = True
+            elif isinstance(node, ast.AnnAssign):
+                t = node.target
+                if (isinstance(t, ast.Name) and t.id == "_batch_deriv_by_lemma"
+                        and node.value is not None):
+                    val = node.value
+                    if (isinstance(val, ast.Call)
+                            and isinstance(val.func, ast.Name)
+                            and val.func.id == "defaultdict"):
+                        found = True
+        self.assertTrue(
+            found,
+            "_batch_deriv_by_lemma must be initialised as defaultdict(set), not {}"
+        )
+
+    def test_batch_deriv_by_root_initialised_as_defaultdict(self):
+        """_batch_deriv_by_root must be initialised with defaultdict(set)."""
+        import ast
+        src = self._search_aya_source()
+        tree = ast.parse(src)
+        found = False
+        for node in ast.walk(tree):
+            if isinstance(node, ast.Assign):
+                for t in node.targets:
+                    if isinstance(t, ast.Name) and t.id == "_batch_deriv_by_root":
+                        val = node.value
+                        if (isinstance(val, ast.Call)
+                                and isinstance(val.func, ast.Name)
+                                and val.func.id == "defaultdict"):
+                            found = True
+            elif isinstance(node, ast.AnnAssign):
+                t = node.target
+                if (isinstance(t, ast.Name) and t.id == "_batch_deriv_by_root"
+                        and node.value is not None):
+                    val = node.value
+                    if (isinstance(val, ast.Call)
+                            and isinstance(val.func, ast.Name)
+                            and val.func.id == "defaultdict"):
+                        found = True
+        self.assertTrue(
+            found,
+            "_batch_deriv_by_root must be initialised as defaultdict(set), not {}"
+        )
+
+    def test_defaultdict_importable_from_outputs(self):
+        """defaultdict must be importable from alfanous.outputs module namespace."""
+        import alfanous.outputs as _outputs
+        self.assertTrue(
+            hasattr(_outputs, "defaultdict"),
+            "defaultdict must be imported at module level in alfanous.outputs"
+        )
+
+
+class TestAyaWordsMapsDefaultdict(unittest.TestCase):
+    """aya_words_map, annot_words_map, annot_aya_words_map must use defaultdict(list)."""
+
+    def _search_aya_source(self):
+        import inspect, textwrap
+        import alfanous.outputs as m
+        return textwrap.dedent(inspect.getsource(m.Raw._search_aya))
+
+    def _check_no_setdefault_for(self, var_name):
+        import ast
+        src = self._search_aya_source()
+        tree = ast.parse(src)
+        for node in ast.walk(tree):
+            if not isinstance(node, ast.Call):
+                continue
+            func = node.func
+            if not (isinstance(func, ast.Attribute) and func.attr == "setdefault"):
+                continue
+            if isinstance(func.value, ast.Name) and func.value.id == var_name:
+                self.fail(
+                    f"{var_name} must not use .setdefault() — "
+                    f"initialise it as defaultdict(list) and use direct item access."
+                )
+
+    def _check_initialised_as_defaultdict(self, var_name):
+        import ast
+        src = self._search_aya_source()
+        tree = ast.parse(src)
+        found = False
+        for node in ast.walk(tree):
+            # Handle both plain assignment (`x = defaultdict(...)`) and
+            # annotated assignment (`x: SomeType = defaultdict(...)`).
+            if isinstance(node, ast.Assign):
+                for t in node.targets:
+                    if isinstance(t, ast.Name) and t.id == var_name:
+                        val = node.value
+                        if (isinstance(val, ast.Call)
+                                and isinstance(val.func, ast.Name)
+                                and val.func.id == "defaultdict"):
+                            found = True
+            elif isinstance(node, ast.AnnAssign):
+                t = node.target
+                if isinstance(t, ast.Name) and t.id == var_name and node.value is not None:
+                    val = node.value
+                    if (isinstance(val, ast.Call)
+                            and isinstance(val.func, ast.Name)
+                            and val.func.id == "defaultdict"):
+                        found = True
+        self.assertTrue(
+            found,
+            f"{var_name} must be initialised as defaultdict(list), not {{}}"
+        )
+
+    def test_aya_words_map_no_setdefault(self):
+        """aya_words_map must not use .setdefault() — use defaultdict(list)."""
+        self._check_no_setdefault_for("aya_words_map")
+
+    def test_aya_words_map_is_defaultdict(self):
+        """aya_words_map must be initialised as defaultdict(list)."""
+        self._check_initialised_as_defaultdict("aya_words_map")
+
+    def test_annot_words_map_no_setdefault(self):
+        """annot_words_map must not use .setdefault() — use defaultdict(list)."""
+        self._check_no_setdefault_for("annot_words_map")
+
+    def test_annot_words_map_is_defaultdict(self):
+        """annot_words_map must be initialised as defaultdict(list)."""
+        self._check_initialised_as_defaultdict("annot_words_map")
+
+    def test_annot_aya_words_map_no_setdefault(self):
+        """annot_aya_words_map must not use .setdefault() — use defaultdict(list)."""
+        self._check_no_setdefault_for("annot_aya_words_map")
+
+    def test_annot_aya_words_map_is_defaultdict(self):
+        """annot_aya_words_map must be initialised as defaultdict(list)."""
+        self._check_initialised_as_defaultdict("annot_aya_words_map")
+
+
+# ---------------------------------------------------------------------------
+# Iteration-8 fixes
+# ---------------------------------------------------------------------------
+
+class TestCoalesceTextModuleLevel(unittest.TestCase):
+    """_COALESCE_TEXT must be defined at module level and replace no-highlight lambdas."""
+
+    def test_coalesce_text_exists(self):
+        """_COALESCE_TEXT must be a module-level callable in alfanous.outputs."""
+        import alfanous.outputs as _outputs
+        self.assertTrue(
+            hasattr(_outputs, "_COALESCE_TEXT"),
+            "_COALESCE_TEXT must be defined at module level in alfanous.outputs"
+        )
+        self.assertTrue(
+            callable(_outputs._COALESCE_TEXT),
+            "_COALESCE_TEXT must be callable"
+        )
+
+    def test_coalesce_text_returns_value_when_truthy(self):
+        """_COALESCE_TEXT must return x when x is truthy."""
+        from alfanous.outputs import _COALESCE_TEXT
+        self.assertEqual(_COALESCE_TEXT("hello"), "hello")
+        self.assertEqual(_COALESCE_TEXT("الله"), "الله")
+        self.assertEqual(_COALESCE_TEXT(1), 1)
+
+    def test_coalesce_text_returns_fallback_when_falsy(self):
+        """_COALESCE_TEXT must return '-----' when x is falsy."""
+        from alfanous.outputs import _COALESCE_TEXT
+        self.assertEqual(_COALESCE_TEXT(None), "-----")
+        self.assertEqual(_COALESCE_TEXT(""), "-----")
+        self.assertEqual(_COALESCE_TEXT(0), "-----")
+
+    def _no_highlight_lambdas_in(self, method_name):
+        """Return True if the method contains `lambda X: X if X else "-----"`
+        (the plain identity-coalesce pattern with no function call in the truthy branch)."""
+        import ast, inspect, textwrap
+        import alfanous.outputs as m
+        src = textwrap.dedent(inspect.getsource(getattr(m.Raw, method_name)))
+        tree = ast.parse(src)
+        for node in ast.walk(tree):
+            if not isinstance(node, ast.Lambda):
+                continue
+            body = node.body
+            # Only flag lambdas whose body is a plain IfExp like `X if X else "-----"`.
+            # Lambdas with a Call in the truthy branch (e.g. self.QSE.highlight(...))
+            # are the highlight-enabled variants and are intentionally left as lambdas.
+            if not isinstance(body, ast.IfExp):
+                continue
+            orelse = body.orelse
+            truthy = body.body
+            if (isinstance(orelse, ast.Constant)
+                    and orelse.value == "-----"
+                    and isinstance(truthy, ast.Name)):
+                return True
+        return False
+
+    def test_search_aya_no_highlight_lambda_removed(self):
+        """_search_aya must not allocate `lambda X: X if X else '-----'`."""
+        self.assertFalse(
+            self._no_highlight_lambdas_in("_search_aya"),
+            "_search_aya no-highlight path must use _COALESCE_TEXT, "
+            "not an inline lambda"
+        )
+
+    def test_search_translation_no_highlight_lambda_removed(self):
+        """_search_translation must not allocate `lambda X: X if X else '-----'`."""
+        self.assertFalse(
+            self._no_highlight_lambdas_in("_search_translation"),
+            "_search_translation no-highlight path must use _COALESCE_TEXT, "
+            "not an inline lambda"
+        )
+
+    def test_search_words_no_highlight_lambda_removed(self):
+        """_search_words must not allocate `lambda X: X if X else '-----'`."""
+        self.assertFalse(
+            self._no_highlight_lambdas_in("_search_words"),
+            "_search_words no-highlight path must use _COALESCE_TEXT, "
+            "not an inline lambda"
+        )
+
+
+class TestFlagDefaultsBinding(unittest.TestCase):
+    """_FLAG_DEFAULTS must be defined at module level for fast IS_FLAG lookups."""
+
+    def test_flag_defaults_exists(self):
+        """_FLAG_DEFAULTS must be a module-level dict in alfanous.outputs."""
+        import alfanous.outputs as _outputs
+        self.assertTrue(
+            hasattr(_outputs, "_FLAG_DEFAULTS"),
+            "_FLAG_DEFAULTS must be defined at module level in alfanous.outputs"
+        )
+        self.assertIsInstance(
+            _outputs._FLAG_DEFAULTS, dict,
+            "_FLAG_DEFAULTS must be a dict"
+        )
+
+    def test_flag_defaults_equals_raw_defaults(self):
+        """_FLAG_DEFAULTS must be the same object as Raw.DEFAULTS['flags']."""
+        import alfanous.outputs as _outputs
+        self.assertIs(
+            _outputs._FLAG_DEFAULTS,
+            _outputs.Raw.DEFAULTS['flags'],
+            "_FLAG_DEFAULTS must be the same dict object as Raw.DEFAULTS['flags']"
+        )
+
+    def test_is_flag_uses_flag_defaults_not_raw_defaults(self):
+        """IS_FLAG must reference _FLAG_DEFAULTS, not Raw.DEFAULTS['flags']."""
+        import ast, inspect
+        import alfanous.outputs as _outputs
+        src = inspect.getsource(_outputs.IS_FLAG)
+        tree = ast.parse(src)
+        for node in ast.walk(tree):
+            # Detect attribute access Raw.DEFAULTS and subsequent subscript
+            if isinstance(node, ast.Subscript):
+                val = node.value
+                if isinstance(val, ast.Attribute) and val.attr == "DEFAULTS":
+                    if isinstance(val.value, ast.Name) and val.value.id == "Raw":
+                        self.fail(
+                            "IS_FLAG must use _FLAG_DEFAULTS[key], not "
+                            "Raw.DEFAULTS['flags'][key] — the latter costs 3 "
+                            "attribute/dict lookups per call."
+                        )
+
+    def test_is_flag_still_works_correctly(self):
+        """IS_FLAG must still return correct results after the lookup change."""
+        from alfanous.outputs import IS_FLAG
+        # Test with a known boolean flag
+        self.assertTrue(IS_FLAG({"vocalized": True}, "vocalized"))
+        self.assertFalse(IS_FLAG({"vocalized": False}, "vocalized"))
+        self.assertFalse(IS_FLAG({"vocalized": "false"}, "vocalized"))
+        self.assertFalse(IS_FLAG({"vocalized": "0"}, "vocalized"))
+        # Empty / None fall back to default
+        self.assertEqual(
+            IS_FLAG({"vocalized": None}, "vocalized"),
+            True,  # Raw.DEFAULTS['flags']['vocalized'] is True
+        )
+
+
+class TestTashkilQueryNormalizedCached(unittest.TestCase):
+    """TashkilQuery must pre-compute _normalized_query_words at __init__ time."""
+
+    def test_normalized_query_words_attribute_exists(self):
+        """TashkilQuery instances must have a _normalized_query_words attribute."""
+        from alfanous.query_plugins import TashkilQuery
+        q = TashkilQuery("aya", "الله")
+        self.assertTrue(
+            hasattr(q, "_normalized_query_words"),
+            "TashkilQuery must set _normalized_query_words in __init__"
+        )
+
+    def test_normalized_query_words_is_frozenset(self):
+        """_normalized_query_words must be a frozenset for O(1) lookup."""
+        from alfanous.query_plugins import TashkilQuery
+        q = TashkilQuery("aya", "الله")
+        self.assertIsInstance(
+            q._normalized_query_words, frozenset,
+            "_normalized_query_words must be a frozenset"
+        )
+
+    def test_normalized_query_words_matches_words(self):
+        """_normalized_query_words must equal the initial frozenset(self.words)."""
+        from alfanous.query_plugins import TashkilQuery
+        q = TashkilQuery("aya", ["الله", "الرحمن"])
+        self.assertEqual(
+            q._normalized_query_words,
+            frozenset(q.words),
+            "_normalized_query_words must equal frozenset(self.words) at init time"
+        )
+
+    def test_btexts_does_not_recompute_normalized_set(self):
+        """_btexts must not recompute {normalize(w) for w in self.text}."""
+        import ast, inspect, textwrap
+        from alfanous.query_plugins import TashkilQuery
+        src = textwrap.dedent(inspect.getsource(TashkilQuery._btexts))
+        tree = ast.parse(src)
+
+        # Look for a set comprehension that calls normalize_all on self.text.
+        for node in ast.walk(tree):
+            if not isinstance(node, ast.SetComp):
+                continue
+            # Check if the iterable is `self.text`
+            for gen in node.generators:
+                iter_node = gen.iter
+                if (isinstance(iter_node, ast.Attribute)
+                        and iter_node.attr == "text"
+                        and isinstance(iter_node.value, ast.Name)
+                        and iter_node.value.id == "self"):
+                    self.fail(
+                        "TashkilQuery._btexts must not recompute "
+                        "{normalize(w) for w in self.text} on every call — "
+                        "use self._normalized_query_words instead."
+                    )
+
+
 if __name__ == "__main__":
     unittest.main()

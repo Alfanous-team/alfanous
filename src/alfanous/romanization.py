@@ -1,135 +1,135 @@
 # Buckwalter Romanization  letters mapping
 BUCKWALTER2UNICODE = {
-    u"'": u"\u0621",  # hamza-on-the-line
-    u"|": u"\u0622",  # madda
-    u">": u"\u0623",  # hamza-on-'alif
-    u"&": u"\u0624",  # hamza-on-waaw
-    u"<": u"\u0625",  # hamza-under-'alif
-    u"}": u"\u0626",  # hamza-on-yaa'
-    u"A": u"\u0627",  # bare 'alif
-    u"b": u"\u0628",  # baa'
-    u"p": u"\u0629",  # taa' marbuuTa
-    u"t": u"\u062A",  # taa'
-    u"v": u"\u062B",  # thaa'
-    u"j": u"\u062C",  # jiim
-    u"H": u"\u062D",  # Haa'
-    u"x": u"\u062E",  # khaa'
-    u"d": u"\u062F",  # daal
-    u"*": u"\u0630",  # dhaal
-    u"r": u"\u0631",  # raa'
-    u"z": u"\u0632",  # zaay
-    u"s": u"\u0633",  # siin
-    u"$": u"\u0634",  # shiin
-    u"S": u"\u0635",  # Saad
-    u"D": u"\u0636",  # Daad
-    u"T": u"\u0637",  # Taa'
-    u"Z": u"\u0638",  # Zaa' (DHaa')
-    u"E": u"\u0639",  # cayn
-    u"g": u"\u063A",  # ghayn
-    u"_": u"\u0640",  # taTwiil
-    u"f": u"\u0641",  # faa'
-    u"q": u"\u0642",  # qaaf
-    u"k": u"\u0643",  # kaaf
-    u"l": u"\u0644",  # laam
-    u"m": u"\u0645",  # miim
-    u"n": u"\u0646",  # nuun
-    u"h": u"\u0647",  # haa'
-    u"w": u"\u0648",  # waaw
-    u"Y": u"\u0649",  # 'alif maqSuura
-    u"y": u"\u064A",  # yaa'
-    u"F": u"\u064B",  # fatHatayn
-    u"N": u"\u064C",  # Dammatayn
-    u"K": u"\u064D",  # kasratayn
-    u"a": u"\u064E",  # fatHa
-    u"u": u"\u064F",  # Damma
-    u"i": u"\u0650",  # kasra
-    u"~": u"\u0651",  # shaddah
-    u"o": u"\u0652",  # sukuun
-    u"`": u"\u0670",  # dagger 'alif
-    u"{": u"\u0671",  # waSla
+    "'": "\u0621",  # hamza-on-the-line
+    "|": "\u0622",  # madda
+    ">": "\u0623",  # hamza-on-'alif
+    "&": "\u0624",  # hamza-on-waaw
+    "<": "\u0625",  # hamza-under-'alif
+    "}": "\u0626",  # hamza-on-yaa'
+    "A": "\u0627",  # bare 'alif
+    "b": "\u0628",  # baa'
+    "p": "\u0629",  # taa' marbuuTa
+    "t": "\u062A",  # taa'
+    "v": "\u062B",  # thaa'
+    "j": "\u062C",  # jiim
+    "H": "\u062D",  # Haa'
+    "x": "\u062E",  # khaa'
+    "d": "\u062F",  # daal
+    "*": "\u0630",  # dhaal
+    "r": "\u0631",  # raa'
+    "z": "\u0632",  # zaay
+    "s": "\u0633",  # siin
+    "$": "\u0634",  # shiin
+    "S": "\u0635",  # Saad
+    "D": "\u0636",  # Daad
+    "T": "\u0637",  # Taa'
+    "Z": "\u0638",  # Zaa' (DHaa')
+    "E": "\u0639",  # cayn
+    "g": "\u063A",  # ghayn
+    "_": "\u0640",  # taTwiil
+    "f": "\u0641",  # faa'
+    "q": "\u0642",  # qaaf
+    "k": "\u0643",  # kaaf
+    "l": "\u0644",  # laam
+    "m": "\u0645",  # miim
+    "n": "\u0646",  # nuun
+    "h": "\u0647",  # haa'
+    "w": "\u0648",  # waaw
+    "Y": "\u0649",  # 'alif maqSuura
+    "y": "\u064A",  # yaa'
+    "F": "\u064B",  # fatHatayn
+    "N": "\u064C",  # Dammatayn
+    "K": "\u064D",  # kasratayn
+    "a": "\u064E",  # fatHa
+    "u": "\u064F",  # Damma
+    "i": "\u0650",  # kasra
+    "~": "\u0651",  # shaddah
+    "o": "\u0652",  # sukuun
+    "`": "\u0670",  # dagger 'alif
+    "{": "\u0671",  # waSla
     # extended here
-    u"^": u"\u0653",  # Maddah
-    u"#": u"\u0654",  # HamzaAbove
+    "^": "\u0653",  # Maddah
+    "#": "\u0654",  # HamzaAbove
 
-    u":": u"\u06DC",  # SmallHighSeen
-    u"@": u"\u06DF",  # SmallHighRoundedZero
-    u"\"": u"\u06E0",  # SmallHighUprightRectangularZero
-    u"[": u"\u06E2",  # SmallHighMeemIsolatedForm
-    u";": u"\u06E3",  # SmallLowSeen
-    u",": u"\u06E5",  # SmallWaw
-    u".": u"\u06E6",  # SmallYa
-    u"!": u"\u06E8",  # SmallHighNoon
-    u"-": u"\u06EA",  # EmptyCentreLowStop
-    u"+": u"\u06EB",  # EmptyCentreHighStop
-    u"%": u"\u06EC",  # RoundedHighStopWithFilledCentre
-    u"]": u"\u06ED"  #
+    ":": "\u06DC",  # SmallHighSeen
+    "@": "\u06DF",  # SmallHighRoundedZero
+    "\"": "\u06E0",  # SmallHighUprightRectangularZero
+    "[": "\u06E2",  # SmallHighMeemIsolatedForm
+    ";": "\u06E3",  # SmallLowSeen
+    ",": "\u06E5",  # SmallWaw
+    ".": "\u06E6",  # SmallYa
+    "!": "\u06E8",  # SmallHighNoon
+    "-": "\u06EA",  # EmptyCentreLowStop
+    "+": "\u06EB",  # EmptyCentreHighStop
+    "%": "\u06EC",  # RoundedHighStopWithFilledCentre
+    "]": "\u06ED"  #
 
 }
 
 # ISO233-2 romanization letter mapping
-ISO2UNICODE = {u"ˌ": u"\u0621",  # hamza-on-the-line
-               # u"|": u"\u0622", # madda
-               u"ˈ": u"\u0623",  # hamza-on-'alif
-               # u"ˈ": u"\u0624",  # hamza-on-waaw
-               # u"<": u"\u0625", # hamza-under-'alif
-               # u"ˈ": u"\u0626",  # hamza-on-yaa'
-               u"ʾ": u"\u0627",  # bare 'alif
-               u"b": u"\u0628",  # baa'
-               u"ẗ": u"\u0629",  # taa' marbuuTa
-               u"t": u"\u062A",  # taa'
-               u"ṯ": u"\u062B",  # thaa'
-               u"ǧ": u"\u062C",  # jiim
-               u"ḥ": u"\u062D",  # Haa'
-               u"ẖ": u"\u062E",  # khaa'
-               u"d": u"\u062F",  # daal
-               u"ḏ": u"\u0630",  # dhaal
-               u"r": u"\u0631",  # raa'
-               u"z": u"\u0632",  # zaay
-               u"s": u"\u0633",  # siin
-               u"š": u"\u0634",  # shiin
-               u"ṣ": u"\u0635",  # Saad
-               u"ḍ": u"\u0636",  # Daad
-               u"ṭ": u"\u0637",  # Taa'
-               u"ẓ": u"\u0638",  # Zaa' (DHaa')
-               u"ʿ": u"\u0639",  # cayn
-               u"ġ": u"\u063A",  # ghayn
-               # u"_": u"\u0640", # taTwiil
-               u"f": u"\u0641",  # faa'
-               u"q": u"\u0642",  # qaaf
-               u"k": u"\u0643",  # kaaf
-               u"l": u"\u0644",  # laam
-               u"m": u"\u0645",  # miim
-               u"n": u"\u0646",  # nuun
-               u"h": u"\u0647",  # haa'
-               u"w": u"\u0648",  # waaw
-               u"ỳ": u"\u0649",  # 'alif maqSuura
-               u"y": u"\u064A",  # yaa'
-               u"á": u"\u064B",  # fatHatayn
-               u"ú": u"\u064C",  # Dammatayn
-               u"í": u"\u064D",  # kasratayn
-               u"a": u"\u064E",  # fatHa
-               u"u": u"\u064F",  # Damma
-               u"i": u"\u0650",  # kasra
-               # u"~": u"\u0651", # shaddah
-               u"°": u"\u0652",  # sukuun
-               # u"`": u"\u0670", # dagger 'alif
-               # u"{": u"\u0671", # waSla
+ISO2UNICODE = {"ˌ": "\u0621",  # hamza-on-the-line
+               # "|": "\u0622", # madda
+               "ˈ": "\u0623",  # hamza-on-'alif
+               # "ˈ": "\u0624",  # hamza-on-waaw
+               # "<": "\u0625", # hamza-under-'alif
+               # "ˈ": "\u0626",  # hamza-on-yaa'
+               "ʾ": "\u0627",  # bare 'alif
+               "b": "\u0628",  # baa'
+               "ẗ": "\u0629",  # taa' marbuuTa
+               "t": "\u062A",  # taa'
+               "ṯ": "\u062B",  # thaa'
+               "ǧ": "\u062C",  # jiim
+               "ḥ": "\u062D",  # Haa'
+               "ẖ": "\u062E",  # khaa'
+               "d": "\u062F",  # daal
+               "ḏ": "\u0630",  # dhaal
+               "r": "\u0631",  # raa'
+               "z": "\u0632",  # zaay
+               "s": "\u0633",  # siin
+               "š": "\u0634",  # shiin
+               "ṣ": "\u0635",  # Saad
+               "ḍ": "\u0636",  # Daad
+               "ṭ": "\u0637",  # Taa'
+               "ẓ": "\u0638",  # Zaa' (DHaa')
+               "ʿ": "\u0639",  # cayn
+               "ġ": "\u063A",  # ghayn
+               # "_": "\u0640", # taTwiil
+               "f": "\u0641",  # faa'
+               "q": "\u0642",  # qaaf
+               "k": "\u0643",  # kaaf
+               "l": "\u0644",  # laam
+               "m": "\u0645",  # miim
+               "n": "\u0646",  # nuun
+               "h": "\u0647",  # haa'
+               "w": "\u0648",  # waaw
+               "ỳ": "\u0649",  # 'alif maqSuura
+               "y": "\u064A",  # yaa'
+               "á": "\u064B",  # fatHatayn
+               "ú": "\u064C",  # Dammatayn
+               "í": "\u064D",  # kasratayn
+               "a": "\u064E",  # fatHa
+               "u": "\u064F",  # Damma
+               "i": "\u0650",  # kasra
+               # "~": "\u0651", # shaddah
+               "°": "\u0652",  # sukuun
+               # "`": "\u0670", # dagger 'alif
+               # "{": "\u0671", # waSla
                ##extended here
-               # u"^": u"\u0653", # Maddah
-               # u"#": u"\u0654", # HamzaAbove
+               # "^": "\u0653", # Maddah
+               # "#": "\u0654", # HamzaAbove
 
-               # u":"  : "\u06DC", # SmallHighSeen
-               # u"@"  : "\u06DF", # SmallHighRoundedZero
-               # u"\"" : "\u06E0", # SmallHighUprightRectangularZero
-               # u"["  : "\u06E2", # SmallHighMeemIsolatedForm
-               # u";"  : "\u06E3", # SmallLowSeen
-               # u","  : "\u06E5", # SmallWaw
-               # u"."  : "\u06E6", # SmallYa
-               # u"!"  : "\u06E8", # SmallHighNoon
-               # u"-"  : "\u06EA", # EmptyCentreLowStop
-               # u"+"  : "\u06EB", # EmptyCentreHighStop
-               # u"%"  : "\u06EC", # RoundedHighStopWithFilledCentre
-               # u"]"  : "\u06ED"          #
+               # ":"  : "\u06DC", # SmallHighSeen
+               # "@"  : "\u06DF", # SmallHighRoundedZero
+               # "\"" : "\u06E0", # SmallHighUprightRectangularZero
+               # "["  : "\u06E2", # SmallHighMeemIsolatedForm
+               # ";"  : "\u06E3", # SmallLowSeen
+               # ","  : "\u06E5", # SmallWaw
+               # "."  : "\u06E6", # SmallYa
+               # "!"  : "\u06E8", # SmallHighNoon
+               # "-"  : "\u06EA", # EmptyCentreLowStop
+               # "+"  : "\u06EB", # EmptyCentreHighStop
+               # "%"  : "\u06EC", # RoundedHighStopWithFilledCentre
+               # "]"  : "\u06ED"          #
 
                }
 
@@ -150,68 +150,68 @@ ROMANIZATION_SYSTEMS_MAPPINGS_REVERSED = {
 # letter can produce multiple candidates (e.g. 's' for both س and ص).
 # The Quran wordset filter then selects the phonetically correct form.
 ARABIZI2UNICODE = {
-    u"2": [u"\u0621"],              # ء hamza
-    u"3": [u"\u0639"],              # ع ain
-    u"5": [u"\u062E"],              # خ kha
-    u"6": [u"\u0637", u"\u0636"],  # ط ta emphatic, ض dad (6alal=ضلال in number-based chat)
-    u"7": [u"\u062D"],              # ح ha (pharyngeal)
-    u"8": [u"\u0642"],              # ق qaf (number-based chat: 8ala=قال)
-    u"-": [u""],                    # transparent separator (e.g. Al-Hamd)
-    u"9": [u"\u0635"],              # ص sad
-    u"a": [u"\u0627"],              # ا alef
-    u"b": [u"\u0628"],              # ب ba
-    u"t": [u"\u062A", u"\u0637"],  # ت ta, ط emphatic (Taqwa→تقوى, Talha→طلحة)
-    u"g": [u"\u062C"],              # ج jim (dialectal; gh→غ takes precedence)
-    u"j": [u"\u062C"],              # ج jim
-    u"d": [u"\u062F", u"\u0636", u"\u0630"],  # د dal, ض dad emphatic (Dallin→ضالين), ذ dhal (Dahab→ذهب)
-    u"r": [u"\u0631"],              # ر ra
-    u"z": [u"\u0632", u"\u0638", u"\u0630"],  # ز zay, ظ dhal emphatic, ذ dhal (Zahab=ذهب, Zanb=ذنب)
-    u"s": [u"\u0633", u"\u0635"],  # س sin, ص sad (Muslim→مسلم, Salah→صلاة)
-    u"f": [u"\u0641"],              # ف fa
-    u"q": [u"\u0642"],              # ق qaf
-    u"k": [u"\u0643", u"\u0642"],  # ك kaf, ق qaf dialectal (Kiyamah→قيامة)
-    u"l": [u"\u0644"],              # ل lam
-    u"m": [u"\u0645"],              # م mim
-    u"n": [u"\u0646"],              # ن nun
-    u"h": [u"\u0647", u"\u062D"],  # ه ha, ح pharyngeal (Hajj→حج, Hisab→حساب)
-    u"w": [u"\u0648"],              # و waw
-    u"y": [u"\u064A"],              # ي ya
-    u"e": [u"\u064A"],              # ي ya (long 'ee' sound, e.g. "Keefak"→كيفك)
-    u"o": [u"\u0648"],              # و waw
-    u"u": [u"\u0648"],              # و waw (long 'oo'/'uu' sound, e.g. "shu"→شو)
-    u"i": [u"\u064A"],              # ي ya (long i)
+    "2": ["\u0621"],              # ء hamza
+    "3": ["\u0639"],              # ع ain
+    "5": ["\u062E"],              # خ kha
+    "6": ["\u0637", "\u0636"],  # ط ta emphatic, ض dad (6alal=ضلال in number-based chat)
+    "7": ["\u062D"],              # ح ha (pharyngeal)
+    "8": ["\u0642"],              # ق qaf (number-based chat: 8ala=قال)
+    "-": [""],                    # transparent separator (e.g. Al-Hamd)
+    "9": ["\u0635"],              # ص sad
+    "a": ["\u0627"],              # ا alef
+    "b": ["\u0628"],              # ب ba
+    "t": ["\u062A", "\u0637"],  # ت ta, ط emphatic (Taqwa→تقوى, Talha→طلحة)
+    "g": ["\u062C"],              # ج jim (dialectal; gh→غ takes precedence)
+    "j": ["\u062C"],              # ج jim
+    "d": ["\u062F", "\u0636", "\u0630"],  # د dal, ض dad emphatic (Dallin→ضالين), ذ dhal (Dahab→ذهب)
+    "r": ["\u0631"],              # ر ra
+    "z": ["\u0632", "\u0638", "\u0630"],  # ز zay, ظ dhal emphatic, ذ dhal (Zahab=ذهب, Zanb=ذنب)
+    "s": ["\u0633", "\u0635"],  # س sin, ص sad (Muslim→مسلم, Salah→صلاة)
+    "f": ["\u0641"],              # ف fa
+    "q": ["\u0642"],              # ق qaf
+    "k": ["\u0643", "\u0642"],  # ك kaf, ق qaf dialectal (Kiyamah→قيامة)
+    "l": ["\u0644"],              # ل lam
+    "m": ["\u0645"],              # م mim
+    "n": ["\u0646"],              # ن nun
+    "h": ["\u0647", "\u062D"],  # ه ha, ح pharyngeal (Hajj→حج, Hisab→حساب)
+    "w": ["\u0648"],              # و waw
+    "y": ["\u064A"],              # ي ya
+    "e": ["\u064A"],              # ي ya (long 'ee' sound, e.g. "Keefak"→كيفك)
+    "o": ["\u0648"],              # و waw
+    "u": ["\u0648"],              # و waw (long 'oo'/'uu' sound, e.g. "shu"→شو)
+    "i": ["\u064A"],              # ي ya (long i)
 }
 
 # Arabizi digraph mappings: two Latin characters → one Arabic letter
 # These create ambiguity with their component single-character mappings,
 # which is why arabizi_to_arabic_list() returns multiple candidates.
 ARABIZI_DIGRAPHS = {
-    u"sh": u"\u0634",  # ش sheen
-    u"th": u"\u062B",  # ث tha
-    u"kh": u"\u062E",  # خ kha
-    u"dh": u"\u0630",  # ذ dhal
-    u"gh": u"\u063A",  # غ ghain
-    u"3'": u"\u063A",  # غ ghain (number-apostrophe notation: 3'ayr=غير)
-    u"ch": u"\u0634",  # ش sheen (dialectal: Chokr=شكر)
-    u"ah": u"\u0629",  # ة ta marbuta (terminal -ah suffix: Salah=صلاة, Rahmah=رحمة)
-    u"eh": u"\u0629",  # ة ta marbuta (Rule D: terminal feminine suffix)
+    "sh": "\u0634",  # ش sheen
+    "th": "\u062B",  # ث tha
+    "kh": "\u062E",  # خ kha
+    "dh": "\u0630",  # ذ dhal
+    "gh": "\u063A",  # غ ghain
+    "3'": "\u063A",  # غ ghain (number-apostrophe notation: 3'ayr=غير)
+    "ch": "\u0634",  # ش sheen (dialectal: Chokr=شكر)
+    "ah": "\u0629",  # ة ta marbuta (terminal -ah suffix: Salah=صلاة, Rahmah=رحمة)
+    "eh": "\u0629",  # ة ta marbuta (Rule D: terminal feminine suffix)
 }
 
 # Vowels excluded from gemination in Arabizi conversion (Rule C).
-_ARABIZI_VOWELS = frozenset(u"aeiou")
+_ARABIZI_VOWELS = frozenset("aeiou")
 
 # Two-character word-initial prefixes that map to the definite article ال.
 # Covers standard (al/el) and sun-letter assimilation forms.
 _ARABIZI_AL_PREFIXES_2 = frozenset([
-    u"al", u"el",
-    u"ar", u"er",
-    u"an", u"en",
-    u"as", u"es",
-    u"ad", u"ed",
+    "al", "el",
+    "ar", "er",
+    "an", "en",
+    "as", "es",
+    "ad", "ed",
 ])
 
 # Three-character prefixes for ش assimilation (ash/esh: Ash-shaytan → الشيطان).
-_ARABIZI_AL_PREFIXES_3 = frozenset([u"ash", u"esh"])
+_ARABIZI_AL_PREFIXES_3 = frozenset(["ash", "esh"])
 
 # Hard cap on the number of candidate Arabic strings produced by the recursive
 # _convert() helper inside arabizi_to_arabic_list().  Without a cap, adversarial
@@ -223,7 +223,7 @@ _ARABIZI_AL_PREFIXES_3 = frozenset([u"ash", u"esh"])
 _MAX_ARABIZI_CANDIDATES = 1000
 
 
-def arabizi_to_arabic_list(string, ignore=u""):
+def arabizi_to_arabic_list(string, ignore=""):
     """Convert an Arabizi string to a list of potential Arabic strings.
 
     Arabizi (Arabic chat alphabet) uses Latin characters and digits to
@@ -271,9 +271,9 @@ def arabizi_to_arabic_list(string, ignore=u""):
         c = s[0].lower()
 
         # Word boundary: a space resets the word-start flag for what follows
-        if s[0] == u" ":
+        if s[0] == " ":
             for suffix in _convert(s[1:], at_word_start=True):
-                results.add(u" " + suffix)
+                results.add(" " + suffix)
                 if len(results) >= _MAX_ARABIZI_CANDIDATES:
                     return results
             return results
@@ -285,7 +285,7 @@ def arabizi_to_arabic_list(string, ignore=u""):
             prefix3 = s[:3].lower()
             if prefix3 in _ARABIZI_AL_PREFIXES_3:
                 for suffix in _convert(s[3:], at_word_start=False):
-                    results.add(u"\u0627\u0644" + suffix)  # ال
+                    results.add("\u0627\u0644" + suffix)  # ال
                     if len(results) >= _MAX_ARABIZI_CANDIDATES:
                         return results
 
@@ -295,7 +295,7 @@ def arabizi_to_arabic_list(string, ignore=u""):
             prefix2 = s[:2].lower()
             if prefix2 in _ARABIZI_AL_PREFIXES_2:
                 for suffix in _convert(s[2:], at_word_start=False):
-                    results.add(u"\u0627\u0644" + suffix)  # ال
+                    results.add("\u0627\u0644" + suffix)  # ال
                     if len(results) >= _MAX_ARABIZI_CANDIDATES:
                         return results
 
@@ -315,7 +315,7 @@ def arabizi_to_arabic_list(string, ignore=u""):
                 and c not in _ARABIZI_VOWELS):
             for ac in ARABIZI2UNICODE[c]:
                 for suffix in _convert(s[2:], at_word_start=False):
-                    results.add(ac + u"\u0651" + suffix)  # with shadda
+                    results.add(ac + "\u0651" + suffix)  # with shadda
                     results.add(ac + suffix)              # without shadda (unvocalized match)
                     if len(results) >= _MAX_ARABIZI_CANDIDATES:
                         return results
@@ -345,19 +345,19 @@ def arabizi_to_arabic_list(string, ignore=u""):
                 results.update(suffixes)
                 if len(results) >= _MAX_ARABIZI_CANDIDATES:
                     return results
-            if c == u"a":
+            if c == "a":
                 # Rule D: initial 'a' → أ (U+0623) in addition to ا
                 if at_word_start:
                     for suffix in suffixes:
-                        results.add(u"\u0623" + suffix)  # أ + rest
+                        results.add("\u0623" + suffix)  # أ + rest
                         if len(results) >= _MAX_ARABIZI_CANDIDATES:
                             return results
                 # Rule D: terminal 'a' → ى (U+0649) and ة (U+0629) in addition to ا
                 # ة covers feminine endings: Ganna=جنة, Ra7ma=رحمة
                 if len(s) == 1:
                     for suffix in suffixes:  # suffixes == {""} when terminal
-                        results.add(u"\u0649" + suffix)  # ى
-                        results.add(u"\u0629" + suffix)  # ة (feminine ta marbuta)
+                        results.add("\u0649" + suffix)  # ى
+                        results.add("\u0629" + suffix)  # ة (feminine ta marbuta)
                         if len(results) >= _MAX_ARABIZI_CANDIDATES:
                             return results
                 # Standard ا mapping always included (arabic_chars == ["ا"])
@@ -366,13 +366,13 @@ def arabizi_to_arabic_list(string, ignore=u""):
                         results.add(ac + suffix)
                         if len(results) >= _MAX_ARABIZI_CANDIDATES:
                             return results
-            elif c == u"2":
+            elif c == "2":
                 # Rule D: initial '2' also yields أ (hamza-on-alef) and إ (hamza-
                 # under-alef) in addition to ء.  Covers: 2anta=أنت, 2iman=إيمان.
                 if at_word_start:
                     for suffix in suffixes:
-                        results.add(u"\u0623" + suffix)  # أ + rest
-                        results.add(u"\u0625" + suffix)  # إ + rest
+                        results.add("\u0623" + suffix)  # أ + rest
+                        results.add("\u0625" + suffix)  # إ + rest
                         if len(results) >= _MAX_ARABIZI_CANDIDATES:
                             return results
                 for ac in arabic_chars:
@@ -380,13 +380,13 @@ def arabizi_to_arabic_list(string, ignore=u""):
                         results.add(ac + suffix)  # ء + rest
                         if len(results) >= _MAX_ARABIZI_CANDIDATES:
                             return results
-            elif c in (u"i", u"e") and at_word_start:
+            elif c in ("i", "e") and at_word_start:
                 # Rule D extension: initial 'i'/'e' also yields إ (hamza-under-alef,
                 # U+0625) in addition to ي.  Covers: Iman→إيمان, Iblis→إبليس,
                 # Ikhlas→إخلاص, Enta→إنت.
                 # Note: arabic_chars is [ي (ya, U+064A)] for both 'i' and 'e'.
                 for suffix in suffixes:
-                    results.add(u"\u0625" + suffix)  # إ + rest
+                    results.add("\u0625" + suffix)  # إ + rest
                     if len(results) >= _MAX_ARABIZI_CANDIDATES:
                         return results
                 for ac in arabic_chars:
@@ -394,14 +394,14 @@ def arabizi_to_arabic_list(string, ignore=u""):
                         results.add(ac + suffix)  # ي + rest (standard ya mapping)
                         if len(results) >= _MAX_ARABIZI_CANDIDATES:
                             return results
-            elif c in (u"u", u"o") and at_word_start:
+            elif c in ("u", "o") and at_word_start:
                 # Rule D extension: initial 'u'/'o' also yields أ (hamza-on-alef,
                 # U+0623) in addition to و.  Covers: Ummah→أمة, Ommah→أمة
                 # (dialectal form of أمة where users write initial 'o' for the
                 # glottal-stop vowel sound), and similar Islamic/dialectal forms
                 # where a word-initial short vowel is represented with 'u' or 'o'.
                 for suffix in suffixes:
-                    results.add(u"\u0623" + suffix)  # أ + rest
+                    results.add("\u0623" + suffix)  # أ + rest
                     if len(results) >= _MAX_ARABIZI_CANDIDATES:
                         return results
                 for ac in arabic_chars:
@@ -421,9 +421,9 @@ def arabizi_to_arabic_list(string, ignore=u""):
                 # (Zakat=زكاة, Hayat=حياة, Salat=صلاة).  The 'at'/'ah' digraphs
                 # already handle many cases, but a bare terminal 'h'/'t' (when
                 # the preceding vowel was omitted) also needs this candidate.
-                if c in (u"h", u"t") and (len(s) == 1 or (len(s) > 1 and s[1] == u" ")):
+                if c in ("h", "t") and (len(s) == 1 or (len(s) > 1 and s[1] == " ")):
                     for suffix in suffixes:
-                        results.add(u"\u0629" + suffix)  # ة
+                        results.add("\u0629" + suffix)  # ة
                         if len(results) >= _MAX_ARABIZI_CANDIDATES:
                             return results
         else:
@@ -443,7 +443,7 @@ def arabizi_to_arabic_list(string, ignore=u""):
     # hamza + alef is written as آ, e.g. قرءان → قرآن (Quran), آية (aya).
     # raw is already a set; iterate over a snapshot so we can add to it safely.
     for c in list(raw):
-        replaced = c.replace(u"\u0621\u0627", u"\u0622")  # ءا → آ
+        replaced = c.replace("\u0621\u0627", "\u0622")  # ءا → آ
         if replaced != c:
             raw.add(replaced)
     return list(raw)
@@ -468,7 +468,7 @@ def filter_candidates_by_wordset(candidates, wordset):
     return filtered if filtered else candidates
 
 
-def transliterate(mode, string, ignore=u"", reverse=False):
+def transliterate(mode, string, ignore="", reverse=False):
     """ encode & decode different  romanization systems """
 
     if reverse:

@@ -94,7 +94,7 @@ def QTranslationHighlight(text, terms, type="css", **kwargs):
     return highlighted or text
 
 
-class QBoldFormatter(object):
+class QBoldFormatter:
     """ add the style tags to the text """
 
     def _format(self, text):

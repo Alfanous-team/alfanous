@@ -71,7 +71,7 @@ _SYM_OPS_RE = re.compile(
 
 class StandardParser(QueryParser):  #
     def __init__(self, schema, mainfield, otherfields, termclass=Term):
-        super(StandardParser, self).__init__(
+        super().__init__(
             mainfield,
             schema=schema,
             group=qparser.OrGroup,
@@ -89,10 +89,10 @@ class ArabicParser(StandardParser):
                  termclass=Term,
                  ara2eng=arabic_to_english_fields):
 
-        super(ArabicParser, self).__init__(schema=schema,
-                                           mainfield=mainfield,
-                                           otherfields=otherfields,
-                                           termclass=termclass)
+        super().__init__(schema=schema,
+                         mainfield=mainfield,
+                         otherfields=otherfields,
+                         termclass=termclass)
         self.ara2eng = ara2eng
         
         # Add Whoosh 2.7 query plugins for custom Arabic syntax
@@ -159,7 +159,7 @@ class ArabicParser(StandardParser):
 
     def parse(self, querystr, normalize=True, debug=False):
         """Parse a query string, first preprocessing Arabic field names and range syntax."""
-        return super(ArabicParser, self).parse(
+        return super().parse(
             self._preprocess_query(querystr), normalize=normalize, debug=debug
         )
 
@@ -173,8 +173,8 @@ class QuranicParser(ArabicParser):
                  otherfields=[],
                  termclass=Term,
                  ara2eng=arabic_to_english_fields):
-        super(QuranicParser, self).__init__(schema=schema,
-                                            mainfield=mainfield,
-                                            otherfields=otherfields,
-                                            termclass=termclass)
+        super().__init__(schema=schema,
+                         mainfield=mainfield,
+                         otherfields=otherfields,
+                         termclass=termclass)
 

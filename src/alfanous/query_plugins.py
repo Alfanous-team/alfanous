@@ -217,14 +217,12 @@ class QMultiTerm(MultiTerm):
                 yield btext
 
     def __str__(self):
-        return u"%s:<%s>" % (self.fieldname, self.text)
+        return f"{self.fieldname}:<{self.text}>"
 
     def __repr__(self):
-        return "%s(%r, %r, boost=%r)" % (
-            self.__class__.__name__,
-            self.fieldname,
-            self.text,
-            self.boost
+        return (
+            f"{self.__class__.__name__}("
+            f"{self.fieldname!r}, {self.text!r}, boost={self.boost!r})"
         )
 
     def __hash__(self):
@@ -407,6 +405,13 @@ class TashkilQuery(QMultiTerm):
         self.text = text if isinstance(text, list) else [text]
         self.boost = boost
         self.words = [_ASF_TASHKIL.normalize_all(word) for word in self.text]
+        # Pre-compute once at construction time: the frozenset of normalized
+        # query-word forms used in _btexts for membership testing.  Since
+        # self.text never changes, recomputing this on every _btexts call
+        # (which Whoosh may invoke multiple times per search) is wasteful.
+        # self.words at this point contains exactly the initial normalized
+        # forms — before _btexts appends any expanded index terms.
+        self._normalized_query_words = frozenset(self.words)
 
     def __hash__(self):
         return hash((self.__class__.__name__, self.fieldname, tuple(self.text), self.boost))
@@ -422,9 +427,9 @@ class TashkilQuery(QMultiTerm):
     def _btexts(self, ixreader):
         fieldname = self.fieldname
         from_bytes = ixreader.schema[fieldname].from_bytes
-        # Pre-compute the normalised form of every query word once instead of
-        # recomputing it O(index_terms) times inside the inner loop.
-        normalized_query_words = {_ASF_TASHKIL.normalize_all(w) for w in self.text}
+        # Use the frozenset pre-computed at __init__ time instead of
+        # recomputing {normalize(w) for w in self.text} on every call.
+        normalized_query_words = self._normalized_query_words
         seen_words = set(self.words)
         count = 0
         for field, btext in ixreader.all_terms():
@@ -512,8 +517,8 @@ class ArabicWildcardQuery(Wildcard):
 
     def __init__(self, fieldname, text, boost=1.0):
         # Replace Arabic question mark with standard wildcard
-        new_text = text.replace(u"؟", u"?")
-        super(ArabicWildcardQuery, self).__init__(fieldname, new_text, boost)
+        new_text = text.replace("؟", "?")
+        super().__init__(fieldname, new_text, boost)
         # Store original text for hash/eq
         self._original_text = text
 
@@ -525,7 +530,7 @@ class ArabicWildcardQuery(Wildcard):
         the configured timelimit before any results are collected.
         """
         count = 0
-        for btext in super(ArabicWildcardQuery, self)._btexts(ixreader):
+        for btext in super()._btexts(ixreader):
             if count >= self.MAX_EXPAND:
                 break
             yield btext
@@ -552,7 +557,7 @@ class SynonymsPlugin(TaggingPlugin):
         qclass = SynonymsQuery
 
         def r(self):
-            return "~%r" % self.text
+            return f"~{self.text!r}"
 
     expr = r"~(?P<text>\S+)"
     nodetype = SynonymsNode
@@ -578,7 +583,7 @@ class DerivationPlugin(TaggingPlugin):
 
     class DerivationNode(syntax.WordNode):
         def __init__(self, text, **kwargs):
-            super(DerivationPlugin.DerivationNode, self).__init__(text, **kwargs)
+            super().__init__(text, **kwargs)
             # Count the number of > symbols to determine level
             self.level = len(text) - len(text.lstrip('>'))
             self.actual_text = text.lstrip('>')
@@ -593,7 +598,7 @@ class DerivationPlugin(TaggingPlugin):
             )
 
         def r(self):
-            return "%s%r" % ('>' * self.level, self.actual_text)
+            return f"{'>' * self.level}{self.actual_text!r}"
 
     expr = r"(?P<text>>+\S+)"
     nodetype = DerivationNode
@@ -607,7 +612,7 @@ class SpellErrorsPlugin(TaggingPlugin):
         qclass = SpellErrorsQuery
 
         def r(self):
-            return "%%%r" % self.text
+            return f"%{self.text!r}"
 
     expr = r"%(?P<text>\S+)"
     nodetype = SpellErrorsNode
@@ -636,7 +641,7 @@ class TashkilPlugin(TaggingPlugin):
                 return NullQuery()
 
         def r(self):
-            return "'%s'" % self.text
+            return f"'{self.text}'"
 
     expr = r"'(?P<text>[^']+)'"
     nodetype = TashkilNode
@@ -652,12 +657,12 @@ class TuplePlugin(TaggingPlugin):
             # Split by comma or Arabic comma
             items = [
                 item.strip()
-                for item in self.text.replace(u'،', ',').split(',')
+                for item in self.text.replace('،', ',').split(',')
             ]
             return TupleQuery(fieldname, items, boost=self.boost)
 
         def r(self):
-            return "{%s}" % self.text
+            return f"{{{self.text}}}"
 
     expr = r"\{(?P<text>[^}]+)\}"
     nodetype = TupleNode
@@ -673,7 +678,7 @@ class ArabicWildcardPlugin(TaggingPlugin):
             return ArabicWildcardQuery(fieldname, self.text, boost=self.boost)
 
         def r(self):
-            return "%r" % self.text
+            return f"{self.text!r}"
 
     # Match words containing * or ؟
     expr = r"(?P<text>\S*[*؟]\S*)"
