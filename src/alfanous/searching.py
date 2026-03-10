@@ -32,6 +32,50 @@ def _is_valid_term(x):
     return not isinstance(x, int) or x >= 0
 
 
+def _strip_phrase_queries(q):
+    """Replace every ``Phrase`` node in *q* with an ``And`` of ``Term`` nodes.
+
+    The ``aya_fuzzy`` field is indexed with ``phrase=False`` — it stores no
+    positional information, so Whoosh raises ``QueryError`` whenever it tries
+    to execute a ``Phrase`` query against it.  This helper walks the query
+    tree and converts each ``Phrase`` node into an unordered ``And`` of
+    ``Term`` nodes (preserving the individual tokens while dropping the
+    adjacency/order requirement that the field cannot satisfy).
+
+    The transformation is applied recursively so that phrases nested inside
+    compound queries (``And``, ``Or``, ``AndNot``, etc.) are also converted.
+
+    :param q: A Whoosh :class:`~whoosh.query.Query` object.
+    :returns: A new query tree with all ``Phrase`` nodes replaced.
+    """
+    if isinstance(q, wquery.Phrase):
+        terms = [wquery.Term(q.fieldname, word) for word in q.words]
+        if not terms:
+            return wquery.NullQuery
+        if len(terms) == 1:
+            return terms[0]
+        return wquery.And(terms)
+
+    if isinstance(q, wquery.BinaryQuery):
+        # BinaryQuery subclasses (AndNot, AndMaybe, Require, Otherwise) store
+        # their two children in .subqueries as a (a, b) tuple and accept the
+        # same two positional arguments in their constructor.
+        new_a = _strip_phrase_queries(q.subqueries[0])
+        new_b = _strip_phrase_queries(q.subqueries[1])
+        return type(q)(new_a, new_b)
+
+    if isinstance(q, wquery.CompoundQuery):
+        # And, Or, DisjunctionMax, Ordered, etc. store children in .subqueries
+        # as a list and accept that list as their first constructor argument.
+        new_subs = [_strip_phrase_queries(s) for s in q.subqueries]
+        return type(q)(new_subs)
+
+    if isinstance(q, wquery.Not):
+        return wquery.Not(_strip_phrase_queries(q.query))
+
+    return q
+
+
 class QReader:
     """ reader of the index """
 
@@ -286,6 +330,13 @@ class QSearcher:
                 self._fuzzy_parser = _QueryParser("aya_fuzzy", schema=self._schema)
             try:
                 aya_fuzzy_query = self._fuzzy_parser.parse(querystr)
+                # 'aya_fuzzy' has phrase=False (no position data), so any
+                # Phrase sub-query produced by parsing quoted text would raise
+                # QueryError at execution time.  Convert each Phrase node to an
+                # unordered And-of-Terms so the individual tokens are still
+                # required but no positional constraint is enforced.
+                if aya_fuzzy_query is not None:
+                    aya_fuzzy_query = _strip_phrase_queries(aya_fuzzy_query)
             except StopIteration:
                 aya_fuzzy_query = None
 
