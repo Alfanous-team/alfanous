@@ -11,7 +11,7 @@ import re
 from functools import lru_cache
 
 from whoosh.qparser import TaggingPlugin, syntax
-from whoosh.query import MultiTerm, Or, Term, Wildcard
+from whoosh.query import MultiTerm, NullQuery, Or, Term, Wildcard
 
 from alfanous.data import syndict, antdict
 from alfanous.text_processing import QArabicSymbolsFilter
@@ -120,27 +120,23 @@ def _query_word_index(filter_dict, field="word", limit=5000):
     return list(_query_word_index_cached(filter_key, field, limit))
 
 
-def _collect_derivations_two_pass(candidates, index_key):
-    """Collect derivation words for *candidates* using two single-pass index scans.
+@lru_cache(maxsize=256)
+def _collect_derivations_two_pass_cached(candidates_frozen, index_key):
+    """LRU-cached implementation of the two-pass derivation scan.
 
-    This replaces the previous approach in :meth:`DerivationQuery._get_derivations`
-    which called :func:`_query_word_index` up to 15+ times (once per
-    candidate × field combination in Pass 1, then 3× per matching key value
-    in Pass 2), each time doing a full ``iter_docs()`` scan of ~75 k documents.
-    Two passes over the same corpus reduces I/O by roughly (3 + 3×N) / 2 ×
-    for a query that matches N unique key values.
+    *candidates_frozen* is a ``frozenset`` of candidate word forms (the
+    hashable equivalent of the ``candidates`` set accepted by the public
+    wrapper).  The result is returned as a ``tuple`` so it is also hashable
+    and can be stored in the LRU cache without the caller accidentally
+    mutating it.
 
-    **Pass 1** — find all *index_key* values for word documents where any of
-    the five lookup fields (``word``, ``normalized``, ``lemma``, ``root``,
-    ``word_standard``) matches any candidate form.
+    The cache avoids repeating two full ``iter_docs()`` passes over ~75 k
+    index documents for the same word on every search request.  A single
+    derivation lookup scans roughly 150 k stored-field dicts; with the
+    cache, subsequent identical queries are answered in microseconds.
 
-    **Pass 2** — collect ``word_standard``, ``normalized``, and ``word`` values
-    for all word documents whose *index_key* matches a value from Pass 1.
-
-    :param candidates: Non-empty set of candidate word forms.
-    :param index_key: Either ``'lemma'`` (level ≤ 1) or ``'root'`` (level ≥ 2).
-    :returns: List of unique word forms that are derivations of *candidates*.
-    :raises Exception: If the index is unavailable or the reader raises.
+    Cache size 256 covers typical query diversity (hundreds of unique Arabic
+    root/lemma queries) while keeping the resident memory footprint small.
     """
     from alfanous.data import QSE as _QSE
     engine = _QSE()
@@ -154,14 +150,14 @@ def _collect_derivations_two_pass(candidates, index_key):
         if stored.get("kind") != "word":
             continue
         for sf in _DERIVATION_SEARCH_FIELDS:
-            if stored.get(sf) in candidates:
+            if stored.get(sf) in candidates_frozen:
                 kv = stored.get(index_key)
                 if kv:
                     key_values.add(kv)
                 break  # one matching field per document is sufficient
 
     if not key_values:
-        return []
+        return ()
 
     # Pass 2: collect all word forms whose index_key is in key_values.
     words = set()
@@ -174,7 +170,36 @@ def _collect_derivations_two_pass(candidates, index_key):
                 if val:
                     words.add(val)
 
-    return list(words)
+    return tuple(words)
+
+
+def _collect_derivations_two_pass(candidates, index_key):
+    """Collect derivation words for *candidates* using two single-pass index scans.
+
+    This replaces the previous approach in :meth:`DerivationQuery._get_derivations`
+    which called :func:`_query_word_index` up to 15+ times (once per
+    candidate × field combination in Pass 1, then 3× per matching key value
+    in Pass 2), each time doing a full ``iter_docs()`` scan of ~75 k documents.
+    Two passes over the same corpus reduces I/O by roughly (3 + 3×N) / 2 ×
+    for a query that matches N unique key values.
+
+    Results are cached by :func:`_collect_derivations_two_pass_cached` so
+    that repeated queries for the same word pay the two-pass scan cost only
+    once per process lifetime.
+
+    **Pass 1** — find all *index_key* values for word documents where any of
+    the five lookup fields (``word``, ``normalized``, ``lemma``, ``root``,
+    ``word_standard``) matches any candidate form.
+
+    **Pass 2** — collect ``word_standard``, ``normalized``, and ``word`` values
+    for all word documents whose *index_key* matches a value from Pass 1.
+
+    :param candidates: Non-empty set of candidate word forms.
+    :param index_key: Either ``'lemma'`` (level ≤ 1) or ``'root'`` (level ≥ 2).
+    :returns: List of unique word forms that are derivations of *candidates*.
+    :raises Exception: If the index is unavailable or the reader raises.
+    """
+    return list(_collect_derivations_two_pass_cached(frozenset(candidates), index_key))
 
 
 class QMultiTerm(MultiTerm):
@@ -594,22 +619,21 @@ class TashkilPlugin(TaggingPlugin):
 
     class TashkilNode(syntax.TextNode):
         def query(self, parser):
-            from whoosh import query as wquery
             fieldname = parser.fieldname
             # Split text and filter out empty tokens
             words = [w for w in self.text.split() if w.strip()]
-            
+
             # If multiple words, create an Or query with Term subqueries
             # This allows proper search across multiple terms with tashkil
             if len(words) > 1:
-                subqueries = [wquery.Term(fieldname, word) for word in words]
-                return wquery.Or(subqueries, boost=self.boost)
+                subqueries = [Term(fieldname, word) for word in words]
+                return Or(subqueries, boost=self.boost)
             elif len(words) == 1:
                 # Single word - use TashkilQuery for tashkil-aware search
                 return TashkilQuery(fieldname, words, boost=self.boost)
             else:
                 # No words - return empty query
-                return wquery.NullQuery()
+                return NullQuery()
 
         def r(self):
             return "'%s'" % self.text
