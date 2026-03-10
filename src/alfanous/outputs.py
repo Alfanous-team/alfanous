@@ -68,7 +68,9 @@ _WORD_ALL_INDEXED_FIELDS = [
 ]
 
 # Word-child fields that support faceting (ID/KEYWORD fields, stored and indexed).
-_WORD_FACET_FIELDS = frozenset(["root", "lemma", "type"])
+# Note: lemma is intentionally excluded here because it is a full search field
+# (included in _WORD_ALL_INDEXED_FIELDS) rather than a low-cardinality facet.
+_WORD_FACET_FIELDS = frozenset(["root", "type"])
 
 
 def _build_filter_query(filter_dict):

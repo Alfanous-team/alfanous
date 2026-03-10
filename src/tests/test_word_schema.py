@@ -3,8 +3,8 @@
 These tests validate the schema changes that do NOT require a built index:
 - word_standard and lemma are KEYWORD type in fields.json
 - root, lemma, and type are marked facet_allowed in fields.json
-- _WORD_ALL_INDEXED_FIELDS includes word_standard
-- _WORD_FACET_FIELDS contains exactly {root, lemma, type}
+- _WORD_ALL_INDEXED_FIELDS includes word_standard and lemma
+- _WORD_FACET_FIELDS contains exactly {root, type}
 """
 
 import json
@@ -70,11 +70,21 @@ def test_word_standard_in_word_all_indexed_fields():
     )
 
 
+def test_lemma_in_word_all_indexed_fields():
+    """lemma must be in _WORD_ALL_INDEXED_FIELDS (not just a facet field)."""
+    from alfanous.outputs import _WORD_ALL_INDEXED_FIELDS
+    assert "lemma" in _WORD_ALL_INDEXED_FIELDS, (
+        "lemma must be in _WORD_ALL_INDEXED_FIELDS so it is searchable via "
+        "the word MultifieldParser"
+    )
+
+
 def test_word_facet_fields_set():
-    """_WORD_FACET_FIELDS must contain exactly root, lemma, and type."""
+    """_WORD_FACET_FIELDS must contain exactly root and type (lemma removed)."""
     from alfanous.outputs import _WORD_FACET_FIELDS
-    assert _WORD_FACET_FIELDS == frozenset({"root", "lemma", "type"}), (
-        "_WORD_FACET_FIELDS should be frozenset({'root', 'lemma', 'type'})"
+    assert _WORD_FACET_FIELDS == frozenset({"root", "type"}), (
+        "_WORD_FACET_FIELDS should be frozenset({'root', 'type'}); "
+        "lemma belongs in _WORD_ALL_INDEXED_FIELDS instead"
     )
 
 
