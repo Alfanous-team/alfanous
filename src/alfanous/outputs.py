@@ -949,7 +949,24 @@ class Raw:
                 # unconditionally would iterate ALL results and hold a reader reference
                 # on every request even when word_info is False (the default).
                 _result_docnums = set(hit.docnum for hit in res)
-                _index_reader = searcher.reader()
+
+                # Acquire _wi_searcher BEFORE capturing _index_reader.
+                # shared_searcher() calls _get_shared_searcher().refresh() internally;
+                # if the Whoosh index has changed since the main search, the old shared
+                # searcher (and the reader returned by searcher.reader()) is closed at
+                # that point.  Grabbing _index_reader first would leave a stale, closed
+                # reader that raises ReaderClosed on any subsequent postings() call.
+                # By obtaining _wi_searcher first we ensure any pending refresh runs
+                # before we ask for the reader, so get_shared_reader() always returns
+                # an open reader belonging to the current shared searcher.
+                _wi_searcher = (
+                    self.QSE.shared_searcher()
+                    if (word_vocalizations or word_derivations) and self.QSE.OK
+                    else None
+                )
+                # get_shared_reader() resolves through _get_shared_searcher(), so it
+                # returns the reader of the NOW-current (post-refresh) shared searcher.
+                _index_reader = self.QSE.get_shared_reader()
 
                 def _count_term_in_results(field, term_text):
                     """Count occurrences of a term within the search result documents."""
@@ -984,15 +1001,6 @@ class Raw:
                 docs_in_results = 0
                 nb_vocalizations_globale = 0
                 cpt = 1
-                # Open ONE shared Whoosh searcher for all per-term word-info
-                # sub-queries (vocalizations, derivation lookup).  Without this,
-                # each search_with_query() call would open and close its own
-                # searcher, paying the segment-open overhead up to 4× per term.
-                _wi_searcher = (
-                    self.QSE.shared_searcher()
-                    if (word_vocalizations or word_derivations) and self.QSE.OK
-                    else None
-                )
                 try:
                     for term in termz:
                         if term[0] == "aya" or term[0] == "aya_":

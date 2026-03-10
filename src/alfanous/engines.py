@@ -220,6 +220,21 @@ class BasicSearchEngine:
 
         return results, _SearcherProxy(whoosh_searcher)
 
+    def get_shared_reader(self):
+        """Return the IndexReader from the engine's current shared Whoosh Searcher.
+
+        Unlike ``searcher.reader()`` on a cached :class:`~alfanous.searching._SearcherProxy`,
+        this method always resolves through :meth:`~alfanous.searching.QSearcher.get_reader`
+        which calls ``_get_shared_searcher()`` internally.  Any pending index
+        refresh is therefore applied *before* the reader is returned, guaranteeing
+        that the caller receives a reader that belongs to the *current* (open)
+        shared searcher rather than a potentially stale one that may have been
+        closed by a concurrent refresh.
+
+        Callers should not cache the returned reader across multiple requests.
+        """
+        return self._searcher.get_reader()
+
     def list_values(self, fieldname):
         """ list all stored values of a field  """
         if "_reader" in self.__dict__:
