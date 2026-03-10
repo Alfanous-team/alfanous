@@ -1077,5 +1077,113 @@ class TestSharedSearcherNoPerCallImport(unittest.TestCase):
         )
 
 
+# ---------------------------------------------------------------------------
+# Iteration-5 fixes
+# ---------------------------------------------------------------------------
+
+class TestNoLimitNoneInFaceting(unittest.TestCase):
+    """outputs.py must not use limit=None for faceting (OOM risk)."""
+
+    def _get_all_limit_none_calls(self, src):
+        """Return a list of (lineno, call_src) for every searcher.search(limit=None) call."""
+        import ast
+        tree = ast.parse(src)
+        hits = []
+        for node in ast.walk(tree):
+            if not isinstance(node, ast.Call):
+                continue
+            # Look for <something>.search(...)
+            func = node.func
+            if not (isinstance(func, ast.Attribute) and func.attr == "search"):
+                continue
+            for kw in node.keywords:
+                if kw.arg == "limit" and isinstance(kw.value, ast.Constant) and kw.value.value is None:
+                    hits.append(getattr(node, "lineno", "?"))
+        return hits
+
+    def test_no_limit_none_in_outputs(self):
+        """outputs.py must not pass limit=None to any searcher.search() call."""
+        import inspect
+        import alfanous.outputs as _outputs_module
+        src = inspect.getsource(_outputs_module)
+        hits = self._get_all_limit_none_calls(src)
+        self.assertEqual(
+            hits, [],
+            f"outputs.py has searcher.search(limit=None) at line(s) {hits}; "
+            "use _MAX_FACET_DOCS instead to bound memory usage."
+        )
+
+    def test_max_facet_docs_constant_exists(self):
+        """_MAX_FACET_DOCS must be defined as a module-level constant in outputs.py."""
+        import alfanous.outputs as _outputs_module
+        self.assertTrue(
+            hasattr(_outputs_module, "_MAX_FACET_DOCS"),
+            "_MAX_FACET_DOCS must be defined at module level in alfanous.outputs"
+        )
+
+    def test_max_facet_docs_value_is_reasonable(self):
+        """_MAX_FACET_DOCS must be at least QURAN_TOTAL_VERSES and at most 1_000_000."""
+        import alfanous.outputs as _outputs_module
+        from alfanous.constants import QURAN_TOTAL_VERSES
+        cap = _outputs_module._MAX_FACET_DOCS
+        self.assertIsInstance(cap, int, "_MAX_FACET_DOCS must be an integer")
+        self.assertGreaterEqual(
+            cap, QURAN_TOTAL_VERSES,
+            f"_MAX_FACET_DOCS ({cap}) must be >= QURAN_TOTAL_VERSES ({QURAN_TOTAL_VERSES})"
+        )
+        self.assertLessEqual(
+            cap, 1_000_000,
+            f"_MAX_FACET_DOCS ({cap}) must be <= 1_000_000 (otherwise the cap has no practical effect)"
+        )
+
+
+class TestArabiziCandidateCap(unittest.TestCase):
+    """arabizi_to_arabic_list must never produce more than _MAX_ARABIZI_CANDIDATES items."""
+
+    def test_max_arabizi_candidates_constant_exists(self):
+        """_MAX_ARABIZI_CANDIDATES must be defined in alfanous.romanization."""
+        import alfanous.romanization as _rom
+        self.assertTrue(
+            hasattr(_rom, "_MAX_ARABIZI_CANDIDATES"),
+            "_MAX_ARABIZI_CANDIDATES must be defined at module level in alfanous.romanization"
+        )
+
+    def test_max_arabizi_candidates_value_is_positive(self):
+        """_MAX_ARABIZI_CANDIDATES must be a positive integer."""
+        import alfanous.romanization as _rom
+        cap = _rom._MAX_ARABIZI_CANDIDATES
+        self.assertIsInstance(cap, int, "_MAX_ARABIZI_CANDIDATES must be an integer")
+        self.assertGreater(cap, 0, "_MAX_ARABIZI_CANDIDATES must be positive")
+
+    def test_long_ambiguous_input_capped(self):
+        """A long all-vowel input must produce at most _MAX_ARABIZI_CANDIDATES results."""
+        from alfanous.romanization import arabizi_to_arabic_list, _MAX_ARABIZI_CANDIDATES
+        # All vowels: each maps to 2–3 Arabic chars + empty-string option → exponential growth.
+        result = arabizi_to_arabic_list("aeiouaeiou")
+        self.assertLessEqual(
+            len(result), _MAX_ARABIZI_CANDIDATES,
+            f"arabizi_to_arabic_list produced {len(result)} candidates for a 10-vowel input; "
+            f"must be capped at _MAX_ARABIZI_CANDIDATES={_MAX_ARABIZI_CANDIDATES}"
+        )
+
+    def test_normal_input_still_correct(self):
+        """Normal Arabizi inputs must still produce correct Arabic candidates after capping."""
+        from alfanous.romanization import arabizi_to_arabic_list
+        # Short, unambiguous input — should not be affected by the cap.
+        candidates = set(arabizi_to_arabic_list("rahman"))
+        self.assertIn("رحمن", candidates, "rahman must still produce رحمن with the cap in place")
+
+    def test_result_never_exceeds_cap(self):
+        """No call to arabizi_to_arabic_list must return more items than the cap."""
+        from alfanous.romanization import arabizi_to_arabic_list, _MAX_ARABIZI_CANDIDATES
+        for test_input in ("aaaaaaaaaaaa", "eeeeeeeeee", "sssssssssss", "aaabbbccc"):
+            result = arabizi_to_arabic_list(test_input)
+            self.assertLessEqual(
+                len(result), _MAX_ARABIZI_CANDIDATES,
+                f"arabizi_to_arabic_list({test_input!r}) returned {len(result)} candidates; "
+                f"must be <= {_MAX_ARABIZI_CANDIDATES}"
+            )
+
+
 if __name__ == "__main__":
     unittest.main()

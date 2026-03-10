@@ -72,6 +72,14 @@ _WORD_ALL_INDEXED_FIELDS = [
 # (included in _WORD_ALL_INDEXED_FIELDS) rather than a low-cardinality facet.
 _WORD_FACET_FIELDS = frozenset(["root", "type"])
 
+# Maximum number of documents Whoosh will collect when building facets.
+# Using limit=None causes Whoosh to load every matching document into memory,
+# which can be 300 000+ docs for a corpus-wide facet query.  This constant is
+# a safe upper bound that covers the entire Quran corpus
+# (~6 236 ayas + ~77 000 words + ~100 000 translations + parent docs) while
+# protecting the process from runaway memory allocation.
+_MAX_FACET_DOCS = 100_000
+
 
 def _build_filter_query(filter_dict):
     """Convert a filter dict to a list of Whoosh Term/Or query objects.
@@ -552,8 +560,10 @@ class Raw:
                     else:
                         kind_filter = wquery.Term("kind", "aya")
                     
-                    # Search matching documents
-                    results = searcher.search(kind_filter, limit=None, groupedby=groupedby)
+                    # Search matching documents.  _MAX_FACET_DOCS is a safe upper bound
+                    # that covers the full Quran corpus; limit=None would load every doc
+                    # into memory (OOM risk under load).
+                    results = searcher.search(kind_filter, limit=_MAX_FACET_DOCS, groupedby=groupedby)
                     
                     # Get facet groups
                     field_groups = results.groups(field)
@@ -1798,7 +1808,9 @@ class Raw:
                     groupedby = Facets()
                     for fld in facets_list:
                         groupedby.add_field(fld)
-                    facet_res = searcher.search(combined, limit=None,
+                    # _MAX_FACET_DOCS is a safe upper bound that covers the full corpus;
+                    # limit=None would load every matching document into memory (OOM risk).
+                    facet_res = searcher.search(combined, limit=_MAX_FACET_DOCS,
                                                groupedby=groupedby)
                     output["facets"] = {}
                     for fld in facets_list:
