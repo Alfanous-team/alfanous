@@ -1084,8 +1084,8 @@ class TestSharedSearcherNoPerCallImport(unittest.TestCase):
 class TestNoLimitNoneInFaceting(unittest.TestCase):
     """outputs.py must not use limit=None for faceting (OOM risk)."""
 
-    def _get_all_limit_none_calls(self, src):
-        """Return a list of (lineno, call_src) for every searcher.search(limit=None) call."""
+    def _get_all_limit_none_lines(self, src):
+        """Return a list of line numbers for every searcher.search(limit=None) call."""
         import ast
         tree = ast.parse(src)
         hits = []
@@ -1098,7 +1098,7 @@ class TestNoLimitNoneInFaceting(unittest.TestCase):
                 continue
             for kw in node.keywords:
                 if kw.arg == "limit" and isinstance(kw.value, ast.Constant) and kw.value.value is None:
-                    hits.append(getattr(node, "lineno", "?"))
+                    hits.append(node.lineno)
         return hits
 
     def test_no_limit_none_in_outputs(self):
@@ -1106,7 +1106,7 @@ class TestNoLimitNoneInFaceting(unittest.TestCase):
         import inspect
         import alfanous.outputs as _outputs_module
         src = inspect.getsource(_outputs_module)
-        hits = self._get_all_limit_none_calls(src)
+        hits = self._get_all_limit_none_lines(src)
         self.assertEqual(
             hits, [],
             f"outputs.py has searcher.search(limit=None) at line(s) {hits}; "

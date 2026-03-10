@@ -74,9 +74,9 @@ _WORD_FACET_FIELDS = frozenset(["root", "type"])
 
 # Maximum number of documents Whoosh will collect when building facets.
 # Using limit=None causes Whoosh to load every matching document into memory,
-# which can be 300 000+ docs for a corpus-wide facet query.  This constant is
+# which can be 300,000+ docs for a corpus-wide facet query.  This constant is
 # a safe upper bound that covers the entire Quran corpus
-# (~6 236 ayas + ~77 000 words + ~100 000 translations + parent docs) while
+# (~6,236 ayas + ~77,000 words + ~100,000 translations + parent docs) while
 # protecting the process from runaway memory allocation.
 _MAX_FACET_DOCS = 100_000
 
@@ -1625,9 +1625,12 @@ class Raw:
 
         The result structure includes:
         - ``words``: per-word morphological data plus the parent aya text.
+          Each entry's ``aya.text`` / ``aya.text_no_highlight`` reflects the
+          ``script`` flag: ``"standard"`` (default) gives the standard Arabic
+          text; ``"uthmani"`` gives the Uthmani script text.
         - ``interval``: pagination metadata.
-        - ``facets``: (optional) per-field value counts for ``root``,
-          ``lemma``, and ``type`` when requested via the ``facets`` flag.
+        - ``facets``: (optional) per-field value counts for ``root`` and
+          ``type`` when requested via the ``facets`` flag.
         - ``runtime``: query execution time.
         """
         flags = {**self._defaults["flags"], **flags}
@@ -1639,6 +1642,7 @@ class Raw:
         offset = ((int(flags["page"]) - 1) * range_) + 1 if flags.get("page") \
             else int(flags["offset"])
         highlight = flags["highlight"]
+        script = flags["script"]
         timelimit = self._parse_timelimit(flags)
 
         # Parse and validate the facets parameter against the allowed set.
@@ -1718,9 +1722,13 @@ class Raw:
             else:
                 H = lambda X: self.QSE.highlight(X, terms, highlight) if X else "-----"
 
+            # Pre-check script once — avoids re-evaluating per word in the result loop.
+            _use_standard_script = script == "standard"
+
             # Build a gid→aya_text map so each word result can include the full
-            # parent aya text.  Word children store the parent aya's gid, so a
-            # single batch query retrieves all needed parent docs at once.
+            # parent aya text in both standard and Uthmani scripts.  Word children
+            # store the parent aya's gid, so a single batch query retrieves all
+            # needed parent docs at once.
             gid_to_aya = {}
             if reslist:
                 unique_gids = {r.get("gid") for r in reslist
@@ -1738,7 +1746,10 @@ class Raw:
                         for _pr in _parent_res:
                             _g = _pr.get("gid")
                             if _g is not None:
-                                gid_to_aya[_g] = _pr.get("aya") or _pr.get("aya_")
+                                gid_to_aya[_g] = {
+                                    "standard": _pr.get("aya") or _pr.get("aya_") or "",
+                                    "uthmani":  _pr.get("uth_") or "",
+                                }
                     except Exception:
                         pass  # aya text enrichment is best-effort
     
@@ -1758,7 +1769,11 @@ class Raw:
             for r in reslist:
                 cpt += 1
                 _gid = r.get("gid")
-                _aya_raw = gid_to_aya.get(_gid)
+                _aya_data = gid_to_aya.get(_gid) or {}
+                _aya_raw = (
+                    _aya_data.get("standard") if _use_standard_script
+                    else _aya_data.get("uthmani")
+                )
                 output["words"][cpt] = {
                     "identifier": {
                         "word_id": r.get("word_id"),

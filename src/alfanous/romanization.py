@@ -218,7 +218,7 @@ _ARABIZI_AL_PREFIXES_3 = frozenset([u"ash", u"esh"])
 # or very long inputs can cause combinatorial explosion: a 10-char string with
 # 5 Arabic mappings per position yields up to 5^10 = 10 million candidates,
 # exhausting hundreds of MB of memory.  The Quran word-set filter that follows
-# is only meaningful on a small list of plausible forms, so stopping at 1 000
+# is only meaningful on a small list of plausible forms, so stopping at 1,000
 # candidates loses no recall for legitimate queries.
 _MAX_ARABIZI_CANDIDATES = 1000
 
