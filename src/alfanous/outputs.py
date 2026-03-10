@@ -80,6 +80,15 @@ _WORD_FACET_FIELDS = frozenset(["root", "type"])
 # protecting the process from runaway memory allocation.
 _MAX_FACET_DOCS = 100_000
 
+# Sort-key functions defined once at module level so every list.sort() and
+# heapq.nlargest() call in the hot path reuses the same function object
+# rather than allocating a new lambda on every request.
+def _WORD_ID_KEY(e):
+    return e.get("word_id") or 0
+
+def _FACET_COUNT_KEY(x):
+    return len(x[1])
+
 
 def _build_filter_query(filter_dict):
     """Convert a filter dict to a list of Whoosh Term/Or query objects.
@@ -577,7 +586,7 @@ class Raw:
                         # Get top N most frequent values with document counts
                         # heapq.nlargest is O(n log k) vs O(n log n) for a full sort
                         top_items = heapq.nlargest(
-                            limit, field_groups.items(), key=lambda x: len(x[1])
+                            limit, field_groups.items(), key=_FACET_COUNT_KEY
                         )
                         
                         result["keywords"] = [
@@ -1001,6 +1010,104 @@ class Raw:
                 docs_in_results = 0
                 nb_vocalizations_globale = 0
                 cpt = 1
+
+                # ── Batch fetch word-child data for ALL query terms ───────────
+                # Instead of issuing up to 4 separate word-index queries *per
+                # query term* (vocalization lookup, word-data lookup, lemma
+                # derivation, root derivation), we issue at most 2 batch queries
+                # before the term loop and build in-memory lookup dicts.
+                # For a 20-term query this reduces ≤80 round-trips to ≤2.
+                #
+                # _batch_word_data : norm → {"lemma": str|None,
+                #                            "root":  str|None,
+                #                            "words": set(vocalized forms)}
+                # _batch_deriv_by_lemma : lemma → set(normalized forms)
+                # _batch_deriv_by_root  : root  → set(normalized forms)
+                _batch_word_data: dict = {}
+                _batch_deriv_by_lemma: dict = {}
+                _batch_deriv_by_root: dict = {}
+
+                if (word_vocalizations or word_derivations) and _wi_searcher is not None:
+                    _batch_norms = sorted({
+                        strip_vocalization(t[1])
+                        for t in termz if t[0] in ("aya", "aya_")
+                    })
+                    if _batch_norms:
+                        # Batch query 1 – word forms, lemma, root for every term.
+                        _bq1_norm = (
+                            wquery.Or([wquery.Term("normalized", n) for n in _batch_norms])
+                            if len(_batch_norms) > 1
+                            else wquery.Term("normalized", _batch_norms[0])
+                        )
+                        _bq1 = wquery.And([wquery.Term("kind", "word"), _bq1_norm])
+                        _bq1_res = self.QSE.search_with_shared_searcher(
+                            _wi_searcher, _bq1, limit=len(_batch_norms) * 50
+                        )
+                        for _bw in _bq1_res:
+                            _bn = _bw.get("normalized")
+                            if not _bn:
+                                continue
+                            if _bn not in _batch_word_data:
+                                _batch_word_data[_bn] = {
+                                    "lemma": None, "root": None, "words": set()
+                                }
+                            _be = _batch_word_data[_bn]
+                            if _be["lemma"] is None:
+                                _be["lemma"] = _bw.get("lemma") or None
+                            if _be["root"] is None:
+                                _be["root"] = _bw.get("root") or None
+                            _wf = _bw.get("word")
+                            if _wf:
+                                _be["words"].add(_wf)
+
+                        if word_derivations:
+                            # Batch query 2 – derivation siblings by lemma & root.
+                            _all_lemmas = sorted({
+                                d["lemma"] for d in _batch_word_data.values()
+                                if d["lemma"]
+                            })
+                            _all_roots = sorted({
+                                d["root"] for d in _batch_word_data.values()
+                                if d["root"]
+                            })
+                            _bq2_parts = []
+                            if _all_lemmas:
+                                _bq2_parts.append(
+                                    wquery.Or([wquery.Term("lemma", l) for l in _all_lemmas])
+                                    if len(_all_lemmas) > 1
+                                    else wquery.Term("lemma", _all_lemmas[0])
+                                )
+                            if _all_roots:
+                                _bq2_parts.append(
+                                    wquery.Or([wquery.Term("root", r) for r in _all_roots])
+                                    if len(_all_roots) > 1
+                                    else wquery.Term("root", _all_roots[0])
+                                )
+                            if _bq2_parts:
+                                _bq2_filter = (
+                                    wquery.Or(_bq2_parts)
+                                    if len(_bq2_parts) > 1
+                                    else _bq2_parts[0]
+                                )
+                                _bq2 = wquery.And([
+                                    wquery.Term("kind", "word"), _bq2_filter
+                                ])
+                                _bq2_res = self.QSE.search_with_shared_searcher(
+                                    _wi_searcher, _bq2,
+                                    limit=(len(_all_lemmas) + len(_all_roots)) * 500,
+                                )
+                                for _d in _bq2_res:
+                                    _dn = _d.get("normalized")
+                                    if not _dn:
+                                        continue
+                                    _dl = _d.get("lemma")
+                                    _dr = _d.get("root")
+                                    if _dl:
+                                        _batch_deriv_by_lemma.setdefault(_dl, set()).add(_dn)
+                                    if _dr:
+                                        _batch_deriv_by_root.setdefault(_dr, set()).add(_dn)
+                # ── End batch fetch ───────────────────────────────────────────
+
                 try:
                     for term in termz:
                         if term[0] == "aya" or term[0] == "aya_":
@@ -1013,73 +1120,33 @@ class Raw:
                             docs_in_results += term_ayas_in_results
                             if word_vocalizations:
                                 _term_normalized = strip_vocalization(term[1])
-                                vocalizations = []
-                                if _wi_searcher is not None:
-                                    _voc_q = wquery.And([
-                                        wquery.Term("kind", "word"),
-                                        wquery.Term("normalized", _term_normalized),
-                                    ])
-                                    _voc_res = self.QSE.search_with_shared_searcher(
-                                        _wi_searcher, _voc_q, limit=500
-                                    )
-                                    vocalizations = list(
-                                        set(w.get("word") for w in _voc_res if w.get("word")) - {term[1]}
-                                    )
+                                _wdata = _batch_word_data.get(_term_normalized, {})
+                                vocalizations = list(
+                                    _wdata.get("words", set()) - {term[1]}
+                                )
                                 nb_vocalizations_globale += len(vocalizations)
                             if word_synonyms:
                                 synonyms = syndict.get(term[1]) or []
                             derivations_extra = []
                             if word_derivations:
-                                derivations = []
-                                # Always initialize so words_output refs below are safe
-                                # even when the index is unavailable.
-                                lemma = root = None
-                                derivations_set = set()
-                                if _wi_searcher is not None:
-                                    _norm_term = strip_vocalization(term[1])
-                                    _word_q = wquery.And([
-                                        wquery.Term("kind", "word"),
-                                        wquery.Term("normalized", _norm_term),
-                                    ])
-                                    _word_res = self.QSE.search_with_shared_searcher(
-                                        _wi_searcher, _word_q, limit=10
+                                _norm_term = strip_vocalization(term[1])
+                                _wdata = _batch_word_data.get(_norm_term, {})
+                                lemma = _wdata.get("lemma")
+                                root = _wdata.get("root")
+                                derivations_set = (
+                                    _batch_deriv_by_lemma.get(lemma, set())
+                                    if lemma else set()
+                                )
+                                derivations = list(derivations_set)
+                                if root:
+                                    derivations_extra = list(
+                                        _batch_deriv_by_root.get(root, set())
+                                        - derivations_set
                                     )
-                                    # Extract fields immediately; Hit objects access
-                                    # stored fields lazily through the reader.
-                                    for _w in _word_res:
-                                        if lemma is None:
-                                            lemma = _w.get("lemma") or None
-                                        if root is None:
-                                            root = _w.get("root") or None
-                                        if lemma and root:
-                                            break
-                                    if lemma:
-                                        _lem_q = wquery.And([
-                                            wquery.Term("kind", "word"),
-                                            wquery.Term("lemma", lemma),
-                                        ])
-                                        _lem_res = self.QSE.search_with_shared_searcher(
-                                            _wi_searcher, _lem_q, limit=500
-                                        )
-                                        derivations_set = set(
-                                            w.get("normalized") for w in _lem_res
-                                            if w.get("normalized")
-                                        )
-                                        derivations = list(derivations_set)
-                                    if root:
-                                        _root_q = wquery.And([
-                                            wquery.Term("kind", "word"),
-                                            wquery.Term("root", root),
-                                        ])
-                                        _root_res = self.QSE.search_with_shared_searcher(
-                                            _wi_searcher, _root_q, limit=500
-                                        )
-                                        _root_norms_set = set(
-                                            w.get("normalized") for w in _root_res
-                                            if w.get("normalized")
-                                        )
-                                        derivations_extra = list(_root_norms_set - derivations_set)
-    
+                            else:
+                                lemma = root = None
+                                derivations = []
+
                             # Compute variations specific to this word: among all
                             # matched aya_ac terms, keep only those within
                             # fuzzy_maxdist edit distance of this word's unvocalized
@@ -1264,7 +1331,7 @@ class Raw:
                             aya_words_map.setdefault(key, []).append(entry)
                         # Sort each aya's word list by word_id (ascending position order).
                         for key in aya_words_map:
-                            aya_words_map[key].sort(key=lambda e: e.get("word_id") or 0)
+                            aya_words_map[key].sort(key=_WORD_ID_KEY)
                     finally:
                         wc_searcher.close()
                 except Exception:
@@ -1309,7 +1376,7 @@ class Raw:
                                         "normalized": _w.get("normalized"),
                                     })
                             for _g in annot_words_map:
-                                annot_words_map[_g].sort(key=lambda e: e.get("word_id") or 0)
+                                annot_words_map[_g].sort(key=_WORD_ID_KEY)
                         finally:
                             _aw_srch.close()
                 except Exception:
@@ -1345,7 +1412,7 @@ class Raw:
                                     "normalized": _w.get("normalized"),
                                 })
                         for _g in annot_aya_words_map:
-                            annot_aya_words_map[_g].sort(key=lambda e: e.get("word_id") or 0)
+                            annot_aya_words_map[_g].sort(key=_WORD_ID_KEY)
                     finally:
                         _aa_srch.close()
                 except Exception:
@@ -1367,10 +1434,14 @@ class Raw:
                 for facet_field in facets_list:
                     try:
                         facet_groups = res.groups(facet_field)
-                        # facet_groups is a dict where keys are values and values are lists of docnums
+                        # heapq.nlargest is O(n log k) vs O(n log n) for a full sort
+                        # when returning only the top-50 facet values — and avoids
+                        # materialising a sorted copy of the entire groups dict.
                         output["facets"][facet_field] = [
                             {"value": value, "count": len(doclist)}
-                            for value, doclist in sorted(facet_groups.items(), key=lambda x: len(x[1]), reverse=True)
+                            for value, doclist in heapq.nlargest(
+                                50, facet_groups.items(), key=_FACET_COUNT_KEY
+                            )
                         ]
                     except Exception:
                         # If facet field doesn't exist or error, skip it
@@ -1841,10 +1912,8 @@ class Raw:
                             groups = facet_res.groups(fld)
                             output["facets"][fld] = [
                                 {"value": v, "count": len(docs)}
-                                for v, docs in sorted(
-                                    groups.items(),
-                                    key=lambda x: len(x[1]),
-                                    reverse=True,
+                                for v, docs in heapq.nlargest(
+                                    50, groups.items(), key=_FACET_COUNT_KEY
                                 )
                             ]
                         except Exception:
