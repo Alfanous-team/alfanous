@@ -781,3 +781,30 @@ def test_fuzzy_excludes_short_words():
     latin_terms = [("aya", "hello"), ("aya", "world")]
     assert build_levenshtein_subqueries(latin_terms) == [], \
         "Non-Arabic terms should be excluded from fuzzy matching"
+
+
+def test_fuzzy_phrase_no_query_error():
+    """Phrase queries must not raise QueryError when fuzzy=True.
+
+    The 'aya_fuzzy' field has phrase=False so Whoosh raises
+    ``QueryError: Phrase search: 'aya_fuzzy' field has no positions``
+    whenever a Phrase query object is executed against it.  The fix in
+    :func:`~alfanous.searching._strip_phrase_queries` converts each Phrase
+    node to an And-of-Terms before execution.  This test verifies that
+    sending a quoted (phrase) query with ``fuzzy=True`` does **not** raise
+    an exception and returns a result tuple.
+    """
+    from whoosh.query.qcore import QueryError
+    # A two-word Arabic phrase query — the leading/trailing quotes tell the
+    # Whoosh QueryParser to produce a Phrase object.  searcher is a
+    # non-closing proxy; no explicit close needed.
+    phrase_query = '"رب العالمين"'
+    try:
+        results, terms, searcher = QSE.search_all(phrase_query, fuzzy=True, limit=10)
+    except QueryError as exc:
+        raise AssertionError(
+            f"search_all raised QueryError for phrase+fuzzy: {exc}"
+        ) from exc
+    # Basic sanity: result tuple has the right shape
+    assert hasattr(results, 'runtime'), "results must be a Whoosh Results object"
+    assert isinstance(terms, list)

@@ -528,3 +528,104 @@ def test_derivation_results_contain_no_uthmani_marks_root_level():
             assert chr(cp) not in w, (
                 f"Derivation result {w!r} contains Uthmanic mark U+{cp:04X}"
             )
+
+
+# ---------------------------------------------------------------------------
+# Unit tests for _strip_phrase_queries (no index required)
+# ---------------------------------------------------------------------------
+
+class TestStripPhraseQueries:
+    """Verify that _strip_phrase_queries converts Phrase nodes without an index."""
+
+    def _make_schema(self):
+        from whoosh.fields import Schema, TEXT
+        return Schema(f=TEXT(phrase=False))
+
+    def test_plain_term_unchanged(self):
+        """A plain Term is returned as-is."""
+        from whoosh import query as wq
+        from alfanous.searching import _strip_phrase_queries
+        q = wq.Term("f", "hello")
+        result = _strip_phrase_queries(q)
+        assert result == q
+
+    def test_single_phrase_becomes_and_of_terms(self):
+        """A Phrase with two words is replaced by And([Term, Term])."""
+        from whoosh import query as wq
+        from alfanous.searching import _strip_phrase_queries
+        q = wq.Phrase("f", ["hello", "world"])
+        result = _strip_phrase_queries(q)
+        assert isinstance(result, wq.And), f"Expected And, got {type(result)}"
+        assert set(result.subqueries) == {wq.Term("f", "hello"), wq.Term("f", "world")}
+
+    def test_single_word_phrase_becomes_term(self):
+        """A Phrase with a single word is collapsed to a plain Term."""
+        from whoosh import query as wq
+        from alfanous.searching import _strip_phrase_queries
+        q = wq.Phrase("f", ["hello"])
+        result = _strip_phrase_queries(q)
+        assert isinstance(result, wq.Term)
+        assert result.text == "hello"
+
+    def test_empty_phrase_becomes_null(self):
+        """A Phrase with no words is replaced by NullQuery."""
+        from whoosh import query as wq
+        from alfanous.searching import _strip_phrase_queries
+        q = wq.Phrase("f", [])
+        result = _strip_phrase_queries(q)
+        assert result is wq.NullQuery
+
+    def test_and_containing_phrase(self):
+        """A Phrase nested inside an And is converted; the And wrapper is kept."""
+        from whoosh import query as wq
+        from alfanous.searching import _strip_phrase_queries
+        phrase = wq.Phrase("f", ["رب", "العالمين"])
+        q = wq.And([wq.Term("f", "foo"), phrase])
+        result = _strip_phrase_queries(q)
+        assert isinstance(result, wq.And)
+        # The Phrase child must now be an And of Terms, not a Phrase
+        sub_types = {type(s) for s in result.subqueries}
+        assert wq.Phrase not in sub_types, "Phrase must not survive _strip_phrase_queries"
+
+    def test_or_containing_phrase(self):
+        """A Phrase nested inside an Or is converted; the Or wrapper is kept."""
+        from whoosh import query as wq
+        from alfanous.searching import _strip_phrase_queries
+        phrase = wq.Phrase("f", ["رب", "العالمين"])
+        q = wq.Or([wq.Term("f", "bar"), phrase])
+        result = _strip_phrase_queries(q)
+        assert isinstance(result, wq.Or)
+        sub_types = {type(s) for s in result.subqueries}
+        assert wq.Phrase not in sub_types
+
+    def test_andnot_containing_phrase(self):
+        """A Phrase inside an AndNot (BinaryQuery) is converted."""
+        from whoosh import query as wq
+        from alfanous.searching import _strip_phrase_queries
+        phrase = wq.Phrase("f", ["رب", "العالمين"])
+        q = wq.AndNot(phrase, wq.Term("f", "baz"))
+        result = _strip_phrase_queries(q)
+        assert isinstance(result, wq.AndNot)
+        # First child was a Phrase — must be converted to And
+        assert isinstance(result.subqueries[0], wq.And)
+        # Second child (plain Term) must be unchanged
+        assert isinstance(result.subqueries[1], wq.Term)
+
+    def test_not_containing_phrase(self):
+        """A Phrase inside a Not is converted."""
+        from whoosh import query as wq
+        from alfanous.searching import _strip_phrase_queries
+        phrase = wq.Phrase("f", ["رب", "العالمين"])
+        q = wq.Not(phrase)
+        result = _strip_phrase_queries(q)
+        assert isinstance(result, wq.Not)
+        assert isinstance(result.query, wq.And)
+
+    def test_non_phrase_compound_unchanged(self):
+        """Compound queries without any Phrase children are returned unchanged."""
+        from whoosh import query as wq
+        from alfanous.searching import _strip_phrase_queries
+        q = wq.And([wq.Term("f", "a"), wq.Term("f", "b")])
+        result = _strip_phrase_queries(q)
+        assert isinstance(result, wq.And)
+        assert all(isinstance(s, wq.Term) for s in result.subqueries)
