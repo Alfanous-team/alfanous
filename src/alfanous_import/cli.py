@@ -11,7 +11,7 @@ parser = OptionParser(usage=usage, version="Alfanous 0.4 - Importer")
 
 commands = OptionGroup(parser, "Options", "Choose what to do:  ")
 
-commands.add_option("-x", "--index", dest="index", type="choice", choices=["main", "word"],
+commands.add_option("-x", "--index", dest="index", type="choice", choices=["main"],
                     help="create  indexes", metavar="TYPE")
 
 commands.add_option("--translations", dest="translations_path",
@@ -87,16 +87,6 @@ if options.index:
         T.build_docindex(ayaSchema,
                          translations_store_path=options.translations_path,
                          corpus_path=options.corpus_path,
-                         merge=_merge,
-                         optimize=_optimize,
-                         procs=options.procs,
-                         multisegment=options.multisegment,
-                         batch_size=options.batch_size)
-
-    elif options.index == "word":
-        T = Transformer(index_path=DESTINATION, resource_path=SOURCE)
-        wordqcSchema = T.build_schema(tablename='wordqc')
-        T.build_docindex(wordqcSchema, tablename='wordqc',
                          merge=_merge,
                          optimize=_optimize,
                          procs=options.procs,
