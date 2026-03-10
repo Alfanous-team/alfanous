@@ -155,6 +155,7 @@ def test_search():
                                          'class="match term1">لِلَّهِ</span> '
                                          'رَبِّ الْعَالَمِينَ',
                                  'text_no_highlight': 'الحمد لله رب العالمين',
+                                 'transliteration': 'Alhamdu lillahi rabbi alAAalameena',
                                  'translation': 'All praise is due to Allah, '
                                                 'the Lord of the Worlds.'},
                          'identifier': {'aya_id': 2,
@@ -216,6 +217,7 @@ def test_search():
                                                       'فأخرج به من الثمرات '
                                                       'رزقا لكم فلا تجعلوا لله '
                                                       'أندادا وأنتم تعلمون',
+                                 'transliteration': 'Allathee jaAAala lakumu alarda firashan waalssamaa binaan waanzala mina alssamai maan faakhraja bihi mina alththamarati rizqan lakum fala tajAAaloo lillahi andadan waantum taAAlamoona',
                                  'translation': 'Who made the earth a resting '
                                                 'place for you and the heaven '
                                                 'a canopy and (Who) sends down '
@@ -278,6 +280,7 @@ def test_search():
                                                       'وملائكته ورسله وجبريل '
                                                       'وميكال فإن الله عدو '
                                                       'للكافرين',
+                                 'transliteration': 'Man kana AAaduwwan lillahi wamalaikatihi warusulihi wajibreela wameekala fainna Allaha AAaduwwun lilkafireena',
                                  'translation': 'Whoever is the enemy of Allah '
                                                 'and His angels and His '
                                                 'apostles and Jibreel and '
@@ -346,6 +349,7 @@ def test_search():
                                                       'وهو محسن فله أجره عند '
                                                       'ربه ولا خوف عليهم ولا '
                                                       'هم يحزنون',
+                                 'transliteration': 'Bala man aslama wajhahu lillahi wahuwa muhsinun falahu ajruhu AAinda rabbihi wala khawfun AAalayhim wala hum yahzanoona',
                                  'translation': 'Yes! whoever submits himself '
                                                 'entirely to Allah and he is '
                                                 'the doer of good (to others) '
@@ -422,6 +426,7 @@ def test_search():
                                                       'كانوا عليها قل لله '
                                                       'المشرق والمغرب يهدي من '
                                                       'يشاء إلى صراط مستقيم',
+                                 'transliteration': 'Sayaqoolu alssufahao mina alnnasi ma wallahum AAan qiblatihimu allatee kanoo AAalayha qul lillahi almashriqu waalmaghribu yahdee man yashao ila siratin mustaqeemin',
                                  'translation': 'The fools among the people '
                                                 'will say: What has turned '
                                                 'them from their qiblah which '
@@ -480,6 +485,7 @@ def test_search():
                                  'text_no_highlight': 'الذين إذا أصابتهم مصيبة '
                                                       'قالوا إنا لله وإنا إليه '
                                                       'راجعون',
+                                 'transliteration': 'Allatheena itha asabathum museebatun qaloo inna lillahi wainna ilayhi rajiAAoona',
                                  'translation': 'Who, when a misfortune '
                                                 'befalls them, say: Surely we '
                                                 "are Allah's and to Him we "
@@ -561,6 +567,7 @@ def test_search():
                                                       'العذاب أن القوة لله '
                                                       'جميعا وأن الله شديد '
                                                       'العذاب',
+                                 'transliteration': 'Wamina alnnasi man yattakhithu min dooni Allahi andadan yuhibboonahum kahubbi Allahi waallatheena amanoo ashaddu hubban lillahi walaw yara allatheena thalamoo ith yarawna alAAathaba anna alquwwata lillahi jameeAAan waanna Allaha shadeedu alAAathabi',
                                  'translation': 'And there are some among men '
                                                 'who take for themselves '
                                                 'objects of worship besides '
@@ -630,6 +637,7 @@ def test_search():
                                                       'كلوا من طيبات ما '
                                                       'رزقناكم واشكروا لله إن '
                                                       'كنتم إياه تعبدون',
+                                 'transliteration': 'Ya ayyuha allatheena amanoo kuloo min tayyibati ma razaqnakum waoshkuroo lillahi in kuntum iyyahu taAAbudoona',
                                  'translation': 'O you who believe! eat of the '
                                                 'good things that We have '
                                                 'provided you with, and give '
@@ -689,6 +697,7 @@ def test_search():
                                                       'فتنة ويكون الدين لله '
                                                       'فإن انتهوا فلا عدوان '
                                                       'إلا على الظالمين',
+                                 'transliteration': 'Waqatiloohum hatta la takoona fitnatun wayakoona alddeenu lillahi faini intahaw fala AAudwana illa AAala alththalimeena',
                                  'translation': 'And fight with them until '
                                                 'there is no persecution, and '
                                                 'religion should be only for '
@@ -786,7 +795,8 @@ def test_search():
                                                        'الحرام واتقوا الله '
                                                        'واعلموا أن الله شديد '
                                                        'العقاب',
-                                  'translation': 'And accomplish the '
+                                  'transliteration': 'Waatimmoo alhajja waalAAumrata lillahi fain ohsirtum fama istaysara mina alhadyi wala tahliqoo ruoosakum hatta yablugha alhadyu mahillahu faman kana minkum mareedan aw bihi athan min rasihi fafidyatun min siyamin aw sadaqatin aw nusukin faitha amintum faman tamattaAAa bialAAumrati ila alhajji fama istaysara mina alhadyi faman lam yajid fasiyamu thalathati ayyamin fee alhajji wasabAAatin itha rajaAAtum tilka AAasharatun kamilatun thalika liman lam yakun ahluhu hadiree almasjidi alharami waittaqoo Allaha waiAAlamoo anna Allaha shadeedu alAAiqabi',
+                                 'translation': 'And accomplish the '
                                                  'pilgrimage and the visit for '
                                                  'Allah, but if, you are '
                                                  'prevented, (send) whatever '
