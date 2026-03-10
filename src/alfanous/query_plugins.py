@@ -407,6 +407,13 @@ class TashkilQuery(QMultiTerm):
         self.text = text if isinstance(text, list) else [text]
         self.boost = boost
         self.words = [_ASF_TASHKIL.normalize_all(word) for word in self.text]
+        # Pre-compute once at construction time: the frozenset of normalized
+        # query-word forms used in _btexts for membership testing.  Since
+        # self.text never changes, recomputing this on every _btexts call
+        # (which Whoosh may invoke multiple times per search) is wasteful.
+        # self.words at this point contains exactly the initial normalized
+        # forms — before _btexts appends any expanded index terms.
+        self._normalized_query_words = frozenset(self.words)
 
     def __hash__(self):
         return hash((self.__class__.__name__, self.fieldname, tuple(self.text), self.boost))
@@ -422,9 +429,9 @@ class TashkilQuery(QMultiTerm):
     def _btexts(self, ixreader):
         fieldname = self.fieldname
         from_bytes = ixreader.schema[fieldname].from_bytes
-        # Pre-compute the normalised form of every query word once instead of
-        # recomputing it O(index_terms) times inside the inner loop.
-        normalized_query_words = {_ASF_TASHKIL.normalize_all(w) for w in self.text}
+        # Use the frozenset pre-computed at __init__ time instead of
+        # recomputing {normalize(w) for w in self.text} on every call.
+        normalized_query_words = self._normalized_query_words
         seen_words = set(self.words)
         count = 0
         for field, btext in ixreader.all_terms():

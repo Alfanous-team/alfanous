@@ -96,6 +96,13 @@ def _FACET_COUNT_KEY(x):
 def _ZERO_IF_NONE(x):
     return x if x else 0
 
+# Text-coalesce helper — replaces `lambda X: X if X else "-----"` that was
+# allocated on every _search_aya / _search_translation / _search_words call
+# for the no-highlight (H / TH) path.  Defining it once at module level avoids
+# one function-object allocation per request on each of the three search methods.
+def _COALESCE_TEXT(x):
+    return x if x else "-----"
+
 # Keyword-split helper — replaces the per-request lambda
 # `keywords = lambda phrase: _KEYWORD_SPLIT_RE.findall(phrase)`.
 # Binding the method once at module level avoids allocating a new closure
@@ -135,7 +142,7 @@ def _edit_distance(s, t):
 
 ## a function to decide what is True and what is false
 def IS_FLAG(flags, key):
-    default = Raw.DEFAULTS['flags'][key]
+    default = _FLAG_DEFAULTS[key]
     val = flags.get(key, default)
     if val is None or val == '':
         return default
@@ -953,8 +960,8 @@ class Raw:
                 # translation highlight function: applies QTranslationHighlight with non-Arabic query terms
                 TH = lambda X: QTranslationHighlight(X, _trans_terms, type=highlight) if X and _trans_terms else (X if X else "-----")
             else:
-                H = lambda X: X if X else "-----"
-                TH = lambda X: X if X else "-----"
+                H = _COALESCE_TEXT
+                TH = _COALESCE_TEXT
             # Pre-check script once — avoids re-evaluating `script == "standard"` per aya in the result loop.
             _use_standard_script = script == "standard"
             ##########################################
@@ -1622,7 +1629,7 @@ class Raw:
             # Extract matched terms from the translation sub-query for highlight.
             terms = [t for field, t in _child_q.all_terms() if field in self._trans_fields]
             if highlight == "none":
-                H = lambda X: X if X else "-----"
+                H = _COALESCE_TEXT
             else:
                 H = lambda X: QTranslationHighlight(X, terms, type=highlight) if X else "-----"
     
@@ -1819,7 +1826,7 @@ class Raw:
                     _terms_set.add(_wu)
     
             if highlight == "none":
-                H = lambda X: X if X else "-----"
+                H = _COALESCE_TEXT
             else:
                 H = lambda X: self.QSE.highlight(X, terms, highlight) if X else "-----"
 
@@ -1946,4 +1953,13 @@ class Raw:
             return output
         finally:
             searcher.close()
+
+
+# ---------------------------------------------------------------------------
+# Module-level binding resolved after Raw is defined.
+#
+# IS_FLAG() accesses this instead of Raw.DEFAULTS['flags'][key] (3 lookups)
+# so each of its ~20 calls per _search_aya request costs only 1 dict lookup.
+# ---------------------------------------------------------------------------
+_FLAG_DEFAULTS = Raw.DEFAULTS['flags']
 

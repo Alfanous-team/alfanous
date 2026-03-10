@@ -1640,5 +1640,200 @@ class TestAyaWordsMapsDefaultdict(unittest.TestCase):
         self._check_initialised_as_defaultdict("annot_aya_words_map")
 
 
+# ---------------------------------------------------------------------------
+# Iteration-8 fixes
+# ---------------------------------------------------------------------------
+
+class TestCoalesceTextModuleLevel(unittest.TestCase):
+    """_COALESCE_TEXT must be defined at module level and replace no-highlight lambdas."""
+
+    def test_coalesce_text_exists(self):
+        """_COALESCE_TEXT must be a module-level callable in alfanous.outputs."""
+        import alfanous.outputs as _outputs
+        self.assertTrue(
+            hasattr(_outputs, "_COALESCE_TEXT"),
+            "_COALESCE_TEXT must be defined at module level in alfanous.outputs"
+        )
+        self.assertTrue(
+            callable(_outputs._COALESCE_TEXT),
+            "_COALESCE_TEXT must be callable"
+        )
+
+    def test_coalesce_text_returns_value_when_truthy(self):
+        """_COALESCE_TEXT must return x when x is truthy."""
+        from alfanous.outputs import _COALESCE_TEXT
+        self.assertEqual(_COALESCE_TEXT("hello"), "hello")
+        self.assertEqual(_COALESCE_TEXT("الله"), "الله")
+        self.assertEqual(_COALESCE_TEXT(1), 1)
+
+    def test_coalesce_text_returns_fallback_when_falsy(self):
+        """_COALESCE_TEXT must return '-----' when x is falsy."""
+        from alfanous.outputs import _COALESCE_TEXT
+        self.assertEqual(_COALESCE_TEXT(None), "-----")
+        self.assertEqual(_COALESCE_TEXT(""), "-----")
+        self.assertEqual(_COALESCE_TEXT(0), "-----")
+
+    def _no_highlight_lambdas_in(self, method_name):
+        """Return True if the method contains `lambda X: X if X else "-----"`
+        (the plain identity-coalesce pattern with no function call in the truthy branch)."""
+        import ast, inspect, textwrap
+        import alfanous.outputs as m
+        src = textwrap.dedent(inspect.getsource(getattr(m.Raw, method_name)))
+        tree = ast.parse(src)
+        for node in ast.walk(tree):
+            if not isinstance(node, ast.Lambda):
+                continue
+            body = node.body
+            # Only flag lambdas whose body is a plain IfExp like `X if X else "-----"`.
+            # Lambdas with a Call in the truthy branch (e.g. self.QSE.highlight(...))
+            # are the highlight-enabled variants and are intentionally left as lambdas.
+            if not isinstance(body, ast.IfExp):
+                continue
+            orelse = body.orelse
+            truthy = body.body
+            if (isinstance(orelse, ast.Constant)
+                    and orelse.value == "-----"
+                    and isinstance(truthy, ast.Name)):
+                return True
+        return False
+
+    def test_search_aya_no_highlight_lambda_removed(self):
+        """_search_aya must not allocate `lambda X: X if X else '-----'`."""
+        self.assertFalse(
+            self._no_highlight_lambdas_in("_search_aya"),
+            "_search_aya no-highlight path must use _COALESCE_TEXT, "
+            "not an inline lambda"
+        )
+
+    def test_search_translation_no_highlight_lambda_removed(self):
+        """_search_translation must not allocate `lambda X: X if X else '-----'`."""
+        self.assertFalse(
+            self._no_highlight_lambdas_in("_search_translation"),
+            "_search_translation no-highlight path must use _COALESCE_TEXT, "
+            "not an inline lambda"
+        )
+
+    def test_search_words_no_highlight_lambda_removed(self):
+        """_search_words must not allocate `lambda X: X if X else '-----'`."""
+        self.assertFalse(
+            self._no_highlight_lambdas_in("_search_words"),
+            "_search_words no-highlight path must use _COALESCE_TEXT, "
+            "not an inline lambda"
+        )
+
+
+class TestFlagDefaultsBinding(unittest.TestCase):
+    """_FLAG_DEFAULTS must be defined at module level for fast IS_FLAG lookups."""
+
+    def test_flag_defaults_exists(self):
+        """_FLAG_DEFAULTS must be a module-level dict in alfanous.outputs."""
+        import alfanous.outputs as _outputs
+        self.assertTrue(
+            hasattr(_outputs, "_FLAG_DEFAULTS"),
+            "_FLAG_DEFAULTS must be defined at module level in alfanous.outputs"
+        )
+        self.assertIsInstance(
+            _outputs._FLAG_DEFAULTS, dict,
+            "_FLAG_DEFAULTS must be a dict"
+        )
+
+    def test_flag_defaults_equals_raw_defaults(self):
+        """_FLAG_DEFAULTS must be the same object as Raw.DEFAULTS['flags']."""
+        import alfanous.outputs as _outputs
+        self.assertIs(
+            _outputs._FLAG_DEFAULTS,
+            _outputs.Raw.DEFAULTS['flags'],
+            "_FLAG_DEFAULTS must be the same dict object as Raw.DEFAULTS['flags']"
+        )
+
+    def test_is_flag_uses_flag_defaults_not_raw_defaults(self):
+        """IS_FLAG must reference _FLAG_DEFAULTS, not Raw.DEFAULTS['flags']."""
+        import ast, inspect
+        import alfanous.outputs as _outputs
+        src = inspect.getsource(_outputs.IS_FLAG)
+        tree = ast.parse(src)
+        for node in ast.walk(tree):
+            # Detect attribute access Raw.DEFAULTS and subsequent subscript
+            if isinstance(node, ast.Subscript):
+                val = node.value
+                if isinstance(val, ast.Attribute) and val.attr == "DEFAULTS":
+                    if isinstance(val.value, ast.Name) and val.value.id == "Raw":
+                        self.fail(
+                            "IS_FLAG must use _FLAG_DEFAULTS[key], not "
+                            "Raw.DEFAULTS['flags'][key] — the latter costs 3 "
+                            "attribute/dict lookups per call."
+                        )
+
+    def test_is_flag_still_works_correctly(self):
+        """IS_FLAG must still return correct results after the lookup change."""
+        from alfanous.outputs import IS_FLAG
+        # Test with a known boolean flag
+        self.assertTrue(IS_FLAG({"vocalized": True}, "vocalized"))
+        self.assertFalse(IS_FLAG({"vocalized": False}, "vocalized"))
+        self.assertFalse(IS_FLAG({"vocalized": "false"}, "vocalized"))
+        self.assertFalse(IS_FLAG({"vocalized": "0"}, "vocalized"))
+        # Empty / None fall back to default
+        self.assertEqual(
+            IS_FLAG({"vocalized": None}, "vocalized"),
+            True,  # Raw.DEFAULTS['flags']['vocalized'] is True
+        )
+
+
+class TestTashkilQueryNormalizedCached(unittest.TestCase):
+    """TashkilQuery must pre-compute _normalized_query_words at __init__ time."""
+
+    def test_normalized_query_words_attribute_exists(self):
+        """TashkilQuery instances must have a _normalized_query_words attribute."""
+        from alfanous.query_plugins import TashkilQuery
+        q = TashkilQuery("aya", "الله")
+        self.assertTrue(
+            hasattr(q, "_normalized_query_words"),
+            "TashkilQuery must set _normalized_query_words in __init__"
+        )
+
+    def test_normalized_query_words_is_frozenset(self):
+        """_normalized_query_words must be a frozenset for O(1) lookup."""
+        from alfanous.query_plugins import TashkilQuery
+        q = TashkilQuery("aya", "الله")
+        self.assertIsInstance(
+            q._normalized_query_words, frozenset,
+            "_normalized_query_words must be a frozenset"
+        )
+
+    def test_normalized_query_words_matches_words(self):
+        """_normalized_query_words must equal the initial frozenset(self.words)."""
+        from alfanous.query_plugins import TashkilQuery
+        q = TashkilQuery("aya", ["الله", "الرحمن"])
+        self.assertEqual(
+            q._normalized_query_words,
+            frozenset(q.words),
+            "_normalized_query_words must equal frozenset(self.words) at init time"
+        )
+
+    def test_btexts_does_not_recompute_normalized_set(self):
+        """_btexts must not recompute {normalize(w) for w in self.text}."""
+        import ast, inspect, textwrap
+        from alfanous.query_plugins import TashkilQuery
+        src = textwrap.dedent(inspect.getsource(TashkilQuery._btexts))
+        tree = ast.parse(src)
+
+        # Look for a set comprehension that calls normalize_all on self.text.
+        for node in ast.walk(tree):
+            if not isinstance(node, ast.SetComp):
+                continue
+            # Check if the iterable is `self.text`
+            for gen in node.generators:
+                iter_node = gen.iter
+                if (isinstance(iter_node, ast.Attribute)
+                        and iter_node.attr == "text"
+                        and isinstance(iter_node.value, ast.Name)
+                        and iter_node.value.id == "self"):
+                    self.fail(
+                        "TashkilQuery._btexts must not recompute "
+                        "{normalize(w) for w in self.text} on every call — "
+                        "use self._normalized_query_words instead."
+                    )
+
+
 if __name__ == "__main__":
     unittest.main()
