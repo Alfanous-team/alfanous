@@ -89,6 +89,18 @@ def _WORD_ID_KEY(e):
 def _FACET_COUNT_KEY(x):
     return len(x[1])
 
+# Zero-coalesce helper — replaces `N = lambda X: X if X else 0` that was
+# allocated on every _search_aya call and called ~6× per result (≈150 calls
+# per 25-result page).
+def _ZERO_IF_NONE(x):
+    return x if x else 0
+
+# Keyword-split helper — replaces the per-request lambda
+# `keywords = lambda phrase: _KEYWORD_SPLIT_RE.findall(phrase)`.
+# Binding the method once at module level avoids allocating a new closure
+# on every _search_aya and _search_translation call.
+_KEYWORD_FIND = _KEYWORD_SPLIT_RE.findall
+
 
 def _build_filter_query(filter_dict):
     """Convert a filter dict to a list of Whoosh Term/Or query objects.
@@ -942,10 +954,6 @@ class Raw:
             else:
                 H = lambda X: X if X else "-----"
                 TH = lambda X: X if X else "-----"
-            # Numbers are 0 if not defined
-            N = lambda X: X if X else 0
-            # parse keywords lists , used for Sura names
-            keywords = lambda phrase: _KEYWORD_SPLIT_RE.findall(phrase)
             # Pre-check script once — avoids re-evaluating `script == "standard"` per aya in the result loop.
             _use_standard_script = script == "standard"
             ##########################################
@@ -1458,46 +1466,60 @@ class Raw:
             )
             for r in reslist:
                 cpt += 1
-                _sura_name = keywords(r["sura"])[0]
-                _sura_arabic_name = keywords(r["sura_arabic"])[0]
-                _sura_english_name = keywords(r["sura_english"])[0] if sura_info else None
+                # Cache the gid and frequently-accessed identifiers once per
+                # iteration so that subsequent accesses are plain local-variable
+                # lookups instead of repeated Hit.__getitem__ → fields() calls.
+                _gid = r["gid"]
+                _aya_id = r["aya_id"]
+                _sura_id = r["sura_id"]
+                _sura_name = _KEYWORD_FIND(r["sura"])[0]
+                _sura_arabic_name = _KEYWORD_FIND(r["sura_arabic"])[0]
+                _sura_english_name = _KEYWORD_FIND(r["sura_english"])[0] if sura_info else None
                 # Evaluate once per aya — reused in text, prev/next fields.
                 _is_sajda = aya_sajda_info and r["sajda"] == "نعم"
+                # Cache adjacent-aya dicts once per iteration; each is accessed
+                # 4× (id, sura, sura_arabic, text) when prev_aya/next_aya is True.
+                # The _prev_adja/_next_adja dict accesses below are guarded by the
+                # same `if prev_aya` / `if next_aya` condition, so when the flag is
+                # False the variable is never dereferenced (Python short-circuits
+                # the conditional expression `{ ... } if flag else None`).
+                _prev_adja = adja_ayas[_gid - 1] if prev_aya else None
+                _next_adja = adja_ayas[_gid + 1] if next_aya else None
                 output["ayas"][cpt] = {
 
-                    "identifier": {"gid": r["gid"],
-                                   "aya_id": r["aya_id"],
-                                   "sura_id": r["sura_id"],
+                    "identifier": {"gid": _gid,
+                                   "aya_id": _aya_id,
+                                   "sura_id": _sura_id,
                                    "sura_name": _sura_name,
                                    "sura_arabic_name": _sura_arabic_name,
                                    },
 
                     "aya": {
-                        "id": r["aya_id"],
+                        "id": _aya_id,
                         "text": H(V(r["aya_"])) if _use_standard_script
                         else H(r["uth_"]),
                         "text_no_highlight": r["aya"] if _use_standard_script
                         else r["uth_"],
-                        "translation": TH(trad_text.get(r["gid"], {}).get("text")) if _want_translation else None,
+                        "translation": TH(trad_text.get(_gid, {}).get("text")) if _want_translation else None,
                         "recitation": (
                             f'https://www.everyayah.com/data/{_recitation_subfolder}/%03d%03d.mp3' % (
-                                int(r["sura_id"]), int(r["aya_id"]))
+                                int(_sura_id), int(_aya_id))
                             if _recitation_subfolder else None
                         ),
                         "prev_aya": {
-                            "id": adja_ayas[r["gid"] - 1]["aya_id"],
-                            "sura": adja_ayas[r["gid"] - 1]["sura"],
-                            "sura_arabic": adja_ayas[r["gid"] - 1]["sura_arabic"],
-                            "text": V(adja_ayas[r["gid"] - 1]["aya_"]) if _use_standard_script
-                            else adja_ayas[r["gid"] - 1]["uth_"],
+                            "id": _prev_adja["aya_id"],
+                            "sura": _prev_adja["sura"],
+                            "sura_arabic": _prev_adja["sura_arabic"],
+                            "text": V(_prev_adja["aya_"]) if _use_standard_script
+                            else _prev_adja["uth_"],
                         } if prev_aya else None
                         ,
                         "next_aya": {
-                            "id": adja_ayas[r["gid"] + 1]["aya_id"],
-                            "sura": adja_ayas[r["gid"] + 1]["sura"],
-                            "sura_arabic": adja_ayas[r["gid"] + 1]["sura_arabic"],
-                            "text": V(adja_ayas[r["gid"] + 1]["aya_"]) if _use_standard_script
-                            else adja_ayas[r["gid"] + 1]["uth_"],
+                            "id": _next_adja["aya_id"],
+                            "sura": _next_adja["sura"],
+                            "sura_arabic": _next_adja["sura_arabic"],
+                            "text": V(_next_adja["aya_"]) if _use_standard_script
+                            else _next_adja["uth_"],
                         } if next_aya else None
                         ,
 
@@ -1508,16 +1530,16 @@ class Raw:
                         "name": _sura_name,
                         "arabic_name": _sura_arabic_name,
                         "english_name": _sura_english_name,
-                        "id": r["sura_id"],
+                        "id": _sura_id,
                         "type": r["sura_type"],
                         "arabic_type": r["sura_type_arabic"],
                         "order": r["sura_order"],
                         "ayas": r["s_a"],
                         "stat": {} if not sura_stat_info
                         else {
-                            "words": N(r["s_w"]),
-                            "godnames": N(r["s_g"]),
-                            "letters": N(r["s_l"])
+                            "words": _ZERO_IF_NONE(r["s_w"]),
+                            "godnames": _ZERO_IF_NONE(r["s_g"]),
+                            "letters": _ZERO_IF_NONE(r["s_l"])
                         }
 
                     },
@@ -1540,27 +1562,27 @@ class Raw:
 
                     "stat": {} if not aya_stat_info
                     else {
-                        "words": N(r["a_w"]),
-                        "letters": N(r["a_l"]),
-                        "godnames": N(r["a_g"])
+                        "words": _ZERO_IF_NONE(r["a_w"]),
+                        "letters": _ZERO_IF_NONE(r["a_l"]),
+                        "godnames": _ZERO_IF_NONE(r["a_g"])
                     },
 
                     "sajda": {} if not aya_sajda_info
                     else {
                         "exist": _is_sajda,
                         "type": r["sajda_type"] if _is_sajda else None,
-                        "id": N(r["sajda_id"]) if _is_sajda else None,
+                        "id": _ZERO_IF_NONE(r["sajda_id"]) if _is_sajda else None,
                     },
 
                     "annotations": (
-                        annot_words_map.get(r["gid"], []) if annotation_word
-                        else annot_aya_words_map.get(r["gid"], []) if annotation_aya
+                        annot_words_map.get(_gid, []) if annotation_word
+                        else annot_aya_words_map.get(_gid, []) if annotation_aya
                         else []
                     )
                 }
                 if word_linguistics:
                     output["ayas"][cpt]["words"] = aya_words_map.get(
-                        (r["sura_id"], r["aya_id"]), []
+                        (_sura_id, _aya_id), []
                     )
             return output
         finally:
@@ -1613,7 +1635,6 @@ class Raw:
     
             # Fetch parent aya docs for the current result page using NestedParent.
             # NestedParent(_child_q) returns the parent aya of every matching translation child.
-            _keywords = lambda phrase: _KEYWORD_SPLIT_RE.findall(phrase)
             parent_data = {}
             if reslist:
                 _all_parents_q = wquery.Term("kind", "aya")
@@ -1668,8 +1689,8 @@ class Raw:
                         "translation_id": r.get("trans_id"),
                         "aya_id": _parent.get("aya_id"),
                         "sura_id": _parent.get("sura_id"),
-                        "sura_name": (_keywords(_parent["sura"]) or [None])[0] if _parent.get("sura") else None,
-                        "sura_arabic_name": (_keywords(_parent["sura_arabic"]) or [None])[0] if _parent.get("sura_arabic") else None,
+                        "sura_name": (_KEYWORD_FIND(_parent["sura"]) or [None])[0] if _parent.get("sura") else None,
+                        "sura_arabic_name": (_KEYWORD_FIND(_parent["sura_arabic"]) or [None])[0] if _parent.get("sura_arabic") else None,
                     },
                     "aya": {
                         "text": _parent.get("aya"),
