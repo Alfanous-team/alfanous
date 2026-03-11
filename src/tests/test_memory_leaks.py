@@ -1835,5 +1835,250 @@ class TestTashkilQueryNormalizedCached(unittest.TestCase):
                     )
 
 
+# ---------------------------------------------------------------------------
+# Shared reader/searcher contract tests
+#
+# The issue "all use shared reader/searcher, and it only be closed with engine
+# closing of context manager" requires that:
+#   1. QSearcher._get_shared_searcher() returns the SAME Whoosh Searcher
+#      object on every call (no per-request Searcher creation).
+#   2. _SearcherProxy.close() / __exit__ are true no-ops — they must NOT
+#      close the underlying Whoosh Searcher.
+#   3. QReader.close() when attached to a QSearcher is a no-op (the reader
+#      is owned by the QSearcher and must not be closed by the QReader).
+#   4. Only BasicSearchEngine.close() / its __exit__ closes the shared
+#      Whoosh Searcher (single lifecycle owner).
+#   5. QReader.attach_to_searcher() properly wires the QReader so that it
+#      borrows the reader from the QSearcher rather than opening its own.
+# ---------------------------------------------------------------------------
+
+class TestSharedReaderSearcherContract(unittest.TestCase):
+    """Verify the shared reader/searcher ownership and lifecycle guarantees."""
+
+    # ------------------------------------------------------------------
+    # Helpers
+    # ------------------------------------------------------------------
+
+    def _make_qsearcher(self):
+        """Return (QSearcher, mock_whoosh_searcher) backed by mocks."""
+        from alfanous.searching import QSearcher
+        mock_docindex = MagicMock()
+        mock_ws = MagicMock()
+        # refresh() returns self to simulate no index change between calls.
+        mock_ws.refresh.return_value = mock_ws
+        # mock_docindex.get_index().searcher is the Whoosh searcher factory;
+        # calling it (e.g. with weighting=…) returns mock_ws.
+        mock_docindex.get_index.return_value.searcher.return_value = mock_ws
+        mock_docindex.get_schema.return_value = MagicMock()
+        qs = QSearcher(mock_docindex, MagicMock())
+        return qs, mock_ws
+
+    def _make_engine(self):
+        """Return (BasicSearchEngine, mock_whoosh_searcher) backed by mocks."""
+        from whoosh.fields import Schema, TEXT
+        from alfanous.engines import BasicSearchEngine
+        from alfanous.searching import QSearcher, QReader
+
+        schema = Schema(aya=TEXT)
+        mock_docindex = MagicMock()
+        mock_docindex.OK = True
+        mock_docindex.get_schema.return_value = schema
+
+        mock_ws = MagicMock()
+        mock_ws.refresh.return_value = mock_ws
+        mock_index = MagicMock()
+        mock_index.searcher.return_value = mock_ws
+        mock_docindex.get_index.return_value = mock_index
+
+        engine = BasicSearchEngine(
+            qdocindex=mock_docindex,
+            query_parser=MagicMock(return_value=MagicMock()),
+            main_field="aya",
+            otherfields=[],
+            qsearcher=QSearcher,
+            qreader=QReader,
+            qhighlight=MagicMock(),
+        )
+        return engine, mock_ws
+
+    # ------------------------------------------------------------------
+    # 1. _get_shared_searcher returns the same object on every call
+    # ------------------------------------------------------------------
+
+    def test_get_shared_searcher_returns_same_instance(self):
+        """_get_shared_searcher() must return the identical object on every call."""
+        qs, mock_ws = self._make_qsearcher()
+
+        first = qs._get_shared_searcher()
+        second = qs._get_shared_searcher()
+        third = qs._get_shared_searcher()
+
+        self.assertIs(first, second, "second call must return the same shared searcher")
+        self.assertIs(second, third, "third call must return the same shared searcher")
+
+    def test_get_shared_searcher_factory_called_once(self):
+        """The Whoosh index.searcher factory must be invoked at most once."""
+        qs, mock_ws = self._make_qsearcher()
+
+        qs._get_shared_searcher()
+        qs._get_shared_searcher()
+        qs._get_shared_searcher()
+
+        # The factory (qs._searcher) should only have been called once (on
+        # the first _get_shared_searcher() call that lazily opens it).
+        self.assertEqual(
+            qs._searcher.call_count, 1,
+            "Searcher factory must be invoked only once despite multiple "
+            "_get_shared_searcher() calls",
+        )
+
+    # ------------------------------------------------------------------
+    # 2. _SearcherProxy.close() / __exit__ are true no-ops
+    # ------------------------------------------------------------------
+
+    def test_searcher_proxy_close_does_not_close_underlying(self):
+        """_SearcherProxy.close() must NOT close the underlying Whoosh Searcher."""
+        from alfanous.searching import _SearcherProxy
+        mock_ws = MagicMock()
+        proxy = _SearcherProxy(mock_ws)
+        proxy.close()
+        mock_ws.close.assert_not_called()
+
+    def test_searcher_proxy_exit_does_not_close_underlying(self):
+        """Using _SearcherProxy as a context manager must NOT close the underlying searcher."""
+        from alfanous.searching import _SearcherProxy
+        mock_ws = MagicMock()
+        proxy = _SearcherProxy(mock_ws)
+        with proxy:
+            pass
+        mock_ws.close.assert_not_called()
+
+    def test_multiple_proxy_close_calls_still_noop(self):
+        """Multiple _SearcherProxy.close() calls must all be no-ops."""
+        from alfanous.searching import _SearcherProxy
+        mock_ws = MagicMock()
+        proxy = _SearcherProxy(mock_ws)
+        proxy.close()
+        proxy.close()
+        proxy.close()
+        mock_ws.close.assert_not_called()
+
+    # ------------------------------------------------------------------
+    # 3. QReader.close() is a no-op when attached to a QSearcher
+    # ------------------------------------------------------------------
+
+    def test_qreader_close_noop_when_attached(self):
+        """QReader.close() must be a no-op when attached to a QSearcher."""
+        from alfanous.searching import QReader
+        mock_docindex = MagicMock()
+        mock_docindex.get_schema.return_value = MagicMock()
+
+        reader = QReader(mock_docindex)
+        mock_qsearcher = MagicMock()
+        reader.attach_to_searcher(mock_qsearcher)
+
+        # close() must not propagate to the qsearcher
+        reader.close()
+        mock_qsearcher.close.assert_not_called()
+
+    def test_qreader_close_noop_does_not_call_get_reader(self):
+        """QReader.close() when attached must not call get_reader() on QSearcher."""
+        from alfanous.searching import QReader
+        mock_docindex = MagicMock()
+        mock_docindex.get_schema.return_value = MagicMock()
+
+        reader = QReader(mock_docindex)
+        mock_qsearcher = MagicMock()
+        reader.attach_to_searcher(mock_qsearcher)
+
+        reader.close()
+        mock_qsearcher.get_reader.assert_not_called()
+
+    # ------------------------------------------------------------------
+    # 4. Only BasicSearchEngine.close() closes the shared Whoosh Searcher
+    # ------------------------------------------------------------------
+
+    def test_shared_searcher_not_closed_before_engine_close(self):
+        """The shared Whoosh Searcher must stay open until BasicSearchEngine.close()."""
+        engine, mock_ws = self._make_engine()
+
+        # Trigger lazy creation of the shared searcher
+        engine._searcher._get_shared_searcher()
+
+        # Not yet closed
+        mock_ws.close.assert_not_called()
+
+        # Only after engine.close() should it be closed
+        engine.close()
+        mock_ws.close.assert_called_once()
+
+    def test_shared_searcher_closed_exactly_once_by_context_manager(self):
+        """The shared Whoosh Searcher must be closed exactly once when using 'with engine:'."""
+        engine, mock_ws = self._make_engine()
+
+        # Trigger lazy creation of the shared searcher
+        engine._searcher._get_shared_searcher()
+        mock_ws.close.assert_not_called()
+
+        with engine:
+            mock_ws.close.assert_not_called()
+
+        mock_ws.close.assert_called_once()
+
+    def test_qsearcher_close_releases_shared_searcher(self):
+        """QSearcher.close() must close the underlying Whoosh Searcher."""
+        qs, mock_ws = self._make_qsearcher()
+        qs._get_shared_searcher()  # lazily open
+        mock_ws.close.assert_not_called()
+
+        qs.close()
+        mock_ws.close.assert_called_once()
+
+    # ------------------------------------------------------------------
+    # 5. QReader.attach_to_searcher borrows reader from QSearcher
+    # ------------------------------------------------------------------
+
+    def test_attach_to_searcher_reader_property_delegates(self):
+        """After attach_to_searcher, QReader.reader must come from QSearcher.get_reader()."""
+        from alfanous.searching import QReader
+        mock_docindex = MagicMock()
+        mock_docindex.get_schema.return_value = MagicMock()
+
+        reader = QReader(mock_docindex)
+        mock_qsearcher = MagicMock()
+        sentinel_reader = object()
+        mock_qsearcher.get_reader.return_value = sentinel_reader
+
+        reader.attach_to_searcher(mock_qsearcher)
+
+        # The reader property must delegate to qsearcher.get_reader()
+        result = reader.reader
+        self.assertIs(
+            result, sentinel_reader,
+            "QReader.reader must return the reader from QSearcher after attach_to_searcher()",
+        )
+        mock_qsearcher.get_reader.assert_called_once()
+
+    def test_attach_to_searcher_closes_own_reader_if_open(self):
+        """attach_to_searcher must close any previously opened own reader."""
+        from alfanous.searching import QReader
+        mock_docindex = MagicMock()
+        mock_docindex.get_schema.return_value = MagicMock()
+        mock_docindex.get_index.return_value.reader.return_value = MagicMock()
+
+        reader = QReader(mock_docindex)
+        # Open the own reader first
+        own_reader = reader._ensure_own_reader()
+        mock_qsearcher = MagicMock()
+
+        reader.attach_to_searcher(mock_qsearcher)
+
+        # Direct access to the private attribute is intentional: this test
+        # validates the internal lifecycle guarantee that attach_to_searcher()
+        # clears the own reader reference so no stale reader stays open.
+        own_reader.close.assert_called_once()
+        self.assertIsNone(reader._own_reader, "own reader must be cleared after attach_to_searcher")
+
+
 if __name__ == "__main__":
     unittest.main()
