@@ -1,3 +1,4 @@
+import atexit
 import json
 from functools import lru_cache
 
@@ -23,6 +24,25 @@ from alfanous import paths
 # ---------------------------------------------------------------------------
 
 _QSE_INSTANCES: "dict[str, object]" = {}
+
+
+def _close_qse_singletons():
+    """Close all cached QSE instances at process exit.
+
+    Called automatically by the atexit handler registered below.  This is
+    the only place where the shared singleton engines are explicitly closed,
+    ensuring that Whoosh file-system resources are released cleanly when the
+    Python process exits.
+    """
+    for instance in list(_QSE_INSTANCES.values()):
+        try:
+            instance.close()
+        except Exception:
+            pass
+    _QSE_INSTANCES.clear()
+
+
+atexit.register(_close_qse_singletons)
 
 
 @lru_cache(maxsize=1)
