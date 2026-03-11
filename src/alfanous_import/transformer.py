@@ -735,6 +735,13 @@ class Transformer:
                         for lines, lang_field, base in trans_meta:
                             text = lines[idx]
                             child_doc = {**base, "gid": gid, "trans_text": text}
+                            # Store sura_id and aya_id directly on every
+                            # translation child so they are available for
+                            # faceting and filtering without a parent lookup.
+                            if sura_id is not None:
+                                child_doc["sura_id"] = sura_id
+                            if aya_id is not None:
+                                child_doc["aya_id"] = aya_id
                             if lang_field:
                                 child_doc[lang_field] = text
                             writer.add_document(**child_doc)

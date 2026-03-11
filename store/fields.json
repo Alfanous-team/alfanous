@@ -23,7 +23,8 @@
     "stored": true,
     "table_name": "aya",
     "type": "NUMERIC",
-    "unique": null
+    "unique": null,
+    "facet_allowed": true
   },
   {
     "analyzer": null,
@@ -140,9 +141,9 @@
     "source": "taha_zerrouki",
     "stored": true,
     "table_name": "aya",
-    "type": "TEXT",
+    "type": "ID",
     "unique": null,
-    "phrase": false
+    "facet_allowed": true
   },
   {
     "analyzer": null,
@@ -155,9 +156,9 @@
     "source": "taha_zerrouki",
     "stored": true,
     "table_name": "aya",
-    "type": "TEXT",
+    "type": "ID",
     "unique": null,
-    "phrase": false
+    "facet_allowed": true
   },
   {
     "analyzer": null,
@@ -170,9 +171,9 @@
     "source": "taha_zerrouki",
     "stored": true,
     "table_name": "aya",
-    "type": "TEXT",
+    "type": "ID",
     "unique": null,
-    "phrase": false
+    "facet_allowed": true
   },
   {
     "analyzer": null,
@@ -186,7 +187,8 @@
     "stored": true,
     "table_name": "aya",
     "type": "NUMERIC",
-    "unique": null
+    "unique": null,
+    "facet_allowed": true
   },
   {
     "analyzer": null,
@@ -199,7 +201,8 @@
     "stored": true,
     "table_name": "aya",
     "type": "NUMERIC",
-    "unique": null
+    "unique": null,
+    "facet_allowed": true
   },
   {
     "analyzer": null,
@@ -212,7 +215,8 @@
     "stored": true,
     "table_name": "aya",
     "type": "NUMERIC",
-    "unique": null
+    "unique": null,
+    "facet_allowed": true
   },
   {
     "analyzer": null,
@@ -225,7 +229,8 @@
     "stored": true,
     "table_name": "aya",
     "type": "NUMERIC",
-    "unique": null
+    "unique": null,
+    "facet_allowed": true
   },
   {
     "analyzer": null,
@@ -238,7 +243,8 @@
     "stored": true,
     "table_name": "aya",
     "type": "NUMERIC",
-    "unique": null
+    "unique": null,
+    "facet_allowed": true
   },
   {
     "analyzer": null,
@@ -277,7 +283,8 @@
     "stored": true,
     "table_name": "aya",
     "type": "ID",
-    "unique": null
+    "unique": null,
+    "facet_allowed": true
   },
   {
     "analyzer": null,
@@ -305,7 +312,8 @@
     "stored": true,
     "table_name": "aya",
     "type": "ID",
-    "unique": null
+    "unique": null,
+    "facet_allowed": true
   },
   {
     "analyzer": "APermissibleAnalyzer",
@@ -466,7 +474,8 @@
     "stored": true,
     "table_name": "aya",
     "type": "ID",
-    "unique": null
+    "unique": null,
+    "facet_allowed": true
   },
   {
     "analyzer": null,
@@ -699,7 +708,8 @@
     "stored": true,
     "analyzer": null,
     "comment": "Part of speech in English (kind=word child docs)",
-    "unique": null
+    "unique": null,
+    "facet_allowed": true
   },
   {
     "id": 119,
@@ -810,7 +820,8 @@
     "stored": true,
     "analyzer": null,
     "comment": "Grammatical gender M/F (kind=word child docs)",
-    "unique": null
+    "unique": null,
+    "facet_allowed": true
   },
   {
     "id": 128,
@@ -870,7 +881,8 @@
     "stored": true,
     "analyzer": null,
     "comment": "Nominal state DEF/INDEF (kind=word child docs)",
-    "unique": null
+    "unique": null,
+    "facet_allowed": true
   },
   {
     "analyzer": null,
@@ -895,7 +907,8 @@
     "stored": true,
     "analyzer": null,
     "comment": "Derivation ACT PCPL/PASS PCPL/VN (kind=word child docs)",
-    "unique": null
+    "unique": null,
+    "facet_allowed": true
   },
   {
     "id": 134,
@@ -956,7 +969,8 @@
     "stored": true,
     "analyzer": null,
     "comment": "Grammatical case NOM/ACC/GEN (kind=word child docs)",
-    "unique": null
+    "unique": null,
+    "facet_allowed": true
   },
   {
     "id": 138,

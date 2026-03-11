@@ -1,10 +1,13 @@
-"""Tests for word sub-schema configuration.
+"""Tests for word sub-schema configuration and facet field catalogue.
 
-These tests validate the schema changes that do NOT require a built index:
+These tests validate schema changes that do NOT require a built index:
 - word_standard and lemma are KEYWORD type in fields.json
-- root, lemma, and type are marked facet_allowed in fields.json
+- root, lemma, type, pos, gender, case, state, derivation are facet_allowed
+- chapter, topic, subtopic are ID type in fields.json (exact-match filtering)
 - _WORD_ALL_INDEXED_FIELDS includes word_standard and lemma
-- _WORD_FACET_FIELDS contains exactly {root, type}
+- _WORD_FACET_FIELDS contains the expected set of morphological facet fields
+- _TRANS_FACET_FIELDS contains sura_id, aya_id, trans_id, trans_lang
+- _AYA_FACET_FIELDS contains the expected aya-level facet fields
 """
 
 import json
@@ -26,6 +29,10 @@ def fields_by_name():
     return {fld["name"]: fld for fld in fields if fld.get("search_name")}
 
 
+# ---------------------------------------------------------------------------
+# Existing field-type tests
+# ---------------------------------------------------------------------------
+
 def test_word_standard_is_keyword(fields_by_name):
     """word_standard must be declared as KEYWORD in fields.json."""
     assert fields_by_name["word_standard"]["type"] == "KEYWORD", (
@@ -39,6 +46,35 @@ def test_lemma_is_keyword(fields_by_name):
         "lemma should be KEYWORD in fields.json"
     )
 
+
+# ---------------------------------------------------------------------------
+# chapter / topic / subtopic must be ID so exact-match filtering works
+# ---------------------------------------------------------------------------
+
+def test_chapter_is_id(fields_by_name):
+    """chapter must be declared as ID in fields.json for exact-match filtering."""
+    assert fields_by_name["chapter"]["type"] == "ID", (
+        "chapter should be ID so filter=chapter:value works correctly"
+    )
+
+
+def test_topic_is_id(fields_by_name):
+    """topic must be declared as ID in fields.json for exact-match filtering."""
+    assert fields_by_name["topic"]["type"] == "ID", (
+        "topic should be ID so filter=topic:value works correctly"
+    )
+
+
+def test_subtopic_is_id(fields_by_name):
+    """subtopic must be declared as ID in fields.json for exact-match filtering."""
+    assert fields_by_name["subtopic"]["type"] == "ID", (
+        "subtopic should be ID so filter=subtopic:value works correctly"
+    )
+
+
+# ---------------------------------------------------------------------------
+# facet_allowed flags
+# ---------------------------------------------------------------------------
 
 def test_root_facet_allowed(fields_by_name):
     """root must have facet_allowed=true in fields.json."""
@@ -61,6 +97,26 @@ def test_type_facet_allowed(fields_by_name):
     )
 
 
+@pytest.mark.parametrize("field_name", ["pos", "gender", "case", "state", "derivation"])
+def test_word_morphological_fields_facet_allowed(fields_by_name, field_name):
+    """Word morphological fields shown in the facet UI must have facet_allowed=true."""
+    assert fields_by_name[field_name].get("facet_allowed") is True, (
+        f"{field_name} should have facet_allowed=true in fields.json"
+    )
+
+
+@pytest.mark.parametrize("field_name", ["chapter", "topic", "subtopic"])
+def test_aya_theme_fields_facet_allowed(fields_by_name, field_name):
+    """Aya-level theme fields must have facet_allowed=true in fields.json."""
+    assert fields_by_name[field_name].get("facet_allowed") is True, (
+        f"{field_name} should have facet_allowed=true in fields.json"
+    )
+
+
+# ---------------------------------------------------------------------------
+# _WORD_ALL_INDEXED_FIELDS membership
+# ---------------------------------------------------------------------------
+
 def test_word_standard_in_word_all_indexed_fields():
     """word_standard must be in _WORD_ALL_INDEXED_FIELDS."""
     from alfanous.outputs import _WORD_ALL_INDEXED_FIELDS
@@ -79,14 +135,96 @@ def test_lemma_in_word_all_indexed_fields():
     )
 
 
+# ---------------------------------------------------------------------------
+# _WORD_FACET_FIELDS — the expanded set shown in the word-facet UI
+# ---------------------------------------------------------------------------
+
+_EXPECTED_WORD_FACET_FIELDS = frozenset({
+    "root", "type", "pos", "lemma", "case", "state", "derivation", "gender",
+})
+
+
 def test_word_facet_fields_set():
-    """_WORD_FACET_FIELDS must contain exactly root and type (lemma removed)."""
+    """_WORD_FACET_FIELDS must contain the expected morphological facet fields."""
     from alfanous.outputs import _WORD_FACET_FIELDS
-    assert _WORD_FACET_FIELDS == frozenset({"root", "type"}), (
-        "_WORD_FACET_FIELDS should be frozenset({'root', 'type'}); "
-        "lemma belongs in _WORD_ALL_INDEXED_FIELDS instead"
+    assert _WORD_FACET_FIELDS == _EXPECTED_WORD_FACET_FIELDS, (
+        f"_WORD_FACET_FIELDS should be {_EXPECTED_WORD_FACET_FIELDS!r}; "
+        f"got {_WORD_FACET_FIELDS!r}"
     )
 
+
+@pytest.mark.parametrize("field_name", sorted(_EXPECTED_WORD_FACET_FIELDS))
+def test_word_facet_field_membership(field_name):
+    """Each expected word facet field must be present in _WORD_FACET_FIELDS."""
+    from alfanous.outputs import _WORD_FACET_FIELDS
+    assert field_name in _WORD_FACET_FIELDS
+
+
+# ---------------------------------------------------------------------------
+# _TRANS_FACET_FIELDS — translation child-doc facet fields
+# ---------------------------------------------------------------------------
+
+def test_trans_facet_fields_contains_sura_id():
+    """_TRANS_FACET_FIELDS must contain sura_id."""
+    from alfanous.outputs import _TRANS_FACET_FIELDS
+    assert "sura_id" in _TRANS_FACET_FIELDS
+
+
+def test_trans_facet_fields_contains_aya_id():
+    """_TRANS_FACET_FIELDS must contain aya_id."""
+    from alfanous.outputs import _TRANS_FACET_FIELDS
+    assert "aya_id" in _TRANS_FACET_FIELDS
+
+
+def test_trans_facet_fields_contains_trans_id():
+    """_TRANS_FACET_FIELDS must contain trans_id."""
+    from alfanous.outputs import _TRANS_FACET_FIELDS
+    assert "trans_id" in _TRANS_FACET_FIELDS
+
+
+def test_trans_facet_fields_contains_trans_lang():
+    """_TRANS_FACET_FIELDS must contain trans_lang."""
+    from alfanous.outputs import _TRANS_FACET_FIELDS
+    assert "trans_lang" in _TRANS_FACET_FIELDS
+
+
+# ---------------------------------------------------------------------------
+# _AYA_FACET_FIELDS — aya-level facet field catalogue
+# ---------------------------------------------------------------------------
+
+@pytest.mark.parametrize("field_name", [
+    "sura_id", "juz", "chapter", "topic", "subtopic", "sura_type",
+])
+def test_aya_facet_fields_membership(field_name):
+    """Key aya-level fields must be present in _AYA_FACET_FIELDS."""
+    from alfanous.outputs import _AYA_FACET_FIELDS
+    assert field_name in _AYA_FACET_FIELDS
+
+
+# ---------------------------------------------------------------------------
+# show?query=facets catalogue in self._all
+# ---------------------------------------------------------------------------
+
+def test_show_facets_structure():
+    """show?query=facets must return a dict keyed by unit with field lists."""
+    from alfanous.outputs import Raw, _WORD_FACET_FIELDS, _TRANS_FACET_FIELDS, _AYA_FACET_FIELDS
+
+    r = Raw.__new__(Raw)
+    r._facets = {
+        "aya": sorted(_AYA_FACET_FIELDS),
+        "word": sorted(_WORD_FACET_FIELDS),
+        "translation": sorted(_TRANS_FACET_FIELDS),
+    }
+    assert set(r._facets.keys()) == {"aya", "word", "translation"}
+    assert "sura_id" in r._facets["aya"]
+    assert "root" in r._facets["word"]
+    assert "sura_id" in r._facets["translation"]
+    assert "aya_id" in r._facets["translation"]
+
+
+# ---------------------------------------------------------------------------
+# Transformer schema-builder tests
+# ---------------------------------------------------------------------------
 
 def test_schema_builder_lemma_keyword():
     """Transformer.build_schema must produce a KEYWORD field for lemma."""
@@ -107,4 +245,40 @@ def test_schema_builder_word_standard_keyword():
     schema = t.build_schema("aya")
     assert isinstance(schema["word_standard"], KEYWORD), (
         "Transformer.build_schema must produce KEYWORD for word_standard"
+    )
+
+
+def test_schema_builder_chapter_id():
+    """Transformer.build_schema must produce an ID field for chapter."""
+    from alfanous_import.transformer import Transformer
+    from whoosh.fields import ID
+    t = Transformer("/tmp/_test_idx_schema/", _STORE_PATH)
+    schema = t.build_schema("aya")
+    assert isinstance(schema["chapter"], ID), (
+        "Transformer.build_schema must produce ID for chapter so that "
+        "filter=chapter:value works"
+    )
+
+
+def test_schema_builder_topic_id():
+    """Transformer.build_schema must produce an ID field for topic."""
+    from alfanous_import.transformer import Transformer
+    from whoosh.fields import ID
+    t = Transformer("/tmp/_test_idx_schema/", _STORE_PATH)
+    schema = t.build_schema("aya")
+    assert isinstance(schema["topic"], ID), (
+        "Transformer.build_schema must produce ID for topic so that "
+        "filter=topic:value works"
+    )
+
+
+def test_schema_builder_subtopic_id():
+    """Transformer.build_schema must produce an ID field for subtopic."""
+    from alfanous_import.transformer import Transformer
+    from whoosh.fields import ID
+    t = Transformer("/tmp/_test_idx_schema/", _STORE_PATH)
+    schema = t.build_schema("aya")
+    assert isinstance(schema["subtopic"], ID), (
+        "Transformer.build_schema must produce ID for subtopic so that "
+        "filter=subtopic:value works"
     )
