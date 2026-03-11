@@ -491,7 +491,12 @@ class QSearcher:
         of occurrences in the full corpus) so the most characteristic Quranic
         phrases appear first.
 
-        :param word: A single unvocalized Arabic word to find collocations for.
+        :param word: An Arabic word (ideally unvocalized) to find collocations
+            for.  The word is matched exactly against the ``aya_shingles`` term
+            dictionary, which is indexed with :data:`QStandardAnalyzer`-style
+            normalization (Uthmani symbol removal, lamalef, tatweel).  Passing a
+            fully vocalized word will return no results if the normalized form
+            differs.  Multi-word strings will simply not match any shingle entry.
         :param limit: Maximum number of phrases to return (default 5).
         :param stopwords: Words to exclude from bigram neighbours.
             ``None`` means no filtering.

@@ -173,15 +173,29 @@ class BasicSearchEngine:
         return self._searcher.correct_query(querystr)
 
     def autocomplete(self, querystr):
+        """Get collocation-based autocomplete suggestions for the last word in a query.
+
+        Splits *querystr* into words.  The final word is looked up in the
+        ``aya_shingles`` Whoosh field to retrieve the most frequent bigram and
+        trigram phrases that contain that word.  The returned phrases serve as
+        rich multi-word completions (e.g. ``'رسول'`` → ``['رسول الله',
+        'إني لكم رسول', …]``) rather than simple single-word prefix matches.
+
+        @param querystr: The query string to autocomplete.  May be one or more
+            space-separated Arabic words; only the last word is used for lookup.
+        @return: Dict with:
+            - ``'base'``: all words except the last (the already-typed prefix),
+              joined with a space.
+            - ``'completion'``: ordered list of collocation phrases for the
+              last word (at most 10), sorted by Quranic corpus frequency.
         """
-        Get autocomplete suggestions for the last word in a query.
-        
-        @param querystr: The query string to autocomplete
-        @return: Dict with 'base' (all but last word) and 'completion' (suggestions for last word)
-        """
-        return { "base": "".join(querystr.split()[:-1]),
-                 "completion": self._reader.autocomplete(querystr.split()[-1])
-                 }
+        words = querystr.split()
+        last_word = words[-1] if words else querystr
+        base = " ".join(words[:-1])
+        return {
+            "base": base,
+            "completion": self.suggest_collocations(last_word, limit=10),
+        }
 
     def highlight(self, text, terms, highlight_type="css", strip_vocalization=True):
         """

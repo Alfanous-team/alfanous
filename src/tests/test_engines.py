@@ -97,14 +97,28 @@ def test_suggest_collocations_unknown_word():
 
 
 def test_autocomplete():
-    assert QSE.autocomplete("رسول") == {'base': '',
- 'completion': ['رسول',
-                'رسولا',
-                'رسولكم',
-                'رسولنا',
-                'رسوله',
-                'رسولها',
-                'رسولهم']}
+    result = QSE.autocomplete("رسول")
+    assert result["base"] == ""
+    # completion must be collocation phrases (bigrams/trigrams), not single-word prefixes
+    assert all(len(phrase.split()) >= 2 for phrase in result["completion"])
+    # the query word must appear in every phrase
+    assert all("رسول" in phrase.split() for phrase in result["completion"])
+    # most frequent Quranic collocation should be near the top
+    assert "رسول الله" in result["completion"]
+
+
+def test_autocomplete_multiword():
+    """For a multi-word query the base preserves all but the last word."""
+    result = QSE.autocomplete("إن الله")
+    assert result["base"] == "إن"
+    assert all("الله" in phrase.split() for phrase in result["completion"])
+
+
+def test_autocomplete_unknown_word():
+    """An unknown word returns an empty completion list."""
+    result = QSE.autocomplete("zzzzz")
+    assert result["base"] == ""
+    assert result["completion"] == []
 
 
 def test_search():

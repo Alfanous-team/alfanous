@@ -138,9 +138,8 @@ def suggest_collocations(query: str, unit: str = "aya",
     Quranic word order.
 
     Example: querying ``'سميع'`` (all-hearing) may return phrases like
-    ``'والله سميع عليم'`` (trigram, 8×), ``'سميع عليم'`` (bigram), and
-    ``'سميع بصير'`` (bigram) because these patterns appear directly adjacent
-    to سميع in the Quranic text.
+    ``'والله سميع عليم'``, ``'سميع عليم'``, and ``'سميع بصير'`` because
+    these patterns appear directly adjacent to سميع in the Quranic text.
 
     The response also includes standard spelling suggestions under the
     ``'suggest'`` key so callers can obtain both in a single request.

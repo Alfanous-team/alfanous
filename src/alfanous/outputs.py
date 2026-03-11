@@ -44,22 +44,30 @@ _SUGGEST_STRIP_RE = re.compile(r'[^\u0621-\u065F\u0670-\u06FF\s]')
 def _load_collocation_stopwords():
     """Load stop words for collocation filtering, returning an empty frozenset on failure.
 
-    Called once at module import time.  If the stop words file is missing or
-    malformed, a WARNING is logged and an empty frozenset is returned so that
-    collocation suggestions degrade gracefully — all bigram collocations will
-    be returned without filtering (common function words like ``من``, ``في``
-    will appear), rather than raising an error at search time.
+    Called once at module import time.  Returns an empty frozenset on any
+    error so that collocation suggestions degrade gracefully — bigrams will be
+    returned without filtering (common function words like ``من``, ``في`` will
+    appear), rather than raising an error at search time.  Different failure
+    modes are logged at WARNING with distinct messages to aid debugging:
+
+    * ``OSError`` — stop-words file is missing or unreadable.
+    * ``json.JSONDecodeError`` — file exists but contains invalid JSON.
+    * ``ImportError`` — ``alfanous.paths`` is unavailable (unusual at runtime).
     """
+    _log = logging.getLogger(__name__)
     try:
         from alfanous import paths
+    except ImportError as exc:
+        _log.warning("Could not import alfanous.paths for stop words (%s); collocations will not be filtered", exc)
+        return frozenset()
+    try:
         with open(paths.STOP_WORDS_FILE, encoding='utf-8') as f:
             return frozenset(json.load(f))
-    except (OSError, json.JSONDecodeError, ImportError) as exc:
-        logging.getLogger(__name__).warning(
-            "Could not load collocation stop words (%s); collocations will not be filtered",
-            exc,
-        )
-        return frozenset()
+    except OSError as exc:
+        _log.warning("Stop-words file missing or unreadable (%s); collocations will not be filtered", exc)
+    except json.JSONDecodeError as exc:
+        _log.warning("Stop-words file contains invalid JSON (%s); collocations will not be filtered", exc)
+    return frozenset()
 
 _COLLOCATION_STOPWORDS = _load_collocation_stopwords()
 

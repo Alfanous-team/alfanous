@@ -228,7 +228,7 @@ class QShingleFilter(Filter):
     """Whoosh filter that emits overlapping word shingles of sizes *minsize*
     to *maxsize* from an incoming token stream.
 
-    Unlike Whoosh's built-in :class:`~whoosh.analysis.ShingleFilter` — which
+    Unlike Whoosh's built-in :class:`whoosh.analysis.ShingleFilter` — which
     only produces shingles of a *single* fixed size — this filter emits shingles
     of every size between *minsize* and *maxsize* in a single pass. It is used
     by :data:`QShingleAnalyzer` to simultaneously index word bigrams and
@@ -269,7 +269,7 @@ class QShingleFilter(Filter):
                 yield tk
 
 
-# Word-level bigram + trigram analyzer using Whoosh's native ShingleFilter.
+# Word-level bigram + trigram analyzer using QShingleFilter.
 # QSpaceTokenizer splits on whitespace; QArabicSymbolsFilter normalises
 # (strips tashkeel, Uthmani symbols, lamalef, tatweel); QShingleFilter(2, 3)
 # then merges consecutive pairs and triples into single shingle tokens
