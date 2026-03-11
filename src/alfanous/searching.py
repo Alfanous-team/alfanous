@@ -153,13 +153,6 @@ class QReader:
                 pass
             self._own_reader = None
 
-    def __del__(self):
-        """Ensure any owned reader is closed when the object is garbage collected."""
-        try:
-            self.close()
-        except Exception:
-            pass
-
     def __enter__(self):
         return self
 
@@ -305,13 +298,6 @@ class QSearcher:
             except Exception:
                 pass
             self._shared_searcher = None
-
-    def __del__(self):
-        """Ensure the shared searcher is closed on garbage collection."""
-        try:
-            self.close()
-        except Exception:
-            pass
 
     def __enter__(self):
         return self
