@@ -10,6 +10,12 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+# Maximum number of attempts for operations that can fail with ReaderClosed.
+# On attempt 1 the shared searcher is reset and reopened; if attempt 2 also
+# fails the exception is propagated to the caller (except correct_query which
+# falls back gracefully to the original query string).
+_MAX_READER_CLOSED_RETRIES = 2
+
 
 def _decode_if_bytes(x):
     if isinstance(x, bytes):
@@ -314,7 +320,14 @@ class QSearcher:
         self.close()
 
     def search(self, querystr, limit=QURAN_TOTAL_VERSES, sortedby="score", reverse=False, facets=None, filter_dict=None, fuzzy=False, fuzzy_maxdist=1, timelimit=5.0):
-        searcher = self._get_shared_searcher()
+        # Parse FIRST, before obtaining the shared searcher.  Query plugins
+        # (DerivationPlugin, TuplePlugin, …) call engine._reader.reader →
+        # QSearcher.get_reader() → _get_shared_searcher() during parse().
+        # If the underlying Whoosh index has changed since the last request,
+        # that internal call refreshes the shared searcher and closes the
+        # previous one.  Parsing before we take our own reference ensures that
+        # any plugin-triggered refresh has already happened, so the reference
+        # we obtain below belongs to the post-refresh searcher and is not stale.
         query = self._qparser.parse(querystr)
 
         if fuzzy:
@@ -393,22 +406,50 @@ class QSearcher:
                 filter_query = wquery.And(filter_queries)
 
         collector_kwargs = dict(limit=limit, sortedby=QSort(sortedby), reverse=reverse, groupedby=groupedby, terms=fuzzy)
-        if timelimit is not None:
-            c = searcher.collector(**collector_kwargs)
-            tlc = TimeLimitCollector(c, timelimit=timelimit, use_alarm=False)
-            # FilterCollector must wrap TimeLimitCollector (not the other way)
-            # so that filter logic in FilterCollector.collect_matches() is
-            # applied correctly.  Wrapping in the reverse order causes
-            # TimeLimitCollector.collect_matches() to call child.collect()
-            # directly, bypassing FilterCollector's allow-set check.
-            final_c = FilterCollector(tlc, allow=filter_query) if filter_query is not None else tlc
+
+        # Obtain the shared searcher AFTER parsing so that any plugin-triggered
+        # refresh has already completed (see comment at the top of this method).
+        # Retry once on ReaderClosed: a concurrent refresh between _get_shared_searcher()
+        # and the actual search call can still close the reader in rare conditions
+        # (e.g. mmap I/O releasing the GIL).  On the second failure the exception
+        # is re-raised so the caller sees a clean error rather than silent wrong results.
+        for attempt in range(_MAX_READER_CLOSED_RETRIES):
+            searcher = self._get_shared_searcher()
             try:
-                searcher.search_with_collector(query, final_c)
-            except TimeLimit:
-                logger.warning("Search timelimit of %s seconds reached; returning partial results", timelimit)
-            results = final_c.results()
-        else:
-            results = searcher.search(query, **collector_kwargs, filter=filter_query)
+                if timelimit is not None:
+                    c = searcher.collector(**collector_kwargs)
+                    tlc = TimeLimitCollector(c, timelimit=timelimit, use_alarm=False)
+                    # FilterCollector must wrap TimeLimitCollector (not the other way)
+                    # so that filter logic in FilterCollector.collect_matches() is
+                    # applied correctly.  Wrapping in the reverse order causes
+                    # TimeLimitCollector.collect_matches() to call child.collect()
+                    # directly, bypassing FilterCollector's allow-set check.
+                    final_c = FilterCollector(tlc, allow=filter_query) if filter_query is not None else tlc
+                    try:
+                        searcher.search_with_collector(query, final_c)
+                    except TimeLimit:
+                        logger.warning("Search timelimit of %s seconds reached; returning partial results", timelimit)
+                    results = final_c.results()
+                else:
+                    results = searcher.search(query, **collector_kwargs, filter=filter_query)
+                break  # success — exit retry loop
+            except ReaderClosed:
+                if attempt == 0:
+                    # Force _get_shared_searcher() to reopen on the next attempt.
+                    self._shared_searcher = None
+                    logger.warning(
+                        "search: Underlying index reader was closed during search "
+                        "for query %r; retrying with a fresh searcher.",
+                        querystr,
+                    )
+                    continue
+                # Second failure: re-raise so the caller receives a clean error.
+                logger.error(
+                    "search: Underlying index reader still closed on retry for "
+                    "query %r; propagating ReaderClosed.",
+                    querystr,
+                )
+                raise
 
         if fuzzy:
             # Use matched_terms() to capture the actual index terms that were
@@ -448,19 +489,34 @@ class QSearcher:
         """Run a pre-built Whoosh query object (e.g. NestedParent) directly,
         bypassing string parsing.  Returns the same ``(results, terms, searcher)``
         tuple as :meth:`search` but with an empty *terms* list."""
-        searcher = self._get_shared_searcher()
         search_kwargs = dict(limit=limit, sortedby=QSort(sortedby), reverse=reverse)
-        if timelimit is not None:
-            c = searcher.collector(**search_kwargs)
-            tlc = TimeLimitCollector(c, timelimit=timelimit, use_alarm=False)
+        for attempt in range(_MAX_READER_CLOSED_RETRIES):
+            searcher = self._get_shared_searcher()
             try:
-                searcher.search_with_collector(q_obj, tlc)
-            except TimeLimit:
-                logger.warning("Search timelimit of %s seconds reached; returning partial results", timelimit)
-            results = tlc.results()
-        else:
-            results = searcher.search(q=q_obj, **search_kwargs)
-        return results, [], _SearcherProxy(searcher)
+                if timelimit is not None:
+                    c = searcher.collector(**search_kwargs)
+                    tlc = TimeLimitCollector(c, timelimit=timelimit, use_alarm=False)
+                    try:
+                        searcher.search_with_collector(q_obj, tlc)
+                    except TimeLimit:
+                        logger.warning("Search timelimit of %s seconds reached; returning partial results", timelimit)
+                    results = tlc.results()
+                else:
+                    results = searcher.search(q=q_obj, **search_kwargs)
+                return results, [], _SearcherProxy(searcher)
+            except ReaderClosed:
+                if attempt == 0:
+                    self._shared_searcher = None
+                    logger.warning(
+                        "search_obj: Underlying index reader was closed; "
+                        "retrying with a fresh searcher.",
+                    )
+                    continue
+                logger.error(
+                    "search_obj: Underlying index reader still closed on retry; "
+                    "propagating ReaderClosed.",
+                )
+                raise
 
     def suggest(self, querystr):
         d = {}
@@ -502,7 +558,7 @@ class QSearcher:
         # reference we obtain below belongs to the post-refresh searcher and is
         # less likely to be immediately stale.
         parsed = self._qparser.parse(querystr)
-        for attempt in range(2):
+        for attempt in range(_MAX_READER_CLOSED_RETRIES):
             searcher = self._get_shared_searcher()
             try:
                 correction = searcher.correct_query(parsed, querystr)

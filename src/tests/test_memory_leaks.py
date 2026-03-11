@@ -2169,6 +2169,133 @@ class TestSharedReaderSearcherContract(unittest.TestCase):
             "reference to the shared searcher.",
         )
 
+    # ------------------------------------------------------------------
+    # 7. search() reorders parse-before-get-searcher & retries on ReaderClosed
+    # ------------------------------------------------------------------
+
+    def test_search_retries_on_reader_closed(self):
+        """QSearcher.search must retry once on ReaderClosed and succeed."""
+        from whoosh.fields import Schema, TEXT
+        from whoosh.reading import ReaderClosed
+        from alfanous.searching import QSearcher
+
+        schema = Schema(aya=TEXT)
+        mock_docindex = MagicMock()
+        mock_docindex.get_schema.return_value = schema
+        mock_ws = MagicMock()
+        mock_ws.refresh.return_value = mock_ws
+        mock_docindex.get_index.return_value.searcher.return_value = mock_ws
+
+        good_results = MagicMock()
+        good_results.matched_terms.return_value = None
+        # First call raises ReaderClosed; second succeeds.
+        mock_ws.search.side_effect = [ReaderClosed(), good_results]
+
+        qs = QSearcher(mock_docindex, MagicMock())
+        qs._shared_searcher = mock_ws
+        mock_parser = MagicMock()
+        mock_parsed_query = MagicMock()
+        mock_parsed_query.all_terms.return_value = []
+        mock_parser.parse.return_value = mock_parsed_query
+        qs._qparser = mock_parser
+
+        results, terms, _searcher = qs.search("sura_id:49", timelimit=None)
+        self.assertIs(results, good_results,
+                      "search must return results from the successful retry")
+
+    def test_search_reraises_on_second_reader_closed(self):
+        """QSearcher.search must re-raise ReaderClosed if both attempts fail."""
+        from whoosh.fields import Schema, TEXT
+        from whoosh.reading import ReaderClosed
+        from alfanous.searching import QSearcher
+
+        schema = Schema(aya=TEXT)
+        mock_docindex = MagicMock()
+        mock_docindex.get_schema.return_value = schema
+        mock_ws = MagicMock()
+        mock_ws.refresh.return_value = mock_ws
+        # Both attempts raise ReaderClosed.
+        mock_ws.search.side_effect = [ReaderClosed(), ReaderClosed()]
+        mock_docindex.get_index.return_value.searcher.return_value = mock_ws
+
+        qs = QSearcher(mock_docindex, MagicMock())
+        qs._shared_searcher = mock_ws
+        mock_parser = MagicMock()
+        mock_parsed_query = MagicMock()
+        mock_parsed_query.all_terms.return_value = []
+        mock_parser.parse.return_value = mock_parsed_query
+        qs._qparser = mock_parser
+
+        with self.assertRaises(ReaderClosed):
+            qs.search("sura_id:49", timelimit=None)
+
+        self.assertEqual(mock_ws.search.call_count, 2,
+                         "search must attempt the Whoosh search exactly twice before re-raising")
+
+    def test_search_parses_before_getting_searcher(self):
+        """parse() must be called before _get_shared_searcher() in search().
+
+        Ensures the same parse-first ordering guarantee that was applied to
+        correct_query is also present in the search() method.
+        """
+        import ast, inspect, textwrap
+        import alfanous.searching as _searching_module
+        src = textwrap.dedent(inspect.getsource(_searching_module.QSearcher.search))
+        tree = ast.parse(src)
+
+        parse_line = None
+        get_searcher_line = None
+        for node in ast.walk(tree):
+            if not isinstance(node, (ast.Assign, ast.Expr)):
+                continue
+            node_src = ast.unparse(node)
+            if "_qparser.parse" in node_src and parse_line is None:
+                parse_line = node.lineno
+            if "_get_shared_searcher" in node_src and get_searcher_line is None:
+                get_searcher_line = node.lineno
+
+        self.assertIsNotNone(parse_line,
+                             "search must call _qparser.parse")
+        self.assertIsNotNone(get_searcher_line,
+                             "search must call _get_shared_searcher")
+        self.assertLess(
+            parse_line, get_searcher_line,
+            "parse() must come before _get_shared_searcher() in search() "
+            "so that any plugin-triggered refresh completes before we take our "
+            "reference to the shared searcher.",
+        )
+
+    def test_search_obj_retries_on_reader_closed(self):
+        """QSearcher.search_obj must retry once on ReaderClosed and succeed."""
+        from whoosh.fields import Schema, TEXT
+        from whoosh.reading import ReaderClosed
+        from alfanous.searching import QSearcher
+
+        schema = Schema(aya=TEXT)
+        mock_docindex = MagicMock()
+        mock_docindex.get_schema.return_value = schema
+        mock_ws = MagicMock()
+        mock_ws.refresh.return_value = mock_ws
+        mock_docindex.get_index.return_value.searcher.return_value = mock_ws
+
+        good_results = MagicMock()
+        mock_ws.search.side_effect = [ReaderClosed(), good_results]
+
+        qs = QSearcher(mock_docindex, MagicMock())
+        qs._shared_searcher = mock_ws
+
+        import whoosh.query as wq
+        q_obj = wq.NullQuery()
+        results, terms, _searcher = qs.search_obj(q_obj, timelimit=None)
+        self.assertIs(results, good_results,
+                      "search_obj must return results from the successful retry")
+        # After the first ReaderClosed the implementation resets _shared_searcher
+        # so that _get_shared_searcher() reopens a fresh one on the next attempt.
+        # By the time we check here the second attempt has already succeeded and
+        # the attribute has been repopulated; verify it is non-None (open).
+        self.assertIsNotNone(qs._shared_searcher,
+                             "_shared_searcher must be set to a fresh searcher after retry succeeds")
+
 
 if __name__ == "__main__":
     unittest.main()
