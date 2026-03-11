@@ -61,7 +61,8 @@ class SearchResponse(BaseModel):
 class SuggestResponse(BaseModel):
     """Model for suggest API response validation"""
     error: ErrorResponse
-    suggest: Optional[Dict[str, Any]] = Field(None, description="Suggestion results")
+    suggest: Optional[Dict[str, Any]] = Field(None, description="Spelling suggestion results")
+    collocations: Optional[Dict[str, Any]] = Field(None, description="Collocation suggestions — words that frequently co-occur with the query word in Quranic verses")
 
 
 class InfoResponse(BaseModel):

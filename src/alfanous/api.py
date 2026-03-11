@@ -122,6 +122,43 @@ def correct_query(query: str, unit: str = "aya",
     return do(all_flags)
 
 
+def suggest_collocations(query: str, unit: str = "aya",
+                         flags: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
+    """
+    Return collocation suggestions (bigrams and trigrams) for a query.
+
+    Uses the pre-computed ``aya_shingles`` Whoosh field — built at index time
+    with :data:`~alfanous.text_processing.QShingleAnalyzer` (a custom
+    :class:`~alfanous.text_processing.QShingleFilter` pipeline) — to look up
+    all word bigrams and trigrams containing the query word(s) and their corpus
+    frequencies directly from the index.  No per-document scanning is needed.
+
+    Both two-word bigrams and three-word trigrams are returned when relevant
+    (trigrams appear at least twice in the corpus).  Phrases preserve natural
+    Quranic word order.
+
+    Example: querying ``'سميع'`` (all-hearing) may return phrases like
+    ``'والله سميع عليم'``, ``'سميع عليم'``, and ``'سميع بصير'`` because
+    these patterns appear directly adjacent to سميع in the Quranic text.
+
+    The response also includes standard spelling suggestions under the
+    ``'suggest'`` key so callers can obtain both in a single request.
+
+    @param query: The Arabic word or phrase to find collocations for.
+    @param unit: Search unit ('aya', 'word', 'translation').
+    @param flags: Additional flags dictionary.
+    @return: Dictionary containing:
+             - ``'collocations'``: mapping of each input word to a list of
+               2- or 3-word phrase strings ordered by corpus frequency.
+             - ``'suggest'``: standard spelling suggestions (same as the
+               ``suggest`` action).
+             - ``'error'``: standard error envelope.
+    """
+    all_flags = flags if flags is not None else {}
+    all_flags.update({"action": "suggest", "query": query, "unit": unit})
+    return do(all_flags)
+
+
 def get_info(query: str = "all") -> Dict[str, Any]:
     """
     Show useful meta info.

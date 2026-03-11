@@ -147,6 +147,22 @@ class BasicSearchEngine:
         """
         return self._searcher.suggest(querystr)
 
+    def suggest_collocations(self, word, limit=5, stopwords=None, trigram_min_count=2):
+        """Find n-grams (bigrams and trigrams) centred on *word* in the same verse.
+
+        Delegates to :meth:`~alfanous.searching.QSearcher.suggest_collocations`.
+
+        :param word: A single unvocalized Arabic word to find collocations for.
+        :param limit: Maximum number of phrases to return (default 5).
+        :param stopwords: Words to exclude from bigram neighbours.
+        :param trigram_min_count: Minimum count for a trigram to be included
+            (default 2 — only trigrams that appear at least twice are returned).
+        :returns: List of adjacency-based 2- or 3-word phrase strings.
+        """
+        return self._searcher.suggest_collocations(
+            word, limit=limit, stopwords=stopwords, trigram_min_count=trigram_min_count
+        )
+
     def correct_query(self, querystr):
         """
         Return a corrected version of *querystr* using Whoosh's query corrector.
@@ -157,15 +173,29 @@ class BasicSearchEngine:
         return self._searcher.correct_query(querystr)
 
     def autocomplete(self, querystr):
+        """Get collocation-based autocomplete suggestions for the last word in a query.
+
+        Splits *querystr* into words.  The final word is looked up in the
+        ``aya_shingles`` Whoosh field to retrieve the most frequent bigram and
+        trigram phrases that contain that word.  The returned phrases serve as
+        rich multi-word completions (e.g. ``'رسول'`` → ``['رسول الله',
+        'إني لكم رسول', …]``) rather than simple single-word prefix matches.
+
+        @param querystr: The query string to autocomplete.  May be one or more
+            space-separated Arabic words; only the last word is used for lookup.
+        @return: Dict with:
+            - ``'base'``: all words except the last (the already-typed prefix),
+              joined with a space.
+            - ``'completion'``: ordered list of collocation phrases for the
+              last word (at most 10), sorted by Quranic corpus frequency.
         """
-        Get autocomplete suggestions for the last word in a query.
-        
-        @param querystr: The query string to autocomplete
-        @return: Dict with 'base' (all but last word) and 'completion' (suggestions for last word)
-        """
-        return { "base": "".join(querystr.split()[:-1]),
-                 "completion": self._reader.autocomplete(querystr.split()[-1])
-                 }
+        words = querystr.split()
+        last_word = words[-1] if words else querystr
+        base = " ".join(words[:-1])
+        return {
+            "base": base,
+            "completion": self.suggest_collocations(last_word, limit=10),
+        }
 
     def highlight(self, text, terms, highlight_type="css", strip_vocalization=True):
         """

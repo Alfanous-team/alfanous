@@ -1,4 +1,5 @@
 import heapq
+import json
 import logging
 import re
 from collections import defaultdict
@@ -37,6 +38,38 @@ _KEYWORD_SPLIT_RE = re.compile("[^,،]+")
 
 # Pre-compiled regex for stripping non-Arabic characters from suggestion queries.
 _SUGGEST_STRIP_RE = re.compile(r'[^\u0621-\u065F\u0670-\u06FF\s]')
+
+# Stop words loaded once at import time — used by _suggest_collocations_aya to
+# filter common function words that would otherwise dominate adjacency counts.
+def _load_collocation_stopwords():
+    """Load stop words for collocation filtering, returning an empty frozenset on failure.
+
+    Called once at module import time.  Returns an empty frozenset on any
+    error so that collocation suggestions degrade gracefully — bigrams will be
+    returned without filtering (common function words like ``من``, ``في`` will
+    appear), rather than raising an error at search time.  Different failure
+    modes are logged at WARNING with distinct messages to aid debugging:
+
+    * ``OSError`` — stop-words file is missing or unreadable.
+    * ``json.JSONDecodeError`` — file exists but contains invalid JSON.
+    * ``ImportError`` — ``alfanous.paths`` is unavailable (unusual at runtime).
+    """
+    _log = logging.getLogger(__name__)
+    try:
+        from alfanous import paths
+    except ImportError as exc:
+        _log.warning("Could not import alfanous.paths for stop words (%s); collocations will not be filtered", exc)
+        return frozenset()
+    try:
+        with open(paths.STOP_WORDS_FILE, encoding='utf-8') as f:
+            return frozenset(json.load(f))
+    except OSError as exc:
+        _log.warning("Stop-words file missing or unreadable (%s); collocations will not be filtered", exc)
+    except json.JSONDecodeError as exc:
+        _log.warning("Stop-words file contains invalid JSON (%s); collocations will not be filtered", exc)
+    return frozenset()
+
+_COLLOCATION_STOPWORDS = _load_collocation_stopwords()
 
 # Pre-compiled regex for detecting whether a query contains Arabic-script
 # characters.  Used in _search_aya on every request to decide between the
@@ -661,12 +694,15 @@ class Raw:
         """ return suggestions for any search unit """
         if unit == "aya":
             suggestions = self._suggest_aya(flags)
+            collocations = self._suggest_collocations_aya(flags)
         elif unit == "translation":
             suggestions = None
+            collocations = None
         else:
             suggestions = {}
+            collocations = {}
 
-        return {"suggest": suggestions}
+        return {"suggest": suggestions, "collocations": collocations}
 
     def _suggest_aya(self, flags):
         """ return suggestions for aya words """
@@ -678,6 +714,41 @@ class Raw:
         query = ' '.join(w for w in query.split() if w)
 
         return self.QSE.suggest_all(query)
+
+    def _suggest_collocations_aya(self, flags):
+        """Return collocation phrases (bigrams and trigrams) for each Arabic word in the query.
+
+        For each word in the query, looks up the pre-computed ``aya_shingles``
+        Whoosh field — built at index time with
+        :data:`~alfanous.text_processing.QShingleAnalyzer` — to retrieve all
+        word bigrams and trigrams containing that word along with their corpus
+        frequencies.  No document-level scan is performed; frequencies come
+        directly from the Whoosh posting list.
+
+        Returns a mapping of each input word to a list of 2- or 3-word
+        collocation phrases ordered by corpus frequency.  Trigrams are included
+        only when they appear at least twice in the Quran (relevance threshold).
+
+        Example: querying ``'سميع'`` may return
+        ``{'سميع': ['والله سميع عليم', 'سميع عليم', 'سميع بصير']}``.
+        """
+        query = flags.get("query") or self._defaults["flags"]["query"]
+        query = _SUGGEST_STRIP_RE.sub(' ', query)
+        words = [w for w in query.split() if w]
+        if not words:
+            return {}
+
+        result = {}
+        for word in words:
+            normalized = _STRIP_VOCALIZATION(word)
+            if not normalized:
+                continue
+            collocations = self.QSE.suggest_collocations(
+                normalized, stopwords=_COLLOCATION_STOPWORDS
+            )
+            if collocations:
+                result[word] = collocations
+        return result
 
     def _correct_query(self, flags, unit):
         """ return a corrected query for any search unit """

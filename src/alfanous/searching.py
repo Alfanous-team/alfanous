@@ -527,6 +527,84 @@ class QSearcher:
             d[mistyped_word] = corrector.suggest(mistyped_word, limit=3, maxdist=1, prefix=False)
         return d
 
+    def suggest_collocations(self, word, limit=5, stopwords=None, trigram_min_count=2):
+        """Find bigrams and trigrams containing *word* using the Whoosh shingle index.
+
+        Uses the ``aya_shingles`` index field — built at index time with
+        :data:`~alfanous.text_processing.QShingleAnalyzer` (Whoosh's
+        :class:`~alfanous.text_processing.QShingleFilter`) — to look up
+        pre-computed word n-grams and their corpus frequencies directly from
+        the index, without scanning individual documents.
+
+        All shingle terms in the index that contain *word* as one of their
+        space-separated components are considered:
+
+        * **Bigrams** (2-word shingles): included unless the *other* word is in
+          *stopwords* or is a single character.
+        * **Trigrams** (3-word shingles): included only when their total
+          occurrence count across the corpus is ≥ *trigram_min_count*.
+
+        Results are sorted by the Whoosh-computed total term frequency (number
+        of occurrences in the full corpus) so the most characteristic Quranic
+        phrases appear first.
+
+        :param word: An Arabic word (ideally unvocalized) to find collocations
+            for.  The word is matched exactly against the ``aya_shingles`` term
+            dictionary, which is indexed with :data:`QStandardAnalyzer`-style
+            normalization (Uthmani symbol removal, lamalef, tatweel).  Passing a
+            fully vocalized word will return no results if the normalized form
+            differs.  Multi-word strings will simply not match any shingle entry.
+        :param limit: Maximum number of phrases to return (default 5).
+        :param stopwords: Words to exclude from bigram neighbours.
+            ``None`` means no filtering.
+        :param trigram_min_count: Minimum total corpus occurrence count for a
+            trigram to be considered relevant (default 2).
+        :returns: List of 2- or 3-word phrase strings ordered by corpus
+            frequency, e.g. ``['والله سميع عليم', 'سميع عليم', 'سميع بصير']``.
+        """
+        searcher = self._get_shared_searcher()
+        reader = searcher.reader()
+
+        # Check that the aya_shingles field exists in this index.
+        if "aya_shingles" not in reader.indexed_field_names():
+            # Graceful fallback: the index predates the aya_shingles field.
+            return []
+
+        _stop = stopwords or frozenset()
+
+        candidates: list = []
+
+        for term_text in reader.field_terms("aya_shingles"):
+            parts = term_text.split()
+            n = len(parts)
+
+            # Only include shingles that contain the query word as a component.
+            if word not in parts:
+                continue
+
+            freq = reader.frequency("aya_shingles", term_text)
+
+            if n == 2:
+                # Bigram: skip if the other word is a stopword or single char
+                other = parts[1] if parts[0] == word else parts[0]
+                if other in _stop or len(other) <= 1:
+                    continue
+            elif n == 3:
+                # Trigram: apply relevance threshold
+                if freq < trigram_min_count:
+                    continue
+
+            candidates.append((freq, term_text))
+
+        candidates.sort(key=lambda x: x[0], reverse=True)
+
+        result: list = []
+        for _, phrase in candidates:
+            result.append(phrase)
+            if len(result) == limit:
+                break
+        return result
+
     def correct_query(self, querystr):
         """Return a corrected version of *querystr* using Whoosh's built-in
         query corrector.

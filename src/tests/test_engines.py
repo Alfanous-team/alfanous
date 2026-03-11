@@ -48,15 +48,77 @@ def test_missing_suggetion():
     assert list(QSE.suggest_all(u"النسر").items()) == [('النسر', ['النار', 'النور', 'النذر'])]
 
 
+def test_suggest_collocations():
+    """Collocations for سميع should include known adjacent Quranic n-grams."""
+    collocations = QSE.suggest_collocations("سميع")
+    assert len(collocations) > 0
+    # Every phrase must be 2 or 3 words and must contain the query word
+    for phrase in collocations:
+        words = phrase.split()
+        assert 2 <= len(words) <= 3
+        assert "سميع" in words
+    # سميع frequently appears adjacent to عليم and بصير in the Quran
+    all_words = {w for phrase in collocations for w in phrase.split()}
+    assert any(w in all_words for w in ["عليم", "بصير"])
+
+
+def test_suggest_collocations_includes_trigrams():
+    """High-frequency trigrams should be returned alongside bigrams."""
+    # سميع has the trigram والله سميع عليم (8×) which exceeds min_count=2
+    collocations = QSE.suggest_collocations("سميع", limit=10)
+    trigrams = [p for p in collocations if len(p.split()) == 3]
+    assert len(trigrams) > 0, "Expected at least one trigram for سميع"
+    trigram_words = {w for p in trigrams for w in p.split()}
+    # عليم should appear in a trigram context with سميع
+    assert "عليم" in trigram_words
+
+
+def test_suggest_collocations_trigram_min_count():
+    """Setting trigram_min_count=999 should suppress all trigrams."""
+    collocations = QSE.suggest_collocations("سميع", limit=10, trigram_min_count=999)
+    for phrase in collocations:
+        assert len(phrase.split()) == 2, "No trigrams should be returned at high min_count"
+
+
+def test_suggest_collocations_with_stopwords():
+    """Stopword filtering should exclude common function words from bigram collocations."""
+    stopwords = frozenset(["في", "من", "على", "إن"])
+    collocations = QSE.suggest_collocations("قل", stopwords=stopwords)
+    bigrams = [p for p in collocations if len(p.split()) == 2]
+    bigram_neighbours = {w for p in bigrams for w in p.split() if w != "قل"}
+    for sw in stopwords:
+        assert sw not in bigram_neighbours, f"stopword '{sw}' must not appear in bigram collocations"
+
+
+def test_suggest_collocations_unknown_word():
+    """An unknown word should return an empty collocation list."""
+    collocations = QSE.suggest_collocations("zzzzzzzzz")
+    assert collocations == []
+
+
 def test_autocomplete():
-    assert QSE.autocomplete("رسول") == {'base': '',
- 'completion': ['رسول',
-                'رسولا',
-                'رسولكم',
-                'رسولنا',
-                'رسوله',
-                'رسولها',
-                'رسولهم']}
+    result = QSE.autocomplete("رسول")
+    assert result["base"] == ""
+    # completion must be collocation phrases (bigrams/trigrams), not single-word prefixes
+    assert all(len(phrase.split()) >= 2 for phrase in result["completion"])
+    # the query word must appear in every phrase
+    assert all("رسول" in phrase.split() for phrase in result["completion"])
+    # most frequent Quranic collocation should be near the top
+    assert "رسول الله" in result["completion"]
+
+
+def test_autocomplete_multiword():
+    """For a multi-word query the base preserves all but the last word."""
+    result = QSE.autocomplete("إن الله")
+    assert result["base"] == "إن"
+    assert all("الله" in phrase.split() for phrase in result["completion"])
+
+
+def test_autocomplete_unknown_word():
+    """An unknown word returns an empty completion list."""
+    result = QSE.autocomplete("zzzzz")
+    assert result["base"] == ""
+    assert result["completion"] == []
 
 
 def test_search():

@@ -74,6 +74,55 @@ def test_suggestion_all_non_arabic():
 
     assert results["suggest"] == {}
 
+
+def test_collocation_suggestion_returned_with_suggest():
+    """The suggest action must include a 'collocations' key in the response."""
+    suggest_flags = {"action": "suggest", "query": "سميع"}
+    results = RAWoutput.do(suggest_flags)
+    assert "collocations" in results
+
+
+def test_collocation_suggestion_basic():
+    """Collocations for 'سميع' should include known adjacent Quranic n-grams."""
+    suggest_flags = {"action": "suggest", "query": "سميع"}
+    results = RAWoutput.do(suggest_flags)
+    collocations = results["collocations"]
+    assert "سميع" in collocations
+    phrases = collocations["سميع"]
+    assert len(phrases) > 0
+    # Every phrase must be 2 or 3 words containing the query word
+    for phrase in phrases:
+        words = phrase.split()
+        assert 2 <= len(words) <= 3
+        assert "سميع" in words
+    # Common adjacent Quranic collocations of سميع
+    all_words = {w for phrase in phrases for w in phrase.split()}
+    assert any(w in all_words for w in ["عليم", "بصير"])
+
+
+def test_collocation_suggestion_includes_trigrams():
+    """Suggest action must return trigrams when they are relevant (count >= 2)."""
+    suggest_flags = {"action": "suggest", "query": "سميع"}
+    results = RAWoutput.do({"action": "suggest", "query": "سميع"})
+    phrases = results["collocations"].get("سميع", [])
+    trigrams = [p for p in phrases if len(p.split()) == 3]
+    assert len(trigrams) > 0, "Expected at least one trigram for سميع in suggest output"
+
+
+def test_collocation_suggestion_all_non_arabic():
+    """A non-Arabic query should return an empty collocations dict."""
+    suggest_flags = {"action": "suggest", "query": "hello world"}
+    results = RAWoutput.do(suggest_flags)
+    assert results["collocations"] == {}
+
+
+def test_collocation_suggestion_strips_symbols():
+    """Symbols around Arabic words should be stripped before collocation lookup."""
+    suggest_flags = {"action": "suggest", "query": "سميع!!!"}
+    results = RAWoutput.do(suggest_flags)
+    collocations = results["collocations"]
+    assert "سميع" in collocations
+
 def test_search():
     ## prepare a search query
     search_flags = {

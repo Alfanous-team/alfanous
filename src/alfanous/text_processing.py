@@ -224,6 +224,65 @@ TranslationHighLightAnalyzer = RegexTokenizer() | LowercaseFilter()
 QFuzzyAnalyzer = _build_fuzzy_analyzer()
 
 
+class QShingleFilter(Filter):
+    """Whoosh filter that emits overlapping word shingles of sizes *minsize*
+    to *maxsize* from an incoming token stream.
+
+    Unlike Whoosh's built-in :class:`whoosh.analysis.ShingleFilter` — which
+    only produces shingles of a *single* fixed size — this filter emits shingles
+    of every size between *minsize* and *maxsize* in a single pass. It is used
+    by :data:`QShingleAnalyzer` to simultaneously index word bigrams and
+    trigrams for the ``aya_shingles`` field.
+
+    Example (minsize=2, maxsize=3, sep=' ')::
+
+        "الله سميع عليم" → ["الله سميع", "الله سميع عليم", "سميع عليم"]
+
+    :param minsize: Minimum shingle size in words (inclusive, default 2).
+    :param maxsize: Maximum shingle size in words (inclusive, default 3).
+    :param sep: Separator inserted between words in each shingle (default space).
+    """
+
+    def __init__(self, minsize=2, maxsize=3, sep=" "):
+        self.minsize = minsize
+        self.maxsize = maxsize
+        self.sep = sep
+
+    def __call__(self, tokens):
+        from collections import deque
+        sep = self.sep
+        # Buffer holds up to maxsize copies of recent tokens.
+        buf: deque = deque(maxlen=self.maxsize)
+        for token in tokens:
+            if token.stopped:
+                buf.clear()  # gaps must break shingles
+                continue
+            buf.append(token.copy())
+            buf_list = list(buf)
+            n = len(buf_list)
+            for size in range(self.minsize, min(self.maxsize, n) + 1):
+                phrase_toks = buf_list[n - size:]
+                tk = phrase_toks[0].copy()
+                tk.text = sep.join(t.text for t in phrase_toks)
+                if tk.chars:
+                    tk.endchar = phrase_toks[-1].endchar
+                yield tk
+
+
+# Word-level bigram + trigram analyzer using QShingleFilter.
+# QSpaceTokenizer splits on whitespace; QArabicSymbolsFilter normalises
+# (strips tashkeel, Uthmani symbols, lamalef, tatweel); QShingleFilter(2, 3)
+# then merges consecutive pairs and triples into single shingle tokens
+# separated by a single space (e.g. "سميع عليم", "والله سميع عليم").
+# No stop-filter is applied so that collocations like "إن الله سميع" are
+# preserved; stop-word exclusion is handled at query time.
+QShingleAnalyzer = (
+    QSpaceTokenizer()
+    | QArabicSymbolsFilter(uthmani_symbols=True)
+    | QShingleFilter(2, 3, sep=" ")
+)
+
+
 # ---------------------------------------------------------------------------
 # Language-specific translation analyzers (pystemmer / Snowball)
 # ---------------------------------------------------------------------------
