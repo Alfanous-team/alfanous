@@ -1706,8 +1706,8 @@ def test_search_words_facets_type():
     assert "type" in result["facets"]
 
 
-def test_search_words_facets_lemma_ignored():
-    """lemma is no longer in _WORD_FACET_FIELDS, so it must be silently dropped."""
+def test_search_words_facets_lemma_included():
+    """lemma is in _WORD_FACET_FIELDS, so it must appear in facets output."""
     result = RAWoutput._search_words({
         "query": "الله",
         "highlight": "none",
@@ -1718,11 +1718,9 @@ def test_search_words_facets_lemma_ignored():
     if not result["words"]:
         pytest.skip("No word results — index may be unavailable")
     assert "facets" in result
-    # 'type' is in _WORD_FACET_FIELDS; 'lemma' is not → must be silently dropped
+    # Both 'type' and 'lemma' are in _WORD_FACET_FIELDS → both must appear
     assert "type" in result["facets"]
-    assert "lemma" not in result["facets"], (
-        "lemma was removed from _WORD_FACET_FIELDS; it must not appear in facets output"
-    )
+    assert "lemma" in result["facets"]
 
 
 def test_search_words_facets_unknown_field_ignored():

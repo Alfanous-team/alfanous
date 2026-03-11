@@ -102,9 +102,24 @@ _WORD_ALL_INDEXED_FIELDS = [
 ]
 
 # Word-child fields that support faceting (ID/KEYWORD fields, stored and indexed).
-# Note: lemma is intentionally excluded here because it is a full search field
-# (included in _WORD_ALL_INDEXED_FIELDS) rather than a low-cardinality facet.
-_WORD_FACET_FIELDS = frozenset(["root", "type"])
+# Covers all morphological attributes shown in the word-level facet UI: POS,
+# lemma, root, word-type, case, state, derivation, and gender.
+_WORD_FACET_FIELDS = frozenset([
+    "root", "type", "pos", "lemma", "case", "state", "derivation", "gender",
+])
+
+# Translation child-doc fields that support faceting.
+# sura_id and aya_id are stored directly in translation child docs so they can
+# be used for grouping; trans_id and trans_lang identify the translation source.
+_TRANS_FACET_FIELDS = frozenset(["sura_id", "aya_id", "trans_id", "trans_lang"])
+
+# Aya-level fields that are useful as facets.  Exposed via show?query=facets
+# so callers can discover what groupings are available without trial and error.
+_AYA_FACET_FIELDS = frozenset([
+    "sura_id", "juz", "hizb", "rub", "nisf", "page",
+    "sura_type", "chapter", "topic", "subtopic",
+    "sajda", "sajda_type",
+])
 
 # Maximum number of documents Whoosh will collect when building facets.
 # Using limit=None causes Whoosh to load every matching document into memory,
@@ -381,6 +396,13 @@ class Raw:
         self._errors = self.ERRORS
         self._domains = self.DOMAINS
         self._helpmessages = self.HELPMESSAGES
+        # Facet field catalogue — consumed by show?query=facets so that callers
+        # can discover which fields are available for grouping per search unit.
+        self._facets = {
+            "aya": sorted(_AYA_FACET_FIELDS),
+            "word": sorted(_WORD_FACET_FIELDS),
+            "translation": sorted(_TRANS_FACET_FIELDS),
+        }
         self._all = {
             "translations": self._translations,
             "recitations": self._recitations,
@@ -397,7 +419,8 @@ class Raw:
             "domains": self._domains,
             "help_messages": self._helpmessages,
             "roots": self._roots,
-            "ai_query_translation_rules": self._ai_query_translation_rules
+            "ai_query_translation_rules": self._ai_query_translation_rules,
+            "facets": self._facets,
         }
 
         # ---------------------------------------------------------------------------
@@ -1683,6 +1706,16 @@ class Raw:
         highlight = flags["highlight"]
         timelimit = self._parse_timelimit(flags)
 
+        # Parse and validate the facets parameter against the allowed set.
+        facets_param = flags.get("facets")
+        facets_list = None
+        if facets_param:
+            if isinstance(facets_param, str):
+                _parts = [f.strip() for f in facets_param.split(",")]
+                facets_list = [s for s in _parts if s in _TRANS_FACET_FIELDS]
+            elif isinstance(facets_param, list):
+                facets_list = [f for f in facets_param if f in _TRANS_FACET_FIELDS]
+
         query = query.replace("\\", "")
 
         # Use the cached translation parser built at __init__ time.
@@ -1766,12 +1799,18 @@ class Raw:
                 _r_text_field = f"text_{_r_lang}" if _r_lang else None
                 _r_field_text = r.get(_r_text_field) if _r_text_field else None
                 _r_text = _r_field_text or r.get("trans_text") or ""
+                # sura_id / aya_id come from the child doc when stored there
+                # (new index builds), falling back to the parent for old indexes.
+                _child_sura_id = r.get("sura_id")
+                _child_aya_id  = r.get("aya_id")
+                _sura_id = _child_sura_id if _child_sura_id is not None else _parent.get("sura_id")
+                _aya_id  = _child_aya_id  if _child_aya_id  is not None else _parent.get("aya_id")
                 output["translations"][cpt] = {
                     "identifier": {
                         "gid": r["gid"],
                         "translation_id": r.get("trans_id"),
-                        "aya_id": _parent.get("aya_id"),
-                        "sura_id": _parent.get("sura_id"),
+                        "aya_id": _aya_id,
+                        "sura_id": _sura_id,
                         "sura_name": (_KEYWORD_FIND(_parent["sura"]) or [None])[0] if _parent.get("sura") else None,
                         "sura_arabic_name": (_KEYWORD_FIND(_parent["sura_arabic"]) or [None])[0] if _parent.get("sura_arabic") else None,
                     },
@@ -1786,6 +1825,31 @@ class Raw:
                         "lang": r.get("trans_lang"),
                     },
                 }
+
+            # Compute facets over the full (un-paginated) result set so that
+            # counts reflect the entire matched corpus, not just the current page.
+            if facets_list and len(res) > 0:
+                try:
+                    groupedby = Facets()
+                    for fld in facets_list:
+                        groupedby.add_field(fld)
+                    facet_res = searcher.search(_child_q, limit=_MAX_FACET_DOCS,
+                                               groupedby=groupedby)
+                    output["facets"] = {}
+                    for fld in facets_list:
+                        try:
+                            groups = facet_res.groups(fld)
+                            output["facets"][fld] = [
+                                {"value": v, "count": len(docs)}
+                                for v, docs in heapq.nlargest(
+                                    50, groups.items(), key=_FACET_COUNT_KEY
+                                )
+                            ]
+                        except Exception:
+                            logger.warning("Could not compute translation facet for field %r", fld, exc_info=True)
+                except Exception:
+                    logger.warning("Translation facet computation failed", exc_info=True)
+
             return output
         finally:
             searcher.close()

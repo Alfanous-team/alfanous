@@ -64,7 +64,11 @@ def test_keywords_all_unique():
 
 
 def test_keywords_chapter_field_unique():
-    """Test getting all unique keywords in chapter field"""
+    """Test getting all unique keywords in chapter field.
+
+    chapter is an ID field (exact-phrase stored values), so unique mode returns
+    the 22 distinct chapter phrases rather than individual tokenized words.
+    """
     result = api.do({'action': 'show', 'query': 'keywords', 'field': 'chapter', 'mode': 'unique'})
     
     assert 'show' in result
@@ -73,13 +77,18 @@ def test_keywords_chapter_field_unique():
     show_data = result['show']
     assert show_data['field'] == 'chapter'
     assert show_data['mode'] == 'unique'
-    assert show_data['count'] == 50
-    assert len(show_data['keywords']) == 50
-    assert 'الإيمان' in show_data['keywords']
+    assert show_data['count'] == 22
+    assert len(show_data['keywords']) == 22
+    # 'الإيمان' appears inside several chapter phrases (e.g. 'أركان الإيمان')
+    assert any('الإيمان' in k for k in show_data['keywords'])
 
 
 def test_keywords_topic_field_unique():
-    """Test getting all unique keywords in topic field"""
+    """Test getting all unique keywords in topic field.
+
+    topic is an ID field (exact-phrase stored values), so unique mode returns
+    the 383 distinct topic phrases rather than individual tokenized words.
+    """
     result = api.do({'action': 'show', 'query': 'keywords', 'field': 'topic', 'mode': 'unique'})
     
     assert 'show' in result
@@ -88,8 +97,8 @@ def test_keywords_topic_field_unique():
     show_data = result['show']
     assert show_data['field'] == 'topic'
     assert show_data['mode'] == 'unique'
-    assert show_data['count'] == 751
-    assert len(show_data['keywords']) == 751
+    assert show_data['count'] == 383
+    assert len(show_data['keywords']) == 383
 
 
 def test_keywords_sura_id_field():
