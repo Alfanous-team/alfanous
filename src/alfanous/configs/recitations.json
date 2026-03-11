@@ -117,222 +117,178 @@
    ],
    "1": {
       "subfolder": "Abdul_Basit_Murattal_192kbps",
-      "name": "Abdul Basit Murattal",
-      "bitrate": "192kbps"
+      "name": "Abdul Basit Murattal"
    },
    "2": {
       "subfolder": "Abdul_Basit_Mujawwad_128kbps",
-      "name": "Abdul Basit Mujawwad",
-      "bitrate": "128kbps"
+      "name": "Abdul Basit Mujawwad"
    },
    "3": {
       "subfolder": "Abdullah_Basfar_192kbps",
-      "name": "Abdullah Basfar",
-      "bitrate": "192kbps"
+      "name": "Abdullah Basfar"
    },
    "4": {
       "subfolder": "Abdurrahmaan_As-Sudais_192kbps",
-      "name": "Abdurrahmaan As-Sudais",
-      "bitrate": "192kbps"
+      "name": "Abdurrahmaan As-Sudais"
    },
    "5": {
       "subfolder": "AbdulSamad_64kbps_QuranExplorer.Com",
-      "name": "AbdulSamad QuranExplorer.Com",
-      "bitrate": "64kbps"
+      "name": "AbdulSamad QuranExplorer.Com"
    },
    "6": {
       "subfolder": "Abu_Bakr_Ash-Shaatree_128kbps",
-      "name": "Abu Bakr Ash-Shaatree",
-      "bitrate": "128kbps"
+      "name": "Abu Bakr Ash-Shaatree"
    },
    "7": {
       "subfolder": "Ahmed_ibn_Ali_al-Ajamy_64kbps_QuranExplorer.Com",
-      "name": "Ahmed ibn Ali al-Ajamy QuranExplorer.Com",
-      "bitrate": "64kbps"
+      "name": "Ahmed ibn Ali al-Ajamy QuranExplorer.Com"
    },
    "8": {
       "subfolder": "Ahmed_ibn_Ali_al-Ajamy_128kbps_ketaballah.net",
-      "name": "Ahmed ibn Ali al-Ajamy KetabAllah.Net",
-      "bitrate": "128kbps"
+      "name": "Ahmed ibn Ali al-Ajamy KetabAllah.Net"
    },
    "9": {
       "subfolder": "Alafasy_128kbps",
-      "name": "Alafasy",
-      "bitrate": "128kbps"
+      "name": "Alafasy"
    },
    "10": {
       "subfolder": "Ghamadi_40kbps",
-      "name": "Ghamadi",
-      "bitrate": "40kbps"
+      "name": "Ghamadi"
    },
    "11": {
       "subfolder": "Hani_Rifai_192kbps",
-      "name": "Hani Rifai",
-      "bitrate": "192kbps"
+      "name": "Hani Rifai"
    },
    "12": {
       "subfolder": "Husary_128kbps",
-      "name": "Husary",
-      "bitrate": "128kbps"
+      "name": "Husary"
    },
    "13": {
       "subfolder": "Husary_128kbps_Mujawwad",
-      "name": "Husary Mujawwad",
-      "bitrate": "128kbps"
+      "name": "Husary Mujawwad"
    },
    "14": {
       "subfolder": "Hudhaify_128kbps",
-      "name": "Hudhaify",
-      "bitrate": "128kbps"
+      "name": "Hudhaify"
    },
    "15": {
       "subfolder": "Ibrahim_Akhdar_64kbps",
-      "name": "Ibrahim Akhdar",
-      "bitrate": "64kbps"
+      "name": "Ibrahim Akhdar"
    },
    "16": {
       "subfolder": "MaherAlMuaiqly128kbps",
-      "name": "Maher Al Muaiqly",
-      "bitrate": "128kbps"
+      "name": "Maher Al Muaiqly"
    },
    "17": {
       "subfolder": "Menshawi_32kbps",
-      "name": "Menshawi",
-      "bitrate": "32kbps"
+      "name": "Menshawi"
    },
    "18": {
       "subfolder": "Minshawy_Mujawwad_192kbps",
-      "name": "Minshawy Mujawwad",
-      "bitrate": "192kbps"
+      "name": "Minshawy Mujawwad"
    },
    "19": {
       "subfolder": "Minshawy_Murattal_128kbps",
-      "name": "Minshawy Murattal",
-      "bitrate": "128kbps"
+      "name": "Minshawy Murattal"
    },
    "20": {
       "subfolder": "Mohammad_al_Tablaway_128kbps",
-      "name": "Mohammad al Tablaway",
-      "bitrate": "128kbps"
+      "name": "Mohammad al Tablaway"
    },
    "21": {
       "subfolder": "Muhammad_Ayyoub_128kbps",
-      "name": "Muhammad Ayyoub",
-      "bitrate": "128kbps"
+      "name": "Muhammad Ayyoub"
    },
    "22": {
       "subfolder": "Muhammad_Jibreel_128kbps",
-      "name": "Muhammad Jibreel",
-      "bitrate": "128kbps"
+      "name": "Muhammad Jibreel"
    },
    "23": {
       "subfolder": "Mustafa_Ismail_48kbps",
-      "name": "Mustafa Ismail",
-      "bitrate": "48kbps"
+      "name": "Mustafa Ismail"
    },
    "24": {
       "subfolder": "Saood_ash-Shuraym_128kbps",
-      "name": "Saood bin Ibraaheem Ash-Shuraym",
-      "bitrate": "128kbps"
+      "name": "Saood bin Ibraaheem Ash-Shuraym"
    },
    "25": {
       "subfolder": "English/Sahih_Intnl_Ibrahim_Walk_192kbps",
-      "name": "(English) Translated by Sahih International Recited by Ibrahim Walk",
-      "bitrate": "192kbps"
+      "name": "(English) Translated by Sahih International Recited by Ibrahim Walk"
    },
    "26": {
       "subfolder": "MultiLanguage/Basfar_Walk_192kbps",
-      "name": "MultiLanguage/Basfar Walk",
-      "bitrate": "192kbps"
+      "name": "MultiLanguage/Basfar Walk"
    },
    "27": {
       "subfolder": "translations/Makarem_Kabiri_16Kbps",
-      "name": "(Persian) Translated by Makarem Recited by Kabiri",
-      "bitrate": "64Kbps"
+      "name": "(Persian) Translated by Makarem Recited by Kabiri"
    },
    "28": {
       "subfolder": "translations/Fooladvand_Hedayatfar_40Kbps",
-      "name": "(Persian) Translated by Fooladvand Recited by Hedayatfar",
-      "bitrate": "64Kbps"
+      "name": "(Persian) Translated by Fooladvand Recited by Hedayatfar"
    },
    "29": {
       "subfolder": "Parhizgar_48kbps",
-      "name": "Parhizgar",
-      "bitrate": "64Kbps"
+      "name": "Parhizgar"
    },
    "30": {
       "subfolder": "translations/azerbaijani/balayev",
-      "name": "Balayev",
-      "bitrate": "64Kbps"
+      "name": "Balayev"
    },
    "31": {
       "subfolder": "Salaah_AbdulRahman_Bukhatir_128kbps",
-      "name": "Salaah AbdulRahman Bukhatir",
-      "bitrate": "128kbps"
+      "name": "Salaah AbdulRahman Bukhatir"
    },
    "32": {
       "subfolder": "Muhsin_Al_Qasim_192kbps",
-      "name": "Muhsin Al Qasim",
-      "bitrate": "192kbps"
+      "name": "Muhsin Al Qasim"
    },
    "33": {
       "subfolder": "Abdullaah_3awwaad_Al-Juhaynee_128kbps",
-      "name": "Abdullaah 3awwaad Al-Juhaynee",
-      "bitrate": "128kbps"
+      "name": "Abdullaah 3awwaad Al-Juhaynee"
    },
    "34": {
       "subfolder": "Salah_Al_Budair_128kbps",
-      "name": "Salah Al Budair",
-      "bitrate": "128kbps"
+      "name": "Salah Al Budair"
    },
    "35": {
       "subfolder": "Abdullah_Matroud_128kbps",
-      "name": "Abdullah Matroud",
-      "bitrate": "128kbps"
+      "name": "Abdullah Matroud"
    },
    "36": {
       "subfolder": "Ahmed_Neana_128kbps",
-      "name": "Ahmed Neana",
-      "bitrate": "128kbps"
+      "name": "Ahmed Neana"
    },
    "37": {
       "subfolder": "Muhammad_AbdulKareem_128kbps",
-      "name": "Muhammad AbdulKareem",
-      "bitrate": "128kbps"
+      "name": "Muhammad AbdulKareem"
    },
    "38": {
       "subfolder": "khalefa_al_tunaiji_64kbps",
-      "name": "Khalefa Al-Tunaiji",
-      "bitrate": "64kbps"
+      "name": "Khalefa Al-Tunaiji"
    },
    "39": {
       "subfolder": "mahmoud_ali_al_banna_32kbps",
-      "name": "Mahmoud Ali Al-Banna",
-      "bitrate": "32kbps"
+      "name": "Mahmoud Ali Al-Banna"
    },
    "40": {
       "subfolder": "warsh/warsh_ibrahim_aldosary_128kbps",
-      "name": "(Warsh) Ibrahim Al-Dosary",
-      "bitrate": "128kbps"
+      "name": "(Warsh) Ibrahim Al-Dosary"
    },
    "41": {
       "subfolder": "warsh/warsh_yassin_al_jazaery_64kbps",
-      "name": "(Warsh) Yassin Al-Jazaery",
-      "bitrate": "64kbps"
+      "name": "(Warsh) Yassin Al-Jazaery"
    },
    "42": {
       "subfolder": "warsh/warsh_Abdul_Basit_128kbps",
-      "name": "(Warsh) Abdul Basit",
-      "bitrate": "128kbps"
+      "name": "(Warsh) Abdul Basit"
    },
    "43": {
       "subfolder": "translations/urdu_shamshad_ali_khan_46kbps",
-      "name": "(Urdu) Shamshad Ali Khan",
-      "bitrate": "46kbps"
+      "name": "(Urdu) Shamshad Ali Khan"
    },
    "44": {
       "subfolder": "Karim_Mansoori_40kbps",
-      "name": "Karim Mansoori (Iran)",
-      "bitrate": "40kbps"
+      "name": "Karim Mansoori (Iran)"
    }
 }
