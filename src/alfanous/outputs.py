@@ -1776,7 +1776,7 @@ class Raw:
                         "sura_arabic_name": (_KEYWORD_FIND(_parent["sura_arabic"]) or [None])[0] if _parent.get("sura_arabic") else None,
                     },
                     "aya": {
-                        "text": _parent.get("aya"),
+                        "text": _parent.get("uth_"),
                         "transliteration": _parent.get("transliteration"),
                     },
                     "translation": {
@@ -1809,9 +1809,8 @@ class Raw:
 
         The result structure includes:
         - ``words``: per-word morphological data plus the parent aya text.
-          Each entry's ``aya.text`` / ``aya.text_no_highlight`` reflects the
-          ``script`` flag: ``"standard"`` (default) gives the standard Arabic
-          text; ``"uthmani"`` gives the Uthmani script text.
+          Each entry's ``aya.text`` / ``aya.text_no_highlight`` always contains
+          the Uthmani vocalized script text (``uth_`` field).
         - ``interval``: pagination metadata.
         - ``facets``: (optional) per-field value counts for ``root`` and
           ``type`` when requested via the ``facets`` flag.
@@ -1826,7 +1825,6 @@ class Raw:
         offset = ((int(flags["page"]) - 1) * range_) + 1 if flags.get("page") \
             else int(flags["offset"])
         highlight = flags["highlight"]
-        script = flags["script"]
         timelimit = self._parse_timelimit(flags)
 
         # Parse and validate the facets parameter against the allowed set.
@@ -1906,13 +1904,10 @@ class Raw:
             else:
                 H = lambda X: self.QSE.highlight(X, terms, highlight) if X else "-----"
 
-            # Pre-check script once — avoids re-evaluating per word in the result loop.
-            _use_standard_script = script == "standard"
-
             # Build a gid→aya_text map so each word result can include the full
-            # parent aya text in both standard and Uthmani scripts.  Word children
-            # store the parent aya's gid, so a single batch query retrieves all
-            # needed parent docs at once.
+            # parent aya text in Uthmani vocalized script.  Word children store
+            # the parent aya's gid, so a single batch query retrieves all needed
+            # parent docs at once.
             gid_to_aya = {}
             if reslist:
                 unique_gids = {r.get("gid") for r in reslist
@@ -1930,10 +1925,7 @@ class Raw:
                         for _pr in _parent_res:
                             _g = _pr.get("gid")
                             if _g is not None:
-                                gid_to_aya[_g] = {
-                                    "standard": _pr.get("aya") or _pr.get("aya_") or "",
-                                    "uthmani":  _pr.get("uth_") or "",
-                                }
+                                gid_to_aya[_g] = _pr.get("uth_") or ""
                     except Exception:
                         pass  # aya text enrichment is best-effort
     
@@ -1953,11 +1945,7 @@ class Raw:
             for r in reslist:
                 cpt += 1
                 _gid = r.get("gid")
-                _aya_data = gid_to_aya.get(_gid) or {}
-                _aya_raw = (
-                    _aya_data.get("standard") if _use_standard_script
-                    else _aya_data.get("uthmani")
-                )
+                _aya_raw = gid_to_aya.get(_gid) or None
                 output["words"][cpt] = {
                     "identifier": {
                         "word_id": r.get("word_id"),

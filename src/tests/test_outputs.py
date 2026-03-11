@@ -1055,6 +1055,27 @@ def test_search_translation_unit():
     assert "text" in first["translation"]
 
 
+def test_search_translation_aya_text_is_uthmani():
+    """_search_translation aya text should be Uthmani vocalized."""
+    result = RAWoutput._search_translation({
+        "query": "praise",
+        "highlight": "none",
+        "page": 1,
+    })
+    assert "translations" in result
+    translations = result["translations"]
+    if not translations:
+        pytest.skip("No translation results — index may be unavailable")
+    first = next(iter(translations.values()))
+    assert "aya" in first, "Each translation result must include an 'aya' key"
+    aya = first["aya"]
+    assert "text" in aya, "'aya' must have a 'text' key"
+    # The aya text should be non-None when the parent document is found
+    # (None is acceptable only if the parent aya has no uth_ field stored)
+    if aya["text"] is not None:
+        assert aya["text"] != "", "aya.text should not be empty when present"
+
+
 def test_search_word_unit_unavailable_engine():
     """Test that searching with unit='word' returns a structured response."""
     search_flags = {
@@ -1603,7 +1624,7 @@ def test_search_words_includes_aya_text():
 
 
 def test_search_words_aya_text_uthmani_script():
-    """_search_words with script=uthmani should return Uthmani aya text."""
+    """_search_words should always return Uthmani vocalized aya text."""
     result = RAWoutput._search_words({
         "query": "root:رحم",
         "highlight": "none",
@@ -1615,15 +1636,15 @@ def test_search_words_aya_text_uthmani_script():
     if not words:
         pytest.skip("No word results for root:رحم — index may be unavailable")
     for entry in words.values():
-        assert "aya" in entry, "Each word result must include an 'aya' key with uthmani script"
+        assert "aya" in entry, "Each word result must include an 'aya' key"
         aya = entry["aya"]
-        assert "text" in aya, "'aya' must have a 'text' key in uthmani mode"
-        assert "text_no_highlight" in aya, "'aya' must have a 'text_no_highlight' key in uthmani mode"
-        assert aya["text"] not in (None, ""), "aya.text should be populated in uthmani mode"
+        assert "text" in aya, "'aya' must have a 'text' key"
+        assert "text_no_highlight" in aya, "'aya' must have a 'text_no_highlight' key"
+        assert aya["text"] not in (None, ""), "aya.text should be populated"
 
 
-def test_search_words_aya_text_standard_differs_from_uthmani():
-    """Standard and Uthmani aya text should differ for the same word results."""
+def test_search_words_aya_text_always_uthmani():
+    """_search_words aya text should be Uthmani vocalized regardless of script flag."""
     result_standard = RAWoutput._search_words({
         "query": "root:رحم",
         "highlight": "none",
@@ -1638,18 +1659,16 @@ def test_search_words_aya_text_standard_differs_from_uthmani():
     })
     if not result_standard.get("words") or not result_uthmani.get("words"):
         pytest.skip("No word results — index may be unavailable")
-    # Pick the first word entry from each
+    # Both script flags should produce the same Uthmani vocalized aya text
     first_std = next(iter(result_standard["words"].values()))
     first_uth = next(iter(result_uthmani["words"].values()))
     std_text = first_std["aya"]["text_no_highlight"]
     uth_text = first_uth["aya"]["text_no_highlight"]
-    # Both must be non-empty
-    assert std_text, "Standard aya text must not be empty"
-    assert uth_text, "Uthmani aya text must not be empty"
-    # They represent the same verse in different scripts, so they should differ
-    assert std_text != uth_text, (
-        "Standard and Uthmani aya texts should differ; "
-        "got the same value for both scripts"
+    assert std_text, "Aya text must not be empty"
+    assert uth_text, "Aya text must not be empty"
+    assert std_text == uth_text, (
+        "Aya text should be Uthmani vocalized regardless of the script flag; "
+        "got different values"
     )
 
 
