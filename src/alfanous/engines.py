@@ -147,17 +147,21 @@ class BasicSearchEngine:
         """
         return self._searcher.suggest(querystr)
 
-    def suggest_collocations(self, word, limit=5, stopwords=None):
-        """Find words that appear immediately adjacent to *word* in the same verse.
+    def suggest_collocations(self, word, limit=5, stopwords=None, trigram_min_count=2):
+        """Find n-grams (bigrams and trigrams) centred on *word* in the same verse.
 
         Delegates to :meth:`~alfanous.searching.QSearcher.suggest_collocations`.
 
         :param word: A single unvocalized Arabic word to find collocations for.
-        :param limit: Maximum number of collocation phrases to return (default 5).
-        :param stopwords: Optional set of words to exclude from collocations.
-        :returns: List of adjacency-based collocation phrase strings.
+        :param limit: Maximum number of phrases to return (default 5).
+        :param stopwords: Words to exclude from bigram neighbours.
+        :param trigram_min_count: Minimum count for a trigram to be included
+            (default 2 — only trigrams that appear at least twice are returned).
+        :returns: List of adjacency-based 2- or 3-word phrase strings.
         """
-        return self._searcher.suggest_collocations(word, limit=limit, stopwords=stopwords)
+        return self._searcher.suggest_collocations(
+            word, limit=limit, stopwords=stopwords, trigram_min_count=trigram_min_count
+        )
 
     def correct_query(self, querystr):
         """

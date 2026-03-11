@@ -470,27 +470,38 @@ class QSearcher:
             d[mistyped_word] = corrector.suggest(mistyped_word, limit=3, maxdist=1, prefix=False)
         return d
 
-    def suggest_collocations(self, word, limit=5, stopwords=None):
-        """Find words that appear immediately adjacent to *word* in Quranic verses.
+    def suggest_collocations(self, word, limit=5, stopwords=None, trigram_min_count=2):
+        """Find n-grams (bigrams and trigrams) centred on *word* in Quranic verses.
 
-        Searches the 'aya_ac' field for all verses containing *word*, then
-        inspects the word immediately before and the word immediately after each
-        occurrence in the stored verse text.  Adjacency-based counting produces
-        linguistically meaningful bigrams (e.g. ``'سميع عليم'``,
-        ``'سميع بصير'``) rather than loose verse-level co-occurrences.
+        Searches the ``aya_ac`` field for all verses containing *word*, then
+        inspects the stored verse text to count every 2- and 3-word phrase that
+        includes *word* as an immediate neighbour.
 
-        Forward bigrams (``word → next``) are returned as ``"word next"``;
-        backward bigrams (``prev → word``) are returned as ``"prev word"``,
-        preserving the original Quranic word order.  All bigrams are merged and
-        sorted by adjacency frequency so the most characteristic collocations
-        appear first.
+        **Bigrams** (always included, stopword-filtered):
+
+        * Forward  — ``word next``
+        * Backward — ``prev word``
+
+        **Trigrams** (included when their count ≥ *trigram_min_count*,
+        single-character tokens filtered but stopwords not excluded so that
+        phrases like ``إن الله سميع`` are preserved):
+
+        * Centered  — ``prev word next``
+        * Forward   — ``word next1 next2``
+        * Backward  — ``prev2 prev1 word``
+
+        All n-grams are merged into a single list and sorted by adjacency
+        frequency so the most characteristic phrases appear first.  The natural
+        Quranic word order is preserved in every returned phrase.
 
         :param word: A single unvocalized Arabic word to find collocations for.
-        :param limit: Maximum number of collocation phrases to return (default 5).
-        :param stopwords: Optional set of words to exclude from collocations.
-            When ``None`` the caller is responsible for pre-filtering.
-        :returns: List of two-word collocation strings ordered by adjacency
-            frequency, e.g. ``['سميع عليم', 'سميع بصير']``.
+        :param limit: Maximum number of phrases to return (default 5).
+        :param stopwords: Words to exclude from **bigram** neighbours.
+            ``None`` means no filtering.
+        :param trigram_min_count: Minimum adjacency count for a trigram to be
+            considered relevant (default 2).  Raise to suppress rare trigrams.
+        :returns: List of 2- or 3-word phrase strings ordered by adjacency
+            frequency, e.g. ``['والله سميع عليم', 'سميع عليم', 'سميع بصير']``.
         """
         from collections import Counter
 
@@ -499,42 +510,69 @@ class QSearcher:
         results = searcher.search(q, limit=QURAN_TOTAL_VERSES)
 
         _stop = stopwords or frozenset()
-        # forward_counts: word immediately after the query word
-        # backward_counts: word immediately before the query word
-        forward_counts = Counter()
-        backward_counts = Counter()
+
+        # Bigram counters (stopword-filtered)
+        fwd_counts = Counter()   # word → next
+        bwd_counts = Counter()   # prev → word
+
+        # Trigram counters (only single-char tokens filtered)
+        ctr_counts = Counter()   # prev word next
+        fwd2_counts = Counter()  # word next1 next2
+        bwd2_counts = Counter()  # prev2 prev1 word
 
         for hit in results:
             aya_text = hit.get("aya") or ""
             tokens = aya_text.split()
+            n = len(tokens)
             for i, tok in enumerate(tokens):
                 if tok != word:
                     continue
-                # Right neighbour (word → next)
-                if i + 1 < len(tokens):
-                    nxt = tokens[i + 1]
-                    if nxt not in _stop and len(nxt) > 1:
-                        forward_counts[nxt] += 1
-                # Left neighbour (prev → word)
-                if i > 0:
-                    prv = tokens[i - 1]
-                    if prv not in _stop and len(prv) > 1:
-                        backward_counts[prv] += 1
 
-        # Merge forward ("word next") and backward ("prev word") bigrams,
-        # preserving the natural Quranic reading order in each phrase.
-        all_bigrams: list = []
-        for co_word, count in forward_counts.items():
-            all_bigrams.append((count, "{} {}".format(word, co_word)))
-        for co_word, count in backward_counts.items():
-            all_bigrams.append((count, "{} {}".format(co_word, word)))
-        all_bigrams.sort(key=lambda x: x[0], reverse=True)
+                prv  = tokens[i - 1] if i > 0 else None
+                nxt  = tokens[i + 1] if i + 1 < n else None
+                prv2 = tokens[i - 2] if i > 1 else None
+                nxt2 = tokens[i + 2] if i + 2 < n else None
 
-        # Deduplicate while preserving order (same phrase can't appear twice,
-        # but a forward and backward entry could theoretically collide).
+                # --- bigrams (stopword-filtered) ---
+                if nxt and nxt not in _stop and len(nxt) > 1:
+                    fwd_counts[nxt] += 1
+                if prv and prv not in _stop and len(prv) > 1:
+                    bwd_counts[prv] += 1
+
+                # --- trigrams (only skip single-char tokens) ---
+                if prv and nxt and len(prv) > 1 and len(nxt) > 1:
+                    ctr_counts[(prv, tok, nxt)] += 1
+                if nxt and nxt2 and len(nxt) > 1 and len(nxt2) > 1:
+                    fwd2_counts[(tok, nxt, nxt2)] += 1
+                if prv and prv2 and len(prv) > 1 and len(prv2) > 1:
+                    bwd2_counts[(prv2, prv, tok)] += 1
+
+        # Build candidate list: (count, phrase)
+        candidates: list = []
+
+        # Bigrams — all candidates (threshold = 1 implicitly)
+        for w, c in fwd_counts.items():
+            candidates.append((c, "{} {}".format(word, w)))
+        for w, c in bwd_counts.items():
+            candidates.append((c, "{} {}".format(w, word)))
+
+        # Trigrams — only when count meets relevance threshold
+        for gram, c in ctr_counts.items():
+            if c >= trigram_min_count:
+                candidates.append((c, " ".join(gram)))
+        for gram, c in fwd2_counts.items():
+            if c >= trigram_min_count:
+                candidates.append((c, " ".join(gram)))
+        for gram, c in bwd2_counts.items():
+            if c >= trigram_min_count:
+                candidates.append((c, " ".join(gram)))
+
+        candidates.sort(key=lambda x: x[0], reverse=True)
+
+        # Deduplicate while preserving frequency order.
         seen: set = set()
         result: list = []
-        for _, phrase in all_bigrams:
+        for _, phrase in candidates:
             if phrase not in seen:
                 seen.add(phrase)
                 result.append(phrase)

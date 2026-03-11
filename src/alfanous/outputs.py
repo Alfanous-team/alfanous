@@ -710,12 +710,15 @@ class Raw:
         """Return adjacency-based collocation phrases for each Arabic word in the query.
 
         For each word in the query, searches the index for verses that contain
-        that word and examines the word immediately before and after each
-        occurrence.  Returns a mapping of each input word to a list of two-word
+        that word and examines the immediate neighbours (bigrams) and two-word
+        window (trigrams) around each occurrence.  Trigrams are included only
+        when they appear at least twice (relevance threshold).
+
+        Returns a mapping of each input word to a list of 2- or 3-word
         collocation phrases ordered by adjacency frequency.
 
         Example: querying ``'سميع'`` may return
-        ``{'سميع': ['سميع عليم', 'سميع بصير']}``.
+        ``{'سميع': ['والله سميع عليم', 'سميع عليم', 'سميع بصير']}``.
         """
         query = flags.get("query") or self._defaults["flags"]["query"]
         query = _SUGGEST_STRIP_RE.sub(' ', query)

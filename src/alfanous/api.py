@@ -125,18 +125,17 @@ def correct_query(query: str, unit: str = "aya",
 def suggest_collocations(query: str, unit: str = "aya",
                          flags: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
     """
-    Return adjacency-based collocation suggestions for a query.
+    Return adjacency-based collocation suggestions (bigrams and trigrams) for a query.
 
     Searches the Quranic index for verses containing the query word(s) and
-    returns the words that appear **immediately adjacent** (before or after)
-    to each query word as collocation phrases.  Adjacency statistics are
-    derived directly from the Quranic corpus, so the results reflect genuine
-    Quranic bigrams.
+    returns the most frequent adjacent phrases — both two-word bigrams and
+    three-word trigrams when they are relevant (appear at least twice).
+    Phrases preserve natural Quranic word order.
 
-    Example: querying ``'سميع'`` (all-hearing) returns phrases like
-    ``'سميع عليم'`` (all-hearing, all-knowing) and
-    ``'سميع بصير'`` (all-hearing, all-seeing) because these words appear
-    directly next to سميع in Quranic verses.
+    Example: querying ``'سميع'`` (all-hearing) may return phrases like
+    ``'والله سميع عليم'`` (trigram, 8×), ``'سميع عليم'`` (bigram), and
+    ``'سميع بصير'`` (bigram) because these patterns appear directly adjacent
+    to سميع in the Quranic text.
 
     The response also includes standard spelling suggestions under the
     ``'suggest'`` key so callers can obtain both in a single request.
@@ -146,7 +145,7 @@ def suggest_collocations(query: str, unit: str = "aya",
     @param flags: Additional flags dictionary.
     @return: Dictionary containing:
              - ``'collocations'``: mapping of each input word to a list of
-               adjacency-based collocation phrase strings ordered by
+               adjacency-based 2- or 3-word phrase strings ordered by
                adjacency frequency.
              - ``'suggest'``: standard spelling suggestions (same as the
                ``suggest`` action).
