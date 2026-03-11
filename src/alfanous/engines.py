@@ -148,14 +148,14 @@ class BasicSearchEngine:
         return self._searcher.suggest(querystr)
 
     def suggest_collocations(self, word, limit=5, stopwords=None):
-        """Find words that frequently co-occur with *word* in the same verse.
+        """Find words that appear immediately adjacent to *word* in the same verse.
 
         Delegates to :meth:`~alfanous.searching.QSearcher.suggest_collocations`.
 
         :param word: A single unvocalized Arabic word to find collocations for.
         :param limit: Maximum number of collocation phrases to return (default 5).
         :param stopwords: Optional set of words to exclude from collocations.
-        :returns: List of collocation phrase strings.
+        :returns: List of adjacency-based collocation phrase strings.
         """
         return self._searcher.suggest_collocations(word, limit=limit, stopwords=stopwords)
 

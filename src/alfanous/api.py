@@ -125,17 +125,18 @@ def correct_query(query: str, unit: str = "aya",
 def suggest_collocations(query: str, unit: str = "aya",
                          flags: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
     """
-    Return collocated word suggestions for a query.
+    Return adjacency-based collocation suggestions for a query.
 
     Searches the Quranic index for verses containing the query word(s) and
-    returns the most frequently co-occurring words as collocation phrases.
-    Collocation statistics are derived directly from the Quranic corpus, so
-    the results reflect genuine Quranic word pairings.
+    returns the words that appear **immediately adjacent** (before or after)
+    to each query word as collocation phrases.  Adjacency statistics are
+    derived directly from the Quranic corpus, so the results reflect genuine
+    Quranic bigrams.
 
     Example: querying ``'سميع'`` (all-hearing) returns phrases like
     ``'سميع عليم'`` (all-hearing, all-knowing) and
-    ``'سميع بصير'`` (all-hearing, all-seeing) because these words frequently
-    appear together in Quranic verses.
+    ``'سميع بصير'`` (all-hearing, all-seeing) because these words appear
+    directly next to سميع in Quranic verses.
 
     The response also includes standard spelling suggestions under the
     ``'suggest'`` key so callers can obtain both in a single request.
@@ -145,7 +146,8 @@ def suggest_collocations(query: str, unit: str = "aya",
     @param flags: Additional flags dictionary.
     @return: Dictionary containing:
              - ``'collocations'``: mapping of each input word to a list of
-               collocation phrase strings ordered by co-occurrence frequency.
+               adjacency-based collocation phrase strings ordered by
+               adjacency frequency.
              - ``'suggest'``: standard spelling suggestions (same as the
                ``suggest`` action).
              - ``'error'``: standard error envelope.

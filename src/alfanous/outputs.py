@@ -1,4 +1,5 @@
 import heapq
+import json
 import logging
 import re
 from collections import defaultdict
@@ -39,15 +40,24 @@ _KEYWORD_SPLIT_RE = re.compile("[^,،]+")
 _SUGGEST_STRIP_RE = re.compile(r'[^\u0621-\u065F\u0670-\u06FF\s]')
 
 # Stop words loaded once at import time — used by _suggest_collocations_aya to
-# filter common function words that would otherwise dominate co-occurrence counts.
+# filter common function words that would otherwise dominate adjacency counts.
 def _load_collocation_stopwords():
-    """Load stop words for collocation filtering, returning an empty frozenset on failure."""
+    """Load stop words for collocation filtering, returning an empty frozenset on failure.
+
+    Called once at module import time.  If the stop words file is missing or
+    malformed, a WARNING is logged and an empty frozenset is returned so that
+    collocation suggestions degrade gracefully (no filtering) rather than
+    raising an error.
+    """
     try:
-        import json
         from alfanous import paths
         with open(paths.STOP_WORDS_FILE, encoding='utf-8') as f:
             return frozenset(json.load(f))
-    except (OSError, json.JSONDecodeError, ImportError):
+    except (OSError, json.JSONDecodeError, ImportError) as exc:
+        logging.getLogger(__name__).warning(
+            "Could not load collocation stop words (%s); collocations will not be filtered",
+            exc,
+        )
         return frozenset()
 
 _COLLOCATION_STOPWORDS = _load_collocation_stopwords()
@@ -697,12 +707,12 @@ class Raw:
         return self.QSE.suggest_all(query)
 
     def _suggest_collocations_aya(self, flags):
-        """Return collocated word pairs for each Arabic word in the query.
+        """Return adjacency-based collocation phrases for each Arabic word in the query.
 
         For each word in the query, searches the index for verses that contain
-        that word and counts which other words appear most frequently in those
-        same verses.  Returns a mapping of each input word to a list of
-        two-word collocation phrases ordered by co-occurrence frequency.
+        that word and examines the word immediately before and after each
+        occurrence.  Returns a mapping of each input word to a list of two-word
+        collocation phrases ordered by adjacency frequency.
 
         Example: querying ``'سميع'`` may return
         ``{'سميع': ['سميع عليم', 'سميع بصير']}``.

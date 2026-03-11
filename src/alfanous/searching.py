@@ -471,18 +471,25 @@ class QSearcher:
         return d
 
     def suggest_collocations(self, word, limit=5, stopwords=None):
-        """Find words that frequently co-occur with *word* in the same Quranic verse.
+        """Find words that appear immediately adjacent to *word* in Quranic verses.
 
         Searches the 'aya_ac' field for all verses containing *word*, then
-        counts how often every other word appears in those same verses.  The
-        *limit* most frequent co-occurring words are returned as two-word
-        collocation phrases (e.g. ``'سميع عليم'``).
+        inspects the word immediately before and the word immediately after each
+        occurrence in the stored verse text.  Adjacency-based counting produces
+        linguistically meaningful bigrams (e.g. ``'سميع عليم'``,
+        ``'سميع بصير'``) rather than loose verse-level co-occurrences.
+
+        Forward bigrams (``word → next``) are returned as ``"word next"``;
+        backward bigrams (``prev → word``) are returned as ``"prev word"``,
+        preserving the original Quranic word order.  All bigrams are merged and
+        sorted by adjacency frequency so the most characteristic collocations
+        appear first.
 
         :param word: A single unvocalized Arabic word to find collocations for.
         :param limit: Maximum number of collocation phrases to return (default 5).
         :param stopwords: Optional set of words to exclude from collocations.
             When ``None`` the caller is responsible for pre-filtering.
-        :returns: List of two-word collocation strings ordered by co-occurrence
+        :returns: List of two-word collocation strings ordered by adjacency
             frequency, e.g. ``['سميع عليم', 'سميع بصير']``.
         """
         from collections import Counter
@@ -492,14 +499,48 @@ class QSearcher:
         results = searcher.search(q, limit=QURAN_TOTAL_VERSES)
 
         _stop = stopwords or frozenset()
-        co_counts = Counter()
+        # forward_counts: word immediately after the query word
+        # backward_counts: word immediately before the query word
+        forward_counts = Counter()
+        backward_counts = Counter()
+
         for hit in results:
             aya_text = hit.get("aya") or ""
-            for w in aya_text.split():
-                if w != word and w not in _stop and len(w) > 1:
-                    co_counts[w] += 1
+            tokens = aya_text.split()
+            for i, tok in enumerate(tokens):
+                if tok != word:
+                    continue
+                # Right neighbour (word → next)
+                if i + 1 < len(tokens):
+                    nxt = tokens[i + 1]
+                    if nxt not in _stop and len(nxt) > 1:
+                        forward_counts[nxt] += 1
+                # Left neighbour (prev → word)
+                if i > 0:
+                    prv = tokens[i - 1]
+                    if prv not in _stop and len(prv) > 1:
+                        backward_counts[prv] += 1
 
-        return ["{} {}".format(word, co_word) for co_word, _ in co_counts.most_common(limit)]
+        # Merge forward ("word next") and backward ("prev word") bigrams,
+        # preserving the natural Quranic reading order in each phrase.
+        all_bigrams: list = []
+        for co_word, count in forward_counts.items():
+            all_bigrams.append((count, "{} {}".format(word, co_word)))
+        for co_word, count in backward_counts.items():
+            all_bigrams.append((count, "{} {}".format(co_word, word)))
+        all_bigrams.sort(key=lambda x: x[0], reverse=True)
+
+        # Deduplicate while preserving order (same phrase can't appear twice,
+        # but a forward and backward entry could theoretically collide).
+        seen: set = set()
+        result: list = []
+        for _, phrase in all_bigrams:
+            if phrase not in seen:
+                seen.add(phrase)
+                result.append(phrase)
+            if len(result) == limit:
+                break
+        return result
 
     def correct_query(self, querystr):
         """Return a corrected version of *querystr* using Whoosh's built-in
