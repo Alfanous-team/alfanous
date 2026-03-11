@@ -471,111 +471,74 @@ class QSearcher:
         return d
 
     def suggest_collocations(self, word, limit=5, stopwords=None, trigram_min_count=2):
-        """Find n-grams (bigrams and trigrams) centred on *word* in Quranic verses.
+        """Find bigrams and trigrams containing *word* using the Whoosh shingle index.
 
-        Searches the ``aya_ac`` field for all verses containing *word*, then
-        inspects the stored verse text to count every 2- and 3-word phrase that
-        includes *word* as an immediate neighbour.
+        Uses the ``aya_shingles`` index field — built at index time with
+        :data:`~alfanous.text_processing.QShingleAnalyzer` (Whoosh's
+        :class:`~alfanous.text_processing.QShingleFilter`) — to look up
+        pre-computed word n-grams and their corpus frequencies directly from
+        the index, without scanning individual documents.
 
-        **Bigrams** (always included, stopword-filtered):
+        All shingle terms in the index that contain *word* as one of their
+        space-separated components are considered:
 
-        * Forward  — ``word next``
-        * Backward — ``prev word``
+        * **Bigrams** (2-word shingles): included unless the *other* word is in
+          *stopwords* or is a single character.
+        * **Trigrams** (3-word shingles): included only when their total
+          occurrence count across the corpus is ≥ *trigram_min_count*.
 
-        **Trigrams** (included when their count ≥ *trigram_min_count*,
-        single-character tokens filtered but stopwords not excluded so that
-        phrases like ``إن الله سميع`` are preserved):
-
-        * Centered  — ``prev word next``
-        * Forward   — ``word next1 next2``
-        * Backward  — ``prev2 prev1 word``
-
-        All n-grams are merged into a single list and sorted by adjacency
-        frequency so the most characteristic phrases appear first.  The natural
-        Quranic word order is preserved in every returned phrase.
+        Results are sorted by the Whoosh-computed total term frequency (number
+        of occurrences in the full corpus) so the most characteristic Quranic
+        phrases appear first.
 
         :param word: A single unvocalized Arabic word to find collocations for.
         :param limit: Maximum number of phrases to return (default 5).
-        :param stopwords: Words to exclude from **bigram** neighbours.
+        :param stopwords: Words to exclude from bigram neighbours.
             ``None`` means no filtering.
-        :param trigram_min_count: Minimum adjacency count for a trigram to be
-            considered relevant (default 2).  Raise to suppress rare trigrams.
-        :returns: List of 2- or 3-word phrase strings ordered by adjacency
+        :param trigram_min_count: Minimum total corpus occurrence count for a
+            trigram to be considered relevant (default 2).
+        :returns: List of 2- or 3-word phrase strings ordered by corpus
             frequency, e.g. ``['والله سميع عليم', 'سميع عليم', 'سميع بصير']``.
         """
-        from collections import Counter
-
         searcher = self._get_shared_searcher()
-        q = wquery.Term("aya_ac", word)
-        results = searcher.search(q, limit=QURAN_TOTAL_VERSES)
+        reader = searcher.reader()
+
+        # Check that the aya_shingles field exists in this index.
+        if "aya_shingles" not in reader.indexed_field_names():
+            # Graceful fallback: the index predates the aya_shingles field.
+            return []
 
         _stop = stopwords or frozenset()
 
-        # Bigram counters (stopword-filtered)
-        fwd_counts = Counter()   # word → next
-        bwd_counts = Counter()   # prev → word
-
-        # Trigram counters (only single-char tokens filtered)
-        ctr_counts = Counter()   # prev word next
-        fwd2_counts = Counter()  # word next1 next2
-        bwd2_counts = Counter()  # prev2 prev1 word
-
-        for hit in results:
-            aya_text = hit.get("aya") or ""
-            tokens = aya_text.split()
-            n = len(tokens)
-            for i, tok in enumerate(tokens):
-                if tok != word:
-                    continue
-
-                prv  = tokens[i - 1] if i > 0 else None
-                nxt  = tokens[i + 1] if i + 1 < n else None
-                prv2 = tokens[i - 2] if i > 1 else None
-                nxt2 = tokens[i + 2] if i + 2 < n else None
-
-                # --- bigrams (stopword-filtered) ---
-                if nxt and nxt not in _stop and len(nxt) > 1:
-                    fwd_counts[nxt] += 1
-                if prv and prv not in _stop and len(prv) > 1:
-                    bwd_counts[prv] += 1
-
-                # --- trigrams (only skip single-char tokens) ---
-                if prv and nxt and len(prv) > 1 and len(nxt) > 1:
-                    ctr_counts[(prv, tok, nxt)] += 1
-                if nxt and nxt2 and len(nxt) > 1 and len(nxt2) > 1:
-                    fwd2_counts[(tok, nxt, nxt2)] += 1
-                if prv and prv2 and len(prv) > 1 and len(prv2) > 1:
-                    bwd2_counts[(prv2, prv, tok)] += 1
-
-        # Build candidate list: (count, phrase)
         candidates: list = []
 
-        # Bigrams — all candidates (threshold = 1 implicitly)
-        for w, c in fwd_counts.items():
-            candidates.append((c, "{} {}".format(word, w)))
-        for w, c in bwd_counts.items():
-            candidates.append((c, "{} {}".format(w, word)))
+        for term_text in reader.field_terms("aya_shingles"):
+            parts = term_text.split()
+            n = len(parts)
 
-        # Trigrams — only when count meets relevance threshold
-        for gram, c in ctr_counts.items():
-            if c >= trigram_min_count:
-                candidates.append((c, " ".join(gram)))
-        for gram, c in fwd2_counts.items():
-            if c >= trigram_min_count:
-                candidates.append((c, " ".join(gram)))
-        for gram, c in bwd2_counts.items():
-            if c >= trigram_min_count:
-                candidates.append((c, " ".join(gram)))
+            # Only include shingles that contain the query word as a component.
+            if word not in parts:
+                continue
+
+            freq = reader.frequency("aya_shingles", term_text)
+
+            if n == 2:
+                # Bigram: skip if the other word is a stopword or single char
+                other = parts[1] if parts[0] == word else parts[0]
+                if other in _stop or len(other) <= 1:
+                    continue
+            elif n == 3:
+                # Trigram: apply relevance threshold
+                if freq < trigram_min_count:
+                    continue
+
+            candidates.append((freq, term_text))
 
         candidates.sort(key=lambda x: x[0], reverse=True)
 
-        # Deduplicate while preserving frequency order.
-        seen: set = set()
         result: list = []
         for _, phrase in candidates:
-            if phrase not in seen:
-                seen.add(phrase)
-                result.append(phrase)
+            result.append(phrase)
             if len(result) == limit:
                 break
         return result

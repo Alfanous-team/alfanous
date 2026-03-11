@@ -125,12 +125,17 @@ def correct_query(query: str, unit: str = "aya",
 def suggest_collocations(query: str, unit: str = "aya",
                          flags: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
     """
-    Return adjacency-based collocation suggestions (bigrams and trigrams) for a query.
+    Return collocation suggestions (bigrams and trigrams) for a query.
 
-    Searches the Quranic index for verses containing the query word(s) and
-    returns the most frequent adjacent phrases — both two-word bigrams and
-    three-word trigrams when they are relevant (appear at least twice).
-    Phrases preserve natural Quranic word order.
+    Uses the pre-computed ``aya_shingles`` Whoosh field — built at index time
+    with :data:`~alfanous.text_processing.QShingleAnalyzer` (a custom
+    :class:`~alfanous.text_processing.QShingleFilter` pipeline) — to look up
+    all word bigrams and trigrams containing the query word(s) and their corpus
+    frequencies directly from the index.  No per-document scanning is needed.
+
+    Both two-word bigrams and three-word trigrams are returned when relevant
+    (trigrams appear at least twice in the corpus).  Phrases preserve natural
+    Quranic word order.
 
     Example: querying ``'سميع'`` (all-hearing) may return phrases like
     ``'والله سميع عليم'`` (trigram, 8×), ``'سميع عليم'`` (bigram), and
@@ -145,8 +150,7 @@ def suggest_collocations(query: str, unit: str = "aya",
     @param flags: Additional flags dictionary.
     @return: Dictionary containing:
              - ``'collocations'``: mapping of each input word to a list of
-               adjacency-based 2- or 3-word phrase strings ordered by
-               adjacency frequency.
+               2- or 3-word phrase strings ordered by corpus frequency.
              - ``'suggest'``: standard spelling suggestions (same as the
                ``suggest`` action).
              - ``'error'``: standard error envelope.

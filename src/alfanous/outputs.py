@@ -46,8 +46,9 @@ def _load_collocation_stopwords():
 
     Called once at module import time.  If the stop words file is missing or
     malformed, a WARNING is logged and an empty frozenset is returned so that
-    collocation suggestions degrade gracefully (no filtering) rather than
-    raising an error.
+    collocation suggestions degrade gracefully — all bigram collocations will
+    be returned without filtering (common function words like ``من``, ``في``
+    will appear), rather than raising an error at search time.
     """
     try:
         from alfanous import paths
@@ -707,15 +708,18 @@ class Raw:
         return self.QSE.suggest_all(query)
 
     def _suggest_collocations_aya(self, flags):
-        """Return adjacency-based collocation phrases for each Arabic word in the query.
+        """Return collocation phrases (bigrams and trigrams) for each Arabic word in the query.
 
-        For each word in the query, searches the index for verses that contain
-        that word and examines the immediate neighbours (bigrams) and two-word
-        window (trigrams) around each occurrence.  Trigrams are included only
-        when they appear at least twice (relevance threshold).
+        For each word in the query, looks up the pre-computed ``aya_shingles``
+        Whoosh field — built at index time with
+        :data:`~alfanous.text_processing.QShingleAnalyzer` — to retrieve all
+        word bigrams and trigrams containing that word along with their corpus
+        frequencies.  No document-level scan is performed; frequencies come
+        directly from the Whoosh posting list.
 
         Returns a mapping of each input word to a list of 2- or 3-word
-        collocation phrases ordered by adjacency frequency.
+        collocation phrases ordered by corpus frequency.  Trigrams are included
+        only when they appear at least twice in the Quran (relevance threshold).
 
         Example: querying ``'سميع'`` may return
         ``{'سميع': ['والله سميع عليم', 'سميع عليم', 'سميع بصير']}``.
