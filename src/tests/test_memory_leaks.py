@@ -2075,9 +2075,99 @@ class TestSharedReaderSearcherContract(unittest.TestCase):
 
         # Direct access to the private attribute is intentional: this test
         # validates the internal lifecycle guarantee that attach_to_searcher()
-        # clears the own reader reference so no stale reader stays open.
+        # clears the reader reference it owns so no stale reader stays open.
         own_reader.close.assert_called_once()
         self.assertIsNone(reader._own_reader, "own reader must be cleared after attach_to_searcher")
+
+    # ------------------------------------------------------------------
+    # 6. correct_query falls back gracefully on ReaderClosed
+    # ------------------------------------------------------------------
+
+    def test_correct_query_falls_back_on_reader_closed(self):
+        """QSearcher.correct_query must return original query on ReaderClosed."""
+        from whoosh.fields import Schema, TEXT
+        from whoosh.reading import ReaderClosed
+        from alfanous.searching import QSearcher
+
+        schema = Schema(aya=TEXT)
+        mock_docindex = MagicMock()
+        mock_docindex.get_schema.return_value = schema
+        mock_ws = MagicMock()
+        mock_ws.refresh.return_value = mock_ws
+        mock_ws.correct_query.side_effect = ReaderClosed()
+        mock_docindex.get_index.return_value.searcher.return_value = mock_ws
+
+        qs = QSearcher(mock_docindex, MagicMock())
+        # prime the shared searcher so it is returned by _get_shared_searcher()
+        qs._shared_searcher = mock_ws
+
+        result = qs.correct_query("remaja putr")
+
+        self.assertEqual(result["original"], "remaja putr")
+        self.assertEqual(result["corrected"], "remaja putr",
+                         "correct_query must return original as corrected when ReaderClosed")
+
+    def test_correct_query_succeeds_on_second_attempt(self):
+        """QSearcher.correct_query retries once and succeeds on the second attempt."""
+        from whoosh.fields import Schema, TEXT
+        from whoosh.reading import ReaderClosed
+        from alfanous.searching import QSearcher
+
+        schema = Schema(aya=TEXT)
+        mock_docindex = MagicMock()
+        mock_docindex.get_schema.return_value = schema
+        mock_ws = MagicMock()
+        mock_ws.refresh.return_value = mock_ws
+
+        # First call raises ReaderClosed; second call succeeds.
+        good_correction = MagicMock()
+        good_correction.string = "corrected_term"
+        mock_ws.correct_query.side_effect = [ReaderClosed(), good_correction]
+        mock_docindex.get_index.return_value.searcher.return_value = mock_ws
+
+        qs = QSearcher(mock_docindex, MagicMock())
+        qs._shared_searcher = mock_ws
+
+        result = qs.correct_query("remaja putr")
+
+        self.assertEqual(result["corrected"], "corrected_term",
+                         "correct_query must return corrected string when second attempt succeeds")
+
+    def test_correct_query_parses_before_getting_searcher(self):
+        """parse() must be called before _get_shared_searcher() in correct_query.
+
+        If parsing triggers a plugin that calls _get_shared_searcher() internally
+        (e.g. via engine._reader.reader) and causes a refresh, the reference we
+        take afterwards belongs to the post-refresh searcher and is not stale.
+        """
+        import ast, inspect, textwrap
+        import alfanous.searching as _searching_module
+        src = textwrap.dedent(inspect.getsource(_searching_module.QSearcher.correct_query))
+        tree = ast.parse(src)
+
+        # Walk statement-by-statement to find the order of _qparser.parse and
+        # _get_shared_searcher.
+        parse_line = None
+        get_searcher_line = None
+        for node in ast.walk(tree):
+            if not isinstance(node, (ast.Assign, ast.Expr)):
+                continue
+            node_src = ast.unparse(node)
+            if "_qparser.parse" in node_src and parse_line is None:
+                parse_line = node.lineno
+            if "_get_shared_searcher" in node_src and get_searcher_line is None:
+                get_searcher_line = node.lineno
+
+        self.assertIsNotNone(parse_line,
+                             "correct_query must call _qparser.parse")
+        self.assertIsNotNone(get_searcher_line,
+                             "correct_query must call _get_shared_searcher")
+        self.assertLess(
+            parse_line, get_searcher_line,
+            "parse() must come before _get_shared_searcher() in correct_query "
+            "so that any plugin-triggered refresh completes before we take our "
+            "reference to the shared searcher.",
+        )
 
 
 if __name__ == "__main__":

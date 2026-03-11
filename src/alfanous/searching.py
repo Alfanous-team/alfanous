@@ -5,6 +5,7 @@ from whoosh import query as wquery
 from whoosh.collectors import TimeLimitCollector, FilterCollector
 from whoosh.searching import TimeLimit
 from whoosh.qparser import QueryParser as _QueryParser
+from whoosh.reading import ReaderClosed
 import logging
 
 logger = logging.getLogger(__name__)
@@ -480,12 +481,46 @@ class QSearcher:
         object whose ``.string`` attribute contains the rewritten query string
         ready to pass back to the search engine.
 
+        The shared Whoosh Searcher can be closed or refreshed by a concurrent
+        request between the moment we obtain it and the moment Whoosh's
+        ``correct_query`` accesses the underlying reader.  When that happens
+        Whoosh raises :exc:`whoosh.reading.ReaderClosed`.  We retry once with a
+        freshly obtained shared searcher and, if the error persists, fall back
+        to returning the original query string unchanged so the caller always
+        receives a well-formed response.
+
         @param querystr: The raw query string entered by the user.
         @return: Dictionary with keys ``original`` (the input) and
                  ``corrected`` (the best rewritten query string, identical to
-                 the input when no correction is needed).
+                 the input when no correction is needed or when the index
+                 reader is temporarily unavailable).
         """
-        searcher = self._get_shared_searcher()
+        # Parse first: query plugins may call _get_shared_searcher() internally
+        # (e.g. via engine._reader.reader → QSearcher.get_reader()).  By parsing
+        # before we take our own reference to the shared searcher we ensure that
+        # any index refresh triggered during parsing has already happened, so the
+        # reference we obtain below belongs to the post-refresh searcher and is
+        # less likely to be immediately stale.
         parsed = self._qparser.parse(querystr)
-        correction = searcher.correct_query(parsed, querystr)
-        return {"original": querystr, "corrected": correction.string}
+        for attempt in range(2):
+            searcher = self._get_shared_searcher()
+            try:
+                correction = searcher.correct_query(parsed, querystr)
+                return {"original": querystr, "corrected": correction.string}
+            except ReaderClosed:
+                if attempt == 0:
+                    # Force _get_shared_searcher() to reopen on the next attempt.
+                    self._shared_searcher = None
+                    logger.warning(
+                        "correct_query: Underlying index reader was closed during "
+                        "correction for query %r; retrying with a fresh searcher.",
+                        querystr,
+                    )
+                    continue
+                # Second failure: fall back gracefully rather than propagating.
+                logger.error(
+                    "correct_query: Underlying index reader still closed on retry "
+                    "for query %r; returning original query unchanged.",
+                    querystr,
+                )
+        return {"original": querystr, "corrected": querystr}
