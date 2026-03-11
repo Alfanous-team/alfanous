@@ -470,6 +470,37 @@ class QSearcher:
             d[mistyped_word] = corrector.suggest(mistyped_word, limit=3, maxdist=1, prefix=False)
         return d
 
+    def suggest_collocations(self, word, limit=5, stopwords=None):
+        """Find words that frequently co-occur with *word* in the same Quranic verse.
+
+        Searches the 'aya_ac' field for all verses containing *word*, then
+        counts how often every other word appears in those same verses.  The
+        *limit* most frequent co-occurring words are returned as two-word
+        collocation phrases (e.g. ``'سميع عليم'``).
+
+        :param word: A single unvocalized Arabic word to find collocations for.
+        :param limit: Maximum number of collocation phrases to return (default 5).
+        :param stopwords: Optional set of words to exclude from collocations.
+            When ``None`` the caller is responsible for pre-filtering.
+        :returns: List of two-word collocation strings ordered by co-occurrence
+            frequency, e.g. ``['سميع عليم', 'سميع بصير']``.
+        """
+        from collections import Counter
+
+        searcher = self._get_shared_searcher()
+        q = wquery.Term("aya_ac", word)
+        results = searcher.search(q, limit=QURAN_TOTAL_VERSES)
+
+        _stop = stopwords or frozenset()
+        co_counts = Counter()
+        for hit in results:
+            aya_text = hit.get("aya") or ""
+            for w in aya_text.split():
+                if w != word and w not in _stop and len(w) > 1:
+                    co_counts[w] += 1
+
+        return ["{} {}".format(word, co_word) for co_word, _ in co_counts.most_common(limit)]
+
     def correct_query(self, querystr):
         """Return a corrected version of *querystr* using Whoosh's built-in
         query corrector.

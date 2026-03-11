@@ -48,6 +48,33 @@ def test_missing_suggetion():
     assert list(QSE.suggest_all(u"النسر").items()) == [('النسر', ['النار', 'النور', 'النذر'])]
 
 
+def test_suggest_collocations():
+    """Collocations for سميع should include known Quranic word pairs."""
+    collocations = QSE.suggest_collocations("سميع")
+    assert len(collocations) > 0
+    # All returned phrases must start with the query word
+    for phrase in collocations:
+        assert phrase.startswith("سميع ")
+    # سميع frequently appears with عليم and بصير in the Quran
+    co_words = [phrase.split()[-1] for phrase in collocations]
+    assert any(w in co_words for w in ["عليم", "بصير"])
+
+
+def test_suggest_collocations_with_stopwords():
+    """Stopword filtering should exclude common function words from collocations."""
+    stopwords = frozenset(["في", "من", "على", "إن"])
+    collocations = QSE.suggest_collocations("قل", stopwords=stopwords)
+    co_words = [phrase.split()[-1] for phrase in collocations]
+    for sw in stopwords:
+        assert sw not in co_words, f"stopword '{sw}' must not appear in collocations"
+
+
+def test_suggest_collocations_unknown_word():
+    """An unknown word should return an empty collocation list."""
+    collocations = QSE.suggest_collocations("zzzzzzzzz")
+    assert collocations == []
+
+
 def test_autocomplete():
     assert QSE.autocomplete("رسول") == {'base': '',
  'completion': ['رسول',

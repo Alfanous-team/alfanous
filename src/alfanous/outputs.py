@@ -38,6 +38,20 @@ _KEYWORD_SPLIT_RE = re.compile("[^,،]+")
 # Pre-compiled regex for stripping non-Arabic characters from suggestion queries.
 _SUGGEST_STRIP_RE = re.compile(r'[^\u0621-\u065F\u0670-\u06FF\s]')
 
+# Stop words loaded once at import time — used by _suggest_collocations_aya to
+# filter common function words that would otherwise dominate co-occurrence counts.
+def _load_collocation_stopwords():
+    """Load stop words for collocation filtering, returning an empty frozenset on failure."""
+    try:
+        import json
+        from alfanous import paths
+        with open(paths.STOP_WORDS_FILE, encoding='utf-8') as f:
+            return frozenset(json.load(f))
+    except (OSError, json.JSONDecodeError, ImportError):
+        return frozenset()
+
+_COLLOCATION_STOPWORDS = _load_collocation_stopwords()
+
 # Pre-compiled regex for detecting whether a query contains Arabic-script
 # characters.  Used in _search_aya on every request to decide between the
 # arabizi/translation path and the direct Arabic path.
@@ -661,12 +675,15 @@ class Raw:
         """ return suggestions for any search unit """
         if unit == "aya":
             suggestions = self._suggest_aya(flags)
+            collocations = self._suggest_collocations_aya(flags)
         elif unit == "translation":
             suggestions = None
+            collocations = None
         else:
             suggestions = {}
+            collocations = {}
 
-        return {"suggest": suggestions}
+        return {"suggest": suggestions, "collocations": collocations}
 
     def _suggest_aya(self, flags):
         """ return suggestions for aya words """
@@ -678,6 +695,35 @@ class Raw:
         query = ' '.join(w for w in query.split() if w)
 
         return self.QSE.suggest_all(query)
+
+    def _suggest_collocations_aya(self, flags):
+        """Return collocated word pairs for each Arabic word in the query.
+
+        For each word in the query, searches the index for verses that contain
+        that word and counts which other words appear most frequently in those
+        same verses.  Returns a mapping of each input word to a list of
+        two-word collocation phrases ordered by co-occurrence frequency.
+
+        Example: querying ``'سميع'`` may return
+        ``{'سميع': ['سميع عليم', 'سميع بصير']}``.
+        """
+        query = flags.get("query") or self._defaults["flags"]["query"]
+        query = _SUGGEST_STRIP_RE.sub(' ', query)
+        words = [w for w in query.split() if w]
+        if not words:
+            return {}
+
+        result = {}
+        for word in words:
+            normalized = _STRIP_VOCALIZATION(word)
+            if not normalized:
+                continue
+            collocations = self.QSE.suggest_collocations(
+                normalized, stopwords=_COLLOCATION_STOPWORDS
+            )
+            if collocations:
+                result[word] = collocations
+        return result
 
     def _correct_query(self, flags, unit):
         """ return a corrected query for any search unit """

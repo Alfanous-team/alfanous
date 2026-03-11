@@ -74,6 +74,44 @@ def test_suggestion_all_non_arabic():
 
     assert results["suggest"] == {}
 
+
+def test_collocation_suggestion_returned_with_suggest():
+    """The suggest action must include a 'collocations' key in the response."""
+    suggest_flags = {"action": "suggest", "query": "سميع"}
+    results = RAWoutput.do(suggest_flags)
+    assert "collocations" in results
+
+
+def test_collocation_suggestion_basic():
+    """Collocations for 'سميع' should include known Quranic word pairs."""
+    suggest_flags = {"action": "suggest", "query": "سميع"}
+    results = RAWoutput.do(suggest_flags)
+    collocations = results["collocations"]
+    assert "سميع" in collocations
+    phrases = collocations["سميع"]
+    assert len(phrases) > 0
+    # All phrases must start with the query word
+    for phrase in phrases:
+        assert phrase.startswith("سميع ")
+    # Common Quranic collocations of سميع
+    co_words = [p.split()[-1] for p in phrases]
+    assert any(w in co_words for w in ["عليم", "بصير"])
+
+
+def test_collocation_suggestion_all_non_arabic():
+    """A non-Arabic query should return an empty collocations dict."""
+    suggest_flags = {"action": "suggest", "query": "hello world"}
+    results = RAWoutput.do(suggest_flags)
+    assert results["collocations"] == {}
+
+
+def test_collocation_suggestion_strips_symbols():
+    """Symbols around Arabic words should be stripped before collocation lookup."""
+    suggest_flags = {"action": "suggest", "query": "سميع!!!"}
+    results = RAWoutput.do(suggest_flags)
+    collocations = results["collocations"]
+    assert "سميع" in collocations
+
 def test_search():
     ## prepare a search query
     search_flags = {

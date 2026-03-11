@@ -122,6 +122,39 @@ def correct_query(query: str, unit: str = "aya",
     return do(all_flags)
 
 
+def suggest_collocations(query: str, unit: str = "aya",
+                         flags: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
+    """
+    Return collocated word suggestions for a query.
+
+    Searches the Quranic index for verses containing the query word(s) and
+    returns the most frequently co-occurring words as collocation phrases.
+    Collocation statistics are derived directly from the Quranic corpus, so
+    the results reflect genuine Quranic word pairings.
+
+    Example: querying ``'سميع'`` (all-hearing) returns phrases like
+    ``'سميع عليم'`` (all-hearing, all-knowing) and
+    ``'سميع بصير'`` (all-hearing, all-seeing) because these words frequently
+    appear together in Quranic verses.
+
+    The response also includes standard spelling suggestions under the
+    ``'suggest'`` key so callers can obtain both in a single request.
+
+    @param query: The Arabic word or phrase to find collocations for.
+    @param unit: Search unit ('aya', 'word', 'translation').
+    @param flags: Additional flags dictionary.
+    @return: Dictionary containing:
+             - ``'collocations'``: mapping of each input word to a list of
+               collocation phrase strings ordered by co-occurrence frequency.
+             - ``'suggest'``: standard spelling suggestions (same as the
+               ``suggest`` action).
+             - ``'error'``: standard error envelope.
+    """
+    all_flags = flags if flags is not None else {}
+    all_flags.update({"action": "suggest", "query": query, "unit": unit})
+    return do(all_flags)
+
+
 def get_info(query: str = "all") -> Dict[str, Any]:
     """
     Show useful meta info.
