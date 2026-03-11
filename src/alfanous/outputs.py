@@ -462,20 +462,30 @@ class Raw:
             self._all_word_fields = []
 
     def close(self):
-        """Close all held search engine resources.
+        """Release this Raw instance.
 
-        Releases the underlying Whoosh index searcher and reader held by
-        the ``QSE`` engine.  After this call the ``Raw`` instance is no
-        longer usable.
+        The underlying ``QSE`` engine is a **process-level singleton** shared
+        by every ``Raw`` / ``Engine`` instance and by the module-level ``_R``
+        that powers the :func:`~alfanous.api.search` convenience function.
+        Closing the singleton here would invalidate every other caller still
+        holding a reference to it, which is the root cause of the
+        ``ReaderClosed`` errors that occur when :class:`Engine` is
+        instantiated and closed many times (e.g. once per autocomplete
+        request).
 
-        :meth:`close` is idempotent: calling it multiple times is safe.
-        Typical usage with a context manager::
+        The singleton is instead cleaned up automatically at process exit via
+        the ``atexit`` handler registered in :mod:`alfanous.data`.
 
-            with Raw(QSE_index=…) as raw:
-                result = raw.do(flags)
+        :meth:`close` is safe to call multiple times (idempotent) and is
+        compatible with the context-manager protocol::
+
+            with Engine() as engine:
+                result = engine.search("query")
         """
-        if hasattr(self, 'QSE'):
-            self.QSE.close()
+        # QSE is a shared singleton managed by alfanous.data.QSE(); do not
+        # close it here — doing so would break all other Raw/Engine instances
+        # and the module-level _R that share the same underlying engine.
+        pass
 
     def __enter__(self):
         return self

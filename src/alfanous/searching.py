@@ -548,48 +548,64 @@ class QSearcher:
         :returns: List of 2- or 3-word phrase strings ordered by corpus
             frequency, e.g. ``['والله سميع عليم', 'سميع عليم', 'سميع بصير']``.
         """
-        searcher = self._get_shared_searcher()
-        reader = searcher.reader()
+        for attempt in range(_MAX_READER_CLOSED_RETRIES):
+            searcher = self._get_shared_searcher()
+            reader = searcher.reader()
+            try:
+                # Check that the aya_shingles field exists in this index.
+                if "aya_shingles" not in reader.indexed_field_names():
+                    # Graceful fallback: the index predates the aya_shingles field.
+                    return []
 
-        # Check that the aya_shingles field exists in this index.
-        if "aya_shingles" not in reader.indexed_field_names():
-            # Graceful fallback: the index predates the aya_shingles field.
-            return []
+                _stop = stopwords or frozenset()
 
-        _stop = stopwords or frozenset()
+                candidates: list = []
 
-        candidates: list = []
+                for term_text in reader.field_terms("aya_shingles"):
+                    parts = term_text.split()
+                    n = len(parts)
 
-        for term_text in reader.field_terms("aya_shingles"):
-            parts = term_text.split()
-            n = len(parts)
+                    # Only include shingles that contain the query word as a component.
+                    if word not in parts:
+                        continue
 
-            # Only include shingles that contain the query word as a component.
-            if word not in parts:
-                continue
+                    freq = reader.frequency("aya_shingles", term_text)
 
-            freq = reader.frequency("aya_shingles", term_text)
+                    if n == 2:
+                        # Bigram: skip if the other word is a stopword or single char
+                        other = parts[1] if parts[0] == word else parts[0]
+                        if other in _stop or len(other) <= 1:
+                            continue
+                    elif n == 3:
+                        # Trigram: apply relevance threshold
+                        if freq < trigram_min_count:
+                            continue
 
-            if n == 2:
-                # Bigram: skip if the other word is a stopword or single char
-                other = parts[1] if parts[0] == word else parts[0]
-                if other in _stop or len(other) <= 1:
+                    candidates.append((freq, term_text))
+
+                candidates.sort(key=lambda x: x[0], reverse=True)
+
+                result: list = []
+                for _, phrase in candidates:
+                    result.append(phrase)
+                    if len(result) == limit:
+                        break
+                return result
+            except ReaderClosed:
+                if attempt == 0:
+                    self._shared_searcher = None
+                    logger.warning(
+                        "suggest_collocations: Underlying index reader was closed "
+                        "for word %r; retrying with a fresh searcher.",
+                        word,
+                    )
                     continue
-            elif n == 3:
-                # Trigram: apply relevance threshold
-                if freq < trigram_min_count:
-                    continue
-
-            candidates.append((freq, term_text))
-
-        candidates.sort(key=lambda x: x[0], reverse=True)
-
-        result: list = []
-        for _, phrase in candidates:
-            result.append(phrase)
-            if len(result) == limit:
-                break
-        return result
+                logger.error(
+                    "suggest_collocations: Underlying index reader still closed on "
+                    "retry for word %r; returning empty list.",
+                    word,
+                )
+        return []
 
     def correct_query(self, querystr):
         """Return a corrected version of *querystr* using Whoosh's built-in

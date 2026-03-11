@@ -533,11 +533,19 @@ class TestRawClose(unittest.TestCase):
             "Raw must have a callable close() method"
         )
 
-    def test_close_delegates_to_qse(self):
-        """Raw.close() must call self.QSE.close()."""
+    def test_close_does_not_delegate_to_qse(self):
+        """Raw.close() must NOT call self.QSE.close().
+
+        The QSE engine is a process-level singleton shared by every Raw /
+        Engine instance.  Closing it from Raw.close() would invalidate all
+        other callers (including the module-level ``_R``) that still hold a
+        reference to the same singleton, which is the root cause of the
+        ReaderClosed errors that occur when Engine is instantiated many times
+        (e.g. once per autocomplete request).
+        """
         raw = self._make_raw()
         raw.close()
-        raw.QSE.close.assert_called_once()
+        raw.QSE.close.assert_not_called()
 
     def test_close_is_idempotent(self):
         """Calling Raw.close() multiple times must not raise."""
@@ -558,6 +566,29 @@ class TestRawClose(unittest.TestCase):
         from alfanous.outputs import Raw
         self.assertTrue(hasattr(Raw, '__enter__'), "__enter__ missing")
         self.assertTrue(hasattr(Raw, '__exit__'), "__exit__ missing")
+
+    def test_multiple_raw_instances_share_qse_and_close_is_safe(self):
+        """Closing one Raw instance must not break other Raw instances.
+
+        Both instances share the same QSE singleton; calling close() on
+        the first must not close the shared QSE so the second remains usable.
+        """
+        from alfanous.outputs import Raw
+        mock_qse = MagicMock()
+        mock_qse.OK = False
+
+        raw1 = Raw.__new__(Raw)
+        raw1.QSE = mock_qse
+
+        raw2 = Raw.__new__(Raw)
+        raw2.QSE = mock_qse
+
+        # Closing raw1 must NOT call QSE.close()
+        raw1.close()
+        mock_qse.close.assert_not_called()
+
+        # raw2 still references the same QSE and should work fine
+        self.assertIs(raw2.QSE, mock_qse)
 
 
 # ---------------------------------------------------------------------------
@@ -2295,6 +2326,59 @@ class TestSharedReaderSearcherContract(unittest.TestCase):
         # the attribute has been repopulated; verify it is non-None (open).
         self.assertIsNotNone(qs._shared_searcher,
                              "_shared_searcher must be set to a fresh searcher after retry succeeds")
+
+    def test_suggest_collocations_retries_on_reader_closed(self):
+        """QSearcher.suggest_collocations must retry on ReaderClosed and succeed."""
+        from whoosh.reading import ReaderClosed
+        from alfanous.searching import QSearcher
+
+        mock_docindex = MagicMock()
+        mock_docindex.get_schema.return_value = MagicMock()
+        mock_ws = MagicMock()
+        mock_ws.refresh.return_value = mock_ws
+        mock_docindex.get_index.return_value.searcher.return_value = mock_ws
+
+        # First reader raises ReaderClosed on field_terms; second succeeds.
+        closed_reader = MagicMock()
+        closed_reader.indexed_field_names.return_value = ["aya_shingles"]
+        closed_reader.field_terms.side_effect = ReaderClosed()
+
+        good_reader = MagicMock()
+        good_reader.indexed_field_names.return_value = ["aya_shingles"]
+        good_reader.field_terms.return_value = []  # no shingles — empty result
+
+        mock_ws.reader.side_effect = [closed_reader, good_reader]
+
+        qs = QSearcher(mock_docindex, MagicMock())
+        qs._shared_searcher = mock_ws
+
+        result = qs.suggest_collocations("سميع")
+        self.assertEqual(result, [], "suggest_collocations must return empty list after retry")
+
+    def test_suggest_collocations_returns_empty_on_persistent_reader_closed(self):
+        """suggest_collocations must return [] when ReaderClosed persists after all retries."""
+        from whoosh.reading import ReaderClosed
+        from alfanous.searching import QSearcher
+
+        mock_docindex = MagicMock()
+        mock_docindex.get_schema.return_value = MagicMock()
+        mock_ws = MagicMock()
+        mock_ws.refresh.return_value = mock_ws
+        mock_docindex.get_index.return_value.searcher.return_value = mock_ws
+
+        bad_reader = MagicMock()
+        bad_reader.indexed_field_names.return_value = ["aya_shingles"]
+        bad_reader.field_terms.side_effect = ReaderClosed()
+
+        # Both reader() calls return a closed reader.
+        mock_ws.reader.return_value = bad_reader
+
+        qs = QSearcher(mock_docindex, MagicMock())
+        qs._shared_searcher = mock_ws
+
+        # Must NOT raise; must return empty list gracefully.
+        result = qs.suggest_collocations("سميع")
+        self.assertEqual(result, [])
 
 
 if __name__ == "__main__":
