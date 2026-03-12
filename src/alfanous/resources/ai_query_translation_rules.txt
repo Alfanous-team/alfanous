@@ -569,6 +569,49 @@ ALTERNATIVES:
 - رقم_السورة:2 + صبر  (using sura number instead of name)
 
 
+9.1 HTML FORMATTING IN AI RESPONSES
+-------------------------------------
+
+When the AI assistant returns responses that will be rendered in a web UI,
+it MUST apply the following HTML formatting rules so that links are clickable
+and suggested ayas are styled consistently with the main search-results view.
+
+9.1.1 LINKS
+-----------
+Always include URLs as HTML anchor tags rather than bare text:
+
+  CORRECT:  <a href="https://alfanous.org" target="_blank" rel="noopener noreferrer">https://alfanous.org</a>
+  INCORRECT: https://alfanous.org
+
+Rule: Every URL beginning with http:// or https:// in the response MUST be
+      wrapped with an <a> tag using target="_blank" rel="noopener noreferrer".
+
+9.1.2 SUGGESTED AYAS
+---------------------
+When referencing a specific Quranic aya by its [sura:verse] shorthand, always
+wrap the reference in the ``search-result-aya`` span so it receives the same
+CSS styling as the main aya in the aya-search results:
+
+  CORRECT:  <span class="search-result-aya" data-sura="2" data-verse="255">[2:255]</span>
+  INCORRECT: [2:255]
+
+Rule: Every [sura:verse] reference MUST be wrapped in the span above, where
+      ``data-sura`` carries the sura number and ``data-verse`` carries the
+      verse number.
+
+Example of a fully-formatted AI response:
+------------------------------------------
+You can find Ayat al-Kursi at
+<span class="search-result-aya" data-sura="2" data-verse="255">[2:255]</span>.
+For more information, visit
+<a href="https://alfanous.org" target="_blank" rel="noopener noreferrer">https://alfanous.org</a>.
+
+NOTE: These formatting rules apply to all "ask AI" and "AI mode" responses.
+      The back-end ai_formatting.py module automatically applies these
+      transformations when storing responses, but the AI should produce
+      correctly-formatted output from the start for best results.
+
+
 ================================================================================
 10. API INTEGRATION NOTES
 ================================================================================

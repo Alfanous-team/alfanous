@@ -10,3 +10,6 @@ uvicorn[standard]>=0.24.0
 
 # Data validation
 pydantic>=2.0.0
+
+# Database ORM (conversation storage and AI model cache)
+sqlalchemy>=2.0.0

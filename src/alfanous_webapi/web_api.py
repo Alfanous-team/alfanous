@@ -17,11 +17,22 @@ Usage:
 
 from typing import Optional, Dict, Any, Union, List, Literal
 from collections.abc import KeysView, ValuesView, ItemsView
-from fastapi import FastAPI, HTTPException, Query
+from datetime import date, datetime
+from fastapi import Depends, FastAPI, HTTPException, Query
 from pydantic import BaseModel, Field, ValidationError
+from sqlalchemy.orm import Session
 import json
 import logging
 import alfanous.api as alfanous_api
+
+from alfanous_webapi.ai_formatting import format_ai_response
+from alfanous_webapi.database import (
+    Conversation,
+    get_db,
+    get_today_conversations,
+    init_db,
+    save_conversation,
+)
 
 
 # Configure logging
@@ -125,6 +136,9 @@ app = FastAPI(
     redoc_url="/redoc"
 )
 
+# Initialise database tables on startup (idempotent – safe to run repeatedly)
+init_db()
+
 
 # Pydantic models for request/response validation
 class SearchRequest(BaseModel):
@@ -171,6 +185,56 @@ class RootResponse(BaseModel):
     version: str
     endpoints: Dict[str, Any]
     usage: str
+
+
+# ---------------------------------------------------------------------------
+# Ask-AI conversation models
+# ---------------------------------------------------------------------------
+
+
+class ConversationRequest(BaseModel):
+    """Request model for saving a conversation turn."""
+
+    session_id: str = Field(
+        ...,
+        description="Unique identifier for the conversation session",
+        min_length=1,
+        max_length=255,
+    )
+    user_message: str = Field(
+        ...,
+        description="The user's message / question",
+        min_length=1,
+    )
+    ai_response: str = Field(
+        ...,
+        description="The AI's plain-text response",
+        min_length=1,
+    )
+
+
+class ConversationResponse(BaseModel):
+    """Response model for a single conversation turn."""
+
+    id: int
+    session_id: str
+    user_message: str
+    ai_response: str
+    ai_response_html: Optional[str] = Field(
+        None,
+        description="HTML-formatted AI response with clickable links and "
+                    "styled aya references (search-result-aya class)",
+    )
+    created_at: datetime
+
+
+class ConversationsListResponse(BaseModel):
+    """Response model for a list of conversation turns."""
+
+    session_id: str
+    date: str = Field(..., description="Date of the conversations (YYYY-MM-DD, UTC)")
+    count: int
+    conversations: List[ConversationResponse]
 
 
 # Root endpoint
@@ -473,6 +537,104 @@ async def get_info_category(category: str) -> InfoResponse:
     except Exception as e:
         logger.exception("Error retrieving info category")
         raise HTTPException(status_code=500, detail="An error occurred while retrieving information")
+
+
+# ---------------------------------------------------------------------------
+# Ask-AI conversation endpoints
+# ---------------------------------------------------------------------------
+
+
+@app.post(
+    "/api/ask-ai/conversations",
+    response_model=ConversationResponse,
+    tags=["Ask AI"],
+    summary="Save a conversation turn",
+)
+async def create_conversation(
+    request: ConversationRequest,
+    db: Session = Depends(get_db),
+) -> ConversationResponse:
+    """
+    Save a user–AI conversation turn and return it with HTML-formatted output.
+
+    The AI response is automatically processed by the formatting utilities:
+    - Bare URLs are converted to clickable ``<a>`` anchor tags.
+    - Aya references such as ``[2:255]`` are wrapped in
+      ``<span class="search-result-aya">`` so they receive the same CSS
+      styling as the main aya display in the search-results view.
+
+    The formatted response is stored in the ``ai_response_html`` field.
+    """
+    try:
+        html_response = format_ai_response(request.ai_response)
+        conv = save_conversation(
+            db=db,
+            session_id=request.session_id,
+            user_message=request.user_message,
+            ai_response=request.ai_response,
+            ai_response_html=html_response,
+        )
+        return ConversationResponse(
+            id=conv.id,
+            session_id=conv.session_id,
+            user_message=conv.user_message,
+            ai_response=conv.ai_response,
+            ai_response_html=conv.ai_response_html,
+            created_at=conv.created_at,
+        )
+    except Exception as e:
+        logger.exception("Error saving conversation")
+        raise HTTPException(
+            status_code=500,
+            detail="An error occurred while saving the conversation",
+        )
+
+
+@app.get(
+    "/api/ask-ai/conversations/today",
+    response_model=ConversationsListResponse,
+    tags=["Ask AI"],
+    summary="Get today's conversations",
+)
+async def get_conversations_today(
+    session_id: str = Query(
+        ...,
+        description="Session identifier whose today's conversations to retrieve",
+        min_length=1,
+        max_length=255,
+    ),
+    db: Session = Depends(get_db),
+) -> ConversationsListResponse:
+    """
+    Return all conversation turns for *session_id* that were created today (UTC).
+
+    Only today's conversations are loaded to keep response sizes manageable and
+    to focus the AI context window on the current day's discussion.
+    """
+    try:
+        rows: list[Conversation] = get_today_conversations(db, session_id)
+        return ConversationsListResponse(
+            session_id=session_id,
+            date=str(date.today()),
+            count=len(rows),
+            conversations=[
+                ConversationResponse(
+                    id=row.id,
+                    session_id=row.session_id,
+                    user_message=row.user_message,
+                    ai_response=row.ai_response,
+                    ai_response_html=row.ai_response_html,
+                    created_at=row.created_at,
+                )
+                for row in rows
+            ],
+        )
+    except Exception as e:
+        logger.exception("Error retrieving today's conversations")
+        raise HTTPException(
+            status_code=500,
+            detail="An error occurred while retrieving conversations",
+        )
 
 
 # Entry point for console script
