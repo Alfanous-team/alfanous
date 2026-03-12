@@ -346,6 +346,25 @@ class QShingleFilter(Filter):
         tokens رسول at pos 0, الله at pos 2
             → []
 
+    Quick-reference: 10 examples (single words and 2-word phrases)::
+
+        # Single words — index mode stores nothing (aya field already covers them)
+        # Single words — query mode yields the word as a unigram fallback
+        "الحمد"  (index)  → []
+        "الحمد"  (query)  → ["الحمد"]
+
+        "رسول"   (index)  → []
+        "رسول"   (query)  → ["رسول"]
+
+        "الله"   (index)  → []
+        "الله"   (query)  → ["الله"]
+
+        # 2-word phrases — both modes produce the bigram
+        "الحمد لله"   → ["الحمد لله"]
+        "رسول الله"   → ["رسول الله"]
+        "بسم الله"    → ["بسم الله"]
+        "سميع عليم"   → ["سميع عليم"]
+
     :param minsize: Minimum shingle size in words (inclusive, default 2).
     :param maxsize: Maximum shingle size in words (inclusive, default 3).
     :param sep: Separator inserted between words in each shingle (default space).
