@@ -40,7 +40,7 @@ def search(query: str, unit: str = "aya", page: int = 1, sortedby: str = "releva
            reverse: bool = False,
            fuzzy: bool = False, fuzzy_maxdist: int = 1, view: str = "normal",
            highlight: str = "bold", flags: Optional[Dict[str, Any]] = None,
-           facets: Optional[str] = None, filter: Optional[str] = None,
+           facets: Optional[str] = None, filter: Optional[Any] = None,
            timelimit: Optional[float] = 5.0,
            translation: Optional[str] = None,
            lang: Optional[str] = None) -> Dict[str, Any]:
@@ -65,8 +65,21 @@ def search(query: str, unit: str = "aya", page: int = 1, sortedby: str = "releva
     @param view: View mode ('normal', 'minimal', etc.)
     @param highlight: Highlight style ('bold', 'css', etc.)
     @param flags: Additional flags dictionary
-    @param facets: Facets to group results by
-    @param filter: Filter to apply to results
+    @param facets: Comma-separated list of facet fields to group results by.
+           Valid aya fields: sura_id, juz, hizb, rub, nisf, page, sura_type,
+           chapter, topic, subtopic, sajda, sajda_type.
+           Valid word fields: root, type, pos, lemma, case, state, derivation, gender.
+           Valid translation fields: sura_id, aya_id, trans_id, trans_lang.
+    @param filter: Restrict results to documents matching these field values,
+           independently of the search query.  Accepted formats:
+           - A dict: ``{"sura_id": 2}`` or ``{"sura_id": [2, 3]}`` (OR within field,
+             AND across fields).
+           - A string: ``"sura_id:2"`` or ``"sura_id:2,juz:1"``.
+           Works for all search units (aya, word, translation).
+           Example useful fields per unit:
+           - aya:         sura_id, juz, hizb, page, sura_type, chapter, topic
+           - word:        pos, type, root, lemma, gender, case, state, derivation
+           - translation: trans_lang, trans_id, sura_id, aya_id
     @param timelimit: Maximum number of seconds to spend on the search query
            (default 5.0). Pass None to disable the limit.
     @param translation: Translation ID (e.g. 'en.shakir') to include with aya results.

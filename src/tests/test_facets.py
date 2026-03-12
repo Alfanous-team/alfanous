@@ -319,3 +319,202 @@ def test_facet_with_topic():
     if "facets" in results["search"] and "topic" in results["search"]["facets"]:
         facets = results["search"]["facets"]["topic"]
         assert isinstance(facets, list)
+
+
+# ---------------------------------------------------------------------------
+# Filter support for 'translation' search unit
+# ---------------------------------------------------------------------------
+
+def test_filter_translation_by_lang():
+    """Filter translation search results by language (outside query)."""
+    results = RAWoutput.do({
+        "action": "search",
+        "unit": "translation",
+        "query": "Allah",
+        "filter": {"trans_lang": "en"},
+    })
+    assert results["error"]["code"] == 0
+    translations = results["search"]["translations"]
+    if not translations:
+        pytest.skip("No translation results — index may lack English translations")
+    for t in translations.values():
+        assert t["translation"]["lang"] == "en"
+
+
+def test_filter_translation_by_sura():
+    """Filter translation search results to a single sura (outside query)."""
+    results = RAWoutput.do({
+        "action": "search",
+        "unit": "translation",
+        "query": "mercy",
+        "filter": {"sura_id": 1},
+    })
+    assert results["error"]["code"] == 0
+    translations = results["search"]["translations"]
+    if not translations:
+        pytest.skip("No translation results for this query/filter combination")
+    for t in translations.values():
+        assert t["identifier"]["sura_id"] == 1
+
+
+def test_filter_translation_string_format():
+    """Filter translation search using string format 'field:value'."""
+    results = RAWoutput.do({
+        "action": "search",
+        "unit": "translation",
+        "query": "Allah",
+        "filter": "trans_lang:en",
+    })
+    assert results["error"]["code"] == 0
+    translations = results["search"]["translations"]
+    if not translations:
+        pytest.skip("No translation results — index may lack English translations")
+    for t in translations.values():
+        assert t["translation"]["lang"] == "en"
+
+
+def test_filter_translation_with_facets():
+    """Filter + facets together for translation unit."""
+    results = RAWoutput.do({
+        "action": "search",
+        "unit": "translation",
+        "query": "mercy",
+        "filter": {"trans_lang": "en"},
+        "facets": "sura_id",
+    })
+    assert results["error"]["code"] == 0
+    if not results["search"]["translations"]:
+        pytest.skip("No translation results")
+    # When filtered by lang=en, all returned translations must be English
+    for t in results["search"]["translations"].values():
+        assert t["translation"]["lang"] == "en"
+    # Facets should be present when results were found
+    if results["search"]["interval"]["total"] > 0:
+        assert "facets" in results["search"]
+        assert "sura_id" in results["search"]["facets"]
+
+
+def test_filter_translation_narrows_results():
+    """Filter should produce fewer or equal results than an unfiltered search."""
+    unfiltered = RAWoutput.do({
+        "action": "search",
+        "unit": "translation",
+        "query": "God",
+    })
+    filtered = RAWoutput.do({
+        "action": "search",
+        "unit": "translation",
+        "query": "God",
+        "filter": {"trans_lang": "en"},
+    })
+    assert filtered["error"]["code"] == 0
+    total_unfiltered = unfiltered["search"]["interval"]["total"]
+    total_filtered = filtered["search"]["interval"]["total"]
+    assert total_filtered <= total_unfiltered
+
+
+# ---------------------------------------------------------------------------
+# Filter support for 'word' search unit
+# ---------------------------------------------------------------------------
+
+def test_filter_words_by_pos():
+    """Filter word search results by part-of-speech outside the query."""
+    results = RAWoutput.do({
+        "action": "search",
+        "unit": "word",
+        "query": "الله",
+        "filter": {"pos": "PN"},
+    })
+    assert results["error"]["code"] == 0
+    words = results["search"]["words"]
+    if not words:
+        pytest.skip("No word results for POS filter — index may not have this POS value")
+    for w in words.values():
+        assert w["word"]["pos"] == "PN"
+
+
+def test_filter_words_by_root():
+    """Filter word search results by Arabic root outside the query."""
+    results = RAWoutput.do({
+        "action": "search",
+        "unit": "word",
+        "query": "root:رحم",
+        "filter": {"sura_id": 1},
+    })
+    assert results["error"]["code"] == 0
+    words = results["search"]["words"]
+    if not words:
+        pytest.skip("No word results for root:رحم in sura 1")
+    for w in words.values():
+        assert w["identifier"]["sura_id"] == 1
+
+
+def test_filter_words_string_format():
+    """Filter word search using string format 'field:value'."""
+    results = RAWoutput.do({
+        "action": "search",
+        "unit": "word",
+        "query": "الله",
+        "filter": "sura_id:1",
+    })
+    assert results["error"]["code"] == 0
+    words = results["search"]["words"]
+    if not words:
+        pytest.skip("No word results for this query/filter combination")
+    for w in words.values():
+        assert w["identifier"]["sura_id"] == 1
+
+
+def test_filter_words_narrows_results():
+    """Filter should produce fewer or equal results than an unfiltered word search."""
+    unfiltered = RAWoutput.do({
+        "action": "search",
+        "unit": "word",
+        "query": "الله",
+    })
+    filtered = RAWoutput.do({
+        "action": "search",
+        "unit": "word",
+        "query": "الله",
+        "filter": {"sura_id": 1},
+    })
+    assert filtered["error"]["code"] == 0
+    assert filtered["search"]["interval"]["total"] <= unfiltered["search"]["interval"]["total"]
+
+
+def test_filter_words_with_facets():
+    """Filter + facets together for word unit."""
+    results = RAWoutput.do({
+        "action": "search",
+        "unit": "word",
+        "query": "root:رحم",
+        "filter": {"sura_id": 1},
+        "facets": "pos",
+    })
+    assert results["error"]["code"] == 0
+    words = results["search"]["words"]
+    if not words:
+        pytest.skip("No word results for root:رحم in sura 1")
+    for w in words.values():
+        assert w["identifier"]["sura_id"] == 1
+    if results["search"]["interval"]["total"] > 0 and "facets" in results["search"]:
+        assert "pos" in results["search"]["facets"]
+
+
+# ---------------------------------------------------------------------------
+# Facets for non-Arabic aya search path
+# ---------------------------------------------------------------------------
+
+def test_facets_non_arabic_aya_search():
+    """Facets should be computed even when the query contains no Arabic script."""
+    results = RAWoutput.do({"action": "search", "query": "mercy", "facets": "sura_id"})
+    assert results["error"]["code"] == 0
+    if results["search"]["interval"]["total"] == 0:
+        pytest.skip("No results for 'mercy' — index may not have English translations indexed on aya")
+    # If there are results, facets should be present
+    assert "facets" in results["search"]
+    assert "sura_id" in results["search"]["facets"]
+    facet_entries = results["search"]["facets"]["sura_id"]
+    assert isinstance(facet_entries, list)
+    for entry in facet_entries:
+        assert "value" in entry and "count" in entry
