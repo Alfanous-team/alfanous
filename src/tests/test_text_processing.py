@@ -9,9 +9,11 @@ import pytest
 from alfanous.text_processing import (
     QArabicSymbolsFilter,
     QArabicStemFilter,
+    QShingleFilter,
     QStopFilter,
     QSynonymsFilter,
     QFuzzyAnalyzer,
+    QShingleAnalyzer,
     QStandardAnalyzer,
     QUthmaniAnalyzer,
     TranslationStemFilter,
@@ -490,3 +492,170 @@ def test_uthmani_field_uses_normalizing_analyzer():
         "the uthmani field should normalize by removing both tashkeel and uthmani symbols"
     )
 
+
+
+# ---------------------------------------------------------------------------
+# QShingleFilter – adjacency tests
+# ---------------------------------------------------------------------------
+
+def test_shingle_filter_basic_bigram_and_trigram():
+    """QShingleFilter produces bigrams and trigrams from a normal 3-word phrase."""
+    shingles = _tokenize(QShingleAnalyzer, "الله سميع عليم")
+    assert "الله سميع" in shingles
+    assert "سميع عليم" in shingles
+    assert "الله سميع عليم" in shingles
+
+
+def test_shingle_filter_single_char_breaks_adjacency():
+    """A single-character token must clear the shingle window.
+
+    Uthmani pause marks such as ص, ق, ن appear as standalone single-letter
+    'words' in the aya text.  They must not bridge two real words into a
+    shingle; otherwise the autocomplete index fills up with nonsense entries
+    like 'سميع ص بصير'.
+    """
+    for noise in ["ص", "ق", "ن", "م"]:
+        shingles = _tokenize(QShingleAnalyzer, f"سميع {noise} بصير")
+        assert shingles == [], f"noise='{noise}': expected [], got {shingles!r}"
+
+
+def test_shingle_filter_truly_adjacent_words_still_form_shingles():
+    """Words that are genuinely adjacent (no noise in between) must still combine."""
+    shingles = _tokenize(QShingleAnalyzer, "سميع بصير")
+    assert "سميع بصير" in shingles
+
+
+def test_shingle_filter_single_char_at_start_does_not_pollute():
+    """A single-char word at the start of a phrase must not contaminate subsequent shingles."""
+    # ن + two real words: only the two real words should form a bigram.
+    # Note: `word in s.split()` is an exact-word check (list membership), not substring.
+    shingles = _tokenize(QShingleAnalyzer, "ن سميع بصير")
+    assert "سميع بصير" in shingles
+    shingle_words = {w for s in shingles for w in s.split()}
+    assert "ن" not in shingle_words, f"Single-char 'ن' leaked into shingles: {shingles!r}"
+
+
+def test_shingle_filter_single_char_at_end_does_not_pollute():
+    """A single-char word at the end of a phrase must not contaminate preceding shingles."""
+    shingles = _tokenize(QShingleAnalyzer, "سميع بصير ص")
+    assert "سميع بصير" in shingles
+    shingle_words = {w for s in shingles for w in s.split()}
+    assert "ص" not in shingle_words, f"Single-char 'ص' leaked into shingles: {shingles!r}"
+
+
+def _make_token_stream(specs, positions=True):
+    """Yield synthetic Whoosh tokens with explicit (text, pos) pairs.
+
+    :param specs: iterable of ``(text, pos)`` tuples.
+    :param positions: whether to enable position tracking on each token.
+    """
+    for text, pos in specs:
+        t = Token(positions=positions)
+        t.text = text
+        t.stopped = False
+        if positions:
+            t.pos = pos
+        yield t
+
+
+def test_shingle_filter_position_gap_breaks_adjacency():
+    """A position gap (pos increment > 1) must clear the shingle window.
+
+    Whoosh's built-in ShingleFilter does NOT check position gaps; our
+    QShingleFilter must do so explicitly using token.pos when positions are
+    tracked (token.positions is True).
+    """
+    sf = QShingleFilter(2, 3)
+    # pos 0 then pos 2: gap of 2 — words are not truly adjacent
+    tokens = list(sf(_make_token_stream([("سميع", 0), ("بصير", 2)])))
+    assert tokens == [], (
+        f"Expected no shingles across a position gap, got {[t.text for t in tokens]!r}"
+    )
+
+
+def test_shingle_filter_position_gap_mid_stream():
+    """A position gap in the middle of a stream resets the window.
+
+    Tokens before the gap must not combine with tokens after it.
+    """
+    sf = QShingleFilter(2, 3)
+    # الله(0) سميع(1) [gap] بصير(3) عليم(4)
+    # Adjacent pairs: الله+سميع, بصير+عليم.
+    # The gap between سميع(1) and بصير(3) must prevent "سميع بصير" and any
+    # trigram that bridges positions 1 and 3.
+    tokens = list(sf(_make_token_stream([
+        ("الله", 0), ("سميع", 1), ("بصير", 3), ("عليم", 4)
+    ])))
+    texts = [t.text for t in tokens]
+    assert "الله سميع" in texts,      f"Expected 'الله سميع' in {texts!r}"
+    assert "بصير عليم" in texts,      f"Expected 'بصير عليم' in {texts!r}"
+    # These shingles must NOT appear because they bridge the gap
+    assert "سميع بصير" not in texts,  f"'سميع بصير' must not span the gap: {texts!r}"
+    assert not any("سميع" in t and "بصير" in t for t in texts), (
+        f"No shingle should bridge the gap: {texts!r}"
+    )
+
+
+def test_shingle_filter_no_positions_falls_back_to_text_checks():
+    """When positions are not tracked, window resets still use stopped/single-char logic."""
+    sf = QShingleFilter(2, 3)
+    # Build tokens without position tracking; simulate a stopped token in between.
+    def _stream():
+        for text in ["سميع", "بصير"]:
+            t = Token(positions=False)
+            t.text = text
+            t.stopped = False
+            yield t
+        # Stopped token (no pos tracking)
+        s = Token(positions=False)
+        s.text = "في"
+        s.stopped = True
+        yield s
+        for text in ["عليم"]:
+            t = Token(positions=False)
+            t.text = text
+            t.stopped = False
+            yield t
+
+    tokens = list(sf(_stream()))
+    texts = [t.text for t in tokens]
+    assert "سميع بصير" in texts,   f"Expected 'سميع بصير' in {texts!r}"
+    # "بصير عليم" must NOT form because the stopped token reset the window
+    assert "بصير عليم" not in texts, f"'بصير عليم' must not span stopped token: {texts!r}"
+
+
+# ---------------------------------------------------------------------------
+# QShingleFilter – query-mode unigram fallback ("words alone")
+# ---------------------------------------------------------------------------
+
+def test_shingle_filter_single_word_query_mode_yields_unigram():
+    """A single Arabic word in query mode must be yielded as a unigram.
+
+    When QShingleAnalyzer is used in query mode and only one real word is
+    present (no shingle can form), the word itself must be emitted so that
+    the Whoosh query is not silently discarded.
+    """
+    assert _tokenize_query(QShingleAnalyzer, "الحمد") == ["الحمد"]
+    assert _tokenize_query(QShingleAnalyzer, "رسول") == ["رسول"]
+
+
+def test_shingle_filter_single_word_index_mode_yields_nothing():
+    """A single Arabic word in index mode must NOT produce any token.
+
+    The aya_shingles field stores only multi-word phrases; the aya field
+    already handles individual words.
+    """
+    assert _tokenize(QShingleAnalyzer, "الحمد") == []
+    assert _tokenize(QShingleAnalyzer, "رسول") == []
+
+
+def test_shingle_filter_two_words_query_mode_yields_shingle_not_unigrams():
+    """Two adjacent words in query mode yield the bigram, not bare unigrams."""
+    result = _tokenize_query(QShingleAnalyzer, "الحمد لله")
+    assert result == ["الحمد لله"], f"Expected bigram only, got {result!r}"
+
+
+def test_shingle_filter_noise_only_query_mode_yields_nothing():
+    """A single-character noise token alone yields nothing even in query mode."""
+    assert _tokenize_query(QShingleAnalyzer, "ص") == []
+    assert _tokenize_query(QShingleAnalyzer, "ق") == []

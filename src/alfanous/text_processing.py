@@ -234,9 +234,136 @@ class QShingleFilter(Filter):
     by :data:`QShingleAnalyzer` to simultaneously index word bigrams and
     trigrams for the ``aya_shingles`` field.
 
-    Example (minsize=2, maxsize=3, sep=' ')::
+    Only truly adjacent words are combined.  Three conditions each reset the
+    shingle window independently:
 
-        "الله سميع عليم" → ["الله سميع", "الله سميع عليم", "سميع عليم"]
+    * A **stopped** token (``token.stopped = True``) — signals a deliberate
+      position gap introduced by an upstream filter such as
+      :class:`QStopFilter`.
+    * A **single-character** token (e.g. a Quranic pause mark such as ص, ق, ن
+      or a surah initial) — these are noise tokens that must not bridge two
+      real words.
+    * A **position gap** — when Whoosh position tracking is active
+      (``token.positions = True``) and ``token.pos`` is not exactly
+      ``prev_pos + 1``, the tokens are not truly adjacent in the original text
+      and the window is reset.  This is the authoritative adjacency check: it
+      catches any gap regardless of its cause (stopped words, silently-dropped
+      tokens, etc.).
+
+    Whoosh's built-in :class:`~whoosh.analysis.ShingleFilter` does *not*
+    perform position-based adjacency checking — it only skips stopped tokens
+    without clearing its buffer, which can still join non-adjacent words.
+
+    Examples (minsize=2, maxsize=3, sep=' ')::
+
+        # 1. Two real words → one bigram
+        "سميع بصير"
+            → ["سميع بصير"]
+
+        # 2. Three real words → two bigrams + one trigram
+        "الله سميع عليم"
+            → ["الله سميع", "سميع عليم", "الله سميع عليم"]
+
+        # 3. Pause mark ص in the middle → nothing (ص resets the window)
+        "سميع ص بصير"
+            → []
+
+        # 4. Pause mark ق in the middle → nothing
+        "سميع ق بصير"
+            → []
+
+        # 5. Pause mark ن in the middle → nothing
+        "سميع ن بصير"
+            → []
+
+        # 6. Noise letter at the start → window starts fresh after it
+        "ن سميع بصير"
+            → ["سميع بصير"]
+
+        # 7. Noise letter at the end → window was already cleared, previous pair kept
+        "سميع بصير ص"
+            → ["سميع بصير"]
+
+        # 8. Four real words → rolling bigrams and trigrams
+        "سميع بصير عليم خبير"
+            → ["سميع بصير", "بصير عليم", "سميع بصير عليم",
+               "عليم خبير", "بصير عليم خبير"]
+
+        # 9. Position gap: الله(pos=0) سميع(pos=1) [gap] بصير(pos=3) عليم(pos=4)
+        #    The gap between pos 1 and pos 3 resets the window — nothing bridges it.
+        tokens at positions 0,1 then 3,4
+            → ["الله سميع", "بصير عليم"]
+
+        # 10. Only single-character words → window always resets, nothing emitted
+        "ن ص ق م"
+            → []
+
+    Examples with الحمد and رسول (minsize=2, maxsize=3, sep=' ')::
+
+        # الحمد
+        # A1. Classic two-word phrase → one bigram
+        "الحمد لله"
+            → ["الحمد لله"]
+
+        # A2. Three-word phrase → two bigrams + one trigram
+        "الحمد لله رب"
+            → ["الحمد لله", "لله رب", "الحمد لله رب"]
+
+        # A3. Four-word phrase (Al-Fatiha opening) → rolling bigrams and trigrams
+        "الحمد لله رب العالمين"
+            → ["الحمد لله", "لله رب", "الحمد لله رب",
+               "رب العالمين", "لله رب العالمين"]
+
+        # A4. Pause mark ص between الحمد and لله → nothing (both modes)
+        "الحمد ص لله"
+            → []
+
+        # A5. الحمد alone
+        #     index mode: no shingle produced (field stores only multi-word phrases)
+        #     query mode: the word itself is yielded as a unigram fallback
+        "الحمد"  (index mode)  → []
+        "الحمد"  (query mode)  → ["الحمد"]
+
+        # رسول
+        # B1. Classic two-word phrase → one bigram
+        "رسول الله"
+            → ["رسول الله"]
+
+        # B2. Three-word phrase → two bigrams + one trigram
+        "رسول الله الكريم"
+            → ["رسول الله", "الله الكريم", "رسول الله الكريم"]
+
+        # B3. Three-word phrase starting with a name → two bigrams + one trigram
+        "محمد رسول الله"
+            → ["محمد رسول", "رسول الله", "محمد رسول الله"]
+
+        # B4. Pause mark ص between رسول and الله → nothing (both modes)
+        "رسول ص الله"
+            → []
+
+        # B5. Position gap رسول(pos=0) [gap] الله(pos=2) → nothing bridges it
+        #     (both modes)
+        tokens رسول at pos 0, الله at pos 2
+            → []
+
+    Quick-reference: 10 examples (single words and 2-word phrases)::
+
+        # Single words — index mode stores nothing (aya field already covers them)
+        # Single words — query mode yields the word as a unigram fallback
+        "الحمد"  (index)  → []
+        "الحمد"  (query)  → ["الحمد"]
+
+        "رسول"   (index)  → []
+        "رسول"   (query)  → ["رسول"]
+
+        "الله"   (index)  → []
+        "الله"   (query)  → ["الله"]
+
+        # 2-word phrases — both modes produce the bigram
+        "الحمد لله"   → ["الحمد لله"]
+        "رسول الله"   → ["رسول الله"]
+        "بسم الله"    → ["بسم الله"]
+        "سميع عليم"   → ["سميع عليم"]
 
     :param minsize: Minimum shingle size in words (inclusive, default 2).
     :param maxsize: Maximum shingle size in words (inclusive, default 3).
@@ -253,10 +380,23 @@ class QShingleFilter(Filter):
         sep = self.sep
         # Buffer holds up to maxsize copies of recent tokens.
         buf: deque = deque(maxlen=self.maxsize)
+        mode = None   # read once from the first token; constant across the stream
+        emitted = False  # True once the first shingle has been yielded
         for token in tokens:
-            if token.stopped:
-                buf.clear()  # gaps must break shingles
+            if mode is None:
+                mode = token.mode
+            if token.stopped or len(token.text) <= 1:
+                # A stopped token signals a position gap; a single-character
+                # token (e.g. Uthmani pause mark or Quranic disconnected letter)
+                # is noise that must not bridge two real words into a shingle.
+                buf.clear()
                 continue
+            # Position-based adjacency check (authoritative when available):
+            # if Whoosh is tracking positions and the gap between this token
+            # and the previous buffered token is not exactly 1, the words are
+            # not truly adjacent — reset the window.
+            if token.positions and buf and token.pos != buf[-1].pos + 1:
+                buf.clear()
             buf.append(token.copy())
             buf_list = list(buf)
             n = len(buf_list)
@@ -267,6 +407,14 @@ class QShingleFilter(Filter):
                 if tk.chars:
                     tk.endchar = phrase_toks[-1].endchar
                 yield tk
+                emitted = True
+
+        # Query-mode unigram fallback: if the whole input stream contained only
+        # a single real word (buf holds exactly that one token) and no shingle
+        # was produced, yield the word as a unigram so the query is not silently
+        # discarded.  Index mode intentionally keeps the field shingle-only.
+        if mode == "query" and not emitted and len(buf) == 1:
+            yield buf[0]
 
 
 # Word-level bigram + trigram analyzer using QShingleFilter.

@@ -163,6 +163,21 @@ class BasicSearchEngine:
             word, limit=limit, stopwords=stopwords, trigram_min_count=trigram_min_count
         )
 
+    def suggest_extensions(self, prefix_text, limit=10):
+        """Find shingles that extend a typed prefix.
+
+        Delegates to :meth:`~alfanous.searching.QSearcher.suggest_extensions`.
+
+        Returns only shingles whose first words exactly match *prefix_text*,
+        making this the right function for autocomplete (the user's typed text
+        is kept intact and the suggestions are longer completions).
+
+        :param prefix_text: One or more space-separated Arabic words already typed.
+        :param limit: Maximum number of completions to return (default 10).
+        :returns: Ordered list of phrase strings extending *prefix_text*.
+        """
+        return self._searcher.suggest_extensions(prefix_text, limit=limit)
+
     def correct_query(self, querystr):
         """
         Return a corrected version of *querystr* using Whoosh's query corrector.
@@ -173,28 +188,48 @@ class BasicSearchEngine:
         return self._searcher.correct_query(querystr)
 
     def autocomplete(self, querystr):
-        """Get collocation-based autocomplete suggestions for the last word in a query.
+        """Get autocomplete suggestions that extend what the user has typed.
 
-        Splits *querystr* into words.  The final word is looked up in the
-        ``aya_shingles`` Whoosh field to retrieve the most frequent bigram and
-        trigram phrases that contain that word.  The returned phrases serve as
-        rich multi-word completions (e.g. ``'رسول'`` → ``['رسول الله',
-        'إني لكم رسول', …]``) rather than simple single-word prefix matches.
+        Uses the full *querystr* as a prefix and returns shingles from the
+        ``aya_shingles`` field whose first words exactly match that prefix.
+        This gives consistent, "extend what was typed" behaviour for both
+        single-word and multi-word input:
 
-        @param querystr: The query string to autocomplete.  May be one or more
-            space-separated Arabic words; only the last word is used for lookup.
+        * ``autocomplete("الحمد")``
+          → ``["الحمد لله", "الحمد لله رب"]``
+          *(bigrams and trigrams that start with الحمد)*
+
+        * ``autocomplete("الحمد لله")``
+          → ``["الحمد لله رب"]``
+          *(trigrams that start with the full bigram)*
+
+        * ``autocomplete("رسول")``
+          → ``["رسول الله", "رسول الله الكريم"]``
+          *(only phrases where رسول is the first word — not "محمد رسول")*
+
+        When no shingle extends the typed text (rare word or index predates
+        ``aya_shingles``), the method falls back to prefix-based single-word
+        completion from the ``aya_ac`` field.
+
+        @param querystr: The Arabic text the user has typed (one or more words).
         @return: Dict with:
-            - ``'base'``: all words except the last (the already-typed prefix),
-              joined with a space.
-            - ``'completion'``: ordered list of collocation phrases for the
-              last word (at most 10), sorted by Quranic corpus frequency.
+            - ``'base'``: all words except the last, joined with a space
+              (unchanged prefix already committed).
+            - ``'completion'``: ordered list of phrase completions (at most 10),
+              sorted by Quranic corpus frequency.
         """
         words = querystr.split()
-        last_word = words[-1] if words else querystr
+        if not words:
+            return {"base": "", "completion": []}
         base = " ".join(words[:-1])
+        completion = self.suggest_extensions(querystr.strip(), limit=10)
+        if not completion:
+            # No shingle extends this prefix — fall back to single-word prefix
+            # expansion on aya_ac (handles rare/unknown words gracefully).
+            completion = self._reader.autocomplete(words[-1])[:10]
         return {
             "base": base,
-            "completion": self.suggest_collocations(last_word, limit=10),
+            "completion": completion,
         }
 
     def highlight(self, text, terms, highlight_type="css", strip_vocalization=True):
