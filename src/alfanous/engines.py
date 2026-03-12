@@ -173,28 +173,41 @@ class BasicSearchEngine:
         return self._searcher.correct_query(querystr)
 
     def autocomplete(self, querystr):
-        """Get collocation-based autocomplete suggestions for the last word in a query.
+        """Get autocomplete suggestions for the last word in a query.
 
-        Splits *querystr* into words.  The final word is looked up in the
-        ``aya_shingles`` Whoosh field to retrieve the most frequent bigram and
-        trigram phrases that contain that word.  The returned phrases serve as
-        rich multi-word completions (e.g. ``'رسول'`` → ``['رسول الله',
-        'إني لكم رسول', …]``) rather than simple single-word prefix matches.
+        First tries the collocation-based approach: looks up the last word in
+        the ``aya_shingles`` Whoosh field to retrieve the most frequent bigram
+        and trigram phrases that contain that word (e.g. ``'رسول'`` →
+        ``['رسول الله', 'إني لكم رسول', …]``).
+
+        A Whoosh ``Term`` query against ``aya_shingles`` for a single word
+        returns no results because the field stores only multi-word phrases.
+        When the shingle approach returns nothing (rare word, or the index
+        pre-dates the ``aya_shingles`` field), the method falls back to
+        prefix-based single-word completion from the ``aya_ac`` field via
+        ``QReader.autocomplete``.
 
         @param querystr: The query string to autocomplete.  May be one or more
             space-separated Arabic words; only the last word is used for lookup.
         @return: Dict with:
             - ``'base'``: all words except the last (the already-typed prefix),
               joined with a space.
-            - ``'completion'``: ordered list of collocation phrases for the
-              last word (at most 10), sorted by Quranic corpus frequency.
+            - ``'completion'``: ordered list of collocation phrases or
+              prefix-matched words for the last word (at most 10).
         """
         words = querystr.split()
         last_word = words[-1] if words else querystr
         base = " ".join(words[:-1])
+        completion = self.suggest_collocations(last_word, limit=10)
+        if not completion:
+            # Whoosh aya_shingles lookup returned nothing for this word alone
+            # (the field stores only bigrams/trigrams, so a single-word Term
+            # query always misses).  Fall back to prefix-based word completion
+            # from the aya_ac field.
+            completion = self._reader.autocomplete(last_word)[:10]
         return {
             "base": base,
-            "completion": self.suggest_collocations(last_word, limit=10),
+            "completion": completion,
         }
 
     def highlight(self, text, terms, highlight_type="css", strip_vocalization=True):

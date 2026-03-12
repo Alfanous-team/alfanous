@@ -2381,5 +2381,117 @@ class TestSharedReaderSearcherContract(unittest.TestCase):
         self.assertEqual(result, [])
 
 
+# ---------------------------------------------------------------------------
+# autocomplete fallback: prefix-based word completion when shingles yield nothing
+# ---------------------------------------------------------------------------
+
+class TestAutocompleteWordAloneFallback(unittest.TestCase):
+    """BasicSearchEngine.autocomplete must fall back to prefix completion.
+
+    A Whoosh Term query against ``aya_shingles`` for a single word always
+    returns 0 results because the field stores only bigrams and trigrams.
+    ``suggest_collocations`` uses its own term-dict scan so it DOES work for
+    single words that appear in shingles.  But when a word has NO collocations
+    at all (very rare word, or the index pre-dates the field), the completion
+    must fall back to ``QReader.autocomplete`` (prefix expansion on aya_ac)
+    rather than returning an empty list.
+    """
+
+    def test_collocations_found_no_fallback(self):
+        """When suggest_collocations returns results, reader.autocomplete is NOT called."""
+        from alfanous.engines import BasicSearchEngine
+
+        engine = BasicSearchEngine.__new__(BasicSearchEngine)
+        engine._searcher = MagicMock()
+        engine._searcher.suggest_collocations.return_value = ["الحمد لله", "الحمد لله رب"]
+        engine._reader = MagicMock()
+        engine._reader.autocomplete.return_value = ["الحمد"]
+
+        result = engine.autocomplete("الحمد")
+
+        self.assertEqual(result["base"], "")
+        self.assertEqual(result["completion"], ["الحمد لله", "الحمد لله رب"])
+        engine._reader.autocomplete.assert_not_called()
+
+    def test_no_collocations_falls_back_to_prefix(self):
+        """When suggest_collocations returns [], autocomplete falls back to prefix expansion."""
+        from alfanous.engines import BasicSearchEngine
+
+        engine = BasicSearchEngine.__new__(BasicSearchEngine)
+        engine._searcher = MagicMock()
+        engine._searcher.suggest_collocations.return_value = []
+        engine._reader = MagicMock()
+        engine._reader.autocomplete.return_value = ["نادر", "نادرة"]
+
+        result = engine.autocomplete("نادر")
+
+        self.assertEqual(result["completion"], ["نادر", "نادرة"])
+        engine._reader.autocomplete.assert_called_once_with("نادر")
+
+    def test_fallback_result_capped_at_10(self):
+        """The fallback prefix result is capped at 10 items."""
+        from alfanous.engines import BasicSearchEngine
+
+        engine = BasicSearchEngine.__new__(BasicSearchEngine)
+        engine._searcher = MagicMock()
+        engine._searcher.suggest_collocations.return_value = []
+        # Reader returns 15 prefix matches
+        engine._reader = MagicMock()
+        engine._reader.autocomplete.return_value = [f"كلمة{i}" for i in range(15)]
+
+        result = engine.autocomplete("كلمة")
+
+        self.assertEqual(len(result["completion"]), 10)
+
+    def test_base_and_completion_structure(self):
+        """Return value always has 'base' and 'completion' keys."""
+        from alfanous.engines import BasicSearchEngine
+
+        engine = BasicSearchEngine.__new__(BasicSearchEngine)
+        engine._searcher = MagicMock()
+        engine._searcher.suggest_collocations.return_value = ["رسول الله"]
+        engine._reader = MagicMock()
+
+        result = engine.autocomplete("رسول الله")
+
+        self.assertIn("base", result)
+        self.assertIn("completion", result)
+        self.assertEqual(result["base"], "رسول")
+
+    def test_single_word_with_collocations(self):
+        """الحمد alone → collocations from shingle index (no fallback needed)."""
+        from alfanous.engines import BasicSearchEngine
+
+        engine = BasicSearchEngine.__new__(BasicSearchEngine)
+        engine._searcher = MagicMock()
+        engine._searcher.suggest_collocations.return_value = [
+            "الحمد لله", "الحمد لله رب"
+        ]
+        engine._reader = MagicMock()
+        engine._reader.autocomplete.return_value = []
+
+        result = engine.autocomplete("الحمد")
+
+        self.assertEqual(result["base"], "")
+        self.assertEqual(result["completion"], ["الحمد لله", "الحمد لله رب"])
+        engine._reader.autocomplete.assert_not_called()
+
+    def test_single_word_no_collocations_uses_prefix(self):
+        """رسول alone with no shingle results → falls back to prefix expansion."""
+        from alfanous.engines import BasicSearchEngine
+
+        engine = BasicSearchEngine.__new__(BasicSearchEngine)
+        engine._searcher = MagicMock()
+        engine._searcher.suggest_collocations.return_value = []
+        engine._reader = MagicMock()
+        engine._reader.autocomplete.return_value = ["رسول", "رسولكم"]
+
+        result = engine.autocomplete("رسول")
+
+        self.assertEqual(result["base"], "")
+        self.assertEqual(result["completion"], ["رسول", "رسولكم"])
+        engine._reader.autocomplete.assert_called_once_with("رسول")
+
+
 if __name__ == "__main__":
     unittest.main()

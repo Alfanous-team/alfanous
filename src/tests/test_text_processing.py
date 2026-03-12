@@ -622,3 +622,40 @@ def test_shingle_filter_no_positions_falls_back_to_text_checks():
     assert "سميع بصير" in texts,   f"Expected 'سميع بصير' in {texts!r}"
     # "بصير عليم" must NOT form because the stopped token reset the window
     assert "بصير عليم" not in texts, f"'بصير عليم' must not span stopped token: {texts!r}"
+
+
+# ---------------------------------------------------------------------------
+# QShingleFilter – query-mode unigram fallback ("words alone")
+# ---------------------------------------------------------------------------
+
+def test_shingle_filter_single_word_query_mode_yields_unigram():
+    """A single Arabic word in query mode must be yielded as a unigram.
+
+    When QShingleAnalyzer is used in query mode and only one real word is
+    present (no shingle can form), the word itself must be emitted so that
+    the Whoosh query is not silently discarded.
+    """
+    assert _tokenize_query(QShingleAnalyzer, "الحمد") == ["الحمد"]
+    assert _tokenize_query(QShingleAnalyzer, "رسول") == ["رسول"]
+
+
+def test_shingle_filter_single_word_index_mode_yields_nothing():
+    """A single Arabic word in index mode must NOT produce any token.
+
+    The aya_shingles field stores only multi-word phrases; the aya field
+    already handles individual words.
+    """
+    assert _tokenize(QShingleAnalyzer, "الحمد") == []
+    assert _tokenize(QShingleAnalyzer, "رسول") == []
+
+
+def test_shingle_filter_two_words_query_mode_yields_shingle_not_unigrams():
+    """Two adjacent words in query mode yield the bigram, not bare unigrams."""
+    result = _tokenize_query(QShingleAnalyzer, "الحمد لله")
+    assert result == ["الحمد لله"], f"Expected bigram only, got {result!r}"
+
+
+def test_shingle_filter_noise_only_query_mode_yields_nothing():
+    """A single-character noise token alone yields nothing even in query mode."""
+    assert _tokenize_query(QShingleAnalyzer, "ص") == []
+    assert _tokenize_query(QShingleAnalyzer, "ق") == []

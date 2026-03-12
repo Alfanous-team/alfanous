@@ -314,13 +314,15 @@ class QShingleFilter(Filter):
             → ["الحمد لله", "لله رب", "الحمد لله رب",
                "رب العالمين", "لله رب العالمين"]
 
-        # A4. Pause mark ص between الحمد and لله → nothing
+        # A4. Pause mark ص between الحمد and لله → nothing (both modes)
         "الحمد ص لله"
             → []
 
-        # A5. الحمد alone (single word) → no shingle produced
-        "الحمد"
-            → []
+        # A5. الحمد alone
+        #     index mode: no shingle produced (field stores only multi-word phrases)
+        #     query mode: the word itself is yielded as a unigram fallback
+        "الحمد"  (index mode)  → []
+        "الحمد"  (query mode)  → ["الحمد"]
 
         # رسول
         # B1. Classic two-word phrase → one bigram
@@ -335,11 +337,12 @@ class QShingleFilter(Filter):
         "محمد رسول الله"
             → ["محمد رسول", "رسول الله", "محمد رسول الله"]
 
-        # B4. Pause mark ص between رسول and الله → nothing
+        # B4. Pause mark ص between رسول and الله → nothing (both modes)
         "رسول ص الله"
             → []
 
         # B5. Position gap رسول(pos=0) [gap] الله(pos=2) → nothing bridges it
+        #     (both modes)
         tokens رسول at pos 0, الله at pos 2
             → []
 
@@ -358,7 +361,11 @@ class QShingleFilter(Filter):
         sep = self.sep
         # Buffer holds up to maxsize copies of recent tokens.
         buf: deque = deque(maxlen=self.maxsize)
+        mode = None   # read once from the first token; constant across the stream
+        emitted = False  # True once the first shingle has been yielded
         for token in tokens:
+            if mode is None:
+                mode = token.mode
             if token.stopped or len(token.text) <= 1:
                 # A stopped token signals a position gap; a single-character
                 # token (e.g. Uthmani pause mark or Quranic disconnected letter)
@@ -381,6 +388,14 @@ class QShingleFilter(Filter):
                 if tk.chars:
                     tk.endchar = phrase_toks[-1].endchar
                 yield tk
+                emitted = True
+
+        # Query-mode unigram fallback: if the whole input stream contained only
+        # a single real word (buf holds exactly that one token) and no shingle
+        # was produced, yield the word as a unigram so the query is not silently
+        # discarded.  Index mode intentionally keeps the field shingle-only.
+        if mode == "query" and not emitted and len(buf) == 1:
+            yield buf[0]
 
 
 # Word-level bigram + trigram analyzer using QShingleFilter.
