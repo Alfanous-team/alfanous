@@ -234,9 +234,25 @@ class QShingleFilter(Filter):
     by :data:`QShingleAnalyzer` to simultaneously index word bigrams and
     trigrams for the ``aya_shingles`` field.
 
-    Only truly adjacent words are combined: a stopped token or a single-character
-    token (e.g. a Quranic pause mark such as ص, ق, ن) resets the window so that
-    words on either side are never joined into the same shingle.
+    Only truly adjacent words are combined.  Three conditions each reset the
+    shingle window independently:
+
+    * A **stopped** token (``token.stopped = True``) — signals a deliberate
+      position gap introduced by an upstream filter such as
+      :class:`QStopFilter`.
+    * A **single-character** token (e.g. a Quranic pause mark such as ص, ق, ن
+      or a surah initial) — these are noise tokens that must not bridge two
+      real words.
+    * A **position gap** — when Whoosh position tracking is active
+      (``token.positions = True``) and ``token.pos`` is not exactly
+      ``prev_pos + 1``, the tokens are not truly adjacent in the original text
+      and the window is reset.  This is the authoritative adjacency check: it
+      catches any gap regardless of its cause (stopped words, silently-dropped
+      tokens, etc.).
+
+    Whoosh's built-in :class:`~whoosh.analysis.ShingleFilter` does *not*
+    perform position-based adjacency checking — it only skips stopped tokens
+    without clearing its buffer, which can still join non-adjacent words.
 
     Example (minsize=2, maxsize=3, sep=' ')::
 
@@ -265,6 +281,12 @@ class QShingleFilter(Filter):
                 # is noise that must not bridge two real words into a shingle.
                 buf.clear()
                 continue
+            # Position-based adjacency check (authoritative when available):
+            # if Whoosh is tracking positions and the gap between this token
+            # and the previous buffered token is not exactly 1, the words are
+            # not truly adjacent — reset the window.
+            if token.positions and buf and token.pos != buf[-1].pos + 1:
+                buf.clear()
             buf.append(token.copy())
             buf_list = list(buf)
             n = len(buf_list)
