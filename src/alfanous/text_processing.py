@@ -254,10 +254,49 @@ class QShingleFilter(Filter):
     perform position-based adjacency checking — it only skips stopped tokens
     without clearing its buffer, which can still join non-adjacent words.
 
-    Example (minsize=2, maxsize=3, sep=' ')::
+    Examples (minsize=2, maxsize=3, sep=' ')::
 
-        "الله سميع عليم" → ["الله سميع", "الله سميع عليم", "سميع عليم"]
-        "سميع ص بصير"    → []   (ص breaks adjacency)
+        # 1. Two real words → one bigram
+        "سميع بصير"
+            → ["سميع بصير"]
+
+        # 2. Three real words → two bigrams + one trigram
+        "الله سميع عليم"
+            → ["الله سميع", "سميع عليم", "الله سميع عليم"]
+
+        # 3. Pause mark ص in the middle → nothing (ص resets the window)
+        "سميع ص بصير"
+            → []
+
+        # 4. Pause mark ق in the middle → nothing
+        "سميع ق بصير"
+            → []
+
+        # 5. Pause mark ن in the middle → nothing
+        "سميع ن بصير"
+            → []
+
+        # 6. Noise letter at the start → window starts fresh after it
+        "ن سميع بصير"
+            → ["سميع بصير"]
+
+        # 7. Noise letter at the end → window was already cleared, previous pair kept
+        "سميع بصير ص"
+            → ["سميع بصير"]
+
+        # 8. Four real words → rolling bigrams and trigrams
+        "سميع بصير عليم خبير"
+            → ["سميع بصير", "بصير عليم", "سميع بصير عليم",
+               "عليم خبير", "بصير عليم خبير"]
+
+        # 9. Position gap: الله(pos=0) سميع(pos=1) [gap] بصير(pos=3) عليم(pos=4)
+        #    The gap between pos 1 and pos 3 resets the window — nothing bridges it.
+        tokens at positions 0,1 then 3,4
+            → ["الله سميع", "بصير عليم"]
+
+        # 10. Only single-character words → window always resets, nothing emitted
+        "ن ص ق م"
+            → []
 
     :param minsize: Minimum shingle size in words (inclusive, default 2).
     :param maxsize: Maximum shingle size in words (inclusive, default 3).
