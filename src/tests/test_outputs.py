@@ -90,11 +90,13 @@ def test_collocation_suggestion_basic():
     assert "سميع" in collocations
     phrases = collocations["سميع"]
     assert len(phrases) > 0
-    # Every phrase must be 2 or 3 words containing the query word
+    # Every phrase must be 2 or 3 words containing the query word,
+    # and must not contain single-character words (e.g. Quranic surah initials like ص, ق, ن)
     for phrase in phrases:
         words = phrase.split()
         assert 2 <= len(words) <= 3
         assert "سميع" in words
+        assert all(len(w) > 1 for w in words), f"Single-char word in phrase: {phrase!r}"
     # Common adjacent Quranic collocations of سميع
     all_words = {w for phrase in phrases for w in phrase.split()}
     assert any(w in all_words for w in ["عليم", "بصير"])

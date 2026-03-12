@@ -580,6 +580,10 @@ class QSearcher:
                         # Trigram: apply relevance threshold
                         if freq < trigram_min_count:
                             continue
+                        # Skip trigrams where any non-query part is a stopword or single char
+                        others = [p for p in parts if p != word]
+                        if any(p in _stop or len(p) <= 1 for p in others):
+                            continue
 
                     candidates.append((freq, term_text))
 
