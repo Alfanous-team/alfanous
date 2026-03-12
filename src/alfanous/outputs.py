@@ -158,6 +158,36 @@ def _COALESCE_TEXT(x):
 _KEYWORD_FIND = _KEYWORD_SPLIT_RE.findall
 
 
+def _parse_filter_param(filter_param):
+    """Parse the ``filter`` flag value into a dict suitable for :func:`_build_filter_query`.
+
+    Accepts:
+
+    * A plain ``dict`` — returned as-is.
+    * A ``str`` in ``"field:value,field2:value2"`` format — parsed into a dict;
+      numeric strings are automatically coerced to ``int``.
+    * Any other value (``None``, empty string, …) — returns ``None``.
+    """
+    if not filter_param:
+        return None
+    if isinstance(filter_param, dict):
+        return filter_param
+    if isinstance(filter_param, str):
+        result = {}
+        for item in filter_param.split(","):
+            if ":" in item:
+                field, value = item.split(":", 1)
+                field = field.strip()
+                value = value.strip()
+                try:
+                    value = int(value)
+                except ValueError:
+                    pass
+                result[field] = value
+        return result or None
+    return None
+
+
 def _build_filter_query(filter_dict):
     """Convert a filter dict to a list of Whoosh Term/Or query objects.
 
@@ -845,25 +875,7 @@ class Raw:
                 facets_list = facets_param
         
         # Parse filter parameter
-        filter_param = flags.get("filter")
-        filter_dict = None
-        if filter_param:
-            if isinstance(filter_param, dict):
-                filter_dict = filter_param
-            elif isinstance(filter_param, str):
-                # Parse "field:value,field2:value2" format
-                filter_dict = {}
-                for item in filter_param.split(","):
-                    if ":" in item:
-                        field, value = item.split(":", 1)
-                        field = field.strip()
-                        value = value.strip()
-                        # Try to convert to int if possible
-                        try:
-                            value = int(value)
-                        except ValueError:
-                            pass
-                        filter_dict[field] = value
+        filter_dict = _parse_filter_param(flags.get("filter"))
 
         # pre-defined views # TODO remove this feature , complexity for no real benifit
         if view == "minimal":
@@ -1021,6 +1033,19 @@ class Raw:
                 timelimit=timelimit,
             )
             terms, _all_ac_variations = [], []
+            # Compute facets for the non-Arabic path via a second pass (the
+            # main search_with_query call does not support groupedby).
+            _nonara_facet_res = None
+            if facets_list and len(res) > 0:
+                try:
+                    _fg = Facets()
+                    for _f in facets_list:
+                        _fg.add_field(_f)
+                    _nonara_facet_res = searcher.search(
+                        _final_q, limit=_MAX_FACET_DOCS, groupedby=_fg
+                    )
+                except Exception:
+                    pass
         else:
             # Arabic (or field-qualified) query — search aya fields directly.
             # Restrict to parent aya documents only so that nested child
@@ -1036,6 +1061,7 @@ class Raw:
             # Used in the word_info loop to derive per-word variation lists.
             _all_ac_variations = [term[1] for term in termz if term[0] == "aya_ac"]
             _trans_terms = []
+            _nonara_facet_res = None
         try:
             # pagination
             offset = 1 if offset < 1 else offset
@@ -1555,8 +1581,12 @@ class Raw:
             if facets_list and res:
                 output["facets"] = {}
                 for facet_field in facets_list:
+                    # For the Arabic path, facets are embedded in `res` via
+                    # search_all(facets=...).  For the non-Arabic path,
+                    # `_nonara_facet_res` holds a separate facet-grouped result.
+                    _facet_source = res if _nonara_facet_res is None else _nonara_facet_res
                     try:
-                        facet_groups = res.groups(facet_field)
+                        facet_groups = _facet_source.groups(facet_field)
                         # heapq.nlargest is O(n log k) vs O(n log n) for a full sort
                         # when returning only the top-50 facet values — and avoids
                         # materialising a sorted copy of the entire groups dict.
@@ -1726,6 +1756,9 @@ class Raw:
             elif isinstance(facets_param, list):
                 facets_list = [f for f in facets_param if f in _TRANS_FACET_FIELDS]
 
+        # Parse filter parameter (supports dict or "field:value,..." string).
+        filter_dict = _parse_filter_param(flags.get("filter"))
+
         query = query.replace("\\", "")
 
         # Use the cached translation parser built at __init__ time.
@@ -1736,6 +1769,10 @@ class Raw:
                 "translations": {},
             }
         _child_q = wquery.And([wquery.Term("kind", "translation"), self._trans_parser.parse(query)])
+        # Apply optional filter outside the text query (e.g. trans_lang, sura_id).
+        _filter_parts = _build_filter_query(filter_dict)
+        if _filter_parts:
+            _child_q = wquery.And([_child_q] + _filter_parts)
         res, termz, searcher = self.QSE.search_with_query(
             _child_q,
             limit=self._defaults["results_limit"]["translation"],
@@ -1911,6 +1948,9 @@ class Raw:
             elif isinstance(facets_param, list):
                 facets_list = [f for f in facets_param if f in _WORD_FACET_FIELDS]
 
+        # Parse filter parameter (supports dict or "field:value,..." string).
+        filter_dict = _parse_filter_param(flags.get("filter"))
+
         # Transliterate if no field filter is present
         query = query.replace("\\", "")
         if ":" not in query:
@@ -1938,6 +1978,10 @@ class Raw:
         # Restrict results to word children only.
         kind_filter = wquery.Term("kind", "word")
         combined = wquery.And([word_query, kind_filter])
+        # Apply optional filter outside the text query (e.g. pos, root, sura_id).
+        _filter_parts = _build_filter_query(filter_dict)
+        if _filter_parts:
+            combined = wquery.And([combined] + _filter_parts)
 
         res, _terms, searcher = self.QSE.search_with_query(
             combined,
