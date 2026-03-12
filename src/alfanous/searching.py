@@ -7,8 +7,16 @@ from whoosh.searching import TimeLimit
 from whoosh.qparser import QueryParser as _QueryParser
 from whoosh.reading import ReaderClosed
 import logging
+import struct
+import zlib
 
 logger = logging.getLogger(__name__)
+
+# Exceptions that indicate corrupted or truncated index data during stored-field
+# reads.  zlib.error (code -5) is the most common — it surfaces when a stored
+# field block has been written incompletely.  struct.error catches binary
+# framing mismatches; EOFError and OSError cover truncated or unreadable files.
+_INDEX_DATA_ERRORS = (zlib.error, struct.error, EOFError, OSError)
 
 # Maximum number of attempts for operations that can fail with ReaderClosed.
 # On attempt 1 the shared searcher is reset and reopened; if attempt 2 also
@@ -191,10 +199,27 @@ class QReader:
                 "falling back to full iter_docs() scan",
                 fieldname,
             )
-            for _, stored_fields in reader.iter_docs():
-                value = stored_fields.get(fieldname)
-                if value is not None and value != "":
-                    values.add(value)
+            try:
+                for _, stored_fields in reader.iter_docs():
+                    value = stored_fields.get(fieldname)
+                    if value is not None and value != "":
+                        values.add(value)
+            except _INDEX_DATA_ERRORS as e:
+                logger.warning(
+                    "list_stored_values(%r): index data error during fallback "
+                    "scan: %s — returning partial results (run 'make build' to "
+                    "rebuild the index)",
+                    fieldname,
+                    e,
+                )
+        except _INDEX_DATA_ERRORS as e:
+            logger.warning(
+                "list_stored_values(%r): index data error reading stored "
+                "fields: %s — returning partial results (run 'make build' to "
+                "rebuild the index)",
+                fieldname,
+                e,
+            )
         return sorted(filter(_is_valid_term, values))
 
     def term_stats(self, terms):

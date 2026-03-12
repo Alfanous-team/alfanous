@@ -1,6 +1,10 @@
+import logging
+
 from whoosh.filedb.filestore import FileStorage
 from whoosh import index
 from alfanous.constants import QURAN_TOTAL_VERSES
+
+logger = logging.getLogger(__name__)
 
 
 class BasicDocIndex:
@@ -18,11 +22,18 @@ class BasicDocIndex:
             return self.OK = True if success
         """
         ix, ok = None, False
-        if index.exists_in(self._ixpath):
-            storage = FileStorage(self._ixpath)
-            ix = storage.open_index()
-            ok = True
-
+        try:
+            if index.exists_in(self._ixpath):
+                storage = FileStorage(self._ixpath)
+                ix = storage.open_index()
+                ok = True
+        except Exception as e:
+            logger.error(
+                "Failed to open index at %r: %s — index may be corrupted or "
+                "truncated (run 'make build' to rebuild it)",
+                self._ixpath,
+                e,
+            )
         return ix, ok
 
     def verify(self):
