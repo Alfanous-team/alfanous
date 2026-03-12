@@ -611,6 +611,83 @@ class QSearcher:
                 )
         return []
 
+    def suggest_extensions(self, prefix_text, limit=10):
+        """Find shingles in ``aya_shingles`` that *extend* a typed prefix.
+
+        Unlike :meth:`suggest_collocations` — which finds all shingles
+        containing a given word anywhere — this method returns only shingles
+        whose **first words exactly match** *prefix_text*.  That makes it the
+        right tool for autocomplete: whatever the user has already typed is kept
+        intact, and the suggestions are longer phrases that complete it.
+
+        Examples with a corpus that contains "الحمد لله رب العالمين" and
+        "رسول الله الكريم"::
+
+            suggest_extensions("الحمد")
+                → ["الحمد لله", "الحمد لله رب"]   # bigram + trigram starting with الحمد
+
+            suggest_extensions("الحمد لله")
+                → ["الحمد لله رب"]                 # trigram that extends the bigram
+
+            suggest_extensions("رسول")
+                → ["رسول الله", "رسول الله الكريم"]  # NOT "محمد رسول" (doesn't start with رسول)
+
+            suggest_extensions("نادر")
+                → []                               # word not at the start of any shingle
+
+        The method is safe to call with multi-word input; prefix length > 1
+        will only match longer shingles (e.g. trigrams when prefix is a bigram).
+        Results are sorted by corpus frequency (highest first).
+
+        :param prefix_text: One or more space-separated Arabic words that the
+            user has already typed.  All words are matched as a prefix against
+            the ``aya_shingles`` term dictionary.
+        :param limit: Maximum number of phrase completions to return (default 10).
+        :returns: Ordered list of shingle strings that extend *prefix_text*,
+            e.g. ``['الحمد لله', 'الحمد لله رب']`` for input ``'الحمد'``.
+        """
+        prefix_words = prefix_text.strip().split()
+        if not prefix_words:
+            return []
+        n = len(prefix_words)
+
+        for attempt in range(_MAX_READER_CLOSED_RETRIES):
+            searcher = self._get_shared_searcher()
+            reader = searcher.reader()
+            try:
+                if "aya_shingles" not in reader.indexed_field_names():
+                    return []
+
+                candidates: list = []
+
+                for term_text in reader.field_terms("aya_shingles"):
+                    parts = term_text.split()
+                    # Must be strictly longer than the prefix (so it actually extends it)
+                    # and must start with the exact prefix words.
+                    if len(parts) <= n or parts[:n] != prefix_words:
+                        continue
+                    freq = reader.frequency("aya_shingles", term_text)
+                    candidates.append((freq, term_text))
+
+                candidates.sort(key=lambda x: x[0], reverse=True)
+                return [phrase for _, phrase in candidates[:limit]]
+
+            except ReaderClosed:
+                if attempt == 0:
+                    self._shared_searcher = None
+                    logger.warning(
+                        "suggest_extensions: Underlying index reader was closed "
+                        "for prefix %r; retrying with a fresh searcher.",
+                        prefix_text,
+                    )
+                    continue
+                logger.error(
+                    "suggest_extensions: Underlying index reader still closed on "
+                    "retry for prefix %r; returning empty list.",
+                    prefix_text,
+                )
+        return []
+
     def correct_query(self, querystr):
         """Return a corrected version of *querystr* using Whoosh's built-in
         query corrector.

@@ -2382,115 +2382,196 @@ class TestSharedReaderSearcherContract(unittest.TestCase):
 
 
 # ---------------------------------------------------------------------------
-# autocomplete fallback: prefix-based word completion when shingles yield nothing
+# suggest_extensions: ReaderClosed retry tests
 # ---------------------------------------------------------------------------
 
-class TestAutocompleteWordAloneFallback(unittest.TestCase):
-    """BasicSearchEngine.autocomplete must fall back to prefix completion.
+class TestSuggestExtensionsReaderClosed(unittest.TestCase):
+    """QSearcher.suggest_extensions must handle ReaderClosed gracefully."""
 
-    A Whoosh Term query against ``aya_shingles`` for a single word always
-    returns 0 results because the field stores only bigrams and trigrams.
-    ``suggest_collocations`` uses its own term-dict scan so it DOES work for
-    single words that appear in shingles.  But when a word has NO collocations
-    at all (very rare word, or the index pre-dates the field), the completion
-    must fall back to ``QReader.autocomplete`` (prefix expansion on aya_ac)
-    rather than returning an empty list.
+    def test_suggest_extensions_retries_on_reader_closed(self):
+        """suggest_extensions must retry once when the reader is closed."""
+        from whoosh.reading import ReaderClosed
+        from alfanous.searching import QSearcher
+
+        mock_docindex = MagicMock()
+        mock_docindex.get_schema.return_value = MagicMock()
+        mock_ws = MagicMock()
+        mock_ws.refresh.return_value = mock_ws
+        mock_docindex.get_index.return_value.searcher.return_value = mock_ws
+
+        closed_reader = MagicMock()
+        closed_reader.indexed_field_names.return_value = ["aya_shingles"]
+        closed_reader.field_terms.side_effect = ReaderClosed()
+
+        good_reader = MagicMock()
+        good_reader.indexed_field_names.return_value = ["aya_shingles"]
+        good_reader.field_terms.return_value = []
+
+        mock_ws.reader.side_effect = [closed_reader, good_reader]
+
+        qs = QSearcher(mock_docindex, MagicMock())
+        qs._shared_searcher = mock_ws
+
+        result = qs.suggest_extensions("الحمد")
+        self.assertEqual(result, [])
+
+    def test_suggest_extensions_returns_empty_on_persistent_reader_closed(self):
+        """suggest_extensions must return [] when ReaderClosed persists after all retries."""
+        from whoosh.reading import ReaderClosed
+        from alfanous.searching import QSearcher
+
+        mock_docindex = MagicMock()
+        mock_docindex.get_schema.return_value = MagicMock()
+        mock_ws = MagicMock()
+        mock_ws.refresh.return_value = mock_ws
+        mock_docindex.get_index.return_value.searcher.return_value = mock_ws
+
+        bad_reader = MagicMock()
+        bad_reader.indexed_field_names.return_value = ["aya_shingles"]
+        bad_reader.field_terms.side_effect = ReaderClosed()
+
+        mock_ws.reader.return_value = bad_reader
+
+        qs = QSearcher(mock_docindex, MagicMock())
+        qs._shared_searcher = mock_ws
+
+        result = qs.suggest_extensions("الحمد")
+        self.assertEqual(result, [])
+
+    def test_suggest_extensions_returns_empty_when_field_absent(self):
+        """suggest_extensions returns [] gracefully when aya_shingles field is absent."""
+        from alfanous.searching import QSearcher
+
+        mock_docindex = MagicMock()
+        mock_docindex.get_schema.return_value = MagicMock()
+        mock_ws = MagicMock()
+        mock_docindex.get_index.return_value.searcher.return_value = mock_ws
+
+        reader = MagicMock()
+        reader.indexed_field_names.return_value = []  # aya_shingles absent
+        mock_ws.reader.return_value = reader
+
+        qs = QSearcher(mock_docindex, MagicMock())
+        qs._shared_searcher = mock_ws
+
+        result = qs.suggest_extensions("الحمد")
+        self.assertEqual(result, [])
+
+    def test_suggest_extensions_empty_prefix_returns_empty(self):
+        """suggest_extensions returns [] immediately for empty/blank input."""
+        from alfanous.searching import QSearcher
+
+        mock_docindex = MagicMock()
+        mock_docindex.get_schema.return_value = MagicMock()
+        mock_docindex.get_index.return_value.searcher.return_value = MagicMock()
+
+        qs = QSearcher(mock_docindex, MagicMock())
+        self.assertEqual(qs.suggest_extensions(""), [])
+        self.assertEqual(qs.suggest_extensions("   "), [])
+
+
+# ---------------------------------------------------------------------------
+# autocomplete: prefix-based extension via suggest_extensions
+# ---------------------------------------------------------------------------
+
+class TestAutocompleteSuggestExtensions(unittest.TestCase):
+    """BasicSearchEngine.autocomplete must use suggest_extensions for completions.
+
+    autocomplete uses the FULL typed text as a prefix and returns shingles that
+    start with those exact words.  This gives identical result *types* for single-
+    word and multi-word inputs — both return phrase completions that extend what
+    was typed.  When no shingle extends the prefix (rare/unknown word or index
+    predates aya_shingles), the method falls back to QReader.autocomplete (prefix
+    expansion on aya_ac).
     """
 
-    def test_collocations_found_no_fallback(self):
-        """When suggest_collocations returns results, reader.autocomplete is NOT called."""
-        from alfanous.engines import BasicSearchEngine
+    def _make_engine(self, extensions, prefix_words=None):
+        """Return a BasicSearchEngine backed by mocks.
 
+        :param extensions: list returned by suggest_extensions
+        :param prefix_words: list returned by QReader.autocomplete (fallback)
+        """
+        from alfanous.engines import BasicSearchEngine
         engine = BasicSearchEngine.__new__(BasicSearchEngine)
         engine._searcher = MagicMock()
-        engine._searcher.suggest_collocations.return_value = ["الحمد لله", "الحمد لله رب"]
+        engine._searcher.suggest_extensions.return_value = extensions
         engine._reader = MagicMock()
-        engine._reader.autocomplete.return_value = ["الحمد"]
+        engine._reader.autocomplete.return_value = prefix_words or []
+        return engine
 
+    def test_single_word_returns_extending_phrases(self):
+        """الحمد alone → phrases that start with الحمد (same type as 2-word input)."""
+        engine = self._make_engine(["الحمد لله", "الحمد لله رب"])
         result = engine.autocomplete("الحمد")
-
         self.assertEqual(result["base"], "")
         self.assertEqual(result["completion"], ["الحمد لله", "الحمد لله رب"])
         engine._reader.autocomplete.assert_not_called()
 
-    def test_no_collocations_falls_back_to_prefix(self):
-        """When suggest_collocations returns [], autocomplete falls back to prefix expansion."""
-        from alfanous.engines import BasicSearchEngine
+    def test_two_word_returns_extending_phrases(self):
+        """الحمد لله → trigrams that start with الحمد لله (same type as single word)."""
+        engine = self._make_engine(["الحمد لله رب"])
+        result = engine.autocomplete("الحمد لله")
+        self.assertEqual(result["base"], "الحمد")
+        self.assertEqual(result["completion"], ["الحمد لله رب"])
+        engine._reader.autocomplete.assert_not_called()
 
-        engine = BasicSearchEngine.__new__(BasicSearchEngine)
-        engine._searcher = MagicMock()
-        engine._searcher.suggest_collocations.return_value = []
-        engine._reader = MagicMock()
-        engine._reader.autocomplete.return_value = ["نادر", "نادرة"]
+    def test_single_word_same_result_type_as_two_words(self):
+        """Single word and 2-word inputs both return phrase completions (not bare words)."""
+        engine_single = self._make_engine(["رسول الله", "رسول الله الكريم"])
+        engine_two    = self._make_engine(["رسول الله الكريم"])
 
+        r1 = engine_single.autocomplete("رسول")
+        r2 = engine_two.autocomplete("رسول الله")
+
+        # Both return lists of multi-word phrases, not bare single words
+        for phrase in r1["completion"]:
+            self.assertGreater(len(phrase.split()), 1, f"{phrase!r} is not a phrase")
+        for phrase in r2["completion"]:
+            self.assertGreater(len(phrase.split()), 1, f"{phrase!r} is not a phrase")
+
+    def test_no_extensions_falls_back_to_prefix(self):
+        """When no shingle extends the typed text, fall back to aya_ac prefix expansion."""
+        engine = self._make_engine([], prefix_words=["نادر", "نادرة"])
         result = engine.autocomplete("نادر")
-
         self.assertEqual(result["completion"], ["نادر", "نادرة"])
         engine._reader.autocomplete.assert_called_once_with("نادر")
 
+    def test_fallback_uses_last_word_for_prefix_expansion(self):
+        """Fallback prefix expansion uses the last word (not the full multi-word input)."""
+        engine = self._make_engine([], prefix_words=["شيء"])
+        engine.autocomplete("كلمة شيء")
+        engine._reader.autocomplete.assert_called_once_with("شيء")
+
     def test_fallback_result_capped_at_10(self):
         """The fallback prefix result is capped at 10 items."""
-        from alfanous.engines import BasicSearchEngine
-
-        engine = BasicSearchEngine.__new__(BasicSearchEngine)
-        engine._searcher = MagicMock()
-        engine._searcher.suggest_collocations.return_value = []
-        # Reader returns 15 prefix matches
-        engine._reader = MagicMock()
-        engine._reader.autocomplete.return_value = [f"كلمة{i}" for i in range(15)]
-
+        engine = self._make_engine([], prefix_words=[f"كلمة{i}" for i in range(15)])
         result = engine.autocomplete("كلمة")
-
         self.assertEqual(len(result["completion"]), 10)
 
-    def test_base_and_completion_structure(self):
+    def test_base_and_completion_keys_present(self):
         """Return value always has 'base' and 'completion' keys."""
-        from alfanous.engines import BasicSearchEngine
-
-        engine = BasicSearchEngine.__new__(BasicSearchEngine)
-        engine._searcher = MagicMock()
-        engine._searcher.suggest_collocations.return_value = ["رسول الله"]
-        engine._reader = MagicMock()
-
+        engine = self._make_engine(["رسول الله الكريم"])
         result = engine.autocomplete("رسول الله")
-
         self.assertIn("base", result)
         self.assertIn("completion", result)
-        self.assertEqual(result["base"], "رسول")
 
-    def test_single_word_with_collocations(self):
-        """الحمد alone → collocations from shingle index (no fallback needed)."""
-        from alfanous.engines import BasicSearchEngine
+    def test_base_is_all_words_except_last(self):
+        """'base' is all words except the last, joined with a space."""
+        engine = self._make_engine(["الحمد لله رب"])
+        result = engine.autocomplete("الحمد لله")
+        self.assertEqual(result["base"], "الحمد")
 
-        engine = BasicSearchEngine.__new__(BasicSearchEngine)
-        engine._searcher = MagicMock()
-        engine._searcher.suggest_collocations.return_value = [
-            "الحمد لله", "الحمد لله رب"
-        ]
-        engine._reader = MagicMock()
-        engine._reader.autocomplete.return_value = []
+    def test_empty_querystr_returns_empty(self):
+        """Empty input returns empty base and completion."""
+        engine = self._make_engine([])
+        result = engine.autocomplete("")
+        self.assertEqual(result, {"base": "", "completion": []})
 
-        result = engine.autocomplete("الحمد")
-
-        self.assertEqual(result["base"], "")
-        self.assertEqual(result["completion"], ["الحمد لله", "الحمد لله رب"])
-        engine._reader.autocomplete.assert_not_called()
-
-    def test_single_word_no_collocations_uses_prefix(self):
-        """رسول alone with no shingle results → falls back to prefix expansion."""
-        from alfanous.engines import BasicSearchEngine
-
-        engine = BasicSearchEngine.__new__(BasicSearchEngine)
-        engine._searcher = MagicMock()
-        engine._searcher.suggest_collocations.return_value = []
-        engine._reader = MagicMock()
-        engine._reader.autocomplete.return_value = ["رسول", "رسولكم"]
-
-        result = engine.autocomplete("رسول")
-
-        self.assertEqual(result["base"], "")
-        self.assertEqual(result["completion"], ["رسول", "رسولكم"])
-        engine._reader.autocomplete.assert_called_once_with("رسول")
+    def test_suggest_extensions_called_with_full_input(self):
+        """suggest_extensions receives the full query string, not just the last word."""
+        engine = self._make_engine(["الحمد لله رب"])
+        engine.autocomplete("الحمد لله")
+        engine._searcher.suggest_extensions.assert_called_once_with("الحمد لله", limit=10)
 
 
 if __name__ == "__main__":
