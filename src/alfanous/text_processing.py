@@ -298,6 +298,51 @@ class QShingleFilter(Filter):
         "ن ص ق م"
             → []
 
+    Examples with الحمد and رسول (minsize=2, maxsize=3, sep=' ')::
+
+        # الحمد
+        # A1. Classic two-word phrase → one bigram
+        "الحمد لله"
+            → ["الحمد لله"]
+
+        # A2. Three-word phrase → two bigrams + one trigram
+        "الحمد لله رب"
+            → ["الحمد لله", "لله رب", "الحمد لله رب"]
+
+        # A3. Four-word phrase (Al-Fatiha opening) → rolling bigrams and trigrams
+        "الحمد لله رب العالمين"
+            → ["الحمد لله", "لله رب", "الحمد لله رب",
+               "رب العالمين", "لله رب العالمين"]
+
+        # A4. Pause mark ص between الحمد and لله → nothing
+        "الحمد ص لله"
+            → []
+
+        # A5. الحمد alone (single word) → no shingle produced
+        "الحمد"
+            → []
+
+        # رسول
+        # B1. Classic two-word phrase → one bigram
+        "رسول الله"
+            → ["رسول الله"]
+
+        # B2. Three-word phrase → two bigrams + one trigram
+        "رسول الله الكريم"
+            → ["رسول الله", "الله الكريم", "رسول الله الكريم"]
+
+        # B3. Three-word phrase starting with a name → two bigrams + one trigram
+        "محمد رسول الله"
+            → ["محمد رسول", "رسول الله", "محمد رسول الله"]
+
+        # B4. Pause mark ص between رسول and الله → nothing
+        "رسول ص الله"
+            → []
+
+        # B5. Position gap رسول(pos=0) [gap] الله(pos=2) → nothing bridges it
+        tokens رسول at pos 0, الله at pos 2
+            → []
+
     :param minsize: Minimum shingle size in words (inclusive, default 2).
     :param maxsize: Maximum shingle size in words (inclusive, default 3).
     :param sep: Separator inserted between words in each shingle (default space).
