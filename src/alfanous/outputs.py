@@ -4,6 +4,8 @@ import logging
 import re
 from collections import defaultdict
 
+logger = logging.getLogger(__name__)
+
 from alfanous.text_processing import QArabicSymbolsFilter
 from alfanous.data import *
 from alfanous.constants import QURAN_TOTAL_VERSES

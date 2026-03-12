@@ -1741,3 +1741,29 @@ def test_search_words_facets_unknown_field_ignored():
     assert "root" in result["facets"]
     assert "sura_id" not in result["facets"]
 
+
+def test_search_translation_facets_exception_does_not_propagate(monkeypatch):
+    """When facet computation raises an exception (simulating a ValueError
+    from a closed Whoosh reader), ``_search_translation`` must still return a
+    valid output dict rather than propagating the error.  The logger.warning()
+    calls in the except blocks must not raise ``NameError``.
+    """
+    from unittest.mock import patch
+    from whoosh.sorting import Facets
+
+    # Patch `Facets` used inside _search_translation to raise ValueError,
+    # mimicking ``ValueError: I/O operation on closed file`` from Whoosh.
+    with patch("alfanous.outputs.Facets", side_effect=ValueError("I/O operation on closed file")):
+        result = RAWoutput._search_translation({
+            "query": "praise",
+            "highlight": "none",
+            "page": 1,
+            "facets": "trans_lang",
+        })
+
+    # The method must return a structured dict (not raise).
+    assert isinstance(result, dict), "_search_translation must return a dict even when facets raise"
+    assert "interval" in result or "translations" in result, (
+        "_search_translation result must contain 'interval' or 'translations'"
+    )
+

@@ -275,3 +275,31 @@ class TestFstringFormatting(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+# ---------------------------------------------------------------------------
+# Module-level logger in outputs.py
+# ---------------------------------------------------------------------------
+
+class TestOutputsModuleLevelLogger(unittest.TestCase):
+    """outputs.py must define a module-level ``logger`` so that the exception
+    handlers inside ``_search_translation`` (lines that call
+    ``logger.warning(...)``) do not raise ``NameError`` when a Whoosh I/O
+    error such as ``ValueError: I/O operation on closed file`` is caught at
+    runtime.
+    """
+
+    def test_logger_is_defined(self):
+        """alfanous.outputs must expose a module-level 'logger' attribute."""
+        import logging
+        import alfanous.outputs as _outputs_module
+
+        self.assertTrue(
+            hasattr(_outputs_module, "logger"),
+            "alfanous.outputs must define a module-level 'logger' variable",
+        )
+        self.assertIsInstance(
+            _outputs_module.logger,
+            logging.Logger,
+            "alfanous.outputs.logger must be a logging.Logger instance",
+        )
