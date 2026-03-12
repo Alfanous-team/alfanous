@@ -870,3 +870,60 @@ def test_fuzzy_phrase_no_query_error():
     # Basic sanity: result tuple has the right shape
     assert hasattr(results, 'runtime'), "results must be a Whoosh Results object"
     assert isinstance(terms, list)
+
+
+def test_topic_phrase_no_query_error():
+    """Phrase queries on 'topic' (an ID field) must not raise QueryError.
+
+    'topic', 'chapter', and 'subtopic' are ``ID`` type fields with no
+    positional data.  Before the fix, a query like ``topic:"الانشغال بشهوات
+    الدنيا"`` raised ``QueryError: Phrase search: 'topic' field has no
+    positions`` because Whoosh tries to execute a Phrase query object against
+    a field that stores no position information.
+
+    The fix in :func:`~alfanous.searching._strip_phrase_queries` (with
+    *schema* provided) converts such Phrase nodes to And-of-Terms before
+    execution, so the query returns useful results rather than crashing.
+    """
+    from whoosh.query.qcore import QueryError
+
+    for field, phrase in [
+        # "Preoccupation with worldly desires" — a multi-word topic value
+        ("topic",    '"الانشغال بشهوات الدنيا"'),
+        # "Pillars of faith" — a multi-word chapter value
+        ("chapter",  '"أركان الإيمان"'),
+        # "Explanation of the hadith" — a multi-word subtopic value
+        ("subtopic", '"شرح الحديث"'),
+    ]:
+        query_str = f'{field}:{phrase}'
+        try:
+            results, terms, searcher = QSE.search_all(query_str, limit=10)
+        except QueryError as exc:
+            raise AssertionError(
+                f"search_all raised QueryError for {query_str!r}: {exc}"
+            ) from exc
+        assert hasattr(results, 'runtime'), (
+            f"results for {query_str!r} must be a Whoosh Results object"
+        )
+
+
+def test_phrase_search_preserved_for_positional_fields():
+    """Phrase search on TEXT fields (with positions) must still work correctly.
+
+    The schema-aware _strip_phrase_queries must not strip Phrase nodes for
+    TEXT fields that DO store positional data (e.g. 'aya', 'aya_').  This
+    test verifies that a quoted phrase query on the main aya field returns
+    the same results as before the fix.
+    """
+    from whoosh.query.qcore import QueryError
+
+    # "Lord of the worlds" — a phrase that appears many times in the Quran
+    phrase_query = '"رب العالمين"'
+    try:
+        results, terms, searcher = QSE.search_all(phrase_query, limit=100)
+    except QueryError as exc:
+        raise AssertionError(
+            f"search_all raised QueryError for phrase on positional field: {exc}"
+        ) from exc
+    assert hasattr(results, 'runtime'), "results must be a Whoosh Results object"
+    assert len(results) > 0, "Phrase search on aya field should return results"

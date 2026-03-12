@@ -39,23 +39,53 @@ def _is_valid_term(x):
     return not isinstance(x, int) or x >= 0
 
 
-def _strip_phrase_queries(q):
-    """Replace every ``Phrase`` node in *q* with an ``And`` of ``Term`` nodes.
+def _strip_phrase_queries(q, schema=None):
+    """Replace Phrase nodes that target fields without positional info with And-of-Terms.
 
-    The ``aya_fuzzy`` field is indexed with ``phrase=False`` — it stores no
-    positional information, so Whoosh raises ``QueryError`` whenever it tries
-    to execute a ``Phrase`` query against it.  This helper walks the query
-    tree and converts each ``Phrase`` node into an unordered ``And`` of
-    ``Term`` nodes (preserving the individual tokens while dropping the
-    adjacency/order requirement that the field cannot satisfy).
+    Whoosh raises ``QueryError: Phrase search: '<field>' field has no
+    positions`` when a ``Phrase`` query is executed against any field that
+    does not store positional data — this includes ``ID``, ``KEYWORD``, and
+    ``NUMERIC`` field types as well as ``TEXT`` fields built with
+    ``phrase=False`` (e.g. ``aya_fuzzy``).
+
+    This helper walks the query tree and converts each such ``Phrase`` node
+    into an unordered ``And`` of ``Term`` nodes, preserving the individual
+    tokens while dropping the adjacency/order constraint that the field cannot
+    satisfy.
+
+    When *schema* is ``None`` every ``Phrase`` node is converted regardless of
+    field — this is the backward-compatible behaviour used when stripping the
+    ``aya_fuzzy`` sub-query where the entire sub-query targets a single
+    ``phrase=False`` field.
+
+    When *schema* is provided a ``Phrase`` node is only replaced when the
+    targeted field does **not** support positional information (i.e.
+    ``schema[fieldname].supports('positions')`` returns ``False`` or the
+    field has no format at all).  Phrase nodes targeting TEXT fields that
+    do store positions (e.g. ``aya``, ``aya_``, translation fields) are left
+    intact so that exact phrase matching still works for those fields.
 
     The transformation is applied recursively so that phrases nested inside
     compound queries (``And``, ``Or``, ``AndNot``, etc.) are also converted.
 
     :param q: A Whoosh :class:`~whoosh.query.Query` object.
-    :returns: A new query tree with all ``Phrase`` nodes replaced.
+    :param schema: Optional Whoosh :class:`~whoosh.fields.Schema`.  When
+        provided, only Phrase nodes whose field lacks positional support are
+        replaced.
+    :returns: A new query tree with qualifying ``Phrase`` nodes replaced.
     """
     if isinstance(q, wquery.Phrase):
+        if schema is not None and q.fieldname in schema:
+            # Leave the Phrase intact for fields that DO support positions
+            # (TEXT fields with phrase=True).  Only strip phrases for fields
+            # that have no positional data (ID, KEYWORD, NUMERIC, STORED, or
+            # TEXT with phrase=False).
+            # STORED fields have format=None so FieldType.supports() raises
+            # AttributeError.  Check format is not None before calling it.
+            field = schema[q.fieldname]
+            if getattr(field, 'format', None) is not None and field.supports('positions'):
+                return q
+
         terms = [wquery.Term(q.fieldname, word) for word in q.words]
         if not terms:
             return wquery.NullQuery
@@ -67,18 +97,18 @@ def _strip_phrase_queries(q):
         # BinaryQuery subclasses (AndNot, AndMaybe, Require, Otherwise) store
         # their two children in .subqueries as a (a, b) tuple and accept the
         # same two positional arguments in their constructor.
-        new_a = _strip_phrase_queries(q.subqueries[0])
-        new_b = _strip_phrase_queries(q.subqueries[1])
+        new_a = _strip_phrase_queries(q.subqueries[0], schema)
+        new_b = _strip_phrase_queries(q.subqueries[1], schema)
         return type(q)(new_a, new_b)
 
     if isinstance(q, wquery.CompoundQuery):
         # And, Or, DisjunctionMax, Ordered, etc. store children in .subqueries
         # as a list and accept that list as their first constructor argument.
-        new_subs = [_strip_phrase_queries(s) for s in q.subqueries]
+        new_subs = [_strip_phrase_queries(s, schema) for s in q.subqueries]
         return type(q)(new_subs)
 
     if isinstance(q, wquery.Not):
-        return wquery.Not(_strip_phrase_queries(q.query))
+        return wquery.Not(_strip_phrase_queries(q.query, schema))
 
     return q
 
@@ -315,6 +345,14 @@ class QSearcher:
         # any plugin-triggered refresh has already happened, so the reference
         # we obtain below belongs to the post-refresh searcher and is not stale.
         query = self._qparser.parse(querystr)
+
+        # Strip phrase queries for fields that do not support positional
+        # information.  ID, KEYWORD, NUMERIC, and TEXT(phrase=False) fields
+        # (e.g. 'topic', 'chapter', 'subtopic', 'aya_fuzzy') cannot execute
+        # phrase queries and Whoosh would raise QueryError at search time.
+        # Phrases targeting TEXT fields with phrase=True (e.g. 'aya', 'aya_',
+        # translation fields) are preserved so exact phrase matching works.
+        query = _strip_phrase_queries(query, schema=self._schema)
 
         if fuzzy:
             # Strategy 2: Search the normalised/stemmed 'aya_fuzzy' field (fed
