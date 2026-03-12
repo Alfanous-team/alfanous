@@ -234,9 +234,14 @@ class QShingleFilter(Filter):
     by :data:`QShingleAnalyzer` to simultaneously index word bigrams and
     trigrams for the ``aya_shingles`` field.
 
+    Only truly adjacent words are combined: a stopped token or a single-character
+    token (e.g. a Quranic pause mark such as ص, ق, ن) resets the window so that
+    words on either side are never joined into the same shingle.
+
     Example (minsize=2, maxsize=3, sep=' ')::
 
         "الله سميع عليم" → ["الله سميع", "الله سميع عليم", "سميع عليم"]
+        "سميع ص بصير"    → []   (ص breaks adjacency)
 
     :param minsize: Minimum shingle size in words (inclusive, default 2).
     :param maxsize: Maximum shingle size in words (inclusive, default 3).
@@ -254,8 +259,11 @@ class QShingleFilter(Filter):
         # Buffer holds up to maxsize copies of recent tokens.
         buf: deque = deque(maxlen=self.maxsize)
         for token in tokens:
-            if token.stopped:
-                buf.clear()  # gaps must break shingles
+            if token.stopped or len(token.text) <= 1:
+                # A stopped token signals a position gap; a single-character
+                # token (e.g. Uthmani pause mark or Quranic disconnected letter)
+                # is noise that must not bridge two real words into a shingle.
+                buf.clear()
                 continue
             buf.append(token.copy())
             buf_list = list(buf)

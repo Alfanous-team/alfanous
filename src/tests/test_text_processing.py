@@ -9,9 +9,11 @@ import pytest
 from alfanous.text_processing import (
     QArabicSymbolsFilter,
     QArabicStemFilter,
+    QShingleFilter,
     QStopFilter,
     QSynonymsFilter,
     QFuzzyAnalyzer,
+    QShingleAnalyzer,
     QStandardAnalyzer,
     QUthmaniAnalyzer,
     TranslationStemFilter,
@@ -490,3 +492,52 @@ def test_uthmani_field_uses_normalizing_analyzer():
         "the uthmani field should normalize by removing both tashkeel and uthmani symbols"
     )
 
+
+
+# ---------------------------------------------------------------------------
+# QShingleFilter – adjacency tests
+# ---------------------------------------------------------------------------
+
+def test_shingle_filter_basic_bigram_and_trigram():
+    """QShingleFilter produces bigrams and trigrams from a normal 3-word phrase."""
+    shingles = _tokenize(QShingleAnalyzer, "الله سميع عليم")
+    assert "الله سميع" in shingles
+    assert "سميع عليم" in shingles
+    assert "الله سميع عليم" in shingles
+
+
+def test_shingle_filter_single_char_breaks_adjacency():
+    """A single-character token must clear the shingle window.
+
+    Uthmani pause marks such as ص, ق, ن appear as standalone single-letter
+    'words' in the aya text.  They must not bridge two real words into a
+    shingle; otherwise the autocomplete index fills up with nonsense entries
+    like 'سميع ص بصير'.
+    """
+    for noise in ["ص", "ق", "ن", "م"]:
+        shingles = _tokenize(QShingleAnalyzer, f"سميع {noise} بصير")
+        assert shingles == [], f"noise='{noise}': expected [], got {shingles!r}"
+
+
+def test_shingle_filter_truly_adjacent_words_still_form_shingles():
+    """Words that are genuinely adjacent (no noise in between) must still combine."""
+    shingles = _tokenize(QShingleAnalyzer, "سميع بصير")
+    assert "سميع بصير" in shingles
+
+
+def test_shingle_filter_single_char_at_start_does_not_pollute():
+    """A single-char word at the start of a phrase must not contaminate subsequent shingles."""
+    # ن + two real words: only the two real words should form a bigram.
+    # Note: `word in s.split()` is an exact-word check (list membership), not substring.
+    shingles = _tokenize(QShingleAnalyzer, "ن سميع بصير")
+    assert "سميع بصير" in shingles
+    shingle_words = {w for s in shingles for w in s.split()}
+    assert "ن" not in shingle_words, f"Single-char 'ن' leaked into shingles: {shingles!r}"
+
+
+def test_shingle_filter_single_char_at_end_does_not_pollute():
+    """A single-char word at the end of a phrase must not contaminate preceding shingles."""
+    shingles = _tokenize(QShingleAnalyzer, "سميع بصير ص")
+    assert "سميع بصير" in shingles
+    shingle_words = {w for s in shingles for w in s.split()}
+    assert "ص" not in shingle_words, f"Single-char 'ص' leaked into shingles: {shingles!r}"
