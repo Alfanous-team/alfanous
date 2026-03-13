@@ -141,6 +141,7 @@ def test_lemma_in_word_all_indexed_fields():
 
 _EXPECTED_WORD_FACET_FIELDS = frozenset({
     "root", "type", "pos", "lemma", "case", "state", "derivation", "gender",
+    "number", "person", "form", "voice", "aspect", "mood",
 })
 
 

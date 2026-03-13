@@ -1,6 +1,7 @@
 import heapq
 import json
 import logging
+import math
 import re
 from collections import defaultdict
 
@@ -108,6 +109,7 @@ _WORD_ALL_INDEXED_FIELDS = [
 # lemma, root, word-type, case, state, derivation, and gender.
 _WORD_FACET_FIELDS = frozenset([
     "root", "type", "pos", "lemma", "case", "state", "derivation", "gender",
+    "number", "person", "form", "voice", "aspect", "mood",
 ])
 
 # Translation child-doc fields that support faceting.
@@ -1575,7 +1577,7 @@ class Raw:
                 "end": end,
                 "total": len(res),
                 "page": ((start - 1) / range) + 1,
-                "nb_pages": ((len(res) - 1) / range) + 1
+                "nb_pages": math.ceil(len(res) / range) if len(res) > 0 else 0
             }
             output["translation_info"] = {}
             
@@ -1835,7 +1837,7 @@ class Raw:
                 "end": end,
                 "total": len(res),
                 "page": ((start - 1) / range) + 1,
-                "nb_pages": ((len(res) - 1) / range) + 1
+                "nb_pages": math.ceil(len(res) / range) if len(res) > 0 else 0
             }
             cpt = start - 1
             output["translations"] = {}
@@ -2056,7 +2058,7 @@ class Raw:
                     "end": end,
                     "total": len(res),
                     "page": ((start - 1) / range_) + 1 if start > 0 else 1,
-                    "nb_pages": ((len(res) - 1) / range_) + 1 if len(res) > 0 else 0,
+                    "nb_pages": math.ceil(len(res) / range_) if len(res) > 0 else 0,
                 },
                 "words": {},
             }
