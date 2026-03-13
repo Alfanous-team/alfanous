@@ -1,6 +1,11 @@
+import logging
+import pickle
+
 from whoosh.filedb.filestore import FileStorage
 from whoosh import index
 from alfanous.constants import QURAN_TOTAL_VERSES
+
+logger = logging.getLogger(__name__)
 
 
 class BasicDocIndex:
@@ -18,10 +23,24 @@ class BasicDocIndex:
             return self.OK = True if success
         """
         ix, ok = None, False
-        if index.exists_in(self._ixpath):
-            storage = FileStorage(self._ixpath)
-            ix = storage.open_index()
-            ok = True
+        try:
+            if index.exists_in(self._ixpath):
+                storage = FileStorage(self._ixpath)
+                ix = storage.open_index()
+                ok = True
+        except pickle.UnpicklingError as exc:
+            logger.error(
+                "Failed to load index at '%s': %s. "
+                "The index file appears to be corrupted or was built with an "
+                "incompatible version of Python/Whoosh. "
+                "Please rebuild the index by running 'make build'.",
+                self._ixpath, exc,
+            )
+        except Exception as exc:
+            logger.error(
+                "Unexpected error loading index at '%s': %s.",
+                self._ixpath, exc,
+            )
 
         return ix, ok
 
