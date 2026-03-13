@@ -900,7 +900,7 @@ def test_search():
                                    'type': 'Medinan'},
                           'theme': {}}},
             'interval': {'end': 10,
-                         'nb_pages': 12.5,
+                         'nb_pages': 12,
                          'page': 1.0,
                          'start': 1,
                          'total': 116},

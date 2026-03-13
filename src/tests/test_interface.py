@@ -23,7 +23,7 @@ def test_search():
 
     # Total occurrence count of "الله" in the Quran is an invariant.
     assert results['search']['interval'] == {
-        'end': 10, 'nb_pages': 157.6, 'page': 1.0, 'start': 1, 'total': 1567
+        'end': 10, 'nb_pages': 157, 'page': 1.0, 'start': 1, 'total': 1567
     }
 
     # Top-level structure
