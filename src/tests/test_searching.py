@@ -31,6 +31,7 @@ class TestStripPhraseQueries:
             topic=ID(stored=True),
             chapter=ID(stored=True),
             subtopic=ID(stored=True),
+            sura=TEXT(stored=True, phrase=False),
             sura_name=KEYWORD(stored=True),
             sura_id=NUMERIC(stored=True),
             aya_fuzzy=TEXT(stored=True, phrase=False),
@@ -110,4 +111,23 @@ class TestStripPhraseQueries:
         result = _strip_phrase_queries(q, schema=schema)
         assert isinstance(result, wquery.And), (
             "Phrase on KEYWORD 'sura_name' field must be converted to And-of-Terms"
+        )
+
+    def test_sura_phrase_stripped_with_schema(self):
+        """Phrase on the 'sura' TEXT(phrase=False) field is converted to And-of-Terms.
+
+        The 'sura' field (romanized sura name) is indexed with ``phrase=False``
+        so it stores no positional data.  A phrase query like
+        ``sura:"Al Baqarah"`` must not raise
+        ``QueryError: Phrase search: 'sura' field has no positions``.
+        ``_strip_phrase_queries`` should convert it to an unordered And-of-Terms.
+        """
+        from whoosh import query as wquery
+        from alfanous.searching import _strip_phrase_queries
+
+        schema = self._make_schema()
+        q = wquery.Phrase("sura", ["Al", "Baqarah"])
+        result = _strip_phrase_queries(q, schema=schema)
+        assert isinstance(result, wquery.And), (
+            "Phrase on TEXT(phrase=False) 'sura' field must be converted to And-of-Terms"
         )
