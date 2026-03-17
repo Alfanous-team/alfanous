@@ -464,13 +464,29 @@ class Raw:
         # ---------------------------------------------------------------------------
         if self.QSE.OK:
             from whoosh.qparser import MultifieldParser as _MFP, OrGroup as _OrGroup
+            from whoosh.qparser.plugins import WildcardPlugin as _WildcardPlugin, EveryPlugin as _EveryPlugin
+            from alfanous.query_plugins import ArabicWildcardPlugin as _ArabicWildcardPlugin
             _schema = self.QSE._schema
             _schema_fields = set(_schema.names())
+
+            def _make_bounded_parser(fields, schema, group):
+                """Build a MultifieldParser that uses ArabicWildcardPlugin (bounded
+                expansion, ؟/? support) instead of the default WildcardPlugin."""
+                p = _MFP(fields, schema, group=group)
+                # Replace WildcardPlugin with ArabicWildcardPlugin so that
+                # wildcard queries (*, ?, ؟) are bounded to MAX_EXPAND terms.
+                # Also remove EveryPlugin to prevent *:* match-all queries.
+                p.remove_plugin_class(_WildcardPlugin)
+                p.remove_plugin_class(_EveryPlugin)
+                p.add_plugin(_ArabicWildcardPlugin())
+                return p
 
             # Translation search parser (used in _search_aya non-Arabic path and
             # _search_translation).
             _avail_trans = [f for f in _TEXT_LANG_FIELDS if f in _schema_fields]
-            self._trans_parser = _MFP(_avail_trans, _schema, group=_OrGroup) if _avail_trans else None
+            self._trans_parser = (
+                _make_bounded_parser(_avail_trans, _schema, _OrGroup) if _avail_trans else None
+            )
             # Frozenset of the same fields — used for fast membership tests
             # when extracting matched terms for highlighting.
             self._trans_fields = frozenset(_avail_trans)
@@ -484,7 +500,7 @@ class Raw:
             # Only build the parser when there is at least one usable field.
             # _search_words already checks for None and returns an empty response.
             self._word_parser = (
-                _MFP(_default_word_f, schema=_schema, group=_OrGroup)
+                _make_bounded_parser(_default_word_f, _schema, _OrGroup)
                 if _default_word_f else None
             )
             # Also cache the full list for schema filtering in _search_words.
