@@ -1108,6 +1108,23 @@ class Raw:
 
             # Words & Annotations
             words_output = {"individual": {}}
+            if not word_info:
+                # Always populate words.individual with matched terms so callers
+                # can see which keywords were matched (including fuzzy variations)
+                # without requiring the full word_info flag.
+                _cpt = 1
+                for term in termz:
+                    if term[0] in ("aya", "aya_"):
+                        _word_norm = strip_vocalization(term[1])
+                        _word_variations = [
+                            v for v in _all_ac_variations
+                            if _edit_distance(_word_norm, v) <= fuzzy_maxdist
+                        ]
+                        words_output["individual"][_cpt] = {
+                            "word": term[1],
+                            "variations": _word_variations,
+                        }
+                        _cpt += 1
             if word_info:
                 # _result_docnums and _index_reader are only needed here; building them
                 # unconditionally would iterate ALL results and hold a reader reference
