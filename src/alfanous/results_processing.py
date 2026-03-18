@@ -2,7 +2,7 @@ from math import log as _log
 
 from whoosh.scoring import BM25F, BM25FScorer, WeightScorer
 from whoosh.highlight import highlight, HtmlFormatter, BasicFragmentScorer, WholeFragmenter
-from alfanous.text_processing import QHighLightAnalyzer, QDiacHighLightAnalyzer, Gword_tamdid, TranslationHighLightAnalyzer
+from alfanous.text_processing import QHighLightAnalyzer, QDiacHighLightAnalyzer, Gword_tamdid, TranslationHighLightAnalyzer, make_translation_analyzer
 from alfanous.constants import QURAN_TOTAL_VERSES
 
 
@@ -77,13 +77,14 @@ def Qhighlight(text, terms, type="css", strip_vocalization=True):
     return highlighted or text
 
 
-def QTranslationHighlight(text, terms, type="css", **kwargs):
+def QTranslationHighlight(text, terms, type="css", lang=None, **kwargs):
+    analyzer = make_translation_analyzer(lang) if lang else TranslationHighLightAnalyzer
     formatter = _BOLD_FORMATTER if type == "bold" else HtmlFormatter(**_HTML_FORMATTER_KWARGS)
 
     highlighted = highlight(
         text,
         terms,
-        analyzer=TranslationHighLightAnalyzer,
+        analyzer=analyzer,
         fragmenter=WholeFragmenter,
         formatter=formatter,
         top=3,

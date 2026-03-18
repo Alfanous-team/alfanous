@@ -152,7 +152,7 @@ def _ZERO_IF_NONE(x):
 # allocated on every _search_aya / _search_translation / _search_words call
 # for the no-highlight (H / TH) path.  Defining it once at module level avoids
 # one function-object allocation per request on each of the three search methods.
-def _COALESCE_TEXT(x):
+def _COALESCE_TEXT(x, *args, **kwargs):
     return x if x else "-----"
 
 # Keyword-split helper — replaces the per-request lambda
@@ -1092,7 +1092,12 @@ class Raw:
             if _do_highlight:
                 H = lambda X: self.QSE.highlight(X, terms, highlight) if X else "-----"
                 # translation highlight function: applies QTranslationHighlight with non-Arabic query terms
-                TH = lambda X: QTranslationHighlight(X, _trans_terms, type=highlight) if X and _trans_terms else (X if X else "-----")
+                def TH(X, lang=None):
+                    if not X:
+                        return "-----"
+                    if not _trans_terms:
+                        return X
+                    return QTranslationHighlight(X, _trans_terms, type=highlight, lang=lang)
             else:
                 H = _COALESCE_TEXT
                 TH = _COALESCE_TEXT
@@ -1650,7 +1655,7 @@ class Raw:
                         "text_no_highlight": r["aya"] if _use_standard_script
                         else r["uth_"],
                         "transliteration": r.get("transliteration"),
-                        "translation": TH(trad_text.get(_gid, {}).get("text")) if _want_translation else None,
+                        "translation": TH(trad_text.get(_gid, {}).get("text"), trad_text.get(_gid, {}).get("lang")) if _want_translation else None,
                         "recitation": (
                             f'https://www.everyayah.com/data/{_recitation_subfolder}/%03d%03d.mp3' % (
                                 int(_sura_id), int(_aya_id))
@@ -1790,7 +1795,10 @@ class Raw:
             if highlight == "none":
                 H = _COALESCE_TEXT
             else:
-                H = lambda X: QTranslationHighlight(X, terms, type=highlight) if X else "-----"
+                def H(X, lang=None):
+                    if not X:
+                        return "-----"
+                    return QTranslationHighlight(X, terms, type=highlight, lang=lang)
     
             offset = 1 if offset < 1 else offset
             range = self._defaults["minrange"] if range < self._defaults["minrange"] else range
@@ -1870,7 +1878,7 @@ class Raw:
                         "transliteration": _parent.get("transliteration"),
                     },
                     "translation": {
-                        "text": H(_r_text),
+                        "text": H(_r_text, _r_lang or None),
                         "text_no_highlight": _r_text,
                         "author": r.get("trans_author"),
                         "lang": r.get("trans_lang"),
