@@ -1767,3 +1767,75 @@ def test_search_translation_facets_exception_does_not_propagate(monkeypatch):
         "_search_translation result must contain 'interval' or 'translations'"
     )
 
+
+def test_search_aya_words_individual_always_populated():
+    """words.individual must always contain matched terms, even without word_info=True.
+
+    The words.individual list exposes which keywords were matched by the search
+    engine — the same terms used internally for highlighting — so callers can
+    see matched words without having to parse highlighted spans or request full
+    word_info details.
+    """
+    result = RAWoutput.do({
+        "action": "search",
+        "query": "الحمد",
+        "highlight": "none",
+        # word_info deliberately omitted (defaults to False)
+    })
+    assert result["error"]["code"] == 0
+    search = result["search"]
+    individual = search["words"]["individual"]
+    assert len(individual) > 0, "words.individual must not be empty for a matching query"
+    words = [entry["word"] for entry in individual.values()]
+    # The searched word should appear as-is (possibly vocalized) in the matched terms
+    assert any(w == "الحمد" or w.replace("\u064e\u064f\u064b\u064c\u0650\u064d\u0651\u0652", "") == "الحمد"
+               for w in words), (
+        "Searched word الحمد must appear in words.individual"
+    )
+    # Minimal entry must have at least 'word' and 'variations' keys
+    for entry in individual.values():
+        assert "word" in entry
+        assert "variations" in entry
+
+
+def test_search_aya_fuzzy_words_individual_includes_variations():
+    """Fuzzy aya search: words.individual must include variation terms even without word_info.
+
+    When fuzzy=True, the engine expands the query via Levenshtein matching on
+    the aya_ac field.  All actually-matched variation terms must appear in
+    words.individual[N]["variations"] so callers can display all matched forms.
+    Uses كتاب (4 chars) which qualifies for Levenshtein expansion.
+    """
+    result = RAWoutput.do({
+        "action": "search",
+        "query": "كتاب",
+        "fuzzy": True,
+        "highlight": "none",
+        # word_info deliberately omitted (defaults to False)
+    })
+    assert result["error"]["code"] == 0
+    search = result["search"]
+    individual = search["words"]["individual"]
+    assert len(individual) > 0, "words.individual must not be empty for a matching query"
+
+    # Fuzzy search for كتاب should match several verb forms in the variations list
+    all_variations = [v for entry in individual.values() for v in entry.get("variations", [])]
+    assert len(all_variations) > 0, (
+        "Fuzzy search for كتاب must expose variation terms in words.individual"
+    )
+
+    # Every non-fuzzy matched word must also appear in the fuzzy matched words,
+    # confirming fuzzy is a superset of the exact search.
+    non_fuzzy_result = RAWoutput.do({
+        "action": "search",
+        "query": "كتاب",
+        "fuzzy": False,
+        "highlight": "none",
+    })
+    non_fuzzy_individual = non_fuzzy_result["search"]["words"]["individual"]
+    fuzzy_word_set = {entry["word"] for entry in individual.values()}
+    for entry in non_fuzzy_individual.values():
+        assert entry["word"] in fuzzy_word_set, (
+            f"Non-fuzzy matched word {entry['word']!r} must also appear in fuzzy results"
+        )
+
