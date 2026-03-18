@@ -1072,8 +1072,8 @@ class Raw:
             range = self._defaults["minrange"] if range < self._defaults["minrange"] else range
             range = self._defaults["maxrange"] if range > self._defaults["maxrange"] else range
             interval_end = offset + range - 1
-            end = interval_end if interval_end < len(res) else len(res)
             start = offset if offset <= len(res) else -1
+            end = (interval_end if interval_end < len(res) else len(res)) if start != -1 else 0
             reslist = [] if end == 0 or start == -1 else res[start - 1:end]
             # todo pagination should be done inside search operation for better performance
 
@@ -1576,7 +1576,7 @@ class Raw:
                 "start": start,
                 "end": end,
                 "total": len(res),
-                "page": ((start - 1) / range) + 1,
+                "page": ((start - 1) / range) + 1 if start > 0 else 0,
                 "nb_pages": math.ceil(len(res) / range) if len(res) > 0 else 0
             }
             output["translation_info"] = {}
@@ -1796,8 +1796,8 @@ class Raw:
             range = self._defaults["minrange"] if range < self._defaults["minrange"] else range
             range = self._defaults["maxrange"] if range > self._defaults["maxrange"] else range
             interval_end = offset + range - 1
-            end = interval_end if interval_end < len(res) else len(res)
             start = offset if offset <= len(res) else -1
+            end = (interval_end if interval_end < len(res) else len(res)) if start != -1 else 0
             reslist = [] if end == 0 or start == -1 else res[start - 1:end]
     
             # Fetch parent aya docs for the current result page using NestedParent.
@@ -1836,7 +1836,7 @@ class Raw:
                 "start": start,
                 "end": end,
                 "total": len(res),
-                "page": ((start - 1) / range) + 1,
+                "page": ((start - 1) / range) + 1 if start > 0 else 0,
                 "nb_pages": math.ceil(len(res) / range) if len(res) > 0 else 0
             }
             cpt = start - 1
@@ -2004,8 +2004,8 @@ class Raw:
             offset = 1 if offset < 1 else offset
             range_ = max(self._defaults["minrange"], min(range_, self._defaults["maxrange"]))
             interval_end = offset + range_ - 1
-            end = min(interval_end, len(res))
             start = offset if offset <= len(res) else -1
+            end = min(interval_end, len(res)) if start != -1 else 0
             reslist = [] if end == 0 or start == -1 else res[start - 1:end]
     
             # When a result was matched by word_standard, add its Uthmanic 'word'
@@ -2057,7 +2057,7 @@ class Raw:
                     "start": start,
                     "end": end,
                     "total": len(res),
-                    "page": ((start - 1) / range_) + 1 if start > 0 else 1,
+                    "page": ((start - 1) / range_) + 1 if start > 0 else 0,
                     "nb_pages": math.ceil(len(res) / range_) if len(res) > 0 else 0,
                 },
                 "words": {},

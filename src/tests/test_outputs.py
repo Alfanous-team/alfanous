@@ -1767,3 +1767,58 @@ def test_search_translation_facets_exception_does_not_propagate(monkeypatch):
         "_search_translation result must contain 'interval' or 'translations'"
     )
 
+
+def test_aya_search_out_of_bounds_page_returns_consistent_interval():
+    """When the requested page is beyond the last page, interval fields must be consistent.
+
+    Before the fix, requesting a page far beyond the result count produced an
+    ``end`` equal to ``total`` (instead of 0) and a non-integer ``page`` value
+    like 0.8 — both of which are incorrect.
+    """
+    result = RAWoutput.do({
+        "action": "search",
+        "query": "الرحمن",   # ~45 results → 5 pages
+        "page": 9999,
+        "highlight": "none",
+    })
+    interval = result["search"]["interval"]
+    assert interval["start"] == -1, "out-of-bounds page should yield start == -1"
+    assert interval["end"] == 0, "out-of-bounds page should yield end == 0 (not total)"
+    assert interval["page"] == 0, "out-of-bounds page should yield page == 0 (not fractional)"
+    assert interval["nb_pages"] > 0, "nb_pages should reflect total pages available"
+    assert result["search"]["ayas"] == {}, "no aya results expected for out-of-bounds page"
+
+
+def test_translation_search_out_of_bounds_page_returns_consistent_interval():
+    """Same out-of-bounds interval fix applies to the translation search unit."""
+    result = RAWoutput.do({
+        "action": "search",
+        "query": "god",
+        "unit": "translation",
+        "page": 9999,
+        "highlight": "none",
+    })
+    interval = result["search"]["interval"]
+    assert interval["start"] == -1, "out-of-bounds page should yield start == -1"
+    assert interval["end"] == 0, "out-of-bounds page should yield end == 0 (not total)"
+    assert interval["page"] == 0, "out-of-bounds page should yield page == 0 (not fractional)"
+    assert interval["nb_pages"] > 0, "nb_pages should reflect total pages available"
+    assert result["search"]["translations"] == {}, "no translation results expected for out-of-bounds page"
+
+
+def test_word_search_out_of_bounds_page_returns_consistent_interval():
+    """Same out-of-bounds interval fix applies to the word search unit."""
+    result = RAWoutput.do({
+        "action": "search",
+        "query": "الله",
+        "unit": "word",
+        "page": 9999,
+        "highlight": "none",
+    })
+    interval = result["search"]["interval"]
+    assert interval["start"] == -1, "out-of-bounds page should yield start == -1"
+    assert interval["end"] == 0, "out-of-bounds page should yield end == 0 (not total)"
+    assert interval["page"] == 0, "out-of-bounds page should yield page == 0 (not 1)"
+    assert interval["nb_pages"] > 0, "nb_pages should reflect total pages available"
+    assert result["search"]["words"] == {}, "no word results expected for out-of-bounds page"
+
