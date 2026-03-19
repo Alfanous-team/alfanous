@@ -1072,7 +1072,21 @@ class Raw:
                         _seen_terms.add(_trans_term)
                         _deduped_pairs.append((_trans_field, _trans_term))
                 termz = self.QSE.term_stats(_deduped_pairs)
-            terms, _all_ac_variations = [], []
+            # Add arabizi-converted Arabic candidates to termz so the mapped
+            # Arabic words (e.g. 'قول' for 'qawl') appear in words.individual
+            # and are used for Arabic text highlighting.
+            if _arabizi_candidates:
+                _arabizi_term_stats = self.QSE.term_stats(
+                    [("aya", c) for c in _arabizi_candidates]
+                )
+                termz = list(termz) + list(_arabizi_term_stats)
+            # Build the Arabic highlighting terms from the aya-field entries in
+            # termz (arabizi-converted candidates).  Translation terms are
+            # handled separately via the _trans_terms / TH lambda below.
+            terms = [t[1] for t in termz if t[0] in ("aya", "aya_")]
+            _all_ac_variations = []
+            # No derivation expansion in the non-Arabic query path.
+            _termz_for_words = termz
             # Compute facets for the non-Arabic path via a second pass (the
             # main search_with_query call does not support groupedby).
             _nonara_facet_res = None
@@ -1095,11 +1109,16 @@ class Raw:
                 if "kind" in self.QSE._schema
                 else query
             )
-            res, termz, searcher = self.QSE.search_all(aya_query, limit=self._defaults["results_limit"]["aya"], sortedby=sortedby, reverse=reverse, facets=facets_list, filter_dict=filter_dict, fuzzy=fuzzy, fuzzy_maxdist=fuzzy_maxdist, fuzzy_derivation=fuzzy_derivation, timelimit=timelimit)
+            res, termz, searcher, _deriv_expansion = self.QSE.search_all(aya_query, limit=self._defaults["results_limit"]["aya"], sortedby=sortedby, reverse=reverse, facets=facets_list, filter_dict=filter_dict, fuzzy=fuzzy, fuzzy_maxdist=fuzzy_maxdist, fuzzy_derivation=fuzzy_derivation, timelimit=timelimit)
             terms = [term[1] for term in termz[:self._defaults["maxkeywords"]]]
             # All matched aya_ac variation terms (only populated when fuzzy=True).
             # Used in the word_info loop to derive per-word variation lists.
             _all_ac_variations = [term[1] for term in termz if term[0] == "aya_ac"]
+            # All matched terms — including derivation expansion — appear in
+            # words.individual so that every highlighted word is also listed
+            # as a keyword entry (requirement: "anything highlighted should be
+            # in words.individual").
+            _termz_for_words = termz
             _trans_terms = []
             _nonara_facet_res = None
         try:
@@ -1149,7 +1168,7 @@ class Raw:
                 # can see which keywords were matched (including fuzzy variations)
                 # without requiring the full word_info flag.
                 _cpt = 1
-                for term in termz:
+                for term in _termz_for_words:
                     if term[0] in ("aya", "aya_") or term[0] in self._trans_fields:
                         _word_norm = strip_vocalization(term[1])
                         _word_variations = [
@@ -1238,7 +1257,7 @@ class Raw:
                 if (word_vocalizations or word_derivations) and _wi_searcher is not None:
                     _batch_norms = sorted({
                         strip_vocalization(t[1])
-                        for t in termz if t[0] in ("aya", "aya_")
+                        for t in _termz_for_words if t[0] in ("aya", "aya_")
                     })
                     if _batch_norms:
                         # Batch query 1 – word forms, lemma, root for every term.
@@ -1317,7 +1336,7 @@ class Raw:
                 # ── End batch fetch ───────────────────────────────────────────
 
                 try:
-                    for term in termz:
+                    for term in _termz_for_words:
                         if term[0] == "aya" or term[0] == "aya_":
                             if term[2]:
                                 matches += term[2]

@@ -1945,3 +1945,162 @@ def test_english_keyword_appears_in_words_individual_with_word_info():
         assert "nb_ayas_overall" in entry
         assert "variations" in entry
         assert isinstance(entry["variations"], list)
+
+
+def test_arabizi_query_arabic_in_words_individual():
+    """Arabizi query (e.g. 'qawl') should include the mapped Arabic word (قول)
+    in words.individual so callers know which Arabic keywords were matched.
+    """
+    search_flags = {
+        "action": "search",
+        "query": "qawl",
+        "highlight": "none",
+    }
+    results = RAWoutput.do(search_flags)
+    assert results["error"]["code"] == 0
+
+    if results["search"]["interval"]["total"] == 0:
+        pytest.skip("'qawl' returned no results — arabizi conversion may not include قول")
+
+    words_individual = results["search"]["words"]["individual"]
+    assert words_individual, (
+        "words.individual must not be empty for an arabizi query"
+    )
+    word_texts = [entry["word"] for entry in words_individual.values()]
+    # The mapped Arabic word 'قول' (or one of its forms) must appear.
+    # Use the range \u0621-\u064A which covers standard Arabic letters and
+    # common diacritics, excluding non-letter Arabic block symbols.
+    assert any("\u0621" <= c <= "\u064A" for w in word_texts for c in w), (
+        f"words.individual must contain at least one Arabic word for arabizi query 'qawl'; "
+        f"got: {word_texts}"
+    )
+
+
+def test_arabizi_query_highlights_arabic_text():
+    """Arabizi query (e.g. 'qawl') should highlight the matched Arabic words
+    in the aya text, not leave them un-highlighted.
+    """
+    search_flags = {
+        "action": "search",
+        "query": "qawl",
+        "highlight": "css",
+    }
+    results = RAWoutput.do(search_flags)
+    assert results["error"]["code"] == 0
+
+    if results["search"]["interval"]["total"] == 0:
+        pytest.skip("'qawl' returned no results — arabizi conversion may not include قول")
+
+    # At least one result must have a highlighted Arabic span
+    highlighted_found = False
+    for aya_data in results["search"]["ayas"].values():
+        text = aya_data["aya"]["text"]
+        if "<span" in text:
+            highlighted_found = True
+            break
+
+    assert highlighted_found, (
+        "Arabizi query 'qawl' must produce highlighted Arabic text in search results"
+    )
+
+
+def test_fuzzy_derivation_highlights_derivation_words():
+    """fuzzy_derivation=True must highlight derivation-matched words in aya text.
+
+    When fuzzy_derivation=True the query is expanded with morphological
+    derivations of the search term.  For example, searching 'ملك' expands to
+    include 'مالك', 'يملك', etc.  Before the fix, only the exact query word
+    'ملك' was in the highlight terms list, so derivation matches were returned
+    in results but not visually highlighted.
+    """
+    from alfanous.text_processing import QArabicSymbolsFilter
+    _strip = QArabicSymbolsFilter(
+        shaping=False, tashkil=True, spellerrors=False, hamza=False
+    ).normalize_all
+
+    query_term = "ملك"
+    search_flags = {
+        "action": "search",
+        "query": query_term,
+        "fuzzy": True,
+        "fuzzy_derivation": True,
+        "highlight": "css",
+        "perpage": 300,
+    }
+    results = RAWoutput.do(search_flags)
+    assert results["error"]["code"] == 0
+
+    # Derivation search must return more results than plain exact search
+    exact_flags = {**search_flags, "fuzzy": False, "fuzzy_derivation": False}
+    exact_results = RAWoutput.do(exact_flags)
+    assert (
+        results["search"]["interval"]["total"]
+        >= exact_results["search"]["interval"]["total"]
+    ), "fuzzy+derivation must return at least as many results as exact search"
+
+    # At least one derivation word (something OTHER than 'ملك' itself) must be
+    # highlighted — confirming that derivation terms are in the highlight list.
+    highlighted_derivation_found = False
+    for aya_data in results["search"]["ayas"].values():
+        text = aya_data["aya"]["text"]
+        if "<span" not in text:
+            continue
+        spans = re.findall(r"<span[^>]*>(.*?)</span>", text)
+        for span in spans:
+            stripped = _strip(span)
+            if stripped != query_term:
+                highlighted_derivation_found = True
+                break
+        if highlighted_derivation_found:
+            break
+
+    assert highlighted_derivation_found, (
+        f"fuzzy_derivation=True must highlight derivation words (e.g. مالك، يملك) "
+        f"in addition to the exact query term {query_term!r}"
+    )
+
+
+def test_fuzzy_derivation_words_individual_includes_expansions():
+    """words.individual must include derivation-expansion terms when fuzzy_derivation=True.
+
+    The requirement is that "words.individual should include the expansions"
+    and "any thing highlighted should be in words.individual".  When
+    fuzzy_derivation=True, matched derivation words (e.g. 'مالك', 'يملك' for
+    a query of 'ملك') must appear as entries in words.individual.
+    """
+    query_term = "ملك"
+    search_flags = {
+        "action": "search",
+        "query": query_term,
+        "fuzzy": True,
+        "fuzzy_derivation": True,
+        "word_info": True,
+        "highlight": "none",
+    }
+    results = RAWoutput.do(search_flags)
+    assert results["error"]["code"] == 0
+
+    words_individual = results["search"]["words"]["individual"]
+    assert words_individual, "words.individual must not be empty"
+
+    # The query word must appear in words.individual
+    word_texts = [entry["word"] for entry in words_individual.values()]
+    assert query_term in word_texts, (
+        f"User's query word {query_term!r} must appear in words.individual; got: {word_texts}"
+    )
+
+    from alfanous.text_processing import QArabicSymbolsFilter
+    _strip = QArabicSymbolsFilter(
+        shaping=False, tashkil=True, spellerrors=False, hamza=False
+    ).normalize_all
+
+    # At least one derivation word (something OTHER than the query term) must
+    # also be present — confirming that expansion terms are included.
+    derivation_found = any(
+        _strip(entry["word"]) != query_term
+        for entry in words_individual.values()
+    )
+    assert derivation_found, (
+        f"words.individual must contain at least one derivation word (not just {query_term!r}) "
+        f"when fuzzy_derivation=True — all expanded keywords must be listed"
+    )

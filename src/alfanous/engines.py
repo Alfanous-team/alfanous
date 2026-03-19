@@ -81,8 +81,8 @@ class BasicSearchEngine:
             merged = {**_default, **(filter_dict or {})}
         else:
             merged = filter_dict
-        results, terms, searcher = self._searcher.search(querystr, limit=limit, sortedby=sortedby, reverse=reverse, facets=facets, filter_dict=merged, fuzzy=fuzzy, fuzzy_maxdist=fuzzy_maxdist, fuzzy_derivation=fuzzy_derivation, timelimit=timelimit)
-        return results, list(self._reader.term_stats(terms)), searcher
+        results, terms, searcher, expansion_terms = self._searcher.search(querystr, limit=limit, sortedby=sortedby, reverse=reverse, facets=facets, filter_dict=merged, fuzzy=fuzzy, fuzzy_maxdist=fuzzy_maxdist, fuzzy_derivation=fuzzy_derivation, timelimit=timelimit)
+        return results, list(self._reader.term_stats(terms)), searcher, expansion_terms
 
     def search_with_query(self, q_obj, limit=QURAN_TOTAL_VERSES, sortedby="score", reverse=False, timelimit=5.0):
         """Run a pre-built Whoosh query object (e.g. NestedParent/NestedChildren).
