@@ -1153,7 +1153,7 @@ _WORD_ANNOTATION_FIELDS = [
     {"field": "mood",       "description": "Verb mood in Arabic script"},
     {"field": "case",       "description": "Grammatical case in Arabic script"},
     # Translation-related fields
-    {"field": "trans_id",   "description": "Translation identifier (e.g. 'en.shakir', 'fr.hamidullah', 'ar.jalalayn'). Use list_field_values('trans_id') to enumerate all available translations."},
+    {"field": "trans_id",   "description": "Translation identifier (e.g. 'en.sahih', 'fr.hamidullah', 'ar.jalalayn'). Use list_field_values('trans_id') to enumerate all available translations."},
     {"field": "trans_lang", "description": "Translation language code (e.g. 'en', 'fr', 'ar', 'id', 'ja')"},
 ]
 

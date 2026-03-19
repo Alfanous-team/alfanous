@@ -527,7 +527,7 @@
     "type": "ID",
     "stored": true,
     "analyzer": null,
-    "comment": "Translation identifier for child docs (e.g. 'en.shakir')",
+    "comment": "Translation identifier for child docs (e.g. 'en.sahih')",
     "is_spellchecked": null,
     "unique": null
   },

@@ -160,15 +160,15 @@ def test_search_translation_unit_english():
 
 
 def test_search_aya_with_translation_param():
-    """aya search with translation='en.shakir' returns translation text alongside each aya."""
-    result = alfanous.api.search("الرحمن الرحيم", translation="en.shakir")
+    """aya search with translation='en.sahih' returns translation text alongside each aya."""
+    result = alfanous.api.search("الرحمن الرحيم", translation="en.sahih")
     assert result["error"]["code"] == 0
     ayas = result["search"]["ayas"]
     assert len(ayas) > 0
-    # At least some results must have a non-None translation (those that have en.shakir)
+    # At least some results must have a non-None translation (those that have en.sahih)
     translations_found = [item["aya"]["translation"] for item in ayas.values()]
     assert any(t is not None for t in translations_found), (
-        "Expected at least one aya to include en.shakir translation text"
+        "Expected at least one aya to include en.sahih translation text"
     )
     # Any non-None translation must be a plain string, not a dict
     for t in translations_found:
