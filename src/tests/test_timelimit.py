@@ -482,3 +482,116 @@ def test_find_extended_warning_logged_on_timeout(caplog):
                 assert "timelimit" in record.getMessage().lower()
     finally:
         shutil.rmtree(tmpdir, ignore_errors=True)
+
+
+# ---------------------------------------------------------------------------
+# Pure-wildcard guard tests (no index required)
+# ---------------------------------------------------------------------------
+
+def test_pure_wildcard_re_matches_bare_wildcards():
+    """_PURE_WILDCARD_RE must match queries that consist only of wildcard chars.
+
+    Regression guard for: "exceeding timelimit with wildcards search".
+    These queries would otherwise route through the expensive NestedParent
+    translation search path in _search_aya.
+    """
+    from alfanous.outputs import _PURE_WILDCARD_RE
+
+    should_match = ["*", "?", "؟", "* ?", "؟*", "  *  ", "**", "*?*"]
+    # Edge cases: whitespace-only queries (no wildcards but also no content)
+    # are also matched so they don't trigger translation search.
+    # Field-qualified wildcards like "text:*" contain ":" which routes them
+    # to the Arabic path (never reaches _PURE_WILDCARD_RE check), and queries
+    # like "*test*" or "t*" have actual content so they must NOT match.
+    should_not_match = ["*test*", "t*", "hello", "*h*", "", "god*", "text:*"]
+
+    for q in should_match:
+        assert _PURE_WILDCARD_RE.match(q), (
+            f"_PURE_WILDCARD_RE should match pure-wildcard query {q!r} but did not"
+        )
+    for q in should_not_match:
+        assert not _PURE_WILDCARD_RE.match(q), (
+            f"_PURE_WILDCARD_RE should NOT match query with content {q!r} but did"
+        )
+
+
+def test_search_aya_skips_trans_parser_for_pure_wildcards(monkeypatch):
+    """_search_aya must not call _trans_parser.parse for pure-wildcard queries.
+
+    The translation NestedParent search is skipped for queries like '*' to
+    avoid expanding wildcards across all translation fields — an operation
+    that would exceed the timelimit.
+    """
+    from alfanous.outputs import Raw
+
+    raw = Raw.__new__(Raw)
+    raw._defaults = {
+        "flags": {
+            "lang": "en",
+            "sortedby": "score",
+            "reverse": False,
+            "perpage": None,
+            "range": 25,
+            "page": None,
+            "offset": 1,
+            "recitation": None,
+            "translation": None,
+            "romanization": "none",
+            "highlight": "none",
+            "script": "simple",
+            "vocalized": False,
+            "fuzzy": False,
+            "fuzzy_maxdist": 1,
+            "fuzzy_derivation": False,
+            "timelimit": "5",
+            "view": "custom",
+            "facets": None,
+            "filter": None,
+            "prev_aya": False,
+            "next_aya": False,
+            "sura_info": False,
+            "sura_stat_info": False,
+            "word_info": False,
+            "word_synonyms": False,
+            "word_derivations": False,
+            "word_vocalizations": False,
+            "word_linguistics": False,
+            "aya_position_info": False,
+            "aya_theme_info": False,
+            "aya_stat_info": False,
+            "aya_sajda_info": False,
+            "annotation_aya": False,
+            "annotation_word": False,
+        },
+        "results_limit": {"aya": 25},
+    }
+    raw.DOMAINS = {
+        "view": ["custom", "minimal", "normal", "full", "statistic", "linguistic", "recitation"],
+    }
+
+    # Mock _trans_parser with a sentinel to detect if parse() is called
+    mock_trans_parser = MagicMock()
+    raw._trans_parser = mock_trans_parser
+    raw._trans_fields = frozenset()
+
+    # Mock QSE so search_with_query returns empty results immediately
+    mock_qse = MagicMock()
+    mock_qse._schema = {}
+    mock_results = MagicMock()
+    mock_results.__len__ = MagicMock(return_value=0)
+    mock_results.__iter__ = MagicMock(return_value=iter([]))
+    mock_qse.search_with_query.return_value = (mock_results, [], MagicMock())
+    raw.QSE = mock_qse
+
+    # Stub helpers used inside _search_aya that require real data
+    monkeypatch.setattr("alfanous.outputs.arabizi_to_arabic_list", lambda *a, **kw: [])
+    monkeypatch.setattr("alfanous.outputs.quran_unvocalized_words", lambda: frozenset())
+
+    flags = {"query": "*", "action": "search"}
+    try:
+        raw._search_aya(flags)
+    except Exception:
+        pass  # Output formatting may fail; we only care about the parser call
+
+    # The translation parser must NOT have been called for a bare wildcard
+    mock_trans_parser.parse.assert_not_called()

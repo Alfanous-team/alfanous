@@ -79,6 +79,17 @@ _COLLOCATION_STOPWORDS = _load_collocation_stopwords()
 # arabizi/translation path and the direct Arabic path.
 _ARABIC_SCRIPT_RE = re.compile(r'[\u0600-\u06FF]')
 
+# Pre-compiled regex for detecting "pure wildcard" queries — queries that
+# consist *only* of wildcard characters (*, ?, ؟) and optional whitespace,
+# with no alphabetic or digit content.  Examples: "*", "?", "* ?", "؟*".
+# Note: ؟ (U+061F) is the Arabic question mark, which is also accepted as a
+# wildcard character in the search interface (converted to ? by ArabicWildcardQuery).
+# Such queries would expand the NestedParent translation search across every
+# term in every translation field, exceeding any reasonable timelimit while
+# producing no useful results.  They are short-circuited in _search_aya to
+# skip the expensive translation search path entirely.
+_PURE_WILDCARD_RE = re.compile(r'^[\s*?؟]+$')
+
 # Pre-instantiated Arabic text normalisation filters.  Only two configurations
 # are ever used inside _search_aya:
 #   _STRIP_VOCALIZATION  — always strips diacritics (tashkil=True)
@@ -1015,10 +1026,13 @@ class Raw:
             # to also search the Arabic aya fields ("the word and arabizi(word)").
             _query_parts = []
 
-            # 1. Translation search: NestedParent over child translation docs
+            # 1. Translation search: NestedParent over child translation docs.
+            # Skip for pure-wildcard queries (e.g. bare "*", "?", "؟") — they
+            # expand across every term in every translation field via NestedParent,
+            # exceeding any reasonable timelimit while producing zero useful results.
             _trans_terms = []
             _trans_term_pairs = []
-            if self._trans_parser is not None:
+            if self._trans_parser is not None and not _PURE_WILDCARD_RE.match(query):
                 _trans_q = self._trans_parser.parse(query)
                 _all_trans_q_terms = [(f, t) for f, t in _trans_q.all_terms() if f in self._trans_fields]
                 _trans_terms = [t for _, t in _all_trans_q_terms]

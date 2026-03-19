@@ -2104,3 +2104,39 @@ def test_fuzzy_derivation_words_individual_includes_expansions():
         f"words.individual must contain at least one derivation word (not just {query_term!r}) "
         f"when derivation_level=\"root\" — all expanded keywords must be listed"
     )
+
+
+def test_pure_wildcard_search_returns_quickly_without_error():
+    """A bare wildcard query (* or ?) must return quickly with no error.
+
+    Pure-wildcard queries have no alphabetic content so they would expand
+    the translation NestedParent search across every term in every translation
+    field — an operation that exceeds any reasonable timelimit.  The fix
+    short-circuits such queries before the expensive translation search,
+    returning empty results immediately.
+
+    Regression test for: "exceeding timelimit with wildcards search"
+    """
+    import time
+
+    for query in ("*", "?", "؟", "* ?", "؟*"):
+        search_flags = {
+            "action": "search",
+            "query": query,
+            "timelimit": "5",
+        }
+        t0 = time.monotonic()
+        results = RAWoutput.do(search_flags)
+        elapsed = time.monotonic() - t0
+
+        # Must complete well under the configured timelimit (5 s above).
+        # 2 s is a generous ceiling: the short-circuit path should finish in
+        # milliseconds; anything above 2 s indicates the translation search
+        # was NOT skipped and the timelimit is being approached.
+        assert elapsed < 2.0, (
+            f"Pure-wildcard query {query!r} took {elapsed:.3f}s — "
+            "translation NestedParent search was not skipped"
+        )
+        assert results["error"]["code"] == 0, (
+            f"Pure-wildcard query {query!r} returned an error: {results['error']}"
+        )
