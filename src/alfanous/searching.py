@@ -554,23 +554,30 @@ class QSearcher:
                             )
                     else:
                         decoded_terms.add((fieldname, text))
-                # Exclude derivation-expansion terms from the terms returned to
-                # callers.  These are search-expansion internals (added to
-                # broaden recall) and must NOT appear in words_output as
-                # separate keyword entries: if they did, the first entry in
-                # words.individual would be a derivation word rather than the
-                # user's actual query word, causing incorrect nb_variations == 0.
-                # Exception: keep a derivation term if it was also part of the
-                # user's original query (e.g. the user explicitly typed it).
-                if _derivation_expansion:
-                    decoded_terms -= (_derivation_expansion - _original_query_terms)
+                # Keep ALL matched terms (including derivation expansion) so
+                # that downstream highlighting can cover every word that was
+                # actually matched by the expanded query.  The expansion set is
+                # returned as a separate 4th value so callers can still exclude
+                # expansion terms from per-keyword statistics (words.individual)
+                # without losing highlight coverage.
                 terms = frozenset(decoded_terms)
             else:
                 terms = _original_query_terms
         else:
             terms = query.all_terms()
 
-        return results, terms, _SearcherProxy(searcher)
+        # Return derivation-expansion terms that are NOT in the user's original
+        # query as a separate frozenset.  Callers (outputs.py) use this set to:
+        #   • include all terms (original + expansion) for highlighting, so that
+        #     matched derivation words are visually highlighted in results;
+        #   • exclude expansion terms from words.individual statistics, so the
+        #     first entry always corresponds to the user's actual query word
+        #     and per-word statistics (nb_variations, nb_matches …) are correct.
+        _expansion_for_caller = (
+            frozenset(_derivation_expansion - _original_query_terms)
+            if _derivation_expansion else frozenset()
+        )
+        return results, terms, _SearcherProxy(searcher), _expansion_for_caller
 
     def search_obj(self, q_obj, limit=QURAN_TOTAL_VERSES, sortedby="score", reverse=False, timelimit=5.0):
         """Run a pre-built Whoosh query object (e.g. NestedParent) directly,

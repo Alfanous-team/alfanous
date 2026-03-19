@@ -2230,7 +2230,7 @@ class TestSharedReaderSearcherContract(unittest.TestCase):
         mock_parser.parse.return_value = mock_parsed_query
         qs._qparser = mock_parser
 
-        results, terms, _searcher = qs.search("sura_id:49", timelimit=None)
+        results, terms, _searcher, *_ = qs.search("sura_id:49", timelimit=None)
         self.assertIs(results, good_results,
                       "search must return results from the successful retry")
 

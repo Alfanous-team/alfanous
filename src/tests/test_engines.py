@@ -124,7 +124,7 @@ def test_autocomplete_unknown_word():
 
 def test_search():
     QUERY1 = "الأمل"
-    results, terms, searcher = QSE.search_all(QUERY1,
+    results, terms, searcher, *_ = QSE.search_all(QUERY1,
                                               limit=6236,
                                               sortedby="score",
                                               reverse=True)
@@ -190,7 +190,7 @@ def test_search():
 
     # Transliteration field search: Latin-script phonetic text must be searchable.
     # "alrrahmani" appears in Al-Fatiha 1:1 and 1:3 transliterations.
-    results_t, terms_t, searcher_t = QSE.search_all("transliteration:alrrahmani", limit=10)
+    results_t, terms_t, searcher_t, *_ = QSE.search_all("transliteration:alrrahmani", limit=10)
     assert len(results_t) > 0, "transliteration field search must return results"
     assert all(r.get("kind") == "aya" for r in results_t)
     assert any("alrrahmani" in (r.get("transliteration") or "").lower() for r in results_t)
@@ -231,7 +231,7 @@ def test_translation_engine():
 
 def _qse_search(query, **kwargs):
     """Helper: run a QSE search and return result count."""
-    results, _terms, _searcher = QSE.search_all(
+    results, _terms, _searcher, *_ = QSE.search_all(
         query, limit=6236, sortedby="score", reverse=True, **kwargs
     )
     return len(results)
@@ -280,12 +280,12 @@ def test_wildcard_stopped_by_timelimit():
     that the full code path (wildcard expansion → TimeLimitCollector → partial
     results) is exercised and handled gracefully.
     """
-    results, _terms, _searcher = QSE.search_all(u"*", limit=6236, timelimit=0.00001)
+    results, _terms, _searcher, *_ = QSE.search_all(u"*", limit=6236, timelimit=0.00001)
     assert results is not None, "results must not be None when timelimit is hit"
     assert len(results) >= 0, "results length must be non-negative"
 
     # Also verify the single-char wildcard variant with the same constraint
-    results2, _terms2, _searcher2 = QSE.search_all(u"ن*", limit=6236, timelimit=0.00001)
+    results2, _terms2, _searcher2, *_ = QSE.search_all(u"ن*", limit=6236, timelimit=0.00001)
     assert results2 is not None
     assert len(results2) >= 0
 
@@ -327,7 +327,7 @@ def test_advanced_search_word_properties():
     """
     # {قول،اسم} — noun derivations of قول; new index-based logic may return more
     # variations than the old static data → accept any count >= original baseline
-    results, terms, _searcher = QSE.search_all(u"{قول،اسم}", limit=6236, sortedby="score", reverse=True)
+    results, terms, _searcher, *_ = QSE.search_all(u"{قول،اسم}", limit=6236, sortedby="score", reverse=True)
     assert len(results) >= 59
     term_words = [t[1] for t in terms]
     assert len(term_words) >= 11
@@ -335,7 +335,7 @@ def test_advanced_search_word_properties():
     assert "قولا" in term_words
 
     # {ملك،فعل} — verbs with root ملك; accept any count >= original baseline
-    results2, terms2, _searcher2 = QSE.search_all(u"{ملك،فعل}", limit=6236, sortedby="score", reverse=True)
+    results2, terms2, _searcher2, *_ = QSE.search_all(u"{ملك،فعل}", limit=6236, sortedby="score", reverse=True)
     assert len(results2) >= 42
     term_words2 = [t[1] for t in terms2]
     assert len(term_words2) >= 8
@@ -863,7 +863,7 @@ def test_fuzzy_phrase_no_query_error():
     # non-closing proxy; no explicit close needed.
     phrase_query = '"رب العالمين"'
     try:
-        results, terms, searcher = QSE.search_all(phrase_query, fuzzy=True, limit=10)
+        results, terms, searcher, *_ = QSE.search_all(phrase_query, fuzzy=True, limit=10)
     except QueryError as exc:
         raise AssertionError(
             f"search_all raised QueryError for phrase+fuzzy: {exc}"
@@ -898,7 +898,7 @@ def test_topic_phrase_no_query_error():
     ]:
         query_str = f'{field}:{phrase}'
         try:
-            results, terms, searcher = QSE.search_all(query_str, limit=10)
+            results, terms, searcher, *_ = QSE.search_all(query_str, limit=10)
         except QueryError as exc:
             raise AssertionError(
                 f"search_all raised QueryError for {query_str!r}: {exc}"
@@ -924,7 +924,7 @@ def test_sura_phrase_no_query_error():
 
     query_str = 'sura:"Al Baqarah"'
     try:
-        results, terms, searcher = QSE.search_all(query_str, limit=10)
+        results, terms, searcher, *_ = QSE.search_all(query_str, limit=10)
     except QueryError as exc:
         raise AssertionError(
             f"search_all raised QueryError for {query_str!r}: {exc}"
@@ -947,7 +947,7 @@ def test_phrase_search_preserved_for_positional_fields():
     # "Lord of the worlds" — a phrase that appears many times in the Quran
     phrase_query = '"رب العالمين"'
     try:
-        results, terms, searcher = QSE.search_all(phrase_query, limit=100)
+        results, terms, searcher, *_ = QSE.search_all(phrase_query, limit=100)
     except QueryError as exc:
         raise AssertionError(
             f"search_all raised QueryError for phrase on positional field: {exc}"
@@ -965,7 +965,7 @@ def test_fuzzy_derivation_returns_more_results():
     """
     root_deriv_results = _qse_search(u">>ملك")
 
-    fuzzy_results, _, _ = QSE.search_all(u"ملك", fuzzy=True, fuzzy_derivation=True, limit=QURAN_TOTAL_VERSES)
+    fuzzy_results, _, _, _ = QSE.search_all(u"ملك", fuzzy=True, fuzzy_derivation=True, limit=QURAN_TOTAL_VERSES)
     fuzzy_count = len(fuzzy_results)
 
     assert fuzzy_count >= root_deriv_results, (
@@ -980,8 +980,8 @@ def test_fuzzy_derivation_disabled():
     Results with derivation expansion disabled should be <= results with it
     enabled (disabling it only reduces recall, never increases it).
     """
-    with_deriv, _, _ = QSE.search_all(u"ملك", fuzzy=True, fuzzy_derivation=True, limit=QURAN_TOTAL_VERSES)
-    without_deriv, _, _ = QSE.search_all(u"ملك", fuzzy=True, fuzzy_derivation=False, limit=QURAN_TOTAL_VERSES)
+    with_deriv, _, _, _ = QSE.search_all(u"ملك", fuzzy=True, fuzzy_derivation=True, limit=QURAN_TOTAL_VERSES)
+    without_deriv, _, _, _ = QSE.search_all(u"ملك", fuzzy=True, fuzzy_derivation=False, limit=QURAN_TOTAL_VERSES)
 
     assert len(with_deriv) >= len(without_deriv), (
         "Enabling derivation expansion must not reduce the result count"
@@ -1000,7 +1000,7 @@ def test_fuzzy_derivation_no_index_fallback():
     # Mock _get_derivations to simulate a missing/unavailable index:
     # returns only the input word itself — no derivation expansion.
     with patch("alfanous.query_plugins.DerivationQuery._get_derivations", return_value=["ملك"]):
-        results, terms, searcher = QSE.search_all(u"ملك", fuzzy=True, fuzzy_derivation=True, limit=10)
+        results, terms, searcher, *_ = QSE.search_all(u"ملك", fuzzy=True, fuzzy_derivation=True, limit=10)
 
     assert hasattr(results, 'runtime'), "results must be a Whoosh Results object"
     assert isinstance(terms, list)
@@ -1015,7 +1015,7 @@ def test_nonfuzzy_derivation_returns_more_results():
     """
     lemma_deriv_results = _qse_search(u">ملك")
 
-    nonfuzzy_results, _, _ = QSE.search_all(u"ملك", fuzzy=False, fuzzy_derivation=True, limit=QURAN_TOTAL_VERSES)
+    nonfuzzy_results, _, _, _ = QSE.search_all(u"ملك", fuzzy=False, fuzzy_derivation=True, limit=QURAN_TOTAL_VERSES)
     nonfuzzy_count = len(nonfuzzy_results)
 
     assert nonfuzzy_count >= lemma_deriv_results, (
@@ -1030,8 +1030,8 @@ def test_nonfuzzy_derivation_disabled():
     Results with derivation expansion disabled should be <= results with it
     enabled (disabling it only reduces recall, never increases it).
     """
-    with_deriv, _, _ = QSE.search_all(u"ملك", fuzzy=False, fuzzy_derivation=True, limit=QURAN_TOTAL_VERSES)
-    without_deriv, _, _ = QSE.search_all(u"ملك", fuzzy=False, fuzzy_derivation=False, limit=QURAN_TOTAL_VERSES)
+    with_deriv, _, _, _ = QSE.search_all(u"ملك", fuzzy=False, fuzzy_derivation=True, limit=QURAN_TOTAL_VERSES)
+    without_deriv, _, _, _ = QSE.search_all(u"ملك", fuzzy=False, fuzzy_derivation=False, limit=QURAN_TOTAL_VERSES)
 
     assert len(with_deriv) >= len(without_deriv), (
         "Enabling derivation expansion must not reduce the result count"

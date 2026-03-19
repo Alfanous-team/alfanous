@@ -137,7 +137,7 @@ def test_basic_search_engine_passes_timelimit_to_qsearcher():
     mock_terms = []
 
     mock_qsearcher = MagicMock()
-    mock_qsearcher.search.return_value = (mock_results, mock_terms, MagicMock())
+    mock_qsearcher.search.return_value = (mock_results, mock_terms, MagicMock(), frozenset())
 
     mock_qreader = MagicMock()
     mock_qreader.term_stats.return_value = []
@@ -304,7 +304,7 @@ def test_wildcard_search_via_qsearcher_stopped_by_timelimit():
         parser.add_plugin(ArabicWildcardPlugin())
 
         qs = QSearcher(mock_index, parser)
-        results, _terms, _searcher = qs.search("t*", timelimit=EXTREMELY_SHORT_TIMELIMIT)
+        results, _terms, _searcher, *_ = qs.search("t*", timelimit=EXTREMELY_SHORT_TIMELIMIT)
 
         assert results is not None, "results must not be None when timelimit fires during wildcard"
         assert len(results) >= 0, "results length must be non-negative"
