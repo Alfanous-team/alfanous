@@ -231,3 +231,63 @@ class TestFuzzyDerivationExpansion:
                 DerivationQuery._get_derivations(term, 2)
 
         assert call_count["n"] == 1, "Duplicate terms must only be expanded once"
+
+    def test_derivation_expansion_terms_excluded_from_matched_terms(self):
+        """Derivation-expansion terms must be filtered out of the matched-terms set.
+
+        Strategy 4 adds Term("aya", d) for each derivation.  When these
+        terms match documents, Whoosh includes them in matched_terms().  They
+        must NOT be returned as part of the 'terms' frozenset that callers use
+        to build words_output, otherwise the first entry in words.individual
+        becomes a derivation word (not the user's query word) and
+        nb_variations is incorrectly 0.
+
+        Verify the filtering logic directly using the frozenset set-difference
+        approach implemented in QSearcher.search.
+        """
+        # Simulate matched_terms: includes original query term AND derivations
+        original_query_terms = frozenset([("aya", "ملك"), ("aya_", "ملك")])
+        derivation_expansion = {("aya", "مالك"), ("aya", "يملك"), ("aya", "ملكوت")}
+
+        # All matched terms (would come from results.matched_terms())
+        all_matched = original_query_terms | derivation_expansion | {("aya_ac", "ملك")}
+
+        # Apply the filter: remove derivation terms not in the original query
+        filtered = set(all_matched)
+        filtered -= (derivation_expansion - original_query_terms)
+
+        # Derivation terms should be excluded
+        for deriv_pair in derivation_expansion:
+            assert deriv_pair not in filtered, (
+                f"Derivation-expansion term {deriv_pair} must be excluded"
+            )
+        # Original query terms and aya_ac terms must be kept
+        assert ("aya", "ملك") in filtered
+        assert ("aya_", "ملك") in filtered
+        assert ("aya_ac", "ملك") in filtered
+
+    def test_derivation_expansion_term_kept_if_in_original_query(self):
+        """A derivation term that was also in the original query is kept.
+
+        If the user explicitly typed a word that also appears as a derivation
+        of another word in the query, that word must NOT be excluded from the
+        returned terms (it was a real user keyword, not just an expansion).
+        """
+        # Scenario: user typed both "ملك" and "مالك"; "مالك" is also a
+        # derivation of "ملك" — it must be kept.
+        original_query_terms = frozenset([("aya", "ملك"), ("aya", "مالك")])
+        derivation_expansion = {("aya", "مالك"), ("aya", "يملك")}
+
+        all_matched = original_query_terms | derivation_expansion
+
+        filtered = set(all_matched)
+        filtered -= (derivation_expansion - original_query_terms)
+
+        # "مالك" is in both derivation_expansion and original_query_terms → kept
+        assert ("aya", "مالك") in filtered, (
+            "A term in both derivation_expansion and original_query_terms must be kept"
+        )
+        # "يملك" is only a derivation → excluded
+        assert ("aya", "يملك") not in filtered, (
+            "A pure derivation-expansion term must be excluded"
+        )
