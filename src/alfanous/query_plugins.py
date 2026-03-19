@@ -680,7 +680,7 @@ class ArabicWildcardPlugin(TaggingPlugin):
         def r(self):
             return f"{self.text!r}"
 
-    # Match words containing * or ؟
-    expr = r"(?P<text>\S*[*؟]\S*)"
+    # Match words containing *, ASCII ?, or Arabic ؟
+    expr = r"(?P<text>\S*[*?؟]\S*)"
     nodetype = ArabicWildcardNode
     priority = 90  # Lower than other plugins to let them match first
