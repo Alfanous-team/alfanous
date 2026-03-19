@@ -957,31 +957,31 @@ def test_phrase_search_preserved_for_positional_fields():
 
 
 def test_fuzzy_derivation_returns_more_results():
-    """fuzzy=True with derivation expansion returns >= results of explicit root derivation.
+    """fuzzy=True with root derivation expansion returns >= results of explicit root derivation.
 
-    Searching "ملك" with fuzzy=True and derivation expansion enabled should
+    Searching "ملك" with fuzzy=True and derivation_level="root" should
     return at least as many verses as the plain root-derivation query >>ملك,
-    because the fuzzy derivation strategy uses root-level (level=2) expansion.
+    because root-level expansion uses level=2.
     """
     root_deriv_results = _qse_search(u">>ملك")
 
-    fuzzy_results, _, _, _ = QSE.search_all(u"ملك", fuzzy=True, fuzzy_derivation=True, limit=QURAN_TOTAL_VERSES)
+    fuzzy_results, _, _, _ = QSE.search_all(u"ملك", fuzzy=True, derivation_level="root", limit=QURAN_TOTAL_VERSES)
     fuzzy_count = len(fuzzy_results)
 
     assert fuzzy_count >= root_deriv_results, (
-        f"fuzzy+derivation ({fuzzy_count}) should cover at least as many results "
+        f"fuzzy search with derivation_level=\"root\" ({fuzzy_count}) should cover at least as many results "
         f"as >>ملك derivation search ({root_deriv_results})"
     )
 
 
 def test_fuzzy_derivation_disabled():
-    """fuzzy_derivation=False disables derivation expansion.
+    """derivation_level="word" disables derivation expansion.
 
     Results with derivation expansion disabled should be <= results with it
     enabled (disabling it only reduces recall, never increases it).
     """
-    with_deriv, _, _, _ = QSE.search_all(u"ملك", fuzzy=True, fuzzy_derivation=True, limit=QURAN_TOTAL_VERSES)
-    without_deriv, _, _, _ = QSE.search_all(u"ملك", fuzzy=True, fuzzy_derivation=False, limit=QURAN_TOTAL_VERSES)
+    with_deriv, _, _, _ = QSE.search_all(u"ملك", fuzzy=True, derivation_level="root", limit=QURAN_TOTAL_VERSES)
+    without_deriv, _, _, _ = QSE.search_all(u"ملك", fuzzy=True, derivation_level="word", limit=QURAN_TOTAL_VERSES)
 
     assert len(with_deriv) >= len(without_deriv), (
         "Enabling derivation expansion must not reduce the result count"
@@ -989,7 +989,7 @@ def test_fuzzy_derivation_disabled():
 
 
 def test_fuzzy_derivation_no_index_fallback():
-    """fuzzy derivation expansion gracefully handles unavailable derivations.
+    """derivation expansion gracefully handles unavailable derivations.
 
     When _get_derivations returns only the original word (no index hit or
     index unavailable), no extra Terms are added and the search still
@@ -1000,38 +1000,38 @@ def test_fuzzy_derivation_no_index_fallback():
     # Mock _get_derivations to simulate a missing/unavailable index:
     # returns only the input word itself — no derivation expansion.
     with patch("alfanous.query_plugins.DerivationQuery._get_derivations", return_value=["ملك"]):
-        results, terms, searcher, *_ = QSE.search_all(u"ملك", fuzzy=True, fuzzy_derivation=True, limit=10)
+        results, terms, searcher, *_ = QSE.search_all(u"ملك", fuzzy=True, derivation_level="root", limit=10)
 
     assert hasattr(results, 'runtime'), "results must be a Whoosh Results object"
     assert isinstance(terms, list)
 
 
 def test_nonfuzzy_derivation_returns_more_results():
-    """fuzzy=False with derivation expansion returns >= results of explicit lemma derivation.
+    """derivation_level="lemma" returns >= results of explicit lemma derivation.
 
-    Searching "ملك" with fuzzy=False and derivation expansion enabled should
-    return at least as many verses as the plain lemma-derivation query >ملك,
-    because the non-fuzzy derivation strategy uses lemma-level (level=1) expansion.
+    Searching "ملك" with derivation_level="lemma" should return at least as
+    many verses as the plain lemma-derivation query >ملك, because lemma-level
+    expansion uses level=1.
     """
     lemma_deriv_results = _qse_search(u">ملك")
 
-    nonfuzzy_results, _, _, _ = QSE.search_all(u"ملك", fuzzy=False, fuzzy_derivation=True, limit=QURAN_TOTAL_VERSES)
+    nonfuzzy_results, _, _, _ = QSE.search_all(u"ملك", fuzzy=False, derivation_level="lemma", limit=QURAN_TOTAL_VERSES)
     nonfuzzy_count = len(nonfuzzy_results)
 
     assert nonfuzzy_count >= lemma_deriv_results, (
-        f"non-fuzzy+derivation ({nonfuzzy_count}) should cover at least as many results "
+        f"derivation_level=\"lemma\" ({nonfuzzy_count}) should cover at least as many results "
         f"as >ملك derivation search ({lemma_deriv_results})"
     )
 
 
 def test_nonfuzzy_derivation_disabled():
-    """fuzzy_derivation=False with fuzzy=False returns plain search results.
+    """derivation_level="word" with fuzzy=False returns plain search results.
 
     Results with derivation expansion disabled should be <= results with it
     enabled (disabling it only reduces recall, never increases it).
     """
-    with_deriv, _, _, _ = QSE.search_all(u"ملك", fuzzy=False, fuzzy_derivation=True, limit=QURAN_TOTAL_VERSES)
-    without_deriv, _, _, _ = QSE.search_all(u"ملك", fuzzy=False, fuzzy_derivation=False, limit=QURAN_TOTAL_VERSES)
+    with_deriv, _, _, _ = QSE.search_all(u"ملك", fuzzy=False, derivation_level="lemma", limit=QURAN_TOTAL_VERSES)
+    without_deriv, _, _, _ = QSE.search_all(u"ملك", fuzzy=False, derivation_level="word", limit=QURAN_TOTAL_VERSES)
 
     assert len(with_deriv) >= len(without_deriv), (
         "Enabling derivation expansion must not reduce the result count"

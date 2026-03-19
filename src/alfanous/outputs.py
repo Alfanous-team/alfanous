@@ -283,7 +283,7 @@ class Raw:
             "perpage": 10,  # overridden with range
             "fuzzy": False,
             "fuzzy_maxdist": 1,
-            "fuzzy_derivation": False,
+            "derivation_level": "word",
             "timelimit": 5.0,
             "aya": True,
             "facets": None,
@@ -336,7 +336,7 @@ class Raw:
         "perpage": [],  # range( DEFAULTS["maxrange"] ) , # overridden with range
         "fuzzy": [True, False],
         "fuzzy_maxdist": [],
-        "fuzzy_derivation": [True, False],
+        "derivation_level": ["word", "lemma", "root"],
         "timelimit": [],
         "aya": [True, False],
     }
@@ -384,7 +384,7 @@ class Raw:
         "perpage": "results per page  [override range]",
         "fuzzy": "fuzzy search — searches aya_ (exact) and aya (normalised/stemmed) with Levenshtein distance matching and morphological derivation expansion",
         "fuzzy_maxdist": "maximum Levenshtein edit distance for fuzzy term matching (default: 1, only used when fuzzy=True)",
-        "fuzzy_derivation": "expand Arabic query terms to morphological derivations: root-level (level=2) when fuzzy=True, lemma-level (level=1) when fuzzy=False (default: False)",
+        "derivation_level": "morphological derivation expansion level: 'word' (no expansion, default), 'lemma' (lemma-level, narrow set of related forms), 'root' (root-level, all words sharing the same root)",
         "timelimit": "maximum number of seconds to spend on a search query (default: 5.0, use None or 0 to disable)",
         "aya": "enable retrieving of aya text in the case of translation search",
     }
@@ -882,7 +882,9 @@ class Raw:
         vocalized = IS_FLAG(flags, 'vocalized')
         fuzzy = IS_FLAG(flags, 'fuzzy')
         fuzzy_maxdist = int(flags.get('fuzzy_maxdist', self._defaults['flags']['fuzzy_maxdist']))
-        fuzzy_derivation = IS_FLAG(flags, 'fuzzy_derivation')
+        derivation_level = flags.get('derivation_level', self._defaults['flags']['derivation_level'])
+        if derivation_level not in ("word", "lemma", "root"):
+            derivation_level = self._defaults['flags']['derivation_level']
         timelimit = self._parse_timelimit(flags)
         view = flags["view"]
         # Validate view parameter; fall back to "custom" if not recognised
@@ -1109,7 +1111,7 @@ class Raw:
                 if "kind" in self.QSE._schema
                 else query
             )
-            res, termz, searcher, _deriv_expansion = self.QSE.search_all(aya_query, limit=self._defaults["results_limit"]["aya"], sortedby=sortedby, reverse=reverse, facets=facets_list, filter_dict=filter_dict, fuzzy=fuzzy, fuzzy_maxdist=fuzzy_maxdist, fuzzy_derivation=fuzzy_derivation, timelimit=timelimit)
+            res, termz, searcher, _deriv_expansion = self.QSE.search_all(aya_query, limit=self._defaults["results_limit"]["aya"], sortedby=sortedby, reverse=reverse, facets=facets_list, filter_dict=filter_dict, fuzzy=fuzzy, fuzzy_maxdist=fuzzy_maxdist, derivation_level=derivation_level, timelimit=timelimit)
             terms = [term[1] for term in termz[:self._defaults["maxkeywords"]]]
             # All matched aya_ac variation terms (only populated when fuzzy=True).
             # Used in the word_info loop to derive per-word variation lists.
