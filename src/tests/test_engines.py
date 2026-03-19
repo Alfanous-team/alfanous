@@ -203,7 +203,7 @@ def test_translation_engine():
         "( gid:1 OR gid:2 ) AND kind:translation", defaultfield="gid"
     )
     assert len(results)
-    assert {'en.shakir', 'en.transliteration'} & set(
+    assert {'en.sahih', 'en.transliteration'} & set(
         r.get("trans_id") for r in results
     )
     searcher.close()

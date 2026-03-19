@@ -26,10 +26,9 @@ https://archive.org/download/ZekrMultiMedia/ar.jalalayn.trans.zip
 #http://tanzil.net/trans/en.maududi.trans.zip
 #http://tanzil.net/trans/en.pickthall.trans.zip
 #http://tanzil.net/trans/en.qaribullah.trans.zip
-#http://tanzil.net/trans/en.sahih.trans.zip
 #http://tanzil.net/trans/en.sarwar.trans.zip
-# was: http://tanzil.net/trans/en.shakir.trans.zip
-https://archive.org/download/ZekrMultiMedia/en.shakir.trans.zip
+# was: https://archive.org/download/ZekrMultiMedia/en.shakir.trans.zip (removed: see issue #542)
+http://tanzil.net/trans/en.sahih.trans.zip
 ##http://tanzil.net/trans/en.transliteration.trans.zip
 #http://tanzil.net/trans/en.wahiduddin.trans.zip
 #http://tanzil.net/trans/en.yusufali.trans.zip
@@ -48,7 +47,8 @@ https://archive.org/download/ZekrMultiMedia/id.muntakhab.trans.zip
 #http://tanzil.net/trans/it.piccardo.trans.zip
 https://archive.org/download/ZekrMultiMedia/ja.japanese.trans.zip
 #http://tanzil.net/trans/ko.korean.trans.zip
-https://archive.org/download/ZekrMultiMedia/ku.asan.trans.zip
+# was: https://archive.org/download/ZekrMultiMedia/ku.asan.trans.zip (incomplete: 6235 lines)
+http://tanzil.net/trans/ku.asan.trans.zip
 # was: http://tanzil.net/trans/ms.basmeih.trans.zip
 https://archive.org/download/ZekrMultiMedia/ms.basmeih.trans.zip
 https://archive.org/download/ZekrMultiMedia/ml.abdulhameed.trans.zip

@@ -88,7 +88,7 @@ def search(query: str, unit: str = "aya", page: int = 1, sortedby: str = "releva
            - translation: trans_lang, trans_id, sura_id, aya_id
     @param timelimit: Maximum number of seconds to spend on the search query
            (default 5.0). Pass None to disable the limit.
-    @param translation: Translation ID (e.g. 'en.shakir') to include with aya results.
+    @param translation: Translation ID (e.g. 'en.sahih') to include with aya results.
     @param lang: Language code (e.g. 'en', 'fr', 'ar') to retrieve translations by
            language at query time. If both ``translation`` and ``lang`` are given,
            ``translation`` takes precedence.

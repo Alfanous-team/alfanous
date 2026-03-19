@@ -141,7 +141,7 @@ def test_search():
                  "aya_theme_info": False,
                  "aya_stat_info": False,
                  "aya_sajda_info": True,
-                 "translation": "en.shakir",
+                 "translation": "en.sahih",
                  }
 
     results = RAWoutput.do( search_flags )
@@ -188,7 +188,22 @@ def test_search():
     results_without_words_individual["search"]["words"] = results["search"]["words"].copy()
     del results_without_words_individual["search"]["words"]["individual"]
 
-    assert results_without_words_individual == {'error': {'code': 0, 'msg': 'success'},
+    # Strip translator-specific text before comparing: the exact wording depends on
+    # which translation is active (en.sahih, en.shakir, …) and must not be hardcoded.
+    def _strip_translation_text(obj):
+        if isinstance(obj, dict):
+            return {k: (None if k == 'translation' else _strip_translation_text(v))
+                    for k, v in obj.items()}
+        if isinstance(obj, list):
+            return [_strip_translation_text(i) for i in obj]
+        return obj
+
+    # Verify each result aya has a non-empty translation string.
+    for aya_data in results["search"]["ayas"].values():
+        t = aya_data["aya"]["translation"]
+        assert isinstance(t, str) and t, f"Expected non-empty translation string, got {t!r}"
+
+    assert _strip_translation_text(results_without_words_individual) == _strip_translation_text({'error': {'code': 0, 'msg': 'success'},
  'search': {'ayas': {1: {'annotations': [],
                          'aya': {'id': 2,
                                  'next_aya': {'id': 3,
@@ -910,7 +925,7 @@ def test_search():
                                  'nb_ayas_overall': 138,
                                  'nb_ayas': 138,
                                  'nb_vocalizations': 0,
-                                 'nb_words': 2}}}}
+                                 'nb_words': 2}}}})  # end _strip_translation_text(expected)
     
     # # Compare words->individual separately (order-independent check)
     # assert sorted(actual_words_individual.keys()) == sorted(expected_words_individual.keys())
@@ -1266,7 +1281,7 @@ def test_view_minimal_keeps_translation():
         "page": 1,
         "view": "minimal",
         "highlight": "none",
-        "translation": "en.shakir",
+        "translation": "en.sahih",
     }
     results = RAWoutput.do(flags)
     assert results["search"]["ayas"], "Expected at least one search result"
@@ -1564,7 +1579,7 @@ def test_non_arabic_aya_search_highlights_translation():
         "unit": "aya",
         "query": "mercy",
         "highlight": "css",
-        "translation": "en.shakir",
+        "translation": "en.sahih",
         "page": 1,
     }
     results = RAWoutput.do(search_flags)
@@ -1589,7 +1604,7 @@ def test_non_arabic_aya_search_no_highlight_when_highlight_none():
         "unit": "aya",
         "query": "mercy",
         "highlight": "none",
-        "translation": "en.shakir",
+        "translation": "en.sahih",
         "page": 1,
     }
     results = RAWoutput.do(search_flags)
