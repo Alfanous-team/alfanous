@@ -2005,9 +2005,9 @@ def test_arabizi_query_highlights_arabic_text():
 
 
 def test_fuzzy_derivation_highlights_derivation_words():
-    """fuzzy_derivation=True must highlight derivation-matched words in aya text.
+    """derivation_level="root" must highlight derivation-matched words in aya text.
 
-    When fuzzy_derivation=True the query is expanded with morphological
+    When derivation_level="root" the query is expanded with morphological
     derivations of the search term.  For example, searching 'ملك' expands to
     include 'مالك', 'يملك', etc.  Before the fix, only the exact query word
     'ملك' was in the highlight terms list, so derivation matches were returned
@@ -2023,7 +2023,7 @@ def test_fuzzy_derivation_highlights_derivation_words():
         "action": "search",
         "query": query_term,
         "fuzzy": True,
-        "fuzzy_derivation": True,
+        "derivation_level": "root",
         "highlight": "css",
         "perpage": 300,
     }
@@ -2031,12 +2031,12 @@ def test_fuzzy_derivation_highlights_derivation_words():
     assert results["error"]["code"] == 0
 
     # Derivation search must return more results than plain exact search
-    exact_flags = {**search_flags, "fuzzy": False, "fuzzy_derivation": False}
+    exact_flags = {**search_flags, "fuzzy": False, "derivation_level": "word"}
     exact_results = RAWoutput.do(exact_flags)
     assert (
         results["search"]["interval"]["total"]
         >= exact_results["search"]["interval"]["total"]
-    ), "fuzzy+derivation must return at least as many results as exact search"
+    ), "fuzzy search with derivation_level=\"root\" must return at least as many results as exact search"
 
     # At least one derivation word (something OTHER than 'ملك' itself) must be
     # highlighted — confirming that derivation terms are in the highlight list.
@@ -2055,17 +2055,17 @@ def test_fuzzy_derivation_highlights_derivation_words():
             break
 
     assert highlighted_derivation_found, (
-        f"fuzzy_derivation=True must highlight derivation words (e.g. مالك، يملك) "
+        f"When derivation_level=\"root\", derivation words (e.g. مالك، يملك) must be highlighted "
         f"in addition to the exact query term {query_term!r}"
     )
 
 
 def test_fuzzy_derivation_words_individual_includes_expansions():
-    """words.individual must include derivation-expansion terms when fuzzy_derivation=True.
+    """words.individual must include derivation-expansion terms when derivation_level="root".
 
     The requirement is that "words.individual should include the expansions"
     and "any thing highlighted should be in words.individual".  When
-    fuzzy_derivation=True, matched derivation words (e.g. 'مالك', 'يملك' for
+    derivation_level="root", matched derivation words (e.g. 'مالك', 'يملك' for
     a query of 'ملك') must appear as entries in words.individual.
     """
     query_term = "ملك"
@@ -2073,7 +2073,7 @@ def test_fuzzy_derivation_words_individual_includes_expansions():
         "action": "search",
         "query": query_term,
         "fuzzy": True,
-        "fuzzy_derivation": True,
+        "derivation_level": "root",
         "word_info": True,
         "highlight": "none",
     }
@@ -2102,5 +2102,5 @@ def test_fuzzy_derivation_words_individual_includes_expansions():
     )
     assert derivation_found, (
         f"words.individual must contain at least one derivation word (not just {query_term!r}) "
-        f"when fuzzy_derivation=True — all expanded keywords must be listed"
+        f"when derivation_level=\"root\" — all expanded keywords must be listed"
     )

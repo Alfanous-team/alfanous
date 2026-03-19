@@ -335,7 +335,7 @@ class QSearcher:
     def __exit__(self, *args):
         self.close()
 
-    def search(self, querystr, limit=QURAN_TOTAL_VERSES, sortedby="score", reverse=False, facets=None, filter_dict=None, fuzzy=False, fuzzy_maxdist=1, fuzzy_derivation=False, timelimit=5.0):
+    def search(self, querystr, limit=QURAN_TOTAL_VERSES, sortedby="score", reverse=False, facets=None, filter_dict=None, fuzzy=False, fuzzy_maxdist=1, derivation_level="word", timelimit=5.0):
         # Parse FIRST, before obtaining the shared searcher.  Query plugins
         # (DerivationPlugin, TuplePlugin, …) call engine._reader.reader →
         # QSearcher.get_reader() → _get_shared_searcher() during parse().
@@ -363,9 +363,10 @@ class QSearcher:
         # 'nb_variations' would be 0.
         _original_query_terms: "frozenset[tuple]" = frozenset(query.all_terms())
 
-        # Derivation expansion — always active when fuzzy_derivation=True.
-        # fuzzy=True  → root-level (level=2) derivations (like >>word)
-        # fuzzy=False → lemma-level (level=1) derivations (like >word)
+        # Derivation expansion — active when derivation_level is "lemma" or "root".
+        # "root"  → root-level (level=2) derivations (like >>word)
+        # "lemma" → lemma-level (level=1) derivations (like >word)
+        # "word"  → no derivation expansion (default)
         #
         # _derivation_expansion tracks every (fieldname, text) pair added
         # so they can be excluded from the matched-terms set returned to
@@ -375,9 +376,9 @@ class QSearcher:
         # incorrect per-word statistics (e.g. nb_variations == 0).
         derivation_subqueries = []
         _derivation_expansion: "set[tuple]" = set()
-        if fuzzy_derivation:
+        if derivation_level in ("lemma", "root"):
             from alfanous.query_plugins import DerivationQuery
-            deriv_level = 2 if fuzzy else 1  # 2 = root (>>word), 1 = lemma (>word)
+            deriv_level = 2 if derivation_level == "root" else 1  # 2 = root (>>word), 1 = lemma (>word)
             seen_derivation_terms = set()
             for _fieldname, term in query.all_terms():
                 if not (isinstance(term, str) and any('\u0600' <= c <= '\u06FF' for c in term)):

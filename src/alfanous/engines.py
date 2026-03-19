@@ -49,7 +49,7 @@ class BasicSearchEngine:
 
     # end  __init__
 
-    def search_all(self, querystr, limit=QURAN_TOTAL_VERSES, sortedby="score", reverse=False, facets=None, filter_dict=None, fuzzy=False, fuzzy_maxdist=1, fuzzy_derivation=False, timelimit=5.0):
+    def search_all(self, querystr, limit=QURAN_TOTAL_VERSES, sortedby="score", reverse=False, facets=None, filter_dict=None, fuzzy=False, fuzzy_maxdist=1, derivation_level="word", timelimit=5.0):
         """
         Perform a search in the index.
         
@@ -65,10 +65,10 @@ class BasicSearchEngine:
                Arabic query term to all its morphological derivations.
         @param fuzzy_maxdist: Maximum Levenshtein edit distance for fuzzy term
                matching (default 1). Only used when fuzzy=True.
-        @param fuzzy_derivation: When True, expand each Arabic query term to its
-               morphological derivations — root-level (level=2) when fuzzy=True,
-               lemma-level (level=1) when fuzzy=False (e.g. searching "ملك" also
-               matches "يملك", "مالك", "ملكوت"). Defaults to False.
+        @param derivation_level: Controls morphological derivation expansion.
+               "word"  → no expansion (default).
+               "lemma" → expand to lemma-level derivations (level=1, e.g. same lemma forms).
+               "root"  → expand to root-level derivations (level=2, e.g. all words sharing the root).
         @param timelimit: Maximum number of seconds to spend on the search
                (default 5.0). Pass None to disable the limit.
         @return: Tuple of (results, term_stats, searcher)
@@ -81,7 +81,7 @@ class BasicSearchEngine:
             merged = {**_default, **(filter_dict or {})}
         else:
             merged = filter_dict
-        results, terms, searcher, expansion_terms = self._searcher.search(querystr, limit=limit, sortedby=sortedby, reverse=reverse, facets=facets, filter_dict=merged, fuzzy=fuzzy, fuzzy_maxdist=fuzzy_maxdist, fuzzy_derivation=fuzzy_derivation, timelimit=timelimit)
+        results, terms, searcher, expansion_terms = self._searcher.search(querystr, limit=limit, sortedby=sortedby, reverse=reverse, facets=facets, filter_dict=merged, fuzzy=fuzzy, fuzzy_maxdist=fuzzy_maxdist, derivation_level=derivation_level, timelimit=timelimit)
         return results, list(self._reader.term_stats(terms)), searcher, expansion_terms
 
     def search_with_query(self, q_obj, limit=QURAN_TOTAL_VERSES, sortedby="score", reverse=False, timelimit=5.0):
