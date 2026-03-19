@@ -283,6 +283,7 @@ class Raw:
             "perpage": 10,  # overridden with range
             "fuzzy": False,
             "fuzzy_maxdist": 1,
+            "fuzzy_derivation": True,
             "timelimit": 5.0,
             "aya": True,
             "facets": None,
@@ -335,6 +336,7 @@ class Raw:
         "perpage": [],  # range( DEFAULTS["maxrange"] ) , # overridden with range
         "fuzzy": [True, False],
         "fuzzy_maxdist": [],
+        "fuzzy_derivation": [True, False],
         "timelimit": [],
         "aya": [True, False],
     }
@@ -380,8 +382,9 @@ class Raw:
         "range": "range of results",
         "page": "page number  [override offset]",
         "perpage": "results per page  [override range]",
-        "fuzzy": "fuzzy search — searches aya_ (exact) and aya (normalised/stemmed) with Levenshtein distance matching",
+        "fuzzy": "fuzzy search — searches aya_ (exact) and aya (normalised/stemmed) with Levenshtein distance matching and morphological derivation expansion",
         "fuzzy_maxdist": "maximum Levenshtein edit distance for fuzzy term matching (default: 1, only used when fuzzy=True)",
+        "fuzzy_derivation": "expand Arabic query terms to all their root-level morphological derivations when fuzzy=True (default: True)",
         "timelimit": "maximum number of seconds to spend on a search query (default: 5.0, use None or 0 to disable)",
         "aya": "enable retrieving of aya text in the case of translation search",
     }
@@ -863,6 +866,7 @@ class Raw:
         vocalized = IS_FLAG(flags, 'vocalized')
         fuzzy = IS_FLAG(flags, 'fuzzy')
         fuzzy_maxdist = int(flags.get('fuzzy_maxdist', self._defaults['flags']['fuzzy_maxdist']))
+        fuzzy_derivation = IS_FLAG(flags, 'fuzzy_derivation')
         timelimit = self._parse_timelimit(flags)
         view = flags["view"]
         # Validate view parameter; fall back to "custom" if not recognised
@@ -1059,7 +1063,7 @@ class Raw:
                 if "kind" in self.QSE._schema
                 else query
             )
-            res, termz, searcher = self.QSE.search_all(aya_query, limit=self._defaults["results_limit"]["aya"], sortedby=sortedby, reverse=reverse, facets=facets_list, filter_dict=filter_dict, fuzzy=fuzzy, fuzzy_maxdist=fuzzy_maxdist, timelimit=timelimit)
+            res, termz, searcher = self.QSE.search_all(aya_query, limit=self._defaults["results_limit"]["aya"], sortedby=sortedby, reverse=reverse, facets=facets_list, filter_dict=filter_dict, fuzzy=fuzzy, fuzzy_maxdist=fuzzy_maxdist, fuzzy_derivation=fuzzy_derivation, timelimit=timelimit)
             terms = [term[1] for term in termz[:self._defaults["maxkeywords"]]]
             # All matched aya_ac variation terms (only populated when fuzzy=True).
             # Used in the word_info loop to derive per-word variation lists.

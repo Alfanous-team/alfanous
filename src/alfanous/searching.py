@@ -335,7 +335,7 @@ class QSearcher:
     def __exit__(self, *args):
         self.close()
 
-    def search(self, querystr, limit=QURAN_TOTAL_VERSES, sortedby="score", reverse=False, facets=None, filter_dict=None, fuzzy=False, fuzzy_maxdist=1, timelimit=5.0):
+    def search(self, querystr, limit=QURAN_TOTAL_VERSES, sortedby="score", reverse=False, facets=None, filter_dict=None, fuzzy=False, fuzzy_maxdist=1, fuzzy_derivation=True, timelimit=5.0):
         # Parse FIRST, before obtaining the shared searcher.  Query plugins
         # (DerivationPlugin, TuplePlugin, …) call engine._reader.reader →
         # QSearcher.get_reader() → _get_shared_searcher() during parse().
@@ -393,6 +393,29 @@ class QSearcher:
                 if isinstance(term, str) and len(term) >= 4 and any('\u0600' <= c <= '\u06FF' for c in term)
             ]
 
+            # Strategy 4: Derivation expansion — match all morphological
+            # derivations of each Arabic query term in the 'aya' field.
+            # Uses root-level (level=2) derivations for the broadest set,
+            # covering all verb/noun/adjective forms from the same root (e.g.
+            # searching "ملك" also matches "يملك", "مالك", "ملكوت", etc.).
+            # Reuses the same two-pass index scan as the explicit >>word
+            # query plugin, with LRU caching so repeated requests are free.
+            # Only applied to Arabic-script terms; non-Arabic terms are skipped.
+            derivation_subqueries = []
+            if fuzzy and fuzzy_derivation:
+                from alfanous.query_plugins import DerivationQuery
+                seen_derivation_terms = set()
+                for _fieldname, term in query.all_terms():
+                    if not (isinstance(term, str) and any('\u0600' <= c <= '\u06FF' for c in term)):
+                        continue
+                    if term in seen_derivation_terms:
+                        continue
+                    seen_derivation_terms.add(term)
+                    derivations = DerivationQuery._get_derivations(term, 2)
+                    for d in derivations:
+                        if d and d != term:
+                            derivation_subqueries.append(wquery.Term("aya", d))
+
             parts = [query]
             if aya_fuzzy_query is not None:
                 parts.append(aya_fuzzy_query)
@@ -401,6 +424,12 @@ class QSearcher:
                     wquery.Or(levenshtein_subqueries)
                     if len(levenshtein_subqueries) > 1
                     else levenshtein_subqueries[0]
+                )
+            if derivation_subqueries:
+                parts.append(
+                    wquery.Or(derivation_subqueries)
+                    if len(derivation_subqueries) > 1
+                    else derivation_subqueries[0]
                 )
             query = wquery.Or(parts)
 

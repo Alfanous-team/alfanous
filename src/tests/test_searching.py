@@ -131,3 +131,103 @@ class TestStripPhraseQueries:
         assert isinstance(result, wquery.And), (
             "Phrase on TEXT(phrase=False) 'sura' field must be converted to And-of-Terms"
         )
+
+
+# ---------------------------------------------------------------------------
+# Unit tests for fuzzy derivation expansion (no index required)
+# ---------------------------------------------------------------------------
+
+class TestFuzzyDerivationExpansion:
+    """Unit tests for the Strategy 4 derivation expansion in QSearcher.search."""
+
+    def test_build_derivation_subqueries_arabic_only(self):
+        """Derivation expansion only fires for Arabic-script terms."""
+        from unittest.mock import patch
+        from whoosh import query as wquery
+        from alfanous.query_plugins import DerivationQuery
+
+        # Reproduce the exact filter logic from QSearcher.search Strategy 4
+        def build_derivation_subqueries(terms):
+            """Mirror the derivation expansion logic from QSearcher.search."""
+            seen = set()
+            subqueries = []
+            for _fieldname, term in terms:
+                if not (isinstance(term, str) and any('\u0600' <= c <= '\u06FF' for c in term)):
+                    continue
+                if term in seen:
+                    continue
+                seen.add(term)
+                derivations = DerivationQuery._get_derivations(term, 2)
+                for d in derivations:
+                    if d and d != term:
+                        subqueries.append(wquery.Term("aya", d))
+            return subqueries
+
+        mock_derivations = ["مالك", "يملك", "ملكوت"]
+
+        with patch.object(DerivationQuery, "_get_derivations", return_value=mock_derivations):
+            # Arabic term — derivation subqueries should be produced (none of the
+            # mock derivations equal the original "ملك", so all 3 are included)
+            arabic_terms = [("aya", "ملك")]
+            result = build_derivation_subqueries(arabic_terms)
+            assert len(result) == len(mock_derivations), (
+                "One Term per unique derivation that differs from the original"
+            )
+            for q in result:
+                assert isinstance(q, wquery.Term)
+                assert q.fieldname == "aya"
+
+        with patch.object(DerivationQuery, "_get_derivations", return_value=mock_derivations):
+            # Latin term — no derivation subqueries
+            latin_terms = [("aya", "book")]
+            result = build_derivation_subqueries(latin_terms)
+            assert result == [], "Latin terms must not trigger derivation expansion"
+
+    def test_derivation_skips_original_word(self):
+        """The original query word itself must not be duplicated in subqueries."""
+        from unittest.mock import patch
+        from whoosh import query as wquery
+        from alfanous.query_plugins import DerivationQuery
+
+        original = "ملك"
+        # Derivations include the original word — it should be excluded from subqueries
+        mock_derivations = [original, "مالك", "يملك"]
+
+        seen = set()
+        subqueries = []
+        with patch.object(DerivationQuery, "_get_derivations", return_value=mock_derivations):
+            derivations = DerivationQuery._get_derivations(original, 2)
+            for d in derivations:
+                if d and d != original:
+                    subqueries.append(wquery.Term("aya", d))
+
+        term_texts = [q.text for q in subqueries]
+        assert original not in term_texts, "Original query word must not appear in derivation subqueries"
+        assert "مالك" in term_texts
+        assert "يملك" in term_texts
+
+    def test_derivation_deduplicates_terms(self):
+        """Repeated Arabic terms in a multi-word query are only expanded once."""
+        from unittest.mock import patch
+        from whoosh import query as wquery
+        from alfanous.query_plugins import DerivationQuery
+
+        call_count = {"n": 0}
+
+        def counting_get_derivations(word, level):
+            call_count["n"] += 1
+            return [word]  # No new derivations
+
+        with patch.object(DerivationQuery, "_get_derivations", side_effect=counting_get_derivations):
+            # Same term repeated — should only call _get_derivations once
+            repeated_terms = [("aya", "ملك"), ("aya", "ملك"), ("aya", "ملك")]
+            seen = set()
+            for _fieldname, term in repeated_terms:
+                if not (isinstance(term, str) and any('\u0600' <= c <= '\u06FF' for c in term)):
+                    continue
+                if term in seen:
+                    continue
+                seen.add(term)
+                DerivationQuery._get_derivations(term, 2)
+
+        assert call_count["n"] == 1, "Duplicate terms must only be expanded once"

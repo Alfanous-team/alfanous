@@ -7,6 +7,7 @@ This is a test module for most of features provided by alfanous.engines module.
 import pytest
 from alfanous.engines import QuranicSearchEngine
 from alfanous import paths
+from alfanous.constants import QURAN_TOTAL_VERSES
 
 
 QSE = QuranicSearchEngine(paths.QSE_INDEX)
@@ -953,3 +954,54 @@ def test_phrase_search_preserved_for_positional_fields():
         ) from exc
     assert hasattr(results, 'runtime'), "results must be a Whoosh Results object"
     assert len(results) > 0, "Phrase search on aya field should return results"
+
+
+def test_fuzzy_derivation_returns_more_results():
+    """fuzzy=True with derivation expansion returns >= results of exact search.
+
+    Searching "ملك" with fuzzy=True and derivation expansion enabled should
+    return at least as many verses as the plain root-derivation query >>ملك,
+    because the fuzzy derivation strategy is a superset of the explicit root
+    derivation search.
+    """
+    root_deriv_results = _qse_search(u">>ملك")
+
+    fuzzy_results, _, _ = QSE.search_all(u"ملك", fuzzy=True, fuzzy_derivation=True, limit=QURAN_TOTAL_VERSES)
+    fuzzy_count = len(fuzzy_results)
+
+    assert fuzzy_count >= root_deriv_results, (
+        f"fuzzy+derivation ({fuzzy_count}) should cover at least as many results "
+        f"as >>ملك derivation search ({root_deriv_results})"
+    )
+
+
+def test_fuzzy_derivation_disabled():
+    """fuzzy_derivation=False disables derivation expansion.
+
+    Results with derivation expansion disabled should be <= results with it
+    enabled (disabling it only reduces recall, never increases it).
+    """
+    with_deriv, _, _ = QSE.search_all(u"ملك", fuzzy=True, fuzzy_derivation=True, limit=QURAN_TOTAL_VERSES)
+    without_deriv, _, _ = QSE.search_all(u"ملك", fuzzy=True, fuzzy_derivation=False, limit=QURAN_TOTAL_VERSES)
+
+    assert len(with_deriv) >= len(without_deriv), (
+        "Enabling derivation expansion must not reduce the result count"
+    )
+
+
+def test_fuzzy_derivation_no_index_fallback():
+    """fuzzy derivation expansion gracefully handles unavailable derivations.
+
+    When _get_derivations returns only the original word (no index hit or
+    index unavailable), no extra Terms are added and the search still
+    completes without error.
+    """
+    from unittest.mock import patch
+
+    # Mock _get_derivations to simulate a missing/unavailable index:
+    # returns only the input word itself — no derivation expansion.
+    with patch("alfanous.query_plugins.DerivationQuery._get_derivations", return_value=["ملك"]):
+        results, terms, searcher = QSE.search_all(u"ملك", fuzzy=True, fuzzy_derivation=True, limit=10)
+
+    assert hasattr(results, 'runtime'), "results must be a Whoosh Results object"
+    assert isinstance(terms, list)
