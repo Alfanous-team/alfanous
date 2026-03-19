@@ -89,6 +89,16 @@ class BasicSearchEngine:
         results, terms, searcher = self._searcher.search_obj(q_obj, limit=limit, sortedby=sortedby, reverse=reverse, timelimit=timelimit)
         return results, [], searcher
 
+    def term_stats(self, terms):
+        """Return term statistics for a list of (field, term) pairs.
+
+        :param terms: Iterable of ``(field, term_text)`` tuples.
+        :returns: List of ``(field, term_text, frequency, doc_frequency)`` tuples.
+        """
+        if "_reader" in self.__dict__:
+            return list(self._reader.term_stats(terms))
+        return []
+
     def shared_searcher(self):
         """Return the engine's cached Whoosh Searcher wrapped in a non-closing proxy.
 

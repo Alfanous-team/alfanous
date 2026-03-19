@@ -1011,9 +1011,12 @@ class Raw:
 
             # 1. Translation search: NestedParent over child translation docs
             _trans_terms = []
+            _trans_term_pairs = []
             if self._trans_parser is not None:
                 _trans_q = self._trans_parser.parse(query)
-                _trans_terms = [t for f, t in _trans_q.all_terms() if f in self._trans_fields]
+                _all_trans_q_terms = [(f, t) for f, t in _trans_q.all_terms() if f in self._trans_fields]
+                _trans_terms = [t for _, t in _all_trans_q_terms]
+                _trans_term_pairs = _all_trans_q_terms
                 _query_parts.append(wquery.NestedParent(wquery.Term("kind", "aya"), _trans_q))
 
             # 2. Arabizi search: convert non-Arabic words to Arabic candidates
@@ -1052,6 +1055,19 @@ class Raw:
                 reverse=reverse,
                 timelimit=timelimit,
             )
+            # search_with_query returns empty termz; build it from the
+            # translation query terms so English keywords appear in
+            # words.individual.
+            if not termz and _trans_term_pairs:
+                # Deduplicate by term text: the same word may match multiple
+                # translation language fields; keep one entry per unique term.
+                _seen_terms: set = set()
+                _deduped_pairs = []
+                for _trans_field, _trans_term in _trans_term_pairs:
+                    if _trans_term not in _seen_terms:
+                        _seen_terms.add(_trans_term)
+                        _deduped_pairs.append((_trans_field, _trans_term))
+                termz = self.QSE.term_stats(_deduped_pairs)
             terms, _all_ac_variations = [], []
             # Compute facets for the non-Arabic path via a second pass (the
             # main search_with_query call does not support groupedby).
@@ -1130,7 +1146,7 @@ class Raw:
                 # without requiring the full word_info flag.
                 _cpt = 1
                 for term in termz:
-                    if term[0] in ("aya", "aya_"):
+                    if term[0] in ("aya", "aya_") or term[0] in self._trans_fields:
                         _word_norm = strip_vocalization(term[1])
                         _word_variations = [
                             v for v in _all_ac_variations
@@ -1367,6 +1383,36 @@ class Raw:
                                 "derivations_extra": derivations_extra,
                                 "nb_variations": len(word_variations),
                                 "variations": word_variations,
+                            }
+                            cpt += 1
+                        elif term[0] in self._trans_fields:
+                            # English (translation) keyword: Arabic-specific fields
+                            # (lemma, root, derivations, vocalizations) are not
+                            # applicable; counts within the result page are 0 because
+                            # results are parent aya documents while translation
+                            # postings live in nested child documents.
+                            if term[2]:
+                                matches += term[2]
+                            docs += term[3]
+                            words_output["individual"][cpt] = {
+                                "word": term[1],
+                                "romanization": None,
+                                "nb_matches_overall": int(term[2]) if term[2] else 0,
+                                "nb_matches": 0,
+                                "nb_ayas_overall": term[3],
+                                "nb_ayas": 0,
+                                "nb_vocalizations": 0,
+                                "vocalizations": [],
+                                "nb_synonyms": 0,
+                                "synonyms": [],
+                                "lemma": "",
+                                "root": "",
+                                "nb_derivations": 0,
+                                "derivations": [],
+                                "nb_derivations_extra": 0,
+                                "derivations_extra": [],
+                                "nb_variations": 0,
+                                "variations": [],
                             }
                             cpt += 1
                     words_output["global"] = {"nb_words": cpt - 1, "nb_matches_overall": int(matches),
