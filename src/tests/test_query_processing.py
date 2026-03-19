@@ -40,6 +40,10 @@ def test_preprocess_query():
     # Plain words with no field
     assert _preprocess(u"الصلاة و الزكاة") == u"الصلاة AND الزكاة"
     assert _preprocess(u"سميع أو بصير") == u"سميع OR بصير"
+    # Symbol operators (+, |, -) surrounded by spaces
+    assert _preprocess(u"sura:\"Ash-Shu'araa\" + aya_id:223") == u"sura:\"Ash-Shu'araa\" AND aya_id:223"
+    # Apostrophe inside double-quoted phrase is preserved as-is
+    assert _preprocess(u"sura:\"Al-An'am\" + aya_id:1") == u"sura:\"Al-An'am\" AND aya_id:1"
 
 
 def test_parsing_with_schema():
