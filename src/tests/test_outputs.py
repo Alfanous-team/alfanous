@@ -1892,3 +1892,56 @@ def test_word_search_out_of_bounds_page_returns_consistent_interval():
     assert interval["nb_pages"] > 0, "nb_pages should reflect total pages available"
     assert result["search"]["words"] == {}, "no word results expected for out-of-bounds page"
 
+
+
+def test_english_keyword_appears_in_words_individual():
+    """English keywords like 'fire' must appear in words.individual.
+
+    Regression test for: non-Arabic (English) query keywords were absent from
+    words.individual because search_with_query always returned empty termz and
+    the population loop only processed aya/aya_ field terms.
+    """
+    search_flags = {
+        "action": "search",
+        "query": "fire",
+        "highlight": "none",
+    }
+    results = RAWoutput.do(search_flags)
+    assert results["error"]["code"] == 0
+    assert results["search"]["interval"]["total"] > 0, "Expected results for 'fire'"
+
+    words_individual = results["search"]["words"]["individual"]
+    assert words_individual, (
+        "words.individual must not be empty for an English keyword search"
+    )
+    word_texts = [entry["word"] for entry in words_individual.values()]
+    assert any("fire" in w for w in word_texts), (
+        f"'fire' (or its stemmed form) must appear in words.individual; got: {word_texts}"
+    )
+
+
+def test_english_keyword_appears_in_words_individual_with_word_info():
+    """English keywords must appear in words.individual even when word_info=True."""
+    search_flags = {
+        "action": "search",
+        "query": "fire",
+        "word_info": True,
+        "highlight": "none",
+    }
+    results = RAWoutput.do(search_flags)
+    assert results["error"]["code"] == 0
+
+    words_individual = results["search"]["words"]["individual"]
+    assert words_individual, (
+        "words.individual must not be empty for an English keyword search with word_info=True"
+    )
+    word_texts = [entry["word"] for entry in words_individual.values()]
+    assert any("fire" in w for w in word_texts), (
+        f"'fire' (or its stemmed form) must appear in words.individual with word_info=True; got: {word_texts}"
+    )
+    # Each entry must have the standard word_info keys
+    for entry in words_individual.values():
+        assert "nb_matches_overall" in entry
+        assert "nb_ayas_overall" in entry
+        assert "variations" in entry
+        assert isinstance(entry["variations"], list)
