@@ -934,6 +934,41 @@ def test_sura_phrase_no_query_error():
     )
 
 
+def test_sura_phrase_with_apostrophe_and_aya_id():
+    """Phrase search on the 'sura' field with apostrophe in name, combined with aya_id filter.
+
+    Sura 26 (الشعراء "The Poets") has romanization ``Ash-Shu'araa`` which
+    contains an apostrophe.  The query ``sura:"Ash-Shu'araa" + aya_id:223``
+    must:
+
+    - not raise any exception (apostrophe inside double-quoted phrase is safe),
+    - return the verse at sura_id=26, aya_id=223 as the sole result.
+    """
+    from whoosh.query.qcore import QueryError
+
+    query_str = "sura:\"Ash-Shu'araa\" + aya_id:223"
+    try:
+        results, *_ = QSE.search_all(query_str, limit=10)
+    except QueryError as exc:
+        raise AssertionError(
+            f"search_all raised QueryError for {query_str!r}: {exc}"
+        ) from exc
+    assert hasattr(results, 'runtime'), (
+        f"results for {query_str!r} must be a Whoosh Results object"
+    )
+    assert len(results) == 1, (
+        f"sura:\"Ash-Shu'araa\" + aya_id:223 must return exactly one verse, "
+        f"got {len(results)}"
+    )
+    hit = dict(results[0])
+    assert hit.get('sura_id') == 26, (
+        f"Expected sura_id=26 but got sura_id={hit.get('sura_id')}"
+    )
+    assert hit.get('aya_id') == 223, (
+        f"Expected aya_id=223 but got aya_id={hit.get('aya_id')}"
+    )
+
+
 def test_phrase_search_preserved_for_positional_fields():
     """Phrase search on TEXT fields (with positions) must still work correctly.
 
