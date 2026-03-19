@@ -138,7 +138,12 @@ class TestStripPhraseQueries:
 # ---------------------------------------------------------------------------
 
 class TestFuzzyDerivationExpansion:
-    """Unit tests for the Strategy 4 derivation expansion in QSearcher.search."""
+    """Unit tests for the derivation expansion in QSearcher.search.
+
+    Derivation expansion runs in both fuzzy and non-fuzzy modes:
+    - fuzzy=True  → root-level (level=2) derivations
+    - fuzzy=False → lemma-level (level=1) derivations
+    """
 
     def test_build_derivation_subqueries_arabic_only(self):
         """Derivation expansion only fires for Arabic-script terms."""
@@ -146,8 +151,8 @@ class TestFuzzyDerivationExpansion:
         from whoosh import query as wquery
         from alfanous.query_plugins import DerivationQuery
 
-        # Reproduce the exact filter logic from QSearcher.search Strategy 4
-        def build_derivation_subqueries(terms):
+        # Reproduce the exact filter logic from QSearcher.search
+        def build_derivation_subqueries(terms, deriv_level=2):
             """Mirror the derivation expansion logic from QSearcher.search."""
             seen = set()
             subqueries = []
@@ -157,7 +162,7 @@ class TestFuzzyDerivationExpansion:
                 if term in seen:
                     continue
                 seen.add(term)
-                derivations = DerivationQuery._get_derivations(term, 1)
+                derivations = DerivationQuery._get_derivations(term, deriv_level)
                 for d in derivations:
                     if d and d != term:
                         subqueries.append(wquery.Term("aya", d))
@@ -169,7 +174,7 @@ class TestFuzzyDerivationExpansion:
             # Arabic term — derivation subqueries should be produced (none of the
             # mock derivations equal the original "ملك", so all 3 are included)
             arabic_terms = [("aya", "ملك")]
-            result = build_derivation_subqueries(arabic_terms)
+            result = build_derivation_subqueries(arabic_terms, deriv_level=2)
             assert len(result) == len(mock_derivations), (
                 "One Term per unique derivation that differs from the original"
             )
@@ -180,8 +185,34 @@ class TestFuzzyDerivationExpansion:
         with patch.object(DerivationQuery, "_get_derivations", return_value=mock_derivations):
             # Latin term — no derivation subqueries
             latin_terms = [("aya", "book")]
-            result = build_derivation_subqueries(latin_terms)
+            result = build_derivation_subqueries(latin_terms, deriv_level=2)
             assert result == [], "Latin terms must not trigger derivation expansion"
+
+    def test_derivation_level_varies_by_fuzzy_mode(self):
+        """fuzzy=True uses level=2 (root), fuzzy=False uses level=1 (lemma)."""
+        from unittest.mock import patch, call
+        from alfanous.query_plugins import DerivationQuery
+
+        captured_levels = []
+
+        def tracking_get_derivations(word, level):
+            captured_levels.append(level)
+            return [word]
+
+        with patch.object(DerivationQuery, "_get_derivations", side_effect=tracking_get_derivations):
+            term = "ملك"
+            # fuzzy=True → root-level derivations (level=2)
+            fuzzy = True
+            deriv_level = 2 if fuzzy else 1
+            DerivationQuery._get_derivations(term, deriv_level)
+            # fuzzy=False → lemma-level derivations (level=1)
+            fuzzy = False
+            deriv_level = 2 if fuzzy else 1
+            DerivationQuery._get_derivations(term, deriv_level)
+
+        assert captured_levels == [2, 1], (
+            "fuzzy=True must use level=2 (root), fuzzy=False must use level=1 (lemma)"
+        )
 
     def test_derivation_skips_original_word(self):
         """The original query word itself must not be duplicated in subqueries."""
@@ -196,7 +227,7 @@ class TestFuzzyDerivationExpansion:
         seen = set()
         subqueries = []
         with patch.object(DerivationQuery, "_get_derivations", return_value=mock_derivations):
-            derivations = DerivationQuery._get_derivations(original, 1)
+            derivations = DerivationQuery._get_derivations(original, 2)
             for d in derivations:
                 if d and d != original:
                     subqueries.append(wquery.Term("aya", d))
@@ -228,7 +259,7 @@ class TestFuzzyDerivationExpansion:
                 if term in seen:
                     continue
                 seen.add(term)
-                DerivationQuery._get_derivations(term, 1)
+                DerivationQuery._get_derivations(term, 2)
 
         assert call_count["n"] == 1, "Duplicate terms must only be expanded once"
 

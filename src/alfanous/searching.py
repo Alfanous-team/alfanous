@@ -354,15 +354,43 @@ class QSearcher:
         # translation fields) are preserved so exact phrase matching works.
         query = _strip_phrase_queries(query, schema=self._schema)
 
-        # Capture the original query terms (before any fuzzy expansion) so that
-        # Strategy 4 derivation-expansion terms can be excluded from the matched
-        # terms returned to callers.  Callers (e.g. outputs.py) use the returned
-        # terms to build per-word statistics and the words.individual list; if
-        # derivation-expansion terms polluted that list the wrong word would
-        # appear at index 1 and its 'nb_variations' would be 0.
-        _original_query_terms: "frozenset[tuple]" = (
-            frozenset(query.all_terms()) if fuzzy else frozenset()
-        )
+        # Capture the original query terms before any expansion (fuzzy or
+        # derivation) so that derivation-expansion terms can be excluded from
+        # the matched terms returned to callers.  Callers (e.g. outputs.py)
+        # use the returned terms to build per-word statistics and the
+        # words.individual list; if derivation-expansion terms polluted that
+        # list the wrong word would appear at index 1 and its
+        # 'nb_variations' would be 0.
+        _original_query_terms: "frozenset[tuple]" = frozenset(query.all_terms())
+
+        # Derivation expansion — always active when fuzzy_derivation=True.
+        # fuzzy=True  → root-level (level=2) derivations (like >>word)
+        # fuzzy=False → lemma-level (level=1) derivations (like >word)
+        #
+        # _derivation_expansion tracks every (fieldname, text) pair added
+        # so they can be excluded from the matched-terms set returned to
+        # callers.  Derivation terms are search-expansion internals, not
+        # user keywords; including them in words_output would replace the
+        # original query word with a derivation at position 1 and produce
+        # incorrect per-word statistics (e.g. nb_variations == 0).
+        derivation_subqueries = []
+        _derivation_expansion: "set[tuple]" = set()
+        if fuzzy_derivation:
+            from alfanous.query_plugins import DerivationQuery
+            deriv_level = 2 if fuzzy else 1  # 2 = root (>>word), 1 = lemma (>word)
+            seen_derivation_terms = set()
+            for _fieldname, term in query.all_terms():
+                if not (isinstance(term, str) and any('\u0600' <= c <= '\u06FF' for c in term)):
+                    continue
+                if term in seen_derivation_terms:
+                    continue
+                seen_derivation_terms.add(term)
+                derivations = DerivationQuery._get_derivations(term, deriv_level)
+                for d in derivations:
+                    if d and d != term:
+                        derivation_subqueries.append(wquery.Term("aya", d))
+                        _derivation_expansion.add(("aya", d))
+
         if fuzzy:
             # Strategy 2: Search the normalised/stemmed 'aya_fuzzy' field (fed
             # from the same vocalized source text as aya_, processed at index
@@ -402,38 +430,6 @@ class QSearcher:
                 if isinstance(term, str) and len(term) >= 4 and any('\u0600' <= c <= '\u06FF' for c in term)
             ]
 
-            # Strategy 4: Derivation expansion — match all morphological
-            # derivations of each Arabic query term in the 'aya' field.
-            # Uses stem/lemma-level (level=1) derivations, consistent with the
-            # default >word derivation query syntax (e.g. searching "ملك" also
-            # matches forms sharing the same lemma).
-            # Reuses the same two-pass index scan as the explicit >word
-            # query plugin, with LRU caching so repeated requests are free.
-            # Only applied to Arabic-script terms; non-Arabic terms are skipped.
-            #
-            # _derivation_expansion tracks every (fieldname, text) pair added
-            # here so they can be excluded from the matched-terms set returned
-            # to callers.  Derivation terms are search-expansion internals, not
-            # user keywords; including them in words_output would replace the
-            # original query word with a derivation at position 1 and produce
-            # incorrect per-word statistics (e.g. nb_variations == 0).
-            derivation_subqueries = []
-            _derivation_expansion: "set[tuple]" = set()
-            if fuzzy and fuzzy_derivation:
-                from alfanous.query_plugins import DerivationQuery
-                seen_derivation_terms = set()
-                for _fieldname, term in query.all_terms():
-                    if not (isinstance(term, str) and any('\u0600' <= c <= '\u06FF' for c in term)):
-                        continue
-                    if term in seen_derivation_terms:
-                        continue
-                    seen_derivation_terms.add(term)
-                    derivations = DerivationQuery._get_derivations(term, 1)
-                    for d in derivations:
-                        if d and d != term:
-                            derivation_subqueries.append(wquery.Term("aya", d))
-                            _derivation_expansion.add(("aya", d))
-
             parts = [query]
             if aya_fuzzy_query is not None:
                 parts.append(aya_fuzzy_query)
@@ -450,6 +446,15 @@ class QSearcher:
                     else derivation_subqueries[0]
                 )
             query = wquery.Or(parts)
+        elif derivation_subqueries:
+            # Non-fuzzy mode with lemma-level derivation expansion: OR the
+            # derivation terms with the original query.
+            deriv_part = (
+                wquery.Or(derivation_subqueries)
+                if len(derivation_subqueries) > 1
+                else derivation_subqueries[0]
+            )
+            query = wquery.Or([query, deriv_part])
 
         # Prepare facets if requested
         groupedby = None
@@ -476,7 +481,8 @@ class QSearcher:
             elif len(filter_queries) > 1:
                 filter_query = wquery.And(filter_queries)
 
-        collector_kwargs = dict(limit=limit, sortedby=QSort(sortedby), reverse=reverse, groupedby=groupedby, terms=fuzzy)
+        _has_derivation_expansion = bool(_derivation_expansion)
+        collector_kwargs = dict(limit=limit, sortedby=QSort(sortedby), reverse=reverse, groupedby=groupedby, terms=(fuzzy or _has_derivation_expansion))
 
         # Obtain the shared searcher AFTER parsing so that any plugin-triggered
         # refresh has already completed (see comment at the top of this method).
@@ -522,7 +528,7 @@ class QSearcher:
                 )
                 raise
 
-        if fuzzy:
+        if fuzzy or _has_derivation_expansion:
             # Use matched_terms() to capture the actual index terms that were
             # hit, including all fuzzy variations expanded by FuzzyTerm.
             # Whoosh returns term texts as bytes; decode to unicode strings so
@@ -548,10 +554,10 @@ class QSearcher:
                             )
                     else:
                         decoded_terms.add((fieldname, text))
-                # Exclude Strategy 4 derivation-expansion terms from the terms
-                # returned to callers.  These are search-expansion internals
-                # (added to broaden recall) and must NOT appear in words_output
-                # as separate keyword entries: if they did, the first entry in
+                # Exclude derivation-expansion terms from the terms returned to
+                # callers.  These are search-expansion internals (added to
+                # broaden recall) and must NOT appear in words_output as
+                # separate keyword entries: if they did, the first entry in
                 # words.individual would be a derivation word rather than the
                 # user's actual query word, causing incorrect nb_variations == 0.
                 # Exception: keep a derivation term if it was also part of the
@@ -560,7 +566,7 @@ class QSearcher:
                     decoded_terms -= (_derivation_expansion - _original_query_terms)
                 terms = frozenset(decoded_terms)
             else:
-                terms = query.all_terms()
+                terms = _original_query_terms
         else:
             terms = query.all_terms()
 
