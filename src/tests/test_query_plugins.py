@@ -577,6 +577,43 @@ def test_spell_errors_query_executes_against_index():
         assert 'مالك' in result_texts
 
 
+def test_derivation_plugin_inside_parentheses():
+    """Regression: >قال inside parentheses must not consume the closing paren.
+
+    outputs.py wraps Arabic queries as ``kind:aya AND (>قال)``.  Before the
+    fix the DerivationPlugin regex ``>+\\S+`` matched ``>قال)`` — including
+    the closing parenthesis — so the derivation text became ``قال)`` and the
+    lookup returned no results.
+    """
+    _mock = _make_derivation_mock(_MALIK_LEMMA_WORDS, _MALIK_ROOT_WORDS, "مالك")
+    with patch("alfanous.query_plugins._collect_derivations_two_pass", side_effect=_mock):
+        parser = create_test_parser()
+        query = parser.parse("foo AND (>مالك)")
+    # The DerivationQuery must have text == 'مالك', NOT 'مالك)'
+    from whoosh.query import And
+    subqueries = query.subqueries if hasattr(query, 'subqueries') else [query]
+    deriv_queries = [sq for sq in subqueries if isinstance(sq, DerivationQuery)]
+    assert len(deriv_queries) == 1, f"Expected 1 DerivationQuery, got {[type(sq).__name__ for sq in subqueries]}"
+    assert deriv_queries[0].text == "مالك", f"DerivationQuery.text should be 'مالك', got {deriv_queries[0].text!r}"
+
+
+def test_wildcard_plugin_inside_parentheses():
+    """Regression: *نبي* inside parentheses must not consume the closing paren.
+
+    outputs.py wraps Arabic queries as ``kind:aya AND (*نبي*)``.  Before the
+    fix the ArabicWildcardPlugin regex ``\\S*[*?؟]\\S*`` matched ``*نبي*)`` —
+    including the closing parenthesis — so the wildcard pattern became
+    ``*نبي*)`` and matched nothing in the index.
+    """
+    from whoosh.query import Wildcard as _Wildcard
+    parser = create_test_parser()
+    query = parser.parse("foo AND (*نبي*)")
+    subqueries = query.subqueries if hasattr(query, 'subqueries') else [query]
+    wildcard_queries = [sq for sq in subqueries if isinstance(sq, _Wildcard)]
+    assert len(wildcard_queries) == 1, f"Expected 1 wildcard query, got {[type(sq).__name__ for sq in subqueries]}"
+    assert wildcard_queries[0].text == "*نبي*", f"Wildcard text should be '*نبي*', got {wildcard_queries[0].text!r}"
+
+
 if __name__ == "__main__":
     pytest.main([__file__, "-v"])
 

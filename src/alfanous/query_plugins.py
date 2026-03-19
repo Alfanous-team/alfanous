@@ -620,7 +620,9 @@ class DerivationPlugin(TaggingPlugin):
         def r(self):
             return f"{'>' * self.level}{self.actual_text!r}"
 
-    expr = r"(?P<text>>+\S+)"
+    # Exclude parentheses so that grouping syntax e.g. ``kind:aya AND (>word)``
+    # does not swallow the closing ``)`` into the derivation text.
+    expr = r"(?P<text>>+[^\s()]+)"
     nodetype = DerivationNode
     priority = 100
 
@@ -700,7 +702,9 @@ class ArabicWildcardPlugin(TaggingPlugin):
         def r(self):
             return f"{self.text!r}"
 
-    # Match words containing *, ASCII ?, or Arabic ؟
-    expr = r"(?P<text>\S*[*?؟]\S*)"
+    # Match words containing *, ASCII ?, or Arabic ؟.
+    # Exclude parentheses so that grouping syntax e.g. ``kind:aya AND (*word*)``
+    # does not swallow the closing ``)`` into the wildcard text.
+    expr = r"(?P<text>[^\s()]*[*?؟][^\s()]*)"
     nodetype = ArabicWildcardNode
     priority = 90  # Lower than other plugins to let them match first
