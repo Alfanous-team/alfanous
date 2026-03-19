@@ -404,10 +404,10 @@ class QSearcher:
 
             # Strategy 4: Derivation expansion — match all morphological
             # derivations of each Arabic query term in the 'aya' field.
-            # Uses root-level (level=2) derivations for the broadest set,
-            # covering all verb/noun/adjective forms from the same root (e.g.
-            # searching "ملك" also matches "يملك", "مالك", "ملكوت", etc.).
-            # Reuses the same two-pass index scan as the explicit >>word
+            # Uses stem/lemma-level (level=1) derivations, consistent with the
+            # default >word derivation query syntax (e.g. searching "ملك" also
+            # matches forms sharing the same lemma).
+            # Reuses the same two-pass index scan as the explicit >word
             # query plugin, with LRU caching so repeated requests are free.
             # Only applied to Arabic-script terms; non-Arabic terms are skipped.
             #
@@ -428,7 +428,7 @@ class QSearcher:
                     if term in seen_derivation_terms:
                         continue
                     seen_derivation_terms.add(term)
-                    derivations = DerivationQuery._get_derivations(term, 2)
+                    derivations = DerivationQuery._get_derivations(term, 1)
                     for d in derivations:
                         if d and d != term:
                             derivation_subqueries.append(wquery.Term("aya", d))

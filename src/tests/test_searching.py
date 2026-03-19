@@ -157,7 +157,7 @@ class TestFuzzyDerivationExpansion:
                 if term in seen:
                     continue
                 seen.add(term)
-                derivations = DerivationQuery._get_derivations(term, 2)
+                derivations = DerivationQuery._get_derivations(term, 1)
                 for d in derivations:
                     if d and d != term:
                         subqueries.append(wquery.Term("aya", d))
@@ -196,7 +196,7 @@ class TestFuzzyDerivationExpansion:
         seen = set()
         subqueries = []
         with patch.object(DerivationQuery, "_get_derivations", return_value=mock_derivations):
-            derivations = DerivationQuery._get_derivations(original, 2)
+            derivations = DerivationQuery._get_derivations(original, 1)
             for d in derivations:
                 if d and d != original:
                     subqueries.append(wquery.Term("aya", d))
@@ -228,7 +228,7 @@ class TestFuzzyDerivationExpansion:
                 if term in seen:
                     continue
                 seen.add(term)
-                DerivationQuery._get_derivations(term, 2)
+                DerivationQuery._get_derivations(term, 1)
 
         assert call_count["n"] == 1, "Duplicate terms must only be expanded once"
 

@@ -960,18 +960,18 @@ def test_fuzzy_derivation_returns_more_results():
     """fuzzy=True with derivation expansion returns >= results of exact search.
 
     Searching "ملك" with fuzzy=True and derivation expansion enabled should
-    return at least as many verses as the plain root-derivation query >>ملك,
-    because the fuzzy derivation strategy is a superset of the explicit root
+    return at least as many verses as the plain lemma-derivation query >ملك,
+    because the fuzzy derivation strategy is a superset of the explicit lemma
     derivation search.
     """
-    root_deriv_results = _qse_search(u">>ملك")
+    lemma_deriv_results = _qse_search(u">ملك")
 
     fuzzy_results, _, _ = QSE.search_all(u"ملك", fuzzy=True, fuzzy_derivation=True, limit=QURAN_TOTAL_VERSES)
     fuzzy_count = len(fuzzy_results)
 
-    assert fuzzy_count >= root_deriv_results, (
+    assert fuzzy_count >= lemma_deriv_results, (
         f"fuzzy+derivation ({fuzzy_count}) should cover at least as many results "
-        f"as >>ملك derivation search ({root_deriv_results})"
+        f"as >ملك derivation search ({lemma_deriv_results})"
     )
 
 
