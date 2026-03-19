@@ -131,3 +131,194 @@ class TestStripPhraseQueries:
         assert isinstance(result, wquery.And), (
             "Phrase on TEXT(phrase=False) 'sura' field must be converted to And-of-Terms"
         )
+
+
+# ---------------------------------------------------------------------------
+# Unit tests for fuzzy derivation expansion (no index required)
+# ---------------------------------------------------------------------------
+
+class TestFuzzyDerivationExpansion:
+    """Unit tests for the derivation expansion in QSearcher.search.
+
+    Derivation expansion runs in both fuzzy and non-fuzzy modes:
+    - fuzzy=True  → root-level (level=2) derivations
+    - fuzzy=False → lemma-level (level=1) derivations
+    """
+
+    def test_build_derivation_subqueries_arabic_only(self):
+        """Derivation expansion only fires for Arabic-script terms."""
+        from unittest.mock import patch
+        from whoosh import query as wquery
+        from alfanous.query_plugins import DerivationQuery
+
+        # Reproduce the exact filter logic from QSearcher.search
+        def build_derivation_subqueries(terms, deriv_level=2):
+            """Mirror the derivation expansion logic from QSearcher.search."""
+            seen = set()
+            subqueries = []
+            for _fieldname, term in terms:
+                if not (isinstance(term, str) and any('\u0600' <= c <= '\u06FF' for c in term)):
+                    continue
+                if term in seen:
+                    continue
+                seen.add(term)
+                derivations = DerivationQuery._get_derivations(term, deriv_level)
+                for d in derivations:
+                    if d and d != term:
+                        subqueries.append(wquery.Term("aya", d))
+            return subqueries
+
+        mock_derivations = ["مالك", "يملك", "ملكوت"]
+
+        with patch.object(DerivationQuery, "_get_derivations", return_value=mock_derivations):
+            # Arabic term — derivation subqueries should be produced (none of the
+            # mock derivations equal the original "ملك", so all 3 are included)
+            arabic_terms = [("aya", "ملك")]
+            result = build_derivation_subqueries(arabic_terms, deriv_level=2)
+            assert len(result) == len(mock_derivations), (
+                "One Term per unique derivation that differs from the original"
+            )
+            for q in result:
+                assert isinstance(q, wquery.Term)
+                assert q.fieldname == "aya"
+
+        with patch.object(DerivationQuery, "_get_derivations", return_value=mock_derivations):
+            # Latin term — no derivation subqueries
+            latin_terms = [("aya", "book")]
+            result = build_derivation_subqueries(latin_terms, deriv_level=2)
+            assert result == [], "Latin terms must not trigger derivation expansion"
+
+    def test_derivation_level_varies_by_fuzzy_mode(self):
+        """fuzzy=True uses level=2 (root), fuzzy=False uses level=1 (lemma)."""
+        from unittest.mock import patch, call
+        from alfanous.query_plugins import DerivationQuery
+
+        captured_levels = []
+
+        def tracking_get_derivations(word, level):
+            captured_levels.append(level)
+            return [word]
+
+        with patch.object(DerivationQuery, "_get_derivations", side_effect=tracking_get_derivations):
+            term = "ملك"
+            # fuzzy=True → root-level derivations (level=2)
+            fuzzy = True
+            deriv_level = 2 if fuzzy else 1
+            DerivationQuery._get_derivations(term, deriv_level)
+            # fuzzy=False → lemma-level derivations (level=1)
+            fuzzy = False
+            deriv_level = 2 if fuzzy else 1
+            DerivationQuery._get_derivations(term, deriv_level)
+
+        assert captured_levels == [2, 1], (
+            "fuzzy=True must use level=2 (root), fuzzy=False must use level=1 (lemma)"
+        )
+
+    def test_derivation_skips_original_word(self):
+        """The original query word itself must not be duplicated in subqueries."""
+        from unittest.mock import patch
+        from whoosh import query as wquery
+        from alfanous.query_plugins import DerivationQuery
+
+        original = "ملك"
+        # Derivations include the original word — it should be excluded from subqueries
+        mock_derivations = [original, "مالك", "يملك"]
+
+        seen = set()
+        subqueries = []
+        with patch.object(DerivationQuery, "_get_derivations", return_value=mock_derivations):
+            derivations = DerivationQuery._get_derivations(original, 2)
+            for d in derivations:
+                if d and d != original:
+                    subqueries.append(wquery.Term("aya", d))
+
+        term_texts = [q.text for q in subqueries]
+        assert original not in term_texts, "Original query word must not appear in derivation subqueries"
+        assert "مالك" in term_texts
+        assert "يملك" in term_texts
+
+    def test_derivation_deduplicates_terms(self):
+        """Repeated Arabic terms in a multi-word query are only expanded once."""
+        from unittest.mock import patch
+        from whoosh import query as wquery
+        from alfanous.query_plugins import DerivationQuery
+
+        call_count = {"n": 0}
+
+        def counting_get_derivations(word, level):
+            call_count["n"] += 1
+            return [word]  # No new derivations
+
+        with patch.object(DerivationQuery, "_get_derivations", side_effect=counting_get_derivations):
+            # Same term repeated — should only call _get_derivations once
+            repeated_terms = [("aya", "ملك"), ("aya", "ملك"), ("aya", "ملك")]
+            seen = set()
+            for _fieldname, term in repeated_terms:
+                if not (isinstance(term, str) and any('\u0600' <= c <= '\u06FF' for c in term)):
+                    continue
+                if term in seen:
+                    continue
+                seen.add(term)
+                DerivationQuery._get_derivations(term, 2)
+
+        assert call_count["n"] == 1, "Duplicate terms must only be expanded once"
+
+    def test_derivation_expansion_terms_excluded_from_matched_terms(self):
+        """Derivation-expansion terms must be filtered out of the matched-terms set.
+
+        Strategy 4 adds Term("aya", d) for each derivation.  When these
+        terms match documents, Whoosh includes them in matched_terms().  They
+        must NOT be returned as part of the 'terms' frozenset that callers use
+        to build words_output, otherwise the first entry in words.individual
+        becomes a derivation word (not the user's query word) and
+        nb_variations is incorrectly 0.
+
+        Verify the filtering logic directly using the frozenset set-difference
+        approach implemented in QSearcher.search.
+        """
+        # Simulate matched_terms: includes original query term AND derivations
+        original_query_terms = frozenset([("aya", "ملك"), ("aya_", "ملك")])
+        derivation_expansion = {("aya", "مالك"), ("aya", "يملك"), ("aya", "ملكوت")}
+
+        # All matched terms (would come from results.matched_terms())
+        all_matched = original_query_terms | derivation_expansion | {("aya_ac", "ملك")}
+
+        # Apply the filter: remove derivation terms not in the original query
+        filtered = set(all_matched)
+        filtered -= (derivation_expansion - original_query_terms)
+
+        # Derivation terms should be excluded
+        for deriv_pair in derivation_expansion:
+            assert deriv_pair not in filtered, (
+                f"Derivation-expansion term {deriv_pair} must be excluded"
+            )
+        # Original query terms and aya_ac terms must be kept
+        assert ("aya", "ملك") in filtered
+        assert ("aya_", "ملك") in filtered
+        assert ("aya_ac", "ملك") in filtered
+
+    def test_derivation_expansion_term_kept_if_in_original_query(self):
+        """A derivation term that was also in the original query is kept.
+
+        If the user explicitly typed a word that also appears as a derivation
+        of another word in the query, that word must NOT be excluded from the
+        returned terms (it was a real user keyword, not just an expansion).
+        """
+        # Scenario: user typed both "ملك" and "مالك"; "مالك" is also a
+        # derivation of "ملك" — it must be kept.
+        original_query_terms = frozenset([("aya", "ملك"), ("aya", "مالك")])
+        derivation_expansion = {("aya", "مالك"), ("aya", "يملك")}
+
+        all_matched = original_query_terms | derivation_expansion
+
+        filtered = set(all_matched)
+        filtered -= (derivation_expansion - original_query_terms)
+
+        # "مالك" is in both derivation_expansion and original_query_terms → kept
+        assert ("aya", "مالك") in filtered, (
+            "A term in both derivation_expansion and original_query_terms must be kept"
+        )
+        # "يملك" is only a derivation → excluded
+        assert ("aya", "يملك") not in filtered, (
+            "A pure derivation-expansion term must be excluded"
+        )

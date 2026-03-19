@@ -38,7 +38,8 @@ def do(flags: Dict[str, Any]) -> Dict[str, Any]:
 
 def search(query: str, unit: str = "aya", page: int = 1, sortedby: str = "relevance",
            reverse: bool = False,
-           fuzzy: bool = False, fuzzy_maxdist: int = 1, view: str = "normal",
+           fuzzy: bool = False, fuzzy_maxdist: int = 1, fuzzy_derivation: bool = False,
+           view: str = "normal",
            highlight: str = "bold", flags: Optional[Dict[str, Any]] = None,
            facets: Optional[str] = None, filter: Optional[Any] = None,
            timelimit: Optional[float] = 5.0,
@@ -59,9 +60,13 @@ def search(query: str, unit: str = "aya", page: int = 1, sortedby: str = "releva
            lowest/earliest value comes first (e.g. shortest verse first for
            'ayalength', or least-relevant result first for 'score').
     @param fuzzy: Enable fuzzy search — uses aya_ (exact), aya (normalised/stemmed),
-           and Levenshtein distance matching on aya_ac simultaneously
+           Levenshtein distance matching on aya_ac, and morphological derivation
+           expansion simultaneously
     @param fuzzy_maxdist: Maximum Levenshtein edit distance for fuzzy term matching
            (default 1, only used when fuzzy=True)
+    @param fuzzy_derivation: When True, expand each Arabic query term to its
+           morphological derivations — root-level (level=2) when fuzzy=True,
+           lemma-level (level=1) when fuzzy=False. Defaults to False.
     @param view: View mode ('normal', 'minimal', etc.)
     @param highlight: Highlight style ('bold', 'css', etc.)
     @param flags: Additional flags dictionary
@@ -101,6 +106,7 @@ def search(query: str, unit: str = "aya", page: int = 1, sortedby: str = "releva
                       "reverse": reverse,
                       "fuzzy": fuzzy,
                       "fuzzy_maxdist": fuzzy_maxdist,
+                      "fuzzy_derivation": fuzzy_derivation,
                       "view": view,
                       "highlight": highlight,
                       "facets": facets,
