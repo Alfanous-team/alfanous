@@ -316,6 +316,65 @@ def test_arabic_wildcard_question_mark():
     # Wildcard queries expand against the index, not at parse time
 
 
+def test_arabic_wildcard_multifield_asterisk():
+    """Regression: pray* via MultifieldParser must not produce a None-fieldname query.
+
+    MultifieldParser initialises the parser with fieldname=None and uses
+    MultifieldPlugin to copy each unfielded node and call set_fieldname() on it.
+    The ArabicWildcardNode.query() method must read self.fieldname (set by
+    MultifieldPlugin) and fall back to parser.fieldname — not bypass self.fieldname.
+    Before the fix, parser.fieldname was used directly, which is None for a
+    MultifieldParser, causing KeyError/'No field named None' at search time.
+    """
+    from whoosh.qparser import MultifieldParser
+    from whoosh.qparser.plugins import WildcardPlugin, EveryPlugin
+
+    schema = Schema(text_en=TEXT(stored=True), text_fr=TEXT(stored=True))
+    p = MultifieldParser(['text_en', 'text_fr'], schema)
+    p.remove_plugin_class(WildcardPlugin)
+    p.remove_plugin_class(EveryPlugin)
+    p.add_plugin(ArabicWildcardPlugin())
+
+    # parse() must not raise; the resulting query must have valid (non-None) fieldnames
+    q = p.parse('pray*')
+    assert q is not None
+    # For a multi-field wildcard the result is an Or of per-field queries
+    for subq in q:
+        assert subq.fieldname is not None, (
+            f"Query {subq!r} has fieldname=None; ArabicWildcardNode must "
+            "use self.fieldname (set by MultifieldPlugin) rather than parser.fieldname"
+        )
+
+
+def test_arabic_wildcard_multifield_question_mark():
+    """Regression: produc? via MultifieldParser must not produce a None-fieldname query.
+
+    Same root cause as test_arabic_wildcard_multifield_asterisk but exercises the
+    single-character wildcard (?) path, which maps to ArabicWildcardQuery.
+    Before the fix this caused KeyError/'No field named None' when the query was
+    executed against a Whoosh index.
+    """
+    from whoosh.qparser import MultifieldParser
+    from whoosh.qparser.plugins import WildcardPlugin, EveryPlugin
+
+    schema = Schema(text_en=TEXT(stored=True), text_fr=TEXT(stored=True))
+    p = MultifieldParser(['text_en', 'text_fr'], schema)
+    p.remove_plugin_class(WildcardPlugin)
+    p.remove_plugin_class(EveryPlugin)
+    p.add_plugin(ArabicWildcardPlugin())
+
+    q = p.parse('produc?')
+    assert q is not None
+    for subq in q:
+        assert subq.fieldname is not None, (
+            f"Query {subq!r} has fieldname=None; ArabicWildcardNode must "
+            "use self.fieldname (set by MultifieldPlugin) rather than parser.fieldname"
+        )
+        assert isinstance(subq, ArabicWildcardQuery), (
+            f"Expected ArabicWildcardQuery, got {type(subq).__name__}"
+        )
+
+
 def test_every_plugin_removed():
     """EveryPlugin is removed from ArabicParser so *:* must not parse to Every."""
     from whoosh.query import Every

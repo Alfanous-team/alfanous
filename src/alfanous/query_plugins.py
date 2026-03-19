@@ -589,7 +589,7 @@ class DerivationPlugin(TaggingPlugin):
             self.actual_text = text.lstrip('>')
 
         def query(self, parser):
-            fieldname = parser.fieldname
+            fieldname = self.fieldname or parser.fieldname
             return DerivationQuery(
                 fieldname,
                 self.actual_text,
@@ -624,7 +624,7 @@ class TashkilPlugin(TaggingPlugin):
 
     class TashkilNode(syntax.TextNode):
         def query(self, parser):
-            fieldname = parser.fieldname
+            fieldname = self.fieldname or parser.fieldname
             # Split text and filter out empty tokens
             words = [w for w in self.text.split() if w.strip()]
 
@@ -653,7 +653,7 @@ class TuplePlugin(TaggingPlugin):
 
     class TupleNode(syntax.TextNode):
         def query(self, parser):
-            fieldname = parser.fieldname
+            fieldname = self.fieldname or parser.fieldname
             # Split by comma or Arabic comma
             items = [
                 item.strip()
@@ -674,7 +674,7 @@ class ArabicWildcardPlugin(TaggingPlugin):
 
     class ArabicWildcardNode(syntax.WordNode):
         def query(self, parser):
-            fieldname = parser.fieldname
+            fieldname = self.fieldname or parser.fieldname
             return ArabicWildcardQuery(fieldname, self.text, boost=self.boost)
 
         def r(self):
