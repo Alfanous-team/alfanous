@@ -39,6 +39,38 @@ def _is_valid_term(x):
     return not isinstance(x, int) or x >= 0
 
 
+def _collect_plugin_expanded_terms(q):
+    """Collect terms already expanded by morph-generating query plugins.
+
+    DerivationPlugin (``>word``, ``>>word``) and TuplePlugin
+    (``{root,type,pattern}``) already produce full morphological expansions at
+    parse time.  Applying ``derivation_level`` expansion on top of those terms
+    would be redundant and wasteful.  This function walks the query tree and
+    returns a :class:`frozenset` of ``(fieldname, text)`` pairs that originate
+    from these plugins so the caller can skip them.
+    """
+    from alfanous.query_plugins import DerivationQuery, TupleQuery
+
+    terms: "set[tuple]" = set()
+
+    if isinstance(q, (DerivationQuery, TupleQuery)):
+        terms.update(q.all_terms())
+        return terms
+
+    if isinstance(q, wquery.CompoundQuery):
+        for sq in q.subqueries:
+            terms.update(_collect_plugin_expanded_terms(sq))
+
+    if isinstance(q, wquery.BinaryQuery):
+        terms.update(_collect_plugin_expanded_terms(q.subqueries[0]))
+        terms.update(_collect_plugin_expanded_terms(q.subqueries[1]))
+
+    if isinstance(q, wquery.Not):
+        terms.update(_collect_plugin_expanded_terms(q.query))
+
+    return terms
+
+
 def _strip_phrase_queries(q, schema=None):
     """Replace Phrase nodes that target fields without positional info with And-of-Terms.
 
@@ -379,11 +411,18 @@ class QSearcher:
         if derivation_level in ("lemma", "root"):
             from alfanous.query_plugins import DerivationQuery
             deriv_level = 2 if derivation_level == "root" else 1  # 2 = root (>>word), 1 = lemma (>word)
+            # Skip terms already expanded by DerivationPlugin or TuplePlugin
+            # (WordProp) — those plugins produce morphological forms at parse
+            # time, so re-expanding them here would be redundant.
+            plugin_expanded = _collect_plugin_expanded_terms(query)
+            plugin_expanded_words = {term for _, term in plugin_expanded}
             seen_derivation_terms = set()
             for _fieldname, term in query.all_terms():
                 if not (isinstance(term, str) and any('\u0600' <= c <= '\u06FF' for c in term)):
                     continue
                 if term in seen_derivation_terms:
+                    continue
+                if term in plugin_expanded_words:
                     continue
                 seen_derivation_terms.add(term)
                 derivations = DerivationQuery._get_derivations(term, deriv_level)

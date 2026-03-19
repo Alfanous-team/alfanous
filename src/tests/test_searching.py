@@ -322,3 +322,95 @@ class TestFuzzyDerivationExpansion:
         assert ("aya", "يملك") not in filtered, (
             "A pure derivation-expansion term must be excluded"
         )
+
+
+# ---------------------------------------------------------------------------
+# Unit tests for _collect_plugin_expanded_terms (no index required)
+# ---------------------------------------------------------------------------
+
+class TestCollectPluginExpandedTerms:
+    """Tests for alfanous.searching._collect_plugin_expanded_terms."""
+
+    def test_plain_term_returns_empty(self):
+        """A plain Whoosh Term node has no plugin-expanded terms."""
+        from whoosh import query as wquery
+        from alfanous.searching import _collect_plugin_expanded_terms
+
+        q = wquery.Term("aya", "مالك")
+        result = _collect_plugin_expanded_terms(q)
+        assert result == set()
+
+    def test_derivation_query_returns_all_terms(self):
+        """DerivationQuery node returns all its expanded terms."""
+        from alfanous.searching import _collect_plugin_expanded_terms
+        from alfanous.query_plugins import DerivationQuery
+        from unittest.mock import patch
+
+        mock_words = ["مالك", "مالكون", "يملك"]
+        with patch.object(DerivationQuery, '_get_derivations', return_value=mock_words):
+            dq = DerivationQuery("aya", "مالك", level=1)
+        result = _collect_plugin_expanded_terms(dq)
+        assert len(result) == 3
+        assert ("aya", "مالك") in result
+        assert ("aya", "مالكون") in result
+        assert ("aya", "يملك") in result
+
+    def test_tuple_query_returns_all_terms(self):
+        """TupleQuery node returns all its expanded terms."""
+        from alfanous.searching import _collect_plugin_expanded_terms
+        from alfanous.query_plugins import TupleQuery
+        from unittest.mock import patch
+
+        mock_words = ["قول", "قولا", "قولكم"]
+        with patch("alfanous.query_plugins._query_word_index", return_value=mock_words):
+            tq = TupleQuery("aya", ["قول", "اسم"])
+        result = _collect_plugin_expanded_terms(tq)
+        assert len(result) == 3
+        assert ("aya", "قول") in result
+
+    def test_compound_query_with_derivation(self):
+        """DerivationQuery inside a compound Or returns its terms."""
+        from whoosh import query as wquery
+        from alfanous.searching import _collect_plugin_expanded_terms
+        from alfanous.query_plugins import DerivationQuery
+        from unittest.mock import patch
+
+        mock_words = ["مالك", "مالكون"]
+        with patch.object(DerivationQuery, '_get_derivations', return_value=mock_words):
+            dq = DerivationQuery("aya", "مالك", level=1)
+        plain = wquery.Term("aya", "كتاب")
+        compound = wquery.Or([plain, dq])
+
+        result = _collect_plugin_expanded_terms(compound)
+        # Only DerivationQuery terms, not the plain term
+        assert ("aya", "مالك") in result
+        assert ("aya", "مالكون") in result
+        assert ("aya", "كتاب") not in result
+
+    def test_nested_and_or_with_derivation(self):
+        """Deeply nested query trees still find DerivationQuery nodes."""
+        from whoosh import query as wquery
+        from alfanous.searching import _collect_plugin_expanded_terms
+        from alfanous.query_plugins import DerivationQuery
+        from unittest.mock import patch
+
+        mock_words = ["مالك", "يملك"]
+        with patch.object(DerivationQuery, '_get_derivations', return_value=mock_words):
+            dq = DerivationQuery("aya", "مالك", level=2)
+        inner = wquery.And([wquery.Term("aya", "كتاب"), dq])
+        outer = wquery.Or([wquery.Term("aya", "رب"), inner])
+
+        result = _collect_plugin_expanded_terms(outer)
+        assert ("aya", "مالك") in result
+        assert ("aya", "يملك") in result
+        assert ("aya", "كتاب") not in result
+        assert ("aya", "رب") not in result
+
+    def test_no_plugin_queries_returns_empty(self):
+        """Query tree with no plugin queries returns empty set."""
+        from whoosh import query as wquery
+        from alfanous.searching import _collect_plugin_expanded_terms
+
+        q = wquery.And([wquery.Term("aya", "مالك"), wquery.Term("aya", "كتاب")])
+        result = _collect_plugin_expanded_terms(q)
+        assert result == set()
