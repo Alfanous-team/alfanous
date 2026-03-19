@@ -429,12 +429,16 @@ class QSearcher:
         # incorrect per-word statistics (e.g. nb_variations == 0).
         derivation_subqueries = []
         _derivation_expansion: "set[tuple]" = set()
-        if derivation_level in ("lemma", "root"):
+        if derivation_level in ("lemma", "root") and not _has_wildcard_query(query):
             from alfanous.query_plugins import DerivationQuery
             deriv_level = 2 if derivation_level == "root" else 1  # 2 = root (>>word), 1 = lemma (>word)
             # Skip terms already expanded by DerivationPlugin or TuplePlugin
             # (WordProp) — those plugins produce morphological forms at parse
             # time, so re-expanding them here would be redundant.
+            # Wildcard queries (ArabicWildcardPlugin) are also excluded: they
+            # perform their own pattern-based expansion at search time, so
+            # derivation_level processing is skipped entirely when any wildcard
+            # node is present (checked above via _has_wildcard_query).
             plugin_expanded = _collect_plugin_expanded_terms(query)
             plugin_expanded_words = {term for _, term in plugin_expanded}
             seen_derivation_terms = set()
