@@ -367,6 +367,8 @@ class TestCollectPluginExpandedTerms:
         result = _collect_plugin_expanded_terms(tq)
         assert len(result) == 3
         assert ("aya", "قول") in result
+        assert ("aya", "قولا") in result
+        assert ("aya", "قولكم") in result
 
     def test_compound_query_with_derivation(self):
         """DerivationQuery inside a compound Or returns its terms."""
@@ -414,3 +416,59 @@ class TestCollectPluginExpandedTerms:
         q = wquery.And([wquery.Term("aya", "مالك"), wquery.Term("aya", "كتاب")])
         result = _collect_plugin_expanded_terms(q)
         assert result == set()
+
+
+# ---------------------------------------------------------------------------
+# Unit tests for _has_wildcard_query (no index required)
+# ---------------------------------------------------------------------------
+
+class TestHasWildcardQuery:
+    """Tests for alfanous.searching._has_wildcard_query."""
+
+    def test_wildcard_node_returns_true(self):
+        """A bare Wildcard node must be detected."""
+        from whoosh import query as wquery
+        from alfanous.searching import _has_wildcard_query
+
+        q = wquery.Wildcard("aya", "كت*")
+        assert _has_wildcard_query(q) is True
+
+    def test_term_node_returns_false(self):
+        """A plain Term has no wildcard — must return False."""
+        from whoosh import query as wquery
+        from alfanous.searching import _has_wildcard_query
+
+        q = wquery.Term("aya", "كتاب")
+        assert _has_wildcard_query(q) is False
+
+    def test_arabic_wildcard_query_returns_true(self):
+        """ArabicWildcardQuery (subclass of Wildcard) must also be detected."""
+        from alfanous.query_plugins import ArabicWildcardQuery
+        from alfanous.searching import _has_wildcard_query
+
+        q = ArabicWildcardQuery("aya", "كت*")
+        assert _has_wildcard_query(q) is True
+
+    def test_wildcard_inside_and_returns_true(self):
+        """Wildcard nested inside an And compound must be found."""
+        from whoosh import query as wquery
+        from alfanous.searching import _has_wildcard_query
+
+        q = wquery.And([wquery.Term("aya", "الله"), wquery.Wildcard("aya", "رح*")])
+        assert _has_wildcard_query(q) is True
+
+    def test_wildcard_inside_or_returns_true(self):
+        """Wildcard nested inside an Or compound must be found."""
+        from whoosh import query as wquery
+        from alfanous.searching import _has_wildcard_query
+
+        q = wquery.Or([wquery.Term("aya", "الله"), wquery.Wildcard("aya", "رح*")])
+        assert _has_wildcard_query(q) is True
+
+    def test_no_wildcard_compound_returns_false(self):
+        """A compound query with only Term leaves must return False."""
+        from whoosh import query as wquery
+        from alfanous.searching import _has_wildcard_query
+
+        q = wquery.And([wquery.Term("aya", "الله"), wquery.Term("aya", "أكبر")])
+        assert _has_wildcard_query(q) is False
