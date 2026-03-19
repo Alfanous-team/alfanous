@@ -207,14 +207,34 @@ class QMultiTerm(MultiTerm):
 
     def _btexts(self, ixreader):
         fieldname = self.fieldname
-        to_bytes = ixreader.schema[fieldname].to_bytes
+        field = ixreader.schema[fieldname]
+        to_bytes = field.to_bytes
+        seen = set()
         for word in self.words:
-            try:
-                btext = to_bytes(word)
-            except ValueError:
-                continue
-            if (fieldname, btext) in ixreader:
-                yield btext
+            # Obtain the analyzed form(s) of this word for the given field.
+            # Without analysis, to_bytes() only does UTF-8 encoding, so a
+            # vocalized Arabic word like "عَذَابٌ" (returned by _get_derivations
+            # from the word index) would not match the diacritics-stripped term
+            # "عذاب" that QStandardAnalyzer stored in the aya field at index
+            # time.  process_text() re-runs the same analyzer pipeline so the
+            # lookup bytes match the stored bytes.
+            if hasattr(field, 'process_text'):
+                try:
+                    analyzed = list(field.process_text(word, mode='index'))
+                except Exception:
+                    analyzed = [word]
+            else:
+                analyzed = [word]
+            for text in (analyzed or [word]):
+                if text in seen:
+                    continue
+                seen.add(text)
+                try:
+                    btext = to_bytes(text)
+                except ValueError:
+                    continue
+                if (fieldname, btext) in ixreader:
+                    yield btext
 
     def __str__(self):
         return f"{self.fieldname}:<{self.text}>"

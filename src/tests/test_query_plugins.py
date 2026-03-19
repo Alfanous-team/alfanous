@@ -507,6 +507,62 @@ def test_derivation_query_root_level_executes_against_index():
         assert len(results) >= 2
 
 
+def test_derivation_query_vocalized_words_match_analyzed_index():
+    """DerivationQuery must find results even when all derivation words are vocalized.
+
+    Regression test for: >>عذاب gives no results in fuzzy=false mode.
+
+    The aya field uses QStandardAnalyzer which strips diacritics at index time,
+    so the stored terms are unvocalized (e.g. "عذاب").  DerivationQuery.words
+    may contain vocalized forms (e.g. "عَذَابٌ") from the word index's word
+    field.  Without the fix, _btexts() encoded these with to_bytes() (raw
+    UTF-8, no analysis) producing bytes that never matched the index terms.
+
+    The fix makes _btexts() run each word through field.process_text() so
+    the same normalization (diacritics-stripping, shaping) that ran at
+    index time is also applied at query time.
+    """
+    from whoosh.filedb.filestore import RamStorage
+    from alfanous.text_processing import QStandardAnalyzer
+
+    # Create an index whose field uses QStandardAnalyzer – exactly like the
+    # real 'aya' field – so that indexed terms are unvocalized Arabic.
+    schema = Schema(aya=TEXT(analyzer=QStandardAnalyzer, stored=True))
+    st = RamStorage()
+    ix = st.create_index(schema)
+    writer = ix.writer()
+    writer.add_document(aya='وَلَهُمْ عَذَابٌ عَظِيمٌ')
+    writer.add_document(aya='يُعَذِّبُ مَنْ يَشَاءُ')
+    writer.commit()
+
+    # Simulate the worst case: _collect_derivations_two_pass returns ONLY
+    # vocalized forms (as if the 'normalized' and 'word_standard' stored
+    # fields were absent and only the 'word' vocalized field was present).
+    # Before the fix _btexts() would find no index terms and return 0 results.
+    _vocalized_only = lambda _candidates, _index_key: (
+        'عَذَابٌ', 'عَذَابَ', 'عَذَابِ', 'يُعَذِّبُ'
+    )
+
+    from whoosh.qparser.plugins import SingleQuotePlugin
+    parser = QueryParser('aya', ix.schema)
+    parser.remove_plugin_class(SingleQuotePlugin)
+    parser.add_plugin(DerivationPlugin())
+
+    with patch("alfanous.query_plugins._collect_derivations_two_pass",
+               side_effect=_vocalized_only):
+        query = parser.parse('>>عذاب')
+
+    assert isinstance(query, DerivationQuery)
+    assert query.level == 2
+
+    with ix.searcher() as searcher:
+        results = searcher.search(query)
+        assert len(results) >= 1, (
+            ">>عذاب should return results even when derivation words are vocalized; "
+            "_btexts() must normalize through the field analyzer"
+        )
+
+
 def test_spell_errors_query_executes_against_index():
     """Test that SpellErrorsQuery can be executed against a Whoosh index."""
     ix = create_test_index()
