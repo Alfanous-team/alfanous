@@ -17,6 +17,27 @@ logger = logging.getLogger(__name__)
 _MAX_READER_CLOSED_RETRIES = 2
 
 
+def _has_wildcard_query(q):
+    """Return True if the query tree contains at least one Wildcard node.
+
+    Used by :func:`QSearcher.search` to decide whether term tracking
+    (``terms=True``) must be enabled so that the actual index terms matched
+    by each wildcard pattern are captured via ``matched_terms()`` and made
+    available for aya-text highlighting.
+    """
+    if isinstance(q, wquery.Wildcard):
+        return True
+    subqs = getattr(q, "subqueries", None)
+    if subqs:
+        return any(_has_wildcard_query(sq) for sq in subqs)
+    # Binary compound nodes expose .a / .b instead of .subqueries
+    for attr in ("a", "b"):
+        child = getattr(q, attr, None)
+        if child is not None and _has_wildcard_query(child):
+            return True
+    return False
+
+
 def _decode_if_bytes(x):
     if isinstance(x, bytes):
         return x.decode('utf-8')
@@ -483,7 +504,8 @@ class QSearcher:
                 filter_query = wquery.And(filter_queries)
 
         _has_derivation_expansion = bool(_derivation_expansion)
-        collector_kwargs = dict(limit=limit, sortedby=QSort(sortedby), reverse=reverse, groupedby=groupedby, terms=(fuzzy or _has_derivation_expansion))
+        _has_wildcard = _has_wildcard_query(query)
+        collector_kwargs = dict(limit=limit, sortedby=QSort(sortedby), reverse=reverse, groupedby=groupedby, terms=(fuzzy or _has_derivation_expansion or _has_wildcard))
 
         # Obtain the shared searcher AFTER parsing so that any plugin-triggered
         # refresh has already completed (see comment at the top of this method).
@@ -529,9 +551,10 @@ class QSearcher:
                 )
                 raise
 
-        if fuzzy or _has_derivation_expansion:
+        if fuzzy or _has_derivation_expansion or _has_wildcard:
             # Use matched_terms() to capture the actual index terms that were
-            # hit, including all fuzzy variations expanded by FuzzyTerm.
+            # hit, including all fuzzy variations expanded by FuzzyTerm and all
+            # concrete terms expanded from wildcard patterns at query time.
             # Whoosh returns term texts as bytes; decode to unicode strings so
             # downstream code (highlighting, term stats) can handle them.
             # matched_terms() returns None when terms=True was not passed, and
