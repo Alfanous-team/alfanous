@@ -38,7 +38,7 @@ def do(flags: Dict[str, Any]) -> Dict[str, Any]:
 
 def search(query: str, unit: str = "aya", page: int = 1, sortedby: str = "relevance",
            reverse: bool = False,
-           fuzzy: bool = False, fuzzy_maxdist: int = 1, fuzzy_derivation: bool = True,
+           fuzzy: bool = False, fuzzy_maxdist: int = 1, fuzzy_derivation: bool = False,
            view: str = "normal",
            highlight: str = "bold", flags: Optional[Dict[str, Any]] = None,
            facets: Optional[str] = None, filter: Optional[Any] = None,
@@ -64,10 +64,9 @@ def search(query: str, unit: str = "aya", page: int = 1, sortedby: str = "releva
            expansion simultaneously
     @param fuzzy_maxdist: Maximum Levenshtein edit distance for fuzzy term matching
            (default 1, only used when fuzzy=True)
-    @param fuzzy_derivation: When True (default) and fuzzy=True, expand each Arabic
-           query term to all its root-level morphological derivations (e.g. searching
-           "ملك" also matches "يملك", "مالك", "ملكوت"). Set to False to disable
-           derivation expansion while keeping the other fuzzy strategies active.
+    @param fuzzy_derivation: When True, expand each Arabic query term to its
+           morphological derivations — root-level (level=2) when fuzzy=True,
+           lemma-level (level=1) when fuzzy=False. Defaults to False.
     @param view: View mode ('normal', 'minimal', etc.)
     @param highlight: Highlight style ('bold', 'css', etc.)
     @param flags: Additional flags dictionary

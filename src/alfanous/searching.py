@@ -335,7 +335,7 @@ class QSearcher:
     def __exit__(self, *args):
         self.close()
 
-    def search(self, querystr, limit=QURAN_TOTAL_VERSES, sortedby="score", reverse=False, facets=None, filter_dict=None, fuzzy=False, fuzzy_maxdist=1, fuzzy_derivation=True, timelimit=5.0):
+    def search(self, querystr, limit=QURAN_TOTAL_VERSES, sortedby="score", reverse=False, facets=None, filter_dict=None, fuzzy=False, fuzzy_maxdist=1, fuzzy_derivation=False, timelimit=5.0):
         # Parse FIRST, before obtaining the shared searcher.  Query plugins
         # (DerivationPlugin, TuplePlugin, …) call engine._reader.reader →
         # QSearcher.get_reader() → _get_shared_searcher() during parse().

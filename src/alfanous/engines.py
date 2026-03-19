@@ -49,7 +49,7 @@ class BasicSearchEngine:
 
     # end  __init__
 
-    def search_all(self, querystr, limit=QURAN_TOTAL_VERSES, sortedby="score", reverse=False, facets=None, filter_dict=None, fuzzy=False, fuzzy_maxdist=1, fuzzy_derivation=True, timelimit=5.0):
+    def search_all(self, querystr, limit=QURAN_TOTAL_VERSES, sortedby="score", reverse=False, facets=None, filter_dict=None, fuzzy=False, fuzzy_maxdist=1, fuzzy_derivation=False, timelimit=5.0):
         """
         Perform a search in the index.
         
@@ -65,11 +65,10 @@ class BasicSearchEngine:
                Arabic query term to all its morphological derivations.
         @param fuzzy_maxdist: Maximum Levenshtein edit distance for fuzzy term
                matching (default 1). Only used when fuzzy=True.
-        @param fuzzy_derivation: When True (default) and fuzzy=True, expand each
-               Arabic query term to all its root-level morphological derivations
-               (e.g. searching "ملك" also matches "يملك", "مالك", "ملكوت"). Set
-               to False to disable derivation expansion while keeping the other
-               fuzzy strategies active.
+        @param fuzzy_derivation: When True, expand each Arabic query term to its
+               morphological derivations — root-level (level=2) when fuzzy=True,
+               lemma-level (level=1) when fuzzy=False (e.g. searching "ملك" also
+               matches "يملك", "مالك", "ملكوت"). Defaults to False.
         @param timelimit: Maximum number of seconds to spend on the search
                (default 5.0). Pass None to disable the limit.
         @return: Tuple of (results, term_stats, searcher)

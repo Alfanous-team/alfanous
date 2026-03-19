@@ -283,7 +283,7 @@ class Raw:
             "perpage": 10,  # overridden with range
             "fuzzy": False,
             "fuzzy_maxdist": 1,
-            "fuzzy_derivation": True,
+            "fuzzy_derivation": False,
             "timelimit": 5.0,
             "aya": True,
             "facets": None,
@@ -384,7 +384,7 @@ class Raw:
         "perpage": "results per page  [override range]",
         "fuzzy": "fuzzy search — searches aya_ (exact) and aya (normalised/stemmed) with Levenshtein distance matching and morphological derivation expansion",
         "fuzzy_maxdist": "maximum Levenshtein edit distance for fuzzy term matching (default: 1, only used when fuzzy=True)",
-        "fuzzy_derivation": "expand Arabic query terms to morphological derivations: root-level (level=2) when fuzzy=True, lemma-level (level=1) when fuzzy=False (default: True)",
+        "fuzzy_derivation": "expand Arabic query terms to morphological derivations: root-level (level=2) when fuzzy=True, lemma-level (level=1) when fuzzy=False (default: False)",
         "timelimit": "maximum number of seconds to spend on a search query (default: 5.0, use None or 0 to disable)",
         "aya": "enable retrieving of aya text in the case of translation search",
     }
