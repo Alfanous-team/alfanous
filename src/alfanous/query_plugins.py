@@ -173,6 +173,55 @@ def _collect_derivations_two_pass_cached(candidates_frozen, index_key):
     return tuple(words)
 
 
+@lru_cache(maxsize=512)
+def _lookup_key_values_cached(candidates_frozen, index_key):
+    """Return the set of *index_key* values (lemma or root) for *candidates*.
+
+    Performs a single pass over word-child documents to find the lemma/root
+    value(s) corresponding to the given candidate word forms.  This is the
+    lookup half of the two-pass derivation approach — it answers "what is the
+    lemma (or root) of this word?" without collecting all sibling derivations.
+
+    Used by the field-based ``derivation_level`` implementation in
+    ``searching.py`` and the ``DerivationPlugin``.
+    """
+    from alfanous.data import QSE as _QSE
+    engine = _QSE()
+    if not engine.OK:
+        return frozenset()
+    reader = engine._reader.reader
+
+    key_values = set()
+    for _, stored in reader.iter_docs():
+        if stored.get("kind") != "word":
+            continue
+        for sf in _DERIVATION_SEARCH_FIELDS:
+            if stored.get(sf) in candidates_frozen:
+                kv = stored.get(index_key)
+                if kv:
+                    key_values.add(kv)
+                break
+    return frozenset(key_values)
+
+
+def _lookup_key_values(word, index_key):
+    """Return the lemma or root value(s) for a query *word*.
+
+    Normalises and optionally stems *word* to build a set of candidate forms,
+    then looks them up in the word-child index to find the corresponding
+    *index_key* values (``'lemma'`` or ``'root'``).
+
+    :param word: Arabic word to look up.
+    :param index_key: ``'lemma'`` or ``'root'``.
+    :returns: Frozenset of key values (may be empty if word is unknown).
+    """
+    word_norm = _ASF_NORMALIZE.normalize_all(word)
+    stemmer = _get_arabic_stemmer()
+    word_stem = stemmer.stemWord(word_norm) if stemmer is not None else word_norm
+    candidates = frozenset({word, word_norm, word_stem} - {''})
+    return _lookup_key_values_cached(candidates, index_key)
+
+
 def _collect_derivations_two_pass(candidates, index_key):
     """Collect derivation words for *candidates* using two single-pass index scans.
 
@@ -599,7 +648,25 @@ class AntonymsPlugin(TaggingPlugin):
 
 
 class DerivationPlugin(TaggingPlugin):
-    """Plugin for derivation search (>word or >>word)"""
+    """Plugin for derivation search (>word, >>word, or >>>word).
+
+    Derivation levels map to pre-indexed aya fields:
+
+    * ``>word``   (level 1) → stem: search ``aya_fuzzy`` (snowball Arabic stemming)
+    * ``>>word``  (level 2) → lemma: search ``aya_lemma`` (corpus lemma)
+    * ``>>>word`` (level 3) → root: search ``aya_root`` (corpus root)
+
+    Uses the pre-indexed fields when available for better performance.
+    Falls back to query-time expansion via :class:`DerivationQuery` when the
+    target field is not in the schema.
+    """
+
+    # Map derivation level → (target_field, index_key_for_lookup)
+    _LEVEL_FIELDS = {
+        1: ("aya_fuzzy", None),       # stem — no key lookup needed
+        2: ("aya_lemma", "lemma"),     # lemma
+        3: ("aya_root", "root"),       # root
+    }
 
     class DerivationNode(syntax.WordNode):
         def __init__(self, text, **kwargs):
@@ -610,6 +677,45 @@ class DerivationPlugin(TaggingPlugin):
 
         def query(self, parser):
             fieldname = self.fieldname or parser.fieldname
+            level_info = DerivationPlugin._LEVEL_FIELDS.get(self.level)
+            if level_info is not None:
+                deriv_field, index_key = level_info
+                schema = getattr(parser, 'schema', None)
+                if schema is not None and deriv_field in schema:
+                    if index_key is None:
+                        # Level 1 (stem): search aya_fuzzy directly.
+                        # Apply the field's analyzer to the query term so that
+                        # the stemmed form matches the indexed content.
+                        field_obj = schema[deriv_field]
+                        tokens = list(field_obj.analyzer(self.actual_text, mode="query"))
+                        if tokens:
+                            terms = [Term(deriv_field, t.text) for t in tokens]
+                            if len(terms) == 1:
+                                return terms[0]
+                            return Or(terms, boost=self.boost)
+                    else:
+                        # Level 2/3 (lemma/root): look up the key value and
+                        # search the corresponding aya_lemma/aya_root field.
+                        # Normalize through the field analyzer since key values
+                        # are vocalized but the field strips vocalization.
+                        key_values = _lookup_key_values(self.actual_text, index_key)
+                        if key_values:
+                            field_obj = schema[deriv_field]
+                            terms = []
+                            seen = set()
+                            for kv in key_values:
+                                if not kv:
+                                    continue
+                                for tok in field_obj.analyzer(kv, mode="query"):
+                                    if tok.text not in seen:
+                                        seen.add(tok.text)
+                                        terms.append(Term(deriv_field, tok.text))
+                            if len(terms) == 1:
+                                return terms[0]
+                            if terms:
+                                return Or(terms, boost=self.boost)
+            # Fallback to expansion-based approach for backward compatibility
+            # (when derivation fields are not in the schema).
             return DerivationQuery(
                 fieldname,
                 self.actual_text,

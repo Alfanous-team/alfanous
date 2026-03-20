@@ -1365,9 +1365,9 @@ def test_fuzzy_search_highlights_variations():
     When fuzzy=True, Levenshtein-distance matching on 'aya_ac' expands the
     query to include related forms.  For example, searching for كتاب should
     also match and highlight كتابه (his book), كتابا (a book), كتابك
-    (your book), and كتب (books).  Before the fix, only the exact query
-    word كتاب was in the highlight terms list, so these variant forms were
-    returned in results but not visually highlighted.
+    (your book), and كتب (books).  Variation-matched results may rank lower
+    than exact matches, so we search across all pages (using mushaf order)
+    to ensure at least one variation word is highlighted.
     """
     from alfanous.text_processing import QArabicSymbolsFilter
     _strip = QArabicSymbolsFilter(shaping=False, tashkil=True, spellerrors=False, hamza=False).normalize_all
@@ -1377,6 +1377,7 @@ def test_fuzzy_search_highlights_variations():
         "query": "كتاب",
         "fuzzy": True,
         "highlight": "css",
+        "sortedby": "mushaf",
         "perpage": 300,
     }
     results = RAWoutput.do(search_flags)
@@ -1390,20 +1391,25 @@ def test_fuzzy_search_highlights_variations():
     )
 
     highlighted_variation_found = False
-    for aya_data in results["search"]["ayas"].values():
-        text = aya_data["aya"]["text"]
-        if "<span" not in text:
-            continue
-        # Get all highlighted spans
-        import re as _re
-        spans = _re.findall(r"<span[^>]*>(.*?)</span>", text)
-        for span in spans:
-            # Strip tashkeel to get the base unvocalized form using the
-            # project's own Arabic normalization utility
-            stripped = _strip(span)
-            # A "variation" is a highlighted word that is NOT the exact query term
-            if stripped != "كتاب":
-                highlighted_variation_found = True
+    # Search across multiple pages to find variation-highlighted words,
+    # since fuzzy-only matches may rank lower under relevance scoring.
+    total = results["search"]["interval"]["total"]
+    max_page = (total // 25) + 2
+    for page in range(1, max_page):
+        page_flags = {**search_flags, "page": page}
+        page_results = RAWoutput.do(page_flags)
+        for aya_data in page_results["search"]["ayas"].values():
+            text = aya_data["aya"]["text"]
+            if "<span" not in text:
+                continue
+            import re as _re
+            spans = _re.findall(r"<span[^>]*>(.*?)</span>", text)
+            for span in spans:
+                stripped = _strip(span)
+                if stripped != "كتاب":
+                    highlighted_variation_found = True
+                    break
+            if highlighted_variation_found:
                 break
         if highlighted_variation_found:
             break
@@ -2020,13 +2026,11 @@ def test_arabizi_query_highlights_arabic_text():
 
 
 def test_fuzzy_derivation_highlights_derivation_words():
-    """derivation_level="root" must highlight derivation-matched words in aya text.
+    """derivation_level=3 (root) must highlight derivation-matched words in aya text.
 
-    When derivation_level="root" the query is expanded with morphological
+    When derivation_level=3 the query is expanded with morphological
     derivations of the search term.  For example, searching 'ملك' expands to
-    include 'مالك', 'يملك', etc.  Before the fix, only the exact query word
-    'ملك' was in the highlight terms list, so derivation matches were returned
-    in results but not visually highlighted.
+    include 'مالك', 'يملك', etc.
     """
     from alfanous.text_processing import QArabicSymbolsFilter
     _strip = QArabicSymbolsFilter(
@@ -2038,7 +2042,7 @@ def test_fuzzy_derivation_highlights_derivation_words():
         "action": "search",
         "query": query_term,
         "fuzzy": True,
-        "derivation_level": "root",
+        "derivation_level": 3,
         "highlight": "css",
         "perpage": 300,
     }
@@ -2046,12 +2050,12 @@ def test_fuzzy_derivation_highlights_derivation_words():
     assert results["error"]["code"] == 0
 
     # Derivation search must return more results than plain exact search
-    exact_flags = {**search_flags, "fuzzy": False, "derivation_level": "word"}
+    exact_flags = {**search_flags, "fuzzy": False, "derivation_level": 0}
     exact_results = RAWoutput.do(exact_flags)
     assert (
         results["search"]["interval"]["total"]
         >= exact_results["search"]["interval"]["total"]
-    ), "fuzzy search with derivation_level=\"root\" must return at least as many results as exact search"
+    ), "fuzzy search with derivation_level=3 must return at least as many results as exact search"
 
     # At least one derivation word (something OTHER than 'ملك' itself) must be
     # highlighted — confirming that derivation terms are in the highlight list.
@@ -2070,17 +2074,17 @@ def test_fuzzy_derivation_highlights_derivation_words():
             break
 
     assert highlighted_derivation_found, (
-        f"When derivation_level=\"root\", derivation words (e.g. مالك، يملك) must be highlighted "
+        f"When derivation_level=3, derivation words (e.g. مالك، يملك) must be highlighted "
         f"in addition to the exact query term {query_term!r}"
     )
 
 
 def test_fuzzy_derivation_words_individual_includes_expansions():
-    """words.individual must include derivation-expansion terms when derivation_level="root".
+    """words.individual must include derivation-expansion terms when derivation_level=3 (root).
 
     The requirement is that "words.individual should include the expansions"
     and "any thing highlighted should be in words.individual".  When
-    derivation_level="root", matched derivation words (e.g. 'مالك', 'يملك' for
+    derivation_level=3, matched derivation words (e.g. 'مالك', 'يملك' for
     a query of 'ملك') must appear as entries in words.individual.
     """
     query_term = "ملك"
@@ -2088,7 +2092,7 @@ def test_fuzzy_derivation_words_individual_includes_expansions():
         "action": "search",
         "query": query_term,
         "fuzzy": True,
-        "derivation_level": "root",
+        "derivation_level": 3,
         "word_info": True,
         "highlight": "none",
     }
@@ -2117,7 +2121,7 @@ def test_fuzzy_derivation_words_individual_includes_expansions():
     )
     assert derivation_found, (
         f"words.individual must contain at least one derivation word (not just {query_term!r}) "
-        f"when derivation_level=\"root\" — all expanded keywords must be listed"
+        f"when derivation_level=3 — all expanded keywords must be listed"
     )
 
 

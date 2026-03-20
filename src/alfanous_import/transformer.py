@@ -679,6 +679,32 @@ class Transformer:
                 _schema_names = set(ix.schema.names())
                 _has_word_standard        = "word_standard"        in _schema_names
                 _has_word_transliteration = "word_transliteration" in _schema_names
+                _has_aya_lemma            = "aya_lemma"            in _schema_names
+                _has_aya_root             = "aya_root"             in _schema_names
+
+                # Pre-build aya_lemma and aya_root text for each aya from
+                # word-child data.  Each word's lemma (or root) is used; when
+                # the morphological value is missing, the word's normalised
+                # form is used as a fallback so that every word position is
+                # represented and phrase-length queries still align.
+                _aya_lemma_text: dict = {}
+                _aya_root_text: dict = {}
+                if (_has_aya_lemma or _has_aya_root) and words_by_aya:
+                    for _key, _words_list in words_by_aya.items():
+                        if _has_aya_lemma:
+                            _lemmas = []
+                            for _w in _words_list:
+                                # Use the word's normalized form as fallback
+                                # to maintain word-position alignment.
+                                _l = _w.get("lemma") or _w.get("normalized") or ""
+                                _lemmas.append(_l)
+                            _aya_lemma_text[_key] = " ".join(_lemmas)
+                        if _has_aya_root:
+                            _roots = []
+                            for _w in _words_list:
+                                _r = _w.get("root") or _w.get("normalized") or ""
+                                _roots.append(_r)
+                            _aya_root_text[_key] = " ".join(_roots)
 
                 # Pre-compute per-translation metadata so the inner loop only
                 # does an index lookup + cheap dict copy rather than recomputing
@@ -728,6 +754,12 @@ class Transformer:
                     sura_id = line.get("sura_id")
                     aya_id = line.get("aya_id")
                     doc["kind"] = "aya"
+                    # Add pre-built aya_lemma / aya_root text from word-child data.
+                    _aya_key = (sura_id, aya_id)
+                    if _has_aya_lemma and _aya_key in _aya_lemma_text:
+                        doc["aya_lemma"] = _aya_lemma_text[_aya_key]
+                    if _has_aya_root and _aya_key in _aya_root_text:
+                        doc["aya_root"] = _aya_root_text[_aya_key]
                     writer.start_group()
                     writer.add_document(**doc)
                     if gid is not None and trans_meta:

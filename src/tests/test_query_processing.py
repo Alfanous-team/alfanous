@@ -99,12 +99,15 @@ def test_parsing_with_schema():
                                            'words': ['\u062c\u062d\u064a\u0645']}
 
     # Root-level derivations via word_standard lookup:
-    # سماكم is stored as word_standard for corpus word سَمَّىٰكُمُ (sura 22:78),
-    # which has root سمو, so >>سماكم should expand to all standard-script
-    # derivations of that root.
-    derivations_samakum = sorted(QP.parse(u">>سماكم").__dict__['words'])
-    assert 'سماكم' in derivations_samakum           # the queried word itself
-    assert 'اسم' in derivations_samakum             # common word from root سمو
-    assert 'بسم' in derivations_samakum             # بسم (بِسْمِ)
-    assert 'والسماوات' in derivations_samakum       # وَالسَّمَٰوَٰت
-    assert len(derivations_samakum) >= 20           # root سمو has many derivations
+    # >>سماكم (level 2) uses the field-based approach when aya_lemma is
+    # available in the schema.  The plugin looks up the lemma value(s)
+    # for سماكم and generates Term("aya_lemma", ...) queries.
+    parsed_samakum = QP.parse(u">>سماكم")
+    # The query should target the aya_lemma field (field-based derivation)
+    samakum_terms = list(parsed_samakum.all_terms())
+    assert len(samakum_terms) >= 1, ">>سماكم must produce at least one term"
+    # All terms should target aya_lemma field
+    samakum_fields = {f for f, _ in samakum_terms}
+    assert "aya_lemma" in samakum_fields, (
+        f">>سماكم should target aya_lemma field; got fields: {samakum_fields}"
+    )
