@@ -2124,6 +2124,16 @@ def test_fuzzy_derivation_words_individual_includes_expansions():
         f"when derivation_level=3 — all expanded keywords must be listed"
     )
 
+    # No entry in words.individual should be a vocalized Arabic string.
+    # Vocalized strings contain Arabic diacritic characters (U+064B–U+065F).
+    _ARABIC_DIACRITIC_RE = re.compile(r'[\u064B-\u065F]')
+    for entry in words_individual.values():
+        w = entry.get("word", "")
+        assert not _ARABIC_DIACRITIC_RE.search(w), (
+            f"words.individual must not contain vocalized keywords in derivation search; "
+            f"found vocalized word {w!r}"
+        )
+
 
 def test_pure_wildcard_search_returns_quickly_without_error():
     """A bare wildcard query (* or ?) must return quickly with no error.

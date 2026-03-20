@@ -159,13 +159,19 @@ def _collect_derivations_two_pass_cached(candidates_frozen, index_key):
     if not key_values:
         return ()
 
-    # Pass 2: collect all word forms whose index_key is in key_values.
+    # Pass 2: collect all unvocalized word forms whose index_key is in
+    # key_values.  Only 'word_standard' and 'normalized' are collected here;
+    # the vocalized 'word' field is intentionally omitted so that derivation
+    # expansion results (used for highlighting and words.individual) never
+    # contain diacritics.  Unvocalized forms are sufficient for both
+    # highlighting (the 'aya' field is indexed without diacritics) and for
+    # display in words.individual.
     words = set()
     for _, stored in reader.iter_docs():
         if stored.get("kind") != "word":
             continue
         if stored.get(index_key) in key_values:
-            for field in ('word_standard', 'normalized', 'word'):
+            for field in ('word_standard', 'normalized'):
                 val = stored.get(field)
                 if val:
                     words.add(val)
@@ -240,8 +246,10 @@ def _collect_derivations_two_pass(candidates, index_key):
     the five lookup fields (``word``, ``normalized``, ``lemma``, ``root``,
     ``word_standard``) matches any candidate form.
 
-    **Pass 2** — collect ``word_standard``, ``normalized``, and ``word`` values
-    for all word documents whose *index_key* matches a value from Pass 1.
+    **Pass 2** — collect ``word_standard`` and ``normalized`` (unvocalized)
+    values for all word documents whose *index_key* matches a value from Pass
+    1.  The vocalized ``word`` field is intentionally excluded so that
+    derivation results never contain diacritical marks.
 
     :param candidates: Non-empty set of candidate word forms.
     :param index_key: Either ``'lemma'`` (level ≤ 1) or ``'root'`` (level ≥ 2).
