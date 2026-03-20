@@ -1030,9 +1030,16 @@ class Raw:
         # preprocess query
         query = query.replace("\\", "")
 
-        if ":" not in query and not _ARABIC_SCRIPT_RE.search(query):
+        if ":" not in query and not _ARABIC_SCRIPT_RE.search(query) and not _PURE_WILDCARD_RE.match(query):
             # Non-Arabic query: search translations AND try arabizi conversion
             # to also search the Arabic aya fields ("the word and arabizi(word)").
+            # Pure-wildcard queries (e.g. *, ?, ??, ???) are excluded from this
+            # path: they have no translation terms and no arabizi candidates so
+            # they always produce an empty _query_parts list → NullQuery → zero
+            # results.  They are instead handled by the Arabic aya search path
+            # below, which routes them through QSearcher where ArabicWildcardQuery
+            # limits expansion to MAX_EXPAND terms and the TimeLimitCollector
+            # enforces the configured timelimit.
             _query_parts = []
 
             # 1. Translation search: NestedParent over child translation docs.
