@@ -387,6 +387,67 @@ def test_every_plugin_removed():
     assert not isinstance(query, Every), "*:* should not produce an Every (match-all) query"
 
 
+def test_arabic_parser_double_question_is_arabic_wildcard():
+    """ArabicParser: ?? must produce ArabicWildcardQuery, not a plain Whoosh Wildcard.
+
+    The built-in WildcardPlugin has tagger priority 0 and therefore runs before
+    ArabicWildcardPlugin (priority 90) in the tagging phase.  Without explicitly
+    removing WildcardPlugin from ArabicParser, standalone ?? and ??? queries are
+    consumed by WildcardPlugin and produce plain Wildcard objects that have no
+    MAX_EXPAND cap — allowing them to iterate over the full index lexicon and
+    exceed the timelimit.
+    """
+    from alfanous.query_processing import ArabicParser
+    from whoosh.fields import Schema, TEXT
+
+    schema = Schema(text=TEXT(stored=True))
+    parser = ArabicParser(schema, mainfield='text')
+
+    query = parser.parse('??')
+    assert isinstance(query, ArabicWildcardQuery), (
+        f"?? should produce ArabicWildcardQuery but got {type(query).__name__}. "
+        "WildcardPlugin must be removed from ArabicParser so ArabicWildcardPlugin "
+        "handles standalone wildcard tokens."
+    )
+    assert query.text == '??', f"Expected text '??' but got {query.text!r}"
+
+
+def test_arabic_parser_triple_question_is_arabic_wildcard():
+    """ArabicParser: ??? must produce ArabicWildcardQuery (same root cause as ??)."""
+    from alfanous.query_processing import ArabicParser
+    from whoosh.fields import Schema, TEXT
+
+    schema = Schema(text=TEXT(stored=True))
+    parser = ArabicParser(schema, mainfield='text')
+
+    query = parser.parse('???')
+    assert isinstance(query, ArabicWildcardQuery), (
+        f"??? should produce ArabicWildcardQuery but got {type(query).__name__}."
+    )
+    assert query.text == '???', f"Expected text '???' but got {query.text!r}"
+
+
+def test_arabic_parser_wildcard_plugin_not_present():
+    """ArabicParser must not contain WildcardPlugin after initialisation.
+
+    WildcardPlugin's tagger runs before ArabicWildcardPlugin (lower priority
+    number = earlier execution) so it must be removed to let ArabicWildcardPlugin
+    handle all wildcard tokens with the MAX_EXPAND safety cap.
+    """
+    from whoosh.qparser.plugins import WildcardPlugin
+    from alfanous.query_processing import ArabicParser
+    from whoosh.fields import Schema, TEXT
+
+    schema = Schema(text=TEXT(stored=True))
+    parser = ArabicParser(schema, mainfield='text')
+
+    plugin_types = [type(p) for p in parser.plugins]
+    assert WildcardPlugin not in plugin_types, (
+        "WildcardPlugin must be removed from ArabicParser so that "
+        "ArabicWildcardPlugin is the sole handler for ?, ??, ???, * patterns."
+    )
+
+
 def test_multiple_plugins_combination():
     """Test combination of multiple plugins - Example: AND/OR logic from README"""
     parser = create_test_parser()

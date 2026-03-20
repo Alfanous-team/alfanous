@@ -19,7 +19,7 @@ from whoosh.query import Term
 from alfanous.data import arabic_to_english_fields
 
 # Import query plugins for integration with Whoosh 2.7
-from whoosh.qparser.plugins import SingleQuotePlugin, EveryPlugin
+from whoosh.qparser.plugins import SingleQuotePlugin, EveryPlugin, WildcardPlugin
 
 # ---------------------------------------------------------------------------
 # Pre-compiled regexes and operator tables used by ArabicParser._preprocess_query.
@@ -111,6 +111,14 @@ class ArabicParser(StandardParser):
         self.remove_plugin_class(SingleQuotePlugin)
         # Remove EveryPlugin so *:* does not translate to a match-all query
         self.remove_plugin_class(EveryPlugin)
+        # Remove the built-in WildcardPlugin so that ArabicWildcardPlugin (added
+        # below) is the sole handler for ?, ??, ???, * patterns.  WildcardPlugin
+        # has a lower tagger priority (0) than ArabicWildcardPlugin (90) and
+        # therefore runs first in the tagging phase, consuming bare ? and * chars
+        # before ArabicWildcardPlugin can match complete wildcard tokens.  Without
+        # this removal, standalone queries like ??, ???, and * produce plain
+        # Whoosh Wildcard objects that lack the MAX_EXPAND cap.
+        self.remove_plugin_class(WildcardPlugin)
         
         # Add all Arabic query plugins (instantiate plugin classes)
         self.add_plugin(SynonymsPlugin())

@@ -595,3 +595,99 @@ def test_search_aya_skips_trans_parser_for_pure_wildcards(monkeypatch):
 
     # The translation parser must NOT have been called for a bare wildcard
     mock_trans_parser.parse.assert_not_called()
+
+
+def test_pure_wildcard_routes_to_arabic_search_path(monkeypatch):
+    """Pure-wildcard queries (*, ??, ???) must route to the Arabic aya search path.
+
+    Before this fix, queries like '??', '???', and '*' fell into the non-Arabic
+    branch where the translation search was skipped (correctly, to avoid timelimit
+    issues) but arabizi conversion also produced no candidates, resulting in an
+    empty _query_parts list and NullQuery → zero results.
+
+    After the fix the condition ``not _PURE_WILDCARD_RE.match(query)`` is added to
+    the non-Arabic branch guard so that pure wildcards bypass the translation path
+    entirely and are forwarded to QSearcher.search_all() which applies
+    ArabicWildcardQuery (MAX_EXPAND cap) and TimeLimitCollector.
+    """
+    from alfanous.outputs import Raw
+
+    raw = Raw.__new__(Raw)
+    raw._defaults = {
+        "flags": {
+            "lang": "en",
+            "sortedby": "score",
+            "reverse": False,
+            "perpage": None,
+            "range": 25,
+            "page": None,
+            "offset": 1,
+            "recitation": None,
+            "translation": None,
+            "romanization": "none",
+            "highlight": "none",
+            "script": "simple",
+            "vocalized": False,
+            "fuzzy": False,
+            "fuzzy_maxdist": 1,
+            "fuzzy_derivation": False,
+            "derivation_level": 0,
+            "timelimit": "5",
+            "view": "custom",
+            "facets": None,
+            "filter": None,
+            "prev_aya": False,
+            "next_aya": False,
+            "sura_info": False,
+            "sura_stat_info": False,
+            "word_info": False,
+            "word_synonyms": False,
+            "word_derivations": False,
+            "word_vocalizations": False,
+            "word_linguistics": False,
+            "aya_position_info": False,
+            "aya_theme_info": False,
+            "aya_stat_info": False,
+            "aya_sajda_info": False,
+            "annotation_aya": False,
+            "annotation_word": False,
+        },
+        "results_limit": {"aya": 25},
+        "maxkeywords": 10,
+    }
+    raw.DOMAINS = {
+        "view": ["custom", "minimal", "normal", "full", "statistic", "linguistic", "recitation"],
+    }
+
+    mock_trans_parser = MagicMock()
+    raw._trans_parser = mock_trans_parser
+    raw._trans_fields = frozenset()
+
+    # Mock QSE.search_all (the Arabic path) to return a usable empty result
+    mock_qse = MagicMock()
+    mock_qse._schema = {}
+    mock_results = MagicMock()
+    mock_results.__len__ = MagicMock(return_value=0)
+    mock_results.__iter__ = MagicMock(return_value=iter([]))
+    mock_qse.search_all.return_value = (mock_results, [], MagicMock(), [])
+    raw.QSE = mock_qse
+
+    monkeypatch.setattr("alfanous.outputs.arabizi_to_arabic_list", lambda *a, **kw: [])
+    monkeypatch.setattr("alfanous.outputs.quran_unvocalized_words", lambda: frozenset())
+
+    for wildcard_query in ("*", "??", "???", "?"):
+        mock_qse.search_all.reset_mock()
+        mock_trans_parser.parse.reset_mock()
+        flags = {"query": wildcard_query, "action": "search"}
+        try:
+            raw._search_aya(flags)
+        except Exception:
+            pass  # Output formatting may fail; we only care about the search path
+
+        # Translation parser must never be called for pure wildcards
+        mock_trans_parser.parse.assert_not_called()
+        # Arabic search path (search_all) MUST be called — not NullQuery via search_with_query
+        assert mock_qse.search_all.called, (
+            f"QSE.search_all must be called for pure-wildcard query {wildcard_query!r} "
+            "so results are returned instead of NullQuery."
+        )
