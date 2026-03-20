@@ -294,7 +294,7 @@ class Raw:
             "perpage": 10,  # overridden with range
             "fuzzy": False,
             "fuzzy_maxdist": 1,
-            "derivation_level": "word",
+            "derivation_level": 0,
             "timelimit": 5.0,
             "aya": True,
             "facets": None,
@@ -347,7 +347,7 @@ class Raw:
         "perpage": [],  # range( DEFAULTS["maxrange"] ) , # overridden with range
         "fuzzy": [True, False],
         "fuzzy_maxdist": [],
-        "derivation_level": ["word", "lemma", "root"],
+        "derivation_level": [0, 1, 2, 3, "word", "stem", "lemma", "root"],
         "timelimit": [],
         "aya": [True, False],
     }
@@ -393,9 +393,9 @@ class Raw:
         "range": "range of results",
         "page": "page number  [override offset]",
         "perpage": "results per page  [override range]",
-        "fuzzy": "fuzzy search — searches aya_ (exact) and aya (normalised/stemmed) with Levenshtein distance matching and morphological derivation expansion",
+        "fuzzy": "fuzzy search — Levenshtein distance matching on aya_ac for spelling variants and typos (does NOT involve stemming — use derivation_level for morphological broadening)",
         "fuzzy_maxdist": "maximum Levenshtein edit distance for fuzzy term matching (default: 1, only used when fuzzy=True)",
-        "derivation_level": "morphological derivation expansion level: 'word' (no expansion, default), 'lemma' (lemma-level, narrow set of related forms), 'root' (root-level, all words sharing the same root)",
+        "derivation_level": "morphological derivation broadening level: 0/'word' (exact, default), 1/'stem' (snowball Arabic stemming), 2/'lemma' (corpus lemma), 3/'root' (corpus root)",
         "timelimit": "maximum number of seconds to spend on a search query (default: 5.0, use None or 0 to disable)",
         "aya": "enable retrieving of aya text in the case of translation search",
     }
@@ -894,8 +894,17 @@ class Raw:
         fuzzy = IS_FLAG(flags, 'fuzzy')
         fuzzy_maxdist = int(flags.get('fuzzy_maxdist', self._defaults['flags']['fuzzy_maxdist']))
         derivation_level = flags.get('derivation_level', self._defaults['flags']['derivation_level'])
-        if derivation_level not in ("word", "lemma", "root"):
-            derivation_level = self._defaults['flags']['derivation_level']
+        # Normalize derivation_level: accept both integers and string aliases.
+        _DERIV_LEVEL_MAP = {"word": 0, "stem": 1, "lemma": 2, "root": 3}
+        if isinstance(derivation_level, str):
+            derivation_level = _DERIV_LEVEL_MAP.get(derivation_level, 0)
+        else:
+            try:
+                derivation_level = int(derivation_level)
+            except (TypeError, ValueError):
+                derivation_level = 0
+        if derivation_level not in (0, 1, 2, 3):
+            derivation_level = 0
         timelimit = self._parse_timelimit(flags)
         view = flags["view"]
         # Validate view parameter; fall back to "custom" if not recognised
@@ -1126,7 +1135,27 @@ class Raw:
                 else query
             )
             res, termz, searcher, _deriv_expansion = self.QSE.search_all(aya_query, limit=self._defaults["results_limit"]["aya"], sortedby=sortedby, reverse=reverse, facets=facets_list, filter_dict=filter_dict, fuzzy=fuzzy, fuzzy_maxdist=fuzzy_maxdist, derivation_level=derivation_level, timelimit=timelimit)
-            terms = [term[1] for term in termz[:self._defaults["maxkeywords"]]]
+            terms = [term[1] for term in termz if term[0] in ("aya", "aya_")]
+            terms = terms[:self._defaults["maxkeywords"]]
+            # When derivation_level >= 2, matched terms include aya_lemma or
+            # aya_root field values (lemma/root strings).  These don't appear
+            # in the aya text, so they can't be used for highlighting directly.
+            # Expand them to actual aya words via the cached derivation lookup
+            # and add those words to the highlight terms.
+            if derivation_level >= 2 and _deriv_expansion:
+                from alfanous.query_plugins import _collect_derivations_two_pass, _ASF_NORMALIZE, _get_arabic_stemmer, _UTHMANI_ANNOTATION_RE
+                _deriv_key = "lemma" if derivation_level == 2 else "root"
+                _deriv_key_values = set()
+                for _df, _dt in _deriv_expansion:
+                    if _df in ("aya_lemma", "aya_root"):
+                        _deriv_key_values.add(_dt)
+                if _deriv_key_values:
+                    try:
+                        _expanded_words = _collect_derivations_two_pass(_deriv_key_values, _deriv_key)
+                        _expanded_words = [_UTHMANI_ANNOTATION_RE.sub('', w) for w in _expanded_words if w]
+                        terms.extend(_expanded_words)
+                    except Exception:
+                        pass
             # All matched aya_ac variation terms (only populated when fuzzy=True).
             # Used in the word_info loop to derive per-word variation lists.
             _all_ac_variations = [term[1] for term in termz if term[0] == "aya_ac"]

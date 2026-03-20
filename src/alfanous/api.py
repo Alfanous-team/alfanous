@@ -38,7 +38,7 @@ def do(flags: Dict[str, Any]) -> Dict[str, Any]:
 
 def search(query: str, unit: str = "aya", page: int = 1, sortedby: str = "relevance",
            reverse: bool = False,
-           fuzzy: bool = False, fuzzy_maxdist: int = 1, derivation_level: str = "word",
+           fuzzy: bool = False, fuzzy_maxdist: int = 1, derivation_level = 0,
            view: str = "normal",
            highlight: str = "bold", flags: Optional[Dict[str, Any]] = None,
            facets: Optional[str] = None, filter: Optional[Any] = None,
@@ -59,15 +59,17 @@ def search(query: str, unit: str = "aya", page: int = 1, sortedby: str = "releva
     @param reverse: Reverse the sort order (default False).  When True, the
            lowest/earliest value comes first (e.g. shortest verse first for
            'ayalength', or least-relevant result first for 'score').
-    @param fuzzy: Enable fuzzy search — uses aya_ (exact), aya (normalised/stemmed),
-           Levenshtein distance matching on aya_ac, and morphological derivation
-           expansion simultaneously
+    @param fuzzy: Enable fuzzy search — Levenshtein distance matching on
+           aya_ac for spelling variants and typos.  Fuzzy does NOT involve
+           stemming — use derivation_level for morphological broadening.
     @param fuzzy_maxdist: Maximum Levenshtein edit distance for fuzzy term matching
            (default 1, only used when fuzzy=True)
-    @param derivation_level: Controls morphological derivation expansion of Arabic query terms.
-           "word"  → no expansion (default).
-           "lemma" → expand to lemma-level derivations (level=1, narrow set of related forms).
-           "root"  → expand to root-level derivations (level=2, all words sharing the same root).
+    @param derivation_level: Controls morphological derivation broadening.
+           Accepts integer levels or string aliases:
+           0 / "word"  → exact match only (default).
+           1 / "stem"  → also search aya_fuzzy (snowball Arabic stemming).
+           2 / "lemma" → also search aya_lemma (corpus lemma field).
+           3 / "root"  → also search aya_root  (corpus root field).
     @param view: View mode ('normal', 'minimal', etc.)
     @param highlight: Highlight style ('bold', 'css', etc.)
     @param flags: Additional flags dictionary

@@ -1082,5 +1082,29 @@
     "unique": null,
     "analyzer": null,
     "comment": "Latin transliteration word matched by position from aya transliteration field (kind=word child docs)"
+  },
+  {
+    "analyzer": "QStandardAnalyzer",
+    "comment": "نص الآية مبدلة كل كلمة بالجذع اللغوي (لِمَّا) — للبحث المشتق بمستوى اللمّا",
+    "id": 150,
+    "name": "_aya_lemma",
+    "name_arabic": "آية_لمّا",
+    "search_name": "aya_lemma",
+    "stored": false,
+    "table_name": "aya",
+    "type": "TEXT",
+    "phrase": false
+  },
+  {
+    "analyzer": "QStandardAnalyzer",
+    "comment": "نص الآية مبدلة كل كلمة بالجذر — للبحث المشتق بمستوى الجذر",
+    "id": 151,
+    "name": "_aya_root",
+    "name_arabic": "آية_جذر",
+    "search_name": "aya_root",
+    "stored": false,
+    "table_name": "aya",
+    "type": "TEXT",
+    "phrase": false
   }
 ]

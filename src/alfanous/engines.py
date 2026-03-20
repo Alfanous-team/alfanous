@@ -49,7 +49,7 @@ class BasicSearchEngine:
 
     # end  __init__
 
-    def search_all(self, querystr, limit=QURAN_TOTAL_VERSES, sortedby="score", reverse=False, facets=None, filter_dict=None, fuzzy=False, fuzzy_maxdist=1, derivation_level="word", timelimit=5.0):
+    def search_all(self, querystr, limit=QURAN_TOTAL_VERSES, sortedby="score", reverse=False, facets=None, filter_dict=None, fuzzy=False, fuzzy_maxdist=1, derivation_level=0, timelimit=5.0):
         """
         Perform a search in the index.
         
@@ -60,18 +60,21 @@ class BasicSearchEngine:
         @param facets: Facets to group results by
         @param filter_dict: Filters to apply to the search (merged with any
                default_filter configured on this engine)
-        @param fuzzy: When True, also search the normalised/stemmed 'aya' field,
-               apply Levenshtein distance matching on 'aya_ac', and expand each
-               Arabic query term to all its morphological derivations.
+        @param fuzzy: When True, apply Levenshtein distance matching on
+               'aya_ac' for spelling variants and typos.  Fuzzy does NOT
+               involve stemming — use derivation_level for morphological
+               broadening.
         @param fuzzy_maxdist: Maximum Levenshtein edit distance for fuzzy term
                matching (default 1). Only used when fuzzy=True.
-        @param derivation_level: Controls morphological derivation expansion.
-               "word"  → no expansion (default).
-               "lemma" → expand to lemma-level derivations (level=1, e.g. same lemma forms).
-               "root"  → expand to root-level derivations (level=2, e.g. all words sharing the root).
+        @param derivation_level: Controls morphological derivation broadening.
+               Accepts integer levels or string aliases:
+               0 / "word"  → exact match only (default).
+               1 / "stem"  → also search aya_fuzzy (snowball Arabic stemming).
+               2 / "lemma" → also search aya_lemma (corpus lemma field).
+               3 / "root"  → also search aya_root  (corpus root field).
         @param timelimit: Maximum number of seconds to spend on the search
                (default 5.0). Pass None to disable the limit.
-        @return: Tuple of (results, term_stats, searcher)
+        @return: Tuple of (results, term_stats, searcher, expansion_terms)
         """
         # Merge the engine-level default filter (e.g. kind="aya") with any
         # caller-supplied filter.  Caller values take precedence.
