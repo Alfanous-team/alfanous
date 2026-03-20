@@ -696,9 +696,20 @@ class DerivationPlugin(TaggingPlugin):
                     else:
                         # Level 2/3 (lemma/root): look up the key value and
                         # search the corresponding aya_lemma/aya_root field.
+                        # Normalize through the field analyzer since key values
+                        # are vocalized but the field strips vocalization.
                         key_values = _lookup_key_values(self.actual_text, index_key)
                         if key_values:
-                            terms = [Term(deriv_field, kv) for kv in key_values if kv]
+                            field_obj = schema[deriv_field]
+                            terms = []
+                            seen = set()
+                            for kv in key_values:
+                                if not kv:
+                                    continue
+                                for tok in field_obj.analyzer(kv, mode="query"):
+                                    if tok.text not in seen:
+                                        seen.add(tok.text)
+                                        terms.append(Term(deriv_field, tok.text))
                             if len(terms) == 1:
                                 return terms[0]
                             if terms:

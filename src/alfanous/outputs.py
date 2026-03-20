@@ -1135,7 +1135,7 @@ class Raw:
                 else query
             )
             res, termz, searcher, _deriv_expansion = self.QSE.search_all(aya_query, limit=self._defaults["results_limit"]["aya"], sortedby=sortedby, reverse=reverse, facets=facets_list, filter_dict=filter_dict, fuzzy=fuzzy, fuzzy_maxdist=fuzzy_maxdist, derivation_level=derivation_level, timelimit=timelimit)
-            terms = [term[1] for term in termz if term[0] in ("aya", "aya_")]
+            terms = [term[1] for term in termz if term[0] in ("aya", "aya_", "aya_ac")]
             terms = terms[:self._defaults["maxkeywords"]]
             # When derivation_level >= 2, matched terms include aya_lemma or
             # aya_root field values (lemma/root strings).  These don't appear
@@ -1154,6 +1154,14 @@ class Raw:
                         _expanded_words = _collect_derivations_two_pass(_deriv_key_values, _deriv_key)
                         _expanded_words = [_UTHMANI_ANNOTATION_RE.sub('', w) for w in _expanded_words if w]
                         terms.extend(_expanded_words)
+                        # Also add expansion words to termz so they appear in
+                        # words.individual (requirement: "anything highlighted
+                        # should be in words.individual").
+                        _existing_words = {t[1] for t in termz if t[0] in ("aya", "aya_")}
+                        termz = list(termz)
+                        for _ew in _expanded_words:
+                            if _ew not in _existing_words:
+                                termz.append(("aya", _ew, 0, 0))
                     except Exception:
                         pass
             # All matched aya_ac variation terms (only populated when fuzzy=True).
