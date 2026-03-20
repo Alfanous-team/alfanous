@@ -495,8 +495,7 @@ class QSearcher:
                             for kv in key_values:
                                 if kv:
                                     # Normalize through the field analyzer
-                                    tokens = list(_deriv_field_obj.analyzer(kv, mode="query"))
-                                    for tok in tokens:
+                                    for tok in _deriv_field_obj.analyzer(kv, mode="query"):
                                         derivation_subqueries.append(wquery.Term(_deriv_field, tok.text))
                                         _derivation_expansion.add((_deriv_field, tok.text))
                 else:

@@ -344,16 +344,18 @@ def test_advanced_search_word_properties():
 
 def test_advanced_search_derivations():
     """9. Derivations — > (stem), >> (lemma), >>> (root)."""
+    exact_results = _qse_search(u"ملك")
     stem_results = _qse_search(u">ملك")
     lemma_results = _qse_search(u">>ملك")
     root_results = _qse_search(u">>>ملك")
+    assert exact_results >= 1
     assert stem_results >= 1
     assert lemma_results >= 1
     assert root_results >= 1
     # Results should increase or stay the same with broader derivation levels
-    assert stem_results >= _qse_search(u"ملك")  # stem >= exact
-    assert lemma_results >= stem_results          # lemma >= stem
-    assert root_results >= lemma_results          # root >= lemma
+    assert stem_results >= exact_results    # stem >= exact
+    assert lemma_results >= stem_results    # lemma >= stem
+    assert root_results >= lemma_results    # root >= lemma
 
 
 def test_advanced_search_arabizi():

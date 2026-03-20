@@ -1143,7 +1143,7 @@ class Raw:
             # Expand them to actual aya words via the cached derivation lookup
             # and add those words to the highlight terms.
             if derivation_level >= 2 and _deriv_expansion:
-                from alfanous.query_plugins import _collect_derivations_two_pass, _ASF_NORMALIZE, _get_arabic_stemmer, _UTHMANI_ANNOTATION_RE
+                from alfanous.query_plugins import _collect_derivations_two_pass, _UTHMANI_ANNOTATION_RE
                 _deriv_key = "lemma" if derivation_level == 2 else "root"
                 _deriv_key_values = set()
                 for _df, _dt in _deriv_expansion:
@@ -1151,8 +1151,11 @@ class Raw:
                         _deriv_key_values.add(_dt)
                 if _deriv_key_values:
                     try:
-                        _expanded_words = _collect_derivations_two_pass(_deriv_key_values, _deriv_key)
-                        _expanded_words = [_UTHMANI_ANNOTATION_RE.sub('', w) for w in _expanded_words if w]
+                        _expanded_words = [
+                            _UTHMANI_ANNOTATION_RE.sub('', w)
+                            for w in _collect_derivations_two_pass(_deriv_key_values, _deriv_key)
+                            if w
+                        ]
                         terms.extend(_expanded_words)
                         # Also add expansion words to termz so they appear in
                         # words.individual (requirement: "anything highlighted

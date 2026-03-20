@@ -694,6 +694,8 @@ class Transformer:
                         if _has_aya_lemma:
                             _lemmas = []
                             for _w in _words_list:
+                                # Use the word's normalized form as fallback
+                                # to maintain word-position alignment.
                                 _l = _w.get("lemma") or _w.get("normalized") or ""
                                 _lemmas.append(_l)
                             _aya_lemma_text[_key] = " ".join(_lemmas)
