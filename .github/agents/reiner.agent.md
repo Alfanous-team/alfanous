@@ -5,12 +5,12 @@
 # For format details, see: https://gh.io/customagents/config
 
 name: Reiner
-description: 
+description: Custom to always choose opus 
 ---
 
 # My Agent
 
-- use always claude opus, 
+- use always claude opus 4.6, 
 - and follow ai instructions
 - always check memory leaks,
 - and double check if tests are working well at the end
