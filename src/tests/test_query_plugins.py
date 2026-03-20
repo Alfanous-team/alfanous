@@ -619,8 +619,67 @@ if __name__ == "__main__":
 
 
 # ---------------------------------------------------------------------------
-# Derivation results must not contain U+06D6–U+06ED Uthmanic annotation marks
+# _collect_derivations_two_pass_cached must not return vocalized word forms
 # ---------------------------------------------------------------------------
+
+def test_collect_derivations_two_pass_cached_returns_only_unvocalized():
+    """Pass 2 of _collect_derivations_two_pass_cached must not include the
+    vocalized 'word' field — only 'word_standard' and 'normalized' are collected.
+
+    Regression/requirement test for: remove vocalized keywords from
+    words.individual in morphological derivations level search.
+    """
+    from unittest.mock import MagicMock, patch as _patch
+    from alfanous.query_plugins import _collect_derivations_two_pass_cached
+
+    # Build fake word-child documents: one with vocalized 'word', unvocalized
+    # 'normalized' and 'word_standard', keyed by lemma "ملك".
+    _DOCS = [
+        {
+            "kind": "word",
+            "lemma": "ملك",
+            "root": "ملك",
+            "word": "مَلِكٌ",       # vocalized — must NOT appear in results
+            "normalized": "ملك",   # unvocalized — must appear
+            "word_standard": "ملك",
+        },
+        {
+            "kind": "word",
+            "lemma": "ملك",
+            "root": "ملك",
+            "word": "مَالِكٌ",      # vocalized — must NOT appear in results
+            "normalized": "مالك",  # unvocalized — must appear
+            "word_standard": "مالك",
+        },
+    ]
+
+    mock_reader = MagicMock()
+    mock_reader.iter_docs.return_value = [(i, d) for i, d in enumerate(_DOCS)]
+
+    mock_engine = MagicMock()
+    mock_engine.OK = True
+    mock_engine._reader.reader = mock_reader
+
+    # Arabic diacritics range (tashkeel / harakat)
+    import re as _re
+    _DIACRITIC_RE = _re.compile(r'[\u064B-\u065F]')
+
+    with _patch("alfanous.data.QSE", return_value=mock_engine):
+        # Clear LRU cache so the patched engine is used
+        _collect_derivations_two_pass_cached.cache_clear()
+        results = list(_collect_derivations_two_pass_cached(frozenset({"ملك"}), "lemma"))
+
+    assert results, "Expected at least one unvocalized derivation word"
+    for w in results:
+        assert not _DIACRITIC_RE.search(w), (
+            f"_collect_derivations_two_pass_cached returned vocalized form {w!r}; "
+            "only unvocalized forms (word_standard, normalized) should be collected"
+        )
+    # The unvocalized normalized forms must be present
+    assert "ملك" in results, "Expected 'ملك' (normalized) in results"
+    assert "مالك" in results, "Expected 'مالك' (normalized) in results"
+
+
 
 def _make_word_index_mock_with_marks(word, lemma, root, lemma_words, root_words):
     """Like _make_word_index_mock but injects U+06D6–U+06ED marks into the
