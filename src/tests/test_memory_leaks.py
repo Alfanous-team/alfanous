@@ -2327,6 +2327,64 @@ class TestSharedReaderSearcherContract(unittest.TestCase):
         self.assertIsNotNone(qs._shared_searcher,
                              "_shared_searcher must be set to a fresh searcher after retry succeeds")
 
+    def test_search_obj_strips_phrases_on_query_error(self):
+        """search_obj must retry with phrases stripped when QueryError 'has no positions'."""
+        from whoosh.fields import Schema, TEXT, ID
+        from whoosh.query import QueryError, Phrase, Term
+        from alfanous.searching import QSearcher
+
+        # Build a schema where 'nophrase' has phrase=False (no positions).
+        schema = Schema(nophrase=TEXT(phrase=False), kind=ID(stored=True))
+        mock_docindex = MagicMock()
+        mock_docindex.get_schema.return_value = schema
+        mock_ws = MagicMock()
+        mock_ws.refresh.return_value = mock_ws
+        mock_docindex.get_index.return_value.searcher.return_value = mock_ws
+
+        good_results = MagicMock()
+        # First search (with Phrase) raises QueryError; second (with And(Term)) succeeds.
+        mock_ws.search.side_effect = [
+            QueryError("Phrase search: 'nophrase' field has no positions"),
+            good_results,
+        ]
+
+        qs = QSearcher(mock_docindex, MagicMock())
+        qs._shared_searcher = mock_ws
+
+        # A phrase query against the no-position field.
+        q_obj = Phrase("nophrase", ["mercy", "compassion"])
+        results, terms, _searcher = qs.search_obj(q_obj, timelimit=None)
+
+        self.assertIs(results, good_results,
+                      "search_obj must return results from the stripped-phrase retry")
+        self.assertEqual(mock_ws.search.call_count, 2,
+                         "search must be called twice: once with Phrase, once with And(Terms)")
+        # Second call must not contain a Phrase — it should be an And of Terms.
+        second_call_query = mock_ws.search.call_args_list[1].kwargs.get("q")
+        self.assertNotIsInstance(second_call_query, Phrase,
+                                 "Retried query must not be a Phrase")
+
+    def test_search_obj_reraises_unrelated_query_error(self):
+        """search_obj must re-raise QueryError that is NOT about missing positions."""
+        from whoosh.fields import Schema, TEXT
+        from whoosh.query import QueryError, NullQuery
+        from alfanous.searching import QSearcher
+
+        schema = Schema(aya=TEXT)
+        mock_docindex = MagicMock()
+        mock_docindex.get_schema.return_value = schema
+        mock_ws = MagicMock()
+        mock_ws.refresh.return_value = mock_ws
+        mock_docindex.get_index.return_value.searcher.return_value = mock_ws
+
+        mock_ws.search.side_effect = QueryError("Some other query error")
+
+        qs = QSearcher(mock_docindex, MagicMock())
+        qs._shared_searcher = mock_ws
+
+        with self.assertRaises(QueryError, msg="Unrelated QueryError must propagate"):
+            qs.search_obj(NullQuery(), timelimit=None)
+
     def test_suggest_collocations_retries_on_reader_closed(self):
         """QSearcher.suggest_collocations must retry on ReaderClosed and succeed."""
         from whoosh.reading import ReaderClosed

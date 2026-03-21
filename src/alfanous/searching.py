@@ -6,6 +6,7 @@ from whoosh.collectors import TimeLimitCollector, FilterCollector
 from whoosh.searching import TimeLimit
 from whoosh.qparser import QueryParser as _QueryParser
 from whoosh.reading import ReaderClosed
+from whoosh.query import QueryError
 import logging
 
 logger = logging.getLogger(__name__)
@@ -685,6 +686,22 @@ class QSearcher:
         )
         return results, terms, _SearcherProxy(searcher), _expansion_for_caller
 
+    def _run_query(self, searcher, q_obj, search_kwargs, timelimit):
+        """Execute *q_obj* against *searcher* and return a Whoosh Results object.
+
+        Applies :class:`~whoosh.collectors.TimeLimitCollector` when *timelimit*
+        is not ``None``.
+        """
+        if timelimit is not None:
+            c = searcher.collector(**search_kwargs)
+            tlc = TimeLimitCollector(c, timelimit=timelimit, use_alarm=False)
+            try:
+                searcher.search_with_collector(q_obj, tlc)
+            except TimeLimit:
+                logger.warning("Search timelimit of %s seconds reached; returning partial results", timelimit)
+            return tlc.results()
+        return searcher.search(q=q_obj, **search_kwargs)
+
     def search_obj(self, q_obj, limit=QURAN_TOTAL_VERSES, sortedby="score", reverse=False, timelimit=5.0):
         """Run a pre-built Whoosh query object (e.g. NestedParent) directly,
         bypassing string parsing.  Returns the same ``(results, terms, searcher)``
@@ -693,16 +710,7 @@ class QSearcher:
         for attempt in range(_MAX_READER_CLOSED_RETRIES):
             searcher = self._get_shared_searcher()
             try:
-                if timelimit is not None:
-                    c = searcher.collector(**search_kwargs)
-                    tlc = TimeLimitCollector(c, timelimit=timelimit, use_alarm=False)
-                    try:
-                        searcher.search_with_collector(q_obj, tlc)
-                    except TimeLimit:
-                        logger.warning("Search timelimit of %s seconds reached; returning partial results", timelimit)
-                    results = tlc.results()
-                else:
-                    results = searcher.search(q=q_obj, **search_kwargs)
+                results = self._run_query(searcher, q_obj, search_kwargs, timelimit)
                 return results, [], _SearcherProxy(searcher)
             except ReaderClosed:
                 if attempt == 0:
@@ -717,6 +725,19 @@ class QSearcher:
                     "propagating ReaderClosed.",
                 )
                 raise
+            except QueryError as exc:
+                if "has no positions" not in str(exc):
+                    raise
+                # A field in the query does not store positional data so Whoosh
+                # cannot satisfy a Phrase query against it.  Strip all Phrase
+                # nodes from the query tree (converting them to unordered
+                # And-of-Terms) and run the relaxed query instead.
+                logger.warning(
+                    "search_obj: %s — retrying with phrase queries stripped.", exc
+                )
+                q_obj = _strip_phrase_queries(q_obj)
+                results = self._run_query(searcher, q_obj, search_kwargs, timelimit)
+                return results, [], _SearcherProxy(searcher)
 
     def suggest(self, querystr):
         d = {}
