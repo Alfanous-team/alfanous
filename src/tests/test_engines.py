@@ -918,13 +918,10 @@ def test_sura_phrase_no_query_error():
     """Phrase query on the 'sura' field must not raise QueryError.
 
     The 'sura' field stores the romanized sura name and is indexed with
-    ``phrase=False`` (no positional data).  A query like
-    ``sura:"Al Baqarah"`` previously raised
-    ``QueryError: Phrase search: 'sura' field has no positions``.
-
-    The fix in :func:`~alfanous.searching._strip_phrase_queries` (with
-    *schema* provided) converts such Phrase nodes to And-of-Terms before
-    execution, so the query returns useful results rather than crashing.
+    ``phrase=True`` (positional data stored) so that exact phrase ordering
+    is preserved.  With an older index built without positional data the
+    query still succeeds because :func:`~alfanous.searching._strip_phrase_queries`
+    converts unresolvable Phrase nodes to And-of-Terms before execution.
     """
     from whoosh.query.qcore import QueryError
 
