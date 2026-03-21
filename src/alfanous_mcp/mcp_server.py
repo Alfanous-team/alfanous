@@ -36,7 +36,7 @@ logger = logging.getLogger(__name__)
 mcp = FastMCP(
     name="alfanous",
     instructions=(
-        "Alfanous is a search engine for the Holy Qur'an.\n\n"
+        "Alfanous is a search engine for the Holy Quran.\n\n"
 
         "TOOL OVERVIEW\n"
         "-------------\n"
