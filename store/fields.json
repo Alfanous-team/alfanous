@@ -328,7 +328,7 @@
     "table_name": "aya",
     "type": "TEXT",
     "unique": null,
-    "phrase": false
+    "phrase": true
   },
   {
     "analyzer": null,
@@ -489,7 +489,7 @@
     "table_name": "aya",
     "type": "TEXT",
     "unique": null,
-    "phrase": false
+    "phrase": true
   },
   {
     "analyzer": null,
@@ -503,7 +503,7 @@
     "table_name": "aya",
     "type": "TEXT",
     "unique": null,
-    "phrase": false
+    "phrase": true
   },
   {
     "id": 94,

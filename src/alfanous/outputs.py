@@ -1525,9 +1525,9 @@ class Raw:
                     _adja_gid_set = set()
                     for r in reslist:
                         if prev_aya:
-                            _adja_gid_set.add(str(r["gid"] - 1))
+                            _adja_gid_set.add(r["gid"] - 1)
                         if next_aya:
-                            _adja_gid_set.add(str(r["gid"] + 1))
+                            _adja_gid_set.add(r["gid"] + 1)
                     _adja_q = wquery.And([
                         wquery.Or([wquery.Term("gid", g) for g in _adja_gid_set]),
                         wquery.Term("kind", "aya"),
@@ -1557,7 +1557,7 @@ class Raw:
                 # Using search_with_query with a pre-compiled query object avoids the
                 # string-building + re-parsing overhead of the old find_extended approach.
                 child_q = wquery.And([
-                    wquery.Or([wquery.Term("gid", str(r["gid"])) for r in reslist]),
+                    wquery.Or([wquery.Term("gid", r["gid"]) for r in reslist]),
                     wquery.Term("kind", "translation"),
                 ])
                 child_res, _, child_searcher = self.QSE.search_with_query(
@@ -1981,7 +1981,7 @@ class Raw:
                 _page_gids = {r["gid"] for r in reslist}
                 _page_child_q = wquery.And([
                     wquery.Term("kind", "translation"),
-                    wquery.Or([wquery.Term("gid", str(g)) for g in _page_gids]),
+                    wquery.Or([wquery.Term("gid", g) for g in _page_gids]),
                 ])
                 _parent_q = wquery.NestedParent(_all_parents_q, _page_child_q)
                 _parent_res, _, _parent_searcher = self.QSE.search_with_query(
