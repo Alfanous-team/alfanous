@@ -4,6 +4,7 @@ Tests for the configurable timelimit feature across the search stack.
 
 import shutil
 import inspect
+from collections import OrderedDict
 import logging
 import tempfile
 from unittest.mock import MagicMock, patch, call
@@ -342,7 +343,7 @@ def test_find_extended_uses_timelimit_collector():
             qhighlight=MagicMock(),
         )
         engine._schema = ix.schema
-        engine._find_parsers = {}
+        engine._find_parsers = OrderedDict()
 
         with patch("alfanous.engines.TimeLimitCollector", wraps=TimeLimitCollector) as MockTLC:
             results, searcher = engine.find_extended("text:word", "text", timelimit=3.0)
@@ -374,7 +375,7 @@ def test_find_extended_no_timelimit_uses_search_directly():
             qhighlight=MagicMock(),
         )
         engine._schema = ix.schema
-        engine._find_parsers = {}
+        engine._find_parsers = OrderedDict()
 
         with patch("alfanous.engines.TimeLimitCollector") as MockTLC:
             results, searcher = engine.find_extended("text:word", "text", timelimit=None)
@@ -403,7 +404,7 @@ def test_find_extended_caches_parser_per_field():
             qhighlight=MagicMock(),
         )
         engine._schema = ix.schema
-        engine._find_parsers = {}
+        engine._find_parsers = OrderedDict()
 
         engine.find_extended("text:word", "text", timelimit=None)
         first_parser = engine._find_parsers.get("text")
@@ -435,7 +436,7 @@ def test_find_extended_returns_partial_results_on_timeout():
             qhighlight=MagicMock(),
         )
         engine._schema = ix.schema
-        engine._find_parsers = {}
+        engine._find_parsers = OrderedDict()
 
         # An extremely short timelimit; may or may not actually fire depending
         # on hardware, but must never raise.
@@ -468,7 +469,7 @@ def test_find_extended_warning_logged_on_timeout(caplog):
             qhighlight=MagicMock(),
         )
         engine._schema = ix.schema
-        engine._find_parsers = {}
+        engine._find_parsers = OrderedDict()
 
         with caplog.at_level(logging.WARNING, logger=_engines_module.logger.name):
             engine.find_extended("text:word", "text", timelimit=EXTREMELY_SHORT_TIMELIMIT)
