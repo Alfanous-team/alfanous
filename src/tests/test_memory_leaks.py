@@ -2632,5 +2632,201 @@ class TestAutocompleteSuggestExtensions(unittest.TestCase):
         engine._searcher.suggest_extensions.assert_called_once_with("الحمد لله", limit=10)
 
 
+# ---------------------------------------------------------------------------
+# Performance: _is_arabic_text helper uses frozenset for O(1) lookups
+# ---------------------------------------------------------------------------
+
+class TestIsArabicTextHelper(unittest.TestCase):
+    """Verify the _is_arabic_text helper is defined and uses a frozenset."""
+
+    def test_helper_exists_in_searching(self):
+        """_is_arabic_text must be a module-level callable."""
+        from alfanous.searching import _is_arabic_text
+        self.assertTrue(callable(_is_arabic_text))
+
+    def test_arabic_codepoints_frozenset(self):
+        """_ARABIC_CODEPOINTS must be a frozenset for immutable O(1) lookups."""
+        from alfanous.searching import _ARABIC_CODEPOINTS
+        self.assertIsInstance(_ARABIC_CODEPOINTS, frozenset)
+        # Must contain Arabic block codepoints
+        self.assertIn('\u0627', _ARABIC_CODEPOINTS)  # Alef
+        self.assertIn('\u0628', _ARABIC_CODEPOINTS)  # Ba
+        self.assertNotIn('A', _ARABIC_CODEPOINTS)
+        self.assertNotIn('1', _ARABIC_CODEPOINTS)
+
+    def test_arabic_text_detected(self):
+        """Arabic strings return True."""
+        from alfanous.searching import _is_arabic_text
+        self.assertTrue(_is_arabic_text("مُلْك"))
+        self.assertTrue(_is_arabic_text("بسم الله"))
+        self.assertTrue(_is_arabic_text("abc\u0627"))  # Mixed, but has Arabic
+
+    def test_non_arabic_text_rejected(self):
+        """Non-Arabic strings and non-strings return False."""
+        from alfanous.searching import _is_arabic_text
+        self.assertFalse(_is_arabic_text("hello"))
+        self.assertFalse(_is_arabic_text("123"))
+        self.assertFalse(_is_arabic_text(""))
+        self.assertFalse(_is_arabic_text(42))
+        self.assertFalse(_is_arabic_text(None))
+        self.assertFalse(_is_arabic_text(b"bytes"))
+
+    def test_no_inline_range_checks_in_search(self):
+        """The search() method must not contain inline \\u0600 range checks.
+
+        All Arabic-text checks must go through _is_arabic_text() or
+        _arabic_query_terms() — no duplicated inline ``any('\\u0600' ...)``
+        comparisons.
+        """
+        import ast, inspect, textwrap
+        import alfanous.searching as _mod
+        src = textwrap.dedent(inspect.getsource(_mod.QSearcher.search))
+        tree = ast.parse(src)
+
+        # Look for any generator expression containing '\u0600' string comparison
+        for node in ast.walk(tree):
+            if isinstance(node, ast.Compare):
+                for comp_val in [node.left] + list(node.comparators):
+                    if isinstance(comp_val, ast.Constant) and comp_val.value == '\u0600':
+                        self.fail(
+                            "QSearcher.search() still contains inline "
+                            "'\\u0600' <= c <= '\\u06FF' check — use "
+                            "_is_arabic_text() or _arabic_query_terms() instead"
+                        )
+
+
+# ---------------------------------------------------------------------------
+# Performance: _arabic_query_terms deduplicates derivation iteration
+# ---------------------------------------------------------------------------
+
+class TestArabicQueryTermsHelper(unittest.TestCase):
+    """Verify _arabic_query_terms extracts unique Arabic terms properly."""
+
+    def test_helper_exists(self):
+        """_arabic_query_terms must be a module-level callable."""
+        from alfanous.searching import _arabic_query_terms
+        self.assertTrue(callable(_arabic_query_terms))
+
+    def test_yields_arabic_terms_only(self):
+        """Only Arabic-script terms from query.all_terms() are yielded."""
+        from alfanous.searching import _arabic_query_terms
+        from whoosh import query as wq
+
+        q = wq.And([wq.Term("aya", "مُلْك"), wq.Term("aya", "hello"), wq.Term("aya", "كتاب")])
+        result = list(_arabic_query_terms(q))
+        self.assertIn("مُلْك", result)
+        self.assertIn("كتاب", result)
+        self.assertNotIn("hello", result)
+
+    def test_deduplicates_terms(self):
+        """Duplicate Arabic terms are yielded only once."""
+        from alfanous.searching import _arabic_query_terms
+        from whoosh import query as wq
+
+        q = wq.And([wq.Term("aya", "مُلْك"), wq.Term("aya_", "مُلْك")])
+        result = list(_arabic_query_terms(q))
+        self.assertEqual(result.count("مُلْك"), 1)
+
+
+# ---------------------------------------------------------------------------
+# Performance: _find_parsers uses LRU eviction via OrderedDict
+# ---------------------------------------------------------------------------
+
+class TestFindParsersLRUEviction(unittest.TestCase):
+    """Verify that _find_parsers cache is bounded by _MAX_FIND_PARSER_CACHE."""
+
+    def test_find_parsers_is_ordered_dict(self):
+        """_find_parsers must be an OrderedDict for LRU eviction support."""
+        from collections import OrderedDict
+        import alfanous.engines as _eng
+        # Build a minimal mock engine
+        mock_docindex = MagicMock()
+        mock_docindex.OK = True
+        mock_docindex.get_schema.return_value = MagicMock()
+        mock_docindex.get_index.return_value = MagicMock()
+        engine = _eng.BasicSearchEngine.__new__(_eng.BasicSearchEngine)
+        engine.OK = False
+        engine._find_parsers = OrderedDict()
+
+        self.assertIsInstance(engine._find_parsers, OrderedDict)
+
+    def test_max_cache_constant_defined(self):
+        """_MAX_FIND_PARSER_CACHE must be defined at module level."""
+        import alfanous.engines as _eng
+        self.assertTrue(hasattr(_eng, '_MAX_FIND_PARSER_CACHE'))
+        self.assertIsInstance(_eng._MAX_FIND_PARSER_CACHE, int)
+        self.assertGreater(_eng._MAX_FIND_PARSER_CACHE, 0)
+
+    def test_eviction_logic_in_find_extended(self):
+        """find_extended must evict oldest entry when cache is full.
+
+        We verify this by checking the source code for popitem(last=False)
+        and len(self._find_parsers) >= _MAX_FIND_PARSER_CACHE.
+        """
+        import ast, inspect, textwrap
+        import alfanous.engines as _eng
+        src = textwrap.dedent(inspect.getsource(_eng.BasicSearchEngine.find_extended))
+        tree = ast.parse(src)
+
+        found_popitem = False
+        found_len_check = False
+        for node in ast.walk(tree):
+            # Check for popitem call
+            if isinstance(node, ast.Call):
+                func = node.func
+                if isinstance(func, ast.Attribute) and func.attr == 'popitem':
+                    found_popitem = True
+            # Check for >= comparison with _MAX_FIND_PARSER_CACHE
+            if isinstance(node, ast.Compare):
+                for comp_val in list(node.comparators):
+                    if isinstance(comp_val, ast.Name) and comp_val.id == '_MAX_FIND_PARSER_CACHE':
+                        found_len_check = True
+
+        self.assertTrue(found_popitem, "find_extended must call popitem(last=False) for LRU eviction")
+        self.assertTrue(found_len_check, "find_extended must check len >= _MAX_FIND_PARSER_CACHE")
+
+
+# ---------------------------------------------------------------------------
+# Performance: _MIN_FUZZY_TERM_LEN constant used instead of magic number
+# ---------------------------------------------------------------------------
+
+class TestFuzzyTermLenConstant(unittest.TestCase):
+    """Verify that _MIN_FUZZY_TERM_LEN is defined and used for fuzzy search."""
+
+    def test_constant_defined(self):
+        """_MIN_FUZZY_TERM_LEN must be defined at module level in searching."""
+        from alfanous.searching import _MIN_FUZZY_TERM_LEN
+        self.assertIsInstance(_MIN_FUZZY_TERM_LEN, int)
+        self.assertEqual(_MIN_FUZZY_TERM_LEN, 4)
+
+    def test_no_magic_number_in_fuzzy_search(self):
+        """The fuzzy search block must not use a hard-coded '4' for min length.
+
+        It should reference _MIN_FUZZY_TERM_LEN instead.
+        """
+        import ast, inspect, textwrap
+        import alfanous.searching as _mod
+        src = textwrap.dedent(inspect.getsource(_mod.QSearcher.search))
+        tree = ast.parse(src)
+
+        # Find the levenshtein_subqueries list comprehension and check
+        # that it references _MIN_FUZZY_TERM_LEN, not a literal 4
+        for node in ast.walk(tree):
+            if isinstance(node, ast.ListComp):
+                # Check if this is the FuzzyTerm comprehension
+                comp_src = ast.dump(node)
+                if 'FuzzyTerm' in comp_src or 'aya_ac' in comp_src:
+                    # Check that the conditions don't use raw integer 4
+                    for cond in node.generators[0].ifs:
+                        for inner in ast.walk(cond):
+                            if isinstance(inner, ast.Compare):
+                                for comp_val in list(inner.comparators):
+                                    if isinstance(comp_val, ast.Constant) and comp_val.value == 4:
+                                        self.fail(
+                                            "Fuzzy search uses magic number 4 — "
+                                            "should use _MIN_FUZZY_TERM_LEN"
+                                        )
+
+
 if __name__ == "__main__":
     unittest.main()

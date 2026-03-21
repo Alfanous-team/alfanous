@@ -1,4 +1,5 @@
 import logging
+from collections import OrderedDict
 
 from whoosh import qparser
 from whoosh.qparser import QueryParser
@@ -12,6 +13,11 @@ from alfanous.query_processing import QuranicParser, StandardParser
 from alfanous.constants import QURAN_TOTAL_VERSES
 
 logger = logging.getLogger(__name__)
+
+# Maximum number of per-field QueryParser objects to cache in
+# BasicSearchEngine._find_parsers.  Prevents unbounded memory growth
+# when find_extended is called with many different field names.
+_MAX_FIND_PARSER_CACHE = 20
 
 class BasicSearchEngine:
     def __init__(self, qdocindex, query_parser, main_field, otherfields, qsearcher, qreader, qhighlight, default_filter=None):
@@ -44,7 +50,9 @@ class BasicSearchEngine:
             # Per-field QueryParser cache used by find_extended.  Parsers are
             # stateless once created (they depend only on the field name and the
             # fixed index schema), so caching them avoids repeated allocations.
-            self._find_parsers = {}
+            # Uses OrderedDict with LRU eviction capped at _MAX_FIND_PARSER_CACHE
+            # to prevent unbounded growth.
+            self._find_parsers: OrderedDict = OrderedDict()
             self.OK = True
 
     # end  __init__
@@ -282,8 +290,14 @@ class BasicSearchEngine:
         whoosh_searcher = self._searcher._get_shared_searcher()
 
         # Lazily cache one QueryParser per defaultfield so we do not allocate
-        # a new parser object on every call.
-        if defaultfield not in self._find_parsers:
+        # a new parser object on every call.  LRU eviction prevents unbounded
+        # growth when many different field names are used.
+        if defaultfield in self._find_parsers:
+            # Move to end (most recently used) for LRU ordering.
+            self._find_parsers.move_to_end(defaultfield)
+        else:
+            if len(self._find_parsers) >= _MAX_FIND_PARSER_CACHE:
+                self._find_parsers.popitem(last=False)  # evict oldest
             self._find_parsers[defaultfield] = QueryParser(defaultfield, schema=self._schema)
         q = self._find_parsers[defaultfield].parse(query)
 
