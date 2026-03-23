@@ -38,8 +38,8 @@ class _MemoryViewFile:
         pos = self._pos
         end = self._len
         while pos < end:
-            # Check one byte at a time for newline
-            if buf[pos:pos + 1] == b"\n":
+            # In Python 3 both bytes[i] and memoryview[i] return int.
+            if buf[pos] == 10:  # ord(b"\n")
                 pos += 1
                 break
             pos += 1
@@ -81,6 +81,7 @@ def _zero_copy_bufferfile_init(self, buf, name=None, onclose=None):
     self.is_closed = False
 
 
+# Applied at import time which is serialised by the GIL; safe for threads.
 BufferFile.__init__ = _zero_copy_bufferfile_init
 
 

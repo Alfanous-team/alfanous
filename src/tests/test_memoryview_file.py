@@ -3,6 +3,7 @@ Whoosh's BytesIO-based BufferFile."""
 
 import pickle
 import struct
+from io import BytesIO
 
 from alfanous.indexing import _MemoryViewFile
 
@@ -129,8 +130,7 @@ class TestBufferFileMonkeyPatch:
         from whoosh.filedb.structfile import BufferFile
         data = b"test data for buffer file"
         bf = BufferFile(data, name="test")
-        assert type(bf.file).__name__ == "_MemoryViewFile"
-        assert not isinstance(bf.file, type(None))
+        assert isinstance(bf.file, _MemoryViewFile)
 
     def test_bufferfile_read(self):
         from whoosh.filedb.structfile import BufferFile
@@ -165,8 +165,8 @@ class TestBufferFileMonkeyPatch:
 
     def test_no_bytesio_copy(self):
         """Verify that the patched BufferFile does NOT create a BytesIO."""
-        from io import BytesIO
         from whoosh.filedb.structfile import BufferFile
         data = b"x" * 1000
         bf = BufferFile(data, name="test")
         assert not isinstance(bf.file, BytesIO)
+        assert isinstance(bf.file, _MemoryViewFile)
