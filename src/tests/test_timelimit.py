@@ -528,7 +528,7 @@ def test_search_aya_skips_trans_parser_for_pure_wildcards(monkeypatch):
     raw = Raw.__new__(Raw)
     raw._defaults = {
         "flags": {
-            "lang": "en",
+            "search_lang": "en",
             "sortedby": "score",
             "reverse": False,
             "perpage": None,
@@ -618,7 +618,7 @@ def test_pure_wildcard_routes_to_arabic_search_path(monkeypatch):
     raw = Raw.__new__(Raw)
     raw._defaults = {
         "flags": {
-            "lang": "en",
+            "search_lang": "en",
             "sortedby": "score",
             "reverse": False,
             "perpage": None,

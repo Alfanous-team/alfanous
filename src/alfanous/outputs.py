@@ -305,7 +305,7 @@ class Raw:
             "view": "custom",
             "recitation": "1",
             "translation": None,
-            "lang": None,
+            "search_lang": None,
             "romanization": None,
             "prev_aya": True,
             "next_aya": True,
@@ -358,7 +358,7 @@ class Raw:
         "view": ["minimal", "normal", "full", "statistic", "linguistic", "recitation", "custom"],
         "recitation": [],  # range( 30 ),
         "translation": [],
-        "lang": [],
+        "search_lang": [],
         "romanization": ["none", "buckwalter", "iso", "arabtex"],  # arabizi is forbidden for show
         "prev_aya": [True, False],
         "next_aya": [True, False],
@@ -401,7 +401,7 @@ class Raw:
         "view": "pre-defined configuration for what information to retrieve",
         "recitation": "recitation id",
         "translation": "translation id",
-        "lang": "language code (e.g. 'en', 'fr', 'ar') to select translation by language at query time",
+        "search_lang": "language code (e.g. 'en', 'fr', 'ar') to select translation by language at query time",
         "romanization": "type of romanization",
         "prev_aya": "enable previous aya retrieving",
         "next_aya": "enable next aya retrieving",
@@ -541,7 +541,7 @@ class Raw:
             # when extracting matched terms for highlighting.
             self._trans_fields = frozenset(_avail_trans)
 
-            # Per-language parsers: when the caller passes lang="en" (or any
+            # Per-language parsers: when the caller passes search_lang="en" (or any
             # other code), the non-Arabic search path is restricted to only
             # the corresponding text_{lang} field instead of all translations.
             self._lang_trans_parsers = {}
@@ -938,7 +938,7 @@ class Raw:
             else int(flags["offset"])
         recitation = flags["recitation"]
         translation = flags["translation"]
-        lang = flags.get("lang") or self._defaults["flags"]["lang"]
+        search_lang = flags.get("search_lang") or self._defaults["flags"]["search_lang"]
         romanization = flags["romanization"]
         highlight = flags["highlight"]
         script = flags["script"]
@@ -1098,16 +1098,16 @@ class Raw:
             # Skip for pure-wildcard queries (e.g. bare "*", "?", "؟") — they
             # expand across every term in every translation field via NestedParent,
             # exceeding any reasonable timelimit while producing zero useful results.
-            # When the caller specifies a language (e.g. lang="en"), restrict the
+            # When the caller specifies a language (e.g. search_lang="en"), restrict the
             # search to only that language's translation field (text_en); if no
-            # lang is given, fall back to searching across all available fields.
+            # search_lang is given, fall back to searching across all available fields.
             _trans_terms = []
             _trans_term_pairs = []
             _active_trans_parser = (
-                self._lang_trans_parsers.get(lang, self._trans_parser) if lang else self._trans_parser
+                self._lang_trans_parsers.get(search_lang, self._trans_parser) if search_lang else self._trans_parser
             )
             _active_trans_fields = (
-                self._lang_trans_fields.get(lang, self._trans_fields) if lang
+                self._lang_trans_fields.get(search_lang, self._trans_fields) if search_lang
                 else self._trans_fields
             )
             if _active_trans_parser is not None and not _PURE_WILDCARD_RE.match(query):
@@ -1575,7 +1575,7 @@ class Raw:
                         _wi_searcher.close()
             output["words"] = words_output
             # Build adjacent-aya lookup for prev/next aya text.
-            _want_translation = bool(translation or lang)
+            _want_translation = bool(translation or search_lang)
             if prev_aya or next_aya:
                 # Default sentinel values for boundary ayas (gid 0 and 6237 don't exist in the index).
                 adja_ayas = {
@@ -1654,9 +1654,9 @@ class Raw:
                     for g, trans_map in all_children.items():
                         if translation and translation in trans_map:
                             trad_text[g] = trans_map[translation]
-                        elif lang:
+                        elif search_lang:
                             for tid, tdata in trans_map.items():
-                                if tdata["lang"] == lang:
+                                if tdata["lang"] == search_lang:
                                     trad_text[g] = tdata
                                     break
     

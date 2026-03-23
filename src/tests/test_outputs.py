@@ -2241,7 +2241,7 @@ def test_non_arabic_aya_search_with_lang_returns_results():
         "action": "search",
         "unit": "aya",
         "query": "mercy",
-        "lang": "en",
+        "search_lang": "en",
         "highlight": "none",
         "page": 1,
     })
