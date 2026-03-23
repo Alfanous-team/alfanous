@@ -1217,6 +1217,55 @@ class TestArabiziCandidateCap(unittest.TestCase):
 
 
 # ---------------------------------------------------------------------------
+# filter_candidates_by_wordset — strict filtering (no fallback to full list)
+# ---------------------------------------------------------------------------
+
+class TestFilterCandidatesByWordset(unittest.TestCase):
+    """filter_candidates_by_wordset must return an empty list when no candidates
+    match the wordset instead of falling back to the full unfiltered list."""
+
+    def test_no_match_returns_empty_list(self):
+        """When no candidate matches the wordset, an empty list must be returned."""
+        from alfanous.romanization import filter_candidates_by_wordset
+        candidates = ["ابجد", "هوز", "حطي"]
+        wordset = frozenset()  # empty wordset — nothing can match
+        result = filter_candidates_by_wordset(candidates, wordset)
+        self.assertEqual(result, [],
+                         "filter_candidates_by_wordset must return [] when no candidates match")
+
+    def test_partial_match_returns_only_matching(self):
+        """Only candidates present in the wordset should be returned."""
+        from alfanous.romanization import filter_candidates_by_wordset
+        wordset = frozenset(["رحمن"])
+        candidates = ["رحمن", "ابجد", "هوز"]
+        result = filter_candidates_by_wordset(candidates, wordset)
+        self.assertEqual(result, ["رحمن"],
+                         "filter_candidates_by_wordset must return only matching candidates")
+
+    def test_all_match_returns_all(self):
+        """When all candidates match, all must be returned unchanged."""
+        from alfanous.romanization import filter_candidates_by_wordset
+        wordset = frozenset(["رحمن", "الله"])
+        candidates = ["رحمن", "الله"]
+        result = filter_candidates_by_wordset(candidates, wordset)
+        self.assertEqual(sorted(result), sorted(candidates),
+                         "filter_candidates_by_wordset must return all candidates when all match")
+
+    def test_nonexistent_arabizi_word_empty_keywords(self):
+        """Arabizi input that maps to no Quran words must yield an empty filtered list,
+        not tens of random Arabic word candidates."""
+        from alfanous.romanization import arabizi_to_arabic_list, filter_candidates_by_wordset
+        # "heavedwedw" has no plausible Arabic transliteration in the Quran
+        candidates = arabizi_to_arabic_list("heavedwedw")
+        # Use a minimal wordset that does not include any candidate
+        wordset = frozenset(["الله", "رحمن"])  # real words, but unrelated to "heavedwedw"
+        result = filter_candidates_by_wordset(candidates, wordset)
+        self.assertEqual(result, [],
+                         "Non-Quranic arabizi input must produce an empty filtered list, "
+                         f"not {len(result)} random candidates")
+
+
+# ---------------------------------------------------------------------------
 # Iteration-6 fixes
 # ---------------------------------------------------------------------------
 
