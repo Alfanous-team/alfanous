@@ -595,6 +595,11 @@ class ArabicWildcardQuery(Wildcard):
     def __init__(self, fieldname, text, boost=1.0):
         # Replace Arabic question mark with standard wildcard
         new_text = text.replace("؟", "?")
+        # Lowercase so that queries like "God*" match index terms lowercased
+        # by LowercaseFilter (e.g. translation fields).  Arabic text has no
+        # case concept so .lower() is a no-op for Arabic; wildcard characters
+        # (* and ?) are ASCII punctuation and are also unaffected by .lower().
+        new_text = new_text.lower()
         super().__init__(fieldname, new_text, boost)
         # Store original text for hash/eq
         self._original_text = text

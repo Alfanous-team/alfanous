@@ -316,6 +316,81 @@ def test_arabic_wildcard_question_mark():
     # Wildcard queries expand against the index, not at parse time
 
 
+def test_arabic_wildcard_lowercase_on_construction():
+    """ArabicWildcardQuery must lowercase the pattern text at construction time.
+
+    Translation fields (text_en, text_fr, etc.) use LowercaseFilter so their
+    index terms are stored lowercase ('god', 'pray', ...).  Without lowercasing
+    the query pattern, 'God*' would produce the regex 'God.*' which is
+    case-sensitive and never matches the indexed 'god*' terms.
+    Arabic text is unaffected by .lower() (Arabic has no case concept), and
+    wildcard characters * and ? are ASCII punctuation also unaffected.
+    """
+    tests = [
+        # (input_text, expected_text_after_init)
+        ("God*",   "god*"),
+        ("GOD*",   "god*"),
+        ("Pray?",  "pray?"),
+        ("*Test*", "*test*"),
+        ("G?d",    "g?d"),
+        # Arabic should be unchanged by .lower()
+        ("نبي*",   "نبي*"),
+        ("الله*",  "الله*"),
+        # Arabic question mark converted first, then lowercase (no-op on Arabic)
+        ("نعم؟",   "نعم?"),
+        # Pure wildcards should be unchanged
+        ("*",      "*"),
+        ("??",     "??"),
+    ]
+    for input_text, expected in tests:
+        q = ArabicWildcardQuery("text_en", input_text)
+        assert q.text == expected, (
+            f"ArabicWildcardQuery('text_en', {input_text!r}).text should be "
+            f"{expected!r} but got {q.text!r}. Wildcards must be lowercased "
+            "so they match index terms processed by LowercaseFilter."
+        )
+
+
+def test_arabic_wildcard_case_insensitive_matches_lowercase_indexed_term():
+    """God* must match the index term 'god' in a field with LowercaseFilter.
+
+    Regression test for: LowercaseFilter — God* can't match indexed term god.
+
+    Translation fields use LowercaseFilter so 'God' is stored as 'god'.
+    Before the fix, ArabicWildcardQuery('field', 'God*') kept the pattern
+    as 'God*' which compiled to regex 'God.*' — a case-sensitive pattern
+    that never matched the lowercase indexed term 'god'.
+    """
+    import shutil
+    import tempfile
+    from whoosh import index as whoosh_index
+    from whoosh.analysis import RegexTokenizer, LowercaseFilter
+    from whoosh.fields import Schema, TEXT
+
+    analyzer = RegexTokenizer() | LowercaseFilter()
+    tmpdir = tempfile.mkdtemp()
+    try:
+        schema = Schema(text_en=TEXT(stored=True, analyzer=analyzer))
+        ix = whoosh_index.create_in(tmpdir, schema)
+        writer = ix.writer()
+        writer.add_document(text_en="God is great")
+        writer.add_document(text_en="praise the lord")
+        writer.commit()
+
+        with ix.searcher() as searcher:
+            # All of these should match the document containing "God" (indexed as "god")
+            for pattern in ("God*", "GOD*", "GoD*", "g*", "go*", "god*"):
+                q = ArabicWildcardQuery("text_en", pattern)
+                results = searcher.search(q)
+                assert len(results) >= 1, (
+                    f"Pattern {pattern!r} should match doc with 'God' (indexed as 'god') "
+                    f"but got {len(results)} results. "
+                    "ArabicWildcardQuery must lowercase the pattern at construction time."
+                )
+    finally:
+        shutil.rmtree(tmpdir, ignore_errors=True)
+
+
 def test_arabic_wildcard_multifield_asterisk():
     """Regression: pray* via MultifieldParser must not produce a None-fieldname query.
 
@@ -731,7 +806,8 @@ def test_arabic_wildcard_matcher_star_does_not_use_every():
     Every matcher (all documents, unbounded).  The override must call
     MultiTerm.matcher() instead so the MAX_EXPAND cap in _btexts() is applied.
     """
-    import shutil, tempfile
+    import shutil
+    import tempfile
     from whoosh import index as whoosh_index
     from whoosh.fields import Schema, TEXT
 
