@@ -1,6 +1,88 @@
 from whoosh.filedb.filestore import FileStorage
+from whoosh.filedb.structfile import BufferFile
 from whoosh import index
 from alfanous.constants import QURAN_TOTAL_VERSES
+
+
+class _MemoryViewFile:
+    """Zero-copy file-like wrapper around a memoryview or buffer.
+
+    ``BytesIO(buf)`` copies the entire buffer into anonymous heap memory.
+    This class provides the same *read-only* file interface (``read``,
+    ``seek``, ``tell``, ``readline``) while keeping a reference to the
+    original buffer, avoiding the duplication of large mmap'd index
+    segments (~155 MB each).
+    """
+
+    __slots__ = ("_buf", "_len", "_pos")
+
+    def __init__(self, buf):
+        self._buf = buf
+        self._len = len(buf)
+        self._pos = 0
+
+    # -- file-like read interface -------------------------------------------
+
+    def read(self, n=-1):
+        if n is None or n < 0:
+            data = bytes(self._buf[self._pos:])
+            self._pos = self._len
+            return data
+        end = min(self._pos + n, self._len)
+        data = bytes(self._buf[self._pos:end])
+        self._pos = end
+        return data
+
+    def readline(self):
+        buf = self._buf
+        pos = self._pos
+        end = self._len
+        while pos < end:
+            # In Python 3 both bytes[i] and memoryview[i] return int.
+            if buf[pos] == 10:  # ord(b"\n")
+                pos += 1
+                break
+            pos += 1
+        data = bytes(buf[self._pos:pos])
+        self._pos = pos
+        return data
+
+    def seek(self, pos, whence=0):
+        if whence == 0:
+            self._pos = pos
+        elif whence == 1:
+            self._pos += pos
+        elif whence == 2:
+            self._pos = self._len + pos
+        # Clamp to [0, _len]
+        if self._pos < 0:
+            self._pos = 0
+        elif self._pos > self._len:
+            self._pos = self._len
+        return self._pos
+
+    def tell(self):
+        return self._pos
+
+    def close(self):
+        pass
+
+
+def _zero_copy_bufferfile_init(self, buf, name=None, onclose=None):
+    """Drop-in replacement for ``BufferFile.__init__`` that avoids the
+    ``BytesIO(buf)`` copy.  All other attributes are set identically to
+    the original constructor.
+    """
+    self._buf = buf
+    self._name = name
+    self.file = _MemoryViewFile(buf)
+    self.onclose = onclose
+    self.is_real = False
+    self.is_closed = False
+
+
+# Applied at import time which is serialised by the GIL; safe for threads.
+BufferFile.__init__ = _zero_copy_bufferfile_init
 
 
 class BasicDocIndex:
