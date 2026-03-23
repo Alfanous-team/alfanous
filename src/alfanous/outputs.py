@@ -283,7 +283,7 @@ def _build_hierarchical_facets(res, hierarchy_fields):
             if len(path) > depth:
                 groups[path[depth]].append(path)
         result = []
-        for value, sub_paths in sorted(groups.items(), key=lambda x: len(x[1]), reverse=True):  # sort by doc count
+        for value, sub_paths in sorted(groups.items(), key=lambda x: len(x[1]), reverse=True):  # sort by count (most frequent first)
             children = build_level(sub_paths, depth + 1) if depth + 1 < len(hierarchy_fields) else []
             result.append({"value": value, "count": len(sub_paths), "children": children})
         return result
