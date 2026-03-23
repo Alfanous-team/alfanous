@@ -151,8 +151,7 @@ def test_search():
     
     # Extract words->individual for separate comparison (order-independent)
     actual_words_individual = results["search"]["words"]["individual"]
-    expected_words_individual = {1: {'hint': 'aya',
-                                     'derivations': [],
+    expected_words_individual = {1: {'derivations': [],
                                      'derivations_extra': [],
                                      'lemma': '',
                                      'nb_ayas_overall': 113,
@@ -167,8 +166,7 @@ def test_search():
                                      'synonyms': [],
                                      'vocalizations': [],
                                      'word': 'لله'},
-                                 2: {'hint': 'aya',
-                                     'derivations': [],
+                                 2: {'derivations': [],
                                      'derivations_extra': [],
                                      'lemma': '',
                                      'nb_ayas_overall': 25,
@@ -2174,11 +2172,12 @@ def test_pure_wildcard_search_returns_quickly_without_error():
 
 
 def test_latin_keywords_have_translation_hint():
-    """Latin keywords matching translation text should have hint='translation' in words.individual.
+    """Latin keywords matching translation text should have a language hint in words.individual.
 
     When a Latin/English query (e.g. 'heaven') matches aya text via translation fields,
-    the resulting words.individual entries must include hint='translation' so API consumers
-    can distinguish translation matches from direct Arabic text matches.
+    the resulting words.individual entries must include a 'hint' key naming the translation
+    language (e.g. 'english') so API consumers can distinguish translation matches from
+    direct Arabic text matches.
     """
     # Search with a Latin/English word that matches translation text
     results = RAWoutput.do({
@@ -2195,21 +2194,22 @@ def test_latin_keywords_have_translation_hint():
     # There must be at least one keyword entry
     assert individual, "Expected at least one keyword in words.individual for 'heaven'"
 
-    # Every keyword entry must have a 'hint' field
+    # No keyword entry should have hint='aya' (that's for Arabic text matches)
     for key, word_data in individual.items():
-        assert "hint" in word_data, (
-            f"words.individual[{key}] is missing the 'hint' field: {word_data!r}"
-        )
+        if "hint" in word_data:
+            assert word_data["hint"] != "aya", (
+                f"words.individual[{key}] should not have hint='aya' for a translation match: {word_data!r}"
+            )
 
-    # At least one keyword should have hint='translation' (the English match)
-    hints = [wd["hint"] for wd in individual.values()]
-    assert "translation" in hints, (
-        f"Expected at least one keyword with hint='translation', got hints: {hints}"
+    # At least one keyword should have a translation-language hint (not None, not 'aya')
+    _translation_hints = {wd["hint"] for wd in individual.values() if "hint" in wd}
+    assert _translation_hints, (
+        f"Expected at least one keyword with a translation hint, got individual: {individual}"
     )
 
 
-def test_arabic_keywords_have_aya_hint():
-    """Arabic keywords in aya search should have hint='aya' in words.individual."""
+def test_arabic_keywords_have_no_hint():
+    """Arabic keywords in aya search should NOT have a 'hint' key in words.individual."""
     results = RAWoutput.do({
         "action": "search",
         "query": "الله",
@@ -2224,16 +2224,14 @@ def test_arabic_keywords_have_aya_hint():
     assert individual, "Expected at least one keyword in words.individual for 'الله'"
 
     for key, word_data in individual.items():
-        assert "hint" in word_data, (
-            f"words.individual[{key}] is missing the 'hint' field: {word_data!r}"
-        )
-        assert word_data["hint"] == "aya", (
-            f"Expected hint='aya' for Arabic keyword, got {word_data['hint']!r}"
+        assert "hint" not in word_data, (
+            f"words.individual[{key}] should not have a 'hint' key for Arabic aya keyword, "
+            f"got hint={word_data['hint']!r}"
         )
 
 
 def test_hint_present_without_word_info():
-    """The 'hint' field should appear in words.individual even without word_info=True."""
+    """Translation hint should appear in words.individual even without word_info=True."""
     results = RAWoutput.do({
         "action": "search",
         "query": "heaven",
@@ -2247,12 +2245,36 @@ def test_hint_present_without_word_info():
 
     assert individual, "Expected at least one keyword in words.individual for 'heaven'"
 
-    for key, word_data in individual.items():
-        assert "hint" in word_data, (
-            f"words.individual[{key}] (word_info=False) is missing the 'hint' field: {word_data!r}"
-        )
-
-    hints = [wd["hint"] for wd in individual.values()]
-    assert "translation" in hints, (
-        f"Expected at least one keyword with hint='translation' (word_info=False), got hints: {hints}"
+    _translation_hints = {wd["hint"] for wd in individual.values() if "hint" in wd}
+    assert _translation_hints, (
+        f"Expected at least one keyword with a translation hint (word_info=False), "
+        f"got individual: {individual}"
     )
+
+
+def test_arabic_tafsir_keyword_hint():
+    """Arabic translation (tafsir) keywords should have hint='tafsir' in words.individual."""
+    # Use a common Arabic word that is likely to appear in Arabic tafsir text
+    results = RAWoutput.do({
+        "action": "search",
+        "query": "الرحمن",
+        "word_info": True,
+        "highlight": "none",
+    })
+    assert results["error"]["code"] == 0
+    search = results.get("search", {})
+    words = search.get("words", {})
+    individual = words.get("individual", {})
+    assert individual, "Expected at least one keyword in words.individual for 'الرحمن'"
+
+    # Arabic aya-field matches must have no hint; tafsir matches must have hint='tafsir'
+    for key, word_data in individual.items():
+        hint = word_data.get("hint")
+        assert hint != "aya", (
+            f"words.individual[{key}]: 'aya' is not a valid hint value: {word_data!r}"
+        )
+        if hint is not None:
+            assert hint == "tafsir", (
+                f"words.individual[{key}]: expected hint='tafsir' for Arabic translation, "
+                f"got {hint!r}"
+            )

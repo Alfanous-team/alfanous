@@ -26,6 +26,33 @@ from alfanous.text_processing import _TRANSLATION_LANGS
 # All language-specific indexed translation fields (text_en, text_fr, …).
 _TEXT_LANG_FIELDS = [f'text_{l}' for l in _TRANSLATION_LANGS]
 
+# Hint labels for translation fields: 'text_ar' → 'tafsir', others → language name.
+_LANG_CODE_TO_HINT = {
+    'ar': 'tafsir',
+    'en': 'english',
+    'fr': 'french',
+    'id': 'indonesian',
+    'ms': 'malay',
+    'tr': 'turkish',
+    'es': 'spanish',
+    'ja': 'japanese',
+    'ku': 'kurdish',
+    'ml': 'malayalam',
+    'pt': 'portuguese',
+}
+
+def _trans_field_hint(field_name):
+    """Return a hint string for a translation field name in the format 'text_XX'.
+
+    ``field_name`` must be a translation field name of the form ``text_{lang}``
+    (e.g. ``'text_en'``, ``'text_ar'``).  Returns ``'tafsir'`` for Arabic
+    (``'text_ar'``), the full English language name for well-known languages
+    (e.g. ``'english'``, ``'french'``), or the raw two-letter language code for
+    any language not listed in ``_LANG_CODE_TO_HINT``.
+    """
+    lang = field_name[5:]  # strip leading 'text_'
+    return _LANG_CODE_TO_HINT.get(lang, lang)
+
 # Characters passed through unchanged during Arabizi conversion inside queries.
 # Whoosh search operators (AND/OR/NOT symbols, field selectors, wildcards, etc.)
 # must not be transliterated to Arabic letters.
@@ -1249,7 +1276,7 @@ class Raw:
                         ]
                         words_output["individual"][_cpt] = {
                             "word": term[1],
-                            "hint": "translation" if term[0] in self._trans_fields else "aya",
+                            **({"hint": _trans_field_hint(term[0])} if term[0] in self._trans_fields else {}),
                             "variations": _word_variations,
                         }
                         _cpt += 1
@@ -1460,7 +1487,6 @@ class Raw:
     
                             words_output["individual"][cpt] = {
                                 "word": term[1],
-                                "hint": "aya",
                                 "romanization": transliterate(romanization, term[1], ignore="", reverse=True) if romanization in
                                                                                                                  self.DOMAINS[
                                                                                                                      "romanization"] else None,
@@ -1493,7 +1519,7 @@ class Raw:
                             docs += term[3]
                             words_output["individual"][cpt] = {
                                 "word": term[1],
-                                "hint": "translation",
+                                "hint": _trans_field_hint(term[0]),
                                 "romanization": None,
                                 "nb_matches_overall": int(term[2]) if term[2] else 0,
                                 "nb_matches": 0,
