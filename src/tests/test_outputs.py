@@ -2169,3 +2169,84 @@ def test_pure_wildcard_search_returns_quickly_without_error():
         assert results["error"]["code"] == 0, (
             f"Pure-wildcard query {query!r} returned an error: {results['error']}"
         )
+
+
+def test_lang_trans_parsers_populated_per_language():
+    """Raw._lang_trans_parsers must contain an entry for each available text_* field.
+
+    When the index is built with translation fields (e.g. text_en, text_fr),
+    _lang_trans_parsers should have one per-language parser for every language
+    whose field is present in the schema.  This ensures that the non-Arabic
+    search path can use a lang-scoped parser when ``lang`` is specified.
+    """
+    from alfanous.text_processing import _TRANSLATION_LANGS
+
+    schema_fields = set(RAWoutput.QSE._schema.names())
+    expected_langs = [lc for lc in _TRANSLATION_LANGS if f"text_{lc}" in schema_fields]
+
+    for lc in expected_langs:
+        assert lc in RAWoutput._lang_trans_parsers, (
+            f"_lang_trans_parsers must have an entry for lang={lc!r}"
+        )
+        assert lc in RAWoutput._lang_trans_fields, (
+            f"_lang_trans_fields must have an entry for lang={lc!r}"
+        )
+        assert RAWoutput._lang_trans_fields[lc] == frozenset([f"text_{lc}"]), (
+            f"_lang_trans_fields[{lc!r}] must be exactly {{text_{lc}}}"
+        )
+
+
+def test_non_arabic_search_with_lang_restricts_to_lang_field():
+    """When lang='en' is passed, a non-Arabic query must search only text_en.
+
+    The issue requested that specifying ``lang`` on an aya search with a
+    non-Arabic query restricts the translation search to the corresponding
+    ``text_{lang}`` field and ignores all other translation fields.
+
+    We verify this by checking that the query issued by the non-Arabic path
+    only targets ``text_en`` (and not ``text_fr``, ``text_ar``, etc.) when
+    ``lang='en'`` is given, by inspecting which fields the parsed query uses.
+    This is done via the per-language parser stored on the Raw instance.
+    """
+    from whoosh.qparser import MultifieldParser
+
+    # Confirm the lang-scoped parser for 'en' targets only text_en.
+    if "en" not in RAWoutput._lang_trans_parsers:
+        pytest.skip("text_en field not in index — cannot test lang scoping for 'en'")
+
+    en_parser = RAWoutput._lang_trans_parsers["en"]
+    q = en_parser.parse("mercy")
+    all_fields = {f for f, _ in q.all_terms()}
+    assert all_fields == {"text_en"}, (
+        f"Lang-scoped parser for 'en' must produce terms only in text_en, got: {all_fields}"
+    )
+
+    # Verify the all-languages parser covers more than one field.
+    if RAWoutput._trans_parser is not None:
+        q_all = RAWoutput._trans_parser.parse("mercy")
+        all_fields_all = {f for f, _ in q_all.all_terms()}
+        assert len(all_fields_all) > 1, (
+            "The all-languages _trans_parser must target more than one field"
+        )
+
+
+def test_non_arabic_aya_search_with_lang_returns_results():
+    """Non-Arabic aya search with lang='en' must return results.
+
+    Regression test: when lang is passed, the non-Arabic path must still
+    produce search results (it should search text_en, not fall through to
+    an empty parser or be silently skipped).
+    """
+    result = RAWoutput.do({
+        "action": "search",
+        "unit": "aya",
+        "query": "mercy",
+        "lang": "en",
+        "highlight": "none",
+        "page": 1,
+    })
+    assert result["error"]["code"] == 0, f"Search returned error: {result['error']}"
+    ayas = result["search"]["ayas"]
+    assert ayas, (
+        "Non-Arabic search with lang='en' must return at least one aya result"
+    )

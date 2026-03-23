@@ -514,6 +514,20 @@ class Raw:
             # when extracting matched terms for highlighting.
             self._trans_fields = frozenset(_avail_trans)
 
+            # Per-language parsers: when the caller passes lang="en" (or any
+            # other code), the non-Arabic search path is restricted to only
+            # the corresponding text_{lang} field instead of all translations.
+            self._lang_trans_parsers = {}
+            self._lang_trans_fields = {}
+            from alfanous.text_processing import _TRANSLATION_LANGS as _TL
+            for _lc in _TL:
+                _lf = f"text_{_lc}"
+                if _lf in _schema_fields:
+                    self._lang_trans_parsers[_lc] = _make_bounded_parser(
+                        [_lf], _schema, _OrGroup
+                    )
+                    self._lang_trans_fields[_lc] = frozenset([_lf])
+
             # Word search parser (used in _search_words).
             _all_word_f = [f for f in _WORD_ALL_INDEXED_FIELDS if f in _schema_fields]
             _default_word_f = (
@@ -531,6 +545,8 @@ class Raw:
         else:
             self._trans_parser = None
             self._trans_fields = frozenset()
+            self._lang_trans_parsers = {}
+            self._lang_trans_fields = {}
             self._word_parser = None
             self._all_word_fields = []
 
@@ -1055,11 +1071,21 @@ class Raw:
             # Skip for pure-wildcard queries (e.g. bare "*", "?", "؟") — they
             # expand across every term in every translation field via NestedParent,
             # exceeding any reasonable timelimit while producing zero useful results.
+            # When the caller specifies a language (e.g. lang="en"), restrict the
+            # search to only that language's translation field (text_en); if no
+            # lang is given, fall back to searching across all available fields.
             _trans_terms = []
             _trans_term_pairs = []
-            if self._trans_parser is not None and not _PURE_WILDCARD_RE.match(query):
-                _trans_q = self._trans_parser.parse(query)
-                _all_trans_q_terms = [(f, t) for f, t in _trans_q.all_terms() if f in self._trans_fields]
+            _active_trans_parser = (
+                self._lang_trans_parsers.get(lang) if lang else self._trans_parser
+            )
+            _active_trans_fields = (
+                self._lang_trans_fields.get(lang, self._trans_fields) if lang
+                else self._trans_fields
+            )
+            if _active_trans_parser is not None and not _PURE_WILDCARD_RE.match(query):
+                _trans_q = _active_trans_parser.parse(query)
+                _all_trans_q_terms = [(f, t) for f, t in _trans_q.all_terms() if f in _active_trans_fields]
                 _trans_terms = [t for _, t in _all_trans_q_terms]
                 _trans_term_pairs = _all_trans_q_terms
                 _query_parts.append(wquery.NestedParent(wquery.Term("kind", "aya"), _trans_q))
@@ -1577,10 +1603,10 @@ class Raw:
                     for ch in child_res:
                         g = ch["gid"]
                         tid = ch.get("trans_id") or ""
-                        lang = ch.get("trans_lang") or ""
+                        _ch_lang = ch.get("trans_lang") or ""
                         # Read text from the language-specific field when available,
                         # falling back to the stored trans_text for backward compat.
-                        text_field = f"text_{lang}" if lang else None
+                        text_field = f"text_{_ch_lang}" if _ch_lang else None
                         field_text = ch.get(text_field) if text_field else None
                         text = field_text or ch.get("trans_text") or ""
                         if g not in all_children:
@@ -1588,7 +1614,7 @@ class Raw:
                         all_children[g][tid] = {
                             "text": text,
                             "id": tid,
-                            "lang": lang,
+                            "lang": _ch_lang,
                             "author": ch.get("trans_author") or "",
                         }
                 finally:
