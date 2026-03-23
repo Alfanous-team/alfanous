@@ -2171,6 +2171,7 @@ def test_pure_wildcard_search_returns_quickly_without_error():
         )
 
 
+<<<<<<< copilot/fix-aya-search-lang-parameter
 def test_lang_trans_parsers_populated_per_language():
     """Raw._lang_trans_parsers must contain an entry for each available text_* field.
 
@@ -2252,6 +2253,8 @@ def test_non_arabic_aya_search_with_lang_returns_results():
     )
 
 
+=======
+>>>>>>> master
 def test_latin_keywords_have_translation_hint():
     """Latin keywords matching translation text should have a language hint in words.individual.
 
