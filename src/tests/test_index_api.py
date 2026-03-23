@@ -1,8 +1,6 @@
-"""Tests for alfanous.api.index_translations()."""
+"""Tests for the QSE nested-document architecture."""
 
-import json
 import os
-import shutil
 
 import pytest
 
@@ -11,159 +9,197 @@ alfanous_import = pytest.importorskip(
     reason="alfanous_import package is not installed",
 )
 
-import alfanous.api as alfanous
+from alfanous.constants import QURAN_TOTAL_VERSES
 
 # Path to the translation store shipped with the repository
 _STORE_DIR = os.path.normpath(os.path.join(
     os.path.dirname(__file__), "..", "..", "store", "Translations"
 ))
+_STORE_EXISTS = os.path.isdir(_STORE_DIR)
 
-# Pick two well-known zip files that are present in the store
-_SAMPLE_ZIPS = [
-    os.path.join(_STORE_DIR, "en.shakir.trans.zip"),
-    os.path.join(_STORE_DIR, "en.transliteration.trans.zip"),
-]
-_STORE_EXISTS = os.path.isdir(_STORE_DIR) and all(
-    os.path.exists(z) for z in _SAMPLE_ZIPS
-)
+_RESOURCES_PATH = os.path.normpath(
+    os.path.join(os.path.dirname(__file__), "..", "..", "store")
+) + os.sep
 
 
-@pytest.fixture()
-def temp_index_dir(tmp_path):
-    """Provide a temporary directory for a fresh extend index."""
-    return str(tmp_path / "extend")
+@pytest.fixture(scope="module")
+def nested_qse_index(tmp_path_factory):
+    """Build a QSE index with all available translations nested as children.
+
+    Scoped to the module so the (slow) build only runs once.
+    """
+    from alfanous_import.transformer import Transformer
+    index_dir = str(tmp_path_factory.mktemp("nested_main"))
+    t = Transformer(index_path=index_dir, resource_path=_RESOURCES_PATH)
+    schema = t.build_schema("aya")
+    t.build_docindex(schema, translations_store_path=_STORE_DIR,
+                     merge=False, procs=2, multisegment=True)
+    return index_dir
 
 
-@pytest.fixture()
-def temp_translations_json(tmp_path):
-    """Provide a temporary translations.json file."""
-    path = str(tmp_path / "translations.json")
-    with open(path, "w", encoding="utf-8") as f:
-        json.dump({}, f)
-    return path
+@pytest.mark.skipif(not _STORE_EXISTS, reason="translation store not found")
+def test_nested_qse_schema_has_required_fields(nested_qse_index):
+    """The combined QSE schema must contain both aya-parent and translation-child fields."""
+    from whoosh.filedb.filestore import FileStorage
+    ix = FileStorage(nested_qse_index).open_index()
+    names = ix.schema.names()
+    for f in ("aya", "aya_", "gid", "sura_id", "aya_id"):
+        assert f in names, f"Parent field '{f}' missing from schema"
+    for f in ("kind", "trans_id", "trans_lang", "trans_text", "trans_author"):
+        assert f in names, f"Child field '{f}' missing from schema"
+    ix.close()
 
 
-@pytest.fixture()
-def translation_source_dir(tmp_path):
-    """A temporary directory pre-populated with two sample translation zips."""
-    src = str(tmp_path / "translations_src")
-    os.makedirs(src)
-    for zip_path in _SAMPLE_ZIPS:
-        shutil.copy(zip_path, src)
-    return src
+@pytest.mark.skipif(not _STORE_EXISTS, reason="translation store not found")
+def test_nested_qse_parent_count(nested_qse_index):
+    """Parent aya count must equal QURAN_TOTAL_VERSES."""
+    from whoosh.filedb.filestore import FileStorage
+    from whoosh import query as wq
+    ix = FileStorage(nested_qse_index).open_index()
+    with ix.searcher() as s:
+        parents = s.search(wq.Term("kind", "aya"), limit=QURAN_TOTAL_VERSES + 1)
+        assert len(parents) == QURAN_TOTAL_VERSES
+    ix.close()
 
 
-@pytest.mark.skipif(not _STORE_EXISTS, reason="sample translation zips not found in store/Translations/")
-def test_index_translations_indexes_all_zips(temp_index_dir, temp_translations_json, translation_source_dir):
-    """index_translations() indexes every .trans.zip found in the source folder."""
-    count = alfanous.index_translations(
-        source=translation_source_dir,
-        _index_path=temp_index_dir,
-        _translations_list_file=temp_translations_json,
-    )
-    assert count == 2
-    with open(temp_translations_json, encoding="utf-8") as f:
-        data = json.load(f)
-    assert "en.shakir" in data
-    assert "en.transliteration" in data
+@pytest.mark.skipif(not _STORE_EXISTS, reason="translation store not found")
+def test_nested_qse_nested_parent_query(nested_qse_index):
+    """NestedParent: searching text_en returns parent aya documents."""
+    from whoosh.filedb.filestore import FileStorage
+    from whoosh import query as wq
+    from whoosh.qparser import QueryParser
+    ix = FileStorage(nested_qse_index).open_index()
+    with ix.searcher() as s:
+        q = wq.NestedParent(
+            wq.Term("kind", "aya"),
+            QueryParser("text_en", ix.schema).parse("merciful"),
+        )
+        results = s.search(q, limit=10)
+        assert len(results) > 0, "NestedParent query must return at least one aya"
+        for r in results:
+            assert r["kind"] == "aya", "NestedParent must only return parent aya docs"
+    ix.close()
 
 
-@pytest.mark.skipif(not _STORE_EXISTS, reason="sample translation zips not found in store/Translations/")
-def test_index_translations_skips_already_indexed(temp_index_dir, temp_translations_json, translation_source_dir):
-    """index_translations() returns 0 when all translations are already indexed."""
-    alfanous.index_translations(
-        source=translation_source_dir,
-        _index_path=temp_index_dir,
-        _translations_list_file=temp_translations_json,
-    )
-    # Second call: nothing new to index
-    count = alfanous.index_translations(
-        source=translation_source_dir,
-        _index_path=temp_index_dir,
-        _translations_list_file=temp_translations_json,
-    )
-    assert count == 0
+@pytest.mark.skipif(not _STORE_EXISTS, reason="translation store not found")
+def test_nested_qse_child_query_for_gid(nested_qse_index):
+    """Querying kind:translation AND gid:1 returns exactly one child per translation."""
+    from whoosh.filedb.filestore import FileStorage
+    from whoosh import query as wq
+    ix = FileStorage(nested_qse_index).open_index()
+    with ix.searcher() as s:
+        n_trans = len([f for f in os.listdir(_STORE_DIR) if f.endswith(".trans.zip")])
+        q = wq.And([wq.Term("kind", "translation"), wq.Term("gid", 1)])
+        results = s.search(q, limit=n_trans + 10)
+        assert len(results) == n_trans, (
+            f"Expected {n_trans} children for gid=1, got {len(results)}"
+        )
+        for r in results:
+            assert r["kind"] == "translation"
+            assert r["gid"] == 1
+            assert r.get("trans_text"), "trans_text must be non-empty"
+    ix.close()
 
 
-@pytest.mark.skipif(not _STORE_EXISTS, reason="sample translation zips not found in store/Translations/")
-def test_index_translations_removes_stale_entry_when_count_zero(temp_index_dir, temp_translations_json, translation_source_dir):
-    """index_translations() must update translations.json even when no new translations are indexed (count=0)."""
-    # First call: index the translations
-    alfanous.index_translations(
-        source=translation_source_dir,
-        _index_path=temp_index_dir,
-        _translations_list_file=temp_translations_json,
-    )
-
-    # Manually inject a stale (non-indexed) entry into translations.json
-    with open(temp_translations_json, encoding="utf-8") as f:
-        data = json.load(f)
-    data["xx.stale"] = "Stale-Translation"
-    with open(temp_translations_json, "w", encoding="utf-8") as f:
-        json.dump(data, f)
-
-    # Second call: count=0 (all already indexed), but translations.json should still be cleaned up
-    count = alfanous.index_translations(
-        source=translation_source_dir,
-        _index_path=temp_index_dir,
-        _translations_list_file=temp_translations_json,
-    )
-    assert count == 0
-
-    with open(temp_translations_json, encoding="utf-8") as f:
-        data = json.load(f)
-
-    assert "xx.stale" not in data, (
-        "stale entry must be removed even when count=0 (no new translations indexed)"
-    )
-    assert "en.shakir" in data
-    assert "en.transliteration" in data
+_CORPUS_PATH = os.path.normpath(os.path.join(
+    os.path.dirname(__file__), "..", "..", "store", "quranic-corpus-morphology-0.4.txt"
+))
+_CORPUS_EXISTS = os.path.isfile(_CORPUS_PATH)
 
 
-@pytest.mark.skipif(not _STORE_EXISTS, reason="sample translation zips not found in store/Translations/")
-def test_index_translations_updates_translations_json(temp_index_dir, temp_translations_json, translation_source_dir):
-    """index_translations() updates translations.json with all indexed IDs."""
-    alfanous.index_translations(
-        source=translation_source_dir,
-        _index_path=temp_index_dir,
-        _translations_list_file=temp_translations_json,
-    )
-    with open(temp_translations_json, encoding="utf-8") as f:
-        data = json.load(f)
-    assert len(data) >= 2
+@pytest.fixture(scope="module")
+def corpus_qse_index(tmp_path_factory):
+    """Build a QSE index with word children from the quranic corpus.
+
+    This fixture specifically exercises the code path that was broken by
+    ``UnknownFieldError: No field named 'englishcase'`` — word entries from
+    ``_load_corpus_words`` contain keys (englishcase, englishpos, englishmood,
+    englishstate, special) that are absent from the aya schema.  The fix
+    filters word_doc against ``_schema_names`` before calling
+    ``writer.add_document``.
+    """
+    from alfanous_import.transformer import Transformer
+    index_dir = str(tmp_path_factory.mktemp("corpus_main"))
+    t = Transformer(index_path=index_dir, resource_path=_RESOURCES_PATH)
+    schema = t.build_schema("aya")
+    # Must NOT raise UnknownFieldError
+    t.build_docindex(schema, corpus_path=_CORPUS_PATH,
+                     merge=False, procs=2, multisegment=True)
+    return index_dir
 
 
-@pytest.mark.skipif(not _STORE_EXISTS, reason="sample translation zips not found in store/Translations/")
-def test_update_translations_list_does_not_preserve_non_indexed(tmp_path):
-    """update_translations_list() must not carry over non-indexed entries from a previous run."""
-    from alfanous_import.updater import update_translations_list
+@pytest.mark.skipif(not _CORPUS_EXISTS, reason="quranic corpus file not found")
+def test_corpus_index_builds_without_unknown_field_error(corpus_qse_index):
+    """Building a QSE index with --corpus must not raise UnknownFieldError.
 
-    index_dir = str(tmp_path / "extend")
-    translations_json = str(tmp_path / "translations.json")
+    Regression test for the bug where 'englishcase', 'englishpos', 'englishmood',
+    'englishstate' (present in _load_corpus_words output but absent from the aya
+    schema) caused an UnknownFieldError in writer.add_document.
+    """
+    # If we reached this point the fixture built successfully — that's the test.
+    from whoosh.filedb.filestore import FileStorage
+    ix = FileStorage(corpus_qse_index).open_index()
+    names = ix.schema.names()
+    # Word-child fields from the aya schema must be present
+    for f in ("word", "word_id", "pos", "root", "lemma"):
+        assert f in names, f"Word child field '{f}' missing from schema"
+    # englishmood and englishstate are now indexable — they must be in the schema
+    for f in ("englishmood", "englishstate"):
+        assert f in names, (
+            f"Field '{f}' should now be in the aya schema as an indexable ID field"
+        )
+    # englishcase and englishpos remain stored-only and must NOT be in the aya schema
+    for bad in ("englishcase", "englishpos"):
+        assert bad not in names, (
+            f"Field '{bad}' should not be in the aya schema"
+        )
+    ix.close()
 
-    # Pre-populate translations.json with a stale, non-indexed entry
-    with open(translations_json, "w", encoding="utf-8") as f:
-        json.dump({"xx.stale": "Stale-Translation"}, f)
 
-    # Index only two real translations
-    src = str(tmp_path / "src")
-    os.makedirs(src)
-    for zip_path in _SAMPLE_ZIPS:
-        shutil.copy(zip_path, src)
+@pytest.mark.skipif(not _CORPUS_EXISTS, reason="quranic corpus file not found")
+def test_corpus_index_englishstate_englishmood_indexable(corpus_qse_index):
+    """englishstate and englishmood must be searchable as ID fields in word children."""
+    from whoosh.filedb.filestore import FileStorage
+    from whoosh import query as wq
+    ix = FileStorage(corpus_qse_index).open_index()
+    schema = ix.schema
+    # Both fields must be present and indexable (not STORED-only)
+    from whoosh.fields import STORED
+    for fname in ("englishstate", "englishmood"):
+        assert fname in schema, f"Field '{fname}' must be in the index schema"
+        assert not isinstance(schema[fname], STORED), (
+            f"Field '{fname}' must be an indexable field, not STORED"
+        )
+    # Must be able to search word children by englishstate and englishmood
+    with ix.searcher() as s:
+        q = wq.And([wq.Term("kind", "word"), wq.Term("englishstate", "Indefinite state")])
+        results = s.search(q, limit=5)
+        assert len(results) > 0, (
+            "englishstate:'Indefinite state' query must return at least one word child"
+        )
+        q2 = wq.And([wq.Term("kind", "word"), wq.Term("englishmood", "Jussive mood")])
+        results2 = s.search(q2, limit=5)
+        assert len(results2) > 0, (
+            "englishmood:'Jussive mood' query must return at least one word child"
+        )
+    ix.close()
 
-    alfanous.index_translations(
-        source=src,
-        _index_path=index_dir,
-        _translations_list_file=translations_json,
-    )
 
-    with open(translations_json, encoding="utf-8") as f:
-        data = json.load(f)
+@pytest.mark.skipif(not _CORPUS_EXISTS, reason="quranic corpus file not found")
+def test_corpus_index_word_children_stored(corpus_qse_index):
+    """Word children written with corpus data must be retrievable from the index."""
+    from whoosh.filedb.filestore import FileStorage
+    from whoosh import query as wq
+    ix = FileStorage(corpus_qse_index).open_index()
+    with ix.searcher() as s:
+        q = wq.And([wq.Term("kind", "word"), wq.Term("gid", 1)])
+        results = s.search(q, limit=20)
+        assert len(results) > 0, "At least one word child must be stored for gid=1"
+        for r in results:
+            assert r["kind"] == "word"
+            assert r["gid"] == 1
+            assert r.get("word"), "word field must be non-empty for word children"
+    ix.close()
 
-    # The stale entry must not survive
-    assert "xx.stale" not in data, (
-        "update_translations_list must not preserve non-indexed entries"
-    )
-    # The newly indexed entries must be present
-    assert "en.shakir" in data
-    assert "en.transliteration" in data
+
+

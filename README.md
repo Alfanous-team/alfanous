@@ -1,5 +1,7 @@
 [![Tests](https://github.com/Alfanous-team/alfanous/workflows/tests/badge.svg)](https://github.com/Alfanous-team/alfanous/actions)
 
+<!-- mcp-name: io.github.Alfanous-team/alfanous -->
+
 # Alfanous API
 
 **Alfanous** is a Quranic search engine API that provides simple and advanced search capabilities for the Holy Qur'an. It enables developers to build applications that search through Quranic text in Arabic, with support for Buckwalter transliteration, advanced query syntax, and rich metadata.
@@ -41,6 +43,9 @@ $ pip install alfanous3
 
 # Get suggestions
 >>> api.do({"action": "suggest", "query": u"الح"})
+
+# Correct a query
+>>> api.correct_query(u"الكتاب")
 
 # Get metadata information
 >>> api.do({"action": "show", "query": "translations"})
@@ -101,8 +106,20 @@ Faceted search (aggregate by fields):
 #### Core Functions
 
 * `api.search(query, **options)` - Search Quran verses
-* `api.do(params)` - Unified interface for all actions (search, suggest, show)
+* `api.do(params)` - Unified interface for all actions (search, suggest, show, list_values, correct_query)
+* `api.correct_query(query, unit, flags)` - Get a spelling-corrected version of a query
 * `api.get_info(category)` - Get metadata information
+
+The underlying `Raw` output engine is exposed as `Engine` in `alfanous.api` (and re-exported from `alfanous` directly). Use it as a context manager to ensure index resources are properly released:
+
+```python
+from alfanous.api import Engine
+# or equivalently:
+# from alfanous import Engine
+
+with Engine() as engine:
+    result = engine.do({"action": "search", "query": u"الله"})
+```
 
 #### Search Parameters
 
@@ -112,20 +129,151 @@ Common parameters for `api.do()` with `action="search"`:
 * `unit` (str): Search unit - "aya", "word", or "translation" (default: "aya")
 * `page` (int): Page number (default: 1)
 * `perpage` (int): Results per page, 1-100 (default: 10)
-* `sortedby` (str): Sort order - "score", "mushaf", "tanzil", "subject" (default: "score")
+* `sortedby` (str): Sort order - "score", "relevance", "mushaf", "tanzil", "ayalength" (default: "score")
+* `reverse` (bool): Reverse the sort order (default: False)
 * `view` (str): Output view - "minimal", "normal", "full", "statistic", "linguistic" (default: "normal")
 * `highlight` (str): Highlight style - "css", "html", "bold", "bbcode" (default: "css")
 * `script` (str): Text script - "standard" or "uthmani" (default: "standard")
 * `vocalized` (bool): Include Arabic vocalization (default: True)
 * `translation` (str): Translation ID to include
 * `recitation` (str): Recitation ID to include (1-30, default: "1")
-* `fuzzy` (bool): Enable fuzzy search (default: False)
+* `fuzzy` (bool): Enable fuzzy search — searches both `aya_` (exact) and `aya` (normalised/stemmed) fields, plus Levenshtein distance matching (default: False). See [Exact Search vs Fuzzy Search](#exact-search-vs-fuzzy-search).
+* `fuzzy_maxdist` (int): Maximum Levenshtein edit distance for fuzzy term matching — `1`, `2`, or `3` (default: `1`, only used when `fuzzy=True`).
 * `facets` (str): Comma-separated list of fields for faceted search
 * `filter` (dict): Filter results by field values
 
 For a complete list of parameters and options, see the [detailed documentation](#advanced-features).
 
 ### Advanced Features
+
+#### Exact Search vs Fuzzy Search
+
+Alfanous provides two complementary search modes that control which index fields are queried.
+
+##### Exact Search (default — `fuzzy=False`)
+
+When fuzzy search is **off** (the default), queries run against the **`aya_`** field, which stores the fully-vocalized Quranic text with diacritical marks (tashkeel) preserved. This mode is designed for precise, statistical matching:
+
+* Diacritics in the query are significant — `مَلِكِ` and `مَالِكِ` are treated as different words.
+* No stop-word removal, synonym expansion, or stemming is applied to the query.
+* Ideal when you need exact phrase matches, reproducible result counts, or statistical analysis.
+
+```python
+# Default exact search — only the vocalized aya_ field is used
+>>> api.search(u"الله")
+>>> api.search(u"الله", fuzzy=False)
+
+# Phrase match with full diacritics
+>>> api.search(u'"الْحَمْدُ لِلَّهِ"')
+```
+
+##### Fuzzy Search (`fuzzy=True`)
+
+When fuzzy search is **on**, queries run against **both** the `aya_` field (exact matches) **and** the `aya` field (a separate index built for broad, forgiving search). At index time the `aya` field is processed through a richer pipeline:
+
+1. **Normalisation** — shaped letters, tatweel, hamza variants and common spelling errors are unified.
+2. **Stop-word removal** — high-frequency function words (e.g. مِنْ، فِي، مَا) are filtered out so they do not dilute result relevance.
+3. **Synonym expansion** — each token is stored together with its synonyms, so a query for one word automatically matches equivalent words.
+4. **Arabic stemming** — words are reduced to their stem using the [Snowball Arabic stemmer](https://snowballstem.org/) (via `pystemmer`), so different morphological forms of the same root match each other.
+
+No heavy operations are performed on the query string at search time; all the linguistic enrichment lives in the index.
+
+Additionally, for each Arabic term in the query, a **Levenshtein distance** search is performed against the `aya_ac` field (unvocalized, non-stemmed). This catches spelling variants and typos within a configurable edit-distance budget controlled by `fuzzy_maxdist`.
+
+```python
+# Fuzzy search — aya_ (exact) + aya (normalised/stemmed) + Levenshtein distance on aya_ac
+>>> api.search(u"الكتاب", fuzzy=True)
+
+# Increase edit distance to 2 to tolerate more spelling variation
+>>> api.search(u"الكتاب", fuzzy=True, fuzzy_maxdist=2)
+
+# Via the unified interface
+>>> api.do({
+...     "action": "search",
+...     "query": u"مؤمن",
+...     "fuzzy": True,
+...     "fuzzy_maxdist": 1,
+...     "page": 1,
+...     "perpage": 10
+... })
+```
+
+| `fuzzy_maxdist` | Behaviour |
+|---|---|
+| `1` (default) | Catches single-character insertions, deletions, or substitutions |
+| `2` | Broader tolerance — useful for longer words or noisy input |
+| `3` | Maximum supported — use with care as recall increases significantly |
+
+Fuzzy mode is particularly useful when:
+
+* The user does not know the exact vocalized form of a word.
+* You want morphologically related words to appear in the same result set (e.g. searching *كتب* also surfaces *كتاب*, *كاتب*, *مكتوب*).
+* You want synonym-aware retrieval without writing explicit OR queries.
+
+> **Note:** `pystemmer` must be installed for stemming to take effect (`pip install pystemmer`). If the package is absent the stem filter degrades silently to a no-op, leaving normalisation and stop-word removal still active.
+
+#### List Field Values
+
+`list_values` returns every unique indexed value for a given field. Use it to discover the full vocabulary of searchable fields — for example, all available translation identifiers, part-of-speech tags, or root words — before composing a query.
+
+```python
+# Get all unique root values in the index
+>>> api.do({"action": "list_values", "field": "root"})
+# Returns: {"list_values": {"field": "root", "values": [...], "count": N}}
+
+# Discover all indexed translation IDs
+>>> api.do({"action": "list_values", "field": "trans_id"})
+
+# Discover all part-of-speech categories for word search
+>>> api.do({"action": "list_values", "field": "pos"})
+
+# Retrieve all indexed lemmas on demand (replaces the former show/lemmas)
+>>> api.do({"action": "list_values", "field": "lemma"})
+```
+
+**Parameters:**
+
+* `field` (str): The name of the indexed field whose unique values you want (required).
+
+**Return value:**
+
+A dictionary with a `list_values` key containing:
+
+* `field` — the requested field name.
+* `values` — sorted list of unique non-empty indexed values.
+* `count` — length of the `values` list.
+
+#### Query Correction
+
+`correct_query()` uses Whoosh's built-in spell-checker to compare each term in the query against the index vocabulary and replace unknown terms with the closest known alternative.  When the query is already valid (all terms appear in the index) the `corrected` value in the response is identical to the original input.
+
+```python
+# Correct a query via the dedicated function
+>>> api.correct_query(u"الكتاب")
+# Returns:
+# {"correct_query": {"original": "الكتاب", "corrected": "الكتاب"}, "error": ...}
+
+# Correct a misspelled / out-of-vocabulary term
+>>> api.correct_query(u"الكتب")
+# Returns:
+# {"correct_query": {"original": "الكتب", "corrected": "الكتاب"}, "error": ...}
+
+# Via the unified interface
+>>> api.do({"action": "correct_query", "query": u"الكتب", "unit": "aya"})
+```
+
+**Parameters:**
+
+* `query` (str): The raw query string to correct (required).
+* `unit` (str): Search unit — currently only `"aya"` is supported; other units return `None` (default: `"aya"`).
+* `flags` (dict): Optional dictionary of additional flags.
+
+**Return value:**
+
+A dictionary with a `correct_query` key containing:
+
+* `original` — the input query string as provided.
+* `corrected` — the corrected query string; identical to `original` when no correction is needed.
 
 #### Query Syntax
 
@@ -192,6 +340,11 @@ Available fields for fielded search:
 * `باب` (subtopic) - Subtopic
 * `نوع_السورة` (sura_type) - Sura type (Meccan/Medinan)
 
+Word-level fields (use with `unit="word"`):
+
+* `englishstate` - Nominal state in English (e.g. "Definite state", "Indefinite state")
+* `englishmood` - Verb mood in English (e.g. "Indicative mood", "Subjunctive mood", "Jussive mood")
+
 For the complete field list, call:
 
 ```python
@@ -241,6 +394,8 @@ Get various metadata using the "show" action:
 >>> api.do({"action": "show", "query": "defaults"})
 ```
 
+> **Note:** Lemmas are no longer exposed via `show`. Use `api.do({"action": "list_values", "field": "lemma"})` to retrieve them on demand.
+
 #### Adding New Translations
 
 You can extend the local search index with additional Zekr-compatible `.trans.zip` translation files using `index_translations()`. This requires the `alfanous_import` package (included in the repository under `src/alfanous_import/`).
@@ -275,6 +430,45 @@ The [examples/](examples/) directory contains example scripts demonstrating vari
 * **facet_search_examples.py** - Faceted search and filtering examples
 
 See [examples/README.md](examples/README.md) for more information.
+
+## MCP Server
+
+Alfanous ships an [MCP (Model Context Protocol)](https://modelcontextprotocol.io/) server that lets AI assistants (Claude, Copilot, etc.) search and explore the Qur'an directly. See [alfanous_mcp/README.md](src/alfanous_mcp/README.md) for the full reference.
+
+Quick start:
+
+```sh
+$ pip install alfanous3-mcp
+$ python -m alfanous_mcp.mcp_server        # stdio – works with Claude Desktop
+```
+
+To connect Claude Desktop, add the following to your `claude_desktop_config.json`:
+
+```json
+{
+  "mcpServers": {
+    "alfanous": {
+      "type": "stdio",
+      "command": "python",
+      "args": ["-m", "alfanous_mcp.mcp_server"],
+      "tools": [
+        "search_quran",
+        "search_translations",
+        "get_quran_info",
+        "search_quran_by_themes",
+        "search_quran_by_stats",
+        "search_quran_by_position",
+        "suggest_query",
+        "correct_query",
+        "search_by_word_linguistics",
+        "list_field_values"
+      ]
+    }
+  }
+}
+```
+
+The server is also published to the [GitHub MCP Registry](https://github.com/mcp/io.github.Alfanous-team/alfanous) — you can install it with a single click from there.
 
 ## Web Interface
 
@@ -313,7 +507,7 @@ $ git clone https://github.com/Alfanous-team/alfanous.git
 $ cd alfanous
 
 # Install dependencies
-$ pip install pyparsing whoosh pytest
+$ pip install pyparsing whoosh pystemmer pytest
 
 # Build indexes (required for development)
 $ make build
@@ -330,7 +524,7 @@ $ pytest -vv --rootdir=src/
 
 ## License
 
-Alfanous is licensed under the **GNU Affero General Public License v3 or later (AGPLv3+)**.
+Alfanous is licensed under the **GNU Lesser General Public License v3 or later (LGPLv3+)**.
 
 See [LICENSE](LICENSE) for details.
 

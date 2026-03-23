@@ -5,9 +5,9 @@ This file contains rules and patterns for translating natural language queries
 into Alfanous query syntax. These rules can be used by AI systems or query
 assistants to help users search the Quran more effectively.
 
-VERSION: 1.0
-DATE: 2026-02-28
-LICENSE: AGPL v3 or later
+VERSION: 1.1
+DATE: 2026-03-10
+LICENSE: LGPL v3 or later
 
 
 TABLE OF CONTENTS
@@ -19,6 +19,10 @@ TABLE OF CONTENTS
 5. Field Names Reference
 6. Natural Language Translation Patterns
 7. Common Query Examples
+8. Error Handling
+9. Response Format for AI Assistants
+10. API Integration Notes
+11. Final Pass Requirements
 
 
 ================================================================================
@@ -585,6 +589,81 @@ When integrating with Alfanous API:
 
 4. For faceted search, use facets parameter:
    facets="sura_id,juz,subject"
+
+
+================================================================================
+11. FINAL PASS REQUIREMENTS
+================================================================================
+
+After completing any AI-assisted task involving Alfanous code, queries, or
+responses, always perform the following two final-pass checks before
+considering the work done.
+
+--------------------------------------------------------------------------------
+11.1 MEMORY LEAK AND PERFORMANCE OPTIMIZATION PASS
+--------------------------------------------------------------------------------
+
+Always review the work for the following issues before finalising:
+
+MEMORY LEAKS — check for:
+  - Unclosed index searchers or writers (always call searcher.close() /
+    writer.commit() / writer.cancel() in a try/finally block)
+  - Accumulating caches or dictionaries that grow without bound
+  - Circular references that prevent garbage collection
+  - File handles, network sockets, or database connections left open
+  - Large intermediate lists or sets that could be replaced by generators
+
+PERFORMANCE BOTTLENECKS — check for:
+  - O(n²) or worse loops over large datasets (e.g., iterating all 6 236 verses
+    inside a per-word loop)
+  - Repeated full-index scans where a targeted field query suffices
+  - Building the same parser, schema, or analyzer object on every request
+    instead of caching it at startup
+  - Using limit=None on Whoosh searches when a reasonable upper bound is known
+  - Redundant transliteration or normalization applied more than once to the
+    same string
+  - Blocking I/O on the request path that could be deferred or batched
+
+Checklist (complete before finishing):
+  [ ] All searcher / writer objects are closed in try/finally blocks
+  [ ] No unbounded data structures accumulate across requests
+  [ ] Hot-path objects (parsers, analyzers, schemas) are cached at init time
+  [ ] Query limits are set appropriately — limit=None is justified if used
+  [ ] No redundant normalization / transliteration calls in tight loops
+
+--------------------------------------------------------------------------------
+11.2 DOCUMENTATION UPDATE PASS
+--------------------------------------------------------------------------------
+
+Always update documentation to reflect any changes made.  The minimum expected
+updates are:
+
+API CHANGES:
+  - Update docstrings for every function or class whose signature or behaviour
+    changed (parameters, return value, raised exceptions)
+  - Add inline comments for non-obvious logic (e.g., why a specific Whoosh
+    query strategy is used)
+
+FIELD/SCHEMA CHANGES:
+  - Update the field descriptions in store/fields.json (comment, type,
+    facet_allowed, etc.) to match the new behaviour
+  - Update section 5 (FIELD NAMES REFERENCE) of this file if searchable or
+    facetable field names change
+  - Update section 10 (API INTEGRATION NOTES) if new parameters are introduced
+
+GENERAL:
+  - Update VERSION and DATE at the top of this file whenever the AI rules
+    themselves change
+  - Update CHANGELOG.md or release notes when user-visible behaviour changes
+  - Ensure README.md examples remain accurate after the change
+
+Checklist (complete before finishing):
+  [ ] All changed functions/classes have up-to-date docstrings
+  [ ] store/fields.json comments reflect current field semantics
+  [ ] This file (ai_query_translation_rules.txt) is updated if query syntax
+      or searchable fields changed
+  [ ] README.md and any affected example files remain accurate
+  [ ] VERSION and DATE at the top of this file are bumped if rules changed
 
 
 ================================================================================

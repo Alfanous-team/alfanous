@@ -1,0 +1,73 @@
+name: Publish to MCP Registry
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write  # Required for OIDC authentication
+      contents: read
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Wait for alfanous3 PyPI package to be available
+        run: |
+          VERSION="${{ github.ref_name }}"
+          VERSION="${VERSION#v}"
+          echo "Waiting for alfanous3==${VERSION} to appear on PyPI..."
+          for i in $(seq 1 30); do
+            STATUS=$(curl -s -o /dev/null -w "%{http_code}" \
+              "https://pypi.org/pypi/alfanous3/${VERSION}/json")
+            if [ "$STATUS" = "200" ]; then
+              echo "alfanous3==${VERSION} is available on PyPI."
+              break
+            fi
+            echo "Attempt ${i}/30: not yet available (HTTP ${STATUS}). Waiting 60s..."
+            sleep 60
+          done
+          if [ "$STATUS" != "200" ]; then
+            echo "ERROR: alfanous3==${VERSION} did not appear on PyPI after 30 minutes." >&2
+            exit 1
+          fi
+
+      - name: Wait for alfanous3-mcp PyPI package to be available
+        run: |
+          VERSION="${{ github.ref_name }}"
+          VERSION="${VERSION#v}"
+          echo "Waiting for alfanous3-mcp==${VERSION} to appear on PyPI..."
+          for i in $(seq 1 30); do
+            STATUS=$(curl -s -o /dev/null -w "%{http_code}" \
+              "https://pypi.org/pypi/alfanous3-mcp/${VERSION}/json")
+            if [ "$STATUS" = "200" ]; then
+              echo "alfanous3-mcp==${VERSION} is available on PyPI."
+              break
+            fi
+            echo "Attempt ${i}/30: not yet available (HTTP ${STATUS}). Waiting 60s..."
+            sleep 60
+          done
+          if [ "$STATUS" != "200" ]; then
+            echo "ERROR: alfanous3-mcp==${VERSION} did not appear on PyPI after 30 minutes." >&2
+            exit 1
+          fi
+
+      - name: Install mcp-publisher
+        run: |
+          curl -fsSL "https://github.com/modelcontextprotocol/registry/releases/latest/download/mcp-publisher_$(uname -s | tr '[:upper:]' '[:lower:]')_$(uname -m | sed 's/x86_64/amd64/;s/aarch64/arm64/').tar.gz" | tar xz mcp-publisher
+
+      - name: Set version in server.json
+        run: |
+          VERSION="${{ github.ref_name }}"
+          VERSION="${VERSION#v}"
+          jq --arg v "$VERSION" '.version = $v | .packages[0].version = $v' server.json > server.tmp && mv server.tmp server.json
+
+      - name: Authenticate to MCP Registry
+        run: ./mcp-publisher login github-oidc
+
+      - name: Publish server to MCP Registry
+        run: ./mcp-publisher publish

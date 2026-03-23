@@ -113,6 +113,57 @@ def test_ai_rules_contains_examples():
         f"Expected more than 20 example lines, found {len(example_lines)}"
 
 
+def test_ai_rules_contains_final_pass_section():
+    """Test that the AI rules file contains a Final Pass Requirements section."""
+    rules_path = paths.AI_QUERY_TRANSLATION_RULES_FILE
+
+    with open(rules_path, 'r', encoding='utf-8') as f:
+        content = f.read()
+
+    assert "FINAL PASS REQUIREMENTS" in content, \
+        "Final Pass Requirements section not found"
+
+
+def test_ai_rules_final_pass_memory_leak_check():
+    """Test that the Final Pass section covers memory leak / performance checks."""
+    rules_path = paths.AI_QUERY_TRANSLATION_RULES_FILE
+
+    with open(rules_path, 'r', encoding='utf-8') as f:
+        content = f.read().lower()
+
+    assert "memory leak" in content, \
+        "Memory leak check not documented in final pass section"
+    assert "performance" in content, \
+        "Performance optimization check not documented in final pass section"
+
+
+def test_ai_rules_final_pass_documentation_update():
+    """Test that the Final Pass section covers documentation update requirements."""
+    rules_path = paths.AI_QUERY_TRANSLATION_RULES_FILE
+
+    with open(rules_path, 'r', encoding='utf-8') as f:
+        content = f.read().lower()
+
+    assert "documentation update" in content, \
+        "Documentation update requirement not found in final pass section"
+
+
+def test_ai_rules_toc_lists_final_pass():
+    """Test that the table of contents lists the Final Pass section."""
+    rules_path = paths.AI_QUERY_TRANSLATION_RULES_FILE
+
+    with open(rules_path, 'r', encoding='utf-8') as f:
+        content = f.read()
+
+    toc_start = content.find("TABLE OF CONTENTS")
+    toc_end = content.find("================================================================================", toc_start + 1)
+    assert toc_start != -1, "TABLE OF CONTENTS not found"
+    toc_text = content[toc_start:toc_end].lower()
+
+    assert "final pass" in toc_text, \
+        "Final Pass section not listed in Table of Contents"
+
+
 if __name__ == "__main__":
     # Run tests
     test_ai_rules_file_exists()
@@ -135,5 +186,17 @@ if __name__ == "__main__":
     
     test_ai_rules_contains_examples()
     print("✓ AI rules file contains examples")
-    
+
+    test_ai_rules_contains_final_pass_section()
+    print("✓ AI rules file contains Final Pass section")
+
+    test_ai_rules_final_pass_memory_leak_check()
+    print("✓ Final Pass section covers memory leaks and performance")
+
+    test_ai_rules_final_pass_documentation_update()
+    print("✓ Final Pass section covers documentation updates")
+
+    test_ai_rules_toc_lists_final_pass()
+    print("✓ Table of Contents lists Final Pass section")
+
     print("\nAll tests passed!")

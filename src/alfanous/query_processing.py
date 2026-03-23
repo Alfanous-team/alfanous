@@ -11,217 +11,67 @@ FIXME multifields
 
 import re
 
-from pyparsing import printables, alphanums
-from pyparsing import ZeroOrMore, OneOrMore
-from pyparsing import Group, Combine, Suppress, Optional, FollowedBy
-from pyparsing import Literal, CharsNotIn, Word, Keyword
-from pyparsing import Empty, White, Forward, QuotedString
-from pyparsing import StringEnd
 from whoosh import qparser
 
 from whoosh.qparser import QueryParser
-from whoosh.query import Term, MultiTerm
-from whoosh.query import Wildcard as whoosh_Wildcard
-from whoosh.query import Prefix as whoosh_Prefix
-from whoosh.query import Or, NullQuery, Every
+from whoosh.query import Term
 
-from alfanous.data import syndict, derivedict, worddict, arabic_to_english_fields
-from alfanous.text_processing import QArabicSymbolsFilter
-
-from alfanous.misc import locate, find, filter_doubles
+from alfanous.data import arabic_to_english_fields
 
 # Import query plugins for integration with Whoosh 2.7
-from whoosh.qparser.plugins import SingleQuotePlugin
+from whoosh.qparser.plugins import SingleQuotePlugin, EveryPlugin, WildcardPlugin
 
+# ---------------------------------------------------------------------------
+# Pre-compiled regexes and operator tables used by ArabicParser._preprocess_query.
+# Defined at module level so they are compiled once per process, not once per
+# parse() call.
+# ---------------------------------------------------------------------------
 
-def _make_arabic_parser():
-    escapechar = "//"
-    alephba = u"""
-                abcdefghijklmnopqrstuvwxyz_
-                األآإـتنمكطدجحخهعغفقثصضشسيبئءؤرىةوزظذ
-                """
+# Split a query string on quoted sub-strings to protect their contents.
+_QUOTE_SPLIT_RE = re.compile(r'("[^"]*"|\'[^\']*\')')
 
-    wordtext = CharsNotIn('//*؟^():"{}[]$><%~#،,\' +-|')
-    escape = Suppress(escapechar) \
-             + (Word(printables, exact=1) | White(exact=1))
-    wordtoken = Combine(OneOrMore(wordtext | escape))
+# Match a field-name token followed immediately by ':'.
+_FIELD_RE = re.compile(r'([\w\u0600-\u06FF]+):')
 
-    # A plain old word.
-    plainWord = Group(wordtoken).setResultsName("Word")
+# Match a full bracket range expression.
+_RANGE_OUTER_RE = re.compile(r'\[([^\]]+)\]')
 
-    # A wildcard word containing * or ?.
-    wildchars = Word(u"؟?*")
-    # Start with word chars and then have wild chars mixed in
-    wildmixed = wordtoken + OneOrMore(wildchars + Optional(wordtoken))
-    # Or, start with wildchars, and then either a mixture of word and wild chars
-    # , or the next token
-    wildstart = wildchars \
-                + (OneOrMore(wordtoken + Optional(wildchars))
-                   | FollowedBy(White()
-                                | StringEnd()))
-    wildcard = Group(
-        Combine(wildmixed | wildstart)
-    ).setResultsName("Wildcard")
+# Match the Arabic range word "الى"/"إلى" when not adjacent to non-whitespace.
+_RANGE_INNER_RE = re.compile(r'(?<!\S)(الى|إلى)(?!\S)')
 
-    # A range of terms
-    startfence = Literal("[")
-    endfence = Literal("]")
-    rangeitem = QuotedString('"') | wordtoken
-    to = Keyword(u"الى") \
-         | Keyword(u"إلى") \
-         | Keyword("To") \
-         | Keyword("to") \
-         | Keyword("TO")
+# Arabic logical operator table.  Insertion order is significant: longer
+# tokens (وليس) must appear before their prefixes (و / ليس) so the alternation
+# in _ARABIC_OPS_RE always matches the longest token first.
+_ARABIC_OPS = {
+    'وليس': 'ANDNOT',
+    'ليس':  'NOT',
+    'و':    'AND',
+    'أو':   'OR',
+    'او':   'OR',
+}
 
-    openstartrange = Group(Empty()) \
-                     + Suppress(to + White()) \
-                     + Group(rangeitem)
+# Matches an Arabic logical operator surrounded by horizontal whitespace.
+_ARABIC_OPS_RE = re.compile(
+    r'(?<=[^\S\n])(' + '|'.join(re.escape(k) for k in _ARABIC_OPS) + r')(?=[^\S\n])'
+)
 
-    openendrange = Group(rangeitem) \
-                   + Suppress(White() + to) \
-                   + Group(Empty())
-    normalrange = Group(rangeitem) \
-                  + Suppress(White() + to + White()) \
-                  + Group(rangeitem)
-    range = Group(
-        startfence \
-        + (normalrange | openstartrange | openendrange) \
-        + endfence).setResultsName("Range")
+# Matches a leading NOT operator at the very start of a (sub-)expression.
+_START_NOT_RE = re.compile(
+    r'^(' + '|'.join(re.escape(k) for k in ('ليس', 'وليس')) + r')(?=\s)'
+)
 
-    # synonyms
-    syn_symbol = Literal("~")
-    synonym = Group(syn_symbol + wordtoken).setResultsName("Synonyms")
+# Symbol binary operator table.
+_SYM_OPS = {'+': 'AND', '|': 'OR', '-': 'ANDNOT'}
 
-    # antonyms
-    ant_symbol = Literal("#")
-    antonym = Group(ant_symbol + wordtoken).setResultsName("Antonyms")
-
-    # derivation level 1,2
-    derive_symbole = Literal(u"<") | Literal(u">")
-    derivation = Group(
-        OneOrMore(derive_symbole) + wordtoken
-    ).setResultsName("Derivation")
-
-    # spellerrors
-    # spellerrors=Group(QuotedString('\'')).setResultsName("Errors")
-    spellerrors_symbole = Literal(u"%")
-    spellerrors = Group(
-        spellerrors_symbole + wordtoken
-    ).setResultsName("SpellErrors")
-
-    # shakl:must uplevel to boostable
-    tashkil_symbol = Literal("'")
-    tashkil = Group(
-        tashkil_symbol + \
-        ZeroOrMore(wordtoken | White()) + \
-        tashkil_symbol
-    ).setResultsName("Tashkil")
-
-    # tuple search (root,pattern,type)
-    starttuple = Literal("{")
-    endtuple = Literal("}")
-    bettuple = Literal(u"،") | Literal(",")
-    wordtuple = Group(Optional(wordtoken))
-    tuple = Group(
-        starttuple + \
-        wordtuple + \
-        ZeroOrMore(bettuple + wordtuple) + \
-        endtuple
-    ).setResultsName("Tuple")
-
-    # A word-like thing
-    generalWord = range | wildcard | plainWord | tuple | antonym | synonym | \
-                  derivation | tashkil | spellerrors
-
-    # A quoted phrase
-    quotedPhrase = Group(QuotedString('"')).setResultsName("Quotes")
-
-    expression = Forward()
-
-    # Parentheses can enclose (group) any expression
-    parenthetical = Group((
-            Suppress("(") + expression + Suppress(")"))
-    ).setResultsName("Group")
-
-    boostableUnit = generalWord | quotedPhrase
-    boostedUnit = Group(
-        boostableUnit + \
-        Suppress("^") + \
-        Word("0123456789", ".0123456789")
-    ).setResultsName("Boost")
-
-    # The user can flag that a parenthetical group, quoted phrase, or word
-    # should be searched in a particular field by prepending 'fn:', where fn is
-    # the name of the field.
-    fieldableUnit = parenthetical | boostedUnit | boostableUnit
-    fieldedUnit = Group(
-        (Word(alephba + "_") | Word(alphanums + "_")) + \
-        Suppress(':') + \
-        fieldableUnit
-    ).setResultsName("Field")
-
-    # Units of content
-    unit = fieldedUnit | fieldableUnit
-
-    # A unit may be "not"-ed.
-    operatorNot = Group(
-        Suppress(Keyword(u"ليس") | Keyword(u"NOT")) + \
-        Suppress(White()) + \
-        unit
-    ).setResultsName("Not")
-    generalUnit = operatorNot | unit
-
-    andToken = Keyword(u"و") | Keyword(u"AND")
-    orToken = Keyword(u"أو") | Keyword(u"او") | Keyword(u"OR")
-    andNotToken = Keyword(u"وليس") | Keyword(u"ANDNOT")
-
-    operatorAnd = Group(
-        (generalUnit +
-         Suppress(White()) +
-         Suppress(andToken) +
-         Suppress(White()) +
-         expression) | \
-        (generalUnit +
-         Suppress(Literal(u"+")) +
-         expression)
-    ).setResultsName("And")
-
-    operatorOr = Group(
-        (generalUnit +
-         Suppress(White()) +
-         Suppress(orToken) +
-         Suppress(White()) +
-         expression) | \
-        (generalUnit +
-         Suppress(Literal(u"|")) +
-         expression)
-    ).setResultsName("Or")
-
-    operatorAndNot = Group(
-        (unit +
-         Suppress(White()) +
-         Suppress(andNotToken) +
-         Suppress(White()) +
-         expression) | \
-        (unit +
-         Suppress(Literal(u"-")) +
-         expression)
-    ).setResultsName("AndNot")
-
-    expression << (OneOrMore(operatorAnd | operatorOr | operatorAndNot |
-                             generalUnit | Suppress(White())) | Empty())
-
-    toplevel = Group(expression).set_results_name("Toplevel") + StringEnd()
-
-    return toplevel.parse_string
-
-
-ARABIC_PARSER_FN = _make_arabic_parser()
+# Matches a symbol binary operator surrounded by spaces.
+_SYM_OPS_RE = re.compile(
+    r'(?<=\s)(' + '|'.join(re.escape(k) for k in _SYM_OPS) + r')(?=\s)'
+)
 
 
 class StandardParser(QueryParser):  #
     def __init__(self, schema, mainfield, otherfields, termclass=Term):
-        super(StandardParser, self).__init__(
+        super().__init__(
             mainfield,
             schema=schema,
             group=qparser.OrGroup,
@@ -239,11 +89,10 @@ class ArabicParser(StandardParser):
                  termclass=Term,
                  ara2eng=arabic_to_english_fields):
 
-        super(ArabicParser, self).__init__(schema=schema,
-                                           mainfield=mainfield,
-                                           otherfields=otherfields,
-                                           termclass=termclass)
-        self.parser = ARABIC_PARSER_FN
+        super().__init__(schema=schema,
+                         mainfield=mainfield,
+                         otherfields=otherfields,
+                         termclass=termclass)
         self.ara2eng = ara2eng
         
         # Add Whoosh 2.7 query plugins for custom Arabic syntax
@@ -260,6 +109,16 @@ class ArabicParser(StandardParser):
         
         # Remove SingleQuotePlugin to allow our TashkilPlugin to work
         self.remove_plugin_class(SingleQuotePlugin)
+        # Remove EveryPlugin so *:* does not translate to a match-all query
+        self.remove_plugin_class(EveryPlugin)
+        # Remove the built-in WildcardPlugin so that ArabicWildcardPlugin (added
+        # below) is the sole handler for ?, ??, ???, * patterns.  WildcardPlugin
+        # has a lower tagger priority (0) than ArabicWildcardPlugin (90) and
+        # therefore runs first in the tagging phase, consuming bare ? and * chars
+        # before ArabicWildcardPlugin can match complete wildcard tokens.  Without
+        # this removal, standalone queries like ??, ???, and * produce plain
+        # Whoosh Wildcard objects that lack the MAX_EXPAND cap.
+        self.remove_plugin_class(WildcardPlugin)
         
         # Add all Arabic query plugins (instantiate plugin classes)
         self.add_plugin(SynonymsPlugin())
@@ -273,7 +132,7 @@ class ArabicParser(StandardParser):
     def _preprocess_query(self, querystr):
         """Translate Arabic field names, range keywords, and logical operators before Whoosh parsing."""
         # Split on quoted strings ('...' and "...") to protect their contents
-        parts = re.split(r'("[^"]*"|\'[^\']*\')', querystr)
+        parts = _QUOTE_SPLIT_RE.split(querystr)
 
         result_parts = []
         for i, part in enumerate(parts):
@@ -287,30 +146,20 @@ class ArabicParser(StandardParser):
             def replace_field(match):
                 field = match.group(1)
                 return self.ara2eng.get(field, field) + ':'
-            p = re.sub(r'([\w\u0600-\u06FF]+):', replace_field, p)
+            p = _FIELD_RE.sub(replace_field, p)
 
             # 2. Replace Arabic range keyword 'الى'/'إلى' with 'TO' inside brackets
             def replace_range(m):
-                inner = re.sub(r'(?<!\S)(الى|إلى)(?!\S)', 'TO', m.group(1))
+                inner = _RANGE_INNER_RE.sub('TO', m.group(1))
                 return '[' + inner + ']'
-            p = re.sub(r'\[([^\]]+)\]', replace_range, p)
+            p = _RANGE_OUTER_RE.sub(replace_range, p)
 
             # 3. Replace Arabic logical operators (only when surrounded by whitespace)
-            _arabic_ops = {'وليس': 'ANDNOT', 'ليس': 'NOT', 'و': 'AND',
-                           'أو': 'OR', 'او': 'OR'}
-            _arabic_ops_re = re.compile(
-                r'(?<=[^\S\n])(' + '|'.join(re.escape(k) for k in _arabic_ops) + r')(?=[^\S\n])'
-            )
-            p = _arabic_ops_re.sub(lambda m: _arabic_ops[m.group(1)], p)
-            p = re.sub(r'^(' + '|'.join(re.escape(k) for k in ('ليس', 'وليس')) + r')(?=\s)',
-                       lambda m: _arabic_ops[m.group(1)], p)
+            p = _ARABIC_OPS_RE.sub(lambda m: _ARABIC_OPS[m.group(1)], p)
+            p = _START_NOT_RE.sub(lambda m: _ARABIC_OPS[m.group(1)], p)
 
             # 4. Replace symbol binary operators surrounded by spaces
-            _sym_ops = {'+': 'AND', '|': 'OR', '-': 'ANDNOT'}
-            _sym_ops_re = re.compile(
-                r'(?<=\s)(' + '|'.join(re.escape(k) for k in _sym_ops) + r')(?=\s)'
-            )
-            p = _sym_ops_re.sub(lambda m: _sym_ops[m.group(1)], p)
+            p = _SYM_OPS_RE.sub(lambda m: _SYM_OPS[m.group(1)], p)
 
             result_parts.append(p)
 
@@ -318,309 +167,9 @@ class ArabicParser(StandardParser):
 
     def parse(self, querystr, normalize=True, debug=False):
         """Parse a query string, first preprocessing Arabic field names and range syntax."""
-        return super(ArabicParser, self).parse(
+        return super().parse(
             self._preprocess_query(querystr), normalize=normalize, debug=debug
         )
-
-    def _Field(self, node, fieldname):
-        return self._eval(node[1], self.ara2eng.get(node[0]) or node[0])
-
-    def _Synonyms(self, node, fieldname):
-        return self.make_synonyms(fieldname, node[1])
-
-    def _Antonyms(self, node, fieldname):
-        return self.make_antonyms(fieldname, node[1])
-
-    def _Derivation(self, node, fieldname):
-        return self.make_derivation(fieldname,
-                                    text=node[-1],
-                                    level=len(node) - 1)
-
-    def _SpellErrors(self, node, fieldname):
-        return self.make_spellerrors(fieldname, node[1])
-
-    def _Tashkil(self, node, fieldname):
-        if len(node) > 2:
-            lst = node[1:-1]
-        else:
-            lst = []
-        return self.make_tashkil(fieldname, lst)
-
-    def _Tuple(self, node, fieldname):
-        return self.make_tuple(fieldname,
-                               [node[i][0] for i in range(1, len(node), 2)])
-
-    def _Prefix(self, node, fieldname):
-        return self.make_prefix(fieldname, node[1])
-
-    def make_synonyms(self, fieldname, text):
-        return self.Synonyms(fieldname, text)
-
-    def make_antonyms(self, fieldname, text):
-        return self.Antonyms(fieldname, text)
-
-    def make_derivation(self, fieldname, text, level):
-        return self.Derivation(fieldname, text, level)
-
-    def make_spellerrors(self, fieldname, text):
-        return self.SpellErrors(fieldname, text)
-
-    def make_tashkil(self, fieldname, words):
-        words = [word for word in words if word[0] not in " \t\r\n"]
-        if len(words):
-            return self.Tashkil(fieldname, words)
-        else:
-            return NullQuery
-
-    def make_tuple(self, fieldname, items):
-        return self.Tuple(fieldname, items)
-
-    def make_wildcard(self, fieldname, text):
-
-        field = self._field(fieldname) if fieldname else None
-        if field:
-            text = self.get_term_text(field,
-                                      text,
-                                      tokenize=False,
-                                      removestops=False)
-
-        return self.Wildcard(fieldname, text)
-
-    def make_prefix(self, fieldname, text):
-        field = self._field(fieldname)
-        if field:
-            text = self.get_term_text(field,
-                                      text,
-                                      tokenize=False,
-                                      removestops=False)
-
-        return self.Prefix(fieldname, text)
-
-    class QMultiTerm(MultiTerm):
-        """ basic class """
-
-        def _btexts(self, ixreader):
-            fieldname = self.fieldname
-            to_bytes = ixreader.schema[fieldname].to_bytes
-            for word in self.words:
-                try:
-                    btext = to_bytes(word)
-                except ValueError:
-                    continue
-                if (fieldname, btext) in ixreader:
-                    yield btext
-
-        def __str__(self):
-            return u"%s:<%s>" % (self.fieldname, self.text)
-
-        def __repr__(self):
-            return "%s(%r, %r, boost=%r)" % (self.__class__.__name__,
-                                             self.fieldname,
-                                             self.text,
-                                             self.boost)
-
-        def _all_terms(self, termset, phrases=True):
-            for word in self.words:
-                termset.add((self.fieldname, word))
-
-        def has_terms(self):
-            return True
-
-        def terms(self, phrases=False):
-            for word in self.words:
-                yield (self.fieldname, word)
-
-        def _existing_terms(self,
-                            ixreader,
-                            termset,
-                            reverse=False,
-                            phrases=True):
-            fieldname, words = self.fieldname, self.words
-            fieldnum = ixreader.fieldname_to_num(fieldname)
-            for word in words:
-                contains = (fieldnum, word) in ixreader
-                if reverse:
-                    contains = not contains
-                if contains:
-                    termset.add((fieldname, word))
-
-    class FuzzyAll(QMultiTerm):
-        """  do all possible operations to make a  fuzzy search
-                    - Synonyms
-                    - root derivation
-                    - spell
-                    - tashkil
-        """
-
-        def __init__(self, fieldname, text, boost=1.0):
-            self.fieldname = fieldname
-            self.text = text
-            self.boost = boost
-            self.words = self.pipeline(self.fieldname, self.text)
-
-        def pipeline(self, fieldname, text):
-            words = set()
-            words |= set(ArabicParser.Synonyms(fieldname, text).words)
-            words |= set(ArabicParser.Derivation(fieldname, text).words)
-            return list(words)
-
-    class Synonyms(QMultiTerm):
-        """
-        query that automatically searches for synonyms
-        of the given word in the same field.
-        """
-
-        def __init__(self, fieldname, text, boost=1.0):
-            self.fieldname = fieldname
-            self.text = text
-            self.boost = boost
-            self.words = self.synonyms(self.text)
-
-        @staticmethod
-        def synonyms(word):
-            """ TODO find an arabic synonyms thesaurus """
-            return [word]
-
-    class Antonyms(QMultiTerm):
-        """
-        query that automatically searches for antonyms
-        of the given word in the same field.
-        """
-
-        def __init__(self, fieldname, text, boost=1.0):
-            self.fieldname = fieldname
-            self.text = text
-            self.boost = boost
-            self.words = self.antonyms(self.text)
-
-        @staticmethod
-        def antonyms(word):
-            """ TODO find an arabic antonyms thesaurus """
-            return [word]
-
-    class Derivation(QMultiTerm):
-        """
-        query that automatically searches for derivations
-        of the given word in the same field.
-        """
-
-        def __init__(self, fieldname, text, level=0, boost=1.0):
-            self.fieldname = fieldname
-            self.text = text
-            self.boost = boost
-            self.words = self.derivation(self.text, level)
-
-            @staticmethod
-            def derivation(word, leveldist):
-                """ 
-                TODO find a good specific stemmer for arabic language,
-                manipulate at least tow levels of stemming root,lemma 
-                """
-                return [word]
-
-    class SpellErrors(QMultiTerm):
-        """
-        query that ignores  the spell errors of arabic letters such as:
-            - ta' marbuta and ha'
-            - alef maqsura and ya'
-            - hamza forms
-        """
-
-        def __init__(self, fieldname, text, boost=1.0):
-            self.fieldname = fieldname
-            self.text = text
-            self.boost = boost
-            self.words = [text]
-            self.ASF = QArabicSymbolsFilter(shaping=True,
-                                            tashkil=False,
-                                            spellerrors=True,
-                                            hamza=True)
-
-        def _btexts(self, ixreader):
-            fieldname = self.fieldname
-            from_bytes = ixreader.schema[fieldname].from_bytes
-            for field, btext in ixreader.all_terms():
-                if field == fieldname:
-                    indexed_text = from_bytes(btext)
-                    if self._compare(self.text, indexed_text):
-                        yield btext
-
-        def _compare(self, first, second):
-            """ normalize and compare """
-            matched = (self.ASF.normalize_all(first) == self.ASF.normalize_all(second))
-            if matched:
-                self.words.append(second)
-            return matched
-
-    class Tashkil(QMultiTerm):
-        """
-        query that automatically searches for different tashkil of words
-        of the given word in the same field.
-        """
-
-        def __init__(self, fieldname, text, boost=1.0):
-            self.fieldname = fieldname
-            self.text = text
-            self.boost = boost
-            ASF = QArabicSymbolsFilter(shaping=False,
-                                       tashkil=True,
-                                       spellerrors=False,
-                                       hamza=False)
-            self.words = [ASF.normalize_all(word) for word in text]
-
-        def _btexts(self, ixreader):
-            fieldname = self.fieldname
-            from_bytes = ixreader.schema[fieldname].from_bytes
-            for field, btext in ixreader.all_terms():
-                if field == fieldname:
-                    indexed_text = from_bytes(btext)
-                    for word in self.text:
-                        if self._compare(word, indexed_text):
-                            yield btext
-
-        def _compare(self, first, second):
-            """ normalize and compare """
-
-            if first == second: # todo tshkil comparing
-                self.words.append(second)
-                return True
-
-    class Tuple(QMultiTerm):
-        """
-        query that automatically searches for different  words that have 
-        the same root*pattern*type of the given word in the same field.
-        """
-
-        def __init__(self, fieldname, items, boost=1.0):
-            self.fieldname = fieldname
-            self.props = self._properties(items)
-            self.text = "(" + ",".join(items) + ")"
-            self.boost = boost
-            self.words = self.tuple(self.props)
-
-        def _properties(self, items):
-            """ convert list of properties to a dictionary """
-            l = len(items)
-            if l >= 0: D = {}
-            if l >= 1: D["test"] = items[0]
-            if l >= 2: pass  # add new props
-            return D
-
-        @staticmethod
-        def tuple(props):
-            """ search the words that have some specific properties
-            TODO find an arabic analyzer that can suggest a word properties
-            """
-            return []
-
-    class Wildcard(whoosh_Wildcard):
-        """customize the wildcards for arabic symbols   """
-
-        def __init__(self, fieldname, text, boost=1.0):
-            new_text = text.replace(u"؟", u"?")
-            super(ArabicParser.Wildcard, self).__init__(fieldname,
-                                                        new_text,
-                                                        boost)
 
 
 class QuranicParser(ArabicParser):
@@ -632,216 +181,8 @@ class QuranicParser(ArabicParser):
                  otherfields=[],
                  termclass=Term,
                  ara2eng=arabic_to_english_fields):
-        super(QuranicParser, self).__init__(schema=schema,
-                                            mainfield=mainfield,
-                                            otherfields=otherfields,
-                                            termclass=termclass)
+        super().__init__(schema=schema,
+                         mainfield=mainfield,
+                         otherfields=otherfields,
+                         termclass=termclass)
 
-    class FuzzyAll(ArabicParser.FuzzyAll):
-        """ specific for quran    """
-
-        def pipeline(self, fieldname, text):
-            words = set()
-            words |= set(QuranicParser.Synonyms(fieldname, text).words)
-            words |= set(QuranicParser.Derivation(fieldname, text, level=1).words)
-            return list(words)
-
-    class Synonyms(ArabicParser.Synonyms):
-        """
-        query that automatically searches for synonyms
-        of the given word in the same field.specific for qur'an
-        """
-
-        @staticmethod
-        def synonyms(word):
-            return syndict.get(word) or [word]
-
-
-
-
-    class Derivation(ArabicParser.Derivation):
-        """
-            specific for quran
-        """
-
-        @staticmethod
-        def derivation(word, leveldist):
-            """ search in defined field """
-            # define source level index
-            if word in derivedict["word_"]:
-                indexsrc = "word_"
-            elif word in derivedict["lemma"]:
-                indexsrc = "lemma"
-            elif word in derivedict["root"]:
-                indexsrc = "root"
-            else:
-                indexsrc = None  # warning
-            # define destination level index
-            if leveldist == 0:
-                indexdist = "word_"
-            elif leveldist == 1:
-                indexdist = "lemma"
-            elif leveldist == 2:
-                indexdist = "root"
-            else:
-                indexdist = "root"  # new levels
-
-            lst = []
-            if indexsrc:  # if index source level is defined
-                itm = locate(derivedict[indexsrc], derivedict[indexdist], word)
-                if itm:  # if different of none
-                    lst = filter_doubles(find(derivedict[indexdist], derivedict["word_"], itm))
-                else:
-                    lst = [word]
-
-            return lst
-
-    class Tuple(ArabicParser.Tuple):
-        """
-        query that automatically searches for different  words that have 
-        the same root*pattern*type of the given word in the same field.
-                
-        """
-
-        def _properties(self, items):
-            """ convert list of prop"rties to a dictionary """
-            l = len(items)
-            if l >= 0: D = {}
-            if l >= 1: D["root"] = items[0]
-            if l >= 2: D["type"] = items[1]
-            if l >= 3: D["pattern"] = items[2]
-            if l >= 4: pass  # new properties
-
-            return D
-
-        @staticmethod
-        def tuple(props):
-            """ search the words that have the specific properties """
-
-            wset = None
-            for propkey in props.keys():
-                if worddict.get(propkey):
-                    partial_wset = set(find(worddict[propkey], worddict["word_"], props[propkey]))
-                    if wset is None:
-                        wset = partial_wset
-                    else:
-                        wset &= partial_wset
-            return list(wset)
-
-    class Wildcard(ArabicParser.Wildcard, ArabicParser.QMultiTerm):
-        """
-        customize the wildcards for highlight
-        """
-
-        def __init__(self, fieldname, text, boost=1.0):
-            self.words = []
-            new_text = text.replace(u"؟", u"?")
-            super(QuranicParser.Wildcard, self).__init__(fieldname,
-                                                         new_text,
-                                                         boost)
-
-        def _btexts(self, ixreader):
-            fieldname = self.fieldname
-            from_bytes = ixreader.schema[fieldname].from_bytes
-            if self.prefix:
-                candidates = ixreader.expand_prefix(fieldname, self.prefix)
-            else:
-                candidates = ixreader.lexicon(fieldname)
-
-            exp = self.expression
-            for btext in candidates:
-                text = from_bytes(btext)
-                if exp.match(text):
-                    self.words.append(text)
-                    yield btext
-
-        def normalize(self):
-            # If there are no wildcard characters in this "wildcard",
-            # turn it into a simple Term.
-            text = self.text
-            if text == "*":
-                return Every(boost=self.boost)
-            if "*" not in text and "?" not in text:
-                # If no wildcard chars, convert to a normal term.
-                return Term(self.fieldname, self.text, boost=self.boost)
-            elif ("?" not in text
-                  and text.endswith("*")
-                  and text.find("*") == len(text) - 1
-                  and (len(text) < 2 or text[-2] != "\\")):
-                # If the only wildcard char is an asterisk at the end, convert to a
-                # Prefix query.
-                return QuranicParser.Prefix(self.fieldname,
-                                            self.text[:-1],
-                                            boost=self.boost)
-            else:
-                return self
-
-    class Prefix(whoosh_Prefix, ArabicParser.QMultiTerm):
-        """customize Prefix for  highlight """
-
-        def __init__(self, fieldname, text, boost=1.0):
-            self.words = []
-            super(QuranicParser.Prefix, self).__init__(fieldname,
-                                                       text,
-                                                       boost)
-
-        def _btexts(self, ixreader):
-            fieldname = self.fieldname
-            from_bytes = ixreader.schema[fieldname].from_bytes
-            for btext in ixreader.expand_prefix(fieldname, self.text):
-                self.words.append(from_bytes(btext))
-                yield btext
-
-
-class SuperFuzzyAll(QuranicParser.FuzzyAll):
-    """ 
-    specific for quran
-    search with all possible forms of the  word
-    """
-
-    def pipeline(self, fieldname, text):
-        words = set()
-        words |= set(QuranicParser.Synonyms(fieldname, text).words)
-        words |= set(QuranicParser.Derivation(fieldname, text, level=1).words)
-        if len(words) == 1:
-            wildcarded_text = " ".join(map(lambda x: "*" + x + "*", text.split(" ")))
-            words |= set(QuranicParser.Wildcard(fieldname, wildcarded_text).words)
-
-        return list(words)
-
-
-class FuzzyQuranicParser(QuranicParser):
-    """a customized query parser  that respects Quranic properties"""
-
-    def __init__(self,
-                 schema,
-                 mainfield="aya",
-                 otherfields=tuple(),
-                 termclass=SuperFuzzyAll,
-                 ara2eng=arabic_to_english_fields):
-        super(FuzzyQuranicParser, self).__init__(schema=schema,
-                                                 mainfield=mainfield,
-                                                 otherfields=otherfields,
-                                                 termclass=termclass)
-
-        self.fieldnames = [mainfield] + otherfields
-
-    def _make(self, methodname, fieldname, *args):
-        method = getattr(super(FuzzyQuranicParser, self), methodname)
-        if fieldname is None:
-            return Or([method(fn, *args) for fn in self.fieldnames])
-        else:
-            return method(fieldname, *args)
-
-    def make_term(self, fieldname, text):
-        return self._make("make_term", fieldname, text)
-
-    def make_range(self, fieldname, start, end, startexcl, endexcl):
-        return self._make("make_range", fieldname, start, end,
-                          startexcl, endexcl)
-
-    def make_wildcard(self, fieldname, text):
-        return self._make("make_wildcard", fieldname, text)
-
-    def make_phrase(self, fieldname, text):
-        return self._make("make_phrase", fieldname, text)

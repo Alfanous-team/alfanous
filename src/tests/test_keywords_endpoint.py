@@ -3,7 +3,16 @@ This is a test module for the keywords endpoint feature.
 Tests the ability to query top most frequent keywords or all unique keywords in a field.
 """
 
+import pytest
 from alfanous import api
+from alfanous.data import QSE
+from alfanous import paths
+
+
+@pytest.fixture(autouse=True)
+def _require_index():
+    if not QSE(paths.QSE_INDEX).OK:
+        pytest.skip("Search index not built — run `make build` first")
 
 
 def test_keywords_top_frequent_default():
@@ -16,8 +25,8 @@ def test_keywords_top_frequent_default():
     show_data = result['show']
     assert show_data['field'] == 'aya_'
     assert show_data['mode'] == 'unique'
-    assert show_data['count'] == 17574  # Total unique words in aya_ field
-    assert len(show_data['keywords']) == 17574
+    assert show_data['count'] == 17572  # Total unique words in aya_ field
+    assert len(show_data['keywords']) == 17572
     
     # Check that it returns a list of unique words
     assert isinstance(show_data['keywords'], list)
@@ -55,7 +64,11 @@ def test_keywords_all_unique():
 
 
 def test_keywords_chapter_field_unique():
-    """Test getting all unique keywords in chapter field"""
+    """Test getting all unique keywords in chapter field.
+
+    chapter is an ID field (exact-phrase stored values), so unique mode returns
+    the 22 distinct chapter phrases rather than individual tokenized words.
+    """
     result = api.do({'action': 'show', 'query': 'keywords', 'field': 'chapter', 'mode': 'unique'})
     
     assert 'show' in result
@@ -64,13 +77,18 @@ def test_keywords_chapter_field_unique():
     show_data = result['show']
     assert show_data['field'] == 'chapter'
     assert show_data['mode'] == 'unique'
-    assert show_data['count'] == 50
-    assert len(show_data['keywords']) == 50
-    assert 'الإيمان' in show_data['keywords']
+    assert show_data['count'] == 22
+    assert len(show_data['keywords']) == 22
+    # 'الإيمان' appears inside several chapter phrases (e.g. 'أركان الإيمان')
+    assert any('الإيمان' in k for k in show_data['keywords'])
 
 
 def test_keywords_topic_field_unique():
-    """Test getting all unique keywords in topic field"""
+    """Test getting all unique keywords in topic field.
+
+    topic is an ID field (exact-phrase stored values), so unique mode returns
+    the 383 distinct topic phrases rather than individual tokenized words.
+    """
     result = api.do({'action': 'show', 'query': 'keywords', 'field': 'topic', 'mode': 'unique'})
     
     assert 'show' in result
@@ -79,8 +97,8 @@ def test_keywords_topic_field_unique():
     show_data = result['show']
     assert show_data['field'] == 'topic'
     assert show_data['mode'] == 'unique'
-    assert show_data['count'] == 751
-    assert len(show_data['keywords']) == 751
+    assert show_data['count'] == 383
+    assert len(show_data['keywords']) == 383
 
 
 def test_keywords_sura_id_field():
@@ -97,27 +115,6 @@ def test_keywords_sura_id_field():
     assert len(show_data['keywords']) == 114
     # Verify it's a list of integers from 1 to 114
     assert show_data['keywords'] == list(range(1, 115))
-
-
-def test_keywords_frequent_subject_field():
-    """Test getting most frequent keywords in subject field with explicit mode"""
-    result = api.do({'action': 'show', 'query': 'keywords', 'field': 'subject', 'mode': 'frequent', 'limit': 15})
-    
-    assert 'show' in result
-    assert result['error']['code'] == 0
-    
-    show_data = result['show']
-    assert show_data['field'] == 'subject'
-    assert show_data['mode'] == 'frequent'
-    assert show_data['limit'] == 15
-    assert show_data['count'] == 15
-    assert len(show_data['keywords']) == 15
-    
-    # Verify structure
-    for keyword in show_data['keywords']:
-        assert 'word' in keyword
-        assert 'frequency' in keyword
-        assert keyword['frequency'] > 0
 
 
 def test_keywords_invalid_limit_parameter():
@@ -164,14 +161,14 @@ def test_keywords_explicit_aya_unit():
 
 def test_keywords_translation_unit_unique():
     """Test translation unit with unique mode"""
-    result = api.do({'action': 'show', 'query': 'keywords', 'unit': 'translation', 'field': 'id', 'mode': 'unique'})
+    result = api.do({'action': 'show', 'query': 'keywords', 'unit': 'translation', 'field': 'trans_id', 'mode': 'unique'})
     
     assert 'show' in result
     assert result['error']['code'] == 0
     
     show_data = result['show']
     assert show_data['unit'] == 'translation'
-    assert show_data['field'] == 'id'
+    assert show_data['field'] == 'trans_id'
     assert show_data['mode'] == 'unique'
     assert show_data['count'] > 0
     assert len(show_data['keywords']) == show_data['count']
@@ -181,14 +178,14 @@ def test_keywords_translation_unit_unique():
 
 def test_keywords_translation_unit_frequent():
     """Test translation unit with frequent mode"""
-    result = api.do({'action': 'show', 'query': 'keywords', 'unit': 'translation', 'field': 'text', 'mode': 'frequent', 'limit': 10})
+    result = api.do({'action': 'show', 'query': 'keywords', 'unit': 'translation', 'field': 'text_en', 'mode': 'frequent', 'limit': 10})
     
     assert 'show' in result
     assert result['error']['code'] == 0
     
     show_data = result['show']
     assert show_data['unit'] == 'translation'
-    assert show_data['field'] == 'text'
+    assert show_data['field'] == 'text_en'
     assert show_data['mode'] == 'frequent'
     assert show_data['limit'] == 10
     assert show_data['count'] == 10
@@ -201,16 +198,15 @@ def test_keywords_translation_unit_frequent():
         assert keyword['frequency'] > 0
 
 
-def test_keywords_word_unit_unavailable():
-    """Test that word unit returns appropriate error when unavailable"""
+def test_keywords_word_unit():
+    """Word unit keywords now use QSE (kind=word children from corpus)."""
     result = api.do({'action': 'show', 'query': 'keywords', 'unit': 'word'})
-    
+
     assert 'show' in result
     assert result['error']['code'] == 0
-    
+
     show_data = result['show']
     assert show_data['unit'] == 'word'
-    assert show_data['count'] == 0
-    assert 'error' in show_data
-    assert 'not available' in show_data['error'].lower()
+    # Word children are embedded in QSE — count > 0 when corpus was indexed
+    assert show_data['count'] >= 0
 

@@ -3,16 +3,16 @@
     Use `alfanous.search` for searching in Quran verses and translations.
     Use `alfanous.get_info` for getting meta info.
     Use `alfanous.do` method for search, suggestion and get most useful info.
-    Use `alfanous.index_translations` to add translation zip files from a folder to the local index.
     """
 
 from typing import Dict, Optional, Any
-import os
 
 # import Output object
 from alfanous.outputs import Raw as _search_engine
-# import default Paths
-from alfanous.data import paths as PATHS
+
+# Public alias: users should import Engine from alfanous.api (or alfanous)
+# instead of reaching into alfanous.outputs directly.
+Engine = _search_engine
 
 DEFAULTS, DOMAINS, HELPMESSAGES = _search_engine.DEFAULTS, _search_engine.DOMAINS, _search_engine.HELPMESSAGES
 FLAGS = DEFAULTS["flags"].keys()
@@ -36,26 +36,74 @@ def do(flags: Dict[str, Any]) -> Dict[str, Any]:
     return _R.do(flags)
 
 
-def search(query: str, unit: str = "aya", page: int = 1, sortedby: str = "relevance", 
-           fuzzy: bool = False, view: str = "normal", highlight: str = "bold", 
-           flags: Optional[Dict[str, Any]] = None, facets: Optional[str] = None, 
-           filter: Optional[str] = None, hierarchical_facets: Optional[str] = None) -> Dict[str, Any]:
+def search(query: str, unit: str = "aya", page: int = 1, sortedby: str = "relevance",
+           reverse: bool = False,
+           fuzzy: bool = False, fuzzy_maxdist: int = 1, derivation_level = 0,
+           view: str = "normal",
+           highlight: str = "bold", flags: Optional[Dict[str, Any]] = None,
+           facets: Optional[str] = None, filter: Optional[Any] = None,
+           timelimit: Optional[float] = 5.0,
+           translation: Optional[str] = None,
+           lang: Optional[str] = None,
+           hierarchical_facets: Optional[str] = None) -> Dict[str, Any]:
     """
     Search in Quran verses and translations.
     
     @param query: The search query string
     @param unit: Search unit ('aya', 'word', 'translation')
     @param page: Page number for pagination
-    @param sortedby: Sort order ('relevance', 'mushaf', etc.)
-    @param fuzzy: Enable fuzzy search
+    @param sortedby: Sort order.  One of:
+           - 'score' / 'relevance': rank by Whoosh BM25 relevance (highest score first by default).
+           - 'mushaf': traditional Qur'an order (sura then verse number).
+           - 'tanzil': revelation chronology order.
+           - 'ayalength': verse length in words (shortest first by default).
+    @param reverse: Reverse the sort order (default False).  When True, the
+           lowest/earliest value comes first (e.g. shortest verse first for
+           'ayalength', or least-relevant result first for 'score').
+    @param fuzzy: Enable fuzzy search — Levenshtein distance matching on
+           aya_ac for spelling variants and typos.  Fuzzy does NOT involve
+           stemming — use derivation_level for morphological broadening.
+    @param fuzzy_maxdist: Maximum Levenshtein edit distance for fuzzy term matching
+           (default 1, only used when fuzzy=True)
+    @param derivation_level: Controls morphological derivation broadening.
+           Accepts integer levels or string aliases:
+           0 / "word"  → exact match only (default).
+           1 / "stem"  → also search aya_fuzzy (snowball Arabic stemming).
+           2 / "lemma" → also search aya_lemma (corpus lemma field).
+           3 / "root"  → also search aya_root  (corpus root field).
     @param view: View mode ('normal', 'minimal', etc.)
     @param highlight: Highlight style ('bold', 'css', etc.)
     @param flags: Additional flags dictionary
-    @param facets: Flat facets to group results by (comma-separated field names)
-    @param filter: Filter to apply to results
+    @param facets: Comma-separated list of facet fields to group results by.
+           Valid aya fields: sura_id, juz, hizb, rub, nisf, page, sura_type,
+           chapter, topic, subtopic, sajda, sajda_type.
+           Valid word fields: root, type, pos, lemma, case, state, derivation, gender.
+           Valid translation fields: sura_id, aya_id, trans_id, trans_lang.
+    @param filter: Restrict results to documents matching these field values,
+           independently of the search query.  Accepted formats:
+           - A dict: ``{"sura_id": 2}`` or ``{"sura_id": [2, 3]}`` (OR within field,
+             AND across fields).
+           - A string: ``"sura_id:2"`` or ``"sura_id:2,juz:1"``.
+           Works for all search units (aya, word, translation).
+           Example useful fields per unit:
+           - aya:         sura_id, juz, hizb, page, sura_type, chapter, topic
+           - word:        pos, type, root, lemma, gender, case, state, derivation
+           - translation: trans_lang, trans_id, sura_id, aya_id
+    @param timelimit: Maximum number of seconds to spend on the search query
+           (default 5.0). Pass None to disable the limit.
+    @param translation: Translation ID (e.g. 'en.sahih') to include with aya results.
+    @param lang: Language code (e.g. 'en', 'fr', 'ar') to retrieve translations by
+           language at query time. If both ``translation`` and ``lang`` are given,
+           ``translation`` takes precedence.
     @param hierarchical_facets: Hierarchical facets using '>' notation, e.g.
-        ``"juz>hizb"`` or ``"juz>hizb;chapter>topic>subtopic"``
-    @return: Dictionary of search results
+           ``"juz>hizb"`` or ``"juz>hizb;chapter>topic>subtopic"``.  Multiple
+           hierarchies are separated by ``";"``.  Results are returned under
+           ``search.hierarchical_facets`` keyed by the hierarchy name.
+    @return: Dictionary of search results. Each aya entry includes an optional
+           ``translation`` field controlled by the ``translation``/``lang``
+           parameters. Use ``translation=en.transliteration`` or ``lang=en``
+           to retrieve the English transliteration, and
+           ``translation=ar.jalalayn`` or ``lang=ar`` to retrieve a tafsir.
     """
     all_flags = flags if flags is not None else {}
     all_flags.update({"action": "search",
@@ -63,13 +111,79 @@ def search(query: str, unit: str = "aya", page: int = 1, sortedby: str = "releva
                       "query": query,
                       "page": page,
                       "sortedby": sortedby,
+                      "reverse": reverse,
                       "fuzzy": fuzzy,
+                      "fuzzy_maxdist": fuzzy_maxdist,
+                      "derivation_level": derivation_level,
                       "view": view,
                       "highlight": highlight,
                       "facets": facets,
                       "filter": filter,
+                      "timelimit": timelimit,
+                      "translation": translation,
+                      "lang": lang,
                       "hierarchical_facets": hierarchical_facets,
                       })
+    return do(all_flags)
+
+
+def correct_query(query: str, unit: str = "aya",
+                  flags: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
+    """
+    Return a corrected version of *query* using Whoosh's built-in query
+    corrector.
+
+    Compares each term in the parsed query against the index vocabulary and
+    replaces unknown terms with the closest known alternative.  When the query
+    is already valid (all terms appear in the index) the ``corrected`` value in
+    the response is identical to the original input.
+
+    @param query: The raw query string to correct.
+    @param unit: Search unit ('aya', 'word', 'translation').  Only 'aya' is
+                 currently supported; other units return ``None``.
+    @param flags: Additional flags dictionary.
+    @return: Dictionary containing ``correct_query`` with sub-keys ``original``
+             and ``corrected``, plus the standard ``error`` envelope.
+    """
+    all_flags = flags if flags is not None else {}
+    all_flags.update({"action": "correct_query", "query": query, "unit": unit})
+    return do(all_flags)
+
+
+def suggest_collocations(query: str, unit: str = "aya",
+                         flags: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
+    """
+    Return collocation suggestions (bigrams and trigrams) for a query.
+
+    Uses the pre-computed ``aya_shingles`` Whoosh field — built at index time
+    with :data:`~alfanous.text_processing.QShingleAnalyzer` (a custom
+    :class:`~alfanous.text_processing.QShingleFilter` pipeline) — to look up
+    all word bigrams and trigrams containing the query word(s) and their corpus
+    frequencies directly from the index.  No per-document scanning is needed.
+
+    Both two-word bigrams and three-word trigrams are returned when relevant
+    (trigrams appear at least twice in the corpus).  Phrases preserve natural
+    Quranic word order.
+
+    Example: querying ``'سميع'`` (all-hearing) may return phrases like
+    ``'والله سميع عليم'``, ``'سميع عليم'``, and ``'سميع بصير'`` because
+    these patterns appear directly adjacent to سميع in the Quranic text.
+
+    The response also includes standard spelling suggestions under the
+    ``'suggest'`` key so callers can obtain both in a single request.
+
+    @param query: The Arabic word or phrase to find collocations for.
+    @param unit: Search unit ('aya', 'word', 'translation').
+    @param flags: Additional flags dictionary.
+    @return: Dictionary containing:
+             - ``'collocations'``: mapping of each input word to a list of
+               2- or 3-word phrase strings ordered by corpus frequency.
+             - ``'suggest'``: standard spelling suggestions (same as the
+               ``suggest`` action).
+             - ``'error'``: standard error envelope.
+    """
+    all_flags = flags if flags is not None else {}
+    all_flags.update({"action": "suggest", "query": query, "unit": unit})
     return do(all_flags)
 
 
@@ -83,61 +197,20 @@ def get_info(query: str = "all") -> Dict[str, Any]:
     return do({"action": "show", "query": query})
 
 
-def index_translations(source: str,
-                       _index_path: Optional[str] = None,
-                       _translations_list_file: Optional[str] = None) -> int:
+def list_values(field: str) -> Dict[str, Any]:
     """
-    Index all Zekr-compatible ``.trans.zip`` files found in *source* into the
-    local extend index.
+    List all unique indexed values for a given field.
 
-    Each zip must contain a ``translation.properties`` descriptor and a verse
-    text file with exactly 6,236 lines (one per Quranic verse). Files that are
-    already present in the index are silently skipped.
+    Useful for discovering the possible values of annotation fields such as
+    ``pos``, ``gender``, ``number``, ``person``, ``form``, ``voice``,
+    ``state``, ``derivation``, ``aspect``, ``mood``, ``case``, ``root``,
+    ``lemma``, etc.
 
-    After indexing, ``configs/translations.json`` is updated so that every
-    newly added translation is immediately visible via :func:`get_info` and
-    :func:`search`.
-
-    Example::
-
-        import alfanous.api as alfanous
-        count = alfanous.index_translations(source="/path/to/translations")
-        print(f"{count} translation(s) newly indexed")
-
-    @param source: Path to a directory that contains ``.trans.zip`` files.
-    @type source: str
-    @param _index_path: Override the extend index directory (for testing only).
-    @param _translations_list_file: Override the translations config path (for testing only).
-    @return: Number of translations that were newly indexed (already-present ones are skipped).
-    @raises ImportError: If the ``alfanous_import`` package is not installed.
+    @param field: The indexed field name to query (e.g. 'pos', 'gender').
+    @return: Dictionary with key ``list_values`` containing:
+             - ``field``  – the queried field name
+             - ``values`` – sorted list of unique values in the index
+             - ``count``  – number of values returned
+             - ``error``  – (only on failure) human-readable error message
     """
-    try:
-        from alfanous_import.importer import ZekrModelsImporter
-        from alfanous_import.updater import update_translations_list
-    except ImportError:
-        raise ImportError(
-            "The 'alfanous_import' package is required to index translation files. "
-            "Install it from the repository: src/alfanous_import/"
-        )
-
-    index_path = _index_path if _index_path is not None else PATHS.TSE_INDEX
-    translations_list_file = (
-        _translations_list_file if _translations_list_file is not None
-        else PATHS.TRANSLATIONS_LIST_FILE
-    )
-
-    importer = ZekrModelsImporter(pathindex=index_path, pathstore="")
-    count = 0
-    for zip_file in sorted(
-        f for f in os.listdir(source) if f.endswith(".trans.zip")
-    ):
-        if importer.index_single_translation(os.path.join(source, zip_file)):
-            count += 1
-
-    update_translations_list(
-        TSE_index=index_path,
-        translations_list_file=translations_list_file,
-    )
-
-    return count
-
+    return do({"action": "list_values", "field": field})

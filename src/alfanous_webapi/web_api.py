@@ -61,7 +61,8 @@ class SearchResponse(BaseModel):
 class SuggestResponse(BaseModel):
     """Model for suggest API response validation"""
     error: ErrorResponse
-    suggest: Optional[Dict[str, Any]] = Field(None, description="Suggestion results")
+    suggest: Optional[Dict[str, Any]] = Field(None, description="Spelling suggestion results")
+    collocations: Optional[Dict[str, Any]] = Field(None, description="Collocation suggestions — words that frequently co-occur with the query word in Quranic verses")
 
 
 class InfoResponse(BaseModel):
@@ -132,8 +133,9 @@ class SearchRequest(BaseModel):
     unit: str = Field("aya", description="Search unit: 'aya' (verse), 'word', or 'translation'")
     page: int = Field(1, ge=1, description="Page number for pagination")
     perpage: int = Field(10, ge=1, le=100, description="Results per page")
-    sortedby: str = Field("relevance", description="Sort order: 'score', 'relevance', 'mushaf', 'tanzil', 'subject'")
-    fuzzy: bool = Field(False, description="Enable fuzzy search")
+    sortedby: str = Field("relevance", description="Sort order: 'score', 'relevance', 'mushaf', 'tanzil', 'ayalength'")
+    fuzzy: bool = Field(False, description="Enable fuzzy search — combines exact (aya_), normalised/stemmed (aya), and Levenshtein distance matching")
+    fuzzy_maxdist: int = Field(1, ge=1, le=3, description="Maximum Levenshtein edit distance for fuzzy term matching (default 1, only used when fuzzy=True)")
     view: str = Field("normal", description="View mode: 'minimal', 'normal', 'full', 'statistic', 'linguistic', 'custom'")
     highlight: str = Field("bold", description="Highlight mode: 'css', 'html', 'bold', 'bbcode'")
     script: Optional[Literal["standard", "uthmani"]] = Field(None, description="Script type: 'standard' or 'uthmani'")
@@ -241,9 +243,10 @@ async def search_post(request: SearchRequest) -> SearchResponse:
             "query": request.query,
             "unit": request.unit,
             "page": request.page,
-            "range": request.perpage,
+            "perpage": request.perpage,
             "sortedby": request.sortedby,
             "fuzzy": request.fuzzy,
+            "fuzzy_maxdist": request.fuzzy_maxdist,
             "view": request.view,
             "highlight": request.highlight,
         }
@@ -295,8 +298,9 @@ async def search_get(
     unit: str = Query("aya", description="Search unit: 'aya', 'word', or 'translation'"),
     page: int = Query(1, ge=1, description="Page number for pagination"),
     perpage: int = Query(10, ge=1, le=100, description="Results per page"),
-    sortedby: str = Query("relevance", description="Sort order: 'score', 'relevance', 'mushaf', 'tanzil', 'subject'"),
-    fuzzy: bool = Query(False, description="Enable fuzzy search"),
+    sortedby: str = Query("relevance", description="Sort order: 'score', 'relevance', 'mushaf', 'tanzil', 'ayalength'"),
+    fuzzy: bool = Query(False, description="Enable fuzzy search — combines exact (aya_), normalised/stemmed (aya), and Levenshtein distance matching"),
+    fuzzy_maxdist: int = Query(1, ge=1, le=3, description="Maximum Levenshtein edit distance for fuzzy term matching (default 1, only used when fuzzy=True)"),
     view: str = Query("normal", description="View mode: 'minimal', 'normal', 'full', 'statistic', 'linguistic', 'custom'"),
     highlight: str = Query("bold", description="Highlight mode: 'css', 'html', 'bold', 'bbcode'"),
     script: Optional[Literal["standard", "uthmani"]] = Query(None, description="Script type: 'standard' or 'uthmani'"),
@@ -326,9 +330,10 @@ async def search_get(
             "query": query,
             "unit": unit,
             "page": page,
-            "range": perpage,
+            "perpage": perpage,
             "sortedby": sortedby,
             "fuzzy": fuzzy,
+            "fuzzy_maxdist": fuzzy_maxdist,
             "view": view,
             "highlight": highlight,
         }

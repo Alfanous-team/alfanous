@@ -99,10 +99,9 @@ debian/tmp/
 debian/alfanous/
 debian/files
 debian/python-alfanous/
-information.json
+src/alfanous/resources/__generated__/arabic_names.json
 # Allow the committed config file; ignore auto-generated copies elsewhere
-translations.json
-!src/alfanous/configs/translations.json
+src/alfanous/configs/__generated__/translations.json
 
 # Packages #
 ############
@@ -143,4 +142,8 @@ Icon?
 desktop.ini
 venv/
 venv2/
+
+
+# Whoosh index files (built artifacts)
+src/alfanous/indexes/
 

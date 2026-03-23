@@ -300,4 +300,4 @@ For issues and questions:
 
 ## License
 
-This API wrapper follows the same license as Alfanous: AGPL v3 or later
+This API wrapper follows the same license as Alfanous: LGPL v3 or later

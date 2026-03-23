@@ -3,12 +3,472 @@
 This is a test module for alfanous.Searching
 
 """
+import os
+import pytest
 from alfanous import paths
 from alfanous.indexing import QseDocIndex
 from alfanous.searching import QReader
 
 def test_searching():
+    if not os.path.isdir(paths.QSE_INDEX) or not QseDocIndex(paths.QSE_INDEX).OK:
+        pytest.skip("Search index not built — run `make build` first")
     index = QseDocIndex( paths.QSE_INDEX )
     reader = QReader( index )
-    assert list(reader.list_terms( "sura_name" ))[:10] == []
+    assert list(reader.list_values( "sura_name" ))[:10] == []
 
+
+# ---------------------------------------------------------------------------
+# Unit tests for _strip_phrase_queries (no index required)
+# ---------------------------------------------------------------------------
+
+class TestStripPhraseQueries:
+    """Tests for alfanous.searching._strip_phrase_queries."""
+
+    def _make_schema(self):
+        from whoosh.fields import Schema, TEXT, ID, KEYWORD, NUMERIC
+        return Schema(
+            aya=TEXT(stored=True, phrase=True),
+            topic=ID(stored=True),
+            chapter=ID(stored=True),
+            subtopic=ID(stored=True),
+            sura=TEXT(stored=True, phrase=False),
+            sura_name=KEYWORD(stored=True),
+            sura_id=NUMERIC(stored=True),
+            aya_fuzzy=TEXT(stored=True, phrase=False),
+        )
+
+    def test_phrase_stripped_without_schema(self):
+        """Without a schema, ALL Phrase nodes are converted to And-of-Terms."""
+        from whoosh import query as wquery
+        from alfanous.searching import _strip_phrase_queries
+
+        q = wquery.Phrase("topic", ["word1", "word2"])
+        result = _strip_phrase_queries(q)
+        assert isinstance(result, wquery.And), (
+            "Phrase should be converted to And without a schema"
+        )
+
+    def test_phrase_on_id_field_stripped_with_schema(self):
+        """With a schema, a Phrase on an ID field is converted to And-of-Terms."""
+        from whoosh import query as wquery
+        from alfanous.searching import _strip_phrase_queries
+
+        schema = self._make_schema()
+        q = wquery.Phrase("topic", ["word1", "word2"])
+        result = _strip_phrase_queries(q, schema=schema)
+        assert isinstance(result, wquery.And), (
+            "Phrase on ID 'topic' field must be converted to And-of-Terms"
+        )
+
+    def test_phrase_on_text_field_preserved_with_schema(self):
+        """With a schema, a Phrase on a TEXT(phrase=True) field is left intact."""
+        from whoosh import query as wquery
+        from alfanous.searching import _strip_phrase_queries
+
+        schema = self._make_schema()
+        q = wquery.Phrase("aya", ["word1", "word2"])
+        result = _strip_phrase_queries(q, schema=schema)
+        assert isinstance(result, wquery.Phrase), (
+            "Phrase on TEXT 'aya' field must NOT be stripped (field supports positions)"
+        )
+
+    def test_phrase_on_text_phrase_false_stripped_with_schema(self):
+        """With a schema, a Phrase on a TEXT(phrase=False) field is converted."""
+        from whoosh import query as wquery
+        from alfanous.searching import _strip_phrase_queries
+
+        schema = self._make_schema()
+        q = wquery.Phrase("aya_fuzzy", ["word1", "word2"])
+        result = _strip_phrase_queries(q, schema=schema)
+        assert isinstance(result, wquery.And), (
+            "Phrase on TEXT(phrase=False) 'aya_fuzzy' field must be converted to And-of-Terms"
+        )
+
+    def test_mixed_compound_query(self):
+        """Schema-aware stripping inside a compound query (Or containing Phrase nodes)."""
+        from whoosh import query as wquery
+        from alfanous.searching import _strip_phrase_queries
+
+        schema = self._make_schema()
+        # Or(Phrase("aya", ...), Phrase("topic", ...))
+        # → aya phrase preserved, topic phrase stripped
+        q_aya = wquery.Phrase("aya", ["الحمد", "لله"])
+        q_topic = wquery.Phrase("topic", ["أركان", "الإيمان"])
+        compound = wquery.Or([q_aya, q_topic])
+        result = _strip_phrase_queries(compound, schema=schema)
+        assert isinstance(result, wquery.Or)
+        subs = result.subqueries
+        assert isinstance(subs[0], wquery.Phrase), "aya Phrase must be preserved"
+        assert isinstance(subs[1], wquery.And), "topic Phrase must be converted"
+
+    def test_keyword_field_phrase_stripped(self):
+        """Phrase on a KEYWORD field is converted to And-of-Terms."""
+        from whoosh import query as wquery
+        from alfanous.searching import _strip_phrase_queries
+
+        schema = self._make_schema()
+        q = wquery.Phrase("sura_name", ["Al", "Baqara"])
+        result = _strip_phrase_queries(q, schema=schema)
+        assert isinstance(result, wquery.And), (
+            "Phrase on KEYWORD 'sura_name' field must be converted to And-of-Terms"
+        )
+
+    def test_sura_phrase_stripped_with_schema(self):
+        """Phrase on the 'sura' TEXT(phrase=False) field is converted to And-of-Terms.
+
+        The 'sura' field (romanized sura name) is indexed with ``phrase=False``
+        so it stores no positional data.  A phrase query like
+        ``sura:"Al Baqarah"`` must not raise
+        ``QueryError: Phrase search: 'sura' field has no positions``.
+        ``_strip_phrase_queries`` should convert it to an unordered And-of-Terms.
+        """
+        from whoosh import query as wquery
+        from alfanous.searching import _strip_phrase_queries
+
+        schema = self._make_schema()
+        q = wquery.Phrase("sura", ["Al", "Baqarah"])
+        result = _strip_phrase_queries(q, schema=schema)
+        assert isinstance(result, wquery.And), (
+            "Phrase on TEXT(phrase=False) 'sura' field must be converted to And-of-Terms"
+        )
+
+
+# ---------------------------------------------------------------------------
+# Unit tests for fuzzy derivation expansion (no index required)
+# ---------------------------------------------------------------------------
+
+class TestFuzzyDerivationExpansion:
+    """Unit tests for the derivation expansion in QSearcher.search.
+
+    Derivation expansion runs in both fuzzy and non-fuzzy modes:
+    - fuzzy=True  → root-level (level=2) derivations
+    - fuzzy=False → lemma-level (level=1) derivations
+    """
+
+    def test_build_derivation_subqueries_arabic_only(self):
+        """Derivation expansion only fires for Arabic-script terms."""
+        from unittest.mock import patch
+        from whoosh import query as wquery
+        from alfanous.query_plugins import DerivationQuery
+
+        # Reproduce the exact filter logic from QSearcher.search
+        def build_derivation_subqueries(terms, deriv_level=2):
+            """Mirror the derivation expansion logic from QSearcher.search."""
+            seen = set()
+            subqueries = []
+            for _fieldname, term in terms:
+                if not (isinstance(term, str) and any('\u0600' <= c <= '\u06FF' for c in term)):
+                    continue
+                if term in seen:
+                    continue
+                seen.add(term)
+                derivations = DerivationQuery._get_derivations(term, deriv_level)
+                for d in derivations:
+                    if d and d != term:
+                        subqueries.append(wquery.Term("aya", d))
+            return subqueries
+
+        mock_derivations = ["مالك", "يملك", "ملكوت"]
+
+        with patch.object(DerivationQuery, "_get_derivations", return_value=mock_derivations):
+            # Arabic term — derivation subqueries should be produced (none of the
+            # mock derivations equal the original "ملك", so all 3 are included)
+            arabic_terms = [("aya", "ملك")]
+            result = build_derivation_subqueries(arabic_terms, deriv_level=2)
+            assert len(result) == len(mock_derivations), (
+                "One Term per unique derivation that differs from the original"
+            )
+            for q in result:
+                assert isinstance(q, wquery.Term)
+                assert q.fieldname == "aya"
+
+        with patch.object(DerivationQuery, "_get_derivations", return_value=mock_derivations):
+            # Latin term — no derivation subqueries
+            latin_terms = [("aya", "book")]
+            result = build_derivation_subqueries(latin_terms, deriv_level=2)
+            assert result == [], "Latin terms must not trigger derivation expansion"
+
+    def test_derivation_level_varies_by_fuzzy_mode(self):
+        """fuzzy=True uses level=2 (root), fuzzy=False uses level=1 (lemma)."""
+        from unittest.mock import patch, call
+        from alfanous.query_plugins import DerivationQuery
+
+        captured_levels = []
+
+        def tracking_get_derivations(word, level):
+            captured_levels.append(level)
+            return [word]
+
+        with patch.object(DerivationQuery, "_get_derivations", side_effect=tracking_get_derivations):
+            term = "ملك"
+            # fuzzy=True → root-level derivations (level=2)
+            fuzzy = True
+            deriv_level = 2 if fuzzy else 1
+            DerivationQuery._get_derivations(term, deriv_level)
+            # fuzzy=False → lemma-level derivations (level=1)
+            fuzzy = False
+            deriv_level = 2 if fuzzy else 1
+            DerivationQuery._get_derivations(term, deriv_level)
+
+        assert captured_levels == [2, 1], (
+            "fuzzy=True must use level=2 (root), fuzzy=False must use level=1 (lemma)"
+        )
+
+    def test_derivation_skips_original_word(self):
+        """The original query word itself must not be duplicated in subqueries."""
+        from unittest.mock import patch
+        from whoosh import query as wquery
+        from alfanous.query_plugins import DerivationQuery
+
+        original = "ملك"
+        # Derivations include the original word — it should be excluded from subqueries
+        mock_derivations = [original, "مالك", "يملك"]
+
+        seen = set()
+        subqueries = []
+        with patch.object(DerivationQuery, "_get_derivations", return_value=mock_derivations):
+            derivations = DerivationQuery._get_derivations(original, 2)
+            for d in derivations:
+                if d and d != original:
+                    subqueries.append(wquery.Term("aya", d))
+
+        term_texts = [q.text for q in subqueries]
+        assert original not in term_texts, "Original query word must not appear in derivation subqueries"
+        assert "مالك" in term_texts
+        assert "يملك" in term_texts
+
+    def test_derivation_deduplicates_terms(self):
+        """Repeated Arabic terms in a multi-word query are only expanded once."""
+        from unittest.mock import patch
+        from whoosh import query as wquery
+        from alfanous.query_plugins import DerivationQuery
+
+        call_count = {"n": 0}
+
+        def counting_get_derivations(word, level):
+            call_count["n"] += 1
+            return [word]  # No new derivations
+
+        with patch.object(DerivationQuery, "_get_derivations", side_effect=counting_get_derivations):
+            # Same term repeated — should only call _get_derivations once
+            repeated_terms = [("aya", "ملك"), ("aya", "ملك"), ("aya", "ملك")]
+            seen = set()
+            for _fieldname, term in repeated_terms:
+                if not (isinstance(term, str) and any('\u0600' <= c <= '\u06FF' for c in term)):
+                    continue
+                if term in seen:
+                    continue
+                seen.add(term)
+                DerivationQuery._get_derivations(term, 2)
+
+        assert call_count["n"] == 1, "Duplicate terms must only be expanded once"
+
+    def test_derivation_expansion_terms_excluded_from_matched_terms(self):
+        """Derivation-expansion terms must be filtered out of the matched-terms set.
+
+        Strategy 4 adds Term("aya", d) for each derivation.  When these
+        terms match documents, Whoosh includes them in matched_terms().  They
+        must NOT be returned as part of the 'terms' frozenset that callers use
+        to build words_output, otherwise the first entry in words.individual
+        becomes a derivation word (not the user's query word) and
+        nb_variations is incorrectly 0.
+
+        Verify the filtering logic directly using the frozenset set-difference
+        approach implemented in QSearcher.search.
+        """
+        # Simulate matched_terms: includes original query term AND derivations
+        original_query_terms = frozenset([("aya", "ملك"), ("aya_", "ملك")])
+        derivation_expansion = {("aya", "مالك"), ("aya", "يملك"), ("aya", "ملكوت")}
+
+        # All matched terms (would come from results.matched_terms())
+        all_matched = original_query_terms | derivation_expansion | {("aya_ac", "ملك")}
+
+        # Apply the filter: remove derivation terms not in the original query
+        filtered = set(all_matched)
+        filtered -= (derivation_expansion - original_query_terms)
+
+        # Derivation terms should be excluded
+        for deriv_pair in derivation_expansion:
+            assert deriv_pair not in filtered, (
+                f"Derivation-expansion term {deriv_pair} must be excluded"
+            )
+        # Original query terms and aya_ac terms must be kept
+        assert ("aya", "ملك") in filtered
+        assert ("aya_", "ملك") in filtered
+        assert ("aya_ac", "ملك") in filtered
+
+    def test_derivation_expansion_term_kept_if_in_original_query(self):
+        """A derivation term that was also in the original query is kept.
+
+        If the user explicitly typed a word that also appears as a derivation
+        of another word in the query, that word must NOT be excluded from the
+        returned terms (it was a real user keyword, not just an expansion).
+        """
+        # Scenario: user typed both "ملك" and "مالك"; "مالك" is also a
+        # derivation of "ملك" — it must be kept.
+        original_query_terms = frozenset([("aya", "ملك"), ("aya", "مالك")])
+        derivation_expansion = {("aya", "مالك"), ("aya", "يملك")}
+
+        all_matched = original_query_terms | derivation_expansion
+
+        filtered = set(all_matched)
+        filtered -= (derivation_expansion - original_query_terms)
+
+        # "مالك" is in both derivation_expansion and original_query_terms → kept
+        assert ("aya", "مالك") in filtered, (
+            "A term in both derivation_expansion and original_query_terms must be kept"
+        )
+        # "يملك" is only a derivation → excluded
+        assert ("aya", "يملك") not in filtered, (
+            "A pure derivation-expansion term must be excluded"
+        )
+
+
+# ---------------------------------------------------------------------------
+# Unit tests for _collect_plugin_expanded_terms (no index required)
+# ---------------------------------------------------------------------------
+
+class TestCollectPluginExpandedTerms:
+    """Tests for alfanous.searching._collect_plugin_expanded_terms."""
+
+    def test_plain_term_returns_empty(self):
+        """A plain Whoosh Term node has no plugin-expanded terms."""
+        from whoosh import query as wquery
+        from alfanous.searching import _collect_plugin_expanded_terms
+
+        q = wquery.Term("aya", "مالك")
+        result = _collect_plugin_expanded_terms(q)
+        assert result == set()
+
+    def test_derivation_query_returns_all_terms(self):
+        """DerivationQuery node returns all its expanded terms."""
+        from alfanous.searching import _collect_plugin_expanded_terms
+        from alfanous.query_plugins import DerivationQuery
+        from unittest.mock import patch
+
+        mock_words = ["مالك", "مالكون", "يملك"]
+        with patch.object(DerivationQuery, '_get_derivations', return_value=mock_words):
+            dq = DerivationQuery("aya", "مالك", level=1)
+        result = _collect_plugin_expanded_terms(dq)
+        assert len(result) == 3
+        assert ("aya", "مالك") in result
+        assert ("aya", "مالكون") in result
+        assert ("aya", "يملك") in result
+
+    def test_tuple_query_returns_all_terms(self):
+        """TupleQuery node returns all its expanded terms."""
+        from alfanous.searching import _collect_plugin_expanded_terms
+        from alfanous.query_plugins import TupleQuery
+        from unittest.mock import patch
+
+        mock_words = ["قول", "قولا", "قولكم"]
+        with patch("alfanous.query_plugins._query_word_index", return_value=mock_words):
+            tq = TupleQuery("aya", ["قول", "اسم"])
+        result = _collect_plugin_expanded_terms(tq)
+        assert len(result) == 3
+        assert ("aya", "قول") in result
+        assert ("aya", "قولا") in result
+        assert ("aya", "قولكم") in result
+
+    def test_compound_query_with_derivation(self):
+        """DerivationQuery inside a compound Or returns its terms."""
+        from whoosh import query as wquery
+        from alfanous.searching import _collect_plugin_expanded_terms
+        from alfanous.query_plugins import DerivationQuery
+        from unittest.mock import patch
+
+        mock_words = ["مالك", "مالكون"]
+        with patch.object(DerivationQuery, '_get_derivations', return_value=mock_words):
+            dq = DerivationQuery("aya", "مالك", level=1)
+        plain = wquery.Term("aya", "كتاب")
+        compound = wquery.Or([plain, dq])
+
+        result = _collect_plugin_expanded_terms(compound)
+        # Only DerivationQuery terms, not the plain term
+        assert ("aya", "مالك") in result
+        assert ("aya", "مالكون") in result
+        assert ("aya", "كتاب") not in result
+
+    def test_nested_and_or_with_derivation(self):
+        """Deeply nested query trees still find DerivationQuery nodes."""
+        from whoosh import query as wquery
+        from alfanous.searching import _collect_plugin_expanded_terms
+        from alfanous.query_plugins import DerivationQuery
+        from unittest.mock import patch
+
+        mock_words = ["مالك", "يملك"]
+        with patch.object(DerivationQuery, '_get_derivations', return_value=mock_words):
+            dq = DerivationQuery("aya", "مالك", level=2)
+        inner = wquery.And([wquery.Term("aya", "كتاب"), dq])
+        outer = wquery.Or([wquery.Term("aya", "رب"), inner])
+
+        result = _collect_plugin_expanded_terms(outer)
+        assert ("aya", "مالك") in result
+        assert ("aya", "يملك") in result
+        assert ("aya", "كتاب") not in result
+        assert ("aya", "رب") not in result
+
+    def test_no_plugin_queries_returns_empty(self):
+        """Query tree with no plugin queries returns empty set."""
+        from whoosh import query as wquery
+        from alfanous.searching import _collect_plugin_expanded_terms
+
+        q = wquery.And([wquery.Term("aya", "مالك"), wquery.Term("aya", "كتاب")])
+        result = _collect_plugin_expanded_terms(q)
+        assert result == set()
+
+
+# ---------------------------------------------------------------------------
+# Unit tests for _has_wildcard_query (no index required)
+# ---------------------------------------------------------------------------
+
+class TestHasWildcardQuery:
+    """Tests for alfanous.searching._has_wildcard_query."""
+
+    def test_wildcard_node_returns_true(self):
+        """A bare Wildcard node must be detected."""
+        from whoosh import query as wquery
+        from alfanous.searching import _has_wildcard_query
+
+        q = wquery.Wildcard("aya", "كت*")
+        assert _has_wildcard_query(q) is True
+
+    def test_term_node_returns_false(self):
+        """A plain Term has no wildcard — must return False."""
+        from whoosh import query as wquery
+        from alfanous.searching import _has_wildcard_query
+
+        q = wquery.Term("aya", "كتاب")
+        assert _has_wildcard_query(q) is False
+
+    def test_arabic_wildcard_query_returns_true(self):
+        """ArabicWildcardQuery (subclass of Wildcard) must also be detected."""
+        from alfanous.query_plugins import ArabicWildcardQuery
+        from alfanous.searching import _has_wildcard_query
+
+        q = ArabicWildcardQuery("aya", "كت*")
+        assert _has_wildcard_query(q) is True
+
+    def test_wildcard_inside_and_returns_true(self):
+        """Wildcard nested inside an And compound must be found."""
+        from whoosh import query as wquery
+        from alfanous.searching import _has_wildcard_query
+
+        q = wquery.And([wquery.Term("aya", "الله"), wquery.Wildcard("aya", "رح*")])
+        assert _has_wildcard_query(q) is True
+
+    def test_wildcard_inside_or_returns_true(self):
+        """Wildcard nested inside an Or compound must be found."""
+        from whoosh import query as wquery
+        from alfanous.searching import _has_wildcard_query
+
+        q = wquery.Or([wquery.Term("aya", "الله"), wquery.Wildcard("aya", "رح*")])
+        assert _has_wildcard_query(q) is True
+
+    def test_no_wildcard_compound_returns_false(self):
+        """A compound query with only Term leaves must return False."""
+        from whoosh import query as wquery
+        from alfanous.searching import _has_wildcard_query
+
+        q = wquery.And([wquery.Term("aya", "الله"), wquery.Term("aya", "أكبر")])
+        assert _has_wildcard_query(q) is False

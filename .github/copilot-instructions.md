@@ -7,7 +7,7 @@ Alfanous is a search engine API for the Holy Qur'an that provides simple and adv
 - **Language**: Python 3.8+
 - **Core Dependencies**: pyparsing, whoosh
 - **Testing Framework**: pytest
-- **License**: AGPL v3 or later
+- **License**: LGPL v3 or later
 
 ## Project Structure
 ```
@@ -51,12 +51,27 @@ alfanous/
    ```
 
 ### Running Tests
+
+> **Important:** Many tests depend on the Whoosh search indexes being present
+> in `src/alfanous/indexes/`. The indexes must be built **before** running
+> the full test suite. Without them, tests that exercise the search engine
+> (e.g. `test_engines.py`, `test_mcp_server.py`, `test_outputs.py`) will
+> fail with `QSE.OK == False` or `AttributeError: '_schema'`. Tests that do
+> **not** require the index (e.g. `test_query_plugins.py`,
+> `test_text_processing.py`) can run without building first.
+
 ```bash
-# Run all tests
+# 1. Build indexes first (required for most tests)
+make build
+
+# 2. Run all tests
 pytest -vv --rootdir=src/
 
 # Run specific test file
 pytest src/tests/test_searching.py -v
+
+# Run only tests that do not need the index
+pytest src/tests/test_query_plugins.py src/tests/test_text_processing.py -v
 ```
 
 ### Building the Project
@@ -164,9 +179,10 @@ def test_component_functionality():
 - **pypi-release.yaml**: Handles PyPI package releases
 
 ### Before Committing
-1. Run tests: `pytest -vv --rootdir=src/`
-2. Clean temporary files: `make clean`
-3. Ensure no build artifacts are committed
+1. Build indexes: `make build` (required before running the full test suite)
+2. Run tests: `pytest -vv --rootdir=src/`
+3. Clean temporary files: `make clean`
+4. Ensure no build artifacts are committed
 
 ## Special Notes
 

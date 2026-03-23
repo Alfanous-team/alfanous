@@ -1,0 +1,31 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "io.github.Alfanous-team/alfanous",
+  "title": "Alfanous - Quranic Search Engine",
+  "description": "Search and explore the Holy Qur'an with Arabic text, transliteration, and advanced search support.",
+  "repository": {
+    "url": "https://github.com/Alfanous-team/alfanous",
+    "source": "github"
+  },
+  "version": "1.0.0",
+  "packages": [
+    {
+      "registryType": "pypi",
+      "identifier": "alfanous3-mcp",
+      "version": "1.0.0",
+      "transport": {
+        "type": "stdio"
+      },
+      "runtimeArguments": [
+        {
+          "type": "positional",
+          "value": "-m"
+        },
+        {
+          "type": "positional",
+          "value": "alfanous_mcp.mcp_server"
+        }
+      ]
+    }
+  ]
+}
