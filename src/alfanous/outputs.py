@@ -145,6 +145,12 @@ _AYA_FACET_FIELDS = frozenset([
     "sajda", "sajda_type",
 ])
 
+# Fields that may participate in a hierarchical facet.  Only thematic/semantic
+# fields are allowed here — positional fields such as juz and hizb are
+# intentionally excluded because they represent fixed Quranic divisions, not
+# semantic groupings.
+_HIERARCHICAL_FACET_FIELDS = frozenset(["chapter", "topic", "subtopic"])
+
 # Maximum number of documents Whoosh will collect when building facets.
 # Using limit=None causes Whoosh to load every matching document into memory,
 # which can be 300,000+ docs for a corpus-wide facet query.  This constant is
@@ -248,19 +254,20 @@ def _build_hierarchical_facets(res, hierarchy_fields):
     Each document in *res* is visited once; its stored values for
     ``hierarchy_fields`` are read and placed into a tree structure.
 
-    Example for ``hierarchy_fields = ["juz", "hizb"]``::
+    Example for ``hierarchy_fields = ["chapter", "topic", "subtopic"]``::
 
         [
-            {"value": 1, "count": 20, "children": [
-                {"value": 1, "count": 12, "children": []},
-                {"value": 2, "count": 8,  "children": []},
+            {"value": "الإيمان", "count": 30, "children": [
+                {"value": "أركان الإيمان", "count": 18, "children": [
+                    {"value": "الإيمان بالله", "count": 10, "children": []},
+                ]},
             ]},
             ...
         ]
 
     @param res: Whoosh :class:`~whoosh.searching.Results` object.
-    @param hierarchy_fields: Ordered list of field names, from most
-        general (parent) to most specific (leaf).
+    @param hierarchy_fields: Ordered list of field names from ``_HIERARCHICAL_FACET_FIELDS``,
+        from most general (parent) to most specific (leaf).
     @return: List of top-level facet nodes, each with ``value``,
         ``count``, and ``children``.
     """
@@ -459,7 +466,7 @@ class Raw:
         "aya": "enable retrieving of aya text in the case of translation search",
         "facets": "comma-separated list of fields to compute flat facet counts for",
         "filter": "field:value filter applied before search (dict or 'field:value' string)",
-        "hierarchical_facets": "semicolon-separated hierarchies using '>' notation, e.g. 'juz>hizb;chapter>topic>subtopic'",
+        "hierarchical_facets": "semicolon-separated thematic hierarchies using '>' notation, e.g. 'chapter>topic>subtopic'. Only chapter, topic, and subtopic fields are supported.",
     }
 
     def __init__(self,
@@ -985,9 +992,11 @@ class Raw:
         # Parse filter parameter
         filter_dict = _parse_filter_param(flags.get("filter"))
 
-        # Parse hierarchical_facets parameter
-        # Accepts semicolon-separated hierarchies using '>' notation,
-        # e.g. "juz>hizb" or "juz>hizb;chapter>topic>subtopic"
+        # Parse hierarchical_facets parameter.
+        # Only fields in _HIERARCHICAL_FACET_FIELDS (chapter, topic, subtopic)
+        # are accepted.  Positional fields such as juz and hizb are silently
+        # skipped — they represent fixed Quranic divisions, not semantic
+        # groupings, so hierarchical nesting on them is not supported.
         hierarchical_facets_param = flags.get("hierarchical_facets")
         hierarchical_facets_list = []
         if hierarchical_facets_param:
@@ -996,10 +1005,18 @@ class Raw:
                     hier = hier.strip()
                     if ">" in hier:
                         fields = [f.strip() for f in hier.split(">") if f.strip()]
-                        if len(fields) >= 2:
+                        if (
+                            len(fields) >= 2
+                            and all(f in _HIERARCHICAL_FACET_FIELDS for f in fields)
+                        ):
                             hierarchical_facets_list.append(fields)
             elif isinstance(hierarchical_facets_param, list):
-                hierarchical_facets_list = hierarchical_facets_param
+                hierarchical_facets_list = [
+                    h for h in hierarchical_facets_param
+                    if isinstance(h, list)
+                    and len(h) >= 2
+                    and all(f in _HIERARCHICAL_FACET_FIELDS for f in h)
+                ]
 
         # pre-defined views # TODO remove this feature , complexity for no real benifit
         if view == "minimal":

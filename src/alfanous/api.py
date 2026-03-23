@@ -95,9 +95,12 @@ def search(query: str, unit: str = "aya", page: int = 1, sortedby: str = "releva
     @param lang: Language code (e.g. 'en', 'fr', 'ar') to retrieve translations by
            language at query time. If both ``translation`` and ``lang`` are given,
            ``translation`` takes precedence.
-    @param hierarchical_facets: Hierarchical facets using '>' notation, e.g.
-           ``"juz>hizb"`` or ``"juz>hizb;chapter>topic>subtopic"``.  Multiple
-           hierarchies are separated by ``";"``.  Results are returned under
+    @param hierarchical_facets: Thematic hierarchical facets using '>' notation.
+           Only the fields ``chapter``, ``topic``, and ``subtopic`` are supported
+           (positional fields such as ``juz`` and ``hizb`` are ignored).
+           Example: ``"chapter>topic>subtopic"`` or ``"chapter>topic"``.
+           Multiple hierarchies can be separated by ``";"`` but each must
+           consist solely of the allowed fields.  Results are returned under
            ``search.hierarchical_facets`` keyed by the hierarchy name.
     @return: Dictionary of search results. Each aya entry includes an optional
            ``translation`` field controlled by the ``translation``/``lang``
