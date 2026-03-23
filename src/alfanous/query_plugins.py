@@ -595,6 +595,11 @@ class ArabicWildcardQuery(Wildcard):
     def __init__(self, fieldname, text, boost=1.0):
         # Replace Arabic question mark with standard wildcard
         new_text = text.replace("؟", "?")
+        # Lowercase so that queries like "God*" match index terms lowercased
+        # by LowercaseFilter (e.g. translation fields).  Arabic text has no
+        # case concept so .lower() is a no-op for Arabic; wildcard characters
+        # (* and ?) are ASCII punctuation and are also unaffected by .lower().
+        new_text = new_text.lower()
         super().__init__(fieldname, new_text, boost)
         # Store original text for hash/eq
         self._original_text = text
@@ -612,6 +617,34 @@ class ArabicWildcardQuery(Wildcard):
                 break
             yield btext
             count += 1
+
+    def normalize(self):
+        """Override Wildcard.normalize() to keep ArabicWildcardQuery intact.
+
+        Whoosh's Wildcard.normalize() converts:
+        - bare ``*`` → ``Every(field)``  (completely unbounded)
+        - ``prefix*``  → ``Prefix(field, prefix)``  (also unbounded)
+
+        Both conversions bypass the MAX_EXPAND cap in _btexts(), allowing
+        translation and word searches to iterate over the entire index lexicon.
+        By returning ``self`` for all wildcard-containing patterns the
+        MAX_EXPAND guard remains active regardless of the query shape.
+        """
+        if "*" not in self.text and "?" not in self.text:
+            from whoosh.query import Term
+            return Term(self.fieldname, self.text, boost=self.boost)
+        return self
+
+    def matcher(self, searcher, context=None):
+        """Override Wildcard.matcher() to avoid the bare-``*`` → Every shortcut.
+
+        Whoosh's Wildcard.matcher() special-cases ``text == "*"`` and creates
+        an Every query whose matcher iterates all documents — bypassing _btexts
+        entirely.  Calling MultiTerm.matcher() directly routes through our
+        capped _btexts() instead.
+        """
+        from whoosh.query.terms import MultiTerm
+        return MultiTerm.matcher(self, searcher, context)
 
     def __hash__(self):
         return hash((self.__class__.__name__, self.fieldname, self._original_text, self.boost))

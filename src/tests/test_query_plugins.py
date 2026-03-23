@@ -316,6 +316,81 @@ def test_arabic_wildcard_question_mark():
     # Wildcard queries expand against the index, not at parse time
 
 
+def test_arabic_wildcard_lowercase_on_construction():
+    """ArabicWildcardQuery must lowercase the pattern text at construction time.
+
+    Translation fields (text_en, text_fr, etc.) use LowercaseFilter so their
+    index terms are stored lowercase ('god', 'pray', ...).  Without lowercasing
+    the query pattern, 'God*' would produce the regex 'God.*' which is
+    case-sensitive and never matches the indexed 'god*' terms.
+    Arabic text is unaffected by .lower() (Arabic has no case concept), and
+    wildcard characters * and ? are ASCII punctuation also unaffected.
+    """
+    tests = [
+        # (input_text, expected_text_after_init)
+        ("God*",   "god*"),
+        ("GOD*",   "god*"),
+        ("Pray?",  "pray?"),
+        ("*Test*", "*test*"),
+        ("G?d",    "g?d"),
+        # Arabic should be unchanged by .lower()
+        ("نبي*",   "نبي*"),
+        ("الله*",  "الله*"),
+        # Arabic question mark converted first, then lowercase (no-op on Arabic)
+        ("نعم؟",   "نعم?"),
+        # Pure wildcards should be unchanged
+        ("*",      "*"),
+        ("??",     "??"),
+    ]
+    for input_text, expected in tests:
+        q = ArabicWildcardQuery("text_en", input_text)
+        assert q.text == expected, (
+            f"ArabicWildcardQuery('text_en', {input_text!r}).text should be "
+            f"{expected!r} but got {q.text!r}. Wildcards must be lowercased "
+            "so they match index terms processed by LowercaseFilter."
+        )
+
+
+def test_arabic_wildcard_case_insensitive_matches_lowercase_indexed_term():
+    """God* must match the index term 'god' in a field with LowercaseFilter.
+
+    Regression test for: LowercaseFilter — God* can't match indexed term god.
+
+    Translation fields use LowercaseFilter so 'God' is stored as 'god'.
+    Before the fix, ArabicWildcardQuery('field', 'God*') kept the pattern
+    as 'God*' which compiled to regex 'God.*' — a case-sensitive pattern
+    that never matched the lowercase indexed term 'god'.
+    """
+    import shutil
+    import tempfile
+    from whoosh import index as whoosh_index
+    from whoosh.analysis import RegexTokenizer, LowercaseFilter
+    from whoosh.fields import Schema, TEXT
+
+    analyzer = RegexTokenizer() | LowercaseFilter()
+    tmpdir = tempfile.mkdtemp()
+    try:
+        schema = Schema(text_en=TEXT(stored=True, analyzer=analyzer))
+        ix = whoosh_index.create_in(tmpdir, schema)
+        writer = ix.writer()
+        writer.add_document(text_en="God is great")
+        writer.add_document(text_en="praise the lord")
+        writer.commit()
+
+        with ix.searcher() as searcher:
+            # All of these should match the document containing "God" (indexed as "god")
+            for pattern in ("God*", "GOD*", "GoD*", "g*", "go*", "god*"):
+                q = ArabicWildcardQuery("text_en", pattern)
+                results = searcher.search(q)
+                assert len(results) >= 1, (
+                    f"Pattern {pattern!r} should match doc with 'God' (indexed as 'god') "
+                    f"but got {len(results)} results. "
+                    "ArabicWildcardQuery must lowercase the pattern at construction time."
+                )
+    finally:
+        shutil.rmtree(tmpdir, ignore_errors=True)
+
+
 def test_arabic_wildcard_multifield_asterisk():
     """Regression: pray* via MultifieldParser must not produce a None-fieldname query.
 
@@ -673,6 +748,153 @@ def test_wildcard_plugin_inside_parentheses():
     wildcard_queries = [sq for sq in subqueries if isinstance(sq, _Wildcard)]
     assert len(wildcard_queries) == 1, f"Expected 1 wildcard query, got {[type(sq).__name__ for sq in subqueries]}"
     assert wildcard_queries[0].text == "*نبي*", f"Wildcard text should be '*نبي*', got {wildcard_queries[0].text!r}"
+
+
+def test_arabic_wildcard_normalize_star_stays_as_arabic_wildcard():
+    """ArabicWildcardQuery.normalize() must NOT convert bare '*' to Every.
+
+    Whoosh's Wildcard.normalize() converts ``*`` → ``Every(field)`` which is
+    completely unbounded and bypasses the MAX_EXPAND cap.  The override must
+    return ``self`` so the cap remains active for translation/word search.
+    """
+    from whoosh.query import Every
+    wq = ArabicWildcardQuery("text_en", "*")
+    result = wq.normalize()
+    assert not isinstance(result, Every), (
+        "ArabicWildcardQuery.normalize() must not convert '*' to Every; "
+        "Every has no expansion limit and would match all documents."
+    )
+    assert isinstance(result, ArabicWildcardQuery), (
+        f"normalize('*') should return ArabicWildcardQuery, got {type(result).__name__}"
+    )
+
+
+def test_arabic_wildcard_normalize_prefix_stays_as_arabic_wildcard():
+    """ArabicWildcardQuery.normalize() must NOT convert 'word*' to Prefix.
+
+    Whoosh's Wildcard.normalize() converts ``word*`` → ``Prefix(field, 'word')``.
+    Prefix._btexts() is unbounded (calls ixreader.expand_prefix()) so it
+    bypasses the MAX_EXPAND cap.  The override must return ``self``.
+    """
+    from whoosh.query.terms import Prefix
+    wq = ArabicWildcardQuery("text_en", "word*")
+    result = wq.normalize()
+    assert not isinstance(result, Prefix), (
+        "ArabicWildcardQuery.normalize() must not convert 'word*' to Prefix; "
+        "Prefix._btexts() is unbounded and bypasses MAX_EXPAND."
+    )
+    assert isinstance(result, ArabicWildcardQuery), (
+        f"normalize('word*') should return ArabicWildcardQuery, got {type(result).__name__}"
+    )
+
+
+def test_arabic_wildcard_normalize_no_wildcard_becomes_term():
+    """ArabicWildcardQuery.normalize() converts plain-text to Term (no wildcards)."""
+    from whoosh.query import Term
+    wq = ArabicWildcardQuery("text_en", "hello")
+    result = wq.normalize()
+    assert isinstance(result, Term), (
+        f"normalize('hello') should return Term, got {type(result).__name__}"
+    )
+    assert result.text == "hello"
+
+
+def test_arabic_wildcard_matcher_star_does_not_use_every():
+    """ArabicWildcardQuery.matcher() for bare '*' must use _btexts(), not Every.
+
+    Whoosh's Wildcard.matcher() short-circuits ``text == '*'`` and creates an
+    Every matcher (all documents, unbounded).  The override must call
+    MultiTerm.matcher() instead so the MAX_EXPAND cap in _btexts() is applied.
+    """
+    import shutil
+    import tempfile
+    from whoosh import index as whoosh_index
+    from whoosh.fields import Schema, TEXT
+
+    tmpdir = tempfile.mkdtemp()
+    try:
+        schema = Schema(text_en=TEXT(stored=True))
+        ix = whoosh_index.create_in(tmpdir, schema)
+        writer = ix.writer()
+        for word in ("alpha", "beta", "gamma"):
+            writer.add_document(text_en=word)
+        writer.commit()
+
+        with ix.searcher() as searcher:
+            wq = ArabicWildcardQuery("text_en", "*")
+            # matcher() must succeed (no exception from Every shortcut)
+            m = wq.matcher(searcher)
+            # It should match some documents (from _btexts capped at MAX_EXPAND)
+            count = 0
+            while m.is_active():
+                count += 1
+                m.next()
+            assert count <= ArabicWildcardQuery.MAX_EXPAND, (
+                f"matcher('*') matched {count} docs but MAX_EXPAND={ArabicWildcardQuery.MAX_EXPAND}"
+            )
+    finally:
+        shutil.rmtree(tmpdir, ignore_errors=True)
+
+
+def test_arabic_wildcard_multifield_star_no_every():
+    """MultifieldParser with ArabicWildcardPlugin: '*' must not produce Every.
+
+    Before the normalize() fix, parsing '*' with a MultifieldParser set up for
+    translation/word search produced Every('field') queries — completely
+    unbounded.  After the fix each sub-query must be ArabicWildcardQuery.
+    """
+    from whoosh.qparser import MultifieldParser
+    from whoosh.qparser.plugins import WildcardPlugin, EveryPlugin
+    from whoosh.query import Every
+    from whoosh.fields import Schema, TEXT
+
+    schema = Schema(text_en=TEXT(stored=True), text_fr=TEXT(stored=True))
+    p = MultifieldParser(["text_en", "text_fr"], schema)
+    p.remove_plugin_class(WildcardPlugin)
+    p.remove_plugin_class(EveryPlugin)
+    p.add_plugin(ArabicWildcardPlugin())
+
+    result = p.parse("*")
+    assert result is not None
+    for subq in result:
+        assert not isinstance(subq, Every), (
+            f"Sub-query {subq!r} is Every — ArabicWildcardQuery.normalize() "
+            "must prevent Every conversion so MAX_EXPAND cap applies."
+        )
+        assert isinstance(subq, ArabicWildcardQuery), (
+            f"Expected ArabicWildcardQuery, got {type(subq).__name__}"
+        )
+
+
+def test_arabic_wildcard_multifield_prefix_no_unbounded_prefix():
+    """MultifieldParser with ArabicWildcardPlugin: 'word*' must not produce Prefix.
+
+    Before the normalize() fix, 'word*' was converted to Prefix('field', 'word')
+    by Wildcard.normalize() — which is unbounded.  After the fix it must stay
+    as ArabicWildcardQuery.
+    """
+    from whoosh.qparser import MultifieldParser
+    from whoosh.qparser.plugins import WildcardPlugin, EveryPlugin
+    from whoosh.query.terms import Prefix
+    from whoosh.fields import Schema, TEXT
+
+    schema = Schema(text_en=TEXT(stored=True), text_fr=TEXT(stored=True))
+    p = MultifieldParser(["text_en", "text_fr"], schema)
+    p.remove_plugin_class(WildcardPlugin)
+    p.remove_plugin_class(EveryPlugin)
+    p.add_plugin(ArabicWildcardPlugin())
+
+    result = p.parse("word*")
+    assert result is not None
+    for subq in result:
+        assert not isinstance(subq, Prefix), (
+            f"Sub-query {subq!r} is Prefix — Prefix._btexts() is unbounded and "
+            "bypasses MAX_EXPAND.  ArabicWildcardQuery.normalize() must prevent "
+            "the Wildcard→Prefix conversion."
+        )
+        assert isinstance(subq, ArabicWildcardQuery), (
+            f"Expected ArabicWildcardQuery, got {type(subq).__name__}"
+        )
 
 
 if __name__ == "__main__":
