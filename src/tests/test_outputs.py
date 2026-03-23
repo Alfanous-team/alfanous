@@ -151,7 +151,8 @@ def test_search():
     
     # Extract words->individual for separate comparison (order-independent)
     actual_words_individual = results["search"]["words"]["individual"]
-    expected_words_individual = {1: {'derivations': [],
+    expected_words_individual = {1: {'hint': 'aya',
+                                     'derivations': [],
                                      'derivations_extra': [],
                                      'lemma': '',
                                      'nb_ayas_overall': 113,
@@ -166,7 +167,8 @@ def test_search():
                                      'synonyms': [],
                                      'vocalizations': [],
                                      'word': 'لله'},
-                                 2: {'derivations': [],
+                                 2: {'hint': 'aya',
+                                     'derivations': [],
                                      'derivations_extra': [],
                                      'lemma': '',
                                      'nb_ayas_overall': 25,
@@ -2169,3 +2171,88 @@ def test_pure_wildcard_search_returns_quickly_without_error():
         assert results["error"]["code"] == 0, (
             f"Pure-wildcard query {query!r} returned an error: {results['error']}"
         )
+
+
+def test_latin_keywords_have_translation_hint():
+    """Latin keywords matching translation text should have hint='translation' in words.individual.
+
+    When a Latin/English query (e.g. 'heaven') matches aya text via translation fields,
+    the resulting words.individual entries must include hint='translation' so API consumers
+    can distinguish translation matches from direct Arabic text matches.
+    """
+    # Search with a Latin/English word that matches translation text
+    results = RAWoutput.do({
+        "action": "search",
+        "query": "heaven",
+        "word_info": True,
+        "highlight": "none",
+    })
+    assert results["error"]["code"] == 0
+    search = results.get("search", {})
+    words = search.get("words", {})
+    individual = words.get("individual", {})
+
+    # There must be at least one keyword entry
+    assert individual, "Expected at least one keyword in words.individual for 'heaven'"
+
+    # Every keyword entry must have a 'hint' field
+    for key, word_data in individual.items():
+        assert "hint" in word_data, (
+            f"words.individual[{key}] is missing the 'hint' field: {word_data!r}"
+        )
+
+    # At least one keyword should have hint='translation' (the English match)
+    hints = [wd["hint"] for wd in individual.values()]
+    assert "translation" in hints, (
+        f"Expected at least one keyword with hint='translation', got hints: {hints}"
+    )
+
+
+def test_arabic_keywords_have_aya_hint():
+    """Arabic keywords in aya search should have hint='aya' in words.individual."""
+    results = RAWoutput.do({
+        "action": "search",
+        "query": "الله",
+        "word_info": True,
+        "highlight": "none",
+    })
+    assert results["error"]["code"] == 0
+    search = results.get("search", {})
+    words = search.get("words", {})
+    individual = words.get("individual", {})
+
+    assert individual, "Expected at least one keyword in words.individual for 'الله'"
+
+    for key, word_data in individual.items():
+        assert "hint" in word_data, (
+            f"words.individual[{key}] is missing the 'hint' field: {word_data!r}"
+        )
+        assert word_data["hint"] == "aya", (
+            f"Expected hint='aya' for Arabic keyword, got {word_data['hint']!r}"
+        )
+
+
+def test_hint_present_without_word_info():
+    """The 'hint' field should appear in words.individual even without word_info=True."""
+    results = RAWoutput.do({
+        "action": "search",
+        "query": "heaven",
+        "word_info": False,
+        "highlight": "none",
+    })
+    assert results["error"]["code"] == 0
+    search = results.get("search", {})
+    words = search.get("words", {})
+    individual = words.get("individual", {})
+
+    assert individual, "Expected at least one keyword in words.individual for 'heaven'"
+
+    for key, word_data in individual.items():
+        assert "hint" in word_data, (
+            f"words.individual[{key}] (word_info=False) is missing the 'hint' field: {word_data!r}"
+        )
+
+    hints = [wd["hint"] for wd in individual.values()]
+    assert "translation" in hints, (
+        f"Expected at least one keyword with hint='translation' (word_info=False), got hints: {hints}"
+    )

@@ -1249,6 +1249,7 @@ class Raw:
                         ]
                         words_output["individual"][_cpt] = {
                             "word": term[1],
+                            "hint": "translation" if term[0] in self._trans_fields else "aya",
                             "variations": _word_variations,
                         }
                         _cpt += 1
@@ -1459,6 +1460,7 @@ class Raw:
     
                             words_output["individual"][cpt] = {
                                 "word": term[1],
+                                "hint": "aya",
                                 "romanization": transliterate(romanization, term[1], ignore="", reverse=True) if romanization in
                                                                                                                  self.DOMAINS[
                                                                                                                      "romanization"] else None,
@@ -1491,6 +1493,7 @@ class Raw:
                             docs += term[3]
                             words_output["individual"][cpt] = {
                                 "word": term[1],
+                                "hint": "translation",
                                 "romanization": None,
                                 "nb_matches_overall": int(term[2]) if term[2] else 0,
                                 "nb_matches": 0,
