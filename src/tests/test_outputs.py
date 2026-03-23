@@ -2171,14 +2171,13 @@ def test_pure_wildcard_search_returns_quickly_without_error():
         )
 
 
-<<<<<<< copilot/fix-aya-search-lang-parameter
 def test_lang_trans_parsers_populated_per_language():
     """Raw._lang_trans_parsers must contain an entry for each available text_* field.
 
     When the index is built with translation fields (e.g. text_en, text_fr),
     _lang_trans_parsers should have one per-language parser for every language
     whose field is present in the schema.  This ensures that the non-Arabic
-    search path can use a lang-scoped parser when ``lang`` is specified.
+    search path can use a search_lang-scoped parser when ``search_lang`` is specified.
     """
     from alfanous.text_processing import _TRANSLATION_LANGS
 
@@ -2198,20 +2197,20 @@ def test_lang_trans_parsers_populated_per_language():
 
 
 def test_non_arabic_search_with_lang_restricts_to_lang_field():
-    """When lang='en' is passed, a non-Arabic query must search only text_en.
+    """When search_lang='en' is passed, a non-Arabic query must search only text_en.
 
-    The issue requested that specifying ``lang`` on an aya search with a
-    non-Arabic query restricts the translation search to the corresponding
-    ``text_{lang}`` field and ignores all other translation fields.
+    Specifying ``search_lang`` on an aya search with a non-Arabic query restricts
+    the translation search to the corresponding ``text_{lang}`` field and ignores
+    all other translation fields.
 
     We verify this by checking that the query issued by the non-Arabic path
     only targets ``text_en`` (and not ``text_fr``, ``text_ar``, etc.) when
-    ``lang='en'`` is given, by inspecting which fields the parsed query uses.
+    ``search_lang='en'`` is given, by inspecting which fields the parsed query uses.
     This is done via the per-language parser stored on the Raw instance.
     """
     from whoosh.qparser import MultifieldParser
 
-    # Confirm the lang-scoped parser for 'en' targets only text_en.
+    # Confirm the search_lang-scoped parser for 'en' targets only text_en.
     if "en" not in RAWoutput._lang_trans_parsers:
         pytest.skip("text_en field not in index - cannot test lang scoping for 'en'")
 
@@ -2232,9 +2231,9 @@ def test_non_arabic_search_with_lang_restricts_to_lang_field():
 
 
 def test_non_arabic_aya_search_with_lang_returns_results():
-    """Non-Arabic aya search with lang='en' must return results.
+    """Non-Arabic aya search with search_lang='en' must return results.
 
-    Regression test: when lang is passed, the non-Arabic path must still
+    Regression test: when search_lang is passed, the non-Arabic path must still
     produce search results (it should search text_en, not fall through to
     an empty parser or be silently skipped).
     """
@@ -2249,12 +2248,10 @@ def test_non_arabic_aya_search_with_lang_returns_results():
     assert result["error"]["code"] == 0, f"Search returned error: {result['error']}"
     ayas = result["search"]["ayas"]
     assert ayas, (
-        "Non-Arabic search with lang='en' must return at least one aya result"
+        "Non-Arabic search with search_lang='en' must return at least one aya result"
     )
 
 
-=======
->>>>>>> master
 def test_latin_keywords_have_translation_hint():
     """Latin keywords matching translation text should have a language hint in words.individual.
 
