@@ -1077,7 +1077,7 @@ class Raw:
             _trans_terms = []
             _trans_term_pairs = []
             _active_trans_parser = (
-                self._lang_trans_parsers.get(lang) if lang else self._trans_parser
+                self._lang_trans_parsers.get(lang, self._trans_parser) if lang else self._trans_parser
             )
             _active_trans_fields = (
                 self._lang_trans_fields.get(lang, self._trans_fields) if lang

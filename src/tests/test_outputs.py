@@ -2212,7 +2212,7 @@ def test_non_arabic_search_with_lang_restricts_to_lang_field():
 
     # Confirm the lang-scoped parser for 'en' targets only text_en.
     if "en" not in RAWoutput._lang_trans_parsers:
-        pytest.skip("text_en field not in index — cannot test lang scoping for 'en'")
+        pytest.skip("text_en field not in index - cannot test lang scoping for 'en'")
 
     en_parser = RAWoutput._lang_trans_parsers["en"]
     q = en_parser.parse("mercy")
