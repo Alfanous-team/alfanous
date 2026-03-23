@@ -2175,6 +2175,9 @@ class Raw:
 
         # Transliterate if no field filter is present
         query = query.replace("\\", "")
+        # Save the raw query before Buckwalter transliteration to detect
+        # whether it was Latin / Arabizi input (needed later for Arabizi search).
+        _pre_transliterate_query = query
         if ":" not in query:
             query = transliterate("buckwalter", query, ignore="'_\"%*?#~[]{}:>+-|")
         # Normalize Uthmani diacritics (ALEF_WASLA, Uthmani sukun/stop marks) and
@@ -2182,6 +2185,25 @@ class Raw:
         # store un-vocalized standard Arabic — match when the query is in Uthmanic
         # script (e.g. ٱلۡهَدۡيِۖ should match the stored form الهدي).
         query = _NORMALIZE_WORD_QUERY(query)
+
+        # Arabizi search: when the query is non-Arabic Latin text (no Arabic
+        # script characters, no field filter), attempt to convert it to Arabic
+        # candidates and search those across the unvocalized word fields
+        # (word_standard, normalized, lemma).  Candidates are filtered against
+        # the set of unvocalized Quranic words so only known word forms produce
+        # hits; unrecognised Arabizi input falls back to the standard
+        # Buckwalter-parsed query.
+        _word_arabizi_candidates = []
+        if ":" not in _pre_transliterate_query and not _ARABIC_SCRIPT_RE.search(_pre_transliterate_query):
+            _raw_arabizi = _pre_transliterate_query.lower()
+            _word_arabizi_candidates = arabizi_to_arabic_list(
+                _raw_arabizi, ignore=_ARABIZI_IGNORE_CHARS
+            )
+            _qwords = quran_unvocalized_words()
+            if _qwords:
+                _word_arabizi_candidates = filter_candidates_by_wordset(
+                    _word_arabizi_candidates, _qwords
+                )
 
         empty_response = {
             "words": {},
@@ -2201,6 +2223,28 @@ class Raw:
             word_query = self._word_parser.parse(query)
         except Exception:
             return empty_response
+
+        # If Arabizi candidates were found, extend word_query with OR terms that
+        # target the unvocalized Arabic word fields so that e.g. "nuh" matches
+        # the indexed form نوح in word_standard / normalized / lemma.
+        if _word_arabizi_candidates:
+            _schema_names = set(self.QSE._schema.names())
+            _arabizi_target_fields = [
+                f for f in ["word_standard", "normalized", "lemma"]
+                if f in _schema_names
+            ]
+            _arabizi_word_terms = [
+                wquery.Term(f, c)
+                for c in _word_arabizi_candidates
+                for f in _arabizi_target_fields
+            ]
+            if _arabizi_word_terms:
+                _arabizi_q = (
+                    wquery.Or(_arabizi_word_terms)
+                    if len(_arabizi_word_terms) > 1
+                    else _arabizi_word_terms[0]
+                )
+                word_query = wquery.Or([word_query, _arabizi_q])
 
         # Restrict results to word children only.
         kind_filter = wquery.Term("kind", "word")

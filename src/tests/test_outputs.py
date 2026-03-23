@@ -1135,6 +1135,80 @@ def test_search_words_linguistic_field_query():
     assert "words" in result
 
 
+def test_search_words_arabizi_normalized():
+    """_search_words should find word children when an Arabizi query is given.
+
+    'nuh' → Arabizi candidates include نوح which is stored as the *normalized*
+    form of the prophet's name in the word index.  The result set must be
+    non-empty and every returned entry must have 'نوح' as its normalized form.
+    """
+    result = RAWoutput._search_words({
+        "query": "nuh",
+        "highlight": "none",
+        "page": 1,
+    })
+    assert result["interval"]["total"] > 0, (
+        "_search_words('nuh') should return results via Arabizi conversion to نوح"
+    )
+    for w in result["words"].values():
+        assert w["word"]["normalized"] == "نوح", (
+            f"Expected normalized='نوح' for Arabizi 'nuh', got {w['word']['normalized']!r}"
+        )
+
+
+def test_search_words_arabizi_word_standard():
+    """_search_words via Arabizi should also match the word_standard field.
+
+    'ibrahim' → filtered Arabizi candidates include إبراهم (the unvocalized
+    form stored in the *normalized* field), so all results should have
+    normalized='إبراهم'.
+    """
+    result = RAWoutput._search_words({
+        "query": "ibrahim",
+        "highlight": "none",
+        "page": 1,
+    })
+    assert result["interval"]["total"] > 0, (
+        "_search_words('ibrahim') should return results via Arabizi conversion"
+    )
+    # Every word returned should be one of the Arabizi-expanded Arabic forms.
+    valid_normalized = {"إبراهيم", "إبراهم"}
+    for w in result["words"].values():
+        norm = w["word"]["normalized"]
+        assert norm in valid_normalized, (
+            f"Unexpected normalized form {norm!r} for Arabizi 'ibrahim'"
+        )
+
+
+def test_search_words_arabic_query_unaffected():
+    """Direct Arabic word queries must still return the same results after the Arabizi change."""
+    arabic = RAWoutput._search_words({
+        "query": "نوح",
+        "highlight": "none",
+        "page": 1,
+    })
+    arabizi = RAWoutput._search_words({
+        "query": "nuh",
+        "highlight": "none",
+        "page": 1,
+    })
+    assert arabic["interval"]["total"] == arabizi["interval"]["total"], (
+        "Arabizi 'nuh' should return the same hit count as Arabic 'نوح'"
+    )
+
+
+def test_search_words_field_filter_bypasses_arabizi():
+    """Queries containing ':' (field:value) must NOT be converted via Arabizi."""
+    result = RAWoutput._search_words({
+        "query": "root:رحم",
+        "highlight": "none",
+        "page": 1,
+    })
+    # Should return a structured (possibly non-empty) response without error.
+    assert "interval" in result
+    assert "words" in result
+
+
 def test_search_word_vocalizations_returns_list():
     """Test that vocalizations in search output returns a list of strings, not a single string."""
     search_flags = {
