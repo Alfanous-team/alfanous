@@ -675,6 +675,152 @@ def test_wildcard_plugin_inside_parentheses():
     assert wildcard_queries[0].text == "*نبي*", f"Wildcard text should be '*نبي*', got {wildcard_queries[0].text!r}"
 
 
+def test_arabic_wildcard_normalize_star_stays_as_arabic_wildcard():
+    """ArabicWildcardQuery.normalize() must NOT convert bare '*' to Every.
+
+    Whoosh's Wildcard.normalize() converts ``*`` → ``Every(field)`` which is
+    completely unbounded and bypasses the MAX_EXPAND cap.  The override must
+    return ``self`` so the cap remains active for translation/word search.
+    """
+    from whoosh.query import Every
+    wq = ArabicWildcardQuery("text_en", "*")
+    result = wq.normalize()
+    assert not isinstance(result, Every), (
+        "ArabicWildcardQuery.normalize() must not convert '*' to Every; "
+        "Every has no expansion limit and would match all documents."
+    )
+    assert isinstance(result, ArabicWildcardQuery), (
+        f"normalize('*') should return ArabicWildcardQuery, got {type(result).__name__}"
+    )
+
+
+def test_arabic_wildcard_normalize_prefix_stays_as_arabic_wildcard():
+    """ArabicWildcardQuery.normalize() must NOT convert 'word*' to Prefix.
+
+    Whoosh's Wildcard.normalize() converts ``word*`` → ``Prefix(field, 'word')``.
+    Prefix._btexts() is unbounded (calls ixreader.expand_prefix()) so it
+    bypasses the MAX_EXPAND cap.  The override must return ``self``.
+    """
+    from whoosh.query.terms import Prefix
+    wq = ArabicWildcardQuery("text_en", "word*")
+    result = wq.normalize()
+    assert not isinstance(result, Prefix), (
+        "ArabicWildcardQuery.normalize() must not convert 'word*' to Prefix; "
+        "Prefix._btexts() is unbounded and bypasses MAX_EXPAND."
+    )
+    assert isinstance(result, ArabicWildcardQuery), (
+        f"normalize('word*') should return ArabicWildcardQuery, got {type(result).__name__}"
+    )
+
+
+def test_arabic_wildcard_normalize_no_wildcard_becomes_term():
+    """ArabicWildcardQuery.normalize() converts plain-text to Term (no wildcards)."""
+    from whoosh.query import Term
+    wq = ArabicWildcardQuery("text_en", "hello")
+    result = wq.normalize()
+    assert isinstance(result, Term), (
+        f"normalize('hello') should return Term, got {type(result).__name__}"
+    )
+    assert result.text == "hello"
+
+
+def test_arabic_wildcard_matcher_star_does_not_use_every():
+    """ArabicWildcardQuery.matcher() for bare '*' must use _btexts(), not Every.
+
+    Whoosh's Wildcard.matcher() short-circuits ``text == '*'`` and creates an
+    Every matcher (all documents, unbounded).  The override must call
+    MultiTerm.matcher() instead so the MAX_EXPAND cap in _btexts() is applied.
+    """
+    import shutil, tempfile
+    from whoosh import index as whoosh_index
+    from whoosh.fields import Schema, TEXT
+
+    tmpdir = tempfile.mkdtemp()
+    try:
+        schema = Schema(text_en=TEXT(stored=True))
+        ix = whoosh_index.create_in(tmpdir, schema)
+        writer = ix.writer()
+        for word in ("alpha", "beta", "gamma"):
+            writer.add_document(text_en=word)
+        writer.commit()
+
+        with ix.searcher() as searcher:
+            wq = ArabicWildcardQuery("text_en", "*")
+            # matcher() must succeed (no exception from Every shortcut)
+            m = wq.matcher(searcher)
+            # It should match some documents (from _btexts capped at MAX_EXPAND)
+            count = 0
+            while m.is_active():
+                count += 1
+                m.next()
+            assert count <= ArabicWildcardQuery.MAX_EXPAND, (
+                f"matcher('*') matched {count} docs but MAX_EXPAND={ArabicWildcardQuery.MAX_EXPAND}"
+            )
+    finally:
+        shutil.rmtree(tmpdir, ignore_errors=True)
+
+
+def test_arabic_wildcard_multifield_star_no_every():
+    """MultifieldParser with ArabicWildcardPlugin: '*' must not produce Every.
+
+    Before the normalize() fix, parsing '*' with a MultifieldParser set up for
+    translation/word search produced Every('field') queries — completely
+    unbounded.  After the fix each sub-query must be ArabicWildcardQuery.
+    """
+    from whoosh.qparser import MultifieldParser
+    from whoosh.qparser.plugins import WildcardPlugin, EveryPlugin
+    from whoosh.query import Every
+    from whoosh.fields import Schema, TEXT
+
+    schema = Schema(text_en=TEXT(stored=True), text_fr=TEXT(stored=True))
+    p = MultifieldParser(["text_en", "text_fr"], schema)
+    p.remove_plugin_class(WildcardPlugin)
+    p.remove_plugin_class(EveryPlugin)
+    p.add_plugin(ArabicWildcardPlugin())
+
+    result = p.parse("*")
+    assert result is not None
+    for subq in result:
+        assert not isinstance(subq, Every), (
+            f"Sub-query {subq!r} is Every — ArabicWildcardQuery.normalize() "
+            "must prevent Every conversion so MAX_EXPAND cap applies."
+        )
+        assert isinstance(subq, ArabicWildcardQuery), (
+            f"Expected ArabicWildcardQuery, got {type(subq).__name__}"
+        )
+
+
+def test_arabic_wildcard_multifield_prefix_no_unbounded_prefix():
+    """MultifieldParser with ArabicWildcardPlugin: 'word*' must not produce Prefix.
+
+    Before the normalize() fix, 'word*' was converted to Prefix('field', 'word')
+    by Wildcard.normalize() — which is unbounded.  After the fix it must stay
+    as ArabicWildcardQuery.
+    """
+    from whoosh.qparser import MultifieldParser
+    from whoosh.qparser.plugins import WildcardPlugin, EveryPlugin
+    from whoosh.query.terms import Prefix
+    from whoosh.fields import Schema, TEXT
+
+    schema = Schema(text_en=TEXT(stored=True), text_fr=TEXT(stored=True))
+    p = MultifieldParser(["text_en", "text_fr"], schema)
+    p.remove_plugin_class(WildcardPlugin)
+    p.remove_plugin_class(EveryPlugin)
+    p.add_plugin(ArabicWildcardPlugin())
+
+    result = p.parse("word*")
+    assert result is not None
+    for subq in result:
+        assert not isinstance(subq, Prefix), (
+            f"Sub-query {subq!r} is Prefix — Prefix._btexts() is unbounded and "
+            "bypasses MAX_EXPAND.  ArabicWildcardQuery.normalize() must prevent "
+            "the Wildcard→Prefix conversion."
+        )
+        assert isinstance(subq, ArabicWildcardQuery), (
+            f"Expected ArabicWildcardQuery, got {type(subq).__name__}"
+        )
+
+
 if __name__ == "__main__":
     pytest.main([__file__, "-v"])
 
