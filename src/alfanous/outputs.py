@@ -1131,15 +1131,20 @@ class Raw:
             # translation query terms so English keywords appear in
             # words.individual.
             if not termz and _trans_term_pairs:
-                # Deduplicate by term text: the same word may match multiple
-                # translation language fields; keep one entry per unique term.
-                _seen_terms: set = set()
-                _deduped_pairs = []
-                for _trans_field, _trans_term in _trans_term_pairs:
-                    if _trans_term not in _seen_terms:
-                        _seen_terms.add(_trans_term)
-                        _deduped_pairs.append((_trans_field, _trans_term))
-                termz = self.QSE.term_stats(_deduped_pairs)
+                # Fetch stats for ALL (field, term) pairs, then for each
+                # unique term text keep the entry whose field has the most
+                # overall matches.  This ensures "fire" → text_en (many
+                # matches) rather than text_ar (0 matches), so the hint and
+                # nb_matches_overall reflect the language where the term is
+                # actually found.
+                _all_pair_stats = list(self.QSE.term_stats(_trans_term_pairs))
+                _term_best: dict = {}
+                for _stat in _all_pair_stats:
+                    _s_field, _s_text, _s_freq, _s_docs = _stat
+                    _best = _term_best.get(_s_text)
+                    if _best is None or (_s_freq or 0) > (_best[2] or 0):
+                        _term_best[_s_text] = _stat
+                termz = list(_term_best.values())
             # Add arabizi-converted Arabic candidates to termz so the mapped
             # Arabic words (e.g. 'قول' for 'qawl') appear in words.individual
             # and are used for Arabic text highlighting.
@@ -1274,9 +1279,10 @@ class Raw:
                             v for v in _all_ac_variations
                             if _edit_distance(_word_norm, v) <= fuzzy_maxdist
                         ]
+                        _has_matches = (term[2] or 0) > 0
                         words_output["individual"][_cpt] = {
                             "word": term[1],
-                            **({"hint": _trans_field_hint(term[0])} if term[0] in self._trans_fields else {}),
+                            **({"hint": _trans_field_hint(term[0])} if term[0] in self._trans_fields and _has_matches else {}),
                             "variations": _word_variations,
                         }
                         _cpt += 1
@@ -1514,14 +1520,15 @@ class Raw:
                             # applicable; counts within the result page are 0 because
                             # results are parent aya documents while translation
                             # postings live in nested child documents.
+                            _nb_matches_overall = int(term[2]) if term[2] else 0
                             if term[2]:
                                 matches += term[2]
                             docs += term[3]
                             words_output["individual"][cpt] = {
                                 "word": term[1],
-                                "hint": _trans_field_hint(term[0]),
+                                **({"hint": _trans_field_hint(term[0])} if _nb_matches_overall > 0 else {}),
                                 "romanization": None,
-                                "nb_matches_overall": int(term[2]) if term[2] else 0,
+                                "nb_matches_overall": _nb_matches_overall,
                                 "nb_matches": 0,
                                 "nb_ayas_overall": term[3],
                                 "nb_ayas": 0,
