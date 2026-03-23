@@ -29,8 +29,11 @@ _ASF_TASHKIL = QArabicSymbolsFilter(
     shaping=False, tashkil=True, spellerrors=False, hamza=False
 )
 # Pre-instantiated filter used by DerivationQuery for normalising the query word.
+# uthmani_symbols=True ensures Uthmanic annotation marks (U+06D6–U+06ED) and
+# ALEF_WASLA (U+0671) are stripped/replaced so that derivation lookups work
+# when the input word is in Uthmanic script (e.g. ٱلۡهَدۡيِۖ).
 _ASF_NORMALIZE = QArabicSymbolsFilter(
-    shaping=True, tashkil=True, spellerrors=False, hamza=False
+    shaping=True, tashkil=True, spellerrors=False, hamza=False, uthmani_symbols=True
 )
 # Pre-instantiated filter used by SpellErrorsQuery — avoids allocating a new
 # QArabicSymbolsFilter on every SpellErrorsQuery instantiation.

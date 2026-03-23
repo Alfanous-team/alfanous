@@ -493,6 +493,77 @@ def test_uthmani_field_uses_normalizing_analyzer():
     )
 
 
+# ---------------------------------------------------------------------------
+# _NORMALIZE_WORD_QUERY – word search pre-normalization (issue: ٱلۡهَدۡيِۖ)
+# ---------------------------------------------------------------------------
+
+def test_normalize_word_query_strips_uthmani_issue_word():
+    """_NORMALIZE_WORD_QUERY must reduce ٱلۡهَدۡيِۖ to الهدي.
+
+    This is the concrete Uthmani word from the bug report.  The query word
+    contains ALEF_WASLA (U+0671), Uthmani sukun (U+06E1), standard tashkeel
+    (FATHA U+064E, KASRA U+0650) and a Uthmanic stop mark (U+06D6).  After
+    pre-normalization all those marks must be gone so that KEYWORD fields
+    like *word_standard* (which stores the plain Arabic form) also match.
+    """
+    from alfanous.outputs import _NORMALIZE_WORD_QUERY
+
+    uthmani_word = 'ٱلۡهَدۡيِۖ'
+    result = _NORMALIZE_WORD_QUERY(uthmani_word)
+    assert result == 'الهدي', (
+        f"Expected 'الهدي' but got {result!r}; _NORMALIZE_WORD_QUERY must strip "
+        "Uthmani annotation marks and standard tashkeel from the query so that "
+        "word_standard KEYWORD field matches Uthmanic input"
+    )
+
+
+def test_normalize_word_query_preserves_field_syntax():
+    """_NORMALIZE_WORD_QUERY must not corrupt Whoosh field-qualifier syntax.
+
+    A field-qualified query like 'root:رحم' must have its ASCII field name
+    and colon left intact while any Uthmani/tashkeel in the value part is
+    stripped.
+    """
+    from alfanous.outputs import _NORMALIZE_WORD_QUERY
+
+    query = 'root:رحم'
+    result = _NORMALIZE_WORD_QUERY(query)
+    assert result == 'root:رحم', (
+        f"Expected 'root:رحم' but got {result!r}; ASCII field names and colons "
+        "must not be affected by Uthmani pre-normalization"
+    )
+
+
+def test_normalize_word_query_idempotent_on_plain_arabic():
+    """_NORMALIZE_WORD_QUERY must leave already-normalized Arabic unchanged."""
+    from alfanous.outputs import _NORMALIZE_WORD_QUERY
+
+    plain = 'الهدي'
+    assert _NORMALIZE_WORD_QUERY(plain) == plain, (
+        "_NORMALIZE_WORD_QUERY must be idempotent: plain Arabic without "
+        "diacritics or Uthmani marks must not be changed"
+    )
+
+
+def test_asf_normalize_strips_uthmani_issue_word():
+    """_ASF_NORMALIZE in query_plugins must reduce ٱلۡهَدۡيِۖ to الهدي.
+
+    DerivationQuery and _lookup_key_values use _ASF_NORMALIZE to build the
+    candidate set for the two-pass derivation scan.  With uthmani_symbols=True
+    the fully-normalized form الهدي is included as a candidate so that
+    word_standard/normalized stored fields (which hold the un-vocalized
+    standard form) are also matched in Pass 1 of the scan.
+    """
+    from alfanous.query_plugins import _ASF_NORMALIZE
+
+    uthmani_word = 'ٱلۡهَدۡيِۖ'
+    result = _ASF_NORMALIZE.normalize_all(uthmani_word)
+    assert result == 'الهدي', (
+        f"Expected 'الهدي' but got {result!r}; _ASF_NORMALIZE must normalize "
+        "Uthmani diacritics so derivation lookups work with Uthmanic input"
+    )
+
+
 
 # ---------------------------------------------------------------------------
 # QShingleFilter – adjacency tests

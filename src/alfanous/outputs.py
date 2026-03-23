@@ -102,6 +102,15 @@ _KEEP_VOCALIZATION = QArabicSymbolsFilter(
     shaping=False, tashkil=False, spellerrors=False, hamza=False
 ).normalize_all
 
+# Pre-normalization applied to word-unit search queries.  Strips standard
+# tashkeel (diacritics) and Uthmanic annotation marks (U+06D6–U+06ED) plus
+# ALEF_WASLA (U+0671) so that KEYWORD fields like *word_standard* — which store
+# the plain un-vocalized standard-Arabic form — match when the user's query
+# contains Uthmanic script (e.g. ٱلۡهَدۡيِۖ).
+_NORMALIZE_WORD_QUERY = QArabicSymbolsFilter(
+    shaping=True, tashkil=True, spellerrors=False, hamza=False, uthmani_symbols=True
+).normalize_all
+
 # All word-child index fields targetable by _search_words.
 # Defined at module level so the list is not rebuilt on every request.
 _WORD_ALL_INDEXED_FIELDS = [
@@ -2132,6 +2141,11 @@ class Raw:
         query = query.replace("\\", "")
         if ":" not in query:
             query = transliterate("buckwalter", query, ignore="'_\"%*?#~[]{}:>+-|")
+        # Normalize Uthmani diacritics (ALEF_WASLA, Uthmani sukun/stop marks) and
+        # standard tashkeel so that KEYWORD fields like *word_standard* — which
+        # store un-vocalized standard Arabic — match when the query is in Uthmanic
+        # script (e.g. ٱلۡهَدۡيِۖ should match the stored form الهدي).
+        query = _NORMALIZE_WORD_QUERY(query)
 
         empty_response = {
             "words": {},
