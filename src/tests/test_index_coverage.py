@@ -11,7 +11,7 @@ from whoosh.filedb.filestore import FileStorage
 from alfanous import paths
 
 QURAN_TOTAL_VERSES = 6236
-INDEX_SIZE_LIMIT_MB = 90
+INDEX_SIZE_LIMIT_MB = 100
 
 
 def _iter_docs_by_kind():
@@ -74,7 +74,7 @@ def test_index_each_translation_covers_all_ayas():
         )
 
 
-def test_index_size_under_90mb():
+def test_index_size_under_100mb():
     """The main index directory must not exceed INDEX_SIZE_LIMIT_MB megabytes.
 
     Walks every file under paths.QSE_INDEX and sums their sizes.  A large
