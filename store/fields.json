@@ -581,7 +581,7 @@
     "analyzer": "TranslationAnalyzer_ar",
     "is_spellchecked": null,
     "unique": null,
-    "phrase": true
+    "phrase": false
   },
   {
     "id": 104,
@@ -594,7 +594,7 @@
     "analyzer": "TranslationAnalyzer_en",
     "is_spellchecked": null,
     "unique": null,
-    "phrase": true
+    "phrase": false
   },
   {
     "id": 106,
@@ -607,7 +607,7 @@
     "analyzer": "TranslationAnalyzer_fr",
     "is_spellchecked": null,
     "unique": null,
-    "phrase": true
+    "phrase": false
   },
   {
     "id": 108,
@@ -620,7 +620,7 @@
     "analyzer": "TranslationAnalyzer_id",
     "is_spellchecked": null,
     "unique": null,
-    "phrase": true
+    "phrase": false
   },
   {
     "id": 109,
@@ -633,7 +633,7 @@
     "analyzer": "TranslationAnalyzer_ms",
     "is_spellchecked": null,
     "unique": null,
-    "phrase": true
+    "phrase": false
   },
   {
     "id": 112,
@@ -646,7 +646,7 @@
     "analyzer": "TranslationAnalyzer_tr",
     "is_spellchecked": null,
     "unique": null,
-    "phrase": true
+    "phrase": false
   },
   {
     "id": 114,
@@ -991,7 +991,7 @@
     "search_name": "text_ja",
     "type": "TEXT",
     "stored": false,
-    "phrase": true,
+    "phrase": false,
     "analyzer": "TranslationAnalyzer_ja"
   },
   {
@@ -1001,7 +1001,7 @@
     "search_name": "text_ku",
     "type": "TEXT",
     "stored": false,
-    "phrase": true,
+    "phrase": false,
     "analyzer": "TranslationAnalyzer_ku"
   },
   {
@@ -1011,7 +1011,7 @@
     "search_name": "text_ml",
     "type": "TEXT",
     "stored": false,
-    "phrase": true,
+    "phrase": false,
     "analyzer": "TranslationAnalyzer_ml"
   },
   {
@@ -1021,7 +1021,7 @@
     "search_name": "text_es",
     "type": "TEXT",
     "stored": false,
-    "phrase": true,
+    "phrase": false,
     "analyzer": "TranslationAnalyzer_es"
   },
   {
@@ -1031,7 +1031,7 @@
     "search_name": "text_pt",
     "type": "TEXT",
     "stored": false,
-    "phrase": true,
+    "phrase": false,
     "analyzer": "TranslationAnalyzer_pt"
   },
   {
@@ -1041,7 +1041,7 @@
     "search_name": "text_ur",
     "type": "TEXT",
     "stored": false,
-    "phrase": true,
+    "phrase": false,
     "analyzer": "TranslationAnalyzer_ur"
   },
   {
@@ -1051,7 +1051,7 @@
     "search_name": "text_bn",
     "type": "TEXT",
     "stored": false,
-    "phrase": true,
+    "phrase": false,
     "analyzer": "TranslationAnalyzer_bn"
   },
   {
@@ -1061,7 +1061,7 @@
     "search_name": "text_ha",
     "type": "TEXT",
     "stored": false,
-    "phrase": true,
+    "phrase": false,
     "analyzer": "TranslationAnalyzer_ha"
   },
   {
@@ -1071,7 +1071,7 @@
     "search_name": "text_ru",
     "type": "TEXT",
     "stored": false,
-    "phrase": true,
+    "phrase": false,
     "analyzer": "TranslationAnalyzer_ru"
   },
   {
@@ -1081,7 +1081,7 @@
     "search_name": "text_ps",
     "type": "TEXT",
     "stored": false,
-    "phrase": true,
+    "phrase": false,
     "analyzer": "TranslationAnalyzer_ps"
   },
   {
@@ -1091,7 +1091,7 @@
     "search_name": "text_uz",
     "type": "TEXT",
     "stored": false,
-    "phrase": true,
+    "phrase": false,
     "analyzer": "TranslationAnalyzer_uz"
   },
   {
@@ -1101,7 +1101,7 @@
     "search_name": "text_sw",
     "type": "TEXT",
     "stored": false,
-    "phrase": true,
+    "phrase": false,
     "analyzer": "TranslationAnalyzer_sw"
   },
   {
