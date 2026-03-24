@@ -1,0 +1,17 @@
+{# @page: The number of current page #}
+{# @nb_pages: The total number of result pages #}
+
+{% load custom_filters %}
+{% load query %}
+
+{% if page != 1 %}
+  {% with page|add:"-1" as prev_page %}
+	<link rel="prev" href="{% filter force_escape %}?{% custom_query params.query prev_page False %}{% endfilter %}" />
+  {% endwith %}
+{% endif %}
+
+{% if page != nb_pages %}
+  {% with page|add:"+1" as next_page %}
+	<link rel="next" href="{% filter force_escape %}?{% custom_query params.query next_page False %}{% endfilter %}" />
+  {% endwith %}
+{% endif %}

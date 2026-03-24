@@ -1,0 +1,46 @@
+{# @page: The number of current page #}
+{# @nb_pages: The total number of result pages #}
+
+{% load custom_filters %}
+{% load query %}
+
+<div class="pagination pagination-centered">
+  <ul>
+    {% if page != 1 %}
+      {% with page|add:"-1" as prev_page %}
+      <li>
+        <a class="no_decoration" href='?{% custom_query params.query prev_page False %}'>
+          <span>&laquo;</span>
+        </a>
+      </li>
+      {% endwith %}
+    {% endif %}
+
+    {% for i in nb_pages|get_range %}
+      {% if  i == page %}
+        <li class="disabled"><a>{{ i }}</a></li>
+      {% elif i <= page|add:"+7" and i >= page|add:"-3"  %}
+        {# pages  in range [-3,+7] #}
+        <li><a class='page_link' href="?{% custom_query params.query i False %}">{{ i }}</a></li>
+      {% elif i|divisibleby:"50" and i < page or i == 1  %} {# Prio: Left #}
+        {# first page ; and every 50 pages before current page #}
+        <li><a class='page_link' href="?{% custom_query params.query i False %}">{{ i }}</a></li>
+        <li class="disabled"><a>..</a></li>
+      {% elif i|divisibleby:"50" and i > page or i == nb_pages  %}
+        {# last page;  and every 50 pages after current page #}
+        <li class="disabled"><a>..</a></li>
+        <li><a class='page_link' href="?{% custom_query params.query i False %}">{{ i }}</a></li>
+      {% endif %}
+    {% endfor %}
+
+    {% if page != nb_pages %}
+      {% with page|add:"+1" as next_page %}
+      <li>
+        <a class="no_decoration" href='?{% custom_query params.query next_page False %}'>
+          <span>&raquo;</span>
+        </a>
+      </li>
+      {% endwith %}
+    {% endif %}
+  </ul>
+</div>

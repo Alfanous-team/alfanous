@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<OpenSearchDescription xmlns="http://a9.com/-/spec/opensearch/1.1/">
+  <ShortName>Alfanous</ShortName>
+  <Description>Alfanous - Advanced Qur'anic Search Engine</Description>
+  <Tags>quran alfanous قرآن الفانوس</Tags>
+  <Image height="16" width="16" type="image/png">
+    http://www.alfanous.org/static/shared/img/icon/icon_32_a.png
+  </Image>
+  <Url
+    type="text/html"
+    method="GET"
+    xmlns:referrer="http://a9.com/-/opensearch/extensions/referrer/"
+    template="http://www.alfanous.org/?query={searchTerms}"
+    />
+  <Url
+    type="application/opensearchdescription+xml"
+    rel="self"
+    template="http://www.alfanous.org/opensearch.xml"
+    />
+  <InputEncoding>UTF-8</InputEncoding>
+  <AdultContent>false</AdultContent>
+</OpenSearchDescription>

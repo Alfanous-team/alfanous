@@ -1,0 +1,3903 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <author>Assem Chelli</author>
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="windowModality">
+   <enum>Qt::ApplicationModal</enum>
+  </property>
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1422</width>
+    <height>703</height>
+   </rect>
+  </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="MinimumExpanding" vsizetype="Expanding">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>976</width>
+    <height>0</height>
+   </size>
+  </property>
+  <property name="focusPolicy">
+   <enum>Qt::ClickFocus</enum>
+  </property>
+  <property name="acceptDrops">
+   <bool>false</bool>
+  </property>
+  <property name="windowTitle">
+   <string>Alfanous - Qur'anic Search Engine (Kahraman Release)</string>
+  </property>
+  <property name="windowIcon">
+   <iconset resource="../images/main.qrc">
+    <normaloff>:/resources/AlFanous.png</normaloff>:/resources/AlFanous.png</iconset>
+  </property>
+  <property name="whatsThis">
+   <string/>
+  </property>
+  <property name="layoutDirection">
+   <enum>Qt::LeftToRight</enum>
+  </property>
+  <property name="styleSheet">
+   <string notr="true"> QToolBox::tab {
+         background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
+                                     stop: 0 #E1F1E1, stop: 0.4 #DDEDDD,
+                                     stop: 0.5 #D8E8D8, stop: 1.0 #D3E3D3);
+         border-radius: 10px;
+         color: rgb(0, 85, 0);
+     border: 1px solid green;
+     }
+
+     QToolBox::tab:selected { /* italicize selected tabs */
+  background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
+                                     stop: 0 #C1D1C1, stop: 0.4 #BDCDBD,
+                                     stop: 0.5 #B8C8B8, stop: 1.0 #B3C3B3);
+         font: italic;
+         color: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:0, stop:0 rgba(255, 0, 0, 255), stop:0.166 rgba(138, 138, 0, 255), stop:0.333 rgba(0, 92, 0, 255), stop:0.5 rgba(0, 0, 0, 255), stop:0.666 rgba(0, 0, 255, 255), stop:0.833 rgba(255, 0, 255, 255), stop:1 rgba(255, 0, 0, 255));
+     border: 2px solid red;
+}
+
+
+
+
+QDockWidget {
+     border: 1px solid lightgray;
+
+     titlebar-close-icon: url(:/resources/application_exit.png);
+	border-radius:5px;
+ 	icon-size: 64px;
+ }
+
+ QDockWidget::title {
+     text-align: center; /* align the text to the left */
+
+     padding-left: 20px;
+ }
+
+ QDockWidget::close-button, QDockWidget::float-button {
+     border: 1px solid transparent;
+     padding: 0px;
+ }
+
+ QDockWidget::close-button:hover, QDockWidget::float-button:hover {
+
+ }
+
+ QDockWidget::close-button:pressed, QDockWidget::float-button:pressed {
+     padding: 1px -1px -1px 1px;
+ }
+
+QPushButton { background: qlineargradient(spread:pad, x1:0.504091, y1:0.619, x2:0.487, y2:0, stop:0 rgba(240, 146, 146, 255), stop:1 rgba(238, 197, 197, 255)) ;
+ border: 1px solid #f5f6fa;
+     border-radius: 3px; }
+
+QToolButton { background: qlineargradient(spread:pad, x1:0.504091, y1:0.619, x2:0.487, y2:0, stop:0 rgba(162, 200, 160, 255), stop:1 rgba(226, 225, 221, 255));
+ border: 1px solid #f5f6fa;
+     border-radius: 3px; }
+
+
+
+
+
+
+ QMenuBar::item:selected,QPushButton:hover,QToolButton:hover { /* when selected using mouse or keyboard */
+border: 1px solid #f5f6fa;
+     border-radius: 3px;
+
+  
+ }
+
+ QMenuBar::item:pressed,QPushButton:pressed,QToolButton:pressed{
+          border: 1px solid grey;
+     border-radius: 3px;
+
+
+}
+
+
+
+
+ QMenu::item { /* when selected using mouse or keyboard */
+
+margin-left: 2px;
+margin-right: 2px;
+
+padding-top: 4px;
+padding-bottom: 4px;
+padding-left: 28px;
+padding-right: 14px;
+
+/*background:blue;*/
+/*padding: 2px 0px 2px -1px;*/
+}
+
+ QMenu::item:selected { /* when selected using mouse or keyboard */
+     border: 1px solid #a7dbff;
+     border-radius: 3px;
+
+
+margin-left: 1px;
+
+padding-left: 28px;
+
+
+/*padding: 2px 0px 2px -1px;*/
+}
+
+
+
+
+QMenu::indicator:unchecked { /* when selected using mouse or keyboard */
+
+     border-radius: 3px;
+
+}
+
+QMenu::indicator:checked:enabled { /* when selected using mouse or keyboard */
+     border: 1px solid #a7dbff;
+     border-radius: 3px;
+
+     background-color: #e6eff4;
+
+     image: url(:/resources/menu_indicator.png)
+}
+
+
+QMenu::indicator:checked:!enabled { /* when selected using mouse or keyboard */
+     image: url(:/resources/menu_indicator_disabled.png)
+}
+
+
+
+QMenu::separator {
+    height: 2px;
+    margin-left: 0px;
+margin-top: 4px;
+margin-bottom: 4px;
+
+
+}
+
+QGroupBox {
+     border: 1px solid green;
+	border-radius:5px;
+	margin: 6px 2px 2px 2px;
+}
+
+QGroupBox::title {
+     subcontrol-origin: margin;
+     subcontrol-position: top left; /* position at the top center */
+     padding: 0 3px;
+}
+
+ QCheckBox {
+     spacing: 5px;
+ }
+
+ QCheckBox::indicator {
+     width: 13px;
+     height: 13px;
+ }
+
+ QCheckBox::indicator:unchecked {
+     image: url(:/resources/checkbox_off_enabled.png);
+ }
+
+ QCheckBox::indicator:unchecked:!enabled {
+     image: url(:/resources/checkbox_off_disabled.png);
+ }
+
+ QCheckBox::indicator:unchecked:hover {
+     image: url(:/resources/checkbox_off_enabled_hover.png);
+ }
+
+ QCheckBox::indicator:unchecked:pressed {
+     image: url(:/resources/checkbox_off_enabled_pressed.png);
+ }
+
+ QCheckBox::indicator:checked {
+     image: url(:/resources/checkbox_on_enabled.png);
+ }
+
+ QCheckBox::indicator:checked:!enabled {
+     image: url(:/resources/checkbox_on_disabled.png);
+ }
+
+
+ QCheckBox::indicator:checked:hover {
+     image: url(:/resources/checkbox_on_enabled_hover.png);
+ }
+
+ QCheckBox::indicator:checked:pressed {
+     image: url(:/resources/checkbox_on_enabled_pressed.png);
+ }
+
+ QCheckBox::indicator:indeterminate:hover {
+     image: url(:/resources/checkbox_inter_enabled_hover.png);
+ }
+
+ QCheckBox::indicator:indeterminate {
+     image: url(:/resources/checkbox_inter_enabled.png);
+ } 
+
+ QCheckBox::indicator:indeterminate:!enabled {
+     image: url(:/resources/checkbox_inter_disabled.png);
+ }
+
+QRadioButton {
+     spacing: 5px;
+ }
+
+ QRadioButton::indicator {
+     width: 12px;
+     height: 12px;
+ }
+
+ QRadioButton::indicator:unchecked {
+     image: url(:/resources/radiobutton_off_enabled.png);
+ }
+
+ QRadioButton::indicator:checked {
+     image: url(:/resources/radiobutton_on_enabled.png);
+ }
+
+ QRadioButton::indicator:checked:hover {
+     image: url(:/resources/radiobutton_on_enabled_hover.png);
+ }
+
+ QRadioButton::indicator:checked:pressed {
+     image: url(:/resources/radiobutton_on_enabled_pressed.png);
+}
+
+ QRadioButton::indicator:unchecked:!enabled {
+     image: url(:/resources/radiobutton_off_disabled.png);
+ }
+
+ QRadioButton::indicator:checked:!enabled {
+     image: url(:/resources/radiobutton_on_disabled.png);
+ }
+
+ QRadioButton::indicator:unchecked:hover {
+     image: url(:/resources/radiobutton_off_enabled_hover.png);
+}
+
+ QRadioButton::indicator:unchecked:pressed {
+     image: url(:/resources/radiobutton_off_enabled_pressed.png);
+}
+
+QLineEdit, QTextEdit, QSpinBox, QDoubleSpinBox, QTextBrowser {
+
+	border-radius: 2px;
+
+
+}
+
+
+
+
+
+
+
+
+QComboBox::QFrame {
+	border: 1px solid #828790;
+}
+
+QLabel,QToolBox {
+	border: 0px solid #828790;
+}
+
+QSpinBox::up-button, QDoubleSpinBox::up-button {
+     subcontrol-origin: border;
+     subcontrol-position: top right; /* position at the top right corner */
+
+     width: 16px; /* 16 + 2*1px border-width = 15px padding + 3px parent border */
+     border-width: 2px;
+	border-bottom-width: 0;
+
+	border-image: url(:/resources/spin_up_enabled.png) 1;
+}
+
+QSpinBox::down-button, QDoubleSpinBox::down-button {
+     subcontrol-origin: border;
+     subcontrol-position: bottom right; /* position at bottom right corner */
+
+     width: 16px;
+     border-width: 2px;
+     border-top-width: 0;
+
+	border-image: url(:/resources/spin_down_enabled.png) 1;
+}
+
+QLineEdit, QTextEdit, QSpinBox, QDoubleSpinBox, QTextBrowser {
+ 	border-top: 1px solid #abadb3;
+ 	border-right: 1px solid #abadb3;
+	border-left: 1px solid #e3e9ef;
+	border-bottom: 1px solid #e3e9ef;
+	border-radius: 2px;
+
+     background: white;
+     selection-background-color: #3399ff;
+
+	min-height: 23 px;
+}
+
+QLineEdit:!enabled, QTextEdit:!enabled, QSpinBox:!enabled, QDoubleSpinBox:!enabled {
+ 	border: 1px solid #afafaf;
+	border-radius: 2px;
+
+     background: white;
+	color: #afafaf;
+     selection-background-color: #3399ff;
+}
+
+
+QLineEdit:hover:enabled, QTextEdit:hover:enabled, QSpinBox:hover:enabled, QDoubleSpinBox:hover:enabled {
+ 	border-top: 1px solid #3d7bad;
+ 	border-right: 1px solid #3d7bad;
+	border-left: 1px solid #b7d9ed;
+	border-bottom: 1px solid #b7d9ed;
+}
+
+
+QSpinBox, QDoubleSpinBox {
+	padding-right: 18px;
+}
+
+QSpinBox::up-button:!enabled, QDoubleSpinBox::up-button:!enabled,
+QSpinBox::up-arrow:off, QDoubleSpinBox::up-arrow:off {
+	border-image: url(:/resources/spin_up_disabled.png) 1;
+}
+
+QSpinBox::down-button:!enabled, QDoubleSpinBox::down-button:!enabled,
+QSpinBox::down-arrow:off, QDoubleSpinBox::down-arrow:off {
+	border-image: url(:/resources/spin_down_disabled.png) 1;
+}
+
+QSpinBox::up-button:hover:enabled, QDoubleSpinBox::up-button:hover:enabled {
+	border-image: url(:/resources/spin_up_enabled_hover.png) 1;
+}
+
+QSpinBox::up-button:pressed:enabled, QDoubleSpinBox::up-button:pressed:enabled {
+	border-image: url(:/resources/spin_up_enabled_pressed.png) 1;
+}
+
+QSpinBox::down-button:hover:enabled, QDoubleSpinBox::down-button:hover:enabled {
+	border-image: url(:/resources/spin_down_enabled_hover.png) 1;
+}
+
+QSpinBox::down-button:pressed:enabled, QDoubleSpinBox::down-button:pressed:enabled {
+	border-image: url(:/resources/spin_down_enabled_pressed.png) 1;
+}
+</string>
+  </property>
+  <property name="locale">
+   <locale language="English" country="UnitedStates"/>
+  </property>
+  <property name="documentMode">
+   <bool>false</bool>
+  </property>
+  <property name="dockNestingEnabled">
+   <bool>false</bool>
+  </property>
+  <property name="dockOptions">
+   <set>QMainWindow::AllowTabbedDocks|QMainWindow::AnimatedDocks</set>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <property name="layoutDirection">
+    <enum>Qt::LeftToRight</enum>
+   </property>
+   <layout class="QVBoxLayout" name="verticalLayout_2">
+    <item>
+     <layout class="QHBoxLayout" name="horizontalLayout_4">
+      <item>
+       <widget class="QComboBox" name="o_query">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+          <horstretch>2</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>0</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="toolTip">
+         <string>Write your query here</string>
+        </property>
+        <property name="statusTip">
+         <string>Write your query here</string>
+        </property>
+        <property name="whatsThis">
+         <string>SearchBar</string>
+        </property>
+        <property name="layoutDirection">
+         <enum>Qt::RightToLeft</enum>
+        </property>
+        <property name="styleSheet">
+         <string notr="true"/>
+        </property>
+        <property name="editable">
+         <bool>true</bool>
+        </property>
+        <property name="currentIndex">
+         <number>0</number>
+        </property>
+        <property name="maxVisibleItems">
+         <number>5</number>
+        </property>
+        <property name="maxCount">
+         <number>5</number>
+        </property>
+        <property name="insertPolicy">
+         <enum>QComboBox::InsertAtTop</enum>
+        </property>
+        <property name="duplicatesEnabled">
+         <bool>false</bool>
+        </property>
+        <property name="frame">
+         <bool>true</bool>
+        </property>
+        <property name="modelColumn">
+         <number>0</number>
+        </property>
+        <item>
+         <property name="text">
+          <string notr="true">الحمد لله</string>
+         </property>
+        </item>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="o_search">
+        <property name="toolTip">
+         <string>Click to search</string>
+        </property>
+        <property name="statusTip">
+         <string>Click to search</string>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+        <property name="icon">
+         <iconset resource="../images/main.qrc">
+          <normaloff>:/resources/find.png</normaloff>:/resources/find.png</iconset>
+        </property>
+        <property name="flat">
+         <bool>false</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="o_clear">
+        <property name="toolTip">
+         <string>Click to clear searchbar</string>
+        </property>
+        <property name="statusTip">
+         <string>Click to clear searchbar</string>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+        <property name="icon">
+         <iconset resource="../images/main.qrc">
+          <normaloff>:/resources/clear_left.png</normaloff>:/resources/clear_left.png</iconset>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+    <item>
+     <layout class="QHBoxLayout" name="horizontalLayout_45">
+      <item>
+       <widget class="QCheckBox" name="o_autospell">
+        <property name="enabled">
+         <bool>true</bool>
+        </property>
+        <property name="text">
+         <string>Fuzzy Search</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <spacer name="horizontalSpacer_9">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeType">
+         <enum>QSizePolicy::Fixed</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>10</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item>
+       <widget class="QLabel" name="label_33">
+        <property name="enabled">
+         <bool>true</bool>
+        </property>
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="font">
+         <font>
+          <weight>75</weight>
+          <bold>true</bold>
+         </font>
+        </property>
+        <property name="text">
+         <string>search in :</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QRadioButton" name="o_search_in_ayas">
+        <property name="enabled">
+         <bool>true</bool>
+        </property>
+        <property name="text">
+         <string>Verses</string>
+        </property>
+        <property name="checked">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QRadioButton" name="o_search_in_trads">
+        <property name="enabled">
+         <bool>true</bool>
+        </property>
+        <property name="text">
+         <string>Translations</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <spacer name="horizontalSpacer_8">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+     </layout>
+    </item>
+    <item>
+     <widget class="QFrame" name="frame0">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="frameShape">
+       <enum>QFrame::Box</enum>
+      </property>
+      <property name="frameShadow">
+       <enum>QFrame::Sunken</enum>
+      </property>
+      <property name="lineWidth">
+       <number>2</number>
+      </property>
+      <property name="midLineWidth">
+       <number>0</number>
+      </property>
+      <layout class="QHBoxLayout" name="horizontalLayout_28">
+       <property name="spacing">
+        <number>3</number>
+       </property>
+       <property name="margin">
+        <number>3</number>
+       </property>
+       <item>
+        <layout class="QVBoxLayout" name="verticalLayout33"/>
+       </item>
+      </layout>
+     </widget>
+    </item>
+    <item>
+     <layout class="QHBoxLayout" name="horizontalLayout_17">
+      <item>
+       <spacer name="horizontalSpacer_3">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout_2">
+        <item>
+         <widget class="QLabel" name="label_3">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="text">
+           <string/>
+          </property>
+          <property name="pixmap">
+           <pixmap resource="../images/main.qrc">:/resources/edit_clear_history.png</pixmap>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLCDNumber" name="o_time">
+          <property name="font">
+           <font>
+            <family>Andale Mono</family>
+            <italic>true</italic>
+           </font>
+          </property>
+          <property name="frameShape">
+           <enum>QFrame::NoFrame</enum>
+          </property>
+          <property name="smallDecimalPoint">
+           <bool>true</bool>
+          </property>
+          <property name="digitCount">
+           <number>5</number>
+          </property>
+          <property name="segmentStyle">
+           <enum>QLCDNumber::Flat</enum>
+          </property>
+          <property name="value" stdset="0">
+           <double>0.000000000000000</double>
+          </property>
+          <property name="intValue" stdset="0">
+           <number>0</number>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout">
+        <item>
+         <widget class="QLabel" name="label_2">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="text">
+           <string/>
+          </property>
+          <property name="pixmap">
+           <pixmap resource="../images/main.qrc">:/resources/document_preview.png</pixmap>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLCDNumber" name="o_resnum">
+          <property name="font">
+           <font>
+            <family>Arial</family>
+            <pointsize>13</pointsize>
+           </font>
+          </property>
+          <property name="whatsThis">
+           <string notr="true"/>
+          </property>
+          <property name="styleSheet">
+           <string notr="true"/>
+          </property>
+          <property name="frameShape">
+           <enum>QFrame::NoFrame</enum>
+          </property>
+          <property name="smallDecimalPoint">
+           <bool>true</bool>
+          </property>
+          <property name="digitCount">
+           <number>4</number>
+          </property>
+          <property name="segmentStyle">
+           <enum>QLCDNumber::Flat</enum>
+          </property>
+          <property name="value" stdset="0">
+           <double>0.000000000000000</double>
+          </property>
+          <property name="intValue" stdset="0">
+           <number>0</number>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <widget class="QLabel" name="label_32">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="text">
+         <string>Page</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QSpinBox" name="o_page">
+        <property name="minimumSize">
+         <size>
+          <width>100</width>
+          <height>25</height>
+         </size>
+        </property>
+        <property name="minimum">
+         <number>0</number>
+        </property>
+        <property name="maximum">
+         <number>0</number>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="label_38">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="text">
+         <string>of</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLCDNumber" name="o_numpage">
+        <property name="font">
+         <font>
+          <family>Arial</family>
+         </font>
+        </property>
+        <property name="toolTip">
+         <string>page count</string>
+        </property>
+        <property name="whatsThis">
+         <string notr="true"/>
+        </property>
+        <property name="frameShape">
+         <enum>QFrame::NoFrame</enum>
+        </property>
+        <property name="smallDecimalPoint">
+         <bool>true</bool>
+        </property>
+        <property name="digitCount">
+         <number>5</number>
+        </property>
+        <property name="segmentStyle">
+         <enum>QLCDNumber::Flat</enum>
+        </property>
+        <property name="value" stdset="0">
+         <double>0.000000000000000</double>
+        </property>
+        <property name="intValue" stdset="0">
+         <number>0</number>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <spacer name="horizontalSpacer_10">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+     </layout>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QMenuBar" name="menubar">
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>1422</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <property name="layoutDirection">
+    <enum>Qt::LeftToRight</enum>
+   </property>
+   <property name="defaultUp">
+    <bool>false</bool>
+   </property>
+   <widget class="QMenu" name="menu">
+    <property name="title">
+     <string>&amp;File</string>
+    </property>
+    <widget class="QMenu" name="menu_Recent_Queries">
+     <property name="enabled">
+      <bool>false</bool>
+     </property>
+     <property name="title">
+      <string>&amp;Recent Queries</string>
+     </property>
+     <addaction name="actionNone"/>
+    </widget>
+    <addaction name="action_Load_Query"/>
+    <addaction name="action_Save_Query"/>
+    <addaction name="menu_Recent_Queries"/>
+    <addaction name="separator"/>
+    <addaction name="a_save"/>
+    <addaction name="a_save_txt"/>
+    <addaction name="a_print"/>
+    <addaction name="separator"/>
+    <addaction name="m_exit"/>
+   </widget>
+   <widget class="QMenu" name="menu_2">
+    <property name="title">
+     <string>&amp;Help</string>
+    </property>
+    <addaction name="m_help"/>
+    <addaction name="separator"/>
+    <addaction name="m_about"/>
+   </widget>
+   <widget class="QMenu" name="menu_4">
+    <property name="title">
+     <string>&amp;View</string>
+    </property>
+    <addaction name="m_features"/>
+   </widget>
+   <widget class="QMenu" name="menuOptions">
+    <property name="enabled">
+     <bool>true</bool>
+    </property>
+    <property name="layoutDirection">
+     <enum>Qt::LeftToRight</enum>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">text-align:center;</string>
+    </property>
+    <property name="tearOffEnabled">
+     <bool>false</bool>
+    </property>
+    <property name="title">
+     <string>&amp;Options</string>
+    </property>
+    <property name="separatorsCollapsible">
+     <bool>true</bool>
+    </property>
+    <widget class="QMenu" name="menuRecitation">
+     <property name="enabled">
+      <bool>false</bool>
+     </property>
+     <property name="title">
+      <string>Recitation</string>
+     </property>
+     <addaction name="actionDefault_3"/>
+    </widget>
+    <widget class="QMenu" name="menuPerPage">
+     <property name="enabled">
+      <bool>false</bool>
+     </property>
+     <property name="title">
+      <string>PerPage</string>
+     </property>
+     <addaction name="actionpp1"/>
+     <addaction name="actionpp10"/>
+     <addaction name="actionpp20"/>
+     <addaction name="actionpp50"/>
+     <addaction name="actionpp100"/>
+    </widget>
+    <widget class="QMenu" name="menuStyle">
+     <property name="title">
+      <string>Style</string>
+     </property>
+     <addaction name="actionDefaultStyle"/>
+     <addaction name="actionWindows"/>
+     <addaction name="actionMotif"/>
+     <addaction name="actionCDE"/>
+     <addaction name="actionPlastique"/>
+     <addaction name="actionWindowsXP"/>
+     <addaction name="actionMacintosh"/>
+    </widget>
+    <widget class="QMenu" name="menuLimit">
+     <property name="title">
+      <string>Limit</string>
+     </property>
+     <addaction name="actionlimit100"/>
+     <addaction name="actionlimit500"/>
+     <addaction name="actionlimit1000"/>
+     <addaction name="actionlimit6236"/>
+    </widget>
+    <widget class="QMenu" name="menuShow">
+     <property name="enabled">
+      <bool>true</bool>
+     </property>
+     <property name="title">
+      <string>Show</string>
+     </property>
+     <addaction name="actionWord_Info"/>
+     <addaction name="actionSura_info"/>
+     <addaction name="actionAya_Info"/>
+     <addaction name="separator"/>
+     <addaction name="actionPrevios_aya"/>
+     <addaction name="actionNext_aya"/>
+    </widget>
+    <widget class="QMenu" name="menuOrder_by">
+     <property name="enabled">
+      <bool>true</bool>
+     </property>
+     <property name="layoutDirection">
+      <enum>Qt::LeftToRight</enum>
+     </property>
+     <property name="title">
+      <string>Sort by</string>
+     </property>
+     <widget class="QMenu" name="menuFields">
+      <property name="title">
+       <string>Field</string>
+      </property>
+     </widget>
+     <addaction name="actionRelevance"/>
+     <addaction name="actionPosition_in_Mus_haf"/>
+     <addaction name="actionRevelation"/>
+     <addaction name="actionSubject"/>
+     <addaction name="menuFields"/>
+     <addaction name="separator"/>
+     <addaction name="actionInverse"/>
+    </widget>
+    <widget class="QMenu" name="menuScript">
+     <property name="enabled">
+      <bool>true</bool>
+     </property>
+     <property name="title">
+      <string>Script</string>
+     </property>
+     <addaction name="actionStandard"/>
+     <addaction name="actionUthmani"/>
+    </widget>
+    <widget class="QMenu" name="menuTranslation">
+     <property name="enabled">
+      <bool>true</bool>
+     </property>
+     <property name="title">
+      <string>Translation</string>
+     </property>
+     <addaction name="actionTranslationNone"/>
+     <addaction name="actionTranslationDefault"/>
+     <addaction name="separator"/>
+    </widget>
+    <widget class="QMenu" name="menuChoose_Language">
+     <property name="enabled">
+      <bool>true</bool>
+     </property>
+     <property name="title">
+      <string>Choose &amp;Language</string>
+     </property>
+     <property name="icon">
+      <iconset resource="../images/main.qrc">
+       <normaloff>:/resources/flag.png</normaloff>:/resources/flag.png</iconset>
+     </property>
+     <addaction name="actionSystem"/>
+     <addaction name="actionAlbanian"/>
+     <addaction name="actionArabic"/>
+     <addaction name="actionEnglish"/>
+     <addaction name="actionFrench"/>
+     <addaction name="actionIndonesian"/>
+     <addaction name="actionMalay"/>
+     <addaction name="actionSpanish"/>
+    </widget>
+    <addaction name="menuOrder_by"/>
+    <addaction name="separator"/>
+    <addaction name="menuScript"/>
+    <addaction name="actionHighlight_Keywords"/>
+    <addaction name="separator"/>
+    <addaction name="menuTranslation"/>
+    <addaction name="menuRecitation"/>
+    <addaction name="menuShow"/>
+    <addaction name="separator"/>
+    <addaction name="menuLimit"/>
+    <addaction name="menuPerPage"/>
+    <addaction name="separator"/>
+    <addaction name="menuChoose_Language"/>
+    <addaction name="menuStyle"/>
+    <addaction name="actionPreferences"/>
+   </widget>
+   <widget class="QMenu" name="menu_Edit">
+    <property name="enabled">
+     <bool>true</bool>
+    </property>
+    <property name="title">
+     <string>&amp;Edit</string>
+    </property>
+    <addaction name="actionCopy_Query"/>
+    <addaction name="actionCopy_Page"/>
+   </widget>
+   <widget class="QMenu" name="menuContribute">
+    <property name="title">
+     <string>&amp;Contribute</string>
+    </property>
+    <addaction name="action_Say_Thanks"/>
+    <addaction name="actionAsk_a_Question"/>
+    <addaction name="actionShare_an_Idea"/>
+    <addaction name="actionReport_a_Problem"/>
+    <addaction name="separator"/>
+    <addaction name="actionTranslate"/>
+    <addaction name="actionCode"/>
+    <addaction name="actionFunds"/>
+   </widget>
+   <addaction name="menu"/>
+   <addaction name="menu_Edit"/>
+   <addaction name="menu_4"/>
+   <addaction name="menuOptions"/>
+   <addaction name="menuContribute"/>
+   <addaction name="menu_2"/>
+  </widget>
+  <widget class="QDockWidget" name="w_features">
+   <property name="sizePolicy">
+    <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+     <horstretch>0</horstretch>
+     <verstretch>0</verstretch>
+    </sizepolicy>
+   </property>
+   <property name="minimumSize">
+    <size>
+     <width>300</width>
+     <height>410</height>
+    </size>
+   </property>
+   <property name="windowIcon">
+    <iconset resource="../images/main.qrc">
+     <normaloff>:/resources/editcut.png</normaloff>:/resources/editcut.png</iconset>
+   </property>
+   <property name="styleSheet">
+    <string notr="true"/>
+   </property>
+   <property name="floating">
+    <bool>false</bool>
+   </property>
+   <property name="features">
+    <set>QDockWidget::DockWidgetFloatable|QDockWidget::DockWidgetMovable</set>
+   </property>
+   <property name="allowedAreas">
+    <set>Qt::LeftDockWidgetArea|Qt::RightDockWidgetArea</set>
+   </property>
+   <property name="windowTitle">
+    <string> Search Features </string>
+   </property>
+   <attribute name="dockWidgetArea">
+    <number>1</number>
+   </attribute>
+   <widget class="QWidget" name="dockWidgetContents_8">
+    <layout class="QVBoxLayout" name="verticalLayout_3">
+     <item>
+      <widget class="QToolBox" name="toolBox">
+       <property name="enabled">
+        <bool>true</bool>
+       </property>
+       <property name="focusPolicy">
+        <enum>Qt::WheelFocus</enum>
+       </property>
+       <property name="acceptDrops">
+        <bool>true</bool>
+       </property>
+       <property name="styleSheet">
+        <string notr="true"/>
+       </property>
+       <property name="frameShape">
+        <enum>QFrame::NoFrame</enum>
+       </property>
+       <property name="frameShadow">
+        <enum>QFrame::Raised</enum>
+       </property>
+       <property name="lineWidth">
+        <number>0</number>
+       </property>
+       <property name="currentIndex">
+        <number>0</number>
+       </property>
+       <widget class="QWidget" name="p_predefined">
+        <property name="geometry">
+         <rect>
+          <x>0</x>
+          <y>0</y>
+          <width>309</width>
+          <height>454</height>
+         </rect>
+        </property>
+        <attribute name="label">
+         <string>Predefined Queries</string>
+        </attribute>
+        <layout class="QVBoxLayout" name="verticalLayout_5">
+         <item>
+          <widget class="QGroupBox" name="groupBox">
+           <property name="title">
+            <string/>
+           </property>
+           <layout class="QVBoxLayout" name="verticalLayout">
+            <item>
+             <layout class="QHBoxLayout" name="horizontalLayout_8">
+              <item>
+               <widget class="QRadioButton" name="o_predefined_goto">
+                <property name="text">
+                 <string>Go to</string>
+                </property>
+                <property name="checked">
+                 <bool>true</bool>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QComboBox" name="o_predefined_sura">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QSpinBox" name="o_predefined_aya">
+                <property name="prefix">
+                 <string>aya </string>
+                </property>
+                <property name="minimum">
+                 <number>1</number>
+                </property>
+                <property name="maximum">
+                 <number>286</number>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </item>
+            <item>
+             <layout class="QHBoxLayout" name="horizontalLayout_29">
+              <item>
+               <widget class="QRadioButton" name="o_predefined_all_deriv">
+                <property name="text">
+                 <string>All derivations of word</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QComboBox" name="o_predefined_root">
+                <property name="enabled">
+                 <bool>false</bool>
+                </property>
+                <property name="editable">
+                 <bool>true</bool>
+                </property>
+                <item>
+                 <property name="text">
+                  <string notr="true">rHm</string>
+                 </property>
+                </item>
+               </widget>
+              </item>
+             </layout>
+            </item>
+            <item>
+             <layout class="QHBoxLayout" name="horizontalLayout_36">
+              <item>
+               <widget class="QRadioButton" name="o_predefined_respect_tashkeel">
+                <property name="text">
+                 <string>Respect Tashkeel and Search</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLineEdit" name="o_predefined_vocalized_word">
+                <property name="enabled">
+                 <bool>false</bool>
+                </property>
+                <property name="text">
+                 <string notr="true"/>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </item>
+            <item>
+             <layout class="QHBoxLayout" name="horizontalLayout_33">
+              <item>
+               <widget class="QRadioButton" name="o_predefined_longest_words">
+                <property name="enabled">
+                 <bool>true</bool>
+                </property>
+                <property name="text">
+                 <string>The longest words in Quran</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </item>
+            <item>
+             <layout class="QHBoxLayout" name="horizontalLayout_5">
+              <item>
+               <widget class="QRadioButton" name="o_predefined_shortest_words">
+                <property name="text">
+                 <string>The shortest words in Quran</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </item>
+            <item>
+             <layout class="QHBoxLayout" name="horizontalLayout_34">
+              <item>
+               <widget class="QRadioButton" name="o_predefined_all_sajadate">
+                <property name="text">
+                 <string>All sajadate in Quran</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </item>
+           </layout>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="o_add2query_predefined">
+           <property name="font">
+            <font>
+             <weight>50</weight>
+             <bold>false</bold>
+             <underline>true</underline>
+             <strikeout>false</strikeout>
+             <kerning>false</kerning>
+            </font>
+           </property>
+           <property name="cursor">
+            <cursorShape>PointingHandCursor</cursorShape>
+           </property>
+           <property name="toolTip">
+            <string/>
+           </property>
+           <property name="text">
+            <string>Add to SearchBar</string>
+           </property>
+           <property name="icon">
+            <iconset resource="../images/main.qrc">
+             <normaloff>:/resources/up-16.png</normaloff>:/resources/up-16.png</iconset>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <spacer name="verticalSpacer">
+           <property name="orientation">
+            <enum>Qt::Vertical</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>20</width>
+             <height>40</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+        </layout>
+       </widget>
+       <widget class="QWidget" name="page_2">
+        <property name="geometry">
+         <rect>
+          <x>0</x>
+          <y>0</y>
+          <width>212</width>
+          <height>280</height>
+         </rect>
+        </property>
+        <attribute name="label">
+         <string>Advanced Search</string>
+        </attribute>
+        <layout class="QVBoxLayout" name="verticalLayout_7">
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_6">
+           <property name="sizeConstraint">
+            <enum>QLayout::SetMaximumSize</enum>
+           </property>
+           <item>
+            <widget class="QLabel" name="label_4">
+             <property name="text">
+              <string>Text</string>
+             </property>
+             <property name="buddy">
+              <cstring>o_feature_text</cstring>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLineEdit" name="o_feature_text">
+             <property name="layoutDirection">
+              <enum>Qt::RightToLeft</enum>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <widget class="QGroupBox" name="groupBox_3">
+           <property name="title">
+            <string/>
+           </property>
+           <property name="checkable">
+            <bool>false</bool>
+           </property>
+           <layout class="QVBoxLayout" name="verticalLayout_14">
+            <item>
+             <widget class="QRadioButton" name="o_phrase">
+              <property name="text">
+               <string>Phrase</string>
+              </property>
+              <property name="checked">
+               <bool>true</bool>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QRadioButton" name="o_partofword">
+              <property name="text">
+               <string>Part of Words</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QRadioButton" name="o_allwords">
+              <property name="text">
+               <string>All Words</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QRadioButton" name="o_somewords">
+              <property name="text">
+               <string>Some Words</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QRadioButton" name="o_nowords">
+              <property name="text">
+               <string>Except Words</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QRadioButton" name="o_synonyms">
+              <property name="enabled">
+               <bool>true</bool>
+              </property>
+              <property name="text">
+               <string>Synonyms</string>
+              </property>
+              <property name="checkable">
+               <bool>true</bool>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QRadioButton" name="o_vocalization">
+              <property name="enabled">
+               <bool>true</bool>
+              </property>
+              <property name="text">
+               <string>Partial vocalisation</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QRadioButton" name="o_derivation_light">
+              <property name="enabled">
+               <bool>true</bool>
+              </property>
+              <property name="text">
+               <string>Light Stemming</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QRadioButton" name="o_derivation_deep">
+              <property name="enabled">
+               <bool>true</bool>
+              </property>
+              <property name="text">
+               <string>Deep Stemming (Root)</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+         </item>
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_20">
+           <item>
+            <widget class="QLabel" name="label_10">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="text">
+              <string>Relation</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QComboBox" name="o_relation_advanced">
+             <property name="currentIndex">
+              <number>1</number>
+             </property>
+             <item>
+              <property name="text">
+               <string>Add</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>Replace</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>Disjunction (OR)</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>Conjuction (AND)</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>Exception (ANDNOT)</string>
+              </property>
+             </item>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <widget class="QPushButton" name="o_add2query_advanced">
+           <property name="font">
+            <font>
+             <weight>50</weight>
+             <bold>false</bold>
+             <underline>true</underline>
+             <strikeout>false</strikeout>
+             <kerning>false</kerning>
+            </font>
+           </property>
+           <property name="cursor">
+            <cursorShape>PointingHandCursor</cursorShape>
+           </property>
+           <property name="text">
+            <string>Add to SearchBar</string>
+           </property>
+           <property name="icon">
+            <iconset resource="../images/main.qrc">
+             <normaloff>:/resources/up-16.png</normaloff>:/resources/up-16.png</iconset>
+           </property>
+           <property name="checkable">
+            <bool>false</bool>
+           </property>
+           <property name="checked">
+            <bool>false</bool>
+           </property>
+           <property name="autoDefault">
+            <bool>false</bool>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <spacer name="verticalSpacer_8">
+           <property name="orientation">
+            <enum>Qt::Vertical</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>20</width>
+             <height>40</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+        </layout>
+       </widget>
+       <widget class="QWidget" name="page">
+        <property name="geometry">
+         <rect>
+          <x>0</x>
+          <y>0</y>
+          <width>212</width>
+          <height>137</height>
+         </rect>
+        </property>
+        <attribute name="label">
+         <string>Word Properties</string>
+        </attribute>
+        <layout class="QVBoxLayout" name="verticalLayout_16">
+         <item>
+          <widget class="QGroupBox" name="groupBox_2">
+           <property name="title">
+            <string/>
+           </property>
+           <property name="flat">
+            <bool>false</bool>
+           </property>
+           <layout class="QVBoxLayout" name="verticalLayout_10">
+            <item>
+             <layout class="QHBoxLayout" name="horizontalLayout_22">
+              <item>
+               <widget class="QLabel" name="label_28">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="text">
+                 <string>Root</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QComboBox" name="o_word_root">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="layoutDirection">
+                 <enum>Qt::LeftToRight</enum>
+                </property>
+                <property name="editable">
+                 <bool>true</bool>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </item>
+            <item>
+             <layout class="QHBoxLayout" name="horizontalLayout_21">
+              <item>
+               <widget class="QLabel" name="label_27">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="text">
+                 <string>Type</string>
+                </property>
+                <property name="buddy">
+                 <cstring>o_word_type</cstring>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QComboBox" name="o_word_type">
+                <item>
+                 <property name="text">
+                  <string>Noun</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Verb</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Preposition</string>
+                 </property>
+                </item>
+               </widget>
+              </item>
+             </layout>
+            </item>
+           </layout>
+          </widget>
+         </item>
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_27">
+           <item>
+            <widget class="QLabel" name="label_11">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="text">
+              <string>Relation</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QComboBox" name="o_relation_word">
+             <property name="currentIndex">
+              <number>1</number>
+             </property>
+             <item>
+              <property name="text">
+               <string>Add</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>Replace</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>Disjunction (OR)</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>Conjuction (AND)</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>Exception (ANDNOT)</string>
+              </property>
+             </item>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <widget class="QPushButton" name="o_add2query_word">
+           <property name="font">
+            <font>
+             <weight>50</weight>
+             <bold>false</bold>
+             <underline>true</underline>
+             <strikeout>false</strikeout>
+             <kerning>false</kerning>
+            </font>
+           </property>
+           <property name="cursor">
+            <cursorShape>PointingHandCursor</cursorShape>
+           </property>
+           <property name="text">
+            <string>Add to SearchBar</string>
+           </property>
+           <property name="icon">
+            <iconset resource="../images/main.qrc">
+             <normaloff>:/resources/up-16.png</normaloff>:/resources/up-16.png</iconset>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <spacer name="verticalSpacer_3">
+           <property name="orientation">
+            <enum>Qt::Vertical</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>20</width>
+             <height>94</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+        </layout>
+       </widget>
+       <widget class="QWidget" name="p_subject">
+        <property name="geometry">
+         <rect>
+          <x>0</x>
+          <y>0</y>
+          <width>154</width>
+          <height>168</height>
+         </rect>
+        </property>
+        <attribute name="label">
+         <string>Subjects</string>
+        </attribute>
+        <layout class="QVBoxLayout" name="verticalLayout_4">
+         <item>
+          <widget class="QGroupBox" name="groupBox_8">
+           <property name="title">
+            <string/>
+           </property>
+           <layout class="QVBoxLayout" name="verticalLayout_8">
+            <item>
+             <layout class="QHBoxLayout" name="horizontalLayout_24">
+              <item>
+               <widget class="QLabel" name="label_16">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="text">
+                 <string>Chapter</string>
+                </property>
+                <property name="buddy">
+                 <cstring>o_chapter</cstring>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QComboBox" name="o_chapter">
+                <property name="enabled">
+                 <bool>true</bool>
+                </property>
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="toolTip">
+                 <string/>
+                </property>
+                <item>
+                 <property name="text">
+                  <string>All</string>
+                 </property>
+                </item>
+               </widget>
+              </item>
+             </layout>
+            </item>
+            <item>
+             <layout class="QHBoxLayout" name="horizontalLayout_25">
+              <item>
+               <widget class="QLabel" name="label_17">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="text">
+                 <string>Topic</string>
+                </property>
+                <property name="buddy">
+                 <cstring>o_topic</cstring>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QComboBox" name="o_topic">
+                <property name="enabled">
+                 <bool>true</bool>
+                </property>
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <item>
+                 <property name="text">
+                  <string>All</string>
+                 </property>
+                </item>
+               </widget>
+              </item>
+             </layout>
+            </item>
+            <item>
+             <layout class="QHBoxLayout" name="horizontalLayout_26">
+              <item>
+               <widget class="QLabel" name="label_20">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="text">
+                 <string>SubTopic</string>
+                </property>
+                <property name="buddy">
+                 <cstring>o_subtopic</cstring>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QComboBox" name="o_subtopic">
+                <property name="enabled">
+                 <bool>true</bool>
+                </property>
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <item>
+                 <property name="text">
+                  <string>All</string>
+                 </property>
+                </item>
+               </widget>
+              </item>
+             </layout>
+            </item>
+           </layout>
+          </widget>
+         </item>
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_9">
+           <item>
+            <widget class="QLabel" name="label_5">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="text">
+              <string>Relation</string>
+             </property>
+             <property name="buddy">
+              <cstring>o_relation_subject</cstring>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QComboBox" name="o_relation_subject">
+             <property name="enabled">
+              <bool>true</bool>
+             </property>
+             <property name="currentIndex">
+              <number>1</number>
+             </property>
+             <item>
+              <property name="text">
+               <string>Add</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>Replace</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>(OR)</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>(AND)</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>(ANDNOT)</string>
+              </property>
+             </item>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <widget class="QPushButton" name="o_add2query_subject">
+           <property name="enabled">
+            <bool>true</bool>
+           </property>
+           <property name="font">
+            <font>
+             <weight>50</weight>
+             <bold>false</bold>
+             <underline>true</underline>
+             <strikeout>false</strikeout>
+             <kerning>false</kerning>
+            </font>
+           </property>
+           <property name="cursor">
+            <cursorShape>PointingHandCursor</cursorShape>
+           </property>
+           <property name="toolTip">
+            <string/>
+           </property>
+           <property name="text">
+            <string>Add to SearchBar</string>
+           </property>
+           <property name="icon">
+            <iconset resource="../images/main.qrc">
+             <normaloff>:/resources/up-16.png</normaloff>:/resources/up-16.png</iconset>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <spacer name="verticalSpacer_10">
+           <property name="orientation">
+            <enum>Qt::Vertical</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>20</width>
+             <height>40</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+        </layout>
+       </widget>
+       <widget class="QWidget" name="p_struct">
+        <property name="geometry">
+         <rect>
+          <x>0</x>
+          <y>0</y>
+          <width>196</width>
+          <height>170</height>
+         </rect>
+        </property>
+        <attribute name="label">
+         <string>Structural Search</string>
+        </attribute>
+        <layout class="QVBoxLayout" name="verticalLayout_18">
+         <item>
+          <widget class="QGroupBox" name="groupBox_9">
+           <property name="title">
+            <string/>
+           </property>
+           <layout class="QVBoxLayout" name="verticalLayout_9">
+            <item>
+             <layout class="QHBoxLayout" name="horizontalLayout_10">
+              <item>
+               <widget class="QLabel" name="label_19">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="text">
+                 <string>search in</string>
+                </property>
+                <property name="buddy">
+                 <cstring>o_struct_as</cstring>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QComboBox" name="o_struct_as">
+                <item>
+                 <property name="text">
+                  <string>Ayas</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Ayas (Global id)</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Ruku's</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Suras</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Pages</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Rubu's</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Hizbs</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Juz's</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Manzils</string>
+                 </property>
+                </item>
+               </widget>
+              </item>
+             </layout>
+            </item>
+            <item>
+             <layout class="QHBoxLayout" name="horizontalLayout_7">
+              <item>
+               <widget class="QLabel" name="label_14">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="text">
+                 <string>from</string>
+                </property>
+                <property name="buddy">
+                 <cstring>o_struct_from</cstring>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QSpinBox" name="o_struct_from">
+                <property name="whatsThis">
+                 <string/>
+                </property>
+                <property name="styleSheet">
+                 <string notr="true">color : red</string>
+                </property>
+                <property name="minimum">
+                 <number>1</number>
+                </property>
+                <property name="maximum">
+                 <number>286</number>
+                </property>
+                <property name="value">
+                 <number>1</number>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </item>
+            <item>
+             <layout class="QHBoxLayout" name="horizontalLayout_23">
+              <item>
+               <widget class="QLabel" name="label_29">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="text">
+                 <string>to</string>
+                </property>
+                <property name="buddy">
+                 <cstring>o_struct_from</cstring>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QSpinBox" name="o_struct_to">
+                <property name="styleSheet">
+                 <string notr="true">color : red</string>
+                </property>
+                <property name="minimum">
+                 <number>1</number>
+                </property>
+                <property name="maximum">
+                 <number>286</number>
+                </property>
+                <property name="value">
+                 <number>1</number>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </item>
+           </layout>
+          </widget>
+         </item>
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_30">
+           <item>
+            <widget class="QLabel" name="label_12">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="text">
+              <string>Relation</string>
+             </property>
+             <property name="buddy">
+              <cstring>o_relation_struct</cstring>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QComboBox" name="o_relation_struct">
+             <property name="currentIndex">
+              <number>1</number>
+             </property>
+             <item>
+              <property name="text">
+               <string>Add</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>Replace</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>(OR)</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>(AND)</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>(ANDNOT)</string>
+              </property>
+             </item>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <widget class="QPushButton" name="o_add2query_struct">
+           <property name="font">
+            <font>
+             <weight>50</weight>
+             <bold>false</bold>
+             <underline>true</underline>
+             <strikeout>false</strikeout>
+             <kerning>false</kerning>
+            </font>
+           </property>
+           <property name="cursor">
+            <cursorShape>PointingHandCursor</cursorShape>
+           </property>
+           <property name="toolTip">
+            <string/>
+           </property>
+           <property name="text">
+            <string>Add to SearchBar</string>
+           </property>
+           <property name="icon">
+            <iconset resource="../images/main.qrc">
+             <normaloff>:/resources/up-16.png</normaloff>:/resources/up-16.png</iconset>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <spacer name="verticalSpacer_7">
+           <property name="orientation">
+            <enum>Qt::Vertical</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>20</width>
+             <height>0</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+        </layout>
+       </widget>
+       <widget class="QWidget" name="p_stat">
+        <property name="geometry">
+         <rect>
+          <x>0</x>
+          <y>0</y>
+          <width>198</width>
+          <height>200</height>
+         </rect>
+        </property>
+        <attribute name="label">
+         <string>Statistic Search</string>
+        </attribute>
+        <layout class="QVBoxLayout" name="verticalLayout_19">
+         <item>
+          <widget class="QGroupBox" name="groupBox_10">
+           <property name="title">
+            <string/>
+           </property>
+           <layout class="QVBoxLayout" name="verticalLayout_17">
+            <item>
+             <layout class="QHBoxLayout" name="horizontalLayout_11">
+              <item>
+               <widget class="QLabel" name="label_18">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="text">
+                 <string> number of</string>
+                </property>
+                <property name="buddy">
+                 <cstring>o_stat_num</cstring>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QComboBox" name="o_stat_num">
+                <item>
+                 <property name="text">
+                  <string>None</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Letters</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Words</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Divine  Name</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Ayas</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Ruku's</string>
+                 </property>
+                </item>
+               </widget>
+              </item>
+             </layout>
+            </item>
+            <item>
+             <layout class="QHBoxLayout" name="horizontalLayout_12">
+              <item>
+               <widget class="QLabel" name="label_22">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="text">
+                 <string>in </string>
+                </property>
+                <property name="buddy">
+                 <cstring>o_stat_in</cstring>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QComboBox" name="o_stat_in">
+                <item>
+                 <property name="text">
+                  <string>None</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Aya</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Sura</string>
+                 </property>
+                </item>
+               </widget>
+              </item>
+             </layout>
+            </item>
+            <item>
+             <layout class="QHBoxLayout" name="horizontalLayout_13">
+              <item>
+               <widget class="QLabel" name="label_23">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="text">
+                 <string>from</string>
+                </property>
+                <property name="buddy">
+                 <cstring>o_stat_from</cstring>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QSpinBox" name="o_stat_from">
+                <property name="styleSheet">
+                 <string notr="true">color : red</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </item>
+            <item>
+             <layout class="QHBoxLayout" name="horizontalLayout_14">
+              <item>
+               <widget class="QLabel" name="label_24">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="text">
+                 <string>to</string>
+                </property>
+                <property name="buddy">
+                 <cstring>o_stat_to</cstring>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QSpinBox" name="o_stat_to">
+                <property name="styleSheet">
+                 <string notr="true">color : red</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </item>
+           </layout>
+          </widget>
+         </item>
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_31">
+           <item>
+            <widget class="QLabel" name="label_13">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="text">
+              <string>Relation</string>
+             </property>
+             <property name="buddy">
+              <cstring>o_relation_stat</cstring>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QComboBox" name="o_relation_stat">
+             <property name="currentIndex">
+              <number>1</number>
+             </property>
+             <item>
+              <property name="text">
+               <string>Add</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>Replace</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>(OR)</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>(AND)</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>(ANDNOT)</string>
+              </property>
+             </item>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <widget class="QPushButton" name="o_add2query_stat">
+           <property name="font">
+            <font>
+             <weight>50</weight>
+             <bold>false</bold>
+             <underline>true</underline>
+             <strikeout>false</strikeout>
+             <kerning>false</kerning>
+            </font>
+           </property>
+           <property name="cursor">
+            <cursorShape>PointingHandCursor</cursorShape>
+           </property>
+           <property name="toolTip">
+            <string/>
+           </property>
+           <property name="text">
+            <string>Add to SearchBar</string>
+           </property>
+           <property name="icon">
+            <iconset resource="../images/main.qrc">
+             <normaloff>:/resources/up-16.png</normaloff>:/resources/up-16.png</iconset>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <spacer name="verticalSpacer_4">
+           <property name="orientation">
+            <enum>Qt::Vertical</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>20</width>
+             <height>40</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+        </layout>
+       </widget>
+       <widget class="QWidget" name="p_misc">
+        <property name="geometry">
+         <rect>
+          <x>0</x>
+          <y>0</y>
+          <width>213</width>
+          <height>198</height>
+         </rect>
+        </property>
+        <attribute name="label">
+         <string>Misc</string>
+        </attribute>
+        <layout class="QVBoxLayout" name="verticalLayout_20">
+         <item>
+          <widget class="QGroupBox" name="groupBox_11">
+           <property name="title">
+            <string/>
+           </property>
+           <layout class="QVBoxLayout" name="verticalLayout_21">
+            <item>
+             <layout class="QHBoxLayout" name="horizontalLayout_15">
+              <item>
+               <widget class="QLabel" name="label_25">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="text">
+                 <string>Sura</string>
+                </property>
+                <property name="buddy">
+                 <cstring>o_stat_in</cstring>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QComboBox" name="o_sura_name">
+                <item>
+                 <property name="text">
+                  <string>None</string>
+                 </property>
+                </item>
+               </widget>
+              </item>
+             </layout>
+            </item>
+            <item>
+             <layout class="QHBoxLayout" name="horizontalLayout_16">
+              <item>
+               <widget class="QLabel" name="label_26">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="text">
+                 <string>Revelation place </string>
+                </property>
+                <property name="buddy">
+                 <cstring>o_stat_in</cstring>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QComboBox" name="o_tanzil">
+                <item>
+                 <property name="text">
+                  <string>None</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Medina</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Mekka</string>
+                 </property>
+                </item>
+               </widget>
+              </item>
+             </layout>
+            </item>
+            <item>
+             <layout class="QHBoxLayout" name="horizontalLayout_19">
+              <item>
+               <widget class="QLabel" name="label_31">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="text">
+                 <string>Sajdah</string>
+                </property>
+                <property name="buddy">
+                 <cstring>o_stat_in</cstring>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QComboBox" name="o_sajdah_exist">
+                <item>
+                 <property name="text">
+                  <string>None</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>No</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Yes</string>
+                 </property>
+                </item>
+               </widget>
+              </item>
+             </layout>
+            </item>
+            <item>
+             <layout class="QHBoxLayout" name="horizontalLayout_18">
+              <item>
+               <widget class="QLabel" name="label_30">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="text">
+                 <string>Sajdah Type</string>
+                </property>
+                <property name="buddy">
+                 <cstring>o_stat_in</cstring>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QComboBox" name="o_sajdah_type">
+                <property name="enabled">
+                 <bool>true</bool>
+                </property>
+                <item>
+                 <property name="text">
+                  <string>None</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Recommended</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Obliged</string>
+                 </property>
+                </item>
+               </widget>
+              </item>
+             </layout>
+            </item>
+           </layout>
+          </widget>
+         </item>
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_32">
+           <item>
+            <widget class="QLabel" name="label_15">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="text">
+              <string>Relation</string>
+             </property>
+             <property name="buddy">
+              <cstring>o_relation_misc</cstring>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QComboBox" name="o_relation_misc">
+             <property name="currentIndex">
+              <number>1</number>
+             </property>
+             <item>
+              <property name="text">
+               <string>Add</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>Replace</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>(OR)</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>(AND)</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>(ANDNOT)</string>
+              </property>
+             </item>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <widget class="QPushButton" name="o_add2query_misc">
+           <property name="font">
+            <font>
+             <weight>50</weight>
+             <bold>false</bold>
+             <underline>true</underline>
+             <strikeout>false</strikeout>
+             <kerning>false</kerning>
+            </font>
+           </property>
+           <property name="cursor">
+            <cursorShape>PointingHandCursor</cursorShape>
+           </property>
+           <property name="toolTip">
+            <string/>
+           </property>
+           <property name="text">
+            <string>Add to SearchBar</string>
+           </property>
+           <property name="icon">
+            <iconset resource="../images/main.qrc">
+             <normaloff>:/resources/up-16.png</normaloff>:/resources/up-16.png</iconset>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <spacer name="verticalSpacer_6">
+           <property name="orientation">
+            <enum>Qt::Vertical</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>20</width>
+             <height>40</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+        </layout>
+       </widget>
+      </widget>
+     </item>
+    </layout>
+   </widget>
+  </widget>
+  <action name="m_exit">
+   <property name="icon">
+    <iconset resource="../images/main.qrc">
+     <normaloff>:/resources/exit.png</normaloff>:/resources/exit.png</iconset>
+   </property>
+   <property name="text">
+    <string>E&amp;xit</string>
+   </property>
+   <property name="menuRole">
+    <enum>QAction::QuitRole</enum>
+   </property>
+  </action>
+  <action name="m_about">
+   <property name="icon">
+    <iconset resource="../images/main.qrc">
+     <normaloff>:/resources/document_properties.png</normaloff>:/resources/document_properties.png</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;About</string>
+   </property>
+   <property name="toolTip">
+    <string>About AlfanousDesktop</string>
+   </property>
+   <property name="menuRole">
+    <enum>QAction::AboutRole</enum>
+   </property>
+  </action>
+  <action name="m_project">
+   <property name="icon">
+    <iconset resource="../images/main.qrc">
+     <normaloff>:/resources/gnome-help2.png</normaloff>:/resources/gnome-help2.png</iconset>
+   </property>
+   <property name="text">
+    <string>About</string>
+   </property>
+   <property name="menuRole">
+    <enum>QAction::AboutRole</enum>
+   </property>
+  </action>
+  <action name="m_link">
+   <property name="icon">
+    <iconset>
+     <normaloff>:/icons/resources/Icon Base/Icon (62).ico</normaloff>:/icons/resources/Icon Base/Icon (62).ico</iconset>
+   </property>
+   <property name="text">
+    <string>links</string>
+   </property>
+  </action>
+  <action name="m_support">
+   <property name="icon">
+    <iconset resource="../images/main.qrc">
+     <normaloff>:/resources/gnome-money.png</normaloff>:/resources/gnome-money.png</iconset>
+   </property>
+   <property name="text">
+    <string>Funding</string>
+   </property>
+  </action>
+  <action name="m_advancedbar">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Advanced Search</string>
+   </property>
+  </action>
+  <action name="m_extendbar">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Extending Search</string>
+   </property>
+  </action>
+  <action name="m_help">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../images/main.qrc">
+     <normaloff>:/resources/contents.png</normaloff>:/resources/contents.png</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;Help</string>
+   </property>
+  </action>
+  <action name="m_features_show">
+   <property name="checkable">
+    <bool>false</bool>
+   </property>
+   <property name="checked">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>Show &amp;features</string>
+   </property>
+  </action>
+  <action name="m_translate">
+   <property name="icon">
+    <iconset>
+     <normaloff>:/icons/resources/Icon Base/Icon (8).ico</normaloff>:/icons/resources/Icon Base/Icon (8).ico</iconset>
+   </property>
+   <property name="text">
+    <string>Translate!</string>
+   </property>
+  </action>
+  <action name="a_save">
+   <property name="icon">
+    <iconset resource="../images/main.qrc">
+     <normaloff>:/resources/gnome-dev-floppy.png</normaloff>:/resources/gnome-dev-floppy.png</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;Export Results as HTML</string>
+   </property>
+   <property name="iconText">
+    <string>Export Results as HTML</string>
+   </property>
+  </action>
+  <action name="a_print">
+   <property name="icon">
+    <iconset resource="../images/main.qrc">
+     <normaloff>:/resources/filequickprint.png</normaloff>:/resources/filequickprint.png</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;Print Results</string>
+   </property>
+  </action>
+  <action name="a_mail">
+   <property name="icon">
+    <iconset resource="../images/main.qrc">
+     <normaloff>:/resources/emblem-mail.png</normaloff>:/resources/emblem-mail.png</iconset>
+   </property>
+   <property name="text">
+    <string>Send by email</string>
+   </property>
+  </action>
+  <action name="a_redo">
+   <property name="icon">
+    <iconset resource="../images/main.qrc">
+     <normaloff>:/resources/editredo.png</normaloff>:/resources/editredo.png</iconset>
+   </property>
+   <property name="text">
+    <string>Redo</string>
+   </property>
+  </action>
+  <action name="a_undo">
+   <property name="icon">
+    <iconset resource="../images/main.qrc">
+     <normaloff>:/resources/editundo.png</normaloff>:/resources/editundo.png</iconset>
+   </property>
+   <property name="text">
+    <string>Undo</string>
+   </property>
+  </action>
+  <action name="actionZoom_In">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../images/main.qrc">
+     <normaloff>:/resources/zoomin.png</normaloff>:/resources/zoomin.png</iconset>
+   </property>
+   <property name="text">
+    <string>Zoom In</string>
+   </property>
+  </action>
+  <action name="actionZoom_Out">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../images/main.qrc">
+     <normaloff>:/resources/zoomout.png</normaloff>:/resources/zoomout.png</iconset>
+   </property>
+   <property name="text">
+    <string>Zoom Out</string>
+   </property>
+  </action>
+  <action name="actionHints">
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../images/main.qrc">
+     <normaloff>:/resources/bookmark.png</normaloff>:/resources/bookmark.png</iconset>
+   </property>
+   <property name="text">
+    <string>Hints</string>
+   </property>
+  </action>
+  <action name="actionCode">
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../images/main.qrc">
+     <normaloff>:/resources/bug-buddy.png</normaloff>:/resources/bug-buddy.png</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;Code</string>
+   </property>
+  </action>
+  <action name="actionFunds">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../images/main.qrc">
+     <normaloff>:/resources/gnome-money.png</normaloff>:/resources/gnome-money.png</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;Donate us!</string>
+   </property>
+   <property name="visible">
+    <bool>false</bool>
+   </property>
+  </action>
+  <action name="actionContact_us">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../images/main.qrc">
+     <normaloff>:/resources/gnome-modem.png</normaloff>:/resources/gnome-modem.png</iconset>
+   </property>
+   <property name="text">
+    <string>Contact us</string>
+   </property>
+  </action>
+  <action name="m_features">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Show/Hide &amp;features</string>
+   </property>
+  </action>
+  <action name="actionTranslate">
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset>
+     <normaloff>:/resources/centrejust.png</normaloff>:/resources/centrejust.png</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;Translate</string>
+   </property>
+  </action>
+  <action name="actionRelevance">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Relevance</string>
+   </property>
+  </action>
+  <action name="actionPosition_in_Mus_haf">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Mus-haf</string>
+   </property>
+  </action>
+  <action name="actionRevelation">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Revelation</string>
+   </property>
+  </action>
+  <action name="actionSubject">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Subject</string>
+   </property>
+  </action>
+  <action name="actionInverse">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Reverse order</string>
+   </property>
+  </action>
+  <action name="actionDefault">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>default</string>
+   </property>
+  </action>
+  <action name="actionStandard">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Standard</string>
+   </property>
+  </action>
+  <action name="actionUthmani">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Uthmani</string>
+   </property>
+  </action>
+  <action name="actionTranslationNone">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>None</string>
+   </property>
+   <property name="toolTip">
+    <string notr="true">None</string>
+   </property>
+  </action>
+  <action name="actionDefault_3">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>None</string>
+   </property>
+  </action>
+  <action name="actionWord_statistics">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Word statistics</string>
+   </property>
+  </action>
+  <action name="actionSura_info">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Sura information</string>
+   </property>
+  </action>
+  <action name="actionAya_Info">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Aya Information</string>
+   </property>
+  </action>
+  <action name="actionPrevios_aya">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Previos aya</string>
+   </property>
+  </action>
+  <action name="actionNext_aya">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Next aya</string>
+   </property>
+  </action>
+  <action name="actionPreferences">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../images/main.qrc">
+     <normaloff>:/resources/exec.png</normaloff>:/resources/exec.png</iconset>
+   </property>
+   <property name="text">
+    <string>Preferences</string>
+   </property>
+   <property name="visible">
+    <bool>false</bool>
+   </property>
+  </action>
+  <action name="action_Load_Query">
+   <property name="checkable">
+    <bool>false</bool>
+   </property>
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../images/main.qrc">
+     <normaloff>:/resources/up.png</normaloff>:/resources/up.png</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;Load  Query</string>
+   </property>
+  </action>
+  <action name="action_Save_Query">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../images/main.qrc">
+     <normaloff>:/resources/down.png</normaloff>:/resources/down.png</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;Save Query</string>
+   </property>
+  </action>
+  <action name="actionEnglish">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string notr="true">English </string>
+   </property>
+   <property name="toolTip">
+    <string notr="true">English</string>
+   </property>
+  </action>
+  <action name="actionAdd_Translation">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="icon">
+    <iconset>
+     <normaloff>:/resources/button_ok.png</normaloff>:/resources/button_ok.png</iconset>
+   </property>
+   <property name="text">
+    <string>Add Translation</string>
+   </property>
+  </action>
+  <action name="actionDefault_4">
+   <property name="text">
+    <string>Default</string>
+   </property>
+  </action>
+  <action name="actionChange_Index_Path">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>Change Path</string>
+   </property>
+   <property name="visible">
+    <bool>false</bool>
+   </property>
+  </action>
+  <action name="actionAdd_Recitation">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="icon">
+    <iconset>
+     <normaloff>:/resources/button_ok.png</normaloff>:/resources/button_ok.png</iconset>
+   </property>
+   <property name="text">
+    <string>Add Recitation</string>
+   </property>
+  </action>
+  <action name="actionDefault_5">
+   <property name="text">
+    <string>default</string>
+   </property>
+  </action>
+  <action name="actionUndo_Query">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../images/main.qrc">
+     <normaloff>:/resources/editundo.png</normaloff>:/resources/editundo.png</iconset>
+   </property>
+   <property name="text">
+    <string notr="true">Undo Query</string>
+   </property>
+  </action>
+  <action name="actionRedo_Query">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../images/main.qrc">
+     <normaloff>:/resources/editredo.png</normaloff>:/resources/editredo.png</iconset>
+   </property>
+   <property name="text">
+    <string notr="true">Redo Query</string>
+   </property>
+  </action>
+  <action name="actionCopy_Query">
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../images/main.qrc">
+     <normaloff>:/resources/editpaste.png</normaloff>:/resources/editpaste.png</iconset>
+   </property>
+   <property name="text">
+    <string>Copy Query</string>
+   </property>
+  </action>
+  <action name="actionCopy_Page">
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../images/main.qrc">
+     <normaloff>:/resources/editpaste.png</normaloff>:/resources/editpaste.png</iconset>
+   </property>
+   <property name="text">
+    <string>Copy Result as Text</string>
+   </property>
+  </action>
+  <action name="actionNone">
+   <property name="text">
+    <string notr="true">None</string>
+   </property>
+   <property name="toolTip">
+    <string notr="true">None</string>
+   </property>
+  </action>
+  <action name="m_abou_project">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../images/main.qrc">
+     <normaloff>:/resources/document_properties.png</normaloff>:/resources/document_properties.png</iconset>
+   </property>
+   <property name="text">
+    <string>About project</string>
+   </property>
+  </action>
+  <action name="action_Say_Thanks">
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../images/main.qrc">
+     <normaloff>:/feedback/feedback/say_thanks.png</normaloff>:/feedback/feedback/say_thanks.png</iconset>
+   </property>
+   <property name="text">
+    <string>Say &amp;Thanks</string>
+   </property>
+  </action>
+  <action name="actionWord_Info">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Keyword Information</string>
+   </property>
+  </action>
+  <action name="actionHighlight_Keywords">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Highlight Keywords</string>
+   </property>
+  </action>
+  <action name="actionlimit100">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string notr="true">100</string>
+   </property>
+   <property name="toolTip">
+    <string notr="true">100</string>
+   </property>
+   <property name="visible">
+    <bool>false</bool>
+   </property>
+  </action>
+  <action name="actionlimit500">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string notr="true">500</string>
+   </property>
+   <property name="toolTip">
+    <string notr="true">500</string>
+   </property>
+  </action>
+  <action name="actionlimit1000">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string notr="true">1000</string>
+   </property>
+   <property name="iconText">
+    <string notr="true">1000</string>
+   </property>
+   <property name="toolTip">
+    <string notr="true">1000</string>
+   </property>
+  </action>
+  <action name="actionlimit6236">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string notr="true">6236</string>
+   </property>
+   <property name="toolTip">
+    <string notr="true">6236</string>
+   </property>
+  </action>
+  <action name="actionpp1">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string notr="true">1</string>
+   </property>
+   <property name="toolTip">
+    <string notr="true">1</string>
+   </property>
+  </action>
+  <action name="actionpp10">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string notr="true">10</string>
+   </property>
+   <property name="toolTip">
+    <string notr="true">10</string>
+   </property>
+  </action>
+  <action name="actionpp20">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string notr="true">20</string>
+   </property>
+   <property name="toolTip">
+    <string notr="true">20</string>
+   </property>
+  </action>
+  <action name="actionpp50">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string notr="true">50</string>
+   </property>
+   <property name="toolTip">
+    <string notr="true">50</string>
+   </property>
+  </action>
+  <action name="actionpp100">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string notr="true">100</string>
+   </property>
+   <property name="toolTip">
+    <string notr="true">100</string>
+   </property>
+  </action>
+  <action name="actionWindows">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Windows</string>
+   </property>
+  </action>
+  <action name="actionMotif">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Motif</string>
+   </property>
+  </action>
+  <action name="actionCDE">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>CDE</string>
+   </property>
+  </action>
+  <action name="actionPlastique">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Plastique</string>
+   </property>
+  </action>
+  <action name="actionWindowsXP">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Windows XP</string>
+   </property>
+  </action>
+  <action name="actionMacintosh">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Macintosh</string>
+   </property>
+  </action>
+  <action name="actionDefaultStyle">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Default</string>
+   </property>
+  </action>
+  <action name="a_save_txt">
+   <property name="text">
+    <string>Export Results as text</string>
+   </property>
+  </action>
+  <action name="actionArabic">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string notr="true">Arabic</string>
+   </property>
+   <property name="toolTip">
+    <string notr="true">العربية</string>
+   </property>
+  </action>
+  <action name="actionFrench">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string notr="true">French</string>
+   </property>
+   <property name="toolTip">
+    <string notr="true">Fr</string>
+   </property>
+  </action>
+  <action name="actionIndonesian">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string notr="true">Indonesian</string>
+   </property>
+   <property name="toolTip">
+    <string notr="true">Indonesian</string>
+   </property>
+  </action>
+  <action name="actionSystem">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>System default</string>
+   </property>
+  </action>
+  <action name="actionMalay">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string notr="true">Malay</string>
+   </property>
+   <property name="toolTip">
+    <string notr="true">Malay</string>
+   </property>
+  </action>
+  <action name="actionSpanish">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string notr="true">Spanish</string>
+   </property>
+   <property name="toolTip">
+    <string notr="true">Spanish</string>
+   </property>
+  </action>
+  <action name="actionReport_a_Problem">
+   <property name="icon">
+    <iconset resource="../images/main.qrc">
+     <normaloff>:/feedback/feedback/report_a_problem.png</normaloff>:/feedback/feedback/report_a_problem.png</iconset>
+   </property>
+   <property name="text">
+    <string>Report a &amp;Problem</string>
+   </property>
+  </action>
+  <action name="actionAsk_a_Question">
+   <property name="icon">
+    <iconset resource="../images/main.qrc">
+     <normaloff>:/feedback/feedback/ask_a_question.png</normaloff>:/feedback/feedback/ask_a_question.png</iconset>
+   </property>
+   <property name="text">
+    <string>Ask a &amp;Question</string>
+   </property>
+  </action>
+  <action name="actionShare_an_Idea">
+   <property name="icon">
+    <iconset resource="../images/main.qrc">
+     <normaloff>:/feedback/feedback/share_an_idea.png</normaloff>:/feedback/feedback/share_an_idea.png</iconset>
+   </property>
+   <property name="text">
+    <string>Share an &amp;Idea</string>
+   </property>
+  </action>
+  <action name="actionOpen_issues">
+   <property name="text">
+    <string>Open issues</string>
+   </property>
+  </action>
+  <action name="actionAlbanian">
+   <property name="text">
+    <string notr="true">Albanian</string>
+   </property>
+   <property name="toolTip">
+    <string notr="true">Albanian</string>
+   </property>
+  </action>
+  <action name="actionTranslationDefault">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Default</string>
+   </property>
+  </action>
+ </widget>
+ <tabstops>
+  <tabstop>o_search</tabstop>
+  <tabstop>o_clear</tabstop>
+  <tabstop>o_relation_stat</tabstop>
+  <tabstop>o_sura_name</tabstop>
+  <tabstop>o_sajdah_type</tabstop>
+  <tabstop>o_relation_misc</tabstop>
+  <tabstop>o_derivation_deep</tabstop>
+  <tabstop>o_allwords</tabstop>
+  <tabstop>o_struct_as</tabstop>
+  <tabstop>o_struct_from</tabstop>
+  <tabstop>o_stat_in</tabstop>
+  <tabstop>o_struct_to</tabstop>
+  <tabstop>o_relation_advanced</tabstop>
+  <tabstop>o_stat_to</tabstop>
+  <tabstop>o_stat_num</tabstop>
+  <tabstop>o_sajdah_exist</tabstop>
+  <tabstop>o_add2query_struct</tabstop>
+  <tabstop>o_word_type</tabstop>
+  <tabstop>o_relation_word</tabstop>
+  <tabstop>o_chapter</tabstop>
+  <tabstop>o_topic</tabstop>
+  <tabstop>o_subtopic</tabstop>
+  <tabstop>o_relation_subject</tabstop>
+  <tabstop>o_add2query_subject</tabstop>
+  <tabstop>o_add2query_misc</tabstop>
+  <tabstop>o_tanzil</tabstop>
+  <tabstop>o_feature_text</tabstop>
+  <tabstop>o_partofword</tabstop>
+  <tabstop>o_vocalization</tabstop>
+  <tabstop>o_derivation_light</tabstop>
+  <tabstop>o_somewords</tabstop>
+  <tabstop>o_nowords</tabstop>
+  <tabstop>o_synonyms</tabstop>
+  <tabstop>o_stat_from</tabstop>
+  <tabstop>o_relation_struct</tabstop>
+ </tabstops>
+ <resources>
+  <include location="../images/main.qrc"/>
+ </resources>
+ <connections>
+  <connection>
+   <sender>m_features</sender>
+   <signal>triggered(bool)</signal>
+   <receiver>w_features</receiver>
+   <slot>setVisible(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>119</x>
+     <y>403</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>w_features</sender>
+   <signal>visibilityChanged(bool)</signal>
+   <receiver>m_features_show</receiver>
+   <slot>setChecked(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>139</x>
+     <y>417</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>o_clear</sender>
+   <signal>clicked()</signal>
+   <receiver>o_query</receiver>
+   <slot>clear()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>1416</x>
+     <y>45</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>898</x>
+     <y>48</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>o_predefined_goto</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>o_predefined_sura</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>33</x>
+     <y>105</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>103</x>
+     <y>104</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>o_predefined_goto</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>o_predefined_aya</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>49</x>
+     <y>107</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>308</x>
+     <y>115</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>o_predefined_all_deriv</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>o_predefined_root</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>153</x>
+     <y>137</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>191</x>
+     <y>132</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>o_predefined_respect_tashkeel</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>o_predefined_vocalized_word</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>104</x>
+     <y>166</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>249</x>
+     <y>166</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>o_search_in_trads</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>w_features</receiver>
+   <slot>setDisabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>649</x>
+     <y>71</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>231</x>
+     <y>28</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>o_search_in_trads</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>menuOrder_by</receiver>
+   <slot>setDisabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>649</x>
+     <y>71</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>67</x>
+     <y>101</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>o_search_in_trads</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>menuScript</receiver>
+   <slot>setDisabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>649</x>
+     <y>71</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>67</x>
+     <y>50</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>o_search_in_trads</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>menuShow</receiver>
+   <slot>setDisabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>649</x>
+     <y>71</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>85</x>
+     <y>90</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+ <slots>
+  <slot>search_all()</slot>
+  <slot>changepage(int)</slot>
+  <slot>subject2(QString)</slot>
+  <slot>subject3(QString)</slot>
+  <slot>changepage()</slot>
+  <slot>changePERPAGE(QString)</slot>
+ </slots>
+</ui>

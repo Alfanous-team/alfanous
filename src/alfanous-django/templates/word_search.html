@@ -1,0 +1,34 @@
+{% extends "word_results.html" %}
+
+{% load custom_filters %}
+{% load query %}
+
+{% block pagination_rel_block %}
+  {% if results.search.interval.nb_pages > 1 %}
+    {% include 'wui/pagination_rel.html' with page=results.search.interval.page nb_pages=results.search.interval.nb_pages %}
+  {% endif %}
+{% endblock %}
+
+{% block options %}
+{% endblock %}
+
+
+{% block views_panel %}
+{% endblock %}
+
+
+{% block sortedby_panel %}
+{% endblock %}
+
+{% block translations_panel %}
+{% endblock %}
+
+{% block recitations_panel %}
+{% endblock %}
+
+
+{% block pagination %}
+  {% if results.search.interval.nb_pages > 1 %}
+    {% include 'wui/pagination.html' with page=results.search.interval.page nb_pages=results.search.interval.nb_pages %}
+  {% endif %}
+{% endblock %}

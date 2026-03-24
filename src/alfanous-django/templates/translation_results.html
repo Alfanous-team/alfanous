@@ -1,0 +1,173 @@
+{% extends "base.html" %}
+
+{% load query %}
+{% load kwacros %}
+
+
+{% kwacro paginationRoutine %}
+	{% block pagination %} {% endblock %}
+    {% block pagination_tablet %} {% endblock %}
+    {% block pagination_phone %} {% endblock %}
+{% endkwacro %}
+
+{% block results %}
+	<div id="#search_result_static" class="row span9 offset2 text-center">
+		{% if results.error.code == 0  %}
+			 <span	class="muted">
+			 {{ _("Runtime") }}
+						({{ results.search.runtime|floatformat:"5" }} {{ _("seconds") }})
+			 </span>
+
+			{% if results.search.interval.total %}
+				<!-- translation results -->
+				<div class="row offset1 span11 text-center">
+					<ul class="breadcrumb">
+					    <li>{{ _("Results") }}: ( {{ results.search.interval.start }}</li>
+					    <li>{{ _("to") }} {{ results.search.interval.end }}</li>
+					    <li class="active">{{ _("of") }} {{ results.search.interval.total }}</li>
+					    <li>)</li>
+				    </ul>
+				</div>
+
+				<!-- Pages control # top one -->
+				<div class="row">
+					<div class="span12">
+						{% usekwacro paginationRoutine %}
+					</div>
+				</div>
+
+				{% for result_id, result_content in  	results.search.translations.items %}
+					<div class='container well well-small span12'>
+            <fieldset class='main_re_item'>
+              <legend class="text-{{ bidi.align }}">
+                {# TODO: use wui/header.html #}
+                <span class="muted">
+                  <b>#{{ result_id }}</b>
+                  {% if result_content.aya %}
+                    <h3>
+                    <a class=""  href='?{% simple_query ' AND ' gid=result_content.identifier.gid id=result_content.identifier.id %}'>
+                      <small>
+                        <span class="hidden-phone">{{ _("Interpretation of") }}</span>
+                          ( {% if bidi.direction == "rtl" %}
+                            {{ result_content.aya.sura_arabic_name }}
+                            {% else %}
+                              {{ result_content.aya.sura_name }}
+                            {% endif %}
+                          {{ result_content.aya.aya_id }} )
+                        <span class="hidden-phone">
+                          {{ _("in") }} {{ result_content.info.language }}
+                          {{ _("by") }} {{ result_content.info.author }}
+                        </span>
+                        <span class="visible-phone"> - {{ result_content.info.language_short }} </span>
+                      </small>
+                    </a>
+                    </h3>
+                  {% endif %}
+                </span>
+                <div class="pull-{{ bidi.align_inverse }} ">
+                  {% url 'results_i18n' current.unit as share_path %}
+                  {% simple_query ' AND ' gid=result_content.identifier.gid id=result_content.identifier.id as share_params %}
+                  {% include 'wui/result/header_buttons.html' %}
+                </div>
+              </legend>
+
+				  			<div class="row-fluid">
+                  <div class="span10 offset1">
+                    <div class="row">
+                      <div id="aya_text_{{ ayaresult_id }}" class="row text-center non-arabic-ayah">
+                        {% include 'wui/aya/aya.html' with aya_text=result_content.text %}
+
+                        {% if result_content.aya %}
+                          -
+                          <a class="text-success"  href='?{% simple_query ' AND ' gid=result_content.identifier.gid lang=result_content.info.language_short %}'>
+                            <small>
+                              {{ _("Interpretation of") }} (
+                                {% if bidi.direction == "rtl" %}  {{ result_content.aya.sura_name }}
+                                {% else %} {{ result_content.aya.sura_name }}
+                                {% endif %}
+                                {{ result_content.aya.aya_id }}
+                              )
+                            </small>
+                          </a>
+                        {% endif %}
+
+
+
+
+				                        </div>
+
+
+				                    </div>
+			                    </div>
+
+			                    <div class="row text-center span12">
+			                    	<hr/>
+			                 		{% if result_content.aya %}
+
+								  		<p class="arabic-ayah">
+									  		<span class='quran_decoration main_aya'>
+									 		 [ </span>
+									  		<span class="aya_words quran main_aya">
+									  		  {{ result_content.aya.text }}
+									  		</span>
+									  		<span class='quran_decoration main_aya'>
+									  		] </span>									  		
+											-	<a class="text-success"
+                             href="{% url 'results_i18n' 'aya' %}?{% aya_query result_content.aya %}">
+												  <small>{{ result_content.aya.sura_arabic_name }}</small>
+                          {{ result_content.aya.aya_id }}
+                        </a>
+								  		</p>
+						  			{% endif %}
+				                		</div>
+
+				                		<div class="row text-center span12">
+				                		   <hr/>
+											<span class="badge badge-info">{{ _("About translation") }}</span>
+															<span class="label label-success" >
+                                  <a  href='?{% simple_query ' AND ' gid=result_content.identifier.gid %}'>
+														    	{{ _("Aya") }} | {{ result_content.identifier.gid }}</a>
+							  							   </span>
+
+												    		<span class="label label-success">
+																	<a href='?{% simple_query ' AND ' id=result_content.identifier.id %}'>
+																	{{ _("Author") }} | {{  result_content.info.author }} </a>
+															</span>
+															<span class="label label-inverse">
+                                <a href='?{% simple_query ' AND ' lang=result_content.info.language_short %}'>
+																{{ _("Language") }} | {{ result_content.info.language }}</a>
+															</span>
+
+				                        </div>
+				  			</div>
+					    </fieldset>
+					</div>
+				{% endfor %}
+
+				<!-- Pages control # bottom one -->
+				<div class="row">
+					<div class="span12">
+						{% usekwacro paginationRoutine %}
+					</div>
+				</div>
+			</div>
+	</div>
+			{% else %}
+				<div class="row">
+					<div class="alert alert-error text-center span10 offset1">
+						<button type="button" class="close" data-dismiss="alert">&times;</button>
+						{{ _("Sorry! there is no results for this search query.") }}
+					</div>
+				</div>
+			{% endif %}
+		{% elif results.error %}
+			<div class="row">
+				<div class="alert alert-error span10 offset1">
+					<button type="button" class="close" data-dismiss="alert">&times;</button>
+					{{ _("Error ") }} ({{ results.error.code }}) : {{ results.error.msg|linebreaksbr }}
+				</div>
+			</div>
+		{% else %}
+
+		{% endif %}
+{% endblock results %}

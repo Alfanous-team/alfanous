@@ -1,0 +1,139 @@
+{% extends "aya_results.html" %}
+
+{% load custom_filters %}
+{% load query %}
+
+{% block pagination_rel_block %}
+  {% if results.search.interval.nb_pages > 1 %}
+    {% include 'wui/pagination_rel.html' with page=results.search.interval.page nb_pages=results.search.interval.nb_pages %}
+  {% endif %}
+{% endblock %}
+
+{% block options %}
+<!-- Multiple Checkboxes -->
+<div class="control-group ">
+  <div class="controls">
+    <label class="checkbox inline">
+      {# todo: replace fuzzy search with exact search (inversed logic),needs translation update #}
+      <input type="checkbox"  name="fuzzy" value="True" {% if params.query  %}{{ params.fuzzy|yesno:"checked," }}{% else %}checked="yes"{% endif %} />
+      {{ _("Fuzzy search") }}
+    </label>
+    <label class="checkbox  inline">
+      <input type="checkbox" name="vocalized" value="False" {{ params.vocalized|yesno:"checked," }} /> 
+      {{ _("Unvocalized text") }}
+    </label>
+    <label class="checkbox inline">
+      <input type="checkbox" name="script" value="uthmani" {{ params.script|yesno:"checked," }} /> 
+      {{ _("Uthmani script") }}
+    </label>
+  </div>
+</div>
+{% endblock %}
+
+
+{% block views_panel %}
+<div class="control-group ">
+  <div class="controls">
+
+<div class="input-prepend">
+<span class="add-on"><i class="icon-eye-open "></i></span>
+<span class="add-on hidden-phone">{{ _("View") }}</span>
+
+{% if bidi.direction == "rtl" %}
+    <select id="view" name="view" class="input-xlarge text-right">
+{% else %}
+    <select id="view" name="view" class="input-xlarge text-left">
+{% endif %}
+		<option value="default" {% ifequal params.view "default" %}selected{% endifequal %}>{{ _("Default") }}</option>
+		<option value="minimal" {% ifequal params.view "minimal" %}selected{% endifequal %}>{{ _("Minimal") }}</option>
+		<option value="normal" {% ifequal params.view "normal" %}selected{% endifequal %}>{{ _("Normal") }}</option>
+		<option value="full" {% ifequal params.view "full" %}selected{% endifequal %}>{{ _("Full") }}</option>
+		<option value="statistic" {% ifequal params.view "statistic" %}selected{% endifequal %}>{{ _("Statitic") }}</option>
+		<option value="linguistic" {% ifequal params.view "linguistic" %}selected{% endifequal %}>{{ _("Linguistic") }}</option>
+		<option value="recitation" {% ifequal params.view "recitation" %}selected{% endifequal %}>{{ _("Recitation") }}</option>
+    </select>
+
+    </div>
+  </div>
+
+
+</div>
+{% endblock %}
+
+
+{% block sortedby_panel %}
+<div class="control-group">
+  <div class="controls">
+  <div class="input-prepend">
+<span class="add-on"><i class="icon-sort"></i></span>
+<span class="add-on hidden-phone">{{ _("Sorted by") }}</span>
+  
+{% if bidi.direction == "rtl" %}
+    <select id="sortedby" name="sortedby" class="input-xlarge text-right">
+{% else %}
+    <select id="sortedby" name="sortedby" class="input-xlarge text-left">
+{% endif %}
+		<option value="score" {% ifequal params.sortedby "score" %}selected{% endifequal %}>{{ _("Relevance") }}</option>
+		<option value="mushaf" {% ifequal params.sortedby "mushaf" %}selected{% endifequal %}>{{ _("Mus'haf") }}</option>
+		<option value="tanzil" {% ifequal params.sortedby "tanzil" %}selected{% endifequal %}>{{ _("Tanzil") }}</option>
+		<option value="subject" {% ifequal params.sortedby "subject" %}selected{% endifequal %}>{{ _("Topics") }}</option>
+		<option value="ayalength" {% ifequal params.sortedby "ayalength" %}selected{% endifequal %}>{{ _("Ayah length") }}</option>
+    </select>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block translations_panel %}
+<div class="control-group">
+  <div class="controls">
+  <div class="input-prepend">
+<span class="add-on"><i class="icon-globe"></i></span>
+<span class="add-on hidden-phone">{{ _("Translation") }}</span>
+
+{% if bidi.direction == "rtl" %}
+    <select id="translation" name="translation" class="input-xlarge text-right">
+{% else %}
+    <select id="translation" name="translation" class="input-xlarge text-left">
+{% endif %}
+		<option value="en.transliteration">{{ _("Default") }}</option>
+		<option value="None" {% ifequal params.translation "None" %}selected{% endifequal %}>{{ _("No translation") }}</option>
+		{% for translation_id, translation_name in available.translations.items%}
+		<option value="{{ translation_id }}" {% ifequal params.translation translation_id %}selected{% endifequal %}>{{ translation_name }}</option>
+		{% endfor %}
+    </select>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block recitations_panel %}
+<div class="control-group">
+  <div class="controls">
+    <div class="input-prepend">
+<span class="add-on"><i class="icon-play-circle"></i></span>
+<span class="add-on hidden-phone">{{ _("Recitation:") }}</span>
+{% if bidi.direction == "rtl" %}
+    <select id="recitation" name="recitation" class="input-xlarge text-right">
+{% else %}
+    <select id="recitation" name="recitation" class="input-xlarge text-left">
+{% endif %}
+		<option value="14">{{ _("Default") }}</option>
+		<option value="0" {% ifequal params.recitation "0" %}selected{% endifequal %}>{{ _("No recitation") }}</option>
+		{% for recitation_id, recitation_details in info.show.recitations.items %}
+			{% if recitation_id != "ayahCount" %}
+					<option value="{{ recitation_id }}" {% ifequal params.recitation recitation_id %}selected{% endifequal %}>{{ recitation_details.name }} - {{ recitation_details.bitrate }} </option>
+			{% endif %}
+		{% endfor %}
+    </select>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+
+{% block pagination %}
+  {% if results.search.interval.nb_pages > 1 %}
+    {% include 'wui/pagination.html' with page=results.search.interval.page nb_pages=results.search.interval.nb_pages %}
+  {% endif %}
+{% endblock %}

@@ -1,0 +1,44 @@
+											<span class="row-fluid">
+												<span class="span3"> {{ _("Chapter") }} </span> 
+												<select id="advanced_search_thematic_chapter" class=" span9" >
+												{% for chapter in info.show.chapters%}
+												  <option value="{{ chapter }}"> {{ chapter }} </option>
+												{% endfor %}
+												</select>
+											</span>
+{#											<!--#}
+{#											<span class="row-fluid">#}
+{#												<span class="span3"> {{ _("Topic") }} </span> #}
+{#												<select id="advanced_search_linguistic_topic" class="disabled span9" >#}
+{#												  {% for topic in info.show.topics %}#}
+{#												  <option value="{{ topic }}"> {{ topic }} </option>#}
+{#												{% endfor %}#}
+{#												</select>#}
+{#											</span>#}
+{#											-->#}
+{#											<!--#}
+{#											<span class="row-fluid">#}
+{#												<span class="span3"> {{ _("SubTopic") }} </span> #}
+{#												<select id="advanced_search_linguistic_subtopic" class="span9" >#}
+{#												  {% for subtopic in info.show.subtopics%}#}
+{#												  <option value="{{ subtopic }}"> {{ subtopic }} </option>#}
+{#												{% endfor %}#}
+{#												</select>#}
+{#											</span>#}
+{#											-->#}
+											<hr />
+											
+											<span class="row-fluid">
+												<span class="span3"> {{ _("Relation") }} </span> 
+												<select id="advanced_search_thematic_relation" class=" span9" >
+												  <option value="replace">{{ _("Replacement") }}</option>
+												  <option value="add">{{ _("Addition") }}</option>
+												  <option value="and">{{ _("Conjunction (AND)") }}</option>
+												  <option value="or">{{ _("Disjunction (OR)") }}</option>
+												  <option value="andnot">{{ _("Exception (ANDNOT)") }}</option>
+												</select>
+											</span>
+											<button class="btn btn-primary btn-block" type="button" 
+											onclick="AddToSearchBar( prepare_topics($('#advanced_search_thematic_chapter').val()), $('#advanced_search_thematic_relation').val() );">
+												{{ _("Add to search bar") }}
+											</button>

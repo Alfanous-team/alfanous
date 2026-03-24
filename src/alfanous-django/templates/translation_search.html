@@ -1,0 +1,56 @@
+{% extends "translation_results.html" %}
+
+{% load custom_filters %}
+{% load query %}
+
+{% block pagination_rel_block %}
+  {% if results.search.interval.nb_pages > 1 %}
+    {% include 'wui/pagination_rel.html' with page=results.search.interval.page nb_pages=results.search.interval.nb_pages %}
+  {% endif %}
+{% endblock %}
+
+{% block no_request %} 
+	<div style="direction: {{ bidi.direction }};">
+	{{ _("List of indexed Quran translations") }} ({{ _("Translation source:") }} <a  href='http://tanzil.net/trans/' target='_blank' >{{ _("Tanzil") }}</a>):<button id="showlog" type="button">{{ _("Show/Hide!") }}</button><br> 
+	</div>
+	<div class="logbox" id="logbox">
+		{% for translation in available.translations.items %}
+		<span class="log">	{{ forloop.counter }}. {{ translation.1 }} </span><br/>
+		{% empty %}
+		<span class="log"> {{ _("Sorry, there is no indexed translations!") }}</span><br/>
+		{% endfor %}
+	</div>
+	<br />
+	
+	<br />
+{% endblock %} 
+
+
+{% block options %}
+<div class="options" style="direction: {{ bidi.direction }};">
+<!-- <input type="checkbox"  name="aya" value="True" {{ params.aya|yesno:"checked," }} /> 
+	<span class="xtitle">{{ _("Show ayah arabic text") }} </span> -->
+</div>
+
+{% endblock %}
+
+
+{% block views_panel %}{% endblock %}
+
+{% block sortedby_panel %}
+{% endblock %}
+
+{% block translations_panel %}
+{% endblock %}
+
+{% block recitations_panel %}
+{% endblock %}
+
+
+{% block pagination %}
+  {% if results.search.interval.nb_pages > 1 %}
+    {% include 'wui/pagination.html' with page=results.search.interval.page nb_pages=results.search.interval.nb_pages %}
+  {% endif %}
+{% endblock %}
+
+

@@ -1,0 +1,1678 @@
+# Turkish translation for alfanous
+# Copyright (c) 2013 Rosetta Contributors and Canonical Ltd 2013
+# This file is distributed under the same license as the alfanous package.
+# Last interpreter <aliaksin151@gmail.com> in January,2018
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: alfanous\n"
+"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2014-03-02 09:44+0100\n"
+"PO-Revision-Date: 2018-01-22 20:33+0000\n"
+"Last-Translator: Ali Aksın <Unknown>\n"
+"Language-Team: Turkish <tr@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Launchpad-Export-Date: 2018-05-25 06:12+0000\n"
+"X-Generator: Launchpad (build 18667)\n"
+
+#: settings.py:238 public/templates/base.html:174 templates/base.html:121
+#: wui/templates/wui/advanced_search/structural.html:4
+msgid "Ayahs"
+msgstr "Ayetler"
+
+#: settings.py:241 public/templates/base.html:175 templates/base.html:122
+msgid "Translations"
+msgstr "Çeviriler"
+
+#: settings.py:242 public/templates/base.html:176 templates/base.html:123
+msgid "Words"
+msgstr "Kelimeler"
+
+#: public/templates/aya_results.html:17 public/templates/aya_results.html:63
+#: public/templates/word_results.html:17 templates/aya_keyword_block.html:7
+#: templates/aya_results.html:18 templates/keyword-block.html:7
+#: templates/word_results.html:18
+msgid "Keywords"
+msgstr "Anahtar Sözcükler"
+
+#: public/templates/aya_results.html:19 public/templates/aya_results.html:286
+#: public/templates/translation_results.html:25
+#: public/templates/word_results.html:19 public/templates/word_results.html:31
+#: templates/aya_results.html:20 templates/aya_results.html.py:74
+#: templates/translation_results.html:25 templates/word_results.html:20
+#: templates/word_results.html.py:32
+msgid "Results"
+msgstr "Sonuçlar"
+
+#: public/templates/aya_results.html:21
+#: public/templates/translation_results.html:17
+#: public/templates/word_results.html:21 templates/aya_results.html:22
+#: templates/translation_results.html:17 templates/word_results.html:22
+msgid "Runtime"
+msgstr "Çalışma zamanı"
+
+#: public/templates/aya_results.html:22 public/templates/word_results.html:22
+#: templates/aya_results.html:23 templates/word_results.html:23
+msgid "s"
+msgstr "ler"
+
+#: public/templates/aya_results.html:30 templates/aya_results.html:31
+msgid "Searched keyword:"
+msgstr "Aranan anahtar sözcük"
+
+#: public/templates/aya_results.html:31 templates/aya_results.html:32
+msgid "Suggestions:"
+msgstr "Öneriler"
+
+#: public/templates/aya_results.html:47 templates/aya_results.html:48
+msgid "no suggestions!"
+msgstr "Öneriler yok!"
+
+#: public/templates/aya_results.html:80 public/templates/aya_results.html:584
+#: public/templates/aya_results.html:658 public/templates/base.html:83
+#: templates/aya_keyword_block.html:28 templates/base.html:30
+#: templates/keyword-block.html:23
+#: wui/templates/wui/advanced_search/statistical.html:5
+#: wui/templates/wui/aya/one_result.html:167
+#: wui/templates/wui/aya/stats.html:61
+msgid "words"
+msgstr "sözcükler"
+
+#: public/templates/aya_results.html:94 public/templates/aya_results.html:107
+#: templates/aya_keyword_block.html:53 templates/aya_keyword_block.html:81
+#: templates/keyword-block.html:41 templates/keyword-block.html.py:61
+msgid "occurances"
+msgstr "oluşumlar"
+
+#: public/templates/aya_results.html:97 public/templates/aya_results.html:116
+#: templates/aya_keyword_block.html:64 templates/aya_keyword_block.html:103
+#: templates/keyword-block.html:47 templates/keyword-block.html.py:75
+msgid "vocalizations"
+msgstr "seslendirmeler"
+
+#: public/templates/aya_results.html:111 public/templates/base.html:76
+#: templates/aya_keyword_block.html:92 templates/base.html:23
+#: templates/keyword-block.html:68
+msgid "ayates"
+msgstr "ayetler"
+
+#: public/templates/aya_results.html:132 templates/aya_keyword_block.html:126
+#: templates/keyword-block.html:91
+msgid "synonyms"
+msgstr "eşanlamlılar"
+
+#: public/templates/aya_results.html:149 templates/aya_keyword_block.html:151
+#: templates/keyword-block.html:108
+msgid "derivations"
+msgstr "türevler"
+
+#: public/templates/aya_results.html:179
+#: templates/aya_keyword_annotation_block.html:7
+#: templates/keyword-block.html:139
+msgid "annotations"
+msgstr "dipnotlar"
+
+#: public/templates/aya_results.html:208
+#: public/templates/word_results.html:175
+#: templates/aya_keyword_annotation_block.html:46
+#: templates/keyword-block.html:169 templates/word_results.html:153
+msgid "part"
+msgstr "parça"
+
+#: public/templates/aya_results.html:211
+#: public/templates/word_results.html:178
+#: templates/aya_keyword_annotation_block.html:51
+#: templates/keyword-block.html:172 templates/word_results.html:156
+msgid "lemma"
+msgstr "başlık"
+
+#: public/templates/aya_results.html:214
+#: public/templates/word_results.html:181
+#: templates/aya_keyword_annotation_block.html:57
+#: templates/keyword-block.html:175 templates/word_results.html:159
+msgid "root"
+msgstr "kök"
+
+#: public/templates/aya_results.html:217
+#: public/templates/word_results.html:184
+#: templates/aya_keyword_annotation_block.html:63
+#: templates/keyword-block.html:178 templates/word_results.html:162
+msgid "special"
+msgstr "özel"
+
+#: public/templates/aya_results.html:220
+#: public/templates/word_results.html:187
+#: templates/aya_keyword_annotation_block.html:69
+#: templates/keyword-block.html:181 templates/word_results.html:165
+msgid "token"
+msgstr "simge"
+
+#: public/templates/aya_results.html:223 public/templates/aya_results.html:611
+#: public/templates/aya_results.html:643 public/templates/aya_results.html:648
+#: public/templates/word_results.html:190
+#: templates/aya_keyword_annotation_block.html:75
+#: templates/keyword-block.html:184 templates/word_results.html:168
+#: wui/templates/wui/aya/one_result.html:152
+#: wui/templates/wui/aya/one_result.html:157
+#: wui/templates/wui/aya/stats.html:88
+msgid "type"
+msgstr "tür"
+
+#: public/templates/aya_results.html:226
+#: public/templates/word_results.html:193
+#: templates/aya_keyword_annotation_block.html:80
+#: templates/keyword-block.html:187 templates/word_results.html:171
+msgid "POS"
+msgstr "POS"
+
+#: public/templates/aya_results.html:230
+#: public/templates/word_results.html:197
+#: templates/aya_keyword_annotation_block.html:86
+#: templates/keyword-block.html:191 templates/word_results.html:175
+msgid "aspect"
+msgstr "yön"
+
+#: public/templates/aya_results.html:233
+#: public/templates/word_results.html:200
+#: templates/aya_keyword_annotation_block.html:91
+#: templates/keyword-block.html:194 templates/word_results.html:178
+msgid "state"
+msgstr "devlet"
+
+#: public/templates/aya_results.html:236
+#: public/templates/word_results.html:203
+#: templates/aya_keyword_annotation_block.html:96
+#: templates/keyword-block.html:197 templates/word_results.html:181
+msgid "form"
+msgstr "form"
+
+#: public/templates/aya_results.html:239
+#: public/templates/word_results.html:206
+#: templates/aya_keyword_annotation_block.html:101
+#: templates/keyword-block.html:200 templates/word_results.html:184
+msgid "case"
+msgstr "durum"
+
+#: public/templates/aya_results.html:242
+#: public/templates/word_results.html:209
+#: templates/aya_keyword_annotation_block.html:107
+#: templates/keyword-block.html:203 templates/word_results.html:187
+msgid "derivation"
+msgstr "türetme"
+
+#: public/templates/aya_results.html:245
+#: public/templates/word_results.html:212
+#: templates/aya_keyword_annotation_block.html:112
+#: templates/keyword-block.html:206 templates/word_results.html:190
+msgid "person"
+msgstr "şahıs"
+
+#: public/templates/aya_results.html:248
+#: public/templates/word_results.html:215
+#: templates/aya_keyword_annotation_block.html:117
+#: templates/keyword-block.html:209 templates/word_results.html:193
+msgid "number"
+msgstr "numara"
+
+#: public/templates/aya_results.html:251
+#: public/templates/word_results.html:218
+#: templates/aya_keyword_annotation_block.html:122
+#: templates/keyword-block.html:212 templates/word_results.html:196
+msgid "gender"
+msgstr "cinsiyet"
+
+#: public/templates/aya_results.html:254
+#: public/templates/word_results.html:221
+#: templates/aya_keyword_annotation_block.html:127
+#: templates/keyword-block.html:215 templates/word_results.html:199
+msgid "voice"
+msgstr "ses"
+
+#: public/templates/aya_results.html:287
+#: public/templates/translation_results.html:26
+#: public/templates/word_results.html:32 templates/aya_results.html:75
+#: templates/translation_results.html:26 templates/word_results.html:33
+msgid "to"
+msgstr "-"
+
+#: public/templates/aya_results.html:288
+#: public/templates/translation_results.html:27
+#: public/templates/word_results.html:33 public/templates/word_results.html:65
+#: templates/aya_results.html:76 templates/translation_results.html:27
+#: templates/word_results.html:34 templates/word_results.html.py:67
+msgid "of"
+msgstr "|"
+
+#: public/templates/aya_results.html:310
+#: public/templates/translation_results.html:44
+#: public/templates/word_results.html:54 templates/translation_results.html:45
+#: templates/word_results.html:56 wui/templates/wui/result/header.html:7
+msgid "Result n°"
+msgstr "Sonuç No."
+
+#: public/templates/aya_results.html:352
+#: public/templates/translation_results.html:84
+#: public/templates/word_results.html:90
+#: wui/templates/wui/result/share_dropdown.html:14
+msgid "Twitter"
+msgstr "Twitter"
+
+#: public/templates/aya_results.html:353
+#: public/templates/translation_results.html:85
+#: public/templates/word_results.html:91
+#: wui/templates/wui/result/share_dropdown.html:20
+msgid "Facebook"
+msgstr "Facebook"
+
+#: public/templates/aya_results.html:354
+#: public/templates/translation_results.html:86
+#: wui/templates/wui/result/share_dropdown.html:26
+msgid "Google+"
+msgstr "Google+"
+
+#: public/templates/aya_results.html:355
+#: public/templates/translation_results.html:87
+#: public/templates/word_results.html:93
+#: wui/templates/wui/result/share_dropdown.html:32
+msgid "Linkedin"
+msgstr "Linkedin"
+
+#: public/templates/aya_results.html:471
+#: wui/templates/wui/aya/one_result.html:66
+msgid "Click here to show more details"
+msgstr "Daha fazla bilgi almak için buraya tıklayın"
+
+#: public/templates/aya_results.html:474
+#: wui/templates/wui/aya/one_result.html:69
+msgid "Show more"
+msgstr "Daha fazlasını göster"
+
+#: public/templates/aya_results.html:493
+#: wui/templates/wui/advanced_search/thematic.html:2
+#: wui/templates/wui/aya/one_result.html:88
+msgid "Chapter"
+msgstr "Fasıl"
+
+#: public/templates/aya_results.html:503
+#: wui/templates/wui/advanced_search/thematic.html:11
+#: wui/templates/wui/aya/one_result.html:98
+msgid "Topic"
+msgstr "Konu"
+
+#: public/templates/aya_results.html:512
+#: wui/templates/wui/aya/one_result.html:107
+msgid "Subtopic"
+msgstr "Alt konu"
+
+#: public/templates/aya_results.html:527 wui/templates/wui/aya/stats.html:4
+msgid "About ayah"
+msgstr "Ayet hakkında"
+
+#: public/templates/aya_results.html:536 wui/templates/wui/aya/stats.html:13
+msgid "manzil"
+msgstr "menzil"
+
+#: public/templates/aya_results.html:544 wui/templates/wui/aya/stats.html:21
+msgid "juz"
+msgstr "cüz"
+
+#: public/templates/aya_results.html:552 wui/templates/wui/aya/stats.html:29
+msgid "hizb"
+msgstr "kısım"
+
+#: public/templates/aya_results.html:555 wui/templates/wui/aya/stats.html:32
+msgid "quart"
+msgstr "kuart"
+
+#: public/templates/aya_results.html:563 wui/templates/wui/aya/stats.html:40
+msgid "page"
+msgstr "sayfa"
+
+#: public/templates/aya_results.html:572 wui/templates/wui/aya/stats.html:49
+msgid "page (indian)"
+msgstr "sayfa (hintçe)"
+
+#: public/templates/aya_results.html:592 public/templates/aya_results.html:659
+#: wui/templates/wui/advanced_search/statistical.html:4
+#: wui/templates/wui/aya/one_result.html:168
+#: wui/templates/wui/aya/stats.html:69
+msgid "letters"
+msgstr "harfler"
+
+#: public/templates/aya_results.html:601 public/templates/aya_results.html:660
+#: wui/templates/wui/aya/one_result.html:169
+#: wui/templates/wui/aya/stats.html:78
+msgid "divine names"
+msgstr "mübarek isimler"
+
+#: public/templates/aya_results.html:608 wui/templates/wui/aya/stats.html:85
+msgid "sajda"
+msgstr "secde"
+
+#: public/templates/aya_results.html:608 wui/templates/wui/aya/stats.html:85
+msgid "Hafs"
+msgstr "Hafs"
+
+#: public/templates/aya_results.html:610 public/templates/aya_results.html:637
+#: wui/templates/wui/aya/one_result.html:146
+#: wui/templates/wui/aya/stats.html:87
+msgid "n°"
+msgstr "no:"
+
+#: public/templates/aya_results.html:619
+#: wui/templates/wui/aya/one_result.html:128
+msgid "About surah"
+msgstr "Sure Hakkında"
+
+#: public/templates/aya_results.html:626 public/templates/aya_results.html:632
+#: wui/templates/wui/aya/one_result.html:135
+#: wui/templates/wui/aya/one_result.html:141
+msgid "Sura"
+msgstr "Sure"
+
+#: public/templates/aya_results.html:652
+#: wui/templates/wui/aya/one_result.html:161
+msgid "revelation_order"
+msgstr "iniş sırası"
+
+#: public/templates/aya_results.html:655
+#: wui/templates/wui/advanced_search/statistical.html:7
+#: wui/templates/wui/aya/one_result.html:164
+msgid "ayahs"
+msgstr "ayetler"
+
+#: public/templates/aya_results.html:681
+#: public/templates/translation_results.html:205
+#: public/templates/word_results.html:241 templates/aya_results.html:104
+#: templates/translation_results.html:159 templates/word_results.html:219
+msgid "Sorry! there is no results for this search query."
+msgstr "Maalesef bu arama sorgusu için sonuç yok."
+
+#: public/templates/aya_results.html:690
+#: public/templates/translation_results.html:213
+#: public/templates/word_results.html:250 templates/aya_results.html:113
+#: templates/translation_results.html:167 templates/word_results.html:228
+msgid "Error "
+msgstr "Hata "
+
+#: public/templates/aya_search.html:13 templates/aya_search.html:12
+msgid "Fuzzy search"
+msgstr "Karışık arama"
+
+#: public/templates/aya_search.html:17 templates/aya_search.html:16
+msgid "Unvocalized text"
+msgstr "Seslendirilmemiş metin"
+
+#: public/templates/aya_search.html:21 templates/aya_search.html:20
+msgid "Uthmani script"
+msgstr "Hz. Osman mushafı"
+
+#: public/templates/aya_search.html:34 templates/aya_search.html:33
+msgid "View"
+msgstr "Görünüm"
+
+#: public/templates/aya_search.html:41 public/templates/aya_search.html:92
+#: public/templates/aya_search.html:114 public/templates/base.html:232
+#: templates/aya_search.html:40 templates/aya_search.html.py:91
+#: templates/aya_search.html:113 templates/base.html:181
+msgid "Default"
+msgstr "Öntanımlı"
+
+#: public/templates/aya_search.html:42 templates/aya_search.html:41
+msgid "Minimal"
+msgstr "En az"
+
+#: public/templates/aya_search.html:43 templates/aya_search.html:42
+msgid "Normal"
+msgstr "Normal"
+
+#: public/templates/aya_search.html:44 templates/aya_search.html:43
+msgid "Full"
+msgstr "Tam"
+
+#: public/templates/aya_search.html:45 templates/aya_search.html:44
+msgid "Statitic"
+msgstr "İstatistik"
+
+#: public/templates/aya_search.html:46 templates/aya_search.html:45
+msgid "Linguistic"
+msgstr "Dilbilimsel"
+
+#: public/templates/aya_search.html:47 templates/aya_search.html:46
+msgid "Recitation"
+msgstr "Okuma"
+
+#: public/templates/aya_search.html:62 templates/aya_search.html:61
+msgid "Sorted by"
+msgstr "Sınıfllandırma ölçütü:"
+
+#: public/templates/aya_search.html:69 templates/aya_search.html:68
+msgid "Relevance"
+msgstr "İlişki"
+
+#: public/templates/aya_search.html:70 templates/aya_search.html:69
+msgid "Mus'haf"
+msgstr "Mushaf"
+
+#: public/templates/aya_search.html:71
+#: public/templates/translation_search.html:7 templates/aya_search.html:70
+#: templates/translation_search.html:8
+msgid "Tanzil"
+msgstr "Tenzil"
+
+#: public/templates/aya_search.html:72 templates/aya_search.html:71
+msgid "Topics"
+msgstr "Konular"
+
+#: public/templates/aya_search.html:73 templates/aya_search.html:72
+msgid "Ayah length"
+msgstr "Ayet uzunluğu"
+
+#: public/templates/aya_search.html:85 templates/aya_search.html:84
+msgid "Translation"
+msgstr "Çeviri"
+
+#: public/templates/aya_search.html:93 templates/aya_search.html:92
+msgid "No translation"
+msgstr "Çevirisi yok"
+
+#: public/templates/aya_search.html:108 templates/aya_search.html:107
+msgid "Recitation:"
+msgstr "Okuma:"
+
+#: public/templates/aya_search.html:115 templates/aya_search.html:114
+msgid "No recitation"
+msgstr "Okuma yok"
+
+#: public/templates/base.html:10
+msgid "Page:"
+msgstr "Sayfa:"
+
+#: public/templates/base.html:14
+msgid "Order:"
+msgstr "Sıralama:"
+
+#: public/templates/base.html:18
+msgid "View:"
+msgstr "Görünüm:"
+
+#: public/templates/base.html:22
+msgid "Options:"
+msgstr "Seçenekler:"
+
+#: public/templates/base.html:24
+msgid "vocalized"
+msgstr "Seslendiren"
+
+#: public/templates/base.html:27
+msgid "uthmani"
+msgstr "Osmani"
+
+#: public/templates/base.html:30
+msgid "fuzzy"
+msgstr "karışık"
+
+#: public/templates/base.html:35
+msgid "Translation:"
+msgstr "Çeviri:"
+
+#: public/templates/base.html:42 public/templates/base.html.py:48
+#: public/templates/base.html:433 templates/base.html:418
+#: wui/templatetags/meta.py:11
+msgid "Quran Ayah Search"
+msgstr "Ayet-i Kerime Araması"
+
+#: public/templates/base.html:44 public/templates/base.html.py:433
+#: templates/base.html:418 wui/templatetags/meta.py:13
+msgid "Quran Word Search"
+msgstr "Kur'an Sözcük Arama"
+
+#: public/templates/base.html:46 public/templates/base.html.py:433
+#: templates/base.html:418 wui/templatetags/meta.py:12
+msgid "Quran Translation Search"
+msgstr "Kur'an Çeviri Araması"
+
+#: public/templates/base.html:50 public/templates/base.html.py:433
+#: templates/base.html:418 wui/templates/wui/og_tags.html:2
+#: wui/templatetags/meta.py:33
+msgid "Alfanous"
+msgstr "Alfanous"
+
+#: public/templates/base.html:57
+msgid "Alfanous search results searching in"
+msgstr "Alfanous şunlar içinde arama sonuçlarını tarar:"
+
+#: public/templates/base.html:57
+msgid "looking for the query"
+msgstr "Sorgu araması"
+
+#: public/templates/base.html:57
+msgid "the page"
+msgstr "sayfa"
+
+#: public/templates/base.html:57
+msgid "the view"
+msgstr "görünüm"
+
+#: public/templates/base.html:57
+msgid "the script"
+msgstr "mushaf"
+
+#: public/templates/base.html:57
+msgid "and the translation"
+msgstr "ve çeviri"
+
+#: public/templates/base.html:57
+msgid "The fuzzy search is"
+msgstr "Karışık arama"
+
+#: public/templates/base.html:60 wui/templatetags/meta.py:56
+msgid ""
+"Alfanous has the feautre to search in the Quran words, their properties and "
+"occurences"
+msgstr ""
+"Alfanous, Kur'an-ı Kerim kelimelerini tanımlanan özellik ve seçeneğe göre "
+"arama özelliğine sahiptir."
+
+#: public/templates/base.html:62 wui/templatetags/meta.py:58
+msgid ""
+"Alfanous has the feautre to search in the translations of Quran meanings to "
+"lot of world languages"
+msgstr ""
+"Alfanous, birçok dildeki Kur'an-ı Kerim çevirileri arasında arama yapma "
+"özelliğine sahiptir."
+
+#: public/templates/base.html:64
+msgid ""
+"Alfanous is a functional, dynamic, comprehensive Qur’an search engine that "
+"has been effectively designed to carry out simple or advanced Quranic "
+"searches."
+msgstr ""
+"Alfanous, fonksiyonel, dinamik, basit veya ayrıntılı Kur'an-ı Kerim "
+"aramalarını efektif olarak dizayn eden kapsamlı bir arama motorudur."
+
+#: public/templates/base.html:71 templates/base.html:18
+msgid "quran"
+msgstr "Kur'an-ı Kerim"
+
+#: public/templates/base.html:72 templates/base.html:19
+msgid "forqan"
+msgstr "furkan"
+
+#: public/templates/base.html:73 templates/base.html:20
+msgid "koran"
+msgstr "Kur'an-ı Kerim"
+
+#: public/templates/base.html:74 templates/base.html:21
+msgid "search"
+msgstr "arama"
+
+#: public/templates/base.html:75 templates/base.html:22
+msgid "search engine"
+msgstr "arama motoru"
+
+#: public/templates/base.html:77 templates/base.html:24
+msgid "surates"
+msgstr "suretler"
+
+#: public/templates/base.html:78 templates/base.html:25
+msgid "advanced"
+msgstr "gelişmiş"
+
+#: public/templates/base.html:79 templates/base.html:26
+msgid "statistics"
+msgstr "istatistikler"
+
+#: public/templates/base.html:80 templates/base.html:27
+msgid "linguistic"
+msgstr "dilbilimsel"
+
+#: public/templates/base.html:81 templates/base.html:28
+msgid "information retrieval"
+msgstr "bilgi erişimi"
+
+#: public/templates/base.html:82 templates/base.html:29
+msgid "natural language processing"
+msgstr "doğal dil işleme"
+
+#: public/templates/base.html:84 templates/base.html:31
+msgid "Lantern"
+msgstr "Fener"
+
+#: public/templates/base.html:85 templates/base.html:32
+msgid "alfanous"
+msgstr "alfanous"
+
+#: public/templates/base.html:93 templates/base.html:40
+msgid "vocalized text"
+msgstr "seslendirilmiş metin"
+
+#: public/templates/base.html:96 templates/base.html:43
+msgid "uthmani script"
+msgstr "Osmani mushaf"
+
+#: public/templates/base.html:99 templates/base.html:46
+msgid "fuzzy search"
+msgstr "karışık arama"
+
+#: public/templates/base.html:195 templates/base.html:142
+msgid "First, select the search unit"
+msgstr "İlk olarak arama birimini seçin"
+
+#: public/templates/base.html:196 templates/base.html:143
+msgid ""
+"You can choose whether to search in Arabic verses of the holly Quran or in "
+"its translations"
+msgstr ""
+"Kur'an-ı Kerim'in Arapça ayetlerinden mi yoksa  tercümelerinden mi arama "
+"yapacağınızı  seçebilirsiniz."
+
+#: public/templates/base.html:210 templates/base.html:157
+msgid "Select your language"
+msgstr "Dilinizi seçin"
+
+#: public/templates/base.html:211 templates/base.html:158
+msgid ""
+"If you didn't notice, Alfanous User Interface is now translated to other "
+"languages, choose the one that fits you the best, or, you can contribute in "
+"translating it into your native language! (see the translate link)"
+msgstr ""
+"Eğer farketmediyseniz, Alfanous Kullanıcı Arayüzü şimdi diğer dillere de "
+"çeviriliyor, size en uygun olan dili seçebilir veya kendi dilinize çevirerek "
+"katkı sağlayabilirsiniz! (Çeviri linkine göz atın)"
+
+#: public/templates/base.html:213 templates/base.html:160
+msgid "Languages"
+msgstr "Diller"
+
+#: public/templates/base.html:223 templates/base.html:172
+msgid "Current:"
+msgstr "Geçerli"
+
+#: public/templates/base.html:228 templates/base.html:177
+msgid "Skins"
+msgstr "Dış görünümler"
+
+#: public/templates/base.html:235 templates/base.html:184
+msgid "Cerulean"
+msgstr "Gök mavisi"
+
+#: public/templates/base.html:236 templates/base.html:185
+msgid "Cyborg"
+msgstr "Siborg"
+
+#: public/templates/base.html:237 templates/base.html:186
+msgid "Amelia"
+msgstr "Ameli"
+
+#: public/templates/base.html:238 templates/base.html:187
+msgid "Readable"
+msgstr "Okunabilir"
+
+#: public/templates/base.html:239 templates/base.html:188
+msgid "Slate"
+msgstr "Arduvaz"
+
+#: public/templates/base.html:240 templates/base.html:189
+msgid "Spacelab"
+msgstr "Spacelab"
+
+#: public/templates/base.html:241 templates/base.html:190
+msgid "Super Heroes"
+msgstr "Süper Kahramanlar"
+
+#: public/templates/base.html:242 templates/base.html:191
+msgid "United"
+msgstr "Birleşik"
+
+#: public/templates/base.html:264 templates/base.html:215
+msgid "Our page on Facebook"
+msgstr "Sayfamız Facebook'ta"
+
+#: public/templates/base.html:265 templates/base.html:216
+msgid "Our page on Google+"
+msgstr "Sayfamız Google+'ta"
+
+#: public/templates/base.html:266 templates/base.html:217
+msgid "Our account on Twitter"
+msgstr "Hesabımız Twitter'da"
+
+#: public/templates/base.html:267 templates/base.html:218
+msgid "Our repository on Github"
+msgstr "Kodlarımız Github'ta"
+
+#: public/templates/base.html:268 templates/base.html:219
+msgid "Our Mailing list on GoogleGroups"
+msgstr "Elektronik posta listemiz Google Gruplar'da"
+
+#: public/templates/base.html:282 templates/base.html:233
+msgid "Information:"
+msgstr "Danışma:"
+
+#: public/templates/base.html:283 templates/base.html:234
+msgid "Quick Tour!"
+msgstr "Hızlı Tur!"
+
+#: public/templates/base.html:284 public/templates/popups_content.html:7
+#: templates/base.html:235 templates/popups_content.html:7
+msgid "F.A.Q."
+msgstr "S.S.S."
+
+#: public/templates/base.html:285 templates/base.html:236
+msgid "Sample search here"
+msgstr "İşte örnek bir arama"
+
+#: public/templates/base.html:286 templates/base.html:237
+msgid ""
+"Here you can learn by example about the full power of Alfanous search engine "
+"and what you can do with it."
+msgstr ""
+"Alfanous arama motorunun tüm gücünü ve onunla neler yapabileceğinizi  "
+"örneklerle öğrenebilirsiniz."
+
+#: public/templates/base.html:290 public/templates/popups_content.html:21
+#: templates/base.html:241 templates/popups_content.html:21
+msgid "Help"
+msgstr "Yardım"
+
+#: public/templates/base.html:292 templates/base.html:243
+msgid "Contact"
+msgstr "İletişim"
+
+#: public/templates/base.html:293 public/templates/popups_content.html:263
+#: templates/base.html:244 templates/popups_content.html:263
+msgid "Download"
+msgstr "İndirin"
+
+#: public/templates/base.html:294 templates/base.html:246
+msgid "Contribute:"
+msgstr "Katkıda bulunun"
+
+#: public/templates/base.html:295 templates/base.html:247
+msgid "Feedback"
+msgstr "Geri Bildirim"
+
+#: public/templates/base.html:296 templates/base.html:248
+msgid "Translate"
+msgstr "Çeviiri"
+
+#: public/templates/base.html:297 templates/base.html:249
+msgid "we really need your help!"
+msgstr "Yardımınıza gerçekten ihtiyacımız var!"
+
+#: public/templates/base.html:298 templates/base.html:250
+msgid ""
+"We're looking to fund the project, if you like it, help us making it even "
+"better."
+msgstr ""
+"Projeyi finanse etmek istiyoruz, beğendi iseniz projeyi daha da "
+"geliştirmemize yardımcı olun."
+
+#: public/templates/base.html:306 templates/base.html:258
+msgid "Donate"
+msgstr "Bağış Yapın"
+
+#: public/templates/base.html:307 templates/base.html:260
+msgid "Other means"
+msgstr "Diğer anlamlar"
+
+#: public/templates/base.html:326 templates/base.html:279
+msgid "Alfanous is smart!"
+msgstr "Alfanous beceriklidir!"
+
+#: public/templates/base.html:330 templates/base.html:283
+msgid "search query here ..."
+msgstr "sorgunuzu buraya girin ..."
+
+#: public/templates/base.html:336 templates/base.html:289
+msgid "Quick search"
+msgstr "Hızlı arama"
+
+#: public/templates/base.html:342 templates/base.html:295
+msgid "Even more!"
+msgstr "Daha fazlası!"
+
+#: public/templates/base.html:343 templates/base.html:296
+msgid ""
+"You can <strong>sort</strong>, <strong>filter</strong> search reasults or "
+"choose a translation, you can as well choose a recitator!"
+msgstr ""
+"Arama sonuçlarını  <strong>sıralayabilir</strong>, "
+"<strong>filtreleyebilirsiniz</strong> veya bir çeviri seçer, aynı zamanda "
+"bir okuyucu da seçebilirsiniz!"
+
+#: public/templates/base.html:348
+msgid "Search options"
+msgstr "Arama tercihleri"
+
+#: public/templates/base.html:367
+msgid "Bismi'Allah Go!"
+msgstr "Allah'ın adıyla git!"
+
+#: public/templates/base.html:393 templates/base.html:378
+msgid "Help!"
+msgstr "Yardım!"
+
+#: public/templates/base.html:395 templates/base.html:380
+msgid "Please help us translate Alfanous Project into more languages!"
+msgstr ""
+"Alfanous projesinde daha fazla dile çeviri için lütfen bize yardımcı olun!"
+
+#: public/templates/base.html:403 templates/base.html:387
+msgid ""
+"Please help us improving Alfanous Project, by taking this survey about "
+"search features in Holy Quran."
+msgstr ""
+"Kur'an-ı Kerim'deki arama özellikleri hakkındaki bu ankete  katılarak "
+"Alfanous projesini geliştirmemize yardımcı olun."
+
+#: public/templates/base.html:409 templates/base.html:394
+msgid "Info!"
+msgstr "Bilgi!"
+
+#: public/templates/base.html:411 templates/base.html:396
+msgid "The source of indexed Quran translations is Tanzil Project"
+msgstr ""
+"İndekselenen Kur'an-ı Kerim tercümelerinin kaynağı 'Tanzil' projesidir."
+
+#: public/templates/base.html:433 templates/base.html:418
+msgid "Share!"
+msgstr "Paylaş!"
+
+#: public/templates/base.html:444 templates/base.html:429
+msgid "Copyright"
+msgstr "Telif hakkı"
+
+#: public/templates/base.html:444 templates/base.html:429
+msgid "Alfanous Team"
+msgstr "Alfanous Takımı"
+
+#: public/templates/base.html:445 templates/base.html:430
+msgid "released under"
+msgstr "şununla yayınlandı:"
+
+#: public/templates/base.html:445 templates/base.html:430
+msgid "AGPL license"
+msgstr "AGPL lisansı"
+
+#: public/templates/base.html:450 templates/base.html:435
+msgid "Powered by"
+msgstr "Tarafından desteklendi:"
+
+#: public/templates/base.html:459 templates/base.html:444
+msgid "Add to your search bar!"
+msgstr "Seçim çubuğunuza ekleyin!"
+
+#: public/templates/popups_content.html:10 templates/popups_content.html:10
+msgid "See"
+msgstr "Göz atın"
+
+#: public/templates/popups_content.html:10 templates/popups_content.html:10
+msgid "this link"
+msgstr "bu link"
+
+#: public/templates/popups_content.html:13
+#: public/templates/popups_content.html:134
+#: public/templates/popups_content.html:148
+#: public/templates/popups_content.html:172
+#: public/templates/popups_content.html:193
+#: public/templates/popups_content.html:254
+#: public/templates/popups_content.html:302
+#: public/templates/popups_content.html:323 templates/popups_content.html:13
+#: templates/popups_content.html.py:134 templates/popups_content.html:148
+#: templates/popups_content.html.py:172 templates/popups_content.html:193
+#: templates/popups_content.html.py:254 templates/popups_content.html:302
+#: templates/popups_content.html.py:323
+msgid " Close "
+msgstr " Kapatın "
+
+#: public/templates/popups_content.html:27 templates/popups_content.html:27
+msgid "Searching in Quran Ayahs"
+msgstr "Kur'an Ayetlerini Arama"
+
+#: public/templates/popups_content.html:34
+#: public/templates/popups_content.html:98 templates/popups_content.html:34
+#: templates/popups_content.html.py:98
+msgid "Exact search"
+msgstr "Tam arama"
+
+#: public/templates/popups_content.html:39
+#: public/templates/popups_content.html:103 templates/popups_content.html:39
+#: templates/popups_content.html.py:103
+#: wui/templates/wui/advanced_search/advanced_query.html:8
+msgid "Phrase search"
+msgstr "Deyim araması"
+
+#: public/templates/popups_content.html:44
+#: public/templates/popups_content.html:108 templates/popups_content.html:44
+#: templates/popups_content.html.py:108
+msgid "Logical relations"
+msgstr "Mantıksal ilişkiler"
+
+#: public/templates/popups_content.html:49
+#: public/templates/popups_content.html:113 templates/popups_content.html:49
+#: templates/popups_content.html.py:113
+msgid "Wildcards"
+msgstr "Joker karakterler"
+
+#: public/templates/popups_content.html:54
+#: public/templates/popups_content.html:118 templates/popups_content.html:54
+#: templates/popups_content.html.py:118
+msgid "Fields"
+msgstr "Alanlar"
+
+#: public/templates/popups_content.html:59 templates/popups_content.html:59
+msgid "Intervals"
+msgstr "Aralıklar"
+
+#: public/templates/popups_content.html:64 templates/popups_content.html:64
+#: wui/templates/wui/advanced_search/advanced_query.html:33
+msgid "Partial vocalization"
+msgstr "Kısmi seslendirme"
+
+#: public/templates/popups_content.html:69 templates/popups_content.html:69
+msgid "Word properties"
+msgstr "Kelime özellikleri"
+
+#: public/templates/popups_content.html:74 templates/popups_content.html:74
+msgid "Derivations"
+msgstr "Kökenler"
+
+#: public/templates/popups_content.html:79 templates/popups_content.html:79
+msgid "Buckwalter Transliteration"
+msgstr "Buckwalter Harf Çevirisi"
+
+#: public/templates/popups_content.html:91 templates/popups_content.html:91
+msgid "Searching in Quran Translations"
+msgstr "Kur'an-ı Kerim çevirilerinde ara"
+
+#: public/templates/popups_content.html:131 templates/popups_content.html:131
+msgid ""
+"The website does not work well on Internet Explorer, we suggest to use "
+"another browser such as: "
+msgstr ""
+"Web sitesi Internet Explorer'da iyi çalışmaz, başka bir tarayıcı "
+"kullanmanızı öneririz: "
+
+#: public/templates/popups_content.html:131 templates/popups_content.html:131
+msgid "Firefox"
+msgstr "Firefox"
+
+#: public/templates/popups_content.html:142 templates/popups_content.html:142
+msgid "Awarded!"
+msgstr "Layık!"
+
+#: public/templates/popups_content.html:145 templates/popups_content.html:145
+msgid ""
+"Alfanous.org was chosen as the best-in-technicaity website in the "
+"competition AlgeriaWebAwards 2012."
+msgstr ""
+"Alfanous.org, AlgeriaWebAwards 2012 yarışmasında teknik açıdan en iyi web "
+"sitesi seçildi."
+
+#: public/templates/popups_content.html:156 templates/popups_content.html:156
+msgid "How to donate"
+msgstr "Nasıl bağış yapılır"
+
+#: public/templates/popups_content.html:159 templates/popups_content.html:159
+msgid ""
+"We're stuck looking for possible ways for donations/Funding. Any help is "
+"appreciated!"
+msgstr ""
+"Bağışlar/Finansman adına olası yollar bulmak için sıkışıp kaldık. Herhangi "
+"bir yardım memnuniyetle karşılanacaktır!"
+
+#: public/templates/popups_content.html:162 templates/popups_content.html:162
+msgid "Any way you can help by:"
+msgstr "Herhangi bir yolla yardım edebilirsiniz:"
+
+#: public/templates/popups_content.html:164 templates/popups_content.html:164
+msgid ""
+"Pay our web hosting monthly bills directly, we create an account for you in "
+"the host to do that."
+msgstr ""
+"Sunucu masraflarına düzenli aylık ödemelerle katkı sağlayabilirsiniz , bunu "
+"yapmanız için sunucuda sizin adınıza bir hesap oluşturacağız."
+
+#: public/templates/popups_content.html:165 templates/popups_content.html:165
+msgid ""
+"Lead an advertising compaign for the project website through Google adwords "
+"or Facebook."
+msgstr ""
+"Google adwords veya Facebook aracılığıyla proje web sitesi için bir reklam "
+"kampanyası yapın."
+
+#: public/templates/popups_content.html:166 templates/popups_content.html:166
+msgid "Buy Products (T-shirts, Cups, Hats) from Zazzle"
+msgstr "Zazzle'den ürün satın alın (Tişörtler, şapkalar, fincanlar)"
+
+#: public/templates/popups_content.html:167 templates/popups_content.html:167
+msgid "Donate by flattr:"
+msgstr "flattr aracılığı ile bağışta bulunun"
+
+#: public/templates/popups_content.html:180 templates/popups_content.html:180
+msgid "Contact us"
+msgstr "Bizimle iletişime geçin"
+
+#: public/templates/popups_content.html:184 templates/popups_content.html:184
+msgid "If you have a concrete bug report for Alfanous please go to"
+msgstr ""
+"Alfanous ile ilgili somut bir hata raporu bildiriminde bulunacaksanız şuraya "
+"geçiş yapın:"
+
+#: public/templates/popups_content.html:184 templates/popups_content.html:184
+msgid "Issues Tracker"
+msgstr "Yayın Tarayıcı"
+
+#: public/templates/popups_content.html:184 templates/popups_content.html:184
+msgid "submit your report and tag it \"bug\"."
+msgstr "raporunuzu iletin ve onu etiketleyin \"hata\"."
+
+#: public/templates/popups_content.html:185 templates/popups_content.html:185
+msgid ""
+"If you want to participate in actively developing Alfanous,by testing read"
+msgstr ""
+"Test ederek aktif olarak geliştirilmekte olan Alfanous'un bir parçası olmak "
+"isterseniz"
+
+#: public/templates/popups_content.html:185 templates/popups_content.html:185
+msgid "and by coding read "
+msgstr "ve coding read ile "
+
+#: public/templates/popups_content.html:186 templates/popups_content.html:186
+msgid "If you want to help in Alfanous somehow,  read"
+msgstr "Eğer Alfanous'a bir şekilde yardımcı olmak istiyorsanız, okuyun"
+
+#: public/templates/popups_content.html:187 templates/popups_content.html:187
+msgid ""
+"If you have a feature request, a proposition or a question for the project, "
+"you may use the mailing list."
+msgstr ""
+"Özel bir istek, bir öneri veya proje için bir sorunuz varsa, posta listesini "
+"kullanabilirsiniz."
+
+#: public/templates/popups_content.html:188 templates/popups_content.html:188
+msgid ""
+"If you want to criticize the project, we'll be thankful if you resume your "
+"criticism and send it to the mailing list."
+msgstr ""
+"Projeyi eleştirmek isterseniz, değerlendirmenizi  gözden geçirerek e-posta "
+"listemize gönderdiğinizde müteşekkir olacağız."
+
+#: public/templates/popups_content.html:190 templates/popups_content.html:190
+msgid "For anything else, you can contact us via the mailing list which is:"
+msgstr ""
+"Diğer konularda e-posta listemiz aracılığı ile bizimle irtibata "
+"geçebilirsiniz:"
+
+#: public/templates/popups_content.html:203 templates/popups_content.html:203
+msgid "How to contribute"
+msgstr "Nasıl yardımda bulunulur"
+
+#: public/templates/popups_content.html:211 templates/popups_content.html:211
+msgid "Spreading the word"
+msgstr "Duyurun"
+
+#: public/templates/popups_content.html:217 templates/popups_content.html:217
+msgid "Following and sharing our social network pages:"
+msgstr "Bizim sosyal medya sayfalarımızı takip edin ve paylaşın:"
+
+#: public/templates/popups_content.html:219 templates/popups_content.html:219
+msgid "Sharing a link to"
+msgstr "Bir link paylaşın:"
+
+#: public/templates/popups_content.html:219 templates/popups_content.html:219
+msgid "our website"
+msgstr "internet sitemiz"
+
+#: public/templates/popups_content.html:219 templates/popups_content.html:219
+msgid "via your accounts in Social networks."
+msgstr "hesaplarınız aracılığı ile Sosyal medyada."
+
+#: public/templates/popups_content.html:220 templates/popups_content.html:220
+msgid ""
+"Pointing  skilled developers and Quranic researchers to the importance of "
+"the project."
+msgstr ""
+"Uzman geliştiricilere ve Kur'an -ı Kerim araştırmacılarına projenin önemini "
+"vurgulamak."
+
+#: public/templates/popups_content.html:221 templates/popups_content.html:221
+msgid "Writing articles about the project in blogs, newspapers."
+msgstr "Proje hakkında yazılan blog yazıları, gazete haberleri."
+
+#: public/templates/popups_content.html:222 templates/popups_content.html:222
+msgid "Showing a banner on your Blog/Website."
+msgstr "Blog veya sitenizde bir afiş gösterin"
+
+#: public/templates/popups_content.html:223 templates/popups_content.html:223
+msgid ""
+"creating an ad for alfanous links using Google adwords or facebook if you're "
+"familiar with that (btw,it needs money)"
+msgstr ""
+"Google Adwords veya Facebook'ta Alfanous  için reklam linki oluşturun, eğer "
+"bunda samimi iseniz (sırası gelmişken, ona para gereklidir)"
+
+#: public/templates/popups_content.html:232 templates/popups_content.html:232
+msgid "Or by"
+msgstr "Veya ile"
+
+#: public/templates/popups_content.html:237 templates/popups_content.html:237
+msgid ""
+"Managing and Animating our social network pages with news and daily posts "
+"[Arabic, English]:"
+msgstr ""
+"Haber ve günlük yayınlarla sosyal ağ sayfalarımızı yönetme ve animasyon "
+"yapma [Arapça, İngilizce]:"
+
+#: public/templates/popups_content.html:239 templates/popups_content.html:239
+msgid "Translating project interfaces to your language , see:"
+msgstr "Kendi dilinize çevirilen proje arayüzleri, göz atın:"
+
+#: public/templates/popups_content.html:240 templates/popups_content.html:240
+msgid "Testing the modules and releases, Reporting bugs , see:"
+msgstr "Sürümleri ve modülleri test etmek, hataları raporlamak, göz atın:"
+
+#: public/templates/popups_content.html:241 templates/popups_content.html:241
+msgid "Fixing"
+msgstr "Düzeltme"
+
+#: public/templates/popups_content.html:241 templates/popups_content.html:241
+msgid "bugs"
+msgstr "Hatalar"
+
+#: public/templates/popups_content.html:241 templates/popups_content.html:241
+msgid "Coding"
+msgstr "Kodlama"
+
+#: public/templates/popups_content.html:241 templates/popups_content.html:241
+msgid "new features"
+msgstr "yeni özellikler"
+
+#: public/templates/popups_content.html:241 templates/popups_content.html:241
+msgid "or Developing"
+msgstr "veya Geliştirme"
+
+#: public/templates/popups_content.html:241 templates/popups_content.html:241
+msgid "new interfaces"
+msgstr "yeni arayüzler"
+
+#: public/templates/popups_content.html:241 templates/popups_content.html:241
+msgid "See:"
+msgstr "Göz atın:"
+
+#: public/templates/popups_content.html:242 templates/popups_content.html:242
+msgid "Designing  Icons, Logos , Banners."
+msgstr "Tasarlanmış Simgeler, Logolar, Afişler"
+
+#: public/templates/popups_content.html:243 templates/popups_content.html:243
+msgid ""
+"Packaging the project for different systems: Windows, Linux distributions, "
+"MacOs."
+msgstr ""
+"Projeyi farklı sistemler için paketleyin: Windows, Linux dağıtımları, MacOs."
+
+#: public/templates/popups_content.html:244 templates/popups_content.html:244
+msgid ""
+"Donating/Supporting to the project: <em>We're stuck looking for possible "
+"ways for donations/Funding. Any help is appreciated</em>"
+msgstr ""
+"Projeye Bağış / Destek: <em> Bağışlar / Finansman adına olası yollar bulmak "
+"için sıkışmış durumdayız. Herhangi bir yardım memnuniyetle karşılanacaktır. "
+"</em>"
+
+#: public/templates/popups_content.html:266 templates/popups_content.html:266
+msgid "Windows"
+msgstr "Windows"
+
+#: public/templates/popups_content.html:269 templates/popups_content.html:269
+msgid "English desktop release 0.4"
+msgstr "İngilizce masaüstü sürümü 0.4"
+
+#: public/templates/popups_content.html:272 templates/popups_content.html:272
+msgid "Arabic desktop release 0.3"
+msgstr "Arapça masaüstü sürümü 0.3"
+
+#: public/templates/popups_content.html:276 templates/popups_content.html:276
+msgid "Linux"
+msgstr "Linux"
+
+#: public/templates/popups_content.html:279 templates/popups_content.html:279
+msgid "More details"
+msgstr "Daha fazla ayrıntı"
+
+#: public/templates/popups_content.html:282 templates/popups_content.html:282
+msgid "MacOS"
+msgstr "MacOS"
+
+#: public/templates/popups_content.html:285
+#: public/templates/popups_content.html:291
+#: public/templates/popups_content.html:294
+#: public/templates/popups_content.html:297 templates/popups_content.html:285
+#: templates/popups_content.html.py:294 templates/popups_content.html:297
+msgid "Not yet"
+msgstr "Henüz değil"
+
+#: public/templates/popups_content.html:288 templates/popups_content.html:288
+msgid "Smartphones"
+msgstr "Akıllı telefonlar"
+
+#: public/templates/popups_content.html:291 templates/popups_content.html:291
+msgid "Android"
+msgstr "Android"
+
+#: public/templates/popups_content.html:294 templates/popups_content.html:294
+msgid "iPhone"
+msgstr "iPhone"
+
+#: public/templates/popups_content.html:297 templates/popups_content.html:297
+msgid "Windows Phone"
+msgstr "Windows Phone"
+
+#: public/templates/popups_content.html:310 templates/popups_content.html:310
+msgid "How to translate"
+msgstr "Nasıl çeviri yapılır"
+
+#: public/templates/popups_content.html:315 templates/popups_content.html:315
+msgid "Check the existance of your language in the available languages list."
+msgstr ""
+"Dilinizin mevcut dil paketleri arasında olup olmadığını kontrol edin."
+
+#: public/templates/popups_content.html:316 templates/popups_content.html:316
+msgid "Download the file:"
+msgstr "Dosyayı indirin:"
+
+#: public/templates/popups_content.html:317 templates/popups_content.html:317
+msgid "Use Poedit or Virtaal to edit it."
+msgstr "Düzenlemek için Poedit veya Virtaal kullanın."
+
+#: public/templates/popups_content.html:318 templates/popups_content.html:318
+msgid "Send the updated file into our mailing list:"
+msgstr "Güncellenmiş dosyayı e-posta listemize gönderin:"
+
+#: public/templates/popups_content.html:320 templates/popups_content.html:320
+msgid "Note:"
+msgstr "Not:"
+
+#: public/templates/popups_content.html:320 templates/popups_content.html:320
+msgid "You can use launchpad to translate without installing any tool"
+msgstr ""
+"Herhangi bir araç kurmaya gerek kalmaksızın tercüme için launchpad'i "
+"kullanabilirsiniz."
+
+#: public/templates/popups_content.html:320 templates/popups_content.html:320
+msgid "here!"
+msgstr "burada!"
+
+#: public/templates/translation_results.html:18
+#: templates/translation_results.html:18
+msgid "seconds"
+msgstr "saniye"
+
+#: public/templates/translation_results.html:54
+#: public/templates/translation_results.html:84
+#: public/templates/translation_results.html:85
+#: public/templates/translation_results.html:87
+#: public/templates/translation_results.html:90
+#: public/templates/translation_results.html:124
+#: templates/translation_results.html:51 templates/translation_results.html:84
+#: wui/templatetags/share.py:29
+msgid "Interpretation of"
+msgstr "Şunun açıklamasıdır:"
+
+#: public/templates/translation_results.html:62
+#: templates/translation_results.html:59
+msgid "in"
+msgstr "içinde"
+
+#: public/templates/translation_results.html:63
+#: templates/translation_results.html:60
+msgid "by"
+msgstr "ile"
+
+#: public/templates/translation_results.html:164
+#: templates/translation_results.html:126
+msgid "About translation"
+msgstr "Çeviri hakkında"
+
+#: public/templates/translation_results.html:171
+#: templates/translation_results.html:129
+msgid "Aya"
+msgstr "Ayet"
+
+#: public/templates/translation_results.html:178
+#: templates/translation_results.html:134
+msgid "Author"
+msgstr "Yazar"
+
+#: public/templates/translation_results.html:184
+#: templates/translation_results.html:138
+msgid "Language"
+msgstr "Dil"
+
+#: public/templates/translation_search.html:7
+#: templates/translation_search.html:8
+msgid "List of indexed Quran translations"
+msgstr "İndekslenmiş Kur'an çevirilerinin listesi"
+
+#: public/templates/translation_search.html:7
+#: templates/translation_search.html:8
+msgid "Translation source:"
+msgstr "Çeviri kaynağı:"
+
+#: public/templates/translation_search.html:7
+#: templates/translation_search.html:8
+msgid "Show/Hide!"
+msgstr "Göster/Sakla"
+
+#: public/templates/translation_search.html:13
+#: templates/translation_search.html:14
+msgid "Sorry, there is no indexed translations!"
+msgstr "Üzgünüz, indekslenmiş çeviriler yok!"
+
+#: public/templates/translation_search.html:25
+#: templates/translation_search.html:26
+msgid "Show ayah arabic text"
+msgstr "Ayetleri arapça göster"
+
+#: public/templates/word_results.html:65 templates/word_results.html:67
+msgid "Word"
+msgstr "Kelime"
+
+#: public/templates/word_results.html:92
+msgid "Google-Plus"
+msgstr "Google-Plus"
+
+#: public/templates/word_results.html:173 templates/word_results.html:151
+msgid "info"
+msgstr "bilgi"
+
+#: templates/base.html:245
+msgid "Dev API"
+msgstr "Uygulama Geliştirme"
+
+#: templates/base.html:259
+msgid "Code"
+msgstr "Kod"
+
+#: templates/base.html:301
+msgid "Advanced Search"
+msgstr "Gelişmiş Arama"
+
+#: templates/base.html:307
+msgid "Predefined Queries"
+msgstr "Öntanımlı Sorgular"
+
+#: templates/base.html:309
+msgid "Options"
+msgstr "Seçenekler"
+
+#: templates/base.html:312
+msgid "Advanced Query"
+msgstr "Gelişmiş Sorgu"
+
+#: templates/base.html:315
+msgid "Word Properties"
+msgstr "Kelime \tÖzellikleri"
+
+#: templates/base.html:317
+msgid "Thematic Search"
+msgstr "Tematik Arama"
+
+#: templates/base.html:318
+msgid "Structural Search"
+msgstr "Yapısal Arama"
+
+#: templates/base.html:319
+msgid "Statistical Search"
+msgstr "İstatiksel Arama"
+
+#: templates/base.html:320
+msgid "Miscellaneous"
+msgstr "Çeşitli"
+
+#: wui/templates/wui/advanced_search/advanced_query.html:2
+msgid "Text"
+msgstr "Yazı"
+
+#: wui/templates/wui/advanced_search/advanced_query.html:3
+msgid "query"
+msgstr "sorgu"
+
+#: wui/templates/wui/advanced_search/advanced_query.html:13
+msgid "Part of other words"
+msgstr "Diğer kelimelerin parçası"
+
+#: wui/templates/wui/advanced_search/advanced_query.html:17
+msgid "All these words"
+msgstr "Bütün bu kelimeler"
+
+#: wui/templates/wui/advanced_search/advanced_query.html:21
+msgid "At least one of these words"
+msgstr "Bu kelimelerden en az biri"
+
+#: wui/templates/wui/advanced_search/advanced_query.html:25
+msgid "Except these words"
+msgstr "Bu kelimeler hariç"
+
+#: wui/templates/wui/advanced_search/advanced_query.html:29
+msgid "Synonyms"
+msgstr "Eşanlamlılar"
+
+#: wui/templates/wui/advanced_search/advanced_query.html:37
+msgid "Light Stemming"
+msgstr "Hafif Arındırma"
+
+#: wui/templates/wui/advanced_search/advanced_query.html:41
+msgid "Deep Stemming"
+msgstr "Derin Arındırma"
+
+#: wui/templates/wui/advanced_search/advanced_query.html:46
+#: wui/templates/wui/advanced_search/linguistic.html:16
+#: wui/templates/wui/advanced_search/statistical.html:32
+#: wui/templates/wui/advanced_search/structural.html:27
+#: wui/templates/wui/advanced_search/thematic.html:32
+msgid "Relation"
+msgstr "İlişki"
+
+#: wui/templates/wui/advanced_search/advanced_query.html:48
+#: wui/templates/wui/advanced_search/linguistic.html:18
+#: wui/templates/wui/advanced_search/statistical.html:34
+#: wui/templates/wui/advanced_search/structural.html:29
+#: wui/templates/wui/advanced_search/thematic.html:34
+msgid "Replacement"
+msgstr "Yer Değiştirme"
+
+#: wui/templates/wui/advanced_search/advanced_query.html:49
+#: wui/templates/wui/advanced_search/linguistic.html:19
+#: wui/templates/wui/advanced_search/statistical.html:35
+#: wui/templates/wui/advanced_search/structural.html:30
+#: wui/templates/wui/advanced_search/thematic.html:35
+msgid "Addition"
+msgstr "Ekleme"
+
+#: wui/templates/wui/advanced_search/advanced_query.html:50
+#: wui/templates/wui/advanced_search/linguistic.html:20
+#: wui/templates/wui/advanced_search/statistical.html:36
+#: wui/templates/wui/advanced_search/structural.html:31
+#: wui/templates/wui/advanced_search/thematic.html:36
+msgid "Conjunction (AND)"
+msgstr "Bağlaç (AND)"
+
+#: wui/templates/wui/advanced_search/advanced_query.html:51
+#: wui/templates/wui/advanced_search/linguistic.html:21
+#: wui/templates/wui/advanced_search/statistical.html:37
+#: wui/templates/wui/advanced_search/structural.html:32
+#: wui/templates/wui/advanced_search/thematic.html:37
+msgid "Disjunction (OR)"
+msgstr "Ayırma (OR)"
+
+#: wui/templates/wui/advanced_search/advanced_query.html:52
+#: wui/templates/wui/advanced_search/linguistic.html:22
+#: wui/templates/wui/advanced_search/statistical.html:38
+#: wui/templates/wui/advanced_search/structural.html:33
+#: wui/templates/wui/advanced_search/thematic.html:38
+msgid "Exception (ANDNOT)"
+msgstr "İstisna (ANDNOT)"
+
+#: wui/templates/wui/advanced_search/advanced_query.html:57
+#: wui/templates/wui/advanced_search/linguistic.html:27
+#: wui/templates/wui/advanced_search/statistical.html:43
+#: wui/templates/wui/advanced_search/structural.html:38
+#: wui/templates/wui/advanced_search/thematic.html:43
+msgid "Add to search bar"
+msgstr "Arama çubuğuna ekle"
+
+#: wui/templates/wui/advanced_search/linguistic.html:2
+msgid "Root"
+msgstr "Kök"
+
+#: wui/templates/wui/advanced_search/linguistic.html:3
+msgid "arabic root eg: قول"
+msgstr "arapça kökü örn: قول"
+
+#: wui/templates/wui/advanced_search/linguistic.html:6
+msgid "Type"
+msgstr "Çeşit"
+
+#: wui/templates/wui/advanced_search/linguistic.html:8
+msgid "Verb"
+msgstr "Fiil"
+
+#: wui/templates/wui/advanced_search/linguistic.html:9
+msgid "Noun"
+msgstr "İsim"
+
+#: wui/templates/wui/advanced_search/linguistic.html:10
+msgid "Particle"
+msgstr "Edat"
+
+#: wui/templates/wui/advanced_search/predefined_queries.html:17
+msgid "Ayah:"
+msgstr "Ayet:"
+
+#: wui/templates/wui/advanced_search/predefined_queries.html:21
+msgid "Surah:"
+msgstr "Sure:"
+
+#: wui/templates/wui/advanced_search/predefined_queries.html:40
+#: wui/templates/wui/advanced_search/predefined_queries.html:53
+#: wui/templates/wui/advanced_search/predefined_queries.html:62
+#: wui/templates/wui/advanced_search/predefined_queries.html:71
+#: wui/templates/wui/advanced_search/predefined_queries.html:80
+msgid "Go!"
+msgstr "Git!"
+
+#: wui/templates/wui/advanced_search/predefined_queries.html:46
+msgid "All the derivations of the Arabic root:"
+msgstr "Arapça kökün bütün kökenleri:"
+
+#: wui/templates/wui/advanced_search/predefined_queries.html:50
+msgid "an arabic root like قول ملك سمو"
+msgstr "şول ملك سمو gibi bir arapça kök"
+
+#: wui/templates/wui/advanced_search/predefined_queries.html:59
+msgid "The longest words in Quran?"
+msgstr "Kur'an'daki en uzun kelimeler"
+
+#: wui/templates/wui/advanced_search/predefined_queries.html:68
+msgid "The shortest words in Quran?"
+msgstr "Kur'an'daki en kısa kelimeler"
+
+#: wui/templates/wui/advanced_search/predefined_queries.html:77
+msgid "All sajadate in Quran?"
+msgstr "Tüm secde ayetleri"
+
+#: wui/templates/wui/advanced_search/statistical.html:2
+msgid "Number of"
+msgstr "Numarası"
+
+#: wui/templates/wui/advanced_search/statistical.html:6
+msgid "devine names"
+msgstr "mübarek isimler"
+
+#: wui/templates/wui/advanced_search/statistical.html:8
+msgid "ruku's"
+msgstr "rükular"
+
+#: wui/templates/wui/advanced_search/statistical.html:13
+msgid "In"
+msgstr "içinde"
+
+#: wui/templates/wui/advanced_search/statistical.html:15
+msgid "ayah"
+msgstr "ayet"
+
+#: wui/templates/wui/advanced_search/statistical.html:16
+msgid "surah"
+msgstr "sure"
+
+#: wui/templates/wui/advanced_search/statistical.html:21
+#: wui/templates/wui/advanced_search/structural.html:16
+msgid "From"
+msgstr "İlk seçim"
+
+#: wui/templates/wui/advanced_search/statistical.html:27
+#: wui/templates/wui/advanced_search/structural.html:22
+msgid "To"
+msgstr "Son seçim"
+
+#: wui/templates/wui/advanced_search/structural.html:2
+msgid "Search in"
+msgstr "İçinde Ara"
+
+#: wui/templates/wui/advanced_search/structural.html:5
+msgid "Ayahs (Global ID)"
+msgstr "Ayetler (Global Sıra)"
+
+#: wui/templates/wui/advanced_search/structural.html:6
+msgid "Surahs"
+msgstr "Sureler"
+
+#: wui/templates/wui/advanced_search/structural.html:7
+msgid "Pages"
+msgstr "Sayfalar"
+
+#: wui/templates/wui/advanced_search/structural.html:8
+msgid "Hizbs"
+msgstr "Kısımlar"
+
+#: wui/templates/wui/advanced_search/structural.html:9
+msgid "Juz's"
+msgstr "Cüzler"
+
+#: wui/templates/wui/advanced_search/structural.html:10
+msgid "Ruku's"
+msgstr "Rükular"
+
+#: wui/templates/wui/advanced_search/structural.html:11
+msgid "Manzils"
+msgstr "Menziller"
+
+#: wui/templates/wui/advanced_search/thematic.html:21
+msgid "SubTopic"
+msgstr "Altkonu"
+
+#: wui/templatetags/meta.py:40
+#, python-format
+msgid ""
+"\"Alfanous search results searching in %(unit)s looking for the query "
+"%(query)s, the page %(page)s, the view %(view)s, the script "
+"%(script)s%(vocalized)s, and the translation %(translation)s. The fuzzy "
+"search is %(fuzzy)s."
+msgstr ""
+"\"Alfanous arama sonuçlarını içlerinde taradığı  %(unit)s  :  %(query)s, "
+"sayfa %(page)s, görünüm %(view)s, mushaf %(script)s%(vocalized)s, ve çeviri "
+"%(translation)s. Karışık arama %(fuzzy)s.."
+
+#: wui/templatetags/meta.py:61
+msgid ""
+"Alfanous is a functional, dynamic, comprehensive Qur'an search engine that "
+"has been effectively designed to carry out simple or advanced Quranic "
+"searches."
+msgstr ""
+"Alfanous   basit veya gelişmiş Kur'an-ı Kerim aramalarını etkili biçimde "
+"düzenleyen kapsamlı, fonksiyonel ve dinamik bir Kur'an-ı Kerim arama "
+"motorudur."

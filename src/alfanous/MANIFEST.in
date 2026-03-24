@@ -1,0 +1,7 @@
+include *.py *.txt
+exclude *.pyc
+include configs/*
+include indexes/main/*
+include indexes/extend/*
+include indexes/word/*
+include resources/*

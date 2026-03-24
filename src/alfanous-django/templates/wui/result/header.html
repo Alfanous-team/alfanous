@@ -1,0 +1,35 @@
+{% load query %}
+
+<span class="muted">
+  {% with result_content.identifier.gid|stringformat:"s" as gid %}
+  {% with bidi.fields.gid|add:':'|add:gid as new_query %}
+  <a class="muted" id="r{{ result_id }}" href='#r{{ result_id }}'>
+    <b>#{{ result_id }}</b>
+  </a>
+  {% endwith %}
+  {% endwith %}
+ &nbsp;
+
+    <h3>
+  <a class="muted" href='{% url 'browse_aya' result_content.identifier.sura_name result_content.identifier.aya_id|stringformat:"i" %}'>
+    <span >
+      <small>
+        {% if bidi.direction == "rtl" %}
+          {{ result_content.identifier.sura_arabic_name }}
+        {% else %}
+          {{ result_content.identifier.sura_name }}
+        {% endif %}
+        {{ result_content.aya.id }}
+      </small>
+    </span>
+  </a>
+  </h3>
+</span>
+
+
+
+<div class="pull-{{ bidi.align_inverse }}">
+  {% url 'results_i18n' current.unit as share_path %}
+  {% aya_query result_content as share_params %}
+  {% include 'wui/result/header_buttons.html' %}
+</div>

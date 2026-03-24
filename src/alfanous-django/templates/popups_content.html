@@ -1,0 +1,204 @@
+{% load query %}
+
+<!-- F.A.Q. -->
+<div id="faqpanel" class="modal hide fade" tabindex="-1" role="dialog" aria-hidden="true" style="text-align: {{ bidi.align }};  direction: {{ bidi.direction}};">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h3 id="myModalLabel_faq"><i class="icon-question-sign"></i> {{ _("F.A.Q.") }}</h3>
+    </div>
+    <div class="modal-body">
+        <p>{{ _("See") }} <a href="https://github.com/Alfanous-team/alfanous/blob/master/FAQ.rst">{{ _("this link") }}</a>.</p>
+    </div>
+    <div class="modal-footer">
+        <button class="btn" data-dismiss="modal" aria-hidden="true">{{ _(" Close ") }}</button>
+    </div>
+</div>
+
+<!-- Help -->
+<div id="help" class="modal hide fade" tabindex="-1" role="dialog" aria-hidden="true" style="text-align: {{ bidi.align }};  direction: {{ bidi.direction}};">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h3 id="myModalLabel_help"><i class="icon-exclamation-sign"></i> {{ _("Help") }}</h3>
+    </div>
+    <div class="modal-body">
+        <div id="accordion_help" class="accodion">
+            <div class="accordion-group">
+                <div class="accordion-heading">
+                    <a class="accordion-toggle icon-chevron-right" href="#collapseOne_help" data-parent="#accodion_help" data-toggle="collapse"> {{ _("Searching in Quran Ayahs") }} </a>
+                </div>
+                <div id="collapseOne_help" class="accodion-body collapse">
+                    <div class="accordion-inner">
+                        <table class="table table-striped table-bordered" style="direction:{{ bidi.direction }};">
+                             <tbody>
+                                <tr>
+                                    <th >{{ _("Exact search") }} </th>
+                                    <td  ><a  href='/{{ LANGUAGE_CODE }}/?{% custom_query 'رب ' 1 False %}'> رب</a></td>
+                                    <td  ><a  href='/{{ LANGUAGE_CODE }}/?{% custom_query 'فأسقيناكموه' 1 False %}'> فأسقيناكموه </a></td>
+                                </tr>
+                                <tr>
+                                    <th >{{ _("Phrase search") }}  </th>
+                                    <td><a href='/{{ LANGUAGE_CODE }}/?{% custom_query '"رب العالمين"' 1 False %}'>"رب العالمين"</a></td>
+                                    <td><a href='/{{ LANGUAGE_CODE }}/?{% custom_query '"رسول الله"' 1 False %}'>"رسول الله"</a></td>
+                                </tr>
+                                <tr>
+                                    <th >{{ _("Logical relations") }}</th>
+                                    <td ><a href='/{{ LANGUAGE_CODE }}/?{% custom_query '(الصلاة - الزكاة) + سورة:البقرة' 1 False %}'>(الصلاة - الزكاة) + سورة:البقرة</a></td>
+                                    <td ><a href='/{{ LANGUAGE_CODE }}/?{% custom_query ' سميع | بصير' 1 False %}'> سميع | بصير</a></td>
+                                </tr>
+                                <tr>
+                                    <th >{{ _("Wildcards") }}</th>
+                                    <td><a href='/{{ LANGUAGE_CODE }}/?{% custom_query '*نبي*' 1 False %}'>*نبي*</a></td>
+                                    <td><a href='/{{ LANGUAGE_CODE }}/?{% custom_query 'نعم؟' 1 False %}'>نعم؟</a></td>
+                                </tr>
+                                <tr>
+                                    <th >{{ _("Fields") }}</th>
+                                    <td ><a href='/{{ LANGUAGE_CODE }}/?{% custom_query 'سورة:يس' 1 False %}'>سورة:يس</a></td>
+                                    <td ><a href='/{{ LANGUAGE_CODE }}/?{% custom_query 'سجدة:نعم' 1 False %}'>سجدة:نعم</a></td>
+                                </tr>
+                                <tr>
+                                    <th >{{ _("Intervals") }} </th>
+                                    <td><a href='/{{ LANGUAGE_CODE }}/?{% custom_query '  رقم_السورة:[1 الى 5] + الله' 1 False %}'>  رقم_السورة:[1 الى 5] + الله</a></td>
+                                    <td> </td>
+                                </tr>
+                                <tr>
+                                    <th >{{ _("Partial vocalization") }} </th>
+                                    <td ><a href="/{{ LANGUAGE_CODE }}/?{% custom_query "آية_:'مَن'" 1 False %}">آية_:'مَن'</a></td>
+                                    <td ><a href="/{{ LANGUAGE_CODE }}/?{% custom_query "آية_:'المَلكُ'" 1 False %}">آية_:'المَلكُ'</a></td>
+                                </tr>
+                                <tr>
+                                    <th >{{ _("Word properties") }}</th>
+                                    <td><a href='/{{ LANGUAGE_CODE }}/?{% custom_query '{قول،اسم}' 1 False %}'>{قول،اسم}</a></td>
+                                    <td><a href='/{{ LANGUAGE_CODE }}/?{% custom_query '{ملك،فعل}' 1 False %}'>{ملك،فعل}</a></td>
+                                </tr>
+                                <tr>
+                                    <th>{{ _("Derivations") }}</th>
+                                    <td><a href='/{{ LANGUAGE_CODE }}/?{% custom_query '>>ملك' 1 False %}'>&gt;&gt;ملك</a></td>
+                                    <td ><a href='/{{ LANGUAGE_CODE }}/?{% custom_query '>ملك' 1 False %}'> &gt;ملك</a></td>
+                                </tr>
+                                 <tr>
+                                    <th>{{ _("Buckwalter Transliteration") }}</th>
+                                    <td><a href='/{{ LANGUAGE_CODE }}/?{% custom_query 'qawol' 1 False %}'>qawol</a></td>
+                                    <td ><a href='/{{ LANGUAGE_CODE }}/?{% custom_query 'Allah' 1 False %}'>Allah</a></td>
+                                </tr>
+
+                             </tbody>
+                          </table>
+                    </div>
+                </div>
+             </div>
+            <div class="accordion-group">
+                <div class="accordion-heading">
+                    <a class="accordion-toggle icon-chevron-right" href="#collapseTwo_help" data-parent="#accodion_help" data-toggle="collapse"> {{ _("Searching in Quran Translations") }} </a>
+                </div>
+                <div id="collapseTwo_help" class="accodion-body collapse">
+                    <div class="accordion-inner">
+                         <table class="table table-striped table-bordered" style="direction:{{ bidi.direction }};">
+                             <tbody>
+                                <tr>
+					                <th >{{ _("Exact search") }} </th>
+					                <td  ><a  href='{% url 'results_i18n' "translation" %}?{% custom_query 'god' 1 False %}'> god </a></td>
+					                <td  ><a  href='{% url 'results_i18n' "translation" %}?{% custom_query 'time' 1 False %}'> time </a></td>
+				                </tr>
+				                <tr>
+					                <th >{{ _("Phrase search") }}  </th>
+					                <td><a href='{% url 'results_i18n' "translation" %}?{% custom_query '"the Lord Of The Creation"' 1 False %}'>"the Lord Of The Creation"</a></td>
+					                <td><a href='{% url 'results_i18n' "translation" %}?{% custom_query '"seven heavens"' 1 False %}'>"seven heavens"</a></td>
+				                </tr>
+				                <tr>
+					                <th >{{ _("Logical relations") }}</th>
+					                <td ><a href='{% url 'results_i18n' "translation" %}?{% custom_query 'prayer AND charity' 1 False %}'>prayer AND charity</a></td>
+				                    <td ><a href='{% url 'results_i18n' "translation" %}?{% custom_query 'prayer OR charity' 1 False %}'>prayer OR charity</a></td>
+				                </tr>
+				                <tr>
+					                <th >{{ _("Wildcards") }}</th>
+					                <td><a href='{% url 'results_i18n' "translation" %}?{% custom_query 'pray*' 1 False %}'>pray*</a></td>
+					                <td><a href='{% url 'results_i18n' "translation" %}?{% custom_query 'produc?' 1 False %}'>produc?</a></td>
+				                </tr>
+				                <tr>
+					                <th >{{ _("Fields") }}</th>
+					                <td ><a href='{% url 'results_i18n' "translation" %}?{% custom_query 'lang:en' 1 False %}'>lang:fr</a></td>
+				                    <td ><a href='{% url 'results_i18n' "translation" %}?{% custom_query 'author:Shakir' 1 False %}'>author:Shakir
+				                    </a></td>
+				                </tr>
+
+                             </tbody>
+                          </table>
+                    </div>
+                </div>
+             </div>
+        </div>
+
+       <!-- <p> {{ _("The website does not work well on Internet Explorer, we suggest to use another browser such as: ") }} <a href="https://www.mozilla.org/firefox/" target="_blank">{{ _("Firefox") }}</a>.</p> -->
+    </div>
+    <div class="modal-footer">
+        <button class="btn" data-dismiss="modal" aria-hidden="true">{{ _(" Close ") }}</button>
+    </div>
+</div>
+
+
+
+
+
+<!-- Download -->
+
+<div id="download" class="modal hide fade" tabindex="-1" role="dialog" aria-hidden="true" style="text-align: {{ bidi.align }};  direction: {{ bidi.direction}};">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h3 id="myModalLabel_download"><i class="icon-download-alt"></i> {{ _("Download") }}</h3>
+    </div>
+    <div class="modal-body">
+        <h4><i class="icon-windows"></i> {{ _("Windows") }}:</h4>
+        <ul>
+         <li>
+                <a class="name" title="Click to download alfanousDesktop-latest release" href="https://sourceforge.net/projects/alfanous/files/latest/download?source=directory">{{ _("Latest desktop release (Multi-languages)") }}</a>
+             </li>
+            <li>
+                <a class="name" title="Click to download alfanousDesktop-win0.4r20.exe" href="http://sourceforge.net/projects/alfanous/files/Interfaces/AlfanousDesktop/0.4.20/alfanousDesktop-win0.4r20.exe/download">{{ _("English desktop release 0.4") }}</a>
+             </li>
+            <li>
+                <a class="name" title="Click to download alfanousDesktop-windows-0.3ar.exe" href="http://sourceforge.net/projects/alfanous/files/Interfaces/AlfanousDesktop/0.3/alfanousDesktop-windows-0.3ar.exe/download">{{ _("Arabic desktop release 0.3") }} </a>
+            </li>
+        </ul>
+
+        <h4><i class="icon-linux"></i>  {{ _("Linux") }}:</h4>
+      	<ul>
+            <li>
+       				 <a class="name" title="more details" href="https://github.com/Alfanous-team/alfanous/blob/master/INSTALL.rst">{{ _("More details") }}</a>
+    		</li>
+    	</ul>
+    	<h4><i class="icon-mobile-phone"></i>  {{ _("Smartphones") }}:</h4>
+      	<ul>
+
+    		<li>
+    	    	{{ _("iPhone") }}: <a href="https://itunes.apple.com/us/app/alfanws-mhrk-bhth-qrany-mtqdm/id543646326?mt=8" target="_blank"> iPhoneIslam</a> 
+    	    </li>
+            <li>
+       			{{ _("Android") }}: /
+    		</li>
+    	</ul>
+    </div>
+    <div class="modal-footer">
+        <button class="btn" data-dismiss="modal" aria-hidden="true">{{ _(" Close ") }}</button>
+    </div>
+</div>
+
+<!-- Translate -->
+<div id="translatepanel" class="modal hide fade" tabindex="-1" role="dialog" aria-hidden="true" style="text-align: {{ bidi.align }};  direction: {{ bidi.direction}};">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h3 id="myModalLabel_translate"><i class="icon-globe"></i> {{ _("How to translate") }}</h3>
+    </div>
+    <div class="modal-body">
+    <!--
+        <ul class="list">
+        <li>{{ _("Check the existance of your language in the available languages list.") }}</li>
+        <li>{{ _("Download the file:") }} <a href="/static/django.po">django.po</a>.</li>
+        <li>{{ _("Use Poedit or Virtaal to edit it.") }}</li>
+        <li>{{ _("Send the updated file into our mailing list:") }} <a href="http://groups.google.com/group/alfanous">alfanous[at]googlegroups[dot]com</a> .</li>
+    </ul>
+    <strong>{{ _("Note:") }}</strong> --> {{ _("You can use launchpad to translate without installing any tool") }} <a href="https://translations.launchpad.net/alfanous">{{ _("here!") }}</a>
+    </div>
+    <div class="modal-footer">
+        <button class="btn" data-dismiss="modal" aria-hidden="true">{{ _(" Close ") }}</button>
+    </div>
+</div>

@@ -1,0 +1,28 @@
+											<span class="row-fluid">
+												<span class="span3">{{ _("Root") }}</span> 
+												<input id="advanced_search_linguitic_root" type="text" placeholder="{{ _('arabic root eg: قول') }}"  class="span9 input-medium ">
+											</span>
+											<span class="row-fluid">
+												<span class="span3"> {{ _("Type") }} </span> 
+												<select id="advanced_search_linguistic_type" class=" span9" >
+												  <option value="فعل">{{ _("Verb") }}</option>
+												  <option value="اسم">{{ _("Noun") }}</option>
+												  <option value="أداة">{{ _("Particle") }}</option>
+												</select>
+											</span>
+											<hr />
+											
+											<span class="row-fluid">
+												<span class="span3"> {{ _("Relation") }} </span> 
+												<select id="advanced_search_linguistic_relation" class=" span9" >
+												  <option value="replace">{{ _("Replacement") }}</option>
+												  <option value="add">{{ _("Addition") }}</option>
+												  <option value="and">{{ _("Conjunction (AND)") }}</option>
+												  <option value="or">{{ _("Disjunction (OR)") }}</option>
+												  <option value="andnot">{{ _("Exception (ANDNOT)") }}</option>
+												</select>
+											</span>
+											<button class="btn btn-primary btn-block" type="button" 
+											onclick="AddToSearchBar( prepare_word_properties($('#advanced_search_linguitic_root').val(), $('#advanced_search_linguistic_type').val() ), $('#advanced_search_linguistic_relation').val() );">
+												{{ _("Add to search bar") }}
+											</button>

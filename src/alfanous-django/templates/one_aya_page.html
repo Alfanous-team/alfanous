@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>{% if params.is404 %}
+      {{ _("Page not found!") }}
+      
+      {% elif params.isRandom %}
+      
+      {{ _("Random") }}
+      
+       {% else %}
+  سورة {{ search.ayas.1.identifier.sura_arabic_name }} ، الآية {{ search.ayas.1.identifier.aya_id }}
+
+
+    
+ {% endif %}
+ </title>
+ 
+ <meta charset="utf-8">
+
+  <meta name="description" content="{% if params.is404 %} 404 error {% elif params.isRandom %} {{ _('show a random verse of the quran') }}  {% else %}{{ search.ayas.1.aya.text }} {% endif %}">
+  <meta name="keywords" content="{{ search.ayas.1.identifier.sura_arabic_name }}, Quran, قرآن, sura, aya">
+  <meta name="author" content="Alfanous Team, ACH">
+  <!-- SHARE -->
+    <link rel="canonical"  href="/r?id={{ params.gid }}&amp;bg={{ params.bg }}">
+  <link rel="me"  href="https://twitter.com/alfanous" >
+  <!-- CSS -->
+
+
+  <link href="/static/shared/css/one_aya_page.css" rel="stylesheet">
+  <link href="/static/shared/css/style.css" rel="stylesheet">
+  <link id="skin_css" href="/static/ltr/css/skins/bootstrap_default.css" rel="stylesheet">
+  <link href="/static/ltr/css/bootstrap-responsive.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="/static/shared/css/font-awesome.min.css">
+
+    <style rel="stylesheet">
+    body
+{
+    /*background: #020202;*/
+    background-image:url(/static/shared/img/oneayapage/bg{{ params.bg }}.jpg);
+    background-position: center center;
+    background-repeat: no-repeat; 
+    background-attachment: fixed; 
+    background-size: cover; 
+    -moz-background-size: 100% 100%;     /* Gecko 1.9.2 (Firefox 3.6) */
+    -o-background-size: 100% 100%;        /* Opera 9.5 */
+    -webkit-background-size: 100% 100%;   /* Safari 3.0 */
+    background-size: 100% 100%;           /* Gecko 2.0 (Firefox 4.0) > CSS3 */ 
+    overflow:hidden
+}
+
+        .random_aya {
+                direction: rtl;
+    font-family: me_quran, Scheherazade, KacstBook, KacstQurn, ArabeyesQr, "KFGQPC Uthman Taha Naskh", Arial;
+    font-size: 13px;
+    word-spacing: 3px;
+    line-height: 200%;
+            display: block;
+    font-size: 1.5em;
+    margin-block-start: 0.83em;
+    margin-block-end: 0.83em;
+    margin-inline-start: 0px;
+    margin-inline-end: 0px;
+    font-weight: bold;
+        }
+    
+    
+    </style>
+</head>
+
+<body>
+    
+    <!-- BEGIN CONTENT -->
+     <div class="container">
+    
+    <div class="wrap_content row  text-center offset1 span12">
+        <br/>
+      <br/>
+
+      <h2 class="random_aya arabic-ayah-secondary"><span class="quran_decoration">[</span>{{ search.ayas.1.aya.text }}<span class="quran_decoration">]</span></h2>
+      
+      <h3><a href="/r?id={{ params.gid }}&amp;bg={{ params.bg }}">{{ search.ayas.1.identifier.sura_arabic_name }} {{ search.ayas.1.identifier.aya_id }}</a></h3>
+      
+      <br/>
+      <br/>
+      {% if is404 %}
+     <div class="alert alert-error" role="alert"> {{ _("Page not found!") }}</div>
+      {% endif %}
+      <br/>
+{#     {% if not params.simple %}#}
+{#            <ul  class="inline" style='min-width: 5px;'>#}
+{#            <li>#}
+{#              <a href="/r"  title="{{ _('Randomize') }}"><i class="icon-refresh"></i></a>#}
+{#            </li>#}
+{#            <li>#}
+{#              <a href="/r?id={{ params.gid }}&amp;bg={{ params.bg }}&amp;simple=1" title="{{ _('Hide social icons') }}"><i class="icon-eye-close "></i></a>#}
+{#            </li>#}
+{#            <li>#}
+{#                   <a href="/r?id={{ search.ayas.1.identifier.gid }}&amp;api=1" title="{{ _('API result') }}"><i class="icon-exchange  icon-large"></i></a>#}
+{#            </li>#}
+{#           |#}
+{#            <li>#}
+{#                <a href="https://twitter.com/intent/tweet?text={{ search.ayas.1.aya.text_no_highlight }} - {{ search.ayas.1.identifier.sura_arabic_name }} {{ search.ayas.1.identifier.aya_id }} &amp;url=http://www.alfanous.org/r?id={{ search.ayas.1.identifier.gid }}" target="_blank" title="{{ _('Share to Twitter') }}">#}
+{#                <i class="icon-twitter"></i>#}
+{#                </a>#}
+{#            </li>#}
+{#            <li>#}
+{#                <a href="https://www.facebook.com/sharer/sharer.php?u=http://www.alfanous.org/r?id={{ search.ayas.1.identifier.gid }}&amp;t='test'" target="_blank" title="{{ _('Share to Facebook') }}">#}
+{#                <i class="icon-facebook"></i>#}
+{#                </a>#}
+{#            </li>#}
+{#            <li>#}
+{#                <a href="https://plus.google.com/share?url=http://www.alfanous.org/r?id={{ search.ayas.1.identifier.gid }}" target="_blank">#}
+{#                <i class="icon-google-plus" title="{{ _('Share to Google+') }}"></i>#}
+{#                </a>#}
+{#            </li>#}
+{#            <li>#}
+{#                <a href="https://www.linkedin.com/shareArticle?mini=true&url=http://www.alfanous.org/r?id={{ search.ayas.1.identifier.gid }}&amp;title=سورة {{ search.ayas.1.identifier.sura_arabic_name }} ، الآية {{ search.ayas.1.identifier.aya_id }}&amp;summary=&amp;source=" target="_blank" title="{{ _('Share to Linkedin') }}">#}
+{#                <i class="icon-linkedin"></i>#}
+{##}
+{#                </a>#}
+{#            </li>#}
+{##}
+{#            </ul>#}
+{##}
+{#       <a href="/"> ALFANOUS.ORG </a>#}
+{##}
+{#       {% endif %}#}
+    </div>
+    <!-- END CONTENT -->
+    
+    <!-- Google analytics #Assem -->
+    <script type="text/javascript">
+        var _gaq = _gaq || [];
+        _gaq.push(['_setAccount', 'UA-9859501-4']);
+        _gaq.push(['_trackPageview']);
+
+        (function() {
+            var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+            ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+            var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+        })();
+    </script>
+    <!-- end -->
+
+
+</body></html>

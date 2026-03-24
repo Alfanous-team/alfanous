@@ -1,0 +1,15 @@
+[Desktop Entry]
+Encoding=UTF-8
+Name=Alfanous
+Name[ar]=الفانوس
+GenericName=Alfanous-Quranic Search Engine
+GenericName[ar]=الفانوس - محرك بحث قرآني
+Categories=Education;X-Islamic-Software;X-Quran;Qt;X-Red-Hat-Base;X-SuSE-Core-Office;X-MandrivaLinux-MoreApplications-Databases;
+TryExec=alfanous-desktop
+Exec=alfanous-desktop
+Icon=AlFanous
+StartupNotify=true
+Terminal=false
+Type=Application
+X-KDE-SubstituteUID=false
+Keywords=quran;search;deen;islam;religion;

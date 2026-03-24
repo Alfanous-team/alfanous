@@ -1,0 +1,15 @@
+{# @result_content #}
+{# @share_path #}
+{# @share_params #}
+
+{% load share %}
+
+
+    <a class="btn btn-primary" href="{% twitter_share result_content share_path share_params %}" target="_blank">
+      <span class='icon-twitter'></span>
+    </a>
+   <a class="btn btn-primary" href="{% facebook_share result_content share_path share_params %}" target="_blank">
+
+      <span class='icon-facebook'></span>
+    </a>
+

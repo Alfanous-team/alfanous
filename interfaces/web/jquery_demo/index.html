@@ -1,0 +1,191 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+
+	<title>Alfanous JSON Search Form with jQuery v3 | Alfanous</title>
+
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta http-equiv="content-language" content="en ar" />
+	<meta name="robots" content="index, follow" />
+
+	<meta name="description" content="A Simple jQuery/JavaScript Demo example for Alfanous JSON interface." />
+	<meta name="keywords" content="alfanous, quran, json, ajax, jquery, javascript, tips, tutorial, demo, search" />
+	<meta name="copyright" content="&copy; CC Alfanous.org Project" />
+	<meta name="author" content="Abdellah Chelli, Sneetsher Crispy, Abdullah Shally, عبدالله شلي"/>
+
+	<link rel="shortcut icon" href="img/icon.gif" type="image/gif" />
+	<link type="text/css" href="css/smoothness/jquery-ui-1.8.16.custom.css" rel="stylesheet" />
+	<link type="text/css" href="css/screen.css" rel="stylesheet"/>
+	<!--<link type="text/css" href="css/print.css" rel="stylesheet" media="print"/>-->
+	<!--<link type="text/css" href="css/mobile.css" rel="stylesheet" media="mobile"/>-->
+
+	<script type="text/javascript" src="js/jquery-1.6.2.min.js"></script>
+	<!--<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>-->
+	<!--<script type="text/javascript" src="js/jquery-ui-1.8.16.custom.min.js"></script>-->
+	<!--<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.14/jquery-ui.min.js"></script>-->
+	<script type="text/javascript" src="js/jquery.corner.js"></script>
+
+	<script>
+		$(document).ready(function(){
+
+
+			$("#search_box").corner("3px");
+			$("#submit").corner("3px");
+
+			$('#form').submit(function(){
+				param = {action:"search", query: $("#search_box").val(), page: 1, highlight: "css"};
+				get_results(param);
+				return false;
+			});
+
+
+			function get_results (param) {
+				$.ajax({
+					url: "http://www.alfanous.org/jos2",
+					async: false,
+					type: "GET",
+					dataType: "json",
+					timeout: 10000,
+					crossDomain: true,
+					data: param,
+					success: function(json){
+						show_results (json);
+					},
+					error: function(jq_xhr, text_status, error_thrown){
+						$("#search_result").html("<div id='error'><p>"+ error_thrown+"</p></div>");
+						return false;
+					}
+					});
+			};
+
+
+			function show_results (json) {
+				var results = "";
+				var results_pages = "";
+
+				var nb_pages = Math.floor((json.search.interval.total- 1) / 10)+ 1;
+				var page = Math.floor((json.search.interval.start- 1) / 10)+ 1;
+
+				$("#search_result").html("");
+
+				// Note
+				results += "<div id='note'>\nQuery processing took " + json.search.runtime + " sec.";
+					results += " Page "+ page+ "/"+ nb_pages+ ".\n";
+					results += "<p>This is a simple demo for JSON interface of Alfanous.org project (<a href='http://www.alfanous.org/jos2'>http://www.alfanous.org/jos2</a>) authored first time by <a href='http://www.sneetsher.org/abdellah/'>Abdellah Chelli</a> </p>\n";
+					results += "</div>\n";
+                // Pages control
+                results_pages += "<div class='pages'>\nPages:";
+                for( i = 1; i <= nb_pages; i++) {
+                    if (i == page)
+                    {
+                        results_pages += " "+ i;
+                    }
+                    else
+                    {
+                        results_pages += " <a href=''>"+ i+ "</a>";
+                    };
+                };
+                results_pages += "</div>\n";
+
+                // Words list - not yet
+                results += "<div id='search_words'>";
+                results += "<div class='details_label word_count'> words|"+ json.search.words["global"].nb_words+ "</div>";
+                results += "<div class='details_label word_stat0'> matches|"+ json.search.words["global"].nb_matches+ "</div>";
+                for( i = 1; i <= json.search.words.global.nb_words; i++) {
+                    results += "<div class='word_details'>";
+                        results += "<div class='details_label word_info0'> word|"+ json.search.words["individual"][i].word+ "</div>";
+                        results += "<div class='details_label word_stat0'> matches|"+ json.search.words["individual"][i].nb_matches+ "</div>";
+                        results += "<div class='details_label word_stat1'> ayas|"+ json.search.words["individual"][i].nb_ayas+ "</div>";
+                    results += "</div>";
+                };
+                results += "</div>";
+
+                // Pages list
+                results += results_pages;
+                
+                // Ayas list
+                results += "<div id='search_ayas'>";
+                for( i = json.search.interval.start; i <= json.search.interval.end; i++) {
+                    if (i % 2)
+                        {
+                            results += "<div class='result_item0'>";
+                        }
+                    else
+                        {
+                            results += "<div class='result_item1'>";
+                        };
+                    results += "<span class='item_number'>"+ i+ "</span>";
+                    results += "<div class='quran'> &#64831 "+ json.search.ayas[i].aya.text;
+                        results += " (<span>"+ json.search.ayas[i].aya.id+ "</span>) &#64830 </div>";
+                    results += "<div class='aya_details'>";
+                        results += "<div class='details_label aya_stat0'> words|"+ json.search.ayas[i].stat.words+ "</div>";
+                        results += "<div class='details_label aya_stat1'> letters|"+ json.search.ayas[i].stat.letters+ "</div>";
+                        results += "<div class='details_label aya_stat2'> godnames|"+ json.search.ayas[i].stat.godnames+ "</div> ";
+                        results += "<div class='details_label aya_pos0'> hizb|"+ json.search.ayas[i].position.hizb+ "</div>";
+                        results += "<div class='details_label aya_pos1'> page|"+ json.search.ayas[i].position.page+ "</div>";
+                        results += "</div>";
+                    results += "<div class='sura_details'>";
+                        results += "<div class='details_label sura_info0'> sura|"+ json.search.ayas[i].sura.name+ "</div> ";
+                        results += "<div class='details_label sura_ord0'> number|"+ json.search.ayas[i].sura.id+ "</div>";
+                        results += "<div class='details_label sura_info1'> type|"+ json.search.ayas[i].sura.type+ "</div>";
+                        results += "<div class='details_label sura_ord1'> order|"+ json.search.ayas[i].sura.order+ "</div> ";
+                        results += "<div class='details_label sura_stat0'> ayas|"+ json.search.ayas[i].sura.stat.ayas+ "</div> ";
+                        results += "<div class='details_label sura_stat1'> words|"+ json.search.ayas[i].sura.stat.words+ " </div>";
+                        results += "<div class='details_label sura_stat2'> letters|"+ json.search.ayas[i].sura.stat.letters+ "</div>";
+                        results += "<div class='details_label sura_stat3'> godnames|"+ json.search.ayas[i].sura.stat.godnames+ "</div>";
+                        results += "</div>";
+                    results += "</div>";
+                };
+                results += "</div>";
+
+                // Pages list
+                results += results_pages;
+
+
+                //----------------------------
+					
+				// show result
+				$("#search_result").append(results);
+
+				// Corners
+				$(".details_label").corner("3px");
+				$(".result_item0").corner("10px");
+				$(".result_item1").corner("10px");
+				$(".item_number").corner("5px");
+				$("#note").corner("10px");
+				$("#search_words").corner("10px");
+				$(".pages a").corner("2px");
+
+				// Pages control
+				$(".pages a").one('click', function(event) {
+					var param2 = param;
+					param2.page = $(this).text();
+					$('#search_box').val(param2.search);
+					get_results(param2);
+					event.preventDefault();
+				});
+			};
+
+		});
+
+	</script>
+
+</head>
+<body>
+	<div id="search_form">
+		<div id="logo">
+			<img src="img/logo.png" alt="Alfanous blue logo">
+			<a href="http://www.alfanous.org/" target="blank">Alfanous.org Project</a>
+		</div>
+		<form id="form" method="GET" action="http://www.alfanous.org/jos2">
+			<input id="search_box" type="text" name="search" title="search" value="الحمد" />
+			<input id="submit" type="submit"value="Search" />
+		</form>
+	</div>
+
+	<div id="search_result"></div>
+
+
+
+</body>
+</html>

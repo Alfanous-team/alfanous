@@ -1,0 +1,12 @@
+{
+"engine": "Alfanous", 
+"wiki": "https://github.com/Alfanous-team/alfanous/blob/master/README.rst", 
+"description": "Alfanous is a Quranic search engine provides simple and advanced search services in the diverse information of the Holy Quran .", 
+"usage":"\n\n-------\nInstall\n-------\n\n.. code-block:: sh\n\n    $ sudo pip install alfanous\n\n-----\nUsage\n-----\nYou can use it from console:\n\n.. code-block:: sh\n\n    $ alfanous-console -a search -q الله \n\nor from Python:\n\n.. code-block:: python\n\n    >>> import alfanous\n    >>> alfanous.search(u\"الله\")\n    >>> alfanous.search(u\"qwl\")     # Buckwalter transliteration\n\n\nMore about `API <https://github.com/Alfanous-team/alfanous/tree/master/src/alfanous>`_\n",
+"json_output_system_note": "To contact the author ,please send an email  to the mailing list <b>alfanous [at] googlegroups.com</b>\n>here</a>\n",
+"console_note":"this is console interface of Alfanous, try -h to get help ",
+"author": "Assem chelli",
+"contact": "assem.ch@gmail.com", 
+"version": "alfanous.version",
+"release": "alfanous.release"
+}

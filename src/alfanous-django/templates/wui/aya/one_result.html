@@ -1,0 +1,172 @@
+{% load query %}
+
+<div class='container well well-small span12'>
+<fieldset class="fieldset">
+  <legend class="text-{{ bidi.align }}">
+    {% include 'wui/result/header.html' %}
+  </legend>
+
+<div class="row-fluid">
+  <div class="span10 offset1">
+
+
+
+    <div class="row">
+      {# previous aya #}
+      {% if result_content.aya.prev_aya  and result_content.aya.prev_aya.id != 0 %}
+        <p>{% include 'wui/aya/secondary_aya.html' with primary_aya_id=result_id aya=result_content.aya.prev_aya %}</p>
+      {% endif %}
+
+      <div id="aya_text_{{ result_id }}" class="row text-center arabic-ayah">
+        <p>
+        {% include 'wui/aya/aya.html' with aya_text=result_content.aya.text %}
+        -
+        <a href='{% url 'browse_aya' result_content.identifier.sura_name result_content.identifier.aya_id|stringformat:"i" %}'>
+          <span class="text-success">
+            <small>{{ result_content.identifier.sura_arabic_name }}</small>
+            {{ result_content.aya.id }}
+          </span>
+        </a>
+        </p> 
+      </div>
+
+      {# next aya #}
+      {% if result_content.aya.next_aya  and result_content.aya.next_aya.id != 9999 %}
+        <p>{% include 'wui/aya/secondary_aya.html' with primary_aya_id=result_id aya=result_content.aya.next_aya %}</p>
+      {% endif %}
+    </div>
+
+        {% if result_content.aya.recitation %}
+              <hr/>
+          <audio class="audio-player" controls src="{{ result_content.aya.recitation }}" >test</audio>
+        {% endif %}
+
+
+
+    {% if result_content.aya.translation %}
+
+      <div class="row text-center non-arabic-ayah">
+        <hr />
+        {% autoescape off %}
+          {{ result_content.aya.translation }}
+        {% endautoescape %}
+      </div>
+    {% endif %}
+
+    <hr/>
+  </div>
+
+
+
+</div>
+
+{% if params.view == "default" %}
+  {% if  result_content.theme or  result_content.stat or 	result_content.position %}
+
+    <div class="text-center">
+      <a id="aya_details_{{ result_id }}" class="text-center show_hide_aya_details" data-toggle="tooltip" title="{{ _('Click here to show more details') }} "><p>
+        ----------
+        <i id="details_icon_{{ result_id }}" class="icon-chevron-down"></i>
+        {{ _("Show more") }}
+        ----------
+      </p></a>
+    </div>
+  {% endif %}
+{% else %}
+  <br/>
+{% endif %}
+{# <details> fixme:need style change #}
+<div id="aya_details_{{ result_id }}_content"
+  {% if params.view == "default" %}
+     class="aya_details"
+  {% endif %}
+  >
+  <div class="row-fluid">
+    {% if result_content.theme.chapter %}
+      <table class="table table-bordered table-condensed">
+        <tbody>
+        <tr class="warning">
+          {% if result_content.theme.chapter %}
+            <td><i class="icon-book"></i><strong class="hidden-phone"> {{ _("Chapter") }}:</strong></td>
+            <td >
+              {% with bidi.fields.chapter|add:':"'|add:result_content.theme.chapter|add:'"'  as new_query %}
+                <a class=' no_decoration' href='?{% custom_query  new_query 1 False %}'>
+              {% endwith %}
+              {{ result_content.theme.chapter }}</a>
+            </td>
+          {% endif %}
+
+          {% if result_content.theme.topic %}
+            <td><i class="icon-tag"></i><strong class="hidden-phone"> {{ _("Topic") }}:</strong></td>
+            <td>
+              {% with bidi.fields.topic|add:':"'|add:result_content.theme.topic|add:'"'  as new_query %}
+                <a class='no_decoration' href='?{% custom_query  new_query 1 False %}'>
+              {% endwith %}
+              {{ result_content.theme.topic }}</a>
+            </td>
+          {% endif %}
+          {% if result_content.theme.subtopic %}
+            <td><i class="icon-tag"></i><strong class="hidden-phone"> {{ _("Subtopic") }}:</strong></td>
+            <td>
+              {% with bidi.fields.subtopic|add:':"'|add:result_content.theme.subtopic|add:'"'  as new_query %}
+                <a class='no_decoration' href='?{% custom_query  new_query 1 False %}'>
+              {% endwith %}
+              {{ result_content.theme.subtopic }}</a>
+            </td>
+          {% endif %}
+        </tr>
+        </tbody>
+      </table>
+    {% endif %}
+  </div>
+
+  {% if result_content.stat or 	result_content.position %}
+    {% include 'wui/aya/stats.html' %}
+  {% endif %}
+
+  {% if result_content.sura %}
+    <br/>
+    <div class="text-center">
+      <span class="badge badge-info">{{ _("About surah") }}</span>
+		                        <span class="label label-success">
+		                        	{% if bidi.direction == "rtl" %}
+
+                                {% with bidi.fields.sura_arabic|add:':"'|add:result_content.sura.arabic_name|add:'"' as new_query %}
+                                  <a href='?{% custom_query  new_query 1 True %}'>
+                                {% endwith %}
+                              {{ _("Sura") }} | {{ result_content.sura.arabic_name }}
+                              ({{ result_content.sura.name }})</a>
+                              {% else %}
+                                {% with bidi.fields.sura|add:':"'|add:result_content.sura.name|add:'"' as new_query %}
+                                  <a href='?{% custom_query  new_query 1 True %}'>
+                                {% endwith %}
+                              {{ _("Sura") }} | {{ result_content.sura.name }}
+                              ( {{ result_content.sura.english_name }})</a>
+                              {% endif %}
+		                        </span>
+
+      <span class="label label-inverse"> {{ _("n°") }} | {{ result_content.sura.id }} </span>
+		                        <span class="label label-inverse">
+		                            {% if bidi.direction != "rtl" %}
+                                            {{ _("type") }} | {{ result_content.sura.type }}
+                                    {% else %}
+                                           {{ _("type") }} | {{ result_content.sura.arabic_type }}
+                                    {% endif %}
+		                        </span>
+		                        <span class="label label-inverse">
+		                        	{{ _("revelation_order") }}  | {{ result_content.sura.order }}
+		                        </span>
+		                        <span class="label">
+		                        	{{ _("ayahs") }} | {{ result_content.sura.ayas }}
+		                        </span>
+      {% if result_content.sura.stat %}
+        <span class="label"> {{ _("words") }} | {{ result_content.sura.stat.words }} </span>
+        <span class="label"> {{ _("letters") }} | {{ result_content.sura.stat.letters }} </span>
+        <span class="label"> {{ _("divine names") }} | {{ result_content.sura.stat.godnames }} </span>
+      {% endif %}
+    </div>
+  {% endif %}
+</div>
+{# </details> #}
+</fieldset>
+</div>

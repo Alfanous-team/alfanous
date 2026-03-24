@@ -1,0 +1,83 @@
+{% load query %}
+
+<div class="text-center">
+  <span class="badge badge-info"> {{ _("About ayah") }}</span>
+
+  {% if result_content.position %}
+      <span class="label label-success">
+		                            {% with result_content.position.page|stringformat:"s" as position_page %}
+                                  {% with bidi.fields.page|add:':'|add:position_page as new_query %}
+                                    <a class='no_decoration' href='?{% custom_query new_query 1 True%}'>
+                                  {% endwith %}
+                                {% endwith %}
+      {{ _("page") }} | {{ result_content.position.page }}</a>
+		                            </span>
+        {% if LANGUAGE_CODE == "ur" %}
+          <span class="label label-success">
+			                                {% with result_content.position.page_IN|stringformat:"s" as position_page %}
+                                        {% with bidi.fields.page_IN|add:':'|add:position_page as new_query %}
+                                          <a class='no_decoration' href='?{% custom_query new_query 1 True%}'>
+                                        {% endwith %}
+                                      {% endwith %}
+            {{ _("page (indian)") }} | {{ result_content.position.page_IN }}</a>
+	        </span>
+        {% endif %}
+    <span class="label label-success">
+		                            {% with result_content.position.hizb|stringformat:"s" as position_hizb %}
+                                  {% with bidi.fields.hizb|add:':'|add:position_hizb as new_query %}
+                                    <a class='no_decoration' href='?{% custom_query  new_query 1 True%}'>
+                                  {% endwith %}
+                                {% endwith %}
+      {{ _("hizb") }} | {{ result_content.position.hizb }}</a>
+		                            </span>
+    <span class="label label-inverse">
+		                            	{{ _("quart") }} | {{ result_content.position.rub|add:"+1" }}
+		                            </span>
+    <span class="label label-inverse">
+      {{ _("juz") }} | {{ result_content.position.juz }}
+	</span>
+    <span class="label label-inverse">
+      {{ _("manzil") }} | {{ result_content.position.manzil }}
+	</span>
+
+
+
+  {% endif %}
+
+  {% if result_content.stat %}
+    <span class="label label-warning">
+							  		{% with result_content.stat.words|stringformat:"s" as stat_words %}
+                      {% with bidi.fields.a_w|add:':'|add:stat_words  as new_query %}
+                        <a class='no_decoration' href='?{% custom_query  new_query 1 False %}'>
+                      {% endwith %}
+                    {% endwith %}
+      {{ _("words") }} | {{ result_content.stat.words }}</a>
+		                            </span>
+    <span class="label label-warning">
+		                            {% with result_content.stat.letters|stringformat:"s" as stat_letters %}
+                                  {% with bidi.fields.a_l|add:':'|add:stat_letters  as new_query %}
+                                    <a class='no_decoration' href='?{% custom_query  new_query 1 False %}'>
+                                  {% endwith %}
+                                {% endwith %}
+      {{ _("letters") }} | {{ result_content.stat.letters }}</a>
+		                            </span>
+
+    <span class="label label-warning">
+		                            {% with result_content.stat.godnames|stringformat:"s" as stat_godnames %}
+                                  {% with bidi.fields.a_g|add:':'|add:stat_godnames as new_query %}
+                                    <a class='no_decoration' href='?{% custom_query  new_query 1 False %}'>
+                                  {% endwith %}
+                                {% endwith %}
+      {{ _("divine names") }} | {{ result_content.stat.godnames }}</a>
+		                            </span>
+  {% endif %}
+
+  {% if  result_content.sajda.exist %}
+    <span class="label label-important">
+		                            	<a class='no_decoration' href='?{% custom_query "sajda:نعم" 1 False%}'>
+                                    {{ _("sajda") }} ({{ _("Hafs") }})</a>
+		                            </span>
+    <span class="label label-inverse">{{ _("n°") }} | {{ result_content.sajda.id }}</span>
+    <span class="label label-inverse">{{ _("type") }} | {{ result_content.sajda.type }}</span>
+  {% endif %}
+</div>

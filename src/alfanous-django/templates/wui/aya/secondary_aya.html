@@ -1,0 +1,17 @@
+{# @primary_aya_id - The ID of the primary aya related to this secondary aya. #}
+{# @aya - The secondary aya to be rendered. #}
+
+{% load query %}
+
+<div id="secondary_aya_text_{{ primary_aya_id }}" class="row text-center arabic-ayah-secondary">
+  <span class='quran_decoration muted'>[</span>
+  <span class="muted">{{ aya.text }} </span>
+  <span class='quran_decoration muted'>]</span>
+  -
+  <a href='{% url 'browse_aya' aya.sura aya.id|stringformat:"i" %}'>
+    <span class="muted">
+      <small>{{ aya.sura_arabic }}</small>
+      {{ aya.id }}
+    </span>
+  </a>
+</div>
