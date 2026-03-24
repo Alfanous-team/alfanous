@@ -566,8 +566,9 @@ def make_translation_analyzer(lang):
 # Transformer.build_schema() can retrieve them via getattr(text_processing, name).
 # Active languages (zip files present in store/Translations/) + future targets.
 _TRANSLATION_LANGS = [
-    'ar', 'en', 'fr', 'id', 'ms', 'tr',   # active — zip files present in store
-    'es', 'ja', 'ku', 'ml', 'pt',           # planned — zip files not yet in store
+    'ar', 'en', 'fr', 'id', 'ms', 'tr',                    # active — zip files present in store
+    'es', 'ja', 'ku', 'ml', 'pt',                           # planned — zip files not yet in store
+    'ur', 'bn', 'ha', 'ru', 'ps', 'uz', 'sw',              # new: ur.maududi, bn.khan, ha.gumi, ru.kuliev, ps.abdulwali, uz.sodik, sw.barwani
 ]
 
 for _tl in _TRANSLATION_LANGS:

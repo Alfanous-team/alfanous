@@ -1035,6 +1035,76 @@
     "analyzer": "TranslationAnalyzer_pt"
   },
   {
+    "id": 152,
+    "table_name": "aya",
+    "name": "text_ur",
+    "search_name": "text_ur",
+    "type": "TEXT",
+    "stored": false,
+    "phrase": true,
+    "analyzer": "TranslationAnalyzer_ur"
+  },
+  {
+    "id": 153,
+    "table_name": "aya",
+    "name": "text_bn",
+    "search_name": "text_bn",
+    "type": "TEXT",
+    "stored": false,
+    "phrase": true,
+    "analyzer": "TranslationAnalyzer_bn"
+  },
+  {
+    "id": 154,
+    "table_name": "aya",
+    "name": "text_ha",
+    "search_name": "text_ha",
+    "type": "TEXT",
+    "stored": false,
+    "phrase": true,
+    "analyzer": "TranslationAnalyzer_ha"
+  },
+  {
+    "id": 155,
+    "table_name": "aya",
+    "name": "text_ru",
+    "search_name": "text_ru",
+    "type": "TEXT",
+    "stored": false,
+    "phrase": true,
+    "analyzer": "TranslationAnalyzer_ru"
+  },
+  {
+    "id": 156,
+    "table_name": "aya",
+    "name": "text_ps",
+    "search_name": "text_ps",
+    "type": "TEXT",
+    "stored": false,
+    "phrase": true,
+    "analyzer": "TranslationAnalyzer_ps"
+  },
+  {
+    "id": 157,
+    "table_name": "aya",
+    "name": "text_uz",
+    "search_name": "text_uz",
+    "type": "TEXT",
+    "stored": false,
+    "phrase": true,
+    "analyzer": "TranslationAnalyzer_uz"
+  },
+  {
+    "id": 158,
+    "table_name": "aya",
+    "name": "text_sw",
+    "search_name": "text_sw",
+    "type": "TEXT",
+    "stored": false,
+    "phrase": true,
+    "analyzer": "TranslationAnalyzer_sw"
+  },
+  {
     "id": 144,
     "table_name": "aya",
     "name": "transliteration",
