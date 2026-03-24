@@ -1,6 +1,0 @@
-a[href]:after {
-    content: "" !important; /* overriding twitter bootstrap */
-}
-
-
-
