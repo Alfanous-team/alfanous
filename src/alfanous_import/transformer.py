@@ -218,9 +218,7 @@ def _load_corpus_words_txt(corpus_path):
                 # English (stored-only, not indexed)
                 "englishpos":   stem_feats.get("englishpos"),
                 "type":         stem_feats.get("type"),
-                "englishmood":  stem_feats.get("englishmood"),
                 "englishcase":  stem_feats.get("englishcase"),
-                "englishstate": stem_feats.get("englishstate"),
                 # Arabic (primary, indexed)
                 "pos":          stem_feats.get("arabicpos"),
                 "root":         stem_feats.get("arabicroot"),
@@ -292,9 +290,7 @@ def _load_corpus_words_xml(corpus_path):
                 # English (stored-only, not indexed)
                 "englishpos":   first.get("pos") or None,
                 "type":         first.get("type") or None,
-                "englishmood":  first.get("mood") or None,
                 "englishcase":  first.get("case") or None,
-                "englishstate": first.get("state") or None,
                 # Arabic (primary, indexed)
                 "pos":          first.get("arabicpos") or None,
                 "root":         first.get("arabicroot") or None,
