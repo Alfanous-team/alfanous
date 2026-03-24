@@ -1734,9 +1734,7 @@ class Raw:
                                 "special":      w.get("special"),
                                 # English (stored-only)
                                 "englishpos":   w.get("englishpos"),
-                                "englishmood":  w.get("englishmood"),
                                 "englishcase":  w.get("englishcase"),
-                                "englishstate": w.get("englishstate"),
                                 # Unchanged fields
                                 "prefix":       w.get("prefix"),
                                 "suffix":       w.get("suffix"),
@@ -2416,9 +2414,7 @@ class Raw:
                         "special":          r.get("special"),
                         # English (stored-only)
                         "englishpos":       r.get("englishpos"),
-                        "englishmood":      r.get("englishmood"),
                         "englishcase":      r.get("englishcase"),
-                        "englishstate":     r.get("englishstate"),
                         # Unchanged fields
                         "prefix":           r.get("prefix"),
                         "suffix":           r.get("suffix"),

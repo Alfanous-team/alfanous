@@ -167,8 +167,10 @@ def _strip_phrase_queries(q, schema=None):
     targeted field does **not** support positional information (i.e.
     ``schema[fieldname].supports('positions')`` returns ``False`` or the
     field has no format at all).  Phrase nodes targeting TEXT fields that
-    do store positions (e.g. ``aya``, ``aya_``, translation fields) are left
-    intact so that exact phrase matching still works for those fields.
+    do store positions (e.g. ``aya``, ``aya_``) are left intact so that
+    exact phrase matching still works for those fields.  Translation text
+    fields (``text_{lang}``) use ``phrase=False`` to reduce index size, so
+    phrase queries on them are also converted to unordered AND queries.
 
     The transformation is applied recursively so that phrases nested inside
     compound queries (``And``, ``Or``, ``AndNot``, etc.) are also converted.
@@ -453,10 +455,11 @@ class QSearcher:
 
         # Strip phrase queries for fields that do not support positional
         # information.  ID, KEYWORD, NUMERIC, and TEXT(phrase=False) fields
-        # (e.g. 'topic', 'chapter', 'subtopic', 'aya_fuzzy') cannot execute
-        # phrase queries and Whoosh would raise QueryError at search time.
-        # Phrases targeting TEXT fields with phrase=True (e.g. 'aya', 'aya_',
-        # translation fields) are preserved so exact phrase matching works.
+        # (e.g. 'topic', 'chapter', 'subtopic', 'aya_fuzzy', all text_{lang}
+        # translation fields) cannot execute phrase queries and Whoosh would
+        # raise QueryError at search time.
+        # Phrases targeting TEXT fields with phrase=True (e.g. 'aya', 'aya_')
+        # are preserved so exact phrase matching still works for Arabic text.
         query = _strip_phrase_queries(query, schema=self._schema)
 
         # Capture the original query terms before any expansion (fuzzy or
