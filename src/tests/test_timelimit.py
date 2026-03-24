@@ -528,7 +528,7 @@ def test_search_aya_skips_trans_parser_for_pure_wildcards(monkeypatch):
     raw = Raw.__new__(Raw)
     raw._defaults = {
         "flags": {
-            "lang": "en",
+            "search_lang": "en",
             "sortedby": "score",
             "reverse": False,
             "perpage": None,
@@ -574,6 +574,8 @@ def test_search_aya_skips_trans_parser_for_pure_wildcards(monkeypatch):
     mock_trans_parser = MagicMock()
     raw._trans_parser = mock_trans_parser
     raw._trans_fields = frozenset()
+    raw._lang_trans_parsers = {}
+    raw._lang_trans_fields = {}
 
     # Mock QSE so search_with_query returns empty results immediately
     mock_qse = MagicMock()
@@ -616,7 +618,7 @@ def test_pure_wildcard_routes_to_arabic_search_path(monkeypatch):
     raw = Raw.__new__(Raw)
     raw._defaults = {
         "flags": {
-            "lang": "en",
+            "search_lang": "en",
             "sortedby": "score",
             "reverse": False,
             "perpage": None,
@@ -663,6 +665,8 @@ def test_pure_wildcard_routes_to_arabic_search_path(monkeypatch):
     mock_trans_parser = MagicMock()
     raw._trans_parser = mock_trans_parser
     raw._trans_fields = frozenset()
+    raw._lang_trans_parsers = {}
+    raw._lang_trans_fields = {}
 
     # Mock QSE.search_all (the Arabic path) to return a usable empty result
     mock_qse = MagicMock()

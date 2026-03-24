@@ -305,7 +305,7 @@ class Raw:
             "view": "custom",
             "recitation": "1",
             "translation": None,
-            "lang": None,
+            "search_lang": None,
             "romanization": None,
             "prev_aya": True,
             "next_aya": True,
@@ -358,7 +358,7 @@ class Raw:
         "view": ["minimal", "normal", "full", "statistic", "linguistic", "recitation", "custom"],
         "recitation": [],  # range( 30 ),
         "translation": [],
-        "lang": [],
+        "search_lang": [],
         "romanization": ["none", "buckwalter", "iso", "arabtex"],  # arabizi is forbidden for show
         "prev_aya": [True, False],
         "next_aya": [True, False],
@@ -401,7 +401,7 @@ class Raw:
         "view": "pre-defined configuration for what information to retrieve",
         "recitation": "recitation id",
         "translation": "translation id",
-        "lang": "language code (e.g. 'en', 'fr', 'ar') to select translation by language at query time",
+        "search_lang": "language code (e.g. 'en', 'fr', 'ar') to select translation by language at query time",
         "romanization": "type of romanization",
         "prev_aya": "enable previous aya retrieving",
         "next_aya": "enable next aya retrieving",
@@ -541,6 +541,20 @@ class Raw:
             # when extracting matched terms for highlighting.
             self._trans_fields = frozenset(_avail_trans)
 
+            # Per-language parsers: when the caller passes search_lang="en" (or any
+            # other code), the non-Arabic search path is restricted to only
+            # the corresponding text_{lang} field instead of all translations.
+            self._lang_trans_parsers = {}
+            self._lang_trans_fields = {}
+            from alfanous.text_processing import _TRANSLATION_LANGS as _TL
+            for _lc in _TL:
+                _lf = f"text_{_lc}"
+                if _lf in _schema_fields:
+                    self._lang_trans_parsers[_lc] = _make_bounded_parser(
+                        [_lf], _schema, _OrGroup
+                    )
+                    self._lang_trans_fields[_lc] = frozenset([_lf])
+
             # Word search parser (used in _search_words).
             _all_word_f = [f for f in _WORD_ALL_INDEXED_FIELDS if f in _schema_fields]
             _default_word_f = (
@@ -558,6 +572,8 @@ class Raw:
         else:
             self._trans_parser = None
             self._trans_fields = frozenset()
+            self._lang_trans_parsers = {}
+            self._lang_trans_fields = {}
             self._word_parser = None
             self._all_word_fields = []
 
@@ -922,7 +938,7 @@ class Raw:
             else int(flags["offset"])
         recitation = flags["recitation"]
         translation = flags["translation"]
-        lang = flags.get("lang") or self._defaults["flags"]["lang"]
+        search_lang = flags.get("search_lang") or self._defaults["flags"]["search_lang"]
         romanization = flags["romanization"]
         highlight = flags["highlight"]
         script = flags["script"]
@@ -1082,11 +1098,21 @@ class Raw:
             # Skip for pure-wildcard queries (e.g. bare "*", "?", "؟") — they
             # expand across every term in every translation field via NestedParent,
             # exceeding any reasonable timelimit while producing zero useful results.
+            # When the caller specifies a language (e.g. search_lang="en"), restrict the
+            # search to only that language's translation field (text_en); if no
+            # search_lang is given, fall back to searching across all available fields.
             _trans_terms = []
             _trans_term_pairs = []
-            if self._trans_parser is not None and not _PURE_WILDCARD_RE.match(query):
-                _trans_q = self._trans_parser.parse(query)
-                _all_trans_q_terms = [(f, t) for f, t in _trans_q.all_terms() if f in self._trans_fields]
+            _active_trans_parser = (
+                self._lang_trans_parsers.get(search_lang, self._trans_parser) if search_lang else self._trans_parser
+            )
+            _active_trans_fields = (
+                self._lang_trans_fields.get(search_lang, self._trans_fields) if search_lang
+                else self._trans_fields
+            )
+            if _active_trans_parser is not None and not _PURE_WILDCARD_RE.match(query):
+                _trans_q = _active_trans_parser.parse(query)
+                _all_trans_q_terms = [(f, t) for f, t in _trans_q.all_terms() if f in _active_trans_fields]
                 _trans_terms = [t for _, t in _all_trans_q_terms]
                 _trans_term_pairs = _all_trans_q_terms
                 _query_parts.append(wquery.NestedParent(wquery.Term("kind", "aya"), _trans_q))
@@ -1287,10 +1313,26 @@ class Raw:
                         }
                         _cpt += 1
             if word_info:
-                # _result_docnums and _index_reader are only needed here; building them
-                # unconditionally would iterate ALL results and hold a reader reference
-                # on every request even when word_info is False (the default).
-                _result_docnums = frozenset(hit.docnum for hit in res)
+                # _result_docnums/_result_gids and _index_reader are only needed here;
+                # building them unconditionally would iterate ALL results and hold a
+                # reader reference on every request even when word_info is False
+                # (the default).
+                # Both are collected in a single pass over the result hits:
+                # _result_docnums – Whoosh internal doc numbers of matched parent ayas,
+                #   used to count Arabic keyword occurrences directly.
+                # _result_gids    – the stored gid values of matched parent ayas, used
+                #   to count translation keyword occurrences via child doc gid look-up
+                #   (translation postings live in nested child documents whose docnums
+                #   differ from the parent aya docnums in _result_docnums).
+                _result_docnums_set = set()
+                _result_gids_set = set()
+                for _hit in res:
+                    _result_docnums_set.add(_hit.docnum)
+                    _gid = _hit.get("gid")
+                    if _gid is not None:
+                        _result_gids_set.add(_gid)
+                _result_docnums = frozenset(_result_docnums_set)
+                _result_gids = frozenset(_result_gids_set)
 
                 # Acquire _wi_searcher BEFORE capturing _index_reader.
                 # shared_searcher() calls _get_shared_searcher().refresh() internally;
@@ -1330,6 +1372,41 @@ class Raw:
                         m = _index_reader.postings(field, term_text)
                         while m.is_active():
                             if m.id() in _result_docnums:
+                                count += 1
+                            m.next()
+                    except Exception:
+                        pass
+                    return count
+
+                def _count_trans_term_in_results(field, term_text):
+                    """Count occurrences of a translation term within the result set.
+
+                    Translation keywords are indexed in nested child documents whose
+                    Whoosh docnums differ from the parent aya docnums in
+                    _result_docnums.  We resolve via the stored ``gid`` field, which
+                    every child document inherits from its parent aya.
+                    """
+                    count = 0
+                    try:
+                        m = _index_reader.postings(field, term_text)
+                        while m.is_active():
+                            if _index_reader.stored_fields(m.id()).get("gid") in _result_gids:
+                                count += m.value_as("frequency")
+                            m.next()
+                    except Exception:
+                        pass
+                    return count
+
+                def _count_trans_ayas_in_results(field, term_text):
+                    """Count unique parent ayas that contain a translation term within the result set."""
+                    count = 0
+                    seen_gids = set()
+                    try:
+                        m = _index_reader.postings(field, term_text)
+                        while m.is_active():
+                            child_gid = _index_reader.stored_fields(m.id()).get("gid")
+                            if child_gid in _result_gids and child_gid not in seen_gids:
+                                seen_gids.add(child_gid)
                                 count += 1
                             m.next()
                     except Exception:
@@ -1517,21 +1594,24 @@ class Raw:
                         elif term[0] in self._trans_fields:
                             # English (translation) keyword: Arabic-specific fields
                             # (lemma, root, derivations, vocalizations) are not
-                            # applicable; counts within the result page are 0 because
-                            # results are parent aya documents while translation
-                            # postings live in nested child documents.
+                            # applicable.  Occurrence counts within the result page
+                            # are computed via the nested-document gid join.
                             _nb_matches_overall = int(term[2]) if term[2] else 0
                             if term[2]:
                                 matches += term[2]
                             docs += term[3]
+                            term_trans_matches_in_results = _count_trans_term_in_results(term[0], term[1])
+                            term_trans_ayas_in_results = _count_trans_ayas_in_results(term[0], term[1])
+                            matches_in_results += term_trans_matches_in_results
+                            docs_in_results += term_trans_ayas_in_results
                             words_output["individual"][cpt] = {
                                 "word": term[1],
                                 **({"hint": _trans_field_hint(term[0])} if _nb_matches_overall > 0 else {}),
                                 "romanization": None,
                                 "nb_matches_overall": _nb_matches_overall,
-                                "nb_matches": 0,
+                                "nb_matches": term_trans_matches_in_results,
                                 "nb_ayas_overall": term[3],
-                                "nb_ayas": 0,
+                                "nb_ayas": term_trans_ayas_in_results,
                                 "nb_vocalizations": 0,
                                 "vocalizations": [],
                                 "nb_synonyms": 0,
@@ -1556,7 +1636,7 @@ class Raw:
                         _wi_searcher.close()
             output["words"] = words_output
             # Build adjacent-aya lookup for prev/next aya text.
-            _want_translation = bool(translation or lang)
+            _want_translation = bool(translation or search_lang)
             if prev_aya or next_aya:
                 # Default sentinel values for boundary ayas (gid 0 and 6237 don't exist in the index).
                 adja_ayas = {
@@ -1613,10 +1693,10 @@ class Raw:
                     for ch in child_res:
                         g = ch["gid"]
                         tid = ch.get("trans_id") or ""
-                        lang = ch.get("trans_lang") or ""
+                        _ch_lang = ch.get("trans_lang") or ""
                         # Read text from the language-specific field when available,
                         # falling back to the stored trans_text for backward compat.
-                        text_field = f"text_{lang}" if lang else None
+                        text_field = f"text_{_ch_lang}" if _ch_lang else None
                         field_text = ch.get(text_field) if text_field else None
                         text = field_text or ch.get("trans_text") or ""
                         if g not in all_children:
@@ -1624,7 +1704,7 @@ class Raw:
                         all_children[g][tid] = {
                             "text": text,
                             "id": tid,
-                            "lang": lang,
+                            "lang": _ch_lang,
                             "author": ch.get("trans_author") or "",
                         }
                 finally:
@@ -1635,9 +1715,9 @@ class Raw:
                     for g, trans_map in all_children.items():
                         if translation and translation in trans_map:
                             trad_text[g] = trans_map[translation]
-                        elif lang:
+                        elif search_lang:
                             for tid, tdata in trans_map.items():
-                                if tdata["lang"] == lang:
+                                if tdata["lang"] == search_lang:
                                     trad_text[g] = tdata
                                     break
     

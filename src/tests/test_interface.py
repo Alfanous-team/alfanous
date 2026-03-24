@@ -177,8 +177,8 @@ def test_search_aya_with_translation_param():
 
 
 def test_search_aya_with_lang_en():
-    """aya search with lang='en' returns an English translation alongside each aya."""
-    result = alfanous.api.search("الله", lang="en")
+    """aya search with search_lang='en' returns an English translation alongside each aya."""
+    result = alfanous.api.search("الله", search_lang="en")
     assert result["error"]["code"] == 0
     ayas = result["search"]["ayas"]
     assert len(ayas) > 0

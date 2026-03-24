@@ -44,7 +44,7 @@ def search(query: str, unit: str = "aya", page: int = 1, sortedby: str = "releva
            facets: Optional[str] = None, filter: Optional[Any] = None,
            timelimit: Optional[float] = 5.0,
            translation: Optional[str] = None,
-           lang: Optional[str] = None) -> Dict[str, Any]:
+           search_lang: Optional[str] = None) -> Dict[str, Any]:
     """
     Search in Quran verses and translations.
     
@@ -91,14 +91,14 @@ def search(query: str, unit: str = "aya", page: int = 1, sortedby: str = "releva
     @param timelimit: Maximum number of seconds to spend on the search query
            (default 5.0). Pass None to disable the limit.
     @param translation: Translation ID (e.g. 'en.sahih') to include with aya results.
-    @param lang: Language code (e.g. 'en', 'fr', 'ar') to retrieve translations by
-           language at query time. If both ``translation`` and ``lang`` are given,
+    @param search_lang: Language code (e.g. 'en', 'fr', 'ar') to retrieve translations by
+           language at query time. If both ``translation`` and ``search_lang`` are given,
            ``translation`` takes precedence.
     @return: Dictionary of search results. Each aya entry includes an optional
-           ``translation`` field controlled by the ``translation``/``lang``
-           parameters. Use ``translation=en.transliteration`` or ``lang=en``
+           ``translation`` field controlled by the ``translation``/``search_lang``
+           parameters. Use ``translation=en.transliteration`` or ``search_lang=en``
            to retrieve the English transliteration, and
-           ``translation=ar.jalalayn`` or ``lang=ar`` to retrieve a tafsir.
+           ``translation=ar.jalalayn`` or ``search_lang=ar`` to retrieve a tafsir.
     """
     all_flags = flags if flags is not None else {}
     all_flags.update({"action": "search",
@@ -116,7 +116,7 @@ def search(query: str, unit: str = "aya", page: int = 1, sortedby: str = "releva
                       "filter": filter,
                       "timelimit": timelimit,
                       "translation": translation,
-                      "lang": lang,
+                      "search_lang": search_lang,
                       })
     return do(all_flags)
 
