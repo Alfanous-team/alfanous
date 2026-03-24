@@ -1287,10 +1287,26 @@ class Raw:
                         }
                         _cpt += 1
             if word_info:
-                # _result_docnums and _index_reader are only needed here; building them
-                # unconditionally would iterate ALL results and hold a reader reference
-                # on every request even when word_info is False (the default).
-                _result_docnums = frozenset(hit.docnum for hit in res)
+                # _result_docnums/_result_gids and _index_reader are only needed here;
+                # building them unconditionally would iterate ALL results and hold a
+                # reader reference on every request even when word_info is False
+                # (the default).
+                # Both are collected in a single pass over the result hits:
+                # _result_docnums – Whoosh internal doc numbers of matched parent ayas,
+                #   used to count Arabic keyword occurrences directly.
+                # _result_gids    – the stored gid values of matched parent ayas, used
+                #   to count translation keyword occurrences via child doc gid look-up
+                #   (translation postings live in nested child documents whose docnums
+                #   differ from the parent aya docnums in _result_docnums).
+                _result_docnums_set = set()
+                _result_gids_set = set()
+                for _hit in res:
+                    _result_docnums_set.add(_hit.docnum)
+                    _gid = _hit.get("gid")
+                    if _gid is not None:
+                        _result_gids_set.add(_gid)
+                _result_docnums = frozenset(_result_docnums_set)
+                _result_gids = frozenset(_result_gids_set)
 
                 # Acquire _wi_searcher BEFORE capturing _index_reader.
                 # shared_searcher() calls _get_shared_searcher().refresh() internally;
@@ -1330,6 +1346,41 @@ class Raw:
                         m = _index_reader.postings(field, term_text)
                         while m.is_active():
                             if m.id() in _result_docnums:
+                                count += 1
+                            m.next()
+                    except Exception:
+                        pass
+                    return count
+
+                def _count_trans_term_in_results(field, term_text):
+                    """Count occurrences of a translation term within the result set.
+
+                    Translation keywords are indexed in nested child documents whose
+                    Whoosh docnums differ from the parent aya docnums in
+                    _result_docnums.  We resolve via the stored ``gid`` field, which
+                    every child document inherits from its parent aya.
+                    """
+                    count = 0
+                    try:
+                        m = _index_reader.postings(field, term_text)
+                        while m.is_active():
+                            if _index_reader.stored_fields(m.id()).get("gid") in _result_gids:
+                                count += m.value_as("frequency")
+                            m.next()
+                    except Exception:
+                        pass
+                    return count
+
+                def _count_trans_ayas_in_results(field, term_text):
+                    """Count unique parent ayas that contain a translation term within the result set."""
+                    count = 0
+                    seen_gids = set()
+                    try:
+                        m = _index_reader.postings(field, term_text)
+                        while m.is_active():
+                            child_gid = _index_reader.stored_fields(m.id()).get("gid")
+                            if child_gid in _result_gids and child_gid not in seen_gids:
+                                seen_gids.add(child_gid)
                                 count += 1
                             m.next()
                     except Exception:
@@ -1517,21 +1568,24 @@ class Raw:
                         elif term[0] in self._trans_fields:
                             # English (translation) keyword: Arabic-specific fields
                             # (lemma, root, derivations, vocalizations) are not
-                            # applicable; counts within the result page are 0 because
-                            # results are parent aya documents while translation
-                            # postings live in nested child documents.
+                            # applicable.  Occurrence counts within the result page
+                            # are computed via the nested-document gid join.
                             _nb_matches_overall = int(term[2]) if term[2] else 0
                             if term[2]:
                                 matches += term[2]
                             docs += term[3]
+                            term_trans_matches_in_results = _count_trans_term_in_results(term[0], term[1])
+                            term_trans_ayas_in_results = _count_trans_ayas_in_results(term[0], term[1])
+                            matches_in_results += term_trans_matches_in_results
+                            docs_in_results += term_trans_ayas_in_results
                             words_output["individual"][cpt] = {
                                 "word": term[1],
                                 **({"hint": _trans_field_hint(term[0])} if _nb_matches_overall > 0 else {}),
                                 "romanization": None,
                                 "nb_matches_overall": _nb_matches_overall,
-                                "nb_matches": 0,
+                                "nb_matches": term_trans_matches_in_results,
                                 "nb_ayas_overall": term[3],
-                                "nb_ayas": 0,
+                                "nb_ayas": term_trans_ayas_in_results,
                                 "nb_vocalizations": 0,
                                 "vocalizations": [],
                                 "nb_synonyms": 0,
