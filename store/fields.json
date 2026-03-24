@@ -1085,8 +1085,11 @@
     "name_arabic": "ترجمة_صوتية",
     "search_name": "transliteration",
     "source": "tanzil.net",
-    "type": "STORED",
-    "comment": "Latin-script phonetic transliteration of verse text; loaded from en.transliteration.trans.zip into the parent aya doc (not a child translation)"
+    "type": "TEXT",
+    "comment": "Latin-script phonetic transliteration of verse text; loaded from en.transliteration.trans.zip into the parent aya doc (not a child translation)",
+    "stored": true,
+    "phrase": false,
+    "analyzer": null
   },
   {
     "id": 145,
