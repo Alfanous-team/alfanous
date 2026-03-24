@@ -2456,3 +2456,43 @@ def test_hint_absent_when_nb_matches_overall_is_zero_no_word_info():
         f"'fire' query (word_info=False) must not produce hint='tafsir'; "
         f"got hints={hints}, individual={individual}"
     )
+
+
+def test_non_arabic_keyword_nb_matches_nonzero_when_matching():
+    """nb_matches and nb_ayas must be > 0 for a non-Arabic keyword that has results.
+
+    Regression test for: occurrences of non-arabic keywords are zero in aya
+    search, it should be some value if matching.
+
+    Previously nb_matches and nb_ayas were hard-coded to 0 for translation-field
+    terms because their postings live in nested child documents.  The fix resolves
+    occurrences via the shared ``gid`` field that every child document inherits
+    from its parent aya.
+    """
+    results = RAWoutput.do({
+        "action": "search",
+        "query": "fire",
+        "word_info": True,
+        "highlight": "none",
+    })
+    assert results["error"]["code"] == 0
+    individual = results["search"]["words"]["individual"]
+    assert individual, "Expected non-empty words.individual for 'fire' with word_info=True"
+
+    fire_entries = [wd for wd in individual.values() if "fire" in wd.get("word", "")]
+    assert fire_entries, (
+        f"Expected an entry containing 'fire' in words.individual; got {individual}"
+    )
+    for entry in fire_entries:
+        assert entry.get("nb_matches", 0) > 0, (
+            f"'fire' entry must have nb_matches > 0 (non-Arabic occurrence count); got {entry}"
+        )
+        assert entry.get("nb_ayas", 0) > 0, (
+            f"'fire' entry must have nb_ayas > 0 (non-Arabic aya count); got {entry}"
+        )
+        assert entry.get("nb_matches", 0) <= entry.get("nb_matches_overall", 0), (
+            f"nb_matches must not exceed nb_matches_overall; got {entry}"
+        )
+        assert entry.get("nb_ayas", 0) <= entry.get("nb_ayas_overall", 0), (
+            f"nb_ayas must not exceed nb_ayas_overall; got {entry}"
+        )
