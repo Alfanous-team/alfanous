@@ -455,17 +455,16 @@ def filter_candidates_by_wordset(candidates, wordset):
     Each candidate may be a multi-word string (space-separated tokens, as
     produced when the input contains spaces).  A candidate is accepted when
     **every** space-separated token appears in *wordset*.  If no candidates
-    pass the filter the original *candidates* list is returned unchanged so
-    that non-Quranic Arabizi input still produces suggestions.
+    pass the filter an empty list is returned so that non-Quranic input does
+    not produce spurious keyword suggestions.
 
     :param candidates: list of Arabic candidate strings (output of
         :func:`arabizi_to_arabic_list`)
     :param wordset: a set or frozenset of known Arabic words to filter against
-    :return: filtered list, or *candidates* unchanged if no entry matches
+    :return: filtered list, or empty list if no entry matches
     """
-    filtered = [c for c in candidates
-                if all(tok in wordset for tok in c.split())]
-    return filtered if filtered else list(candidates)
+    return [c for c in candidates
+            if all(tok in wordset for tok in c.split())]
 
 
 def transliterate(mode, string, ignore="", reverse=False):

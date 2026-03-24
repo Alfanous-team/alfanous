@@ -546,9 +546,9 @@ def test_arabizi_quran_word_filter():
     result_bokra = filtered("bokreh")
     assert u"\u0628\u0643\u0631\u0629" in result_bokra   # بكرة
 
-    # For non-Quranic Arabizi words the fallback is all candidates (no empty result)
+    # For non-Quranic Arabizi words the filter returns an empty list (strict, no spurious suggestions)
     result_fallback = filtered("salameh")
-    assert len(result_fallback) > 0   # should fall back gracefully
+    assert isinstance(result_fallback, list)   # always a list, possibly empty
 
     # إبليس is a Quranic word; "iblis" → إبليس after filtering (initial i→إ rule)
     result_iblis = filtered("iblis")
