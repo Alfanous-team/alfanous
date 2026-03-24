@@ -1157,15 +1157,20 @@ class Raw:
             # translation query terms so English keywords appear in
             # words.individual.
             if not termz and _trans_term_pairs:
-                # Deduplicate by term text: the same word may match multiple
-                # translation language fields; keep one entry per unique term.
-                _seen_terms: set = set()
-                _deduped_pairs = []
-                for _trans_field, _trans_term in _trans_term_pairs:
-                    if _trans_term not in _seen_terms:
-                        _seen_terms.add(_trans_term)
-                        _deduped_pairs.append((_trans_field, _trans_term))
-                termz = self.QSE.term_stats(_deduped_pairs)
+                # Fetch stats for ALL (field, term) pairs, then for each
+                # unique term text keep the entry whose field has the most
+                # overall matches.  This ensures "fire" → text_en (many
+                # matches) rather than text_ar (0 matches), so the hint and
+                # nb_matches_overall reflect the language where the term is
+                # actually found.
+                _all_pair_stats = list(self.QSE.term_stats(_trans_term_pairs))
+                _term_best: dict = {}
+                for _stat in _all_pair_stats:
+                    _s_field, _s_text, _s_freq, _s_docs = _stat
+                    _best = _term_best.get(_s_text)
+                    if _best is None or (_s_freq or 0) > (_best[2] or 0):
+                        _term_best[_s_text] = _stat
+                termz = list(_term_best.values())
             # Add arabizi-converted Arabic candidates to termz so the mapped
             # Arabic words (e.g. 'قول' for 'qawl') appear in words.individual
             # and are used for Arabic text highlighting.
@@ -1300,17 +1305,34 @@ class Raw:
                             v for v in _all_ac_variations
                             if _edit_distance(_word_norm, v) <= fuzzy_maxdist
                         ]
+                        _has_matches = (term[2] or 0) > 0
                         words_output["individual"][_cpt] = {
                             "word": term[1],
-                            **({"hint": _trans_field_hint(term[0])} if term[0] in self._trans_fields else {}),
+                            **({"hint": _trans_field_hint(term[0])} if term[0] in self._trans_fields and _has_matches else {}),
                             "variations": _word_variations,
                         }
                         _cpt += 1
             if word_info:
-                # _result_docnums and _index_reader are only needed here; building them
-                # unconditionally would iterate ALL results and hold a reader reference
-                # on every request even when word_info is False (the default).
-                _result_docnums = frozenset(hit.docnum for hit in res)
+                # _result_docnums/_result_gids and _index_reader are only needed here;
+                # building them unconditionally would iterate ALL results and hold a
+                # reader reference on every request even when word_info is False
+                # (the default).
+                # Both are collected in a single pass over the result hits:
+                # _result_docnums – Whoosh internal doc numbers of matched parent ayas,
+                #   used to count Arabic keyword occurrences directly.
+                # _result_gids    – the stored gid values of matched parent ayas, used
+                #   to count translation keyword occurrences via child doc gid look-up
+                #   (translation postings live in nested child documents whose docnums
+                #   differ from the parent aya docnums in _result_docnums).
+                _result_docnums_set = set()
+                _result_gids_set = set()
+                for _hit in res:
+                    _result_docnums_set.add(_hit.docnum)
+                    _gid = _hit.get("gid")
+                    if _gid is not None:
+                        _result_gids_set.add(_gid)
+                _result_docnums = frozenset(_result_docnums_set)
+                _result_gids = frozenset(_result_gids_set)
 
                 # Acquire _wi_searcher BEFORE capturing _index_reader.
                 # shared_searcher() calls _get_shared_searcher().refresh() internally;
@@ -1350,6 +1372,41 @@ class Raw:
                         m = _index_reader.postings(field, term_text)
                         while m.is_active():
                             if m.id() in _result_docnums:
+                                count += 1
+                            m.next()
+                    except Exception:
+                        pass
+                    return count
+
+                def _count_trans_term_in_results(field, term_text):
+                    """Count occurrences of a translation term within the result set.
+
+                    Translation keywords are indexed in nested child documents whose
+                    Whoosh docnums differ from the parent aya docnums in
+                    _result_docnums.  We resolve via the stored ``gid`` field, which
+                    every child document inherits from its parent aya.
+                    """
+                    count = 0
+                    try:
+                        m = _index_reader.postings(field, term_text)
+                        while m.is_active():
+                            if _index_reader.stored_fields(m.id()).get("gid") in _result_gids:
+                                count += m.value_as("frequency")
+                            m.next()
+                    except Exception:
+                        pass
+                    return count
+
+                def _count_trans_ayas_in_results(field, term_text):
+                    """Count unique parent ayas that contain a translation term within the result set."""
+                    count = 0
+                    seen_gids = set()
+                    try:
+                        m = _index_reader.postings(field, term_text)
+                        while m.is_active():
+                            child_gid = _index_reader.stored_fields(m.id()).get("gid")
+                            if child_gid in _result_gids and child_gid not in seen_gids:
+                                seen_gids.add(child_gid)
                                 count += 1
                             m.next()
                     except Exception:
@@ -1537,20 +1594,24 @@ class Raw:
                         elif term[0] in self._trans_fields:
                             # English (translation) keyword: Arabic-specific fields
                             # (lemma, root, derivations, vocalizations) are not
-                            # applicable; counts within the result page are 0 because
-                            # results are parent aya documents while translation
-                            # postings live in nested child documents.
+                            # applicable.  Occurrence counts within the result page
+                            # are computed via the nested-document gid join.
+                            _nb_matches_overall = int(term[2]) if term[2] else 0
                             if term[2]:
                                 matches += term[2]
                             docs += term[3]
+                            term_trans_matches_in_results = _count_trans_term_in_results(term[0], term[1])
+                            term_trans_ayas_in_results = _count_trans_ayas_in_results(term[0], term[1])
+                            matches_in_results += term_trans_matches_in_results
+                            docs_in_results += term_trans_ayas_in_results
                             words_output["individual"][cpt] = {
                                 "word": term[1],
-                                "hint": _trans_field_hint(term[0]),
+                                **({"hint": _trans_field_hint(term[0])} if _nb_matches_overall > 0 else {}),
                                 "romanization": None,
-                                "nb_matches_overall": int(term[2]) if term[2] else 0,
-                                "nb_matches": 0,
+                                "nb_matches_overall": _nb_matches_overall,
+                                "nb_matches": term_trans_matches_in_results,
                                 "nb_ayas_overall": term[3],
-                                "nb_ayas": 0,
+                                "nb_ayas": term_trans_ayas_in_results,
                                 "nb_vocalizations": 0,
                                 "vocalizations": [],
                                 "nb_synonyms": 0,
@@ -2194,6 +2255,9 @@ class Raw:
 
         # Transliterate if no field filter is present
         query = query.replace("\\", "")
+        # Save the raw query before Buckwalter transliteration to detect
+        # whether it was Latin / Arabizi input (needed later for Arabizi search).
+        _pre_transliterate_query = query
         if ":" not in query:
             query = transliterate("buckwalter", query, ignore="'_\"%*?#~[]{}:>+-|")
         # Normalize Uthmani diacritics (ALEF_WASLA, Uthmani sukun/stop marks) and
@@ -2201,6 +2265,25 @@ class Raw:
         # store un-vocalized standard Arabic — match when the query is in Uthmanic
         # script (e.g. ٱلۡهَدۡيِۖ should match the stored form الهدي).
         query = _NORMALIZE_WORD_QUERY(query)
+
+        # Arabizi search: when the query is non-Arabic Latin text (no Arabic
+        # script characters, no field filter), attempt to convert it to Arabic
+        # candidates and search those across the unvocalized word fields
+        # (word_standard, normalized, lemma).  Candidates are filtered against
+        # the set of unvocalized Quranic words so only known word forms produce
+        # hits; unrecognised Arabizi input falls back to the standard
+        # Buckwalter-parsed query.
+        _word_arabizi_candidates = []
+        if ":" not in _pre_transliterate_query and not _ARABIC_SCRIPT_RE.search(_pre_transliterate_query):
+            _raw_arabizi = _pre_transliterate_query.lower()
+            _word_arabizi_candidates = arabizi_to_arabic_list(
+                _raw_arabizi, ignore=_ARABIZI_IGNORE_CHARS
+            )
+            _qwords = quran_unvocalized_words()
+            if _qwords:
+                _word_arabizi_candidates = filter_candidates_by_wordset(
+                    _word_arabizi_candidates, _qwords
+                )
 
         empty_response = {
             "words": {},
@@ -2220,6 +2303,28 @@ class Raw:
             word_query = self._word_parser.parse(query)
         except Exception:
             return empty_response
+
+        # If Arabizi candidates were found, extend word_query with OR terms that
+        # target the unvocalized Arabic word fields so that e.g. "nuh" matches
+        # the indexed form نوح in word_standard / normalized / lemma.
+        if _word_arabizi_candidates:
+            _schema_names = set(self.QSE._schema.names())
+            _arabizi_target_fields = [
+                f for f in ["word_standard", "normalized", "lemma"]
+                if f in _schema_names
+            ]
+            _arabizi_word_terms = [
+                wquery.Term(f, c)
+                for c in _word_arabizi_candidates
+                for f in _arabizi_target_fields
+            ]
+            if _arabizi_word_terms:
+                _arabizi_q = (
+                    wquery.Or(_arabizi_word_terms)
+                    if len(_arabizi_word_terms) > 1
+                    else _arabizi_word_terms[0]
+                )
+                word_query = wquery.Or([word_query, _arabizi_q])
 
         # Restrict results to word children only.
         kind_filter = wquery.Term("kind", "word")
