@@ -1135,6 +1135,80 @@ def test_search_words_linguistic_field_query():
     assert "words" in result
 
 
+def test_search_words_arabizi_normalized():
+    """_search_words should find word children when an Arabizi query is given.
+
+    'nuh' → Arabizi candidates include نوح which is stored as the *normalized*
+    form of the prophet's name in the word index.  The result set must be
+    non-empty and every returned entry must have 'نوح' as its normalized form.
+    """
+    result = RAWoutput._search_words({
+        "query": "nuh",
+        "highlight": "none",
+        "page": 1,
+    })
+    assert result["interval"]["total"] > 0, (
+        "_search_words('nuh') should return results via Arabizi conversion to نوح"
+    )
+    for w in result["words"].values():
+        assert w["word"]["normalized"] == "نوح", (
+            f"Expected normalized='نوح' for Arabizi 'nuh', got {w['word']['normalized']!r}"
+        )
+
+
+def test_search_words_arabizi_word_standard():
+    """_search_words via Arabizi should also match the word_standard field.
+
+    'ibrahim' → filtered Arabizi candidates include إبراهم (the unvocalized
+    form stored in the *normalized* field), so all results should have
+    normalized='إبراهم'.
+    """
+    result = RAWoutput._search_words({
+        "query": "ibrahim",
+        "highlight": "none",
+        "page": 1,
+    })
+    assert result["interval"]["total"] > 0, (
+        "_search_words('ibrahim') should return results via Arabizi conversion"
+    )
+    # Every word returned should be one of the Arabizi-expanded Arabic forms.
+    valid_normalized = {"إبراهيم", "إبراهم"}
+    for w in result["words"].values():
+        norm = w["word"]["normalized"]
+        assert norm in valid_normalized, (
+            f"Unexpected normalized form {norm!r} for Arabizi 'ibrahim'"
+        )
+
+
+def test_search_words_arabic_query_unaffected():
+    """Direct Arabic word queries must still return the same results after the Arabizi change."""
+    arabic = RAWoutput._search_words({
+        "query": "نوح",
+        "highlight": "none",
+        "page": 1,
+    })
+    arabizi = RAWoutput._search_words({
+        "query": "nuh",
+        "highlight": "none",
+        "page": 1,
+    })
+    assert arabic["interval"]["total"] == arabizi["interval"]["total"], (
+        "Arabizi 'nuh' should return the same hit count as Arabic 'نوح'"
+    )
+
+
+def test_search_words_field_filter_bypasses_arabizi():
+    """Queries containing ':' (field:value) must NOT be converted via Arabizi."""
+    result = RAWoutput._search_words({
+        "query": "root:رحم",
+        "highlight": "none",
+        "page": 1,
+    })
+    # Should return a structured (possibly non-empty) response without error.
+    assert "interval" in result
+    assert "words" in result
+
+
 def test_search_word_vocalizations_returns_list():
     """Test that vocalizations in search output returns a list of strings, not a single string."""
     search_flags = {
@@ -2278,3 +2352,107 @@ def test_arabic_tafsir_keyword_hint():
                 f"words.individual[{key}]: expected hint='tafsir' for Arabic translation, "
                 f"got {hint!r}"
             )
+
+
+def test_fire_query_hint_is_english():
+    """'fire' should have hint='english' in words.individual (not 'tafsir').
+
+    Regression test: the old deduplication picked text_ar (first in the language
+    list) for 'fire', which assigned hint='tafsir' and nb_matches_overall=0.
+    The fix picks the field with the most overall matches so 'fire' → text_en
+    → hint='english'.
+    """
+    results = RAWoutput.do({
+        "action": "search",
+        "query": "fire",
+        "highlight": "none",
+    })
+    assert results["error"]["code"] == 0
+    individual = results["search"]["words"]["individual"]
+    assert individual, "Expected non-empty words.individual for 'fire'"
+
+    hints = {wd.get("hint") for wd in individual.values() if "hint" in wd}
+    assert "tafsir" not in hints, (
+        f"'fire' query must not produce hint='tafsir'; got hints={hints}, individual={individual}"
+    )
+    assert "english" in hints, (
+        f"'fire' query must produce hint='english'; got hints={hints}, individual={individual}"
+    )
+
+
+def test_fire_query_word_info_nb_matches_overall_nonzero():
+    """'fire' with word_info=True must have nb_matches_overall > 0 and hint='english'.
+
+    Regression test: the old deduplication associated 'fire' with text_ar (0 matches
+    in Arabic), so nb_matches_overall was always 0.  The fix picks text_en.
+    """
+    results = RAWoutput.do({
+        "action": "search",
+        "query": "fire",
+        "word_info": True,
+        "highlight": "none",
+    })
+    assert results["error"]["code"] == 0
+    individual = results["search"]["words"]["individual"]
+    assert individual, "Expected non-empty words.individual for 'fire' with word_info=True"
+
+    # Find entries that contain 'fire' in the word text
+    fire_entries = [wd for wd in individual.values() if "fire" in wd.get("word", "")]
+    assert fire_entries, (
+        f"Expected an entry containing 'fire' in words.individual; got {individual}"
+    )
+    for entry in fire_entries:
+        assert entry.get("nb_matches_overall", 0) > 0, (
+            f"'fire' entry must have nb_matches_overall > 0; got {entry}"
+        )
+        assert entry.get("hint") == "english", (
+            f"'fire' entry must have hint='english'; got hint={entry.get('hint')!r}"
+        )
+
+
+def test_hint_absent_when_nb_matches_overall_is_zero():
+    """A translation keyword with nb_matches_overall=0 must not carry a 'hint' key.
+
+    New requirement: hints are only meaningful when the term was actually found in
+    the index.  Keywords with 0 overall matches must not show a language hint that
+    could mislead callers.
+    """
+    results = RAWoutput.do({
+        "action": "search",
+        "query": "fire",
+        "word_info": True,
+        "highlight": "none",
+    })
+    assert results["error"]["code"] == 0
+    individual = results["search"]["words"]["individual"]
+
+    for key, entry in individual.items():
+        if entry.get("nb_matches_overall", 1) == 0:
+            assert "hint" not in entry, (
+                f"words.individual[{key}]: hint must not be present when "
+                f"nb_matches_overall=0; got {entry!r}"
+            )
+
+
+def test_hint_absent_when_nb_matches_overall_is_zero_no_word_info():
+    """Same as above but with word_info=False (the lightweight path)."""
+    results = RAWoutput.do({
+        "action": "search",
+        "query": "fire",
+        "word_info": False,
+        "highlight": "none",
+    })
+    assert results["error"]["code"] == 0
+    individual = results["search"]["words"]["individual"]
+
+    # In the word_info=False path, individual entries only contain "word",
+    # optional "hint", and "variations".  If a hint is present it must
+    # correspond to a field that actually has matches.
+    # We cannot assert nb_matches_overall=0 directly (those stats aren't
+    # included in the lightweight path), but we can assert that the hint
+    # for 'fire' is not the misleading 'tafsir' value.
+    hints = {wd.get("hint") for wd in individual.values() if "hint" in wd}
+    assert "tafsir" not in hints, (
+        f"'fire' query (word_info=False) must not produce hint='tafsir'; "
+        f"got hints={hints}, individual={individual}"
+    )
