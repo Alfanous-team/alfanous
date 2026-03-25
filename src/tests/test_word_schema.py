@@ -418,3 +418,154 @@ def test_number_name_arabic(fields_by_name):
     """number field must have name_arabic = العدد."""
     assert fields_by_name["number"]["name_arabic"] == "العدد"
 
+
+# ---------------------------------------------------------------------------
+# transformer.py — inference rules (TXT reader path)
+# Tests use _load_corpus_words_txt with a synthetic in-memory corpus file.
+# ---------------------------------------------------------------------------
+
+def _make_words_loader():
+    """Return a callable that runs _load_corpus_words_txt on an in-memory file."""
+    import tempfile, os
+    from alfanous_import import transformer as _t
+
+    def load(lines):
+        """Write *lines* to a temp file and return the result dict."""
+        content = "\n".join(lines) + "\n"
+        with tempfile.NamedTemporaryFile(mode="w", suffix=".txt",
+                                        delete=False, encoding="utf-8") as fh:
+            fh.write(content)
+            name = fh.name
+        try:
+            return _t._load_corpus_words_txt(name)
+        finally:
+            os.unlink(name)
+
+    return load
+
+
+@pytest.fixture(scope="module")
+def load_words():
+    return _make_words_loader()
+
+
+def test_infer_voice_active_for_verb(load_words):
+    """Verbs with no ACT/PASS tag must get voice inferred as مبني للمعلوم."""
+    # Perfect verb, no voice tag
+    result = load_words([
+        "(1:1:1:1)\tktb\tV\tSTEM|POS:V|LEM:ktb|ROOT:ktb|PERF|3|M|S",
+    ])
+    words = result[(1, 1)]
+    assert len(words) == 1
+    assert words[0]["voice"] == "مبني للمعلوم"
+
+
+def test_infer_voice_passive_not_overridden(load_words):
+    """Verbs with an explicit PASS tag must keep مبني للمجهول."""
+    result = load_words([
+        "(1:1:1:1)\tktb\tV\tSTEM|POS:V|LEM:ktb|ROOT:ktb|PERF|PASS|3|M|S",
+    ])
+    words = result[(1, 1)]
+    assert words[0]["voice"] == "مبني للمجهول"
+
+
+def test_infer_mood_indicative_for_impf(load_words):
+    """Imperfect verbs with no MOOD: tag must get mood inferred as مرفوع."""
+    result = load_words([
+        "(1:1:1:1)\tyktb\tV\tSTEM|POS:V|LEM:ktb|ROOT:ktb|IMPF|3|M|S",
+    ])
+    words = result[(1, 1)]
+    assert words[0]["mood"] == "مرفوع"
+
+
+def test_infer_mood_not_applied_to_perf(load_words):
+    """Perfect verbs must NOT have mood inferred (mood only applies to IMPF)."""
+    result = load_words([
+        "(1:1:1:1)\tktb\tV\tSTEM|POS:V|LEM:ktb|ROOT:ktb|PERF|3|M|S",
+    ])
+    words = result[(1, 1)]
+    assert words[0]["mood"] is None
+
+
+def test_infer_mood_explicit_subj_kept(load_words):
+    """Imperfect verbs with explicit MOOD:SUBJ must keep منصوب."""
+    result = load_words([
+        "(1:1:1:1)\tyktb\tV\tSTEM|POS:V|LEM:ktb|ROOT:ktb|IMPF|MOOD:SUBJ|3|M|S",
+    ])
+    words = result[(1, 1)]
+    assert words[0]["mood"] == "منصوب"
+
+
+def test_infer_state_definite_for_noun(load_words):
+    """Nouns with no DEF/INDEF tag must get state inferred as معرفة."""
+    result = load_words([
+        "(1:1:1:1)\tAlktAb\tN\tSTEM|POS:N|LEM:ktAb|ROOT:ktb|M|NOM",
+    ])
+    words = result[(1, 1)]
+    assert words[0]["state"] == "معرفة"
+
+
+def test_infer_state_definite_for_nominal(load_words):
+    """Adjectives (Nominals) with no state tag must get state inferred as معرفة."""
+    result = load_words([
+        "(1:1:1:1)\tkbyr\tADJ\tSTEM|POS:ADJ|LEM:kbyr|ROOT:kbr|M|NOM",
+    ])
+    words = result[(1, 1)]
+    assert words[0]["state"] == "معرفة"
+
+
+def test_infer_state_indefinite_not_overridden(load_words):
+    """Nouns with explicit INDEF tag must keep نكرة."""
+    result = load_words([
+        "(1:1:1:1)\tktAb\tN\tSTEM|POS:N|LEM:ktAb|ROOT:ktb|M|NOM|INDEF",
+    ])
+    words = result[(1, 1)]
+    assert words[0]["state"] == "نكرة"
+
+
+def test_infer_number_singular_for_noun(load_words):
+    """Nouns with no S/D/P number tag must get number inferred as singular."""
+    result = load_words([
+        "(1:1:1:1)\tAlktAb\tN\tSTEM|POS:N|LEM:ktAb|ROOT:ktb|M|NOM",
+    ])
+    words = result[(1, 1)]
+    assert words[0]["number"] == "singular"
+
+
+def test_infer_number_singular_for_nominal(load_words):
+    """Adjectives (Nominals) with no number tag must get number inferred as singular."""
+    result = load_words([
+        "(1:1:1:1)\tkbyr\tADJ\tSTEM|POS:ADJ|LEM:kbyr|ROOT:kbr|M|NOM",
+    ])
+    words = result[(1, 1)]
+    assert words[0]["number"] == "singular"
+
+
+def test_infer_number_plural_not_overridden(load_words):
+    """Nouns with explicit P tag must keep plural."""
+    result = load_words([
+        "(1:1:1:1)\tktb\tN\tSTEM|POS:N|LEM:ktAb|ROOT:ktb|M|P|NOM",
+    ])
+    words = result[(1, 1)]
+    assert words[0]["number"] == "plural"
+
+
+def test_infer_number_dual_not_overridden(load_words):
+    """Nouns with explicit D tag must keep dual."""
+    result = load_words([
+        "(1:1:1:1)\tktAbAn\tN\tSTEM|POS:N|LEM:ktAb|ROOT:ktb|M|D|NOM",
+    ])
+    words = result[(1, 1)]
+    assert words[0]["number"] == "dual"
+
+
+def test_no_number_inference_for_verb(load_words):
+    """Verbs must NOT have number inferred (number is explicit in PGN for verbs)."""
+    result = load_words([
+        "(1:1:1:1)\tktb\tV\tSTEM|POS:V|LEM:ktb|ROOT:ktb|PERF|3|M",
+    ])
+    words = result[(1, 1)]
+    # No number PGN (M is gender, not number) → should NOT get singular inferred
+    # because type is "Verbs", not "Nouns"/"Nominals"
+    assert words[0]["number"] is None
+

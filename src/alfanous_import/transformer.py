@@ -242,10 +242,18 @@ def _load_corpus_words_txt(corpus_path):
             # absence of any voice tag means Active voice.
             if stem_feats.get("type") == "Verbs" and entry["voice"] is None:
                 entry["voice"] = VERB["ACT"][0]  # "مبني للمعلوم"
-            # Infer state for nouns: corpus only tags INDEF (نكرة) explicitly;
-            # absence of any state tag means Definite (معرفة).
-            if stem_feats.get("type") == "Nouns" and entry["state"] is None:
+            # Infer mood for imperfect verbs: corpus only tags SUBJ/JUS/ENG
+            # explicitly; absence of a mood tag means Indicative (default).
+            if entry["aspect"] == VERB["IMPF"][0] and entry["mood"] is None:
+                entry["mood"] = VERB["IND"][0]  # "مرفوع"
+            # Infer state for nouns and adjectives/numerals: corpus only tags
+            # INDEF (نكرة) explicitly; absence means Definite (معرفة).
+            if stem_feats.get("type") in ("Nouns", "Nominals") and entry["state"] is None:
                 entry["state"] = NOM["DEF"][0]  # "معرفة"
+            # Infer number for nouns and adjectives/numerals: corpus only tags
+            # D (dual) and P (plural) explicitly; absence means singular (مفرد).
+            if stem_feats.get("type") in ("Nouns", "Nominals") and entry["number"] is None:
+                entry["number"] = PGN["S"]  # "singular"
             result[(sura, aya)].append(entry)
 
         logging.info("Loaded %d word occurrences from corpus.", gid)
@@ -322,10 +330,18 @@ def _load_corpus_words_xml(corpus_path):
             # absence of any voice tag means Active voice.
             if entry.get("type") == "Verbs" and entry["voice"] is None:
                 entry["voice"] = "مبني للمعلوم"
-            # Infer state for nouns: corpus only tags INDEF (نكرة) explicitly;
-            # absence of any state tag means Definite (معرفة).
-            if entry.get("type") == "Nouns" and entry["state"] is None:
+            # Infer mood for imperfect verbs: corpus only tags SUBJ/JUS/ENG
+            # explicitly; absence of a mood tag means Indicative (default).
+            if entry.get("aspect") == "فعل مضارع" and entry["mood"] is None:
+                entry["mood"] = "مرفوع"
+            # Infer state for nouns and adjectives/numerals: corpus only tags
+            # INDEF (نكرة) explicitly; absence means Definite (معرفة).
+            if entry.get("type") in ("Nouns", "Nominals") and entry["state"] is None:
                 entry["state"] = "معرفة"
+            # Infer number for nouns and adjectives/numerals: corpus only tags
+            # D (dual) and P (plural) explicitly; absence means singular (مفرد).
+            if entry.get("type") in ("Nouns", "Nominals") and entry["number"] is None:
+                entry["number"] = "singular"
             result[(iteration["sura_id"], iteration["aya_id"])].append(entry)
 
         logging.info("Loaded %d word occurrences from corpus.", gid)
