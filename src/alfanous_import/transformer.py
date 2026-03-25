@@ -140,7 +140,8 @@ def _load_corpus_words_txt(corpus_path):
             elif part in ('ACT', 'PASS'):
                 f['voice'] = VERB.get(part, (None, None))[0]
             elif part in ('(I)', '(II)', '(III)', '(IV)', '(V)', '(VI)',
-                          '(VII)', '(VIII)', '(IX)', '(X)', '(XI)', '(XII)'):
+                          '(VII)', '(VIII)', '(IX)', '(X)', '(XI)', '(XII)',
+                          '(Q1)', '(Q2)', '(Q3)', '(Q4)'):
                 f['form'] = VERB.get(part, (None, None))[0]
             elif part == 'VN':
                 f['derivation'] = DERIV.get('VN', (None, None))[0]

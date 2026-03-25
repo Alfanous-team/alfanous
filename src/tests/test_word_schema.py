@@ -361,10 +361,13 @@ def _make_stem_features_parser():
         BUCKWALTER2UNICODE, POS, PGN, PGNclass, VERB, NOM, DERIV, PREFIX,
     )
     from alfanous_import.quran_corpus_reader.main import _INV_POS
+    # _b2u is a helper defined in the same outer function scope; replicate it
+    def _b2u(s):
+        return "".join(BUCKWALTER2UNICODE.get(ch, ch) for ch in s)
     exec(fn_src, {
         "BUCKWALTER2UNICODE": BUCKWALTER2UNICODE, "POS": POS, "PGN": PGN,
         "PGNclass": PGNclass, "VERB": VERB, "NOM": NOM, "DERIV": DERIV,
-        "PREFIX": PREFIX, "_INV_POS": _INV_POS,
+        "PREFIX": PREFIX, "_INV_POS": _INV_POS, "_b2u": _b2u,
     }, ns)
     return ns["_parse_stem_features"]
 
@@ -568,4 +571,197 @@ def test_no_number_inference_for_verb(load_words):
     # No number PGN (M is gender, not number) → should NOT get singular inferred
     # because type is "Verbs", not "Nouns"/"Nominals"
     assert words[0]["number"] is None
+
+
+# ---------------------------------------------------------------------------
+# constants.py — missing POS particle tags (CIRC, COM, INT, RSLT)
+# ---------------------------------------------------------------------------
+
+def test_pos_circ():
+    """CIRC must map to حرف حال / Circumstantial particle."""
+    from alfanous_import.quran_corpus_reader.constants import POS
+    assert POS["CIRC"] == ("حرف حال", "Circumstantial particle")
+
+
+def test_pos_com():
+    """COM must map to واو المعية / Comitative particle."""
+    from alfanous_import.quran_corpus_reader.constants import POS
+    assert POS["COM"] == ("واو المعية", "Comitative particle")
+
+
+def test_pos_int():
+    """INT must map to حرف تفسير / Particle of interpretation."""
+    from alfanous_import.quran_corpus_reader.constants import POS
+    assert POS["INT"] == ("حرف تفسير", "Particle of interpretation")
+
+
+def test_pos_rslt():
+    """RSLT must map to حرف واقع في جواب الشرط / Result particle."""
+    from alfanous_import.quran_corpus_reader.constants import POS
+    assert POS["RSLT"] == ("حرف واقع في جواب الشرط", "Result particle")
+
+
+def test_pos_circ_com_int_rslt_in_posclass():
+    """CIRC, COM, INT, RSLT must all appear in POSclass Particles."""
+    from alfanous_import.quran_corpus_reader.constants import POSclass
+    particles = POSclass["Particles"]
+    for tag in ("CIRC", "COM", "INT", "RSLT"):
+        assert tag in particles, f"'{tag}' missing from POSclass['Particles']"
+
+
+def test_inv_pos_circ_com_int_rslt():
+    """_INV_POS must resolve CIRC, COM, INT, RSLT to the 'Particles' category."""
+    from alfanous_import.quran_corpus_reader.main import _INV_POS
+    for tag in ("CIRC", "COM", "INT", "RSLT"):
+        assert _INV_POS.get(tag) == ["Particles"], (
+            f"_INV_POS['{tag}'] should be ['Particles']"
+        )
+
+
+# ---------------------------------------------------------------------------
+# constants.py — quadriliteral verb forms (Q1)–(Q4)
+# ---------------------------------------------------------------------------
+
+def test_verb_quadriliteral_forms():
+    """(Q1)–(Q4) must have correct Arabic patterns and English descriptions."""
+    from alfanous_import.quran_corpus_reader.constants import VERB
+    expected = {
+        "(Q1)": ("فَعْلَلَ",     "First quadriliteral form"),
+        "(Q2)": ("تَفَعْلَلَ",   "Second quadriliteral form"),
+        "(Q3)": ("اِفْعَنْلَلَ", "Third quadriliteral form"),
+        "(Q4)": ("اِفْعَلَلَّ",  "Fourth quadriliteral form"),
+    }
+    for code, (arabic, english) in expected.items():
+        assert VERB[code][0] == arabic,  f"VERB['{code}'][0] should be '{arabic}'"
+        assert VERB[code][1] == english, f"VERB['{code}'][1] should be '{english}'"
+
+
+def test_verbclass_includes_quadriliteral():
+    """VERBclass['form'] must include (Q1)–(Q4)."""
+    from alfanous_import.quran_corpus_reader.constants import VERBclass
+    for q in ("(Q1)", "(Q2)", "(Q3)", "(Q4)"):
+        assert q in VERBclass["form"], f"'{q}' missing from VERBclass['form']"
+
+
+# ---------------------------------------------------------------------------
+# constants.py — PREFIX dict: missing waw and fa prefix tags
+# ---------------------------------------------------------------------------
+
+def test_prefix_new_waw_entries():
+    """w:CONJ+, w:REM+, w:CIRC+, w:SUP+, w:COM+ must be in PREFIX with (و, wa)."""
+    from alfanous_import.quran_corpus_reader.constants import PREFIX
+    for tag in ("w:CONJ+", "w:REM+", "w:CIRC+", "w:SUP+", "w:COM+"):
+        assert tag in PREFIX, f"'{tag}' missing from PREFIX"
+        assert PREFIX[tag] == ("و", "wa"), f"PREFIX['{tag}'] should be ('و', 'wa')"
+
+
+def test_prefix_new_fa_entries():
+    """f:RSLT+ and f:SUP+ must be in PREFIX with (ف, fa)."""
+    from alfanous_import.quran_corpus_reader.constants import PREFIX
+    for tag in ("f:RSLT+", "f:SUP+"):
+        assert tag in PREFIX, f"'{tag}' missing from PREFIX"
+        assert PREFIX[tag] == ("ف", "fa"), f"PREFIX['{tag}'] should be ('ف', 'fa')"
+
+
+# ---------------------------------------------------------------------------
+# constants.py — PREFIXclass: correct category assignments
+# ---------------------------------------------------------------------------
+
+def test_prefixclass_w_p_is_preposition():
+    """w:P+ must be in PREFIXclass 'preposition', not 'resumption'."""
+    from alfanous_import.quran_corpus_reader.constants import PREFIXclass
+    assert "w:P+" in PREFIXclass["preposition"]
+    assert "w:P+" not in PREFIXclass.get("resumption", [])
+
+
+def test_prefixclass_resumption_uses_rem_tags():
+    """PREFIXclass 'resumption' must contain f:REM+ and w:REM+."""
+    from alfanous_import.quran_corpus_reader.constants import PREFIXclass
+    resumption = PREFIXclass["resumption"]
+    assert "f:REM+" in resumption
+    assert "w:REM+" in resumption
+
+
+def test_prefixclass_conjunction_includes_wconj():
+    """PREFIXclass 'conjunction' must include w:CONJ+."""
+    from alfanous_import.quran_corpus_reader.constants import PREFIXclass
+    assert "w:CONJ+" in PREFIXclass["conjunction"]
+
+
+def test_prefixclass_new_categories():
+    """New PREFIXclass categories must contain the right tags."""
+    from alfanous_import.quran_corpus_reader.constants import PREFIXclass
+    assert "w:CIRC+" in PREFIXclass["circumstantial"]
+    assert "w:COM+"  in PREFIXclass["comitative"]
+    assert "f:RSLT+" in PREFIXclass["result"]
+    assert "f:SUP+"  in PREFIXclass["supplemental"]
+    assert "w:SUP+"  in PREFIXclass["supplemental"]
+
+
+def test_all_prefix_tags_have_category():
+    """Every key in PREFIX must appear in _INV_PREFIX (PREFIXclass is complete)."""
+    from alfanous_import.quran_corpus_reader.constants import PREFIX
+    from alfanous_import.quran_corpus_reader.main import _INV_PREFIX
+    missing = [t for t in PREFIX if t not in _INV_PREFIX]
+    assert not missing, f"Prefix tags missing from PREFIXclass: {missing}"
+
+
+# ---------------------------------------------------------------------------
+# transformer.py — quadriliteral forms parsed correctly by _parse_stem_features
+# ---------------------------------------------------------------------------
+
+def test_parse_stem_q1_form(parse_stem):
+    """(Q1) form tag must produce Arabic pattern فَعْلَلَ."""
+    feats = parse_stem("STEM|POS:V|LEM:dHrj|(Q1)|PERF|3|M|S")
+    assert feats.get("form") == "فَعْلَلَ"
+
+
+def test_parse_stem_q2_form(parse_stem):
+    """(Q2) form tag must produce Arabic pattern تَفَعْلَلَ."""
+    feats = parse_stem("STEM|POS:V|LEM:tdHrj|(Q2)|IMPF|3|M|S")
+    assert feats.get("form") == "تَفَعْلَلَ"
+
+
+def test_parse_stem_q3_form(parse_stem):
+    """(Q3) form tag must produce Arabic pattern اِفْعَنْلَلَ."""
+    feats = parse_stem("STEM|POS:V|(Q3)|PERF|3|M|S")
+    assert feats.get("form") == "اِفْعَنْلَلَ"
+
+
+def test_parse_stem_q4_form(parse_stem):
+    """(Q4) form tag must produce Arabic pattern اِفْعَلَلَّ."""
+    feats = parse_stem("STEM|POS:V|(Q4)|PERF|3|M|S")
+    assert feats.get("form") == "اِفْعَلَلَّ"
+
+
+# ---------------------------------------------------------------------------
+# transformer.py — CIRC/COM/INT/RSLT POS tags parsed correctly
+# ---------------------------------------------------------------------------
+
+def test_parse_stem_circ_pos(parse_stem):
+    """POS:CIRC must set arabicpos to حرف حال and type to Particles."""
+    feats = parse_stem("STEM|POS:CIRC")
+    assert feats.get("arabicpos") == "حرف حال"
+    assert feats.get("type") == "Particles"
+
+
+def test_parse_stem_com_pos(parse_stem):
+    """POS:COM must set arabicpos to واو المعية and type to Particles."""
+    feats = parse_stem("STEM|POS:COM")
+    assert feats.get("arabicpos") == "واو المعية"
+    assert feats.get("type") == "Particles"
+
+
+def test_parse_stem_int_pos(parse_stem):
+    """POS:INT must set arabicpos to حرف تفسير and type to Particles."""
+    feats = parse_stem("STEM|POS:INT")
+    assert feats.get("arabicpos") == "حرف تفسير"
+    assert feats.get("type") == "Particles"
+
+
+def test_parse_stem_rslt_pos(parse_stem):
+    """POS:RSLT must set arabicpos to حرف واقع في جواب الشرط and type to Particles."""
+    feats = parse_stem("STEM|POS:RSLT")
+    assert feats.get("arabicpos") == "حرف واقع في جواب الشرط"
+    assert feats.get("type") == "Particles"
 

@@ -91,6 +91,8 @@ POS = {
 "AVR":( "حرف ردع", "Aversion particle" ),
 "CAUS":( "حرف سببية", "Particle of cause" ),
 "CERT":( "حرف تحقيق", "Particle of certainty" ),
+"CIRC":( "حرف حال", "Circumstantial particle" ),
+"COM":( "واو المعية", "Comitative particle" ),
 "COND":( "حرف شرط", "Conditional particle" ),
 "EQ":( "حرف تسوية", "Equalization particle" ),
 "EXH":( "حرف تحضيض", "Exhortation particle" ),
@@ -98,6 +100,7 @@ POS = {
 "EXP":( "أداة استثناء", "Exceptive particle" ),
 "FUT":( "حرف استقبال", "Future particle" ),
 "INC":( "حرف ابتداء", "Inceptive particle" ),
+"INT":( "حرف تفسير", "Particle of interpretation" ),
 "INTG":( "حرف استفهام", "Interogative particle" ),
 "NEG":( "حرف نفي", "Negative particle" ),
 "PREV":( "حرف كاف", "Preventive particle" ),
@@ -105,6 +108,7 @@ POS = {
 "REM":( "حرف استئنافية", "Resumption particle" ),
 "RES":( "أداة حصر", "Restriction particle" ),
 "RET":( "حرف اضراب", "Retraction particle" ),
+"RSLT":( "حرف واقع في جواب الشرط", "Result particle" ),
 "SUP":( "حرف زائد", "Supplemental particle" ),
 "SUR":( "حرف فجاءة", "Surprise particle" ),
 "VOC":( "حرف نداء", "Vocative particle" ),
@@ -120,23 +124,27 @@ POSclass = {
 "Prepositions":["P"],
 "lām Prefixes":["EMPH", "IMPV", "PRP"],
 "Conjunctions":["CONJ", "SUB"],
-"Particles":["ACC", "AMD", "ANS", "AVR", "CAUS", "CERT", "COND", "EQ", "EXH", "EXL", "EXP", "FUT", "INC", "INTG", "NEG", "PREV", "PRO", "REM", "RES", "RET", "SUP", "SUR", "VOC"],
+"Particles":["ACC", "AMD", "ANS", "AVR", "CAUS", "CERT", "CIRC", "COM", "COND", "EQ", "EXH", "EXL", "EXP", "FUT", "INC", "INT", "INTG", "NEG", "PREV", "PRO", "REM", "RES", "RET", "RSLT", "SUP", "SUR", "VOC"],
 "Disconnected Letters":["INL"]
 }
 
 PREFIXclass = {
 "determiner":["Al+"],
-"preposition":["bi+", "ka+", "ta+", "l:P+"],
+"preposition":["bi+", "ka+", "ta+", "l:P+", "w:P+"],
 "future particle":["sa+"],
 "vocative particle":["ya+", "ha+"],
 "interrogative particle":["A:INTG+"],
 "equalization particle":["A:EQ+"],
-"conjunction":["wa+", "f:CONJ+"],
-"resumption":["w:P+"],
+"conjunction":["wa+", "f:CONJ+", "w:CONJ+"],
+"resumption":["f:REM+", "w:REM+"],
 "cause":["f:CAUS+"],
 "emphasis":["l:EMPH+"],
 "purpose":["l:PRP+"],
 "imperative":["l:IMPV+"],
+"circumstantial":["w:CIRC+"],
+"supplemental":["f:SUP+", "w:SUP+"],
+"comitative":["w:COM+"],
+"result":["f:RSLT+"],
 "--undefined--":["A+", "fa+"]
 }
 
@@ -153,9 +161,16 @@ PREFIX = {
 "A:EQ+":( "أ", "alif" ),
 "wa+":( "و", "wa" ),
 "w:P+":( "و", "wa" ),
+"w:CONJ+":( "و", "wa" ),
+"w:REM+":( "و", "wa" ),
+"w:CIRC+":( "و", "wa" ),
+"w:SUP+":( "و", "wa" ),
+"w:COM+":( "و", "wa" ),
 "fa+":( "ف", "fa" ),
 "f:CONJ+":( "ف", "fa" ),
 "f:REM+":( "ف", "fa" ),
+"f:RSLT+":( "ف", "fa" ),
+"f:SUP+":( "ف", "fa" ),
 "f:CAUS+":( "ف", "fa" ),
 "l:P+":( "ل", "lām" ),
 "l:EMPH+":( "ل", "lām" ),
@@ -184,7 +199,8 @@ VERBclass = {
 "aspect":["PERF", "IMPF", "IMPV"],
 "mood":["IND", "SUBJ", "JUS", "ENG"],
 "voice":["ACT", "PASS"],
-"form":["(I)", "(II)", "(III)", "(IV)", "(V)", "(VI)", "(VII)", "(VIII)", "(IX)", "(X)", "(XI)", "(XII)"]
+"form":["(I)", "(II)", "(III)", "(IV)", "(V)", "(VI)", "(VII)", "(VIII)", "(IX)", "(X)", "(XI)", "(XII)",
+        "(Q1)", "(Q2)", "(Q3)", "(Q4)"]
 }
 
 VERB = {
@@ -208,7 +224,11 @@ VERB = {
 "(IX)":  ( "اِفْعَلَّ",    "Ninth form" ),
 "(X)":   ( "اِسْتَفْعَلَ", "Tenth form" ),
 "(XI)":  ( "اِفْعَالَّ",   "Eleventh form" ),
-"(XII)": ( "اِفْعَوْعَلَ", "Twelfth form" )
+"(XII)": ( "اِفْعَوْعَلَ", "Twelfth form" ),
+"(Q1)":  ( "فَعْلَلَ",     "First quadriliteral form" ),
+"(Q2)":  ( "تَفَعْلَلَ",   "Second quadriliteral form" ),
+"(Q3)":  ( "اِفْعَنْلَلَ", "Third quadriliteral form" ),
+"(Q4)":  ( "اِفْعَلَلَّ",  "Fourth quadriliteral form" ),
 }
 
 DERIVclass = {
