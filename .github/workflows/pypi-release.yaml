@@ -6,6 +6,9 @@ on:
       - 'v*'
   workflow_dispatch:
 
+permissions:
+  contents: write
+
 jobs:
   build-and-publish:
     runs-on: ubuntu-latest
@@ -73,3 +76,14 @@ jobs:
         password: ${{ secrets.ALFANOUS_MCP_PYPI_TOKEN }}
         packages-dir: src/alfanous_mcp/dist/
         skip-existing: true
+
+    - name: Create GitHub Release and upload artifacts
+      if: startsWith(github.ref, 'refs/tags/v')
+      uses: softprops/action-gh-release@v2
+      with:
+        files: |
+          src/dist/*.whl
+          src/dist/*.tar.gz
+          src/alfanous_mcp/dist/*.whl
+          src/alfanous_mcp/dist/*.tar.gz
+        generate_release_notes: true
