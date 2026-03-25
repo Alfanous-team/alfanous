@@ -1240,25 +1240,32 @@ class Raw:
             res, termz, searcher, _deriv_expansion = self.QSE.search_all(aya_query, limit=self._defaults["results_limit"]["aya"], sortedby=sortedby, reverse=reverse, facets=facets_list, filter_dict=filter_dict, fuzzy=fuzzy, fuzzy_maxdist=fuzzy_maxdist, derivation_level=derivation_level, timelimit=timelimit)
             terms = [term[1] for term in termz if term[0] in ("aya", "aya_", "aya_ac")]
             terms = terms[:self._defaults["maxkeywords"]]
-            # When derivation_level >= 2, matched terms include _lemma or
-            # aya_root field values (lemma/root strings).  These don't appear
-            # in the aya text, so they can't be used for highlighting directly.
-            # Expand them to actual aya words via the cached derivation lookup
-            # and add those words to the highlight terms.
-            if derivation_level >= 2 and _deriv_expansion:
+            # When derivation_level >= 1, matched terms include aya_stem /
+            # aya_lemma / aya_root field values which don't appear verbatim in
+            # the aya text.  Expand them back to actual word forms via the
+            # engine-level lookup table so those words are highlighted.
+            if derivation_level >= 1 and _deriv_expansion:
                 from alfanous.query_plugins import _collect_derivations_two_pass, _UTHMANI_ANNOTATION_RE
-                _deriv_key = "lemma" if derivation_level == 2 else "root"
-                _deriv_key_values = set()
+                _deriv_field_key_map = {
+                    "aya_stem":  "lemma",
+                    "aya_lemma": "lemma",
+                    "aya_root":  "root",
+                }
+                _deriv_key_values: "dict[str, set]" = {}
                 for _df, _dt in _deriv_expansion:
-                    if _df in ("aya_lemma", "aya_root"):
-                        _deriv_key_values.add(_dt)
+                    _dkey = _deriv_field_key_map.get(_df)
+                    if _dkey:
+                        _deriv_key_values.setdefault(_dkey, set()).add(_dt)
                 if _deriv_key_values:
+                    _lookup_table = getattr(self.QSE, '_word_lookup_table', None)
                     try:
-                        _expanded_words = [
-                            _UTHMANI_ANNOTATION_RE.sub('', w)
-                            for w in _collect_derivations_two_pass(_deriv_key_values, _deriv_key)
-                            if w
-                        ]
+                        _expanded_words = []
+                        for _dkey, _dvals in _deriv_key_values.items():
+                            for w in _collect_derivations_two_pass(
+                                _dvals, _dkey, lookup_table=_lookup_table
+                            ):
+                                if w:
+                                    _expanded_words.append(_UTHMANI_ANNOTATION_RE.sub('', w))
                         terms.extend(_expanded_words)
                         # Also add expansion words to termz so they appear in
                         # words.individual (requirement: "anything highlighted
@@ -2426,49 +2433,52 @@ class Raw:
                 word_query = wquery.Or([word_query, _arabizi_q])
 
         # Derivation-level expansion for word search.
-        # Level 1 (stem)  → also search word_stem field (corpus-derived stem)
-        # Level 2 (lemma) → also search word_lemma field (normalized corpus lemma)
-        # Level 3 (root)  → also search the root field (Buckwalter root)
+        # Level 1 (stem)  → search word_stem (QStandardAnalyzer) + Snowball stem fallback
+        # Level 2 (lemma) → search word_lemma (QStandardAnalyzer)
+        # Level 3 (root)  → search root field (ID — normalize directly)
         _WORD_DERIV_FIELD_MAP = {
-            1: ("word_stem",  None),
-            2: ("word_lemma", "lemma"),
-            3: ("root",       "root"),
+            1: "word_stem",
+            2: "word_lemma",
+            3: "root",
         }
         if _dl_flag >= 1:
             _schema_names_set = set(self.QSE._schema.names())
-            _dinfo = _WORD_DERIV_FIELD_MAP.get(_dl_flag)
-            if _dinfo:
-                _dfield, _dkey = _dinfo
-                if _dfield in _schema_names_set:
-                    _deriv_extra = []
-                    if _dkey is None:
-                        # Level 1 (stem): re-parse query targeting word_stem.
-                        # word_stem uses QStandardAnalyzer (strips tashkeel).
-                        _wfield_obj = self.QSE._schema[_dfield]
-                        for _ft, _fterm in word_query.all_terms():
-                            if _is_arabic_text(_fterm):
-                                for _tok in _wfield_obj.analyzer(_fterm, mode="query"):
+            _dfield = _WORD_DERIV_FIELD_MAP.get(_dl_flag)
+            if _dfield and _dfield in _schema_names_set:
+                _deriv_extra = []
+                _seen = set()
+                _wfield_obj = self.QSE._schema[_dfield]
+                _wfield_analyzer = getattr(_wfield_obj, 'analyzer', None)
+                # For level 1, also load the Snowball Arabic stemmer as fallback.
+                _snowball_stemmer = None
+                if _dl_flag == 1:
+                    from alfanous.query_plugins import _get_arabic_stemmer as _gas
+                    _snowball_stemmer = _gas()
+                for _ft, _fterm in word_query.all_terms():
+                    if _is_arabic_text(_fterm):
+                        if _wfield_analyzer:
+                            # TEXT field: apply field's own analyzer (QStandardAnalyzer)
+                            for _tok in _wfield_analyzer(_fterm, mode="query"):
+                                if _tok.text not in _seen:
+                                    _seen.add(_tok.text)
                                     _deriv_extra.append(wquery.Term(_dfield, _tok.text))
-                    else:
-                        # Level 2/3: look up lemma/root key values for each
-                        # Arabic query term and search the corresponding field.
-                        from alfanous.query_plugins import _lookup_key_values
-                        _wfield_obj = self.QSE._schema[_dfield]
-                        _seen_kv = set()
-                        for _ft, _fterm in word_query.all_terms():
-                            if _is_arabic_text(_fterm):
-                                for _kv in _lookup_key_values(_fterm, _dkey):
-                                    if not _kv or _kv in _seen_kv:
-                                        continue
-                                    _seen_kv.add(_kv)
-                                    for _tok in _wfield_obj.analyzer(_kv, mode="query"):
-                                        _deriv_extra.append(
-                                            wquery.Term(_dfield, _tok.text)
-                                        )
-                    if _deriv_extra:
-                        word_query = wquery.Or(
-                            [word_query] + _deriv_extra
-                        )
+                            # Level 1 fallback: Snowball Arabic stem (only if different)
+                            if _snowball_stemmer is not None:
+                                _norm_fterm = _NORMALIZE_WORD_QUERY(_fterm)
+                                _sbw = _snowball_stemmer.stemWord(_norm_fterm)
+                                if _sbw and _sbw not in _seen:
+                                    _seen.add(_sbw)
+                                    _deriv_extra.append(wquery.Term(_dfield, _sbw))
+                        else:
+                            # ID field (root): strip tashkeel and use directly
+                            _norm = _NORMALIZE_WORD_QUERY(_fterm)
+                            if _norm and _norm not in _seen:
+                                _seen.add(_norm)
+                                _deriv_extra.append(wquery.Term(_dfield, _norm))
+                if _deriv_extra:
+                    word_query = wquery.Or(
+                        [word_query] + _deriv_extra
+                    )
 
         # Fuzzy search for word children: Levenshtein distance on 'normalized'
         # (unvocalized) field — handles spelling variants and typos.

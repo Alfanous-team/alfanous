@@ -172,35 +172,49 @@ def test_antonyms_plugin():
     assert "فردوس" in query.words  # paradise
 
 
+def _make_derivation_schema():
+    """Create a Schema that includes aya_stem, aya_lemma, aya_root fields."""
+    from whoosh.fields import Schema, TEXT
+    from alfanous.text_processing import QStandardAnalyzer
+    return Schema(
+        text=TEXT(stored=True),
+        aya_stem=TEXT(analyzer=QStandardAnalyzer, phrase=False),
+        aya_lemma=TEXT(analyzer=QStandardAnalyzer, phrase=False),
+        aya_root=TEXT(analyzer=QStandardAnalyzer, phrase=False),
+    )
+
+
 def test_derivation_plugin_single():
-    """Test derivation plugin with single > (>word) — lemma-level derivations."""
-    _mock = _make_derivation_mock(_MALIK_LEMMA_WORDS, _MALIK_ROOT_WORDS, "مالك")
-    with patch("alfanous.query_plugins._collect_derivations_two_pass", side_effect=_mock):
-        parser = create_test_parser()
-        query = parser.parse(">مالك")
-    assert isinstance(query, DerivationQuery)
-    assert query.level == 1
+    """Test derivation plugin with single > (>word) — stem-level: produces Term on aya_stem."""
+    schema = _make_derivation_schema()
+    parser = QueryParser('text', schema)
+    parser.add_plugin(DerivationPlugin())
+    query = parser.parse(">مالك")
+    assert isinstance(query, Term)
+    assert query.fieldname == "aya_stem"
     assert query.text == "مالك"
-    assert sorted(query.words) == sorted(_MALIK_LEMMA_WORDS)
-    assert len(query.words) == 2
 
 
 def test_derivation_plugin_double():
-    """Test derivation plugin with double >> (>>word) — root-level derivations."""
-    _mock = _make_derivation_mock(_MALIK_LEMMA_WORDS, _MALIK_ROOT_WORDS, "مالك")
-    with patch("alfanous.query_plugins._collect_derivations_two_pass", side_effect=_mock):
-        parser = create_test_parser()
-        query = parser.parse(">>مالك")
-    assert isinstance(query, DerivationQuery)
-    assert query.level == 2
+    """Test derivation plugin with double >> (>>word) — lemma-level: produces Term on aya_lemma."""
+    schema = _make_derivation_schema()
+    parser = QueryParser('text', schema)
+    parser.add_plugin(DerivationPlugin())
+    query = parser.parse(">>مالك")
+    assert isinstance(query, Term)
+    assert query.fieldname == "aya_lemma"
     assert query.text == "مالك"
-    assert len(query.words) == 23
-    assert "مالك" in query.words
-    assert "ملكوت" in query.words
-    assert "يملك" in query.words
-    assert "الملك" in query.words
-    query_lemma_words = _MALIK_LEMMA_WORDS
-    assert len(query.words) > len(query_lemma_words)
+
+
+def test_derivation_plugin_triple():
+    """Test derivation plugin with triple >>> (>>>word) — root-level: produces Term on aya_root."""
+    schema = _make_derivation_schema()
+    parser = QueryParser('text', schema)
+    parser.add_plugin(DerivationPlugin())
+    query = parser.parse(">>>مالك")
+    assert isinstance(query, Term)
+    assert query.fieldname == "aya_root"
+    assert query.text == "مالك"
 
 
 def test_spell_errors_plugin():
@@ -568,13 +582,16 @@ def test_query_normalization():
 
 def test_complex_query():
     """Test complex query with multiple features from README"""
-    parser = create_test_parser()
-    
-    # Test derivation
+    schema = _make_derivation_schema()
+    parser = QueryParser('text', schema)
+    parser.add_plugin(DerivationPlugin())
+    parser.add_plugin(SynonymsPlugin())
+
+    # Test derivation — now produces a Term on aya_lemma (level 2)
     query = parser.parse(">>الصلاة")
-    assert isinstance(query, DerivationQuery)
-    assert query.text == "الصلاة"
-    
+    assert isinstance(query, Term)
+    assert query.fieldname == "aya_lemma"
+
     # Test synonym
     query = parser.parse("~الله")
     assert isinstance(query, SynonymsQuery)
@@ -582,120 +599,114 @@ def test_complex_query():
 
 
 def create_test_index():
-    """Create a RAM-based test index with Arabic words"""
+    """Create a RAM-based test index with Arabic words and derivation fields."""
     from whoosh.filedb.filestore import RamStorage
+    from alfanous.text_processing import QStandardAnalyzer
 
-    schema = Schema(text=TEXT(stored=True))
+    schema = Schema(
+        text=TEXT(stored=True),
+        aya_stem=TEXT(analyzer=QStandardAnalyzer, phrase=False),
+        aya_lemma=TEXT(analyzer=QStandardAnalyzer, phrase=False),
+        aya_root=TEXT(analyzer=QStandardAnalyzer, phrase=False),
+    )
     st = RamStorage()
     ix = st.create_index(schema)
     writer = ix.writer()
     for word in ['مالك', 'مالكون', 'يملك', 'الملك', 'ملكوت']:
-        writer.add_document(text=word)
+        writer.add_document(text=word, aya_lemma=word, aya_stem=word, aya_root=word)
     writer.commit()
     return ix
 
 
 def create_index_parser(ix):
-    """Create a parser configured with all plugins for a given index"""
+    """Create a parser configured with DerivationPlugin for a given index."""
     from whoosh.qparser.plugins import SingleQuotePlugin
-
     parser = QueryParser('text', ix.schema)
     parser.remove_plugin_class(SingleQuotePlugin)
     parser.add_plugin(DerivationPlugin())
-    parser.add_plugin(SynonymsPlugin())
-    parser.add_plugin(AntonymsPlugin())
     parser.add_plugin(SpellErrorsPlugin())
-    parser.add_plugin(TashkilPlugin())
     return parser
 
 
 def test_derivation_query_executes_against_index():
-    """Test that DerivationQuery executes against a Whoosh RAM index."""
-    _mock = _make_derivation_mock(_MALIK_LEMMA_WORDS, _MALIK_ROOT_WORDS, "مالك")
+    """Test that DerivationPlugin produces a Term that executes against a Whoosh RAM index."""
     ix = create_test_index()
     parser = create_index_parser(ix)
 
-    with patch("alfanous.query_plugins._collect_derivations_two_pass", side_effect=_mock):
-        query = parser.parse('>مالك')
-
-    assert isinstance(query, DerivationQuery)
+    query = parser.parse('>مالك')
+    assert isinstance(query, Term)
+    assert query.fieldname == "aya_stem"
 
     with ix.searcher() as searcher:
         results = searcher.search(query)
-        result_texts = [r['text'] for r in results]
-        assert 'مالك' in result_texts
-        assert 'مالكون' in result_texts
+        result_texts = [r['aya_stem'] if 'aya_stem' in r else r['text'] for r in results]
+        # aya_stem field is not stored but aya_lemma/text are available
+        assert len(results) >= 1
 
 
 def test_derivation_query_root_level_executes_against_index():
-    """Test that root-level DerivationQuery (>>) executes against a Whoosh RAM index."""
-    _mock = _make_derivation_mock(_MALIK_LEMMA_WORDS, _MALIK_ROOT_WORDS, "مالك")
+    """Test that root-level DerivationPlugin (>>) produces a Term on aya_lemma."""
     ix = create_test_index()
     parser = create_index_parser(ix)
 
-    with patch("alfanous.query_plugins._collect_derivations_two_pass", side_effect=_mock):
-        query = parser.parse('>>مالك')
-
-    assert isinstance(query, DerivationQuery)
+    query = parser.parse('>>مالك')
+    assert isinstance(query, Term)
+    assert query.fieldname == "aya_lemma"
 
     with ix.searcher() as searcher:
         results = searcher.search(query)
-        assert len(results) >= 2
+        assert len(results) >= 1
 
 
 def test_derivation_query_vocalized_words_match_analyzed_index():
-    """DerivationQuery must find results even when all derivation words are vocalized.
+    """DerivationPlugin with aya_lemma field: >>عذاب searches aya_lemma directly.
 
-    Regression test for: >>عذاب gives no results in fuzzy=false mode.
-
-    The aya field uses QStandardAnalyzer which strips diacritics at index time,
-    so the stored terms are unvocalized (e.g. "عذاب").  DerivationQuery.words
-    may contain vocalized forms (e.g. "عَذَابٌ") from the word index's word
-    field.  Without the fix, _btexts() encoded these with to_bytes() (raw
-    UTF-8, no analysis) producing bytes that never matched the index terms.
-
-    The fix makes _btexts() run each word through field.process_text() so
-    the same normalization (diacritics-stripping, shaping) that ran at
-    index time is also applied at query time.
+    The aya_lemma field uses QStandardAnalyzer which strips diacritics, so a
+    vocalized query term is normalised to match the indexed unvocalized tokens.
     """
     from whoosh.filedb.filestore import RamStorage
     from alfanous.text_processing import QStandardAnalyzer
 
-    # Create an index whose field uses QStandardAnalyzer – exactly like the
-    # real 'aya' field – so that indexed terms are unvocalized Arabic.
-    schema = Schema(aya=TEXT(analyzer=QStandardAnalyzer, stored=True))
+    schema = Schema(
+        aya=TEXT(analyzer=QStandardAnalyzer, stored=True),
+        aya_stem=TEXT(analyzer=QStandardAnalyzer, phrase=False),
+        aya_lemma=TEXT(analyzer=QStandardAnalyzer, phrase=False),
+        aya_root=TEXT(analyzer=QStandardAnalyzer, phrase=False),
+    )
     st = RamStorage()
     ix = st.create_index(schema)
     writer = ix.writer()
-    writer.add_document(aya='وَلَهُمْ عَذَابٌ عَظِيمٌ')
-    writer.add_document(aya='يُعَذِّبُ مَنْ يَشَاءُ')
-    writer.commit()
-
-    # Simulate the worst case: _collect_derivations_two_pass returns ONLY
-    # vocalized forms (as if the 'normalized' and 'standard' stored
-    # fields were absent and only the 'word' vocalized field was present).
-    # Before the fix _btexts() would find no index terms and return 0 results.
-    _vocalized_only = lambda _candidates, _index_key: (
-        'عَذَابٌ', 'عَذَابَ', 'عَذَابِ', 'يُعَذِّبُ'
+    writer.add_document(
+        aya='وَلَهُمْ عَذَابٌ عَظِيمٌ',
+        aya_lemma='عذاب عظيم',
+        aya_stem='عذاب عظيم',
+        aya_root='عذب عظم',
     )
+    writer.add_document(
+        aya='يُعَذِّبُ مَنْ يَشَاءُ',
+        aya_lemma='عذب من شاء',
+        aya_stem='عذب من شاء',
+        aya_root='عذب من شيء',
+    )
+    writer.commit()
 
     from whoosh.qparser.plugins import SingleQuotePlugin
     parser = QueryParser('aya', ix.schema)
     parser.remove_plugin_class(SingleQuotePlugin)
     parser.add_plugin(DerivationPlugin())
 
-    with patch("alfanous.query_plugins._collect_derivations_two_pass",
-               side_effect=_vocalized_only):
-        query = parser.parse('>>عذاب')
+    query = parser.parse('>>عذاب')
 
-    assert isinstance(query, DerivationQuery)
-    assert query.level == 2
+    # DerivationPlugin now creates a Term on aya_lemma — no DerivationQuery needed.
+    assert isinstance(query, Term)
+    assert query.fieldname == "aya_lemma"
+    assert query.text == "عذاب"
 
     with ix.searcher() as searcher:
         results = searcher.search(query)
         assert len(results) >= 1, (
-            ">>عذاب should return results even when derivation words are vocalized; "
-            "_btexts() must normalize through the field analyzer"
+            ">>عذاب should match aya_lemma 'عذاب' — QStandardAnalyzer strips "
+            "tashkeel at both index and query time"
         )
 
 
@@ -721,16 +732,20 @@ def test_derivation_plugin_inside_parentheses():
     the closing parenthesis — so the derivation text became ``قال)`` and the
     lookup returned no results.
     """
-    _mock = _make_derivation_mock(_MALIK_LEMMA_WORDS, _MALIK_ROOT_WORDS, "مالك")
-    with patch("alfanous.query_plugins._collect_derivations_two_pass", side_effect=_mock):
-        parser = create_test_parser()
-        query = parser.parse("foo AND (>مالك)")
-    # The DerivationQuery must have text == 'مالك', NOT 'مالك)'
+    schema = _make_derivation_schema()
+    parser = QueryParser('text', schema)
+    parser.add_plugin(DerivationPlugin())
+    query = parser.parse("foo AND (>مالك)")
+    # The derivation text must be 'مالك', NOT 'مالك)' — regex must stop before ')'
     from whoosh.query import And
     subqueries = query.subqueries if hasattr(query, 'subqueries') else [query]
-    deriv_queries = [sq for sq in subqueries if isinstance(sq, DerivationQuery)]
-    assert len(deriv_queries) == 1, f"Expected 1 DerivationQuery, got {[type(sq).__name__ for sq in subqueries]}"
-    assert deriv_queries[0].text == "مالك", f"DerivationQuery.text should be 'مالك', got {deriv_queries[0].text!r}"
+    stem_queries = [sq for sq in subqueries if isinstance(sq, Term) and sq.fieldname == "aya_stem"]
+    assert len(stem_queries) == 1, (
+        f"Expected 1 Term on aya_stem, got {[type(sq).__name__ for sq in subqueries]}"
+    )
+    assert stem_queries[0].text == "مالك", (
+        f"aya_stem Term.text should be 'مالك', got {stem_queries[0].text!r}"
+    )
 
 
 def test_wildcard_plugin_inside_parentheses():
@@ -902,21 +917,20 @@ if __name__ == "__main__":
 
 
 # ---------------------------------------------------------------------------
-# _collect_derivations_two_pass_cached must not return vocalized word forms
+# _collect_derivations_two_pass must not return vocalized word forms
 # ---------------------------------------------------------------------------
 
-def test_collect_derivations_two_pass_cached_returns_only_unvocalized():
-    """Pass 2 of _collect_derivations_two_pass_cached must not include the
-    vocalized 'word' field — only 'standard' and 'normalized' are collected.
+def test_collect_derivations_two_pass_returns_only_unvocalized():
+    """_collect_derivations_two_pass must not include the vocalized 'word' field
+    — only 'standard' and 'normalized' are collected from the lookup table.
 
     Regression/requirement test for: remove vocalized keywords from
     words.individual in morphological derivations level search.
     """
-    from unittest.mock import MagicMock, patch as _patch
-    from alfanous.query_plugins import _collect_derivations_two_pass_cached
+    import re as _re
+    from alfanous.query_plugins import _build_word_lookup_table, _collect_derivations_two_pass
+    from unittest.mock import MagicMock
 
-    # Build fake word-child documents: one with vocalized 'word', unvocalized
-    # 'normalized' and 'standard', keyed by lemma "ملك".
     _DOCS = [
         {
             "kind": "word",
@@ -939,29 +953,16 @@ def test_collect_derivations_two_pass_cached_returns_only_unvocalized():
     mock_reader = MagicMock()
     mock_reader.iter_docs.return_value = [(i, d) for i, d in enumerate(_DOCS)]
 
-    mock_engine = MagicMock()
-    mock_engine.OK = True
-    mock_engine._reader.reader = mock_reader
+    lookup_table = _build_word_lookup_table(mock_reader)
+    results = _collect_derivations_two_pass({"ملك"}, "lemma", lookup_table=lookup_table)
 
-    # Arabic diacritics range (tashkeel / harakat)
-    import re as _re
     _DIACRITIC_RE = _re.compile(r'[\u064B-\u065F]')
-
-    with _patch("alfanous.data.QSE", return_value=mock_engine):
-        # Clear LRU caches so the patched engine is used
-        from alfanous.query_plugins import _build_word_lookup_table
-        _build_word_lookup_table.cache_clear()
-        _collect_derivations_two_pass_cached.cache_clear()
-        results = list(_collect_derivations_two_pass_cached(frozenset({"ملك"}), "lemma"))
-        _build_word_lookup_table.cache_clear()
-
     assert results, "Expected at least one unvocalized derivation word"
     for w in results:
         assert not _DIACRITIC_RE.search(w), (
-            f"_collect_derivations_two_pass_cached returned vocalized form {w!r}; "
+            f"_collect_derivations_two_pass returned vocalized form {w!r}; "
             "only unvocalized forms (standard, normalized) should be collected"
         )
-    # The unvocalized normalized forms must be present
     assert "ملك" in results, "Expected 'ملك' (normalized) in results"
     assert "مالك" in results, "Expected 'مالك' (normalized) in results"
 

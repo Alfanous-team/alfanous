@@ -1183,6 +1183,18 @@
     "phrase": false
   },
   {
+    "analyzer": "QStemAnalyzer",
+    "comment": "نص الآية مبدلة كل كلمة بجذعها — للبحث المشتق بمستوى الجذع (كلمة_جذع)",
+    "id": 165,
+    "name": "_aya_stem",
+    "name_arabic": "آية_جذع",
+    "search_name": "aya_stem",
+    "stored": false,
+    "table_name": "aya",
+    "type": "TEXT",
+    "phrase": false
+  },
+  {
     "id": 160,
     "table_name": "aya",
     "name": "word_lemma",

@@ -688,6 +688,7 @@ class Transformer:
                 _has_word_transliteration = "word_transliteration" in _schema_names
                 _has_aya_lemma            = "aya_lemma"            in _schema_names
                 _has_aya_root             = "aya_root"             in _schema_names
+                _has_aya_stem             = "aya_stem"             in _schema_names
                 _has_word_lemma           = "word_lemma"           in _schema_names
                 _has_word_stem            = "word_stem"            in _schema_names
                 _has_uthmani_different    = "uthmani_different"    in _schema_names
@@ -700,16 +701,17 @@ class Transformer:
                         hamza=False, uthmani_symbols=True,
                     )
 
-                # Pre-build aya_lemma and aya_root text for each aya from
-                # word-child data.  Each word's lemma (or root) is used; when
-                # the morphological value is missing, the word's normalised
-                # form is used as a fallback so that every word position is
-                # represented and phrase-length queries still align.
+                # Pre-build aya_lemma, aya_root and aya_stem text for each aya
+                # from word-child data.  Each word's morphological value is
+                # used; the word's normalised form is used as a fallback so
+                # that every word position is represented and phrase-length
+                # queries still align.
                 _aya_lemma_text: dict = {}
                 _aya_root_text: dict = {}
-                if (_has_aya_lemma or _has_aya_root) and words_by_aya:
-                    # Normalizer to strip tashkeel from vocalized lemmas so
-                    # aya_lemma is searchable without diacritics.
+                _aya_stem_text: dict = {}
+                if (_has_aya_lemma or _has_aya_root or _has_aya_stem) and words_by_aya:
+                    # Normalizer to strip tashkeel from vocalized values so
+                    # aya_lemma and aya_stem are searchable without diacritics.
                     from alfanous.text_processing import QArabicSymbolsFilter as _QASF
                     _lemma_norm = _QASF(
                         shaping=True, tashkil=True, spellerrors=False,
@@ -732,6 +734,15 @@ class Transformer:
                                 _r = _w.get("root") or _w.get("normalized") or ""
                                 _roots.append(_r)
                             _aya_root_text[_key] = " ".join(_roots)
+                        if _has_aya_stem:
+                            _stems = []
+                            for _w in _words_list:
+                                # Pass the raw (vocalized) corpus stem so
+                                # QStemAnalyzer handles normalization and
+                                # Snowball stemming at index time.
+                                _s = _w.get("stem") or _w.get("lemma") or _w.get("normalized") or ""
+                                _stems.append(_s)
+                            _aya_stem_text[_key] = " ".join(_stems)
 
                 # Pre-compute per-translation metadata so the inner loop only
                 # does an index lookup + cheap dict copy rather than recomputing
@@ -787,6 +798,8 @@ class Transformer:
                         doc["aya_lemma"] = _aya_lemma_text[_aya_key]
                     if _has_aya_root and _aya_key in _aya_root_text:
                         doc["aya_root"] = _aya_root_text[_aya_key]
+                    if _has_aya_stem and _aya_key in _aya_stem_text:
+                        doc["aya_stem"] = _aya_stem_text[_aya_key]
                     writer.start_group()
                     writer.add_document(**doc)
                     if gid is not None and trans_meta:

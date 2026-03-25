@@ -223,6 +223,20 @@ QUthmaniDiacAnalyzer = QSpaceTokenizer() | QArabicSymbolsFilter(tashkil=False, u
 TranslationHighLightAnalyzer = RegexTokenizer() | LowercaseFilter()
 QFuzzyAnalyzer = _build_fuzzy_analyzer()
 
+# Analyzer for the aya_stem / word_stem derivation fields.
+# Applies full normalisation (tashkeel, shaping, hamza, Uthmanic symbols) then
+# the Snowball Arabic stemmer — without stop-word removal or synonym expansion.
+# Used at both index time and query time so that query terms are stemmed
+# consistently with the indexed content.
+QStemAnalyzer = (
+    QSpaceTokenizer()
+    | QArabicSymbolsFilter(
+        shaping=True, tashkil=True, spellerrors=False,
+        hamza=False, uthmani_symbols=True,
+    )
+    | QArabicStemFilter()
+)
+
 
 class QShingleFilter(Filter):
     """Whoosh filter that emits overlapping word shingles of sizes *minsize*
