@@ -156,7 +156,7 @@ _WORD_ALL_INDEXED_FIELDS = [
 # lemma, root, word-type, case, state, derivation, and gender.
 _WORD_FACET_FIELDS = frozenset([
     "root", "type", "pos", "lemma", "case", "state", "derivation", "gender",
-    "number", "person", "form", "voice", "aspect", "mood",
+    "number", "person", "form", "pattern", "voice", "aspect", "mood",
 ])
 
 # Translation child-doc fields that support faceting.
@@ -185,6 +185,19 @@ _MAX_FACET_DOCS = 100_000
 # rather than allocating a new lambda on every request.
 def _WORD_ID_KEY(e):
     return e.get("word_id") or 0
+
+
+def _parse_segments(raw):
+    """Deserialize segments from stored JSON string to a Python list."""
+    if not raw:
+        return []
+    if isinstance(raw, list):
+        return raw
+    try:
+        return json.loads(raw)
+    except (TypeError, ValueError):
+        return []
+
 
 def _FACET_COUNT_KEY(x):
     return len(x[1])
@@ -487,6 +500,10 @@ class Raw:
             "word": sorted(_WORD_FACET_FIELDS),
             "translation": sorted(_TRANS_FACET_FIELDS),
         }
+        # Arabic→English morphology mappings so consumers can translate Arabic
+        # field values without hard-coding them.  Imported from constants.py.
+        from alfanous_import.quran_corpus_reader.constants import MORPHOLOGY_MAPPINGS
+        self._morphology_mappings = MORPHOLOGY_MAPPINGS
         self._all = {
             "translations": self._translations,
             "recitations": self._recitations,
@@ -505,6 +522,7 @@ class Raw:
             "roots": self._roots,
             "ai_query_translation_rules": self._ai_query_translation_rules,
             "facets": self._facets,
+            "morphology_mappings": self._morphology_mappings,
         }
 
         # ---------------------------------------------------------------------------
@@ -1723,19 +1741,17 @@ class Raw:
                                 "transliteration": w.get("word_transliteration"),
                                 "normalized":   w.get("normalized"),
                                 "spelled":      w.get("spelled"),
-                                # Arabic (primary, indexed)
+                                # Arabic morphological fields
                                 "pos":          w.get("pos"),
                                 "type":         w.get("type"),
                                 "root":         w.get("root"),
+                                "stem":         w.get("stem"),
                                 "lemma":        w.get("lemma"),
+                                "pattern":      w.get("pattern"),
                                 "mood":         w.get("mood"),
                                 "case":         w.get("case"),
                                 "state":        w.get("state"),
                                 "special":      w.get("special"),
-                                # English (stored-only)
-                                "englishpos":   w.get("englishpos"),
-                                "englishcase":  w.get("englishcase"),
-                                # Unchanged fields
                                 "prefix":       w.get("prefix"),
                                 "suffix":       w.get("suffix"),
                                 "gender":       w.get("gender"),
@@ -1745,6 +1761,8 @@ class Raw:
                                 "voice":        w.get("voice"),
                                 "derivation":   w.get("derivation"),
                                 "aspect":       w.get("aspect"),
+                                # Per-segment breakdown for treebank display
+                                "segments":     _parse_segments(w.get("segments")),
                             }
                             aya_words_map[key].append(entry)
                         # Sort each aya's word list by word_id (ascending position order).
@@ -2403,19 +2421,17 @@ class Raw:
                         "transliteration":   r.get("word_transliteration"),
                         "normalized":        r.get("normalized"),
                         "spelled":          r.get("spelled"),
-                        # Arabic (primary, indexed)
+                        # Arabic morphological fields
                         "pos":              r.get("pos"),
                         "type":             r.get("type"),
                         "root":             r.get("root"),
+                        "stem":             r.get("stem"),
                         "lemma":            r.get("lemma"),
+                        "pattern":          r.get("pattern"),
                         "mood":             r.get("mood"),
                         "case":             r.get("case"),
                         "state":            r.get("state"),
                         "special":          r.get("special"),
-                        # English (stored-only)
-                        "englishpos":       r.get("englishpos"),
-                        "englishcase":      r.get("englishcase"),
-                        # Unchanged fields
                         "prefix":           r.get("prefix"),
                         "suffix":           r.get("suffix"),
                         "gender":           r.get("gender"),
@@ -2425,6 +2441,8 @@ class Raw:
                         "voice":            r.get("voice"),
                         "derivation":       r.get("derivation"),
                         "aspect":           r.get("aspect"),
+                        # Per-segment breakdown for treebank display
+                        "segments":         _parse_segments(r.get("segments")),
                     },
                 }
 

@@ -185,14 +185,14 @@ PGNclass = {
 }
 
 PGN = {
-"1":"first person",
-"2":"second person",
-"3":"third person",
-"M":"masculine",
-"F":"feminine",
-"S":"singular",
-"D":"dual",
-"P":"plural"
+"1":( "المتكلم", "first person" ),
+"2":( "المخاطب", "second person" ),
+"3":( "الغائب", "third person" ),
+"M":( "مذكر", "masculine" ),
+"F":( "مؤنث", "feminine" ),
+"S":( "مفرد", "singular" ),
+"D":( "مثنى", "dual" ),
+"P":( "جمع", "plural" ),
 }
 
 VERBclass = {
@@ -245,6 +245,55 @@ DERIV = {
 "VN":( "مصدر", "Verbal noun" )
 }
 
+# ---------------------------------------------------------------------------
+# Derived nominal patterns — (form_arabic, derivation_arabic) → وزن
+# For verbs the pattern is the form itself. For derived nominals the pattern
+# depends on both form and derivation type.
+# ---------------------------------------------------------------------------
+_ACT  = DERIV["ACT PCPL"][0]   # "اسم فاعل"
+_PASS = DERIV["PASS PCPL"][0]  # "اسم مفعول"
+_VN   = DERIV["VN"][0]         # "مصدر"
+
+NOMINAL_PATTERN = {
+# Form I — VN omitted (irregular, varies per verb)
+(VERB["(I)"][0],    _ACT):  "فَاعِل",
+(VERB["(I)"][0],    _PASS): "مَفْعُول",
+# Form II
+(VERB["(II)"][0],   _ACT):  "مُفَعِّل",
+(VERB["(II)"][0],   _PASS): "مُفَعَّل",
+(VERB["(II)"][0],   _VN):   "تَفْعِيل",
+# Form III — VN uses فِعَال (verified from corpus: حِسَاب, شِقَاق, etc.)
+(VERB["(III)"][0],  _ACT):  "مُفَاعِل",
+(VERB["(III)"][0],  _PASS): "مُفَاعَل",
+(VERB["(III)"][0],  _VN):   "فِعَال",
+# Form IV
+(VERB["(IV)"][0],   _ACT):  "مُفْعِل",
+(VERB["(IV)"][0],   _PASS): "مُفْعَل",
+(VERB["(IV)"][0],   _VN):   "إِفْعَال",
+# Form V
+(VERB["(V)"][0],    _ACT):  "مُتَفَعِّل",
+(VERB["(V)"][0],    _PASS): "مُتَفَعَّل",
+(VERB["(V)"][0],    _VN):   "تَفَعُّل",
+# Form VI
+(VERB["(VI)"][0],   _ACT):  "مُتَفَاعِل",
+(VERB["(VI)"][0],   _PASS): "مُتَفَاعَل",
+(VERB["(VI)"][0],   _VN):   "تَفَاعُل",
+# Form VII
+(VERB["(VII)"][0],  _ACT):  "مُنْفَعِل",
+(VERB["(VII)"][0],  _VN):   "اِنْفِعَال",
+# Form VIII
+(VERB["(VIII)"][0], _ACT):  "مُفْتَعِل",
+(VERB["(VIII)"][0], _PASS): "مُفْتَعَل",
+(VERB["(VIII)"][0], _VN):   "اِفْتِعَال",
+# Form IX
+(VERB["(IX)"][0],   _ACT):  "مُفْعَلّ",
+(VERB["(IX)"][0],   _VN):   "اِفْعِلَال",
+# Form X
+(VERB["(X)"][0],    _ACT):  "مُسْتَفْعِل",
+(VERB["(X)"][0],    _PASS): "مُسْتَفْعَل",
+(VERB["(X)"][0],    _VN):   "اِسْتِفْعَال",
+}
+
 NOMclass = {
 "state":["DEF", "INDEF"],
 "case":["NOM", "ACC", "GEN"]
@@ -290,4 +339,51 @@ def _reverse_class(dictionary):
 
 _INV_POS = _reverse_class(POSclass)
 _INV_PREFIX = _reverse_class(PREFIXclass)
+
+
+# ---------------------------------------------------------------------------
+# Suffix tag → (Arabic, English) mappings
+# ---------------------------------------------------------------------------
+
+SUFFIX = {
+"+n:EMPH": ( "نون التوكيد", "Emphatic nūn suffix" ),
+"+VOC":    ( "حرف نداء", "Vocative suffix" ),
+}
+
+
+# ---------------------------------------------------------------------------
+# MORPHOLOGY_MAPPINGS — Arabic→English for every morphological field.
+# Exposed through the API's ``show?query=morphology_mappings`` endpoint so
+# that consumers can translate Arabic values without hard-coding them.
+# ---------------------------------------------------------------------------
+
+def _ar_to_en(d):
+    """Build {Arabic: English} from a dict whose values are (Arabic, English) tuples."""
+    return {v[0]: v[1] for v in d.values()}
+
+
+MORPHOLOGY_MAPPINGS = {
+    "pos":        _ar_to_en(POS),
+    "gender":     _ar_to_en(PGN),           # subset filtered below
+    "number":     _ar_to_en(PGN),
+    "person":     _ar_to_en(PGN),
+    "form":       _ar_to_en(VERB),
+    "voice":      _ar_to_en(VERB),
+    "aspect":     _ar_to_en(VERB),
+    "mood":       _ar_to_en(VERB),
+    "case":       _ar_to_en(NOM),
+    "state":      _ar_to_en(NOM),
+    "derivation": _ar_to_en(DERIV),
+    "prefix":     _ar_to_en(PREFIX),
+}
+# Narrow per-field mappings to only the values that actually appear for that field.
+MORPHOLOGY_MAPPINGS["gender"] = {PGN[k][0]: PGN[k][1] for k in PGNclass["gender"]}
+MORPHOLOGY_MAPPINGS["number"] = {PGN[k][0]: PGN[k][1] for k in PGNclass["number"]}
+MORPHOLOGY_MAPPINGS["person"] = {PGN[k][0]: PGN[k][1] for k in PGNclass["person"]}
+MORPHOLOGY_MAPPINGS["form"]   = {VERB[k][0]: VERB[k][1] for k in VERBclass["form"]}
+MORPHOLOGY_MAPPINGS["voice"]  = {VERB[k][0]: VERB[k][1] for k in VERBclass["voice"]}
+MORPHOLOGY_MAPPINGS["aspect"] = {VERB[k][0]: VERB[k][1] for k in VERBclass["aspect"]}
+MORPHOLOGY_MAPPINGS["mood"]   = {VERB[k][0]: VERB[k][1] for k in VERBclass["mood"]}
+MORPHOLOGY_MAPPINGS["case"]   = {NOM[k][0]: NOM[k][1]   for k in NOMclass["case"]}
+MORPHOLOGY_MAPPINGS["state"]  = {NOM[k][0]: NOM[k][1]   for k in NOMclass["state"]}
 

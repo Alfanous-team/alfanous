@@ -141,7 +141,7 @@ def test_lemma_in_word_all_indexed_fields():
 
 _EXPECTED_WORD_FACET_FIELDS = frozenset({
     "root", "type", "pos", "lemma", "case", "state", "derivation", "gender",
-    "number", "person", "form", "voice", "aspect", "mood",
+    "number", "person", "form", "pattern", "voice", "aspect", "mood",
 })
 
 
@@ -289,27 +289,27 @@ def test_schema_builder_subtopic_id():
 # constants.py — PGN values (person/gender/number use English descriptions)
 # ---------------------------------------------------------------------------
 
-def test_pgn_person_english():
-    """PGN person codes must map to English descriptions."""
+def test_pgn_person_arabic():
+    """PGN person codes must map to (Arabic, English) tuples."""
     from alfanous_import.quran_corpus_reader.constants import PGN
-    assert PGN["1"] == "first person"
-    assert PGN["2"] == "second person"
-    assert PGN["3"] == "third person"
+    assert PGN["1"] == ("المتكلم", "first person")
+    assert PGN["2"] == ("المخاطب", "second person")
+    assert PGN["3"] == ("الغائب", "third person")
 
 
-def test_pgn_gender_english():
-    """PGN gender codes must map to English descriptions."""
+def test_pgn_gender_arabic():
+    """PGN gender codes must map to (Arabic, English) tuples."""
     from alfanous_import.quran_corpus_reader.constants import PGN
-    assert PGN["M"] == "masculine"
-    assert PGN["F"] == "feminine"
+    assert PGN["M"] == ("مذكر", "masculine")
+    assert PGN["F"] == ("مؤنث", "feminine")
 
 
-def test_pgn_number_english():
-    """PGN number codes must map to English descriptions."""
+def test_pgn_number_arabic():
+    """PGN number codes must map to (Arabic, English) tuples."""
     from alfanous_import.quran_corpus_reader.constants import PGN
-    assert PGN["S"] == "singular"
-    assert PGN["D"] == "dual"
-    assert PGN["P"] == "plural"
+    assert PGN["S"] == ("مفرد", "singular")
+    assert PGN["D"] == ("مثنى", "dual")
+    assert PGN["P"] == ("جمع", "plural")
 
 
 # ---------------------------------------------------------------------------
@@ -409,48 +409,48 @@ def test_parse_stem_form_arabic(parse_stem):
 # ---------------------------------------------------------------------------
 
 def test_parse_stem_pgn_3ms(parse_stem):
-    """Combined PGN code '3MS' must set person, gender, and number."""
+    """Combined PGN code '3MS' must set person, gender, and number in Arabic."""
     feats = parse_stem("STEM|POS:V|PERF|LEM:ktb|ROOT:ktb|3MS")
-    assert feats.get("person") == "third person"
-    assert feats.get("gender") == "masculine"
-    assert feats.get("number") == "singular"
+    assert feats.get("person") == "الغائب"
+    assert feats.get("gender") == "مذكر"
+    assert feats.get("number") == "مفرد"
 
 
 def test_parse_stem_pgn_1p(parse_stem):
-    """Combined PGN code '1P' must set person and number (no gender)."""
+    """Combined PGN code '1P' must set person and number in Arabic (no gender)."""
     feats = parse_stem("STEM|POS:V|PERF|(IV)|LEM:>asoqayo|ROOT:sqy|1P")
-    assert feats.get("person") == "first person"
-    assert feats.get("number") == "plural"
+    assert feats.get("person") == "المتكلم"
+    assert feats.get("number") == "جمع"
     assert feats.get("gender") is None
 
 
 def test_parse_stem_pgn_2mp(parse_stem):
-    """Combined PGN code '2MP' must set person, gender, and number."""
+    """Combined PGN code '2MP' must set person, gender, and number in Arabic."""
     feats = parse_stem("STEM|POS:V|IMPF|LEM:ktb|ROOT:ktb|2MP")
-    assert feats.get("person") == "second person"
-    assert feats.get("gender") == "masculine"
-    assert feats.get("number") == "plural"
+    assert feats.get("person") == "المخاطب"
+    assert feats.get("gender") == "مذكر"
+    assert feats.get("number") == "جمع"
 
 
 def test_parse_stem_pgn_3fs(parse_stem):
-    """Combined PGN code '3FS' must set person, gender, and number."""
+    """Combined PGN code '3FS' must set person, gender, and number in Arabic."""
     feats = parse_stem("STEM|POS:V|IMPF|LEM:sqy|ROOT:sqy|3FS")
-    assert feats.get("person") == "third person"
-    assert feats.get("gender") == "feminine"
-    assert feats.get("number") == "singular"
+    assert feats.get("person") == "الغائب"
+    assert feats.get("gender") == "مؤنث"
+    assert feats.get("number") == "مفرد"
 
 
 def test_parse_stem_noun_pgn_ms(parse_stem):
     """Noun combined PGN 'M' followed by case must parse gender correctly."""
     feats = parse_stem("STEM|POS:N|LEM:{som|ROOT:smw|M|GEN")
-    assert feats.get("gender") == "masculine"
+    assert feats.get("gender") == "مذكر"
 
 
 def test_parse_stem_noun_pgn_mp(parse_stem):
-    """Noun combined PGN code 'MP' must set gender and number."""
+    """Noun combined PGN code 'MP' must set gender and number in Arabic."""
     feats = parse_stem("STEM|POS:N|LEM:>asobaAT|ROOT:sbT|MP|GEN")
-    assert feats.get("gender") == "masculine"
-    assert feats.get("number") == "plural"
+    assert feats.get("gender") == "مذكر"
+    assert feats.get("number") == "جمع"
 
 
 # ---------------------------------------------------------------------------
@@ -577,39 +577,39 @@ def test_infer_state_indefinite_not_overridden(load_words):
 
 
 def test_infer_number_singular_for_noun(load_words):
-    """Nouns with no S/D/P number tag must get number inferred as singular."""
+    """Nouns with no S/D/P number tag must get number inferred as مفرد."""
     result = load_words([
         "(1:1:1:1)\tAlktAb\tN\tSTEM|POS:N|LEM:ktAb|ROOT:ktb|M|NOM",
     ])
     words = result[(1, 1)]
-    assert words[0]["number"] == "singular"
+    assert words[0]["number"] == "مفرد"
 
 
 def test_infer_number_singular_for_nominal(load_words):
-    """Adjectives (Nominals) with no number tag must get number inferred as singular."""
+    """Adjectives (Nominals) with no number tag must get number inferred as مفرد."""
     result = load_words([
         "(1:1:1:1)\tkbyr\tADJ\tSTEM|POS:ADJ|LEM:kbyr|ROOT:kbr|M|NOM",
     ])
     words = result[(1, 1)]
-    assert words[0]["number"] == "singular"
+    assert words[0]["number"] == "مفرد"
 
 
 def test_infer_number_plural_not_overridden(load_words):
-    """Nouns with explicit P tag must keep plural."""
+    """Nouns with explicit P tag must keep جمع."""
     result = load_words([
         "(1:1:1:1)\tktb\tN\tSTEM|POS:N|LEM:ktAb|ROOT:ktb|M|P|NOM",
     ])
     words = result[(1, 1)]
-    assert words[0]["number"] == "plural"
+    assert words[0]["number"] == "جمع"
 
 
 def test_infer_number_dual_not_overridden(load_words):
-    """Nouns with explicit D tag must keep dual."""
+    """Nouns with explicit D tag must keep مثنى."""
     result = load_words([
         "(1:1:1:1)\tktAbAn\tN\tSTEM|POS:N|LEM:ktAb|ROOT:ktb|M|D|NOM",
     ])
     words = result[(1, 1)]
-    assert words[0]["number"] == "dual"
+    assert words[0]["number"] == "مثنى"
 
 
 def test_no_number_inference_for_verb(load_words):
@@ -618,7 +618,7 @@ def test_no_number_inference_for_verb(load_words):
         "(1:1:1:1)\tktb\tV\tSTEM|POS:V|LEM:ktb|ROOT:ktb|PERF|3|M",
     ])
     words = result[(1, 1)]
-    # No number PGN (M is gender, not number) → should NOT get singular inferred
+    # No number PGN (M is gender, not number) → should NOT get مفرد inferred
     # because type is "Verbs", not "Nouns"/"Nominals"
     assert words[0]["number"] is None
 
@@ -914,4 +914,363 @@ def test_parse_stem_rslt_pos(parse_stem):
     feats = parse_stem("STEM|POS:RSLT")
     assert feats.get("arabicpos") == "حرف واقع في جواب الشرط"
     assert feats.get("type") == "Particles"
+
+
+# ---------------------------------------------------------------------------
+# Normalized lemma — tashkeel must be stripped for searchability
+# ---------------------------------------------------------------------------
+
+def test_lemma_vocalized(load_words):
+    """Lemma must be stored WITH tashkeel (vocalized) to preserve the wazan/pattern."""
+    result = load_words([
+        "(1:1:1:1)\tbi\tP\tPREFIX|bi+",
+        "(1:1:1:2)\tsomi\tN\tSTEM|POS:N|LEM:{som|ROOT:smw|M|GEN",
+    ])
+    words = result[(1, 1)]
+    # LEM:{som → _b2u → ٱسْم (with sukun)
+    assert words[0]["lemma"] is not None
+    # Must contain Arabic diacritical marks (the vocalized lemma preserves wazan)
+    import unicodedata
+    assert any(unicodedata.category(c) == 'Mn' for c in words[0]["lemma"])
+
+
+# ---------------------------------------------------------------------------
+# Segments — per-word segment breakdown for treebank display
+# ---------------------------------------------------------------------------
+
+def test_segments_prefix_stem(load_words):
+    """Word with prefix + stem must produce 2 segments."""
+    result = load_words([
+        "(1:1:1:1)\tbi\tP\tPREFIX|bi+",
+        "(1:1:1:2)\tsomi\tN\tSTEM|POS:N|LEM:{som|ROOT:smw|M|GEN",
+    ])
+    words = result[(1, 1)]
+    segs = words[0]["segments"]
+    assert len(segs) == 2
+    assert segs[0]["type"] == "PREFIX"
+    assert segs[0]["pos"] == "ب"      # PREFIX bi+ → Arabic "ب"
+    assert segs[1]["type"] == "STEM"
+    assert segs[1]["pos"] == "اسم"    # POS:N → Arabic "اسم"
+
+
+def test_segments_prefix_stem_suffix(load_words):
+    """Word with prefix + stem + suffix must produce 3 segments."""
+    result = load_words([
+        "(1:1:1:1)\tfa\tCONJ\tPREFIX|f:CONJ+",
+        "(1:1:1:2)\t>asoqayo\tV\tSTEM|POS:V|PERF|(IV)|LEM:>asoqayo|ROOT:sqy|1P",
+        "(1:1:1:3)\tna`\tPRON\tSUFFIX|PRON:1P",
+    ])
+    words = result[(1, 1)]
+    segs = words[0]["segments"]
+    assert len(segs) == 3
+    assert segs[0]["type"] == "PREFIX"
+    assert segs[1]["type"] == "STEM"
+    assert segs[1]["pos"] == "فعل"    # POS:V → Arabic "فعل"
+    assert segs[2]["type"] == "SUFFIX"
+    assert segs[2]["pos"] == "ضمير"   # PRON suffix → Arabic "ضمير"
+
+
+def test_segments_stem_only(load_words):
+    """Word with only a stem must produce 1 segment."""
+    result = load_words([
+        "(1:1:1:1)\t{ll~ahi\tPN\tSTEM|POS:PN|LEM:{ll~ah|ROOT:Alh|GEN",
+    ])
+    words = result[(1, 1)]
+    segs = words[0]["segments"]
+    assert len(segs) == 1
+    assert segs[0]["type"] == "STEM"
+    assert segs[0]["pos"] == "اسم علم"  # POS:PN → Arabic "اسم علم"
+
+
+def test_segments_multi_suffix(load_words):
+    """Word with 2 pronoun suffixes must produce segments for each."""
+    result = load_words([
+        "(1:1:1:1)\t>asoqayo\tV\tSTEM|POS:V|PERF|(IV)|LEM:>asoqayo|ROOT:sqy|1P",
+        "(1:1:1:2)\tna`\tPRON\tSUFFIX|PRON:1P",
+        "(1:1:1:3)\tkumuw\tPRON\tSUFFIX|PRON:2MP",
+    ])
+    words = result[(1, 1)]
+    segs = words[0]["segments"]
+    assert len(segs) == 3
+    assert segs[1]["type"] == "SUFFIX"
+    assert segs[2]["type"] == "SUFFIX"
+
+
+# ---------------------------------------------------------------------------
+# MORPHOLOGY_MAPPINGS — Arabic→English mappings for show info
+# ---------------------------------------------------------------------------
+
+def test_morphology_mappings_has_all_fields():
+    """MORPHOLOGY_MAPPINGS must contain entries for all morphological fields."""
+    from alfanous_import.quran_corpus_reader.constants import MORPHOLOGY_MAPPINGS
+    expected = {"pos", "gender", "number", "person", "form", "voice",
+                "aspect", "mood", "case", "state", "derivation", "prefix"}
+    assert set(MORPHOLOGY_MAPPINGS.keys()) == expected
+
+
+def test_morphology_mappings_gender_arabic_to_english():
+    """Gender mapping must translate Arabic values to English."""
+    from alfanous_import.quran_corpus_reader.constants import MORPHOLOGY_MAPPINGS
+    assert MORPHOLOGY_MAPPINGS["gender"]["مذكر"] == "masculine"
+    assert MORPHOLOGY_MAPPINGS["gender"]["مؤنث"] == "feminine"
+
+
+def test_morphology_mappings_number_arabic_to_english():
+    """Number mapping must translate Arabic values to English."""
+    from alfanous_import.quran_corpus_reader.constants import MORPHOLOGY_MAPPINGS
+    assert MORPHOLOGY_MAPPINGS["number"]["مفرد"] == "singular"
+    assert MORPHOLOGY_MAPPINGS["number"]["مثنى"] == "dual"
+    assert MORPHOLOGY_MAPPINGS["number"]["جمع"] == "plural"
+
+
+def test_morphology_mappings_person_arabic_to_english():
+    """Person mapping must translate Arabic values to English."""
+    from alfanous_import.quran_corpus_reader.constants import MORPHOLOGY_MAPPINGS
+    assert MORPHOLOGY_MAPPINGS["person"]["المتكلم"] == "first person"
+    assert MORPHOLOGY_MAPPINGS["person"]["المخاطب"] == "second person"
+    assert MORPHOLOGY_MAPPINGS["person"]["الغائب"] == "third person"
+
+
+def test_morphology_mappings_voice_arabic_to_english():
+    """Voice mapping must translate Arabic values to English."""
+    from alfanous_import.quran_corpus_reader.constants import MORPHOLOGY_MAPPINGS
+    assert MORPHOLOGY_MAPPINGS["voice"]["مبني للمعلوم"] == "Active voice"
+    assert MORPHOLOGY_MAPPINGS["voice"]["مبني للمجهول"] == "Passive voice"
+
+
+def test_morphology_mappings_pos_covers_all():
+    """POS mapping must cover all POS tags."""
+    from alfanous_import.quran_corpus_reader.constants import MORPHOLOGY_MAPPINGS, POS
+    for tag, (ar, en) in POS.items():
+        assert ar in MORPHOLOGY_MAPPINGS["pos"], f"POS Arabic '{ar}' missing from mapping"
+        assert MORPHOLOGY_MAPPINGS["pos"][ar] == en
+
+
+# ---------------------------------------------------------------------------
+# stem — the Arabic text of the STEM morpheme segment
+# ---------------------------------------------------------------------------
+
+def test_stem_equals_lemma_for_noun(load_words):
+    """For nouns, stem must equal the vocalized lemma."""
+    result = load_words([
+        "(1:1:1:1)\tbi\tP\tPREFIX|bi+",
+        "(1:1:1:2)\tsomi\tN\tSTEM|POS:N|LEM:{som|ROOT:smw|M|GEN",
+    ])
+    words = result[(1, 1)]
+    assert words[0]["stem"] == words[0]["lemma"]
+    assert words[0]["stem"] is not None
+
+
+def test_stem_lemma_x_pattern_for_verb(load_words):
+    """For verbs, stem must combine lemma and pattern as 'lemma pattern'."""
+    result = load_words([
+        "(1:1:1:1)\tkataba\tV\tSTEM|POS:V|PERF|LEM:kataba|ROOT:ktb|3MS",
+    ])
+    words = result[(1, 1)]
+    lemma = words[0]["lemma"]
+    pattern = words[0]["pattern"]
+    assert words[0]["stem"] == "{} {}".format(lemma, pattern)
+    assert "فَعَلَ" in words[0]["stem"]  # Form I pattern
+
+
+def test_stem_lemma_x_pattern_form_iv(load_words):
+    """For Form IV verbs, stem must show 'lemma أَفْعَلَ'."""
+    result = load_words([
+        "(1:1:1:1)\t>aslm\tV\tSTEM|POS:V|PERF|(IV)|LEM:>aslama|ROOT:slm|3MS",
+    ])
+    words = result[(1, 1)]
+    assert "أَفْعَلَ" in words[0]["stem"]
+
+
+def test_stem_special(load_words):
+    """For words with a special (SP:) tag, stem must equal the special value."""
+    result = load_words([
+        "(1:1:1:1)\t<in~a\tACC\tSTEM|POS:ACC|LEM:<in~|SP:<in~",
+    ])
+    words = result[(1, 1)]
+    assert words[0]["stem"] == words[0]["special"]
+    assert words[0]["stem"] is not None
+
+
+# ---------------------------------------------------------------------------
+# pattern — morphological wazan (وزن)
+# ---------------------------------------------------------------------------
+
+def test_pattern_verb_equals_form(load_words):
+    """For verbs, pattern must equal the form field."""
+    result = load_words([
+        "(1:1:1:1)\tktb\tV\tSTEM|POS:V|PERF|LEM:ktb|ROOT:ktb|3MS",
+    ])
+    words = result[(1, 1)]
+    assert words[0]["pattern"] == words[0]["form"]
+    assert words[0]["pattern"] == "فَعَلَ"  # inferred Form I
+
+
+def test_pattern_verb_form_iv(load_words):
+    """Verb Form IV must have pattern أَفْعَلَ."""
+    result = load_words([
+        "(1:1:1:1)\t>aslm\tV\tSTEM|POS:V|PERF|(IV)|LEM:>aslm|ROOT:slm|3MS",
+    ])
+    words = result[(1, 1)]
+    assert words[0]["pattern"] == "أَفْعَلَ"
+
+
+def test_pattern_act_pcpl_form_i(load_words):
+    """Form I active participle must have pattern فَاعِل."""
+    result = load_words([
+        "(1:1:1:1)\tma`liki\tN\tSTEM|POS:N|ACT|PCPL|LEM:ma`lik|ROOT:mlk|M|GEN",
+    ])
+    words = result[(1, 1)]
+    assert words[0]["pattern"] == "فَاعِل"
+
+
+def test_pattern_pass_pcpl_form_i(load_words):
+    """Form I passive participle must have pattern مَفْعُول."""
+    result = load_words([
+        "(1:1:1:1)\tmgDwb\tN\tSTEM|POS:N|PASS|PCPL|LEM:mgDwb|ROOT:gDb|M|GEN",
+    ])
+    words = result[(1, 1)]
+    assert words[0]["pattern"] == "مَفْعُول"
+
+
+def test_pattern_act_pcpl_form_iv(load_words):
+    """Form IV active participle must have pattern مُفْعِل."""
+    result = load_words([
+        "(1:1:1:1)\tmslm\tN\tSTEM|POS:N|ACT|PCPL|(IV)|LEM:mslm|ROOT:slm|M|NOM",
+    ])
+    words = result[(1, 1)]
+    assert words[0]["pattern"] == "مُفْعِل"
+
+
+def test_pattern_pass_pcpl_form_iv(load_words):
+    """Form IV passive participle must have pattern مُفْعَل."""
+    result = load_words([
+        "(1:1:1:1)\tmrsl\tN\tSTEM|POS:N|PASS|PCPL|(IV)|LEM:mrsl|ROOT:rsl|MP|GEN",
+    ])
+    words = result[(1, 1)]
+    assert words[0]["pattern"] == "مُفْعَل"
+
+
+def test_pattern_act_pcpl_form_x(load_words):
+    """Form X active participle must have pattern مُسْتَفْعِل."""
+    result = load_words([
+        "(1:1:1:1)\tmsotaqiym\tADJ\tSTEM|POS:ADJ|ACT|PCPL|(X)|LEM:msotaqiym|ROOT:qwm|M|ACC",
+    ])
+    words = result[(1, 1)]
+    assert words[0]["pattern"] == "مُسْتَفْعِل"
+
+
+def test_pattern_vn_form_ii(load_words):
+    """Form II verbal noun must have pattern تَفْعِيل."""
+    result = load_words([
+        "(1:1:1:1)\ttSryf\tN\tSTEM|POS:N|VN|(II)|LEM:tSryf|ROOT:Srf|M|GEN",
+    ])
+    words = result[(1, 1)]
+    assert words[0]["pattern"] == "تَفْعِيل"
+
+
+def test_pattern_vn_form_iv(load_words):
+    """Form IV verbal noun must have pattern إِفْعَال."""
+    result = load_words([
+        "(1:1:1:1)\t<HsAn\tN\tSTEM|POS:N|VN|(IV)|LEM:<HsAn|ROOT:Hsn|M|ACC",
+    ])
+    words = result[(1, 1)]
+    assert words[0]["pattern"] == "إِفْعَال"
+
+
+def test_pattern_vn_form_x(load_words):
+    """Form X verbal noun must have pattern اِسْتِفْعَال."""
+    result = load_words([
+        "(1:1:1:1)\t{stbdAl\tN\tSTEM|POS:N|VN|(X)|LEM:{stbdAl|ROOT:bdl|M|ACC",
+    ])
+    words = result[(1, 1)]
+    assert words[0]["pattern"] == "اِسْتِفْعَال"
+
+
+def test_pattern_vn_form_i_uses_lemma(load_words):
+    """Form I verbal noun has irregular patterns → falls back to lemma."""
+    result = load_words([
+        "(1:1:1:1)\tTgyAn\tN\tSTEM|POS:N|VN|LEM:TgyAn|ROOT:Tgy|M|GEN",
+    ])
+    words = result[(1, 1)]
+    # Form I VN is not in NOMINAL_PATTERN → falls back to vocalized lemma
+    assert words[0]["pattern"] == words[0]["lemma"]
+
+
+def test_pattern_plain_noun_equals_lemma(load_words):
+    """Plain nouns (no derivation) must have pattern = vocalized lemma."""
+    result = load_words([
+        "(1:1:1:1)\tktAb\tN\tSTEM|POS:N|LEM:kitAb|ROOT:ktb|M|NOM",
+    ])
+    words = result[(1, 1)]
+    assert words[0]["pattern"] == words[0]["lemma"]
+    assert words[0]["pattern"] is not None
+
+
+def test_pattern_act_pcpl_form_viii(load_words):
+    """Form VIII active participle must have pattern مُفْتَعِل."""
+    result = load_words([
+        "(1:1:1:1)\tmhtdy\tN\tSTEM|POS:N|ACT|PCPL|(VIII)|LEM:mhtdy|ROOT:hdy|M|NOM",
+    ])
+    words = result[(1, 1)]
+    assert words[0]["pattern"] == "مُفْتَعِل"
+
+
+def test_pattern_vn_form_iii(load_words):
+    """Form III verbal noun must have pattern فِعَال."""
+    result = load_words([
+        "(1:1:1:1)\tHsAb\tN\tSTEM|POS:N|VN|(III)|LEM:HsAb|ROOT:Hsb|M|GEN",
+    ])
+    words = result[(1, 1)]
+    assert words[0]["pattern"] == "فِعَال"
+
+
+# ---------------------------------------------------------------------------
+# NOMINAL_PATTERN — verified lookup table
+# ---------------------------------------------------------------------------
+
+def test_nominal_pattern_form_i_act():
+    from alfanous_import.quran_corpus_reader.constants import NOMINAL_PATTERN, VERB, DERIV
+    assert NOMINAL_PATTERN[(VERB["(I)"][0], DERIV["ACT PCPL"][0])] == "فَاعِل"
+
+def test_nominal_pattern_form_i_pass():
+    from alfanous_import.quran_corpus_reader.constants import NOMINAL_PATTERN, VERB, DERIV
+    assert NOMINAL_PATTERN[(VERB["(I)"][0], DERIV["PASS PCPL"][0])] == "مَفْعُول"
+
+def test_nominal_pattern_form_i_vn_absent():
+    """Form I VN is irregular — must NOT be in NOMINAL_PATTERN."""
+    from alfanous_import.quran_corpus_reader.constants import NOMINAL_PATTERN, VERB, DERIV
+    assert (VERB["(I)"][0], DERIV["VN"][0]) not in NOMINAL_PATTERN
+
+def test_nominal_pattern_form_ii_act():
+    from alfanous_import.quran_corpus_reader.constants import NOMINAL_PATTERN, VERB, DERIV
+    assert NOMINAL_PATTERN[(VERB["(II)"][0], DERIV["ACT PCPL"][0])] == "مُفَعِّل"
+
+def test_nominal_pattern_form_ii_pass():
+    from alfanous_import.quran_corpus_reader.constants import NOMINAL_PATTERN, VERB, DERIV
+    assert NOMINAL_PATTERN[(VERB["(II)"][0], DERIV["PASS PCPL"][0])] == "مُفَعَّل"
+
+def test_nominal_pattern_form_ii_vn():
+    from alfanous_import.quran_corpus_reader.constants import NOMINAL_PATTERN, VERB, DERIV
+    assert NOMINAL_PATTERN[(VERB["(II)"][0], DERIV["VN"][0])] == "تَفْعِيل"
+
+def test_nominal_pattern_form_iii_vn():
+    from alfanous_import.quran_corpus_reader.constants import NOMINAL_PATTERN, VERB, DERIV
+    assert NOMINAL_PATTERN[(VERB["(III)"][0], DERIV["VN"][0])] == "فِعَال"
+
+def test_nominal_pattern_form_iv_vn():
+    from alfanous_import.quran_corpus_reader.constants import NOMINAL_PATTERN, VERB, DERIV
+    assert NOMINAL_PATTERN[(VERB["(IV)"][0], DERIV["VN"][0])] == "إِفْعَال"
+
+def test_nominal_pattern_form_x_act():
+    from alfanous_import.quran_corpus_reader.constants import NOMINAL_PATTERN, VERB, DERIV
+    assert NOMINAL_PATTERN[(VERB["(X)"][0], DERIV["ACT PCPL"][0])] == "مُسْتَفْعِل"
+
+def test_nominal_pattern_form_x_pass():
+    from alfanous_import.quran_corpus_reader.constants import NOMINAL_PATTERN, VERB, DERIV
+    assert NOMINAL_PATTERN[(VERB["(X)"][0], DERIV["PASS PCPL"][0])] == "مُسْتَفْعَل"
+
+def test_nominal_pattern_form_x_vn():
+    from alfanous_import.quran_corpus_reader.constants import NOMINAL_PATTERN, VERB, DERIV
+    assert NOMINAL_PATTERN[(VERB["(X)"][0], DERIV["VN"][0])] == "اِسْتِفْعَال"
 
