@@ -689,8 +689,10 @@ class Transformer:
                 _has_aya_lemma            = "aya_lemma"            in _schema_names
                 _has_aya_root             = "aya_root"             in _schema_names
                 _has_aya_stem             = "aya_stem"             in _schema_names
+                _has_aya_auto_stem        = "aya_auto_stem"        in _schema_names
                 _has_word_lemma           = "word_lemma"           in _schema_names
                 _has_word_stem            = "word_stem"            in _schema_names
+                _has_word_auto_stem       = "word_auto_stem"       in _schema_names
                 _has_uthmani_different    = "uthmani_different"    in _schema_names
 
                 # Normalizer for comparing standard vs. Uthmani forms.
@@ -701,15 +703,16 @@ class Transformer:
                         hamza=False, uthmani_symbols=True,
                     )
 
-                # Pre-build aya_lemma, aya_root and aya_stem text for each aya
-                # from word-child data.  Each word's morphological value is
-                # used; the word's normalised form is used as a fallback so
-                # that every word position is represented and phrase-length
+                # Pre-build aya_lemma, aya_root, aya_stem and aya_auto_stem text
+                # for each aya from word-child data.  Each word's morphological
+                # value is used; the word's normalised form is used as a fallback
+                # so that every word position is represented and phrase-length
                 # queries still align.
                 _aya_lemma_text: dict = {}
                 _aya_root_text: dict = {}
                 _aya_stem_text: dict = {}
-                if (_has_aya_lemma or _has_aya_root or _has_aya_stem) and words_by_aya:
+                _aya_auto_stem_text: dict = {}
+                if (_has_aya_lemma or _has_aya_root or _has_aya_stem or _has_aya_auto_stem) and words_by_aya:
                     # Normalizer to strip tashkeel from vocalized values so
                     # aya_lemma and aya_stem are searchable without diacritics.
                     from alfanous.text_processing import QArabicSymbolsFilter as _QASF
@@ -744,6 +747,17 @@ class Transformer:
                                 _s = _lemma_norm.normalize_all(_s) if _s else ""
                                 _stems.append(_s)
                             _aya_stem_text[_key] = " ".join(_stems)
+                        if _has_aya_auto_stem:
+                            # Store normalized word forms; QStemAnalyzer applies
+                            # the Snowball Arabic stemmer at index time so that
+                            # both indexed and query terms are Snowball-stemmed
+                            # consistently.
+                            _auto_norms = []
+                            for _w in _words_list:
+                                _n = _w.get("normalized") or _w.get("word") or ""
+                                _n = _lemma_norm.normalize_all(_n) if _n else ""
+                                _auto_norms.append(_n)
+                            _aya_auto_stem_text[_key] = " ".join(_auto_norms)
 
                 # Pre-compute per-translation metadata so the inner loop only
                 # does an index lookup + cheap dict copy rather than recomputing
@@ -801,6 +815,8 @@ class Transformer:
                         doc["aya_root"] = _aya_root_text[_aya_key]
                     if _has_aya_stem and _aya_key in _aya_stem_text:
                         doc["aya_stem"] = _aya_stem_text[_aya_key]
+                    if _has_aya_auto_stem and _aya_key in _aya_auto_stem_text:
+                        doc["aya_auto_stem"] = _aya_auto_stem_text[_aya_key]
                     writer.start_group()
                     writer.add_document(**doc)
                     if gid is not None and trans_meta:
@@ -846,7 +862,7 @@ class Transformer:
                                     word_doc["uthmani_different"] = (_norm_uth != _norm_std)
                             if _has_word_transliteration and pos < len(tr_tokens):
                                 word_doc["word_transliteration"] = tr_tokens[pos]
-                            # Normalized word_lemma / word_stem for word search.
+                            # Normalized word_lemma / word_stem / word_auto_stem for word search.
                             if _has_word_lemma:
                                 _wl = w.get("lemma") or w.get("normalized") or ""
                                 if _wl:
@@ -855,6 +871,14 @@ class Transformer:
                                 _ws = w.get("stem") or w.get("lemma") or w.get("normalized") or ""
                                 if _ws:
                                     word_doc["word_stem"] = _ws
+                            if _has_word_auto_stem:
+                                # Store the normalized word form; QStemAnalyzer applies
+                                # the Snowball Arabic stemmer at index time so that
+                                # both indexed and query terms are Snowball-stemmed
+                                # consistently.
+                                _wa = w.get("normalized") or w.get("word") or ""
+                                if _wa:
+                                    word_doc["word_auto_stem"] = _wa
                             word_doc["gid"] = gid
                             writer.add_document(kind="word", **word_doc)
                     writer.end_group()

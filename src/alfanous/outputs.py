@@ -161,7 +161,7 @@ _KEYWORDS_ARABIC_FIELD_ALIASES = {
 #   word_standard  — normalised standard (Imla'i) spelling (TEXT, QStandardAnalyzer)
 #   standard       — raw standard (Imla'i) spelling (KEYWORD, stored, for display)
 _WORD_ALL_INDEXED_FIELDS = [
-    "word", "word_lemma", "word_stem",
+    "word", "word_lemma", "word_stem", "word_auto_stem",
     "normalized", "word_standard", "standard",
     "pos", "type",
     "root", "arabicroot",
@@ -1246,9 +1246,10 @@ class Raw:
             if derivation_level >= 1 and _deriv_expansion:
                 from alfanous.query_plugins import _collect_derivations_two_pass, _UTHMANI_ANNOTATION_RE
                 _deriv_field_key_map = {
-                    "aya_stem":  "lemma",
-                    "aya_lemma": "lemma",
-                    "aya_root":  "root",
+                    "aya_stem":      "lemma",
+                    "aya_lemma":     "lemma",
+                    "aya_root":      "root",
+                    "aya_auto_stem": "auto_stem",
                 }
                 _deriv_key_values: "dict[str, set]" = {}
                 for _df, _dt in _deriv_expansion:

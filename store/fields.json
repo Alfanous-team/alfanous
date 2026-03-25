@@ -1236,5 +1236,28 @@
     "type": "BOOLEAN",
     "stored": true,
     "comment": "True when normalized Uthmani spelling differs from normalized standard (Imla'i) spelling (kind=word child docs)"
+  },
+  {
+    "analyzer": "QStemAnalyzer",
+    "comment": "نص الآية مع كل كلمة في شكلها المجذّع تلقائياً بالجذع Snowball — مُضمَّن في استعلام البحث المشتق لمرة واحدة (kind=aya)",
+    "id": 166,
+    "name": "_aya_auto_stem",
+    "name_arabic": "آية_جذع_تلقائي",
+    "search_name": "aya_auto_stem",
+    "stored": false,
+    "table_name": "aya",
+    "type": "TEXT",
+    "phrase": false
+  },
+  {
+    "id": 167,
+    "table_name": "aya",
+    "name": "word_auto_stem",
+    "name_arabic": "كلمة_جذع_تلقائي",
+    "search_name": "word_auto_stem",
+    "type": "TEXT",
+    "stored": false,
+    "analyzer": "QStemAnalyzer",
+    "comment": "Auto-stemmed (Snowball) normalized word form per word child doc — for derivation matching in tuple search (kind=word)"
   }
 ]
