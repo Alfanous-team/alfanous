@@ -14,10 +14,10 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     
     - name: Set up Python
-      uses: actions/setup-python@v4
+      uses: actions/setup-python@v5
       with:
         python-version: '3.x'
     
@@ -60,22 +60,6 @@ jobs:
     - name: Check distribution
       run: |
         twine check src/dist/* src/alfanous_mcp/dist/*
-    
-    - name: Publish alfanous3 to PyPI
-      uses: pypa/gh-action-pypi-publish@release/v1
-      with:
-        user: __token__
-        password: ${{ secrets.ALFANOUS_PYPI_TOKEN }}
-        packages-dir: src/dist/
-        skip-existing: true
-    
-    - name: Publish alfanous3-mcp to PyPI
-      uses: pypa/gh-action-pypi-publish@release/v1
-      with:
-        user: __token__
-        password: ${{ secrets.ALFANOUS_MCP_PYPI_TOKEN }}
-        packages-dir: src/alfanous_mcp/dist/
-        skip-existing: true
 
     - name: Create GitHub Release and upload artifacts
       if: startsWith(github.ref, 'refs/tags/v')
@@ -87,3 +71,23 @@ jobs:
           src/alfanous_mcp/dist/*.whl
           src/alfanous_mcp/dist/*.tar.gz
         generate_release_notes: true
+    
+    - name: Publish alfanous3 to PyPI
+      continue-on-error: true
+      uses: pypa/gh-action-pypi-publish@release/v1
+      with:
+        user: __token__
+        password: ${{ secrets.ALFANOUS_PYPI_TOKEN }}
+        packages-dir: src/dist/
+        skip-existing: true
+        attestations: false
+    
+    - name: Publish alfanous3-mcp to PyPI
+      continue-on-error: true
+      uses: pypa/gh-action-pypi-publish@release/v1
+      with:
+        user: __token__
+        password: ${{ secrets.ALFANOUS_MCP_PYPI_TOKEN }}
+        packages-dir: src/alfanous_mcp/dist/
+        skip-existing: true
+        attestations: false
