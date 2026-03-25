@@ -1265,7 +1265,7 @@ class Raw:
                             ):
                                 if w:
                                     # Strip both Uthmanic annotation marks and standard
-                                    # tashkeel so the expanded forms match the indexed
+                                    # tashkil so the expanded forms match the indexed
                                     # "aya" field postings (which are stored stripped by
                                     # QStandardAnalyzer).  Without this, vocalized forms
                                     # from the word_standard KEYWORD field would fail the

@@ -875,7 +875,7 @@
     "id": 132,
     "table_name": "aya",
     "name": "state",
-    "name_arabic": "حالة_اسمية",
+    "name_arabic": "تعريف",
     "search_name": "state",
     "type": "ID",
     "stored": true,

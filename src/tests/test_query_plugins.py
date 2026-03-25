@@ -976,6 +976,61 @@ def test_collect_derivations_two_pass_returns_only_unvocalized():
     assert "مالك" in results, "Expected 'مالك' (normalized) in results"
 
 
+def test_collect_derivations_two_pass_multi_lemma_normalization():
+    """_collect_derivations_two_pass must return forms from ALL vocalized lemmas
+    that share the same normalized (no-tashkeel) form.
+
+    Regression test for: when aya_lemma postings contain a normalized lemma
+    like "ملك" that could come from both مَلَكَ (verb) and مَلِكٌ (noun), the
+    expansion must include forms of BOTH lemmas so no matched word shows zero
+    hits in the keywords output.
+    """
+    from alfanous.query_plugins import _build_word_lookup_table, _collect_derivations_two_pass
+    from unittest.mock import MagicMock
+
+    # Two words with DIFFERENT vocalized lemmas that both normalize to "ملك":
+    #   مَلِكٌ (king, noun)  — lemma = "مَلِكٌ"
+    #   يَمْلِكُ (he owns, verb) — lemma = "مَلَكَ"
+    # Both lemmas strip to "ملك" under QStandardAnalyzer.
+    _DOCS = [
+        {
+            "kind": "word",
+            "lemma": "مَلِكٌ",   # vocalized lemma for noun "king"
+            "root": "ملك",
+            "word": "مَلِكٌ",
+            "normalized": "ملك",
+            "standard": "ملك",
+        },
+        {
+            "kind": "word",
+            "lemma": "مَلَكَ",   # vocalized lemma for verb "to own/reign"
+            "root": "ملك",
+            "word": "يَمْلِكُ",
+            "normalized": "يملك",
+            "standard": "يملك",
+        },
+    ]
+
+    mock_reader = MagicMock()
+    mock_reader.iter_docs.return_value = [(i, d) for i, d in enumerate(_DOCS)]
+
+    lookup_table = _build_word_lookup_table(mock_reader)
+
+    # When aya_lemma:ملك is matched, both "ملك" (noun form) and "يملك" (verb
+    # form) must appear in the expansion — the two-pass fallback via form_to_key
+    # would only find one lemma, missing the other.
+    results = _collect_derivations_two_pass({"ملك"}, "lemma", lookup_table=lookup_table)
+
+    assert "ملك" in results, (
+        "Expected noun form 'ملك' (from lemma مَلِكٌ) in results"
+    )
+    assert "يملك" in results, (
+        "Expected verb form 'يملك' (from lemma مَلَكَ) in results. "
+        "Before the fix, the two-pass fallback via form_to_key would only "
+        "find one lemma (whichever normalized form was seen first), missing "
+        "the other and causing matched words to show zero hits in keywords."
+    )
+
 
 def _make_word_index_mock_with_marks(word, lemma, root, lemma_words, root_words):
     """Like _make_word_index_mock but injects U+06D6–U+06ED marks into the

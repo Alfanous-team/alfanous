@@ -130,21 +130,30 @@ def _build_word_lookup_table(reader):
     ``engine._word_lookup_table`` and freed when the engine is closed.
 
     Performs a single ``iter_docs()`` pass over all ~77 k word-child documents
-    and populates three in-memory dicts:
+    and populates four in-memory dicts:
 
     * ``form_to_key``: stored word form → ``{'lemma': ..., 'root': ...}``
     * ``lemma_to_forms``: vocalized lemma → frozenset of unvocalized word forms
     * ``root_to_forms``: root string → frozenset of unvocalized word forms
+    * ``normalized_lemma_to_forms``: normalized (no-tashkeel) lemma →
+      frozenset of unvocalized word forms for ALL vocalized lemmas that share
+      the same normalized form.  This is the primary lookup used when expanding
+      derivation-field postings (``aya_lemma``, ``aya_stem``) whose values are
+      already normalized by QStandardAnalyzer.
 
     The tables are used by :func:`_collect_derivations_two_pass` for
     highlighting derivation-level aya-search results.
 
     :param reader: An open Whoosh ``IndexReader``.
-    :returns: Tuple ``(form_to_key, lemma_to_forms, root_to_forms)``
+    :returns: Tuple ``(form_to_key, lemma_to_forms, root_to_forms,
+        normalized_lemma_to_forms)``
     """
     form_to_key = {}       # word_form → {'lemma': vocalized_lemma, 'root': root}
     _lemma_forms = {}      # vocalized_lemma → set of unvocalized word forms
     _root_forms = {}       # root            → set of unvocalized word forms
+    _normalized_lemma_forms = {}  # normalized_lemma → set of unvocalized word forms
+
+    _asf = QArabicSymbolsFilter(shaping=True, tashkil=True, spellerrors=False, hamza=False)
 
     for _, stored in reader.iter_docs():
         if stored.get("kind") != "word":
@@ -168,9 +177,23 @@ def _build_word_lookup_table(reader):
             if root:
                 _root_forms.setdefault(root, set()).add(val)
 
+        # Build normalized_lemma_to_forms: map the QStandardAnalyzer-normalized
+        # lemma (what aya_lemma/aya_stem postings contain) → word forms.
+        # Multiple vocalized lemmas can normalize to the same string (e.g.
+        # مَلَكَ and مَلِكٌ both normalize to "ملك"), so all their forms are
+        # collected together under the single normalized key.
+        if lemma:
+            lemma_norm = _asf.normalize_all(lemma)
+            if lemma_norm:
+                for field in ("standard", "normalized"):
+                    val = stored.get(field)
+                    if val:
+                        _normalized_lemma_forms.setdefault(lemma_norm, set()).add(val)
+
     lemma_to_forms = {k: frozenset(v) for k, v in _lemma_forms.items()}
     root_to_forms  = {k: frozenset(v) for k, v in _root_forms.items()}
-    return form_to_key, lemma_to_forms, root_to_forms
+    normalized_lemma_to_forms = {k: frozenset(v) for k, v in _normalized_lemma_forms.items()}
+    return form_to_key, lemma_to_forms, root_to_forms, normalized_lemma_to_forms
 
 
 def _collect_derivations_two_pass(candidates, index_key, lookup_table=None):
@@ -184,10 +207,15 @@ def _collect_derivations_two_pass(candidates, index_key, lookup_table=None):
     rescanning the index on every request.
 
     :param candidates: Set/frozenset of candidate word forms (normalized).
+        When called from outputs.py with derivation-expansion terms, these are
+        the QStandardAnalyzer-normalized values from the ``aya_lemma`` /
+        ``aya_root`` postings (i.e. already-normalized lemma or root strings).
+        When called from DerivationQuery, these are the word form itself.
     :param index_key: ``'lemma'`` or ``'root'``.
     :param lookup_table: Pre-built ``(form_to_key, lemma_to_forms,
-        root_to_forms)`` tuple from ``engine._word_lookup_table``.  When
-        ``None`` the function falls back to the current QSE engine's table.
+        root_to_forms[, normalized_lemma_to_forms])`` tuple from
+        ``engine._word_lookup_table``.  When ``None`` the function falls back
+        to the current QSE engine's table.
     :returns: List of unique unvocalized word forms.
     """
     if lookup_table is None:
@@ -200,7 +228,29 @@ def _collect_derivations_two_pass(candidates, index_key, lookup_table=None):
     if not lookup_table:
         return []
 
-    form_to_key, lemma_to_forms, root_to_forms = lookup_table
+    # Support both old 3-tuple and new 4-tuple lookup tables.
+    if len(lookup_table) >= 4:
+        form_to_key, lemma_to_forms, root_to_forms, normalized_lemma_to_forms = lookup_table[:4]
+    else:
+        form_to_key, lemma_to_forms, root_to_forms = lookup_table
+        normalized_lemma_to_forms = {}
+
+    # For lemma-level expansion: candidates are QStandardAnalyzer-normalized
+    # lemma values straight from the aya_lemma/aya_stem postings.  Use the
+    # normalized_lemma_to_forms mapping directly so that ALL vocalized lemmas
+    # sharing the same normalized form are covered (e.g. both مَلَكَ and مَلِكٌ
+    # normalize to "ملك" — without this, only one lemma's forms would be
+    # returned, causing other matched words to show zero hits in keywords).
+    if index_key == "lemma" and normalized_lemma_to_forms:
+        words = set()
+        for candidate in candidates:
+            forms = normalized_lemma_to_forms.get(candidate)
+            if forms:
+                words.update(forms)
+        if words:
+            return list(words)
+        # Fall through to two-pass if normalized lookup found nothing
+        # (e.g. candidate is a plain word form, not a normalized lemma value).
 
     # Pass 1: find all index_key values matching any candidate.
     key_values = set()
