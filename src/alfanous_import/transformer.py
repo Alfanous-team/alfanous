@@ -238,6 +238,14 @@ def _load_corpus_words_txt(corpus_path):
                 "derivation":   stem_feats.get("derivation"),
                 "aspect":       stem_feats.get("aspect"),
             }
+            # Infer voice for verbs: corpus only tags PASS explicitly;
+            # absence of any voice tag means Active voice.
+            if stem_feats.get("type") == "Verbs" and entry["voice"] is None:
+                entry["voice"] = VERB["ACT"][1]  # "Active voice"
+            # Infer state for nouns: corpus only tags INDEF (نكرة) explicitly;
+            # absence of any state tag means Definite (معرفة).
+            if stem_feats.get("type") == "Nouns" and entry["state"] is None:
+                entry["state"] = NOM["DEF"][0]  # "معرفة"
             result[(sura, aya)].append(entry)
 
         logging.info("Loaded %d word occurrences from corpus.", gid)
