@@ -53,6 +53,13 @@ class BasicSearchEngine:
             # Uses OrderedDict with LRU eviction capped at _MAX_FIND_PARSER_CACHE
             # to prevent unbounded growth.
             self._find_parsers: OrderedDict = OrderedDict()
+            # Build the word-child lookup table once from the open reader.
+            # The table is shared for the entire lifespan of this engine and
+            # freed (set to None) in close().  It is used by
+            # _collect_derivations_two_pass for highlighting after
+            # derivation-level aya searches.
+            from alfanous.query_plugins import _build_word_lookup_table as _build_wlt
+            self._word_lookup_table = _build_wlt(self._reader.reader)
             self.OK = True
 
     # end  __init__
@@ -360,6 +367,8 @@ class BasicSearchEngine:
             self._searcher.close()
         if hasattr(self, '_reader'):
             self._reader.close()
+        # Free the word lookup table so its memory can be reclaimed.
+        self._word_lookup_table = None
 
     def __enter__(self):
         return self

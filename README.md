@@ -287,10 +287,104 @@ Alfanous supports advanced query syntax:
 * **Fielded Search**: Use field name - `سورة:يس`, `سجدة:نعم`
 * **Ranges**: Use `[X الى Y]` - `رقم_السورة:[1 الى 5]`
 * **Partial Vocalization**: Search with some diacritics - `آية_:'مَن'`
-* **Root/Lemma**: Use `>>` for root, `>` for lemma - `>>مالك`, `>مالك`
+* **Derivation (stem)**: Use `>` - `>رحيم` (searches `aya_stem` — corpus-derived stem)
+* **Derivation (lemma)**: Use `>>` - `>>رحيم` (searches `aya_lemma` — all inflections of the same lexeme)
+* **Derivation (root)**: Use `>>>` - `>>>ملك` (searches `aya_root` — all words from the same root)
 * **Tuples**: Use `{root,type}` - `{قول،اسم}`
 
-#### Faceted Search
+#### Derivation-Level Search
+
+Control how broadly the search expands morphologically using the `derivation_level` parameter:
+
+| Level | Value | Index field | Description |
+|---|---|---|---|
+| 0 | `"word"` | `aya` | Exact match only (default) |
+| 1 | `"stem"` | `aya_stem` | Corpus-derived stem — words sharing the same morphological stem |
+| 2 | `"lemma"` | `aya_lemma` | Corpus lemma — all inflections of the same lexeme |
+| 3 | `"root"` | `aya_root` | Trilateral root — all words from the same root |
+
+Each derivation field is pre-indexed at build time so queries run against a compact, pre-computed representation rather than expanding at search time.
+
+```python
+# Level 0 — exact match
+>>> api.do({"action": "search", "query": "رَحِيمٌ"})
+
+# Level 1 — stem (corpus-derived stem)
+>>> api.do({"action": "search", "query": "رحيم", "derivation_level": 1})
+
+# Level 2 — all words sharing the same lemma (e.g. all forms of رَحِيمٌ)
+>>> api.do({"action": "search", "query": "رحيم", "derivation_level": 2})
+
+# Level 3 — all words from root رحم (رحمة، رحمن، رحيم، يرحم، …)
+>>> api.do({"action": "search", "query": "رحيم", "derivation_level": 3})
+
+# String aliases are also accepted
+>>> api.do({"action": "search", "query": "كتب", "derivation_level": "root"})
+```
+
+The derivation syntax `>word`, `>>word`, `>>>word` maps to levels 1, 2, 3 respectively and can be embedded directly in queries:
+
+```python
+# Stem-level derivation in a query expression
+>>> api.do({"action": "search", "query": ">رحيم"})
+
+# Root-level: all words from root ملك
+>>> api.do({"action": "search", "query": ">>>ملك"})
+
+# Combined with field filters
+>>> api.do({"action": "search", "query": ">>الله AND سورة:الإخلاص"})
+```
+
+#### Word Search (`unit="word"`)
+
+When `unit="word"` the engine searches word-level child documents instead of verse-level parent documents. Each word child carries its full morphological annotation — part-of-speech, lemma, stem, root, pattern, gender, number, person, voice, mood, derivation level, and more.
+
+```python
+# Search all words matching "الله" at word level
+>>> api.do({"action": "search", "query": "الله", "unit": "word"})
+
+# Derivation levels also apply to word search:
+# Level 1 — search word_stem (corpus-derived stem)
+>>> api.do({"action": "search", "query": "رحيم", "unit": "word", "derivation_level": 1})
+
+# Level 2 — search word_lemma (normalized lemma)
+>>> api.do({"action": "search", "query": "رحيم", "unit": "word", "derivation_level": 2})
+
+# Level 3 — search root (exact root value, e.g. "رحم")
+>>> api.do({"action": "search", "query": "رحم", "unit": "word", "derivation_level": 3})
+```
+
+##### Morphological Filtering (`search_by_word_linguistics`)
+
+Filter words by any combination of morphological properties using the `search_by_word_linguistics` action:
+
+```python
+# Find all nouns from root قول
+>>> api.do({
+...     "action": "search_by_word_linguistics",
+...     "root": "قول",
+...     "type": "أسماء"       # Arabic POS category name
+... })
+
+# Find all active-voice past-tense verbs from root كتب
+>>> api.do({
+...     "action": "search_by_word_linguistics",
+...     "root": "كتب",
+...     "pos": "V",
+...     "voice": "مبني للمعلوم",
+...     "aspect": "فعل ماضي"
+... })
+
+# Find all proper nouns
+>>> api.do({
+...     "action": "search_by_word_linguistics",
+...     "pos": "PN"
+... })
+```
+
+Available morphological filter fields include: `pos`, `type`, `root`, `lemma`, `stem`, `pattern`, `gender`, `number`, `person`, `voice`, `mood`, `state`, `case`, `form`, `aspect`, `derivation`, `special`, `prefix`, `suffix`, `segments`.
+
+
 
 Faceted search allows you to aggregate search results by fields:
 

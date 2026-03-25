@@ -383,6 +383,7 @@ def _make_stem_features_parser():
         BUCKWALTER2UNICODE, POS, PGN, PGNclass, VERB, VERB_QUAD, NOM, DERIV, PREFIX,
         _INV_POS,
     )
+    from alfanous.morphology import POSclass_arabic
     # _b2u is a helper defined in the same outer function scope; replicate it
     def _b2u(s):
         return "".join(BUCKWALTER2UNICODE.get(ch, ch) for ch in s)
@@ -391,6 +392,7 @@ def _make_stem_features_parser():
         "PGNclass": PGNclass, "VERB": VERB, "VERB_QUAD": VERB_QUAD,
         "NOM": NOM, "DERIV": DERIV,
         "PREFIX": PREFIX, "_INV_POS": _INV_POS, "_b2u": _b2u,
+        "POSclass_arabic": POSclass_arabic,
     }, ns)
     return ns["_parse_stem_features"]
 
@@ -911,31 +913,31 @@ def test_parse_stem_quad_root_high_forms_unchanged(parse_stem):
 # ---------------------------------------------------------------------------
 
 def test_parse_stem_circ_pos(parse_stem):
-    """POS:CIRC must set arabicpos to حرف حال and type to Particles."""
+    """POS:CIRC must set arabicpos to حرف حال and type to أدوات (Arabic)."""
     feats = parse_stem("STEM|POS:CIRC")
     assert feats.get("arabicpos") == "حرف حال"
-    assert feats.get("type") == "Particles"
+    assert feats.get("type") == "أدوات"
 
 
 def test_parse_stem_com_pos(parse_stem):
-    """POS:COM must set arabicpos to واو المعية and type to Particles."""
+    """POS:COM must set arabicpos to واو المعية and type to أدوات (Arabic)."""
     feats = parse_stem("STEM|POS:COM")
     assert feats.get("arabicpos") == "واو المعية"
-    assert feats.get("type") == "Particles"
+    assert feats.get("type") == "أدوات"
 
 
 def test_parse_stem_int_pos(parse_stem):
-    """POS:INT must set arabicpos to حرف تفسير and type to Particles."""
+    """POS:INT must set arabicpos to حرف تفسير and type to أدوات (Arabic)."""
     feats = parse_stem("STEM|POS:INT")
     assert feats.get("arabicpos") == "حرف تفسير"
-    assert feats.get("type") == "Particles"
+    assert feats.get("type") == "أدوات"
 
 
 def test_parse_stem_rslt_pos(parse_stem):
-    """POS:RSLT must set arabicpos to حرف واقع في جواب الشرط and type to Particles."""
+    """POS:RSLT must set arabicpos to حرف واقع في جواب الشرط and type to أدوات (Arabic)."""
     feats = parse_stem("STEM|POS:RSLT")
     assert feats.get("arabicpos") == "حرف واقع في جواب الشرط"
-    assert feats.get("type") == "Particles"
+    assert feats.get("type") == "أدوات"
 
 
 # ---------------------------------------------------------------------------
@@ -1024,7 +1026,7 @@ def test_segments_multi_suffix(load_words):
 
 def test_morphology_mappings_has_all_fields():
     """MORPHOLOGY_MAPPINGS must contain entries for all morphological fields."""
-    from alfanous_import.quran_corpus_reader.constants import MORPHOLOGY_MAPPINGS
+    from alfanous.morphology import MORPHOLOGY_MAPPINGS
     expected = {"pos", "gender", "number", "person", "form", "voice",
                 "aspect", "mood", "case", "state", "derivation", "prefix"}
     assert set(MORPHOLOGY_MAPPINGS.keys()) == expected
@@ -1032,14 +1034,14 @@ def test_morphology_mappings_has_all_fields():
 
 def test_morphology_mappings_gender_arabic_to_english():
     """Gender mapping must translate Arabic values to English."""
-    from alfanous_import.quran_corpus_reader.constants import MORPHOLOGY_MAPPINGS
+    from alfanous.morphology import MORPHOLOGY_MAPPINGS
     assert MORPHOLOGY_MAPPINGS["gender"]["مذكر"] == "masculine"
     assert MORPHOLOGY_MAPPINGS["gender"]["مؤنث"] == "feminine"
 
 
 def test_morphology_mappings_number_arabic_to_english():
     """Number mapping must translate Arabic values to English."""
-    from alfanous_import.quran_corpus_reader.constants import MORPHOLOGY_MAPPINGS
+    from alfanous.morphology import MORPHOLOGY_MAPPINGS
     assert MORPHOLOGY_MAPPINGS["number"]["مفرد"] == "singular"
     assert MORPHOLOGY_MAPPINGS["number"]["مثنى"] == "dual"
     assert MORPHOLOGY_MAPPINGS["number"]["جمع"] == "plural"
@@ -1047,7 +1049,7 @@ def test_morphology_mappings_number_arabic_to_english():
 
 def test_morphology_mappings_person_arabic_to_english():
     """Person mapping must translate Arabic values to English."""
-    from alfanous_import.quran_corpus_reader.constants import MORPHOLOGY_MAPPINGS
+    from alfanous.morphology import MORPHOLOGY_MAPPINGS
     assert MORPHOLOGY_MAPPINGS["person"]["المتكلم"] == "first person"
     assert MORPHOLOGY_MAPPINGS["person"]["المخاطب"] == "second person"
     assert MORPHOLOGY_MAPPINGS["person"]["الغائب"] == "third person"
@@ -1055,14 +1057,14 @@ def test_morphology_mappings_person_arabic_to_english():
 
 def test_morphology_mappings_voice_arabic_to_english():
     """Voice mapping must translate Arabic values to English."""
-    from alfanous_import.quran_corpus_reader.constants import MORPHOLOGY_MAPPINGS
+    from alfanous.morphology import MORPHOLOGY_MAPPINGS
     assert MORPHOLOGY_MAPPINGS["voice"]["مبني للمعلوم"] == "Active voice"
     assert MORPHOLOGY_MAPPINGS["voice"]["مبني للمجهول"] == "Passive voice"
 
 
 def test_morphology_mappings_pos_covers_all():
     """POS mapping must cover all POS tags."""
-    from alfanous_import.quran_corpus_reader.constants import MORPHOLOGY_MAPPINGS, POS
+    from alfanous.morphology import MORPHOLOGY_MAPPINGS, POS
     for tag, (ar, en) in POS.items():
         assert ar in MORPHOLOGY_MAPPINGS["pos"], f"POS Arabic '{ar}' missing from mapping"
         assert MORPHOLOGY_MAPPINGS["pos"][ar] == en
@@ -1084,24 +1086,22 @@ def test_stem_equals_lemma_for_noun(load_words):
 
 
 def test_stem_lemma_x_pattern_for_verb(load_words):
-    """For verbs, stem must combine lemma and pattern as 'lemma pattern'."""
+    """For verbs, stem must equal the lemma (dictionary base form only)."""
     result = load_words([
         "(1:1:1:1)\tkataba\tV\tSTEM|POS:V|PERF|LEM:kataba|ROOT:ktb|3MS",
     ])
     words = result[(1, 1)]
     lemma = words[0]["lemma"]
-    pattern = words[0]["pattern"]
-    assert words[0]["stem"] == "{} {}".format(lemma, pattern)
-    assert "فَعَلَ" in words[0]["stem"]  # Form I pattern
+    assert words[0]["stem"] == lemma
 
 
 def test_stem_lemma_x_pattern_form_iv(load_words):
-    """For Form IV verbs, stem must show 'lemma أَفْعَلَ'."""
+    """For Form IV verbs, stem must equal the lemma (no pattern appended)."""
     result = load_words([
         "(1:1:1:1)\t>aslm\tV\tSTEM|POS:V|PERF|(IV)|LEM:>aslama|ROOT:slm|3MS",
     ])
     words = result[(1, 1)]
-    assert "أَفْعَلَ" in words[0]["stem"]
+    assert words[0]["stem"] == words[0]["lemma"]
 
 
 def test_stem_special(load_words):
@@ -1210,13 +1210,14 @@ def test_pattern_vn_form_x(load_words):
 
 
 def test_pattern_vn_form_i_uses_lemma(load_words):
-    """Form I verbal noun has irregular patterns → falls back to lemma."""
+    """Form I verbal noun has irregular patterns → pattern stays None (no assumption)."""
     result = load_words([
         "(1:1:1:1)\tTgyAn\tN\tSTEM|POS:N|VN|LEM:TgyAn|ROOT:Tgy|M|GEN",
     ])
     words = result[(1, 1)]
-    # Form I VN is not in NOMINAL_PATTERN → falls back to vocalized lemma
-    assert words[0]["pattern"] == words[0]["lemma"]
+    # Form I VN is not in NOMINAL_PATTERN; pattern stays None instead of
+    # falling back to the lemma, so callers must handle None explicitly.
+    assert words[0]["pattern"] is None
 
 
 def test_pattern_plain_noun_none(load_words):

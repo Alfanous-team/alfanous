@@ -41,9 +41,8 @@ _ASF_SPELL_ERRORS = QArabicSymbolsFilter(
     shaping=True, tashkil=False, spellerrors=True, hamza=True
 )
 
-# Tuple of word-child fields searched in the two-pass derivation scan.
-# Defined here so it is not rebuilt on every call to
-# _collect_derivations_two_pass().
+# Word-child stored fields scanned when building the derivation lookup table
+# at engine instantiation.
 _DERIVATION_SEARCH_FIELDS = ('word', 'normalized', 'lemma', 'root', 'standard')
 
 # Lazily-cached Arabic Snowball stemmer for DerivationQuery.  Populated on
@@ -123,143 +122,107 @@ def _query_word_index(filter_dict, field="word", limit=5000):
     return list(_query_word_index_cached(filter_key, field, limit))
 
 
-@lru_cache(maxsize=256)
-def _collect_derivations_two_pass_cached(candidates_frozen, index_key):
-    """LRU-cached implementation of the two-pass derivation scan.
+def _build_word_lookup_table(reader):
+    """Build lookup tables for the word child documents in one index scan.
 
-    *candidates_frozen* is a ``frozenset`` of candidate word forms (the
-    hashable equivalent of the ``candidates`` set accepted by the public
-    wrapper).  The result is returned as a ``tuple`` so it is also hashable
-    and can be stored in the LRU cache without the caller accidentally
-    mutating it.
+    Called once at engine instantiation (``BasicSearchEngine.__init__``) with
+    the engine's open ``IndexReader``.  The returned tables are stored as
+    ``engine._word_lookup_table`` and freed when the engine is closed.
 
-    The cache avoids repeating two full ``iter_docs()`` passes over ~75 k
-    index documents for the same word on every search request.  A single
-    derivation lookup scans roughly 150 k stored-field dicts; with the
-    cache, subsequent identical queries are answered in microseconds.
+    Performs a single ``iter_docs()`` pass over all ~77 k word-child documents
+    and populates three in-memory dicts:
 
-    Cache size 256 covers typical query diversity (hundreds of unique Arabic
-    root/lemma queries) while keeping the resident memory footprint small.
+    * ``form_to_key``: stored word form → ``{'lemma': ..., 'root': ...}``
+    * ``lemma_to_forms``: vocalized lemma → frozenset of unvocalized word forms
+    * ``root_to_forms``: root string → frozenset of unvocalized word forms
+
+    The tables are used by :func:`_collect_derivations_two_pass` for
+    highlighting derivation-level aya-search results.
+
+    :param reader: An open Whoosh ``IndexReader``.
+    :returns: Tuple ``(form_to_key, lemma_to_forms, root_to_forms)``
     """
-    from alfanous.data import QSE as _QSE
-    engine = _QSE()
-    if not engine.OK:
-        raise RuntimeError("QSE index unavailable")
-    reader = engine._reader.reader
+    form_to_key = {}       # word_form → {'lemma': vocalized_lemma, 'root': root}
+    _lemma_forms = {}      # vocalized_lemma → set of unvocalized word forms
+    _root_forms = {}       # root            → set of unvocalized word forms
 
-    # Pass 1: find all index_key values matching any candidate in any field.
-    key_values = set()
     for _, stored in reader.iter_docs():
         if stored.get("kind") != "word":
             continue
+        lemma = stored.get("lemma")
+        root = stored.get("root")
+
+        # Map every searchable stored form → {lemma, root}
         for sf in _DERIVATION_SEARCH_FIELDS:
-            if stored.get(sf) in candidates_frozen:
-                kv = stored.get(index_key)
-                if kv:
-                    key_values.add(kv)
-                break  # one matching field per document is sufficient
+            key = stored.get(sf)
+            if key and key not in form_to_key:
+                form_to_key[key] = {"lemma": lemma, "root": root}
+
+        # Map lemma/root → unvocalized word forms (for derivation highlighting)
+        for field in ("standard", "normalized"):
+            val = stored.get(field)
+            if not val:
+                continue
+            if lemma:
+                _lemma_forms.setdefault(lemma, set()).add(val)
+            if root:
+                _root_forms.setdefault(root, set()).add(val)
+
+    lemma_to_forms = {k: frozenset(v) for k, v in _lemma_forms.items()}
+    root_to_forms  = {k: frozenset(v) for k, v in _root_forms.items()}
+    return form_to_key, lemma_to_forms, root_to_forms
+
+
+def _collect_derivations_two_pass(candidates, index_key, lookup_table=None):
+    """Collect unvocalized word forms sharing the same lemma or root as *candidates*.
+
+    Used for **highlighting** after a derivation-level aya search: the matched
+    aya_lemma / aya_root field values are expanded back to the actual word
+    forms that appear in the aya text so that those words are highlighted.
+
+    Uses the engine-level lookup table (built once at engine init) rather than
+    rescanning the index on every request.
+
+    :param candidates: Set/frozenset of candidate word forms (normalized).
+    :param index_key: ``'lemma'`` or ``'root'``.
+    :param lookup_table: Pre-built ``(form_to_key, lemma_to_forms,
+        root_to_forms)`` tuple from ``engine._word_lookup_table``.  When
+        ``None`` the function falls back to the current QSE engine's table.
+    :returns: List of unique unvocalized word forms.
+    """
+    if lookup_table is None:
+        try:
+            from alfanous.data import QSE as _QSE
+            _engine = _QSE()
+            lookup_table = getattr(_engine, '_word_lookup_table', None)
+        except Exception:
+            pass
+    if not lookup_table:
+        return []
+
+    form_to_key, lemma_to_forms, root_to_forms = lookup_table
+
+    # Pass 1: find all index_key values matching any candidate.
+    key_values = set()
+    for candidate in candidates:
+        entry = form_to_key.get(candidate)
+        if entry:
+            kv = entry.get(index_key)
+            if kv:
+                key_values.add(kv)
 
     if not key_values:
-        return ()
+        return []
 
-    # Pass 2: collect all unvocalized word forms whose index_key is in
-    # key_values.  Only 'standard' and 'normalized' are collected here;
-    # the vocalized 'word' field is intentionally omitted so that derivation
-    # expansion results (used for highlighting and words.individual) never
-    # contain diacritics.  Unvocalized forms are sufficient for both
-    # highlighting (the 'aya' field is indexed without diacritics) and for
-    # display in words.individual.
+    # Pass 2: collect unvocalized word forms for each key value.
+    key_map = lemma_to_forms if index_key == "lemma" else root_to_forms
     words = set()
-    for _, stored in reader.iter_docs():
-        if stored.get("kind") != "word":
-            continue
-        if stored.get(index_key) in key_values:
-            for field in ('standard', 'normalized'):
-                val = stored.get(field)
-                if val:
-                    words.add(val)
+    for kv in key_values:
+        forms = key_map.get(kv)
+        if forms:
+            words.update(forms)
 
-    return tuple(words)
-
-
-@lru_cache(maxsize=512)
-def _lookup_key_values_cached(candidates_frozen, index_key):
-    """Return the set of *index_key* values (lemma or root) for *candidates*.
-
-    Performs a single pass over word-child documents to find the lemma/root
-    value(s) corresponding to the given candidate word forms.  This is the
-    lookup half of the two-pass derivation approach — it answers "what is the
-    lemma (or root) of this word?" without collecting all sibling derivations.
-
-    Used by the field-based ``derivation_level`` implementation in
-    ``searching.py`` and the ``DerivationPlugin``.
-    """
-    from alfanous.data import QSE as _QSE
-    engine = _QSE()
-    if not engine.OK:
-        return frozenset()
-    reader = engine._reader.reader
-
-    key_values = set()
-    for _, stored in reader.iter_docs():
-        if stored.get("kind") != "word":
-            continue
-        for sf in _DERIVATION_SEARCH_FIELDS:
-            if stored.get(sf) in candidates_frozen:
-                kv = stored.get(index_key)
-                if kv:
-                    key_values.add(kv)
-                break
-    return frozenset(key_values)
-
-
-def _lookup_key_values(word, index_key):
-    """Return the lemma or root value(s) for a query *word*.
-
-    Normalises and optionally stems *word* to build a set of candidate forms,
-    then looks them up in the word-child index to find the corresponding
-    *index_key* values (``'lemma'`` or ``'root'``).
-
-    :param word: Arabic word to look up.
-    :param index_key: ``'lemma'`` or ``'root'``.
-    :returns: Frozenset of key values (may be empty if word is unknown).
-    """
-    word_norm = _ASF_NORMALIZE.normalize_all(word)
-    stemmer = _get_arabic_stemmer()
-    word_stem = stemmer.stemWord(word_norm) if stemmer is not None else word_norm
-    candidates = frozenset({word, word_norm, word_stem} - {''})
-    return _lookup_key_values_cached(candidates, index_key)
-
-
-def _collect_derivations_two_pass(candidates, index_key):
-    """Collect derivation words for *candidates* using two single-pass index scans.
-
-    This replaces the previous approach in :meth:`DerivationQuery._get_derivations`
-    which called :func:`_query_word_index` up to 15+ times (once per
-    candidate × field combination in Pass 1, then 3× per matching key value
-    in Pass 2), each time doing a full ``iter_docs()`` scan of ~75 k documents.
-    Two passes over the same corpus reduces I/O by roughly (3 + 3×N) / 2 ×
-    for a query that matches N unique key values.
-
-    Results are cached by :func:`_collect_derivations_two_pass_cached` so
-    that repeated queries for the same word pay the two-pass scan cost only
-    once per process lifetime.
-
-    **Pass 1** — find all *index_key* values for word documents where any of
-    the five lookup fields (``word``, ``normalized``, ``lemma``, ``root``,
-    ``word_standard``) matches any candidate form.
-
-    **Pass 2** — collect ``word_standard`` and ``normalized`` (unvocalized)
-    values for all word documents whose *index_key* matches a value from Pass
-    1.  The vocalized ``word`` field is intentionally excluded so that
-    derivation results never contain diacritical marks.
-
-    :param candidates: Non-empty set of candidate word forms.
-    :param index_key: Either ``'lemma'`` (level ≤ 1) or ``'root'`` (level ≥ 2).
-    :returns: List of unique word forms that are derivations of *candidates*.
-    :raises Exception: If the index is unavailable or the reader raises.
-    """
-    return list(_collect_derivations_two_pass_cached(frozenset(candidates), index_key))
+    return list(words)
 
 
 class QMultiTerm(MultiTerm):
@@ -529,15 +492,14 @@ class TashkilQuery(QMultiTerm):
 class TupleQuery(QMultiTerm):
     """Query for words matching specific morphological properties"""
 
-    # Map Arabic query type labels to the English "type" field stored in the
-    # word-children index (populated from corpus first.get("type")).
-    # Corpus values: 'Nouns', 'Verbs', 'Particles', 'Nominals', 'Pronouns',
-    #                'Adverbs', 'Prepositions', 'Conjunctions', 'Disconnected Letters'
+    # Map Arabic query type labels to the Arabic "type" field stored in the
+    # word-children index (populated via POSclass_arabic in transformer.py).
+    # Index values: 'أسماء', 'أفعال', 'أدوات', 'حروف_مقطعة', etc.
     _ARABIC_TO_TYPE = {
-        "اسم": "Nouns",
-        "فعل": "Verbs",
-        "أداة": "Particles",
-        "فواتيح": "Disconnected Letters",
+        "اسم": "أسماء",
+        "فعل": "أفعال",
+        "أداة": "أدوات",
+        "فواتيح": "حروف_مقطعة",
     }
 
     def __init__(self, fieldname, items, boost=1.0):
@@ -567,15 +529,15 @@ class TupleQuery(QMultiTerm):
         :returns: List of matching standard Arabic word forms.
         """
         # "root" maps directly to the "root" field (stores arabicroot, Arabic script).
-        # "type" maps to the "type" field which stores English category values
-        # ("Nouns", "Verbs", "Particles") via _ARABIC_TO_TYPE mapping.
+        # "type" maps to the "type" field which stores Arabic category values
+        # ("أسماء", "أفعال", "أدوات") via _ARABIC_TO_TYPE mapping.
         _filter = {}
         if props.get("root"):
             _filter["root"] = props["root"]
         if props.get("type"):
-            english_type = TupleQuery._ARABIC_TO_TYPE.get(props["type"])
-            if english_type:
-                _filter["type"] = english_type
+            arabic_type = TupleQuery._ARABIC_TO_TYPE.get(props["type"])
+            if arabic_type:
+                _filter["type"] = arabic_type
         if _filter:
             # Merge standard (primary) and normalized so that words whose
             # standard is None (e.g. تملك) are still included.
@@ -696,20 +658,20 @@ class DerivationPlugin(TaggingPlugin):
 
     Derivation levels map to pre-indexed aya fields:
 
-    * ``>word``   (level 1) → stem: search ``aya_fuzzy`` (snowball Arabic stemming)
+    * ``>word``   (level 1) → stem: search ``aya_stem``  (corpus-derived stem)
     * ``>>word``  (level 2) → lemma: search ``aya_lemma`` (corpus lemma)
-    * ``>>>word`` (level 3) → root: search ``aya_root`` (corpus root)
+    * ``>>>word`` (level 3) → root: search ``aya_root``  (corpus root)
 
-    Uses the pre-indexed fields when available for better performance.
-    Falls back to query-time expansion via :class:`DerivationQuery` when the
-    target field is not in the schema.
+    Each target field uses QStandardAnalyzer, so the query term is normalised
+    through that analyzer before the Term query is built — no intermediate
+    key-value lookup is needed.  All three fields are always in the schema.
     """
 
-    # Map derivation level → (target_field, index_key_for_lookup)
+    # Map derivation level → target aya field name (always in schema)
     _LEVEL_FIELDS = {
-        1: ("aya_fuzzy", None),       # stem — no key lookup needed
-        2: ("aya_lemma",    "lemma"),     # lemma
-        3: ("aya_root",  "root"),      # root
+        1: "aya_stem",    # stem  — QStandardAnalyzer (corpus-derived stem)
+        2: "aya_lemma",   # lemma — QStandardAnalyzer
+        3: "aya_root",    # root  — QStandardAnalyzer
     }
 
     class DerivationNode(syntax.WordNode):
@@ -721,51 +683,36 @@ class DerivationPlugin(TaggingPlugin):
 
         def query(self, parser):
             fieldname = self.fieldname or parser.fieldname
-            level_info = DerivationPlugin._LEVEL_FIELDS.get(self.level)
-            if level_info is not None:
-                deriv_field, index_key = level_info
+            deriv_field = DerivationPlugin._LEVEL_FIELDS.get(self.level)
+            if deriv_field is not None:
                 schema = getattr(parser, 'schema', None)
                 if schema is not None and deriv_field in schema:
-                    if index_key is None:
-                        # Level 1 (stem): search aya_fuzzy directly.
-                        # Apply the field's analyzer to the query term so that
-                        # the stemmed form matches the indexed content.
-                        field_obj = schema[deriv_field]
-                        tokens = list(field_obj.analyzer(self.actual_text, mode="query"))
-                        if tokens:
-                            terms = [Term(deriv_field, t.text) for t in tokens]
-                            if len(terms) == 1:
-                                return terms[0]
-                            return Or(terms, boost=self.boost)
-                    else:
-                        # Level 2/3 (lemma/root): look up the key value and
-                        # search the corresponding aya_lemma/aya_root field.
-                        # Normalize through the field analyzer since key values
-                        # are vocalized but the field strips vocalization.
-                        key_values = _lookup_key_values(self.actual_text, index_key)
-                        if key_values:
-                            field_obj = schema[deriv_field]
-                            terms = []
-                            seen = set()
-                            for kv in key_values:
-                                if not kv:
-                                    continue
-                                for tok in field_obj.analyzer(kv, mode="query"):
-                                    if tok.text not in seen:
-                                        seen.add(tok.text)
-                                        terms.append(Term(deriv_field, tok.text))
-                            if len(terms) == 1:
-                                return terms[0]
-                            if terms:
-                                return Or(terms, boost=self.boost)
-            # Fallback to expansion-based approach for backward compatibility
-            # (when derivation fields are not in the schema).
-            return DerivationQuery(
-                fieldname,
-                self.actual_text,
-                level=self.level,
-                boost=self.boost
-            )
+                    # Apply the target field's own analyzer to the query term.
+                    # All three fields (aya_stem, aya_lemma, aya_root) use
+                    # QStandardAnalyzer which just strips tashkeel — no
+                    # intermediate key-value lookup is needed.
+                    field_obj = schema[deriv_field]
+                    seen: "set[str]" = set()
+                    terms = []
+                    for tok in field_obj.analyzer(self.actual_text, mode="query"):
+                        if tok.text not in seen:
+                            seen.add(tok.text)
+                            terms.append(Term(deriv_field, tok.text))
+                    # Always include the exact-match term on the main field so
+                    # that derivation results are a superset of exact results.
+                    _main_seen: "set[str]" = set()
+                    if fieldname in schema:
+                        main_obj = schema[fieldname]
+                        for tok in main_obj.analyzer(self.actual_text, mode="query"):
+                            if tok.text not in _main_seen:
+                                _main_seen.add(tok.text)
+                                terms.append(Term(fieldname, tok.text))
+                    if len(terms) == 1:
+                        return terms[0]
+                    if terms:
+                        return Or(terms, boost=self.boost)
+            # Field not found — return a simple Term on the original field.
+            return Term(fieldname, self.actual_text, boost=self.boost)
 
         def r(self):
             return f"{'>' * self.level}{self.actual_text!r}"

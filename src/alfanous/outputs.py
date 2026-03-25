@@ -21,6 +21,9 @@ from whoosh.fields import TEXT as _WhooshTEXT
 from whoosh.sorting import Facets
 from alfanous.results_processing import QTranslationHighlight
 
+# Import helpers from searching module used in word search derivation/fuzzy expansion.
+from alfanous.searching import _is_arabic_text, _MIN_FUZZY_TERM_LEN
+
 
 from alfanous.text_processing import _TRANSLATION_LANGS
 # All language-specific indexed translation fields (text_en, text_fr, …).
@@ -452,7 +455,7 @@ class Raw:
         "perpage": "results per page  [override range]",
         "fuzzy": "fuzzy search — Levenshtein distance matching on aya_ac for spelling variants and typos (does NOT involve stemming — use derivation_level for morphological broadening)",
         "fuzzy_maxdist": "maximum Levenshtein edit distance for fuzzy term matching (default: 1, only used when fuzzy=True)",
-        "derivation_level": "morphological derivation broadening level: 0/'word' (exact, default), 1/'stem' (snowball Arabic stemming), 2/'lemma' (corpus lemma), 3/'root' (corpus root)",
+        "derivation_level": "morphological derivation broadening level: 0/'word' (exact, default), 1/'stem' (corpus-derived stem), 2/'lemma' (corpus lemma), 3/'root' (corpus root)",
         "timelimit": "maximum number of seconds to spend on a search query (default: 5.0, use None or 0 to disable)",
         "aya": "enable retrieving of aya text in the case of translation search",
     }
@@ -509,8 +512,8 @@ class Raw:
             "translation": sorted(_TRANS_FACET_FIELDS),
         }
         # Arabic→English morphology mappings so consumers can translate Arabic
-        # field values without hard-coding them.  Imported from constants.py.
-        from alfanous_import.quran_corpus_reader.constants import MORPHOLOGY_MAPPINGS
+        # field values without hard-coding them.
+        from alfanous.morphology import MORPHOLOGY_MAPPINGS
         self._morphology_mappings = MORPHOLOGY_MAPPINGS
         self._all = {
             "translations": self._translations,
@@ -568,6 +571,8 @@ class Raw:
             self._trans_fields = frozenset(_avail_trans)
 
             # Word search parser (used in _search_words).
+            # Uses ArabicParser so that tuple syntax {root,type,pattern} and
+            # derivation syntax (>, >>, >>>) work in word searches.
             _all_word_f = [f for f in _WORD_ALL_INDEXED_FIELDS if f in _schema_fields]
             _default_word_f = (
                 [f for f in ["word_standard", "word", "normalized", "standard"] if f in _schema_fields]
@@ -575,10 +580,20 @@ class Raw:
             )
             # Only build the parser when there is at least one usable field.
             # _search_words already checks for None and returns an empty response.
-            self._word_parser = (
-                _make_bounded_parser(_default_word_f, _schema, _OrGroup)
-                if _default_word_f else None
-            )
+            if _default_word_f:
+                from alfanous.query_processing import ArabicParser as _ArabicParser
+                _wp = _ArabicParser(
+                    schema=_schema,
+                    mainfield=_default_word_f[0],
+                    otherfields=_default_word_f[1:],
+                )
+                # Override the fieldname list so unqualified queries search all
+                # default word fields at once (same as the MultifieldParser behaviour).
+                from whoosh.qparser import MultifieldPlugin as _MFPlugin
+                _wp.add_plugin(_MFPlugin(_default_word_f))
+                self._word_parser = _wp
+            else:
+                self._word_parser = None
             # Also cache the full list for schema filtering in _search_words.
             self._all_word_fields = _all_word_f
         else:
@@ -1211,25 +1226,32 @@ class Raw:
             res, termz, searcher, _deriv_expansion = self.QSE.search_all(aya_query, limit=self._defaults["results_limit"]["aya"], sortedby=sortedby, reverse=reverse, facets=facets_list, filter_dict=filter_dict, fuzzy=fuzzy, fuzzy_maxdist=fuzzy_maxdist, derivation_level=derivation_level, timelimit=timelimit)
             terms = [term[1] for term in termz if term[0] in ("aya", "aya_", "aya_ac")]
             terms = terms[:self._defaults["maxkeywords"]]
-            # When derivation_level >= 2, matched terms include _lemma or
-            # aya_root field values (lemma/root strings).  These don't appear
-            # in the aya text, so they can't be used for highlighting directly.
-            # Expand them to actual aya words via the cached derivation lookup
-            # and add those words to the highlight terms.
-            if derivation_level >= 2 and _deriv_expansion:
+            # When derivation_level >= 1, matched terms include aya_stem /
+            # aya_lemma / aya_root field values which don't appear verbatim in
+            # the aya text.  Expand them back to actual word forms via the
+            # engine-level lookup table so those words are highlighted.
+            if derivation_level >= 1 and _deriv_expansion:
                 from alfanous.query_plugins import _collect_derivations_two_pass, _UTHMANI_ANNOTATION_RE
-                _deriv_key = "lemma" if derivation_level == 2 else "root"
-                _deriv_key_values = set()
+                _deriv_field_key_map = {
+                    "aya_stem":  "lemma",
+                    "aya_lemma": "lemma",
+                    "aya_root":  "root",
+                }
+                _deriv_key_values: "dict[str, set]" = {}
                 for _df, _dt in _deriv_expansion:
-                    if _df in ("aya_lemma", "aya_root"):
-                        _deriv_key_values.add(_dt)
+                    _dkey = _deriv_field_key_map.get(_df)
+                    if _dkey:
+                        _deriv_key_values.setdefault(_dkey, set()).add(_dt)
                 if _deriv_key_values:
+                    _lookup_table = getattr(self.QSE, '_word_lookup_table', None)
                     try:
-                        _expanded_words = [
-                            _UTHMANI_ANNOTATION_RE.sub('', w)
-                            for w in _collect_derivations_two_pass(_deriv_key_values, _deriv_key)
-                            if w
-                        ]
+                        _expanded_words = []
+                        for _dkey, _dvals in _deriv_key_values.items():
+                            for w in _collect_derivations_two_pass(
+                                _dvals, _dkey, lookup_table=_lookup_table
+                            ):
+                                if w:
+                                    _expanded_words.append(_UTHMANI_ANNOTATION_RE.sub('', w))
                         terms.extend(_expanded_words)
                         # Also add expansion words to termz so they appear in
                         # words.individual (requirement: "anything highlighted
@@ -2299,8 +2321,32 @@ class Raw:
         # Parse filter parameter (supports dict or "field:value,..." string).
         filter_dict = _parse_filter_param(flags.get("filter"))
 
-        # Transliterate if no field filter is present
+        # Derivation level: honour the explicit flag value, or extract from
+        # '>', '>>', '>>>' prefix on the query string (same syntax as aya search).
+        _deriv_level_map = {"word": 0, "stem": 1, "lemma": 2, "root": 3}
+        _dl_flag = flags.get("derivation_level", 0) or 0
+        if isinstance(_dl_flag, str):
+            _dl_flag = _deriv_level_map.get(_dl_flag.lower(), 0)
+        else:
+            _dl_flag = int(_dl_flag)
+
+        # Extract leading '>' derivation syntax from the query.
         query = query.replace("\\", "")
+        _q_stripped = query.lstrip()
+        if _q_stripped.startswith(">>>"):
+            _dl_flag = max(_dl_flag, 3)
+            query = _q_stripped[3:].lstrip()
+        elif _q_stripped.startswith(">>"):
+            _dl_flag = max(_dl_flag, 2)
+            query = _q_stripped[2:].lstrip()
+        elif _q_stripped.startswith(">"):
+            _dl_flag = max(_dl_flag, 1)
+            query = _q_stripped[1:].lstrip()
+
+        # Fuzzy mode flag.
+        fuzzy = IS_FLAG(flags, "fuzzy")
+        fuzzy_maxdist = int(flags.get("fuzzy_maxdist") or 1)
+
         # Save the raw query before Buckwalter transliteration to detect
         # whether it was Latin / Arabizi input (needed later for Arabizi search).
         _pre_transliterate_query = query
@@ -2371,6 +2417,56 @@ class Raw:
                     else _arabizi_word_terms[0]
                 )
                 word_query = wquery.Or([word_query, _arabizi_q])
+
+        # Derivation-level expansion for word search.
+        # Level 1 (stem)  → search word_stem (QStandardAnalyzer, corpus-derived stem)
+        # Level 2 (lemma) → search word_lemma (QStandardAnalyzer)
+        # Level 3 (root)  → search root field (ID — normalize directly)
+        _WORD_DERIV_FIELD_MAP = {
+            1: "word_stem",
+            2: "word_lemma",
+            3: "root",
+        }
+        if _dl_flag >= 1:
+            _schema_names_set = set(self.QSE._schema.names())
+            _dfield = _WORD_DERIV_FIELD_MAP.get(_dl_flag)
+            if _dfield and _dfield in _schema_names_set:
+                _deriv_extra = []
+                _seen = set()
+                _wfield_obj = self.QSE._schema[_dfield]
+                _wfield_analyzer = getattr(_wfield_obj, 'analyzer', None)
+                for _ft, _fterm in word_query.all_terms():
+                    if _is_arabic_text(_fterm):
+                        if _wfield_analyzer:
+                            # TEXT field: apply field's own analyzer (QStandardAnalyzer)
+                            for _tok in _wfield_analyzer(_fterm, mode="query"):
+                                if _tok.text not in _seen:
+                                    _seen.add(_tok.text)
+                                    _deriv_extra.append(wquery.Term(_dfield, _tok.text))
+                        else:
+                            # ID field (root): strip tashkeel and use directly
+                            _norm = _NORMALIZE_WORD_QUERY(_fterm)
+                            if _norm and _norm not in _seen:
+                                _seen.add(_norm)
+                                _deriv_extra.append(wquery.Term(_dfield, _norm))
+                if _deriv_extra:
+                    word_query = wquery.Or(
+                        [word_query] + _deriv_extra
+                    )
+
+        # Fuzzy search for word children: Levenshtein distance on 'normalized'
+        # (unvocalized) field — handles spelling variants and typos.
+        if fuzzy:
+            _schema_names_set = set(self.QSE._schema.names())
+            _fuzz_field = "normalized" if "normalized" in _schema_names_set else None
+            if _fuzz_field:
+                _fuzz_terms = [
+                    wquery.FuzzyTerm(_fuzz_field, _ft, maxdist=fuzzy_maxdist, prefixlength=1)
+                    for _, _ft in word_query.all_terms()
+                    if _is_arabic_text(_ft) and len(_ft) >= _MIN_FUZZY_TERM_LEN
+                ]
+                if _fuzz_terms:
+                    word_query = wquery.Or([word_query] + _fuzz_terms)
 
         # Restrict results to word children only.
         kind_filter = wquery.Term("kind", "word")

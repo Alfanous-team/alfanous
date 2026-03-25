@@ -1,13 +1,13 @@
 """
-Focused tests for the three memory-management fixes:
+Focused tests for the memory-management fixes:
 
 1. outputs.py  – extend_runtime is no longer accumulated inside the
                  adjacent-aya loop (it was added once per hit).
 2. outputs.py  – parent_data stores plain dicts (_p.fields()) instead of
                  Whoosh Hit objects so that the parent Results and its
                  Searcher reference are released sooner.
-3. searching.py – QSearcher caches _fuzzy_parser instead of creating a new
-                  QueryParser on every fuzzy search call.
+3. engines.py  – BasicSearchEngine builds _word_lookup_table at init and
+                 frees it in close().
 """
 
 import unittest
@@ -110,82 +110,60 @@ class TestParentDataStoresFieldDicts(unittest.TestCase):
 
 
 # ---------------------------------------------------------------------------
-# Fix 3: QSearcher caches _fuzzy_parser across fuzzy searches
+# Fix 3: BasicSearchEngine builds _word_lookup_table at init and frees it
+#         in close() so the iter_docs memory is not held forever.
 # ---------------------------------------------------------------------------
 
-class TestQSearcherFuzzyParserCached(unittest.TestCase):
-    """_fuzzy_parser must be created once and reused on subsequent fuzzy searches."""
+class TestWordLookupTableLifecycle(unittest.TestCase):
+    """_word_lookup_table must be built at engine init and freed in close()."""
 
-    def _make_qsearcher(self):
-        """Return a minimally-mocked QSearcher without a real index."""
-        from whoosh.fields import Schema, TEXT
-        from alfanous.searching import QSearcher
+    def _make_engine_with_reader(self):
+        """Return a minimally-mocked BasicSearchEngine."""
+        from alfanous.engines import BasicSearchEngine
 
-        schema = Schema(aya_fuzzy=TEXT)
-        mock_docindex = MagicMock()
-        mock_docindex.get_schema.return_value = schema
-        mock_index = MagicMock()
-        # get_index().searcher must be callable (returns a Whoosh Searcher factory)
-        mock_index.searcher = MagicMock()
-        mock_docindex.get_index.return_value = mock_index
-
-        qs = QSearcher(mock_docindex, MagicMock())
-        return qs, schema
-
-    def test_fuzzy_parser_initially_none(self):
-        qs, _ = self._make_qsearcher()
-        self.assertIsNone(qs._fuzzy_parser,
-                          "_fuzzy_parser must start as None (lazy init)")
-
-    def test_fuzzy_parser_cached_after_first_use(self):
-        """After the first fuzzy search, _fuzzy_parser is set and reused."""
-        from whoosh.qparser import QueryParser
-        qs, schema = self._make_qsearcher()
-
-        # Manually simulate what search() does on first fuzzy call:
-        if qs._fuzzy_parser is None:
-            qs._fuzzy_parser = QueryParser("aya_fuzzy", schema=schema)
-        first_parser = qs._fuzzy_parser
-
-        # Simulate a second fuzzy call — parser must NOT be replaced
-        if qs._fuzzy_parser is None:
-            qs._fuzzy_parser = QueryParser("aya_fuzzy", schema=schema)
-
-        self.assertIs(qs._fuzzy_parser, first_parser,
-                      "The same QueryParser instance must be reused across fuzzy searches")
-
-    def test_fuzzy_parser_creation_counted(self):
-        """QueryParser is only instantiated once across multiple fuzzy searches."""
-        from whoosh.fields import Schema, TEXT
-        from alfanous.searching import QSearcher
-
-        schema = Schema(aya_fuzzy=TEXT)
-        creation_count = [0]
-
-        from whoosh.qparser import QueryParser as _RealQP
-
-        class _CountingQP(_RealQP):
-            def __init__(self, *args, **kwargs):
-                creation_count[0] += 1
-                super().__init__(*args, **kwargs)
+        mock_reader = MagicMock()
+        mock_reader.iter_docs.return_value = iter([])  # no docs
 
         mock_docindex = MagicMock()
-        mock_docindex.get_schema.return_value = schema
+        mock_docindex.OK = True
+        mock_docindex.get_schema.return_value = MagicMock()
         mock_index = MagicMock()
         mock_index.searcher = MagicMock()
         mock_docindex.get_index.return_value = mock_index
 
-        qs = QSearcher(mock_docindex, MagicMock())
+        mock_qr = MagicMock()
+        mock_qr.reader = mock_reader
+        mock_qr.attach_to_searcher = MagicMock()
 
-        # Simulate three "fuzzy" calls using the counting parser class
-        for _ in range(3):
-            if qs._fuzzy_parser is None:
-                qs._fuzzy_parser = _CountingQP("aya_fuzzy", schema=schema)
+        engine = BasicSearchEngine(
+            qdocindex=mock_docindex,
+            query_parser=MagicMock(return_value=MagicMock()),
+            main_field="aya",
+            otherfields=[],
+            qsearcher=MagicMock(return_value=MagicMock()),
+            qreader=MagicMock(return_value=mock_qr),
+            qhighlight=MagicMock(),
+        )
+        return engine
 
-        self.assertEqual(
-            creation_count[0], 1,
-            f"QueryParser('aya_fuzzy') should be constructed exactly once, "
-            f"got {creation_count[0]}."
+    def test_word_lookup_table_built_at_init(self):
+        """_word_lookup_table must be a 3-tuple after engine init."""
+        engine = self._make_engine_with_reader()
+        self.assertTrue(
+            hasattr(engine, '_word_lookup_table'),
+            "BasicSearchEngine must have _word_lookup_table after __init__"
+        )
+        tbl = engine._word_lookup_table
+        self.assertIsInstance(tbl, tuple)
+        self.assertEqual(len(tbl), 3)
+
+    def test_word_lookup_table_freed_on_close(self):
+        """_word_lookup_table must be None after close()."""
+        engine = self._make_engine_with_reader()
+        engine.close()
+        self.assertIsNone(
+            engine._word_lookup_table,
+            "_word_lookup_table must be set to None in close()"
         )
 
 
@@ -1343,134 +1321,48 @@ class TestTashkilNodeNoFunctionLevelImport(unittest.TestCase):
         )
 
 
-class TestDerivationTwoPassCached(unittest.TestCase):
-    """_collect_derivations_two_pass must be backed by an LRU cache."""
+class TestCollectDerivationsTwoPass(unittest.TestCase):
+    """_collect_derivations_two_pass uses the engine-level lookup table."""
 
-    def test_cached_helper_exists(self):
-        """_collect_derivations_two_pass_cached must be defined in query_plugins."""
-        import alfanous.query_plugins as _qp
-        self.assertTrue(
-            hasattr(_qp, "_collect_derivations_two_pass_cached"),
-            "_collect_derivations_two_pass_cached must be defined in alfanous.query_plugins"
-        )
+    def _make_lookup_table(self, docs):
+        from alfanous.query_plugins import _build_word_lookup_table
+        mock_reader = MagicMock()
+        mock_reader.iter_docs.return_value = iter(list(enumerate(docs)))
+        return _build_word_lookup_table(mock_reader)
 
-    def test_cached_helper_has_lru_cache(self):
-        """_collect_derivations_two_pass_cached must be decorated with @lru_cache."""
-        import alfanous.query_plugins as _qp
-        cached_fn = _qp._collect_derivations_two_pass_cached
-        self.assertTrue(
-            hasattr(cached_fn, "cache_info"),
-            "_collect_derivations_two_pass_cached must be wrapped with @lru_cache "
-            "(missing cache_info attribute)"
-        )
-
-    def test_two_pass_calls_cached_helper(self):
-        """_collect_derivations_two_pass must delegate to the cached helper."""
-        import inspect
-        import alfanous.query_plugins as _qp
-        src = inspect.getsource(_qp._collect_derivations_two_pass)
-        self.assertIn(
-            "_collect_derivations_two_pass_cached",
-            src,
-            "_collect_derivations_two_pass must call _collect_derivations_two_pass_cached"
-        )
-
-    def test_cached_helper_cache_size(self):
-        """_collect_derivations_two_pass_cached must have maxsize >= 64."""
-        import alfanous.query_plugins as _qp
-        info = _qp._collect_derivations_two_pass_cached.cache_info()
-        self.assertGreaterEqual(
-            info.maxsize, 64,
-            f"Cache maxsize {info.maxsize} is too small; use at least 64 to be useful"
-        )
-
-    def test_identical_calls_hit_cache(self):
-        """Calling _collect_derivations_two_pass twice with the same args must use the cache."""
-        from unittest.mock import patch
-        import alfanous.query_plugins as _qp
-
-        # Clear any existing cache state from previous test runs
-        _qp._collect_derivations_two_pass_cached.cache_clear()
-
-        # Patch the cached function to return a fixed tuple without touching the index.
-        with patch(
-            "alfanous.query_plugins._collect_derivations_two_pass_cached",
-            return_value=("word1", "word2"),
-        ) as patched:
-            result1 = _qp._collect_derivations_two_pass({"كتب"}, "root")
-            result2 = _qp._collect_derivations_two_pass({"كتب"}, "root")
-
-        # The mock was called twice (once per outer call) since the mock
-        # itself is not wrapped in @lru_cache.  What we really want to verify
-        # is that the PUBLIC wrapper converts the set to a frozenset before
-        # calling the cached helper (so identical sets produce identical cache
-        # keys), and that it returns a list each time.
-        self.assertIsInstance(result1, list)
-        self.assertIsInstance(result2, list)
-        self.assertEqual(result1, result2)
-        # The patched helper was called with frozenset, not raw set
-        calls = patched.call_args_list
-        self.assertEqual(len(calls), 2)
-        for call in calls:
-            args, _ = call
-            self.assertIsInstance(
-                args[0], frozenset,
-                "_collect_derivations_two_pass must convert candidates to frozenset before calling cached helper"
-            )
-
-    def test_two_pass_accepts_set_input(self):
-        """_collect_derivations_two_pass must accept a plain set (not just frozenset)."""
-        from unittest.mock import patch
-        import alfanous.query_plugins as _qp
-
-        with patch(
-            "alfanous.query_plugins._collect_derivations_two_pass_cached",
-            return_value=("word_a",),
-        ):
-            result = _qp._collect_derivations_two_pass({"كلمة"}, "lemma")
-        self.assertIsInstance(result, list, "Return value must be a list")
-
-    def test_two_pass_returns_list(self):
+    def test_returns_list(self):
         """_collect_derivations_two_pass must always return a list."""
-        from unittest.mock import patch
-        import alfanous.query_plugins as _qp
-
-        with patch(
-            "alfanous.query_plugins._collect_derivations_two_pass_cached",
-            return_value=(),
-        ):
-            result = _qp._collect_derivations_two_pass({"x"}, "root")
+        from alfanous.query_plugins import _collect_derivations_two_pass
+        result = _collect_derivations_two_pass({"x"}, "root", lookup_table=({}, {}, {}))
         self.assertIsInstance(result, list)
         self.assertEqual(result, [])
 
-    def test_cache_hit_on_real_lru_cache(self):
-        """Cache hit counter must increment for repeated identical calls."""
-        import alfanous.query_plugins as _qp
-        from unittest.mock import patch, MagicMock
+    def test_accepts_set_input(self):
+        """Must accept a plain set as candidates."""
+        from alfanous.query_plugins import _collect_derivations_two_pass
+        result = _collect_derivations_two_pass({"كلمة"}, "lemma", lookup_table=({}, {}, {}))
+        self.assertIsInstance(result, list)
 
-        _qp._collect_derivations_two_pass_cached.cache_clear()
+    def test_no_results_without_table(self):
+        """Returns empty list when no lookup_table is provided and QSE is unavailable."""
+        from alfanous.query_plugins import _collect_derivations_two_pass
+        with patch("alfanous.data.QSE", side_effect=Exception("no engine")):
+            result = _collect_derivations_two_pass({"كتب"}, "lemma")
+        self.assertEqual(result, [])
 
-        # Build a minimal mock engine whose reader iterates zero docs so the
-        # two-pass function returns () without touching the real index.
-        mock_reader = MagicMock()
-        mock_reader.iter_docs.return_value = iter([])  # no docs → empty result
-        mock_engine = MagicMock()
-        mock_engine.OK = True
-        mock_engine._reader.reader = mock_reader
-
-        with patch("alfanous.query_plugins._collect_derivations_two_pass_cached.__module__",
-                   "alfanous.query_plugins", create=True):
-            with patch("alfanous.data.QSE", return_value=mock_engine):
-                # First call: cache miss → runs the function body.
-                _qp._collect_derivations_two_pass_cached(frozenset({"كتب"}), "root")
-                # Second call: identical args → cache hit.
-                _qp._collect_derivations_two_pass_cached(frozenset({"كتب"}), "root")
-
-        info = _qp._collect_derivations_two_pass_cached.cache_info()
-        self.assertGreaterEqual(
-            info.hits, 1,
-            f"Expected at least 1 cache hit for identical frozen-set args; got {info}"
-        )
+    def test_uses_pre_built_table(self):
+        """With a pre-built lookup table the two-pass logic returns unvocalized forms."""
+        from alfanous.query_plugins import _collect_derivations_two_pass
+        docs = [
+            {"kind": "word", "lemma": "ملك", "root": "ملك",
+             "word": "مَلِكٌ", "normalized": "ملك", "standard": "ملك"},
+            {"kind": "word", "lemma": "ملك", "root": "ملك",
+             "word": "مَالِكٌ", "normalized": "مالك", "standard": "مالك"},
+        ]
+        tbl = self._make_lookup_table(docs)
+        result = _collect_derivations_two_pass({"ملك"}, "lemma", lookup_table=tbl)
+        self.assertIn("ملك", result)
+        self.assertIn("مالك", result)
 
 
 # ---------------------------------------------------------------------------

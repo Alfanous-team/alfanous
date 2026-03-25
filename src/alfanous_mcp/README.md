@@ -86,20 +86,21 @@ Add the following to your `claude_desktop_config.json`:
 
 Search for verses in the Holy Qur'an.
 
-| Parameter      | Type    | Default       | Description |
-|----------------|---------|---------------|-------------|
-| `query`        | string  | *(required)*  | Arabic text or Buckwalter transliteration |
-| `unit`         | string  | `"aya"`       | `"aya"`, `"word"`, or `"translation"` |
-| `page`         | int     | `1`           | Page number |
-| `perpage`      | int     | `10`          | Results per page (1–100) |
-| `sortedby`     | string  | `"relevance"` | `"relevance"`, `"score"`, `"mushaf"`, `"tanzil"`, `"ayalength"` |
-| `fuzzy`        | bool    | `false`       | Enable fuzzy search (see [Fuzzy Search](#fuzzy-search)) |
-| `fuzzy_maxdist`| int     | `1`           | Levenshtein edit distance — `1`, `2`, or `3` (only used when `fuzzy=true`) |
-| `view`         | string  | `"normal"`    | `"minimal"`, `"normal"`, `"full"`, `"statistic"`, `"linguistic"` |
-| `highlight`    | string  | `"bold"`      | `"bold"`, `"css"`, `"html"`, `"bbcode"` |
-| `translation`  | string  | `null`        | Translation identifier to include alongside each verse |
-| `facets`       | string  | `null`        | Comma-separated facet fields |
-| `field_filter` | string  | `null`        | Field filter expression (e.g. `"sura_number:2"`) |
+| Parameter        | Type    | Default       | Description |
+|------------------|---------|---------------|-------------|
+| `query`          | string  | *(required)*  | Arabic text or Buckwalter transliteration |
+| `unit`           | string  | `"aya"`       | `"aya"`, `"word"`, or `"translation"` |
+| `page`           | int     | `1`           | Page number |
+| `perpage`        | int     | `10`          | Results per page (1–100) |
+| `sortedby`       | string  | `"relevance"` | `"relevance"`, `"score"`, `"mushaf"`, `"tanzil"`, `"ayalength"` |
+| `fuzzy`          | bool    | `false`       | Enable fuzzy search (see [Fuzzy Search](#fuzzy-search)) |
+| `fuzzy_maxdist`  | int     | `1`           | Levenshtein edit distance — `1`, `2`, or `3` (only used when `fuzzy=true`) |
+| `derivation_level`| int/str | `0`          | Morphological breadth — `0`/`"word"` (exact), `1`/`"stem"`, `2`/`"lemma"`, `3`/`"root"` (see [Derivation-Level Search](#derivation-level-search)) |
+| `view`           | string  | `"normal"`    | `"minimal"`, `"normal"`, `"full"`, `"statistic"`, `"linguistic"` |
+| `highlight`      | string  | `"bold"`      | `"bold"`, `"css"`, `"html"`, `"bbcode"` |
+| `translation`    | string  | `null`        | Translation identifier to include alongside each verse |
+| `facets`         | string  | `null`        | Comma-separated facet fields |
+| `field_filter`   | string  | `null`        | Field filter expression (e.g. `"sura_number:2"`) |
 
 ### `search_translations`
 
@@ -144,6 +145,69 @@ Get auto-completion suggestions for a partial query.
 |-----------|--------|----------|-------------|
 | `query`   | string | *(required)* | Partial search string |
 | `unit`    | string | `"aya"`  | `"aya"`, `"word"`, or `"translation"` |
+
+## Derivation-Level Search
+
+Control how broadly the search expands morphologically using the `derivation_level` parameter of `search_quran` (or `unit="word"`).
+
+| Level | Value | Index field | How it works |
+|-------|-------|-------------|--------------|
+| 0 | `"word"` | `aya` | Exact match only (default) |
+| 1 | `"stem"` | `aya_stem` | Corpus-derived stem — words sharing the same morphological stem |
+| 2 | `"lemma"` | `aya_lemma` | Corpus lemma — all inflections of the same lexeme |
+| 3 | `"root"` | `aya_root` | Trilateral root — all words from the same Arabic root |
+
+```
+# Stem-level: رحيم → corpus stem → matches words with same stem
+search_quran(query="رحيم", derivation_level=1)
+
+# Lemma-level: all words sharing the lemma of رَحِيمٌ
+search_quran(query="رحيم", derivation_level="lemma")
+
+# Root-level: all words from root رحم
+search_quran(query="رحم", derivation_level=3)
+```
+
+Derivation syntax can also be embedded directly in the query string:
+
+| Pattern | Field searched | Example |
+|---------|---------------|---------|
+| `>word` | `aya_stem` | `>رحيم` |
+| `>>word` | `aya_lemma` | `>>رحيم` |
+| `>>>word` | `aya_root` | `>>>رحم` |
+
+## Word Search (`unit="word"`)
+
+When `unit="word"` the engine searches individual word child documents, each carrying full morphological annotation. The `derivation_level` parameter works here too:
+
+| Level | Field searched | Description |
+|-------|---------------|-------------|
+| 0 | `word`, `normalized` | Exact word match |
+| 1 | `word_stem` | Corpus-derived stem (QStandardAnalyzer) |
+| 2 | `word_lemma` | Normalized lemma (QStandardAnalyzer) |
+| 3 | `root` | Exact root value |
+
+```
+# Find all word-level matches for "الله"
+search_quran(query="الله", unit="word")
+
+# All words sharing the lemma of رحيم
+search_quran(query="رحيم", unit="word", derivation_level=2)
+
+# All words from root رحم
+search_quran(query="رحم", unit="word", derivation_level=3)
+```
+
+For morphological filtering use the `search_by_word_linguistics` action:
+
+```
+# All nouns from root قول
+do({"action": "search_by_word_linguistics", "root": "قول", "type": "أسماء"})
+
+# All active-voice past-tense verbs from root كتب
+do({"action": "search_by_word_linguistics", "root": "كتب", "pos": "V",
+    "voice": "مبني للمعلوم", "aspect": "فعل ماضي"})
+```
 
 ## Fuzzy Search
 
@@ -193,6 +257,9 @@ and over 100 practical examples.
 | Phrase | `"بسم الله"` | Exact phrase |
 | Wildcard | `رحم*` | Words starting with رحم |
 | Field filter | `sura_number:2` | Surah 2 only |
+| Stem derivation | `>رحيم` | `aya_stem` (corpus-derived stem) |
+| Lemma derivation | `>>رحيم` | `aya_lemma` (all inflections of same lexeme) |
+| Root derivation | `>>>ملك` | `aya_root` (all words from same root) |
 | Fuzzy | `fuzzy=true` parameter | Broad approximate match |
 
 ## License
