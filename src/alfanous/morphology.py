@@ -74,6 +74,21 @@ POSclass = {
     "Disconnected Letters": ["INL"],
 }
 
+# Arabic display names for each POSclass category.
+# Used to store Arabic type values in the word index (instead of English).
+POSclass_arabic = {
+    "Nouns":               "أسماء",
+    "Pronouns":            "ضمائر",
+    "Nominals":            "صفات",
+    "Adverbs":             "ظروف",
+    "Verbs":               "أفعال",
+    "Prepositions":        "حروف_جر",
+    "lām Prefixes":        "لام",
+    "Conjunctions":        "حروف_عطف",
+    "Particles":           "أدوات",
+    "Disconnected Letters": "حروف_مقطعة",
+}
+
 PREFIXclass = {
     "determiner":          ["Al+"],
     "preposition":         ["bi+", "ka+", "ta+", "l:P+", "w:P+"],

@@ -70,6 +70,8 @@ def _load_corpus_words_txt(corpus_path):
     )
     # _INV_POS maps raw tag (e.g. "V") → category name (e.g. "Verbs").
     from alfanous_import.quran_corpus_reader.constants import _INV_POS
+    # POSclass_arabic maps English category names to Arabic (e.g. "Verbs" → "أفعال").
+    from alfanous.morphology import POSclass_arabic
     from alfanous.text_processing import QArabicSymbolsFilter
 
     def _b2u(s):
@@ -110,10 +112,11 @@ def _load_corpus_words_txt(corpus_path):
                     pos_info = POS.get(val, (None, None))
                     f['arabicpos']  = pos_info[0]
                     f['englishpos'] = pos_info[1]
-                    # type stores the English category name (e.g. "Verbs")
-                    # via _INV_POS lookup.
+                    # type stores the Arabic category name (e.g. "أفعال")
+                    # via _INV_POS → POSclass_arabic lookup.
                     type_list = _INV_POS.get(val)
-                    f['type'] = type_list[0] if type_list else val
+                    english_type = type_list[0] if type_list else val
+                    f['type'] = POSclass_arabic.get(english_type, english_type)
                 elif key == 'LEM':
                     f['arabiclemma'] = _b2u(val)
                 elif key == 'ROOT':
@@ -279,7 +282,7 @@ def _load_corpus_words_txt(corpus_path):
             }
             # Infer voice for verbs: corpus only tags PASS explicitly;
             # absence of any voice tag means Active voice.
-            if stem_feats.get("type") == "Verbs" and entry["voice"] is None:
+            if stem_feats.get("type") == "أفعال" and entry["voice"] is None:
                 entry["voice"] = VERB["ACT"][0]  # "مبني للمعلوم"
             # Infer mood for imperfect verbs: corpus only tags SUBJ/JUS/ENG
             # explicitly; absence of a mood tag means Indicative (default).
@@ -287,43 +290,33 @@ def _load_corpus_words_txt(corpus_path):
                 entry["mood"] = VERB["IND"][0]  # "مرفوع"
             # Infer state for nouns and adjectives/numerals: corpus only tags
             # INDEF (نكرة) explicitly; absence means Definite (معرفة).
-            if stem_feats.get("type") in ("Nouns", "Nominals") and entry["state"] is None:
+            if stem_feats.get("type") in ("أسماء", "صفات") and entry["state"] is None:
                 entry["state"] = NOM["DEF"][0]  # "معرفة"
             # Infer number for nouns and adjectives/numerals: corpus only tags
             # D (dual) and P (plural) explicitly; absence means singular (مفرد).
-            if stem_feats.get("type") in ("Nouns", "Nominals") and entry["number"] is None:
+            if stem_feats.get("type") in ("أسماء", "صفات") and entry["number"] is None:
                 entry["number"] = PGN["S"][0]  # "مفرد"
             # Infer form I for verbs: corpus only tags forms (II)–(XII)
             # explicitly; absence of a form tag means Form I (فَعَلَ).
-            if stem_feats.get("type") == "Verbs" and entry["form"] is None:
+            if stem_feats.get("type") == "أفعال" and entry["form"] is None:
                 entry["form"] = VERB["(I)"][0]  # "فَعَلَ"
             # Compute pattern (وزن): for verbs, pattern = form.  For derived
             # nominals (ACT PCPL / PASS PCPL / VN), look up the derived pattern
             # from form × derivation.  Plain nouns/nominals without a
-            # derivation tag get pattern=None — their vocalized lemma already
-            # encodes the wazan implicitly so a separate pattern field is
-            # redundant.
+            # derivation tag keep pattern=None — the vocalized lemma already
+            # encodes the wazan implicitly and we do not assume a pattern.
             _form = entry["form"]
             _deriv = entry["derivation"]
-            if stem_feats.get("type") == "Verbs":
+            if stem_feats.get("type") == "أفعال":
                 entry["pattern"] = _form
             elif _deriv:
                 _form_key = _form or VERB["(I)"][0]
-                entry["pattern"] = NOMINAL_PATTERN.get((_form_key, _deriv)) or raw_lemma
-            # Compute stem: for nouns, stem = lemma.  For verbs, stem
-            # combines lemma × pattern to show both the dictionary form and
-            # its morphological template.  For special words (SP: tag), stem
-            # = the special value.
+                entry["pattern"] = NOMINAL_PATTERN.get((_form_key, _deriv))
+            # Compute stem: for all words, stem = lemma (the dictionary base
+            # form).  For special words (SP: tag), stem = the special value.
             _special = entry["special"]
-            _type = stem_feats.get("type")
             if _special:
                 entry["stem"] = _special
-            elif _type == "Verbs":
-                _pat = entry["pattern"]
-                entry["stem"] = (
-                    "{} {}".format(raw_lemma, _pat) if raw_lemma and _pat
-                    else raw_lemma
-                )
             else:
                 entry["stem"] = raw_lemma
             result[(sura, aya)].append(entry)

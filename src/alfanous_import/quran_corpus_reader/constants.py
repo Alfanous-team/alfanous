@@ -4,7 +4,7 @@
 # alfanous runtime package so that they are available without alfanous_import.
 # Re-export them from there to keep existing imports working.
 from alfanous.morphology import (  # noqa: F401
-    POS, POSclass,
+    POS, POSclass, POSclass_arabic,
     PREFIXclass, PREFIX,
     PGNclass, PGN,
     VERBclass, VERB,

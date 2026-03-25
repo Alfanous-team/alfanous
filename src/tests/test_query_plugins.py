@@ -948,9 +948,12 @@ def test_collect_derivations_two_pass_cached_returns_only_unvocalized():
     _DIACRITIC_RE = _re.compile(r'[\u064B-\u065F]')
 
     with _patch("alfanous.data.QSE", return_value=mock_engine):
-        # Clear LRU cache so the patched engine is used
+        # Clear LRU caches so the patched engine is used
+        from alfanous.query_plugins import _build_word_lookup_table
+        _build_word_lookup_table.cache_clear()
         _collect_derivations_two_pass_cached.cache_clear()
         results = list(_collect_derivations_two_pass_cached(frozenset({"ملك"}), "lemma"))
+        _build_word_lookup_table.cache_clear()
 
     assert results, "Expected at least one unvocalized derivation word"
     for w in results:

@@ -73,7 +73,6 @@ jobs:
         generate_release_notes: true
     
     - name: Publish alfanous3 to PyPI
-      continue-on-error: true
       uses: pypa/gh-action-pypi-publish@release/v1
       with:
         user: __token__
@@ -83,7 +82,6 @@ jobs:
         attestations: false
     
     - name: Publish alfanous3-mcp to PyPI
-      continue-on-error: true
       uses: pypa/gh-action-pypi-publish@release/v1
       with:
         user: __token__

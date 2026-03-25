@@ -21,6 +21,9 @@ from whoosh.fields import TEXT as _WhooshTEXT
 from whoosh.sorting import Facets
 from alfanous.results_processing import QTranslationHighlight
 
+# Import helpers from searching module used in word search derivation/fuzzy expansion.
+from alfanous.searching import _is_arabic_text, _MIN_FUZZY_TERM_LEN
+
 
 from alfanous.text_processing import _TRANSLATION_LANGS
 # All language-specific indexed translation fields (text_en, text_fr, …).
@@ -568,6 +571,8 @@ class Raw:
             self._trans_fields = frozenset(_avail_trans)
 
             # Word search parser (used in _search_words).
+            # Uses ArabicParser so that tuple syntax {root,type,pattern} and
+            # derivation syntax (>, >>, >>>) work in word searches.
             _all_word_f = [f for f in _WORD_ALL_INDEXED_FIELDS if f in _schema_fields]
             _default_word_f = (
                 [f for f in ["word_standard", "word", "normalized", "standard"] if f in _schema_fields]
@@ -575,10 +580,20 @@ class Raw:
             )
             # Only build the parser when there is at least one usable field.
             # _search_words already checks for None and returns an empty response.
-            self._word_parser = (
-                _make_bounded_parser(_default_word_f, _schema, _OrGroup)
-                if _default_word_f else None
-            )
+            if _default_word_f:
+                from alfanous.query_processing import ArabicParser as _ArabicParser
+                _wp = _ArabicParser(
+                    schema=_schema,
+                    mainfield=_default_word_f[0],
+                    otherfields=_default_word_f[1:],
+                )
+                # Override the fieldname list so unqualified queries search all
+                # default word fields at once (same as the MultifieldParser behaviour).
+                from whoosh.qparser import MultifieldPlugin as _MFPlugin
+                _wp.add_plugin(_MFPlugin(_default_word_f))
+                self._word_parser = _wp
+            else:
+                self._word_parser = None
             # Also cache the full list for schema filtering in _search_words.
             self._all_word_fields = _all_word_f
         else:
@@ -1091,8 +1106,22 @@ class Raw:
         # print query
         # preprocess query
         query = query.replace("\\", "")
+        # Apply Buckwalter transliteration to non-Arabic, non-wildcard queries
+        # so that queries like "ktb" or "kutubo" are converted to Arabic script
+        # before routing.  This mirrors the word-search preprocessing.
+        # Re-evaluate the routing condition after transliteration since a
+        # successful conversion will now yield an Arabic-script query.
+        _non_arabic = (
+            ":" not in query
+            and not _ARABIC_SCRIPT_RE.search(query)
+            and not _PURE_WILDCARD_RE.match(query)
+        )
+        if _non_arabic:
+            query = transliterate("buckwalter", query, ignore="'_\"%*?#~[]{}:>+-|")
+            # Re-check: Buckwalter conversion may have produced Arabic script.
+            _non_arabic = not _ARABIC_SCRIPT_RE.search(query)
 
-        if ":" not in query and not _ARABIC_SCRIPT_RE.search(query) and not _PURE_WILDCARD_RE.match(query):
+        if _non_arabic:
             # Non-Arabic query: search translations AND try arabizi conversion
             # to also search the Arabic aya fields ("the word and arabizi(word)").
             # Pure-wildcard queries (e.g. *, ?, ??, ???) are excluded from this
@@ -2299,8 +2328,32 @@ class Raw:
         # Parse filter parameter (supports dict or "field:value,..." string).
         filter_dict = _parse_filter_param(flags.get("filter"))
 
-        # Transliterate if no field filter is present
+        # Derivation level: honour the explicit flag value, or extract from
+        # '>', '>>', '>>>' prefix on the query string (same syntax as aya search).
+        _deriv_level_map = {"word": 0, "stem": 1, "lemma": 2, "root": 3}
+        _dl_flag = flags.get("derivation_level", 0) or 0
+        if isinstance(_dl_flag, str):
+            _dl_flag = _deriv_level_map.get(_dl_flag.lower(), 0)
+        else:
+            _dl_flag = int(_dl_flag)
+
+        # Extract leading '>' derivation syntax from the query.
         query = query.replace("\\", "")
+        _q_stripped = query.lstrip()
+        if _q_stripped.startswith(">>>"):
+            _dl_flag = max(_dl_flag, 3)
+            query = _q_stripped[3:].lstrip()
+        elif _q_stripped.startswith(">>"):
+            _dl_flag = max(_dl_flag, 2)
+            query = _q_stripped[2:].lstrip()
+        elif _q_stripped.startswith(">"):
+            _dl_flag = max(_dl_flag, 1)
+            query = _q_stripped[1:].lstrip()
+
+        # Fuzzy mode flag.
+        fuzzy = IS_FLAG(flags, "fuzzy")
+        fuzzy_maxdist = int(flags.get("fuzzy_maxdist") or 1)
+
         # Save the raw query before Buckwalter transliteration to detect
         # whether it was Latin / Arabizi input (needed later for Arabizi search).
         _pre_transliterate_query = query
@@ -2371,6 +2424,65 @@ class Raw:
                     else _arabizi_word_terms[0]
                 )
                 word_query = wquery.Or([word_query, _arabizi_q])
+
+        # Derivation-level expansion for word search.
+        # Level 1 (stem)  → also search word_stem field (corpus-derived stem)
+        # Level 2 (lemma) → also search word_lemma field (normalized corpus lemma)
+        # Level 3 (root)  → also search the root field (Buckwalter root)
+        _WORD_DERIV_FIELD_MAP = {
+            1: ("word_stem",  None),
+            2: ("word_lemma", "lemma"),
+            3: ("root",       "root"),
+        }
+        if _dl_flag >= 1:
+            _schema_names_set = set(self.QSE._schema.names())
+            _dinfo = _WORD_DERIV_FIELD_MAP.get(_dl_flag)
+            if _dinfo:
+                _dfield, _dkey = _dinfo
+                if _dfield in _schema_names_set:
+                    _deriv_extra = []
+                    if _dkey is None:
+                        # Level 1 (stem): re-parse query targeting word_stem.
+                        # word_stem uses QStandardAnalyzer (strips tashkeel).
+                        _wfield_obj = self.QSE._schema[_dfield]
+                        for _ft, _fterm in word_query.all_terms():
+                            if _is_arabic_text(_fterm):
+                                for _tok in _wfield_obj.analyzer(_fterm, mode="query"):
+                                    _deriv_extra.append(wquery.Term(_dfield, _tok.text))
+                    else:
+                        # Level 2/3: look up lemma/root key values for each
+                        # Arabic query term and search the corresponding field.
+                        from alfanous.query_plugins import _lookup_key_values
+                        _wfield_obj = self.QSE._schema[_dfield]
+                        _seen_kv = set()
+                        for _ft, _fterm in word_query.all_terms():
+                            if _is_arabic_text(_fterm):
+                                for _kv in _lookup_key_values(_fterm, _dkey):
+                                    if not _kv or _kv in _seen_kv:
+                                        continue
+                                    _seen_kv.add(_kv)
+                                    for _tok in _wfield_obj.analyzer(_kv, mode="query"):
+                                        _deriv_extra.append(
+                                            wquery.Term(_dfield, _tok.text)
+                                        )
+                    if _deriv_extra:
+                        word_query = wquery.Or(
+                            [word_query] + _deriv_extra
+                        )
+
+        # Fuzzy search for word children: Levenshtein distance on 'normalized'
+        # (unvocalized) field — handles spelling variants and typos.
+        if fuzzy:
+            _schema_names_set = set(self.QSE._schema.names())
+            _fuzz_field = "normalized" if "normalized" in _schema_names_set else None
+            if _fuzz_field:
+                _fuzz_terms = [
+                    wquery.FuzzyTerm(_fuzz_field, _ft, maxdist=fuzzy_maxdist, prefixlength=1)
+                    for _, _ft in word_query.all_terms()
+                    if _is_arabic_text(_ft) and len(_ft) >= _MIN_FUZZY_TERM_LEN
+                ]
+                if _fuzz_terms:
+                    word_query = wquery.Or([word_query] + _fuzz_terms)
 
         # Restrict results to word children only.
         kind_filter = wquery.Term("kind", "word")

@@ -123,6 +123,63 @@ def _query_word_index(filter_dict, field="word", limit=5000):
     return list(_query_word_index_cached(filter_key, field, limit))
 
 
+@lru_cache(maxsize=1)
+def _build_word_lookup_table():
+    """Build cached lookup tables for the word child documents in one index scan.
+
+    Calling this function the first time performs a single ``iter_docs()`` pass
+    over all ~77 k word-child documents and populates three in-memory tables:
+
+    * ``form_to_key``: word form (any of the five lookup fields) →
+      ``{'lemma': ..., 'root': ...}``
+    * ``lemma_to_forms``: Buckwalter lemma → frozenset of (standard/normalized)
+      unvocalized word forms that share that lemma
+    * ``root_to_forms``: Buckwalter root → frozenset of unvocalized word forms
+      that share that root
+
+    After the first call the result is cached indefinitely so that subsequent
+    derivation-level lookups are answered in O(1) dict-lookup time instead of
+    repeating the full ``iter_docs()`` scan.
+
+    :returns: Tuple ``(form_to_key, lemma_to_forms, root_to_forms)``
+    """
+    from alfanous.data import QSE as _QSE
+    engine = _QSE()
+    if not engine.OK:
+        return {}, {}, {}
+    reader = engine._reader.reader
+
+    form_to_key = {}       # word_form → {'lemma': bw_lemma, 'root': bw_root}
+    _lemma_forms = {}      # bw_lemma → set of unvocalized word forms
+    _root_forms = {}       # bw_root  → set of unvocalized word forms
+
+    for _, stored in reader.iter_docs():
+        if stored.get("kind") != "word":
+            continue
+        lemma = stored.get("lemma")
+        root = stored.get("root")
+
+        # Map every searchable form → {lemma, root}
+        for sf in _DERIVATION_SEARCH_FIELDS:
+            key = stored.get(sf)
+            if key and key not in form_to_key:
+                form_to_key[key] = {"lemma": lemma, "root": root}
+
+        # Map lemma/root → unvocalized word forms (for derivation expansion)
+        for field in ("standard", "normalized"):
+            val = stored.get(field)
+            if not val:
+                continue
+            if lemma:
+                _lemma_forms.setdefault(lemma, set()).add(val)
+            if root:
+                _root_forms.setdefault(root, set()).add(val)
+
+    lemma_to_forms = {k: frozenset(v) for k, v in _lemma_forms.items()}
+    root_to_forms  = {k: frozenset(v) for k, v in _root_forms.items()}
+    return form_to_key, lemma_to_forms, root_to_forms
+
+
 @lru_cache(maxsize=256)
 def _collect_derivations_two_pass_cached(candidates_frozen, index_key):
     """LRU-cached implementation of the two-pass derivation scan.
@@ -141,43 +198,29 @@ def _collect_derivations_two_pass_cached(candidates_frozen, index_key):
     Cache size 256 covers typical query diversity (hundreds of unique Arabic
     root/lemma queries) while keeping the resident memory footprint small.
     """
-    from alfanous.data import QSE as _QSE
-    engine = _QSE()
-    if not engine.OK:
-        raise RuntimeError("QSE index unavailable")
-    reader = engine._reader.reader
+    form_to_key, lemma_to_forms, root_to_forms = _build_word_lookup_table()
+    if not form_to_key:
+        return ()
 
-    # Pass 1: find all index_key values matching any candidate in any field.
+    # Pass 1: find all index_key values matching any candidate.
     key_values = set()
-    for _, stored in reader.iter_docs():
-        if stored.get("kind") != "word":
-            continue
-        for sf in _DERIVATION_SEARCH_FIELDS:
-            if stored.get(sf) in candidates_frozen:
-                kv = stored.get(index_key)
-                if kv:
-                    key_values.add(kv)
-                break  # one matching field per document is sufficient
+    for candidate in candidates_frozen:
+        entry = form_to_key.get(candidate)
+        if entry:
+            kv = entry.get(index_key)
+            if kv:
+                key_values.add(kv)
 
     if not key_values:
         return ()
 
-    # Pass 2: collect all unvocalized word forms whose index_key is in
-    # key_values.  Only 'standard' and 'normalized' are collected here;
-    # the vocalized 'word' field is intentionally omitted so that derivation
-    # expansion results (used for highlighting and words.individual) never
-    # contain diacritics.  Unvocalized forms are sufficient for both
-    # highlighting (the 'aya' field is indexed without diacritics) and for
-    # display in words.individual.
+    # Pass 2: collect unvocalized word forms for each key value.
+    key_map = lemma_to_forms if index_key == "lemma" else root_to_forms
     words = set()
-    for _, stored in reader.iter_docs():
-        if stored.get("kind") != "word":
-            continue
-        if stored.get(index_key) in key_values:
-            for field in ('standard', 'normalized'):
-                val = stored.get(field)
-                if val:
-                    words.add(val)
+    for kv in key_values:
+        forms = key_map.get(kv)
+        if forms:
+            words.update(forms)
 
     return tuple(words)
 
@@ -186,30 +229,21 @@ def _collect_derivations_two_pass_cached(candidates_frozen, index_key):
 def _lookup_key_values_cached(candidates_frozen, index_key):
     """Return the set of *index_key* values (lemma or root) for *candidates*.
 
-    Performs a single pass over word-child documents to find the lemma/root
-    value(s) corresponding to the given candidate word forms.  This is the
-    lookup half of the two-pass derivation approach — it answers "what is the
-    lemma (or root) of this word?" without collecting all sibling derivations.
+    Uses the pre-built word lookup table so that the full ``iter_docs()`` scan
+    is paid at most once per process lifetime, and subsequent lookups for any
+    query term are answered in O(1) dict-lookup time.
 
     Used by the field-based ``derivation_level`` implementation in
     ``searching.py`` and the ``DerivationPlugin``.
     """
-    from alfanous.data import QSE as _QSE
-    engine = _QSE()
-    if not engine.OK:
-        return frozenset()
-    reader = engine._reader.reader
-
+    form_to_key, _, _ = _build_word_lookup_table()
     key_values = set()
-    for _, stored in reader.iter_docs():
-        if stored.get("kind") != "word":
-            continue
-        for sf in _DERIVATION_SEARCH_FIELDS:
-            if stored.get(sf) in candidates_frozen:
-                kv = stored.get(index_key)
-                if kv:
-                    key_values.add(kv)
-                break
+    for candidate in candidates_frozen:
+        entry = form_to_key.get(candidate)
+        if entry:
+            kv = entry.get(index_key)
+            if kv:
+                key_values.add(kv)
     return frozenset(key_values)
 
 
