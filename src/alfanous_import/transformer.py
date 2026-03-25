@@ -222,7 +222,12 @@ def _load_corpus_words_txt(corpus_path):
                 # Arabic (primary, indexed)
                 "pos":          stem_feats.get("arabicpos"),
                 "root":         stem_feats.get("arabicroot"),
-                "lemma":        stem_feats.get("arabiclemma"),
+                # arabiclemma stores the original vocalized Arabic form; lemma
+                # stores the normalized (tashkeel-stripped) form so that
+                # KEYWORD-field exact-match queries (e.g. lemma:يمين) succeed
+                # regardless of whether the user types diacritics or not.
+                "arabiclemma":  stem_feats.get("arabiclemma"),
+                "lemma":        qasf.normalize_all(stem_feats.get("arabiclemma") or "") or None,
                 "special":      stem_feats.get("arabicspecial"),
                 "mood":         stem_feats.get("arabicmood"),
                 "case":         stem_feats.get("arabiccase"),
@@ -294,7 +299,12 @@ def _load_corpus_words_xml(corpus_path):
                 # Arabic (primary, indexed)
                 "pos":          first.get("arabicpos") or None,
                 "root":         first.get("arabicroot") or None,
-                "lemma":        first.get("arabiclemma") or None,
+                # arabiclemma stores the original vocalized Arabic form; lemma
+                # stores the normalized (tashkeel-stripped) form so that
+                # KEYWORD-field exact-match queries (e.g. lemma:يمين) succeed
+                # regardless of whether the user types diacritics or not.
+                "arabiclemma":  first.get("arabiclemma") or None,
+                "lemma":        qasf.normalize_all(first.get("arabiclemma") or "") or None,
                 "special":      first.get("arabicspecial") or None,
                 "mood":         first.get("arabicmood") or None,
                 "case":         first.get("arabiccase") or None,

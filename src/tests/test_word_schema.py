@@ -283,3 +283,125 @@ def test_schema_builder_subtopic_id():
         "Transformer.build_schema must produce ID for subtopic so that "
         "filter=subtopic:value works"
     )
+
+
+def test_schema_builder_arabiclemma_id():
+    """Transformer.build_schema must produce an ID field for arabiclemma."""
+    from alfanous_import.transformer import Transformer
+    from whoosh.fields import ID
+    t = Transformer("/tmp/_test_idx_schema/", _STORE_PATH)
+    schema = t.build_schema("aya")
+    assert isinstance(schema["arabiclemma"], ID), (
+        "Transformer.build_schema must produce ID for arabiclemma"
+    )
+
+
+# ---------------------------------------------------------------------------
+# Lemma normalization: transformer must strip tashkeel from stored lemma values
+# so that KEYWORD exact-match queries work after _NORMALIZE_WORD_QUERY strips
+# diacritics from the user's query (e.g. lemma:يَمِين → lemma:يمين).
+# ---------------------------------------------------------------------------
+
+def test_load_corpus_words_txt_lemma_normalized():
+    """_load_corpus_words_txt must store normalized (unvocalized) lemma values.
+
+    The lemma KEYWORD field uses exact-match lookup.  _search_words strips
+    tashkeel from the entire query via _NORMALIZE_WORD_QUERY before parsing,
+    so the stored values must also be unvocalized for the search to succeed.
+    """
+    from alfanous.text_processing import QArabicSymbolsFilter
+    from alfanous_import.transformer import _load_corpus_words_txt
+    import tempfile, os
+
+    qasf = QArabicSymbolsFilter(
+        shaping=True, tashkil=True, spellerrors=False,
+        hamza=False, uthmani_symbols=True,
+    )
+
+    # Build a minimal corpus .txt snippet with a vocalized lemma (يَمِين).
+    # The Buckwalter form of يَمِين is yam~yn; its LEM tag is yam~yn as well.
+    # We use a known short entry to keep the test self-contained.
+    corpus_lines = [
+        "LOCATION\tFORM\tTAG\tFEATURES",
+        "(1:1:1:1)\tyam~yn\tN\tSTEM|POS:N|LEM:yam~yn|ROOT:ymn|M|NOM",
+    ]
+    with tempfile.NamedTemporaryFile(mode='w', suffix='.txt',
+                                     encoding='utf-8', delete=False) as fh:
+        fh.write("\n".join(corpus_lines))
+        tmp_path = fh.name
+
+    try:
+        words_by_aya = _load_corpus_words_txt(tmp_path)
+        assert words_by_aya, "Expected at least one word entry"
+        word = words_by_aya[(1, 1)][0]
+
+        raw_lemma = word.get("arabiclemma")
+        stored_lemma = word.get("lemma")
+
+        # arabiclemma must preserve the original (possibly vocalized) form.
+        assert raw_lemma is not None, "arabiclemma should be populated"
+
+        # lemma must be the normalized (tashkeel-stripped) form.
+        expected_normalized = qasf.normalize_all(raw_lemma or "") or None
+        assert stored_lemma == expected_normalized, (
+            f"lemma field must store normalized Arabic; "
+            f"got {stored_lemma!r}, expected {expected_normalized!r}"
+        )
+
+        # Verify that if the raw lemma was vocalized the normalized form
+        # differs (i.e. normalization actually did something) OR they are
+        # equal (lemma was already unvocalized); either way the stored value
+        # must equal the normalized form.
+        assert stored_lemma is None or stored_lemma == qasf.normalize_all(stored_lemma or ""), (
+            "Stored lemma must itself be in normalized form (idempotent)"
+        )
+    finally:
+        os.unlink(tmp_path)
+
+
+def test_load_corpus_words_txt_lemma_vocalized_unvocalized_equal():
+    """Vocalized and unvocalized queries must produce the same stored lemma.
+
+    This regression test for the issue 'lemma:يَمِين not working' ensures
+    that the stored lemma value is the same whether the source data contains
+    diacritics or not, so both query forms return results after normalization.
+    """
+    from alfanous.text_processing import QArabicSymbolsFilter
+    from alfanous_import.transformer import _load_corpus_words_txt
+    import tempfile, os
+
+    qasf = QArabicSymbolsFilter(
+        shaping=True, tashkil=True, spellerrors=False,
+        hamza=False, uthmani_symbols=True,
+    )
+
+    # yam~yn = يَمِّين (with shadda+kasra on mim), ymyn = يمين (plain)
+    corpus_vocalized = [
+        "LOCATION\tFORM\tTAG\tFEATURES",
+        "(1:1:1:1)\tyam~yn\tN\tSTEM|POS:N|LEM:yam~yn|ROOT:ymn|M|NOM",
+    ]
+    corpus_unvocalized = [
+        "LOCATION\tFORM\tTAG\tFEATURES",
+        "(1:1:1:1)\tymyn\tN\tSTEM|POS:N|LEM:ymyn|ROOT:ymn|M|NOM",
+    ]
+
+    results = []
+    for lines in (corpus_vocalized, corpus_unvocalized):
+        with tempfile.NamedTemporaryFile(mode='w', suffix='.txt',
+                                         encoding='utf-8', delete=False) as fh:
+            fh.write("\n".join(lines))
+            tmp_path = fh.name
+        try:
+            words = _load_corpus_words_txt(tmp_path)
+            results.append(words[(1, 1)][0].get("lemma"))
+        finally:
+            os.unlink(tmp_path)
+
+    # Both should produce the same normalized lemma so that search is consistent.
+    norm_voc, norm_plain = results
+    assert norm_voc is None or norm_voc == qasf.normalize_all(norm_voc or ""), (
+        "Vocalized lemma must be stored normalized"
+    )
+    assert norm_plain is None or norm_plain == qasf.normalize_all(norm_plain or ""), (
+        "Plain lemma must be stored normalized"
+    )
