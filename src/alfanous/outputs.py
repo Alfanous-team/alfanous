@@ -2255,7 +2255,7 @@ class Raw:
         Word children are indexed with ``kind="word"`` alongside translation
         children.  This method searches them using a ``MultifieldParser`` that
         targets all indexed word fields — free-text fields (``word``,
-        ``normalized``, ``word_standard``) as well as linguistic ID/KEYWORD
+        ``normalized``, ``word_standard``, ``standard``) as well as linguistic ID/KEYWORD
         fields (``pos``, ``type``, ``root``, ``arabicroot``, ``lemma``,
         ``arabiclemma``, ``gender``, ``number``, ``person``, ``form``,
         ``voice``, ``state``, ``derivation``, ``aspect``, ``mood``, ``case``)
@@ -2264,7 +2264,7 @@ class Raw:
 
         Field-qualified queries (e.g. ``root:رحم``) are supported for all
         indexed word fields.  Unqualified queries search across the primary
-        text fields (``word``, ``normalized``, and ``word_standard``).
+        text fields (``word``, ``normalized``, ``word_standard``, and ``standard``).
 
         The result structure includes:
         - ``words``: per-word morphological data plus the parent aya text.
@@ -2401,14 +2401,14 @@ class Raw:
             end = min(interval_end, len(res)) if start != -1 else 0
             reslist = [] if end == 0 or start == -1 else res[start - 1:end]
     
-            # When a result was matched by word_standard, add its Uthmanic 'word'
+            # When a result was matched by standard, add its Uthmanic 'word'
             # value to the keywords list so that the Uthmanic form of the word can
             # also be highlighted in the result text.
             _terms_set = set(terms)
             for _r in reslist:
                 if len(terms) >= self._defaults["maxkeywords"]:
                     break
-                _ws = _r.get("standard") or _r.get("word_standard")
+                _ws = _r.get("standard")
                 _wu = _r.get("word")
                 if _ws and _wu and _ws in _terms_set and _wu not in _terms_set:
                     terms.append(_wu)

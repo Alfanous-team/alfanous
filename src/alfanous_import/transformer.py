@@ -827,7 +827,7 @@ class Transformer:
                                 # standard forms differ (e.g. الصلوة vs الصلاة).
                                 if _has_uthmani_different:
                                     _norm_uth = w.get("normalized") or ""
-                                    _norm_std = qasf.normalize_all(_std_tok) if _std_tok else ""
+                                    _norm_std = qasf.normalize_all(_std_tok)
                                     word_doc["uthmani_different"] = (_norm_uth != _norm_std)
                             if _has_word_transliteration and pos < len(tr_tokens):
                                 word_doc["word_transliteration"] = tr_tokens[pos]

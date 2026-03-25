@@ -1,10 +1,10 @@
 """Tests for word sub-schema configuration and facet field catalogue.
 
 These tests validate schema changes that do NOT require a built index:
-- word_standard and lemma are KEYWORD type in fields.json
+- standard is KEYWORD type; word_standard is TEXT type in fields.json
 - root, lemma, type, pos, gender, case, state, derivation are facet_allowed
 - chapter, topic, subtopic are ID type in fields.json (exact-match filtering)
-- _WORD_ALL_INDEXED_FIELDS includes word_standard and lemma
+- _WORD_ALL_INDEXED_FIELDS includes word_standard, standard, and lemma
 - _WORD_FACET_FIELDS contains the expected set of morphological facet fields
 - _TRANS_FACET_FIELDS contains sura_id, aya_id, trans_id, trans_lang
 - _AYA_FACET_FIELDS contains the expected aya-level facet fields
