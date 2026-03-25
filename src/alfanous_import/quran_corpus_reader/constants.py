@@ -170,14 +170,14 @@ PGNclass = {
 }
 
 PGN = {
-"1":"متكلم",
-"2":"مخاطب",
-"3":"غائب",
-"M":"مذّكر",
-"F":"مؤنّث",
-"S":"مفرد",
-"D":"مثنّى",
-"P":"جمع"
+"1":"first person",
+"2":"second person",
+"3":"third person",
+"M":"masculine",
+"F":"feminine",
+"S":"singular",
+"D":"dual",
+"P":"plural"
 }
 
 VERBclass = {
@@ -197,18 +197,18 @@ VERB = {
 "ENG":( "مؤكد", "Energetic mood" ),
 "ACT":( "مبني للمعلوم", "Active voice" ),
 "PASS":( "مبني للمجهول", "Passive voice" ),
-"(I)":( "", "First form" ),
-"(II)" :( "", "Second form" ),
-"(III)" :( "", "Third form" ),
-"(IV)" :( "", "Fourth form" ),
-"(V)" :( "", "Fifth form" ),
-"(VI)" :( "", "Sixth form" ),
-"(VII)" :( "", "Seventh form" ),
-"(VIII)":( "", "Eighth form" ),
-"(IX)" :( "", "Ninth form" ),
-"(X)" :( "", "Tenth form" ),
-"(XI)" :( "", "Eleventh form" ),
-"(XII)" :( "", "Twelfth form" )
+"(I)":   ( "فَعَلَ",       "First form" ),
+"(II)":  ( "فَعَّلَ",      "Second form" ),
+"(III)": ( "فَاعَلَ",      "Third form" ),
+"(IV)":  ( "أَفْعَلَ",     "Fourth form" ),
+"(V)":   ( "تَفَعَّلَ",    "Fifth form" ),
+"(VI)":  ( "تَفَاعَلَ",    "Sixth form" ),
+"(VII)": ( "اِنْفَعَلَ",   "Seventh form" ),
+"(VIII)":( "اِفْتَعَلَ",   "Eighth form" ),
+"(IX)":  ( "اِفْعَلَّ",    "Ninth form" ),
+"(X)":   ( "اِسْتَفْعَلَ", "Tenth form" ),
+"(XI)":  ( "اِفْعَالَّ",   "Eleventh form" ),
+"(XII)": ( "اِفْعَوْعَلَ", "Twelfth form" )
 }
 
 DERIVclass = {

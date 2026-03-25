@@ -221,19 +221,19 @@ class API:
                         next_tag = part[idx + 1] if idx + 1 < len(part) else None
                         if next_tag == "PCPL":
                             deriv_key = tag + " PCPL"
-                            part_dict[_INV_DERIV[deriv_key][0]] = DERIV[deriv_key][1]
+                            part_dict[_INV_DERIV[deriv_key][0]] = DERIV[deriv_key][0]
                             idx += 2   # consume "ACT"/"PASS" + "PCPL"
                             continue
-                        part_dict[_INV_VERB[tag][0]] = VERB[tag][1]
+                        part_dict[_INV_VERB[tag][0]] = VERB[tag][0]
                     elif tag in VERB:
-                        part_dict[_INV_VERB[tag][0]] = VERB[tag][1]
+                        part_dict[_INV_VERB[tag][0]] = VERB[tag][0]
                     elif tag in NOM:
                         nom_field    = _INV_NOM[tag][0]
                         arabic_field = "arabicstate" if nom_field == "state" else "arabiccase"
                         part_dict[nom_field]    = NOM[tag][1]
                         part_dict[arabic_field] = NOM[tag][0]
                     elif tag == "VN":
-                        part_dict[_INV_DERIV[tag][0]] = DERIV[tag][1]
+                        part_dict[_INV_DERIV[tag][0]] = DERIV[tag][0]
                     idx += 1
                 result["base"].append(part_dict)
 

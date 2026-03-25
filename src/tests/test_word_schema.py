@@ -283,3 +283,138 @@ def test_schema_builder_subtopic_id():
         "Transformer.build_schema must produce ID for subtopic so that "
         "filter=subtopic:value works"
     )
+
+
+# ---------------------------------------------------------------------------
+# constants.py — PGN values (person/gender/number use English descriptions)
+# ---------------------------------------------------------------------------
+
+def test_pgn_person_english():
+    """PGN person codes must map to English descriptions."""
+    from alfanous_import.quran_corpus_reader.constants import PGN
+    assert PGN["1"] == "first person"
+    assert PGN["2"] == "second person"
+    assert PGN["3"] == "third person"
+
+
+def test_pgn_gender_english():
+    """PGN gender codes must map to English descriptions."""
+    from alfanous_import.quran_corpus_reader.constants import PGN
+    assert PGN["M"] == "masculine"
+    assert PGN["F"] == "feminine"
+
+
+def test_pgn_number_english():
+    """PGN number codes must map to English descriptions."""
+    from alfanous_import.quran_corpus_reader.constants import PGN
+    assert PGN["S"] == "singular"
+    assert PGN["D"] == "dual"
+    assert PGN["P"] == "plural"
+
+
+# ---------------------------------------------------------------------------
+# constants.py — VERB form patterns use Arabic morphological patterns
+# ---------------------------------------------------------------------------
+
+def test_verb_form_arabic_patterns():
+    """Verb forms (I)-(XII) must have non-empty Arabic morphological patterns."""
+    from alfanous_import.quran_corpus_reader.constants import VERB
+    expected = {
+        "(I)":    "فَعَلَ",
+        "(II)":   "فَعَّلَ",
+        "(III)":  "فَاعَلَ",
+        "(IV)":   "أَفْعَلَ",
+        "(V)":    "تَفَعَّلَ",
+        "(VI)":   "تَفَاعَلَ",
+        "(VII)":  "اِنْفَعَلَ",
+        "(VIII)": "اِفْتَعَلَ",
+        "(IX)":   "اِفْعَلَّ",
+        "(X)":    "اِسْتَفْعَلَ",
+        "(XI)":   "اِفْعَالَّ",
+        "(XII)":  "اِفْعَوْعَلَ",
+    }
+    for code, arabic in expected.items():
+        assert VERB[code][0] == arabic, f"VERB['{code}'][0] should be '{arabic}'"
+
+
+# ---------------------------------------------------------------------------
+# transformer.py — _parse_stem_features stores Arabic for voice/aspect/derivation/form
+# ---------------------------------------------------------------------------
+
+def _make_stem_features_parser():
+    """Return the _parse_stem_features inner function from _load_corpus_words_txt."""
+    import sys
+    sys.path.insert(0, _STORE_PATH + "/../src")
+    # _parse_stem_features is a closure; extract it by running a minimal corpus stub
+    import types, io
+    from alfanous_import import transformer as _t
+    import inspect, textwrap
+
+    src = inspect.getsource(_t._load_corpus_words_txt)
+    # Isolate the inner function definition
+    lines = src.splitlines()
+    start = next(i for i, l in enumerate(lines) if "def _parse_stem_features" in l)
+    end   = next(i for i, l in enumerate(lines) if i > start and l.strip().startswith("qasf"))
+    fn_src = textwrap.dedent("\n".join(lines[start:end]))
+    ns = {}
+    from alfanous_import.quran_corpus_reader.constants import (
+        BUCKWALTER2UNICODE, POS, PGN, PGNclass, VERB, NOM, DERIV, PREFIX,
+    )
+    from alfanous_import.quran_corpus_reader.main import _INV_POS
+    exec(fn_src, {
+        "BUCKWALTER2UNICODE": BUCKWALTER2UNICODE, "POS": POS, "PGN": PGN,
+        "PGNclass": PGNclass, "VERB": VERB, "NOM": NOM, "DERIV": DERIV,
+        "PREFIX": PREFIX, "_INV_POS": _INV_POS,
+    }, ns)
+    return ns["_parse_stem_features"]
+
+
+@pytest.fixture(scope="module")
+def parse_stem():
+    return _make_stem_features_parser()
+
+
+def test_parse_stem_voice_arabic(parse_stem):
+    """voice field from STEM features must be Arabic (مبني للمجهول for PASS)."""
+    feats = parse_stem("STEM|POS:V|PASS|PERF")
+    assert feats.get("voice") == "مبني للمجهول"
+
+
+def test_parse_stem_aspect_arabic(parse_stem):
+    """aspect field from STEM features must be Arabic."""
+    assert parse_stem("STEM|POS:V|PERF")["aspect"] == "فعل ماض"
+    assert parse_stem("STEM|POS:V|IMPF")["aspect"] == "فعل مضارع"
+    assert parse_stem("STEM|POS:V|IMPV")["aspect"] == "فعل أمر"
+
+
+def test_parse_stem_derivation_arabic(parse_stem):
+    """derivation field must be Arabic (اسم فاعل / اسم مفعول / مصدر)."""
+    assert parse_stem("STEM|POS:N|ACT|PCPL")["derivation"] == "اسم فاعل"
+    assert parse_stem("STEM|POS:N|PASS|PCPL")["derivation"] == "اسم مفعول"
+    assert parse_stem("STEM|POS:N|VN")["derivation"] == "مصدر"
+
+
+def test_parse_stem_form_arabic(parse_stem):
+    """form field must be the Arabic morphological pattern."""
+    assert parse_stem("STEM|POS:V|(II)")["form"] == "فَعَّلَ"
+    assert parse_stem("STEM|POS:V|(X)")["form"] == "اِسْتَفْعَلَ"
+
+
+# ---------------------------------------------------------------------------
+# fields.json — Arabic names for person / gender / number
+# ---------------------------------------------------------------------------
+
+def test_person_name_arabic(fields_by_name):
+    """person field must have name_arabic = الاسناد."""
+    assert fields_by_name["person"]["name_arabic"] == "الاسناد"
+
+
+def test_gender_name_arabic(fields_by_name):
+    """gender field must have name_arabic = الجنس."""
+    assert fields_by_name["gender"]["name_arabic"] == "الجنس"
+
+
+def test_number_name_arabic(fields_by_name):
+    """number field must have name_arabic = العدد."""
+    assert fields_by_name["number"]["name_arabic"] == "العدد"
+

@@ -95,7 +95,7 @@ def _load_corpus_words_txt(corpus_path):
             if prev in ('ACT', 'PASS') and part == 'PCPL':
                 combo = prev + ' PCPL'
                 deriv_info = DERIV.get(combo, (None, None))
-                f['derivation'] = deriv_info[1]
+                f['derivation'] = deriv_info[0]
                 deriv_skip.add(idx - 1)
                 deriv_skip.add(idx)
             prev = part
@@ -136,14 +136,14 @@ def _load_corpus_words_txt(corpus_path):
                 f['arabicstate']   = nom_info[0]
                 f['englishstate']  = nom_info[1]
             elif part in ('PERF', 'IMPF', 'IMPV'):
-                f['aspect'] = VERB.get(part, (None, None))[1]
+                f['aspect'] = VERB.get(part, (None, None))[0]
             elif part in ('ACT', 'PASS'):
-                f['voice'] = VERB.get(part, (None, None))[1]
+                f['voice'] = VERB.get(part, (None, None))[0]
             elif part in ('(I)', '(II)', '(III)', '(IV)', '(V)', '(VI)',
                           '(VII)', '(VIII)', '(IX)', '(X)', '(XI)', '(XII)'):
-                f['form'] = VERB.get(part, (None, None))[1]
+                f['form'] = VERB.get(part, (None, None))[0]
             elif part == 'VN':
-                f['derivation'] = DERIV.get('VN', (None, None))[1]
+                f['derivation'] = DERIV.get('VN', (None, None))[0]
         return f
 
     qasf = QArabicSymbolsFilter(
@@ -241,7 +241,7 @@ def _load_corpus_words_txt(corpus_path):
             # Infer voice for verbs: corpus only tags PASS explicitly;
             # absence of any voice tag means Active voice.
             if stem_feats.get("type") == "Verbs" and entry["voice"] is None:
-                entry["voice"] = VERB["ACT"][1]  # "Active voice"
+                entry["voice"] = VERB["ACT"][0]  # "مبني للمعلوم"
             # Infer state for nouns: corpus only tags INDEF (نكرة) explicitly;
             # absence of any state tag means Definite (معرفة).
             if stem_feats.get("type") == "Nouns" and entry["state"] is None:
@@ -318,6 +318,14 @@ def _load_corpus_words_xml(corpus_path):
                 "derivation":   first.get("derivation") or None,
                 "aspect":       first.get("aspect") or None,
             }
+            # Infer voice for verbs: corpus only tags PASS explicitly;
+            # absence of any voice tag means Active voice.
+            if entry.get("type") == "Verbs" and entry["voice"] is None:
+                entry["voice"] = "مبني للمعلوم"
+            # Infer state for nouns: corpus only tags INDEF (نكرة) explicitly;
+            # absence of any state tag means Definite (معرفة).
+            if entry.get("type") == "Nouns" and entry["state"] is None:
+                entry["state"] = "معرفة"
             result[(iteration["sura_id"], iteration["aya_id"])].append(entry)
 
         logging.info("Loaded %d word occurrences from corpus.", gid)
