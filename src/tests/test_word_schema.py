@@ -26,7 +26,7 @@ _FIELDS_JSON = _STORE_PATH + "fields.json"
 def fields_by_name():
     with open(_FIELDS_JSON) as f:
         fields = json.load(f)
-    return {fld["name"]: fld for fld in fields if fld.get("search_name")}
+    return {fld["search_name"]: fld for fld in fields if fld.get("search_name")}
 
 
 # ---------------------------------------------------------------------------

@@ -1106,7 +1106,7 @@
     {
         "id": 146,
         "table_name": "aya",
-        "name": "standard",
+        "name": "word_standard",
         "name_arabic": "الكلمة_المعيارية",
         "search_name": "standard",
         "type": "KEYWORD",
