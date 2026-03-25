@@ -261,6 +261,10 @@ def _load_corpus_words_txt(corpus_path):
             # D (dual) and P (plural) explicitly; absence means singular (مفرد).
             if stem_feats.get("type") in ("Nouns", "Nominals") and entry["number"] is None:
                 entry["number"] = PGN["S"]  # "singular"
+            # Infer form I for verbs: corpus only tags forms (II)–(XII)
+            # explicitly; absence of a form tag means Form I (فَعَلَ).
+            if stem_feats.get("type") == "Verbs" and entry["form"] is None:
+                entry["form"] = VERB["(I)"][0]  # "فَعَلَ"
             result[(sura, aya)].append(entry)
 
         logging.info("Loaded %d word occurrences from corpus.", gid)

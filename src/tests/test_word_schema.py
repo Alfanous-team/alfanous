@@ -623,6 +623,33 @@ def test_no_number_inference_for_verb(load_words):
     assert words[0]["number"] is None
 
 
+def test_infer_form_i_for_verb(load_words):
+    """Verbs with no explicit form tag must get form inferred as فَعَلَ (Form I)."""
+    result = load_words([
+        "(1:1:1:1)\tktb\tV\tSTEM|POS:V|LEM:ktb|ROOT:ktb|PERF|3|M|S",
+    ])
+    words = result[(1, 1)]
+    assert words[0]["form"] == "فَعَلَ"
+
+
+def test_infer_form_explicit_not_overridden(load_words):
+    """Verbs with an explicit form tag (e.g. IV) must NOT be overridden to Form I."""
+    result = load_words([
+        "(1:1:1:1)\tktb\tV\tSTEM|POS:V|LEM:ktb|ROOT:ktb|PERF|(IV)|3|M|S",
+    ])
+    words = result[(1, 1)]
+    assert words[0]["form"] == "أَفْعَلَ"
+
+
+def test_no_form_inference_for_noun(load_words):
+    """Nouns must NOT have form inferred (only verbs have form)."""
+    result = load_words([
+        "(1:1:1:1)\tktb\tN\tSTEM|POS:N|LEM:ktAb|ROOT:ktb|M|NOM",
+    ])
+    words = result[(1, 1)]
+    assert words[0]["form"] is None
+
+
 # ---------------------------------------------------------------------------
 # constants.py — missing POS particle tags (CIRC, COM, INT, RSLT)
 # ---------------------------------------------------------------------------
