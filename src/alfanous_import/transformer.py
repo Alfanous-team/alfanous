@@ -312,8 +312,8 @@ def _load_corpus_words_txt(corpus_path):
             elif _deriv:
                 _form_key = _form or VERB["(I)"][0]
                 entry["pattern"] = NOMINAL_PATTERN.get((_form_key, _deriv))
-            # Compute stem: for all words, stem = lemma (the dictionary base
-            # form).  For special words (SP: tag), stem = the special value.
+            # Compute stem: defaults to the lemma (dictionary base form).
+            # Special words (SP: tag) override with their special value.
             _special = entry["special"]
             if _special:
                 entry["stem"] = _special
