@@ -140,8 +140,12 @@ _NORMALIZE_WORD_QUERY = QArabicSymbolsFilter(
 
 # All word-child index fields targetable by _search_words.
 # Defined at module level so the list is not rebuilt on every request.
+# The first three fields (word, word_lemma, word_stem) are the primary text
+# search targets — Uthmani word, corpus-normalised lemma, and corpus-derived
+# stem respectively.
 _WORD_ALL_INDEXED_FIELDS = [
-    "word", "normalized", "word_standard",
+    "word", "word_lemma", "word_stem",
+    "normalized", "word_standard",
     "pos", "type",
     "root", "arabicroot",
     "lemma", "arabiclemma",
@@ -1213,7 +1217,7 @@ class Raw:
                 _deriv_key = "lemma" if derivation_level == 2 else "root"
                 _deriv_key_values = set()
                 for _df, _dt in _deriv_expansion:
-                    if _df in ("lemma_norm", "aya_root"):
+                    if _df in ("aya_lemma", "aya_root"):
                         _deriv_key_values.add(_dt)
                 if _deriv_key_values:
                     try:

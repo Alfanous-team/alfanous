@@ -78,7 +78,7 @@ class BasicSearchEngine:
                Accepts integer levels or string aliases:
                0 / "word"  → exact match only (default).
                1 / "stem"  → also search aya_fuzzy (snowball Arabic stemming).
-               2 / "lemma" → also search lemma_norm (corpus lemma field).
+               2 / "lemma" → also search aya_lemma (corpus lemma field).
                3 / "root"  → also search aya_root  (corpus root field).
         @param timelimit: Maximum number of seconds to spend on the search
                (default 5.0). Pass None to disable the limit.

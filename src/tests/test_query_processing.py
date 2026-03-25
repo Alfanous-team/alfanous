@@ -101,13 +101,13 @@ def test_parsing_with_schema():
     # Root-level derivations via word_standard lookup:
     # >>سماكم (level 2) uses the field-based approach when _lemma is
     # available in the schema.  The plugin looks up the lemma value(s)
-    # for سماكم and generates Term("lemma_norm", ...) queries.
+    # for سماكم and generates Term("aya_lemma", ...) queries.
     parsed_samakum = QP.parse(u">>سماكم")
-    # The query should target the lemma_norm field (field-based derivation)
+    # The query should target the aya_lemma field (field-based derivation)
     samakum_terms = list(parsed_samakum.all_terms())
     assert len(samakum_terms) >= 1, ">>سماكم must produce at least one term"
-    # All terms should target lemma_norm field
+    # All terms should target aya_lemma field
     samakum_fields = {f for f, _ in samakum_terms}
-    assert "lemma_norm" in samakum_fields, (
-        f">>سماكم should target lemma_norm field; got fields: {samakum_fields}"
+    assert "aya_lemma" in samakum_fields, (
+        f">>سماكم should target aya_lemma field; got fields: {samakum_fields}"
     )
