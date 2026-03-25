@@ -473,9 +473,9 @@ class QSearcher:
         #   2 / "lemma" → also search aya_lemma (corpus lemma field)
         #   3 / "root"  → also search aya_root  (corpus root field)
         #
-        # Each derivation field is always in the schema (QStandardAnalyzer).
-        # Level 1 adds two terms per query word: the corpus stem (via field
-        # analyzer) and the Snowball Arabic stemmer output.
+        # Each derivation field uses QStandardAnalyzer (normalize only, no
+        # stemming).  The corpus already provides stem/lemma/root values at
+        # the correct level of specificity.
         _DERIV_LEVEL_MAP = {"word": 0, "stem": 1, "lemma": 2, "root": 3}
         _DERIV_FIELD_MAP = {
             1: "aya_stem",   # stem  — QStandardAnalyzer (corpus-derived stem)
@@ -493,16 +493,7 @@ class QSearcher:
             _deriv_field = _DERIV_FIELD_MAP.get(_deriv_level_int)
             if _deriv_field is not None and _deriv_field in self._schema:
                 _deriv_field_obj = self._schema[_deriv_field]
-                # For level 1 (aya_stem uses QStemAnalyzer = Snowball):
-                #   PRIMARY  — field analyzer (QStemAnalyzer, Snowball-stemmed)
-                #   FALLBACK — normalized-only token (QStandardAnalyzer, no stem),
-                #              only added when it differs from the stemmed result.
-                # For levels 2/3 (aya_lemma/aya_root, QStandardAnalyzer):
-                #   single term from field analyzer.
-                _norm_fallback_fn = None
-                if _deriv_level_int == 1:
-                    from alfanous.query_plugins import _ASF_NORMALIZE as _QPN
-                    _norm_fallback_fn = _QPN.normalize_all
+                # All levels: single normalized term from field analyzer.
                 for term in _arabic_query_terms(query):
                     _seen_toks: "set[str]" = set()
                     for tok in _deriv_field_obj.analyzer(term, mode="query"):
@@ -510,11 +501,6 @@ class QSearcher:
                             _seen_toks.add(tok.text)
                             derivation_subqueries.append(wquery.Term(_deriv_field, tok.text))
                             _derivation_expansion.add((_deriv_field, tok.text))
-                    if _norm_fallback_fn is not None:
-                        _norm = _norm_fallback_fn(term)
-                        if _norm and _norm not in _seen_toks:
-                            derivation_subqueries.append(wquery.Term(_deriv_field, _norm))
-                            _derivation_expansion.add((_deriv_field, _norm))
 
         if fuzzy:
             # Fuzzy mode: Levenshtein distance matching on 'aya_ac'

@@ -287,7 +287,7 @@ Alfanous supports advanced query syntax:
 * **Fielded Search**: Use field name - `سورة:يس`, `سجدة:نعم`
 * **Ranges**: Use `[X الى Y]` - `رقم_السورة:[1 الى 5]`
 * **Partial Vocalization**: Search with some diacritics - `آية_:'مَن'`
-* **Derivation (stem)**: Use `>` - `>رحيم` (searches `aya_stem` — corpus stem + Snowball fallback)
+* **Derivation (stem)**: Use `>` - `>رحيم` (searches `aya_stem` — corpus-derived stem)
 * **Derivation (lemma)**: Use `>>` - `>>رحيم` (searches `aya_lemma` — all inflections of the same lexeme)
 * **Derivation (root)**: Use `>>>` - `>>>ملك` (searches `aya_root` — all words from the same root)
 * **Tuples**: Use `{root,type}` - `{قول،اسم}`
@@ -299,7 +299,7 @@ Control how broadly the search expands morphologically using the `derivation_lev
 | Level | Value | Index field | Description |
 |---|---|---|---|
 | 0 | `"word"` | `aya` | Exact match only (default) |
-| 1 | `"stem"` | `aya_stem` | Corpus-derived stem (Snowball Arabic stemmer); also adds the normalized form as fallback |
+| 1 | `"stem"` | `aya_stem` | Corpus-derived stem — words sharing the same morphological stem |
 | 2 | `"lemma"` | `aya_lemma` | Corpus lemma — all inflections of the same lexeme |
 | 3 | `"root"` | `aya_root` | Trilateral root — all words from the same root |
 
@@ -309,7 +309,7 @@ Each derivation field is pre-indexed at build time so queries run against a comp
 # Level 0 — exact match
 >>> api.do({"action": "search", "query": "رَحِيمٌ"})
 
-# Level 1 — stem (corpus stem as primary, Snowball stem as fallback)
+# Level 1 — stem (corpus-derived stem)
 >>> api.do({"action": "search", "query": "رحيم", "derivation_level": 1})
 
 # Level 2 — all words sharing the same lemma (e.g. all forms of رَحِيمٌ)
@@ -344,7 +344,7 @@ When `unit="word"` the engine searches word-level child documents instead of ver
 >>> api.do({"action": "search", "query": "الله", "unit": "word"})
 
 # Derivation levels also apply to word search:
-# Level 1 — search word_stem (corpus stem + Snowball fallback)
+# Level 1 — search word_stem (corpus-derived stem)
 >>> api.do({"action": "search", "query": "رحيم", "unit": "word", "derivation_level": 1})
 
 # Level 2 — search word_lemma (normalized lemma)

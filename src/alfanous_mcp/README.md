@@ -153,12 +153,12 @@ Control how broadly the search expands morphologically using the `derivation_lev
 | Level | Value | Index field | How it works |
 |-------|-------|-------------|--------------|
 | 0 | `"word"` | `aya` | Exact match only (default) |
-| 1 | `"stem"` | `aya_stem` | Corpus-derived stem indexed with Snowball Arabic stemmer; also adds the normalized token as fallback |
+| 1 | `"stem"` | `aya_stem` | Corpus-derived stem — words sharing the same morphological stem |
 | 2 | `"lemma"` | `aya_lemma` | Corpus lemma — all inflections of the same lexeme |
 | 3 | `"root"` | `aya_root` | Trilateral root — all words from the same Arabic root |
 
 ```
-# Stem-level: رحيم → Snowball stem → matches رحمة، الرحيم، يرحم، …
+# Stem-level: رحيم → corpus stem → matches words with same stem
 search_quran(query="رحيم", derivation_level=1)
 
 # Lemma-level: all words sharing the lemma of رَحِيمٌ
@@ -183,7 +183,7 @@ When `unit="word"` the engine searches individual word child documents, each car
 | Level | Field searched | Description |
 |-------|---------------|-------------|
 | 0 | `word`, `normalized` | Exact word match |
-| 1 | `word_stem` | Corpus stem (QStandardAnalyzer) + Snowball fallback |
+| 1 | `word_stem` | Corpus-derived stem (QStandardAnalyzer) |
 | 2 | `word_lemma` | Normalized lemma (QStandardAnalyzer) |
 | 3 | `root` | Exact root value |
 
@@ -257,7 +257,7 @@ and over 100 practical examples.
 | Phrase | `"بسم الله"` | Exact phrase |
 | Wildcard | `رحم*` | Words starting with رحم |
 | Field filter | `sura_number:2` | Surah 2 only |
-| Stem derivation | `>رحيم` | `aya_stem` (Snowball-stemmed corpus stem) |
+| Stem derivation | `>رحيم` | `aya_stem` (corpus-derived stem) |
 | Lemma derivation | `>>رحيم` | `aya_lemma` (all inflections of same lexeme) |
 | Root derivation | `>>>ملك` | `aya_root` (all words from same root) |
 | Fuzzy | `fuzzy=true` parameter | Broad approximate match |

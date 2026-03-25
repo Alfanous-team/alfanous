@@ -1183,7 +1183,7 @@
     "phrase": false
   },
   {
-    "analyzer": "QStemAnalyzer",
+    "analyzer": "QStandardAnalyzer",
     "comment": "نص الآية مبدلة كل كلمة بجذعها — للبحث المشتق بمستوى الجذع (كلمة_جذع)",
     "id": 165,
     "name": "_aya_stem",

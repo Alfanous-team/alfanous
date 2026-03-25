@@ -737,10 +737,11 @@ class Transformer:
                         if _has_aya_stem:
                             _stems = []
                             for _w in _words_list:
-                                # Pass the raw (vocalized) corpus stem so
-                                # QStemAnalyzer handles normalization and
-                                # Snowball stemming at index time.
+                                # Use the corpus-derived stem, normalized to
+                                # strip tashkeel (QStandardAnalyzer at index
+                                # time handles the rest).
                                 _s = _w.get("stem") or _w.get("lemma") or _w.get("normalized") or ""
+                                _s = _lemma_norm.normalize_all(_s) if _s else ""
                                 _stems.append(_s)
                             _aya_stem_text[_key] = " ".join(_stems)
 

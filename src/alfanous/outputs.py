@@ -455,7 +455,7 @@ class Raw:
         "perpage": "results per page  [override range]",
         "fuzzy": "fuzzy search — Levenshtein distance matching on aya_ac for spelling variants and typos (does NOT involve stemming — use derivation_level for morphological broadening)",
         "fuzzy_maxdist": "maximum Levenshtein edit distance for fuzzy term matching (default: 1, only used when fuzzy=True)",
-        "derivation_level": "morphological derivation broadening level: 0/'word' (exact, default), 1/'stem' (snowball Arabic stemming), 2/'lemma' (corpus lemma), 3/'root' (corpus root)",
+        "derivation_level": "morphological derivation broadening level: 0/'word' (exact, default), 1/'stem' (corpus-derived stem), 2/'lemma' (corpus lemma), 3/'root' (corpus root)",
         "timelimit": "maximum number of seconds to spend on a search query (default: 5.0, use None or 0 to disable)",
         "aya": "enable retrieving of aya text in the case of translation search",
     }
@@ -2419,7 +2419,7 @@ class Raw:
                 word_query = wquery.Or([word_query, _arabizi_q])
 
         # Derivation-level expansion for word search.
-        # Level 1 (stem)  → search word_stem (QStandardAnalyzer) + Snowball stem fallback
+        # Level 1 (stem)  → search word_stem (QStandardAnalyzer, corpus-derived stem)
         # Level 2 (lemma) → search word_lemma (QStandardAnalyzer)
         # Level 3 (root)  → search root field (ID — normalize directly)
         _WORD_DERIV_FIELD_MAP = {
@@ -2435,11 +2435,6 @@ class Raw:
                 _seen = set()
                 _wfield_obj = self.QSE._schema[_dfield]
                 _wfield_analyzer = getattr(_wfield_obj, 'analyzer', None)
-                # For level 1, also load the Snowball Arabic stemmer as fallback.
-                _snowball_stemmer = None
-                if _dl_flag == 1:
-                    from alfanous.query_plugins import _get_arabic_stemmer as _gas
-                    _snowball_stemmer = _gas()
                 for _ft, _fterm in word_query.all_terms():
                     if _is_arabic_text(_fterm):
                         if _wfield_analyzer:
@@ -2448,13 +2443,6 @@ class Raw:
                                 if _tok.text not in _seen:
                                     _seen.add(_tok.text)
                                     _deriv_extra.append(wquery.Term(_dfield, _tok.text))
-                            # Level 1 fallback: Snowball Arabic stem (only if different)
-                            if _snowball_stemmer is not None:
-                                _norm_fterm = _NORMALIZE_WORD_QUERY(_fterm)
-                                _sbw = _snowball_stemmer.stemWord(_norm_fterm)
-                                if _sbw and _sbw not in _seen:
-                                    _seen.add(_sbw)
-                                    _deriv_extra.append(wquery.Term(_dfield, _sbw))
                         else:
                             # ID field (root): strip tashkeel and use directly
                             _norm = _NORMALIZE_WORD_QUERY(_fterm)

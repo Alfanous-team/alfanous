@@ -687,10 +687,10 @@ class DerivationPlugin(TaggingPlugin):
             if deriv_field is not None:
                 schema = getattr(parser, 'schema', None)
                 if schema is not None and deriv_field in schema:
-                    # PRIMARY: apply the target field's own analyzer.
-                    # For level 1 (aya_stem / QStemAnalyzer) this runs Snowball.
-                    # For levels 2/3 (aya_lemma/aya_root / QStandardAnalyzer)
-                    # it just strips tashkeel — no intermediate lookup needed.
+                    # Apply the target field's own analyzer to the query term.
+                    # All three fields (aya_stem, aya_lemma, aya_root) use
+                    # QStandardAnalyzer which just strips tashkeel — no
+                    # intermediate key-value lookup is needed.
                     field_obj = schema[deriv_field]
                     seen: "set[str]" = set()
                     terms = []
@@ -698,13 +698,6 @@ class DerivationPlugin(TaggingPlugin):
                         if tok.text not in seen:
                             seen.add(tok.text)
                             terms.append(Term(deriv_field, tok.text))
-                    # FALLBACK (level 1 only): normalized-only form (no Snowball),
-                    # added when it differs from the Snowball-stemmed primary term.
-                    if self.level == 1:
-                        norm = _ASF_NORMALIZE.normalize_all(self.actual_text)
-                        if norm and norm not in seen:
-                            seen.add(norm)
-                            terms.append(Term(deriv_field, norm))
                     # Always include the exact-match term on the main field so
                     # that derivation results are a superset of exact results.
                     _main_seen: "set[str]" = set()
