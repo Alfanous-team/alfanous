@@ -358,7 +358,7 @@ def _make_stem_features_parser():
     fn_src = textwrap.dedent("\n".join(lines[start:end]))
     ns = {}
     from alfanous_import.quran_corpus_reader.constants import (
-        BUCKWALTER2UNICODE, POS, PGN, PGNclass, VERB, NOM, DERIV, PREFIX,
+        BUCKWALTER2UNICODE, POS, PGN, PGNclass, VERB, VERB_QUAD, NOM, DERIV, PREFIX,
     )
     from alfanous_import.quran_corpus_reader.main import _INV_POS
     # _b2u is a helper defined in the same outer function scope; replicate it
@@ -366,7 +366,8 @@ def _make_stem_features_parser():
         return "".join(BUCKWALTER2UNICODE.get(ch, ch) for ch in s)
     exec(fn_src, {
         "BUCKWALTER2UNICODE": BUCKWALTER2UNICODE, "POS": POS, "PGN": PGN,
-        "PGNclass": PGNclass, "VERB": VERB, "NOM": NOM, "DERIV": DERIV,
+        "PGNclass": PGNclass, "VERB": VERB, "VERB_QUAD": VERB_QUAD,
+        "NOM": NOM, "DERIV": DERIV,
         "PREFIX": PREFIX, "_INV_POS": _INV_POS, "_b2u": _b2u,
     }, ns)
     return ns["_parse_stem_features"]
@@ -733,6 +734,79 @@ def test_verb_has_no_q_entries():
     from alfanous_import.quran_corpus_reader.constants import VERB
     for q in ("(Q1)", "(Q2)", "(Q3)", "(Q4)"):
         assert q not in VERB, f"Spurious key '{q}' found in VERB dict"
+
+
+# ---------------------------------------------------------------------------
+# constants.py — VERB_QUAD: quadriliteral form patterns (root length = 4)
+# ---------------------------------------------------------------------------
+
+def test_verb_quad_patterns():
+    """VERB_QUAD must map (I)–(IV) to the correct quadriliteral Arabic patterns."""
+    from alfanous_import.quran_corpus_reader.constants import VERB_QUAD
+    expected = {
+        "(I)":   ("فَعْلَلَ",     "First form (quadriliteral)"),
+        "(II)":  ("تَفَعْلَلَ",   "Second form (quadriliteral)"),
+        "(III)": ("إِفْعَنْلَلَ", "Third form (quadriliteral)"),
+        "(IV)":  ("إِفْعَلَلَّ",  "Fourth form (quadriliteral)"),
+    }
+    for code, (arabic, english) in expected.items():
+        assert VERB_QUAD[code][0] == arabic,  f"VERB_QUAD['{code}'][0] should be '{arabic}'"
+        assert VERB_QUAD[code][1] == english, f"VERB_QUAD['{code}'][1] should be '{english}'"
+
+
+def test_verb_quad_only_covers_i_to_iv():
+    """VERB_QUAD must only cover (I)–(IV); higher forms are triliteral-only."""
+    from alfanous_import.quran_corpus_reader.constants import VERB_QUAD
+    assert set(VERB_QUAD.keys()) == {"(I)", "(II)", "(III)", "(IV)"}
+
+
+# ---------------------------------------------------------------------------
+# transformer.py — quadriliteral dispatch: root length selects VERB_QUAD
+# ---------------------------------------------------------------------------
+
+def test_parse_stem_quad_form_i(parse_stem):
+    """4-letter root + (I) tag → quadriliteral pattern فَعْلَلَ."""
+    # Use a synthetic 4-letter root 'zHzH' (زحزح), same family as corpus entry
+    feats = parse_stem("STEM|POS:V|(I)|ROOT:zHzH|PERF|3|M|S")
+    assert feats.get("form") == "فَعْلَلَ", (
+        "4-letter root with (I) should produce quadriliteral pattern فَعْلَلَ"
+    )
+
+
+def test_parse_stem_quad_form_ii(parse_stem):
+    """4-letter root + (II) tag → quadriliteral pattern تَفَعْلَلَ."""
+    feats = parse_stem("STEM|POS:N|ACT|PCPL|(II)|ROOT:zHzH|M|GEN")
+    assert feats.get("form") == "تَفَعْلَلَ"
+
+
+def test_parse_stem_quad_form_iii(parse_stem):
+    """4-letter root + (III) tag → quadriliteral pattern إِفْعَنْلَلَ."""
+    feats = parse_stem("STEM|POS:V|(III)|ROOT:zHzH|PERF|3|M|S")
+    assert feats.get("form") == "إِفْعَنْلَلَ"
+
+
+def test_parse_stem_quad_form_iv(parse_stem):
+    """4-letter root + (IV) tag → quadriliteral pattern إِفْعَلَلَّ."""
+    feats = parse_stem("STEM|POS:V|(IV)|ROOT:zHzH|PERF|3|M|S")
+    assert feats.get("form") == "إِفْعَلَلَّ"
+
+
+def test_parse_stem_triliteral_form_i_unchanged(parse_stem):
+    """3-letter root + (I) tag → triliteral pattern فَعَلَ (unchanged)."""
+    feats = parse_stem("STEM|POS:V|(I)|ROOT:ktb|PERF|3|M|S")
+    assert feats.get("form") == "فَعَلَ"
+
+
+def test_parse_stem_triliteral_form_iv_unchanged(parse_stem):
+    """3-letter root + (IV) tag → triliteral pattern أَفْعَلَ (unchanged)."""
+    feats = parse_stem("STEM|POS:V|(IV)|ROOT:nEm|PERF|3|M|S")
+    assert feats.get("form") == "أَفْعَلَ"
+
+
+def test_parse_stem_quad_root_high_forms_unchanged(parse_stem):
+    """4-letter root + (V)–(XII) tags → standard triliteral patterns (no VERB_QUAD)."""
+    feats = parse_stem("STEM|POS:V|(X)|ROOT:zHzH|IMPF|3|M|S")
+    assert feats.get("form") == "إِسْتَفْعَلَ"
 
 
 # ---------------------------------------------------------------------------

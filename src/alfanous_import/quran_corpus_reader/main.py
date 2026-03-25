@@ -43,6 +43,7 @@ from .constants import (
     PREFIXclass,
     PRON,
     VERB,
+    VERB_QUAD,
     VERBclass,
 )
 
@@ -192,6 +193,16 @@ class API:
             result["base"] = []
             for part in parsedlist[1]:
                 part_dict: Dict[str, Any] = {}
+
+                # Pre-scan this base segment for ROOT length so we can select
+                # triliteral vs quadriliteral form patterns below.
+                _root_raw = next(
+                    (part[i + 1] for i, t in enumerate(part)
+                     if t == "ROOT:" and i + 1 < len(part)),
+                    ""
+                )
+                _quad = len(_root_raw) == 4
+
                 idx = 0
                 while idx < len(part):
                     tag = part[idx]
@@ -226,7 +237,8 @@ class API:
                             continue
                         part_dict[_INV_VERB[tag][0]] = VERB[tag][0]
                     elif tag in VERB:
-                        part_dict[_INV_VERB[tag][0]] = VERB[tag][0]
+                        form_dict = VERB_QUAD if _quad and tag in VERB_QUAD else VERB
+                        part_dict[_INV_VERB[tag][0]] = form_dict[tag][0]
                     elif tag in NOM:
                         nom_field    = _INV_NOM[tag][0]
                         arabic_field = "arabicstate" if nom_field == "state" else "arabiccase"

@@ -70,7 +70,7 @@ def _load_corpus_words_txt(corpus_path):
     import re as _re2
     from collections import defaultdict, OrderedDict
     from alfanous_import.quran_corpus_reader.constants import (
-        BUCKWALTER2UNICODE, POS, PGN, PGNclass, VERB, NOM, DERIV, PREFIX,
+        BUCKWALTER2UNICODE, POS, PGN, PGNclass, VERB, VERB_QUAD, NOM, DERIV, PREFIX,
     )
     # _INV_POS maps raw tag (e.g. "V") → category name (e.g. "Verbs"), matching
     # what the XML reader stored in the "type" field via _reverse_class(POSclass).
@@ -88,6 +88,12 @@ def _load_corpus_words_txt(corpus_path):
         """Return a dict of morphological attributes from a STEM feature string."""
         f = {}
         parts = features.split('|')
+
+        # Pre-scan: determine raw root length to select triliteral vs quadriliteral
+        # form patterns.  The corpus uses (I)–(IV) for both; root length discriminates.
+        _root_raw = next((p[5:] for p in parts if p.startswith('ROOT:')), '')
+        _quad = len(_root_raw) == 4
+
         # Scan for ACT PCPL / PASS PCPL two-token combos first
         prev = None
         deriv_skip = set()
@@ -141,7 +147,8 @@ def _load_corpus_words_txt(corpus_path):
                 f['voice'] = VERB.get(part, (None, None))[0]
             elif part in ('(I)', '(II)', '(III)', '(IV)', '(V)', '(VI)',
                           '(VII)', '(VIII)', '(IX)', '(X)', '(XI)', '(XII)'):
-                f['form'] = VERB.get(part, (None, None))[0]
+                form_dict = VERB_QUAD if _quad and part in VERB_QUAD else VERB
+                f['form'] = form_dict.get(part, (None, None))[0]
             elif part == 'VN':
                 f['derivation'] = DERIV.get('VN', (None, None))[0]
         return f

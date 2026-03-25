@@ -226,6 +226,15 @@ VERB = {
 "(XII)": ( "إِفْعَوْعَلَ", "Twelfth form" ),
 }
 
+# Quadriliteral verb form patterns — used when the root has 4 letters.
+# The corpus still tags these as (I)–(IV); root length is the discriminator.
+VERB_QUAD = {
+"(I)":  ( "فَعْلَلَ",     "First form (quadriliteral)" ),
+"(II)": ( "تَفَعْلَلَ",   "Second form (quadriliteral)" ),
+"(III)":( "إِفْعَنْلَلَ", "Third form (quadriliteral)" ),
+"(IV)": ( "إِفْعَلَلَّ",  "Fourth form (quadriliteral)" ),
+}
+
 DERIVclass = {
 "derivation":["ACT PCPL", "PASS PCPL", "VN"]
 }
