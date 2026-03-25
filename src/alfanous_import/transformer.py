@@ -699,6 +699,14 @@ class Transformer:
                 _has_word_stem            = "word_stem"            in _schema_names
                 _has_uthmani_different    = "uthmani_different"    in _schema_names
 
+                # Normalizer for comparing standard vs. Uthmani forms.
+                if _has_uthmani_different:
+                    from alfanous.text_processing import QArabicSymbolsFilter as _QASF
+                    _std_norm = _QASF(
+                        shaping=True, tashkil=True, spellerrors=False,
+                        hamza=False, uthmani_symbols=True,
+                    )
+
                 # Pre-build aya_lemma and aya_root text for each aya from
                 # word-child data.  Each word's lemma (or root) is used; when
                 # the morphological value is missing, the word's normalised
@@ -827,7 +835,7 @@ class Transformer:
                                 # standard forms differ (e.g. الصلوة vs الصلاة).
                                 if _has_uthmani_different:
                                     _norm_uth = w.get("normalized") or ""
-                                    _norm_std = qasf.normalize_all(_std_tok)
+                                    _norm_std = _std_norm.normalize_all(_std_tok)
                                     word_doc["uthmani_different"] = (_norm_uth != _norm_std)
                             if _has_word_transliteration and pos < len(tr_tokens):
                                 word_doc["word_transliteration"] = tr_tokens[pos]
