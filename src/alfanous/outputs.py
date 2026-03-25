@@ -509,8 +509,8 @@ class Raw:
             "translation": sorted(_TRANS_FACET_FIELDS),
         }
         # Arabic→English morphology mappings so consumers can translate Arabic
-        # field values without hard-coding them.  Imported from constants.py.
-        from alfanous_import.quran_corpus_reader.constants import MORPHOLOGY_MAPPINGS
+        # field values without hard-coding them.
+        from alfanous.morphology import MORPHOLOGY_MAPPINGS
         self._morphology_mappings = MORPHOLOGY_MAPPINGS
         self._all = {
             "translations": self._translations,

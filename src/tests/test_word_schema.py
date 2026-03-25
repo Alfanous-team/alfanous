@@ -1024,7 +1024,7 @@ def test_segments_multi_suffix(load_words):
 
 def test_morphology_mappings_has_all_fields():
     """MORPHOLOGY_MAPPINGS must contain entries for all morphological fields."""
-    from alfanous_import.quran_corpus_reader.constants import MORPHOLOGY_MAPPINGS
+    from alfanous.morphology import MORPHOLOGY_MAPPINGS
     expected = {"pos", "gender", "number", "person", "form", "voice",
                 "aspect", "mood", "case", "state", "derivation", "prefix"}
     assert set(MORPHOLOGY_MAPPINGS.keys()) == expected
@@ -1032,14 +1032,14 @@ def test_morphology_mappings_has_all_fields():
 
 def test_morphology_mappings_gender_arabic_to_english():
     """Gender mapping must translate Arabic values to English."""
-    from alfanous_import.quran_corpus_reader.constants import MORPHOLOGY_MAPPINGS
+    from alfanous.morphology import MORPHOLOGY_MAPPINGS
     assert MORPHOLOGY_MAPPINGS["gender"]["مذكر"] == "masculine"
     assert MORPHOLOGY_MAPPINGS["gender"]["مؤنث"] == "feminine"
 
 
 def test_morphology_mappings_number_arabic_to_english():
     """Number mapping must translate Arabic values to English."""
-    from alfanous_import.quran_corpus_reader.constants import MORPHOLOGY_MAPPINGS
+    from alfanous.morphology import MORPHOLOGY_MAPPINGS
     assert MORPHOLOGY_MAPPINGS["number"]["مفرد"] == "singular"
     assert MORPHOLOGY_MAPPINGS["number"]["مثنى"] == "dual"
     assert MORPHOLOGY_MAPPINGS["number"]["جمع"] == "plural"
@@ -1047,7 +1047,7 @@ def test_morphology_mappings_number_arabic_to_english():
 
 def test_morphology_mappings_person_arabic_to_english():
     """Person mapping must translate Arabic values to English."""
-    from alfanous_import.quran_corpus_reader.constants import MORPHOLOGY_MAPPINGS
+    from alfanous.morphology import MORPHOLOGY_MAPPINGS
     assert MORPHOLOGY_MAPPINGS["person"]["المتكلم"] == "first person"
     assert MORPHOLOGY_MAPPINGS["person"]["المخاطب"] == "second person"
     assert MORPHOLOGY_MAPPINGS["person"]["الغائب"] == "third person"
@@ -1055,14 +1055,14 @@ def test_morphology_mappings_person_arabic_to_english():
 
 def test_morphology_mappings_voice_arabic_to_english():
     """Voice mapping must translate Arabic values to English."""
-    from alfanous_import.quran_corpus_reader.constants import MORPHOLOGY_MAPPINGS
+    from alfanous.morphology import MORPHOLOGY_MAPPINGS
     assert MORPHOLOGY_MAPPINGS["voice"]["مبني للمعلوم"] == "Active voice"
     assert MORPHOLOGY_MAPPINGS["voice"]["مبني للمجهول"] == "Passive voice"
 
 
 def test_morphology_mappings_pos_covers_all():
     """POS mapping must cover all POS tags."""
-    from alfanous_import.quran_corpus_reader.constants import MORPHOLOGY_MAPPINGS, POS
+    from alfanous.morphology import MORPHOLOGY_MAPPINGS, POS
     for tag, (ar, en) in POS.items():
         assert ar in MORPHOLOGY_MAPPINGS["pos"], f"POS Arabic '{ar}' missing from mapping"
         assert MORPHOLOGY_MAPPINGS["pos"][ar] == en
