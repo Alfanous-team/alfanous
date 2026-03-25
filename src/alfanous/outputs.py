@@ -140,9 +140,12 @@ _NORMALIZE_WORD_QUERY = QArabicSymbolsFilter(
 
 # All word-child index fields targetable by _search_words.
 # Defined at module level so the list is not rebuilt on every request.
-# The first three fields (word, word_lemma, word_stem) are the primary text
-# search targets — Uthmani word, corpus-normalised lemma, and corpus-derived
-# stem respectively.
+# The first five fields are the primary text search targets:
+#   word           — Uthmani word (vocalized)
+#   word_lemma     — corpus-normalised lemma (tashkeel-stripped)
+#   word_stem      — corpus-derived stem (tashkeel-stripped)
+#   normalized     — normalised Uthmani spelling (tashkeel-stripped)
+#   word_standard  — standard (Imla'i) spelling
 _WORD_ALL_INDEXED_FIELDS = [
     "word", "word_lemma", "word_stem",
     "normalized", "word_standard",
