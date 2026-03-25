@@ -98,7 +98,7 @@ def _make_tuple_mock(root_words_map):
     "Nouns" / "Verbs") via _ARABIC_TO_TYPE.  The mock therefore reads the
     ``type`` key from filter_dict.
     """
-    def _mock(filter_dict, field="word_standard", limit=5000):
+    def _mock(filter_dict, field="standard", limit=5000):
         root = filter_dict.get("root", "")
         type_ = filter_dict.get("type", "")  # English value: "Nouns", "Verbs", …
         key = (root, type_)
@@ -672,7 +672,7 @@ def test_derivation_query_vocalized_words_match_analyzed_index():
     writer.commit()
 
     # Simulate the worst case: _collect_derivations_two_pass returns ONLY
-    # vocalized forms (as if the 'normalized' and 'word_standard' stored
+    # vocalized forms (as if the 'normalized' and 'standard' stored
     # fields were absent and only the 'word' vocalized field was present).
     # Before the fix _btexts() would find no index terms and return 0 results.
     _vocalized_only = lambda _candidates, _index_key: (
@@ -907,7 +907,7 @@ if __name__ == "__main__":
 
 def test_collect_derivations_two_pass_cached_returns_only_unvocalized():
     """Pass 2 of _collect_derivations_two_pass_cached must not include the
-    vocalized 'word' field — only 'word_standard' and 'normalized' are collected.
+    vocalized 'word' field — only 'standard' and 'normalized' are collected.
 
     Regression/requirement test for: remove vocalized keywords from
     words.individual in morphological derivations level search.
@@ -916,7 +916,7 @@ def test_collect_derivations_two_pass_cached_returns_only_unvocalized():
     from alfanous.query_plugins import _collect_derivations_two_pass_cached
 
     # Build fake word-child documents: one with vocalized 'word', unvocalized
-    # 'normalized' and 'word_standard', keyed by lemma "ملك".
+    # 'normalized' and 'standard', keyed by lemma "ملك".
     _DOCS = [
         {
             "kind": "word",
@@ -924,7 +924,7 @@ def test_collect_derivations_two_pass_cached_returns_only_unvocalized():
             "root": "ملك",
             "word": "مَلِكٌ",       # vocalized — must NOT appear in results
             "normalized": "ملك",   # unvocalized — must appear
-            "word_standard": "ملك",
+            "standard": "ملك",
         },
         {
             "kind": "word",
@@ -932,7 +932,7 @@ def test_collect_derivations_two_pass_cached_returns_only_unvocalized():
             "root": "ملك",
             "word": "مَالِكٌ",      # vocalized — must NOT appear in results
             "normalized": "مالك",  # unvocalized — must appear
-            "word_standard": "مالك",
+            "standard": "مالك",
         },
     ]
 
@@ -956,7 +956,7 @@ def test_collect_derivations_two_pass_cached_returns_only_unvocalized():
     for w in results:
         assert not _DIACRITIC_RE.search(w), (
             f"_collect_derivations_two_pass_cached returned vocalized form {w!r}; "
-            "only unvocalized forms (word_standard, normalized) should be collected"
+            "only unvocalized forms (standard, normalized) should be collected"
         )
     # The unvocalized normalized forms must be present
     assert "ملك" in results, "Expected 'ملك' (normalized) in results"
@@ -967,7 +967,7 @@ def test_collect_derivations_two_pass_cached_returns_only_unvocalized():
 def _make_word_index_mock_with_marks(word, lemma, root, lemma_words, root_words):
     """Like _make_word_index_mock but injects U+06D6–U+06ED marks into the
     returned word forms.  This simulates the state of the index *before* the
-    normalize_uthmani_symbols fix, where word_standard entries could contain
+    normalize_uthmani_symbols fix, where standard entries could contain
     Uthmanic annotation characters."""
     # Embed a small selection of Uthmanic marks into each word form
     _MARKS = '\u06D6\u06DF\u06E8'  # SmallHighLigature, SmallHighRoundedZero, SmallHighNoon

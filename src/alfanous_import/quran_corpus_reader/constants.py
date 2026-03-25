@@ -91,6 +91,8 @@ POS = {
 "AVR":( "حرف ردع", "Aversion particle" ),
 "CAUS":( "حرف سببية", "Particle of cause" ),
 "CERT":( "حرف تحقيق", "Particle of certainty" ),
+"CIRC":( "حرف حال", "Circumstantial particle" ),
+"COM":( "واو المعية", "Comitative particle" ),
 "COND":( "حرف شرط", "Conditional particle" ),
 "EQ":( "حرف تسوية", "Equalization particle" ),
 "EXH":( "حرف تحضيض", "Exhortation particle" ),
@@ -98,6 +100,7 @@ POS = {
 "EXP":( "أداة استثناء", "Exceptive particle" ),
 "FUT":( "حرف استقبال", "Future particle" ),
 "INC":( "حرف ابتداء", "Inceptive particle" ),
+"INT":( "حرف تفسير", "Particle of interpretation" ),
 "INTG":( "حرف استفهام", "Interogative particle" ),
 "NEG":( "حرف نفي", "Negative particle" ),
 "PREV":( "حرف كاف", "Preventive particle" ),
@@ -105,6 +108,7 @@ POS = {
 "REM":( "حرف استئنافية", "Resumption particle" ),
 "RES":( "أداة حصر", "Restriction particle" ),
 "RET":( "حرف اضراب", "Retraction particle" ),
+"RSLT":( "حرف واقع في جواب الشرط", "Result particle" ),
 "SUP":( "حرف زائد", "Supplemental particle" ),
 "SUR":( "حرف فجاءة", "Surprise particle" ),
 "VOC":( "حرف نداء", "Vocative particle" ),
@@ -120,23 +124,27 @@ POSclass = {
 "Prepositions":["P"],
 "lām Prefixes":["EMPH", "IMPV", "PRP"],
 "Conjunctions":["CONJ", "SUB"],
-"Particles":["ACC", "AMD", "ANS", "AVR", "CAUS", "CERT", "COND", "EQ", "EXH", "EXL", "EXP", "FUT", "INC", "INTG", "NEG", "PREV", "PRO", "REM", "RES", "RET", "SUP", "SUR", "VOC"],
+"Particles":["ACC", "AMD", "ANS", "AVR", "CAUS", "CERT", "CIRC", "COM", "COND", "EQ", "EXH", "EXL", "EXP", "FUT", "INC", "INT", "INTG", "NEG", "PREV", "PRO", "REM", "RES", "RET", "RSLT", "SUP", "SUR", "VOC"],
 "Disconnected Letters":["INL"]
 }
 
 PREFIXclass = {
 "determiner":["Al+"],
-"preposition":["bi+", "ka+", "ta+", "l:P+"],
+"preposition":["bi+", "ka+", "ta+", "l:P+", "w:P+"],
 "future particle":["sa+"],
 "vocative particle":["ya+", "ha+"],
 "interrogative particle":["A:INTG+"],
 "equalization particle":["A:EQ+"],
-"conjunction":["wa+", "f:CONJ+"],
-"resumption":["w:P+"],
+"conjunction":["wa+", "f:CONJ+", "w:CONJ+"],
+"resumption":["f:REM+", "w:REM+"],
 "cause":["f:CAUS+"],
 "emphasis":["l:EMPH+"],
 "purpose":["l:PRP+"],
 "imperative":["l:IMPV+"],
+"circumstantial":["w:CIRC+"],
+"supplemental":["f:SUP+", "w:SUP+"],
+"comitative":["w:COM+"],
+"result":["f:RSLT+"],
 "--undefined--":["A+", "fa+"]
 }
 
@@ -153,9 +161,16 @@ PREFIX = {
 "A:EQ+":( "أ", "alif" ),
 "wa+":( "و", "wa" ),
 "w:P+":( "و", "wa" ),
+"w:CONJ+":( "و", "wa" ),
+"w:REM+":( "و", "wa" ),
+"w:CIRC+":( "و", "wa" ),
+"w:SUP+":( "و", "wa" ),
+"w:COM+":( "و", "wa" ),
 "fa+":( "ف", "fa" ),
 "f:CONJ+":( "ف", "fa" ),
 "f:REM+":( "ف", "fa" ),
+"f:RSLT+":( "ف", "fa" ),
+"f:SUP+":( "ف", "fa" ),
 "f:CAUS+":( "ف", "fa" ),
 "l:P+":( "ل", "lām" ),
 "l:EMPH+":( "ل", "lām" ),
@@ -170,14 +185,14 @@ PGNclass = {
 }
 
 PGN = {
-"1":"متكلم",
-"2":"مخاطب",
-"3":"غائب",
-"M":"مذّكر",
-"F":"مؤنّث",
-"S":"مفرد",
-"D":"مثنّى",
-"P":"جمع"
+"1":( "المتكلم", "first person" ),
+"2":( "المخاطب", "second person" ),
+"3":( "الغائب", "third person" ),
+"M":( "مذكر", "masculine" ),
+"F":( "مؤنث", "feminine" ),
+"S":( "مفرد", "singular" ),
+"D":( "مثنى", "dual" ),
+"P":( "جمع", "plural" ),
 }
 
 VERBclass = {
@@ -197,18 +212,27 @@ VERB = {
 "ENG":( "مؤكد", "Energetic mood" ),
 "ACT":( "مبني للمعلوم", "Active voice" ),
 "PASS":( "مبني للمجهول", "Passive voice" ),
-"(I)":( "", "First form" ),
-"(II)" :( "", "Second form" ),
-"(III)" :( "", "Third form" ),
-"(IV)" :( "", "Fourth form" ),
-"(V)" :( "", "Fifth form" ),
-"(VI)" :( "", "Sixth form" ),
-"(VII)" :( "", "Seventh form" ),
-"(VIII)":( "", "Eighth form" ),
-"(IX)" :( "", "Ninth form" ),
-"(X)" :( "", "Tenth form" ),
-"(XI)" :( "", "Eleventh form" ),
-"(XII)" :( "", "Twelfth form" )
+"(I)":   ( "فَعَلَ",       "First form" ),
+"(II)":  ( "فَعَّلَ",      "Second form" ),
+"(III)": ( "فَاعَلَ",      "Third form" ),
+"(IV)":  ( "أَفْعَلَ",     "Fourth form" ),
+"(V)":   ( "تَفَعَّلَ",    "Fifth form" ),
+"(VI)":  ( "تَفَاعَلَ",    "Sixth form" ),
+"(VII)": ( "إِنْفَعَلَ",   "Seventh form" ),
+"(VIII)":( "إِفْتَعَلَ",   "Eighth form" ),
+"(IX)":  ( "إِفْعَلَّ",    "Ninth form" ),
+"(X)":   ( "إِسْتَفْعَلَ", "Tenth form" ),
+"(XI)":  ( "إِفْعَالَّ",   "Eleventh form" ),
+"(XII)": ( "إِفْعَوْعَلَ", "Twelfth form" ),
+}
+
+# Quadriliteral verb form patterns — used when the root has 4 letters.
+# The corpus still tags these as (I)–(IV); root length is the discriminator.
+VERB_QUAD = {
+"(I)":  ( "فَعْلَلَ",     "First form (quadriliteral)" ),
+"(II)": ( "تَفَعْلَلَ",   "Second form (quadriliteral)" ),
+"(III)":( "إِفْعَنْلَلَ", "Third form (quadriliteral)" ),
+"(IV)": ( "إِفْعَلَلَّ",  "Fourth form (quadriliteral)" ),
 }
 
 DERIVclass = {
@@ -219,6 +243,55 @@ DERIV = {
 "ACT PCPL":( "اسم فاعل", "Active participle" ),
 "PASS PCPL":( "اسم مفعول", "Passive participle" ),
 "VN":( "مصدر", "Verbal noun" )
+}
+
+# ---------------------------------------------------------------------------
+# Derived nominal patterns — (form_arabic, derivation_arabic) → وزن
+# For verbs the pattern is the form itself. For derived nominals the pattern
+# depends on both form and derivation type.
+# ---------------------------------------------------------------------------
+_ACT  = DERIV["ACT PCPL"][0]   # "اسم فاعل"
+_PASS = DERIV["PASS PCPL"][0]  # "اسم مفعول"
+_VN   = DERIV["VN"][0]         # "مصدر"
+
+NOMINAL_PATTERN = {
+# Form I — VN omitted (irregular, varies per verb)
+(VERB["(I)"][0],    _ACT):  "فَاعِل",
+(VERB["(I)"][0],    _PASS): "مَفْعُول",
+# Form II
+(VERB["(II)"][0],   _ACT):  "مُفَعِّل",
+(VERB["(II)"][0],   _PASS): "مُفَعَّل",
+(VERB["(II)"][0],   _VN):   "تَفْعِيل",
+# Form III — VN uses فِعَال (verified from corpus: حِسَاب, شِقَاق, etc.)
+(VERB["(III)"][0],  _ACT):  "مُفَاعِل",
+(VERB["(III)"][0],  _PASS): "مُفَاعَل",
+(VERB["(III)"][0],  _VN):   "فِعَال",
+# Form IV
+(VERB["(IV)"][0],   _ACT):  "مُفْعِل",
+(VERB["(IV)"][0],   _PASS): "مُفْعَل",
+(VERB["(IV)"][0],   _VN):   "إِفْعَال",
+# Form V
+(VERB["(V)"][0],    _ACT):  "مُتَفَعِّل",
+(VERB["(V)"][0],    _PASS): "مُتَفَعَّل",
+(VERB["(V)"][0],    _VN):   "تَفَعُّل",
+# Form VI
+(VERB["(VI)"][0],   _ACT):  "مُتَفَاعِل",
+(VERB["(VI)"][0],   _PASS): "مُتَفَاعَل",
+(VERB["(VI)"][0],   _VN):   "تَفَاعُل",
+# Form VII
+(VERB["(VII)"][0],  _ACT):  "مُنْفَعِل",
+(VERB["(VII)"][0],  _VN):   "اِنْفِعَال",
+# Form VIII
+(VERB["(VIII)"][0], _ACT):  "مُفْتَعِل",
+(VERB["(VIII)"][0], _PASS): "مُفْتَعَل",
+(VERB["(VIII)"][0], _VN):   "اِفْتِعَال",
+# Form IX
+(VERB["(IX)"][0],   _ACT):  "مُفْعَلّ",
+(VERB["(IX)"][0],   _VN):   "اِفْعِلَال",
+# Form X
+(VERB["(X)"][0],    _ACT):  "مُسْتَفْعِل",
+(VERB["(X)"][0],    _PASS): "مُسْتَفْعَل",
+(VERB["(X)"][0],    _VN):   "اِسْتِفْعَال",
 }
 
 NOMclass = {
@@ -247,4 +320,70 @@ PRON = {
 "D": {"نا", "كما", "هما"},
 "P": {"نا", "كم", "هم", "كن", "هن"},
 }
+
+
+# ---------------------------------------------------------------------------
+# Inverted class dicts — look up a raw tag → category name
+# ---------------------------------------------------------------------------
+
+def _reverse_class(dictionary):
+    """Invert a class-mapping dict (values may be plain values or lists)."""
+    result = {}
+    for key, value in dictionary.items():
+        if not isinstance(value, list):
+            value = [value]
+        for v in value:
+            result.setdefault(v, []).append(key)
+    return result
+
+
+_INV_POS = _reverse_class(POSclass)
+_INV_PREFIX = _reverse_class(PREFIXclass)
+
+
+# ---------------------------------------------------------------------------
+# Suffix tag → (Arabic, English) mappings
+# ---------------------------------------------------------------------------
+
+SUFFIX = {
+"+n:EMPH": ( "نون التوكيد", "Emphatic nūn suffix" ),
+"+VOC":    ( "حرف نداء", "Vocative suffix" ),
+}
+
+
+# ---------------------------------------------------------------------------
+# MORPHOLOGY_MAPPINGS — Arabic→English for every morphological field.
+# Exposed through the API's ``show?query=morphology_mappings`` endpoint so
+# that consumers can translate Arabic values without hard-coding them.
+# ---------------------------------------------------------------------------
+
+def _ar_to_en(d):
+    """Build {Arabic: English} from a dict whose values are (Arabic, English) tuples."""
+    return {v[0]: v[1] for v in d.values()}
+
+
+MORPHOLOGY_MAPPINGS = {
+    "pos":        _ar_to_en(POS),
+    "gender":     _ar_to_en(PGN),           # subset filtered below
+    "number":     _ar_to_en(PGN),
+    "person":     _ar_to_en(PGN),
+    "form":       _ar_to_en(VERB),
+    "voice":      _ar_to_en(VERB),
+    "aspect":     _ar_to_en(VERB),
+    "mood":       _ar_to_en(VERB),
+    "case":       _ar_to_en(NOM),
+    "state":      _ar_to_en(NOM),
+    "derivation": _ar_to_en(DERIV),
+    "prefix":     _ar_to_en(PREFIX),
+}
+# Narrow per-field mappings to only the values that actually appear for that field.
+MORPHOLOGY_MAPPINGS["gender"] = {PGN[k][0]: PGN[k][1] for k in PGNclass["gender"]}
+MORPHOLOGY_MAPPINGS["number"] = {PGN[k][0]: PGN[k][1] for k in PGNclass["number"]}
+MORPHOLOGY_MAPPINGS["person"] = {PGN[k][0]: PGN[k][1] for k in PGNclass["person"]}
+MORPHOLOGY_MAPPINGS["form"]   = {VERB[k][0]: VERB[k][1] for k in VERBclass["form"]}
+MORPHOLOGY_MAPPINGS["voice"]  = {VERB[k][0]: VERB[k][1] for k in VERBclass["voice"]}
+MORPHOLOGY_MAPPINGS["aspect"] = {VERB[k][0]: VERB[k][1] for k in VERBclass["aspect"]}
+MORPHOLOGY_MAPPINGS["mood"]   = {VERB[k][0]: VERB[k][1] for k in VERBclass["mood"]}
+MORPHOLOGY_MAPPINGS["case"]   = {NOM[k][0]: NOM[k][1]   for k in NOMclass["case"]}
+MORPHOLOGY_MAPPINGS["state"]  = {NOM[k][0]: NOM[k][1]   for k in NOMclass["state"]}
 

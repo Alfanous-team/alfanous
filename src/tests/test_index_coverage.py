@@ -11,7 +11,7 @@ from whoosh.filedb.filestore import FileStorage
 from alfanous import paths
 
 QURAN_TOTAL_VERSES = 6236
-INDEX_SIZE_LIMIT_MB = 100
+INDEX_SIZE_LIMIT_MB = 120
 
 
 def _iter_docs_by_kind():

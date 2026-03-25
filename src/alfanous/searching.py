@@ -484,7 +484,7 @@ class QSearcher:
         _DERIV_LEVEL_MAP = {"word": 0, "stem": 1, "lemma": 2, "root": 3}
         _DERIV_FIELD_MAP = {
             1: ("aya_fuzzy", None),       # stem — parse with aya_fuzzy parser
-            2: ("aya_lemma", "lemma"),     # lemma — lookup key, search field
+            2: ("aya_lemma",    "lemma"),     # lemma — lookup key, search field
             3: ("aya_root",  "root"),      # root  — lookup key, search field
         }
         if isinstance(derivation_level, str):

@@ -44,7 +44,7 @@ _ASF_SPELL_ERRORS = QArabicSymbolsFilter(
 # Tuple of word-child fields searched in the two-pass derivation scan.
 # Defined here so it is not rebuilt on every call to
 # _collect_derivations_two_pass().
-_DERIVATION_SEARCH_FIELDS = ('word', 'normalized', 'lemma', 'root', 'word_standard')
+_DERIVATION_SEARCH_FIELDS = ('word', 'normalized', 'lemma', 'root', 'standard')
 
 # Lazily-cached Arabic Snowball stemmer for DerivationQuery.  Populated on
 # first use so that a missing pystemmer package does not cause an import error.
@@ -163,7 +163,7 @@ def _collect_derivations_two_pass_cached(candidates_frozen, index_key):
         return ()
 
     # Pass 2: collect all unvocalized word forms whose index_key is in
-    # key_values.  Only 'word_standard' and 'normalized' are collected here;
+    # key_values.  Only 'standard' and 'normalized' are collected here;
     # the vocalized 'word' field is intentionally omitted so that derivation
     # expansion results (used for highlighting and words.individual) never
     # contain diacritics.  Unvocalized forms are sufficient for both
@@ -174,7 +174,7 @@ def _collect_derivations_two_pass_cached(candidates_frozen, index_key):
         if stored.get("kind") != "word":
             continue
         if stored.get(index_key) in key_values:
-            for field in ('word_standard', 'normalized'):
+            for field in ('standard', 'normalized'):
                 val = stored.get(field)
                 if val:
                     words.add(val)
@@ -577,9 +577,9 @@ class TupleQuery(QMultiTerm):
             if english_type:
                 _filter["type"] = english_type
         if _filter:
-            # Merge word_standard (primary) and normalized so that words whose
-            # word_standard is None (e.g. تملك) are still included.
-            words = set(_query_word_index(_filter, field="word_standard"))
+            # Merge standard (primary) and normalized so that words whose
+            # standard is None (e.g. تملك) are still included.
+            words = set(_query_word_index(_filter, field="standard"))
             words.update(_query_word_index(_filter, field="normalized"))
             words.discard(None)
             return list(words)
@@ -708,8 +708,8 @@ class DerivationPlugin(TaggingPlugin):
     # Map derivation level → (target_field, index_key_for_lookup)
     _LEVEL_FIELDS = {
         1: ("aya_fuzzy", None),       # stem — no key lookup needed
-        2: ("aya_lemma", "lemma"),     # lemma
-        3: ("aya_root", "root"),       # root
+        2: ("aya_lemma",    "lemma"),     # lemma
+        3: ("aya_root",  "root"),      # root
     }
 
     class DerivationNode(syntax.WordNode):

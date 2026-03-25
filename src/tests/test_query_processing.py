@@ -99,7 +99,7 @@ def test_parsing_with_schema():
                                            'words': ['\u062c\u062d\u064a\u0645']}
 
     # Root-level derivations via word_standard lookup:
-    # >>سماكم (level 2) uses the field-based approach when aya_lemma is
+    # >>سماكم (level 2) uses the field-based approach when _lemma is
     # available in the schema.  The plugin looks up the lemma value(s)
     # for سماكم and generates Term("aya_lemma", ...) queries.
     parsed_samakum = QP.parse(u">>سماكم")

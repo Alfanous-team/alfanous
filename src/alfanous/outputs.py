@@ -140,8 +140,16 @@ _NORMALIZE_WORD_QUERY = QArabicSymbolsFilter(
 
 # All word-child index fields targetable by _search_words.
 # Defined at module level so the list is not rebuilt on every request.
+# The first six fields are the primary text search targets:
+#   word           — Uthmani word (vocalized)
+#   word_lemma     — corpus-normalised lemma (tashkeel-stripped)
+#   word_stem      — corpus-derived stem (tashkeel-stripped)
+#   normalized     — normalised Uthmani spelling (tashkeel-stripped)
+#   word_standard  — normalised standard (Imla'i) spelling (TEXT, QStandardAnalyzer)
+#   standard       — raw standard (Imla'i) spelling (KEYWORD, stored, for display)
 _WORD_ALL_INDEXED_FIELDS = [
-    "word", "normalized", "word_standard",
+    "word", "word_lemma", "word_stem",
+    "normalized", "word_standard", "standard",
     "pos", "type",
     "root", "arabicroot",
     "lemma", "arabiclemma",
@@ -156,7 +164,7 @@ _WORD_ALL_INDEXED_FIELDS = [
 # lemma, root, word-type, case, state, derivation, and gender.
 _WORD_FACET_FIELDS = frozenset([
     "root", "type", "pos", "lemma", "case", "state", "derivation", "gender",
-    "number", "person", "form", "voice", "aspect", "mood",
+    "number", "person", "form", "pattern", "voice", "aspect", "mood",
 ])
 
 # Translation child-doc fields that support faceting.
@@ -185,6 +193,19 @@ _MAX_FACET_DOCS = 100_000
 # rather than allocating a new lambda on every request.
 def _WORD_ID_KEY(e):
     return e.get("word_id") or 0
+
+
+def _parse_segments(raw):
+    """Deserialize segments from stored JSON string to a Python list."""
+    if not raw:
+        return []
+    if isinstance(raw, list):
+        return raw
+    try:
+        return json.loads(raw)
+    except (TypeError, ValueError):
+        return []
+
 
 def _FACET_COUNT_KEY(x):
     return len(x[1])
@@ -487,6 +508,10 @@ class Raw:
             "word": sorted(_WORD_FACET_FIELDS),
             "translation": sorted(_TRANS_FACET_FIELDS),
         }
+        # Arabic→English morphology mappings so consumers can translate Arabic
+        # field values without hard-coding them.  Imported from constants.py.
+        from alfanous_import.quran_corpus_reader.constants import MORPHOLOGY_MAPPINGS
+        self._morphology_mappings = MORPHOLOGY_MAPPINGS
         self._all = {
             "translations": self._translations,
             "recitations": self._recitations,
@@ -505,6 +530,7 @@ class Raw:
             "roots": self._roots,
             "ai_query_translation_rules": self._ai_query_translation_rules,
             "facets": self._facets,
+            "morphology_mappings": self._morphology_mappings,
         }
 
         # ---------------------------------------------------------------------------
@@ -544,7 +570,7 @@ class Raw:
             # Word search parser (used in _search_words).
             _all_word_f = [f for f in _WORD_ALL_INDEXED_FIELDS if f in _schema_fields]
             _default_word_f = (
-                [f for f in ["word_standard", "word", "normalized"] if f in _schema_fields]
+                [f for f in ["word_standard", "word", "normalized", "standard"] if f in _schema_fields]
                 or _all_word_f
             )
             # Only build the parser when there is at least one usable field.
@@ -1185,7 +1211,7 @@ class Raw:
             res, termz, searcher, _deriv_expansion = self.QSE.search_all(aya_query, limit=self._defaults["results_limit"]["aya"], sortedby=sortedby, reverse=reverse, facets=facets_list, filter_dict=filter_dict, fuzzy=fuzzy, fuzzy_maxdist=fuzzy_maxdist, derivation_level=derivation_level, timelimit=timelimit)
             terms = [term[1] for term in termz if term[0] in ("aya", "aya_", "aya_ac")]
             terms = terms[:self._defaults["maxkeywords"]]
-            # When derivation_level >= 2, matched terms include aya_lemma or
+            # When derivation_level >= 2, matched terms include _lemma or
             # aya_root field values (lemma/root strings).  These don't appear
             # in the aya text, so they can't be used for highlighting directly.
             # Expand them to actual aya words via the cached derivation lookup
@@ -1722,20 +1748,20 @@ class Raw:
                                 "word":         w.get("word"),
                                 "transliteration": w.get("word_transliteration"),
                                 "normalized":   w.get("normalized"),
+                                "standard":     w.get("standard"),
+                                "uthmani_different": w.get("uthmani_different"),
                                 "spelled":      w.get("spelled"),
-                                # Arabic (primary, indexed)
+                                # Arabic morphological fields
                                 "pos":          w.get("pos"),
                                 "type":         w.get("type"),
                                 "root":         w.get("root"),
+                                "stem":         w.get("stem"),
                                 "lemma":        w.get("lemma"),
+                                "pattern":      w.get("pattern"),
                                 "mood":         w.get("mood"),
                                 "case":         w.get("case"),
                                 "state":        w.get("state"),
                                 "special":      w.get("special"),
-                                # English (stored-only)
-                                "englishpos":   w.get("englishpos"),
-                                "englishcase":  w.get("englishcase"),
-                                # Unchanged fields
                                 "prefix":       w.get("prefix"),
                                 "suffix":       w.get("suffix"),
                                 "gender":       w.get("gender"),
@@ -1745,6 +1771,8 @@ class Raw:
                                 "voice":        w.get("voice"),
                                 "derivation":   w.get("derivation"),
                                 "aspect":       w.get("aspect"),
+                                # Per-segment breakdown for treebank display
+                                "segments":     _parse_segments(w.get("segments")),
                             }
                             aya_words_map[key].append(entry)
                         # Sort each aya's word list by word_id (ascending position order).
@@ -1793,6 +1821,29 @@ class Raw:
                                         "word":       _w.get("word"),
                                         "transliteration": _w.get("word_transliteration"),
                                         "normalized": _w.get("normalized"),
+                                        "standard":   _w.get("standard"),
+                                        "uthmani_different": _w.get("uthmani_different"),
+                                        "spelled":    _w.get("spelled"),
+                                        "pos":        _w.get("pos"),
+                                        "type":       _w.get("type"),
+                                        "root":       _w.get("root"),
+                                        "stem":       _w.get("stem"),
+                                        "lemma":      _w.get("lemma"),
+                                        "pattern":    _w.get("pattern"),
+                                        "mood":       _w.get("mood"),
+                                        "case":       _w.get("case"),
+                                        "state":      _w.get("state"),
+                                        "special":    _w.get("special"),
+                                        "prefix":     _w.get("prefix"),
+                                        "suffix":     _w.get("suffix"),
+                                        "gender":     _w.get("gender"),
+                                        "number":     _w.get("number"),
+                                        "person":     _w.get("person"),
+                                        "form":       _w.get("form"),
+                                        "voice":      _w.get("voice"),
+                                        "derivation": _w.get("derivation"),
+                                        "aspect":     _w.get("aspect"),
+                                        "segments":   _parse_segments(_w.get("segments")),
                                     })
                             for _g in annot_words_map:
                                 annot_words_map[_g].sort(key=_WORD_ID_KEY)
@@ -1830,6 +1881,29 @@ class Raw:
                                     "word":       _w.get("word"),
                                     "transliteration": _w.get("word_transliteration"),
                                     "normalized": _w.get("normalized"),
+                                    "standard":   _w.get("standard"),
+                                    "uthmani_different": _w.get("uthmani_different"),
+                                    "spelled":    _w.get("spelled"),
+                                    "pos":        _w.get("pos"),
+                                    "type":       _w.get("type"),
+                                    "root":       _w.get("root"),
+                                    "stem":       _w.get("stem"),
+                                    "lemma":      _w.get("lemma"),
+                                    "pattern":    _w.get("pattern"),
+                                    "mood":       _w.get("mood"),
+                                    "case":       _w.get("case"),
+                                    "state":      _w.get("state"),
+                                    "special":    _w.get("special"),
+                                    "prefix":     _w.get("prefix"),
+                                    "suffix":     _w.get("suffix"),
+                                    "gender":     _w.get("gender"),
+                                    "number":     _w.get("number"),
+                                    "person":     _w.get("person"),
+                                    "form":       _w.get("form"),
+                                    "voice":      _w.get("voice"),
+                                    "derivation": _w.get("derivation"),
+                                    "aspect":     _w.get("aspect"),
+                                    "segments":   _parse_segments(_w.get("segments")),
                                 })
                         for _g in annot_aya_words_map:
                             annot_aya_words_map[_g].sort(key=_WORD_ID_KEY)
@@ -2181,7 +2255,7 @@ class Raw:
         Word children are indexed with ``kind="word"`` alongside translation
         children.  This method searches them using a ``MultifieldParser`` that
         targets all indexed word fields — free-text fields (``word``,
-        ``normalized``, ``word_standard``) as well as linguistic ID/KEYWORD
+        ``normalized``, ``word_standard``, ``standard``) as well as linguistic ID/KEYWORD
         fields (``pos``, ``type``, ``root``, ``arabicroot``, ``lemma``,
         ``arabiclemma``, ``gender``, ``number``, ``person``, ``form``,
         ``voice``, ``state``, ``derivation``, ``aspect``, ``mood``, ``case``)
@@ -2190,7 +2264,7 @@ class Raw:
 
         Field-qualified queries (e.g. ``root:رحم``) are supported for all
         indexed word fields.  Unqualified queries search across the primary
-        text fields (``word``, ``normalized``, and ``word_standard``).
+        text fields (``word``, ``normalized``, ``word_standard``, and ``standard``).
 
         The result structure includes:
         - ``words``: per-word morphological data plus the parent aya text.
@@ -2327,14 +2401,14 @@ class Raw:
             end = min(interval_end, len(res)) if start != -1 else 0
             reslist = [] if end == 0 or start == -1 else res[start - 1:end]
     
-            # When a result was matched by word_standard, add its Uthmanic 'word'
+            # When a result was matched by standard, add its Uthmanic 'word'
             # value to the keywords list so that the Uthmanic form of the word can
             # also be highlighted in the result text.
             _terms_set = set(terms)
             for _r in reslist:
                 if len(terms) >= self._defaults["maxkeywords"]:
                     break
-                _ws = _r.get("word_standard")
+                _ws = _r.get("standard")
                 _wu = _r.get("word")
                 if _ws and _wu and _ws in _terms_set and _wu not in _terms_set:
                     terms.append(_wu)
@@ -2402,20 +2476,20 @@ class Raw:
                         "text_no_highlight": r.get("word", ""),
                         "transliteration":   r.get("word_transliteration"),
                         "normalized":        r.get("normalized"),
+                        "standard":          r.get("standard"),
+                        "uthmani_different":  r.get("uthmani_different"),
                         "spelled":          r.get("spelled"),
-                        # Arabic (primary, indexed)
+                        # Arabic morphological fields
                         "pos":              r.get("pos"),
                         "type":             r.get("type"),
                         "root":             r.get("root"),
+                        "stem":             r.get("stem"),
                         "lemma":            r.get("lemma"),
+                        "pattern":          r.get("pattern"),
                         "mood":             r.get("mood"),
                         "case":             r.get("case"),
                         "state":            r.get("state"),
                         "special":          r.get("special"),
-                        # English (stored-only)
-                        "englishpos":       r.get("englishpos"),
-                        "englishcase":      r.get("englishcase"),
-                        # Unchanged fields
                         "prefix":           r.get("prefix"),
                         "suffix":           r.get("suffix"),
                         "gender":           r.get("gender"),
@@ -2425,6 +2499,8 @@ class Raw:
                         "voice":            r.get("voice"),
                         "derivation":       r.get("derivation"),
                         "aspect":           r.get("aspect"),
+                        # Per-segment breakdown for treebank display
+                        "segments":         _parse_segments(r.get("segments")),
                     },
                 }
 

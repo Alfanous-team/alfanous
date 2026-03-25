@@ -34,10 +34,7 @@ def _load_corpus_words(corpus_path):
     """Read a Quranic Corpus morphology file and return word occurrences grouped
     by ``(sura_id, aya_id)``.
 
-    Supports two formats, detected by file extension:
-
-    * ``.txt`` — tab-separated v0.4 format (``quranic-corpus-morphology-0.4.txt``)
-    * ``.txt`` — tab-separated v0.4 format (``quranic-corpus-morphology-0.4.txt``)
+    Reads the tab-separated v0.4 format (``quranic-corpus-morphology-0.4.txt``).
 
     Each entry is a flat dict whose keys match the word-child search fields
     defined in ``fields.json`` (table_name="aya", ids 100-124).
@@ -45,9 +42,7 @@ def _load_corpus_words(corpus_path):
     :param corpus_path: Absolute or relative path to the corpus file.
     :returns: ``defaultdict(list)`` keyed by ``(sura_id, aya_id)``.
     """
-    if corpus_path and corpus_path.endswith(".txt"):
-        return _load_corpus_words_txt(corpus_path)
-    return _load_corpus_words_xml(corpus_path)
+    return _load_corpus_words_txt(corpus_path)
 
 
 def _load_corpus_words_txt(corpus_path):
@@ -70,11 +65,11 @@ def _load_corpus_words_txt(corpus_path):
     import re as _re2
     from collections import defaultdict, OrderedDict
     from alfanous_import.quran_corpus_reader.constants import (
-        BUCKWALTER2UNICODE, POS, PGN, PGNclass, VERB, NOM, DERIV, PREFIX,
+        BUCKWALTER2UNICODE, POS, PGN, PGNclass, VERB, VERB_QUAD, NOM, DERIV, PREFIX,
+        SUFFIX as SUFFIX_MAP, NOMINAL_PATTERN,
     )
-    # _INV_POS maps raw tag (e.g. "V") → category name (e.g. "Verbs"), matching
-    # what the XML reader stored in the "type" field via _reverse_class(POSclass).
-    from alfanous_import.quran_corpus_reader.main import _INV_POS
+    # _INV_POS maps raw tag (e.g. "V") → category name (e.g. "Verbs").
+    from alfanous_import.quran_corpus_reader.constants import _INV_POS
     from alfanous.text_processing import QArabicSymbolsFilter
 
     def _b2u(s):
@@ -88,6 +83,12 @@ def _load_corpus_words_txt(corpus_path):
         """Return a dict of morphological attributes from a STEM feature string."""
         f = {}
         parts = features.split('|')
+
+        # Pre-scan: determine raw root length to select triliteral vs quadriliteral
+        # form patterns.  The corpus uses (I)–(IV) for both; root length discriminates.
+        _root_raw = next((p[5:] for p in parts if p.startswith('ROOT:')), '')
+        _quad = len(_root_raw) == 4
+
         # Scan for ACT PCPL / PASS PCPL two-token combos first
         prev = None
         deriv_skip = set()
@@ -95,7 +96,7 @@ def _load_corpus_words_txt(corpus_path):
             if prev in ('ACT', 'PASS') and part == 'PCPL':
                 combo = prev + ' PCPL'
                 deriv_info = DERIV.get(combo, (None, None))
-                f['derivation'] = deriv_info[1]
+                f['derivation'] = deriv_info[0]
                 deriv_skip.add(idx - 1)
                 deriv_skip.add(idx)
             prev = part
@@ -109,8 +110,8 @@ def _load_corpus_words_txt(corpus_path):
                     pos_info = POS.get(val, (None, None))
                     f['arabicpos']  = pos_info[0]
                     f['englishpos'] = pos_info[1]
-                    # type stores the English category name (e.g. "Verbs") to
-                    # match what the XML reader stored via _INV_POS lookup.
+                    # type stores the English category name (e.g. "Verbs")
+                    # via _INV_POS lookup.
                     type_list = _INV_POS.get(val)
                     f['type'] = type_list[0] if type_list else val
                 elif key == 'LEM':
@@ -126,7 +127,13 @@ def _load_corpus_words_txt(corpus_path):
             elif part in PGN:
                 for field, tags in PGNclass.items():
                     if part in tags:
-                        f[field] = PGN[part]
+                        f[field] = PGN[part][0]
+            elif len(part) >= 2 and all(ch in PGN for ch in part):
+                # Combined PGN code (e.g. "3MS", "1P", "2MP")
+                for ch in part:
+                    for field, tags in PGNclass.items():
+                        if ch in tags:
+                            f[field] = PGN[ch][0]
             elif part in ('NOM', 'ACC', 'GEN'):
                 nom_info = NOM.get(part, (None, None))
                 f['arabiccase']   = nom_info[0]
@@ -136,14 +143,15 @@ def _load_corpus_words_txt(corpus_path):
                 f['arabicstate']   = nom_info[0]
                 f['englishstate']  = nom_info[1]
             elif part in ('PERF', 'IMPF', 'IMPV'):
-                f['aspect'] = VERB.get(part, (None, None))[1]
+                f['aspect'] = VERB.get(part, (None, None))[0]
             elif part in ('ACT', 'PASS'):
-                f['voice'] = VERB.get(part, (None, None))[1]
+                f['voice'] = VERB.get(part, (None, None))[0]
             elif part in ('(I)', '(II)', '(III)', '(IV)', '(V)', '(VI)',
                           '(VII)', '(VIII)', '(IX)', '(X)', '(XI)', '(XII)'):
-                f['form'] = VERB.get(part, (None, None))[1]
+                form_dict = VERB_QUAD if _quad and part in VERB_QUAD else VERB
+                f['form'] = form_dict.get(part, (None, None))[0]
             elif part == 'VN':
-                f['derivation'] = DERIV.get('VN', (None, None))[1]
+                f['derivation'] = DERIV.get('VN', (None, None))[0]
         return f
 
     qasf = QArabicSymbolsFilter(
@@ -187,24 +195,55 @@ def _load_corpus_words_txt(corpus_path):
             # Full Uthmanic word form = all segment BW forms concatenated → Arabic
             word_text = _b2u("".join(s[1] for s in segs))
 
-            # Extract morphological info from the STEM segment
+            # Extract morphological info from the STEM segment and build
+            # per-segment breakdown for treebank-style visualisation.
             stem_feats = {}
+            stem_text = None   # Arabic text of the STEM morpheme
             prefix_parts = []
             suffix_parts = []
+            segments = []   # [{ar, pos, type}, ...]
             for _, bw_form, feat_type, features in segs:
+                arabic_tok = _b2u(bw_form)
                 if feat_type == 'STEM':
                     stem_feats = _parse_stem_features(features)
+                    stem_text = arabic_tok
+                    segments.append({
+                        "ar": arabic_tok,
+                        "pos": stem_feats.get("arabicpos", ""),
+                        "type": "STEM",
+                    })
                 elif feat_type == 'PREFIX':
-                    arabic_tok = _b2u(bw_form)
+                    # Resolve prefix tag to Arabic POS, e.g. "bi+" → "حرف جر"
+                    ptag = features.split('|', 1)[1] if '|' in features else ""
+                    pre_pos = PREFIX.get(ptag, (None, None))[0] or ptag
                     if arabic_tok:
                         prefix_parts.append(arabic_tok)
+                    segments.append({
+                        "ar": arabic_tok,
+                        "pos": pre_pos,
+                        "type": "PREFIX",
+                    })
                 elif feat_type == 'SUFFIX':
-                    arabic_tok = _b2u(bw_form)
+                    stag = features.split('|', 1)[1] if '|' in features else ""
+                    if stag.startswith("PRON:"):
+                        suf_pos = POS["PRON"][0]  # "ضمير"
+                    else:
+                        suf_pos = SUFFIX_MAP.get(stag, (None, None))[0] or stag
                     if arabic_tok:
                         suffix_parts.append(arabic_tok)
+                    segments.append({
+                        "ar": arabic_tok,
+                        "pos": suf_pos,
+                        "type": "SUFFIX",
+                    })
 
             prefix_str = ";".join(prefix_parts) or None
             suffix_str = ";".join(suffix_parts) or None
+
+            # Keep the vocalized lemma — it encodes the wazan/pattern for
+            # nouns (e.g. مَٰلِك → فَاعِل, كِتَاب → فِعَال).  A normalised
+            # copy is used only for the aya_lemma search field.
+            raw_lemma = stem_feats.get("arabiclemma")
 
             gid += 1
             entry = {
@@ -215,29 +254,78 @@ def _load_corpus_words_txt(corpus_path):
                 "word":         word_text,
                 "normalized":   qasf.normalize_all(word_text) or None,
                 "spelled":      qasf_spelled.normalize_all(word_text) or None,
-                # English (stored-only, not indexed)
-                "englishpos":   stem_feats.get("englishpos"),
+                # Arabic only — all morphological values stored in Arabic
                 "type":         stem_feats.get("type"),
-                "englishcase":  stem_feats.get("englishcase"),
-                # Arabic (primary, indexed)
                 "pos":          stem_feats.get("arabicpos"),
                 "root":         stem_feats.get("arabicroot"),
-                "lemma":        stem_feats.get("arabiclemma"),
+                "stem":         None,   # computed after inference below
+                "lemma":        raw_lemma,
                 "special":      stem_feats.get("arabicspecial"),
                 "mood":         stem_feats.get("arabicmood"),
                 "case":         stem_feats.get("arabiccase"),
                 "state":        stem_feats.get("arabicstate"),
-                # Unchanged fields
                 "prefix":       prefix_str,
                 "suffix":       suffix_str,
                 "gender":       stem_feats.get("gender"),
                 "number":       stem_feats.get("number"),
                 "person":       stem_feats.get("person"),
                 "form":         stem_feats.get("form"),
+                "pattern":      None,  # computed after inference below
                 "voice":        stem_feats.get("voice"),
                 "derivation":   stem_feats.get("derivation"),
                 "aspect":       stem_feats.get("aspect"),
+                # Per-segment breakdown for treebank visualisation
+                "segments":     segments,
             }
+            # Infer voice for verbs: corpus only tags PASS explicitly;
+            # absence of any voice tag means Active voice.
+            if stem_feats.get("type") == "Verbs" and entry["voice"] is None:
+                entry["voice"] = VERB["ACT"][0]  # "مبني للمعلوم"
+            # Infer mood for imperfect verbs: corpus only tags SUBJ/JUS/ENG
+            # explicitly; absence of a mood tag means Indicative (default).
+            if entry["aspect"] == VERB["IMPF"][0] and entry["mood"] is None:
+                entry["mood"] = VERB["IND"][0]  # "مرفوع"
+            # Infer state for nouns and adjectives/numerals: corpus only tags
+            # INDEF (نكرة) explicitly; absence means Definite (معرفة).
+            if stem_feats.get("type") in ("Nouns", "Nominals") and entry["state"] is None:
+                entry["state"] = NOM["DEF"][0]  # "معرفة"
+            # Infer number for nouns and adjectives/numerals: corpus only tags
+            # D (dual) and P (plural) explicitly; absence means singular (مفرد).
+            if stem_feats.get("type") in ("Nouns", "Nominals") and entry["number"] is None:
+                entry["number"] = PGN["S"][0]  # "مفرد"
+            # Infer form I for verbs: corpus only tags forms (II)–(XII)
+            # explicitly; absence of a form tag means Form I (فَعَلَ).
+            if stem_feats.get("type") == "Verbs" and entry["form"] is None:
+                entry["form"] = VERB["(I)"][0]  # "فَعَلَ"
+            # Compute pattern (وزن): for verbs, pattern = form.  For derived
+            # nominals (ACT PCPL / PASS PCPL / VN), look up the derived pattern
+            # from form × derivation.  Plain nouns/nominals without a
+            # derivation tag get pattern=None — their vocalized lemma already
+            # encodes the wazan implicitly so a separate pattern field is
+            # redundant.
+            _form = entry["form"]
+            _deriv = entry["derivation"]
+            if stem_feats.get("type") == "Verbs":
+                entry["pattern"] = _form
+            elif _deriv:
+                _form_key = _form or VERB["(I)"][0]
+                entry["pattern"] = NOMINAL_PATTERN.get((_form_key, _deriv)) or raw_lemma
+            # Compute stem: for nouns, stem = lemma.  For verbs, stem
+            # combines lemma × pattern to show both the dictionary form and
+            # its morphological template.  For special words (SP: tag), stem
+            # = the special value.
+            _special = entry["special"]
+            _type = stem_feats.get("type")
+            if _special:
+                entry["stem"] = _special
+            elif _type == "Verbs":
+                _pat = entry["pattern"]
+                entry["stem"] = (
+                    "{} {}".format(raw_lemma, _pat) if raw_lemma and _pat
+                    else raw_lemma
+                )
+            else:
+                entry["stem"] = raw_lemma
             result[(sura, aya)].append(entry)
 
         logging.info("Loaded %d word occurrences from corpus.", gid)
@@ -245,77 +333,6 @@ def _load_corpus_words_txt(corpus_path):
         logging.warning("Failed to load corpus words from %s: %s", corpus_path, exc)
     return result
 
-
-def _load_corpus_words_xml(corpus_path):
-    """Read the legacy XML Quranic Corpus morphology file.
-
-    :param corpus_path: Absolute or relative path to the corpus XML file.
-    :returns: ``defaultdict(list)`` keyed by ``(sura_id, aya_id)``.
-    """
-    from collections import defaultdict
-    from alfanous_import.quran_corpus_reader.main import API as CorpusAPI
-    from alfanous.text_processing import QArabicSymbolsFilter
-
-    result = defaultdict(list)
-    try:
-        api = CorpusAPI(source=corpus_path)
-        qasf = QArabicSymbolsFilter(
-            shaping=True, tashkil=True, spellerrors=False,
-            hamza=False, uthmani_symbols=True,
-        )
-        qasf_spelled = QArabicSymbolsFilter(
-            shaping=True, tashkil=True, spellerrors=True,
-            hamza=True, uthmani_symbols=True,
-        )
-        gid = 0
-        for iteration in api.all_words_generator():
-            gid += 1
-            word_text = iteration["word"]
-            base = iteration["morphology"]["base"]
-            first = base[0] if base else {}
-            prefixes = iteration["morphology"].get("prefixes", [])
-            suffixes = iteration["morphology"].get("suffixes", [])
-
-            prefix_str = ";".join(p.get("arabictoken", "") for p in prefixes) or None
-            suffix_str = ";".join(s.get("arabictoken", "") for s in suffixes) or None
-
-            entry = {
-                "word_gid":     gid,
-                "word_id":      iteration["word_id"],
-                "aya_id":       iteration["aya_id"],
-                "sura_id":      iteration["sura_id"],
-                "word":         word_text,
-                "normalized":   qasf.normalize_all(word_text) or None,
-                "spelled":      qasf_spelled.normalize_all(word_text) or None,
-                # English (stored-only, not indexed)
-                "englishpos":   first.get("pos") or None,
-                "type":         first.get("type") or None,
-                "englishcase":  first.get("case") or None,
-                # Arabic (primary, indexed)
-                "pos":          first.get("arabicpos") or None,
-                "root":         first.get("arabicroot") or None,
-                "lemma":        first.get("arabiclemma") or None,
-                "special":      first.get("arabicspecial") or None,
-                "mood":         first.get("arabicmood") or None,
-                "case":         first.get("arabiccase") or None,
-                "state":        first.get("arabicstate") or None,
-                # Unchanged fields
-                "prefix":       prefix_str,
-                "suffix":       suffix_str,
-                "gender":       first.get("gender") or None,
-                "number":       first.get("number") or None,
-                "person":       first.get("person") or None,
-                "form":         first.get("form") or None,
-                "voice":        first.get("voice") or None,
-                "derivation":   first.get("derivation") or None,
-                "aspect":       first.get("aspect") or None,
-            }
-            result[(iteration["sura_id"], iteration["aya_id"])].append(entry)
-
-        logging.info("Loaded %d word occurrences from corpus.", gid)
-    except Exception as exc:
-        logging.warning("Failed to load corpus words from %s: %s", corpus_path, exc)
-    return result
 
 import re as _re
 import zipfile as _zipfile
@@ -674,9 +691,21 @@ class Transformer:
                 # Pre-compute schema field names once.
                 _schema_names = set(ix.schema.names())
                 _has_word_standard        = "word_standard"        in _schema_names
+                _has_standard             = "standard"             in _schema_names
                 _has_word_transliteration = "word_transliteration" in _schema_names
                 _has_aya_lemma            = "aya_lemma"            in _schema_names
                 _has_aya_root             = "aya_root"             in _schema_names
+                _has_word_lemma           = "word_lemma"           in _schema_names
+                _has_word_stem            = "word_stem"            in _schema_names
+                _has_uthmani_different    = "uthmani_different"    in _schema_names
+
+                # Normalizer for comparing standard vs. Uthmani forms.
+                if _has_uthmani_different:
+                    from alfanous.text_processing import QArabicSymbolsFilter as _QASF
+                    _std_norm = _QASF(
+                        shaping=True, tashkil=True, spellerrors=False,
+                        hamza=False, uthmani_symbols=True,
+                    )
 
                 # Pre-build aya_lemma and aya_root text for each aya from
                 # word-child data.  Each word's lemma (or root) is used; when
@@ -686,6 +715,13 @@ class Transformer:
                 _aya_lemma_text: dict = {}
                 _aya_root_text: dict = {}
                 if (_has_aya_lemma or _has_aya_root) and words_by_aya:
+                    # Normalizer to strip tashkeel from vocalized lemmas so
+                    # aya_lemma is searchable without diacritics.
+                    from alfanous.text_processing import QArabicSymbolsFilter as _QASF
+                    _lemma_norm = _QASF(
+                        shaping=True, tashkil=True, spellerrors=False,
+                        hamza=False, uthmani_symbols=True,
+                    )
                     for _key, _words_list in words_by_aya.items():
                         if _has_aya_lemma:
                             _lemmas = []
@@ -693,6 +729,8 @@ class Transformer:
                                 # Use the word's normalized form as fallback
                                 # to maintain word-position alignment.
                                 _l = _w.get("lemma") or _w.get("normalized") or ""
+                                # Strip tashkeel from vocalized lemma for search.
+                                _l = _lemma_norm.normalize_all(_l) if _l else ""
                                 _lemmas.append(_l)
                             _aya_lemma_text[_key] = " ".join(_lemmas)
                         if _has_aya_root:
@@ -750,7 +788,7 @@ class Transformer:
                     sura_id = line.get("sura_id")
                     aya_id = line.get("aya_id")
                     doc["kind"] = "aya"
-                    # Add pre-built aya_lemma / aya_root text from word-child data.
+                    # Add pre-built aya-level text from word-child data.
                     _aya_key = (sura_id, aya_id)
                     if _has_aya_lemma and _aya_key in _aya_lemma_text:
                         doc["aya_lemma"] = _aya_lemma_text[_aya_key]
@@ -782,10 +820,34 @@ class Transformer:
                         for pos, w in enumerate(corpus_words_for_aya):
                             word_doc = {k: w[k] for k in _word_schema_keys
                                         if w[k] is not None}
-                            if _has_word_standard and pos < len(std_tokens):
-                                word_doc["word_standard"] = std_tokens[pos]
+                            # Serialize segments list as JSON for the STORED field.
+                            if "segments" in word_doc and isinstance(word_doc["segments"], list):
+                                word_doc["segments"] = json.dumps(
+                                    word_doc["segments"], ensure_ascii=False,
+                                )
+                            if pos < len(std_tokens):
+                                _std_tok = std_tokens[pos]
+                                if _has_standard:
+                                    word_doc["standard"] = _std_tok
+                                if _has_word_standard:
+                                    word_doc["word_standard"] = _std_tok
+                                # Flag whether normalised Uthmani and normalised
+                                # standard forms differ (e.g. الصلوة vs الصلاة).
+                                if _has_uthmani_different:
+                                    _norm_uth = w.get("normalized") or ""
+                                    _norm_std = _std_norm.normalize_all(_std_tok)
+                                    word_doc["uthmani_different"] = (_norm_uth != _norm_std)
                             if _has_word_transliteration and pos < len(tr_tokens):
                                 word_doc["word_transliteration"] = tr_tokens[pos]
+                            # Normalized word_lemma / word_stem for word search.
+                            if _has_word_lemma:
+                                _wl = w.get("lemma") or w.get("normalized") or ""
+                                if _wl:
+                                    word_doc["word_lemma"] = _wl
+                            if _has_word_stem:
+                                _ws = w.get("stem") or w.get("lemma") or w.get("normalized") or ""
+                                if _ws:
+                                    word_doc["word_stem"] = _ws
                             word_doc["gid"] = gid
                             writer.add_document(kind="word", **word_doc)
                     writer.end_group()
