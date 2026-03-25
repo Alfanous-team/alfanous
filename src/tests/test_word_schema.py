@@ -359,8 +359,8 @@ def _make_stem_features_parser():
     ns = {}
     from alfanous_import.quran_corpus_reader.constants import (
         BUCKWALTER2UNICODE, POS, PGN, PGNclass, VERB, VERB_QUAD, NOM, DERIV, PREFIX,
+        _INV_POS,
     )
-    from alfanous_import.quran_corpus_reader.main import _INV_POS
     # _b2u is a helper defined in the same outer function scope; replicate it
     def _b2u(s):
         return "".join(BUCKWALTER2UNICODE.get(ch, ch) for ch in s)
@@ -402,6 +402,55 @@ def test_parse_stem_form_arabic(parse_stem):
     """form field must be the Arabic morphological pattern."""
     assert parse_stem("STEM|POS:V|(II)")["form"] == "فَعَّلَ"
     assert parse_stem("STEM|POS:V|(X)")["form"] == "إِسْتَفْعَلَ"
+
+
+# ---------------------------------------------------------------------------
+# transformer.py — combined PGN code parsing (e.g. 3MS, 1P, 2MP)
+# ---------------------------------------------------------------------------
+
+def test_parse_stem_pgn_3ms(parse_stem):
+    """Combined PGN code '3MS' must set person, gender, and number."""
+    feats = parse_stem("STEM|POS:V|PERF|LEM:ktb|ROOT:ktb|3MS")
+    assert feats.get("person") == "third person"
+    assert feats.get("gender") == "masculine"
+    assert feats.get("number") == "singular"
+
+
+def test_parse_stem_pgn_1p(parse_stem):
+    """Combined PGN code '1P' must set person and number (no gender)."""
+    feats = parse_stem("STEM|POS:V|PERF|(IV)|LEM:>asoqayo|ROOT:sqy|1P")
+    assert feats.get("person") == "first person"
+    assert feats.get("number") == "plural"
+    assert feats.get("gender") is None
+
+
+def test_parse_stem_pgn_2mp(parse_stem):
+    """Combined PGN code '2MP' must set person, gender, and number."""
+    feats = parse_stem("STEM|POS:V|IMPF|LEM:ktb|ROOT:ktb|2MP")
+    assert feats.get("person") == "second person"
+    assert feats.get("gender") == "masculine"
+    assert feats.get("number") == "plural"
+
+
+def test_parse_stem_pgn_3fs(parse_stem):
+    """Combined PGN code '3FS' must set person, gender, and number."""
+    feats = parse_stem("STEM|POS:V|IMPF|LEM:sqy|ROOT:sqy|3FS")
+    assert feats.get("person") == "third person"
+    assert feats.get("gender") == "feminine"
+    assert feats.get("number") == "singular"
+
+
+def test_parse_stem_noun_pgn_ms(parse_stem):
+    """Noun combined PGN 'M' followed by case must parse gender correctly."""
+    feats = parse_stem("STEM|POS:N|LEM:{som|ROOT:smw|M|GEN")
+    assert feats.get("gender") == "masculine"
+
+
+def test_parse_stem_noun_pgn_mp(parse_stem):
+    """Noun combined PGN code 'MP' must set gender and number."""
+    feats = parse_stem("STEM|POS:N|LEM:>asobaAT|ROOT:sbT|MP|GEN")
+    assert feats.get("gender") == "masculine"
+    assert feats.get("number") == "plural"
 
 
 # ---------------------------------------------------------------------------
@@ -612,7 +661,7 @@ def test_pos_circ_com_int_rslt_in_posclass():
 
 def test_inv_pos_circ_com_int_rslt():
     """_INV_POS must resolve CIRC, COM, INT, RSLT to the 'Particles' category."""
-    from alfanous_import.quran_corpus_reader.main import _INV_POS
+    from alfanous_import.quran_corpus_reader.constants import _INV_POS
     for tag in ("CIRC", "COM", "INT", "RSLT"):
         assert _INV_POS.get(tag) == ["Particles"], (
             f"_INV_POS['{tag}'] should be ['Particles']"
@@ -676,8 +725,7 @@ def test_prefixclass_new_categories():
 
 def test_all_prefix_tags_have_category():
     """Every key in PREFIX must appear in _INV_PREFIX (PREFIXclass is complete)."""
-    from alfanous_import.quran_corpus_reader.constants import PREFIX
-    from alfanous_import.quran_corpus_reader.main import _INV_PREFIX
+    from alfanous_import.quran_corpus_reader.constants import PREFIX, _INV_PREFIX
     missing = [t for t in PREFIX if t not in _INV_PREFIX]
     assert not missing, f"Prefix tags missing from PREFIXclass: {missing}"
 

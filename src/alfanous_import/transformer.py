@@ -34,10 +34,7 @@ def _load_corpus_words(corpus_path):
     """Read a Quranic Corpus morphology file and return word occurrences grouped
     by ``(sura_id, aya_id)``.
 
-    Supports two formats, detected by file extension:
-
-    * ``.txt`` — tab-separated v0.4 format (``quranic-corpus-morphology-0.4.txt``)
-    * ``.txt`` — tab-separated v0.4 format (``quranic-corpus-morphology-0.4.txt``)
+    Reads the tab-separated v0.4 format (``quranic-corpus-morphology-0.4.txt``).
 
     Each entry is a flat dict whose keys match the word-child search fields
     defined in ``fields.json`` (table_name="aya", ids 100-124).
@@ -45,9 +42,7 @@ def _load_corpus_words(corpus_path):
     :param corpus_path: Absolute or relative path to the corpus file.
     :returns: ``defaultdict(list)`` keyed by ``(sura_id, aya_id)``.
     """
-    if corpus_path and corpus_path.endswith(".txt"):
-        return _load_corpus_words_txt(corpus_path)
-    return _load_corpus_words_xml(corpus_path)
+    return _load_corpus_words_txt(corpus_path)
 
 
 def _load_corpus_words_txt(corpus_path):
@@ -72,9 +67,8 @@ def _load_corpus_words_txt(corpus_path):
     from alfanous_import.quran_corpus_reader.constants import (
         BUCKWALTER2UNICODE, POS, PGN, PGNclass, VERB, VERB_QUAD, NOM, DERIV, PREFIX,
     )
-    # _INV_POS maps raw tag (e.g. "V") → category name (e.g. "Verbs"), matching
-    # what the XML reader stored in the "type" field via _reverse_class(POSclass).
-    from alfanous_import.quran_corpus_reader.main import _INV_POS
+    # _INV_POS maps raw tag (e.g. "V") → category name (e.g. "Verbs").
+    from alfanous_import.quran_corpus_reader.constants import _INV_POS
     from alfanous.text_processing import QArabicSymbolsFilter
 
     def _b2u(s):
@@ -115,8 +109,8 @@ def _load_corpus_words_txt(corpus_path):
                     pos_info = POS.get(val, (None, None))
                     f['arabicpos']  = pos_info[0]
                     f['englishpos'] = pos_info[1]
-                    # type stores the English category name (e.g. "Verbs") to
-                    # match what the XML reader stored via _INV_POS lookup.
+                    # type stores the English category name (e.g. "Verbs")
+                    # via _INV_POS lookup.
                     type_list = _INV_POS.get(val)
                     f['type'] = type_list[0] if type_list else val
                 elif key == 'LEM':
@@ -133,6 +127,12 @@ def _load_corpus_words_txt(corpus_path):
                 for field, tags in PGNclass.items():
                     if part in tags:
                         f[field] = PGN[part]
+            elif len(part) >= 2 and all(ch in PGN for ch in part):
+                # Combined PGN code (e.g. "3MS", "1P", "2MP")
+                for ch in part:
+                    for field, tags in PGNclass.items():
+                        if ch in tags:
+                            f[field] = PGN[ch]
             elif part in ('NOM', 'ACC', 'GEN'):
                 nom_info = NOM.get(part, (None, None))
                 f['arabiccase']   = nom_info[0]
@@ -268,93 +268,6 @@ def _load_corpus_words_txt(corpus_path):
         logging.warning("Failed to load corpus words from %s: %s", corpus_path, exc)
     return result
 
-
-def _load_corpus_words_xml(corpus_path):
-    """Read the legacy XML Quranic Corpus morphology file.
-
-    :param corpus_path: Absolute or relative path to the corpus XML file.
-    :returns: ``defaultdict(list)`` keyed by ``(sura_id, aya_id)``.
-    """
-    from collections import defaultdict
-    from alfanous_import.quran_corpus_reader.main import API as CorpusAPI
-    from alfanous.text_processing import QArabicSymbolsFilter
-
-    result = defaultdict(list)
-    try:
-        api = CorpusAPI(source=corpus_path)
-        qasf = QArabicSymbolsFilter(
-            shaping=True, tashkil=True, spellerrors=False,
-            hamza=False, uthmani_symbols=True,
-        )
-        qasf_spelled = QArabicSymbolsFilter(
-            shaping=True, tashkil=True, spellerrors=True,
-            hamza=True, uthmani_symbols=True,
-        )
-        gid = 0
-        for iteration in api.all_words_generator():
-            gid += 1
-            word_text = iteration["word"]
-            base = iteration["morphology"]["base"]
-            first = base[0] if base else {}
-            prefixes = iteration["morphology"].get("prefixes", [])
-            suffixes = iteration["morphology"].get("suffixes", [])
-
-            prefix_str = ";".join(p.get("arabictoken", "") for p in prefixes) or None
-            suffix_str = ";".join(s.get("arabictoken", "") for s in suffixes) or None
-
-            entry = {
-                "word_gid":     gid,
-                "word_id":      iteration["word_id"],
-                "aya_id":       iteration["aya_id"],
-                "sura_id":      iteration["sura_id"],
-                "word":         word_text,
-                "normalized":   qasf.normalize_all(word_text) or None,
-                "spelled":      qasf_spelled.normalize_all(word_text) or None,
-                # English (stored-only, not indexed)
-                "englishpos":   first.get("pos") or None,
-                "type":         first.get("type") or None,
-                "englishcase":  first.get("case") or None,
-                # Arabic (primary, indexed)
-                "pos":          first.get("arabicpos") or None,
-                "root":         first.get("arabicroot") or None,
-                "lemma":        first.get("arabiclemma") or None,
-                "special":      first.get("arabicspecial") or None,
-                "mood":         first.get("arabicmood") or None,
-                "case":         first.get("arabiccase") or None,
-                "state":        first.get("arabicstate") or None,
-                # Unchanged fields
-                "prefix":       prefix_str,
-                "suffix":       suffix_str,
-                "gender":       first.get("gender") or None,
-                "number":       first.get("number") or None,
-                "person":       first.get("person") or None,
-                "form":         first.get("form") or None,
-                "voice":        first.get("voice") or None,
-                "derivation":   first.get("derivation") or None,
-                "aspect":       first.get("aspect") or None,
-            }
-            # Infer voice for verbs: corpus only tags PASS explicitly;
-            # absence of any voice tag means Active voice.
-            if entry.get("type") == "Verbs" and entry["voice"] is None:
-                entry["voice"] = "مبني للمعلوم"
-            # Infer mood for imperfect verbs: corpus only tags SUBJ/JUS/ENG
-            # explicitly; absence of a mood tag means Indicative (default).
-            if entry.get("aspect") == "فعل مضارع" and entry["mood"] is None:
-                entry["mood"] = "مرفوع"
-            # Infer state for nouns and adjectives/numerals: corpus only tags
-            # INDEF (نكرة) explicitly; absence means Definite (معرفة).
-            if entry.get("type") in ("Nouns", "Nominals") and entry["state"] is None:
-                entry["state"] = "معرفة"
-            # Infer number for nouns and adjectives/numerals: corpus only tags
-            # D (dual) and P (plural) explicitly; absence means singular (مفرد).
-            if entry.get("type") in ("Nouns", "Nominals") and entry["number"] is None:
-                entry["number"] = "singular"
-            result[(iteration["sura_id"], iteration["aya_id"])].append(entry)
-
-        logging.info("Loaded %d word occurrences from corpus.", gid)
-    except Exception as exc:
-        logging.warning("Failed to load corpus words from %s: %s", corpus_path, exc)
-    return result
 
 import re as _re
 import zipfile as _zipfile

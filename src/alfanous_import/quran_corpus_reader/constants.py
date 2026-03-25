@@ -272,3 +272,22 @@ PRON = {
 "P": {"نا", "كم", "هم", "كن", "هن"},
 }
 
+
+# ---------------------------------------------------------------------------
+# Inverted class dicts — look up a raw tag → category name
+# ---------------------------------------------------------------------------
+
+def _reverse_class(dictionary):
+    """Invert a class-mapping dict (values may be plain values or lists)."""
+    result = {}
+    for key, value in dictionary.items():
+        if not isinstance(value, list):
+            value = [value]
+        for v in value:
+            result.setdefault(v, []).append(key)
+    return result
+
+
+_INV_POS = _reverse_class(POSclass)
+_INV_PREFIX = _reverse_class(PREFIXclass)
+
