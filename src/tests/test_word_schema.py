@@ -326,12 +326,12 @@ def test_verb_form_arabic_patterns():
         "(IV)":   "أَفْعَلَ",
         "(V)":    "تَفَعَّلَ",
         "(VI)":   "تَفَاعَلَ",
-        "(VII)":  "اِنْفَعَلَ",
-        "(VIII)": "اِفْتَعَلَ",
-        "(IX)":   "اِفْعَلَّ",
-        "(X)":    "اِسْتَفْعَلَ",
-        "(XI)":   "اِفْعَالَّ",
-        "(XII)":  "اِفْعَوْعَلَ",
+        "(VII)":  "إِنْفَعَلَ",
+        "(VIII)": "إِفْتَعَلَ",
+        "(IX)":   "إِفْعَلَّ",
+        "(X)":    "إِسْتَفْعَلَ",
+        "(XI)":   "إِفْعَالَّ",
+        "(XII)":  "إِفْعَوْعَلَ",
     }
     for code, arabic in expected.items():
         assert VERB[code][0] == arabic, f"VERB['{code}'][0] should be '{arabic}'"
@@ -400,7 +400,7 @@ def test_parse_stem_derivation_arabic(parse_stem):
 def test_parse_stem_form_arabic(parse_stem):
     """form field must be the Arabic morphological pattern."""
     assert parse_stem("STEM|POS:V|(II)")["form"] == "فَعَّلَ"
-    assert parse_stem("STEM|POS:V|(X)")["form"] == "اِسْتَفْعَلَ"
+    assert parse_stem("STEM|POS:V|(X)")["form"] == "إِسْتَفْعَلَ"
 
 
 # ---------------------------------------------------------------------------
@@ -619,31 +619,6 @@ def test_inv_pos_circ_com_int_rslt():
 
 
 # ---------------------------------------------------------------------------
-# constants.py — quadriliteral verb forms (Q1)–(Q4)
-# ---------------------------------------------------------------------------
-
-def test_verb_quadriliteral_forms():
-    """(Q1)–(Q4) must have correct Arabic patterns and English descriptions."""
-    from alfanous_import.quran_corpus_reader.constants import VERB
-    expected = {
-        "(Q1)": ("فَعْلَلَ",     "First quadriliteral form"),
-        "(Q2)": ("تَفَعْلَلَ",   "Second quadriliteral form"),
-        "(Q3)": ("اِفْعَنْلَلَ", "Third quadriliteral form"),
-        "(Q4)": ("اِفْعَلَلَّ",  "Fourth quadriliteral form"),
-    }
-    for code, (arabic, english) in expected.items():
-        assert VERB[code][0] == arabic,  f"VERB['{code}'][0] should be '{arabic}'"
-        assert VERB[code][1] == english, f"VERB['{code}'][1] should be '{english}'"
-
-
-def test_verbclass_includes_quadriliteral():
-    """VERBclass['form'] must include (Q1)–(Q4)."""
-    from alfanous_import.quran_corpus_reader.constants import VERBclass
-    for q in ("(Q1)", "(Q2)", "(Q3)", "(Q4)"):
-        assert q in VERBclass["form"], f"'{q}' missing from VERBclass['form']"
-
-
-# ---------------------------------------------------------------------------
 # constants.py — PREFIX dict: missing waw and fa prefix tags
 # ---------------------------------------------------------------------------
 
@@ -707,31 +682,57 @@ def test_all_prefix_tags_have_category():
 
 
 # ---------------------------------------------------------------------------
-# transformer.py — quadriliteral forms parsed correctly by _parse_stem_features
+# transformer.py — verb forms VII–XII use إِ (hamza-below alif + kasra)
 # ---------------------------------------------------------------------------
 
-def test_parse_stem_q1_form(parse_stem):
-    """(Q1) form tag must produce Arabic pattern فَعْلَلَ."""
-    feats = parse_stem("STEM|POS:V|LEM:dHrj|(Q1)|PERF|3|M|S")
-    assert feats.get("form") == "فَعْلَلَ"
+def test_parse_stem_form_vii(parse_stem):
+    """(VII) form tag must produce Arabic pattern إِنْفَعَلَ (hamza-below alif)."""
+    feats = parse_stem("STEM|POS:V|(VII)|PERF|3|M|S")
+    assert feats.get("form") == "إِنْفَعَلَ"
 
 
-def test_parse_stem_q2_form(parse_stem):
-    """(Q2) form tag must produce Arabic pattern تَفَعْلَلَ."""
-    feats = parse_stem("STEM|POS:V|LEM:tdHrj|(Q2)|IMPF|3|M|S")
-    assert feats.get("form") == "تَفَعْلَلَ"
+def test_parse_stem_form_viii(parse_stem):
+    """(VIII) form tag must produce Arabic pattern إِفْتَعَلَ (hamza-below alif)."""
+    feats = parse_stem("STEM|POS:V|(VIII)|PERF|3|M|S")
+    assert feats.get("form") == "إِفْتَعَلَ"
 
 
-def test_parse_stem_q3_form(parse_stem):
-    """(Q3) form tag must produce Arabic pattern اِفْعَنْلَلَ."""
-    feats = parse_stem("STEM|POS:V|(Q3)|PERF|3|M|S")
-    assert feats.get("form") == "اِفْعَنْلَلَ"
+def test_parse_stem_form_ix(parse_stem):
+    """(IX) form tag must produce Arabic pattern إِفْعَلَّ (hamza-below alif)."""
+    feats = parse_stem("STEM|POS:V|(IX)|PERF|3|M|S")
+    assert feats.get("form") == "إِفْعَلَّ"
 
 
-def test_parse_stem_q4_form(parse_stem):
-    """(Q4) form tag must produce Arabic pattern اِفْعَلَلَّ."""
-    feats = parse_stem("STEM|POS:V|(Q4)|PERF|3|M|S")
-    assert feats.get("form") == "اِفْعَلَلَّ"
+def test_parse_stem_form_x(parse_stem):
+    """(X) form tag must produce Arabic pattern إِسْتَفْعَلَ (hamza-below alif)."""
+    feats = parse_stem("STEM|POS:V|(X)|PERF|3|M|S")
+    assert feats.get("form") == "إِسْتَفْعَلَ"
+
+
+def test_parse_stem_form_xi(parse_stem):
+    """(XI) form tag must produce Arabic pattern إِفْعَالَّ (hamza-below alif)."""
+    feats = parse_stem("STEM|POS:V|(XI)|PERF|3|M|S")
+    assert feats.get("form") == "إِفْعَالَّ"
+
+
+def test_parse_stem_form_xii(parse_stem):
+    """(XII) form tag must produce Arabic pattern إِفْعَوْعَلَ (hamza-below alif)."""
+    feats = parse_stem("STEM|POS:V|(XII)|PERF|3|M|S")
+    assert feats.get("form") == "إِفْعَوْعَلَ"
+
+
+def test_verbclass_has_no_q_forms():
+    """VERBclass['form'] must NOT contain any (Q*) tags — they don't exist in corpus."""
+    from alfanous_import.quran_corpus_reader.constants import VERBclass
+    for form in VERBclass["form"]:
+        assert not form.startswith("(Q"), f"Spurious quadriliteral tag '{form}' in VERBclass"
+
+
+def test_verb_has_no_q_entries():
+    """VERB dict must NOT contain (Q1)–(Q4) — those tags are absent from the corpus."""
+    from alfanous_import.quran_corpus_reader.constants import VERB
+    for q in ("(Q1)", "(Q2)", "(Q3)", "(Q4)"):
+        assert q not in VERB, f"Spurious key '{q}' found in VERB dict"
 
 
 # ---------------------------------------------------------------------------

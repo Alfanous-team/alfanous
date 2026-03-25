@@ -199,8 +199,7 @@ VERBclass = {
 "aspect":["PERF", "IMPF", "IMPV"],
 "mood":["IND", "SUBJ", "JUS", "ENG"],
 "voice":["ACT", "PASS"],
-"form":["(I)", "(II)", "(III)", "(IV)", "(V)", "(VI)", "(VII)", "(VIII)", "(IX)", "(X)", "(XI)", "(XII)",
-        "(Q1)", "(Q2)", "(Q3)", "(Q4)"]
+"form":["(I)", "(II)", "(III)", "(IV)", "(V)", "(VI)", "(VII)", "(VIII)", "(IX)", "(X)", "(XI)", "(XII)"]
 }
 
 VERB = {
@@ -219,16 +218,12 @@ VERB = {
 "(IV)":  ( "أَفْعَلَ",     "Fourth form" ),
 "(V)":   ( "تَفَعَّلَ",    "Fifth form" ),
 "(VI)":  ( "تَفَاعَلَ",    "Sixth form" ),
-"(VII)": ( "اِنْفَعَلَ",   "Seventh form" ),
-"(VIII)":( "اِفْتَعَلَ",   "Eighth form" ),
-"(IX)":  ( "اِفْعَلَّ",    "Ninth form" ),
-"(X)":   ( "اِسْتَفْعَلَ", "Tenth form" ),
-"(XI)":  ( "اِفْعَالَّ",   "Eleventh form" ),
-"(XII)": ( "اِفْعَوْعَلَ", "Twelfth form" ),
-"(Q1)":  ( "فَعْلَلَ",     "First quadriliteral form" ),
-"(Q2)":  ( "تَفَعْلَلَ",   "Second quadriliteral form" ),
-"(Q3)":  ( "اِفْعَنْلَلَ", "Third quadriliteral form" ),
-"(Q4)":  ( "اِفْعَلَلَّ",  "Fourth quadriliteral form" ),
+"(VII)": ( "إِنْفَعَلَ",   "Seventh form" ),
+"(VIII)":( "إِفْتَعَلَ",   "Eighth form" ),
+"(IX)":  ( "إِفْعَلَّ",    "Ninth form" ),
+"(X)":   ( "إِسْتَفْعَلَ", "Tenth form" ),
+"(XI)":  ( "إِفْعَالَّ",   "Eleventh form" ),
+"(XII)": ( "إِفْعَوْعَلَ", "Twelfth form" ),
 }
 
 DERIVclass = {

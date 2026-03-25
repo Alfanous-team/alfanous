@@ -129,7 +129,6 @@ _voice  = _make_keywords(["ACT", "PASS"])
 _form   = _make_keywords([
     "(I)", "(II)", "(III)", "(IV)", "(V)", "(VI)",
     "(VII)", "(VIII)", "(IX)", "(X)", "(XI)", "(XII)",
-    "(Q1)", "(Q2)", "(Q3)", "(Q4)",
 ])
 _verb   = _aspect | _voice | _form
 _voc    = Keyword("+voc").suppress()
