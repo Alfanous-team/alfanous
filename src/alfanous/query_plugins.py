@@ -707,10 +707,13 @@ class DerivationPlugin(TaggingPlugin):
                             terms.append(Term(deriv_field, norm))
                     # Always include the exact-match term on the main field so
                     # that derivation results are a superset of exact results.
+                    _main_seen: "set[str]" = set()
                     if fieldname in schema:
                         main_obj = schema[fieldname]
                         for tok in main_obj.analyzer(self.actual_text, mode="query"):
-                            terms.append(Term(fieldname, tok.text))
+                            if tok.text not in _main_seen:
+                                _main_seen.add(tok.text)
+                                terms.append(Term(fieldname, tok.text))
                     if len(terms) == 1:
                         return terms[0]
                     if terms:
