@@ -147,7 +147,7 @@ class TestWordLookupTableLifecycle(unittest.TestCase):
         return engine
 
     def test_word_lookup_table_built_at_init(self):
-        """_word_lookup_table must be a 3-tuple after engine init."""
+        """_word_lookup_table must be a 4-tuple after engine init."""
         engine = self._make_engine_with_reader()
         self.assertTrue(
             hasattr(engine, '_word_lookup_table'),
@@ -155,7 +155,7 @@ class TestWordLookupTableLifecycle(unittest.TestCase):
         )
         tbl = engine._word_lookup_table
         self.assertIsInstance(tbl, tuple)
-        self.assertEqual(len(tbl), 3)
+        self.assertEqual(len(tbl), 4)
 
     def test_word_lookup_table_freed_on_close(self):
         """_word_lookup_table must be None after close()."""
