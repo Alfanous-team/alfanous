@@ -1197,14 +1197,13 @@ def test_pattern_vn_form_i_uses_lemma(load_words):
     assert words[0]["pattern"] == words[0]["lemma"]
 
 
-def test_pattern_plain_noun_equals_lemma(load_words):
-    """Plain nouns (no derivation) must have pattern = vocalized lemma."""
+def test_pattern_plain_noun_none(load_words):
+    """Plain nouns (no derivation) must have pattern = None."""
     result = load_words([
         "(1:1:1:1)\tktAb\tN\tSTEM|POS:N|LEM:kitAb|ROOT:ktb|M|NOM",
     ])
     words = result[(1, 1)]
-    assert words[0]["pattern"] == words[0]["lemma"]
-    assert words[0]["pattern"] is not None
+    assert words[0]["pattern"] is None
 
 
 def test_pattern_act_pcpl_form_viii(load_words):

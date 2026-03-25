@@ -1203,7 +1203,7 @@ class Raw:
             res, termz, searcher, _deriv_expansion = self.QSE.search_all(aya_query, limit=self._defaults["results_limit"]["aya"], sortedby=sortedby, reverse=reverse, facets=facets_list, filter_dict=filter_dict, fuzzy=fuzzy, fuzzy_maxdist=fuzzy_maxdist, derivation_level=derivation_level, timelimit=timelimit)
             terms = [term[1] for term in termz if term[0] in ("aya", "aya_", "aya_ac")]
             terms = terms[:self._defaults["maxkeywords"]]
-            # When derivation_level >= 2, matched terms include aya_lemma or
+            # When derivation_level >= 2, matched terms include _lemma or
             # aya_root field values (lemma/root strings).  These don't appear
             # in the aya text, so they can't be used for highlighting directly.
             # Expand them to actual aya words via the cached derivation lookup
@@ -1213,7 +1213,7 @@ class Raw:
                 _deriv_key = "lemma" if derivation_level == 2 else "root"
                 _deriv_key_values = set()
                 for _df, _dt in _deriv_expansion:
-                    if _df in ("aya_lemma", "aya_root"):
+                    if _df in ("lemma_norm", "aya_root"):
                         _deriv_key_values.add(_dt)
                 if _deriv_key_values:
                     try:

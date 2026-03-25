@@ -299,8 +299,10 @@ def _load_corpus_words_txt(corpus_path):
                 entry["form"] = VERB["(I)"][0]  # "فَعَلَ"
             # Compute pattern (وزن): for verbs, pattern = form.  For derived
             # nominals (ACT PCPL / PASS PCPL / VN), look up the derived pattern
-            # from form × derivation.  For plain nouns/nominals, the vocalized
-            # lemma itself shows the wazan (e.g. كِتَاب = فِعَال).
+            # from form × derivation.  Plain nouns/nominals without a
+            # derivation tag get pattern=None — their vocalized lemma already
+            # encodes the wazan implicitly so a separate pattern field is
+            # redundant.
             _form = entry["form"]
             _deriv = entry["derivation"]
             if stem_feats.get("type") == "Verbs":
@@ -308,8 +310,6 @@ def _load_corpus_words_txt(corpus_path):
             elif _deriv:
                 _form_key = _form or VERB["(I)"][0]
                 entry["pattern"] = NOMINAL_PATTERN.get((_form_key, _deriv)) or raw_lemma
-            elif stem_feats.get("type") in ("Nouns", "Nominals"):
-                entry["pattern"] = raw_lemma
             # Compute stem: for nouns, stem = lemma.  For verbs, stem
             # combines lemma × pattern to show both the dictionary form and
             # its morphological template.  For special words (SP: tag), stem
@@ -692,19 +692,30 @@ class Transformer:
                 _schema_names = set(ix.schema.names())
                 _has_word_standard        = "word_standard"        in _schema_names
                 _has_word_transliteration = "word_transliteration" in _schema_names
-                _has_aya_lemma            = "aya_lemma"            in _schema_names
+                _has_aya_lemma            = "lemma_norm"              in _schema_names
                 _has_aya_root             = "aya_root"             in _schema_names
+                _has_aya_stem             = "stem_norm"                in _schema_names
+                _has_aya_word             = "word_norm"                in _schema_names
+                _has_aya_standard         = "standard_norm"            in _schema_names
 
-                # Pre-build aya_lemma and aya_root text for each aya from
-                # word-child data.  Each word's lemma (or root) is used; when
-                # the morphological value is missing, the word's normalised
-                # form is used as a fallback so that every word position is
-                # represented and phrase-length queries still align.
+                # Pre-build normalized aya-level text fields for each aya from
+                # word-child data.  Each field aggregates a different per-word
+                # value (lemma, root, stem, uthmani word, standard word) so
+                # that the index can be searched by any of these normalised
+                # representations.  When a value is missing for a word, the
+                # word's normalised form is used as a fallback so that every
+                # position is represented and phrase-length queries still align.
                 _aya_lemma_text: dict = {}
                 _aya_root_text: dict = {}
-                if (_has_aya_lemma or _has_aya_root) and words_by_aya:
+                _aya_stem_text: dict = {}
+                _aya_word_text: dict = {}
+                _aya_standard_text: dict = {}
+                _needs_word_agg = (_has_aya_lemma or _has_aya_root or
+                                   _has_aya_stem or _has_aya_word or
+                                   _has_aya_standard)
+                if _needs_word_agg and words_by_aya:
                     # Normalizer to strip tashkeel from vocalized lemmas so
-                    # aya_lemma is searchable without diacritics.
+                    # _lemma is searchable without diacritics.
                     from alfanous.text_processing import QArabicSymbolsFilter as _QASF
                     _lemma_norm = _QASF(
                         shaping=True, tashkil=True, spellerrors=False,
@@ -727,6 +738,24 @@ class Transformer:
                                 _r = _w.get("root") or _w.get("normalized") or ""
                                 _roots.append(_r)
                             _aya_root_text[_key] = " ".join(_roots)
+                        if _has_aya_stem:
+                            _stems = []
+                            for _w in _words_list:
+                                _s = _w.get("stem") or _w.get("lemma") or _w.get("normalized") or ""
+                                _s = _lemma_norm.normalize_all(_s) if _s else ""
+                                _stems.append(_s)
+                            _aya_stem_text[_key] = " ".join(_stems)
+                        if _has_aya_word:
+                            _words = []
+                            for _w in _words_list:
+                                _wt = _w.get("normalized") or ""
+                                _words.append(_wt)
+                            _aya_word_text[_key] = " ".join(_words)
+                        if _has_aya_standard:
+                            # Standard words come from the aya standard text,
+                            # not from word children — handled below after
+                            # tokenising the parent aya doc.
+                            pass
 
                 # Pre-compute per-translation metadata so the inner loop only
                 # does an index lookup + cheap dict copy rather than recomputing
@@ -776,12 +805,19 @@ class Transformer:
                     sura_id = line.get("sura_id")
                     aya_id = line.get("aya_id")
                     doc["kind"] = "aya"
-                    # Add pre-built aya_lemma / aya_root text from word-child data.
+                    # Add pre-built normalised aya-level text fields.
                     _aya_key = (sura_id, aya_id)
                     if _has_aya_lemma and _aya_key in _aya_lemma_text:
-                        doc["aya_lemma"] = _aya_lemma_text[_aya_key]
+                        doc["lemma_norm"] = _aya_lemma_text[_aya_key]
                     if _has_aya_root and _aya_key in _aya_root_text:
                         doc["aya_root"] = _aya_root_text[_aya_key]
+                    if _has_aya_stem and _aya_key in _aya_stem_text:
+                        doc["stem_norm"] = _aya_stem_text[_aya_key]
+                    if _has_aya_word and _aya_key in _aya_word_text:
+                        doc["word_norm"] = _aya_word_text[_aya_key]
+                    # _standard is built from the aya standard text directly
+                    if _has_aya_standard and "aya" in doc:
+                        doc["standard_norm"] = doc["aya"]
                     writer.start_group()
                     writer.add_document(**doc)
                     if gid is not None and trans_meta:

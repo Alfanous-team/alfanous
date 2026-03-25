@@ -1160,11 +1160,11 @@
     },
     {
         "analyzer": "QStandardAnalyzer",
-        "comment": "نص الآية مبدلة كل كلمة بالجذع اللغوي (لِمَّا) — للبحث المشتق بمستوى اللمّا",
+        "comment": "نص الآية مبدلة كل كلمة بالجذع اللغوي (لِمَّا) — مطبعة بدون تشكيل للبحث",
         "id": 150,
         "name": "_aya_lemma",
         "name_arabic": "آية_لمّا",
-        "search_name": "aya_lemma",
+        "search_name": "lemma_norm",
         "stored": false,
         "table_name": "aya",
         "type": "TEXT",
@@ -1181,5 +1181,41 @@
         "table_name": "aya",
         "type": "TEXT",
         "phrase": false
+    },
+    {
+        "id": 160,
+        "table_name": "aya",
+        "name": "_aya_stem",
+        "name_arabic": "آية_جذع_صرفي",
+        "search_name": "stem_norm",
+        "type": "TEXT",
+        "stored": false,
+        "analyzer": "QStandardAnalyzer",
+        "phrase": false,
+        "comment": "نص الآية مبدلة كل كلمة بالجذع الصرفي — مطبعة بدون تشكيل للبحث"
+    },
+    {
+        "id": 161,
+        "table_name": "aya",
+        "name": "_aya_word",
+        "name_arabic": "آية_كلمة",
+        "search_name": "word_norm",
+        "type": "TEXT",
+        "stored": false,
+        "analyzer": "QStandardAnalyzer",
+        "phrase": false,
+        "comment": "نص الآية مبدلة كل كلمة بالشكل العثماني المطبع — للبحث"
+    },
+    {
+        "id": 162,
+        "table_name": "aya",
+        "name": "_aya_standard",
+        "name_arabic": "آية_إملائي",
+        "search_name": "standard_norm",
+        "type": "TEXT",
+        "stored": false,
+        "analyzer": "QStandardAnalyzer",
+        "phrase": false,
+        "comment": "نص الآية بالخط الاملائي — نسخة مطبعة للبحث الافتراضي"
     }
 ]

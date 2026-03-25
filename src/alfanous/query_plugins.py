@@ -697,7 +697,7 @@ class DerivationPlugin(TaggingPlugin):
     Derivation levels map to pre-indexed aya fields:
 
     * ``>word``   (level 1) → stem: search ``aya_fuzzy`` (snowball Arabic stemming)
-    * ``>>word``  (level 2) → lemma: search ``aya_lemma`` (corpus lemma)
+    * ``>>word``  (level 2) → lemma: search ``lemma_norm`` (corpus lemma)
     * ``>>>word`` (level 3) → root: search ``aya_root`` (corpus root)
 
     Uses the pre-indexed fields when available for better performance.
@@ -708,8 +708,8 @@ class DerivationPlugin(TaggingPlugin):
     # Map derivation level → (target_field, index_key_for_lookup)
     _LEVEL_FIELDS = {
         1: ("aya_fuzzy", None),       # stem — no key lookup needed
-        2: ("aya_lemma", "lemma"),     # lemma
-        3: ("aya_root", "root"),       # root
+        2: ("lemma_norm",    "lemma"),     # lemma
+        3: ("aya_root",  "root"),      # root
     }
 
     class DerivationNode(syntax.WordNode):
@@ -739,7 +739,7 @@ class DerivationPlugin(TaggingPlugin):
                             return Or(terms, boost=self.boost)
                     else:
                         # Level 2/3 (lemma/root): look up the key value and
-                        # search the corresponding aya_lemma/aya_root field.
+                        # search the corresponding lemma_norm/aya_root field.
                         # Normalize through the field analyzer since key values
                         # are vocalized but the field strips vocalization.
                         key_values = _lookup_key_values(self.actual_text, index_key)
