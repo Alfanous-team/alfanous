@@ -1246,7 +1246,7 @@ class Raw:
             if derivation_level >= 1 and _deriv_expansion:
                 from alfanous.query_plugins import _collect_derivations_two_pass, _UTHMANI_ANNOTATION_RE
                 _deriv_field_key_map = {
-                    "aya_stem":      "lemma",
+                    "aya_stem":      "stem",
                     "aya_lemma":     "lemma",
                     "aya_root":      "root",
                     "aya_auto_stem": "auto_stem",

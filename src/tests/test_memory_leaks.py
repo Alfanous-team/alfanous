@@ -147,7 +147,7 @@ class TestWordLookupTableLifecycle(unittest.TestCase):
         return engine
 
     def test_word_lookup_table_built_at_init(self):
-        """_word_lookup_table must be a 4-tuple after engine init."""
+        """_word_lookup_table must be a 6-tuple after engine init."""
         engine = self._make_engine_with_reader()
         self.assertTrue(
             hasattr(engine, '_word_lookup_table'),
@@ -155,7 +155,7 @@ class TestWordLookupTableLifecycle(unittest.TestCase):
         )
         tbl = engine._word_lookup_table
         self.assertIsInstance(tbl, tuple)
-        self.assertEqual(len(tbl), 4)
+        self.assertEqual(len(tbl), 6)
 
     def test_word_lookup_table_freed_on_close(self):
         """_word_lookup_table must be None after close()."""
@@ -1363,6 +1363,45 @@ class TestCollectDerivationsTwoPass(unittest.TestCase):
         result = _collect_derivations_two_pass({"ملك"}, "lemma", lookup_table=tbl)
         self.assertIn("ملك", result)
         self.assertIn("مالك", result)
+
+    def test_stem_expansion_uses_normalized_stem_to_forms(self):
+        """index_key='stem' must expand via normalized_stem_to_forms (5th tuple element)."""
+        from alfanous.query_plugins import _collect_derivations_two_pass
+        docs = [
+            {"kind": "word", "lemma": "رَحِمَ", "stem": "رحم", "root": "رحم",
+             "word": "رَحِمَ", "normalized": "رحم", "standard": "رحم"},
+            {"kind": "word", "lemma": "رَحْمَة", "stem": "رحم", "root": "رحم",
+             "word": "رَحْمَة", "normalized": "رحمة", "standard": "رحمة"},
+        ]
+        tbl = self._make_lookup_table(docs)
+        # Both words share corpus stem "رحم" — both should be returned.
+        result = _collect_derivations_two_pass({"رحم"}, "stem", lookup_table=tbl)
+        self.assertIn("رحم", result, "Expected normalized form 'رحم' for stem expansion")
+        self.assertIn("رحمة", result, "Expected 'رحمة' sharing corpus stem 'رحم'")
+
+    def test_auto_stem_expansion_returns_forms(self):
+        """index_key='auto_stem' must expand via auto_stem_to_forms (6th tuple element)."""
+        from alfanous.query_plugins import _collect_derivations_two_pass, _get_arabic_stemmer
+        stemmer = _get_arabic_stemmer()
+        if stemmer is None:
+            self.skipTest("pystemmer not installed — skipping auto_stem test")
+        docs = [
+            {"kind": "word", "lemma": "رحم", "root": "رحم",
+             "word": "رَحِمَ", "normalized": "رحم", "standard": "رحم"},
+            {"kind": "word", "lemma": "رحمة", "root": "رحم",
+             "word": "رَحْمَة", "normalized": "رحمة", "standard": "رحمة"},
+        ]
+        tbl = self._make_lookup_table(docs)
+        # Compute expected Snowball stem of "رحم"
+        from alfanous.text_processing import QArabicSymbolsFilter
+        _asf = QArabicSymbolsFilter(shaping=True, tashkil=True, spellerrors=False, hamza=False)
+        auto_stem = stemmer.stemWord(_asf.normalize_all("رحم"))
+        result = _collect_derivations_two_pass({auto_stem}, "auto_stem", lookup_table=tbl)
+        # At least one of the word forms should be returned.
+        self.assertTrue(
+            len(result) > 0,
+            f"auto_stem expansion of '{auto_stem}' should return word forms"
+        )
 
 
 # ---------------------------------------------------------------------------

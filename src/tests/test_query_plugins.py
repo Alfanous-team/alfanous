@@ -173,19 +173,20 @@ def test_antonyms_plugin():
 
 
 def _make_derivation_schema():
-    """Create a Schema that includes aya_stem, aya_lemma, aya_root fields."""
+    """Create a Schema that includes aya_stem, aya_lemma, aya_root and aya_auto_stem fields."""
     from whoosh.fields import Schema, TEXT
-    from alfanous.text_processing import QStandardAnalyzer
+    from alfanous.text_processing import QStandardAnalyzer, QStemAnalyzer
     return Schema(
         text=TEXT(stored=True),
         aya_stem=TEXT(analyzer=QStandardAnalyzer, phrase=False),
         aya_lemma=TEXT(analyzer=QStandardAnalyzer, phrase=False),
         aya_root=TEXT(analyzer=QStandardAnalyzer, phrase=False),
+        aya_auto_stem=TEXT(analyzer=QStemAnalyzer, phrase=False),
     )
 
 
 def test_derivation_plugin_single():
-    """Test derivation plugin with single > (>word) — stem-level: OR(aya_stem, main field)."""
+    """Test derivation plugin with single > (>word) — stem-level: OR(aya_stem, aya_auto_stem, main field)."""
     schema = _make_derivation_schema()
     parser = QueryParser('text', schema)
     parser.add_plugin(DerivationPlugin())
@@ -195,11 +196,12 @@ def test_derivation_plugin_single():
     assert isinstance(query, Or)
     sub_fields = {sq.fieldname for sq in query.subqueries if isinstance(sq, Term)}
     assert "aya_stem" in sub_fields
+    assert "aya_auto_stem" in sub_fields, "DerivationPlugin must include aya_auto_stem (Snowball)"
     assert "text" in sub_fields
 
 
 def test_derivation_plugin_double():
-    """Test derivation plugin with double >> (>>word) — lemma-level: OR(aya_lemma, main field)."""
+    """Test derivation plugin with double >> (>>word) — lemma-level: OR(aya_lemma, aya_auto_stem, main field)."""
     schema = _make_derivation_schema()
     parser = QueryParser('text', schema)
     parser.add_plugin(DerivationPlugin())
@@ -207,11 +209,12 @@ def test_derivation_plugin_double():
     assert isinstance(query, Or)
     sub_fields = {sq.fieldname for sq in query.subqueries if isinstance(sq, Term)}
     assert "aya_lemma" in sub_fields
+    assert "aya_auto_stem" in sub_fields, "DerivationPlugin must include aya_auto_stem (Snowball)"
     assert "text" in sub_fields
 
 
 def test_derivation_plugin_triple():
-    """Test derivation plugin with triple >>> (>>>word) — root-level: OR(aya_root, main field)."""
+    """Test derivation plugin with triple >>> (>>>word) — root-level: OR(aya_root, aya_auto_stem, main field)."""
     schema = _make_derivation_schema()
     parser = QueryParser('text', schema)
     parser.add_plugin(DerivationPlugin())
@@ -219,7 +222,27 @@ def test_derivation_plugin_triple():
     assert isinstance(query, Or)
     sub_fields = {sq.fieldname for sq in query.subqueries if isinstance(sq, Term)}
     assert "aya_root" in sub_fields
+    assert "aya_auto_stem" in sub_fields, "DerivationPlugin must include aya_auto_stem (Snowball)"
     assert "text" in sub_fields
+
+
+def test_derivation_plugin_auto_stem_without_aya_auto_stem_field():
+    """DerivationPlugin must work gracefully when aya_auto_stem is not in the schema."""
+    from whoosh.fields import Schema, TEXT
+    from alfanous.text_processing import QStandardAnalyzer
+    schema_no_auto = Schema(
+        text=TEXT(stored=True),
+        aya_stem=TEXT(analyzer=QStandardAnalyzer, phrase=False),
+        aya_lemma=TEXT(analyzer=QStandardAnalyzer, phrase=False),
+        aya_root=TEXT(analyzer=QStandardAnalyzer, phrase=False),
+    )
+    parser = QueryParser('text', schema_no_auto)
+    parser.add_plugin(DerivationPlugin())
+    query = parser.parse(">مالك")
+    # Must still produce a valid query even without aya_auto_stem.
+    sub_fields = {sq.fieldname for sq in query.subqueries if isinstance(sq, Term)}
+    assert "aya_stem" in sub_fields
+    assert "aya_auto_stem" not in sub_fields  # absent since not in schema
 
 
 def test_spell_errors_plugin():
@@ -607,19 +630,21 @@ def test_complex_query():
 def create_test_index():
     """Create a RAM-based test index with Arabic words and derivation fields."""
     from whoosh.filedb.filestore import RamStorage
-    from alfanous.text_processing import QStandardAnalyzer
+    from alfanous.text_processing import QStandardAnalyzer, QStemAnalyzer
 
     schema = Schema(
         text=TEXT(stored=True),
         aya_stem=TEXT(analyzer=QStandardAnalyzer, phrase=False),
         aya_lemma=TEXT(analyzer=QStandardAnalyzer, phrase=False),
         aya_root=TEXT(analyzer=QStandardAnalyzer, phrase=False),
+        aya_auto_stem=TEXT(analyzer=QStemAnalyzer, phrase=False),
     )
     st = RamStorage()
     ix = st.create_index(schema)
     writer = ix.writer()
     for word in ['مالك', 'مالكون', 'يملك', 'الملك', 'ملكوت']:
-        writer.add_document(text=word, aya_lemma=word, aya_stem=word, aya_root=word)
+        writer.add_document(text=word, aya_lemma=word, aya_stem=word,
+                            aya_root=word, aya_auto_stem=word)
     writer.commit()
     return ix
 
