@@ -739,6 +739,8 @@ class Transformer:
                                 _roots.append(_r)
                             _aya_root_text[_key] = " ".join(_roots)
                         if _has_aya_stem:
+                            # Stem falls back to lemma (many particles and
+                            # non-derived words have no explicit stem value).
                             _stems = []
                             for _w in _words_list:
                                 _s = _w.get("stem") or _w.get("lemma") or _w.get("normalized") or ""
@@ -751,11 +753,8 @@ class Transformer:
                                 _wt = _w.get("normalized") or ""
                                 _words.append(_wt)
                             _aya_word_text[_key] = " ".join(_words)
-                        if _has_aya_standard:
-                            # Standard words come from the aya standard text,
-                            # not from word children — handled below after
-                            # tokenising the parent aya doc.
-                            pass
+                        # _standard is a copy of the parent aya text (already
+                        # normalized) — assigned directly when writing the doc.
 
                 # Pre-compute per-translation metadata so the inner loop only
                 # does an index lookup + cheap dict copy rather than recomputing
