@@ -141,6 +141,16 @@ _NORMALIZE_WORD_QUERY = QArabicSymbolsFilter(
     shaping=True, tashkil=True, spellerrors=False, hamza=False, uthmani_symbols=True
 ).normalize_all
 
+# Map Arabic UI field names used in the keywords endpoint to canonical Whoosh
+# field names.  Defined at module level to avoid dict recreation on every call.
+# "اعراب" / "إعراب" (grammatical case) → "case" field (values: مرفوع, منصوب, مجرور)
+# "تعريف" (definiteness / nominal state)  → "state" field (values: معرفة, نكرة)
+_KEYWORDS_ARABIC_FIELD_ALIASES = {
+    "اعراب": "case",
+    "إعراب": "case",
+    "تعريف": "state",
+}
+
 # All word-child index fields targetable by _search_words.
 # Defined at module level so the list is not rebuilt on every request.
 # The first six fields are the primary text search targets:
@@ -717,7 +727,10 @@ class Raw:
         unit = flags.get("unit", "aya")
         field = flags.get("field", "aya_")
         mode = flags.get("mode", "unique")
-        
+
+        # Resolve Arabic UI field name aliases to canonical Whoosh field names.
+        field = _KEYWORDS_ARABIC_FIELD_ALIASES.get(field, field)
+
         # Select the appropriate search engine based on unit
         if unit == "word":
             search_engine = self.QSE
@@ -1251,7 +1264,14 @@ class Raw:
                                 _dvals, _dkey, lookup_table=_lookup_table
                             ):
                                 if w:
-                                    _expanded_words.append(_UTHMANI_ANNOTATION_RE.sub('', w))
+                                    # Strip both Uthmanic annotation marks and standard
+                                    # tashkeel so the expanded forms match the indexed
+                                    # "aya" field postings (which are stored stripped by
+                                    # QStandardAnalyzer).  Without this, vocalized forms
+                                    # from the word_standard KEYWORD field would fail the
+                                    # _count_term_in_results lookup and show zero matches.
+                                    _ew_raw = _UTHMANI_ANNOTATION_RE.sub('', w)
+                                    _expanded_words.append(_STRIP_VOCALIZATION(_ew_raw))
                         terms.extend(_expanded_words)
                         # Also add expansion words to termz so they appear in
                         # words.individual (requirement: "anything highlighted
