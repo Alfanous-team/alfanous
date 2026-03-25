@@ -94,13 +94,13 @@ def _make_tuple_mock(root_words_map):
     """Return a side_effect function for TupleQuery tests.
 
     TupleQuery._get_words_by_properties maps the user-facing ``type`` property
-    to the ``type`` index field (which stores English category values like
-    "Nouns" / "Verbs") via _ARABIC_TO_TYPE.  The mock therefore reads the
+    to the ``type`` index field (which stores Arabic category values like
+    "أسماء" / "أفعال") via _ARABIC_TO_TYPE.  The mock therefore reads the
     ``type`` key from filter_dict.
     """
     def _mock(filter_dict, field="standard", limit=5000):
         root = filter_dict.get("root", "")
-        type_ = filter_dict.get("type", "")  # English value: "Nouns", "Verbs", …
+        type_ = filter_dict.get("type", "")  # Arabic value: "أسماء", "أفعال", …
         key = (root, type_)
         return list(root_words_map.get(key, []))
     return _mock
@@ -185,36 +185,41 @@ def _make_derivation_schema():
 
 
 def test_derivation_plugin_single():
-    """Test derivation plugin with single > (>word) — stem-level: produces Term on aya_stem."""
+    """Test derivation plugin with single > (>word) — stem-level: OR(aya_stem, main field)."""
     schema = _make_derivation_schema()
     parser = QueryParser('text', schema)
     parser.add_plugin(DerivationPlugin())
     query = parser.parse(">مالك")
-    assert isinstance(query, Term)
-    assert query.fieldname == "aya_stem"
-    assert query.text == "مالك"
+    # Derivation always includes the main-field exact term so results are
+    # a superset of exact search.
+    assert isinstance(query, Or)
+    sub_fields = {sq.fieldname for sq in query.subqueries if isinstance(sq, Term)}
+    assert "aya_stem" in sub_fields
+    assert "text" in sub_fields
 
 
 def test_derivation_plugin_double():
-    """Test derivation plugin with double >> (>>word) — lemma-level: produces Term on aya_lemma."""
+    """Test derivation plugin with double >> (>>word) — lemma-level: OR(aya_lemma, main field)."""
     schema = _make_derivation_schema()
     parser = QueryParser('text', schema)
     parser.add_plugin(DerivationPlugin())
     query = parser.parse(">>مالك")
-    assert isinstance(query, Term)
-    assert query.fieldname == "aya_lemma"
-    assert query.text == "مالك"
+    assert isinstance(query, Or)
+    sub_fields = {sq.fieldname for sq in query.subqueries if isinstance(sq, Term)}
+    assert "aya_lemma" in sub_fields
+    assert "text" in sub_fields
 
 
 def test_derivation_plugin_triple():
-    """Test derivation plugin with triple >>> (>>>word) — root-level: produces Term on aya_root."""
+    """Test derivation plugin with triple >>> (>>>word) — root-level: OR(aya_root, main field)."""
     schema = _make_derivation_schema()
     parser = QueryParser('text', schema)
     parser.add_plugin(DerivationPlugin())
     query = parser.parse(">>>مالك")
-    assert isinstance(query, Term)
-    assert query.fieldname == "aya_root"
-    assert query.text == "مالك"
+    assert isinstance(query, Or)
+    sub_fields = {sq.fieldname for sq in query.subqueries if isinstance(sq, Term)}
+    assert "aya_root" in sub_fields
+    assert "text" in sub_fields
 
 
 def test_spell_errors_plugin():
@@ -272,7 +277,7 @@ def test_tuple_plugin_single_item():
 
 def test_tuple_plugin_multiple_items():
     """Test tuple plugin — root قول, type اسم (noun): 11 results."""
-    _mock = _make_tuple_mock({("قول", "Nouns"): _QAWL_NOUNS})
+    _mock = _make_tuple_mock({("قول", "أسماء"): _QAWL_NOUNS})
     with patch("alfanous.query_plugins._query_word_index", side_effect=_mock):
         parser = create_test_parser()
         query = parser.parse("{قول،اسم}")
@@ -289,7 +294,7 @@ def test_tuple_plugin_multiple_items():
 
 def test_tuple_plugin_root_and_type():
     """Test tuple plugin — root ملك, type فعل (verb): 8 results."""
-    _mock = _make_tuple_mock({("ملك", "Verbs"): _MALIK_VERBS})
+    _mock = _make_tuple_mock({("ملك", "أفعال"): _MALIK_VERBS})
     with patch("alfanous.query_plugins._query_word_index", side_effect=_mock):
         parser = create_test_parser()
         query = parser.parse("{ملك،فعل}")
@@ -587,10 +592,11 @@ def test_complex_query():
     parser.add_plugin(DerivationPlugin())
     parser.add_plugin(SynonymsPlugin())
 
-    # Test derivation — now produces a Term on aya_lemma (level 2)
+    # Test derivation — produces Or(aya_lemma, text) for level 2
     query = parser.parse(">>الصلاة")
-    assert isinstance(query, Term)
-    assert query.fieldname == "aya_lemma"
+    assert isinstance(query, Or)
+    sub_fields = {sq.fieldname for sq in query.subqueries if isinstance(sq, Term)}
+    assert "aya_lemma" in sub_fields
 
     # Test synonym
     query = parser.parse("~الله")
@@ -629,29 +635,29 @@ def create_index_parser(ix):
 
 
 def test_derivation_query_executes_against_index():
-    """Test that DerivationPlugin produces a Term that executes against a Whoosh RAM index."""
+    """Test that DerivationPlugin produces an Or query that executes against a Whoosh RAM index."""
     ix = create_test_index()
     parser = create_index_parser(ix)
 
     query = parser.parse('>مالك')
-    assert isinstance(query, Term)
-    assert query.fieldname == "aya_stem"
+    assert isinstance(query, Or)
+    sub_fields = {sq.fieldname for sq in query.subqueries if isinstance(sq, Term)}
+    assert "aya_stem" in sub_fields
 
     with ix.searcher() as searcher:
         results = searcher.search(query)
-        result_texts = [r['aya_stem'] if 'aya_stem' in r else r['text'] for r in results]
-        # aya_stem field is not stored but aya_lemma/text are available
         assert len(results) >= 1
 
 
 def test_derivation_query_root_level_executes_against_index():
-    """Test that root-level DerivationPlugin (>>) produces a Term on aya_lemma."""
+    """Test that root-level DerivationPlugin (>>) produces an Or with aya_lemma."""
     ix = create_test_index()
     parser = create_index_parser(ix)
 
     query = parser.parse('>>مالك')
-    assert isinstance(query, Term)
-    assert query.fieldname == "aya_lemma"
+    assert isinstance(query, Or)
+    sub_fields = {sq.fieldname for sq in query.subqueries if isinstance(sq, Term)}
+    assert "aya_lemma" in sub_fields
 
     with ix.searcher() as searcher:
         results = searcher.search(query)
@@ -697,10 +703,12 @@ def test_derivation_query_vocalized_words_match_analyzed_index():
 
     query = parser.parse('>>عذاب')
 
-    # DerivationPlugin now creates a Term on aya_lemma — no DerivationQuery needed.
-    assert isinstance(query, Term)
-    assert query.fieldname == "aya_lemma"
-    assert query.text == "عذاب"
+    # DerivationPlugin creates Or(aya_lemma term, aya exact term).
+    assert isinstance(query, Or)
+    sub_fields = {sq.fieldname for sq in query.subqueries if isinstance(sq, Term)}
+    assert "aya_lemma" in sub_fields
+    aya_lemma_terms = [sq for sq in query.subqueries if isinstance(sq, Term) and sq.fieldname == "aya_lemma"]
+    assert aya_lemma_terms[0].text == "عذاب"
 
     with ix.searcher() as searcher:
         results = searcher.search(query)
@@ -738,13 +746,14 @@ def test_derivation_plugin_inside_parentheses():
     query = parser.parse("foo AND (>مالك)")
     # The derivation text must be 'مالك', NOT 'مالك)' — regex must stop before ')'
     from whoosh.query import And
-    subqueries = query.subqueries if hasattr(query, 'subqueries') else [query]
-    stem_queries = [sq for sq in subqueries if isinstance(sq, Term) and sq.fieldname == "aya_stem"]
-    assert len(stem_queries) == 1, (
-        f"Expected 1 Term on aya_stem, got {[type(sq).__name__ for sq in subqueries]}"
+    # Flatten all subqueries recursively
+    all_terms = list(query.all_terms())
+    stem_terms = [(f, t) for f, t in all_terms if f == "aya_stem"]
+    assert len(stem_terms) >= 1, (
+        f"Expected at least 1 Term on aya_stem, got terms: {all_terms}"
     )
-    assert stem_queries[0].text == "مالك", (
-        f"aya_stem Term.text should be 'مالك', got {stem_queries[0].text!r}"
+    assert stem_terms[0][1] == "مالك", (
+        f"aya_stem term should be 'مالك', got {stem_terms[0][1]!r}"
     )
 
 

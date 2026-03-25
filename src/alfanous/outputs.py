@@ -1106,22 +1106,8 @@ class Raw:
         # print query
         # preprocess query
         query = query.replace("\\", "")
-        # Apply Buckwalter transliteration to non-Arabic, non-wildcard queries
-        # so that queries like "ktb" or "kutubo" are converted to Arabic script
-        # before routing.  This mirrors the word-search preprocessing.
-        # Re-evaluate the routing condition after transliteration since a
-        # successful conversion will now yield an Arabic-script query.
-        _non_arabic = (
-            ":" not in query
-            and not _ARABIC_SCRIPT_RE.search(query)
-            and not _PURE_WILDCARD_RE.match(query)
-        )
-        if _non_arabic:
-            query = transliterate("buckwalter", query, ignore="'_\"%*?#~[]{}:>+-|")
-            # Re-check: Buckwalter conversion may have produced Arabic script.
-            _non_arabic = not _ARABIC_SCRIPT_RE.search(query)
 
-        if _non_arabic:
+        if ":" not in query and not _ARABIC_SCRIPT_RE.search(query) and not _PURE_WILDCARD_RE.match(query):
             # Non-Arabic query: search translations AND try arabizi conversion
             # to also search the Arabic aya fields ("the word and arabizi(word)").
             # Pure-wildcard queries (e.g. *, ?, ??, ???) are excluded from this

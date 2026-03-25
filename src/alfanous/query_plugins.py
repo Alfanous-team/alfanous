@@ -492,15 +492,14 @@ class TashkilQuery(QMultiTerm):
 class TupleQuery(QMultiTerm):
     """Query for words matching specific morphological properties"""
 
-    # Map Arabic query type labels to the English "type" field stored in the
-    # word-children index (populated from corpus first.get("type")).
-    # Corpus values: 'Nouns', 'Verbs', 'Particles', 'Nominals', 'Pronouns',
-    #                'Adverbs', 'Prepositions', 'Conjunctions', 'Disconnected Letters'
+    # Map Arabic query type labels to the Arabic "type" field stored in the
+    # word-children index (populated via POSclass_arabic in transformer.py).
+    # Index values: 'أسماء', 'أفعال', 'أدوات', 'حروف_مقطعة', etc.
     _ARABIC_TO_TYPE = {
-        "اسم": "Nouns",
-        "فعل": "Verbs",
-        "أداة": "Particles",
-        "فواتيح": "Disconnected Letters",
+        "اسم": "أسماء",
+        "فعل": "أفعال",
+        "أداة": "أدوات",
+        "فواتيح": "حروف_مقطعة",
     }
 
     def __init__(self, fieldname, items, boost=1.0):
@@ -530,15 +529,15 @@ class TupleQuery(QMultiTerm):
         :returns: List of matching standard Arabic word forms.
         """
         # "root" maps directly to the "root" field (stores arabicroot, Arabic script).
-        # "type" maps to the "type" field which stores English category values
-        # ("Nouns", "Verbs", "Particles") via _ARABIC_TO_TYPE mapping.
+        # "type" maps to the "type" field which stores Arabic category values
+        # ("أسماء", "أفعال", "أدوات") via _ARABIC_TO_TYPE mapping.
         _filter = {}
         if props.get("root"):
             _filter["root"] = props["root"]
         if props.get("type"):
-            english_type = TupleQuery._ARABIC_TO_TYPE.get(props["type"])
-            if english_type:
-                _filter["type"] = english_type
+            arabic_type = TupleQuery._ARABIC_TO_TYPE.get(props["type"])
+            if arabic_type:
+                _filter["type"] = arabic_type
         if _filter:
             # Merge standard (primary) and normalized so that words whose
             # standard is None (e.g. تملك) are still included.
@@ -706,6 +705,12 @@ class DerivationPlugin(TaggingPlugin):
                         if norm and norm not in seen:
                             seen.add(norm)
                             terms.append(Term(deriv_field, norm))
+                    # Always include the exact-match term on the main field so
+                    # that derivation results are a superset of exact results.
+                    if fieldname in schema:
+                        main_obj = schema[fieldname]
+                        for tok in main_obj.analyzer(self.actual_text, mode="query"):
+                            terms.append(Term(fieldname, tok.text))
                     if len(terms) == 1:
                         return terms[0]
                     if terms:
