@@ -33,10 +33,24 @@ def fields_by_name():
 # Existing field-type tests
 # ---------------------------------------------------------------------------
 
-def test_word_standard_is_keyword(fields_by_name):
-    """word_standard must be declared as KEYWORD in fields.json."""
-    assert fields_by_name["word_standard"]["type"] == "KEYWORD", (
-        "word_standard should be KEYWORD so it is searchable via MultifieldParser"
+def test_standard_is_keyword(fields_by_name):
+    """standard must be declared as KEYWORD in fields.json (raw stored value)."""
+    assert fields_by_name["standard"]["type"] == "KEYWORD", (
+        "standard should be KEYWORD — raw stored Imla'i word for display"
+    )
+
+
+def test_word_standard_is_text(fields_by_name):
+    """word_standard must be declared as TEXT in fields.json (normalized for search)."""
+    assert fields_by_name["word_standard"]["type"] == "TEXT", (
+        "word_standard should be TEXT with QStandardAnalyzer for normalized search"
+    )
+
+
+def test_uthmani_different_is_boolean(fields_by_name):
+    """uthmani_different must be declared as BOOLEAN in fields.json."""
+    assert fields_by_name["uthmani_different"]["type"] == "BOOLEAN", (
+        "uthmani_different should be BOOLEAN"
     )
 
 
@@ -123,6 +137,14 @@ def test_word_standard_in_word_all_indexed_fields():
     assert "word_standard" in _WORD_ALL_INDEXED_FIELDS, (
         "word_standard must be in _WORD_ALL_INDEXED_FIELDS so the word "
         "MultifieldParser includes it as a default search field"
+    )
+
+
+def test_standard_in_word_all_indexed_fields():
+    """standard must be in _WORD_ALL_INDEXED_FIELDS."""
+    from alfanous.outputs import _WORD_ALL_INDEXED_FIELDS
+    assert "standard" in _WORD_ALL_INDEXED_FIELDS, (
+        "standard (raw KEYWORD) must be in _WORD_ALL_INDEXED_FIELDS"
     )
 
 
@@ -238,14 +260,14 @@ def test_schema_builder_lemma_keyword():
     )
 
 
-def test_schema_builder_word_standard_keyword():
-    """Transformer.build_schema must produce a KEYWORD field for word_standard."""
+def test_schema_builder_standard_keyword():
+    """Transformer.build_schema must produce a KEYWORD field for standard."""
     from alfanous_import.transformer import Transformer
     from whoosh.fields import KEYWORD
     t = Transformer("/tmp/_test_idx_schema/", _STORE_PATH)
     schema = t.build_schema("aya")
-    assert isinstance(schema["word_standard"], KEYWORD), (
-        "Transformer.build_schema must produce KEYWORD for word_standard"
+    assert isinstance(schema["standard"], KEYWORD), (
+        "Transformer.build_schema must produce KEYWORD for standard"
     )
 
 

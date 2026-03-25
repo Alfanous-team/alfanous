@@ -1106,14 +1106,14 @@
     {
         "id": 146,
         "table_name": "aya",
-        "name": "word_standard",
+        "name": "standard",
         "name_arabic": "الكلمة_المعيارية",
-        "search_name": "word_standard",
+        "search_name": "standard",
         "type": "KEYWORD",
         "stored": true,
         "unique": null,
         "analyzer": null,
-        "comment": "Standard (non-Uthmanic) Arabic word matched by position from aya standard text field (kind=word child docs)"
+        "comment": "Raw standard (Imla'i) Arabic word matched by position from aya standard text (kind=word child docs) — for display, not normalized"
     },
     {
         "id": 147,
@@ -1203,5 +1203,26 @@
         "stored": false,
         "analyzer": "QStandardAnalyzer",
         "comment": "Normalized stem per word child doc — corpus-derived stem form, searchable (kind=word)"
+    },
+    {
+        "id": 163,
+        "table_name": "aya",
+        "name": "word_standard",
+        "name_arabic": "الكلمة_المعيارية_المطبعة",
+        "search_name": "word_standard",
+        "type": "TEXT",
+        "stored": false,
+        "analyzer": "QStandardAnalyzer",
+        "comment": "Normalized standard (Imla'i) Arabic word — TEXT with QStandardAnalyzer for search (kind=word child docs)"
+    },
+    {
+        "id": 164,
+        "table_name": "aya",
+        "name": "uthmani_different",
+        "name_arabic": "اختلاف_عثماني",
+        "search_name": "uthmani_different",
+        "type": "BOOLEAN",
+        "stored": true,
+        "comment": "True when normalized Uthmani spelling differs from normalized standard (Imla'i) spelling (kind=word child docs)"
     }
 ]

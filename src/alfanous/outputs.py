@@ -140,15 +140,16 @@ _NORMALIZE_WORD_QUERY = QArabicSymbolsFilter(
 
 # All word-child index fields targetable by _search_words.
 # Defined at module level so the list is not rebuilt on every request.
-# The first five fields are the primary text search targets:
+# The first six fields are the primary text search targets:
 #   word           — Uthmani word (vocalized)
 #   word_lemma     — corpus-normalised lemma (tashkeel-stripped)
 #   word_stem      — corpus-derived stem (tashkeel-stripped)
 #   normalized     — normalised Uthmani spelling (tashkeel-stripped)
-#   word_standard  — standard (Imla'i) spelling
+#   word_standard  — normalised standard (Imla'i) spelling (TEXT, QStandardAnalyzer)
+#   standard       — raw standard (Imla'i) spelling (KEYWORD, stored, for display)
 _WORD_ALL_INDEXED_FIELDS = [
     "word", "word_lemma", "word_stem",
-    "normalized", "word_standard",
+    "normalized", "word_standard", "standard",
     "pos", "type",
     "root", "arabicroot",
     "lemma", "arabiclemma",
@@ -569,7 +570,7 @@ class Raw:
             # Word search parser (used in _search_words).
             _all_word_f = [f for f in _WORD_ALL_INDEXED_FIELDS if f in _schema_fields]
             _default_word_f = (
-                [f for f in ["word_standard", "word", "normalized"] if f in _schema_fields]
+                [f for f in ["word_standard", "word", "normalized", "standard"] if f in _schema_fields]
                 or _all_word_f
             )
             # Only build the parser when there is at least one usable field.
@@ -1747,6 +1748,8 @@ class Raw:
                                 "word":         w.get("word"),
                                 "transliteration": w.get("word_transliteration"),
                                 "normalized":   w.get("normalized"),
+                                "standard":     w.get("standard"),
+                                "uthmani_different": w.get("uthmani_different"),
                                 "spelled":      w.get("spelled"),
                                 # Arabic morphological fields
                                 "pos":          w.get("pos"),
@@ -1818,6 +1821,8 @@ class Raw:
                                         "word":       _w.get("word"),
                                         "transliteration": _w.get("word_transliteration"),
                                         "normalized": _w.get("normalized"),
+                                        "standard":   _w.get("standard"),
+                                        "uthmani_different": _w.get("uthmani_different"),
                                         "spelled":    _w.get("spelled"),
                                         "pos":        _w.get("pos"),
                                         "type":       _w.get("type"),
@@ -1876,6 +1881,8 @@ class Raw:
                                     "word":       _w.get("word"),
                                     "transliteration": _w.get("word_transliteration"),
                                     "normalized": _w.get("normalized"),
+                                    "standard":   _w.get("standard"),
+                                    "uthmani_different": _w.get("uthmani_different"),
                                     "spelled":    _w.get("spelled"),
                                     "pos":        _w.get("pos"),
                                     "type":       _w.get("type"),
@@ -2401,7 +2408,7 @@ class Raw:
             for _r in reslist:
                 if len(terms) >= self._defaults["maxkeywords"]:
                     break
-                _ws = _r.get("word_standard")
+                _ws = _r.get("standard") or _r.get("word_standard")
                 _wu = _r.get("word")
                 if _ws and _wu and _ws in _terms_set and _wu not in _terms_set:
                     terms.append(_wu)
@@ -2469,6 +2476,8 @@ class Raw:
                         "text_no_highlight": r.get("word", ""),
                         "transliteration":   r.get("word_transliteration"),
                         "normalized":        r.get("normalized"),
+                        "standard":          r.get("standard"),
+                        "uthmani_different":  r.get("uthmani_different"),
                         "spelled":          r.get("spelled"),
                         # Arabic morphological fields
                         "pos":              r.get("pos"),

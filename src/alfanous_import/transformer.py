@@ -691,11 +691,13 @@ class Transformer:
                 # Pre-compute schema field names once.
                 _schema_names = set(ix.schema.names())
                 _has_word_standard        = "word_standard"        in _schema_names
+                _has_standard             = "standard"             in _schema_names
                 _has_word_transliteration = "word_transliteration" in _schema_names
                 _has_aya_lemma            = "aya_lemma"            in _schema_names
                 _has_aya_root             = "aya_root"             in _schema_names
                 _has_word_lemma           = "word_lemma"           in _schema_names
                 _has_word_stem            = "word_stem"            in _schema_names
+                _has_uthmani_different    = "uthmani_different"    in _schema_names
 
                 # Pre-build aya_lemma and aya_root text for each aya from
                 # word-child data.  Each word's lemma (or root) is used; when
@@ -815,8 +817,18 @@ class Transformer:
                                 word_doc["segments"] = json.dumps(
                                     word_doc["segments"], ensure_ascii=False,
                                 )
-                            if _has_word_standard and pos < len(std_tokens):
-                                word_doc["word_standard"] = std_tokens[pos]
+                            if pos < len(std_tokens):
+                                _std_tok = std_tokens[pos]
+                                if _has_standard:
+                                    word_doc["standard"] = _std_tok
+                                if _has_word_standard:
+                                    word_doc["word_standard"] = _std_tok
+                                # Flag whether normalised Uthmani and normalised
+                                # standard forms differ (e.g. الصلوة vs الصلاة).
+                                if _has_uthmani_different:
+                                    _norm_uth = w.get("normalized") or ""
+                                    _norm_std = qasf.normalize_all(_std_tok) if _std_tok else ""
+                                    word_doc["uthmani_different"] = (_norm_uth != _norm_std)
                             if _has_word_transliteration and pos < len(tr_tokens):
                                 word_doc["word_transliteration"] = tr_tokens[pos]
                             # Normalized word_lemma / word_stem for word search.
