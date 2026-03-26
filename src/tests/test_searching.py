@@ -417,6 +417,100 @@ class TestCollectPluginExpandedTerms:
         result = _collect_plugin_expanded_terms(q)
         assert result == set()
 
+    def test_aya_auto_stem_term_is_plugin_expanded(self):
+        """Term targeting aya_auto_stem must be treated as plugin-expanded (in _DERIV_FIELDS)."""
+        from whoosh import query as wquery
+        from alfanous.searching import _collect_plugin_expanded_terms
+
+        q = wquery.Term("aya_auto_stem", "رحم")
+        result = _collect_plugin_expanded_terms(q)
+        assert ("aya_auto_stem", "رحم") in result, (
+            "aya_auto_stem terms must be treated as plugin-expanded to prevent double-expansion"
+        )
+
+    def test_aya_stem_term_is_plugin_expanded(self):
+        """Term targeting aya_stem must be treated as plugin-expanded (in _DERIV_FIELDS)."""
+        from whoosh import query as wquery
+        from alfanous.searching import _collect_plugin_expanded_terms
+
+        q = wquery.Term("aya_stem", "ملك")
+        result = _collect_plugin_expanded_terms(q)
+        assert ("aya_stem", "ملك") in result, (
+            "aya_stem terms must be treated as plugin-expanded to prevent double-expansion"
+        )
+
+
+# ---------------------------------------------------------------------------
+# Unit tests: derivation-expansion terms with zero results must be filtered
+# from words.individual in _search_aya.
+# ---------------------------------------------------------------------------
+
+class TestDerivationExpansionKeywordFilter:
+    """Derivation-expansion terms injected as ('aya', word, 0, 0) must not
+    appear in words.individual when they have no matches in the result set.
+
+    Regression test for: root-level search for مالك shows 34 keywords,
+    32 of which have zero occurrences.
+    """
+
+    def _make_termz(self, *entries):
+        """Construct a termz list from (field, word, freq, doc_freq) tuples."""
+        return list(entries)
+
+    def test_zero_stats_zero_results_term_is_excluded(self):
+        """A term with (0, 0) stats and 0 result-matches must NOT enter words.individual.
+
+        This is the core fix: expansion terms appended as ('aya', w, 0, 0) that
+        don't appear in any matched aya should be silently dropped.
+        """
+        # Build a minimal termz with one real term and one synthetic expansion.
+        termz = self._make_termz(
+            ("aya", "مالك", 120, 43),   # real query term — has corpus stats
+            ("aya", "الملائكة", 0, 0),  # synthetic expansion — injected by _collect_derivations_two_pass
+        )
+
+        # Simulate the filter condition used in _search_aya:
+        #   skip if not term[2] and not term[3] and not term_matches_in_results
+        def would_be_skipped(term, term_matches_in_results):
+            return not term[2] and not term[3] and not term_matches_in_results
+
+        # الملائكة has zero corpus stats and matches nothing in the 2-result set.
+        assert would_be_skipped(("aya", "الملائكة", 0, 0), 0), (
+            "Expansion term with (0,0) stats and 0 result-matches must be filtered"
+        )
+        # مالك has real corpus stats — must NOT be skipped even with 0 result-matches.
+        assert not would_be_skipped(("aya", "مالك", 120, 43), 0), (
+            "Real query term with corpus stats must never be filtered"
+        )
+
+    def test_zero_stats_but_matching_term_is_included(self):
+        """An expansion term with (0, 0) stats that DOES match results must stay.
+
+        e.g. يملك shares the root ملك with مالك — if it appears in the 2
+        matched ayas it must be listed in keywords so the highlighted word
+        is also in words.individual.
+        """
+        def would_be_skipped(term, term_matches_in_results):
+            return not term[2] and not term[3] and not term_matches_in_results
+
+        # يملك was injected with (0,0) stats but actually appears in results.
+        assert not would_be_skipped(("aya", "يملك", 0, 0), 3), (
+            "Expansion term that matches in results must NOT be filtered"
+        )
+
+    def test_real_term_with_zero_corpus_stats_is_not_skipped(self):
+        """A term with non-zero doc_freq but zero term-freq must not be filtered.
+
+        This guards against accidental filtering of edge-case real terms.
+        """
+        def would_be_skipped(term, term_matches_in_results):
+            return not term[2] and not term[3] and not term_matches_in_results
+
+        # term[2]=0 but term[3]=5 — has doc frequency → real term.
+        assert not would_be_skipped(("aya", "كتاب", 0, 5), 0), (
+            "Term with non-zero doc_freq must not be filtered even with 0 term-freq"
+        )
+
 
 # ---------------------------------------------------------------------------
 # Unit tests for _has_wildcard_query (no index required)

@@ -1571,6 +1571,18 @@ class Raw:
                             matches_in_results += term_matches_in_results
                             term_ayas_in_results = _count_ayas_in_results(term[0], term[1])
                             docs_in_results += term_ayas_in_results
+
+                            # Derivation-expansion terms are injected into termz as
+                            # ("aya", word, 0, 0) — no real corpus stats.  When such a
+                            # term also has zero matches in the current result set it
+                            # would appear in keywords with "0 occurrences in 0 ayas",
+                            # which is useless noise (e.g. the full root family of "ملك"
+                            # contains 34 forms, but only 2 appear in a given result).
+                            # Skip these entries; they are still included in `terms`
+                            # (the highlighting list) so any aya that does contain them
+                            # will still show the highlighted word.
+                            if not term[2] and not term[3] and not term_matches_in_results:
+                                continue
                             if word_vocalizations:
                                 _term_normalized = strip_vocalization(term[1])
                                 _wdata = _batch_word_data.get(_term_normalized, {})
