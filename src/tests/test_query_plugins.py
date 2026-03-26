@@ -1216,3 +1216,135 @@ class TestStripPhraseQueries:
         result = _strip_phrase_queries(q)
         assert isinstance(result, wq.And)
         assert all(isinstance(s, wq.Term) for s in result.subqueries)
+
+
+# ---------------------------------------------------------------------------
+# Derivation subquery morphological resolution via QSearcher.search()
+# ---------------------------------------------------------------------------
+
+def test_qsearcher_root_level_resolves_root_from_lookup_table():
+    """QSearcher.search(derivation_level=3, word_lookup_table=...) must resolve
+    the query word to its actual root before building Term("aya_root", ...).
+
+    The index stores aya_root='ملك' (the root), NOT 'مالك' (the word form).
+    Without resolution, Term("aya_root","مالك") finds 0 results.
+    With resolution via form_to_key, Term("aya_root","ملك") finds both ayas.
+
+    This is an end-to-end regression test for the "only 2 ayas matched" bug.
+    """
+    from whoosh.filedb.filestore import RamStorage
+    from whoosh.fields import Schema, TEXT
+    from whoosh.qparser import QueryParser
+    from whoosh.qparser.plugins import SingleQuotePlugin
+    from alfanous.text_processing import QStandardAnalyzer
+    from alfanous.searching import QSearcher
+
+    # Build an index where aya_root stores the real root "ملك", not the word forms.
+    schema = Schema(
+        aya=TEXT(analyzer=QStandardAnalyzer, stored=True),
+        aya_stem=TEXT(analyzer=QStandardAnalyzer, phrase=False),
+        aya_lemma=TEXT(analyzer=QStandardAnalyzer, phrase=False),
+        aya_root=TEXT(analyzer=QStandardAnalyzer, phrase=False),
+    )
+    st = RamStorage()
+    ix = st.create_index(schema)
+    writer = ix.writer()
+    writer.add_document(
+        aya="يَمْلِكُ مَا فِي السَّمَاوَاتِ",
+        aya_stem="ملك", aya_lemma="ملك", aya_root="ملك",
+    )
+    writer.add_document(
+        aya="مَالِكِ يَوْمِ الدِّينِ",
+        aya_stem="مالك", aya_lemma="مالك", aya_root="ملك",
+    )
+    writer.add_document(
+        aya="بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ",
+        aya_stem="رحم", aya_lemma="رحم", aya_root="رحم",
+    )
+    writer.commit()
+
+    # Build a minimal word lookup table: مالك → root "ملك"
+    form_to_key = {
+        "مالك": {"lemma": "مَالِك", "root": "ملك", "stem_norm": "مالك"},
+        "يملك": {"lemma": "مَلَكَ",  "root": "ملك", "stem_norm": "ملك"},
+    }
+    word_lookup_table = (form_to_key, {}, {}, {}, {}, {})
+
+    parser = QueryParser("aya", ix.schema)
+    parser.remove_plugin_class(SingleQuotePlugin)
+
+    qs = QSearcher.__new__(QSearcher)
+    qs._searcher = ix.searcher
+    qs._qparser = parser
+    qs._schema = ix.schema
+    qs._shared_searcher = None
+
+    results, _, _, expansion = qs.search(
+        "مالك",
+        derivation_level=3,
+        word_lookup_table=word_lookup_table,
+        timelimit=None,
+    )
+    assert len(results) == 2, (
+        f"Root-level search for مالك (root=ملك) must return 2 ayas, got {len(results)}. "
+        f"expansion={expansion}.  "
+        "This regression means form_to_key root resolution is broken."
+    )
+
+
+def test_qsearcher_root_level_without_lookup_uses_raw_term():
+    """QSearcher.search() without a lookup table falls back to the raw query term.
+
+    Verifies the fallback path: when word_lookup_table=None or empty, the code
+    builds Term("aya_root","مالك") (the unresolved form) which finds no results
+    in an index where aya_root stores "ملك".
+    """
+    from whoosh.filedb.filestore import RamStorage
+    from whoosh.fields import Schema, TEXT
+    from whoosh.qparser import QueryParser
+    from whoosh.qparser.plugins import SingleQuotePlugin
+    from alfanous.text_processing import QStandardAnalyzer
+    from alfanous.searching import QSearcher
+
+    schema = Schema(
+        aya=TEXT(analyzer=QStandardAnalyzer, stored=True),
+        aya_stem=TEXT(analyzer=QStandardAnalyzer, phrase=False),
+        aya_lemma=TEXT(analyzer=QStandardAnalyzer, phrase=False),
+        aya_root=TEXT(analyzer=QStandardAnalyzer, phrase=False),
+    )
+    st = RamStorage()
+    ix = st.create_index(schema)
+    writer = ix.writer()
+    writer.add_document(
+        aya="يَمْلِكُ مَا فِي السَّمَاوَاتِ",
+        aya_stem="ملك", aya_lemma="ملك", aya_root="ملك",
+    )
+    writer.add_document(
+        aya="مَالِكِ يَوْمِ الدِّينِ",
+        aya_stem="مالك", aya_lemma="مالك", aya_root="ملك",
+    )
+    writer.commit()
+
+    parser = QueryParser("aya", ix.schema)
+    parser.remove_plugin_class(SingleQuotePlugin)
+
+    qs = QSearcher.__new__(QSearcher)
+    qs._searcher = ix.searcher
+    qs._qparser = parser
+    qs._schema = ix.schema
+    qs._shared_searcher = None
+
+    # No lookup table → Term("aya_root","مالك") built — no aya has that root
+    results, _, _, _ = qs.search(
+        "مالك",
+        derivation_level=3,
+        word_lookup_table=None,
+        timelimit=None,
+    )
+    # aya exact-match fires on "مالك" in aya text: finds the 1 aya "مَالِكِ..."
+    # aya_root fallback finds nothing (no aya has aya_root="مالك").
+    # Total < 2, confirming that without the lookup table the fix doesn't work.
+    assert len(results) < 2, (
+        f"Without lookup table the raw fallback should not find all root-family ayas, "
+        f"got {len(results)}"
+    )
