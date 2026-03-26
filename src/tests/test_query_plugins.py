@@ -1348,3 +1348,84 @@ def test_qsearcher_root_level_without_lookup_uses_raw_term():
         f"Without lookup table the raw fallback should not find all root-family ayas, "
         f"got {len(results)}"
     )
+
+def test_qsearcher_stem_level_targets_aya_auto_stem():
+    """QSearcher.search(derivation_level=1) must target aya_auto_stem, NOT aya_stem.
+
+    derivation_level=1 now uses aya_auto_stem (QStemAnalyzer / Snowball Arabic
+    stemmer) so that morphological variants are matched via automatic stemming
+    at both index and query time, without needing a corpus-derived stem lookup.
+
+    The test verifies:
+    1. aya_auto_stem terms appear in the derivation expansion.
+    2. aya_stem terms do NOT appear in the derivation expansion.
+    3. The Snowball analyzer finds at least 1 result.
+    """
+    from whoosh.filedb.filestore import RamStorage
+    from whoosh.fields import Schema, TEXT
+    from whoosh.qparser import QueryParser
+    from whoosh.qparser.plugins import SingleQuotePlugin
+    from alfanous.text_processing import QStandardAnalyzer, QStemAnalyzer
+    from alfanous.searching import QSearcher
+
+    # Index where aya_auto_stem stores the normalized word form;
+    # QStemAnalyzer applies Snowball at index time.
+    schema = Schema(
+        aya=TEXT(analyzer=QStandardAnalyzer, stored=True),
+        aya_stem=TEXT(analyzer=QStandardAnalyzer, phrase=False),
+        aya_auto_stem=TEXT(analyzer=QStemAnalyzer, phrase=False),
+        aya_lemma=TEXT(analyzer=QStandardAnalyzer, phrase=False),
+        aya_root=TEXT(analyzer=QStandardAnalyzer, phrase=False),
+    )
+    st = RamStorage()
+    ix = st.create_index(schema)
+    writer = ix.writer()
+    # Store the normalized word form in aya_auto_stem; the Snowball analyzer
+    # will produce the same stem at index and query time.
+    writer.add_document(
+        aya="مَالِكِ يَوْمِ الدِّينِ",
+        aya_stem="مالك",
+        aya_auto_stem="مالك",
+        aya_lemma="مالك",
+        aya_root="ملك",
+    )
+    writer.add_document(
+        aya="بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ",
+        aya_stem="رحم",
+        aya_auto_stem="رحم",
+        aya_lemma="رحم",
+        aya_root="رحم",
+    )
+    writer.commit()
+
+    parser = QueryParser("aya", ix.schema)
+    parser.remove_plugin_class(SingleQuotePlugin)
+
+    qs = QSearcher.__new__(QSearcher)
+    qs._searcher = ix.searcher
+    qs._qparser = parser
+    qs._schema = ix.schema
+    qs._shared_searcher = None
+
+    results, _, _, expansion = qs.search(
+        "مالك",
+        derivation_level=1,
+        word_lookup_table=None,
+        timelimit=None,
+    )
+
+    auto_stem_pairs = [p for p in expansion if p[0] == "aya_auto_stem"]
+    stem_pairs = [p for p in expansion if p[0] == "aya_stem"]
+
+    assert auto_stem_pairs, (
+        f"derivation_level=1 must produce aya_auto_stem expansion terms; "
+        f"expansion={expansion}"
+    )
+    assert not stem_pairs, (
+        f"derivation_level=1 must NOT produce aya_stem expansion terms; "
+        f"expansion={expansion}"
+    )
+    assert len(results) >= 1, (
+        f"Stem-level search for مالك (via aya_auto_stem Snowball) must find at "
+        f"least the 1 exact-match aya; got {len(results)}"
+    )

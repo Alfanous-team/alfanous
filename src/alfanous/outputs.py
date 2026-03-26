@@ -157,6 +157,7 @@ _KEYWORDS_ARABIC_FIELD_ALIASES = {
 #   word           — Uthmani word (vocalized)
 #   word_lemma     — corpus-normalised lemma (tashkeel-stripped)
 #   word_stem      — corpus-derived stem (tashkeel-stripped)
+#   word_auto_stem — Snowball-stemmed word form (QStemAnalyzer) — used by derivation_level=1
 #   normalized     — normalised Uthmani spelling (tashkeel-stripped)
 #   word_standard  — normalised standard (Imla'i) spelling (TEXT, QStandardAnalyzer)
 #   standard       — raw standard (Imla'i) spelling (KEYWORD, stored, for display)
@@ -2454,22 +2455,24 @@ class Raw:
                 word_query = wquery.Or([word_query, _arabizi_q])
 
         # Derivation-level expansion for word search.
-        # Level 1 (stem)  → search word_stem (QStandardAnalyzer, corpus-derived stem)
+        # Level 1 (stem)  → search word_auto_stem (QStemAnalyzer, Snowball Arabic stemmer)
         # Level 2 (lemma) → search word_lemma (QStandardAnalyzer)
         # Level 3 (root)  → search root field (ID — normalize directly)
         #
-        # For each query term we first look up its actual morphological value
-        # (stem/lemma/root) from the word lookup table rather than simply
-        # applying the field analyzer to the raw term.  Without this, a query
-        # for "مالك" would search `root` for "مالك" (tashkeel-stripped query
-        # word) instead of "ملك" (the actual root), returning only the handful
-        # of word docs where مالك itself happens to be the stored root value.
+        # For levels 2 and 3 we first look up the actual morphological value
+        # (lemma/root) from the word lookup table rather than simply applying
+        # the field analyzer to the raw term.  Without this, a query for "مالك"
+        # would search `root` for "مالك" (tashkeel-stripped query word) instead
+        # of "ملك" (the actual root).
+        # Level 1 uses word_auto_stem (QStemAnalyzer / Snowball): the raw query
+        # term is passed directly to the Snowball analyzer, which produces the
+        # same stem that was stored at index time — no form_to_key lookup needed.
         _WORD_DERIV_FIELD_MAP = {
-            1: "word_stem",
+            1: "word_auto_stem",
             2: "word_lemma",
             3: "root",
         }
-        _word_level_to_morph = {1: "stem_norm", 2: "lemma", 3: "root"}
+        _word_level_to_morph = {2: "lemma", 3: "root"}
         _word_form_to_key: "dict" = {}
         _wlt = getattr(self.QSE, '_word_lookup_table', None)
         if _wlt and len(_wlt) > 0:

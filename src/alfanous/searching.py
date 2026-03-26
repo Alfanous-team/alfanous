@@ -469,18 +469,18 @@ class QSearcher:
         # Derivation level — controls morphological broadening of the search.
         # Accepts both integer levels and legacy string aliases:
         #   0 / "word"  → exact match only (default)
-        #   1 / "stem"  → also search aya_stem  (corpus-derived stem)
+        #   1 / "stem"  → also search aya_auto_stem (Snowball Arabic stemmer)
         #   2 / "lemma" → also search aya_lemma (corpus lemma field)
         #   3 / "root"  → also search aya_root  (corpus root field)
         #
-        # Each derivation field uses QStandardAnalyzer (normalize only, no
-        # stemming).  The corpus already provides stem/lemma/root values at
-        # the correct level of specificity.
+        # Level 1 uses QStemAnalyzer (Snowball) so stemming is handled at both
+        # index and query time without a corpus-derived stem lookup.
+        # Levels 2 and 3 use QStandardAnalyzer (normalize only, no stemming).
         _DERIV_LEVEL_MAP = {"word": 0, "stem": 1, "lemma": 2, "root": 3}
         _DERIV_FIELD_MAP = {
-            1: "aya_stem",   # stem  — QStandardAnalyzer (corpus-derived stem)
-            2: "aya_lemma",  # lemma — QStandardAnalyzer
-            3: "aya_root",   # root  — QStandardAnalyzer
+            1: "aya_auto_stem",  # stem  — QStemAnalyzer (Snowball Arabic stemmer)
+            2: "aya_lemma",      # lemma — QStandardAnalyzer
+            3: "aya_root",       # root  — QStandardAnalyzer
         }
         if isinstance(derivation_level, str):
             _deriv_level_int = _DERIV_LEVEL_MAP.get(derivation_level, 0)
@@ -491,14 +491,16 @@ class QSearcher:
         # morphological properties {"lemma": ..., "root": ..., "stem_norm": ...}.
         # Used below to translate the user's query word to the correct posting
         # value for the target derivation field:
-        #   level 1 (aya_stem): form_to_key[term]["stem_norm"] → e.g. "ملك"
+        #   level 1 (aya_auto_stem): no lookup — QStemAnalyzer (Snowball) handles
+        #       stemming automatically at both index and query time, so the raw
+        #       (tashkeel-stripped) query term is passed directly to the analyzer.
         #   level 2 (aya_lemma): form_to_key[term]["lemma"]    → e.g. "مَالِك"
         #   level 3 (aya_root): form_to_key[term]["root"]      → e.g. "ملك"
         # Without this translation we would search aya_root for "مالك" but the
         # field stores "ملك" (the actual root), so only the 2 ayas where the
         # literal text "مالك" appears as a root would match instead of the
         # hundreds of ayas containing any word from the ملك root family.
-        _level_to_morph = {1: "stem_norm", 2: "lemma", 3: "root"}
+        _level_to_morph = {2: "lemma", 3: "root"}
         _form_to_key = (word_lookup_table[0]
                         if word_lookup_table and len(word_lookup_table) > 0
                         else {})
@@ -532,9 +534,9 @@ class QSearcher:
             # (unvocalized, non-stemmed) to handle spelling variants and typos.
             # Only applied to Arabic-script terms; structured/numeric terms are
             # skipped.
-            # NOTE: fuzzy no longer searches aya_stem for stemming — stemming
-            # is controlled exclusively via derivation_level.  The aya_stem
-            # search is now part of derivation_level=1 ("stem").
+            # NOTE: fuzzy no longer searches aya_auto_stem for stemming — stemming
+            # is controlled exclusively via derivation_level.  The aya_auto_stem
+            # search (Snowball) is now part of derivation_level=1 ("stem").
             levenshtein_subqueries = [
                 wquery.FuzzyTerm("aya_ac", term, maxdist=fuzzy_maxdist, prefixlength=1)
                 for fieldname, term in query.all_terms()

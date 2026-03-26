@@ -513,20 +513,22 @@ class TestDerivationExpansionKeywordFilter:
 
 
 # ---------------------------------------------------------------------------
-# Unit tests: derivation subquery resolution uses root/lemma/stem from lookup
-# table, NOT the bare (tashkeel-stripped) query word.
+# Unit tests: derivation subquery resolution uses root/lemma from lookup
+# table, and aya_auto_stem (Snowball) for level 1.
 # ---------------------------------------------------------------------------
 
 class TestDerivationSubqueryResolution:
-    """QSearcher.search() must look up the actual morphological value (root /
-    lemma / stem_norm) for each query word before building the derivation
-    subquery Term.
+    """QSearcher.search() must use the correct field and morphological value
+    for each derivation level.
 
     Regression test for: derivation_level:root search for مالك matches only
     2 ayas because Term("aya_root", "مالك") was built instead of
     Term("aya_root", "ملك").  The aya_root field stores "ملك" (the root), not
     "مالك" (the word form), so searching for the word form found only the rare
     ayas where مالك happens to be recorded as its own root.
+
+    Level 1 now uses aya_auto_stem (QStemAnalyzer / Snowball): the raw
+    query term is passed directly to the analyzer — no form_to_key lookup.
     """
 
     def _make_lookup_table(self, form_to_key):
@@ -540,8 +542,8 @@ class TestDerivationSubqueryResolution:
         }
         lt = self._make_lookup_table(form_to_key)
 
-        # Simulate what QSearcher.search() does:
-        _level_to_morph = {1: "stem_norm", 2: "lemma", 3: "root"}
+        # Simulate what QSearcher.search() does (levels 2 and 3 only):
+        _level_to_morph = {2: "lemma", 3: "root"}
         _morph_attr = _level_to_morph[3]  # "root"
         _entry = form_to_key.get("مالك")
         _morph_val = _entry.get(_morph_attr) if _entry else None
@@ -557,7 +559,7 @@ class TestDerivationSubqueryResolution:
             "مالك": {"lemma": "مَالِك", "root": "ملك", "stem_norm": "مالك"},
         }
 
-        _level_to_morph = {1: "stem_norm", 2: "lemma", 3: "root"}
+        _level_to_morph = {2: "lemma", 3: "root"}
         _morph_attr = _level_to_morph[2]  # "lemma"
         _entry = form_to_key.get("مالك")
         _morph_val = _entry.get(_morph_attr) if _entry else None
@@ -567,28 +569,43 @@ class TestDerivationSubqueryResolution:
             f"Level 2 should resolve to the vocalized lemma; got '{_search_term}'"
         )
 
-    def test_stem_level_resolves_stem_norm(self):
-        """Level 1 (stem): query term 'يملك' resolves to its corpus stem via form_to_key."""
+    def test_stem_level_uses_raw_term_with_snowball(self):
+        """Level 1 (auto_stem): QSearcher passes the raw term to QStemAnalyzer.
+
+        aya_auto_stem uses QStemAnalyzer (Snowball Arabic stemmer) at both
+        index and query time, so no form_to_key lookup is needed — the
+        analyzer produces the correct posting key automatically.
+
+        _level_to_morph has no entry for level 1, so _morph_attr is None,
+        _morph_val is None, and _search_term == raw query term.
+        """
         form_to_key = {
             "يملك": {"lemma": "مَلَكَ", "root": "ملك", "stem_norm": "ملك"},
         }
 
-        _level_to_morph = {1: "stem_norm", 2: "lemma", 3: "root"}
-        _morph_attr = _level_to_morph[1]  # "stem_norm"
+        # Level 1 is NOT in _level_to_morph — no lookup, raw term used.
+        _level_to_morph = {2: "lemma", 3: "root"}
+        _morph_attr = _level_to_morph.get(1)  # None — not in map
         _entry = form_to_key.get("يملك")
-        _morph_val = _entry.get(_morph_attr) if _entry else None
+        _morph_val = (_entry.get(_morph_attr) if _entry and _morph_attr else None)
         _search_term = _morph_val if _morph_val else "يملك"
 
-        assert _search_term == "ملك", (
-            f"Level 1 should resolve to the corpus stem; got '{_search_term}'"
+        # The raw term is passed to QStemAnalyzer; the test confirms no lookup.
+        assert _morph_attr is None, (
+            "Level 1 must have no entry in _level_to_morph (Snowball handles it)"
+        )
+        assert _search_term == "يملك", (
+            f"Level 1 should pass the raw term to QStemAnalyzer; got '{_search_term}'"
         )
 
     def test_unknown_word_falls_back_to_raw_term(self):
         """A query word not in form_to_key falls back to the raw (normalized) term."""
         form_to_key: dict = {}  # empty — word not in Quran corpus
 
-        _level_to_morph = {1: "stem_norm", 2: "lemma", 3: "root"}
-        for level in (1, 2, 3):
+        # Level 1 is absent from _level_to_morph (Snowball handles it).
+        # Levels 2 and 3 have no entry → morph_val is None → fallback to raw.
+        _level_to_morph = {2: "lemma", 3: "root"}
+        for level in (2, 3):
             _morph_attr = _level_to_morph[level]
             _entry = form_to_key.get("xyz")
             _morph_val = _entry.get(_morph_attr) if _entry else None
@@ -596,9 +613,23 @@ class TestDerivationSubqueryResolution:
             assert _search_term == "xyz", (
                 f"Level {level}: unknown word must fall back to raw term; got '{_search_term}'"
             )
+        # Level 1: no lookup at all — morph_attr is None.
+        _morph_attr_1 = _level_to_morph.get(1)  # None
+        _morph_val_1 = (form_to_key.get("xyz") or {}).get(_morph_attr_1) if _morph_attr_1 else None
+        _search_term_1 = _morph_val_1 if _morph_val_1 else "xyz"
+        assert _search_term_1 == "xyz", (
+            f"Level 1: raw term must be used as input to Snowball analyzer; got '{_search_term_1}'"
+        )
 
     def test_form_to_key_contains_stem_norm(self):
-        """_build_word_lookup_table must store 'stem_norm' in each form_to_key entry."""
+        """_build_word_lookup_table stores 'stem_norm' in each form_to_key entry.
+
+        stem_norm is the normalized corpus-derived stem; it is still stored
+        in form_to_key (alongside lemma and root) for use by
+        _collect_derivations_two_pass during result highlighting, even though
+        QSearcher.search() no longer uses it for derivation_level=1 queries
+        (which now target aya_auto_stem via QStemAnalyzer instead).
+        """
         from alfanous.query_plugins import _build_word_lookup_table
 
         class _FakeReader:
@@ -619,7 +650,7 @@ class TestDerivationSubqueryResolution:
         assert "يملك" in form_to_key, "normalized form 'يملك' must be in form_to_key"
         entry = form_to_key["يملك"]
         assert "stem_norm" in entry, (
-            "form_to_key entry must contain 'stem_norm' for derivation-level stem resolution"
+            "form_to_key entry must contain 'stem_norm' (stored for highlighting use)"
         )
         assert entry["stem_norm"] == "ملك", (
             f"stem_norm should be 'ملك' (normalized corpus stem); got {entry['stem_norm']!r}"

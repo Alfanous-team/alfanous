@@ -1404,11 +1404,13 @@ class TestCollectDerivationsTwoPass(unittest.TestCase):
         )
 
     def test_form_to_key_has_stem_norm(self):
-        """_build_word_lookup_table must store 'stem_norm' in each form_to_key entry.
+        """_build_word_lookup_table stores 'stem_norm' in each form_to_key entry.
 
-        Regression test for the derivation-level fix: QSearcher.search() reads
-        form_to_key[term]["stem_norm"] to resolve aya_stem queries to the
-        correct corpus-derived stem posting rather than the raw query word.
+        stem_norm is the normalized corpus-derived stem. It is stored in
+        form_to_key alongside lemma and root for use by
+        _collect_derivations_two_pass during result highlighting.
+        Note: QSearcher.search() derivation_level=1 now targets aya_auto_stem
+        (QStemAnalyzer / Snowball) and no longer reads stem_norm at query time.
         """
         from alfanous.query_plugins import _build_word_lookup_table
         docs = [
@@ -1438,9 +1440,9 @@ class TestCollectDerivationsTwoPass(unittest.TestCase):
     def test_form_to_key_stem_norm_falls_back_to_lemma(self):
         """When stem is absent, stem_norm must fall back to the normalized lemma.
 
-        The aya_stem field stores stem-or-lemma at index time, so form_to_key
-        must mirror that behaviour so derivation_level=1 queries work correctly
-        for words whose corpus entry has no explicit stem.
+        stem_norm is stored for highlighting (used by _collect_derivations_two_pass).
+        When the corpus entry has no explicit stem, it falls back to the lemma,
+        mirroring the aya_stem indexing fallback.
         """
         from alfanous.query_plugins import _build_word_lookup_table
         docs = [
@@ -1495,28 +1497,31 @@ class TestDerivationSubqueryResolutionIntegration(unittest.TestCase):
         """
         from whoosh.filedb.filestore import RamStorage
         from whoosh.fields import Schema, TEXT, KEYWORD
-        from alfanous.text_processing import QStandardAnalyzer
+        from alfanous.text_processing import QStandardAnalyzer, QStemAnalyzer
 
         schema = Schema(
             aya=TEXT(analyzer=QStandardAnalyzer, stored=True),
             aya_stem=TEXT(analyzer=QStandardAnalyzer, phrase=False),
+            aya_auto_stem=TEXT(analyzer=QStemAnalyzer, phrase=False),
             aya_lemma=TEXT(analyzer=QStandardAnalyzer, phrase=False),
             aya_root=TEXT(analyzer=QStandardAnalyzer, phrase=False),
         )
         st = RamStorage()
         ix = st.create_index(schema)
         writer = ix.writer()
-        # aya 1 — verb يَمْلِكُ, root ملك
+        # aya 1 — verb يَمْلِكُ, root ملك; normalized form "يملك" stored in aya_auto_stem
         writer.add_document(
             aya="يَمْلِكُ مَا فِي السَّمَاوَاتِ",
             aya_stem="ملك",
+            aya_auto_stem="يملك",
             aya_lemma="ملك",
             aya_root="ملك",
         )
-        # aya 2 — noun مَالِكٌ, root ملك
+        # aya 2 — noun مَالِكٌ, root ملك; normalized form "مالك" stored in aya_auto_stem
         writer.add_document(
             aya="مَالِكِ يَوْمِ الدِّينِ",
             aya_stem="مالك",
+            aya_auto_stem="مالك",
             aya_lemma="مالك",
             aya_root="ملك",
         )
@@ -1524,6 +1529,7 @@ class TestDerivationSubqueryResolutionIntegration(unittest.TestCase):
         writer.add_document(
             aya="بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ",
             aya_stem="رحم",
+            aya_auto_stem="رحم",
             aya_lemma="رحم",
             aya_root="رحم",
         )
@@ -1537,6 +1543,54 @@ class TestDerivationSubqueryResolutionIntegration(unittest.TestCase):
             "يملك": {"lemma": "مَلَكَ",  "root": "ملك", "stem_norm": "ملك"},
         }
         return (form_to_key, {}, {}, {}, {}, {})
+
+    def test_stem_level_with_auto_stem_uses_snowball(self):
+        """derivation_level=1 (stem) must search aya_auto_stem via QStemAnalyzer.
+
+        Level 1 now targets aya_auto_stem (QStemAnalyzer / Snowball Arabic stemmer)
+        rather than aya_stem (corpus-derived, QStandardAnalyzer).  The Snowball
+        analyzer is applied to the raw query term at search time, producing the
+        same stem that was stored at index time.
+
+        Both "مالك" ayas share the same Snowball stem so the query should find
+        at least 1 result (exact-match on 'aya' text also fires).
+        """
+        from whoosh.qparser import QueryParser
+        from whoosh.qparser.plugins import SingleQuotePlugin
+        from alfanous.searching import QSearcher
+
+        ix = self._make_index_with_roots()
+        parser = QueryParser("aya", ix.schema)
+        parser.remove_plugin_class(SingleQuotePlugin)
+
+        qs = QSearcher.__new__(QSearcher)
+        qs._searcher = ix.searcher
+        qs._qparser = parser
+        qs._schema = ix.schema
+        qs._shared_searcher = None
+
+        results, _, _, expansion = qs.search(
+            "مالك",
+            derivation_level=1,
+            word_lookup_table=None,
+            timelimit=None,
+        )
+        # Confirm aya_auto_stem was targeted (not aya_stem).
+        auto_stem_pairs = [p for p in expansion if p[0] == "aya_auto_stem"]
+        self.assertTrue(
+            auto_stem_pairs,
+            f"derivation_level=1 must add aya_auto_stem terms; expansion={expansion}"
+        )
+        stem_pairs = [p for p in expansion if p[0] == "aya_stem"]
+        self.assertFalse(
+            stem_pairs,
+            f"derivation_level=1 must NOT add aya_stem terms; expansion={expansion}"
+        )
+        self.assertGreaterEqual(
+            len(results), 1,
+            f"Stem-level search for مالك must find at least 1 aya; "
+            f"got {len(results)}.  expansion={expansion}"
+        )
 
     def test_root_level_with_lookup_table_finds_all_matching_ayas(self):
         """derivation_level=3 (root) must resolve مالك → ملك and find both ayas.
