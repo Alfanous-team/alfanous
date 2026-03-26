@@ -81,7 +81,7 @@ POSclass = {
 POSclass_arabic = {
     "Nouns":               "اسم",
     "Pronouns":            "ضمير",
-    "Nominals":            "صفة",
+    "Nominals":            "اسم",
     "Adverbs":             "ظرف",
     "Verbs":               "فعل",
     "Prepositions":        "حرف_جر",

@@ -290,11 +290,11 @@ def _load_corpus_words_txt(corpus_path):
                 entry["mood"] = VERB["IND"][0]  # "مرفوع"
             # Infer state for nouns and adjectives/numerals: corpus only tags
             # INDEF (نكرة) explicitly; absence means Definite (معرفة).
-            if stem_feats.get("type") in ("اسم", "صفة") and entry["state"] is None:
+            if stem_feats.get("type") == "اسم" and entry["state"] is None:
                 entry["state"] = NOM["DEF"][0]  # "معرفة"
             # Infer number for nouns and adjectives/numerals: corpus only tags
             # D (dual) and P (plural) explicitly; absence means singular (مفرد).
-            if stem_feats.get("type") in ("اسم", "صفة") and entry["number"] is None:
+            if stem_feats.get("type") == "اسم" and entry["number"] is None:
                 entry["number"] = PGN["S"][0]  # "مفرد"
             # Infer form I for verbs: corpus only tags forms (II)–(XII)
             # explicitly; absence of a form tag means Form I (فَعَلَ).

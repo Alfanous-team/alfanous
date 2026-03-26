@@ -643,7 +643,7 @@ def test_no_number_inference_for_verb(load_words):
     ])
     words = result[(1, 1)]
     # No number PGN (M is gender, not number) → should NOT get مفرد inferred
-    # because type is "Verbs", not "Nouns"/"Nominals"
+    # because type is "فعل" (verb), not "اسم"
     assert words[0]["number"] is None
 
 
