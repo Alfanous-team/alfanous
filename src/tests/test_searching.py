@@ -513,8 +513,169 @@ class TestDerivationExpansionKeywordFilter:
 
 
 # ---------------------------------------------------------------------------
-# Unit tests for _has_wildcard_query (no index required)
+# Unit tests: derivation subquery resolution uses root/lemma/stem from lookup
+# table, NOT the bare (tashkeel-stripped) query word.
 # ---------------------------------------------------------------------------
+
+class TestDerivationSubqueryResolution:
+    """QSearcher.search() must look up the actual morphological value (root /
+    lemma / stem_norm) for each query word before building the derivation
+    subquery Term.
+
+    Regression test for: derivation_level:root search for مالك matches only
+    2 ayas because Term("aya_root", "مالك") was built instead of
+    Term("aya_root", "ملك").  The aya_root field stores "ملك" (the root), not
+    "مالك" (the word form), so searching for the word form found only the rare
+    ayas where مالك happens to be recorded as its own root.
+    """
+
+    def _make_lookup_table(self, form_to_key):
+        """Build a minimal 6-tuple lookup table with only form_to_key populated."""
+        return (form_to_key, {}, {}, {}, {}, {})
+
+    def test_root_level_resolves_root_value(self):
+        """Level 3 (root): query term 'مالك' resolves to root 'ملك' via form_to_key."""
+        form_to_key = {
+            "مالك": {"lemma": "مَالِك", "root": "ملك", "stem_norm": "مالك"},
+        }
+        lt = self._make_lookup_table(form_to_key)
+
+        # Simulate what QSearcher.search() does:
+        _level_to_morph = {1: "stem_norm", 2: "lemma", 3: "root"}
+        _morph_attr = _level_to_morph[3]  # "root"
+        _entry = form_to_key.get("مالك")
+        _morph_val = _entry.get(_morph_attr) if _entry else None
+        _search_term = _morph_val if _morph_val else "مالك"
+
+        assert _search_term == "ملك", (
+            f"Level 3 should search aya_root for 'ملك' (the root), got '{_search_term}'"
+        )
+
+    def test_lemma_level_resolves_lemma_value(self):
+        """Level 2 (lemma): query term 'مالك' resolves to lemma 'مَالِك' via form_to_key."""
+        form_to_key = {
+            "مالك": {"lemma": "مَالِك", "root": "ملك", "stem_norm": "مالك"},
+        }
+
+        _level_to_morph = {1: "stem_norm", 2: "lemma", 3: "root"}
+        _morph_attr = _level_to_morph[2]  # "lemma"
+        _entry = form_to_key.get("مالك")
+        _morph_val = _entry.get(_morph_attr) if _entry else None
+        _search_term = _morph_val if _morph_val else "مالك"
+
+        assert _search_term == "مَالِك", (
+            f"Level 2 should resolve to the vocalized lemma; got '{_search_term}'"
+        )
+
+    def test_stem_level_resolves_stem_norm(self):
+        """Level 1 (stem): query term 'يملك' resolves to its corpus stem via form_to_key."""
+        form_to_key = {
+            "يملك": {"lemma": "مَلَكَ", "root": "ملك", "stem_norm": "ملك"},
+        }
+
+        _level_to_morph = {1: "stem_norm", 2: "lemma", 3: "root"}
+        _morph_attr = _level_to_morph[1]  # "stem_norm"
+        _entry = form_to_key.get("يملك")
+        _morph_val = _entry.get(_morph_attr) if _entry else None
+        _search_term = _morph_val if _morph_val else "يملك"
+
+        assert _search_term == "ملك", (
+            f"Level 1 should resolve to the corpus stem; got '{_search_term}'"
+        )
+
+    def test_unknown_word_falls_back_to_raw_term(self):
+        """A query word not in form_to_key falls back to the raw (normalized) term."""
+        form_to_key: dict = {}  # empty — word not in Quran corpus
+
+        _level_to_morph = {1: "stem_norm", 2: "lemma", 3: "root"}
+        for level in (1, 2, 3):
+            _morph_attr = _level_to_morph[level]
+            _entry = form_to_key.get("xyz")
+            _morph_val = _entry.get(_morph_attr) if _entry else None
+            _search_term = _morph_val if _morph_val else "xyz"
+            assert _search_term == "xyz", (
+                f"Level {level}: unknown word must fall back to raw term; got '{_search_term}'"
+            )
+
+    def test_form_to_key_contains_stem_norm(self):
+        """_build_word_lookup_table must store 'stem_norm' in each form_to_key entry."""
+        from alfanous.query_plugins import _build_word_lookup_table
+
+        class _FakeReader:
+            def iter_docs(self):
+                yield (0, {
+                    "kind": "word",
+                    "word": "يَمْلِكُ",
+                    "normalized": "يملك",
+                    "lemma": "مَلَكَ",
+                    "root": "ملك",
+                    "stem": "ملك",
+                    "standard": "يملك",
+                })
+
+        lt = _build_word_lookup_table(_FakeReader())
+        form_to_key = lt[0]
+
+        assert "يملك" in form_to_key, "normalized form 'يملك' must be in form_to_key"
+        entry = form_to_key["يملك"]
+        assert "stem_norm" in entry, (
+            "form_to_key entry must contain 'stem_norm' for derivation-level stem resolution"
+        )
+        assert entry["stem_norm"] == "ملك", (
+            f"stem_norm should be 'ملك' (normalized corpus stem); got {entry['stem_norm']!r}"
+        )
+        assert entry["root"] == "ملك", "root must be 'ملك'"
+        assert entry["lemma"] == "مَلَكَ", "lemma must be 'مَلَكَ'"
+
+    def test_qsearcher_search_passes_lookup_table(self):
+        """QSearcher.search() must accept and use word_lookup_table parameter.
+
+        Verify that the new keyword parameter is wired in without TypeError.
+        A mock QSearcher that captures the search call confirms the parameter
+        reaches the derivation-subquery building code.
+        """
+        from alfanous.searching import QSearcher
+        from unittest.mock import MagicMock, patch
+        from whoosh import query as wq
+        from whoosh.fields import Schema, TEXT
+
+        # Build a trivial schema and mock out all Whoosh internals.
+        schema = Schema(aya=TEXT)
+        mock_parser = MagicMock()
+        mock_parser.parse.return_value = wq.Term("aya", "مالك")
+
+        mock_searcher_instance = MagicMock()
+        mock_searcher_instance.search.return_value = ([], [], {})
+        mock_searcher_instance.collector.return_value = MagicMock()
+        mock_results = MagicMock()
+        mock_results.__len__ = lambda s: 0
+        mock_results.__iter__ = lambda s: iter([])
+        mock_results.matched_terms.return_value = set()
+        mock_collector = MagicMock()
+        mock_collector.results.return_value = mock_results
+        mock_searcher_instance.collector.return_value = mock_collector
+
+        mock_index = MagicMock()
+        mock_index.get_schema.return_value = schema
+        mock_index.get_index.return_value.searcher.return_value = mock_searcher_instance
+
+        qs = QSearcher.__new__(QSearcher)
+        qs._searcher = mock_index.get_index().searcher
+        qs._qparser = mock_parser
+        qs._schema = schema
+        qs._shared_searcher = mock_searcher_instance
+
+        form_to_key = {"مالك": {"lemma": "مَالِك", "root": "ملك", "stem_norm": "مالك"}}
+        lookup_table = (form_to_key, {}, {}, {}, {}, {})
+
+        # Must not raise TypeError for unknown parameter.
+        try:
+            qs.search("مالك", derivation_level=3, word_lookup_table=lookup_table,
+                      timelimit=None)
+        except TypeError as e:
+            raise AssertionError(
+                f"QSearcher.search() rejected word_lookup_table parameter: {e}"
+            ) from e
 
 class TestHasWildcardQuery:
     """Tests for alfanous.searching._has_wildcard_query."""

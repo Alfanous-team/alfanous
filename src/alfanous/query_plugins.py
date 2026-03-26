@@ -172,11 +172,23 @@ def _build_word_lookup_table(reader):
         root = stored.get("root")
         stem = stored.get("stem")
 
-        # Map every searchable stored form → {lemma, root}
+        # Compute the normalized corpus-derived stem once per word so it can be
+        # stored in form_to_key alongside lemma and root.  This allows callers
+        # that receive a word form (e.g. "مالك") to resolve its corpus stem via a
+        # simple dict lookup rather than a second index scan.
+        _stem_val = stem or lemma  # aya_stem falls back to lemma if stem absent
+        stem_norm = _asf.normalize_all(_stem_val) if _stem_val else None
+
+        # Map every searchable stored form → {lemma, root, stem_norm}.
+        # stem_norm is the QStandardAnalyzer-normalized corpus-derived stem —
+        # the same value that aya_stem / word_stem postings contain at index
+        # time.  Storing it here lets QSearcher.search() and _search_words()
+        # translate a user-typed query word directly to the correct aya_stem /
+        # word_stem posting without needing a separate index pass.
         for sf in _DERIVATION_SEARCH_FIELDS:
             key = stored.get(sf)
             if key and key not in form_to_key:
-                form_to_key[key] = {"lemma": lemma, "root": root}
+                form_to_key[key] = {"lemma": lemma, "root": root, "stem_norm": stem_norm}
 
         # Map lemma/root → unvocalized word forms (for derivation highlighting)
         for field in ("standard", "normalized"):
@@ -206,14 +218,11 @@ def _build_word_lookup_table(reader):
         # The corpus stem for a word may differ from its lemma (e.g. a verb's
         # conjugated stem vs. the lemma root form), so a dedicated mapping gives
         # more precise expansion than reusing normalized_lemma_to_forms.
-        _stem_val = stem or lemma  # aya_stem falls back to lemma if stem absent
-        if _stem_val:
-            stem_norm = _asf.normalize_all(_stem_val)
-            if stem_norm:
-                for field in ("standard", "normalized"):
-                    val = stored.get(field)
-                    if val:
-                        _normalized_stem_forms.setdefault(stem_norm, set()).add(val)
+        if stem_norm:
+            for field in ("standard", "normalized"):
+                val = stored.get(field)
+                if val:
+                    _normalized_stem_forms.setdefault(stem_norm, set()).add(val)
 
         # Build auto_stem_to_forms: map the Snowball Arabic stem of the
         # normalized word form (what aya_auto_stem/word_auto_stem postings
@@ -233,10 +242,19 @@ def _build_word_lookup_table(reader):
                                 val = stored.get(field)
                                 if val:
                                     _auto_stem_forms.setdefault(_sf_stem, set()).add(val)
-                            # Also register the stem itself in form_to_key so
-                            # _collect_derivations_two_pass pass-1 can resolve it.
+                            # Register the Snowball stem itself in form_to_key so
+                            # that _collect_derivations_two_pass pass-1 can resolve
+                            # it when the stem appears as a candidate.  The lemma,
+                            # root, and stem_norm values are inherited from the source
+                            # word because a Snowball stem is a reduced form of that
+                            # word and shares its morphological properties.  Pass-1
+                            # only uses this entry to find the lemma/root for pass-2
+                            # expansion; the inherited values are correct for that
+                            # purpose even if the stem string is not an actual Quranic
+                            # word form.
                             if _sf_stem not in form_to_key:
-                                form_to_key[_sf_stem] = {"lemma": lemma, "root": root}
+                                form_to_key[_sf_stem] = {"lemma": lemma, "root": root,
+                                                         "stem_norm": stem_norm}
                     break  # normalized preferred over word; stop after first hit
 
     lemma_to_forms = {k: frozenset(v) for k, v in _lemma_forms.items()}

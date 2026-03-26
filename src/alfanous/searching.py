@@ -437,7 +437,7 @@ class QSearcher:
     def __exit__(self, *args):
         self.close()
 
-    def search(self, querystr, limit=QURAN_TOTAL_VERSES, sortedby="score", reverse=False, facets=None, filter_dict=None, fuzzy=False, fuzzy_maxdist=1, derivation_level=0, timelimit=5.0):
+    def search(self, querystr, limit=QURAN_TOTAL_VERSES, sortedby="score", reverse=False, facets=None, filter_dict=None, fuzzy=False, fuzzy_maxdist=1, derivation_level=0, timelimit=5.0, word_lookup_table=None):
         # Parse FIRST, before obtaining the shared searcher.  Query plugins
         # (DerivationPlugin, TuplePlugin, …) call engine._reader.reader →
         # QSearcher.get_reader() → _get_shared_searcher() during parse().
@@ -487,16 +487,41 @@ class QSearcher:
         else:
             _deriv_level_int = int(derivation_level)
 
+        # form_to_key maps a normalized word form (e.g. "مالك") to its
+        # morphological properties {"lemma": ..., "root": ..., "stem_norm": ...}.
+        # Used below to translate the user's query word to the correct posting
+        # value for the target derivation field:
+        #   level 1 (aya_stem): form_to_key[term]["stem_norm"] → e.g. "ملك"
+        #   level 2 (aya_lemma): form_to_key[term]["lemma"]    → e.g. "مَالِك"
+        #   level 3 (aya_root): form_to_key[term]["root"]      → e.g. "ملك"
+        # Without this translation we would search aya_root for "مالك" but the
+        # field stores "ملك" (the actual root), so only the 2 ayas where the
+        # literal text "مالك" appears as a root would match instead of the
+        # hundreds of ayas containing any word from the ملك root family.
+        _level_to_morph = {1: "stem_norm", 2: "lemma", 3: "root"}
+        _form_to_key = (word_lookup_table[0]
+                        if word_lookup_table and len(word_lookup_table) > 0
+                        else {})
+
         derivation_subqueries = []
         _derivation_expansion: "set[tuple]" = set()
         if _deriv_level_int >= 1 and not _has_wildcard_query(query):
             _deriv_field = _DERIV_FIELD_MAP.get(_deriv_level_int)
             if _deriv_field is not None and _deriv_field in self._schema:
                 _deriv_field_obj = self._schema[_deriv_field]
-                # All levels: single normalized term from field analyzer.
+                _morph_attr = _level_to_morph.get(_deriv_level_int)
                 for term in _arabic_query_terms(query):
+                    # Resolve the actual morphological value (root/lemma/stem)
+                    # for this query term.  The term is already
+                    # QStandardAnalyzer-normalized (tashkeel stripped) by the
+                    # query parser, so a direct form_to_key lookup is enough.
+                    # Fall back to the raw term when the word is unknown.
+                    _entry = _form_to_key.get(term)
+                    _morph_val = (_entry.get(_morph_attr)
+                                  if _entry and _morph_attr else None)
+                    _search_term = _morph_val if _morph_val else term
                     _seen_toks: "set[str]" = set()
-                    for tok in _deriv_field_obj.analyzer(term, mode="query"):
+                    for tok in _deriv_field_obj.analyzer(_search_term, mode="query"):
                         if tok.text not in _seen_toks:
                             _seen_toks.add(tok.text)
                             derivation_subqueries.append(wquery.Term(_deriv_field, tok.text))

@@ -1581,6 +1581,8 @@ class Raw:
                             # Skip these entries; they are still included in `terms`
                             # (the highlighting list) so any aya that does contain them
                             # will still show the highlighted word.
+                            # term[2] = corpus term-frequency; term[3] = corpus doc-frequency.
+                            # Both are 0 for synthetically injected expansion terms.
                             if not term[2] and not term[3] and not term_matches_in_results:
                                 continue
                             if word_vocalizations:
@@ -2455,11 +2457,23 @@ class Raw:
         # Level 1 (stem)  → search word_stem (QStandardAnalyzer, corpus-derived stem)
         # Level 2 (lemma) → search word_lemma (QStandardAnalyzer)
         # Level 3 (root)  → search root field (ID — normalize directly)
+        #
+        # For each query term we first look up its actual morphological value
+        # (stem/lemma/root) from the word lookup table rather than simply
+        # applying the field analyzer to the raw term.  Without this, a query
+        # for "مالك" would search `root` for "مالك" (tashkeel-stripped query
+        # word) instead of "ملك" (the actual root), returning only the handful
+        # of word docs where مالك itself happens to be the stored root value.
         _WORD_DERIV_FIELD_MAP = {
             1: "word_stem",
             2: "word_lemma",
             3: "root",
         }
+        _word_level_to_morph = {1: "stem_norm", 2: "lemma", 3: "root"}
+        _word_form_to_key: "dict" = {}
+        _wlt = getattr(self.QSE, '_word_lookup_table', None)
+        if _wlt and len(_wlt) > 0:
+            _word_form_to_key = _wlt[0]
         if _dl_flag >= 1:
             _schema_names_set = set(self.QSE._schema.names())
             _dfield = _WORD_DERIV_FIELD_MAP.get(_dl_flag)
@@ -2468,17 +2482,24 @@ class Raw:
                 _seen = set()
                 _wfield_obj = self.QSE._schema[_dfield]
                 _wfield_analyzer = getattr(_wfield_obj, 'analyzer', None)
+                _word_morph_attr = _word_level_to_morph.get(_dl_flag)
                 for _ft, _fterm in word_query.all_terms():
                     if _is_arabic_text(_fterm):
+                        # Resolve the actual morphological value from the lookup
+                        # table; fall back to the raw term if unknown.
+                        _w_entry = _word_form_to_key.get(_fterm)
+                        _w_morph = (_w_entry.get(_word_morph_attr)
+                                    if _w_entry and _word_morph_attr else None)
+                        _w_search = _w_morph if _w_morph else _fterm
                         if _wfield_analyzer:
                             # TEXT field: apply field's own analyzer (QStandardAnalyzer)
-                            for _tok in _wfield_analyzer(_fterm, mode="query"):
+                            for _tok in _wfield_analyzer(_w_search, mode="query"):
                                 if _tok.text not in _seen:
                                     _seen.add(_tok.text)
                                     _deriv_extra.append(wquery.Term(_dfield, _tok.text))
                         else:
                             # ID field (root): strip tashkeel and use directly
-                            _norm = _NORMALIZE_WORD_QUERY(_fterm)
+                            _norm = _NORMALIZE_WORD_QUERY(_w_search)
                             if _norm and _norm not in _seen:
                                 _seen.add(_norm)
                                 _deriv_extra.append(wquery.Term(_dfield, _norm))
