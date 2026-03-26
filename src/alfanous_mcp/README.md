@@ -202,7 +202,7 @@ For morphological filtering use the `search_by_word_linguistics` action:
 
 ```
 # All nouns from root قول
-do({"action": "search_by_word_linguistics", "root": "قول", "type": "أسماء"})
+do({"action": "search_by_word_linguistics", "root": "قول", "type": "اسم"})
 
 # All active-voice past-tense verbs from root كتب
 do({"action": "search_by_word_linguistics", "root": "كتب", "pos": "V",

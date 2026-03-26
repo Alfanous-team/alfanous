@@ -141,17 +141,28 @@ _NORMALIZE_WORD_QUERY = QArabicSymbolsFilter(
     shaping=True, tashkil=True, spellerrors=False, hamza=False, uthmani_symbols=True
 ).normalize_all
 
+# Map Arabic UI field names used in the keywords endpoint to canonical Whoosh
+# field names.  Defined at module level to avoid dict recreation on every call.
+# "اعراب" / "إعراب" (grammatical case) → "case" field (values: مرفوع, منصوب, مجرور)
+# "تعريف" (definiteness / nominal state)  → "state" field (values: معرفة, نكرة)
+_KEYWORDS_ARABIC_FIELD_ALIASES = {
+    "اعراب": "case",
+    "إعراب": "case",
+    "تعريف": "state",
+}
+
 # All word-child index fields targetable by _search_words.
 # Defined at module level so the list is not rebuilt on every request.
 # The first six fields are the primary text search targets:
 #   word           — Uthmani word (vocalized)
 #   word_lemma     — corpus-normalised lemma (tashkeel-stripped)
 #   word_stem      — corpus-derived stem (tashkeel-stripped)
+#   word_auto_stem — Snowball-stemmed word form (QStemAnalyzer) — used by derivation_level=1
 #   normalized     — normalised Uthmani spelling (tashkeel-stripped)
 #   word_standard  — normalised standard (Imla'i) spelling (TEXT, QStandardAnalyzer)
 #   standard       — raw standard (Imla'i) spelling (KEYWORD, stored, for display)
 _WORD_ALL_INDEXED_FIELDS = [
-    "word", "word_lemma", "word_stem",
+    "word", "word_lemma", "word_stem", "word_auto_stem",
     "normalized", "word_standard", "standard",
     "pos", "type",
     "root", "arabicroot",
@@ -717,7 +728,10 @@ class Raw:
         unit = flags.get("unit", "aya")
         field = flags.get("field", "aya_")
         mode = flags.get("mode", "unique")
-        
+
+        # Resolve Arabic UI field name aliases to canonical Whoosh field names.
+        field = _KEYWORDS_ARABIC_FIELD_ALIASES.get(field, field)
+
         # Select the appropriate search engine based on unit
         if unit == "word":
             search_engine = self.QSE
@@ -1233,9 +1247,10 @@ class Raw:
             if derivation_level >= 1 and _deriv_expansion:
                 from alfanous.query_plugins import _collect_derivations_two_pass, _UTHMANI_ANNOTATION_RE
                 _deriv_field_key_map = {
-                    "aya_stem":  "lemma",
-                    "aya_lemma": "lemma",
-                    "aya_root":  "root",
+                    "aya_stem":      "stem",
+                    "aya_lemma":     "lemma",
+                    "aya_root":      "root",
+                    "aya_auto_stem": "auto_stem",
                 }
                 _deriv_key_values: "dict[str, set]" = {}
                 for _df, _dt in _deriv_expansion:
@@ -1251,7 +1266,14 @@ class Raw:
                                 _dvals, _dkey, lookup_table=_lookup_table
                             ):
                                 if w:
-                                    _expanded_words.append(_UTHMANI_ANNOTATION_RE.sub('', w))
+                                    # Strip both Uthmanic annotation marks and standard
+                                    # tashkil so the expanded forms match the indexed
+                                    # "aya" field postings (which are stored stripped by
+                                    # QStandardAnalyzer).  Without this, vocalized forms
+                                    # from the word_standard KEYWORD field would fail the
+                                    # _count_term_in_results lookup and show zero matches.
+                                    _ew_raw = _UTHMANI_ANNOTATION_RE.sub('', w)
+                                    _expanded_words.append(_STRIP_VOCALIZATION(_ew_raw))
                         terms.extend(_expanded_words)
                         # Also add expansion words to termz so they appear in
                         # words.individual (requirement: "anything highlighted
@@ -1550,6 +1572,20 @@ class Raw:
                             matches_in_results += term_matches_in_results
                             term_ayas_in_results = _count_ayas_in_results(term[0], term[1])
                             docs_in_results += term_ayas_in_results
+
+                            # Derivation-expansion terms are injected into termz as
+                            # ("aya", word, 0, 0) — no real corpus stats.  When such a
+                            # term also has zero matches in the current result set it
+                            # would appear in keywords with "0 occurrences in 0 ayas",
+                            # which is useless noise (e.g. the full root family of "ملك"
+                            # contains 34 forms, but only 2 appear in a given result).
+                            # Skip these entries; they are still included in `terms`
+                            # (the highlighting list) so any aya that does contain them
+                            # will still show the highlighted word.
+                            # term[2] = corpus term-frequency; term[3] = corpus doc-frequency.
+                            # Both are 0 for synthetically injected expansion terms.
+                            if not term[2] and not term[3] and not term_matches_in_results:
+                                continue
                             if word_vocalizations:
                                 _term_normalized = strip_vocalization(term[1])
                                 _wdata = _batch_word_data.get(_term_normalized, {})
@@ -2419,14 +2455,28 @@ class Raw:
                 word_query = wquery.Or([word_query, _arabizi_q])
 
         # Derivation-level expansion for word search.
-        # Level 1 (stem)  → search word_stem (QStandardAnalyzer, corpus-derived stem)
+        # Level 1 (stem)  → search word_auto_stem (QStemAnalyzer, Snowball Arabic stemmer)
         # Level 2 (lemma) → search word_lemma (QStandardAnalyzer)
         # Level 3 (root)  → search root field (ID — normalize directly)
+        #
+        # For levels 2 and 3 we first look up the actual morphological value
+        # (lemma/root) from the word lookup table rather than simply applying
+        # the field analyzer to the raw term.  Without this, a query for "مالك"
+        # would search `root` for "مالك" (tashkeel-stripped query word) instead
+        # of "ملك" (the actual root).
+        # Level 1 uses word_auto_stem (QStemAnalyzer / Snowball): the raw query
+        # term is passed directly to the Snowball analyzer, which produces the
+        # same stem that was stored at index time — no form_to_key lookup needed.
         _WORD_DERIV_FIELD_MAP = {
-            1: "word_stem",
+            1: "word_auto_stem",
             2: "word_lemma",
             3: "root",
         }
+        _word_level_to_morph = {2: "lemma", 3: "root"}
+        _word_form_to_key: "dict" = {}
+        _wlt = getattr(self.QSE, '_word_lookup_table', None)
+        if _wlt and len(_wlt) > 0:
+            _word_form_to_key = _wlt[0]
         if _dl_flag >= 1:
             _schema_names_set = set(self.QSE._schema.names())
             _dfield = _WORD_DERIV_FIELD_MAP.get(_dl_flag)
@@ -2435,17 +2485,24 @@ class Raw:
                 _seen = set()
                 _wfield_obj = self.QSE._schema[_dfield]
                 _wfield_analyzer = getattr(_wfield_obj, 'analyzer', None)
+                _word_morph_attr = _word_level_to_morph.get(_dl_flag)
                 for _ft, _fterm in word_query.all_terms():
                     if _is_arabic_text(_fterm):
+                        # Resolve the actual morphological value from the lookup
+                        # table; fall back to the raw term if unknown.
+                        _w_entry = _word_form_to_key.get(_fterm)
+                        _w_morph = (_w_entry.get(_word_morph_attr)
+                                    if _w_entry and _word_morph_attr else None)
+                        _w_search = _w_morph if _w_morph else _fterm
                         if _wfield_analyzer:
                             # TEXT field: apply field's own analyzer (QStandardAnalyzer)
-                            for _tok in _wfield_analyzer(_fterm, mode="query"):
+                            for _tok in _wfield_analyzer(_w_search, mode="query"):
                                 if _tok.text not in _seen:
                                     _seen.add(_tok.text)
                                     _deriv_extra.append(wquery.Term(_dfield, _tok.text))
                         else:
                             # ID field (root): strip tashkeel and use directly
-                            _norm = _NORMALIZE_WORD_QUERY(_fterm)
+                            _norm = _NORMALIZE_WORD_QUERY(_w_search)
                             if _norm and _norm not in _seen:
                                 _seen.add(_norm)
                                 _deriv_extra.append(wquery.Term(_dfield, _norm))

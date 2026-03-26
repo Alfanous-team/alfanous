@@ -95,12 +95,12 @@ def _make_tuple_mock(root_words_map):
 
     TupleQuery._get_words_by_properties maps the user-facing ``type`` property
     to the ``type`` index field (which stores Arabic category values like
-    "أسماء" / "أفعال") via _ARABIC_TO_TYPE.  The mock therefore reads the
+    "اسم" / "فعل") via _ARABIC_TO_TYPE.  The mock therefore reads the
     ``type`` key from filter_dict.
     """
     def _mock(filter_dict, field="standard", limit=5000):
         root = filter_dict.get("root", "")
-        type_ = filter_dict.get("type", "")  # Arabic value: "أسماء", "أفعال", …
+        type_ = filter_dict.get("type", "")  # Arabic value: "اسم", "فعل", …
         key = (root, type_)
         return list(root_words_map.get(key, []))
     return _mock
@@ -173,19 +173,20 @@ def test_antonyms_plugin():
 
 
 def _make_derivation_schema():
-    """Create a Schema that includes aya_stem, aya_lemma, aya_root fields."""
+    """Create a Schema that includes aya_stem, aya_lemma, aya_root and aya_auto_stem fields."""
     from whoosh.fields import Schema, TEXT
-    from alfanous.text_processing import QStandardAnalyzer
+    from alfanous.text_processing import QStandardAnalyzer, QStemAnalyzer
     return Schema(
         text=TEXT(stored=True),
         aya_stem=TEXT(analyzer=QStandardAnalyzer, phrase=False),
         aya_lemma=TEXT(analyzer=QStandardAnalyzer, phrase=False),
         aya_root=TEXT(analyzer=QStandardAnalyzer, phrase=False),
+        aya_auto_stem=TEXT(analyzer=QStemAnalyzer, phrase=False),
     )
 
 
 def test_derivation_plugin_single():
-    """Test derivation plugin with single > (>word) — stem-level: OR(aya_stem, main field)."""
+    """Test derivation plugin with single > (>word) — stem-level: OR(aya_stem, aya_auto_stem, main field)."""
     schema = _make_derivation_schema()
     parser = QueryParser('text', schema)
     parser.add_plugin(DerivationPlugin())
@@ -195,11 +196,12 @@ def test_derivation_plugin_single():
     assert isinstance(query, Or)
     sub_fields = {sq.fieldname for sq in query.subqueries if isinstance(sq, Term)}
     assert "aya_stem" in sub_fields
+    assert "aya_auto_stem" in sub_fields, "DerivationPlugin must include aya_auto_stem (Snowball)"
     assert "text" in sub_fields
 
 
 def test_derivation_plugin_double():
-    """Test derivation plugin with double >> (>>word) — lemma-level: OR(aya_lemma, main field)."""
+    """Test derivation plugin with double >> (>>word) — lemma-level: OR(aya_lemma, aya_auto_stem, main field)."""
     schema = _make_derivation_schema()
     parser = QueryParser('text', schema)
     parser.add_plugin(DerivationPlugin())
@@ -207,11 +209,12 @@ def test_derivation_plugin_double():
     assert isinstance(query, Or)
     sub_fields = {sq.fieldname for sq in query.subqueries if isinstance(sq, Term)}
     assert "aya_lemma" in sub_fields
+    assert "aya_auto_stem" in sub_fields, "DerivationPlugin must include aya_auto_stem (Snowball)"
     assert "text" in sub_fields
 
 
 def test_derivation_plugin_triple():
-    """Test derivation plugin with triple >>> (>>>word) — root-level: OR(aya_root, main field)."""
+    """Test derivation plugin with triple >>> (>>>word) — root-level: OR(aya_root, aya_auto_stem, main field)."""
     schema = _make_derivation_schema()
     parser = QueryParser('text', schema)
     parser.add_plugin(DerivationPlugin())
@@ -219,7 +222,27 @@ def test_derivation_plugin_triple():
     assert isinstance(query, Or)
     sub_fields = {sq.fieldname for sq in query.subqueries if isinstance(sq, Term)}
     assert "aya_root" in sub_fields
+    assert "aya_auto_stem" in sub_fields, "DerivationPlugin must include aya_auto_stem (Snowball)"
     assert "text" in sub_fields
+
+
+def test_derivation_plugin_auto_stem_without_aya_auto_stem_field():
+    """DerivationPlugin must work gracefully when aya_auto_stem is not in the schema."""
+    from whoosh.fields import Schema, TEXT
+    from alfanous.text_processing import QStandardAnalyzer
+    schema_no_auto = Schema(
+        text=TEXT(stored=True),
+        aya_stem=TEXT(analyzer=QStandardAnalyzer, phrase=False),
+        aya_lemma=TEXT(analyzer=QStandardAnalyzer, phrase=False),
+        aya_root=TEXT(analyzer=QStandardAnalyzer, phrase=False),
+    )
+    parser = QueryParser('text', schema_no_auto)
+    parser.add_plugin(DerivationPlugin())
+    query = parser.parse(">مالك")
+    # Must still produce a valid query even without aya_auto_stem.
+    sub_fields = {sq.fieldname for sq in query.subqueries if isinstance(sq, Term)}
+    assert "aya_stem" in sub_fields
+    assert "aya_auto_stem" not in sub_fields  # absent since not in schema
 
 
 def test_spell_errors_plugin():
@@ -277,7 +300,7 @@ def test_tuple_plugin_single_item():
 
 def test_tuple_plugin_multiple_items():
     """Test tuple plugin — root قول, type اسم (noun): 11 results."""
-    _mock = _make_tuple_mock({("قول", "أسماء"): _QAWL_NOUNS})
+    _mock = _make_tuple_mock({("قول", "اسم"): _QAWL_NOUNS})
     with patch("alfanous.query_plugins._query_word_index", side_effect=_mock):
         parser = create_test_parser()
         query = parser.parse("{قول،اسم}")
@@ -294,7 +317,7 @@ def test_tuple_plugin_multiple_items():
 
 def test_tuple_plugin_root_and_type():
     """Test tuple plugin — root ملك, type فعل (verb): 8 results."""
-    _mock = _make_tuple_mock({("ملك", "أفعال"): _MALIK_VERBS})
+    _mock = _make_tuple_mock({("ملك", "فعل"): _MALIK_VERBS})
     with patch("alfanous.query_plugins._query_word_index", side_effect=_mock):
         parser = create_test_parser()
         query = parser.parse("{ملك،فعل}")
@@ -306,6 +329,32 @@ def test_tuple_plugin_root_and_type():
     assert "ملكتم" in query.words
     assert "تملك" in query.words
     assert "أملك" in query.words
+
+
+def test_tuple_plugin_type_filter_blocks_auto_stem():
+    """When a type filter is present, auto-stem expansion must not run.
+
+    {ملك، فعل} should return only verbs.  Without the fix, auto-stem would
+    add nouns like مَلِك and مَلَك that share the same Snowball stem as ملك.
+    The mock returns only verbs for (ملك, فعل); any call with an empty type
+    (i.e. auto-stem path) would return nouns — the test asserts they are absent.
+    """
+    _NOUNS_SAME_STEM = ["ملك", "ملكا", "الملك", "الملوك"]
+    _mock = _make_tuple_mock({
+        ("ملك", "فعل"): _MALIK_VERBS,
+        ("ملك", ""): _NOUNS_SAME_STEM,  # would be hit if auto-stem runs
+    })
+    with patch("alfanous.query_plugins._query_word_index", side_effect=_mock):
+        parser = create_test_parser()
+        query = parser.parse("{ملك،فعل}")
+    assert isinstance(query, TupleQuery)
+    # Auto-stem must not have added any nouns
+    for noun in _NOUNS_SAME_STEM:
+        assert noun not in query.words, (
+            f"Auto-stem expansion leaked noun '{noun}' into verb-filtered results"
+        )
+    # Verbs must still be present
+    assert "يملك" in query.words
 
 
 def test_arabic_wildcard_asterisk():
@@ -607,19 +656,21 @@ def test_complex_query():
 def create_test_index():
     """Create a RAM-based test index with Arabic words and derivation fields."""
     from whoosh.filedb.filestore import RamStorage
-    from alfanous.text_processing import QStandardAnalyzer
+    from alfanous.text_processing import QStandardAnalyzer, QStemAnalyzer
 
     schema = Schema(
         text=TEXT(stored=True),
         aya_stem=TEXT(analyzer=QStandardAnalyzer, phrase=False),
         aya_lemma=TEXT(analyzer=QStandardAnalyzer, phrase=False),
         aya_root=TEXT(analyzer=QStandardAnalyzer, phrase=False),
+        aya_auto_stem=TEXT(analyzer=QStemAnalyzer, phrase=False),
     )
     st = RamStorage()
     ix = st.create_index(schema)
     writer = ix.writer()
     for word in ['مالك', 'مالكون', 'يملك', 'الملك', 'ملكوت']:
-        writer.add_document(text=word, aya_lemma=word, aya_stem=word, aya_root=word)
+        writer.add_document(text=word, aya_lemma=word, aya_stem=word,
+                            aya_root=word, aya_auto_stem=word)
     writer.commit()
     return ix
 
@@ -976,6 +1027,61 @@ def test_collect_derivations_two_pass_returns_only_unvocalized():
     assert "مالك" in results, "Expected 'مالك' (normalized) in results"
 
 
+def test_collect_derivations_two_pass_multi_lemma_normalization():
+    """_collect_derivations_two_pass must return forms from ALL vocalized lemmas
+    that share the same normalized (no-tashkeel) form.
+
+    Regression test for: when aya_lemma postings contain a normalized lemma
+    like "ملك" that could come from both مَلَكَ (verb) and مَلِكٌ (noun), the
+    expansion must include forms of BOTH lemmas so no matched word shows zero
+    hits in the keywords output.
+    """
+    from alfanous.query_plugins import _build_word_lookup_table, _collect_derivations_two_pass
+    from unittest.mock import MagicMock
+
+    # Two words with DIFFERENT vocalized lemmas that both normalize to "ملك":
+    #   مَلِكٌ (king, noun)  — lemma = "مَلِكٌ"
+    #   يَمْلِكُ (he owns, verb) — lemma = "مَلَكَ"
+    # Both lemmas strip to "ملك" under QStandardAnalyzer.
+    _DOCS = [
+        {
+            "kind": "word",
+            "lemma": "مَلِكٌ",   # vocalized lemma for noun "king"
+            "root": "ملك",
+            "word": "مَلِكٌ",
+            "normalized": "ملك",
+            "standard": "ملك",
+        },
+        {
+            "kind": "word",
+            "lemma": "مَلَكَ",   # vocalized lemma for verb "to own/reign"
+            "root": "ملك",
+            "word": "يَمْلِكُ",
+            "normalized": "يملك",
+            "standard": "يملك",
+        },
+    ]
+
+    mock_reader = MagicMock()
+    mock_reader.iter_docs.return_value = [(i, d) for i, d in enumerate(_DOCS)]
+
+    lookup_table = _build_word_lookup_table(mock_reader)
+
+    # When aya_lemma:ملك is matched, both "ملك" (noun form) and "يملك" (verb
+    # form) must appear in the expansion — the two-pass fallback via form_to_key
+    # would only find one lemma, missing the other.
+    results = _collect_derivations_two_pass({"ملك"}, "lemma", lookup_table=lookup_table)
+
+    assert "ملك" in results, (
+        "Expected noun form 'ملك' (from lemma مَلِكٌ) in results"
+    )
+    assert "يملك" in results, (
+        "Expected verb form 'يملك' (from lemma مَلَكَ) in results. "
+        "Before the fix, the two-pass fallback via form_to_key would only "
+        "find one lemma (whichever normalized form was seen first), missing "
+        "the other and causing matched words to show zero hits in keywords."
+    )
+
 
 def _make_word_index_mock_with_marks(word, lemma, root, lemma_words, root_words):
     """Like _make_word_index_mock but injects U+06D6–U+06ED marks into the
@@ -1136,3 +1242,216 @@ class TestStripPhraseQueries:
         result = _strip_phrase_queries(q)
         assert isinstance(result, wq.And)
         assert all(isinstance(s, wq.Term) for s in result.subqueries)
+
+
+# ---------------------------------------------------------------------------
+# Derivation subquery morphological resolution via QSearcher.search()
+# ---------------------------------------------------------------------------
+
+def test_qsearcher_root_level_resolves_root_from_lookup_table():
+    """QSearcher.search(derivation_level=3, word_lookup_table=...) must resolve
+    the query word to its actual root before building Term("aya_root", ...).
+
+    The index stores aya_root='ملك' (the root), NOT 'مالك' (the word form).
+    Without resolution, Term("aya_root","مالك") finds 0 results.
+    With resolution via form_to_key, Term("aya_root","ملك") finds both ayas.
+
+    This is an end-to-end regression test for the "only 2 ayas matched" bug.
+    """
+    from whoosh.filedb.filestore import RamStorage
+    from whoosh.fields import Schema, TEXT
+    from whoosh.qparser import QueryParser
+    from whoosh.qparser.plugins import SingleQuotePlugin
+    from alfanous.text_processing import QStandardAnalyzer
+    from alfanous.searching import QSearcher
+
+    # Build an index where aya_root stores the real root "ملك", not the word forms.
+    schema = Schema(
+        aya=TEXT(analyzer=QStandardAnalyzer, stored=True),
+        aya_stem=TEXT(analyzer=QStandardAnalyzer, phrase=False),
+        aya_lemma=TEXT(analyzer=QStandardAnalyzer, phrase=False),
+        aya_root=TEXT(analyzer=QStandardAnalyzer, phrase=False),
+    )
+    st = RamStorage()
+    ix = st.create_index(schema)
+    writer = ix.writer()
+    writer.add_document(
+        aya="يَمْلِكُ مَا فِي السَّمَاوَاتِ",
+        aya_stem="ملك", aya_lemma="ملك", aya_root="ملك",
+    )
+    writer.add_document(
+        aya="مَالِكِ يَوْمِ الدِّينِ",
+        aya_stem="مالك", aya_lemma="مالك", aya_root="ملك",
+    )
+    writer.add_document(
+        aya="بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ",
+        aya_stem="رحم", aya_lemma="رحم", aya_root="رحم",
+    )
+    writer.commit()
+
+    # Build a minimal word lookup table: مالك → root "ملك"
+    form_to_key = {
+        "مالك": {"lemma": "مَالِك", "root": "ملك", "stem_norm": "مالك"},
+        "يملك": {"lemma": "مَلَكَ",  "root": "ملك", "stem_norm": "ملك"},
+    }
+    word_lookup_table = (form_to_key, {}, {}, {}, {}, {})
+
+    parser = QueryParser("aya", ix.schema)
+    parser.remove_plugin_class(SingleQuotePlugin)
+
+    qs = QSearcher.__new__(QSearcher)
+    qs._searcher = ix.searcher
+    qs._qparser = parser
+    qs._schema = ix.schema
+    qs._shared_searcher = None
+
+    results, _, _, expansion = qs.search(
+        "مالك",
+        derivation_level=3,
+        word_lookup_table=word_lookup_table,
+        timelimit=None,
+    )
+    assert len(results) == 2, (
+        f"Root-level search for مالك (root=ملك) must return 2 ayas, got {len(results)}. "
+        f"expansion={expansion}.  "
+        "This regression means form_to_key root resolution is broken."
+    )
+
+
+def test_qsearcher_root_level_without_lookup_uses_raw_term():
+    """QSearcher.search() without a lookup table falls back to the raw query term.
+
+    Verifies the fallback path: when word_lookup_table=None or empty, the code
+    builds Term("aya_root","مالك") (the unresolved form) which finds no results
+    in an index where aya_root stores "ملك".
+    """
+    from whoosh.filedb.filestore import RamStorage
+    from whoosh.fields import Schema, TEXT
+    from whoosh.qparser import QueryParser
+    from whoosh.qparser.plugins import SingleQuotePlugin
+    from alfanous.text_processing import QStandardAnalyzer
+    from alfanous.searching import QSearcher
+
+    schema = Schema(
+        aya=TEXT(analyzer=QStandardAnalyzer, stored=True),
+        aya_stem=TEXT(analyzer=QStandardAnalyzer, phrase=False),
+        aya_lemma=TEXT(analyzer=QStandardAnalyzer, phrase=False),
+        aya_root=TEXT(analyzer=QStandardAnalyzer, phrase=False),
+    )
+    st = RamStorage()
+    ix = st.create_index(schema)
+    writer = ix.writer()
+    writer.add_document(
+        aya="يَمْلِكُ مَا فِي السَّمَاوَاتِ",
+        aya_stem="ملك", aya_lemma="ملك", aya_root="ملك",
+    )
+    writer.add_document(
+        aya="مَالِكِ يَوْمِ الدِّينِ",
+        aya_stem="مالك", aya_lemma="مالك", aya_root="ملك",
+    )
+    writer.commit()
+
+    parser = QueryParser("aya", ix.schema)
+    parser.remove_plugin_class(SingleQuotePlugin)
+
+    qs = QSearcher.__new__(QSearcher)
+    qs._searcher = ix.searcher
+    qs._qparser = parser
+    qs._schema = ix.schema
+    qs._shared_searcher = None
+
+    # No lookup table → Term("aya_root","مالك") built — no aya has that root
+    results, _, _, _ = qs.search(
+        "مالك",
+        derivation_level=3,
+        word_lookup_table=None,
+        timelimit=None,
+    )
+    # aya exact-match fires on "مالك" in aya text: finds the 1 aya "مَالِكِ..."
+    # aya_root fallback finds nothing (no aya has aya_root="مالك").
+    # Total < 2, confirming that without the lookup table the fix doesn't work.
+    assert len(results) < 2, (
+        f"Without lookup table the raw fallback should not find all root-family ayas, "
+        f"got {len(results)}"
+    )
+
+def test_qsearcher_stem_level_targets_aya_auto_stem():
+    """QSearcher.search(derivation_level=1) must target aya_auto_stem, NOT aya_stem.
+
+    derivation_level=1 now uses aya_auto_stem (QStemAnalyzer / Snowball Arabic
+    stemmer) so that morphological variants are matched via automatic stemming
+    at both index and query time, without needing a corpus-derived stem lookup.
+
+    The test verifies:
+    1. aya_auto_stem terms appear in the derivation expansion.
+    2. aya_stem terms do NOT appear in the derivation expansion.
+    3. The Snowball analyzer finds at least 1 result.
+    """
+    from whoosh.filedb.filestore import RamStorage
+    from whoosh.fields import Schema, TEXT
+    from whoosh.qparser import QueryParser
+    from whoosh.qparser.plugins import SingleQuotePlugin
+    from alfanous.text_processing import QStandardAnalyzer, QStemAnalyzer
+    from alfanous.searching import QSearcher
+
+    # Index where aya_auto_stem stores the normalized word form;
+    # QStemAnalyzer applies Snowball at index time.
+    schema = Schema(
+        aya=TEXT(analyzer=QStandardAnalyzer, stored=True),
+        aya_stem=TEXT(analyzer=QStandardAnalyzer, phrase=False),
+        aya_auto_stem=TEXT(analyzer=QStemAnalyzer, phrase=False),
+        aya_lemma=TEXT(analyzer=QStandardAnalyzer, phrase=False),
+        aya_root=TEXT(analyzer=QStandardAnalyzer, phrase=False),
+    )
+    st = RamStorage()
+    ix = st.create_index(schema)
+    writer = ix.writer()
+    # Store the normalized word form in aya_auto_stem; the Snowball analyzer
+    # will produce the same stem at index and query time.
+    writer.add_document(
+        aya="مَالِكِ يَوْمِ الدِّينِ",
+        aya_stem="مالك",
+        aya_auto_stem="مالك",
+        aya_lemma="مالك",
+        aya_root="ملك",
+    )
+    writer.add_document(
+        aya="بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ",
+        aya_stem="رحم",
+        aya_auto_stem="رحم",
+        aya_lemma="رحم",
+        aya_root="رحم",
+    )
+    writer.commit()
+
+    parser = QueryParser("aya", ix.schema)
+    parser.remove_plugin_class(SingleQuotePlugin)
+
+    qs = QSearcher.__new__(QSearcher)
+    qs._searcher = ix.searcher
+    qs._qparser = parser
+    qs._schema = ix.schema
+    qs._shared_searcher = None
+
+    results, _, _, expansion = qs.search(
+        "مالك",
+        derivation_level=1,
+        word_lookup_table=None,
+        timelimit=None,
+    )
+
+    auto_stem_pairs = [p for p in expansion if p[0] == "aya_auto_stem"]
+    stem_pairs = [p for p in expansion if p[0] == "aya_stem"]
+
+    assert auto_stem_pairs, (
+        f"derivation_level=1 must produce aya_auto_stem expansion terms; "
+        f"expansion={expansion}"
+    )
+    assert not stem_pairs, (
+        f"derivation_level=1 must NOT produce aya_stem expansion terms; "
+        f"expansion={expansion}"
+    )
+    assert len(results) >= 1, (
+        f"Stem-level search for مالك (via aya_auto_stem Snowball) must find at "
+        f"least the 1 exact-match aya; got {len(results)}"
+    )

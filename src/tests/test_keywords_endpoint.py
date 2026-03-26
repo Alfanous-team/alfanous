@@ -210,3 +210,73 @@ def test_keywords_word_unit():
     # Word children are embedded in QSE — count > 0 when corpus was indexed
     assert show_data['count'] >= 0
 
+
+def test_keywords_arabic_field_alias_case():
+    """Arabic field alias 'اعراب' resolves to the 'case' Whoosh field.
+
+    The 'case' field stores Arabic grammatical-case values (مرفوع, منصوب, مجرور)
+    for word-child documents.  Querying with the Arabic UI name 'اعراب' must
+    return the same results as querying with the canonical field name 'case'.
+    """
+    result_alias = api.do({
+        'action': 'show', 'query': 'keywords',
+        'unit': 'word', 'field': 'اعراب', 'mode': 'unique',
+    })
+    result_direct = api.do({
+        'action': 'show', 'query': 'keywords',
+        'unit': 'word', 'field': 'case', 'mode': 'unique',
+    })
+
+    assert result_alias['error']['code'] == 0
+    assert result_direct['error']['code'] == 0
+
+    # The resolved field name in the response should be the canonical Whoosh name.
+    assert result_alias['show']['field'] == 'case'
+
+    # Keyword values must include the accusative form منصوب.
+    keywords = result_alias['show']['keywords']
+    assert 'منصوب' in keywords, (
+        f"Expected 'منصوب' in case-field keywords, got: {sorted(keywords)[:10]}..."
+    )
+    # Both forms of the alias should return identical results.
+    assert set(keywords) == set(result_direct['show']['keywords'])
+
+
+def test_keywords_arabic_field_alias_case_hamza():
+    """Arabic field alias 'إعراب' (with hamza) also resolves to 'case'."""
+    result = api.do({
+        'action': 'show', 'query': 'keywords',
+        'unit': 'word', 'field': 'إعراب', 'mode': 'unique',
+    })
+    assert result['error']['code'] == 0
+    assert result['show']['field'] == 'case'
+    assert 'منصوب' in result['show']['keywords']
+
+
+def test_keywords_arabic_field_alias_state():
+    """Arabic field alias 'تعريف' resolves to the 'state' Whoosh field.
+
+    The 'state' field stores definiteness values (معرفة, نكرة) for word-child
+    documents.  Querying with 'تعريف' must return the same results as querying
+    with the canonical field name 'state'.
+    """
+    result_alias = api.do({
+        'action': 'show', 'query': 'keywords',
+        'unit': 'word', 'field': 'تعريف', 'mode': 'unique',
+    })
+    result_direct = api.do({
+        'action': 'show', 'query': 'keywords',
+        'unit': 'word', 'field': 'state', 'mode': 'unique',
+    })
+
+    assert result_alias['error']['code'] == 0
+    assert result_direct['error']['code'] == 0
+
+    assert result_alias['show']['field'] == 'state'
+
+    keywords = result_alias['show']['keywords']
+    assert 'معرفة' in keywords, (
+        f"Expected 'معرفة' in state-field keywords, got: {sorted(keywords)[:10]}..."
+    )
+    assert set(keywords) == set(result_direct['show']['keywords'])
+

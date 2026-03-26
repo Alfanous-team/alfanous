@@ -130,33 +130,65 @@ def _build_word_lookup_table(reader):
     ``engine._word_lookup_table`` and freed when the engine is closed.
 
     Performs a single ``iter_docs()`` pass over all ~77 k word-child documents
-    and populates three in-memory dicts:
+    and populates six in-memory dicts:
 
     * ``form_to_key``: stored word form → ``{'lemma': ..., 'root': ...}``
     * ``lemma_to_forms``: vocalized lemma → frozenset of unvocalized word forms
     * ``root_to_forms``: root string → frozenset of unvocalized word forms
+    * ``normalized_lemma_to_forms``: normalized (no-tashkeel) lemma →
+      frozenset of unvocalized word forms for ALL vocalized lemmas that share
+      the same normalized form.  Primary lookup for ``aya_lemma`` postings.
+    * ``normalized_stem_to_forms``: normalized corpus-derived stem →
+      frozenset of unvocalized word forms sharing that corpus stem.  Used
+      when expanding ``aya_stem`` postings (indexed with QStandardAnalyzer)
+      back to actual word forms for highlighting.
+    * ``auto_stem_to_forms``: Snowball Arabic stem of normalized word form →
+      frozenset of unvocalized word forms sharing that Snowball stem.  Used
+      when expanding ``aya_auto_stem`` postings (which are indexed with
+      ``QStemAnalyzer``) back to actual word forms for highlighting and for
+      ``TupleQuery`` auto-stem expansion.
 
     The tables are used by :func:`_collect_derivations_two_pass` for
     highlighting derivation-level aya-search results.
 
     :param reader: An open Whoosh ``IndexReader``.
-    :returns: Tuple ``(form_to_key, lemma_to_forms, root_to_forms)``
+    :returns: Tuple ``(form_to_key, lemma_to_forms, root_to_forms,
+        normalized_lemma_to_forms, normalized_stem_to_forms, auto_stem_to_forms)``
     """
     form_to_key = {}       # word_form → {'lemma': vocalized_lemma, 'root': root}
     _lemma_forms = {}      # vocalized_lemma → set of unvocalized word forms
     _root_forms = {}       # root            → set of unvocalized word forms
+    _normalized_lemma_forms = {}  # normalized_lemma → set of unvocalized word forms
+    _normalized_stem_forms = {}   # normalized_stem  → set of unvocalized word forms
+    _auto_stem_forms = {}         # snowball_stem     → set of unvocalized word forms
+
+    _asf = QArabicSymbolsFilter(shaping=True, tashkil=True, spellerrors=False, hamza=False)
+    stemmer = _get_arabic_stemmer()
 
     for _, stored in reader.iter_docs():
         if stored.get("kind") != "word":
             continue
         lemma = stored.get("lemma")
         root = stored.get("root")
+        stem = stored.get("stem")
 
-        # Map every searchable stored form → {lemma, root}
+        # Compute the normalized corpus-derived stem once per word so it can be
+        # stored in form_to_key alongside lemma and root.  This allows callers
+        # that receive a word form (e.g. "مالك") to resolve its corpus stem via a
+        # simple dict lookup rather than a second index scan.
+        _stem_val = stem or lemma  # aya_stem falls back to lemma if stem absent
+        stem_norm = _asf.normalize_all(_stem_val) if _stem_val else None
+
+        # Map every searchable stored form → {lemma, root, stem_norm}.
+        # stem_norm is the QStandardAnalyzer-normalized corpus-derived stem —
+        # the same value that aya_stem / word_stem postings contain at index
+        # time.  Storing it here lets QSearcher.search() and _search_words()
+        # translate a user-typed query word directly to the correct aya_stem /
+        # word_stem posting without needing a separate index pass.
         for sf in _DERIVATION_SEARCH_FIELDS:
             key = stored.get(sf)
             if key and key not in form_to_key:
-                form_to_key[key] = {"lemma": lemma, "root": root}
+                form_to_key[key] = {"lemma": lemma, "root": root, "stem_norm": stem_norm}
 
         # Map lemma/root → unvocalized word forms (for derivation highlighting)
         for field in ("standard", "normalized"):
@@ -168,26 +200,98 @@ def _build_word_lookup_table(reader):
             if root:
                 _root_forms.setdefault(root, set()).add(val)
 
+        # Build normalized_lemma_to_forms: map the QStandardAnalyzer-normalized
+        # lemma (what aya_lemma postings contain) → word forms.
+        # Multiple vocalized lemmas can normalize to the same string (e.g.
+        # مَلَكَ and مَلِكٌ both normalize to "ملك"), so all their forms are
+        # collected together under the single normalized key.
+        if lemma:
+            lemma_norm = _asf.normalize_all(lemma)
+            if lemma_norm:
+                for field in ("standard", "normalized"):
+                    val = stored.get(field)
+                    if val:
+                        _normalized_lemma_forms.setdefault(lemma_norm, set()).add(val)
+
+        # Build normalized_stem_to_forms: map the QStandardAnalyzer-normalized
+        # corpus-derived stem (what aya_stem postings contain) → word forms.
+        # The corpus stem for a word may differ from its lemma (e.g. a verb's
+        # conjugated stem vs. the lemma root form), so a dedicated mapping gives
+        # more precise expansion than reusing normalized_lemma_to_forms.
+        if stem_norm:
+            for field in ("standard", "normalized"):
+                val = stored.get(field)
+                if val:
+                    _normalized_stem_forms.setdefault(stem_norm, set()).add(val)
+
+        # Build auto_stem_to_forms: map the Snowball Arabic stem of the
+        # normalized word form (what aya_auto_stem/word_auto_stem postings
+        # contain after QStemAnalyzer processing) → word forms.
+        # This enables _collect_derivations_two_pass to expand aya_auto_stem
+        # postings back to actual word forms for highlighting, and lets
+        # TupleQuery find additional word candidates via auto-stemming.
+        if stemmer:
+            for sf_field in ("normalized", "word"):
+                _sf_raw = stored.get(sf_field) or ""
+                if _sf_raw:
+                    _sf_norm = _asf.normalize_all(_sf_raw)
+                    if _sf_norm:
+                        _sf_stem = stemmer.stemWord(_sf_norm)
+                        if _sf_stem:
+                            # Hoist the standard/normalized lookups outside the
+                            # inner add loop to avoid repeated dict accesses.
+                            _std_val = stored.get("standard")
+                            _norm_val = stored.get("normalized")
+                            if _std_val:
+                                _auto_stem_forms.setdefault(_sf_stem, set()).add(_std_val)
+                            if _norm_val:
+                                _auto_stem_forms.setdefault(_sf_stem, set()).add(_norm_val)
+                            # Register the Snowball stem itself in form_to_key so
+                            # that _collect_derivations_two_pass pass-1 can resolve
+                            # it when the stem appears as a candidate.  The lemma,
+                            # root, and stem_norm values are inherited from the source
+                            # word because a Snowball stem is a reduced form of that
+                            # word and shares its morphological properties.  Pass-1
+                            # only uses this entry to find the lemma/root for pass-2
+                            # expansion; the inherited values are correct for that
+                            # purpose even if the stem string is not an actual Quranic
+                            # word form.
+                            if _sf_stem not in form_to_key:
+                                form_to_key[_sf_stem] = {"lemma": lemma, "root": root,
+                                                         "stem_norm": stem_norm}
+                    break  # normalized preferred over word; stop after first hit
+
     lemma_to_forms = {k: frozenset(v) for k, v in _lemma_forms.items()}
     root_to_forms  = {k: frozenset(v) for k, v in _root_forms.items()}
-    return form_to_key, lemma_to_forms, root_to_forms
+    normalized_lemma_to_forms = {k: frozenset(v) for k, v in _normalized_lemma_forms.items()}
+    normalized_stem_to_forms  = {k: frozenset(v) for k, v in _normalized_stem_forms.items()}
+    auto_stem_to_forms = {k: frozenset(v) for k, v in _auto_stem_forms.items()}
+    return (form_to_key, lemma_to_forms, root_to_forms,
+            normalized_lemma_to_forms, normalized_stem_to_forms, auto_stem_to_forms)
 
 
 def _collect_derivations_two_pass(candidates, index_key, lookup_table=None):
-    """Collect unvocalized word forms sharing the same lemma or root as *candidates*.
+    """Collect unvocalized word forms sharing the same lemma, stem, root, or
+    auto-stem as *candidates*.
 
     Used for **highlighting** after a derivation-level aya search: the matched
-    aya_lemma / aya_root field values are expanded back to the actual word
-    forms that appear in the aya text so that those words are highlighted.
+    aya_lemma / aya_stem / aya_root / aya_auto_stem field values are expanded
+    back to the actual word forms that appear in the aya text so that those
+    words are highlighted.
 
     Uses the engine-level lookup table (built once at engine init) rather than
     rescanning the index on every request.
 
     :param candidates: Set/frozenset of candidate word forms (normalized).
-    :param index_key: ``'lemma'`` or ``'root'``.
-    :param lookup_table: Pre-built ``(form_to_key, lemma_to_forms,
-        root_to_forms)`` tuple from ``engine._word_lookup_table``.  When
-        ``None`` the function falls back to the current QSE engine's table.
+        When called from outputs.py with derivation-expansion terms, these are
+        the QStandardAnalyzer-normalized values from the ``aya_lemma`` /
+        ``aya_stem`` / ``aya_root`` postings, or QStemAnalyzer-stemmed values
+        from ``aya_auto_stem`` postings.
+        When called from DerivationQuery, these are the word form itself.
+    :param index_key: One of ``'lemma'``, ``'stem'``, ``'root'``,
+        or ``'auto_stem'``.
+    :param lookup_table: Pre-built tuple from ``engine._word_lookup_table``.
+        When ``None`` the function falls back to the current QSE engine's table.
     :returns: List of unique unvocalized word forms.
     """
     if lookup_table is None:
@@ -200,14 +304,83 @@ def _collect_derivations_two_pass(candidates, index_key, lookup_table=None):
     if not lookup_table:
         return []
 
-    form_to_key, lemma_to_forms, root_to_forms = lookup_table
+    # Unpack the lookup table — support old 3/4/5-tuple and new 6-tuple.
+    _lt = lookup_table
+    form_to_key              = _lt[0] if len(_lt) > 0 else {}
+    lemma_to_forms           = _lt[1] if len(_lt) > 1 else {}
+    root_to_forms            = _lt[2] if len(_lt) > 2 else {}
+    normalized_lemma_to_forms = _lt[3] if len(_lt) > 3 else {}
+    normalized_stem_to_forms  = _lt[4] if len(_lt) > 4 else {}
+    auto_stem_to_forms        = _lt[5] if len(_lt) > 5 else {}
+
+    # ------------------------------------------------------------------
+    # Auto-stem expansion (aya_auto_stem postings, QStemAnalyzer)
+    # ------------------------------------------------------------------
+    if index_key == "auto_stem":
+        words = set()
+        stemmer = _get_arabic_stemmer()
+        _asf = QArabicSymbolsFilter(shaping=True, tashkil=True, spellerrors=False, hamza=False)
+        for candidate in candidates:
+            # Direct lookup of already-stemmed terms
+            forms = auto_stem_to_forms.get(candidate)
+            if forms:
+                words.update(forms)
+            # Also try Snowball-stemming the candidate (handles un-stemmed input)
+            if stemmer:
+                cand_norm = _asf.normalize_all(candidate)
+                if cand_norm:
+                    cand_stem = stemmer.stemWord(cand_norm)
+                    if cand_stem and cand_stem != candidate:
+                        forms = auto_stem_to_forms.get(cand_stem)
+                        if forms:
+                            words.update(forms)
+        return list(words)
+
+    # ------------------------------------------------------------------
+    # Corpus-stem expansion (aya_stem postings, QStandardAnalyzer)
+    # ------------------------------------------------------------------
+    if index_key == "stem":
+        words = set()
+        for candidate in candidates:
+            forms = normalized_stem_to_forms.get(candidate)
+            if forms:
+                words.update(forms)
+        if words:
+            return list(words)
+        # Fall through to two-pass if direct stem lookup found nothing.
+
+    # ------------------------------------------------------------------
+    # Lemma expansion (aya_lemma postings, QStandardAnalyzer)
+    # ------------------------------------------------------------------
+    if index_key == "lemma" and normalized_lemma_to_forms:
+        # Candidates are QStandardAnalyzer-normalized lemma values straight
+        # from the aya_lemma postings.  Use the normalized_lemma_to_forms
+        # mapping directly so that ALL vocalized lemmas sharing the same
+        # normalized form are covered (e.g. both مَلَكَ and مَلِكٌ normalize
+        # to "ملك" — without this, only one lemma's forms would be returned,
+        # causing other matched words to show zero hits in keywords).
+        words = set()
+        for candidate in candidates:
+            forms = normalized_lemma_to_forms.get(candidate)
+            if forms:
+                words.update(forms)
+        if words:
+            return list(words)
+        # Fall through to two-pass if normalized lookup found nothing
+        # (e.g. candidate is a plain word form, not a normalized lemma value).
+
+    # ------------------------------------------------------------------
+    # Two-pass fallback: Pass 1 → resolve lemma/root, Pass 2 → expand forms
+    # ------------------------------------------------------------------
+    # Resolve index_key: "stem" falls back to "lemma" for the two-pass lookup.
+    _two_pass_key = "lemma" if index_key == "stem" else index_key
 
     # Pass 1: find all index_key values matching any candidate.
     key_values = set()
     for candidate in candidates:
         entry = form_to_key.get(candidate)
         if entry:
-            kv = entry.get(index_key)
+            kv = entry.get(_two_pass_key)
             if kv:
                 key_values.add(kv)
 
@@ -215,7 +388,7 @@ def _collect_derivations_two_pass(candidates, index_key, lookup_table=None):
         return []
 
     # Pass 2: collect unvocalized word forms for each key value.
-    key_map = lemma_to_forms if index_key == "lemma" else root_to_forms
+    key_map = lemma_to_forms if _two_pass_key == "lemma" else root_to_forms
     words = set()
     for kv in key_values:
         forms = key_map.get(kv)
@@ -494,12 +667,12 @@ class TupleQuery(QMultiTerm):
 
     # Map Arabic query type labels to the Arabic "type" field stored in the
     # word-children index (populated via POSclass_arabic in transformer.py).
-    # Index values: 'أسماء', 'أفعال', 'أدوات', 'حروف_مقطعة', etc.
+    # Index values now use singular forms: 'اسم', 'فعل', 'أداة', 'حرف_مقطعة', etc.
     _ARABIC_TO_TYPE = {
-        "اسم": "أسماء",
-        "فعل": "أفعال",
-        "أداة": "أدوات",
-        "فواتيح": "حروف_مقطعة",
+        "اسم": "اسم",
+        "فعل": "فعل",
+        "أداة": "أداة",
+        "فواتيح": "حرف_مقطعة",
     }
 
     def __init__(self, fieldname, items, boost=1.0):
@@ -525,12 +698,20 @@ class TupleQuery(QMultiTerm):
         """Search word children that match specific morphological properties
         via the live word-children index.
 
+        In addition to exact root/type matching via ``_query_word_index``,
+        also expands results using the Snowball Arabic auto-stem: the root
+        term (or any provided word form) is Snowball-stemmed and matched
+        against ``auto_stem_to_forms`` in the engine lookup table so that
+        morphological variants not captured by the exact root field are
+        included.  Auto-stem expansion is skipped when a type filter is
+        present so that e.g. ``{ملك، فعل}`` returns only verbs.
+
         :param props: Dict with optional keys ``root``, ``type``.
         :returns: List of matching standard Arabic word forms.
         """
         # "root" maps directly to the "root" field (stores arabicroot, Arabic script).
         # "type" maps to the "type" field which stores Arabic category values
-        # ("أسماء", "أفعال", "أدوات") via _ARABIC_TO_TYPE mapping.
+        # ("اسم", "فعل", "أداة") via _ARABIC_TO_TYPE mapping.
         _filter = {}
         if props.get("root"):
             _filter["root"] = props["root"]
@@ -538,14 +719,40 @@ class TupleQuery(QMultiTerm):
             arabic_type = TupleQuery._ARABIC_TO_TYPE.get(props["type"])
             if arabic_type:
                 _filter["type"] = arabic_type
+        words = set()
         if _filter:
             # Merge standard (primary) and normalized so that words whose
             # standard is None (e.g. تملك) are still included.
-            words = set(_query_word_index(_filter, field="standard"))
+            words.update(_query_word_index(_filter, field="standard"))
             words.update(_query_word_index(_filter, field="normalized"))
-            words.discard(None)
-            return list(words)
-        return []
+
+        # Auto-stem expansion via the engine lookup table: Snowball-stem the
+        # root query term and collect all word forms sharing that stem.  This
+        # catches derivational variants not covered by the exact "root" field.
+        # Skipped when a type filter is specified so that type-constrained
+        # queries (e.g. {ملك، فعل}) return only words of the requested type.
+        if props.get("root") and not props.get("type"):
+            stemmer = _get_arabic_stemmer()
+            if stemmer:
+                root_norm = _ASF_NORMALIZE.normalize_all(props["root"])
+                if root_norm:
+                    root_auto_stem = stemmer.stemWord(root_norm)
+                    if root_auto_stem:
+                        try:
+                            from alfanous.data import QSE as _QSE
+                            engine = _QSE()
+                            if engine.OK and hasattr(engine, '_word_lookup_table'):
+                                lt = engine._word_lookup_table
+                                if lt and len(lt) >= 6:
+                                    auto_stem_to_forms = lt[5]
+                                    more_forms = auto_stem_to_forms.get(root_auto_stem)
+                                    if more_forms:
+                                        words.update(more_forms)
+                        except Exception:
+                            pass
+
+        words.discard(None)
+        return list(words) if words else []
 
 
 class ArabicWildcardQuery(Wildcard):
@@ -662,9 +869,16 @@ class DerivationPlugin(TaggingPlugin):
     * ``>>word``  (level 2) → lemma: search ``aya_lemma`` (corpus lemma)
     * ``>>>word`` (level 3) → root: search ``aya_root``  (corpus root)
 
-    Each target field uses QStandardAnalyzer, so the query term is normalised
-    through that analyzer before the Term query is built — no intermediate
-    key-value lookup is needed.  All three fields are always in the schema.
+    At every level the query also includes ``aya_auto_stem`` (indexed with
+    ``QStemAnalyzer`` / Snowball Arabic stemmer) as an additional OR clause so
+    that morphological variants not captured by corpus-derived derivation fields
+    are still matched.  The aya index is searched only once: all targets are
+    combined into a single OR query at parse time.
+
+    Each corpus target field uses QStandardAnalyzer, so the query term is
+    normalised through that analyzer before the Term query is built — no
+    intermediate key-value lookup is needed.  All three fields are always in
+    the schema.
     """
 
     # Map derivation level → target aya field name (always in schema)
@@ -698,6 +912,17 @@ class DerivationPlugin(TaggingPlugin):
                         if tok.text not in seen:
                             seen.add(tok.text)
                             terms.append(Term(deriv_field, tok.text))
+                    # Also include aya_auto_stem with QStemAnalyzer (Snowball
+                    # Arabic stemmer) so that morphological variants not covered
+                    # by the corpus-derived derivation field are matched in the
+                    # same single-pass aya search.
+                    if schema is not None and "aya_auto_stem" in schema:
+                        auto_field_obj = schema["aya_auto_stem"]
+                        auto_seen: "set[str]" = set()
+                        for tok in auto_field_obj.analyzer(self.actual_text, mode="query"):
+                            if tok.text not in auto_seen:
+                                auto_seen.add(tok.text)
+                                terms.append(Term("aya_auto_stem", tok.text))
                     # Always include the exact-match term on the main field so
                     # that derivation results are a superset of exact results.
                     _main_seen: "set[str]" = set()

@@ -76,17 +76,19 @@ POSclass = {
 
 # Arabic display names for each POSclass category.
 # Used to store Arabic type values in the word index (instead of English).
+# Singular forms are used so that the query label (e.g. "فعل") matches the
+# stored index value directly without needing a separate translation mapping.
 POSclass_arabic = {
-    "Nouns":               "أسماء",
-    "Pronouns":            "ضمائر",
-    "Nominals":            "صفات",
-    "Adverbs":             "ظروف",
-    "Verbs":               "أفعال",
-    "Prepositions":        "حروف_جر",
+    "Nouns":               "اسم",
+    "Pronouns":            "ضمير",
+    "Nominals":            "اسم",
+    "Adverbs":             "ظرف",
+    "Verbs":               "فعل",
+    "Prepositions":        "حرف_جر",
     "lām Prefixes":        "لام",
-    "Conjunctions":        "حروف_عطف",
-    "Particles":           "أدوات",
-    "Disconnected Letters": "حروف_مقطعة",
+    "Conjunctions":        "حرف_عطف",
+    "Particles":           "أداة",
+    "Disconnected Letters": "حرف_مقطعة",
 }
 
 PREFIXclass = {

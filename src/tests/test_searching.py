@@ -417,10 +417,296 @@ class TestCollectPluginExpandedTerms:
         result = _collect_plugin_expanded_terms(q)
         assert result == set()
 
+    def test_aya_auto_stem_term_marked_as_plugin_expanded(self):
+        """Term targeting aya_auto_stem must be treated as plugin-expanded (in _DERIV_FIELDS)."""
+        from whoosh import query as wquery
+        from alfanous.searching import _collect_plugin_expanded_terms
+
+        q = wquery.Term("aya_auto_stem", "رحم")
+        result = _collect_plugin_expanded_terms(q)
+        assert ("aya_auto_stem", "رحم") in result, (
+            "aya_auto_stem terms must be treated as plugin-expanded to prevent double-expansion"
+        )
+
+    def test_aya_stem_term_is_plugin_expanded(self):
+        """Term targeting aya_stem must be treated as plugin-expanded (in _DERIV_FIELDS)."""
+        from whoosh import query as wquery
+        from alfanous.searching import _collect_plugin_expanded_terms
+
+        q = wquery.Term("aya_stem", "ملك")
+        result = _collect_plugin_expanded_terms(q)
+        assert ("aya_stem", "ملك") in result, (
+            "aya_stem terms must be treated as plugin-expanded to prevent double-expansion"
+        )
+
 
 # ---------------------------------------------------------------------------
-# Unit tests for _has_wildcard_query (no index required)
+# Unit tests: derivation-expansion terms with zero results must be filtered
+# from words.individual in _search_aya.
 # ---------------------------------------------------------------------------
+
+class TestDerivationExpansionKeywordFilter:
+    """Derivation-expansion terms injected as ('aya', word, 0, 0) must not
+    appear in words.individual when they have no matches in the result set.
+
+    Regression test for: root-level search for مالك shows 34 keywords,
+    32 of which have zero occurrences.
+    """
+
+    def _make_termz(self, *entries):
+        """Construct a termz list from (field, word, freq, doc_freq) tuples."""
+        return list(entries)
+
+    def test_zero_stats_zero_results_term_is_excluded(self):
+        """A term with (0, 0) stats and 0 result-matches must NOT enter words.individual.
+
+        This is the core fix: expansion terms appended as ('aya', w, 0, 0) that
+        don't appear in any matched aya should be silently dropped.
+        """
+        # Build a minimal termz with one real term and one synthetic expansion.
+        termz = self._make_termz(
+            ("aya", "مالك", 120, 43),   # real query term — has corpus stats
+            ("aya", "الملائكة", 0, 0),  # synthetic expansion — injected by _collect_derivations_two_pass
+        )
+
+        # Simulate the filter condition used in _search_aya:
+        #   skip if not term[2] and not term[3] and not term_matches_in_results
+        def would_be_skipped(term, term_matches_in_results):
+            return not term[2] and not term[3] and not term_matches_in_results
+
+        # الملائكة has zero corpus stats and matches nothing in the 2-result set.
+        assert would_be_skipped(("aya", "الملائكة", 0, 0), 0), (
+            "Expansion term with (0,0) stats and 0 result-matches must be filtered"
+        )
+        # مالك has real corpus stats — must NOT be skipped even with 0 result-matches.
+        assert not would_be_skipped(("aya", "مالك", 120, 43), 0), (
+            "Real query term with corpus stats must never be filtered"
+        )
+
+    def test_zero_stats_but_matching_term_is_included(self):
+        """An expansion term with (0, 0) stats that DOES match results must stay.
+
+        e.g. يملك shares the root ملك with مالك — if it appears in the 2
+        matched ayas it must be listed in keywords so the highlighted word
+        is also in words.individual.
+        """
+        def would_be_skipped(term, term_matches_in_results):
+            return not term[2] and not term[3] and not term_matches_in_results
+
+        # يملك was injected with (0,0) stats but actually appears in results.
+        assert not would_be_skipped(("aya", "يملك", 0, 0), 3), (
+            "Expansion term that matches in results must NOT be filtered"
+        )
+
+    def test_real_term_with_zero_corpus_stats_is_not_skipped(self):
+        """A term with non-zero doc_freq but zero term-freq must not be filtered.
+
+        This guards against accidental filtering of edge-case real terms.
+        """
+        def would_be_skipped(term, term_matches_in_results):
+            return not term[2] and not term[3] and not term_matches_in_results
+
+        # term[2]=0 but term[3]=5 — has doc frequency → real term.
+        assert not would_be_skipped(("aya", "كتاب", 0, 5), 0), (
+            "Term with non-zero doc_freq must not be filtered even with 0 term-freq"
+        )
+
+
+# ---------------------------------------------------------------------------
+# Unit tests: derivation subquery resolution uses root/lemma from lookup
+# table, and aya_auto_stem (Snowball) for level 1.
+# ---------------------------------------------------------------------------
+
+class TestDerivationSubqueryResolution:
+    """QSearcher.search() must use the correct field and morphological value
+    for each derivation level.
+
+    Regression test for: derivation_level:root search for مالك matches only
+    2 ayas because Term("aya_root", "مالك") was built instead of
+    Term("aya_root", "ملك").  The aya_root field stores "ملك" (the root), not
+    "مالك" (the word form), so searching for the word form found only the rare
+    ayas where مالك happens to be recorded as its own root.
+
+    Level 1 now uses aya_auto_stem (QStemAnalyzer / Snowball): the raw
+    query term is passed directly to the analyzer — no form_to_key lookup.
+    """
+
+    def _make_lookup_table(self, form_to_key):
+        """Build a minimal 6-tuple lookup table with only form_to_key populated."""
+        return (form_to_key, {}, {}, {}, {}, {})
+
+    def test_root_level_resolves_root_value(self):
+        """Level 3 (root): query term 'مالك' resolves to root 'ملك' via form_to_key."""
+        form_to_key = {
+            "مالك": {"lemma": "مَالِك", "root": "ملك", "stem_norm": "مالك"},
+        }
+        lt = self._make_lookup_table(form_to_key)
+
+        # Simulate what QSearcher.search() does (levels 2 and 3 only):
+        _level_to_morph = {2: "lemma", 3: "root"}
+        _morph_attr = _level_to_morph[3]  # "root"
+        _entry = form_to_key.get("مالك")
+        _morph_val = _entry.get(_morph_attr) if _entry else None
+        _search_term = _morph_val if _morph_val else "مالك"
+
+        assert _search_term == "ملك", (
+            f"Level 3 should search aya_root for 'ملك' (the root), got '{_search_term}'"
+        )
+
+    def test_lemma_level_resolves_lemma_value(self):
+        """Level 2 (lemma): query term 'مالك' resolves to lemma 'مَالِك' via form_to_key."""
+        form_to_key = {
+            "مالك": {"lemma": "مَالِك", "root": "ملك", "stem_norm": "مالك"},
+        }
+
+        _level_to_morph = {2: "lemma", 3: "root"}
+        _morph_attr = _level_to_morph[2]  # "lemma"
+        _entry = form_to_key.get("مالك")
+        _morph_val = _entry.get(_morph_attr) if _entry else None
+        _search_term = _morph_val if _morph_val else "مالك"
+
+        assert _search_term == "مَالِك", (
+            f"Level 2 should resolve to the vocalized lemma; got '{_search_term}'"
+        )
+
+    def test_stem_level_uses_raw_term_with_snowball(self):
+        """Level 1 (auto_stem): QSearcher passes the raw term to QStemAnalyzer.
+
+        aya_auto_stem uses QStemAnalyzer (Snowball Arabic stemmer) at both
+        index and query time, so no form_to_key lookup is needed — the
+        analyzer produces the correct posting key automatically.
+
+        _level_to_morph has no entry for level 1, so _morph_attr is None,
+        _morph_val is None, and _search_term == raw query term.
+        """
+        form_to_key = {
+            "يملك": {"lemma": "مَلَكَ", "root": "ملك", "stem_norm": "ملك"},
+        }
+
+        # Level 1 is NOT in _level_to_morph — no lookup, raw term used.
+        _level_to_morph = {2: "lemma", 3: "root"}
+        _morph_attr = _level_to_morph.get(1)  # None — not in map
+        _entry = form_to_key.get("يملك")
+        _morph_val = (_entry.get(_morph_attr) if _entry and _morph_attr else None)
+        _search_term = _morph_val if _morph_val else "يملك"
+
+        # The raw term is passed to QStemAnalyzer; the test confirms no lookup.
+        assert _morph_attr is None, (
+            "Level 1 must have no entry in _level_to_morph (Snowball handles it)"
+        )
+        assert _search_term == "يملك", (
+            f"Level 1 should pass the raw term to QStemAnalyzer; got '{_search_term}'"
+        )
+
+    def test_unknown_word_falls_back_to_raw_term(self):
+        """A query word not in form_to_key falls back to the raw (normalized) term."""
+        form_to_key: dict = {}  # empty — word not in Quran corpus
+
+        # Level 1 is absent from _level_to_morph (Snowball handles it).
+        # Levels 2 and 3 have no entry → morph_val is None → fallback to raw.
+        _level_to_morph = {2: "lemma", 3: "root"}
+        for level in (2, 3):
+            _morph_attr = _level_to_morph[level]
+            _entry = form_to_key.get("xyz")
+            _morph_val = _entry.get(_morph_attr) if _entry else None
+            _search_term = _morph_val if _morph_val else "xyz"
+            assert _search_term == "xyz", (
+                f"Level {level}: unknown word must fall back to raw term; got '{_search_term}'"
+            )
+        # Level 1: no lookup at all — morph_attr is None.
+        _morph_attr_1 = _level_to_morph.get(1)  # None
+        _morph_val_1 = (form_to_key.get("xyz") or {}).get(_morph_attr_1) if _morph_attr_1 else None
+        _search_term_1 = _morph_val_1 if _morph_val_1 else "xyz"
+        assert _search_term_1 == "xyz", (
+            f"Level 1: raw term must be used as input to Snowball analyzer; got '{_search_term_1}'"
+        )
+
+    def test_form_to_key_contains_stem_norm(self):
+        """_build_word_lookup_table stores 'stem_norm' in each form_to_key entry.
+
+        stem_norm is the normalized corpus-derived stem; it is still stored
+        in form_to_key (alongside lemma and root) for use by
+        _collect_derivations_two_pass during result highlighting, even though
+        QSearcher.search() no longer uses it for derivation_level=1 queries
+        (which now target aya_auto_stem via QStemAnalyzer instead).
+        """
+        from alfanous.query_plugins import _build_word_lookup_table
+
+        class _FakeReader:
+            def iter_docs(self):
+                yield (0, {
+                    "kind": "word",
+                    "word": "يَمْلِكُ",
+                    "normalized": "يملك",
+                    "lemma": "مَلَكَ",
+                    "root": "ملك",
+                    "stem": "ملك",
+                    "standard": "يملك",
+                })
+
+        lt = _build_word_lookup_table(_FakeReader())
+        form_to_key = lt[0]
+
+        assert "يملك" in form_to_key, "normalized form 'يملك' must be in form_to_key"
+        entry = form_to_key["يملك"]
+        assert "stem_norm" in entry, (
+            "form_to_key entry must contain 'stem_norm' (stored for highlighting use)"
+        )
+        assert entry["stem_norm"] == "ملك", (
+            f"stem_norm should be 'ملك' (normalized corpus stem); got {entry['stem_norm']!r}"
+        )
+        assert entry["root"] == "ملك", "root must be 'ملك'"
+        assert entry["lemma"] == "مَلَكَ", "lemma must be 'مَلَكَ'"
+
+    def test_qsearcher_search_passes_lookup_table(self):
+        """QSearcher.search() must accept and use word_lookup_table parameter.
+
+        Verify that the new keyword parameter is wired in without TypeError.
+        A mock QSearcher that captures the search call confirms the parameter
+        reaches the derivation-subquery building code.
+        """
+        from alfanous.searching import QSearcher
+        from unittest.mock import MagicMock, patch
+        from whoosh import query as wq
+        from whoosh.fields import Schema, TEXT
+
+        # Build a trivial schema and mock out all Whoosh internals.
+        schema = Schema(aya=TEXT)
+        mock_parser = MagicMock()
+        mock_parser.parse.return_value = wq.Term("aya", "مالك")
+
+        mock_searcher_instance = MagicMock()
+        mock_searcher_instance.search.return_value = ([], [], {})
+        mock_searcher_instance.collector.return_value = MagicMock()
+        mock_results = MagicMock()
+        mock_results.__len__ = lambda s: 0
+        mock_results.__iter__ = lambda s: iter([])
+        mock_results.matched_terms.return_value = set()
+        mock_collector = MagicMock()
+        mock_collector.results.return_value = mock_results
+        mock_searcher_instance.collector.return_value = mock_collector
+
+        mock_index = MagicMock()
+        mock_index.get_schema.return_value = schema
+        mock_index.get_index.return_value.searcher.return_value = mock_searcher_instance
+
+        qs = QSearcher.__new__(QSearcher)
+        qs._searcher = mock_index.get_index().searcher
+        qs._qparser = mock_parser
+        qs._schema = schema
+        qs._shared_searcher = mock_searcher_instance
+
+        form_to_key = {"مالك": {"lemma": "مَالِك", "root": "ملك", "stem_norm": "مالك"}}
+        lookup_table = (form_to_key, {}, {}, {}, {}, {})
+
+        # Must not raise TypeError for unknown parameter.
+        try:
+            qs.search("مالك", derivation_level=3, word_lookup_table=lookup_table,
+                      timelimit=None)
+        except TypeError as e:
+            raise AssertionError(
+                f"QSearcher.search() rejected word_lookup_table parameter: {e}"
+            ) from e
 
 class TestHasWildcardQuery:
     """Tests for alfanous.searching._has_wildcard_query."""

@@ -99,7 +99,7 @@ class BasicSearchEngine:
             merged = {**_default, **(filter_dict or {})}
         else:
             merged = filter_dict
-        results, terms, searcher, expansion_terms = self._searcher.search(querystr, limit=limit, sortedby=sortedby, reverse=reverse, facets=facets, filter_dict=merged, fuzzy=fuzzy, fuzzy_maxdist=fuzzy_maxdist, derivation_level=derivation_level, timelimit=timelimit)
+        results, terms, searcher, expansion_terms = self._searcher.search(querystr, limit=limit, sortedby=sortedby, reverse=reverse, facets=facets, filter_dict=merged, fuzzy=fuzzy, fuzzy_maxdist=fuzzy_maxdist, derivation_level=derivation_level, timelimit=timelimit, word_lookup_table=getattr(self, '_word_lookup_table', None))
         return results, list(self._reader.term_stats(terms)), searcher, expansion_terms
 
     def search_with_query(self, q_obj, limit=QURAN_TOTAL_VERSES, sortedby="score", reverse=False, timelimit=5.0):
