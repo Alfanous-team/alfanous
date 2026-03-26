@@ -238,10 +238,14 @@ def _build_word_lookup_table(reader):
                     if _sf_norm:
                         _sf_stem = stemmer.stemWord(_sf_norm)
                         if _sf_stem:
-                            for field in ("standard", "normalized"):
-                                val = stored.get(field)
-                                if val:
-                                    _auto_stem_forms.setdefault(_sf_stem, set()).add(val)
+                            # Hoist the standard/normalized lookups outside the
+                            # inner add loop to avoid repeated dict accesses.
+                            _std_val = stored.get("standard")
+                            _norm_val = stored.get("normalized")
+                            if _std_val:
+                                _auto_stem_forms.setdefault(_sf_stem, set()).add(_std_val)
+                            if _norm_val:
+                                _auto_stem_forms.setdefault(_sf_stem, set()).add(_norm_val)
                             # Register the Snowball stem itself in form_to_key so
                             # that _collect_derivations_two_pass pass-1 can resolve
                             # it when the stem appears as a candidate.  The lemma,

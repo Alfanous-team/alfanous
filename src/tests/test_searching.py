@@ -417,7 +417,7 @@ class TestCollectPluginExpandedTerms:
         result = _collect_plugin_expanded_terms(q)
         assert result == set()
 
-    def test_aya_auto_stem_term_is_plugin_expanded(self):
+    def test_aya_auto_stem_term_marked_as_plugin_expanded(self):
         """Term targeting aya_auto_stem must be treated as plugin-expanded (in _DERIV_FIELDS)."""
         from whoosh import query as wquery
         from alfanous.searching import _collect_plugin_expanded_terms
