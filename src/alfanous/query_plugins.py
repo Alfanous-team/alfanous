@@ -667,12 +667,12 @@ class TupleQuery(QMultiTerm):
 
     # Map Arabic query type labels to the Arabic "type" field stored in the
     # word-children index (populated via POSclass_arabic in transformer.py).
-    # Index values: 'أسماء', 'أفعال', 'أدوات', 'حروف_مقطعة', etc.
+    # Index values now use singular forms: 'اسم', 'فعل', 'أداة', 'حرف_مقطعة', etc.
     _ARABIC_TO_TYPE = {
-        "اسم": "أسماء",
-        "فعل": "أفعال",
-        "أداة": "أدوات",
-        "فواتيح": "حروف_مقطعة",
+        "اسم": "اسم",
+        "فعل": "فعل",
+        "أداة": "أداة",
+        "فواتيح": "حرف_مقطعة",
     }
 
     def __init__(self, fieldname, items, boost=1.0):
@@ -703,15 +703,15 @@ class TupleQuery(QMultiTerm):
         term (or any provided word form) is Snowball-stemmed and matched
         against ``auto_stem_to_forms`` in the engine lookup table so that
         morphological variants not captured by the exact root field are
-        included.  The type filter is applied only to the exact-match path;
-        auto-stem expansion is root-based only (no type filter).
+        included.  Auto-stem expansion is skipped when a type filter is
+        present so that e.g. ``{ملك، فعل}`` returns only verbs.
 
         :param props: Dict with optional keys ``root``, ``type``.
         :returns: List of matching standard Arabic word forms.
         """
         # "root" maps directly to the "root" field (stores arabicroot, Arabic script).
         # "type" maps to the "type" field which stores Arabic category values
-        # ("أسماء", "أفعال", "أدوات") via _ARABIC_TO_TYPE mapping.
+        # ("اسم", "فعل", "أداة") via _ARABIC_TO_TYPE mapping.
         _filter = {}
         if props.get("root"):
             _filter["root"] = props["root"]
@@ -729,8 +729,9 @@ class TupleQuery(QMultiTerm):
         # Auto-stem expansion via the engine lookup table: Snowball-stem the
         # root query term and collect all word forms sharing that stem.  This
         # catches derivational variants not covered by the exact "root" field.
-        # Only applied when a root is provided (type-only queries stay exact).
-        if props.get("root"):
+        # Skipped when a type filter is specified so that type-constrained
+        # queries (e.g. {ملك، فعل}) return only words of the requested type.
+        if props.get("root") and not props.get("type"):
             stemmer = _get_arabic_stemmer()
             if stemmer:
                 root_norm = _ASF_NORMALIZE.normalize_all(props["root"])

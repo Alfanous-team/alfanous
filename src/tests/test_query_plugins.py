@@ -95,12 +95,12 @@ def _make_tuple_mock(root_words_map):
 
     TupleQuery._get_words_by_properties maps the user-facing ``type`` property
     to the ``type`` index field (which stores Arabic category values like
-    "أسماء" / "أفعال") via _ARABIC_TO_TYPE.  The mock therefore reads the
+    "اسم" / "فعل") via _ARABIC_TO_TYPE.  The mock therefore reads the
     ``type`` key from filter_dict.
     """
     def _mock(filter_dict, field="standard", limit=5000):
         root = filter_dict.get("root", "")
-        type_ = filter_dict.get("type", "")  # Arabic value: "أسماء", "أفعال", …
+        type_ = filter_dict.get("type", "")  # Arabic value: "اسم", "فعل", …
         key = (root, type_)
         return list(root_words_map.get(key, []))
     return _mock
@@ -300,7 +300,7 @@ def test_tuple_plugin_single_item():
 
 def test_tuple_plugin_multiple_items():
     """Test tuple plugin — root قول, type اسم (noun): 11 results."""
-    _mock = _make_tuple_mock({("قول", "أسماء"): _QAWL_NOUNS})
+    _mock = _make_tuple_mock({("قول", "اسم"): _QAWL_NOUNS})
     with patch("alfanous.query_plugins._query_word_index", side_effect=_mock):
         parser = create_test_parser()
         query = parser.parse("{قول،اسم}")
@@ -317,7 +317,7 @@ def test_tuple_plugin_multiple_items():
 
 def test_tuple_plugin_root_and_type():
     """Test tuple plugin — root ملك, type فعل (verb): 8 results."""
-    _mock = _make_tuple_mock({("ملك", "أفعال"): _MALIK_VERBS})
+    _mock = _make_tuple_mock({("ملك", "فعل"): _MALIK_VERBS})
     with patch("alfanous.query_plugins._query_word_index", side_effect=_mock):
         parser = create_test_parser()
         query = parser.parse("{ملك،فعل}")
@@ -329,6 +329,32 @@ def test_tuple_plugin_root_and_type():
     assert "ملكتم" in query.words
     assert "تملك" in query.words
     assert "أملك" in query.words
+
+
+def test_tuple_plugin_type_filter_blocks_auto_stem():
+    """When a type filter is present, auto-stem expansion must not run.
+
+    {ملك، فعل} should return only verbs.  Without the fix, auto-stem would
+    add nouns like مَلِك and مَلَك that share the same Snowball stem as ملك.
+    The mock returns only verbs for (ملك, فعل); any call with an empty type
+    (i.e. auto-stem path) would return nouns — the test asserts they are absent.
+    """
+    _NOUNS_SAME_STEM = ["ملك", "ملكا", "الملك", "الملوك"]
+    _mock = _make_tuple_mock({
+        ("ملك", "فعل"): _MALIK_VERBS,
+        ("ملك", ""): _NOUNS_SAME_STEM,  # would be hit if auto-stem runs
+    })
+    with patch("alfanous.query_plugins._query_word_index", side_effect=_mock):
+        parser = create_test_parser()
+        query = parser.parse("{ملك،فعل}")
+    assert isinstance(query, TupleQuery)
+    # Auto-stem must not have added any nouns
+    for noun in _NOUNS_SAME_STEM:
+        assert noun not in query.words, (
+            f"Auto-stem expansion leaked noun '{noun}' into verb-filtered results"
+        )
+    # Verbs must still be present
+    assert "يملك" in query.words
 
 
 def test_arabic_wildcard_asterisk():

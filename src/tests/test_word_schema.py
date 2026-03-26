@@ -913,31 +913,31 @@ def test_parse_stem_quad_root_high_forms_unchanged(parse_stem):
 # ---------------------------------------------------------------------------
 
 def test_parse_stem_circ_pos(parse_stem):
-    """POS:CIRC must set arabicpos to حرف حال and type to أدوات (Arabic)."""
+    """POS:CIRC must set arabicpos to حرف حال and type to أداة (Arabic)."""
     feats = parse_stem("STEM|POS:CIRC")
     assert feats.get("arabicpos") == "حرف حال"
-    assert feats.get("type") == "أدوات"
+    assert feats.get("type") == "أداة"
 
 
 def test_parse_stem_com_pos(parse_stem):
-    """POS:COM must set arabicpos to واو المعية and type to أدوات (Arabic)."""
+    """POS:COM must set arabicpos to واو المعية and type to أداة (Arabic)."""
     feats = parse_stem("STEM|POS:COM")
     assert feats.get("arabicpos") == "واو المعية"
-    assert feats.get("type") == "أدوات"
+    assert feats.get("type") == "أداة"
 
 
 def test_parse_stem_int_pos(parse_stem):
-    """POS:INT must set arabicpos to حرف تفسير and type to أدوات (Arabic)."""
+    """POS:INT must set arabicpos to حرف تفسير and type to أداة (Arabic)."""
     feats = parse_stem("STEM|POS:INT")
     assert feats.get("arabicpos") == "حرف تفسير"
-    assert feats.get("type") == "أدوات"
+    assert feats.get("type") == "أداة"
 
 
 def test_parse_stem_rslt_pos(parse_stem):
-    """POS:RSLT must set arabicpos to حرف واقع في جواب الشرط and type to أدوات (Arabic)."""
+    """POS:RSLT must set arabicpos to حرف واقع في جواب الشرط and type to أداة (Arabic)."""
     feats = parse_stem("STEM|POS:RSLT")
     assert feats.get("arabicpos") == "حرف واقع في جواب الشرط"
-    assert feats.get("type") == "أدوات"
+    assert feats.get("type") == "أداة"
 
 
 # ---------------------------------------------------------------------------

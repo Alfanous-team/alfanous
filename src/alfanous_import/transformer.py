@@ -70,7 +70,7 @@ def _load_corpus_words_txt(corpus_path):
     )
     # _INV_POS maps raw tag (e.g. "V") → category name (e.g. "Verbs").
     from alfanous_import.quran_corpus_reader.constants import _INV_POS
-    # POSclass_arabic maps English category names to Arabic (e.g. "Verbs" → "أفعال").
+    # POSclass_arabic maps English category names to Arabic (e.g. "Verbs" → "فعل").
     from alfanous.morphology import POSclass_arabic
     from alfanous.text_processing import QArabicSymbolsFilter
 
@@ -112,7 +112,7 @@ def _load_corpus_words_txt(corpus_path):
                     pos_info = POS.get(val, (None, None))
                     f['arabicpos']  = pos_info[0]
                     f['englishpos'] = pos_info[1]
-                    # type stores the Arabic category name (e.g. "أفعال")
+                    # type stores the Arabic category name (e.g. "فعل")
                     # via _INV_POS → POSclass_arabic lookup.
                     type_list = _INV_POS.get(val)
                     english_type = type_list[0] if type_list else val
@@ -282,7 +282,7 @@ def _load_corpus_words_txt(corpus_path):
             }
             # Infer voice for verbs: corpus only tags PASS explicitly;
             # absence of any voice tag means Active voice.
-            if stem_feats.get("type") == "أفعال" and entry["voice"] is None:
+            if stem_feats.get("type") == "فعل" and entry["voice"] is None:
                 entry["voice"] = VERB["ACT"][0]  # "مبني للمعلوم"
             # Infer mood for imperfect verbs: corpus only tags SUBJ/JUS/ENG
             # explicitly; absence of a mood tag means Indicative (default).
@@ -290,15 +290,15 @@ def _load_corpus_words_txt(corpus_path):
                 entry["mood"] = VERB["IND"][0]  # "مرفوع"
             # Infer state for nouns and adjectives/numerals: corpus only tags
             # INDEF (نكرة) explicitly; absence means Definite (معرفة).
-            if stem_feats.get("type") in ("أسماء", "صفات") and entry["state"] is None:
+            if stem_feats.get("type") in ("اسم", "صفة") and entry["state"] is None:
                 entry["state"] = NOM["DEF"][0]  # "معرفة"
             # Infer number for nouns and adjectives/numerals: corpus only tags
             # D (dual) and P (plural) explicitly; absence means singular (مفرد).
-            if stem_feats.get("type") in ("أسماء", "صفات") and entry["number"] is None:
+            if stem_feats.get("type") in ("اسم", "صفة") and entry["number"] is None:
                 entry["number"] = PGN["S"][0]  # "مفرد"
             # Infer form I for verbs: corpus only tags forms (II)–(XII)
             # explicitly; absence of a form tag means Form I (فَعَلَ).
-            if stem_feats.get("type") == "أفعال" and entry["form"] is None:
+            if stem_feats.get("type") == "فعل" and entry["form"] is None:
                 entry["form"] = VERB["(I)"][0]  # "فَعَلَ"
             # Compute pattern (وزن): for verbs, pattern = form.  For derived
             # nominals (ACT PCPL / PASS PCPL / VN), look up the derived pattern
@@ -307,7 +307,7 @@ def _load_corpus_words_txt(corpus_path):
             # encodes the wazan implicitly and we do not assume a pattern.
             _form = entry["form"]
             _deriv = entry["derivation"]
-            if stem_feats.get("type") == "أفعال":
+            if stem_feats.get("type") == "فعل":
                 entry["pattern"] = _form
             elif _deriv:
                 _form_key = _form or VERB["(I)"][0]
