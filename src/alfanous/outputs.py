@@ -172,6 +172,12 @@ _AYA_FACET_FIELDS = frozenset([
     "sajda", "sajda_type",
 ])
 
+# Fields that may participate in a hierarchical facet.  Only thematic/semantic
+# fields are allowed here — positional fields such as juz and hizb are
+# intentionally excluded because they represent fixed Quranic divisions, not
+# semantic groupings.
+_HIERARCHICAL_FACET_FIELDS = frozenset(["chapter", "topic", "subtopic"])
+
 # Maximum number of documents Whoosh will collect when building facets.
 # Using limit=None causes Whoosh to load every matching document into memory,
 # which can be 300,000+ docs for a corpus-wide facet query.  This constant is
@@ -269,6 +275,56 @@ def _edit_distance(s, t):
     return d[n]
 
 
+def _build_hierarchical_facets(res, hierarchy_fields):
+    """Build hierarchical facet counts from a Whoosh result set.
+
+    Each document in *res* is visited once; its stored values for
+    ``hierarchy_fields`` are read and placed into a tree structure.
+
+    Example for ``hierarchy_fields = ["chapter", "topic", "subtopic"]``::
+
+        [
+            {"value": "الإيمان", "count": 30, "children": [
+                {"value": "أركان الإيمان", "count": 18, "children": [
+                    {"value": "الإيمان بالله", "count": 10, "children": []},
+                ]},
+            ]},
+            ...
+        ]
+
+    @param res: Whoosh :class:`~whoosh.searching.Results` object.
+    @param hierarchy_fields: Ordered list of field names from ``_HIERARCHICAL_FACET_FIELDS``,
+        from most general (parent) to most specific (leaf).
+    @return: List of top-level facet nodes, each with ``value``,
+        ``count``, and ``children``.
+    """
+    from collections import defaultdict
+
+    doc_paths = []
+    for hit in res:
+        path = []
+        for field in hierarchy_fields:
+            val = hit.get(field)
+            if val is None or val == "":
+                break
+            path.append(val)
+        if path:
+            doc_paths.append(tuple(path))
+
+    def build_level(paths, depth):
+        groups = defaultdict(list)
+        for path in paths:
+            if len(path) > depth:
+                groups[path[depth]].append(path)
+        result = []
+        for value, sub_paths in sorted(groups.items(), key=lambda x: len(x[1]), reverse=True):  # sort by count (most frequent first)
+            children = build_level(sub_paths, depth + 1) if depth + 1 < len(hierarchy_fields) else []
+            result.append({"value": value, "count": len(sub_paths), "children": children})
+        return result
+
+    return build_level(doc_paths, 0)
+
+
 ## a function to decide what is True and what is false
 def IS_FLAG(flags, key):
     default = _FLAG_DEFAULTS[key]
@@ -335,6 +391,7 @@ class Raw:
             "aya": True,
             "facets": None,
             "filter": None,
+            "hierarchical_facets": None,
         }
     }
 
@@ -434,6 +491,9 @@ class Raw:
         "derivation_level": "morphological derivation broadening level: 0/'word' (exact, default), 1/'stem' (snowball Arabic stemming), 2/'lemma' (corpus lemma), 3/'root' (corpus root)",
         "timelimit": "maximum number of seconds to spend on a search query (default: 5.0, use None or 0 to disable)",
         "aya": "enable retrieving of aya text in the case of translation search",
+        "facets": "comma-separated list of fields to compute flat facet counts for",
+        "filter": "field:value filter applied before search (dict or 'field:value' string)",
+        "hierarchical_facets": "semicolon-separated thematic hierarchies using '>' notation, e.g. 'chapter>topic>subtopic'. Only chapter, topic, and subtopic fields are supported.",
     }
 
     def __init__(self,
@@ -958,6 +1018,32 @@ class Raw:
         
         # Parse filter parameter
         filter_dict = _parse_filter_param(flags.get("filter"))
+
+        # Parse hierarchical_facets parameter.
+        # Only fields in _HIERARCHICAL_FACET_FIELDS (chapter, topic, subtopic)
+        # are accepted.  Positional fields such as juz and hizb are silently
+        # skipped — they represent fixed Quranic divisions, not semantic
+        # groupings, so hierarchical nesting on them is not supported.
+        hierarchical_facets_param = flags.get("hierarchical_facets")
+        hierarchical_facets_list = []
+        if hierarchical_facets_param:
+            if isinstance(hierarchical_facets_param, str):
+                for hier in hierarchical_facets_param.split(";"):
+                    hier = hier.strip()
+                    if ">" in hier:
+                        fields = [f.strip() for f in hier.split(">") if f.strip()]
+                        if (
+                            len(fields) >= 2
+                            and all(f in _HIERARCHICAL_FACET_FIELDS for f in fields)
+                        ):
+                            hierarchical_facets_list.append(fields)
+            elif isinstance(hierarchical_facets_param, list):
+                hierarchical_facets_list = [
+                    h for h in hierarchical_facets_param
+                    if isinstance(h, list)
+                    and len(h) >= 2
+                    and all(f in _HIERARCHICAL_FACET_FIELDS for f in h)
+                ]
 
         # pre-defined views # TODO remove this feature , complexity for no real benifit
         if view == "minimal":
@@ -1818,6 +1904,22 @@ class Raw:
                     except Exception:
                         # If facet field doesn't exist or error, skip it
                         pass
+
+            # Add hierarchical facets to output if requested
+            if hierarchical_facets_list and res:
+                output["hierarchical_facets"] = {}
+                # For the non-Arabic path, use the full result set (_nonara_facet_res if
+                # available, else the main res) so that all documents are visited.
+                _hier_source = res if _nonara_facet_res is None else _nonara_facet_res
+                for hierarchy_fields in hierarchical_facets_list:
+                    hierarchy_name = ">".join(hierarchy_fields)
+                    try:
+                        output["hierarchical_facets"][hierarchy_name] = _build_hierarchical_facets(
+                            _hier_source, hierarchy_fields
+                        )
+                    except Exception:
+                        pass
+
             ### Ayas
             cpt = start - 1
             output["ayas"] = {}

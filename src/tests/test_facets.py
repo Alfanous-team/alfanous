@@ -321,6 +321,114 @@ def test_facet_with_topic():
         assert isinstance(facets, list)
 
 
+def test_hierarchical_facet_juz_hizb_rejected():
+    """juz>hizb is a positional hierarchy and must be silently ignored."""
+    search_flags = {
+        "action": "search",
+        "query": "الصلاة",
+        "hierarchical_facets": "juz>hizb",
+        "aya_position_info": True,
+    }
+
+    results = RAWoutput.do(search_flags)
+
+    assert results["error"]["code"] == 0
+    # hierarchical_facets should be absent (no valid hierarchy was requested)
+    assert "hierarchical_facets" not in results["search"]
+
+
+def test_hierarchical_facet_chapter_topic_subtopic():
+    """Test hierarchical facets for chapter > topic > subtopic."""
+    search_flags = {
+        "action": "search",
+        "query": "الجنة",
+        "hierarchical_facets": "chapter>topic>subtopic",
+    }
+
+    results = RAWoutput.do(search_flags)
+
+    assert results["error"]["code"] == 0
+    assert "hierarchical_facets" in results["search"]
+    assert "chapter>topic>subtopic" in results["search"]["hierarchical_facets"]
+
+    top_nodes = results["search"]["hierarchical_facets"]["chapter>topic>subtopic"]
+    assert isinstance(top_nodes, list)
+
+    for node in top_nodes:
+        assert "value" in node
+        assert "count" in node
+        assert "children" in node
+        assert isinstance(node["count"], int)
+        assert node["count"] > 0
+        # each topic child count must sum to the chapter count
+        child_total = sum(c["count"] for c in node["children"])
+        assert child_total == node["count"]
+        for topic_node in node["children"]:
+            assert "value" in topic_node
+            assert "count" in topic_node
+            assert "children" in topic_node
+            # subtopics under each topic: count may be <= topic count because
+            # some ayas have a chapter and topic but no subtopic value.
+            subtopic_total = sum(s["count"] for s in topic_node["children"])
+            assert subtopic_total <= topic_node["count"]
+
+
+def test_hierarchical_facets_mixed_only_valid_accepted():
+    """When juz>hizb is mixed with chapter>topic, only chapter>topic is returned."""
+    search_flags = {
+        "action": "search",
+        "query": "الله",
+        "hierarchical_facets": "juz>hizb;chapter>topic",
+    }
+
+    results = RAWoutput.do(search_flags)
+
+    assert results["error"]["code"] == 0
+    assert "hierarchical_facets" in results["search"]
+    # juz>hizb must be absent — positional hierarchy not supported
+    assert "juz>hizb" not in results["search"]["hierarchical_facets"]
+    # chapter>topic must be present — thematic hierarchy is supported
+    assert "chapter>topic" in results["search"]["hierarchical_facets"]
+
+
+def test_hierarchical_facets_via_api():
+    """Test hierarchical facets using the api.search() function with a valid thematic hierarchy."""
+    results = api.search(query="الرحمن", hierarchical_facets="chapter>topic")
+
+    assert results["error"]["code"] == 0
+    assert "hierarchical_facets" in results["search"]
+    assert "chapter>topic" in results["search"]["hierarchical_facets"]
+
+
+def test_hierarchical_facets_via_api_juz_hizb_rejected():
+    """Requesting juz>hizb via api.search() should produce no hierarchical_facets key."""
+    results = api.search(query="الرحمن", hierarchical_facets="juz>hizb")
+
+    assert results["error"]["code"] == 0
+    assert "hierarchical_facets" not in results["search"]
+
+
+def test_hierarchical_facets_counts_sum_to_total():
+    """Test that top-level hierarchical facet counts sum to total results (chapter>topic)."""
+    search_flags = {
+        "action": "search",
+        "query": "الله",
+        "hierarchical_facets": "chapter>topic",
+    }
+
+    results = RAWoutput.do(search_flags)
+
+    assert results["error"]["code"] == 0
+    assert "hierarchical_facets" in results["search"]
+    nodes = results["search"]["hierarchical_facets"].get("chapter>topic", [])
+
+    total_from_facets = sum(n["count"] for n in nodes)
+    # Top-level chapter counts must sum to the number of ayas that have
+    # a chapter value (may be less than total if some ayas have no chapter).
+    assert total_from_facets <= results["search"]["interval"]["total"]
+    assert total_from_facets > 0
+
+
 # ---------------------------------------------------------------------------
 # Filter support for 'translation' search unit
 # ---------------------------------------------------------------------------

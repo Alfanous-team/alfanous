@@ -44,7 +44,8 @@ def search(query: str, unit: str = "aya", page: int = 1, sortedby: str = "releva
            facets: Optional[str] = None, filter: Optional[Any] = None,
            timelimit: Optional[float] = 5.0,
            translation: Optional[str] = None,
-           lang: Optional[str] = None) -> Dict[str, Any]:
+           lang: Optional[str] = None,
+           hierarchical_facets: Optional[str] = None) -> Dict[str, Any]:
     """
     Search in Quran verses and translations.
     
@@ -94,6 +95,13 @@ def search(query: str, unit: str = "aya", page: int = 1, sortedby: str = "releva
     @param lang: Language code (e.g. 'en', 'fr', 'ar') to retrieve translations by
            language at query time. If both ``translation`` and ``lang`` are given,
            ``translation`` takes precedence.
+    @param hierarchical_facets: Thematic hierarchical facets using '>' notation.
+           Only the fields ``chapter``, ``topic``, and ``subtopic`` are supported
+           (positional fields such as ``juz`` and ``hizb`` are ignored).
+           Example: ``"chapter>topic>subtopic"`` or ``"chapter>topic"``.
+           Multiple hierarchies can be separated by ``";"`` but each must
+           consist solely of the allowed fields.  Results are returned under
+           ``search.hierarchical_facets`` keyed by the hierarchy name.
     @return: Dictionary of search results. Each aya entry includes an optional
            ``translation`` field controlled by the ``translation``/``lang``
            parameters. Use ``translation=en.transliteration`` or ``lang=en``
@@ -117,6 +125,7 @@ def search(query: str, unit: str = "aya", page: int = 1, sortedby: str = "releva
                       "timelimit": timelimit,
                       "translation": translation,
                       "lang": lang,
+                      "hierarchical_facets": hierarchical_facets,
                       })
     return do(all_flags)
 
