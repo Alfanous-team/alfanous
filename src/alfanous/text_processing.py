@@ -583,6 +583,7 @@ _TRANSLATION_LANGS = [
     'ar', 'en', 'fr', 'id', 'ms', 'tr',                    # active — zip files present in store
     'es', 'ja', 'ku', 'ml', 'pt',                           # planned — zip files not yet in store
     'ur', 'bn', 'ha', 'ru', 'ps', 'uz', 'sw',              # new: ur.maududi, bn.hoque, ha.gumi, ru.kuliev, ps.abdulwali, uz.sodik, sw.barwani
+    'dv',                                                   # new: dv.divehi
 ]
 
 for _tl in _TRANSLATION_LANGS:
