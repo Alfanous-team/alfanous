@@ -1079,6 +1079,16 @@
     "analyzer": "TranslationAnalyzer_sw"
   },
   {
+    "id": 162,
+    "table_name": "aya",
+    "name": "text_dv",
+    "search_name": "text_dv",
+    "type": "TEXT",
+    "stored": false,
+    "phrase": false,
+    "analyzer": "TranslationAnalyzer_dv"
+  },
+  {
     "id": 144,
     "table_name": "aya",
     "name": "transliteration",
