@@ -1,3 +1,5 @@
+[![MseeP.ai Security Assessment Badge](https://mseep.net/pr/alfanous-team-alfanous-badge.png)](https://mseep.ai/app/alfanous-team-alfanous)
+
 [![Tests](https://github.com/Alfanous-team/alfanous/workflows/tests/badge.svg)](https://github.com/Alfanous-team/alfanous/actions)
 
 <!-- mcp-name: io.github.Alfanous-team/alfanous -->
