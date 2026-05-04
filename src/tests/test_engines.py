@@ -1052,19 +1052,31 @@ def test_fuzzy_derivation_no_index_fallback():
 
 
 def test_nonfuzzy_derivation_returns_more_results():
-    """derivation_level=2 (lemma) returns >= results of explicit >>ملك derivation.
+    """>>ملك (explicit derivation syntax) returns >= results vs derivation_level=2.
 
-    Searching "ملك" with derivation_level=2 (lemma) should return at least as
-    many verses as the >>ملك derivation query, because both use level 2 (lemma).
+    The explicit ``>>ملك`` query (DerivationPlugin) expands at parse time to an OR of:
+      - ``aya_lemma:"ملك"``  (corpus lemma field, QStandardAnalyzer)
+      - ``aya_auto_stem:"…"`` (Snowball Arabic stemmer field)
+      - ``aya:"ملك"``         (exact match)
+
+    The ``derivation_level=2`` API parameter only ORs the corpus-lemma field
+    (``aya_lemma``) with the original exact query.  Because ``>>`` also includes
+    ``aya_auto_stem``, it has broader recall and should return at least as many
+    results as ``derivation_level=2``.
+
+    Both methods must return a non-trivial count for the common root ملك.
     """
     lemma_deriv_results = _qse_search(u">>ملك")
 
     nonfuzzy_results, _, _, _ = QSE.search_all(u"ملك", fuzzy=False, derivation_level=2, limit=QURAN_TOTAL_VERSES)
     nonfuzzy_count = len(nonfuzzy_results)
 
-    assert nonfuzzy_count >= lemma_deriv_results, (
-        f"derivation_level=2 ({nonfuzzy_count}) should cover at least as many results "
-        f"as >>ملك derivation search ({lemma_deriv_results})"
+    assert lemma_deriv_results >= nonfuzzy_count, (
+        f">>ملك derivation search ({lemma_deriv_results}) should cover at least as many results "
+        f"as derivation_level=2 ({nonfuzzy_count}), because >> also searches aya_auto_stem"
+    )
+    assert nonfuzzy_count > 0, (
+        f"derivation_level=2 must return results for common Arabic root ملك; got {nonfuzzy_count}"
     )
 
 

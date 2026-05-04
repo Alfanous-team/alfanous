@@ -692,3 +692,122 @@ def test_pure_wildcard_routes_to_arabic_search_path(monkeypatch):
             f"QSE.search_all must be called for pure-wildcard query {wildcard_query!r} "
             "so results are returned instead of NullQuery."
         )
+
+
+# ---------------------------------------------------------------------------
+# Backtick / query-sanitization guard tests (no index required)
+#
+# Regression for: "query timeout ?q=%C5%9Fiye`%C3%A2&tp=..."
+# The backtick character (U+0060) is the Buckwalter romanization marker for
+# dagger-alif (U+0670).  When it appears in a non-Buckwalter query string,
+# Whoosh's query tokenizer treats it as a word-boundary separator, silently
+# splitting e.g. "şiye`â" into TWO fragments: "şiye" and "â".  If the
+# right-hand fragment happens to look like an Arabic or Arabizi word, this
+# can cause the query to expand into a large OR expression and trigger a
+# server-level timeout (the Whoosh timelimit only guards the search phase,
+# not the query-building phase).
+# The fix: _sanitize_query() strips backticks before the query reaches any
+# parser, so "şiye`â" becomes the single token "şiyeâ".
+# ---------------------------------------------------------------------------
+
+def test_sanitize_query_strips_backslash_and_backtick():
+    """_sanitize_query must remove both backslash and backtick characters."""
+    from alfanous.outputs import _sanitize_query
+
+    # Backslash stripping (pre-existing behaviour)
+    assert _sanitize_query("hello\\world") == "helloworld"
+    assert _sanitize_query("\\test\\") == "test"
+
+    # Backtick stripping (new behaviour — prevents Whoosh term-splitting)
+    assert _sanitize_query("şiye`â") == "şiyeâ"
+    assert _sanitize_query("abc`def") == "abcdef"
+    assert _sanitize_query("`test`") == "test"
+    assert _sanitize_query("no_backtick") == "no_backtick"
+
+    # Combined
+    assert _sanitize_query("a\\b`c") == "abc"
+
+    # Arabic text is preserved unchanged
+    assert _sanitize_query("أسماء الله الحسنى") == "أسماء الله الحسنى"
+    assert _sanitize_query("الله أكبر") == "الله أكبر"
+
+
+def test_sanitize_query_backtick_in_arabizi_ignore_chars():
+    """The backtick must be in _ARABIZI_IGNORE_CHARS so the Arabizi converter
+    explicitly passes it through unchanged (rather than relying on the fallback
+    'else' branch) when the converter receives a pre-sanitized query."""
+    from alfanous.outputs import _ARABIZI_IGNORE_CHARS
+
+    assert "`" in _ARABIZI_IGNORE_CHARS, (
+        "Backtick must be in _ARABIZI_IGNORE_CHARS so it is never transliterated "
+        "to dagger-alif (U+0670) in Arabizi→Arabic conversion."
+    )
+
+
+def test_search_aya_strips_backtick_before_trans_parser(monkeypatch):
+    """_search_aya must strip the backtick from the query before calling
+    _trans_parser.parse(), so "şiye`â" is searched as the single token "şiyeâ"
+    rather than being split into "şiye" AND "â".
+
+    Regression for: query timeout with backtick in non-Arabic query strings.
+    """
+    from alfanous.outputs import Raw
+
+    raw = Raw.__new__(Raw)
+    # Use the real class-level defaults so all required flag keys are present.
+    import copy
+    raw._defaults = copy.deepcopy(Raw.DEFAULTS)
+    raw.DOMAINS = {
+        "view": ["custom", "minimal", "normal", "full", "statistic", "linguistic", "recitation"],
+    }
+
+    # Capture the query string that _trans_parser.parse() receives
+    _parsed_queries = []
+
+    class _CapturingParser:
+        def parse(self, q):
+            _parsed_queries.append(q)
+            from whoosh.query import NullQuery
+            return NullQuery()
+
+    raw._trans_parser = _CapturingParser()
+    raw._trans_fields = frozenset()
+
+    mock_qse = MagicMock()
+    mock_qse._schema = {}
+    mock_results = MagicMock()
+    mock_results.__len__ = MagicMock(return_value=0)
+    mock_results.__iter__ = MagicMock(return_value=iter([]))
+    mock_qse.search_with_query.return_value = (mock_results, [], MagicMock())
+    raw.QSE = mock_qse
+
+    monkeypatch.setattr("alfanous.outputs.arabizi_to_arabic_list", lambda *a, **kw: [])
+    monkeypatch.setattr("alfanous.outputs.quran_unvocalized_words", lambda: frozenset())
+
+    flags = {"query": "şiye`â", "action": "search"}
+    try:
+        raw._search_aya(flags)
+    except Exception:
+        pass  # Output formatting may fail; we only care about what reached the parser
+
+    # The parser must have received the sanitized query without the backtick
+    assert len(_parsed_queries) == 1, (
+        "_trans_parser.parse must be called exactly once for this non-Arabic query"
+    )
+    received = _parsed_queries[0]
+    assert "`" not in received, (
+        f"Backtick must be stripped before _trans_parser.parse() is called; "
+        f"got query string: {received!r}"
+    )
+    assert received == "şiyeâ", (
+        f"Sanitized query must be 'şiyeâ' (backtick removed); got {received!r}"
+    )
+
+    # Also verify the search was actually executed (not short-circuited to NullQuery).
+    # _trans_parser returned NullQuery, so _query_parts has one entry → search_with_query
+    # must have been called with that query object.
+    assert mock_qse.search_with_query.called, (
+        "_search_aya must call QSE.search_with_query after building the query from "
+        "the sanitized (backtick-free) query string"
+    )
+
