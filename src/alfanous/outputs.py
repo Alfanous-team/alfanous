@@ -59,7 +59,33 @@ def _trans_field_hint(field_name):
 # Characters passed through unchanged during Arabizi conversion inside queries.
 # Whoosh search operators (AND/OR/NOT symbols, field selectors, wildcards, etc.)
 # must not be transliterated to Arabic letters.
-_ARABIZI_IGNORE_CHARS = "'_\"%*?#~[]{}:>+-|"
+# The grave accent/backtick (`) is also included: it maps to dagger-alif (U+0670)
+# in Buckwalter romanization but has no meaning in general Arabizi queries, and
+# Whoosh treats it as a word-boundary character that would split e.g. "şiye`â"
+# into two separate (and mostly useless) terms.
+_ARABIZI_IGNORE_CHARS = "'_\"%*?#~[]{}:>+-|`"
+
+
+def _sanitize_query(query):
+    """Strip characters from *query* that cause unexpected behaviour in the search pipeline.
+
+    Characters removed:
+
+    * ``\\`` (backslash) – causes escape/parsing issues inside Whoosh query strings.
+    * `` ` `` (grave accent / backtick) – the Buckwalter romanization character for
+      dagger-alif (U+0670).  When a user accidentally includes a backtick in a
+      non-Buckwalter query (e.g. ``şiye`â`` from copy-paste or keyboard layout
+      artefacts), Whoosh's query tokenizer treats the backtick as a word-boundary
+      separator, silently splitting the intended single term into two fragments.
+      This can cause the query to expand into a large OR expression (e.g. when the
+      right-hand fragment happens to be an Arabic-looking term) and trigger a query
+      timeout.  Stripping the backtick collapses ``şiye`â`` into ``şiyeâ``, which
+      the parser then handles as a single, bounded term.
+
+    :param query: Raw query string supplied by the caller.
+    :returns: Sanitized query string.
+    """
+    return query.replace("\\", "").replace("`", "")
 
 FALSE_PATTERN = '^false|no|off|0$'
 # Compiled once at import time — used by IS_FLAG on every request.
@@ -1119,7 +1145,7 @@ class Raw:
 
         # print query
         # preprocess query
-        query = query.replace("\\", "")
+        query = _sanitize_query(query)
 
         if ":" not in query and not _ARABIC_SCRIPT_RE.search(query) and not _PURE_WILDCARD_RE.match(query):
             # Non-Arabic query: search translations AND try arabizi conversion
@@ -2162,7 +2188,7 @@ class Raw:
         # Parse filter parameter (supports dict or "field:value,..." string).
         filter_dict = _parse_filter_param(flags.get("filter"))
 
-        query = query.replace("\\", "")
+        query = _sanitize_query(query)
 
         # Use the cached translation parser built at __init__ time.
         if self._trans_parser is None:
@@ -2367,7 +2393,7 @@ class Raw:
             _dl_flag = int(_dl_flag)
 
         # Extract leading '>' derivation syntax from the query.
-        query = query.replace("\\", "")
+        query = _sanitize_query(query)
         _q_stripped = query.lstrip()
         if _q_stripped.startswith(">>>"):
             _dl_flag = max(_dl_flag, 3)
