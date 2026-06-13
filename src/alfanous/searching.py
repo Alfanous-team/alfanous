@@ -69,6 +69,36 @@ def _is_transient_reader_corruption(exc):
     message = str(exc).lower()
     return any(sig in message for sig in _TRANSIENT_READER_CORRUPTION_SIGNATURES)
 
+# Upper bound on the number of entries kept in the shared Whoosh searcher's
+# memoization caches (``_idf_cache`` and ``_filter_cache``).  The shared
+# searcher is a long-lived process singleton (see
+# :meth:`QSearcher._get_shared_searcher`) and Whoosh populates these caches with
+# one entry per *distinct* scored term / filter query, never evicting them.
+# In a long-running server answering diverse user queries this grows without
+# bound — a slow memory leak.  ``_filter_cache`` is especially costly because
+# each value is a doc-id set spanning the whole index.  When a cache exceeds
+# this threshold it is cleared wholesale (the caches are pure memoization, so
+# Whoosh transparently repopulates them on demand).
+_MAX_SEARCHER_CACHE_ENTRIES = 4096
+
+
+def _bound_searcher_caches(searcher):
+    """Clear the shared searcher's memoization caches once they grow too large.
+
+    Whoosh's :class:`whoosh.searching.Searcher` keeps an ``_idf_cache`` and a
+    ``_filter_cache`` that accumulate one entry per distinct scored term and
+    filter query for the lifetime of the searcher object.  Because Alfanous
+    reuses a single shared searcher across the whole process, these caches
+    would otherwise grow unboundedly as users issue ever more distinct queries.
+    Resetting them when they pass :data:`_MAX_SEARCHER_CACHE_ENTRIES` caps the
+    memory while preserving the caching benefit for the active working set.
+    """
+    for attr in ("_idf_cache", "_filter_cache"):
+        cache = getattr(searcher, attr, None)
+        if cache is not None and len(cache) > _MAX_SEARCHER_CACHE_ENTRIES:
+            cache.clear()
+
+
 # Pre-built frozenset of Arabic Unicode block codepoints for O(1) membership
 # checks.  Used by _is_arabic_text() instead of repeated range comparisons.
 _ARABIC_CODEPOINTS = frozenset(chr(cp) for cp in range(0x0600, 0x0700))
@@ -478,6 +508,9 @@ class QSearcher:
                     old.close()
                 except Exception:
                     pass
+        # Keep Whoosh's per-searcher memoization caches from growing without
+        # bound over the lifetime of this long-lived shared searcher.
+        _bound_searcher_caches(self._shared_searcher)
         return self._shared_searcher
 
     def get_reader(self):

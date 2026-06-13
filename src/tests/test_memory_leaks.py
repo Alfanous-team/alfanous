@@ -3146,5 +3146,73 @@ class TestFuzzyTermLenConstant(unittest.TestCase):
                                         )
 
 
+class TestSharedSearcherCachesBounded(unittest.TestCase):
+    """The long-lived shared Whoosh searcher accumulates per-term/per-filter
+    memoization entries in ``_idf_cache`` and ``_filter_cache`` that Whoosh
+    never evicts.  QSearcher must cap these so a long-running process answering
+    diverse queries does not leak memory unboundedly.
+    """
+
+    def test_max_cache_entries_constant_is_reasonable(self):
+        """_MAX_SEARCHER_CACHE_ENTRIES must be a sane positive bound."""
+        from alfanous.searching import _MAX_SEARCHER_CACHE_ENTRIES
+        self.assertIsInstance(_MAX_SEARCHER_CACHE_ENTRIES, int)
+        self.assertGreater(_MAX_SEARCHER_CACHE_ENTRIES, 0)
+        # Large enough to be a useful working-set cache, small enough to bound RAM.
+        self.assertLessEqual(_MAX_SEARCHER_CACHE_ENTRIES, 100000)
+
+    def test_bound_clears_caches_over_threshold(self):
+        """_bound_searcher_caches must empty caches that exceed the threshold."""
+        from alfanous import searching
+        searcher = MagicMock()
+        searcher._idf_cache = {i: i for i in range(searching._MAX_SEARCHER_CACHE_ENTRIES + 5)}
+        searcher._filter_cache = {i: i for i in range(searching._MAX_SEARCHER_CACHE_ENTRIES + 5)}
+        searching._bound_searcher_caches(searcher)
+        self.assertEqual(len(searcher._idf_cache), 0)
+        self.assertEqual(len(searcher._filter_cache), 0)
+
+    def test_bound_keeps_caches_under_threshold(self):
+        """Caches at or below the threshold must be left untouched."""
+        from alfanous import searching
+        searcher = MagicMock()
+        searcher._idf_cache = {i: i for i in range(10)}
+        searcher._filter_cache = {i: i for i in range(10)}
+        searching._bound_searcher_caches(searcher)
+        self.assertEqual(len(searcher._idf_cache), 10)
+        self.assertEqual(len(searcher._filter_cache), 10)
+
+    def test_bound_tolerates_missing_caches(self):
+        """A searcher without the cache attributes must not raise."""
+        from alfanous import searching
+
+        class _NoCaches:
+            pass
+
+        searching._bound_searcher_caches(_NoCaches())  # must not raise
+
+    def test_get_shared_searcher_bounds_caches(self):
+        """_get_shared_searcher must bound the returned searcher's caches.
+
+        Builds a QSearcher via __new__ (no index needed), gives it a fake
+        already-open shared searcher whose caches are over the threshold, and
+        verifies the caches are cleared when _get_shared_searcher is called.
+        """
+        from alfanous import searching
+        from alfanous.searching import QSearcher
+
+        fake = MagicMock()
+        fake.refresh.return_value = fake  # generation unchanged -> same object
+        fake._idf_cache = {i: i for i in range(searching._MAX_SEARCHER_CACHE_ENTRIES + 5)}
+        fake._filter_cache = {}
+
+        qs = QSearcher.__new__(QSearcher)
+        qs._shared_searcher = fake
+
+        returned = qs._get_shared_searcher()
+
+        self.assertIs(returned, fake)
+        self.assertEqual(len(fake._idf_cache), 0)
+
+
 if __name__ == "__main__":
     unittest.main()
