@@ -17,6 +17,44 @@ logger = logging.getLogger(__name__)
 # falls back gracefully to the original query string).
 _MAX_READER_CLOSED_RETRIES = 2
 
+# Substrings that identify a transient *reader corruption* surfaced as a plain
+# ``ValueError`` rather than a clean :exc:`whoosh.reading.ReaderClosed`.
+#
+# When the shared searcher is refreshed (see
+# :meth:`QSearcher._get_shared_searcher`) the previous searcher — and the
+# memory-mapped posting files it owns — is closed eagerly.  A concurrent search
+# still reading those postings may read from the now-invalid mapping instead of
+# raising ``ReaderClosed``.  Whoosh then interprets the garbage bytes as a
+# posting block header and feeds them to ``pickle.load`` (see
+# ``whoosh.codec.whoosh3.W3LeafMatcher._goto`` →
+# ``StructFile.read_pickle``), which raises e.g.
+# ``ValueError: unsupported pickle protocol: 120``.  These are the same
+# transient race as ``ReaderClosed`` and are recovered by reopening the
+# searcher and retrying.
+_TRANSIENT_READER_CORRUPTION_SIGNATURES = (
+    "unsupported pickle protocol",
+    "pickle data was truncated",
+    "mmap",
+    "closed file",
+    "operation on closed",
+    "seek of closed",
+    "read of closed",
+)
+
+
+def _is_transient_reader_corruption(exc):
+    """Return ``True`` when *exc* looks like a transient corrupted read caused
+    by the shared searcher being refreshed/closed mid-search.
+
+    This recognises the rare case where a closed memory-mapped posting file is
+    read as if it were live data, which Whoosh surfaces as a generic
+    ``ValueError`` (most often ``unsupported pickle protocol: N``) instead of a
+    clean :exc:`whoosh.reading.ReaderClosed`.  Genuine ``ValueError`` instances
+    (e.g. malformed query input) do not match and are re-raised by callers.
+    """
+    message = str(exc).lower()
+    return any(sig in message for sig in _TRANSIENT_READER_CORRUPTION_SIGNATURES)
+
 # Pre-built frozenset of Arabic Unicode block codepoints for O(1) membership
 # checks.  Used by _is_arabic_text() instead of repeated range comparisons.
 _ARABIC_CODEPOINTS = frozenset(chr(cp) for cp in range(0x0600, 0x0700))
@@ -639,6 +677,29 @@ class QSearcher:
                     querystr,
                 )
                 raise
+            except ValueError as exc:
+                # A concurrent searcher refresh can close a memory-mapped
+                # posting file mid-search, causing Whoosh to read garbage and
+                # raise e.g. ``ValueError: unsupported pickle protocol: 120``
+                # instead of a clean ReaderClosed.  Treat this like ReaderClosed:
+                # reopen the searcher and retry once.  Re-raise other ValueErrors
+                # (e.g. malformed query input) immediately.
+                if not _is_transient_reader_corruption(exc):
+                    raise
+                if attempt == 0:
+                    self._shared_searcher = None
+                    logger.warning(
+                        "search: Corrupted read from a refreshed/closed reader "
+                        "for query %r (%s); retrying with a fresh searcher.",
+                        querystr, exc,
+                    )
+                    continue
+                logger.error(
+                    "search: Corrupted read persisted on retry for query %r; "
+                    "propagating error.",
+                    querystr,
+                )
+                raise
 
         if fuzzy or _has_derivation_expansion or _has_wildcard:
             # Use matched_terms() to capture the actual index terms that were
@@ -729,6 +790,24 @@ class QSearcher:
                 logger.error(
                     "search_obj: Underlying index reader still closed on retry; "
                     "propagating ReaderClosed.",
+                )
+                raise
+            except ValueError as exc:
+                # Transient corrupted read from a refreshed/closed memory-mapped
+                # posting file (e.g. "unsupported pickle protocol: 120"); treat
+                # like ReaderClosed and retry once.  Other ValueErrors propagate.
+                if not _is_transient_reader_corruption(exc):
+                    raise
+                if attempt == 0:
+                    self._shared_searcher = None
+                    logger.warning(
+                        "search_obj: Corrupted read from a refreshed/closed "
+                        "reader (%s); retrying with a fresh searcher.", exc,
+                    )
+                    continue
+                logger.error(
+                    "search_obj: Corrupted read persisted on retry; "
+                    "propagating error.",
                 )
                 raise
             except QueryError as exc:
