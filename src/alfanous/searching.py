@@ -27,18 +27,27 @@ _MAX_READER_CLOSED_RETRIES = 2
 # reopening the searcher and retrying:
 #   * ReaderClosed                       — reader explicitly closed mid-read.
 #   * pickle.UnpicklingError             — corrupt pickle stream.
+#   * EOFError ("Ran out of input")      — the mmap was truncated/emptied so
+#                                          unpickle hit end-of-stream (issue #905).
 #   * ValueError("unsupported pickle protocol") — the first garbage byte is
 #     misread as a pickle protocol number.
 #   * AttributeError("'int' object has no attribute 'append'") — a posting
 #     list deserialises to an int, then Whoosh's GrowableArray.append() is
 #     called on it (whoosh/util/numlists.py).
-# The ValueError / AttributeError cases are matched by message because their
+# ReaderClosed, UnpicklingError, and EOFError are caught by type.  The
+# ValueError / AttributeError cases are matched by message because their
 # bare types are too broad to retry on unconditionally (doing so could mask
 # genuine programming errors).
-_TRANSIENT_READER_ERROR_TYPES = (ReaderClosed, pickle.UnpicklingError)
+_TRANSIENT_READER_ERROR_TYPES = (ReaderClosed, pickle.UnpicklingError, EOFError)
 _TRANSIENT_READER_ERROR_MESSAGES = (
     "unsupported pickle protocol",
+    "pickle data was truncated",
     "object has no attribute 'append'",
+    "mmap",
+    "closed file",
+    "operation on closed",
+    "seek of closed",
+    "read of closed",
 )
 
 
@@ -55,7 +64,6 @@ def _is_transient_reader_corruption(exc):
         msg = str(exc)
         return any(sig in msg for sig in _TRANSIENT_READER_ERROR_MESSAGES)
     return False
-
 
 # Pre-built frozenset of Arabic Unicode block codepoints for O(1) membership
 # checks.  Used by _is_arabic_text() instead of repeated range comparisons.

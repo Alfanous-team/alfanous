@@ -760,6 +760,93 @@ class TestHasWildcardQuery:
         assert _has_wildcard_query(q) is False
 
 
+class TestTransientReaderCorruptionRetry:
+    """Regression tests for issue #901: a concurrent searcher refresh can close
+    a memory-mapped posting file mid-search, causing Whoosh to read garbage and
+    raise ``ValueError: unsupported pickle protocol: 120`` instead of a clean
+    ``ReaderClosed``.  ``QSearcher`` must treat this as a transient error,
+    reopen the searcher and retry, while still propagating genuine ValueErrors.
+    """
+
+    def test_signature_detects_pickle_protocol_error(self):
+        from alfanous.searching import _is_transient_reader_corruption
+
+        assert _is_transient_reader_corruption(
+            ValueError("unsupported pickle protocol: 120")
+        )
+
+    def test_signature_detects_closed_mmap_error(self):
+        from alfanous.searching import _is_transient_reader_corruption
+
+        assert _is_transient_reader_corruption(
+            ValueError("seek of closed file")
+        )
+        assert _is_transient_reader_corruption(
+            ValueError("mmap closed or invalid")
+        )
+
+    def test_signature_ignores_unrelated_value_error(self):
+        from alfanous.searching import _is_transient_reader_corruption
+
+        assert not _is_transient_reader_corruption(
+            ValueError("invalid literal for int() with base 10: 'x'")
+        )
+
+    def _make_mock_qsearcher(self, search_side_effect):
+        from unittest.mock import MagicMock
+        from alfanous.searching import QSearcher
+
+        mock_whoosh_searcher = MagicMock()
+        mock_whoosh_searcher.search.side_effect = search_side_effect
+
+        mock_index = MagicMock()
+        mock_index.get_index.return_value.searcher.return_value = mock_whoosh_searcher
+        mock_index.get_schema.return_value = MagicMock()
+
+        mock_parser = MagicMock()
+        mock_parser.parse.return_value = MagicMock(
+            all_terms=MagicMock(return_value=[])
+        )
+        return QSearcher(mock_index, mock_parser), mock_whoosh_searcher
+
+    def test_search_retries_and_recovers_on_pickle_protocol_error(self):
+        """The reported failure must be recovered: first attempt raises the
+        corrupted-read ValueError, the searcher is reopened and the retry
+        returns results."""
+        from unittest.mock import patch, MagicMock
+
+        mock_results = MagicMock(matched_terms=MagicMock(return_value=None))
+        qs, mock_whoosh_searcher = self._make_mock_qsearcher(
+            [ValueError("unsupported pickle protocol: 120"), mock_results]
+        )
+
+        with patch("alfanous.searching._strip_phrase_queries", side_effect=lambda q, schema=None: q):
+            results, terms, searcher, expansion = qs.search(
+                "sura_id:26 + aya_id:155", timelimit=None
+            )
+
+        assert results is mock_results
+        assert mock_whoosh_searcher.search.call_count == 2
+        # The stale searcher must have been reset so the retry reopened one.
+        assert qs._shared_searcher is not None
+
+    def test_search_propagates_unrelated_value_error(self):
+        """A genuine ValueError (e.g. malformed input) must NOT be swallowed."""
+        from unittest.mock import patch
+        import pytest
+
+        qs, mock_whoosh_searcher = self._make_mock_qsearcher(
+            ValueError("invalid literal for int() with base 10: 'x'")
+        )
+
+        with patch("alfanous.searching._strip_phrase_queries", side_effect=lambda q, schema=None: q):
+            with pytest.raises(ValueError, match="invalid literal"):
+                qs.search("aya_id:x", timelimit=None)
+
+        # Re-raised immediately on the first attempt — no pointless retry.
+        assert mock_whoosh_searcher.search.call_count == 1
+
+
 # ---------------------------------------------------------------------------
 # Unit test for UnpicklingError retry logic
 # ---------------------------------------------------------------------------
@@ -881,6 +968,10 @@ class TestTransientReaderCorruption:
         assert _is_transient_reader_corruption(ReaderClosed()) is True
         assert _is_transient_reader_corruption(pickle.UnpicklingError("x")) is True
 
+    def test_eof_error_is_transient(self):
+        from alfanous.searching import _is_transient_reader_corruption
+        assert _is_transient_reader_corruption(EOFError("Ran out of input")) is True
+
     def test_unrelated_errors_are_not_transient(self):
         from alfanous.searching import _is_transient_reader_corruption
         # A genuine programming error must NOT be swallowed/retried.
@@ -966,3 +1057,122 @@ class TestTransientReaderCorruption:
 
         # No retry: _get_shared_searcher called exactly once.
         assert qs._get_shared_searcher.call_count == 1
+
+
+# ---------------------------------------------------------------------------
+# Regression test for GitHub issue #905: EOFError "Ran out of input"
+# ---------------------------------------------------------------------------
+
+class TestEOFErrorRetry:
+    """Verify that QSearcher retries on EOFError ("Ran out of input").
+
+    A concurrent index refresh closes the mmap'd posting files, so an
+    in-flight search can decode a truncated/empty posting block and raise
+    ``EOFError: Ran out of input`` while unpickling.  This must be treated
+    like ReaderClosed/UnpicklingError: reset the shared searcher and retry.
+    """
+
+    def test_search_retries_on_eof_error(self):
+        """search() must catch EOFError on the first attempt, reset the
+        shared searcher, and retry.  On the second failure it re-raises."""
+        from unittest.mock import MagicMock
+        from alfanous.searching import QSearcher
+
+        qs = QSearcher.__new__(QSearcher)
+        qs._shared_searcher = None
+
+        mock_schema = MagicMock()
+        mock_schema.__contains__ = MagicMock(return_value=False)
+        mock_schema.names.return_value = []
+        qs._schema = mock_schema
+
+        from whoosh import query as wquery
+        mock_parser = MagicMock()
+        mock_parser.parse.return_value = wquery.Term("aya", "test")
+        qs._qparser = mock_parser
+
+        mock_searcher = MagicMock()
+        mock_searcher.collector.return_value = MagicMock()
+        mock_searcher.search_with_collector.side_effect = EOFError("Ran out of input")
+        qs._get_shared_searcher = MagicMock(return_value=mock_searcher)
+
+        with pytest.raises(EOFError):
+            qs.search("test", timelimit=5.0)
+
+        assert qs._get_shared_searcher.call_count == 2
+
+    def test_search_succeeds_on_retry_after_eof_error(self):
+        """search() must succeed when the retry attempt works."""
+        from unittest.mock import MagicMock
+        from alfanous.searching import QSearcher
+
+        qs = QSearcher.__new__(QSearcher)
+        qs._shared_searcher = None
+
+        mock_schema = MagicMock()
+        mock_schema.__contains__ = MagicMock(return_value=False)
+        mock_schema.names.return_value = []
+        qs._schema = mock_schema
+
+        from whoosh import query as wquery
+        mock_parser = MagicMock()
+        mock_parser.parse.return_value = wquery.Term("aya", "test")
+        qs._qparser = mock_parser
+
+        mock_results = MagicMock()
+        mock_results.matched_terms.return_value = set()
+
+        fail_searcher = MagicMock()
+        fail_searcher.collector.return_value = MagicMock()
+        fail_searcher.search_with_collector.side_effect = EOFError("Ran out of input")
+
+        ok_collector = MagicMock()
+        ok_collector.results.return_value = mock_results
+        ok_searcher = MagicMock()
+        ok_searcher.collector.return_value = ok_collector
+        ok_searcher.search_with_collector.return_value = None
+
+        call_count = [0]
+        def get_searcher():
+            call_count[0] += 1
+            return fail_searcher if call_count[0] == 1 else ok_searcher
+        qs._get_shared_searcher = get_searcher
+
+        results, terms, searcher_proxy, expansion = qs.search("test", timelimit=5.0)
+        assert results is mock_results
+        assert call_count[0] == 2
+
+    def test_search_obj_retries_on_eof_error(self):
+        """search_obj() (used by nested sura_id+aya_id queries like issue #905)
+        must retry once on EOFError and succeed on the second attempt."""
+        from unittest.mock import MagicMock
+        from alfanous.searching import QSearcher
+
+        qs = QSearcher.__new__(QSearcher)
+        qs._shared_searcher = None
+
+        mock_schema = MagicMock()
+        mock_schema.__contains__ = MagicMock(return_value=False)
+        mock_schema.names.return_value = []
+        qs._schema = mock_schema
+
+        from whoosh import query as wquery
+        q_obj = wquery.Term("aya", "test")
+
+        mock_results = MagicMock()
+
+        fail_searcher = MagicMock()
+        fail_searcher.search.side_effect = EOFError("Ran out of input")
+
+        ok_searcher = MagicMock()
+        ok_searcher.search.return_value = mock_results
+
+        call_count = [0]
+        def get_searcher():
+            call_count[0] += 1
+            return fail_searcher if call_count[0] == 1 else ok_searcher
+        qs._get_shared_searcher = get_searcher
+
+        results, terms, searcher_proxy = qs.search_obj(q_obj, timelimit=None)
+        assert results is mock_results
+        assert call_count[0] == 2
