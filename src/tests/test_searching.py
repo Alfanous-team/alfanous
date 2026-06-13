@@ -760,7 +760,6 @@ class TestHasWildcardQuery:
         assert _has_wildcard_query(q) is False
 
 
-<<<<<<< HEAD
 class TestTransientReaderCorruptionRetry:
     """Regression tests for issue #901: a concurrent searcher refresh can close
     a memory-mapped posting file mid-search, causing Whoosh to read garbage and
@@ -846,7 +845,8 @@ class TestTransientReaderCorruptionRetry:
 
         # Re-raised immediately on the first attempt — no pointless retry.
         assert mock_whoosh_searcher.search.call_count == 1
-=======
+
+
 # ---------------------------------------------------------------------------
 # Unit test for UnpicklingError retry logic
 # ---------------------------------------------------------------------------
@@ -933,4 +933,3 @@ class TestUnpicklingErrorRetry:
         results, terms, searcher_proxy, expansion = qs.search("test", timelimit=5.0)
         assert results is mock_results
         assert call_count[0] == 2
->>>>>>> origin/main
