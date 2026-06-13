@@ -18,6 +18,19 @@ logger = logging.getLogger(__name__)
 # falls back gracefully to the original query string).
 _MAX_READER_CLOSED_RETRIES = 2
 
+# Transient errors that signal the shared Whoosh searcher's underlying reader
+# was closed or refreshed concurrently while a search was in flight.  A refresh
+# eagerly closes the mmap'd posting files, so an in-flight read can surface in
+# several disguises:
+#   * whoosh.reading.ReaderClosed  — the reader was explicitly closed;
+#   * pickle.UnpicklingError       — a partially-overwritten posting block is
+#                                    decoded as garbage ("invalid load key");
+#   * EOFError ("Ran out of input")— the mmap was truncated/emptied so unpickle
+#                                    hit end-of-stream immediately (issue #905).
+# All three are handled identically: reset the shared searcher and retry once
+# with a freshly opened one.
+_TRANSIENT_READER_ERRORS = (ReaderClosed, pickle.UnpicklingError, EOFError)
+
 # Pre-built frozenset of Arabic Unicode block codepoints for O(1) membership
 # checks.  Used by _is_arabic_text() instead of repeated range comparisons.
 _ARABIC_CODEPOINTS = frozenset(chr(cp) for cp in range(0x0600, 0x0700))
@@ -638,7 +651,7 @@ class QSearcher:
                 else:
                     results = searcher.search(query, **collector_kwargs, filter=filter_query)
                 break  # success — exit retry loop
-            except (ReaderClosed, pickle.UnpicklingError):
+            except _TRANSIENT_READER_ERRORS:
                 if attempt == 0:
                     # Force _get_shared_searcher() to reopen on the next attempt.
                     self._shared_searcher = None
@@ -734,7 +747,7 @@ class QSearcher:
             try:
                 results = self._run_query(searcher, q_obj, search_kwargs, timelimit)
                 return results, [], _SearcherProxy(searcher)
-            except (ReaderClosed, pickle.UnpicklingError):
+            except _TRANSIENT_READER_ERRORS:
                 if attempt == 0:
                     self._shared_searcher = None
                     logger.warning(
@@ -852,7 +865,7 @@ class QSearcher:
                     if len(result) == limit:
                         break
                 return result
-            except (ReaderClosed, pickle.UnpicklingError):
+            except _TRANSIENT_READER_ERRORS:
                 if attempt == 0:
                     self._shared_searcher = None
                     logger.warning(
@@ -929,7 +942,7 @@ class QSearcher:
                 candidates.sort(key=lambda x: x[0], reverse=True)
                 return [phrase for _, phrase in candidates[:limit]]
 
-            except (ReaderClosed, pickle.UnpicklingError):
+            except _TRANSIENT_READER_ERRORS:
                 if attempt == 0:
                     self._shared_searcher = None
                     logger.warning(
@@ -981,7 +994,7 @@ class QSearcher:
             try:
                 correction = searcher.correct_query(parsed, querystr)
                 return {"original": querystr, "corrected": correction.string}
-            except (ReaderClosed, pickle.UnpicklingError):
+            except _TRANSIENT_READER_ERRORS:
                 if attempt == 0:
                     # Force _get_shared_searcher() to reopen on the next attempt.
                     self._shared_searcher = None
