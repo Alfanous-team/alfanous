@@ -760,6 +760,93 @@ class TestHasWildcardQuery:
         assert _has_wildcard_query(q) is False
 
 
+class TestTransientReaderCorruptionRetry:
+    """Regression tests for issue #901: a concurrent searcher refresh can close
+    a memory-mapped posting file mid-search, causing Whoosh to read garbage and
+    raise ``ValueError: unsupported pickle protocol: 120`` instead of a clean
+    ``ReaderClosed``.  ``QSearcher`` must treat this as a transient error,
+    reopen the searcher and retry, while still propagating genuine ValueErrors.
+    """
+
+    def test_signature_detects_pickle_protocol_error(self):
+        from alfanous.searching import _is_transient_reader_corruption
+
+        assert _is_transient_reader_corruption(
+            ValueError("unsupported pickle protocol: 120")
+        )
+
+    def test_signature_detects_closed_mmap_error(self):
+        from alfanous.searching import _is_transient_reader_corruption
+
+        assert _is_transient_reader_corruption(
+            ValueError("seek of closed file")
+        )
+        assert _is_transient_reader_corruption(
+            ValueError("mmap closed or invalid")
+        )
+
+    def test_signature_ignores_unrelated_value_error(self):
+        from alfanous.searching import _is_transient_reader_corruption
+
+        assert not _is_transient_reader_corruption(
+            ValueError("invalid literal for int() with base 10: 'x'")
+        )
+
+    def _make_mock_qsearcher(self, search_side_effect):
+        from unittest.mock import MagicMock
+        from alfanous.searching import QSearcher
+
+        mock_whoosh_searcher = MagicMock()
+        mock_whoosh_searcher.search.side_effect = search_side_effect
+
+        mock_index = MagicMock()
+        mock_index.get_index.return_value.searcher.return_value = mock_whoosh_searcher
+        mock_index.get_schema.return_value = MagicMock()
+
+        mock_parser = MagicMock()
+        mock_parser.parse.return_value = MagicMock(
+            all_terms=MagicMock(return_value=[])
+        )
+        return QSearcher(mock_index, mock_parser), mock_whoosh_searcher
+
+    def test_search_retries_and_recovers_on_pickle_protocol_error(self):
+        """The reported failure must be recovered: first attempt raises the
+        corrupted-read ValueError, the searcher is reopened and the retry
+        returns results."""
+        from unittest.mock import patch, MagicMock
+
+        mock_results = MagicMock(matched_terms=MagicMock(return_value=None))
+        qs, mock_whoosh_searcher = self._make_mock_qsearcher(
+            [ValueError("unsupported pickle protocol: 120"), mock_results]
+        )
+
+        with patch("alfanous.searching._strip_phrase_queries", side_effect=lambda q, schema=None: q):
+            results, terms, searcher, expansion = qs.search(
+                "sura_id:26 + aya_id:155", timelimit=None
+            )
+
+        assert results is mock_results
+        assert mock_whoosh_searcher.search.call_count == 2
+        # The stale searcher must have been reset so the retry reopened one.
+        assert qs._shared_searcher is not None
+
+    def test_search_propagates_unrelated_value_error(self):
+        """A genuine ValueError (e.g. malformed input) must NOT be swallowed."""
+        from unittest.mock import patch
+        import pytest
+
+        qs, mock_whoosh_searcher = self._make_mock_qsearcher(
+            ValueError("invalid literal for int() with base 10: 'x'")
+        )
+
+        with patch("alfanous.searching._strip_phrase_queries", side_effect=lambda q, schema=None: q):
+            with pytest.raises(ValueError, match="invalid literal"):
+                qs.search("aya_id:x", timelimit=None)
+
+        # Re-raised immediately on the first attempt — no pointless retry.
+        assert mock_whoosh_searcher.search.call_count == 1
+
+
 # ---------------------------------------------------------------------------
 # Unit test for UnpicklingError retry logic
 # ---------------------------------------------------------------------------
