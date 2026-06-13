@@ -2656,6 +2656,53 @@ class TestSharedReaderSearcherContract(unittest.TestCase):
         with self.assertRaises(QueryError, msg="Unrelated QueryError must propagate"):
             qs.search_obj(NullQuery(), timelimit=None)
 
+    def test_search_obj_strips_nested_phrase_on_query_error(self):
+        """search_obj must strip phrase queries nested inside NestedParent child queries."""
+        from whoosh.fields import Schema, TEXT, ID
+        from whoosh.query import QueryError, Phrase, Term, Or, And, NestedParent
+        from alfanous.searching import QSearcher
+
+        schema = Schema(
+            aya=TEXT(phrase=True),
+            text_ar=TEXT(phrase=False),
+            kind=ID(stored=True),
+        )
+        mock_docindex = MagicMock()
+        mock_docindex.get_schema.return_value = schema
+        mock_ws = MagicMock()
+        mock_ws.refresh.return_value = mock_ws
+        mock_docindex.get_index.return_value.searcher.return_value = mock_ws
+
+        good_results = MagicMock()
+        mock_ws.search.side_effect = [
+            QueryError("Phrase search: 'text_ar' field has no positions"),
+            good_results,
+        ]
+
+        qs = QSearcher(mock_docindex, MagicMock())
+        qs._shared_searcher = mock_ws
+
+        q_obj = NestedParent(
+            Term("kind", "aya"),
+            Or([
+                Phrase("aya", ["الحمد", "لله"]),
+                Phrase("text_ar", ["mercy", "compassion"]),
+            ]),
+        )
+        results, terms, _searcher = qs.search_obj(q_obj, timelimit=None)
+
+        self.assertIs(results, good_results,
+                      "search_obj must return results from the stripped-phrase retry")
+        self.assertEqual(mock_ws.search.call_count, 2)
+
+        second_call_query = mock_ws.search.call_args_list[1].kwargs.get("q")
+        self.assertIsInstance(second_call_query, NestedParent)
+        self.assertIsInstance(second_call_query.child, Or)
+        self.assertIsInstance(second_call_query.child.subqueries[0], Phrase,
+                              "Phrase on positional field must be preserved")
+        self.assertIsInstance(second_call_query.child.subqueries[1], And,
+                              "Phrase on non-positional field must be converted")
+
     def test_suggest_collocations_retries_on_reader_closed(self):
         """QSearcher.suggest_collocations must retry on ReaderClosed and succeed."""
         from whoosh.reading import ReaderClosed
