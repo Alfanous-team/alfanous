@@ -933,3 +933,121 @@ class TestUnpicklingErrorRetry:
         results, terms, searcher_proxy, expansion = qs.search("test", timelimit=5.0)
         assert results is mock_results
         assert call_count[0] == 2
+
+# ---------------------------------------------------------------------------
+# Regression test for GitHub issue #905: EOFError "Ran out of input"
+# ---------------------------------------------------------------------------
+
+class TestEOFErrorRetry:
+    """Verify that QSearcher retries on EOFError ("Ran out of input").
+
+    A concurrent index refresh closes the mmap'd posting files, so an
+    in-flight search can decode a truncated/empty posting block and raise
+    ``EOFError: Ran out of input`` while unpickling.  This must be treated
+    like ReaderClosed/UnpicklingError: reset the shared searcher and retry.
+    """
+
+    def test_search_retries_on_eof_error(self):
+        """search() must catch EOFError on the first attempt, reset the
+        shared searcher, and retry.  On the second failure it re-raises."""
+        from unittest.mock import MagicMock
+        from alfanous.searching import QSearcher
+
+        qs = QSearcher.__new__(QSearcher)
+        qs._shared_searcher = None
+
+        mock_schema = MagicMock()
+        mock_schema.__contains__ = MagicMock(return_value=False)
+        mock_schema.names.return_value = []
+        qs._schema = mock_schema
+
+        from whoosh import query as wquery
+        mock_parser = MagicMock()
+        mock_parser.parse.return_value = wquery.Term("aya", "test")
+        qs._qparser = mock_parser
+
+        mock_searcher = MagicMock()
+        mock_searcher.collector.return_value = MagicMock()
+        mock_searcher.search_with_collector.side_effect = EOFError("Ran out of input")
+        qs._get_shared_searcher = MagicMock(return_value=mock_searcher)
+
+        with pytest.raises(EOFError):
+            qs.search("test", timelimit=5.0)
+
+        assert qs._get_shared_searcher.call_count == 2
+
+    def test_search_succeeds_on_retry_after_eof_error(self):
+        """search() must succeed when the retry attempt works."""
+        from unittest.mock import MagicMock
+        from alfanous.searching import QSearcher
+
+        qs = QSearcher.__new__(QSearcher)
+        qs._shared_searcher = None
+
+        mock_schema = MagicMock()
+        mock_schema.__contains__ = MagicMock(return_value=False)
+        mock_schema.names.return_value = []
+        qs._schema = mock_schema
+
+        from whoosh import query as wquery
+        mock_parser = MagicMock()
+        mock_parser.parse.return_value = wquery.Term("aya", "test")
+        qs._qparser = mock_parser
+
+        mock_results = MagicMock()
+        mock_results.matched_terms.return_value = set()
+
+        fail_searcher = MagicMock()
+        fail_searcher.collector.return_value = MagicMock()
+        fail_searcher.search_with_collector.side_effect = EOFError("Ran out of input")
+
+        ok_collector = MagicMock()
+        ok_collector.results.return_value = mock_results
+        ok_searcher = MagicMock()
+        ok_searcher.collector.return_value = ok_collector
+        ok_searcher.search_with_collector.return_value = None
+
+        call_count = [0]
+        def get_searcher():
+            call_count[0] += 1
+            return fail_searcher if call_count[0] == 1 else ok_searcher
+        qs._get_shared_searcher = get_searcher
+
+        results, terms, searcher_proxy, expansion = qs.search("test", timelimit=5.0)
+        assert results is mock_results
+        assert call_count[0] == 2
+
+    def test_search_obj_retries_on_eof_error(self):
+        """search_obj() (used by nested sura_id+aya_id queries like issue #905)
+        must retry once on EOFError and succeed on the second attempt."""
+        from unittest.mock import MagicMock
+        from alfanous.searching import QSearcher
+
+        qs = QSearcher.__new__(QSearcher)
+        qs._shared_searcher = None
+
+        mock_schema = MagicMock()
+        mock_schema.__contains__ = MagicMock(return_value=False)
+        mock_schema.names.return_value = []
+        qs._schema = mock_schema
+
+        from whoosh import query as wquery
+        q_obj = wquery.Term("aya", "test")
+
+        mock_results = MagicMock()
+
+        fail_searcher = MagicMock()
+        fail_searcher.search.side_effect = EOFError("Ran out of input")
+
+        ok_searcher = MagicMock()
+        ok_searcher.search.return_value = mock_results
+
+        call_count = [0]
+        def get_searcher():
+            call_count[0] += 1
+            return fail_searcher if call_count[0] == 1 else ok_searcher
+        qs._get_shared_searcher = get_searcher
+
+        results, terms, searcher_proxy = qs.search_obj(q_obj, timelimit=None)
+        assert results is mock_results
+        assert call_count[0] == 2
