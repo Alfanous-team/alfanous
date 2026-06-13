@@ -934,6 +934,131 @@ class TestUnpicklingErrorRetry:
         assert results is mock_results
         assert call_count[0] == 2
 
+
+# ---------------------------------------------------------------------------
+# Unit tests for transient shared-searcher corruption detection / retry
+# (regression for issue #907: "'int' object has no attribute 'append'")
+# ---------------------------------------------------------------------------
+
+class TestTransientReaderCorruption:
+    """Verify _is_transient_reader_corruption and the search retry behaviour.
+
+    Issue #907: querying ``بِرَٰزِقِينَ`` intermittently raised
+    ``AttributeError("'int' object has no attribute 'append'")``.  This is a
+    transient corruption surfaced when a concurrent ``refresh()`` closes the
+    shared searcher's mmap'd posting files mid-read (Whoosh's
+    ``GrowableArray.append`` is invoked on an int that was mis-decoded from the
+    unmapped region).  Such errors must be retried with a fresh searcher.
+    """
+
+    def test_int_append_attribute_error_is_transient(self):
+        from alfanous.searching import _is_transient_reader_corruption
+        exc = AttributeError("'int' object has no attribute 'append'")
+        assert _is_transient_reader_corruption(exc) is True
+
+    def test_unsupported_pickle_protocol_value_error_is_transient(self):
+        from alfanous.searching import _is_transient_reader_corruption
+        exc = ValueError("unsupported pickle protocol: 88")
+        assert _is_transient_reader_corruption(exc) is True
+
+    def test_reader_closed_and_unpickling_error_are_transient(self):
+        import pickle
+        from whoosh.reading import ReaderClosed
+        from alfanous.searching import _is_transient_reader_corruption
+        assert _is_transient_reader_corruption(ReaderClosed()) is True
+        assert _is_transient_reader_corruption(pickle.UnpicklingError("x")) is True
+
+    def test_eof_error_is_transient(self):
+        from alfanous.searching import _is_transient_reader_corruption
+        assert _is_transient_reader_corruption(EOFError("Ran out of input")) is True
+
+    def test_unrelated_errors_are_not_transient(self):
+        from alfanous.searching import _is_transient_reader_corruption
+        # A genuine programming error must NOT be swallowed/retried.
+        assert _is_transient_reader_corruption(
+            AttributeError("'Foo' object has no attribute 'bar'")
+        ) is False
+        assert _is_transient_reader_corruption(ValueError("bad input")) is False
+        assert _is_transient_reader_corruption(KeyError("missing")) is False
+
+    def test_search_succeeds_on_retry_after_int_append_error(self):
+        """search() must catch the 'int' object has no attribute 'append'
+        AttributeError on the first attempt, reset the shared searcher, and
+        retry successfully (regression for issue #907)."""
+        from unittest.mock import MagicMock
+        from alfanous.searching import QSearcher
+
+        qs = QSearcher.__new__(QSearcher)
+        qs._shared_searcher = None
+
+        mock_schema = MagicMock()
+        mock_schema.__contains__ = MagicMock(return_value=False)
+        mock_schema.names.return_value = []
+        qs._schema = mock_schema
+
+        from whoosh import query as wquery
+        mock_parser = MagicMock()
+        mock_parser.parse.return_value = wquery.Term("aya", "test")
+        qs._qparser = mock_parser
+
+        mock_results = MagicMock()
+        mock_results.matched_terms.return_value = set()
+
+        fail_searcher = MagicMock()
+        fail_searcher.collector.return_value = MagicMock()
+        fail_searcher.search_with_collector.side_effect = AttributeError(
+            "'int' object has no attribute 'append'"
+        )
+
+        ok_collector = MagicMock()
+        ok_collector.results.return_value = mock_results
+        ok_searcher = MagicMock()
+        ok_searcher.collector.return_value = ok_collector
+        ok_searcher.search_with_collector.return_value = None
+
+        call_count = [0]
+        def get_searcher():
+            call_count[0] += 1
+            return fail_searcher if call_count[0] == 1 else ok_searcher
+        qs._get_shared_searcher = get_searcher
+
+        results, terms, searcher_proxy, expansion = qs.search("test", timelimit=5.0)
+        assert results is mock_results
+        assert call_count[0] == 2
+
+    def test_search_does_not_retry_on_unrelated_attribute_error(self):
+        """A non-transient AttributeError must propagate immediately without
+        resetting/reopening the shared searcher."""
+        from unittest.mock import MagicMock
+        from alfanous.searching import QSearcher
+
+        qs = QSearcher.__new__(QSearcher)
+        qs._shared_searcher = None
+
+        mock_schema = MagicMock()
+        mock_schema.__contains__ = MagicMock(return_value=False)
+        mock_schema.names.return_value = []
+        qs._schema = mock_schema
+
+        from whoosh import query as wquery
+        mock_parser = MagicMock()
+        mock_parser.parse.return_value = wquery.Term("aya", "test")
+        qs._qparser = mock_parser
+
+        mock_searcher = MagicMock()
+        mock_searcher.collector.return_value = MagicMock()
+        mock_searcher.search_with_collector.side_effect = AttributeError(
+            "'Widget' object has no attribute 'frobnicate'"
+        )
+        qs._get_shared_searcher = MagicMock(return_value=mock_searcher)
+
+        with pytest.raises(AttributeError):
+            qs.search("test", timelimit=5.0)
+
+        # No retry: _get_shared_searcher called exactly once.
+        assert qs._get_shared_searcher.call_count == 1
+
+
 # ---------------------------------------------------------------------------
 # Regression test for GitHub issue #905: EOFError "Ran out of input"
 # ---------------------------------------------------------------------------
