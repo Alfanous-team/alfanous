@@ -217,6 +217,21 @@ def _strip_phrase_queries(q, schema=None):
     if isinstance(q, wquery.Not):
         return wquery.Not(_strip_phrase_queries(q.query, schema))
 
+    if isinstance(q, wquery.NestedParent):
+        return wquery.NestedParent(
+            _strip_phrase_queries(q.parents, schema),
+            _strip_phrase_queries(q.child, schema),
+            per_parent_limit=q.per_parent_limit,
+            score_fn=q.score_fn,
+        )
+
+    if isinstance(q, wquery.NestedChildren):
+        return wquery.NestedChildren(
+            _strip_phrase_queries(q.parents, schema),
+            _strip_phrase_queries(q.child, schema),
+            boost=q.boost,
+        )
+
     return q
 
 
@@ -741,7 +756,7 @@ class QSearcher:
                 logger.warning(
                     "search_obj: %s — retrying with phrase queries stripped.", exc
                 )
-                q_obj = _strip_phrase_queries(q_obj)
+                q_obj = _strip_phrase_queries(q_obj, schema=self._schema)
                 results = self._run_query(searcher, q_obj, search_kwargs, timelimit)
                 return results, [], _SearcherProxy(searcher)
 
