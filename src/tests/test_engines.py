@@ -979,6 +979,29 @@ def test_sura_phrase_with_apostrophe_and_aya_id():
     )
 
 
+def test_sura_as_saaffat_aya_57_no_unpickling_error():
+    """Regression test for GitHub issue #899: UnpicklingError on sura:"As-Saaffat" + aya_id:57.
+
+    This query must return exactly one verse (sura 37, aya 57) with all stored
+    fields intact.  Previous versions raised ``pickle.UnpicklingError: invalid
+    load key, '\\xf0'`` when the shared searcher's underlying mmap was
+    invalidated during a reader refresh.
+    """
+    query_str = 'sura:"As-Saaffat" + aya_id:57'
+    results, *_ = QSE.search_all(query_str, limit=10)
+    assert len(results) == 1, (
+        f"sura:\"As-Saaffat\" + aya_id:57 must return exactly one verse, "
+        f"got {len(results)}"
+    )
+    hit = dict(results[0])
+    assert hit.get('sura_id') == 37, (
+        f"Expected sura_id=37 but got sura_id={hit.get('sura_id')}"
+    )
+    assert hit.get('aya_id') == 57, (
+        f"Expected aya_id=57 but got aya_id={hit.get('aya_id')}"
+    )
+
+
 def test_phrase_search_preserved_for_positional_fields():
     """Phrase search on TEXT fields (with positions) must still work correctly.
 
