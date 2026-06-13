@@ -760,6 +760,7 @@ class TestHasWildcardQuery:
         assert _has_wildcard_query(q) is False
 
 
+<<<<<<< HEAD
 class TestTransientReaderCorruptionRetry:
     """Regression tests for issue #901: a concurrent searcher refresh can close
     a memory-mapped posting file mid-search, causing Whoosh to read garbage and
@@ -845,3 +846,91 @@ class TestTransientReaderCorruptionRetry:
 
         # Re-raised immediately on the first attempt — no pointless retry.
         assert mock_whoosh_searcher.search.call_count == 1
+=======
+# ---------------------------------------------------------------------------
+# Unit test for UnpicklingError retry logic
+# ---------------------------------------------------------------------------
+
+class TestUnpicklingErrorRetry:
+    """Verify that QSearcher.search retries on pickle.UnpicklingError."""
+
+    def test_search_retries_on_unpickling_error(self):
+        """search() must catch UnpicklingError on the first attempt,
+        reset the shared searcher, and retry.  On the second failure the
+        exception is re-raised."""
+        import pickle
+        from unittest.mock import MagicMock, patch, PropertyMock
+        from alfanous.searching import QSearcher
+
+        # Build a minimal QSearcher with mocked internals
+        qs = QSearcher.__new__(QSearcher)
+        qs._shared_searcher = None
+
+        mock_schema = MagicMock()
+        mock_schema.__contains__ = MagicMock(return_value=False)
+        mock_schema.names.return_value = []
+        qs._schema = mock_schema
+
+        # Mock the parser to return a simple query
+        from whoosh import query as wquery
+        mock_parser = MagicMock()
+        mock_parser.parse.return_value = wquery.Term("aya", "test")
+        qs._qparser = mock_parser
+
+        # _get_shared_searcher returns a mock searcher that raises
+        # UnpicklingError on every search call
+        mock_searcher = MagicMock()
+        mock_searcher.collector.return_value = MagicMock()
+        mock_searcher.search_with_collector.side_effect = pickle.UnpicklingError("invalid load key")
+        qs._get_shared_searcher = MagicMock(return_value=mock_searcher)
+
+        with pytest.raises(pickle.UnpicklingError):
+            qs.search("test", timelimit=5.0)
+
+        # _get_shared_searcher should have been called twice (initial + retry)
+        assert qs._get_shared_searcher.call_count == 2
+
+    def test_search_succeeds_on_retry_after_unpickling_error(self):
+        """search() must succeed when the retry attempt works."""
+        import pickle
+        from unittest.mock import MagicMock
+        from alfanous.searching import QSearcher
+
+        qs = QSearcher.__new__(QSearcher)
+        qs._shared_searcher = None
+
+        mock_schema = MagicMock()
+        mock_schema.__contains__ = MagicMock(return_value=False)
+        mock_schema.names.return_value = []
+        qs._schema = mock_schema
+
+        from whoosh import query as wquery
+        mock_parser = MagicMock()
+        mock_parser.parse.return_value = wquery.Term("aya", "test")
+        qs._qparser = mock_parser
+
+        # First searcher raises, second succeeds
+        mock_results = MagicMock()
+        mock_results.matched_terms.return_value = set()
+
+        fail_searcher = MagicMock()
+        fail_searcher.collector.return_value = MagicMock()
+        fail_searcher.search_with_collector.side_effect = pickle.UnpicklingError("invalid load key")
+
+        ok_collector = MagicMock()
+        ok_collector.results.return_value = mock_results
+        ok_searcher = MagicMock()
+        ok_searcher.collector.return_value = ok_collector
+        ok_searcher.search_with_collector.return_value = None
+
+        call_count = [0]
+        def get_searcher():
+            call_count[0] += 1
+            return fail_searcher if call_count[0] == 1 else ok_searcher
+        qs._get_shared_searcher = get_searcher
+
+        # Should succeed on the retry
+        results, terms, searcher_proxy, expansion = qs.search("test", timelimit=5.0)
+        assert results is mock_results
+        assert call_count[0] == 2
+>>>>>>> origin/main

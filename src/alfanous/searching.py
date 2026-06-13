@@ -8,6 +8,7 @@ from whoosh.qparser import QueryParser as _QueryParser
 from whoosh.reading import ReaderClosed
 from whoosh.query import QueryError
 import logging
+import pickle
 
 logger = logging.getLogger(__name__)
 
@@ -254,6 +255,21 @@ def _strip_phrase_queries(q, schema=None):
 
     if isinstance(q, wquery.Not):
         return wquery.Not(_strip_phrase_queries(q.query, schema))
+
+    if isinstance(q, wquery.NestedParent):
+        return wquery.NestedParent(
+            _strip_phrase_queries(q.parents, schema),
+            _strip_phrase_queries(q.child, schema),
+            per_parent_limit=q.per_parent_limit,
+            score_fn=q.score_fn,
+        )
+
+    if isinstance(q, wquery.NestedChildren):
+        return wquery.NestedChildren(
+            _strip_phrase_queries(q.parents, schema),
+            _strip_phrase_queries(q.child, schema),
+            boost=q.boost,
+        )
 
     return q
 
@@ -660,20 +676,20 @@ class QSearcher:
                 else:
                     results = searcher.search(query, **collector_kwargs, filter=filter_query)
                 break  # success — exit retry loop
-            except ReaderClosed:
+            except (ReaderClosed, pickle.UnpicklingError):
                 if attempt == 0:
                     # Force _get_shared_searcher() to reopen on the next attempt.
                     self._shared_searcher = None
                     logger.warning(
-                        "search: Underlying index reader was closed during search "
-                        "for query %r; retrying with a fresh searcher.",
-                        querystr,
+                        "search: Index reader error during search for query %r "
+                        "(attempt %d); retrying with a fresh searcher.",
+                        querystr, attempt + 1,
                     )
                     continue
                 # Second failure: re-raise so the caller receives a clean error.
                 logger.error(
-                    "search: Underlying index reader still closed on retry for "
-                    "query %r; propagating ReaderClosed.",
+                    "search: Index reader error persists on retry for "
+                    "query %r; propagating.",
                     querystr,
                 )
                 raise
@@ -779,17 +795,17 @@ class QSearcher:
             try:
                 results = self._run_query(searcher, q_obj, search_kwargs, timelimit)
                 return results, [], _SearcherProxy(searcher)
-            except ReaderClosed:
+            except (ReaderClosed, pickle.UnpicklingError):
                 if attempt == 0:
                     self._shared_searcher = None
                     logger.warning(
-                        "search_obj: Underlying index reader was closed; "
+                        "search_obj: Index reader error; "
                         "retrying with a fresh searcher.",
                     )
                     continue
                 logger.error(
-                    "search_obj: Underlying index reader still closed on retry; "
-                    "propagating ReaderClosed.",
+                    "search_obj: Index reader error persists on retry; "
+                    "propagating.",
                 )
                 raise
             except ValueError as exc:
@@ -820,7 +836,7 @@ class QSearcher:
                 logger.warning(
                     "search_obj: %s — retrying with phrase queries stripped.", exc
                 )
-                q_obj = _strip_phrase_queries(q_obj)
+                q_obj = _strip_phrase_queries(q_obj, schema=self._schema)
                 results = self._run_query(searcher, q_obj, search_kwargs, timelimit)
                 return results, [], _SearcherProxy(searcher)
 
@@ -915,17 +931,17 @@ class QSearcher:
                     if len(result) == limit:
                         break
                 return result
-            except ReaderClosed:
+            except (ReaderClosed, pickle.UnpicklingError):
                 if attempt == 0:
                     self._shared_searcher = None
                     logger.warning(
-                        "suggest_collocations: Underlying index reader was closed "
+                        "suggest_collocations: Index reader error "
                         "for word %r; retrying with a fresh searcher.",
                         word,
                     )
                     continue
                 logger.error(
-                    "suggest_collocations: Underlying index reader still closed on "
+                    "suggest_collocations: Index reader error persists on "
                     "retry for word %r; returning empty list.",
                     word,
                 )
@@ -992,17 +1008,17 @@ class QSearcher:
                 candidates.sort(key=lambda x: x[0], reverse=True)
                 return [phrase for _, phrase in candidates[:limit]]
 
-            except ReaderClosed:
+            except (ReaderClosed, pickle.UnpicklingError):
                 if attempt == 0:
                     self._shared_searcher = None
                     logger.warning(
-                        "suggest_extensions: Underlying index reader was closed "
+                        "suggest_extensions: Index reader error "
                         "for prefix %r; retrying with a fresh searcher.",
                         prefix_text,
                     )
                     continue
                 logger.error(
-                    "suggest_extensions: Underlying index reader still closed on "
+                    "suggest_extensions: Index reader error persists on "
                     "retry for prefix %r; returning empty list.",
                     prefix_text,
                 )
@@ -1044,19 +1060,19 @@ class QSearcher:
             try:
                 correction = searcher.correct_query(parsed, querystr)
                 return {"original": querystr, "corrected": correction.string}
-            except ReaderClosed:
+            except (ReaderClosed, pickle.UnpicklingError):
                 if attempt == 0:
                     # Force _get_shared_searcher() to reopen on the next attempt.
                     self._shared_searcher = None
                     logger.warning(
-                        "correct_query: Underlying index reader was closed during "
+                        "correct_query: Index reader error during "
                         "correction for query %r; retrying with a fresh searcher.",
                         querystr,
                     )
                     continue
                 # Second failure: fall back gracefully rather than propagating.
                 logger.error(
-                    "correct_query: Underlying index reader still closed on retry "
+                    "correct_query: Index reader error persists on retry "
                     "for query %r; returning original query unchanged.",
                     querystr,
                 )
