@@ -18,6 +18,45 @@ logger = logging.getLogger(__name__)
 # falls back gracefully to the original query string).
 _MAX_READER_CLOSED_RETRIES = 2
 
+# Exception signatures indicating the shared, mmap-backed Whoosh searcher was
+# closed or refreshed concurrently *while a search was reading from it*.  When
+# QSearcher.refresh() closes the previous searcher's mmap'd posting files, an
+# in-flight search on the now-stale reader deserialises bytes from the unmapped
+# region.  Depending on what garbage is read this surfaces as one of several
+# unrelated-looking exceptions, all of which are transient and resolved by
+# reopening the searcher and retrying:
+#   * ReaderClosed                       — reader explicitly closed mid-read.
+#   * pickle.UnpicklingError             — corrupt pickle stream.
+#   * ValueError("unsupported pickle protocol") — the first garbage byte is
+#     misread as a pickle protocol number.
+#   * AttributeError("'int' object has no attribute 'append'") — a posting
+#     list deserialises to an int, then Whoosh's GrowableArray.append() is
+#     called on it (whoosh/util/numlists.py).
+# The ValueError / AttributeError cases are matched by message because their
+# bare types are too broad to retry on unconditionally (doing so could mask
+# genuine programming errors).
+_TRANSIENT_READER_ERROR_TYPES = (ReaderClosed, pickle.UnpicklingError)
+_TRANSIENT_READER_ERROR_MESSAGES = (
+    "unsupported pickle protocol",
+    "object has no attribute 'append'",
+)
+
+
+def _is_transient_reader_corruption(exc):
+    """Return True if *exc* looks like a transient shared-searcher corruption.
+
+    These errors occur when the mmap-backed posting files of the shared Whoosh
+    searcher are closed/remapped by a concurrent ``refresh()`` while a search is
+    reading them.  They are always safe to retry after reopening the searcher.
+    """
+    if isinstance(exc, _TRANSIENT_READER_ERROR_TYPES):
+        return True
+    if isinstance(exc, (ValueError, AttributeError)):
+        msg = str(exc)
+        return any(sig in msg for sig in _TRANSIENT_READER_ERROR_MESSAGES)
+    return False
+
+
 # Pre-built frozenset of Arabic Unicode block codepoints for O(1) membership
 # checks.  Used by _is_arabic_text() instead of repeated range comparisons.
 _ARABIC_CODEPOINTS = frozenset(chr(cp) for cp in range(0x0600, 0x0700))
@@ -638,14 +677,16 @@ class QSearcher:
                 else:
                     results = searcher.search(query, **collector_kwargs, filter=filter_query)
                 break  # success — exit retry loop
-            except (ReaderClosed, pickle.UnpicklingError):
+            except Exception as _exc:
+                if not _is_transient_reader_corruption(_exc):
+                    raise
                 if attempt == 0:
                     # Force _get_shared_searcher() to reopen on the next attempt.
                     self._shared_searcher = None
                     logger.warning(
                         "search: Index reader error during search for query %r "
-                        "(attempt %d); retrying with a fresh searcher.",
-                        querystr, attempt + 1,
+                        "(attempt %d): %s; retrying with a fresh searcher.",
+                        querystr, attempt + 1, _exc,
                     )
                     continue
                 # Second failure: re-raise so the caller receives a clean error.
@@ -734,19 +775,6 @@ class QSearcher:
             try:
                 results = self._run_query(searcher, q_obj, search_kwargs, timelimit)
                 return results, [], _SearcherProxy(searcher)
-            except (ReaderClosed, pickle.UnpicklingError):
-                if attempt == 0:
-                    self._shared_searcher = None
-                    logger.warning(
-                        "search_obj: Index reader error; "
-                        "retrying with a fresh searcher.",
-                    )
-                    continue
-                logger.error(
-                    "search_obj: Index reader error persists on retry; "
-                    "propagating.",
-                )
-                raise
             except QueryError as exc:
                 if "has no positions" not in str(exc):
                     raise
@@ -760,6 +788,21 @@ class QSearcher:
                 q_obj = _strip_phrase_queries(q_obj, schema=self._schema)
                 results = self._run_query(searcher, q_obj, search_kwargs, timelimit)
                 return results, [], _SearcherProxy(searcher)
+            except Exception as _exc:
+                if not _is_transient_reader_corruption(_exc):
+                    raise
+                if attempt == 0:
+                    self._shared_searcher = None
+                    logger.warning(
+                        "search_obj: Index reader error (%s); "
+                        "retrying with a fresh searcher.", _exc,
+                    )
+                    continue
+                logger.error(
+                    "search_obj: Index reader error persists on retry; "
+                    "propagating.",
+                )
+                raise
 
     def suggest(self, querystr):
         d = {}
@@ -852,13 +895,15 @@ class QSearcher:
                     if len(result) == limit:
                         break
                 return result
-            except (ReaderClosed, pickle.UnpicklingError):
+            except Exception as _exc:
+                if not _is_transient_reader_corruption(_exc):
+                    raise
                 if attempt == 0:
                     self._shared_searcher = None
                     logger.warning(
                         "suggest_collocations: Index reader error "
-                        "for word %r; retrying with a fresh searcher.",
-                        word,
+                        "for word %r (%s); retrying with a fresh searcher.",
+                        word, _exc,
                     )
                     continue
                 logger.error(
@@ -929,13 +974,15 @@ class QSearcher:
                 candidates.sort(key=lambda x: x[0], reverse=True)
                 return [phrase for _, phrase in candidates[:limit]]
 
-            except (ReaderClosed, pickle.UnpicklingError):
+            except Exception as _exc:
+                if not _is_transient_reader_corruption(_exc):
+                    raise
                 if attempt == 0:
                     self._shared_searcher = None
                     logger.warning(
                         "suggest_extensions: Index reader error "
-                        "for prefix %r; retrying with a fresh searcher.",
-                        prefix_text,
+                        "for prefix %r (%s); retrying with a fresh searcher.",
+                        prefix_text, _exc,
                     )
                     continue
                 logger.error(
@@ -981,14 +1028,16 @@ class QSearcher:
             try:
                 correction = searcher.correct_query(parsed, querystr)
                 return {"original": querystr, "corrected": correction.string}
-            except (ReaderClosed, pickle.UnpicklingError):
+            except Exception as _exc:
+                if not _is_transient_reader_corruption(_exc):
+                    raise
                 if attempt == 0:
                     # Force _get_shared_searcher() to reopen on the next attempt.
                     self._shared_searcher = None
                     logger.warning(
                         "correct_query: Index reader error during "
-                        "correction for query %r; retrying with a fresh searcher.",
-                        querystr,
+                        "correction for query %r (%s); retrying with a fresh searcher.",
+                        querystr, _exc,
                     )
                     continue
                 # Second failure: fall back gracefully rather than propagating.
