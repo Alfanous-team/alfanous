@@ -887,8 +887,10 @@ class TestUnpicklingErrorRetry:
         with pytest.raises(pickle.UnpicklingError):
             qs.search("test", timelimit=5.0)
 
-        # _get_shared_searcher should have been called twice (initial + retry)
-        assert qs._get_shared_searcher.call_count == 2
+        # _get_shared_searcher should have been called once per attempt
+        # (initial + retries up to _MAX_READER_CLOSED_RETRIES).
+        from alfanous.searching import _MAX_READER_CLOSED_RETRIES
+        assert qs._get_shared_searcher.call_count == _MAX_READER_CLOSED_RETRIES
 
     def test_search_succeeds_on_retry_after_unpickling_error(self):
         """search() must succeed when the retry attempt works."""
@@ -971,6 +973,16 @@ class TestTransientReaderCorruption:
     def test_eof_error_is_transient(self):
         from alfanous.searching import _is_transient_reader_corruption
         assert _is_transient_reader_corruption(EOFError("Ran out of input")) is True
+
+    def test_struct_unpack_error_is_transient(self):
+        """Issue #911: a truncated mmap'd posting block makes struct.unpack
+        raise ``struct.error('unpack requires a buffer of 4 bytes')``; this is
+        transient and must be retried."""
+        import struct
+        from alfanous.searching import _is_transient_reader_corruption
+        assert _is_transient_reader_corruption(
+            struct.error("unpack requires a buffer of 4 bytes")
+        ) is True
 
     def test_unrelated_errors_are_not_transient(self):
         from alfanous.searching import _is_transient_reader_corruption
@@ -1099,7 +1111,8 @@ class TestEOFErrorRetry:
         with pytest.raises(EOFError):
             qs.search("test", timelimit=5.0)
 
-        assert qs._get_shared_searcher.call_count == 2
+        from alfanous.searching import _MAX_READER_CLOSED_RETRIES
+        assert qs._get_shared_searcher.call_count == _MAX_READER_CLOSED_RETRIES
 
     def test_search_succeeds_on_retry_after_eof_error(self):
         """search() must succeed when the retry attempt works."""
