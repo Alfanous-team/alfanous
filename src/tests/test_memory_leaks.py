@@ -2506,18 +2506,18 @@ class TestSharedReaderSearcherContract(unittest.TestCase):
                       "search must return results from the successful retry")
 
     def test_search_reraises_on_second_reader_closed(self):
-        """QSearcher.search must re-raise ReaderClosed if both attempts fail."""
+        """QSearcher.search must re-raise ReaderClosed if every attempt fails."""
         from whoosh.fields import Schema, TEXT
         from whoosh.reading import ReaderClosed
-        from alfanous.searching import QSearcher
+        from alfanous.searching import QSearcher, _MAX_READER_CLOSED_RETRIES
 
         schema = Schema(aya=TEXT)
         mock_docindex = MagicMock()
         mock_docindex.get_schema.return_value = schema
         mock_ws = MagicMock()
         mock_ws.refresh.return_value = mock_ws
-        # Both attempts raise ReaderClosed.
-        mock_ws.search.side_effect = [ReaderClosed(), ReaderClosed()]
+        # Every attempt raises ReaderClosed.
+        mock_ws.search.side_effect = [ReaderClosed()] * _MAX_READER_CLOSED_RETRIES
         mock_docindex.get_index.return_value.searcher.return_value = mock_ws
 
         qs = QSearcher(mock_docindex, MagicMock())
@@ -2531,8 +2531,9 @@ class TestSharedReaderSearcherContract(unittest.TestCase):
         with self.assertRaises(ReaderClosed):
             qs.search("sura_id:49", timelimit=None)
 
-        self.assertEqual(mock_ws.search.call_count, 2,
-                         "search must attempt the Whoosh search exactly twice before re-raising")
+        self.assertEqual(mock_ws.search.call_count, _MAX_READER_CLOSED_RETRIES,
+                         "search must attempt the Whoosh search _MAX_READER_CLOSED_RETRIES "
+                         "times before re-raising")
 
     def test_search_parses_before_getting_searcher(self):
         """parse() must be called before _get_shared_searcher() in search().
