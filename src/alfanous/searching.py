@@ -9,14 +9,18 @@ from whoosh.reading import ReaderClosed
 from whoosh.query import QueryError
 import logging
 import pickle
+import struct
 
 logger = logging.getLogger(__name__)
 
 # Maximum number of attempts for operations that can fail with ReaderClosed.
-# On attempt 1 the shared searcher is reset and reopened; if attempt 2 also
-# fails the exception is propagated to the caller (except correct_query which
-# falls back gracefully to the original query string).
-_MAX_READER_CLOSED_RETRIES = 2
+# Each failing attempt (except the last) resets the shared searcher and reopens
+# it before retrying; if the final attempt also fails the exception is
+# propagated to the caller (except correct_query / the suggest_* helpers which
+# fall back gracefully).  More than one retry is needed because a busy server
+# may refresh the index repeatedly, so a single reopen can land on yet another
+# concurrently-refreshing searcher and fail again (issue #911).
+_MAX_READER_CLOSED_RETRIES = 4
 
 # Exception signatures indicating the shared, mmap-backed Whoosh searcher was
 # closed or refreshed concurrently *while a search was reading from it*.  When
@@ -29,16 +33,19 @@ _MAX_READER_CLOSED_RETRIES = 2
 #   * pickle.UnpicklingError             — corrupt pickle stream.
 #   * EOFError ("Ran out of input")      — the mmap was truncated/emptied so
 #                                          unpickle hit end-of-stream (issue #905).
+#   * struct.error("unpack requires a buffer of N bytes") — a fixed-width
+#     numeric field (e.g. a length prefix) was read from a truncated/unmapped
+#     region so ``struct.unpack`` got fewer bytes than expected (issue #911).
 #   * ValueError("unsupported pickle protocol") — the first garbage byte is
 #     misread as a pickle protocol number.
 #   * AttributeError("'int' object has no attribute 'append'") — a posting
 #     list deserialises to an int, then Whoosh's GrowableArray.append() is
 #     called on it (whoosh/util/numlists.py).
-# ReaderClosed, UnpicklingError, and EOFError are caught by type.  The
-# ValueError / AttributeError cases are matched by message because their
+# ReaderClosed, UnpicklingError, EOFError, and struct.error are caught by type.
+# The ValueError / AttributeError cases are matched by message because their
 # bare types are too broad to retry on unconditionally (doing so could mask
 # genuine programming errors).
-_TRANSIENT_READER_ERROR_TYPES = (ReaderClosed, pickle.UnpicklingError, EOFError)
+_TRANSIENT_READER_ERROR_TYPES = (ReaderClosed, pickle.UnpicklingError, EOFError, struct.error)
 _TRANSIENT_READER_ERROR_MESSAGES = (
     "unsupported pickle protocol",
     "pickle data was truncated",
@@ -694,10 +701,11 @@ class QSearcher:
 
         # Obtain the shared searcher AFTER parsing so that any plugin-triggered
         # refresh has already completed (see comment at the top of this method).
-        # Retry once on ReaderClosed: a concurrent refresh between _get_shared_searcher()
+        # Retry on ReaderClosed: a concurrent refresh between _get_shared_searcher()
         # and the actual search call can still close the reader in rare conditions
-        # (e.g. mmap I/O releasing the GIL).  On the second failure the exception
-        # is re-raised so the caller sees a clean error rather than silent wrong results.
+        # (e.g. mmap I/O releasing the GIL).  Each failing attempt reopens the
+        # searcher; only after _MAX_READER_CLOSED_RETRIES attempts is the exception
+        # re-raised so the caller sees a clean error rather than silent wrong results.
         for attempt in range(_MAX_READER_CLOSED_RETRIES):
             searcher = self._get_shared_searcher()
             try:
@@ -721,7 +729,7 @@ class QSearcher:
             except Exception as _exc:
                 if not _is_transient_reader_corruption(_exc):
                     raise
-                if attempt == 0:
+                if attempt < _MAX_READER_CLOSED_RETRIES - 1:
                     # Force _get_shared_searcher() to reopen on the next attempt.
                     self._shared_searcher = None
                     logger.warning(
@@ -730,7 +738,7 @@ class QSearcher:
                         querystr, attempt + 1, _exc,
                     )
                     continue
-                # Second failure: re-raise so the caller receives a clean error.
+                # Retries exhausted: re-raise so the caller receives a clean error.
                 logger.error(
                     "search: Index reader error persists on retry for "
                     "query %r; propagating.",
@@ -832,7 +840,7 @@ class QSearcher:
             except Exception as _exc:
                 if not _is_transient_reader_corruption(_exc):
                     raise
-                if attempt == 0:
+                if attempt < _MAX_READER_CLOSED_RETRIES - 1:
                     self._shared_searcher = None
                     logger.warning(
                         "search_obj: Index reader error (%s); "
@@ -939,7 +947,7 @@ class QSearcher:
             except Exception as _exc:
                 if not _is_transient_reader_corruption(_exc):
                     raise
-                if attempt == 0:
+                if attempt < _MAX_READER_CLOSED_RETRIES - 1:
                     self._shared_searcher = None
                     logger.warning(
                         "suggest_collocations: Index reader error "
@@ -1018,7 +1026,7 @@ class QSearcher:
             except Exception as _exc:
                 if not _is_transient_reader_corruption(_exc):
                     raise
-                if attempt == 0:
+                if attempt < _MAX_READER_CLOSED_RETRIES - 1:
                     self._shared_searcher = None
                     logger.warning(
                         "suggest_extensions: Index reader error "
@@ -1046,7 +1054,7 @@ class QSearcher:
         The shared Whoosh Searcher can be closed or refreshed by a concurrent
         request between the moment we obtain it and the moment Whoosh's
         ``correct_query`` accesses the underlying reader.  When that happens
-        Whoosh raises :exc:`whoosh.reading.ReaderClosed`.  We retry once with a
+        Whoosh raises :exc:`whoosh.reading.ReaderClosed`.  We retry with a
         freshly obtained shared searcher and, if the error persists, fall back
         to returning the original query string unchanged so the caller always
         receives a well-formed response.
@@ -1072,7 +1080,7 @@ class QSearcher:
             except Exception as _exc:
                 if not _is_transient_reader_corruption(_exc):
                     raise
-                if attempt == 0:
+                if attempt < _MAX_READER_CLOSED_RETRIES - 1:
                     # Force _get_shared_searcher() to reopen on the next attempt.
                     self._shared_searcher = None
                     logger.warning(
@@ -1081,7 +1089,7 @@ class QSearcher:
                         querystr, _exc,
                     )
                     continue
-                # Second failure: fall back gracefully rather than propagating.
+                # Retries exhausted: fall back gracefully rather than propagating.
                 logger.error(
                     "correct_query: Index reader error persists on retry "
                     "for query %r; returning original query unchanged.",
