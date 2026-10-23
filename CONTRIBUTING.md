@@ -80,7 +80,7 @@ This command will:
 After building the indexes, you can install Alfanous in development mode:
 
 ```bash
-cd src/alfanous
+cd src
 pip install -e .
 ```
 
@@ -106,7 +106,7 @@ For a complete build from source:
 
 3. **Install**:
    ```bash
-   cd src/alfanous
+   cd src
    python setup.py install
    ```
 
