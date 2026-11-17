@@ -36,7 +36,7 @@ setup(
 
     packages=['alfanous_mcp'],
 
-    install_requires=['alfanous3>=1.0.0', 'mcp>=1.0.0'],
+    install_requires=['alfanous3>=1.0.0', 'mcp>=1.0.0,<2'],
 
     author="Assem Chelli",
     author_email="assem.ch@gmail.com",
